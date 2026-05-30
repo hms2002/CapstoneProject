@@ -25,6 +25,48 @@ Prevention:
 
 ## Active Entries
 
+## 2026-05-30 - VFX Auto Builder Reset Inspector Particle Tuning On Play
+
+Context:
+Explosion debris bounce particle prefab values could revert when entering Play Mode, and Unity logged `Setting the duration while system is still playing is not supported` from `ExplosionDebrisBouncePrefabBuilder`. A later DemonKing wiring pass also tried to create a second Resources mirror of the tuned HighArc prefab, which risked letting the runtime copy drift from the Inspector-authored prefab.
+
+Cause:
+The editor builder's `InitializeOnLoadMethod` path rebuilt prefabs when existing assets differed from generated preset/material checks. Entering Play Mode can trigger editor domain reload/delay calls, so Inspector-authored particle changes were overwritten by generated defaults. The builder also configured newly added `ParticleSystem` components while Unity still considered them playing. Mirroring a prefab for runtime loading created another authoring surface for values to diverge.
+
+Fix:
+Limit the automatic builder path to missing prefab creation only; explicit menu rebuild remains available at `Tools/VFX/Rebuild Explosion Debris Bounce Prefabs`. Create generated ParticleSystem children inactive, stop/clear them, configure modules, then reactivate them. For DemonKing HighArc runtime use, move the authored prefab itself into `Resources/DemonKing/Vfx` instead of maintaining a generated mirror.
+
+Prevention:
+Editor auto-builders for authored VFX should not repair existing prefab assets on play/domain reload unless the user explicitly invokes a rebuild command. Generated prefab scaffolds may create missing assets automatically, but preserving Inspector tuning must be the default behavior. When a runtime path requires `Resources`, move or directly reference the tuned prefab rather than copying it into a second prefab that can fall out of sync.
+
+## 2026-05-30 - Manual ParticleSystem Prefabs Had No Useful Inspector Preview
+
+Context:
+The generated explosion debris bounce prefabs existed, but the normal ParticleSystem/Prefab preview did not show how the effect behaves.
+
+Cause:
+`TopDownDebrisBounceEmitter2D` drives particles manually through `ParticleSystem.SetParticles(...)` from the component update loop. The built-in ParticleSystem preview can play authored module emission, but it does not run this custom virtual-height simulation.
+
+Fix:
+Add an Editor-only preview window that instantiates a hidden temporary prefab copy, steps the emitter manually, and renders it through a hidden camera into a `RenderTexture`. The prefab builder now also resolves `Sprites-Default.mat` before the older default particle/fire fallbacks so the generated presets use the intended square sprite-style material.
+
+Prevention:
+For manually driven VFX helpers, include a dedicated Editor preview path instead of relying on the Inspector ParticleSystem preview. Preview tools must render temporary instances and must not mutate prefab assets directly.
+
+## 2026-05-30 - Cinematic Fixed Waits Treated As Camera Completion
+
+Context:
+Merchant, run-special NPC, shortcut, and tutorial cinematic flows could advance speech bubbles, choices, or gameplay release before the visible camera/letterbox presentation had fully settled.
+
+Cause:
+Several flows used authored focus/return wait seconds as if they represented camera completion. Those values are only minimum hold durations and do not account for Cinemachine blend completion, follow damping, moving camera targets, or the extra frame needed for the output camera to settle. `TutorialCombatIntroSequence` also released gameplay before its letterbox-out routine finished.
+
+Fix:
+Flow-owned camera waits now perform the existing authored minimum wait and then wait for the Cinemachine brain to stop blending and for the intended target's viewport position to remain stable for consecutive frames. `TutorialCombatIntroSequence` now releases gameplay only after letterbox-out completes.
+
+Prevention:
+For cinematic camera flows, treat serialized wait seconds as minimum presentation holds, not as completion gates. Advance speech bubbles, choices, gameplay release, or cleanup only after camera settle and visible closing presentation have finished.
+
 ## 2026-05-30 - Dialogue Text Preview Used A Different TMP Coordinate Space
 
 Context:

@@ -25,6 +25,31 @@ public sealed class DemonKingProjectile2D : MonoBehaviour
         float damage,
         float lifetime)
     {
+        return Spawn(
+            owner,
+            position,
+            direction,
+            homingTarget,
+            speed,
+            turnRate,
+            radius,
+            damage,
+            lifetime,
+            null);
+    }
+
+    public static DemonKingProjectile2D Spawn(
+        DemonKingController owner,
+        Vector2 position,
+        Vector2 direction,
+        Transform homingTarget,
+        float speed,
+        float turnRate,
+        float radius,
+        float damage,
+        float lifetime,
+        GameObject visualPrefab)
+    {
         GameObject projectileObject = new("DemonKing_MagicProjectile");
         projectileObject.transform.position = position;
 
@@ -32,14 +57,47 @@ public sealed class DemonKingProjectile2D : MonoBehaviour
         collider.isTrigger = true;
         collider.radius = Mathf.Max(0.05f, radius);
 
+        bool hasCustomVisual = visualPrefab != null;
+        if (hasCustomVisual)
+            AttachProjectileVisual(projectileObject.transform, visualPrefab, direction);
+        else
+            AttachFallbackVisual(projectileObject);
+
+        DemonKingProjectile2D projectile = projectileObject.AddComponent<DemonKingProjectile2D>();
+        projectile.Initialize(owner, direction, homingTarget, speed, turnRate, radius, damage, lifetime, !hasCustomVisual);
+        return projectile;
+    }
+
+    private static void AttachFallbackVisual(GameObject projectileObject)
+    {
         SpriteRenderer renderer = projectileObject.AddComponent<SpriteRenderer>();
         renderer.sprite = DemonKingPrimitiveVisual.GetCircleSprite();
         renderer.color = new Color(0.55f, 0.15f, 1f, 0.95f);
         DemonKingPrimitiveVisual.ApplyProjectileSorting(renderer);
+    }
 
-        DemonKingProjectile2D projectile = projectileObject.AddComponent<DemonKingProjectile2D>();
-        projectile.Initialize(owner, direction, homingTarget, speed, turnRate, radius, damage, lifetime);
-        return projectile;
+    private static void AttachProjectileVisual(Transform projectileRoot, GameObject visualPrefab, Vector2 direction)
+    {
+        if (projectileRoot == null || visualPrefab == null)
+            return;
+
+        GameObject visual = Instantiate(visualPrefab, projectileRoot);
+        if (visual == null)
+            return;
+
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        float angle = Mathf.Atan2(safeDirection.y, safeDirection.x) * Mathf.Rad2Deg;
+        Transform visualTransform = visual.transform;
+        visualTransform.localPosition = Vector3.zero;
+        visualTransform.localRotation = Quaternion.Euler(0f, 0f, angle);
+
+        SpriteRenderer[] renderers = visual.GetComponentsInChildren<SpriteRenderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+            DemonKingPrimitiveVisual.ApplyProjectileSorting(renderers[i]);
+
+        Collider2D[] colliders = visual.GetComponentsInChildren<Collider2D>(true);
+        for (int i = 0; i < colliders.Length; i++)
+            colliders[i].enabled = false;
     }
 
     private void Initialize(
@@ -50,7 +108,8 @@ public sealed class DemonKingProjectile2D : MonoBehaviour
         float newTurnRate,
         float newRadius,
         float newDamage,
-        float newLifetime)
+        float newLifetime,
+        bool scaleRootVisual)
     {
         owner = newOwner;
         direction = initialDirection.sqrMagnitude > 0.0001f ? initialDirection.normalized : Vector2.right;
@@ -62,7 +121,9 @@ public sealed class DemonKingProjectile2D : MonoBehaviour
         lifetime = Mathf.Max(0.1f, newLifetime);
 
         float diameter = radius * 2f;
-        transform.localScale = new Vector3(diameter, diameter, 1f);
+        transform.localScale = scaleRootVisual
+            ? new Vector3(diameter, diameter, 1f)
+            : Vector3.one;
     }
 
     private void Update()

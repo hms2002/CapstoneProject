@@ -1,84 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "5104e87f7da743998017016cb853f4dd",
-            "startedUtc": "2026-05-29T13:43:39.8730393Z",
-            "endedUtc": "2026-05-29T13:43:41.4464088Z",
-            "entries": []
-        },
-        {
-            "sessionId": "039709d0bb63439fba71d22190035410",
-            "startedUtc": "2026-05-29T13:44:47.9978241Z",
-            "endedUtc": "2026-05-29T13:44:49.4143263Z",
-            "entries": []
-        },
-        {
-            "sessionId": "980f229070f446eea86c2d08443995c9",
-            "startedUtc": "2026-05-29T13:45:20.4846526Z",
-            "endedUtc": "2026-05-29T13:45:21.9715893Z",
-            "entries": []
-        },
-        {
-            "sessionId": "7bc7224f193247d4bcd125b9585f4a9e",
-            "startedUtc": "2026-05-29T13:53:45.1173777Z",
-            "endedUtc": "2026-05-29T13:53:46.6176430Z",
-            "entries": []
-        },
-        {
-            "sessionId": "e073f1c0b0c442a6afeaa2dbcbb3b3da",
-            "startedUtc": "2026-05-29T14:18:32.4184909Z",
-            "endedUtc": "2026-05-29T14:18:34.0052953Z",
-            "entries": []
-        },
-        {
-            "sessionId": "b41d545fcd34492797e9dd5d3ad72286",
-            "startedUtc": "2026-05-29T14:23:07.4276699Z",
-            "endedUtc": "2026-05-29T14:23:12.4734601Z",
-            "entries": []
-        },
-        {
-            "sessionId": "c3873a9f49274b3fbffcf4149b7a1d7e",
-            "startedUtc": "2026-05-29T14:35:07.6626469Z",
-            "endedUtc": "2026-05-29T14:35:09.1762543Z",
-            "entries": []
-        },
-        {
-            "sessionId": "628d493e31dd424889db3dfb6e4aab01",
-            "startedUtc": "2026-05-29T14:36:41.4707639Z",
-            "endedUtc": "2026-05-29T14:36:43.3396220Z",
-            "entries": []
-        },
-        {
-            "sessionId": "81bfa514e13742d0bf65dd1a3cc6b3a2",
-            "startedUtc": "2026-05-29T14:42:16.1268542Z",
-            "endedUtc": "2026-05-29T14:42:18.2591454Z",
-            "entries": []
-        },
-        {
-            "sessionId": "3ccf883d4ba94b07bd08b35a340dc834",
-            "startedUtc": "2026-05-29T14:44:40.8012344Z",
-            "endedUtc": "2026-05-29T14:44:42.7212221Z",
-            "entries": []
-        },
-        {
-            "sessionId": "b3b69744e7b640a48a147396b8f0318c",
-            "startedUtc": "2026-05-29T14:52:19.1389357Z",
-            "endedUtc": "2026-05-29T14:52:20.8636083Z",
-            "entries": []
-        },
-        {
-            "sessionId": "b68201bd96794bf2bbbe1828aab1f4b0",
-            "startedUtc": "2026-05-29T14:55:16.9062182Z",
-            "endedUtc": "2026-05-29T14:55:18.8088122Z",
-            "entries": []
-        },
-        {
-            "sessionId": "ff2fb8e0872d40fc9b353b46e6f75ccf",
-            "startedUtc": "2026-05-29T15:10:53.3312208Z",
-            "endedUtc": "2026-05-29T15:10:54.9623547Z",
-            "entries": []
-        },
-        {
             "sessionId": "3584e1332f7243eb9211f40b3ea01905",
             "startedUtc": "2026-05-29T15:19:15.3160012Z",
             "endedUtc": "2026-05-29T15:19:17.0762143Z",
@@ -119,6 +41,128 @@
             "startedUtc": "2026-05-29T21:04:55.9249743Z",
             "endedUtc": "2026-05-29T21:04:59.1943500Z",
             "entries": []
+        },
+        {
+            "sessionId": "5f1701ab17e14edca8fce9d80ed40d0d",
+            "startedUtc": "2026-05-29T21:18:50.0441325Z",
+            "endedUtc": "2026-05-29T21:18:51.3223457Z",
+            "entries": []
+        },
+        {
+            "sessionId": "24e615291b93483a860da736811f56ae",
+            "startedUtc": "2026-05-29T21:20:33.0874501Z",
+            "endedUtc": "2026-05-29T21:20:34.5499919Z",
+            "entries": []
+        },
+        {
+            "sessionId": "ea0376e1a6e347a993b191666816b024",
+            "startedUtc": "2026-05-29T22:15:22.2538831Z",
+            "endedUtc": "2026-05-29T22:15:24.3140470Z",
+            "entries": []
+        },
+        {
+            "sessionId": "0ef1bb83fe1f466da2ff1ff08af206fc",
+            "startedUtc": "2026-05-29T22:15:43.0212851Z",
+            "endedUtc": "2026-05-29T22:15:44.7260416Z",
+            "entries": []
+        },
+        {
+            "sessionId": "529e10331f3d446c83865841983e18bf",
+            "startedUtc": "2026-05-29T22:19:28.8504289Z",
+            "endedUtc": "2026-05-29T22:19:30.0762923Z",
+            "entries": []
+        },
+        {
+            "sessionId": "662581144fd54e6e80022496d3d6f5ee",
+            "startedUtc": "2026-05-29T22:24:13.3833928Z",
+            "endedUtc": "2026-05-29T22:24:15.8794518Z",
+            "entries": []
+        },
+        {
+            "sessionId": "ba1125a3b240465f847d4b5eaaa88463",
+            "startedUtc": "2026-05-29T22:34:37.5883010Z",
+            "endedUtc": "2026-05-29T22:34:38.8929383Z",
+            "entries": []
+        },
+        {
+            "sessionId": "2a77782975b942f3bdf051ca025136e9",
+            "startedUtc": "2026-05-29T22:37:22.2227081Z",
+            "endedUtc": "2026-05-29T22:40:34.1291137Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 5,
+                    "coldSpawns": 5,
+                    "firstSeenSeconds": 189.81027221679688,
+                    "lastSeenSeconds": 191.17340087890626,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ProtoTypeHub"
+                }
+            ]
+        },
+        {
+            "sessionId": "9288221eff3745949d8ec6167ca5e297",
+            "startedUtc": "2026-05-29T22:44:46.4049609Z",
+            "endedUtc": "2026-05-29T22:44:48.4854057Z",
+            "entries": []
+        },
+        {
+            "sessionId": "328f95ddf6b540c7a15f571f0b6b599b",
+            "startedUtc": "2026-05-30T00:07:21.3986284Z",
+            "endedUtc": "2026-05-30T00:07:23.2151178Z",
+            "entries": []
+        },
+        {
+            "sessionId": "663987dc3329404c846116f02e07334e",
+            "startedUtc": "2026-05-30T04:56:55.3464730Z",
+            "endedUtc": "2026-05-30T04:57:50.3522694Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 257,
+                    "coldSpawns": 81,
+                    "firstSeenSeconds": 28.489667892456056,
+                    "lastSeenSeconds": 54.486778259277347,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
+        },
+        {
+            "sessionId": "3018cf671fd747a1b88f0e4f9220336a",
+            "startedUtc": "2026-05-30T05:01:57.3402333Z",
+            "endedUtc": "2026-05-30T05:02:57.5848373Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 89,
+                    "coldSpawns": 80,
+                    "firstSeenSeconds": 30.960716247558595,
+                    "lastSeenSeconds": 59.62749481201172,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
+        },
+        {
+            "sessionId": "bc2d8dc8dfda46cea3c1549c3882a632",
+            "startedUtc": "2026-05-30T05:13:37.4342746Z",
+            "endedUtc": "2026-05-30T05:14:00.3977003Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 2,
+                    "coldSpawns": 2,
+                    "firstSeenSeconds": 22.936248779296876,
+                    "lastSeenSeconds": 22.94040298461914,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
         }
     ]
 }

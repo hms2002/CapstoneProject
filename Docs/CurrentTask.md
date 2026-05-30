@@ -1,52 +1,57 @@
 ---
 status: active
 authority: current-task
-category: boss-defeat-ending-outro
-last_reviewed: 2026-05-27
+category: explosion-debris-bounce-vfx
+last_reviewed: 2026-05-30
 ---
 
 # Current Task
 
 ## Goal
 
-Add a boss-selectable terminal ending flow after boss defeat:
+Create reusable top-down explosion debris bounce VFX prefabs:
 
-`BossDeathPresentation` death speech bubble -> Ink `DialogueService` dialogue -> fullscreen ending outro -> `RunEndReason.Victory` -> `TitleScene`.
+explosion origin -> debris spreads in a circle -> debris uses virtual height to read as airborne -> gravity brings it back to the same 2D ground plane -> contact puffs fire on each bounce.
 
 ## Requested Work
 
-- Add ending outro playback scripts modeled after TitleIntro without modifying the existing title intro path.
-- Add a scene-authored boss defeat ending sequence component with explicit boss, dialogue, outro, run-end, and target-scene references.
-- Extend `BossDeathPresentation` with an optional terminal ending hook after death speech.
-- Skip normal boss reward/portal handling when the terminal ending flow completes.
-- Keep Dialogue UI visible during the post-speech Dialogue section even while the boss cinematic letterbox is active.
+- Add a reusable `TopDownDebrisBounceEmitter2D` runtime presentation helper.
+- Add an Editor builder for three explosion debris bounce prefab variants:
+  - high arc
+  - diagonal scatter
+  - low skitter
+- Keep this as reusable prefab content only; do not wire it into existing boss, mob, weapon, or ability data in this task.
+- Record the top-down contact-point decision and verification status in project memory.
 
 ## Scope Notes
 
-- The flow is opt-in per explicitly assigned boss, not global for every boss.
-- Existing normal boss reward/chest/portal behavior remains unchanged.
-- The terminal ending path replaces reward/portal activation for the selected boss.
-- Outro UI must be authored as scene/prefab UI and driven through serialized references; runtime UI hierarchy creation is not part of this task.
-- Do not direct-edit scene or prefab YAML for wiring.
+- The effect is visual-only and must not apply damage, gameplay tags, hit detection, input blocking, or scene progression.
+- The helper may simulate individual debris pieces, but actual use remains prefab-authored and spawned through existing presentation paths.
+- Do not hand-edit prefab YAML. Prefab generation must happen through UnityEditor APIs or Unity Inspector authoring.
+- Unity Editor is open, so do not run Unity batchmode.
 
 ## Done Criteria
 
-- A selected boss can run death speech, Ink dialogue, ending outro, Victory run end, and `TitleScene` transition in order.
-- The selected terminal flow does not call boss reward-ready handling or activate the normal reward/portal path.
-- Normal bosses without the terminal sequence keep the existing death presentation and reward/portal flow.
-- DialogueCanvas is not faded out by the death letterbox while terminal post-speech dialogue is active.
-- Static verification checks confirm the new hook ordering, source references, and project-file inclusion state.
+- Runtime source exists for virtual-height debris motion and contact puffs.
+- Editor menu exists at `Tools/VFX/Rebuild Explosion Debris Bounce Prefabs`.
+- Builder targets:
+  - `Assets/LeeJunMo/Prefab/Effect/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_HighArc.prefab`
+  - `Assets/LeeJunMo/Prefab/Effect/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_DiagonalScatter.prefab`
+  - `Assets/LeeJunMo/Prefab/Effect/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_LowSkitter.prefab`
+- Static checks confirm the new helper, builder, output paths, and project-file inclusion state.
+- Final report states whether Unity import/compile, prefab generation, and manual preview were actually run.
 
 ## Verification Plan
 
-- Run `rg` checks for the terminal hook before reward notification, no new manager/singleton/`DontDestroyOnLoad`, and ending sequence API references.
-- Check generated `.csproj` inclusion for new scripts before choosing build coverage.
-- Run `dotnet build Assembly-CSharp.csproj --no-restore` only if generated project files include the new scripts.
-- Run `git diff --check` for touched tracked files.
-- Run a trailing-whitespace scan for touched source/docs.
+- Run `rg` checks for helper/builder/menu/output paths.
+- Check generated `.csproj` inclusion for new scripts before choosing MSBuild coverage.
+- Run `dotnet build` only if generated project files include the new scripts.
+- Run `git diff --check` for touched source/docs.
+- Run trailing-whitespace checks for touched source/docs.
 - Check for Unity Editor processes and do not run Unity batchmode if the Editor is open.
 
 ## Remaining Risks
 
-- New MonoBehaviours and ScriptableObject require Unity import/compile and Inspector wiring.
-- Manual Play Mode validation is required for authored outro layout, skip/advance behavior, Dialogue visibility under letterbox, final run-end save behavior, and selected boss reward/portal suppression.
+- New MonoBehaviour and generated prefab assets require Unity import/compile.
+- The builder may auto-create prefabs only after Unity imports the new scripts; otherwise run the menu manually.
+- Manual Scene/Game preview is required to confirm the virtual-height offset reads as airborne debris rather than northward ground movement.

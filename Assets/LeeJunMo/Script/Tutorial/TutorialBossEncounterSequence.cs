@@ -405,7 +405,8 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         yield return ZoomCameraWhileWaitingRoutine(
             playerFocusOrthographicSize,
             cameraZoomInSeconds,
-            initialPlayerFocusWaitSeconds);
+            initialPlayerFocusWaitSeconds,
+            target);
     }
 
     private IEnumerator FocusCameraRoutine()
@@ -419,7 +420,11 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         Transform focusTarget = bossFocusTarget != null ? bossFocusTarget : transform;
         CacheCameraState();
         SetCameraTarget(focusTarget);
-        yield return ZoomCameraWhileWaitingRoutine(focusOrthographicSize, cameraZoomInSeconds, cameraFocusWaitSeconds);
+        yield return ZoomCameraWhileWaitingRoutine(
+            focusOrthographicSize,
+            cameraZoomInSeconds,
+            cameraFocusWaitSeconds,
+            focusTarget);
     }
 
     private IEnumerator FocusPlayerForLaserRoutine()
@@ -433,7 +438,11 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         CacheCameraState();
         Transform target = playerFocusTarget != null ? playerFocusTarget : ResolvePlayerTransform();
         SetCameraTarget(target);
-        yield return ZoomCameraWhileWaitingRoutine(playerFocusOrthographicSize, cameraZoomInSeconds, playerFocusWaitSeconds);
+        yield return ZoomCameraWhileWaitingRoutine(
+            playerFocusOrthographicSize,
+            cameraZoomInSeconds,
+            playerFocusWaitSeconds,
+            target);
     }
 
     private IEnumerator RefocusBossAfterLaserRoutine()
@@ -447,7 +456,11 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         CacheCameraState();
         Transform target = bossFocusTarget != null ? bossFocusTarget : transform;
         SetCameraTarget(target);
-        yield return ZoomCameraWhileWaitingRoutine(focusOrthographicSize, cameraZoomInSeconds, bossRefocusWaitSeconds);
+        yield return ZoomCameraWhileWaitingRoutine(
+            focusOrthographicSize,
+            cameraZoomInSeconds,
+            bossRefocusWaitSeconds,
+            target);
     }
 
     private IEnumerator ReturnCameraRoutine()
@@ -464,7 +477,11 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         float restoreOrthographicSize = hasCachedCameraLens
             ? cachedCameraOrthographicSize
             : focusOrthographicSize;
-        yield return ZoomCameraWhileWaitingRoutine(restoreOrthographicSize, cameraZoomOutSeconds, cameraReturnWaitSeconds);
+        yield return ZoomCameraWhileWaitingRoutine(
+            restoreOrthographicSize,
+            cameraZoomOutSeconds,
+            cameraReturnWaitSeconds,
+            restoreTarget);
 
         RestoreCameraState(restoreTarget);
     }
@@ -508,12 +525,14 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
     private IEnumerator ZoomCameraWhileWaitingRoutine(
         float targetOrthographicSize,
         float zoomDuration,
-        float minimumWaitSeconds)
+        float minimumWaitSeconds,
+        Transform settleTarget)
     {
         float waitDuration = Mathf.Max(0f, minimumWaitSeconds);
         if (!zoomGameplayCameraDuringFocus || gameplayCamera == null)
         {
             yield return WaitForPresentationSeconds(waitDuration);
+            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
             yield break;
         }
 
@@ -525,6 +544,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         if (totalDuration <= 0f)
         {
             SetCameraOrthographicSize(gameplayCamera, clampedTargetSize);
+            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
             yield break;
         }
 
@@ -545,6 +565,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         }
 
         SetCameraOrthographicSize(gameplayCamera, clampedTargetSize);
+        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
     }
 
     private IEnumerator WaitForPresentationSeconds(float seconds)
@@ -1002,6 +1023,18 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
             }
 
             return registeredPlayer;
+        }
+
+        Transform instancePlayer = PlayerInteractor2D.Instance != null ? PlayerInteractor2D.Instance.transform : null;
+        if (instancePlayer != null)
+        {
+            if (playerTransform != instancePlayer)
+            {
+                playerTransform = instancePlayer;
+                ClearPlayerPresentationComponentCache();
+            }
+
+            return instancePlayer;
         }
 
         return playerTransform;

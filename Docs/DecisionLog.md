@@ -7,6 +7,114 @@ last_reviewed: 2026-05-30
 
 # Decision Log
 
+## 2026-05-30 - DemonKing VFX Uses Left-Baseline Socket Tuning
+
+Decision:
+DemonKing pattern VFX positions should be tuned through an optional `DemonKingVfxSocketMap`. Socket offsets are authored against the DarkLord sprite's natural left-facing baseline, and X is mirrored when the boss faces right. Child Transform anchors may override numeric offsets; if the socket map is absent, existing fallback positions are preserved.
+
+Reason:
+DarkLord patterns need precise hand, foot, eye, sword, and charge output points, but direct scene/prefab YAML editing would make Unity references fragile. A small boss-local socket map keeps this tuning visible in the Inspector and Scene view without introducing a generic manager or changing unrelated bosses.
+
+Implications:
+- Timed attack VFX positions and their generated hit colliders move together when a socket is used.
+- Socket gizmos are authoring/debug visualization only; actual values still need Unity Inspector and Play Mode review.
+- EgoSword keeps its existing held/throw/recall offset fields, with selected-object gizmos added for review rather than a serialization migration.
+
+## 2026-05-30 - DemonKing Visual Tuning Uses An Editor Preview Tool
+
+Decision:
+DemonKing body clips, one-shot VFX hit windows, pattern AL tuning fields, EgoSword offsets, and VFX sockets should be adjusted through `Tools/DemonKing/Visual Tuning Preview` as an Editor-only authoring tool. The tool edits existing assets/components rather than introducing a new central runtime tuning profile.
+
+Reason:
+DarkLord/DemonKing tuning values are intentionally split across `.anim` clips, generated Resources VFX prefabs, AbilityLogic ScriptableObject assets, and scene/prefab components. A central runtime profile would require migration and another source of truth, while an Editor-only surface can make the existing ownership visible and previewable.
+
+Implications:
+- Preview instances are hidden temporary objects rendered through a tool camera/RenderTexture and must not mutate scene or prefab contents during playback.
+- `.anim` frame curves and hit-window events are saved only through explicit Apply buttons.
+- Pattern, EgoSword, and socket serialized fields are edited through `SerializedObject` with Undo/dirty handling, matching normal Inspector ownership.
+- This tool is an authoring convenience, not a gameplay manager or runtime dependency.
+
+## 2026-05-30 - DemonKing Explosions Emit High-Arc Debris
+
+Decision:
+`DemonKingExplosionVfx`, `DarkLordExplosion2Vfx`, and `DemonKingImpactVfx` should spawn `PF_ExplosionDebrisBounce_HighArc` at the same world position as an additional visual-only presentation layer.
+
+Reason:
+The boss's explosion and impact beats need a stronger top-down ground-hit read without changing damage windows, camera shake, fragment persistence, or pattern timing.
+
+Implications:
+- `DemonKingPatternVfx` owns the runtime pairing so every existing explosion/impact call site inherits the debris presentation.
+- `PF_ExplosionDebrisBounce_HighArc` is the authored runtime prefab at `Assets/Resources/DemonKing/Vfx`, not a generated mirror. Do not maintain a second HighArc copy with separate tuning.
+- The debris emitter must remain visual-only and must not add collision, damage, gameplay tags, or timing gates.
+
+## 2026-05-30 - DemonKing HomingMagic Separates Stock And Fired Projectile VFX
+
+Decision:
+DemonKing HomingMagic should present its remaining shots as visual-only stock VFX over the boss, then spawn the real projectile from the consumed stock VFX position with a separate fired-projectile visual prefab.
+
+Reason:
+The pattern needs to communicate that five shots are loaded before firing, while keeping projectile movement, lifetime, collision, and damage owned by `DemonKingProjectile2D`.
+
+Implications:
+- `AbilityLogic_DemonKingHomingMagic` owns stock VFX layout, target-side-first consumption, recentering, and cleanup.
+- `DemonKingProjectile2D.Spawn(...)` keeps the old primitive fallback and accepts an optional child visual prefab for fired projectiles.
+- The stock and fired projectile prefabs are Inspector-assigned AbilityLogic slots; scene/prefab YAML should not be hand-edited for this wiring.
+- If those slots are empty, `DemonKingPatternVfxAssetBuilder` generated Resources wrappers for `HomingMagicBaltVFX.anim` and `HomingMagicBaltProjectile.anim` are the default fallback.
+
+## 2026-05-30 - DemonKingImpact Spawn Points Own Impact Shake
+
+Decision:
+Whenever DemonKing code directly commits a `DemonKingImpactVfx`, the same impact timing should own camera shake unless that impact already routes shake through a timed-hit callback.
+
+Reason:
+Impact shake should align with the visible impact frame, but duplicated shake on timed VFX callbacks makes repeated patterns feel noisy and harder to tune.
+
+Implications:
+- Bombardment release impact and EgoSword planting impact have their own camera shake hooks because they directly spawn `DemonKingImpactVfx`.
+- ExplosionJump landing, WallBounceRush final landing, hand GroggyRecoverCounter, and EgoSword VerticalStrike keep their existing timed-hit/impact shake paths.
+- `DarkLordExplosion2`, `DemonKingExplosion`, and `DarkLordGroggyReleaseVfx` keep their separate shake policies.
+
+## 2026-05-30 - Top-Down Debris Bounce Uses Virtual Height
+
+Decision:
+Explosion debris bounce VFX should simulate debris on a 2D ground plane with separate virtual height, instead of relying on Unity ParticleSystem gravity/collision to decide where the piece hits the ground.
+
+Reason:
+The game is top-down, so screen-down gravity reads like movement across the map rather than falling. Keeping ground XY and virtual height separate lets the effect emit bounce/contact puffs at the intended map contact point while only using a small screen-space offset for the airborne read.
+
+Implications:
+- `TopDownDebrisBounceEmitter2D` owns visual-only debris simulation and contact puffs.
+- Generated debris-bounce prefabs are presentation content and should be spawned through existing presentation paths.
+- Final tuning must be reviewed in Scene/Game view because too much height offset can look like the debris moved north instead of upward.
+
+## 2026-05-30 - Directional Telegraph Fill For Non-Radial Attacks
+
+Decision:
+Attack telegraph fill should grow from the attack start/origin toward the attack end for rectangular and sector warnings. Circle and ring warnings keep radial/center-based fill behavior.
+
+Reason:
+Directional attacks read more clearly when the warning communicates travel direction or attack reach over time. Center-growing rectangles and sectors make line slashes, rush lanes, and cones feel like they appear from the middle rather than from the attacker or attack start point.
+
+Implications:
+- `AttackTelegraphView` keeps sprite-based rectangle and sector fill anchored on the local start edge while scaling progress.
+- `AttackTelegraphWallClippedMeshView` keeps rectangle mesh start vertices fixed and scales only the front edge toward the wall-clipped endpoint.
+- Circle/ring warnings remain exceptions because their danger expands radially rather than from a directional start edge.
+
+## 2026-05-30 - DemonKing One-Shot VFX Own Hit Windows
+
+Decision:
+DemonKing attacks that have concrete generated one-shot VFX should route damage, SFX, and camera shake through `TimedAnimatedHitEffect2D` hit-window callbacks where practical. Warnings use `AttackTelegraphService` specs, while continuous body-contact rushes and laser active windows remain code-driven.
+
+Reason:
+The boss's hit feedback needs to line up with visible VFX frames instead of firing at warning completion or coroutine commit time. Reusing the shared timed-hit component keeps frame timing in generated animation clips without adding pattern-specific animation-event relay scripts.
+
+Implications:
+- `DemonKingPatternVfxAssetBuilder` is responsible for adding `EnableHitCollision`/`DisableHitCollision` events and timed-hit components to generated one-shot VFX prefabs.
+- Runtime pattern code still owns the hit shape/payload because size, damage, and shared-hit policy are pattern-specific.
+- Sound and camera shake should fire from hit-window callbacks or direct impact commits, not from warning start.
+- Primitive warning duplicates should not be reintroduced; use telegraph specs and reserve primitive visuals for active fallback flashes.
+- AbilityLogic assets and `EgoSwordActor` now expose SFX/shake slots that require Unity Inspector review after import.
+
 ## 2026-05-30 - Dialogue Text Animation Preview Mirrors Runtime UGUI
 
 Decision:

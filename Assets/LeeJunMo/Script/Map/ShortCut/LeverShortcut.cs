@@ -162,6 +162,7 @@ public class LeverShortcut : PermanentShortcut
         SetCameraTarget(moveTarget);
         yield return MoveCameraTargetToRoutine(moveTarget, focusTarget);
         yield return WaitForPresentationSeconds(cameraFocusWaitSeconds);
+        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, focusTarget);
     }
 
     private IEnumerator ReturnCameraRoutine()
@@ -175,6 +176,7 @@ public class LeverShortcut : PermanentShortcut
         SetCameraTarget(moveTarget != null ? moveTarget : restoreTarget);
         yield return MoveCameraTargetToRoutine(moveTarget, restoreTarget);
         yield return WaitForPresentationSeconds(cameraReturnWaitSeconds);
+        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, restoreTarget);
         RestoreCameraState(restoreTarget);
     }
 
@@ -361,6 +363,9 @@ public class LeverShortcut : PermanentShortcut
             return;
 
         Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        if (playerTransform == null && PlayerInteractor2D.Instance != null)
+            playerTransform = PlayerInteractor2D.Instance.transform;
+
         if (playerTransform == null)
             return;
 

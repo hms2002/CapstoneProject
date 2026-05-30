@@ -576,6 +576,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         CacheCameraState();
         SetCameraTarget(focusTarget);
         yield return WaitForPresentationSeconds(cameraFocusWaitSeconds);
+        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, focusTarget);
     }
 
     private IEnumerator PlayCameraReturn()
@@ -587,6 +588,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         Transform restoreTarget = playerTransform != null ? playerTransform : cachedCameraFollow;
         SetCameraTarget(restoreTarget);
         yield return WaitForPresentationSeconds(cameraReturnWaitSeconds);
+        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, restoreTarget);
         RestoreCameraState(restoreTarget);
     }
 

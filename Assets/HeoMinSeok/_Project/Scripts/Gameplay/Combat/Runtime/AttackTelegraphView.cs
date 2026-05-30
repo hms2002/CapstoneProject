@@ -38,6 +38,7 @@ namespace UnityGAS
         private bool baseScaleCaptured;
         private Vector3 fillBaseScale = Vector3.one;
         private Vector3 borderBaseScale = Vector3.one;
+        private Vector3 fillBaseLocalPosition;
         private Sprite fillBaseSprite;
         private Sprite borderBaseSprite;
 
@@ -539,6 +540,7 @@ namespace UnityGAS
             baseScaleCaptured = true;
             fillBaseScale = fillRoot != null ? fillRoot.localScale : Vector3.one;
             borderBaseScale = borderRoot != null ? borderRoot.localScale : Vector3.one;
+            fillBaseLocalPosition = fillRoot != null ? fillRoot.localPosition : Vector3.zero;
         }
 
         private void CaptureBaseSprites()
@@ -651,12 +653,27 @@ namespace UnityGAS
                 return;
 
             Vector2 fillSize = activeSize;
+            Vector3 fillOffset = Vector3.zero;
             if (activeStyle != null && activeStyle.scaleFillWithProgress)
             {
                 float start = Mathf.Clamp01(activeStyle.fillScaleStart);
                 float end = Mathf.Clamp01(activeStyle.fillScaleEnd);
                 float scale = Mathf.Lerp(start, end, normalized);
-                fillSize *= scale;
+
+                if (activeShape == AttackTelegraphShape.Rectangle)
+                {
+                    fillSize.x *= scale;
+                    fillOffset = ResolveStartAnchoredFillOffset(activeSize.x, fillSize.x);
+                }
+                else if (activeShape == AttackTelegraphShape.Sector)
+                {
+                    fillSize *= scale;
+                    fillOffset = ResolveStartAnchoredFillOffset(activeSize.x, fillSize.x);
+                }
+                else
+                {
+                    fillSize *= scale;
+                }
 
                 if (activeShape == AttackTelegraphShape.Circle)
                 {
@@ -665,10 +682,17 @@ namespace UnityGAS
                 }
             }
 
+            fillRoot.localPosition = fillBaseLocalPosition + fillOffset;
             fillRoot.localScale = new Vector3(
                 fillBaseScale.x * fillSize.x,
                 fillBaseScale.y * fillSize.y,
                 fillBaseScale.z);
+        }
+
+        private Vector3 ResolveStartAnchoredFillOffset(float fullLength, float currentLength)
+        {
+            float offsetX = (currentLength - fullLength) * 0.5f * fillBaseScale.x;
+            return new Vector3(offsetX, 0f, 0f);
         }
 
         private static void EnsureCircleSprites()

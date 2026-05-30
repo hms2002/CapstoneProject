@@ -53,6 +53,9 @@ public sealed class DemonKingController : BossControllerBase
     [Header("Groggy Counter Presentation")]
     [SerializeField] private SoundRef groggyRecoverCounterWarningPingSound;
 
+    [Header("VFX Sockets")]
+    [SerializeField] private DemonKingVfxSocketMap vfxSocketMap;
+
     [Header("Afterimage")]
     [SerializeField] private bool enableBodyAfterimage = true;
     [SerializeField, Min(0.01f)] private float bodyAfterimageIntervalSeconds = 0.04f;
@@ -323,6 +326,59 @@ public sealed class DemonKingController : BossControllerBase
         return transform.position + offset;
     }
 
+    public Vector2 ResolveVfxSocketWorld(
+        DemonKingVfxSocketId socketId,
+        Vector2 fallbackLeftFacingLocalOffset)
+    {
+        DemonKingVfxSocketMap socketMap = ResolveVfxSocketMap();
+        if (socketMap != null)
+            return socketMap.ResolveWorldPosition(socketId, fallbackLeftFacingLocalOffset, IsFacingLeft);
+
+        Vector3 localOffset = ResolveLeftFacingLocalOffset(fallbackLeftFacingLocalOffset);
+        return transform.TransformPoint(localOffset);
+    }
+
+    public Vector2 ResolveVfxSocketWorldAtBasePosition(
+        DemonKingVfxSocketId socketId,
+        Vector2 baseWorldPosition,
+        Vector2 fallbackLeftFacingLocalOffset)
+    {
+        DemonKingVfxSocketMap socketMap = ResolveVfxSocketMap();
+        if (socketMap != null)
+            return socketMap.ResolveWorldPositionAt(socketId, baseWorldPosition, fallbackLeftFacingLocalOffset, IsFacingLeft);
+
+        Vector3 localOffset = ResolveLeftFacingLocalOffset(fallbackLeftFacingLocalOffset);
+        return baseWorldPosition + (Vector2)transform.TransformVector(localOffset);
+    }
+
+    public Vector3 ResolveVfxSocketLocal(
+        DemonKingVfxSocketId socketId,
+        Vector2 fallbackLeftFacingLocalOffset)
+    {
+        DemonKingVfxSocketMap socketMap = ResolveVfxSocketMap();
+        if (socketMap != null)
+            return socketMap.ResolveLocalOffset(socketId, fallbackLeftFacingLocalOffset, IsFacingLeft);
+
+        return ResolveLeftFacingLocalOffset(fallbackLeftFacingLocalOffset);
+    }
+
+    private Vector3 ResolveLeftFacingLocalOffset(Vector2 leftFacingLocalOffset)
+    {
+        Vector3 offset = leftFacingLocalOffset;
+        if (!IsFacingLeft)
+            offset.x = -offset.x;
+
+        return offset;
+    }
+
+    private DemonKingVfxSocketMap ResolveVfxSocketMap()
+    {
+        if (vfxSocketMap == null)
+            vfxSocketMap = GetComponentInChildren<DemonKingVfxSocketMap>(true);
+
+        return vfxSocketMap;
+    }
+
     public Vector2 GetDirectionToTargetOrFacing(Vector2? fromPosition = null)
     {
         Vector2 origin = fromPosition ?? (Vector2)transform.position;
@@ -426,6 +482,27 @@ public sealed class DemonKingController : BossControllerBase
             return false;
 
         playedPatternAnimationStartStates.Add(stateName);
+        return true;
+    }
+
+    public bool HoldPatternAnimationFrame(
+        string stateName,
+        int frameIndex,
+        bool allowDuringGroggy = false,
+        bool allowDuringFinalDesperation = false)
+    {
+        if (string.IsNullOrWhiteSpace(stateName))
+            return false;
+
+        if (!CanPlayPatternAnimation(allowDuringGroggy, allowDuringFinalDesperation))
+            return false;
+
+        float normalizedTime = ResolvePatternAnimationFrameNormalizedTime(stateName, frameIndex);
+        ReleasePatternAnimationHold();
+        if (!TryPlayPatternAnimation(stateName, normalizedTime, allowDuringGroggy, allowDuringFinalDesperation))
+            return false;
+
+        HoldPatternAnimatorSpeed();
         return true;
     }
 
@@ -998,6 +1075,16 @@ public sealed class DemonKingController : BossControllerBase
 
         float frameSeconds = ResolveClipFrameSeconds(clip, 0.08333334f);
         return Mathf.Clamp01(Mathf.Max(0f, clip.length - frameSeconds) / clip.length);
+    }
+
+    private float ResolvePatternAnimationFrameNormalizedTime(string stateName, int frameIndex)
+    {
+        if (!TryResolvePatternAnimationClip(stateName, out AnimationClip clip) || clip.length <= 0f)
+            return 0f;
+
+        float frameSeconds = ResolveClipFrameSeconds(clip, 0.08333334f);
+        float sampleTime = Mathf.Clamp(Mathf.Max(0, frameIndex) * frameSeconds, 0f, Mathf.Max(0f, clip.length - frameSeconds));
+        return Mathf.Clamp01(sampleTime / clip.length);
     }
 
     private static float ResolveClipFrameSeconds(AnimationClip clip, float fallbackSeconds)

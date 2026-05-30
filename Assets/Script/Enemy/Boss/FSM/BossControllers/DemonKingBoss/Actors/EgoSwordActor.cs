@@ -1,7 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [DisallowMultipleComponent]
 public sealed class EgoSwordActor : MonoBehaviour
@@ -12,8 +17,15 @@ public sealed class EgoSwordActor : MonoBehaviour
     private const string EgoSwordAuraEndStateName = "End";
 
     private static readonly RaycastHit2D[] WallHitBuffer = new RaycastHit2D[8];
-    private static readonly Color WarningSquareColor = new(1f, 0.15f, 0.08f, 0.35f);
     private static readonly Color AttackSquareColor = new(1f, 0.85f, 0.2f, 0.62f);
+#if UNITY_EDITOR
+    private static readonly Color HeldGizmoColor = new(0.25f, 0.85f, 1f, 1f);
+    private static readonly Color ThrowGizmoColor = new(1f, 0.85f, 0.15f, 1f);
+    private static readonly Color RecallGizmoColor = new(0.45f, 1f, 0.35f, 1f);
+    private static readonly Color LaserGizmoColor = new(1f, 0.25f, 0.25f, 1f);
+    private static readonly Color ImpactGizmoColor = new(1f, 0.45f, 0.1f, 1f);
+    private const float SocketGizmoRadius = 0.1f;
+#endif
 
     private enum SwordState
     {
@@ -67,6 +79,11 @@ public sealed class EgoSwordActor : MonoBehaviour
     [SerializeField, Min(0.1f)] private float recallImpactDiameter = 3.2f;
     [SerializeField, Min(0f)] private float recallImpactDamage = 1.5f;
     [SerializeField, Min(0f)] private float recallImpactKnockback = 8f;
+
+    [Header("Impact Presentation")]
+    [SerializeField] private SoundRef verticalStrikeImpactSound;
+    [SerializeField] private CameraShakeHook plantImpactCameraShake = CameraShakeHook.Create(0.12f, 1f, 0.28f, 0.04f);
+    [SerializeField] private CameraShakeHook verticalStrikeImpactCameraShake = CameraShakeHook.Create(0.18f, 1f, 0.35f, 0.04f);
 
     [Header("Afterimage")]
     [SerializeField] private bool enableAfterimage = true;
@@ -471,9 +488,18 @@ public sealed class EgoSwordActor : MonoBehaviour
         ApplyBuriedMask();
         DemonKingPatternVfx.SpawnEgoSwordAttack(transform, verticalStrikeDiameter);
         DemonKingPatternVfx.SpawnImpact(transform.position, verticalStrikeDiameter, leaveFragment: false);
+        PlayPlantImpactShake();
         useCrossPatternNext = false;
         if (startPatterns && isActiveAndEnabled)
             StartDroppedPatterns();
+    }
+
+    private void PlayPlantImpactShake()
+    {
+        if (owner == null || owner.IsDead || !owner.IsCombatActive)
+            return;
+
+        plantImpactCameraShake.TryPlay(gameObject, Vector2.down, debugReason: "DemonKing.EgoSwordPlantImpact");
     }
 
     private IEnumerator RunDroppedPatternLoop()
@@ -648,20 +674,6 @@ public sealed class EgoSwordActor : MonoBehaviour
         float warningSeconds = ResolveLaserTempoSeconds(laserWarningSeconds);
         float attackSeconds = ResolveLaserTempoSeconds(laserAttackDurationSeconds);
 
-        DemonKingPrimitiveVisual.SpawnSquare(
-            firstWarningLine.Center,
-            firstWarningLine.Size,
-            firstWarningLine.RotationDeg,
-            warningSeconds,
-            WarningSquareColor,
-            "DemonKing_EgoLaserSquareWarning");
-        DemonKingPrimitiveVisual.SpawnSquare(
-            secondWarningLine.Center,
-            secondWarningLine.Size,
-            secondWarningLine.RotationDeg,
-            warningSeconds,
-            WarningSquareColor,
-            "DemonKing_EgoLaserSquareWarning");
         telegraph?.SpawnDetachedView(CreateLaserSpec(firstWarningLine, warningSeconds));
         telegraph?.SpawnDetachedView(CreateLaserSpec(secondWarningLine, warningSeconds));
         if (shouldSyncAuraWithLaser)
@@ -914,13 +926,12 @@ public sealed class EgoSwordActor : MonoBehaviour
         BeginAfterimage();
 
         AttackTelegraphView warning = telegraph?.SpawnDetachedView(
-            AttackTelegraphSpec.CreateCircle(groundTarget, verticalStrikeDiameter, warningDuration, owner.DefaultWarningStyle));
-        DemonKingPrimitiveVisual warningCircle = DemonKingPrimitiveVisual.SpawnCircle(
-            groundTarget,
-            verticalStrikeDiameter,
-            warningDuration,
-            WarningSquareColor,
-            "DemonKing_EgoVerticalCircleWarning");
+            AttackTelegraphSpecUtility.WithThinWarningOutline(
+                AttackTelegraphSpec.CreateCircle(
+                    groundTarget,
+                    verticalStrikeDiameter,
+                    warningDuration,
+                    owner.DefaultWarningStyle)));
 
         try
         {
@@ -946,15 +957,12 @@ public sealed class EgoSwordActor : MonoBehaviour
 
                 transform.position = new Vector3(swordPosition.x, swordPosition.y, transform.position.z);
                 transform.rotation = Quaternion.identity;
-                warning?.UpdateGeometry(AttackTelegraphSpec.CreateCircle(
-                    groundTarget,
-                    verticalStrikeDiameter,
-                    warningDuration,
-                    owner.DefaultWarningStyle));
-                warningCircle?.UpdateGeometry(
-                    groundTarget,
-                    new Vector2(verticalStrikeDiameter, verticalStrikeDiameter),
-                    0f);
+                warning?.UpdateGeometry(AttackTelegraphSpecUtility.WithThinWarningOutline(
+                    AttackTelegraphSpec.CreateCircle(
+                        groundTarget,
+                        verticalStrikeDiameter,
+                        warningDuration,
+                        owner.DefaultWarningStyle)));
 
                 elapsed += Time.deltaTime;
                 yield return null;
@@ -1031,23 +1039,68 @@ public sealed class EgoSwordActor : MonoBehaviour
         transform.rotation = Quaternion.identity;
         ApplyBuriedMask();
         activeVerticalAttackVfx = DemonKingPatternVfx.SpawnEgoSwordAttack(transform, verticalStrikeDiameter);
-        DemonKingPatternVfx.SpawnImpact(groundTarget, verticalStrikeDiameter, leaveFragment: false);
-        if (activeVerticalAttackVfx == null)
+        DemonKingAnimationClipVisual impactVfx = DemonKingPatternVfx.SpawnImpact(groundTarget, verticalStrikeDiameter, leaveFragment: false);
+        bool presentationPlayed = false;
+        void PlayImpactPresentationOnce()
         {
+            if (presentationPlayed)
+                return;
+
+            presentationPlayed = true;
+            PlayActorSound(verticalStrikeImpactSound, groundTarget);
+            verticalStrikeImpactCameraShake.TryPlay(gameObject, Vector2.down, debugReason: "DemonKing.EgoSwordVerticalStrikeImpact");
+        }
+
+        CombatHitPayload payload = DemonKingCombatUtil.MakePayload(owner, owner.DefaultDamageEffect, patternDamage);
+        bool timed = DemonKingPatternVfx.TryPlayCircleTimedHit(
+            activeVerticalAttackVfx,
+            owner,
+            verticalStrikeDiameter,
+            payload,
+            null,
+            PlayImpactPresentationOnce);
+        if (!timed)
+        {
+            timed = DemonKingPatternVfx.TryPlayCircleTimedHit(
+                impactVfx,
+                owner,
+                verticalStrikeDiameter,
+                payload,
+                null,
+                PlayImpactPresentationOnce);
+        }
+
+        if (!timed)
+        {
+            PlayImpactPresentationOnce();
             DemonKingPrimitiveVisual.SpawnCircle(
                 groundTarget,
                 verticalStrikeDiameter,
                 0.12f,
                 AttackSquareColor,
                 "DemonKing_EgoVerticalCircleAttack");
-        }
 
-        DemonKingCombatUtil.ApplyCircleDamage(
-            owner,
-            groundTarget,
-            verticalStrikeDiameter * 0.5f,
-            owner.DefaultDamageEffect,
-            patternDamage);
+            DemonKingCombatUtil.ApplyCircleDamage(
+                owner,
+                groundTarget,
+                verticalStrikeDiameter * 0.5f,
+                owner.DefaultDamageEffect,
+                patternDamage);
+        }
+    }
+
+    private void PlayActorSound(SoundRef sound, Vector2 position)
+    {
+        if (owner == null || !sound.IsSet)
+            return;
+
+        SoundPlaybackUtility.Play(
+            sound,
+            instigator: owner.gameObject,
+            causer: gameObject,
+            target: owner.CurrentTarget != null ? owner.CurrentTarget.gameObject : null,
+            position: position,
+            sourceObject: this);
     }
 
     private void CacheBaseSwordRenderers()
@@ -1602,13 +1655,81 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     private AttackTelegraphSpec CreateLaserSpec(LaserLine line, float duration)
     {
-        return AttackTelegraphSpec.CreateRectangle(
-            line.Center,
-            line.Size,
-            line.RotationDeg,
-            duration,
-            owner.DefaultWarningStyle);
+        return AttackTelegraphSpecUtility.WithThinWarningOutline(
+            AttackTelegraphSpec.CreateRectangle(
+                line.Center,
+                line.Size,
+                line.RotationDeg,
+                duration,
+                owner.DefaultWarningStyle));
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        DemonKingController resolvedOwner = owner != null ? owner : GetComponentInParent<DemonKingController>();
+        Vector3 ownerPosition = resolvedOwner != null ? resolvedOwner.transform.position : transform.position;
+
+        DrawOffsetPoint("Held", ResolveEditorOwnerOffsetPosition(resolvedOwner, heldOffset), ownerPosition, HeldGizmoColor);
+        DrawOffsetPoint("Throw Origin", ResolveEditorOwnerOffsetPosition(resolvedOwner, throwOriginLocalOffset), ownerPosition, ThrowGizmoColor);
+        DrawOffsetPoint("Recall Target", ResolveEditorOwnerOffsetPosition(resolvedOwner, recallTargetLocalOffset), ownerPosition, RecallGizmoColor);
+        DrawLaserOffsetGizmo();
+        DrawImpactGizmo();
+    }
+
+    private Vector3 ResolveEditorOwnerOffsetPosition(DemonKingController resolvedOwner, Vector3 localOffset)
+    {
+        if (resolvedOwner != null)
+            return resolvedOwner.ResolveSwordHoldPosition(localOffset);
+
+        return transform.position + localOffset;
+    }
+
+    private void DrawOffsetPoint(string label, Vector3 position, Vector3 origin, Color color)
+    {
+        Gizmos.color = color;
+        Gizmos.DrawLine(origin, position);
+        Gizmos.DrawWireSphere(position, SocketGizmoRadius);
+        Handles.color = color;
+        Handles.Label(position + Vector3.up * 0.14f, label);
+    }
+
+    private void DrawLaserOffsetGizmo()
+    {
+        float offset = Mathf.Max(0f, laserVfxRayOriginOffset);
+        if (offset <= 0f)
+            return;
+
+        Vector3 center = transform.position;
+        Vector3[] directions =
+        {
+            Vector3.right,
+            Vector3.left,
+            Vector3.up,
+            Vector3.down
+        };
+
+        Gizmos.color = LaserGizmoColor;
+        Handles.color = LaserGizmoColor;
+        for (int i = 0; i < directions.Length; i++)
+        {
+            Vector3 point = center + directions[i] * offset;
+            Gizmos.DrawLine(center, point);
+            Gizmos.DrawWireSphere(point, SocketGizmoRadius * 0.75f);
+        }
+
+        Handles.Label(center + Vector3.up * (offset + 0.18f), "Laser VFX Origin Offset");
+    }
+
+    private void DrawImpactGizmo()
+    {
+        Vector3 center = transform.position;
+        Gizmos.color = ImpactGizmoColor;
+        Gizmos.DrawWireSphere(center, verticalStrikeDiameter * 0.5f);
+        Handles.color = ImpactGizmoColor;
+        Handles.Label(center + Vector3.up * (verticalStrikeDiameter * 0.5f + 0.12f), "Vertical/Plant Impact");
+    }
+#endif
 
     private readonly struct LaserLine
     {

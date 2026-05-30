@@ -1,12 +1,8 @@
 using UnityEngine;
-using UnityGAS;
 using System.Collections.Generic;
 
 /// <summary>
-/// 책임:
-/// - 플레이어의 공식 전투 접점이 방 입장 영역에 들어왔을 때 방 encounter 시작을 MonsterSpawnRoomGroup에 알린다.
-/// - 문 닫힘이 유예된 상태에서 플레이어가 다시 방 밖으로 나가면 encounter 시작 요청을 취소한다.
-/// - 공격 이펙트/센서처럼 플레이어 하위에 붙은 비본체 collider가 방 입장으로 오인되지 않도록 직접 CombatHurtbox2D만 인정한다.
+/// Notifies the room encounter only after the player's body collider is fully inside this room trigger.
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
@@ -14,7 +10,8 @@ public sealed class RoomEncounterEntryTrigger2D : MonoBehaviour
 {
     [SerializeField] private MonsterSpawnRoomGroup targetRoomGroup;
 
-    private readonly HashSet<Collider2D> activePlayerColliders = new();
+    private readonly HashSet<Collider2D> activePlayerBodyColliders = new();
+    private Collider2D triggerCollider;
     private bool missingRoomGroupWarningLogged;
 
     private void Reset()
@@ -33,27 +30,43 @@ public sealed class RoomEncounterEntryTrigger2D : MonoBehaviour
         EnsureTriggerCollider();
     }
 
+    private void Update()
+    {
+        CompactInactiveBodyColliders();
+
+        if (activePlayerBodyColliders.Count <= 0)
+            return;
+
+        if (!ResolveRoomGroup() || triggerCollider == null)
+            return;
+
+        foreach (Collider2D bodyCollider in activePlayerBodyColliders)
+        {
+            if (bodyCollider != null && IsBodyColliderFullyInsideRoom(bodyCollider))
+            {
+                targetRoomGroup.NotifyPlayerEnteredEncounter();
+                return;
+            }
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!IsPlayerCollider(other))
+        if (!TryResolvePlayerBodyCollider(other, out Collider2D bodyCollider))
             return;
 
         if (!ResolveRoomGroup())
             return;
 
-        bool wasEmpty = activePlayerColliders.Count == 0;
-        activePlayerColliders.Add(other);
-
-        if (wasEmpty)
-            targetRoomGroup.NotifyPlayerEnteredEncounter();
+        activePlayerBodyColliders.Add(bodyCollider);
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (!activePlayerColliders.Remove(other))
+        if (!activePlayerBodyColliders.Remove(other))
             return;
 
-        if (activePlayerColliders.Count > 0)
+        if (activePlayerBodyColliders.Count > 0)
             return;
 
         if (!ResolveRoomGroup())
@@ -64,10 +77,10 @@ public sealed class RoomEncounterEntryTrigger2D : MonoBehaviour
 
     private void OnDisable()
     {
-        if (activePlayerColliders.Count <= 0)
+        if (activePlayerBodyColliders.Count <= 0)
             return;
 
-        activePlayerColliders.Clear();
+        activePlayerBodyColliders.Clear();
         if (targetRoomGroup != null)
             targetRoomGroup.NotifyPlayerExitedEncounter();
     }
@@ -92,21 +105,56 @@ public sealed class RoomEncounterEntryTrigger2D : MonoBehaviour
 
     private void EnsureTriggerCollider()
     {
-        Collider2D triggerCollider = GetComponent<Collider2D>();
+        triggerCollider = GetComponent<Collider2D>();
         if (triggerCollider != null)
             triggerCollider.isTrigger = true;
     }
 
-    private static bool IsPlayerCollider(Collider2D other)
+    private static bool TryResolvePlayerBodyCollider(Collider2D other, out Collider2D bodyCollider)
     {
+        bodyCollider = null;
+
         if (other == null)
             return false;
 
-        CombatHurtbox2D hurtbox = other.GetComponent<CombatHurtbox2D>();
-        if (hurtbox == null || !hurtbox.OwnsCollider(other))
+        PlayerInteractor2D player = other.GetComponentInParent<PlayerInteractor2D>();
+        if (player == null || !player.CompareTag("Player"))
             return false;
 
-        GameObject targetRoot = hurtbox.ResolveTargetRoot();
-        return targetRoot != null && targetRoot.CompareTag("Player");
+        Collider2D playerBodyCollider = player.BodyCollider;
+        if (playerBodyCollider == null || playerBodyCollider != other)
+            return false;
+
+        bodyCollider = playerBodyCollider;
+        return true;
+    }
+
+    private bool IsBodyColliderFullyInsideRoom(Collider2D bodyCollider)
+    {
+        if (bodyCollider == null || triggerCollider == null)
+            return false;
+
+        Bounds bounds = bodyCollider.bounds;
+        Vector2 min = new(bounds.min.x, bounds.min.y);
+        Vector2 max = new(bounds.max.x, bounds.max.y);
+        Vector2 center = new(bounds.center.x, bounds.center.y);
+
+        return triggerCollider.OverlapPoint(new Vector2(min.x, min.y)) &&
+               triggerCollider.OverlapPoint(new Vector2(min.x, max.y)) &&
+               triggerCollider.OverlapPoint(new Vector2(max.x, min.y)) &&
+               triggerCollider.OverlapPoint(new Vector2(max.x, max.y)) &&
+               triggerCollider.OverlapPoint(new Vector2(center.x, min.y)) &&
+               triggerCollider.OverlapPoint(new Vector2(center.x, max.y)) &&
+               triggerCollider.OverlapPoint(new Vector2(min.x, center.y)) &&
+               triggerCollider.OverlapPoint(new Vector2(max.x, center.y)) &&
+               triggerCollider.OverlapPoint(center);
+    }
+
+    private void CompactInactiveBodyColliders()
+    {
+        activePlayerBodyColliders.RemoveWhere(bodyCollider =>
+            bodyCollider == null ||
+            !bodyCollider.enabled ||
+            !bodyCollider.gameObject.activeInHierarchy);
     }
 }

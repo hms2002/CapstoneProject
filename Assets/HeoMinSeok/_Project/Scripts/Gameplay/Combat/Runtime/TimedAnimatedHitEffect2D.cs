@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,18 +30,31 @@ namespace UnityGAS
         private readonly HashSet<GameObject> localHitTargets = new();
         private CombatHitPayload payload;
         private SharedHitRegistry sharedRegistry;
+        private Action hitWindowOpenedCallback;
         private ContactFilter2D contactFilter;
         private Coroutine lifetimeCoroutine;
         private float originalAnimatorSpeed = 1f;
         private bool hasOriginalAnimatorSpeed;
         private bool isCollected;
+        private bool hitWindowOpenedCallbackInvoked;
 
         public void Play(float lifetimeSeconds, CombatHitPayload hitPayload, SharedHitRegistry registry = null)
         {
+            Play(lifetimeSeconds, hitPayload, registry, null);
+        }
+
+        public void Play(
+            float lifetimeSeconds,
+            CombatHitPayload hitPayload,
+            SharedHitRegistry registry,
+            Action onHitWindowOpened)
+        {
             payload = hitPayload;
             sharedRegistry = registry;
+            hitWindowOpenedCallback = onHitWindowOpened;
             localHitTargets.Clear();
             isCollected = false;
+            hitWindowOpenedCallbackInvoked = false;
 
             CacheReferences();
             ConfigureContactFilter();
@@ -58,6 +72,7 @@ namespace UnityGAS
         /// <summary>애니메이션 이벤트에서 호출해 피해 콜라이더를 켜고 현재 겹친 대상을 즉시 검사한다.</summary>
         public void EnableHitCollision()
         {
+            InvokeHitWindowOpenedCallbackIfNeeded();
             SetHitCollisionEnabled(true);
             CheckCurrentOverlaps();
         }
@@ -77,6 +92,7 @@ namespace UnityGAS
             isCollected = true;
             DisableHitCollision();
             RestoreAnimatorSpeed();
+            hitWindowOpenedCallback = null;
 
             if (lifetimeCoroutine != null)
             {
@@ -103,6 +119,7 @@ namespace UnityGAS
         {
             DisableHitCollision();
             RestoreAnimatorSpeed();
+            hitWindowOpenedCallback = null;
 
             if (lifetimeCoroutine != null)
             {
@@ -136,6 +153,21 @@ namespace UnityGAS
                 originalAnimatorSpeed = animator.speed;
                 hasOriginalAnimatorSpeed = true;
             }
+        }
+
+        public void SetReferenceClip(AnimationClip clip)
+        {
+            referenceClip = clip;
+        }
+
+        public void ConfigureHitCollision(Collider2D[] colliders, LayerMask layers, bool applyOnlyOnce = true)
+        {
+            DisableHitCollision();
+            hitColliders = colliders;
+            targetLayers = layers;
+            applyOnlyOncePerEffect = applyOnlyOnce;
+            ConfigureContactFilter();
+            DisableHitCollision();
         }
 
         private void ApplyAnimatorSpeed(float lifetimeSeconds)
@@ -223,6 +255,15 @@ namespace UnityGAS
                     overlapResults[hitIndex] = null;
                 }
             }
+        }
+
+        private void InvokeHitWindowOpenedCallbackIfNeeded()
+        {
+            if (hitWindowOpenedCallbackInvoked)
+                return;
+
+            hitWindowOpenedCallbackInvoked = true;
+            hitWindowOpenedCallback?.Invoke();
         }
 
         private void TryApplyHit(Collider2D other)

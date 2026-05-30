@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
+using CapstonePresentation;
 using UnityEngine;
+using UnityGAS;
 
 [DisallowMultipleComponent]
 public sealed class DemonKingPrimitiveVisual : MonoBehaviour
@@ -219,7 +222,7 @@ public sealed class DemonKingWorldDimmingOverlay : MonoBehaviour
     private void Initialize(DemonKingController owner, float initialAlpha)
     {
         fallbackAnchor = owner != null ? owner.transform : null;
-        targetCamera = Camera.main != null ? Camera.main : Object.FindAnyObjectByType<Camera>();
+        targetCamera = Camera.main != null ? Camera.main : UnityEngine.Object.FindAnyObjectByType<Camera>();
 
         overlayRenderer = gameObject.AddComponent<SpriteRenderer>();
         overlayRenderer.sprite = DemonKingPrimitiveVisual.GetSquareSprite();
@@ -334,6 +337,7 @@ public static class DemonKingPatternVfx
     private const string DarkLordFragmentVfxPath = "DemonKing/Vfx/DarkLordFragmentVfx";
     private const string DemonChargeEffectVfxPath = "DemonKing/Vfx/DemonChargeEffectVfx";
     private const string SwordSpinVfxPath = "DemonKing/Vfx/SwordSpin4FrameVfx";
+    private const string HighArcDebrisVfxPath = "DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc";
 
     private const string IdleStateName = "Idle";
     private const string LoopStateName = "Loop";
@@ -345,8 +349,19 @@ public static class DemonKingPatternVfx
     private const float FragmentHoldSeconds = 2f;
     private const float FragmentFadeSeconds = 0.5f;
 
+    private static GameObject highArcDebrisPrefab;
+    private static bool highArcDebrisMissingLogged;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStaticState()
+    {
+        highArcDebrisPrefab = null;
+        highArcDebrisMissingLogged = false;
+    }
+
     public static DemonKingAnimationClipVisual SpawnExplosion(Vector2 center, float diameter)
     {
+        SpawnHighArcDebris(center);
         return DemonKingAnimationClipVisual.SpawnOneShot(
             ExplosionVfxPath,
             center,
@@ -366,8 +381,35 @@ public static class DemonKingPatternVfx
             DemonKingPrimitiveVisual.SpawnCircle(center, diameter, 0.12f, fallbackColor, fallbackName);
     }
 
+    public static bool TryPlayCircleTimedHit(
+        DemonKingAnimationClipVisual visual,
+        DemonKingController owner,
+        float diameter,
+        CombatHitPayload payload,
+        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry,
+        Action onHitWindowOpened)
+    {
+        if (visual == null || owner == null)
+            return false;
+
+        return visual.TryPlayTimedCircleHit(
+            Mathf.Max(0.01f, diameter),
+            owner.TargetMask,
+            payload,
+            sharedHitRegistry,
+            onHitWindowOpened);
+    }
+
+    public static bool TryPlayTimedSignal(
+        DemonKingAnimationClipVisual visual,
+        Action onHitWindowOpened)
+    {
+        return visual != null && visual.TryPlayTimedSignal(onHitWindowOpened);
+    }
+
     public static DemonKingAnimationClipVisual SpawnDarkLordExplosion2(Vector2 center, float diameter)
     {
+        SpawnHighArcDebris(center);
         return DemonKingAnimationClipVisual.SpawnOneShot(
             DarkLordExplosion2VfxPath,
             center,
@@ -390,6 +432,7 @@ public static class DemonKingPatternVfx
     public static DemonKingAnimationClipVisual SpawnImpact(Vector2 center, float diameter, bool leaveFragment = true)
     {
         _ = diameter;
+        SpawnHighArcDebris(center);
         DemonKingAnimationClipVisual impact = DemonKingAnimationClipVisual.SpawnOneShot(
             ImpactVfxPath,
             center,
@@ -415,7 +458,10 @@ public static class DemonKingPatternVfx
             centerOnSpriteBounds: true);
     }
 
-    public static DemonKingAnimationClipVisual SpawnChargeLoop(Transform target, Vector2 direction)
+    public static DemonKingAnimationClipVisual SpawnChargeLoop(
+        Transform target,
+        Vector2 direction,
+        Vector3 localOffset = default)
     {
         if (target == null)
             return null;
@@ -424,7 +470,7 @@ public static class DemonKingPatternVfx
         return DemonKingAnimationClipVisual.SpawnFollowingLoop(
             DemonChargeEffectVfxPath,
             target,
-            new Vector3(0f, 0f, -0.08f),
+            new Vector3(localOffset.x, localOffset.y, -0.08f),
             Vector2.zero,
             DemonKingCombatUtil.RotationDeg(safeDirection),
             "DemonKing_ChargeLoopVfx",
@@ -463,15 +509,18 @@ public static class DemonKingPatternVfx
             LoopStateName);
     }
 
-    public static DemonKingAnimationClipVisual SpawnAttachedStab(Transform parent, Vector2 direction)
+    public static DemonKingAnimationClipVisual SpawnAttachedStab(
+        Transform parent,
+        Vector2 direction,
+        Vector3 localOffset = default)
     {
         if (parent == null)
             return null;
 
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
         Vector3 localPosition = new(
-            safeDirection.x * (StabOriginalVisualLength * StabForwardOffsetRatio),
-            safeDirection.y * (StabOriginalVisualLength * StabForwardOffsetRatio),
+            localOffset.x + safeDirection.x * (StabOriginalVisualLength * StabForwardOffsetRatio),
+            localOffset.y + safeDirection.y * (StabOriginalVisualLength * StabForwardOffsetRatio),
             -0.05f);
 
         return DemonKingAnimationClipVisual.SpawnAttachedOneShot(
@@ -543,6 +592,44 @@ public static class DemonKingPatternVfx
     {
         DemonKingAnimationClipVisual fragment = SpawnPersistentFragment(center, "DarkLord_TimedFragmentVfx");
         fragment?.ReleaseAfterDelayAndFade(FragmentHoldSeconds, FragmentFadeSeconds);
+    }
+
+    public static void SpawnHighArcDebris(Vector2 center)
+    {
+        GameObject prefab = ResolveHighArcDebrisPrefab();
+        if (prefab == null)
+            return;
+
+        SpawnedPresentationHook hook = new()
+        {
+            prefab = prefab,
+            scaleMultiplier = Vector3.one,
+            anchorMode = PresentationSpawnAnchorMode.ContextPosition,
+            scaleMode = PresentationSpawnScaleMode.None,
+            boundsMode = PresentationTargetBoundsMode.RendererAabb,
+            lifetimeMode = PresentationLifetimeMode.AutoDetect,
+        };
+        WorldPresentationContext context = WorldPresentationContext.AtWorld(
+            null,
+            new Vector3(center.x, center.y, 0f),
+            Vector3.up,
+            sourceObject: prefab);
+        PresentationSpawnService.SpawnOneShot(hook, context);
+    }
+
+    private static GameObject ResolveHighArcDebrisPrefab()
+    {
+        if (highArcDebrisPrefab != null)
+            return highArcDebrisPrefab;
+
+        highArcDebrisPrefab = Resources.Load<GameObject>(HighArcDebrisVfxPath);
+        if (highArcDebrisPrefab == null && !highArcDebrisMissingLogged)
+        {
+            highArcDebrisMissingLogged = true;
+            Debug.LogWarning($"DemonKing debris VFX prefab not found at Resources/{HighArcDebrisVfxPath}.");
+        }
+
+        return highArcDebrisPrefab;
     }
 }
 
@@ -714,6 +801,44 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
         ReleaseAfterDelayAndFade(0f, fadeSeconds);
     }
 
+    public bool TryPlayTimedCircleHit(
+        float worldDiameter,
+        LayerMask targetLayers,
+        CombatHitPayload payload,
+        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry,
+        Action onHitWindowOpened)
+    {
+        TimedAnimatedHitEffect2D timedHitEffect = GetComponentInChildren<TimedAnimatedHitEffect2D>(true);
+        if (timedHitEffect == null)
+            return false;
+
+        CircleCollider2D hitCollider = ConfigureCircleHitCollider(worldDiameter);
+        timedHitEffect.ConfigureHitCollision(new Collider2D[] { hitCollider }, targetLayers);
+        timedHitEffect.Play(
+            ResolveLongestClipLength(),
+            payload,
+            sharedHitRegistry,
+            onHitWindowOpened);
+        return true;
+    }
+
+    public bool TryPlayTimedSignal(Action onHitWindowOpened)
+    {
+        TimedAnimatedHitEffect2D timedHitEffect = GetComponentInChildren<TimedAnimatedHitEffect2D>(true);
+        if (timedHitEffect == null)
+            return false;
+
+        DisableAllHitColliders();
+        LayerMask emptyMask = default;
+        timedHitEffect.ConfigureHitCollision(Array.Empty<Collider2D>(), emptyMask);
+        timedHitEffect.Play(
+            ResolveLongestClipLength(),
+            null,
+            null,
+            onHitWindowOpened);
+        return true;
+    }
+
     public void SetSpriteFlipX(bool flipX)
     {
         CacheRuntimeReferences();
@@ -774,6 +899,38 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
             CenterOnSpriteBounds();
         playbackRoutine = StartCoroutine(CoDestroyAfterSeconds(ResolveLongestClipLength()));
         return true;
+    }
+
+    private CircleCollider2D ConfigureCircleHitCollider(float worldDiameter)
+    {
+        DisableAllHitColliders();
+        CircleCollider2D hitCollider = GetComponent<CircleCollider2D>();
+        if (hitCollider == null)
+            hitCollider = gameObject.AddComponent<CircleCollider2D>();
+
+        hitCollider.isTrigger = true;
+        hitCollider.offset = Vector2.zero;
+        hitCollider.radius = ResolveLocalCircleRadius(worldDiameter);
+        hitCollider.enabled = false;
+        return hitCollider;
+    }
+
+    private void DisableAllHitColliders()
+    {
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i] != null)
+                colliders[i].enabled = false;
+        }
+    }
+
+    private float ResolveLocalCircleRadius(float worldDiameter)
+    {
+        float safeWorldDiameter = Mathf.Max(0.01f, worldDiameter);
+        Vector3 scale = transform.lossyScale;
+        float maxScale = Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.y), 0.01f);
+        return (safeWorldDiameter * 0.5f) / maxScale;
     }
 
     private bool TryPlayLoop(Vector2 targetSize, string stateName, bool centerOnSpriteBounds)
