@@ -253,6 +253,9 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     public virtual BossPatternEntry SelectNextPattern()
     {
         EnsureCombatTarget(forceRefresh: true);
+        if (CombatTargetDeathUtility.IsPlayerDeathSequenceRunning(Target))
+            return null;
+
         blackboard.Tick(0f, Target, GetCurrentHpRatio());
 
         BossPatternEntry followUpPattern = TrySelectQueuedFollowUpPattern();
@@ -292,6 +295,9 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     {
         if (patternEntry == null || abilitySystem == null) return false;
 
+        if (CombatTargetDeathUtility.IsPlayerDeathSequenceRunning(Target))
+            return false;
+
         if (abilitySystem.IsBusy) return false;
 
         BossPatternEvalResult result = patternRuntime != null &&
@@ -319,6 +325,12 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     public bool TryStartAbility(AbilityDefinition ability, GameObject explicitTarget = null)
     {
         if (abilitySystem == null || ability == null)
+            return false;
+
+        Transform targetTransform = explicitTarget != null
+            ? explicitTarget.transform
+            : Target;
+        if (CombatTargetDeathUtility.IsPlayerDeathSequenceRunning(targetTransform))
             return false;
 
         GameObject targetObject = explicitTarget != null

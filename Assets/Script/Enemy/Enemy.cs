@@ -259,6 +259,9 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
         if (candidate == null)
             return false;
 
+        if (CombatTargetDeathUtility.IsPlayerDeathSequenceRunning(candidate))
+            return false;
+
         if (!IsTargetablePlayer(candidate))
             return false;
 

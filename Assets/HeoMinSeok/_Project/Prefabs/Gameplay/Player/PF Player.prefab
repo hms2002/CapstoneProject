@@ -1557,6 +1557,8 @@ MonoBehaviour:
   deathStateTagSet: {fileID: 0}
   hubSceneName: ProtoTypeHub
   fallbackDelaySeconds: 1.25
+  combatSfxDuckVolumeOnDeath: 0
+  combatSfxDuckFadeSeconds: 0.35
   additionalBehavioursToDisable: []
   collidersToDisable: []
 --- !u!114 &2333025531112780419

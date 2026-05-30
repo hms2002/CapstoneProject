@@ -1,35 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "3623e9844e9a448fad3b8014966b3aa5",
-            "startedUtc": "2026-05-30T12:10:20.6527425Z",
-            "endedUtc": "2026-05-30T12:10:22.7712509Z",
-            "entries": []
-        },
-        {
-            "sessionId": "2556c150af3d41d8a25a0a9ea2921f82",
-            "startedUtc": "2026-05-30T12:12:08.8455067Z",
-            "endedUtc": "2026-05-30T12:12:11.0622369Z",
-            "entries": []
-        },
-        {
-            "sessionId": "05f44b4fa0a347ef940e74dedccef2bc",
-            "startedUtc": "2026-05-30T12:20:36.4353300Z",
-            "endedUtc": "2026-05-30T12:20:57.5131227Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 21.06348991394043,
-                    "lastSeenSeconds": 21.063661575317384,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
             "sessionId": "cb36431456e840c798f07232b7b448d5",
             "startedUtc": "2026-05-30T12:22:05.5318299Z",
             "endedUtc": "2026-05-30T12:22:06.5774603Z",
@@ -140,6 +111,24 @@
             "sessionId": "0151bc3e92f6453e9a43d3706bc3bf69",
             "startedUtc": "2026-05-30T13:29:23.1907689Z",
             "endedUtc": "2026-05-30T13:29:24.3128877Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d3d91946638b4bfea409e385b03181cf",
+            "startedUtc": "2026-05-30T13:40:57.1331502Z",
+            "endedUtc": "2026-05-30T13:40:58.6211043Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a5b29d07f9f14899a8e319e732e7ddc5",
+            "startedUtc": "2026-05-30T13:44:54.8608073Z",
+            "endedUtc": "2026-05-30T13:44:56.0369880Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d6dee9a018f4415abf417d264559490e",
+            "startedUtc": "2026-05-30T13:50:20.5802893Z",
+            "endedUtc": "2026-05-30T13:50:21.7621920Z",
             "entries": []
         }
     ]
