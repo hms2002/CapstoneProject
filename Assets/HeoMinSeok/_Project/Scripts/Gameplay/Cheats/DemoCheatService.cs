@@ -59,7 +59,20 @@ public sealed class DemoCheatService
             $"{FormatKey(settings.WarpToPortalKey)}: 포탈 앞으로 이동",
             $"{FormatKey(settings.ResetWeaponCooldownKey)}: 무기 쿨타임 초기화",
             $"{FormatKey(settings.IncreaseAttackKey)}: 공격력 +{settings.AttackIncreaseAmount:0.###}",
-            $"{FormatKey(settings.MapZoomToggleKey)}: 맵 전체 줌 토글");
+            $"{FormatKey(settings.MapZoomToggleKey)}: 맵 전체 줌 토글",
+            $"{FormatKey(settings.WarpToBossSceneKey)}: 보스 씬 포탈 설정");
+    }
+
+    public string BuildBossSceneSelectionGuide()
+    {
+        return string.Join(
+            "\n",
+            "이동하고 싶은 보스 씬에 맞게 키를 입력하세요",
+            "F1: 그림자 보스",
+            "F2: 드래곤 보스",
+            "F3: 슬라임 보스",
+            "F4: 데몬킹 보스",
+            "F5: 취소");
     }
 
     public DemoCheatResult AddMagicStone(DemoCheatSettingsSO settings)
@@ -99,6 +112,41 @@ public sealed class DemoCheatService
 
         Log($"Runtime Special NPC 앞으로 워프. scene={SceneManager.GetActiveScene().name}, npc={npc.name}");
         return DemoCheatResult.Succeeded("Runtime Special NPC 앞으로 이동했습니다.");
+    }
+
+    public DemoCheatResult PrepareNearestPortalForBossScene(DemoCheatSettingsSO settings, int bossSceneIndex)
+    {
+        if (!TryResolvePlayer(out Transform player))
+            return Fail("플레이어를 찾을 수 없습니다.");
+
+        if (!TryResolveBossSceneName(settings, bossSceneIndex, out string sceneName))
+            return Fail("선택한 보스 씬이 설정되어 있지 않습니다.");
+
+        ScenePortal portal = FindNearestPortal(player.position);
+        if (portal == null)
+            return Fail("목적지를 설정할 포탈을 찾을 수 없습니다.");
+
+        if (!portal.SetOneShotDestinationOverride(sceneName, this))
+            return Fail("포탈 목적지를 설정하지 못했습니다.");
+
+        RestoreMapZoomImmediate();
+
+        Transform anchor = portal.GetPromptAnchor();
+        Vector3 targetPosition = anchor != null ? anchor.position : portal.transform.position;
+        targetPosition.z = player.position.z;
+
+        MovementMotor2D movementMotor = player.GetComponent<MovementMotor2D>();
+        if (movementMotor != null)
+        {
+            movementMotor.WarpTo(targetPosition, clearExternalMovement: true, clearMotion: true);
+        }
+        else
+        {
+            SetPlayerPositionImmediate(player, targetPosition);
+        }
+
+        Log($"보스 씬 포탈 override 설정. portal={portal.name}, scene={sceneName}");
+        return DemoCheatResult.Succeeded($"다음 포탈 목적지를 {sceneName}(으)로 설정했습니다.");
     }
 
     public DemoCheatResult RefillPlayerHealth(DemoCheatSettingsSO settings)
@@ -427,6 +475,21 @@ public sealed class DemoCheatService
         GameObject taggedPlayer = GameObject.FindGameObjectWithTag("Player");
         player = taggedPlayer != null ? taggedPlayer.transform : null;
         return player != null;
+    }
+
+    private static bool TryResolveBossSceneName(DemoCheatSettingsSO settings, int bossSceneIndex, out string sceneName)
+    {
+        sceneName = null;
+        IReadOnlyList<string> sceneNames = settings != null ? settings.BossSceneNames : null;
+        if (sceneNames == null || bossSceneIndex < 0 || bossSceneIndex >= sceneNames.Count)
+            return false;
+
+        string candidate = sceneNames[bossSceneIndex];
+        if (string.IsNullOrWhiteSpace(candidate))
+            return false;
+
+        sceneName = candidate.Trim();
+        return true;
     }
 
     private static bool IsPortalWarpAllowedScene()
