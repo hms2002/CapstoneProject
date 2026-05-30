@@ -10,12 +10,17 @@ public enum DemonKingVfxSocketId
     EyeFlash,
     HandCast,
     HandCounterImpact,
-    SwordSlashOrigin,
+    SwordCounterOrigin,
     SwordStabOrigin,
     FootLandingImpact,
     ChargeLoop,
     ChargeDisappear,
-    HomingStockCenter
+    HomingStockCenter,
+    SwordThrowOrigin,
+    SwordThrowReturnOrigin,
+    SwordThrowEffectOrigin,
+    EyeFlashSecondary,
+    SwordSlashOrigin
 }
 
 [Serializable]
@@ -73,12 +78,17 @@ public sealed class DemonKingVfxSocketMap : MonoBehaviour
         new(DemonKingVfxSocketId.EyeFlash, new Vector2(0f, 0.75f), new Color(1f, 0.2f, 0.2f, 1f)),
         new(DemonKingVfxSocketId.HandCast, new Vector2(0f, 0.55f), new Color(0.35f, 0.75f, 1f, 1f)),
         new(DemonKingVfxSocketId.HandCounterImpact, Vector2.zero, new Color(1f, 0.45f, 0.1f, 1f), 0.16f),
-        new(DemonKingVfxSocketId.SwordSlashOrigin, Vector2.zero, new Color(1f, 0.9f, 0.15f, 1f), 0.14f),
+        new(DemonKingVfxSocketId.SwordCounterOrigin, Vector2.zero, new Color(1f, 0.9f, 0.15f, 1f), 0.14f),
         new(DemonKingVfxSocketId.SwordStabOrigin, Vector2.zero, new Color(1f, 0.65f, 0.1f, 1f), 0.14f),
         new(DemonKingVfxSocketId.FootLandingImpact, Vector2.zero, new Color(0.25f, 1f, 0.45f, 1f), 0.16f),
         new(DemonKingVfxSocketId.ChargeLoop, Vector2.zero, new Color(0.85f, 0.35f, 1f, 1f), 0.14f),
         new(DemonKingVfxSocketId.ChargeDisappear, Vector2.zero, new Color(0.65f, 0.25f, 1f, 1f), 0.14f),
         new(DemonKingVfxSocketId.HomingStockCenter, new Vector2(0f, 1.6f), new Color(0.25f, 0.85f, 1f, 1f), 0.14f),
+        new(DemonKingVfxSocketId.SwordThrowOrigin, new Vector2(-0.35f, 0.45f), new Color(1f, 0.75f, 0.25f, 1f), 0.14f),
+        new(DemonKingVfxSocketId.SwordThrowReturnOrigin, new Vector2(-0.25f, 0.55f), new Color(1f, 0.85f, 0.35f, 1f), 0.14f),
+        new(DemonKingVfxSocketId.SwordThrowEffectOrigin, new Vector2(-0.35f, 0.45f), new Color(0.35f, 0.95f, 1f, 1f), 0.14f),
+        new(DemonKingVfxSocketId.EyeFlashSecondary, new Vector2(-0.15f, 0.75f), new Color(1f, 0.3f, 0.35f, 1f), 0.12f),
+        new(DemonKingVfxSocketId.SwordSlashOrigin, Vector2.zero, new Color(1f, 0.55f, 0.15f, 1f), 0.14f),
     };
 
     public Vector3 ResolveLocalOffset(

@@ -1,20 +1,211 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
+public enum DemonKingBodyFrameSampleMode
+{
+    PlayFromStart,
+    HoldFirstFrame,
+    HoldFrame,
+    HoldLastFrame
+}
+
+public enum DemonKingBuiltInVfxKind
+{
+    None,
+    Explosion,
+    DarkLordExplosion2,
+    Impact,
+    GroggyRelease,
+    EyeFlash,
+    Stab,
+    Slash,
+    ChargeLoop,
+    ChargeDisappear,
+    SwordSpin,
+    EgoSwordAttack,
+    HomingStock,
+    HomingProjectile
+}
+
+[Serializable]
+public struct DemonKingBodyAnimationRef
+{
+    [SerializeField] private AnimationClip clip;
+    [SerializeField] private DemonKingBodyFrameSampleMode sampleMode;
+    [SerializeField] private int frameIndex;
+    [SerializeField] private string fallbackStateName;
+
+    public AnimationClip Clip => clip;
+    public DemonKingBodyFrameSampleMode SampleMode => sampleMode;
+    public int FrameIndex => Mathf.Max(0, frameIndex);
+    public string FallbackStateName => fallbackStateName;
+    public string StateName => clip != null ? clip.name : fallbackStateName;
+
+    public static DemonKingBodyAnimationRef State(
+        string fallbackStateName,
+        DemonKingBodyFrameSampleMode sampleMode = DemonKingBodyFrameSampleMode.PlayFromStart,
+        int frameIndex = 0)
+    {
+        return new DemonKingBodyAnimationRef
+        {
+            clip = null,
+            sampleMode = sampleMode,
+            frameIndex = Mathf.Max(0, frameIndex),
+            fallbackStateName = fallbackStateName
+        };
+    }
+}
+
+[Serializable]
+public struct DemonKingVfxCueRef
+{
+    [SerializeField] private GameObject prefabOverride;
+    [SerializeField] private DemonKingBuiltInVfxKind fallbackKind;
+    [SerializeField] private DemonKingVfxSocketId socketId;
+    [SerializeField] private Vector2 fallbackLeftOffset;
+    [SerializeField] private Vector2 targetSize;
+    [SerializeField] private Vector3 scale;
+    [SerializeField] private float rotationOffsetDeg;
+    [SerializeField] private bool leaveFragment;
+
+    public GameObject PrefabOverride => prefabOverride;
+    public DemonKingBuiltInVfxKind FallbackKind => fallbackKind;
+    public DemonKingVfxSocketId SocketId => socketId;
+    public Vector2 FallbackLeftOffset => fallbackLeftOffset;
+    public Vector2 TargetSize => targetSize;
+    public Vector3 Scale => scale == Vector3.zero ? Vector3.one : scale;
+    public float RotationOffsetDeg => rotationOffsetDeg;
+    public bool LeaveFragment => leaveFragment;
+    public bool IsConfigured => prefabOverride != null || fallbackKind != DemonKingBuiltInVfxKind.None;
+
+    public Vector2 ResolveTargetSize(float fallbackDiameter)
+    {
+        return targetSize.sqrMagnitude > 0.0001f
+            ? targetSize
+            : new Vector2(fallbackDiameter, fallbackDiameter);
+    }
+
+    public static DemonKingVfxCueRef BuiltIn(
+        DemonKingBuiltInVfxKind fallbackKind,
+        DemonKingVfxSocketId socketId,
+        Vector2 fallbackLeftOffset,
+        Vector2 targetSize,
+        float rotationOffsetDeg = 0f,
+        bool leaveFragment = true)
+    {
+        return new DemonKingVfxCueRef
+        {
+            prefabOverride = null,
+            fallbackKind = fallbackKind,
+            socketId = socketId,
+            fallbackLeftOffset = fallbackLeftOffset,
+            targetSize = targetSize,
+            scale = Vector3.one,
+            rotationOffsetDeg = rotationOffsetDeg,
+            leaveFragment = leaveFragment
+        };
+    }
+}
+
+[Serializable]
+public struct GroggyCounterBranchVisual
+{
+    [SerializeField] private DemonKingBodyAnimationRef groggyPoseAnimation;
+    [SerializeField] private DemonKingBodyAnimationRef counterAnimation;
+    [SerializeField] private DemonKingVfxCueRef counterImpactVfx;
+    [SerializeField] private DemonKingVfxSocketId eyeFlashSocket;
+    [SerializeField] private Vector2 eyeFlashFallbackLeftOffset;
+    [SerializeField] private Vector2 eyeFlashSize;
+
+    public DemonKingBodyAnimationRef GroggyPoseAnimation => groggyPoseAnimation;
+    public DemonKingBodyAnimationRef CounterAnimation => counterAnimation;
+    public DemonKingVfxCueRef CounterImpactVfx => counterImpactVfx;
+    public DemonKingVfxSocketId EyeFlashSocket => eyeFlashSocket;
+    public Vector2 EyeFlashFallbackLeftOffset => eyeFlashFallbackLeftOffset;
+    public Vector2 EyeFlashSize => eyeFlashSize.sqrMagnitude > 0.0001f ? eyeFlashSize : new Vector2(2.2f, 2.2f);
+
+    public static GroggyCounterBranchVisual SwordDefault()
+    {
+        return new GroggyCounterBranchVisual
+        {
+            groggyPoseAnimation = DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordGroggyState, DemonKingBodyFrameSampleMode.HoldFirstFrame),
+            counterAnimation = DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordGroggyCounterState),
+            counterImpactVfx = DemonKingVfxCueRef.BuiltIn(
+                DemonKingBuiltInVfxKind.GroggyRelease,
+                DemonKingVfxSocketId.SwordCounterOrigin,
+                new Vector2(0f, -0.5f),
+                new Vector2(5.5f, 5.5f),
+                leaveFragment: false),
+            eyeFlashSocket = DemonKingVfxSocketId.EyeFlashSecondary,
+            eyeFlashFallbackLeftOffset = new Vector2(-0.15f, 0.75f),
+            eyeFlashSize = new Vector2(2.2f, 2.2f)
+        };
+    }
+
+    public static GroggyCounterBranchVisual HandDefault()
+    {
+        return new GroggyCounterBranchVisual
+        {
+            groggyPoseAnimation = DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandGroggyState, DemonKingBodyFrameSampleMode.HoldFirstFrame),
+            counterAnimation = DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandGroggyCounterState),
+            counterImpactVfx = DemonKingVfxCueRef.BuiltIn(
+                DemonKingBuiltInVfxKind.Impact,
+                DemonKingVfxSocketId.HandCounterImpact,
+                new Vector2(0f, -0.5f),
+                new Vector2(5.5f, 5.5f),
+                leaveFragment: true),
+            eyeFlashSocket = DemonKingVfxSocketId.EyeFlash,
+            eyeFlashFallbackLeftOffset = new Vector2(0f, 0.7f),
+            eyeFlashSize = new Vector2(2.2f, 2.2f)
+        };
+    }
+}
+
 public abstract class AbilityLogic_DemonKingBase : AbilityLogic
 {
-    private const float JumpTravelEndNormalized = 0.28f;
-    private const float JumpHoldEndNormalized = 0.86f;
-    private const float JumpPreDropEndNormalized = 0.96f;
-    private const float JumpPreDropHeightScale = 0.9f;
-    private const float JumpTravelEaseOutPower = 2.2f;
-    private const float JumpLandingDropSharpness = 0.22f;
-
     private static readonly RaycastHit2D[] WallHitBuffer = new RaycastHit2D[12];
     protected static readonly Color AttackSquareColor = new(1f, 0.75f, 0.15f, 0.55f);
+
+    [System.Serializable]
+    public struct JumpMotionProfile
+    {
+        [Range(0.01f, 1f)] public float travelEndNormalized;
+        [Range(0.01f, 1f)] public float holdEndNormalized;
+        [Range(0.01f, 1f)] public float preDropEndNormalized;
+        [Range(0f, 1f)] public float preDropHeightScale;
+        [Min(0.01f)] public float travelEaseOutPower;
+        [Min(0.01f)] public float landingDropSharpness;
+
+        public static JumpMotionProfile Default => new()
+        {
+            travelEndNormalized = 0.28f,
+            holdEndNormalized = 0.86f,
+            preDropEndNormalized = 0.96f,
+            preDropHeightScale = 0.9f,
+            travelEaseOutPower = 2.2f,
+            landingDropSharpness = 0.22f
+        };
+
+        public JumpMotionProfile Normalized()
+        {
+            float travelEnd = Mathf.Clamp(travelEndNormalized, 0.01f, 0.98f);
+            float holdEnd = Mathf.Clamp(holdEndNormalized, travelEnd, 0.99f);
+            float preDropEnd = Mathf.Clamp(preDropEndNormalized, holdEnd, 0.999f);
+            return new JumpMotionProfile
+            {
+                travelEndNormalized = travelEnd,
+                holdEndNormalized = holdEnd,
+                preDropEndNormalized = preDropEnd,
+                preDropHeightScale = Mathf.Clamp01(preDropHeightScale),
+                travelEaseOutPower = Mathf.Max(0.01f, travelEaseOutPower),
+                landingDropSharpness = Mathf.Max(0.01f, landingDropSharpness)
+            };
+        }
+    }
 
     protected readonly struct LineArea
     {
@@ -34,6 +225,75 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
     protected static DemonKingController GetDemonKing(AbilitySystem system)
     {
         return system != null ? system.GetComponent<DemonKingController>() : null;
+    }
+
+    protected static string ResolveBodyStateName(DemonKingBodyAnimationRef animationRef, string fallbackStateName)
+    {
+        string stateName = animationRef.StateName;
+        return string.IsNullOrWhiteSpace(stateName) ? fallbackStateName : stateName;
+    }
+
+    protected static bool PlayBodyAnimation(
+        DemonKingController demon,
+        DemonKingBodyAnimationRef animationRef,
+        string fallbackStateName,
+        bool allowDuringGroggy = false,
+        bool allowDuringFinalDesperation = false,
+        bool oncePerPattern = false)
+    {
+        if (demon == null)
+            return false;
+
+        string stateName = ResolveBodyStateName(animationRef, fallbackStateName);
+        if (string.IsNullOrWhiteSpace(stateName))
+            return false;
+
+        return animationRef.SampleMode switch
+        {
+            DemonKingBodyFrameSampleMode.HoldFirstFrame => oncePerPattern
+                ? demon.HoldPatternAnimationFirstFrameOncePerPattern(stateName, allowDuringGroggy, allowDuringFinalDesperation)
+                : demon.HoldPatternAnimationFirstFrame(stateName, allowDuringGroggy, allowDuringFinalDesperation),
+            DemonKingBodyFrameSampleMode.HoldFrame => demon.HoldPatternAnimationFrame(
+                stateName,
+                animationRef.FrameIndex,
+                allowDuringGroggy,
+                allowDuringFinalDesperation),
+            DemonKingBodyFrameSampleMode.HoldLastFrame => demon.HoldPatternAnimationLastFrame(
+                stateName,
+                allowDuringGroggy,
+                allowDuringFinalDesperation),
+            _ => oncePerPattern
+                ? demon.PlayPatternAnimationOncePerPattern(stateName, allowDuringGroggy, allowDuringFinalDesperation)
+                : demon.PlayPatternAnimation(stateName, allowDuringGroggy, allowDuringFinalDesperation)
+        };
+    }
+
+    protected static bool HoldBodyAnimationLastFrame(
+        DemonKingController demon,
+        DemonKingBodyAnimationRef animationRef,
+        string fallbackStateName,
+        bool allowDuringGroggy = false,
+        bool allowDuringFinalDesperation = false)
+    {
+        return demon != null
+            && demon.HoldPatternAnimationLastFrame(
+                ResolveBodyStateName(animationRef, fallbackStateName),
+                allowDuringGroggy,
+                allowDuringFinalDesperation);
+    }
+
+    protected static float ResolveBodyAnimationLastFrameDelay(
+        DemonKingController demon,
+        DemonKingBodyAnimationRef animationRef,
+        string fallbackStateName,
+        float fallbackSeconds = 0.08333334f)
+    {
+        if (demon == null)
+            return Mathf.Max(0f, fallbackSeconds);
+
+        return demon.ResolvePatternAnimationLastFrameStartDelay(
+            ResolveBodyStateName(animationRef, fallbackStateName),
+            fallbackSeconds);
     }
 
     protected static void ShowRectangleWarning(
@@ -83,7 +343,7 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         DemonKingController demon,
         SoundRef sound,
         Vector2 position,
-        Object sourceObject,
+        UnityEngine.Object sourceObject,
         GameObject target = null)
     {
         if (demon == null || !sound.IsSet)
@@ -120,7 +380,7 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         float knockback,
         SoundRef impactSound,
         CameraShakeHook impactCameraShake,
-        Object sourceObject,
+        UnityEngine.Object sourceObject,
         string debugReason)
     {
         if (demon == null)
@@ -231,18 +491,52 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         Vector2 target,
         float duration,
         float arcHeight,
+        JumpMotionProfile jumpMotionProfile,
         float landingFrameSwitchRatio,
         AbilitySpec spec)
+    {
+        return RunParabolicPatternJump(
+            demon,
+            start,
+            target,
+            duration,
+            arcHeight,
+            jumpMotionProfile,
+            landingFrameSwitchRatio,
+            spec,
+            DemonKingBodyAnimationRef.State(
+                DemonKingController.DarkLordHandJumpAttackState,
+                DemonKingBodyFrameSampleMode.HoldFirstFrame),
+            DemonKingController.DarkLordHandJumpAttackState);
+    }
+
+    protected static IEnumerator RunParabolicPatternJump(
+        DemonKingController demon,
+        Vector2 start,
+        Vector2 target,
+        float duration,
+        float arcHeight,
+        JumpMotionProfile jumpMotionProfile,
+        float landingFrameSwitchRatio,
+        AbilitySpec spec,
+        DemonKingBodyAnimationRef travelAnimation,
+        string travelFallbackState)
     {
         if (demon == null)
             yield break;
 
         float safeDuration = Mathf.Max(0.01f, duration);
         float safeArcHeight = Mathf.Max(0f, arcHeight);
+        JumpMotionProfile safeProfile = jumpMotionProfile.Normalized();
         _ = landingFrameSwitchRatio;
         float z = demon.transform.position.z;
 
-        demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordHandJumpAttackState);
+        PlayBodyAnimation(
+            demon,
+            travelAnimation,
+            string.IsNullOrWhiteSpace(travelFallbackState)
+                ? DemonKingController.DarkLordHandJumpAttackState
+                : travelFallbackState);
 
         float elapsed = 0f;
         while (elapsed < safeDuration)
@@ -253,9 +547,9 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
             elapsed += Time.deltaTime;
             float normalizedTime = Mathf.Clamp01(elapsed / safeDuration);
 
-            float horizontalProgress = ResolveDemonKingJumpGroundProgress(normalizedTime);
+            float horizontalProgress = ResolveDemonKingJumpGroundProgress(normalizedTime, safeProfile);
             Vector2 groundPosition = Vector2.Lerp(start, target, horizontalProgress);
-            float height = ResolveDemonKingJumpHeight(normalizedTime, safeArcHeight);
+            float height = ResolveDemonKingJumpHeight(normalizedTime, safeArcHeight, safeProfile);
             demon.transform.position = new Vector3(groundPosition.x, groundPosition.y + height, z);
             yield return null;
         }
@@ -263,45 +557,45 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         demon.transform.position = new Vector3(target.x, target.y, z);
     }
 
-    private static float ResolveDemonKingJumpGroundProgress(float normalizedTime)
+    private static float ResolveDemonKingJumpGroundProgress(float normalizedTime, JumpMotionProfile profile)
     {
         float clampedTime = Mathf.Clamp01(normalizedTime);
-        if (clampedTime >= JumpTravelEndNormalized)
+        if (clampedTime >= profile.travelEndNormalized)
             return 1f;
 
-        float travelProgress = Mathf.Clamp01(clampedTime / JumpTravelEndNormalized);
-        return 1f - Mathf.Pow(1f - travelProgress, JumpTravelEaseOutPower);
+        float travelProgress = Mathf.Clamp01(clampedTime / profile.travelEndNormalized);
+        return 1f - Mathf.Pow(1f - travelProgress, profile.travelEaseOutPower);
     }
 
-    private static float ResolveDemonKingJumpHeight(float normalizedTime, float maxHeight)
+    private static float ResolveDemonKingJumpHeight(float normalizedTime, float maxHeight, JumpMotionProfile profile)
     {
         float safeHeight = Mathf.Max(0f, maxHeight);
         if (safeHeight <= 0f)
             return 0f;
 
         float clampedTime = Mathf.Clamp01(normalizedTime);
-        if (clampedTime <= JumpTravelEndNormalized)
+        if (clampedTime <= profile.travelEndNormalized)
         {
-            float travelProgress = Mathf.Clamp01(clampedTime / JumpTravelEndNormalized);
-            float easedProgress = 1f - Mathf.Pow(1f - travelProgress, JumpTravelEaseOutPower);
+            float travelProgress = Mathf.Clamp01(clampedTime / profile.travelEndNormalized);
+            float easedProgress = 1f - Mathf.Pow(1f - travelProgress, profile.travelEaseOutPower);
             return Mathf.Lerp(0f, safeHeight, easedProgress);
         }
 
-        if (clampedTime <= JumpHoldEndNormalized)
+        if (clampedTime <= profile.holdEndNormalized)
             return safeHeight;
 
-        if (clampedTime <= JumpPreDropEndNormalized)
+        if (clampedTime <= profile.preDropEndNormalized)
         {
             float preDropProgress = Mathf.InverseLerp(
-                JumpHoldEndNormalized,
-                JumpPreDropEndNormalized,
+                profile.holdEndNormalized,
+                profile.preDropEndNormalized,
                 clampedTime);
-            return Mathf.Lerp(safeHeight, safeHeight * JumpPreDropHeightScale, preDropProgress);
+            return Mathf.Lerp(safeHeight, safeHeight * profile.preDropHeightScale, preDropProgress);
         }
 
-        float dropProgress = Mathf.InverseLerp(JumpPreDropEndNormalized, 1f, clampedTime);
-        float easedDrop = Mathf.Pow(Mathf.Clamp01(dropProgress), JumpLandingDropSharpness);
-        return Mathf.Lerp(safeHeight * JumpPreDropHeightScale, 0f, easedDrop);
+        float dropProgress = Mathf.InverseLerp(profile.preDropEndNormalized, 1f, clampedTime);
+        float easedDrop = Mathf.Pow(Mathf.Clamp01(dropProgress), profile.landingDropSharpness);
+        return Mathf.Lerp(safeHeight * profile.preDropHeightScale, 0f, easedDrop);
     }
 
     protected static AttackTelegraphView ShowLineWarning(
@@ -497,6 +791,12 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
     [SerializeField, Min(0f)] private float knockback = 5f;
     [SerializeField, Min(0f)] private float intervalSeconds = 0.12f;
     [SerializeField, Min(0f)] private float dashEndPoseHoldSeconds = 0.1f;
+    [SerializeField] private DemonKingBodyAnimationRef readyAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordDashStabReadyState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
+    [SerializeField] private DemonKingBodyAnimationRef dashAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordDashStabState);
+    [SerializeField] private DemonKingVfxCueRef stabVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.Stab, DemonKingVfxSocketId.SwordStabOrigin, Vector2.zero, Vector2.zero, leaveFragment: false);
     [SerializeField] private SoundRef dashCommitSound;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -518,7 +818,7 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
             Vector2 lockedTarget = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : start + demon.FacingDirection;
             float currentWarningSeconds = Mathf.Max(0f, firstWarningSeconds - warningStepDecrease * i);
             demon.FacePatternDirection(lockedTarget - start);
-            demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordSwordDashStabReadyState);
+            PlayBodyAnimation(demon, readyAnimation, DemonKingController.DarkLordSwordDashStabReadyState);
             AttackTelegraphView warningView = ShowLineWarning(demon, start, lockedTarget, hitWidth, currentWarningSeconds);
 
             float elapsed = 0f;
@@ -553,10 +853,24 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
 
             direction /= distance;
             demon.FacePatternDirection(direction);
-            demon.PlayPatternAnimation(DemonKingController.DarkLordSwordDashStabState);
+            PlayBodyAnimation(demon, dashAnimation, DemonKingController.DarkLordSwordDashStabState);
             PlayPatternSound(demon, dashCommitSound, start, this);
-            Vector3 stabLocalOffset = demon.ResolveVfxSocketLocal(DemonKingVfxSocketId.SwordStabOrigin, Vector2.zero);
-            DemonKingPatternVfx.SpawnAttachedStab(demon.transform, direction, stabLocalOffset);
+            Vector3 stabLocalOffset = demon.ResolveVfxSocketLocal(stabVfx.SocketId, stabVfx.FallbackLeftOffset);
+            if (stabVfx.PrefabOverride != null)
+            {
+                DemonKingAnimationClipVisual.SpawnAttachedOneShot(
+                    stabVfx.PrefabOverride,
+                    demon.transform,
+                    new Vector3(stabLocalOffset.x, stabLocalOffset.y, -0.05f),
+                    stabVfx.TargetSize,
+                    DemonKingCombatUtil.RotationDeg(direction) + stabVfx.RotationOffsetDeg,
+                    "DemonKing_StabVfx",
+                    1);
+            }
+            else
+            {
+                DemonKingPatternVfx.SpawnAttachedStab(demon.transform, direction, stabLocalOffset);
+            }
 
             yield return RunLungeContactDamage(
                 demon,
@@ -573,7 +887,7 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
 
             if (!IsAbilityCancelled(spec))
             {
-                demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordSwordDashStabReadyState);
+                PlayBodyAnimation(demon, readyAnimation, DemonKingController.DarkLordSwordDashStabReadyState);
                 if (i < pierceCount - 1)
                     yield return ReturnToStart(demon, motion, start, returnSeconds, spec);
                 else if (dashEndPoseHoldSeconds > 0f)
@@ -629,6 +943,14 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
     [SerializeField, Min(0f)] private float explosionStepInterval = 0.04f;
     [SerializeField, Min(0f)] private float explosionDamage = 1f;
     [SerializeField, Min(0f)] private float slashEndPoseHoldSeconds = 0.12f;
+    [SerializeField] private DemonKingBodyAnimationRef slashWarningAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordSlashState, DemonKingBodyFrameSampleMode.HoldFrame, 1);
+    [SerializeField] private DemonKingBodyAnimationRef slashCommitAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordSlashState, DemonKingBodyFrameSampleMode.HoldLastFrame);
+    [SerializeField] private DemonKingVfxCueRef slashVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.Slash, DemonKingVfxSocketId.SwordSlashOrigin, Vector2.zero, Vector2.zero, leaveFragment: false);
+    [SerializeField] private DemonKingVfxCueRef lineExplosionVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.DarkLordExplosion2, DemonKingVfxSocketId.SwordSlashOrigin, Vector2.zero, Vector2.zero);
     [SerializeField] private SoundRef approachSound;
     [SerializeField] private SoundRef slashCommitSound;
     [SerializeField] private SoundRef lineExplosionSound;
@@ -679,7 +1001,7 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
             Vector2 direction = demon.GetDirectionToTargetOrFacing(origin);
             demon.FacePatternDirection(direction);
             origin = demon.ResolveVfxSocketWorld(DemonKingVfxSocketId.SwordSlashOrigin, Vector2.zero);
-            demon.HoldPatternAnimationFrame(DemonKingController.DarkLordSwordSlashState, 1);
+            PlayBodyAnimation(demon, slashWarningAnimation, DemonKingController.DarkLordSwordSlashState);
             ShowSectorWarning(demon, origin, direction, slashRadius, slashAngle, warningSeconds);
             Vector2[] lineDirections = CreateHeavySlashLineDirections(direction);
             LineArea[] lineAreas = new LineArea[lineDirections.Length];
@@ -693,13 +1015,13 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
             if (IsAbilityCancelled(spec))
                 yield break;
 
-            DemonKingAnimationClipVisual slashVfx = DemonKingPatternVfx.SpawnSlash(origin, direction, slashRadius);
+            DemonKingAnimationClipVisual slashVfx = SpawnSlashVfx(origin, direction);
             void CommitSlashDamage()
             {
                 if (IsAbilityCancelled(spec) || demon == null || demon.IsDead)
                     return;
 
-                demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordSwordSlashState);
+                PlayBodyAnimation(demon, slashCommitAnimation, DemonKingController.DarkLordSwordSlashState);
                 PlayPatternSound(demon, slashCommitSound, origin, this);
                 PlayPatternShake(demon, slashImpactCameraShake, direction, "DemonKing.HeavySlashImpact");
                 DemonKingCombatUtil.ApplySectorDamage(
@@ -719,7 +1041,7 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
             yield return SpawnLineExplosions(demon, origin, lineDirections, lineAreas, spec);
             if (!IsAbilityCancelled(spec) && slashEndPoseHoldSeconds > 0f)
             {
-                demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordSwordSlashState);
+                PlayBodyAnimation(demon, slashCommitAnimation, DemonKingController.DarkLordSwordSlashState);
                 yield return WaitForSecondsUnlessCancelled(slashEndPoseHoldSeconds, spec);
             }
         }
@@ -775,13 +1097,27 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
                 explosionDamage,
                 explosionVfxKind: DemonKingDelayedExplosionVfxKind.DarkLordExplosion2,
                 impactSound: lineExplosionSound,
-                impactCameraShake: lineExplosionCameraShake);
+                impactCameraShake: lineExplosionCameraShake,
+                explosionVfxCue: lineExplosionVfx);
 
             if (explosionStepInterval > 0f)
                 yield return WaitForSecondsUnlessCancelled(explosionStepInterval, spec);
         }
 
         yield return WaitForSecondsUnlessCancelled(explosionWarningSeconds, spec);
+    }
+
+    private DemonKingAnimationClipVisual SpawnSlashVfx(Vector2 origin, Vector2 direction)
+    {
+        if (slashVfx.PrefabOverride == null && slashVfx.FallbackKind == DemonKingBuiltInVfxKind.Slash)
+            return DemonKingPatternVfx.SpawnSlash(origin, direction, slashRadius);
+
+        return DemonKingPatternVfx.SpawnCueOneShot(
+            slashVfx,
+            origin,
+            slashRadius,
+            direction,
+            "DemonKing_HeavySlashVfx");
     }
 }
 
@@ -791,6 +1127,8 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
     [SerializeField, Min(0.1f)] private float throwSpeedMultiplier = 5f;
     [SerializeField, Min(0)] private int wallBounceCount = 5;
     [SerializeField, Min(0f)] private float throwEndPoseHoldSeconds = 0.12f;
+    [SerializeField] private DemonKingBodyAnimationRef throwAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordThrowingState);
     [SerializeField] private SoundRef throwReleaseSound;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -823,9 +1161,15 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
             Vector2 animationOrigin = sword.ResolveThrowOriginPosition();
             Vector2 animationDirection = demon.GetDirectionToTargetOrFacing(animationOrigin);
             demon.FacePatternDirection(animationDirection);
-            demon.PlayPatternAnimationOncePerPattern(DemonKingController.DarkLordSwordThrowingState);
+            PlayBodyAnimation(
+                demon,
+                throwAnimation,
+                DemonKingController.DarkLordSwordThrowingState,
+                oncePerPattern: true);
 
-            float throwDelaySeconds = demon.ResolvePatternAnimationLastFrameStartDelay(
+            float throwDelaySeconds = ResolveBodyAnimationLastFrameDelay(
+                demon,
+                throwAnimation,
                 DemonKingController.DarkLordSwordThrowingState);
             yield return WaitForSecondsUnlessCancelled(throwDelaySeconds, spec);
 
@@ -840,7 +1184,7 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
             demon.SetSwordDropped();
             if (throwEndPoseHoldSeconds > 0f)
             {
-                demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordSwordThrowingState);
+                HoldBodyAnimationLastFrame(demon, throwAnimation, DemonKingController.DarkLordSwordThrowingState);
                 yield return WaitForSecondsUnlessCancelled(throwEndPoseHoldSeconds, spec);
             }
         }
@@ -878,6 +1222,10 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
     [SerializeField] private Vector2 stockOrbBaseLocalOffset = new(0f, 1.6f);
     [SerializeField, Min(0f)] private float stockOrbSpacing = 0.45f;
     [SerializeField, Min(0f)] private float stockOrbArcHeight = 0.35f;
+    [SerializeField] private DemonKingBodyAnimationRef castAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandBaltState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
+    [SerializeField] private DemonKingBodyAnimationRef fireAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandBaltState, DemonKingBodyFrameSampleMode.HoldLastFrame);
     [SerializeField] private SoundRef castSound;
     [SerializeField] private SoundRef fireSound;
 
@@ -914,7 +1262,7 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
 
                 demon.FacePatternDirection(fireDirection);
                 PlayPatternSound(demon, castSound, bossPosition, this);
-                demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordHandBaltState);
+                PlayBodyAnimation(demon, castAnimation, DemonKingController.DarkLordHandBaltState);
                 DemonKingProjectile2D.Spawn(
                     demon,
                     spawnPosition,
@@ -927,7 +1275,7 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
                     lifetimeSeconds,
                     firedVisualPrefab);
                 PlayPatternSound(demon, fireSound, spawnPosition, this);
-                demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordHandBaltState);
+                PlayBodyAnimation(demon, fireAnimation, DemonKingController.DarkLordHandBaltState);
 
                 Vector2 moveDirection = ResolveMagicMoveDirection(demon, bossPosition);
                 float moveDistance = demon.PlayerDashDistanceReference;
@@ -1183,7 +1531,7 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
 
     private Vector2 ResolveMagicMoveDirection(DemonKingController demon, Vector2 origin)
     {
-        int startIndex = Random.Range(0, CardinalDirections.Length);
+        int startIndex = UnityEngine.Random.Range(0, CardinalDirections.Length);
         float distance = demon.PlayerDashDistanceReference;
         for (int i = 0; i < CardinalDirections.Length; i++)
         {
@@ -1209,8 +1557,6 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
 
 public class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
 {
-    private const float ReleaseImpactPoseHoldSeconds = 1f;
-
     [SerializeField, Min(1)] private int strikeCount = 6;
     [SerializeField, Min(0f)] private float moveSeconds = 0.5f;
     [SerializeField, Min(0f)] private float warningSeconds = 0.6f;
@@ -1221,6 +1567,15 @@ public class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
     [SerializeField, Min(0.1f)] private float explosionDiameter = 1.35f;
     [SerializeField, Min(0.1f)] private float explosionSpacing = 1.35f;
     [SerializeField, Min(0f)] private float damage = 1f;
+    [SerializeField, Min(0f)] private float releaseImpactPoseHoldSeconds = 1f;
+    [SerializeField] private DemonKingBodyAnimationRef chargeAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandChargeState);
+    [SerializeField] private DemonKingBodyAnimationRef releaseAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandGroggyCounterState);
+    [SerializeField] private DemonKingVfxCueRef releaseImpactVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.Impact, DemonKingVfxSocketId.HandCounterImpact, Vector2.zero, Vector2.zero);
+    [SerializeField] private DemonKingVfxCueRef laneExplosionVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.DarkLordExplosion2, DemonKingVfxSocketId.HandCounterImpact, Vector2.zero, Vector2.zero);
     [SerializeField] private SoundRef chargeSound;
     [SerializeField] private SoundRef releaseSound;
     [SerializeField] private SoundRef explosionSound;
@@ -1237,7 +1592,11 @@ public class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
         demon.PushFaceTargetLock();
         try
         {
-            demon.PlayPatternAnimationOncePerPattern(DemonKingController.DarkLordHandChargeState);
+            PlayBodyAnimation(
+                demon,
+                chargeAnimation,
+                DemonKingController.DarkLordHandChargeState,
+                oncePerPattern: true);
             PlayPatternSound(demon, chargeSound, demon.transform.position, this);
             Vector2 arenaCenter = demon.ArenaCenterPosition;
             Vector2 playerPosition = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : arenaCenter + Vector2.left;
@@ -1278,7 +1637,8 @@ public class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
                     damage,
                     explosionVfxKind: DemonKingDelayedExplosionVfxKind.DarkLordExplosion2,
                     impactSound: explosionSound,
-                    impactCameraShake: explosionCameraShake);
+                    impactCameraShake: explosionCameraShake,
+                    explosionVfxCue: laneExplosionVfx);
 
                 yield return WaitForSecondsUnlessCancelled(warningIntervalSeconds, spec);
             }
@@ -1293,22 +1653,36 @@ public class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
 
     private IEnumerator PlayBombardmentReleasePose(DemonKingController demon, AbilitySpec spec)
     {
-        string releaseState = DemonKingController.DarkLordHandGroggyCounterState;
-        if (demon.PlayPatternAnimationOncePerPattern(releaseState))
+        string releaseState = ResolveBodyStateName(releaseAnimation, DemonKingController.DarkLordHandGroggyCounterState);
+        if (PlayBodyAnimation(
+                demon,
+                releaseAnimation,
+                DemonKingController.DarkLordHandGroggyCounterState,
+                oncePerPattern: true))
         {
-            float releaseDelaySeconds = demon.ResolvePatternAnimationLastFrameStartDelay(releaseState);
+            float releaseDelaySeconds = ResolveBodyAnimationLastFrameDelay(
+                demon,
+                releaseAnimation,
+                DemonKingController.DarkLordHandGroggyCounterState);
             yield return WaitForSecondsUnlessCancelled(releaseDelaySeconds, spec);
             if (IsAbilityCancelled(spec))
                 yield break;
         }
 
-        demon.HoldPatternAnimationLastFrame(releaseState);
-        Vector2 releaseCenter = demon.ResolveVfxSocketWorld(DemonKingVfxSocketId.HandCounterImpact, Vector2.zero);
+        HoldBodyAnimationLastFrame(demon, releaseAnimation, releaseState);
+        Vector2 releaseCenter = demon.ResolveVfxSocketWorld(
+            releaseImpactVfx.SocketId,
+            releaseImpactVfx.FallbackLeftOffset);
         PlayPatternSound(demon, releaseSound, releaseCenter, this);
-        DemonKingPatternVfx.SpawnImpact(releaseCenter, explosionDiameter);
+        DemonKingPatternVfx.SpawnCueOneShot(
+            releaseImpactVfx,
+            releaseCenter,
+            explosionDiameter,
+            Vector2.down,
+            "DemonKing_BombardmentReleaseImpact");
         PlayPatternShake(demon, bombardmentReleaseImpactCameraShake, Vector2.down, "DemonKing.BombardmentReleaseImpact");
 
-        yield return WaitForSecondsUnlessCancelled(ReleaseImpactPoseHoldSeconds, spec);
+        yield return WaitForSecondsUnlessCancelled(releaseImpactPoseHoldSeconds, spec);
         if (!IsAbilityCancelled(spec))
             demon.PlayPatternAnimationIfChanged(DemonKingController.DarkLordHandIdleState);
     }
@@ -1329,7 +1703,16 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
     [SerializeField, Min(0f)] private float radialDamage = 1f;
     [SerializeField, Min(0f)] private float jumpArcHeight = 1.35f;
     [SerializeField, Range(0f, 1f)] private float landingFrameSwitchRatio = 0.78f;
+    [SerializeField] private JumpMotionProfile jumpMotionProfile = JumpMotionProfile.Default;
     [SerializeField, Min(0f)] private float landingPoseHoldSeconds = 0.14f;
+    [SerializeField] private DemonKingBodyAnimationRef jumpTravelAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandJumpAttackState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
+    [SerializeField] private DemonKingBodyAnimationRef jumpLandingAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandJumpAttackState, DemonKingBodyFrameSampleMode.HoldLastFrame);
+    [SerializeField] private DemonKingVfxCueRef landingImpactVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.Impact, DemonKingVfxSocketId.FootLandingImpact, Vector2.zero, Vector2.zero);
+    [SerializeField] private DemonKingVfxCueRef radialExplosionVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.Explosion, DemonKingVfxSocketId.FootLandingImpact, Vector2.zero, Vector2.zero);
     [SerializeField] private SoundRef jumpStartSound;
     [SerializeField] private SoundRef landingImpactSound;
     [SerializeField] private SoundRef radialExplosionSound;
@@ -1366,8 +1749,11 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
                     target,
                     travelSeconds,
                     jumpArcHeight,
+                    jumpMotionProfile,
                     landingFrameSwitchRatio,
-                    spec);
+                    spec,
+                    jumpTravelAnimation,
+                    DemonKingController.DarkLordHandJumpAttackState);
             }
             finally
             {
@@ -1377,9 +1763,14 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
             if (IsAbilityCancelled(spec))
                 yield break;
 
-            demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordHandJumpAttackState);
-            impactCenter = demon.ResolveVfxSocketWorld(DemonKingVfxSocketId.FootLandingImpact, Vector2.zero);
-            DemonKingAnimationClipVisual landingImpact = DemonKingPatternVfx.SpawnImpact(impactCenter, impactDiameter);
+            PlayBodyAnimation(demon, jumpLandingAnimation, DemonKingController.DarkLordHandJumpAttackState);
+            impactCenter = demon.ResolveVfxSocketWorld(landingImpactVfx.SocketId, landingImpactVfx.FallbackLeftOffset);
+            DemonKingAnimationClipVisual landingImpact = DemonKingPatternVfx.SpawnCueOneShot(
+                landingImpactVfx,
+                impactCenter,
+                impactDiameter,
+                Vector2.down,
+                "DemonKing_ExplosionJumpLandingImpact");
             TryPlayTimedCircleDamage(
                 landingImpact,
                 demon,
@@ -1474,7 +1865,12 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
                     demon.DefaultDamageEffect,
                     radialDamage,
                     knockback);
-                DemonKingAnimationClipVisual radialExplosion = DemonKingPatternVfx.SpawnExplosion(center, radialExplosionDiameter);
+                DemonKingAnimationClipVisual radialExplosion = DemonKingPatternVfx.SpawnCueOneShot(
+                    radialExplosionVfx,
+                    center,
+                    radialExplosionDiameter,
+                    direction,
+                    "DemonKing_RadialExplosionVfx");
                 bool timed = DemonKingPatternVfx.TryPlayCircleTimedHit(
                     radialExplosion,
                     demon,
@@ -1517,6 +1913,8 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
     [SerializeField, Min(0.1f)] private float recallSpeedMultiplier = 5f;
     [SerializeField, Min(0.1f)] private float timeoutSeconds = 2.5f;
     [SerializeField, Min(0f)] private float recoverEndPoseHoldSeconds = 0.16f;
+    [SerializeField] private DemonKingBodyAnimationRef recoverAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandSwordRecoverState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
     [SerializeField] private SoundRef recallStartSound;
     [SerializeField] private SoundRef recallCompleteSound;
 
@@ -1527,7 +1925,7 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
         if (demon == null || sword == null)
             yield break;
 
-        demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordHandSwordRecoverState);
+        PlayBodyAnimation(demon, recoverAnimation, DemonKingController.DarkLordHandSwordRecoverState);
         try
         {
             PlayPatternSound(demon, recallStartSound, sword.transform.position, this);
@@ -1548,9 +1946,9 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
 
             PlayPatternSound(demon, recallCompleteSound, demon.transform.position, this);
             demon.ReleasePatternAnimationHold();
-            demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordHandSwordRecoverState);
+            HoldBodyAnimationLastFrame(demon, recoverAnimation, DemonKingController.DarkLordHandSwordRecoverState);
             float finalFrameSeconds = demon.ResolvePatternAnimationFrameSeconds(
-                DemonKingController.DarkLordHandSwordRecoverState);
+                ResolveBodyStateName(recoverAnimation, DemonKingController.DarkLordHandSwordRecoverState));
             yield return WaitForSecondsUnlessCancelled(
                 Mathf.Max(finalFrameSeconds, recoverEndPoseHoldSeconds),
                 spec);
@@ -1603,8 +2001,27 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
     [SerializeField, Min(0f)] private float finalImpactDamage = 2f;
     [SerializeField, Min(0f)] private float finalJumpArcHeight = 1.35f;
     [SerializeField, Range(0f, 1f)] private float finalLandingFrameSwitchRatio = 0.78f;
+    [SerializeField] private JumpMotionProfile finalJumpMotionProfile = JumpMotionProfile.Default;
     [SerializeField, Min(0f)] private float rushEndPoseHoldSeconds = 0.1f;
     [SerializeField, Min(0f)] private float finalLandingPoseHoldSeconds = 0.14f;
+    [SerializeField] private DemonKingBodyAnimationRef rushReadyAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordDashStabReadyState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
+    [SerializeField] private DemonKingBodyAnimationRef swordRushAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordDashStabState);
+    [SerializeField] private DemonKingBodyAnimationRef handRushAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandJumpAttackState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
+    [SerializeField] private DemonKingBodyAnimationRef finalJumpTravelAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandJumpAttackState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
+    [SerializeField] private DemonKingBodyAnimationRef finalJumpLandingAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandJumpAttackState, DemonKingBodyFrameSampleMode.HoldLastFrame);
+    [SerializeField] private DemonKingVfxCueRef chargeLoopVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.ChargeLoop, DemonKingVfxSocketId.ChargeLoop, Vector2.zero, Vector2.zero, leaveFragment: false);
+    [SerializeField] private DemonKingVfxCueRef chargeDisappearVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.ChargeDisappear, DemonKingVfxSocketId.ChargeDisappear, Vector2.zero, Vector2.zero, leaveFragment: false);
+    [SerializeField] private DemonKingVfxCueRef finalLandingImpactVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.Impact, DemonKingVfxSocketId.FootLandingImpact, Vector2.zero, Vector2.zero);
+    [SerializeField] private DemonKingVfxCueRef finalLandingExplosionVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.Explosion, DemonKingVfxSocketId.FootLandingImpact, Vector2.zero, Vector2.zero);
     [SerializeField] private SoundRef rushStartSound;
     [SerializeField] private SoundRef rushEndpointSound;
     [SerializeField] private SoundRef finalLandingSound;
@@ -1630,7 +2047,7 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
             float retreatDistance = demon.PlayerDashDistanceReference;
             demon.FacePatternDirection(-awayFromPlayer);
             if (demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold)
-                demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordSwordDashStabReadyState);
+                PlayBodyAnimation(demon, rushReadyAnimation, DemonKingController.DarkLordSwordDashStabReadyState);
             demon.BeginBodyAfterimage();
             try
             {
@@ -1652,7 +2069,7 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
             Vector2 warningStart = demon.transform.position;
             Vector2 direction = demon.GetDirectionToTargetOrFacing(warningStart);
             if (demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold)
-                demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordSwordDashStabReadyState);
+                PlayBodyAnimation(demon, rushReadyAnimation, DemonKingController.DarkLordSwordDashStabReadyState);
             LineArea warningLine = ResolveForwardLineArea(demon, warningStart, direction, hitWidth, fallbackRushDistance);
             AttackTelegraphView warningView = ShowLineAreaWarning(demon, warningLine, warningSeconds);
 
@@ -1679,18 +2096,21 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
                 Vector2 start = demon.transform.position;
                 direction = direction.sqrMagnitude > 0.0001f ? direction.normalized : demon.GetDirectionToTargetOrFacing(start);
                 demon.FacePatternDirection(direction);
-                string rushState = demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold
-                    ? DemonKingController.DarkLordSwordDashStabState
-                    : DemonKingController.DarkLordHandJumpAttackState;
                 if (demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold)
-                    demon.PlayPatternAnimation(rushState);
+                    PlayBodyAnimation(demon, swordRushAnimation, DemonKingController.DarkLordSwordDashStabState);
                 else
-                    demon.HoldPatternAnimationFirstFrame(rushState);
+                    PlayBodyAnimation(demon, handRushAnimation, DemonKingController.DarkLordHandJumpAttackState);
                 float distance = Mathf.Max(0.5f, ResolveWallDistance(demon, start, direction, fallbackRushDistance) - 0.35f);
                 float rushSeconds = SecondsForSpeed(distance, rushSpeed, 0.2f);
 
-                Vector3 chargeLoopOffset = demon.ResolveVfxSocketLocal(DemonKingVfxSocketId.ChargeLoop, Vector2.zero);
-                DemonKingAnimationClipVisual chargeLoop = DemonKingPatternVfx.SpawnChargeLoop(demon.transform, direction, chargeLoopOffset);
+                Vector3 chargeLoopOffset = demon.ResolveVfxSocketLocal(chargeLoopVfx.SocketId, chargeLoopVfx.FallbackLeftOffset);
+                DemonKingAnimationClipVisual chargeLoop = DemonKingPatternVfx.SpawnCueFollowingLoop(
+                    chargeLoopVfx,
+                    demon.transform,
+                    chargeLoopOffset,
+                    hitWidth,
+                    direction,
+                    "DemonKing_WallRushChargeLoop");
                 PlayPatternSound(demon, rushStartSound, start, this);
                 try
                 {
@@ -1716,14 +2136,19 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
                     yield break;
 
                 demon.transform.position = start + direction * distance;
-                Vector2 chargeDisappearCenter = demon.ResolveVfxSocketWorld(DemonKingVfxSocketId.ChargeDisappear, Vector2.zero);
-                DemonKingPatternVfx.SpawnChargeDisappear(chargeDisappearCenter, direction);
+                Vector2 chargeDisappearCenter = demon.ResolveVfxSocketWorld(chargeDisappearVfx.SocketId, chargeDisappearVfx.FallbackLeftOffset);
+                DemonKingPatternVfx.SpawnCueOneShot(
+                    chargeDisappearVfx,
+                    chargeDisappearCenter,
+                    hitWidth,
+                    direction,
+                    "DemonKing_WallRushChargeDisappear");
                 PlayPatternSound(demon, rushEndpointSound, chargeDisappearCenter, this);
                 PlayPatternShake(demon, rushEndpointCameraShake, direction, "DemonKing.WallBounceRushEndpoint");
                 if (demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold)
-                    demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordSwordDashStabReadyState);
+                    PlayBodyAnimation(demon, rushReadyAnimation, DemonKingController.DarkLordSwordDashStabReadyState);
                 else
-                    demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordHandJumpAttackState);
+                    PlayBodyAnimation(demon, finalJumpLandingAnimation, DemonKingController.DarkLordHandJumpAttackState);
 
                 yield return WaitForSecondsUnlessCancelled(Mathf.Max(0.1f, rushEndPoseHoldSeconds), spec);
 
@@ -1767,8 +2192,11 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
                 target,
                 finalJumpSeconds,
                 finalJumpArcHeight,
+                finalJumpMotionProfile,
                 finalLandingFrameSwitchRatio,
-                spec);
+                spec,
+                finalJumpTravelAnimation,
+                DemonKingController.DarkLordHandJumpAttackState);
         }
         finally
         {
@@ -1778,9 +2206,14 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
         if (IsAbilityCancelled(spec))
             yield break;
 
-        demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordHandJumpAttackState);
-        impactCenter = demon.ResolveVfxSocketWorld(DemonKingVfxSocketId.FootLandingImpact, Vector2.zero);
-        DemonKingAnimationClipVisual finalImpact = DemonKingPatternVfx.SpawnImpact(impactCenter, finalImpactDiameter);
+        PlayBodyAnimation(demon, finalJumpLandingAnimation, DemonKingController.DarkLordHandJumpAttackState);
+        impactCenter = demon.ResolveVfxSocketWorld(finalLandingImpactVfx.SocketId, finalLandingImpactVfx.FallbackLeftOffset);
+        DemonKingAnimationClipVisual finalImpact = DemonKingPatternVfx.SpawnCueOneShot(
+            finalLandingImpactVfx,
+            impactCenter,
+            finalImpactDiameter,
+            Vector2.down,
+            "DemonKing_WallRushFinalLandingImpact");
         TryPlayTimedCircleDamage(
             finalImpact,
             demon,
@@ -1792,11 +2225,20 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
             finalLandingCameraShake,
             this,
             "DemonKing.WallBounceRushFinalLanding");
-        DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(
-            impactCenter,
-            finalImpactDiameter,
-            AttackSquareColor,
-            "DemonKing_FinalJumpCircleAttack");
+        if (DemonKingPatternVfx.SpawnCueOneShot(
+                finalLandingExplosionVfx,
+                impactCenter,
+                finalImpactDiameter,
+                Vector2.down,
+                "DemonKing_FinalJumpCircleAttack") == null)
+        {
+            DemonKingPrimitiveVisual.SpawnCircle(
+                impactCenter,
+                finalImpactDiameter,
+                0.12f,
+                AttackSquareColor,
+                "DemonKing_FinalJumpCircleAttack");
+        }
         if (finalLandingPoseHoldSeconds > 0f)
             yield return WaitForSecondsUnlessCancelled(finalLandingPoseHoldSeconds, spec);
     }
@@ -1804,18 +2246,19 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
 
 public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKingBase
 {
-    private const float DimFadeOutRatio = 0.45f;
-    private const float EyeFlashHoldRatio = 0.2f;
-    private const float ImpactPoseHoldSeconds = 0.5f;
-
     [SerializeField, Min(0f)] private float attackDelaySeconds = 0.4f;
     [SerializeField, Min(0.1f)] private float explosionDiameter = 5.4f;
     [SerializeField, Min(0f)] private float damage = 2f;
     [SerializeField, Min(0f)] private float knockback = 14f;
     [SerializeField, Range(0f, 1f)] private float dimTargetAlpha = 0.55f;
+    [SerializeField, Range(0f, 1f)] private float dimFadeOutRatio = 0.45f;
+    [SerializeField, Range(0f, 1f)] private float eyeFlashHoldRatio = 0.2f;
     [SerializeField] private Vector2 eyeFlashLocalOffset = new(0f, 0.75f);
     [SerializeField] private Vector2 eyeFlashSize = new(2.4f, 0.9f);
+    [SerializeField] private GroggyCounterBranchVisual swordVisual = GroggyCounterBranchVisual.SwordDefault();
+    [SerializeField] private GroggyCounterBranchVisual handVisual = GroggyCounterBranchVisual.HandDefault();
     [SerializeField, Min(0f)] private float counterEndPoseHoldSeconds = 0.12f;
+    [SerializeField, Min(0f)] private float minimumImpactPoseHoldSeconds = 0.5f;
     [SerializeField] private SoundRef warningPingSound;
     [SerializeField] private SoundRef counterImpactSound;
     [SerializeField] private CameraShakeHook counterImpactCameraShake = CameraShakeHook.Create(0.2f, 1f, 0.38f, 0.04f);
@@ -1826,23 +2269,39 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
         if (demon == null)
             yield break;
 
-        string counterState = demon.ResolveGroggyCounterAnimationState();
+        GroggyCounterBranchVisual branchVisual = ResolveBranchVisual(demon);
+        string groggyFallbackState = ResolveGroggyFallbackState(demon);
+        string counterFallbackState = demon.ResolveGroggyCounterAnimationState();
         demon.PushFaceTargetLock();
         DemonKingWorldDimmingOverlay dimming = DemonKingWorldDimmingOverlay.Begin(demon, 0f);
         try
         {
-            float fadeOutSeconds = attackDelaySeconds * DimFadeOutRatio;
-            float eyeFlashHoldSeconds = attackDelaySeconds * EyeFlashHoldRatio;
+            float fadeOutSeconds = attackDelaySeconds * dimFadeOutRatio;
+            float eyeFlashHoldSeconds = attackDelaySeconds * eyeFlashHoldRatio;
             float fadeInSeconds = Mathf.Max(0f, attackDelaySeconds - fadeOutSeconds - eyeFlashHoldSeconds);
 
-            demon.HoldGroggyPoseAnimation(allowDuringGroggy: true);
+            PlayBodyAnimation(
+                demon,
+                branchVisual.GroggyPoseAnimation,
+                groggyFallbackState,
+                allowDuringGroggy: true);
             yield return FadeDimming(dimming, dimTargetAlpha, fadeOutSeconds, spec);
             if (IsAbilityCancelled(spec))
                 yield break;
 
-            demon.HoldGroggyPoseAnimation(allowDuringGroggy: true);
-            Vector3 eyeFlashOffset = demon.ResolveVfxSocketLocal(DemonKingVfxSocketId.EyeFlash, eyeFlashLocalOffset);
-            DemonKingPatternVfx.SpawnEyeFlash(demon.transform, (Vector2)eyeFlashOffset, eyeFlashSize);
+            PlayBodyAnimation(
+                demon,
+                branchVisual.GroggyPoseAnimation,
+                groggyFallbackState,
+                allowDuringGroggy: true);
+            Vector2 fallbackEyeOffset = branchVisual.EyeFlashFallbackLeftOffset.sqrMagnitude > 0.0001f
+                ? branchVisual.EyeFlashFallbackLeftOffset
+                : eyeFlashLocalOffset;
+            Vector3 eyeFlashOffset = demon.ResolveVfxSocketLocal(branchVisual.EyeFlashSocket, fallbackEyeOffset);
+            Vector2 resolvedEyeFlashSize = branchVisual.EyeFlashSize.sqrMagnitude > 0.0001f
+                ? branchVisual.EyeFlashSize
+                : eyeFlashSize;
+            DemonKingPatternVfx.SpawnEyeFlash(demon.transform, (Vector2)eyeFlashOffset, resolvedEyeFlashSize);
             PlayWarningPing(demon);
 
             yield return WaitForSecondsUnlessCancelled(eyeFlashHoldSeconds, spec);
@@ -1853,7 +2312,7 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
             if (IsAbilityCancelled(spec))
                 yield break;
 
-            yield return PlayCounterImpact(demon, counterState, spec);
+            yield return PlayCounterImpact(demon, branchVisual, counterFallbackState, spec);
         }
         finally
         {
@@ -1863,24 +2322,46 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
         }
     }
 
-    private IEnumerator PlayCounterImpact(DemonKingController demon, string counterState, AbilitySpec spec)
+    private IEnumerator PlayCounterImpact(
+        DemonKingController demon,
+        GroggyCounterBranchVisual branchVisual,
+        string counterFallbackState,
+        AbilitySpec spec)
     {
-        if (demon.PlayPatternAnimationOncePerPattern(counterState, allowDuringGroggy: true))
+        string counterState = ResolveBodyStateName(branchVisual.CounterAnimation, counterFallbackState);
+        bool playFromStart = branchVisual.CounterAnimation.SampleMode == DemonKingBodyFrameSampleMode.PlayFromStart;
+        if (PlayBodyAnimation(
+                demon,
+                branchVisual.CounterAnimation,
+                counterFallbackState,
+                allowDuringGroggy: true,
+                oncePerPattern: true)
+            && playFromStart)
         {
-            float releaseDelaySeconds = demon.ResolvePatternAnimationLastFrameStartDelay(counterState);
+            float releaseDelaySeconds = ResolveBodyAnimationLastFrameDelay(
+                demon,
+                branchVisual.CounterAnimation,
+                counterFallbackState);
             yield return WaitForSecondsUnlessCancelled(releaseDelaySeconds, spec);
             if (IsAbilityCancelled(spec))
                 yield break;
         }
 
-        demon.HoldPatternAnimationLastFrame(counterState, allowDuringGroggy: true);
-        DemonKingVfxSocketId socketId = counterState == DemonKingController.DarkLordSwordGroggyCounterState
-            ? DemonKingVfxSocketId.SwordSlashOrigin
-            : DemonKingVfxSocketId.HandCounterImpact;
-        Vector2 center = demon.ResolveVfxSocketWorld(socketId, Vector2.zero);
-        DemonKingAnimationClipVisual counterImpact = counterState == DemonKingController.DarkLordSwordGroggyCounterState
-            ? DemonKingPatternVfx.SpawnGroggyRelease(center, explosionDiameter)
-            : DemonKingPatternVfx.SpawnImpact(center, explosionDiameter);
+        HoldBodyAnimationLastFrame(
+            demon,
+            branchVisual.CounterAnimation,
+            counterFallbackState,
+            allowDuringGroggy: true);
+        DemonKingVfxCueRef impactCue = branchVisual.CounterImpactVfx;
+        Vector2 center = demon.ResolveVfxSocketWorld(
+            impactCue.SocketId,
+            impactCue.FallbackLeftOffset);
+        DemonKingAnimationClipVisual counterImpact = DemonKingPatternVfx.SpawnCueOneShot(
+            impactCue,
+            center,
+            explosionDiameter,
+            Vector2.down,
+            "DemonKing_GroggyCounterImpact");
         TryPlayTimedCircleDamage(
             counterImpact,
             demon,
@@ -1893,12 +2374,34 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
             this,
             "DemonKing.GroggyRecoverCounterImpact");
 
-        float holdSeconds = Mathf.Max(counterEndPoseHoldSeconds, ImpactPoseHoldSeconds);
+        float holdSeconds = Mathf.Max(counterEndPoseHoldSeconds, minimumImpactPoseHoldSeconds);
         if (holdSeconds > 0f)
             yield return WaitForSecondsUnlessCancelled(holdSeconds, spec);
 
         if (!IsAbilityCancelled(spec))
             demon.RestoreCombatPose();
+    }
+
+    private GroggyCounterBranchVisual ResolveBranchVisual(DemonKingController demon)
+    {
+        bool swordHeld = demon != null && demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold;
+        GroggyCounterBranchVisual branch = swordHeld ? swordVisual : handVisual;
+        if (!string.IsNullOrWhiteSpace(branch.CounterAnimation.StateName)
+            || branch.CounterImpactVfx.FallbackKind != DemonKingBuiltInVfxKind.None)
+        {
+            return branch;
+        }
+
+        return swordHeld
+            ? GroggyCounterBranchVisual.SwordDefault()
+            : GroggyCounterBranchVisual.HandDefault();
+    }
+
+    private static string ResolveGroggyFallbackState(DemonKingController demon)
+    {
+        return demon != null && demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold
+            ? DemonKingController.DarkLordSwordGroggyState
+            : DemonKingController.DarkLordHandGroggyState;
     }
 
     private static IEnumerator FadeDimming(
@@ -1974,6 +2477,12 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
     [SerializeField, Min(0f)] private float laserVfxRayOriginOffset = 0.35f;
     [SerializeField, Min(0.1f)] private float fallbackLaserLength = 40f;
     [SerializeField, Min(0f)] private float laserDamage = 1f;
+    [SerializeField] private DemonKingBodyAnimationRef finalPoseAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLord10PercentState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
+    [SerializeField] private DemonKingVfxCueRef bombExplosionVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.DarkLordExplosion2, DemonKingVfxSocketId.FootLandingImpact, Vector2.zero, Vector2.zero);
+    [SerializeField] private GameObject laserVfxPrefabOverride;
+    [SerializeField] private string laserVfxResourcePath = FinalLaserVfxResourcePath;
     [SerializeField] private SoundRef startSound;
     [SerializeField] private SoundRef bombExplosionSound;
     [SerializeField] private SoundRef laserWarningSound;
@@ -2019,7 +2528,9 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
                 yield break;
 
             demon.transform.position = center;
-            demon.HoldPatternAnimationFirstFrame(
+            PlayBodyAnimation(
+                demon,
+                finalPoseAnimation,
                 DemonKingController.DarkLord10PercentState,
                 allowDuringFinalDesperation: true);
             PlayPatternSound(demon, startSound, center, this);
@@ -2119,7 +2630,7 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
                 ? (Vector2)demon.CurrentTarget.position
                 : (Vector2)demon.ArenaCenterPosition;
 
-            Vector2 offset = Random.insideUnitCircle * bombOffsetRange;
+            Vector2 offset = UnityEngine.Random.insideUnitCircle * bombOffsetRange;
 
             DemonKingDelayedDamageArea.SpawnCircle(
                 demon,
@@ -2130,7 +2641,8 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
                 ignoreOwnerGroggy: true,
                 explosionVfxKind: DemonKingDelayedExplosionVfxKind.DarkLordExplosion2,
                 impactSound: bombExplosionSound,
-                impactCameraShake: bombExplosionCameraShake);
+                impactCameraShake: bombExplosionCameraShake,
+                explosionVfxCue: bombExplosionVfx);
 
             timer += Mathf.Max(0.01f, bombIntervalSeconds);
         }
@@ -2183,15 +2695,22 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
         if (finalLaserVfxPrefab != null)
             return finalLaserVfxPrefab;
 
-        GameObject prefabObject = Resources.Load<GameObject>(FinalLaserVfxResourcePath);
+        GameObject prefabObject = laserVfxPrefabOverride != null
+            ? laserVfxPrefabOverride
+            : !string.IsNullOrWhiteSpace(laserVfxResourcePath)
+                ? Resources.Load<GameObject>(laserVfxResourcePath)
+                : null;
         if (prefabObject != null)
             finalLaserVfxPrefab = prefabObject.GetComponent<DemonKingEgoLaserVfx>();
 
         if (finalLaserVfxPrefab == null && !finalLaserVfxMissingLogged)
         {
             finalLaserVfxMissingLogged = true;
+            string path = string.IsNullOrWhiteSpace(laserVfxResourcePath)
+                ? "(empty)"
+                : laserVfxResourcePath;
             Debug.LogWarning(
-                $"DemonKing FinalDesperation could not load animated laser VFX at Resources/{FinalLaserVfxResourcePath}. Falling back to primitive laser visuals.",
+                $"DemonKing FinalDesperation could not load animated laser VFX from override or Resources/{path}. Falling back to primitive laser visuals.",
                 this);
         }
 

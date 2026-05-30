@@ -25,7 +25,8 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         bool ignoreOwnerGroggy = false,
         DemonKingDelayedExplosionVfxKind explosionVfxKind = DemonKingDelayedExplosionVfxKind.Default,
         SoundRef impactSound = default,
-        CameraShakeHook impactCameraShake = default)
+        CameraShakeHook impactCameraShake = default,
+        DemonKingVfxCueRef explosionVfxCue = default)
     {
         if (owner == null)
             return;
@@ -41,7 +42,8 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
             ignoreOwnerGroggy,
             explosionVfxKind,
             impactSound,
-            impactCameraShake));
+            impactCameraShake,
+            explosionVfxCue));
     }
 
     public static void SpawnRectangle(
@@ -70,7 +72,8 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         bool ignoreOwnerGroggy = false,
         DemonKingDelayedExplosionVfxKind explosionVfxKind = DemonKingDelayedExplosionVfxKind.Default,
         SoundRef impactSound = default,
-        CameraShakeHook impactCameraShake = default)
+        CameraShakeHook impactCameraShake = default,
+        DemonKingVfxCueRef explosionVfxCue = default)
     {
         if (owner == null || centers == null || centers.Count == 0)
             return;
@@ -86,7 +89,8 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
             ignoreOwnerGroggy,
             explosionVfxKind,
             impactSound,
-            impactCameraShake));
+            impactCameraShake,
+            explosionVfxCue));
     }
 
     private IEnumerator RunCircle(
@@ -98,7 +102,8 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         bool ignoreOwnerGroggy,
         DemonKingDelayedExplosionVfxKind explosionVfxKind,
         SoundRef impactSound,
-        CameraShakeHook impactCameraShake)
+        CameraShakeHook impactCameraShake,
+        DemonKingVfxCueRef explosionVfxCue)
     {
         owner.GetTelegraphService()?.SpawnDetachedView(
             AttackTelegraphSpecUtility.WithThinWarningOutline(
@@ -127,6 +132,7 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
                 AttackColor,
                 "DemonKing_ExplosionCircleAttack",
                 explosionVfxKind,
+                explosionVfxCue,
                 payload,
                 null,
                 PlayImpactPresentationOnce,
@@ -156,7 +162,8 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         bool ignoreOwnerGroggy,
         DemonKingDelayedExplosionVfxKind explosionVfxKind,
         SoundRef impactSound,
-        CameraShakeHook impactCameraShake)
+        CameraShakeHook impactCameraShake,
+        DemonKingVfxCueRef explosionVfxCue)
     {
         for (int i = 0; i < centers.Count; i++)
         {
@@ -195,6 +202,7 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
                     AttackColor,
                     "DemonKing_ExplosionCircleAttack",
                     explosionVfxKind,
+                    explosionVfxCue,
                     payload,
                     sharedHitRegistry,
                     PlayImpactPresentationOnce,
@@ -232,7 +240,8 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
                         diameter,
                         AttackColor,
                         "DemonKing_ExplosionCircleAttack",
-                        explosionVfxKind);
+                        explosionVfxKind,
+                        explosionVfxCue);
                 }
             }
         }
@@ -285,14 +294,22 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         Color fallbackColor,
         string fallbackName,
         DemonKingDelayedExplosionVfxKind explosionVfxKind,
+        DemonKingVfxCueRef explosionVfxCue,
         CombatHitPayload payload,
         TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry,
         System.Action onHitWindowOpened,
         out bool spawnedVisual)
     {
-        DemonKingAnimationClipVisual visual = explosionVfxKind == DemonKingDelayedExplosionVfxKind.DarkLordExplosion2
-            ? DemonKingPatternVfx.SpawnDarkLordExplosion2(center, diameter)
-            : DemonKingPatternVfx.SpawnExplosion(center, diameter);
+        DemonKingAnimationClipVisual visual = explosionVfxCue.IsConfigured
+            ? DemonKingPatternVfx.SpawnCueOneShot(
+                explosionVfxCue,
+                center,
+                diameter,
+                Vector2.down,
+                "DemonKing_DelayedExplosionCue")
+            : explosionVfxKind == DemonKingDelayedExplosionVfxKind.DarkLordExplosion2
+                ? DemonKingPatternVfx.SpawnDarkLordExplosion2(center, diameter)
+                : DemonKingPatternVfx.SpawnExplosion(center, diameter);
         spawnedVisual = visual != null;
 
         if (visual == null)
@@ -315,8 +332,24 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         float diameter,
         Color fallbackColor,
         string fallbackName,
-        DemonKingDelayedExplosionVfxKind explosionVfxKind)
+        DemonKingDelayedExplosionVfxKind explosionVfxKind,
+        DemonKingVfxCueRef explosionVfxCue)
     {
+        if (explosionVfxCue.IsConfigured)
+        {
+            if (DemonKingPatternVfx.SpawnCueOneShot(
+                    explosionVfxCue,
+                    center,
+                    diameter,
+                    Vector2.down,
+                    fallbackName) == null)
+            {
+                DemonKingPrimitiveVisual.SpawnCircle(center, diameter, 0.12f, fallbackColor, fallbackName);
+            }
+
+            return;
+        }
+
         if (explosionVfxKind == DemonKingDelayedExplosionVfxKind.DarkLordExplosion2)
         {
             DemonKingPatternVfx.SpawnDarkLordExplosion2OrFallbackCircle(center, diameter, fallbackColor, fallbackName);

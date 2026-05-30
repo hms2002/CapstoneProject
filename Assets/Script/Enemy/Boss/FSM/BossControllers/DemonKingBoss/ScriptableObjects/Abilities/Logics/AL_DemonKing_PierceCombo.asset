@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83bdc72f53b6421f8656c4a876e43b21, type: 3}
   m_Name: AL_DemonKing_PierceCombo
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   pierceCount: 3
   firstWarningSeconds: 1
   warningStepDecrease: 0.2
@@ -21,3 +21,9 @@ MonoBehaviour:
   damage: 1
   knockback: 5
   intervalSeconds: 0.12
+  dashEndPoseHoldSeconds: 0.1
+  dashCommitSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

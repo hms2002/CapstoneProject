@@ -331,6 +331,8 @@ public sealed class DialogueTextAnimationTunerWindow : EditorWindow
         inspectorScrollPosition = EditorGUILayout.BeginScrollView(inspectorScrollPosition);
         DrawProfileHeader();
         EditorGUILayout.Space(8f);
+        DrawTagResetButtons();
+        EditorGUILayout.Space(8f);
         DrawProfileEditor();
         EditorGUILayout.EndScrollView();
     }
@@ -365,11 +367,9 @@ public sealed class DialogueTextAnimationTunerWindow : EditorWindow
             using (new EditorGUI.DisabledScope(selectedProfile == null))
             {
                 if (GUILayout.Button("Reset Values", GUILayout.Height(24f)))
-                {
-                    Undo.RecordObject(selectedProfile, "Reset Dialogue Text Animation Profile");
-                    selectedProfile.ResetToDefaults();
-                    EditorUtility.SetDirty(selectedProfile);
-                }
+                    ResetSelectedProfileValues(
+                        "Reset Dialogue Text Animation Profile",
+                        profile => profile.ResetToDefaults());
             }
         }
 
@@ -379,6 +379,63 @@ public sealed class DialogueTextAnimationTunerWindow : EditorWindow
                 "No profile is selected. DialogueView will use an in-memory fallback until the default Resources asset exists.",
                 MessageType.Info);
         }
+    }
+
+    private void DrawTagResetButtons()
+    {
+        EditorGUILayout.LabelField("Reset Tag Values", EditorStyles.boldLabel);
+        using (new EditorGUI.DisabledScope(selectedProfile == null))
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                DrawTagResetButton("Shake", "Reset Shake Text Animation", profile => profile.ResetShakeToDefault());
+                DrawTagResetButton("Tremble", "Reset Tremble Text Animation", profile => profile.ResetTrembleToDefault());
+                DrawTagResetButton("SlowShake", "Reset SlowShake Text Animation", profile => profile.ResetSlowShakeToDefault());
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                DrawTagResetButton("Wave", "Reset Wave Text Animation", profile => profile.ResetWaveToDefault());
+                DrawTagResetButton("Float", "Reset Float Text Animation", profile => profile.ResetFloatToDefault());
+                DrawTagResetButton("Punch", "Reset Punch Text Animation", profile => profile.ResetPunchToDefault());
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                DrawTagResetButton("Rand Size", "Reset Random Size Text Animation", profile => profile.ResetRandomSizeToDefault());
+                DrawTagResetButton("Cam Low", "Reset CameraShake Low Text Animation", profile => profile.ResetCameraShakeLowToDefault());
+                DrawTagResetButton("Cam Mid", "Reset CameraShake Middle Text Animation", profile => profile.ResetCameraShakeMiddleToDefault());
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                DrawTagResetButton("Cam High", "Reset CameraShake High Text Animation", profile => profile.ResetCameraShakeHighToDefault());
+                DrawTagResetButton("Camera All", "Reset CameraShake Text Animation", profile => profile.ResetCameraShakeToDefault());
+            }
+        }
+    }
+
+    private void DrawTagResetButton(
+        string label,
+        string undoName,
+        System.Action<DialogueTextAnimationProfileSO> resetAction)
+    {
+        if (GUILayout.Button(label, GUILayout.Height(22f)))
+            ResetSelectedProfileValues(undoName, resetAction);
+    }
+
+    private void ResetSelectedProfileValues(
+        string undoName,
+        System.Action<DialogueTextAnimationProfileSO> resetAction)
+    {
+        if (selectedProfile == null || resetAction == null)
+            return;
+
+        Undo.RecordObject(selectedProfile, undoName);
+        resetAction(selectedProfile);
+        EditorUtility.SetDirty(selectedProfile);
+        GUI.changed = true;
+        Repaint();
     }
 
     private void DrawProfileEditor()

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c4f697592e2452aa9e634afc611a203, type: 3}
   m_Name: AL_DemonKing_Hp50WallBounceRush
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   wallBounceCount: 4
   warningSeconds: 0.6
   retreatSeconds: 0.16
@@ -23,3 +23,106 @@ MonoBehaviour:
   finalJumpSeconds: 0.5
   finalImpactDiameter: 3.4
   finalImpactDamage: 2
+  finalJumpArcHeight: 1.35
+  finalLandingFrameSwitchRatio: 0.78
+  finalJumpMotionProfile:
+    travelEndNormalized: 0.28
+    holdEndNormalized: 0.86
+    preDropEndNormalized: 0.96
+    preDropHeightScale: 0.9
+    travelEaseOutPower: 2.2
+    landingDropSharpness: 0.22
+  rushEndPoseHoldSeconds: 0.1
+  finalLandingPoseHoldSeconds: 0.14
+  rushReadyAnimation:
+    clip: {fileID: 0}
+    sampleMode: 1
+    frameIndex: 0
+    fallbackStateName: DarkLord_Sword_DashStabReady
+  swordRushAnimation:
+    clip: {fileID: 0}
+    sampleMode: 0
+    frameIndex: 0
+    fallbackStateName: DarkLord_Sword_DashStab
+  handRushAnimation:
+    clip: {fileID: 0}
+    sampleMode: 1
+    frameIndex: 0
+    fallbackStateName: DarkLord_Hand_JumpAttack
+  finalJumpTravelAnimation:
+    clip: {fileID: 0}
+    sampleMode: 1
+    frameIndex: 0
+    fallbackStateName: DarkLord_Hand_JumpAttack
+  finalJumpLandingAnimation:
+    clip: {fileID: 0}
+    sampleMode: 3
+    frameIndex: 0
+    fallbackStateName: DarkLord_Hand_JumpAttack
+  chargeLoopVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 8
+    socketId: 6
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    leaveFragment: 0
+  chargeDisappearVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 9
+    socketId: 7
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    leaveFragment: 0
+  finalLandingImpactVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 3
+    socketId: 5
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    leaveFragment: 1
+  finalLandingExplosionVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 1
+    socketId: 5
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    leaveFragment: 1
+  rushStartSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  rushEndpointSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  finalLandingSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  rushEndpointCameraShake:
+    amplitude: 0.08
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.18
+    minIntervalSeconds: 0.08
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  finalLandingCameraShake:
+    amplitude: 0.18
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.35
+    minIntervalSeconds: 0.04
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
