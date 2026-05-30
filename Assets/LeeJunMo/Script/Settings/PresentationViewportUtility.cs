@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Responsibility: resolves the live presentation container and 16:9 viewport used by cameras and UI canvases.
 public static class PresentationViewportUtility
 {
     public const int DefaultWindowWidth = 1280;
@@ -29,6 +30,9 @@ public static class PresentationViewportUtility
         int windowedResolutionWidth,
         int windowedResolutionHeight)
     {
+        if (Application.isPlaying && Screen.width > 0 && Screen.height > 0)
+            return new Vector2Int(Screen.width, Screen.height);
+
         if (windowMode == GameWindowMode.Windowed)
         {
             int width = windowedResolutionWidth > 0 ? windowedResolutionWidth : DefaultWindowWidth;
