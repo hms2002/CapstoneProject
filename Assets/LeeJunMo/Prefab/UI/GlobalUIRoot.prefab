@@ -5787,6 +5787,7 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openInteractionFallbackSeconds: 2.5
   openSound:
     key: sound_menu_chain1
     volumeMultiplier: 1
@@ -7162,6 +7163,7 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openInteractionFallbackSeconds: 2.5
   openSound:
     key: sound_menu_chain1
     volumeMultiplier: 1
@@ -9880,6 +9882,7 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openInteractionFallbackSeconds: 2.5
   openSound:
     key: sound_menu_chain1
     volumeMultiplier: 1
@@ -13665,6 +13668,7 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openInteractionFallbackSeconds: 2.5
   openSound:
     key: sound_menu_chain1
     volumeMultiplier: 1
@@ -16862,6 +16866,7 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openInteractionFallbackSeconds: 2.5
   openSound:
     key: sound_menu_chain1
     volumeMultiplier: 1
@@ -20223,6 +20228,7 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openInteractionFallbackSeconds: 2.5
   openSound:
     key: sound_menu_chain1
     volumeMultiplier: 1
@@ -25765,6 +25771,7 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openInteractionFallbackSeconds: 2.5
   openSound:
     key: sound_menu_chain1
     volumeMultiplier: 1
@@ -36218,6 +36225,8 @@ MonoBehaviour:
   authoredCursorRect: {fileID: 0}
   authoredCursorImage: {fileID: 0}
   hideSystemCursorWhileSpriteActive: 1
+  preferHardwareCursorInExclusiveFullscreen: 1
+  keepSystemCursorVisibleInExclusiveFullscreenFallback: 1
   overlaySortingOrder: 32767
   scaleWithScreenHeight: 1
   referenceScreenHeight: 1080
@@ -38395,6 +38404,7 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openInteractionFallbackSeconds: 2.5
   openSound:
     key: sound_menu_chain1
     volumeMultiplier: 1

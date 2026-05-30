@@ -168,6 +168,21 @@ namespace UnityGAS
 
         protected virtual void OnTriggerEnter2D(Collider2D other)
         {
+            TryHandleTriggerCollision(other);
+        }
+
+        protected virtual void OnTriggerStay2D(Collider2D other)
+        {
+            TryHandleTriggerCollision(other);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - Enter/Stay 양쪽 트리거 이벤트를 같은 규칙으로 해석한다.
+        /// - 대시처럼 이미 겹쳐진 상태가 유지되는 상황에서도 유효 타격 기회를 놓치지 않게 한다.
+        /// </summary>
+        private void TryHandleTriggerCollision(Collider2D other)
+        {
             if (!isInitialized || other == null) return;
 
             int wallLayerBit = 1 << other.gameObject.layer;
