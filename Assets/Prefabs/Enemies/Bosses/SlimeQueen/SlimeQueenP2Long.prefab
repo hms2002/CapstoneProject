@@ -244,7 +244,7 @@ MonoBehaviour:
   waterCannonMuzzleSocket: {fileID: 6057653836644520300}
   waterCannonCenterSocket: {fileID: 6057653836644520300}
   waterCannonStartForwardOffset: 0.26
-  waterCannonLaserVfxPrefab: {fileID: 7799575014260888715, guid: 2b4807372e2866b4b9e2a5c30bc8c2e9, type: 3}
+  waterCannonLaserVfxPrefab: {fileID: 0}
   waterCannonLaserVfxResourcePath: DemonKing/WaterZetLaserVfx
   waterCannonActiveSeconds: 2
   waterCannonShotWarningSeconds: 0.25

@@ -240,8 +240,8 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
             if (stageSet == null)
                 continue;
 
-            if (string.Equals(stageSet.CorridorSceneName, sceneName, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(stageSet.BossSceneName, sceneName, StringComparison.OrdinalIgnoreCase))
+            if (stageSet.MatchesCorridorScene(sceneName) ||
+                stageSet.MatchesBossScene(sceneName))
             {
                 return stageSet;
             }

@@ -479,10 +479,10 @@ public sealed class PortalRouteManager : MonoBehaviour
         if (string.IsNullOrWhiteSpace(portalSceneName))
             return configuredTransitionType;
 
-        if (string.Equals(portalSceneName, currentStageSet.CorridorSceneName, StringComparison.OrdinalIgnoreCase))
+        if (currentStageSet.MatchesCorridorScene(portalSceneName))
             return TransitionType.CorridorToBoss;
 
-        if (!string.Equals(portalSceneName, currentStageSet.BossSceneName, StringComparison.OrdinalIgnoreCase))
+        if (!currentStageSet.MatchesBossScene(portalSceneName))
             return configuredTransitionType;
 
         return currentStageIndex + 1 < activeRouteStages.Count

@@ -21,6 +21,7 @@ public class StatueShortcut : TemporaryShortcut
     private static readonly int OfferTriggerID = Animator.StringToHash("Offer");
     private static readonly int OfferingStateID = Animator.StringToHash("OfferingState");
 
+    private const string InsufficientOfferingMessage = "제물이 부족합니다";
     private const int OfferingStateEmpty = 0;
     private const int OfferingStateFilling = 1;
     private const int OfferingStateFilled = 2;
@@ -37,9 +38,6 @@ public class StatueShortcut : TemporaryShortcut
         public Sprite StatueSprite => statueSprite;
         public RuntimeAnimatorController AnimatorController => animatorController;
     }
-
-    [Header("프롬프트")]
-    [SerializeField] private string interactPromptText = "바치기";
 
     [Header("비용 설정")]
     [SerializeField] private CostType costType;
@@ -231,7 +229,21 @@ public class StatueShortcut : TemporaryShortcut
         OnUnHighlight();
     }
 
-    public override string GetInteractDescription() => IsActivated ? string.Empty : interactPromptText;
+    public override string GetInteractDescription()
+    {
+        if (IsActivated)
+            return string.Empty;
+
+        return costType == CostType.MagicStone
+            ? $"마정석 {costAmount}개 바치기"
+            : $"체력 {costAmount} 바치기";
+    }
+
+    protected override void OnFail(IPlayerInteractor player)
+    {
+        base.OnFail(player);
+        UIManager.Instance?.ShowWarning(InsufficientOfferingMessage);
+    }
 
     private bool IsActivated => targetDoor != null && targetDoor.IsOpen;
 
