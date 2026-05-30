@@ -7,6 +7,7 @@ using UnityEngine.InputSystem.UI;
 #endif
 
 [DisallowMultipleComponent]
+// Responsibility: coordinates title scene menu panels, input locks, and scene launch flow.
 public sealed class TitleMenuController : MonoBehaviour
 {
     private const string DontDestroyOnLoadSceneName = "DontDestroyOnLoad";
@@ -38,6 +39,7 @@ public sealed class TitleMenuController : MonoBehaviour
 
     private bool listenersBound;
     private bool isLoading;
+    private bool mainMenuLockedBySettingsPanel;
     private Coroutine mainMenuUnlockCoroutine;
 
     private void Awake()
@@ -75,6 +77,8 @@ public sealed class TitleMenuController : MonoBehaviour
 
     private void Update()
     {
+        RefreshSettingsPanelInputLock();
+
         if (!Input.GetKeyDown(KeyCode.Escape) || isLoading || IsIntroActive)
             return;
 
@@ -139,7 +143,13 @@ public sealed class TitleMenuController : MonoBehaviour
     private void HandleSettingsPressed()
     {
         ResolveReferences();
-        settingsPanel?.OpenUI();
+        if (settingsPanel == null)
+            return;
+
+        StopMainMenuUnlockLead();
+        mainMenuLockedBySettingsPanel = true;
+        SetMainMenuInteractable(false);
+        settingsPanel.OpenUI();
     }
 
     private void HandleQuitPressed()
@@ -257,6 +267,19 @@ public sealed class TitleMenuController : MonoBehaviour
 
         mainMenuCanvasGroup.interactable = enabled;
         mainMenuCanvasGroup.blocksRaycasts = enabled;
+    }
+
+    private void RefreshSettingsPanelInputLock()
+    {
+        if (!mainMenuLockedBySettingsPanel)
+            return;
+
+        ResolveReferences();
+        if (settingsPanel != null && settingsPanel.gameObject.activeSelf)
+            return;
+
+        mainMenuLockedBySettingsPanel = false;
+        StartMainMenuUnlockLead();
     }
 
     private void EnsureUiInputReady()
