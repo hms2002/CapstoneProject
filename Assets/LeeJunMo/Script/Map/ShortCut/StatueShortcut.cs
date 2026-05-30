@@ -3,6 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 제물 비용 타입에 따라 석상 비주얼을 전환하고, 지불 성공 후 석상 애니메이션 이벤트로 숏컷 개방을 완료합니다.
+/// </summary>
 public class StatueShortcut : TemporaryShortcut
 {
     private static readonly SoundRef OfferMagicStoneSound = SoundRef.FromKey("sound_player_OfferMagicstone");
@@ -15,6 +18,25 @@ public class StatueShortcut : TemporaryShortcut
     }
 
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
+    private static readonly int OfferTriggerID = Animator.StringToHash("Offer");
+    private static readonly int OfferingStateID = Animator.StringToHash("OfferingState");
+
+    private const int OfferingStateEmpty = 0;
+    private const int OfferingStateFilling = 1;
+    private const int OfferingStateFilled = 2;
+
+    /// <summary>
+    /// 석상 비용 타입 하나에 대응하는 본체 스프라이트와 AnimatorController 세트를 보관합니다.
+    /// </summary>
+    [System.Serializable]
+    private struct StatueVisualProfile
+    {
+        [SerializeField] private Sprite statueSprite;
+        [SerializeField] private RuntimeAnimatorController animatorController;
+
+        public Sprite StatueSprite => statueSprite;
+        public RuntimeAnimatorController AnimatorController => animatorController;
+    }
 
     [Header("프롬프트")]
     [SerializeField] private string interactPromptText = "바치기";
@@ -36,18 +58,29 @@ public class StatueShortcut : TemporaryShortcut
     [SerializeField] private Sprite magicStoneIcon;
     [SerializeField] private Sprite hpIcon;
 
+    [Header("석상 애니메이션")]
+    [SerializeField] private Animator statueAnimator;
+    [SerializeField] private bool waitForOfferingFillAnimationEvent = true;
+
+    [Header("비용 타입별 비주얼")]
+    [SerializeField] private SpriteRenderer statueRenderer;
+    [SerializeField] private StatueVisualProfile magicStoneVisual;
+    [SerializeField] private StatueVisualProfile hpVisual;
+
     [Header("하이라이트")]
     [SerializeField] private SpriteRenderer highlightRenderer;
     [SerializeField] private GameObject highlightTarget;
 
     private MaterialPropertyBlock propBlock;
+    private bool waitingForOfferingFill;
+    private IPlayerInteractor pendingSuccessPlayer;
 
     protected override void Awake()
     {
         base.Awake();
 
         propBlock = new MaterialPropertyBlock();
-        ApplyRequirementVisual();
+        ApplyCostTypeVisual();
         RefreshVisualState();
         OnUnHighlight();
     }
@@ -55,7 +88,7 @@ public class StatueShortcut : TemporaryShortcut
     protected override void OnValidate()
     {
         base.OnValidate();
-        ApplyRequirementVisual();
+        ApplyCostTypeVisual();
     }
 
     public override void OnPlayerNearby()
@@ -99,7 +132,7 @@ public class StatueShortcut : TemporaryShortcut
     public override bool CanInteract(IPlayerInteractor player)
     {
         RefreshVisualState();
-        return base.CanInteract(player);
+        return !waitingForOfferingFill && base.CanInteract(player);
     }
 
     protected override bool CheckCondition(IPlayerInteractor player)
@@ -152,6 +185,45 @@ public class StatueShortcut : TemporaryShortcut
         SoundPlaybackUtility.Play(sound, instigator: instigator, causer: gameObject, position: transform.position, sourceObject: this);
     }
 
+    protected override bool TryBeginDeferredSuccess(IPlayerInteractor player)
+    {
+        if (!waitForOfferingFillAnimationEvent || statueAnimator == null)
+            return false;
+
+        waitingForOfferingFill = true;
+        pendingSuccessPlayer = player;
+
+        if (requirementRoot != null)
+            requirementRoot.SetActive(false);
+
+        if (interactPromptRoot != null)
+            interactPromptRoot.SetActive(false);
+
+        if (highlightTarget != null)
+            highlightTarget.SetActive(false);
+
+        statueAnimator.SetInteger(OfferingStateID, OfferingStateFilling);
+        statueAnimator.ResetTrigger(OfferTriggerID);
+        statueAnimator.SetTrigger(OfferTriggerID);
+
+        return true;
+    }
+
+    public void CompleteOfferingFillAnimation()
+    {
+        if (!waitingForOfferingFill)
+            return;
+
+        IPlayerInteractor player = pendingSuccessPlayer;
+        waitingForOfferingFill = false;
+        pendingSuccessPlayer = null;
+
+        if (statueAnimator != null)
+            statueAnimator.SetInteger(OfferingStateID, OfferingStateFilled);
+
+        CompleteSuccessfulInteraction(player);
+    }
+
     protected override void OnSuccess()
     {
         base.OnSuccess();
@@ -178,16 +250,25 @@ public class StatueShortcut : TemporaryShortcut
 
         if (highlightTarget != null && activated)
             highlightTarget.SetActive(false);
+
+        if (statueAnimator != null && !waitingForOfferingFill)
+            statueAnimator.SetInteger(OfferingStateID, activated ? OfferingStateFilled : OfferingStateEmpty);
     }
 
-    private void ApplyRequirementVisual()
+    private void ApplyCostTypeVisual()
     {
         if (requirementAmountText != null)
             requirementAmountText.text = costAmount.ToString();
 
-        if (requirementIconRenderer == null)
-            return;
+        StatueVisualProfile visual = costType == CostType.MagicStone ? magicStoneVisual : hpVisual;
 
-        requirementIconRenderer.sprite = costType == CostType.MagicStone ? magicStoneIcon : hpIcon;
+        if (requirementIconRenderer != null)
+            requirementIconRenderer.sprite = costType == CostType.MagicStone ? magicStoneIcon : hpIcon;
+
+        if (statueRenderer != null && visual.StatueSprite != null)
+            statueRenderer.sprite = visual.StatueSprite;
+
+        if (statueAnimator != null && visual.AnimatorController != null)
+            statueAnimator.runtimeAnimatorController = visual.AnimatorController;
     }
 }

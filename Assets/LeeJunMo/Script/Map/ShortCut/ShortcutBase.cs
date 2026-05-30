@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 잠긴 문과 연결된 숏컷 상호작용의 조건 검사, 비용 소비, 성공 연출 실행 흐름을 관리합니다.
+/// </summary>
 public abstract class ShortcutBase : InteractableBase
 {
     [Header("설정")]
@@ -79,6 +82,14 @@ public abstract class ShortcutBase : InteractableBase
         }
 
         ConsumeCondition(player);
+        if (TryBeginDeferredSuccess(player))
+            return;
+
+        CompleteSuccessfulInteraction(player);
+    }
+
+    protected void CompleteSuccessfulInteraction(IPlayerInteractor player)
+    {
         OnSuccess();
         PlaySuccessPresentation(player);
     }
@@ -94,6 +105,7 @@ public abstract class ShortcutBase : InteractableBase
 
     protected abstract bool CheckCondition(IPlayerInteractor player);
     protected virtual void ConsumeCondition(IPlayerInteractor player) { }
+    protected virtual bool TryBeginDeferredSuccess(IPlayerInteractor player) => false;
     protected abstract void OnSuccess();
 
     protected virtual void OnFail(IPlayerInteractor player)
