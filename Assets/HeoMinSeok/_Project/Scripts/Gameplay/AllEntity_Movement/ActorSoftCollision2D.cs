@@ -13,6 +13,7 @@ namespace UnityGAS
         [SerializeField] private Collider2D bodyCollider;
         [SerializeField] private Rigidbody2D body;
         [SerializeField] private ExternalMovementController2D externalMovement;
+        [SerializeField] private EntityCollisionProfile2D collisionProfile;
 
         [Header("Layers")]
         [Tooltip("부드럽게 미끄러질 대상 액터 레이어입니다. 예: Enemy")]
@@ -21,6 +22,8 @@ namespace UnityGAS
         [SerializeField] private LayerMask wallLayers;
 
         [Header("Push")]
+        [Tooltip("EntityCollisionProfile2D가 액터 통과 모드일 때 부드러운 분리 외압도 멈춥니다.")]
+        [SerializeField] private bool suspendWhileBodyPassesThroughActors;
         [SerializeField, Min(0f)] private float pushSpeed = 2.8f;
         [SerializeField, Min(0.01f)] private float pushDurationSeconds = 0.08f;
         [SerializeField, Min(0f)] private float wallProbeDistance = 0.08f;
@@ -42,11 +45,20 @@ namespace UnityGAS
             if (externalMovement == null)
                 externalMovement = GetComponent<ExternalMovementController2D>();
 
+            if (collisionProfile == null)
+                collisionProfile = GetComponent<EntityCollisionProfile2D>();
+
             ConfigureFilters();
         }
 
         private void FixedUpdate()
         {
+            if (ShouldSuspendForCollisionProfile())
+            {
+                externalMovement?.RemoveTimedVelocitiesFromSource(this);
+                return;
+            }
+
             if (bodyCollider == null || externalMovement == null || actorLayers.value == 0 || pushSpeed <= 0f)
                 return;
 
@@ -99,6 +111,18 @@ namespace UnityGAS
             }
 
             return acceptedCount > 0 ? sum / acceptedCount : Vector2.zero;
+        }
+
+        /// <summary>
+        /// 책임:
+        /// EntityCollisionProfile2D가 액터 통과/비활성 상태일 때 소프트 충돌 외압이 통과 정책을 다시 막지 않도록 한다.
+        /// </summary>
+        private bool ShouldSuspendForCollisionProfile()
+        {
+            if (!suspendWhileBodyPassesThroughActors || collisionProfile == null)
+                return false;
+
+            return collisionProfile.CurrentMode != EntityCollisionProfile2D.BodyCollisionMode.Normal;
         }
 
         private Collider2D ResolveBodyCollider()
