@@ -662,8 +662,15 @@ namespace UnityGAS
 
                 if (activeShape == AttackTelegraphShape.Rectangle)
                 {
-                    fillSize.x *= scale;
-                    fillOffset = ResolveStartAnchoredFillOffset(activeSize.x, fillSize.x);
+                    if (activeStyle.fillAnchor == AttackTelegraphFillAnchor.CenterOut)
+                    {
+                        fillSize *= scale;
+                    }
+                    else
+                    {
+                        fillSize.x *= scale;
+                        fillOffset = ResolveStartAnchoredFillOffset(activeSize.x, fillSize.x);
+                    }
                 }
                 else if (activeShape == AttackTelegraphShape.Sector)
                 {
