@@ -232,7 +232,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
     private int CountRemainingMonsters()
     {
-        int count = 0;
+        int count = targetRoomGroup != null ? targetRoomGroup.PendingRoomEntrySpawnCount : 0;
         for (int i = 0; i < trackedMonsters.Count; i++)
         {
             if (trackedMonsters[i] != null)

@@ -44,9 +44,6 @@ internal sealed class SceneMonsterSpawnDirector
 
         if (policy.ClearAliveMonstersBeforeSceneSpawn)
             ClearSpawnedMonsters();
-
-        if (policy.SpawnOnSceneLoaded)
-            SpawnAll(difficultyModifiers);
     }
 
     public void CollectSpawnPointsFromActiveScene()
@@ -81,12 +78,6 @@ internal sealed class SceneMonsterSpawnDirector
 
             spawnRooms.Add(room);
         }
-    }
-
-    public void SpawnAll(DifficultyModifiers difficultyModifiers)
-    {
-        SpawnGroupedRooms(difficultyModifiers);
-        SpawnUngroupedFallback(difficultyModifiers);
     }
 
     public GameObject SpawnOne(MonsterSpawnRequest request, DifficultyModifiers difficultyModifiers)
@@ -168,74 +159,6 @@ internal sealed class SceneMonsterSpawnDirector
     {
         spawnPoints.RemoveAll(point => point == null);
         spawnRooms.RemoveAll(room => room == null);
-    }
-
-    private void SpawnGroupedRooms(DifficultyModifiers difficultyModifiers)
-    {
-        List<MonsterSpawnRequest> requests = new List<MonsterSpawnRequest>();
-        for (int i = 0; i < spawnRooms.Count; i++)
-        {
-            MonsterSpawnRoomGroup room = spawnRooms[i];
-            if (room == null || room.SpawnProfile == null)
-                continue;
-
-            room.BuildSpawnRequests(requests);
-        }
-
-        for (int i = 0; i < requests.Count; i++)
-            SpawnOne(requests[i], difficultyModifiers);
-    }
-
-    private void SpawnUngroupedFallback(DifficultyModifiers difficultyModifiers)
-    {
-        List<MonsterSpawnContainer> defaultPoints = new List<MonsterSpawnContainer>();
-        List<MonsterSpawnContainer> extraCandidates = new List<MonsterSpawnContainer>();
-        int stageIndex = ResolveCurrentStageIndex();
-
-        for (int i = 0; i < spawnPoints.Count; i++)
-        {
-            MonsterSpawnContainer point = spawnPoints[i];
-            if (point == null || !point.TryResolveMonsterPrefab(stageIndex, out _))
-                continue;
-
-            if (point.RoomGroup != null && point.RoomGroup.SpawnProfile != null)
-                continue;
-
-            if (point.SpawnByDefault)
-                defaultPoints.Add(point);
-
-            if (!point.SpawnByDefault && point.AllowExtraSpawn)
-                extraCandidates.Add(point);
-        }
-
-        for (int i = 0; i < defaultPoints.Count; i++)
-        {
-            if (defaultPoints[i].TryCreateRequest(stageIndex, out MonsterSpawnRequest request))
-                SpawnOne(request, difficultyModifiers);
-        }
-
-        int extraCount = CalculateExtraSpawnCount(defaultPoints.Count, difficultyModifiers?.extraSpawnRatio ?? 0f);
-        Shuffle(extraCandidates);
-
-        for (int i = 0; i < extraCount && i < extraCandidates.Count; i++)
-        {
-            if (extraCandidates[i].TryCreateRequest(stageIndex, out MonsterSpawnRequest request))
-                SpawnOne(request, difficultyModifiers);
-        }
-    }
-
-    /// <summary>
-    /// 책임:
-    /// - 직접 배치된 MonsterSpawnContainer가 스테이지별 몬스터 세트를 resolve할 때 사용할 현재 런 index를 제공한다.
-    /// - 개발 씬처럼 route plan이 없으면 첫 스테이지로 취급한다.
-    /// </summary>
-    private static int ResolveCurrentStageIndex()
-    {
-        PortalRouteManager routeManager = PortalRouteManager.Instance;
-        if (routeManager == null || !routeManager.HasActivePlan)
-            return 0;
-
-        return Mathf.Max(0, routeManager.CurrentStageIndex);
     }
 
     private void ApplyDifficulty(GameObject monster, DifficultyModifiers difficultyModifiers)
@@ -344,21 +267,6 @@ internal sealed class SceneMonsterSpawnDirector
         return service != null && service.gameObject.scene == SceneManager.GetActiveScene();
     }
 
-    private int CalculateExtraSpawnCount(int baseCount, float extraRatio)
-    {
-        if (baseCount <= 0 || extraRatio <= 0f)
-            return 0;
-
-        float raw = baseCount * extraRatio;
-        int count = Mathf.FloorToInt(raw);
-
-        float fractional = raw - count;
-        if (Random.value < fractional)
-            count += 1;
-
-        return count;
-    }
-
     private void CompactSpawnedMonsterList()
     {
         for (int i = spawnedMonsters.Count - 1; i >= 0; i--)
@@ -368,12 +276,4 @@ internal sealed class SceneMonsterSpawnDirector
         }
     }
 
-    private static void Shuffle<T>(List<T> list)
-    {
-        for (int i = 0; i < list.Count; i++)
-        {
-            int j = Random.Range(i, list.Count);
-            (list[i], list[j]) = (list[j], list[i]);
-        }
-    }
 }

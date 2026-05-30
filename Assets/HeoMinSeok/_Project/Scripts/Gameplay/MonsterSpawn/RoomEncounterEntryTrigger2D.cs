@@ -9,6 +9,7 @@ using System.Collections.Generic;
 public sealed class RoomEncounterEntryTrigger2D : MonoBehaviour
 {
     [SerializeField] private MonsterSpawnRoomGroup targetRoomGroup;
+    [SerializeField] private bool logRoomEntryTriggerDebug;
 
     private readonly HashSet<Collider2D> activePlayerBodyColliders = new();
     private Collider2D triggerCollider;
@@ -44,6 +45,7 @@ public sealed class RoomEncounterEntryTrigger2D : MonoBehaviour
         {
             if (bodyCollider != null && IsBodyColliderFullyInsideRoom(bodyCollider))
             {
+                LogTrigger($"fully inside: body={FormatCollider(bodyCollider)}, room={targetRoomGroup.name}");
                 targetRoomGroup.NotifyPlayerEnteredEncounter();
                 return;
             }
@@ -53,25 +55,42 @@ public sealed class RoomEncounterEntryTrigger2D : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!TryResolvePlayerBodyCollider(other, out Collider2D bodyCollider))
+        {
+            LogTrigger($"enter ignored: not player body collider={FormatCollider(other)}");
             return;
+        }
 
         if (!ResolveRoomGroup())
+        {
+            LogTrigger($"enter ignored: missing room group collider={FormatCollider(other)}");
             return;
+        }
 
         activePlayerBodyColliders.Add(bodyCollider);
+        LogTrigger($"enter accepted: body={FormatCollider(bodyCollider)}, activeCount={activePlayerBodyColliders.Count}, room={targetRoomGroup.name}");
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (!activePlayerBodyColliders.Remove(other))
+        {
+            LogTrigger($"exit ignored: body not tracked={FormatCollider(other)}");
             return;
+        }
 
         if (activePlayerBodyColliders.Count > 0)
+        {
+            LogTrigger($"exit partial: body={FormatCollider(other)}, activeCount={activePlayerBodyColliders.Count}");
             return;
+        }
 
         if (!ResolveRoomGroup())
+        {
+            LogTrigger($"exit ignored: missing room group collider={FormatCollider(other)}");
             return;
+        }
 
+        LogTrigger($"exit accepted: body={FormatCollider(other)}, room={targetRoomGroup.name}");
         targetRoomGroup.NotifyPlayerExitedEncounter();
     }
 
@@ -156,5 +175,18 @@ public sealed class RoomEncounterEntryTrigger2D : MonoBehaviour
             bodyCollider == null ||
             !bodyCollider.enabled ||
             !bodyCollider.gameObject.activeInHierarchy);
+    }
+
+    private void LogTrigger(string message)
+    {
+        if (!logRoomEntryTriggerDebug)
+            return;
+
+        Debug.Log($"[RoomEntryTrigger] {name}: {message}", this);
+    }
+
+    private static string FormatCollider(Collider2D collider)
+    {
+        return collider != null ? $"{collider.name}({collider.GetType().Name})" : "null";
     }
 }
