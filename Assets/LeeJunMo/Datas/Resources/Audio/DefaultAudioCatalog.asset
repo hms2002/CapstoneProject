@@ -77,8 +77,8 @@ MonoBehaviour:
     bus: 0
     category: 5
     variants:
-    - {fileID: 8300000, guid: b13b3257cfdefe64aae6dcc13fd07a50, type: 3}
-    volume: 1
+    - {fileID: 8300000, guid: 2e3230c895d5f954196f7d05064399d8, type: 3}
+    volume: 0.458
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
