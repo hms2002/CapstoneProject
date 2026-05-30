@@ -107,7 +107,7 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
     {
         owner.GetTelegraphService()?.SpawnDetachedView(
             AttackTelegraphSpecUtility.WithThinWarningOutline(
-                AttackTelegraphSpec.CreateCircle(center, diameter, warningSeconds, owner.DefaultWarningStyle)));
+                DemonKingCombatUtil.CreateTopDownCircleWarningSpec(owner, center, diameter, warningSeconds)));
 
         if (warningSeconds > 0f)
             yield return new WaitForSeconds(warningSeconds);
@@ -170,7 +170,7 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
             Vector2 center = centers[i];
             owner.GetTelegraphService()?.SpawnDetachedView(
                 AttackTelegraphSpecUtility.WithThinWarningOutline(
-                    AttackTelegraphSpec.CreateCircle(center, diameter, warningSeconds, owner.DefaultWarningStyle)));
+                    DemonKingCombatUtil.CreateTopDownCircleWarningSpec(owner, center, diameter, warningSeconds)));
         }
 
         if (warningSeconds > 0f)

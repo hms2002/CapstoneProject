@@ -11,6 +11,27 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: af1af0e8ff4e4722b8188d7694366af9, type: 3}
   m_Name: AL_DemonKing_RecallEgoSword
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   recallSpeedMultiplier: 5
   timeoutSeconds: 2.5
+  recoverEndPoseHoldSeconds: 0.4
+  recoverAnimation:
+    clip: {fileID: 0}
+    sampleMode: 1
+    frameIndex: 0
+    fallbackStateName: DarkLord_Hand_SwordRecover
+  recoverCompleteAnimation:
+    clip: {fileID: 0}
+    sampleMode: 3
+    frameIndex: 0
+    fallbackStateName: DarkLord_Hand_SwordRecover
+  recallStartSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  recallCompleteSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

@@ -25,6 +25,62 @@ Prevention:
 
 ## Active Entries
 
+## 2026-05-31 - DemonKing WallBounceRush Count Could Be Spent On Tiny Rushes
+
+Context:
+HP50 `WallBounceRush` could still consume the configured rush count while the boss was close to a wall, making fewer full visible rushes appear than the authored count.
+
+Cause:
+The endpoint was wall-safe, but the pattern still accepted the exact player direction even when that direction immediately hit a nearby wall. The result was technically a completed rush, but visually it read as a tiny collision/pause instead of one of the intended set-piece charges.
+
+Fix:
+WallBounceRush now resolves a visible trajectory before each rush. It prefers the player direction, but if that path is shorter than the minimum visible distance it tests nearby angles inside a limited cone and uses the longest candidate. A dedicated wall-rush probe collider can be authored on the DemonKing to make wall stopping match the visible body.
+
+Prevention:
+For boss set-piece movement with a fixed visible count, validate both collision safety and presentation length. A wall-safe endpoint alone is not enough if short endpoints still consume authored beats.
+
+## 2026-05-30 - DemonKing WallBounceRush Point Raycast Let Body Cross Walls
+
+Context:
+HP50 `WallBounceRush` could appear to spend collision/rush counts behind or past arena walls, so the configured rush count looked lower than intended.
+
+Cause:
+The pattern resolved the wall endpoint with a center-point raycast and then snapped the boss root to that endpoint. The boss body has visible area, so the center point could stop at the wall while the sprite/body crossed it.
+
+Fix:
+Resolve retreat, warning, and rush endpoints with a body-radius `CircleCast` plus stop skin before moving or snapping the root.
+
+Prevention:
+For large boss root movement, do not use point raycasts as final wall-stop endpoints. Use a body-size cast or authored movement bounds, and keep warning geometry derived from the same stopped endpoint as the movement.
+
+## 2026-05-30 - Portal Entrance Could Play During Active Scene Transition
+
+Context:
+After the title -> tutorial -> hub -> run flow, a DragonCorridor `ScenePortal` could play its entrance pull-in presentation and then not move to the target scene.
+
+Cause:
+`ScenePortal.CanInteract(...)` checked route resolvability but did not check whether `SceneTransitionCoordinator` was still active from a previous scene transition. The real travel call happens after the entrance presentation, and `ScenePortalTravelService.TryTravel(...)` rejects requests while a transition is active. That rejection path returned `false` without a diagnostic, so the player was restored after the presentation with no clear portal-specific log.
+
+Fix:
+`ScenePortal.CanInteract(...)` now blocks interaction while `SceneTransitionCoordinator.IsTransitionActive` is true. `ScenePortalTravelService` now logs a warning when travel is rejected because another scene transition is already active.
+
+Prevention:
+Pre-travel presentations must share the same acceptance gates as the final travel request. If a presentation delays the actual transition call, validate global transition locks before starting the presentation and log any late rejection path.
+
+## 2026-05-30 - DemonKing Groggy Dim Raised Body Above Its Own VFX
+
+Context:
+During DemonKing GroggyRecoverCounter, EyeFlash and sword GroggyRelease VFX could appear behind the DarkLord body.
+
+Cause:
+The Groggy world dim overlay highlighted the boss by temporarily moving all DemonKing SpriteRenderers to `Projectile / Order 2`, while the EyeFlash and GroggyRelease prefabs rendered at `Projectile / Order 1`.
+
+Fix:
+Keep the DarkLord/DemonKing root body SpriteRenderer on `Entity / Order 0` and render the Groggy dim panel with the Flowering-style policy on `Entity / Order -1`. VFX remain on Projectile, so they draw above the Entity body without body sorting mutation.
+
+Prevention:
+Do not solve DemonKing focus/dim effects by raising the body into the VFX Projectile layer. For body readability, use a lower Entity-layer dim panel, tint, outline, or authored highlight that does not change the body sorting layer/order.
+
 ## 2026-05-30 - VFX Auto Builder Reset Inspector Particle Tuning On Play
 
 Context:

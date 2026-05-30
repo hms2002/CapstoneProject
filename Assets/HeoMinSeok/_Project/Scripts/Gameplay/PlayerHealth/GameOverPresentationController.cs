@@ -17,6 +17,9 @@ public enum GameOverCauseKind
 
 public struct GameOverPresentationRequest
 {
+    private const string VictoryTitleText = "\uC2B9\uB9AC?";
+    private const string VictoryMessageText = "\uC2B9\uB9AC\uD558\uC600\uC9C0\uB9CC, \uC774\uAC83\uC73C\uB85C \uCDA9\uBD84\uD588\uC744\uAE4C?";
+
     public GameOverCauseKind CauseKind;
     public string CauseName;
     public float RemainingSeconds;
@@ -29,6 +32,14 @@ public struct GameOverPresentationRequest
     public string ReturnButtonLabel;
     public string MessageTextOverride;
     public bool HideTimeText;
+    public bool IsVictory;
+    public int MagicStoneRewardAmount;
+    public bool AllowInventoryDuringPresentation;
+    public bool ShowInventoryKeyHint;
+    public bool UseStandingPlayerSnapshot;
+    public string TitleTextOverride;
+    public bool HasTitleColorOverride;
+    public Color TitleColorOverride;
 
     public static GameOverPresentationRequest Defeat(
         Transform playerTransform,
@@ -47,7 +58,9 @@ public struct GameOverPresentationRequest
             PlayerTransform = playerTransform,
             EndRunOnReturn = true,
             EndRunReason = RunEndReason.Defeat,
-            UseSceneTransitionService = useSceneTransitionService
+            UseSceneTransitionService = useSceneTransitionService,
+            AllowInventoryDuringPresentation = true,
+            ShowInventoryKeyHint = true
         };
     }
 
@@ -66,7 +79,38 @@ public struct GameOverPresentationRequest
             PlayerTransform = playerTransform,
             EndRunOnReturn = true,
             EndRunReason = RunEndReason.TimeOver,
-            UseSceneTransitionService = useSceneTransitionService
+            UseSceneTransitionService = useSceneTransitionService,
+            AllowInventoryDuringPresentation = true,
+            ShowInventoryKeyHint = true
+        };
+    }
+
+    public static GameOverPresentationRequest Victory(
+        Transform playerTransform,
+        int magicStoneRewardAmount,
+        string hubSceneName,
+        bool useSceneTransitionService)
+    {
+        return new GameOverPresentationRequest
+        {
+            CauseKind = GameOverCauseKind.Monster,
+            CauseName = string.Empty,
+            RemainingSeconds = ResolveRemainingSeconds(),
+            LocationName = string.Empty,
+            HubSceneName = hubSceneName,
+            PlayerTransform = playerTransform,
+            EndRunOnReturn = true,
+            EndRunReason = RunEndReason.Victory,
+            UseSceneTransitionService = useSceneTransitionService,
+            MessageTextOverride = VictoryMessageText,
+            IsVictory = true,
+            MagicStoneRewardAmount = Mathf.Max(0, magicStoneRewardAmount),
+            AllowInventoryDuringPresentation = true,
+            ShowInventoryKeyHint = true,
+            UseStandingPlayerSnapshot = true,
+            TitleTextOverride = VictoryTitleText,
+            HasTitleColorOverride = true,
+            TitleColorOverride = new Color(0.35f, 1f, 0.35f, 1f)
         };
     }
 
@@ -150,6 +194,8 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private const float DefaultHoleHeight = 44f;
     private const float DefaultReturnPlayerSize = 96f;
     private const float SnapshotToAuthoredSeconds = 0.25f;
+    private const string MagicStoneRewardTextFormat = "\uB9C8\uC815\uC11D \uD68D\uB4DD\uB7C9 : {0}";
+    private const string LocationTextFormat = "\uC7A5\uC18C : {0}";
 
     private static readonly string[] MonsterDeathPhrases =
     {
@@ -217,11 +263,32 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private bool hasCapturedAuthoredReturnPose;
     private bool hasCapturedDefaultReturnButtonLabel;
     private bool hasCapturedDefaultTimeTextActive;
+    private bool hasCapturedDefaultTitleText;
     private string defaultReturnButtonLabel;
     private bool defaultTimeTextActive;
+    private TMP_Text titleText;
+    private string defaultTitleText;
+    private Color defaultTitleColor = Color.white;
     private GameFlowInputBlocker inputBlocker;
     private PlayerCinematicProtection acquiredProtection;
     private readonly List<SpriteRenderer> hiddenWorldPlayerRenderers = new List<SpriteRenderer>();
+    private bool hasInventoryHudPresentation;
+    private InventoryOpenHudButton inventoryHudButton;
+    private GameObject inventoryHudRoot;
+    private Transform inventoryHudOriginalParent;
+    private int inventoryHudOriginalSiblingIndex;
+    private bool inventoryHudOriginalActive;
+    private RectTransform inventoryHudRect;
+    private Vector2 inventoryHudOriginalAnchorMin;
+    private Vector2 inventoryHudOriginalAnchorMax;
+    private Vector2 inventoryHudOriginalPivot;
+    private Vector2 inventoryHudOriginalAnchoredPosition;
+    private Vector2 inventoryHudOriginalSizeDelta;
+    private Vector3 inventoryHudOriginalLocalPosition;
+    private Quaternion inventoryHudOriginalLocalRotation = Quaternion.identity;
+    private Vector3 inventoryHudOriginalLocalScale = Vector3.one;
+    private GameObject inventoryHudKeyHintRoot;
+    private bool inventoryHudKeyHintOriginalActive;
     private Vector2 returnPlayerAuthoredAnchorMin = new Vector2(0.5f, 0.5f);
     private Vector2 returnPlayerAuthoredAnchorMax = new Vector2(0.5f, 0.5f);
     private Vector2 returnPlayerAuthoredPivot = new Vector2(0.5f, 0.5f);
@@ -243,6 +310,20 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private Quaternion returnHoleDownMaskAuthoredRotation = Quaternion.identity;
 
     public static bool IsShowing => activeController != null;
+
+    public static bool CanOpenInventoryFromActiveGameOver(IStackableUI inventoryUi)
+    {
+        return activeController != null &&
+               activeController.CanOpenInventoryDuringPresentation(inventoryUi);
+    }
+
+    public static bool TryPushInventoryFromActiveGameOver(IStackableUI inventoryUi)
+    {
+        if (activeController == null)
+            return false;
+
+        return activeController.TryPushInventoryDuringPresentation(inventoryUi);
+    }
 
     public static bool TryShow(GameOverPresentationRequest request)
     {
@@ -286,6 +367,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
         BindReturnButton();
         CaptureDefaultReturnButtonLabel();
         CaptureDefaultTimeTextActive();
+        CaptureDefaultTitleText();
         SetPresentationVisible(false);
         SetReturnPresentationVisible(false);
         SetPitVisible(false);
@@ -299,6 +381,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= HandleSceneLoaded;
+        RestoreInventoryHudPresentation();
         ReleaseInputBlocker();
         MouseCursorService.Instance?.ClearDomain(this);
     }
@@ -306,6 +389,8 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private void OnDestroy()
     {
         RestoreHiddenWorldPlayerRenderers();
+        RestoreInventoryHudPresentation();
+        RestoreDefaultTitleText();
         RestoreDefaultReturnButtonLabel();
         RestoreDefaultTimeTextActive();
         ReleaseInputBlocker();
@@ -333,6 +418,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
         BindReturnButton();
         CaptureDefaultReturnButtonLabel();
         CaptureDefaultTimeTextActive();
+        CaptureDefaultTitleText();
         ValidateAuthoredReferences();
         PrepareGameplayState(request.PlayerTransform);
         PlayGameOverBgm();
@@ -341,6 +427,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
         MouseCursorService.Instance?.SetDomain(this, MouseCursorDomain.SystemUi, priority: SystemCursorPriority);
         SetPresentationVisible(true);
         SetPitVisible(false);
+        ApplyInventoryHudPresentation(request);
 
         if (activeRoutine != null)
             StopCoroutine(activeRoutine);
@@ -495,6 +582,147 @@ public sealed class GameOverPresentationController : MonoBehaviour
         inputBlocker = null;
     }
 
+    private bool CanOpenInventoryDuringPresentation(IStackableUI inventoryUi)
+    {
+        return request.AllowInventoryDuringPresentation &&
+               inventoryUi != null &&
+               inputBlocker != null &&
+               inputBlocker.CanOpenOwnedUI(inventoryUi);
+    }
+
+    private bool TryPushInventoryDuringPresentation(IStackableUI inventoryUi)
+    {
+        if (!CanOpenInventoryDuringPresentation(inventoryUi))
+            return false;
+
+        return inputBlocker.TryPushOwnedUI(inventoryUi);
+    }
+
+    private void ApplyInventoryHudPresentation(GameOverPresentationRequest request)
+    {
+        RestoreInventoryHudPresentation();
+
+        if (!request.AllowInventoryDuringPresentation || rootCanvas == null)
+            return;
+
+        inventoryHudButton = ResolveInventoryHudButton();
+        inventoryHudRoot = inventoryHudButton != null ? inventoryHudButton.GetPresentationRoot() : null;
+        if (inventoryHudButton == null || inventoryHudRoot == null)
+            return;
+
+        Transform hudTransform = inventoryHudRoot.transform;
+        inventoryHudOriginalParent = hudTransform.parent;
+        inventoryHudOriginalSiblingIndex = hudTransform.GetSiblingIndex();
+        inventoryHudOriginalActive = inventoryHudRoot.activeSelf;
+        inventoryHudOriginalLocalPosition = hudTransform.localPosition;
+        inventoryHudOriginalLocalRotation = hudTransform.localRotation;
+        inventoryHudOriginalLocalScale = hudTransform.localScale;
+
+        inventoryHudRect = hudTransform as RectTransform;
+        if (inventoryHudRect != null)
+        {
+            inventoryHudOriginalAnchorMin = inventoryHudRect.anchorMin;
+            inventoryHudOriginalAnchorMax = inventoryHudRect.anchorMax;
+            inventoryHudOriginalPivot = inventoryHudRect.pivot;
+            inventoryHudOriginalAnchoredPosition = inventoryHudRect.anchoredPosition;
+            inventoryHudOriginalSizeDelta = inventoryHudRect.sizeDelta;
+        }
+
+        inventoryHudKeyHintRoot = FindChildByName(inventoryHudRoot.transform, "KeyGlyph");
+        if (inventoryHudKeyHintRoot != null)
+        {
+            inventoryHudKeyHintOriginalActive = inventoryHudKeyHintRoot.activeSelf;
+            inventoryHudKeyHintRoot.SetActive(request.ShowInventoryKeyHint);
+        }
+
+        hudTransform.SetParent(rootCanvas.transform, false);
+        hudTransform.SetAsLastSibling();
+        inventoryHudRoot.SetActive(true);
+        inventoryHudButton.RefreshNow();
+        hasInventoryHudPresentation = true;
+    }
+
+    private void RestoreInventoryHudPresentation()
+    {
+        if (!hasInventoryHudPresentation)
+            return;
+
+        if (inventoryHudKeyHintRoot != null)
+            inventoryHudKeyHintRoot.SetActive(inventoryHudKeyHintOriginalActive);
+
+        if (inventoryHudRoot != null)
+        {
+            Transform hudTransform = inventoryHudRoot.transform;
+            if (inventoryHudOriginalParent != null)
+            {
+                hudTransform.SetParent(inventoryHudOriginalParent, false);
+                hudTransform.SetSiblingIndex(Mathf.Min(
+                    inventoryHudOriginalSiblingIndex,
+                    inventoryHudOriginalParent.childCount - 1));
+            }
+
+            hudTransform.localPosition = inventoryHudOriginalLocalPosition;
+            hudTransform.localRotation = inventoryHudOriginalLocalRotation;
+            hudTransform.localScale = inventoryHudOriginalLocalScale;
+
+            if (inventoryHudRect != null)
+            {
+                inventoryHudRect.anchorMin = inventoryHudOriginalAnchorMin;
+                inventoryHudRect.anchorMax = inventoryHudOriginalAnchorMax;
+                inventoryHudRect.pivot = inventoryHudOriginalPivot;
+                inventoryHudRect.anchoredPosition = inventoryHudOriginalAnchoredPosition;
+                inventoryHudRect.sizeDelta = inventoryHudOriginalSizeDelta;
+            }
+
+            inventoryHudRoot.SetActive(inventoryHudOriginalActive);
+        }
+
+        hasInventoryHudPresentation = false;
+        inventoryHudButton = null;
+        inventoryHudRoot = null;
+        inventoryHudOriginalParent = null;
+        inventoryHudRect = null;
+        inventoryHudKeyHintRoot = null;
+    }
+
+    private static InventoryOpenHudButton ResolveInventoryHudButton()
+    {
+        InventoryOpenHudButton[] buttons = Resources.FindObjectsOfTypeAll<InventoryOpenHudButton>();
+        InventoryOpenHudButton inactiveCandidate = null;
+
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            InventoryOpenHudButton button = buttons[i];
+            if (button == null || !button.gameObject.scene.IsValid())
+                continue;
+
+            if (button.isActiveAndEnabled)
+                return button;
+
+            inactiveCandidate ??= button;
+        }
+
+        return inactiveCandidate;
+    }
+
+    private static GameObject FindChildByName(Transform root, string objectName)
+    {
+        if (root == null || string.IsNullOrWhiteSpace(objectName))
+            return null;
+
+        if (string.Equals(root.gameObject.name, objectName, System.StringComparison.Ordinal))
+            return root.gameObject;
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            GameObject found = FindChildByName(root.GetChild(i), objectName);
+            if (found != null)
+                return found;
+        }
+
+        return null;
+    }
+
     private static void CenterCameraOnPlayer(Transform playerTransform)
     {
         if (playerTransform == null)
@@ -625,6 +853,25 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
         if (returnButtonLabelText == null && returnButton != null)
             returnButtonLabelText = returnButton.GetComponentInChildren<TMP_Text>(true);
+
+        if (titleText == null)
+            titleText = ResolveNamedText("TitleText");
+    }
+
+    private TMP_Text ResolveNamedText(string objectName)
+    {
+        if (string.IsNullOrWhiteSpace(objectName))
+            return null;
+
+        TMP_Text[] texts = GetComponentsInChildren<TMP_Text>(true);
+        for (int i = 0; i < texts.Length; i++)
+        {
+            TMP_Text text = texts[i];
+            if (text != null && string.Equals(text.gameObject.name, objectName, System.StringComparison.Ordinal))
+                return text;
+        }
+
+        return null;
     }
 
     private void CaptureAuthoredReturnPose()
@@ -675,6 +922,9 @@ public sealed class GameOverPresentationController : MonoBehaviour
         if (returnPlayerImage == null || playerTransform == null)
             return null;
 
+        if (request.UseStandingPlayerSnapshot)
+            PrepareStandingSnapshotPose(playerTransform);
+
         SpriteRenderer spriteRenderer = ResolvePlayerSpriteRenderer(playerTransform);
         if (spriteRenderer == null || spriteRenderer.sprite == null)
             return null;
@@ -694,6 +944,21 @@ public sealed class GameOverPresentationController : MonoBehaviour
         }
 
         return spriteRenderer;
+    }
+
+    private static void PrepareStandingSnapshotPose(Transform playerTransform)
+    {
+        if (playerTransform == null)
+            return;
+
+        MovementMotor2D movementMotor = playerTransform.GetComponent<MovementMotor2D>();
+        movementMotor?.StopAllMotion();
+
+        PlayerAnimatorController2D animatorController = playerTransform.GetComponent<PlayerAnimatorController2D>();
+        animatorController?.ApplyFacingDirectionForPresentation(Vector2.down);
+
+        Animator animator = playerTransform.GetComponentInChildren<Animator>(true);
+        animator?.Update(0f);
     }
 
     private bool TryMatchReturnPlayerToWorldSprite(SpriteRenderer spriteRenderer)
@@ -955,6 +1220,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
         hideOnNextSceneLoaded = false;
         RestoreHiddenWorldPlayerRenderers();
+        RestoreInventoryHudPresentation();
         ReleaseInputBlocker();
         ReleasePlayerProtection();
         ReleaseTimerPause();
@@ -963,6 +1229,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
         if (returnButton != null)
             returnButton.interactable = true;
 
+        RestoreDefaultTitleText();
         RestoreDefaultReturnButtonLabel();
         RestoreDefaultTimeTextActive();
         SetGraphicAlpha(blackoutGraphic, 0f);
@@ -1182,6 +1449,8 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
     private void ApplyText(GameOverPresentationRequest request)
     {
+        ApplyTitleText(request);
+
         if (messageText != null)
         {
             messageText.text = string.IsNullOrWhiteSpace(request.MessageTextOverride)
@@ -1191,8 +1460,55 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
         ApplyTimeText(request);
 
+        if (request.IsVictory && locationText != null)
+        {
+            locationText.text = string.Format(
+                MagicStoneRewardTextFormat,
+                Mathf.Max(0, request.MagicStoneRewardAmount));
+            return;
+        }
+
         if (locationText != null)
-            locationText.text = $"장소 : {request.LocationName}";
+        {
+            locationText.text = string.Format(LocationTextFormat, request.LocationName);
+            return;
+        }
+
+    }
+
+    private void CaptureDefaultTitleText()
+    {
+        if (hasCapturedDefaultTitleText || titleText == null)
+            return;
+
+        defaultTitleText = titleText.text;
+        defaultTitleColor = titleText.color;
+        hasCapturedDefaultTitleText = true;
+    }
+
+    private void ApplyTitleText(GameOverPresentationRequest request)
+    {
+        if (titleText == null)
+            return;
+
+        CaptureDefaultTitleText();
+
+        titleText.text = string.IsNullOrWhiteSpace(request.TitleTextOverride)
+            ? defaultTitleText
+            : request.TitleTextOverride;
+
+        titleText.color = request.HasTitleColorOverride
+            ? request.TitleColorOverride
+            : defaultTitleColor;
+    }
+
+    private void RestoreDefaultTitleText()
+    {
+        if (!hasCapturedDefaultTitleText || titleText == null)
+            return;
+
+        titleText.text = defaultTitleText;
+        titleText.color = defaultTitleColor;
     }
 
     private void CaptureDefaultTimeTextActive()

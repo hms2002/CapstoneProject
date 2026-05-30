@@ -124,12 +124,14 @@ public sealed class ScenePortal : InteractableBase
     {
         bool hasPlayer = player != null;
         bool isIdle = hasPlayer && player.CurrentState == InteractState.Idle;
+        bool transitionIdle = !IsSceneTransitionActive();
         PortalRouteManager routeManager = PortalRouteManager.EnsureInstance();
         bool canResolve = routeManager != null &&
                           routeManager.CanResolveRoute(this);
 
         bool canInteract =
             !isTransitioning &&
+            transitionIdle &&
             hasPlayer &&
             isIdle &&
             canResolve;
@@ -188,6 +190,12 @@ public sealed class ScenePortal : InteractableBase
         return playEntrancePresentation &&
                entranceDuration > 0f &&
                player?.Transform != null;
+    }
+
+    private static bool IsSceneTransitionActive()
+    {
+        SceneTransitionCoordinator coordinator = SceneTransitionCoordinator.Instance;
+        return coordinator != null && coordinator.IsTransitionActive;
     }
 
     private IEnumerator PlayEntranceAndTravelRoutine(IPlayerInteractor player)

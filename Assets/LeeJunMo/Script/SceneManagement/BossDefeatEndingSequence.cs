@@ -7,6 +7,12 @@ using UnityEngine;
 [AddComponentMenu("Capstone/Boss/Boss Defeat Ending Sequence")]
 public sealed class BossDefeatEndingSequence : MonoBehaviour
 {
+    private enum TerminalCompletionMode
+    {
+        VictoryGameOver,
+        LoadTargetScene
+    }
+
     [Header("Boss")]
     [SerializeField] private BossControllerBase targetBoss;
 
@@ -20,6 +26,7 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
     [SerializeField] private bool keepOutroVisibleUntilSceneTransition = true;
 
     [Header("Completion")]
+    [SerializeField] private TerminalCompletionMode completionMode = TerminalCompletionMode.VictoryGameOver;
     [SerializeField] private string targetSceneName = "TitleScene";
     [SerializeField] private RunEndReason endRunReason = RunEndReason.Victory;
     [SerializeField, Min(0f)] private float titleSceneFadeOutDuration = 1.5f;
@@ -89,7 +96,7 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
             yield return PlayOutroRoutine();
 
             completedViaTerminalEnding = true;
-            keepTerminalStateUntilDisable = CompleteRunAndLoadTargetScene();
+            keepTerminalStateUntilDisable = CompleteTerminalEnding();
         }
         finally
         {
@@ -138,14 +145,54 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
         }
 
         bool completed = false;
+        bool keepVisibleOnCompleted = keepOutroVisibleUntilSceneTransition &&
+                                      completionMode == TerminalCompletionMode.LoadTargetScene;
         if (!outroPlayer.TryPlay(
                 () => completed = true,
-                keepOutroVisibleUntilSceneTransition))
+                keepVisibleOnCompleted))
         {
             yield break;
         }
 
         yield return new WaitUntil(() => completed || outroPlayer == null || !outroPlayer.IsPlaying);
+
+        if (completionMode == TerminalCompletionMode.VictoryGameOver)
+            outroPlayer?.HideViewImmediate();
+    }
+
+    private bool CompleteTerminalEnding()
+    {
+        if (completionMode == TerminalCompletionMode.LoadTargetScene)
+            return CompleteRunAndLoadTargetScene();
+
+        if (CompleteRunWithVictoryGameOver())
+            return true;
+
+        return CompleteRunAndLoadTargetScene();
+    }
+
+    private bool CompleteRunWithVictoryGameOver()
+    {
+        GamePlayDataManager gameplay = GamePlayDataManager.Instance;
+        int magicStoneRewardAmount = gameplay != null
+            ? Mathf.Max(0, gameplay.GetPendingRunMagicStoneDelta())
+            : 0;
+
+        GameOverPresentationRequest request = GameOverPresentationRequest.Victory(
+            PlayerRuntimeRegistry.GetPlayerTransform(),
+            magicStoneRewardAmount,
+            null,
+            useSceneTransitionService: true);
+
+        ReleaseTerminalState();
+
+        if (GameOverPresentationController.TryShow(request))
+            return true;
+
+        Debug.LogWarning(
+            "[BossDefeatEndingSequence] Victory game-over presentation was not accepted. Falling back to target scene transition.",
+            this);
+        return false;
     }
 
     private bool CompleteRunAndLoadTargetScene()

@@ -50,11 +50,17 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (InputBindingService.EnsureInstance().WasPressedThisFrame(InputActionId.InventoryToggle))
         {
-            if (UIManager.Instance != null && UIManager.Instance.IsExternalUiInputBlocked)
+            bool isOpen = inventoryScreen != null && inventoryScreen.IsActive;
+            if (!isOpen &&
+                UIManager.Instance != null &&
+                UIManager.Instance.IsExternalUiInputBlocked &&
+                !GameOverPresentationController.CanOpenInventoryFromActiveGameOver(inventoryScreen))
+            {
                 return;
+            }
 
             // [수정] 인터페이스 프로퍼티(IsActive)를 통해 상태 확인
-            if (inventoryScreen != null && inventoryScreen.IsActive)
+            if (isOpen)
                 Close();
             else
                 TryOpen();
@@ -83,7 +89,9 @@ public class InventoryUIManager : MonoBehaviour
 
         // [핵심] 직접 켜지 않고 UIManager의 스택에 밀어넣음!
         bool opened = false;
-        if (UIManager.Instance != null)
+        if (GameOverPresentationController.CanOpenInventoryFromActiveGameOver(inventoryScreen))
+            opened = GameOverPresentationController.TryPushInventoryFromActiveGameOver(inventoryScreen);
+        else if (UIManager.Instance != null)
             opened = UIManager.Instance.TryPushUI(inventoryScreen);
         else
         {
@@ -185,6 +193,9 @@ public class InventoryUIManager : MonoBehaviour
 
     private bool CanOpenThroughUiManager()
     {
+        if (GameOverPresentationController.CanOpenInventoryFromActiveGameOver(inventoryScreen))
+            return true;
+
         return UIManager.Instance == null || UIManager.Instance.CanOpenUI(inventoryScreen);
     }
 

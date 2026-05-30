@@ -54,11 +54,20 @@ namespace UnityGAS
             float duration,
             AttackTelegraphStyle style = null)
         {
+            return CreateEllipse(center, new Vector2(diameter, diameter), duration, style);
+        }
+
+        public static AttackTelegraphSpec CreateEllipse(
+            Vector3 center,
+            Vector2 size,
+            float duration,
+            AttackTelegraphStyle style = null)
+        {
             return new AttackTelegraphSpec
             {
                 shape = AttackTelegraphShape.Circle,
                 center = center,
-                size = new Vector2(diameter, diameter),
+                size = new Vector2(Mathf.Max(0.01f, size.x), Mathf.Max(0.01f, size.y)),
                 innerDiameter = 0f,
                 sectorAngleDeg = 0f,
                 rotationDeg = 0f,

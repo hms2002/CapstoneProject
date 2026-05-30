@@ -37903,7 +37903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpeechBubbleComponent
   bubblePrefab: {fileID: 8482697653009772348, guid: 62446638c99411c4c9669c3f3efc113d, type: 3}
-  bubbleOffset: {x: 0.52, y: 0.85, z: 0}
+  bubbleOffset: {x: 0.52, y: 1.51, z: 0}
   showBubbleOffsetGizmo: 1
   bubbleOffsetGizmoColor: {r: 1, g: 0.92, b: 0.16, a: 0.9}
   bubbleOffsetGizmoRadius: 0.12

@@ -218,7 +218,9 @@ namespace UnityGAS
                     RebuildRadialMesh(
                         spec.center,
                         Vector2.right,
-                        Mathf.Max(spec.size.x, spec.size.y) * 0.5f,
+                        new Vector2(
+                            Mathf.Max(0.01f, spec.size.x * 0.5f),
+                            Mathf.Max(0.01f, spec.size.y * 0.5f)),
                         360f,
                         spec.wallClipLayers,
                         spec.wallClipSampleCount,
@@ -410,6 +412,28 @@ namespace UnityGAS
             float skinWidth,
             float fillScale)
         {
+            float safeRange = Mathf.Max(0.01f, range);
+            RebuildRadialMesh(
+                origin,
+                direction,
+                new Vector2(safeRange, safeRange),
+                angleDegrees,
+                wallLayers,
+                sampleCount,
+                skinWidth,
+                fillScale);
+        }
+
+        private void RebuildRadialMesh(
+            Vector2 origin,
+            Vector2 direction,
+            Vector2 radii,
+            float angleDegrees,
+            LayerMask wallLayers,
+            int sampleCount,
+            float skinWidth,
+            float fillScale)
+        {
             transform.position = origin;
             transform.rotation = Quaternion.identity;
 
@@ -422,7 +446,7 @@ namespace UnityGAS
 
             vertices[0] = Vector3.zero;
             float halfAngle = Mathf.Clamp(angleDegrees, 0.1f, 360f) * 0.5f;
-            float safeRange = Mathf.Max(0.01f, range);
+            Vector2 safeRadii = new(Mathf.Max(0.01f, radii.x), Mathf.Max(0.01f, radii.y));
             float safeSkin = Mathf.Max(0f, skinWidth);
 
             for (int i = 0; i < outerVertexCount; i++)
@@ -434,7 +458,8 @@ namespace UnityGAS
                     ? t * 360f
                     : Mathf.Lerp(-halfAngle, halfAngle, t);
                 Vector2 rayDirection = Rotate(forward, angle);
-                float distance = ResolveVisibleDistance(origin, rayDirection, safeRange, wallLayers, safeSkin);
+                float rayRange = ResolveEllipseRayDistance(rayDirection, safeRadii);
+                float distance = ResolveVisibleDistance(origin, rayDirection, rayRange, wallLayers, safeSkin);
                 vertices[i + 1] = rayDirection * distance;
             }
 
@@ -458,6 +483,20 @@ namespace UnityGAS
             mesh.vertices = vertices;
             mesh.triangles = triangles;
             mesh.RecalculateBounds();
+        }
+
+        private static float ResolveEllipseRayDistance(Vector2 rayDirection, Vector2 radii)
+        {
+            Vector2 safeDirection = rayDirection.sqrMagnitude > 0.0001f ? rayDirection.normalized : Vector2.right;
+            float radiusX = Mathf.Max(0.01f, radii.x);
+            float radiusY = Mathf.Max(0.01f, radii.y);
+            float denominator =
+                (safeDirection.x * safeDirection.x) / (radiusX * radiusX) +
+                (safeDirection.y * safeDirection.y) / (radiusY * radiusY);
+            if (denominator <= 0.0001f)
+                return radiusX;
+
+            return 1f / Mathf.Sqrt(denominator);
         }
 
         /// <summary>

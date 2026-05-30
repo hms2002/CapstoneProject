@@ -59,6 +59,9 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 - `Assets/LeeJunMo/Script/UIStructure/RewardDisplayService.cs`
 - `Assets/LeeJunMo/Script/Editor/NpcCustomizationHub/NpcCustomizationHubWindow.cs`
 - `Assets/LeeJunMo/Script/Editor/DialogueTextAnimationTunerWindow.cs`
+- `Assets/LeeJunMo/Datas/Inks/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink`
+- `Assets/LeeJunMo/Datas/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_SlimeQueenBoss.spriteLib`
+- `Assets/LeeJunMo/Datas/Dialogue/NPC/SlimeQueenBossNpc.asset`
 
 ## Ownership And Lifecycle
 
@@ -98,6 +101,7 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 - Add background Effect changes with `# effect: <target>`, where `<target>` is `default`, `speaker`, or an NPC id such as `1005`.
 - Add full-line impact shake with `# CameraShake: Low|Middle|High`; the same tag drives panel motion, DOShake-like per-character TMP impact offsets, text inertia, and camera shake. Keep `Middle` as the only medium-strength spelling and validate new Ink through the NPC Customization Hub.
 - Add broad dialogue timing passes as additive Ink/JSON copies under `Assets/LeeJunMo/Datas/Inks/AnimatedVariants/` first; do not replace original TextAsset references until the owning scene/tool is intentionally rewired.
+- Slime Queen's Notion-authored variant follows this additive rule: Notion source id `1004` is normalized to project NPC id `3001`, the new SpriteLibrary is assigned to `SlimeQueenBossNpc.asset`, and the new Melta Ink JSON remains inactive until `primaryInk` is explicitly reassigned. The Slime Queen SpriteLibrary keeps `default`, `Normal`, and `Idle` aliased to the Idle portrait so the existing placeholder `SlimeQueenBossIntro` face tag still resolves.
 - Review and edit existing NPCData assets through `Tools/NPC/NPC Customization Hub` when changing profile, Ink JSON references, dialogue theme, sprite library, emote offset, affection rewards, or NPCDatabase membership.
 - Add NPC actions through NPC Feature Core and feature-specific folders.
 - Add run-internal speech-bubble NPC behavior through [Run Special NPC Structure](./RunSpecialNpcStructure.md), not the Ink portrait dialogue buckets.
@@ -124,6 +128,7 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 - `PreviewRenderUtility` may not be enough for hidden UGUI CanvasRenderer previews; use a dedicated preview camera and `RenderTexture` when the source/effective rect diagnostics are valid but the preview still renders black.
 - Keep Text Animation Tuner diagnostic fields out of the normal Input pane once the effective-size fallback is stable; use internal logic and source selection rather than exposing size debug controls during normal tuning.
 - Animated Ink variants are not automatically used by existing scenes just because the files exist; Unity import and explicit TextAsset reassignment are still required.
+- Notion dialogue source ids can differ from project `NPCData.id`; normalize `# speaker` and `# face` tags to the project id before compiling or the runtime portrait lookup can miss the intended NPCData.
 - Ink `# face: npcId: label` uses the NPC id to pick `NPCData`, but portrait sprite lookup uses the runtime SpriteLibrary category `Face` and the authored label. Editor validation should not treat the NPC id as a SpriteLibrary category.
 - Affection presentation must not rely only on DOTween `OnComplete`; disable, destroy, or replacement-animation paths also need to release the dialogue continuation.
 - Affection reward display can deadlock if it uses the normal reward opening path while a dialogue or boss encounter external blocker is active. Use the flow-owned reward path for dialogue-gated affection rewards, and keep the missing-view fallback so dialogue can continue if the authored reward UI is absent.

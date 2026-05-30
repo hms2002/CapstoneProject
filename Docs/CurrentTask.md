@@ -1,7 +1,7 @@
 ---
 status: active
 authority: current-task
-category: explosion-debris-bounce-vfx
+category: demonking-victory-gameover-flow
 last_reviewed: 2026-05-30
 ---
 
@@ -9,49 +9,48 @@ last_reviewed: 2026-05-30
 
 ## Goal
 
-Create reusable top-down explosion debris bounce VFX prefabs:
-
-explosion origin -> debris spreads in a circle -> debris uses virtual height to read as airborne -> gravity brings it back to the same 2D ground plane -> contact puffs fire on each bounce.
+Change the final DemonKing terminal ending so the outro returns to the roguelike run loop through the existing Game Over screen instead of loading `TitleScene`.
 
 ## Requested Work
 
-- Add a reusable `TopDownDebrisBounceEmitter2D` runtime presentation helper.
-- Add an Editor builder for three explosion debris bounce prefab variants:
-  - high arc
-  - diagonal scatter
-  - low skitter
-- Keep this as reusable prefab content only; do not wire it into existing boss, mob, weapon, or ability data in this task.
-- Record the top-down contact-point decision and verification status in project memory.
+- After DemonKing death speech, Dialogue, and Ending Outro, show a Victory GameOver presentation.
+- Reuse the existing authored Game Over UI.
+- Show run magic stone gain in the former location text slot.
+- Change victory copy to:
+  - title: `승리?` in green
+  - message: `승리하였지만, 이것으로 충분했을까?`
+- Keep the bottom-left inventory HUD icon and key hint available on real defeat and victory GameOver screens.
+- Allow inventory opening from real defeat and victory GameOver screens.
+- Keep FakeGameOver from showing or accepting inventory HUD/input.
+- Keep the player snapshot standing for victory.
 
 ## Scope Notes
 
-- The effect is visual-only and must not apply damage, gameplay tags, hit detection, input blocking, or scene progression.
-- The helper may simulate individual debris pieces, but actual use remains prefab-authored and spawned through existing presentation paths.
-- Do not hand-edit prefab YAML. Prefab generation must happen through UnityEditor APIs or Unity Inspector authoring.
+- Do not directly edit scene or prefab YAML.
+- Do not add new managers, singletons, or `DontDestroyOnLoad` objects.
+- Existing terminal `TitleScene` load stays as a fallback/optional completion mode.
+- `GlobalUIRoot` authored UI remains the presentation source; runtime code may temporarily move the existing inventory HUD button for GameOver presentation, but must restore it.
 - Unity Editor is open, so do not run Unity batchmode.
 
 ## Done Criteria
 
-- Runtime source exists for virtual-height debris motion and contact puffs.
-- Editor menu exists at `Tools/VFX/Rebuild Explosion Debris Bounce Prefabs`.
-- Builder targets:
-  - `Assets/LeeJunMo/Prefab/Effect/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_HighArc.prefab`
-  - `Assets/LeeJunMo/Prefab/Effect/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_DiagonalScatter.prefab`
-  - `Assets/LeeJunMo/Prefab/Effect/Particle/ExplosionDebrisBounce/PF_ExplosionDebrisBounce_LowSkitter.prefab`
-- Static checks confirm the new helper, builder, output paths, and project-file inclusion state.
-- Final report states whether Unity import/compile, prefab generation, and manual preview were actually run.
+- `BossDefeatEndingSequence` defaults terminal completion to Victory GameOver after outro.
+- Victory GameOver commits `RunEndReason.Victory` only on return, preserving pending magic stone gain for display.
+- Real defeat/victory GameOver can open inventory through a GameOver-owned input-blocker exception.
+- FakeGameOver keeps inventory operation and key hint hidden/blocked.
+- Outro view does not remain over the Victory GameOver screen.
+- Static checks and touched-file diff checks are run.
 
 ## Verification Plan
 
-- Run `rg` checks for helper/builder/menu/output paths.
-- Check generated `.csproj` inclusion for new scripts before choosing MSBuild coverage.
-- Run `dotnet build` only if generated project files include the new scripts.
-- Run `git diff --check` for touched source/docs.
-- Run trailing-whitespace checks for touched source/docs.
-- Check for Unity Editor processes and do not run Unity batchmode if the Editor is open.
+- Run `rg` checks for terminal Victory GameOver, inventory GameOver owner exception, FakeGameOver inventory disable, and no new global managers/singletons.
+- Confirm touched C# files are included in `Assembly-CSharp.csproj`.
+- Run `dotnet build Assembly-CSharp.csproj --no-restore` when the project file includes touched scripts.
+- Do not run Unity batchmode while Unity Editor processes are open.
+- Manual Play Mode still needs to verify DemonKing outro -> Victory GameOver, inventory open/close, FakeGameOver blocking, return-to-Hub Victory commit, and no TitleScene transition.
 
 ## Remaining Risks
 
-- New MonoBehaviour and generated prefab assets require Unity import/compile.
-- The builder may auto-create prefabs only after Unity imports the new scripts; otherwise run the menu manually.
-- Manual Scene/Game preview is required to confirm the virtual-height offset reads as airborne debris rather than northward ground movement.
+- `BossDefeatEndingSequence` gained a serialized completion-mode enum; existing scene components need Unity import/Inspector review.
+- Victory player standing snapshot uses the live player renderer/animator state; manual review should confirm the captured frame is the desired standing pose.
+- Inventory HUD is temporarily reparented at runtime and restored; manual review should confirm layout remains bottom-left on the GameOver canvas.
