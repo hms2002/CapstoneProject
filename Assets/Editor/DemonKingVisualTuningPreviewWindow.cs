@@ -775,6 +775,9 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
 
         switch (previewSubject)
         {
+            case PreviewSubject.Composite:
+                CreateCompositePreviewInstance();
+                break;
             case PreviewSubject.VfxPrefab:
                 CreateVfxPreviewInstance();
                 break;
@@ -792,7 +795,12 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
     private void CreateBodyPreviewInstance()
     {
         EnsurePreviewRoot();
-        GameObject body = new("DemonKing_BodyClipPreview")
+        previewInstance = CreateBodyPreviewObject("DemonKing_BodyClipPreview");
+    }
+
+    private GameObject CreateBodyPreviewObject(string objectName)
+    {
+        GameObject body = new(objectName)
         {
             hideFlags = HideFlags.HideAndDontSave
         };
@@ -800,7 +808,7 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
         body.transform.localPosition = Vector3.zero;
         bodyPreviewRenderer = body.AddComponent<SpriteRenderer>();
         bodyPreviewRenderer.sortingOrder = 1;
-        previewInstance = body;
+        return body;
     }
 
     private void CreateVfxPreviewInstance()
@@ -809,23 +817,63 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
         if (selectedVfxPrefab == null)
             return;
 
-        previewInstance = PrefabUtility.InstantiatePrefab(selectedVfxPrefab) as GameObject;
-        if (previewInstance == null)
-            previewInstance = Object.Instantiate(selectedVfxPrefab);
-        if (previewInstance == null)
+        previewInstance = CreateVfxPreviewObject(Vector3.zero, Vector3.one, 0f);
+    }
+
+    private void CreateCompositePreviewInstance()
+    {
+        EnsurePreviewRoot();
+
+        GameObject body = null;
+        if (compositeShowBody)
+            body = CreateBodyPreviewObject("DemonKing_CompositeBodyPreview");
+
+        GameObject vfx = null;
+        if (compositeShowVfx && selectedVfxPrefab != null)
+        {
+            Vector3 localOffset = ResolveCompositeVfxLocalOffset();
+            vfx = CreateVfxPreviewObject(localOffset, compositeVfxPreviewScale, compositeVfxRotationDeg);
+        }
+
+        previewInstance = body != null ? body : vfx;
+    }
+
+    private GameObject CreateVfxPreviewObject(Vector3 localPosition, Vector3 localScaleMultiplier, float localRotationDeg)
+    {
+        if (selectedVfxPrefab == null)
+            return null;
+
+        GameObject instance = PrefabUtility.InstantiatePrefab(selectedVfxPrefab) as GameObject;
+        if (instance == null)
+            instance = Object.Instantiate(selectedVfxPrefab);
+        if (instance == null)
+            return null;
+
+        instance.name = $"{selectedVfxPrefab.name}_Preview";
+        instance.transform.SetParent(previewRoot.transform, false);
+        instance.transform.localPosition = localPosition;
+        instance.transform.localRotation = Quaternion.Euler(0f, 0f, localRotationDeg);
+        instance.transform.localScale = Vector3.Scale(instance.transform.localScale, localScaleMultiplier);
+        SetHideFlagsRecursive(instance.transform, HideFlags.HideAndDontSave);
+        instance.SetActive(true);
+
+        CachePreviewPlaybackComponents();
+        StartPreviewPlaybackComponents();
+        return instance;
+    }
+
+    private void CachePreviewPlaybackComponents()
+    {
+        if (previewRoot == null)
             return;
 
-        previewInstance.name = $"{selectedVfxPrefab.name}_Preview";
-        previewInstance.transform.SetParent(previewRoot.transform, false);
-        previewInstance.transform.localPosition = Vector3.zero;
-        previewInstance.transform.localRotation = Quaternion.identity;
-        SetHideFlagsRecursive(previewInstance.transform, HideFlags.HideAndDontSave);
-        previewInstance.SetActive(true);
+        previewAnimators = previewRoot.GetComponentsInChildren<Animator>(true);
+        previewParticleSystems = previewRoot.GetComponentsInChildren<ParticleSystem>(true);
+        previewDebrisEmitters = previewRoot.GetComponentsInChildren<TopDownDebrisBounceEmitter2D>(true);
+    }
 
-        previewAnimators = previewInstance.GetComponentsInChildren<Animator>(true);
-        previewParticleSystems = previewInstance.GetComponentsInChildren<ParticleSystem>(true);
-        previewDebrisEmitters = previewInstance.GetComponentsInChildren<TopDownDebrisBounceEmitter2D>(true);
-
+    private void StartPreviewPlaybackComponents()
+    {
         for (int i = 0; i < previewAnimators.Length; i++)
         {
             Animator animator = previewAnimators[i];
@@ -844,6 +892,18 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
 
         for (int i = 0; i < previewDebrisEmitters.Length; i++)
             previewDebrisEmitters[i]?.RestartEditorPreview();
+    }
+
+    private Vector3 ResolveCompositeVfxLocalOffset()
+    {
+        if (selectedSocketMap != null)
+            return selectedSocketMap.ResolveLocalOffset(compositeVfxSocket, compositeFallbackLeftOffset, previewFacingLeft);
+
+        Vector3 offset = compositeFallbackLeftOffset;
+        if (!previewFacingLeft)
+            offset.x = -offset.x;
+
+        return offset;
     }
 
     private void StepPreviewInstance(float deltaTime)
@@ -889,12 +949,17 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
             return;
 
         DrawCenterMarker(previewRect);
-        if (previewSubject == PreviewSubject.VfxPrefab)
+        if (previewSubject == PreviewSubject.VfxPrefab
+            || previewSubject == PreviewSubject.Composite && compositeShowVfx)
             DrawHitWindowOverlay(previewRect);
-        if (previewSubject == PreviewSubject.EgoSwordOffsets)
+        if (previewSubject == PreviewSubject.EgoSwordOffsets
+            || previewSubject == PreviewSubject.Composite && compositeShowEgoSword)
             DrawEgoSwordOverlay(previewRect);
-        if (previewSubject == PreviewSubject.SocketMap)
+        if (previewSubject == PreviewSubject.SocketMap
+            || previewSubject == PreviewSubject.Composite && compositeShowSockets)
             DrawSocketOverlay(previewRect);
+        if (previewSubject == PreviewSubject.Composite && compositeShowVfx)
+            DrawCompositeVfxSocketOverlay(previewRect);
     }
 
     private void DrawCenterMarker(Rect previewRect)
@@ -964,6 +1029,12 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
             string label = idProperty != null ? idProperty.enumDisplayNames[idProperty.enumValueIndex] : $"Socket {i}";
             DrawMarker(previewRect, PreviewOrigin + (Vector3)offset, color, label);
         }
+    }
+
+    private void DrawCompositeVfxSocketOverlay(Rect previewRect)
+    {
+        Vector3 offset = ResolveCompositeVfxLocalOffset();
+        DrawMarker(previewRect, PreviewOrigin + offset, HitWindowColor, "Composite VFX");
     }
 
     private void DrawVectorMarker(SerializedObject serializedObject, string propertyName, Rect previewRect, Color color, string label)
@@ -1179,6 +1250,18 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
     {
         switch (previewSubject)
         {
+            case PreviewSubject.Composite:
+                float compositeLength = 0.1f;
+                if (compositeShowBody && selectedAnimationClip != null)
+                    compositeLength = Mathf.Max(compositeLength, selectedAnimationClip.length);
+                if (compositeShowVfx)
+                {
+                    AnimationClip compositeVfxClip = ResolveSelectedVfxReferenceClip();
+                    if (compositeVfxClip != null)
+                        compositeLength = Mathf.Max(compositeLength, compositeVfxClip.length);
+                }
+
+                return compositeLength;
             case PreviewSubject.VfxPrefab:
                 AnimationClip vfxClip = ResolveSelectedVfxReferenceClip();
                 return Mathf.Max(0.1f, vfxClip != null ? vfxClip.length : 1f);
