@@ -27,3 +27,39 @@ MonoBehaviour:
   laserVfxRayOriginOffset: 1.2
   fallbackLaserLength: 40
   laserDamage: 1
+  startSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  bombExplosionSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  laserWarningSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  laserFireSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  openingCameraShake:
+    amplitude: 0.18
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.35
+    minIntervalSeconds: 0.04
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  bombExplosionCameraShake:
+    amplitude: 0.08
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.18
+    minIntervalSeconds: 0.08
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0

@@ -11,7 +11,13 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2102aa7a028d42f8acca7f250a3e2dd4, type: 3}
   m_Name: AL_DemonKing_ThrowEgoSword
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   warningSeconds: 1.4
   throwSpeedMultiplier: 5
   wallBounceCount: 5
+  throwEndPoseHoldSeconds: 0.12
+  throwReleaseSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

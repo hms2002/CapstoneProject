@@ -81,6 +81,16 @@ public sealed class EgoSwordActor : MonoBehaviour
     [SerializeField, Min(0f)] private float recallImpactKnockback = 8f;
 
     [Header("Impact Presentation")]
+    [SerializeField] private DemonKingVfxCueRef swordSpinVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.SwordSpin, DemonKingVfxSocketId.SwordThrowEffectOrigin, Vector2.zero, Vector2.zero, leaveFragment: false);
+    [SerializeField] private DemonKingVfxCueRef plantAttackVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.EgoSwordAttack, DemonKingVfxSocketId.SwordThrowEffectOrigin, Vector2.zero, Vector2.zero, leaveFragment: false);
+    [SerializeField] private DemonKingVfxCueRef plantImpactVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.Impact, DemonKingVfxSocketId.SwordThrowEffectOrigin, Vector2.zero, Vector2.zero, leaveFragment: false);
+    [SerializeField] private DemonKingVfxCueRef verticalAttackVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.EgoSwordAttack, DemonKingVfxSocketId.SwordThrowEffectOrigin, Vector2.zero, Vector2.zero, leaveFragment: false);
+    [SerializeField] private DemonKingVfxCueRef verticalImpactVfx =
+        DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.Impact, DemonKingVfxSocketId.SwordThrowEffectOrigin, Vector2.zero, Vector2.zero, leaveFragment: false);
     [SerializeField] private SoundRef verticalStrikeImpactSound;
     [SerializeField] private CameraShakeHook plantImpactCameraShake = CameraShakeHook.Create(0.12f, 1f, 0.28f, 0.04f);
     [SerializeField] private CameraShakeHook verticalStrikeImpactCameraShake = CameraShakeHook.Create(0.18f, 1f, 0.35f, 0.04f);
@@ -486,8 +496,19 @@ public sealed class EgoSwordActor : MonoBehaviour
         flyingSpeed = 0f;
         transform.rotation = Quaternion.identity;
         ApplyBuriedMask();
-        DemonKingPatternVfx.SpawnEgoSwordAttack(transform, verticalStrikeDiameter);
-        DemonKingPatternVfx.SpawnImpact(transform.position, verticalStrikeDiameter, leaveFragment: false);
+        DemonKingPatternVfx.SpawnCueAttachedOneShot(
+            plantAttackVfx,
+            transform,
+            Vector3.zero,
+            verticalStrikeDiameter,
+            Vector2.down,
+            "EgoSword_PlantAttackVfx");
+        DemonKingPatternVfx.SpawnCueOneShot(
+            plantImpactVfx,
+            transform.position,
+            verticalStrikeDiameter,
+            Vector2.down,
+            "EgoSword_PlantImpactVfx");
         PlayPlantImpactShake();
         useCrossPatternNext = false;
         if (startPatterns && isActiveAndEnabled)
@@ -1038,8 +1059,19 @@ public sealed class EgoSwordActor : MonoBehaviour
         transform.position = groundTarget;
         transform.rotation = Quaternion.identity;
         ApplyBuriedMask();
-        activeVerticalAttackVfx = DemonKingPatternVfx.SpawnEgoSwordAttack(transform, verticalStrikeDiameter);
-        DemonKingAnimationClipVisual impactVfx = DemonKingPatternVfx.SpawnImpact(groundTarget, verticalStrikeDiameter, leaveFragment: false);
+        activeVerticalAttackVfx = DemonKingPatternVfx.SpawnCueAttachedOneShot(
+            verticalAttackVfx,
+            transform,
+            Vector3.zero,
+            verticalStrikeDiameter,
+            Vector2.down,
+            "EgoSword_VerticalAttackVfx");
+        DemonKingAnimationClipVisual impactVfx = DemonKingPatternVfx.SpawnCueOneShot(
+            verticalImpactVfx,
+            groundTarget,
+            verticalStrikeDiameter,
+            Vector2.down,
+            "EgoSword_VerticalImpactVfx");
         bool presentationPlayed = false;
         void PlayImpactPresentationOnce()
         {
@@ -1181,7 +1213,13 @@ public sealed class EgoSwordActor : MonoBehaviour
     private void StartSwordSpinEffect()
     {
         StopSwordSpinEffect();
-        activeSwordSpinVfx = DemonKingPatternVfx.SpawnSwordSpinLoop(transform);
+        activeSwordSpinVfx = DemonKingPatternVfx.SpawnCueFollowingLoop(
+            swordSpinVfx,
+            transform,
+            Vector3.zero,
+            contactRadius * 2f,
+            velocityDirection,
+            "EgoSword_SpinVfx");
     }
 
     private void StopSwordSpinEffect()

@@ -70,6 +70,61 @@ public sealed class DialogueTextAnimationProfileSO : ScriptableObject
         cameraShake = DialogueCameraShakeSettings.CreateDefault();
     }
 
+    public void ResetShakeToDefault()
+    {
+        shake = InlineMotionSettings.CreateShake();
+    }
+
+    public void ResetTrembleToDefault()
+    {
+        tremble = InlineMotionSettings.CreateTremble();
+    }
+
+    public void ResetSlowShakeToDefault()
+    {
+        slowShake = InlineMotionSettings.CreateSlowShake();
+    }
+
+    public void ResetWaveToDefault()
+    {
+        wave = WaveMotionSettings.CreateWave();
+    }
+
+    public void ResetFloatToDefault()
+    {
+        @float = WaveMotionSettings.CreateFloat();
+    }
+
+    public void ResetPunchToDefault()
+    {
+        punch = PunchMotionSettings.CreateDefault();
+    }
+
+    public void ResetRandomSizeToDefault()
+    {
+        randomSize = RandomSizeSettings.CreateDefault();
+    }
+
+    public void ResetCameraShakeLowToDefault()
+    {
+        cameraShake = cameraShake.WithDefaultLow();
+    }
+
+    public void ResetCameraShakeMiddleToDefault()
+    {
+        cameraShake = cameraShake.WithDefaultMiddle();
+    }
+
+    public void ResetCameraShakeHighToDefault()
+    {
+        cameraShake = cameraShake.WithDefaultHigh();
+    }
+
+    public void ResetCameraShakeToDefault()
+    {
+        cameraShake = DialogueCameraShakeSettings.CreateDefault();
+    }
+
     public bool TryResolveCameraShakeMotion(
         DialogueCameraShakePreset preset,
         out DialogueCameraShakeMotionSettings motion)
@@ -315,6 +370,24 @@ public struct DialogueCameraShakeSettings
         low = low.Validated();
         middle = middle.Validated();
         high = high.Validated();
+        return this;
+    }
+
+    public DialogueCameraShakeSettings WithDefaultLow()
+    {
+        low = CreateDefault().low;
+        return this;
+    }
+
+    public DialogueCameraShakeSettings WithDefaultMiddle()
+    {
+        middle = CreateDefault().middle;
+        return this;
+    }
+
+    public DialogueCameraShakeSettings WithDefaultHigh()
+    {
+        high = CreateDefault().high;
         return this;
     }
 

@@ -30,6 +30,7 @@ DarkLord/DemonKing tuning values are intentionally split across `.anim` clips, g
 
 Implications:
 - Preview instances are hidden temporary objects rendered through a tool camera/RenderTexture and must not mutate scene or prefab contents during playback.
+- Composite preview should be used when checking combined body pose, selected VFX, hit-window marker, EgoSword markers, and socket positions in one authoring view.
 - `.anim` frame curves and hit-window events are saved only through explicit Apply buttons.
 - Pattern, EgoSword, and socket serialized fields are edited through `SerializedObject` with Undo/dirty handling, matching normal Inspector ownership.
 - This tool is an authoring convenience, not a gameplay manager or runtime dependency.
@@ -1791,3 +1792,45 @@ Implications:
 - `DarkLordFragment` is a separate crack visual: timed after general `DemonKingImpactVfx`, persistent while EgoSword is fixed in the ground, and faded/cleared by the owning runtime path.
 - HP50 charge and EgoSword spin are loop-follow visuals. The sword spin follows position but not sword rotation, matching the authored spinning effect sheet.
 - Unity import or `Tools/DemonKing/Rebuild Pattern VFX Assets` must create/repair the generated Resources assets before runtime loads the new prefabs.
+
+## 2026-05-30 - DemonKing Visual Tuning Uses Pattern-Unit Workbench
+
+Decision:
+`Tools/DemonKing/Visual Tuning Preview` treats `AL_DemonKing_*` assets as the pattern-level visual tuning source of truth. The Pattern Workbench shows a synthesized phase timeline for each pattern and groups quick controls by timing, animation, VFX, warning/hit, SFX/shake, and movement, while the full serialized asset inspector remains available below it.
+
+Reason:
+DemonKing visual timing is authored at the pattern level, not as isolated clips or VFX assets. Frame holds, warning fill, body pose changes, impact VFX, sockets, SFX, shake, and movement beats need to be reviewed together before Play Mode validation.
+
+Implications:
+- The Workbench is Editor-only and does not execute live Ability coroutines or own runtime state.
+- New tunable pattern policy values should live on the relevant `AbilityLogic_DemonKing*` asset when designers need to tune them, instead of staying hidden as code constants.
+- Serialized fields should be added conservatively and with defaults matching current behavior because existing ScriptableObject assets require Unity import/Inspector review.
+- Scene/prefab YAML is not modified by this tool; final pattern feel still requires Play Mode checks.
+
+## 2026-05-30 - DemonKing GroggyCounter Visuals Are Branch-Owned
+
+Decision:
+`AbilityLogic_DemonKingGroggyRecoverCounter` owns separate `swordVisual` and `handVisual` branch structs for groggy pose, counter animation, impact VFX, impact socket, and eye-flash socket/offset/size.
+
+Reason:
+Sword-held and hand-state counters are now intentionally different reads: sword keeps the slash/release style and secondary eye point, while hand uses DemonKingImpact/DarkLordImpact-style release and the primary eye point. Keeping both under one generic field caused the Workbench to hide the real branch differences and made runtime edits easy to misapply.
+
+Implications:
+- Sword branch defaults to `DarkLord_Sword_Groggy`, `DarkLord_Sword_GroggyCounter`, `DarkLordGroggyReleaseVfx`, `SwordCounterOrigin`, and `EyeFlashSecondary`.
+- Hand branch defaults to `DarkLord_Hand_Groggy`, `DarkLord_Hand_GroggyCounter`, `DemonKingImpactVfx`, `HandCounterImpact`, and `EyeFlash`.
+- Common damage, knockback, dim timing, SFX, and shake remain shared on the AL.
+- Existing AL assets need Unity import/Inspector review for the new nested serialized fields.
+
+## 2026-05-30 - DemonKing Pattern Presentation Mapping Is Asset-Owned
+
+Decision:
+DemonKing pattern body animation and VFX selection should be editable from the Pattern Workbench through serialized fields on the owning `AL_DemonKing_*` asset, with `EgoSwordActor` owning sword-specific subpattern cue refs.
+
+Reason:
+Designers need to tune a whole pattern as one unit: body clip choice, hold/sample policy, VFX prefab override, built-in fallback, socket, scale, rotation, and resource fallback must be visible beside the synthesized pattern timeline. Keeping this data on the existing runtime owner avoids a second profile asset and keeps Play Mode behavior tied to the same fields shown in the tool.
+
+Implications:
+- `DemonKingBodyAnimationRef` and `DemonKingVfxCueRef` are the preferred pattern-facing presentation reference structs for new DemonKing visual mappings.
+- The Workbench `Animation / VFX Mapping` panel should expose the runtime-owned fields rather than only showing hardcoded preview descriptors.
+- Existing AL assets and `EgoSwordActor` instances require Unity import/Inspector review after new serialized fields are added.
+- The Workbench remains Editor-only preview; it does not execute live pattern coroutines or replace Play Mode validation.

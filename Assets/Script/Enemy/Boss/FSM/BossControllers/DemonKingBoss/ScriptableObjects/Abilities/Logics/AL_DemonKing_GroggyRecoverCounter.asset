@@ -16,6 +16,28 @@ MonoBehaviour:
   explosionDiameter: 5.4
   damage: 1
   knockback: 14
-  dimTargetAlpha: 0.8
-  eyeFlashLocalOffset: {x: 0, y: 0.75}
+  dimTargetAlpha: 0.9
+  dimFadeOutRatio: 0.45
+  eyeFlashHoldRatio: 0.2
+  eyeFlashLocalOffset: {x: 0, y: 1}
   eyeFlashSize: {x: 2.4, y: 0.9}
+  counterEndPoseHoldSeconds: 0.12
+  minimumImpactPoseHoldSeconds: 0.5
+  warningPingSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  counterImpactSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  counterImpactCameraShake:
+    amplitude: 0.2
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.38
+    minIntervalSeconds: 0.04
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
