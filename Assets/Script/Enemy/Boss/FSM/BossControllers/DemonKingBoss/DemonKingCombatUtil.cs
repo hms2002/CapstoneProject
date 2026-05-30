@@ -4,7 +4,23 @@ using UnityGAS;
 
 public static class DemonKingCombatUtil
 {
+    public const float TopDownCircleWarningYScale = 0.9f;
+
     private static readonly Collider2D[] OverlapBuffer = new Collider2D[32];
+
+    public static AttackTelegraphSpec CreateTopDownCircleWarningSpec(
+        DemonKingController demon,
+        Vector2 center,
+        float diameter,
+        float duration)
+    {
+        float safeDiameter = Mathf.Max(0.01f, diameter);
+        return AttackTelegraphSpec.CreateEllipse(
+            center,
+            new Vector2(safeDiameter, safeDiameter * TopDownCircleWarningYScale),
+            duration,
+            demon != null ? demon.DefaultWarningStyle : null);
+    }
 
     public static CombatHitPayload MakePayload(
         DemonKingController demon,

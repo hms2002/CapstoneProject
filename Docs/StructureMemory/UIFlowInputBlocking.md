@@ -29,6 +29,8 @@ This is a fast context map, not the final UI architecture source of truth.
 - `Assets/LeeJunMo/Script/UIStructure/SettingsPanelUI.cs`
 - `Assets/LeeJunMo/Script/UIStructure/KeyBindingPanelUI.cs`
 - `Assets/LeeJunMo/Script/UIStructure/GameFlowInputBlocker.cs`
+- `Assets/HeoMinSeok/_Project/Scripts/UI/Inventory/Common/InventoryUIManager.cs`
+- `Assets/HeoMinSeok/_Project/Scripts/UI/HUD/InventoryOpenHudButton.cs`
 - `Assets/LeeJunMo/Script/Dialogue/DialogueService.cs`
 - `Assets/LeeJunMo/Script/Dialogue/BossEncounterDirector.cs`
 - `Assets/LeeJunMo/Script/Dialogue/BossTalkManager.cs`
@@ -51,7 +53,9 @@ This is a fast context map, not the final UI architecture source of truth.
 - The flow calls `Release()` when the protected flow window ends.
 - `GameFlowInputBlocker` releases automatically from `OnDisable` and `OnDestroy`.
 - A blocked flow that must open its own stack UI uses `GameFlowInputBlocker.TryPushOwnedUI(...)`.
+- A blocked flow that needs to query that exception first uses `GameFlowInputBlocker.CanOpenOwnedUI(...)`.
 - `UIManager.TryPushUIForExternalBlockOwner(...)` is the UIManager-side owner exception path.
+- `UIManager.CanOpenUIForExternalBlockOwner(...)` mirrors that owner exception for availability checks.
 - A popup that is explicitly part of the active flow, but not owned by the same blocker component, can use the flow-owned UI path through a dedicated service. Current example: affection reward UI opens via `RewardDisplayService.ShowFlowOwnedReward(...)`.
 - Persistent global panels are adopted under `GlobalUIRoot`; scene-local duplicate panels must not destroy a valid persistent panel to win their own static instance slot.
 - `SettingsPanelUI.EnsureInstance()` and `KeyBindingPanelUI.EnsureInstance()` should return the current valid instance or search existing authored panels. The ownership decision belongs to the root/UI manager layer, not to child-panel replacement rules.
@@ -63,6 +67,7 @@ This is a fast context map, not the final UI architecture source of truth.
 - Dialogue blocking is owned by `DialogueService` while dialogue is playing.
 - Boss encounter presentation blocking is owned by `BossEncounterDirector` for the outer camera/transition/dialogue/return sequence. Legacy `BossTalkManager` follows the same rule.
 - Boss death presentation, game-over return presentation, tutorial combat intro, merchant activation cinematic, hub spawn fall/wake presentation, and boss reward portal reveal each own a blocker for their flow window.
+- Real defeat and victory GameOver screens keep their blocker active, but expose a narrow inventory-only exception through `GameOverPresentationController`. `InventoryUIManager` uses that owner path so Inventory can open while Pause, Settings, and other unrelated stack UI remain blocked. FakeGameOver disables the exception.
 - Upgrade open fade is executed by `UpgradeUiOpenFlow`; it blocks unrelated UI input, then opens `UpgradeTreeUI` through the owned push path.
 - Reward open presentation blocks unrelated UI input until the open presentation finishes.
 - Affection reward UI can open as a flow-owned popup during dialogue/encounter blocking, then its close callback resumes the waiting dialogue tag. While open, `RewardDisplayUI` asks `DialogueService` to make the captured Reward canvas and shared non-raycasting Hover canvas temporarily visible so reward item detail hover can render even though Dialogue suppression still owns the rest of the non-dialogue UI.
@@ -73,6 +78,7 @@ This is a fast context map, not the final UI architecture source of truth.
 
 - For a new flow gap before stack UI opens, add a `GameFlowInputBlocker` to the flow owner and wrap only the protected window.
 - For a flow that opens its own UI while blocked, use `TryPushOwnedUI`.
+- For a flow that must make a HUD button visible while blocked, keep the exception narrow and owner-bound. GameOver temporarily presents the existing authored Inventory HUD button on the GameOver canvas, then restores its parent, sibling index, active state, and key-hint state during cleanup.
 - For a flow-owned popup opened by a service rather than by the blocker owner itself, use a narrow service/API handoff instead of calling the normal `TryPushUI` path.
 - For an already-open stack UI, prefer `IStackableUI.GameplayLockProfile` instead of adding a flow blocker.
 - If several flows need a shared handoff rule, update this document and consider an Architecture/Contract promotion.

@@ -765,6 +765,7 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
                 EditorGUILayout.LabelField("Current Phase", EditorStyles.boldLabel);
                 EditorGUILayout.LabelField(selectedPhase.Name, EditorStyles.boldLabel);
                 EditorGUILayout.LabelField("Body", string.IsNullOrEmpty(selectedPhase.BodyClipName) ? "(none)" : selectedPhase.BodyClipName);
+                EditorGUILayout.LabelField("Body Field", string.IsNullOrEmpty(selectedPhase.BodyPropertyPath) ? "(none)" : selectedPhase.BodyPropertyPath);
                 EditorGUILayout.LabelField("VFX", string.IsNullOrEmpty(selectedPhase.VfxPrefabName) ? "(none)" : selectedPhase.VfxPrefabName);
                 EditorGUILayout.LabelField("Socket", selectedPhase.HasSocket ? selectedPhase.SocketId.ToString() : "(none)");
                 EditorGUILayout.LabelField("Policy", selectedPhase.Policy);
@@ -928,6 +929,7 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
         {
             EditorGUILayout.LabelField(selectedPhase.Name, EditorStyles.boldLabel);
             EditorGUILayout.LabelField("Body", string.IsNullOrEmpty(selectedPhase.BodyClipName) ? "(none)" : selectedPhase.BodyClipName);
+            EditorGUILayout.LabelField("Body Field", string.IsNullOrEmpty(selectedPhase.BodyPropertyPath) ? "(none)" : selectedPhase.BodyPropertyPath);
             EditorGUILayout.LabelField("VFX", string.IsNullOrEmpty(selectedPhase.VfxPrefabName) ? "(none)" : selectedPhase.VfxPrefabName);
             EditorGUILayout.LabelField("Socket", selectedPhase.HasSocket ? selectedPhase.SocketId.ToString() : "(none)");
             EditorGUILayout.LabelField("Policy", selectedPhase.Policy);
@@ -955,6 +957,7 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
 
         EditorGUILayout.Space(6f);
         EditorGUILayout.LabelField("Animation / VFX Mapping", EditorStyles.boldLabel);
+        DrawBodyCueCoverageDiagnostics(definition);
         for (int i = 0; i < definition.MappingRows.Count; i++)
         {
             DemonKingPatternPreviewMappingRow row = definition.MappingRows[i];
@@ -995,6 +998,40 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
                 }
             }
         }
+    }
+
+    private static void DrawBodyCueCoverageDiagnostics(DemonKingPatternPreviewDefinition definition)
+    {
+        if (definition == null || definition.Phases.Count == 0)
+            return;
+
+        List<string> missing = new();
+        for (int i = 0; i < definition.Phases.Count; i++)
+        {
+            DemonKingPatternPreviewPhase phase = definition.Phases[i];
+            if (phase == null
+                || string.IsNullOrWhiteSpace(phase.BodyClipName)
+                || phase.HasEditableBodyCue)
+            {
+                continue;
+            }
+
+            string key = $"[{phase.Category}] {phase.Name}: {phase.BodyClipName}";
+            if (!missing.Contains(key))
+                missing.Add(key);
+        }
+
+        if (missing.Count == 0)
+        {
+            EditorGUILayout.HelpBox(
+                "Body Cue Coverage: every previewed body pose in this pattern is connected to an editable BodyAnimationRef field.",
+                MessageType.Info);
+            return;
+        }
+
+        EditorGUILayout.HelpBox(
+            "Body Cue Coverage missing editable fields:\n" + string.Join("\n", missing),
+            MessageType.Warning);
     }
 
     private SerializedObject ResolveMappingSerializedObject(DemonKingPatternPreviewMappingRow row)
@@ -2089,6 +2126,10 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
         float flyingRotation = ReadEgoSwordFloat("flyingRotationDegreesPerSecond", 720f);
         float throwRotation = ReadEgoSwordFloat("throwInitialRotation", 0f);
         float recallRotation = ReadEgoSwordFloat("recallInitialRotation", 0f);
+        float recallLiftHeight = ReadEgoSwordFloat("recallLiftHeight", 2.2f);
+        float recallLiftSeconds = ReadEgoSwordFloat("recallLiftSeconds", 0.16f);
+        float recallLiftHoldSeconds = ReadEgoSwordFloat("recallLiftHoldSeconds", 0.18f);
+        float recallReturnMinimumSeconds = ReadEgoSwordFloat("recallReturnMinimumSeconds", 0.35f);
         float hoverHeight = ReadEgoSwordFloat("verticalHoverHeight", 2.2f);
         float liftSeconds = ReadEgoSwordFloat("verticalStrikeLiftSeconds", 0.1f);
         float liftHeight = ReadEgoSwordFloat("verticalStrikeLiftHeight", 0.45f);
@@ -2109,10 +2150,17 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
                 Vector3.Lerp(throwOrigin, droppedPoint, t),
                 throwRotation + flyingRotation * localTime,
                 showSpin: true),
-            DemonKingEgoSwordPreviewMode.RecallSpin => new EgoSwordPreviewPose(
-                Vector3.Lerp(droppedPoint, recallTarget, t),
-                recallRotation + flyingRotation * localTime,
-                showSpin: true),
+            DemonKingEgoSwordPreviewMode.RecallSpin => ResolveRecallSpinPose(
+                localTime,
+                duration,
+                droppedPoint,
+                recallTarget,
+                recallLiftHeight,
+                recallLiftSeconds,
+                recallLiftHoldSeconds,
+                recallReturnMinimumSeconds,
+                recallRotation,
+                flyingRotation),
             DemonKingEgoSwordPreviewMode.VerticalTrack => new EgoSwordPreviewPose(
                 Vector3.Lerp(droppedPoint, new Vector3(0f, hoverHeight, -0.04f), Mathf.SmoothStep(0f, 1f, t)),
                 flyingRotation * localTime,
@@ -2156,6 +2204,48 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
             Vector3.Lerp(apex, ground, dropT * dropT),
             flyingRotationDegreesPerSecond * localTime,
             showSpin: false);
+    }
+
+    private static EgoSwordPreviewPose ResolveRecallSpinPose(
+        float localTime,
+        float duration,
+        Vector3 droppedPoint,
+        Vector3 recallTarget,
+        float liftHeight,
+        float liftSeconds,
+        float liftHoldSeconds,
+        float returnMinimumSeconds,
+        float recallInitialRotation,
+        float flyingRotationDegreesPerSecond)
+    {
+        Vector3 liftedPoint = droppedPoint + Vector3.up * Mathf.Max(0f, liftHeight);
+        float safeLiftSeconds = Mathf.Max(0f, liftSeconds);
+        if (safeLiftSeconds > 0.001f && localTime < safeLiftSeconds)
+        {
+            float liftT = Mathf.Clamp01(localTime / safeLiftSeconds);
+            float easedLiftT = 1f - Mathf.Pow(1f - liftT, 3f);
+            return new EgoSwordPreviewPose(
+                Vector3.Lerp(droppedPoint, liftedPoint, easedLiftT),
+                recallInitialRotation,
+                showSpin: false);
+        }
+
+        float safeLiftHoldSeconds = Mathf.Max(0f, liftHoldSeconds);
+        if (localTime < safeLiftSeconds + safeLiftHoldSeconds)
+        {
+            return new EgoSwordPreviewPose(
+                liftedPoint,
+                recallInitialRotation,
+                showSpin: false);
+        }
+
+        float returnStartTime = safeLiftSeconds + safeLiftHoldSeconds;
+        float returnSeconds = Mathf.Max(0.01f, Mathf.Max(returnMinimumSeconds, duration - returnStartTime));
+        float returnT = Mathf.Clamp01((localTime - returnStartTime) / returnSeconds);
+        return new EgoSwordPreviewPose(
+            Vector3.Lerp(liftedPoint, recallTarget, returnT),
+            recallInitialRotation + flyingRotationDegreesPerSecond * Mathf.Max(0f, localTime - returnStartTime),
+            showSpin: true);
     }
 
     private Vector3 ReadEgoSwordVector3(string propertyName, Vector3 fallback)
@@ -2498,9 +2588,19 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
     private void DrawPatternCircle(Rect previewRect, DemonKingPatternPreviewShape shape)
     {
         Vector3 center = PreviewOrigin + (Vector3)shape.CenterOffset;
-        Vector2 guiCenter = WorldToPreviewGui(center, previewRect);
-        Handles.DrawWireDisc(guiCenter, Vector3.forward, WorldDistanceToPreviewPixels(shape.Radius, previewRect));
-        Handles.Label(guiCenter + new Vector2(8f, -36f), shape.Label);
+        Vector2 radii = shape.Size.sqrMagnitude > 0.0001f
+            ? shape.Size * 0.5f
+            : Vector2.one * shape.Radius;
+        List<Vector3> points = new();
+        for (int i = 0; i <= 48; i++)
+        {
+            float angle = i / 48f * Mathf.PI * 2f;
+            Vector3 world = center + new Vector3(Mathf.Cos(angle) * radii.x, Mathf.Sin(angle) * radii.y, 0f);
+            points.Add(WorldToPreviewGui(world, previewRect));
+        }
+
+        Handles.DrawAAPolyLine(2f, points.ToArray());
+        Handles.Label(WorldToPreviewGui(center, previewRect) + new Vector2(8f, -36f), shape.Label);
     }
 
     private void DrawPatternRectangle(Rect previewRect, DemonKingPatternPreviewShape shape)
@@ -3334,12 +3434,14 @@ internal sealed class DemonKingPatternPreviewShape
 
     public static DemonKingPatternPreviewShape Circle(string label, Vector2 centerOffset, float diameter)
     {
+        float safeDiameter = Mathf.Max(0.1f, diameter);
         return new DemonKingPatternPreviewShape
         {
             Kind = DemonKingPatternPreviewShapeKind.Circle,
             Label = label,
             CenterOffset = centerOffset,
-            Radius = Mathf.Max(0.05f, diameter * 0.5f)
+            Size = new Vector2(safeDiameter, safeDiameter * DemonKingCombatUtil.TopDownCircleWarningYScale),
+            Radius = safeDiameter * 0.5f
         };
     }
 
@@ -3429,6 +3531,8 @@ internal sealed class DemonKingPatternPreviewPhase
     public float EndSeconds => StartSeconds + DurationSeconds;
     public float DefaultPreviewTime { get; private set; }
     public string BodyClipName { get; private set; }
+    public string BodyPropertyPath { get; private set; }
+    public bool HasEditableBodyCue => !string.IsNullOrWhiteSpace(BodyPropertyPath);
     public int BodyFrameIndex { get; private set; } = -1;
     public string VfxPrefabName { get; private set; }
     public GameObject VfxPrefabReference { get; private set; }
@@ -3448,10 +3552,11 @@ internal sealed class DemonKingPatternPreviewPhase
         DurationSeconds = Mathf.Max(0.01f, durationSeconds);
     }
 
-    public DemonKingPatternPreviewPhase WithBody(string clipName, int frameIndex = -1)
+    public DemonKingPatternPreviewPhase WithBody(string clipName, int frameIndex = -1, string bodyPropertyPath = null)
     {
         BodyClipName = clipName;
         BodyFrameIndex = frameIndex;
+        BodyPropertyPath = bodyPropertyPath;
         return this;
     }
 
@@ -3618,11 +3723,11 @@ internal sealed class DemonKingPatternPreviewDefinition
         {
             float warning = Mathf.Max(0.01f, firstWarning - warningStep * i);
             AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Warning", $"Pierce {i + 1} ready", warning)
-                .WithBody(BodyName(serializedObject, "readyAnimation", "DarkLord_Sword_DashStabReady"), BodyFrame(serializedObject, "readyAnimation", 0))
+                .WithBody(BodyName(serializedObject, "readyAnimation", "DarkLord_Sword_DashStabReady"), BodyFrame(serializedObject, "readyAnimation", 0), "readyAnimation")
                 .WithShape(DemonKingPatternPreviewShape.Rectangle("Dash warning", ForwardLineCenter, new Vector2(4f, hitWidth), LeftRotationDeg))
                 .WithPolicy("DashStabReady first frame is held while the warning follows the current target."));
             AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Commit", $"Pierce {i + 1} dash", lunge)
-                .WithBody(BodyName(serializedObject, "dashAnimation", "DarkLord_Sword_DashStab"), BodyFrame(serializedObject, "dashAnimation", -1))
+                .WithBody(BodyName(serializedObject, "dashAnimation", "DarkLord_Sword_DashStab"), BodyFrame(serializedObject, "dashAnimation", -1), "dashAnimation")
                 .WithVfx(
                     VfxName(serializedObject, "stabVfx", "DemonKingStabVfx"),
                     VfxSocket(serializedObject, "stabVfx", DemonKingVfxSocketId.SwordStabOrigin),
@@ -3635,15 +3740,15 @@ internal sealed class DemonKingPatternPreviewDefinition
             if (i < count - 1)
             {
                 AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Recover", $"Pierce {i + 1} return", returnSeconds)
-                    .WithBody(BodyName(serializedObject, "readyAnimation", "DarkLord_Sword_DashStabReady"), BodyFrame(serializedObject, "readyAnimation", 0))
+                    .WithBody(BodyName(serializedObject, "readyAnimation", "DarkLord_Sword_DashStabReady"), BodyFrame(serializedObject, "readyAnimation", 0), "readyAnimation")
                     .WithPolicy("Recover returns to the ready pose before the next dash."));
                 AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Interval", $"Pierce {i + 1} interval", interval)
-                    .WithBody(BodyName(serializedObject, "readyAnimation", "DarkLord_Sword_DashStabReady"), BodyFrame(serializedObject, "readyAnimation", 0)));
+                    .WithBody(BodyName(serializedObject, "readyAnimation", "DarkLord_Sword_DashStabReady"), BodyFrame(serializedObject, "readyAnimation", 0), "readyAnimation"));
             }
             else
             {
                 AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Recover", "Final dash end hold", endHold)
-                    .WithBody(BodyName(serializedObject, "readyAnimation", "DarkLord_Sword_DashStabReady"), BodyFrame(serializedObject, "readyAnimation", 0)));
+                    .WithBody(BodyName(serializedObject, "readyAnimation", "DarkLord_Sword_DashStabReady"), BodyFrame(serializedObject, "readyAnimation", 0), "readyAnimation"));
             }
         }
 
@@ -3658,8 +3763,9 @@ internal sealed class DemonKingPatternPreviewDefinition
         definition.AddGroup("Movement", "moveSpeedMultiplier", "fallbackMoveSeconds", "stopBeforeTargetDistance");
         definition.AddGroup("Warning / Hit", "warningSeconds", "slashRadius", "slashAngle", "damage", "knockback");
         definition.AddGroup("Line Explosions", "fallbackLineLength", "lineWidth", "explosionSpacing", "explosionDiameter", "explosionWarningSeconds", "explosionStepInterval", "explosionDamage");
-        definition.AddGroup("Animation / VFX", "slashWarningAnimation", "slashCommitAnimation", "slashVfx", "lineExplosionVfx", "slashEndPoseHoldSeconds");
+        definition.AddGroup("Animation / VFX", "approachAnimation", "slashWarningAnimation", "slashCommitAnimation", "slashVfx", "lineExplosionVfx", "slashEndPoseHoldSeconds");
         definition.AddGroup("SFX / Shake", "approachSound", "slashCommitSound", "lineExplosionSound", "slashImpactCameraShake", "lineExplosionCameraShake");
+        definition.AddMapping("Approach Body", bodyPropertyPath: "approachAnimation");
         definition.AddMapping("Slash Warning Hold", bodyPropertyPath: "slashWarningAnimation");
         definition.AddMapping("Slash Commit / Slash VFX", bodyPropertyPath: "slashCommitAnimation", vfxPropertyPath: "slashVfx");
         definition.AddMapping("Follow-up Line Explosion VFX", vfxPropertyPath: "lineExplosionVfx");
@@ -3676,14 +3782,14 @@ internal sealed class DemonKingPatternPreviewDefinition
         float hold = Float(serializedObject, "slashEndPoseHoldSeconds", 0.12f);
 
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Move", "Approach and face target", move)
-            .WithBody("DarkLord_Sword_Idle")
-            .WithPolicy("Boss stops before the target, then recalculates slash direction."));
+            .WithBody(BodyName(serializedObject, "approachAnimation", string.Empty), BodyFrame(serializedObject, "approachAnimation", -1), "approachAnimation")
+            .WithPolicy("Optional approach body cue; boss stops before the target, then recalculates slash direction."));
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Warning", "Slash_1 warning hold", warning)
-            .WithBody(BodyName(serializedObject, "slashWarningAnimation", "DarkLord_Sword_Slash"), BodyFrame(serializedObject, "slashWarningAnimation", 1))
+            .WithBody(BodyName(serializedObject, "slashWarningAnimation", "DarkLord_Sword_Slash"), BodyFrame(serializedObject, "slashWarningAnimation", 1), "slashWarningAnimation")
             .WithShape(DemonKingPatternPreviewShape.Sector("Slash sector", Vector2.zero, radius, angle, LeftRotationDeg))
             .WithPolicy("Slash_1 is held while sector and line warnings fill from attack origin."));
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Commit", "Slash_2 impact", 0.12f)
-            .WithBody(BodyName(serializedObject, "slashCommitAnimation", "DarkLord_Sword_Slash"), BodyFrame(serializedObject, "slashCommitAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex))
+            .WithBody(BodyName(serializedObject, "slashCommitAnimation", "DarkLord_Sword_Slash"), BodyFrame(serializedObject, "slashCommitAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "slashCommitAnimation")
             .WithVfx(
                 VfxName(serializedObject, "slashVfx", "DarkLordSlashVfx"),
                 VfxSocket(serializedObject, "slashVfx", DemonKingVfxSocketId.SwordSlashOrigin),
@@ -3698,7 +3804,7 @@ internal sealed class DemonKingPatternPreviewDefinition
             .WithShape(DemonKingPatternPreviewShape.Rectangle("Line explosion lanes", new Vector2(-lineLength * 0.1f, 0f), new Vector2(Mathf.Min(lineLength, 8f), lineWidth), LeftRotationDeg))
             .WithPolicy($"DarkLordExplosion2 repeats at spacing, diameter {explosionDiameter:0.00}."));
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Recover", "Slash end pose hold", hold)
-            .WithBody(BodyName(serializedObject, "slashCommitAnimation", "DarkLord_Sword_Slash"), BodyFrame(serializedObject, "slashCommitAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex)));
+            .WithBody(BodyName(serializedObject, "slashCommitAnimation", "DarkLord_Sword_Slash"), BodyFrame(serializedObject, "slashCommitAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "slashCommitAnimation"));
         return definition;
     }
 
@@ -3708,33 +3814,39 @@ internal sealed class DemonKingPatternPreviewDefinition
             "ThrowEgoSword",
             "Sword throw warning, DarkLord_Sword_Throwing frame timing, then EgoSword appears from the throw origin.");
         definition.PreferEgoSword();
-        definition.AddGroup("Timing", "warningSeconds", "throwSpeedMultiplier", "wallBounceCount", "throwEndPoseHoldSeconds");
-        definition.AddGroup("Animation", "throwAnimation");
+        definition.AddGroup("Timing", "warningSeconds", "throwReleaseDelaySeconds", "throwSpeedMultiplier", "wallBounceCount", "throwEndPoseHoldSeconds");
+        definition.AddGroup("Animation", "aimAnimation", "throwAnimation", "throwEndPoseAnimation");
         definition.AddGroup("SFX / Shake", "throwReleaseSound");
+        definition.AddMapping("Aim Body", bodyPropertyPath: "aimAnimation");
         definition.AddMapping("Throw Body Clip", bodyPropertyPath: "throwAnimation");
+        definition.AddMapping("Throw End Pose Body", bodyPropertyPath: "throwEndPoseAnimation");
         definition.AddMapping(
             "EgoSword Throw Spin VFX",
             vfxPropertyPath: "swordSpinVfx",
             source: DemonKingPatternPreviewMappingSource.EgoSwordActor);
         float time = 0f;
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Warning", "Aim held sword", Float(serializedObject, "warningSeconds", 1.4f))
-            .WithBody("DarkLord_Sword_Idle")
+            .WithBody(BodyName(serializedObject, "aimAnimation", "DarkLord_Sword_Idle"), BodyFrame(serializedObject, "aimAnimation", 0), "aimAnimation")
             .WithPolicy("No EgoSword actor is visible while held; the body owns the sword pose."));
-        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Animation", "Throw wind-up frame", 1.5f)
-            .WithBody(BodyName(serializedObject, "throwAnimation", "DarkLord_Sword_Throwing"), 0)
-            .WithPolicy("Frame 0 communicates the long throw preparation."));
+        float throwReleaseDelay = Float(serializedObject, "throwReleaseDelaySeconds", 1.5f);
+        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Animation", "Throw wind-up frame", throwReleaseDelay)
+            .WithBody(BodyName(serializedObject, "throwAnimation", "DarkLord_Sword_Throwing"), 0, "throwAnimation")
+            .WithPolicy("Frame 0 communicates the long throw preparation; release starts when Throw_1 appears."));
         float releaseStart = time;
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Commit", "Throw release frame", 0.5f)
-            .WithBody(BodyName(serializedObject, "throwAnimation", "DarkLord_Sword_Throwing"), DemonKingPatternPreviewPhase.LastBodyFrameIndex)
+            .WithBody(BodyName(serializedObject, "throwAnimation", "DarkLord_Sword_Throwing"), DemonKingPatternPreviewPhase.LastBodyFrameIndex, "throwAnimation")
             .WithVfx(
                 EgoSwordVfxName(selectedEgoSword, "swordSpinVfx", "SwordSpin4FrameVfx"),
                 DemonKingVfxSocketId.SwordThrowEffectOrigin,
                 prefabReference: EgoSwordVfxPrefab(selectedEgoSword, "swordSpinVfx"))
-            .WithPolicy("Last frame starts EgoSword throw and spin VFX; EgoSword offsets are reviewed with the marker overlay."));
+            .WithPolicy("Throw_1/release frame starts EgoSword throw and spin VFX; EgoSword offsets are reviewed with the marker overlay."));
         definition.AddCue(DemonKingPatternPreviewCue.EgoSword(
             releaseStart,
             Mathf.Max(0.01f, time - releaseStart),
             DemonKingEgoSwordPreviewMode.ThrowSpin));
+        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Recover", "Throw end pose hold", Float(serializedObject, "throwEndPoseHoldSeconds", 0.12f))
+            .WithBody(BodyName(serializedObject, "throwEndPoseAnimation", "DarkLord_Sword_Throwing"), BodyFrame(serializedObject, "throwEndPoseAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "throwEndPoseAnimation")
+            .WithPolicy("End pose is independent from the throw release clip so it can be tuned separately."));
         return definition;
     }
 
@@ -3756,7 +3868,7 @@ internal sealed class DemonKingPatternPreviewDefinition
         float interval = Float(serializedObject, "shotIntervalSeconds", 0.4f);
         float move = Float(serializedObject, "moveSeconds", 0.18f);
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Load", "Overhead stock arc", 0.12f)
-            .WithBody(BodyName(serializedObject, "castAnimation", "DarkLord_Hand_Balt"), BodyFrame(serializedObject, "castAnimation", 0))
+            .WithBody(BodyName(serializedObject, "castAnimation", "DarkLord_Hand_Balt"), BodyFrame(serializedObject, "castAnimation", 0), "castAnimation")
             .WithVfx(
                 ObjectPrefabName(serializedObject, "stockOrbVisualPrefab", "HomingMagicBaltStockVfx"),
                 DemonKingVfxSocketId.HomingStockCenter,
@@ -3766,7 +3878,7 @@ internal sealed class DemonKingPatternPreviewDefinition
         for (int i = 0; i < count; i++)
         {
             AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Fire", $"Consume stock {i + 1}", Mathf.Max(0.01f, interval))
-                .WithBody(BodyName(serializedObject, "fireAnimation", "DarkLord_Hand_Balt"), BodyFrame(serializedObject, "fireAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex))
+                .WithBody(BodyName(serializedObject, "fireAnimation", "DarkLord_Hand_Balt"), BodyFrame(serializedObject, "fireAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "fireAnimation")
                 .WithVfx(
                     ObjectPrefabName(serializedObject, "firedProjectileVisualPrefab", "HomingMagicBaltProjectileVfx"),
                     DemonKingVfxSocketId.HomingStockCenter,
@@ -3784,11 +3896,12 @@ internal sealed class DemonKingPatternPreviewDefinition
             "Bombardment",
             "Hand charge, GroggyCounter release impact, one-second release hold, then DarkLordExplosion2 lane strikes.");
         definition.AddGroup("Timing", "strikeCount", "moveSeconds", "warningSeconds", "warningIntervalSeconds", "releaseImpactPoseHoldSeconds");
-        definition.AddGroup("Animation / VFX", "chargeAnimation", "releaseAnimation", "releaseImpactVfx", "laneExplosionVfx");
+        definition.AddGroup("Animation / VFX", "chargeAnimation", "releaseAnimation", "postReleaseAnimation", "releaseImpactVfx", "laneExplosionVfx");
         definition.AddGroup("Lane", "sideOffset", "laneWidth", "fallbackMapHeight", "explosionDiameter", "explosionSpacing", "damage");
         definition.AddGroup("SFX / Shake", "chargeSound", "releaseSound", "explosionSound", "bombardmentReleaseImpactCameraShake", "explosionCameraShake");
         definition.AddMapping("Charge Body", bodyPropertyPath: "chargeAnimation");
         definition.AddMapping("Release Body / Impact VFX", bodyPropertyPath: "releaseAnimation", vfxPropertyPath: "releaseImpactVfx");
+        definition.AddMapping("Post Release Body", bodyPropertyPath: "postReleaseAnimation");
         definition.AddMapping("Lane Explosion VFX", vfxPropertyPath: "laneExplosionVfx");
 
         float time = 0f;
@@ -3798,10 +3911,10 @@ internal sealed class DemonKingPatternPreviewDefinition
         float explosionDiameter = Float(serializedObject, "explosionDiameter", 1.35f);
         int count = Mathf.Clamp(Int(serializedObject, "strikeCount", 6), 1, 12);
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Charge", "Hand charge while moving", move)
-            .WithBody(BodyName(serializedObject, "chargeAnimation", "DarkLord_Hand_Charge"), BodyFrame(serializedObject, "chargeAnimation", -1))
+            .WithBody(BodyName(serializedObject, "chargeAnimation", "DarkLord_Hand_Charge"), BodyFrame(serializedObject, "chargeAnimation", -1), "chargeAnimation")
             .WithPolicy("Charge pose and movement happen before lane release."));
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Release", "GroggyCounter impact frame", Float(serializedObject, "releaseImpactPoseHoldSeconds", 1f))
-            .WithBody(BodyName(serializedObject, "releaseAnimation", "DarkLord_Hand_GroggyCounter"), BodyFrame(serializedObject, "releaseAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex))
+            .WithBody(BodyName(serializedObject, "releaseAnimation", "DarkLord_Hand_GroggyCounter"), BodyFrame(serializedObject, "releaseAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "releaseAnimation")
             .WithVfx(
                 VfxName(serializedObject, "releaseImpactVfx", "DemonKingImpactVfx"),
                 VfxSocket(serializedObject, "releaseImpactVfx", DemonKingVfxSocketId.HandCounterImpact),
@@ -3811,6 +3924,9 @@ internal sealed class DemonKingPatternPreviewDefinition
                 VfxPrefab(serializedObject, "releaseImpactVfx"))
             .WithShape(DemonKingPatternPreviewShape.Circle("Release impact", Vector2.zero, explosionDiameter))
             .WithPolicy("Impact VFX, release sound, shake, and release-frame hold are owned by Bombardment."));
+        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Recover", "Post release body", 0.12f)
+            .WithBody(BodyName(serializedObject, "postReleaseAnimation", "DarkLord_Hand_Idle"), BodyFrame(serializedObject, "postReleaseAnimation", 0), "postReleaseAnimation")
+            .WithPolicy("Body pose after release hold, before lane explosions continue."));
         for (int i = 0; i < count; i++)
         {
             AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Explosion", $"Lane strike {i + 1}", Mathf.Max(0.01f, interval + warning))
@@ -3841,11 +3957,11 @@ internal sealed class DemonKingPatternPreviewDefinition
         float travel = Float(serializedObject, "travelSeconds", 0.7f);
         float impactDiameter = Float(serializedObject, "impactDiameter", 3.2f);
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Warning", "Jump travel / landing warning", travel)
-            .WithBody(BodyName(serializedObject, "jumpTravelAnimation", "DarkLord_Hand_JumpAttack"), BodyFrame(serializedObject, "jumpTravelAnimation", 0))
+            .WithBody(BodyName(serializedObject, "jumpTravelAnimation", "DarkLord_Hand_JumpAttack"), BodyFrame(serializedObject, "jumpTravelAnimation", 0), "jumpTravelAnimation")
             .WithShape(DemonKingPatternPreviewShape.Circle("Landing warning", Vector2.zero, impactDiameter))
             .WithPolicy("JumpAttack_0 is held while the root follows the serialized jumpMotionProfile."));
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Commit", "Landing impact frame", Float(serializedObject, "landingPoseHoldSeconds", 0.14f))
-            .WithBody(BodyName(serializedObject, "jumpLandingAnimation", "DarkLord_Hand_JumpAttack"), BodyFrame(serializedObject, "jumpLandingAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex))
+            .WithBody(BodyName(serializedObject, "jumpLandingAnimation", "DarkLord_Hand_JumpAttack"), BodyFrame(serializedObject, "jumpLandingAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "jumpLandingAnimation")
             .WithVfx(
                 VfxName(serializedObject, "landingImpactVfx", "DemonKingImpactVfx"),
                 VfxSocket(serializedObject, "landingImpactVfx", DemonKingVfxSocketId.FootLandingImpact),
@@ -3865,31 +3981,44 @@ internal sealed class DemonKingPatternPreviewDefinition
     {
         DemonKingPatternPreviewDefinition definition = new(
             "RecallEgoSword",
-            "SwordRecover first frame is held while EgoSword returns; final frame samples when recall completes.");
+            "SwordRecover first frame is held while EgoSword lifts like VerticalStrike, then returns to the DemonKing socket with spin VFX.");
         definition.PreferEgoSword();
         definition.AddGroup("Timing", "recallSpeedMultiplier", "timeoutSeconds", "recoverEndPoseHoldSeconds");
-        definition.AddGroup("Animation", "recoverAnimation");
+        definition.AddGroup("Animation", "recoverAnimation", "recoverCompleteAnimation");
         definition.AddGroup("SFX / Shake", "recallStartSound", "recallCompleteSound");
         definition.AddMapping("Recover Body Clip", bodyPropertyPath: "recoverAnimation");
+        definition.AddMapping("Recover Complete Body", bodyPropertyPath: "recoverCompleteAnimation");
         definition.AddMapping(
             "EgoSword Recall Spin VFX",
             vfxPropertyPath: "swordSpinVfx",
             source: DemonKingPatternPreviewMappingSource.EgoSwordActor);
         float time = 0f;
         float recallDuration = Float(serializedObject, "timeoutSeconds", 2.5f);
-        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Recall", "Recover first frame hold", recallDuration)
-            .WithBody(BodyName(serializedObject, "recoverAnimation", "DarkLord_Hand_SwordRecover"), 0)
+        float recallLiftSeconds = EgoSwordFloat(selectedEgoSword, "recallLiftSeconds", 0.16f);
+        float recallLiftHoldSeconds = EgoSwordFloat(selectedEgoSword, "recallLiftHoldSeconds", 0.18f);
+        float recallReturnMinimumSeconds = EgoSwordFloat(selectedEgoSword, "recallReturnMinimumSeconds", 0.35f);
+        float returnDuration = Mathf.Max(
+            recallReturnMinimumSeconds,
+            recallDuration - recallLiftSeconds - recallLiftHoldSeconds);
+        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Lift", "Lift sword before return", recallLiftSeconds)
+            .WithBody(BodyName(serializedObject, "recoverAnimation", "DarkLord_Hand_SwordRecover"), 0, "recoverAnimation")
+            .WithPolicy("First frame remains held while EgoSword rises before flying back; spin starts on return."));
+        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Hold", "Hover before return", recallLiftHoldSeconds)
+            .WithBody(BodyName(serializedObject, "recoverAnimation", "DarkLord_Hand_SwordRecover"), 0, "recoverAnimation")
+            .WithPolicy("Lifted sword waits briefly in the air before return movement starts."));
+        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Return", "Fly to return socket", returnDuration)
+            .WithBody(BodyName(serializedObject, "recoverAnimation", "DarkLord_Hand_SwordRecover"), 0, "recoverAnimation")
             .WithVfx(
                 EgoSwordVfxName(selectedEgoSword, "swordSpinVfx", "SwordSpin4FrameVfx"),
                 DemonKingVfxSocketId.SwordThrowEffectOrigin,
                 prefabReference: EgoSwordVfxPrefab(selectedEgoSword, "swordSpinVfx"))
-            .WithPolicy("First frame remains held while the sword travels back."));
+            .WithPolicy("EgoSword returns to SwordThrowReturnOrigin while spin follows position only."));
         definition.AddCue(DemonKingPatternPreviewCue.EgoSword(
             0f,
-            recallDuration,
+            recallLiftSeconds + recallLiftHoldSeconds + returnDuration,
             DemonKingEgoSwordPreviewMode.RecallSpin));
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Complete", "Recover final frame", Float(serializedObject, "recoverEndPoseHoldSeconds", 0.16f))
-            .WithBody(BodyName(serializedObject, "recoverAnimation", "DarkLord_Hand_SwordRecover"), DemonKingPatternPreviewPhase.LastBodyFrameIndex)
+            .WithBody(BodyName(serializedObject, "recoverCompleteAnimation", "DarkLord_Hand_SwordRecover"), BodyFrame(serializedObject, "recoverCompleteAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "recoverCompleteAnimation")
             .WithPolicy("Final frame shows the sword returned before sword idle recovery."));
         return definition;
     }
@@ -3898,17 +4027,15 @@ internal sealed class DemonKingPatternPreviewDefinition
     {
         DemonKingPatternPreviewDefinition definition = new(
             "WallBounceRush",
-            "HP50 set piece: warning, linear rushes with endpoint pause, charge loop/disappear VFX, then final jump landing.");
-        definition.AddGroup("Rush", "wallBounceCount", "warningSeconds", "retreatSeconds", "fallbackRushDistance", "rushSpeedMultiplier", "rushEndPoseHoldSeconds");
+            "HP50 set piece after sword throw: hand-only warning, linear rushes with endpoint pause, charge loop/disappear VFX, then final jump landing.");
+        definition.AddGroup("Rush", "wallBounceCount", "warningSeconds", "retreatSeconds", "fallbackRushDistance", "minimumVisibleRushDistance", "minimumRushSeconds", "shortRushRetargetMaxAngle", "shortRushRetargetStepDegrees", "rushSpeedMultiplier", "rushEndPoseHoldSeconds");
         definition.AddGroup("Hit", "hitWidth", "damage", "knockback");
         definition.AddGroup("Final Jump", "finalJumpSeconds", "finalImpactDiameter", "finalImpactDamage", "finalJumpArcHeight", "finalJumpMotionProfile", "finalLandingPoseHoldSeconds", "finalLandingFrameSwitchRatio");
-        definition.AddGroup("Animation / VFX", "rushReadyAnimation", "swordRushAnimation", "handRushAnimation", "chargeLoopVfx", "chargeDisappearVfx", "finalJumpTravelAnimation", "finalJumpLandingAnimation", "finalLandingImpactVfx", "finalLandingExplosionVfx");
+        definition.AddGroup("Animation / VFX", "handRushAnimation", "endpointPauseAnimation", "chargeLoopVfx", "finalJumpTravelAnimation", "finalJumpLandingAnimation", "finalLandingImpactVfx", "finalLandingExplosionVfx");
         definition.AddGroup("SFX / Shake", "rushStartSound", "rushEndpointSound", "finalLandingSound", "rushEndpointCameraShake", "finalLandingCameraShake");
         definition.LegacyNoRuntimeEffectProperties.Add("finalLandingFrameSwitchRatio");
-        definition.AddMapping("Rush Ready Body", bodyPropertyPath: "rushReadyAnimation");
-        definition.AddMapping("Sword Rush Body / Charge Loop", bodyPropertyPath: "swordRushAnimation", vfxPropertyPath: "chargeLoopVfx");
-        definition.AddMapping("Hand Rush Body", bodyPropertyPath: "handRushAnimation");
-        definition.AddMapping("Endpoint Disappear VFX", vfxPropertyPath: "chargeDisappearVfx");
+        definition.AddMapping("Hand Rush Body / Charge VFX", bodyPropertyPath: "handRushAnimation", vfxPropertyPath: "chargeLoopVfx");
+        definition.AddMapping("Endpoint Pause Body / Disappear State", bodyPropertyPath: "endpointPauseAnimation");
         definition.AddMapping("Final Jump Travel Body", bodyPropertyPath: "finalJumpTravelAnimation");
         definition.AddMapping("Final Landing Body / Impact VFX", bodyPropertyPath: "finalJumpLandingAnimation", vfxPropertyPath: "finalLandingImpactVfx");
         definition.AddMapping("Final Landing Extra Explosion VFX", vfxPropertyPath: "finalLandingExplosionVfx");
@@ -3919,13 +4046,13 @@ internal sealed class DemonKingPatternPreviewDefinition
         float endpointHold = Mathf.Max(0.1f, Float(serializedObject, "rushEndPoseHoldSeconds", 0.1f));
         int count = Mathf.Clamp(Int(serializedObject, "wallBounceCount", 4), 1, 10);
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Warning", "Retreat and rush warning", warning + Float(serializedObject, "retreatSeconds", 0.16f))
-            .WithBody(BodyName(serializedObject, "rushReadyAnimation", "DarkLord_Sword_DashStabReady"), BodyFrame(serializedObject, "rushReadyAnimation", 0))
+            .WithBody(BodyName(serializedObject, "handRushAnimation", "DarkLord_Hand_JumpAttack"), BodyFrame(serializedObject, "handRushAnimation", 0), "handRushAnimation")
             .WithShape(DemonKingPatternPreviewShape.Rectangle("Rush warning", ForwardLineCenter, new Vector2(5f, hitWidth), LeftRotationDeg))
-            .WithPolicy("Warning line is recalculated from the current position before the rush loop."));
+            .WithPolicy("Charge is hand-only because WallBounceRush is selected after ThrowEgoSword drops the sword."));
         for (int i = 0; i < count; i++)
         {
             AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Rush", $"Wall rush {i + 1}", 0.2f)
-                .WithBody(BodyName(serializedObject, "swordRushAnimation", "DarkLord_Sword_DashStab"), BodyFrame(serializedObject, "swordRushAnimation", -1))
+                .WithBody(BodyName(serializedObject, "handRushAnimation", "DarkLord_Hand_JumpAttack"), BodyFrame(serializedObject, "handRushAnimation", 0), "handRushAnimation")
                 .WithVfx(
                     VfxName(serializedObject, "chargeLoopVfx", "DemonChargeEffectVfx"),
                     VfxSocket(serializedObject, "chargeLoopVfx", DemonKingVfxSocketId.ChargeLoop),
@@ -3934,26 +4061,26 @@ internal sealed class DemonKingPatternPreviewDefinition
                     VfxScale(serializedObject, "chargeLoopVfx"),
                     VfxPrefab(serializedObject, "chargeLoopVfx"))
                 .WithShape(DemonKingPatternPreviewShape.Rectangle("Rush hit", ForwardLineCenter, new Vector2(5f, hitWidth), LeftRotationDeg))
-                .WithPolicy("Linear rush movement uses no easing; hand-state branch previews with JumpAttack in Play Mode."));
+                .WithPolicy("Linear rush movement uses no easing; body animation uses the hand charge branch only."));
             AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Endpoint", $"Endpoint pause {i + 1}", endpointHold)
-                .WithBody(BodyName(serializedObject, "rushReadyAnimation", "DarkLord_Sword_DashStabReady"), BodyFrame(serializedObject, "rushReadyAnimation", 0))
+                .WithBody(BodyName(serializedObject, "endpointPauseAnimation", "DarkLord_Hand_JumpAttack"), BodyFrame(serializedObject, "endpointPauseAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "endpointPauseAnimation")
                 .WithVfx(
-                    VfxName(serializedObject, "chargeDisappearVfx", "DemonChargeEffectVfx"),
-                    VfxSocket(serializedObject, "chargeDisappearVfx", DemonKingVfxSocketId.ChargeDisappear),
-                    VfxFallbackOffset(serializedObject, "chargeDisappearVfx", Vector2.zero),
-                    VfxRotation(serializedObject, "chargeDisappearVfx"),
-                    VfxScale(serializedObject, "chargeDisappearVfx"),
-                    VfxPrefab(serializedObject, "chargeDisappearVfx"))
-                .WithPolicy("Endpoint disappear VFX, sound, shake, and at least 0.1s pause."));
+                    VfxName(serializedObject, "chargeLoopVfx", "DemonChargeEffectVfx"),
+                    VfxSocket(serializedObject, "chargeLoopVfx", DemonKingVfxSocketId.ChargeLoop),
+                    VfxFallbackOffset(serializedObject, "chargeLoopVfx", Vector2.zero),
+                    VfxRotation(serializedObject, "chargeLoopVfx"),
+                    VfxScale(serializedObject, "chargeLoopVfx"),
+                    VfxPrefab(serializedObject, "chargeLoopVfx"))
+                .WithPolicy("Same Charge VFX prefab detaches from follow and plays Disappear state at endpoint; sound, shake, and at least 0.1s pause."));
         }
 
         float finalImpactDiameter = Float(serializedObject, "finalImpactDiameter", 3.4f);
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Final Jump", "Final jump travel", Float(serializedObject, "finalJumpSeconds", 0.5f))
-            .WithBody(BodyName(serializedObject, "finalJumpTravelAnimation", "DarkLord_Hand_JumpAttack"), BodyFrame(serializedObject, "finalJumpTravelAnimation", 0))
+            .WithBody(BodyName(serializedObject, "finalJumpTravelAnimation", "DarkLord_Hand_JumpAttack"), BodyFrame(serializedObject, "finalJumpTravelAnimation", 0), "finalJumpTravelAnimation")
             .WithShape(DemonKingPatternPreviewShape.Circle("Final landing warning", Vector2.zero, finalImpactDiameter))
             .WithPolicy("Final jump uses finalJumpMotionProfile."));
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Commit", "Final landing impact", Float(serializedObject, "finalLandingPoseHoldSeconds", 0.14f))
-            .WithBody(BodyName(serializedObject, "finalJumpLandingAnimation", "DarkLord_Hand_JumpAttack"), BodyFrame(serializedObject, "finalJumpLandingAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex))
+            .WithBody(BodyName(serializedObject, "finalJumpLandingAnimation", "DarkLord_Hand_JumpAttack"), BodyFrame(serializedObject, "finalJumpLandingAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "finalJumpLandingAnimation")
             .WithVfx(
                 VfxName(serializedObject, "finalLandingImpactVfx", "DemonKingImpactVfx"),
                 VfxSocket(serializedObject, "finalLandingImpactVfx", DemonKingVfxSocketId.FootLandingImpact),
@@ -3990,14 +4117,14 @@ internal sealed class DemonKingPatternPreviewDefinition
             Float(serializedObject, "minimumImpactPoseHoldSeconds", 0.5f));
         float time = 0f;
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Groggy", "Groggy dim hold", dim)
-            .WithBody(BodyName(serializedObject, "handVisual.groggyPoseAnimation", "DarkLord_Hand_Groggy"), BodyFrame(serializedObject, "handVisual.groggyPoseAnimation", 0))
+            .WithBody(BodyName(serializedObject, "handVisual.groggyPoseAnimation", "DarkLord_Hand_Groggy"), BodyFrame(serializedObject, "handVisual.groggyPoseAnimation", 0), "handVisual.groggyPoseAnimation")
             .WithPolicy("Current Sword/Hand Groggy pose is held; it should not oscillate."));
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Eye", "Eye flash hold", eye)
-            .WithBody(BodyName(serializedObject, "handVisual.groggyPoseAnimation", "DarkLord_Hand_Groggy"), BodyFrame(serializedObject, "handVisual.groggyPoseAnimation", 0))
+            .WithBody(BodyName(serializedObject, "handVisual.groggyPoseAnimation", "DarkLord_Hand_Groggy"), BodyFrame(serializedObject, "handVisual.groggyPoseAnimation", 0), "handVisual.groggyPoseAnimation")
             .WithVfx("DemonKingEyeLightVfx", DemonKingVfxSocketId.EyeFlash, new Vector2(0f, 0.75f))
             .WithPolicy("Eye flash VFX and warning ping happen while Groggy pose remains held."));
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Sword Branch", "Sword GroggyCounter impact", hold)
-            .WithBody(BodyName(serializedObject, "swordVisual.counterAnimation", "DarkLord_Sword_GroggyCounter"), BodyFrame(serializedObject, "swordVisual.counterAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex))
+            .WithBody(BodyName(serializedObject, "swordVisual.counterAnimation", "DarkLord_Sword_GroggyCounter"), BodyFrame(serializedObject, "swordVisual.counterAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "swordVisual.counterAnimation")
             .WithVfx(
                 VfxName(serializedObject, "swordVisual.counterImpactVfx", "DarkLordGroggyReleaseVfx"),
                 VfxSocket(serializedObject, "swordVisual.counterImpactVfx", DemonKingVfxSocketId.SwordCounterOrigin),
@@ -4008,7 +4135,7 @@ internal sealed class DemonKingPatternPreviewDefinition
             .WithShape(DemonKingPatternPreviewShape.Circle("Sword counter", Vector2.zero, impactDiameter))
             .WithPolicy("Sword-held counter keeps the sword release VFX."));
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Hand Branch", "Hand GroggyCounter impact", hold)
-            .WithBody(BodyName(serializedObject, "handVisual.counterAnimation", "DarkLord_Hand_GroggyCounter"), BodyFrame(serializedObject, "handVisual.counterAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex))
+            .WithBody(BodyName(serializedObject, "handVisual.counterAnimation", "DarkLord_Hand_GroggyCounter"), BodyFrame(serializedObject, "handVisual.counterAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "handVisual.counterAnimation")
             .WithVfx(
                 VfxName(serializedObject, "handVisual.counterImpactVfx", "DemonKingImpactVfx"),
                 VfxSocket(serializedObject, "handVisual.counterImpactVfx", DemonKingVfxSocketId.HandCounterImpact),
@@ -4027,10 +4154,11 @@ internal sealed class DemonKingPatternPreviewDefinition
             "FinalDesperation",
             "10% pose, opening knockback, repeated DarkLordExplosion2 bombs, and alternating laser warning/fire rows.");
         definition.AddGroup("Opening", "moveToCenterSeconds", "openingKnockbackDiameter", "openingKnockbackDamage", "openingKnockback");
-        definition.AddGroup("Animation", "finalPoseAnimation");
+        definition.AddGroup("Animation", "openingMoveAnimation", "finalPoseAnimation");
         definition.AddGroup("Bombs", "bombIntervalSeconds", "bombWarningSeconds", "bombDiameter", "bombDamage", "bombOffsetRange", "bombExplosionVfx");
         definition.AddGroup("Laser", "laserWarningSeconds", "laserAttackSeconds", "laserWidth", "laserVfxRayOriginOffset", "fallbackLaserLength", "laserDamage", "laserVfxPrefabOverride", "laserVfxResourcePath");
         definition.AddGroup("SFX / Shake", "startSound", "bombExplosionSound", "laserWarningSound", "laserFireSound", "openingCameraShake", "bombExplosionCameraShake");
+        definition.AddMapping("Opening Move Body", bodyPropertyPath: "openingMoveAnimation");
         definition.AddMapping("10% Final Pose", bodyPropertyPath: "finalPoseAnimation");
         definition.AddMapping("Bomb Explosion VFX", vfxPropertyPath: "bombExplosionVfx");
         definition.AddMapping("Laser VFX", objectVfxPropertyPath: "laserVfxPrefabOverride", resourcePathPropertyPath: "laserVfxResourcePath");
@@ -4038,22 +4166,25 @@ internal sealed class DemonKingPatternPreviewDefinition
         float time = 0f;
         float bombDiameter = Float(serializedObject, "bombDiameter", 2.1f);
         float laserWidth = Float(serializedObject, "laserWidth", 0.75f);
-        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Opening", "Center move and 10% pose", Float(serializedObject, "moveToCenterSeconds", 0.6f))
-            .WithBody(BodyName(serializedObject, "finalPoseAnimation", "DarkLord_10Percent"), BodyFrame(serializedObject, "finalPoseAnimation", 0))
+        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Opening", "Center move", Float(serializedObject, "moveToCenterSeconds", 0.6f))
+            .WithBody(BodyName(serializedObject, "openingMoveAnimation", string.Empty), BodyFrame(serializedObject, "openingMoveAnimation", -1), "openingMoveAnimation")
             .WithShape(DemonKingPatternPreviewShape.Circle("Opening knockback", Vector2.zero, Float(serializedObject, "openingKnockbackDiameter", 40f)))
-            .WithPolicy("DarkLord_10Percent is held after center settlement."));
+            .WithPolicy("Optional opening move body cue; DarkLord_10Percent starts after center settlement."));
+        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Opening", "10% pose commit", 0.12f)
+            .WithBody(BodyName(serializedObject, "finalPoseAnimation", "DarkLord_10Percent"), BodyFrame(serializedObject, "finalPoseAnimation", 0), "finalPoseAnimation")
+            .WithPolicy("Final pose, start sound, opening shake, and health clamp release commit together."));
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Bomb", "10% bomb explosion", Float(serializedObject, "bombWarningSeconds", 0.4f))
-            .WithBody(BodyName(serializedObject, "finalPoseAnimation", "DarkLord_10Percent"), BodyFrame(serializedObject, "finalPoseAnimation", 0))
+            .WithBody(BodyName(serializedObject, "finalPoseAnimation", "DarkLord_10Percent"), BodyFrame(serializedObject, "finalPoseAnimation", 0), "finalPoseAnimation")
             .WithVfx(VfxPrefab(serializedObject, "bombExplosionVfx"), VfxName(serializedObject, "bombExplosionVfx", "DarkLordExplosion2Vfx"))
             .WithShape(DemonKingPatternPreviewShape.Circle("Bomb", new Vector2(-1.5f, 0.5f), bombDiameter))
             .WithPolicy("Bombs use DarkLordExplosion2 and their own explosion sound/shake."));
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Laser Warning", "Laser warning pair", Float(serializedObject, "laserWarningSeconds", 1f))
-            .WithBody(BodyName(serializedObject, "finalPoseAnimation", "DarkLord_10Percent"), BodyFrame(serializedObject, "finalPoseAnimation", 0))
+            .WithBody(BodyName(serializedObject, "finalPoseAnimation", "DarkLord_10Percent"), BodyFrame(serializedObject, "finalPoseAnimation", 0), "finalPoseAnimation")
             .WithShape(DemonKingPatternPreviewShape.Rectangle("Laser warning", ForwardLineCenter, new Vector2(6f, laserWidth), LeftRotationDeg)));
         float laserFireStart = time;
         float laserAttackSeconds = Float(serializedObject, "laserAttackSeconds", 1f);
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Laser Fire", "Laser fire pair", laserAttackSeconds)
-            .WithBody(BodyName(serializedObject, "finalPoseAnimation", "DarkLord_10Percent"), BodyFrame(serializedObject, "finalPoseAnimation", 0))
+            .WithBody(BodyName(serializedObject, "finalPoseAnimation", "DarkLord_10Percent"), BodyFrame(serializedObject, "finalPoseAnimation", 0), "finalPoseAnimation")
             .WithShape(DemonKingPatternPreviewShape.Rectangle("Laser damage", ForwardLineCenter, new Vector2(6f, laserWidth), LeftRotationDeg))
             .WithPolicy("Animated EgoSword laser VFX owns active damage where available."));
         string laserResourcePath = String(serializedObject, "laserVfxResourcePath", "DemonKing/DemonKingEgoLaserVfx");

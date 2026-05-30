@@ -43,6 +43,12 @@ public sealed class EgoSwordActor : MonoBehaviour
     [SerializeField] private float throwInitialRotation = 0f;
     [SerializeField] private float recallInitialRotation = 0f;
 
+    [Header("Recall")]
+    [SerializeField, Min(0f)] private float recallLiftHeight = 2.2f;
+    [SerializeField, Min(0f)] private float recallLiftSeconds = 0.16f;
+    [SerializeField, Min(0f)] private float recallLiftHoldSeconds = 0.18f;
+    [SerializeField, Min(0f)] private float recallReturnMinimumSeconds = 0.35f;
+
     [Header("Throw")]
     [SerializeField, Min(0.01f)] private float contactRadius = 0.45f;
     [SerializeField, Min(0f)] private float contactDamage = 1f;
@@ -121,12 +127,15 @@ public sealed class EgoSwordActor : MonoBehaviour
     private RuntimeAnimatorController defaultSwordAnimatorController;
     private RuntimeAnimatorController auraAnimatorController;
     private Sprite defaultSwordSprite;
+    private Coroutine recallLiftRoutine;
     private Coroutine verticalAuraAnimationRoutine;
     private bool verticalAuraAnimationActive;
     private bool swordAnimationDefaultsCaptured;
     private bool auraControllerMissingLogged;
     private bool auraControllerInvalidLogged;
     private bool recallMovementActive;
+    private bool recallAuraReady;
+    private bool recallLiftReady;
     private bool subPatternAbilityRunning;
     private AbilitySpec activeSubPatternSpec;
     private SpriteAfterimageEmitter2D afterimageEmitter;
@@ -156,12 +165,14 @@ public sealed class EgoSwordActor : MonoBehaviour
     private void OnDisable()
     {
         StopAfterimage(clearGhosts: true);
+        StopRecallLiftRoutine();
         StopSwordSpinEffect();
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
         ReleaseVerticalStrikeVfx();
         ReleaseAttachedOneShotVfx();
+        ResetRecallReadiness();
     }
 
     private void LateUpdate()
@@ -192,13 +203,14 @@ public sealed class EgoSwordActor : MonoBehaviour
     public void HideWhileHeld()
     {
         StopAfterimage(clearGhosts: true);
+        StopRecallLiftRoutine();
         StopSwordSpinEffect();
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
         ReleaseVerticalStrikeVfx();
         ReleaseAttachedOneShotVfx();
-        recallMovementActive = false;
+        ResetRecallReadiness();
         subPatternAbilityRunning = false;
         activeSubPatternSpec = null;
         state = SwordState.Held;
@@ -216,7 +228,7 @@ public sealed class EgoSwordActor : MonoBehaviour
     public Vector2 ResolveThrowOriginPosition()
     {
         if (owner != null)
-            return owner.ResolveSwordHoldPosition(throwOriginLocalOffset);
+            return owner.ResolveVfxSocketWorld(DemonKingVfxSocketId.SwordThrowOrigin, throwOriginLocalOffset);
 
         return (Vector2)(transform.position + throwOriginLocalOffset);
     }
@@ -224,13 +236,14 @@ public sealed class EgoSwordActor : MonoBehaviour
     public void CleanupForBossBattleEnd()
     {
         StopAfterimage(clearGhosts: true);
+        StopRecallLiftRoutine();
         StopSwordSpinEffect();
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
         ReleaseVerticalStrikeVfx();
         ReleaseAttachedOneShotVfx();
-        recallMovementActive = false;
+        ResetRecallReadiness();
         subPatternAbilityRunning = false;
         activeSubPatternSpec = null;
         state = SwordState.Held;
@@ -248,10 +261,11 @@ public sealed class EgoSwordActor : MonoBehaviour
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
 
+        StopRecallLiftRoutine();
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
-        recallMovementActive = false;
+        ResetRecallReadiness();
         transform.SetParent(null, true);
         transform.position = origin;
         transform.rotation = Quaternion.Euler(0f, 0f, throwInitialRotation);
@@ -279,17 +293,29 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     public void Recall(float speed)
     {
+        StopRecallLiftRoutine();
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
         transform.SetParent(null, true);
         transform.rotation = Quaternion.Euler(0f, 0f, recallInitialRotation);
         flyingSpeed = Mathf.Max(0.01f, speed);
-        recallMovementActive = false;
+        ResetRecallReadiness();
         state = SwordState.Recalling;
         PlayRecallAuraStartup();
-        StartSwordSpinEffect();
-        BeginAfterimage();
+        StartRecallLiftMotion();
+    }
+
+    public float EstimateRecallTimeoutSeconds(float speed)
+    {
+        float safeSpeed = Mathf.Max(0.01f, speed);
+        Vector2 liftedPosition = (Vector2)transform.position + Vector2.up * Mathf.Max(0f, recallLiftHeight);
+        Vector2 targetPosition = ResolveRecallTargetPosition();
+        float returnSeconds = Vector2.Distance(liftedPosition, targetPosition) / safeSpeed;
+        return Mathf.Max(0f, recallLiftSeconds)
+            + Mathf.Max(0f, recallLiftHoldSeconds)
+            + Mathf.Max(Mathf.Max(0f, recallReturnMinimumSeconds), returnSeconds)
+            + 0.75f;
     }
 
     private void TickFlying()
@@ -367,6 +393,8 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     public void CompleteRecallAtOwner()
     {
+        StopRecallLiftRoutine();
+        ResetRecallReadiness();
         StopAfterimage();
         StopSwordSpinEffect();
         if (owner == null)
@@ -387,9 +415,128 @@ public sealed class EgoSwordActor : MonoBehaviour
     private Vector2 ResolveRecallTargetPosition()
     {
         if (owner != null)
-            return owner.ResolveSwordHoldPosition(recallTargetLocalOffset);
+            return owner.ResolveVfxSocketWorld(DemonKingVfxSocketId.SwordThrowReturnOrigin, recallTargetLocalOffset);
 
         return (Vector2)(transform.position + recallTargetLocalOffset);
+    }
+
+    private void StartRecallLiftMotion()
+    {
+        StopRecallLiftRoutine();
+
+        if (!isActiveAndEnabled)
+        {
+            MarkRecallLiftReady();
+            return;
+        }
+
+        recallLiftRoutine = StartCoroutine(CoRecallLiftBeforeReturn());
+    }
+
+    private IEnumerator CoRecallLiftBeforeReturn()
+    {
+        Vector2 start = transform.position;
+        Vector2 end = start + Vector2.up * Mathf.Max(0f, recallLiftHeight);
+        float duration = Mathf.Max(0f, recallLiftSeconds);
+
+        if (duration <= 0.001f)
+        {
+            transform.position = new Vector3(end.x, end.y, transform.position.z);
+        }
+        else
+        {
+            float elapsed = 0f;
+            while (elapsed < duration)
+            {
+                if (state != SwordState.Recalling)
+                {
+                    recallLiftRoutine = null;
+                    yield break;
+                }
+
+                float t = Mathf.Clamp01(elapsed / duration);
+                float easedT = 1f - Mathf.Pow(1f - t, 3f);
+                Vector2 position = Vector2.Lerp(start, end, easedT);
+                transform.position = new Vector3(position.x, position.y, transform.position.z);
+                transform.rotation = Quaternion.Euler(0f, 0f, recallInitialRotation);
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        transform.position = new Vector3(end.x, end.y, transform.position.z);
+        float holdSeconds = Mathf.Max(0f, recallLiftHoldSeconds);
+        float holdElapsed = 0f;
+        while (holdElapsed < holdSeconds)
+        {
+            if (state != SwordState.Recalling)
+            {
+                recallLiftRoutine = null;
+                yield break;
+            }
+
+            transform.position = new Vector3(end.x, end.y, transform.position.z);
+            transform.rotation = Quaternion.Euler(0f, 0f, recallInitialRotation);
+            holdElapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        recallLiftRoutine = null;
+        MarkRecallLiftReady();
+    }
+
+    private void StopRecallLiftRoutine()
+    {
+        if (recallLiftRoutine == null)
+            return;
+
+        StopCoroutine(recallLiftRoutine);
+        recallLiftRoutine = null;
+    }
+
+    private void ResetRecallReadiness()
+    {
+        recallMovementActive = false;
+        recallAuraReady = false;
+        recallLiftReady = false;
+    }
+
+    private void MarkRecallAuraReady()
+    {
+        recallAuraReady = true;
+        TryStartRecallMovement();
+    }
+
+    private void MarkRecallLiftReady()
+    {
+        recallLiftReady = true;
+        TryStartRecallMovement();
+    }
+
+    private void TryStartRecallMovement()
+    {
+        if (state != SwordState.Recalling || !recallAuraReady || !recallLiftReady || recallMovementActive)
+            return;
+
+        ClampRecallSpeedForVisibleReturn();
+        StartSwordSpinEffect();
+        BeginAfterimage();
+        recallMovementActive = true;
+    }
+
+    private void ClampRecallSpeedForVisibleReturn()
+    {
+        float minimumSeconds = Mathf.Max(0f, recallReturnMinimumSeconds);
+        if (minimumSeconds <= 0.001f)
+            return;
+
+        float distance = Vector2.Distance(transform.position, ResolveRecallTargetPosition());
+        if (distance <= 0.001f)
+            return;
+
+        float visibleSpeed = distance / minimumSeconds;
+        flyingSpeed = Mathf.Min(flyingSpeed, visibleSpeed);
     }
 
     private void RotateClockwise(float deltaTime)
@@ -948,11 +1095,11 @@ public sealed class EgoSwordActor : MonoBehaviour
 
         AttackTelegraphView warning = telegraph?.SpawnDetachedView(
             AttackTelegraphSpecUtility.WithThinWarningOutline(
-                AttackTelegraphSpec.CreateCircle(
+                DemonKingCombatUtil.CreateTopDownCircleWarningSpec(
+                    owner,
                     groundTarget,
                     verticalStrikeDiameter,
-                    warningDuration,
-                    owner.DefaultWarningStyle)));
+                    warningDuration)));
 
         try
         {
@@ -979,11 +1126,11 @@ public sealed class EgoSwordActor : MonoBehaviour
                 transform.position = new Vector3(swordPosition.x, swordPosition.y, transform.position.z);
                 transform.rotation = Quaternion.identity;
                 warning?.UpdateGeometry(AttackTelegraphSpecUtility.WithThinWarningOutline(
-                    AttackTelegraphSpec.CreateCircle(
+                    DemonKingCombatUtil.CreateTopDownCircleWarningSpec(
+                        owner,
                         groundTarget,
                         verticalStrikeDiameter,
-                        warningDuration,
-                        owner.DefaultWarningStyle)));
+                        warningDuration)));
 
                 elapsed += Time.deltaTime;
                 yield return null;
@@ -1357,7 +1504,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         StopVerticalAuraAnimation();
         if (!PlayAuraStartState(out float startLength))
         {
-            recallMovementActive = true;
+            MarkRecallAuraReady();
             return;
         }
 
@@ -1427,11 +1574,11 @@ public sealed class EgoSwordActor : MonoBehaviour
         if (!TryPlaySwordAnimatorState(EgoSwordAuraIdleStateName, out _))
         {
             StopVerticalAuraAnimation();
-            recallMovementActive = true;
+            MarkRecallAuraReady();
             yield break;
         }
 
-        recallMovementActive = true;
+        MarkRecallAuraReady();
     }
 
     private void PlayAuraIdleAnimation()
@@ -1709,8 +1856,8 @@ public sealed class EgoSwordActor : MonoBehaviour
         Vector3 ownerPosition = resolvedOwner != null ? resolvedOwner.transform.position : transform.position;
 
         DrawOffsetPoint("Held", ResolveEditorOwnerOffsetPosition(resolvedOwner, heldOffset), ownerPosition, HeldGizmoColor);
-        DrawOffsetPoint("Throw Origin", ResolveEditorOwnerOffsetPosition(resolvedOwner, throwOriginLocalOffset), ownerPosition, ThrowGizmoColor);
-        DrawOffsetPoint("Recall Target", ResolveEditorOwnerOffsetPosition(resolvedOwner, recallTargetLocalOffset), ownerPosition, RecallGizmoColor);
+        DrawOffsetPoint("Throw Origin", ResolveEditorSocketPosition(resolvedOwner, DemonKingVfxSocketId.SwordThrowOrigin, throwOriginLocalOffset), ownerPosition, ThrowGizmoColor);
+        DrawOffsetPoint("Recall Target", ResolveEditorSocketPosition(resolvedOwner, DemonKingVfxSocketId.SwordThrowReturnOrigin, recallTargetLocalOffset), ownerPosition, RecallGizmoColor);
         DrawLaserOffsetGizmo();
         DrawImpactGizmo();
     }
@@ -1721,6 +1868,17 @@ public sealed class EgoSwordActor : MonoBehaviour
             return resolvedOwner.ResolveSwordHoldPosition(localOffset);
 
         return transform.position + localOffset;
+    }
+
+    private Vector3 ResolveEditorSocketPosition(
+        DemonKingController resolvedOwner,
+        DemonKingVfxSocketId socketId,
+        Vector3 fallbackLocalOffset)
+    {
+        if (resolvedOwner != null)
+            return resolvedOwner.ResolveVfxSocketWorld(socketId, fallbackLocalOffset);
+
+        return transform.position + fallbackLocalOffset;
     }
 
     private void DrawOffsetPoint(string label, Vector3 position, Vector3 origin, Color color)

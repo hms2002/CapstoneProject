@@ -129,6 +129,11 @@ public class UIManager : MonoBehaviour
         return CanOpenUI(ui, null);
     }
 
+    public bool CanOpenUIForExternalBlockOwner(Object owner, IStackableUI ui)
+    {
+        return owner != null && CanOpenUI(ui, owner);
+    }
+
     private bool CanOpenUI(IStackableUI ui, Object allowedExternalBlockOwner)
     {
         return CanOpenUI(ui, allowedExternalBlockOwner, false);

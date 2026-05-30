@@ -682,6 +682,8 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         request.MessageTextOverride = ResolveFakeGameOverText(fakeGameOverMessageText, null, "처치자 마왕");
         request.LocationName = ResolveFakeGameOverText(fakeGameOverLocationName, null, "마왕의 알현실");
         request.HideTimeText = hideFakeGameOverTimeText;
+        request.AllowInventoryDuringPresentation = false;
+        request.ShowInventoryKeyHint = false;
 
         GameOverPresentationController.TryShow(request);
     }
