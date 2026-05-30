@@ -15820,6 +15820,7 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  vfxSocketMap: {fileID: 0}
   enableBodyAfterimage: 1
   bodyAfterimageIntervalSeconds: 0.04
   bodyAfterimageLifetimeSeconds: 0.16
@@ -15965,6 +15966,27 @@ MonoBehaviour:
   recallImpactDiameter: 3.2
   recallImpactDamage: 1.5
   recallImpactKnockback: 8
+  verticalStrikeImpactSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  plantImpactCameraShake:
+    amplitude: 0.12
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.28
+    minIntervalSeconds: 0.04
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  verticalStrikeImpactCameraShake:
+    amplitude: 0.18
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.35
+    minIntervalSeconds: 0.04
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
   enableAfterimage: 1
   afterimageIntervalSeconds: 0.035
   afterimageLifetimeSeconds: 0.14
@@ -16195,6 +16217,7 @@ GameObject:
   - component: {fileID: 1785454309}
   - component: {fileID: 1785454312}
   - component: {fileID: 9045646977701484068}
+  - component: {fileID: 9045646977701484069}
   m_Layer: 31
   m_Name: DemonKing
   m_TagString: Enemy
@@ -16621,6 +16644,88 @@ MonoBehaviour:
   endRunReason: 1
   titleSceneFadeOutDuration: 3
   titleSceneFadeInDuration: 1
+--- !u!114 &9045646977701484069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717066173154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af9ab396a24d937458d0da234a496cd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DemonKingVfxSocketMap
+  referenceTransform: {fileID: 7124681141591174978}
+  facingSprite: {fileID: 8897721722272043594}
+  showGizmos: 1
+  showOnlyWhenSelected: 1
+  showLabels: 1
+  fallbackGizmoRadius: 0.12
+  sockets:
+  - id: 0
+    enabled: 1
+    anchor: {fileID: 0}
+    leftFacingLocalOffset: {x: 0, y: 0.75}
+    mirrorXByFacing: 1
+    gizmoColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+    gizmoRadius: 0.12
+  - id: 1
+    enabled: 1
+    anchor: {fileID: 0}
+    leftFacingLocalOffset: {x: 0, y: 0.55}
+    mirrorXByFacing: 1
+    gizmoColor: {r: 0.35, g: 0.75, b: 1, a: 1}
+    gizmoRadius: 0.12
+  - id: 2
+    enabled: 1
+    anchor: {fileID: 0}
+    leftFacingLocalOffset: {x: 0, y: 0}
+    mirrorXByFacing: 1
+    gizmoColor: {r: 1, g: 0.45, b: 0.1, a: 1}
+    gizmoRadius: 0.16
+  - id: 3
+    enabled: 1
+    anchor: {fileID: 0}
+    leftFacingLocalOffset: {x: 0, y: 0}
+    mirrorXByFacing: 1
+    gizmoColor: {r: 1, g: 0.9, b: 0.15, a: 1}
+    gizmoRadius: 0.14
+  - id: 4
+    enabled: 1
+    anchor: {fileID: 0}
+    leftFacingLocalOffset: {x: 0, y: 0}
+    mirrorXByFacing: 1
+    gizmoColor: {r: 1, g: 0.65, b: 0.1, a: 1}
+    gizmoRadius: 0.14
+  - id: 5
+    enabled: 1
+    anchor: {fileID: 0}
+    leftFacingLocalOffset: {x: 0, y: 0}
+    mirrorXByFacing: 1
+    gizmoColor: {r: 0.25, g: 1, b: 0.45, a: 1}
+    gizmoRadius: 0.16
+  - id: 6
+    enabled: 1
+    anchor: {fileID: 0}
+    leftFacingLocalOffset: {x: 0, y: 0}
+    mirrorXByFacing: 1
+    gizmoColor: {r: 0.85, g: 0.35, b: 1, a: 1}
+    gizmoRadius: 0.14
+  - id: 7
+    enabled: 1
+    anchor: {fileID: 0}
+    leftFacingLocalOffset: {x: 0, y: 0}
+    mirrorXByFacing: 1
+    gizmoColor: {r: 0.65, g: 0.25, b: 1, a: 1}
+    gizmoRadius: 0.14
+  - id: 8
+    enabled: 1
+    anchor: {fileID: 0}
+    leftFacingLocalOffset: {x: 0, y: 1.6}
+    mirrorXByFacing: 1
+    gizmoColor: {r: 0.25, g: 0.85, b: 1, a: 1}
+    gizmoRadius: 0.14
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
