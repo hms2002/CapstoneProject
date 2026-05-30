@@ -18,7 +18,7 @@ public sealed class SlimeQueenVanishParticleEffect : MonoBehaviour
     [SerializeField, Min(0.01f)] private float squareSize = 0.18f;
     [SerializeField, Min(0f)] private float minSpreadDistance = 0.65f;
     [SerializeField, Min(0f)] private float maxSpreadDistance = 1.15f;
-    [SerializeField] private Color squareColor = new Color(0.26f, 1f, 0.22f, 0.95f);
+    [SerializeField] private Color squareColor = new Color(0.5764705882352941f, 0.9490196078431373f, 0.6862745098039216f, 0.95f);
     [SerializeField] private string fallbackSortingLayerName = "Entity";
     [SerializeField] private int sortingOrderOffset = 3;
     [SerializeField, Min(0f)] private float destroyPaddingSeconds = 0.1f;

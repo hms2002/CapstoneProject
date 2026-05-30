@@ -551,7 +551,7 @@ MonoBehaviour:
   actorLayers:
     serializedVersion: 2
     m_Bits: 2147483656
-  defaultMode: 0
+  defaultMode: 1
 --- !u!114 &1028000
 MonoBehaviour:
   m_ObjectHideFlags: 0

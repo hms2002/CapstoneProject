@@ -37,6 +37,8 @@ public sealed class AbilityLogic_SlimeQueenCrossWaterPillar : AbilityLogic
         if (segments.Count == 0)
             yield break;
 
+        bool preserveLingeringParticles = false;
+
         try
         {
             slimeQueen.FaceCurrentTarget();
@@ -59,10 +61,12 @@ public sealed class AbilityLogic_SlimeQueenCrossWaterPillar : AbilityLogic
 
             if (slimeQueen.CrossWaterPillarBlastViewSeconds > 0f)
                 yield return WaitForSecondsUnlessCancelled(slimeQueen.CrossWaterPillarBlastViewSeconds, spec);
+
+            preserveLingeringParticles = !IsAbilityCancelled(spec);
         }
         finally
         {
-            slimeQueen.CleanupCrossWaterPillarPresentation();
+            slimeQueen.CleanupCrossWaterPillarPresentation(clearLingeringParticles: !preserveLingeringParticles);
         }
     }
 

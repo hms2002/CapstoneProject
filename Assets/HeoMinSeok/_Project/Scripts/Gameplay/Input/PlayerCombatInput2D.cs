@@ -88,7 +88,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
         if (IsCombatBlocked())
         {
             TryHandleBlockedWeaponAbilityInput(input);
-            ReleaseAttackHoldIfNeeded();
+            ReleaseAttackHoldIfInputEnded(input);
             return;
         }
 
@@ -183,6 +183,22 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
         isHoldingAttack = false;
         nextAutoAttackTime = 0f;
         SendGameplayEventSafe(attackReleasedEvent);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 피격 경직처럼 짧은 전투 차단 상태에서는 실제 공격 입력이 유지되는 한 홀드 판정을 보존한다.
+    /// - 실제 입력이 끝난 경우에만 release 이벤트를 보내 차지/홀드 무기 상태가 고착되지 않게 한다.
+    /// </summary>
+    private void ReleaseAttackHoldIfInputEnded(InputBindingService input)
+    {
+        if (!isHoldingAttack)
+            return;
+
+        if (input != null && input.IsPressed(InputActionId.PrimaryAttack))
+            return;
+
+        ReleaseAttackHoldIfNeeded();
     }
 
     /// <summary>

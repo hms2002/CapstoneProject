@@ -1,111 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "6c9b0b5120d74efaa33cf4e5f0b724a1",
-            "startedUtc": "2026-05-30T10:29:00.2871848Z",
-            "endedUtc": "2026-05-30T10:29:01.3772458Z",
-            "entries": []
-        },
-        {
-            "sessionId": "2229f0fb7b8243c89f3752b46cc8d5da",
-            "startedUtc": "2026-05-30T10:33:06.7999784Z",
-            "endedUtc": "2026-05-30T10:33:08.0591329Z",
-            "entries": []
-        },
-        {
-            "sessionId": "e68e80be54bf49658c6dca82bd86c770",
-            "startedUtc": "2026-05-30T10:33:53.9138617Z",
-            "endedUtc": "2026-05-30T10:33:56.2630543Z",
-            "entries": []
-        },
-        {
-            "sessionId": "99dd485e27144bc8b3a9826880cdb6f3",
-            "startedUtc": "2026-05-30T10:34:33.3750920Z",
-            "endedUtc": "2026-05-30T10:34:35.7547349Z",
-            "entries": []
-        },
-        {
-            "sessionId": "7fe43dc9a2874c1695f4fc1cd0474bd9",
-            "startedUtc": "2026-05-30T10:37:39.6336250Z",
-            "endedUtc": "2026-05-30T10:37:40.8658921Z",
-            "entries": []
-        },
-        {
-            "sessionId": "d8d372d17afa43a386a9e7af34947c58",
-            "startedUtc": "2026-05-30T10:38:17.9341665Z",
-            "endedUtc": "2026-05-30T10:40:27.7131798Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab",
-                    "prefabName": "PF_Dragon_KegImpactSplash",
-                    "totalSpawns": 4,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 129.76547241210938,
-                    "lastSeenSeconds": 129.76856994628907,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/DashDust.prefab",
-                    "prefabName": "DashDust",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 127.01028442382813,
-                    "lastSeenSeconds": 127.01028442382813,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_Dragon_LandingDust.prefab",
-                    "prefabName": "PF_Dragon_LandingDust",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 128.41152954101563,
-                    "lastSeenSeconds": 128.41152954101563,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/SlashHit.prefab",
-                    "prefabName": "SlashHit",
-                    "totalSpawns": 3,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 48.28594970703125,
-                    "lastSeenSeconds": 48.8897705078125,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal1AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal1AttackTileParticle",
-                    "totalSpawns": 3,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 48.300472259521487,
-                    "lastSeenSeconds": 48.89492416381836,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                }
-            ]
-        },
-        {
-            "sessionId": "e87f09dc36904b23bae44b6703aef775",
-            "startedUtc": "2026-05-30T11:48:10.2495102Z",
-            "endedUtc": "2026-05-30T11:48:11.2535620Z",
-            "entries": []
-        },
-        {
-            "sessionId": "ee40d971ac274cefb281cfef9811ae08",
-            "startedUtc": "2026-05-30T11:48:33.1027373Z",
-            "endedUtc": "2026-05-30T11:48:35.2745517Z",
-            "entries": []
-        },
-        {
-            "sessionId": "dacd9017b1134f34858a00242d3c432e",
-            "startedUtc": "2026-05-30T11:49:11.3341861Z",
-            "endedUtc": "2026-05-30T11:49:13.4829756Z",
-            "entries": []
-        },
-        {
             "sessionId": "b17804acd9cf40aca92c136e4447eae3",
             "startedUtc": "2026-05-30T11:52:17.3806712Z",
             "endedUtc": "2026-05-30T11:52:18.8162724Z",
@@ -169,6 +64,82 @@
             "sessionId": "2556c150af3d41d8a25a0a9ea2921f82",
             "startedUtc": "2026-05-30T12:12:08.8455067Z",
             "endedUtc": "2026-05-30T12:12:11.0622369Z",
+            "entries": []
+        },
+        {
+            "sessionId": "05f44b4fa0a347ef940e74dedccef2bc",
+            "startedUtc": "2026-05-30T12:20:36.4353300Z",
+            "endedUtc": "2026-05-30T12:20:57.5131227Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 21.06348991394043,
+                    "lastSeenSeconds": 21.063661575317384,
+                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
+                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
+                }
+            ]
+        },
+        {
+            "sessionId": "cb36431456e840c798f07232b7b448d5",
+            "startedUtc": "2026-05-30T12:22:05.5318299Z",
+            "endedUtc": "2026-05-30T12:22:06.5774603Z",
+            "entries": []
+        },
+        {
+            "sessionId": "0a6dda235b124979b1465532a3ee2912",
+            "startedUtc": "2026-05-30T12:22:46.0364987Z",
+            "endedUtc": "2026-05-30T12:23:14.4112012Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 28.36042594909668,
+                    "lastSeenSeconds": 28.3606014251709,
+                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
+                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
+                }
+            ]
+        },
+        {
+            "sessionId": "467e76065bf64904b3885e74a2974ca2",
+            "startedUtc": "2026-05-30T12:26:36.4771891Z",
+            "endedUtc": "2026-05-30T12:26:38.6089627Z",
+            "entries": []
+        },
+        {
+            "sessionId": "3c6cd1c669ec4d73b19e7c8589bb9526",
+            "startedUtc": "2026-05-30T12:30:14.5782428Z",
+            "endedUtc": "2026-05-30T12:30:15.6977728Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d9dc3bf80cb445238cbb2d66740c74bf",
+            "startedUtc": "2026-05-30T12:32:28.8311122Z",
+            "endedUtc": "2026-05-30T12:32:30.7859014Z",
+            "entries": []
+        },
+        {
+            "sessionId": "25885afc137c40d99d7ee28c3c4b8957",
+            "startedUtc": "2026-05-30T12:37:06.3174999Z",
+            "endedUtc": "2026-05-30T12:37:08.3870502Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4106af26eec949e59798c4f1e9ef6d5d",
+            "startedUtc": "2026-05-30T12:44:42.4585692Z",
+            "endedUtc": "2026-05-30T12:44:43.4966326Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d11b14af049e4e92a1feb17bd50870f0",
+            "startedUtc": "2026-05-30T12:48:53.3675371Z",
+            "endedUtc": "2026-05-30T12:48:54.5116984Z",
             "entries": []
         }
     ]

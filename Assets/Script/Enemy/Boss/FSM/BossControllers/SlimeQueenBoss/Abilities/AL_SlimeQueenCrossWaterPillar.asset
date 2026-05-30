@@ -21,7 +21,7 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
     randomSounds: []
     additionalSounds:
-    - key: sound_slimeQueen_CrossWaterPillar2
+    - key: sound_slimequeen_crosswaterpillar2
       volumeMultiplier: 1
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}

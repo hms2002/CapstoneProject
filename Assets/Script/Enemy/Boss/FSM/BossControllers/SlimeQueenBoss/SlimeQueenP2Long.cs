@@ -86,6 +86,15 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     [Tooltip("물기둥 피해에 사용할 GAS Damage Effect입니다.")]
     [SerializeField] private GE_Damage_Spec crossWaterPillarDamageEffect;
 
+    [Tooltip("물기둥 위치마다 추가로 출력할 파티클 프리팹입니다. 피해 판정은 없고 연출만 담당합니다.")]
+    [SerializeField] private GameObject crossWaterPillarParticlePrefab;
+
+    [Tooltip("물기둥 위치 파티클 생성 위치 보정값입니다.")]
+    [SerializeField] private Vector3 crossWaterPillarParticleOffset;
+
+    [Tooltip("물기둥 위치 파티클 수명입니다. 0 이하면 패턴 정리 시점에만 정리합니다.")]
+    [SerializeField, Min(0f)] private float crossWaterPillarParticleLifetimeSeconds = 0f;
+
     [Tooltip("물기둥 생성이 금지되는 레이어입니다. 보통 HoleTrap 레이어를 지정합니다. 비어 있으면 검사하지 않습니다.")]
     [SerializeField] private LayerMask crossWaterPillarBlockedSpawnLayers = 1 << 6;
 
@@ -236,6 +245,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     private readonly List<AttackTelegraphView> crossWaterPillarWarningViews = new List<AttackTelegraphView>();
     private readonly List<AttackTelegraphView> crossWaterPillarBlastViews = new List<AttackTelegraphView>();
     private readonly List<GameObject> crossWaterPillarBlastEffects = new List<GameObject>();
+    private readonly List<GameObject> crossWaterPillarParticles = new List<GameObject>();
     private readonly List<AttackTelegraphView> toxicDropWarningViews = new List<AttackTelegraphView>();
     private readonly List<SlimeQueenToxicDropProjectileVisual> toxicDropProjectileVisuals = new List<SlimeQueenToxicDropProjectileVisual>();
     private readonly List<AttackTelegraphView> waterCannonShotWarningViews = new List<AttackTelegraphView>();
@@ -481,6 +491,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         ClearViews(crossWaterPillarWarningViews);
         ClearViews(crossWaterPillarBlastViews);
         ClearCrossWaterPillarBlastEffects();
+        ClearCrossWaterPillarParticles();
 
         if (segments == null)
             return;
@@ -513,11 +524,14 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     }
 
     /// <summary>팔방 물기둥 패턴이 남긴 경고와 물기둥 표시를 정리합니다.</summary>
-    public void CleanupCrossWaterPillarPresentation()
+    public void CleanupCrossWaterPillarPresentation(bool clearLingeringParticles = true)
     {
         ClearViews(crossWaterPillarWarningViews);
         ClearViews(crossWaterPillarBlastViews);
         ClearCrossWaterPillarBlastEffects();
+
+        if (clearLingeringParticles)
+            ClearCrossWaterPillarParticles();
     }
 
     /// <summary>물대포 연발 패턴의 첫 조준 방향을 현재 플레이어 방향으로 초기화합니다.</summary>
@@ -861,6 +875,8 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         if (ShouldSkipCrossWaterPillarBlastPosition(blastPosition))
             return;
 
+        SpawnCrossWaterPillarParticle(blastPosition);
+
         if (blastEffectPrefab == null)
             return;
 
@@ -884,6 +900,25 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
                 "물기둥 이펙트는 표시되지만 이펙트 콜리더 피해 타이밍은 적용되지 않습니다.",
                 blastEffectPrefab);
         }
+    }
+
+    /// <summary>물기둥 위치에 피해 판정과 분리된 보조 파티클을 출력합니다.</summary>
+    private void SpawnCrossWaterPillarParticle(Vector3 blastPosition)
+    {
+        if (crossWaterPillarParticlePrefab == null)
+            return;
+
+        GameObject particle = Instantiate(
+            crossWaterPillarParticlePrefab,
+            blastPosition + crossWaterPillarParticleOffset,
+            Quaternion.identity);
+        if (particle == null)
+            return;
+
+        crossWaterPillarParticles.Add(particle);
+
+        if (crossWaterPillarParticleLifetimeSeconds > 0f)
+            Destroy(particle, crossWaterPillarParticleLifetimeSeconds);
     }
 
     /// <summary>물기둥 생성 지점이 구덩이처럼 금지된 스폰 영역 위인지 검사합니다.</summary>
@@ -935,6 +970,18 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         }
 
         crossWaterPillarBlastEffects.Clear();
+    }
+
+    private void ClearCrossWaterPillarParticles()
+    {
+        for (int i = crossWaterPillarParticles.Count - 1; i >= 0; i--)
+        {
+            GameObject particle = crossWaterPillarParticles[i];
+            if (particle != null)
+                Destroy(particle);
+        }
+
+        crossWaterPillarParticles.Clear();
     }
 
     private CombatHitPayload BuildCrossWaterPillarHitPayload(AbilitySystem sourceSystem, AbilitySpec sourceSpec)
