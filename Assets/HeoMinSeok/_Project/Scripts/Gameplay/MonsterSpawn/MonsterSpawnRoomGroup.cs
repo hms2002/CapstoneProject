@@ -1,16 +1,20 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 
 /// <summary>
 /// 책임:
 /// - 하나의 방에 속한 MonsterSpawnContainer들을 묶어 관리한다.
-/// - 방 전용 스폰 프로파일에서 무작위로 스폰 테이블 하나를 선택해 스폰 요청 목록을 생성한다.
+/// - 플레이어가 방에 처음 들어왔을 때 연결된 MonsterSpawnContainer들을 VFX와 함께 생성한다.
 /// - 플레이어의 방 encounter 진입/이탈을 연결된 문 잠금 장치에 전파한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 {
+    private const string DefaultRoomEntrySpawnSettingsResourcePath = "MonsterRoomEntrySpawnSettings";
+
     public static event Action<MonsterSpawnRoomGroup> ActiveRoomEntered;
     public static event Action<MonsterSpawnRoomGroup> ActiveRoomExited;
 
@@ -18,14 +22,31 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
     [SerializeField] private bool autoCollectChildContainers = true;
     [SerializeField] private List<MonsterSpawnContainer> spawnContainers = new();
 
+    [Header("Entry Spawn Presentation")]
+    [SerializeField] private GameObject spawnVfxPrefab;
+    [SerializeField, Min(0f)] private float spawnVfxDelaySeconds = 0.35f;
+    [SerializeField] private Vector3 spawnVfxOffset;
+    [SerializeField] private SoundRef spawnSound;
+
+    [Header("Debug")]
+    [SerializeField] private bool logRoomEntrySpawnDebug;
+
     private readonly List<MonsterSpawnContainer> reusableContainers = new();
     private readonly List<GameObject> reusableSpawnPlan = new();
     private readonly List<RoomDoorMonsterKillLock> runtimeDoorLocks = new();
     private readonly List<GameObject> runtimeSpawnedMonsters = new();
+    private readonly List<Coroutine> activeSpawnRoutines = new();
+    private readonly List<ChestMonsterKillLock> pendingChestLocks = new();
+    private readonly List<GameObject> activeSpawnVfx = new();
+    private MonsterRoomEntrySpawnSettingsSO cachedDefaultSpawnSettings;
     private bool playerEncounterEntered;
+    private bool roomEntrySpawnStarted;
+    private int pendingRoomEntrySpawnCount;
 
     public MonsterRoomSpawnProfileSO SpawnProfile => spawnProfile;
     public bool PlayerEncounterEntered => playerEncounterEntered;
+    public int PendingRoomEntrySpawnCount => pendingRoomEntrySpawnCount;
+    public int RemainingRegisteredOrPendingCount => CountAliveRegisteredMonsters() + pendingRoomEntrySpawnCount;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStaticEvents()
@@ -141,6 +162,11 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
         return results.Count;
     }
 
+    public bool HasPendingRoomEntrySpawns()
+    {
+        return pendingRoomEntrySpawnCount > 0;
+    }
+
     public void NotifyPlayerEnteredEncounter()
     {
         if (playerEncounterEntered)
@@ -148,6 +174,7 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
         playerEncounterEntered = true;
         CompactRuntimeLists();
+        StartRoomEntrySpawnIfNeeded();
 
         for (int i = runtimeDoorLocks.Count - 1; i >= 0; i--)
         {
@@ -187,6 +214,220 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
         ActiveRoomExited?.Invoke(this);
     }
 
+    private void OnDisable()
+    {
+        CancelActiveSpawnRoutines();
+        ReleaseAllPendingSpawns();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 방 첫 입장 시 기존 authoring으로 배치된 spawnByDefault 컨테이너들을 지연 스폰한다.
+    /// - 맵 툴 세팅을 바꾸지 않고도 기존 방 몬스터 배치가 입장 스폰으로 동작하게 한다.
+    /// </summary>
+    private void StartRoomEntrySpawnIfNeeded()
+    {
+        if (roomEntrySpawnStarted)
+        {
+            LogRoomEntrySpawn("skip: room entry spawn already started.");
+            return;
+        }
+
+        roomEntrySpawnStarted = true;
+        RefreshContainersIfNeeded();
+        LogRoomEntrySpawn($"start: containers={reusableContainers.Count}");
+
+        int stageIndex = ResolveCurrentStageIndex();
+        for (int i = 0; i < reusableContainers.Count; i++)
+        {
+            MonsterSpawnContainer container = reusableContainers[i];
+            if (container == null || !container.SpawnByDefault)
+            {
+                LogRoomEntrySpawn($"skip container[{i}]: nullOrSpawnByDefaultFalse container={FormatContainer(container)}");
+                continue;
+            }
+
+            if (!container.TryCreateRequest(stageIndex, out MonsterSpawnRequest request))
+            {
+                LogRoomEntrySpawn($"skip container[{i}]: failed request. container={FormatContainer(container)}, stage={stageIndex}");
+                continue;
+            }
+
+            ReservePendingSpawn(request);
+            LogRoomEntrySpawn($"reserved container[{i}]: prefab={FormatObject(request.MonsterPrefab)}, pos={request.Position}, pending={pendingRoomEntrySpawnCount}, chestLock={FormatObject(request.LinkedChestKillLock)}");
+            Coroutine routine = StartCoroutine(SpawnRoomEntryMonsterRoutine(request));
+            activeSpawnRoutines.Add(routine);
+        }
+    }
+
+    private IEnumerator SpawnRoomEntryMonsterRoutine(MonsterSpawnRequest request)
+    {
+        GameObject vfx = null;
+        GameObject resolvedVfxPrefab = ResolveSpawnVfxPrefab();
+        float resolvedDelaySeconds = ResolveSpawnVfxDelaySeconds(resolvedVfxPrefab);
+        Vector3 resolvedOffset = ResolveSpawnVfxOffset();
+        SoundRef resolvedSound = ResolveSpawnSound();
+
+        LogRoomEntrySpawn($"routine start: prefab={FormatObject(request.MonsterPrefab)}, pos={request.Position}, vfx={FormatObject(resolvedVfxPrefab)}, delay={resolvedDelaySeconds:0.###}");
+        if (resolvedVfxPrefab != null)
+        {
+            vfx = Instantiate(
+                resolvedVfxPrefab,
+                request.Position + resolvedOffset,
+                request.Rotation);
+            activeSpawnVfx.Add(vfx);
+            LogRoomEntrySpawn($"vfx instantiated: vfx={FormatObject(vfx)}, pos={vfx.transform.position}");
+        }
+
+        PlaySpawnSound(resolvedSound, request.Position + resolvedOffset);
+
+        float delaySeconds = resolvedVfxPrefab != null ? resolvedDelaySeconds : 0f;
+        if (delaySeconds > 0f)
+        {
+            LogRoomEntrySpawn($"wait delay: seconds={delaySeconds:0.###}, prefab={FormatObject(request.MonsterPrefab)}");
+            yield return new WaitForSeconds(delaySeconds);
+        }
+
+        MonsterSpawner spawner = MonsterSpawner.Instance;
+        if (spawner != null)
+        {
+            GameObject spawnedMonster = spawner.SpawnOne(request);
+            LogRoomEntrySpawn($"spawn result: prefab={FormatObject(request.MonsterPrefab)}, monster={FormatObject(spawnedMonster)}");
+            ReleasePendingSpawn(request, releaseChestPending: spawnedMonster == null);
+        }
+        else
+        {
+            LogRoomEntrySpawn($"spawn failed: MonsterSpawner.Instance is null. prefab={FormatObject(request.MonsterPrefab)}");
+            ReleasePendingSpawn(request, releaseChestPending: true);
+        }
+
+        activeSpawnRoutines.RemoveAll(routine => routine == null);
+        activeSpawnVfx.Remove(vfx);
+        if (vfx != null)
+            Destroy(vfx);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - VFX 대기 중인 아직 생성되지 않은 몬스터를 문/상자 kill lock 카운트에 포함한다.
+    /// - 실제 몬스터가 생성되기 전 클리어로 오판되는 것을 막는다.
+    /// </summary>
+    private void ReservePendingSpawn(MonsterSpawnRequest request)
+    {
+        pendingRoomEntrySpawnCount++;
+        LogRoomEntrySpawn($"pending++: pending={pendingRoomEntrySpawnCount}, prefab={FormatObject(request.MonsterPrefab)}");
+        if (request.LinkedChestKillLock == null)
+            return;
+
+        request.LinkedChestKillLock.ReservePendingMonster();
+        pendingChestLocks.Add(request.LinkedChestKillLock);
+        LogRoomEntrySpawn($"chest pending++: chestLock={FormatObject(request.LinkedChestKillLock)}");
+    }
+
+    private void ReleasePendingSpawn(MonsterSpawnRequest request, bool releaseChestPending)
+    {
+        pendingRoomEntrySpawnCount = Mathf.Max(0, pendingRoomEntrySpawnCount - 1);
+        LogRoomEntrySpawn($"pending--: pending={pendingRoomEntrySpawnCount}, prefab={FormatObject(request.MonsterPrefab)}, releaseChestPending={releaseChestPending}");
+        if (request.LinkedChestKillLock == null)
+            return;
+
+        if (releaseChestPending)
+        {
+            request.LinkedChestKillLock.ReleasePendingMonster();
+            LogRoomEntrySpawn($"chest pending--: chestLock={FormatObject(request.LinkedChestKillLock)}");
+        }
+
+        pendingChestLocks.Remove(request.LinkedChestKillLock);
+    }
+
+    private void CancelActiveSpawnRoutines()
+    {
+        for (int i = 0; i < activeSpawnRoutines.Count; i++)
+        {
+            Coroutine routine = activeSpawnRoutines[i];
+            if (routine != null)
+                StopCoroutine(routine);
+        }
+
+        activeSpawnRoutines.Clear();
+
+        for (int i = activeSpawnVfx.Count - 1; i >= 0; i--)
+        {
+            GameObject vfx = activeSpawnVfx[i];
+            if (vfx != null)
+                Destroy(vfx);
+        }
+
+        activeSpawnVfx.Clear();
+    }
+
+    private void ReleaseAllPendingSpawns()
+    {
+        pendingRoomEntrySpawnCount = 0;
+        for (int i = 0; i < pendingChestLocks.Count; i++)
+        {
+            ChestMonsterKillLock chestLock = pendingChestLocks[i];
+            if (chestLock != null)
+                chestLock.ReleasePendingMonster();
+        }
+
+        pendingChestLocks.Clear();
+    }
+
+    private void PlaySpawnSound(SoundRef soundRef, Vector3 position)
+    {
+        if (!soundRef.IsSet)
+            return;
+
+        SoundPlaybackUtility.Play(soundRef, causer: gameObject, position: position, sourceObject: this);
+        LogRoomEntrySpawn($"sound played: key={soundRef.key}, pos={position}");
+    }
+
+    private GameObject ResolveSpawnVfxPrefab()
+    {
+        if (spawnVfxPrefab != null)
+            return spawnVfxPrefab;
+
+        MonsterRoomEntrySpawnSettingsSO settings = ResolveDefaultSpawnSettings();
+        return settings != null ? settings.DefaultSpawnVfxPrefab : null;
+    }
+
+    private float ResolveSpawnVfxDelaySeconds(GameObject resolvedVfxPrefab)
+    {
+        if (spawnVfxPrefab != null)
+            return spawnVfxDelaySeconds;
+
+        MonsterRoomEntrySpawnSettingsSO settings = ResolveDefaultSpawnSettings();
+        return settings != null ? settings.DefaultSpawnVfxDelaySeconds : spawnVfxDelaySeconds;
+    }
+
+    private Vector3 ResolveSpawnVfxOffset()
+    {
+        if (spawnVfxPrefab != null || spawnVfxOffset != Vector3.zero)
+            return spawnVfxOffset;
+
+        MonsterRoomEntrySpawnSettingsSO settings = ResolveDefaultSpawnSettings();
+        return settings != null ? settings.DefaultSpawnVfxOffset : spawnVfxOffset;
+    }
+
+    private SoundRef ResolveSpawnSound()
+    {
+        if (spawnSound.IsSet)
+            return spawnSound;
+
+        MonsterRoomEntrySpawnSettingsSO settings = ResolveDefaultSpawnSettings();
+        return settings != null ? settings.DefaultSpawnSound : spawnSound;
+    }
+
+    private MonsterRoomEntrySpawnSettingsSO ResolveDefaultSpawnSettings()
+    {
+        if (cachedDefaultSpawnSettings != null)
+            return cachedDefaultSpawnSettings;
+
+        cachedDefaultSpawnSettings = Resources.Load<MonsterRoomEntrySpawnSettingsSO>(DefaultRoomEntrySpawnSettingsResourcePath);
+        return cachedDefaultSpawnSettings;
+    }
+
     private void RefreshContainersIfNeeded()
     {
         reusableContainers.Clear();
@@ -200,9 +441,10 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
                 if (child == null)
                     continue;
 
-                reusableContainers.Add(child);
+                AddReusableContainerIfNeeded(child);
             }
 
+            CollectSceneContainersLinkedToThisRoom();
             return;
         }
 
@@ -212,8 +454,44 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
             if (container == null)
                 continue;
 
-            reusableContainers.Add(container);
+            AddReusableContainerIfNeeded(container);
         }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 맵 툴이 MonsterSpawnContainer.roomGroup 참조로 연결한 스폰 포인트를 방 그룹 authoring 데이터로 수집한다.
+    /// - 스폰 포인트가 방 그룹 Transform의 자식이 아니어도 기존 맵 툴 세팅 그대로 방 입장 스폰에 참여하게 한다.
+    /// </summary>
+    private void CollectSceneContainersLinkedToThisRoom()
+    {
+#if UNITY_2023_1_OR_NEWER
+        MonsterSpawnContainer[] sceneContainers = FindObjectsByType<MonsterSpawnContainer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+#else
+        MonsterSpawnContainer[] sceneContainers = FindObjectsOfType<MonsterSpawnContainer>();
+#endif
+
+        for (int i = 0; i < sceneContainers.Length; i++)
+        {
+            MonsterSpawnContainer container = sceneContainers[i];
+            if (container == null || container.gameObject.scene != gameObject.scene)
+                continue;
+
+            if (container.RoomGroup != this)
+                continue;
+
+            AddReusableContainerIfNeeded(container);
+        }
+
+        LogRoomEntrySpawn($"collect linked containers: total={reusableContainers.Count}");
+    }
+
+    private void AddReusableContainerIfNeeded(MonsterSpawnContainer container)
+    {
+        if (container == null || reusableContainers.Contains(container))
+            return;
+
+        reusableContainers.Add(container);
     }
 
     /// <summary>
@@ -244,6 +522,30 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
     {
         runtimeDoorLocks.RemoveAll(doorLock => doorLock == null);
         runtimeSpawnedMonsters.RemoveAll(monster => monster == null);
+    }
+
+    private int CountAliveRegisteredMonsters()
+    {
+        CompactRuntimeLists();
+        return runtimeSpawnedMonsters.Count;
+    }
+
+    private void LogRoomEntrySpawn(string message)
+    {
+        if (!logRoomEntrySpawnDebug)
+            return;
+
+        Debug.Log($"[RoomEntrySpawn] {name}: {message}", this);
+    }
+
+    private static string FormatContainer(MonsterSpawnContainer container)
+    {
+        return container != null ? container.name : "null";
+    }
+
+    private static string FormatObject(UnityEngine.Object target)
+    {
+        return target != null ? target.name : "null";
     }
 
 #if UNITY_EDITOR

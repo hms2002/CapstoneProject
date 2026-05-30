@@ -23,6 +23,7 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
 
     private bool isUnlocked = true;
     private int remainingAliveCount = 0;
+    private int pendingMonsterCount = 0;
     private WorldObjectPresentationRuntime unlockPresentationRuntime;
 
     /// <summary>
@@ -46,6 +47,24 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
     /// 책임 : 현재 살아 있는 잠금 대상 몬스터 수를 외부에 제공한다.
     /// </summary>
     public int RemainingAliveCount => remainingAliveCount;
+
+    /// <summary>
+    /// 책임 : 스폰 VFX 대기 중인 잠금 대상 몬스터를 실제 생성 전까지 카운트에 포함한다.
+    /// </summary>
+    public void ReservePendingMonster()
+    {
+        pendingMonsterCount++;
+        RecalculateState(raiseEvents: true);
+    }
+
+    /// <summary>
+    /// 책임 : 예약된 스폰이 실제 몬스터 등록 또는 취소로 해소되었을 때 pending 카운트를 줄인다.
+    /// </summary>
+    public void ReleasePendingMonster()
+    {
+        pendingMonsterCount = Mathf.Max(0, pendingMonsterCount - 1);
+        RecalculateState(raiseEvents: true);
+    }
 
     private void Awake()
     {
@@ -74,6 +93,9 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
         if (trackedMonsters.Contains(monster))
             return;
 
+        if (pendingMonsterCount > 0)
+            pendingMonsterCount--;
+
         trackedMonsters.Add(monster);
         RecalculateState(raiseEvents: true);
     }
@@ -86,6 +108,7 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
     public void ClearRegisteredMonsters()
     {
         trackedMonsters.Clear();
+        pendingMonsterCount = 0;
         RecalculateState(raiseEvents: true);
     }
 
@@ -127,7 +150,7 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
     {
         CompactDeadEntries();
 
-        int newRemainingCount = trackedMonsters.Count;
+        int newRemainingCount = trackedMonsters.Count + pendingMonsterCount;
         bool newUnlocked = newRemainingCount == 0;
 
         bool countChanged = remainingAliveCount != newRemainingCount;

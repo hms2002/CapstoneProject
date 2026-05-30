@@ -32,8 +32,6 @@ public class MonsterSpawner : MonoBehaviour
 
     [Header("Scene Policy")]
     [SerializeField] private bool recollectSpawnPointsOnSceneLoaded = true;
-    [SerializeField] private bool spawnOnStart = true;
-    [SerializeField] private bool spawnOnSceneLoaded = true;
     [SerializeField] private bool clearAliveMonstersBeforeSceneSpawn = true;
 
     private SceneMonsterSpawnDirector sceneDirector;
@@ -87,9 +85,6 @@ public class MonsterSpawner : MonoBehaviour
 
         if (recollectSpawnPointsOnSceneLoaded || spawnPoints.Count == 0)
             CollectSpawnPointsFromActiveScene();
-
-        if (spawnOnStart)
-            SpawnAll();
     }
 
     /// <summary>
@@ -114,18 +109,6 @@ public class MonsterSpawner : MonoBehaviour
     public void CollectSpawnPointsFromActiveScene()
     {
         SceneDirector.CollectSpawnPointsFromActiveScene();
-        SyncSceneServiceReferences();
-    }
-
-    /// <summary>
-    /// 책임:
-    /// - 현재 등록된 SpawnPoint들을 기준으로 기본 몬스터 배치를 생성한다.
-    /// - 난이도 수정자의 extraSpawnRatio를 반영해 추가 스폰도 수행한다.
-    /// </summary>
-    [ContextMenu("Spawn All")]
-    public void SpawnAll()
-    {
-        SceneDirector.SpawnAll(BuildRuntimeDifficultyModifiers());
         SyncSceneServiceReferences();
     }
 
@@ -187,7 +170,6 @@ public class MonsterSpawner : MonoBehaviour
         SceneDirector.HandleSceneLoaded(
             new SceneMonsterSpawnPolicy(
                 recollectSpawnPointsOnSceneLoaded,
-                spawnOnSceneLoaded,
                 clearAliveMonstersBeforeSceneSpawn),
             BuildRuntimeDifficultyModifiers());
 
