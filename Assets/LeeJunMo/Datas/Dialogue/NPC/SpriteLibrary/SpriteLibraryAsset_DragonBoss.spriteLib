@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a5e6fedc2472449cead18ef23b5cb30d, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteLibrarySourceAsset
   m_Library:
   - m_Name: Face
@@ -47,8 +47,38 @@ MonoBehaviour:
       m_Sprite: {fileID: 21300000, guid: 4ead3b0a61bc93f4dad73ea382bf8f23, type: 3}
       m_FromMain: 0
       m_SpriteOverride: {fileID: 21300000, guid: 4ead3b0a61bc93f4dad73ea382bf8f23, type: 3}
+    - m_Name: Spiri_Dragon
+      m_Hash: 101876201
+      m_Sprite: {fileID: -5244108214742962476, guid: 2c76e3a74016c7641a876767a4fd54f1, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -5244108214742962476, guid: 2c76e3a74016c7641a876767a4fd54f1, type: 3}
+    - m_Name: Spiri_Drink
+      m_Hash: 206541902
+      m_Sprite: {fileID: 4018392636136513170, guid: b916c2a7f849aa94aabbe18761d9884a, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 4018392636136513170, guid: b916c2a7f849aa94aabbe18761d9884a, type: 3}
+    - m_Name: Spiri_Idle
+      m_Hash: 309833013
+      m_Sprite: {fileID: 4410287023350739978, guid: 87addf85fa8b5234bbcb900d04fa6921, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 4410287023350739978, guid: 87addf85fa8b5234bbcb900d04fa6921, type: 3}
+    - m_Name: Spiri_DrunkRelax
+      m_Hash: 412984124
+      m_Sprite: {fileID: 3825925869027057488, guid: 257f6b01c40d1084fb65b49500f47ae0, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 3825925869027057488, guid: 257f6b01c40d1084fb65b49500f47ae0, type: 3}
+    - m_Name: Spiri_DrunkShout
+      m_Hash: 515203235
+      m_Sprite: {fileID: -9122104208230050258, guid: e9205611ec75a2b4b92c57a14939c822, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -9122104208230050258, guid: e9205611ec75a2b4b92c57a14939c822, type: 3}
+    - m_Name: Spiri_Smile
+      m_Hash: 618777346
+      m_Sprite: {fileID: 6440980619396084247, guid: d61bdeddfb182904d8c875a9f334bbf0, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 6440980619396084247, guid: d61bdeddfb182904d8c875a9f334bbf0, type: 3}
     m_FromMain: 0
-    m_EntryOverrideCount: 6
-  m_PrimaryLibraryGUID: 
-  m_ModificationHash: 639129725255422819
+    m_EntryOverrideCount: 12
+  m_PrimaryLibraryGUID:
+  m_ModificationHash: 639156938954496847
   m_Version: 1

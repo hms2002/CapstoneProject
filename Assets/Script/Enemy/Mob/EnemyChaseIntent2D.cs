@@ -185,7 +185,6 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         chaseEnabled = false;
         lastIntent = IntentMovementData.None;
         ClearChasePath();
-        LogChase("StopChase 호출.");
     }
 
     /// <summary>스폰 시 전달된 방/경로 탐색 문맥을 저장해 추적 우회 경로 계산에 사용합니다.</summary>

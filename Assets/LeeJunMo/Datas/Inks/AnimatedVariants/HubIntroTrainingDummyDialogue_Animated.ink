@@ -1,4 +1,4 @@
-﻿=== HUB_INTRO_TRAINING_DUMMY ===
+=== HUB_INTRO_TRAINING_DUMMY ===
 # speaker: 1002
 # anim: normal
 저건 훈련 허수아비야. 새 무기나 기술이 생겼다면 먼저 저기서 시험해. [pause=0.25]실전에서 확인하다가 쓰러지는 것보단 싸게 먹히니까.

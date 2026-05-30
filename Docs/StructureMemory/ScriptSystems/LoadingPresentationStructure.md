@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-16
+last_reviewed: 2026-05-30
 ---
 
 # Loading Presentation Structure
@@ -17,7 +17,7 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 | --- | ---: | --- |
 | Global UI | 36 | UIManager, popup stack, global UI root, flow blockers, raycast gates, pause/settings/reward/title panels, cursor and warning services. |
 | Loading | 18 | Load manifests, asset providers, preload service, loading overlay/controller/debug/trace runtime. |
-| Presentation Runtime | 10 | Cue catalog/service, presentation references, world presentation runtime, spawn/routine services. |
+| Presentation Runtime | 11 | Cue catalog/service, presentation references, world presentation runtime, spawn/routine services, and visual-only helper components. |
 | Combat UI | 10 | Damage popup and monster element gauge UI. |
 | Audio | 8 | Audio runtime services, sound playback context, sound cues, music/ambience support. |
 | Input Bindings | 7 | Input action IDs, glyph database, binding service, shortcut defaults. |
@@ -60,6 +60,9 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 - `Assets/LeeJunMo/Script/Loading/Runtime/LoadingOverlayController.cs`
 - `Assets/LeeJunMo/Script/Loading/Runtime/PresentationPreloadService.cs`
 - `Assets/LeeJunMo/Script/Loading/Runtime/PrewarmTraceRuntime.cs`
+- `Assets/LeeJunMo/Script/Presentation/Runtime/TopDownDebrisBounceEmitter2D.cs`
+- `Assets/Editor/ExplosionDebrisBouncePrefabBuilder.cs`
+- `Assets/Editor/ExplosionDebrisBouncePreviewWindow.cs`
 - `Assets/Editor/PrewarmRecommendationWindow.cs`
 
 ## Ownership And Lifecycle
@@ -72,6 +75,7 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 - `SceneFadeTransitionService` may create a runtime fallback overlay when a transition begins from a scene without an authored fade service, but title-origin transitions should prefer a scene-root authored `SceneFadeTransitionService` so fade timing is Inspector-tuned. If the loaded scene brings in an authored service during any active transition, replacement is deferred until `EndTransitionSession()` so the same overlay that faded to black can fade the next scene back in. The deferred authored overlay is reset transparent/inactive while pending.
 - `PrewarmTraceRuntime` writes editor trace output to a tester/machine-specific `PrewarmTrace_*.json` file under `Assets/LeeJunMo/Datas/Loading/` and keeps the older `PrewarmTrace.json` as a read-only legacy source. `PrewarmRecommendationWindow` aggregates every tester trace file it finds plus the legacy file so multiple testers can commit their own trace results without rewriting one shared JSON.
 - Camera/audio/settings/speech bubble scripts are presentation support and should not own progression state.
+- `TopDownDebrisBounceEmitter2D` is visual-only. It simulates debris ground XY plus virtual height, supports circular or rotated-ellipse ground spread through prefab-facing fields, updates child ParticleSystems, and emits contact puffs on bounce; it must not own damage, hit timing, gameplay tags, or flow blocking.
 
 ## Boundary Review
 
@@ -80,7 +84,7 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 | Global UI policy | `UIManager` correctly owns stack UI policy and external flow blockers. Return-to-title remains a UI entry point, but `TitleReturnService` now owns the run-end and scene-transition execution handoff. |
 | Title-local vs global runtime UI | Title menu/panels are scene-local authored UI. Gameplay `GlobalUIRoot`, runtime camera rig, and stack UI services are cleaned or avoided on title through the scene-domain bootstrap policy; title-side persistent UI/camera cleanup now executes through `SceneDomainTitleCleanupScope`, and camera title guards now route through `CameraBootstrapScenePolicy`. |
 | Loading / preload | `PresentationPreloadService` follows `LoadingScopes.md`: it reads the active route load window and delegates manifest preload/release to asset providers. |
-| Presentation runtime | `WorldPresentationRuntime` and `PresentationSpawnService` execute sound, shake, visual spawn, pooling, and cleanup. They are runtime consumers, not authoring owners. |
+| Presentation runtime | `WorldPresentationRuntime` and `PresentationSpawnService` execute sound, shake, visual spawn, pooling, and cleanup. They are runtime consumers, not authoring owners. `TopDownDebrisBounceEmitter2D` is an authored prefab helper consumed by those spawn paths. |
 | Runtime-created UI / overlay | Loading overlay fallback, cursor canvas, cinematic letterbox, status HUD entry/tooltip fallback, and Boss HUD dual/split fallback can create UI hierarchy at runtime and report through `RuntimePresentationFallbackAudit` in editor/development builds. `MouseCursorService` now prefers serialized cursor canvas/image references before fallback creation. `GamePresentationController` intentionally keeps the display letterbox runtime-generated because it follows window/resolution policy. Scene Setup Validator validates the representative `GlobalUIRoot.prefab` and provides an auto-fix path for cursor authoring. |
 | Camera / audio route support | Camera and route BGM bridge scene, boss, and route context for presentation. This is acceptable as support code, but new progression rules should stay outside these services. |
 
@@ -95,6 +99,7 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 - Add global UI flow policy through UIManager and related stack/blocker interfaces.
 - Add loading behavior through manifests, bootstrap config, asset providers, and overlay/controller scripts.
 - Add presentation support through dedicated presentation services rather than gameplay owners.
+- Add visual-only helper prefabs through UnityEditor builders or Inspector authoring, then spawn them through existing presentation hooks.
 
 ## Known Pitfalls
 
@@ -108,6 +113,9 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 - Do not change prewarm trace capture back to a single shared JSON file. Shared trace writes create source-control conflicts when several testers run sessions; recommendation analysis should merge per-tester files instead.
 - Presentation authoring should follow `Docs/Contracts/PresentationAuthoringContract.md`.
 - Loading/addressable behavior can be scene and asset-reference sensitive; verify paths and asset references before changing.
+- Top-down airborne debris should keep ground contact points explicit. Avoid ParticleSystem gravity/collision as the source of truth when the visual needs to look like it bounced on the map plane. Use ground spread scale/rotation for ellipse-shaped explosion silhouettes instead of faking direction through screen-space height offset.
+- Manually driven ParticleSystems that write particles through code need a dedicated Editor preview path; the built-in ParticleSystem preview does not step custom virtual-height simulation.
+- VFX prefab builders may auto-create missing scaffold assets, but should not auto-repair existing prefab assets on Play/domain reload because that overwrites Inspector tuning. Keep destructive regeneration behind an explicit menu command.
 
 ## Promotion Candidate
 

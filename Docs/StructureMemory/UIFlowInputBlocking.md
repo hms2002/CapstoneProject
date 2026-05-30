@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: system-map
-last_reviewed: 2026-05-29
+last_reviewed: 2026-05-30
 ---
 
 # UI Flow Input Blocking
@@ -83,6 +83,7 @@ This is a fast context map, not the final UI architecture source of truth.
 - Do not open feature UI while a dialogue-owned blocker is still active. Request dialogue exit first, then open after dialogue and external UI blockers release.
 - Do not detach a dialogue continuation from an affection reward close callback to avoid a blocker deadlock. If the reward popup is part of the current dialogue flow, open it through the flow-owned reward path.
 - Do not assume dialogue blocking covers an outer encounter/cinematic sequence. The outer flow owner must block its non-dialogue camera, transition, and handoff windows.
+- Do not release a cinematic flow blocker or player protection before visible closing presentation is done. Camera focus/return waits are minimum holds plus camera settle, and letterbox-out should finish before gameplay release events fire.
 - Do not merge chest world-object presentation timing with chest UI reveal timing. Keep timing separate, but block input across the full first-open sequence when needed.
 - Interrupted flows must release their blocker from cleanup paths.
 - If a stack UI freezes time while `Time.timeScale` is already `0`, its cached restore value may belong to another freeze owner. UI restore must not write that stale zero over a later non-zero restore.

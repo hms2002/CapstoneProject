@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: error-log
-last_reviewed: 2026-05-29
+last_reviewed: 2026-05-30
 ---
 
 # Error Log
@@ -24,6 +24,90 @@ Prevention:
 ```
 
 ## Active Entries
+
+## 2026-05-30 - VFX Auto Builder Reset Inspector Particle Tuning On Play
+
+Context:
+Explosion debris bounce particle prefab values could revert when entering Play Mode, and Unity logged `Setting the duration while system is still playing is not supported` from `ExplosionDebrisBouncePrefabBuilder`. A later DemonKing wiring pass also tried to create a second Resources mirror of the tuned HighArc prefab, which risked letting the runtime copy drift from the Inspector-authored prefab.
+
+Cause:
+The editor builder's `InitializeOnLoadMethod` path rebuilt prefabs when existing assets differed from generated preset/material checks. Entering Play Mode can trigger editor domain reload/delay calls, so Inspector-authored particle changes were overwritten by generated defaults. The builder also configured newly added `ParticleSystem` components while Unity still considered them playing. Mirroring a prefab for runtime loading created another authoring surface for values to diverge.
+
+Fix:
+Limit the automatic builder path to missing prefab creation only; explicit menu rebuild remains available at `Tools/VFX/Rebuild Explosion Debris Bounce Prefabs`. Create generated ParticleSystem children inactive, stop/clear them, configure modules, then reactivate them. For DemonKing HighArc runtime use, move the authored prefab itself into `Resources/DemonKing/Vfx` instead of maintaining a generated mirror.
+
+Prevention:
+Editor auto-builders for authored VFX should not repair existing prefab assets on play/domain reload unless the user explicitly invokes a rebuild command. Generated prefab scaffolds may create missing assets automatically, but preserving Inspector tuning must be the default behavior. When a runtime path requires `Resources`, move or directly reference the tuned prefab rather than copying it into a second prefab that can fall out of sync.
+
+## 2026-05-30 - Manual ParticleSystem Prefabs Had No Useful Inspector Preview
+
+Context:
+The generated explosion debris bounce prefabs existed, but the normal ParticleSystem/Prefab preview did not show how the effect behaves.
+
+Cause:
+`TopDownDebrisBounceEmitter2D` drives particles manually through `ParticleSystem.SetParticles(...)` from the component update loop. The built-in ParticleSystem preview can play authored module emission, but it does not run this custom virtual-height simulation.
+
+Fix:
+Add an Editor-only preview window that instantiates a hidden temporary prefab copy, steps the emitter manually, and renders it through a hidden camera into a `RenderTexture`. The prefab builder now also resolves `Sprites-Default.mat` before the older default particle/fire fallbacks so the generated presets use the intended square sprite-style material.
+
+Prevention:
+For manually driven VFX helpers, include a dedicated Editor preview path instead of relying on the Inspector ParticleSystem preview. Preview tools must render temporary instances and must not mutate prefab assets directly.
+
+## 2026-05-30 - Cinematic Fixed Waits Treated As Camera Completion
+
+Context:
+Merchant, run-special NPC, shortcut, and tutorial cinematic flows could advance speech bubbles, choices, or gameplay release before the visible camera/letterbox presentation had fully settled.
+
+Cause:
+Several flows used authored focus/return wait seconds as if they represented camera completion. Those values are only minimum hold durations and do not account for Cinemachine blend completion, follow damping, moving camera targets, or the extra frame needed for the output camera to settle. `TutorialCombatIntroSequence` also released gameplay before its letterbox-out routine finished.
+
+Fix:
+Flow-owned camera waits now perform the existing authored minimum wait and then wait for the Cinemachine brain to stop blending and for the intended target's viewport position to remain stable for consecutive frames. `TutorialCombatIntroSequence` now releases gameplay only after letterbox-out completes.
+
+Prevention:
+For cinematic camera flows, treat serialized wait seconds as minimum presentation holds, not as completion gates. Advance speech bubbles, choices, gameplay release, or cleanup only after camera settle and visible closing presentation have finished.
+
+## 2026-05-30 - Dialogue Text Preview Used A Different TMP Coordinate Space
+
+Context:
+`Tools/Dialogue/Text Animation Tuner` showed `[wave]`, `[slowshake]`, `[shake]`, and `# CameraShake` character impact motion as more dynamic than the actual DialoguePanel. After switching to `TextMeshProUGUI`, assigning the real `DialogueText` source could make the preview text disappear. A later pass could also throw `IndexOutOfRangeException` in `TextMeshProUGUI.SetSharedMaterials(...)`. Even after source/effective rect diagnostics were valid, the preview could still render black.
+
+Cause:
+The preview rendered a world `TextMeshPro` object with a fixed small font size and arbitrary orthographic camera framing, while runtime dialogue uses `TextMeshProUGUI` in the DialoguePanel Canvas. The same absolute TMP vertex offsets therefore appeared at different visual scales. The follow-up UGUI preview then copied the source `DialogueText` RectTransform literally; that authored text rect has height `0` because the parent `DialogueTextCon` supplies the usable layout area, so the preview mesh had no visible text area. The source `fontSharedMaterials` array was also copied into a fresh preview TMP instance whose internal material/submesh slots did not match that array. `PreviewRenderUtility` did not reliably render the hidden world-space UGUI CanvasRenderer output.
+
+Fix:
+The tuner preview now renders a hidden world-space `Canvas + TextMeshProUGUI`, resolves `GlobalUIRoot.prefab` `DialogueView.dialogueText` as the default source, and copies its text/rect/font settings before applying the shared text animation utility. Preview-only effective text sizing resolves zero or invalid source dimensions from the parent container before falling back to `1720 x 250`, and the tool reports source/effective size diagnostics. Material copying is limited to the font and primary shared material instead of copying the source material array. The preview now uses a hidden preview camera and `RenderTexture` instead of `PreviewRenderUtility`.
+
+Prevention:
+When adding editor previews for UI text vertex animation, render through the same TMP component family and layout scale as runtime, or require an explicit runtime source object. Do not tune UI vertex offsets from a world TMP preview with arbitrary font/camera scale. Also do not treat a zero-size child text rect as the final render area when the authored UI relies on a parent container, do not copy `fontSharedMaterials` arrays between unrelated TMP instances, and prefer explicit `RenderTexture + Camera.Render()` for UGUI previews when `PreviewRenderUtility` produces black output.
+
+## 2026-05-29 - DemonKing Pose Holds Restarted Current Animator State
+
+Context:
+`DarkLord_Hand_Groggy`, `DarkLord_Sword_Groggy`, `DarkLord_Hand_GroggyCounter`, `DarkLord_Sword_GroggyCounter`, and `DarkLord_Sword_Slash` could still look like they replayed even after adding once-per-pattern start guards.
+
+Cause:
+The first pass guarded only full clip start calls. Pose hold helpers still called `Animator.Play(...)` when the Animator was already on the same state: `HoldGroggyPoseAnimation()` restarted the current Groggy pose at frame 0, and last-frame holds could jump a completed same-state clip back to its computed last-frame normalized time.
+
+Fix:
+DemonKing same-state pose holds now reuse the current Animator state instead of replaying it. Groggy eye-flash holds freeze the current Groggy frame when already in the Groggy state, and last-frame holds skip `Animator.Play(...)` when the same state has already reached or passed the requested frame.
+
+Prevention:
+For DarkLord state-library clips, distinguish between a deliberate frame switch and a pose hold. Use `Animator.Play(..., 0f)` only when a clip should actually restart; when the current state already represents the desired pose, freeze or continue that state instead of resampling it.
+
+## 2026-05-29 - DemonKing Facing Used The Wrong Sprite Baseline
+
+Context:
+DarkLord/DemonKing body sprites are authored facing left in the source sheet, but many DemonKing animations and pattern windows appeared to face away from the player.
+
+Cause:
+The shared `Enemy.TryApplySpriteFacingTargetX(...)` helper treats the cached initial `SpriteRenderer.flipX` value as the right-facing baseline. DemonKing's unflipped art is left-facing, so using that helper directly inverted the intended direction.
+
+Fix:
+`DemonKingController` now owns a local left-facing baseline: `flipX == false` means facing left and `flipX == true` means facing right. Auto-facing, pattern-facing, fallback facing direction, and sword hold offset mirroring use that DemonKing-specific baseline.
+
+Prevention:
+When adding a boss with non-right-facing source art, do not assume the shared `Enemy` facing helper is correct. Confirm the authored sprite's natural facing direction and either set the prefab's initial `flipX` to the right-facing baseline or add a boss-local facing policy before wiring pattern animation timing.
 
 ## 2026-05-29 - Apprentice Sword Abilities Ignored Authored Animation Hit Events
 
@@ -925,10 +1009,10 @@ Cause:
 `Resources.FindObjectsOfTypeAll<UpgradeTreeUI>()` returned `UpgradeTreeUI` components that live in Prefab Assets. The editor preview restore path called `UpgradeLakePresentation.Initialize(...)`, which attempted to create and parent a generated `LakeSurface` child under a Prefab Asset transform.
 
 Fix:
-Skip persistent Prefab Asset objects, unloaded scenes, and Prefab Stage objects in the upgrade lake editor preview loop and in `UpgradeTreeUI` editor preview/restore methods. Keep automatic material restoration no-create/no-initialize so assembly reload and play-mode transitions do not call `UpgradeLakePresentation.Initialize(...)`. Disable the automatic edit-mode lake preview callbacks by default; lake preview refresh is now a manual Inspector button action. Add defensive `UpgradeLakePresentation` guards so generated lake surface or ripple layers are not created under persistent Prefab Asset transforms.
+Skip persistent Prefab Asset objects, unloaded scenes, and Prefab Stage objects in the upgrade lake editor preview loop and in `UpgradeTreeUI` editor preview/restore methods. Keep automatic material restoration no-create/no-initialize so assembly reload and play-mode transitions do not call `UpgradeLakePresentation.Initialize(...)`. Later follow-up removed the Upgrade edit-mode LakePreview path entirely: the custom `UpgradeTreeUI` Inspector was deleted, `UpgradeLakePresentation` no longer uses `ExecuteAlways`, and editor preview methods were removed.
 
 Prevention:
-Editor preview/update loops that use `Resources.FindObjectsOfTypeAll` must filter out persistent assets, unloaded scene objects, and Prefab Stage contents before mutating transforms, components, materials, or generated children. Automatic cleanup/restoration handlers for assembly reload, play-mode transitions, and `OnDisable` should restore only existing state; they must not create helper components or generated children.
+Editor preview/update loops that use `Resources.FindObjectsOfTypeAll` must filter out persistent assets, unloaded scene objects, and Prefab Stage contents before mutating transforms, components, materials, or generated children. Automatic cleanup/restoration handlers for assembly reload, play-mode transitions, and `OnDisable` should restore only existing state; they must not create helper components or generated children. Do not reintroduce Upgrade LakePreview without a separate, no-scene-mutation editor design.
 
 ## 2026-05-06 - CurrentTask Drift
 
@@ -1156,3 +1240,17 @@ Fix:
 
 Prevention:
 Any pre-travel presentation lock that writes gameplay tags must be released before the runtime capture boundary. Holding an input blocker "until travel accepted" is unsafe when acceptance performs capture synchronously.
+
+## 2026-05-30 - One-Shot Animation Guard Blocked DemonKing Multi-Hit Motions
+
+Context:
+DarkLord body clips needed replay protection because Groggy, GroggyCounter, and Slash could restart or oscillate inside one pattern. After adding a pattern-level one-shot guard, DashStab no longer matched the intended three-hit PierceCombo rhythm.
+
+Cause:
+The guard was applied as a broad animation rule instead of a pattern-semantics rule. Single-commit clips and per-hit clips have different replay needs even when both are controlled by `Animator.Play(...)`.
+
+Fix:
+DashStab and multi-rush body starts use normal per-hit playback, while Slash and GroggyCounter keep one-shot start guards plus last-frame hold sampling. GroggyRecoverCounter now stays in Groggy through the eye flash, plays GroggyCounter for the impact, spawns state-specific VFX (`DarkLordGroggyReleaseVfx` for sword-held counters and `DemonKingImpactVfx` for hand-state counters), then restores idle after the impact hold.
+
+Prevention:
+Before applying a once-per-pattern animation guard, classify whether the state is a single visual commit, a frame sample/hold, or a repeated per-hit state. Also lock DemonKing auto-facing during authored motion windows so sprite flips do not masquerade as animation replay problems.

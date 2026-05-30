@@ -19,6 +19,7 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
 
     public Transform Transform => transform;
     public InteractState CurrentState { get; private set; } = InteractState.Idle;
+    public Collider2D BodyCollider => bodyCollider;
 
     [Header("Interaction")]
     [SerializeField] private WorldInteractionPromptController interactionPrompt;

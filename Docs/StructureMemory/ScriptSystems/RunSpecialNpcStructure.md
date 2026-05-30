@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-23
+last_reviewed: 2026-05-30
 ---
 
 # Run Special NPC Structure
@@ -61,13 +61,13 @@ This is a structure-memory map. It does not override `Docs/Architecture/Dialogue
 - Player interaction starts only while the player is `Idle` and no run-special flow is active.
 - The flow hides the world prompt, sets the player to `Talking`, acquires `GameFlowInputBlocker`, pauses `RunTimeLimitSystem`, and sets `Time.timeScale` to `0` until cleanup.
 - The flow plays the existing `CinematicLetterboxOverlay` and fades HUD-style global canvas layers to the configured target alpha, like the Merchant cinematic. The run-special path excludes `GlobalCanvasLayer.Dialogue` from that fade so the authored `DialogueCanvas` choice panel remains visible and clickable.
-- After letterbox-in, the flow can temporarily focus `CameraBootstrap`'s gameplay `CinemachineCamera` on the NPC focus target. The default target is the assigned speech bubble transform, falling back to the NPC transform. The camera brain uses unscaled blending while dialogue has `Time.timeScale = 0`.
+- After letterbox-in, the flow can temporarily focus `CameraBootstrap`'s gameplay `CinemachineCamera` on the NPC focus target. The default target is the assigned speech bubble transform, falling back to the NPC transform. The camera brain uses unscaled blending while dialogue has `Time.timeScale = 0`, and focus/return waits treat serialized wait seconds as minimum holds before waiting for camera settle.
 - The interactor asks its primary `RunSpecialNpcFeatureBase` for a `RunSpecialNpcDialogueBranchKey`, reads that branch from `RunSpecialNpcDialogueSetSO`, then plays branch lines and branch choices. Legacy interactor-authored line/choice fields remain only as dialogue-set asset migration input.
 - Run-special lines call `SpeechBubbleComponent.SpeakWithPreSizedLayout(...)`, so the bubble measures the full line first, clamps the text width, enables wrapping, and then starts the typewriter reveal inside the already-sized bubble. Normal `SpeechBubbleComponent.Speak(...)` calls keep the legacy empty-text-then-grow behavior.
 - If a `RunSpecialNpcLine.Text` contains line breaks, `RunSpecialNpcInteractor` splits that text into multiple speech-bubble lines during playback. Each split segment keeps the original line's duration and theme, and blank segments are ignored. This applies to branch lines and choice response lines.
 - Line skip follows the existing Dialogue input rule: left click or `InputActionId.DialogueAdvance` advances the current speech-bubble line. The first skip completes active typing; the next skip hides the line. Choice selection remains click or number-key based, so Space/DialogueAdvance does not confirm run-special choices.
 - Choices are authored in the dialogue set SO. A choice can include `unavailableResponseLines`; when present and the feature allows that unavailable state to be exposed, the choice may stay visible even if its action is currently unavailable, so the selected choice can explain the failure before any feature execution.
-- Before the authored choice presenter appears, the flow returns the camera to the player, waits for that unscaled return window, then shows the player choice UI. If the selected choice has NPC response lines, the flow focuses the camera back on the NPC before playing those lines.
+- Before the authored choice presenter appears, the flow returns the camera to the player, waits for the unscaled minimum return window and camera settle, then shows the player choice UI. If the selected choice has NPC response lines, the flow focuses the camera back on the NPC before playing those lines.
 - The authored choice presenter accepts clicks and number keys `1`-`9` after the configured guard window. It supports the current three-button panel by activating only visible choice slots and deactivating unused button objects so layout collapses correctly. For the current three-button authoring, attach `DialogueChoiceKeyGlyph` to each choice button root and place the visual `KeyGlyph` child under that button; the presenter binds the icon to the visible choice index and hides it with unused slots.
 - When the presenter has `RunSpecialNpcChoiceAnchorFollower`, the interactor assigns the current player transform after the camera return and before showing choices, then clears it during flow cleanup. The current authored panel lives under `GlobalUIRoot > DialogueCanvas` and uses screen-space overlay positioning from player world coordinates.
 - Most feature executions run inside the paused run-special dialogue flow. A feature that returns `ExecuteAfterRunSpecialPresentationClose = true` is deferred until after camera return, letterbox/HUD close, run-timer unpause, and `Time.timeScale` restore. The flow keeps the input blocker and player talking state until that deferred feature finishes.

@@ -134,11 +134,11 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
 
         yield return ReturnCameraRoutine();
 
-        ReleaseSequenceState(invokeGameplayReleased: true);
-        hasPlayed = true;
-
         if (useLetterbox)
             yield return PlayLetterboxOutRoutine();
+
+        ReleaseSequenceState(invokeGameplayReleased: true);
+        hasPlayed = true;
 
         sequenceRoutine = null;
         onSequenceCompleted?.Invoke();
@@ -209,7 +209,11 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
         Transform target = focusTarget != null ? focusTarget : transform;
         CacheCameraState();
         SetCameraTarget(target);
-        yield return ZoomCameraWhileWaitingRoutine(focusOrthographicSize, cameraZoomInSeconds, cameraFocusWaitSeconds);
+        yield return ZoomCameraWhileWaitingRoutine(
+            focusOrthographicSize,
+            cameraZoomInSeconds,
+            cameraFocusWaitSeconds,
+            target);
     }
 
     private IEnumerator ReturnCameraRoutine()
@@ -221,19 +225,25 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
             ? cachedCameraOrthographicSize
             : focusOrthographicSize;
 
-        yield return ZoomCameraWhileWaitingRoutine(restoreOrthographicSize, cameraZoomOutSeconds, cameraReturnWaitSeconds);
+        yield return ZoomCameraWhileWaitingRoutine(
+            restoreOrthographicSize,
+            cameraZoomOutSeconds,
+            cameraReturnWaitSeconds,
+            restoreTarget);
         RestoreCameraState(restoreTarget);
     }
 
     private IEnumerator ZoomCameraWhileWaitingRoutine(
         float targetOrthographicSize,
         float zoomDuration,
-        float minimumWaitSeconds)
+        float minimumWaitSeconds,
+        Transform settleTarget)
     {
         float waitDuration = Mathf.Max(0f, minimumWaitSeconds);
         if (!zoomGameplayCameraDuringFocus || gameplayCamera == null)
         {
             yield return WaitForPresentationSeconds(waitDuration);
+            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
             yield break;
         }
 
@@ -245,6 +255,7 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
         if (totalDuration <= 0f)
         {
             SetCameraOrthographicSize(gameplayCamera, clampedTargetSize);
+            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
             yield break;
         }
 
@@ -265,6 +276,7 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
         }
 
         SetCameraOrthographicSize(gameplayCamera, clampedTargetSize);
+        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
     }
 
     private static IEnumerator WaitForPresentationSeconds(float seconds)
@@ -332,6 +344,9 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
     {
         if (playerTransform == null)
             playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+
+        if (playerTransform == null && PlayerInteractor2D.Instance != null)
+            playerTransform = PlayerInteractor2D.Instance.transform;
 
         return playerTransform;
     }

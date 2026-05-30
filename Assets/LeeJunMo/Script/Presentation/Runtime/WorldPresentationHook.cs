@@ -23,6 +23,15 @@ namespace CapstonePresentation
         TargetSpriteBoundsUniform
     }
 
+    /// <summary>
+    /// 책임 : 타겟 기반 연출의 앵커/스케일 계산에 사용할 bounds 계산 방식을 표현한다.
+    /// </summary>
+    public enum PresentationTargetBoundsMode
+    {
+        RendererAabb,
+        SpriteMeshTight
+    }
+
     [Serializable]
     public struct SpawnedPresentationHook
     {
@@ -33,6 +42,7 @@ namespace CapstonePresentation
         public bool attachToTarget;
         public PresentationSpawnAnchorMode anchorMode;
         public PresentationSpawnScaleMode scaleMode;
+        public PresentationTargetBoundsMode boundsMode;
         [Min(0.0001f)] public float targetBoundsReferenceSize;
         [Min(0f)] public float targetBoundsScaleMultiplier;
         public PresentationLifetimeMode lifetimeMode;
@@ -213,9 +223,22 @@ namespace CapstonePresentation
         }
     }
 
+    /// <summary>
+    /// 책임 : 월드 연출이 타겟의 시각적 크기/중심을 기준으로 배치될 수 있도록 SpriteRenderer bounds를 계산한다.
+    /// </summary>
     public static class PresentationTargetBoundsUtility
     {
-        public static bool TryResolveSpriteBounds(GameObject target, out Bounds bounds)
+        public static bool TryResolveSpriteBounds(
+            GameObject target,
+            out Bounds bounds,
+            PresentationTargetBoundsMode mode = PresentationTargetBoundsMode.RendererAabb)
+        {
+            return mode == PresentationTargetBoundsMode.SpriteMeshTight
+                ? TryResolveTightSpriteBounds(target, out bounds)
+                : TryResolveRendererBounds(target, out bounds);
+        }
+
+        private static bool TryResolveRendererBounds(GameObject target, out Bounds bounds)
         {
             bounds = default;
             if (target == null)
@@ -247,6 +270,141 @@ namespace CapstonePresentation
             }
 
             return hasBounds;
+        }
+
+        private static bool TryResolveTightSpriteBounds(GameObject target, out Bounds bounds)
+        {
+            bounds = default;
+            if (target == null)
+                return false;
+
+            SpriteRenderer[] sprites = target.GetComponentsInChildren<SpriteRenderer>(includeInactive: false);
+            if (TryResolveTightBoundsFromVisualRenderers(sprites, out bounds))
+                return true;
+
+            if (target.TryGetComponent(out SpriteRenderer rootSprite) && IsUsable(rootSprite))
+                return TryResolveRendererTightBounds(rootSprite, out bounds);
+
+            bool hasBounds = false;
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                SpriteRenderer sprite = sprites[i];
+                if (!IsUsable(sprite) || IsShadowRenderer(sprite))
+                    continue;
+
+                if (!TryResolveRendererTightBounds(sprite, out Bounds spriteBounds))
+                    continue;
+
+                if (!hasBounds)
+                {
+                    bounds = spriteBounds;
+                    hasBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(spriteBounds);
+                }
+            }
+
+            return hasBounds;
+        }
+
+        private static bool TryResolveTightBoundsFromVisualRenderers(SpriteRenderer[] sprites, out Bounds bounds)
+        {
+            bounds = default;
+            bool hasBounds = false;
+
+            if (sprites == null)
+                return false;
+
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                SpriteRenderer sprite = sprites[i];
+                if (!IsUsable(sprite) || !IsVisualRenderer(sprite) || IsShadowRenderer(sprite))
+                    continue;
+
+                if (!TryResolveRendererTightBounds(sprite, out Bounds spriteBounds))
+                    continue;
+
+                if (!hasBounds)
+                {
+                    bounds = spriteBounds;
+                    hasBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(spriteBounds);
+                }
+            }
+
+            return hasBounds;
+        }
+
+        private static bool TryResolveRendererTightBounds(SpriteRenderer sprite, out Bounds bounds)
+        {
+            bounds = default;
+            if (!IsUsable(sprite))
+                return false;
+
+            Vector2[] vertices = sprite.sprite.vertices;
+            if (vertices == null || vertices.Length == 0)
+            {
+                bounds = sprite.bounds;
+                return true;
+            }
+
+            Vector3 first = ToWorldSpriteVertex(sprite, vertices[0]);
+            bounds = new Bounds(first, Vector3.zero);
+            for (int i = 1; i < vertices.Length; i++)
+                bounds.Encapsulate(ToWorldSpriteVertex(sprite, vertices[i]));
+
+            return true;
+        }
+
+        private static Vector3 ToWorldSpriteVertex(SpriteRenderer sprite, Vector2 vertex)
+        {
+            if (sprite.flipX)
+                vertex.x = -vertex.x;
+            if (sprite.flipY)
+                vertex.y = -vertex.y;
+
+            return sprite.transform.TransformPoint(vertex);
+        }
+
+        private static bool IsVisualRenderer(SpriteRenderer sprite)
+        {
+            Transform current = sprite.transform;
+            while (current != null)
+            {
+                string name = current.name;
+                if (!string.IsNullOrEmpty(name)
+                    && name.IndexOf("Visual", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+
+                current = current.parent;
+            }
+
+            return false;
+        }
+
+        private static bool IsShadowRenderer(SpriteRenderer sprite)
+        {
+            Transform current = sprite.transform;
+            while (current != null)
+            {
+                string name = current.name;
+                if (!string.IsNullOrEmpty(name)
+                    && name.IndexOf("Shadow", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+
+                current = current.parent;
+            }
+
+            return false;
         }
 
         private static bool IsUsable(SpriteRenderer sprite)

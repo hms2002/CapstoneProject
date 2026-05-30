@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f9f0d318c124906a2bc43c2cbb86a12, type: 3}
   m_Name: AL_SlimeQueenCrossWaterPillar
   m_EditorClassIdentifier: 
-  blastEffectPrefab: {fileID: 3297215421415640078, guid: a007a9f51facfcb428c22ce2d3727a82, type: 3}
+  blastEffectPrefab: {fileID: 3089383613003607766, guid: 80887572fb543c54ab92e347139c0eac, type: 3}
   castPresentation:
     sound:
       key: sound_slimequeen_crosswaterpillar1
@@ -41,6 +41,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -54,6 +55,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0

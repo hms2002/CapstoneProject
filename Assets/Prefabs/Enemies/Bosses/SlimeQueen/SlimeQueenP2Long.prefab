@@ -33,6 +33,7 @@ GameObject:
   - component: {fileID: 7700200000000012}
   - component: {fileID: 7700100000000012}
   - component: {fileID: 1831426399991419180}
+  - component: {fileID: 6269069264931515585}
   m_Layer: 31
   m_Name: SlimeQueenP2Long
   m_TagString: Enemy
@@ -229,9 +230,14 @@ MonoBehaviour:
   crossWaterPillarWallStopPadding: 0.05
   crossWaterPillarBlastInterval: 1.2
   crossWaterPillarBlastDiameter: 1.25
-  crossWaterPillarBlastViewSeconds: 0.2
+  crossWaterPillarBlastViewSeconds: 0.39
   crossWaterPillarDamage: 1.5
   crossWaterPillarDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  crossWaterPillarBlockedSpawnLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  crossWaterPillarHoleCheckRadiusScale: 0.45
+  logSkippedCrossWaterPillarOnHole: 0
   waterCannonWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   waterCannonBeamStyle: {fileID: 0}
   waterCannonBeamVisualPrefab: {fileID: 1000000, guid: 3ec7b4634d524e0d84ec605c177e6b86, type: 3}
@@ -705,6 +711,20 @@ MonoBehaviour:
   - {fileID: 6057653836644520300}
   captureInitialPositionsOnAwake: 1
   invertWhenFlipX: 1
+--- !u!114 &6269069264931515585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1a21a5a77b4e9e8d68c54b70c393fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterElementGaugeAnchor2D
+  anchor: {fileID: 3335382834671591542}
+  fallbackOffset: {x: 0, y: -1}
 --- !u!1 &1024000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1094,6 +1114,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6057653836644520300}
+  - {fileID: 3335382834671591542}
   m_Father: {fileID: 1001000}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5190044495122245195
@@ -1122,6 +1143,37 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.116, y: 0.892, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9202272511269249813}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5249662079288702916
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3335382834671591542}
+  m_Layer: 31
+  m_Name: ElementGaugePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3335382834671591542
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5249662079288702916}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

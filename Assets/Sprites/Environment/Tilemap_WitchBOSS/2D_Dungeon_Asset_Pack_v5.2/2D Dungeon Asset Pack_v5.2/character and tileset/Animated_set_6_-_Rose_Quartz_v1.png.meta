@@ -1,0 +1,2821 @@
+fileFormatVersion: 2
+guid: 18d964c917812d04982e285e007fac25
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7823423371637475728
+    second: Animated_set_6_-_Rose_Quartz_v1_0
+  - first:
+      213: 5855843986243557468
+    second: Animated_set_6_-_Rose_Quartz_v1_1
+  - first:
+      213: -647438491020196394
+    second: Animated_set_6_-_Rose_Quartz_v1_2
+  - first:
+      213: -2029000866430056732
+    second: Animated_set_6_-_Rose_Quartz_v1_3
+  - first:
+      213: -7054055965268350756
+    second: Animated_set_6_-_Rose_Quartz_v1_4
+  - first:
+      213: -1350096282319361277
+    second: Animated_set_6_-_Rose_Quartz_v1_5
+  - first:
+      213: 6914140923918636306
+    second: Animated_set_6_-_Rose_Quartz_v1_6
+  - first:
+      213: -5049480226757965150
+    second: Animated_set_6_-_Rose_Quartz_v1_7
+  - first:
+      213: -5880797681157353112
+    second: Animated_set_6_-_Rose_Quartz_v1_8
+  - first:
+      213: -6233452108171893678
+    second: Animated_set_6_-_Rose_Quartz_v1_9
+  - first:
+      213: 3802530224636770859
+    second: Animated_set_6_-_Rose_Quartz_v1_10
+  - first:
+      213: -4157121449940479287
+    second: Animated_set_6_-_Rose_Quartz_v1_11
+  - first:
+      213: -534117098405113851
+    second: Animated_set_6_-_Rose_Quartz_v1_12
+  - first:
+      213: 5194605672593859715
+    second: Animated_set_6_-_Rose_Quartz_v1_13
+  - first:
+      213: -1002248228274457151
+    second: Animated_set_6_-_Rose_Quartz_v1_14
+  - first:
+      213: -426170813449707041
+    second: Animated_set_6_-_Rose_Quartz_v1_15
+  - first:
+      213: -491110070625919560
+    second: Animated_set_6_-_Rose_Quartz_v1_16
+  - first:
+      213: 4372374178420049886
+    second: Animated_set_6_-_Rose_Quartz_v1_17
+  - first:
+      213: -7061073453895474866
+    second: Animated_set_6_-_Rose_Quartz_v1_18
+  - first:
+      213: 1593728046432891197
+    second: Animated_set_6_-_Rose_Quartz_v1_19
+  - first:
+      213: -145982828041908397
+    second: Animated_set_6_-_Rose_Quartz_v1_20
+  - first:
+      213: 917858673889345101
+    second: Animated_set_6_-_Rose_Quartz_v1_21
+  - first:
+      213: -8195771469453743326
+    second: Animated_set_6_-_Rose_Quartz_v1_22
+  - first:
+      213: 1398869022153986874
+    second: Animated_set_6_-_Rose_Quartz_v1_23
+  - first:
+      213: 9068603601880556732
+    second: Animated_set_6_-_Rose_Quartz_v1_24
+  - first:
+      213: -7717028817210467240
+    second: Animated_set_6_-_Rose_Quartz_v1_25
+  - first:
+      213: 2696179072860216066
+    second: Animated_set_6_-_Rose_Quartz_v1_26
+  - first:
+      213: 3525719462134570846
+    second: Animated_set_6_-_Rose_Quartz_v1_27
+  - first:
+      213: -8856288322590463306
+    second: Animated_set_6_-_Rose_Quartz_v1_28
+  - first:
+      213: 345447237995574427
+    second: Animated_set_6_-_Rose_Quartz_v1_29
+  - first:
+      213: -1867661289855630581
+    second: Animated_set_6_-_Rose_Quartz_v1_30
+  - first:
+      213: 4899647429653843310
+    second: Animated_set_6_-_Rose_Quartz_v1_31
+  - first:
+      213: -7404096824378777151
+    second: Animated_set_6_-_Rose_Quartz_v1_32
+  - first:
+      213: -2688994573392791763
+    second: Animated_set_6_-_Rose_Quartz_v1_33
+  - first:
+      213: -3956606154354135393
+    second: Animated_set_6_-_Rose_Quartz_v1_34
+  - first:
+      213: -3167253695121709680
+    second: Animated_set_6_-_Rose_Quartz_v1_35
+  - first:
+      213: -7909540227816459995
+    second: Animated_set_6_-_Rose_Quartz_v1_36
+  - first:
+      213: -8254916388517073023
+    second: Animated_set_6_-_Rose_Quartz_v1_37
+  - first:
+      213: 7306466597849723278
+    second: Animated_set_6_-_Rose_Quartz_v1_38
+  - first:
+      213: 2096618479932761081
+    second: Animated_set_6_-_Rose_Quartz_v1_39
+  - first:
+      213: 4552638097452988384
+    second: Animated_set_6_-_Rose_Quartz_v1_40
+  - first:
+      213: -3109092682984464903
+    second: Animated_set_6_-_Rose_Quartz_v1_41
+  - first:
+      213: -3446258949540031066
+    second: Animated_set_6_-_Rose_Quartz_v1_42
+  - first:
+      213: -7761312713806534914
+    second: Animated_set_6_-_Rose_Quartz_v1_43
+  - first:
+      213: 9018416135846750113
+    second: Animated_set_6_-_Rose_Quartz_v1_44
+  - first:
+      213: 6074123866158453749
+    second: Animated_set_6_-_Rose_Quartz_v1_45
+  - first:
+      213: -7214423804946141537
+    second: Animated_set_6_-_Rose_Quartz_v1_46
+  - first:
+      213: -4958669260138709136
+    second: Animated_set_6_-_Rose_Quartz_v1_47
+  - first:
+      213: -5832983529994414675
+    second: Animated_set_6_-_Rose_Quartz_v1_48
+  - first:
+      213: 6695730136922297268
+    second: Animated_set_6_-_Rose_Quartz_v1_49
+  - first:
+      213: -6113092273566190
+    second: Animated_set_6_-_Rose_Quartz_v1_50
+  - first:
+      213: 8440745231840375221
+    second: Animated_set_6_-_Rose_Quartz_v1_51
+  - first:
+      213: 7053335978416152757
+    second: Animated_set_6_-_Rose_Quartz_v1_52
+  - first:
+      213: -6692900986480483400
+    second: Animated_set_6_-_Rose_Quartz_v1_53
+  - first:
+      213: -5957694586550301459
+    second: Animated_set_6_-_Rose_Quartz_v1_54
+  - first:
+      213: 4918111412271880418
+    second: Animated_set_6_-_Rose_Quartz_v1_55
+  - first:
+      213: 8171820894365932284
+    second: Animated_set_6_-_Rose_Quartz_v1_56
+  - first:
+      213: 7188586182932178952
+    second: Animated_set_6_-_Rose_Quartz_v1_57
+  - first:
+      213: 72887002961631577
+    second: Animated_set_6_-_Rose_Quartz_v1_58
+  - first:
+      213: 4665166315722655805
+    second: Animated_set_6_-_Rose_Quartz_v1_59
+  - first:
+      213: 869827740737013059
+    second: Animated_set_6_-_Rose_Quartz_v1_60
+  - first:
+      213: -1139910783909113194
+    second: Animated_set_6_-_Rose_Quartz_v1_61
+  - first:
+      213: -1961371011886004351
+    second: Animated_set_6_-_Rose_Quartz_v1_62
+  - first:
+      213: -977647625652383819
+    second: Animated_set_6_-_Rose_Quartz_v1_63
+  - first:
+      213: 3726167849738308146
+    second: Animated_set_6_-_Rose_Quartz_v1_64
+  - first:
+      213: 1057461631213451701
+    second: Animated_set_6_-_Rose_Quartz_v1_65
+  - first:
+      213: -3843597214973515879
+    second: Animated_set_6_-_Rose_Quartz_v1_66
+  - first:
+      213: 6128761685065904371
+    second: Animated_set_6_-_Rose_Quartz_v1_67
+  - first:
+      213: -7124369960627298605
+    second: Animated_set_6_-_Rose_Quartz_v1_68
+  - first:
+      213: -9025299869901953100
+    second: Animated_set_6_-_Rose_Quartz_v1_69
+  - first:
+      213: 161964389564021902
+    second: Animated_set_6_-_Rose_Quartz_v1_70
+  - first:
+      213: 50578407021203275
+    second: Animated_set_6_-_Rose_Quartz_v1_71
+  - first:
+      213: -3244772299937286889
+    second: Animated_set_6_-_Rose_Quartz_v1_72
+  - first:
+      213: -4234932393831443768
+    second: Animated_set_6_-_Rose_Quartz_v1_73
+  - first:
+      213: -7582438767953959074
+    second: Animated_set_6_-_Rose_Quartz_v1_74
+  - first:
+      213: 6699749527613637967
+    second: Animated_set_6_-_Rose_Quartz_v1_75
+  - first:
+      213: 527733920052955857
+    second: Animated_set_6_-_Rose_Quartz_v1_76
+  - first:
+      213: -5223950345565363312
+    second: Animated_set_6_-_Rose_Quartz_v1_77
+  - first:
+      213: 6398915849564404662
+    second: Animated_set_6_-_Rose_Quartz_v1_78
+  - first:
+      213: -563235206784631288
+    second: Animated_set_6_-_Rose_Quartz_v1_79
+  - first:
+      213: 3823603743031243311
+    second: Animated_set_6_-_Rose_Quartz_v1_80
+  - first:
+      213: -1400391982590863904
+    second: Animated_set_6_-_Rose_Quartz_v1_81
+  - first:
+      213: 3046119948729755630
+    second: Animated_set_6_-_Rose_Quartz_v1_82
+  - first:
+      213: -6912166860973452651
+    second: Animated_set_6_-_Rose_Quartz_v1_83
+  - first:
+      213: -3713638561518510951
+    second: Animated_set_6_-_Rose_Quartz_v1_84
+  - first:
+      213: -44309502953131115
+    second: Animated_set_6_-_Rose_Quartz_v1_85
+  - first:
+      213: -3062422429495093599
+    second: Animated_set_6_-_Rose_Quartz_v1_86
+  - first:
+      213: 3266732209696698471
+    second: Animated_set_6_-_Rose_Quartz_v1_87
+  - first:
+      213: 1249868864705980311
+    second: Animated_set_6_-_Rose_Quartz_v1_88
+  - first:
+      213: -2097408286951786818
+    second: Animated_set_6_-_Rose_Quartz_v1_89
+  - first:
+      213: 8865735154419644448
+    second: Animated_set_6_-_Rose_Quartz_v1_90
+  - first:
+      213: 912252676068462193
+    second: Animated_set_6_-_Rose_Quartz_v1_91
+  - first:
+      213: -4970744109796986423
+    second: Animated_set_6_-_Rose_Quartz_v1_92
+  - first:
+      213: 5756285123116789581
+    second: Animated_set_6_-_Rose_Quartz_v1_93
+  - first:
+      213: 3181017493360203750
+    second: Animated_set_6_-_Rose_Quartz_v1_94
+  - first:
+      213: -1431258433789183034
+    second: Animated_set_6_-_Rose_Quartz_v1_95
+  - first:
+      213: 8758256223502326707
+    second: Animated_set_6_-_Rose_Quartz_v1_96
+  - first:
+      213: 2170632595376556370
+    second: Animated_set_6_-_Rose_Quartz_v1_97
+  - first:
+      213: -3867776575240927526
+    second: Animated_set_6_-_Rose_Quartz_v1_98
+  - first:
+      213: -5426263201561759986
+    second: Animated_set_6_-_Rose_Quartz_v1_99
+  - first:
+      213: 6285416181892473132
+    second: Animated_set_6_-_Rose_Quartz_v1_100
+  - first:
+      213: 3996337309345337358
+    second: Animated_set_6_-_Rose_Quartz_v1_101
+  - first:
+      213: 4453040270589237026
+    second: Animated_set_6_-_Rose_Quartz_v1_102
+  - first:
+      213: -730007075750031253
+    second: Animated_set_6_-_Rose_Quartz_v1_103
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 17
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 319
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0763f0ec4ed9d6390800000000000000
+      internalID: -7823423371637475728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 304
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5897247413244150800000000000000
+      internalID: 5855843986243557468
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_2
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d583d86f16d307f0800000000000000
+      internalID: -647438491020196394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_3
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e60a7b467a87d3e0800000000000000
+      internalID: -2029000866430056732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_4
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd8647c3975fa1e90800000000000000
+      internalID: -7054055965268350756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_5
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30b67c7959e734de0800000000000000
+      internalID: -1350096282319361277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_6
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2155921a986f3ff50800000000000000
+      internalID: 6914140923918636306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_7
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2aa8bbfac74ace9b0800000000000000
+      internalID: -5049480226757965150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_8
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 861dca2baa5336ea0800000000000000
+      internalID: -5880797681157353112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_9
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 254210875545e79a0800000000000000
+      internalID: -6233452108171893678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_10
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2a3927b71d45c430800000000000000
+      internalID: 3802530224636770859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_11
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c214201110fe46c0800000000000000
+      internalID: -4157121449940479287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_12
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 500d911345f6698f0800000000000000
+      internalID: -534117098405113851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_13
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 384af274652f61840800000000000000
+      internalID: 5194605672593859715
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_14
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c5bfe8eb8c4712f0800000000000000
+      internalID: -1002248228274457151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_15
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd1e0b237efe51af0800000000000000
+      internalID: -426170813449707041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_16
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bd99b62ef93f29f0800000000000000
+      internalID: -491110070625919560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_17
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed741d1462bcdac30800000000000000
+      internalID: 4372374178420049886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_18
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e41ae97da17020e90800000000000000
+      internalID: -7061073453895474866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_19
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d31b53cd63f0e1610800000000000000
+      internalID: 1593728046432891197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_20
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35f414f246d59fdf0800000000000000
+      internalID: -145982828041908397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_21
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4e7f23d993ecbc00800000000000000
+      internalID: 917858673889345101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_22
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22bade68545c24e80800000000000000
+      internalID: -8195771469453743326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_23
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3359c0d6f7c96310800000000000000
+      internalID: 1398869022153986874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_24
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb42beaade62add70800000000000000
+      internalID: 9068603601880556732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_25
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85c97b46d2b97e490800000000000000
+      internalID: -7717028817210467240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_26
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20bdca0f490ca6520800000000000000
+      internalID: 2696179072860216066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_27
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5f5636bb2fdde030800000000000000
+      internalID: 3525719462134570846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_28
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ba2e8771b4281580800000000000000
+      internalID: -8856288322590463306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_29
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b94bd55ce664bc400800000000000000
+      internalID: 345447237995574427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_30
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 319
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b034861c3fbb416e0800000000000000
+      internalID: -1867661289855630581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_31
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 304
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6d4c29b06b0ff340800000000000000
+      internalID: 4899647429653843310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_32
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 319
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c12e44ba2d5f3990800000000000000
+      internalID: -7404096824378777151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_33
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 304
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2738f1bea5ceaad0800000000000000
+      internalID: -2688994573392791763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_34
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 271
+        width: 33
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9ee8956aaf4719c0800000000000000
+      internalID: -3956606154354135393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_35
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 175
+        width: 272
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0952abc8b87ab04d0800000000000000
+      internalID: -3167253695121709680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_36
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5217650c11bab3290800000000000000
+      internalID: -7909540227816459995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_37
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18fa3e3f745a07d80800000000000000
+      internalID: -8254916388517073023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_38
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e81f610d8a8c56560800000000000000
+      internalID: 7306466597849723278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_39
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f369ed266fa81d10800000000000000
+      internalID: 2096618479932761081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_40
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e7789d8a383e2f30800000000000000
+      internalID: 4552638097452988384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_41
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fdd1f07da84ad4d0800000000000000
+      internalID: -3109092682984464903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_42
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a5d7a49ebd6c20d0800000000000000
+      internalID: -3446258949540031066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_43
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef6a6de35374a4490800000000000000
+      internalID: -7761312713806534914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_44
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a7ebc5a1b9d72d70800000000000000
+      internalID: 9018416135846750113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_45
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f3d814697f9b4450800000000000000
+      internalID: 6074123866158453749
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_46
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9e2017e5c731eb90800000000000000
+      internalID: -7214423804946141537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_47
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07f78ce74944f2bb0800000000000000
+      internalID: -4958669260138709136
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_48
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da59af942641d0fa0800000000000000
+      internalID: -5832983529994414675
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_49
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 271
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b3912385130cec50800000000000000
+      internalID: 6695730136922297268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_50
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 271
+        width: 33
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21e0e8acc284aeff0800000000000000
+      internalID: -6113092273566190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_51
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b1fa6f311d832570800000000000000
+      internalID: 8440745231840375221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_52
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b02af2c3bb72e160800000000000000
+      internalID: 7053335978416152757
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_53
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b328f7630a0e13a0800000000000000
+      internalID: -6692900986480483400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_54
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: decc668b654025da0800000000000000
+      internalID: -5957694586550301459
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_55
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e8924ea544a04440800000000000000
+      internalID: 4918111412271880418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_56
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cfadbc8aec3286170800000000000000
+      internalID: 8171820894365932284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_57
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80824feeb0df2c360800000000000000
+      internalID: 7188586182932178952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_58
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9595540d752f20100800000000000000
+      internalID: 72887002961631577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_59
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3844ca0c000eb040800000000000000
+      internalID: 4665166315722655805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_60
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 345096eb8bf321c00800000000000000
+      internalID: 869827740737013059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_61
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 692d5797e293e20f0800000000000000
+      internalID: -1139910783909113194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_62
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18749cbd47fc7c4e0800000000000000
+      internalID: -1961371011886004351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_63
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5bf4c7d0aa2be62f0800000000000000
+      internalID: -977647625652383819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_64
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23a0221dae106b330800000000000000
+      internalID: 3726167849738308146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_65
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b9351c30cbdcae00800000000000000
+      internalID: 1057461631213451701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_66
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 997a2dd72bcc8aac0800000000000000
+      internalID: -3843597214973515879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_67
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 163
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f0b06fe74cbd0550800000000000000
+      internalID: 6128761685065904371
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_68
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3de98507447212d90800000000000000
+      internalID: -7124369960627298605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_69
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 111
+        width: 272
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b76d1f1691bfb280800000000000000
+      internalID: -9025299869901953100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_70
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8cf93211c96f3200800000000000000
+      internalID: 161964389564021902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_71
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4fcdcf0bc0b3b000800000000000000
+      internalID: 50578407021203275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_72
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 715f535e8c048f2d0800000000000000
+      internalID: -3244772299937286889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_73
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c2d1e9ec6f7a35c0800000000000000
+      internalID: -4234932393831443768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_74
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5724f03d14c5c690800000000000000
+      internalID: -7582438767953959074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_75
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f458085d2ba4afc50800000000000000
+      internalID: 6699749527613637967
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_76
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1da4ea84433e25700800000000000000
+      internalID: 527733920052955857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_77
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0932c40a6dcc087b0800000000000000
+      internalID: -5223950345565363312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_78
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6bb37e0ff048dc850800000000000000
+      internalID: 6398915849564404662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_79
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80ebb96409cfe28f0800000000000000
+      internalID: -563235206784631288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_80
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f223b31985b201530800000000000000
+      internalID: 3823603743031243311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_81
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e5dd5359eec09ce0800000000000000
+      internalID: -1400391982590863904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_82
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee7a44f44fdf54a20800000000000000
+      internalID: 3046119948729755630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_83
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5925377bcdc0310a0800000000000000
+      internalID: -6912166860973452651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_84
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99c1f7c6761867cc0800000000000000
+      internalID: -3713638561518510951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_85
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 593fd48edb4926ff0800000000000000
+      internalID: -44309502953131115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_86
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a691c996071085d0800000000000000
+      internalID: -3062422429495093599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_87
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 272
+        height: 97
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7607c4703a3c55d20800000000000000
+      internalID: 3266732209696698471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_88
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 797ee904c1d685110800000000000000
+      internalID: 1249868864705980311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_89
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb6374b864284e2e0800000000000000
+      internalID: -2097408286951786818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_90
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02830e7762b690b70800000000000000
+      internalID: 8865735154419644448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_91
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17ec57eb9f8f8ac00800000000000000
+      internalID: 912252676068462193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_92
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c17f2a719e540bb0800000000000000
+      internalID: -4970744109796986423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_93
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4fed3542de62ef40800000000000000
+      internalID: 5756285123116789581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_94
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e7d9047e8e352c20800000000000000
+      internalID: 3181017493360203750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_95
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cbb630a906232ce0800000000000000
+      internalID: -1431258433789183034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_96
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bbd5bdc1a39b8970800000000000000
+      internalID: 8758256223502326707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_97
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 259cd4158d2af1e10800000000000000
+      internalID: 2170632595376556370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_98
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad6003a72b5e25ac0800000000000000
+      internalID: -3867776575240927526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_99
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0f23252e5a02b4b0800000000000000
+      internalID: -5426263201561759986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_100
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c21613347b84a3750800000000000000
+      internalID: 6285416181892473132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_101
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e005b2efb97d57730800000000000000
+      internalID: 3996337309345337358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_102
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2271bfa68806ccd30800000000000000
+      internalID: 4453040270589237026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animated_set_6_-_Rose_Quartz_v1_103
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b60d56eae6e7ed5f0800000000000000
+      internalID: -730007075750031253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Animated_set_6_-_Rose_Quartz_v1_0: -7823423371637475728
+      Animated_set_6_-_Rose_Quartz_v1_1: 5855843986243557468
+      Animated_set_6_-_Rose_Quartz_v1_10: 3802530224636770859
+      Animated_set_6_-_Rose_Quartz_v1_100: 6285416181892473132
+      Animated_set_6_-_Rose_Quartz_v1_101: 3996337309345337358
+      Animated_set_6_-_Rose_Quartz_v1_102: 4453040270589237026
+      Animated_set_6_-_Rose_Quartz_v1_103: -730007075750031253
+      Animated_set_6_-_Rose_Quartz_v1_11: -4157121449940479287
+      Animated_set_6_-_Rose_Quartz_v1_12: -534117098405113851
+      Animated_set_6_-_Rose_Quartz_v1_13: 5194605672593859715
+      Animated_set_6_-_Rose_Quartz_v1_14: -1002248228274457151
+      Animated_set_6_-_Rose_Quartz_v1_15: -426170813449707041
+      Animated_set_6_-_Rose_Quartz_v1_16: -491110070625919560
+      Animated_set_6_-_Rose_Quartz_v1_17: 4372374178420049886
+      Animated_set_6_-_Rose_Quartz_v1_18: -7061073453895474866
+      Animated_set_6_-_Rose_Quartz_v1_19: 1593728046432891197
+      Animated_set_6_-_Rose_Quartz_v1_2: -647438491020196394
+      Animated_set_6_-_Rose_Quartz_v1_20: -145982828041908397
+      Animated_set_6_-_Rose_Quartz_v1_21: 917858673889345101
+      Animated_set_6_-_Rose_Quartz_v1_22: -8195771469453743326
+      Animated_set_6_-_Rose_Quartz_v1_23: 1398869022153986874
+      Animated_set_6_-_Rose_Quartz_v1_24: 9068603601880556732
+      Animated_set_6_-_Rose_Quartz_v1_25: -7717028817210467240
+      Animated_set_6_-_Rose_Quartz_v1_26: 2696179072860216066
+      Animated_set_6_-_Rose_Quartz_v1_27: 3525719462134570846
+      Animated_set_6_-_Rose_Quartz_v1_28: -8856288322590463306
+      Animated_set_6_-_Rose_Quartz_v1_29: 345447237995574427
+      Animated_set_6_-_Rose_Quartz_v1_3: -2029000866430056732
+      Animated_set_6_-_Rose_Quartz_v1_30: -1867661289855630581
+      Animated_set_6_-_Rose_Quartz_v1_31: 4899647429653843310
+      Animated_set_6_-_Rose_Quartz_v1_32: -7404096824378777151
+      Animated_set_6_-_Rose_Quartz_v1_33: -2688994573392791763
+      Animated_set_6_-_Rose_Quartz_v1_34: -3956606154354135393
+      Animated_set_6_-_Rose_Quartz_v1_35: -3167253695121709680
+      Animated_set_6_-_Rose_Quartz_v1_36: -7909540227816459995
+      Animated_set_6_-_Rose_Quartz_v1_37: -8254916388517073023
+      Animated_set_6_-_Rose_Quartz_v1_38: 7306466597849723278
+      Animated_set_6_-_Rose_Quartz_v1_39: 2096618479932761081
+      Animated_set_6_-_Rose_Quartz_v1_4: -7054055965268350756
+      Animated_set_6_-_Rose_Quartz_v1_40: 4552638097452988384
+      Animated_set_6_-_Rose_Quartz_v1_41: -3109092682984464903
+      Animated_set_6_-_Rose_Quartz_v1_42: -3446258949540031066
+      Animated_set_6_-_Rose_Quartz_v1_43: -7761312713806534914
+      Animated_set_6_-_Rose_Quartz_v1_44: 9018416135846750113
+      Animated_set_6_-_Rose_Quartz_v1_45: 6074123866158453749
+      Animated_set_6_-_Rose_Quartz_v1_46: -7214423804946141537
+      Animated_set_6_-_Rose_Quartz_v1_47: -4958669260138709136
+      Animated_set_6_-_Rose_Quartz_v1_48: -5832983529994414675
+      Animated_set_6_-_Rose_Quartz_v1_49: 6695730136922297268
+      Animated_set_6_-_Rose_Quartz_v1_5: -1350096282319361277
+      Animated_set_6_-_Rose_Quartz_v1_50: -6113092273566190
+      Animated_set_6_-_Rose_Quartz_v1_51: 8440745231840375221
+      Animated_set_6_-_Rose_Quartz_v1_52: 7053335978416152757
+      Animated_set_6_-_Rose_Quartz_v1_53: -6692900986480483400
+      Animated_set_6_-_Rose_Quartz_v1_54: -5957694586550301459
+      Animated_set_6_-_Rose_Quartz_v1_55: 4918111412271880418
+      Animated_set_6_-_Rose_Quartz_v1_56: 8171820894365932284
+      Animated_set_6_-_Rose_Quartz_v1_57: 7188586182932178952
+      Animated_set_6_-_Rose_Quartz_v1_58: 72887002961631577
+      Animated_set_6_-_Rose_Quartz_v1_59: 4665166315722655805
+      Animated_set_6_-_Rose_Quartz_v1_6: 6914140923918636306
+      Animated_set_6_-_Rose_Quartz_v1_60: 869827740737013059
+      Animated_set_6_-_Rose_Quartz_v1_61: -1139910783909113194
+      Animated_set_6_-_Rose_Quartz_v1_62: -1961371011886004351
+      Animated_set_6_-_Rose_Quartz_v1_63: -977647625652383819
+      Animated_set_6_-_Rose_Quartz_v1_64: 3726167849738308146
+      Animated_set_6_-_Rose_Quartz_v1_65: 1057461631213451701
+      Animated_set_6_-_Rose_Quartz_v1_66: -3843597214973515879
+      Animated_set_6_-_Rose_Quartz_v1_67: 6128761685065904371
+      Animated_set_6_-_Rose_Quartz_v1_68: -7124369960627298605
+      Animated_set_6_-_Rose_Quartz_v1_69: -9025299869901953100
+      Animated_set_6_-_Rose_Quartz_v1_7: -5049480226757965150
+      Animated_set_6_-_Rose_Quartz_v1_70: 161964389564021902
+      Animated_set_6_-_Rose_Quartz_v1_71: 50578407021203275
+      Animated_set_6_-_Rose_Quartz_v1_72: -3244772299937286889
+      Animated_set_6_-_Rose_Quartz_v1_73: -4234932393831443768
+      Animated_set_6_-_Rose_Quartz_v1_74: -7582438767953959074
+      Animated_set_6_-_Rose_Quartz_v1_75: 6699749527613637967
+      Animated_set_6_-_Rose_Quartz_v1_76: 527733920052955857
+      Animated_set_6_-_Rose_Quartz_v1_77: -5223950345565363312
+      Animated_set_6_-_Rose_Quartz_v1_78: 6398915849564404662
+      Animated_set_6_-_Rose_Quartz_v1_79: -563235206784631288
+      Animated_set_6_-_Rose_Quartz_v1_8: -5880797681157353112
+      Animated_set_6_-_Rose_Quartz_v1_80: 3823603743031243311
+      Animated_set_6_-_Rose_Quartz_v1_81: -1400391982590863904
+      Animated_set_6_-_Rose_Quartz_v1_82: 3046119948729755630
+      Animated_set_6_-_Rose_Quartz_v1_83: -6912166860973452651
+      Animated_set_6_-_Rose_Quartz_v1_84: -3713638561518510951
+      Animated_set_6_-_Rose_Quartz_v1_85: -44309502953131115
+      Animated_set_6_-_Rose_Quartz_v1_86: -3062422429495093599
+      Animated_set_6_-_Rose_Quartz_v1_87: 3266732209696698471
+      Animated_set_6_-_Rose_Quartz_v1_88: 1249868864705980311
+      Animated_set_6_-_Rose_Quartz_v1_89: -2097408286951786818
+      Animated_set_6_-_Rose_Quartz_v1_9: -6233452108171893678
+      Animated_set_6_-_Rose_Quartz_v1_90: 8865735154419644448
+      Animated_set_6_-_Rose_Quartz_v1_91: 912252676068462193
+      Animated_set_6_-_Rose_Quartz_v1_92: -4970744109796986423
+      Animated_set_6_-_Rose_Quartz_v1_93: 5756285123116789581
+      Animated_set_6_-_Rose_Quartz_v1_94: 3181017493360203750
+      Animated_set_6_-_Rose_Quartz_v1_95: -1431258433789183034
+      Animated_set_6_-_Rose_Quartz_v1_96: 8758256223502326707
+      Animated_set_6_-_Rose_Quartz_v1_97: 2170632595376556370
+      Animated_set_6_-_Rose_Quartz_v1_98: -3867776575240927526
+      Animated_set_6_-_Rose_Quartz_v1_99: -5426263201561759986
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

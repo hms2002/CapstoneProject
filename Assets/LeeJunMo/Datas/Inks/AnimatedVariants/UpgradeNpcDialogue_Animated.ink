@@ -1,4 +1,4 @@
-﻿// Upgrade NPC dialogue
+// Upgrade NPC dialogue
 // This NPC talks first, then opens the Upgrade feature through NPCFeatureController.
 
 # speaker: 1002

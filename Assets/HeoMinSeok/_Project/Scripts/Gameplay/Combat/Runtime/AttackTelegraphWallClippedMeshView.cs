@@ -469,16 +469,12 @@ namespace UnityGAS
             if (fillScale >= 0.999f)
                 return;
 
-            Vector3 center = Vector3.zero;
             for (int i = 0; i < sampleCount; i++)
             {
-                center += vertices[i * 2];
-                center += vertices[i * 2 + 1];
+                int startIndex = i * 2;
+                int endIndex = startIndex + 1;
+                vertices[endIndex] = Vector3.Lerp(vertices[startIndex], vertices[endIndex], fillScale);
             }
-
-            center /= Mathf.Max(1, sampleCount * 2);
-            for (int i = 0; i < sampleCount * 2; i++)
-                vertices[i] = Vector3.Lerp(center, vertices[i], fillScale);
         }
 
         /// <summary>

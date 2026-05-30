@@ -111,6 +111,7 @@ Map the weapon, GAS/ability, combat, status, movement, and player-adjacent runti
 - Weapon state should stay owned by weapon runtime data, processors, and selected weapon runtime state objects.
 - GAS/ASC should execute selected ability behavior; it should not become the owner of weapon-specific persistent state.
 - Combat damage/hit pipeline is shared infrastructure and should remain independent from a single weapon or enemy.
+- Attack telegraph fill progression is shape-specific: rectangles and sectors grow from the local attack start/origin toward the endpoint, while circles and rings keep radial/center-based fill.
 - HUD and tooltip-facing weapon data should project current runtime state rather than own it.
 
 ## Runtime Boundary Review

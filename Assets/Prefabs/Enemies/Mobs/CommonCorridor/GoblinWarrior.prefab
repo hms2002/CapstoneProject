@@ -205,6 +205,37 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &8251772968037894286
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7540447322263823450}
+  m_Layer: 31
+  m_Name: ElementGaugePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7540447322263823450
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8251772968037894286}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.22, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5916399510225648973}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8710274080854395680
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,6 +421,7 @@ GameObject:
   - component: {fileID: 8640929697042788153}
   - component: {fileID: 7700200000000000}
   - component: {fileID: 7700100000000000}
+  - component: {fileID: 6299769445634792214}
   m_Layer: 31
   m_Name: GoblinWarrior
   m_TagString: Enemy
@@ -414,6 +446,7 @@ Transform:
   - {fileID: 2498477160433252354}
   - {fileID: 8710274080854395683}
   - {fileID: 8710274080854395685}
+  - {fileID: 7540447322263823450}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &8838329475023516266
@@ -865,3 +898,17 @@ MonoBehaviour:
     lastBuildUpTime: 0
     sustainVfxInstance: {fileID: 0}
     uiVisible: 1
+--- !u!114 &6299769445634792214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9047710376581899356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1a21a5a77b4e9e8d68c54b70c393fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterElementGaugeAnchor2D
+  anchor: {fileID: 7540447322263823450}
+  fallbackOffset: {x: 0, y: -1}

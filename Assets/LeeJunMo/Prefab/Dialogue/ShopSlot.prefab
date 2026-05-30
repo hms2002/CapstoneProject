@@ -415,7 +415,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 2733973228906417710, guid: 54d49fcb5010f7c4fba7b7db5af57ab4, type: 3}
+  m_Sprite: {fileID: -7124369960627298605, guid: 18d964c917812d04982e285e007fac25, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -541,7 +541,7 @@ MonoBehaviour:
   itemSpriteCenterX: 1
   itemSpriteAnchorOffset: {x: 0, y: 0}
   priceIconRenderer: {fileID: 1339857238}
-  currencyIconSprite: {fileID: 2733973228906417710, guid: 54d49fcb5010f7c4fba7b7db5af57ab4, type: 3}
+  currencyIconSprite: {fileID: -7124369960627298605, guid: 18d964c917812d04982e285e007fac25, type: 3}
   priceIconOffset: {x: 0, y: 0, z: 0}
   priceIconSpacing: 0.04
   priceIconPositionMode: 0

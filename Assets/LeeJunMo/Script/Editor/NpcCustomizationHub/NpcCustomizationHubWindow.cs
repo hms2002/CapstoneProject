@@ -37,6 +37,7 @@ public sealed class NpcCustomizationHubWindow : EditorWindow
         "speaker",
         "anim",
         "dialogue_anim",
+        "camerashake",
         "enter",
         "face",
         "emote",
@@ -60,6 +61,13 @@ public sealed class NpcCustomizationHubWindow : EditorWindow
         "cold",
     };
 
+    private static readonly HashSet<string> SupportedCameraShakeTags = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "low",
+        "middle",
+        "high",
+    };
+
     private static readonly HashSet<string> SupportedInlineEffects = new(StringComparer.OrdinalIgnoreCase)
     {
         "shake",
@@ -72,6 +80,28 @@ public sealed class NpcCustomizationHubWindow : EditorWindow
         "wobble",
         "float",
         "drift",
+        "rand_size",
+        "random_size",
+        "randomsize",
+        "size_jitter",
+        "sizejitter",
+        "drunk_size",
+        "drunksize",
+        "slowshake",
+        "slow_shake",
+        "drunkshake",
+        "drunk_shake",
+    };
+
+    private static readonly HashSet<string> RandomSizeInlineEffects = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "rand_size",
+        "random_size",
+        "randomsize",
+        "size_jitter",
+        "sizejitter",
+        "drunk_size",
+        "drunksize",
     };
 
     private static readonly HashSet<string> KnownNpcFeatureNames = new(StringComparer.OrdinalIgnoreCase)
@@ -1239,6 +1269,13 @@ public sealed class NpcCustomizationHubWindow : EditorWindow
             return;
         }
 
+        if (command.Equals("camerashake", StringComparison.OrdinalIgnoreCase))
+        {
+            if (!SupportedCameraShakeTags.Contains(value))
+                AddIssue(IssueSeverity.Error, scope, $"{sourcePath}:{lineNumber} unsupported CameraShake tag '{value}'. Expected Low, Middle, or High.", context);
+            return;
+        }
+
         if (command.Equals("speaker", StringComparison.OrdinalIgnoreCase))
         {
             ValidateSpeakerTag(value, sourcePath, lineNumber, scope, context);
@@ -1359,7 +1396,8 @@ public sealed class NpcCustomizationHubWindow : EditorWindow
             }
 
             bool isClosing = tag.StartsWith("/", StringComparison.Ordinal);
-            string effectName = isClosing ? tag.Substring(1).Trim() : tag;
+            string effectExpression = isClosing ? tag.Substring(1).Trim() : tag;
+            string effectName = ExtractInlineEffectName(effectExpression);
             if (!SupportedInlineEffects.Contains(effectName))
             {
                 searchIndex = end + 1;
@@ -1369,6 +1407,7 @@ public sealed class NpcCustomizationHubWindow : EditorWindow
             if (!isClosing)
             {
                 openTags.Push(effectName);
+                ValidateInlineEffectArguments(effectName, effectExpression, lineNumber, sourcePath, scope, context);
             }
             else if (openTags.Count == 0 ||
                      !string.Equals(openTags.Pop(), effectName, StringComparison.OrdinalIgnoreCase))
@@ -1381,6 +1420,78 @@ public sealed class NpcCustomizationHubWindow : EditorWindow
 
         while (openTags.Count > 0)
             AddIssue(IssueSeverity.Warning, scope, $"{sourcePath}:{lineNumber} effect tag '[{openTags.Pop()}]' is not closed on the same line.", context);
+    }
+
+    private void ValidateInlineEffectArguments(
+        string effectName,
+        string effectExpression,
+        int lineNumber,
+        string sourcePath,
+        string scope,
+        Object context)
+    {
+        if (!RandomSizeInlineEffects.Contains(effectName))
+            return;
+
+        int equalsIndex = effectExpression.IndexOf('=');
+        if (equalsIndex < 0 || equalsIndex + 1 >= effectExpression.Length)
+            return;
+
+        string value = effectExpression.Substring(equalsIndex + 1);
+        string[] parts = value.Split(',', ';', '|', '~');
+        if (parts.Length < 2)
+        {
+            AddIssue(IssueSeverity.Warning, scope, $"{sourcePath}:{lineNumber} random size tag '{effectExpression}' should use a min,max range such as 95,110.", context);
+            return;
+        }
+
+        if (!TryParseInlineScale(parts[0], out float minScale) ||
+            !TryParseInlineScale(parts[1], out float maxScale))
+        {
+            AddIssue(IssueSeverity.Warning, scope, $"{sourcePath}:{lineNumber} random size tag '{effectExpression}' has an invalid scale range.", context);
+            return;
+        }
+
+        RandomSizeSettings randomSizeSettings =
+            DialogueTextAnimationProfileSO.LoadDefaultOrFallback().RandomSize;
+        float lower = Mathf.Min(minScale, maxScale);
+        float upper = Mathf.Max(minScale, maxScale);
+        if (lower < randomSizeSettings.ClampMinScale || upper > randomSizeSettings.ClampMaxScale)
+        {
+            AddIssue(
+                IssueSeverity.Warning,
+                scope,
+                $"{sourcePath}:{lineNumber} random size tag '{effectExpression}' is outside the configured random size clamp range.",
+                context);
+        }
+    }
+
+    private static string ExtractInlineEffectName(string expression)
+    {
+        if (string.IsNullOrWhiteSpace(expression))
+            return string.Empty;
+
+        int equalsIndex = expression.IndexOf('=');
+        return equalsIndex >= 0
+            ? expression.Substring(0, equalsIndex).Trim()
+            : expression.Trim();
+    }
+
+    private static bool TryParseInlineScale(string value, out float scale)
+    {
+        scale = 1f;
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        string trimmed = value.Trim();
+        if (trimmed.EndsWith("%", StringComparison.Ordinal))
+            trimmed = trimmed.Substring(0, trimmed.Length - 1);
+
+        if (!float.TryParse(trimmed, NumberStyles.Float, CultureInfo.InvariantCulture, out float parsed))
+            return false;
+
+        scale = parsed > 2f ? parsed / 100f : parsed;
+        return scale > 0f;
     }
 
     private void ValidateBossEncounterStartPaths(NPCData npc)

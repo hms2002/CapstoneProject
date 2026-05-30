@@ -42549,7 +42549,7 @@ PrefabInstance:
     - target: {fileID: 6539283319822102739, guid: 225d580cb9ca3624c9d81e307cbfce64, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 2733973228906417710, guid: 54d49fcb5010f7c4fba7b7db5af57ab4, type: 3}
+      objectReference: {fileID: -7124369960627298605, guid: 18d964c917812d04982e285e007fac25, type: 3}
     - target: {fileID: 6578129014226894282, guid: 225d580cb9ca3624c9d81e307cbfce64, type: 3}
       propertyPath: m_Name
       value: Statue

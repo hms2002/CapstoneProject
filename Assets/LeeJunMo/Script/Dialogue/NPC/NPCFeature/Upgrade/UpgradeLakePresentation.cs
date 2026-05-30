@@ -473,7 +473,6 @@ public struct UpgradeLakePresentationSettings
     }
 }
 
-[ExecuteAlways]
 [DisallowMultipleComponent]
 public sealed class UpgradeLakePresentation : MonoBehaviour
 {
@@ -510,9 +509,6 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
     private static readonly int StampAspectId = Shader.PropertyToID("_StampAspect");
     private static readonly int StampSeedId = Shader.PropertyToID("_StampSeed");
 
-    private const float EditorTestWakeSpacing = 18f;
-    private const int EditorTestWakeStampCount = 9;
-
     private RectTransform viewportRoot;
     private RectTransform contentRoot;
     private Image surfaceImage;
@@ -527,7 +523,6 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
     private bool useSurfaceMaterialSettings;
     private bool ownsSurfaceMaterial;
     private bool ownsSurfaceLayer;
-    private bool animateSurfaceInEditMode;
     private float nextAmbientRippleTime;
     private float lastSurfaceRippleTime = float.NegativeInfinity;
     private float wakeStampSeed;
@@ -556,8 +551,7 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
         Image lakeSurfaceImage,
         UpgradeLakePresentationSettings presentationSettings,
         Material lakeSurfaceMaterialPreset = null,
-        bool useLakeSurfaceMaterialSettings = false,
-        bool animateLakeSurfaceInEditMode = false)
+        bool useLakeSurfaceMaterialSettings = false)
     {
         viewportRoot = viewport;
         contentRoot = content;
@@ -571,16 +565,13 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
             ownsSurfaceLayer = false;
         }
 
-        bool nextAnimateSurfaceInEditMode = !Application.isPlaying && animateLakeSurfaceInEditMode;
-        if (surfaceMaterialPreset != lakeSurfaceMaterialPreset ||
-            animateSurfaceInEditMode != nextAnimateSurfaceInEditMode)
+        if (surfaceMaterialPreset != lakeSurfaceMaterialPreset)
         {
             DestroySurfaceMaterial();
         }
 
         surfaceMaterialPreset = lakeSurfaceMaterialPreset;
         useSurfaceMaterialSettings = lakeSurfaceMaterialPreset != null && useLakeSurfaceMaterialSettings;
-        animateSurfaceInEditMode = nextAnimateSurfaceInEditMode;
         hasInitialized = true;
 
         EnsureLayers();
@@ -623,12 +614,7 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
             return;
 
         if (!Application.isPlaying)
-        {
-#if UNITY_EDITOR
-            TickEditorPreview();
-#endif
             return;
-        }
 
         EnsureLayers();
         ApplyLayerVisibility();
@@ -646,14 +632,6 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
         DestroySurfaceMaterial();
         DestroyWakeBufferMaterial();
         ReleaseWakeBuffers();
-    }
-
-    private void OnDisable()
-    {
-#if UNITY_EDITOR
-        if (!Application.isPlaying)
-            RestoreEditorPreviewMaterial();
-#endif
     }
 
     private bool CanPlay()
@@ -802,16 +780,14 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
     {
         if (surfaceMaterialPreset != null)
         {
-            if (Application.isPlaying || animateSurfaceInEditMode)
+            if (Application.isPlaying)
             {
                 if (surfaceMaterial == null || !ownsSurfaceMaterial)
                 {
                     DestroySurfaceMaterial();
                     surfaceMaterial = new Material(surfaceMaterialPreset)
                     {
-                        name = Application.isPlaying
-                            ? $"M_Runtime{surfaceMaterialPreset.name}"
-                            : $"M_EditorPreview{surfaceMaterialPreset.name}",
+                        name = $"M_Runtime{surfaceMaterialPreset.name}",
                         hideFlags = HideFlags.HideAndDontSave,
                     };
                     ownsSurfaceMaterial = true;
@@ -909,9 +885,6 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
 
         if (!useSurfaceMaterialSettings)
             settings.ApplySurfaceSettingsTo(surfaceMaterial);
-
-        if (!Application.isPlaying && useSurfaceMaterialSettings && !animateSurfaceInEditMode)
-            return;
 
         surfaceMaterial.SetFloat(InteractionStrengthId, settings.surfaceInteractionStrength);
         surfaceMaterial.SetFloat(InteractionCompressionId, settings.surfaceCompressionStrength);
@@ -1359,100 +1332,6 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
         float deltaTime = settings.useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
         return Mathf.Max(deltaTime, 0.0001f);
     }
-
-#if UNITY_EDITOR
-    public void TickEditorPreview()
-    {
-        if (Application.isPlaying || !hasInitialized || viewportRoot == null)
-            return;
-
-        EnsureLayers();
-        ApplyLayerVisibility();
-        if (!settings.enabled)
-            return;
-
-        if (wakeReadBuffer != null || wakeWriteBuffer != null)
-            UpdateWakeSimulation();
-
-        ApplySurfaceMaterialProperties();
-        if (surfaceImage != null && !ownsSurfaceMaterial)
-            surfaceImage.SetMaterialDirty();
-    }
-
-    public void RestoreEditorPreviewMaterial()
-    {
-        RestoreEditorPreviewMaterial(null);
-    }
-
-    public void RestoreEditorPreviewMaterial(Material materialPresetOverride)
-    {
-        if (Application.isPlaying)
-            return;
-
-        if (UnityEditor.EditorUtility.IsPersistent(this) ||
-            (viewportRoot != null && UnityEditor.EditorUtility.IsPersistent(viewportRoot)))
-        {
-            return;
-        }
-
-        if (materialPresetOverride != null)
-            surfaceMaterialPreset = materialPresetOverride;
-
-        animateSurfaceInEditMode = false;
-
-        Material previewMaterial = ownsSurfaceMaterial ? surfaceMaterial : null;
-        surfaceMaterial = surfaceMaterialPreset;
-        ownsSurfaceMaterial = false;
-
-        RestoreSurfaceImageMaterial();
-
-        if (previewMaterial != null)
-            DestroyImmediate(previewMaterial);
-    }
-
-    public void EmitEditorRipplePreview()
-    {
-        if (Application.isPlaying || !hasInitialized || viewportRoot == null)
-            return;
-
-        EnsureLayers();
-        float intensity = settings.surfaceClickRippleIntensity > 0f ? settings.surfaceClickRippleIntensity : 0.72f;
-        EmitAtViewportLocal(Vector2.zero, intensity, force: true);
-        TickEditorPreview();
-    }
-
-    public void EmitEditorWakePreview()
-    {
-        if (Application.isPlaying || !hasInitialized || viewportRoot == null)
-            return;
-
-        EnsureLayers();
-        if (!EnsureWakeBuffer(clear: false))
-            return;
-
-        Vector2 direction = new Vector2(1f, 0.18f).normalized;
-        float spacing = Mathf.Max(EditorTestWakeSpacing, settings.pointerWakeMinDistance);
-        float centerOffset = (EditorTestWakeStampCount - 1) * spacing * 0.5f;
-        for (int i = 0; i < EditorTestWakeStampCount; i++)
-        {
-            Vector2 localPosition = direction * ((i * spacing) - centerOffset);
-            AddPointerWakeStamp(localPosition, direction, 1f);
-        }
-
-        TickEditorPreview();
-    }
-
-    public void ClearEditorInteractionPreview()
-    {
-        if (Application.isPlaying)
-            return;
-
-        surfaceRipples.Clear();
-        ClearWakeBuffer(wakeReadBuffer);
-        ClearWakeBuffer(wakeWriteBuffer);
-        TickEditorPreview();
-    }
-#endif
 
     private static RectTransform FindDirectChild(RectTransform parent, string childName)
     {

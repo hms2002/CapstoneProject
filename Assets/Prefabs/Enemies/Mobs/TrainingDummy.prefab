@@ -214,6 +214,7 @@ GameObject:
   - component: {fileID: 8484874629454787397}
   - component: {fileID: 4507302158978733247}
   - component: {fileID: 6600200000000001}
+  - component: {fileID: 6558170542621112072}
   m_Layer: 31
   m_Name: TrainingDummy
   m_TagString: Untagged
@@ -236,6 +237,7 @@ Transform:
   m_Children:
   - {fileID: 6100200000000001}
   - {fileID: 5451030939994078815}
+  - {fileID: 5213211690451484012}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &712520009108075101
@@ -557,6 +559,20 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2147483656
   defaultMode: 1
+--- !u!114 &6558170542621112072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956472550783629341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1a21a5a77b4e9e8d68c54b70c393fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterElementGaugeAnchor2D
+  anchor: {fileID: 5213211690451484012}
+  fallbackOffset: {x: 0, y: -1}
 --- !u!1 &3652137647696168531
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,3 +664,34 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &8991971562024548519
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5213211690451484012}
+  m_Layer: 31
+  m_Name: ElementGaugePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5213211690451484012
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8991971562024548519}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7958329241213569362}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

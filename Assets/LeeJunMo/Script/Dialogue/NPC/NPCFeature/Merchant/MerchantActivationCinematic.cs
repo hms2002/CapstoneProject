@@ -182,6 +182,7 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
         if (TryBeginMerchantFocusCameraBlend())
         {
             yield return WaitForPresentationSeconds(cameraFocusWaitSeconds);
+            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, merchantFocusTarget);
             yield break;
         }
 
@@ -189,7 +190,8 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
         yield return ZoomCameraWhileWaitingRoutine(
             merchantFocusOrthographicSize,
             zoomInDuration,
-            cameraFocusWaitSeconds);
+            cameraFocusWaitSeconds,
+            merchantFocusTarget);
     }
 
     private IEnumerator ReturnCameraRoutine()
@@ -203,6 +205,7 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
         {
             LowerMerchantFocusCameraPriorityForReturn();
             yield return WaitForPresentationSeconds(cameraReturnWaitSeconds);
+            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, restoreTarget);
             RestoreCameraState(restoreTarget);
             yield break;
         }
@@ -214,7 +217,8 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
         yield return ZoomCameraWhileWaitingRoutine(
             restoreOrthographicSize,
             zoomOutDuration,
-            cameraReturnWaitSeconds);
+            cameraReturnWaitSeconds,
+            restoreTarget);
 
         RestoreCameraState(restoreTarget);
     }
@@ -462,12 +466,17 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
         isUsingFocusCamera = false;
     }
 
-    private IEnumerator ZoomCameraWhileWaitingRoutine(float targetOrthographicSize, float zoomDuration, float minimumWaitSeconds)
+    private IEnumerator ZoomCameraWhileWaitingRoutine(
+        float targetOrthographicSize,
+        float zoomDuration,
+        float minimumWaitSeconds,
+        Transform settleTarget)
     {
         float waitDuration = Mathf.Max(0f, minimumWaitSeconds);
         if (!zoomCameraDuringFocus || gameplayCamera == null)
         {
             yield return WaitForPresentationSeconds(waitDuration);
+            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
             yield break;
         }
 
@@ -482,6 +491,7 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
         if (totalDuration <= 0f)
         {
             SetCameraOrthographicSize(clampedTargetSize);
+            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
             yield break;
         }
 
@@ -501,6 +511,7 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
         }
 
         SetCameraOrthographicSize(clampedTargetSize);
+        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
     }
 
     private float GetCameraOrthographicSize()
@@ -553,6 +564,9 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
             return;
 
         Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        if (playerTransform == null && PlayerInteractor2D.Instance != null)
+            playerTransform = PlayerInteractor2D.Instance.transform;
+
         if (playerTransform == null)
             return;
 

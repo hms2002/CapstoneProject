@@ -37,6 +37,7 @@ GameObject:
   - component: {fileID: 4568362210068245321}
   - component: {fileID: 621653922633986502}
   - component: {fileID: 6959115687579837536}
+  - component: {fileID: 117233341450707058}
   m_Layer: 31
   m_Name: DemonKing
   m_TagString: Enemy
@@ -56,7 +57,8 @@ Transform:
   m_LocalPosition: {x: -22.5, y: 10.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5796896217105914270}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7759160880716235645
@@ -192,7 +194,7 @@ Animator:
   m_GameObject: {fileID: 945520286179334166}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b3cbf6478180162478fd48a8c2b75145, type: 2}
+  m_Controller: {fileID: 9100000, guid: d1a4000000000000000000000000000c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -391,6 +393,10 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  enableBodyAfterimage: 1
+  bodyAfterimageIntervalSeconds: 0.04
+  bodyAfterimageLifetimeSeconds: 0.16
+  bodyAfterimageColor: {r: 1, g: 0.25, b: 0.18, a: 0.45}
 --- !u!114 &4420802989016375446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -764,6 +770,7 @@ MonoBehaviour:
   deathVanishEffectOffset: {x: 0, y: 0, z: 0}
   deathSpeechSituation: 2
   deathBgmFadeOutDuration: 0
+  terminalEndingSequence: {fileID: 0}
 --- !u!114 &5103660979619691146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -837,3 +844,48 @@ MonoBehaviour:
   deathLensBlendDuration: 0.35
   phaseLensScale: 1.18
   phaseLensBlendDuration: 0.35
+--- !u!114 &117233341450707058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 945520286179334166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1a21a5a77b4e9e8d68c54b70c393fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterElementGaugeAnchor2D
+  anchor: {fileID: 5796896217105914270}
+  fallbackOffset: {x: 0, y: -1}
+--- !u!1 &8828615964768619946
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5796896217105914270}
+  m_Layer: 31
+  m_Name: ElementGaugePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5796896217105914270
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8828615964768619946}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1708932354766596942}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

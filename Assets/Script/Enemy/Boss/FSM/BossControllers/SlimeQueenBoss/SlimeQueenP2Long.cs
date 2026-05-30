@@ -19,6 +19,8 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     private const float ToxicDropTriangleX = 0.8660254f;
     private const string DefaultWaterCannonLaserVfxResourcePath = "DemonKing/WaterZetLaserVfx";
     private const string DefaultWaterCannonHitEffectResourcePath = "DemonKing/Effect_WaterjetHitparticle";
+    private static readonly HashSet<int> WarnedMissingCrossWaterPillarTimedHitEffectPrefabs = new HashSet<int>();
+    private static readonly Collider2D[] CrossWaterPillarBlockedSpawnHits = new Collider2D[8];
 
     [Header("Phase 2 Long - Random Movement")]
     [Tooltip("랜덤 착지 위치를 뽑을 바운더리입니다. 비워두면 씬에서 자동 탐색합니다.")]
@@ -83,6 +85,15 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 
     [Tooltip("물기둥 피해에 사용할 GAS Damage Effect입니다.")]
     [SerializeField] private GE_Damage_Spec crossWaterPillarDamageEffect;
+
+    [Tooltip("물기둥 생성이 금지되는 레이어입니다. 보통 HoleTrap 레이어를 지정합니다. 비어 있으면 검사하지 않습니다.")]
+    [SerializeField] private LayerMask crossWaterPillarBlockedSpawnLayers = 1 << 6;
+
+    [Tooltip("물기둥 생성 지점이 금지 레이어와 겹치는지 검사할 반경 배율입니다.")]
+    [SerializeField, Range(0f, 1f)] private float crossWaterPillarHoleCheckRadiusScale = 0.45f;
+
+    [Tooltip("켜면 구덩이 위라서 스킵된 물기둥 위치를 로그로 남깁니다.")]
+    [SerializeField] private bool logSkippedCrossWaterPillarOnHole;
 
     [Space(8)]
 
@@ -471,11 +482,12 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         ClearViews(crossWaterPillarBlastViews);
         ClearCrossWaterPillarBlastEffects();
 
-        if (segments == null || crossWaterPillarDamage <= 0f || crossWaterPillarDamageEffect == null)
+        if (segments == null)
             return;
 
-        bool hasDamagedTarget = false;
         float interval = Mathf.Max(0.1f, crossWaterPillarBlastInterval);
+        CombatHitPayload hitPayload = BuildCrossWaterPillarHitPayload(sourceSystem, sourceSpec);
+        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry = new TimedAnimatedHitEffect2D.SharedHitRegistry();
 
         for (int i = 0; i < segments.Count; i++)
         {
@@ -487,10 +499,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             for (float offset = 0f; offset <= segment.Length + 0.001f; offset += interval)
             {
                 Vector3 blastPosition = segment.Start + segment.Direction * offset;
-                SpawnWaterPillarBlastEffect(blastPosition, blastEffectPrefab);
-
-                if (!hasDamagedTarget && TryDamagePlayerAtBlast(sourceSystem, sourceSpec, blastPosition))
-                    hasDamagedTarget = true;
+                SpawnWaterPillarBlastEffect(blastPosition, blastEffectPrefab, hitPayload, sharedHitRegistry);
 
                 lastOffset = offset;
             }
@@ -498,10 +507,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             if (segment.Length - lastOffset > crossWaterPillarBlastDiameter * 0.25f)
             {
                 Vector3 blastPosition = segment.End;
-                SpawnWaterPillarBlastEffect(blastPosition, blastEffectPrefab);
-
-                if (!hasDamagedTarget && TryDamagePlayerAtBlast(sourceSystem, sourceSpec, blastPosition))
-                    hasDamagedTarget = true;
+                SpawnWaterPillarBlastEffect(blastPosition, blastEffectPrefab, hitPayload, sharedHitRegistry);
             }
         }
     }
@@ -845,9 +851,16 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         return Mathf.Max(MinCrossWaterPillarCastDistance, crossWaterPillarFallbackDistance);
     }
 
-    /// <summary>물기둥 발생 지점 이펙트를 생성합니다.</summary>
-    private void SpawnWaterPillarBlastEffect(Vector3 blastPosition, GameObject blastEffectPrefab)
+    /// <summary>물기둥 발생 지점 이펙트를 생성하고, 가능하면 이펙트 자체 콜리더 피해를 초기화합니다.</summary>
+    private void SpawnWaterPillarBlastEffect(
+        Vector3 blastPosition,
+        GameObject blastEffectPrefab,
+        CombatHitPayload hitPayload,
+        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry)
     {
+        if (ShouldSkipCrossWaterPillarBlastPosition(blastPosition))
+            return;
+
         if (blastEffectPrefab == null)
             return;
 
@@ -856,6 +869,60 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             return;
 
         crossWaterPillarBlastEffects.Add(effect);
+
+        TimedAnimatedHitEffect2D timedHitEffect = effect.GetComponentInChildren<TimedAnimatedHitEffect2D>(true);
+        if (timedHitEffect != null)
+        {
+            timedHitEffect.Play(crossWaterPillarBlastViewSeconds, hitPayload, sharedHitRegistry);
+            return;
+        }
+
+        if (WarnedMissingCrossWaterPillarTimedHitEffectPrefabs.Add(blastEffectPrefab.GetInstanceID()))
+        {
+            Debug.LogWarning(
+                $"[{nameof(SlimeQueenP2Long)}] CrossWaterPillar blast effect prefab has no {nameof(TimedAnimatedHitEffect2D)}. " +
+                "물기둥 이펙트는 표시되지만 이펙트 콜리더 피해 타이밍은 적용되지 않습니다.",
+                blastEffectPrefab);
+        }
+    }
+
+    /// <summary>물기둥 생성 지점이 구덩이처럼 금지된 스폰 영역 위인지 검사합니다.</summary>
+    private bool ShouldSkipCrossWaterPillarBlastPosition(Vector3 blastPosition)
+    {
+        if (crossWaterPillarBlockedSpawnLayers.value == 0 || crossWaterPillarHoleCheckRadiusScale <= 0f)
+            return false;
+
+        float radius = Mathf.Max(0.01f, crossWaterPillarBlastDiameter * 0.5f * crossWaterPillarHoleCheckRadiusScale);
+        ContactFilter2D contactFilter = new ContactFilter2D
+        {
+            useLayerMask = true,
+            layerMask = crossWaterPillarBlockedSpawnLayers,
+            useTriggers = true
+        };
+        int hitCount = Physics2D.OverlapCircle(
+            blastPosition,
+            radius,
+            contactFilter,
+            CrossWaterPillarBlockedSpawnHits);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hit = CrossWaterPillarBlockedSpawnHits[i];
+            CrossWaterPillarBlockedSpawnHits[i] = null;
+
+            if (hit == null)
+                continue;
+
+            if (hit.GetComponent<HoleTrap>() == null && hit.GetComponentInParent<HoleTrap>() == null)
+                continue;
+
+            if (logSkippedCrossWaterPillarOnHole)
+                Debug.Log($"[{nameof(SlimeQueenP2Long)}] CrossWaterPillar skipped on HoleTrap. position={blastPosition}", hit);
+
+            return true;
+        }
+
+        return false;
     }
 
     private void ClearCrossWaterPillarBlastEffects()
@@ -870,37 +937,25 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         crossWaterPillarBlastEffects.Clear();
     }
 
-    /// <summary>물기둥 판정 원 안에 있는 플레이어에게 한 번 피해를 적용합니다.</summary>
-    private bool TryDamagePlayerAtBlast(AbilitySystem sourceSystem, AbilitySpec sourceSpec, Vector3 blastPosition)
+    private CombatHitPayload BuildCrossWaterPillarHitPayload(AbilitySystem sourceSystem, AbilitySpec sourceSpec)
     {
-        float radius = crossWaterPillarBlastDiameter * 0.5f;
-        Collider2D[] hits = Physics2D.OverlapCircleAll(blastPosition, radius);
+        if (crossWaterPillarDamage <= 0f || crossWaterPillarDamageEffect == null)
+            return null;
 
-        for (int i = 0; i < hits.Length; i++)
-        {
-            if (!HasPlayerTagInHierarchy(hits[i].transform))
-                continue;
+        CombatDamageSnapshot snapshot = new(
+            finalHpDamage: crossWaterPillarDamage,
+            finalStaggerBuildUp: 0f,
+            finalKnockbackImpulse: 0f,
+            isCriticalHit: false);
 
-            GameObject damageTarget = CombatTargetResolver2D.ResolveDamageTarget(hits[i]);
-            if (damageTarget == null || !damageTarget.CompareTag("Player"))
-                continue;
-
-            CombatDamageAction.ApplyDamageAndEmitHit(
-                sourceSystem != null ? sourceSystem : AbilitySystem,
-                sourceSpec,
-                crossWaterPillarDamageEffect,
-                null,
-                damageTarget,
-                crossWaterPillarDamage,
-                0f,
-                0f,
-                null,
-                blastPosition,
-                gameObject);
-            return true;
-        }
-
-        return false;
+        return CombatHitPayload.FromSnapshot(
+            sourceSystem: sourceSystem != null ? sourceSystem : AbilitySystem,
+            sourceSpec: sourceSpec,
+            damageEffect: crossWaterPillarDamageEffect,
+            knockbackEffect: null,
+            snapshot: snapshot,
+            hitConfirmedTag: null,
+            causer: gameObject);
     }
 
     /// <summary>현재 타겟 방향과 벽 충돌을 기준으로 물대포 선분을 만듭니다.</summary>

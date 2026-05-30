@@ -51,6 +51,8 @@ public class DialogueTagHandler : MonoBehaviour
                 case "speaker":
                 case "anim":
                 case "dialogue_anim":
+                case "effect":
+                case "camerashake":
                     break;
 
                 case "enter": OnPortraitEnterRequested?.Invoke(targetId, value); break;

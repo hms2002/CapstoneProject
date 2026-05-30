@@ -1,7 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
+
+public enum DemonKingDelayedExplosionVfxKind
+{
+    Default,
+    DarkLordExplosion2
+}
 
 public sealed class DemonKingDelayedDamageArea : MonoBehaviour
 {
@@ -15,14 +22,26 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         float diameter,
         float warningSeconds,
         float damage,
-        bool ignoreOwnerGroggy = false)
+        bool ignoreOwnerGroggy = false,
+        DemonKingDelayedExplosionVfxKind explosionVfxKind = DemonKingDelayedExplosionVfxKind.Default,
+        SoundRef impactSound = default,
+        CameraShakeHook impactCameraShake = default)
     {
         if (owner == null)
             return;
 
         GameObject runner = new("DemonKing_DelayedCircle");
         DemonKingDelayedDamageArea area = runner.AddComponent<DemonKingDelayedDamageArea>();
-        area.StartCoroutine(area.RunCircle(owner, center, diameter, warningSeconds, damage, ignoreOwnerGroggy));
+        area.StartCoroutine(area.RunCircle(
+            owner,
+            center,
+            diameter,
+            warningSeconds,
+            damage,
+            ignoreOwnerGroggy,
+            explosionVfxKind,
+            impactSound,
+            impactCameraShake));
     }
 
     public static void SpawnRectangle(
@@ -48,14 +67,26 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         float diameter,
         float warningSeconds,
         float damage,
-        bool ignoreOwnerGroggy = false)
+        bool ignoreOwnerGroggy = false,
+        DemonKingDelayedExplosionVfxKind explosionVfxKind = DemonKingDelayedExplosionVfxKind.Default,
+        SoundRef impactSound = default,
+        CameraShakeHook impactCameraShake = default)
     {
         if (owner == null || centers == null || centers.Count == 0)
             return;
 
         GameObject runner = new("DemonKing_DelayedCircleCluster");
         DemonKingDelayedDamageArea area = runner.AddComponent<DemonKingDelayedDamageArea>();
-        area.StartCoroutine(area.RunCircleCluster(owner, centers, diameter, warningSeconds, damage, ignoreOwnerGroggy));
+        area.StartCoroutine(area.RunCircleCluster(
+            owner,
+            centers,
+            diameter,
+            warningSeconds,
+            damage,
+            ignoreOwnerGroggy,
+            explosionVfxKind,
+            impactSound,
+            impactCameraShake));
     }
 
     private IEnumerator RunCircle(
@@ -64,35 +95,53 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         float diameter,
         float warningSeconds,
         float damage,
-        bool ignoreOwnerGroggy)
+        bool ignoreOwnerGroggy,
+        DemonKingDelayedExplosionVfxKind explosionVfxKind,
+        SoundRef impactSound,
+        CameraShakeHook impactCameraShake)
     {
-        DemonKingPrimitiveVisual.SpawnCircle(
-            center,
-            diameter,
-            warningSeconds,
-            WarningColor,
-            "DemonKing_ExplosionCircleWarning");
-
         owner.GetTelegraphService()?.SpawnDetachedView(
-            AttackTelegraphSpec.CreateCircle(center, diameter, warningSeconds, owner.DefaultWarningStyle));
+            AttackTelegraphSpecUtility.WithThinWarningOutline(
+                AttackTelegraphSpec.CreateCircle(center, diameter, warningSeconds, owner.DefaultWarningStyle)));
 
         if (warningSeconds > 0f)
             yield return new WaitForSeconds(warningSeconds);
 
         if (owner != null && !owner.IsDead && (ignoreOwnerGroggy || !owner.HasGroggyTag()))
         {
-            DemonKingCombatUtil.ApplyCircleDamage(
-                owner,
-                center,
-                diameter * 0.5f,
-                owner.DefaultDamageEffect,
-                damage);
+            CombatHitPayload payload = DemonKingCombatUtil.MakePayload(owner, owner.DefaultDamageEffect, damage);
+            bool presentationPlayed = false;
+            void PlayImpactPresentationOnce()
+            {
+                if (presentationPlayed)
+                    return;
 
-            DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(
+                presentationPlayed = true;
+                PlayImpactPresentation(owner, center, impactSound, impactCameraShake, "DemonKing.DelayedCircleImpact");
+            }
+
+            bool timed = TrySpawnTimedExplosionVfx(
+                owner,
                 center,
                 diameter,
                 AttackColor,
-                "DemonKing_ExplosionCircleAttack");
+                "DemonKing_ExplosionCircleAttack",
+                explosionVfxKind,
+                payload,
+                null,
+                PlayImpactPresentationOnce,
+                out _);
+
+            if (!timed)
+            {
+                PlayImpactPresentationOnce();
+                DemonKingCombatUtil.ApplyCircleDamage(
+                    owner,
+                    center,
+                    diameter * 0.5f,
+                    owner.DefaultDamageEffect,
+                    damage);
+            }
         }
 
         Destroy(gameObject);
@@ -104,20 +153,17 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         float diameter,
         float warningSeconds,
         float damage,
-        bool ignoreOwnerGroggy)
+        bool ignoreOwnerGroggy,
+        DemonKingDelayedExplosionVfxKind explosionVfxKind,
+        SoundRef impactSound,
+        CameraShakeHook impactCameraShake)
     {
         for (int i = 0; i < centers.Count; i++)
         {
             Vector2 center = centers[i];
-            DemonKingPrimitiveVisual.SpawnCircle(
-                center,
-                diameter,
-                warningSeconds,
-                WarningColor,
-                "DemonKing_ExplosionCircleWarning");
-
             owner.GetTelegraphService()?.SpawnDetachedView(
-                AttackTelegraphSpec.CreateCircle(center, diameter, warningSeconds, owner.DefaultWarningStyle));
+                AttackTelegraphSpecUtility.WithThinWarningOutline(
+                    AttackTelegraphSpec.CreateCircle(center, diameter, warningSeconds, owner.DefaultWarningStyle)));
         }
 
         if (warningSeconds > 0f)
@@ -125,6 +171,48 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
 
         if (owner != null && !owner.IsDead && (ignoreOwnerGroggy || !owner.HasGroggyTag()))
         {
+            CombatHitPayload payload = DemonKingCombatUtil.MakePayload(owner, owner.DefaultDamageEffect, damage);
+            TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry = new();
+            bool presentationPlayed = false;
+            void PlayImpactPresentationOnce()
+            {
+                if (presentationPlayed)
+                    return;
+
+                presentationPlayed = true;
+                Vector2 presentationCenter = centers.Count > 0 ? centers[0] : owner.transform.position;
+                PlayImpactPresentation(owner, presentationCenter, impactSound, impactCameraShake, "DemonKing.DelayedCircleClusterImpact");
+            }
+
+            int timedCount = 0;
+            bool anyVisualSpawned = false;
+            for (int i = 0; i < centers.Count; i++)
+            {
+                if (TrySpawnTimedExplosionVfx(
+                    owner,
+                    centers[i],
+                    diameter,
+                    AttackColor,
+                    "DemonKing_ExplosionCircleAttack",
+                    explosionVfxKind,
+                    payload,
+                    sharedHitRegistry,
+                    PlayImpactPresentationOnce,
+                    out bool visualSpawned))
+                {
+                    timedCount++;
+                }
+
+                anyVisualSpawned |= visualSpawned;
+            }
+
+            if (timedCount > 0)
+            {
+                Destroy(gameObject);
+                yield break;
+            }
+
+            PlayImpactPresentationOnce();
             HashSet<GameObject> damagedTargets = new();
             for (int i = 0; i < centers.Count; i++)
             {
@@ -137,11 +225,15 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
                     damage,
                     damagedTargets);
 
-                DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(
-                    center,
-                    diameter,
-                    AttackColor,
-                    "DemonKing_ExplosionCircleAttack");
+                if (!anyVisualSpawned)
+                {
+                    SpawnExplosionFallbackVfx(
+                        center,
+                        diameter,
+                        AttackColor,
+                        "DemonKing_ExplosionCircleAttack",
+                        explosionVfxKind);
+                }
             }
         }
 
@@ -157,16 +249,9 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         float damage,
         bool ignoreOwnerGroggy)
     {
-        DemonKingPrimitiveVisual.SpawnSquare(
-            center,
-            size,
-            rotationDeg,
-            warningSeconds,
-            WarningColor,
-            "DemonKing_RectSquareWarning");
-
         owner.GetTelegraphService()?.SpawnDetachedView(
-            AttackTelegraphSpec.CreateRectangle(center, size, rotationDeg, warningSeconds, owner.DefaultWarningStyle));
+            AttackTelegraphSpecUtility.WithThinWarningOutline(
+                AttackTelegraphSpec.CreateRectangle(center, size, rotationDeg, warningSeconds, owner.DefaultWarningStyle)));
 
         if (warningSeconds > 0f)
             yield return new WaitForSeconds(warningSeconds);
@@ -191,5 +276,77 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    private static bool TrySpawnTimedExplosionVfx(
+        DemonKingController owner,
+        Vector2 center,
+        float diameter,
+        Color fallbackColor,
+        string fallbackName,
+        DemonKingDelayedExplosionVfxKind explosionVfxKind,
+        CombatHitPayload payload,
+        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry,
+        System.Action onHitWindowOpened,
+        out bool spawnedVisual)
+    {
+        DemonKingAnimationClipVisual visual = explosionVfxKind == DemonKingDelayedExplosionVfxKind.DarkLordExplosion2
+            ? DemonKingPatternVfx.SpawnDarkLordExplosion2(center, diameter)
+            : DemonKingPatternVfx.SpawnExplosion(center, diameter);
+        spawnedVisual = visual != null;
+
+        if (visual == null)
+        {
+            DemonKingPrimitiveVisual.SpawnCircle(center, diameter, 0.12f, fallbackColor, fallbackName);
+            return false;
+        }
+
+        return DemonKingPatternVfx.TryPlayCircleTimedHit(
+            visual,
+            owner,
+            diameter,
+            payload,
+            sharedHitRegistry,
+            onHitWindowOpened);
+    }
+
+    private static void SpawnExplosionFallbackVfx(
+        Vector2 center,
+        float diameter,
+        Color fallbackColor,
+        string fallbackName,
+        DemonKingDelayedExplosionVfxKind explosionVfxKind)
+    {
+        if (explosionVfxKind == DemonKingDelayedExplosionVfxKind.DarkLordExplosion2)
+        {
+            DemonKingPatternVfx.SpawnDarkLordExplosion2OrFallbackCircle(center, diameter, fallbackColor, fallbackName);
+            return;
+        }
+
+        DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(center, diameter, fallbackColor, fallbackName);
+    }
+
+    private static void PlayImpactPresentation(
+        DemonKingController owner,
+        Vector2 center,
+        SoundRef sound,
+        CameraShakeHook shake,
+        string debugReason)
+    {
+        if (owner == null)
+            return;
+
+        if (sound.IsSet)
+        {
+            SoundPlaybackUtility.Play(
+                sound,
+                instigator: owner.gameObject,
+                causer: owner.gameObject,
+                target: owner.CurrentTarget != null ? owner.CurrentTarget.gameObject : null,
+                position: center,
+                sourceObject: owner);
+        }
+
+        shake.TryPlay(owner.gameObject, Vector3.down, debugReason: debugReason);
     }
 }

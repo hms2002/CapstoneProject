@@ -2,10 +2,215 @@
 status: active
 authority: project-log
 category: decision-log
-last_reviewed: 2026-05-29
+last_reviewed: 2026-05-30
 ---
 
 # Decision Log
+
+## 2026-05-30 - DemonKing VFX Uses Left-Baseline Socket Tuning
+
+Decision:
+DemonKing pattern VFX positions should be tuned through an optional `DemonKingVfxSocketMap`. Socket offsets are authored against the DarkLord sprite's natural left-facing baseline, and X is mirrored when the boss faces right. Child Transform anchors may override numeric offsets; if the socket map is absent, existing fallback positions are preserved.
+
+Reason:
+DarkLord patterns need precise hand, foot, eye, sword, and charge output points, but direct scene/prefab YAML editing would make Unity references fragile. A small boss-local socket map keeps this tuning visible in the Inspector and Scene view without introducing a generic manager or changing unrelated bosses.
+
+Implications:
+- Timed attack VFX positions and their generated hit colliders move together when a socket is used.
+- Socket gizmos are authoring/debug visualization only; actual values still need Unity Inspector and Play Mode review.
+- EgoSword keeps its existing held/throw/recall offset fields, with selected-object gizmos added for review rather than a serialization migration.
+
+## 2026-05-30 - DemonKing Visual Tuning Uses An Editor Preview Tool
+
+Decision:
+DemonKing body clips, one-shot VFX hit windows, pattern AL tuning fields, EgoSword offsets, and VFX sockets should be adjusted through `Tools/DemonKing/Visual Tuning Preview` as an Editor-only authoring tool. The tool edits existing assets/components rather than introducing a new central runtime tuning profile.
+
+Reason:
+DarkLord/DemonKing tuning values are intentionally split across `.anim` clips, generated Resources VFX prefabs, AbilityLogic ScriptableObject assets, and scene/prefab components. A central runtime profile would require migration and another source of truth, while an Editor-only surface can make the existing ownership visible and previewable.
+
+Implications:
+- Preview instances are hidden temporary objects rendered through a tool camera/RenderTexture and must not mutate scene or prefab contents during playback.
+- `.anim` frame curves and hit-window events are saved only through explicit Apply buttons.
+- Pattern, EgoSword, and socket serialized fields are edited through `SerializedObject` with Undo/dirty handling, matching normal Inspector ownership.
+- This tool is an authoring convenience, not a gameplay manager or runtime dependency.
+
+## 2026-05-30 - DemonKing Explosions Emit High-Arc Debris
+
+Decision:
+`DemonKingExplosionVfx`, `DarkLordExplosion2Vfx`, and `DemonKingImpactVfx` should spawn `PF_ExplosionDebrisBounce_HighArc` at the same world position as an additional visual-only presentation layer.
+
+Reason:
+The boss's explosion and impact beats need a stronger top-down ground-hit read without changing damage windows, camera shake, fragment persistence, or pattern timing.
+
+Implications:
+- `DemonKingPatternVfx` owns the runtime pairing so every existing explosion/impact call site inherits the debris presentation.
+- `PF_ExplosionDebrisBounce_HighArc` is the authored runtime prefab at `Assets/Resources/DemonKing/Vfx`, not a generated mirror. Do not maintain a second HighArc copy with separate tuning.
+- The debris emitter must remain visual-only and must not add collision, damage, gameplay tags, or timing gates.
+
+## 2026-05-30 - DemonKing HomingMagic Separates Stock And Fired Projectile VFX
+
+Decision:
+DemonKing HomingMagic should present its remaining shots as visual-only stock VFX over the boss, then spawn the real projectile from the consumed stock VFX position with a separate fired-projectile visual prefab.
+
+Reason:
+The pattern needs to communicate that five shots are loaded before firing, while keeping projectile movement, lifetime, collision, and damage owned by `DemonKingProjectile2D`.
+
+Implications:
+- `AbilityLogic_DemonKingHomingMagic` owns stock VFX layout, target-side-first consumption, recentering, and cleanup.
+- `DemonKingProjectile2D.Spawn(...)` keeps the old primitive fallback and accepts an optional child visual prefab for fired projectiles.
+- The stock and fired projectile prefabs are Inspector-assigned AbilityLogic slots; scene/prefab YAML should not be hand-edited for this wiring.
+- If those slots are empty, `DemonKingPatternVfxAssetBuilder` generated Resources wrappers for `HomingMagicBaltVFX.anim` and `HomingMagicBaltProjectile.anim` are the default fallback.
+
+## 2026-05-30 - DemonKingImpact Spawn Points Own Impact Shake
+
+Decision:
+Whenever DemonKing code directly commits a `DemonKingImpactVfx`, the same impact timing should own camera shake unless that impact already routes shake through a timed-hit callback.
+
+Reason:
+Impact shake should align with the visible impact frame, but duplicated shake on timed VFX callbacks makes repeated patterns feel noisy and harder to tune.
+
+Implications:
+- Bombardment release impact and EgoSword planting impact have their own camera shake hooks because they directly spawn `DemonKingImpactVfx`.
+- ExplosionJump landing, WallBounceRush final landing, hand GroggyRecoverCounter, and EgoSword VerticalStrike keep their existing timed-hit/impact shake paths.
+- `DarkLordExplosion2`, `DemonKingExplosion`, and `DarkLordGroggyReleaseVfx` keep their separate shake policies.
+
+## 2026-05-30 - Top-Down Debris Bounce Uses Virtual Height
+
+Decision:
+Explosion debris bounce VFX should simulate debris on a 2D ground plane with separate virtual height, instead of relying on Unity ParticleSystem gravity/collision to decide where the piece hits the ground.
+
+Reason:
+The game is top-down, so screen-down gravity reads like movement across the map rather than falling. Keeping ground XY and virtual height separate lets the effect emit bounce/contact puffs at the intended map contact point while only using a small screen-space offset for the airborne read.
+
+Implications:
+- `TopDownDebrisBounceEmitter2D` owns visual-only debris simulation and contact puffs.
+- Generated debris-bounce prefabs are presentation content and should be spawned through existing presentation paths.
+- Final tuning must be reviewed in Scene/Game view because too much height offset can look like the debris moved north instead of upward.
+
+## 2026-05-30 - Directional Telegraph Fill For Non-Radial Attacks
+
+Decision:
+Attack telegraph fill should grow from the attack start/origin toward the attack end for rectangular and sector warnings. Circle and ring warnings keep radial/center-based fill behavior.
+
+Reason:
+Directional attacks read more clearly when the warning communicates travel direction or attack reach over time. Center-growing rectangles and sectors make line slashes, rush lanes, and cones feel like they appear from the middle rather than from the attacker or attack start point.
+
+Implications:
+- `AttackTelegraphView` keeps sprite-based rectangle and sector fill anchored on the local start edge while scaling progress.
+- `AttackTelegraphWallClippedMeshView` keeps rectangle mesh start vertices fixed and scales only the front edge toward the wall-clipped endpoint.
+- Circle/ring warnings remain exceptions because their danger expands radially rather than from a directional start edge.
+
+## 2026-05-30 - DemonKing One-Shot VFX Own Hit Windows
+
+Decision:
+DemonKing attacks that have concrete generated one-shot VFX should route damage, SFX, and camera shake through `TimedAnimatedHitEffect2D` hit-window callbacks where practical. Warnings use `AttackTelegraphService` specs, while continuous body-contact rushes and laser active windows remain code-driven.
+
+Reason:
+The boss's hit feedback needs to line up with visible VFX frames instead of firing at warning completion or coroutine commit time. Reusing the shared timed-hit component keeps frame timing in generated animation clips without adding pattern-specific animation-event relay scripts.
+
+Implications:
+- `DemonKingPatternVfxAssetBuilder` is responsible for adding `EnableHitCollision`/`DisableHitCollision` events and timed-hit components to generated one-shot VFX prefabs.
+- Runtime pattern code still owns the hit shape/payload because size, damage, and shared-hit policy are pattern-specific.
+- Sound and camera shake should fire from hit-window callbacks or direct impact commits, not from warning start.
+- Primitive warning duplicates should not be reintroduced; use telegraph specs and reserve primitive visuals for active fallback flashes.
+- AbilityLogic assets and `EgoSwordActor` now expose SFX/shake slots that require Unity Inspector review after import.
+
+## 2026-05-30 - Dialogue Text Animation Preview Mirrors Runtime UGUI
+
+Decision:
+`Tools/Dialogue/Text Animation Tuner` previews dialogue text animation through a hidden world-space `Canvas + TextMeshProUGUI` rendered by a dedicated preview camera into a `RenderTexture`. It copies the default `GlobalUIRoot.prefab` `DialogueView.dialogueText` rendering settings before applying `DialogueTextAnimationUtility`.
+
+Reason:
+The previous world `TextMeshPro` preview used a small font size and arbitrary camera framing, so the same vertex offsets looked much larger than they did in the actual DialoguePanel. Tuning should be based on the runtime UGUI text scale, rect, wrapping, alignment, and font settings.
+
+Implications:
+- The shared parser/effect utility remains the source of text animation behavior; the change is preview rendering parity, not Ink syntax or runtime behavior.
+- The default preview source is the project DialoguePanel, while a manual `TextMeshProUGUI` source can be assigned for scene/prefab override comparisons.
+- Preview font changes are explicit through `Override Preview Font`; by default, the tool uses the DialoguePanel font.
+- Source text rects with zero or invalid dimensions are interpreted through the parent Dialogue text container for preview visibility; the prefab/scene RectTransforms are not mutated.
+- `PreviewRenderUtility` is avoided for this UGUI preview because the source/effective rects can be valid while CanvasRenderer output still renders black.
+
+## 2026-05-30 - Dialogue Text Animation Uses A Central Profile SO
+
+Decision:
+Ink inline TextAnimating tags and `# CameraShake` text motion values are tuned through `DialogueTextAnimationProfileSO`. `DialogueView` may use an optional override, but the normal path loads `Assets/LeeJunMo/Datas/Resources/Dialogue/DefaultDialogueTextAnimationProfile.asset` through `Resources`; if that asset is unavailable, runtime falls back to the previous hardcoded defaults.
+
+Reason:
+Writers and designers need to tune `[shake]`, `[tremble]`, `[punch]`, `[wave]`, `[float]`, `[slowshake]`, `[rand_size]`, and CameraShake text motion without changing Ink syntax or editing scene/prefab references.
+
+Implications:
+- Existing Ink tags remain valid; this is a tuning-source migration, not an Ink syntax migration.
+- `DialogueTextAnimationUtility` is the shared parser/vertex animation surface used by runtime and the editor preview.
+- `Tools/Dialogue/Text Animation Tuner` is the intended editor surface for live TMP preview and default profile editing.
+- Scene/prefab wiring is optional because the default profile is loaded from `Resources`.
+
+## 2026-05-29 - DemonKing Pattern Body Animation Starts Once Per Pattern
+
+Decision:
+DemonKing body pattern animation start playback is limited to one start per Animator state per boss pattern execution. End-frame sampling and frame-control holds remain allowed for hit/recover beats such as `Balt`, `SwordRecover`, and `JumpAttack` frame transitions.
+
+Reason:
+DarkLord clips are played directly through a transition-free Animator state library. Repeated `Animator.Play(state, 0, 0f)` calls inside pattern loops made one-shot poses look like they restarted several times instead of reading as a single committed action.
+
+Implications:
+- `DemonKingController` owns the per-pattern start-playback record and clears it on pattern end, death, and destroy cleanup.
+- Pattern code should use once-per-pattern helpers for full clip starts and preparation poses, while keeping last-frame holds for impact/readability.
+- Same-state pose holds must not blindly call `Animator.Play(...)`: if Groggy is already active, hold the current frame, and if a same-state one-shot has already reached the requested end frame, freeze it instead of resampling it.
+- `WallBounceRush` now uses linear endpoint movement plus a short endpoint pause for the 50% set piece instead of relying on ease-out arrival feel.
+
+## 2026-05-29 - Dialogue CameraShake Is Ink-Owned Impact Metadata
+
+Decision:
+Dialogue impact shake uses a controller-owned `# CameraShake: Low|Middle|High` line tag. `DialogueController` resolves the tag before line playback, and `DialogueView` applies TextBoxGroup shake, DOShake-like per-character TMP impact offsets, dialogue text inertia, and existing `CameraShakeService` camera shake from one preset.
+
+Reason:
+Writers need specific story beats to shake both the dialogue presentation and the visible gameplay background without adding scene/prefab wiring. Keeping the tag in the dialogue metadata path matches existing `anim` and `effect` ownership while reusing the established camera shake setting gate.
+
+Implications:
+- `Middle` is the only supported medium-strength spelling; `Medium` is intentionally unsupported.
+- The camera component respects the player's screen-shake setting because `CameraShakeService` is called without `ignoreScreenShakeSetting`.
+- Dialogue UI shake still plays even when gameplay screen shake is disabled.
+- Low/Middle/High motion values, per-character impact offsets, and the global intensity multiplier now live in `DialogueTextAnimationProfileSO`; legacy `DialogueView` fields remain only as hidden fallback data.
+
+## 2026-05-29 - Drunk Dialogue Uses Scoped TextAnimating Tags
+
+Decision:
+Drunk/slurred dialogue should use scoped TextAnimating tags instead of manually wrapping individual characters in many TMP `<size>` tags. `[rand_size=min,max]...[/rand_size]` assigns each visible character in the range a stable pseudo-random scale, clamped to 80%-120%, and `[slowshake]...[/slowshake]` adds a low-speed per-character shake.
+
+Reason:
+Writers need to mark the text area that should feel tipsy, then define a restrained size range, without turning the Ink source into unreadable per-character rich text. Keeping this in the existing inline text-effect parser preserves the typewriter path and allows the NPC Hub validator to reason about the tags.
+
+Implications:
+- Use these tags only on short drunk/slurred phrases, not whole paragraphs.
+- `Spiri_Dragon` and `Spiri_Drink` lines can stay outside this drunk delivery rule; `Spiri_Drink` may still use restrained SFX size emphasis.
+- The random size is deterministic per character for a line, so it reads as uneven vocal pitch without flickering every frame.
+- `[slowshake]` is a scoped text effect, not a line-level `# CameraShake` replacement.
+
+## 2026-05-29 - Dialogue Background Effect Switch Is Ink-Owned
+
+Decision:
+Dialogue background Effect changes during Ink playback use a controller-owned `# effect: <target>` line tag. Supported targets are an NPC id such as `1005`, `speaker`, and `default`.
+
+Reason:
+The Effect is already authored on `NPCData.DialogueTheme.effectOverride`, and writers need to change it at specific story beats without changing the active speaker or adding scene/prefab wiring. Keeping it as Ink metadata matches the existing `anim` and `face` tag style while preserving the current Dialogue UI ownership.
+
+Implications:
+- `DialogueController` applies the Effect tag after `speaker` processing and before line text playback.
+- `DialogueView` exposes an Effect-only theme apply method so textbox and speaker-frame colors remain controlled by the speaker theme.
+- Mid-dialogue Effect switching currently swaps the AnimatorOverrideController only; replaying the DialogueEffect `Intro` state is a planned follow-up.
+
+## 2026-05-29 - DemonKing Held EgoSword Is Body-Only
+
+Decision:
+When DemonKing is in sword-held mode, the authored scene `EgoSwordActor` is kept hidden/inactive and the held sword is represented by the DemonKing body animation. The actor is reactivated only when `DarkLord_Sword_Throwing` reaches the last-frame start, and recall holds the first `DarkLord_Hand_SwordRecover` frame until the sword arrives before showing the final recover frame. The 50% `WallBounceRush` requires dropped-sword mode, so HP50 selection forces `ThrowEgoSword` first when the sword is still held.
+
+Reason:
+The boss concept now treats the held weapon as part of the DemonKing sprite sheet, not as a separate follower object. Using clip length/frame-rate timing keeps sprite frame edits local to the clip and avoids adding animation-event dependencies for this pattern handoff.
+
+Implications:
+- `EgoSwordActor` remains a scene-authored reusable actor, not a runtime-instantiated prefab.
+- The DemonKing Animator must use the DarkLord state-library controller for visual timing to match the intended throw/recover frames.
+- Future `DarkLord_Sword_Throwing` or `DarkLord_Hand_SwordRecover` state renames must update the `DemonKingController` constants and mapping helpers.
 
 ## 2026-05-29 - ScenePortal Entrance Presentation Does Not Change Travel Semantics
 
@@ -1558,3 +1763,31 @@ Implications:
 - Keep the old reveal material fields serialized on `FloweringBloomData` for compatibility, but do not use them as the runtime reveal gate.
 - `FloweringBloomPresentationController` must restore the hidden `PlayerRender`, destroy the silhouette, and clear any reveal masks during Bloom cleanup/weapon release.
 - If this cut-in becomes shared presentation, migrate the runtime-created silhouette/reveal objects to authored prefab references under the presentation authoring contract.
+
+## 2026-05-30 - DemonKing Animation Replay Guards Are Pattern-Specific
+
+Decision:
+DarkLord/DemonKing body animation replay guards apply to single-commit pattern clips, not to every named state. Multi-hit or multi-rush motions such as DashStab can restart per strike, while Slash and GroggyCounter keep stricter replay guards and frame-hold sampling.
+
+Reason:
+The one-start-per-pattern guard fixed accidental replay loops for Groggy, GroggyCounter, and Slash, but applying the same rule to DashStab hid the intended three-attack rhythm. The guard boundary must follow pattern semantics rather than clip name alone.
+
+Implications:
+- Use `PlayPatternAnimationOncePerPattern(...)` only when the pattern has one visual commit for that state.
+- Use normal `PlayPatternAnimation(...)` for per-hit DashStab/rush starts.
+- GroggyRecoverCounter should flow Groggy eye flash -> GroggyCounter impact frame -> combat idle, using `DarkLordGroggyReleaseVfx` for sword-held counter impacts and `DemonKingImpactVfx` for hand-state counter impacts.
+- Pattern motion windows should hold DemonKing face-target locks so auto-facing does not flip the body during authored attack poses.
+
+## 2026-05-30 - DemonKing DarkLord Effects Use Generated Resource VFX
+
+Decision:
+New DarkLord effect sheets for DemonKing combat are integrated as generated `Resources/DemonKing/Vfx` Animator-prefab assets, with runtime code spawning named VFX helpers instead of reading sprite sheets directly.
+
+Reason:
+The existing DemonKing non-laser VFX path already validates Resources prefabs, Animator states, and sorting. Extending that path keeps effect authoring repairable through `DemonKingPatternVfxAssetBuilder` and avoids adding animation-event or runtime sprite-loading dependencies.
+
+Implications:
+- `DarkLordExplosion2` is used only where the pattern asks for that stronger explosion style: HeavySlash follow-up line explosions, Bombardment lane explosions, and 10% FinalDesperation bombs.
+- `DarkLordFragment` is a separate crack visual: timed after general `DemonKingImpactVfx`, persistent while EgoSword is fixed in the ground, and faded/cleared by the owning runtime path.
+- HP50 charge and EgoSword spin are loop-follow visuals. The sword spin follows position but not sword rotation, matching the authored spinning effect sheet.
+- Unity import or `Tools/DemonKing/Rebuild Pattern VFX Assets` must create/repair the generated Resources assets before runtime loads the new prefabs.

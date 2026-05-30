@@ -378,7 +378,11 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         Transform focusTarget = target != null ? target : transform;
         CacheCameraState();
         SetCameraTarget(focusTarget);
-        yield return ZoomCameraWhileWaitingRoutine(orthographicSize, cameraZoomInSeconds, waitSeconds);
+        yield return ZoomCameraWhileWaitingRoutine(
+            orthographicSize,
+            cameraZoomInSeconds,
+            waitSeconds,
+            focusTarget);
     }
 
     private IEnumerator ReturnCameraRoutine()
@@ -396,19 +400,22 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         yield return ZoomCameraWhileWaitingRoutine(
             restoreOrthographicSize,
             cameraZoomOutSeconds,
-            cameraReturnWaitSeconds);
+            cameraReturnWaitSeconds,
+            restoreTarget);
         RestoreCameraState(restoreTarget);
     }
 
     private IEnumerator ZoomCameraWhileWaitingRoutine(
         float targetOrthographicSize,
         float zoomDuration,
-        float minimumWaitSeconds)
+        float minimumWaitSeconds,
+        Transform settleTarget)
     {
         float waitDuration = Mathf.Max(0f, minimumWaitSeconds);
         if (!zoomGameplayCameraDuringFocus || gameplayCamera == null)
         {
             yield return WaitForPresentationSeconds(waitDuration);
+            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
             yield break;
         }
 
@@ -420,6 +427,7 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         if (totalDuration <= 0f)
         {
             SetCameraOrthographicSize(gameplayCamera, clampedTargetSize);
+            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
             yield break;
         }
 
@@ -440,6 +448,7 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         }
 
         SetCameraOrthographicSize(gameplayCamera, clampedTargetSize);
+        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
     }
 
     private IEnumerator WaitForPlayerTransformRoutine()
@@ -566,7 +575,11 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
 
     private Transform ResolvePlayerTransform()
     {
-        return PlayerRuntimeRegistry.GetPlayerTransform();
+        Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        if (playerTransform == null && PlayerInteractor2D.Instance != null)
+            playerTransform = PlayerInteractor2D.Instance.transform;
+
+        return playerTransform;
     }
 
     private void AcquirePlayerProtection()

@@ -87,13 +87,13 @@ public class CameraPresentationDirector : MonoBehaviour
     public IEnumerator FocusBossRoutine()
     {
         BeginBossFocus();
-        yield return WaitForBlendEnd();
+        yield return WaitForBlendEnd(ResolveBossFocusTarget());
     }
 
     public IEnumerator FocusBossWithDeathLensRoutine()
     {
         BeginBossFocusWithDeathLens();
-        yield return WaitForBlendEnd();
+        yield return WaitForBlendEnd(ResolveBossFocusTarget());
     }
 
     public IEnumerator FocusTargetWithDeathLensRoutine(Transform target)
@@ -105,7 +105,7 @@ public class CameraPresentationDirector : MonoBehaviour
     public IEnumerator FocusBossWithPhaseLensRoutine()
     {
         BeginBossFocusWithPhaseLens();
-        yield return WaitForBlendEnd();
+        yield return WaitForBlendEnd(ResolveBossFocusTarget());
     }
 
     public void BindBossCameraTarget(Transform target)
@@ -130,7 +130,7 @@ public class CameraPresentationDirector : MonoBehaviour
         if (playerCam != null)
             playerCam.Priority = GetPlayerFocusPriority();
 
-        yield return WaitForBlendEnd();
+        yield return WaitForBlendEnd(PlayerRuntimeRegistry.GetPlayerTransform());
 
         RestoreBossLensImmediate();
         RestoreBrainIgnoreTimeScale();
@@ -272,7 +272,7 @@ public class CameraPresentationDirector : MonoBehaviour
         CameraBootstrap.EnsureImpulseListener(camera.gameObject);
     }
 
-    private IEnumerator WaitForBlendEnd()
+    private IEnumerator WaitForBlendEnd(Transform settleTarget)
     {
         yield return null;
 
@@ -294,12 +294,14 @@ public class CameraPresentationDirector : MonoBehaviour
             }
             else if (sawBlend)
             {
-                yield break;
+                break;
             }
 
             elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
+
+        yield return CameraCinematicWaitUtility.WaitForCameraSettle(brain, null, settleTarget);
     }
 
     private float GetBlendWaitFallbackSeconds()
@@ -360,6 +362,14 @@ public class CameraPresentationDirector : MonoBehaviour
 
         if (bossCam != null)
             bossCam.Priority = GetBossFocusPriority();
+    }
+
+    private Transform ResolveBossFocusTarget()
+    {
+        if (bossCam == null)
+            return null;
+
+        return bossCam.Follow != null ? bossCam.Follow : bossCam.LookAt;
     }
 
     private void BeginBossFocusWithLens(float lensScale, float lensDuration)

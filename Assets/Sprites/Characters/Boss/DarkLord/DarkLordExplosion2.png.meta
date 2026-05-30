@@ -1,0 +1,341 @@
+fileFormatVersion: 2
+guid: 75a214575290fcb4fb4b47748cc571d5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5280575355362928974
+    second: DarkLordExplosion2_0
+  - first:
+      213: -9095722503226929376
+    second: DarkLordExplosion2_1
+  - first:
+      213: 512679265371433407
+    second: DarkLordExplosion2_2
+  - first:
+      213: -2124347744165702087
+    second: DarkLordExplosion2_3
+  - first:
+      213: -2392014969398982221
+    second: DarkLordExplosion2_4
+  - first:
+      213: -8072752050980576158
+    second: DarkLordExplosion2_5
+  - first:
+      213: -2140851392685827977
+    second: DarkLordExplosion2_6
+  - first:
+      213: -6083578979542927063
+    second: DarkLordExplosion2_7
+  - first:
+      213: -3936370250157487540
+    second: DarkLordExplosion2_8
+  - first:
+      213: -7534253584378947090
+    second: DarkLordExplosion2_9
+  - first:
+      213: -180880505929273132
+    second: DarkLordExplosion2_10
+  - first:
+      213: 6233973121700992207
+    second: DarkLordExplosion2_11
+  - first:
+      213: 6013682041917851905
+    second: DarkLordExplosion2_12
+  - first:
+      213: 2890180637031933072
+    second: DarkLordExplosion2_13
+  - first:
+      213: 8699503404875002149
+    second: DarkLordExplosion2_14
+  - first:
+      213: -6355986012117607568
+    second: DarkLordExplosion2_15
+  - first:
+      213: -340236318024755128
+    second: DarkLordExplosion2_16
+  - first:
+      213: -5894582894602792555
+    second: DarkLordExplosion2_17
+  - first:
+      213: -1819071042810800600
+    second: DarkLordExplosion2_18
+  - first:
+      213: -1380500883886927705
+    second: DarkLordExplosion2_19
+  - first:
+      213: 8360550633813049713
+    second: DarkLordExplosion2_20
+  - first:
+      213: -8325637456731966788
+    second: DarkLordExplosion2_21
+  - first:
+      213: 8613615993531453012
+    second: DarkLordExplosion2_22
+  - first:
+      213: 7938647857885713401
+    second: DarkLordExplosion2_23
+  - first:
+      213: 7799595484876969883
+    second: DarkLordExplosion2_24
+  - first:
+      213: -4220500219665436994
+    second: DarkLordExplosion2_25
+  - first:
+      213: -3516581645004668775
+    second: DarkLordExplosion2_26
+  - first:
+      213: -3108414241692416608
+    second: DarkLordExplosion2_27
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: DarkLordExplosion2_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 85
+        height: 128
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b619e521b0a7b6b0800000000000000
+      internalID: -5280575355362928974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLordExplosion2_1
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 0
+        width: 85
+        height: 128
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02fc1a3139085c180800000000000000
+      internalID: -9095722503226929376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLordExplosion2_2
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 0
+        width: 85
+        height: 128
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb92c2853176d1700800000000000000
+      internalID: 512679265371433407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLordExplosion2_3
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 0
+        width: 85
+        height: 128
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 936d9916bfcc482e0800000000000000
+      internalID: -2124347744165702087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLordExplosion2_4
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 0
+        width: 85
+        height: 128
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b98e8b0f0bddced0800000000000000
+      internalID: -2392014969398982221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLordExplosion2_5
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 0
+        width: 85
+        height: 128
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2642f79e7c2d7ff80800000000000000
+      internalID: -8072752050980576158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 3679ccd823a07354c96b11680eb578c4
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":1.0},"gridSpriteSize":{"x":85.0,"y":128.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.30000001192092898},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      DarkLordExplosion2_0: -5280575355362928974
+      DarkLordExplosion2_1: -9095722503226929376
+      DarkLordExplosion2_2: 512679265371433407
+      DarkLordExplosion2_3: -2124347744165702087
+      DarkLordExplosion2_4: -2392014969398982221
+      DarkLordExplosion2_5: -8072752050980576158
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
