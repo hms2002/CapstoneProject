@@ -164,12 +164,14 @@ MonoBehaviour:
   bodyCollider: {fileID: 777000000000000012}
   body: {fileID: 0}
   externalMovement: {fileID: 3341026293018187748}
+  collisionProfile: {fileID: 0}
   actorLayers:
     serializedVersion: 2
     m_Bits: 2147483648
   wallLayers:
     serializedVersion: 2
     m_Bits: 1073741824
+  suspendWhileBodyPassesThroughActors: 0
   pushSpeed: 2.8
   pushDurationSeconds: 0.08
   wallProbeDistance: 0.08

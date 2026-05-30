@@ -434,7 +434,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2147483656
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -1739,6 +1739,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -1752,6 +1753,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -1781,6 +1783,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -1794,6 +1797,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -1823,6 +1827,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -1836,6 +1841,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2035,6 +2041,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2048,6 +2055,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2077,6 +2085,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2090,6 +2099,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2119,6 +2129,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2132,6 +2143,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2185,8 +2197,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   bodyColliders:
   - {fileID: 2408987213105108475}
   baseExcludedLayers:

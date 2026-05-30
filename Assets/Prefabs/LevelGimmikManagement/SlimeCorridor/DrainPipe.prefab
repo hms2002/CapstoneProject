@@ -81,12 +81,12 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 673162585
-  m_SortingLayer: 3
+  m_SortingLayerID: -1039746825
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 9f7e709805604741a88b1db0a4774f61, type: 3}
-  m_Color: {r: 0.56, g: 0.34, b: 0.17, a: 1}
+  m_Sprite: {fileID: 21300000, guid: b0270b43dd9b8e645aa5f2ab78aebd1f, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -156,8 +156,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Offset: {x: 0, y: 0.3}
+  m_Radius: 0.33
 --- !u!114 &6000000000000000000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,7 +173,13 @@ MonoBehaviour:
   spriteRenderer: {fileID: 3000000000000000000}
   damageReceptionColliders:
   - {fileID: 4000000000000000000}
+  stopperSprite: {fileID: 21300000, guid: b0270b43dd9b8e645aa5f2ab78aebd1f, type: 3}
+  holeSprite: {fileID: 21300000, guid: 81643724080443a48aba9407c54fc9b7, type: 3}
+  blockedHoleSprite: {fileID: 21300000, guid: d22a8d5b30f694e4c8496130188ad544, type: 3}
+  entitySortingLayerName: Entity
+  holeSortingLayerName: GroundAOE
   hitCountToBreak: 3
+  suctionCenterOffset: {x: 0, y: 0.3}
   suctionRadius: 2.5
   suctionSpeed: 5
   consumeDistance: 0.2
@@ -184,15 +190,15 @@ MonoBehaviour:
   suctionVfxGrowSeconds: 0.35
   suctionVfxShrinkSeconds: 0.25
   suctionVfxMaxScaleMultiplier: 2
-  corkColor: {r: 0.56, g: 0.34, b: 0.17, a: 1}
-  brokenColor: {r: 0, g: 0, b: 0, a: 1}
+  corkColor: {r: 1, g: 1, b: 1, a: 1}
+  brokenColor: {r: 1, g: 1, b: 1, a: 1}
   openSound:
-    key: sound_drainPipe_Open
+    key: sound_drainpipe_open
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   waterfallLoopSound:
-    key: sound_drainPipe_WtaerFall
+    key: sound_drainpipe_wtaerfall
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
@@ -214,7 +220,7 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   phaseTwoBossReturnSound:
-    key: sound_slimeQueen_Return
+    key: sound_slimequeen_return
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
