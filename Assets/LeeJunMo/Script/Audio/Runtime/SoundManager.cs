@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CapstoneRuntime;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace CapstoneAudio
 {
@@ -10,6 +11,16 @@ namespace CapstoneAudio
     {
         // 이 클래스의 책임:
         // 카탈로그 기반 사운드 재생, 루프 핸들 관리, 오디오 풀링, 볼륨/피치 런타임 제어를 총괄한다.
+
+        /// <summary>
+        /// 책임:
+        /// 사용자 볼륨 설정과 별개로 런타임 ducking을 다시 계산할 수 있도록 AudioSource별 원본 재생 정보를 보관한다.
+        /// </summary>
+        private sealed class RuntimeSoundState
+        {
+            public AudioCategory Category;
+            public float BaseVolume;
+        }
 
         public const string DefaultCatalogResourcesPath = "Audio/DefaultAudioCatalog";
         private const string MasterVolumePrefKey = "settings.audio.master";
@@ -36,6 +47,7 @@ namespace CapstoneAudio
         private readonly List<AudioSource> importantSfxSources = new();
         private readonly Stack<AudioSource> idleLoopSources = new();
         private readonly Dictionary<int, AudioSource> activeLoopSources = new();
+        private readonly Dictionary<AudioSource, RuntimeSoundState> runtimeSoundStates = new();
         private readonly Dictionary<string, float> nextPlayableTimes =
             new(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> missingKeyWarnings =
@@ -47,6 +59,8 @@ namespace CapstoneAudio
         private bool initialized;
         private int nextHandleId = 1;
         private float currentMusicBaseVolume = 1f;
+        private float combatSfxDuckVolume = 1f;
+        private Tween combatSfxDuckTween;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Bootstrap()
@@ -225,6 +239,7 @@ namespace CapstoneAudio
         {
             masterVolume = Mathf.Clamp01(volume);
             PlayerPrefs.SetFloat(MasterVolumePrefKey, masterVolume);
+            RefreshAllRuntimeSfxVolumes();
 
             if (musicSource == null)
                 return;
@@ -248,6 +263,7 @@ namespace CapstoneAudio
         {
             masterSfxVolume = Mathf.Clamp01(volume);
             PlayerPrefs.SetFloat(SfxVolumePrefKey, masterSfxVolume);
+            RefreshAllRuntimeSfxVolumes();
         }
 
         public float GetMasterVolume()
@@ -268,6 +284,30 @@ namespace CapstoneAudio
             return masterSfxVolume;
         }
 
+        public void DuckCombatSfx(float targetVolume, float fadeSeconds)
+        {
+            EnsureInitialized();
+
+            combatSfxDuckTween?.Kill();
+            targetVolume = Mathf.Clamp01(targetVolume);
+            fadeSeconds = Mathf.Max(0f, fadeSeconds);
+
+            if (fadeSeconds <= 0f)
+            {
+                ApplyCombatSfxDuckVolume(targetVolume);
+                return;
+            }
+
+            combatSfxDuckTween = DOTween
+                .To(() => combatSfxDuckVolume, ApplyCombatSfxDuckVolume, targetVolume, fadeSeconds)
+                .SetUpdate(true);
+        }
+
+        public void ResetCombatSfxDuck(float fadeSeconds = 0f)
+        {
+            DuckCombatSfx(1f, fadeSeconds);
+        }
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -281,10 +321,27 @@ namespace CapstoneAudio
             EnsureInitialized();
         }
 
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += HandleSceneLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= HandleSceneLoaded;
+        }
+
         private void OnDestroy()
         {
+            combatSfxDuckTween?.Kill();
+
             if (Instance == this)
                 Instance = null;
+        }
+
+        private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            ResetCombatSfxDuck(0f);
         }
 
         private void EnsureInitialized()
@@ -308,6 +365,7 @@ namespace CapstoneAudio
             importantSfxSources.Clear();
             idleLoopSources.Clear();
             activeLoopSources.Clear();
+            runtimeSoundStates.Clear();
 
             CreateOneShotPool(normalSfxSources, sfxPoolSize, "SFX");
             CreateOneShotPool(importantSfxSources, importantSfxPoolSize, "ImportantSFX");
@@ -398,6 +456,7 @@ namespace CapstoneAudio
             source.spatialBlend = 0f;
             source.transform.SetParent(loopRoot, false);
             source.transform.localPosition = Vector3.zero;
+            runtimeSoundStates.Remove(source);
             idleLoopSources.Push(source);
         }
 
@@ -467,6 +526,7 @@ namespace CapstoneAudio
             pool.Add(recycled);
             recycled.DOKill();
             recycled.Stop();
+            runtimeSoundStates.Remove(recycled);
             return recycled;
         }
 
@@ -483,7 +543,8 @@ namespace CapstoneAudio
             source.DOKill();
             source.clip = clip;
             source.pitch = entry.PickAudioSourcePitch();
-            source.volume = entry.volume * soundRef.EffectiveVolumeMultiplier * masterSfxVolume * masterVolume;
+            TrackRuntimeSoundState(source, entry.category, entry.volume * soundRef.EffectiveVolumeMultiplier);
+            source.volume = ResolveRuntimeSfxVolume(source);
             source.minDistance = Mathf.Max(0.01f, entry.minDistance);
             source.maxDistance = Mathf.Max(source.minDistance, entry.maxDistance);
 
@@ -525,7 +586,8 @@ namespace CapstoneAudio
             source.clip = clip;
             source.pitch = 1f;
             source.loop = false;
-            source.volume = Mathf.Clamp01(volume) * masterSfxVolume * masterVolume;
+            TrackRuntimeSoundState(source, AudioCategory.Other, Mathf.Clamp01(volume));
+            source.volume = ResolveRuntimeSfxVolume(source);
 
             if (spatial)
             {
@@ -556,6 +618,60 @@ namespace CapstoneAudio
             }
 
             return false;
+        }
+
+        private void TrackRuntimeSoundState(AudioSource source, AudioCategory category, float baseVolume)
+        {
+            if (source == null)
+                return;
+
+            runtimeSoundStates[source] = new RuntimeSoundState
+            {
+                Category = category,
+                BaseVolume = Mathf.Max(0f, baseVolume)
+            };
+        }
+
+        private float ResolveRuntimeSfxVolume(AudioSource source)
+        {
+            if (source == null || !runtimeSoundStates.TryGetValue(source, out RuntimeSoundState state))
+                return masterSfxVolume * masterVolume;
+
+            float duckMultiplier = ShouldDuckCombatCategory(state.Category) ? combatSfxDuckVolume : 1f;
+            return state.BaseVolume * masterSfxVolume * masterVolume * duckMultiplier;
+        }
+
+        private void ApplyCombatSfxDuckVolume(float value)
+        {
+            combatSfxDuckVolume = Mathf.Clamp01(value);
+            RefreshAllRuntimeSfxVolumes();
+        }
+
+        private void RefreshAllRuntimeSfxVolumes()
+        {
+            foreach (KeyValuePair<AudioSource, RuntimeSoundState> pair in runtimeSoundStates)
+            {
+                AudioSource source = pair.Key;
+                if (source == null)
+                    continue;
+
+                source.volume = ResolveRuntimeSfxVolume(source);
+            }
+        }
+
+        private static bool ShouldDuckCombatCategory(AudioCategory category)
+        {
+            switch (category)
+            {
+                case AudioCategory.Ability:
+                case AudioCategory.Effect:
+                case AudioCategory.Enemy:
+                case AudioCategory.Boss:
+                case AudioCategory.World:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private bool IsOnCooldown(string key, float cooldown)

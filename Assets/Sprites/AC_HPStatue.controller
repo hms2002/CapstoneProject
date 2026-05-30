@@ -32,7 +32,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AClip_HPStatue_Filled
+  m_Name: AClip_HPStatue_Filling
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -46,7 +46,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 150ad282a3b5b91408c3300ba4379711, type: 2}
+  m_Motion: {fileID: 7400000, guid: 380394782dc7e234abb452ce133d2932, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -123,7 +123,7 @@ AnimatorStateMachine:
     m_Position: {x: 300, y: 110, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1808194979562830871}
-    m_Position: {x: 300, y: 160, z: 0}
+    m_Position: {x: 470, y: 160, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8007631453249619854}
     m_Position: {x: 300, y: 220, z: 0}
@@ -197,7 +197,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AClip_HPStatue_Filling
+  m_Name: AClip_HPStatue_Filled
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -210,7 +210,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 380394782dc7e234abb452ce133d2932, type: 2}
+  m_Motion: {fileID: 7400000, guid: 150ad282a3b5b91408c3300ba4379711, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

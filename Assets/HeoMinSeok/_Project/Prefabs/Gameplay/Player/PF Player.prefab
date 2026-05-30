@@ -434,7 +434,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2147483656
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -854,6 +854,7 @@ GameObject:
   - component: {fileID: 6601192358712345678}
   - component: {fileID: 8470790143729662828}
   - component: {fileID: 2244668801357902468}
+  - component: {fileID: 771900000000020002}
   - component: {fileID: -6179936427583040154}
   - component: {fileID: 771900000000020001}
   m_Layer: 3
@@ -1556,6 +1557,8 @@ MonoBehaviour:
   deathStateTagSet: {fileID: 0}
   hubSceneName: ProtoTypeHub
   fallbackDelaySeconds: 1.25
+  combatSfxDuckVolumeOnDeath: 0
+  combatSfxDuckFadeSeconds: 0.35
   additionalBehavioursToDisable: []
   collidersToDisable: []
 --- !u!114 &2333025531112780419
@@ -1738,6 +1741,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -1751,6 +1755,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -1780,6 +1785,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -1793,6 +1799,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -1822,6 +1829,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -1835,6 +1843,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2034,6 +2043,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2047,6 +2057,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2076,6 +2087,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2089,6 +2101,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2118,6 +2131,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2131,6 +2145,7 @@ MonoBehaviour:
         attachToTarget: 0
         anchorMode: 0
         scaleMode: 0
+        boundsMode: 0
         targetBoundsReferenceSize: 0
         targetBoundsScaleMultiplier: 0
         lifetimeMode: 0
@@ -2162,16 +2177,39 @@ MonoBehaviour:
   bodyCollider: {fileID: 0}
   body: {fileID: 288432539280398367}
   externalMovement: {fileID: 7359355598128478682}
+  collisionProfile: {fileID: 771900000000020002}
   actorLayers:
     serializedVersion: 2
     m_Bits: 2147483648
   wallLayers:
     serializedVersion: 2
     m_Bits: 1073741824
+  suspendWhileBodyPassesThroughActors: 1
   pushSpeed: 2.8
   pushDurationSeconds: 0.08
   wallProbeDistance: 0.08
   maxActorsPerTick: 8
+--- !u!114 &771900000000020002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bodyColliders:
+  - {fileID: 2408987213105108475}
+  baseExcludedLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  actorLayers:
+    serializedVersion: 2
+    m_Bits: 2147483656
+  defaultMode: 1
 --- !u!114 &-6179936427583040154
 MonoBehaviour:
   m_ObjectHideFlags: 0

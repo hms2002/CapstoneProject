@@ -14717,7 +14717,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2000000000000000000, guid: d1c98a1a57f44e43bb4b806f44ad9273, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3
+      value: -3.3
       objectReference: {fileID: 0}
     - target: {fileID: 2000000000000000000, guid: d1c98a1a57f44e43bb4b806f44ad9273, type: 3}
       propertyPath: m_LocalPosition.z
@@ -14917,7 +14917,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2000000000000000000, guid: d1c98a1a57f44e43bb4b806f44ad9273, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5
+      value: 4.7
       objectReference: {fileID: 0}
     - target: {fileID: 2000000000000000000, guid: d1c98a1a57f44e43bb4b806f44ad9273, type: 3}
       propertyPath: m_LocalPosition.z
@@ -14950,6 +14950,18 @@ PrefabInstance:
     - target: {fileID: 2000000000000000000, guid: d1c98a1a57f44e43bb4b806f44ad9273, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6000000000000000000, guid: d1c98a1a57f44e43bb4b806f44ad9273, type: 3}
+      propertyPath: openSound.key
+      value: sound_drainpipe_open
+      objectReference: {fileID: 0}
+    - target: {fileID: 6000000000000000000, guid: d1c98a1a57f44e43bb4b806f44ad9273, type: 3}
+      propertyPath: waterfallLoopSound.key
+      value: sound_drainpipe_wtaerfall
+      objectReference: {fileID: 0}
+    - target: {fileID: 6000000000000000000, guid: d1c98a1a57f44e43bb4b806f44ad9273, type: 3}
+      propertyPath: phaseTwoBossReturnSound.key
+      value: sound_slimequeen_return
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -15400,7 +15412,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2000000000000000000, guid: d1c98a1a57f44e43bb4b806f44ad9273, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3
+      value: -3.3
       objectReference: {fileID: 0}
     - target: {fileID: 2000000000000000000, guid: d1c98a1a57f44e43bb4b806f44ad9273, type: 3}
       propertyPath: m_LocalPosition.z
@@ -20390,7 +20402,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2000000000000000000, guid: d1c98a1a57f44e43bb4b806f44ad9273, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5
+      value: 4.7
       objectReference: {fileID: 0}
     - target: {fileID: 2000000000000000000, guid: d1c98a1a57f44e43bb4b806f44ad9273, type: 3}
       propertyPath: m_LocalPosition.z
@@ -20549,8 +20561,6 @@ MonoBehaviour:
   gaugeViewInstaller: {fileID: 0}
   pathfinder: {fileID: 0}
   recollectSpawnPointsOnSceneLoaded: 1
-  spawnOnStart: 0
-  spawnOnSceneLoaded: 1
   clearAliveMonstersBeforeSceneSpawn: 1
 --- !u!4 &1977209586
 Transform:

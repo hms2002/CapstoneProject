@@ -9,6 +9,17 @@ using UnityGAS;
 [RequireComponent(typeof(Collider2D), typeof(SpriteRenderer), typeof(CombatHurtbox2D))]
 public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
 {
+    /// <summary>
+    /// 책임:
+    /// DrainPipe의 피격/흡입/막힘 가능 상태를 명시적으로 표현한다.
+    /// </summary>
+    private enum DrainPipeState
+    {
+        Stopper,
+        Hole,
+        BlockedHole
+    }
+
     private const float PhaseTwoBossDrainSeconds = 4f;
     private const float PhaseTwoBossExitJumpSeconds = 0.45f;
     private const float PhaseTwoBossExitJumpArcHeight = 0.85f;
@@ -20,11 +31,31 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     [Tooltip("마개가 열리면 꺼지고 복구되면 다시 켜질 피격 전용 콜라이더입니다. 비워두면 같은 오브젝트의 Collider2D들을 사용합니다.")]
     [SerializeField] private Collider2D[] damageReceptionColliders;
 
+    [Header("State Sprites")]
+    [Tooltip("마개로 막힌 피격 가능 상태의 스프라이트입니다.")]
+    [SerializeField] private Sprite stopperSprite;
+
+    [Tooltip("마개가 뚫려 Pawn/P2 보스를 흡입하는 상태의 스프라이트입니다.")]
+    [SerializeField] private Sprite holeSprite;
+
+    [Tooltip("P2 보스가 빠져나온 뒤 막혀서 더 이상 피격/흡입되지 않는 상태의 스프라이트입니다.")]
+    [SerializeField] private Sprite blockedHoleSprite;
+
+    [Header("State Sorting")]
+    [Tooltip("마개로 막힌 상태와 막힌 구멍 상태에서 사용할 렌더 정렬 레이어입니다.")]
+    [SerializeField] private string entitySortingLayerName = "Entity";
+
+    [Tooltip("뚫린 구멍 상태에서 사용할 바닥 장판 렌더 정렬 레이어입니다.")]
+    [SerializeField] private string holeSortingLayerName = "GroundAOE";
+
     [Header("Hit")]
     [Tooltip("배수관이 파괴되기까지 필요한 피격 횟수입니다.")]
     [SerializeField] private int hitCountToBreak = 3;
 
     [Header("Suction")]
+    [Tooltip("Pawn/P2 보스를 끌어당기는 중심과 흡입 연출 위치에 더할 월드 오프셋입니다.")]
+    [SerializeField] private Vector2 suctionCenterOffset = new Vector2(0f, 0.3f);
+
     [Tooltip("파괴된 배수관이 Pawn 슬라임을 끌어당기는 반지름입니다.")]
     [SerializeField] private float suctionRadius = 7f;
 
@@ -96,15 +127,15 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     private Transform suctionVfxTransform;
     private Vector3 suctionVfxBaseScale = Vector3.one;
     private bool[] damageReceptionColliderDefaultEnabledStates;
+    private DrainPipeState currentState = DrainPipeState.Stopper;
     private int currentHitCount;
-    private bool isBroken;
 
     private void Awake()
     {
         CacheReferences();
         EnsureOverlapBuffer();
         EnsureTemporaryCircleSprite();
-        SyncVisual();
+        ApplyState(currentState, resetHitCount: false);
     }
 
     private void OnValidate()
@@ -147,7 +178,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
 
     private void FixedUpdate()
     {
-        if (!isBroken)
+        if (currentState != DrainPipeState.Hole)
             return;
 
         EnsureOverlapBuffer();
@@ -165,7 +196,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     /// <summary>배수관 피격 횟수를 누적하고 3회 이상이면 파괴 상태로 전환합니다.</summary>
     public bool TryApplyDamage(DamageRequest request)
     {
-        if (isBroken)
+        if (currentState != DrainPipeState.Stopper)
             return false;
 
         int hitAmount = Mathf.Max(1, request.TokenDamage);
@@ -195,15 +226,24 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         if (spriteRenderer == null)
             return;
 
-        spriteRenderer.color = isBroken ? brokenColor : corkColor;
+        Sprite stateSprite = ResolveStateSprite(currentState);
+        if (stateSprite != null)
+        {
+            spriteRenderer.sprite = stateSprite;
+            spriteRenderer.color = Color.white;
+        }
+        else
+        {
+            spriteRenderer.color = currentState == DrainPipeState.Stopper ? corkColor : brokenColor;
+        }
+
+        ApplyStateSorting();
     }
 
     /// <summary>파괴 상태로 전환하고 흡입 연출이 시작되도록 표시를 갱신합니다.</summary>
     private void BreakPipe()
     {
-        isBroken = true;
-        SetDamageReceptionEnabled(false);
-        SyncVisual();
+        ApplyState(DrainPipeState.Hole);
         SoundPlaybackUtility.Play(openSound, causer: gameObject, position: transform.position, sourceObject: this);
         StartWaterfallLoop();
         ShowSuctionVfx();
@@ -212,11 +252,11 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     /// <summary>배수구 흡입 범위 안에 들어온 2페이즈 슬라임 여왕을 배수구 대상으로 등록합니다.</summary>
     private void AcquirePhaseTwoBossTarget()
     {
-        if (!isBroken || phaseTwoBossTarget != null || phaseTwoBossDrainCoroutine != null || phaseTwoBossSuctionRadius <= 0f)
+        if (currentState != DrainPipeState.Hole || phaseTwoBossTarget != null || phaseTwoBossDrainCoroutine != null || phaseTwoBossSuctionRadius <= 0f)
             return;
 
         ContactFilter2D filter = CreatePhaseTwoBossSuctionFilter();
-        int hitCount = Physics2D.OverlapCircle(transform.position, phaseTwoBossSuctionRadius, filter, overlapColliders);
+        int hitCount = Physics2D.OverlapCircle(ResolveSuctionCenter(), phaseTwoBossSuctionRadius, filter, overlapColliders);
         for (int i = 0; i < hitCount; i++)
         {
             Collider2D hitCollider = overlapColliders[i];
@@ -253,7 +293,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
             return;
         }
 
-        Vector2 drainPosition = transform.position;
+        Vector2 drainPosition = ResolveSuctionCenter();
         Rigidbody2D bossBody = phaseTwoBossTarget.GetComponent<Rigidbody2D>();
         Vector2 bossPosition = bossBody != null && bossBody.simulated
             ? bossBody.position
@@ -300,7 +340,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         ResetBodyVelocity(slimeQueen.GetComponent<Rigidbody2D>());
     }
 
-    /// <summary>배수구 안에 잠긴 보스를 4초 뒤 복귀시키고 배수구를 원상복구합니다.</summary>
+    /// <summary>배수구 안에 잠긴 보스를 4초 뒤 복귀시키고 배수구를 막힌 구멍 상태로 전환합니다.</summary>
     private IEnumerator DrainPhaseTwoBossRoutine(SlimeQueenPhaseTwoBase slimeQueen, PhaseTwoBossDrainContext drainContext)
     {
         if (slimeQueen != null)
@@ -321,7 +361,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         activePhaseTwoBossDrainContext = null;
         phaseTwoBossDrainCoroutine = null;
         ReleasePhaseTwoBossClaim(slimeQueen);
-        RestorePipe();
+        BlockPipeAfterPhaseTwoBossExit();
     }
 
     /// <summary>흡입 범위 안에 들어온 Pawn 슬라임을 흡입 대상으로 등록합니다.</summary>
@@ -329,7 +369,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     {
         ContactFilter2D filter = CreateSuctionFilter();
 
-        int hitCount = Physics2D.OverlapCircle(transform.position, suctionRadius, filter, overlapColliders);
+        int hitCount = Physics2D.OverlapCircle(ResolveSuctionCenter(), suctionRadius, filter, overlapColliders);
         for (int i = 0; i < hitCount; i++)
         {
             Collider2D hitCollider = overlapColliders[i];
@@ -349,7 +389,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     /// <summary>등록된 Pawn 슬라임을 배수관 중심으로 끌어당기고 가까워지면 제거합니다.</summary>
     private void PullPawnTargets()
     {
-        Vector2 drainPosition = transform.position;
+        Vector2 drainPosition = ResolveSuctionCenter();
 
         for (int i = suctionTargets.Count - 1; i >= 0; i--)
         {
@@ -415,19 +455,58 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         pawn.enabled = false;
     }
 
-    /// <summary>보스가 빠져나온 뒤 배수구를 다시 피격 가능한 초기 상태로 되돌립니다.</summary>
-    private void RestorePipe()
+    /// <summary>보스가 빠져나온 뒤 배수구를 막힌 구멍 상태로 전환해 더 이상 피격/흡입되지 않게 합니다.</summary>
+    private void BlockPipeAfterPhaseTwoBossExit()
     {
-        isBroken = false;
-        currentHitCount = 0;
         ConsumeRemainingPawnTargets();
         StopWaterfallLoop();
         CleanupSuctionVfxImmediate();
         ReleasePhaseTwoBossClaim(claimedPhaseTwoBoss);
         phaseTwoBossTarget = null;
         claimedPhaseTwoBoss = null;
-        SetDamageReceptionEnabled(true);
+        ApplyState(DrainPipeState.BlockedHole);
+    }
+
+    /// <summary>DrainPipe 상태에 맞춰 피격 가능 여부와 표시 스프라이트를 동기화합니다.</summary>
+    private void ApplyState(DrainPipeState nextState, bool resetHitCount = true)
+    {
+        currentState = nextState;
+
+        if (resetHitCount && currentState != DrainPipeState.Stopper)
+            currentHitCount = 0;
+
+        SetDamageReceptionEnabled(currentState == DrainPipeState.Stopper);
         SyncVisual();
+    }
+
+    /// <summary>현재 상태에 대응하는 직렬화 스프라이트를 반환합니다.</summary>
+    private Sprite ResolveStateSprite(DrainPipeState state)
+    {
+        switch (state)
+        {
+            case DrainPipeState.Stopper:
+                return stopperSprite;
+            case DrainPipeState.Hole:
+                return holeSprite;
+            case DrainPipeState.BlockedHole:
+                return blockedHoleSprite != null ? blockedHoleSprite : holeSprite;
+            default:
+                return null;
+        }
+    }
+
+    /// <summary>DrainPipe 상태에 따라 바닥 장판 계층과 엔티티 계층을 전환합니다.</summary>
+    private void ApplyStateSorting()
+    {
+        if (spriteRenderer == null)
+            return;
+
+        string sortingLayerName = currentState == DrainPipeState.Hole
+            ? holeSortingLayerName
+            : entitySortingLayerName;
+
+        if (!string.IsNullOrWhiteSpace(sortingLayerName))
+            spriteRenderer.sortingLayerName = sortingLayerName;
     }
 
     /// <summary>마개 피격용 콜라이더들의 초기 enabled 상태를 저장합니다.</summary>
@@ -478,9 +557,9 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         CleanupSuctionVfxImmediate();
 
         Transform anchor = suctionVfxAnchor != null ? suctionVfxAnchor : transform;
-        suctionVfxInstance = Instantiate(suctionVfxPrefab, anchor.position, anchor.rotation, anchor);
+        suctionVfxInstance = Instantiate(suctionVfxPrefab, ResolveSuctionCenter(), anchor.rotation, anchor);
         suctionVfxTransform = suctionVfxInstance.transform;
-        suctionVfxTransform.localPosition = Vector3.zero;
+        suctionVfxTransform.position = ResolveSuctionCenter();
         suctionVfxTransform.localRotation = Quaternion.identity;
         suctionVfxBaseScale = suctionVfxTransform.localScale;
         suctionVfxTransform.localScale = Vector3.zero;
@@ -677,11 +756,11 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     /// <summary>열린 배수구의 2페이즈 보스 흡입 반경 안에 지정 좌표가 들어오는지 확인합니다.</summary>
     public bool ContainsActivePhaseTwoBossSuctionPoint(Vector3 worldPosition, float extraRadius = 0f)
     {
-        if (!isBroken || phaseTwoBossSuctionRadius <= 0f)
+        if (currentState != DrainPipeState.Hole || phaseTwoBossSuctionRadius <= 0f)
             return false;
 
         float radius = Mathf.Max(0f, phaseTwoBossSuctionRadius + extraRadius);
-        return Vector2.Distance(transform.position, worldPosition) <= radius;
+        return Vector2.Distance(ResolveSuctionCenter(), worldPosition) <= radius;
     }
 
     private static bool IsPhaseTwoBossAlive(SlimeQueenPhaseTwoBase slimeQueen)
@@ -753,9 +832,15 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
 
     private Vector3 GetDrainPosition(float targetZ)
     {
-        Vector3 drainPosition = transform.position;
+        Vector3 drainPosition = ResolveSuctionCenter();
         drainPosition.z = targetZ;
         return drainPosition;
+    }
+
+    /// <summary>Pawn/P2 보스 흡입과 흡입 VFX가 사용할 월드 중심점을 계산합니다.</summary>
+    private Vector2 ResolveSuctionCenter()
+    {
+        return (Vector2)transform.position + suctionCenterOffset;
     }
 
     private static void SetPhaseTwoBossPosition(SlimeQueenPhaseTwoBase slimeQueen, Vector3 position)
@@ -964,7 +1049,10 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     {
         Vector3 center = transform.position;
 
-        Gizmos.color = isBroken ? Color.black : new Color(0.56f, 0.34f, 0.17f, 0.7f);
+        Gizmos.color = currentState == DrainPipeState.Stopper
+            ? new Color(0.56f, 0.34f, 0.17f, 0.7f)
+            : Color.black;
+        center = ResolveSuctionCenter();
         Gizmos.DrawWireSphere(center, Mathf.Max(0f, suctionRadius));
 
         Gizmos.color = new Color(0.1f, 0.75f, 1f, 0.9f);

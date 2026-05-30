@@ -154,12 +154,12 @@ TextureImporter:
       name: stone_statue_0
       rect:
         serializedVersion: 2
-        x: 3
-        y: 43
-        width: 17
-        height: 34
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 40
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -176,12 +176,12 @@ TextureImporter:
       name: stone_statue_1
       rect:
         serializedVersion: 2
-        x: 26
-        y: 43
-        width: 17
-        height: 34
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 23
+        y: 40
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -198,12 +198,12 @@ TextureImporter:
       name: stone_statue_2
       rect:
         serializedVersion: 2
-        x: 49
-        y: 43
-        width: 17
-        height: 34
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 46
+        y: 40
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -220,12 +220,12 @@ TextureImporter:
       name: stone_statue_3
       rect:
         serializedVersion: 2
-        x: 72
-        y: 43
-        width: 17
-        height: 34
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 69
+        y: 40
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -242,12 +242,12 @@ TextureImporter:
       name: stone_statue_4
       rect:
         serializedVersion: 2
-        x: 95
-        y: 43
-        width: 17
-        height: 34
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 92
+        y: 40
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -264,12 +264,12 @@ TextureImporter:
       name: stone_statue_5
       rect:
         serializedVersion: 2
-        x: 118
-        y: 43
-        width: 17
-        height: 34
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 115
+        y: 40
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -286,12 +286,12 @@ TextureImporter:
       name: stone_statue_6
       rect:
         serializedVersion: 2
-        x: 141
-        y: 43
-        width: 17
-        height: 34
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 138
+        y: 40
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -308,12 +308,12 @@ TextureImporter:
       name: stone_statue_7
       rect:
         serializedVersion: 2
-        x: 164
-        y: 43
-        width: 17
-        height: 34
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 161
+        y: 40
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -330,12 +330,12 @@ TextureImporter:
       name: stone_statue_8
       rect:
         serializedVersion: 2
-        x: 187
-        y: 43
-        width: 17
-        height: 34
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 184
+        y: 40
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -352,12 +352,12 @@ TextureImporter:
       name: stone_statue_9
       rect:
         serializedVersion: 2
-        x: 3
-        y: 3
-        width: 17
-        height: 33
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 0
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -374,12 +374,12 @@ TextureImporter:
       name: stone_statue_10
       rect:
         serializedVersion: 2
-        x: 26
-        y: 3
-        width: 17
-        height: 33
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 23
+        y: 0
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -396,12 +396,12 @@ TextureImporter:
       name: stone_statue_11
       rect:
         serializedVersion: 2
-        x: 49
-        y: 3
-        width: 17
-        height: 33
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 46
+        y: 0
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -418,12 +418,12 @@ TextureImporter:
       name: stone_statue_12
       rect:
         serializedVersion: 2
-        x: 72
-        y: 3
-        width: 17
-        height: 33
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 69
+        y: 0
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -440,12 +440,12 @@ TextureImporter:
       name: stone_statue_13
       rect:
         serializedVersion: 2
-        x: 95
-        y: 3
-        width: 17
-        height: 33
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 92
+        y: 0
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -462,12 +462,12 @@ TextureImporter:
       name: stone_statue_14
       rect:
         serializedVersion: 2
-        x: 118
-        y: 3
-        width: 17
-        height: 33
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 115
+        y: 0
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -484,12 +484,12 @@ TextureImporter:
       name: stone_statue_15
       rect:
         serializedVersion: 2
-        x: 141
-        y: 3
-        width: 17
-        height: 33
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 138
+        y: 0
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -506,12 +506,12 @@ TextureImporter:
       name: stone_statue_16
       rect:
         serializedVersion: 2
-        x: 164
-        y: 3
-        width: 17
-        height: 33
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 161
+        y: 0
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -528,12 +528,12 @@ TextureImporter:
       name: stone_statue_17
       rect:
         serializedVersion: 2
-        x: 187
-        y: 3
-        width: 17
-        height: 33
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 184
+        y: 0
+        width: 23
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -560,7 +560,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":23.0,"y":40.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.15000000596046449},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       stone_statue_0: 4262318189563216989
       stone_statue_1: -4890498173126086035

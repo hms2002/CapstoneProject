@@ -49,6 +49,12 @@ internal static class ScenePortalTravelPlanner
 {
     public static PortalRouteDecision ResolveRoute(ScenePortalTravelRequest request)
     {
+        if (request.Portal != null &&
+            request.Portal.TryGetOneShotDestinationOverride(out string overrideSceneName))
+        {
+            return new PortalRouteDecision(overrideSceneName, "Default", TransitionType.CorridorToBoss);
+        }
+
         if (request.RouteManager == null)
             return default;
 

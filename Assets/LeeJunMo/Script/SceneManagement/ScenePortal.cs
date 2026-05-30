@@ -51,6 +51,8 @@ public sealed class ScenePortal : InteractableBase
     private PortalEntranceSnapshot activeEntranceSnapshot;
     private PlayerCinematicProtection lockedPlayerProtection;
     private GameFlowInputBlocker entranceInputBlocker;
+    private object oneShotDestinationOverrideOwner;
+    private string oneShotDestinationOverrideSceneName;
 
     private MaterialPropertyBlock propBlock;
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
@@ -64,6 +66,7 @@ public sealed class ScenePortal : InteractableBase
     public TransitionType PortalTransitionType => transitionType;
     public RunRouteCatalogSO StartRunRouteCatalog => startRunRouteCatalog;
     public IReadOnlyList<GameplayTagSet> SceneTravelCleanupTagSets => sceneTravelCleanupTagSets;
+    public bool HasOneShotDestinationOverride => !string.IsNullOrWhiteSpace(oneShotDestinationOverrideSceneName);
 
     private void Awake()
     {
@@ -126,7 +129,8 @@ public sealed class ScenePortal : InteractableBase
         bool isIdle = hasPlayer && player.CurrentState == InteractState.Idle;
         bool transitionIdle = !IsSceneTransitionActive();
         PortalRouteManager routeManager = PortalRouteManager.EnsureInstance();
-        bool canResolve = routeManager != null &&
+        bool canResolve = HasOneShotDestinationOverride ||
+                          routeManager != null &&
                           routeManager.CanResolveRoute(this);
 
         bool canInteract =
@@ -174,6 +178,35 @@ public sealed class ScenePortal : InteractableBase
     public override InteractState GetInteractType() => InteractState.Idle;
     public override string GetInteractDescription() => interactPromptText;
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+
+    /// <summary>
+    /// 책임:
+    /// 시연/디버그 치트가 기존 포탈 상호작용 흐름을 유지한 채 다음 1회 목적지만 바꿀 수 있게 한다.
+    /// </summary>
+    public bool SetOneShotDestinationOverride(string sceneName, object owner)
+    {
+        if (string.IsNullOrWhiteSpace(sceneName) || owner == null)
+            return false;
+
+        oneShotDestinationOverrideSceneName = sceneName.Trim();
+        oneShotDestinationOverrideOwner = owner;
+        return true;
+    }
+
+    public bool TryGetOneShotDestinationOverride(out string sceneName)
+    {
+        sceneName = oneShotDestinationOverrideSceneName;
+        return !string.IsNullOrWhiteSpace(sceneName);
+    }
+
+    public void ClearOneShotDestinationOverride(object owner)
+    {
+        if (owner != null && oneShotDestinationOverrideOwner != null && !ReferenceEquals(oneShotDestinationOverrideOwner, owner))
+            return;
+
+        oneShotDestinationOverrideSceneName = null;
+        oneShotDestinationOverrideOwner = null;
+    }
 
     private void SetOutline(bool enabled)
     {

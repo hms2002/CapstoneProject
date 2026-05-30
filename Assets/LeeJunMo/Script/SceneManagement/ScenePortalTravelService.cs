@@ -56,6 +56,9 @@ internal static class ScenePortalTravelCoordinator
                 gameplay,
                 transitionCoordinator));
 
+        if (result.Succeeded)
+            portal.ClearOneShotDestinationOverride(null);
+
         return result.Succeeded;
     }
 }

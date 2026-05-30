@@ -44,8 +44,29 @@ public sealed class MobAttackState : IMobState
             return;
         }
 
-        if (context.Owner.Target == null || !context.Owner.CanPerceiveTarget(context.Owner.Target))
+        if (context.Owner.Target == null)
         {
+            cancelledByLostTarget = true;
+            context.AbilityBridge?.CancelActiveAbility(true);
+            stateMachine.ChangeState(MobStateTransitionUtility.CreatePostAttackState(context), context);
+            return;
+        }
+
+        if (!context.Owner.CanPerceiveTarget(context.Owner.Target))
+        {
+            if (CombatTargetDeathUtility.IsPlayerDeathSequenceRunning(context.Owner.Target))
+            {
+                if (context.AbilityBridge != null && context.AbilityBridge.IsAbilityExecutionBusy)
+                    return;
+
+                if (request.RecoverSeconds > 0f)
+                    stateMachine.ChangeState(new MobRecoverState(request.RecoverSeconds), context);
+                else
+                    stateMachine.ChangeState(MobStateTransitionUtility.CreatePostAttackState(context), context);
+
+                return;
+            }
+
             cancelledByLostTarget = true;
             context.AbilityBridge?.CancelActiveAbility(true);
             stateMachine.ChangeState(MobStateTransitionUtility.CreatePostAttackState(context), context);

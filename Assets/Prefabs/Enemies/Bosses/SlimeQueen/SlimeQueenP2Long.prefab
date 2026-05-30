@@ -233,6 +233,9 @@ MonoBehaviour:
   crossWaterPillarBlastViewSeconds: 0.39
   crossWaterPillarDamage: 1.5
   crossWaterPillarDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  crossWaterPillarParticlePrefab: {fileID: 2448575849230576120, guid: 18d42adbb3a7c624abe8f1661ea9a5ad, type: 3}
+  crossWaterPillarParticleOffset: {x: 0, y: 0, z: 0}
+  crossWaterPillarParticleLifetimeSeconds: 2
   crossWaterPillarBlockedSpawnLayers:
     serializedVersion: 2
     m_Bits: 64
@@ -244,7 +247,7 @@ MonoBehaviour:
   waterCannonMuzzleSocket: {fileID: 6057653836644520300}
   waterCannonCenterSocket: {fileID: 6057653836644520300}
   waterCannonStartForwardOffset: 0.26
-  waterCannonLaserVfxPrefab: {fileID: 7799575014260888715, guid: 2b4807372e2866b4b9e2a5c30bc8c2e9, type: 3}
+  waterCannonLaserVfxPrefab: {fileID: 0}
   waterCannonLaserVfxResourcePath: DemonKing/WaterZetLaserVfx
   waterCannonActiveSeconds: 2
   waterCannonShotWarningSeconds: 0.25
@@ -603,7 +606,7 @@ MonoBehaviour:
   actorLayers:
     serializedVersion: 2
     m_Bits: 2147483656
-  defaultMode: 0
+  defaultMode: 1
 --- !u!114 &1028000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1063,7 +1066,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2147483656
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

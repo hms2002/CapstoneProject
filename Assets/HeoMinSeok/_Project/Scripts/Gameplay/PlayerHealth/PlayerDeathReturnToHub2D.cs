@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityGAS;
@@ -34,6 +35,10 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     [SerializeField] private string hubSceneName = "ProtoTypeHub";
     [SerializeField] private float fallbackDelaySeconds = 1.25f;
 
+    [Header("Death Audio Ducking")]
+    [SerializeField, Range(0f, 1f)] private float combatSfxDuckVolumeOnDeath = 0f;
+    [SerializeField, Min(0f)] private float combatSfxDuckFadeSeconds = 1f;
+
     [Header("Optional Extra Blockers")]
     [SerializeField] private Behaviour[] additionalBehavioursToDisable;
     [SerializeField] private Collider2D[] collidersToDisable;
@@ -43,6 +48,8 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     private GameOverCauseKind lastDamageCauseKind = GameOverCauseKind.Monster;
     private GameplayTagSet deadControlBlockTagSet;
     private readonly HashSet<GameplayTag> deathTagsBuffer = new();
+
+    public bool IsDeathSequenceRunning => isDeathSequenceRunning;
 
     private void Awake()
     {
@@ -192,6 +199,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
             return false;
 
         isDeathSequenceRunning = true;
+        SoundManager.EnsureInstance().DuckCombatSfx(combatSfxDuckVolumeOnDeath, combatSfxDuckFadeSeconds);
         StartCoroutine(CoDeathSequence(causeKind, causeName, endRunReason, targetHubSceneName, useSceneTransitionService));
         return true;
     }

@@ -11,6 +11,7 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
 
     private DemoCheatSettingsSO settings;
     private DemoCheatService service;
+    private bool isAwaitingBossSceneSelection;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Bootstrap()
@@ -45,6 +46,20 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
         if (IsSceneTransitionActive())
         {
             service.RestoreMapZoomImmediate();
+            isAwaitingBossSceneSelection = false;
+            return;
+        }
+
+        if (isAwaitingBossSceneSelection)
+        {
+            HandleBossSceneSelectionInput();
+            return;
+        }
+
+        if (WasPressed(settings.WarpToBossSceneKey))
+        {
+            isAwaitingBossSceneSelection = true;
+            ShowResult(DemoCheatResult.Succeeded(service.BuildBossSceneSelectionGuide()), settings.CheatGuideDuration);
             return;
         }
 
@@ -71,6 +86,31 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
 
         if (WasPressed(settings.IncreaseAttackKey))
             ShowResult(service.IncreasePlayerAttack(settings));
+    }
+
+    private void HandleBossSceneSelectionInput()
+    {
+        if (WasPressed(KeyCode.F5) || WasPressed(KeyCode.Escape))
+        {
+            isAwaitingBossSceneSelection = false;
+            ShowResult(DemoCheatResult.Succeeded("보스 씬 이동 설정을 취소했습니다."));
+            return;
+        }
+
+        if (WasPressed(KeyCode.F1))
+            ApplyBossScenePortalOverride(0);
+        else if (WasPressed(KeyCode.F2))
+            ApplyBossScenePortalOverride(1);
+        else if (WasPressed(KeyCode.F3))
+            ApplyBossScenePortalOverride(2);
+        else if (WasPressed(KeyCode.F4))
+            ApplyBossScenePortalOverride(3);
+    }
+
+    private void ApplyBossScenePortalOverride(int bossSceneIndex)
+    {
+        isAwaitingBossSceneSelection = false;
+        ShowResult(service.PrepareNearestPortalForBossScene(settings, bossSceneIndex));
     }
 
     private void ShowResult(DemoCheatResult result, float durationOverride = -1f)

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b8f4e111d974384b88c54fa280f88da, type: 3}
   m_Name: MonsterRoomEntrySpawnSettings
   m_EditorClassIdentifier: 
-  defaultSpawnVfxPrefab: {fileID: 0}
-  defaultSpawnVfxDelaySeconds: 0.35
+  defaultSpawnVfxPrefab: {fileID: 3410950004873631985, guid: 5fa720efdcd176d4e9f00bdd488cc8f4, type: 3}
+  defaultSpawnVfxDelaySeconds: 0.25
   defaultSpawnVfxOffset: {x: 0, y: 0, z: 0}
   defaultSpawnSound:
     key: 
