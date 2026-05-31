@@ -118,6 +118,12 @@ public sealed class WeaponPresentationRig2D : MonoBehaviour
         UpdateAimRotation();
     }
 
+    public void ResetAimPresentationOverrideForWeaponChange()
+    {
+        ResolveReferences();
+        ClearAimPresentationOverride();
+    }
+
     public int BeginAimPresentationOverride(
         WeaponAimPresentationMode mode,
         Vector2 castDirection,

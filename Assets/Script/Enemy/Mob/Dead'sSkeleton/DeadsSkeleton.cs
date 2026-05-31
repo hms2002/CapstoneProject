@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityGAS;
 
 /// <summary>
-/// 이 클래스의 책임: 
+/// 이 클래스의 책임:
 /// 플레이어 추적 중 자폭 조건을 판단하고, 자폭 모드에서만 폭발/광원 사망 규칙이 적용되며 일반 피해는 무시하는 해골 몬스터의 전투 흐름을 관리한다.
 /// </summary>
 public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMobAttackStateResolver, IMobPresentationCleanup
@@ -480,7 +480,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     {
         if (telegraphService == null) return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
             transform.position,
             GetConfiguredExplosionDiameter(),
             Mathf.Max(0f, introDuration),
@@ -516,7 +516,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         if (telegraphService == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
             transform.position,
             GetConfiguredExplosionDiameter(),
             0f,
@@ -531,7 +531,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         if (telegraphService == null || IsPlayingSelfDestructIntro())
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
             transform.position,
             GetConfiguredExplosionDiameter(),
             0f,
@@ -697,6 +697,9 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hit = hits[i];
+            if (!TopDownEllipseHitUtility2D.ContainsCollider(hit, transform.position, GetConfiguredExplosionDiameter()))
+                continue;
+
             GameObject targetRoot = CombatTargetResolver2D.ResolveDamageTarget(hit);
 
             if (targetRoot == null || targetRoot == gameObject)

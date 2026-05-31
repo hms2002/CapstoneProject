@@ -35,16 +35,8 @@ public sealed class AbilityLogic_ApprenticeHeroSwordDashStab : AbilityLogic
         TryPlayAnim(system, data.AnimationTrigger, spec.Definition);
         AbilityAudioRouter.PlayOneShot(data.DashStartSound, system, spec, sourceObjectOverride: data);
 
-        float dashSpeed = data.DashDistance / data.DashDuration;
-        if (dashSpeed > 0f)
-            motion.StartDash(direction, dashSpeed, data.DashDuration);
-
         try
         {
-            float hitEventWaitStart = Time.time;
-            yield return WaitForHitEvent(system, spec, data);
-            float hitEventWaitElapsed = Mathf.Max(0f, Time.time - hitEventWaitStart);
-
             if (IsAbilityCancelled(spec))
             {
                 motion.CancelMotion();
@@ -70,8 +62,11 @@ public sealed class AbilityLogic_ApprenticeHeroSwordDashStab : AbilityLogic
                 AbilityAudioRouter.PlayOneShotAtPosition(data.StabSound, system, spec, center, data);
             }
 
-            float remainingDashDuration = Mathf.Max(0f, data.DashDuration - hitEventWaitElapsed);
-            float activeDuration = Mathf.Max(remainingDashDuration, data.Hitbox != null ? data.Hitbox.ActiveTime : 0f);
+            float dashSpeed = data.DashDistance / data.DashDuration;
+            if (dashSpeed > 0f)
+                motion.StartDash(direction, dashSpeed, data.DashDuration);
+
+            float activeDuration = Mathf.Max(data.DashDuration, data.Hitbox != null ? data.Hitbox.ActiveTime : 0f);
             float elapsed = 0f;
             while (elapsed < activeDuration)
             {

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 43350c648d0a5b3408f4b3594b695d51
+guid: 813f6908a2392d04bac648d97239c952
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 732581709833602448
-    second: intro 2_0
+      213: -8772676096829782843
+    second: Gemini_Generated_Image_25dmbj25dmbj25dm (1)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: intro 2_0
+      name: Gemini_Generated_Image_25dmbj25dmbj25dm (1)_0
       rect:
         serializedVersion: 2
         x: 0
@@ -110,34 +110,34 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData:
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 09584970f27aa2a00800000000000000
-      internalID: 732581709833602448
+      spriteID: 5c486eec191314680800000000000000
+      internalID: -8772676096829782843
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     outline: []
-    customData:
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
-    indices:
+    indices: 
     edges: []
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      intro 2_0: 732581709833602448
-  mipmapLimitGroupName:
+      Gemini_Generated_Image_25dmbj25dmbj25dm (1)_0: -8772676096829782843
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  userData:
-  assetBundleName:
-  assetBundleVariant:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

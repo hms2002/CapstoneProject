@@ -1670,8 +1670,6 @@ MonoBehaviour:
   lakeSurfaceImage: {fileID: 0}
   lakeSurfaceMaterial: {fileID: 2100000, guid: a7f89c4cb2e6d9742a81af669b7bfb2d, type: 2}
   useLakeSurfaceMaterialSettings: 1
-  previewLakeSurfaceInEditMode: 1
-  animateLakeSurfaceInEditMode: 1
   lakePresentationSettings:
     enabled: 1
     useUnscaledTime: 1

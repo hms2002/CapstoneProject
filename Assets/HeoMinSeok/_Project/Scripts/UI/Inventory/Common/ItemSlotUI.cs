@@ -62,6 +62,7 @@ public class ItemSlotUI : MonoBehaviour,
     private bool isPointerOver;
     private bool isPointerPressed;
     private bool isDraggingThisSlot;
+    private InventoryScreen ownerInventoryScreen;
 
     public RectTransform SlotRect
     {
@@ -241,7 +242,7 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (container == null || IsLocked) return;
+        if (container == null || IsLocked || IsInventoryInspectionOnly()) return;
 
         // [수정] 드래그 시작 시 호버 패널 숨김 (UIManager 활용)
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
@@ -279,6 +280,12 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (IsInventoryInspectionOnly())
+        {
+            ItemDragContext.CancelActiveDragSession();
+            return;
+        }
+
         if (!ItemDragContext.Active) return;
         DragIcon.Instance?.Follow(eventData.position);
     }
@@ -294,15 +301,18 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (IsLocked)
+        if (IsLocked || IsInventoryInspectionOnly())
+        {
+            ItemDragContext.CancelActiveDragSession();
             return;
+        }
 
         InventorySlotTransferInteractionService.ExecuteDrop(container, index, Refresh);
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (container == null || IsLocked) return;
+        if (container == null || IsLocked || IsInventoryInspectionOnly()) return;
 
         if (eventData.button == PointerEventData.InputButton.Right)
         {
@@ -313,7 +323,7 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (container == null || IsLocked || ItemDragContext.Active)
+        if (container == null || IsLocked || IsInventoryInspectionOnly() || ItemDragContext.Active)
             return;
 
         if (container.Get(index) == null)
@@ -325,6 +335,13 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        if (IsInventoryInspectionOnly())
+        {
+            isPointerPressed = false;
+            RefreshHoverHighlight();
+            return;
+        }
+
         if (!isPointerPressed)
             return;
 
@@ -351,7 +368,7 @@ public class ItemSlotUI : MonoBehaviour,
             return;
         }
 
-        if (ItemDragContext.Active)
+        if (ItemDragContext.Active && !IsInventoryInspectionOnly())
         {
             RefreshHoverHighlight();
             return;
@@ -385,7 +402,7 @@ public class ItemSlotUI : MonoBehaviour,
         RefreshHoverHighlight();
         MouseCursorService.EnsureInstance().SetInteractable(this, false);
 
-        if (ItemDragContext.Active) return;
+        if (ItemDragContext.Active && !IsInventoryInspectionOnly()) return;
 
         // [수정] HoverController에게 끄라고 요청
         if (ItemHoverController.Instance != null)
@@ -411,6 +428,9 @@ public class ItemSlotUI : MonoBehaviour,
         if (item == null)
             return false;
 
+        if (IsInventoryInspectionOnly())
+            return isPointerOver;
+
         if (isDraggingThisSlot)
             return true;
 
@@ -422,9 +442,29 @@ public class ItemSlotUI : MonoBehaviour,
 
     private float GetHoverHighlightTargetAlpha()
     {
+        if (IsInventoryInspectionOnly())
+            return hoverHighlightAlpha;
+
         return isPointerPressed || isDraggingThisSlot
             ? actionHighlightAlpha
             : hoverHighlightAlpha;
+    }
+
+    private bool IsInventoryInspectionOnly()
+    {
+        if (ItemContainerGroupRegistry.IsInspectionOnly)
+            return true;
+
+        InventoryScreen owner = ResolveOwnerInventoryScreen();
+        return owner != null && owner.IsInspectionOnly;
+    }
+
+    private InventoryScreen ResolveOwnerInventoryScreen()
+    {
+        if (ownerInventoryScreen == null)
+            ownerInventoryScreen = GetComponentInParent<InventoryScreen>(true);
+
+        return ownerInventoryScreen;
     }
 
     private void SetHoverHighlight(bool active)

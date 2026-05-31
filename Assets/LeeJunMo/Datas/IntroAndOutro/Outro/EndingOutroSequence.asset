@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b4a2f9c1e9d4f8b8d4f4f0d7a8c2e11, type: 3}
+  m_Name: EndingOutroSequence
+  m_EditorClassIdentifier: Assembly-CSharp::EndingOutroSequenceSO
+  slides:
+  - image: {fileID: 21300000, guid: 8b3817e5d6f7b064389312e4b0000cb6, type: 3}
+    text: "\uB9C8\uC655\uC740 \uC4F0\uB7EC\uC84C\uB2E4."
+  - image: {fileID: 21300000, guid: 813f6908a2392d04bac648d97239c952, type: 3}
+    text: "\uC655\uAD6D\uC744 \uC704\uD611\uD558\uB358 \uC774\uC885\uC871\uC740 \uB9C8\uC655\uC758
+      \uBD80\uC7AC\uB85C \uBFD4\uBFD4\uC774 \uD769\uC5B4\uC84C\uB2E4. \uD769\uC5B4\uC9C4
+      \uC774\uC885\uC871\uC774 \uAC01\uC9C0\uC5D0\uC11C \uBB38\uC81C\uB97C \uC77C\uC73C\uD0A8\uB2E4\uB294
+      \uC18C\uC2DD\uB3C4 \uB4E4\uB824\uC654\uB2E4."
+  - image: {fileID: 21300000, guid: f9c20d8f41913e14d93d1e304ed03f32, type: 3}
+    text: "\uB2F9\uC2E0\uC758 \uCE5C\uAD6C\uAC00 \uC5B4\uC9F8\uC11C \uB9C8\uC655\uC744
+      \uC790\uCC98\uD588\uB294\uC9C0 \uC544\uC9C1 \uBAA8\uB974\uC9C0\uB9CC, \uC5B4\uCA0C\uAC70\uB098
+      \uC655\uAD6D\uC740 \uADC0\uD658\uD55C \uB2F9\uC2E0\uC744 \uD658\uC601\uD588\uB2E4."
+  - image: {fileID: 21300000, guid: e58705b6d8e350149a322f1995a73886, type: 3}
+    text: "\uD558\uC9C0\uB9CC... \uC815\uB9D0 \uC774\uAC83\uC73C\uB85C \uB41C \uAC78\uAE4C?"
+  secondsPerCharacter: 0.05
+  outroStartFadeDuration: 1.2
+  oneLineWaitSeconds: 1.5
+  multiLineWaitSeconds: 2
+  imageFadeDuration: 0.5
+  initialImageFadeDuration: 1.2
+  skipHoldSeconds: 2.5
+  skipFillColor: {r: 0.9529412, g: 0.24705882, b: 0.28235295, a: 1}

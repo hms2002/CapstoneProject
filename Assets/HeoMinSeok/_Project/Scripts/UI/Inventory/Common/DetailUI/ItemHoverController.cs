@@ -53,6 +53,7 @@ public class ItemHoverController : MonoBehaviour
         var ctx = BuildContext();
         ctx.sourceContainer = container;
         ctx.sourceIndex = index;
+        ctx.IsInspectionOnly = IsInventoryInspectionOnly(slotRect);
 
         if (itemDef is RelicDefinition && container is IRelicLevelProvider relicLevelProvider && index >= 0)
         {
@@ -133,6 +134,8 @@ public class ItemHoverController : MonoBehaviour
             return false;
 
         if (currentContext == null ||
+            currentContext.IsInspectionOnly ||
+            ItemContainerGroupRegistry.IsInspectionOnly ||
             currentSourceContainer == null ||
             currentSourceIndex < 0 ||
             currentSourceIndex >= currentSourceContainer.SlotCount)
@@ -145,6 +148,17 @@ public class ItemHoverController : MonoBehaviour
 
         ItemDetailActionHint hint = currentContext.ResolvePrimaryActionHint();
         return hint.Visible && hint.Key == KeyCode.F;
+    }
+
+    private static bool IsInventoryInspectionOnly(RectTransform slotRect)
+    {
+        if (ItemContainerGroupRegistry.IsInspectionOnly)
+            return true;
+
+        InventoryScreen inventoryScreen = slotRect != null
+            ? slotRect.GetComponentInParent<InventoryScreen>()
+            : null;
+        return inventoryScreen != null && inventoryScreen.IsInspectionOnly;
     }
 
     private void ClearCurrentHover()

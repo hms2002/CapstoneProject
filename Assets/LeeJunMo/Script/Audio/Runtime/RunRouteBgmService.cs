@@ -15,8 +15,10 @@ public sealed class RunRouteBgmService : MonoBehaviour
 
     private static bool s_isQuitting;
 
-    [SerializeField, Min(0f)] private float sceneBgmFadeDuration = 0.5f;
-    [SerializeField, Min(0f)] private float bossCombatBgmFadeDuration = 0.75f;
+#pragma warning disable 0414
+    [HideInInspector, SerializeField, Min(0f)] private float sceneBgmFadeDuration = 0.5f;
+    [HideInInspector, SerializeField, Min(0f)] private float bossCombatBgmFadeDuration = 0.75f;
+#pragma warning restore 0414
     [SerializeField] private string titleSceneName = "TitleScene";
     [SerializeField] private SoundRef titleSceneBgm = SoundRef.FromKey("TitleSceneBGM");
     [SerializeField] private bool verboseLogging;
@@ -57,7 +59,7 @@ public sealed class RunRouteBgmService : MonoBehaviour
         if (currentStage == null || !currentStage.BossCombatBgm.IsSet)
             return;
 
-        PlayMusicIfChanged(currentStage.BossCombatBgm, bossCombatBgmFadeDuration, "Boss combat started");
+        PlayMusicIfChanged(currentStage.BossCombatBgm, "Boss combat started");
     }
 
     /// <summary>현재 활성 씬 기준 BGM을 다시 판정해 타이틀 정리/씬 직접 시작 뒤에도 음악 상태를 복구합니다.</summary>
@@ -122,27 +124,31 @@ public sealed class RunRouteBgmService : MonoBehaviour
 
         if (TryResolveTitleBgm(scene, out SoundRef titleBgm))
         {
-            PlayMusicIfChanged(titleBgm, sceneBgmFadeDuration, $"Title scene loaded ({scene.name})", forceRestart);
+            PlayMusicIfChanged(titleBgm, $"Title scene loaded ({scene.name})", forceRestart);
             return;
         }
 
         if (TryResolveHubBgm(scene, out SoundRef hubBgm))
         {
-            PlayMusicIfChanged(hubBgm, sceneBgmFadeDuration, $"Hub scene loaded ({scene.name})", forceRestart);
+            PlayMusicIfChanged(hubBgm, $"Hub scene loaded ({scene.name})", forceRestart);
             return;
         }
 
         if (TryResolveCurrentStageCorridorBgm(scene, out SoundRef corridorBgm))
         {
-            PlayMusicIfChanged(corridorBgm, sceneBgmFadeDuration, $"Corridor scene loaded ({scene.name})", forceRestart);
+            PlayMusicIfChanged(corridorBgm, $"Corridor scene loaded ({scene.name})", forceRestart);
             return;
         }
 
-        if (TryResolveBossScenePreCombatBgm(scene, out SoundRef carryOverBgm) &&
-            (forceRestart || !AreEquivalent(currentMusicRef, carryOverBgm)))
+        if (TryResolveBossScenePreCombatBgm(scene, out SoundRef carryOverBgm))
         {
-            PlayMusicIfChanged(carryOverBgm, sceneBgmFadeDuration, $"Boss scene pre-combat fallback ({scene.name})", forceRestart);
+            if (forceRestart || !AreEquivalent(currentMusicRef, carryOverBgm))
+                PlayMusicIfChanged(carryOverBgm, $"Boss scene pre-combat fallback ({scene.name})", forceRestart);
+
+            return;
         }
+
+        StopTitleBgmIfCarriedIntoNonTitleScene(scene);
     }
 
     private bool TryResolveTitleBgm(Scene scene, out SoundRef bgm)
@@ -241,7 +247,7 @@ public sealed class RunRouteBgmService : MonoBehaviour
         return false;
     }
 
-    private void PlayMusicIfChanged(SoundRef soundRef, float fadeDuration, string reason, bool forceRestart = false)
+    private void PlayMusicIfChanged(SoundRef soundRef, string reason, bool forceRestart = false)
     {
         if (!soundRef.IsSet)
             return;
@@ -249,15 +255,35 @@ public sealed class RunRouteBgmService : MonoBehaviour
         if (!forceRestart && AreEquivalent(currentMusicRef, soundRef))
             return;
 
-        SoundManager.EnsureInstance().PlayMusic(soundRef, fadeDuration);
+        SoundManager.EnsureInstance().PlayMusic(soundRef);
         currentMusicRef = soundRef;
 
         if (verboseLogging)
         {
             Debug.Log(
-                $"[RunRouteBgmService] Switched BGM. key={soundRef.key}, fade={fadeDuration}, reason={reason}",
+                $"[RunRouteBgmService] Switched BGM. key={soundRef.key}, reason={reason}",
                 this);
         }
+    }
+
+    private void StopTitleBgmIfCarriedIntoNonTitleScene(Scene scene)
+    {
+        if (!scene.IsValid() || SceneNameEquals(scene.name, titleSceneName))
+            return;
+
+        if (!titleSceneBgm.IsSet || !AreEquivalent(currentMusicRef, titleSceneBgm))
+            return;
+
+        StopCurrentMusic($"No BGM resolved for non-title scene ({scene.name}) after title BGM");
+    }
+
+    private void StopCurrentMusic(string reason)
+    {
+        currentMusicRef = default;
+        SoundManager.Instance?.StopMusic();
+
+        if (verboseLogging)
+            Debug.Log($"[RunRouteBgmService] Stopped BGM. reason={reason}", this);
     }
 
     private static bool AreEquivalent(SoundRef left, SoundRef right)

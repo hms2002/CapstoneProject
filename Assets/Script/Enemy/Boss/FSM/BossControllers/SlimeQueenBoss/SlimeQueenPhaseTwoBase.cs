@@ -555,7 +555,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
             landingPosition,
             slamWarningDiameter,
             Phase2SlamIntervalSeconds,
@@ -610,9 +610,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         if (slamDamage <= 0f || CurrentTarget == null || slamDamageEffect == null)
             return;
 
-        float damageRadius = Mathf.Max(0.1f, slamDamageDiameter * 0.5f);
-        float sqrDistance = ((Vector2)(CurrentTarget.position - landingPosition)).sqrMagnitude;
-        if (sqrDistance > damageRadius * damageRadius)
+        if (!TopDownEllipseHitUtility2D.ContainsPoint(landingPosition, ResolvePhase2SlamHitDiameter(), CurrentTarget.position))
             return;
 
         CombatDamageAction.ApplyDamageAndEmitHit(
@@ -630,6 +628,13 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     }
 
     /// <summary>몸 부풀림 원형 경고를 보스 위치에 표시합니다.</summary>
+    private float ResolvePhase2SlamHitDiameter()
+    {
+        // Retain the old serialized damage diameter while top-down warning size owns this hit shape.
+        _ = slamDamageDiameter;
+        return Mathf.Max(0.1f, slamWarningDiameter);
+    }
+
     public void ShowBodyInflateWarning()
     {
         CleanupBodyInflatePresentation();
@@ -638,7 +643,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
             transform.position,
             bodyInflateWarningDiameter,
             bodyInflateWarningSeconds,
@@ -666,11 +671,14 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         if (hasDamage && bodyInflateImpactDamageEffect == null)
             return;
 
-        float radius = Mathf.Max(0.1f, bodyInflateImpactDiameter * 0.5f);
+        float radius = Mathf.Max(0.1f, Mathf.Max(bodyInflateImpactDiameter, bodyInflateWarningDiameter) * 0.5f);
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, radius);
 
         for (int i = 0; i < hits.Length; i++)
         {
+            if (!TopDownEllipseHitUtility2D.ContainsCollider(hits[i], transform.position, bodyInflateWarningDiameter))
+                continue;
+
             if (!HasPlayerTagInHierarchy(hits[i].transform))
                 continue;
 

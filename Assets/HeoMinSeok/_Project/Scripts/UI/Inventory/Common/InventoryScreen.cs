@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,8 +43,10 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
     private bool playSlideFadePresentationOnNextOpen = true;
     private Coroutine chestRevealInputBlockRoutine;
     private GameFlowInputBlocker chestRevealInputBlocker;
+    private readonly HashSet<int> inspectionOnlyOwnerIds = new HashSet<int>();
 
     public bool IsActive => gameObject.activeSelf;
+    public bool IsInspectionOnly => inspectionOnlyOwnerIds.Count > 0;
     public bool CanCloseOnEscape => true;
     public UIOpenGroup OpenGroup => UIOpenGroup.ExclusiveModal;
     public UIOpenGroup BlockedOpenGroups => UIOpenGroup.ExclusiveModal;
@@ -52,6 +56,30 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
         openMode == OpenMode.Chest &&
         chestInventoryScreen != null &&
         chestInventoryScreen.IsFirstOpenRevealPlaying;
+
+    public void AcquireInspectionOnlyMode(object owner)
+    {
+        int ownerId = ResolveInspectionOwnerId(owner);
+        if (ownerId == 0)
+            return;
+
+        if (!inspectionOnlyOwnerIds.Add(ownerId))
+            return;
+
+        ApplyInspectionOnlyState();
+    }
+
+    public void ReleaseInspectionOnlyMode(object owner)
+    {
+        int ownerId = ResolveInspectionOwnerId(owner);
+        if (ownerId == 0)
+            return;
+
+        if (!inspectionOnlyOwnerIds.Remove(ownerId))
+            return;
+
+        ApplyInspectionOnlyState();
+    }
 
     public void OpenUI()
     {
@@ -115,6 +143,7 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
     private void OnDisable()
     {
         ReleaseChestRevealInputBlock();
+        ClearInspectionOnlyMode();
         ItemDragContext.CancelActiveDragSession();
         MouseCursorService.Instance?.ClearDomain(this);
         playerInventoryPanel?.ClearBinding();
@@ -122,6 +151,38 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
         ItemContainerGroupRegistry.Clear();
 
         UIManager.Instance?.HideHoverImmediate();
+    }
+
+    private void ClearInspectionOnlyMode()
+    {
+        if (inspectionOnlyOwnerIds.Count == 0)
+            return;
+
+        inspectionOnlyOwnerIds.Clear();
+        ApplyInspectionOnlyState();
+    }
+
+    private void ApplyInspectionOnlyState()
+    {
+        bool inspectionOnly = IsInspectionOnly;
+        ItemContainerGroupRegistry.SetInspectionOnly(inspectionOnly);
+
+        if (!inspectionOnly)
+            return;
+
+        ItemDragContext.CancelActiveDragSession();
+        DropZoneUI.ActiveInstance?.Hide();
+    }
+
+    private static int ResolveInspectionOwnerId(object owner)
+    {
+        if (owner == null)
+            return 0;
+
+        if (owner is UnityEngine.Object unityObject)
+            return unityObject.GetInstanceID();
+
+        return RuntimeHelpers.GetHashCode(owner);
     }
 
     public void Bind(

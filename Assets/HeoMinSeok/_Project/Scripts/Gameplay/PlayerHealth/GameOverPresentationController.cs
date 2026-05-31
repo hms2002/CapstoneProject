@@ -248,7 +248,10 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private SoundRef gameOverBgm = SoundRef.FromKey("GameOverBGM");
+#pragma warning disable 0414
+    [HideInInspector]
     [SerializeField, Min(0f)] private float gameOverBgmFadeSeconds = 0.5f;
+#pragma warning restore 0414
 
     [Header("Legacy World Return Presentation")]
     [SerializeField] private Transform returnPitTransform;
@@ -289,6 +292,10 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private Vector3 inventoryHudOriginalLocalScale = Vector3.one;
     private GameObject inventoryHudKeyHintRoot;
     private bool inventoryHudKeyHintOriginalActive;
+    private InventoryScreen gameOverInventoryScreen;
+    private bool hasInventoryLayerLift;
+    private CanvasSortingSnapshot popupCanvasSortingSnapshot;
+    private CanvasSortingSnapshot hoverCanvasSortingSnapshot;
     private Vector2 returnPlayerAuthoredAnchorMin = new Vector2(0.5f, 0.5f);
     private Vector2 returnPlayerAuthoredAnchorMax = new Vector2(0.5f, 0.5f);
     private Vector2 returnPlayerAuthoredPivot = new Vector2(0.5f, 0.5f);
@@ -345,6 +352,29 @@ public sealed class GameOverPresentationController : MonoBehaviour
         return true;
     }
 
+    private readonly struct CanvasSortingSnapshot
+    {
+        private readonly Canvas canvas;
+        private readonly bool overrideSorting;
+        private readonly int sortingOrder;
+
+        public CanvasSortingSnapshot(Canvas canvas)
+        {
+            this.canvas = canvas;
+            overrideSorting = canvas != null && canvas.overrideSorting;
+            sortingOrder = canvas != null ? canvas.sortingOrder : 0;
+        }
+
+        public void Restore()
+        {
+            if (canvas == null)
+                return;
+
+            canvas.overrideSorting = overrideSorting;
+            canvas.sortingOrder = sortingOrder;
+        }
+    }
+
     private static GameOverPresentationController FindSceneController()
     {
         GameOverPresentationController[] controllers = Resources.FindObjectsOfTypeAll<GameOverPresentationController>();
@@ -381,6 +411,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= HandleSceneLoaded;
+        ReleaseGameOverInventoryPresentation();
         RestoreInventoryHudPresentation();
         ReleaseInputBlocker();
         MouseCursorService.Instance?.ClearDomain(this);
@@ -389,6 +420,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private void OnDestroy()
     {
         RestoreHiddenWorldPlayerRenderers();
+        ReleaseGameOverInventoryPresentation();
         RestoreInventoryHudPresentation();
         RestoreDefaultTitleText();
         RestoreDefaultReturnButtonLabel();
@@ -400,6 +432,12 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
         if (activeController == this)
             activeController = null;
+    }
+
+    private void Update()
+    {
+        if (gameOverInventoryScreen != null && !gameOverInventoryScreen.IsActive)
+            ReleaseGameOverInventoryPresentation();
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -441,7 +479,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
         if (!gameOverBgm.IsSet)
             return;
 
-        SoundManager.EnsureInstance().PlayMusic(gameOverBgm, gameOverBgmFadeSeconds);
+        SoundManager.EnsureInstance().PlayMusic(gameOverBgm);
     }
 
     private GameOverPresentationRequest NormalizeRequest(GameOverPresentationRequest incomingRequest)
@@ -595,7 +633,86 @@ public sealed class GameOverPresentationController : MonoBehaviour
         if (!CanOpenInventoryDuringPresentation(inventoryUi))
             return false;
 
-        return inputBlocker.TryPushOwnedUI(inventoryUi);
+        InventoryScreen inventoryScreen = inventoryUi as InventoryScreen;
+        inventoryScreen?.AcquireInspectionOnlyMode(this);
+
+        bool opened = inputBlocker.TryPushOwnedUI(inventoryUi);
+        if (!opened)
+        {
+            inventoryScreen?.ReleaseInspectionOnlyMode(this);
+            return false;
+        }
+
+        if (inventoryScreen != null)
+        {
+            gameOverInventoryScreen = inventoryScreen;
+            ApplyInventoryLayerLift();
+        }
+
+        return true;
+    }
+
+    private void ApplyInventoryLayerLift()
+    {
+        RestoreInventoryLayerLift();
+
+        Canvas gameOverCanvas = rootCanvas != null
+            ? rootCanvas
+            : GlobalUIRoot.GetCanvas(GlobalCanvasLayer.GameOver);
+        int gameOverSortingOrder = gameOverCanvas != null ? gameOverCanvas.sortingOrder : 0;
+        int popupSortingOrder = gameOverSortingOrder + 1;
+
+        Canvas popupCanvas = GlobalUIRoot.GetCanvas(GlobalCanvasLayer.Popup);
+        if (popupCanvas != null && popupCanvas != gameOverCanvas)
+        {
+            popupCanvasSortingSnapshot = new CanvasSortingSnapshot(popupCanvas);
+            popupSortingOrder = Mathf.Max(popupCanvas.sortingOrder, popupSortingOrder);
+            LiftCanvasAboveGameOver(popupCanvas, popupSortingOrder);
+            hasInventoryLayerLift = true;
+        }
+
+        Canvas hoverCanvas = GlobalUIRoot.GetCanvas(GlobalCanvasLayer.Hover);
+        if (hoverCanvas != null && hoverCanvas != gameOverCanvas)
+        {
+            hoverCanvasSortingSnapshot = new CanvasSortingSnapshot(hoverCanvas);
+            int hoverSortingOrder = Mathf.Max(
+                Mathf.Max(hoverCanvas.sortingOrder, gameOverSortingOrder + 2),
+                popupSortingOrder + 1);
+            LiftCanvasAboveGameOver(hoverCanvas, hoverSortingOrder);
+            hasInventoryLayerLift = true;
+        }
+    }
+
+    private static void LiftCanvasAboveGameOver(Canvas canvas, int sortingOrder)
+    {
+        if (canvas == null)
+            return;
+
+        canvas.overrideSorting = true;
+        canvas.sortingOrder = sortingOrder;
+    }
+
+    private void ReleaseGameOverInventoryPresentation()
+    {
+        if (gameOverInventoryScreen != null)
+        {
+            gameOverInventoryScreen.ReleaseInspectionOnlyMode(this);
+            gameOverInventoryScreen = null;
+        }
+
+        RestoreInventoryLayerLift();
+    }
+
+    private void RestoreInventoryLayerLift()
+    {
+        if (!hasInventoryLayerLift)
+            return;
+
+        popupCanvasSortingSnapshot.Restore();
+        hoverCanvasSortingSnapshot.Restore();
+        popupCanvasSortingSnapshot = default;
+        hoverCanvasSortingSnapshot = default;
+        hasInventoryLayerLift = false;
     }
 
     private void ApplyInventoryHudPresentation(GameOverPresentationRequest request)
@@ -1220,6 +1337,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
         hideOnNextSceneLoaded = false;
         RestoreHiddenWorldPlayerRenderers();
+        ReleaseGameOverInventoryPresentation();
         RestoreInventoryHudPresentation();
         ReleaseInputBlocker();
         ReleasePlayerProtection();

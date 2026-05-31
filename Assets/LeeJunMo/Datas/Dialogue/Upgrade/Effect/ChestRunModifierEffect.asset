@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e1c6e366cdcb5d45aeffe3b1193ed88, type: 3}
   m_Name: ChestRunModifierEffect
   m_EditorClassIdentifier: 
-  rewardText: 
+  rewardText: "\uC0C1\uC790\uC758 \uB0B4\uC6A9\uBB3C\uC744 \uB9AC\uB864\uD560 \uC218
+    \uC788\uB2E4."
   rewardIcon: {fileID: 725556707599801474, guid: 38fff8b5f0a464f4fa7dd878114bb1b2, type: 3}
   chestWeaponMinBonus: 0
   chestWeaponMaxBonus: 0
   chestRelicMinBonus: 0
   chestRelicMaxBonus: 0
   chestRefreshCount: 5
-  relicLevelBonusChance: 0.202
+  relicLevelBonusChance: 0

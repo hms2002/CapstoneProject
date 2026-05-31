@@ -152,7 +152,7 @@ public class GameplayRuntimeDebugWindow : EditorWindow
                 UpgradeManager.Instance.TryBuyUpgrade(selectedNode.nodeID);
 
             if (GUILayout.Button("Preview Reward"))
-                RewardDisplayService.Instance?.ShowReward(selectedNode.effects, null);
+                RewardDisplayService.Instance?.ShowUpgradeReward(selectedNode);
         }
 
         if (GUILayout.Button("Toggle Upgrade UI"))

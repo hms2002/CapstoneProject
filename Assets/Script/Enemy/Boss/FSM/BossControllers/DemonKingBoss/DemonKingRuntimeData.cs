@@ -97,4 +97,17 @@ public sealed class DemonKingRuntimeData
         RecallRequested = false;
         GroggyRecoverCounterRequested = false;
     }
+
+#if UNITY_EDITOR
+    public void ResetForWorkbenchRuntimeRefresh()
+    {
+        SwordMode = DemonKingEgoSwordMode.Hold;
+        HoldPatternUseCount = 0;
+        EgoSwordPatternUseCount = 0;
+        RecallRequested = false;
+        GroggyRecoverCounterRequested = false;
+        Hp50PatternUsed = false;
+        FinalDesperationStarted = false;
+    }
+#endif
 }

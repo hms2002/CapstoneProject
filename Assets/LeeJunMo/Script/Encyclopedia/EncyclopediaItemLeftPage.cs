@@ -21,6 +21,9 @@ public sealed class EncyclopediaItemLeftPage : MonoBehaviour
     [SerializeField] private Button relicButton;
     [FormerlySerializedAs("consumableSubTabButton")]
     [SerializeField] private Button consumableButton;
+    [SerializeField] private Image weaponTabIcon;
+    [SerializeField] private Image relicTabIcon;
+    [SerializeField] private Image consumableTabIcon;
     [SerializeField] private GameObject weaponSelectedMarker;
     [SerializeField] private GameObject relicSelectedMarker;
     [SerializeField] private GameObject consumableSelectedMarker;
@@ -91,6 +94,15 @@ public sealed class EncyclopediaItemLeftPage : MonoBehaviour
 
         if (consumableButton == null)
             consumableButton = EncyclopediaReferenceResolver.FindComponent<Button>(transform, "ConsumableTab", "ConsumableTabButton", "Consumable", "ConsumableButton");
+
+        if (weaponTabIcon == null && weaponButton != null)
+            weaponTabIcon = EncyclopediaReferenceResolver.FindTabIcon(weaponButton.transform);
+
+        if (relicTabIcon == null && relicButton != null)
+            relicTabIcon = EncyclopediaReferenceResolver.FindTabIcon(relicButton.transform);
+
+        if (consumableTabIcon == null && consumableButton != null)
+            consumableTabIcon = EncyclopediaReferenceResolver.FindTabIcon(consumableButton.transform);
 
         if (weaponSelectedMarker == null)
             weaponSelectedMarker = EncyclopediaReferenceResolver.FindMarker(transform, "WeaponTab") ??

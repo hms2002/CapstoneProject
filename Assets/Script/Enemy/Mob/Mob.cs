@@ -24,6 +24,7 @@ public class Mob : Enemy
     private PitFallReaction2D pitFallReaction;
     private bool triedInitializeStateMachine;
     private bool suppressMonsterLootDrop;
+    private int pitFallDeathResolutionDepth;
     private int facingLockCount;
     private float spawnIdlePauseUntilTime;
 
@@ -224,6 +225,16 @@ public class Mob : Enemy
         suppressMonsterLootDrop = true;
     }
 
+    public virtual void BeginPitFallDeathResolution(PitFallContext context)
+    {
+        pitFallDeathResolutionDepth++;
+    }
+
+    public virtual void EndPitFallDeathResolution(PitFallContext context)
+    {
+        pitFallDeathResolutionDepth = Mathf.Max(0, pitFallDeathResolutionDepth - 1);
+    }
+
     protected void RegisterLockTrackedChild(GameObject child)
     {
         if (child == null)
@@ -243,12 +254,13 @@ public class Mob : Enemy
     {
         EnterDeathState();
 
-        if (!suppressMonsterLootDrop)
+        if (!suppressMonsterLootDrop && pitFallDeathResolutionDepth <= 0)
             LootManager.Instance?.SpawnMonsterLoot(transform.position);
     }
 
     private void OnDisable()
     {
+        pitFallDeathResolutionDepth = 0;
         aiContext?.PerformFailSafeCleanup();
         ShutdownStateMachine();
     }

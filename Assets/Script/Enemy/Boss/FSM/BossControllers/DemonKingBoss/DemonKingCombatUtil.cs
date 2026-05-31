@@ -4,7 +4,7 @@ using UnityGAS;
 
 public static class DemonKingCombatUtil
 {
-    public const float TopDownCircleWarningYScale = 0.9f;
+    public const float TopDownCircleWarningYScale = AttackTelegraphSpec.TopDownCircleWarningYScale;
 
     private static readonly Collider2D[] OverlapBuffer = new Collider2D[32];
 
@@ -23,10 +23,9 @@ public static class DemonKingCombatUtil
         float diameter,
         float duration)
     {
-        float safeDiameter = Mathf.Max(0.01f, diameter);
-        return AttackTelegraphSpec.CreateEllipse(
+        return AttackTelegraphSpec.CreateTopDownCircle(
             center,
-            new Vector2(safeDiameter, safeDiameter * TopDownCircleWarningYScale),
+            diameter,
             duration,
             demon != null ? demon.DefaultWarningStyle : null);
     }
@@ -77,6 +76,27 @@ public static class DemonKingCombatUtil
 
         int count = Physics2D.OverlapCircle(center, radius, CreateTargetFilter(demon.TargetMask), OverlapBuffer);
         return ApplyToHits(center, count, payload, demon.gameObject, damagedTargets);
+    }
+
+    public static void ApplyTopDownEllipseDamage(
+        DemonKingController demon,
+        Vector2 center,
+        float diameter,
+        GE_Damage_Spec damageEffect,
+        float damageAmount,
+        HashSet<GameObject> damagedTargets = null,
+        float knockbackImpulse = 0f)
+    {
+        if (demon == null || diameter <= 0f)
+            return;
+
+        CombatHitPayload payload = MakePayload(demon, damageEffect, damageAmount, knockbackImpulse);
+        if (payload == null)
+            return;
+
+        float broadphaseRadius = Mathf.Max(0.05f, diameter * 0.5f);
+        int count = Physics2D.OverlapCircle(center, broadphaseRadius, CreateTargetFilter(demon.TargetMask), OverlapBuffer);
+        ApplyToHits(center, count, payload, demon.gameObject, damagedTargets, topDownEllipseDiameter: diameter);
     }
 
     public static bool ApplyRectangleDamage(
@@ -171,7 +191,8 @@ public static class DemonKingCombatUtil
         GameObject self,
         HashSet<GameObject> damagedTargets,
         DamageCooldownRegistry damageCooldowns = null,
-        float damageIntervalSeconds = 0f)
+        float damageIntervalSeconds = 0f,
+        float topDownEllipseDiameter = 0f)
     {
         bool appliedAny = false;
         for (int i = 0; i < count; i++)
@@ -179,6 +200,12 @@ public static class DemonKingCombatUtil
             Collider2D hit = OverlapBuffer[i];
             if (hit == null)
                 continue;
+
+            if (topDownEllipseDiameter > 0f
+                && !TopDownEllipseHitUtility2D.ContainsCollider(hit, hitOrigin, topDownEllipseDiameter))
+            {
+                continue;
+            }
 
             GameObject targetRoot = CombatTargetResolver2D.ResolveDamageTarget(hit);
             if (targetRoot == null || targetRoot == self)

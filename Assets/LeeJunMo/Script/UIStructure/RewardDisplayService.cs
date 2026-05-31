@@ -70,7 +70,18 @@ public class RewardDisplayService : MonoBehaviour
 
     public void ShowReward(List<UpgradeEffectSO> upgradeEffects = null, List<AffectionEffect> affectionEffects = null, Action callback = null)
     {
-        EnqueueRewardRequest(upgradeEffects, affectionEffects, callback, false);
+        EnqueueRewardRequest(upgradeEffects, affectionEffects, callback, false, null);
+    }
+
+    public void ShowUpgradeReward(UpgradeNodeSO upgradeNode, Action callback = null)
+    {
+        if (upgradeNode == null)
+        {
+            callback?.Invoke();
+            return;
+        }
+
+        EnqueueRewardRequest(upgradeNode.effects, null, callback, false, upgradeNode);
     }
 
     public void ShowFlowOwnedReward(List<UpgradeEffectSO> upgradeEffects = null, List<AffectionEffect> affectionEffects = null, Action callback = null)
@@ -82,20 +93,22 @@ public class RewardDisplayService : MonoBehaviour
             return;
         }
 
-        EnqueueRewardRequest(upgradeEffects, affectionEffects, callback, true);
+        EnqueueRewardRequest(upgradeEffects, affectionEffects, callback, true, null);
     }
 
     private void EnqueueRewardRequest(
         List<UpgradeEffectSO> upgradeEffects,
         List<AffectionEffect> affectionEffects,
         Action callback,
-        bool allowDuringExternalUiInputBlock)
+        bool allowDuringExternalUiInputBlock,
+        UpgradeNodeSO upgradeNode)
     {
         pendingRequests.Enqueue(new PendingRewardRequest(
             upgradeEffects != null ? new List<UpgradeEffectSO>(upgradeEffects) : null,
             affectionEffects != null ? new List<AffectionEffect>(affectionEffects) : null,
             callback,
-            allowDuringExternalUiInputBlock));
+            allowDuringExternalUiInputBlock,
+            upgradeNode));
 
         if (currentView == null)
             Debug.LogWarning("[RewardDisplayService] RewardDisplayUI view is not registered yet. Reward display request will be queued.", this);
@@ -131,7 +144,8 @@ public class RewardDisplayService : MonoBehaviour
                 request.upgradeEffects,
                 request.affectionEffects,
                 request.callback,
-                request.allowDuringExternalUiInputBlock))
+                request.allowDuringExternalUiInputBlock,
+                request.upgradeNode))
         {
             isShowingReward = false;
             request.callback?.Invoke();
@@ -186,17 +200,20 @@ public class RewardDisplayService : MonoBehaviour
         public readonly List<AffectionEffect> affectionEffects;
         public readonly Action callback;
         public readonly bool allowDuringExternalUiInputBlock;
+        public readonly UpgradeNodeSO upgradeNode;
 
         public PendingRewardRequest(
             List<UpgradeEffectSO> upgradeEffects,
             List<AffectionEffect> affectionEffects,
             Action callback,
-            bool allowDuringExternalUiInputBlock)
+            bool allowDuringExternalUiInputBlock,
+            UpgradeNodeSO upgradeNode)
         {
             this.upgradeEffects = upgradeEffects;
             this.affectionEffects = affectionEffects;
             this.callback = callback;
             this.allowDuringExternalUiInputBlock = allowDuringExternalUiInputBlock;
+            this.upgradeNode = upgradeNode;
         }
     }
 }

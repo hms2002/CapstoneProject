@@ -7,6 +7,7 @@ public static class ItemContainerGroupRegistry
     private static IItemContainer consumableEquip;
     private static IItemContainer weaponEquip;
     private static IItemContainer relicEquip;
+    private static bool inspectionOnly;
 
     public static void SetGroup(
         IItemContainer chestContainer,
@@ -26,10 +27,17 @@ public static class ItemContainerGroupRegistry
         consumableEquip = null;
         weaponEquip = null;
         relicEquip = null;
+        inspectionOnly = false;
+    }
+
+    public static void SetInspectionOnly(bool value)
+    {
+        inspectionOnly = value;
     }
 
     public static IItemContainer Chest => chest;
     public static IItemContainer ConsumableEquip => consumableEquip;
     public static IItemContainer WeaponEquip => weaponEquip;
     public static IItemContainer RelicEquip => relicEquip;
+    public static bool IsInspectionOnly => inspectionOnly;
 }

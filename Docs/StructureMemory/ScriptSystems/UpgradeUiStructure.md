@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-29
+last_reviewed: 2026-05-31
 ---
 
 # Upgrade UI Structure
@@ -47,12 +47,21 @@ Map the upgrade tree UI navigation and purchase feedback flow after the overflow
   - `UpgradeUnavailable`
 - Locked slots keep their lock/gray visual state but leave the button interactable so clicking a locked node can display the warning.
 
+## Reward Presentation
+
+- Normal upgrade purchases show rewards through `RewardDisplayService.ShowUpgradeReward(UpgradeNodeSO)`.
+- Generic upgrade reward slots use `UpgradeNodeSO.icon`, and generic reward text uses `UpgradeNodeSO.description`; `UpgradeEffectSO.rewardIcon` / `rewardText` remain legacy fallback data for non-node callers.
+- Item unlock upgrade effects keep the existing unlocked weapon/relic item slots, and their summary line is the generic item-unlock message instead of the node description.
+
 ## Key Files
 
 - `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Upgrade/UpgradeTreeUI.cs`
 - `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Upgrade/UpgradeSlotUI.cs`
 - `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Upgrade/UpgradeManager.cs`
+- `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Upgrade/UpgradePurchaseCompletionService.cs`
 - `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Upgrade/UpgradePurchaseService.cs`
+- `Assets/LeeJunMo/Script/UIStructure/RewardDisplayService.cs`
+- `Assets/LeeJunMo/Script/UIStructure/RewardDisplayUI.cs`
 - `Assets/LeeJunMo/Script/UIStructure/UIManager.cs`
 - `Assets/LeeJunMo/Script/UIStructure/WarningPopupCode.cs`
 - `Assets/LeeJunMo/Prefab/UI/Upgrade/UpgradeTreePanel.prefab`
@@ -65,6 +74,7 @@ Map the upgrade tree UI navigation and purchase feedback flow after the overflow
 - The arrow movement assumes the existing centered content/clamp model. If the content anchor/pivot model changes, re-check direction mapping.
 - Locked nodes are now clickable for feedback. Verify cursor, hover, and disabled-looking presentation together so players understand the click shows a reason rather than purchases the node.
 - Warning strings live in `UIManager.ResolveWarningMessage(...)`; avoid feature-local popup text unless the shared warning path becomes insufficient.
+- Generic upgrade reward display intentionally exposes missing node metadata. If a purchased node has no icon or description, fix the `UpgradeNodeSO` instead of restoring effect-level reward metadata for that node.
 - Do not reintroduce automatic or manual edit-mode LakePreview unless the editor mutation boundary is redesigned. The previous preview path was tied to recurring Inspector `EditorStyles.toolbarButtonRight` failures after prefab-asset mutation.
 
 ## Promotion Candidate

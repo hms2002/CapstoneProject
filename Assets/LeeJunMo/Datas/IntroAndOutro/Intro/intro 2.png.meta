@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: defed05ae5fca6e40968a28bb7a85a87
+guid: 43350c648d0a5b3408f4b3594b695d51
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7402075421915102227
-    second: intro 4_0
+      213: 732581709833602448
+    second: intro 2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: intro 4_0
+      name: intro 2_0
       rect:
         serializedVersion: 2
         x: 0
@@ -110,34 +110,34 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData:
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 31c36ebd06479b660800000000000000
-      internalID: 7402075421915102227
+      spriteID: 09584970f27aa2a00800000000000000
+      internalID: 732581709833602448
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     outline: []
-    customData:
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
-    indices:
+    indices: 
     edges: []
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      intro 4_0: 7402075421915102227
-  mipmapLimitGroupName:
+      intro 2_0: 732581709833602448
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  userData:
-  assetBundleName:
-  assetBundleVariant:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
