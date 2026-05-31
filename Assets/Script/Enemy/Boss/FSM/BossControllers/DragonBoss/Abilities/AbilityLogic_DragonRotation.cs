@@ -216,6 +216,7 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
             warningSeconds,
             warningTelegraphStyle);
 
+        spec = AttackTelegraphSpecUtility.WithThinWarningOutline(spec);
         telegraphService.Show(spec);
     }
 

@@ -162,6 +162,7 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
             duration,
             impactTelegraphStyle);
 
+        spec = AttackTelegraphSpecUtility.WithThinWarningOutline(spec);
         return telegraphService.SpawnDetachedView(spec);
     }
 
@@ -170,11 +171,13 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
         if (view == null)
             return;
 
-        view.UpdateGeometry(AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
             impactPosition,
             telegraphDiameter,
             duration,
-            impactTelegraphStyle));
+            impactTelegraphStyle);
+
+        view.UpdateGeometry(AttackTelegraphSpecUtility.WithThinWarningOutline(spec));
     }
 
     private AttackTelegraphView SpawnAimLineTelegraph(
@@ -211,12 +214,13 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
         float length = Mathf.Max(0.01f, toImpact.magnitude);
         Vector3 center = start + (Vector3)(toImpact.normalized * (length * 0.5f));
         float rotationDeg = Mathf.Atan2(toImpact.y, toImpact.x) * Mathf.Rad2Deg;
-        return AttackTelegraphSpec.CreateRectangle(
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
             center,
             new Vector2(length, aimLineWidth),
             rotationDeg,
             duration,
             aimLineTelegraphStyle != null ? aimLineTelegraphStyle : impactTelegraphStyle);
+        return AttackTelegraphSpecUtility.WithThinWarningOutlineOnly(spec);
     }
 
     private void SpawnAlcoholPuddle(Vector3 impactPosition)

@@ -252,6 +252,7 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
             duration,
             centerImpactTelegraphStyle);
 
+        spec = AttackTelegraphSpecUtility.WithThinWarningOutline(spec);
         return telegraphService.SpawnDetachedView(spec);
     }
 

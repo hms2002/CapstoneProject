@@ -227,6 +227,7 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
             duration,
             impactTelegraphStyle);
 
+        spec = AttackTelegraphSpecUtility.WithThinWarningOutline(spec);
         return telegraphService.SpawnDetachedView(spec);
     }
 
@@ -463,6 +464,7 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
                 scatteredKegWarningSeconds,
                 impactTelegraphStyle);
 
+            spec = AttackTelegraphSpecUtility.WithThinWarningOutline(spec);
             telegraphService.SpawnDetachedView(spec);
         }
     }

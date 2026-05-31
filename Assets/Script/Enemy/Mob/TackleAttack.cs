@@ -371,7 +371,17 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
             duration,
             style);
 
+        spec = ApplyMonsterSpecificTelegraphPresentation(spec);
         telegraph.Show(spec);
+    }
+
+    /// <summary>몬스터별 경고선 표시 정책을 적용합니다.</summary>
+    private AttackTelegraphSpec ApplyMonsterSpecificTelegraphPresentation(AttackTelegraphSpec spec)
+    {
+        if (GetComponent<TreasureMonster>() != null || GetComponent<ShadowMonster>() != null)
+            return AttackTelegraphSpecUtility.WithThinWarningOutlineOnly(spec);
+
+        return spec;
     }
 
     /// <summary>태클 준비 애니메이션 트리거를 선택적으로 호출합니다.</summary>

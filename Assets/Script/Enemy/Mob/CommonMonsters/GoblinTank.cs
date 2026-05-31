@@ -249,11 +249,11 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
 
     private void ShowWarning(GoblinTank.SlamContext context, float warningSeconds)
     {
-        telegraphService?.Show(AttackTelegraphSpec.CreateCircle(
+        telegraphService?.Show(AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             context.Center,
             context.ImpactDiameter,
             warningSeconds,
-            warningStyle));
+            warningStyle)));
     }
 
     private void HideWarning()

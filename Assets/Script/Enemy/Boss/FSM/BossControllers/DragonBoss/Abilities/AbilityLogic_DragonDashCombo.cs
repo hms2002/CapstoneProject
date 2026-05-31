@@ -224,6 +224,7 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
             duration,
             warningTelegraphStyle);
 
+        warningSpec = AttackTelegraphSpecUtility.WithThinWarningOutlineOnly(warningSpec);
         telegraphService.Show(warningSpec);
     }
 

@@ -632,7 +632,7 @@ MonoBehaviour:
   squareSize: 0.18
   minSpreadDistance: 0.65
   maxSpreadDistance: 1.15
-  squareColor: {r: 0.26, g: 1, b: 0.22, a: 0.95}
+  squareColor: {r: 0.5764706, g: 0.9490196, b: 0.6862745, a: 0.95}
   fallbackSortingLayerName: Entity
   sortingOrderOffset: 3
   destroyPaddingSeconds: 0.1
