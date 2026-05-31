@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8dd139b6904a2e141942ae39bc372f6b, type: 3}
-  m_Name: PS_StatInfo_HP
+  m_Name: PS_StatInfo_NormalDamage
   m_EditorClassIdentifier: 
   icon: {fileID: 0}
-  label: "\uCCB4\uB825"
-  valueMode: 2
-  valueAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  maxAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-  statId: 0
-  displayFormat: 0
-  valueMultiplier: 1
+  label: "\uAE30\uBCF8 \uACF5\uACA9 \uD53C\uD574"
+  valueMode: 3
+  valueAttribute: {fileID: 0}
+  maxAttribute: {fileID: 0}
+  statId: 21
+  displayFormat: 2
+  valueMultiplier: 100
   decimalPlaces: 0

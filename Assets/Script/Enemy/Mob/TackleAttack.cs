@@ -378,7 +378,7 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     /// <summary>몬스터별 경고선 표시 정책을 적용합니다.</summary>
     private AttackTelegraphSpec ApplyMonsterSpecificTelegraphPresentation(AttackTelegraphSpec spec)
     {
-        if (GetComponent<TreasureMonster>() != null || GetComponent<ShadowMonster>() != null)
+        if (GetComponent<TreasureMonster>() != null || GetComponent<ShadowMonster>() != null || GetComponent<CorridorCandlestickMonster>() != null)
             return AttackTelegraphSpecUtility.WithThinWarningOutlineOnly(spec);
 
         return spec;
