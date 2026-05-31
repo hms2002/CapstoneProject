@@ -16,6 +16,9 @@ MonoBehaviour:
   - attribute: {fileID: 11400000, guid: 7c73dc1304784f1fa6485f08922031cc, type: 2}
     displayNameOverride: "회피율"
     type: 0
-    value: 0.08
-    valueByLevel: []
+    value: 0.03
+    valueByLevel:
+    - 0.03
+    - 0.05
+    - 0.08
     duration: 0
