@@ -1,39 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "b56992be3d954937a860aafcd57dc813",
-            "startedUtc": "2026-05-30T14:52:53.1174503Z",
-            "endedUtc": "2026-05-30T14:52:55.0884485Z",
-            "entries": []
-        },
-        {
-            "sessionId": "f9f678790c2441ef826804bcbf1371fa",
-            "startedUtc": "2026-05-30T15:05:57.4381865Z",
-            "endedUtc": "2026-05-30T15:06:21.5665476Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/SlashHit.prefab",
-                    "prefabName": "SlashHit",
-                    "totalSpawns": 3,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 23.112417221069337,
-                    "lastSeenSeconds": 23.714923858642579,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal1AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal1AttackTileParticle",
-                    "totalSpawns": 3,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 23.125017166137697,
-                    "lastSeenSeconds": 23.72215461730957,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                }
-            ]
-        },
-        {
             "sessionId": "fb71f5f806cd41b689e79bd37e38b926",
             "startedUtc": "2026-05-30T15:11:20.4298550Z",
             "endedUtc": "2026-05-30T15:11:51.0693967Z",
@@ -406,6 +373,18 @@
             "sessionId": "f0a8137b040242d7aedf8373477955d2",
             "startedUtc": "2026-05-31T05:28:52.3272141Z",
             "endedUtc": "2026-05-31T05:28:54.5460390Z",
+            "entries": []
+        },
+        {
+            "sessionId": "22485cb90908462c980639ddb15b2f4e",
+            "startedUtc": "2026-05-31T06:03:36.9105069Z",
+            "endedUtc": "2026-05-31T06:03:39.0594860Z",
+            "entries": []
+        },
+        {
+            "sessionId": "9513c55052b4417091beb28357634b49",
+            "startedUtc": "2026-05-31T06:08:37.4950735Z",
+            "endedUtc": "2026-05-31T06:08:39.3226166Z",
             "entries": []
         }
     ]
