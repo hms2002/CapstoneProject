@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dd139b6904a2e141942ae39bc372f6b, type: 3}
+  m_Name: PS_StatInfo_ElectricDamage
+  m_EditorClassIdentifier: 
+  icon: {fileID: 0}
+  label: "\uC804\uAE30 \uD53C\uD574\uB7C9"
+  valueMode: 3
+  valueAttribute: {fileID: 0}
+  maxAttribute: {fileID: 0}
+  statId: 323
+  displayFormat: 0
+  valueMultiplier: 1
+  decimalPlaces: 0

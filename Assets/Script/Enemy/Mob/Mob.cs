@@ -26,6 +26,7 @@ public class Mob : Enemy
     private bool suppressMonsterLootDrop;
     private int pitFallDeathResolutionDepth;
     private int facingLockCount;
+    private float spawnIdlePauseUntilTime;
 
     protected EnemyChaseIntent2D ChaseIntent => chaseIntent;
     protected MonsterSpawnRoomGroup LockTrackingRoomGroup => lockTrackingRoomGroup;
@@ -49,6 +50,13 @@ public class Mob : Enemy
         if (isDead) return;
 
         EnsureTargetResolved();
+
+        if (IsSpawnIdlePaused())
+        {
+            PerformSpawnIdlePauseCleanup();
+            UpdateAnimation();
+            return;
+        }
 
         if (TryInitializeStateMachine())
         {
@@ -92,7 +100,7 @@ public class Mob : Enemy
     /// <summary>이 몬스터가 추적 이동을 사용할지 정합니다.</summary>
     public virtual bool CanUseChaseMovement()
     {
-        return true;
+        return !IsSpawnIdlePaused();
     }
 
     /// <summary>이동과 방향 애니메이션을 갱신합니다.</summary>
@@ -113,6 +121,41 @@ public class Mob : Enemy
         if (Target == null) return;
 
         TryApplySpriteFacingTargetX(Target.position.x);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 방 입장 스폰 직후 일반 몬스터가 바로 추적/공격하지 않도록 짧은 대기 시간을 적용한다.
+    /// - 스폰 연출과 실제 전투 시작 사이에 숨 쉴 틈을 만들어 VFX 스폰 체감을 안정화한다.
+    /// </summary>
+    public void ApplySpawnIdlePause(float seconds)
+    {
+        if (seconds <= 0f || isDead)
+            return;
+
+        spawnIdlePauseUntilTime = Mathf.Max(spawnIdlePauseUntilTime, Time.time + seconds);
+        PerformSpawnIdlePauseCleanup();
+    }
+
+    private bool IsSpawnIdlePaused()
+    {
+        return spawnIdlePauseUntilTime > Time.time;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 스폰 직후 대기 시간 동안 공격 실행뿐 아니라 추적 이동 의도까지 함께 비운다.
+    /// - FSM context가 아직 초기화되기 전인 몬스터도 chase intent 캐시를 직접 정리해 제자리 대기하게 한다.
+    /// </summary>
+    private void PerformSpawnIdlePauseCleanup()
+    {
+        if (aiContext != null)
+        {
+            aiContext.PerformSuppressionCleanup();
+            return;
+        }
+
+        ResolveChaseIntent()?.StopChase();
     }
 
     /// <summary>

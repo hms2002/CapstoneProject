@@ -13,9 +13,11 @@ public sealed class MonsterRoomEntrySpawnSettingsSO : ScriptableObject
     [SerializeField, Min(0f)] private float defaultSpawnVfxDelaySeconds = 0.35f;
     [SerializeField] private Vector3 defaultSpawnVfxOffset;
     [SerializeField] private SoundRef defaultSpawnSound;
+    [SerializeField, Min(0f)] private float defaultPostSpawnIdleSeconds = 0.5f;
 
     public GameObject DefaultSpawnVfxPrefab => defaultSpawnVfxPrefab;
     public float DefaultSpawnVfxDelaySeconds => defaultSpawnVfxDelaySeconds;
     public Vector3 DefaultSpawnVfxOffset => defaultSpawnVfxOffset;
     public SoundRef DefaultSpawnSound => defaultSpawnSound;
+    public float DefaultPostSpawnIdleSeconds => defaultPostSpawnIdleSeconds;
 }

@@ -36,6 +36,7 @@ public sealed class UIChainDropPresentation : MonoBehaviour
     [SerializeField, Min(0.001f)] private float maxSimulationStep = 1f / 60f;
     [SerializeField, Min(0f)] private float settlePositionThreshold = 2f;
     [SerializeField, Min(0f)] private float settleVelocityThreshold = 36f;
+    [SerializeField, Min(0f)] private float openInteractionFallbackSeconds = 2.5f;
 
     [Header("Audio")]
     [SerializeField] private SoundRef openSound = new SoundRef
@@ -87,6 +88,7 @@ public sealed class UIChainDropPresentation : MonoBehaviour
     private bool hasOpenAnchoredPosition;
     private float openLocalZRotation;
     private float closeAnimationElapsed;
+    private float openAnimationElapsed;
     private bool hasOpenLocalZRotation;
     private bool hasImpactedConstraint;
     private bool isAnimatingOpen;
@@ -191,6 +193,7 @@ public sealed class UIChainDropPresentation : MonoBehaviour
         panelRoot.anchoredPosition = openAnchoredPosition + dropStartLocalOffset;
         ApplyRandomStartRotation();
         currentVelocity = initialVelocity;
+        openAnimationElapsed = 0f;
         hasImpactedConstraint = false;
         hasUnlockedInteractionForCurrentOpen = false;
         isAnimatingOpen = true;
@@ -241,6 +244,7 @@ public sealed class UIChainDropPresentation : MonoBehaviour
         SnapRotationToOpen();
         currentVelocity = Vector2.zero;
         hasImpactedConstraint = false;
+        openAnimationElapsed = 0f;
         isOpen = true;
         ApplyChainReachConstraint();
         SetInteractionEnabled(true);
@@ -434,6 +438,7 @@ public sealed class UIChainDropPresentation : MonoBehaviour
         isAnimatingClose = false;
         currentVelocity = Vector2.zero;
         closeAnimationElapsed = 0f;
+        openAnimationElapsed = 0f;
         hasImpactedConstraint = false;
         hasUnlockedInteractionForCurrentOpen = false;
         onCloseAnimationFinished = null;
@@ -471,9 +476,11 @@ public sealed class UIChainDropPresentation : MonoBehaviour
 
             isAnimatingOpen = true;
             isOpen = true;
+            openAnimationElapsed = 0f;
             hasUnlockedInteractionForCurrentOpen = true;
         }
 
+        openAnimationElapsed += deltaTime;
         float remainingTime = Mathf.Min(deltaTime, 0.1f);
         int stepCount = Mathf.Max(1, Mathf.CeilToInt(remainingTime / maxSimulationStep));
         Vector2 stepSupportMotionLocalDelta = stepCount > 0
@@ -502,7 +509,17 @@ public sealed class UIChainDropPresentation : MonoBehaviour
             ApplyChainReachConstraint();
             currentVelocity = Vector2.zero;
             isAnimatingOpen = false;
+            openAnimationElapsed = 0f;
             SnapRotationToOpen();
+            hasUnlockedInteractionForCurrentOpen = true;
+            SetInteractionEnabled(true);
+            return;
+        }
+
+        if (openInteractionFallbackSeconds > 0f &&
+            openAnimationElapsed >= openInteractionFallbackSeconds &&
+            !hasUnlockedInteractionForCurrentOpen)
+        {
             hasUnlockedInteractionForCurrentOpen = true;
             SetInteractionEnabled(true);
         }

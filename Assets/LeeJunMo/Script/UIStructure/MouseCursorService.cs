@@ -73,6 +73,7 @@ public sealed class MouseCursorEncyclopediaDomainDefinition
 
 [DefaultExecutionOrder(1000)]
 [DisallowMultipleComponent]
+// Responsibility: resolves the active cursor domain/variant and presents a safe software or hardware cursor at runtime.
 public sealed class MouseCursorService : MonoBehaviour
 {
     private const string DefaultThemeResourcePath = "DefaultMouseCursorTheme";
@@ -104,6 +105,8 @@ public sealed class MouseCursorService : MonoBehaviour
 
     [Header("Software Cursor Presentation")]
     [SerializeField] private bool hideSystemCursorWhileSpriteActive = true;
+    [SerializeField] private bool preferHardwareCursorInExclusiveFullscreen = true;
+    [SerializeField] private bool keepSystemCursorVisibleInExclusiveFullscreenFallback = true;
     [SerializeField] private int overlaySortingOrder = short.MaxValue;
     [SerializeField] private bool scaleWithScreenHeight = true;
     [SerializeField, Min(1f)] private float referenceScreenHeight = 1080f;
@@ -440,8 +443,21 @@ public sealed class MouseCursorService : MonoBehaviour
             return;
         }
 
+        if (ShouldPreferHardwareCursor() && TryApplyHardwareCursor(definition))
+        {
+            HideSoftwareCursor();
+            Cursor.visible = true;
+            return;
+        }
+
         if (!ApplySoftwareCursor(definition))
             RestoreSystemCursor();
+    }
+
+    private bool ShouldPreferHardwareCursor()
+    {
+        return preferHardwareCursorInExclusiveFullscreen &&
+               Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen;
     }
 
     private MouseCursorDomain ResolveDomain()
@@ -697,11 +713,17 @@ public sealed class MouseCursorService : MonoBehaviour
         if (cursorCanvas != null)
             cursorCanvas.enabled = true;
 
-        Cursor.visible = !hideSystemCursorWhileSpriteActive;
+        Cursor.visible = ShouldKeepSystemCursorVisibleWithSoftwareFallback() || !hideSystemCursorWhileSpriteActive;
         appliedCursorTexture = null;
         appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         return true;
+    }
+
+    private bool ShouldKeepSystemCursorVisibleWithSoftwareFallback()
+    {
+        return keepSystemCursorVisibleInExclusiveFullscreenFallback &&
+               Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen;
     }
 
     private float ResolveSoftwareCursorScale(MouseCursorSpriteDefinition definition)

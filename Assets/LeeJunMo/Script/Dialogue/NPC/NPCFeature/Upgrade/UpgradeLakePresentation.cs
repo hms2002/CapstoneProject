@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
+// 책임: 업그레이드 호수 UI의 물 표면 색/파동/웨이크 연출 설정값을 보관하고 머티리얼에 적용한다.
 [Serializable]
 public struct UpgradeLakePresentationSettings
 {
@@ -474,8 +476,11 @@ public struct UpgradeLakePresentationSettings
 }
 
 [DisallowMultipleComponent]
+// 책임: 업그레이드 호수 UI의 표면 머티리얼과 파동 이펙트를 생성/갱신하고, 물 클릭 사운드를 실제 파동 발생 시점에 맞춰 재생한다.
 public sealed class UpgradeLakePresentation : MonoBehaviour
 {
+    private static readonly SoundRef WaterInteractSound = SoundRef.FromKey("sound_ui_UpgradeWaterInteract");
+
     private const string SurfaceLayerName = "LakeSurface";
     private const string RippleLayerName = "LakeRipples";
     private const int MaxSurfaceRipples = 8;
@@ -916,14 +921,14 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
         rippleGraphic?.Emit(localPosition, intensity);
     }
 
-    private void AddSurfaceRipple(Vector2 localPosition, float intensity, bool force)
+    private bool AddSurfaceRipple(Vector2 localPosition, float intensity, bool force)
     {
         if (!settings.surfaceInteractionEnabled || intensity <= 0f || !TryLocalToUv(localPosition, out Vector2 uv))
-            return;
+            return false;
 
         float now = GetTime();
         if (!force && settings.surfaceRippleMinInterval > 0f && now - lastSurfaceRippleTime < settings.surfaceRippleMinInterval)
-            return;
+            return false;
 
         if (surfaceRipples.Count >= MaxSurfaceRipples)
             surfaceRipples.RemoveAt(0);
@@ -939,6 +944,7 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
         });
 
         lastSurfaceRippleTime = now;
+        return true;
     }
 
     private void UpdatePointerInteraction()
@@ -953,8 +959,8 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
             return;
         }
 
-        if (Input.GetMouseButtonDown(0))
-            AddSurfaceRipple(localPosition, settings.surfaceClickRippleIntensity, force: false);
+        if (Input.GetMouseButtonDown(0) && AddSurfaceRipple(localPosition, settings.surfaceClickRippleIntensity, force: false))
+            SoundPlaybackUtility.Play(WaterInteractSound, sourceObject: this);
 
         if (!settings.pointerWakeEnabled || settings.pointerWakeIntensity <= 0f)
         {

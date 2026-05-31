@@ -135,7 +135,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     /// <summary>자폭 전환 애니메이션 중에는 추적 이동을 멈춥니다.</summary>
     public override bool CanUseChaseMovement()
     {
-        return !IsPlayingSelfDestructIntro();
+        return base.CanUseChaseMovement() && !IsPlayingSelfDestructIntro();
     }
 
     /// <summary>해골은 체력 Attribute 변화로 사망하지 않도록 공통 체력 처리 훅을 비워 둡니다.</summary>

@@ -8,6 +8,15 @@ public static class DemonKingCombatUtil
 
     private static readonly Collider2D[] OverlapBuffer = new Collider2D[32];
 
+    /// <summary>
+    /// 책임 :
+    /// - 지속 판정 공격에서 대상별 다음 피해 가능 시각을 보관한다.
+    /// - 레이저처럼 오래 남는 공격이 무적 중에는 쿨다운을 소비하지 않고, 실제 피해 성공 후에만 재타격 시간을 밀도록 돕는다.
+    /// </summary>
+    public sealed class DamageCooldownRegistry : Dictionary<GameObject, float>
+    {
+    }
+
     public static AttackTelegraphSpec CreateTopDownCircleWarningSpec(
         DemonKingController demon,
         Vector2 center,
@@ -49,7 +58,7 @@ public static class DemonKingCombatUtil
             causer: demon.gameObject);
     }
 
-    public static void ApplyCircleDamage(
+    public static bool ApplyCircleDamage(
         DemonKingController demon,
         Vector2 center,
         float radius,
@@ -59,14 +68,14 @@ public static class DemonKingCombatUtil
         float knockbackImpulse = 0f)
     {
         if (demon == null || radius <= 0f)
-            return;
+            return false;
 
         CombatHitPayload payload = MakePayload(demon, damageEffect, damageAmount, knockbackImpulse);
         if (payload == null)
-            return;
+            return false;
 
         int count = Physics2D.OverlapCircle(center, radius, CreateTargetFilter(demon.TargetMask), OverlapBuffer);
-        ApplyToHits(center, count, payload, demon.gameObject, damagedTargets);
+        return ApplyToHits(center, count, payload, demon.gameObject, damagedTargets);
     }
 
     public static void ApplyTopDownEllipseDamage(
@@ -87,10 +96,10 @@ public static class DemonKingCombatUtil
 
         float broadphaseRadius = Mathf.Max(0.05f, diameter * 0.5f);
         int count = Physics2D.OverlapCircle(center, broadphaseRadius, CreateTargetFilter(demon.TargetMask), OverlapBuffer);
-        ApplyToHits(center, count, payload, demon.gameObject, damagedTargets, diameter);
+        ApplyToHits(center, count, payload, demon.gameObject, damagedTargets, topDownEllipseDiameter: diameter);
     }
 
-    public static void ApplyRectangleDamage(
+    public static bool ApplyRectangleDamage(
         DemonKingController demon,
         Vector2 center,
         Vector2 size,
@@ -98,17 +107,19 @@ public static class DemonKingCombatUtil
         GE_Damage_Spec damageEffect,
         float damageAmount,
         HashSet<GameObject> damagedTargets = null,
-        float knockbackImpulse = 0f)
+        float knockbackImpulse = 0f,
+        DamageCooldownRegistry damageCooldowns = null,
+        float damageIntervalSeconds = 0f)
     {
         if (demon == null || size.x <= 0f || size.y <= 0f)
-            return;
+            return false;
 
         CombatHitPayload payload = MakePayload(demon, damageEffect, damageAmount, knockbackImpulse);
         if (payload == null)
-            return;
+            return false;
 
         int count = Physics2D.OverlapBox(center, size, rotationDeg, CreateTargetFilter(demon.TargetMask), OverlapBuffer);
-        ApplyToHits(center, count, payload, demon.gameObject, damagedTargets);
+        return ApplyToHits(center, count, payload, demon.gameObject, damagedTargets, damageCooldowns, damageIntervalSeconds);
     }
 
     public static void ApplySectorDamage(
@@ -147,10 +158,11 @@ public static class DemonKingCombatUtil
             if (toTarget.sqrMagnitude > 0.0001f && Vector2.Angle(forward, toTarget.normalized) > halfAngle)
                 continue;
 
-            if (!damagedTargets.Add(targetRoot))
+            if (damagedTargets.Contains(targetRoot))
                 continue;
 
-            CombatHitPayloadApplier.Apply(targetRoot, payload, hit.ClosestPoint(origin));
+            if (CombatHitPayloadApplier.Apply(targetRoot, payload, hit.ClosestPoint(origin)))
+                damagedTargets.Add(targetRoot);
         }
     }
 
@@ -172,14 +184,17 @@ public static class DemonKingCombatUtil
         return Mathf.Atan2(safeDirection.y, safeDirection.x) * Mathf.Rad2Deg;
     }
 
-    private static void ApplyToHits(
+    private static bool ApplyToHits(
         Vector2 hitOrigin,
         int count,
         CombatHitPayload payload,
         GameObject self,
         HashSet<GameObject> damagedTargets,
+        DamageCooldownRegistry damageCooldowns = null,
+        float damageIntervalSeconds = 0f,
         float topDownEllipseDiameter = 0f)
     {
+        bool appliedAny = false;
         for (int i = 0; i < count; i++)
         {
             Collider2D hit = OverlapBuffer[i];
@@ -196,11 +211,27 @@ public static class DemonKingCombatUtil
             if (targetRoot == null || targetRoot == self)
                 continue;
 
-            if (damagedTargets != null && !damagedTargets.Add(targetRoot))
+            if (damagedTargets != null && damagedTargets.Contains(targetRoot))
                 continue;
 
-            CombatHitPayloadApplier.Apply(targetRoot, payload, hit.ClosestPoint(hitOrigin));
+            if (damageCooldowns != null &&
+                damageCooldowns.TryGetValue(targetRoot, out float nextAllowedTime) &&
+                Time.time < nextAllowedTime)
+            {
+                continue;
+            }
+
+            if (!CombatHitPayloadApplier.Apply(targetRoot, payload, hit.ClosestPoint(hitOrigin)))
+                continue;
+
+            damagedTargets?.Add(targetRoot);
+            if (damageCooldowns != null)
+                damageCooldowns[targetRoot] = Time.time + Mathf.Max(0f, damageIntervalSeconds);
+
+            appliedAny = true;
         }
+
+        return appliedAny;
     }
 
     private static ContactFilter2D CreateTargetFilter(LayerMask targetMask)

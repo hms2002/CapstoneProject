@@ -1,13 +1,11 @@
 using System.Collections.Generic;
-using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+// 책임: 업그레이드 트리 슬롯/라인 UI를 생성하고, 입력에 따른 트리 탐색과 슬롯 구매 요청을 중계한다.
 public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 {
-    private static readonly SoundRef UpgradeWaterInteractSound = SoundRef.FromKey("sound_ui_UpgradeWaterInteract");
-
     public static UpgradeTreeUI EnsureInstance()
     {
         UpgradeTreeUI[] existing = Resources.FindObjectsOfTypeAll<UpgradeTreeUI>();
@@ -764,7 +762,6 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
             if (RectTransformUtility.RectangleContainsScreenPoint(viewportRect, Input.mousePosition, eventCamera)
                 && RectTransformUtility.ScreenPointToLocalPointInRectangle(viewportRect, Input.mousePosition, eventCamera, out lastPointerLocalPosition))
             {
-                SoundPlaybackUtility.Play(UpgradeWaterInteractSound, sourceObject: this);
                 isRightMousePanning = true;
                 if (scrollRect != null)
                     scrollRect.StopMovement();

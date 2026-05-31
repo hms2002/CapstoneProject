@@ -16,6 +16,9 @@ MonoBehaviour:
   - attribute: {fileID: 11400000, guid: 3f69b3af0c3b4c89ab6df3ad1b969919, type: 2}
     displayNameOverride: "전기 속성"
     type: 1
-    value: 0.1
-    valueByLevel: []
+    value: 0.03
+    valueByLevel:
+    - 0.03
+    - 0.06
+    - 0.1
     duration: 0

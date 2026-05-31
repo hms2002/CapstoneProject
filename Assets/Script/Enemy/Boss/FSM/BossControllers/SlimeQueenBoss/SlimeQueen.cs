@@ -91,6 +91,9 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     [Tooltip("착지 피해에 사용할 GAS Damage Effect입니다. 비워두면 패턴 1 낙하 피해 Effect를 사용합니다.")]
     [SerializeField] private GE_Damage_Spec jumpLandingDamageEffect;
 
+    [Tooltip("런타임 생성 RandomJump 패턴이 복제해서 사용할 AbilityLogic 템플릿입니다.")]
+    [SerializeField] private AbilityLogic_SlimeQueenRandomJump randomJumpLogicTemplate;
+
     [Space(8)]
 
     [Header("Phase 1 - Pattern 3")]
@@ -1166,14 +1169,15 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             minDistance: 0f,
             maxDistance: 999f);
 
-        BossPatternEntry randomJump = CreatePattern<AbilityLogic_SlimeQueenRandomJump>(
+        BossPatternEntry randomJump = CreatePattern(
             "SlimeQueen_RandomJump",
             weight: 100,
             maxConsecutive: 1,
             lockTime: patternSelectionLockSeconds,
             postDelay: postPatternDelaySeconds,
             minDistance: 0f,
-            maxDistance: 999f);
+            maxDistance: 999f,
+            logicTemplate: randomJumpLogicTemplate);
 
         BossPatternEntry callSlimes = CreatePattern<AbilityLogic_SlimeQueenCallSlimes>(
             "SlimeQueen_CallSlimes",
@@ -1215,10 +1219,13 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         float lockTime,
         float postDelay,
         float minDistance,
-        float maxDistance)
+        float maxDistance,
+        TLogic logicTemplate = null)
         where TLogic : AbilityLogic
     {
-        TLogic logic = ScriptableObject.CreateInstance<TLogic>();
+        TLogic logic = logicTemplate != null
+            ? Instantiate(logicTemplate)
+            : ScriptableObject.CreateInstance<TLogic>();
         logic.name = $"AL_{abilityName}";
 
         AbilityDefinition ability = ScriptableObject.CreateInstance<AbilityDefinition>();

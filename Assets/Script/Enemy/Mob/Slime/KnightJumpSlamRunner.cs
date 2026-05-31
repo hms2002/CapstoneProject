@@ -135,6 +135,7 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
             duration,
             impactStyle);
 
+        spec = AttackTelegraphSpecUtility.WithThinWarningOutline(spec);
         impactWarning = telegraphService.SpawnDetachedView(spec);
     }
 

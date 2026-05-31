@@ -17,7 +17,7 @@ MonoBehaviour:
   icon: {fileID: -5249522915942291002, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
   rarity: 0
   description: "\uC774\uB3D9\uC18D\uB3C4\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
-  maxLevel: 1
+  maxLevel: 3
   dropLevel: 1
   logic: {fileID: 11400000, guid: 3b6dd80db6b340d09eaf8d22758d3128, type: 2}
   param: {fileID: 0}

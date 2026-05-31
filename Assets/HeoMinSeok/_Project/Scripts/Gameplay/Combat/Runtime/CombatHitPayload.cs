@@ -70,6 +70,9 @@ namespace UnityGAS
             if (target == null || payload == null || !payload.IsValid())
                 return false;
 
+            if (CombatInvulnerabilityUtil.IsDamageSuppressed(target, payload.damageEffect as GE_Damage_Spec))
+                return false;
+
             CombatDamageAction.ApplyDamageAndEmitHit(
                 system: payload.sourceSystem,
                 spec: payload.sourceSpec,

@@ -33,6 +33,7 @@ public class Pawn : Slime
 
     public override bool CanUseChaseMovement()
     {
+        if (!base.CanUseChaseMovement()) return false;
         UpdateSpeed(ChaseSpeedMultiplier);
         return CanMove();
     }
