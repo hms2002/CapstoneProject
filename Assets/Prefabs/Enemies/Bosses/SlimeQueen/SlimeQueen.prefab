@@ -147,6 +147,7 @@ MonoBehaviour:
   jumpLandingDamageDiameter: 2.4
   jumpLandingDamage: 1
   jumpLandingDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  randomJumpLogicTemplate: {fileID: 11400000, guid: 4e951eab6cb84cf295af59321d67343a, type: 2}
   bishopPrefab: {fileID: 100000, guid: 4c120d14b57b4436a325443f7b0caa3f, type: 3}
   rookPrefab: {fileID: 625522859161183429, guid: 4a7ea9f5e4df4e39877c3818b6700007, type: 3}
   callSlimeSpawnPositions:
@@ -583,7 +584,7 @@ MonoBehaviour:
   squareSize: 0.18
   minSpreadDistance: 0.65
   maxSpreadDistance: 1.15
-  squareColor: {r: 0.26, g: 1, b: 0.22, a: 0.95}
+  squareColor: {r: 0.5764706, g: 0.9490196, b: 0.6862745, a: 0.95}
   fallbackSortingLayerName: Entity
   sortingOrderOffset: 3
   destroyPaddingSeconds: 0.1

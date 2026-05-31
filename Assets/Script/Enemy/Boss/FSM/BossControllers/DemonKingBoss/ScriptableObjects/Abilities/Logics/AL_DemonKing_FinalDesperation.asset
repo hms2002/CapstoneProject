@@ -27,6 +27,22 @@ MonoBehaviour:
   laserVfxRayOriginOffset: 1.2
   fallbackLaserLength: 40
   laserDamage: 1
+  finalPoseAnimation:
+    clip: {fileID: 0}
+    sampleMode: 1
+    frameIndex: 0
+    fallbackStateName: DarkLord_10Percent
+  bombExplosionVfx:
+    prefabOverride: {fileID: 299506462241839021, guid: a9e652081951498da6dd6d55011852a3, type: 3}
+    fallbackKind: 2
+    socketId: 5
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    leaveFragment: 1
+  laserVfxPrefabOverride: {fileID: 0}
+  laserVfxResourcePath: DemonKing/DemonKingEgoLaserVfx
   startSound:
     key: 
     volumeMultiplier: 0

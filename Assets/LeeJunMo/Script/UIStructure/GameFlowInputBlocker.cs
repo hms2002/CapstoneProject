@@ -48,6 +48,15 @@ public sealed class GameFlowInputBlocker : MonoBehaviour
         return true;
     }
 
+    public bool CanOpenOwnedUI(IStackableUI ui)
+    {
+        if (ui == null)
+            return false;
+
+        return UIManager.Instance == null ||
+               UIManager.Instance.CanOpenUIForExternalBlockOwner(this, ui);
+    }
+
     private void OnDisable()
     {
         Release();

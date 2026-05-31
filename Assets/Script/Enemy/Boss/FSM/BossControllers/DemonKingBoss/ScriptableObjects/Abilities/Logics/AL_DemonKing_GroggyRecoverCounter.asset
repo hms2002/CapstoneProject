@@ -21,6 +21,52 @@ MonoBehaviour:
   eyeFlashHoldRatio: 0.2
   eyeFlashLocalOffset: {x: 0, y: 1}
   eyeFlashSize: {x: 2.4, y: 0.9}
+  swordVisual:
+    groggyPoseAnimation:
+      clip: {fileID: 0}
+      sampleMode: 1
+      frameIndex: 0
+      fallbackStateName: DarkLord_Sword_Groggy
+    counterAnimation:
+      clip: {fileID: 0}
+      sampleMode: 0
+      frameIndex: 0
+      fallbackStateName: DarkLord_Sword_GroggyCounter
+    counterImpactVfx:
+      prefabOverride: {fileID: 0}
+      fallbackKind: 4
+      socketId: 3
+      fallbackLeftOffset: {x: 0, y: -0.5}
+      targetSize: {x: 5.5, y: 5.5}
+      scale: {x: 1.5, y: 1.5, z: 1}
+      rotationOffsetDeg: 0
+      leaveFragment: 0
+    eyeFlashSocket: 12
+    eyeFlashFallbackLeftOffset: {x: -0.15, y: 0.75}
+    eyeFlashSize: {x: 2.2, y: 2.2}
+  handVisual:
+    groggyPoseAnimation:
+      clip: {fileID: 0}
+      sampleMode: 1
+      frameIndex: 0
+      fallbackStateName: DarkLord_Hand_Groggy
+    counterAnimation:
+      clip: {fileID: 0}
+      sampleMode: 0
+      frameIndex: 0
+      fallbackStateName: DarkLord_Hand_GroggyCounter
+    counterImpactVfx:
+      prefabOverride: {fileID: 0}
+      fallbackKind: 3
+      socketId: 2
+      fallbackLeftOffset: {x: 0, y: -0.5}
+      targetSize: {x: 5.5, y: 5.5}
+      scale: {x: 1, y: 1, z: 1}
+      rotationOffsetDeg: 0
+      leaveFragment: 1
+    eyeFlashSocket: 0
+    eyeFlashFallbackLeftOffset: {x: 0, y: 0.7}
+    eyeFlashSize: {x: 2.2, y: 2.2}
   counterEndPoseHoldSeconds: 0.12
   minimumImpactPoseHoldSeconds: 0.5
   warningPingSound:

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textEffectSettleSeconds: 0.18
   shake:
-    amplitudeX: 3
-    amplitudeY: 3
+    amplitudeX: 2.2
+    amplitudeY: 1.6
     speedX: 58.1
     speedY: 71.7
     characterPhaseX: 23.115
@@ -54,7 +54,7 @@ MonoBehaviour:
     speed: 10
     characterPhase: -0.22
   randomSize:
-    defaultMinScale: 3.94
+    defaultMinScale: 6.33
     defaultMaxScale: 10
     clampMinScale: 0.3
     clampMaxScale: 10

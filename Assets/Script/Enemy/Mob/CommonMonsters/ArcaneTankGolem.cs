@@ -440,11 +440,11 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
 
     private void ShowLandingWarning(ArcaneTankGolem.SlamContext context, float warningSeconds)
     {
-        telegraphService?.Show(AttackTelegraphSpec.CreateCircle(
+        telegraphService?.Show(AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             context.LandingPosition,
             context.LandingDiameter,
             warningSeconds,
-            landingWarningStyle));
+            landingWarningStyle)));
     }
 
     private void ShowRockWarnings(Vector2[] centers, ArcaneTankGolem.SlamContext context, float warningSeconds)
@@ -454,11 +454,11 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
 
         for (int i = 0; i < centers.Length; i++)
         {
-            AttackTelegraphView view = telegraphService.SpawnDetachedView(AttackTelegraphSpec.CreateCircle(
+            AttackTelegraphView view = telegraphService.SpawnDetachedView(AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
                 centers[i],
                 context.RockDiameter,
                 warningSeconds,
-                rockWarningStyle));
+                rockWarningStyle)));
             if (view != null)
                 detachedWarnings.Add(view);
         }

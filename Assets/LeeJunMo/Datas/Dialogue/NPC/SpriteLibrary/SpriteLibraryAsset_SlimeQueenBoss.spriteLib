@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e6fedc2472449cead18ef23b5cb30d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteLibrarySourceAsset
+  m_Library:
+  - m_Name: Face
+    m_Hash: 623301721
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: default
+      m_Hash: 111111101
+      m_Sprite: {fileID: 21300000, guid: bd783ac71f9946b58a6d1b451cb282f1, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: bd783ac71f9946b58a6d1b451cb282f1, type: 3}
+    - m_Name: Normal
+      m_Hash: 640249298
+      m_Sprite: {fileID: 21300000, guid: bd783ac71f9946b58a6d1b451cb282f1, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: bd783ac71f9946b58a6d1b451cb282f1, type: 3}
+    - m_Name: Idle
+      m_Hash: 222222202
+      m_Sprite: {fileID: 21300000, guid: bd783ac71f9946b58a6d1b451cb282f1, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: bd783ac71f9946b58a6d1b451cb282f1, type: 3}
+    - m_Name: Funny
+      m_Hash: 333333303
+      m_Sprite: {fileID: 21300000, guid: d5f3e0a527644bf6ae46b94c89d7a25b, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: d5f3e0a527644bf6ae46b94c89d7a25b, type: 3}
+    - m_Name: Smile
+      m_Hash: 444444404
+      m_Sprite: {fileID: 21300000, guid: f0a7d8ce4d68463485bd7719ce0d2ea4, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: f0a7d8ce4d68463485bd7719ce0d2ea4, type: 3}
+    - m_Name: joy
+      m_Hash: 555555505
+      m_Sprite: {fileID: 21300000, guid: aa381e10e5834e7987aaef1622198899, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: aa381e10e5834e7987aaef1622198899, type: 3}
+    - m_Name: Veryjoy
+      m_Hash: 666666606
+      m_Sprite: {fileID: 21300000, guid: b4e61653f79d408daf1cf148b9ff24f4, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: b4e61653f79d408daf1cf148b9ff24f4, type: 3}
+    - m_Name: VeryVeryjoy
+      m_Hash: 777777707
+      m_Sprite: {fileID: 21300000, guid: c92892d29a884b9c82dde3963c803fdf, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: c92892d29a884b9c82dde3963c803fdf, type: 3}
+    - m_Name: Angry
+      m_Hash: 888888808
+      m_Sprite: {fileID: 21300000, guid: e7cd4998878046cf9603a9bdac777441, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: e7cd4998878046cf9603a9bdac777441, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 9
+  m_PrimaryLibraryGUID:
+  m_ModificationHash: 583921407349123764
+  m_Version: 1

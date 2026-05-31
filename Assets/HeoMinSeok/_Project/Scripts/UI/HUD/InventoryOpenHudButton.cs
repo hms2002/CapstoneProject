@@ -46,6 +46,17 @@ public sealed class InventoryOpenHudButton : MonoBehaviour
         RefreshVisibility();
     }
 
+    public GameObject GetPresentationRoot()
+    {
+        ResolveHudRoot();
+        return hudRoot != null ? hudRoot : gameObject;
+    }
+
+    public void RefreshNow()
+    {
+        RefreshVisibility();
+    }
+
     private void HandleClick()
     {
         if (!ResolveOpenRequestHandler())

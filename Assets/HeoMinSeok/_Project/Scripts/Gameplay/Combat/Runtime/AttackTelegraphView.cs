@@ -558,7 +558,6 @@ namespace UnityGAS
 
             switch (shape)
             {
-                case AttackTelegraphShape.Circle:
                 case AttackTelegraphShape.Ring:
                 {
                     float diameter = Mathf.Max(safeSize.x, safeSize.y);
@@ -662,8 +661,15 @@ namespace UnityGAS
 
                 if (activeShape == AttackTelegraphShape.Rectangle)
                 {
-                    fillSize.x *= scale;
-                    fillOffset = ResolveStartAnchoredFillOffset(activeSize.x, fillSize.x);
+                    if (activeStyle.fillAnchor == AttackTelegraphFillAnchor.CenterOut)
+                    {
+                        fillSize *= scale;
+                    }
+                    else
+                    {
+                        fillSize.x *= scale;
+                        fillOffset = ResolveStartAnchoredFillOffset(activeSize.x, fillSize.x);
+                    }
                 }
                 else if (activeShape == AttackTelegraphShape.Sector)
                 {
@@ -675,11 +681,6 @@ namespace UnityGAS
                     fillSize *= scale;
                 }
 
-                if (activeShape == AttackTelegraphShape.Circle)
-                {
-                    float diameter = Mathf.Max(fillSize.x, fillSize.y);
-                    fillSize = new Vector2(diameter, diameter);
-                }
             }
 
             fillRoot.localPosition = fillBaseLocalPosition + fillOffset;

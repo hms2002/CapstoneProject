@@ -59,6 +59,16 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
     public Animator animator;
     public Collider2D obstacleCollider;
 
+    [Header("상태별 렌더 레이어")]
+    [Tooltip("닫힌 상태에서 적용할 Sorting Layer 이름입니다. 비워두면 변경하지 않습니다.")]
+    [SerializeField, SortingLayerName] private string closedSortingLayerName = string.Empty;
+    [Tooltip("열린 상태에서 적용할 Sorting Layer 이름입니다. 비워두면 변경하지 않습니다.")]
+    [SerializeField, SortingLayerName] private string openedSortingLayerName = string.Empty;
+    [Tooltip("model 하위 Renderer에도 상태별 Sorting Layer를 적용합니다.")]
+    [SerializeField] private bool applyStateSortingLayerToModelRenderers = true;
+    [Tooltip("상태별 Sorting Layer를 함께 바꿀 추가 Renderer들입니다.")]
+    [SerializeField] private Renderer[] stateSortingLayerRenderers = System.Array.Empty<Renderer>();
+
     [Header("Presentation")]
     [SerializeField] private Transform presentationAnchor;
     [SerializeField] private WorldObjectPresentationDefinition openPresentation = new();
@@ -136,6 +146,8 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
             closedModelLocalPosition = model.localPosition;
             hasClosedModelLocalPosition = true;
         }
+
+        ApplyCurrentDoorRenderLayerState();
     }
 
     private void Start()
@@ -256,6 +268,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
 
         CancelCloseCompletionWait();
         IsOpen = true;
+        ApplyCurrentDoorRenderLayerState();
 
         if (save && ShortcutProgressService.Instance != null)
             ShortcutProgressService.Instance.UnlockShortcut(mapID, doorID);
@@ -300,6 +313,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         }
 
         IsOpen = false;
+        ApplyCurrentDoorRenderLayerState();
         BeginCloseCompletionWait();
         EnableObstacle();
         KillShakeTween();
@@ -368,6 +382,41 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
     {
         if (obstacleCollider != null)
             obstacleCollider.enabled = true;
+    }
+
+    /// <summary>
+    /// 문 열림/닫힘 상태에 맞춰 authoring된 Sorting Layer를 관련 Renderer에 적용합니다.
+    /// </summary>
+    private void ApplyCurrentDoorRenderLayerState()
+    {
+        string sortingLayerName = IsOpen ? openedSortingLayerName : closedSortingLayerName;
+        if (string.IsNullOrWhiteSpace(sortingLayerName))
+            return;
+
+        int sortingLayerId = SortingLayer.NameToID(sortingLayerName);
+        if (sortingLayerId == 0 && sortingLayerName != SortingLayer.IDToName(0))
+            return;
+
+        if (applyStateSortingLayerToModelRenderers && model != null)
+        {
+            Renderer[] modelRenderers = model.GetComponentsInChildren<Renderer>(includeInactive: true);
+            for (int i = 0; i < modelRenderers.Length; i++)
+                ApplySortingLayer(modelRenderers[i], sortingLayerName);
+        }
+
+        if (stateSortingLayerRenderers == null)
+            return;
+
+        for (int i = 0; i < stateSortingLayerRenderers.Length; i++)
+        {
+            ApplySortingLayer(stateSortingLayerRenderers[i], sortingLayerName);
+        }
+    }
+
+    private static void ApplySortingLayer(Renderer targetRenderer, string sortingLayerName)
+    {
+        if (targetRenderer != null)
+            targetRenderer.sortingLayerName = sortingLayerName;
     }
 
     private void PlayOpenPresentation(GameObject instigator)

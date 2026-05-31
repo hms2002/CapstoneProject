@@ -11,10 +11,12 @@ public sealed class DemonKingPrimitiveVisual : MonoBehaviour
     private const int CircleTextureSize = 64;
     private const float VisualZ = -0.05f;
     private const int ProjectileSortingOrder = 1;
+    private const int EntitySortingOrder = 0;
 
     private static Sprite squareSprite;
     private static Sprite circleSprite;
     private static int projectileSortingLayerId = int.MinValue;
+    private static int entitySortingLayerId = int.MinValue;
 
     private float remainingLifetime;
     private bool hasLifetime;
@@ -64,6 +66,20 @@ public sealed class DemonKingPrimitiveVisual : MonoBehaviour
         renderer.sortingOrder = sortingOrder;
     }
 
+    public static void ApplyEntitySorting(SpriteRenderer renderer, int sortingOrder = EntitySortingOrder)
+    {
+        if (renderer == null)
+            return;
+
+        int sortingLayerId = ResolveEntitySortingLayerId();
+        if (sortingLayerId != 0)
+            renderer.sortingLayerID = sortingLayerId;
+        else
+            renderer.sortingLayerName = "Entity";
+
+        renderer.sortingOrder = sortingOrder;
+    }
+
     public void UpdateGeometry(Vector2 center, Vector2 size, float rotationDeg)
     {
         transform.position = new Vector3(center.x, center.y, VisualZ);
@@ -99,6 +115,15 @@ public sealed class DemonKingPrimitiveVisual : MonoBehaviour
 
         projectileSortingLayerId = SortingLayer.NameToID("Projectile");
         return projectileSortingLayerId;
+    }
+
+    private static int ResolveEntitySortingLayerId()
+    {
+        if (entitySortingLayerId != int.MinValue)
+            return entitySortingLayerId;
+
+        entitySortingLayerId = SortingLayer.NameToID("Entity");
+        return entitySortingLayerId;
     }
 
     private void SetLifetime(float duration)
@@ -179,8 +204,7 @@ public sealed class DemonKingPrimitiveVisual : MonoBehaviour
 [DisallowMultipleComponent]
 public sealed class DemonKingWorldDimmingOverlay : MonoBehaviour
 {
-    private const int OverlaySortingOrder = 0;
-    private const int HighlightSortingOrder = 2;
+    private const int OverlaySortingOrder = -1;
     private const float OrthographicPadding = 1.2f;
     private const float FallbackWorldSize = 64f;
     private const float OverlayZ = -0.05f;
@@ -188,7 +212,6 @@ public sealed class DemonKingWorldDimmingOverlay : MonoBehaviour
     private SpriteRenderer overlayRenderer;
     private Camera targetCamera;
     private Transform fallbackAnchor;
-    private RendererSortingState[] boostedRenderers;
     private bool released;
     private float alpha;
 
@@ -215,7 +238,6 @@ public sealed class DemonKingWorldDimmingOverlay : MonoBehaviour
             return;
 
         released = true;
-        RestoreBoostedRenderers();
         Destroy(gameObject);
     }
 
@@ -226,9 +248,9 @@ public sealed class DemonKingWorldDimmingOverlay : MonoBehaviour
 
         overlayRenderer = gameObject.AddComponent<SpriteRenderer>();
         overlayRenderer.sprite = DemonKingPrimitiveVisual.GetSquareSprite();
-        DemonKingPrimitiveVisual.ApplyProjectileSorting(overlayRenderer, OverlaySortingOrder);
+        overlayRenderer.maskInteraction = SpriteMaskInteraction.None;
+        DemonKingPrimitiveVisual.ApplyEntitySorting(overlayRenderer, OverlaySortingOrder);
 
-        CaptureAndBoostOwnerRenderers(owner);
         SetAlpha(initialAlpha);
         FollowCamera();
     }
@@ -236,18 +258,6 @@ public sealed class DemonKingWorldDimmingOverlay : MonoBehaviour
     private void LateUpdate()
     {
         FollowCamera();
-    }
-
-    private void OnDisable()
-    {
-        if (!released)
-            RestoreBoostedRenderers();
-    }
-
-    private void OnDestroy()
-    {
-        if (!released)
-            RestoreBoostedRenderers();
     }
 
     private void FollowCamera()
@@ -270,57 +280,6 @@ public sealed class DemonKingWorldDimmingOverlay : MonoBehaviour
         }
 
         transform.localScale = new Vector3(FallbackWorldSize, FallbackWorldSize, 1f);
-    }
-
-    private void CaptureAndBoostOwnerRenderers(DemonKingController owner)
-    {
-        if (owner == null)
-        {
-            boostedRenderers = System.Array.Empty<RendererSortingState>();
-            return;
-        }
-
-        SpriteRenderer[] renderers = owner.GetComponentsInChildren<SpriteRenderer>(true);
-        boostedRenderers = new RendererSortingState[renderers.Length];
-        for (int i = 0; i < renderers.Length; i++)
-        {
-            boostedRenderers[i] = new RendererSortingState(renderers[i]);
-            DemonKingPrimitiveVisual.ApplyProjectileSorting(renderers[i], HighlightSortingOrder);
-        }
-    }
-
-    private void RestoreBoostedRenderers()
-    {
-        if (boostedRenderers == null)
-            return;
-
-        for (int i = 0; i < boostedRenderers.Length; i++)
-            boostedRenderers[i].Restore();
-
-        boostedRenderers = null;
-    }
-
-    private readonly struct RendererSortingState
-    {
-        private readonly SpriteRenderer renderer;
-        private readonly int sortingLayerId;
-        private readonly int sortingOrder;
-
-        public RendererSortingState(SpriteRenderer renderer)
-        {
-            this.renderer = renderer;
-            sortingLayerId = renderer != null ? renderer.sortingLayerID : 0;
-            sortingOrder = renderer != null ? renderer.sortingOrder : 0;
-        }
-
-        public void Restore()
-        {
-            if (renderer == null)
-                return;
-
-            renderer.sortingLayerID = sortingLayerId;
-            renderer.sortingOrder = sortingOrder;
-        }
     }
 }
 
@@ -636,6 +595,22 @@ public static class DemonKingPatternVfx
             "DemonKing_ChargeDisappearVfx",
             DefaultSortingOrder,
             DisappearStateName);
+    }
+
+    public static bool TryPlayChargeDisappearFromLoop(
+        DemonKingAnimationClipVisual chargeLoop,
+        DemonKingVfxCueRef cue,
+        float fallbackDiameter,
+        Vector2 direction)
+    {
+        if (chargeLoop == null)
+            return false;
+
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        return chargeLoop.TryDetachAndPlayOneShotState(
+            DisappearStateName,
+            cue.ResolveTargetSize(fallbackDiameter),
+            DemonKingCombatUtil.RotationDeg(safeDirection) + cue.RotationOffsetDeg);
     }
 
     public static DemonKingAnimationClipVisual SpawnSwordSpinLoop(Transform target)
@@ -1049,6 +1024,16 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
     {
         StopPlayback();
         Destroy(gameObject);
+    }
+
+    public bool TryDetachAndPlayOneShotState(string stateName, Vector2 targetSize, float rotationDeg)
+    {
+        usesFollowTarget = false;
+        followTarget = null;
+        followRotation = false;
+        transform.SetParent(null, true);
+        transform.rotation = Quaternion.Euler(0f, 0f, rotationDeg);
+        return TryPlayOneShot(targetSize, stateName, centerOnSpriteBounds: false);
     }
 
     public void ReleaseAfterDelayAndFade(float delaySeconds, float fadeSeconds)

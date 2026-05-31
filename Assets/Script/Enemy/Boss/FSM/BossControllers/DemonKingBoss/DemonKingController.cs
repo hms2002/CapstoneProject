@@ -8,6 +8,7 @@ public sealed class DemonKingController : BossControllerBase
     private const int DefaultWallLayer = 30;
     private const float AutoFaceTargetDeadZone = 0.05f;
     private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
+    private const string KnockbackImmuneTagResourcePath = "Tags/State.Status.KnockbackImmune";
 
     public const string DarkLordSwordIdleState = "DarkLord_Sword_Idle";
     public const string DarkLordSwordSlashState = "DarkLord_Sword_Slash";
@@ -38,6 +39,7 @@ public sealed class DemonKingController : BossControllerBase
     [SerializeField] private GE_Knockback_Spec defaultKnockbackEffect;
     [SerializeField] private AttackTelegraphStyle defaultWarningStyle;
     [SerializeField] private LayerMask wallMask = 1 << DefaultWallLayer;
+    [SerializeField] private Collider2D wallRushCollisionProbe;
 
     [Header("Rule Thresholds")]
     [SerializeField, Min(1)] private int holdPatternsBeforeThrow = 3;
@@ -68,9 +70,12 @@ public sealed class DemonKingController : BossControllerBase
     private DemonKingRuntimeData runtimeData;
     private AttackTelegraphService telegraphService;
     private GameplayTag staggerImmuneTag;
+    private GameplayTag knockbackImmuneTag;
     private SpriteAfterimageEmitter2D bodyAfterimageEmitter;
+    private SpriteRenderer bodySpriteRenderer;
     private int faceTargetLockCount;
     private int thresholdStaggerGuardCount;
+    private bool permanentKnockbackImmuneApplied;
     private bool runtimePatternsConfigured;
     private bool authoredPatternRolesBound;
     private bool finalDesperationHealthClampActive;
@@ -98,6 +103,7 @@ public sealed class DemonKingController : BossControllerBase
     public GE_Knockback_Spec DefaultKnockbackEffect => defaultKnockbackEffect;
     public AttackTelegraphStyle DefaultWarningStyle => defaultWarningStyle;
     public LayerMask WallMask => wallMask;
+    public Collider2D WallRushCollisionProbe => wallRushCollisionProbe;
     public float PlayerMoveSpeedReference => playerMoveSpeedReference;
     public float PlayerDashDistanceReference => playerDashDistanceReference;
     public SoundRef GroggyRecoverCounterWarningPingSound => groggyRecoverCounterWarningPingSound;
@@ -122,7 +128,11 @@ public sealed class DemonKingController : BossControllerBase
         base.Awake();
         runtimeData = new DemonKingRuntimeData();
         telegraphService = GetComponent<AttackTelegraphService>();
+        bodySpriteRenderer = GetComponent<SpriteRenderer>();
+        NormalizeBodySorting();
         staggerImmuneTag = Resources.Load<GameplayTag>(StaggerImmuneTagResourcePath);
+        knockbackImmuneTag = Resources.Load<GameplayTag>(KnockbackImmuneTagResourcePath);
+        ApplyPermanentKnockbackImmunity();
     }
 
     protected override void Start()
@@ -141,8 +151,18 @@ public sealed class DemonKingController : BossControllerBase
     {
         base.Update();
 
+        NormalizeBodySorting();
+
         if (faceTargetDuringCombat && faceTargetLockCount <= 0 && CanAutoFaceTarget())
             FaceCurrentTarget();
+    }
+
+    private void NormalizeBodySorting()
+    {
+        if (bodySpriteRenderer == null)
+            bodySpriteRenderer = GetComponent<SpriteRenderer>();
+
+        DemonKingPrimitiveVisual.ApplyEntitySorting(bodySpriteRenderer);
     }
 
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
@@ -194,6 +214,7 @@ public sealed class DemonKingController : BossControllerBase
         ClearPatternAnimationStartRecords();
         ReleaseFinalDesperationHealthClamp();
         ClearThresholdStaggerGuard();
+        ClearPermanentKnockbackImmunity();
         StopBodyAfterimage(clearGhosts: true);
         CleanupEgoSwordForBattleEnd();
         base.OnDestroy();
@@ -805,6 +826,24 @@ public sealed class DemonKingController : BossControllerBase
         thresholdStaggerGuardCount = 0;
         if (staggerImmuneTag != null && TagSystem != null)
             TryRemoveStateTag(staggerImmuneTag, 1);
+    }
+
+    private void ApplyPermanentKnockbackImmunity()
+    {
+        if (permanentKnockbackImmuneApplied || knockbackImmuneTag == null || TagSystem == null)
+            return;
+
+        permanentKnockbackImmuneApplied = TryAddStateTag(knockbackImmuneTag, 1);
+    }
+
+    private void ClearPermanentKnockbackImmunity()
+    {
+        if (!permanentKnockbackImmuneApplied)
+            return;
+
+        permanentKnockbackImmuneApplied = false;
+        if (knockbackImmuneTag != null && TagSystem != null)
+            TryRemoveStateTag(knockbackImmuneTag, 1);
     }
 
     private bool TryStartFinalDesperationFromHealthGate(

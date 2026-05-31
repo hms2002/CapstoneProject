@@ -216,6 +216,7 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
             warningSeconds,
             warningTelegraphStyle);
 
+        spec = AttackTelegraphSpecUtility.WithThinWarningOutline(spec);
         telegraphService.Show(spec);
     }
 
@@ -238,8 +239,8 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
                 continue;
 
             Vector3 hitPoint = hits[i].ClosestPoint(dragon.transform.position);
-            CombatHitPayloadApplier.Apply(targetRoot, payload, hitPoint);
-            nextDamageAllowedTimes[targetRoot] = Time.time + damageIntervalSeconds;
+            if (CombatHitPayloadApplier.Apply(targetRoot, payload, hitPoint))
+                nextDamageAllowedTimes[targetRoot] = Time.time + damageIntervalSeconds;
         }
     }
 

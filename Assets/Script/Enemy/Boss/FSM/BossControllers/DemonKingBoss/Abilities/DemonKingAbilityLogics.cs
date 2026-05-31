@@ -316,7 +316,7 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
     {
         demon.GetTelegraphService()?.SpawnDetachedView(
             AttackTelegraphSpecUtility.WithThinWarningOutline(
-                AttackTelegraphSpec.CreateCircle(center, diameter, duration, demon.DefaultWarningStyle)));
+                DemonKingCombatUtil.CreateTopDownCircleWarningSpec(demon, center, diameter, duration)));
     }
 
     protected static void ShowSectorWarning(
@@ -701,6 +701,87 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         return float.IsInfinity(nearestDistance) ? fallbackDistance : Mathf.Max(0.1f, nearestDistance);
     }
 
+    protected static float ResolveWallStoppedDistance(
+        DemonKingController demon,
+        Vector2 origin,
+        Vector2 direction,
+        float fallbackDistance,
+        float bodyCastRadius,
+        float skinWidth)
+    {
+        if (demon == null)
+            return Mathf.Max(0.1f, fallbackDistance);
+
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        float safeFallback = Mathf.Max(0.1f, fallbackDistance);
+        float safeRadius = Mathf.Max(0.01f, bodyCastRadius);
+        float safeSkin = Mathf.Max(0f, skinWidth);
+
+        if (TryResolveWallProbeStoppedDistance(demon, origin, safeDirection, safeFallback, safeSkin, out float probeDistance))
+            return probeDistance;
+
+        ContactFilter2D filter = new();
+        filter.SetLayerMask(demon.WallMask);
+        filter.useLayerMask = true;
+        filter.useTriggers = false;
+
+        int hitCount = Physics2D.CircleCast(origin, safeRadius, safeDirection, filter, WallHitBuffer, safeFallback);
+        float nearestDistance = float.PositiveInfinity;
+        for (int i = 0; i < hitCount; i++)
+        {
+            RaycastHit2D hit = WallHitBuffer[i];
+            if (hit.collider == null || hit.collider.isTrigger)
+                continue;
+
+            nearestDistance = Mathf.Min(nearestDistance, hit.distance);
+        }
+
+        if (float.IsInfinity(nearestDistance))
+            return safeFallback;
+
+        return Mathf.Clamp(nearestDistance - safeSkin, 0.1f, safeFallback);
+    }
+
+    private static bool TryResolveWallProbeStoppedDistance(
+        DemonKingController demon,
+        Vector2 origin,
+        Vector2 direction,
+        float fallbackDistance,
+        float skinWidth,
+        out float stoppedDistance)
+    {
+        stoppedDistance = 0f;
+        Collider2D probe = demon != null ? demon.WallRushCollisionProbe : null;
+        if (probe == null || !probe.enabled || !probe.gameObject.activeInHierarchy)
+            return false;
+
+        Vector2 rootPosition = demon.transform.position;
+        if ((rootPosition - origin).sqrMagnitude > 0.01f)
+            return false;
+
+        ContactFilter2D filter = new();
+        filter.SetLayerMask(demon.WallMask);
+        filter.useLayerMask = true;
+        filter.useTriggers = false;
+
+        int hitCount = probe.Cast(direction, filter, WallHitBuffer, fallbackDistance);
+        float nearestDistance = float.PositiveInfinity;
+        for (int i = 0; i < hitCount; i++)
+        {
+            RaycastHit2D hit = WallHitBuffer[i];
+            if (hit.collider == null || hit.collider.isTrigger)
+                continue;
+
+            nearestDistance = Mathf.Min(nearestDistance, hit.distance);
+        }
+
+        if (float.IsInfinity(nearestDistance))
+            return false;
+
+        stoppedDistance = Mathf.Clamp(nearestDistance - skinWidth, 0.1f, fallbackDistance);
+        return true;
+    }
+
     protected static float SecondsForSpeed(float distance, float speed, float fallbackSeconds)
     {
         if (distance <= 0f || speed <= 0f)
@@ -741,7 +822,9 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         LineArea line,
         float damage,
         HashSet<GameObject> damagedTargets = null,
-        float knockback = 0f)
+        float knockback = 0f,
+        DemonKingCombatUtil.DamageCooldownRegistry damageCooldowns = null,
+        float damageIntervalSeconds = 0f)
     {
         DemonKingCombatUtil.ApplyRectangleDamage(
             demon,
@@ -751,7 +834,9 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
             demon.DefaultDamageEffect,
             damage,
             damagedTargets,
-            knockback);
+            knockback,
+            damageCooldowns,
+            damageIntervalSeconds);
     }
 
     protected static List<Vector2> CreateLineAreaExplosionPoints(LineArea line, float spacing)
@@ -943,6 +1028,7 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
     [SerializeField, Min(0f)] private float explosionStepInterval = 0.04f;
     [SerializeField, Min(0f)] private float explosionDamage = 1f;
     [SerializeField, Min(0f)] private float slashEndPoseHoldSeconds = 0.12f;
+    [SerializeField] private DemonKingBodyAnimationRef approachAnimation;
     [SerializeField] private DemonKingBodyAnimationRef slashWarningAnimation =
         DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordSlashState, DemonKingBodyFrameSampleMode.HoldFrame, 1);
     [SerializeField] private DemonKingBodyAnimationRef slashCommitAnimation =
@@ -986,6 +1072,7 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
                     fallbackMoveSeconds);
 
                 demon.FacePatternDirection(moveDelta);
+                PlayBodyAnimation(demon, approachAnimation, null);
                 PlayPatternSound(demon, approachSound, moveStart, this);
                 if (motion != null)
                     motion.StartLunge(moveStart, moveDelta.normalized, moveDelta.magnitude, moveDuration, 1.8f);
@@ -1124,11 +1211,16 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
 public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(0f)] private float warningSeconds = 1.4f;
+    [SerializeField, Min(0f)] private float throwReleaseDelaySeconds = 1.5f;
     [SerializeField, Min(0.1f)] private float throwSpeedMultiplier = 5f;
     [SerializeField, Min(0)] private int wallBounceCount = 5;
     [SerializeField, Min(0f)] private float throwEndPoseHoldSeconds = 0.12f;
+    [SerializeField] private DemonKingBodyAnimationRef aimAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordIdleState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
     [SerializeField] private DemonKingBodyAnimationRef throwAnimation =
         DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordThrowingState);
+    [SerializeField] private DemonKingBodyAnimationRef throwEndPoseAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordThrowingState, DemonKingBodyFrameSampleMode.HoldLastFrame);
     [SerializeField] private SoundRef throwReleaseSound;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -1145,6 +1237,7 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
         demon.PushFaceTargetLock();
         try
         {
+            PlayBodyAnimation(demon, aimAnimation, DemonKingController.DarkLordSwordIdleState);
             float elapsed = 0f;
             while (elapsed < warningSeconds)
             {
@@ -1167,11 +1260,7 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
                 DemonKingController.DarkLordSwordThrowingState,
                 oncePerPattern: true);
 
-            float throwDelaySeconds = ResolveBodyAnimationLastFrameDelay(
-                demon,
-                throwAnimation,
-                DemonKingController.DarkLordSwordThrowingState);
-            yield return WaitForSecondsUnlessCancelled(throwDelaySeconds, spec);
+            yield return WaitForSecondsUnlessCancelled(Mathf.Max(0f, throwReleaseDelaySeconds), spec);
 
             if (IsAbilityCancelled(spec))
                 yield break;
@@ -1184,7 +1273,7 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
             demon.SetSwordDropped();
             if (throwEndPoseHoldSeconds > 0f)
             {
-                HoldBodyAnimationLastFrame(demon, throwAnimation, DemonKingController.DarkLordSwordThrowingState);
+                PlayBodyAnimation(demon, throwEndPoseAnimation, DemonKingController.DarkLordSwordThrowingState);
                 yield return WaitForSecondsUnlessCancelled(throwEndPoseHoldSeconds, spec);
             }
         }
@@ -1572,6 +1661,8 @@ public class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
         DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandChargeState);
     [SerializeField] private DemonKingBodyAnimationRef releaseAnimation =
         DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandGroggyCounterState);
+    [SerializeField] private DemonKingBodyAnimationRef postReleaseAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandIdleState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
     [SerializeField] private DemonKingVfxCueRef releaseImpactVfx =
         DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.Impact, DemonKingVfxSocketId.HandCounterImpact, Vector2.zero, Vector2.zero);
     [SerializeField] private DemonKingVfxCueRef laneExplosionVfx =
@@ -1684,7 +1775,7 @@ public class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
 
         yield return WaitForSecondsUnlessCancelled(releaseImpactPoseHoldSeconds, spec);
         if (!IsAbilityCancelled(spec))
-            demon.PlayPatternAnimationIfChanged(DemonKingController.DarkLordHandIdleState);
+            PlayBodyAnimation(demon, postReleaseAnimation, DemonKingController.DarkLordHandIdleState);
     }
 }
 
@@ -1915,6 +2006,8 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
     [SerializeField, Min(0f)] private float recoverEndPoseHoldSeconds = 0.16f;
     [SerializeField] private DemonKingBodyAnimationRef recoverAnimation =
         DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandSwordRecoverState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
+    [SerializeField] private DemonKingBodyAnimationRef recoverCompleteAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandSwordRecoverState, DemonKingBodyFrameSampleMode.HoldLastFrame);
     [SerializeField] private SoundRef recallStartSound;
     [SerializeField] private SoundRef recallCompleteSound;
 
@@ -1929,10 +2022,12 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
         try
         {
             PlayPatternSound(demon, recallStartSound, sword.transform.position, this);
-            sword.Recall(demon.PlayerMoveSpeedReference * recallSpeedMultiplier);
+            float recallSpeed = demon.PlayerMoveSpeedReference * recallSpeedMultiplier;
+            float effectiveTimeoutSeconds = Mathf.Max(timeoutSeconds, sword.EstimateRecallTimeoutSeconds(recallSpeed));
+            sword.Recall(recallSpeed);
 
             float elapsed = 0f;
-            while (!sword.IsHeld && elapsed < timeoutSeconds)
+            while (!sword.IsHeld && elapsed < effectiveTimeoutSeconds)
             {
                 if (IsAbilityCancelled(spec))
                     yield break;
@@ -1946,9 +2041,9 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
 
             PlayPatternSound(demon, recallCompleteSound, demon.transform.position, this);
             demon.ReleasePatternAnimationHold();
-            HoldBodyAnimationLastFrame(demon, recoverAnimation, DemonKingController.DarkLordHandSwordRecoverState);
+            PlayBodyAnimation(demon, recoverCompleteAnimation, DemonKingController.DarkLordHandSwordRecoverState);
             float finalFrameSeconds = demon.ResolvePatternAnimationFrameSeconds(
-                ResolveBodyStateName(recoverAnimation, DemonKingController.DarkLordHandSwordRecoverState));
+                ResolveBodyStateName(recoverCompleteAnimation, DemonKingController.DarkLordHandSwordRecoverState));
             yield return WaitForSecondsUnlessCancelled(
                 Mathf.Max(finalFrameSeconds, recoverEndPoseHoldSeconds),
                 spec);
@@ -1992,6 +2087,12 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
     [SerializeField, Min(0f)] private float warningSeconds = 0.6f;
     [SerializeField, Min(0.01f)] private float retreatSeconds = 0.16f;
     [SerializeField, Min(0.1f)] private float fallbackRushDistance = 40f;
+    [SerializeField, Min(0.01f)] private float wallRushBodyCastRadius = 0.8f;
+    [SerializeField, Min(0f)] private float wallStopSkinWidth = 0.08f;
+    [SerializeField, Min(0.1f)] private float minimumVisibleRushDistance = 5f;
+    [SerializeField, Min(0.01f)] private float minimumRushSeconds = 0.18f;
+    [SerializeField, Range(0f, 90f)] private float shortRushRetargetMaxAngle = 65f;
+    [SerializeField, Range(1f, 45f)] private float shortRushRetargetStepDegrees = 15f;
     [SerializeField, Min(0.1f)] private float rushSpeedMultiplier = 5f;
     [SerializeField, Min(0.1f)] private float hitWidth = 1.6f;
     [SerializeField, Min(0f)] private float damage = 1f;
@@ -2004,18 +2105,17 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
     [SerializeField] private JumpMotionProfile finalJumpMotionProfile = JumpMotionProfile.Default;
     [SerializeField, Min(0f)] private float rushEndPoseHoldSeconds = 0.1f;
     [SerializeField, Min(0f)] private float finalLandingPoseHoldSeconds = 0.14f;
-    [SerializeField] private DemonKingBodyAnimationRef rushReadyAnimation =
-        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordDashStabReadyState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
-    [SerializeField] private DemonKingBodyAnimationRef swordRushAnimation =
-        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordDashStabState);
     [SerializeField] private DemonKingBodyAnimationRef handRushAnimation =
         DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandJumpAttackState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
+    [SerializeField] private DemonKingBodyAnimationRef endpointPauseAnimation =
+        DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandJumpAttackState, DemonKingBodyFrameSampleMode.HoldLastFrame);
     [SerializeField] private DemonKingBodyAnimationRef finalJumpTravelAnimation =
         DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandJumpAttackState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
     [SerializeField] private DemonKingBodyAnimationRef finalJumpLandingAnimation =
         DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandJumpAttackState, DemonKingBodyFrameSampleMode.HoldLastFrame);
     [SerializeField] private DemonKingVfxCueRef chargeLoopVfx =
         DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.ChargeLoop, DemonKingVfxSocketId.ChargeLoop, Vector2.zero, Vector2.zero, leaveFragment: false);
+    [HideInInspector]
     [SerializeField] private DemonKingVfxCueRef chargeDisappearVfx =
         DemonKingVfxCueRef.BuiltIn(DemonKingBuiltInVfxKind.ChargeDisappear, DemonKingVfxSocketId.ChargeDisappear, Vector2.zero, Vector2.zero, leaveFragment: false);
     [SerializeField] private DemonKingVfxCueRef finalLandingImpactVfx =
@@ -2027,6 +2127,19 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
     [SerializeField] private SoundRef finalLandingSound;
     [SerializeField] private CameraShakeHook rushEndpointCameraShake = CameraShakeHook.Create(0.08f, 1f, 0.18f, 0.08f);
     [SerializeField] private CameraShakeHook finalLandingCameraShake = CameraShakeHook.Create(0.18f, 1f, 0.35f, 0.04f);
+
+    private readonly struct WallRushTrajectory
+    {
+        public WallRushTrajectory(Vector2 direction, float distance)
+        {
+            Direction = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+            Distance = Mathf.Max(0.1f, distance);
+        }
+
+        public Vector2 Direction { get; }
+        public float Distance { get; }
+        public Vector2 EndpointFrom(Vector2 start) => start + Direction * Distance;
+    }
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -2044,10 +2157,15 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
         {
             Vector2 retreatStart = demon.transform.position;
             Vector2 awayFromPlayer = -demon.GetDirectionToTargetOrFacing(retreatStart);
-            float retreatDistance = demon.PlayerDashDistanceReference;
+            float retreatDistance = ResolveWallStoppedDistance(
+                demon,
+                retreatStart,
+                awayFromPlayer,
+                demon.PlayerDashDistanceReference,
+                wallRushBodyCastRadius,
+                wallStopSkinWidth);
             demon.FacePatternDirection(-awayFromPlayer);
-            if (demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold)
-                PlayBodyAnimation(demon, rushReadyAnimation, DemonKingController.DarkLordSwordDashStabReadyState);
+            PlayBodyAnimation(demon, handRushAnimation, DemonKingController.DarkLordHandJumpAttackState);
             demon.BeginBodyAfterimage();
             try
             {
@@ -2068,9 +2186,10 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
 
             Vector2 warningStart = demon.transform.position;
             Vector2 direction = demon.GetDirectionToTargetOrFacing(warningStart);
-            if (demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold)
-                PlayBodyAnimation(demon, rushReadyAnimation, DemonKingController.DarkLordSwordDashStabReadyState);
-            LineArea warningLine = ResolveForwardLineArea(demon, warningStart, direction, hitWidth, fallbackRushDistance);
+            PlayBodyAnimation(demon, handRushAnimation, DemonKingController.DarkLordHandJumpAttackState);
+            WallRushTrajectory warningTrajectory = ResolveRushTrajectory(demon, warningStart, direction);
+            direction = warningTrajectory.Direction;
+            LineArea warningLine = ResolveRushLineArea(warningStart, warningTrajectory);
             AttackTelegraphView warningView = ShowLineAreaWarning(demon, warningLine, warningSeconds);
 
             float elapsed = 0f;
@@ -2079,8 +2198,9 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
                 if (IsAbilityCancelled(spec))
                     yield break;
 
-                direction = demon.GetDirectionToTargetOrFacing(warningStart);
-                warningLine = ResolveForwardLineArea(demon, warningStart, direction, hitWidth, fallbackRushDistance);
+                warningTrajectory = ResolveRushTrajectory(demon, warningStart, demon.GetDirectionToTargetOrFacing(warningStart));
+                direction = warningTrajectory.Direction;
+                warningLine = ResolveRushLineArea(warningStart, warningTrajectory);
                 UpdateLineAreaWarning(warningView, demon, warningLine, warningSeconds);
 
                 elapsed += Time.deltaTime;
@@ -2094,14 +2214,14 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
                     yield break;
 
                 Vector2 start = demon.transform.position;
-                direction = direction.sqrMagnitude > 0.0001f ? direction.normalized : demon.GetDirectionToTargetOrFacing(start);
+                WallRushTrajectory rushTrajectory = ResolveRushTrajectory(demon, start, demon.GetDirectionToTargetOrFacing(start));
+                direction = rushTrajectory.Direction;
                 demon.FacePatternDirection(direction);
-                if (demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold)
-                    PlayBodyAnimation(demon, swordRushAnimation, DemonKingController.DarkLordSwordDashStabState);
-                else
-                    PlayBodyAnimation(demon, handRushAnimation, DemonKingController.DarkLordHandJumpAttackState);
-                float distance = Mathf.Max(0.5f, ResolveWallDistance(demon, start, direction, fallbackRushDistance) - 0.35f);
-                float rushSeconds = SecondsForSpeed(distance, rushSpeed, 0.2f);
+                PlayBodyAnimation(demon, handRushAnimation, DemonKingController.DarkLordHandJumpAttackState);
+                float rushSeconds = Mathf.Max(
+                    minimumRushSeconds,
+                    SecondsForSpeed(rushTrajectory.Distance, rushSpeed, 0.2f));
+                Vector2 safeEndpoint = rushTrajectory.EndpointFrom(start);
 
                 Vector3 chargeLoopOffset = demon.ResolveVfxSocketLocal(chargeLoopVfx.SocketId, chargeLoopVfx.FallbackLeftOffset);
                 DemonKingAnimationClipVisual chargeLoop = DemonKingPatternVfx.SpawnCueFollowingLoop(
@@ -2112,43 +2232,38 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
                     direction,
                     "DemonKing_WallRushChargeLoop");
                 PlayPatternSound(demon, rushStartSound, start, this);
-                try
+                yield return RunLungeContactDamage(
+                    demon,
+                    motion,
+                    start,
+                    direction,
+                    rushTrajectory.Distance,
+                    rushSeconds,
+                    hitWidth,
+                    damage,
+                    knockback,
+                    spec,
+                    lungeEaseOutPower: 1f);
+                if (IsAbilityCancelled(spec))
                 {
-                    yield return RunLungeContactDamage(
-                        demon,
-                        motion,
-                        start,
-                        direction,
-                        distance,
-                        rushSeconds,
-                        hitWidth,
-                        damage,
-                        knockback,
-                        spec,
-                        lungeEaseOutPower: 1f);
+                    chargeLoop?.StopAndRelease();
+                    yield break;
                 }
-                finally
+
+                motion?.CancelMotion();
+                demon.transform.position = safeEndpoint;
+                Vector2 chargeDisappearCenter = demon.ResolveVfxSocketWorld(chargeLoopVfx.SocketId, chargeLoopVfx.FallbackLeftOffset);
+                if (!DemonKingPatternVfx.TryPlayChargeDisappearFromLoop(
+                        chargeLoop,
+                        chargeLoopVfx,
+                        hitWidth,
+                        direction))
                 {
                     chargeLoop?.StopAndRelease();
                 }
-
-                if (IsAbilityCancelled(spec))
-                    yield break;
-
-                demon.transform.position = start + direction * distance;
-                Vector2 chargeDisappearCenter = demon.ResolveVfxSocketWorld(chargeDisappearVfx.SocketId, chargeDisappearVfx.FallbackLeftOffset);
-                DemonKingPatternVfx.SpawnCueOneShot(
-                    chargeDisappearVfx,
-                    chargeDisappearCenter,
-                    hitWidth,
-                    direction,
-                    "DemonKing_WallRushChargeDisappear");
                 PlayPatternSound(demon, rushEndpointSound, chargeDisappearCenter, this);
                 PlayPatternShake(demon, rushEndpointCameraShake, direction, "DemonKing.WallBounceRushEndpoint");
-                if (demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold)
-                    PlayBodyAnimation(demon, rushReadyAnimation, DemonKingController.DarkLordSwordDashStabReadyState);
-                else
-                    PlayBodyAnimation(demon, finalJumpLandingAnimation, DemonKingController.DarkLordHandJumpAttackState);
+                PlayBodyAnimation(demon, endpointPauseAnimation, DemonKingController.DarkLordHandJumpAttackState);
 
                 yield return WaitForSecondsUnlessCancelled(Mathf.Max(0.1f, rushEndPoseHoldSeconds), spec);
 
@@ -2167,6 +2282,70 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
         }
 
         demon.MarkHp50PatternUsed();
+    }
+
+    private WallRushTrajectory ResolveRushTrajectory(DemonKingController demon, Vector2 origin, Vector2 preferredDirection)
+    {
+        Vector2 safePreferred = preferredDirection.sqrMagnitude > 0.0001f
+            ? preferredDirection.normalized
+            : demon.GetDirectionToTargetOrFacing(origin);
+        if (safePreferred.sqrMagnitude <= 0.0001f)
+            safePreferred = Vector2.right;
+
+        WallRushTrajectory best = new(
+            safePreferred,
+            ResolveRushDistance(demon, origin, safePreferred));
+        float targetMinimum = Mathf.Min(
+            Mathf.Max(0.1f, minimumVisibleRushDistance),
+            Mathf.Max(0.1f, fallbackRushDistance));
+        if (best.Distance >= targetMinimum)
+            return best;
+
+        float step = Mathf.Max(1f, shortRushRetargetStepDegrees);
+        float maxAngle = Mathf.Max(0f, shortRushRetargetMaxAngle);
+        for (float angle = step; angle <= maxAngle + 0.001f; angle += step)
+        {
+            for (int sign = -1; sign <= 1; sign += 2)
+            {
+                Vector2 candidateDirection = Rotate(safePreferred, angle * sign);
+                WallRushTrajectory candidate = new(
+                    candidateDirection,
+                    ResolveRushDistance(demon, origin, candidateDirection));
+                if (candidate.Distance > best.Distance)
+                    best = candidate;
+            }
+        }
+
+        return best;
+    }
+
+    private float ResolveRushDistance(DemonKingController demon, Vector2 origin, Vector2 direction)
+    {
+        return ResolveWallStoppedDistance(
+            demon,
+            origin,
+            direction,
+            fallbackRushDistance,
+            wallRushBodyCastRadius,
+            wallStopSkinWidth);
+    }
+
+    private static Vector2 Rotate(Vector2 direction, float degrees)
+    {
+        float radians = degrees * Mathf.Deg2Rad;
+        float cos = Mathf.Cos(radians);
+        float sin = Mathf.Sin(radians);
+        return new Vector2(
+            direction.x * cos - direction.y * sin,
+            direction.x * sin + direction.y * cos).normalized;
+    }
+
+    private LineArea ResolveRushLineArea(Vector2 origin, WallRushTrajectory trajectory)
+    {
+        Vector2 safeDirection = trajectory.Direction;
+        float length = trajectory.Distance;
+        Vector2 center = origin + safeDirection * (length * 0.5f);
+        return new LineArea(center, new Vector2(Mathf.Max(0.1f, length), hitWidth), DemonKingCombatUtil.RotationDeg(safeDirection));
     }
 
     private IEnumerator RunFinalJump(
@@ -2477,6 +2656,10 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
     [SerializeField, Min(0f)] private float laserVfxRayOriginOffset = 0.35f;
     [SerializeField, Min(0.1f)] private float fallbackLaserLength = 40f;
     [SerializeField, Min(0f)] private float laserDamage = 1f;
+    [SerializeField, Min(0.02f)] private float laserDamageIntervalSeconds = 0.35f;
+    [SerializeField, Min(0f)] private float finalFloatAmplitude = 0.12f;
+    [SerializeField, Min(0f)] private float finalFloatFrequency = 1.1f;
+    [SerializeField] private DemonKingBodyAnimationRef openingMoveAnimation;
     [SerializeField] private DemonKingBodyAnimationRef finalPoseAnimation =
         DemonKingBodyAnimationRef.State(DemonKingController.DarkLord10PercentState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
     [SerializeField] private DemonKingVfxCueRef bombExplosionVfx =
@@ -2500,22 +2683,29 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
             yield break;
 
         demon.PushThresholdStaggerGuard();
+        Vector2 finalCenter = demon.ArenaCenterPosition;
+        float finalFloatElapsed = 0f;
         try
         {
             demon.MarkFinalDesperationStarted();
             demon.CompleteEgoSwordRecall();
 
             AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
-            Vector2 center = demon.ArenaCenterPosition;
+            finalCenter = demon.ArenaCenterPosition;
             Vector2 start = demon.transform.position;
-            Vector2 delta = center - start;
+            Vector2 delta = finalCenter - start;
             demon.BeginBodyAfterimage();
             try
             {
+                PlayBodyAnimation(
+                    demon,
+                    openingMoveAnimation,
+                    null,
+                    allowDuringFinalDesperation: true);
                 if (delta.sqrMagnitude > 0.0001f && motion != null)
                     motion.StartLunge(start, delta.normalized, delta.magnitude, moveToCenterSeconds, 1.8f);
                 else
-                    demon.transform.position = center;
+                    demon.transform.position = finalCenter;
 
                 yield return WaitForSecondsUnlessCancelled(moveToCenterSeconds, spec);
             }
@@ -2527,17 +2717,18 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
             if (IsAbilityCancelled(spec) || demon.IsDead)
                 yield break;
 
-            demon.transform.position = center;
+            motion?.CancelMotion();
+            demon.transform.position = finalCenter;
             PlayBodyAnimation(
                 demon,
                 finalPoseAnimation,
                 DemonKingController.DarkLord10PercentState,
                 allowDuringFinalDesperation: true);
-            PlayPatternSound(demon, startSound, center, this);
+            PlayPatternSound(demon, startSound, finalCenter, this);
             PlayPatternShake(demon, openingCameraShake, Vector2.down, "DemonKing.FinalDesperationStart");
             DemonKingCombatUtil.ApplyCircleDamage(
                 demon,
-                center,
+                finalCenter,
                 openingKnockbackDiameter * 0.5f,
                 demon.DefaultDamageEffect,
                 openingKnockbackDamage,
@@ -2548,7 +2739,7 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
 
             IEnumerator RunLaserStep(Vector2 firstDirection, Vector2 secondDirection)
             {
-                center = demon.ArenaCenterPosition;
+                Vector2 center = finalCenter;
                 LineArea firstLine = ResolveFullLineArea(demon, center, firstDirection, laserWidth, fallbackLaserLength);
                 LineArea secondLine = ResolveFullLineArea(demon, center, secondDirection, laserWidth, fallbackLaserLength);
                 PlayPatternSound(demon, laserWarningSound, center, this);
@@ -2561,8 +2752,11 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
                     if (IsAbilityCancelled(spec) || demon.IsDead)
                         yield break;
 
-                    bombTimer = TickFinalBombardment(demon, bombTimer, Time.deltaTime);
-                    warningElapsed += Time.deltaTime;
+                    float deltaTime = Time.deltaTime;
+                    bombTimer = TickFinalBombardment(demon, bombTimer, deltaTime, finalCenter);
+                    finalFloatElapsed += deltaTime;
+                    ApplyFinalFloating(demon, finalCenter, finalFloatElapsed);
+                    warningElapsed += deltaTime;
                     yield return null;
                 }
 
@@ -2590,19 +2784,32 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
                         "DemonKing_FinalLaserSquareAttack");
                 }
 
-                HashSet<GameObject> damagedTargets = new();
+                DemonKingCombatUtil.DamageCooldownRegistry laserDamageCooldowns = new();
                 float attackElapsed = 0f;
                 while (usingAnimatedVfx ? IsAnyFinalLaserVfxPlaying(firstLaserVfx, secondLaserVfx) : attackElapsed < laserAttackSeconds)
                 {
                     if (IsAbilityCancelled(spec) || demon.IsDead)
                         yield break;
 
-                    bombTimer = TickFinalBombardment(demon, bombTimer, Time.fixedDeltaTime);
+                    float deltaTime = Time.fixedDeltaTime;
+                    bombTimer = TickFinalBombardment(demon, bombTimer, deltaTime, finalCenter);
+                    finalFloatElapsed += deltaTime;
+                    ApplyFinalFloating(demon, finalCenter, finalFloatElapsed);
                     if (!usingAnimatedVfx || IsAnyFinalLaserDamageActive(firstLaserVfx))
-                        ApplyLineAreaDamage(demon, firstLine, laserDamage, damagedTargets);
+                        ApplyLineAreaDamage(
+                            demon,
+                            firstLine,
+                            laserDamage,
+                            damageCooldowns: laserDamageCooldowns,
+                            damageIntervalSeconds: laserDamageIntervalSeconds);
                     if (!usingAnimatedVfx || IsAnyFinalLaserDamageActive(secondLaserVfx))
-                        ApplyLineAreaDamage(demon, secondLine, laserDamage, damagedTargets);
-                    attackElapsed += Time.fixedDeltaTime;
+                        ApplyLineAreaDamage(
+                            demon,
+                            secondLine,
+                            laserDamage,
+                            damageCooldowns: laserDamageCooldowns,
+                            damageIntervalSeconds: laserDamageIntervalSeconds);
+                    attackElapsed += deltaTime;
                     yield return new WaitForFixedUpdate();
                 }
             }
@@ -2618,17 +2825,32 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
             demon.StopBodyAfterimage();
             demon.ReleaseFinalDesperationHealthClamp();
             demon.PopThresholdStaggerGuard();
+            if (demon != null && !demon.IsDead)
+                demon.transform.position = new Vector3(finalCenter.x, finalCenter.y, demon.transform.position.z);
         }
     }
 
-    private float TickFinalBombardment(DemonKingController demon, float timer, float deltaTime)
+    private void ApplyFinalFloating(DemonKingController demon, Vector2 center, float elapsedSeconds)
+    {
+        if (demon == null)
+            return;
+
+        float amplitude = Mathf.Max(0f, finalFloatAmplitude);
+        float frequency = Mathf.Max(0f, finalFloatFrequency);
+        float yOffset = amplitude > 0f && frequency > 0f
+            ? Mathf.Sin(elapsedSeconds * frequency * Mathf.PI * 2f) * amplitude
+            : 0f;
+        demon.transform.position = new Vector3(center.x, center.y + yOffset, demon.transform.position.z);
+    }
+
+    private float TickFinalBombardment(DemonKingController demon, float timer, float deltaTime, Vector2 fallbackCenter)
     {
         timer -= deltaTime;
         while (timer <= 0f)
         {
             Vector2 targetCenter = demon.CurrentTarget != null
                 ? (Vector2)demon.CurrentTarget.position
-                : (Vector2)demon.ArenaCenterPosition;
+                : fallbackCenter;
 
             Vector2 offset = UnityEngine.Random.insideUnitCircle * bombOffsetRange;
 

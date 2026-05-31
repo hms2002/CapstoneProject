@@ -1,5 +1,6 @@
 using System.Collections;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
@@ -12,6 +13,9 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
     [Header("Sound")]
     [SerializeField] private SoundRef jumpSound = SoundRef.FromKey("sound_slimeQueen_Jump");
     [SerializeField] private SoundRef landSound = SoundRef.FromKey("sound_slimeQueen_Land");
+
+    [Header("Presentation")]
+    [SerializeField] private WorldPresentationHook landingPresentation;
 
     /// <summary>슬라임 여왕 계열 보스가 바운더리 안의 랜덤 위치 위로 이동한 뒤 체공/급강하합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -86,6 +90,12 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
         }
 
         randomJumpHost.ApplyJumpLandingDamage(spec, landingPosition);
+        SlimeQueenPresentationAudioUtility.PlayPresentation(
+            landingPresentation,
+            hostComponent.gameObject,
+            landingPosition,
+            this,
+            initialTarget);
         SlimeQueenPresentationAudioUtility.PlaySound(
             landSound,
             hostComponent.gameObject,

@@ -7,6 +7,72 @@ last_reviewed: 2026-05-30
 
 # Decision Log
 
+## 2026-05-31 - DemonKing Charge Uses Probe-Based Visible Trajectories
+
+Decision:
+HP50 `WallBounceRush` uses an optional authored wall-rush probe collider for endpoint casts, and each rush may retarget within a limited player-facing angle cone when the direct player path is too short to read as a visible charge. Charge endpoint presentation uses the same `DemonChargeEffectVfx` prefab instance by switching from `Loop` to `Disappear` instead of authoring a second endpoint VFX prefab slot.
+
+Reason:
+The pattern is count-based and must read as the configured number of visible rushes. Near-wall player directions can be collision-correct while still looking like a wasted count. The Charge VFX asset is authored as one controller with multiple states, so a separate disappear prefab slot creates unnecessary and misleading tuning surface.
+
+Implications:
+- `wallRushCollisionProbe` should be authored on the DemonKing prefab/scene instance when body-accurate wall stopping matters.
+- `chargeDisappearVfx` is legacy serialized data only; designers should tune `chargeLoopVfx` for both loop and disappear state placement.
+- WallBounceRush remains hand-only because the sword is forced dropped before the HP50 charge pattern.
+
+## 2026-05-30 - DemonKing Terminal Ending Returns Through Victory GameOver
+
+Decision:
+DemonKing terminal ending defaults to a Victory GameOver completion after the Ending Outro instead of loading `TitleScene`. The previous target-scene load remains as an optional/fallback completion mode.
+
+Reason:
+The final boss should preserve the roguelike loop and return through the existing run-end UI path. Capturing pending run magic stones before `EndRun(Victory)` lets the Victory GameOver screen display the earned amount while the actual run commit remains owned by the return button flow.
+
+Implications:
+- `BossDefeatEndingSequence` shows Victory GameOver after outro and hides the outro view before the GameOver screen.
+- Real defeat and victory GameOver screens may open Inventory through a GameOver-owned blocker exception; unrelated UI remains blocked.
+- FakeGameOver explicitly disables GameOver inventory access and key-hint HUD.
+- Scene/prefab UI remains authored; the existing inventory HUD button is temporarily presented on the GameOver canvas and restored.
+
+## 2026-05-30 - Slime Queen Notion Variant Uses Project NPC Id
+
+Decision:
+The Notion Slime Queen source id `1004` is adapted to the project `SlimeQueenBossNpc.asset` id `3001` in the new Melta animated Ink variant. Only the new Slime Queen SpriteLibrary is wired into `SlimeQueenBossNpc.asset`; `primaryInk` and `bossEncounterInk` are left unchanged.
+
+Reason:
+Dialogue runtime speaker and face tags resolve against project `NPCData.id`, and no project NPCData uses `1004`. The new Notion dialogue should stay additive and inactive until the user explicitly chooses to swap the active Slime Queen Ink reference.
+
+Implications:
+- Notion boss dialogue imports should be normalized to project ids before compile/validation.
+- SpriteLibrary labels can be wired independently from active Ink references to make current and future face tags resolve safely.
+- `default`, `Normal`, and `Idle` should remain aliased for Slime Queen until the existing placeholder Ink is replaced.
+
+## 2026-05-30 - DemonKing Body Pose Cues Are Pattern-Owned
+
+Decision:
+DemonKing body animation beats that designers need to tune should be exposed as `DemonKingBodyAnimationRef` fields on the owning `AL_DemonKing_*` asset. VFX/effect placement remains socket-owned through `DemonKingVfxCueRef` and `DemonKingVfxSocketMap`; body-only poses do not get fake sockets.
+
+Reason:
+Pattern phases such as WallBounceRush endpoint pause can share a visual state with another phase but still need independent authoring control. Treating those timings as sockets hides the real issue and makes body pose tuning dependent on unrelated VFX placement.
+
+Implications:
+- Pattern Workbench phase rows should show the editable body field that owns each previewed body pose.
+- Reused body animations are acceptable only when the runtime timing intentionally shares the same field.
+- Optional no-override phases can remain empty, but visible body poses should not be hardcoded in the preview without a corresponding runtime field.
+
+## 2026-05-30 - DemonKing Uses Top-Down Ellipse Warnings And Wall-Safe Charge
+
+Decision:
+DemonKing-only circular warnings render as 90% Y-scale ellipses for the 3/4 top-down read, while damage remains on the existing circular gameplay shapes. HP50 `WallBounceRush` uses a body-radius wall cast for charge endpoints, and DemonKing keeps `State.Status.KnockbackImmune` active through its lifecycle.
+
+Reason:
+The boss should not visually overstate circular ground danger in a top-down perspective, should not cross walls during the charge set piece, and should not be displaced by player knockback effects.
+
+Implications:
+- `AttackTelegraphSpec.CreateEllipse(...)` exists for visual warning geometry, but generic `CreateCircle(...)` remains circular for other enemies and bosses.
+- DemonKing warning helpers route circle warnings through the 90% Y-scale helper; damage radii are unchanged.
+- WallBounceRush body radius and skin width are Inspector-facing pattern fields and need Play Mode tuning against the authored arena walls.
+
 ## 2026-05-30 - DemonKing VFX Uses Left-Baseline Socket Tuning
 
 Decision:
@@ -19,6 +85,19 @@ Implications:
 - Timed attack VFX positions and their generated hit colliders move together when a socket is used.
 - Socket gizmos are authoring/debug visualization only; actual values still need Unity Inspector and Play Mode review.
 - EgoSword keeps its existing held/throw/recall offset fields, with selected-object gizmos added for review rather than a serialization migration.
+
+## 2026-05-30 - DarkLord Body Sorting Stays Entity Zero
+
+Decision:
+DarkLord/DemonKing root body rendering should remain `Entity / Order 0` during all patterns. Focus or dimming presentation must not temporarily move the body renderer to the Projectile layer.
+
+Reason:
+Moving the body to `Projectile / Order 2` during GroggyCounter made `DemonKingEyeLightVfx` and `DarkLordGroggyReleaseVfx` at `Projectile / Order 1` render behind the body. Keeping the body on Entity makes the layer relationship stable and keeps VFX naturally above the boss.
+
+Implications:
+- GroggyCounter world dim uses the Flowering-style policy: a world SpriteRenderer dim panel on `Entity / Order -1`.
+- Entity-layer characters are not covered by this dim panel; this is an intentional visual tradeoff for stable body/VFX ordering.
+- EyeFlash, GroggyRelease, attacks, projectiles, and other DemonKing spawned VFX continue to use Projectile sorting.
 
 ## 2026-05-30 - DemonKing Visual Tuning Uses An Editor Preview Tool
 
@@ -203,7 +282,7 @@ Implications:
 ## 2026-05-29 - DemonKing Held EgoSword Is Body-Only
 
 Decision:
-When DemonKing is in sword-held mode, the authored scene `EgoSwordActor` is kept hidden/inactive and the held sword is represented by the DemonKing body animation. The actor is reactivated only when `DarkLord_Sword_Throwing` reaches the last-frame start, and recall holds the first `DarkLord_Hand_SwordRecover` frame until the sword arrives before showing the final recover frame. The 50% `WallBounceRush` requires dropped-sword mode, so HP50 selection forces `ThrowEgoSword` first when the sword is still held.
+When DemonKing is in sword-held mode, the authored scene `EgoSwordActor` is kept hidden/inactive and the held sword is represented by the DemonKing body animation. The actor is reactivated when the `DarkLord_Sword_Throwing` release frame (`Throw_1`) begins, and recall holds the first `DarkLord_Hand_SwordRecover` frame while the sword lifts like VerticalStrike and then returns to `SwordThrowReturnOrigin` before showing the final recover frame. The 50% `WallBounceRush` requires dropped-sword mode, so HP50 selection forces `ThrowEgoSword` first when the sword is still held.
 
 Reason:
 The boss concept now treats the held weapon as part of the DemonKing sprite sheet, not as a separate follower object. Using clip length/frame-rate timing keeps sprite frame edits local to the clip and avoids adding animation-event dependencies for this pattern handoff.
@@ -211,6 +290,7 @@ The boss concept now treats the held weapon as part of the DemonKing sprite shee
 Implications:
 - `EgoSwordActor` remains a scene-authored reusable actor, not a runtime-instantiated prefab.
 - The DemonKing Animator must use the DarkLord state-library controller for visual timing to match the intended throw/recover frames.
+- `WallBounceRush` presentation is hand-only because it is selected only after `ThrowEgoSword`; do not reintroduce sword DashStab/DashStabReady branches for the HP50 charge set piece.
 - Future `DarkLord_Sword_Throwing` or `DarkLord_Hand_SwordRecover` state renames must update the `DemonKingController` constants and mapping helpers.
 
 ## 2026-05-29 - ScenePortal Entrance Presentation Does Not Change Travel Semantics

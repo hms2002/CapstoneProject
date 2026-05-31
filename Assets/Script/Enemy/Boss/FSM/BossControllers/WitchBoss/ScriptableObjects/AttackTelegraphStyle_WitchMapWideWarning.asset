@@ -46,3 +46,4 @@ MonoBehaviour:
   scaleFillWithProgress: 1
   fillScaleStart: 0
   fillScaleEnd: 1
+  fillAnchor: 1

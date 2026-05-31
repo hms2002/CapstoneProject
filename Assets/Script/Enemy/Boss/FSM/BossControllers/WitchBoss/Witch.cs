@@ -771,7 +771,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
 
         ResolveArenaRectangle(center, out Vector3 rectCenter, out Vector2 rectSize);
         rectSize = InsetMapWideWarningSize(rectSize);
-        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateRectangle(
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutlineOnly(AttackTelegraphSpec.CreateRectangle(
             rectCenter,
             rectSize,
             0f,

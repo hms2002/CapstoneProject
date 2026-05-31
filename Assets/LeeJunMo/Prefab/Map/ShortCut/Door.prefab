@@ -95,7 +95,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!61 &3144344590017098942
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -166,6 +166,11 @@ MonoBehaviour:
   model: {fileID: 3336051206690434136}
   animator: {fileID: 8025805421795082607}
   obstacleCollider: {fileID: 8131229036808013587}
+  closedSortingLayerName: Entity
+  openedSortingLayerName: GroundAOE
+  applyStateSortingLayerToModelRenderers: 1
+  stateSortingLayerRenderers:
+  - {fileID: 5888260045512627143}
   presentationAnchor: {fileID: 3336051206690434136}
   openPresentation:
     gameplayPresentation:
@@ -214,6 +219,8 @@ MonoBehaviour:
           volumeMultiplier: 0
           anchorPolicy: 0
           localOffset: {x: 0, y: 0, z: 0}
+        randomSounds: []
+        additionalSounds: []
         cameraShake:
           amplitude: 0
           amplitudeMultiplier: 0
@@ -230,6 +237,7 @@ MonoBehaviour:
           attachToTarget: 0
           anchorMode: 0
           scaleMode: 0
+          boundsMode: 0
           targetBoundsReferenceSize: 0
           targetBoundsScaleMultiplier: 0
           lifetimeMode: 0
@@ -243,6 +251,7 @@ MonoBehaviour:
           attachToTarget: 0
           anchorMode: 0
           scaleMode: 0
+          boundsMode: 0
           targetBoundsReferenceSize: 0
           targetBoundsScaleMultiplier: 0
           lifetimeMode: 0
@@ -254,6 +263,8 @@ MonoBehaviour:
           volumeMultiplier: 0
           anchorPolicy: 0
           localOffset: {x: 0, y: 0, z: 0}
+        randomSounds: []
+        additionalSounds: []
         cameraShake:
           amplitude: 0
           amplitudeMultiplier: 0
@@ -270,6 +281,7 @@ MonoBehaviour:
           attachToTarget: 0
           anchorMode: 0
           scaleMode: 0
+          boundsMode: 0
           targetBoundsReferenceSize: 0
           targetBoundsScaleMultiplier: 0
           lifetimeMode: 0
@@ -283,6 +295,7 @@ MonoBehaviour:
           attachToTarget: 0
           anchorMode: 0
           scaleMode: 0
+          boundsMode: 0
           targetBoundsReferenceSize: 0
           targetBoundsScaleMultiplier: 0
           lifetimeMode: 0
@@ -294,6 +307,8 @@ MonoBehaviour:
           volumeMultiplier: 0
           anchorPolicy: 0
           localOffset: {x: 0, y: 0, z: 0}
+        randomSounds: []
+        additionalSounds: []
         cameraShake:
           amplitude: 0
           amplitudeMultiplier: 0
@@ -310,6 +325,7 @@ MonoBehaviour:
           attachToTarget: 0
           anchorMode: 0
           scaleMode: 0
+          boundsMode: 0
           targetBoundsReferenceSize: 0
           targetBoundsScaleMultiplier: 0
           lifetimeMode: 0
@@ -323,6 +339,7 @@ MonoBehaviour:
           attachToTarget: 0
           anchorMode: 0
           scaleMode: 0
+          boundsMode: 0
           targetBoundsReferenceSize: 0
           targetBoundsScaleMultiplier: 0
           lifetimeMode: 0

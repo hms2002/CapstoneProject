@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -20,6 +21,16 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     [SerializeField] private KeyCode resetWeaponCooldownKey = KeyCode.F11;
     [SerializeField] private KeyCode increaseAttackKey = KeyCode.F12;
     [SerializeField] private KeyCode mapZoomToggleKey = KeyCode.F5;
+    [SerializeField] private KeyCode warpToBossSceneKey = KeyCode.F6;
+
+    [Header("Boss Scene Cheat")]
+    [SerializeField] private string[] bossSceneNames =
+    {
+        "HeoMinSeok_Boss_Shadow",
+        "HeoMinSeok_Boss_Dragon",
+        "SangHyup_Boss_SlimeQueen",
+        "LeeJunmo_Boss_DemonKing"
+    };
 
     [Header("Attributes")]
     [SerializeField] private AttributeDefinition healthAttribute;
@@ -51,6 +62,8 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     public KeyCode ResetWeaponCooldownKey => resetWeaponCooldownKey;
     public KeyCode IncreaseAttackKey => increaseAttackKey;
     public KeyCode MapZoomToggleKey => mapZoomToggleKey;
+    public KeyCode WarpToBossSceneKey => warpToBossSceneKey;
+    public IReadOnlyList<string> BossSceneNames => bossSceneNames;
     public AttributeDefinition HealthAttribute => healthAttribute;
     public AttributeDefinition MaxHealthAttribute => maxHealthAttribute;
     public AttributeDefinition AttackAddAttribute => attackAddAttribute;

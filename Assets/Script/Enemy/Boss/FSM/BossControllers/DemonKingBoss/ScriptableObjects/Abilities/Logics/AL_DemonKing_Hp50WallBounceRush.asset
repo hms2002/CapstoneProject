@@ -16,6 +16,12 @@ MonoBehaviour:
   warningSeconds: 0.6
   retreatSeconds: 0.16
   fallbackRushDistance: 40
+  wallRushBodyCastRadius: 0.8
+  wallStopSkinWidth: 0.08
+  minimumVisibleRushDistance: 5
+  minimumRushSeconds: 0.18
+  shortRushRetargetMaxAngle: 65
+  shortRushRetargetStepDegrees: 15
   rushSpeedMultiplier: 5
   hitWidth: 1.6
   damage: 1
@@ -34,19 +40,14 @@ MonoBehaviour:
     landingDropSharpness: 0.22
   rushEndPoseHoldSeconds: 0.1
   finalLandingPoseHoldSeconds: 0.14
-  rushReadyAnimation:
-    clip: {fileID: 0}
-    sampleMode: 1
-    frameIndex: 0
-    fallbackStateName: DarkLord_Sword_DashStabReady
-  swordRushAnimation:
-    clip: {fileID: 0}
-    sampleMode: 0
-    frameIndex: 0
-    fallbackStateName: DarkLord_Sword_DashStab
   handRushAnimation:
-    clip: {fileID: 0}
+    clip: {fileID: 7400000, guid: d1a4000000000000000000000000000a, type: 2}
     sampleMode: 1
+    frameIndex: 0
+    fallbackStateName: DarkLord_Hand_JumpAttack
+  endpointPauseAnimation:
+    clip: {fileID: 7400000, guid: d1a40000000000000000000000000003, type: 2}
+    sampleMode: 3
     frameIndex: 0
     fallbackStateName: DarkLord_Hand_JumpAttack
   finalJumpTravelAnimation:
@@ -60,7 +61,7 @@ MonoBehaviour:
     frameIndex: 0
     fallbackStateName: DarkLord_Hand_JumpAttack
   chargeLoopVfx:
-    prefabOverride: {fileID: 0}
+    prefabOverride: {fileID: 3698878696128690417, guid: 0fa4a3e66d4b60044b5754d9cad794c1, type: 3}
     fallbackKind: 8
     socketId: 6
     fallbackLeftOffset: {x: 0, y: 0}
