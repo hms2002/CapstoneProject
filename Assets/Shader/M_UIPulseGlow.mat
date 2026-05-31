@@ -43,7 +43,7 @@ Material:
     m_Floats:
     - _AlphaThreshold: 0.1
     - _ColorMask: 15
-    - _CoreAlpha: 0.119
+    - _CoreAlpha: 0.165
     - _EnableExternalAlpha: 0
     - _GlowAlpha: 0.43
     - _GlowSize: 1.57
