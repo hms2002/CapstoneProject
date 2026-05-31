@@ -17,8 +17,6 @@ MonoBehaviour:
     baseValue: 5
   - attribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     baseValue: 5
-  - attribute: {fileID: 11400000, guid: 2fa45d25bb8e0e945912cde04492e6d1, type: 2}
-    baseValue: 10
   - attribute: {fileID: 11400000, guid: 5e0412bd8f40af44c9249edbe58db140, type: 2}
     baseValue: 30
   - attribute: {fileID: 11400000, guid: 434cc32abf8345d19696a284b8f3ddfd, type: 2}
@@ -30,4 +28,4 @@ MonoBehaviour:
   - attribute: {fileID: 11400000, guid: dde112729dec0bb4a9d2238ee7ee6dcc, type: 2}
     baseValue: 100
   - attribute: {fileID: 11400000, guid: 947f52c2a34d008428c105cd897d5efd, type: 2}
-    baseValue: 40
+    baseValue: 10
