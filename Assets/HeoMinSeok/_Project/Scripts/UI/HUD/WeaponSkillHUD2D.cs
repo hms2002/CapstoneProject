@@ -37,6 +37,15 @@ public class WeaponSkillHUD2D : MonoBehaviour
         public Image cooldownFill;   // fillAmount = remaining/total (Image Type Filled 필요)
         [Tooltip("선택. 지정하면 Bloom 같은 활성 지속시간 표시는 cooldownFill 대신 이 Image를 사용합니다.")]
         public Image activeDurationFill;
+        [Header("Ready Flash")]
+        [Tooltip("선택. 쿨타임 완료 순간에 반짝일 별도 글로우 Image입니다. 비워두면 icon 자체를 색/스케일로 반짝입니다.")]
+        public Image readyFlashImage;
+        [Tooltip("쿨타임 완료 반짝임 지속 시간입니다.")]
+        public float readyFlashDuration = 0.22f;
+        [Tooltip("쿨타임 완료 반짝임 색입니다. readyFlashImage를 쓰면 이 색으로 글로우를 표시합니다.")]
+        public Color readyFlashColor = new Color(1f, 0.95f, 0.55f, 1f);
+        [Tooltip("readyFlashImage가 없을 때 아이콘을 얼마나 크게 튕길지 정합니다.")]
+        public float readyFlashScale = 1.16f;
         public TMP_Text cooldownText; // 선택(초 표기)
         public TMP_Text chargeText;   // 선택(예: 2/3)
 
@@ -45,6 +54,16 @@ public class WeaponSkillHUD2D : MonoBehaviour
         [System.NonSerialized] public Image.FillMethod cooldownFillMethod;
         [System.NonSerialized] public int cooldownFillOrigin;
         [System.NonSerialized] public bool cooldownFillVisibilityWarningLogged;
+        [System.NonSerialized] public bool readyStateInitialized;
+        [System.NonSerialized] public bool wasReady;
+        [System.NonSerialized] public int lastChargeCount = -1;
+        [System.NonSerialized] public float readyFlashRemaining;
+        [System.NonSerialized] public bool readyFlashScaleCaptured;
+        [System.NonSerialized] public Vector3 readyFlashBaseScale;
+        [System.NonSerialized] public bool readyFlashColorCaptured;
+        [System.NonSerialized] public Color readyFlashBaseIconColor;
+        [System.NonSerialized] public Material readyFlashOriginalMaterial;
+        [System.NonSerialized] public Material readyFlashMaterialInstance;
     }
 
     [Header("Refs")]
@@ -71,6 +90,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
     private AbilityDefinition attackDef;
     private AbilityDefinition skill1Def;
     private AbilityDefinition skill2Def;
+    private WeaponAbilitySelector abilitySelector;
     private InputBindingService cachedInputBindingService;
 
     private void Awake()
@@ -83,6 +103,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
             hudGraphics = hudRoot.GetComponentsInChildren<Graphic>(includeInactive: true);
 
         TryResolvePlayerRefs();
+        RebuildSelector();
         RefreshVisibility();
     }
 
@@ -92,6 +113,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
         PlayerRuntimeRegistry.PlayerUnregistered += HandlePlayerUnregistered;
 
         TryResolvePlayerRefs();
+        RebuildSelector();
         BindInventoryEvents();
         RefreshAbilityRefs();
         RefreshVisibility();
@@ -109,6 +131,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
     {
         UnbindInventoryEvents();
         TryResolvePlayerRefs(player);
+        RebuildSelector();
         BindInventoryEvents();
         RefreshAbilityRefs();
         RefreshVisibility();
@@ -125,6 +148,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
             inventory = null;
             abilitySystem = null;
             weaponEquipController = null;
+            abilitySelector = null;
             RefreshAbilityRefs();
             RefreshVisibility();
         }
@@ -159,15 +183,22 @@ public class WeaponSkillHUD2D : MonoBehaviour
             weaponEquipController = FindFirstObjectByType<WeaponEquipController>();
     }
 
+    private void RebuildSelector()
+    {
+        abilitySelector = inventory != null
+            ? new WeaponAbilitySelector(inventory, weaponEquipController)
+            : null;
+    }
+
     private void BindInventoryEvents()
     {
         if (inventory == null)
             return;
 
         inventory.OnEquippedChanged -= HandleEquippedChanged;
-        inventory.OnInventoryChanged -= RefreshAbilityRefs;
+        inventory.OnInventoryChanged -= HandleInventoryChanged;
         inventory.OnEquippedChanged += HandleEquippedChanged;
-        inventory.OnInventoryChanged += RefreshAbilityRefs;
+        inventory.OnInventoryChanged += HandleInventoryChanged;
     }
 
     private void UnbindInventoryEvents()
@@ -176,11 +207,18 @@ public class WeaponSkillHUD2D : MonoBehaviour
             return;
 
         inventory.OnEquippedChanged -= HandleEquippedChanged;
-        inventory.OnInventoryChanged -= RefreshAbilityRefs;
+        inventory.OnInventoryChanged -= HandleInventoryChanged;
     }
 
     private void HandleEquippedChanged(int prevIdx, int newIdx, WeaponDefinition prevW, WeaponDefinition newW)
     {
+        RebuildSelector();
+        RefreshAbilityRefs();
+    }
+
+    private void HandleInventoryChanged()
+    {
+        RebuildSelector();
         RefreshAbilityRefs();
     }
 
@@ -197,8 +235,12 @@ public class WeaponSkillHUD2D : MonoBehaviour
         }
 
         attackDef = null;
-        skill1Def = inventory.GetActiveAbility(WeaponAbilitySlot.Skill1);
-        skill2Def = inventory.GetActiveAbility(WeaponAbilitySlot.Skill2);
+        skill1Def = abilitySelector != null
+            ? abilitySelector.ResolveAbility(WeaponAbilitySlot.Skill1)
+            : inventory.GetActiveAbility(WeaponAbilitySlot.Skill1);
+        skill2Def = abilitySelector != null
+            ? abilitySelector.ResolveAbility(WeaponAbilitySlot.Skill2)
+            : inventory.GetActiveAbility(WeaponAbilitySlot.Skill2);
 
         ApplySlot(attackUI, attackDef);
         ApplySlot(skill1UI, skill1Def);
@@ -244,36 +286,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
 
     private void ApplySlot(SkillSlotUI ui, AbilityDefinition def)
     {
-        if (ui == null) return;
-
-        bool has = (def != null);
-        SetSlotVisible(ui, has);
-
-        if (ui.icon != null)
-        {
-            ui.icon.enabled = has;
-            ui.icon.color = normalIconColor;
-            // AbilityDefinition에 아이콘이 있다면 여기서 연결해도 됨(없으면 유지)
-            if(def != null)
-                ui.icon.sprite = def.icon;
-        }
-
-        SyncOverlaySprite(ui, def);
-        SyncInputGuide(ui, has);
-
-        if (ui.activeOverlay != null)
-            ui.activeOverlay.SetActive(false);
-
-        if (ui.cooldownFill != null)
-            ui.cooldownFill.fillAmount = has ? 0f : 0f;
-
-        SetActiveDurationFillVisible(ui, false);
-
-        if (ui.cooldownText != null)
-            ui.cooldownText.text = "";
-
-        if (ui.chargeText != null)
-            ui.chargeText.text = "";
+        WeaponSkillHudSlotPresenter.ApplySlot(ui, def, normalIconColor, GetInputBindingService());
     }
 
     /// <summary>
@@ -338,31 +351,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
 
     private void UpdateDynamicIcon(SkillSlotUI ui, WeaponAbilitySlot slot, AbilityDefinition def)
     {
-        if (ui == null || ui.icon == null)
-            return;
-
-        Sprite resolvedIcon = null;
-        if (def != null)
-        {
-            IWeaponAbilityHudIconOverrideProvider provider = ResolveHudIconOverrideProvider();
-            if (provider != null &&
-                provider.TryGetHudIconOverride(slot, def, out Sprite overrideIcon) &&
-                overrideIcon != null)
-            {
-                resolvedIcon = overrideIcon;
-            }
-            else
-            {
-                resolvedIcon = def.icon;
-            }
-        }
-
-        if (ui.icon.sprite != resolvedIcon)
-            ui.icon.sprite = resolvedIcon;
-
-        Image overlayImage = ResolveOverlayImage(ui);
-        if (overlayImage != null && overlayImage.sprite != resolvedIcon)
-            overlayImage.sprite = resolvedIcon;
+        WeaponSkillHudSlotPresenter.UpdateDynamicIcon(ui, slot, def, ResolveHudIconOverrideProvider());
     }
 
     private IWeaponAbilityHudIconOverrideProvider ResolveHudIconOverrideProvider()
@@ -395,18 +384,14 @@ public class WeaponSkillHUD2D : MonoBehaviour
     /// </summary>
     private void UpdateCastingVisual(SkillSlotUI ui, AbilityDefinition def)
     {
-        if (ui == null)
-            return;
-
-        bool hasAbility = def != null;
-        bool isActive = hasAbility && IsAbilityActive(def);
-        if (ui.activeOverlay != null)
-            ui.activeOverlay.SetActive(hasAbility && isActive);
-
-        if (ui.icon != null)
-            ui.icon.color = hasAbility && isActive
-                ? EvaluateActiveIconColor()
-                : normalIconColor;
+        WeaponSkillHudSlotPresenter.UpdateCastingVisual(
+            ui,
+            def,
+            abilitySystem,
+            normalIconColor,
+            activeIconColor,
+            activePulseSpeed,
+            activePulseStrength);
     }
 
     /// <summary>
@@ -488,24 +473,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
     /// </summary>
     private void SyncInputGuide(SkillSlotUI ui, bool isSlotVisible)
     {
-        if (ui == null)
-            return;
-
-        GameObject guideRoot = ResolveInputGuideRoot(ui);
-        Image guideIcon = ui.inputGuideIcon;
-        bool shouldShow = isSlotVisible && ui.useInputGuide && guideIcon != null;
-
-        if (guideRoot != null)
-            guideRoot.SetActive(shouldShow);
-
-        if (!shouldShow || guideIcon == null)
-            return;
-
-        InputBindingService input = GetInputBindingService();
-        guideIcon.enabled = true;
-        guideIcon.sprite = input != null
-            ? input.GetBindingIcon(ui.inputActionId)
-            : null;
+        WeaponSkillHudSlotPresenter.SyncInputGuide(ui, isSlotVisible, GetInputBindingService());
     }
 
     /// <summary>
@@ -538,66 +506,12 @@ public class WeaponSkillHUD2D : MonoBehaviour
     }
     private void UpdateCooldownAndCharge(SkillSlotUI ui, WeaponAbilitySlot slot, AbilityDefinition def)
     {
-        if (ui == null) return;
-
-        if (def == null)
-        {
-            RestoreCooldownFillConfig(ui);
-            SetActiveDurationFillVisible(ui, false);
-            if (ui.cooldownFill != null) ui.cooldownFill.fillAmount = 0f;
-            if (ui.cooldownText != null) ui.cooldownText.text = "";
-            if (ui.chargeText != null) ui.chargeText.text = "";
-            return;
-        }
-
-        if (TryApplyActiveDurationOverride(ui, slot, def))
-            return;
-
-        SetActiveDurationFillVisible(ui, false);
-        RestoreCooldownFillConfig(ui);
-
-        float total = Mathf.Max(0.0001f, def.cooldown);
-
-        // ✅ 충전형
-        if (def.useCharges)
-        {
-            int charges = abilitySystem.GetChargesRemaining(def);
-            int max = abilitySystem.GetMaxCharges(def);
-            float recharge = abilitySystem.GetRechargeRemaining(def); // 다음 1회 충전까지 남은 시간
-
-            // fill: "충전 중"이면 차오르는 형태(= 남은시간 기반)
-            if (ui.cooldownFill != null)
-            {
-                // charges가 풀이면(= 충전 필요 없음) fill 0으로
-                if (charges >= max) ui.cooldownFill.fillAmount = 0f;
-                else ui.cooldownFill.fillAmount = Mathf.Clamp01(recharge / total);
-            }
-
-            if (ui.cooldownText != null)
-            {
-                // 충전 중이고 아직 풀충전 아니면 남은 시간 표시
-                ui.cooldownText.text = (charges < max && recharge > 0.01f) ? recharge.ToString("0.0") : "";
-            }
-
-            if (ui.chargeText != null)
-            {
-                ui.chargeText.text = $"{charges}/{max}";
-            }
-
-            return;
-        }
-
-        // ✅ 일반 쿨다운형
-        float remaining = abilitySystem.GetCooldownRemaining(def);
-
-        if (ui.cooldownFill != null)
-            ui.cooldownFill.fillAmount = Mathf.Clamp01(remaining / total);
-
-        if (ui.cooldownText != null)
-            ui.cooldownText.text = remaining > 0.01f ? remaining.ToString("0.0") : "";
-
-        if (ui.chargeText != null)
-            ui.chargeText.text = "";
+        WeaponSkillHudSlotPresenter.UpdateCooldownAndCharge(
+            ui,
+            slot,
+            def,
+            abilitySystem,
+            ResolveHudDurationOverrideProvider());
     }
 
     private bool TryApplyActiveDurationOverride(SkillSlotUI ui, WeaponAbilitySlot slot, AbilityDefinition def)

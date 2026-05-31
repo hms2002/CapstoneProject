@@ -29,14 +29,25 @@ public sealed class WeaponAbilitySelector
         int activeSlotIndex = weaponInventory != null
             ? weaponInventory.ActiveIndex
             : -1;
+
+        return ResolveAbilityForSlot(activeSlotIndex, slot);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 지정한 무기 인벤토리 슬롯을 기준으로 입력 슬롯의 표시/실행 AbilityDefinition을 확정한다.
+    /// - 비활성 무기 HUD도 활성 무기 입력 선택 규칙과 최대한 같은 경로로 스킬을 표시하게 한다.
+    /// </summary>
+    public AbilityDefinition ResolveAbilityForSlot(int weaponSlotIndex, WeaponAbilitySlot slot)
+    {
         WeaponDefinition activeWeapon = weaponInventory != null
-            ? weaponInventory.ActiveWeapon
+            ? weaponInventory.GetWeaponInSlot(weaponSlotIndex)
             : null;
         WeaponRuntimeData runtimeData = weaponInventory != null
-            ? weaponInventory.ActiveRuntimeData
+            ? weaponInventory.GetRuntimeDataInSlot(weaponSlotIndex)
             : null;
         int otherSlotIndex = weaponInventory != null
-            ? weaponInventory.GetOtherSlotIndex(activeSlotIndex)
+            ? weaponInventory.GetOtherSlotIndex(weaponSlotIndex)
             : -1;
         WeaponDefinition otherWeapon = weaponInventory != null
             ? weaponInventory.GetWeaponInSlot(otherSlotIndex)
@@ -44,7 +55,8 @@ public sealed class WeaponAbilitySelector
         WeaponRuntimeData otherRuntimeData = weaponInventory != null
             ? weaponInventory.GetRuntimeDataInSlot(otherSlotIndex)
             : null;
-        WeaponAbilityRuntimeState runtimeState = runtimeStateProvider != null
+        bool isActiveSlot = weaponInventory != null && weaponInventory.ActiveIndex == weaponSlotIndex;
+        WeaponAbilityRuntimeState runtimeState = isActiveSlot && runtimeStateProvider != null
             ? runtimeStateProvider.GetCurrentWeaponRuntimeState()
             : null;
 
@@ -56,7 +68,7 @@ public sealed class WeaponAbilitySelector
         {
             var context = new WeaponSelectionContext(
                 activeWeapon,
-                activeSlotIndex,
+                weaponSlotIndex,
                 slot,
                 runtimeState,
                 runtimeData,

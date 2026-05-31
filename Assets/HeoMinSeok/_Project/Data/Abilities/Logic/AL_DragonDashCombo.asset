@@ -49,6 +49,8 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0
       amplitudeMultiplier: 0
@@ -62,6 +64,12 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0.3, y: 0.3, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      boundsMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 1
       lifetimeOverrideSeconds: 0.1
       useUnscaledTime: 0
@@ -70,6 +78,12 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      boundsMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
@@ -92,6 +106,8 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0
       amplitudeMultiplier: 0
@@ -105,14 +121,31 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 1, y: 1, z: 1}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      boundsMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
     particle:
-      prefab: {fileID: 4540458603196068083, guid: f3e6d674c38bfa3459b9aa0e37af577d, type: 3}
+      prefab: {fileID: 0}
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 1, y: 1, z: 1}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      boundsMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
+  enableDashAfterimage: 1
+  afterimageEmissionInterval: 0.035
+  afterimageLifetimeSeconds: 0.18
+  afterimageColor: {r: 1, g: 0.35, b: 0.18, a: 0.42}
+  clearAfterimagesOnCancel: 0

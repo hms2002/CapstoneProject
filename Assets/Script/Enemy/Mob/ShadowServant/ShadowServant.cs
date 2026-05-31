@@ -65,7 +65,7 @@ public class ShadowServant : Mob, IMobAttackDecisionSource
 
     public override bool CanUseChaseMovement()
     {
-        return attackRunner == null || !attackRunner.IsRunning;
+        return base.CanUseChaseMovement() && (attackRunner == null || !attackRunner.IsRunning);
     }
 
     protected override void OnDeathStarted()
