@@ -534,6 +534,12 @@ public class WeaponInventory2D : MonoBehaviour
         {
             Equip(slotIndex);
         }
+        else if (wasActive && newWeapon == null)
+        {
+            int fallbackIndex = FindFirstFilledSlot();
+            if (fallbackIndex >= 0)
+                Equip(fallbackIndex);
+        }
         else if (autoEquipIfNone && ActiveIndex < 0 && newWeapon != null)
         {
             Equip(slotIndex);

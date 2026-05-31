@@ -131,6 +131,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
 
     public override bool CanUseChaseMovement()
     {
+        if (!base.CanUseChaseMovement()) return false;
         UpdateSpeed(ChaseSpeedMultiplier);
 
         if (!CanMove())

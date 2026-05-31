@@ -124,6 +124,7 @@ public class Knight : Slime
 
     public override bool CanUseChaseMovement()
     {
+        if (!base.CanUseChaseMovement()) return false;
         UpdateSpeed(ChaseSpeedMultiplier);
 
         if (!CanMove()) return false;

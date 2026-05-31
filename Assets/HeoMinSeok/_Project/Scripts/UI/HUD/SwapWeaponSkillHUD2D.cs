@@ -156,9 +156,9 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
             return;
 
         inventory.OnEquippedChanged -= HandleEquippedChanged;
-        inventory.OnInventoryChanged -= RefreshAbilityRefs;
+        inventory.OnInventoryChanged -= HandleInventoryChanged;
         inventory.OnEquippedChanged += HandleEquippedChanged;
-        inventory.OnInventoryChanged += RefreshAbilityRefs;
+        inventory.OnInventoryChanged += HandleInventoryChanged;
     }
 
     private void UnbindInventoryEvents()
@@ -167,11 +167,18 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
             return;
 
         inventory.OnEquippedChanged -= HandleEquippedChanged;
-        inventory.OnInventoryChanged -= RefreshAbilityRefs;
+        inventory.OnInventoryChanged -= HandleInventoryChanged;
     }
 
     private void HandleEquippedChanged(int previousIndex, int newIndex, WeaponDefinition previousWeapon, WeaponDefinition newWeapon)
     {
+        RebuildSelector();
+        RefreshAbilityRefs();
+    }
+
+    private void HandleInventoryChanged()
+    {
+        RebuildSelector();
         RefreshAbilityRefs();
     }
 

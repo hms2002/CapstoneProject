@@ -196,9 +196,9 @@ public class WeaponSkillHUD2D : MonoBehaviour
             return;
 
         inventory.OnEquippedChanged -= HandleEquippedChanged;
-        inventory.OnInventoryChanged -= RefreshAbilityRefs;
+        inventory.OnInventoryChanged -= HandleInventoryChanged;
         inventory.OnEquippedChanged += HandleEquippedChanged;
-        inventory.OnInventoryChanged += RefreshAbilityRefs;
+        inventory.OnInventoryChanged += HandleInventoryChanged;
     }
 
     private void UnbindInventoryEvents()
@@ -207,11 +207,18 @@ public class WeaponSkillHUD2D : MonoBehaviour
             return;
 
         inventory.OnEquippedChanged -= HandleEquippedChanged;
-        inventory.OnInventoryChanged -= RefreshAbilityRefs;
+        inventory.OnInventoryChanged -= HandleInventoryChanged;
     }
 
     private void HandleEquippedChanged(int prevIdx, int newIdx, WeaponDefinition prevW, WeaponDefinition newW)
     {
+        RebuildSelector();
+        RefreshAbilityRefs();
+    }
+
+    private void HandleInventoryChanged()
+    {
+        RebuildSelector();
         RefreshAbilityRefs();
     }
 

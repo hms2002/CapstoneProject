@@ -27,6 +27,8 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
     [SerializeField, Min(0f)] private float spawnVfxDelaySeconds = 0.35f;
     [SerializeField] private Vector3 spawnVfxOffset;
     [SerializeField] private SoundRef spawnSound;
+    [Tooltip("-1이면 Resources/MonsterRoomEntrySpawnSettings 기본값을 사용합니다. 0이면 이 방에서는 스폰 후 대기를 끕니다.")]
+    [SerializeField, Min(-1f)] private float postSpawnIdleSeconds = -1f;
 
     [Header("Debug")]
     [SerializeField] private bool logRoomEntrySpawnDebug;
@@ -292,6 +294,7 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
         if (spawner != null)
         {
             GameObject spawnedMonster = spawner.SpawnOne(request);
+            ApplyPostSpawnIdlePause(spawnedMonster);
             LogRoomEntrySpawn($"spawn result: prefab={FormatObject(request.MonsterPrefab)}, monster={FormatObject(spawnedMonster)}");
             ReleasePendingSpawn(request, releaseChestPending: spawnedMonster == null);
         }
@@ -417,6 +420,35 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
         MonsterRoomEntrySpawnSettingsSO settings = ResolveDefaultSpawnSettings();
         return settings != null ? settings.DefaultSpawnSound : spawnSound;
+    }
+
+    private float ResolvePostSpawnIdleSeconds()
+    {
+        if (postSpawnIdleSeconds >= 0f)
+            return postSpawnIdleSeconds;
+
+        MonsterRoomEntrySpawnSettingsSO settings = ResolveDefaultSpawnSettings();
+        return settings != null ? settings.DefaultPostSpawnIdleSeconds : 0f;
+    }
+
+    private void ApplyPostSpawnIdlePause(GameObject spawnedMonster)
+    {
+        if (spawnedMonster == null)
+            return;
+
+        float idleSeconds = ResolvePostSpawnIdleSeconds();
+        if (idleSeconds <= 0f)
+            return;
+
+        Mob mob = spawnedMonster.GetComponent<Mob>();
+        if (mob == null)
+            mob = spawnedMonster.GetComponentInChildren<Mob>(includeInactive: true);
+
+        if (mob == null)
+            return;
+
+        mob.ApplySpawnIdlePause(idleSeconds);
+        LogRoomEntrySpawn($"post spawn idle applied: monster={FormatObject(spawnedMonster)}, seconds={idleSeconds:0.###}");
     }
 
     private MonsterRoomEntrySpawnSettingsSO ResolveDefaultSpawnSettings()

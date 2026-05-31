@@ -20,3 +20,4 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  defaultPostSpawnIdleSeconds: 0.5
