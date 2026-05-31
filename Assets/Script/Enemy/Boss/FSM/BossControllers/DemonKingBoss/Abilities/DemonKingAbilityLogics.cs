@@ -822,7 +822,9 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         LineArea line,
         float damage,
         HashSet<GameObject> damagedTargets = null,
-        float knockback = 0f)
+        float knockback = 0f,
+        DemonKingCombatUtil.DamageCooldownRegistry damageCooldowns = null,
+        float damageIntervalSeconds = 0f)
     {
         DemonKingCombatUtil.ApplyRectangleDamage(
             demon,
@@ -832,7 +834,9 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
             demon.DefaultDamageEffect,
             damage,
             damagedTargets,
-            knockback);
+            knockback,
+            damageCooldowns,
+            damageIntervalSeconds);
     }
 
     protected static List<Vector2> CreateLineAreaExplosionPoints(LineArea line, float spacing)
@@ -2652,6 +2656,7 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
     [SerializeField, Min(0f)] private float laserVfxRayOriginOffset = 0.35f;
     [SerializeField, Min(0.1f)] private float fallbackLaserLength = 40f;
     [SerializeField, Min(0f)] private float laserDamage = 1f;
+    [SerializeField, Min(0.02f)] private float laserDamageIntervalSeconds = 0.35f;
     [SerializeField, Min(0f)] private float finalFloatAmplitude = 0.12f;
     [SerializeField, Min(0f)] private float finalFloatFrequency = 1.1f;
     [SerializeField] private DemonKingBodyAnimationRef openingMoveAnimation;
@@ -2779,7 +2784,7 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
                         "DemonKing_FinalLaserSquareAttack");
                 }
 
-                HashSet<GameObject> damagedTargets = new();
+                DemonKingCombatUtil.DamageCooldownRegistry laserDamageCooldowns = new();
                 float attackElapsed = 0f;
                 while (usingAnimatedVfx ? IsAnyFinalLaserVfxPlaying(firstLaserVfx, secondLaserVfx) : attackElapsed < laserAttackSeconds)
                 {
@@ -2791,9 +2796,19 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
                     finalFloatElapsed += deltaTime;
                     ApplyFinalFloating(demon, finalCenter, finalFloatElapsed);
                     if (!usingAnimatedVfx || IsAnyFinalLaserDamageActive(firstLaserVfx))
-                        ApplyLineAreaDamage(demon, firstLine, laserDamage, damagedTargets);
+                        ApplyLineAreaDamage(
+                            demon,
+                            firstLine,
+                            laserDamage,
+                            damageCooldowns: laserDamageCooldowns,
+                            damageIntervalSeconds: laserDamageIntervalSeconds);
                     if (!usingAnimatedVfx || IsAnyFinalLaserDamageActive(secondLaserVfx))
-                        ApplyLineAreaDamage(demon, secondLine, laserDamage, damagedTargets);
+                        ApplyLineAreaDamage(
+                            demon,
+                            secondLine,
+                            laserDamage,
+                            damageCooldowns: laserDamageCooldowns,
+                            damageIntervalSeconds: laserDamageIntervalSeconds);
                     attackElapsed += deltaTime;
                     yield return new WaitForFixedUpdate();
                 }

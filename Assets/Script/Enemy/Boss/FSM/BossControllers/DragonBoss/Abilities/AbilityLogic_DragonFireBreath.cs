@@ -401,8 +401,8 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
             if (!CanDamageTargetNow(targetRoot))
                 continue;
 
-            CombatHitPayloadApplier.Apply(targetRoot, payload, hits[i].ClosestPoint(origin));
-            nextDamageAllowedTimes[targetRoot] = Time.time + damageIntervalSeconds;
+            if (CombatHitPayloadApplier.Apply(targetRoot, payload, hits[i].ClosestPoint(origin)))
+                nextDamageAllowedTimes[targetRoot] = Time.time + damageIntervalSeconds;
         }
     }
 

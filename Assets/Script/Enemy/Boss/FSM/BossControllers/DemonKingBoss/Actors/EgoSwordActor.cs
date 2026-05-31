@@ -70,6 +70,7 @@ public sealed class EgoSwordActor : MonoBehaviour
     [SerializeField, Range(0.1f, 1f)] private float laserTempoMultiplier = 0.75f;
     [SerializeField, Min(0.1f)] private float fallbackMapLaserLength = 40f;
     [SerializeField, Min(0.1f)] private float laserWidth = 0.75f;
+    [SerializeField, Min(0.02f)] private float laserDamageIntervalSeconds = 0.35f;
     [SerializeField, Min(0f)] private float laserVfxRayOriginOffset = 0.35f;
     [SerializeField] private bool useAnimatedLaserVfx = true;
     [SerializeField] private DemonKingEgoLaserVfx laserVfxPrefab;
@@ -887,7 +888,7 @@ public sealed class EgoSwordActor : MonoBehaviour
             telegraph?.SpawnDetachedView(CreateLaserSpec(secondAttackLine, attackSeconds));
         }
 
-        HashSet<GameObject> damagedTargets = new();
+        DemonKingCombatUtil.DamageCooldownRegistry laserDamageCooldowns = new();
         float elapsed = 0f;
         bool auraEndStarted = false;
         while (usingAnimatedVfx ? IsAnyLaserVfxPlaying(firstLaserVfx, secondLaserVfx) : elapsed < attackSeconds)
@@ -913,7 +914,8 @@ public sealed class EgoSwordActor : MonoBehaviour
                     firstAttackLine.RotationDeg,
                     owner.DefaultDamageEffect,
                     patternDamage,
-                    damagedTargets);
+                    damageCooldowns: laserDamageCooldowns,
+                    damageIntervalSeconds: laserDamageIntervalSeconds);
             }
 
             if (!usingAnimatedVfx || IsAnyLaserDamageActive(secondLaserVfx))
@@ -925,7 +927,8 @@ public sealed class EgoSwordActor : MonoBehaviour
                     secondAttackLine.RotationDeg,
                     owner.DefaultDamageEffect,
                     patternDamage,
-                    damagedTargets);
+                    damageCooldowns: laserDamageCooldowns,
+                    damageIntervalSeconds: laserDamageIntervalSeconds);
             }
 
             elapsed += Time.fixedDeltaTime;

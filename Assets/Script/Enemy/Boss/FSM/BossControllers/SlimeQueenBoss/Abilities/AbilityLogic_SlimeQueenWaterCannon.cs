@@ -136,18 +136,22 @@ public sealed class AbilityLogic_SlimeQueenWaterCannon : AbilityLogic
 
             yield return WaitForWaterCannonDamageFrame(slimeQueen, spec, laserVfx);
 
-            bool canApplyDamage = laserVfx == null || laserVfx.DamageActive;
-            if (!IsAbilityCancelled(spec) && shotStarted && canApplyDamage)
-            {
+            if (!IsAbilityCancelled(spec) && shotStarted)
                 slimeQueen.PlayWaterCannonWallHitEffect(line);
-                slimeQueen.TryDamagePlayerInWaterCannonShot(system, spec, line);
-            }
 
             float activeElapsedSeconds = 0f;
+            float nextDamageTime = 0f;
             while (activeElapsedSeconds < slimeQueen.WaterCannonShotActiveSeconds)
             {
                 if (IsAbilityCancelled(spec))
                     yield break;
+
+                bool canApplyDamage = laserVfx == null || laserVfx.DamageActive;
+                if (shotStarted && canApplyDamage && Time.time >= nextDamageTime)
+                {
+                    if (slimeQueen.TryDamagePlayerInWaterCannonShot(system, spec, line))
+                        nextDamageTime = Time.time + slimeQueen.WaterCannonDamageIntervalSeconds;
+                }
 
                 activeElapsedSeconds += Time.deltaTime;
                 yield return null;

@@ -14,6 +14,12 @@ namespace UnityGAS
     [DisallowMultipleComponent]
     public sealed class TimedAnimatedHitEffect2D : MonoBehaviour
     {
+        public enum HitDamageMode
+        {
+            OncePerEffect,
+            PeriodicWhileHitWindowOpen
+        }
+
         [Header("Animation")]
         [SerializeField] private Animator animator;
         [SerializeField] private AnimationClip referenceClip;
@@ -22,6 +28,10 @@ namespace UnityGAS
         [SerializeField] private Collider2D[] hitColliders;
         [SerializeField] private LayerMask targetLayers = 1 << 3;
         [SerializeField] private bool applyOnlyOncePerEffect = true;
+        [SerializeField] private HitDamageMode damageMode = HitDamageMode.OncePerEffect;
+        [SerializeField, Min(0.01f)] private float periodicDamageIntervalSeconds = 0.25f;
+        [SerializeField] private bool periodicApplyImmediatelyOnEnable = true;
+        [SerializeField] private bool debugPeriodicDamage;
 
         [Header("Lifetime")]
         [SerializeField] private bool destroyOnFinished = true;
@@ -33,6 +43,7 @@ namespace UnityGAS
         private Action hitWindowOpenedCallback;
         private ContactFilter2D contactFilter;
         private Coroutine lifetimeCoroutine;
+        private SustainedHitArea2D sustainedHitArea;
         private float originalAnimatorSpeed = 1f;
         private bool hasOriginalAnimatorSpeed;
         private bool isCollected;
@@ -58,6 +69,7 @@ namespace UnityGAS
 
             CacheReferences();
             ConfigureContactFilter();
+            ConfigureSustainedHitArea();
             DisableHitCollision();
             ApplyAnimatorSpeed(lifetimeSeconds);
 
@@ -73,6 +85,13 @@ namespace UnityGAS
         public void EnableHitCollision()
         {
             InvokeHitWindowOpenedCallbackIfNeeded();
+            if (damageMode == HitDamageMode.PeriodicWhileHitWindowOpen)
+            {
+                ConfigureSustainedHitArea();
+                sustainedHitArea?.Play(payload, sharedRegistry);
+                return;
+            }
+
             SetHitCollisionEnabled(true);
             CheckCurrentOverlaps();
         }
@@ -80,6 +99,9 @@ namespace UnityGAS
         /// <summary>애니메이션 이벤트에서 호출해 피해 콜라이더를 끈다.</summary>
         public void DisableHitCollision()
         {
+            if (sustainedHitArea != null)
+                sustainedHitArea.Stop();
+
             SetHitCollisionEnabled(false);
         }
 
@@ -130,6 +152,9 @@ namespace UnityGAS
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (damageMode == HitDamageMode.PeriodicWhileHitWindowOpen)
+                return;
+
             TryApplyHit(other);
         }
 
@@ -223,6 +248,25 @@ namespace UnityGAS
             };
         }
 
+        private void ConfigureSustainedHitArea()
+        {
+            if (damageMode != HitDamageMode.PeriodicWhileHitWindowOpen)
+                return;
+
+            if (sustainedHitArea == null)
+                sustainedHitArea = GetComponent<SustainedHitArea2D>();
+
+            if (sustainedHitArea == null)
+                sustainedHitArea = gameObject.AddComponent<SustainedHitArea2D>();
+
+            sustainedHitArea.Configure(
+                hitColliders,
+                targetLayers,
+                periodicDamageIntervalSeconds,
+                periodicApplyImmediatelyOnEnable,
+                debugPeriodicDamage);
+        }
+
         private void SetHitCollisionEnabled(bool isEnabled)
         {
             if (hitColliders == null)
@@ -278,14 +322,20 @@ namespace UnityGAS
             if (targetRoot == null)
                 return;
 
-            if (applyOnlyOncePerEffect && !localHitTargets.Add(targetRoot))
+            if (applyOnlyOncePerEffect && localHitTargets.Contains(targetRoot))
                 return;
 
-            if (sharedRegistry != null && !sharedRegistry.TryRegister(targetRoot))
+            if (sharedRegistry != null && sharedRegistry.Contains(targetRoot))
                 return;
 
             Vector3 hitPoint = other.ClosestPoint(transform.position);
-            CombatHitPayloadApplier.Apply(targetRoot, payload, hitPoint);
+            if (!CombatHitPayloadApplier.Apply(targetRoot, payload, hitPoint))
+                return;
+
+            if (applyOnlyOncePerEffect)
+                localHitTargets.Add(targetRoot);
+
+            sharedRegistry?.Register(targetRoot);
         }
 
         /// <summary>
@@ -295,6 +345,17 @@ namespace UnityGAS
         public sealed class SharedHitRegistry
         {
             private readonly HashSet<GameObject> hitTargets = new();
+
+            public bool Contains(GameObject target)
+            {
+                return target != null && hitTargets.Contains(target);
+            }
+
+            public void Register(GameObject target)
+            {
+                if (target != null)
+                    hitTargets.Add(target);
+            }
 
             public bool TryRegister(GameObject target)
             {

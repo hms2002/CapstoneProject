@@ -264,6 +264,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     public float WaterCannonShotWarningSeconds => Mathf.Max(0f, waterCannonShotWarningSeconds);
     public float WaterCannonShotActiveSeconds => Mathf.Max(0.01f, waterCannonShotActiveSeconds);
     public float WaterCannonShotIntervalSeconds => Mathf.Max(0.01f, waterCannonShotIntervalSeconds);
+    public float WaterCannonDamageIntervalSeconds => Mathf.Max(0.05f, waterCannonDamageIntervalSeconds);
     public float ToxicDropWarningSeconds => Mathf.Max(0f, toxicDropWarningSeconds);
     public float ToxicDropProjectileFlightSeconds => Mathf.Max(0.01f, toxicDropProjectileFlightSeconds);
 
@@ -1286,20 +1287,22 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             if (!IsPlayerHurtboxCollider(hitCollider, damageTarget))
                 continue;
 
-            CombatDamageAction.ApplyDamageAndEmitHit(
+            CombatDamageSnapshot snapshot = new(
+                finalHpDamage: waterCannonDamage,
+                finalStaggerBuildUp: 0f,
+                finalKnockbackImpulse: 0f,
+                isCriticalHit: false);
+            CombatHitPayload payload = CombatHitPayload.FromSnapshot(
                 sourceSystem != null ? sourceSystem : AbilitySystem,
                 sourceSpec,
                 waterCannonDamageEffect,
                 null,
-                damageTarget,
-                waterCannonDamage,
-                0f,
-                0f,
+                snapshot,
                 null,
-                hitCollider.ClosestPoint(line.Center),
                 gameObject);
 
-            return true;
+            if (CombatHitPayloadApplier.Apply(damageTarget, payload, hitCollider.ClosestPoint(line.Center)))
+                return true;
         }
 
         return false;
