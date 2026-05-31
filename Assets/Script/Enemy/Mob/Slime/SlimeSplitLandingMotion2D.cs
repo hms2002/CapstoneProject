@@ -34,6 +34,9 @@ public sealed class SlimeSplitLandingMotion2D : MonoBehaviour
     private Transform runtimeShadowRoot;
     private SpriteRenderer runtimeShadowRenderer;
 
+    /// <summary>분열 착지 연출이 아직 진행 중인지 외부 잠금/문 시스템에 제공한다.</summary>
+    public bool IsRunning => activeRoutine != null;
+
     /// <summary>분열체의 착지 이동을 시작하고, 진행 중에는 피격 판정을 잠근다.</summary>
     public void Begin(Vector2 startPosition, Vector2 landingPosition, float durationSeconds, float arcHeight)
     {

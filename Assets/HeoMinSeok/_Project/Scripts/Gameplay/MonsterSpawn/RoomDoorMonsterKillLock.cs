@@ -313,6 +313,12 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
             if (monster == null)
                 continue;
 
+            if (IsSplitLandingInProgress(monster))
+            {
+                LogDebug($"Keeping door closed because '{monster.name}' is still resolving split landing.");
+                continue;
+            }
+
             if (!roomArea.Contains(monster.transform.position))
             {
                 outsideMonsterName = monster.name;
@@ -322,6 +328,22 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 분열 착지 중인 슬라임을 방 밖 몬스터 예외 개방 조건에서 제외해 착지 연출 중 문 깜빡임을 막는다.
+    /// </summary>
+    private static bool IsSplitLandingInProgress(GameObject monster)
+    {
+        if (monster == null)
+            return false;
+
+        SlimeSplitLandingMotion2D landingMotion = monster.GetComponent<SlimeSplitLandingMotion2D>();
+        if (landingMotion == null)
+            landingMotion = monster.GetComponentInChildren<SlimeSplitLandingMotion2D>(includeInactive: true);
+
+        return landingMotion != null && landingMotion.IsRunning;
     }
 
     private MonsterRoomArea2D ResolveRoomArea()
