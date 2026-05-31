@@ -50,17 +50,26 @@ public sealed class DemoCheatService
     public string BuildCheatGuide(DemoCheatSettingsSO settings)
     {
         int magicStoneAmount = Mathf.Max(1, settings.MagicStoneAddAmount);
-        return string.Join(
-            "\n",
-            "시연 치트 키",
-            $"{FormatKey(settings.WarpToRunSpecialNpcKey)}: Runtime Special NPC 워프",
-            $"{FormatKey(settings.AddMagicStoneKey)}: 마정석 +{magicStoneAmount}",
-            $"{FormatKey(settings.MaxHealthKey)}: 체력 MAX",
-            $"{FormatKey(settings.WarpToPortalKey)}: 포탈 앞으로 이동",
-            $"{FormatKey(settings.ResetWeaponCooldownKey)}: 무기 쿨타임 초기화",
-            $"{FormatKey(settings.IncreaseAttackKey)}: 공격력 +{settings.AttackIncreaseAmount:0.###}",
-            $"{FormatKey(settings.MapZoomToggleKey)}: 맵 전체 줌 토글",
-            $"{FormatKey(settings.WarpToBossSceneKey)}: 보스 씬 포탈 설정");
+        List<(KeyCode Key, string Description)> entries = new()
+        {
+            (settings.MapZoomToggleKey, "맵 전체 줌 토글"),
+            (settings.WarpToBossSceneKey, "보스 씬 포탈 설정"),
+            (settings.WarpToRunSpecialNpcKey, "Runtime Special NPC 워프"),
+            (settings.AddMagicStoneKey, $"마정석 +{magicStoneAmount}"),
+            (settings.MaxHealthKey, "체력 MAX"),
+            (settings.WarpToPortalKey, "포탈 앞으로 이동"),
+            (settings.ResetWeaponCooldownKey, "무기 쿨타임 초기화"),
+            (settings.IncreaseAttackKey, $"공격력 +{settings.AttackIncreaseAmount:0.###}")
+        };
+
+        entries.RemoveAll(entry => entry.Key == KeyCode.None);
+        entries.Sort((left, right) => CompareCheatGuideKeys(left.Key, right.Key));
+
+        List<string> lines = new() { "시연 치트 키" };
+        for (int i = 0; i < entries.Count; i++)
+            lines.Add($"{FormatKey(entries[i].Key)}: {entries[i].Description}");
+
+        return string.Join("\n", lines);
     }
 
     public string BuildBossSceneSelectionGuide()
@@ -743,6 +752,25 @@ public sealed class DemoCheatService
             return Mathf.Max(0.01f, (float)Screen.width / Screen.height);
 
         return 16f / 9f;
+    }
+
+    private static int CompareCheatGuideKeys(KeyCode left, KeyCode right)
+    {
+        int leftRank = GetCheatGuideKeySortRank(left);
+        int rightRank = GetCheatGuideKeySortRank(right);
+        if (leftRank != rightRank)
+            return leftRank.CompareTo(rightRank);
+
+        return string.Compare(FormatKey(left), FormatKey(right), StringComparison.Ordinal);
+    }
+
+    private static int GetCheatGuideKeySortRank(KeyCode key)
+    {
+        string keyName = key.ToString();
+        if (keyName.Length > 1 && keyName[0] == 'F' && int.TryParse(keyName.Substring(1), out int functionKeyNumber))
+            return functionKeyNumber;
+
+        return 1000 + (int)key;
     }
 
     private static string FormatKey(KeyCode key)
