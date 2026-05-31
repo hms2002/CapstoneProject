@@ -44,6 +44,7 @@ public class WeaponEquipController : MonoBehaviour, IWeaponRuntimeStateProvider
         if (weaponPrefab == null) return;
 
         ResolveReferences();
+        presentationRig?.ResetAimPresentationOverrideForWeaponChange();
         abilitySystem?.OnWeaponEquipped();
 
         if (currentPrefab == weaponPrefab && currentWeaponGO != null)
@@ -69,6 +70,7 @@ public class WeaponEquipController : MonoBehaviour, IWeaponRuntimeStateProvider
     public void Clear()
     {
         ResolveReferences();
+        presentationRig?.ResetAimPresentationOverrideForWeaponChange();
         abilitySystem?.OnWeaponEquipped();
 
         DeactivateCurrent();

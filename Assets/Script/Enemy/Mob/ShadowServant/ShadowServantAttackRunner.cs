@@ -125,7 +125,7 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner, IMobP
         if (telegraphService == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
             context.HitPoint,
             context.WarningDiameter,
             duration,
@@ -166,6 +166,9 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner, IMobP
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hit = hits[i];
+            if (!TopDownEllipseHitUtility2D.ContainsCollider(hit, context.TargetPoint, context.WarningDiameter))
+                continue;
+
             GameObject hitTarget = CombatTargetResolver2D.ResolveDamageTarget(hit);
 
             if (hitTarget == null || hitTarget == owner.gameObject)

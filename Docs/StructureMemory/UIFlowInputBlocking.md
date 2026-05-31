@@ -67,7 +67,7 @@ This is a fast context map, not the final UI architecture source of truth.
 - Dialogue blocking is owned by `DialogueService` while dialogue is playing.
 - Boss encounter presentation blocking is owned by `BossEncounterDirector` for the outer camera/transition/dialogue/return sequence. Legacy `BossTalkManager` follows the same rule.
 - Boss death presentation, game-over return presentation, tutorial combat intro, merchant activation cinematic, hub spawn fall/wake presentation, and boss reward portal reveal each own a blocker for their flow window.
-- Real defeat and victory GameOver screens keep their blocker active, but expose a narrow inventory-only exception through `GameOverPresentationController`. `InventoryUIManager` uses that owner path so Inventory can open while Pause, Settings, and other unrelated stack UI remain blocked. FakeGameOver disables the exception.
+- Real defeat and victory GameOver screens keep their blocker active, but expose a narrow inventory-only exception through `GameOverPresentationController`. `InventoryUIManager` uses that owner path so Inventory can open while Pause, Settings, and other unrelated stack UI remain blocked. The GameOver-owned Inventory temporarily lifts `Popup`/`Hover` above `GameOverCanvas` and runs in inspection-only mode so hover tooltips work but item movement/drop inputs do not. FakeGameOver disables the exception.
 - Upgrade open fade is executed by `UpgradeUiOpenFlow`; it blocks unrelated UI input, then opens `UpgradeTreeUI` through the owned push path.
 - Reward open presentation blocks unrelated UI input until the open presentation finishes.
 - Affection reward UI can open as a flow-owned popup during dialogue/encounter blocking, then its close callback resumes the waiting dialogue tag. While open, `RewardDisplayUI` asks `DialogueService` to make the captured Reward canvas and shared non-raycasting Hover canvas temporarily visible so reward item detail hover can render even though Dialogue suppression still owns the rest of the non-dialogue UI.
@@ -78,7 +78,7 @@ This is a fast context map, not the final UI architecture source of truth.
 
 - For a new flow gap before stack UI opens, add a `GameFlowInputBlocker` to the flow owner and wrap only the protected window.
 - For a flow that opens its own UI while blocked, use `TryPushOwnedUI`.
-- For a flow that must make a HUD button visible while blocked, keep the exception narrow and owner-bound. GameOver temporarily presents the existing authored Inventory HUD button on the GameOver canvas, then restores its parent, sibling index, active state, and key-hint state during cleanup.
+- For a flow that must make a HUD button or popup visible while blocked, keep the exception narrow and owner-bound. GameOver temporarily presents the existing authored Inventory HUD button on the GameOver canvas, lifts only `Popup`/`Hover` while its Inventory is open, then restores the HUD parent/sibling/active/key-hint state and canvas sorting during cleanup.
 - For a flow-owned popup opened by a service rather than by the blocker owner itself, use a narrow service/API handoff instead of calling the normal `TryPushUI` path.
 - For an already-open stack UI, prefer `IStackableUI.GameplayLockProfile` instead of adding a flow blocker.
 - If several flows need a shared handoff rule, update this document and consider an Architecture/Contract promotion.
@@ -89,6 +89,7 @@ This is a fast context map, not the final UI architecture source of truth.
 - Do not open feature UI while a dialogue-owned blocker is still active. Request dialogue exit first, then open after dialogue and external UI blockers release.
 - Do not detach a dialogue continuation from an affection reward close callback to avoid a blocker deadlock. If the reward popup is part of the current dialogue flow, open it through the flow-owned reward path.
 - Do not assume dialogue blocking covers an outer encounter/cinematic sequence. The outer flow owner must block its non-dialogue camera, transition, and handoff windows.
+- Do not treat a flow-owned UI input exception as a complete presentation fix. A modal layer such as GameOver can still hide lower popup/hover canvases unless the flow also owns a scoped sorting-order restore path.
 - Do not release a cinematic flow blocker or player protection before visible closing presentation is done. Camera focus/return waits are minimum holds plus camera settle, and letterbox-out should finish before gameplay release events fire.
 - Do not merge chest world-object presentation timing with chest UI reveal timing. Keep timing separate, but block input across the full first-open sequence when needed.
 - Interrupted flows must release their blocker from cleanup paths.

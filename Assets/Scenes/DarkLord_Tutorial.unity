@@ -11325,6 +11325,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1416114103
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1416114104}
+  m_Layer: 0
+  m_Name: InitialAimTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1416114104
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1416114103}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -21.63, y: 1.25, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1441605663
 GameObject:
   m_ObjectHideFlags: 0
@@ -11602,8 +11633,8 @@ MonoBehaviour:
     direction: {x: 1, y: 1}
     length: 15
     width: 0.75
-    warningSeconds: 0.55
-    attackSeconds: 0.45
+    warningSeconds: 0.25
+    attackSeconds: 0.2
     postDelaySeconds: 0.12
     spawnOppositeRay: 0
     showPrimitiveWarning: 1
@@ -11614,8 +11645,8 @@ MonoBehaviour:
     direction: {x: -1, y: 1}
     length: 15
     width: 0.75
-    warningSeconds: 0.55
-    attackSeconds: 0.45
+    warningSeconds: 0.25
+    attackSeconds: 0.2
     postDelaySeconds: 0.12
     spawnOppositeRay: 0
     showPrimitiveWarning: 1
@@ -11627,7 +11658,7 @@ MonoBehaviour:
     length: 15
     width: 1.35
     warningSeconds: 0.55
-    attackSeconds: 0.45
+    attackSeconds: 0.4
     postDelaySeconds: 0.12
     spawnOppositeRay: 0
     showPrimitiveWarning: 1
@@ -11667,17 +11698,17 @@ MonoBehaviour:
   blockPlayerTargetability: 1
   keepPlayerLockedAfterSequence: 1
   pauseRunTimer: 1
-  applyInitialAimOnSequenceStart: 0
-  initialAimTarget: {fileID: 0}
+  applyInitialAimOnSequenceStart: 1
+  initialAimTarget: {fileID: 1416114104}
   fallbackInitialAimDirection: {x: 1, y: 0}
   hideDefaultHudDuringSequence: 1
-  cameraDirector: {fileID: 0}
+  cameraDirector: {fileID: 1785454312}
   useCameraPresentationDirector: 0
   bossFocusTarget: {fileID: 368370427}
   cameraFocusWaitSeconds: 0.65
   cameraReturnWaitSeconds: 0.45
   zoomGameplayCameraDuringFocus: 1
-  focusOrthographicSize: 4
+  focusOrthographicSize: 4.2
   cameraZoomInSeconds: 0.35
   cameraZoomOutSeconds: 0.25
   focusPlayerBeforeFirstBossFocus: 1
@@ -11686,7 +11717,7 @@ MonoBehaviour:
   focusPlayerBeforeLaser: 1
   playerFocusTarget: {fileID: 1916719246}
   playerFocusWaitSeconds: 0.45
-  playerFocusOrthographicSize: 3.25
+  playerFocusOrthographicSize: 4.2
   refocusBossAfterLaser: 1
   bossRefocusWaitSeconds: 0.45
   useLetterbox: 1
@@ -11698,7 +11729,7 @@ MonoBehaviour:
   fadedLayers: 00000000020000000300000004000000050000000600000007000000
   bossVisualRoot: {fileID: 7124681141591174978}
   scaleBossVisualOnFocus: 1
-  bossFocusScaleMultiplier: 1.15
+  bossFocusScaleMultiplier: 1
   bossScaleInSeconds: 0
   bossScaleOutSeconds: 0.2
   tutorialBossNpcData: {fileID: 11400000, guid: 47d475aabd71d0245a47a8fa56c6546a, type: 2}
@@ -11709,7 +11740,7 @@ MonoBehaviour:
   laserPresentation: {fileID: 1606454207}
   presentationHpView: {fileID: 309033401}
   delayAfterFirstDialogueSeconds: 0.2
-  delayAfterLaserSeconds: 0.2
+  delayAfterLaserSeconds: 0.05
   collapseDelaySeconds: 0.75
   gameOverDelaySeconds: 0.25
   showFakeGameOver: 1
@@ -12161,8 +12192,6 @@ MonoBehaviour:
   gaugeViewInstaller: {fileID: 0}
   pathfinder: {fileID: 0}
   recollectSpawnPointsOnSceneLoaded: 1
-  spawnOnStart: 0
-  spawnOnSceneLoaded: 1
   clearAliveMonstersBeforeSceneSpawn: 1
 --- !u!4 &1977209586
 Transform:
@@ -15942,6 +15971,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heldOffset: {x: 0.85, y: 0.1, z: 0}
+  throwOriginLocalOffset: {x: 0.85, y: 0.1, z: 0}
+  recallTargetLocalOffset: {x: 0.85, y: 0.1, z: 0}
+  throwInitialRotation: 0
+  recallInitialRotation: 0
+  recallLiftHeight: 2.2
+  recallLiftSeconds: 0.16
+  recallLiftHoldSeconds: 0.18
+  recallReturnMinimumSeconds: 0.35
   contactRadius: 0.45
   contactDamage: 1
   contactKnockback: 6
@@ -15973,6 +16010,72 @@ MonoBehaviour:
   recallImpactDiameter: 3.2
   recallImpactDamage: 1.5
   recallImpactKnockback: 8
+  swordSpinVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 10
+    socketId: 11
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    leaveFragment: 0
+  plantAttackVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 11
+    socketId: 11
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    leaveFragment: 0
+  plantImpactVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 3
+    socketId: 11
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    leaveFragment: 0
+  verticalAttackVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 11
+    socketId: 11
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    leaveFragment: 0
+  verticalImpactVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 3
+    socketId: 11
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    leaveFragment: 0
+  verticalStrikeImpactSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  plantImpactCameraShake:
+    amplitude: 0.12
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.28
+    minIntervalSeconds: 0.04
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  verticalStrikeImpactCameraShake:
+    amplitude: 0.18
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.35
+    minIntervalSeconds: 0.04
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
   enableAfterimage: 1
   afterimageIntervalSeconds: 0.035
   afterimageLifetimeSeconds: 0.14
@@ -16159,3 +16262,4 @@ SceneRoots:
   - {fileID: 912430100000000002}
   - {fileID: 1606454209}
   - {fileID: 2107525437}
+  - {fileID: 1416114104}

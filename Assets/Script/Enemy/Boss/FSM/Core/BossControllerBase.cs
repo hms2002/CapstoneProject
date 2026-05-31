@@ -483,12 +483,21 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         if (hasInitializedBossRuntime)
             AbortCurrentPattern();
 
+        CleanupStatusPresentationForDeath();
+
         RunProgressCoordinator.EnsureInstance()?.NotifyBossCombatEnded(this);
         BossHudController.Instance?.MarkBossDefeated(this);
-        GetComponent<MonsterElementGaugeViewInstaller>()?.Uninstall();
         RunProgressCoordinator.EnsureInstance()?.NotifyBossDefeated(this);
         ResolveDeathPresentation();
         deathPresentation?.NotifyDeathStarted();
+    }
+
+    private void CleanupStatusPresentationForDeath()
+    {
+        TryEndGroggyStateImmediately();
+        effectRunner?.ClearAllActiveEffects();
+        GetComponent<ElementGaugeSystem>()?.ClearAll();
+        GetComponent<MonsterElementGaugeViewInstaller>()?.Uninstall();
     }
 
     protected override void OnDestroy()

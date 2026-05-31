@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: error-log
-last_reviewed: 2026-05-30
+last_reviewed: 2026-06-01
 ---
 
 # Error Log
@@ -24,6 +24,188 @@ Prevention:
 ```
 
 ## Active Entries
+
+## 2026-06-01 - Pitfall Damage Fired Mob Death Results Before Pitfall Classification
+
+Context:
+Mobs that died from `HoleTrap` damage could run normal death results at the hole position. Split-capable Slimes could also run their normal death split branch before the pitfall death handler marked the death as a pitfall death.
+
+Cause:
+`PitFallExecutor` applied trap damage before `PitFallReaction2D.OnPitFallCompleted(...)` called the pitfall death handler. If the damage reduced HP to zero, `Enemy.OnEnemyAttributeChanged(...)` could enter `Mob.OnDeathStarted(...)` immediately, while the mob still looked like a normal death to loot and split logic.
+
+Fix:
+`PitFallExecutor` now opens a non-serialized mob pitfall death resolution window around trap damage and completion handling. `Mob.OnDeathStarted(...)` suppresses monster loot during that window, and `Slime` marks `isPitFallDeath` before trap damage can trigger death.
+
+Prevention:
+Any hazard flow whose damage can synchronously kill an enemy must establish death-result context before applying damage. Do not rely on a later completion callback to classify loot, split, summon, or lock-sensitive death behavior.
+
+## 2026-06-01 - Title BGM Survived Unresolved Non-Title Scene Music
+
+Context:
+Title BGM could keep playing after leaving `TitleScene` when the newly loaded non-title scene did not resolve hub, corridor, boss, or pre-combat carryover BGM.
+
+Cause:
+`RunRouteBgmService.RefreshSceneBgm(...)` only changed music when a known scene/route BGM resolved. If no non-title BGM resolved, it left `currentMusicRef` and the `SoundManager` music source untouched, so the previous title track continued.
+
+Fix:
+After all non-title BGM resolution paths fail, `RunRouteBgmService` now stops only when the cached current music matches the configured title BGM. Valid hub/corridor/boss/carryover BGM paths still return before this stop path.
+
+Prevention:
+Scene music routers need an explicit "no resolved music" branch for boundary tracks such as title music. Do not rely on a later scene-specific resolver to replace a boundary BGM when some scenes intentionally or accidentally have no BGM source.
+
+## 2026-06-01 - Encyclopedia Category SFX Followed Data Swap Instead Of Book Turn
+
+Context:
+When switching encyclopedia item categories, the page-flip sound and the visible image/info update could feel mistimed.
+
+Cause:
+Category-change audio was attached to `EncyclopediaItemTab` data-swap and completion callbacks. The book presentation did not expose a callback for the actual page-turn animator start, so the flip sound played when content changed rather than when the book started turning.
+
+Fix:
+`EncyclopediaBookPresentation` now exposes an optional page-turn-start callback for left/right page turns. `EncyclopediaItemTab` plays the start sound on request, the flip sound when the book turn starts, and the end/content sound immediately after new category content is rebuilt.
+
+Prevention:
+For UI sequences with authored motion and content rebinding, put SFX hooks on the presentation beat that owns the visible rhythm. Data swap callbacks should only own content/data sounds when that is the audible event.
+
+## 2026-06-01 - HeavySlash Approach Distance Leaked Into Attack Origin
+
+Context:
+DemonKing HeavySlash needed to stop short before warning, but the later warning and attack placement needed its own configurable player position inside the sector warning.
+
+Cause:
+`stopBeforeTargetDistance` was reused in `ResolveSlashWarningPrediction(...)`, so the same spacing value controlled both the first approach stop and the predicted warning/commit origin.
+
+Fix:
+HeavySlash now uses `stopBeforeTargetDistance` only for the first approach move. Warning tracking positions the sector so the player sits at `playerAnchorInWarningRadius` of the slash radius, and commit movement solves the boss root position from `SwordSlashOrigin` so the locked sector origin and actual hit position match.
+
+Prevention:
+For boss attacks with a prep approach and a separate attack placement, keep approach spacing fields separate from hit-origin or socket alignment calculations. Do not reuse movement-stop offsets inside warning/commit prediction unless the design explicitly says the attack should also be offset.
+
+## 2026-05-31 - DemonKing Charge VFX Immediately Played Disappear
+
+Context:
+HP50 `WallBounceRush` Charge VFX could appear to play only the `Disappear` state instead of showing the `Loop` state through the rush.
+
+Cause:
+`chargeDisappearStartProgress` was added after the existing `AL_DemonKing_Hp50WallBounceRush` asset was authored. If the serialized asset did not carry the field yet, the runtime could receive a zero-like progress value, which made the travel-progress callback switch the same VFX instance into `Disappear` on the first progress tick.
+
+Fix:
+WallBounceRush now resolves missing or near-zero `chargeDisappearStartProgress` to `0.9` at runtime. The pattern also exposes `chargeVfxFlipX`, and the Workbench shows cue-level `Flip X`, so Charge VFX horizontal flip tuning has a runtime-backed field instead of relying on negative scale values that were previously normalized away.
+
+Prevention:
+When adding serialized timing fields to existing AL assets, guard zero/missing values if zero would create a destructive timing behavior. For VFX flip controls, expose an explicit boolean or a consumed runtime field; do not assume negative scale means flip when target-size scaling uses absolute values.
+
+## 2026-05-31 - DemonKing FinalDesperation Test Left Terminal Runtime State
+
+Context:
+Testing `AL_DemonKing_FinalDesperation` through the DemonKing Workbench Actual Pattern Runner could leave the DarkLord body stuck in the 10% pose after cancellation.
+
+Cause:
+FinalDesperation is a terminal pattern. It marks `DemonKingRuntimeData.FinalDesperationStarted`, plays/holds `DarkLord_10Percent`, and intentionally blocks normal `RestoreCombatPose()` while final desperation is active. Cancelling the transient runner ability stops the coroutine, but the terminal runtime flag can remain because that flag is normal fight state, not temporary runner state.
+
+Fix:
+The Workbench now has a `Refresh Runtime State` button. It cancels transient runner execution, clears FinalDesperation test state, releases animation holds, clears afterimages/motion/groggy state, hides EgoSword as held, and restores the combat idle pose.
+
+Prevention:
+Treat terminal boss patterns as stateful runtime transitions when testing them in isolation. After testing FinalDesperation or any future terminal phase, use the Workbench refresh path before continuing normal pattern tuning in the same Play Mode session.
+
+## 2026-05-31 - DemonKing Workbench Synthetic Preview Could Drift From Runtime
+
+Context:
+The DemonKing Pattern Workbench could show a Charge VFX socket/effect preview that did not match the actual 50% Charge pattern in Play Mode.
+
+Cause:
+The Workbench composite preview was a synthesized authoring timeline. It displayed cue/socket policy from descriptors, but it did not execute the live `AbilityLogic`, `DemonKingController`, `DemonKingVfxSocketMap`, `AbilityMotionController2D`, `AttackTelegraphService`, and VFX spawn code paths that determine actual runtime placement.
+
+Fix:
+The Workbench now has a Play Mode-only Actual Pattern Runner. It wraps the selected `AL_DemonKing_*` in a transient `AbilityDefinition`, gives it to the live DemonKing `AbilitySystem`, and runs the real pattern code against the selected/live DemonKing and target. A live runtime preview toggle can render that Play Mode scene inside the Preview Window so socket/effect placement is checked against the actual runtime output instead of only the synthesized timeline.
+
+Prevention:
+Use the synthetic timeline for fast authoring orientation, but use Actual Pattern Runner plus Live Runtime Preview for runtime-sensitive socket, VFX, warning, movement, sound, shake, and cleanup checks. Do not treat descriptor-only preview output as proof that runtime presentation is correct.
+
+## 2026-05-31 - Software Cursor Could Leave Visible Screen After Display Change
+
+Context:
+Changing resolution or screen mode while the custom mouse cursor was active could make the cursor appear to disappear.
+
+Cause:
+`MouseCursorService` hides the OS cursor when its software cursor sprite is active, then positions the UI cursor directly at `Input.mousePosition`. After a resolution or fullscreen-mode transition, Unity can report a pointer position outside the new screen bounds, and some cursor pivots/hotspots can place the entire cursor image outside the visible screen at an edge.
+
+Fix:
+The software cursor position is now clamped to a visible screen-space rectangle based on `Screen.width`, `Screen.height`, the cursor rect size, `lossyScale`, and pivot. Non-finite pointer values fall back to the screen center.
+
+Prevention:
+Any software cursor path that hides the OS cursor must keep its rendered image visible across display transitions and screen-edge positions. Do not assume raw `Input.mousePosition` is already valid for the current output size immediately after `Screen.SetResolution(...)`.
+
+## 2026-05-31 - DemonKing Laser Warning Was Double-Clipped
+
+Context:
+DemonKing EgoSword CrossLaser and 10% FinalDesperation laser warnings could sometimes appear missing or much shorter than the actual laser.
+
+Cause:
+The laser code already resolved a wall-bounded rectangle by raycasting to the nearest wall, then passed that rectangle through `AttackTelegraphSpecUtility.WithThinWarningOutline(...)`. That utility enables wall-clipped mesh rendering, so `AttackTelegraphWallClippedMeshView` raycasted again from the rectangle start edge. When the precomputed start edge was already near a wall, the second clip distance could collapse to nearly zero.
+
+Fix:
+Pre-clipped DemonKing laser rectangles now render through `WithThinWarningOutlineOnly(...)`, preserving the computed length and width without applying another wall-clip pass. Non-laser line warnings keep the existing wall-clipped outline path by default.
+
+Prevention:
+Do not pass already wall-clipped rectangle or line geometry back into a generic wall-clipping telegraph path unless a second lateral wall sample is intentional. Add an explicit opt-out when a pattern owns the wall distance calculation itself.
+
+## 2026-05-31 - GameOver Canvas Hid Inventory Popup
+
+Context:
+The defeat/victory GameOver flow allowed Inventory as a narrow exception, but opening it from GameOver made the Inventory invisible or unusable because it rendered below the GameOver screen.
+
+Cause:
+`GameOverCanvas` is authored with a higher sorting order than `PopupCanvas` and `HoverCanvas`. The input exception alone was not enough because the visual and raycast order still favored GameOver.
+
+Fix:
+The GameOver-owned Inventory open path now temporarily lifts only the existing `Popup` and `Hover` canvases above GameOver and restores their original sorting state during close/reset cleanup. The same path also applies Inventory inspection-only mode.
+
+Prevention:
+When allowing flow-owned UI above a modal presentation, verify both input ownership and canvas sorting/raycast order. Do not solve a narrow flow exception by globally reordering persistent canvases or editing prefab YAML unless that broader UI policy is intended.
+
+## 2026-05-31 - DemonKing Cue Scale Was Serialized But Ignored
+
+Context:
+Sword GroggyCounter's `DarkLordGroggyReleaseVfx` could appear unchanged even when the branch cue scale was increased in the Inspector or Workbench.
+
+Cause:
+`DemonKingVfxCueRef.scale` was serialized and displayed, but runtime spawn paths mostly used only `targetSize` or a fallback diameter. The built-in `GroggyRelease` branch also bypassed the branch cue's target size and used the generic explosion diameter.
+
+Fix:
+Cue spawn paths now resolve a scaled target size, and built-in `GroggyRelease` uses the branch cue's target size and scale. Built-in Impact keeps authored prefab scale unless a cue explicitly supplies size or scale data.
+
+Prevention:
+When exposing visual tuning fields in the Pattern Workbench, verify that every displayed field is consumed by the runtime spawn path. For VFX cue refs, target size, scale, socket, rotation, prefab override, and fallback kind should all have a concrete runtime effect or be hidden/marked legacy.
+
+## 2026-05-31 - Weapon Swap Left Aim Presentation Override Active
+
+Context:
+Swapping weapons during an attack could leave the newly equipped weapon rotation fixed at the previous attack direction.
+
+Cause:
+Weapon attacks can lock `WeaponPresentationRig2D` through `BeginAimPresentationOverride(...)`, but weapon swap resets transient ability execution through `AbilitySystem.ResetTransientRuntimeState()`. That path can stop the running coroutine before its normal `finally`-based `EndAimPresentationOverride(...)` release runs, so the shared presentation rig kept `LockedAtCast` or `FacingSideOnly` state across the next weapon visual.
+
+Fix:
+`WeaponEquipController` now clears the rig's attack-owned aim presentation override at `Equip(...)` and `Clear(...)` boundaries before changing the active weapon visual.
+
+Prevention:
+Cleanup for shared presentation state that survives weapon prefab activation must be owned by the weapon lifecycle boundary, not only by ability coroutine normal or `finally` exits. Keep cinematic presentation locks separate from attack-owned aim overrides.
+
+## 2026-05-31 - Loading Overlay Reveal Hid Fade Before It Was Opaque
+
+Context:
+After portal travel, a delayed corridor loading presentation could begin during a frame drop or heavy preload window, and the black fade DimPanel was barely visible while the gameplay screen remained visible.
+
+Cause:
+`SceneTransitionCoordinator.TryRevealDelayedLoadingPresentation(...)` revealed the loading overlay without forcing it opaque, then immediately hid the scene fade overlay. `LoadingOverlayController` normally fades its overlay in during `Update()`, so a frame drop between those operations could leave both overlays transparent.
+
+Fix:
+The delayed loading reveal now calls `RevealManagedPresentation(immediate: true)` before hiding the fade overlay, making the fade-to-loading handoff black on the same frame.
+
+Prevention:
+When handing off between full-screen transition overlays, make the incoming overlay active and opaque before hiding the outgoing overlay. Do not rely on a later `Update()` fade step to cover a load or prewarm stall.
 
 ## 2026-05-31 - DemonKing WallBounceRush Count Could Be Spent On Tiny Rushes
 

@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Node_639065978682121833
   m_EditorClassIdentifier: 
   nodeID: 674725477
-  upgradeName: Up_5_-1
-  description: 
+  upgradeName: "\uC0C1\uC790 \uB9AC\uB864 \uAC00\uB2A5"
+  description: "\uC0C1\uC790\uC758 \uB0B4\uC6A9\uBB3C\uC744 \uB9AC\uB864\uD560 \uC218
+    \uC788\uB2E4."
   icon: {fileID: 0}
   price: 0
   effects:

@@ -55,6 +55,20 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
     /// <summary>구덩이 사망 여부를 사망 분열 규칙에서 확인할 수 있게 제공합니다.</summary>
     protected bool IsPitFallDeath => isPitFallDeath;
 
+    public override void BeginPitFallDeathResolution(PitFallContext context)
+    {
+        base.BeginPitFallDeathResolution(context);
+        isPitFallDeath = true;
+    }
+
+    public override void EndPitFallDeathResolution(PitFallContext context)
+    {
+        base.EndPitFallDeathResolution(context);
+
+        if (!isDead)
+            isPitFallDeath = false;
+    }
+
     /// <summary>
     /// 책임:
     /// - PitFallReaction2D가 낙하 완료 후 슬라임에게 구덩이 사망 처리를 요청하는 진입점이다.
@@ -240,8 +254,8 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
             {
                 nextSlime.InitSplit(target);
                 nextSlime.SuppressMonsterLootDrop();
-                StartSplitLandingMotion(spawned, center, landingPosition);
                 RegisterLockTrackedChild(spawned);
+                StartSplitLandingMotion(spawned, center, landingPosition);
             }
         }
     }

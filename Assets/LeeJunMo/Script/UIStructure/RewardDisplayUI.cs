@@ -108,7 +108,8 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
         List<UpgradeEffectSO> upgradeEffects = null,
         List<AffectionEffect> affectionEffects = null,
         Action callback = null,
-        bool allowDuringExternalUiInputBlock = false)
+        bool allowDuringExternalUiInputBlock = false,
+        UpgradeNodeSO upgradeNode = null)
     {
         onCloseCallback = callback;
 
@@ -120,13 +121,20 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
 
         string summary = string.Empty;
 
-        if (upgradeEffects != null && upgradeEffects.Count > 0)
+        if (upgradeNode != null || (upgradeEffects != null && upgradeEffects.Count > 0))
         {
             if (titleText != null)
                 titleText.text = "업그레이드 완료!";
 
-            foreach (UpgradeEffectSO effect in upgradeEffects)
-                ProcessUpgrade(effect, ref summary);
+            if (upgradeNode != null)
+            {
+                ProcessUpgrade(upgradeNode, upgradeEffects, ref summary);
+            }
+            else
+            {
+                foreach (UpgradeEffectSO effect in upgradeEffects)
+                    ProcessUpgrade(effect, ref summary);
+            }
         }
         else if (affectionEffects != null && affectionEffects.Count > 0)
         {
@@ -176,17 +184,7 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
 
         if (effect is ItemUnlockUpgradeEffectSO unlockEffect)
         {
-            if (unlockEffect.Weapons != null)
-            {
-                foreach (var weapon in unlockEffect.Weapons)
-                    CreateUnlockSlot(weapon);
-            }
-
-            if (unlockEffect.Relics != null)
-            {
-                foreach (var relic in unlockEffect.Relics)
-                    CreateUnlockSlot(relic);
-            }
+            ProcessItemUnlockUpgrade(unlockEffect);
         }
         else if (effect.rewardIcon != null)
         {
@@ -195,6 +193,65 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
 
         if (!string.IsNullOrEmpty(effect.rewardText))
             summary += $"- {effect.rewardText}\n";
+    }
+
+    private void ProcessUpgrade(UpgradeNodeSO node, List<UpgradeEffectSO> effects, ref string summary)
+    {
+        if (node == null)
+            return;
+
+        bool hasAnyEffect = false;
+        bool hasGenericEffect = false;
+        bool hasItemUnlockEffect = false;
+
+        if (effects != null)
+        {
+            foreach (UpgradeEffectSO effect in effects)
+            {
+                if (effect == null)
+                    continue;
+
+                hasAnyEffect = true;
+                if (effect is ItemUnlockUpgradeEffectSO unlockEffect)
+                {
+                    hasItemUnlockEffect = true;
+                    ProcessItemUnlockUpgrade(unlockEffect);
+                    continue;
+                }
+
+                hasGenericEffect = true;
+            }
+        }
+
+        if (!hasAnyEffect)
+            hasGenericEffect = true;
+
+        if (hasGenericEffect && node.icon != null)
+            CreateEffectSlot(node.icon);
+
+        if (hasItemUnlockEffect)
+            summary += "- 아이템이 해금되었습니다.\n";
+
+        if (hasGenericEffect && !string.IsNullOrWhiteSpace(node.description))
+            summary += $"- {node.description}\n";
+    }
+
+    private void ProcessItemUnlockUpgrade(ItemUnlockUpgradeEffectSO unlockEffect)
+    {
+        if (unlockEffect == null)
+            return;
+
+        if (unlockEffect.Weapons != null)
+        {
+            foreach (var weapon in unlockEffect.Weapons)
+                CreateUnlockSlot(weapon);
+        }
+
+        if (unlockEffect.Relics != null)
+        {
+            foreach (var relic in unlockEffect.Relics)
+                CreateUnlockSlot(relic);
+        }
     }
 
     private void ProcessAffection(AffectionEffect effect, ref string summary)

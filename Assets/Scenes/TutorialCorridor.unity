@@ -24700,6 +24700,7 @@ GameObject:
   - component: {fileID: 1256246606}
   - component: {fileID: 1256246608}
   - component: {fileID: 1256246609}
+  - component: {fileID: 1256246610}
   m_Layer: 0
   m_Name: TutorialSceneFlow
   m_TagString: Untagged
@@ -24850,6 +24851,29 @@ MonoBehaviour:
   onApplyFailed:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1256246610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256246605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76809036469645f98b0646b3209a8385, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialPlayerHealthAutoRecover
+  playerTransform: {fileID: 0}
+  attributeSet: {fileID: 0}
+  healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+  maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  restoreToMaxOnEnable: 1
+  recoverAfterDamage: 1
+  recoveryDelaySeconds: 2
+  minimumSurvivalHealth: 1
+  restoreEpsilon: 0.001
+  suspendPlayerDeathReturn: 1
+  deathReturnToHub: {fileID: 0}
 --- !u!1 &1304818126
 GameObject:
   m_ObjectHideFlags: 0

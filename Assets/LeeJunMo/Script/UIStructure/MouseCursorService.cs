@@ -720,7 +720,60 @@ public sealed class MouseCursorService : MonoBehaviour
         if (cursorCanvas == null || cursorRect == null || cursorImage == null || !cursorImage.enabled)
             return;
 
-        cursorRect.position = Input.mousePosition;
+        cursorRect.position = ResolveVisibleCursorPosition(Input.mousePosition);
+    }
+
+    private Vector2 ResolveVisibleCursorPosition(Vector2 rawPosition)
+    {
+        int screenWidth = Screen.width;
+        int screenHeight = Screen.height;
+        if (screenWidth <= 1 || screenHeight <= 1)
+            return HasFiniteComponents(rawPosition) ? rawPosition : Vector2.zero;
+
+        Vector2 cursorSize = ResolveVisibleCursorSize();
+        Vector2 pivot = cursorRect != null ? cursorRect.pivot : new Vector2(0f, 1f);
+
+        float minX = cursorSize.x * pivot.x;
+        float maxX = screenWidth - cursorSize.x * (1f - pivot.x);
+        float minY = cursorSize.y * pivot.y;
+        float maxY = screenHeight - cursorSize.y * (1f - pivot.y);
+
+        return new Vector2(
+            ClampToVisibleAxis(rawPosition.x, minX, maxX, screenWidth * 0.5f),
+            ClampToVisibleAxis(rawPosition.y, minY, maxY, screenHeight * 0.5f));
+    }
+
+    private Vector2 ResolveVisibleCursorSize()
+    {
+        if (cursorRect == null)
+            return Vector2.one;
+
+        Rect rect = cursorRect.rect;
+        Vector3 scale = cursorRect.lossyScale;
+        float width = Mathf.Abs(rect.width * scale.x);
+        float height = Mathf.Abs(rect.height * scale.y);
+        return new Vector2(Mathf.Max(1f, width), Mathf.Max(1f, height));
+    }
+
+    private static float ClampToVisibleAxis(float value, float min, float max, float fallback)
+    {
+        if (!IsFinite(value))
+            return fallback;
+
+        if (min > max)
+            return fallback;
+
+        return Mathf.Clamp(value, min, max);
+    }
+
+    private static bool HasFiniteComponents(Vector2 value)
+    {
+        return IsFinite(value.x) && IsFinite(value.y);
+    }
+
+    private static bool IsFinite(float value)
+    {
+        return !float.IsNaN(value) && !float.IsInfinity(value);
     }
 
     private void HideSoftwareCursor()

@@ -8,6 +8,8 @@ namespace UnityGAS
     /// </summary>
     public struct AttackTelegraphSpec
     {
+        public const float TopDownCircleWarningYScale = 0.70f;
+
         public AttackTelegraphShape shape;
         public Vector3 center;
         public Vector2 size;
@@ -54,7 +56,26 @@ namespace UnityGAS
             float duration,
             AttackTelegraphStyle style = null)
         {
-            return CreateEllipse(center, new Vector2(diameter, diameter), duration, style);
+            float safeDiameter = Mathf.Max(0.01f, diameter);
+            return CreateEllipse(
+                center,
+                new Vector2(safeDiameter, safeDiameter),
+                duration,
+                style);
+        }
+
+        public static AttackTelegraphSpec CreateTopDownCircle(
+            Vector3 center,
+            float diameter,
+            float duration,
+            AttackTelegraphStyle style = null)
+        {
+            float safeDiameter = Mathf.Max(0.01f, diameter);
+            return CreateEllipse(
+                center,
+                new Vector2(safeDiameter, safeDiameter * TopDownCircleWarningYScale),
+                duration,
+                style);
         }
 
         public static AttackTelegraphSpec CreateEllipse(

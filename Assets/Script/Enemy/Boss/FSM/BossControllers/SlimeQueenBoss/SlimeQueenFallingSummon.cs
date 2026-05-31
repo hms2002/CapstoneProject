@@ -130,8 +130,7 @@ public sealed class SlimeQueenFallingSummon : MonoBehaviour
         if (hasAppliedContactDamage || owner == null || damageTarget == null)
             return;
 
-        float sqrDistance = ((Vector2)(damageTarget.position - transform.position)).sqrMagnitude;
-        if (sqrDistance > contactRadius * contactRadius)
+        if (!TopDownEllipseHitUtility2D.ContainsPoint(transform.position, contactRadius * 2f, damageTarget.position))
             return;
 
         hasAppliedContactDamage = true;

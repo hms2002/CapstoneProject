@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 public sealed class EncyclopediaEntryGridView : MonoBehaviour
@@ -16,6 +17,7 @@ public sealed class EncyclopediaEntryGridView : MonoBehaviour
     private bool warnedMissingSlotAuthoring;
 
     public int SlotsPerPage => Mathf.Max(1, slotsPerPage);
+    public int NavigationColumnCount => ResolveNavigationColumnCount();
     public bool HasRuntimeSlotAuthoring => entryGridRoot != null && entrySlotPrefab != null;
     public int FallbackSlotCount => entrySlots != null ? entrySlots.Count : 0;
     public bool HasAnySlotAuthoring => HasRuntimeSlotAuthoring || FallbackSlotCount > 0;
@@ -210,6 +212,30 @@ public sealed class EncyclopediaEntryGridView : MonoBehaviour
             return runtimeEntrySlots;
 
         return ResolveFallbackEntrySlots();
+    }
+
+    private int ResolveNavigationColumnCount()
+    {
+        GridLayoutGroup gridLayout = ResolveGridLayoutGroup();
+        if (gridLayout != null)
+        {
+            int constraintCount = Mathf.Max(1, gridLayout.constraintCount);
+            if (gridLayout.constraint == GridLayoutGroup.Constraint.FixedColumnCount)
+                return constraintCount;
+
+            if (gridLayout.constraint == GridLayoutGroup.Constraint.FixedRowCount)
+                return Mathf.Max(1, Mathf.CeilToInt(SlotsPerPage / (float)constraintCount));
+        }
+
+        return Mathf.Max(1, Mathf.RoundToInt(Mathf.Sqrt(SlotsPerPage)));
+    }
+
+    private GridLayoutGroup ResolveGridLayoutGroup()
+    {
+        if (entryGridRoot != null && entryGridRoot.TryGetComponent(out GridLayoutGroup gridLayout))
+            return gridLayout;
+
+        return GetComponent<GridLayoutGroup>();
     }
 
     private static ScriptableObject ResolveEntryIconItem(EncyclopediaCatalogSO catalog, EncyclopediaCategory category, int index)

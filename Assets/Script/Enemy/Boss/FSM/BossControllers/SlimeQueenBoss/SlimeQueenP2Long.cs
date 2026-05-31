@@ -360,7 +360,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
             landingPosition,
             jumpWarningDiameter,
             jumpDurationSeconds,
@@ -408,9 +408,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         if (jumpLandingDamage <= 0f || CurrentTarget == null || jumpLandingDamageEffect == null)
             return;
 
-        float damageRadius = Mathf.Max(0.1f, jumpLandingDamageDiameter * 0.5f);
-        float sqrDistance = ((Vector2)(CurrentTarget.position - landingPosition)).sqrMagnitude;
-        if (sqrDistance > damageRadius * damageRadius)
+        if (!TopDownEllipseHitUtility2D.ContainsPoint(landingPosition, ResolveJumpLandingHitDiameter(), CurrentTarget.position))
             return;
 
         CombatDamageAction.ApplyDamageAndEmitHit(
@@ -428,6 +426,13 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     }
 
     /// <summary>팔방 물기둥 패턴의 네 개 양방향 경고선 정보를 만듭니다.</summary>
+    private float ResolveJumpLandingHitDiameter()
+    {
+        // Retain the old serialized damage diameter while top-down warning size owns this hit shape.
+        _ = jumpLandingDamageDiameter;
+        return Mathf.Max(0.1f, jumpWarningDiameter);
+    }
+
     public void BuildCrossWaterPillarSegments(List<CrossWaterPillarSegment> segments)
     {
         if (segments == null)

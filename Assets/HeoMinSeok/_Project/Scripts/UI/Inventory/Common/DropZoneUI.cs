@@ -55,7 +55,7 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (!ItemDragContext.Active) return;
+        if (!ItemDragContext.Active || ItemContainerGroupRegistry.IsInspectionOnly) return;
 
         TryDropSourceToWorld(
             ItemDragContext.Source,
@@ -75,6 +75,9 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
     /// </summary>
     public bool TryDropSourceToWorld(IItemContainer source, int sourceIndex)
     {
+        if (ItemContainerGroupRegistry.IsInspectionOnly)
+            return false;
+
         if (source == null || sourceIndex < 0 || sourceIndex >= source.SlotCount)
             return false;
 

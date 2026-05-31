@@ -5,6 +5,10 @@ using UnityGAS;
 
 public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
 {
+    private const float HoleCheckRadius = 0.2f;
+    private const float HolePathSampleStep = 0.2f;
+    private static readonly Collider2D[] HoleOverlapBuffer = new Collider2D[16];
+
     [Header("Affection Gate")]
     [SerializeField] private bool requireAffection;
     [SerializeField] private int requiredAffectionNpcId;
@@ -38,7 +42,8 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
         if (!HasRequiredAffection())
             return RunSpecialNpcDialogueBranchKey.TeleportLocked;
 
-        if (!HasDestination || ResolvePlayerTransform(context) == null)
+        Transform playerTransform = ResolvePlayerTransform(context);
+        if (!HasDestination || playerTransform == null || IsTeleportPointBlockedByHoleTrap(landingPoint, playerTransform))
             return RunSpecialNpcDialogueBranchKey.TeleportUnavailable;
 
         return RunSpecialNpcDialogueBranchKey.TeleportAvailable;
@@ -46,10 +51,12 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
 
     public override bool CanExecute(RunSpecialNpcFeatureContext context)
     {
-        return base.CanExecute(context) &&
-               HasRequiredAffection() &&
-               ResolvePlayerTransform(context) != null &&
-               landingPoint != null;
+        if (!base.CanExecute(context) || !HasRequiredAffection() || landingPoint == null)
+            return false;
+
+        Transform playerTransform = ResolvePlayerTransform(context);
+        return playerTransform != null &&
+               !IsTeleportPointBlockedByHoleTrap(landingPoint, playerTransform);
     }
 
     public override string GetUnavailableReason(RunSpecialNpcFeatureContext context)
@@ -60,8 +67,12 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
         if (landingPoint == null)
             return "Teleport landing point is missing.";
 
-        if (ResolvePlayerTransform(context) == null)
+        Transform playerTransform = ResolvePlayerTransform(context);
+        if (playerTransform == null)
             return "Current player transform is missing.";
+
+        if (IsTeleportPointBlockedByHoleTrap(landingPoint, playerTransform))
+            return "Teleport landing point overlaps HoleTrap.";
 
         return string.Empty;
     }
@@ -69,7 +80,13 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
     public override IEnumerator Execute(RunSpecialNpcFeatureContext context)
     {
         if (!CanExecute(context))
+        {
+            string unavailableReason = GetUnavailableReason(context);
+            if (!string.IsNullOrEmpty(unavailableReason))
+                LogTeleportWarning(unavailableReason);
+
             yield break;
+        }
 
         Transform playerTransform = ResolvePlayerTransform(context);
         PlayerCinematicProtection playerProtection = AcquirePlayerCinematicProtection(playerTransform);
@@ -90,9 +107,28 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
 
             Transform arrivalAppearancePoint = ResolveAppearancePoint();
             Transform arrivalLandingPoint = landingPoint;
+            if (IsTeleportPointBlockedByHoleTrap(arrivalLandingPoint, playerTransform))
+            {
+                LogTeleportWarning("Teleport landing point overlaps HoleTrap.");
+                yield break;
+            }
 
-            WarpPlayer(context, arrivalAppearancePoint);
-            yield return new WaitForFixedUpdate();
+            bool skipArrivalMovement = ShouldSkipArrivalMovement(playerTransform, arrivalAppearancePoint, arrivalLandingPoint);
+            if (skipArrivalMovement)
+            {
+                if (WarpPlayer(context, arrivalLandingPoint))
+                    yield return new WaitForFixedUpdate();
+
+                if (fadeSessionStarted)
+                    yield return transitionService.FadeInAsync(fadeInDuration);
+
+                yield break;
+            }
+
+            if (WarpPlayer(context, arrivalAppearancePoint))
+                yield return new WaitForFixedUpdate();
+            else
+                yield break;
 
             if (fadeSessionStarted)
                 yield return transitionService.FadeInAsync(fadeInDuration);
@@ -149,10 +185,26 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
         if ((targetPosition - startPosition).sqrMagnitude <= 0.0001f)
             yield break;
 
+        if (IsPositionBlockedByHoleTrap(targetPosition))
+        {
+            LogTeleportWarning("Teleport landing point overlaps HoleTrap.");
+            yield break;
+        }
+
+        if (IsPathBlockedByHoleTrap(startPosition, targetPosition))
+        {
+            LogTeleportWarning("Teleport arrival path crosses HoleTrap. Warping directly to landing.");
+            if (WarpPlayer(context, arrivalLandingPoint))
+                yield return new WaitForFixedUpdate();
+
+            yield break;
+        }
+
         if (moveToLandingDuration <= 0f)
         {
-            WarpPlayer(context, arrivalLandingPoint);
-            yield return new WaitForFixedUpdate();
+            if (WarpPlayer(context, arrivalLandingPoint))
+                yield return new WaitForFixedUpdate();
+
             yield break;
         }
 
@@ -165,29 +217,137 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
                 ? Mathf.Clamp01(moveToLandingCurve.Evaluate(normalizedTime))
                 : normalizedTime;
 
-            SetPlayerPositionImmediate(playerTransform, Vector3.LerpUnclamped(startPosition, targetPosition, moveT));
+            Vector3 nextPosition = Vector3.LerpUnclamped(startPosition, targetPosition, moveT);
+            if (IsPositionBlockedByHoleTrap(nextPosition))
+            {
+                LogTeleportWarning("Teleport arrival movement reached HoleTrap. Warping directly to landing.");
+                if (WarpPlayer(context, arrivalLandingPoint))
+                    yield return new WaitForFixedUpdate();
+
+                yield break;
+            }
+
+            SetPlayerPositionImmediate(playerTransform, nextPosition);
             yield return null;
         }
 
-        WarpPlayer(context, arrivalLandingPoint);
-        yield return new WaitForFixedUpdate();
+        if (WarpPlayer(context, arrivalLandingPoint))
+            yield return new WaitForFixedUpdate();
     }
 
-    private void WarpPlayer(RunSpecialNpcFeatureContext context, Transform targetPoint)
+    private bool WarpPlayer(RunSpecialNpcFeatureContext context, Transform targetPoint)
     {
         Transform playerTransform = ResolvePlayerTransform(context);
         if (playerTransform == null || targetPoint == null)
-            return;
+            return false;
 
         Vector3 targetPosition = ResolvePointPosition(targetPoint, playerTransform);
+        if (IsPositionBlockedByHoleTrap(targetPosition))
+        {
+            LogTeleportWarning("Teleport target overlaps HoleTrap.");
+            return false;
+        }
+
         MovementMotor2D movementMotor = playerTransform.GetComponent<MovementMotor2D>();
         if (movementMotor != null)
         {
             movementMotor.WarpTo(targetPosition, clearExternalMovement, clearAbilityMotion);
-            return;
+            return true;
         }
 
         SetPlayerPositionImmediate(playerTransform, targetPosition);
+        return true;
+    }
+
+    private bool ShouldSkipArrivalMovement(
+        Transform playerTransform,
+        Transform arrivalAppearancePoint,
+        Transform arrivalLandingPoint)
+    {
+        if (playerTransform == null || arrivalAppearancePoint == null || arrivalLandingPoint == null)
+            return false;
+
+        if (arrivalAppearancePoint == arrivalLandingPoint)
+            return false;
+
+        Vector3 appearancePosition = ResolvePointPosition(arrivalAppearancePoint, playerTransform);
+        Vector3 landingPosition = ResolvePointPosition(arrivalLandingPoint, playerTransform);
+        if (IsPositionBlockedByHoleTrap(appearancePosition))
+        {
+            LogTeleportWarning("Teleport appearance point overlaps HoleTrap. Warping directly to landing.");
+            return true;
+        }
+
+        if (IsPathBlockedByHoleTrap(appearancePosition, landingPosition))
+        {
+            LogTeleportWarning("Teleport appearance-to-landing path crosses HoleTrap. Warping directly to landing.");
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsTeleportPointBlockedByHoleTrap(Transform point, Transform playerTransform)
+    {
+        if (point == null || playerTransform == null)
+            return false;
+
+        return IsPositionBlockedByHoleTrap(ResolvePointPosition(point, playerTransform));
+    }
+
+    private static bool IsPathBlockedByHoleTrap(Vector3 startPosition, Vector3 targetPosition)
+    {
+        float distance = Vector3.Distance(startPosition, targetPosition);
+        if (distance <= HolePathSampleStep)
+            return false;
+
+        int sampleCount = Mathf.CeilToInt(distance / HolePathSampleStep);
+        for (int i = 1; i < sampleCount; i++)
+        {
+            float t = i / (float)sampleCount;
+            Vector3 samplePosition = Vector3.Lerp(startPosition, targetPosition, t);
+            if (IsPositionBlockedByHoleTrap(samplePosition))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsPositionBlockedByHoleTrap(Vector3 position)
+    {
+        int hitCount = Physics2D.OverlapCircle(
+            position,
+            HoleCheckRadius,
+            CreateHoleTrapFilter(),
+            HoleOverlapBuffer);
+        bool hasHoleTrap = false;
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D collider = HoleOverlapBuffer[i];
+            if (collider != null && HasHoleTrap(collider))
+                hasHoleTrap = true;
+
+            HoleOverlapBuffer[i] = null;
+        }
+
+        return hasHoleTrap;
+    }
+
+    private static ContactFilter2D CreateHoleTrapFilter()
+    {
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.useTriggers = true;
+        filter.useLayerMask = false;
+        return filter;
+    }
+
+    private static bool HasHoleTrap(Collider2D collider)
+    {
+        if (collider == null)
+            return false;
+
+        return collider.GetComponent<HoleTrap>() != null ||
+               collider.GetComponentInParent<HoleTrap>() != null;
     }
 
     private static Vector3 ResolvePointPosition(Transform point, Transform playerTransform)
@@ -232,6 +392,11 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
             blocker.Acquire(this);
 
         return blocker;
+    }
+
+    private void LogTeleportWarning(string message)
+    {
+        Debug.LogWarning($"[RunSameSceneTeleportNpcFeature] {message}", this);
     }
 
     private static Transform ResolvePlayerTransform(RunSpecialNpcFeatureContext context)

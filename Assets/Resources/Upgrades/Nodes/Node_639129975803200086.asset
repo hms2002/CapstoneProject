@@ -19,10 +19,11 @@ MonoBehaviour:
   price: 0
   effects:
   - {fileID: 11400000, guid: 50de7e22ef564f248e334808259dc06a, type: 2}
-  unlockedNodeIDs: 2056a89e
+  unlockedNodeIDs: 2056a89e0274e01c
   requiredParentIDs: 5bba0988
   nextNodes:
   - {fileID: 11400000, guid: 5a97597d659f75a4dafac4644674cc59, type: 2}
+  - {fileID: 11400000, guid: 0c79ca5def90f81478d91ab6c70e4135, type: 2}
   requiredParents:
   - {fileID: 11400000, guid: 735992350520ac6438ed46e4b0b99c55, type: 2}
   gridX: 3

@@ -327,7 +327,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
             landingPosition,
             summonWarningDiameter,
             summonWarningSeconds,
@@ -343,7 +343,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
             landingPosition,
             jumpWarningDiameter,
             jumpDurationSeconds,
@@ -534,7 +534,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
             transform.position,
             bodyInflateWarningDiameter,
             bodyInflateWarningSeconds,
@@ -570,11 +570,14 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
                 return;
         }
 
-        float radius = Mathf.Max(0.1f, bodyInflateImpactDiameter * 0.5f);
+        float radius = Mathf.Max(0.1f, Mathf.Max(bodyInflateImpactDiameter, bodyInflateWarningDiameter) * 0.5f);
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, radius);
 
         for (int i = 0; i < hits.Length; i++)
         {
+            if (!TopDownEllipseHitUtility2D.ContainsCollider(hits[i], transform.position, bodyInflateWarningDiameter))
+                continue;
+
             if (!HasPlayerTagInHierarchy(hits[i].transform))
                 continue;
 
@@ -675,9 +678,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         if (jumpLandingDamage <= 0f || CurrentTarget == null)
             return;
 
-        float damageRadius = Mathf.Max(0.1f, jumpLandingDamageDiameter * 0.5f);
-        float sqrDistance = ((Vector2)(CurrentTarget.position - landingPosition)).sqrMagnitude;
-        if (sqrDistance > damageRadius * damageRadius)
+        if (!TopDownEllipseHitUtility2D.ContainsPoint(landingPosition, ResolveJumpLandingHitDiameter(), CurrentTarget.position))
             return;
 
         GE_Damage_Spec damageEffect = jumpLandingDamageEffect != null
@@ -702,6 +703,13 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     }
 
     /// <summary>1페이즈 사망 애니메이션 이후 2페이즈 근거리/원거리 퀸을 생성합니다.</summary>
+    private float ResolveJumpLandingHitDiameter()
+    {
+        // Retain the old serialized damage diameter while top-down warning size owns this hit shape.
+        _ = jumpLandingDamageDiameter;
+        return Mathf.Max(0.1f, jumpWarningDiameter);
+    }
+
     protected override void DestroyAfterDelay()
     {
         StartCoroutine(WaitForDeathAnimationAndSplit());

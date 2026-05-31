@@ -33,7 +33,8 @@ public sealed class EgoSwordActor : MonoBehaviour
         Flying,
         Planting,
         Fixed,
-        Recalling
+        Recalling,
+        CinematicPlanted
     }
 
     [Header("Held")]
@@ -62,6 +63,14 @@ public sealed class EgoSwordActor : MonoBehaviour
     [SerializeField, Range(0.05f, 0.95f)] private float buriedMaskHeightRatio = 0.42f;
     [SerializeField, Min(0.1f)] private float buriedMaskWidthMultiplier = 1.6f;
     [SerializeField] private SpriteMask buriedMask;
+
+    [Header("Cinematic Planting")]
+    [SerializeField, Min(0f)] private float finalPlantDistance = 1.1f;
+    [SerializeField] private Vector3 finalPlantLocalOffset = new(0f, -0.15f, 0f);
+    [SerializeField, Min(0f)] private float deathPlantDistance = 1.1f;
+    [SerializeField, Min(0f)] private float deathPlantTravelSeconds = 0.28f;
+    [SerializeField, Min(0f)] private float deathPlantSpinDegreesPerSecond = 720f;
+    [SerializeField, Min(0f)] private float deathPlantArcHeight = 0.25f;
 
     [Header("Dropped Patterns")]
     [SerializeField, Min(0.1f)] private float patternIntervalSeconds = 1.5f;
@@ -141,7 +150,11 @@ public sealed class EgoSwordActor : MonoBehaviour
     private SpriteAfterimageEmitter2D afterimageEmitter;
 
     public bool IsHeld => state == SwordState.Held;
-    public bool IsDropped => state == SwordState.Flying || state == SwordState.Planting || state == SwordState.Fixed || state == SwordState.Recalling;
+    public bool IsDropped => state == SwordState.Flying ||
+                             state == SwordState.Planting ||
+                             state == SwordState.Fixed ||
+                             state == SwordState.Recalling ||
+                             state == SwordState.CinematicPlanted;
     public bool IsRecallActive => state == SwordState.Recalling;
 
     private void Awake()
@@ -289,6 +302,38 @@ public sealed class EgoSwordActor : MonoBehaviour
             return;
 
         BeginPlantingAtCurrentPosition(velocityDirection);
+    }
+
+    public void ShowFinalDesperationPlanted(Vector2 ownerCenter, Vector2 facingDirection)
+    {
+        Vector2 safeDirection = facingDirection.sqrMagnitude > 0.0001f ? facingDirection.normalized : Vector2.left;
+        Vector2 side = new(-safeDirection.y, safeDirection.x);
+        Vector2 target = ownerCenter
+            + safeDirection * Mathf.Max(0f, finalPlantDistance)
+            + safeDirection * finalPlantLocalOffset.x
+            + side * finalPlantLocalOffset.y;
+        PlaceCinematicPlanted(target, spawnFragment: true);
+    }
+
+    public void StartDeathPlant(Vector2 ownerCenter, Vector2 facingDirection)
+    {
+        Vector2 safeDirection = facingDirection.sqrMagnitude > 0.0001f ? facingDirection.normalized : Vector2.left;
+        Vector2 target = ownerCenter + safeDirection * Mathf.Max(0f, deathPlantDistance);
+        PrepareCinematicPlanting();
+
+        Vector2 start = owner != null
+            ? owner.ResolveSwordHoldPosition(throwOriginLocalOffset)
+            : (Vector2)transform.position;
+        transform.position = new Vector3(start.x, start.y, transform.position.z);
+        transform.rotation = Quaternion.identity;
+
+        if (!isActiveAndEnabled || deathPlantTravelSeconds <= 0.001f)
+        {
+            PlaceCinematicPlanted(target, spawnFragment: false);
+            return;
+        }
+
+        plantingRoutine = StartCoroutine(CoDeathPlant(start, target));
     }
 
     public void Recall(float speed)
@@ -583,6 +628,61 @@ public sealed class EgoSwordActor : MonoBehaviour
         subPatternAbilityRunning = false;
         activeSubPatternSpec = null;
         ReleaseVerticalStrikeVfx();
+    }
+
+    private void PrepareCinematicPlanting()
+    {
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+
+        StopAfterimage(clearGhosts: true);
+        StopRecallLiftRoutine();
+        StopSwordSpinEffect();
+        StopPlantingRoutine();
+        StopDroppedPatterns();
+        ClearBuriedMask();
+        ReleaseVerticalStrikeVfx();
+        ReleaseAttachedOneShotVfx();
+        StopVerticalAuraAnimation();
+        ResetRecallReadiness();
+        subPatternAbilityRunning = false;
+        activeSubPatternSpec = null;
+        flyingSpeed = 0f;
+        remainingBounces = 0;
+        state = SwordState.CinematicPlanted;
+        transform.SetParent(null, true);
+    }
+
+    private void PlaceCinematicPlanted(Vector2 position, bool spawnFragment)
+    {
+        PrepareCinematicPlanting();
+        transform.position = new Vector3(position.x, position.y, transform.position.z);
+        transform.rotation = Quaternion.identity;
+        ApplyBuriedMask(spawnFragment);
+    }
+
+    private IEnumerator CoDeathPlant(Vector2 start, Vector2 target)
+    {
+        float duration = Mathf.Max(0.01f, deathPlantTravelSeconds);
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float t = Mathf.Clamp01(elapsed / duration);
+            Vector2 flatPosition = Vector2.Lerp(start, target, t);
+            float arcOffset = Mathf.Sin(t * Mathf.PI) * Mathf.Max(0f, deathPlantArcHeight);
+            transform.position = new Vector3(flatPosition.x, flatPosition.y + arcOffset, transform.position.z);
+            if (deathPlantSpinDegreesPerSecond > 0f)
+                transform.Rotate(0f, 0f, -deathPlantSpinDegreesPerSecond * Time.deltaTime);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = new Vector3(target.x, target.y, transform.position.z);
+        transform.rotation = Quaternion.identity;
+        ApplyBuriedMask(spawnFragment: false);
+        state = SwordState.CinematicPlanted;
+        plantingRoutine = null;
     }
 
     private void BeginPlantingAtCurrentPosition(Vector2 hopDirection)
@@ -1259,10 +1359,10 @@ public sealed class EgoSwordActor : MonoBehaviour
                 AttackSquareColor,
                 "DemonKing_EgoVerticalCircleAttack");
 
-            DemonKingCombatUtil.ApplyCircleDamage(
+            DemonKingCombatUtil.ApplyTopDownEllipseDamage(
                 owner,
                 groundTarget,
-                verticalStrikeDiameter * 0.5f,
+                verticalStrikeDiameter,
                 owner.DefaultDamageEffect,
                 patternDamage);
         }
@@ -1305,7 +1405,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         swordAnimationDefaultsCaptured = true;
     }
 
-    private void ApplyBuriedMask()
+    private void ApplyBuriedMask(bool spawnFragment = true)
     {
         CacheBaseSwordRenderers();
         SpriteMask mask = ResolveBuriedMask(createIfMissing: true);
@@ -1314,7 +1414,10 @@ public sealed class EgoSwordActor : MonoBehaviour
 
         ConfigureBuriedMask(mask);
         mask.enabled = true;
-        SpawnBuriedFragment();
+        if (spawnFragment)
+            SpawnBuriedFragment();
+        else
+            ReleaseBuriedFragment(fade: false);
         for (int i = 0; i < baseSwordRenderers.Length; i++)
         {
             if (baseSwordRenderers[i] != null)
@@ -1840,7 +1943,7 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     private AttackTelegraphSpec CreateLaserSpec(LaserLine line, float duration)
     {
-        return AttackTelegraphSpecUtility.WithThinWarningOutline(
+        return AttackTelegraphSpecUtility.WithThinWarningOutlineOnly(
             AttackTelegraphSpec.CreateRectangle(
                 line.Center,
                 line.Size,

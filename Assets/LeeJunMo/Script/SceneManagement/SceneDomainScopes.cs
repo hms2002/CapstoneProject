@@ -37,7 +37,7 @@ internal static class SceneDomainTitleCleanupScope
 
     public static void Cleanup()
     {
-        SoundManager.Instance?.StopMusic(0.2f);
+        SoundManager.Instance?.StopMusic();
         RunRouteBgmService.EnsureInstance()?.ForceRefreshActiveSceneBgm();
         LoadingOverlayController.Instance?.ForceHidePresentation();
         PortalRouteManager.Instance?.ClearPlan();

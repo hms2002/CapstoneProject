@@ -221,7 +221,7 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
         if (telegraphService == null)
             return null;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateTopDownCircle(
             impactPosition,
             impactDiameter,
             duration,
@@ -241,6 +241,9 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
 
         for (int i = 0; i < hits.Length; i++)
         {
+            if (!TopDownEllipseHitUtility2D.ContainsCollider(hits[i], impactPosition, impactDiameter))
+                continue;
+
             GameObject targetRoot = CombatTargetResolver2D.ResolveDamageTarget(hits[i]);
             if (targetRoot == null || targetRoot == dragon.gameObject)
                 continue;
@@ -457,7 +460,7 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
 
         for (int i = 0; i < kegTargets.Count; i++)
         {
-            AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+            AttackTelegraphSpec spec = AttackTelegraphSpec.CreateTopDownCircle(
                 kegTargets[i],
                 scatteredKegTelegraphDiameter,
                 scatteredKegWarningSeconds,
@@ -542,9 +545,13 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
         if (sourceSystem == null || dragon == null || scatteredKegMissedDamageRadius <= 0f)
             return;
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(impactPosition, scatteredKegMissedDamageRadius, ResolveTargetMask(dragon));
+        float queryRadius = Mathf.Max(scatteredKegMissedDamageRadius, scatteredKegTelegraphDiameter * 0.5f);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(impactPosition, queryRadius, ResolveTargetMask(dragon));
         for (int i = 0; i < hits.Length; i++)
         {
+            if (!TopDownEllipseHitUtility2D.ContainsCollider(hits[i], impactPosition, scatteredKegTelegraphDiameter))
+                continue;
+
             GameObject targetRoot = CombatTargetResolver2D.ResolveDamageTarget(hits[i]);
             if (targetRoot == null || targetRoot == dragon.gameObject)
                 continue;

@@ -31,9 +31,19 @@ public readonly struct DemoCheatResult
 /// </summary>
 public sealed class DemoCheatService
 {
+    private const float RunSpecialNpcWarpHoleCheckRadius = 0.2f;
+    private static readonly string[] RunSpecialNpcCheatWarpPointNames =
+    {
+        "DemoCheatWarpPoint",
+        "CheatWarpPoint",
+        "TestTeleportPoint"
+    };
+
     private static readonly HashSet<AbilityDefinition> AbilityBuffer = new();
     private static readonly List<RunSpecialNpcInteractor> RunSpecialNpcBuffer = new();
     private static readonly List<DemoCheatMapZoomBounds> MapZoomBoundsBuffer = new();
+    private static readonly List<Transform> RunSpecialNpcAnchorSearchRoots = new();
+    private static readonly Collider2D[] HoleOverlapBuffer = new Collider2D[16];
     private readonly UnityEngine.Object logContext;
     private string lastRunSpecialNpcSceneName;
     private int nextRunSpecialNpcIndex;
@@ -96,19 +106,35 @@ public sealed class DemoCheatService
         if (npc == null)
             return Fail("이 씬에서 Runtime Special NPC를 찾을 수 없습니다.");
 
-        Transform anchor = npc.GetPromptAnchor();
+        Transform anchor = ResolveRunSpecialNpcCheatWarpAnchor(npc, out bool usedCheatWarpPoint);
         Vector3 targetPosition = anchor != null ? anchor.position : npc.transform.position;
         targetPosition.z = player.position.z;
 
-        MovementMotor2D movementMotor = player.GetComponent<MovementMotor2D>();
-        if (movementMotor != null)
+        if (IsHoleTrapAtPosition(targetPosition))
         {
-            movementMotor.WarpTo(targetPosition, clearExternalMovement: true, clearMotion: true);
+            if (usedCheatWarpPoint)
+            {
+                Transform fallbackAnchor = npc.GetPromptAnchor();
+                Vector3 fallbackPosition = fallbackAnchor != null ? fallbackAnchor.position : npc.transform.position;
+                fallbackPosition.z = player.position.z;
+
+                if (!IsHoleTrapAtPosition(fallbackPosition))
+                {
+                    LogWarning($"Runtime Special NPC cheat warp point overlaps HoleTrap. Falling back to prompt anchor. npc={npc.name}");
+                    targetPosition = fallbackPosition;
+                }
+                else
+                {
+                    return Fail("Runtime Special NPC warp target overlaps HoleTrap.");
+                }
+            }
+            else
+            {
+                return Fail("Runtime Special NPC warp target overlaps HoleTrap.");
+            }
         }
-        else
-        {
-            SetPlayerPositionImmediate(player, targetPosition);
-        }
+
+        WarpPlayerImmediate(player, targetPosition);
 
         Log($"Runtime Special NPC 앞으로 워프. scene={SceneManager.GetActiveScene().name}, npc={npc.name}");
         return DemoCheatResult.Succeeded("Runtime Special NPC 앞으로 이동했습니다.");
@@ -581,6 +607,134 @@ public sealed class DemoCheatService
         }
 
         return $"{interactor.gameObject.scene.name}/{path}/{interactor.transform.GetSiblingIndex():D4}";
+    }
+
+    private static Transform ResolveRunSpecialNpcCheatWarpAnchor(RunSpecialNpcInteractor npc, out bool usedCheatWarpPoint)
+    {
+        usedCheatWarpPoint = false;
+        if (npc == null)
+            return null;
+
+        if (TryFindRunSpecialNpcCheatWarpPoint(npc, out Transform cheatWarpPoint))
+        {
+            usedCheatWarpPoint = true;
+            return cheatWarpPoint;
+        }
+
+        Transform promptAnchor = npc.GetPromptAnchor();
+        return promptAnchor != null ? promptAnchor : npc.transform;
+    }
+
+    private static bool TryFindRunSpecialNpcCheatWarpPoint(RunSpecialNpcInteractor npc, out Transform cheatWarpPoint)
+    {
+        cheatWarpPoint = null;
+        if (npc == null)
+            return false;
+
+        RunSpecialNpcAnchorSearchRoots.Clear();
+        AddRunSpecialNpcAnchorSearchRoot(npc.transform);
+        AddRunSpecialNpcAnchorSearchRoot(npc.transform.parent);
+        AddRunSpecialNpcAnchorSearchRoot(npc.transform.root);
+
+        for (int nameIndex = 0; nameIndex < RunSpecialNpcCheatWarpPointNames.Length; nameIndex++)
+        {
+            string pointName = RunSpecialNpcCheatWarpPointNames[nameIndex];
+            for (int rootIndex = 0; rootIndex < RunSpecialNpcAnchorSearchRoots.Count; rootIndex++)
+            {
+                Transform root = RunSpecialNpcAnchorSearchRoots[rootIndex];
+                if (TryFindNamedChild(root, pointName, out cheatWarpPoint))
+                {
+                    RunSpecialNpcAnchorSearchRoots.Clear();
+                    return true;
+                }
+            }
+        }
+
+        RunSpecialNpcAnchorSearchRoots.Clear();
+        return false;
+    }
+
+    private static void AddRunSpecialNpcAnchorSearchRoot(Transform root)
+    {
+        if (root == null)
+            return;
+
+        for (int i = 0; i < RunSpecialNpcAnchorSearchRoots.Count; i++)
+        {
+            if (RunSpecialNpcAnchorSearchRoots[i] == root)
+                return;
+        }
+
+        RunSpecialNpcAnchorSearchRoots.Add(root);
+    }
+
+    private static bool TryFindNamedChild(Transform root, string childName, out Transform child)
+    {
+        child = null;
+        if (root == null || string.IsNullOrEmpty(childName))
+            return false;
+
+        Transform[] children = root.GetComponentsInChildren<Transform>(includeInactive: true);
+        for (int i = 0; i < children.Length; i++)
+        {
+            Transform candidate = children[i];
+            if (candidate != null && string.Equals(candidate.name, childName, StringComparison.Ordinal))
+            {
+                child = candidate;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsHoleTrapAtPosition(Vector3 position)
+    {
+        int hitCount = Physics2D.OverlapCircle(
+            position,
+            RunSpecialNpcWarpHoleCheckRadius,
+            CreateHoleTrapFilter(),
+            HoleOverlapBuffer);
+        bool hasHoleTrap = false;
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D collider = HoleOverlapBuffer[i];
+            if (collider != null && HasHoleTrap(collider))
+                hasHoleTrap = true;
+
+            HoleOverlapBuffer[i] = null;
+        }
+
+        return hasHoleTrap;
+    }
+
+    private static ContactFilter2D CreateHoleTrapFilter()
+    {
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.useTriggers = true;
+        filter.useLayerMask = false;
+        return filter;
+    }
+
+    private static bool HasHoleTrap(Collider2D collider)
+    {
+        if (collider == null)
+            return false;
+
+        return collider.GetComponent<HoleTrap>() != null ||
+               collider.GetComponentInParent<HoleTrap>() != null;
+    }
+
+    private static void WarpPlayerImmediate(Transform player, Vector3 targetPosition)
+    {
+        MovementMotor2D movementMotor = player.GetComponent<MovementMotor2D>();
+        if (movementMotor != null)
+        {
+            movementMotor.WarpTo(targetPosition, clearExternalMovement: true, clearMotion: true);
+            return;
+        }
+
+        SetPlayerPositionImmediate(player, targetPosition);
     }
 
     private static void SetPlayerPositionImmediate(Transform player, Vector3 targetPosition)

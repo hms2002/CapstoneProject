@@ -57,10 +57,14 @@ public class MonsterElementGaugeViewInstaller : MonoBehaviour
 
     public void Uninstall()
     {
-        if (installedView == null)
+        MonsterElementGaugeView view = installedView != null
+            ? installedView
+            : GetComponentInChildren<MonsterElementGaugeView>(true);
+
+        if (view == null)
             return;
 
-        Destroy(installedView.gameObject);
+        Destroy(view.gameObject);
         installedView = null;
     }
 }

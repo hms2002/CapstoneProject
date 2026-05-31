@@ -116,14 +116,14 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
         activeRoutine = StartCoroutine(PlayOpenRoutine(prepareContent, onComplete));
     }
 
-    public void PlayLeftPageTurn(Action swapContent, Action onComplete = null)
+    public void PlayLeftPageTurn(Action swapContent, Action onComplete = null, Action onTurnStarted = null)
     {
-        PlayPageTurn(leftPageStateName, leftPageClip, CanPlayLeftPageTurn, swapContent, onComplete);
+        PlayPageTurn(leftPageStateName, leftPageClip, CanPlayLeftPageTurn, swapContent, onComplete, onTurnStarted);
     }
 
-    public void PlayRightPageTurn(Action swapContent, Action onComplete = null)
+    public void PlayRightPageTurn(Action swapContent, Action onComplete = null, Action onTurnStarted = null)
     {
-        PlayPageTurn(rightPageStateName, rightPageClip, CanPlayRightPageTurn, swapContent, onComplete);
+        PlayPageTurn(rightPageStateName, rightPageClip, CanPlayRightPageTurn, swapContent, onComplete, onTurnStarted);
     }
 
     public void PlayContentReveal(Action onComplete = null)
@@ -248,7 +248,13 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    private void PlayPageTurn(string stateName, AnimationClip clip, bool canPlay, Action swapContent, Action onComplete)
+    private void PlayPageTurn(
+        string stateName,
+        AnimationClip clip,
+        bool canPlay,
+        Action swapContent,
+        Action onComplete,
+        Action onTurnStarted)
     {
         StopActiveRoutine();
         ResolveReferences();
@@ -259,6 +265,7 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
 
         if (!gameObject.activeInHierarchy || !canPlay)
         {
+            onTurnStarted?.Invoke();
             SetContentHiddenForLayout();
             swapContent?.Invoke();
             SetContentVisible(true);
@@ -266,13 +273,19 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
             return;
         }
 
-        activeRoutine = StartCoroutine(PlayPageTurnRoutine(stateName, clip, swapContent, onComplete));
+        activeRoutine = StartCoroutine(PlayPageTurnRoutine(stateName, clip, swapContent, onComplete, onTurnStarted));
     }
 
-    private IEnumerator PlayPageTurnRoutine(string stateName, AnimationClip clip, Action swapContent, Action onComplete)
+    private IEnumerator PlayPageTurnRoutine(
+        string stateName,
+        AnimationClip clip,
+        Action swapContent,
+        Action onComplete,
+        Action onTurnStarted)
     {
         yield return PlayContentDisappearRoutine();
         SetContentVisible(false);
+        onTurnStarted?.Invoke();
         PlayBookState(stateName);
         yield return WaitForDuration(GetClipLength(clip, stateName));
         PlayBookState(openedStateName);

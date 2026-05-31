@@ -71,7 +71,10 @@ public sealed class BossDeathPresentation : MonoBehaviour
     [SerializeField] private BossSpeechSituationEnum deathSpeechSituation = BossSpeechSituationEnum.Death;
 
     [Header("Audio")]
+#pragma warning disable 0414
+    [HideInInspector]
     [SerializeField, Min(0f)] private float deathBgmFadeOutDuration = 0f;
+#pragma warning restore 0414
 
     [Header("Terminal Ending")]
     [SerializeField] private BossDefeatEndingSequence terminalEndingSequence;
@@ -151,7 +154,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private IEnumerator RunDeathPresentationRoutine()
     {
-        SoundManager.EnsureInstance().StopMusic(deathBgmFadeOutDuration);
+        SoundManager.EnsureInstance().StopMusic();
         LockPlayerControls();
         overlay = new CinematicLetterboxOverlay();
         bool hasTerminalEnding = TryGetTerminalEndingSequence(out BossDefeatEndingSequence endingSequence);

@@ -74,10 +74,22 @@ public struct BossHudSlotSnapshot
         BossHudHealthBarTheme healthBarTheme)
     {
         string displayName = BossHudValueUtility.ResolveBossDisplayName(boss, displayNameOverride);
+        if (isDefeated)
+        {
+            return new BossHudSlotSnapshot(
+                displayName,
+                0f,
+                false,
+                0f,
+                false,
+                true,
+                healthBarTheme);
+        }
+
         BossHudChannelSnapshot channel = BossHudValueUtility.BuildBossChannel(boss, null, true);
         return new BossHudSlotSnapshot(
             displayName,
-            isDefeated ? 0f : channel.HealthRatio,
+            channel.HealthRatio,
             channel.HasGroggyGauge,
             channel.GroggyRatio,
             channel.IsGroggy,

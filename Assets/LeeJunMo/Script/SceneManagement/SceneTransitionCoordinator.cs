@@ -328,7 +328,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
         if (elapsed < loadingOverlay.DelayedRevealSeconds)
             return false;
 
-        loadingOverlay.RevealManagedPresentation();
+        loadingOverlay.RevealManagedPresentation(immediate: true);
         fadeService?.HideOverlayImmediately();
         loadingPresentationRevealed = true;
         return true;
