@@ -213,6 +213,50 @@ MonoBehaviour:
   defeatedRendererBrightness: 0.5
   toxicRushPitFallSlamVisualHeight: 10
   logToxicRushPitFallSlamHeight: 1
+  toxicRushPitFallSlamLandingPresentation:
+    sound:
+      key:
+      volumeMultiplier: 1
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
+    cameraShake:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    effect:
+      prefab: {fileID: 2448575849230576120, guid: 18d42adbb3a7c624abe8f1661ea9a5ad, type: 3}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      boundsMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+    particle:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      boundsMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
   toxicRushWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   toxicRushWarningSeconds: 1.4
   toxicRushRepeatCount: 3

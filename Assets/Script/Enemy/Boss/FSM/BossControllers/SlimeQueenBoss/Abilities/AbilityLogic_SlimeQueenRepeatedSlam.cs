@@ -1,5 +1,6 @@
 using System.Collections;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
@@ -13,6 +14,9 @@ public sealed class AbilityLogic_SlimeQueenRepeatedSlam : AbilityLogic
 
     [Header("Sound")]
     [SerializeField] private SoundRef slamSound = SoundRef.FromKey("sound_slimeQueen_Stamping");
+
+    [Header("Presentation")]
+    [SerializeField] private WorldPresentationHook landingPresentation;
 
     /// <summary>슬라임 여왕 2페이즈 개체가 플레이어 위치를 연속 조준해 체공/급강하 내려찍기를 반복합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -67,6 +71,12 @@ public sealed class AbilityLogic_SlimeQueenRepeatedSlam : AbilityLogic
             }
 
             slimeQueen.ApplyPhase2SlamDamage(spec, landingPosition);
+            SlimeQueenPresentationAudioUtility.PlayPresentation(
+                landingPresentation,
+                slimeQueen.gameObject,
+                landingPosition,
+                this,
+                initialTarget);
             SlimeQueenPresentationAudioUtility.PlaySound(
                 slamSound,
                 slimeQueen.gameObject,

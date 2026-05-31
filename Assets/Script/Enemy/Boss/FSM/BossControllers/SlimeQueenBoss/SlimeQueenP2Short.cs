@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
@@ -24,6 +25,9 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
 
     [Tooltip("구덩이 복귀 내려찍기에서 height target과 실제 Visual 위치를 추적 로그로 출력합니다.")]
     [SerializeField] private bool logToxicRushPitFallSlamHeight = true;
+
+    [Tooltip("구덩이 복귀 내려찍기 착지 지점에 출력할 연출입니다.")]
+    [SerializeField] private WorldPresentationHook toxicRushPitFallSlamLandingPresentation;
 
     [Header("Phase 2 Short - Toxic Rush")]
     [Tooltip("독성 돌진 경고선 표시에 사용할 AttackTelegraph 스타일입니다.")]
@@ -465,6 +469,11 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
             SnapToPhase2SlamLanding(landingPosition);
             LogToxicRushPitFallSlamHeight("return slam after landing snap", landingPosition, 1f, startVisualHeight, force: true);
             ApplyPhase2SlamDamage(null, landingPosition);
+            SlimeQueenPresentationAudioUtility.PlayPresentation(
+                toxicRushPitFallSlamLandingPresentation,
+                gameObject,
+                landingPosition,
+                this);
             FaceCurrentTarget();
         }
         finally
