@@ -18,13 +18,11 @@
 
 # face: 3001: Angry
 # anim: angry
-이 몸의 수로에 발을 들이기 전에
-먼저 신발부터 닦는 것이 예의 아니더냐?
+이 몸의 수로에 발을 들이기 전에 먼저 신발부터 닦는 것이 예의 아니더냐?
 
 # face: 3001: Angry
 # anim: angry
-그 흙 묻은 신발로 한 발짝만 더 들어오면,
-짐의 백성들이 세 시간 동안 광낸 바닥이 망가지느니라.
+그 흙 묻은 신발로 한 발짝만 더 들어오면, 짐의 백성들이 세 시간 동안 광낸 바닥이 망가지느니라.
 
 # face: 3001: joy
 # anim: slow
@@ -45,8 +43,7 @@
 
 # face: 3001: Idle
 # anim: normal
-그리고 짐은
-그 모든 [slowshake][rand_size=98,106]말캉한[/rand_size][/slowshake] 백성들의 군주.
+그리고 짐은 그 모든 [slowshake][rand_size=98,106]말캉한[/rand_size][/slowshake] 백성들의 군주.
 
 # face: 3001: Smile
 # anim: normal
@@ -63,8 +60,7 @@
 
     # face: 3001: VeryVeryjoy
     # anim: normal
-    그래,
-    아주 정확한 평가로구나!
+    그래, 아주 정확한 평가로구나!
 
     # face: 3001: Smile
     # anim: normal
@@ -72,8 +68,7 @@
 
     # face: 3001: Smile
     # anim: whisper
-    아니,
-    이미 듣고 있겠지.
+    아니, 이미 듣고 있겠지.
 
     # face: 3001: Funny
     # anim: normal
@@ -81,12 +76,7 @@
 
     # face: 3001: Idle
     # anim: normal
-    좋아.
-
-    # face: 3001: Smile
-    # anim: normal
-    그대에게는 특별히
-    품격 있는 패배를 허락하마!
+    좋아. 그대에게는 특별히 품격 있는 패배를 허락하마!
 
     -> SLIME_QUEEN_01_END
 
@@ -97,26 +87,19 @@
 
     # face: 3001: Angry
     # anim: angry
-    지금 네놈, [pause=0.2]
+    지금 네놈, [pause=0.2] 짐의 백성들을 [tremble]얕본 것이냐?[/tremble]
 
     # face: 3001: Angry
     # anim: angry
-    짐의 백성들을 [tremble]얕본 것이냐?[/tremble]
+    <size=120%>슬라임은 샴푸도, 젤리도, 연금술 재료도 아니다!</size>
 
     # face: 3001: Angry
     # anim: angry
-    <size=120%>슬라임은 샴푸도, 젤리도,
-    연금술 재료도 아니다!</size>
+    움직이고, 생각하고,
 
     # face: 3001: Angry
     # anim: angry
-    움직이고,
-    생각하고,
-
-    # face: 3001: Angry
-    # anim: angry
-    근무 교대표까지 작성하는
-    당당한 백성이니라!
+    근무 교대표까지 작성하는 당당한 백성이니라!
 
     # face: 3001: Smile
     # anim: normal
@@ -124,19 +107,14 @@
 
     # face: 3001: Smile
     # anim: cold
-    네놈은 특별히
-    예절 교육부터 받아야겠구나.
+    네놈은 특별히 예절 교육부터 받아야겠구나.
 
     -> SLIME_QUEEN_01_END
 
 = SLIME_QUEEN_01_END
 # face: 3001: Smile
 # anim: normal
-마왕님께서 네놈을 적당히 봐주라 명하셨으니,
-
-# face: 3001: Smile
-# anim: normal
-짐도 그 뜻은 따르겠다.
+마왕님께서 네놈을 적당히 봐주라 명하셨으니, 짐도 그 뜻은 따르겠다.
 
 # face: 3001: Smile
 # anim: cold
@@ -144,13 +122,11 @@
 
 # face: 3001: Smile
 # anim: cold
-여왕의 앞을 지나가려면,
-그만한 자격을 보이거라.
+여왕의 앞을 지나가려면, 그만한 자격을 보이거라.
 
 # face: 3001: Idle
 # anim: normal
-자,
-나의 귀여운 [slowshake][rand_size=98,106]백성들이여[/rand_size][/slowshake]!
+자, 나의 귀여운 [slowshake][rand_size=98,106]백성들이여[/rand_size][/slowshake]!
 
 # face: 3001: Smile
 # anim: normal

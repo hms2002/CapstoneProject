@@ -68404,59 +68404,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2826825829709561300, guid: 84e107a2d896c944b86df050ad0becb7, type: 3}
   m_PrefabInstance: {fileID: 857735306}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &864159656
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 864159657}
-  - component: {fileID: 864159658}
-  m_Layer: 0
-  m_Name: MonsterSpawn_ShadowMonster
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &864159657
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 864159656}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -62, y: 2, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1359969356}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &864159658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 864159656}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
-  sourceKind: 0
-  monsterPrefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
-  stageMonsterSet: {fileID: 0}
-  spawnByDefault: 1
-  allowExtraSpawn: 1
-  spawnAnchor: {fileID: 0}
-  roomArea: {fileID: 1821689219}
-  roomGroup: {fileID: 1821689221}
-  linkedChestKillLock: {fileID: 0}
 --- !u!1 &865509520
 GameObject:
   m_ObjectHideFlags: 0
@@ -70894,7 +70841,6 @@ Transform:
   - {fileID: 544850959}
   - {fileID: 1705041484}
   - {fileID: 225282824}
-  - {fileID: 864159657}
   - {fileID: 1057968764}
   - {fileID: 589914497}
   - {fileID: 1368255381}
@@ -70939,6 +70885,7 @@ Transform:
   - {fileID: 325505236}
   - {fileID: 1997648989}
   - {fileID: 172541016}
+  - {fileID: 1407660420}
   m_Father: {fileID: 1479578845}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1368255380
@@ -71146,6 +71093,59 @@ MonoBehaviour:
   roomArea: {fileID: 436930850}
   roomGroup: {fileID: 436930852}
   linkedChestKillLock: {fileID: 834452577}
+--- !u!1 &1407660419
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1407660420}
+  - component: {fileID: 1407660421}
+  m_Layer: 0
+  m_Name: MonsterSpawn_ShadowMonster
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1407660420
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407660419}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -55, y: 3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1359969356}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1407660421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407660419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
+  monsterPrefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+  stageMonsterSet: {fileID: 0}
+  spawnByDefault: 1
+  allowExtraSpawn: 1
+  spawnAnchor: {fileID: 0}
+  roomArea: {fileID: 1821689219}
+  roomGroup: {fileID: 1821689221}
+  linkedChestKillLock: {fileID: 0}
 --- !u!1 &1422541199
 GameObject:
   m_ObjectHideFlags: 0
