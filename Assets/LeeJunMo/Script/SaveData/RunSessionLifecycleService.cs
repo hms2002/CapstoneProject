@@ -13,6 +13,8 @@ internal static class RunSessionLifecycleService
         data.isRunActive = true;
         data.runElapsedSeconds = 0f;
         data.runRemainingSeconds = 0f;
+        data.pendingHubReturnFullHeal = false;
+        data.pendingHubLoadFullHeal = false;
     }
 
     public static void EndRun(
@@ -36,6 +38,7 @@ internal static class RunSessionLifecycleService
         data.runRemainingSeconds = 0f;
         data.pendingTransition = null;
         data.pendingPlayerState = null;
+        data.pendingHubReturnFullHeal = reason != RunEndReason.None;
         clearRoutePlan?.Invoke();
     }
 }
@@ -193,6 +196,40 @@ internal static class RunSessionStateService
         data.pendingPlayerState = null;
     }
 
+    /// <summary>
+    /// 책임 : 런 종료 후 Hub에 도착했을 때 1회성 풀 회복 요청을 소비한다.
+    /// 씬 복원/초기화 정책과 분리해 Hub 복귀 보상만 명확하게 처리한다.
+    /// </summary>
+    public static bool ConsumePendingHubReturnFullHeal(GamePlayData data)
+    {
+        if (data == null || !data.pendingHubReturnFullHeal)
+            return false;
+
+        data.pendingHubReturnFullHeal = false;
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 : 타이틀에서 세이브 프로필을 통해 Hub로 들어온 플레이어의 1회성 풀 회복 요청을 관리한다.
+    /// 런 복귀 회복과 분리해 저장 데이터 로드 흐름에서만 명시적으로 소비되도록 한다.
+    /// </summary>
+    public static void RequestPendingHubLoadFullHeal(GamePlayData data)
+    {
+        if (data == null)
+            return;
+
+        data.pendingHubLoadFullHeal = true;
+    }
+
+    public static bool ConsumePendingHubLoadFullHeal(GamePlayData data)
+    {
+        if (data == null || !data.pendingHubLoadFullHeal)
+            return false;
+
+        data.pendingHubLoadFullHeal = false;
+        return true;
+    }
+
     public static PlayerRuntimeState PeekPendingPlayerState(GamePlayData data)
     {
         return data != null ? data.pendingPlayerState : null;
@@ -219,6 +256,8 @@ internal static class RunSessionStateService
         data.lastRunEndReason = RunEndReason.None;
         data.pendingTransition = null;
         data.pendingPlayerState = null;
+        data.pendingHubReturnFullHeal = false;
+        data.pendingHubLoadFullHeal = false;
         clearPendingRunProgress?.Invoke();
     }
 }

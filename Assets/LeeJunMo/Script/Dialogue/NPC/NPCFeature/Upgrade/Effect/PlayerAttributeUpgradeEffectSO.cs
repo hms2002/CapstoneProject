@@ -36,6 +36,14 @@ public sealed class PlayerAttributeUpgradeEffectSO : UpgradeEffectSO
         if (attributeSet == null)
             return;
 
+        AttributeLinkedValueCompensator.Snapshot compensationSnapshot = default;
+        bool hasCompensationSnapshot = isPurchase &&
+            AttributeLinkedValueCompensator.TryCapture(
+                attributeSet,
+                attribute,
+                AttributeLinkedValueCompensationContext.Purchase,
+                out compensationSnapshot);
+
         if (useModifierWhenAllowed && attribute.AllowsModifier())
         {
             attributeSet.RemoveModifiersFromSource(this);
@@ -52,7 +60,10 @@ public sealed class PlayerAttributeUpgradeEffectSO : UpgradeEffectSO
                 this);
         }
 
-        if (isPurchase)
+        bool compensated = hasCompensationSnapshot &&
+            AttributeLinkedValueCompensator.Complete(attributeSet, compensationSnapshot, this);
+
+        if (isPurchase && !compensated)
             ApplyPurchaseHeal(attributeSet);
     }
 

@@ -163,6 +163,58 @@ namespace UnityGAS
             return true;
         }
 
+        /// <summary>
+        /// 책임 : 현재 AttributeValue에 특정 source 제거와 임시 modifier 추가를 가정했을 때의 CurrentValue를 계산한다.
+        /// 유물 교체/해제처럼 실제 적용 전에 결과 체력을 검증해야 하는 경로에서 사용한다.
+        /// </summary>
+        public float CalculateProjectedCurrentValue(
+            UnityEngine.Object removedSource,
+            IReadOnlyList<AttributeModifier> addedModifiers)
+        {
+            float flatModifiers = 0f;
+            float percentModifiers = 0f;
+
+            for (int i = 0; i < modifiers.Count; i++)
+            {
+                AttributeModifier modifier = modifiers[i];
+                if (modifier == null)
+                    continue;
+
+                if (removedSource != null && modifier.Source == removedSource)
+                    continue;
+
+                AccumulateModifier(modifier, ref flatModifiers, ref percentModifiers);
+            }
+
+            if (addedModifiers != null)
+            {
+                for (int i = 0; i < addedModifiers.Count; i++)
+                {
+                    AttributeModifier modifier = addedModifiers[i];
+                    if (modifier == null)
+                        continue;
+
+                    AccumulateModifier(modifier, ref flatModifiers, ref percentModifiers);
+                }
+            }
+
+            float max = GetMaxForClamp();
+            float projected = BaseValue + flatModifiers;
+            projected *= 1f + percentModifiers;
+            return Mathf.Clamp(projected, Definition.minValue, max);
+        }
+
+        private static void AccumulateModifier(
+            AttributeModifier modifier,
+            ref float flatModifiers,
+            ref float percentModifiers)
+        {
+            if (modifier.Type == ModifierType.Flat)
+                flatModifiers += modifier.Value;
+            else if (modifier.Type == ModifierType.Percent)
+                percentModifiers += modifier.Value;
+        }
+
         public void Update(float deltaTime)
         {
             for (int i = modifiers.Count - 1; i >= 0; i--)

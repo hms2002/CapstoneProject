@@ -44,6 +44,8 @@ public sealed class GamePlayData
     public float runElapsedSeconds;
     public float runRemainingSeconds;
     public RunEndReason lastRunEndReason = RunEndReason.None;
+    public bool pendingHubReturnFullHeal;
+    public bool pendingHubLoadFullHeal;
 
     public SceneTransitionContext pendingTransition;
     public PlayerRuntimeState pendingPlayerState;

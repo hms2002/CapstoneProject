@@ -70,6 +70,30 @@ public class RelicLogic_StatModifiers : RelicLogic
         ApplyModifiers(ctx);
     }
 
+    public override void AppendPreviewModifiers(
+        RelicContext ctx,
+        AttributeDefinition attribute,
+        List<AttributeModifier> results)
+    {
+        if (attribute == null || results == null)
+            return;
+
+        int level = ctx.level > 0 ? ctx.level : 1;
+
+        for (int i = 0; i < entries.Count; i++)
+        {
+            var e = entries[i];
+            if (e.attribute != attribute)
+                continue;
+
+            results.Add(new AttributeModifier(
+                e.type,
+                EvalValue(e, level),
+                ctx.token,
+                duration: Mathf.Max(0f, e.duration)));
+        }
+    }
+
     /// <summary>
     /// 책임 :
     /// - 유물 레벨에 맞는 상시 AttributeModifier를 현재 token 기준으로 부여한다.

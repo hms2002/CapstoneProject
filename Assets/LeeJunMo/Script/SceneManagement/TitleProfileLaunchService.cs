@@ -56,6 +56,9 @@ internal static class TitleProfileLaunchService
             gameDataManager.SaveData();
         }
 
+        if (SceneDomainScenePolicy.IsHubSceneName(request.TargetSceneName))
+            GamePlayDataManager.EnsureInstance()?.RequestPendingHubLoadFullHeal();
+
         return new TitleProfileLaunchResult(true, request.TargetSceneName);
     }
 }

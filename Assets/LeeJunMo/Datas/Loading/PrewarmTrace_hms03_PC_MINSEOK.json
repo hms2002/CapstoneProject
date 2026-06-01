@@ -1,91 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "60fa852526504301a630c981369cd6c7",
-            "startedUtc": "2026-06-01T13:17:48.5938723Z",
-            "endedUtc": "2026-06-01T13:18:52.5852917Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 10,
-                    "coldSpawns": 3,
-                    "firstSeenSeconds": 40.7088623046875,
-                    "lastSeenSeconds": 63.97608947753906,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
-            "sessionId": "d0b2c46fc5dc493cb1059fdc2568f063",
-            "startedUtc": "2026-06-01T13:26:31.0207430Z",
-            "endedUtc": "2026-06-01T13:27:54.9183918Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 6,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 36.74848175048828,
-                    "lastSeenSeconds": 83.88227844238281,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
-            "sessionId": "1bad8f3a916d4b35a111c77297c6b4d9",
-            "startedUtc": "2026-06-01T13:29:38.4076707Z",
-            "endedUtc": "2026-06-01T13:31:12.8255580Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 7,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 49.896644592285159,
-                    "lastSeenSeconds": 94.40287780761719,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
-            "sessionId": "de081ca79a2a481f908076d4e6472ac8",
-            "startedUtc": "2026-06-01T13:32:29.6252693Z",
-            "endedUtc": "2026-06-01T13:32:58.0039420Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 28.358936309814454,
-                    "lastSeenSeconds": 28.35910415649414,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
-            "sessionId": "54fbdc129f934876851ffd4c441f9174",
-            "startedUtc": "2026-06-01T13:34:03.8217278Z",
-            "endedUtc": "2026-06-01T13:34:53.0517956Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 3,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 37.15351104736328,
-                    "lastSeenSeconds": 49.215782165527347,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
             "sessionId": "4da99373f3854ad6942373ad99c0eb86",
             "startedUtc": "2026-06-01T13:36:03.2738884Z",
             "endedUtc": "2026-06-01T13:37:17.5803286Z",
@@ -239,6 +154,36 @@
             "sessionId": "22e6752b092043e58c1f1a42addfc329",
             "startedUtc": "2026-06-01T15:08:37.0272560Z",
             "endedUtc": "2026-06-01T15:08:39.0742070Z",
+            "entries": []
+        },
+        {
+            "sessionId": "9752848d13944c65a3cf3b7963488f30",
+            "startedUtc": "2026-06-01T16:46:48.5536011Z",
+            "endedUtc": "2026-06-01T16:46:50.9099266Z",
+            "entries": []
+        },
+        {
+            "sessionId": "62dbb4734fe04e9e884c80c7d58e0f8b",
+            "startedUtc": "2026-06-01T16:47:57.6494105Z",
+            "endedUtc": "2026-06-01T16:47:59.3348226Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a6c580a437a04867ac0d72557c12b66f",
+            "startedUtc": "2026-06-01T16:53:44.2756217Z",
+            "endedUtc": "2026-06-01T16:53:46.1972606Z",
+            "entries": []
+        },
+        {
+            "sessionId": "5f71768ab6c749c294f322d38602a383",
+            "startedUtc": "2026-06-01T17:02:09.4913095Z",
+            "endedUtc": "2026-06-01T17:02:11.4524298Z",
+            "entries": []
+        },
+        {
+            "sessionId": "1464db7e327545b7aa96644ea19151dd",
+            "startedUtc": "2026-06-01T17:05:53.4031723Z",
+            "endedUtc": "2026-06-01T17:05:55.0786222Z",
             "entries": []
         }
     ]

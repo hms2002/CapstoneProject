@@ -152,7 +152,12 @@ internal sealed class PlayerRelicContainerAdapter : IItemContainer, IDisposable,
         if (inventory == null)
             return false;
         if (item == null)
-            return inventory.TrySetRelicSlot(index, null);
+        {
+            bool cleared = inventory.TrySetRelicSlot(index, null);
+            if (!cleared)
+                ShowRelicWarning(inventory.LastFailureResult);
+            return cleared;
+        }
         if (!(item is RelicDefinition relic))
             return false;
 
@@ -178,7 +183,12 @@ internal sealed class PlayerRelicContainerAdapter : IItemContainer, IDisposable,
         if (inventory == null)
             return false;
         if (relic == null)
-            return inventory.TrySetRelicSlot(index, null);
+        {
+            bool cleared = inventory.TrySetRelicSlot(index, null);
+            if (!cleared)
+                ShowRelicWarning(inventory.LastFailureResult);
+            return cleared;
+        }
 
         bool ok = inventory.TrySetRelicSlotWithLevel(index, relic, level);
         if (!ok)
@@ -240,6 +250,9 @@ internal sealed class PlayerRelicContainerAdapter : IItemContainer, IDisposable,
 
     private RelicInventory.AcquireResult ResolveRelicFailure(RelicDefinition relic, int incomingLevel)
     {
+        if (inventory != null && inventory.LastFailureResult == RelicInventory.AcquireResult.HealthTooLowForRelicChange)
+            return inventory.LastFailureResult;
+
         if (inventory == null || relic == null)
             return RelicInventory.AcquireResult.InvalidDefinition;
 

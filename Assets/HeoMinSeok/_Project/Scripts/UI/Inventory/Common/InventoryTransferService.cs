@@ -85,6 +85,7 @@ public static class InventoryDeliveryWarningResolver
         {
             RelicInventory.AcquireResult.InventoryFull => WarningPopupCode.RelicInventoryFull,
             RelicInventory.AcquireResult.AlreadyMaxLevel => WarningPopupCode.RelicAlreadyMaxLevel,
+            RelicInventory.AcquireResult.HealthTooLowForRelicChange => WarningPopupCode.RelicChangeWouldDefeatPlayer,
             _ => WarningPopupCode.None
         };
     }
@@ -171,9 +172,11 @@ public static class InventoryTransferService
             var after = target.Get(resolvedTargetIndex);
             if (after != srcItem)
             {
-                return source.TrySet(request.SourceIndex, null)
-                    ? InventoryTransferResult.Success
-                    : InventoryTransferResult.Failed(InventoryTransferFailureReason.SourceClearFailed);
+                if (source.TrySet(request.SourceIndex, null))
+                    return InventoryTransferResult.Success;
+
+                target.TrySet(resolvedTargetIndex, dstItem);
+                return InventoryTransferResult.Failed(InventoryTransferFailureReason.SourceClearFailed);
             }
         }
 
