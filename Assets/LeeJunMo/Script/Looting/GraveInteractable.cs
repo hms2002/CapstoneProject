@@ -1,7 +1,10 @@
 using CapstoneAudio;
 using UnityEngine;
 
-public enum GraveType { Weapon, Relic }
+/// <summary>
+/// 책임: 유해 상호작용이 어떤 보상 정책을 사용할지 구분한다.
+/// </summary>
+public enum GraveType { Weapon, Relic, JunkWeapon, JunkRelic }
 
 public class GraveInteractable : InteractableBase
 {

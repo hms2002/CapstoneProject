@@ -45,8 +45,15 @@ internal readonly struct GraveLootDropResult
     }
 }
 
+/// <summary>
+/// 책임: 유해 상호작용 요청을 타입별 보상 정책으로 변환하고 월드 아이템 드롭을 생성한다.
+/// </summary>
 internal sealed class GraveLootDropService
 {
+    private const string ExcludedJunkWeaponExecutionGunId = "Weapon.ExecutionGun";
+    private const string ExcludedJunkWeaponOddIronId = "Weapon.OddIron";
+    private const string ExcludedJunkWeaponWindWeaponId = "Weapon.WindWeapon";
+
     private readonly LootPoolService poolService;
     private readonly LootRollService rollService;
     private readonly LootSpawnService spawnService;
@@ -76,6 +83,12 @@ internal sealed class GraveLootDropService
 
             case GraveType.Relic:
                 return SpawnRelicGraveLoot(request);
+
+            case GraveType.JunkWeapon:
+                return SpawnJunkWeaponGraveLoot(request);
+
+            case GraveType.JunkRelic:
+                return SpawnJunkRelicGraveLoot(request);
 
             default:
                 return new GraveLootDropResult(request.Type, 0);
@@ -128,6 +141,62 @@ internal sealed class GraveLootDropService
                 continue;
 
             SpawnAnimatedGraveLoot(request.Position, landingPositions, i, relic);
+            spawnedCount++;
+        }
+
+        return new GraveLootDropResult(request.Type, spawnedCount);
+    }
+
+    private GraveLootDropResult SpawnJunkWeaponGraveLoot(GraveLootDropRequest request)
+    {
+        List<Vector3> landingPositions = spawnService.GetHorizontalGroundPositions(request.Position, 1);
+        int spawnedCount = 0;
+
+        int weaponCount = rollService.PickCountInProfile(
+            request.Table.WeaponDropCountProfile,
+            request.BonusMinCount,
+            request.BonusMaxCount);
+        HashSet<string> banList = poolService.BuildWeaponExclusionSet(LootPoolContext.PlayerInventoryAndMerchantStock);
+        banList.Add(ExcludedJunkWeaponExecutionGunId);
+        banList.Add(ExcludedJunkWeaponOddIronId);
+        banList.Add(ExcludedJunkWeaponWindWeaponId);
+
+        for (int i = 0; i < weaponCount; i++)
+        {
+            WeaponDefinition weapon = poolService.GetRandomWeaponFromCandidates(request.Table.JunkWeaponCandidates, banList);
+            if (weapon == null)
+                continue;
+
+            SpawnAnimatedGraveLoot(request.Position, landingPositions, spawnedCount, weapon);
+            spawnedCount++;
+
+            if (!string.IsNullOrWhiteSpace(weapon.weaponId))
+                banList.Add(weapon.weaponId);
+        }
+
+        return new GraveLootDropResult(request.Type, spawnedCount);
+    }
+
+    private GraveLootDropResult SpawnJunkRelicGraveLoot(GraveLootDropRequest request)
+    {
+        List<Vector3> landingPositions = spawnService.GetHorizontalGroundPositions(request.Position, 1);
+        int spawnedCount = 0;
+
+        int relicCount = rollService.PickCountInProfile(
+            request.Table.RelicDropCountProfile,
+            request.BonusMinCount,
+            request.BonusMaxCount);
+        for (int i = 0; i < relicCount; i++)
+        {
+            ItemRarity rarity = rollService.RollGraveRelicRarity(
+                request.Table,
+                request.BonusRareChance,
+                request.BonusEpicChance);
+            RelicDefinition relic = relicByRarityProvider != null ? relicByRarityProvider.Invoke(rarity) : null;
+            if (relic == null)
+                continue;
+
+            SpawnAnimatedGraveLoot(request.Position, landingPositions, spawnedCount, relic);
             spawnedCount++;
         }
 

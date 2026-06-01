@@ -69,7 +69,8 @@ public sealed class DemoCheatService
             (settings.MaxHealthKey, "체력 MAX"),
             (settings.WarpToPortalKey, "포탈 앞으로 이동"),
             (settings.ResetWeaponCooldownKey, "무기 쿨타임 초기화"),
-            (settings.IncreaseAttackKey, $"공격력 +{settings.AttackIncreaseAmount:0.###}")
+            (settings.IncreaseAttackKey, $"공격력 +{settings.AttackIncreaseAmount:0.###}"),
+            (settings.DecreaseAttackKey, $"공격력 -{settings.AttackDecreaseAmount:0.###}")
         };
 
         entries.RemoveAll(entry => entry.Key == KeyCode.None);
@@ -286,6 +287,16 @@ public sealed class DemoCheatService
 
     public DemoCheatResult IncreasePlayerAttack(DemoCheatSettingsSO settings)
     {
+        return AdjustPlayerAttack(settings, Mathf.Abs(settings.AttackIncreaseAmount), "증가", "+");
+    }
+
+    public DemoCheatResult DecreasePlayerAttack(DemoCheatSettingsSO settings)
+    {
+        return AdjustPlayerAttack(settings, -Mathf.Abs(settings.AttackDecreaseAmount), "감소", "-");
+    }
+
+    private DemoCheatResult AdjustPlayerAttack(DemoCheatSettingsSO settings, float delta, string logVerb, string messageSign)
+    {
         if (!TryResolvePlayer(out Transform player))
             return Fail("플레이어를 찾을 수 없습니다.");
 
@@ -296,18 +307,19 @@ public sealed class DemoCheatService
         }
 
         float currentBase = attributeSet.GetBaseValue(settings.AttackAddAttribute);
-        float nextBase = currentBase + settings.AttackIncreaseAmount;
+        float nextBase = currentBase + delta;
         if (!attributeSet.TrySetBaseValue(settings.AttackAddAttribute, nextBase, logContext))
         {
-            return Fail("공격력을 증가시키지 못했습니다.");
+            return Fail($"공격력을 {logVerb}시키지 못했습니다.");
         }
 
         AttributeStatSource statSource = player.GetComponent<AttributeStatSource>();
         if (statSource != null)
             statSource.RebuildProvider();
 
-        Log($"공격력 증가. AttackAdd={currentBase:0.###}->{nextBase:0.###}");
-        return DemoCheatResult.Succeeded("공격력이 +10 증가했습니다.");
+        float amount = Mathf.Abs(delta);
+        Log($"공격력 {logVerb}. AttackAdd={currentBase:0.###}->{nextBase:0.###}");
+        return DemoCheatResult.Succeeded($"공격력이 {messageSign}{amount:0.###} {logVerb}했습니다.");
     }
 
     public DemoCheatResult ToggleMapZoom(DemoCheatSettingsSO settings, MonoBehaviour routineOwner)

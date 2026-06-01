@@ -14,14 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   enableDemoCheats: 1
   cheatGuideKey: 282
-  warpToRunSpecialNpcKey: 288
-  addMagicStoneKey: 289
-  maxHealthKey: 290
-  warpToPortalKey: 291
-  resetWeaponCooldownKey: 292
+  warpToRunSpecialNpcKey: 287
+  addMagicStoneKey: 288
+  maxHealthKey: 289
+  warpToPortalKey: 290
+  resetWeaponCooldownKey: 291
   increaseAttackKey: 293
-  mapZoomToggleKey: 286
-  warpToBossSceneKey: 287
+  decreaseAttackKey: 292
+  mapZoomToggleKey: 285
+  warpToBossSceneKey: 286
   bossSceneNames:
   - HeoMinSeok_Boss_Shadow
   - HeoMinSeok_Boss_Dragon
@@ -30,7 +31,8 @@ MonoBehaviour:
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   attackAddAttribute: {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
-  attackIncreaseAmount: 10
+  attackIncreaseAmount: 100
+  attackDecreaseAmount: 30
   magicStoneAddAmount: 100
   mapZoomCenter: {x: 0, y: 0}
   mapZoomSize: {x: 40, y: 24}

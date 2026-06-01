@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// 책임: 현재 해금/후보 목록과 제외 목록을 기준으로 loot pool에서 실제 아이템 정의를 선택한다.
+/// </summary>
 internal static class LootPoolItemSelectionService
 {
     public static WeaponDefinition GetRandomWeapon(HashSet<string> exclusionList)
@@ -18,6 +21,33 @@ internal static class LootPoolItemSelectionService
 
         string pickedID = valid[Random.Range(0, valid.Count)];
         return ItemManager.Instance.GetWeaponData(pickedID);
+    }
+
+    public static WeaponDefinition GetRandomWeaponFromCandidates(
+        IReadOnlyList<WeaponDefinition> candidates,
+        HashSet<string> exclusionList)
+    {
+        if (candidates == null || candidates.Count == 0)
+            return null;
+
+        exclusionList ??= new HashSet<string>();
+        var valid = new List<WeaponDefinition>();
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            WeaponDefinition weapon = candidates[i];
+            if (weapon == null || string.IsNullOrWhiteSpace(weapon.weaponId))
+                continue;
+
+            if (exclusionList.Contains(weapon.weaponId))
+                continue;
+
+            valid.Add(weapon);
+        }
+
+        if (valid.Count == 0)
+            return null;
+
+        return valid[Random.Range(0, valid.Count)];
     }
 
     public static RelicDefinition GetRandomRelicByRarity(ItemRarity targetRarity)
