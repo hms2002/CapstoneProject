@@ -5,6 +5,11 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+/// <summary>
+/// 책임 :
+/// - 런 중 등장하는 특수 NPC 선택지 UI를 표시하고 버튼/숫자 입력 선택을 중계한다.
+/// - DialogueService를 거치지 않는 선택지 표시 동안 DialogueCanvas raycast가 필요함을 전역으로 알린다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class RunSpecialNpcChoicePresenter : MonoBehaviour
 {
@@ -22,12 +27,26 @@ public sealed class RunSpecialNpcChoicePresenter : MonoBehaviour
     private RectTransform rootRect;
     private bool isVisible;
     private bool inputEnabled;
+    private bool contributesRaycastRequest;
+    private static int visibleChoicePresenterCount;
+
+    public static bool HasVisibleChoicePresenter => visibleChoicePresenterCount > 0;
 
     private void Awake()
     {
         hideUnusedButtons = true;
         ResolveRootGroup();
         Hide();
+    }
+
+    private void OnDisable()
+    {
+        SetRaycastRequestActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        SetRaycastRequestActive(false);
     }
 
     private void Update()
@@ -50,6 +69,7 @@ public sealed class RunSpecialNpcChoicePresenter : MonoBehaviour
         inputEnableTime = Time.unscaledTime + Mathf.Max(0f, inputGuardSeconds);
         isVisible = true;
         inputEnabled = inputGuardSeconds <= 0f;
+        SetRaycastRequestActive(activeChoiceCount > 0);
 
         if (rootGroup != null)
         {
@@ -84,6 +104,7 @@ public sealed class RunSpecialNpcChoicePresenter : MonoBehaviour
         inputEnabled = false;
         choiceSelected = null;
         activeChoiceCount = 0;
+        SetRaycastRequestActive(false);
 
         if (rootGroup != null)
         {
@@ -199,5 +220,16 @@ public sealed class RunSpecialNpcChoicePresenter : MonoBehaviour
 
             button.interactable = i < activeChoiceCount;
         }
+    }
+
+    private void SetRaycastRequestActive(bool active)
+    {
+        if (contributesRaycastRequest == active)
+            return;
+
+        contributesRaycastRequest = active;
+        visibleChoicePresenterCount += active ? 1 : -1;
+        if (visibleChoicePresenterCount < 0)
+            visibleChoicePresenterCount = 0;
     }
 }

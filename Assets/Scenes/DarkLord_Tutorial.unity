@@ -9856,7 +9856,7 @@ MonoBehaviour:
   fadedLayers: 00000000020000000300000004000000050000000600000007000000
   bossVisualRoot: {fileID: 7124681141591174978}
   scaleBossVisualOnFocus: 1
-  bossFocusScaleMultiplier: 1.15
+  bossFocusScaleMultiplier: 1
   bossScaleInSeconds: 0
   bossScaleOutSeconds: 0.2
   tutorialBossNpcData: {fileID: 11400000, guid: 47d475aabd71d0245a47a8fa56c6546a, type: 2}

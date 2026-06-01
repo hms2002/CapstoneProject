@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rewardText: "\uC0C1\uC810 \uBB3C\uD488 20% \uD560\uC778"
   rewardIcon: {fileID: 21300000, guid: 80e2cdbbf23063546b08b1f0741c8b17, type: 3}
-  shopEnabled: 1
+  shopEnabled: 0
   shopSlotBonus: 0
   shopRefreshCount: 0
   discountRate: 0.2

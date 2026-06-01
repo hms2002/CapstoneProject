@@ -1,147 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "e471944934694f4ca711dc6e339a3827",
-            "startedUtc": "2026-06-01T13:43:35.1890111Z",
-            "endedUtc": "2026-06-01T13:43:37.2175963Z",
-            "entries": []
-        },
-        {
-            "sessionId": "92f35b8466bb45cda08f1bca6d0568ae",
-            "startedUtc": "2026-06-01T13:44:45.8454584Z",
-            "endedUtc": "2026-06-01T13:45:15.6049454Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 29.747398376464845,
-                    "lastSeenSeconds": 29.747562408447267,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
-            "sessionId": "37429845abee407ea3bd0ad624cd1c68",
-            "startedUtc": "2026-06-01T13:46:05.8730248Z",
-            "endedUtc": "2026-06-01T13:46:06.9956779Z",
-            "entries": []
-        },
-        {
-            "sessionId": "38bfa33dbc644e4a8c7014408e92c6bf",
-            "startedUtc": "2026-06-01T13:46:52.9807902Z",
-            "endedUtc": "2026-06-01T13:50:10.7049650Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 5,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 26.0242862701416,
-                    "lastSeenSeconds": 197.70985412597657,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
-            "sessionId": "261b0cc49a0c410092b3e7cf7782d9e3",
-            "startedUtc": "2026-06-01T13:58:16.5363279Z",
-            "endedUtc": "2026-06-01T13:58:18.4638819Z",
-            "entries": []
-        },
-        {
-            "sessionId": "e53f23e4320243e191f953c8cea60617",
-            "startedUtc": "2026-06-01T14:03:08.5307319Z",
-            "endedUtc": "2026-06-01T14:03:10.0556816Z",
-            "entries": []
-        },
-        {
-            "sessionId": "08fd963edb60498c85f88f05bf8b5a5f",
-            "startedUtc": "2026-06-01T14:03:22.9591893Z",
-            "endedUtc": "2026-06-01T14:03:24.0944167Z",
-            "entries": []
-        },
-        {
-            "sessionId": "1a77e22cc5e448bf9407de14eb6c2e4e",
-            "startedUtc": "2026-06-01T14:42:18.5280974Z",
-            "endedUtc": "2026-06-01T14:43:00.8158112Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 98,
-                    "coldSpawns": 80,
-                    "firstSeenSeconds": 28.678178787231447,
-                    "lastSeenSeconds": 42.14672088623047,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
-            "sessionId": "213a200155b947df8d32b788f4f53ebc",
-            "startedUtc": "2026-06-01T15:02:19.7410206Z",
-            "endedUtc": "2026-06-01T15:02:21.8659562Z",
-            "entries": []
-        },
-        {
-            "sessionId": "53cbfd0d07ee4b8d8264279816ba58c1",
-            "startedUtc": "2026-06-01T15:04:18.0036745Z",
-            "endedUtc": "2026-06-01T15:04:20.4233972Z",
-            "entries": []
-        },
-        {
-            "sessionId": "abce6b92d501484c941de88b88b44225",
-            "startedUtc": "2026-06-01T15:05:17.9861344Z",
-            "endedUtc": "2026-06-01T15:05:20.2842479Z",
-            "entries": []
-        },
-        {
-            "sessionId": "22e6752b092043e58c1f1a42addfc329",
-            "startedUtc": "2026-06-01T15:08:37.0272560Z",
-            "endedUtc": "2026-06-01T15:08:39.0742070Z",
-            "entries": []
-        },
-        {
-            "sessionId": "9752848d13944c65a3cf3b7963488f30",
-            "startedUtc": "2026-06-01T16:46:48.5536011Z",
-            "endedUtc": "2026-06-01T16:46:50.9099266Z",
-            "entries": []
-        },
-        {
-            "sessionId": "62dbb4734fe04e9e884c80c7d58e0f8b",
-            "startedUtc": "2026-06-01T16:47:57.6494105Z",
-            "endedUtc": "2026-06-01T16:47:59.3348226Z",
-            "entries": []
-        },
-        {
-            "sessionId": "a6c580a437a04867ac0d72557c12b66f",
-            "startedUtc": "2026-06-01T16:53:44.2756217Z",
-            "endedUtc": "2026-06-01T16:53:46.1972606Z",
-            "entries": []
-        },
-        {
-            "sessionId": "5f71768ab6c749c294f322d38602a383",
-            "startedUtc": "2026-06-01T17:02:09.4913095Z",
-            "endedUtc": "2026-06-01T17:02:11.4524298Z",
-            "entries": []
-        },
-        {
-            "sessionId": "1464db7e327545b7aa96644ea19151dd",
-            "startedUtc": "2026-06-01T17:05:53.4031723Z",
-            "endedUtc": "2026-06-01T17:05:55.0786222Z",
-            "entries": []
-        },
-        {
-            "sessionId": "84daceb25ab343668f26fcc4e87bac69",
-            "startedUtc": "2026-06-01T18:41:17.9528757Z",
-            "endedUtc": "2026-06-01T18:41:19.6089695Z",
-            "entries": []
-        },
-        {
             "sessionId": "f646f8535eea4f6dba47c457e0f00a2d",
             "startedUtc": "2026-06-01T18:42:08.7838784Z",
             "endedUtc": "2026-06-01T18:42:10.3099113Z",
@@ -151,6 +10,165 @@
             "sessionId": "cbf6e34bb1b44a7aa9130cfece3473f5",
             "startedUtc": "2026-06-01T18:42:30.8155677Z",
             "endedUtc": "2026-06-01T18:42:32.3098280Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d1554d3995004bc0b1710d3ec6ca72b8",
+            "startedUtc": "2026-06-01T18:49:25.3949167Z",
+            "endedUtc": "2026-06-01T18:50:29.0718668Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab",
+                    "prefabName": "PF_Dragon_KegImpactSplash",
+                    "totalSpawns": 9,
+                    "coldSpawns": 4,
+                    "firstSeenSeconds": 45.25883483886719,
+                    "lastSeenSeconds": 62.63134002685547,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/DashDust.prefab",
+                    "prefabName": "DashDust",
+                    "totalSpawns": 2,
+                    "coldSpawns": 2,
+                    "firstSeenSeconds": 42.50466537475586,
+                    "lastSeenSeconds": 59.862709045410159,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_Dragon_LandingDust.prefab",
+                    "prefabName": "PF_Dragon_LandingDust",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 43.896514892578128,
+                    "lastSeenSeconds": 61.26618957519531,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/Attack/Hitbox_WindWeapon_NormalAtk_HardSlash.prefab",
+                    "prefabName": "Hitbox_WindWeapon_NormalAtk_HardSlash",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 47.33359909057617,
+                    "lastSeenSeconds": 48.694461822509769,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_Dragon_InhaleWind.prefab",
+                    "prefabName": "PF_Dragon_InhaleWind",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 54.9921989440918,
+                    "lastSeenSeconds": 63.66181182861328,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                }
+            ]
+        },
+        {
+            "sessionId": "d2127d0905c24dea86f6ed6d31a2227d",
+            "startedUtc": "2026-06-01T19:04:33.8449389Z",
+            "endedUtc": "2026-06-01T19:04:35.0049326Z",
+            "entries": []
+        },
+        {
+            "sessionId": "ec4266504dcc425891a5be7bd09267d3",
+            "startedUtc": "2026-06-01T19:10:30.4034218Z",
+            "endedUtc": "2026-06-01T19:10:32.6206936Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4c66013f500548f6b061ba507d36c75e",
+            "startedUtc": "2026-06-01T19:20:12.6404335Z",
+            "endedUtc": "2026-06-01T19:20:15.1491163Z",
+            "entries": []
+        },
+        {
+            "sessionId": "c484a51cb1474f9792da927ad317965b",
+            "startedUtc": "2026-06-01T20:06:22.0996373Z",
+            "endedUtc": "2026-06-01T20:06:23.2848083Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a381013022cd4edb97ee86d6360f652f",
+            "startedUtc": "2026-06-01T20:09:45.2863568Z",
+            "endedUtc": "2026-06-01T20:09:47.8394638Z",
+            "entries": []
+        },
+        {
+            "sessionId": "9acf05d255d644419e332b3e4f8f598f",
+            "startedUtc": "2026-06-01T20:10:19.6876985Z",
+            "endedUtc": "2026-06-01T20:10:20.7905840Z",
+            "entries": []
+        },
+        {
+            "sessionId": "22285f205422409ea64c3a177c66b02d",
+            "startedUtc": "2026-06-01T20:24:56.1648625Z",
+            "endedUtc": "2026-06-01T20:24:58.3700872Z",
+            "entries": []
+        },
+        {
+            "sessionId": "5479493caeea45c0a83bf6e823cb5203",
+            "startedUtc": "2026-06-01T20:31:21.2179284Z",
+            "endedUtc": "2026-06-01T20:31:23.8710695Z",
+            "entries": []
+        },
+        {
+            "sessionId": "37e11096d2d64b3596d7654ab8775a2a",
+            "startedUtc": "2026-06-01T20:31:59.9283861Z",
+            "endedUtc": "2026-06-01T20:32:02.4493147Z",
+            "entries": []
+        },
+        {
+            "sessionId": "8fba9446140e4c90b356bb60ab5805a8",
+            "startedUtc": "2026-06-01T20:32:20.3100473Z",
+            "endedUtc": "2026-06-01T20:32:22.8400337Z",
+            "entries": []
+        },
+        {
+            "sessionId": "08a52c7742a541ef8f8492d337c6ac82",
+            "startedUtc": "2026-06-01T20:33:12.2429931Z",
+            "endedUtc": "2026-06-01T20:33:18.6815572Z",
+            "entries": []
+        },
+        {
+            "sessionId": "7b82c6ffeeac4645800cdd57844b04fb",
+            "startedUtc": "2026-06-01T20:36:37.5754099Z",
+            "endedUtc": "2026-06-01T20:36:38.6085092Z",
+            "entries": []
+        },
+        {
+            "sessionId": "085630c1518643219eb5c4150fdfa95a",
+            "startedUtc": "2026-06-01T20:36:50.2312190Z",
+            "endedUtc": "2026-06-01T20:36:52.1324701Z",
+            "entries": []
+        },
+        {
+            "sessionId": "f48fbd6a52264e049245ec00e497a4bf",
+            "startedUtc": "2026-06-01T20:40:18.8735529Z",
+            "endedUtc": "2026-06-01T20:40:21.3874689Z",
+            "entries": []
+        },
+        {
+            "sessionId": "b1e51f3478674263a704414f3c8211d8",
+            "startedUtc": "2026-06-01T20:45:32.7850784Z",
+            "endedUtc": "2026-06-01T20:45:35.2264443Z",
+            "entries": []
+        },
+        {
+            "sessionId": "3a442e3a0f3249128b070040a3bd4554",
+            "startedUtc": "2026-06-01T20:45:51.1259183Z",
+            "endedUtc": "2026-06-01T20:45:53.2487414Z",
+            "entries": []
+        },
+        {
+            "sessionId": "b096041ad98644cfb9a7603542a97c3a",
+            "startedUtc": "2026-06-01T20:52:51.9025600Z",
+            "endedUtc": "2026-06-01T20:52:54.1019065Z",
             "entries": []
         }
     ]
