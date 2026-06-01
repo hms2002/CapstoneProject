@@ -359,6 +359,7 @@ public sealed class BossRewardRevealSceneValidatorWindow : EditorWindow
         bool catalogChanged = false;
         catalogChanged |= AssignInt(serializedCatalog, "normalStageCount", RequiredNormalStageCount, stats);
         catalogChanged |= AssignObjectArray(serializedCatalog, "normalRouteSets", normalRouteSets, stats);
+        catalogChanged |= AssignBool(serializedCatalog, "useFixedNormalRouteOrder", true, stats);
         catalogChanged |= AssignBool(serializedCatalog, "allowDuplicateNormalRoutes", false, stats);
         catalogChanged |= AssignObjectReference(serializedCatalog, "finalRouteSet", finalRouteSet, stats);
 
@@ -897,6 +898,16 @@ public sealed class BossRewardRevealSceneValidatorWindow : EditorWindow
                 RouteCatalogPath);
         }
 
+        if (!catalog.UseFixedNormalRouteOrder)
+        {
+            AddResult(
+                RouteCatalogPath,
+                Severity.Error,
+                "RunRouteCatalog.useFixedNormalRouteOrder should be enabled so the demo route follows the authored normal RouteSet order.",
+                catalog,
+                RouteCatalogPath);
+        }
+
         ValidateNormalRouteSets(catalog);
         ValidateFinalRouteSet(catalog);
     }
@@ -956,7 +967,7 @@ public sealed class BossRewardRevealSceneValidatorWindow : EditorWindow
                 AddResult(
                     RouteCatalogPath,
                     Severity.Error,
-                    "RunRouteCatalog.normalRouteSets order should be Shadow, Dragon, then Slime Queen for deterministic direct scene Play tests.",
+                    "RunRouteCatalog.normalRouteSets order should be Shadow, Dragon, then Slime Queen for fixed runtime routes and deterministic direct scene Play tests.",
                     catalog,
                     RouteCatalogPath);
                 break;

@@ -7,6 +7,19 @@ last_reviewed: 2026-06-01
 
 # Decision Log
 
+## 2026-06-01 - RunRouteCatalog Can Pin Normal Route Order
+
+Decision:
+`RunRouteCatalogSO` can opt into fixed normal RouteSet ordering with `useFixedNormalRouteOrder`. When enabled, runtime run planning uses valid `normalRouteSets` in serialized order up to `normalStageCount`, then appends `finalRouteSet`.
+
+Reason:
+The pre-demo route needs to follow the authored three-boss path deterministically while preserving the existing random route behavior for catalogs that leave the toggle disabled.
+
+Implications:
+- The current demo `RunRouteCatalog.asset` uses fixed order: Shadow, Dragon, Slime Queen, then Demonking final.
+- Fixed mode ignores duplicate random selection policy and requires enough valid authored normal RouteSets for `normalStageCount`.
+- The existing random duplicate/non-duplicate branches remain available when the fixed-order toggle is disabled.
+
 ## 2026-06-01 - One-Shot SFX Duplicate Suppression Is Source-Scoped
 
 Decision:
