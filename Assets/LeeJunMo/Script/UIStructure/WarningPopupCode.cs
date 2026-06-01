@@ -14,5 +14,6 @@ public enum WarningPopupCode
     RelicChangeWouldDefeatPlayer,
     UpgradeNotEnoughMagicStone,
     UpgradeLocked,
-    UpgradeUnavailable
+    UpgradeUnavailable,
+    LastWeaponCannotLeaveInventory
 }

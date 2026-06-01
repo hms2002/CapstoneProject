@@ -1,57 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "4da99373f3854ad6942373ad99c0eb86",
-            "startedUtc": "2026-06-01T13:36:03.2738884Z",
-            "endedUtc": "2026-06-01T13:37:17.5803286Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 5,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 34.00849914550781,
-                    "lastSeenSeconds": 74.29222869873047,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
-            "sessionId": "0e1969df14044e58a0db0707ffd27175",
-            "startedUtc": "2026-06-01T13:37:53.3350461Z",
-            "endedUtc": "2026-06-01T13:39:09.4486904Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 6,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 28.454864501953126,
-                    "lastSeenSeconds": 76.09989929199219,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
-            "sessionId": "ae2f36b4b2564e33ad9a4228df04d49d",
-            "startedUtc": "2026-06-01T13:42:13.1948681Z",
-            "endedUtc": "2026-06-01T13:43:07.5461919Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 3,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 33.7664794921875,
-                    "lastSeenSeconds": 54.33726501464844,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
             "sessionId": "e471944934694f4ca711dc6e339a3827",
             "startedUtc": "2026-06-01T13:43:35.1890111Z",
             "endedUtc": "2026-06-01T13:43:37.2175963Z",
@@ -184,6 +133,24 @@
             "sessionId": "1464db7e327545b7aa96644ea19151dd",
             "startedUtc": "2026-06-01T17:05:53.4031723Z",
             "endedUtc": "2026-06-01T17:05:55.0786222Z",
+            "entries": []
+        },
+        {
+            "sessionId": "84daceb25ab343668f26fcc4e87bac69",
+            "startedUtc": "2026-06-01T18:41:17.9528757Z",
+            "endedUtc": "2026-06-01T18:41:19.6089695Z",
+            "entries": []
+        },
+        {
+            "sessionId": "f646f8535eea4f6dba47c457e0f00a2d",
+            "startedUtc": "2026-06-01T18:42:08.7838784Z",
+            "endedUtc": "2026-06-01T18:42:10.3099113Z",
+            "entries": []
+        },
+        {
+            "sessionId": "cbf6e34bb1b44a7aa9130cfece3473f5",
+            "startedUtc": "2026-06-01T18:42:30.8155677Z",
+            "endedUtc": "2026-06-01T18:42:32.3098280Z",
             "entries": []
         }
     ]

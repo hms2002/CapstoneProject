@@ -101,6 +101,12 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
         if (sourceIndex < 0 || sourceIndex >= source.SlotCount)
             return false;
 
+        if (InventoryWeaponRetentionPolicy.WouldRemoveLastPlayerWeapon(source, sourceIndex))
+        {
+            UIManager.Instance?.ShowWarning(WarningPopupCode.LastWeaponCannotLeaveInventory);
+            return false;
+        }
+
         // ✅ (중요) 제거 전에 레벨 확보
         if (relicLevel <= 0 && item is RelicDefinition && source is IRelicLevelProvider p)
             p.TryGetRelicLevel(sourceIndex, out relicLevel);
