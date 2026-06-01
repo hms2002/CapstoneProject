@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
@@ -69,6 +70,7 @@ public sealed class DemonKingController : BossControllerBase
     private readonly HashSet<string> playedPatternAnimationStartStates = new();
     private DemonKingRuntimeData runtimeData;
     private AttackTelegraphService telegraphService;
+    private BossSpeechController speechController;
     private GameplayTag staggerImmuneTag;
     private GameplayTag knockbackImmuneTag;
     private SpriteAfterimageEmitter2D bodyAfterimageEmitter;
@@ -336,6 +338,53 @@ public sealed class DemonKingController : BossControllerBase
             telegraphService = GetComponent<AttackTelegraphService>();
 
         return telegraphService;
+    }
+
+    public bool TrySpeakPattern(BossSpeechSituationEnum situation, float duration)
+    {
+        return SpeakSituation(situation, duration);
+    }
+
+    public bool TrySpeakPatternAt(
+        BossSpeechSituationEnum situation,
+        float duration,
+        Transform anchor,
+        Vector3 offsetDelta)
+    {
+        BossSpeechController controller = ResolveSpeechController();
+        return controller != null &&
+               controller.TrySpeakSituationParallelAt(situation, duration, anchor, offsetDelta);
+    }
+
+    public bool TrySpeakPatternAt(
+        BossSpeechSituationEnum situation,
+        float duration,
+        Func<Vector3> anchorPositionResolver,
+        Vector3 offsetDelta)
+    {
+        BossSpeechController controller = ResolveSpeechController();
+        return controller != null &&
+               controller.TrySpeakSituationParallelAt(situation, duration, anchorPositionResolver, offsetDelta);
+    }
+
+    public bool TrySpeakPatternAt(
+        BossSpeechSituationEnum situation,
+        float duration,
+        Func<Vector3> anchorPositionResolver,
+        Func<Quaternion> anchorRotationResolver,
+        Vector3 offsetDelta)
+    {
+        BossSpeechController controller = ResolveSpeechController();
+        return controller != null &&
+               controller.TrySpeakSituationParallelAt(situation, duration, anchorPositionResolver, anchorRotationResolver, offsetDelta);
+    }
+
+    private BossSpeechController ResolveSpeechController()
+    {
+        if (speechController == null)
+            speechController = GetComponent<BossSpeechController>();
+
+        return speechController;
     }
 
     public Vector2 ResolveSwordHoldPosition(Vector3 localOffset)

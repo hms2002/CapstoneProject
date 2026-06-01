@@ -112,9 +112,6 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         new Vector2(-17.5f, 4f)
     };
 
-    [Tooltip("패턴 3 시작 시 보스 말풍선에 출력할 문장입니다.")]
-    [SerializeField] private string callSlimeSpeechText = "모두 모여라!!";
-
     [Tooltip("패턴 3 보스 말풍선이 유지되는 시간입니다.")]
     [SerializeField, Min(0f)] private float callSlimeSpeechSeconds = 1.4f;
 
@@ -197,7 +194,6 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         }
     };
 
-    private SpeechBubbleComponent speechBubble;
     private SlimeQueenVanishParticleEffect phaseOneVanishEffect;
     private Coroutine callSlimeSpeechAnimationRoutine;
     private readonly List<AttackTelegraphView> bodyInflateWarningViews = new List<AttackTelegraphView>();
@@ -270,7 +266,6 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     protected override void Awake()
     {
         base.Awake();
-        speechBubble = GetComponent<SpeechBubbleComponent>();
         EnsurePhaseOneVanishEffect();
     }
 
@@ -417,24 +412,13 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     /// <summary>패턴 3 호출 대사를 보스 말풍선으로 출력합니다.</summary>
     public void ShowCallSlimeSpeech()
     {
-        if (string.IsNullOrWhiteSpace(callSlimeSpeechText))
-        {
-            StopCallSlimeSpeechAnimation();
-            return;
-        }
-
         BeginCallSlimeSpeechAnimation();
 
-        if (speechBubble == null)
-            speechBubble = GetComponent<SpeechBubbleComponent>();
-
-        if (speechBubble != null)
-        {
-            speechBubble.Speak(callSlimeSpeechText, callSlimeSpeechSeconds);
+        if (TryShowSlimeQueenSpeech(BossSpeechSituationEnum.SlimeQueenCallSlimes, callSlimeSpeechSeconds))
             return;
-        }
 
-        Debug.Log($"SlimeQueen: {callSlimeSpeechText}", this);
+        StopCallSlimeSpeechAnimation();
+        Debug.LogWarning("[BossFSM] SlimeQueen call slime speech data is missing.", this);
     }
 
     private void BeginCallSlimeSpeechAnimation()
@@ -771,6 +755,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         TQueen spawnedQueen = Instantiate(prefab, splitOrigin, transform.rotation);
         spawnedQueen.name = fallbackName;
         spawnedQueen.SetCombatTarget(CurrentTarget);
+        spawnedQueen.SetSlimeQueenSpeechData(SlimeQueenSpeechData);
         spawnedQueen.BeginPhaseTwoSplitLanding(
             splitOrigin,
             landingPosition,

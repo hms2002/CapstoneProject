@@ -26,6 +26,10 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         maxAmplitude: 0.45f,
         minIntervalSeconds: 0.04f);
 
+    [Header("Speech")]
+    [Tooltip("슬라임 여왕 1/2페이즈 전용 말풍선 대사와 테마 데이터입니다.")]
+    [SerializeField] private BossSpeechData slimeQueenSpeechData;
+
     [Header("Height Presentation")]
     [Tooltip("점프/내려찍기 중 공중 판정 높이로 사용할 바디 Z 높이입니다.")]
     [SerializeField, Min(0f)] private float airborneBodyZHeight = 1f;
@@ -82,10 +86,13 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     private bool patternFacingLockedFlipX;
     private bool isDeathFacingFrozen;
     private bool deathFacingFrozenFlipX;
+    private SpeechBubbleComponent slimeQueenSpeechBubble;
 
     public bool IsPatternMoveDamageBlocked => isPatternMoveDamageBlocked;
 
     public bool CanTriggerPitFall => !isPitFallRuntimeLocked && pitFallTriggerBlockCount <= 0;
+
+    protected BossSpeechData SlimeQueenSpeechData => slimeQueenSpeechData;
 
     protected override void Awake()
     {
@@ -146,6 +153,85 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     public IntentMovementData GetIntent()
     {
         return IntentMovementData.None;
+    }
+
+    /// <summary>1페이즈에서 런타임 생성하는 2페이즈 분열체에 같은 SpeechData를 전달합니다.</summary>
+    public void SetSlimeQueenSpeechData(BossSpeechData speechData)
+    {
+        if (speechData != null)
+            slimeQueenSpeechData = speechData;
+    }
+
+    /// <summary>BossSpeechData 상황 키로 슬라임 여왕 전용 말풍선을 출력합니다.</summary>
+    protected bool TryShowSlimeQueenSpeech(
+        BossSpeechSituationEnum situation,
+        float duration,
+        Action onHidden = null,
+        Vector3 bubbleOffsetDelta = default)
+    {
+        if (!TryGetSlimeQueenSpeechLine(situation, out string line))
+            return false;
+
+        return TryShowSlimeQueenSpeechLine(
+            line,
+            duration,
+            onHidden,
+            bubbleOffsetDelta,
+            useSpeechDataTheme: true);
+    }
+
+    /// <summary>기존 string 호출부 호환용 출력 경로입니다. 테마는 데이터 기반 호출에서만 적용합니다.</summary>
+    protected bool TryShowSlimeQueenSpeechLine(
+        string line,
+        float duration,
+        Action onHidden = null,
+        Vector3 bubbleOffsetDelta = default,
+        bool useSpeechDataTheme = false)
+    {
+        if (string.IsNullOrWhiteSpace(line))
+            return false;
+
+        SpeechBubbleComponent speechBubble = ResolveSlimeQueenSpeechBubble();
+        if (speechBubble == null)
+        {
+            Debug.Log($"SlimeQueen Speech: {line}", this);
+            return false;
+        }
+
+        SpeechBubbleThemeSettings theme =
+            useSpeechDataTheme && slimeQueenSpeechData != null ? slimeQueenSpeechData.BubbleTheme : null;
+        speechBubble.SpeakWithOffsetDelta(line, Mathf.Max(0.1f, duration), theme, onHidden, bubbleOffsetDelta);
+        return true;
+    }
+
+    /// <summary>피날레 소멸처럼 현재 출력 중인 전용 말풍선을 즉시 닫아야 할 때 사용합니다.</summary>
+    protected void HideSlimeQueenSpeechBubble()
+    {
+        SpeechBubbleComponent speechBubble = ResolveSlimeQueenSpeechBubble();
+        if (speechBubble != null)
+            speechBubble.HideActive();
+    }
+
+    private bool TryGetSlimeQueenSpeechLine(BossSpeechSituationEnum situation, out string line)
+    {
+        line = string.Empty;
+        if (slimeQueenSpeechData == null)
+            return false;
+
+        line = slimeQueenSpeechData.GetLine(situation);
+        return !string.IsNullOrWhiteSpace(line);
+    }
+
+    private SpeechBubbleComponent ResolveSlimeQueenSpeechBubble()
+    {
+        if (slimeQueenSpeechBubble != null)
+            return slimeQueenSpeechBubble;
+
+        slimeQueenSpeechBubble = GetComponent<SpeechBubbleComponent>();
+        if (slimeQueenSpeechBubble == null)
+            slimeQueenSpeechBubble = GetComponentInChildren<SpeechBubbleComponent>(includeInactive: true);
+
+        return slimeQueenSpeechBubble;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

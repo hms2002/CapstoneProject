@@ -15,10 +15,10 @@
 = script_1_after_first_choice
 # speaker: 1005
 # anim: slow
-친구. 용사를 말하는 건가. 이 얼마나 진부한 말인가... [pause=0.4]그녀는... 음...
+친우. 용사를 말하는 건가. 이 얼마나 진부한 말인가... [pause=0.4]그녀는... 음...
 # speaker: ???
 # anim: angry
-<color=purple>[wave]푸하하하하하하--![/wave]</color>
+<color=purple>[shake]푸하하하하하하--![/shake]</color>
 
 + [...?]
     -> script_1_after_second_choice

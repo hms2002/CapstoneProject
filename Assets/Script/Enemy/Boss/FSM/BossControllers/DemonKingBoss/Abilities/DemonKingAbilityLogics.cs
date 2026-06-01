@@ -194,6 +194,7 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
 {
     private static readonly RaycastHit2D[] WallHitBuffer = new RaycastHit2D[12];
     protected static readonly Color AttackSquareColor = new(1f, 0.75f, 0.15f, 0.55f);
+    protected static readonly Vector3 EgoSwordSpeechOffsetDelta = new(-0.5f, -0.6f, 0f);
 
     [System.Serializable]
     public struct JumpMotionProfile
@@ -250,6 +251,49 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
     protected static DemonKingController GetDemonKing(AbilitySystem system)
     {
         return system != null ? system.GetComponent<DemonKingController>() : null;
+    }
+
+    protected static void SpeakPattern(
+        DemonKingController demon,
+        BossSpeechSituationEnum situation,
+        float duration = 2f)
+    {
+        if (demon != null)
+            demon.TrySpeakPattern(situation, duration);
+    }
+
+    protected static void SpeakPatternAt(
+        DemonKingController demon,
+        BossSpeechSituationEnum situation,
+        Func<Vector3> anchorPositionResolver,
+        Vector3 offsetDelta,
+        float duration = 2f)
+    {
+        if (demon != null && anchorPositionResolver != null)
+            demon.TrySpeakPatternAt(situation, duration, anchorPositionResolver, offsetDelta);
+    }
+
+    protected static void SpeakPatternAt(
+        DemonKingController demon,
+        BossSpeechSituationEnum situation,
+        Func<Vector3> anchorPositionResolver,
+        Func<Quaternion> anchorRotationResolver,
+        Vector3 offsetDelta,
+        float duration = 2f)
+    {
+        if (demon != null && anchorPositionResolver != null && anchorRotationResolver != null)
+            demon.TrySpeakPatternAt(situation, duration, anchorPositionResolver, anchorRotationResolver, offsetDelta);
+    }
+
+    protected static void SpeakPatternAt(
+        DemonKingController demon,
+        BossSpeechSituationEnum situation,
+        Transform anchor,
+        Vector3 offsetDelta,
+        float duration = 2f)
+    {
+        if (demon != null && anchor != null)
+            demon.TrySpeakPatternAt(situation, duration, anchor, offsetDelta);
     }
 
     protected static string ResolveBodyStateName(DemonKingBodyAnimationRef animationRef, string fallbackStateName)
@@ -1028,6 +1072,8 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
         if (demon == null)
             yield break;
 
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingPierceCombo);
+
         AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
 
         for (int i = 0; i < pierceCount; i++)
@@ -1220,6 +1266,8 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
         DemonKingController demon = GetDemonKing(system);
         if (demon == null)
             yield break;
+
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingHeavySlash);
 
         AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
         demon.PushFaceTargetLock();
@@ -1626,12 +1674,19 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
 
 public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
 {
+    private const float ThrowSpeechSafetyMarginSeconds = 0.1f;
+    private const float ThrowPreReleaseSpeechInstantSeconds = 0.05f;
+    private const float ThrowPreReleaseSpeechMinSeconds = 0.35f;
+    private const float ThrowPreReleaseSpeechMaxSeconds = 1.1f;
+    private const float ThrowReleaseSpeechSeconds = 1.1f;
+
     [SerializeField, Min(0f)] private float warningSeconds = 1.4f;
     [SerializeField, Min(0.01f)] private float aimWarningWidth = 0.22f;
     [SerializeField, Min(0f)] private float throwReleaseDelaySeconds = 1.5f;
     [SerializeField, Min(0.1f)] private float throwSpeedMultiplier = 5f;
     [SerializeField, Min(0)] private int wallBounceCount = 5;
     [SerializeField, Min(0f)] private float throwEndPoseHoldSeconds = 0.12f;
+    [SerializeField] private bool rotateReleaseSpeechWithSword;
     [SerializeField] private DemonKingBodyAnimationRef aimAnimation =
         DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordIdleState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
     [SerializeField] private DemonKingBodyAnimationRef throwAnimation =
@@ -1668,6 +1723,16 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
                 throwAnimation,
                 DemonKingController.DarkLordSwordThrowingState,
                 Mathf.Max(0f, throwReleaseDelaySeconds > 0f ? throwReleaseDelaySeconds : warningSeconds));
+
+            float preReleaseSpeechSeconds = ResolvePreReleaseSpeechDuration(releaseDelaySeconds);
+            SpeakPattern(demon, BossSpeechSituationEnum.DemonKingThrowEgoSword, preReleaseSpeechSeconds);
+            SpeakPatternAt(
+                demon,
+                BossSpeechSituationEnum.EgoSwordThrowEgoSword,
+                sword.ResolveThrowSpeechAnchorPosition,
+                EgoSwordSpeechOffsetDelta,
+                preReleaseSpeechSeconds);
+
             AttackTelegraphView aimWarning = releaseDelaySeconds > 0f
                 ? ShowLineWarning(
                     demon,
@@ -1707,6 +1772,26 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
 
             PlayPatternSound(demon, throwReleaseSound, origin, this);
             sword.Throw(origin, direction, demon.PlayerMoveSpeedReference * throwSpeedMultiplier, wallBounceCount, demon.WallMask);
+            if (rotateReleaseSpeechWithSword)
+            {
+                SpeakPatternAt(
+                    demon,
+                    BossSpeechSituationEnum.EgoSwordThrowEgoSwordRelease,
+                    sword.ResolveSpeechAnchorPosition,
+                    sword.ResolveSpeechAnchorRotation,
+                    EgoSwordSpeechOffsetDelta,
+                    ThrowReleaseSpeechSeconds);
+            }
+            else
+            {
+                SpeakPatternAt(
+                    demon,
+                    BossSpeechSituationEnum.EgoSwordThrowEgoSwordRelease,
+                    sword.ResolveSpeechAnchorPosition,
+                    EgoSwordSpeechOffsetDelta,
+                    ThrowReleaseSpeechSeconds);
+            }
+
             demon.SetSwordDropped();
             if (throwEndPoseHoldSeconds > 0f)
             {
@@ -1718,6 +1803,21 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
         {
             demon.PopFaceTargetLock();
         }
+    }
+
+    private static float ResolvePreReleaseSpeechDuration(float releaseDelaySeconds)
+    {
+        if (releaseDelaySeconds <= 0f)
+            return ThrowPreReleaseSpeechInstantSeconds;
+
+        float safeSpeechSeconds = releaseDelaySeconds - ThrowSpeechSafetyMarginSeconds;
+        if (safeSpeechSeconds <= 0f)
+            return Mathf.Max(0.01f, releaseDelaySeconds * 0.5f);
+
+        return Mathf.Clamp(
+            safeSpeechSeconds,
+            Mathf.Min(ThrowPreReleaseSpeechMinSeconds, safeSpeechSeconds),
+            ThrowPreReleaseSpeechMaxSeconds);
     }
 
     private static Vector2 ResolveCurrentTargetPosition(
@@ -1781,6 +1881,8 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
         DemonKingController demon = GetDemonKing(system);
         if (demon == null)
             yield break;
+
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingHomingMagic);
 
         AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
         demon.PushFaceTargetLock();
@@ -2230,6 +2332,8 @@ public class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
         if (demon == null)
             yield break;
 
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingBombardment);
+
         AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
         demon.PushFaceTargetLock();
         try
@@ -2371,6 +2475,8 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
         DemonKingController demon = GetDemonKing(system);
         if (demon == null)
             yield break;
+
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingExplosionJump);
 
         Vector2 start = demon.transform.position;
         Vector2 target = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : (Vector2)demon.ArenaCenterPosition;
@@ -2558,6 +2664,9 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
 
 public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
 {
+    private const float RecallSpeechStepIntervalSeconds = 0.45f;
+    private const float RecallSpeechDurationSeconds = 0.85f;
+
     [SerializeField, Min(0.1f)] private float recallSpeedMultiplier = 5f;
     [SerializeField, Min(0.1f)] private float timeoutSeconds = 2.5f;
     [SerializeField, Min(0f)] private float recoverEndPoseHoldSeconds = 0.16f;
@@ -2574,6 +2683,8 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
         EgoSwordActor sword = demon != null ? demon.EgoSword : null;
         if (demon == null || sword == null)
             yield break;
+
+        demon.StartCoroutine(RunRecallSpeechSequence(demon, sword, spec));
 
         PlayBodyAnimation(demon, recoverAnimation, DemonKingController.DarkLordHandSwordRecoverState);
         try
@@ -2610,6 +2721,63 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
             demon.ReleasePatternAnimationHold();
         }
     }
+
+    private IEnumerator RunRecallSpeechSequence(DemonKingController demon, EgoSwordActor sword, AbilitySpec spec)
+    {
+        if (!CanContinueRecallSpeechSequence(demon, spec))
+            yield break;
+
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingRecallEgoSword, RecallSpeechDurationSeconds);
+
+        yield return WaitForRecallSpeechStep(demon, spec);
+        if (!CanContinueRecallSpeechSequence(demon, spec) || sword == null)
+            yield break;
+
+        SpeakPatternAt(
+            demon,
+            BossSpeechSituationEnum.EgoSwordRecallEgoSword,
+            sword.ResolveRecallSpeechAnchorPosition,
+            EgoSwordSpeechOffsetDelta,
+            RecallSpeechDurationSeconds);
+
+        yield return WaitForRecallSpeechStep(demon, spec);
+        if (!CanContinueRecallSpeechSequence(demon, spec) || sword == null)
+            yield break;
+
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingRecallEgoSwordRetort, RecallSpeechDurationSeconds);
+
+        yield return WaitForRecallSpeechStep(demon, spec);
+        if (!CanContinueRecallSpeechSequence(demon, spec) || sword == null)
+            yield break;
+
+        SpeakPatternAt(
+            demon,
+            BossSpeechSituationEnum.EgoSwordRecallEgoSwordRetort,
+            sword.ResolveRecallSpeechAnchorPosition,
+            EgoSwordSpeechOffsetDelta,
+            RecallSpeechDurationSeconds);
+    }
+
+    private IEnumerator WaitForRecallSpeechStep(DemonKingController demon, AbilitySpec spec)
+    {
+        float elapsed = 0f;
+        while (elapsed < RecallSpeechStepIntervalSeconds)
+        {
+            if (!CanContinueRecallSpeechSequence(demon, spec))
+                yield break;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private static bool CanContinueRecallSpeechSequence(DemonKingController demon, AbilitySpec spec)
+    {
+        return demon != null &&
+               !demon.IsDead &&
+               !demon.HasDeadTag() &&
+               !IsAbilityCancelled(spec);
+    }
 }
 
 public class AbilityLogic_DemonKingEgoSwordVerticalStrike : AbilityLogic_DemonKingBase
@@ -2620,6 +2788,13 @@ public class AbilityLogic_DemonKingEgoSwordVerticalStrike : AbilityLogic_DemonKi
         EgoSwordActor sword = demon != null ? demon.EgoSword : null;
         if (sword == null)
             yield break;
+
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingEgoSwordVerticalStrike);
+        SpeakPatternAt(
+            demon,
+            BossSpeechSituationEnum.EgoSwordVerticalStrike,
+            sword.ResolveSpeechAnchorPosition,
+            EgoSwordSpeechOffsetDelta);
 
         yield return sword.RunVerticalStrikeAbilityPattern(spec);
     }
@@ -2633,6 +2808,13 @@ public class AbilityLogic_DemonKingEgoSwordCrossLaser : AbilityLogic_DemonKingBa
         EgoSwordActor sword = demon != null ? demon.EgoSword : null;
         if (sword == null)
             yield break;
+
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingEgoSwordCrossLaser);
+        SpeakPatternAt(
+            demon,
+            BossSpeechSituationEnum.EgoSwordCrossLaser,
+            sword.ResolveSpeechAnchorPosition,
+            EgoSwordSpeechOffsetDelta);
 
         yield return sword.RunCrossLaserAbilityPattern(spec);
     }
@@ -2705,6 +2887,8 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
         DemonKingController demon = GetDemonKing(system);
         if (demon == null)
             yield break;
+
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingWallBounceRush);
 
         AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
         EntityCollisionProfile2D collisionProfile = demon.GetComponent<EntityCollisionProfile2D>();
@@ -3035,6 +3219,8 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
         if (demon == null)
             yield break;
 
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingGroggyRecoverCounter);
+
         GroggyCounterBranchVisual branchVisual = ResolveBranchVisual(demon);
         string groggyFallbackState = ResolveGroggyFallbackState(demon);
         string counterFallbackState = demon.ResolveGroggyCounterAnimationState();
@@ -3270,6 +3456,8 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
         DemonKingController demon = GetDemonKing(system);
         if (demon == null)
             yield break;
+
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingFinalDesperation);
 
         demon.PushThresholdStaggerGuard();
         Vector2 finalCenter = demon.ArenaCenterPosition;

@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 251da8bed3e9c1a4cbe56be8f469f57c, type: 3}
+  m_Name: SlimeBossSpeechData
+  m_EditorClassIdentifier: 
+  bubbleTheme:
+    useCustomColors: 1
+    borderColor: {r: 0.54901963, g: 1, b: 0.8509804, a: 1}
+    fillColor: {r: 0, g: 0.5529412, b: 0.3882353, a: 1}
+    fontColor: {r: 0.54901963, g: 1, b: 0.8509804, a: 1}
+  entries:
+  - situation: 0
+    lines: []
+  - situation: 1
+    lines: []
+  - situation: 2
+    lines:
+    - "\uB124\uAC00 \uB2E4\uCE58\uC9C0 \uC54A\uC544\uC11C \uB2E4\uD589\uC774\uC57C.."
+  - situation: 3
+    lines: []
+  - situation: 4
+    lines:
+    - "...\uC774\uAC74 \uC880 \uC544\uD50C\uAC70\uC57C"
+  - situation: 5
+    lines: []
+  - situation: 11
+    lines:
+    - "\uBAA8\uB450 \uBAA8\uC5EC\uB77C!!"
+  - situation: 12
+    lines:
+    - "\uAD50\uB300\uD574\uC918!"
+  - situation: 13
+    lines:
+    - "\uC624\uCF00\uC774!"
+  - situation: 14
+    lines:
+    - "\uC544\uC57C\uC57C\u2026 \uAC10\uD788 \uD53C\uD558\uB2E4\uB2C8!"
+  - situation: 15
+    lines:
+    - "\uC6B0\uC73C\uC73C \uC838\uBC84\uB9AC\uB2E4\uB2C8..!"
+  - situation: 16
+    lines:
+    - "\uB2E4\uC74C\uC5D0\uB294 \uBD10\uC8FC\uC9C0 \uC54A\uC744 \uAC70\uC57C!"

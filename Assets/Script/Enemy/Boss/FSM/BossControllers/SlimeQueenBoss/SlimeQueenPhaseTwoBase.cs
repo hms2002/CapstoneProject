@@ -115,7 +115,6 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     private bool splitLandingMovementMotorWasEnabled;
     private Coroutine splitLandingRoutine;
     private bool? hasIsDeadParameter;
-    private SpeechBubbleComponent speechBubble;
     private SlimeQueenVanishParticleEffect finaleVanishEffect;
     private readonly List<AttackTelegraphView> bodyInflateWarningViews = new List<AttackTelegraphView>();
     private readonly List<AttackTelegraphView> castlingWarningViews = new List<AttackTelegraphView>();
@@ -436,9 +435,27 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     }
 
     /// <summary>캐슬링 경고 중 해당 2페이즈 슬라임의 말풍선 대사를 출력합니다.</summary>
+    public bool TryShowCastlingSpeech(BossSpeechSituationEnum situation, float duration)
+    {
+        return TryShowPhaseTwoSpeech(situation, Mathf.Max(0.1f, duration), null);
+    }
+
+    /// <summary>캐슬링 경고 중 해당 2페이즈 슬라임의 말풍선 대사를 출력합니다.</summary>
     public bool TryShowCastlingSpeech(string text, float duration)
     {
         return TryShowPhaseTwoSpeech(text, Mathf.Max(0.1f, duration), null);
+    }
+
+    /// <summary>2페이즈 보스 공용 말풍선 대사를 BossSpeechData 상황 키로 출력합니다.</summary>
+    public bool TryShowPhaseTwoSpeech(BossSpeechSituationEnum situation, float duration, Action onHidden = null)
+    {
+        return TryShowPhaseTwoSpeech(situation, duration, onHidden, Vector3.zero);
+    }
+
+    /// <summary>2페이즈 보스 공용 말풍선 대사를 BossSpeechData 상황 키와 추가 오프셋으로 출력합니다.</summary>
+    public bool TryShowPhaseTwoSpeech(BossSpeechSituationEnum situation, float duration, Action onHidden, Vector3 bubbleOffsetDelta)
+    {
+        return TryShowSlimeQueenSpeech(situation, duration, onHidden, bubbleOffsetDelta);
     }
 
     /// <summary>2페이즈 보스 공용 말풍선 대사를 출력합니다.</summary>
@@ -450,32 +467,13 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     /// <summary>2페이즈 보스 공용 말풍선 대사를 추가 오프셋과 함께 출력합니다.</summary>
     public bool TryShowPhaseTwoSpeech(string text, float duration, Action onHidden, Vector3 bubbleOffsetDelta)
     {
-        if (string.IsNullOrWhiteSpace(text))
-            return false;
-
-        if (speechBubble == null)
-            speechBubble = GetComponent<SpeechBubbleComponent>();
-
-        if (speechBubble == null)
-            speechBubble = GetComponentInChildren<SpeechBubbleComponent>(includeInactive: true);
-
-        if (speechBubble == null)
-        {
-            Debug.Log($"SlimeQueen Phase Two Speech: {text}", this);
-            return false;
-        }
-
-        speechBubble.SpeakWithOffsetDelta(text, Mathf.Max(0.1f, duration), null, onHidden, bubbleOffsetDelta);
-        return true;
+        return TryShowSlimeQueenSpeechLine(text, duration, onHidden, bubbleOffsetDelta);
     }
 
     /// <summary>최종 패배 연출에서 이 2페이즈 보스를 소멸시킵니다.</summary>
     public void PlayFinaleVanishAndDestroy()
     {
-        if (speechBubble == null)
-            speechBubble = GetComponentInChildren<SpeechBubbleComponent>(includeInactive: true);
-
-        speechBubble?.HideActive();
+        HideSlimeQueenSpeechBubble();
         CleanupBodyInflatePresentation();
         CleanupCastlingPresentation();
         PlayFinaleVanishEffect(transform.position);

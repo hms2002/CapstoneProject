@@ -16,7 +16,7 @@
 
 # face: 2001: Spiri_Dragon
 # anim: slow
-왜인지 모르겠군. 네놈에게선... [pause=0.35]아무 냄새도 나지 않아.
+이유를 모르겠군. 네놈에게선... [pause=0.35]아무 냄새도 나지 않아.
 
 # face: 2001: Spiri_Dragon
 # anim: cold

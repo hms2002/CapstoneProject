@@ -116,6 +116,7 @@ MonoBehaviour:
   deadTag: {fileID: 0}
   groggyTag: {fileID: 11400000, guid: 6a381fd96b3c05d4cbcbd73fbf173f4e, type: 2}
   phases: []
+  slimeQueenSpeechData: {fileID: 11400000, guid: 2e94bab546cea6b47a40fcf9034d64be, type: 2}
   airborneBodyZHeight: 1
   logHeightCollisionDebug: 1
   enablePatternAfterimage: 1
@@ -155,7 +156,6 @@ MonoBehaviour:
   - {x: -22, y: -1.5}
   - {x: -26.5, y: 4}
   - {x: -17.5, y: 4}
-  callSlimeSpeechText: "\uBAA8\uB450 \uBAA8\uC5EC\uB77C!!"
   callSlimeSpeechSeconds: 1.4
   callSlimeSpawnDelaySeconds: 0.35
   bodyInflateWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}

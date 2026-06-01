@@ -14,7 +14,32 @@ public enum BossSpeechSituationEnum
     AbsorbAlcoholOnly,
     AbsorbFireAny,
     GroggyStart,
-    AlcoholThrowPrepare
+    AlcoholThrowPrepare,
+    SlimeQueenCallSlimes,
+    SlimeQueenCastlingRequest,
+    SlimeQueenCastlingReply,
+    SlimeQueenToxicRushPitFallSlam,
+    SlimeQueenFinaleShort,
+    SlimeQueenFinaleLong,
+    DemonKingPierceCombo,
+    DemonKingHeavySlash,
+    DemonKingThrowEgoSword,
+    DemonKingHomingMagic,
+    DemonKingBombardment,
+    DemonKingExplosionJump,
+    DemonKingRecallEgoSword,
+    DemonKingWallBounceRush,
+    DemonKingGroggyRecoverCounter,
+    DemonKingFinalDesperation,
+    DemonKingEgoSwordVerticalStrike,
+    DemonKingEgoSwordCrossLaser,
+    EgoSwordThrowEgoSword,
+    EgoSwordRecallEgoSword,
+    EgoSwordVerticalStrike,
+    EgoSwordCrossLaser,
+    EgoSwordThrowEgoSwordRelease,
+    DemonKingRecallEgoSwordRetort,
+    EgoSwordRecallEgoSwordRetort
 }
 
 [System.Serializable]

@@ -214,6 +214,38 @@ public sealed class EgoSwordActor : MonoBehaviour
         ApplyProjectileSortingOnce();
     }
 
+    public Vector3 ResolveSpeechAnchorPosition()
+    {
+        if (gameObject.activeSelf && state != SwordState.Held)
+            return transform.position;
+
+        if (owner != null)
+            return owner.ResolveSwordHoldPosition(heldOffset);
+
+        return transform.position;
+    }
+
+    public Quaternion ResolveSpeechAnchorRotation()
+    {
+        if (gameObject.activeSelf && state != SwordState.Held)
+            return transform.rotation;
+
+        return Quaternion.identity;
+    }
+
+    public Vector3 ResolveThrowSpeechAnchorPosition()
+    {
+        return ResolveThrowOriginPosition();
+    }
+
+    public Vector3 ResolveRecallSpeechAnchorPosition()
+    {
+        if (gameObject.activeSelf)
+            return transform.position;
+
+        return ResolveRecallTargetPosition();
+    }
+
     public void HideWhileHeld()
     {
         StopAfterimage(clearGhosts: true);

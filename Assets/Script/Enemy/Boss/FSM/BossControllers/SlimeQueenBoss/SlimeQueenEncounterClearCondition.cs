@@ -20,8 +20,6 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
     private const float FinaleSpeechDurationSeconds = 2.5f;
     private const float FinalePostVanishHoldSeconds = 0.35f;
     private const float FinaleFocusMoveSeconds = 0.55f;
-    private const string ShortFinaleSpeech = "우으으 져버리다니..!";
-    private const string LongFinaleSpeech = "다음에는 봐주지 않을 거야!";
 
     private static readonly Vector3 FinaleSpeechBubbleOffsetDelta = new(0f, -1f, 0f);
 
@@ -207,7 +205,10 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
             }
 
             yield return WaitForPresentationSeconds(FinalePreSpeechDelaySeconds);
-            yield return PlayFinaleSpeechAndWait(shortQueen, ShortFinaleSpeech, FinaleSpeechDurationSeconds);
+            yield return PlayFinaleSpeechAndWait(
+                shortQueen,
+                BossSpeechSituationEnum.SlimeQueenFinaleShort,
+                FinaleSpeechDurationSeconds);
 
             if (shortQueen != null)
                 shortQueen.PlayFinaleVanishAndDestroy();
@@ -218,7 +219,10 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
                 yield return MoveFocusAnchorRoutine(focusAnchor, ResolveFinaleTargetPosition(longQueen), FinaleFocusMoveSeconds);
 
             yield return WaitForPresentationSeconds(FinalePreSpeechDelaySeconds);
-            yield return PlayFinaleSpeechAndWait(longQueen, LongFinaleSpeech, FinaleSpeechDurationSeconds);
+            yield return PlayFinaleSpeechAndWait(
+                longQueen,
+                BossSpeechSituationEnum.SlimeQueenFinaleLong,
+                FinaleSpeechDurationSeconds);
 
             if (longQueen != null)
                 longQueen.PlayFinaleVanishAndDestroy();
@@ -281,7 +285,10 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
         routine = null;
     }
 
-    private IEnumerator PlayFinaleSpeechAndWait(SlimeQueenPhaseTwoBase boss, string text, float duration)
+    private IEnumerator PlayFinaleSpeechAndWait(
+        SlimeQueenPhaseTwoBase boss,
+        BossSpeechSituationEnum situation,
+        float duration)
     {
         float resolvedDuration = Mathf.Max(0.1f, duration);
         if (boss == null)
@@ -292,7 +299,7 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
 
         bool bubbleHidden = false;
         bool started = boss.TryShowPhaseTwoSpeech(
-            text,
+            situation,
             resolvedDuration,
             () => bubbleHidden = true,
             FinaleSpeechBubbleOffsetDelta);

@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bubbleTheme:
     useCustomColors: 1
-    borderColor: {r: 1, g: 0.6784314, b: 0.21176471, a: 1}
-    fillColor: {r: 0.3019608, g: 0.105882354, b: 0.015686275, a: 0.55}
-    fontColor: {r: 1, g: 0.8745098, b: 0.5058824, a: 1}
+    borderColor: {r: 0.827451, g: 0.6862745, b: 0.11764706, a: 1}
+    fillColor: {r: 0.6666667, g: 0.019607844, b: 0, a: 1}
+    fontColor: {r: 0.827451, g: 0.6862745, b: 0.11764706, a: 1}
   entries:
   - situation: 0
     lines: []
@@ -24,7 +24,7 @@ MonoBehaviour:
     lines: []
   - situation: 2
     lines:
-    - "술이... 모자라..."
+    - "\uC220\uC774... \uBAA8\uC790\uB77C..."
   - situation: 3
     lines: []
   - situation: 4
@@ -33,17 +33,17 @@ MonoBehaviour:
     lines: []
   - situation: 6
     lines:
-    - "들이킨다!"
+    - "\uB4E4\uC774\uD0A8\uB2E4!"
   - situation: 7
     lines:
-    - "크으~ 취한다~!"
-    - "음~ 좋다~"
+    - "\uD06C\uC73C~ \uCDE8\uD55C\uB2E4~!"
+    - "\uC74C~ \uC88B\uB2E4~"
   - situation: 8
     lines:
-    - "앗 뜨거!"
+    - "\uC557 \uB728\uAC70!"
   - situation: 9
     lines:
-    - "어질어질하군..."
+    - "\uC5B4\uC9C8\uC5B4\uC9C8\uD558\uAD70..."
   - situation: 10
     lines:
-    - "잘 피해봐~"
+    - "\uC798 \uD53C\uD574\uBD10~"

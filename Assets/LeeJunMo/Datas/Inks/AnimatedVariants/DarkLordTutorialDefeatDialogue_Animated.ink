@@ -1,7 +1,7 @@
 === script_2 ===
 # speaker: 1005 # face :Tutorial
 # anim: cold
-보시다시피, 너는 한없이 [punch]나약하고 초라하다[/punch]. 이 옥좌에 닿기엔 턱없이 부족해.
+보다시피, 너는 한없이 [punch]나약하고 초라하다[/punch]. 이 옥좌에 닿기엔 턱없이 부족해.
 
 # speaker: 1005
 # anim: cold

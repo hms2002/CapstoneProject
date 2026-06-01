@@ -10,8 +10,6 @@ using UnityGAS;
 /// </summary>
 public sealed class AbilityLogic_SlimeQueenCastling : AbilityLogic
 {
-    private const string LongQueenCastlingSpeechText = "교대해줘!";
-    private const string ShortQueenCastlingSpeechText = "오케이!";
     private const float ShortQueenSpeechDelaySeconds = 0.7f;
 
     [Header("Sound")]
@@ -111,7 +109,7 @@ public sealed class AbilityLogic_SlimeQueenCastling : AbilityLogic
             yield break;
 
         float replyDelaySeconds = Mathf.Min(ShortQueenSpeechDelaySeconds, warningSeconds);
-        context.LongQueen.TryShowCastlingSpeech(LongQueenCastlingSpeechText, replyDelaySeconds);
+        context.LongQueen.TryShowCastlingSpeech(BossSpeechSituationEnum.SlimeQueenCastlingRequest, replyDelaySeconds);
 
         if (replyDelaySeconds > 0f)
             yield return WaitForSecondsUnlessCancelled(replyDelaySeconds, spec);
@@ -120,7 +118,7 @@ public sealed class AbilityLogic_SlimeQueenCastling : AbilityLogic
             yield break;
 
         float remainingWarningSeconds = Mathf.Max(0f, warningSeconds - replyDelaySeconds);
-        context.ShortQueen.TryShowCastlingSpeech(ShortQueenCastlingSpeechText, remainingWarningSeconds);
+        context.ShortQueen.TryShowCastlingSpeech(BossSpeechSituationEnum.SlimeQueenCastlingReply, remainingWarningSeconds);
 
         if (remainingWarningSeconds > 0f)
             yield return WaitForSecondsUnlessCancelled(remainingWarningSeconds, spec);

@@ -18,9 +18,9 @@ MonoBehaviour:
   storyText: "<color=#96DCFA>\uACAC\uC2B5 \uC6A9\uC0AC\uAC00 \uCC98\uC74C \uC950\uC5C8\uB358
     \uAE30\uBCF8 \uAC80.</color>"
   statModifiers: []
-  attackInputHint: "\uC6B0\uD074\uB9AD"
-  skill1InputHint: Q
-  skill2InputHint: E
+  attackInputHint: "\uC88C\uD074\uB9AD"
+  skill1InputHint: "\uC6B0\uD074\uB9AD"
+  skill2InputHint: Q
   weaponPrefab: {fileID: 916365682996460394, guid: 9fe6c68944504e748195234398110ddd, type: 3}
   displayVisualProfile: {fileID: 0}
   swapSoundOverride:
@@ -30,6 +30,6 @@ MonoBehaviour:
     localOffset: {x: 0, y: 0, z: 0}
   equippedTag: {fileID: 11400000, guid: cac1046499d28814a91fcb2631757240, type: 2}
   attack: {fileID: 11400000, guid: 15f8359a0ca04b7c83f148b0c75cab86, type: 2}
-  skill1: {fileID: 11400000, guid: fb139da0d3c74a54a25bb443decbdb93, type: 2}
-  skill2: {fileID: 11400000, guid: 010cc44b39804e8cb732b3fc8d1b3ea6, type: 2}
+  skill1: {fileID: 11400000, guid: 010cc44b39804e8cb732b3fc8d1b3ea6, type: 2}
+  skill2: {fileID: 11400000, guid: fb139da0d3c74a54a25bb443decbdb93, type: 2}
   abilityLoadout: {fileID: 0}

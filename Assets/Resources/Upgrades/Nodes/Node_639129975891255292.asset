@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Node_639129975891255292
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeNodeSO
   nodeID: -384975505
-  upgradeName: Upgrade 1,0
-  description: 
-  icon: {fileID: 0}
+  upgradeName: "\uCCB4\uB825 \uC99D\uC9C4 \u2160"
+  description: "\uCD5C\uB300 \uCCB4\uB825 1 \uC99D\uAC00"
+  icon: {fileID: 21300000, guid: 6842cb98082269a41ad8096aaabc109c, type: 3}
   price: 0
   effects:
   - {fileID: 11400000, guid: c36a0834b3b7432d9a19685020c6219d, type: 2}

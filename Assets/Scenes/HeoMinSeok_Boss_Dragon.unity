@@ -28731,6 +28731,10 @@ PrefabInstance:
       propertyPath: playerCam
       value: 
       objectReference: {fileID: 2005081369}
+    - target: {fileID: 6824159300182253414, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
+      propertyPath: deathLensScale
+      value: 0.86
+      objectReference: {fileID: 0}
     - target: {fileID: 7430654471959025258, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.791

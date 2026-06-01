@@ -24,12 +24,16 @@ public class SpeechBubble : MonoBehaviour
     [SerializeField, Min(0f)] private float typingSoundInterval = 0.035f;
 
     private Transform target;
+    private Func<Vector3> targetPositionResolver;
+    private Func<Quaternion> targetRotationResolver;
     private Vector3 offset;
+    private Vector3 layoutOffset;
     private Tween typingTween;
     private Coroutine typingRoutine;
     private Coroutine textEffectRoutine;
     private Tween hideDelayTween;
     private Vector3 originalScale;
+    private Quaternion originalRotation;
     private Action<SpeechBubble> releaseAction;
     private Action hiddenAction;
     private Material runtimeBackgroundMaterial;
@@ -52,6 +56,7 @@ public class SpeechBubble : MonoBehaviour
     private DialogueTextRevealPlan currentRevealPlan;
     private int currentRevealVisibleCharacterCount;
     private bool hasCurrentRevealPlan;
+    private readonly Vector3[] worldCorners = new Vector3[4];
 
     private const float UnwrappedPreferredWidthProbe = 10000f;
 
@@ -65,8 +70,36 @@ public class SpeechBubble : MonoBehaviour
     private void Awake()
     {
         originalScale = transform.localScale;
+        originalRotation = transform.rotation;
         ResolveVisualReferences();
         InitializeRuntimeMaterials();
+    }
+
+    public void SetupAndShow(
+        Func<Vector3> targetPositionResolver,
+        Vector3 offset,
+        string text,
+        float duration,
+        bool useTyping,
+        float typingSpeed,
+        SpeechBubbleThemeSettings theme,
+        Action onHidden,
+        Action<SpeechBubble> onRelease)
+    {
+        SetupAndShow(
+            targetPositionResolver,
+            offset,
+            text,
+            duration,
+            useTyping,
+            typingSpeed,
+            theme,
+            onHidden,
+            onRelease,
+            false,
+            0f,
+            0f,
+            0f);
     }
 
     public void SetupAndShow(
@@ -113,6 +146,79 @@ public class SpeechBubble : MonoBehaviour
     {
         SetupAndShowInternal(
             target,
+            null,
+            null,
+            offset,
+            text,
+            duration,
+            useTyping,
+            typingSpeed,
+            theme,
+            onHidden,
+            onRelease,
+            preSizeLayout,
+            minTextWidth,
+            maxTextWidth,
+            minTextHeight,
+            false,
+            DialogueAnimType.Normal);
+    }
+
+    public void SetupAndShow(
+        Func<Vector3> targetPositionResolver,
+        Vector3 offset,
+        string text,
+        float duration,
+        bool useTyping,
+        float typingSpeed,
+        SpeechBubbleThemeSettings theme,
+        Action onHidden,
+        Action<SpeechBubble> onRelease,
+        bool preSizeLayout,
+        float minTextWidth,
+        float maxTextWidth,
+        float minTextHeight)
+    {
+        SetupAndShowInternal(
+            null,
+            targetPositionResolver,
+            null,
+            offset,
+            text,
+            duration,
+            useTyping,
+            typingSpeed,
+            theme,
+            onHidden,
+            onRelease,
+            preSizeLayout,
+            minTextWidth,
+            maxTextWidth,
+            minTextHeight,
+            false,
+            DialogueAnimType.Normal);
+    }
+
+    public void SetupAndShow(
+        Func<Vector3> targetPositionResolver,
+        Func<Quaternion> targetRotationResolver,
+        Vector3 offset,
+        string text,
+        float duration,
+        bool useTyping,
+        float typingSpeed,
+        SpeechBubbleThemeSettings theme,
+        Action onHidden,
+        Action<SpeechBubble> onRelease,
+        bool preSizeLayout,
+        float minTextWidth,
+        float maxTextWidth,
+        float minTextHeight)
+    {
+        SetupAndShowInternal(
+            null,
+            targetPositionResolver,
+            targetRotationResolver,
             offset,
             text,
             duration,
@@ -155,6 +261,31 @@ public class SpeechBubble : MonoBehaviour
     }
 
     public void SetupAndShowAnimated(
+        Func<Vector3> targetPositionResolver,
+        Vector3 offset,
+        string text,
+        float duration,
+        SpeechBubbleThemeSettings theme,
+        Action onHidden,
+        Action<SpeechBubble> onRelease,
+        DialogueAnimType animType)
+    {
+        SetupAndShowAnimated(
+            targetPositionResolver,
+            offset,
+            text,
+            duration,
+            theme,
+            onHidden,
+            onRelease,
+            animType,
+            false,
+            0f,
+            0f,
+            0f);
+    }
+
+    public void SetupAndShowAnimated(
         Transform target,
         Vector3 offset,
         string text,
@@ -170,6 +301,42 @@ public class SpeechBubble : MonoBehaviour
     {
         SetupAndShowInternal(
             target,
+            null,
+            null,
+            offset,
+            text,
+            duration,
+            true,
+            0f,
+            theme,
+            onHidden,
+            onRelease,
+            preSizeLayout,
+            minTextWidth,
+            maxTextWidth,
+            minTextHeight,
+            true,
+            animType);
+    }
+
+    public void SetupAndShowAnimated(
+        Func<Vector3> targetPositionResolver,
+        Vector3 offset,
+        string text,
+        float duration,
+        SpeechBubbleThemeSettings theme,
+        Action onHidden,
+        Action<SpeechBubble> onRelease,
+        DialogueAnimType animType,
+        bool preSizeLayout,
+        float minTextWidth,
+        float maxTextWidth,
+        float minTextHeight)
+    {
+        SetupAndShowInternal(
+            null,
+            targetPositionResolver,
+            null,
             offset,
             text,
             duration,
@@ -188,6 +355,8 @@ public class SpeechBubble : MonoBehaviour
 
     private void SetupAndShowInternal(
         Transform target,
+        Func<Vector3> targetPositionResolver,
+        Func<Quaternion> targetRotationResolver,
         Vector3 offset,
         string text,
         float duration,
@@ -212,14 +381,19 @@ public class SpeechBubble : MonoBehaviour
         currentRevealVisibleCharacterCount = 0;
 
         this.target = target;
+        this.targetPositionResolver = targetPositionResolver;
+        this.targetRotationResolver = targetRotationResolver;
         this.offset = offset;
+        layoutOffset = Vector3.zero;
         hiddenAction = onHidden;
         releaseAction = onRelease;
         currentFullText = displayText;
         isTyping = false;
         isHiding = false;
 
-        transform.position = target.position + offset;
+        if (targetRotationResolver == null)
+            transform.rotation = originalRotation;
+        ApplyAnchorPose();
         gameObject.SetActive(true);
         ApplyTheme(theme);
         PrepareLayoutForText(displayText, preSizeLayout, minTextWidth, maxTextWidth, minTextHeight);
@@ -384,6 +558,34 @@ public class SpeechBubble : MonoBehaviour
         return true;
     }
 
+    public void SetLayoutOffset(Vector3 value)
+    {
+        layoutOffset = value;
+        ApplyAnchorPose();
+    }
+
+    public bool TryGetWorldBounds(out Bounds bounds)
+    {
+        bounds = default;
+
+        if (!gameObject.activeInHierarchy)
+            return false;
+
+        ResolveVisualReferences();
+        RectTransform sourceRect = backgroundRect != null
+            ? backgroundRect
+            : transform as RectTransform;
+        if (sourceRect == null)
+            return false;
+
+        sourceRect.GetWorldCorners(worldCorners);
+        bounds = new Bounds(worldCorners[0], Vector3.zero);
+        for (int i = 1; i < worldCorners.Length; i++)
+            bounds.Encapsulate(worldCorners[i]);
+
+        return bounds.size.sqrMagnitude > 0.000001f;
+    }
+
     public void Hide()
     {
         if (this == null)
@@ -416,16 +618,19 @@ public class SpeechBubble : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (target == null)
+        if (target == null && targetPositionResolver == null)
             return;
 
-        transform.position = target.position + offset;
+        ApplyAnchorPose();
     }
 
     private void OnDisable()
     {
         StopActiveTweens();
         target = null;
+        targetPositionResolver = null;
+        targetRotationResolver = null;
+        transform.rotation = originalRotation;
         hiddenAction = null;
         releaseAction = null;
         currentFullText = string.Empty;
@@ -433,6 +638,32 @@ public class SpeechBubble : MonoBehaviour
         currentRevealVisibleCharacterCount = 0;
         isTyping = false;
         isHiding = false;
+        layoutOffset = Vector3.zero;
+    }
+
+    private Vector3 ResolveAnchorPosition()
+    {
+        if (targetPositionResolver != null)
+            return targetPositionResolver();
+
+        if (target != null)
+            return target.position;
+
+        return transform.position - offset - layoutOffset;
+    }
+
+    private void ApplyAnchorPose()
+    {
+        Quaternion anchorRotation = ResolveAnchorRotation();
+        Vector3 resolvedOffset = targetRotationResolver != null ? anchorRotation * offset : offset;
+        transform.position = ResolveAnchorPosition() + resolvedOffset + layoutOffset;
+        if (targetRotationResolver != null)
+            transform.rotation = anchorRotation * originalRotation;
+    }
+
+    private Quaternion ResolveAnchorRotation()
+    {
+        return targetRotationResolver != null ? targetRotationResolver() : Quaternion.identity;
     }
 
     private void StopActiveTweens()

@@ -20,7 +20,7 @@ MonoBehaviour:
   bossEncounterDialogues: []
   dialogueTheme: {fileID: 11400000, guid: 16de5d7645fe404429b78b7115f05ed0, type: 2}
   affectionRewards:
-  - targetLevel: 3
+  - targetLevel: 1
     effect: {fileID: 11400000, guid: e8c2a5f0d8d14a548a6f2c6d90377b7a, type: 2}
   spriteLibraryAsset: {fileID: 7108339969198208228, guid: 7ed72d4fc66d4fa6a4535f9c5f08f4d7, type: 3}
   emoteOffset: {x: 75, y: 100}

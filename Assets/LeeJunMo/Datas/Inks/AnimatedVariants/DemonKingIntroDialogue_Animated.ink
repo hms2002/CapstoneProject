@@ -1,22 +1,4 @@
 # speaker: 1005
-
-# speaker: ???
-# anim: slow
-조용하던 공기가... [pause=0.35]갑자기 멈췄다.
-
-# CameraShake: Low
-# anim: normal
-작은 진동이 발밑에서 올라왔다.
-
-# CameraShake: Middle
-# anim: angry
-아니, 이건 단순한 흔들림이 아니야.
-
-# CameraShake: High
-# anim: slow
-[punch]문이 부서지듯 열렸다.[/punch]
-
--> END
 # face: 1005: Normal
 # anim: cold
 드디어 왔군. 용사. [pause=0.25]후후, 참 [punch]느려 빠졌네[/punch].

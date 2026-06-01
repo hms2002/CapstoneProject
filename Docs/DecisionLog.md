@@ -2023,3 +2023,31 @@ Implications:
 - `MonsterSpawnRoomGroup`, `RoomDoorMonsterKillLock`, and `ChestMonsterKillLock` should register and count `MonsterLockTrackingUnit` instances, not raw GameObjects.
 - Navigation arrows should point at the live representative of a tracking unit, so arrows move from a dead original to a living split child.
 - General direct summons remain outside KillLock counts unless they enter through spawn registration or explicit split inheritance.
+
+## 2026-06-02 - SlimeQueen Speech Uses BossSpeechData Without Controller Merge
+
+Decision:
+SlimeQueen P1/P2 speech text and bubble theme are authored in `SlimeBossSpeechData.asset`, but SlimeQueen keeps its dedicated split, phase-two, callback, and timing flow instead of fully adopting `BossSpeechController`.
+
+Reason:
+SlimeQueen speech is coupled to split spawning, castling pair timing, pitfall-return slam timing, and the two-body finale. A data-only bridge centralizes text/theme authoring without forcing those special lifecycle rules into the generic boss speech controller.
+
+Implications:
+- Add new SlimeQueen speech situations only at the end of `BossSpeechSituationEnum` to preserve existing serialized enum values.
+- Use `SlimeQueenBossBase` speech helpers for SlimeQueen data-backed lines; keep pattern durations, offsets, and callbacks at their current SlimeQueen call sites.
+- `SlimeQueen`, `SlimeQueenP2Short`, and `SlimeQueenP2Long` prefabs must keep `slimeQueenSpeechData` assigned to the same `SlimeBossSpeechData.asset`.
+
+## 2026-06-02 - DemonKing And EgoSword Speech Use Separate Situation Keys
+
+Decision:
+DemonKing sword-related patterns use separate `BossSpeechSituationEnum` keys for DarkLord/body speech and EgoSword-position speech instead of adding a new serialized speech schema.
+
+Reason:
+`BossSpeechData` is already a simple situation-to-lines authoring asset, and changing its schema would create ScriptableObject migration risk. Appending speaker-specific enum values preserves existing serialized enum values while letting designers fill DarkLord and EgoSword lines independently for the same pattern.
+
+Implications:
+- `DemonKingThrowEgoSword`, `DemonKingRecallEgoSword`, `DemonKingEgoSwordVerticalStrike`, and `DemonKingEgoSwordCrossLaser` are DarkLord/body speech keys.
+- `EgoSwordThrowEgoSword`, `EgoSwordRecallEgoSword`, `EgoSwordVerticalStrike`, and `EgoSwordCrossLaser` are EgoSword-position speech keys.
+- Throw/Recall can append step-specific keys such as `EgoSwordThrowEgoSwordRelease`, `DemonKingRecallEgoSwordRetort`, and `EgoSwordRecallEgoSwordRetort` when a pattern needs fixed turn order but each turn should still use the existing random `lines[]` lookup.
+- Parallel speech bubbles auto-spread only parallel bubble instances. The existing active/single bubble remains fixed and acts as an obstacle; the layout pass scores left/right world-bounds candidates first, then uses a small upward fallback without adding scene or prefab settings.
+- Pattern code may try both keys; missing lines remain no-op through the existing `BossSpeechData.GetLine(...)` path.

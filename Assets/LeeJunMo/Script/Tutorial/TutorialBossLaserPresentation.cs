@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -31,6 +32,9 @@ public sealed class TutorialBossLaserPresentation : MonoBehaviour
     [Header("Laser")]
     [SerializeField] private DemonKingEgoLaserVfx defaultLaserVfxPrefab;
     [SerializeField] private LaserStep[] steps;
+
+    [Header("Sound")]
+    [SerializeField] private SoundRef laserFireSound = SoundRef.FromKey("sound_boss_darklord_laser");
 
     [Header("Presentation HP")]
     [SerializeField] private TutorialPresentationHpView presentationHpView;
@@ -136,6 +140,7 @@ public sealed class TutorialBossLaserPresentation : MonoBehaviour
             presentationHpView.ReduceOne();
 
         onStepHit?.Invoke(stepIndex);
+        PlayLaserFireSound(origin);
 
         DemonKingEgoLaserVfx primaryVfx = SpawnLaserVfx(step, origin, direction, length, width, attackSeconds);
         DemonKingEgoLaserVfx oppositeVfx = step.spawnOppositeRay
@@ -169,6 +174,15 @@ public sealed class TutorialBossLaserPresentation : MonoBehaviour
         DemonKingEgoLaserVfx instance = Instantiate(prefab);
         instance.Play(origin, direction, length, width, attackSeconds);
         return instance;
+    }
+
+    private void PlayLaserFireSound(Vector2 origin)
+    {
+        SoundPlaybackUtility.Play(
+            laserFireSound,
+            causer: gameObject,
+            position: new Vector3(origin.x, origin.y, transform.position.z),
+            sourceObject: this);
     }
 
     private IEnumerator WaitForAttackRoutine(

@@ -14,7 +14,6 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
     private static readonly int ReadyTriggerHash = Animator.StringToHash("ready");
     private static readonly int IsGiantizationHash = Animator.StringToHash("isGiantization");
     private static readonly int IdleStateHash = Animator.StringToHash("SlimeQueenB_Idle");
-    private const string ToxicRushPitFallSlamSpeechText = "아야야… 감히 피하다니!";
     private const float ToxicRushPitFallSlamSpeechSeconds = 1.2f;
     private const float ToxicRushWallSearchDistance = 1000f;
     private const int ToxicRushWallHitBufferSize = 32;
@@ -446,7 +445,9 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
 
         try
         {
-            TryShowPhaseTwoSpeech(ToxicRushPitFallSlamSpeechText, ToxicRushPitFallSlamSpeechSeconds);
+            TryShowPhaseTwoSpeech(
+                BossSpeechSituationEnum.SlimeQueenToxicRushPitFallSlam,
+                ToxicRushPitFallSlamSpeechSeconds);
             ShowPhase2SlamWarning(landingPosition);
 
             float elapsedSeconds = 0f;

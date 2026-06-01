@@ -30098,7 +30098,7 @@ MonoBehaviour:
   disableLegacyFollowWhileSequence: 1
   blendWaitFallbackSeconds: 2
   useBossLensPresentation: 1
-  deathLensScale: 0.82
+  deathLensScale: 0.86
   deathLensBlendDuration: 0.35
   phaseLensScale: 1.18
   phaseLensBlendDuration: 0.35

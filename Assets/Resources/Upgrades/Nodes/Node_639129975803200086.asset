@@ -15,7 +15,7 @@ MonoBehaviour:
   nodeID: -2095978215
   upgradeName: "\uC0C1\uC810 \uD65C\uC131\uD654"
   description: "\uC0C1\uC810 \uAC1C\uC5C5"
-  icon: {fileID: 21300000, guid: 80e2cdbbf23063546b08b1f0741c8b17, type: 3}
+  icon: {fileID: 21300000, guid: b9484393cf3f8fe4896c2edebd077e77, type: 3}
   price: 0
   effects:
   - {fileID: 11400000, guid: 50de7e22ef564f248e334808259dc06a, type: 2}
