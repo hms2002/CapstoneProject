@@ -63,6 +63,42 @@
             "startedUtc": "2026-05-27T18:46:37.7917940Z",
             "endedUtc": "2026-05-27T18:46:39.8872135Z",
             "entries": []
+        },
+        {
+            "sessionId": "451df93d718a428bac75511ac219e28c",
+            "startedUtc": "2026-05-31T12:47:19.4730228Z",
+            "endedUtc": "2026-05-31T12:47:20.9787302Z",
+            "entries": []
+        },
+        {
+            "sessionId": "33a7a40bb66f47d2a4715ddf038909da",
+            "startedUtc": "2026-05-31T12:48:50.8782767Z",
+            "endedUtc": "2026-05-31T12:48:52.0224301Z",
+            "entries": []
+        },
+        {
+            "sessionId": "8cb0f853ec954f6c9b3c23eb474e0d6c",
+            "startedUtc": "2026-06-01T05:01:42.4897729Z",
+            "endedUtc": "2026-06-01T05:01:43.8623244Z",
+            "entries": []
+        },
+        {
+            "sessionId": "49a79000a0624d3299a08ebb5550a429",
+            "startedUtc": "2026-06-01T06:34:48.9221618Z",
+            "endedUtc": "2026-06-01T06:34:51.3414743Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d892b6b8451b49d4b47bf8094edb9593",
+            "startedUtc": "2026-06-01T06:36:21.7321581Z",
+            "endedUtc": "2026-06-01T06:36:24.2020417Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d2a6c736c9ae4e1fbdc20fe86edc1384",
+            "startedUtc": "2026-06-01T06:37:53.2165890Z",
+            "endedUtc": "2026-06-01T06:37:55.9186824Z",
+            "entries": []
         }
     ]
 }
