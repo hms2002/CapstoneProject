@@ -268,7 +268,7 @@ public class Mob : Enemy
         EnterDeathState();
 
         if (!suppressMonsterLootDrop && pitFallDeathResolutionDepth <= 0)
-            LootManager.Instance?.SpawnMonsterLoot(transform.position, SuppressMonsterFieldItemLootDrop);
+            LootManager.Instance?.SpawnMonsterLoot(transform.position, gameObject, SuppressMonsterFieldItemLootDrop);
     }
 
     internal MonsterLockTrackingUnit GetOrCreateLockTrackingUnit()

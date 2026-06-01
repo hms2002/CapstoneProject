@@ -2,25 +2,37 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>몬스터 처치 드롭을 굴릴 때 필요한 위치, 테이블, 드롭 주체, 제외 정책을 전달합니다.</summary>
 internal readonly struct MonsterLootDropRequest
 {
     public Vector3 Position { get; }
     public StageLootTable Table { get; }
+    public GameObject Source { get; }
     public LootPoolContext WeaponExclusionContext { get; }
     public bool SuppressFieldItem { get; }
 
     public MonsterLootDropRequest(Vector3 position, StageLootTable table)
-        : this(position, table, LootPoolContext.PlayerInventory, suppressFieldItem: false)
+        : this(position, table, source: null, LootPoolContext.PlayerInventory, suppressFieldItem: false)
     {
     }
 
     public MonsterLootDropRequest(Vector3 position, StageLootTable table, bool suppressFieldItem)
-        : this(position, table, LootPoolContext.PlayerInventory, suppressFieldItem)
+        : this(position, table, source: null, LootPoolContext.PlayerInventory, suppressFieldItem)
+    {
+    }
+
+    public MonsterLootDropRequest(Vector3 position, StageLootTable table, GameObject source)
+        : this(position, table, source, LootPoolContext.PlayerInventory, suppressFieldItem: false)
+    {
+    }
+
+    public MonsterLootDropRequest(Vector3 position, StageLootTable table, GameObject source, bool suppressFieldItem)
+        : this(position, table, source, LootPoolContext.PlayerInventory, suppressFieldItem)
     {
     }
 
     public MonsterLootDropRequest(Vector3 position, StageLootTable table, LootPoolContext weaponExclusionContext)
-        : this(position, table, weaponExclusionContext, suppressFieldItem: false)
+        : this(position, table, source: null, weaponExclusionContext, suppressFieldItem: false)
     {
     }
 
@@ -28,15 +40,32 @@ internal readonly struct MonsterLootDropRequest
         Vector3 position,
         StageLootTable table,
         LootPoolContext weaponExclusionContext,
-        bool suppressFieldItem = false)
+        bool suppressFieldItem)
+        : this(position, table, source: null, weaponExclusionContext, suppressFieldItem)
+    {
+    }
+
+    public MonsterLootDropRequest(Vector3 position, StageLootTable table, GameObject source, LootPoolContext weaponExclusionContext)
+        : this(position, table, source, weaponExclusionContext, suppressFieldItem: false)
+    {
+    }
+
+    public MonsterLootDropRequest(
+        Vector3 position,
+        StageLootTable table,
+        GameObject source,
+        LootPoolContext weaponExclusionContext,
+        bool suppressFieldItem)
     {
         Position = position;
         Table = table;
+        Source = source;
         WeaponExclusionContext = weaponExclusionContext;
         SuppressFieldItem = suppressFieldItem;
     }
 }
 
+/// <summary>몬스터 처치 드롭 롤 결과와 실제 생성 여부를 호출자에게 알려줍니다.</summary>
 internal readonly struct MonsterLootDropResult
 {
     public static MonsterLootDropResult Empty => new MonsterLootDropResult(MonsterLootType.None, false);
@@ -51,6 +80,7 @@ internal readonly struct MonsterLootDropResult
     }
 }
 
+/// <summary>몬스터 처치 보상 타입을 굴리고 실제 월드 드롭 오브젝트 생성을 위임합니다.</summary>
 internal sealed class MonsterLootDropService
 {
     private readonly LootPoolService poolService;
@@ -75,7 +105,8 @@ internal sealed class MonsterLootDropService
         if (request.Table == null || poolService == null || rollService == null || spawnService == null)
             return MonsterLootDropResult.Empty;
 
-        MonsterLootType lootType = rollService.RollMonsterLootType(request.Table, request.SuppressFieldItem);
+        bool suppressFieldItem = request.SuppressFieldItem || ShouldSuppressFieldHealPickup(request.Source);
+        MonsterLootType lootType = rollService.RollMonsterLootType(request.Table, suppressFieldItem);
         switch (lootType)
         {
             case MonsterLootType.None:
@@ -91,6 +122,9 @@ internal sealed class MonsterLootDropService
                 return SpawnConsumableDrop(request.Position, lootType);
 
             case MonsterLootType.FieldItem:
+                if (suppressFieldItem)
+                    return new MonsterLootDropResult(lootType, false);
+
                 spawnService.SpawnFieldHealPickup(request.Position);
                 return new MonsterLootDropResult(lootType, true);
 
@@ -128,5 +162,10 @@ internal sealed class MonsterLootDropService
 
         spawnService.SpawnLootObject(position, consumable);
         return new MonsterLootDropResult(lootType, true);
+    }
+
+    private static bool ShouldSuppressFieldHealPickup(GameObject source)
+    {
+        return source != null && source.GetComponentInParent<Pawn>() != null;
     }
 }

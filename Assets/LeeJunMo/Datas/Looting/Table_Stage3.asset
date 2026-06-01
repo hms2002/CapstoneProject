@@ -49,11 +49,11 @@ MonoBehaviour:
   rareWeight: 30
   epicWeight: 10
   legendaryWeight: 0
-  mobNothingWeight: 80
+  mobNothingWeight: 95
   mobWeaponWeight: 0
   mobRelicWeight: 0
   mobConsumableWeight: 0
-  mobFieldItemWeight: 20
+  mobFieldItemWeight: 5
   bossStoneCount: 5
   bossFieldHealBaseCount: 0
   legacyChestWeaponMinCount: 1
