@@ -839,7 +839,7 @@ MonoBehaviour:
   animator: {fileID: 1432445524218249099}
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  enemyName: GoblinWarrior
+  enemyName: 고블린 전사
   targetTag: Player
   targetSearchLayers:
     serializedVersion: 2

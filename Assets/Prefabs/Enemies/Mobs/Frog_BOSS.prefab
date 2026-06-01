@@ -216,7 +216,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  enemyName: Frog
+  enemyName: 개구리
   targetTag: Player
   chaseIntent: {fileID: 0}
 --- !u!114 &7001000000000000003
@@ -492,7 +492,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  enemyName: FROOG
+  enemyName: 개구리 보스
   targetTag: Player
   staggerDef: {fileID: 0}
   groggyEffect: {fileID: 0}

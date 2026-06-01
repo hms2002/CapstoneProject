@@ -104,7 +104,7 @@ MonoBehaviour:
   animator: {fileID: 1005000}
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  enemyName: SlimeQueenP2Long
+  enemyName: "\uC6B0\uC544\uD55C \uC5EC\uC655 \uBA5C\uD0C0"
   targetTag: Player
   targetSearchLayers:
     serializedVersion: 2

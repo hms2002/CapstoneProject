@@ -809,7 +809,7 @@ MonoBehaviour:
   animator: {fileID: 6714704082905239214}
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  enemyName: ArcaneMeleeGolem
+  enemyName: 비전 근접 골렘
   targetTag: Player
   targetSearchLayers:
     serializedVersion: 2
