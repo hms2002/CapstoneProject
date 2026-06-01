@@ -11,6 +11,8 @@ public sealed class RunRouteCatalogSO : ScriptableObject
     [Tooltip("Set to 0 to skip normal routes and start directly from the final route set.")]
     [SerializeField, Min(0)] private int normalStageCount = 3;
     [SerializeField] private List<CorridorBossRouteSetSO> normalRouteSets = new();
+    [Tooltip("Use normalRouteSets in serialized order instead of randomly selecting normal routes.")]
+    [SerializeField] private bool useFixedNormalRouteOrder;
     [SerializeField] private bool allowDuplicateNormalRoutes;
 
     [Header("Final Route Set")]
@@ -28,6 +30,7 @@ public sealed class RunRouteCatalogSO : ScriptableObject
 
     public int NormalStageCount => normalStageCount;
     public IReadOnlyList<CorridorBossRouteSetSO> NormalRouteSets => normalRouteSets;
+    public bool UseFixedNormalRouteOrder => useFixedNormalRouteOrder;
     public bool AllowDuplicateNormalRoutes => allowDuplicateNormalRoutes;
     public CorridorBossRouteSetSO FinalRouteSet => finalRouteSet;
     public SoundRef HubBgm => hubBgm;
@@ -44,7 +47,7 @@ public sealed class RunRouteCatalogSO : ScriptableObject
             if (normalStageCount <= 0)
                 return 0;
 
-            return allowDuplicateNormalRoutes ? 1 : normalStageCount;
+            return useFixedNormalRouteOrder || !allowDuplicateNormalRoutes ? normalStageCount : 1;
         }
     }
 

@@ -615,14 +615,21 @@ public sealed class PortalRouteManager : MonoBehaviour
         if (validNormalRoutes.Count < catalog.RequiredNormalRouteCount)
         {
             Debug.LogError(
-                $"[PortalRouteManager] Normal route sets are insufficient. catalog={catalog.name}, required={catalog.RequiredNormalRouteCount}, valid={validNormalRoutes.Count}, allowDuplicate={catalog.AllowDuplicateNormalRoutes}",
+                $"[PortalRouteManager] Normal route sets are insufficient. catalog={catalog.name}, required={catalog.RequiredNormalRouteCount}, valid={validNormalRoutes.Count}, fixedOrder={catalog.UseFixedNormalRouteOrder}, allowDuplicate={catalog.AllowDuplicateNormalRoutes}",
                 this);
             return false;
         }
 
         stages = new List<CorridorBossRouteSetSO>(catalog.NormalStageCount + 1);
 
-        if (catalog.AllowDuplicateNormalRoutes)
+        if (catalog.UseFixedNormalRouteOrder)
+        {
+            for (int i = 0; i < validNormalRoutes.Count && stages.Count < catalog.NormalStageCount; i++)
+            {
+                stages.Add(validNormalRoutes[i]);
+            }
+        }
+        else if (catalog.AllowDuplicateNormalRoutes)
         {
             for (int i = 0; i < catalog.NormalStageCount; i++)
             {
