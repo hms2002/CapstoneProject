@@ -36,7 +36,7 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
     private readonly List<MonsterSpawnContainer> reusableContainers = new();
     private readonly List<GameObject> reusableSpawnPlan = new();
     private readonly List<RoomDoorMonsterKillLock> runtimeDoorLocks = new();
-    private readonly List<GameObject> runtimeSpawnedMonsters = new();
+    private readonly List<MonsterLockTrackingUnit> runtimeSpawnedMonsterUnits = new();
     private readonly List<Coroutine> activeSpawnRoutines = new();
     private readonly List<ChestMonsterKillLock> pendingChestLocks = new();
     private readonly List<GameObject> activeSpawnVfx = new();
@@ -104,11 +104,11 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
         runtimeDoorLocks.Add(doorLock);
         CompactRuntimeLists();
 
-        for (int i = 0; i < runtimeSpawnedMonsters.Count; i++)
+        for (int i = 0; i < runtimeSpawnedMonsterUnits.Count; i++)
         {
-            GameObject monster = runtimeSpawnedMonsters[i];
-            if (monster != null)
-                doorLock.RegisterMonster(monster);
+            MonsterLockTrackingUnit unit = runtimeSpawnedMonsterUnits[i];
+            if (unit != null && unit.HasAliveMember())
+                doorLock.RegisterMonsterUnit(unit);
         }
 
         if (playerEncounterEntered)
@@ -130,8 +130,9 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
         CompactRuntimeLists();
 
-        if (!runtimeSpawnedMonsters.Contains(monster))
-            runtimeSpawnedMonsters.Add(monster);
+        MonsterLockTrackingUnit unit = Mob.ResolveOrCreateLockTrackingUnit(monster);
+        if (!runtimeSpawnedMonsterUnits.Contains(unit))
+            runtimeSpawnedMonsterUnits.Add(unit);
 
         for (int i = runtimeDoorLocks.Count - 1; i >= 0; i--)
         {
@@ -142,7 +143,7 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
                 continue;
             }
 
-            doorLock.RegisterMonster(monster);
+            doorLock.RegisterMonsterUnit(unit);
         }
     }
 
@@ -154,10 +155,10 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
         results.Clear();
         CompactRuntimeLists();
 
-        for (int i = 0; i < runtimeSpawnedMonsters.Count; i++)
+        for (int i = 0; i < runtimeSpawnedMonsterUnits.Count; i++)
         {
-            GameObject monster = runtimeSpawnedMonsters[i];
-            if (monster != null)
+            MonsterLockTrackingUnit unit = runtimeSpawnedMonsterUnits[i];
+            if (unit != null && unit.TryGetAliveRepresentative(out GameObject monster))
                 results.Add(monster);
         }
 
@@ -553,13 +554,13 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
     private void CompactRuntimeLists()
     {
         runtimeDoorLocks.RemoveAll(doorLock => doorLock == null);
-        runtimeSpawnedMonsters.RemoveAll(monster => monster == null);
+        runtimeSpawnedMonsterUnits.RemoveAll(unit => unit == null || !unit.HasAliveMember());
     }
 
     private int CountAliveRegisteredMonsters()
     {
         CompactRuntimeLists();
-        return runtimeSpawnedMonsters.Count;
+        return runtimeSpawnedMonsterUnits.Count;
     }
 
     private void LogRoomEntrySpawn(string message)

@@ -15,7 +15,7 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
     private static readonly SoundRef UnlockSoundMain = SoundRef.FromKey("sound_ui_UnlockChest1");
     private static readonly SoundRef UnlockSoundLayer = SoundRef.FromKey("sound_ui_UnlockChest2");
 
-    private readonly List<GameObject> trackedMonsters = new();
+    private readonly List<MonsterLockTrackingUnit> trackedMonsterUnits = new();
 
     [Header("Presentation")]
     [SerializeField] private Transform presentationAnchor;
@@ -74,10 +74,10 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
 
     private void Update()
     {
-        int oldCount = trackedMonsters.Count;
+        int oldCount = trackedMonsterUnits.Count;
         CompactDeadEntries();
 
-        if (oldCount != trackedMonsters.Count)
+        if (oldCount != trackedMonsterUnits.Count)
             RecalculateState(raiseEvents: true);
     }
 
@@ -90,13 +90,21 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
         if (monster == null)
             return;
 
-        if (trackedMonsters.Contains(monster))
+        RegisterMonsterUnit(Mob.ResolveOrCreateLockTrackingUnit(monster));
+    }
+
+    internal void RegisterMonsterUnit(MonsterLockTrackingUnit unit)
+    {
+        if (unit == null)
+            return;
+
+        if (trackedMonsterUnits.Contains(unit))
             return;
 
         if (pendingMonsterCount > 0)
             pendingMonsterCount--;
 
-        trackedMonsters.Add(monster);
+        trackedMonsterUnits.Add(unit);
         RecalculateState(raiseEvents: true);
     }
 
@@ -107,7 +115,7 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
     [ContextMenu("Clear Registered Monsters")]
     public void ClearRegisteredMonsters()
     {
-        trackedMonsters.Clear();
+        trackedMonsterUnits.Clear();
         pendingMonsterCount = 0;
         RecalculateState(raiseEvents: true);
     }
@@ -120,10 +128,10 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
         results.Clear();
         CompactDeadEntries();
 
-        for (int i = 0; i < trackedMonsters.Count; i++)
+        for (int i = 0; i < trackedMonsterUnits.Count; i++)
         {
-            GameObject monster = trackedMonsters[i];
-            if (monster != null)
+            MonsterLockTrackingUnit unit = trackedMonsterUnits[i];
+            if (unit != null && unit.TryGetAliveRepresentative(out GameObject monster))
                 results.Add(monster);
         }
 
@@ -135,10 +143,11 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
     /// </summary>
     private void CompactDeadEntries()
     {
-        for (int i = trackedMonsters.Count - 1; i >= 0; i--)
+        for (int i = trackedMonsterUnits.Count - 1; i >= 0; i--)
         {
-            if (trackedMonsters[i] == null)
-                trackedMonsters.RemoveAt(i);
+            MonsterLockTrackingUnit unit = trackedMonsterUnits[i];
+            if (unit == null || !unit.HasAliveMember())
+                trackedMonsterUnits.RemoveAt(i);
         }
     }
 
@@ -150,7 +159,7 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
     {
         CompactDeadEntries();
 
-        int newRemainingCount = trackedMonsters.Count + pendingMonsterCount;
+        int newRemainingCount = trackedMonsterUnits.Count + pendingMonsterCount;
         bool newUnlocked = newRemainingCount == 0;
 
         bool countChanged = remainingAliveCount != newRemainingCount;

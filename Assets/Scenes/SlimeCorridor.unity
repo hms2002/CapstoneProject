@@ -134263,8 +134263,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 031ea6d5625b722469f1ab4fb314775b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RunSameSceneTeleportNpcFeature
-  requireAffection: 0
-  requiredAffectionNpcId: 0
+  requireAffection: 1
+  requiredAffectionNpcId: 3001
   requiredAffectionAmount: 3
   appearancePoint: {fileID: 1240852453}
   landingPoint: {fileID: 1514037295}
@@ -171833,6 +171833,55 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5205111981208987127, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
   m_PrefabInstance: {fileID: 2062648499}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &9100206040000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9100206040002}
+  - component: {fileID: 9100206040001}
+  m_Layer: 0
+  m_Name: RoomEnemyNavigationOverlay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &9100206040001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9100206040000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3765e7afefdc3d4da8cb3a0cc3903ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoomEnemyNavigationOverlay
+  arrowPrefab: {fileID: 6100123456789012345, guid: 397712dcf285471895fbf9ddca3073e0, type: 3}
+  showThreshold: 4
+  viewportPadding: 0.08
+  arrowVisualForward: {x: -1, y: 0}
+  worldCamera: {fileID: 0}
+--- !u!4 &9100206040002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9100206040000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -171860,3 +171909,4 @@ SceneRoots:
   - {fileID: 1754959822}
   - {fileID: 2090701892}
   - {fileID: 1931659413}
+  - {fileID: 9100206040002}

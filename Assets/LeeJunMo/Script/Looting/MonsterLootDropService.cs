@@ -7,17 +7,33 @@ internal readonly struct MonsterLootDropRequest
     public Vector3 Position { get; }
     public StageLootTable Table { get; }
     public LootPoolContext WeaponExclusionContext { get; }
+    public bool SuppressFieldItem { get; }
 
     public MonsterLootDropRequest(Vector3 position, StageLootTable table)
-        : this(position, table, LootPoolContext.PlayerInventory)
+        : this(position, table, LootPoolContext.PlayerInventory, suppressFieldItem: false)
+    {
+    }
+
+    public MonsterLootDropRequest(Vector3 position, StageLootTable table, bool suppressFieldItem)
+        : this(position, table, LootPoolContext.PlayerInventory, suppressFieldItem)
     {
     }
 
     public MonsterLootDropRequest(Vector3 position, StageLootTable table, LootPoolContext weaponExclusionContext)
+        : this(position, table, weaponExclusionContext, suppressFieldItem: false)
+    {
+    }
+
+    public MonsterLootDropRequest(
+        Vector3 position,
+        StageLootTable table,
+        LootPoolContext weaponExclusionContext,
+        bool suppressFieldItem = false)
     {
         Position = position;
         Table = table;
         WeaponExclusionContext = weaponExclusionContext;
+        SuppressFieldItem = suppressFieldItem;
     }
 }
 
@@ -59,7 +75,7 @@ internal sealed class MonsterLootDropService
         if (request.Table == null || poolService == null || rollService == null || spawnService == null)
             return MonsterLootDropResult.Empty;
 
-        MonsterLootType lootType = rollService.RollMonsterLootType(request.Table);
+        MonsterLootType lootType = rollService.RollMonsterLootType(request.Table, request.SuppressFieldItem);
         switch (lootType)
         {
             case MonsterLootType.None:

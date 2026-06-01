@@ -32,9 +32,13 @@ public sealed class DragonController : BossControllerBase
     [SerializeField, Min(1)] private int fireBreathPuddlesForMaxWeight = 5;
     [SerializeField, Min(0.01f)] private float fireBreathMaxPuddleWeightMultiplier = 10f;
 
+    [Header("Demo Pattern")]
+    [SerializeField] private bool forceFirstSlamPatternForDemo = true;
+
     private DragonRuntimeData runtimeData;
     private int faceTargetLockCount;
     private SpriteAfterimageEmitter2D jumpAfterimageEmitter;
+    private bool hasForcedFirstSlamPatternForDemo;
 
     public DragonRuntimeData RuntimeData
     {
@@ -55,6 +59,7 @@ public sealed class DragonController : BossControllerBase
     {
         base.Awake();
         runtimeData = new DragonRuntimeData();
+        hasForcedFirstSlamPatternForDemo = false;
     }
 
     protected override void Update()
@@ -69,6 +74,49 @@ public sealed class DragonController : BossControllerBase
     {
         RuntimeData.ResetPatternCounters();
         StopJumpAfterimage(clearGhosts: forced);
+    }
+
+    public override BossPatternEntry SelectNextPattern()
+    {
+        if (forceFirstSlamPatternForDemo && !hasForcedFirstSlamPatternForDemo)
+        {
+            BossPatternEntry forcedPattern = TrySelectFirstSlamPatternForDemo();
+            if (forcedPattern != null)
+            {
+                hasForcedFirstSlamPatternForDemo = true;
+                return forcedPattern;
+            }
+        }
+
+        return base.SelectNextPattern();
+    }
+
+    private BossPatternEntry TrySelectFirstSlamPatternForDemo()
+    {
+        if (Target == null)
+            TryRefreshTarget(logWarning: false);
+
+        if (CombatTargetDeathUtility.IsPlayerDeathSequenceRunning(Target))
+            return null;
+
+        Blackboard?.Tick(0f, Target, CurrentHealthRatio);
+        BossPhaseConfig currentPhase = GetCurrentPhase();
+        System.Collections.Generic.IReadOnlyList<BossPatternEntry> patterns = currentPhase != null ? currentPhase.Patterns : null;
+        if (patterns == null)
+            return null;
+
+        for (int i = 0; i < patterns.Count; i++)
+        {
+            BossPatternEntry pattern = patterns[i];
+            if (!IsSlamPattern(pattern))
+                continue;
+
+            BossPatternEvalResult result = EvaluatePattern(pattern);
+            if (result.CanUse)
+                return pattern;
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -156,6 +204,13 @@ public sealed class DragonController : BossControllerBase
         return patternEntry != null &&
                patternEntry.Ability != null &&
                patternEntry.Ability.logic is AbilityLogic_DragonFireBreath;
+    }
+
+    private static bool IsSlamPattern(BossPatternEntry patternEntry)
+    {
+        return patternEntry != null &&
+               patternEntry.Ability != null &&
+               patternEntry.Ability.logic is AbilityLogic_DragonSlam;
     }
 
     private static int CountActiveAlcoholOrFirePuddles()

@@ -114,13 +114,14 @@ public sealed class LootRollService
         return ItemRarity.Epic;
     }
 
-    public MonsterLootType RollMonsterLootType(StageLootTable table)
+    public MonsterLootType RollMonsterLootType(StageLootTable table, bool suppressFieldItem = false)
     {
         if (table == null)
             return MonsterLootType.None;
 
+        int fieldItemWeight = suppressFieldItem ? 0 : table.mobFieldItemWeight;
         int totalWeight = table.mobNothingWeight + table.mobWeaponWeight + table.mobRelicWeight
-            + table.mobConsumableWeight + table.mobFieldItemWeight;
+            + table.mobConsumableWeight + fieldItemWeight;
         if (totalWeight <= 0)
             return MonsterLootType.None;
 
@@ -142,6 +143,9 @@ public sealed class LootRollService
         sum += table.mobConsumableWeight;
         if (rand < sum)
             return MonsterLootType.Consumable;
+
+        if (fieldItemWeight <= 0)
+            return MonsterLootType.None;
 
         return MonsterLootType.FieldItem;
     }

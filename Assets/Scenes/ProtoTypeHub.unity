@@ -40670,7 +40670,7 @@ MonoBehaviour:
   narratorNpcData: {fileID: 11400000, guid: f569d34990ab7514fa546779656d80cb, type: 2}
   openingSpeechText: "\uAC70\uAE30, \uBC14\uB2E5\uC774 \uB9C8\uC74C\uC5D0 \uB4E4\uB354\uB77C\uB3C4
     \uC2AC\uC2AC \uC77C\uC5B4\uB098. \uC544\uC9C1 \uC8FD\uC740 \uAC74 \uC544\uB2C8\uC796\uC544?"
-  openingSpeechDuration: 2.5
+  openingSpeechDuration: 2
   openingSpeechTheme:
     useCustomColors: 0
     borderColor: {r: 0, g: 0, b: 0, a: 1}
@@ -44036,6 +44036,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5857079469730888616, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5897664732481583689, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}
+    - target: {fileID: 5897664732481583689, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_fontStyle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5897664732481583689, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 1826925326976027445, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}
+    - target: {fileID: 5897664732481583689, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_hasFontAssetChanged
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5904369947923607477, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}

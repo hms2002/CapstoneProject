@@ -21,6 +21,7 @@ public class Pawn : Slime
 
     public GE_Damage_Spec ContactDamageEffect => damageEffect;
     public bool CanDealContactDamage => CanAct();
+    protected override bool SuppressMonsterFieldItemLootDrop => true;
 
     protected override void Awake()
     {
