@@ -31,8 +31,6 @@ public class PlayerConsumableHUD2D : MonoBehaviour
     [SerializeField] private ConsumableSlotUI slot3UI;
     [SerializeField] private ConsumableSlotUI slot4UI;
 
-    private CanvasGroup hudCanvasGroup;
-    private Graphic[] hudGraphics;
     private bool hasBoundInventoryEvents;
 
     private void Awake()
@@ -40,13 +38,8 @@ public class PlayerConsumableHUD2D : MonoBehaviour
         if (hudRoot == null)
             hudRoot = gameObject;
 
-        hudCanvasGroup = hudRoot.GetComponent<CanvasGroup>();
-        if (hudRoot == gameObject && hudCanvasGroup == null)
-            hudGraphics = hudRoot.GetComponentsInChildren<Graphic>(includeInactive: true);
-
         TryResolvePlayerRefs();
         RefreshAllSlots();
-        RefreshVisibility();
     }
 
     private void OnEnable()
@@ -81,24 +74,26 @@ public class PlayerConsumableHUD2D : MonoBehaviour
             UnbindInventoryEvents();
             consumableInventory = null;
             RefreshAllSlots();
-            RefreshVisibility();
         }
     }
 
     private void TryResolvePlayerRefs(PlayerInteractor2D player = null)
     {
-        if (player == null)
-        {
-            player = PlayerRuntimeRegistry.CurrentPlayer != null
-                ? PlayerRuntimeRegistry.CurrentPlayer
-                : PlayerInteractor2D.Instance;
-        }
+        consumableInventory = null;
 
         if (player != null)
+        {
             consumableInventory = player.GetComponent<PlayerConsumableInventory>();
+            return;
+        }
 
-        if (consumableInventory == null)
-            consumableInventory = FindFirstObjectByType<PlayerConsumableInventory>();
+        consumableInventory = PlayerRuntimeRegistry.GetPlayerComponent<PlayerConsumableInventory>();
+        if (consumableInventory != null)
+            return;
+
+        PlayerInteractor2D fallbackPlayer = PlayerInteractor2D.Instance;
+        if (fallbackPlayer != null)
+            consumableInventory = fallbackPlayer.GetComponent<PlayerConsumableInventory>();
     }
 
     private void Start()
@@ -147,7 +142,6 @@ public class PlayerConsumableHUD2D : MonoBehaviour
             BindInventoryEvents();
 
         RefreshAllSlots();
-        RefreshVisibility();
     }
 
     private void RefreshAllSlots()
@@ -158,42 +152,6 @@ public class PlayerConsumableHUD2D : MonoBehaviour
         ApplySlot(slot4UI, 3);
     }
 
-    private void RefreshVisibility()
-    {
-        if (hudRoot == null)
-            return;
-
-        bool hasPlayerRefs = consumableInventory != null;
-        if (hudRoot != gameObject)
-        {
-            if (hudRoot.activeSelf != hasPlayerRefs)
-                hudRoot.SetActive(hasPlayerRefs);
-            return;
-        }
-
-        if (hudCanvasGroup != null)
-        {
-            hudCanvasGroup.alpha = hasPlayerRefs ? 1f : 0f;
-            hudCanvasGroup.interactable = hasPlayerRefs;
-            hudCanvasGroup.blocksRaycasts = hasPlayerRefs;
-            return;
-        }
-
-        if (hudGraphics == null)
-            hudGraphics = hudRoot.GetComponentsInChildren<Graphic>(includeInactive: true);
-
-        for (int i = 0; i < hudGraphics.Length; i++)
-        {
-            if (hudGraphics[i] == null)
-                continue;
-
-            if (hudGraphics[i].gameObject == gameObject)
-                continue;
-
-            hudGraphics[i].enabled = hasPlayerRefs;
-        }
-    }
-
     private void ApplySlot(ConsumableSlotUI ui, int slotIndex)
     {
         if (ui == null)
@@ -202,8 +160,9 @@ public class PlayerConsumableHUD2D : MonoBehaviour
         ConsumableDefinition consumable =
             consumableInventory != null ? consumableInventory.GetConsumableInSlot(slotIndex) : null;
 
+        bool hasInventory = consumableInventory != null;
         bool hasItem = consumable != null;
-        SetSlotVisible(ui, keepSlotVisibleWhenEmpty || hasItem);
+        SetSlotVisible(ui, hasInventory && (keepSlotVisibleWhenEmpty || hasItem));
 
         if (ui.icon != null)
         {

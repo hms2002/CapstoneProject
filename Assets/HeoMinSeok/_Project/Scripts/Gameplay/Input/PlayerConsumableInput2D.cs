@@ -4,7 +4,7 @@ using UnityGAS;
 /// <summary>
 /// 책임 :
 /// - 플레이어의 1회용 아이템 슬롯 입력(1~4)을 처리하고 인벤토리 사용 호출로 변환한다.
-/// - UI 잠금/스킬 잠금 상태에서는 consumable 사용 입력을 무시한다.
+/// - UI/대화/연출/스킬 잠금 상태에서는 consumable 사용 입력을 무시한다.
 /// </summary>
 public class PlayerConsumableInput2D : MonoBehaviour
 {
@@ -14,6 +14,7 @@ public class PlayerConsumableInput2D : MonoBehaviour
     [SerializeField] private GameplayTag skillBlockedTag;
 
     private const string SkillBlockedTagResourcePath = "Tags/State.Skill.Blocked";
+    private PlayerInteractor2D playerInteractor;
 
     public static PlayerConsumableInput2D GetOrAdd(Transform owner)
     {
@@ -32,6 +33,8 @@ public class PlayerConsumableInput2D : MonoBehaviour
             tagSystem = GetComponent<TagSystem>();
         if (skillBlockedTag == null)
             skillBlockedTag = Resources.Load<GameplayTag>(SkillBlockedTagResourcePath);
+        if (playerInteractor == null)
+            playerInteractor = GetComponent<PlayerInteractor2D>();
     }
 
     private void Update()
@@ -56,8 +59,35 @@ public class PlayerConsumableInput2D : MonoBehaviour
 
     private bool IsUseBlocked()
     {
+        if (playerInteractor == null)
+            playerInteractor = GetComponent<PlayerInteractor2D>();
+
+        if (playerInteractor != null && playerInteractor.CurrentState != InteractState.Idle)
+            return true;
+
+        if (IsGameplayInputBlockedByUiOrFlow())
+            return true;
+
         return tagSystem != null &&
                skillBlockedTag != null &&
                tagSystem.HasTag(skillBlockedTag);
+    }
+
+    private static bool IsGameplayInputBlockedByUiOrFlow()
+    {
+        if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+            return true;
+
+        if (UIManager.Instance != null && UIManager.Instance.HasBlockingUI())
+            return true;
+
+        if (SceneTransitionCoordinator.Instance != null &&
+            SceneTransitionCoordinator.Instance.IsTransitionActive)
+        {
+            return true;
+        }
+
+        return LoadingOverlayController.Instance != null &&
+               LoadingOverlayController.Instance.IsActiveLoadingPresentation;
     }
 }

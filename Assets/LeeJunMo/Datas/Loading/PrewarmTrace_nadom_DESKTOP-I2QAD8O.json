@@ -1,12 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "2e786c2001fe44e898c19bd5abe370ed",
-            "startedUtc": "2026-05-31T11:13:09.1413631Z",
-            "endedUtc": "2026-05-31T11:13:10.5996419Z",
-            "entries": []
-        },
-        {
             "sessionId": "f6d37a946a9f4aee817889c84984273d",
             "startedUtc": "2026-05-31T11:26:41.7996218Z",
             "endedUtc": "2026-05-31T11:26:44.0217388Z",
@@ -273,6 +267,12 @@
                     "lastSceneName": "LeeJunmo_Boss_DemonKing"
                 }
             ]
+        },
+        {
+            "sessionId": "8d80288cddb944dcb02eb1a1ee77c256",
+            "startedUtc": "2026-06-01T10:59:36.5392191Z",
+            "endedUtc": "2026-06-01T10:59:37.7827946Z",
+            "entries": []
         }
     ]
 }

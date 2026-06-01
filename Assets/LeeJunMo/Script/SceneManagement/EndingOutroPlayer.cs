@@ -51,7 +51,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
         ResolveRuntimeReferences();
 
         if (hideViewOnAwake)
-            view?.HideImmediate();
+            HideViewIfAlive();
     }
 
     private void OnDisable()
@@ -90,12 +90,12 @@ public sealed class EndingOutroPlayer : MonoBehaviour
         ReleaseCursorHidden();
 
         if (hideView)
-            view?.HideImmediate();
+            HideViewIfAlive();
     }
 
     public void HideViewImmediate()
     {
-        view?.HideImmediate();
+        HideViewIfAlive();
     }
 
     public bool ResolveRuntimeReferences()
@@ -392,7 +392,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
         skipKeyWasHeld = false;
         skipHoldWasPressedByKey = false;
         skipHoldWasPressedByMouse = false;
-        view?.SetSkipFill(0f);
+        SetSkipFillIfViewAlive(0f);
     }
 
     private bool IsSkipKeyOrAdvancePressed()
@@ -466,9 +466,26 @@ public sealed class EndingOutroPlayer : MonoBehaviour
         ReleaseCursorHidden();
 
         if (hideViewWhenCompleted && !keepViewVisibleOnCompleted)
-            view?.HideImmediate();
+            HideViewIfAlive();
 
         onCompleted?.Invoke();
+    }
+
+    private bool HasLiveView()
+    {
+        return view != null;
+    }
+
+    private void HideViewIfAlive()
+    {
+        if (HasLiveView())
+            view.HideImmediate();
+    }
+
+    private void SetSkipFillIfViewAlive(float normalized)
+    {
+        if (HasLiveView())
+            view.SetSkipFill(normalized);
     }
 
     private enum EndingOutroInputCommand

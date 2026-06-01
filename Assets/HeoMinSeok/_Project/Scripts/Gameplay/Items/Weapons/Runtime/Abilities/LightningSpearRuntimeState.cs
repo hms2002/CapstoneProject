@@ -162,6 +162,12 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             return false;
         }
 
+        if (IsGameplayInputBlockedByUiOrFlow())
+        {
+            ClearMarkRushInputBuffer();
+            return false;
+        }
+
         CacheOwnerReferences(null);
         if (!TryResolveActiveLoadout(out LightningSpearLoadout loadout) ||
             loadout.MarkRushOrSweep != ability)
@@ -199,6 +205,12 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
     {
         if (slot != WeaponAbilitySlot.Skill1 || ability == null)
             return false;
+
+        if (IsGameplayInputBlockedByUiOrFlow())
+        {
+            ClearMarkRushInputBuffer();
+            return false;
+        }
 
         CacheOwnerReferences(null);
 
@@ -393,6 +405,12 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
     {
         if (!hasBufferedMarkRushInput)
             return;
+
+        if (IsGameplayInputBlockedByUiOrFlow())
+        {
+            ClearMarkRushInputBuffer();
+            return;
+        }
 
         if (Time.time > markRushInputBufferExpiresAt)
         {
@@ -1971,6 +1989,24 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
         return ownerSystem.GetCooldownRemaining(loadout.MarkRushOrSweep) <= 0f &&
                ownerSystem.GetNextActivationRemaining(loadout.MarkRushOrSweep) <= 0f;
+    }
+
+    private static bool IsGameplayInputBlockedByUiOrFlow()
+    {
+        if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+            return true;
+
+        if (UIManager.Instance != null && UIManager.Instance.HasBlockingUI())
+            return true;
+
+        if (SceneTransitionCoordinator.Instance != null &&
+            SceneTransitionCoordinator.Instance.IsTransitionActive)
+        {
+            return true;
+        }
+
+        return LoadingOverlayController.Instance != null &&
+               LoadingOverlayController.Instance.IsActiveLoadingPresentation;
     }
 
     private Vector2 ResolveCursorWorld(AbilitySystem system)

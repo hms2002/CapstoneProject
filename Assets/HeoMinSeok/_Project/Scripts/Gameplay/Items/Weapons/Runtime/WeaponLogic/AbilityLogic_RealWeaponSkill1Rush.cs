@@ -116,27 +116,10 @@ namespace UnityGAS
                             }
                         }
 
-                    if (data.cancelOnAttackOrSkillInput)
-                    {
-                        if (input.WasPressedThisFrame(InputActionId.PrimaryAttack) ||
-                            input.WasPressedThisFrame(InputActionId.Skill1))
+                        if (CanReadRushCancelInput() &&
+                            TryHandleRushCancelInput(input, system, spec, initialTarget, state))
                         {
-                            state.ShouldApplyHandoff = true;
-                            PlayRushInputCancelSound(system, spec, initialTarget);
-                            system.CancelExecution(force: true);
                             yield break;
-                        }
-
-                        if (input.WasPressedThisFrame(InputActionId.Skill2))
-                        {
-                            if (!TryBeginDeferredSkill2Cancel(system, state))
-                            {
-                                state.ShouldApplyHandoff = true;
-                                PlayRushInputCancelSound(system, spec, initialTarget);
-                                system.CancelExecution(force: true);
-                                yield break;
-                            }
-                            }
                         }
 
                         yield return null;
@@ -179,27 +162,10 @@ namespace UnityGAS
                         }
                     }
 
-                    if (data.cancelOnAttackOrSkillInput)
+                    if (CanReadRushCancelInput() &&
+                        TryHandleRushCancelInput(input, system, spec, initialTarget, state))
                     {
-                        if (input.WasPressedThisFrame(InputActionId.PrimaryAttack) ||
-                            input.WasPressedThisFrame(InputActionId.Skill1))
-                        {
-                            state.ShouldApplyHandoff = true;
-                            PlayRushInputCancelSound(system, spec, initialTarget);
-                            system.CancelExecution(force: true);
-                            break;
-                        }
-
-                        if (input.WasPressedThisFrame(InputActionId.Skill2))
-                        {
-                            if (!TryBeginDeferredSkill2Cancel(system, state))
-                            {
-                                state.ShouldApplyHandoff = true;
-                                PlayRushInputCancelSound(system, spec, initialTarget);
-                                system.CancelExecution(force: true);
-                                break;
-                            }
-                        }
+                        break;
                     }
 
                     yield return null;
@@ -395,6 +361,62 @@ namespace UnityGAS
                 spec,
                 target,
                 sourceObjectOverride: data);
+        }
+
+        private bool CanReadRushCancelInput()
+        {
+            return data != null &&
+                   data.cancelOnAttackOrSkillInput &&
+                   !IsGameplayInputBlockedByUiOrFlow();
+        }
+
+        private bool TryHandleRushCancelInput(
+            InputBindingService input,
+            AbilitySystem system,
+            AbilitySpec spec,
+            GameObject initialTarget,
+            RushRuntimeState state)
+        {
+            if (input == null || system == null || state == null)
+                return false;
+
+            if (input.WasPressedThisFrame(InputActionId.PrimaryAttack) ||
+                input.WasPressedThisFrame(InputActionId.Skill1))
+            {
+                state.ShouldApplyHandoff = true;
+                PlayRushInputCancelSound(system, spec, initialTarget);
+                system.CancelExecution(force: true);
+                return true;
+            }
+
+            if (!input.WasPressedThisFrame(InputActionId.Skill2))
+                return false;
+
+            if (TryBeginDeferredSkill2Cancel(system, state))
+                return false;
+
+            state.ShouldApplyHandoff = true;
+            PlayRushInputCancelSound(system, spec, initialTarget);
+            system.CancelExecution(force: true);
+            return true;
+        }
+
+        private static bool IsGameplayInputBlockedByUiOrFlow()
+        {
+            if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+                return true;
+
+            if (UIManager.Instance != null && UIManager.Instance.HasBlockingUI())
+                return true;
+
+            if (SceneTransitionCoordinator.Instance != null &&
+                SceneTransitionCoordinator.Instance.IsTransitionActive)
+            {
+                return true;
+            }
+
+            return LoadingOverlayController.Instance != null &&
+                   LoadingOverlayController.Instance.IsActiveLoadingPresentation;
         }
 
         /// <summary>

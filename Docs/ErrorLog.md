@@ -25,6 +25,34 @@ Prevention:
 
 ## Active Entries
 
+## 2026-06-01 - Unity Null-Conditional Access Hit Destroyed Presentation Objects
+
+Context:
+Editor logs showed `MissingReferenceException` from `EndingOutroView` while stopping the ending outro during disable/scene transition cleanup. A follow-up scan found the same cleanup pattern on the title intro view and GameOver inventory inspection path.
+
+Cause:
+Presentation cleanup used C# null-conditional calls such as `view?.SetSkipFill(...)`, `outroPlayer?.HideViewImmediate()`, and `inventoryScreen?.ReleaseInspectionOnlyMode(...)`. Unity destroyed objects can still have a non-null C# reference, so `?.` can call into a destroyed `UnityEngine.Object` instead of using Unity's overloaded null comparison.
+
+Fix:
+Outro and title-intro cleanup now use explicit Unity null checks before hiding the view or resetting skip fill. The DemonKing Victory GameOver handoff checks the `EndingOutroPlayer` before hiding its view. The GameOver inventory exception checks the `InventoryScreen` before applying or releasing inspection-only mode.
+
+Prevention:
+Do not use `?.` for cleanup calls on `UnityEngine.Object` references that may be destroyed during scene unload, disable, or global UI replacement. Use `if (obj != null)` before calling methods so Unity's destroyed-object null semantics are respected.
+
+## 2026-06-01 - Consumable And Weapon Input Relied On One Block Tag
+
+Context:
+Potions could be used during dialogue or authored presentation flows. Lightning Spear `Skill1` and an active real-weapon Rush also had paths that could read gameplay input outside the normal combat input gate.
+
+Cause:
+`PlayerConsumableInput2D` only checked `State.Skill.Blocked`, and `PlayerCombatInput2D` still forwarded blocked `Skill1` input to the current weapon runtime. If dialogue or presentation flow blocked input through `InteractState`, UI blocking, or transition/loading state without a reliable skill-block tag, consumable and weapon-specific runtime input could leak.
+
+Fix:
+Consumable, combat, Lightning Spear MarkRush, and real-weapon Rush direct-input paths now check the gameplay input suppression sources directly: non-idle player interaction state where relevant, blocking UI, active dialogue, scene transition, and loading presentation.
+
+Prevention:
+Gameplay input entry points should not rely on a single gameplay tag when the input contract also depends on UI, dialogue, interaction, transition, or loading flow state. Keep tag checks as combat-state gates, but add direct flow/UI gates before consuming items or forwarding weapon runtime input.
+
 ## 2026-06-01 - Pitfall Damage Fired Mob Death Results Before Pitfall Classification
 
 Context:
