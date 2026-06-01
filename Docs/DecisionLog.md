@@ -7,6 +7,18 @@ last_reviewed: 2026-06-01
 
 # Decision Log
 
+## 2026-06-01 - One-Shot SFX Duplicate Suppression Is Source-Scoped
+
+Decision:
+Rapid duplicate one-shot sound suppression is scoped to the same sound key from the same concrete source object/causer/instigator/target. BGM, loops, and the same key from different source objects are not suppressed.
+
+Reason:
+The pre-demo overlap problem is caused by the same actor/event stacking identical one-shots, but shared enemy groups and simultaneous attacks still need to sound like multiple sources.
+
+Implications:
+- Audio call sites should pass a concrete runtime source in `SoundPlaybackContext` when they want duplicate suppression to apply per actor or event owner.
+- Shared ScriptableObject definitions should not be treated as the suppression source when a concrete causer, instigator, or target exists.
+
 ## 2026-05-31 - GameOver Inventory Uses Layer Lift And Inspection Mode
 
 Decision:

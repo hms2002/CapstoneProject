@@ -25,6 +25,20 @@ Prevention:
 
 ## Active Entries
 
+## 2026-06-01 - Debris Final Contact Puff Looked Like Growing Fade
+
+Context:
+DemonKing explosion used the `Debris High` particle path. After fragments broke apart, the final disappearance could look like transparent particles growing larger instead of debris pieces fading out.
+
+Cause:
+The debris bounce emitter emitted contact puffs on final ground contact. Those puffs intentionally grow while fading, which is correct for impact dust but wrong as the final disappearance representation for debris fragments.
+
+Fix:
+`TopDownDebrisBounceEmitter2D` now keeps final fragments in the render-particle buffer and fades their alpha in place before deactivating the piece. Bounce contacts can still emit normal non-final puffs.
+
+Prevention:
+Keep final debris disappearance separate from impact-dust presentation. If a debris piece should vanish, fade the fragment itself; reserve expanding puffs for readable contact impacts.
+
 ## 2026-06-01 - Unity Null-Conditional Access Hit Destroyed Presentation Objects
 
 Context:
@@ -157,13 +171,13 @@ Context:
 Changing resolution or screen mode while the custom mouse cursor was active could make the cursor appear to disappear.
 
 Cause:
-`MouseCursorService` hides the OS cursor when its software cursor sprite is active, then positions the UI cursor directly at `Input.mousePosition`. After a resolution or fullscreen-mode transition, Unity can report a pointer position outside the new screen bounds, and some cursor pivots/hotspots can place the entire cursor image outside the visible screen at an edge.
+`MouseCursorService` hides the OS cursor when its software cursor sprite is active, then positions the UI cursor directly at `Input.mousePosition`. After a resolution or fullscreen-mode transition, Unity can report a pointer position outside the new screen bounds, and some cursor pivots/hotspots can place the entire cursor image outside the visible screen at an edge. Hardware cursor mode can also keep using Unity/OS cached cursor texture state unless the cursor texture is explicitly reapplied after the display transition.
 
 Fix:
-The software cursor position is now clamped to a visible screen-space rectangle based on `Screen.width`, `Screen.height`, the cursor rect size, `lossyScale`, and pivot. Non-finite pointer values fall back to the screen center.
+The software cursor position is now clamped to a visible screen-space rectangle based on `Screen.width`, `Screen.height`, the cursor rect size, `lossyScale`, and pivot. Non-finite pointer values fall back to the screen center. `MouseCursorService` also tracks `Screen.width`, `Screen.height`, and `Screen.fullScreenMode` and forces hardware cursor texture reapply after those values change.
 
 Prevention:
-Any software cursor path that hides the OS cursor must keep its rendered image visible across display transitions and screen-edge positions. Do not assume raw `Input.mousePosition` is already valid for the current output size immediately after `Screen.SetResolution(...)`.
+Any cursor path that hides or replaces the OS cursor must keep its rendered image visible across display transitions and screen-edge positions. Do not assume raw `Input.mousePosition` is already valid for the current output size immediately after `Screen.SetResolution(...)`, and do not skip `Cursor.SetCursor(...)` reapply solely because the texture/hotspot cache still matches.
 
 ## 2026-05-31 - DemonKing Laser Warning Was Double-Clipped
 

@@ -1,29 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "f23dbc7b874d419e8780dfad6761d221",
-            "startedUtc": "2026-05-31T11:31:29.4029240Z",
-            "endedUtc": "2026-05-31T11:31:31.5511330Z",
-            "entries": []
-        },
-        {
-            "sessionId": "16693a4a46d34371ad064fb65ea00979",
-            "startedUtc": "2026-05-31T11:58:46.3215834Z",
-            "endedUtc": "2026-05-31T11:59:18.7571407Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 3,
-                    "coldSpawns": 3,
-                    "firstSeenSeconds": 30.73462677001953,
-                    "lastSeenSeconds": 32.41828918457031,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
             "sessionId": "eeb7f8202bdd41fb9037ba99ebb79f1f",
             "startedUtc": "2026-05-31T12:47:46.4379004Z",
             "endedUtc": "2026-05-31T12:49:21.6316951Z",
@@ -425,6 +402,40 @@
             "startedUtc": "2026-06-01T12:22:11.8725596Z",
             "endedUtc": "2026-06-01T12:22:16.2921692Z",
             "entries": []
+        },
+        {
+            "sessionId": "3d97b0a497d846f0bf9b9201db0398c1",
+            "startedUtc": "2026-06-01T13:47:56.1519033Z",
+            "endedUtc": "2026-06-01T13:49:39.9108297Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 5,
+                    "coldSpawns": 5,
+                    "firstSeenSeconds": 97.46659851074219,
+                    "lastSeenSeconds": 103.16197967529297,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ProtoTypeHub"
+                }
+            ]
+        },
+        {
+            "sessionId": "e935de4f850f4e2aab98d5f71c7282d8",
+            "startedUtc": "2026-06-01T13:50:29.4782225Z",
+            "endedUtc": "2026-06-01T13:52:35.7902218Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 477,
+                    "coldSpawns": 83,
+                    "firstSeenSeconds": 54.365081787109378,
+                    "lastSeenSeconds": 125.80494689941406,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
         }
     ]
 }

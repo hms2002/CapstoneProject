@@ -17,11 +17,11 @@ MonoBehaviour:
   description: 
   icon: {fileID: 0}
   price: 0
-  effects: []
-  unlockedNodeIDs: fae09d02e4bfc335
+  effects:
+  - {fileID: 11400000, guid: c36a0834b3b7432d9a19685020c6219d, type: 2}
+  unlockedNodeIDs: e4bfc335
   requiredParentIDs: 09c60ca7
   nextNodes:
-  - {fileID: 11400000, guid: bb982f642fb28c54891588be3c04339b, type: 2}
   - {fileID: 11400000, guid: 6cb7d8cb1e575f646af0f880b06e502e, type: 2}
   requiredParents:
   - {fileID: 11400000, guid: 93f3aef01a8be844499543c43fca86f6, type: 2}

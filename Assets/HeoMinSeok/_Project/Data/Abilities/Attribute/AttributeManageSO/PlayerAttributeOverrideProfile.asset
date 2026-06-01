@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entries:
   - attribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-    baseValue: 5
+    baseValue: 3
   - attribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-    baseValue: 5
+    baseValue: 3
   - attribute: {fileID: 11400000, guid: 5e0412bd8f40af44c9249edbe58db140, type: 2}
     baseValue: 30
   - attribute: {fileID: 11400000, guid: 434cc32abf8345d19696a284b8f3ddfd, type: 2}

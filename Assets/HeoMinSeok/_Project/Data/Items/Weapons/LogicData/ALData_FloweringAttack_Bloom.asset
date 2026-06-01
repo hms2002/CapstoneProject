@@ -44,7 +44,19 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
-  bloomSlashSoundsByHitboxVariant: []
+  bloomSlashSoundsByHitboxVariant:
+  - key: sound_weapon_flowring_slash_1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: sound_weapon_flowring_slash_2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: sound_weapon_flowring_slash_3
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   damageConfig:
     includeStaggerBuildUp: 1
     includeElementBuildUp: 1

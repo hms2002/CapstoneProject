@@ -22,10 +22,46 @@ namespace CapstoneAudio
             public float BaseVolume;
         }
 
+        private readonly struct SameSourceOneShotKey : IEquatable<SameSourceOneShotKey>
+        {
+            public SameSourceOneShotKey(string soundKey, int sourceId)
+            {
+                SoundKey = soundKey;
+                SourceId = sourceId;
+            }
+
+            public string SoundKey { get; }
+            public int SourceId { get; }
+
+            public bool Equals(SameSourceOneShotKey other)
+            {
+                return SourceId == other.SourceId &&
+                       string.Equals(SoundKey, other.SoundKey, StringComparison.OrdinalIgnoreCase);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is SameSourceOneShotKey other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    int hash = 17;
+                    hash = (hash * 31) + SourceId;
+                    hash = (hash * 31) + StringComparer.OrdinalIgnoreCase.GetHashCode(SoundKey ?? string.Empty);
+                    return hash;
+                }
+            }
+        }
+
         public const string DefaultCatalogResourcesPath = "Audio/DefaultAudioCatalog";
         private const string MasterVolumePrefKey = "settings.audio.master";
         private const string MusicVolumePrefKey = "settings.audio.music";
         private const string SfxVolumePrefKey = "settings.audio.sfx";
+        private const float SameSourceOneShotSuppressSeconds = 0.05f;
+        private const int SameSourceOneShotPruneThreshold = 256;
 
         public static SoundManager Instance { get; private set; }
 
@@ -51,6 +87,8 @@ namespace CapstoneAudio
         private readonly Dictionary<AudioSource, RuntimeSoundState> runtimeSoundStates = new();
         private readonly Dictionary<string, float> nextPlayableTimes =
             new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<SameSourceOneShotKey, float> nextSameSourceOneShotTimes = new();
+        private readonly List<SameSourceOneShotKey> expiredSameSourceOneShotKeys = new();
         private readonly HashSet<string> missingKeyWarnings =
             new(StringComparer.OrdinalIgnoreCase);
 
@@ -121,6 +159,9 @@ namespace CapstoneAudio
                 PlayMusicInternal(entry, soundRef);
                 return AudioHandle.Invalid;
             }
+
+            if (!entry.loop && IsSameSourceOneShotSuppressed(entry, context))
+                return AudioHandle.Invalid;
 
             if (IsOnCooldown(soundRef.key, entry.cooldown))
                 return AudioHandle.Invalid;
@@ -722,6 +763,59 @@ namespace CapstoneAudio
 
             nextPlayableTimes[key] = now + cooldown;
             return false;
+        }
+
+        private bool IsSameSourceOneShotSuppressed(AudioCatalogEntry entry, in SoundPlaybackContext context)
+        {
+            if (entry == null || string.IsNullOrWhiteSpace(entry.key) || SameSourceOneShotSuppressSeconds <= 0f)
+                return false;
+
+            int sourceId = ResolveSameSourceSuppressionId(context);
+            if (sourceId == 0)
+                return false;
+
+            PruneSameSourceOneShotTimesIfNeeded();
+
+            var key = new SameSourceOneShotKey(entry.key, sourceId);
+            float now = Time.unscaledTime;
+            if (nextSameSourceOneShotTimes.TryGetValue(key, out float nextPlayableTime) && now < nextPlayableTime)
+                return true;
+
+            nextSameSourceOneShotTimes[key] = now + SameSourceOneShotSuppressSeconds;
+            return false;
+        }
+
+        private void PruneSameSourceOneShotTimesIfNeeded()
+        {
+            if (nextSameSourceOneShotTimes.Count < SameSourceOneShotPruneThreshold)
+                return;
+
+            float now = Time.unscaledTime;
+            expiredSameSourceOneShotKeys.Clear();
+            foreach (KeyValuePair<SameSourceOneShotKey, float> pair in nextSameSourceOneShotTimes)
+            {
+                if (pair.Value <= now)
+                    expiredSameSourceOneShotKeys.Add(pair.Key);
+            }
+
+            for (int i = 0; i < expiredSameSourceOneShotKeys.Count; i++)
+                nextSameSourceOneShotTimes.Remove(expiredSameSourceOneShotKeys[i]);
+
+            expiredSameSourceOneShotKeys.Clear();
+        }
+
+        private static int ResolveSameSourceSuppressionId(in SoundPlaybackContext context)
+        {
+            if (context.Causer != null)
+                return context.Causer.GetInstanceID();
+
+            if (context.Instigator != null)
+                return context.Instigator.GetInstanceID();
+
+            if (context.Target != null)
+                return context.Target.GetInstanceID();
+
+            return context.SourceObject != null ? context.SourceObject.GetInstanceID() : 0;
         }
 
         private void WarnMissingKey(string key)

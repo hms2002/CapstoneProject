@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f396c0763fd4efdb5b926cd32563250, type: 3}
+  m_Name: MaxHealthPlusOneEffect_B
+  m_EditorClassIdentifier: 
+  rewardText: "\uCD5C\uB300 \uCCB4\uB825 +1"
+  rewardIcon: {fileID: 21300000, guid: 742335e24e5afea4e9516fd89252b06c, type: 3}
+  attribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  modifierType: 0
+  value: 1
+  useModifierWhenAllowed: 1
+  purchaseHealAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+  healByPositiveBonusAmount: 1
+  purchaseHealAmount: 0

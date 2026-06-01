@@ -75,8 +75,8 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   counterImpactSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_swordgroggycounter
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   counterImpactCameraShake:

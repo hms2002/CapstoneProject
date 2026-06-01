@@ -135,6 +135,11 @@ public sealed class MouseCursorService : MonoBehaviour
     private Vector2 appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
     private MouseCursorDomain currentDomain = MouseCursorDomain.Combat;
     private MouseCursorVariant currentVariant = MouseCursorVariant.Default;
+    private int lastScreenWidth = -1;
+    private int lastScreenHeight = -1;
+    private FullScreenMode lastFullScreenMode;
+    private bool hasCapturedDisplayState;
+    private bool forceCursorTextureReapply;
 
     public MouseCursorDomain CurrentDomain => currentDomain;
     public MouseCursorVariant CurrentVariant => currentVariant;
@@ -195,6 +200,7 @@ public sealed class MouseCursorService : MonoBehaviour
     {
         EnsureThemeLoaded();
         PruneDeadOwners();
+        RefreshDisplayState();
         ApplyResolvedCursor();
         UpdateCursorPosition();
     }
@@ -612,12 +618,13 @@ public sealed class MouseCursorService : MonoBehaviour
         if (!TryResolveCursorTexture(definition, out Texture2D texture, out Vector2 hotspot))
             return false;
 
-        if (appliedCursorTexture == texture && appliedCursorHotspot == hotspot)
+        if (!forceCursorTextureReapply && appliedCursorTexture == texture && appliedCursorHotspot == hotspot)
             return true;
 
         Cursor.SetCursor(texture, hotspot, CursorMode.Auto);
         appliedCursorTexture = texture;
         appliedCursorHotspot = hotspot;
+        forceCursorTextureReapply = false;
         return true;
     }
 
@@ -716,8 +723,37 @@ public sealed class MouseCursorService : MonoBehaviour
         Cursor.visible = ShouldKeepSystemCursorVisibleWithSoftwareFallback() || !hideSystemCursorWhileSpriteActive;
         appliedCursorTexture = null;
         appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
+        forceCursorTextureReapply = false;
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         return true;
+    }
+
+    private void RefreshDisplayState()
+    {
+        int screenWidth = Screen.width;
+        int screenHeight = Screen.height;
+        FullScreenMode fullScreenMode = Screen.fullScreenMode;
+
+        if (!hasCapturedDisplayState)
+        {
+            lastScreenWidth = screenWidth;
+            lastScreenHeight = screenHeight;
+            lastFullScreenMode = fullScreenMode;
+            hasCapturedDisplayState = true;
+            return;
+        }
+
+        if (lastScreenWidth == screenWidth &&
+            lastScreenHeight == screenHeight &&
+            lastFullScreenMode == fullScreenMode)
+        {
+            return;
+        }
+
+        lastScreenWidth = screenWidth;
+        lastScreenHeight = screenHeight;
+        lastFullScreenMode = fullScreenMode;
+        forceCursorTextureReapply = true;
     }
 
     private bool ShouldKeepSystemCursorVisibleWithSoftwareFallback()
@@ -817,6 +853,7 @@ public sealed class MouseCursorService : MonoBehaviour
 
         appliedCursorTexture = null;
         appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
+        forceCursorTextureReapply = false;
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         Cursor.visible = true;
     }
@@ -828,6 +865,7 @@ public sealed class MouseCursorService : MonoBehaviour
 
         appliedCursorTexture = null;
         appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
+        forceCursorTextureReapply = false;
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
     }
 
