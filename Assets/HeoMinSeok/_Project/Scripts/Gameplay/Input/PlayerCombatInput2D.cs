@@ -4,7 +4,7 @@ using UnityGAS;
 /// <summary>
 /// 책임 :
 /// - 플레이어의 공격, 스킬, 대시, 무기 스왑 입력을 AbilitySystem과 WeaponInventory에 전달한다.
-/// - block tag 상태를 확인해 UI나 특수 상태에서 전투 조작이 들어가지 않도록 차단한다.
+/// - UI/대화/연출 흐름과 block tag 상태를 확인해 전투 조작이 들어가지 않도록 차단한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventListener
@@ -82,8 +82,17 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
         InputBindingService input = InputBindingService.EnsureInstance();
         SyncAttackHoldWithRealInput(input);
 
-        if (player != null && player.CurrentState != InteractState.Idle)
+        if (IsGameplayInputBlockedByUiOrFlow())
+        {
+            ReleaseAttackHoldIfNeeded();
             return;
+        }
+
+        if (player != null && player.CurrentState != InteractState.Idle)
+        {
+            ReleaseAttackHoldIfNeeded();
+            return;
+        }
 
         if (IsCombatBlocked())
         {
@@ -170,6 +179,24 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
         bool attackBlocked = attackBlockedTag != null && tagSystem.HasTag(attackBlockedTag);
         bool skillBlocked = skillBlockedTag != null && tagSystem.HasTag(skillBlockedTag);
         return attackBlocked || skillBlocked;
+    }
+
+    private static bool IsGameplayInputBlockedByUiOrFlow()
+    {
+        if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+            return true;
+
+        if (UIManager.Instance != null && UIManager.Instance.HasBlockingUI())
+            return true;
+
+        if (SceneTransitionCoordinator.Instance != null &&
+            SceneTransitionCoordinator.Instance.IsTransitionActive)
+        {
+            return true;
+        }
+
+        return LoadingOverlayController.Instance != null &&
+               LoadingOverlayController.Instance.IsActiveLoadingPresentation;
     }
 
     /// <summary>

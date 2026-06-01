@@ -1,29 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "d4fcb822530344ea93a1f8c1084179ce",
-            "startedUtc": "2026-05-31T11:10:21.2573791Z",
-            "endedUtc": "2026-05-31T11:12:28.0439056Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 5,
-                    "coldSpawns": 5,
-                    "firstSeenSeconds": 123.85417938232422,
-                    "lastSeenSeconds": 126.7540512084961,
-                    "firstSceneName": "ProtoTypeHub",
-                    "lastSceneName": "ProtoTypeHub"
-                }
-            ]
-        },
-        {
-            "sessionId": "2e786c2001fe44e898c19bd5abe370ed",
-            "startedUtc": "2026-05-31T11:13:09.1413631Z",
-            "endedUtc": "2026-05-31T11:13:10.5996419Z",
-            "entries": []
-        },
-        {
             "sessionId": "f6d37a946a9f4aee817889c84984273d",
             "startedUtc": "2026-05-31T11:26:41.7996218Z",
             "endedUtc": "2026-05-31T11:26:44.0217388Z",
@@ -273,6 +250,29 @@
                     "lastSceneName": "LeeJunmo_Boss_DemonKing"
                 }
             ]
+        },
+        {
+            "sessionId": "ec8957e9069642158442620bac12bf46",
+            "startedUtc": "2026-05-31T23:55:48.6109297Z",
+            "endedUtc": "2026-05-31T23:57:07.2384190Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 183,
+                    "coldSpawns": 124,
+                    "firstSeenSeconds": 37.60893630981445,
+                    "lastSeenSeconds": 77.30337524414063,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
+        },
+        {
+            "sessionId": "8d80288cddb944dcb02eb1a1ee77c256",
+            "startedUtc": "2026-06-01T10:59:36.5392191Z",
+            "endedUtc": "2026-06-01T10:59:37.7827946Z",
+            "entries": []
         }
     ]
 }

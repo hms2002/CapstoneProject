@@ -157,7 +157,7 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
         yield return new WaitUntil(() => completed || outroPlayer == null || !outroPlayer.IsPlaying);
 
         if (completionMode == TerminalCompletionMode.VictoryGameOver)
-            outroPlayer?.HideViewImmediate();
+            HideOutroViewIfAlive();
     }
 
     private bool CompleteTerminalEnding()
@@ -294,6 +294,12 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
         }
 
         return outroPlayer != null && outroPlayer.CanPlay ? outroPlayer : null;
+    }
+
+    private void HideOutroViewIfAlive()
+    {
+        if (outroPlayer != null)
+            outroPlayer.HideViewImmediate();
     }
 
     private EndingOutroPlayer FindSingleSceneOutroPlayer()

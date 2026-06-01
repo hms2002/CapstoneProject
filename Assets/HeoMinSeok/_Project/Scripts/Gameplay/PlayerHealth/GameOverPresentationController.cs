@@ -634,12 +634,14 @@ public sealed class GameOverPresentationController : MonoBehaviour
             return false;
 
         InventoryScreen inventoryScreen = inventoryUi as InventoryScreen;
-        inventoryScreen?.AcquireInspectionOnlyMode(this);
+        if (inventoryScreen != null)
+            inventoryScreen.AcquireInspectionOnlyMode(this);
 
         bool opened = inputBlocker.TryPushOwnedUI(inventoryUi);
         if (!opened)
         {
-            inventoryScreen?.ReleaseInspectionOnlyMode(this);
+            if (inventoryScreen != null)
+                inventoryScreen.ReleaseInspectionOnlyMode(this);
             return false;
         }
 

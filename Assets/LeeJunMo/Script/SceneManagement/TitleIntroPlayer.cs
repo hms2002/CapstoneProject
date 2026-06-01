@@ -46,7 +46,7 @@ public sealed class TitleIntroPlayer : MonoBehaviour
     private void Awake()
     {
         if (hideViewOnAwake)
-            view?.HideImmediate();
+            HideViewIfAlive();
     }
 
     private void OnDisable()
@@ -59,7 +59,7 @@ public sealed class TitleIntroPlayer : MonoBehaviour
 
         ResetInputState();
         ReleaseCursorHidden();
-        view?.HideImmediate();
+        HideViewIfAlive();
     }
 
     public bool TryPlay(Action onCompleted, bool keepViewVisibleOnCompleted = false)
@@ -81,7 +81,7 @@ public sealed class TitleIntroPlayer : MonoBehaviour
 
     public void HideViewImmediate()
     {
-        view?.HideImmediate();
+        HideViewIfAlive();
     }
 
     private IEnumerator PlayRoutine(Action onCompleted, bool keepViewVisibleOnCompleted)
@@ -359,7 +359,7 @@ public sealed class TitleIntroPlayer : MonoBehaviour
     {
         skipHoldElapsed = 0f;
         skipKeyWasHeld = false;
-        view?.SetSkipFill(0f);
+        SetSkipFillIfViewAlive(0f);
     }
 
     private bool WasAdvanceInputConsumedThisFrame()
@@ -408,9 +408,26 @@ public sealed class TitleIntroPlayer : MonoBehaviour
         ReleaseCursorHidden();
 
         if (hideViewWhenCompleted && !keepViewVisibleOnCompleted)
-            view?.HideImmediate();
+            HideViewIfAlive();
 
         onCompleted?.Invoke();
+    }
+
+    private bool HasLiveView()
+    {
+        return view != null;
+    }
+
+    private void HideViewIfAlive()
+    {
+        if (HasLiveView())
+            view.HideImmediate();
+    }
+
+    private void SetSkipFillIfViewAlive(float normalized)
+    {
+        if (HasLiveView())
+            view.SetSkipFill(normalized);
     }
 
     private enum TitleIntroInputCommand
