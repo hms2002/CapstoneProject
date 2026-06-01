@@ -50,6 +50,8 @@
 <size=120%>위대한 슬라임들의 여왕, 멜타다!</size>
 
 + [정말 훌륭한 수로군.]
+    # add_aff: 1
+
     # face: 3001: Veryjoy
     # anim: normal
     <size=120%>[wave]오호호호호![/wave]</size>

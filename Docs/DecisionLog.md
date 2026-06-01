@@ -2010,3 +2010,16 @@ Implications:
 - The Workbench `Animation / VFX Mapping` panel should expose the runtime-owned fields rather than only showing hardcoded preview descriptors.
 - Existing AL assets and `EgoSwordActor` instances require Unity import/Inspector review after new serialized fields are added.
 - The Workbench remains Editor-only preview; it does not execute live pattern coroutines or replace Play Mode validation.
+
+## 2026-06-02 - Split Monsters Share One KillLock Tracking Unit
+
+Decision:
+Room and chest KillLocks count a Slime split chain as one original monster unit. Split children join the parent's tracking unit, and the unit is removed only when no registered member in that chain is alive.
+
+Reason:
+Counting every split child as a new lock target makes doors and chests evaluate split monsters inconsistently. The intended policy is that the original monster contributes one lock count, but that count remains alive until all descendants produced by the split are cleared.
+
+Implications:
+- `MonsterSpawnRoomGroup`, `RoomDoorMonsterKillLock`, and `ChestMonsterKillLock` should register and count `MonsterLockTrackingUnit` instances, not raw GameObjects.
+- Navigation arrows should point at the live representative of a tracking unit, so arrows move from a dead original to a living split child.
+- General direct summons remain outside KillLock counts unless they enter through spawn registration or explicit split inheritance.

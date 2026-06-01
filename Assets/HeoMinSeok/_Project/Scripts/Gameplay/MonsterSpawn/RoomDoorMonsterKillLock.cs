@@ -25,7 +25,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool logDebug;
 
-    private readonly List<GameObject> trackedMonsters = new();
+    private readonly List<MonsterLockTrackingUnit> trackedMonsterUnits = new();
     private bool roomEntered;
     private bool doorClosedByLock;
     private bool missingDoorWarningLogged;
@@ -69,10 +69,10 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
     private void Update()
     {
-        int previousCount = trackedMonsters.Count;
+        int previousCount = trackedMonsterUnits.Count;
         CompactDestroyedMonsterEntries();
 
-        if (previousCount != trackedMonsters.Count)
+        if (previousCount != trackedMonsterUnits.Count)
         {
             RefreshDoorState();
             return;
@@ -87,12 +87,20 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
     public void RegisterMonster(GameObject monster)
     {
-        if (monster == null || trackedMonsters.Contains(monster))
+        if (monster == null)
             return;
 
-        trackedMonsters.Add(monster);
+        RegisterMonsterUnit(Mob.ResolveOrCreateLockTrackingUnit(monster));
+    }
+
+    internal void RegisterMonsterUnit(MonsterLockTrackingUnit unit)
+    {
+        if (unit == null || trackedMonsterUnits.Contains(unit))
+            return;
+
+        trackedMonsterUnits.Add(unit);
         ResetAllClearedDelay();
-        LogDebug($"Registered monster '{monster.name}'. remaining={RemainingMonsterCount}");
+        LogDebug($"Registered monster unit. remaining={RemainingMonsterCount}");
         RefreshDoorState();
     }
 
@@ -166,7 +174,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
     [ContextMenu("Clear Registered Monsters")]
     public void ClearRegisteredMonsters()
     {
-        trackedMonsters.Clear();
+        trackedMonsterUnits.Clear();
         RefreshDoorState();
     }
 
@@ -233,9 +241,10 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
     private int CountRemainingMonsters()
     {
         int count = targetRoomGroup != null ? targetRoomGroup.PendingRoomEntrySpawnCount : 0;
-        for (int i = 0; i < trackedMonsters.Count; i++)
+        for (int i = 0; i < trackedMonsterUnits.Count; i++)
         {
-            if (trackedMonsters[i] != null)
+            MonsterLockTrackingUnit unit = trackedMonsterUnits[i];
+            if (unit != null && unit.HasAliveMember())
                 count++;
         }
 
@@ -307,10 +316,10 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
         if (roomArea == null)
             return false;
 
-        for (int i = 0; i < trackedMonsters.Count; i++)
+        for (int i = 0; i < trackedMonsterUnits.Count; i++)
         {
-            GameObject monster = trackedMonsters[i];
-            if (monster == null)
+            MonsterLockTrackingUnit unit = trackedMonsterUnits[i];
+            if (unit == null || !unit.TryGetAliveRepresentative(out GameObject monster))
                 continue;
 
             if (IsSplitLandingInProgress(monster))
@@ -360,10 +369,11 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
     private void CompactDestroyedMonsterEntries()
     {
-        for (int i = trackedMonsters.Count - 1; i >= 0; i--)
+        for (int i = trackedMonsterUnits.Count - 1; i >= 0; i--)
         {
-            if (trackedMonsters[i] == null)
-                trackedMonsters.RemoveAt(i);
+            MonsterLockTrackingUnit unit = trackedMonsterUnits[i];
+            if (unit == null || !unit.HasAliveMember())
+                trackedMonsterUnits.RemoveAt(i);
         }
     }
 

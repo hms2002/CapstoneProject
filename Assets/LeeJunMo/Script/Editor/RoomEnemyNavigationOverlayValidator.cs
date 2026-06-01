@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -7,6 +8,7 @@ using UnityEngine.SceneManagement;
 public static class RoomEnemyNavigationOverlayValidator
 {
     private const string ArrowPrefabPath = "Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/KillLockMonsterNavigationArrow.prefab";
+    private const string RouteCatalogPath = "Assets/LeeJunMo/Datas/Scene/RunRouteCatalog.asset";
     private const string OverlayRootName = "RoomEnemyNavigationOverlay";
     private const int DefaultShowThreshold = 4;
     private const float DefaultViewportPadding = 0.08f;
@@ -62,6 +64,72 @@ public static class RoomEnemyNavigationOverlayValidator
         Undo.CollapseUndoOperations(undoGroup);
         Debug.Log($"[RoomEnemyNavigationOverlayValidator] Auto-wire complete. wiredScenes={wiredScenes}");
         ValidateOpenScenes();
+    }
+
+    [MenuItem("Tools/Validation/Validate Room Enemy Navigation Overlay In Route Catalog Corridor Scenes")]
+    public static void ValidateRouteCatalogCorridorScenes()
+    {
+        ProcessRouteCatalogCorridorScenes(autoWire: false);
+    }
+
+    [MenuItem("Tools/Validation/Auto Wire Room Enemy Navigation Overlay In Route Catalog Corridor Scenes")]
+    public static void AutoWireRouteCatalogCorridorScenes()
+    {
+        ProcessRouteCatalogCorridorScenes(autoWire: true);
+    }
+
+    private static void ProcessRouteCatalogCorridorScenes(bool autoWire)
+    {
+        GameObject arrowPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(ArrowPrefabPath);
+        if (arrowPrefab == null)
+        {
+            Debug.LogError($"[RoomEnemyNavigationOverlayValidator] Arrow prefab not found at '{ArrowPrefabPath}'.");
+            return;
+        }
+
+        List<string> scenePaths = CollectRouteCatalogCorridorScenePaths();
+        if (scenePaths.Count == 0)
+        {
+            Debug.LogWarning($"[RoomEnemyNavigationOverlayValidator] No route catalog corridor scenes were resolved from '{RouteCatalogPath}'.");
+            return;
+        }
+
+        int sceneCount = 0;
+        int issueCount = 0;
+        int wiredCount = 0;
+        for (int i = 0; i < scenePaths.Count; i++)
+        {
+            string scenePath = scenePaths[i];
+            Scene scene = FindLoadedSceneByPath(scenePath);
+            bool openedForValidation = !scene.IsValid() || !scene.isLoaded;
+
+            if (openedForValidation)
+                scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
+
+            try
+            {
+                sceneCount++;
+                if (autoWire && SceneNeedsOverlay(scene))
+                {
+                    RoomEnemyNavigationOverlay overlay = EnsureSingleOverlay(scene);
+                    WireOverlay(overlay, arrowPrefab);
+                    EditorSceneManager.MarkSceneDirty(scene);
+                    if (openedForValidation)
+                        EditorSceneManager.SaveScene(scene);
+                    wiredCount++;
+                }
+
+                issueCount += ValidateScene(scene, arrowPrefab);
+            }
+            finally
+            {
+                if (openedForValidation && scene.IsValid() && scene.isLoaded)
+                    EditorSceneManager.CloseScene(scene, removeScene: true);
+            }
+        }
+
+        string action = autoWire ? "Auto-wire" : "Validation";
+        Debug.Log($"[RoomEnemyNavigationOverlayValidator] Route catalog corridor {action} complete. scenes={sceneCount}, wired={wiredCount}, issues={issueCount}");
     }
 
     private static int ValidateScene(Scene scene, GameObject expectedArrowPrefab)
@@ -237,6 +305,82 @@ public static class RoomEnemyNavigationOverlayValidator
             if (scene.IsValid() && scene.isLoaded)
                 yield return scene;
         }
+    }
+
+    private static List<string> CollectRouteCatalogCorridorScenePaths()
+    {
+        List<string> scenePaths = new List<string>();
+        RunRouteCatalogSO catalog = AssetDatabase.LoadAssetAtPath<RunRouteCatalogSO>(RouteCatalogPath);
+        if (catalog == null)
+        {
+            Debug.LogError($"[RoomEnemyNavigationOverlayValidator] RunRouteCatalog asset not found at '{RouteCatalogPath}'.");
+            return scenePaths;
+        }
+
+        IReadOnlyList<CorridorBossRouteSetSO> normalRouteSets = catalog.NormalRouteSets;
+        if (normalRouteSets != null)
+        {
+            for (int i = 0; i < normalRouteSets.Count; i++)
+                AddCorridorScenePath(normalRouteSets[i], scenePaths);
+        }
+
+        AddCorridorScenePath(catalog.FinalRouteSet, scenePaths);
+        return scenePaths;
+    }
+
+    private static void AddCorridorScenePath(CorridorBossRouteSetSO routeSet, List<string> scenePaths)
+    {
+        if (routeSet == null || string.IsNullOrWhiteSpace(routeSet.CorridorSceneName))
+            return;
+
+        if (!TryResolveSceneAssetPath(routeSet.CorridorSceneName, out string scenePath))
+        {
+            Debug.LogError($"[RoomEnemyNavigationOverlayValidator] Corridor scene '{routeSet.CorridorSceneName}' could not be resolved.");
+            return;
+        }
+
+        if (!scenePaths.Contains(scenePath))
+            scenePaths.Add(scenePath);
+    }
+
+    private static bool TryResolveSceneAssetPath(string sceneName, out string scenePath)
+    {
+        scenePath = null;
+        if (string.IsNullOrWhiteSpace(sceneName))
+            return false;
+
+        string[] guids = AssetDatabase.FindAssets($"{sceneName} t:Scene");
+        for (int i = 0; i < guids.Length; i++)
+        {
+            string candidatePath = AssetDatabase.GUIDToAssetPath(guids[i]);
+            if (string.IsNullOrWhiteSpace(candidatePath))
+                continue;
+
+            string candidateName = Path.GetFileNameWithoutExtension(candidatePath);
+            if (!string.Equals(candidateName, sceneName, System.StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            scenePath = candidatePath;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static Scene FindLoadedSceneByPath(string scenePath)
+    {
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+            if (scene.IsValid() &&
+                scene.isLoaded &&
+                string.Equals(scene.path, scenePath, System.StringComparison.OrdinalIgnoreCase))
+            {
+                return scene;
+            }
+        }
+
+        return default;
     }
 
     private static List<T> FindSceneComponents<T>(Scene scene, bool includeInactive) where T : Component

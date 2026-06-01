@@ -9,28 +9,59 @@ internal readonly struct MonsterLootDropRequest
     public StageLootTable Table { get; }
     public GameObject Source { get; }
     public LootPoolContext WeaponExclusionContext { get; }
+    public bool SuppressFieldItem { get; }
 
     public MonsterLootDropRequest(Vector3 position, StageLootTable table)
-        : this(position, table, null, LootPoolContext.PlayerInventory)
+        : this(position, table, source: null, LootPoolContext.PlayerInventory, suppressFieldItem: false)
+    {
+    }
+
+    public MonsterLootDropRequest(Vector3 position, StageLootTable table, bool suppressFieldItem)
+        : this(position, table, source: null, LootPoolContext.PlayerInventory, suppressFieldItem)
     {
     }
 
     public MonsterLootDropRequest(Vector3 position, StageLootTable table, GameObject source)
-        : this(position, table, source, LootPoolContext.PlayerInventory)
+        : this(position, table, source, LootPoolContext.PlayerInventory, suppressFieldItem: false)
+    {
+    }
+
+    public MonsterLootDropRequest(Vector3 position, StageLootTable table, GameObject source, bool suppressFieldItem)
+        : this(position, table, source, LootPoolContext.PlayerInventory, suppressFieldItem)
     {
     }
 
     public MonsterLootDropRequest(Vector3 position, StageLootTable table, LootPoolContext weaponExclusionContext)
-        : this(position, table, null, weaponExclusionContext)
+        : this(position, table, source: null, weaponExclusionContext, suppressFieldItem: false)
+    {
+    }
+
+    public MonsterLootDropRequest(
+        Vector3 position,
+        StageLootTable table,
+        LootPoolContext weaponExclusionContext,
+        bool suppressFieldItem)
+        : this(position, table, source: null, weaponExclusionContext, suppressFieldItem)
     {
     }
 
     public MonsterLootDropRequest(Vector3 position, StageLootTable table, GameObject source, LootPoolContext weaponExclusionContext)
+        : this(position, table, source, weaponExclusionContext, suppressFieldItem: false)
+    {
+    }
+
+    public MonsterLootDropRequest(
+        Vector3 position,
+        StageLootTable table,
+        GameObject source,
+        LootPoolContext weaponExclusionContext,
+        bool suppressFieldItem)
     {
         Position = position;
         Table = table;
         Source = source;
         WeaponExclusionContext = weaponExclusionContext;
+        SuppressFieldItem = suppressFieldItem;
     }
 }
 
@@ -74,7 +105,8 @@ internal sealed class MonsterLootDropService
         if (request.Table == null || poolService == null || rollService == null || spawnService == null)
             return MonsterLootDropResult.Empty;
 
-        MonsterLootType lootType = rollService.RollMonsterLootType(request.Table);
+        bool suppressFieldItem = request.SuppressFieldItem || ShouldSuppressFieldHealPickup(request.Source);
+        MonsterLootType lootType = rollService.RollMonsterLootType(request.Table, suppressFieldItem);
         switch (lootType)
         {
             case MonsterLootType.None:
@@ -90,7 +122,7 @@ internal sealed class MonsterLootDropService
                 return SpawnConsumableDrop(request.Position, lootType);
 
             case MonsterLootType.FieldItem:
-                if (ShouldSuppressFieldHealPickup(request.Source))
+                if (suppressFieldItem)
                     return new MonsterLootDropResult(lootType, false);
 
                 spawnService.SpawnFieldHealPickup(request.Position);

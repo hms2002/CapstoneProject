@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -20,6 +21,7 @@ public class Mob : Enemy
     private MobAIContext aiContext;
     private ChestMonsterKillLock lockTrackingChestLock;
     private MonsterSpawnRoomGroup lockTrackingRoomGroup;
+    private MonsterLockTrackingUnit lockTrackingUnit;
     private IEnemyChaseIntent resolvedChaseIntent;
     private PitFallReaction2D pitFallReaction;
     private bool triedInitializeStateMachine;
@@ -30,6 +32,7 @@ public class Mob : Enemy
 
     protected EnemyChaseIntent2D ChaseIntent => chaseIntent;
     protected MonsterSpawnRoomGroup LockTrackingRoomGroup => lockTrackingRoomGroup;
+    protected virtual bool SuppressMonsterFieldItemLootDrop => false;
     public bool LogMobFsmDebug => logMobFsmDebug;
 
     protected override void Awake()
@@ -216,8 +219,21 @@ public class Mob : Enemy
 
     public void ApplyLockTrackingContext(ChestMonsterKillLock chestLock, MonsterSpawnRoomGroup roomGroup)
     {
+        ApplyLockTrackingContext(chestLock, roomGroup, null);
+    }
+
+    internal void ApplyLockTrackingContext(
+        ChestMonsterKillLock chestLock,
+        MonsterSpawnRoomGroup roomGroup,
+        MonsterLockTrackingUnit sharedUnit)
+    {
         lockTrackingChestLock = chestLock;
         lockTrackingRoomGroup = roomGroup;
+
+        if (sharedUnit != null)
+            AssignLockTrackingUnit(sharedUnit);
+        else if (chestLock != null || roomGroup != null)
+            GetOrCreateLockTrackingUnit();
     }
 
     public void SuppressMonsterLootDrop()
@@ -240,14 +256,11 @@ public class Mob : Enemy
         if (child == null)
             return;
 
-        if (lockTrackingChestLock != null)
-            lockTrackingChestLock.RegisterMonster(child);
-
-        if (lockTrackingRoomGroup != null)
-            lockTrackingRoomGroup.NotifyMonsterSpawned(child);
+        MonsterLockTrackingUnit unit = GetOrCreateLockTrackingUnit();
+        unit.AddMember(child);
 
         if (child.TryGetComponent(out Mob childMob))
-            childMob.ApplyLockTrackingContext(lockTrackingChestLock, lockTrackingRoomGroup);
+            childMob.ApplyLockTrackingContext(lockTrackingChestLock, lockTrackingRoomGroup, unit);
     }
 
     protected override void OnDeathStarted()
@@ -255,7 +268,34 @@ public class Mob : Enemy
         EnterDeathState();
 
         if (!suppressMonsterLootDrop && pitFallDeathResolutionDepth <= 0)
-            LootManager.Instance?.SpawnMonsterLoot(transform.position, gameObject);
+            LootManager.Instance?.SpawnMonsterLoot(transform.position, gameObject, SuppressMonsterFieldItemLootDrop);
+    }
+
+    internal MonsterLockTrackingUnit GetOrCreateLockTrackingUnit()
+    {
+        if (lockTrackingUnit == null)
+            AssignLockTrackingUnit(new MonsterLockTrackingUnit());
+
+        return lockTrackingUnit;
+    }
+
+    internal void AssignLockTrackingUnit(MonsterLockTrackingUnit unit)
+    {
+        if (unit == null)
+            return;
+
+        lockTrackingUnit = unit;
+        lockTrackingUnit.AddMember(gameObject);
+    }
+
+    internal static MonsterLockTrackingUnit ResolveOrCreateLockTrackingUnit(GameObject monster)
+    {
+        if (monster != null && monster.TryGetComponent(out Mob mob))
+            return mob.GetOrCreateLockTrackingUnit();
+
+        MonsterLockTrackingUnit unit = new MonsterLockTrackingUnit();
+        unit.AddMember(monster);
+        return unit;
     }
 
     private void OnDisable()
@@ -469,5 +509,65 @@ public class Mob : Enemy
     /// <summary>추가 공격 기즈모를 그립니다.</summary>
     protected virtual void DrawAttackGizmos()
     {
+    }
+}
+
+internal sealed class MonsterLockTrackingUnit
+{
+    private readonly List<GameObject> members = new();
+
+    public void AddMember(GameObject member)
+    {
+        if (member == null)
+            return;
+
+        CompactDestroyedMembers();
+        for (int i = 0; i < members.Count; i++)
+        {
+            if (members[i] == member)
+                return;
+        }
+
+        members.Add(member);
+    }
+
+    public bool TryGetAliveRepresentative(out GameObject representative)
+    {
+        CompactDestroyedMembers();
+        for (int i = 0; i < members.Count; i++)
+        {
+            GameObject member = members[i];
+            if (IsAliveMember(member))
+            {
+                representative = member;
+                return true;
+            }
+        }
+
+        representative = null;
+        return false;
+    }
+
+    public bool HasAliveMember()
+    {
+        return TryGetAliveRepresentative(out _);
+    }
+
+    private void CompactDestroyedMembers()
+    {
+        for (int i = members.Count - 1; i >= 0; i--)
+        {
+            if (members[i] == null)
+                members.RemoveAt(i);
+        }
+    }
+
+    private static bool IsAliveMember(GameObject member)
+    {
+        if (member == null)
+            return false;
+
+        Enemy enemy = member.GetComponent<Enemy>();
+        return enemy == null || !enemy.IsDead;
     }
 }

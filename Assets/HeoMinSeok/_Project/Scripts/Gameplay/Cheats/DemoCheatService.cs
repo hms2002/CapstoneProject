@@ -237,6 +237,44 @@ public sealed class DemoCheatService
         return DemoCheatResult.Succeeded("무적 치트를 활성화했습니다.");
     }
 
+    public bool TryAutoEnablePlayerInvulnerability(DemoCheatSettingsSO settings, out DemoCheatResult result)
+    {
+        result = default;
+        if (settings == null || !settings.AutoEnableInvulnerabilityAtLowHealth)
+            return false;
+
+        if (!TryResolvePlayer(out Transform player))
+            return false;
+
+        AttributeSet attributeSet = player.GetComponent<AttributeSet>();
+        if (attributeSet == null || settings.HealthAttribute == null)
+            return false;
+
+        float currentHealth = attributeSet.GetAttributeValue(settings.HealthAttribute);
+        if (currentHealth > settings.AutoInvulnerabilityHealthThreshold)
+            return false;
+
+        TagSystem tagSystem = player.GetComponent<TagSystem>();
+        GameplayTag invulnerableTag = ResolveInvulnerableTag(settings);
+        if (tagSystem == null || invulnerableTag == null)
+            return false;
+
+        bool alreadyAppliedToCurrentPlayer =
+            demoInvulnerabilityEnabled &&
+            hasAppliedDemoInvulnerabilityTag &&
+            demoInvulnerabilityTagSystem == tagSystem;
+
+        demoInvulnerabilityEnabled = true;
+        ApplyDemoInvulnerabilityTag(tagSystem, invulnerableTag);
+
+        if (alreadyAppliedToCurrentPlayer)
+            return false;
+
+        Log($"체력 {currentHealth:0.###}에서 무적 치트 자동 ON. threshold={settings.AutoInvulnerabilityHealthThreshold:0.###}, player={player.name}");
+        result = DemoCheatResult.Succeeded("체력 1 이하: 무적 치트를 자동 활성화했습니다.");
+        return true;
+    }
+
     public DemoCheatResult WarpPlayerToNearestPortal(DemoCheatSettingsSO settings)
     {
         if (!TryResolvePlayer(out Transform player))

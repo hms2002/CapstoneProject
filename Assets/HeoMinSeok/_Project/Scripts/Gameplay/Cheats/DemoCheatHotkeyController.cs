@@ -51,6 +51,8 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
             return;
         }
 
+        HandleAutoInvulnerability();
+
         if (isAwaitingBossSceneSelection)
         {
             HandleBossSceneSelectionInput();
@@ -90,6 +92,18 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
 
         if (WasPressed(settings.DecreaseAttackKey))
             ShowResult(service.DecreasePlayerAttack(settings));
+    }
+
+    private void HandleAutoInvulnerability()
+    {
+        if (service == null || settings == null)
+            return;
+
+        if (!service.TryAutoEnablePlayerInvulnerability(settings, out DemoCheatResult result))
+            return;
+
+        if (settings.ShowAutoInvulnerabilityNotification)
+            ShowResult(result);
     }
 
     private void HandleBossSceneSelectionInput()

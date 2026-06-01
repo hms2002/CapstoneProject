@@ -11,18 +11,18 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98f7de8021644458a6b83188c7495e60, type: 3}
   m_Name: DemoCheatSettings
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   enableDemoCheats: 1
-  cheatGuideKey: 282
-  warpToRunSpecialNpcKey: 287
-  addMagicStoneKey: 288
-  invulnerabilityToggleKey: 289
-  warpToPortalKey: 290
-  resetWeaponCooldownKey: 291
-  increaseAttackKey: 293
-  decreaseAttackKey: 292
-  mapZoomToggleKey: 285
-  warpToBossSceneKey: 286
+  cheatGuideKey: 256
+  warpToRunSpecialNpcKey: 262
+  addMagicStoneKey: 260
+  invulnerabilityToggleKey: 261
+  warpToPortalKey: 257
+  resetWeaponCooldownKey: 265
+  increaseAttackKey: 258
+  decreaseAttackKey: 259
+  mapZoomToggleKey: 270
+  warpToBossSceneKey: 269
   bossSceneNames:
   - HeoMinSeok_Boss_Shadow
   - HeoMinSeok_Boss_Dragon
@@ -32,6 +32,9 @@ MonoBehaviour:
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   attackAddAttribute: {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
   invulnerableTag: {fileID: 11400000, guid: 90cc853a47e809d4e8baa4fbcd354709, type: 2}
+  autoEnableInvulnerabilityAtLowHealth: 1
+  autoInvulnerabilityHealthThreshold: 1
+  showAutoInvulnerabilityNotification: 1
   attackIncreaseAmount: 100
   attackDecreaseAmount: 30
   magicStoneAddAmount: 100

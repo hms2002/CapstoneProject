@@ -41,6 +41,11 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     [SerializeField] private AttributeDefinition attackAddAttribute;
     [SerializeField] private GameplayTag invulnerableTag;
 
+    [Header("Automatic Safety")]
+    [SerializeField] private bool autoEnableInvulnerabilityAtLowHealth = true;
+    [SerializeField, Min(0f)] private float autoInvulnerabilityHealthThreshold = 1f;
+    [SerializeField] private bool showAutoInvulnerabilityNotification = true;
+
     [Header("Attack Cheat")]
     [SerializeField] private float attackIncreaseAmount = 100f;
     [SerializeField] private float attackDecreaseAmount = 30f;
@@ -74,6 +79,9 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     public AttributeDefinition MaxHealthAttribute => maxHealthAttribute;
     public AttributeDefinition AttackAddAttribute => attackAddAttribute;
     public GameplayTag InvulnerableTag => invulnerableTag;
+    public bool AutoEnableInvulnerabilityAtLowHealth => autoEnableInvulnerabilityAtLowHealth;
+    public float AutoInvulnerabilityHealthThreshold => Mathf.Max(0f, autoInvulnerabilityHealthThreshold);
+    public bool ShowAutoInvulnerabilityNotification => showAutoInvulnerabilityNotification;
     public float AttackIncreaseAmount => attackIncreaseAmount;
     public float AttackDecreaseAmount => attackDecreaseAmount;
     public int MagicStoneAddAmount => magicStoneAddAmount;
