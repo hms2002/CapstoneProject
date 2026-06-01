@@ -255,7 +255,7 @@ public class Mob : Enemy
         EnterDeathState();
 
         if (!suppressMonsterLootDrop && pitFallDeathResolutionDepth <= 0)
-            LootManager.Instance?.SpawnMonsterLoot(transform.position);
+            LootManager.Instance?.SpawnMonsterLoot(transform.position, gameObject);
     }
 
     private void OnDisable()

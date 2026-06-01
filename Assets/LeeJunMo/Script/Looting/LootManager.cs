@@ -182,12 +182,17 @@ public class LootManager : MonoBehaviour
 
     public void SpawnMonsterLoot(Vector3 position)
     {
+        SpawnMonsterLoot(position, null);
+    }
+
+    public void SpawnMonsterLoot(Vector3 position, GameObject source)
+    {
         StageLootTable table = GetCurrentTable();
         if (table == null)
             return;
 
         EnsureServices();
-        monsterLootDropService.Spawn(new MonsterLootDropRequest(position, table));
+        monsterLootDropService.Spawn(new MonsterLootDropRequest(position, table, source));
     }
 
     public void SpawnLootObject(Vector3 position, ScriptableObject itemData)

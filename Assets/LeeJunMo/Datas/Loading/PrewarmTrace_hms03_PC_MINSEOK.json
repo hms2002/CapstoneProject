@@ -1,41 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "9d4c74c9fc09458388a0229668941e8a",
-            "startedUtc": "2026-06-01T13:11:44.7799013Z",
-            "endedUtc": "2026-06-01T13:12:11.7919778Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 26.995073318481447,
-                    "lastSeenSeconds": 26.995229721069337,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
-            "sessionId": "8858aee9837649e580ed93e56de18a01",
-            "startedUtc": "2026-06-01T13:13:11.4645991Z",
-            "endedUtc": "2026-06-01T13:13:12.5567292Z",
-            "entries": []
-        },
-        {
-            "sessionId": "42d2ec4a3f3e4cfdb12371d9d99f976a",
-            "startedUtc": "2026-06-01T13:15:40.8605167Z",
-            "endedUtc": "2026-06-01T13:15:41.9101954Z",
-            "entries": []
-        },
-        {
-            "sessionId": "1d13bac4c9b24e7d9e92e03521f8052d",
-            "startedUtc": "2026-06-01T13:16:20.1192833Z",
-            "endedUtc": "2026-06-01T13:16:22.1711112Z",
-            "entries": []
-        },
-        {
             "sessionId": "60fa852526504301a630c981369cd6c7",
             "startedUtc": "2026-06-01T13:17:48.5938723Z",
             "endedUtc": "2026-06-01T13:18:52.5852917Z",
@@ -251,6 +216,30 @@
                     "lastSceneName": "LeeJunmo_Boss_DemonKing"
                 }
             ]
+        },
+        {
+            "sessionId": "213a200155b947df8d32b788f4f53ebc",
+            "startedUtc": "2026-06-01T15:02:19.7410206Z",
+            "endedUtc": "2026-06-01T15:02:21.8659562Z",
+            "entries": []
+        },
+        {
+            "sessionId": "53cbfd0d07ee4b8d8264279816ba58c1",
+            "startedUtc": "2026-06-01T15:04:18.0036745Z",
+            "endedUtc": "2026-06-01T15:04:20.4233972Z",
+            "entries": []
+        },
+        {
+            "sessionId": "abce6b92d501484c941de88b88b44225",
+            "startedUtc": "2026-06-01T15:05:17.9861344Z",
+            "endedUtc": "2026-06-01T15:05:20.2842479Z",
+            "entries": []
+        },
+        {
+            "sessionId": "22e6752b092043e58c1f1a42addfc329",
+            "startedUtc": "2026-06-01T15:08:37.0272560Z",
+            "endedUtc": "2026-06-01T15:08:39.0742070Z",
+            "entries": []
         }
     ]
 }
