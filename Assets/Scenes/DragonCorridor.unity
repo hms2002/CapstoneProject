@@ -1290,6 +1290,7 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  postSpawnIdleSeconds: -1
   logRoomEntrySpawnDebug: 0
 --- !u!1 &188255819
 GameObject:
@@ -2389,6 +2390,7 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  postSpawnIdleSeconds: -1
   logRoomEntrySpawnDebug: 0
 --- !u!1001 &360940833
 PrefabInstance:
@@ -2617,6 +2619,7 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  postSpawnIdleSeconds: -1
   logRoomEntrySpawnDebug: 0
 --- !u!1001 &372956969
 PrefabInstance:
@@ -3041,6 +3044,7 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  postSpawnIdleSeconds: -1
   logRoomEntrySpawnDebug: 0
 --- !u!4 &410368121 stripped
 Transform:
@@ -3118,7 +3122,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 426014277}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 1900511867}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -97460,7 +97464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 761629100}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 1434919860}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -97532,7 +97536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 779145238}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 1608280414}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -98358,6 +98362,7 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  postSpawnIdleSeconds: -1
   logRoomEntrySpawnDebug: 0
 --- !u!1 &864795832
 GameObject:
@@ -98755,6 +98760,7 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  postSpawnIdleSeconds: -1
   logRoomEntrySpawnDebug: 0
 --- !u!1 &968713750 stripped
 GameObject:
@@ -99123,7 +99129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 1025179340}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 1900511867}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -99552,7 +99558,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 1063915078}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 1382696336}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -99662,7 +99668,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 1076528924}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 367749654}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -101677,7 +101683,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 1286288062}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 967047311}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -102619,6 +102625,7 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  postSpawnIdleSeconds: -1
   logRoomEntrySpawnDebug: 0
 --- !u!1001 &1400735810
 PrefabInstance:
@@ -102753,7 +102760,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 1428392363}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 967047311}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -102966,6 +102973,7 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  postSpawnIdleSeconds: -1
   logRoomEntrySpawnDebug: 0
 --- !u!1 &1441605663
 GameObject:
@@ -103166,6 +103174,7 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  postSpawnIdleSeconds: -1
   logRoomEntrySpawnDebug: 0
 --- !u!1 &1457778514 stripped
 GameObject:
@@ -103415,7 +103424,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 1502673661}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 1382696336}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -105205,6 +105214,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4462176181425602415, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4462176181425602415, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4462176181425602415, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4462176181425602415, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4496572870649930010, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -105266,6 +105291,22 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4556037510096923253, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4625433562030045442, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4625433562030045442, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4625433562030045442, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4625433562030045442, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
@@ -106866,7 +106907,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 1553499541}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 367749654}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -107182,7 +107223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 1584333067}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 355283775}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -107376,6 +107417,7 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  postSpawnIdleSeconds: -1
   logRoomEntrySpawnDebug: 0
 --- !u!1 &1670336519
 GameObject:
@@ -108361,7 +108403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 1703092061}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 1608280414}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -108734,6 +108776,7 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  postSpawnIdleSeconds: -1
   logRoomEntrySpawnDebug: 0
 --- !u!1001 &1787585817
 PrefabInstance:
@@ -108878,7 +108921,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 1802765944}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 355283775}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -109162,7 +109205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 1857648496}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 858436443}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
@@ -109511,6 +109554,7 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  postSpawnIdleSeconds: -1
   logRoomEntrySpawnDebug: 0
 --- !u!1 &1914841876
 GameObject:
@@ -110466,7 +110510,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 2020322873}
-  targetRoomGroup: {fileID: 0}
+  targetRoomGroup: {fileID: 1434919860}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
