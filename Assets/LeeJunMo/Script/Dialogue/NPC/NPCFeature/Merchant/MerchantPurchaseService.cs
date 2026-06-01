@@ -11,6 +11,7 @@ public enum MerchantPurchaseResultType
     RelicInventoryFull,
     ConsumableInventoryFull,
     RelicAlreadyMaxLevel,
+    RelicChangeWouldDefeatPlayer,
     MissingSystems
 }
 
@@ -177,6 +178,7 @@ public sealed class MerchantPurchaseService
             RelicInventory.AcquireResult.Success => MerchantPurchaseResultType.Success,
             RelicInventory.AcquireResult.InventoryFull => MerchantPurchaseResultType.RelicInventoryFull,
             RelicInventory.AcquireResult.AlreadyMaxLevel => MerchantPurchaseResultType.RelicAlreadyMaxLevel,
+            RelicInventory.AcquireResult.HealthTooLowForRelicChange => MerchantPurchaseResultType.RelicChangeWouldDefeatPlayer,
             _ => MerchantPurchaseResultType.InvalidRequest
         };
     }

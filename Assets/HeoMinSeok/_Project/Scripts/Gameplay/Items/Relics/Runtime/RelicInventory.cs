@@ -29,7 +29,8 @@ public class RelicInventory : MonoBehaviour
         Success = 0,
         InvalidDefinition,
         InventoryFull,
-        AlreadyMaxLevel
+        AlreadyMaxLevel,
+        HealthTooLowForRelicChange
     }
 
     [Serializable]
@@ -58,8 +59,11 @@ public class RelicInventory : MonoBehaviour
     private int authoredCapacity;
     private int runtimeMinimumCapacity;
     private readonly Dictionary<Object, int> runtimeCapacityBonuses = new();
+    private readonly List<AttributeLinkedValueCompensator.Snapshot> compensationSnapshots = new();
+    private readonly List<AttributeModifier> compensationPreviewModifiers = new();
 
     public event Action OnChanged;
+    public AcquireResult LastFailureResult { get; private set; } = AcquireResult.Success;
 
     private void Awake()
     {
@@ -136,7 +140,7 @@ public class RelicInventory : MonoBehaviour
 
             if (keeper.def != null && keeper.token != null)
             {
-                ReapplyLevel(first, merged);
+                ReapplyLevel(first, merged, compensateLinkedValues: false);
             }
         }
     }
@@ -194,10 +198,40 @@ public class RelicInventory : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// 책임 : 특정 슬롯을 지정 유물/레벨로 바꿨을 때 linked current 보상 정책상 가능한지 미리 판정한다.
+    /// 드래그 이동처럼 실제 슬롯 변경 전에 실패 여부를 알아야 하는 UI/컨테이너 경로에서 사용한다.
+    /// </summary>
+    public AcquireResult PreviewSetRelicSlotWithLevel(int slotIndex, RelicDefinition relic, int levelOverride)
+    {
+        if (!IsValidSlot(slotIndex))
+            return AcquireResult.InvalidDefinition;
+
+        if (!CanPlaceRelicInSlot(slotIndex, relic, ignoreIndex: slotIndex))
+            return AcquireResult.InvalidDefinition;
+
+        Entry existingEntry = slots[slotIndex];
+        int incomingLevel = 0;
+        if (relic != null)
+        {
+            incomingLevel = Mathf.Max(1, levelOverride > 0 ? levelOverride : (relic.dropLevel > 0 ? relic.dropLevel : 1));
+            incomingLevel = relic.ClampLevel(incomingLevel);
+        }
+
+        AttributeLinkedValueCompensationContext context = ResolveRelicCompensationContext(
+            existingEntry,
+            relic,
+            incomingLevel);
+
+        return CanApplyLinkedValueCompensation(existingEntry, relic, incomingLevel, context)
+            ? AcquireResult.Success
+            : AcquireResult.HealthTooLowForRelicChange;
+    }
+
     public bool TrySetRelicSlot(int slotIndex, RelicDefinition relic)
     {
-        if (!IsValidSlot(slotIndex)) return false;
-        if (!CanPlaceRelicInSlot(slotIndex, relic, ignoreIndex: slotIndex)) return false;
+        if (!IsValidSlot(slotIndex)) return FailBool(AcquireResult.InvalidDefinition);
+        if (!CanPlaceRelicInSlot(slotIndex, relic, ignoreIndex: slotIndex)) return FailBool(AcquireResult.InvalidDefinition);
 
         if (relic != null && enforceUniqueRelicId && !string.IsNullOrEmpty(relic.relicId))
         {
@@ -212,7 +246,7 @@ public class RelicInventory : MonoBehaviour
                 int newLevel = relic.ClampLevel(oldLevel + gain);
 
                 // 책임 : 이미 최대 레벨이면 중복 획득을 실패 처리한다.
-                if (newLevel == oldLevel) return false;
+                if (newLevel == oldLevel) return FailBool(AcquireResult.AlreadyMaxLevel);
 
                 return ReapplyLevel(existing, newLevel);
             }
@@ -222,6 +256,14 @@ public class RelicInventory : MonoBehaviour
         var prevDef = e.def;
         var prevToken = e.token;
         var prevLevel = e.level;
+        int incomingLevel = 0;
+        if (relic != null)
+            incomingLevel = relic.ClampLevel(relic.dropLevel > 0 ? relic.dropLevel : 1);
+
+        if (!CanApplyLinkedValueCompensation(e, relic, incomingLevel, ResolveRelicCompensationContext(e, relic, incomingLevel)))
+            return FailBool(AcquireResult.HealthTooLowForRelicChange);
+
+        CaptureLinkedValueCompensation(ResolveRelicCompensationContext(e, relic, incomingLevel));
 
         if (prevDef != null)
         {
@@ -243,8 +285,7 @@ public class RelicInventory : MonoBehaviour
             var token = ScriptableObject.CreateInstance<RelicRuntimeToken>();
             e.token = token;
 
-            int lvl = relic.dropLevel > 0 ? relic.dropLevel : 1;
-            e.level = relic.ClampLevel(lvl);
+            e.level = incomingLevel;
 
             var ctx = baseCtx;
             ctx.relicDef = relic;
@@ -254,16 +295,18 @@ public class RelicInventory : MonoBehaviour
         }
 
         slots[slotIndex] = e;
+        CompleteLinkedValueCompensation();
 
         RefreshDebugView();
         OnChanged?.Invoke();
+        LastFailureResult = AcquireResult.Success;
         return true;
     }
 
     public bool TrySetRelicSlotWithLevel(int slotIndex, RelicDefinition relic, int levelOverride)
     {
-        if (!IsValidSlot(slotIndex)) return false;
-        if (!CanPlaceRelicInSlot(slotIndex, relic, ignoreIndex: slotIndex)) return false;
+        if (!IsValidSlot(slotIndex)) return FailBool(AcquireResult.InvalidDefinition);
+        if (!CanPlaceRelicInSlot(slotIndex, relic, ignoreIndex: slotIndex)) return FailBool(AcquireResult.InvalidDefinition);
 
         if (relic == null)
             return TrySetRelicSlot(slotIndex, null);
@@ -283,7 +326,7 @@ public class RelicInventory : MonoBehaviour
                 int newLevel = relic.ClampLevel(oldLevel + incomingLevel);
 
                 // 책임 : 이미 최대 레벨이면 드롭/빠른이동을 실패 처리한다.
-                if (newLevel == oldLevel) return false;
+                if (newLevel == oldLevel) return FailBool(AcquireResult.AlreadyMaxLevel);
 
                 return ReapplyLevel(existing, newLevel);
             }
@@ -293,6 +336,11 @@ public class RelicInventory : MonoBehaviour
         var prevDef = e.def;
         var prevToken = e.token;
         var prevLevel = e.level;
+
+        if (!CanApplyLinkedValueCompensation(e, relic, incomingLevel, ResolveRelicCompensationContext(e, relic, incomingLevel)))
+            return FailBool(AcquireResult.HealthTooLowForRelicChange);
+
+        CaptureLinkedValueCompensation(ResolveRelicCompensationContext(e, relic, incomingLevel));
 
         if (prevDef != null)
         {
@@ -321,9 +369,11 @@ public class RelicInventory : MonoBehaviour
         relic.logic?.OnEquipped(ctx2);
 
         slots[slotIndex] = e;
+        CompleteLinkedValueCompensation();
 
         RefreshDebugView();
         OnChanged?.Invoke();
+        LastFailureResult = AcquireResult.Success;
         return true;
     }
 
@@ -360,14 +410,29 @@ public class RelicInventory : MonoBehaviour
             Entry existingEntry = slots[existingIndex];
             int oldLevel = Mathf.Max(1, existingEntry.level);
             int newLevel = relic.ClampLevel(oldLevel + gain);
-            return newLevel == oldLevel
-                ? AcquireResult.AlreadyMaxLevel
-                : AcquireResult.Success;
+            if (newLevel == oldLevel)
+                return AcquireResult.AlreadyMaxLevel;
+
+            return CanApplyLinkedValueCompensation(
+                existingEntry,
+                relic,
+                newLevel,
+                AttributeLinkedValueCompensationContext.RelicLevelChange)
+                ? AcquireResult.Success
+                : AcquireResult.HealthTooLowForRelicChange;
         }
 
-        return FindFirstEmptySlot() >= 0
+        if (FindFirstEmptySlot() < 0)
+            return AcquireResult.InventoryFull;
+
+        int initialLevel = relic.ClampLevel(gain);
+        return CanApplyLinkedValueCompensation(
+            default,
+            relic,
+            initialLevel,
+            AttributeLinkedValueCompensationContext.RelicEquip)
             ? AcquireResult.Success
-            : AcquireResult.InventoryFull;
+            : AcquireResult.HealthTooLowForRelicChange;
     }
 
     /// <summary>
@@ -378,7 +443,7 @@ public class RelicInventory : MonoBehaviour
     public AcquireResult TryAcquireOrUpgradeDetailed(RelicDefinition relic, int gainedLevel = -1)
     {
         if (relic == null)
-            return AcquireResult.InvalidDefinition;
+            return Fail(AcquireResult.InvalidDefinition);
 
         int gain = gainedLevel > 0 ? gainedLevel : (relic.dropLevel > 0 ? relic.dropLevel : 1);
 
@@ -393,21 +458,21 @@ public class RelicInventory : MonoBehaviour
 
             // 책임 : 이미 최대 레벨이면 추가 획득을 실패 처리한다.
             if (newLevel == oldLevel)
-                return AcquireResult.AlreadyMaxLevel;
+                return Fail(AcquireResult.AlreadyMaxLevel);
 
             return ReapplyLevel(idx, newLevel)
                 ? AcquireResult.Success
-                : AcquireResult.InvalidDefinition;
+                : LastFailureResult;
         }
 
         int empty = FindFirstEmptySlot();
         if (empty < 0)
-            return AcquireResult.InventoryFull;
+            return Fail(AcquireResult.InventoryFull);
 
         int initial = relic.ClampLevel(gain);
         return EquipIntoEmptySlot(empty, relic, initial)
             ? AcquireResult.Success
-            : AcquireResult.InvalidDefinition;
+            : LastFailureResult;
     }
 
     /// <summary>
@@ -550,6 +615,102 @@ public class RelicInventory : MonoBehaviour
         return state;
     }
 
+    /// <summary>
+    /// 책임 : 유물 슬롯 변경이 linked current 값을 최소치 아래로 떨어뜨리는지 사전에 검증한다.
+    /// 실제 modifier를 변경하기 전에 MaxHealth/Health 같은 연결값의 최종 결과를 예측한다.
+    /// </summary>
+    private bool CanApplyLinkedValueCompensation(
+        Entry existingEntry,
+        RelicDefinition incomingRelic,
+        int incomingLevel,
+        AttributeLinkedValueCompensationContext context)
+    {
+        if (baseCtx.attributeSet == null)
+            return true;
+
+        AttributeLinkedValueCompensator.CaptureAll(baseCtx.attributeSet, context, compensationSnapshots);
+        if (compensationSnapshots.Count == 0)
+            return true;
+
+        Object removedSource = existingEntry != null ? existingEntry.token : null;
+
+        for (int i = 0; i < compensationSnapshots.Count; i++)
+        {
+            var snapshot = compensationSnapshots[i];
+            compensationPreviewModifiers.Clear();
+            AppendPreviewModifiers(incomingRelic, incomingLevel, snapshot.MaxAttribute, compensationPreviewModifiers);
+
+            float projectedMax = baseCtx.attributeSet.CalculateProjectedCurrentValue(
+                snapshot.MaxAttribute,
+                removedSource,
+                compensationPreviewModifiers);
+
+            if (AttributeLinkedValueCompensator.WouldDropBelowMinimum(snapshot, projectedMax))
+                return false;
+        }
+
+        return true;
+    }
+
+    private void CaptureLinkedValueCompensation(AttributeLinkedValueCompensationContext context)
+    {
+        AttributeLinkedValueCompensator.CaptureAll(baseCtx.attributeSet, context, compensationSnapshots);
+    }
+
+    private void CompleteLinkedValueCompensation()
+    {
+        AttributeLinkedValueCompensator.CompleteAll(baseCtx.attributeSet, compensationSnapshots, this);
+        compensationSnapshots.Clear();
+    }
+
+    private void AppendPreviewModifiers(
+        RelicDefinition relic,
+        int level,
+        AttributeDefinition attribute,
+        List<AttributeModifier> results)
+    {
+        if (relic == null || relic.logic == null || results == null)
+            return;
+
+        var ctx = baseCtx;
+        ctx.relicDef = relic;
+        ctx.level = Mathf.Max(1, level);
+        ctx.token = null;
+        relic.logic.AppendPreviewModifiers(ctx, attribute, results);
+    }
+
+    private static AttributeLinkedValueCompensationContext ResolveRelicCompensationContext(
+        Entry existingEntry,
+        RelicDefinition incomingRelic,
+        int incomingLevel)
+    {
+        bool hasExisting = existingEntry != null && existingEntry.def != null;
+        bool hasIncoming = incomingRelic != null;
+
+        if (hasExisting && hasIncoming)
+            return AttributeLinkedValueCompensationContext.RelicEquip;
+
+        if (hasExisting)
+            return AttributeLinkedValueCompensationContext.RelicUnequip;
+
+        if (hasIncoming)
+            return AttributeLinkedValueCompensationContext.RelicEquip;
+
+        return AttributeLinkedValueCompensationContext.None;
+    }
+
+    private AcquireResult Fail(AcquireResult result)
+    {
+        LastFailureResult = result;
+        return result;
+    }
+
+    private bool FailBool(AcquireResult result)
+    {
+        LastFailureResult = result;
+        return false;
+    }
+
     private int FindSlotByRelicId(string relicId)
     {
         if (string.IsNullOrEmpty(relicId)) return -1;
@@ -564,13 +725,20 @@ public class RelicInventory : MonoBehaviour
 
     private bool EquipIntoEmptySlot(int slotIndex, RelicDefinition relic, int level)
     {
-        if (!IsValidSlot(slotIndex)) return false;
-        if (relic == null) return false;
-        if (slots[slotIndex].def != null) return false;
+        if (!IsValidSlot(slotIndex)) return FailBool(AcquireResult.InvalidDefinition);
+        if (relic == null) return FailBool(AcquireResult.InvalidDefinition);
+        if (slots[slotIndex].def != null) return FailBool(AcquireResult.InvalidDefinition);
+
+        int resolvedLevel = relic.ClampLevel(level);
+
+        if (!CanApplyLinkedValueCompensation(default, relic, resolvedLevel, AttributeLinkedValueCompensationContext.RelicEquip))
+            return FailBool(AcquireResult.HealthTooLowForRelicChange);
+
+        CaptureLinkedValueCompensation(AttributeLinkedValueCompensationContext.RelicEquip);
 
         var e = slots[slotIndex];
         e.def = relic;
-        e.level = relic.ClampLevel(level);
+        e.level = resolvedLevel;
 
         var token = ScriptableObject.CreateInstance<RelicRuntimeToken>();
         e.token = token;
@@ -582,23 +750,41 @@ public class RelicInventory : MonoBehaviour
         relic.logic?.OnEquipped(ctx);
 
         slots[slotIndex] = e;
+        CompleteLinkedValueCompensation();
         RefreshDebugView();
         OnChanged?.Invoke();
+        LastFailureResult = AcquireResult.Success;
         return true;
     }
 
-    private bool ReapplyLevel(int slotIndex, int newLevel)
+    private bool ReapplyLevel(int slotIndex, int newLevel, bool compensateLinkedValues = true)
     {
-        if (!IsValidSlot(slotIndex)) return false;
+        if (!IsValidSlot(slotIndex)) return FailBool(AcquireResult.InvalidDefinition);
 
         var e = slots[slotIndex];
         var def = e.def;
-        if (def == null) return false;
-        if (e.token == null) return false;
+        if (def == null) return FailBool(AcquireResult.InvalidDefinition);
+        if (e.token == null) return FailBool(AcquireResult.InvalidDefinition);
 
         int oldLevel = Mathf.Max(1, e.level);
         newLevel = def.ClampLevel(newLevel);
         if (newLevel == oldLevel) return true;
+
+        if (compensateLinkedValues)
+        {
+            var projectedEntry = e;
+            projectedEntry.level = oldLevel;
+            if (!CanApplyLinkedValueCompensation(
+                    projectedEntry,
+                    def,
+                    newLevel,
+                    AttributeLinkedValueCompensationContext.RelicLevelChange))
+            {
+                return FailBool(AcquireResult.HealthTooLowForRelicChange);
+            }
+
+            CaptureLinkedValueCompensation(AttributeLinkedValueCompensationContext.RelicLevelChange);
+        }
 
         var ctx = baseCtx;
         ctx.relicDef = def;
@@ -612,10 +798,13 @@ public class RelicInventory : MonoBehaviour
 
         e.level = newLevel;
         slots[slotIndex] = e;
+        if (compensateLinkedValues)
+            CompleteLinkedValueCompensation();
 
         PlayRelicLevelUpSound();
         RefreshDebugView();
         OnChanged?.Invoke();
+        LastFailureResult = AcquireResult.Success;
         return true;
     }
 

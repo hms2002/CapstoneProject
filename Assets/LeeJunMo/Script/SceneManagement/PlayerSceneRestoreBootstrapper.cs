@@ -254,6 +254,8 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         hasRestored = true;
         isRestoreConfirmationPending = false;
 
+        ApplyPendingHubLoadFullHealAfterRestore(gameplay, player);
+
         if (restoreRoutine != null)
         {
             StopCoroutine(restoreRoutine);
@@ -261,5 +263,22 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         }
 
         Debug.Log("[PlayerSceneRestoreBootstrapper] PlayerRuntimeState 蹂듭썝 ?꾨즺.", this);
+    }
+
+    /// <summary>
+    /// 책임 : 저장/씬 복원이 끝난 뒤 타이틀 프로필 Hub 진입 회복 요청을 소비해 복원값이 회복값을 덮어쓰지 않게 한다.
+    /// </summary>
+    private static void ApplyPendingHubLoadFullHealAfterRestore(GamePlayDataManager gameplay, GameObject player)
+    {
+        if (gameplay == null || player == null)
+            return;
+
+        if (!SceneDomainScenePolicy.IsHubSceneName(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
+            return;
+
+        if (!gameplay.ConsumePendingHubLoadFullHeal())
+            return;
+
+        PlayerHealthRestoreUtility.FillLinkedHealthToMax(player, player);
     }
 }

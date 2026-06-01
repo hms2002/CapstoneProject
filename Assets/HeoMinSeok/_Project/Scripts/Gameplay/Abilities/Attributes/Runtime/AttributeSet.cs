@@ -335,6 +335,54 @@ namespace UnityGAS
         }
 
         /// <summary>
+        /// 책임 : Dynamic MaxLink 설정을 외부 정책 시스템이 읽을 수 있게 제공한다.
+        /// MaxHealth/Health처럼 max-current 관계를 코드 하드코딩 없이 해석하는 공식 조회 경로다.
+        /// </summary>
+        public IEnumerable<MaxLink> EnumerateMaxLinks()
+        {
+            EnsureInitialized();
+            return maxLinks;
+        }
+
+        /// <summary>
+        /// 책임 : 주어진 max Attribute를 current Attribute로 사용하는 MaxLink를 찾는다.
+        /// 최대값 변화 보상 정책이 어떤 현재값을 같이 조정해야 하는지 판정할 때 사용한다.
+        /// </summary>
+        public bool TryGetLinkedValueForMax(AttributeDefinition maxDefinition, out AttributeDefinition valueDefinition)
+        {
+            EnsureInitialized();
+            valueDefinition = null;
+
+            if (maxDefinition == null || maxLinks == null)
+                return false;
+
+            for (int i = 0; i < maxLinks.Count; i++)
+            {
+                var link = maxLinks[i];
+                if (link.max != maxDefinition || link.value == null)
+                    continue;
+
+                valueDefinition = link.value;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 책임 : 특정 source modifier 제거와 임시 modifier 추가를 가정한 Attribute current 값을 계산한다.
+        /// 유물 해제/교체 사전 검증처럼 실제 상태를 바꾸기 전에 결과값을 예측해야 하는 경로에서 사용한다.
+        /// </summary>
+        public float CalculateProjectedCurrentValue(
+            AttributeDefinition definition,
+            UnityEngine.Object removedSource,
+            IReadOnlyList<AttributeModifier> addedModifiers)
+        {
+            EnsureInitialized();
+            return GetAttribute(definition)?.CalculateProjectedCurrentValue(removedSource, addedModifiers) ?? 0f;
+        }
+
+        /// <summary>
         /// 책임 : 씬 복원 시 current 값을 직접 되살려야 하는 상태형 Attribute인지 판정한다.
         /// 장착형 modifier로 계산되는 파생 스탯은 제외하고, HP처럼 실제 상태값만 복원 대상으로 삼는다.
         /// </summary>

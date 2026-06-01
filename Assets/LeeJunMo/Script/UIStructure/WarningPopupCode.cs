@@ -11,6 +11,7 @@ public enum WarningPopupCode
     WeaponInventoryFull,
     ConsumableInventoryFull,
     CannotDropHere,
+    RelicChangeWouldDefeatPlayer,
     UpgradeNotEnoughMagicStone,
     UpgradeLocked,
     UpgradeUnavailable

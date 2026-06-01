@@ -165,6 +165,21 @@ public sealed class GamePlayDataManager : MonoBehaviour
         RunSessionStateService.ClearPendingPlayerState(Data);
     }
 
+    public bool ConsumePendingHubReturnFullHeal()
+    {
+        return RunSessionStateService.ConsumePendingHubReturnFullHeal(Data);
+    }
+
+    public void RequestPendingHubLoadFullHeal()
+    {
+        RunSessionStateService.RequestPendingHubLoadFullHeal(Data);
+    }
+
+    public bool ConsumePendingHubLoadFullHeal()
+    {
+        return RunSessionStateService.ConsumePendingHubLoadFullHeal(Data);
+    }
+
     public PlayerRuntimeState PeekPendingPlayerState()
     {
         return RunSessionStateService.PeekPendingPlayerState(Data);

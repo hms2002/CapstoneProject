@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityGAS;
 
 /// <summary>
 /// 책임 : 유물 장착/해제 생명주기에 반응하는 정적 로직의 공통 베이스다.
@@ -33,6 +34,17 @@ public abstract class RelicLogic : ScriptableObject
     /// 기본 구현은 비워 두고, 필요한 유물만 override 한다.
     /// </summary>
     public virtual void OnRestoreDetached(RelicContext ctx) { }
+
+    /// <summary>
+    /// 책임 : 특정 Attribute에 대해 이 유물이 부여할 modifier를 실제 장착 없이 미리 계산한다.
+    /// 장착/해제 전 체력 보정 가능 여부를 검증하는 시스템에서 사용한다.
+    /// </summary>
+    public virtual void AppendPreviewModifiers(
+        RelicContext ctx,
+        AttributeDefinition attribute,
+        List<AttributeModifier> results)
+    {
+    }
 
     /// <summary>
     /// 책임 :

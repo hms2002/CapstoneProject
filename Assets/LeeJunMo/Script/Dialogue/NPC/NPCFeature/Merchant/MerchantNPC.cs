@@ -480,6 +480,7 @@ public sealed class MerchantNPC : MonoBehaviour
             MerchantPurchaseResultType.RelicInventoryFull => WarningPopupCode.RelicInventoryFull,
             MerchantPurchaseResultType.ConsumableInventoryFull => WarningPopupCode.ConsumableInventoryFull,
             MerchantPurchaseResultType.RelicAlreadyMaxLevel => WarningPopupCode.RelicAlreadyMaxLevel,
+            MerchantPurchaseResultType.RelicChangeWouldDefeatPlayer => WarningPopupCode.RelicChangeWouldDefeatPlayer,
             _ => WarningPopupCode.None
         };
 
