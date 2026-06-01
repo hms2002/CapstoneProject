@@ -67,6 +67,13 @@ public sealed class RunTimerHUD : MonoBehaviour
 
         if (!timeLimitSystem.IsRunning)
         {
+            if (timeLimitSystem.IsExpired)
+            {
+                SetVisible(true);
+                UpdateTimeText(0f, true, false);
+                return;
+            }
+
             SetVisible(!hideWhenTimerInactive);
 
             if (!hideWhenTimerInactive)

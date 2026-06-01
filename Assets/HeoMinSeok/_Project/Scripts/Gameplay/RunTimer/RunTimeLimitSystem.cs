@@ -26,6 +26,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
     public float RemainingSeconds => remainingSeconds;
     public float InactivePreviewSeconds => config != null ? Mathf.Max(0f, config.InitialLimitSeconds) : 0f;
     public bool IsRunning => isRunning;
+    public bool IsExpired => hasExpired;
     public bool IsLowTime => config != null && remainingSeconds <= config.LowTimeWarningSeconds;
     public bool IsExternallyPaused => HasExternalPauseBlockers();
     public bool IsPausedByStagePolicy => ShouldPauseByStagePolicy();
@@ -35,6 +36,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
     private IStageTimerPolicy stageTimerPolicy;
     private float remainingSeconds;
     private bool isRunning;
+    private bool hasExpired;
     private bool hasInitializedFromRun;
     private bool isRunCompletionPaused;
     private readonly Dictionary<int, UnityEngine.Object> externalPauseOwners = new();
@@ -167,6 +169,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
     private void HandleRunStarted()
     {
         SetRunCompletionPaused(false);
+        hasExpired = false;
 
         if (config == null)
         {
@@ -180,6 +183,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
     private void HandleRunEnded(RunEndReason reason)
     {
         SetRunCompletionPaused(false);
+        hasExpired = false;
         isRunning = false;
         hasInitializedFromRun = false;
         SetRemainingTimeInternal(0f, persistToGamePlayData: false);
@@ -214,6 +218,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
             return;
 
         isRunning = false;
+        hasExpired = true;
         OnTimeExpired?.Invoke();
 
         if (verboseLogging)
@@ -223,6 +228,8 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
     private void SetRemainingTimeInternal(float seconds, bool persistToGamePlayData)
     {
         remainingSeconds = Mathf.Max(0f, seconds);
+        if (remainingSeconds > 0f)
+            hasExpired = false;
 
         if (persistToGamePlayData && GamePlayDataManager.Instance != null)
             GamePlayDataManager.Instance.SetRunRemainingSeconds(remainingSeconds);
