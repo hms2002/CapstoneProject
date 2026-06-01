@@ -42,7 +42,7 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   fireSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_homingmagic_launch
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}

@@ -101,7 +101,7 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   releaseSound:
-    key: weapon.sword.swing.2
+    key: sound_weapon_apprenticeweapon_skill2
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}

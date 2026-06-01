@@ -28,7 +28,7 @@ MonoBehaviour:
         hitOncePerTarget: 1
         destroyOnFirstHit: 0
       attackSound:
-        key: weapon.sword.swing.1
+        key: sound_weapon_flowering_slash_nobuff_1
         volumeMultiplier: 1
         anchorPolicy: 0
         localOffset: {x: 0, y: 0, z: 0}
@@ -61,7 +61,7 @@ MonoBehaviour:
         hitOncePerTarget: 1
         destroyOnFirstHit: 0
       attackSound:
-        key: weapon.sword.swing.1
+        key: sound_weapon_flowering_slash_nobuff_2
         volumeMultiplier: 1
         anchorPolicy: 0
         localOffset: {x: 0, y: 0, z: 0}

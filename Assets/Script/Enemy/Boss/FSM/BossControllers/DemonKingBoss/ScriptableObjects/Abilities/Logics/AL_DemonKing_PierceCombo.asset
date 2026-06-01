@@ -44,7 +44,7 @@ MonoBehaviour:
     flipX: 0
     leaveFragment: 0
   dashCommitSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_stab
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}

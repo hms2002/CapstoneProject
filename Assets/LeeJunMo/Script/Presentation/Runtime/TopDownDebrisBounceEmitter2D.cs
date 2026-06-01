@@ -7,6 +7,8 @@ namespace CapstonePresentation
     [DisallowMultipleComponent]
     public sealed class TopDownDebrisBounceEmitter2D : MonoBehaviour
     {
+        private const float FinalFragmentFadeSeconds = 0.24f;
+
         [SerializeField] private ParticleSystem debrisParticles;
         [SerializeField] private ParticleSystem contactParticles;
 
@@ -68,7 +70,8 @@ namespace CapstonePresentation
                 float size,
                 float spinDegreesPerSecond,
                 float rotationDegrees,
-                Color32 color)
+                Color32 color,
+                float fadeRemainingSeconds = 0f)
             {
                 Active = active;
                 GroundPosition = groundPosition;
@@ -80,6 +83,7 @@ namespace CapstonePresentation
                 SpinDegreesPerSecond = spinDegreesPerSecond;
                 RotationDegrees = rotationDegrees;
                 Color = color;
+                FadeRemainingSeconds = fadeRemainingSeconds;
             }
 
             public bool Active { get; }
@@ -92,6 +96,8 @@ namespace CapstonePresentation
             public float SpinDegreesPerSecond { get; }
             public float RotationDegrees { get; }
             public Color32 Color { get; }
+            public float FadeRemainingSeconds { get; }
+            public bool IsFading => FadeRemainingSeconds > 0f;
 
             public DebrisPiece WithMotion(
                 Vector2 groundPosition,
@@ -111,7 +117,40 @@ namespace CapstonePresentation
                     Size,
                     SpinDegreesPerSecond,
                     rotationDegrees,
-                    Color);
+                    Color,
+                    FadeRemainingSeconds);
+            }
+
+            public DebrisPiece BeginFade(Vector2 groundPosition, float rotationDegrees)
+            {
+                return new DebrisPiece(
+                    true,
+                    groundPosition,
+                    Vector2.zero,
+                    0f,
+                    0f,
+                    0,
+                    Size,
+                    SpinDegreesPerSecond,
+                    rotationDegrees,
+                    Color,
+                    FinalFragmentFadeSeconds);
+            }
+
+            public DebrisPiece WithFade(float fadeRemainingSeconds)
+            {
+                return new DebrisPiece(
+                    true,
+                    GroundPosition,
+                    Vector2.zero,
+                    0f,
+                    0f,
+                    0,
+                    Size,
+                    SpinDegreesPerSecond,
+                    RotationDegrees,
+                    Color,
+                    fadeRemainingSeconds);
             }
 
             public DebrisPiece Deactivate()
@@ -508,6 +547,15 @@ namespace CapstonePresentation
                 if (!piece.Active)
                     continue;
 
+                if (piece.IsFading)
+                {
+                    float fadeRemainingSeconds = piece.FadeRemainingSeconds - deltaTime;
+                    pieces[i] = fadeRemainingSeconds > 0f
+                        ? piece.WithFade(fadeRemainingSeconds)
+                        : piece.Deactivate();
+                    continue;
+                }
+
                 Vector2 groundPosition = piece.GroundPosition + piece.GroundVelocity * deltaTime;
                 Vector2 groundVelocity = piece.GroundVelocity;
                 float verticalVelocity = piece.VerticalVelocity - gravity * deltaTime;
@@ -518,10 +566,10 @@ namespace CapstonePresentation
                 if (height <= 0f && verticalVelocity <= 0f)
                 {
                     bool canBounce = bouncesRemaining > 0 && -verticalVelocity >= minBounceVelocity;
-                    EmitContactPuff(piece, groundPosition, finalContact: !canBounce);
 
                     if (canBounce)
                     {
+                        EmitContactPuff(piece, groundPosition, finalContact: false);
                         height = 0f;
                         verticalVelocity = -verticalVelocity
                             * bounceDamping
@@ -531,7 +579,7 @@ namespace CapstonePresentation
                     }
                     else
                     {
-                        pieces[i] = piece.Deactivate();
+                        pieces[i] = piece.BeginFade(groundPosition, rotation);
                         continue;
                     }
                 }
@@ -561,6 +609,12 @@ namespace CapstonePresentation
                 Vector2 visualPosition = piece.GroundPosition + heightScreenOffsetPerUnit * piece.Height;
                 float heightRatio = Mathf.Clamp01(piece.Height / heightForMaxSizeBoost);
                 float size = piece.Size * (1f + heightRatio * heightSizeBoost);
+                Color32 color = piece.Color;
+                if (piece.IsFading)
+                {
+                    float fadeRatio = Mathf.Clamp01(piece.FadeRemainingSeconds / FinalFragmentFadeSeconds);
+                    color.a = (byte)Mathf.RoundToInt(color.a * fadeRatio);
+                }
 
                 ParticleSystem.Particle particle = renderParticles[count];
                 particle.position = new Vector3(visualPosition.x, visualPosition.y, 0f);
@@ -569,7 +623,7 @@ namespace CapstonePresentation
                 particle.startLifetime = 1f;
                 particle.startSize = Mathf.Max(0.001f, size);
                 particle.rotation = piece.RotationDegrees * Mathf.Deg2Rad;
-                particle.startColor = piece.Color;
+                particle.startColor = color;
                 renderParticles[count] = particle;
                 count++;
             }

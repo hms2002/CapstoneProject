@@ -53,8 +53,8 @@ MonoBehaviour:
     legacyStaggerDamage: 0
     hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
   markRainSpawnStartSound:
-    key: ""
-    volumeMultiplier: 0
+    key: sound_weapon_lightningspear_skill2
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   markRainMarkSpawnSound:

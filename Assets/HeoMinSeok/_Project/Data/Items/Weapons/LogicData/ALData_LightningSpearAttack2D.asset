@@ -28,7 +28,7 @@ MonoBehaviour:
         hitOncePerTarget: 1
         destroyOnFirstHit: 0
       attackSound:
-        key: weapon.sword.swing.1
+        key: sound_weapon_lightningspear_basicattack1
         volumeMultiplier: 1
         anchorPolicy: 0
         localOffset: {x: 0, y: 0, z: 0}
@@ -59,7 +59,7 @@ MonoBehaviour:
         hitOncePerTarget: 1
         destroyOnFirstHit: 0
       attackSound:
-        key: weapon.sword.swing.1
+        key: sound_weapon_lightningspear_basicattack2
         volumeMultiplier: 1
         anchorPolicy: 0
         localOffset: {x: 0, y: 0, z: 0}
@@ -90,7 +90,7 @@ MonoBehaviour:
         hitOncePerTarget: 1
         destroyOnFirstHit: 0
       attackSound:
-        key: weapon.sword.swing.2
+        key: sound_weapon_lightningspear_basicattack3
         volumeMultiplier: 1
         anchorPolicy: 0
         localOffset: {x: 0, y: 0, z: 0}

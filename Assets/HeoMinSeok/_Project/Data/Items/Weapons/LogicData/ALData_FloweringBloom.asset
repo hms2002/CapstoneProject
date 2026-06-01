@@ -56,8 +56,8 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   finalShakeSound:
-    key: ""
-    volumeMultiplier: 0
+    key: sound_weapon_flowering_skill1end
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   worldDimSortingLayerName: Entity
@@ -139,8 +139,8 @@ MonoBehaviour:
   weaponRevealParticlePrefab: {fileID: 8672368362208833670, guid: f03b83a7062684245ba7d9af3371e11d, type: 3}
   finalShakeParticlePrefab: {fileID: 7504802840108214165, guid: cf510ff300e13494c98c0d4aed66f896, type: 3}
   dashSlashSound:
-    key: ""
-    volumeMultiplier: 0
+    key: sound_weapon_flowering_dashslash
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   particleLifetimeFallback: 1
