@@ -1,23 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "67dbe99e69434991b9ab5118752eab08",
-            "startedUtc": "2026-06-01T12:55:35.3727971Z",
-            "endedUtc": "2026-06-01T13:09:59.4834343Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 864.0855102539063,
-                    "lastSeenSeconds": 864.0858764648438,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
             "sessionId": "9d4c74c9fc09458388a0229668941e8a",
             "startedUtc": "2026-06-01T13:11:44.7799013Z",
             "endedUtc": "2026-06-01T13:12:11.7919778Z",
@@ -251,6 +234,23 @@
             "startedUtc": "2026-06-01T14:03:22.9591893Z",
             "endedUtc": "2026-06-01T14:03:24.0944167Z",
             "entries": []
+        },
+        {
+            "sessionId": "1a77e22cc5e448bf9407de14eb6c2e4e",
+            "startedUtc": "2026-06-01T14:42:18.5280974Z",
+            "endedUtc": "2026-06-01T14:43:00.8158112Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 98,
+                    "coldSpawns": 80,
+                    "firstSeenSeconds": 28.678178787231447,
+                    "lastSeenSeconds": 42.14672088623047,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
         }
     ]
 }

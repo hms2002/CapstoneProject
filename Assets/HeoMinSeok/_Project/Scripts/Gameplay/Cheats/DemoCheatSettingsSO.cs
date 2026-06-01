@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityGAS;
 
 /// <summary>
@@ -16,7 +17,8 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     [SerializeField] private KeyCode cheatGuideKey = KeyCode.F1;
     [SerializeField] private KeyCode warpToRunSpecialNpcKey = KeyCode.F6;
     [SerializeField] private KeyCode addMagicStoneKey = KeyCode.F7;
-    [SerializeField] private KeyCode maxHealthKey = KeyCode.F8;
+    [FormerlySerializedAs("maxHealthKey")]
+    [SerializeField] private KeyCode invulnerabilityToggleKey = KeyCode.F8;
     [SerializeField] private KeyCode warpToPortalKey = KeyCode.F9;
     [SerializeField] private KeyCode resetWeaponCooldownKey = KeyCode.F10;
     [SerializeField] private KeyCode increaseAttackKey = KeyCode.F12;
@@ -37,6 +39,7 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     [SerializeField] private AttributeDefinition healthAttribute;
     [SerializeField] private AttributeDefinition maxHealthAttribute;
     [SerializeField] private AttributeDefinition attackAddAttribute;
+    [SerializeField] private GameplayTag invulnerableTag;
 
     [Header("Attack Cheat")]
     [SerializeField] private float attackIncreaseAmount = 100f;
@@ -59,7 +62,7 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     public KeyCode CheatGuideKey => cheatGuideKey;
     public KeyCode WarpToRunSpecialNpcKey => warpToRunSpecialNpcKey;
     public KeyCode AddMagicStoneKey => addMagicStoneKey;
-    public KeyCode MaxHealthKey => maxHealthKey;
+    public KeyCode InvulnerabilityToggleKey => invulnerabilityToggleKey;
     public KeyCode WarpToPortalKey => warpToPortalKey;
     public KeyCode ResetWeaponCooldownKey => resetWeaponCooldownKey;
     public KeyCode IncreaseAttackKey => increaseAttackKey;
@@ -70,6 +73,7 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     public AttributeDefinition HealthAttribute => healthAttribute;
     public AttributeDefinition MaxHealthAttribute => maxHealthAttribute;
     public AttributeDefinition AttackAddAttribute => attackAddAttribute;
+    public GameplayTag InvulnerableTag => invulnerableTag;
     public float AttackIncreaseAmount => attackIncreaseAmount;
     public float AttackDecreaseAmount => attackDecreaseAmount;
     public int MagicStoneAddAmount => magicStoneAddAmount;

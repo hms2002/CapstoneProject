@@ -36,6 +36,7 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
     private void OnDisable()
     {
         service?.RestoreMapZoomImmediate();
+        service?.DisablePlayerInvulnerabilityCheat();
     }
 
     private void Update()
@@ -75,8 +76,8 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
         if (WasPressed(settings.AddMagicStoneKey))
             ShowResult(service.AddMagicStone(settings));
 
-        if (WasPressed(settings.MaxHealthKey))
-            ShowResult(service.RefillPlayerHealth(settings));
+        if (WasPressed(settings.InvulnerabilityToggleKey))
+            ShowResult(service.TogglePlayerInvulnerability(settings));
 
         if (WasPressed(settings.WarpToPortalKey))
             ShowResult(service.WarpPlayerToNearestPortal(settings));

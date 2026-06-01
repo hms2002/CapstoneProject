@@ -31,6 +31,7 @@ public readonly struct DemoCheatResult
 /// </summary>
 public sealed class DemoCheatService
 {
+    private const string DefaultInvulnerableTagResourcePath = "Tags/State.Invulnerable";
     private const float RunSpecialNpcWarpHoleCheckRadius = 0.2f;
     private static readonly string[] RunSpecialNpcCheatWarpPointNames =
     {
@@ -48,6 +49,10 @@ public sealed class DemoCheatService
     private string lastRunSpecialNpcSceneName;
     private int nextRunSpecialNpcIndex;
     private bool hasMapZoomSnapshot;
+    private bool demoInvulnerabilityEnabled;
+    private bool hasAppliedDemoInvulnerabilityTag;
+    private TagSystem demoInvulnerabilityTagSystem;
+    private GameplayTag demoInvulnerabilityTag;
     private MapZoomCameraSnapshot mapZoomSnapshot;
     private Coroutine mapZoomRoutine;
     private MonoBehaviour mapZoomRoutineOwner;
@@ -66,7 +71,7 @@ public sealed class DemoCheatService
             (settings.WarpToBossSceneKey, "보스 씬 포탈 설정"),
             (settings.WarpToRunSpecialNpcKey, "Runtime Special NPC 워프"),
             (settings.AddMagicStoneKey, $"마정석 +{magicStoneAmount}"),
-            (settings.MaxHealthKey, "체력 MAX"),
+            (settings.InvulnerabilityToggleKey, "무적 토글"),
             (settings.WarpToPortalKey, "포탈 앞으로 이동"),
             (settings.ResetWeaponCooldownKey, "무기 쿨타임 초기화"),
             (settings.IncreaseAttackKey, $"공격력 +{settings.AttackIncreaseAmount:0.###}"),
@@ -207,6 +212,31 @@ public sealed class DemoCheatService
         return DemoCheatResult.Succeeded("체력을 최대치로 회복했습니다.");
     }
 
+    public DemoCheatResult TogglePlayerInvulnerability(DemoCheatSettingsSO settings)
+    {
+        if (demoInvulnerabilityEnabled)
+        {
+            ReleaseDemoInvulnerabilityTag();
+            demoInvulnerabilityEnabled = false;
+            Log("무적 치트 OFF.");
+            return DemoCheatResult.Succeeded("무적 치트를 비활성화했습니다.");
+        }
+
+        if (!TryResolvePlayer(out Transform player))
+            return Fail("플레이어를 찾을 수 없습니다.");
+
+        TagSystem tagSystem = player.GetComponent<TagSystem>();
+        GameplayTag invulnerableTag = ResolveInvulnerableTag(settings);
+        if (tagSystem == null || invulnerableTag == null)
+            return Fail("무적 치트 설정이 올바르지 않습니다.");
+
+        demoInvulnerabilityEnabled = true;
+        ApplyDemoInvulnerabilityTag(tagSystem, invulnerableTag);
+
+        Log($"무적 치트 ON. player={player.name}");
+        return DemoCheatResult.Succeeded("무적 치트를 활성화했습니다.");
+    }
+
     public DemoCheatResult WarpPlayerToNearestPortal(DemoCheatSettingsSO settings)
     {
         if (!TryResolvePlayer(out Transform player))
@@ -322,6 +352,42 @@ public sealed class DemoCheatService
         return DemoCheatResult.Succeeded($"공격력이 {messageSign}{amount:0.###} {logVerb}했습니다.");
     }
 
+    private GameplayTag ResolveInvulnerableTag(DemoCheatSettingsSO settings)
+    {
+        if (settings != null && settings.InvulnerableTag != null)
+            return settings.InvulnerableTag;
+
+        demoInvulnerabilityTag ??= Resources.Load<GameplayTag>(DefaultInvulnerableTagResourcePath);
+        return demoInvulnerabilityTag;
+    }
+
+    private void ApplyDemoInvulnerabilityTag(TagSystem tagSystem, GameplayTag invulnerableTag)
+    {
+        if (tagSystem == null || invulnerableTag == null)
+            return;
+
+        if (hasAppliedDemoInvulnerabilityTag && demoInvulnerabilityTagSystem == tagSystem)
+            return;
+
+        ReleaseDemoInvulnerabilityTag();
+        tagSystem.AddTag(invulnerableTag, 1);
+        demoInvulnerabilityTagSystem = tagSystem;
+        demoInvulnerabilityTag = invulnerableTag;
+        hasAppliedDemoInvulnerabilityTag = true;
+    }
+
+    private void ReleaseDemoInvulnerabilityTag()
+    {
+        if (!hasAppliedDemoInvulnerabilityTag)
+            return;
+
+        if (demoInvulnerabilityTagSystem != null && demoInvulnerabilityTag != null)
+            demoInvulnerabilityTagSystem.RemoveTag(demoInvulnerabilityTag, 1);
+
+        demoInvulnerabilityTagSystem = null;
+        hasAppliedDemoInvulnerabilityTag = false;
+    }
+
     public DemoCheatResult ToggleMapZoom(DemoCheatSettingsSO settings, MonoBehaviour routineOwner)
     {
         if (settings == null)
@@ -344,6 +410,12 @@ public sealed class DemoCheatService
         ApplyMapZoomSnapshot(mapZoomSnapshot);
         ClearMapZoomSnapshot();
         Log("맵 줌을 즉시 복구했습니다.");
+    }
+
+    public void DisablePlayerInvulnerabilityCheat()
+    {
+        ReleaseDemoInvulnerabilityTag();
+        demoInvulnerabilityEnabled = false;
     }
 
     private DemoCheatResult ZoomOutToMap(DemoCheatSettingsSO settings, MonoBehaviour routineOwner)
