@@ -584,7 +584,7 @@ MonoBehaviour:
   animator: {fileID: 6883289869333892357}
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  enemyName: 비전 탱크 골렘
+  enemyName: "\uBE44\uC804 \uD0F1\uD06C \uACE8\uB818"
   targetTag: Player
   targetSearchLayers:
     serializedVersion: 2
