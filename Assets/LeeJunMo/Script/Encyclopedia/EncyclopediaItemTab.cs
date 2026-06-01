@@ -47,6 +47,7 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
     private ScriptableObject selectedItem;
     private bool listenersBound;
     private bool interactionEnabled = true;
+    private bool contentVisible;
     private bool warnedMissingItemDatabase;
     private bool warnedMissingLeftPage;
     private bool warnedMissingRightPage;
@@ -59,6 +60,11 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
     {
         ValidateRequiredReferences();
         BindListeners();
+    }
+
+    private void Update()
+    {
+        HandleGridNavigationInput();
     }
 
 #if UNITY_EDITOR
@@ -148,6 +154,7 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
 
     public void SetContentVisible(bool visible)
     {
+        contentVisible = visible;
         leftPage?.SetContentVisible(visible);
         rightPage?.SetContentVisible(visible);
     }
@@ -206,10 +213,124 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
 
     public void Clear()
     {
+        contentVisible = false;
         ClearSelection();
         leftPage?.ClearSlots();
         rightPage?.Clear();
         SettleCurrentLayout();
+    }
+
+    private void HandleGridNavigationInput()
+    {
+        if (!CanHandleGridNavigation())
+            return;
+
+        InputBindingService input = InputBindingService.EnsureInstance();
+        if (input.WasPressedThisFrame(InputActionId.MoveRight))
+            MoveSelectionLinear(1);
+        else if (input.WasPressedThisFrame(InputActionId.MoveLeft))
+            MoveSelectionLinear(-1);
+        else if (input.WasPressedThisFrame(InputActionId.MoveDown))
+            MoveSelectionVertical(1);
+        else if (input.WasPressedThisFrame(InputActionId.MoveUp))
+            MoveSelectionVertical(-1);
+    }
+
+    private bool CanHandleGridNavigation()
+    {
+        return contentVisible &&
+               interactionEnabled &&
+               isActiveAndEnabled &&
+               gameObject.activeInHierarchy &&
+               GetEntryCount(CurrentCategory) > 0;
+    }
+
+    private void MoveSelectionLinear(int direction)
+    {
+        int entryCount = GetEntryCount(CurrentCategory);
+        if (entryCount <= 0)
+            return;
+
+        int targetIndex = selectedIndex >= 0
+            ? selectedIndex + direction
+            : GetCurrentPageStartIndex();
+        if (targetIndex < 0 || targetIndex >= entryCount)
+            return;
+
+        SelectIndexFromNavigation(targetIndex);
+    }
+
+    private void MoveSelectionVertical(int rowDirection)
+    {
+        int entryCount = GetEntryCount(CurrentCategory);
+        int pageCapacity = GetCurrentPageCapacity();
+        int pageStartIndex = currentPage * pageCapacity;
+        int visibleCount = Mathf.Clamp(entryCount - pageStartIndex, 0, pageCapacity);
+        if (visibleCount <= 0)
+            return;
+
+        if (selectedIndex < pageStartIndex || selectedIndex >= pageStartIndex + visibleCount)
+        {
+            SelectIndexFromNavigation(pageStartIndex);
+            return;
+        }
+
+        int columns = GetGridNavigationColumnCount();
+        int selectedOffset = selectedIndex - pageStartIndex;
+        int selectedColumn = selectedOffset % columns;
+        int targetOffset = selectedOffset + rowDirection * columns;
+
+        if (targetOffset < 0)
+            targetOffset = GetBottomVisibleOffsetInColumn(selectedColumn, columns, visibleCount);
+        else if (targetOffset >= visibleCount)
+            targetOffset = selectedColumn;
+
+        if (targetOffset == selectedOffset || targetOffset < 0 || targetOffset >= visibleCount)
+            return;
+
+        SelectIndexFromNavigation(pageStartIndex + targetOffset);
+    }
+
+    private void SelectIndexFromNavigation(int targetIndex)
+    {
+        int entryCount = GetEntryCount(CurrentCategory);
+        if (targetIndex < 0 || targetIndex >= entryCount)
+            return;
+
+        int pageCapacity = GetCurrentPageCapacity();
+        int targetPage = targetIndex / pageCapacity;
+        if (targetPage != currentPage)
+        {
+            currentPage = targetPage;
+            selectedIndex = targetIndex;
+            Rebuild(selectFirst: false);
+            return;
+        }
+
+        SelectEntry(CurrentCategory, targetIndex);
+    }
+
+    private int GetCurrentPageStartIndex()
+    {
+        return currentPage * GetCurrentPageCapacity();
+    }
+
+    private int GetGridNavigationColumnCount()
+    {
+        EncyclopediaEntryGridView gridView = leftPage != null ? leftPage.EntryGridView : null;
+        if (gridView != null)
+            return Mathf.Max(1, gridView.NavigationColumnCount);
+
+        return Mathf.Max(1, Mathf.RoundToInt(Mathf.Sqrt(GetCurrentPageCapacity())));
+    }
+
+    private static int GetBottomVisibleOffsetInColumn(int column, int columns, int visibleCount)
+    {
+        int bottomOffset = column;
+        while (bottomOffset + columns < visibleCount)
+            bottomOffset += columns;
+
+        return bottomOffset;
     }
 
     private void RequestSubTab(EncyclopediaItemSubTab subTab)
@@ -222,22 +343,22 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
 
         void Swap()
         {
-            PlayCategoryChangeFlipPageSound();
             ApplySubTab(subTab, selectFirst: true);
+            PlayCategoryChangeEndSound();
         }
 
         void Complete()
         {
             SetContentVisible(true);
             SetInteractionEnabled(true);
-            PlayCategoryChangeEndSound();
         }
 
         if (bookPresentation != null && playLeftPageTurnOnSubTabChange)
-            bookPresentation.PlayLeftPageTurn(Swap, Complete);
+            bookPresentation.PlayLeftPageTurn(Swap, Complete, PlayCategoryChangeFlipPageSound);
         else
         {
             SetContentVisible(true);
+            PlayCategoryChangeFlipPageSound();
             Swap();
             Complete();
         }

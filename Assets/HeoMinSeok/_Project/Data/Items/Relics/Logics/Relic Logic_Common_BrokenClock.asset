@@ -16,12 +16,18 @@ MonoBehaviour:
   - attribute: {fileID: 11400000, guid: f466dc1481454c2da49e416aa7749743, type: 2}
     displayNameOverride: "공격속도"
     type: 0
-    value: 0.12
-    valueByLevel: []
+    value: 0.04
+    valueByLevel:
+    - 0.04
+    - 0.08
+    - 0.12
     duration: 0
   - attribute: {fileID: 11400000, guid: 94479dde93479a146a9bd51a982b12ca, type: 2}
     displayNameOverride: "스킬 피해"
     type: 1
-    value: -0.08
-    valueByLevel: []
+    value: -0.03
+    valueByLevel:
+    - -0.03
+    - -0.05
+    - -0.08
     duration: 0

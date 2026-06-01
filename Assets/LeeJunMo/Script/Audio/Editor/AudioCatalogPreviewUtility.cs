@@ -9,6 +9,12 @@ namespace CapstoneAudio.EditorTools
         private static GameObject previewRoot;
         private static AudioSource previewSource;
         private static AudioClip originalPreviewClip;
+        private static double fadeStartTime;
+        private static float fadeStartVolume;
+        private static float fadeTargetVolume;
+        private static float fadeDurationSeconds;
+        private static bool isFading;
+        private static bool stopWhenFadeCompletes;
 
         static AudioCatalogPreviewUtility()
         {
@@ -19,14 +25,14 @@ namespace CapstoneAudio.EditorTools
         }
 
         public static bool CanPreview => true;
-        public static bool HasActivePreview => previewSource != null && previewSource.isPlaying;
+        public static bool HasActivePreview => previewSource != null && (previewSource.isPlaying || isFading);
 
         public static bool IsPreviewing(AudioClip clip)
         {
             return clip != null &&
                    originalPreviewClip == clip &&
                    previewSource != null &&
-                   previewSource.isPlaying;
+                   (previewSource.isPlaying || isFading);
         }
 
         public static void PlayVariant(
@@ -35,7 +41,8 @@ namespace CapstoneAudio.EditorTools
             float playbackSpeed,
             float pitchMin,
             float pitchMax,
-            bool loop = false)
+            bool loop = false,
+            float fadeInSeconds = 0f)
         {
             if (clip == null)
                 return;
@@ -44,12 +51,14 @@ namespace CapstoneAudio.EditorTools
             if (previewSource == null)
                 return;
 
+            ResetFadeState();
             previewSource.Stop();
             previewSource.clip = clip;
             previewSource.loop = loop;
             previewSource.playOnAwake = false;
             previewSource.spatialBlend = 0f;
-            previewSource.volume = Mathf.Clamp01(volume);
+            float targetVolume = Mathf.Clamp01(volume);
+            previewSource.volume = fadeInSeconds > 0f ? 0f : targetVolume;
             float clampedPitchMin = Mathf.Clamp(Mathf.Min(pitchMin, pitchMax), 0.1f, 3f);
             float clampedPitchMax = Mathf.Clamp(Mathf.Max(pitchMin, pitchMax), 0.1f, 3f);
             float runtimePitch = Mathf.Approximately(clampedPitchMin, clampedPitchMax)
@@ -60,9 +69,35 @@ namespace CapstoneAudio.EditorTools
 
             originalPreviewClip = clip;
             previewSource.Play();
+
+            if (fadeInSeconds > 0f)
+                BeginFade(targetVolume, fadeInSeconds, stopOnComplete: false);
         }
 
         public static void StopPreview()
+        {
+            StopPreview(0f);
+        }
+
+        public static void StopPreview(float fadeOutSeconds)
+        {
+            if (previewSource == null)
+            {
+                originalPreviewClip = null;
+                ResetFadeState();
+                return;
+            }
+
+            if (fadeOutSeconds > 0f && previewSource.isPlaying)
+            {
+                BeginFade(0f, fadeOutSeconds, stopOnComplete: true);
+                return;
+            }
+
+            StopPreviewImmediate();
+        }
+
+        private static void StopPreviewImmediate()
         {
             if (previewSource != null)
                 previewSource.Stop();
@@ -75,6 +110,13 @@ namespace CapstoneAudio.EditorTools
         {
             if (previewSource == null)
                 return;
+
+            if (isFading)
+            {
+                UpdateFade();
+                if (previewSource == null)
+                    return;
+            }
 
             if (previewSource.isPlaying)
                 return;
@@ -105,11 +147,74 @@ namespace CapstoneAudio.EditorTools
 
         private static void CleanupPreviewSource()
         {
+            ResetFadeState();
+
             if (previewRoot != null)
                 Object.DestroyImmediate(previewRoot);
 
             previewRoot = null;
             previewSource = null;
+        }
+
+        private static void BeginFade(float targetVolume, float durationSeconds, bool stopOnComplete)
+        {
+            if (previewSource == null)
+                return;
+
+            fadeStartTime = EditorApplication.timeSinceStartup;
+            fadeStartVolume = previewSource.volume;
+            fadeTargetVolume = Mathf.Clamp01(targetVolume);
+            fadeDurationSeconds = Mathf.Max(0f, durationSeconds);
+            stopWhenFadeCompletes = stopOnComplete;
+            isFading = fadeDurationSeconds > 0f &&
+                       !Mathf.Approximately(fadeStartVolume, fadeTargetVolume);
+
+            if (!isFading)
+                CompleteFade();
+        }
+
+        private static void UpdateFade()
+        {
+            if (previewSource == null)
+            {
+                ResetFadeState();
+                return;
+            }
+
+            if (fadeDurationSeconds <= 0f)
+            {
+                CompleteFade();
+                return;
+            }
+
+            float progress = Mathf.Clamp01(
+                (float)((EditorApplication.timeSinceStartup - fadeStartTime) / fadeDurationSeconds));
+            previewSource.volume = Mathf.Lerp(fadeStartVolume, fadeTargetVolume, progress);
+
+            if (progress >= 1f)
+                CompleteFade();
+        }
+
+        private static void CompleteFade()
+        {
+            if (previewSource != null)
+                previewSource.volume = fadeTargetVolume;
+
+            bool shouldStop = stopWhenFadeCompletes;
+            ResetFadeState();
+
+            if (shouldStop)
+                StopPreviewImmediate();
+        }
+
+        private static void ResetFadeState()
+        {
+            fadeStartTime = 0d;
+            fadeStartVolume = 0f;
+            fadeTargetVolume = 0f;
+            fadeDurationSeconds = 0f;
+            isFading = false;
+            stopWhenFadeCompletes = false;
         }
     }
 }

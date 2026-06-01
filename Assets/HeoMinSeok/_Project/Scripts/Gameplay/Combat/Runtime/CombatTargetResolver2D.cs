@@ -85,4 +85,40 @@ namespace UnityGAS
             return path;
         }
     }
+
+    public static class TopDownEllipseHitUtility2D
+    {
+        private const float MinRadius = 0.005f;
+
+        public static bool ContainsPoint(Vector2 center, float diameter, Vector2 point)
+        {
+            return ContainsPoint(center, diameter, AttackTelegraphSpec.TopDownCircleWarningYScale, point);
+        }
+
+        public static bool ContainsPoint(Vector2 center, float diameter, float yScale, Vector2 point)
+        {
+            float radiusX = Mathf.Max(MinRadius, diameter * 0.5f);
+            float radiusY = Mathf.Max(MinRadius, diameter * Mathf.Max(0.01f, yScale) * 0.5f);
+            float normalizedX = (point.x - center.x) / radiusX;
+            float normalizedY = (point.y - center.y) / radiusY;
+            return normalizedX * normalizedX + normalizedY * normalizedY <= 1f;
+        }
+
+        public static bool ContainsCollider(Collider2D collider, Vector2 center, float diameter)
+        {
+            return ContainsCollider(collider, center, diameter, AttackTelegraphSpec.TopDownCircleWarningYScale);
+        }
+
+        public static bool ContainsCollider(Collider2D collider, Vector2 center, float diameter, float yScale)
+        {
+            if (collider == null)
+                return false;
+
+            Vector2 closestPoint = collider.ClosestPoint(center);
+            if (ContainsPoint(center, diameter, yScale, closestPoint))
+                return true;
+
+            return ContainsPoint(center, diameter, yScale, collider.bounds.center);
+        }
+    }
 }

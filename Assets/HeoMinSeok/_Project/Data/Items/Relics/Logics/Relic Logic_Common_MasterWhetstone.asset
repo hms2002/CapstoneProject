@@ -16,12 +16,18 @@ MonoBehaviour:
   - attribute: {fileID: 11400000, guid: 2c8e2b555f632824fbc8a39cd7bcfc86, type: 2}
     displayNameOverride: "공격력"
     type: 1
-    value: 0.06
-    valueByLevel: []
+    value: 0.02
+    valueByLevel:
+    - 0.02
+    - 0.04
+    - 0.06
     duration: 0
   - attribute: {fileID: 11400000, guid: f412c7da2733d71489ec2687fd2f7134, type: 2}
     displayNameOverride: "기본공격 피해"
     type: 1
-    value: 0.08
-    valueByLevel: []
+    value: 0.03
+    valueByLevel:
+    - 0.03
+    - 0.05
+    - 0.08
     duration: 0

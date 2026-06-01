@@ -16,12 +16,18 @@ MonoBehaviour:
   - attribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
     displayNameOverride: "이동속도"
     type: 1
-    value: -0.05
-    valueByLevel: []
+    value: -0.02
+    valueByLevel:
+    - -0.02
+    - -0.03
+    - -0.05
     duration: 0
   - attribute: {fileID: 11400000, guid: 2c8e2b555f632824fbc8a39cd7bcfc86, type: 2}
     displayNameOverride: "공격력"
     type: 1
-    value: 0.18
-    valueByLevel: []
+    value: 0.06
+    valueByLevel:
+    - 0.06
+    - 0.12
+    - 0.18
     duration: 0

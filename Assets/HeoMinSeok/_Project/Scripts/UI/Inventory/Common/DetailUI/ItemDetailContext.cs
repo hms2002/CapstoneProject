@@ -14,6 +14,7 @@ public sealed class ItemDetailContext
     public AttributeSet attributeSet;
     public IItemContainer sourceContainer;
     public int sourceIndex = -1;
+    public bool IsInspectionOnly;
     public int relicLevelOverride = 0; // 있으면 이 값을 우선 사용
 
     public bool IsFromChest =>
@@ -35,7 +36,7 @@ public sealed class ItemDetailContext
     /// </summary>
     public ItemDetailActionHint ResolvePrimaryActionHint()
     {
-        if (sourceContainer == null || sourceIndex < 0)
+        if (IsInspectionOnly || sourceContainer == null || sourceIndex < 0)
             return ItemDetailActionHint.Hidden;
 
         if (IsFromChest)

@@ -2,22 +2,90 @@
 status: active
 authority: project-log
 category: decision-log
-last_reviewed: 2026-05-30
+last_reviewed: 2026-06-01
 ---
 
 # Decision Log
 
+## 2026-05-31 - GameOver Inventory Uses Layer Lift And Inspection Mode
+
+Decision:
+GameOver may open only the authored Inventory through its existing owner exception. While that Inventory is open, GameOver temporarily lifts the existing `Popup` and `Hover` canvases above `GameOverCanvas` and puts the Inventory into inspection-only mode.
+
+Reason:
+`GameOverCanvas` is authored above `PopupCanvas`, so the Inventory can open but render behind GameOver. Reauthoring the prefab or globally changing canvas order would affect normal gameplay UI. The GameOver exception also must not let the player mutate items after defeat or victory.
+
+Implications:
+- The layer lift is runtime-only and restores the original `Popup`/`Hover` sorting state when the Inventory closes or GameOver cleans up.
+- Inspection-only Inventory allows hover tooltips but blocks drag, drop, right-click quick move, and fixed-key world drop.
+- FakeGameOver still does not expose the Inventory exception.
+
+## 2026-05-31 - DemonKing Slash And Cinematic Sword Beats Are Pattern-Owned
+
+Decision:
+DemonKing HeavySlash, SwordThrow, HomingMagic aim warnings, FinalDesperation sword planting, and death sword planting stay owned by the relevant DemonKing pattern/actor code instead of animation events or scene YAML edits.
+
+Reason:
+These beats depend on live target position, current sword state, warning lock timing, and boss lifecycle cleanup. Keeping the timing in AL/actor code lets the Pattern Workbench and Inspector fields tune the behavior while the transition-free DarkLord controller remains a state library.
+
+Implications:
+- HeavySlash uses `stopBeforeTargetDistance` only for its initial approach spacing. The later warning/LockOn/commit sector is positioned by `playerAnchorInWarningRadius`, and commit movement dashes the boss so `SwordSlashOrigin` lands on the locked sector origin while the player sits at the configured point inside the warning.
+- SwordThrow uses the `DarkLord_Sword_Throwing` clip last-frame timing as the release point; reflections remain physics-only and do not create warning lines.
+- FinalDesperation and death use cinematic EgoSword planted states that do not start dropped sword subpatterns, damage, impact VFX, spin VFX, or afterimages.
+- `DemonKingVfxCueRef.scale` is now a runtime size multiplier for cue-authored visuals; existing `Vector3.one` cues remain unchanged, but non-one serialized scales must be reviewed in Play Mode.
+
+## 2026-05-31 - Encyclopedia Relics Do Not Use StoryText For Effects
+
+Decision:
+The encyclopedia Relic detail path does not use shared `StoryText` for effect display. Relic Story/Description UI stays inactive for now, and per-level relic effects render only through dedicated `relicEffectRoot` / `relicEffectText` authoring.
+
+Reason:
+Current relic entries do not have story copy. Reusing `StoryText` for effect output made the layout imply relic story support and hid whether the dedicated relic effect section was actually wired.
+
+Implications:
+- Add a separate relic story section later only if relic story content becomes a real requirement.
+- Missing `relicEffectText` is an authoring gap, not a reason to fall back to `StoryText`.
+- Weapon and Consumable entries may continue to use shared `StoryText` for their current description/story paths.
+
+## 2026-05-31 - Encyclopedia Weapon Stats And Relic Preview Use Separate Authored References
+
+Decision:
+The encyclopedia Item RightPage treats weapon stats and relic level preview as separate authored UI references. Tab icons are also explicit authoring fields on the screen/left-page presenters, and relic preview guide icons are resolved through the existing Q/E KeyGlyph path.
+
+Reason:
+The weapon stat text box and relic level-preview box are visually different layout concerns. Sharing `LvPanel`/`LvTxt` made editor auto-wiring collapse those concerns and prevented authored tab/guide icons from being inspected directly.
+
+Implications:
+- Use `WeaponStatsRoot`/`StatTextPanel` and `RelicPreviewRoot`/`LvPanel` as separate prefab objects where the layout is split.
+- The encyclopedia wiring tool may warn about shared weapon/relic references but should not create replacement visual hierarchy.
+- Relic previous/next guide icons should come from `InputBindingService`/`InputGlyphDatabase` instead of hard-coded sprites.
+
+## 2026-05-31 - Upgrade Rewards Use Node Metadata For Generic Effects
+
+Decision:
+Upgrade purchase reward popups use the purchased `UpgradeNodeSO` as the metadata source for generic effect rewards. Generic effect slots show the node icon and generic reward text uses the node description. Item unlock effects remain item-display rewards and show a generic item-unlock summary line.
+
+Reason:
+The upgrade tree node and the purchase reward popup should not drift because `UpgradeEffectSO.rewardIcon` or `rewardText` was tuned separately. Node icon and description are already what the player saw before purchase.
+
+Implications:
+- `RewardDisplayService.ShowUpgradeReward(...)` is the normal upgrade purchase reward entry point.
+- `UpgradeEffectSO.rewardIcon` and `rewardText` remain serialized compatibility data for legacy or non-node reward calls.
+- Missing generic reward icon/description should be fixed on the `UpgradeNodeSO`, not by restoring per-effect display overrides.
+
 ## 2026-05-31 - DemonKing Charge Uses Probe-Based Visible Trajectories
 
 Decision:
-HP50 `WallBounceRush` uses an optional authored wall-rush probe collider for endpoint casts, and each rush may retarget within a limited player-facing angle cone when the direct player path is too short to read as a visible charge. Charge endpoint presentation uses the same `DemonChargeEffectVfx` prefab instance by switching from `Loop` to `Disappear` instead of authoring a second endpoint VFX prefab slot.
+HP50 `WallBounceRush` uses an optional authored wall-rush probe collider for endpoint casts, and each rush may retarget within a limited player-facing angle cone when the direct player path is too short to read as a visible charge. Charge presentation uses the same `DemonChargeEffectVfx` prefab instance, follows the boss in `Loop`, then switches that same instance to `Disappear` at the configured travel progress before the endpoint instead of authoring a second endpoint VFX prefab slot.
 
 Reason:
 The pattern is count-based and must read as the configured number of visible rushes. Near-wall player directions can be collision-correct while still looking like a wasted count. The Charge VFX asset is authored as one controller with multiple states, so a separate disappear prefab slot creates unnecessary and misleading tuning surface.
 
 Implications:
 - `wallRushCollisionProbe` should be authored on the DemonKing prefab/scene instance when body-accurate wall stopping matters.
-- `chargeDisappearVfx` is legacy serialized data only; designers should tune `chargeLoopVfx` for both loop and disappear state placement.
+- `chargeDisappearVfx` is legacy serialized data only; designers should tune `chargeLoopVfx` for both loop and disappear state placement, plus `chargeDisappearStartProgress` for when the loop detaches into `Disappear`.
+- Missing or zero `chargeDisappearStartProgress` values fall back to `0.9` at runtime so older AL assets do not immediately switch the Charge VFX into `Disappear`.
+- `chargeVfxFlipX` is the WallBounceRush-facing horizontal flip control for the Charge VFX; cue-level `Flip X` remains available for individual VFX cue overrides in the Workbench.
 - WallBounceRush remains hand-only because the sword is forced dropped before the HP50 charge pattern.
 
 ## 2026-05-30 - DemonKing Terminal Ending Returns Through Victory GameOver
@@ -60,17 +128,17 @@ Implications:
 - Reused body animations are acceptable only when the runtime timing intentionally shares the same field.
 - Optional no-override phases can remain empty, but visible body poses should not be hardcoded in the preview without a corresponding runtime field.
 
-## 2026-05-30 - DemonKing Uses Top-Down Ellipse Warnings And Wall-Safe Charge
+## 2026-05-30 - Selected Top-Down Ellipse Warnings And DemonKing Wall-Safe Charge
 
 Decision:
-DemonKing-only circular warnings render as 90% Y-scale ellipses for the 3/4 top-down read, while damage remains on the existing circular gameplay shapes. HP50 `WallBounceRush` uses a body-radius wall cast for charge endpoints, and DemonKing keeps `State.Status.KnockbackImmune` active through its lifecycle.
+Selected circular ground warnings render as 70% Y-scale ellipses for the 3/4 top-down read, while unselected circular warnings and ring warnings remain visually circular. Overlap/point-distance damage paths paired with these selected warnings filter their final hit application through the same top-down ellipse; authored collider/timed-hit VFX paths still use their prefab collider shapes. HP50 `WallBounceRush` uses a body-radius wall cast for charge endpoints, and DemonKing keeps `State.Status.KnockbackImmune` active through its lifecycle.
 
 Reason:
-The boss should not visually overstate circular ground danger in a top-down perspective, should not cross walls during the charge set piece, and should not be displaced by player knockback effects.
+Ground-impact warnings should not visually overstate danger in a top-down perspective, but some attacks still read better as true circles or rings. DemonKing should also not cross walls during the charge set piece, and should not be displaced by player knockback effects.
 
 Implications:
-- `AttackTelegraphSpec.CreateEllipse(...)` exists for visual warning geometry, but generic `CreateCircle(...)` remains circular for other enemies and bosses.
-- DemonKing warning helpers route circle warnings through the 90% Y-scale helper; damage radii are unchanged.
+- `AttackTelegraphSpec.CreateCircle(...)` remains visually circular. `CreateTopDownCircle(...)` is the opt-in 70% Y-scale helper, `CreateEllipse(...)` remains available for explicit custom sizes, and `CreateRing(...)` remains circular.
+- DemonKing warning helpers route their circular ground warnings through the same 70% Y-scale helper. Fallback non-collider circle damage uses the matching ellipse filter, while timed animated VFX collider hits stay collider-authored.
 - WallBounceRush body radius and skin width are Inspector-facing pattern fields and need Play Mode tuning against the authored arena walls.
 
 ## 2026-05-30 - DemonKing VFX Uses Left-Baseline Socket Tuning
@@ -102,13 +170,15 @@ Implications:
 ## 2026-05-30 - DemonKing Visual Tuning Uses An Editor Preview Tool
 
 Decision:
-DemonKing body clips, one-shot VFX hit windows, pattern AL tuning fields, EgoSword offsets, and VFX sockets should be adjusted through `Tools/DemonKing/Visual Tuning Preview` as an Editor-only authoring tool. The tool edits existing assets/components rather than introducing a new central runtime tuning profile.
+DemonKing body clips, one-shot VFX hit windows, pattern AL tuning fields, EgoSword offsets, and VFX sockets should be adjusted through `Tools/DemonKing/Visual Tuning Preview` as an Editor-only authoring tool. The tool edits existing assets/components rather than introducing a new central runtime tuning profile. For runtime-sensitive pattern checks, the Workbench provides a Play Mode-only Actual Pattern Runner that executes the selected `AL_DemonKing_*` through the live DemonKing `AbilitySystem`, plus an optional live scene render mode that shows that Play Mode scene inside the Preview Window.
 
 Reason:
 DarkLord/DemonKing tuning values are intentionally split across `.anim` clips, generated Resources VFX prefabs, AbilityLogic ScriptableObject assets, and scene/prefab components. A central runtime profile would require migration and another source of truth, while an Editor-only surface can make the existing ownership visible and previewable.
 
 Implications:
-- Preview instances are hidden temporary objects rendered through a tool camera/RenderTexture and must not mutate scene or prefab contents during playback.
+- Synthetic preview instances are hidden temporary objects rendered through a tool camera/RenderTexture and must not mutate scene or prefab contents during playback.
+- Actual Pattern Runner is explicitly Play Mode-only and mutates only the live runtime scene state: it can move the boss, spawn real warnings/VFX, apply damage, play sound/shake, and cancel the current DemonKing ability when requested. For tuning, it can also isolate the selected pattern, run it once or in a loop, add a temporary `State.Invulnerable` tag to the player without disabling player input, refresh terminal test state after patterns such as FinalDesperation, and move the player to the DemonKing arena center.
+- Live Runtime Preview is also Play Mode-only. It reuses the Workbench RenderTexture camera to frame the live DemonKing/target scene, and should be used for runtime socket/VFX placement checks before final Game view review.
 - Composite preview should be used when checking combined body pose, selected VFX, hit-window marker, EgoSword markers, and socket positions in one authoring view.
 - `.anim` frame curves and hit-window events are saved only through explicit Apply buttons.
 - Pattern, EgoSword, and socket serialized fields are edited through `SerializedObject` with Undo/dirty handling, matching normal Inspector ownership.
@@ -1869,6 +1939,7 @@ The existing DemonKing non-laser VFX path already validates Resources prefabs, A
 
 Implications:
 - `DarkLordExplosion2` is used only where the pattern asks for that stronger explosion style: HeavySlash follow-up line explosions, Bombardment lane explosions, and 10% FinalDesperation bombs.
+- Circular explosion/impact cue overrides ignore direction-vector rotation and use only their authored rotation offset, so delayed circle explosions do not inherit placeholder directions such as `Vector2.down`.
 - `DarkLordFragment` is a separate crack visual: timed after general `DemonKingImpactVfx`, persistent while EgoSword is fixed in the ground, and faded/cleared by the owning runtime path.
 - HP50 charge and EgoSword spin are loop-follow visuals. The sword spin follows position but not sword rotation, matching the authored spinning effect sheet.
 - Unity import or `Tools/DemonKing/Rebuild Pattern VFX Assets` must create/repair the generated Resources assets before runtime loads the new prefabs.

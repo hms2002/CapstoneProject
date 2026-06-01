@@ -16,6 +16,9 @@ MonoBehaviour:
   - attribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
     displayNameOverride: "이동속도"
     type: 1
-    value: 0.1
-    valueByLevel: []
+    value: 0.03
+    valueByLevel:
+    - 0.03
+    - 0.06
+    - 0.1
     duration: 0

@@ -28,13 +28,16 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
     private const float PatternControlsMinWidth = 320f;
     private const float TimelineMinWidth = 360f;
     private const float AdvancedToolsMinWidth = 300f;
+    private const float RuntimePatternRunnerMinWidth = 320f;
     private const float BottomMinHeight = 160f;
     private const float PatternControlsDefaultWidth = 380f;
     private const float BottomDefaultHeight = 220f;
-    private const float AdvancedToolsDefaultWidth = 360f;
+    private const float AdvancedToolsDefaultWidth = 340f;
+    private const float RuntimePatternRunnerDefaultWidth = 360f;
     private const string PatternControlsWidthPrefKey = "DemonKingVisualTuningPreview.PatternControlsWidth";
     private const string BottomPaneHeightPrefKey = "DemonKingVisualTuningPreview.BottomPaneHeight";
     private const string AdvancedToolsWidthPrefKey = "DemonKingVisualTuningPreview.AdvancedToolsWidth";
+    private const string RuntimePatternRunnerWidthPrefKey = "DemonKingVisualTuningPreview.RuntimePatternRunnerWidth";
 
     private static readonly Vector3 PreviewOrigin = new(14000f, 14000f, 0f);
     private static readonly Color PreviewBackground = new(0.075f, 0.075f, 0.085f, 1f);
@@ -64,6 +67,12 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
         SocketMap
     }
 
+    private enum RuntimePatternPlaybackMode
+    {
+        OneShot,
+        Loop
+    }
+
     private readonly List<AnimationClip> darkLordClips = new();
     private readonly List<AnimationClip> vfxClips = new();
     private readonly List<GameObject> vfxPrefabs = new();
@@ -81,12 +90,14 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
     private Vector2 frameScroll;
     private Vector2 patternTimelineScroll;
     private Vector2 patternControlsScroll;
+    private Vector2 runtimePatternRunnerScroll;
     private Vector2 serializedScroll;
     private ScriptableObject lastPatternWorkbenchAsset;
     private bool layoutPrefsLoaded;
     private float patternControlsPaneWidth;
     private float bottomPaneHeight;
     private float advancedToolsPaneWidth;
+    private float runtimePatternRunnerPaneWidth;
 
     private Camera previewCamera;
     private RenderTexture previewTexture;
@@ -121,6 +132,26 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
     private int patternPreviewBodyFrameIndex = -1;
     private bool patternShowWarningShape = true;
     private bool showFullPatternSerialized;
+    private DemonKingController runtimePatternDemonKing;
+    private Transform runtimePatternTarget;
+    private bool runtimePatternCancelCurrentBeforeRun = true;
+    private bool runtimePatternSelectedOnly = true;
+    private bool runtimePatternPlayerInvulnerable = true;
+    private RuntimePatternPlaybackMode runtimePatternPlaybackMode = RuntimePatternPlaybackMode.OneShot;
+    private bool runtimePatternLivePreviewEnabled;
+    private bool runtimePatternLivePreviewFrameTarget = true;
+    private bool runtimePatternLivePreviewUseGameCameraMask = true;
+    private float runtimePatternLivePreviewCameraSize = 5.5f;
+    private float runtimePatternLivePreviewPadding = 1.25f;
+    private AbilitySystem runtimePatternAbilitySystem;
+    private AbilityDefinition runtimePatternAbilityDefinition;
+    private string runtimePatternStatus;
+    private double runtimePatternStartedAt;
+    private DemonKingController runtimePatternIsolatedDemon;
+    private bool runtimePatternShouldRestoreBossCombat;
+    private TagSystem runtimePatternInvulnerableTagSystem;
+    private GameplayTag runtimePatternInvulnerableTag;
+    private bool runtimePatternInvulnerableApplied;
     private DemonKingPatternPreviewShape activePatternPreviewShape;
     private DemonKingPatternPreviewPhase activePatternPreviewPhase;
     private readonly List<DemonKingPatternPreviewShape> activePatternPreviewShapes = new();
@@ -153,7 +184,12 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
 
     private void OnEnable()
     {
-        float minimumWidth = PreviewMinWidth + PatternControlsMinWidth + SplitterSize + WindowPadding * 2f;
+        float topMinimumWidth = PreviewMinWidth + PatternControlsMinWidth + SplitterSize;
+        float bottomMinimumWidth = TimelineMinWidth
+            + AdvancedToolsMinWidth
+            + RuntimePatternRunnerMinWidth
+            + SplitterSize * 2f;
+        float minimumWidth = Mathf.Max(topMinimumWidth, bottomMinimumWidth) + WindowPadding * 2f;
         float minimumHeight = TopMinHeight
             + BottomMinHeight
             + SplitterSize
@@ -172,6 +208,7 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
     private void OnDisable()
     {
         EditorApplication.update -= TickPreview;
+        CleanupRuntimePatternAbility(cancelExecution: true);
         DestroyPreviewInstance();
         DestroyPreviewCamera();
         ReleasePreviewTexture();
@@ -296,8 +333,14 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
 
     private void DrawBottomWorkbenchPanes(Rect bottomRect)
     {
+        Rect runtimeRect = new(
+            bottomRect.xMax - runtimePatternRunnerPaneWidth,
+            bottomRect.y,
+            runtimePatternRunnerPaneWidth,
+            bottomRect.height);
+        Rect runtimeSplitterRect = new(runtimeRect.x - SplitterSize, bottomRect.y, SplitterSize, bottomRect.height);
         Rect advancedRect = new(
-            bottomRect.xMax - advancedToolsPaneWidth,
+            runtimeSplitterRect.x - advancedToolsPaneWidth,
             bottomRect.y,
             advancedToolsPaneWidth,
             bottomRect.height);
@@ -318,13 +361,29 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
             delta =>
             {
                 advancedToolsPaneWidth -= delta.x;
-                ClampHorizontalPane(ref advancedToolsPaneWidth, bottomRect.width, TimelineMinWidth, AdvancedToolsMinWidth);
+                ClampBottomPaneWidths(bottomRect.width);
             },
             () => EditorPrefs.SetFloat(AdvancedToolsWidthPrefKey, advancedToolsPaneWidth));
 
         GUILayout.BeginArea(advancedRect, GUIContent.none, EditorStyles.helpBox);
         EditorGUILayout.LabelField("Advanced Asset Tools", EditorStyles.boldLabel);
         DrawAdvancedAssetTools();
+        GUILayout.EndArea();
+
+        DrawSplitter(
+            runtimeSplitterRect,
+            MouseCursor.ResizeHorizontal,
+            delta =>
+            {
+                runtimePatternRunnerPaneWidth -= delta.x;
+                ClampBottomPaneWidths(bottomRect.width);
+            },
+            () => EditorPrefs.SetFloat(RuntimePatternRunnerWidthPrefKey, runtimePatternRunnerPaneWidth));
+
+        GUILayout.BeginArea(runtimeRect, GUIContent.none, EditorStyles.helpBox);
+        runtimePatternRunnerScroll = EditorGUILayout.BeginScrollView(runtimePatternRunnerScroll);
+        DrawRuntimePatternExecutionPanel();
+        EditorGUILayout.EndScrollView();
         GUILayout.EndArea();
     }
 
@@ -333,6 +392,7 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
         patternControlsPaneWidth = EditorPrefs.GetFloat(PatternControlsWidthPrefKey, PatternControlsDefaultWidth);
         bottomPaneHeight = EditorPrefs.GetFloat(BottomPaneHeightPrefKey, BottomDefaultHeight);
         advancedToolsPaneWidth = EditorPrefs.GetFloat(AdvancedToolsWidthPrefKey, AdvancedToolsDefaultWidth);
+        runtimePatternRunnerPaneWidth = EditorPrefs.GetFloat(RuntimePatternRunnerWidthPrefKey, RuntimePatternRunnerDefaultWidth);
         layoutPrefsLoaded = true;
     }
 
@@ -357,7 +417,34 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
         }
 
         ClampHorizontalPane(ref patternControlsPaneWidth, bodyRect.width, PreviewMinWidth, PatternControlsMinWidth);
-        ClampHorizontalPane(ref advancedToolsPaneWidth, bodyRect.width, TimelineMinWidth, AdvancedToolsMinWidth);
+        ClampBottomPaneWidths(bodyRect.width);
+    }
+
+    private void ClampBottomPaneWidths(float totalWidth)
+    {
+        float availableWidth = Mathf.Max(1f, totalWidth - SplitterSize * 2f);
+        float minimumTotalWidth = TimelineMinWidth + AdvancedToolsMinWidth + RuntimePatternRunnerMinWidth;
+        if (availableWidth <= minimumTotalWidth)
+        {
+            advancedToolsPaneWidth = Mathf.Max(
+                1f,
+                availableWidth * (AdvancedToolsMinWidth / minimumTotalWidth));
+            runtimePatternRunnerPaneWidth = Mathf.Max(
+                1f,
+                availableWidth * (RuntimePatternRunnerMinWidth / minimumTotalWidth));
+            return;
+        }
+
+        runtimePatternRunnerPaneWidth = Mathf.Clamp(
+            runtimePatternRunnerPaneWidth,
+            RuntimePatternRunnerMinWidth,
+            availableWidth - TimelineMinWidth - AdvancedToolsMinWidth);
+
+        float remainingAfterRuntime = availableWidth - runtimePatternRunnerPaneWidth;
+        advancedToolsPaneWidth = Mathf.Clamp(
+            advancedToolsPaneWidth,
+            AdvancedToolsMinWidth,
+            remainingAfterRuntime - TimelineMinWidth);
     }
 
     private static void ClampHorizontalPane(
@@ -517,6 +604,12 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
             EditorGUI.DrawPreviewTexture(previewRect, previewTexture, null, ScaleMode.ScaleToFit);
         else
             EditorGUI.HelpBox(previewRect, "Preview texture is not available.", MessageType.Warning);
+
+        if (IsLiveRuntimePreviewVisible())
+        {
+            DrawLiveRuntimePreviewOverlay(previewRect);
+            return;
+        }
 
         Handles.BeginGUI();
         DrawPreviewOverlays(previewRect);
@@ -1087,6 +1180,7 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
         DrawRelativeProperty(property, "targetSize", "Target Size");
         DrawRelativeProperty(property, "scale", "Scale");
         DrawRelativeProperty(property, "rotationOffsetDeg", "Rotation Offset");
+        DrawRelativeProperty(property, "flipX", "Flip X");
         DrawRelativeProperty(property, "leaveFragment", "Leave Fragment");
         EditorGUI.indentLevel--;
     }
@@ -1162,6 +1256,450 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
             MarkEditedObjectDirty(serializedAsset.targetObject);
             RestartPreview();
         }
+    }
+
+    private void DrawRuntimePatternExecutionPanel()
+    {
+        EditorGUILayout.Space(6f);
+        using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+        {
+            EditorGUILayout.LabelField("Actual Pattern Runner", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox(
+                "Play Mode only. Runs the selected AL through the live DemonKing AbilitySystem so sockets, VFX, warnings, movement, and cleanup use the same runtime code as the fight.",
+                EditorApplication.isPlaying ? MessageType.Info : MessageType.Warning);
+
+            runtimePatternDemonKing = (DemonKingController)EditorGUILayout.ObjectField(
+                "Runtime DemonKing",
+                runtimePatternDemonKing,
+                typeof(DemonKingController),
+                true);
+            runtimePatternTarget = (Transform)EditorGUILayout.ObjectField(
+                "Runtime Target",
+                runtimePatternTarget,
+                typeof(Transform),
+                true);
+            runtimePatternCancelCurrentBeforeRun = EditorGUILayout.ToggleLeft(
+                "Cancel current DemonKing ability before run",
+                runtimePatternCancelCurrentBeforeRun);
+            bool previousSelectedOnly = runtimePatternSelectedOnly;
+            bool previousPlayerInvulnerable = runtimePatternPlayerInvulnerable;
+            runtimePatternSelectedOnly = EditorGUILayout.ToggleLeft(
+                "Use selected pattern only during test",
+                runtimePatternSelectedOnly);
+            runtimePatternPlayerInvulnerable = EditorGUILayout.ToggleLeft(
+                "Make player invulnerable during test",
+                runtimePatternPlayerInvulnerable);
+            if (previousSelectedOnly && !runtimePatternSelectedOnly)
+                RestoreRuntimePatternSelectedOnly();
+            if (previousPlayerInvulnerable && !runtimePatternPlayerInvulnerable)
+                ReleaseRuntimePatternPlayerInvulnerability();
+            runtimePatternPlaybackMode = (RuntimePatternPlaybackMode)EditorGUILayout.EnumPopup(
+                "Playback Mode",
+                runtimePatternPlaybackMode);
+
+            EditorGUILayout.Space(4f);
+            runtimePatternLivePreviewEnabled = EditorGUILayout.ToggleLeft(
+                "Show live scene in preview window",
+                runtimePatternLivePreviewEnabled);
+            using (new EditorGUI.DisabledScope(!runtimePatternLivePreviewEnabled))
+            {
+                runtimePatternLivePreviewFrameTarget = EditorGUILayout.ToggleLeft(
+                    "Auto-frame target with DemonKing",
+                    runtimePatternLivePreviewFrameTarget);
+                runtimePatternLivePreviewUseGameCameraMask = EditorGUILayout.ToggleLeft(
+                    "Use Game Camera culling mask",
+                    runtimePatternLivePreviewUseGameCameraMask);
+                runtimePatternLivePreviewCameraSize = EditorGUILayout.Slider(
+                    "Live Camera Size",
+                    runtimePatternLivePreviewCameraSize,
+                    1f,
+                    14f);
+                runtimePatternLivePreviewPadding = EditorGUILayout.Slider(
+                    "Frame Padding",
+                    runtimePatternLivePreviewPadding,
+                    0f,
+                    5f);
+                if (!EditorApplication.isPlaying)
+                    EditorGUILayout.HelpBox("Live preview appears here after entering Play Mode.", MessageType.Info);
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button("Find Live DemonKing"))
+                    runtimePatternDemonKing = Object.FindAnyObjectByType<DemonKingController>(FindObjectsInactive.Exclude);
+
+                if (GUILayout.Button("Use Selection"))
+                    AssignRuntimePatternSelection();
+            }
+
+            using (new EditorGUI.DisabledScope(!EditorApplication.isPlaying))
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button("Refresh Runtime State"))
+                    RefreshRuntimePatternState();
+
+                if (GUILayout.Button("Move Player To Center"))
+                    MoveRuntimePatternPlayerToCenter();
+            }
+
+            using (new EditorGUI.DisabledScope(!EditorApplication.isPlaying || selectedAbilityLogicAsset == null))
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button("Run Actual Pattern"))
+                    RunSelectedPatternActual();
+
+                if (GUILayout.Button("Cancel Actual Pattern"))
+                {
+                    CleanupRuntimePatternAbility(cancelExecution: true);
+                    runtimePatternStatus = "Actual pattern runner cancelled and cleaned up.";
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(runtimePatternStatus))
+                EditorGUILayout.HelpBox(runtimePatternStatus, MessageType.None);
+        }
+    }
+
+    private void AssignRuntimePatternSelection()
+    {
+        GameObject selected = Selection.activeGameObject;
+        if (selected == null)
+            return;
+
+        DemonKingController demon = selected.GetComponentInParent<DemonKingController>();
+        if (demon == null)
+            demon = selected.GetComponentInChildren<DemonKingController>(true);
+
+        if (demon != null)
+        {
+            runtimePatternDemonKing = demon;
+            return;
+        }
+
+        runtimePatternTarget = selected.transform;
+    }
+
+    private void RunSelectedPatternActual()
+    {
+        StartRuntimePatternActivation(loopRestart: false);
+    }
+
+    private void RefreshRuntimePatternState()
+    {
+        if (!EditorApplication.isPlaying)
+        {
+            runtimePatternStatus = "Enter Play Mode before refreshing runtime state.";
+            return;
+        }
+
+        DemonKingController demon = ResolveRuntimePatternDemonKing();
+        if (demon == null)
+        {
+            runtimePatternStatus = "No live DemonKingController found to refresh.";
+            return;
+        }
+
+        CleanupRuntimePatternAbility(cancelExecution: true);
+        demon.RefreshWorkbenchRuntimeState();
+        runtimePatternStatus = $"Refreshed runtime state for '{demon.name}'.";
+    }
+
+    private void MoveRuntimePatternPlayerToCenter()
+    {
+        if (!EditorApplication.isPlaying)
+        {
+            runtimePatternStatus = "Enter Play Mode before moving the player.";
+            return;
+        }
+
+        DemonKingController demon = ResolveRuntimePatternDemonKing();
+        GameObject player = ResolveRuntimePatternPlayer(runtimePatternTarget != null ? runtimePatternTarget.gameObject : null);
+        if (player == null)
+        {
+            runtimePatternStatus = "No live Player object found to move.";
+            return;
+        }
+
+        Vector3 center = demon != null ? demon.ArenaCenterPosition : Vector3.zero;
+        player.GetComponent<MovementMotor2D>()?.StopAllMotion();
+        if (player.TryGetComponent(out Rigidbody2D body))
+        {
+            body.linearVelocity = Vector2.zero;
+            body.angularVelocity = 0f;
+        }
+
+        player.transform.position = new Vector3(center.x, center.y, player.transform.position.z);
+        runtimePatternTarget = player.transform;
+        runtimePatternStatus = demon != null
+            ? $"Moved player to '{demon.name}' arena center."
+            : "Moved player to world origin because no live DemonKing was found.";
+    }
+
+    private bool StartRuntimePatternActivation(bool loopRestart)
+    {
+        if (!EditorApplication.isPlaying)
+        {
+            runtimePatternStatus = "Enter Play Mode before running an actual pattern.";
+            return false;
+        }
+
+        if (selectedAbilityLogicAsset is not AbilityLogic logic)
+        {
+            runtimePatternStatus = "Selected asset is not an AbilityLogic.";
+            return false;
+        }
+
+        DemonKingController demon = ResolveRuntimePatternDemonKing();
+        if (demon == null)
+        {
+            runtimePatternStatus = "No live DemonKingController found. Assign one or click Find Live DemonKing in Play Mode.";
+            return false;
+        }
+
+        AbilitySystem abilitySystem = demon.GetComponent<AbilitySystem>();
+        if (abilitySystem == null)
+        {
+            runtimePatternStatus = $"'{demon.name}' has no AbilitySystem.";
+            return false;
+        }
+
+        GameObject target = ResolveRuntimePatternTarget(demon);
+
+        if (!loopRestart)
+            CleanupRuntimePatternAbility(cancelExecution: true);
+
+        if (!loopRestart && runtimePatternCancelCurrentBeforeRun)
+        {
+            abilitySystem.ResetTransientRuntimeState();
+        }
+        else if (abilitySystem.IsBusy)
+        {
+            runtimePatternStatus = "DemonKing AbilitySystem is busy. Enable cancel-before-run or wait for the current ability to finish.";
+            return false;
+        }
+
+        BeginRuntimePatternTestSession(demon, target);
+
+        AbilityDefinition runtimeAbility = ScriptableObject.CreateInstance<AbilityDefinition>();
+        runtimeAbility.hideFlags = HideFlags.HideAndDontSave;
+        runtimeAbility.abilityName = $"Workbench Actual - {selectedAbilityLogicAsset.name}";
+        runtimeAbility.logic = logic;
+        runtimeAbility.executionPolicy = AbilityDefinition.ExecutionPolicy.ExclusiveQueued;
+        runtimeAbility.cooldown = 0f;
+        runtimeAbility.castTime = 0f;
+        runtimeAbility.recoveryTime = 0f;
+        runtimeAbility.canCastWhileMoving = true;
+        runtimeAbility.interruptible = true;
+        runtimeAbility.requireTargetObject = false;
+
+        AbilitySpec spec = abilitySystem.GiveAbility(runtimeAbility);
+        if (!abilitySystem.TryActivateAbility(spec, target))
+        {
+            abilitySystem.TakeAbility(runtimeAbility);
+            DestroyImmediate(runtimeAbility);
+            if (!loopRestart)
+                CleanupRuntimePatternTestSession();
+            runtimePatternStatus = "Actual pattern activation was rejected by the live AbilitySystem.";
+            return false;
+        }
+
+        runtimePatternAbilitySystem = abilitySystem;
+        runtimePatternAbilityDefinition = runtimeAbility;
+        runtimePatternStartedAt = EditorApplication.timeSinceStartup;
+        string modeLabel = runtimePatternPlaybackMode == RuntimePatternPlaybackMode.Loop ? "Looping" : "Running";
+        runtimePatternStatus = $"{modeLabel} actual pattern on '{demon.name}' from '{selectedAbilityLogicAsset.name}'.";
+        return true;
+    }
+
+    private DemonKingController ResolveRuntimePatternDemonKing()
+    {
+        if (runtimePatternDemonKing != null && runtimePatternDemonKing.isActiveAndEnabled)
+            return runtimePatternDemonKing;
+
+        runtimePatternDemonKing = Object.FindAnyObjectByType<DemonKingController>(FindObjectsInactive.Exclude);
+        return runtimePatternDemonKing;
+    }
+
+    private GameObject ResolveRuntimePatternTarget(DemonKingController demon)
+    {
+        if (runtimePatternTarget != null && runtimePatternTarget.gameObject.activeInHierarchy)
+            return runtimePatternTarget.gameObject;
+
+        if (demon != null && demon.CurrentTarget != null)
+        {
+            runtimePatternTarget = demon.CurrentTarget;
+            return demon.CurrentTarget.gameObject;
+        }
+
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            runtimePatternTarget = player.transform;
+            return player;
+        }
+
+        return null;
+    }
+
+    private void BeginRuntimePatternTestSession(DemonKingController demon, GameObject target)
+    {
+        if (runtimePatternSelectedOnly)
+            BeginRuntimePatternSelectedOnly(demon);
+
+        if (runtimePatternPlayerInvulnerable)
+            ApplyRuntimePatternPlayerInvulnerability(target);
+    }
+
+    private void BeginRuntimePatternSelectedOnly(DemonKingController demon)
+    {
+        if (demon == null)
+            return;
+
+        if (runtimePatternIsolatedDemon == demon)
+            return;
+
+        RestoreRuntimePatternSelectedOnly();
+        runtimePatternIsolatedDemon = demon;
+        runtimePatternShouldRestoreBossCombat = demon.IsCombatActive;
+        if (demon.IsCombatActive)
+            demon.SetCombatActive(false);
+    }
+
+    private void RestoreRuntimePatternSelectedOnly()
+    {
+        DemonKingController demon = runtimePatternIsolatedDemon;
+        bool shouldRestore = runtimePatternShouldRestoreBossCombat;
+        runtimePatternIsolatedDemon = null;
+        runtimePatternShouldRestoreBossCombat = false;
+
+        if (!EditorApplication.isPlaying || demon == null || !shouldRestore || demon.IsDead)
+            return;
+
+        demon.SetCombatActive(true);
+    }
+
+    private void ApplyRuntimePatternPlayerInvulnerability(GameObject preferredTarget)
+    {
+        if (runtimePatternInvulnerableApplied)
+            return;
+
+        GameObject player = ResolveRuntimePatternPlayer(preferredTarget);
+        if (player == null)
+            return;
+
+        TagSystem tagSystem = player.GetComponent<TagSystem>();
+        if (tagSystem == null)
+            return;
+
+        runtimePatternInvulnerableTag ??= Resources.Load<GameplayTag>("Tags/State.Invulnerable");
+        if (runtimePatternInvulnerableTag == null)
+            return;
+
+        tagSystem.AddTag(runtimePatternInvulnerableTag, 1);
+        runtimePatternInvulnerableTagSystem = tagSystem;
+        runtimePatternInvulnerableApplied = true;
+    }
+
+    private static GameObject ResolveRuntimePatternPlayer(GameObject preferredTarget)
+    {
+        if (preferredTarget != null && preferredTarget.CompareTag("Player"))
+            return preferredTarget;
+
+        try
+        {
+            return GameObject.FindGameObjectWithTag("Player");
+        }
+        catch (UnityException)
+        {
+            return null;
+        }
+    }
+
+    private void ReleaseRuntimePatternPlayerInvulnerability()
+    {
+        if (!runtimePatternInvulnerableApplied)
+            return;
+
+        if (runtimePatternInvulnerableTagSystem != null && runtimePatternInvulnerableTag != null)
+            runtimePatternInvulnerableTagSystem.RemoveTag(runtimePatternInvulnerableTag, 1);
+
+        runtimePatternInvulnerableTagSystem = null;
+        runtimePatternInvulnerableApplied = false;
+    }
+
+    private void CleanupRuntimePatternTestSession()
+    {
+        ReleaseRuntimePatternPlayerInvulnerability();
+        RestoreRuntimePatternSelectedOnly();
+    }
+
+    private void TickRuntimePatternExecution()
+    {
+        if (runtimePatternAbilityDefinition == null)
+            return;
+
+        if (!EditorApplication.isPlaying)
+        {
+            CleanupRuntimePatternAbility(cancelExecution: false);
+            runtimePatternStatus = "Play Mode ended; actual pattern runner cleaned up.";
+            return;
+        }
+
+        if (runtimePatternAbilitySystem == null)
+        {
+            CleanupRuntimePatternAbility(cancelExecution: false);
+            runtimePatternStatus = "Actual pattern runner lost its AbilitySystem and cleaned up.";
+            return;
+        }
+
+        AbilitySpec spec = runtimePatternAbilitySystem.FindSpec(runtimePatternAbilityDefinition);
+        bool isCurrent = spec != null &&
+            (runtimePatternAbilitySystem.CurrentExecSpec == spec || runtimePatternAbilitySystem.CurrentCastSpec == spec);
+        if (spec == null || isCurrent)
+            return;
+
+        double elapsed = EditorApplication.timeSinceStartup - runtimePatternStartedAt;
+        runtimePatternAbilitySystem.TakeAbility(runtimePatternAbilityDefinition);
+        DestroyImmediate(runtimePatternAbilityDefinition);
+        runtimePatternAbilityDefinition = null;
+        runtimePatternAbilitySystem = null;
+
+        if (runtimePatternPlaybackMode == RuntimePatternPlaybackMode.Loop && EditorApplication.isPlaying)
+        {
+            runtimePatternStatus = $"Actual pattern completed in {elapsed:0.00}s; restarting loop.";
+            if (!StartRuntimePatternActivation(loopRestart: true))
+                CleanupRuntimePatternTestSession();
+            return;
+        }
+
+        CleanupRuntimePatternTestSession();
+        runtimePatternStatus = $"Actual pattern completed in {elapsed:0.00}s.";
+    }
+
+    private void CleanupRuntimePatternAbility(bool cancelExecution)
+    {
+        AbilityDefinition ability = runtimePatternAbilityDefinition;
+        AbilitySystem abilitySystem = runtimePatternAbilitySystem;
+
+        runtimePatternAbilityDefinition = null;
+        runtimePatternAbilitySystem = null;
+
+        if (abilitySystem != null && ability != null)
+        {
+            AbilitySpec spec = abilitySystem.FindSpec(ability);
+            if (cancelExecution && spec != null &&
+                (abilitySystem.CurrentExecSpec == spec || abilitySystem.CurrentCastSpec == spec))
+            {
+                abilitySystem.ResetTransientRuntimeState();
+            }
+
+            abilitySystem.TakeAbility(ability);
+        }
+
+        if (ability != null)
+            DestroyImmediate(ability);
+
+        CleanupRuntimePatternTestSession();
     }
 
     private void OnPatternAssetChanged()
@@ -1904,6 +2442,8 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
 
     private void TickPreview()
     {
+        TickRuntimePatternExecution();
+
         double now = EditorApplication.timeSinceStartup;
         float deltaTime = lastEditorTime > 0d ? Mathf.Min((float)(now - lastEditorTime), 0.05f) : 0f;
         lastEditorTime = now;
@@ -2583,6 +3123,9 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
                 DrawPatternSector(previewRect, shape);
                 break;
         }
+
+        if (shape.HasPlayerAnchor)
+            DrawMarker(previewRect, PreviewOrigin + (Vector3)shape.PlayerAnchorOffset, new Color(0.25f, 0.8f, 1f, 0.95f), "Player Anchor");
     }
 
     private void DrawPatternCircle(Rect previewRect, DemonKingPatternPreviewShape shape)
@@ -3107,10 +3650,118 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
         if (previewCamera == null || previewTexture == null)
             return;
 
+        if (TryRenderLiveRuntimePreview())
+            return;
+
         previewCamera.transform.position = PreviewOrigin + new Vector3(0f, 0f, PreviewDepth);
+        previewCamera.transform.rotation = Quaternion.identity;
         previewCamera.orthographicSize = previewCameraSize;
+        previewCamera.cullingMask = ~0;
         previewCamera.targetTexture = previewTexture;
         previewCamera.Render();
+    }
+
+    private bool TryRenderLiveRuntimePreview()
+    {
+        if (!TryResolveLiveRuntimePreviewFrame(
+                out _,
+                out _,
+                out Vector3 center,
+                out float cameraSize))
+        {
+            return false;
+        }
+
+        Camera gameCamera = Camera.main;
+        previewCamera.transform.position = new Vector3(center.x, center.y, PreviewDepth);
+        previewCamera.transform.rotation = Quaternion.identity;
+        previewCamera.orthographic = true;
+        previewCamera.orthographicSize = cameraSize;
+        previewCamera.nearClipPlane = gameCamera != null ? gameCamera.nearClipPlane : 0.01f;
+        previewCamera.farClipPlane = gameCamera != null ? Mathf.Max(gameCamera.farClipPlane, 40f) : 40f;
+        previewCamera.clearFlags = CameraClearFlags.SolidColor;
+        previewCamera.backgroundColor = PreviewBackground;
+        previewCamera.cullingMask = runtimePatternLivePreviewUseGameCameraMask && gameCamera != null
+            ? gameCamera.cullingMask
+            : ~0;
+        previewCamera.targetTexture = previewTexture;
+        previewCamera.Render();
+
+        return true;
+    }
+
+    private bool TryResolveLiveRuntimePreviewFrame(
+        out DemonKingController demon,
+        out Transform target,
+        out Vector3 center,
+        out float cameraSize)
+    {
+        demon = null;
+        target = null;
+        center = PreviewOrigin;
+        cameraSize = runtimePatternLivePreviewCameraSize;
+
+        if (!runtimePatternLivePreviewEnabled || !EditorApplication.isPlaying)
+            return false;
+
+        demon = ResolveRuntimePatternDemonKing();
+        if (demon == null)
+            return false;
+
+        target = runtimePatternTarget != null && runtimePatternTarget.gameObject.activeInHierarchy
+            ? runtimePatternTarget
+            : null;
+        if (target == null)
+        {
+            GameObject targetObject = ResolveRuntimePatternTarget(demon);
+            target = targetObject != null ? targetObject.transform : null;
+        }
+
+        Vector3 demonPosition = demon.transform.position;
+        center = demonPosition;
+        cameraSize = Mathf.Max(0.1f, runtimePatternLivePreviewCameraSize);
+
+        if (runtimePatternLivePreviewFrameTarget && target != null && target != demon.transform)
+        {
+            Vector3 targetPosition = target.position;
+            center = (demonPosition + targetPosition) * 0.5f;
+            Vector3 delta = targetPosition - demonPosition;
+            float aspect = previewTexture != null && previewTexture.height > 0
+                ? Mathf.Max(0.1f, previewTexture.width / (float)previewTexture.height)
+                : 1f;
+            float verticalSize = Mathf.Abs(delta.y) * 0.5f + runtimePatternLivePreviewPadding;
+            float horizontalSize = Mathf.Abs(delta.x) * 0.5f / aspect + runtimePatternLivePreviewPadding;
+            cameraSize = Mathf.Max(cameraSize, verticalSize, horizontalSize);
+        }
+
+        return true;
+    }
+
+    private bool IsLiveRuntimePreviewVisible()
+    {
+        return runtimePatternLivePreviewEnabled
+            && EditorApplication.isPlaying
+            && runtimePatternDemonKing != null
+            && runtimePatternDemonKing.isActiveAndEnabled;
+    }
+
+    private void DrawLiveRuntimePreviewOverlay(Rect previewRect)
+    {
+        string demonName = runtimePatternDemonKing != null ? runtimePatternDemonKing.name : "(none)";
+        string targetName = runtimePatternTarget != null ? runtimePatternTarget.name : "(none)";
+        Rect overlayRect = new(previewRect.x + 8f, previewRect.y + 8f, 260f, 64f);
+        GUI.Box(overlayRect, GUIContent.none, EditorStyles.helpBox);
+        GUI.Label(
+            new Rect(overlayRect.x + 8f, overlayRect.y + 5f, overlayRect.width - 16f, 18f),
+            "Live Runtime Preview",
+            EditorStyles.boldLabel);
+        GUI.Label(
+            new Rect(overlayRect.x + 8f, overlayRect.y + 25f, overlayRect.width - 16f, 18f),
+            $"DemonKing: {demonName}");
+        GUI.Label(
+            new Rect(overlayRect.x + 8f, overlayRect.y + 39f, overlayRect.width - 16f, 18f),
+            $"Target: {targetName}",
+            EditorStyles.miniLabel);
     }
 
     private void DestroyPreviewInstance()
@@ -3430,6 +4081,8 @@ internal sealed class DemonKingPatternPreviewShape
     public float Radius { get; private set; }
     public float AngleDeg { get; private set; }
     public float RotationDeg { get; private set; }
+    public bool HasPlayerAnchor { get; private set; }
+    public Vector2 PlayerAnchorOffset { get; private set; }
     public Color Color { get; private set; } = new(1f, 0.75f, 0.15f, 0.8f);
 
     public static DemonKingPatternPreviewShape Circle(string label, Vector2 centerOffset, float diameter)
@@ -3473,6 +4126,13 @@ internal sealed class DemonKingPatternPreviewShape
             AngleDeg = Mathf.Clamp(angleDeg, 1f, 360f),
             RotationDeg = rotationDeg
         };
+    }
+
+    public DemonKingPatternPreviewShape WithPlayerAnchor(Vector2 playerAnchorOffset)
+    {
+        HasPlayerAnchor = true;
+        PlayerAnchorOffset = playerAnchorOffset;
+        return this;
     }
 }
 
@@ -3702,8 +4362,8 @@ internal sealed class DemonKingPatternPreviewDefinition
     {
         DemonKingPatternPreviewDefinition definition = new(
             "PierceCombo",
-            "Three-step sword dash pattern. Preview rows expand each warning, dash, return, and final hold beat.");
-        definition.AddGroup("Timing", "pierceCount", "firstWarningSeconds", "warningStepDecrease", "lungeSeconds", "returnSeconds", "intervalSeconds", "dashEndPoseHoldSeconds");
+            "Three-step sword dash pattern. Preview rows expand each tracking warning, lock-on, dash, return, and final hold beat.");
+        definition.AddGroup("Timing", "pierceCount", "firstWarningSeconds", "warningStepDecrease", "lockOnSeconds", "lungeSeconds", "returnSeconds", "intervalSeconds", "dashEndPoseHoldSeconds");
         definition.AddGroup("Animation / VFX", "readyAnimation", "dashAnimation", "stabVfx");
         definition.AddGroup("Warning / Hit", "hitWidth", "damage", "knockback");
         definition.AddGroup("SFX / Shake", "dashCommitSound");
@@ -3713,6 +4373,7 @@ internal sealed class DemonKingPatternPreviewDefinition
         int count = Mathf.Clamp(Int(serializedObject, "pierceCount", 3), 1, 8);
         float firstWarning = Float(serializedObject, "firstWarningSeconds", 1f);
         float warningStep = Float(serializedObject, "warningStepDecrease", 0.2f);
+        float lockOn = Float(serializedObject, "lockOnSeconds", 0.25f);
         float lunge = Float(serializedObject, "lungeSeconds", 0.16f);
         float returnSeconds = Float(serializedObject, "returnSeconds", 0.12f);
         float interval = Float(serializedObject, "intervalSeconds", 0.12f);
@@ -3725,7 +4386,14 @@ internal sealed class DemonKingPatternPreviewDefinition
             AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Warning", $"Pierce {i + 1} ready", warning)
                 .WithBody(BodyName(serializedObject, "readyAnimation", "DarkLord_Sword_DashStabReady"), BodyFrame(serializedObject, "readyAnimation", 0), "readyAnimation")
                 .WithShape(DemonKingPatternPreviewShape.Rectangle("Dash warning", ForwardLineCenter, new Vector2(4f, hitWidth), LeftRotationDeg))
-                .WithPolicy("DashStabReady first frame is held while the warning follows the current target."));
+                .WithPolicy("DashStabReady first frame is held while the warning and boss facing follow the current target."));
+            if (lockOn > 0f)
+            {
+                AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("LockOn", $"Pierce {i + 1} locked warning", lockOn)
+                    .WithBody(BodyName(serializedObject, "readyAnimation", "DarkLord_Sword_DashStabReady"), BodyFrame(serializedObject, "readyAnimation", 0), "readyAnimation")
+                    .WithShape(DemonKingPatternPreviewShape.Rectangle("Locked dash warning", ForwardLineCenter, new Vector2(4f, hitWidth), LeftRotationDeg))
+                    .WithPolicy("The final target line freezes and uses blink telegraph style before the dash."));
+            }
             AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Commit", $"Pierce {i + 1} dash", lunge)
                 .WithBody(BodyName(serializedObject, "dashAnimation", "DarkLord_Sword_DashStab"), BodyFrame(serializedObject, "dashAnimation", -1), "dashAnimation")
                 .WithVfx(
@@ -3759,9 +4427,10 @@ internal sealed class DemonKingPatternPreviewDefinition
     {
         DemonKingPatternPreviewDefinition definition = new(
             "HeavySlash",
-            "Approach, Slash_1 warning hold, Slash_2 commit, then delayed DarkLordExplosion2 line explosions.");
+            "Approach stops before the player, then Slash_1 tracks a player-attached origin before Slash_2 commit and delayed DarkLordExplosion2 line explosions.");
         definition.AddGroup("Movement", "moveSpeedMultiplier", "fallbackMoveSeconds", "stopBeforeTargetDistance");
-        definition.AddGroup("Warning / Hit", "warningSeconds", "slashRadius", "slashAngle", "damage", "knockback");
+        definition.AddGroup("Warning / Hit", "trackingWarningSeconds", "lockOnSeconds", "slashCommitDashSeconds", "slashCommitDashEaseOutPower", "slashRadius", "playerAnchorInWarningRadius", "slashAngle", "damage", "knockback");
+        definition.AddGroup("Legacy", "warningSeconds");
         definition.AddGroup("Line Explosions", "fallbackLineLength", "lineWidth", "explosionSpacing", "explosionDiameter", "explosionWarningSeconds", "explosionStepInterval", "explosionDamage");
         definition.AddGroup("Animation / VFX", "approachAnimation", "slashWarningAnimation", "slashCommitAnimation", "slashVfx", "lineExplosionVfx", "slashEndPoseHoldSeconds");
         definition.AddGroup("SFX / Shake", "approachSound", "slashCommitSound", "lineExplosionSound", "slashImpactCameraShake", "lineExplosionCameraShake");
@@ -3772,23 +4441,31 @@ internal sealed class DemonKingPatternPreviewDefinition
 
         float time = 0f;
         float move = Float(serializedObject, "fallbackMoveSeconds", 0.35f);
-        float warning = Float(serializedObject, "warningSeconds", 0.75f);
+        float trackingWarning = Float(serializedObject, "trackingWarningSeconds", 2f);
+        float lockOn = Float(serializedObject, "lockOnSeconds", 0.4f);
+        float commitDash = Float(serializedObject, "slashCommitDashSeconds", 0.16f);
         float radius = Float(serializedObject, "slashRadius", 3.9f);
+        float playerAnchor = Mathf.Clamp01(Float(serializedObject, "playerAnchorInWarningRadius", 0.5f));
         float angle = Float(serializedObject, "slashAngle", 110f);
         float lineLength = Float(serializedObject, "fallbackLineLength", 40f);
         float lineWidth = Float(serializedObject, "lineWidth", 0.7f);
         float explosionDiameter = Float(serializedObject, "explosionDiameter", 1.35f);
         float explosionStep = Float(serializedObject, "explosionStepInterval", 0.04f);
         float hold = Float(serializedObject, "slashEndPoseHoldSeconds", 0.12f);
+        Vector2 slashPreviewOrigin = new(radius * playerAnchor, 0f);
 
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Move", "Approach and face target", move)
             .WithBody(BodyName(serializedObject, "approachAnimation", string.Empty), BodyFrame(serializedObject, "approachAnimation", -1), "approachAnimation")
-            .WithPolicy("Optional approach body cue; boss stops before the target, then recalculates slash direction."));
-        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Warning", "Slash_1 warning hold", warning)
+            .WithPolicy("Uses stopBeforeTargetDistance only for the first approach move; slash warning and hit origin are not offset by this value."));
+        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Warning", "Slash_1 tracking warning", trackingWarning)
             .WithBody(BodyName(serializedObject, "slashWarningAnimation", "DarkLord_Sword_Slash"), BodyFrame(serializedObject, "slashWarningAnimation", 1), "slashWarningAnimation")
-            .WithShape(DemonKingPatternPreviewShape.Sector("Slash sector", Vector2.zero, radius, angle, LeftRotationDeg))
-            .WithPolicy("Slash_1 is held while sector and line warnings fill from attack origin."));
-        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Commit", "Slash_2 impact", 0.12f)
+            .WithShape(DemonKingPatternPreviewShape.Sector("Slash sector", slashPreviewOrigin, radius, angle, LeftRotationDeg).WithPlayerAnchor(Vector2.zero))
+            .WithPolicy("Slash_1 tracks player position and angle; playerAnchorInWarningRadius controls where the player sits inside the sector before LockOn."));
+        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("LockOn", "Blink locked slash warning", Mathf.Max(0.01f, lockOn))
+            .WithBody(BodyName(serializedObject, "slashWarningAnimation", "DarkLord_Sword_Slash"), BodyFrame(serializedObject, "slashWarningAnimation", 1), "slashWarningAnimation")
+            .WithShape(DemonKingPatternPreviewShape.Sector("Locked slash sector", slashPreviewOrigin, radius, angle, LeftRotationDeg).WithPlayerAnchor(Vector2.zero))
+            .WithPolicy("Position and angle freeze for blink warning before the commit dash."));
+        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Commit", "Dash to locked SwordSlashOrigin and Slash_2 impact", Mathf.Max(0.01f, commitDash))
             .WithBody(BodyName(serializedObject, "slashCommitAnimation", "DarkLord_Sword_Slash"), BodyFrame(serializedObject, "slashCommitAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "slashCommitAnimation")
             .WithVfx(
                 VfxName(serializedObject, "slashVfx", "DarkLordSlashVfx"),
@@ -3797,8 +4474,8 @@ internal sealed class DemonKingPatternPreviewDefinition
                 VfxRotation(serializedObject, "slashVfx"),
                 VfxScale(serializedObject, "slashVfx"),
                 VfxPrefab(serializedObject, "slashVfx"))
-            .WithShape(DemonKingPatternPreviewShape.Sector("Slash damage", Vector2.zero, radius, angle, LeftRotationDeg))
-            .WithPolicy("Slash_2 frame, slash VFX, damage, sound, and shake commit together."));
+            .WithShape(DemonKingPatternPreviewShape.Sector("Slash damage", slashPreviewOrigin, radius, angle, LeftRotationDeg).WithPlayerAnchor(Vector2.zero))
+            .WithPolicy("Boss dashes with afterimage so SwordSlashOrigin lands on the locked sector origin while the player stays at the locked anchor point."));
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Explosion", "Follow-up line explosions", Mathf.Max(0.01f, explosionStep * 6f))
             .WithVfx(VfxPrefab(serializedObject, "lineExplosionVfx"), VfxName(serializedObject, "lineExplosionVfx", "DarkLordExplosion2Vfx"))
             .WithShape(DemonKingPatternPreviewShape.Rectangle("Line explosion lanes", new Vector2(-lineLength * 0.1f, 0f), new Vector2(Mathf.Min(lineLength, 8f), lineWidth), LeftRotationDeg))
@@ -4028,14 +4705,14 @@ internal sealed class DemonKingPatternPreviewDefinition
         DemonKingPatternPreviewDefinition definition = new(
             "WallBounceRush",
             "HP50 set piece after sword throw: hand-only warning, linear rushes with endpoint pause, charge loop/disappear VFX, then final jump landing.");
-        definition.AddGroup("Rush", "wallBounceCount", "warningSeconds", "retreatSeconds", "fallbackRushDistance", "minimumVisibleRushDistance", "minimumRushSeconds", "shortRushRetargetMaxAngle", "shortRushRetargetStepDegrees", "rushSpeedMultiplier", "rushEndPoseHoldSeconds");
+        definition.AddGroup("Rush", "wallBounceCount", "warningSeconds", "retreatSeconds", "fallbackRushDistance", "minimumVisibleRushDistance", "minimumRushSeconds", "shortRushRetargetMaxAngle", "shortRushRetargetStepDegrees", "rushSpeedMultiplier", "chargeDisappearStartProgress", "chargeVfxFlipX", "rushEndPoseHoldSeconds");
         definition.AddGroup("Hit", "hitWidth", "damage", "knockback");
         definition.AddGroup("Final Jump", "finalJumpSeconds", "finalImpactDiameter", "finalImpactDamage", "finalJumpArcHeight", "finalJumpMotionProfile", "finalLandingPoseHoldSeconds", "finalLandingFrameSwitchRatio");
         definition.AddGroup("Animation / VFX", "handRushAnimation", "endpointPauseAnimation", "chargeLoopVfx", "finalJumpTravelAnimation", "finalJumpLandingAnimation", "finalLandingImpactVfx", "finalLandingExplosionVfx");
         definition.AddGroup("SFX / Shake", "rushStartSound", "rushEndpointSound", "finalLandingSound", "rushEndpointCameraShake", "finalLandingCameraShake");
         definition.LegacyNoRuntimeEffectProperties.Add("finalLandingFrameSwitchRatio");
         definition.AddMapping("Hand Rush Body / Charge VFX", bodyPropertyPath: "handRushAnimation", vfxPropertyPath: "chargeLoopVfx");
-        definition.AddMapping("Endpoint Pause Body / Disappear State", bodyPropertyPath: "endpointPauseAnimation");
+        definition.AddMapping("Charge Disappear / Endpoint Pause Body", bodyPropertyPath: "endpointPauseAnimation");
         definition.AddMapping("Final Jump Travel Body", bodyPropertyPath: "finalJumpTravelAnimation");
         definition.AddMapping("Final Landing Body / Impact VFX", bodyPropertyPath: "finalJumpLandingAnimation", vfxPropertyPath: "finalLandingImpactVfx");
         definition.AddMapping("Final Landing Extra Explosion VFX", vfxPropertyPath: "finalLandingExplosionVfx");
@@ -4061,7 +4738,7 @@ internal sealed class DemonKingPatternPreviewDefinition
                     VfxScale(serializedObject, "chargeLoopVfx"),
                     VfxPrefab(serializedObject, "chargeLoopVfx"))
                 .WithShape(DemonKingPatternPreviewShape.Rectangle("Rush hit", ForwardLineCenter, new Vector2(5f, hitWidth), LeftRotationDeg))
-                .WithPolicy("Linear rush movement uses no easing; body animation uses the hand charge branch only."));
+                .WithPolicy("Linear rush movement uses no easing; Charge VFX follows in Loop and switches to Disappear at chargeDisappearStartProgress."));
             AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Endpoint", $"Endpoint pause {i + 1}", endpointHold)
                 .WithBody(BodyName(serializedObject, "endpointPauseAnimation", "DarkLord_Hand_JumpAttack"), BodyFrame(serializedObject, "endpointPauseAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "endpointPauseAnimation")
                 .WithVfx(
@@ -4071,7 +4748,7 @@ internal sealed class DemonKingPatternPreviewDefinition
                     VfxRotation(serializedObject, "chargeLoopVfx"),
                     VfxScale(serializedObject, "chargeLoopVfx"),
                     VfxPrefab(serializedObject, "chargeLoopVfx"))
-                .WithPolicy("Same Charge VFX prefab detaches from follow and plays Disappear state at endpoint; sound, shake, and at least 0.1s pause."));
+                .WithPolicy("Endpoint keeps the body pause, endpoint sound/shake, and at least 0.1s pause after the earlier Charge Disappear transition."));
         }
 
         float finalImpactDiameter = Float(serializedObject, "finalImpactDiameter", 3.4f);

@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeID: 902021092
   upgradeName: Up_1_-1
-  description: 
-  icon: {fileID: 0}
+  description: "\uC0C1\uC790 \uBCF4\uC0C1\uC5D0 \uC720\uBB3C 1\uAC1C \uCD94\uAC00
+    \uB4F1\uC7A5"
+  icon: {fileID: 6936310560564106424, guid: cd07fd15fcb2523438505c47645741ff, type: 3}
   price: 0
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: cbf07d4ed82fa7142aa5c110e14d8fa9, type: 2}
   unlockedNodeIDs: fb344e12
   requiredParentIDs: 6fbd0de9cf5e1d89
   nextNodes:

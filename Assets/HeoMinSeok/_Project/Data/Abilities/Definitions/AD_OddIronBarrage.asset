@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_OddIronBarrage
   m_EditorClassIdentifier: 
-  abilityName: AD_OddIronBarrage
+  abilityName: 전탄 난사
   icon: {fileID: 21300000, guid: c0b4a9ea59c74ce4eb1689ef772c6a7a, type: 3}
-  description: "\uAE30\uBB18\uD55C \uC1F3\uB369\uC774 \uC804\uD0C4 \uB09C\uC0AC.
-    \uB0A8\uC740 \uD0C4\uC744 \uBAA8\uB450 \uC18C\uBE44\uD558\uACE0 0.08\uCD08 \uAC04\uACA9,
-    15\uB3C4 spread\uB85C \uBC1C\uC0AC\uD55C\uB2E4."
+  description: "● 남은 탄을 모두 소비해 빠르게 연속 발사\n● 탄환마다 {val:고정 피해 100}과 넉백을 적용\n● {val:0.08초} 간격, {val:15도} 탄퍼짐으로 발사\n● 발동 후 잔탄이 {neg:0발}이 됨"
   cooldown: 0
   executionPolicy: 0
   useCharges: 0

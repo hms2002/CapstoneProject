@@ -39,7 +39,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
     [SerializeField] private WeaponAbilityBlockView abilityBlockPrefab;
     [SerializeField] private bool hideTemplateAbilityBlock = true;
 
-    [Header("Shared Stat / Relic Preview Section")]
+    [Header("Weapon Stat / Relic Preview Sections")]
     [SerializeField] private GameObject relicPreviewRoot;
     [SerializeField] private TMP_Text relicLevelText;
     [SerializeField] private GameObject relicPreviewPreviousGuideRoot;
@@ -187,8 +187,19 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         if (descriptionText == null)
             descriptionText = storyText;
 
-        if (weaponStatsRoot == null)
-            weaponStatsRoot = EncyclopediaReferenceResolver.FindGameObject(transform, "WeaponStatsRoot", "StatsRoot", "StatRoot", "WeaponStatsSection", "LevelPreviewRoot", "RelicPreviewRoot", "RelicLevelPreviewRoot");
+        if (weaponStatsRoot == null || weaponStatsRoot == relicPreviewRoot)
+        {
+            GameObject resolvedWeaponStatsRoot = EncyclopediaReferenceResolver.FindGameObject(
+                transform,
+                "WeaponStatsRoot",
+                "WeaponStatsPanel",
+                "WeaponStatsSection",
+                "StatTextPanel",
+                "StatsRoot",
+                "StatRoot");
+            if (resolvedWeaponStatsRoot != null && (weaponStatsRoot == null || resolvedWeaponStatsRoot != relicPreviewRoot))
+                weaponStatsRoot = resolvedWeaponStatsRoot;
+        }
 
         if (weaponAbilityRoot == null)
             weaponAbilityRoot = EncyclopediaReferenceResolver.FindGameObject(transform, "WeaponAbilityRoot", "AbilityRoot", "AbilitySection", "AbilityContainerRoot");
@@ -208,8 +219,18 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
             abilityBlockPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<WeaponAbilityBlockView>(AbilityBlockPrefabPath);
 #endif
 
-        if (relicPreviewRoot == null)
-            relicPreviewRoot = EncyclopediaReferenceResolver.FindGameObject(transform, "RelicPreviewRoot", "RelicLevelPreviewRoot", "LevelPreviewRoot", "WeaponStatsRoot", "StatsRoot", "StatRoot");
+        if (relicPreviewRoot == null || relicPreviewRoot == weaponStatsRoot)
+        {
+            GameObject resolvedRelicPreviewRoot = EncyclopediaReferenceResolver.FindGameObject(
+                transform,
+                "RelicPreviewRoot",
+                "RelicLevelPreviewRoot",
+                "LevelPreviewRoot",
+                "LvPanel",
+                "LevelPanel");
+            if (resolvedRelicPreviewRoot != null && (relicPreviewRoot == null || resolvedRelicPreviewRoot != weaponStatsRoot))
+                relicPreviewRoot = resolvedRelicPreviewRoot;
+        }
 
         if (weaponStatsRoot == null)
             weaponStatsRoot = relicPreviewRoot;
@@ -217,12 +238,34 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
             relicPreviewRoot = weaponStatsRoot;
 
         Transform weaponStatsTransform = weaponStatsRoot != null ? weaponStatsRoot.transform : transform;
-        if (weaponStatsText == null)
-            weaponStatsText = EncyclopediaReferenceResolver.FindComponent<TMP_Text>(weaponStatsTransform, "LvTxt", "LvText", "LevelText", "WeaponStatsText", "StatsText", "StatText");
+        if (weaponStatsText == null || weaponStatsText == relicLevelText)
+        {
+            TMP_Text resolvedWeaponStatsText = EncyclopediaReferenceResolver.FindComponent<TMP_Text>(
+                weaponStatsTransform,
+                "WeaponStatsText",
+                "StatsText",
+                "StatText",
+                "StatValueText",
+                "Text",
+                "Text (TMP)",
+                "Text(TMP)");
+            if (resolvedWeaponStatsText != null && (weaponStatsText == null || resolvedWeaponStatsText != relicLevelText))
+                weaponStatsText = resolvedWeaponStatsText;
+        }
 
         Transform relicPreviewTransform = relicPreviewRoot != null ? relicPreviewRoot.transform : transform;
-        if (relicLevelText == null)
-            relicLevelText = EncyclopediaReferenceResolver.FindComponent<TMP_Text>(relicPreviewTransform, "LvTxt", "LvText", "LevelText", "RelicLevelText", "PreviewLevelText");
+        if (relicLevelText == null || relicLevelText == weaponStatsText)
+        {
+            TMP_Text resolvedRelicLevelText = EncyclopediaReferenceResolver.FindComponent<TMP_Text>(
+                relicPreviewTransform,
+                "LvTxt",
+                "LvText",
+                "LevelText",
+                "RelicLevelText",
+                "PreviewLevelText");
+            if (resolvedRelicLevelText != null && (relicLevelText == null || resolvedRelicLevelText != weaponStatsText))
+                relicLevelText = resolvedRelicLevelText;
+        }
 
         ResolveRelicPreviewGuideReferences(relicPreviewTransform);
 
@@ -381,9 +424,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         relicPreviewLevel = 1;
 
         ApplyItemHeader(relic);
-        SetActive(descriptionRoot, true);
-        SetText(descriptionTitleText, "효과");
-
+        SetStorySectionVisible(false);
         SetActive(relicPreviewRoot, true);
         RefreshRelicPreview();
         QueueScrollReset();
@@ -425,6 +466,8 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
     {
         string description = FormatTextOrFallback(rawDescription, EmptyDescriptionText);
         SetActive(descriptionRoot, true);
+        SetActive(descriptionTitleText != null ? descriptionTitleText.gameObject : null, true);
+        SetActive(storyText != null ? storyText.gameObject : null, true);
         SetText(descriptionTitleText, title);
         SetText(storyText, description);
     }
@@ -758,12 +801,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         relicPreviewLevel = Mathf.Clamp(relicPreviewLevel, 1, maxLevel);
         string effectText = FormatText(BuildRelicEffectText(currentRelic, relicPreviewLevel));
         SetText(relicLevelText, $"Lv {relicPreviewLevel} / {maxLevel}");
-        SetText(storyText, effectText);
-        if (relicEffectText != null && relicEffectText != storyText)
-        {
-            SetActive(relicEffectRoot, true);
-            SetText(relicEffectText, effectText);
-        }
+        SetRelicEffectSection(effectText);
 
         RefreshRelicPreviewGuides(maxLevel);
         RebuildDetailLayout();
@@ -807,9 +845,9 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
             relicPreviewNextGuideRoot = EncyclopediaReferenceResolver.FindGameObject(relicPreviewTransform, "RelicPreviewNextGuide", "NextGuide", "NextPreview");
 
         if (relicPreviewPreviousGuideIcon == null && relicPreviewPreviousGuideRoot != null)
-            relicPreviewPreviousGuideIcon = EncyclopediaReferenceResolver.FindComponent<Image>(relicPreviewPreviousGuideRoot.transform, "Icon", "GuideIcon");
+            relicPreviewPreviousGuideIcon = ResolveGuideIcon(relicPreviewPreviousGuideRoot.transform);
         if (relicPreviewNextGuideIcon == null && relicPreviewNextGuideRoot != null)
-            relicPreviewNextGuideIcon = EncyclopediaReferenceResolver.FindComponent<Image>(relicPreviewNextGuideRoot.transform, "Icon", "GuideIcon");
+            relicPreviewNextGuideIcon = ResolveGuideIcon(relicPreviewNextGuideRoot.transform);
 
         if (relicPreviewPreviousGuideCanvasGroup == null && relicPreviewPreviousGuideRoot != null)
             relicPreviewPreviousGuideCanvasGroup = relicPreviewPreviousGuideRoot.GetComponent<CanvasGroup>();
@@ -828,6 +866,15 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
             glossaryPopup.Show(key, EmptyDescriptionText);
     }
 
+    private static Image ResolveGuideIcon(Transform guideRoot)
+    {
+        if (guideRoot == null)
+            return null;
+
+        Image childIcon = EncyclopediaReferenceResolver.FindComponent<Image>(guideRoot, "Icon", "GuideIcon");
+        return childIcon != null ? childIcon : guideRoot.GetComponent<Image>();
+    }
+
     private void SetVisible(bool visible)
     {
         SetActive(contentRoot, visible);
@@ -840,6 +887,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         SetActive(weaponAbilityRoot, false);
         SetActive(relicPreviewRoot, false);
         SetActive(relicEffectRoot, false);
+        SetActive(relicEffectText != null ? relicEffectText.gameObject : null, false);
         SetRelicPreviewGuidesVisible(false);
         SetText(weaponStatsText, string.Empty);
         SetText(relicLevelText, string.Empty);
@@ -850,6 +898,27 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
     {
         SetActive(relicPreviewPreviousGuideRoot, visible);
         SetActive(relicPreviewNextGuideRoot, visible);
+    }
+
+    private void SetStorySectionVisible(bool visible)
+    {
+        SetActive(descriptionRoot, visible);
+        SetActive(descriptionTitleText != null ? descriptionTitleText.gameObject : null, visible);
+        SetActive(storyText != null ? storyText.gameObject : null, visible);
+        if (!visible)
+        {
+            SetText(descriptionTitleText, string.Empty);
+            SetText(storyText, string.Empty);
+        }
+    }
+
+    private void SetRelicEffectSection(string effectText)
+    {
+        bool hasDedicatedEffectText = relicEffectText != null && relicEffectText != storyText;
+        SetActive(relicEffectRoot, hasDedicatedEffectText);
+        SetActive(relicEffectText != null ? relicEffectText.gameObject : null, hasDedicatedEffectText);
+        if (hasDedicatedEffectText)
+            SetText(relicEffectText, effectText);
     }
 
     private void QueueScrollReset()

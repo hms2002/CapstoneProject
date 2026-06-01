@@ -90,10 +90,10 @@ MonoBehaviour:
       hotspotPixels: {x: 2, y: 2}
       scale: 1
     itemSlotCursor:
-      sprite: {fileID: 6031248440567335274, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
-      hotspotPixels: {x: 2, y: 2}
-      scale: 1
+      sprite: {fileID: -3853089226068416766, guid: 5c0cf4259b6d9324c9cf2c2afcde8845, type: 3}
+      hotspotPixels: {x: 20, y: 16}
+      scale: 1.2
     itemSlotPressedCursor:
-      sprite: {fileID: 1449552957060229219, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
-      hotspotPixels: {x: 2, y: 2}
-      scale: 1
+      sprite: {fileID: -66420209048957194, guid: 5c0cf4259b6d9324c9cf2c2afcde8845, type: 3}
+      hotspotPixels: {x: 20, y: 16}
+      scale: 1.2

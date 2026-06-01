@@ -13,6 +13,9 @@ namespace CapstoneAudio.EditorTools
 
         private AudioCatalogSO selectedCatalog;
         private SerializedObject serializedCatalog;
+        private SerializedProperty globalVolumeMultiplierProperty;
+        private SerializedProperty bgmFadeInSecondsProperty;
+        private SerializedProperty bgmFadeOutSecondsProperty;
         private SerializedProperty entriesProperty;
 
         private string searchQuery = string.Empty;
@@ -61,6 +64,7 @@ namespace CapstoneAudio.EditorTools
             BindSerializedCatalog();
             serializedCatalog.Update();
 
+            DrawRuntimeDefaults();
             DrawToolbar();
 
             EditorGUILayout.BeginHorizontal();
@@ -102,6 +106,39 @@ namespace CapstoneAudio.EditorTools
             EditorGUILayout.EndHorizontal();
         }
 
+        private void DrawRuntimeDefaults()
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            EditorGUILayout.LabelField("Runtime Defaults", EditorStyles.boldLabel);
+
+            if (globalVolumeMultiplierProperty != null)
+            {
+                EditorGUILayout.PropertyField(
+                    globalVolumeMultiplierProperty,
+                    new GUIContent("Global Sound Multiplier"));
+            }
+
+            if (bgmFadeInSecondsProperty != null)
+            {
+                EditorGUILayout.PropertyField(
+                    bgmFadeInSecondsProperty,
+                    new GUIContent("BGM Fade In Seconds"));
+            }
+
+            if (bgmFadeOutSecondsProperty != null)
+            {
+                EditorGUILayout.PropertyField(
+                    bgmFadeOutSecondsProperty,
+                    new GUIContent("BGM Fade Out Seconds"));
+            }
+
+            EditorGUILayout.HelpBox(
+                "These defaults are authored tuning values independent from Settings volume. Runtime volume resolves as entry volume x SoundRef multiplier x global sound multiplier x Settings volume.",
+                MessageType.None);
+
+            EditorGUILayout.EndVertical();
+        }
+
         private void DrawEmptyState()
         {
             EditorGUILayout.HelpBox(
@@ -132,7 +169,7 @@ namespace CapstoneAudio.EditorTools
             using (new EditorGUI.DisabledScope(!AudioCatalogPreviewUtility.CanPreview))
             {
                 if (GUILayout.Button("Stop Preview", EditorStyles.toolbarButton, GUILayout.Width(92f)))
-                    AudioCatalogPreviewUtility.StopPreview();
+                    StopSelectedPreview();
             }
 
             EditorGUILayout.EndHorizontal();
@@ -217,8 +254,35 @@ namespace CapstoneAudio.EditorTools
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("maxDistance"));
 
             EditorGUILayout.HelpBox(
-                "Preview uses the entry volume, playback speed, and pitch range. Each Play click samples the pitch once like runtime playback.",
+                "Preview uses the global sound multiplier, entry volume, playback speed, and pitch range. BGM entries also use the runtime default fade-in/fade-out seconds and loop like runtime BGM.",
                 MessageType.None);
+        }
+
+        private float GetPreviewGlobalVolumeMultiplier()
+        {
+            return globalVolumeMultiplierProperty != null
+                ? Mathf.Max(0f, globalVolumeMultiplierProperty.floatValue)
+                : 1f;
+        }
+
+        private float GetBgmFadeInSeconds()
+        {
+            return bgmFadeInSecondsProperty != null
+                ? Mathf.Max(0f, bgmFadeInSecondsProperty.floatValue)
+                : 0f;
+        }
+
+        private float GetBgmFadeOutSeconds()
+        {
+            return bgmFadeOutSecondsProperty != null
+                ? Mathf.Max(0f, bgmFadeOutSecondsProperty.floatValue)
+                : 0f;
+        }
+
+        private void StopSelectedPreview()
+        {
+            float fadeOutSeconds = IsSelectedEntryBgm() ? GetBgmFadeOutSeconds() : 0f;
+            AudioCatalogPreviewUtility.StopPreview(fadeOutSeconds);
         }
 
         private void DrawVariantsField(SerializedProperty entry)
@@ -239,10 +303,14 @@ namespace CapstoneAudio.EditorTools
             {
                 variantsProperty.arraySize = Mathf.Max(0, EditorGUILayout.IntField("Size", variantsProperty.arraySize));
 
-                float previewVolume = entry.FindPropertyRelative("volume").floatValue;
+                float previewVolume = entry.FindPropertyRelative("volume").floatValue * GetPreviewGlobalVolumeMultiplier();
                 float previewSpeed = Mathf.Max(0.1f, entry.FindPropertyRelative("playbackSpeed").floatValue);
                 float previewPitchMin = entry.FindPropertyRelative("pitchMin").floatValue;
                 float previewPitchMax = entry.FindPropertyRelative("pitchMax").floatValue;
+                bool isBgmPreview = IsBgmEntry(entry);
+                bool previewLoop = entry.FindPropertyRelative("loop").boolValue || isBgmPreview;
+                float previewFadeInSeconds = isBgmPreview ? GetBgmFadeInSeconds() : 0f;
+                float previewFadeOutSeconds = isBgmPreview ? GetBgmFadeOutSeconds() : 0f;
                 int removeIndex = -1;
 
                 for (int i = 0; i < variantsProperty.arraySize; i++)
@@ -262,11 +330,13 @@ namespace CapstoneAudio.EditorTools
                                 previewVolume,
                                 previewSpeed,
                                 previewPitchMin,
-                                previewPitchMax);
+                                previewPitchMax,
+                                previewLoop,
+                                previewFadeInSeconds);
                         }
 
                         if (GUILayout.Button("Stop", GUILayout.Width(48f)))
-                            AudioCatalogPreviewUtility.StopPreview();
+                            AudioCatalogPreviewUtility.StopPreview(previewFadeOutSeconds);
                     }
 
                     if (GUILayout.Button("-", GUILayout.Width(24f)))
@@ -287,6 +357,24 @@ namespace CapstoneAudio.EditorTools
                     variantsProperty.DeleteArrayElementAtIndex(removeIndex);
                 }
             }
+        }
+
+        private bool IsSelectedEntryBgm()
+        {
+            if (entriesProperty == null ||
+                selectedIndex < 0 ||
+                selectedIndex >= entriesProperty.arraySize)
+            {
+                return false;
+            }
+
+            return IsBgmEntry(entriesProperty.GetArrayElementAtIndex(selectedIndex));
+        }
+
+        private static bool IsBgmEntry(SerializedProperty entry)
+        {
+            SerializedProperty busProperty = entry?.FindPropertyRelative("bus");
+            return busProperty != null && busProperty.enumValueIndex == (int)AudioBus.BGM;
         }
 
         private void AddEntry()
@@ -387,12 +475,18 @@ namespace CapstoneAudio.EditorTools
             if (selectedCatalog == null)
             {
                 serializedCatalog = null;
+                globalVolumeMultiplierProperty = null;
+                bgmFadeInSecondsProperty = null;
+                bgmFadeOutSecondsProperty = null;
                 entriesProperty = null;
                 selectedIndex = -1;
                 return;
             }
 
             serializedCatalog = new SerializedObject(selectedCatalog);
+            globalVolumeMultiplierProperty = serializedCatalog.FindProperty("globalVolumeMultiplier");
+            bgmFadeInSecondsProperty = serializedCatalog.FindProperty("bgmFadeInSeconds");
+            bgmFadeOutSecondsProperty = serializedCatalog.FindProperty("bgmFadeOutSeconds");
             entriesProperty = serializedCatalog.FindProperty("entries");
             selectedIndex = Mathf.Clamp(selectedIndex, -1, entriesProperty.arraySize - 1);
         }

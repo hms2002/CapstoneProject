@@ -38,8 +38,10 @@ MonoBehaviour:
     preDropHeightScale: 0.9
     travelEaseOutPower: 2.2
     landingDropSharpness: 0.22
-  rushEndPoseHoldSeconds: 0.1
+  rushEndPoseHoldSeconds: 0
   finalLandingPoseHoldSeconds: 0.14
+  chargeDisappearStartProgress: 0.9
+  chargeVfxFlipX: 1
   handRushAnimation:
     clip: {fileID: 7400000, guid: d1a4000000000000000000000000000a, type: 2}
     sampleMode: 1
@@ -66,9 +68,10 @@ MonoBehaviour:
     socketId: 6
     fallbackLeftOffset: {x: 0, y: 0}
     targetSize: {x: 0, y: 0}
-    scale: {x: 1, y: 1, z: 1}
+    scale: {x: 4, y: 2, z: 1}
     rotationOffsetDeg: 0
-    leaveFragment: 0
+    flipX: 0
+    leaveFragment: 1
   chargeDisappearVfx:
     prefabOverride: {fileID: 0}
     fallbackKind: 9
@@ -77,6 +80,7 @@ MonoBehaviour:
     targetSize: {x: 0, y: 0}
     scale: {x: 1, y: 1, z: 1}
     rotationOffsetDeg: 0
+    flipX: 0
     leaveFragment: 0
   finalLandingImpactVfx:
     prefabOverride: {fileID: 0}
@@ -86,6 +90,7 @@ MonoBehaviour:
     targetSize: {x: 0, y: 0}
     scale: {x: 1, y: 1, z: 1}
     rotationOffsetDeg: 0
+    flipX: 0
     leaveFragment: 1
   finalLandingExplosionVfx:
     prefabOverride: {fileID: 0}
@@ -95,6 +100,7 @@ MonoBehaviour:
     targetSize: {x: 0, y: 0}
     scale: {x: 1, y: 1, z: 1}
     rotationOffsetDeg: 0
+    flipX: 0
     leaveFragment: 1
   rushStartSound:
     key: 

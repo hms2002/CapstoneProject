@@ -320,11 +320,16 @@ public static class DemonKingPatternVfx
 
     public static DemonKingAnimationClipVisual SpawnExplosion(Vector2 center, float diameter)
     {
+        return SpawnExplosion(center, new Vector2(diameter, diameter));
+    }
+
+    public static DemonKingAnimationClipVisual SpawnExplosion(Vector2 center, Vector2 targetSize)
+    {
         SpawnHighArcDebris(center);
         return DemonKingAnimationClipVisual.SpawnOneShot(
             ExplosionVfxPath,
             center,
-            new Vector2(diameter, diameter),
+            targetSize,
             0f,
             "DemonKing_ExplosionVfx",
             DefaultSortingOrder);
@@ -368,11 +373,16 @@ public static class DemonKingPatternVfx
 
     public static DemonKingAnimationClipVisual SpawnDarkLordExplosion2(Vector2 center, float diameter)
     {
+        return SpawnDarkLordExplosion2(center, new Vector2(diameter, diameter));
+    }
+
+    public static DemonKingAnimationClipVisual SpawnDarkLordExplosion2(Vector2 center, Vector2 targetSize)
+    {
         SpawnHighArcDebris(center);
         return DemonKingAnimationClipVisual.SpawnOneShot(
             DarkLordExplosion2VfxPath,
             center,
-            new Vector2(diameter, diameter),
+            targetSize,
             0f,
             "DarkLord_Explosion2Vfx",
             DefaultSortingOrder);
@@ -391,11 +401,16 @@ public static class DemonKingPatternVfx
     public static DemonKingAnimationClipVisual SpawnImpact(Vector2 center, float diameter, bool leaveFragment = true)
     {
         _ = diameter;
+        return SpawnImpact(center, Vector2.zero, leaveFragment);
+    }
+
+    public static DemonKingAnimationClipVisual SpawnImpact(Vector2 center, Vector2 targetSize, bool leaveFragment = true)
+    {
         SpawnHighArcDebris(center);
         DemonKingAnimationClipVisual impact = DemonKingAnimationClipVisual.SpawnOneShot(
             ImpactVfxPath,
             center,
-            Vector2.zero,
+            targetSize,
             0f,
             "DemonKing_ImpactVfx",
             DefaultSortingOrder);
@@ -415,39 +430,41 @@ public static class DemonKingPatternVfx
         {
             SpawnPresentationCompanionsForCue(cue, center);
             Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
-            return DemonKingAnimationClipVisual.SpawnOneShot(
+            DemonKingAnimationClipVisual overrideVisual = DemonKingAnimationClipVisual.SpawnOneShot(
                 cue.PrefabOverride,
                 center,
-                cue.ResolveTargetSize(fallbackDiameter),
-                DemonKingCombatUtil.RotationDeg(safeDirection) + cue.RotationOffsetDeg,
+                cue.ResolveScaledTargetSize(fallbackDiameter),
+                ResolveCueRotationDeg(cue, safeDirection),
                 name,
                 DefaultSortingOrder);
+            ApplyCueFlip(overrideVisual, cue);
+            return overrideVisual;
         }
 
-        return cue.FallbackKind switch
+        DemonKingAnimationClipVisual visual = cue.FallbackKind switch
         {
-            DemonKingBuiltInVfxKind.Explosion => SpawnExplosion(center, fallbackDiameter),
-            DemonKingBuiltInVfxKind.DarkLordExplosion2 => SpawnDarkLordExplosion2(center, fallbackDiameter),
-            DemonKingBuiltInVfxKind.Impact => SpawnImpact(center, fallbackDiameter, cue.LeaveFragment),
-            DemonKingBuiltInVfxKind.GroggyRelease => SpawnGroggyRelease(center, fallbackDiameter),
+            DemonKingBuiltInVfxKind.Explosion => SpawnExplosion(center, cue.ResolveScaledTargetSize(fallbackDiameter)),
+            DemonKingBuiltInVfxKind.DarkLordExplosion2 => SpawnDarkLordExplosion2(center, cue.ResolveScaledTargetSize(fallbackDiameter)),
+            DemonKingBuiltInVfxKind.Impact => SpawnImpact(center, cue.ResolveOptionalScaledTargetSize(fallbackDiameter), cue.LeaveFragment),
+            DemonKingBuiltInVfxKind.GroggyRelease => SpawnGroggyRelease(center, cue.ResolveScaledTargetSize(fallbackDiameter)),
             DemonKingBuiltInVfxKind.EyeFlash => DemonKingAnimationClipVisual.SpawnOneShot(
                 EyeFlashVfxPath,
                 center,
-                cue.ResolveTargetSize(fallbackDiameter),
+                cue.ResolveScaledTargetSize(fallbackDiameter),
                 cue.RotationOffsetDeg,
                 name,
                 DefaultSortingOrder),
             DemonKingBuiltInVfxKind.Stab => DemonKingAnimationClipVisual.SpawnOneShot(
                 StabVfxPath,
                 center,
-                cue.ResolveTargetSize(fallbackDiameter),
+                cue.ResolveScaledTargetSize(fallbackDiameter),
                 DemonKingCombatUtil.RotationDeg(direction) + cue.RotationOffsetDeg,
                 name,
                 DefaultSortingOrder),
             DemonKingBuiltInVfxKind.Slash => DemonKingAnimationClipVisual.SpawnOneShot(
                 SlashVfxPath,
                 center,
-                cue.ResolveTargetSize(fallbackDiameter),
+                cue.ResolveScaledTargetSize(fallbackDiameter),
                 DemonKingCombatUtil.RotationDeg(direction) + cue.RotationOffsetDeg,
                 name,
                 DefaultSortingOrder),
@@ -455,26 +472,28 @@ public static class DemonKingPatternVfx
             DemonKingBuiltInVfxKind.EgoSwordAttack => DemonKingAnimationClipVisual.SpawnOneShot(
                 EgoSwordAttackVfxPath,
                 center,
-                cue.ResolveTargetSize(fallbackDiameter),
+                cue.ResolveScaledTargetSize(fallbackDiameter),
                 DemonKingCombatUtil.RotationDeg(direction) + cue.RotationOffsetDeg,
                 name,
                 DefaultSortingOrder),
             DemonKingBuiltInVfxKind.HomingStock => DemonKingAnimationClipVisual.SpawnOneShot(
                 "DemonKing/Vfx/HomingMagicBaltStockVfx",
                 center,
-                cue.ResolveTargetSize(fallbackDiameter),
+                cue.ResolveScaledTargetSize(fallbackDiameter),
                 cue.RotationOffsetDeg,
                 name,
                 DefaultSortingOrder),
             DemonKingBuiltInVfxKind.HomingProjectile => DemonKingAnimationClipVisual.SpawnOneShot(
                 "DemonKing/Vfx/HomingMagicBaltProjectileVfx",
                 center,
-                cue.ResolveTargetSize(fallbackDiameter),
+                cue.ResolveScaledTargetSize(fallbackDiameter),
                 DemonKingCombatUtil.RotationDeg(direction) + cue.RotationOffsetDeg,
                 name,
                 DefaultSortingOrder),
             _ => null
         };
+        ApplyCueFlip(visual, cue);
+        return visual;
     }
 
     public static DemonKingAnimationClipVisual SpawnCueAttachedOneShot(
@@ -492,21 +511,23 @@ public static class DemonKingPatternVfx
         if (cue.PrefabOverride != null)
         {
             SpawnPresentationCompanionsForCue(cue, parent.TransformPoint(localOffset));
-            return DemonKingAnimationClipVisual.SpawnAttachedOneShot(
+            DemonKingAnimationClipVisual overrideVisual = DemonKingAnimationClipVisual.SpawnAttachedOneShot(
                 cue.PrefabOverride,
                 parent,
                 localOffset,
-                cue.ResolveTargetSize(fallbackDiameter),
-                DemonKingCombatUtil.RotationDeg(safeDirection) + cue.RotationOffsetDeg,
+                cue.ResolveScaledTargetSize(fallbackDiameter),
+                ResolveCueRotationDeg(cue, safeDirection),
                 name,
                 DefaultSortingOrder);
+            ApplyCueFlip(overrideVisual, cue);
+            return overrideVisual;
         }
 
-        return cue.FallbackKind switch
+        DemonKingAnimationClipVisual visual = cue.FallbackKind switch
         {
             DemonKingBuiltInVfxKind.EgoSwordAttack => SpawnEgoSwordAttack(parent, fallbackDiameter),
             DemonKingBuiltInVfxKind.Stab => SpawnAttachedStab(parent, safeDirection, localOffset),
-            DemonKingBuiltInVfxKind.EyeFlash => SpawnEyeFlash(parent, localOffset, cue.ResolveTargetSize(fallbackDiameter)),
+            DemonKingBuiltInVfxKind.EyeFlash => SpawnEyeFlash(parent, localOffset, cue.ResolveScaledTargetSize(fallbackDiameter)),
             _ => SpawnCueOneShot(
                 cue,
                 parent.TransformPoint(localOffset),
@@ -514,6 +535,8 @@ public static class DemonKingPatternVfx
                 safeDirection,
                 name)
         };
+        ApplyCueFlip(visual, cue);
+        return visual;
     }
 
     public static DemonKingAnimationClipVisual SpawnCueFollowingLoop(
@@ -530,24 +553,49 @@ public static class DemonKingPatternVfx
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
         if (cue.PrefabOverride != null)
         {
-            return DemonKingAnimationClipVisual.SpawnFollowingLoop(
+            DemonKingAnimationClipVisual overrideVisual = DemonKingAnimationClipVisual.SpawnFollowingLoop(
                 cue.PrefabOverride,
                 target,
                 localOffset,
-                cue.ResolveTargetSize(fallbackDiameter),
-                DemonKingCombatUtil.RotationDeg(safeDirection) + cue.RotationOffsetDeg,
+                cue.ResolveScaledTargetSize(fallbackDiameter),
+                ResolveCueRotationDeg(cue, safeDirection),
                 name,
                 DefaultSortingOrder,
                 inheritRotation: false,
                 LoopStateName);
+            ApplyCueFlip(overrideVisual, cue);
+            return overrideVisual;
         }
 
-        return cue.FallbackKind switch
+        DemonKingAnimationClipVisual visual = cue.FallbackKind switch
         {
             DemonKingBuiltInVfxKind.ChargeLoop => SpawnChargeLoop(target, safeDirection, localOffset),
             DemonKingBuiltInVfxKind.SwordSpin => SpawnSwordSpinLoop(target, localOffset),
             _ => null
         };
+        ApplyCueFlip(visual, cue);
+        return visual;
+    }
+
+    private static void ApplyCueFlip(DemonKingAnimationClipVisual visual, DemonKingVfxCueRef cue)
+    {
+        if (visual != null && cue.FlipX)
+            visual.SetSpriteFlipX(true);
+    }
+
+    private static float ResolveCueRotationDeg(DemonKingVfxCueRef cue, Vector2 direction)
+    {
+        if (UsesDirectionlessCircularRotation(cue))
+            return cue.RotationOffsetDeg;
+
+        return DemonKingCombatUtil.RotationDeg(direction) + cue.RotationOffsetDeg;
+    }
+
+    private static bool UsesDirectionlessCircularRotation(DemonKingVfxCueRef cue)
+    {
+        return cue.FallbackKind == DemonKingBuiltInVfxKind.Explosion ||
+               cue.FallbackKind == DemonKingBuiltInVfxKind.DarkLordExplosion2 ||
+               cue.FallbackKind == DemonKingBuiltInVfxKind.Impact;
     }
 
     public static DemonKingAnimationClipVisual SpawnPersistentFragment(Vector2 center, string name = "DarkLord_FragmentVfx")
@@ -609,7 +657,7 @@ public static class DemonKingPatternVfx
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
         return chargeLoop.TryDetachAndPlayOneShotState(
             DisappearStateName,
-            cue.ResolveTargetSize(fallbackDiameter),
+            cue.ResolveScaledTargetSize(fallbackDiameter),
             DemonKingCombatUtil.RotationDeg(safeDirection) + cue.RotationOffsetDeg);
     }
 
@@ -679,10 +727,15 @@ public static class DemonKingPatternVfx
 
     public static DemonKingAnimationClipVisual SpawnGroggyRelease(Vector2 center, float diameter)
     {
+        return SpawnGroggyRelease(center, new Vector2(diameter, diameter));
+    }
+
+    public static DemonKingAnimationClipVisual SpawnGroggyRelease(Vector2 center, Vector2 targetSize)
+    {
         return DemonKingAnimationClipVisual.SpawnOneShot(
             GroggyReleaseVfxPath,
             center,
-            new Vector2(diameter, diameter),
+            targetSize,
             0f,
             "DarkLord_GroggyReleaseVfx",
             DefaultSortingOrder);

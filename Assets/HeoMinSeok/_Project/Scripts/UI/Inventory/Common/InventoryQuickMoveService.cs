@@ -46,6 +46,9 @@ public static class InventoryQuickMoveService
 {
     public static InventoryQuickMoveResult TryMove(IItemContainer source, int sourceIndex)
     {
+        if (ItemContainerGroupRegistry.IsInspectionOnly)
+            return InventoryQuickMoveResult.Ignored;
+
         if (source == null)
             return InventoryQuickMoveResult.Ignored;
 
@@ -278,6 +281,13 @@ public static class InventorySlotTransferInteractionService
 
     public static void ExecuteDrop(IItemContainer target, int targetIndex, Action refresh)
     {
+        if (ItemContainerGroupRegistry.IsInspectionOnly)
+        {
+            ItemDragContext.CancelActiveDragSession();
+            refresh?.Invoke();
+            return;
+        }
+
         if (target == null || !ItemDragContext.Active)
             return;
 
@@ -287,6 +297,12 @@ public static class InventorySlotTransferInteractionService
 
     public static void ExecuteQuickMove(IItemContainer source, int sourceIndex, Action refresh)
     {
+        if (ItemContainerGroupRegistry.IsInspectionOnly)
+        {
+            refresh?.Invoke();
+            return;
+        }
+
         if (source == null)
             return;
 

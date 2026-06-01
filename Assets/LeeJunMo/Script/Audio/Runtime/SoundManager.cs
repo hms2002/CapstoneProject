@@ -41,6 +41,7 @@ namespace CapstoneAudio
         [SerializeField, Range(0f, 1f)] private float masterVolume = 1f;
         [SerializeField, Range(0f, 1f)] private float masterMusicVolume = 1f;
         [SerializeField, Range(0f, 1f)] private float masterSfxVolume = 1f;
+        [HideInInspector]
         [SerializeField, Min(0f)] private float bgmFadeDuration = 0.5f;
 
         private readonly List<AudioSource> normalSfxSources = new();
@@ -146,12 +147,12 @@ namespace CapstoneAudio
             source.Play();
         }
 
-        public void PlayMusic(string key, float fadeDuration = -1f)
+        public void PlayMusic(string key)
         {
-            PlayMusic(SoundRef.FromKey(key), fadeDuration);
+            PlayMusic(SoundRef.FromKey(key));
         }
 
-        public void PlayMusic(in SoundRef soundRef, float fadeDuration = -1f)
+        public void PlayMusic(in SoundRef soundRef)
         {
             if (!soundRef.IsSet)
                 return;
@@ -164,17 +165,17 @@ namespace CapstoneAudio
                 return;
             }
 
-            PlayMusicInternal(entry, soundRef, fadeDuration);
+            PlayMusicInternal(entry, soundRef);
         }
 
-        public void StopMusic(float fadeDuration = -1f)
+        public void StopMusic()
         {
             EnsureInitialized();
 
             if (musicSource == null || !musicSource.isPlaying)
                 return;
 
-            float duration = fadeDuration >= 0f ? fadeDuration : bgmFadeDuration;
+            float duration = ResolveBgmFadeOutSeconds();
             musicSource.DOKill();
 
             if (duration <= 0f)
@@ -245,7 +246,7 @@ namespace CapstoneAudio
                 return;
 
             musicSource.DOKill();
-            musicSource.volume = currentMusicBaseVolume * masterMusicVolume * masterVolume;
+            musicSource.volume = ResolveCurrentMusicTargetVolume();
         }
 
         public void SetMusicVolume(float volume)
@@ -256,7 +257,7 @@ namespace CapstoneAudio
                 return;
 
             musicSource.DOKill();
-            musicSource.volume = currentMusicBaseVolume * masterMusicVolume * masterVolume;
+            musicSource.volume = ResolveCurrentMusicTargetVolume();
         }
 
         public void SetSfxVolume(float volume)
@@ -378,6 +379,35 @@ namespace CapstoneAudio
             masterSfxVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(SfxVolumePrefKey, masterSfxVolume));
         }
 
+        private float ResolveGlobalVolumeMultiplier()
+        {
+            return defaultCatalog != null
+                ? defaultCatalog.GlobalVolumeMultiplier
+                : 1f;
+        }
+
+        private float ResolveBgmFadeInSeconds()
+        {
+            return defaultCatalog != null
+                ? defaultCatalog.BgmFadeInSeconds
+                : Mathf.Max(0f, bgmFadeDuration);
+        }
+
+        private float ResolveBgmFadeOutSeconds()
+        {
+            return defaultCatalog != null
+                ? defaultCatalog.BgmFadeOutSeconds
+                : Mathf.Max(0f, bgmFadeDuration);
+        }
+
+        private float ResolveCurrentMusicTargetVolume()
+        {
+            return currentMusicBaseVolume
+                   * ResolveGlobalVolumeMultiplier()
+                   * masterMusicVolume
+                   * masterVolume;
+        }
+
         private Transform CreateRoot(string rootName)
         {
             GameObject root = new GameObject(rootName);
@@ -462,22 +492,25 @@ namespace CapstoneAudio
 
         private void PlayMusicInternal(
             AudioCatalogEntry entry,
-            SoundRef soundRef,
-            float fadeDuration = -1f)
+            SoundRef soundRef)
         {
             if (!entry.TryPickClip(out AudioClip clip))
                 return;
 
             EnsureInitialized();
 
-            float duration = fadeDuration >= 0f ? fadeDuration : bgmFadeDuration;
-            float targetVolume = entry.volume * soundRef.EffectiveVolumeMultiplier * masterMusicVolume * masterVolume;
+            float fadeInSeconds = ResolveBgmFadeInSeconds();
+            float fadeOutSeconds = ResolveBgmFadeOutSeconds();
             currentMusicBaseVolume = entry.volume * soundRef.EffectiveVolumeMultiplier;
+            float targetVolume = ResolveCurrentMusicTargetVolume();
 
             if (musicSource.clip == clip && musicSource.isPlaying)
             {
                 musicSource.DOKill();
-                musicSource.DOFade(targetVolume, duration).SetUpdate(true);
+                if (fadeInSeconds <= 0f)
+                    musicSource.volume = targetVolume;
+                else
+                    musicSource.DOFade(targetVolume, fadeInSeconds).SetUpdate(true);
                 return;
             }
 
@@ -490,22 +523,22 @@ namespace CapstoneAudio
                 musicSource.pitch = entry.PickAudioSourcePitch();
                 musicSource.loop = entry.loop || entry.bus == AudioBus.BGM;
                 musicSource.spatialBlend = 0f;
-                musicSource.volume = duration > 0f ? 0f : targetVolume;
+                musicSource.volume = fadeInSeconds > 0f ? 0f : targetVolume;
                 musicSource.Play();
 
-                if (duration > 0f)
-                    musicSource.DOFade(targetVolume, duration).SetUpdate(true);
+                if (fadeInSeconds > 0f)
+                    musicSource.DOFade(targetVolume, fadeInSeconds).SetUpdate(true);
             };
 
             musicSource.DOKill();
 
-            if (!musicSource.isPlaying || duration <= 0f)
+            if (!musicSource.isPlaying || fadeOutSeconds <= 0f)
             {
                 playNewClip();
                 return;
             }
 
-            musicSource.DOFade(0f, duration)
+            musicSource.DOFade(0f, fadeOutSeconds)
                 .SetUpdate(true)
                 .OnComplete(() => playNewClip());
         }
@@ -586,7 +619,7 @@ namespace CapstoneAudio
             source.clip = clip;
             source.pitch = 1f;
             source.loop = false;
-            TrackRuntimeSoundState(source, AudioCategory.Other, Mathf.Clamp01(volume));
+            TrackRuntimeSoundState(source, AudioCategory.Other, Mathf.Max(0f, volume));
             source.volume = ResolveRuntimeSfxVolume(source);
 
             if (spatial)
@@ -635,10 +668,14 @@ namespace CapstoneAudio
         private float ResolveRuntimeSfxVolume(AudioSource source)
         {
             if (source == null || !runtimeSoundStates.TryGetValue(source, out RuntimeSoundState state))
-                return masterSfxVolume * masterVolume;
+                return ResolveGlobalVolumeMultiplier() * masterSfxVolume * masterVolume;
 
             float duckMultiplier = ShouldDuckCombatCategory(state.Category) ? combatSfxDuckVolume : 1f;
-            return state.BaseVolume * masterSfxVolume * masterVolume * duckMultiplier;
+            return state.BaseVolume
+                   * ResolveGlobalVolumeMultiplier()
+                   * masterSfxVolume
+                   * masterVolume
+                   * duckMultiplier;
         }
 
         private void ApplyCombatSfxDuckVolume(float value)

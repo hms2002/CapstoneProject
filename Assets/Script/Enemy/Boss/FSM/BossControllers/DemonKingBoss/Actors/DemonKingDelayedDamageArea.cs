@@ -141,10 +141,10 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
             if (!timed)
             {
                 PlayImpactPresentationOnce();
-                DemonKingCombatUtil.ApplyCircleDamage(
+                DemonKingCombatUtil.ApplyTopDownEllipseDamage(
                     owner,
                     center,
-                    diameter * 0.5f,
+                    diameter,
                     owner.DefaultDamageEffect,
                     damage);
             }
@@ -225,10 +225,10 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
             for (int i = 0; i < centers.Count; i++)
             {
                 Vector2 center = centers[i];
-                DemonKingCombatUtil.ApplyCircleDamage(
+                DemonKingCombatUtil.ApplyTopDownEllipseDamage(
                     owner,
                     center,
-                    diameter * 0.5f,
+                    diameter,
                     owner.DefaultDamageEffect,
                     damage,
                     damagedTargets);

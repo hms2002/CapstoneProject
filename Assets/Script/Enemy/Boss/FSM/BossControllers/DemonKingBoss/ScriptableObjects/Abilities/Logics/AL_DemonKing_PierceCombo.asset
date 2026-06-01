@@ -15,6 +15,7 @@ MonoBehaviour:
   pierceCount: 3
   firstWarningSeconds: 1
   warningStepDecrease: 0.2
+  lockOnSeconds: 0.25
   lungeSeconds: 0.16
   returnSeconds: 0.12
   hitWidth: 1.05
@@ -22,6 +23,26 @@ MonoBehaviour:
   knockback: 5
   intervalSeconds: 0.12
   dashEndPoseHoldSeconds: 0.1
+  readyAnimation:
+    clip: {fileID: 0}
+    sampleMode: 1
+    frameIndex: 0
+    fallbackStateName: DarkLord_Sword_DashStabReady
+  dashAnimation:
+    clip: {fileID: 0}
+    sampleMode: 0
+    frameIndex: 0
+    fallbackStateName: DarkLord_Sword_DashStab
+  stabVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 6
+    socketId: 4
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    flipX: 0
+    leaveFragment: 0
   dashCommitSound:
     key: 
     volumeMultiplier: 0

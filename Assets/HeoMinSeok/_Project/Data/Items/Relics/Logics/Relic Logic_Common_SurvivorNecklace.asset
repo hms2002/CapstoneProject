@@ -17,11 +17,17 @@ MonoBehaviour:
     displayNameOverride: "최대 체력"
     type: 0
     value: 1
-    valueByLevel: []
+    valueByLevel:
+    - 1
+    - 1
+    - 1
     duration: 0
   - attribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
     displayNameOverride: "이동속도"
     type: 1
-    value: 0.05
-    valueByLevel: []
+    value: 0.02
+    valueByLevel:
+    - 0.02
+    - 0.03
+    - 0.05
     duration: 0

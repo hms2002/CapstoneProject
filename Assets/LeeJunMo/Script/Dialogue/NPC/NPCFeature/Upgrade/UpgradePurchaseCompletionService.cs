@@ -38,7 +38,7 @@ internal sealed class UpgradePurchaseCompletionService
         RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
 
         if (RewardDisplayService.Instance != null)
-            RewardDisplayService.Instance.ShowReward(node.effects, null);
+            RewardDisplayService.Instance.ShowUpgradeReward(node);
 
         checkAndUnlockNodesAfterPurchase();
         notifications?.RequestImmediateSave();

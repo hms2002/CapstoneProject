@@ -20,7 +20,6 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
     private const float FinaleSpeechDurationSeconds = 2.5f;
     private const float FinalePostVanishHoldSeconds = 0.35f;
     private const float FinaleFocusMoveSeconds = 0.55f;
-    private const float FinaleBgmFadeOutDurationSeconds = 0f;
     private const string ShortFinaleSpeech = "우으으 져버리다니..!";
     private const string LongFinaleSpeech = "다음에는 봐주지 않을 거야!";
 
@@ -177,7 +176,7 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
 
     private IEnumerator RunPhaseTwoFinaleRoutine(SlimeQueenP2Short shortQueen, SlimeQueenP2Long longQueen)
     {
-        SoundManager.EnsureInstance().StopMusic(FinaleBgmFadeOutDurationSeconds);
+        SoundManager.EnsureInstance().StopMusic();
 
         CleanupFinaleRuntimeState();
         finalePlayerProtection = AcquirePlayerProtection();

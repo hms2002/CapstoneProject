@@ -18,7 +18,7 @@ MonoBehaviour:
   rarity: 1
   description: "\uC774\uB3D9\uC18D\uB3C4\uAC00 \uAC10\uC18C\uD558\uC9C0\uB9CC \uACF5\uACA9\uB825\uC774
     \uD06C\uAC8C \uC99D\uAC00\uD569\uB2C8\uB2E4."
-  maxLevel: 1
+  maxLevel: 3
   dropLevel: 1
   logic: {fileID: 11400000, guid: f6f4ed2e6a75450a9200b6c6db29ef75, type: 2}
   param: {fileID: 0}

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dd139b6904a2e141942ae39bc372f6b, type: 3}
   m_Name: PS_StatInfo_HP
   m_EditorClassIdentifier: 
-  icon: {fileID: -1330801700, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  icon: {fileID: 0}
   label: "\uCCB4\uB825"
   valueMode: 2
   valueAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}

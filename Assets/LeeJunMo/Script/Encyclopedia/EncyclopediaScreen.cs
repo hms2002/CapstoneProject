@@ -30,6 +30,9 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
     [SerializeField] private Button itemMainTabButton;
     [SerializeField] private Button monsterMainTabButton;
     [SerializeField] private Button bossMainTabButton;
+    [SerializeField] private Image itemMainTabIcon;
+    [SerializeField] private Image monsterMainTabIcon;
+    [SerializeField] private Image bossMainTabIcon;
     [SerializeField] private GameObject itemMainSelectedMarker;
     [SerializeField] private GameObject monsterMainSelectedMarker;
     [SerializeField] private GameObject bossMainSelectedMarker;
@@ -527,6 +530,15 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
         if (bossMainTabButton == null)
             bossMainTabButton = EncyclopediaReferenceResolver.FindComponent<Button>(searchRoot, "BossTab", "BossTabButton", "Boss", "BossButton");
 
+        if (itemMainTabIcon == null && itemMainTabButton != null)
+            itemMainTabIcon = EncyclopediaReferenceResolver.FindTabIcon(itemMainTabButton.transform);
+
+        if (monsterMainTabIcon == null && monsterMainTabButton != null)
+            monsterMainTabIcon = EncyclopediaReferenceResolver.FindTabIcon(monsterMainTabButton.transform);
+
+        if (bossMainTabIcon == null && bossMainTabButton != null)
+            bossMainTabIcon = EncyclopediaReferenceResolver.FindTabIcon(bossMainTabButton.transform);
+
         if (itemMainSelectedMarker == null)
             itemMainSelectedMarker = EncyclopediaReferenceResolver.FindMarker(searchRoot, "ItemTab") ??
                 EncyclopediaReferenceResolver.FindMarker(searchRoot, "Item");
@@ -742,5 +754,10 @@ internal static class EncyclopediaReferenceResolver
             return null;
 
         return FindGameObject(owner, "SelectedMarker", "SelectMarker", "Selected", "Selection", "Highlight", "Highlighter");
+    }
+
+    public static Image FindTabIcon(Transform owner)
+    {
+        return FindComponent<Image>(owner, "TabIcon", "Icon", "ButtonIcon", "CategoryIcon");
     }
 }

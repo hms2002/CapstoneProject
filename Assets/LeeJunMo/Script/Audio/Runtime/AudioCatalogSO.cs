@@ -138,6 +138,11 @@ namespace CapstoneAudio
     [CreateAssetMenu(fileName = "AudioCatalog", menuName = "Audio/Audio Catalog")]
     public sealed class AudioCatalogSO : ScriptableObject
     {
+        [Header("Runtime Defaults")]
+        [SerializeField, Min(0f)] private float globalVolumeMultiplier = 1f;
+        [SerializeField, Min(0f)] private float bgmFadeInSeconds = 0.5f;
+        [SerializeField, Min(0f)] private float bgmFadeOutSeconds = 0.5f;
+
         [SerializeField] private List<AudioCatalogEntry> entries = new();
 
         private readonly Dictionary<string, AudioCatalogEntry> lookup =
@@ -146,6 +151,9 @@ namespace CapstoneAudio
         private bool lookupDirty = true;
 
         public IReadOnlyList<AudioCatalogEntry> Entries => entries;
+        public float GlobalVolumeMultiplier => Mathf.Max(0f, globalVolumeMultiplier);
+        public float BgmFadeInSeconds => Mathf.Max(0f, bgmFadeInSeconds);
+        public float BgmFadeOutSeconds => Mathf.Max(0f, bgmFadeOutSeconds);
 
         public bool TryGetEntry(string key, out AudioCatalogEntry entry)
         {
@@ -184,17 +192,27 @@ namespace CapstoneAudio
 
         private void OnEnable()
         {
+            NormalizeRuntimeDefaults();
             lookupDirty = true;
         }
 
         private void OnValidate()
         {
+            NormalizeRuntimeDefaults();
+
             for (int i = 0; i < entries.Count; i++)
             {
                 entries[i]?.Normalize();
             }
 
             lookupDirty = true;
+        }
+
+        private void NormalizeRuntimeDefaults()
+        {
+            globalVolumeMultiplier = Mathf.Max(0f, globalVolumeMultiplier);
+            bgmFadeInSeconds = Mathf.Max(0f, bgmFadeInSeconds);
+            bgmFadeOutSeconds = Mathf.Max(0f, bgmFadeOutSeconds);
         }
 
         private void EnsureLookup()

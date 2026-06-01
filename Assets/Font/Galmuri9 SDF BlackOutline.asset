@@ -56588,7 +56588,14 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Ints: []
-    m_Floats: []
+    m_Floats:
+    - _FaceDilate: 0.25
+    - _FaceUVSpeedX: 0
+    - _OutlineSoftness: 0
+    - _OutlineWidth: 0.314
+    - _ScaleRatioA: 0.8333333
+    - _ScaleRatioB: 0.46875
+    - _ScaleRatioC: 0.46875
     m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1

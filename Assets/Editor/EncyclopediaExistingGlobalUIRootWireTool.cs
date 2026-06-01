@@ -507,6 +507,9 @@ public static class EncyclopediaExistingGlobalUIRootWireTool
             RequireRef(report, so, "canvasGroup", "Screen CanvasGroup");
             RequireRef(report, so, "itemTab", "Screen ItemTab");
             RequireRef(report, so, "bookPresentation", "Screen BookPresentation");
+            WarnIfMissingRef(report, so, "itemMainTabIcon", "Screen item main tab icon is unassigned.");
+            WarnIfMissingRef(report, so, "monsterMainTabIcon", "Screen monster main tab icon is unassigned.");
+            WarnIfMissingRef(report, so, "bossMainTabIcon", "Screen boss main tab icon is unassigned.");
         }
 
         if (bookPresentation != null)
@@ -563,6 +566,9 @@ public static class EncyclopediaExistingGlobalUIRootWireTool
         RequireRef(report, so, "weaponButton", "LeftPage weapon sub-tab button");
         RequireRef(report, so, "relicButton", "LeftPage relic sub-tab button");
         RequireRef(report, so, "consumableButton", "LeftPage consumable sub-tab button");
+        WarnIfMissingRef(report, so, "weaponTabIcon", "LeftPage weapon sub-tab icon is unassigned.");
+        WarnIfMissingRef(report, so, "relicTabIcon", "LeftPage relic sub-tab icon is unassigned.");
+        WarnIfMissingRef(report, so, "consumableTabIcon", "LeftPage consumable sub-tab icon is unassigned.");
         RequireRef(report, so, "entryGridView", "LeftPage entry grid view");
         RequireRef(report, so, "previousPageButton", "LeftPage previous page button");
         RequireRef(report, so, "nextPageButton", "LeftPage next page button");
@@ -610,8 +616,17 @@ public static class EncyclopediaExistingGlobalUIRootWireTool
         RequireRef(report, so, "contentRoot", "RightPage content root");
         RequireRef(report, so, "titleText", "RightPage title text");
         RequireRef(report, so, "storyText", "RightPage shared story/description text");
-        RequireNamedRef(report, so, "weaponStatsText", "LvTxt", "RightPage weaponStatsText");
-        RequireNamedRef(report, so, "relicLevelText", "LvTxt", "RightPage relicLevelText");
+        RequireRef(report, so, "weaponStatsRoot", "RightPage weapon stats root");
+        RequireRef(report, so, "weaponStatsText", "RightPage weapon stats text");
+        RequireRef(report, so, "relicPreviewRoot", "RightPage relic preview root");
+        RequireRef(report, so, "relicLevelText", "RightPage relic level text");
+        WarnIfMissingRef(report, so, "relicEffectRoot", "RightPage relic effect root is unassigned; relic effects should not fall back to StoryText.");
+        WarnIfMissingRef(report, so, "relicEffectText", "RightPage relic effect text is unassigned; relic effects should not fall back to StoryText.");
+        WarnIfSameRef(report, so, "relicEffectText", "storyText", "RightPage relic effect text should be separate from StoryText.");
+        WarnIfSameRef(report, so, "weaponStatsRoot", "relicPreviewRoot", "RightPage weapon stats root and relic preview root should be separate authored objects.");
+        WarnIfSameRef(report, so, "weaponStatsText", "relicLevelText", "RightPage weapon stats text and relic level text should be separate authored TMP texts.");
+        RequireRef(report, so, "relicPreviewPreviousGuideIcon", "RightPage previous relic preview guide icon");
+        RequireRef(report, so, "relicPreviewNextGuideIcon", "RightPage next relic preview guide icon");
         RequireRef(report, so, "abilityContainer", "RightPage ability container");
         RequireRef(report, so, "abilityBlockPrefab", "RightPage ability block prefab");
         RequireRef(report, so, "detailScrollRect", "RightPage detail ScrollRect");
@@ -725,6 +740,9 @@ public static class EncyclopediaExistingGlobalUIRootWireTool
             SetObject(so, "weaponButton", subTabs.Length > 0 ? subTabs[0] : null);
             SetObject(so, "relicButton", subTabs.Length > 1 ? subTabs[1] : null);
             SetObject(so, "consumableButton", subTabs.Length > 2 ? subTabs[2] : null);
+            SetObject(so, "weaponTabIcon", subTabs.Length > 0 ? FindTabIcon(subTabs[0].transform) : null);
+            SetObject(so, "relicTabIcon", subTabs.Length > 1 ? FindTabIcon(subTabs[1].transform) : null);
+            SetObject(so, "consumableTabIcon", subTabs.Length > 2 ? FindTabIcon(subTabs[2].transform) : null);
             SetObject(so, "weaponSelectedMarker", subTabs.Length > 0 ? FindMarker(subTabs[0].transform) : null);
             SetObject(so, "relicSelectedMarker", subTabs.Length > 1 ? FindMarker(subTabs[1].transform) : null);
             SetObject(so, "consumableSelectedMarker", subTabs.Length > 2 ? FindMarker(subTabs[2].transform) : null);
@@ -744,14 +762,11 @@ public static class EncyclopediaExistingGlobalUIRootWireTool
                 Find(detailHost, "ScrollContent") ?? Find(detailHost, "ViewportContent") ?? Find(detailHost, "Content");
             Transform descriptionRoot = Find(detailHost, "DescriptionRoot") ?? Find(detailHost, "DescriptionSection") ??
                 Find(detailHost, "CommonDescriptionRoot") ?? Find(detailHost, "DescriptionPanel");
-            Transform weaponStatsRoot = Find(detailHost, "LvPanel") ?? Find(detailHost, "LevelPanel") ??
-                Find(detailHost, "WeaponStatsRoot") ?? Find(detailHost, "StatsRoot") ??
-                Find(detailHost, "StatRoot") ?? Find(detailHost, "WeaponStatsSection") ?? Find(detailHost, "LevelPreviewRoot") ??
-                Find(detailHost, "RelicPreviewRoot") ?? Find(detailHost, "RelicLevelPreviewRoot");
-            Transform relicPreviewRoot = Find(detailHost, "LvPanel") ?? Find(detailHost, "LevelPanel") ??
-                Find(detailHost, "RelicPreviewRoot") ?? Find(detailHost, "RelicLevelPreviewRoot") ??
-                Find(detailHost, "LevelPreviewRoot") ?? Find(detailHost, "WeaponStatsRoot") ?? Find(detailHost, "StatsRoot") ??
-                Find(detailHost, "StatRoot");
+            Transform weaponStatsRoot = Find(detailHost, "WeaponStatsRoot") ?? Find(detailHost, "WeaponStatsPanel") ??
+                Find(detailHost, "WeaponStatsSection") ?? Find(detailHost, "StatTextPanel") ??
+                Find(detailHost, "StatsRoot") ?? Find(detailHost, "StatRoot");
+            Transform relicPreviewRoot = Find(detailHost, "RelicPreviewRoot") ?? Find(detailHost, "RelicLevelPreviewRoot") ??
+                Find(detailHost, "LevelPreviewRoot") ?? Find(detailHost, "LvPanel") ?? Find(detailHost, "LevelPanel");
             if (weaponStatsRoot == null)
                 weaponStatsRoot = relicPreviewRoot;
             if (relicPreviewRoot == null)
@@ -766,9 +781,30 @@ public static class EncyclopediaExistingGlobalUIRootWireTool
             RemoveLegacyInventoryDetailViews(detailHost);
             ConfigureDetailScrollHost(detailHost, contentRoot, abilityContainer);
 
-            TMP_Text sharedLevelText = FindComponentUnder<TMP_Text>(relicPreviewRoot, "LvTxt", "LvText", "LevelText", "RelicLevelText", "PreviewLevelText") ??
-                FindComponentUnder<TMP_Text>(weaponStatsRoot, "LvTxt", "LvText", "LevelText", "WeaponStatsText", "StatsText", "StatText") ??
-                FindComponentUnder<TMP_Text>(detailHost, "LvTxt", "LvText", "LevelText");
+            TMP_Text weaponStatsText = FindComponentUnder<TMP_Text>(
+                weaponStatsRoot,
+                "WeaponStatsText",
+                "StatsText",
+                "StatText",
+                "StatValueText",
+                "Text",
+                "Text (TMP)",
+                "Text(TMP)") ??
+                FindComponentUnder<TMP_Text>(detailHost, "WeaponStatsText", "StatsText", "StatText");
+            TMP_Text relicLevelText = FindComponentUnder<TMP_Text>(
+                relicPreviewRoot,
+                "LvTxt",
+                "LvText",
+                "LevelText",
+                "RelicLevelText",
+                "PreviewLevelText") ??
+                FindComponentUnder<TMP_Text>(detailHost, "LvTxt", "LvText", "LevelText", "RelicLevelText", "PreviewLevelText");
+            if (weaponStatsRoot == relicPreviewRoot)
+            {
+                weaponStatsText ??= relicLevelText;
+                relicLevelText ??= weaponStatsText;
+            }
+
             Transform relicPreviousGuide = Find(relicPreviewRoot, "RelicPreviewPreviousGuide") ?? Find(relicPreviewRoot, "PreviousGuide") ??
                 Find(relicPreviewRoot, "PrevGuide") ?? Find(relicPreviewRoot, "PrevPreview") ?? Find(detailHost, "PrevPreview");
             Transform relicNextGuide = Find(relicPreviewRoot, "RelicPreviewNextGuide") ?? Find(relicPreviewRoot, "NextGuide") ??
@@ -796,23 +832,28 @@ public static class EncyclopediaExistingGlobalUIRootWireTool
             SetObject(so, "descriptionTitleText", FindComponentUnder<TMP_Text>(descriptionRoot, "DescriptionTitleText", "SectionTitleText", "TitleText", "Title"));
             SetObject(so, "storyText", storyText);
             SetObject(so, "weaponStatsRoot", weaponStatsRoot != null ? weaponStatsRoot.gameObject : null);
-            SetObject(so, "weaponStatsText", sharedLevelText);
+            SetObject(so, "weaponStatsText", weaponStatsText);
             SetObject(so, "weaponAbilityRoot", weaponAbilityRoot != null ? weaponAbilityRoot.gameObject : null);
             SetObject(so, "abilityContainer", abilityContainer);
             SetObject(so, "abilityBlockPrefab", abilityBlockPrefab);
             SetObject(so, "relicPreviewRoot", relicPreviewRoot != null ? relicPreviewRoot.gameObject : null);
-            SetObject(so, "relicLevelText", sharedLevelText);
+            SetObject(so, "relicLevelText", relicLevelText);
             SetObject(so, "relicPreviewPreviousGuideRoot", relicPreviousGuide != null ? relicPreviousGuide.gameObject : null);
-            SetObject(so, "relicPreviewPreviousGuideIcon", FindComponentUnder<Image>(relicPreviousGuide, "Icon", "GuideIcon"));
+            SetObject(so, "relicPreviewPreviousGuideIcon", FindGuideIcon(relicPreviousGuide));
             SetObject(so, "relicPreviewPreviousGuideCanvasGroup", relicPreviousGuide != null ? relicPreviousGuide.GetComponent<CanvasGroup>() : null);
             SetObject(so, "relicPreviewNextGuideRoot", relicNextGuide != null ? relicNextGuide.gameObject : null);
-            SetObject(so, "relicPreviewNextGuideIcon", FindComponentUnder<Image>(relicNextGuide, "Icon", "GuideIcon"));
+            SetObject(so, "relicPreviewNextGuideIcon", FindGuideIcon(relicNextGuide));
             SetObject(so, "relicPreviewNextGuideCanvasGroup", relicNextGuide != null ? relicNextGuide.GetComponent<CanvasGroup>() : null);
             SetObject(so, "relicEffectRoot", relicEffectRoot != null ? relicEffectRoot.gameObject : null);
             SetObject(so, "relicEffectText", FindComponentUnder<TMP_Text>(relicEffectRoot, "RelicEffectText", "EffectText", "BodyText", "DescriptionText"));
             SetObject(so, "detailScrollRect", detailHost.GetComponent<ScrollRect>() ?? detailHost.GetComponentInChildren<ScrollRect>(true));
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(itemRightPage);
+
+            if (weaponStatsRoot != null && weaponStatsRoot == relicPreviewRoot)
+                Debug.LogWarning("[EncyclopediaWire] Weapon stats root and relic preview root resolved to the same object. Author a separate WeaponStatsRoot/StatTextPanel to keep weapon stat text separate.", itemRightPage);
+            if (weaponStatsText != null && weaponStatsText == relicLevelText)
+                Debug.LogWarning("[EncyclopediaWire] Weapon stats text and relic level text resolved to the same TMP text. Author a separate WeaponStatsText/StatText and RelicLevelText/LvTxt pair.", itemRightPage);
         }
 
         private static void RemoveDuplicateItemRightPagePresenters(Transform rightPage, EncyclopediaItemRightPage owner)
@@ -1047,6 +1088,9 @@ public static class EncyclopediaExistingGlobalUIRootWireTool
             SetObject(so, "itemMainTabButton", mainTabs.Length > 0 ? mainTabs[0] : null);
             SetObject(so, "monsterMainTabButton", mainTabs.Length > 1 ? mainTabs[1] : null);
             SetObject(so, "bossMainTabButton", mainTabs.Length > 2 ? mainTabs[2] : null);
+            SetObject(so, "itemMainTabIcon", mainTabs.Length > 0 ? FindTabIcon(mainTabs[0].transform) : null);
+            SetObject(so, "monsterMainTabIcon", mainTabs.Length > 1 ? FindTabIcon(mainTabs[1].transform) : null);
+            SetObject(so, "bossMainTabIcon", mainTabs.Length > 2 ? FindTabIcon(mainTabs[2].transform) : null);
             SetObject(so, "itemMainSelectedMarker", mainTabs.Length > 0 ? FindMarker(mainTabs[0].transform) : null);
             SetObject(so, "monsterMainSelectedMarker", mainTabs.Length > 1 ? FindMarker(mainTabs[1].transform) : null);
             SetObject(so, "bossMainSelectedMarker", mainTabs.Length > 2 ? FindMarker(mainTabs[2].transform) : null);
@@ -1475,6 +1519,14 @@ public static class EncyclopediaExistingGlobalUIRootWireTool
             report.Warning(message);
     }
 
+    private static void WarnIfSameRef(ContractReport report, SerializedObject so, string firstPropertyName, string secondPropertyName, string message)
+    {
+        Object first = GetRef(so, firstPropertyName);
+        Object second = GetRef(so, secondPropertyName);
+        if (first != null && first == second)
+            report.Warning(message);
+    }
+
     private static void RequireBool(ContractReport report, SerializedObject so, string propertyName, bool expectedValue, string label)
     {
         SerializedProperty property = so.FindProperty(propertyName);
@@ -1630,6 +1682,20 @@ public static class EncyclopediaExistingGlobalUIRootWireTool
         }
 
         return null;
+    }
+
+    private static Image FindTabIcon(Transform owner)
+    {
+        return FindComponentUnder<Image>(owner, "TabIcon", "Icon", "ButtonIcon", "CategoryIcon");
+    }
+
+    private static Image FindGuideIcon(Transform guide)
+    {
+        if (guide == null)
+            return null;
+
+        Image childIcon = FindComponentUnder<Image>(guide, "Icon", "GuideIcon");
+        return childIcon != null ? childIcon : guide.GetComponent<Image>();
     }
 
     private static T FindComponentUnderParent<T>(Transform root, string parentName, params string[] childNames) where T : Component

@@ -33,7 +33,7 @@ The tutorial support layer provides reusable authoring pieces for future tutoria
 - `TutorialDoorClosedTrigger` is a tutorial bridge that listens to `DoorObject.ClosedPresentationCompleted` and invokes an authored UnityEvent after a target door's close presentation completes. It can optionally require an assigned `RoomDoorMonsterKillLock` to be in an active encounter with remaining monsters.
 - `TutorialCombatIntroSequence` is a scene-authored combat tutorial intro coordinator for the door-closed beat. It locks player controls, blocks player targetability, plays the cinematic letterbox, focuses the gameplay camera on an authored monster/chest target, fires the attack/skill `TutorialInfoTrigger`, waits for the panel to close, returns the camera to the player, plays letterbox-out, then releases gameplay.
 - `TutorialChestOpenedTrigger` is a tutorial bridge that listens to a target `TreasureChest` successful UI-open event and invokes an authored UnityEvent for the next tutorial step.
-- `TutorialPlayerHealthAutoRecover` is a scene-authored tutorial safety component that restores the current player HP attribute to max immediately after HP or max HP changes. It can temporarily disable `PlayerDeathReturnToHub2D` while active so a tutorial scene cannot route to game over before the recovery lands.
+- `TutorialPlayerHealthAutoRecover` is a scene-authored tutorial safety component that detects real player HP loss, keeps lethal hits at a minimum survival HP, then restores the current player HP attribute to max after the configured delay. It can temporarily disable `PlayerDeathReturnToHub2D` while active so a tutorial scene cannot route to game over before the recovery lands.
 
 ## Ownership And Lifecycle
 
@@ -106,7 +106,7 @@ The tutorial support layer provides reusable authoring pieces for future tutoria
 - Use `TutorialCombatIntroSequence.OnGameplayReleased` for authored events that should happen only after the camera returns to the player, letterbox-out completes, and control/targetability are restored.
 - Add post-combat chest guidance by assigning `TutorialSceneSequenceDirector.chestMonsterKillLock` or `roomDoorMonsterKillLock`, starting its monster-clear wait from the combat-start/release beat, and wiring `OnMonstersCleared` to the chest-open `TutorialInfoTrigger.FireNow()`.
 - Add chest-open continuation by placing `TutorialChestOpenedTrigger` on the target chest or a nearby scene object, assigning the target `TreasureChest`, and wiring `OnChestOpened` to `TutorialSceneSequenceDirector.NotifyChestOpened()` plus any next `TutorialInfoTrigger.FireNow()` call.
-- Add tutorial HP safety by placing `TutorialPlayerHealthAutoRecover` in the tutorial scene and assigning the player `AttributeSet`, health `AttributeDefinition`, and max-health `AttributeDefinition`. Leave `suspendPlayerDeathReturn` enabled when the scene must never route to game over from combat damage.
+- Add tutorial HP safety by placing `TutorialPlayerHealthAutoRecover` in the tutorial scene and assigning the health `AttributeDefinition` and max-health `AttributeDefinition`. Player, `AttributeSet`, and `PlayerDeathReturnToHub2D` references may stay empty when the scene uses `PlayerRuntimeRegistry` spawning. Leave `suspendPlayerDeathReturn` enabled when the scene must never route to game over from combat damage.
 
 ## Known Pitfalls
 
@@ -154,7 +154,7 @@ The tutorial support layer provides reusable authoring pieces for future tutoria
 - `TutorialCombatIntroSequence` releases targetability only after returning to the player. If another scene event also acquires `PlayerTargetabilityBlocker`, enemies may still ignore the player until that owner releases its token.
 - `TutorialChestOpenedTrigger` fires from `TreasureChest.FirstOpenedUi` by default, which is raised after `ChestUIManager.OpenChest(...)` succeeds. It will not fire if the chest interaction request starts but the chest UI fails to open.
 - If a tutorial should respond every time an already-open chest UI is reopened, disable `firstOpenOnly`; otherwise leave `triggerOnce` and `firstOpenOnly` enabled for one-shot tutorial continuation.
-- `TutorialPlayerHealthAutoRecover` changes live player HP state and can temporarily disable `PlayerDeathReturnToHub2D`. Keep it out of non-tutorial scenes and verify the health/max-health attribute references in the Inspector.
+- `TutorialPlayerHealthAutoRecover` changes live player HP state, can temporarily disable `PlayerDeathReturnToHub2D`, and lets HP stay low until its recovery delay completes. Keep it out of non-tutorial scenes and verify the health/max-health attribute references in the Inspector.
 
 ## Promotion Candidate
 

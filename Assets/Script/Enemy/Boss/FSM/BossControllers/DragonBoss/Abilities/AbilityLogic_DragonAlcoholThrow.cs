@@ -156,7 +156,7 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
         if (telegraphService == null)
             return null;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateTopDownCircle(
             impactPosition,
             telegraphDiameter,
             duration,
@@ -171,7 +171,7 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
         if (view == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateTopDownCircle(
             impactPosition,
             telegraphDiameter,
             duration,
@@ -366,9 +366,13 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
             return;
 
         LayerMask targetMask = ResolveTargetMask(dragon);
-        Collider2D[] hits = Physics2D.OverlapCircleAll(impactPosition, missedImpactDamageRadius, targetMask);
+        float queryRadius = Mathf.Max(missedImpactDamageRadius, telegraphDiameter * 0.5f);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(impactPosition, queryRadius, targetMask);
         for (int i = 0; i < hits.Length; i++)
         {
+            if (!TopDownEllipseHitUtility2D.ContainsCollider(hits[i], impactPosition, telegraphDiameter))
+                continue;
+
             GameObject targetRoot = CombatTargetResolver2D.ResolveDamageTarget(hits[i]);
             if (targetRoot == null || targetRoot == dragon.gameObject)
                 continue;

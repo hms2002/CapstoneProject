@@ -32,6 +32,9 @@ public sealed class DemonKingEgoLaserVfx : MonoBehaviour
     [SerializeField] private bool destroyOnComplete = true;
 
     private Coroutine playRoutine;
+    private bool hasSortingOverride;
+    private string sortingLayerNameOverride;
+    private int sortingOrderOverride;
 
     public bool IsPlaying { get; private set; }
     public bool DamageActive { get; private set; }
@@ -52,6 +55,23 @@ public sealed class DemonKingEgoLaserVfx : MonoBehaviour
     public void Play(Vector2 origin, Vector2 direction, float length, float width, float damageHoldSeconds)
     {
         Play(origin, direction, length, width, damageHoldSeconds, DefaultBodyVisualLengthMultiplier);
+    }
+
+    public void SetSortingOverride(string sortingLayerName, int orderInLayer)
+    {
+        if (string.IsNullOrWhiteSpace(sortingLayerName))
+        {
+            hasSortingOverride = false;
+            sortingLayerNameOverride = null;
+            sortingOrderOverride = 0;
+            ApplyRendererDefaults();
+            return;
+        }
+
+        hasSortingOverride = true;
+        sortingLayerNameOverride = sortingLayerName;
+        sortingOrderOverride = orderInLayer;
+        ApplyRendererDefaults();
     }
 
     public void Play(
@@ -208,7 +228,15 @@ public sealed class DemonKingEgoLaserVfx : MonoBehaviour
             return;
 
         renderer.enabled = true;
-        DemonKingPrimitiveVisual.ApplyProjectileSorting(renderer, sortingOrder);
+        if (hasSortingOverride)
+        {
+            renderer.sortingLayerName = sortingLayerNameOverride;
+            renderer.sortingOrder = sortingOrderOverride;
+        }
+        else
+        {
+            DemonKingPrimitiveVisual.ApplyProjectileSorting(renderer, sortingOrder);
+        }
     }
 
     private static void ApplyAnimatorDefaults(Animator animator)

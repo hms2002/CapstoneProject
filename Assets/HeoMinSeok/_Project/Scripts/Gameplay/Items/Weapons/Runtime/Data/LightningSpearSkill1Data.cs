@@ -167,7 +167,7 @@ public sealed class LightningSpearSkill1Data : ScriptableObject, IAbilityTooltip
             "MarkRush",
             "뇌창 돌격",
             icon,
-            "● 커서 주변의 [[낙뢰 표식]]으로 즉시 돌진\n● 이동 궤적과 도착 지점을 공격\n● 표식 소모 시 Skill1 쿨타임 초기화 및 {val:회수 창 1개} 획득",
+            "● 커서 주변의 [[낙뢰 표식]]으로 즉시 돌진\n● 이동 궤적과 도착 지점을 공격\n● 표식 소모 시 {pos:Skill1 쿨타임 초기화} 및 {val:회수 창 1개} 획득",
             ability != null ? (float?)ability.cooldown : null);
     }
 }

@@ -16,6 +16,9 @@ MonoBehaviour:
   - attribute: {fileID: 11400000, guid: 4cf98b7d858f198459256a03d954c0d2, type: 2}
     displayNameOverride: "치명타 피해"
     type: 0
-    value: 0.35
-    valueByLevel: []
+    value: 0.12
+    valueByLevel:
+    - 0.12
+    - 0.24
+    - 0.35
     duration: 0

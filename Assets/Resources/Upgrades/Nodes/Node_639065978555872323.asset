@@ -16,7 +16,7 @@ MonoBehaviour:
   upgradeName: "\uC7A1\uB3D9\uC0AC\uB2C8 \uC5C5\uADF8\uB808\uC774\uB4DC"
   description: "\uC7A1\uB3D9\uC0AC\uB2C8\uC5D0\uC11C \uB098\uC624\uB294 \uC544\uC774\uD15C
     \uAC1C\uC218 \uC99D\uAC00"
-  icon: {fileID: 21300142, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
+  icon: {fileID: -1807100930, guid: 522fe167c55eab149b6bf24c2e3fa0ff, type: 3}
   price: 5
   effects:
   - {fileID: 11400000, guid: 9d165f8b57d39174c9634091c1bad251, type: 2}

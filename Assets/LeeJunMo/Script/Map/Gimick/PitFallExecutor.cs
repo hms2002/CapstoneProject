@@ -15,7 +15,9 @@ public static class PitFallExecutor
             yield break;
 
         SlimeQueenBossBase slimeQueenTarget = context.TargetTransform.GetComponent<SlimeQueenBossBase>();
+        Mob mobTarget = context.TargetTransform.GetComponentInParent<Mob>();
         bool completed = false;
+        bool mobPitFallDeathResolutionActive = false;
 
         try
         {
@@ -33,6 +35,12 @@ public static class PitFallExecutor
                 yield return new WaitForSeconds(context.FallDuration);
 
             RemoveFallingEffectBeforeDamageIfOwnedByExecutor(context);
+            if (mobTarget != null)
+            {
+                mobTarget.BeginPitFallDeathResolution(context);
+                mobPitFallDeathResolutionActive = true;
+            }
+
             ApplyTrapDamage(context);
             context.Reaction?.OnPitFallCompleted(context);
 
@@ -44,6 +52,9 @@ public static class PitFallExecutor
         finally
         {
             ResetPhysicsVelocity(context.TargetTransform);
+            if (mobPitFallDeathResolutionActive && mobTarget != null)
+                mobTarget.EndPitFallDeathResolution(context);
+
             if (context.Reaction == null || context.Reaction.RemoveFallingEffectOnComplete)
                 RemoveFallingEffect(context);
             if (slimeQueenTarget != null)

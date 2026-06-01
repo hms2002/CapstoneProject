@@ -195,7 +195,7 @@ public sealed class DemonKingController : BossControllerBase
         ReleaseFinalDesperationHealthClamp();
         ClearThresholdStaggerGuard();
         StopBodyAfterimage(clearGhosts: true);
-        CleanupEgoSwordForBattleEnd();
+        StartEgoSwordDeathPlant();
         base.OnDeathStarted();
         PlayDeathPoseAnimation();
     }
@@ -773,6 +773,31 @@ public sealed class DemonKingController : BossControllerBase
         RuntimeData.MarkFinalDesperationStarted();
     }
 
+    public void ShowEgoSwordFinalDesperationPlant(Vector2 center)
+    {
+        ResolveEgoSword()?.ShowFinalDesperationPlanted(center, FacingDirection);
+    }
+
+#if UNITY_EDITOR
+    public void RefreshWorkbenchRuntimeState()
+    {
+        if (AbilitySystem != null)
+            AbilitySystem.ResetTransientRuntimeState();
+
+        ReleasePatternAnimationHold();
+        ClearPatternAnimationStartRecords();
+        ReleaseFinalDesperationHealthClamp();
+        ClearThresholdStaggerGuard();
+        TryEndGroggyStateImmediately();
+        StopBodyAfterimage(clearGhosts: true);
+        GetComponent<AbilityMotionController2D>()?.CancelMotion();
+
+        RuntimeData.ResetForWorkbenchRuntimeRefresh();
+        CompleteEgoSwordRecall();
+        RestoreCombatPose();
+    }
+#endif
+
     public EgoSwordActor ResolveEgoSword()
     {
         if (egoSword != null)
@@ -1166,6 +1191,15 @@ public sealed class DemonKingController : BossControllerBase
             return;
 
         egoSword.CleanupForBossBattleEnd();
+    }
+
+    private void StartEgoSwordDeathPlant()
+    {
+        if (!Application.isPlaying)
+            return;
+
+        RuntimeData.SetSwordHeld();
+        ResolveEgoSword()?.StartDeathPlant(transform.position, FacingDirection);
     }
 
     private void PrepareEgoSwordHeldHidden()
