@@ -29,3 +29,7 @@ MonoBehaviour:
   normalRelicWeight: 90
   rareRelicWeight: 10
   epicRelicWeight: 0
+  junkWeaponCandidates:
+  - {fileID: 11400000, guid: 17f28fd3af2d443e86388ce0fa8cca38, type: 2}
+  - {fileID: 11400000, guid: 8a579f9a96134f98a1381cd22d36aff3, type: 2}
+  - {fileID: 11400000, guid: c2ee947e28344275889d643aa57789de, type: 2}

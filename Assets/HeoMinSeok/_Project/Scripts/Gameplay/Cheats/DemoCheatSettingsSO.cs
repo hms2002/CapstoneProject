@@ -14,14 +14,15 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
 
     [Header("Hotkeys")]
     [SerializeField] private KeyCode cheatGuideKey = KeyCode.F1;
-    [SerializeField] private KeyCode warpToRunSpecialNpcKey = KeyCode.F7;
-    [SerializeField] private KeyCode addMagicStoneKey = KeyCode.F8;
-    [SerializeField] private KeyCode maxHealthKey = KeyCode.F9;
-    [SerializeField] private KeyCode warpToPortalKey = KeyCode.F10;
-    [SerializeField] private KeyCode resetWeaponCooldownKey = KeyCode.F11;
+    [SerializeField] private KeyCode warpToRunSpecialNpcKey = KeyCode.F6;
+    [SerializeField] private KeyCode addMagicStoneKey = KeyCode.F7;
+    [SerializeField] private KeyCode maxHealthKey = KeyCode.F8;
+    [SerializeField] private KeyCode warpToPortalKey = KeyCode.F9;
+    [SerializeField] private KeyCode resetWeaponCooldownKey = KeyCode.F10;
     [SerializeField] private KeyCode increaseAttackKey = KeyCode.F12;
-    [SerializeField] private KeyCode mapZoomToggleKey = KeyCode.F5;
-    [SerializeField] private KeyCode warpToBossSceneKey = KeyCode.F6;
+    [SerializeField] private KeyCode decreaseAttackKey = KeyCode.F11;
+    [SerializeField] private KeyCode mapZoomToggleKey = KeyCode.F4;
+    [SerializeField] private KeyCode warpToBossSceneKey = KeyCode.F5;
 
     [Header("Boss Scene Cheat")]
     [SerializeField] private string[] bossSceneNames =
@@ -38,7 +39,8 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     [SerializeField] private AttributeDefinition attackAddAttribute;
 
     [Header("Attack Cheat")]
-    [SerializeField] private float attackIncreaseAmount = 10f;
+    [SerializeField] private float attackIncreaseAmount = 100f;
+    [SerializeField] private float attackDecreaseAmount = 30f;
 
     [Header("Currency Cheat")]
     [SerializeField, Min(1)] private int magicStoneAddAmount = 100;
@@ -61,6 +63,7 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     public KeyCode WarpToPortalKey => warpToPortalKey;
     public KeyCode ResetWeaponCooldownKey => resetWeaponCooldownKey;
     public KeyCode IncreaseAttackKey => increaseAttackKey;
+    public KeyCode DecreaseAttackKey => decreaseAttackKey;
     public KeyCode MapZoomToggleKey => mapZoomToggleKey;
     public KeyCode WarpToBossSceneKey => warpToBossSceneKey;
     public IReadOnlyList<string> BossSceneNames => bossSceneNames;
@@ -68,6 +71,7 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     public AttributeDefinition MaxHealthAttribute => maxHealthAttribute;
     public AttributeDefinition AttackAddAttribute => attackAddAttribute;
     public float AttackIncreaseAmount => attackIncreaseAmount;
+    public float AttackDecreaseAmount => attackDecreaseAmount;
     public int MagicStoneAddAmount => magicStoneAddAmount;
     public Vector2 MapZoomCenter => mapZoomCenter;
     public Vector2 MapZoomSize => mapZoomSize;

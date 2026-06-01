@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8e1f72ca6328c4a867b5318ea89225, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graveType: 0
+  graveType: 2
   promptAnchor: {fileID: 4337721743462191109}
   interactPromptText: "\uC5F4\uAE30"
   spriteRenderer: {fileID: 290001370260509396}

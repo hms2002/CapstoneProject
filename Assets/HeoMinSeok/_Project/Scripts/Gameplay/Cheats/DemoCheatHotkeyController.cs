@@ -86,6 +86,9 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
 
         if (WasPressed(settings.IncreaseAttackKey))
             ShowResult(service.IncreasePlayerAttack(settings));
+
+        if (WasPressed(settings.DecreaseAttackKey))
+            ShowResult(service.DecreasePlayerAttack(settings));
     }
 
     private void HandleBossSceneSelectionInput()
