@@ -36,7 +36,8 @@ public enum InventoryTransferFailureReason
     SourceRejectedItem,
     TargetSetFailed,
     SourceClearFailed,
-    SourceSetFailed
+    SourceSetFailed,
+    LastWeaponProtected
 }
 
 public readonly struct InventoryTransferResult
@@ -129,6 +130,17 @@ public static class InventoryTransferService
         var srcItem = source.Get(request.SourceIndex);
         if (srcItem == null)
             return InventoryTransferResult.Failed(InventoryTransferFailureReason.MissingSourceItem);
+
+        if (InventoryWeaponRetentionPolicy.WouldRemoveLastPlayerWeapon(
+                source,
+                request.SourceIndex,
+                target,
+                request.TargetIndex))
+        {
+            return InventoryTransferResult.Failed(
+                InventoryTransferFailureReason.LastWeaponProtected,
+                WarningPopupCode.LastWeaponCannotLeaveInventory);
+        }
 
         int srcLvl = request.SourceRelicLevel;
         if (srcLvl <= 0 && srcItem is RelicDefinition && source is IRelicLevelProvider sourceLevelProvider)

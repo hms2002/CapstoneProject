@@ -383,6 +383,11 @@ public class WeaponInventory2D : MonoBehaviour
     {
         if (!HasEquippedWeapon) return;
         if (IsActiveWeaponChangeBlocked()) return;
+        if (CountFilledSlots() <= 1)
+        {
+            UIManager.Instance?.ShowWarning(WarningPopupCode.LastWeaponCannotLeaveInventory);
+            return;
+        }
 
         int droppingIndex = ActiveIndex;
         DropSlot(droppingIndex);
@@ -735,6 +740,18 @@ public class WeaponInventory2D : MonoBehaviour
                 return i;
         }
         return -1;
+    }
+
+    private int CountFilledSlots()
+    {
+        int count = 0;
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i] != null)
+                count++;
+        }
+
+        return count;
     }
 
     private bool ContainsWeaponId(string weaponId)

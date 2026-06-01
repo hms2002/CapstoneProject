@@ -19,26 +19,21 @@ MonoBehaviour:
     m_OverrideEntries:
     - m_Name: Normal
       m_Hash: 640249298
-      m_Sprite: {fileID: 21300000, guid: b8dd2c5f74ef2b842be9a4918464dd0c, type: 3}
+      m_Sprite: {fileID: 21300000, guid: f309aae6e82882b43837c57b28a49628, type: 3}
       m_FromMain: 0
-      m_SpriteOverride: {fileID: 21300000, guid: b8dd2c5f74ef2b842be9a4918464dd0c, type: 3}
-    - m_Name: Smile
-      m_Hash: 55258123
-      m_Sprite: {fileID: 21300000, guid: b3c096dac376348438c1c20063da80dd, type: 3}
-      m_FromMain: 0
-      m_SpriteOverride: {fileID: 21300000, guid: b3c096dac376348438c1c20063da80dd, type: 3}
+      m_SpriteOverride: {fileID: 21300000, guid: f309aae6e82882b43837c57b28a49628, type: 3}
     - m_Name: Panic
       m_Hash: 526823062
-      m_Sprite: {fileID: 21300000, guid: d58941eb8c2553941940e2880efb81f0, type: 3}
+      m_Sprite: {fileID: 21300000, guid: 067f07352189de9448aa613af3827417, type: 3}
       m_FromMain: 0
-      m_SpriteOverride: {fileID: 21300000, guid: d58941eb8c2553941940e2880efb81f0, type: 3}
+      m_SpriteOverride: {fileID: 21300000, guid: 067f07352189de9448aa613af3827417, type: 3}
     - m_Name: Surprise
       m_Hash: 1687455
-      m_Sprite: {fileID: 21300000, guid: 6ba41f593a391b34e9c0038f24d19413, type: 3}
+      m_Sprite: {fileID: 21300000, guid: e171763e5c5586d4f99a77e766aee7a3, type: 3}
       m_FromMain: 0
-      m_SpriteOverride: {fileID: 21300000, guid: 6ba41f593a391b34e9c0038f24d19413, type: 3}
+      m_SpriteOverride: {fileID: 21300000, guid: e171763e5c5586d4f99a77e766aee7a3, type: 3}
     m_FromMain: 0
-    m_EntryOverrideCount: 4
+    m_EntryOverrideCount: 3
   m_PrimaryLibraryGUID: 
-  m_ModificationHash: 639116334540882940
+  m_ModificationHash: 639159750763290622
   m_Version: 1

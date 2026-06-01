@@ -45,6 +45,9 @@ public sealed class ItemDetailContext
         if (!IsFromPlayerInventory)
             return ItemDetailActionHint.Hidden;
 
+        if (InventoryWeaponRetentionPolicy.WouldRemoveLastPlayerWeapon(sourceContainer, sourceIndex))
+            return ItemDetailActionHint.Hidden;
+
         return IsChestUiActive
             ? ItemDetailActionHint.Show(KeyCode.Mouse1, "상자로 옮기기")
             : ItemDetailActionHint.Show(KeyCode.F, "버리기");

@@ -291,7 +291,11 @@ public static class InventorySlotTransferInteractionService
         if (target == null || !ItemDragContext.Active)
             return;
 
-        ItemDragContext.TryDrop(target, targetIndex);
+        InventoryTransferResult result = ItemDragContext.TryDropWithResult(target, targetIndex);
+        if (!result.Succeeded && result.FailureReason != InventoryTransferFailureReason.None)
+            SoundPlaybackUtility.Play(FailMigrateItemSound);
+        if (result.HasWarning)
+            UIManager.Instance?.ShowWarning(result.WarningCode);
         refresh?.Invoke();
     }
 
