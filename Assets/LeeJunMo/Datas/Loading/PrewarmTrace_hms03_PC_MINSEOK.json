@@ -1,29 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "03ba94769ba34c53b245bb388c065639",
-            "startedUtc": "2026-05-31T12:50:39.5301465Z",
-            "endedUtc": "2026-05-31T12:51:06.9877592Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 57,
-                    "coldSpawns": 57,
-                    "firstSeenSeconds": 11.940574645996094,
-                    "lastSeenSeconds": 27.442018508911134,
-                    "firstSceneName": "SlimeCorridor",
-                    "lastSceneName": "SlimeCorridor"
-                }
-            ]
-        },
-        {
-            "sessionId": "c3899efea8b64fffa17f8957977fd241",
-            "startedUtc": "2026-05-31T14:58:08.8379656Z",
-            "endedUtc": "2026-05-31T14:58:10.5743209Z",
-            "entries": []
-        },
-        {
             "sessionId": "450be2e2cfe142b0904a47c3386c7583",
             "startedUtc": "2026-05-31T15:23:38.4970805Z",
             "endedUtc": "2026-05-31T15:23:40.9502660Z",
@@ -140,6 +117,59 @@
             "sessionId": "5250d02e686e4603a968681622832e75",
             "startedUtc": "2026-05-31T22:44:54.1645881Z",
             "endedUtc": "2026-05-31T22:44:55.8131349Z",
+            "entries": []
+        },
+        {
+            "sessionId": "310375722ece4ff0b02ede9e9a262632",
+            "startedUtc": "2026-05-31T22:53:56.3158672Z",
+            "endedUtc": "2026-05-31T22:58:35.4493420Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 271.9837951660156,
+                    "lastSeenSeconds": 279.12823486328127,
+                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
+                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/SlashHit.prefab",
+                    "prefabName": "SlashHit",
+                    "totalSpawns": 3,
+                    "coldSpawns": 0,
+                    "firstSeenSeconds": 63.028282165527347,
+                    "lastSeenSeconds": 63.629066467285159,
+                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
+                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal1AttackTileParticle.prefab",
+                    "prefabName": "WitchNormal1AttackTileParticle",
+                    "totalSpawns": 3,
+                    "coldSpawns": 0,
+                    "firstSeenSeconds": 63.035552978515628,
+                    "lastSeenSeconds": 63.63401794433594,
+                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
+                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/HitSpark.prefab",
+                    "prefabName": "HitSpark",
+                    "totalSpawns": 1,
+                    "coldSpawns": 0,
+                    "firstSeenSeconds": 72.82909393310547,
+                    "lastSeenSeconds": 72.82909393310547,
+                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
+                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
+                }
+            ]
+        },
+        {
+            "sessionId": "08df2a2979bf4f2bb51602e8fb50c184",
+            "startedUtc": "2026-05-31T23:43:28.5186748Z",
+            "endedUtc": "2026-05-31T23:43:30.3539356Z",
             "entries": []
         }
     ]
