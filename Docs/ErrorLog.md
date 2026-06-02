@@ -1594,3 +1594,17 @@ Fix:
 
 Prevention:
 Keep arrival-start validation separate from final landing validation. For jump-like or airborne cinematic starts, allow the authored start point to overlap unsafe space only while body collider suppression and cinematic protection are already active. Never apply that exception to the final landing point.
+
+## 2026-06-02 - Persistent SoundManager Sources Were Parentable To Scene Objects
+
+Context:
+The 0.1.5 player build crashed with a Mono access violation shortly after the DarkLord tutorial fake GameOver returned toward `ProtoTypeHub`. The 0.1.4 build passed the same route, while the 0.1.5 crash log stopped after DOTween null-target startup warnings and before the next Hub scene load warnings.
+
+Cause:
+Catalog-backed spatial sounds could reparent pooled `SoundManager` `AudioSource` objects under scene-owned follow targets. Because `SoundManager` is persistent, those pooled sources must not become children of scene objects; a scene unload can destroy the pooled source while the manager still holds it in its pool and runtime dictionaries.
+
+Fix:
+Keep catalog-backed sources parented under the persistent `SoundManager` roots. Store the follow target and local offset in runtime sound state, update followed source world positions in `LateUpdate`, and recreate any destroyed one-shot pool entries before reuse.
+
+Prevention:
+Persistent runtime service pools must own the lifetime of their pooled GameObjects. Do not parent pooled service objects under scene-owned transforms; follow scene targets by storing a reference and projecting world position instead. Before recycling a Unity object from a persistent pool, treat Unity fake-null as a destroyed entry and recreate it.

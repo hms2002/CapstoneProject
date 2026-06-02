@@ -26,6 +26,8 @@ namespace CapstoneAudio
             public float BaseVolume;
             public float PitchRoll;
             public bool LoopPlayback;
+            public Transform FollowTarget;
+            public Vector3 FollowLocalOffset;
 
             public bool IsCatalogBacked =>
                 Catalog != null &&
@@ -462,6 +464,11 @@ namespace CapstoneAudio
             SceneManager.sceneLoaded -= HandleSceneLoaded;
         }
 
+        private void LateUpdate()
+        {
+            UpdateFollowAnchoredSources();
+        }
+
         private void OnDestroy()
         {
             combatSfxDuckTween?.Kill();
@@ -797,10 +804,18 @@ namespace CapstoneAudio
         private AudioSource GetOneShotSource(bool important)
         {
             List<AudioSource> pool = important ? importantSfxSources : normalSfxSources;
+            string recoveredPrefix = important ? "ImportantSFX" : "SFX";
 
             for (int i = 0; i < pool.Count; i++)
             {
                 AudioSource source = pool[i];
+                if (source == null)
+                {
+                    source = CreateAudioSource($"{recoveredPrefix}_Recovered_{i}", oneShotRoot);
+                    pool[i] = source;
+                    return source;
+                }
+
                 if (source != null && !source.isPlaying)
                 {
                     UntrackOneShotSource(source);
@@ -809,6 +824,13 @@ namespace CapstoneAudio
             }
 
             AudioSource recycled = pool[0];
+            if (recycled == null)
+            {
+                recycled = CreateAudioSource($"{recoveredPrefix}_Recovered_0", oneShotRoot);
+                pool[0] = recycled;
+                return recycled;
+            }
+
             pool.RemoveAt(0);
             pool.Add(recycled);
             recycled.DOKill();
@@ -894,6 +916,8 @@ namespace CapstoneAudio
 
             state.Category = entry.category;
             state.BaseVolume = Mathf.Max(0f, entry.volume * state.SoundRef.EffectiveVolumeMultiplier);
+            state.FollowTarget = null;
+            state.FollowLocalOffset = Vector3.zero;
 
             source.pitch = entry.ResolveAudioSourcePitch(state.PitchRoll);
             source.volume = ResolveRuntimeSfxVolume(source);
@@ -904,25 +928,27 @@ namespace CapstoneAudio
                 source.loop = entry.loop;
 
             bool playAs2D = state.SoundRef.anchorPolicy == SoundAnchorPolicy.TwoD || !entry.spatial;
+            Transform sourceRoot = state.LoopPlayback ? loopRoot : oneShotRoot;
             if (playAs2D)
             {
                 source.spatialBlend = 0f;
-                source.transform.SetParent(oneShotRoot, false);
+                source.transform.SetParent(sourceRoot, false);
                 source.transform.localPosition = Vector3.zero;
                 return;
             }
 
             source.spatialBlend = 1f;
+            source.transform.SetParent(sourceRoot, false);
 
             Transform follow = ResolveFollowTarget(state.SoundRef.anchorPolicy, state.Context);
             if (follow != null)
             {
-                source.transform.SetParent(follow, false);
-                source.transform.localPosition = state.SoundRef.localOffset;
+                state.FollowTarget = follow;
+                state.FollowLocalOffset = state.SoundRef.localOffset;
+                source.transform.position = follow.TransformPoint(state.FollowLocalOffset);
             }
             else
             {
-                source.transform.SetParent(oneShotRoot, false);
                 source.transform.position =
                     ResolveWorldPosition(state.SoundRef.anchorPolicy, state.Context) + state.SoundRef.localOffset;
             }
@@ -1011,6 +1037,24 @@ namespace CapstoneAudio
 
             runtimeSoundStates[source] = state;
             return state;
+        }
+
+        private void UpdateFollowAnchoredSources()
+        {
+            foreach (KeyValuePair<AudioSource, RuntimeSoundState> pair in runtimeSoundStates)
+            {
+                AudioSource source = pair.Key;
+                RuntimeSoundState state = pair.Value;
+                if (source == null ||
+                    state == null ||
+                    state.FollowTarget == null ||
+                    !source.isPlaying)
+                {
+                    continue;
+                }
+
+                source.transform.position = state.FollowTarget.TransformPoint(state.FollowLocalOffset);
+            }
         }
 
         private void TrackRuntimeSoundState(AudioSource source, AudioCategory category, float baseVolume)

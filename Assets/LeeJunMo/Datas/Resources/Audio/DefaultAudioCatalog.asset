@@ -1526,7 +1526,7 @@ MonoBehaviour:
     variantPlaybackMode: 1
     variants:
     - {fileID: 8300000, guid: 5ecda9a410470cf4d8e0eae7ebab7a94, type: 3}
-    volume: 0.45
+    volume: 0.58
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -2521,7 +2521,7 @@ MonoBehaviour:
     variantPlaybackMode: 0
     variants:
     - {fileID: 8300000, guid: 52d366f6be2748d49b1facbb3c699aab, type: 3}
-    volume: 0.363
+    volume: 0.4
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -2569,7 +2569,7 @@ MonoBehaviour:
     variantPlaybackMode: 1
     variants:
     - {fileID: 8300000, guid: 412a053aa4dd4d8da7aea5f06339d610, type: 3}
-    volume: 0.4
+    volume: 0.497
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -2585,7 +2585,7 @@ MonoBehaviour:
     variantPlaybackMode: 0
     variants:
     - {fileID: 8300000, guid: caac10daadd44528a16183fa785cd948, type: 3}
-    volume: 0.399
+    volume: 0.34
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -2617,7 +2617,7 @@ MonoBehaviour:
     variantPlaybackMode: 0
     variants:
     - {fileID: 8300000, guid: 511448a8998f473ca6a461db1d16daeb, type: 3}
-    volume: 0.144
+    volume: 0.295
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -2633,7 +2633,7 @@ MonoBehaviour:
     variantPlaybackMode: 0
     variants:
     - {fileID: 8300000, guid: a7e0f7f2c69f46bab7a7cbd772ee671b, type: 3}
-    volume: 0.45
+    volume: 0.077
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -2649,7 +2649,7 @@ MonoBehaviour:
     variantPlaybackMode: 0
     variants:
     - {fileID: 8300000, guid: 04459d23763d4b6b8a3227132f176dc3, type: 3}
-    volume: 0.4
+    volume: 0.353
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -2667,7 +2667,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: fdb27e98c55441cfa2fea32d82c00440, type: 3}
     - {fileID: 8300000, guid: 64900ec8c69f4202bd0ef77825074b9f, type: 3}
     - {fileID: 8300000, guid: c93b5d6509034d8bb0897e3b45c46df5, type: 3}
-    volume: 0.597
+    volume: 0.701
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -2700,7 +2700,7 @@ MonoBehaviour:
     variants:
     - {fileID: 8300000, guid: ec0cf099c6204a838e2805c1190bf366, type: 3}
     - {fileID: 8300000, guid: b24c8b872b2242bba1ec17a2e75affe9, type: 3}
-    volume: 0.24
+    volume: 0.3
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -2716,7 +2716,6 @@ MonoBehaviour:
     variantPlaybackMode: 0
     variants:
     - {fileID: 8300000, guid: 2b2a1c10be20488b87bc26682363fe78, type: 3}
-    - {fileID: 8300000, guid: 86634fe0d6e34ea297ce7beafa03639e, type: 3}
     volume: 0.22
     playbackSpeed: 1
     pitchMin: 1
@@ -2733,7 +2732,7 @@ MonoBehaviour:
     variantPlaybackMode: 1
     variants:
     - {fileID: 8300000, guid: 62c990bdf9ae4bfca795ed6d3ebd2e21, type: 3}
-    volume: 0.3
+    volume: 0.633
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -2749,8 +2748,7 @@ MonoBehaviour:
     variantPlaybackMode: 2
     variants:
     - {fileID: 8300000, guid: 5ac15fcb83fe4f24b685e20c54673cf4, type: 3}
-    - {fileID: 8300000, guid: 43c1984f47414dd6b6f528e6b542080e, type: 3}
-    volume: 0.32
+    volume: 0.73
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1

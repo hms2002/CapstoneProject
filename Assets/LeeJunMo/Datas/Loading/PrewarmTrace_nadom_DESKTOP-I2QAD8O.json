@@ -1,183 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "441246234505452884a5846b886934da",
-            "startedUtc": "2026-06-02T02:26:30.7455180Z",
-            "endedUtc": "2026-06-02T02:27:44.0457494Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 239,
-                    "coldSpawns": 80,
-                    "firstSeenSeconds": 30.057086944580079,
-                    "lastSeenSeconds": 72.45132446289063,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
-            "sessionId": "b631d3846ab247598330a9ec5019b660",
-            "startedUtc": "2026-06-02T02:52:25.1813248Z",
-            "endedUtc": "2026-06-02T02:54:10.9694368Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 344,
-                    "coldSpawns": 121,
-                    "firstSeenSeconds": 17.8891544342041,
-                    "lastSeenSeconds": 105.76717376708985,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
-            "sessionId": "c9295f311ac94857b2a84fe1440ead9e",
-            "startedUtc": "2026-06-02T03:19:32.1736740Z",
-            "endedUtc": "2026-06-02T03:22:03.7990356Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 5,
-                    "coldSpawns": 5,
-                    "firstSeenSeconds": 148.12442016601563,
-                    "lastSeenSeconds": 151.41241455078126,
-                    "firstSceneName": "ProtoTypeHub",
-                    "lastSceneName": "ProtoTypeHub"
-                }
-            ]
-        },
-        {
-            "sessionId": "f093c2582d7a4d38a2874c8640957d2e",
-            "startedUtc": "2026-06-02T03:23:23.9132380Z",
-            "endedUtc": "2026-06-02T03:24:59.9228166Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 374,
-                    "coldSpawns": 123,
-                    "firstSeenSeconds": 27.711223602294923,
-                    "lastSeenSeconds": 95.34780883789063,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
-            "sessionId": "5d39fc3369874984b052307b11c16e78",
-            "startedUtc": "2026-06-02T03:26:32.3651016Z",
-            "endedUtc": "2026-06-02T03:27:07.4196673Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 38,
-                    "coldSpawns": 23,
-                    "firstSeenSeconds": 22.35578155517578,
-                    "lastSeenSeconds": 34.248046875,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
-            "sessionId": "3ab5aac8e844463faad3d391264e6b7f",
-            "startedUtc": "2026-06-02T03:29:04.5739217Z",
-            "endedUtc": "2026-06-02T03:29:53.4105194Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 94,
-                    "coldSpawns": 81,
-                    "firstSeenSeconds": 34.51956558227539,
-                    "lastSeenSeconds": 48.341651916503909,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
-            "sessionId": "b1bf6d4537394a61bcf2ada5b4fa63e8",
-            "startedUtc": "2026-06-02T03:31:57.3485111Z",
-            "endedUtc": "2026-06-02T03:32:44.2593613Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 214,
-                    "coldSpawns": 123,
-                    "firstSeenSeconds": 23.891199111938478,
-                    "lastSeenSeconds": 46.89983367919922,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
-            "sessionId": "a17031c2bb62460b8052bd5ec720f306",
-            "startedUtc": "2026-06-02T03:33:36.4320297Z",
-            "endedUtc": "2026-06-02T03:33:37.7815571Z",
-            "entries": []
-        },
-        {
-            "sessionId": "fbcad1c2ceea48ba8181ffc2f92d5441",
-            "startedUtc": "2026-06-02T03:35:53.3289545Z",
-            "endedUtc": "2026-06-02T03:35:55.8322947Z",
-            "entries": []
-        },
-        {
-            "sessionId": "5f1407af857b458abcd85c42b06fd134",
-            "startedUtc": "2026-06-02T03:37:02.3802674Z",
-            "endedUtc": "2026-06-02T03:38:32.7032825Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Effect_SlimeCorridorTeleport.prefab",
-                    "prefabName": "Effect_SlimeCorridorTeleport",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 90.29399871826172,
-                    "lastSeenSeconds": 90.29456329345703,
-                    "firstSceneName": "SlimeCorridor",
-                    "lastSceneName": "SlimeCorridor"
-                }
-            ]
-        },
-        {
-            "sessionId": "966de3083ca5497292fa93f8f5b1cfe3",
-            "startedUtc": "2026-06-02T03:42:40.5164908Z",
-            "endedUtc": "2026-06-02T03:43:10.1118992Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Effect_SlimeCorridorTeleport.prefab",
-                    "prefabName": "Effect_SlimeCorridorTeleport",
-                    "totalSpawns": 2,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 12.491841316223145,
-                    "lastSeenSeconds": 29.579036712646486,
-                    "firstSceneName": "SlimeCorridor",
-                    "lastSceneName": "SlimeCorridor"
-                }
-            ]
-        },
-        {
-            "sessionId": "7ab40980fa6b434486cdba32b4ab5a6d",
-            "startedUtc": "2026-06-02T03:44:02.1665656Z",
-            "endedUtc": "2026-06-02T03:44:04.5739079Z",
-            "entries": []
-        },
-        {
-            "sessionId": "f4ab5454a265445484ddd4298446fb43",
-            "startedUtc": "2026-06-02T03:48:48.5941353Z",
-            "endedUtc": "2026-06-02T03:48:51.4556447Z",
-            "entries": []
-        },
-        {
             "sessionId": "d6500fd847bb440298db485fa72f4ca0",
             "startedUtc": "2026-06-02T03:52:02.6107423Z",
             "endedUtc": "2026-06-02T03:53:01.3813812Z",
@@ -284,6 +107,117 @@
                     "lastSceneName": "LeeJunmo_Boss_DemonKing"
                 }
             ]
+        },
+        {
+            "sessionId": "1fda77c185fb46ff85110678d3796182",
+            "startedUtc": "2026-06-02T05:06:24.1030543Z",
+            "endedUtc": "2026-06-02T05:06:26.6094060Z",
+            "entries": []
+        },
+        {
+            "sessionId": "de31a8ed7379451eb16db857004a514b",
+            "startedUtc": "2026-06-02T05:07:39.7007581Z",
+            "endedUtc": "2026-06-02T05:07:41.9904924Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a8493729661b4343b3725429bbbc60b0",
+            "startedUtc": "2026-06-02T05:08:11.8123500Z",
+            "endedUtc": "2026-06-02T05:08:15.5197381Z",
+            "entries": []
+        },
+        {
+            "sessionId": "1bb45da573504b28bf615b4eb393f9ad",
+            "startedUtc": "2026-06-02T05:09:11.9779343Z",
+            "endedUtc": "2026-06-02T05:09:13.7421807Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d0ec915bfc084118bb4592332e9b810a",
+            "startedUtc": "2026-06-02T05:09:39.4016809Z",
+            "endedUtc": "2026-06-02T05:09:41.5086744Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4471d0b7c23f4381949b182db3a77d6c",
+            "startedUtc": "2026-06-02T05:20:30.8598278Z",
+            "endedUtc": "2026-06-02T05:21:38.0583111Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 257,
+                    "coldSpawns": 89,
+                    "firstSeenSeconds": 21.960765838623048,
+                    "lastSeenSeconds": 66.32929992675781,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
+        },
+        {
+            "sessionId": "adfe7beac29c4f48837c72c33e705c6c",
+            "startedUtc": "2026-06-02T05:25:40.5377803Z",
+            "endedUtc": "2026-06-02T05:27:15.9060693Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 679,
+                    "coldSpawns": 125,
+                    "firstSeenSeconds": 21.736618041992189,
+                    "lastSeenSeconds": 94.52039337158203,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
+        },
+        {
+            "sessionId": "6aae9eac75a94a91bb801f99078a1ffc",
+            "startedUtc": "2026-06-02T05:27:48.7420141Z",
+            "endedUtc": "2026-06-02T05:27:50.3000796Z",
+            "entries": []
+        },
+        {
+            "sessionId": "c903a35fc2f347abadf43eaaa17f2784",
+            "startedUtc": "2026-06-02T05:28:51.1780350Z",
+            "endedUtc": "2026-06-02T05:28:54.1472489Z",
+            "entries": []
+        },
+        {
+            "sessionId": "97163e8ecc704aca859878dc3caf8eca",
+            "startedUtc": "2026-06-02T05:30:44.9347541Z",
+            "endedUtc": "2026-06-02T05:30:48.6333409Z",
+            "entries": []
+        },
+        {
+            "sessionId": "ed8f3a8921a14ab7b71083be17f2be28",
+            "startedUtc": "2026-06-02T06:27:00.4944534Z",
+            "endedUtc": "2026-06-02T06:27:03.5012461Z",
+            "entries": []
+        },
+        {
+            "sessionId": "f5eca95f6e4449509e46470d688922ab",
+            "startedUtc": "2026-06-02T06:28:38.2332086Z",
+            "endedUtc": "2026-06-02T06:28:59.3417641Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Effect_SlimeCorridorTeleport.prefab",
+                    "prefabName": "Effect_SlimeCorridorTeleport",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 21.085987091064454,
+                    "lastSeenSeconds": 21.086589813232423,
+                    "firstSceneName": "SlimeCorridor",
+                    "lastSceneName": "SlimeCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "b42efb12d62f40c0b9edba5d41437b5e",
+            "startedUtc": "2026-06-02T06:31:20.7570806Z",
+            "endedUtc": "2026-06-02T06:31:22.5234142Z",
+            "entries": []
         }
     ]
 }

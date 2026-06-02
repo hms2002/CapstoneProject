@@ -7,6 +7,20 @@ last_reviewed: 2026-06-01
 
 # Decision Log
 
+## 2026-06-02 - Audio Catalog Supports Play Mode Live Tuning
+
+Decision:
+`Tools/Audio/Audio Catalog` can be used during Play Mode as the live tuning surface for loaded `AudioCatalogSO` assets. When a catalog edit is applied, the editor window saves the selected catalog asset and asks the active `SoundManager` to refresh currently playing catalog-backed audio.
+
+Reason:
+Audio mix tuning needs to happen against the live game instead of editor-only preview. The catalog asset remains the source of truth, while `SoundManager` owns the runtime AudioSource state that must be refreshed without restarting gameplay audio.
+
+Implications:
+- Active BGM and currently playing catalog-backed SFX refresh volume, pitch/playback speed, distance, spatial policy, category ducking, and global multiplier effects from the edited catalog.
+- Already chosen random variant clips are not swapped mid-play; clip/variant edits affect future playback or restarted sounds.
+- The editor window saves the catalog asset after serialized changes so Play Mode tuning is not left as unsaved dirty state.
+- `SoundManager.RefreshCatalogRuntime(...)` is a runtime-service refresh hook, not a new manager or persistent object.
+
 ## 2026-06-02 - Intro And Outro Use Start-Only Pencil Typing SFX
 
 Decision:
