@@ -1,12 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "f4ab5454a265445484ddd4298446fb43",
-            "startedUtc": "2026-06-02T03:48:48.5941353Z",
-            "endedUtc": "2026-06-02T03:48:51.4556447Z",
-            "entries": []
-        },
-        {
             "sessionId": "d6500fd847bb440298db485fa72f4ca0",
             "startedUtc": "2026-06-02T03:52:02.6107423Z",
             "endedUtc": "2026-06-02T03:53:01.3813812Z",
@@ -218,6 +212,12 @@
                     "lastSceneName": "SlimeCorridor"
                 }
             ]
+        },
+        {
+            "sessionId": "b42efb12d62f40c0b9edba5d41437b5e",
+            "startedUtc": "2026-06-02T06:31:20.7570806Z",
+            "endedUtc": "2026-06-02T06:31:22.5234142Z",
+            "entries": []
         }
     ]
 }
