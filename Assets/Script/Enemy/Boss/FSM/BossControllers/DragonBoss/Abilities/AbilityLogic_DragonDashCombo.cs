@@ -7,6 +7,16 @@ using UnityGAS;
 
 /// <summary>
 /// 책임:
+/// 취룡 돌진 공격 이펙트를 실제 돌진 범위 중심에 맞출지, 보스 본체에서 방향만 맞춰 출력할지 선택한다.
+/// </summary>
+public enum DragonDashAttackPresentationSpawnMode
+{
+    DashRangeCenterScaled,
+    BossOriginFacingTarget
+}
+
+/// <summary>
+/// 책임:
 /// 취룡 보스의 돌진 콤보 패턴을 실행하며, 경고 표시와 돌진 이동, 돌진 중 접촉 피해를 처리한다.
 /// </summary>
 [CreateAssetMenu(fileName = "AL_DragonDashCombo", menuName = "GAS/Ability Logic/Dragon/AL_DragonDashCombo")]
@@ -43,6 +53,9 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
 
     [Header("Presentation")]
     [SerializeField] private WorldPresentationHook dashAttackPresentation;
+    [SerializeField] private DragonDashAttackPresentationSpawnMode dashAttackPresentationSpawnMode =
+        DragonDashAttackPresentationSpawnMode.DashRangeCenterScaled;
+    [SerializeField] private bool bossOriginScaleXByDashLength;
     [SerializeField] private SoundRef[] dashAttackSoundsByDash = new SoundRef[3];
     [SerializeField] private WorldPresentationHook dashHitPresentation;
 
@@ -301,13 +314,13 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
 
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
         float length = Mathf.Max(0.1f, distance + hitForwardPadding);
-        Vector3 center = start + (safeDirection * (length * 0.5f));
         float angleDeg = Mathf.Atan2(safeDirection.y, safeDirection.x) * Mathf.Rad2Deg;
-        Vector3 presentationScale = new(length, Mathf.Max(0.1f, resolvedHitWidth), 1f);
+        Vector3 spawnPosition = ResolveDashAttackPresentationPosition(dragon, start, safeDirection, length);
+        Vector3 presentationScale = ResolveDashAttackPresentationScale(length, resolvedHitWidth);
 
         WorldPresentationContext context = WorldPresentationContext.AtWorld(
             instigator: dragon.gameObject,
-            position: center,
+            position: spawnPosition,
             fallbackDirection: safeDirection,
             target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
             sourceObject: this,
@@ -324,13 +337,38 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
                 instigator: dragon.gameObject,
                 causer: dragon.gameObject,
                 target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
-                position: center,
+                position: spawnPosition,
                 sourceObject: this);
         }
 
         WorldPresentationRuntime.PlaySignalOnly(signalPresentation, context);
-        SpawnScaledDashAttackVisual(dashAttackPresentation.effect, context, presentationScale);
-        SpawnScaledDashAttackVisual(dashAttackPresentation.particle, context, presentationScale);
+        SpawnDashAttackVisual(dashAttackPresentation.effect, context, presentationScale);
+        SpawnDashAttackVisual(dashAttackPresentation.particle, context, presentationScale);
+    }
+
+    private Vector3 ResolveDashAttackPresentationPosition(
+        DragonController dragon,
+        Vector2 start,
+        Vector2 safeDirection,
+        float length)
+    {
+        if (dashAttackPresentationSpawnMode == DragonDashAttackPresentationSpawnMode.BossOriginFacingTarget)
+        {
+            Transform origin = dragon.BodyVisualRoot != null ? dragon.BodyVisualRoot : dragon.transform;
+            return origin != null ? origin.position : dragon.transform.position;
+        }
+
+        return start + (safeDirection * (length * 0.5f));
+    }
+
+    private Vector3 ResolveDashAttackPresentationScale(float length, float resolvedHitWidth)
+    {
+        if (dashAttackPresentationSpawnMode == DragonDashAttackPresentationSpawnMode.DashRangeCenterScaled)
+            return new Vector3(length, Mathf.Max(0.1f, resolvedHitWidth), 1f);
+
+        return bossOriginScaleXByDashLength
+            ? new Vector3(length, 1f, 1f)
+            : Vector3.one;
     }
 
     /// <summary>돌진 콤보의 n번째 돌진에 대응하는 사운드를 선택합니다.</summary>
@@ -342,7 +380,7 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
         return dashAttackSoundsByDash[dashIndex];
     }
 
-    private static void SpawnScaledDashAttackVisual(
+    private static void SpawnDashAttackVisual(
         SpawnedPresentationHook hook,
         WorldPresentationContext context,
         Vector3 presentationScale)

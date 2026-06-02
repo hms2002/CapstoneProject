@@ -252,6 +252,32 @@ public class Bishop : Slime
         return false;
     }
 
+    /// <summary>
+    /// 책임:
+    /// - Bishop 폭발 이펙트가 애니메이션 이벤트 기반 피해 판정을 수행할 수 있도록 현재 공격 피해 스냅샷을 만든다.
+    /// - 즉시 Overlap 판정과 TimedAnimatedHitEffect2D 경로가 같은 피해 수치를 공유하게 한다.
+    /// </summary>
+    public CombatHitPayload BuildBlastHitPayload(AbilitySystem system, AbilitySpec spec)
+    {
+        if (!HasAttackData())
+            return null;
+
+        CombatDamageSnapshot snapshot = new(
+            finalHpDamage: blastDamageAmount,
+            finalStaggerBuildUp: 0f,
+            finalKnockbackImpulse: 0f,
+            isCriticalHit: false);
+
+        return CombatHitPayload.FromSnapshot(
+            sourceSystem: system != null ? system : abilitySystem,
+            sourceSpec: spec,
+            damageEffect: damageEffect,
+            knockbackEffect: null,
+            snapshot: snapshot,
+            hitConfirmedTag: null,
+            causer: gameObject);
+    }
+
     /// <summary>비숍의 기본 스탯과 크기를 적용합니다.</summary>
     protected override void ApplyStats()
     {
