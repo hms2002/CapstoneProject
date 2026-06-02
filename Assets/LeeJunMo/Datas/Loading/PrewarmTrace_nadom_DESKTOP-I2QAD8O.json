@@ -1,40 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "d6500fd847bb440298db485fa72f4ca0",
-            "startedUtc": "2026-06-02T03:52:02.6107423Z",
-            "endedUtc": "2026-06-02T03:53:01.3813812Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 179,
-                    "coldSpawns": 122,
-                    "firstSeenSeconds": 25.80919647216797,
-                    "lastSeenSeconds": 58.755836486816409,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
-            "sessionId": "f720d97887a54668aa27d10e9505fd74",
-            "startedUtc": "2026-06-02T04:15:34.3322371Z",
-            "endedUtc": "2026-06-02T04:16:44.6768158Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 329,
-                    "coldSpawns": 87,
-                    "firstSeenSeconds": 32.346778869628909,
-                    "lastSeenSeconds": 69.48709106445313,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
             "sessionId": "de3bf0ccec2d45efb3eaf6de33a6188a",
             "startedUtc": "2026-06-02T04:24:12.3876804Z",
             "endedUtc": "2026-06-02T04:24:59.5553814Z",
@@ -217,6 +183,18 @@
             "sessionId": "b42efb12d62f40c0b9edba5d41437b5e",
             "startedUtc": "2026-06-02T06:31:20.7570806Z",
             "endedUtc": "2026-06-02T06:31:22.5234142Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4b49d0badd7346e1ba725ff4dea14aa1",
+            "startedUtc": "2026-06-02T06:55:21.7158360Z",
+            "endedUtc": "2026-06-02T06:55:25.0179228Z",
+            "entries": []
+        },
+        {
+            "sessionId": "053f76b47ce0493e9daaa94c429e20df",
+            "startedUtc": "2026-06-02T06:57:10.1129153Z",
+            "endedUtc": "2026-06-02T06:57:13.6097819Z",
             "entries": []
         }
     ]
