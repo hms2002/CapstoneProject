@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CapstonePresentation.TopDownDebrisBounceEmitter2D
   debrisParticles: {fileID: 8794294851729285226}
-  contactParticles: {fileID: 4777786483269751090}
+  contactParticles: {fileID: 0}
   playOnEnable: 1
   useUnscaledTime: 0
   randomizeSeed: 1
@@ -73,8 +73,8 @@ MonoBehaviour:
   fragmentSpinDegreesRange: {x: -620, y: 620}
   fragmentColorA: {r: 0.28343263, g: 0, b: 0.4716981, a: 1}
   fragmentColorB: {r: 0.48660702, g: 0, b: 0.78113204, a: 1}
-  hotFragmentChance: 0.24
-  contactBurstCountRange: {x: 2, y: 5}
+  hotFragmentChance: 0
+  contactBurstCountRange: {x: 0, y: 0}
   contactLifetimeRange: {x: 0.12, y: 0.26}
   contactSizeMultiplierRange: {x: 1.4, y: 2.7}
   contactSpeedRange: {x: 0.08, y: 0.35}
@@ -97,7 +97,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3103713136137357247
 Transform:
   m_ObjectHideFlags: 0
