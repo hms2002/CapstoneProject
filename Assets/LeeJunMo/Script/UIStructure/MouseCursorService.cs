@@ -105,8 +105,10 @@ public sealed class MouseCursorService : MonoBehaviour
 
     [Header("Software Cursor Presentation")]
     [SerializeField] private bool hideSystemCursorWhileSpriteActive = true;
+    [SerializeField] private bool preferHardwareCursorWhenAvailable = true;
     [SerializeField] private bool preferHardwareCursorInExclusiveFullscreen = true;
-    [SerializeField] private bool keepSystemCursorVisibleInExclusiveFullscreenFallback = true;
+    [SerializeField] private bool keepSystemCursorVisibleWhenUsingSoftwareCursor;
+    [SerializeField] private bool keepSystemCursorVisibleInExclusiveFullscreenFallback;
     [SerializeField] private int overlaySortingOrder = short.MaxValue;
     [SerializeField] private bool scaleWithScreenHeight = true;
     [SerializeField, Min(1f)] private float referenceScreenHeight = 1080f;
@@ -140,6 +142,7 @@ public sealed class MouseCursorService : MonoBehaviour
     private FullScreenMode lastFullScreenMode;
     private bool hasCapturedDisplayState;
     private bool forceCursorTextureReapply;
+    private int displayTransitionRecoveryFrames;
 
     public MouseCursorDomain CurrentDomain => currentDomain;
     public MouseCursorVariant CurrentVariant => currentVariant;
@@ -265,6 +268,14 @@ public sealed class MouseCursorService : MonoBehaviour
     public void SetHidden(UnityEngine.Object owner, bool hidden)
     {
         SetOwnerFlag(hiddenOwners, owner, hidden);
+    }
+
+    public void NotifyDisplayConfigurationChanged()
+    {
+        displayTransitionRecoveryFrames = Mathf.Max(displayTransitionRecoveryFrames, 60);
+        ClearSystemCursorTexture();
+        forceCursorTextureReapply = true;
+        Cursor.visible = true;
     }
 
     private void SetOwnerFlag(Dictionary<int, OwnerFlag> owners, UnityEngine.Object owner, bool active)
@@ -462,7 +473,8 @@ public sealed class MouseCursorService : MonoBehaviour
 
     private bool ShouldPreferHardwareCursor()
     {
-        return preferHardwareCursorInExclusiveFullscreen &&
+        return preferHardwareCursorWhenAvailable ||
+               preferHardwareCursorInExclusiveFullscreen &&
                Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen;
     }
 
@@ -720,7 +732,9 @@ public sealed class MouseCursorService : MonoBehaviour
         if (cursorCanvas != null)
             cursorCanvas.enabled = true;
 
-        Cursor.visible = ShouldKeepSystemCursorVisibleWithSoftwareFallback() || !hideSystemCursorWhileSpriteActive;
+        Cursor.visible = ShouldKeepSystemCursorVisibleWithSoftwareFallback() ||
+                         keepSystemCursorVisibleWhenUsingSoftwareCursor ||
+                         !hideSystemCursorWhileSpriteActive;
         appliedCursorTexture = null;
         appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
         forceCursorTextureReapply = false;
@@ -754,6 +768,7 @@ public sealed class MouseCursorService : MonoBehaviour
         lastScreenHeight = screenHeight;
         lastFullScreenMode = fullScreenMode;
         forceCursorTextureReapply = true;
+        displayTransitionRecoveryFrames = Mathf.Max(displayTransitionRecoveryFrames, 60);
     }
 
     private bool ShouldKeepSystemCursorVisibleWithSoftwareFallback()
@@ -775,6 +790,9 @@ public sealed class MouseCursorService : MonoBehaviour
 
     private void UpdateCursorPosition()
     {
+        if (displayTransitionRecoveryFrames > 0)
+            displayTransitionRecoveryFrames--;
+
         if (cursorCanvas == null || cursorRect == null || cursorImage == null || !cursorImage.enabled)
             return;
 

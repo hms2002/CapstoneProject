@@ -46,6 +46,7 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
     private bool awaitingSwapConfirmation;
     private bool awaitingCloseConfirmation;
     private bool resumeListeningOnConflictCancel;
+    private bool bypassCloseRequestHandler;
     private Dictionary<InputActionId, InputBinding> pendingPreviewBindings;
     private bool isClosing;
     private SettingsPanelUI ownerSettingsPanel;
@@ -252,6 +253,9 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
     public bool TryHandleCloseRequest()
     {
+        if (bypassCloseRequestHandler)
+            return false;
+
         if (!gameObject.activeInHierarchy)
             return false;
 
@@ -862,9 +866,21 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
     private void PerformClose()
     {
         if (UIManager.Instance != null)
-            UIManager.Instance.PopUI(this);
+        {
+            try
+            {
+                bypassCloseRequestHandler = true;
+                UIManager.Instance.PopUI(this);
+            }
+            finally
+            {
+                bypassCloseRequestHandler = false;
+            }
+        }
         else
+        {
             CloseUI();
+        }
     }
 
     private void FinalizeClose()

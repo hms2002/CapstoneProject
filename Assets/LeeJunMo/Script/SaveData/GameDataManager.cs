@@ -8,6 +8,7 @@ public class GameDataManager : MonoBehaviour
 
     public GameData Data { get; private set; }
     public int ActiveSlotIndex { get; private set; }
+    public event System.Action<GameData, int> OnDataLoaded;
 
     private GameDataRepository repository;
 
@@ -54,6 +55,7 @@ public class GameDataManager : MonoBehaviour
         Data = repository.LoadOrCreate();
         NormalizeLoadedData();
         Debug.Log($"[GameDataManager] Game data loaded for slot {ActiveSlotIndex + 1}.");
+        OnDataLoaded?.Invoke(Data, ActiveSlotIndex);
     }
 
     public bool LoadSlot(int slotIndex)
@@ -71,6 +73,8 @@ public class GameDataManager : MonoBehaviour
 
         repository = new GameDataRepository(ActiveSlotIndex);
         Data = new GameData();
+        NormalizeLoadedData();
+        OnDataLoaded?.Invoke(Data, ActiveSlotIndex);
     }
 
     public GameData EnsureData()

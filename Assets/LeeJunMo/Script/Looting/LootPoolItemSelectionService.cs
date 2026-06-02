@@ -7,6 +7,12 @@ using UnityEngine;
 /// </summary>
 internal static class LootPoolItemSelectionService
 {
+    private static readonly HashSet<string> NonDroppableRelicIds = new HashSet<string>
+    {
+        "RD_RunningLedger",
+        "RD_FeatherOrbit",
+    };
+
     public static WeaponDefinition GetRandomWeapon(HashSet<string> exclusionList)
     {
         if (ItemManager.Instance == null)
@@ -65,6 +71,9 @@ internal static class LootPoolItemSelectionService
 
         foreach (var id in pool)
         {
+            if (NonDroppableRelicIds.Contains(id))
+                continue;
+
             var relicData = ItemManager.Instance.GetRelicData(id);
             if (relicData == null)
                 continue;

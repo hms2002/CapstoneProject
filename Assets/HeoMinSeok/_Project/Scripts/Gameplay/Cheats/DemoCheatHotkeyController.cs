@@ -78,8 +78,14 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
         if (WasPressed(settings.AddMagicStoneKey))
             ShowResult(service.AddMagicStone(settings));
 
+        if (WasPressed(settings.RefillHealthKey))
+            ShowResult(service.RefillPlayerHealth(settings));
+
         if (WasPressed(settings.InvulnerabilityToggleKey))
             ShowResult(service.TogglePlayerInvulnerability(settings));
+
+        if (WasPressed(settings.ReleaseAutoInvulnerabilityKey))
+            ShowResult(service.ReleaseAutoInvulnerability(settings));
 
         if (WasPressed(settings.WarpToPortalKey))
             ShowResult(service.WarpPlayerToNearestPortal(settings));
@@ -92,6 +98,9 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
 
         if (WasPressed(settings.DecreaseAttackKey))
             ShowResult(service.DecreasePlayerAttack(settings));
+
+        if (WasPressed(settings.IncreaseSlimeQueenMeltaAffectionKey))
+            ShowResult(service.IncreaseSlimeQueenMeltaAffection(settings));
     }
 
     private void HandleAutoInvulnerability()

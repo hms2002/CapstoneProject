@@ -16,11 +16,14 @@ MonoBehaviour:
   cheatGuideKey: 256
   warpToRunSpecialNpcKey: 262
   addMagicStoneKey: 260
+  refillHealthKey: 263
   invulnerabilityToggleKey: 261
+  releaseAutoInvulnerabilityKey: 281
   warpToPortalKey: 257
   resetWeaponCooldownKey: 265
   increaseAttackKey: 258
   decreaseAttackKey: 259
+  increaseSlimeQueenMeltaAffectionKey: 267
   mapZoomToggleKey: 270
   warpToBossSceneKey: 269
   bossSceneNames:
@@ -37,6 +40,8 @@ MonoBehaviour:
   showAutoInvulnerabilityNotification: 1
   attackIncreaseAmount: 100
   attackDecreaseAmount: 30
+  slimeQueenMeltaNpcId: 3001
+  slimeQueenMeltaAffectionIncreaseAmount: 1
   magicStoneAddAmount: 100
   mapZoomCenter: {x: 0, y: 0}
   mapZoomSize: {x: 40, y: 24}

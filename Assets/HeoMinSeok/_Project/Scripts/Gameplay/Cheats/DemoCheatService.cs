@@ -51,6 +51,7 @@ public sealed class DemoCheatService
     private bool hasMapZoomSnapshot;
     private bool demoInvulnerabilityEnabled;
     private bool hasAppliedDemoInvulnerabilityTag;
+    private bool suppressAutoInvulnerabilityUntilHealthRecovers;
     private TagSystem demoInvulnerabilityTagSystem;
     private GameplayTag demoInvulnerabilityTag;
     private MapZoomCameraSnapshot mapZoomSnapshot;
@@ -71,11 +72,14 @@ public sealed class DemoCheatService
             (settings.WarpToBossSceneKey, "보스 씬 포탈 설정"),
             (settings.WarpToRunSpecialNpcKey, "Runtime Special NPC 워프"),
             (settings.AddMagicStoneKey, $"마정석 +{magicStoneAmount}"),
+            (settings.RefillHealthKey, "체력 MAX"),
             (settings.InvulnerabilityToggleKey, "무적 토글"),
+            (settings.ReleaseAutoInvulnerabilityKey, "자동 무적 해제"),
             (settings.WarpToPortalKey, "포탈 앞으로 이동"),
             (settings.ResetWeaponCooldownKey, "무기 쿨타임 초기화"),
             (settings.IncreaseAttackKey, $"공격력 +{settings.AttackIncreaseAmount:0.###}"),
-            (settings.DecreaseAttackKey, $"공격력 -{settings.AttackDecreaseAmount:0.###}")
+            (settings.DecreaseAttackKey, $"공격력 -{settings.AttackDecreaseAmount:0.###}"),
+            (settings.IncreaseSlimeQueenMeltaAffectionKey, $"슬라임 퀸 멜타 호감도 +{settings.SlimeQueenMeltaAffectionIncreaseAmount}")
         };
 
         entries.RemoveAll(entry => entry.Key == KeyCode.None);
@@ -209,6 +213,7 @@ public sealed class DemoCheatService
         }
 
         Log($"체력 MAX 적용. hp={maxHealth:0.###}");
+        suppressAutoInvulnerabilityUntilHealthRecovers = false;
         return DemoCheatResult.Succeeded("체력을 최대치로 회복했습니다.");
     }
 
@@ -237,6 +242,16 @@ public sealed class DemoCheatService
         return DemoCheatResult.Succeeded("무적 치트를 활성화했습니다.");
     }
 
+    public DemoCheatResult ReleaseAutoInvulnerability(DemoCheatSettingsSO settings)
+    {
+        ReleaseDemoInvulnerabilityTag();
+        demoInvulnerabilityEnabled = false;
+        suppressAutoInvulnerabilityUntilHealthRecovers = true;
+
+        Log("자동 무적 치트 해제. 체력이 임계값을 넘기 전까지 자동 재발동을 억제합니다.");
+        return DemoCheatResult.Succeeded("자동 무적을 해제했습니다.");
+    }
+
     public bool TryAutoEnablePlayerInvulnerability(DemoCheatSettingsSO settings, out DemoCheatResult result)
     {
         result = default;
@@ -251,6 +266,12 @@ public sealed class DemoCheatService
             return false;
 
         float currentHealth = attributeSet.GetAttributeValue(settings.HealthAttribute);
+        if (currentHealth > settings.AutoInvulnerabilityHealthThreshold)
+            suppressAutoInvulnerabilityUntilHealthRecovers = false;
+
+        if (suppressAutoInvulnerabilityUntilHealthRecovers)
+            return false;
+
         if (currentHealth > settings.AutoInvulnerabilityHealthThreshold)
             return false;
 
@@ -361,6 +382,53 @@ public sealed class DemoCheatService
     public DemoCheatResult DecreasePlayerAttack(DemoCheatSettingsSO settings)
     {
         return AdjustPlayerAttack(settings, -Mathf.Abs(settings.AttackDecreaseAmount), "감소", "-");
+    }
+
+    public DemoCheatResult IncreaseSlimeQueenMeltaAffection(DemoCheatSettingsSO settings)
+    {
+        if (settings == null)
+            return Fail("호감도 치트 설정을 찾을 수 없습니다.");
+
+        int npcId = settings.SlimeQueenMeltaNpcId;
+        int amount = settings.SlimeQueenMeltaAffectionIncreaseAmount;
+        if (AffectionManager.Instance != null)
+        {
+            int current = AffectionManager.Instance.GetAffection(npcId);
+            NPCData npcData = NPCManager.Instance != null ? NPCManager.Instance.GetNPCData(npcId) : null;
+            if (npcData != null)
+            {
+                AffectionManager.Instance.AddAffection(npcData, amount);
+            }
+            else
+            {
+                AffectionManager.Instance.SetAffection(npcId, current + amount);
+            }
+
+            Log($"슬라임 퀸 멜타 호감도 증가. npcId={npcId}, amount={current}->{current + amount}");
+            return DemoCheatResult.Succeeded($"슬라임 퀸 멜타 호감도가 +{amount} 증가했습니다.");
+        }
+
+        GameData gameData = GameDataManager.Instance?.EnsureData();
+        if (gameData == null)
+            return Fail("호감도 시스템을 찾을 수 없습니다.");
+
+        gameData.affectionData ??= new AffectionSaveData();
+        gameData.affectionData.affectionRecords ??= new List<AffectionRecord>();
+
+        AffectionRecord record = gameData.affectionData.affectionRecords.Find(x => x != null && x.npcId == npcId);
+        if (record == null)
+        {
+            record = new AffectionRecord(npcId, amount);
+            gameData.affectionData.affectionRecords.Add(record);
+        }
+        else
+        {
+            record.amount += amount;
+        }
+
+        GameDataSaveCoordinator.RequestImmediateSave(logContext);
+        Log($"슬라임 퀸 멜타 호감도 저장 데이터 직접 증가. npcId={npcId}, amount={record.amount - amount}->{record.amount}");
+        return DemoCheatResult.Succeeded($"슬라임 퀸 멜타 호감도가 +{amount} 증가했습니다.");
     }
 
     private DemoCheatResult AdjustPlayerAttack(DemoCheatSettingsSO settings, float delta, string logVerb, string messageSign)

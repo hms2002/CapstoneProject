@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6591e5c22257414ab0e679bbf7b06ba6, type: 3}
   m_Name: SlimeQueenTeleportNpcAvailableEffect
   m_EditorClassIdentifier: 
-  rewardText: TeleportNpc 이용 가능
-  rewardIcon: {fileID: 21300000, guid: 5b1bfa9c0e7024d4f8f5549b8eca2f3c, type: 3}
+  rewardText: "TeleportNpc \uC774\uC6A9 \uAC00\uB2A5"
+  rewardIcon: {fileID: 21300000, guid: 39d25640faf637c4ba23f76876329a6a, type: 3}

@@ -16,3 +16,6 @@ MonoBehaviour:
   blastEffectScaleMultiplier: 1
   alignBlastEffectToLine: 0
   fallbackBlastEffectLifetime: 0.6
+  blastParticlePrefab: {fileID: 2448575849230576120, guid: 18d42adbb3a7c624abe8f1661ea9a5ad, type: 3}
+  blastParticleOffset: {x: 0, y: 0, z: 0}
+  blastParticleLifetimeSeconds: 2

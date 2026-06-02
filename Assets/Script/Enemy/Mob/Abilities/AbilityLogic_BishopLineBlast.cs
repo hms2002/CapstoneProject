@@ -15,6 +15,9 @@ public class AbilityLogic_BishopLineBlast : AbilityLogic
     [SerializeField, Min(0f)] private float blastEffectScaleMultiplier = 1f;
     [SerializeField] private bool alignBlastEffectToLine;
     [SerializeField, Min(0.05f)] private float fallbackBlastEffectLifetime = 1f;
+    [SerializeField] private GameObject blastParticlePrefab;
+    [SerializeField] private Vector3 blastParticleOffset;
+    [SerializeField, Min(0f)] private float blastParticleLifetimeSeconds = 2f;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -41,6 +44,9 @@ public class AbilityLogic_BishopLineBlast : AbilityLogic
             blastEffectPrefab,
             blastEffectScaleMultiplier,
             alignBlastEffectToLine,
-            fallbackBlastEffectLifetime);
+            fallbackBlastEffectLifetime,
+            blastParticlePrefab,
+            blastParticleOffset,
+            blastParticleLifetimeSeconds);
     }
 }

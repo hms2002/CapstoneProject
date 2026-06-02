@@ -548,6 +548,8 @@ public sealed class GameSettingsService : MonoBehaviour
             Mathf.Max(640, appliedResolution.width),
             Mathf.Max(360, appliedResolution.height),
             fullScreenMode);
+
+        MouseCursorService.EnsureInstance().NotifyDisplayConfigurationChanged();
 #endif
     }
 }

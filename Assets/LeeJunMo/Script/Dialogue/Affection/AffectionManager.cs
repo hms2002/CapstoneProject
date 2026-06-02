@@ -15,6 +15,7 @@ public class AffectionManager : MonoBehaviour
 
     private int currentNpcId;
     private AffectionUI linkedUI;
+    private bool isSubscribedToGameDataManager;
 
     public event Action<int, int> OnAffectionChanged;
 
@@ -40,8 +41,22 @@ public class AffectionManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void OnEnable()
+    {
+        TrySubscribeToGameDataManager();
+    }
+
+    private void OnDisable()
+    {
+        if (GameDataManager.Instance != null && isSubscribedToGameDataManager)
+            GameDataManager.Instance.OnDataLoaded -= HandleGameDataLoaded;
+
+        isSubscribedToGameDataManager = false;
+    }
+
     private void Start()
     {
+        TrySubscribeToGameDataManager();
         LoadAffectionData();
     }
 
@@ -118,6 +133,11 @@ public class AffectionManager : MonoBehaviour
                 GamePlayDataManager.Instance?.AddPendingAffectionDelta(npcId, value - previousValue);
             else
                 GameDataSaveCoordinator.RequestImmediateSave(this);
+
+            if (currentNpcId == npcId)
+                linkedUI?.Setup(value);
+
+            OnAffectionChanged?.Invoke(npcId, value);
         }
     }
 
@@ -135,6 +155,25 @@ public class AffectionManager : MonoBehaviour
         progressStore.Load(GameDataManager.Instance?.Data);
         int recordCount = GameDataManager.Instance?.Data?.affectionData?.affectionRecords?.Count ?? 0;
         Debug.Log($"[AffectionManager] Loaded affection data. NPC count: {recordCount}");
+    }
+
+    /// <summary>GameDataManager 생성 순서와 무관하게 호감도 캐시 갱신 이벤트를 한 번만 구독합니다.</summary>
+    private void TrySubscribeToGameDataManager()
+    {
+        if (isSubscribedToGameDataManager || GameDataManager.Instance == null)
+            return;
+
+        GameDataManager.Instance.OnDataLoaded += HandleGameDataLoaded;
+        isSubscribedToGameDataManager = true;
+    }
+
+    /// <summary>슬롯 변경/삭제 후 새 저장 데이터 기준으로 호감도 캐시와 UI를 다시 맞춥니다.</summary>
+    private void HandleGameDataLoaded(GameData data, int slotIndex)
+    {
+        progressStore.Load(data);
+        linkedUI?.Setup(GetAffection(currentNpcId));
+        int recordCount = data?.affectionData?.affectionRecords?.Count ?? 0;
+        Debug.Log($"[AffectionManager] Reloaded affection data for slot {slotIndex + 1}. NPC count: {recordCount}");
     }
 
     private void RunAffectionPresentation(NPCData data, AffectionChangeResult change, bool hasReward, Action onComplete)

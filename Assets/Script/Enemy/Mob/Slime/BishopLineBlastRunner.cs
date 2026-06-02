@@ -26,13 +26,26 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
         public readonly float ScaleMultiplier;
         public readonly bool AlignToLine;
         public readonly float FallbackLifetime;
+        public readonly GameObject ParticlePrefab;
+        public readonly Vector3 ParticleOffset;
+        public readonly float ParticleLifetime;
 
-        public BlastEffectConfig(GameObject prefab, float scaleMultiplier, bool alignToLine, float fallbackLifetime)
+        public BlastEffectConfig(
+            GameObject prefab,
+            float scaleMultiplier,
+            bool alignToLine,
+            float fallbackLifetime,
+            GameObject particlePrefab,
+            Vector3 particleOffset,
+            float particleLifetime)
         {
             Prefab = prefab;
             ScaleMultiplier = scaleMultiplier;
             AlignToLine = alignToLine;
             FallbackLifetime = Mathf.Max(0.05f, fallbackLifetime);
+            ParticlePrefab = particlePrefab;
+            ParticleOffset = particleOffset;
+            ParticleLifetime = Mathf.Max(0f, particleLifetime);
         }
     }
 
@@ -41,6 +54,7 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
     [SerializeField] private AttackTelegraphService telegraphService;
 
     private readonly List<Vector3> blastPoints = new();
+    private readonly List<GameObject> spawnedBlastParticles = new();
     private AttackTelegraphStyle lineStyle;
     private Bishop.LineBlastContext currentContext;
     private bool isRunning;
@@ -67,11 +81,13 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
         if (lineStyle != null)
             Destroy(lineStyle);
 
+        ClearBlastParticles();
     }
 
     private void OnDisable()
     {
         HideLine();
+        ClearBlastParticles();
     }
 
     /// <summary>비숍의 경고선과 동시 폭발 공격을 실행합니다.</summary>
@@ -116,12 +132,14 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
     {
         cancelRequested = true;
         HideLine();
+        ClearBlastParticles();
     }
 
     /// <summary>남아 있는 비숍 공격 경고를 정리합니다.</summary>
     public void CleanupPresentation()
     {
         HideLine();
+        ClearBlastParticles();
     }
 
     /// <summary>비숍의 긴 직사각형 경고선을 표시합니다.</summary>
@@ -153,6 +171,7 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
         owner.PlayMagicCastAnimation();
         SoundPlaybackUtility.Play(AttackSound, causer: gameObject, position: context.LineCenter, sourceObject: this);
         owner.FillBlastPoints(context, blastPoints);
+        SpawnBlastParticles(blastEffectConfig);
         bool timedHitEffectsSpawned = SpawnBlastEffects(system, spec, context, blastEffectConfig);
         if (!timedHitEffectsSpawned)
             owner.TryHitBlasts(system, spec, context, blastPoints);
@@ -201,6 +220,53 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
         }
 
         return spawnedTimedHitEffect;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - Bishop 폭발 지점에 피해 판정과 분리된 보조 파티클을 생성한다.
+    /// - 패턴 취소/비활성화 시 아직 남은 파티클을 회수할 수 있도록 참조를 보관한다.
+    /// </summary>
+    private void SpawnBlastParticles(BlastEffectConfig config)
+    {
+        if (config.ParticlePrefab == null || blastPoints.Count == 0)
+            return;
+
+        PruneMissingBlastParticles();
+
+        for (int i = 0; i < blastPoints.Count; i++)
+        {
+            GameObject particle = Instantiate(config.ParticlePrefab, blastPoints[i] + config.ParticleOffset, Quaternion.identity);
+            if (particle == null)
+                continue;
+
+            spawnedBlastParticles.Add(particle);
+            if (config.ParticleLifetime > 0f)
+                Destroy(particle, config.ParticleLifetime);
+        }
+    }
+
+    /// <summary>이미 자동 제거된 Bishop 보조 파티클 참조를 목록에서 제거합니다.</summary>
+    private void PruneMissingBlastParticles()
+    {
+        for (int i = spawnedBlastParticles.Count - 1; i >= 0; i--)
+        {
+            if (spawnedBlastParticles[i] == null)
+                spawnedBlastParticles.RemoveAt(i);
+        }
+    }
+
+    /// <summary>취소/비활성화 상황에서 남은 Bishop 보조 파티클을 정리합니다.</summary>
+    private void ClearBlastParticles()
+    {
+        for (int i = spawnedBlastParticles.Count - 1; i >= 0; i--)
+        {
+            GameObject particle = spawnedBlastParticles[i];
+            if (particle != null)
+                Destroy(particle);
+        }
+
+        spawnedBlastParticles.Clear();
     }
 
     /// <summary>

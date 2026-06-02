@@ -35863,7 +35863,7 @@ MonoBehaviour:
   authoredCursorImage: {fileID: 0}
   hideSystemCursorWhileSpriteActive: 1
   preferHardwareCursorInExclusiveFullscreen: 1
-  keepSystemCursorVisibleInExclusiveFullscreenFallback: 1
+  keepSystemCursorVisibleInExclusiveFullscreenFallback: 0
   overlaySortingOrder: 32767
   scaleWithScreenHeight: 1
   referenceScreenHeight: 1080

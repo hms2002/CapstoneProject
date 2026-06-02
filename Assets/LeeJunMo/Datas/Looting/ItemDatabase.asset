@@ -73,11 +73,9 @@ MonoBehaviour:
   defaultUnlockedRelics:
   - {fileID: 11400000, guid: 1f2641bce49c9884eaec41adfdfa29f3, type: 2}
   - {fileID: 11400000, guid: 7b7fd4d273ca49739198391f6ed4d309, type: 2}
-  - {fileID: 11400000, guid: eb057c0a7b239b742a001ee568ef4027, type: 2}
   - {fileID: 11400000, guid: 7d7ef88dcbf743f7b79623379d0cd8c6, type: 2}
   - {fileID: 11400000, guid: 7c21e56d0f854d95b4ac9ef71d603f28, type: 2}
   - {fileID: 11400000, guid: d492a6f1c1a7fc84bb3b44a619dcfd4f, type: 2}
-  - {fileID: 11400000, guid: c0e9e82eb0ce4caa9efb337cb57764ff, type: 2}
   - {fileID: 11400000, guid: a73c39a704801a1488033afff3b7f340, type: 2}
   - {fileID: 11400000, guid: 2a2133b4854b68e4eb9a420c0bb3e215, type: 2}
   - {fileID: 11400000, guid: f2a47c8de19b4d8d9e67a31f5b2c4e90, type: 2}

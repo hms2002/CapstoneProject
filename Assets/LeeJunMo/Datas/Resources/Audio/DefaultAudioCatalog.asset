@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 767d1b85a4efadf4d9ef7f6b61591588, type: 3}
   m_Name: DefaultAudioCatalog
   m_EditorClassIdentifier: 
-  globalVolumeMultiplier: 1
+  globalVolumeMultiplier: 10
   bgmFadeInSeconds: 0.5
   bgmFadeOutSeconds: 0.5
   entries:
@@ -2261,7 +2261,7 @@ MonoBehaviour:
     category: 3
     variantPlaybackMode: 2
     variants:
-    - {fileID: 8300000, guid: 91395bf8b4e74c5c98a765f2996a1405, type: 3}
+    - {fileID: 8300000, guid: 09d1becf347fddc46a5b5087987932a2, type: 3}
     - {fileID: 8300000, guid: 150ce12f7303ee84888c12822d6cb56e, type: 3}
     volume: 0.102
     playbackSpeed: 1
@@ -2278,9 +2278,9 @@ MonoBehaviour:
     category: 3
     variantPlaybackMode: 2
     variants:
-    - {fileID: 8300000, guid: c5f428c7c3da49fd933788fdc9163b51, type: 3}
+    - {fileID: 8300000, guid: d52e56b3618f0a6409f0327c512b094b, type: 3}
     - {fileID: 8300000, guid: abfa40cc6214b21478d180450ddcbd81, type: 3}
-    volume: 0.3
+    volume: 0.1
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -2295,9 +2295,9 @@ MonoBehaviour:
     category: 3
     variantPlaybackMode: 2
     variants:
-    - {fileID: 8300000, guid: ed7853db406d487e8ddc8d897dfa602a, type: 3}
+    - {fileID: 8300000, guid: 09d1becf347fddc46a5b5087987932a2, type: 3}
     - {fileID: 8300000, guid: b25bce7649dc0ad4cb916f4a3182c55d, type: 3}
-    volume: 0.3
+    volume: 0.083
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -2409,7 +2409,7 @@ MonoBehaviour:
     variantPlaybackMode: 0
     variants:
     - {fileID: 8300000, guid: 37a4d3c765ad425da8ac81621be73256, type: 3}
-    volume: 0.1
+    volume: 0.038
     playbackSpeed: 0.9
     pitchMin: 1
     pitchMax: 1
@@ -2425,7 +2425,7 @@ MonoBehaviour:
     variantPlaybackMode: 0
     variants:
     - {fileID: 8300000, guid: 633a9973dd1548dba8a7dcee615b17b9, type: 3}
-    volume: 0.1
+    volume: 0.037
     playbackSpeed: 0.9
     pitchMin: 1
     pitchMax: 1
@@ -2441,7 +2441,7 @@ MonoBehaviour:
     variantPlaybackMode: 0
     variants:
     - {fileID: 8300000, guid: 3de0992f861b42f4b6c380dd466d255d, type: 3}
-    volume: 0.1
+    volume: 0.038
     playbackSpeed: 0.9
     pitchMin: 1
     pitchMax: 1
@@ -2457,7 +2457,7 @@ MonoBehaviour:
     variantPlaybackMode: 0
     variants:
     - {fileID: 8300000, guid: 033a774ae9074a22a039052267cede56, type: 3}
-    volume: 0.19
+    volume: 0.112
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1

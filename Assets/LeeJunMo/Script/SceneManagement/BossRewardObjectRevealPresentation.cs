@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : 보스 처치 보상 포탈/오브젝트가 등장할 때 마스크, 파티클, 입력 잠금, 카메라 흔들림을 묶어 reveal 연출을 재생한다.
+/// </summary>
 [DisallowMultipleComponent]
 [AddComponentMenu("Capstone/Boss/Boss Reward Portal Reveal Presentation")]
 public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
@@ -378,9 +381,10 @@ public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
             for (int maskIndex = 0; maskIndex < sceneMasks.Length; maskIndex++)
             {
                 SpriteMask sceneMask = sceneMasks[maskIndex];
-                if (sceneMask == null || IsRevealMask(sceneMask) || IsPlayerVisionMask(sceneMask))
+                if (sceneMask == null || IsRevealMask(sceneMask))
                     continue;
 
+                // Player vision masks are restricted too, so reward renderers only respond to the reveal mask.
                 globalVisionMaskStates.Add(new SpriteMaskRangeState(sceneMask));
                 sceneMask.isCustomRangeActive = true;
                 sceneMask.frontSortingLayerID = sortingLayerId;
@@ -579,11 +583,6 @@ public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
     private bool IsRevealMask(SpriteMask mask)
     {
         return mask != null && (mask == revealMask || mask == activeRevealMask || mask == runtimeRevealMask);
-    }
-
-    private static bool IsPlayerVisionMask(SpriteMask mask)
-    {
-        return mask != null && mask.GetComponentInParent<PlayerVisionMaskFollower>(includeInactive: true) != null;
     }
 
     private ParticleSystem ResolvePlayableParticle(ParticleSystem configuredParticle, bool isLoopDust)

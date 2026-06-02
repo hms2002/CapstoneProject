@@ -17,12 +17,15 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     [SerializeField] private KeyCode cheatGuideKey = KeyCode.F1;
     [SerializeField] private KeyCode warpToRunSpecialNpcKey = KeyCode.F6;
     [SerializeField] private KeyCode addMagicStoneKey = KeyCode.F7;
+    [SerializeField] private KeyCode refillHealthKey = KeyCode.Keypad7;
     [FormerlySerializedAs("maxHealthKey")]
     [SerializeField] private KeyCode invulnerabilityToggleKey = KeyCode.F8;
+    [SerializeField] private KeyCode releaseAutoInvulnerabilityKey = KeyCode.PageDown;
     [SerializeField] private KeyCode warpToPortalKey = KeyCode.F9;
     [SerializeField] private KeyCode resetWeaponCooldownKey = KeyCode.F10;
     [SerializeField] private KeyCode increaseAttackKey = KeyCode.F12;
     [SerializeField] private KeyCode decreaseAttackKey = KeyCode.F11;
+    [SerializeField] private KeyCode increaseSlimeQueenMeltaAffectionKey = KeyCode.KeypadDivide;
     [SerializeField] private KeyCode mapZoomToggleKey = KeyCode.F4;
     [SerializeField] private KeyCode warpToBossSceneKey = KeyCode.F5;
 
@@ -50,6 +53,10 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     [SerializeField] private float attackIncreaseAmount = 100f;
     [SerializeField] private float attackDecreaseAmount = 30f;
 
+    [Header("Affection Cheat")]
+    [SerializeField] private int slimeQueenMeltaNpcId = 3001;
+    [SerializeField, Min(1)] private int slimeQueenMeltaAffectionIncreaseAmount = 1;
+
     [Header("Currency Cheat")]
     [SerializeField, Min(1)] private int magicStoneAddAmount = 100;
 
@@ -67,11 +74,14 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     public KeyCode CheatGuideKey => cheatGuideKey;
     public KeyCode WarpToRunSpecialNpcKey => warpToRunSpecialNpcKey;
     public KeyCode AddMagicStoneKey => addMagicStoneKey;
+    public KeyCode RefillHealthKey => refillHealthKey;
     public KeyCode InvulnerabilityToggleKey => invulnerabilityToggleKey;
+    public KeyCode ReleaseAutoInvulnerabilityKey => releaseAutoInvulnerabilityKey;
     public KeyCode WarpToPortalKey => warpToPortalKey;
     public KeyCode ResetWeaponCooldownKey => resetWeaponCooldownKey;
     public KeyCode IncreaseAttackKey => increaseAttackKey;
     public KeyCode DecreaseAttackKey => decreaseAttackKey;
+    public KeyCode IncreaseSlimeQueenMeltaAffectionKey => increaseSlimeQueenMeltaAffectionKey;
     public KeyCode MapZoomToggleKey => mapZoomToggleKey;
     public KeyCode WarpToBossSceneKey => warpToBossSceneKey;
     public IReadOnlyList<string> BossSceneNames => bossSceneNames;
@@ -84,6 +94,8 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     public bool ShowAutoInvulnerabilityNotification => showAutoInvulnerabilityNotification;
     public float AttackIncreaseAmount => attackIncreaseAmount;
     public float AttackDecreaseAmount => attackDecreaseAmount;
+    public int SlimeQueenMeltaNpcId => slimeQueenMeltaNpcId;
+    public int SlimeQueenMeltaAffectionIncreaseAmount => Mathf.Max(1, slimeQueenMeltaAffectionIncreaseAmount);
     public int MagicStoneAddAmount => magicStoneAddAmount;
     public Vector2 MapZoomCenter => mapZoomCenter;
     public Vector2 MapZoomSize => mapZoomSize;
