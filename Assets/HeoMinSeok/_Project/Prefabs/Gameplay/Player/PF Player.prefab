@@ -1973,7 +1973,7 @@ MonoBehaviour:
   lyingShadowLocalRotationZ: -90
   lyingShadowScaleMultiplier: {x: 2.2, y: 1, z: 1}
   awakeIdleSpriteOverride: {fileID: -720365038908779728, guid: 54afb36f0c9a5b347b44945f7a8e0f78, type: 3}
-  sleepSprite: {fileID: 17380629475235115, guid: 54afb36f0c9a5b347b44945f7a8e0f78, type: 3}
+  sleepSprite: {fileID: -720365038908779728, guid: 54afb36f0c9a5b347b44945f7a8e0f78, type: 3}
   sleepEffectAnchor: {fileID: 4115971267136633410}
   sleepEffectPrefab: {fileID: 5901972143961512537, guid: 1585d72a2e7a6574bbdafcb2f8a24b41, type: 3}
   sleepEffectLocalOffset: {x: 0, y: 0, z: 0}

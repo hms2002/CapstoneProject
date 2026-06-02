@@ -39,6 +39,7 @@ Each feature document should include:
 
 ## Current Documents
 
+- [Audio Catalog Runtime Tuning](./AudioCatalogRuntimeTuning.md)
 - [Script System Map](./ScriptSystemMap.md)
 - [Script Systems](./ScriptSystems/README.md)
 - [UI Flow Input Blocking](./UIFlowInputBlocking.md)

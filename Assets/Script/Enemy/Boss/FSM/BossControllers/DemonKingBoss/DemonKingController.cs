@@ -1275,7 +1275,7 @@ public sealed class DemonKingController : BossControllerBase
             lockTime: 0.25f,
             postDelay: 0.25f,
             minDistance: 0f,
-            maxDistance: 6.5f);
+            maxDistance: 999f);
         BossPatternEntry heavySlash = CreatePattern<AbilityLogic_DemonKingHeavySlash>(
             "DemonKing_HeavySlash",
             DemonKingPatternRole.HoldNormal,
@@ -1284,7 +1284,7 @@ public sealed class DemonKingController : BossControllerBase
             lockTime: 0.5f,
             postDelay: 0.35f,
             minDistance: 0f,
-            maxDistance: 5.8f);
+            maxDistance: 999f);
 
         throwSwordEntry = CreatePattern<AbilityLogic_DemonKingThrowEgoSword>(
             "DemonKing_ThrowEgoSword",
