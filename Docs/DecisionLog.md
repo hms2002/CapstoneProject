@@ -7,6 +7,33 @@ last_reviewed: 2026-06-01
 
 # Decision Log
 
+## 2026-06-02 - Intro And Outro Use Start-Only Pencil Typing SFX
+
+Decision:
+Title intro and ending outro slide text use a dedicated `ui.inoutro.pencil` one-shot SFX when typing starts, not the shared repeated `boss.talking` typing tick.
+
+Reason:
+The intro/outro pencil sound is a longer presentation beat and should not be retriggered per typed character. General Dialogue UI and SpeechBubble typing retain their existing repeated talking sound because their rhythm is separate from the authored intro/outro slide presentation.
+
+Implications:
+- `TitleIntroPlayer` and `EndingOutroPlayer` play the pencil sound once per non-empty slide typing phase.
+- Intro/outro players keep the pencil one-shot handle only so skip requests can fade out the currently playing pencil sound.
+- `TypingAudioUtility.PlayBossTalking(...)` remains the shared call for normal Dialogue UI and SpeechBubble typing.
+- `DefaultAudioCatalog.asset` owns the new `ui.inoutro.pencil` catalog key and requires Unity import/Inspector review after the new mp3 asset is imported.
+
+## 2026-06-02 - Audio Catalog Variants Use Explicit Playback Mode
+
+Decision:
+`AudioCatalogEntry` variants use `AudioVariantPlaybackMode` to choose Random, First, or Simultaneous playback. `Random = 0` remains the default so existing catalog assets keep their current random variant behavior until designers change the field.
+
+Reason:
+Variant arrays were previously random-only. Designers need the same catalog key to support deterministic first-clip playback or layered one-shot SFX without adding extra sound keys or call-site-specific audio code.
+
+Implications:
+- Simultaneous playback is runtime-supported only for non-loop SFX. Loop SFX and BGM stay on the existing single-source/single-handle path.
+- Same-source one-shot duplicate suppression and entry cooldown still apply once per playback request, even when that request emits multiple variant clips.
+- `AudioCatalogSO` has a new serialized field, so existing catalog assets require Unity import/Inspector review before designers tune the mode.
+
 ## 2026-06-01 - RunRouteCatalog Can Pin Normal Route Order
 
 Decision:
@@ -1994,7 +2021,7 @@ Sword-held and hand-state counters are now intentionally different reads: sword 
 Implications:
 - Sword branch defaults to `DarkLord_Sword_Groggy`, `DarkLord_Sword_GroggyCounter`, `DarkLordGroggyReleaseVfx`, `SwordCounterOrigin`, and `EyeFlashSecondary`.
 - Hand branch defaults to `DarkLord_Hand_Groggy`, `DarkLord_Hand_GroggyCounter`, `DemonKingImpactVfx`, `HandCounterImpact`, and `EyeFlash`.
-- Common damage, knockback, dim timing, SFX, and shake remain shared on the AL.
+- Common damage, knockback, dim timing, warning ping SFX, and shake remain shared on the AL. Counter impact SFX is split through Sword/Hand `SoundRef` slots so it can match the selected GroggyCounter branch.
 - Existing AL assets need Unity import/Inspector review for the new nested serialized fields.
 
 ## 2026-05-30 - DemonKing Pattern Presentation Mapping Is Asset-Owned
@@ -2049,5 +2076,52 @@ Implications:
 - `DemonKingThrowEgoSword`, `DemonKingRecallEgoSword`, `DemonKingEgoSwordVerticalStrike`, and `DemonKingEgoSwordCrossLaser` are DarkLord/body speech keys.
 - `EgoSwordThrowEgoSword`, `EgoSwordRecallEgoSword`, `EgoSwordVerticalStrike`, and `EgoSwordCrossLaser` are EgoSword-position speech keys.
 - Throw/Recall can append step-specific keys such as `EgoSwordThrowEgoSwordRelease`, `DemonKingRecallEgoSwordRetort`, and `EgoSwordRecallEgoSwordRetort` when a pattern needs fixed turn order but each turn should still use the existing random `lines[]` lookup.
-- Parallel speech bubbles auto-spread only parallel bubble instances. The existing active/single bubble remains fixed and acts as an obstacle; the layout pass scores left/right world-bounds candidates first, then uses a small upward fallback without adding scene or prefab settings.
+- Parallel speech placement is runtime-only and anchor-aware: `SpeechBubbleComponent` scores tail side, actual world bounds, tail pivot distance from the bubble root, overlap, screen bounds, and small layout nudges before applying a placement. Single/NPC `Speak(...)` keeps the default left-tail placement.
+- Parallel DemonKing/EgoSword two-person dialogue uses a pair solver. The active DarkLord bubble may flip tail side but does not move; the EgoSword parallel bubble can use only a small bounded nudge, so the solver prefers flipping the active bubble over pulling the sword bubble far from its socket. The existing background sprite can be X-flipped, text is counter-flipped to stay readable, and the background layout padding is swapped on flip so typing starts from a stable visual side.
+- Throw/Recall speech rhythm tuning belongs on the owning DemonKing AL assets, not `BossSpeechData`; text data stays line-only while pattern timing remains Inspector-facing pattern data.
+- Throw landing speech uses the appended `EgoSwordThrowEgoSwordPlant` key and is emitted by `EgoSwordActor` when the throw planting transition completes, because the Throw AL has already handed off to sword flight by then.
+- Inactive EgoSword speech resolves through separate `EgoSwordActor` socket fields: `inactiveThrowSpeechSocket` defaults to `SwordThrowOrigin`, and `inactiveRecallSpeechSocket` defaults to `SwordThrowReturnOrigin`. This keeps throw pre-release and recall-response anchors independently tunable through the existing DemonKing socket map without scene YAML edits from code.
+- EgoSword speech fine-positioning is `EgoSwordActor`-owned: the actor exposes `egoSwordSpeechOffsetDelta` as the single Inspector source of truth, DemonKing ALs consume it through `EgoSwordActor.SpeechOffsetDelta`, and actor-emitted throw landing speech uses the same field.
+- The post-recall gap is AL-owned timing through `postRecallPatternDelaySeconds`; delaying the Recall ability completion is what prevents the next main DemonKing pattern from starting immediately after sword recovery.
 - Pattern code may try both keys; missing lines remain no-op through the existing `BossSpeechData.GetLine(...)` path.
+
+## 2026-06-02 - Same-Scene Teleport Arrival Treats Hole Crossing As Airborne Presentation
+
+Decision:
+`RunSameSceneTeleportNpcFeature` treats the movement from `appearancePoint` to `landingPoint` as an airborne arrival presentation. The final landing endpoint must still be safe, but the `appearancePoint` and intermediate path may cross `HoleTrap` space, and the player body collider is suppressed until the arrival movement finishes.
+
+Reason:
+The previous ground-path `HoleTrap` sampling treated a jump-like arrival as if it were normal grounded traversal. If the authored appearance-to-landing line crossed a hole, the feature skipped the landing movement and collapsed to a direct warp, hiding the intended arrival presentation.
+
+Implications:
+- Keep landing endpoint validation before teleport execution.
+- Do not reintroduce `appearancePoint` or intermediate `HoleTrap` sampling as an arrival-movement skip condition. The initial warp to `appearancePoint` may bypass `HoleTrap` target validation because this point is the airborne presentation start, not the final safe ground position.
+- Keep `PlayerCinematicProtection` and `PlayerTargetabilityBlocker` active until the true end of arrival presentation.
+- Play Mode validation must confirm the landing movement is visible, no pitfall starts during arrival, the player body collider restores, and the final landing position remains safe.
+
+## 2026-06-02 - Same-Scene Teleport Landing Start Particle Is Feature-Owned
+
+Decision:
+The same-scene teleport landing-start particle is authored directly on `RunSameSceneTeleportNpcFeature` as a local `SpawnedPresentationHook`. It spawns at the resolved `appearancePoint` after fade-in and before the appearance hold / movement to `landingPoint`.
+
+Reason:
+The particle timing belongs to this feature's arrival presentation rather than shared dialogue flow or scene transition fade. Keeping it feature-owned lets each teleport NPC tune its own start-point VFX without adding another manager, cue requirement, or scene runtime fallback.
+
+Implications:
+- Existing teleport NPC components gain a new serialized `landingStartParticle` field and need Unity Inspector/import review.
+- Empty `landingStartParticle` preserves existing behavior.
+- The spawned prefab should be visual-only; gameplay safety still comes from endpoint validation, cinematic protection, targetability blocking, and body collider suppression.
+- Play Mode validation must confirm particle sorting, scale, lifetime, position, and timing against fade-in / appearance hold / movement.
+
+## 2026-06-02 - Same-Scene Teleport Arrival Uses A Parabolic World-Y Arc
+
+Decision:
+The same-scene teleport movement from `appearancePoint` to `landingPoint` uses `moveToLandingArcHeight` with a quadratic `4h*t*(1-t)` world-Y offset. `moveToLandingCurve` remains the timing control for progress along that arc, and the endpoints stay exact.
+
+Reason:
+The arrival should read as a jump-like landing presentation. A direct position lerp can look like sliding even when fade, particle, and landing timing are correct.
+
+Implications:
+- Existing teleport NPC components gain a new serialized `moveToLandingArcHeight` field and need Unity import/Inspector review.
+- Play Mode validation must tune arc height, movement duration, and timing curve against camera framing, tile clearance, and landing readability.
+- Final landing safety validation remains endpoint-based; do not reintroduce intermediate ground-path `HoleTrap` checks for this airborne presentation.

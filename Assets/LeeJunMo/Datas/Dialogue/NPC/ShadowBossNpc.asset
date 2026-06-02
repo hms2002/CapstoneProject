@@ -59,8 +59,6 @@ MonoBehaviour:
       runEndReason: 0
       invert: 0
   dialogueTheme: {fileID: 11400000, guid: 3ef1664fdf0dac148a47091038acdfd9, type: 2}
-  affectionRewards:
-  - targetLevel: 2
-    effect: {fileID: 11400000, guid: 9de8ce10bc35dcc4b8303cf7c074028a, type: 2}
+  affectionRewards: []
   spriteLibraryAsset: {fileID: 7108339969198208228, guid: 11fe976bca44ca04996308bdbaf83e5c, type: 3}
   emoteOffset: {x: 75, y: 100}

@@ -221,6 +221,28 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: SlimeQueenP2Long_WaterPillarEffect_5
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 29
+        width: 22
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b7afd431fb241764b9a44a00c5bf859a
+      internalID: 1727744771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -240,6 +262,7 @@ TextureImporter:
       SlimeQueenP2Long_WaterPillarEffect_2: -3707753828500976001
       SlimeQueenP2Long_WaterPillarEffect_3: -4490927020296844420
       SlimeQueenP2Long_WaterPillarEffect_4: -5711735218883377551
+      SlimeQueenP2Long_WaterPillarEffect_5: 1727744771
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -6,6 +6,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class EndingOutroPlayer : MonoBehaviour
 {
+    private const float TypingSoundSkipFadeOutSeconds = 0.2f;
+
     [Header("Data")]
     [SerializeField] private EndingOutroSequenceSO sequence;
 
@@ -28,6 +30,8 @@ public sealed class EndingOutroPlayer : MonoBehaviour
     private bool skipHoldWasPressedByMouse;
     private bool skipOutroRequested;
     private float nextTypingSoundTime;
+    private bool typingStartSoundPlayed;
+    private AudioHandle typingSoundHandle;
     private int consumedAdvanceInputFrame = -1;
     private bool hasHiddenCursor;
 
@@ -86,6 +90,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
             playRoutine = null;
         }
 
+        StopTypingSoundImmediate();
         ResetInputState();
         ReleaseCursorHidden();
 
@@ -179,6 +184,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
             if (command == EndingOutroInputCommand.SkipOutro)
             {
                 skipOutroRequested = true;
+                FadeTypingSoundOnSkipRequest();
                 view.SetRootAlpha(targetAlpha);
                 yield break;
             }
@@ -201,12 +207,14 @@ public sealed class EndingOutroPlayer : MonoBehaviour
         text ??= string.Empty;
         view.SetText(string.Empty);
         nextTypingSoundTime = 0f;
+        typingStartSoundPlayed = false;
 
         float secondsPerCharacter = sequence.SecondsPerCharacter;
         bool textComplete = text.Length == 0;
         if (!textComplete && secondsPerCharacter <= 0f)
         {
             view.SetText(text);
+            TryPlayTypingSound();
             textComplete = true;
         }
 
@@ -228,6 +236,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
             if (command == EndingOutroInputCommand.SkipOutro)
             {
                 skipOutroRequested = true;
+                FadeTypingSoundOnSkipRequest();
                 view.SetText(text);
                 view.SetSlideAlpha(1f);
                 if (fadeSkipPromptWithSlide)
@@ -297,6 +306,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
             if (command == EndingOutroInputCommand.SkipOutro)
             {
                 skipOutroRequested = true;
+                FadeTypingSoundOnSkipRequest();
                 yield break;
             }
 
@@ -324,6 +334,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
             if (command == EndingOutroInputCommand.SkipOutro)
             {
                 skipOutroRequested = true;
+                FadeTypingSoundOnSkipRequest();
                 yield break;
             }
 
@@ -433,11 +444,30 @@ public sealed class EndingOutroPlayer : MonoBehaviour
 
     private void TryPlayTypingSound()
     {
-        if (!playTypingSound || Time.unscaledTime < nextTypingSoundTime)
+        if (!playTypingSound || typingStartSoundPlayed || Time.unscaledTime < nextTypingSoundTime)
             return;
 
-        TypingAudioUtility.PlayBossTalking(this, gameObject);
+        typingStartSoundPlayed = true;
+        typingSoundHandle = TypingAudioUtility.PlayIntroOutroPencil(this, gameObject);
         nextTypingSoundTime = Time.unscaledTime + Mathf.Max(0f, typingSoundInterval);
+    }
+
+    private void FadeTypingSoundOnSkipRequest()
+    {
+        if (!typingSoundHandle.IsValid)
+            return;
+
+        SoundPlaybackUtility.Stop(typingSoundHandle, TypingSoundSkipFadeOutSeconds);
+        typingSoundHandle = AudioHandle.Invalid;
+    }
+
+    private void StopTypingSoundImmediate()
+    {
+        if (!typingSoundHandle.IsValid)
+            return;
+
+        SoundPlaybackUtility.Stop(typingSoundHandle);
+        typingSoundHandle = AudioHandle.Invalid;
     }
 
     private void AcquireCursorHidden()

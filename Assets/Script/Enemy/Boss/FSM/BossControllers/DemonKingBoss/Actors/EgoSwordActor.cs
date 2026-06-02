@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityGAS;
 
 #if UNITY_EDITOR
@@ -15,12 +16,15 @@ public sealed class EgoSwordActor : MonoBehaviour
     private const string EgoSwordAuraStartStateName = "Start";
     private const string EgoSwordAuraIdleStateName = "Idle";
     private const string EgoSwordAuraEndStateName = "End";
+    private const float ThrowPlantSpeechSeconds = 1.1f;
+    private const float ThrowLoopFadeOutSeconds = 0.05f;
 
     private static readonly RaycastHit2D[] WallHitBuffer = new RaycastHit2D[8];
     private static readonly Color AttackSquareColor = new(1f, 0.85f, 0.2f, 0.62f);
 #if UNITY_EDITOR
     private static readonly Color HeldGizmoColor = new(0.25f, 0.85f, 1f, 1f);
     private static readonly Color ThrowGizmoColor = new(1f, 0.85f, 0.15f, 1f);
+    private static readonly Color SpeechGizmoColor = new(0.55f, 0.8f, 1f, 1f);
     private static readonly Color RecallGizmoColor = new(0.45f, 1f, 0.35f, 1f);
     private static readonly Color LaserGizmoColor = new(1f, 0.25f, 0.25f, 1f);
     private static readonly Color ImpactGizmoColor = new(1f, 0.45f, 0.1f, 1f);
@@ -43,6 +47,12 @@ public sealed class EgoSwordActor : MonoBehaviour
     [SerializeField] private Vector3 recallTargetLocalOffset = new(0.85f, 0.1f, 0f);
     [SerializeField] private float throwInitialRotation = 0f;
     [SerializeField] private float recallInitialRotation = 0f;
+
+    [Header("Speech")]
+    [FormerlySerializedAs("inactiveSpeechSocket")]
+    [SerializeField] private DemonKingVfxSocketId inactiveThrowSpeechSocket = DemonKingVfxSocketId.SwordThrowOrigin;
+    [SerializeField] private DemonKingVfxSocketId inactiveRecallSpeechSocket = DemonKingVfxSocketId.SwordThrowReturnOrigin;
+    [SerializeField] private Vector3 egoSwordSpeechOffsetDelta = new(-0.5f, -0.6f, 0f);
 
     [Header("Recall")]
     [SerializeField, Min(0f)] private float recallLiftHeight = 2.2f;
@@ -149,6 +159,7 @@ public sealed class EgoSwordActor : MonoBehaviour
     private bool subPatternAbilityRunning;
     private AbilitySpec activeSubPatternSpec;
     private SpriteAfterimageEmitter2D afterimageEmitter;
+    private AudioHandle throwLoopHandle;
 
     public bool IsHeld => state == SwordState.Held;
     public bool IsDropped => state == SwordState.Flying ||
@@ -157,6 +168,7 @@ public sealed class EgoSwordActor : MonoBehaviour
                              state == SwordState.Recalling ||
                              state == SwordState.CinematicPlanted;
     public bool IsRecallActive => state == SwordState.Recalling;
+    public Vector3 SpeechOffsetDelta => egoSwordSpeechOffsetDelta;
 
     private void Awake()
     {
@@ -181,6 +193,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         StopAfterimage(clearGhosts: true);
         StopRecallLiftRoutine();
         StopSwordSpinEffect();
+        StopThrowLoopSound();
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
@@ -235,7 +248,20 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     public Vector3 ResolveThrowSpeechAnchorPosition()
     {
-        return ResolveThrowOriginPosition();
+        if (gameObject.activeSelf && state != SwordState.Held)
+            return transform.position;
+
+        return ResolveInactiveThrowSpeechAnchorPosition();
+    }
+
+    public Vector3 ResolveInactiveThrowSpeechAnchorPosition()
+    {
+        return ResolveInactiveSpeechAnchorPosition(inactiveThrowSpeechSocket, throwOriginLocalOffset);
+    }
+
+    public Vector3 ResolveInactiveRecallSpeechAnchorPosition()
+    {
+        return ResolveInactiveSpeechAnchorPosition(inactiveRecallSpeechSocket, recallTargetLocalOffset);
     }
 
     public Vector3 ResolveRecallSpeechAnchorPosition()
@@ -243,7 +269,17 @@ public sealed class EgoSwordActor : MonoBehaviour
         if (gameObject.activeSelf)
             return transform.position;
 
-        return ResolveRecallTargetPosition();
+        return ResolveInactiveRecallSpeechAnchorPosition();
+    }
+
+    private Vector3 ResolveInactiveSpeechAnchorPosition(
+        DemonKingVfxSocketId socketId,
+        Vector2 fallbackLeftFacingLocalOffset)
+    {
+        if (owner != null)
+            return owner.ResolveVfxSocketWorld(socketId, fallbackLeftFacingLocalOffset);
+
+        return (Vector2)transform.position + fallbackLeftFacingLocalOffset;
     }
 
     public void HideWhileHeld()
@@ -251,6 +287,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         StopAfterimage(clearGhosts: true);
         StopRecallLiftRoutine();
         StopSwordSpinEffect();
+        StopThrowLoopSound();
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
@@ -284,6 +321,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         StopAfterimage(clearGhosts: true);
         StopRecallLiftRoutine();
         StopSwordSpinEffect();
+        StopThrowLoopSound();
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
@@ -302,12 +340,19 @@ public sealed class EgoSwordActor : MonoBehaviour
             gameObject.SetActive(false);
     }
 
-    public void Throw(Vector2 origin, Vector2 direction, float speed, int bounceCount, LayerMask newWallMask)
+    public void Throw(
+        Vector2 origin,
+        Vector2 direction,
+        float speed,
+        int bounceCount,
+        LayerMask newWallMask,
+        SoundRef throwLoopSound)
     {
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
 
         StopRecallLiftRoutine();
+        StopThrowLoopSound();
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
@@ -324,6 +369,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         PlayAuraStartAnimation(playIdleAfterStart: true);
         StartSwordSpinEffect();
         BeginAfterimage();
+        StartThrowLoopSound(throwLoopSound);
 
         if (remainingBounces <= 0)
             BeginPlantingAtCurrentPosition(velocityDirection);
@@ -671,6 +717,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         StopAfterimage(clearGhosts: true);
         StopRecallLiftRoutine();
         StopSwordSpinEffect();
+        StopThrowLoopSound();
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
@@ -725,6 +772,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         ClearBuriedMask();
         StopVerticalAuraAnimation();
         StopSwordSpinEffect();
+        StopThrowLoopSound();
         recallMovementActive = false;
 
         state = SwordState.Planting;
@@ -790,9 +838,24 @@ public sealed class EgoSwordActor : MonoBehaviour
             Vector2.down,
             "EgoSword_PlantImpactVfx");
         PlayPlantImpactShake();
+        if (startPatterns && isActiveAndEnabled)
+            SpeakThrowPlantLine();
+
         useCrossPatternNext = false;
         if (startPatterns && isActiveAndEnabled)
             StartDroppedPatterns();
+    }
+
+    private void SpeakThrowPlantLine()
+    {
+        if (owner == null || owner.IsDead || !owner.IsCombatActive)
+            return;
+
+        owner.TrySpeakPatternAt(
+            BossSpeechSituationEnum.EgoSwordThrowEgoSwordPlant,
+            ThrowPlantSpeechSeconds,
+            ResolveSpeechAnchorPosition,
+            egoSwordSpeechOffsetDelta);
     }
 
     private void PlayPlantImpactShake()
@@ -831,12 +894,12 @@ public sealed class EgoSwordActor : MonoBehaviour
         }
     }
 
-    public IEnumerator RunCrossLaserAbilityPattern(AbilitySpec spec)
+    public IEnumerator RunCrossLaserAbilityPattern(AbilitySpec spec, SoundRef laserFireSound)
     {
         BeginSubPatternAbility(spec);
         try
         {
-            yield return RunCrossPattern(spec);
+            yield return RunCrossPattern(spec, laserFireSound);
         }
         finally
         {
@@ -948,19 +1011,29 @@ public sealed class EgoSwordActor : MonoBehaviour
                spec != null && spec.Token != null && spec.Token.IsCancelled;
     }
 
-    private IEnumerator RunCrossPattern(AbilitySpec spec)
+    private IEnumerator RunCrossPattern(AbilitySpec spec, SoundRef laserFireSound)
     {
         if (IsSubPatternCancelled(spec))
             yield break;
 
-        yield return RunLaserPair(Vector2.right, Vector2.up, spec);
+        yield return RunLaserPair(Vector2.right, Vector2.up, spec, laserFireSound, playFireSound: true);
         if (IsSubPatternCancelled(spec))
             yield break;
 
-        yield return RunLaserPair(new Vector2(1f, 1f).normalized, new Vector2(1f, -1f).normalized, spec);
+        yield return RunLaserPair(
+            new Vector2(1f, 1f).normalized,
+            new Vector2(1f, -1f).normalized,
+            spec,
+            laserFireSound,
+            playFireSound: true);
     }
 
-    private IEnumerator RunLaserPair(Vector2 firstDirection, Vector2 secondDirection, AbilitySpec spec)
+    private IEnumerator RunLaserPair(
+        Vector2 firstDirection,
+        Vector2 secondDirection,
+        AbilitySpec spec,
+        SoundRef laserFireSound,
+        bool playFireSound)
     {
         if (IsSubPatternCancelled(spec))
             yield break;
@@ -995,6 +1068,9 @@ public sealed class EgoSwordActor : MonoBehaviour
             StopAuraTransitionRoutine();
             PlayAuraIdleAnimation();
         }
+
+        if (playFireSound)
+            PlayActorSound(laserFireSound, laserOrigin);
 
         DemonKingEgoLaserVfx[] firstLaserVfx = SpawnLaserLineVfx(firstAttackLine, attackSeconds);
         DemonKingEgoLaserVfx[] secondLaserVfx = SpawnLaserLineVfx(secondAttackLine, attackSeconds);
@@ -1415,6 +1491,30 @@ public sealed class EgoSwordActor : MonoBehaviour
             target: owner.CurrentTarget != null ? owner.CurrentTarget.gameObject : null,
             position: position,
             sourceObject: this);
+    }
+
+    private void StartThrowLoopSound(SoundRef sound)
+    {
+        StopThrowLoopSound();
+        if (owner == null || !sound.IsSet)
+            return;
+
+        throwLoopHandle = SoundPlaybackUtility.Play(
+            sound,
+            instigator: owner.gameObject,
+            causer: gameObject,
+            target: owner.CurrentTarget != null ? owner.CurrentTarget.gameObject : null,
+            position: transform.position,
+            sourceObject: this);
+    }
+
+    private void StopThrowLoopSound()
+    {
+        if (!throwLoopHandle.IsValid)
+            return;
+
+        SoundPlaybackUtility.Stop(throwLoopHandle, ThrowLoopFadeOutSeconds);
+        throwLoopHandle = AudioHandle.Invalid;
     }
 
     private void CacheBaseSwordRenderers()
@@ -1995,6 +2095,8 @@ public sealed class EgoSwordActor : MonoBehaviour
 
         DrawOffsetPoint("Held", ResolveEditorOwnerOffsetPosition(resolvedOwner, heldOffset), ownerPosition, HeldGizmoColor);
         DrawOffsetPoint("Throw Origin", ResolveEditorSocketPosition(resolvedOwner, DemonKingVfxSocketId.SwordThrowOrigin, throwOriginLocalOffset), ownerPosition, ThrowGizmoColor);
+        DrawOffsetPoint("Inactive Throw Speech", ResolveEditorSocketPosition(resolvedOwner, inactiveThrowSpeechSocket, throwOriginLocalOffset), ownerPosition, SpeechGizmoColor);
+        DrawOffsetPoint("Inactive Recall Speech", ResolveEditorSocketPosition(resolvedOwner, inactiveRecallSpeechSocket, recallTargetLocalOffset), ownerPosition, SpeechGizmoColor);
         DrawOffsetPoint("Recall Target", ResolveEditorSocketPosition(resolvedOwner, DemonKingVfxSocketId.SwordThrowReturnOrigin, recallTargetLocalOffset), ownerPosition, RecallGizmoColor);
         DrawLaserOffsetGizmo();
         DrawImpactGizmo();

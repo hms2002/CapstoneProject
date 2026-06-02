@@ -13,6 +13,13 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public sealed class RunSpecialNpcChoicePresenter : MonoBehaviour
 {
+    private static readonly string[] ChoiceNavGlyphNames =
+    {
+        "KeyNav",
+        "Nav KeyGlyph",
+        "KeyGlyph",
+    };
+
     [Header("Authored UI References")]
     [SerializeField] private CanvasGroup rootGroup;
     [SerializeField] private Button[] choiceButtons = Array.Empty<Button>();
@@ -174,13 +181,108 @@ public sealed class RunSpecialNpcChoicePresenter : MonoBehaviour
             return;
 
         DialogueChoiceKeyGlyph keyGlyph = button.GetComponent<DialogueChoiceKeyGlyph>();
-        if (keyGlyph == null)
+        if (keyGlyph != null)
+        {
+            if (visible)
+                keyGlyph.Bind(index);
+            else
+                keyGlyph.Hide();
+
+            return;
+        }
+
+        Image navGlyphImage = ResolveChoiceNavGlyphImage(button);
+        if (navGlyphImage == null)
             return;
 
-        if (visible)
-            keyGlyph.Bind(index);
-        else
-            keyGlyph.Hide();
+        if (!visible || !TryGetChoiceNumberKey(index, out KeyCode key))
+        {
+            HideChoiceNavGlyph(navGlyphImage);
+            return;
+        }
+
+        InputGlyphPresentation glyph = InputGlyphDatabase.Resolve(key);
+        InputGlyphVisualUtility.Apply(null, navGlyphImage, glyph, (index + 1).ToString());
+        navGlyphImage.raycastTarget = false;
+    }
+
+    private static Image ResolveChoiceNavGlyphImage(Button button)
+    {
+        if (button == null)
+            return null;
+
+        Image image = ResolveNamedGlyphImage(button.transform);
+        if (image != null)
+            return image;
+
+        Transform parent = button.transform.parent;
+        return parent != null ? ResolveNamedGlyphImage(parent) : null;
+    }
+
+    private static Image ResolveNamedGlyphImage(Transform root)
+    {
+        if (root == null)
+            return null;
+
+        for (int i = 0; i < ChoiceNavGlyphNames.Length; i++)
+        {
+            Transform named = root.Find(ChoiceNavGlyphNames[i]);
+            Image image = ResolveGlyphImage(named);
+            if (image != null)
+                return image;
+        }
+
+        Image[] images = root.GetComponentsInChildren<Image>(true);
+        for (int i = 0; i < images.Length; i++)
+        {
+            Image image = images[i];
+            if (image != null && IsChoiceNavGlyphName(image.name))
+                return image;
+        }
+
+        return null;
+    }
+
+    private static Image ResolveGlyphImage(Transform glyphRoot)
+    {
+        if (glyphRoot == null)
+            return null;
+
+        Image image = glyphRoot.GetComponent<Image>();
+        return image != null ? image : glyphRoot.GetComponentInChildren<Image>(true);
+    }
+
+    private static bool IsChoiceNavGlyphName(string objectName)
+    {
+        for (int i = 0; i < ChoiceNavGlyphNames.Length; i++)
+        {
+            if (string.Equals(objectName, ChoiceNavGlyphNames[i], StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryGetChoiceNumberKey(int index, out KeyCode key)
+    {
+        key = index switch
+        {
+            0 => KeyCode.Alpha1,
+            1 => KeyCode.Alpha2,
+            2 => KeyCode.Alpha3,
+            _ => KeyCode.None,
+        };
+
+        return key != KeyCode.None;
+    }
+
+    private static void HideChoiceNavGlyph(Image navGlyphImage)
+    {
+        if (navGlyphImage == null)
+            return;
+
+        navGlyphImage.enabled = false;
+        navGlyphImage.gameObject.SetActive(false);
     }
 
     private void EnsureButtonHandlers()

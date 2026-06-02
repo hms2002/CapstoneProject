@@ -53,7 +53,7 @@ public sealed class RunSpecialNpcLine
 [Serializable]
 public sealed class RunSpecialNpcChoiceDefinition
 {
-    [SerializeField] private string label = "Choice";
+    [SerializeField, TextArea] private string label = "Choice";
     [SerializeField] private bool hideWhenActionUnavailable;
     [SerializeField] private RunSpecialNpcChoiceAction action;
     [SerializeField] private RunSpecialNpcLine[] responseLines = Array.Empty<RunSpecialNpcLine>();
@@ -158,7 +158,7 @@ public sealed class RunSpecialNpcDialogueBranchDefinition
 [Serializable]
 public sealed class RunSpecialNpcChoice
 {
-    [SerializeField] private string label = "Choice";
+    [SerializeField, TextArea] private string label = "Choice";
     [SerializeField] private bool hideWhenFeatureUnavailable;
     [SerializeField] private RunSpecialNpcLine[] responseLines = Array.Empty<RunSpecialNpcLine>();
     [SerializeField] private RunSpecialNpcFeatureBase feature;

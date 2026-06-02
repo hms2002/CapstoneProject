@@ -74,11 +74,7 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
 
     private void Update()
     {
-        int oldCount = trackedMonsterUnits.Count;
-        CompactDeadEntries();
-
-        if (oldCount != trackedMonsterUnits.Count)
-            RecalculateState(raiseEvents: true);
+        RecalculateState(raiseEvents: true);
     }
 
     /// <summary>
@@ -126,7 +122,6 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
             return 0;
 
         results.Clear();
-        CompactDeadEntries();
 
         for (int i = 0; i < trackedMonsterUnits.Count; i++)
         {

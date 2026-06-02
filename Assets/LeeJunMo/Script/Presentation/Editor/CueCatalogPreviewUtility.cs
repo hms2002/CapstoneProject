@@ -43,6 +43,7 @@ namespace CapstonePresentation.EditorTools
         }
 
         private static readonly List<PreviewInstance> activeInstances = new();
+        private static readonly List<AudioClip> soundPreviewClips = new();
         private static PreviewRenderUtility previewUtility;
         private static PresentationCueSO currentCue;
         private static UnityEngine.Object currentOwner;
@@ -624,6 +625,21 @@ namespace CapstonePresentation.EditorTools
                 AudioCatalogSO catalog = catalogs[i];
                 if (catalog == null || !catalog.TryGetEntry(sound.key, out AudioCatalogEntry entry) || entry == null)
                     continue;
+
+                if (entry.UsesSimultaneousOneShotPlayback)
+                {
+                    if (!entry.TryGetPlayableClips(soundPreviewClips))
+                        return false;
+
+                    AudioCatalogPreviewUtility.PlayVariants(
+                        soundPreviewClips,
+                        Mathf.Clamp01(entry.volume * sound.EffectiveVolumeMultiplier),
+                        entry.playbackSpeed,
+                        entry.pitchMin,
+                        entry.pitchMax);
+                    soundPreviewClips.Clear();
+                    return true;
+                }
 
                 if (!entry.TryPickClip(out AudioClip clip) || clip == null)
                     return false;

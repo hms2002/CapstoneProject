@@ -78,7 +78,7 @@ MonoBehaviour:
   contactLifetimeRange: {x: 0.12, y: 0.26}
   contactSizeMultiplierRange: {x: 1.4, y: 2.7}
   contactSpeedRange: {x: 0.08, y: 0.35}
-  contactColor: {r: 0.39607847, g: 0.454902, b: 0.5686275, a: 1}
+  contactColor: {r: 0.39607847, g: 0.454902, b: 0.5686275, a: 0}
   contactInheritFragmentColor: 0.25
 --- !u!1 &5077258862668806428
 GameObject:
@@ -1380,7 +1380,7 @@ ParticleSystem:
         m_RotationOrder: 4
     separateAxes: 0
   ColorModule:
-    enabled: 1
+    enabled: 0
     gradient:
       serializedVersion: 2
       minMaxState: 1

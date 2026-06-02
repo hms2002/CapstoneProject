@@ -194,7 +194,6 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
 {
     private static readonly RaycastHit2D[] WallHitBuffer = new RaycastHit2D[12];
     protected static readonly Color AttackSquareColor = new(1f, 0.75f, 0.15f, 0.55f);
-    protected static readonly Vector3 EgoSwordSpeechOffsetDelta = new(-0.5f, -0.6f, 0f);
 
     [System.Serializable]
     public struct JumpMotionProfile
@@ -1678,7 +1677,6 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
     private const float ThrowPreReleaseSpeechInstantSeconds = 0.05f;
     private const float ThrowPreReleaseSpeechMinSeconds = 0.35f;
     private const float ThrowPreReleaseSpeechMaxSeconds = 1.1f;
-    private const float ThrowReleaseSpeechSeconds = 1.1f;
 
     [SerializeField, Min(0f)] private float warningSeconds = 1.4f;
     [SerializeField, Min(0.01f)] private float aimWarningWidth = 0.22f;
@@ -1686,6 +1684,8 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
     [SerializeField, Min(0.1f)] private float throwSpeedMultiplier = 5f;
     [SerializeField, Min(0)] private int wallBounceCount = 5;
     [SerializeField, Min(0f)] private float throwEndPoseHoldSeconds = 0.12f;
+    [SerializeField, Min(0f)] private float throwReactionDelaySeconds = 0f;
+    [SerializeField, Min(0.01f)] private float throwReleaseSpeechSeconds = 1.1f;
     [SerializeField] private bool rotateReleaseSpeechWithSword;
     [SerializeField] private DemonKingBodyAnimationRef aimAnimation =
         DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordIdleState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
@@ -1694,6 +1694,7 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
     [SerializeField] private DemonKingBodyAnimationRef throwEndPoseAnimation =
         DemonKingBodyAnimationRef.State(DemonKingController.DarkLordSwordThrowingState, DemonKingBodyFrameSampleMode.HoldLastFrame);
     [SerializeField] private SoundRef throwReleaseSound;
+    [SerializeField] private SoundRef throwLoopSound;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -1726,12 +1727,7 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
 
             float preReleaseSpeechSeconds = ResolvePreReleaseSpeechDuration(releaseDelaySeconds);
             SpeakPattern(demon, BossSpeechSituationEnum.DemonKingThrowEgoSword, preReleaseSpeechSeconds);
-            SpeakPatternAt(
-                demon,
-                BossSpeechSituationEnum.EgoSwordThrowEgoSword,
-                sword.ResolveThrowSpeechAnchorPosition,
-                EgoSwordSpeechOffsetDelta,
-                preReleaseSpeechSeconds);
+            SpeakThrowReaction(demon, sword, spec, preReleaseSpeechSeconds);
 
             AttackTelegraphView aimWarning = releaseDelaySeconds > 0f
                 ? ShowLineWarning(
@@ -1771,7 +1767,13 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
             Vector2 direction = demon.GetDirectionToTargetOrFacing(origin);
 
             PlayPatternSound(demon, throwReleaseSound, origin, this);
-            sword.Throw(origin, direction, demon.PlayerMoveSpeedReference * throwSpeedMultiplier, wallBounceCount, demon.WallMask);
+            sword.Throw(
+                origin,
+                direction,
+                demon.PlayerMoveSpeedReference * throwSpeedMultiplier,
+                wallBounceCount,
+                demon.WallMask,
+                throwLoopSound);
             if (rotateReleaseSpeechWithSword)
             {
                 SpeakPatternAt(
@@ -1779,8 +1781,8 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
                     BossSpeechSituationEnum.EgoSwordThrowEgoSwordRelease,
                     sword.ResolveSpeechAnchorPosition,
                     sword.ResolveSpeechAnchorRotation,
-                    EgoSwordSpeechOffsetDelta,
-                    ThrowReleaseSpeechSeconds);
+                    sword.SpeechOffsetDelta,
+                    throwReleaseSpeechSeconds);
             }
             else
             {
@@ -1788,8 +1790,8 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
                     demon,
                     BossSpeechSituationEnum.EgoSwordThrowEgoSwordRelease,
                     sword.ResolveSpeechAnchorPosition,
-                    EgoSwordSpeechOffsetDelta,
-                    ThrowReleaseSpeechSeconds);
+                    sword.SpeechOffsetDelta,
+                    throwReleaseSpeechSeconds);
             }
 
             demon.SetSwordDropped();
@@ -1803,6 +1805,76 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
         {
             demon.PopFaceTargetLock();
         }
+    }
+
+    private void SpeakThrowReaction(
+        DemonKingController demon,
+        EgoSwordActor sword,
+        AbilitySpec spec,
+        float preReleaseSpeechSeconds)
+    {
+        float delaySeconds = Mathf.Max(0f, throwReactionDelaySeconds);
+        if (delaySeconds <= 0f)
+        {
+            SpeakPatternAt(
+                demon,
+                BossSpeechSituationEnum.EgoSwordThrowEgoSword,
+                sword.ResolveThrowSpeechAnchorPosition,
+                sword.SpeechOffsetDelta,
+                preReleaseSpeechSeconds);
+            return;
+        }
+
+        demon.StartCoroutine(RunDelayedThrowReactionSpeech(
+            demon,
+            sword,
+            spec,
+            preReleaseSpeechSeconds,
+            delaySeconds));
+    }
+
+    private IEnumerator RunDelayedThrowReactionSpeech(
+        DemonKingController demon,
+        EgoSwordActor sword,
+        AbilitySpec spec,
+        float preReleaseSpeechSeconds,
+        float delaySeconds)
+    {
+        float elapsed = 0f;
+        while (elapsed < delaySeconds)
+        {
+            if (!CanContinueThrowReactionSpeech(demon, sword, spec))
+                yield break;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        if (!CanContinueThrowReactionSpeech(demon, sword, spec))
+            yield break;
+
+        float duration = preReleaseSpeechSeconds - delaySeconds;
+        if (duration <= 0f)
+            yield break;
+
+        SpeakPatternAt(
+            demon,
+            BossSpeechSituationEnum.EgoSwordThrowEgoSword,
+            sword.ResolveThrowSpeechAnchorPosition,
+            sword.SpeechOffsetDelta,
+            Mathf.Max(ThrowPreReleaseSpeechInstantSeconds, duration));
+    }
+
+    private static bool CanContinueThrowReactionSpeech(
+        DemonKingController demon,
+        EgoSwordActor sword,
+        AbilitySpec spec)
+    {
+        return demon != null &&
+               sword != null &&
+               !demon.IsDead &&
+               !demon.HasDeadTag() &&
+               !IsAbilityCancelled(spec);
     }
 
     private static float ResolvePreReleaseSpeechDuration(float releaseDelaySeconds)
@@ -2664,12 +2736,12 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
 
 public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
 {
-    private const float RecallSpeechStepIntervalSeconds = 0.45f;
-    private const float RecallSpeechDurationSeconds = 0.85f;
-
     [SerializeField, Min(0.1f)] private float recallSpeedMultiplier = 5f;
     [SerializeField, Min(0.1f)] private float timeoutSeconds = 2.5f;
     [SerializeField, Min(0f)] private float recoverEndPoseHoldSeconds = 0.16f;
+    [SerializeField, Min(0f)] private float postRecallPatternDelaySeconds = 0.6f;
+    [SerializeField, Min(0f)] private float recallSpeechStepIntervalSeconds = 0.45f;
+    [SerializeField, Min(0.01f)] private float recallSpeechDurationSeconds = 0.85f;
     [SerializeField] private DemonKingBodyAnimationRef recoverAnimation =
         DemonKingBodyAnimationRef.State(DemonKingController.DarkLordHandSwordRecoverState, DemonKingBodyFrameSampleMode.HoldFirstFrame);
     [SerializeField] private DemonKingBodyAnimationRef recoverCompleteAnimation =
@@ -2715,6 +2787,9 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
             yield return WaitForSecondsUnlessCancelled(
                 Mathf.Max(finalFrameSeconds, recoverEndPoseHoldSeconds),
                 spec);
+
+            if (postRecallPatternDelaySeconds > 0f)
+                yield return WaitForSecondsUnlessCancelled(postRecallPatternDelaySeconds, spec);
         }
         finally
         {
@@ -2727,7 +2802,8 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
         if (!CanContinueRecallSpeechSequence(demon, spec))
             yield break;
 
-        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingRecallEgoSword, RecallSpeechDurationSeconds);
+        float speechDuration = Mathf.Max(0.01f, recallSpeechDurationSeconds);
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingRecallEgoSword, speechDuration);
 
         yield return WaitForRecallSpeechStep(demon, spec);
         if (!CanContinueRecallSpeechSequence(demon, spec) || sword == null)
@@ -2737,14 +2813,14 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
             demon,
             BossSpeechSituationEnum.EgoSwordRecallEgoSword,
             sword.ResolveRecallSpeechAnchorPosition,
-            EgoSwordSpeechOffsetDelta,
-            RecallSpeechDurationSeconds);
+            sword.SpeechOffsetDelta,
+            speechDuration);
 
         yield return WaitForRecallSpeechStep(demon, spec);
         if (!CanContinueRecallSpeechSequence(demon, spec) || sword == null)
             yield break;
 
-        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingRecallEgoSwordRetort, RecallSpeechDurationSeconds);
+        SpeakPattern(demon, BossSpeechSituationEnum.DemonKingRecallEgoSwordRetort, speechDuration);
 
         yield return WaitForRecallSpeechStep(demon, spec);
         if (!CanContinueRecallSpeechSequence(demon, spec) || sword == null)
@@ -2754,14 +2830,15 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
             demon,
             BossSpeechSituationEnum.EgoSwordRecallEgoSwordRetort,
             sword.ResolveRecallSpeechAnchorPosition,
-            EgoSwordSpeechOffsetDelta,
-            RecallSpeechDurationSeconds);
+            sword.SpeechOffsetDelta,
+            speechDuration);
     }
 
     private IEnumerator WaitForRecallSpeechStep(DemonKingController demon, AbilitySpec spec)
     {
+        float intervalSeconds = Mathf.Max(0f, recallSpeechStepIntervalSeconds);
         float elapsed = 0f;
-        while (elapsed < RecallSpeechStepIntervalSeconds)
+        while (elapsed < intervalSeconds)
         {
             if (!CanContinueRecallSpeechSequence(demon, spec))
                 yield break;
@@ -2794,7 +2871,7 @@ public class AbilityLogic_DemonKingEgoSwordVerticalStrike : AbilityLogic_DemonKi
             demon,
             BossSpeechSituationEnum.EgoSwordVerticalStrike,
             sword.ResolveSpeechAnchorPosition,
-            EgoSwordSpeechOffsetDelta);
+            sword.SpeechOffsetDelta);
 
         yield return sword.RunVerticalStrikeAbilityPattern(spec);
     }
@@ -2802,6 +2879,8 @@ public class AbilityLogic_DemonKingEgoSwordVerticalStrike : AbilityLogic_DemonKi
 
 public class AbilityLogic_DemonKingEgoSwordCrossLaser : AbilityLogic_DemonKingBase
 {
+    [SerializeField] private SoundRef laserFireSound;
+
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
         DemonKingController demon = GetDemonKing(system);
@@ -2814,9 +2893,9 @@ public class AbilityLogic_DemonKingEgoSwordCrossLaser : AbilityLogic_DemonKingBa
             demon,
             BossSpeechSituationEnum.EgoSwordCrossLaser,
             sword.ResolveSpeechAnchorPosition,
-            EgoSwordSpeechOffsetDelta);
+            sword.SpeechOffsetDelta);
 
-        yield return sword.RunCrossLaserAbilityPattern(spec);
+        yield return sword.RunCrossLaserAbilityPattern(spec, laserFireSound);
     }
 }
 
@@ -3210,6 +3289,9 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
     [SerializeField, Min(0f)] private float counterEndPoseHoldSeconds = 0.12f;
     [SerializeField, Min(0f)] private float minimumImpactPoseHoldSeconds = 0.5f;
     [SerializeField] private SoundRef warningPingSound;
+    [SerializeField] private SoundRef swordCounterImpactSound;
+    [SerializeField] private SoundRef handCounterImpactSound;
+    [HideInInspector]
     [SerializeField] private SoundRef counterImpactSound;
     [SerializeField] private CameraShakeHook counterImpactCameraShake = CameraShakeHook.Create(0.2f, 1f, 0.38f, 0.04f);
 
@@ -3221,6 +3303,7 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
 
         SpeakPattern(demon, BossSpeechSituationEnum.DemonKingGroggyRecoverCounter);
 
+        bool swordCounterBranch = IsSwordCounterBranch(demon);
         GroggyCounterBranchVisual branchVisual = ResolveBranchVisual(demon);
         string groggyFallbackState = ResolveGroggyFallbackState(demon);
         string counterFallbackState = demon.ResolveGroggyCounterAnimationState();
@@ -3264,7 +3347,7 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
             if (IsAbilityCancelled(spec))
                 yield break;
 
-            yield return PlayCounterImpact(demon, branchVisual, counterFallbackState, spec);
+            yield return PlayCounterImpact(demon, branchVisual, counterFallbackState, swordCounterBranch, spec);
         }
         finally
         {
@@ -3278,6 +3361,7 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
         DemonKingController demon,
         GroggyCounterBranchVisual branchVisual,
         string counterFallbackState,
+        bool swordCounterBranch,
         AbilitySpec spec)
     {
         string counterState = ResolveBodyStateName(branchVisual.CounterAnimation, counterFallbackState);
@@ -3321,7 +3405,7 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
             explosionDiameter,
             damage,
             knockback,
-            counterImpactSound,
+            ResolveCounterImpactSound(swordCounterBranch),
             counterImpactCameraShake,
             this,
             "DemonKing.GroggyRecoverCounterImpact");
@@ -3336,7 +3420,7 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
 
     private GroggyCounterBranchVisual ResolveBranchVisual(DemonKingController demon)
     {
-        bool swordHeld = demon != null && demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold;
+        bool swordHeld = IsSwordCounterBranch(demon);
         GroggyCounterBranchVisual branch = swordHeld ? swordVisual : handVisual;
         if (!string.IsNullOrWhiteSpace(branch.CounterAnimation.StateName)
             || branch.CounterImpactVfx.FallbackKind != DemonKingBuiltInVfxKind.None)
@@ -3347,6 +3431,17 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
         return swordHeld
             ? GroggyCounterBranchVisual.SwordDefault()
             : GroggyCounterBranchVisual.HandDefault();
+    }
+
+    private SoundRef ResolveCounterImpactSound(bool swordCounterBranch)
+    {
+        SoundRef branchSound = swordCounterBranch ? swordCounterImpactSound : handCounterImpactSound;
+        return branchSound.IsSet ? branchSound : counterImpactSound;
+    }
+
+    private static bool IsSwordCounterBranch(DemonKingController demon)
+    {
+        return demon != null && demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold;
     }
 
     private static string ResolveGroggyFallbackState(DemonKingController demon)

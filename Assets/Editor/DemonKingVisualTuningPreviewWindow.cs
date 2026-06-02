@@ -902,8 +902,34 @@ internal sealed class DemonKingVisualTuningPreviewWindow : EditorWindow
             else
             {
                 EditorGUILayout.LabelField("Source", selectedEgoSword.name);
+                DrawSelectedEgoSwordSpeechOffset();
             }
         }
+    }
+
+    private void DrawSelectedEgoSwordSpeechOffset()
+    {
+        if (selectedEgoSword == null)
+            return;
+
+        SerializedObject serializedSword = new(selectedEgoSword);
+        serializedSword.Update();
+        SerializedProperty speechOffsetProperty = serializedSword.FindProperty("egoSwordSpeechOffsetDelta");
+        if (speechOffsetProperty == null)
+            return;
+
+        EditorGUI.BeginChangeCheck();
+        EditorGUILayout.PropertyField(
+            speechOffsetProperty,
+            new GUIContent("Speech Offset Delta"));
+        if (!EditorGUI.EndChangeCheck())
+            return;
+
+        Undo.RecordObject(selectedEgoSword, "Tune EgoSword Speech Offset");
+        serializedSword.ApplyModifiedProperties();
+        MarkEditedObjectDirty(selectedEgoSword);
+        patternPreviewNeedsRebuild = true;
+        RestartPreview();
     }
 
     private DemonKingPatternPreviewDefinition CreatePatternPreviewDefinition(SerializedObject serializedAsset)
@@ -4491,7 +4517,7 @@ internal sealed class DemonKingPatternPreviewDefinition
             "ThrowEgoSword",
             "Sword throw warning, DarkLord_Sword_Throwing frame timing, then EgoSword appears from the throw origin.");
         definition.PreferEgoSword();
-        definition.AddGroup("Timing", "warningSeconds", "throwReleaseDelaySeconds", "throwSpeedMultiplier", "wallBounceCount", "throwEndPoseHoldSeconds");
+        definition.AddGroup("Timing", "warningSeconds", "throwReleaseDelaySeconds", "throwReactionDelaySeconds", "throwReleaseSpeechSeconds", "throwSpeedMultiplier", "wallBounceCount", "throwEndPoseHoldSeconds");
         definition.AddGroup("Animation", "aimAnimation", "throwAnimation", "throwEndPoseAnimation");
         definition.AddGroup("SFX / Shake", "throwReleaseSound");
         definition.AddMapping("Aim Body", bodyPropertyPath: "aimAnimation");
@@ -4660,7 +4686,7 @@ internal sealed class DemonKingPatternPreviewDefinition
             "RecallEgoSword",
             "SwordRecover first frame is held while EgoSword lifts like VerticalStrike, then returns to the DemonKing socket with spin VFX.");
         definition.PreferEgoSword();
-        definition.AddGroup("Timing", "recallSpeedMultiplier", "timeoutSeconds", "recoverEndPoseHoldSeconds");
+        definition.AddGroup("Timing", "recallSpeedMultiplier", "timeoutSeconds", "recoverEndPoseHoldSeconds", "postRecallPatternDelaySeconds", "recallSpeechStepIntervalSeconds", "recallSpeechDurationSeconds");
         definition.AddGroup("Animation", "recoverAnimation", "recoverCompleteAnimation");
         definition.AddGroup("SFX / Shake", "recallStartSound", "recallCompleteSound");
         definition.AddMapping("Recover Body Clip", bodyPropertyPath: "recoverAnimation");
@@ -4697,6 +4723,9 @@ internal sealed class DemonKingPatternPreviewDefinition
         AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Complete", "Recover final frame", Float(serializedObject, "recoverEndPoseHoldSeconds", 0.16f))
             .WithBody(BodyName(serializedObject, "recoverCompleteAnimation", "DarkLord_Hand_SwordRecover"), BodyFrame(serializedObject, "recoverCompleteAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "recoverCompleteAnimation")
             .WithPolicy("Final frame shows the sword returned before sword idle recovery."));
+        AddPhase(definition, ref time, new DemonKingPatternPreviewPhase("Post Recall Delay", "Delay before next pattern", Float(serializedObject, "postRecallPatternDelaySeconds", 0.6f))
+            .WithBody(BodyName(serializedObject, "recoverCompleteAnimation", "DarkLord_Hand_SwordRecover"), BodyFrame(serializedObject, "recoverCompleteAnimation", DemonKingPatternPreviewPhase.LastBodyFrameIndex), "recoverCompleteAnimation")
+            .WithPolicy("Ability remains active briefly so the next DemonKing pattern does not start immediately after recall."));
         return definition;
     }
 

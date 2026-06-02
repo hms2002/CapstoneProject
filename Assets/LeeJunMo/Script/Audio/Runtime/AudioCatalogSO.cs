@@ -26,12 +26,20 @@ namespace CapstoneAudio
         Music
     }
 
+    public enum AudioVariantPlaybackMode
+    {
+        Random = 0,
+        First = 1,
+        Simultaneous = 2
+    }
+
     [Serializable]
     public sealed class AudioCatalogEntry
     {
         public string key;
         public AudioBus bus = AudioBus.Sfx;
         public AudioCategory category = AudioCategory.Other;
+        public AudioVariantPlaybackMode variantPlaybackMode = AudioVariantPlaybackMode.Random;
         public AudioClip[] variants;
 
         [Range(0f, 1f)]
@@ -76,11 +84,23 @@ namespace CapstoneAudio
             }
         }
 
+        public bool UsesSimultaneousOneShotPlayback =>
+            variantPlaybackMode == AudioVariantPlaybackMode.Simultaneous &&
+            bus == AudioBus.Sfx &&
+            !loop;
+
+        public bool HasUnsupportedSimultaneousPlayback =>
+            variantPlaybackMode == AudioVariantPlaybackMode.Simultaneous &&
+            !UsesSimultaneousOneShotPlayback;
+
         public bool TryPickClip(out AudioClip clip)
         {
             clip = null;
             if (!HasPlayableClip)
                 return false;
+
+            if (variantPlaybackMode == AudioVariantPlaybackMode.First)
+                return TryPickFirstClip(out clip);
 
             int startIndex = UnityEngine.Random.Range(0, variants.Length);
             for (int i = 0; i < variants.Length; i++)
@@ -90,6 +110,42 @@ namespace CapstoneAudio
                     continue;
 
                 clip = variants[index];
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool TryGetPlayableClips(List<AudioClip> clips)
+        {
+            if (clips == null)
+                return false;
+
+            clips.Clear();
+            if (variants == null || variants.Length == 0)
+                return false;
+
+            for (int i = 0; i < variants.Length; i++)
+            {
+                if (variants[i] != null)
+                    clips.Add(variants[i]);
+            }
+
+            return clips.Count > 0;
+        }
+
+        private bool TryPickFirstClip(out AudioClip clip)
+        {
+            clip = null;
+            if (variants == null || variants.Length == 0)
+                return false;
+
+            for (int i = 0; i < variants.Length; i++)
+            {
+                if (variants[i] == null)
+                    continue;
+
+                clip = variants[i];
                 return true;
             }
 
@@ -108,6 +164,21 @@ namespace CapstoneAudio
         public float PickAudioSourcePitch()
         {
             return PickPitch() * Mathf.Max(0.1f, playbackSpeed);
+        }
+
+        public float ResolvePitch(float normalizedRoll)
+        {
+            float min = Mathf.Min(pitchMin, pitchMax);
+            float max = Mathf.Max(pitchMin, pitchMax);
+            if (Mathf.Approximately(min, max))
+                return min;
+
+            return Mathf.Lerp(min, max, Mathf.Clamp01(normalizedRoll));
+        }
+
+        public float ResolveAudioSourcePitch(float normalizedRoll)
+        {
+            return ResolvePitch(normalizedRoll) * Mathf.Max(0.1f, playbackSpeed);
         }
 
         public void Normalize()
@@ -129,6 +200,9 @@ namespace CapstoneAudio
 
             if (playbackSpeed <= 0f)
                 playbackSpeed = 1f;
+
+            if (!Enum.IsDefined(typeof(AudioVariantPlaybackMode), variantPlaybackMode))
+                variantPlaybackMode = AudioVariantPlaybackMode.Random;
 
             if (maxDistance < minDistance)
                 maxDistance = minDistance;

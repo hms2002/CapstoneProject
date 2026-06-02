@@ -39,7 +39,8 @@ public enum BossSpeechSituationEnum
     EgoSwordCrossLaser,
     EgoSwordThrowEgoSwordRelease,
     DemonKingRecallEgoSwordRetort,
-    EgoSwordRecallEgoSwordRetort
+    EgoSwordRecallEgoSwordRetort,
+    EgoSwordThrowEgoSwordPlant
 }
 
 [System.Serializable]

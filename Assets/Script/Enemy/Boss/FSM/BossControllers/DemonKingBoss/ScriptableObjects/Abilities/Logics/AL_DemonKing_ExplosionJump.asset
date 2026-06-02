@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   travelSeconds: 0.7
   impactDiameter: 3.2
-  damage: 2
+  damage: 1
   knockback: 12
   radialWarningSeconds: 0.6
   radialLineWidth: 1.3
@@ -64,18 +64,18 @@ MonoBehaviour:
     flipX: 0
     leaveFragment: 1
   jumpStartSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_woosh_short
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   landingImpactSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_smash
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   radialExplosionSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_boom
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   landingImpactCameraShake:

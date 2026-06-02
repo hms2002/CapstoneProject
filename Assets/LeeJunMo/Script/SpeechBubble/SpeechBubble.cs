@@ -6,6 +6,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using CapstoneAudio;
 
+public enum SpeechBubbleTailSide
+{
+    Left,
+    Right
+}
+
 public class SpeechBubble : MonoBehaviour
 {
     [Header("UI Components")]
@@ -28,6 +34,7 @@ public class SpeechBubble : MonoBehaviour
     private Func<Quaternion> targetRotationResolver;
     private Vector3 offset;
     private Vector3 layoutOffset;
+    private SpeechBubbleTailSide tailSide = SpeechBubbleTailSide.Left;
     private Tween typingTween;
     private Coroutine typingRoutine;
     private Coroutine textEffectRoutine;
@@ -40,9 +47,17 @@ public class SpeechBubble : MonoBehaviour
     private Material runtimeTextMaterial;
     private RectTransform backgroundRect;
     private RectTransform textRect;
+    private HorizontalLayoutGroup backgroundLayoutGroup;
     private LayoutElement textLayoutElement;
+    private Vector3 defaultBackgroundLocalScale = Vector3.one;
+    private Vector3 defaultTextLocalScale = Vector3.one;
+    private Vector2 defaultBackgroundAnchoredPosition;
+    private RectOffset defaultBackgroundPadding;
     private bool supportsBackgroundTheme;
     private bool supportsTextFaceColor;
+    private bool hasDefaultBackgroundLocalScale;
+    private bool hasDefaultTextLocalScale;
+    private bool hasDefaultBackgroundAnchoredPosition;
     private string currentFullText = string.Empty;
     private bool isTyping;
     private bool isHiding;
@@ -66,6 +81,9 @@ public class SpeechBubble : MonoBehaviour
     private static readonly int BorderId = Shader.PropertyToID("_Border");
     private static readonly int TextureInfluenceId = Shader.PropertyToID("_TextureInfluence");
     private static readonly int FaceColorId = Shader.PropertyToID("_FaceColor");
+
+    public SpeechBubbleTailSide TailSide => tailSide;
+    public Vector3 LayoutOffset => layoutOffset;
 
     private void Awake()
     {
@@ -385,6 +403,7 @@ public class SpeechBubble : MonoBehaviour
         this.targetRotationResolver = targetRotationResolver;
         this.offset = offset;
         layoutOffset = Vector3.zero;
+        SetTailFlipX(false);
         hiddenAction = onHidden;
         releaseAction = onRelease;
         currentFullText = displayText;
@@ -564,6 +583,38 @@ public class SpeechBubble : MonoBehaviour
         ApplyAnchorPose();
     }
 
+    public void SetTailFlipX(bool value)
+    {
+        SetTailSide(value ? SpeechBubbleTailSide.Right : SpeechBubbleTailSide.Left);
+    }
+
+    public void SetTailSide(SpeechBubbleTailSide value)
+    {
+        tailSide = value;
+        ResolveVisualReferences();
+        ApplyTailFlip();
+    }
+
+    public void SetPlacement(SpeechBubbleTailSide value, Vector3 newLayoutOffset)
+    {
+        tailSide = value;
+        layoutOffset = newLayoutOffset;
+        ResolveVisualReferences();
+        ApplyTailFlip();
+        ApplyAnchorPose();
+    }
+
+    public bool TryGetAnchorWorldPosition(out Vector3 position)
+    {
+        position = default;
+
+        if (!gameObject.activeInHierarchy)
+            return false;
+
+        position = ResolveAnchorPosition();
+        return true;
+    }
+
     public bool TryGetWorldBounds(out Bounds bounds)
     {
         bounds = default;
@@ -584,6 +635,42 @@ public class SpeechBubble : MonoBehaviour
             bounds.Encapsulate(worldCorners[i]);
 
         return bounds.size.sqrMagnitude > 0.000001f;
+    }
+
+    public bool TryGetPlacementBounds(
+        SpeechBubbleTailSide candidateTailSide,
+        Vector3 candidateLayoutOffset,
+        out Bounds bounds,
+        out Vector3 desiredRootPosition,
+        out Vector3 tailPivotPosition)
+    {
+        bounds = default;
+        desiredRootPosition = default;
+        tailPivotPosition = default;
+
+        if (!gameObject.activeInHierarchy)
+            return false;
+
+        SpeechBubbleTailSide previousTailSide = tailSide;
+        Vector3 previousLayoutOffset = layoutOffset;
+
+        try
+        {
+            SetPlacement(candidateTailSide, candidateLayoutOffset);
+            Canvas.ForceUpdateCanvases();
+
+            if (!TryGetWorldBounds(out bounds))
+                return false;
+
+            desiredRootPosition = transform.position;
+            tailPivotPosition = CalculateTailPivotPosition(candidateTailSide, bounds);
+            return true;
+        }
+        finally
+        {
+            SetPlacement(previousTailSide, previousLayoutOffset);
+            Canvas.ForceUpdateCanvases();
+        }
     }
 
     public void Hide()
@@ -639,6 +726,8 @@ public class SpeechBubble : MonoBehaviour
         isTyping = false;
         isHiding = false;
         layoutOffset = Vector3.zero;
+        tailSide = SpeechBubbleTailSide.Left;
+        ApplyTailFlip();
     }
 
     private Vector3 ResolveAnchorPosition()
@@ -664,6 +753,12 @@ public class SpeechBubble : MonoBehaviour
     private Quaternion ResolveAnchorRotation()
     {
         return targetRotationResolver != null ? targetRotationResolver() : Quaternion.identity;
+    }
+
+    private static Vector3 CalculateTailPivotPosition(SpeechBubbleTailSide side, Bounds bounds)
+    {
+        float tailX = side == SpeechBubbleTailSide.Left ? bounds.min.x : bounds.max.x;
+        return new Vector3(tailX, bounds.min.y, bounds.center.z);
     }
 
     private void StopActiveTweens()
@@ -768,6 +863,9 @@ public class SpeechBubble : MonoBehaviour
             bubbleBackground = bubbleText.GetComponentInParent<Image>();
 
         backgroundRect = bubbleBackground != null ? bubbleBackground.rectTransform : null;
+        backgroundLayoutGroup = bubbleBackground != null
+            ? bubbleBackground.GetComponent<HorizontalLayoutGroup>()
+            : null;
 
         if (bubbleText != null)
         {
@@ -775,6 +873,85 @@ public class SpeechBubble : MonoBehaviour
             textLayoutElement = bubbleText.GetComponent<LayoutElement>();
             CacheTextDefaults();
         }
+
+        CacheTailFlipDefaults();
+    }
+
+    private void CacheTailFlipDefaults()
+    {
+        if (backgroundRect != null && !hasDefaultBackgroundLocalScale)
+        {
+            defaultBackgroundLocalScale = backgroundRect.localScale;
+            hasDefaultBackgroundLocalScale = true;
+        }
+
+        if (backgroundRect != null && !hasDefaultBackgroundAnchoredPosition)
+        {
+            defaultBackgroundAnchoredPosition = backgroundRect.anchoredPosition;
+            hasDefaultBackgroundAnchoredPosition = true;
+        }
+
+        if (backgroundLayoutGroup != null && defaultBackgroundPadding == null)
+            defaultBackgroundPadding = ClonePadding(backgroundLayoutGroup.padding);
+
+        if (textRect != null && !hasDefaultTextLocalScale)
+        {
+            defaultTextLocalScale = textRect.localScale;
+            hasDefaultTextLocalScale = true;
+        }
+    }
+
+    private void ApplyTailFlip()
+    {
+        bool flipX = tailSide == SpeechBubbleTailSide.Right;
+
+        if (backgroundRect != null && hasDefaultBackgroundLocalScale)
+        {
+            Vector3 nextScale = defaultBackgroundLocalScale;
+            if (flipX)
+                nextScale.x = -nextScale.x;
+
+            backgroundRect.localScale = nextScale;
+        }
+
+        if (backgroundRect != null && hasDefaultBackgroundAnchoredPosition)
+            backgroundRect.anchoredPosition = defaultBackgroundAnchoredPosition;
+
+        ApplyTailPadding(flipX);
+
+        if (textRect != null && hasDefaultTextLocalScale)
+        {
+            Vector3 nextScale = defaultTextLocalScale;
+            if (flipX && backgroundRect != null)
+                nextScale.x = -nextScale.x;
+
+            textRect.localScale = nextScale;
+        }
+
+        if (backgroundRect != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundRect);
+    }
+
+    private void ApplyTailPadding(bool flipX)
+    {
+        if (backgroundLayoutGroup == null || defaultBackgroundPadding == null)
+            return;
+
+        RectOffset padding = backgroundLayoutGroup.padding;
+        if (padding == null)
+            return;
+
+        padding.left = flipX ? defaultBackgroundPadding.right : defaultBackgroundPadding.left;
+        padding.right = flipX ? defaultBackgroundPadding.left : defaultBackgroundPadding.right;
+        padding.top = defaultBackgroundPadding.top;
+        padding.bottom = defaultBackgroundPadding.bottom;
+    }
+
+    private static RectOffset ClonePadding(RectOffset source)
+    {
+        return source != null
+            ? new RectOffset(source.left, source.right, source.top, source.bottom)
+            : null;
     }
 
     private void CacheTextDefaults()
@@ -977,6 +1154,7 @@ public class SpeechBubble : MonoBehaviour
     private void ReleaseToPool()
     {
         target = null;
+        SetTailFlipX(false);
 
         Action<SpeechBubble> callback = releaseAction;
         releaseAction = null;

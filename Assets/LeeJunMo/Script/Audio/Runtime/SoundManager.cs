@@ -18,8 +18,18 @@ namespace CapstoneAudio
         /// </summary>
         private sealed class RuntimeSoundState
         {
+            public AudioCatalogSO Catalog;
+            public string SoundKey;
+            public SoundRef SoundRef;
+            public SoundPlaybackContext Context;
             public AudioCategory Category;
             public float BaseVolume;
+            public float PitchRoll;
+            public bool LoopPlayback;
+
+            public bool IsCatalogBacked =>
+                Catalog != null &&
+                !string.IsNullOrWhiteSpace(SoundKey);
         }
 
         private readonly struct SameSourceOneShotKey : IEquatable<SameSourceOneShotKey>
@@ -84,11 +94,14 @@ namespace CapstoneAudio
         private readonly List<AudioSource> importantSfxSources = new();
         private readonly Stack<AudioSource> idleLoopSources = new();
         private readonly Dictionary<int, AudioSource> activeLoopSources = new();
+        private readonly Dictionary<int, AudioSource> activeTrackedOneShotSources = new();
         private readonly Dictionary<AudioSource, RuntimeSoundState> runtimeSoundStates = new();
         private readonly Dictionary<string, float> nextPlayableTimes =
             new(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<SameSourceOneShotKey, float> nextSameSourceOneShotTimes = new();
         private readonly List<SameSourceOneShotKey> expiredSameSourceOneShotKeys = new();
+        private readonly List<int> expiredTrackedOneShotIds = new();
+        private readonly List<AudioClip> simultaneousOneShotClips = new();
         private readonly HashSet<string> missingKeyWarnings =
             new(StringComparer.OrdinalIgnoreCase);
 
@@ -97,7 +110,12 @@ namespace CapstoneAudio
         private AudioSource musicSource;
         private bool initialized;
         private int nextHandleId = 1;
+        private AudioCatalogSO currentMusicCatalog;
+        private string currentMusicKey;
         private float currentMusicBaseVolume = 1f;
+        private float currentMusicVolumeMultiplier = 1f;
+        private float currentMusicPitchRoll;
+        private bool musicStopPending;
         private float combatSfxDuckVolume = 1f;
         private Tween combatSfxDuckTween;
 
@@ -133,9 +151,12 @@ namespace CapstoneAudio
             if (!handle.IsValid)
                 return false;
 
-            return activeLoopSources.TryGetValue(handle.Id, out AudioSource source)
-                   && source != null
-                   && source.isPlaying;
+            PruneTrackedOneShotSources();
+
+            return (activeLoopSources.TryGetValue(handle.Id, out AudioSource source) ||
+                    activeTrackedOneShotSources.TryGetValue(handle.Id, out source)) &&
+                   source != null &&
+                   source.isPlaying;
         }
 
         public AudioHandle Play(in SoundRef soundRef, in SoundPlaybackContext context)
@@ -145,7 +166,7 @@ namespace CapstoneAudio
 
             EnsureInitialized();
 
-            if (!TryResolveEntry(soundRef.key, out AudioCatalogEntry entry))
+            if (!TryResolveEntry(soundRef.key, out AudioCatalogEntry entry, out AudioCatalogSO catalog))
             {
                 WarnMissingKey(soundRef.key);
                 return AudioHandle.Invalid;
@@ -156,7 +177,7 @@ namespace CapstoneAudio
 
             if (entry.bus == AudioBus.BGM)
             {
-                PlayMusicInternal(entry, soundRef);
+                PlayMusicInternal(catalog, entry, soundRef);
                 return AudioHandle.Invalid;
             }
 
@@ -167,8 +188,37 @@ namespace CapstoneAudio
                 return AudioHandle.Invalid;
 
             return entry.loop
-                ? PlayLoopInternal(entry, soundRef, context)
-                : PlayOneShotInternal(entry, soundRef, context);
+                ? PlayLoopInternal(catalog, entry, soundRef, context)
+                : PlayOneShotInternal(catalog, entry, soundRef, context);
+        }
+
+        public AudioHandle PlayTrackedOneShot(in SoundRef soundRef, in SoundPlaybackContext context)
+        {
+            if (!soundRef.IsSet)
+                return AudioHandle.Invalid;
+
+            EnsureInitialized();
+            PruneTrackedOneShotSources();
+
+            if (!TryResolveEntry(soundRef.key, out AudioCatalogEntry entry, out AudioCatalogSO catalog))
+            {
+                WarnMissingKey(soundRef.key);
+                return AudioHandle.Invalid;
+            }
+
+            if (!entry.HasPlayableClip || entry.bus == AudioBus.BGM || entry.loop)
+                return AudioHandle.Invalid;
+
+            if (entry.UsesSimultaneousOneShotPlayback)
+                return AudioHandle.Invalid;
+
+            if (IsSameSourceOneShotSuppressed(entry, context))
+                return AudioHandle.Invalid;
+
+            if (IsOnCooldown(soundRef.key, entry.cooldown))
+                return AudioHandle.Invalid;
+
+            return PlayTrackedOneShotInternal(catalog, entry, soundRef, context);
         }
 
         public void PlayLegacyClip(
@@ -200,13 +250,13 @@ namespace CapstoneAudio
 
             EnsureInitialized();
 
-            if (!TryResolveEntry(soundRef.key, out AudioCatalogEntry entry))
+            if (!TryResolveEntry(soundRef.key, out AudioCatalogEntry entry, out AudioCatalogSO catalog))
             {
                 WarnMissingKey(soundRef.key);
                 return;
             }
 
-            PlayMusicInternal(entry, soundRef);
+            PlayMusicInternal(catalog, entry, soundRef);
         }
 
         public void StopMusic()
@@ -224,19 +274,25 @@ namespace CapstoneAudio
                 musicSource.Stop();
                 musicSource.clip = null;
                 musicSource.volume = 0f;
+                ClearCurrentMusicTracking();
                 return;
             }
 
+            musicStopPending = true;
             musicSource.DOFade(0f, duration)
                 .SetUpdate(true)
                 .OnComplete(() =>
                 {
                     if (musicSource == null)
+                    {
+                        ClearCurrentMusicTracking();
                         return;
+                    }
 
                     musicSource.Stop();
                     musicSource.clip = null;
                     musicSource.volume = 0f;
+                    ClearCurrentMusicTracking();
                 });
         }
 
@@ -247,21 +303,29 @@ namespace CapstoneAudio
 
             EnsureInitialized();
 
-            if (!activeLoopSources.TryGetValue(handle.Id, out AudioSource source) || source == null)
+            if (activeLoopSources.TryGetValue(handle.Id, out AudioSource loopSource))
+            {
+                activeLoopSources.Remove(handle.Id);
+                StopLoopSource(loopSource, fadeOutDuration);
+                return;
+            }
+
+            PruneTrackedOneShotSources();
+            if (!activeTrackedOneShotSources.TryGetValue(handle.Id, out AudioSource source) || source == null)
                 return;
 
-            activeLoopSources.Remove(handle.Id);
+            activeTrackedOneShotSources.Remove(handle.Id);
             source.DOKill();
 
-            if (fadeOutDuration <= 0f)
+            if (fadeOutDuration <= 0f || !source.isPlaying)
             {
-                ReleaseLoopSource(source);
+                ReleaseOneShotSource(source);
                 return;
             }
 
             source.DOFade(0f, fadeOutDuration)
                 .SetUpdate(true)
-                .OnComplete(() => ReleaseLoopSource(source));
+                .OnComplete(() => ReleaseOneShotSource(source));
         }
 
         public void SetPitch(AudioHandle handle, float pitch)
@@ -271,7 +335,10 @@ namespace CapstoneAudio
 
             EnsureInitialized();
 
-            if (!activeLoopSources.TryGetValue(handle.Id, out AudioSource source) || source == null)
+            PruneTrackedOneShotSources();
+            if ((!activeLoopSources.TryGetValue(handle.Id, out AudioSource source) &&
+                 !activeTrackedOneShotSources.TryGetValue(handle.Id, out source)) ||
+                source == null)
                 return;
 
             source.pitch = Mathf.Clamp(pitch, 0.05f, 3f);
@@ -324,6 +391,28 @@ namespace CapstoneAudio
         {
             EnsureInitialized();
             return masterSfxVolume;
+        }
+
+        public void RefreshCatalogRuntime(AudioCatalogSO catalog)
+        {
+            if (catalog == null)
+                return;
+
+            EnsureInitialized();
+            if (!UsesCatalog(catalog))
+                return;
+
+            catalog.MarkLookupDirty();
+            RefreshCatalogBackedSfx(catalog);
+
+            bool defaultCatalogChanged = defaultCatalog == catalog;
+            if (currentMusicCatalog == catalog)
+                RefreshCurrentMusicFromCatalog(catalog);
+            else if (defaultCatalogChanged)
+                RefreshCurrentMusicVolume();
+
+            if (defaultCatalogChanged)
+                RefreshAllRuntimeSfxVolumes();
         }
 
         public void DuckCombatSfx(float targetVolume, float fadeSeconds)
@@ -407,6 +496,7 @@ namespace CapstoneAudio
             importantSfxSources.Clear();
             idleLoopSources.Clear();
             activeLoopSources.Clear();
+            activeTrackedOneShotSources.Clear();
             runtimeSoundStates.Clear();
 
             CreateOneShotPool(normalSfxSources, sfxPoolSize, "SFX");
@@ -443,10 +533,39 @@ namespace CapstoneAudio
 
         private float ResolveCurrentMusicTargetVolume()
         {
-            return currentMusicBaseVolume
+            return ResolveMusicTargetVolume(currentMusicBaseVolume);
+        }
+
+        private float ResolveMusicTargetVolume(float baseVolume)
+        {
+            return baseVolume
                    * ResolveGlobalVolumeMultiplier()
                    * masterMusicVolume
                    * masterVolume;
+        }
+
+        private void TrackCurrentMusic(
+            AudioCatalogSO catalog,
+            string key,
+            float baseVolume,
+            float volumeMultiplier,
+            float pitchRoll)
+        {
+            currentMusicCatalog = catalog;
+            currentMusicKey = key;
+            currentMusicBaseVolume = Mathf.Max(0f, baseVolume);
+            currentMusicVolumeMultiplier = Mathf.Max(0f, volumeMultiplier);
+            currentMusicPitchRoll = Mathf.Clamp01(pitchRoll);
+        }
+
+        private void ClearCurrentMusicTracking()
+        {
+            currentMusicCatalog = null;
+            currentMusicKey = null;
+            currentMusicBaseVolume = 1f;
+            currentMusicVolumeMultiplier = 1f;
+            currentMusicPitchRoll = 0f;
+            musicStopPending = false;
         }
 
         private Transform CreateRoot(string rootName)
@@ -479,6 +598,26 @@ namespace CapstoneAudio
         }
 
         private AudioHandle PlayOneShotInternal(
+            AudioCatalogSO catalog,
+            AudioCatalogEntry entry,
+            SoundRef soundRef,
+            SoundPlaybackContext context)
+        {
+            if (entry.UsesSimultaneousOneShotPlayback)
+                return PlaySimultaneousOneShotInternal(catalog, entry, soundRef, context);
+
+            if (!entry.TryPickClip(out AudioClip clip))
+                return AudioHandle.Invalid;
+
+            AudioSource source = GetOneShotSource(entry.important);
+            ConfigureCatalogSource(source, clip, catalog, entry, soundRef, context, loopPlayback: false);
+            source.loop = false;
+            source.Play();
+            return AudioHandle.Invalid;
+        }
+
+        private AudioHandle PlayTrackedOneShotInternal(
+            AudioCatalogSO catalog,
             AudioCatalogEntry entry,
             SoundRef soundRef,
             SoundPlaybackContext context)
@@ -487,13 +626,42 @@ namespace CapstoneAudio
                 return AudioHandle.Invalid;
 
             AudioSource source = GetOneShotSource(entry.important);
-            ConfigureCatalogSource(source, clip, entry, soundRef, context);
+            ConfigureCatalogSource(source, clip, catalog, entry, soundRef, context, loopPlayback: false);
             source.loop = false;
             source.Play();
+
+            AudioHandle handle = new AudioHandle(nextHandleId++);
+            activeTrackedOneShotSources[handle.Id] = source;
+            return handle;
+        }
+
+        private AudioHandle PlaySimultaneousOneShotInternal(
+            AudioCatalogSO catalog,
+            AudioCatalogEntry entry,
+            SoundRef soundRef,
+            SoundPlaybackContext context)
+        {
+            if (!entry.TryGetPlayableClips(simultaneousOneShotClips))
+                return AudioHandle.Invalid;
+
+            for (int i = 0; i < simultaneousOneShotClips.Count; i++)
+            {
+                AudioClip clip = simultaneousOneShotClips[i];
+                if (clip == null)
+                    continue;
+
+                AudioSource source = GetOneShotSource(entry.important);
+                ConfigureCatalogSource(source, clip, catalog, entry, soundRef, context, loopPlayback: false);
+                source.loop = false;
+                source.Play();
+            }
+
+            simultaneousOneShotClips.Clear();
             return AudioHandle.Invalid;
         }
 
         private AudioHandle PlayLoopInternal(
+            AudioCatalogSO catalog,
             AudioCatalogEntry entry,
             SoundRef soundRef,
             SoundPlaybackContext context)
@@ -505,13 +673,31 @@ namespace CapstoneAudio
                 ? idleLoopSources.Pop()
                 : CreateAudioSource($"Loop_{nextHandleId}", loopRoot);
 
-            ConfigureCatalogSource(source, clip, entry, soundRef, context);
+            ConfigureCatalogSource(source, clip, catalog, entry, soundRef, context, loopPlayback: true);
             source.loop = true;
             source.Play();
 
             AudioHandle handle = new AudioHandle(nextHandleId++);
             activeLoopSources[handle.Id] = source;
             return handle;
+        }
+
+        private void StopLoopSource(AudioSource source, float fadeOutDuration)
+        {
+            if (source == null)
+                return;
+
+            source.DOKill();
+
+            if (fadeOutDuration <= 0f)
+            {
+                ReleaseLoopSource(source);
+                return;
+            }
+
+            source.DOFade(0f, fadeOutDuration)
+                .SetUpdate(true)
+                .OnComplete(() => ReleaseLoopSource(source));
         }
 
         private void ReleaseLoopSource(AudioSource source)
@@ -531,7 +717,25 @@ namespace CapstoneAudio
             idleLoopSources.Push(source);
         }
 
+        private void ReleaseOneShotSource(AudioSource source)
+        {
+            if (source == null)
+                return;
+
+            source.Stop();
+            source.clip = null;
+            source.loop = false;
+            source.volume = 1f;
+            source.pitch = 1f;
+            source.spatialBlend = 0f;
+            source.transform.SetParent(oneShotRoot, false);
+            source.transform.localPosition = Vector3.zero;
+            runtimeSoundStates.Remove(source);
+            UntrackOneShotSource(source);
+        }
+
         private void PlayMusicInternal(
+            AudioCatalogSO catalog,
             AudioCatalogEntry entry,
             SoundRef soundRef)
         {
@@ -539,14 +743,19 @@ namespace CapstoneAudio
                 return;
 
             EnsureInitialized();
+            musicStopPending = false;
 
             float fadeInSeconds = ResolveBgmFadeInSeconds();
             float fadeOutSeconds = ResolveBgmFadeOutSeconds();
-            currentMusicBaseVolume = entry.volume * soundRef.EffectiveVolumeMultiplier;
-            float targetVolume = ResolveCurrentMusicTargetVolume();
+            bool isSameClipPlaying = musicSource.clip == clip && musicSource.isPlaying;
+            float nextMusicVolumeMultiplier = soundRef.EffectiveVolumeMultiplier;
+            float nextMusicBaseVolume = entry.volume * nextMusicVolumeMultiplier;
+            float nextMusicPitchRoll = isSameClipPlaying ? currentMusicPitchRoll : UnityEngine.Random.value;
+            float targetVolume = ResolveMusicTargetVolume(nextMusicBaseVolume);
 
-            if (musicSource.clip == clip && musicSource.isPlaying)
+            if (isSameClipPlaying)
             {
+                TrackCurrentMusic(catalog, entry.key, nextMusicBaseVolume, nextMusicVolumeMultiplier, nextMusicPitchRoll);
                 musicSource.DOKill();
                 if (fadeInSeconds <= 0f)
                     musicSource.volume = targetVolume;
@@ -560,8 +769,9 @@ namespace CapstoneAudio
                 if (musicSource == null)
                     return;
 
+                TrackCurrentMusic(catalog, entry.key, nextMusicBaseVolume, nextMusicVolumeMultiplier, nextMusicPitchRoll);
                 musicSource.clip = clip;
-                musicSource.pitch = entry.PickAudioSourcePitch();
+                musicSource.pitch = entry.ResolveAudioSourcePitch(nextMusicPitchRoll);
                 musicSource.loop = entry.loop || entry.bus == AudioBus.BGM;
                 musicSource.spatialBlend = 0f;
                 musicSource.volume = fadeInSeconds > 0f ? 0f : targetVolume;
@@ -592,7 +802,10 @@ namespace CapstoneAudio
             {
                 AudioSource source = pool[i];
                 if (source != null && !source.isPlaying)
+                {
+                    UntrackOneShotSource(source);
                     return source;
+                }
             }
 
             AudioSource recycled = pool[0];
@@ -601,28 +814,96 @@ namespace CapstoneAudio
             recycled.DOKill();
             recycled.Stop();
             runtimeSoundStates.Remove(recycled);
+            UntrackOneShotSource(recycled);
             return recycled;
+        }
+
+        private void PruneTrackedOneShotSources()
+        {
+            expiredTrackedOneShotIds.Clear();
+            foreach (KeyValuePair<int, AudioSource> pair in activeTrackedOneShotSources)
+            {
+                AudioSource source = pair.Value;
+                if (source == null || !source.isPlaying)
+                    expiredTrackedOneShotIds.Add(pair.Key);
+            }
+
+            for (int i = 0; i < expiredTrackedOneShotIds.Count; i++)
+            {
+                if (!activeTrackedOneShotSources.TryGetValue(expiredTrackedOneShotIds[i], out AudioSource source))
+                    continue;
+
+                if (source != null && !source.isPlaying)
+                    runtimeSoundStates.Remove(source);
+
+                activeTrackedOneShotSources.Remove(expiredTrackedOneShotIds[i]);
+            }
+
+            expiredTrackedOneShotIds.Clear();
+        }
+
+        private void UntrackOneShotSource(AudioSource source)
+        {
+            if (source == null || activeTrackedOneShotSources.Count == 0)
+                return;
+
+            expiredTrackedOneShotIds.Clear();
+            foreach (KeyValuePair<int, AudioSource> pair in activeTrackedOneShotSources)
+            {
+                if (pair.Value == source)
+                    expiredTrackedOneShotIds.Add(pair.Key);
+            }
+
+            for (int i = 0; i < expiredTrackedOneShotIds.Count; i++)
+                activeTrackedOneShotSources.Remove(expiredTrackedOneShotIds[i]);
+
+            expiredTrackedOneShotIds.Clear();
         }
 
         private void ConfigureCatalogSource(
             AudioSource source,
             AudioClip clip,
+            AudioCatalogSO catalog,
             AudioCatalogEntry entry,
             SoundRef soundRef,
-            SoundPlaybackContext context)
+            SoundPlaybackContext context,
+            bool loopPlayback)
         {
             if (source == null || entry == null || clip == null)
                 return;
 
             source.DOKill();
             source.clip = clip;
-            source.pitch = entry.PickAudioSourcePitch();
-            TrackRuntimeSoundState(source, entry.category, entry.volume * soundRef.EffectiveVolumeMultiplier);
+            RuntimeSoundState state = TrackCatalogRuntimeSoundState(
+                source,
+                catalog,
+                entry,
+                soundRef,
+                context,
+                loopPlayback);
+            ApplyCatalogRuntimeProperties(source, entry, state);
+        }
+
+        private void ApplyCatalogRuntimeProperties(
+            AudioSource source,
+            AudioCatalogEntry entry,
+            RuntimeSoundState state)
+        {
+            if (source == null || entry == null || state == null)
+                return;
+
+            state.Category = entry.category;
+            state.BaseVolume = Mathf.Max(0f, entry.volume * state.SoundRef.EffectiveVolumeMultiplier);
+
+            source.pitch = entry.ResolveAudioSourcePitch(state.PitchRoll);
             source.volume = ResolveRuntimeSfxVolume(source);
             source.minDistance = Mathf.Max(0.01f, entry.minDistance);
             source.maxDistance = Mathf.Max(source.minDistance, entry.maxDistance);
 
-            bool playAs2D = soundRef.anchorPolicy == SoundAnchorPolicy.TwoD || !entry.spatial;
+            if (state.LoopPlayback)
+                source.loop = entry.loop;
+
+            bool playAs2D = state.SoundRef.anchorPolicy == SoundAnchorPolicy.TwoD || !entry.spatial;
             if (playAs2D)
             {
                 source.spatialBlend = 0f;
@@ -633,16 +914,17 @@ namespace CapstoneAudio
 
             source.spatialBlend = 1f;
 
-            Transform follow = ResolveFollowTarget(soundRef.anchorPolicy, context);
+            Transform follow = ResolveFollowTarget(state.SoundRef.anchorPolicy, state.Context);
             if (follow != null)
             {
                 source.transform.SetParent(follow, false);
-                source.transform.localPosition = soundRef.localOffset;
+                source.transform.localPosition = state.SoundRef.localOffset;
             }
             else
             {
                 source.transform.SetParent(oneShotRoot, false);
-                source.transform.position = ResolveWorldPosition(soundRef.anchorPolicy, context) + soundRef.localOffset;
+                source.transform.position =
+                    ResolveWorldPosition(state.SoundRef.anchorPolicy, state.Context) + state.SoundRef.localOffset;
             }
         }
 
@@ -677,21 +959,58 @@ namespace CapstoneAudio
             }
         }
 
-        private bool TryResolveEntry(string key, out AudioCatalogEntry entry)
+        private bool TryResolveEntry(
+            string key,
+            out AudioCatalogEntry entry,
+            out AudioCatalogSO owningCatalog)
         {
             entry = null;
+            owningCatalog = null;
 
             if (defaultCatalog != null && defaultCatalog.TryGetEntry(key, out entry))
+            {
+                owningCatalog = defaultCatalog;
                 return true;
+            }
 
             for (int i = 0; i < additionalCatalogs.Count; i++)
             {
                 AudioCatalogSO catalog = additionalCatalogs[i];
                 if (catalog != null && catalog.TryGetEntry(key, out entry))
+                {
+                    owningCatalog = catalog;
                     return true;
+                }
             }
 
             return false;
+        }
+
+        private RuntimeSoundState TrackCatalogRuntimeSoundState(
+            AudioSource source,
+            AudioCatalogSO catalog,
+            AudioCatalogEntry entry,
+            SoundRef soundRef,
+            SoundPlaybackContext context,
+            bool loopPlayback)
+        {
+            if (source == null || entry == null)
+                return null;
+
+            RuntimeSoundState state = new RuntimeSoundState
+            {
+                Catalog = catalog,
+                SoundKey = entry.key,
+                SoundRef = soundRef,
+                Context = context,
+                Category = entry.category,
+                BaseVolume = Mathf.Max(0f, entry.volume * soundRef.EffectiveVolumeMultiplier),
+                PitchRoll = UnityEngine.Random.value,
+                LoopPlayback = loopPlayback
+            };
+
+            runtimeSoundStates[source] = state;
+            return state;
         }
 
         private void TrackRuntimeSoundState(AudioSource source, AudioCategory category, float baseVolume)
@@ -702,7 +1021,9 @@ namespace CapstoneAudio
             runtimeSoundStates[source] = new RuntimeSoundState
             {
                 Category = category,
-                BaseVolume = Mathf.Max(0f, baseVolume)
+                BaseVolume = Mathf.Max(0f, baseVolume),
+                PitchRoll = 0f,
+                LoopPlayback = false
             };
         }
 
@@ -735,6 +1056,85 @@ namespace CapstoneAudio
 
                 source.volume = ResolveRuntimeSfxVolume(source);
             }
+        }
+
+        private void RefreshCatalogBackedSfx(AudioCatalogSO catalog)
+        {
+            if (catalog == null)
+                return;
+
+            PruneTrackedOneShotSources();
+
+            foreach (KeyValuePair<AudioSource, RuntimeSoundState> pair in runtimeSoundStates)
+            {
+                AudioSource source = pair.Key;
+                RuntimeSoundState state = pair.Value;
+                if (source == null ||
+                    state == null ||
+                    !source.isPlaying ||
+                    !state.IsCatalogBacked ||
+                    state.Catalog != catalog)
+                {
+                    continue;
+                }
+
+                if (!catalog.TryGetEntry(state.SoundKey, out AudioCatalogEntry entry) || entry == null)
+                    continue;
+
+                ApplyCatalogRuntimeProperties(source, entry, state);
+            }
+        }
+
+        private void RefreshCurrentMusicFromCatalog(AudioCatalogSO catalog)
+        {
+            if (catalog == null ||
+                musicSource == null ||
+                !musicSource.isPlaying ||
+                musicStopPending ||
+                string.IsNullOrWhiteSpace(currentMusicKey))
+            {
+                return;
+            }
+
+            if (!catalog.TryGetEntry(currentMusicKey, out AudioCatalogEntry entry) ||
+                entry == null ||
+                entry.bus != AudioBus.BGM)
+            {
+                RefreshCurrentMusicVolume();
+                return;
+            }
+
+            currentMusicBaseVolume = entry.volume * currentMusicVolumeMultiplier;
+            musicSource.DOKill();
+            musicSource.pitch = entry.ResolveAudioSourcePitch(currentMusicPitchRoll);
+            musicSource.loop = entry.loop || entry.bus == AudioBus.BGM;
+            musicSource.volume = ResolveCurrentMusicTargetVolume();
+        }
+
+        private void RefreshCurrentMusicVolume()
+        {
+            if (musicSource == null || !musicSource.isPlaying || musicStopPending)
+                return;
+
+            musicSource.DOKill();
+            musicSource.volume = ResolveCurrentMusicTargetVolume();
+        }
+
+        private bool UsesCatalog(AudioCatalogSO catalog)
+        {
+            if (catalog == null)
+                return false;
+
+            if (defaultCatalog == catalog)
+                return true;
+
+            for (int i = 0; i < additionalCatalogs.Count; i++)
+            {
+                if (additionalCatalogs[i] == catalog)
+                    return true;
+            }
+
+            return false;
         }
 
         private static bool ShouldDuckCombatCategory(AudioCategory category)

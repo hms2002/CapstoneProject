@@ -25,6 +25,20 @@ Prevention:
 
 ## Active Entries
 
+## 2026-06-02 - SpeechBubble Negative Scale Flip Shifted Layout Semantics
+
+Context:
+DemonKing and EgoSword parallel speech bubbles needed tails to face the speaker during short back-and-forth dialogue.
+
+Cause:
+The first implementation flipped the whole background with negative X scale and counter-flipped the text, but did not treat tail side, layout padding, anchor position, and bounds relayout as one policy. This let the tail direction change while the text start position and bubble bounds still reflected the unflipped layout.
+
+Fix:
+Parallel speech now evaluates tail side, layout offset, world bounds, and tail pivot distance together before applying a placement. Active/single bubbles keep their position, active parallel-dialogue bubbles may only flip tail side, and parallel bubbles use a small candidate set so overlap fixes do not pull the bubble far away from its speaker root.
+
+Prevention:
+When flipping UI that owns layout children, do not only negate scale or decide tail direction as a late visual pass. Cache and restore the anchor-facing transform defaults, mirror directional padding/spacing semantics, measure bounds for each candidate state, then choose the tail side and any layout nudge as one placement decision.
+
 ## 2026-06-01 - Debris Final Contact Puff Looked Like Growing Fade
 
 Context:
@@ -1340,15 +1354,19 @@ For first-open chest behavior, keep world and UI presentation timing separate, b
 
 Context:
 After moving dialogue input blocking into `DialogueService` through `GameFlowInputBlocker`, the Upgrade NPC feature stopped opening its popup.
+Later, the same dialogue-exit wait could leave a short player-control gap before the Upgrade UI open flow took over.
 
 Cause:
 `UpgradeFeature.Execute()` called `UpgradeManager.ToggleUI()` before requesting dialogue exit. The dialogue blocker was still active, so `UpgradeManager.OpenUI()` failed the `UIManager.CanOpenUI(...)` gate before its own open-presentation blocker could take ownership.
+The later wait-for-release fix did not add a control-only handoff lock for the period between feature selection and `UpgradeManager.ToggleUI()`.
 
 Fix:
 Request dialogue exit first, then wait until dialogue playback and external UI input blockers are released before opening Upgrade UI.
+During that wait, `UpgradeFeature` now acquires the existing `TS_BlockControlByUI` tag set through `PlayerUIControlLockBridge`, then releases it after `ToggleUI()` starts the normal UI open flow.
 
 Prevention:
 NPC features that open stack UI after dialogue should not open the UI while dialogue is still the active game-flow blocker. End or hand off the dialogue flow first, then open the feature UI.
+If the feature must wait before opening, cover the wait with player-control-only handoff blocking. Do not use a new external UI input blocker for that wait unless the later owned-open exception is explicitly threaded through the same owner.
 
 ## 2026-05-16 - Shared Portal Prefab Carried Start-Run Semantics
 
@@ -1534,3 +1552,45 @@ DashStab and multi-rush body starts use normal per-hit playback, while Slash and
 
 Prevention:
 Before applying a once-per-pattern animation guard, classify whether the state is a single visual commit, a frame sample/hold, or a repeated per-hit state. Also lock DemonKing auto-facing during authored motion windows so sprite flips do not masquerade as animation replay problems.
+
+## 2026-06-02 - KillLock Query Compacted Runtime State Before Owner Refresh
+
+Context:
+Killing the final linked monsters for a KillLock chest at the same time could leave `RemainCount` stale and keep the chest locked, especially when navigation arrows refreshed in the same frame.
+
+Cause:
+`ChestMonsterKillLock.GetAliveMonstersNonAlloc()` looked like a read-only query but compacted the lock's tracked unit list. If it ran from `ChestMonsterKillLockNavigationView.LateUpdate()` after the deaths but before the next lock `Update()`, the lock owner no longer observed a list-count change and did not raise remaining-count or unlock events.
+
+Fix:
+`ChestMonsterKillLock.Update()` now recalculates cached remaining/unlock state every frame, and `GetAliveMonstersNonAlloc()` no longer mutates the lock's tracked unit list.
+
+Prevention:
+Keep gameplay-state compaction and event emission in the owning runtime component. UI/navigation/read-model queries should not mutate owner lists unless they also refresh the owner's cached state and events in the same call.
+
+## 2026-06-02 - Same-Scene Teleport Landing Was Skipped By Ground Hole Path Check
+
+Context:
+`RunSameSceneTeleportNpcFeature` fade out/in was playing, but the player did not visibly move from `appearancePoint` to `landingPoint` for the authored jump-like arrival.
+
+Cause:
+The feature sampled the appearance-to-landing path against `HoleTrap` as if the arrival were grounded movement. When the authored path crossed a hole, it logged the path as blocked and warped directly to the landing point, so the landing presentation never played.
+
+Fix:
+Arrival movement now depends on distinct appearance/landing positions and an authored duration, not on intermediate `HoleTrap` path sampling. The final landing point is still checked for `HoleTrap` overlap, and the player body collider is temporarily disabled during arrival movement so pitfall trigger/stay logic cannot fire mid-cinematic.
+
+Prevention:
+Do not use grounded path-blocking checks for airborne or cinematic arrival paths. Validate the endpoint, then suppress collision/triggers only for the presentation window that needs to cross unsafe space.
+
+## 2026-06-02 - Same-Scene Teleport Appearance Warp Still Used Grounded Target Safety
+
+Context:
+After the path-sampling skip was removed, the same-scene teleport arrival still showed no start particle and no movement when the authored `appearancePoint` was placed over `HoleTrap` space.
+
+Cause:
+The initial warp to `appearancePoint` still called the normal `WarpPlayer(...)` path, which rejects any target position overlapping `HoleTrap`. The arrival path policy had been changed to airborne, but the first warp still treated the airborne start point as a grounded final target.
+
+Fix:
+`WarpPlayer(...)` now has a narrow `allowHoleTrapTarget` option. Only the initial arrival-start warp uses it; final landing warps and non-arrival teleports still reject `HoleTrap` targets.
+
+Prevention:
+Keep arrival-start validation separate from final landing validation. For jump-like or airborne cinematic starts, allow the authored start point to overlap unsafe space only while body collider suppression and cinematic protection are already active. Never apply that exception to the final landing point.

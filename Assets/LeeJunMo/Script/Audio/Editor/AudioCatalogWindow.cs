@@ -11,17 +11,18 @@ namespace CapstoneAudio.EditorTools
     {
         private const string DefaultCatalogAssetPath = "Assets/LeeJunMo/Datas/Resources/Audio/DefaultAudioCatalog.asset";
 
-        private AudioCatalogSO selectedCatalog;
+        [SerializeField] private AudioCatalogSO selectedCatalog;
         private SerializedObject serializedCatalog;
         private SerializedProperty globalVolumeMultiplierProperty;
         private SerializedProperty bgmFadeInSecondsProperty;
         private SerializedProperty bgmFadeOutSecondsProperty;
         private SerializedProperty entriesProperty;
 
-        private string searchQuery = string.Empty;
-        private int selectedIndex = -1;
+        [SerializeField] private string searchQuery = string.Empty;
+        [SerializeField] private int selectedIndex = -1;
         private Vector2 listScroll;
         private Vector2 detailScroll;
+        private readonly List<AudioClip> entryPreviewClips = new();
 
         [MenuItem("Tools/Audio/Audio Catalog")]
         public static void OpenWindow()
@@ -74,9 +75,7 @@ namespace CapstoneAudio.EditorTools
 
             if (serializedCatalog.ApplyModifiedProperties())
             {
-                selectedCatalog.MarkLookupDirty();
-                EditorUtility.SetDirty(selectedCatalog);
-                AudioCatalogEditorUtility.InvalidateCache();
+                ApplyCatalogChanges();
             }
         }
 
@@ -135,6 +134,13 @@ namespace CapstoneAudio.EditorTools
             EditorGUILayout.HelpBox(
                 "These defaults are authored tuning values independent from Settings volume. Runtime volume resolves as entry volume x SoundRef multiplier x global sound multiplier x Settings volume.",
                 MessageType.None);
+
+            if (EditorApplication.isPlaying)
+            {
+                EditorGUILayout.HelpBox(
+                    "Play Mode live tuning is active. Changes are applied to the active SoundManager and saved to the selected catalog asset.",
+                    MessageType.Info);
+            }
 
             EditorGUILayout.EndVertical();
         }
@@ -245,6 +251,13 @@ namespace CapstoneAudio.EditorTools
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("playbackSpeed"));
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("pitchMin"));
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("pitchMax"));
+            SerializedProperty variantPlaybackModeProperty = entry.FindPropertyRelative("variantPlaybackMode");
+            if (variantPlaybackModeProperty != null)
+            {
+                EditorGUILayout.PropertyField(
+                    variantPlaybackModeProperty,
+                    new GUIContent("Variant Playback"));
+            }
             DrawVariantsField(entry);
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("loop"));
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("spatial"));
@@ -308,10 +321,40 @@ namespace CapstoneAudio.EditorTools
                 float previewPitchMin = entry.FindPropertyRelative("pitchMin").floatValue;
                 float previewPitchMax = entry.FindPropertyRelative("pitchMax").floatValue;
                 bool isBgmPreview = IsBgmEntry(entry);
-                bool previewLoop = entry.FindPropertyRelative("loop").boolValue || isBgmPreview;
+                bool isLoopEntry = entry.FindPropertyRelative("loop").boolValue;
+                bool previewLoop = isLoopEntry || isBgmPreview;
                 float previewFadeInSeconds = isBgmPreview ? GetBgmFadeInSeconds() : 0f;
                 float previewFadeOutSeconds = isBgmPreview ? GetBgmFadeOutSeconds() : 0f;
+                AudioVariantPlaybackMode playbackMode = GetVariantPlaybackMode(entry);
                 int removeIndex = -1;
+
+                EditorGUILayout.BeginHorizontal();
+                using (new EditorGUI.DisabledScope(
+                           !AudioCatalogPreviewUtility.CanPreview ||
+                           !HasPlayablePreviewClip(variantsProperty)))
+                {
+                    if (GUILayout.Button("Preview Entry", GUILayout.Width(112f)))
+                    {
+                        PreviewEntry(
+                            variantsProperty,
+                            playbackMode,
+                            previewVolume,
+                            previewSpeed,
+                            previewPitchMin,
+                            previewPitchMax,
+                            previewLoop,
+                            previewFadeInSeconds);
+                    }
+                }
+
+                if (playbackMode == AudioVariantPlaybackMode.Simultaneous && previewLoop)
+                {
+                    EditorGUILayout.HelpBox(
+                        "Simultaneous playback is runtime-supported only for non-loop SFX. This entry previews as a single source.",
+                        MessageType.Warning);
+                }
+
+                EditorGUILayout.EndHorizontal();
 
                 for (int i = 0; i < variantsProperty.arraySize; i++)
                 {
@@ -377,6 +420,134 @@ namespace CapstoneAudio.EditorTools
             return busProperty != null && busProperty.enumValueIndex == (int)AudioBus.BGM;
         }
 
+        private static AudioVariantPlaybackMode GetVariantPlaybackMode(SerializedProperty entry)
+        {
+            SerializedProperty modeProperty = entry?.FindPropertyRelative("variantPlaybackMode");
+            if (modeProperty == null)
+                return AudioVariantPlaybackMode.Random;
+
+            int value = modeProperty.enumValueIndex;
+            return value >= 0 && value <= (int)AudioVariantPlaybackMode.Simultaneous
+                ? (AudioVariantPlaybackMode)value
+                : AudioVariantPlaybackMode.Random;
+        }
+
+        private void PreviewEntry(
+            SerializedProperty variantsProperty,
+            AudioVariantPlaybackMode playbackMode,
+            float previewVolume,
+            float previewSpeed,
+            float previewPitchMin,
+            float previewPitchMax,
+            bool previewLoop,
+            float previewFadeInSeconds)
+        {
+            if (playbackMode == AudioVariantPlaybackMode.Simultaneous && !previewLoop)
+            {
+                if (TryCollectPreviewClips(variantsProperty, entryPreviewClips))
+                {
+                    AudioCatalogPreviewUtility.PlayVariants(
+                        entryPreviewClips,
+                        previewVolume,
+                        previewSpeed,
+                        previewPitchMin,
+                        previewPitchMax);
+                }
+
+                return;
+            }
+
+            if (!TryPickPreviewClip(variantsProperty, playbackMode, out AudioClip clip) || clip == null)
+                return;
+
+            AudioCatalogPreviewUtility.PlayVariant(
+                clip,
+                previewVolume,
+                previewSpeed,
+                previewPitchMin,
+                previewPitchMax,
+                previewLoop,
+                previewFadeInSeconds);
+        }
+
+        private static bool HasPlayablePreviewClip(SerializedProperty variantsProperty)
+        {
+            if (variantsProperty == null || variantsProperty.arraySize == 0)
+                return false;
+
+            for (int i = 0; i < variantsProperty.arraySize; i++)
+            {
+                if (variantsProperty.GetArrayElementAtIndex(i).objectReferenceValue is AudioClip)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryCollectPreviewClips(
+            SerializedProperty variantsProperty,
+            List<AudioClip> clips)
+        {
+            if (clips == null)
+                return false;
+
+            clips.Clear();
+            if (variantsProperty == null || variantsProperty.arraySize == 0)
+                return false;
+
+            for (int i = 0; i < variantsProperty.arraySize; i++)
+            {
+                if (variantsProperty.GetArrayElementAtIndex(i).objectReferenceValue is AudioClip clip)
+                    clips.Add(clip);
+            }
+
+            return clips.Count > 0;
+        }
+
+        private static bool TryPickPreviewClip(
+            SerializedProperty variantsProperty,
+            AudioVariantPlaybackMode playbackMode,
+            out AudioClip clip)
+        {
+            clip = null;
+            if (variantsProperty == null || variantsProperty.arraySize == 0)
+                return false;
+
+            if (playbackMode == AudioVariantPlaybackMode.First)
+                return TryPickFirstPreviewClip(variantsProperty, out clip);
+
+            int startIndex = Random.Range(0, variantsProperty.arraySize);
+            for (int i = 0; i < variantsProperty.arraySize; i++)
+            {
+                int index = (startIndex + i) % variantsProperty.arraySize;
+                clip = variantsProperty.GetArrayElementAtIndex(index).objectReferenceValue as AudioClip;
+                if (clip != null)
+                    return true;
+            }
+
+            clip = null;
+            return false;
+        }
+
+        private static bool TryPickFirstPreviewClip(
+            SerializedProperty variantsProperty,
+            out AudioClip clip)
+        {
+            clip = null;
+            if (variantsProperty == null || variantsProperty.arraySize == 0)
+                return false;
+
+            for (int i = 0; i < variantsProperty.arraySize; i++)
+            {
+                clip = variantsProperty.GetArrayElementAtIndex(i).objectReferenceValue as AudioClip;
+                if (clip != null)
+                    return true;
+            }
+
+            clip = null;
+            return false;
+        }
+
         private void AddEntry()
         {
             entriesProperty.arraySize++;
@@ -388,6 +559,9 @@ namespace CapstoneAudio.EditorTools
             entry.FindPropertyRelative("playbackSpeed").floatValue = 1f;
             entry.FindPropertyRelative("pitchMin").floatValue = 1f;
             entry.FindPropertyRelative("pitchMax").floatValue = 1f;
+            SerializedProperty variantPlaybackModeProperty = entry.FindPropertyRelative("variantPlaybackMode");
+            if (variantPlaybackModeProperty != null)
+                variantPlaybackModeProperty.enumValueIndex = (int)AudioVariantPlaybackMode.Random;
             entry.FindPropertyRelative("minDistance").floatValue = 1f;
             entry.FindPropertyRelative("maxDistance").floatValue = 20f;
         }
@@ -404,7 +578,7 @@ namespace CapstoneAudio.EditorTools
         private void ValidateSelectedCatalog()
         {
             serializedCatalog.ApplyModifiedProperties();
-            AudioCatalogEditorUtility.InvalidateCache();
+            ApplyCatalogChanges();
 
             List<string> issues = new List<string>();
             List<string> duplicates = selectedCatalog.GetDuplicateKeys();
@@ -428,6 +602,12 @@ namespace CapstoneAudio.EditorTools
 
                 if (!entry.HasPlayableClip)
                     issues.Add($"{entry.key} has no playable clips.");
+
+                if (entry.HasUnsupportedSimultaneousPlayback)
+                {
+                    issues.Add(
+                        $"{entry.key} uses Simultaneous variant playback, but Simultaneous is only supported for non-loop SFX.");
+                }
             }
 
             string message = issues.Count == 0
@@ -435,6 +615,21 @@ namespace CapstoneAudio.EditorTools
                 : string.Join("\n", issues);
 
             EditorUtility.DisplayDialog("Audio Catalog Validation", message, "OK");
+        }
+
+        private void ApplyCatalogChanges()
+        {
+            if (selectedCatalog == null)
+                return;
+
+            selectedCatalog.MarkLookupDirty();
+            EditorUtility.SetDirty(selectedCatalog);
+            AudioCatalogEditorUtility.InvalidateCache();
+
+            if (EditorApplication.isPlaying && SoundManager.Instance != null)
+                SoundManager.Instance.RefreshCatalogRuntime(selectedCatalog);
+
+            AssetDatabase.SaveAssetIfDirty(selectedCatalog);
         }
 
         private List<int> GetFilteredIndices()

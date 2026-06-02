@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recallSpeedMultiplier: 5
   timeoutSeconds: 2.5
-  recoverEndPoseHoldSeconds: 0.4
+  recoverEndPoseHoldSeconds: 0.6
+  postRecallPatternDelaySeconds: 1
+  recallSpeechStepIntervalSeconds: 0.8
+  recallSpeechDurationSeconds: 0.8
   recoverAnimation:
     clip: {fileID: 0}
     sampleMode: 1
@@ -26,12 +29,12 @@ MonoBehaviour:
     frameIndex: 0
     fallbackStateName: DarkLord_Hand_SwordRecover
   recallStartSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_woosh_short
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   recallCompleteSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_impact_fragment
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}

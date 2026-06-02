@@ -21,14 +21,15 @@ MonoBehaviour:
   bombDiameter: 2.1
   bombDamage: 1
   bombOffsetRange: 1.8
-  laserWarningSeconds: 0.5
-  laserAttackSeconds: 0.2
+  laserWarningSeconds: 0.4
+  laserAttackSeconds: 0.1
   laserWidth: 0.75
   laserVfxRayOriginOffset: 1.2
   finalLaserSortingLayerName: Entity
   finalLaserSortingOrder: -1
   fallbackLaserLength: 40
   laserDamage: 1
+  laserDamageIntervalSeconds: 0.35
   finalFloatAmplitude: 0.12
   finalFloatFrequency: 1.1
   openingMoveAnimation:
@@ -54,18 +55,18 @@ MonoBehaviour:
   laserVfxPrefabOverride: {fileID: 0}
   laserVfxResourcePath: DemonKing/DemonKingEgoLaserVfx
   startSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_final_start
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   bombExplosionSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_boom
+    volumeMultiplier: 0.6
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   laserWarningSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_magic_cast
+    volumeMultiplier: 0.7
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   laserFireSound:

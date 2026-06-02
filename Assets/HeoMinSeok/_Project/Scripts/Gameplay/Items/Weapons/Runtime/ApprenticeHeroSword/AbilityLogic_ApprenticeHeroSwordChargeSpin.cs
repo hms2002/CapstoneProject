@@ -35,6 +35,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
                 yield break;
             }
 
+            InputActionId chargeInputAction = ResolveChargeInputAction(input);
             float chargeElapsed = 0f;
             chargePresentation?.Update(0f);
             while (true)
@@ -45,7 +46,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
                     yield break;
                 }
 
-                bool released = input.WasReleasedThisFrame(InputActionId.Skill2) || !input.IsPressed(InputActionId.Skill2);
+                bool released = input.WasReleasedThisFrame(chargeInputAction) || !input.IsPressed(chargeInputAction);
                 if (released)
                     break;
 
@@ -210,6 +211,23 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             return;
 
         system.TryPlayAnimationTriggerHash(Animator.StringToHash(animationTrigger), definition);
+    }
+
+    private static InputActionId ResolveChargeInputAction(InputBindingService input)
+    {
+        if (input != null)
+        {
+            if (input.WasPressedThisFrame(InputActionId.Skill1))
+                return InputActionId.Skill1;
+
+            if (input.WasPressedThisFrame(InputActionId.Skill2))
+                return InputActionId.Skill2;
+
+            if (input.IsPressed(InputActionId.Skill1))
+                return InputActionId.Skill1;
+        }
+
+        return InputActionId.Skill2;
     }
 
     private static IEnumerator WaitForReleaseHitEvent(

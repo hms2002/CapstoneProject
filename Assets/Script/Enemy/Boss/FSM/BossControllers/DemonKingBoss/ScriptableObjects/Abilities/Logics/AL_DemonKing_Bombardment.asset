@@ -57,18 +57,18 @@ MonoBehaviour:
     rotationOffsetDeg: 0
     leaveFragment: 1
   chargeSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_magic_cast
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   releaseSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_smash
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   explosionSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_boom
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   bombardmentReleaseImpactCameraShake:

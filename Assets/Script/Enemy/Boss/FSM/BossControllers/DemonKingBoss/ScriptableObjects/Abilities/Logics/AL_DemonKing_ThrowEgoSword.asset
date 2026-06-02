@@ -13,11 +13,36 @@ MonoBehaviour:
   m_Name: AL_DemonKing_ThrowEgoSword
   m_EditorClassIdentifier: 
   warningSeconds: 1.4
+  aimWarningWidth: 0.22
+  throwReleaseDelaySeconds: 1.5
   throwSpeedMultiplier: 5
   wallBounceCount: 5
   throwEndPoseHoldSeconds: 0.12
+  throwReactionDelaySeconds: 0
+  throwReleaseSpeechSeconds: 1.1
+  rotateReleaseSpeechWithSword: 0
+  aimAnimation:
+    clip: {fileID: 0}
+    sampleMode: 1
+    frameIndex: 0
+    fallbackStateName: DarkLord_Sword_Idle
+  throwAnimation:
+    clip: {fileID: 0}
+    sampleMode: 0
+    frameIndex: 0
+    fallbackStateName: DarkLord_Sword_Throwing
+  throwEndPoseAnimation:
+    clip: {fileID: 0}
+    sampleMode: 3
+    frameIndex: 0
+    fallbackStateName: DarkLord_Sword_Throwing
   throwReleaseSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_woosh_short
+    volumeMultiplier: 1
     anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  throwLoopSound:
+    key: sound_boss_darklord_egosword_throw_loop
+    volumeMultiplier: 1
+    anchorPolicy: 4
     localOffset: {x: 0, y: 0, z: 0}

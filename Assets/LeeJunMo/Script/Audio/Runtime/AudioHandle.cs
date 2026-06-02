@@ -6,7 +6,7 @@ namespace CapstoneAudio
     public readonly struct AudioHandle : IEquatable<AudioHandle>
     {
         // 이 구조체의 책임:
-        // SoundManager가 재생 중인 루프 사운드를 안전하게 식별할 수 있는 불투명 핸들을 제공한다.
+        // SoundManager가 재생 중인 핸들 추적 사운드를 안전하게 식별할 수 있는 불투명 핸들을 제공한다.
 
         private readonly int id;
 

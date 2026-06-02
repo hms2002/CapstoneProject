@@ -16,14 +16,14 @@ MonoBehaviour:
   fallbackMoveSeconds: 0.35
   stopBeforeTargetDistance: 5
   warningSeconds: 0.75
-  trackingWarningSeconds: 2
-  lockOnSeconds: 0.4
+  trackingWarningSeconds: 1
+  lockOnSeconds: 0.3
   slashCommitDashSeconds: 0.16
   slashCommitDashEaseOutPower: 2
   slashRadius: 3.9
   playerAnchorInWarningRadius: 0.5
   slashAngle: 110
-  damage: 2
+  damage: 1
   knockback: 10
   fallbackLineLength: 40
   lineWidth: 0.7
@@ -69,8 +69,8 @@ MonoBehaviour:
     flipX: 0
     leaveFragment: 1
   approachSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_woosh_short
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   slashCommitSound:
@@ -79,8 +79,8 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   lineExplosionSound:
-    key: ""
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_boom
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   slashImpactCameraShake:

@@ -15,10 +15,10 @@ MonoBehaviour:
   pierceCount: 3
   firstWarningSeconds: 1
   warningStepDecrease: 0.2
-  lockOnSeconds: 0.25
+  lockOnSeconds: 0.1
   lungeSeconds: 0.16
   returnSeconds: 0.12
-  hitWidth: 1.05
+  hitWidth: 2
   damage: 1
   knockback: 5
   intervalSeconds: 0.12

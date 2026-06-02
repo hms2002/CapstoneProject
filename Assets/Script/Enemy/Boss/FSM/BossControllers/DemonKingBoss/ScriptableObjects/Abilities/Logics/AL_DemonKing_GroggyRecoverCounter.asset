@@ -70,12 +70,22 @@ MonoBehaviour:
   counterEndPoseHoldSeconds: 0.12
   minimumImpactPoseHoldSeconds: 0.5
   warningPingSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_groggycounter_eyeflash
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  swordCounterImpactSound:
+    key: sound_boss_darklord_groggycounter_sword_impact
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  handCounterImpactSound:
+    key: sound_boss_darklord_common_impact_fragment
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   counterImpactSound:
-    key: sound_boss_darklord_swordgroggycounter
+    key:
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}

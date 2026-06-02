@@ -103,8 +103,8 @@ MonoBehaviour:
     flipX: 0
     leaveFragment: 1
   rushStartSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_woosh_short
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   rushEndpointSound:
@@ -113,8 +113,8 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   finalLandingSound:
-    key: ""
-    volumeMultiplier: 0
+    key: sound_boss_darklord_common_smash
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   rushEndpointCameraShake:
