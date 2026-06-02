@@ -1526,7 +1526,7 @@ MonoBehaviour:
     variantPlaybackMode: 1
     variants:
     - {fileID: 8300000, guid: 5ecda9a410470cf4d8e0eae7ebab7a94, type: 3}
-    volume: 0.45
+    volume: 0.58
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
