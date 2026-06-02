@@ -61,7 +61,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -75,7 +75,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -99,7 +99,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -127,12 +127,12 @@ TextureImporter:
       name: DragonMeleeAttack_0
       rect:
         serializedVersion: 2
-        x: 11
-        y: 1
-        width: 11
-        height: 90
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 0
+        width: 64
+        height: 102
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -149,12 +149,12 @@ TextureImporter:
       name: DragonMeleeAttack_1
       rect:
         serializedVersion: 2
-        x: 27
+        x: 64
         y: 0
-        width: 8
-        height: 92
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 64
+        height: 102
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -171,12 +171,12 @@ TextureImporter:
       name: DragonMeleeAttack_2
       rect:
         serializedVersion: 2
-        x: 43
-        y: 1
-        width: 10
-        height: 89
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 128
+        y: 0
+        width: 64
+        height: 102
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -193,12 +193,12 @@ TextureImporter:
       name: DragonMeleeAttack_3
       rect:
         serializedVersion: 2
-        x: 76
-        y: 3
-        width: 8
-        height: 83
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 192
+        y: 0
+        width: 64
+        height: 102
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -215,108 +215,20 @@ TextureImporter:
       name: DragonMeleeAttack_4
       rect:
         serializedVersion: 2
-        x: 92
-        y: 3
-        width: 6
-        height: 72
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 256
+        y: 0
+        width: 64
+        height: 102
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 8ec2c0f153e2874d0800000000000000
+      spriteID: 0d2a0a5405ff9ca42b155fd5b1e245c3
       internalID: -3136706334774514456
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DragonMeleeAttack_5
-      rect:
-        serializedVersion: 2
-        x: 108
-        y: 2
-        width: 7
-        height: 68
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 29548e257dedce300800000000000000
-      internalID: 282845893007787410
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DragonMeleeAttack_6
-      rect:
-        serializedVersion: 2
-        x: 141
-        y: 9
-        width: 7
-        height: 55
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2f9fc654c7ee52bf0800000000000000
-      internalID: -349611178543220238
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DragonMeleeAttack_7
-      rect:
-        serializedVersion: 2
-        x: 156
-        y: 12
-        width: 6
-        height: 41
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e0b29fc36ba36ad50800000000000000
-      internalID: 6748145646042688270
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DragonMeleeAttack_8
-      rect:
-        serializedVersion: 2
-        x: 172
-        y: 12
-        width: 135
-        height: 47
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 57f0aa6ba4918a950800000000000000
-      internalID: 6460441474145849205
       vertices: []
       indices: 
       edges: []
@@ -325,7 +237,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 591281e812537ec409c3618e0e263fd2
     internalID: 0
     vertices: []
     indices: 
@@ -333,17 +245,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":5.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":102.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":1.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":2,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       DragonMeleeAttack_0: 7980945633321865939
       DragonMeleeAttack_1: -4549156975842090798
       DragonMeleeAttack_2: 541125525646022037
       DragonMeleeAttack_3: 4600016971098894413
       DragonMeleeAttack_4: -3136706334774514456
-      DragonMeleeAttack_5: 282845893007787410
-      DragonMeleeAttack_6: -349611178543220238
-      DragonMeleeAttack_7: 6748145646042688270
-      DragonMeleeAttack_8: 6460441474145849205
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

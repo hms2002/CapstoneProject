@@ -153,8 +153,9 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
         owner.PlayMagicCastAnimation();
         SoundPlaybackUtility.Play(AttackSound, causer: gameObject, position: context.LineCenter, sourceObject: this);
         owner.FillBlastPoints(context, blastPoints);
-        SpawnBlastEffects(context, blastEffectConfig);
-        owner.TryHitBlasts(system, spec, context, blastPoints);
+        bool timedHitEffectsSpawned = SpawnBlastEffects(system, spec, context, blastEffectConfig);
+        if (!timedHitEffectsSpawned)
+            owner.TryHitBlasts(system, spec, context, blastPoints);
     }
 
     /// <summary>
@@ -162,16 +163,24 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
     /// - Bishop 직선 마법의 실제 폭발 지점마다 독립 VFX를 생성한다.
     /// - VFX 프리팹 구현 방식이 Particle/Animator/단순 GameObject 중 무엇이어도 수명 뒤 자동 제거한다.
     /// </summary>
-    private void SpawnBlastEffects(Bishop.LineBlastContext context, BlastEffectConfig config)
+    private bool SpawnBlastEffects(
+        AbilitySystem system,
+        AbilitySpec spec,
+        Bishop.LineBlastContext context,
+        BlastEffectConfig config)
     {
         if (config.Prefab == null || blastPoints.Count == 0)
-            return;
+            return false;
 
         Quaternion rotation = config.AlignToLine
             ? Quaternion.Euler(0f, 0f, Mathf.Atan2(context.Direction.y, context.Direction.x) * Mathf.Rad2Deg)
             : Quaternion.identity;
 
         float scale = Mathf.Max(0.01f, context.BlastDiameter * config.ScaleMultiplier);
+        CombatHitPayload hitPayload = owner.BuildBlastHitPayload(system, spec);
+        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry = null;
+        bool spawnedTimedHitEffect = false;
+
         for (int i = 0; i < blastPoints.Count; i++)
         {
             GameObject effect = Instantiate(config.Prefab, blastPoints[i], rotation);
@@ -179,8 +188,19 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
                 continue;
 
             effect.transform.localScale = Vector3.Scale(effect.transform.localScale, new Vector3(scale, scale, 1f));
+            TimedAnimatedHitEffect2D timedHitEffect = effect.GetComponentInChildren<TimedAnimatedHitEffect2D>(true);
+            if (timedHitEffect != null && hitPayload != null)
+            {
+                sharedHitRegistry ??= new TimedAnimatedHitEffect2D.SharedHitRegistry();
+                timedHitEffect.Play(context.BlastViewTime, hitPayload, sharedHitRegistry);
+                spawnedTimedHitEffect = true;
+                continue;
+            }
+
             Destroy(effect, ResolveEffectLifetime(effect, config.FallbackLifetime));
         }
+
+        return spawnedTimedHitEffect;
     }
 
     /// <summary>

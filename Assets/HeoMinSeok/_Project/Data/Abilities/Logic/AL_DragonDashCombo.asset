@@ -60,13 +60,13 @@ MonoBehaviour:
       customDirection: {x: 0, y: 0, z: 0}
       ignoreScreenShakeSetting: 0
     effect:
-      prefab: {fileID: 6877616746287651068, guid: 230cdfca747527646b1afc30748bbfcc, type: 3}
+      prefab: {fileID: 3307170715522110138, guid: c8c33100ea5ce0c4fa0b9496b032c2af, type: 3}
       localOffset: {x: 0, y: 0, z: 0}
-      rotationOffsetZ: 0
-      scaleMultiplier: {x: 0.3, y: 0.3, z: 0}
+      rotationOffsetZ: 90
+      scaleMultiplier: {x: 0.6, y: 0.8, z: 1}
       attachToTarget: 0
       anchorMode: 0
-      scaleMode: 0
+      scaleMode: 1
       boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
@@ -87,6 +87,8 @@ MonoBehaviour:
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
+  dashAttackPresentationSpawnMode: 1
+  bossOriginScaleXByDashLength: 0
   dashAttackSoundsByDash:
   - key: sound_dragon_dash1
     volumeMultiplier: 1

@@ -733,7 +733,7 @@ MonoBehaviour:
       aiSelectionLockTime: 0.4
       postPatternDelay: 0.55
       minDistanceToTarget: 0
-      maxDistanceToTarget: 6
+      maxDistanceToTarget: 15
       minHpRatio: 0
       maxHpRatio: 1
       additionalConditions: []
