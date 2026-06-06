@@ -6,46 +6,46 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/_Project/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
-    path: Assets/Scenes/TitleScene.unity
+    path: Assets/_Project/Scenes/TitleScene.unity
     guid: cd86442ed1495fd4d8436f3c23100177
   - enabled: 1
-    path: Assets/Scenes/TutorialCorridor.unity
+    path: Assets/_Project/Scenes/TutorialCorridor.unity
     guid: ce806cf8fc6515244be9e5b5a1d39ada
   - enabled: 1
-    path: Assets/Scenes/DarkLord_Tutorial.unity
+    path: Assets/_Project/Scenes/DarkLord_Tutorial.unity
     guid: 8a047dbd44c874140b290b75337e2214
   - enabled: 1
-    path: Assets/Scenes/ProtoTypeHub.unity
+    path: Assets/_Project/Scenes/ProtoTypeHub.unity
     guid: 1885b7f69a4ac174784d9d21fa889aa6
   - enabled: 1
-    path: Assets/Scenes/ShadowCorridor.unity
+    path: Assets/_Project/Scenes/ShadowCorridor.unity
     guid: 347c2e0bb3b6c8c4ba08910d79fa7ca5
   - enabled: 1
-    path: Assets/Scenes/HeoMinSeok_Boss_Shadow.unity
+    path: Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity
     guid: f24251656cc0b71449518198fb0423b0
   - enabled: 1
-    path: Assets/Scenes/DragonCorridor.unity
+    path: Assets/_Project/Scenes/DragonCorridor.unity
     guid: bfd9d6b641331574e9884c3f75f00f11
   - enabled: 1
-    path: Assets/Scenes/HeoMinSeok_Boss_Dragon.unity
+    path: Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity
     guid: a12f8757a34e86041902dbfa6e583af7
   - enabled: 1
-    path: Assets/Scenes/SangHyup_Hallway.unity
+    path: Assets/_Project/Scenes/SangHyup_Hallway.unity
     guid: 47f19da84dd4d6a4b95f6c74c3885bb5
   - enabled: 1
-    path: Assets/Scenes/SlimeCorridor.unity
+    path: Assets/_Project/Scenes/SlimeCorridor.unity
     guid: 1839492c4ad06eb4386d432818482551
   - enabled: 1
-    path: Assets/Scenes/SangHyup_Boss_SlimeQueen.unity
+    path: Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity
     guid: 9fda7339af9c20946807655a94cfc671
   - enabled: 1
-    path: Assets/Scenes/DemonkingCorridor.unity
+    path: Assets/_Project/Scenes/DemonkingCorridor.unity
     guid: 2b9ae993eb2d68a4bac3df3d12e7e164
   - enabled: 1
-    path: Assets/Scenes/LeeJunmo_Boss_DemonKing.unity
+    path: Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity
     guid: 0c24345d0b1badb4981f9aa3e94f0faa
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 0e3962ceda711e54f95a96b5e9a5393b, type: 2}

@@ -1,9 +1,9 @@
 ﻿<Solution>
-  <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Ink-Libraries.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="InkEditor.csproj" />
   <Project Path="Assembly-CSharp-firstpass.csproj" />
-  <Project Path="Assembly-CSharp-Editor-firstpass.csproj" />
   <Project Path="PlayModeTests.csproj" />
+  <Project Path="Assembly-CSharp-Editor-firstpass.csproj" />
 </Solution>
