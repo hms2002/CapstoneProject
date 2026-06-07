@@ -1,0 +1,53 @@
+Mode: Verification
+Risk: Medium
+Target Type: [Core / Framework / Leaf / Documentation]
+Do not edit files.
+
+Task:
+현재 diff 또는 완료된 작업을 검토한다.
+
+Goal:
+[검토가 끝나면 변경이 계획/범위/검증 기준에 맞는지 판단할 수 있어야 하는 것]
+
+Intent:
+[왜 검증하는지, 특히 막아야 할 회귀/Unity 위험]
+
+Context:
+[승인된 계획, 변경 요약, 관련 파일, 실행한 검증 명령]
+
+Allowed:
+- Read relevant files and routed docs.
+- Inspect git diff/status.
+- Run non-mutating static checks.
+
+Forbidden:
+- File edits.
+- Extra fixes.
+- Out-of-scope cleanup.
+- scene/prefab/SO/serialized field changes unless explicitly approved.
+- Architecture/Contracts changes unless explicitly approved.
+
+Check:
+- Whether changes match the approved plan.
+- Whether forbidden files or scopes were touched.
+- Unity reference/serialization/prefab risks.
+- Verification command results.
+- Remaining risks.
+
+Output:
+- 문제 없음 / 문제 있음.
+- Risk-bearing files.
+- Regression possibilities.
+- Not Verified items.
+- Suggested Later.
+
+Verification:
+- Static checks: [git diff/status/rg/doc link checks]
+- Unity compile/batchmode/Play Mode: not run unless explicitly required and allowed.
+- Report unexecuted checks as Not Verified.
+
+Assumptions:
+- [Codex가 멋대로 추정하면 안 되는 누락 정보]
+
+Out-of-scope:
+- Report out-of-scope findings under Suggested Later instead of fixing them.

@@ -7,6 +7,20 @@ last_reviewed: 2026-06-01
 
 # Decision Log
 
+## 2026-06-06 - TaskIndex And ActiveTasks Replace CurrentTask Scope
+
+Decision:
+`Docs/CurrentTask.md` is deprecated as the active task-scope source. New Codex work should use the current prompt Task Brief and, when present, a matching `Docs/ActiveTasks/<task-id>.md` for scope. `Docs/TaskIndex.md` is the router/dashboard for active and proposed task documents.
+
+Reason:
+The project frequently uses multiple Codex threads in parallel. A single global current-task document can point at the wrong thread's work and create scope drift.
+
+Implications:
+- This decision supersedes the earlier `Update CurrentTask on Active Work Changes` policy for future work.
+- Scope authority and technical authority are separate: ActiveTasks define thread scope, while `Docs/Contracts/` and `Docs/Architecture/` remain the strongest technical authorities.
+- `Docs/ErrorLog.md` and `Docs/DecisionLog.md` should be searched when relevant instead of fully reread for every task.
+- Historical `CurrentTask` mentions in session logs and old decisions remain as history unless a separate cleanup task is approved.
+
 ## 2026-06-02 - Audio Catalog Supports Play Mode Live Tuning
 
 Decision:

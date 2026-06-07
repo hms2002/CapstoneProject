@@ -1,0 +1,4 @@
+interface:
+  display_name: "Task Brief"
+  short_description: "Normalize rough Codex requests"
+  default_prompt: "Use $task-brief to turn this rough request into a scoped project Task Brief."

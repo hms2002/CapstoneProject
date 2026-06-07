@@ -2,39 +2,53 @@
 status: active
 authority: docs-router
 category: router
-last_reviewed: 2026-05-15
+last_reviewed: 2026-06-06
 ---
 
 # Project Docs Guide
 
 이 문서는 "무엇을 하려는지" 기준으로 어디 문서를 먼저 읽어야 하는지 안내하는 빠른 라우터입니다.
 
-## 작업 전 기본 읽기 순서
+## 작업 전 라우팅 순서
 
-1. [`CurrentTask.md`](./CurrentTask.md)
-2. [`ErrorLog.md`](./ErrorLog.md)
-3. [`DecisionLog.md`](./DecisionLog.md)
-4. 이 README에서 작업 목적에 맞는 문서
+1. 현재 사용자 지시와 prompt Task Brief를 먼저 따른다.
+2. 지시가 특정 작업을 가리키면 [`ActiveTasks/`](./ActiveTasks/)에서 matching task 문서를 확인한다.
+3. 작업이 명확하지 않으면 [`TaskIndex.md`](./TaskIndex.md)를 router/dashboard로 확인한다.
+4. 그 다음 이 README에서 작업 목적에 맞는 기술 문서를 고른다.
+5. [`ErrorLog.md`](./ErrorLog.md)와 [`DecisionLog.md`](./DecisionLog.md)는 관련 키워드가 있거나 사용자가 요청했을 때 검색한다.
 
-## 문서 권위 순서
+[`CurrentTask.md`](./CurrentTask.md)는 deprecated입니다. 새 active scope는 prompt Task Brief 또는 `Docs/ActiveTasks/<task-id>.md`가 정의합니다.
 
-문서 내용이 충돌하면 아래 순서를 우선합니다.
+## Scope Authority
+
+작업 범위가 충돌하면 아래 순서를 우선합니다.
 
 1. 현재 사용자 지시
-2. [`CurrentTask.md`](./CurrentTask.md)
-3. [`Contracts/`](./Contracts/)
-4. [`Architecture/`](./Architecture/)
-5. [`Guides/`](./Guides/)
-6. [`StructureMemory/`](./StructureMemory/)
-7. [`RefactorBacklog/`](./RefactorBacklog/)
-8. [`Reviews/`](./Reviews/)
-9. [`Notes/`](./Notes/)
-10. [`Handoffs/`](./Handoffs/)
+2. 현재 prompt Task Brief
+3. matching [`ActiveTasks/<task-id>.md`](./ActiveTasks/)
+4. [`TaskIndex.md`](./TaskIndex.md) router/dashboard context
+
+Scope Authority는 "이번 스레드에서 무엇을 바꿀 수 있는가"를 정합니다. 기술 계약을 덮어쓰지는 않습니다.
+
+## Technical Authority
+
+기술 구조, 구현 규칙, 계약이 충돌하면 아래 순서를 우선합니다.
+
+1. [`Contracts/`](./Contracts/)
+2. [`Architecture/`](./Architecture/)
+3. [`Guides/`](./Guides/)
+4. [`StructureMemory/`](./StructureMemory/)
+5. [`RefactorBacklog/`](./RefactorBacklog/)
+6. [`Reviews/`](./Reviews/)
+7. [`Notes/`](./Notes/)
+8. [`Handoffs/`](./Handoffs/)
 
 `StructureMemory` and `RefactorBacklog` are context/planning documents. They help future work start faster, but they do not override `Contracts` or `Architecture`.
 
 ## Memory Document Types
 
+- [`TaskIndex.md`](./TaskIndex.md) is a router/dashboard for active and proposed task documents. It is not active scope.
+- [`ActiveTasks/`](./ActiveTasks/) stores thread-specific task scope, mode, risk, allowed/forbidden changes, done criteria, and verification plan.
 - [`SessionLogs/`](./SessionLogs/) records dated task outcomes, verification, manual checks, and remaining risks.
 - [`StructureMemory/`](./StructureMemory/) stores feature-level structure maps for fast context reconstruction.
 - [`RefactorBacklog/`](./RefactorBacklog/) tracks intentional structural debt and refactor candidates with target shape and triggers.
@@ -52,6 +66,15 @@ last_reviewed: 2026-05-15
 - HUD와 tooltip은 상태를 소유하지 않고, 현재 활성 상태를 projection 해서 표시만 합니다.
 
 ## 문서를 고르는 법
+
+### Codex 작업 범위와 지시 품질을 관리하고 싶다
+- [Task Index](./TaskIndex.md)
+- [Active Tasks](./ActiveTasks/README.md)
+- [Task Brief Guide](./Guides/TaskBriefGuide.md)
+- [Task Brief Templates](./_templates/)
+- [Refactoring Guide](./Guides/RefactoringGuide.md)
+- [`Tools/codex-task-brief.ahk`](../Tools/codex-task-brief.ahk): Codex 앱 composer에 Task Brief 템플릿을 붙여넣는 AutoHotkey v2 도구입니다.
+- `$task-brief` repo skill: rough requests를 Task Brief로 정규화할 때 사용합니다. 빈 템플릿 삽입용이 아닙니다.
 
 ### Codex / Obsidian 문서 기억 시스템을 관리하고 싶다
 - [Document Inventory](./Overview/document-inventory.md)

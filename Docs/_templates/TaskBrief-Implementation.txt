@@ -1,0 +1,40 @@
+Mode: Implementation
+Risk: Medium
+Target Type: [Core / Framework / Leaf / Documentation]
+
+PLEASE IMPLEMENT THIS PLAN:
+[승인한 계획을 붙여넣기]
+
+Goal:
+[완료 시 실제로 바뀌어야 하는 동작/문서/도구 상태]
+
+Intent:
+[왜 이 구현이 필요한지, 지켜야 할 구조 방향, 피해야 할 shortcut]
+
+Allowed:
+- Implement only the approved plan.
+- [수정 허용 파일/폴더/시스템]
+
+Forbidden:
+- Plan-outside changes.
+- Out-of-scope fixes.
+- scene/prefab/SO/serialized field changes unless explicitly approved.
+- Architecture/Contracts changes unless explicitly approved.
+- unrelated cleanup.
+- Claiming compile, Unity import, Play Mode, or build success unless actually run.
+
+Done Criteria:
+- [필수 변경 1]
+- [필수 변경 2]
+- [검증/보고 조건]
+
+Verification:
+- Static checks: [rg/git diff/static analysis/doc link checks]
+- Unity checks: [compile/batchmode/Play Mode/manual check, or Not Verified]
+- Report unexecuted checks as Not Verified.
+
+Assumptions:
+- [Codex가 멋대로 추정하면 안 되는 누락 정보]
+
+Out-of-scope:
+- Report out-of-scope findings under Suggested Later instead of fixing them.

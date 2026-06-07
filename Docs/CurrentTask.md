@@ -1,50 +1,27 @@
 ---
-status: active
-authority: current-task
-category: run-route-catalog-fixed-order
-last_reviewed: 2026-06-01
+status: deprecated
+authority: deprecated-compatibility-notice
+category: task-routing
+last_reviewed: 2026-06-06
 ---
 
-# Current Task
+# CurrentTask.md Is Deprecated
 
-## Goal
+`Docs/CurrentTask.md` is no longer the active task-scope source for this project.
 
-Add a `RunRouteCatalogSO` toggle that lets a run use the authored normal RouteSet order exactly, so the demo route can follow the configured three normal RouteSets before the final boss.
+Use the new routing model instead:
 
-## Requested Work
+- Current prompt Task Brief: first source for the current thread's scope.
+- `Docs/ActiveTasks/<task-id>.md`: thread-specific active task scope when a task document exists.
+- `Docs/TaskIndex.md`: router/dashboard for active or proposed task documents.
+- `Docs/README.md`: technical documentation router.
 
-- Add a fixed normal RouteSet order toggle to `RunRouteCatalogSO`.
-- Keep the existing random normal RouteSet behavior when the toggle is disabled.
-- When the toggle is enabled, build the normal route plan from `normalRouteSets` in serialized order, up to `normalStageCount`, then append `finalRouteSet`.
-- Enable the toggle on the current `RunRouteCatalog.asset` whose normal order is Shadow, Dragon, then Slime.
+Do not add new task scope here. This file remains only as a compatibility notice for old links and historical references.
 
-## Scope Notes
+## Replacement Flow
 
-- Do not directly edit Unity scene YAML.
-- Do not add new managers, singletons, or `DontDestroyOnLoad` objects.
-- This task intentionally changes the `RunRouteCatalogSO` serialized ScriptableObject schema by adding one boolean field.
-- Unity Editor is open, so do not run Unity batchmode.
-- Do not modify scene or prefab portal authoring for this task.
-- Keep `finalRouteSet` as the final boss route appended after the normal route sequence.
-
-## Done Criteria
-
-- `RunRouteCatalogSO` exposes a fixed normal route order toggle.
-- `PortalRouteManager` builds fixed-mode plans in `normalRouteSets` order and leaves random-mode behavior unchanged.
-- The current `RunRouteCatalog.asset` has the fixed-order toggle enabled.
-- Existing route validation reports or applies the fixed-order catalog policy when relevant.
-- Static checks and project-file inclusion checks are run.
-
-## Verification Plan
-
-- Run `rg` checks for the fixed-order toggle, plan branch, validator policy, and asset serialized value.
-- Confirm touched runtime C# files are included in `Assembly-CSharp.csproj`.
-- Confirm touched editor C# files are included in `Assembly-CSharp-Editor.csproj`.
-- Run `dotnet build Assembly-CSharp.csproj --no-restore` and `dotnet build Assembly-CSharp-Editor.csproj --no-restore` when the project files include touched scripts.
-- Do not run Unity batchmode while Unity Editor processes are open.
-- Manual Play Mode still needs to verify fixed ON route order from hub start, fixed OFF random behavior, and insufficient/null RouteSet failure logging.
-
-## Remaining Risks
-
-- `RunRouteCatalogSO` has a new serialized field, so Unity Editor import/Inspector review is required.
-- Runtime route behavior must be confirmed in Play Mode because the plan is activated through hub-start portal flow.
+1. Start from the user prompt and identify the work mode.
+2. If a matching ActiveTask exists, read it for scope.
+3. If not, treat the prompt Task Brief as the scope for this thread.
+4. Use `Docs/TaskIndex.md` only to find or register task documents.
+5. Use `Docs/README.md` to route into Contracts, Architecture, Guides, StructureMemory, RefactorBacklog, Reviews, Notes, or Handoffs.

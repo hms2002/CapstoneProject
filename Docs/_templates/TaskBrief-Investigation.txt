@@ -1,0 +1,47 @@
+Mode: Investigation
+Risk: Medium
+Target Type: [Core / Framework / Leaf / Documentation]
+Do not edit files.
+
+Task:
+[problem/system]을 조사한다.
+
+Goal:
+[이번 조사가 끝났을 때 알아야 하는 것]
+
+Intent:
+[왜 조사하는지, 지켜야 할 구조 방향, 피해야 할 shortcut]
+
+Context:
+[증상, 재현 절차, 관련 scene/prefab/asset/script/docs, 최근 변경]
+
+Allowed:
+- Read relevant files and routed docs.
+- Run non-mutating static inspection commands.
+
+Forbidden:
+- File edits.
+- Out-of-scope fixes.
+- scene/prefab/SO/serialized field changes unless explicitly approved.
+- Architecture/Contracts changes unless explicitly approved.
+- unrelated cleanup.
+
+Output:
+- Final decisions or current facts found.
+- Cause candidates.
+- Related files/lines.
+- Unity asset/serialization risks.
+- Fix candidates.
+- Suggested Later.
+- No implementation plan yet.
+
+Verification:
+- Static checks: [rg/git diff/static analysis/doc link checks]
+- Unity compile/batchmode/Play Mode: not run unless explicitly required and allowed.
+- Report unexecuted checks as Not Verified.
+
+Assumptions:
+- [Codex가 멋대로 추정하면 안 되는 누락 정보]
+
+Out-of-scope:
+- Report out-of-scope findings under Suggested Later instead of fixing them.

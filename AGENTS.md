@@ -4,44 +4,68 @@
 
 You are working on a Unity 2D top-down roguelike action project.
 
-## Required Reading Order
+## Task Routing
 
-Before planning or editing, read these files in order:
+Before non-trivial planning or editing, identify the task scope from the current prompt and project task routing:
 
-1. `Docs/CurrentTask.md`
-2. `Docs/ErrorLog.md`
-3. `Docs/DecisionLog.md`
-4. `Docs/README.md`
+1. The user's current instruction and any Task Brief in the prompt.
+2. A matching document in `Docs/ActiveTasks/`, when the prompt names or clearly matches one.
+3. `Docs/TaskIndex.md` as a router/dashboard only, not as active task scope.
+4. `Docs/README.md` for task-specific documentation routes.
 
-Then read only the task-specific documents routed by `Docs/README.md`.
+`Docs/CurrentTask.md` is deprecated and must not be used as the active task scope for new work.
+Search `Docs/ErrorLog.md` and `Docs/DecisionLog.md` only when the task is related to known recurring mistakes, durable decisions, lifecycle/serialization risks, or the user explicitly asks for those logs.
 
-## Documentation Authority
+## Scope Authority
 
-When documents conflict, follow this authority order:
+When scope documents conflict, follow this order:
 
-1. The user's current instruction
-2. `Docs/CurrentTask.md`
-3. `Docs/Contracts/`
-4. `Docs/Architecture/`
-5. `Docs/Guides/`
-6. `Docs/StructureMemory/`
-7. `Docs/RefactorBacklog/`
-8. `Docs/Reviews/`
-9. `Docs/Notes/`
-10. `Docs/Handoffs/`
+1. The user's current instruction.
+2. The current prompt's Task Brief.
+3. The matching `Docs/ActiveTasks/<task-id>.md`.
+4. `Docs/TaskIndex.md` as router/dashboard context only.
+
+Scope authority defines what this thread is allowed to change. It does not override technical contracts.
+
+## Technical Authority
+
+When implementation or architecture documents conflict, follow this order:
+
+1. `Docs/Contracts/`
+2. `Docs/Architecture/`
+3. `Docs/Guides/`
+4. `Docs/StructureMemory/`
+5. `Docs/RefactorBacklog/`
+6. `Docs/Reviews/`
+7. `Docs/Notes/`
+8. `Docs/Handoffs/`
 
 `Docs/StructureMemory/` and `Docs/RefactorBacklog/` are context and planning aids, not source-of-truth documents. `Docs/Reviews/`, `Docs/Notes/`, and `Docs/Handoffs/` are reference-only. Do not let any of these override `Contracts` or `Architecture`.
 
+## Work Mode Gate
+
+Start non-trivial work by identifying the active mode. If the mode is unclear, default to Investigation Mode.
+
+- Investigation: inspect and report causes, related files, risks, and candidate fixes. Do not edit files.
+- Planning: create or refine an implementation plan. Do not edit files.
+- Implementation: execute only the approved plan or explicitly allowed scope.
+- Verification: review the diff, behavior, or checks against the success criteria. Do not add new fixes unless the user switches back to Implementation.
+- Spike: perform a disposable experiment only when the user explicitly accepts throwaway work and cleanup expectations.
+- Micro-fix: perform a local, low-risk edit only when scope and success criteria are obvious.
+
+Do not switch modes automatically. Out-of-scope findings must be reported as `Suggested Later` instead of being fixed in the current slice.
+
+For non-trivial or fuzzy requests, use `Docs/Guides/TaskBriefGuide.md` or the `$task-brief` repo skill to normalize the request before implementation. Keep this file concise; detailed templates and examples belong in the guide or `Docs/_templates/`.
+
 ## Work Rules
 
-- Stay inside the scope of `Docs/CurrentTask.md` unless the user explicitly expands it.
-- Do not modify Unity scenes, prefabs, serialized fields, or ScriptableObject schemas without calling out reference risks first.
-- Do not rename serialized fields unless prefab/scene migration risk has been reviewed.
-- Do not add new Managers, Singletons, or `DontDestroyOnLoad` objects without first proposing the design.
+- Stay inside the current prompt Task Brief or matching `Docs/ActiveTasks/<task-id>.md` unless the user explicitly expands scope.
+- Do not modify Unity scenes, prefabs, ScriptableObject schemas, serialized field names, enum persistent values/order, Animator parameters, Animation Events, Resources paths, `.meta`/GUIDs, asmdefs, ProjectSettings, Input Actions, Tags/Layers, or `DontDestroyOnLoad`/bootstrap flow without explicit user approval.
+- Do not add new Managers, Singletons, or `DontDestroyOnLoad` objects without first proposing the design and receiving approval.
 - Prefer small, reviewable changes over broad rewrites.
 - Do not rewrite `Docs/Architecture/` or `Docs/Contracts/` directly unless the user approves that documentation update.
-- You may update `Docs/SessionLogs/`, `Docs/StructureMemory/`, `Docs/RefactorBacklog/`, `Docs/ErrorLog.md`, and `Docs/DecisionLog.md` when the task outcome requires it.
-- Update `Docs/CurrentTask.md` only when the user explicitly asks to change the active task scope.
+- You may update `Docs/TaskIndex.md`, `Docs/ActiveTasks/`, `Docs/SessionLogs/`, `Docs/StructureMemory/`, `Docs/RefactorBacklog/`, `Docs/ErrorLog.md`, and `Docs/DecisionLog.md` when the task outcome requires it and scope allows it.
+- Do not use `Docs/CurrentTask.md` for new active task scope. It exists only as a deprecated compatibility notice.
 
 ## Presentation HTML Rules
 
@@ -56,7 +80,7 @@ When documents conflict, follow this authority order:
 - Put shared rendering helpers in `Docs/Presentation/_shared/docs-render.js`.
 - Prefer editing `docs-data.js` for content updates instead of rewriting HTML structure.
 - Use small Mermaid UML-like diagrams only when they improve human understanding.
-- Session logs, `CurrentTask`, `DecisionLog`, and `ErrorLog` remain Markdown-first.
+- Session logs, `TaskIndex`, `ActiveTasks`, `DecisionLog`, and `ErrorLog` remain Markdown-first.
 - Do not create one HTML file per Markdown document unless explicitly requested.
 
 ## Presentation HTML Approval Policy
@@ -141,6 +165,7 @@ Create or update one when a task leaves a legacy adapter, temporary fallback, re
 - If the decision should remain durable beyond the current task, add a short entry to `Docs/DecisionLog.md`.
 - If the task reveals a recurring implementation mistake or lifecycle/serialization/prefab trap, add or update `Docs/ErrorLog.md`.
 - If an `Architecture` or `Contracts` document should become the source of truth, call that out as a follow-up unless the user explicitly approves editing that document.
+- At the end of non-trivial work, run a Doc Impact Check and report one of: no doc update needed, SessionLog, StructureMemory, RefactorBacklog, DecisionLog, ErrorLog, Architecture/Contracts promotion candidate, or Presentation HTML stale candidate.
 - Do not create broad new memory documents for every small edit; prefer updating the narrowest existing document that will help the next related task start faster.
 
 ## MCP / Obsidian Rules
@@ -149,12 +174,15 @@ Create or update one when a task leaves a legacy adapter, temporary fallback, re
 - `Docs/` is the source of truth, not a separate external vault.
 - MCP read access may cover all of `Docs/`.
 - MCP or agent write access is limited to:
+  - `Docs/TaskIndex.md`
+  - `Docs/ActiveTasks/`
+  - `Docs/Guides/` only when explicitly approved
   - `Docs/SessionLogs/`
   - `Docs/StructureMemory/`
   - `Docs/RefactorBacklog/`
   - `Docs/ErrorLog.md`
   - `Docs/DecisionLog.md`
-  - `Docs/CurrentTask.md` only when explicitly requested
+  - `Docs/CurrentTask.md` only for deprecated-notice maintenance when explicitly requested
 - Do not rewrite `Docs/Architecture/`, `Docs/Contracts/`, or `Docs/Guides/` through MCP without explicit approval.
 
 ## Unity Project Rules
@@ -185,3 +213,4 @@ At the end of every task, report:
 - How the work was verified
 - Remaining risks or follow-up decisions
 - Whether `SessionLogs`, `ErrorLog`, or `DecisionLog` were updated
+- Doc Impact Check category, including whether Presentation HTML may be stale
