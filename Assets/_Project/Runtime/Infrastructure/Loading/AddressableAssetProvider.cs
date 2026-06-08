@@ -5,11 +5,16 @@ using CapstonePresentation;
 using CapstoneRuntime;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceLocations;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
+/// <summary>
+/// Loading manifest assets을 Addressables로 유지하되, 누락된 주소는 직접 참조로 안전하게 대체하는 provider입니다.
+/// </summary>
 [DefaultExecutionOrder(-871)]
 [DisallowMultipleComponent]
 public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IAssetProviderDebugInfo
@@ -384,6 +389,19 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
             return AssetProviderOperation.Completed(BuildOperationLabel("ResolveDirectAsset", sourceAsset));
         }
 
+        if (!HasAddressableLocation(addressKey))
+        {
+            loadStates[sourceId] = new LoadState
+            {
+                SourceId = sourceId,
+                SourceAsset = sourceAsset,
+                AddressKey = addressKey,
+                LoadedAsset = sourceAsset
+            };
+            RecordDebugEvent($"Address key not found for {sourceAsset.name} [{addressKey}]; using direct reference.");
+            return AssetProviderOperation.Completed(BuildOperationLabel("ResolveDirectAsset", sourceAsset));
+        }
+
         AsyncOperationHandle<UnityEngine.Object> handle;
         try
         {
@@ -417,6 +435,25 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
         operation.ReportProgress(handle.PercentComplete);
         StartCoroutine(CompleteLoadOperation(state, operation));
         return operation;
+    }
+
+    private static bool HasAddressableLocation(string addressKey)
+    {
+        if (string.IsNullOrWhiteSpace(addressKey))
+            return false;
+
+        foreach (IResourceLocator locator in Addressables.ResourceLocators)
+        {
+            if (locator == null)
+                continue;
+
+            if (locator.Locate(addressKey, typeof(UnityEngine.Object), out IList<IResourceLocation> locations) &&
+                locations != null &&
+                locations.Count > 0)
+                return true;
+        }
+
+        return false;
     }
 
     private IEnumerator CompleteLoadOperation(LoadState state, AssetProviderOperation operation)

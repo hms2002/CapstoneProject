@@ -49,14 +49,24 @@ public sealed class DemoCheatService
     private string lastRunSpecialNpcSceneName;
     private int nextRunSpecialNpcIndex;
     private bool hasMapZoomSnapshot;
-    private bool demoInvulnerabilityEnabled;
-    private bool hasAppliedDemoInvulnerabilityTag;
     private bool suppressAutoInvulnerabilityUntilHealthRecovers;
-    private TagSystem demoInvulnerabilityTagSystem;
     private GameplayTag demoInvulnerabilityTag;
+    private DemoInvulnerabilitySourceState manualInvulnerability;
+    private DemoInvulnerabilitySourceState autoInvulnerability;
     private MapZoomCameraSnapshot mapZoomSnapshot;
     private Coroutine mapZoomRoutine;
     private MonoBehaviour mapZoomRoutineOwner;
+
+    /// <summary>
+    /// 책임 : 치트 무적을 수동/자동 소스별로 분리해 각 소스가 자신이 붙인 태그 count만 회수하게 보관한다.
+    /// </summary>
+    private struct DemoInvulnerabilitySourceState
+    {
+        public bool Enabled;
+        public bool HasAppliedTag;
+        public TagSystem TagSystem;
+        public GameplayTag Tag;
+    }
 
     public DemoCheatService(UnityEngine.Object logContext)
     {
@@ -213,16 +223,18 @@ public sealed class DemoCheatService
         }
 
         Log($"체력 MAX 적용. hp={maxHealth:0.###}");
+        ReleaseDemoInvulnerabilityTag(ref autoInvulnerability);
+        autoInvulnerability.Enabled = false;
         suppressAutoInvulnerabilityUntilHealthRecovers = false;
         return DemoCheatResult.Succeeded("체력을 최대치로 회복했습니다.");
     }
 
     public DemoCheatResult TogglePlayerInvulnerability(DemoCheatSettingsSO settings)
     {
-        if (demoInvulnerabilityEnabled)
+        if (manualInvulnerability.Enabled)
         {
-            ReleaseDemoInvulnerabilityTag();
-            demoInvulnerabilityEnabled = false;
+            ReleaseDemoInvulnerabilityTag(ref manualInvulnerability);
+            manualInvulnerability.Enabled = false;
             Log("무적 치트 OFF.");
             return DemoCheatResult.Succeeded("무적 치트를 비활성화했습니다.");
         }
@@ -235,8 +247,8 @@ public sealed class DemoCheatService
         if (tagSystem == null || invulnerableTag == null)
             return Fail("무적 치트 설정이 올바르지 않습니다.");
 
-        demoInvulnerabilityEnabled = true;
-        ApplyDemoInvulnerabilityTag(tagSystem, invulnerableTag);
+        manualInvulnerability.Enabled = true;
+        ApplyDemoInvulnerabilityTag(ref manualInvulnerability, tagSystem, invulnerableTag);
 
         Log($"무적 치트 ON. player={player.name}");
         return DemoCheatResult.Succeeded("무적 치트를 활성화했습니다.");
@@ -244,12 +256,17 @@ public sealed class DemoCheatService
 
     public DemoCheatResult ReleaseAutoInvulnerability(DemoCheatSettingsSO settings)
     {
-        ReleaseDemoInvulnerabilityTag();
-        demoInvulnerabilityEnabled = false;
+        bool hadAutoInvulnerability = autoInvulnerability.Enabled || autoInvulnerability.HasAppliedTag;
         suppressAutoInvulnerabilityUntilHealthRecovers = true;
 
-        Log("자동 무적 치트 해제. 체력이 임계값을 넘기 전까지 자동 재발동을 억제합니다.");
-        return DemoCheatResult.Succeeded("자동 무적을 해제했습니다.");
+        bool releasedTrackedTag = ReleaseDemoInvulnerabilityTag(ref autoInvulnerability);
+        autoInvulnerability.Enabled = false;
+        bool releasedFallbackTag = !releasedTrackedTag && TryReleaseUntrackedAutoInvulnerabilityFallback(settings);
+
+        Log($"자동 무적 치트 해제. releasedTracked={releasedTrackedTag}, releasedFallback={releasedFallbackTag}, 체력이 임계값을 넘기 전까지 자동 재발동을 억제합니다.");
+        return hadAutoInvulnerability || releasedFallbackTag
+            ? DemoCheatResult.Succeeded("자동 무적을 해제했습니다.")
+            : DemoCheatResult.Succeeded("자동 무적은 이미 비활성화되어 있습니다.");
     }
 
     public bool TryAutoEnablePlayerInvulnerability(DemoCheatSettingsSO settings, out DemoCheatResult result)
@@ -267,7 +284,16 @@ public sealed class DemoCheatService
 
         float currentHealth = attributeSet.GetAttributeValue(settings.HealthAttribute);
         if (currentHealth > settings.AutoInvulnerabilityHealthThreshold)
+        {
             suppressAutoInvulnerabilityUntilHealthRecovers = false;
+
+            if (autoInvulnerability.Enabled || autoInvulnerability.HasAppliedTag)
+            {
+                ReleaseDemoInvulnerabilityTag(ref autoInvulnerability);
+                autoInvulnerability.Enabled = false;
+                Log($"체력 회복으로 자동 무적 치트 OFF. hp={currentHealth:0.###}, threshold={settings.AutoInvulnerabilityHealthThreshold:0.###}");
+            }
+        }
 
         if (suppressAutoInvulnerabilityUntilHealthRecovers)
             return false;
@@ -281,12 +307,12 @@ public sealed class DemoCheatService
             return false;
 
         bool alreadyAppliedToCurrentPlayer =
-            demoInvulnerabilityEnabled &&
-            hasAppliedDemoInvulnerabilityTag &&
-            demoInvulnerabilityTagSystem == tagSystem;
+            autoInvulnerability.Enabled &&
+            autoInvulnerability.HasAppliedTag &&
+            autoInvulnerability.TagSystem == tagSystem;
 
-        demoInvulnerabilityEnabled = true;
-        ApplyDemoInvulnerabilityTag(tagSystem, invulnerableTag);
+        autoInvulnerability.Enabled = true;
+        ApplyDemoInvulnerabilityTag(ref autoInvulnerability, tagSystem, invulnerableTag);
 
         if (alreadyAppliedToCurrentPlayer)
             return false;
@@ -467,31 +493,63 @@ public sealed class DemoCheatService
         return demoInvulnerabilityTag;
     }
 
-    private void ApplyDemoInvulnerabilityTag(TagSystem tagSystem, GameplayTag invulnerableTag)
+    private void ApplyDemoInvulnerabilityTag(
+        ref DemoInvulnerabilitySourceState state,
+        TagSystem tagSystem,
+        GameplayTag invulnerableTag)
     {
         if (tagSystem == null || invulnerableTag == null)
             return;
 
-        if (hasAppliedDemoInvulnerabilityTag && demoInvulnerabilityTagSystem == tagSystem)
+        if (state.HasAppliedTag && state.TagSystem == tagSystem)
             return;
 
-        ReleaseDemoInvulnerabilityTag();
+        ReleaseDemoInvulnerabilityTag(ref state);
         tagSystem.AddTag(invulnerableTag, 1);
-        demoInvulnerabilityTagSystem = tagSystem;
-        demoInvulnerabilityTag = invulnerableTag;
-        hasAppliedDemoInvulnerabilityTag = true;
+        state.TagSystem = tagSystem;
+        state.Tag = invulnerableTag;
+        state.HasAppliedTag = true;
     }
 
-    private void ReleaseDemoInvulnerabilityTag()
+    private bool ReleaseDemoInvulnerabilityTag(ref DemoInvulnerabilitySourceState state)
     {
-        if (!hasAppliedDemoInvulnerabilityTag)
-            return;
+        if (!state.HasAppliedTag)
+            return false;
 
-        if (demoInvulnerabilityTagSystem != null && demoInvulnerabilityTag != null)
-            demoInvulnerabilityTagSystem.RemoveTag(demoInvulnerabilityTag, 1);
+        if (state.TagSystem != null && state.Tag != null)
+            state.TagSystem.RemoveTag(state.Tag, 1);
 
-        demoInvulnerabilityTagSystem = null;
-        hasAppliedDemoInvulnerabilityTag = false;
+        state.TagSystem = null;
+        state.Tag = null;
+        state.HasAppliedTag = false;
+        return true;
+    }
+
+    private bool TryReleaseUntrackedAutoInvulnerabilityFallback(DemoCheatSettingsSO settings)
+    {
+        if (manualInvulnerability.HasAppliedTag)
+            return false;
+
+        if (!TryResolvePlayer(out Transform player))
+            return false;
+
+        TagSystem tagSystem = player.GetComponent<TagSystem>();
+        GameplayTag invulnerableTag = ResolveInvulnerableTag(settings);
+        if (tagSystem == null || invulnerableTag == null || !tagSystem.HasTag(invulnerableTag))
+            return false;
+
+        AttributeSet attributeSet = player.GetComponent<AttributeSet>();
+        if (attributeSet != null &&
+            settings != null &&
+            settings.HealthAttribute != null &&
+            attributeSet.GetAttributeValue(settings.HealthAttribute) > settings.AutoInvulnerabilityHealthThreshold)
+        {
+            return false;
+        }
+
+        tagSystem.RemoveTag(invulnerableTag, 1);
+        LogWarning("추적 상태가 끊긴 자동 무적 태그를 fallback으로 1회 회수했습니다.");
+        return true;
     }
 
     public DemoCheatResult ToggleMapZoom(DemoCheatSettingsSO settings, MonoBehaviour routineOwner)
@@ -520,8 +578,10 @@ public sealed class DemoCheatService
 
     public void DisablePlayerInvulnerabilityCheat()
     {
-        ReleaseDemoInvulnerabilityTag();
-        demoInvulnerabilityEnabled = false;
+        ReleaseDemoInvulnerabilityTag(ref manualInvulnerability);
+        ReleaseDemoInvulnerabilityTag(ref autoInvulnerability);
+        manualInvulnerability.Enabled = false;
+        autoInvulnerability.Enabled = false;
     }
 
     private DemoCheatResult ZoomOutToMap(DemoCheatSettingsSO settings, MonoBehaviour routineOwner)
