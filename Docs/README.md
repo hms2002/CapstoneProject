@@ -64,6 +64,9 @@ Scope Authority는 "이번 스레드에서 무엇을 바꿀 수 있는가"를 �
 - `PlayerStatusRuntime`은 상태 저장소가 아니라 적용 허브이며, 상태 owner가 씬 전환 뒤 다시 `Apply(...)` 합니다.
 - 쌍무기 구조는 `RuntimeData / Processor / Coordinator / Interaction Layer` 경계를 기준으로 확장합니다.
 - HUD와 tooltip은 상태를 소유하지 않고, 현재 활성 상태를 projection 해서 표시만 합니다.
+- 런타임 서비스는 App / Gameplay Session / Run / Scene / UI Root / Fallback scope 중 하나로 소유권과 cleanup timing을 설명할 수 있어야 합니다.
+- Durable profile save는 준비된 source of truth에서만 덮어씁니다. 준비되지 않은 manager는 기존 save DTO를 보존해야 합니다.
+- 현재 구조 판단과 검증은 별도 지시가 없으면 `ProtoType*` scene 기준이며, legacy scene은 구조 판단 기준으로 쓰지 않습니다.
 
 ## 문서를 고르는 법
 
@@ -90,8 +93,18 @@ Scope Authority는 "이번 스레드에서 무엇을 바꿀 수 있는가"를 �
 - [Script Systems](./StructureMemory/ScriptSystems/README.md)
 - [Refactor Backlog](./RefactorBacklog/README.md)
 
+### 리팩터링 정책, 런타임 서비스, 저장/씬 ownership을 정렬하고 싶다
+- [Refactoring Guide](./Guides/RefactoringGuide.md)
+- [Runtime Service Ownership Architecture](./Architecture/RuntimeServiceOwnershipArchitecture.md)
+- [Profile Save Ownership Architecture](./Architecture/ProfileSaveOwnershipArchitecture.md)
+- [Scene Classification Architecture](./Architecture/SceneClassificationArchitecture.md)
+- [Scene Domain Bootstrap Architecture](./Architecture/SceneDomainBootstrapArchitecture.md)
+- [Runtime Save Architecture](./Architecture/RuntimeSaveArchitecture.md)
+
 ### Review title/game scene bootstrap and session boundary
 - [Scene Domain Bootstrap Architecture](./Architecture/SceneDomainBootstrapArchitecture.md)
+- [Runtime Service Ownership Architecture](./Architecture/RuntimeServiceOwnershipArchitecture.md)
+- [Scene Classification Architecture](./Architecture/SceneClassificationArchitecture.md)
 - [Scene Runtime Save Structure](./StructureMemory/ScriptSystems/SceneRuntimeSaveStructure.md)
 - [Scene Domain Bootstrap Boundary Split](./RefactorBacklog/SceneDomainBootstrapBoundarySplit.md)
 
@@ -116,6 +129,7 @@ Scope Authority는 "이번 스레드에서 무엇을 바꿀 수 있는가"를 �
 
 ### 무기 런타임 상태 저장/복원이 필요한지 판단하고 싶다
 - [Runtime Save Architecture](./Architecture/RuntimeSaveArchitecture.md)
+- [Profile Save Ownership Architecture](./Architecture/ProfileSaveOwnershipArchitecture.md)
 - legacy 검토 문서는 아래 `Reviews` 섹션을 보세요.
 
 ### 전투 피해/피격/속성 게이지를 수정하고 싶다
@@ -146,6 +160,8 @@ Scope Authority는 "이번 스레드에서 무엇을 바꿀 수 있는가"를 �
 
 ### 씬 이동 시 플레이어/장비/GAS 상태 저장 복원을 수정하고 싶다
 - [Runtime Save Architecture](./Architecture/RuntimeSaveArchitecture.md)
+- [Profile Save Ownership Architecture](./Architecture/ProfileSaveOwnershipArchitecture.md)
+- [Runtime Service Ownership Architecture](./Architecture/RuntimeServiceOwnershipArchitecture.md)
 
 ### 플레이어 버프/디버프/환경 상태와 상태 HUD 구조를 수정하고 싶다
 - [Gameplay Status Architecture](./Architecture/GameplayStatusArchitecture.md)

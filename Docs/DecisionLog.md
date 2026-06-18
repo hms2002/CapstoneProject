@@ -2153,3 +2153,18 @@ Implications:
 - Existing teleport NPC components gain a new serialized `moveToLandingArcHeight` field and need Unity import/Inspector review.
 - Play Mode validation must tune arc height, movement duration, and timing curve against camera framing, tile clearance, and landing readability.
 - Final landing safety validation remains endpoint-based; do not reintroduce intermediate ground-path `HoleTrap` checks for this airborne presentation.
+
+## 2026-06-09 - Use Policy-First Migration-Style Refactoring
+
+Decision:
+Treat project-level refactoring as policy-first, migration-style work. Refactors should preserve player-visible behavior and Unity-facing contracts while lowering the cost and risk of the next change.
+
+Reason:
+The project now has many interconnected player, loot, save, UI, dialogue, upgrade, scene transition, and runtime service paths. Large visual architecture rewrites would risk scene/prefab references, serialized data, save semantics, and bootstrap lifecycle. The safer direction is to define ownership and validation rules first, then move one responsibility at a time behind existing compatibility facades.
+
+Implications:
+- SOLID is applied for practical benefits, not ceremony: clearer responsibilities, safer extension points, smaller contracts, replaceable implementations, and less tangled dependency direction.
+- Runtime services must be classified by App, Gameplay Session, Run, Scene, UI Root, or Fallback scope before lifecycle changes; use `RuntimeServiceOwnershipArchitecture.md`.
+- Durable profile save fields need a source of truth, commit timing, and overwrite guard before save collection changes; use `ProfileSaveOwnershipArchitecture.md`.
+- Scene evidence must be classified; current structure decisions default to `ProtoType*` scenes, while legacy scenes are reference-only; use `SceneClassificationArchitecture.md`.
+- `GameDataManager.SaveData()` item unlock preservation with `ItemManager.IsReady` is the next P0 code follow-up, not part of the policy-only documentation slice.
