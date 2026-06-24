@@ -324,6 +324,7 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
         ResolveDefaultBootstrapConfigIfMissing();
 
         LoadManifestSO bootManifest = bootstrapConfig != null ? bootstrapConfig.BootManifest : null;
+        LoadManifestSO firstRunIntroManifest = bootstrapConfig != null ? bootstrapConfig.FirstRunIntroManifest : null;
         RouteSetLoadManifestSO routeManifest = routeSet.LoadManifest;
         List<LoadManifestSO> runCommonManifests = FindRunCommonManifests(routeSet);
 
@@ -331,6 +332,8 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
             issues.Add(new Issue { severity = Severity.Warning, message = "Bootstrap config was not found. Boot scope will be empty." });
         else if (bootManifest == null)
             issues.Add(new Issue { severity = Severity.Warning, message = "Bootstrap config exists, but Boot manifest is not assigned." });
+        else if (firstRunIntroManifest == null)
+            issues.Add(new Issue { severity = Severity.Warning, message = "Bootstrap config exists, but FirstRunIntro manifest is not assigned." });
 
         if (routeManifest == null)
         {
@@ -346,6 +349,7 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
             issues.Add(new Issue { severity = Severity.Warning, message = "Boss manifest is empty." });
 
         Dictionary<string, AssetEntry> bootAssets = BuildAssetMap(bootManifest);
+        Dictionary<string, AssetEntry> firstRunIntroAssets = BuildAssetMap(firstRunIntroManifest);
         Dictionary<string, AssetEntry> runCommonAssets = MergeManifests(runCommonManifests);
         Dictionary<string, AssetEntry> sharedAssets = BuildAssetMap(routeManifest.SharedManifest);
         Dictionary<string, AssetEntry> corridorAssets = BuildAssetMap(routeManifest.CorridorManifest);
@@ -357,6 +361,13 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
             EditableManifest = bootManifest,
             SupportsPrewarmEditing = bootManifest != null,
             Assets = bootAssets.Values.OrderBy(entry => entry.Path, StringComparer.OrdinalIgnoreCase).ToList()
+        });
+        scopes.Add(new ScopeSnapshot
+        {
+            Label = "FirstRunIntro",
+            EditableManifest = firstRunIntroManifest,
+            SupportsPrewarmEditing = firstRunIntroManifest != null,
+            Assets = firstRunIntroAssets.Values.OrderBy(entry => entry.Path, StringComparer.OrdinalIgnoreCase).ToList()
         });
         scopes.Add(new ScopeSnapshot
         {
@@ -386,9 +397,14 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
             Assets = bossAssets.Values.OrderBy(entry => entry.Path, StringComparer.OrdinalIgnoreCase).ToList()
         });
 
+        AddOverlapIssue("Boot", bootAssets, "FirstRunIntro", firstRunIntroAssets);
         AddOverlapIssue("Boot", bootAssets, "Shared", sharedAssets);
         AddOverlapIssue("Boot", bootAssets, "Corridor", corridorAssets);
         AddOverlapIssue("Boot", bootAssets, "Boss", bossAssets);
+        AddOverlapIssue("FirstRunIntro", firstRunIntroAssets, "RunCommon", runCommonAssets);
+        AddOverlapIssue("FirstRunIntro", firstRunIntroAssets, "Shared", sharedAssets);
+        AddOverlapIssue("FirstRunIntro", firstRunIntroAssets, "Corridor", corridorAssets);
+        AddOverlapIssue("FirstRunIntro", firstRunIntroAssets, "Boss", bossAssets);
         AddOverlapIssue("RunCommon", runCommonAssets, "Shared", sharedAssets);
         AddOverlapIssue("RunCommon", runCommonAssets, "Corridor", corridorAssets);
         AddOverlapIssue("RunCommon", runCommonAssets, "Boss", bossAssets);

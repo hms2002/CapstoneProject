@@ -16,7 +16,7 @@ MonoBehaviour:
   upgradeName: "\uC77C\uD68C\uC131 \uCCB4\uB825 \uC9C0\uAE09"
   description: "\uC2DC\uC791 \uC2DC \uC77C\uD68C\uC131 \uCCB4\uB825 \uBD80\uC5EC"
   icon: {fileID: 2809157193256619909, guid: d8ea97f098c5b0f4daafdae1493166cd, type: 3}
-  price: 0
+  price: 5
   effects:
   - {fileID: 11400000, guid: db71cfabe6e24aca9beb18837666b8c9, type: 2}
   unlockedNodeIDs: 5bba0988

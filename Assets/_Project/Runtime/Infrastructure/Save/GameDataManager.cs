@@ -104,10 +104,11 @@ public class GameDataManager : MonoBehaviour
             Data.tutorialData = new TutorialSaveData();
         Data.tutorialData.Normalize();
 
-        if (ItemManager.Instance != null)
+        ItemManager itemManager = ItemManager.Instance;
+        if (itemManager != null && itemManager.IsReady)
         {
-            Data.itemData.unlockedWeaponIDs = ItemManager.Instance.GetUnlockedWeaponIDs();
-            Data.itemData.unlockedRelicIDs = ItemManager.Instance.GetUnlockedRelicIDs();
+            Data.itemData.unlockedWeaponIDs = itemManager.GetUnlockedWeaponIDs();
+            Data.itemData.unlockedRelicIDs = itemManager.GetUnlockedRelicIDs();
         }
 
         if (UpgradeManager.Instance != null)

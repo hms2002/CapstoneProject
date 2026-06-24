@@ -17,19 +17,57 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         "/Tests/",
         "/Test/",
         "/Gizmos/",
-        "/Resources/Loading/"
+        "/Resources/Loading/",
+        "/_Project/Data/SceneFlow/LoadingManifests/"
     };
 
     private static readonly string[] IgnoredBootPathFragments =
     {
+        "/_Project/Data/Abilities/",
+        "/_Project/Data/Items/Relics/",
+        "/_Project/Data/Items/Weapons/",
         "/_Project/Data/Loot/Tables/GraveLootTable.asset",
         "/_Project/Data/Loot/Tables/Table_Stage",
+        "/_Project/Data/Monsters/",
+        "/_Project/Data/SceneFlow/Routes/",
+        "/_Project/Prefabs/Bosses/",
+        "/_Project/Prefabs/Items/Relics/",
+        "/_Project/Prefabs/Items/Weapons/",
+        "/_Project/Prefabs/Monsters/",
+        "/_Project/Art/Sprites/Bosses/",
+        "/_Project/Art/Sprites/Items/",
+        "/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/",
+        "/_Project/Art/Sprites/UI/Tutorial/",
+        "/_Project/Audio/Bosses/",
+        "/_Project/Audio/Monsters/",
         "/Datas/Dialogue/SpeechData/",
         "/Datas/Dialogue/NPC/DialogueTheme/ShadowBoss",
+        "/Data/Dialogue/NPC/DarkLord",
+        "/Audio/BGM/Dragon",
         "/Audio/BGM/Boss",
         "/Audio/BGM/ShadowCorridor",
+        "/Audio/BGM/Slime",
         "/Sprites/Characters/Boss/",
         "/Sprites/UI/Dialogue/Boss1"
+    };
+
+    private static readonly string[] FirstRunIntroExcludedPathFragments =
+    {
+        "/_Project/Data/Loot/",
+        "/_Project/Data/Monsters/",
+        "/_Project/Data/SceneFlow/Routes/",
+        "/_Project/Prefabs/Bosses/DragonBoss/",
+        "/_Project/Prefabs/Bosses/ShadowBoss/",
+        "/_Project/Prefabs/Bosses/SlimeQueen/",
+        "/_Project/Prefabs/Monsters/CommonCorridor/",
+        "/_Project/Prefabs/Monsters/ShadowCorridor/",
+        "/_Project/Prefabs/Monsters/SlimeCorridor/",
+        "/_Project/Audio/BGM/Dragon",
+        "/_Project/Audio/BGM/ShadowCorridor",
+        "/_Project/Audio/BGM/Slime",
+        "/_Project/Audio/Bosses/Dragon",
+        "/_Project/Audio/Bosses/Shadow",
+        "/_Project/Audio/Bosses/Slime"
     };
 
     private readonly struct AssetBuckets
@@ -54,7 +92,9 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
 
     private CorridorBossRouteSetSO routeSet;
     private LoadManifestSO bootManifest;
+    private LoadManifestSO firstRunIntroManifest;
     private string bootSeedSceneName = "ProtoTypeHub";
+    private string firstRunIntroSceneNames = "TutorialCorridor,DarkLord_Tutorial,ProtoTypeHub";
     private bool saveAssetsAfterBuild = true;
     private bool verboseLogging;
     private Vector2 scrollPosition;
@@ -79,10 +119,20 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         routeSet = (CorridorBossRouteSetSO)EditorGUILayout.ObjectField("Route Set", routeSet, typeof(CorridorBossRouteSetSO), false);
         bootManifest = (LoadManifestSO)EditorGUILayout.ObjectField("Boot Exclusion Manifest", bootManifest, typeof(LoadManifestSO), false);
         bootSeedSceneName = EditorGUILayout.TextField("Boot Seed Scene", bootSeedSceneName);
+        firstRunIntroManifest = (LoadManifestSO)EditorGUILayout.ObjectField("FirstRun Intro Manifest", firstRunIntroManifest, typeof(LoadManifestSO), false);
+        firstRunIntroSceneNames = EditorGUILayout.TextField("FirstRun Intro Scenes", firstRunIntroSceneNames);
         saveAssetsAfterBuild = EditorGUILayout.ToggleLeft("Save Assets After Build", saveAssetsAfterBuild);
         verboseLogging = EditorGUILayout.ToggleLeft("Verbose Logging", verboseLogging);
 
         EditorGUILayout.Space(8f);
+        if (GUILayout.Button("Build Release Loading Set", GUILayout.Height(32f)))
+            BuildReleaseLoadingSet();
+
+        EditorGUILayout.HelpBox(
+            "Build order: Boot -> FirstRun Intro -> all RouteSets -> Addressable Registry. Addressables content build is still a separate release step.",
+            MessageType.None);
+
+        EditorGUILayout.Space(4f);
         using (new EditorGUILayout.HorizontalScope())
         {
             if (GUILayout.Button("Build Selected RouteSet", GUILayout.Height(28f)))
@@ -96,6 +146,9 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         {
             if (GUILayout.Button("Build Boot Manifest From Seed Scene", GUILayout.Height(24f)))
                 BuildBootManifestFromSeedScene();
+
+            if (GUILayout.Button("Build FirstRun Intro Manifest", GUILayout.Height(24f)))
+                BuildFirstRunIntroManifestFromSeedScenes();
 
             using (new EditorGUI.DisabledScope(bootManifest == null))
             {
@@ -154,8 +207,8 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             return;
 
-        string[] guids = AssetDatabase.FindAssets("t:CorridorBossRouteSetSO");
-        if (guids == null || guids.Length == 0)
+        CorridorBossRouteSetSO[] routeSets = FindAllRouteSets();
+        if (routeSets.Length == 0)
         {
             statusMessage = "CorridorBossRouteSetSO 자산을 찾지 못했습니다.";
             return;
@@ -166,14 +219,9 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
 
         try
         {
-            for (int i = 0; i < guids.Length; i++)
+            for (int i = 0; i < routeSets.Length; i++)
             {
-                string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-                CorridorBossRouteSetSO target = AssetDatabase.LoadAssetAtPath<CorridorBossRouteSetSO>(path);
-                if (target == null)
-                    continue;
-
-                BuildRouteSetManifest(target);
+                BuildRouteSetManifest(routeSets[i]);
                 builtCount++;
             }
 
@@ -186,6 +234,77 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         }
         finally
         {
+            RestoreSceneSetup(originalSetup);
+        }
+    }
+
+    private void BuildReleaseLoadingSet()
+    {
+        if (string.IsNullOrWhiteSpace(bootSeedSceneName))
+        {
+            statusMessage = "Boot seed scene 이름이 비어 있습니다.";
+            return;
+        }
+
+        List<string> firstRunSceneNames = ParseSceneNames(firstRunIntroSceneNames);
+        if (firstRunSceneNames.Count == 0)
+        {
+            statusMessage = "FirstRun Intro scene 이름이 비어 있습니다.";
+            return;
+        }
+
+        CorridorBossRouteSetSO[] routeSets = FindAllRouteSets();
+        if (routeSets.Length == 0)
+        {
+            statusMessage = "CorridorBossRouteSetSO 자산을 찾지 못했습니다.";
+            return;
+        }
+
+        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            return;
+
+        SceneSetup[] originalSetup = EditorSceneManager.GetSceneManagerSetup();
+        int builtRouteSetCount = 0;
+
+        try
+        {
+            EditorUtility.DisplayProgressBar("Build Release Loading Set", "Building Boot manifest...", 0.1f);
+            int bootAssetCount = BuildBootManifestCore();
+
+            EditorUtility.DisplayProgressBar("Build Release Loading Set", "Building FirstRun Intro manifest...", 0.3f);
+            int firstRunAssetCount = BuildFirstRunIntroManifestCore(firstRunSceneNames, out int bootExcludedCount);
+
+            for (int i = 0; i < routeSets.Length; i++)
+            {
+                float progress = 0.4f + (0.45f * i / routeSets.Length);
+                EditorUtility.DisplayProgressBar(
+                    "Build Release Loading Set",
+                    $"Building RouteSet manifest {i + 1}/{routeSets.Length}: {routeSets[i].name}",
+                    progress);
+
+                BuildRouteSetManifest(routeSets[i]);
+                builtRouteSetCount++;
+            }
+
+            EditorUtility.DisplayProgressBar("Build Release Loading Set", "Building Addressable registry...", 0.9f);
+            string registrySummary = LoadingAddressableRegistryBuilder.BuildRegistry();
+            if (string.IsNullOrWhiteSpace(registrySummary))
+                throw new InvalidOperationException("Addressable registry build failed.");
+
+            if (saveAssetsAfterBuild)
+                AssetDatabase.SaveAssets();
+
+            statusMessage =
+                $"Built release loading set. Boot={bootAssetCount}, FirstRun={firstRunAssetCount} assets, FirstRun boot-excluded={bootExcludedCount}, RouteSets={builtRouteSetCount}. Addressables content build is still required.";
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"Release loading set build failed after {builtRouteSetCount} RouteSets: {ex.Message}";
+            Debug.LogException(ex);
+        }
+        finally
+        {
+            EditorUtility.ClearProgressBar();
             RestoreSceneSetup(originalSetup);
         }
     }
@@ -205,25 +324,13 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
 
         try
         {
-            string scenePath = FindScenePathByName(bootSeedSceneName);
-            if (string.IsNullOrEmpty(scenePath))
-                throw new InvalidOperationException($"Boot seed scene '{bootSeedSceneName}' 경로를 찾지 못했습니다.");
-
-            Dictionary<string, UnityEngine.Object> sceneAssets = CollectSceneAssets(scenePath);
-            ApplyBootSpecificExclusions(sceneAssets);
-            EnsureBootManifest();
-            EnsureBootstrapConfigAsset();
-            WriteManifest(bootManifest, CategorizeAssets(new List<UnityEngine.Object>(sceneAssets.Values)));
-
-            if (saveAssetsAfterBuild)
-                AssetDatabase.SaveAssets();
-
+            int assetCount = BuildBootManifestCore();
             statusMessage = $"Built boot manifest from {bootSeedSceneName}.";
 
             if (verboseLogging)
             {
                 Debug.Log(
-                    $"[RouteSetLoadManifestBuilder] Built boot manifest from {bootSeedSceneName}. assetCount={sceneAssets.Count}",
+                    $"[RouteSetLoadManifestBuilder] Built boot manifest from {bootSeedSceneName}. assetCount={assetCount}",
                     bootManifest);
             }
         }
@@ -238,10 +345,105 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         }
     }
 
+    private int BuildBootManifestCore()
+    {
+        string scenePath = FindScenePathByName(bootSeedSceneName);
+        if (string.IsNullOrEmpty(scenePath))
+            throw new InvalidOperationException($"Boot seed scene '{bootSeedSceneName}' 경로를 찾지 못했습니다.");
+
+        Dictionary<string, UnityEngine.Object> sceneAssets = CollectSceneAssets(scenePath);
+        ApplyBootSpecificExclusions(sceneAssets);
+        EnsureBootManifest();
+        EnsureBootstrapConfigAsset();
+        WriteManifest(bootManifest, CategorizeAssets(new List<UnityEngine.Object>(sceneAssets.Values)), LoadScopeKind.Boot);
+
+        if (saveAssetsAfterBuild)
+            AssetDatabase.SaveAssets();
+
+        return sceneAssets.Count;
+    }
+
+    private void BuildFirstRunIntroManifestFromSeedScenes()
+    {
+        List<string> sceneNames = ParseSceneNames(firstRunIntroSceneNames);
+        if (sceneNames.Count == 0)
+        {
+            statusMessage = "FirstRun Intro scene 이름이 비어 있습니다.";
+            return;
+        }
+
+        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            return;
+
+        ResolveBootstrapManifestReferencesIfMissing();
+        SceneSetup[] originalSetup = EditorSceneManager.GetSceneManagerSetup();
+
+        try
+        {
+            int assetCount = BuildFirstRunIntroManifestCore(sceneNames, out int bootExcludedCount);
+            statusMessage = $"Built FirstRun Intro manifest from {sceneNames.Count} scenes.";
+
+            if (verboseLogging)
+            {
+                Debug.Log(
+                    $"[RouteSetLoadManifestBuilder] Built FirstRun Intro manifest. scenes={sceneNames.Count}, assetCount={assetCount}, bootExcluded={bootExcludedCount}",
+                    firstRunIntroManifest);
+            }
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"FirstRun Intro build failed: {ex.Message}";
+            Debug.LogException(ex);
+        }
+        finally
+        {
+            RestoreSceneSetup(originalSetup);
+        }
+    }
+
+    private int BuildFirstRunIntroManifestCore(List<string> sceneNames, out int bootExcludedCount)
+    {
+        if (sceneNames == null || sceneNames.Count == 0)
+            throw new InvalidOperationException("FirstRun Intro scene 이름이 비어 있습니다.");
+
+        ResolveBootstrapManifestReferencesIfMissing();
+
+        var firstRunAssets = new Dictionary<string, UnityEngine.Object>(StringComparer.Ordinal);
+        for (int i = 0; i < sceneNames.Count; i++)
+        {
+            string sceneName = sceneNames[i];
+            string scenePath = FindScenePathByName(sceneName);
+            if (string.IsNullOrEmpty(scenePath))
+                throw new InvalidOperationException($"FirstRun Intro scene '{sceneName}' 경로를 찾지 못했습니다.");
+
+            MergeAssets(firstRunAssets, CollectSceneAssets(scenePath));
+        }
+
+        var excludedAssetKeys = new HashSet<string>(StringComparer.Ordinal);
+        AddManifestAssetKeys(bootManifest, excludedAssetKeys);
+        bootExcludedCount = excludedAssetKeys.Count;
+        ApplyExclusions(firstRunAssets, excludedAssetKeys);
+        ApplyFirstRunIntroSpecificExclusions(firstRunAssets);
+
+        EnsureFirstRunIntroManifest();
+        EnsureBootstrapConfigAsset();
+        WriteManifest(
+            firstRunIntroManifest,
+            CategorizeAssets(new List<UnityEngine.Object>(firstRunAssets.Values)),
+            LoadScopeKind.FirstRunIntro);
+
+        if (saveAssetsAfterBuild)
+            AssetDatabase.SaveAssets();
+
+        return firstRunAssets.Count;
+    }
+
     private void BuildRouteSetManifest(CorridorBossRouteSetSO targetRouteSet)
     {
         if (targetRouteSet == null)
             throw new InvalidOperationException("RouteSet이 null입니다.");
+
+        ResolveBootstrapManifestReferencesIfMissing();
 
         string corridorScenePath = FindScenePathByName(targetRouteSet.CorridorSceneName);
         string bossScenePath = FindScenePathByName(targetRouteSet.BossSceneName);
@@ -270,9 +472,9 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         LoadManifestSO corridorManifest = EnsureChildManifest(routeManifest, "corridorManifest", $"{targetRouteSet.name}_Corridor");
         LoadManifestSO bossManifest = EnsureChildManifest(routeManifest, "bossManifest", $"{targetRouteSet.name}_Boss");
 
-        WriteManifest(sharedManifest, CategorizeAssets(sharedAssets));
-        WriteManifest(corridorManifest, CategorizeAssets(corridorOnlyAssets));
-        WriteManifest(bossManifest, CategorizeAssets(bossOnlyAssets));
+        WriteManifest(sharedManifest, CategorizeAssets(sharedAssets), LoadScopeKind.RouteSet);
+        WriteManifest(corridorManifest, CategorizeAssets(corridorOnlyAssets), LoadScopeKind.RouteSet);
+        WriteManifest(bossManifest, CategorizeAssets(bossOnlyAssets), LoadScopeKind.RouteSet);
 
         EditorUtility.SetDirty(routeManifest);
         EditorUtility.SetDirty(targetRouteSet);
@@ -293,12 +495,40 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         var excludedKeys = new HashSet<string>(StringComparer.Ordinal);
 
         AddManifestAssetKeys(bootManifest, excludedKeys);
+        AddManifestAssetKeys(firstRunIntroManifest, excludedKeys);
 
         List<LoadManifestSO> runCommonManifests = FindRunCommonManifests(targetRouteSet);
         for (int i = 0; i < runCommonManifests.Count; i++)
             AddManifestAssetKeys(runCommonManifests[i], excludedKeys);
 
         return excludedKeys;
+    }
+
+    private static CorridorBossRouteSetSO[] FindAllRouteSets()
+    {
+        string[] guids = AssetDatabase.FindAssets("t:CorridorBossRouteSetSO");
+        if (guids == null || guids.Length == 0)
+            return Array.Empty<CorridorBossRouteSetSO>();
+
+        Array.Sort(guids, CompareAssetGuidByPath);
+
+        var routeSets = new List<CorridorBossRouteSetSO>();
+        for (int i = 0; i < guids.Length; i++)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+            CorridorBossRouteSetSO routeSetAsset = AssetDatabase.LoadAssetAtPath<CorridorBossRouteSetSO>(path);
+            if (routeSetAsset != null)
+                routeSets.Add(routeSetAsset);
+        }
+
+        return routeSets.ToArray();
+    }
+
+    private static int CompareAssetGuidByPath(string leftGuid, string rightGuid)
+    {
+        string leftPath = AssetDatabase.GUIDToAssetPath(leftGuid);
+        string rightPath = AssetDatabase.GUIDToAssetPath(rightGuid);
+        return string.Compare(leftPath, rightPath, StringComparison.OrdinalIgnoreCase);
     }
 
     private static void AddManifestAssetKeys(LoadManifestSO manifest, HashSet<string> keys)
@@ -394,6 +624,20 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         }
     }
 
+    private static void MergeAssets(
+        Dictionary<string, UnityEngine.Object> destination,
+        Dictionary<string, UnityEngine.Object> source)
+    {
+        if (destination == null || source == null || source.Count == 0)
+            return;
+
+        foreach (KeyValuePair<string, UnityEngine.Object> pair in source)
+        {
+            if (!destination.ContainsKey(pair.Key))
+                destination.Add(pair.Key, pair.Value);
+        }
+    }
+
     private static Dictionary<string, UnityEngine.Object> CollectSceneAssets(string scenePath)
     {
         Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
@@ -431,6 +675,22 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
             assets.Remove(keysToRemove[i]);
     }
 
+    private static void ApplyFirstRunIntroSpecificExclusions(Dictionary<string, UnityEngine.Object> assets)
+    {
+        if (assets == null || assets.Count == 0)
+            return;
+
+        var keysToRemove = new List<string>();
+        foreach (KeyValuePair<string, UnityEngine.Object> pair in assets)
+        {
+            if (ShouldExcludeFirstRunIntroAsset(pair.Value))
+                keysToRemove.Add(pair.Key);
+        }
+
+        for (int i = 0; i < keysToRemove.Count; i++)
+            assets.Remove(keysToRemove[i]);
+    }
+
     private static bool ShouldIncludeAsset(UnityEngine.Object asset)
     {
         if (asset == null)
@@ -449,20 +709,23 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         if (asset is MonoScript || asset is SceneAsset || asset is DefaultAsset)
             return false;
 
+        if (!AssetDatabase.IsMainAsset(asset))
+            return false;
+
         if (asset is GameObject)
             return PrefabUtility.IsPartOfPrefabAsset(asset);
 
         if (asset is Component)
             return false;
 
-        if (asset is Texture || asset is Shader || asset is ComputeShader)
+        if (IsDependencyOnlyAsset(asset))
             return false;
 
         string typeName = asset.GetType().Name;
         if (IsIgnoredAssetTypeName(typeName))
             return false;
 
-        return true;
+        return IsSupportedManifestRoot(asset);
     }
 
     private static bool ShouldExcludeBootAsset(UnityEngine.Object asset)
@@ -491,6 +754,31 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
                string.Equals(typeName, "PlayerSpeechData", StringComparison.Ordinal);
     }
 
+    private static bool ShouldExcludeFirstRunIntroAsset(UnityEngine.Object asset)
+    {
+        if (asset == null)
+            return false;
+
+        string assetPath = AssetDatabase.GetAssetPath(asset);
+        if (string.IsNullOrEmpty(assetPath))
+            return false;
+
+        string normalizedPath = assetPath.Replace('\\', '/');
+        for (int i = 0; i < FirstRunIntroExcludedPathFragments.Length; i++)
+        {
+            if (normalizedPath.IndexOf(FirstRunIntroExcludedPathFragments[i], StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+        }
+
+        if (normalizedPath.IndexOf("/_Project/Prefabs/Monsters/", StringComparison.OrdinalIgnoreCase) >= 0 &&
+            normalizedPath.IndexOf("TrainingDummy", StringComparison.OrdinalIgnoreCase) < 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     private static bool IsIgnoredAssetPath(string assetPath)
     {
         if (string.IsNullOrEmpty(assetPath))
@@ -511,9 +799,35 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
 
     private static bool IsIgnoredAssetTypeName(string typeName)
     {
-        return string.Equals(typeName, "LightingDataAsset", StringComparison.Ordinal) ||
+        return string.Equals(typeName, "CorridorBossRouteSetSO", StringComparison.Ordinal) ||
+               string.Equals(typeName, "RunRouteCatalogSO", StringComparison.Ordinal) ||
+               string.Equals(typeName, "RouteSetLoadManifestSO", StringComparison.Ordinal) ||
+               string.Equals(typeName, "LoadManifestSO", StringComparison.Ordinal) ||
+               string.Equals(typeName, "LightingDataAsset", StringComparison.Ordinal) ||
                string.Equals(typeName, "LightingSettings", StringComparison.Ordinal) ||
                string.Equals(typeName, "SpriteAtlas", StringComparison.Ordinal);
+    }
+
+    private static bool IsDependencyOnlyAsset(UnityEngine.Object asset)
+    {
+        return asset is Sprite ||
+               asset is Texture ||
+               asset is Material ||
+               asset is Shader ||
+               asset is ComputeShader ||
+               asset is AnimationClip ||
+               asset is RuntimeAnimatorController ||
+               asset is UnityEngine.Tilemaps.TileBase;
+    }
+
+    private static bool IsSupportedManifestRoot(UnityEngine.Object asset)
+    {
+        return asset is GameObject ||
+               asset is PresentationCueSO ||
+               asset is ScriptableObject ||
+               asset is AudioClip ||
+               asset is TextAsset ||
+               asset is Font;
     }
 
     private static AssetBuckets CategorizeAssets(List<UnityEngine.Object> assets)
@@ -605,10 +919,39 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         EditorUtility.SetDirty(bootManifest);
     }
 
+    private void EnsureFirstRunIntroManifest()
+    {
+        if (firstRunIntroManifest != null)
+            return;
+
+        EnsureLoadingAssetDirectory();
+        string assetPath = AssetDatabase.GenerateUniqueAssetPath($"{LoadingAssetDirectory}/FirstRunIntroTutorialLoadManifest.asset");
+        firstRunIntroManifest = CreateInstance<LoadManifestSO>();
+        firstRunIntroManifest.name = "FirstRunIntroTutorialLoadManifest";
+        AssetDatabase.CreateAsset(firstRunIntroManifest, assetPath);
+        EditorUtility.SetDirty(firstRunIntroManifest);
+    }
+
+    private void ResolveBootstrapManifestReferencesIfMissing()
+    {
+        if (bootManifest != null && firstRunIntroManifest != null)
+            return;
+
+        LoadingBootstrapConfigSO config = AssetDatabase.LoadAssetAtPath<LoadingBootstrapConfigSO>(BootstrapConfigSourceAssetPath);
+        if (config == null)
+            return;
+
+        if (bootManifest == null)
+            bootManifest = config.BootManifest;
+
+        if (firstRunIntroManifest == null)
+            firstRunIntroManifest = config.FirstRunIntroManifest;
+    }
+
     private void EnsureBootstrapConfigAsset()
     {
         LoadingBootstrapConfigSO sourceConfig = EnsureBootstrapConfigAtPath(BootstrapConfigSourceAssetPath);
-        ApplyBootManifest(sourceConfig);
+        ApplyBootstrapManifestReferences(sourceConfig);
         EnsureBootstrapConfigInPreloadedAssets(sourceConfig);
     }
 
@@ -624,13 +967,20 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         return config;
     }
 
-    private void ApplyBootManifest(LoadingBootstrapConfigSO config)
+    private void ApplyBootstrapManifestReferences(LoadingBootstrapConfigSO config)
     {
         if (config == null)
             return;
 
         SerializedObject configSerialized = new SerializedObject(config);
-        configSerialized.FindProperty("bootManifest").objectReferenceValue = bootManifest;
+        SerializedProperty bootManifestProperty = configSerialized.FindProperty("bootManifest");
+        if (bootManifestProperty != null && bootManifest != null)
+            bootManifestProperty.objectReferenceValue = bootManifest;
+
+        SerializedProperty firstRunIntroManifestProperty = configSerialized.FindProperty("firstRunIntroManifest");
+        if (firstRunIntroManifestProperty != null && firstRunIntroManifest != null)
+            firstRunIntroManifestProperty.objectReferenceValue = firstRunIntroManifest;
+
         configSerialized.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(config);
     }
@@ -703,10 +1053,10 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         return childManifest;
     }
 
-    private static void WriteManifest(LoadManifestSO manifest, AssetBuckets buckets)
+    private static void WriteManifest(LoadManifestSO manifest, AssetBuckets buckets, LoadScopeKind scopeKind)
     {
         SerializedObject manifestSerialized = new SerializedObject(manifest);
-        manifestSerialized.FindProperty("scopeKind").enumValueIndex = (int)LoadScopeKind.RouteSet;
+        manifestSerialized.FindProperty("scopeKind").enumValueIndex = (int)scopeKind;
         SetObjectList(manifestSerialized.FindProperty("prefabAssets"), buckets.Prefabs);
         SetObjectList(manifestSerialized.FindProperty("cueAssets"), buckets.Cues);
         SetObjectList(manifestSerialized.FindProperty("dataAssets"), buckets.DataAssets);
@@ -720,6 +1070,37 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         property.arraySize = assets.Count;
         for (int i = 0; i < assets.Count; i++)
             property.GetArrayElementAtIndex(i).objectReferenceValue = assets[i];
+    }
+
+    private static List<string> ParseSceneNames(string sceneNames)
+    {
+        var results = new List<string>();
+        if (string.IsNullOrWhiteSpace(sceneNames))
+            return results;
+
+        string[] tokens = sceneNames.Split(new[] { ',', ';', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+        for (int i = 0; i < tokens.Length; i++)
+        {
+            string sceneName = tokens[i].Trim();
+            if (!string.IsNullOrWhiteSpace(sceneName) && !ContainsSceneName(results, sceneName))
+                results.Add(sceneName);
+        }
+
+        return results;
+    }
+
+    private static bool ContainsSceneName(List<string> sceneNames, string sceneName)
+    {
+        if (sceneNames == null || string.IsNullOrWhiteSpace(sceneName))
+            return false;
+
+        for (int i = 0; i < sceneNames.Count; i++)
+        {
+            if (string.Equals(sceneNames[i], sceneName, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
     }
 
     private static string FindScenePathByName(string sceneName)

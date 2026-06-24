@@ -110,7 +110,7 @@ public sealed class TitleProfileSlotService : MonoBehaviour
         if (action == TitleProfileLaunchAction.None)
             return false;
 
-        string resolvedTargetSceneName = ResolveTargetSceneName(action);
+        string resolvedTargetSceneName = ResolveTargetSceneName(action, slotIndex);
         if (string.IsNullOrWhiteSpace(resolvedTargetSceneName))
             return false;
 
@@ -118,7 +118,7 @@ public sealed class TitleProfileSlotService : MonoBehaviour
         return true;
     }
 
-    private string ResolveTargetSceneName(TitleProfileLaunchAction action)
+    private string ResolveTargetSceneName(TitleProfileLaunchAction action, int slotIndex)
     {
         if (action == TitleProfileLaunchAction.StartNewRun &&
             !string.IsNullOrWhiteSpace(newProfileTargetSceneName))
@@ -126,7 +126,28 @@ public sealed class TitleProfileSlotService : MonoBehaviour
             return newProfileTargetSceneName;
         }
 
+        if (action == TitleProfileLaunchAction.ContinueRun &&
+            ShouldResumeTutorialCorridor(slotIndex))
+        {
+            return newProfileTargetSceneName;
+        }
+
         return targetSceneName;
+    }
+
+    private bool ShouldResumeTutorialCorridor(int slotIndex)
+    {
+        if (string.IsNullOrWhiteSpace(newProfileTargetSceneName))
+            return false;
+
+        if (useDebugSlotData)
+            return false;
+
+        GameDataRepository repository = new GameDataRepository(slotIndex);
+        if (!repository.TryLoad(out GameData data) || data == null)
+            return false;
+
+        return HubIntroProgressGate.ShouldRouteTitleLaunchToTutorial(data);
     }
 
     public bool DeleteSlot(int slotIndex)

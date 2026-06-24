@@ -1,80 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "de3bf0ccec2d45efb3eaf6de33a6188a",
-            "startedUtc": "2026-06-02T04:24:12.3876804Z",
-            "endedUtc": "2026-06-02T04:24:59.5553814Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 179,
-                    "coldSpawns": 112,
-                    "firstSeenSeconds": 25.74270248413086,
-                    "lastSeenSeconds": 46.9323616027832,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
-            "sessionId": "4c21c0d46fbf4578a29044efab3005bf",
-            "startedUtc": "2026-06-02T04:26:07.1361551Z",
-            "endedUtc": "2026-06-02T04:26:09.4393632Z",
-            "entries": []
-        },
-        {
-            "sessionId": "edfd765630734772be5db67da24bf2f5",
-            "startedUtc": "2026-06-02T04:30:57.4185143Z",
-            "endedUtc": "2026-06-02T04:31:41.3692464Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 50,
-                    "coldSpawns": 28,
-                    "firstSeenSeconds": 35.396217346191409,
-                    "lastSeenSeconds": 43.58069610595703,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
-            "sessionId": "8e071764d6c34e9da89162dda26d6759",
-            "startedUtc": "2026-06-02T04:38:27.1658518Z",
-            "endedUtc": "2026-06-02T04:39:39.5315756Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 17,
-                    "coldSpawns": 17,
-                    "firstSeenSeconds": 71.30136108398438,
-                    "lastSeenSeconds": 71.56082153320313,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
-            "sessionId": "a4d9c98becdd488782c7ff3fe65a31c4",
-            "startedUtc": "2026-06-02T04:41:04.2131470Z",
-            "endedUtc": "2026-06-02T04:43:37.3346721Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 865,
-                    "coldSpawns": 123,
-                    "firstSeenSeconds": 28.744998931884767,
-                    "lastSeenSeconds": 152.43643188476563,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                }
-            ]
-        },
-        {
             "sessionId": "1fda77c185fb46ff85110678d3796182",
             "startedUtc": "2026-06-02T05:06:24.1030543Z",
             "endedUtc": "2026-06-02T05:06:26.6094060Z",
@@ -195,6 +121,36 @@
             "sessionId": "053f76b47ce0493e9daaa94c429e20df",
             "startedUtc": "2026-06-02T06:57:10.1129153Z",
             "endedUtc": "2026-06-02T06:57:13.6097819Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a443ef6a58084143b83d0096a4313628",
+            "startedUtc": "2026-06-18T06:39:23.8460087Z",
+            "endedUtc": "2026-06-18T06:39:26.4839972Z",
+            "entries": []
+        },
+        {
+            "sessionId": "45c37030e85540c2a219c01268a25449",
+            "startedUtc": "2026-06-18T10:20:13.9446108Z",
+            "endedUtc": "2026-06-18T10:20:16.8763125Z",
+            "entries": []
+        },
+        {
+            "sessionId": "c2e9c6dfc7a140e1b2f30a2ab1395f97",
+            "startedUtc": "2026-06-18T10:45:30.8986092Z",
+            "endedUtc": "2026-06-18T10:45:32.2875776Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a064f15ec37b4b67ab570e94b8898fa1",
+            "startedUtc": "2026-06-18T13:03:36.9019234Z",
+            "endedUtc": "2026-06-18T13:03:38.3830590Z",
+            "entries": []
+        },
+        {
+            "sessionId": "b19891fd318b415196d2fcc21a553b54",
+            "startedUtc": "2026-06-18T13:42:52.0553163Z",
+            "endedUtc": "2026-06-18T13:42:53.2597516Z",
             "entries": []
         }
     ]

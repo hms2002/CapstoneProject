@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7787631088536296713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54a5ab6f6e2990e49baff1289a56ee26, type: 3}
+  m_Name: SlimeRouteSet_Boss
+  m_EditorClassIdentifier: Assembly-CSharp::LoadManifestSO
+  scopeKind: 2
+  prefabAssets:
+  - {fileID: 1000000, guid: d6d1a71573e8467c9ed8fa63b7f4bd14, type: 3}
+  - {fileID: 1000000, guid: 3ec7b4634d524e0d84ec605c177e6b86, type: 3}
+  - {fileID: 1000000, guid: d84fb7a441404cf4ba049fe22336cdb3, type: 3}
+  - {fileID: 1000000, guid: a18e617b0b1f4ce4b730c4d1d950f627, type: 3}
+  - {fileID: 1000000, guid: f8460f5e737a48218760688ff5643ca3, type: 3}
+  - {fileID: 1000000000000000000, guid: d1c98a1a57f44e43bb4b806f44ad9273, type: 3}
+  - {fileID: 2010564695846189207, guid: 91ef41aa8bfef59498e0d63842c08bc4, type: 3}
+  - {fileID: 963607331306312377, guid: 9d5c33dc1ee804944aa93e24179d028a, type: 3}
+  - {fileID: 8924184836679570375, guid: 49c6c927d7274e9489ca51616a131a7f, type: 3}
+  - {fileID: 396419754517208651, guid: 8564ea69668e7544a8c8bb7220832c1b, type: 3}
+  cueAssets: []
+  dataAssets:
+  - {fileID: 11400000, guid: c0a22b38484774e4e82564f837979fba, type: 2}
+  extraAssets: []
+  prewarmPrefabs: []
+--- !u!114 &-1158054042755433760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54a5ab6f6e2990e49baff1289a56ee26, type: 3}
+  m_Name: SlimeRouteSet_Corridor
+  m_EditorClassIdentifier: Assembly-CSharp::LoadManifestSO
+  scopeKind: 2
+  prefabAssets:
+  - {fileID: 6578129014226894282, guid: 225d580cb9ca3624c9d81e307cbfce64, type: 3}
+  - {fileID: 7326883398652249423, guid: 65aed765b26cc4745a94999e32542d6c, type: 3}
+  - {fileID: 6955305126709057867, guid: 6b49f710022e5e64bb337a1da469af91, type: 3}
+  - {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  - {fileID: 827981175415890305, guid: b9febceb6e3458b4aaa9d31cefa9bfb0, type: 3}
+  - {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
+  - {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
+  - {fileID: 5433486041897825252, guid: e67c0e27f47424648af599f14420164d, type: 3}
+  - {fileID: 8253740303149856665, guid: 3d3e2bbb1e1867242add50e34bd3901b, type: 3}
+  - {fileID: 6821349489537912191, guid: 53c48d36675d8be4a95ddf04536c6c68, type: 3}
+  cueAssets: []
+  dataAssets: []
+  extraAssets: []
+  prewarmPrefabs: []
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 301f57600f7db1f4bb96559621cfdd8c, type: 3}
+  m_Name: SlimeRouteSet_LoadManifest
+  m_EditorClassIdentifier: Assembly-CSharp::RouteSetLoadManifestSO
+  sharedManifest: {fileID: 1516326586859441657}
+  corridorManifest: {fileID: -1158054042755433760}
+  bossManifest: {fileID: -7787631088536296713}
+--- !u!114 &1516326586859441657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54a5ab6f6e2990e49baff1289a56ee26, type: 3}
+  m_Name: SlimeRouteSet_Shared
+  m_EditorClassIdentifier: Assembly-CSharp::LoadManifestSO
+  scopeKind: 2
+  prefabAssets:
+  - {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}
+  - {fileID: 100000, guid: 4c120d14b57b4436a325443f7b0caa3f, type: 3}
+  - {fileID: 100000, guid: a1365e9c0af9480b9dc3169f803a951d, type: 3}
+  - {fileID: 625522859161183429, guid: 2327e9837a564ed58b0ae70d7c8e00b1, type: 3}
+  - {fileID: 625522859161183429, guid: 4a7ea9f5e4df4e39877c3818b6700007, type: 3}
+  - {fileID: 100000, guid: d18966565254432a82dc5a7b4acdb6cb, type: 3}
+  cueAssets: []
+  dataAssets:
+  - {fileID: 11400000, guid: 9fde1aac665d3cb48a2f3227bf0c5e5a, type: 2}
+  - {fileID: 11400000, guid: 3903a30b290836e4bb4413a07b019990, type: 2}
+  extraAssets: []
+  prewarmPrefabs: []

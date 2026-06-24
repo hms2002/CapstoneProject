@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CapstoneRuntime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [DefaultExecutionOrder(-858)]
@@ -291,7 +292,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         bool allowedRealBatch =
             realBatchActive &&
             managedPresentationActive &&
-            ShouldShowRealBatch(routeManager);
+            (managedPresentationRevealed || ShouldShowRealBatch(routeManager));
         bool previewBatch = debugPreviewActive;
         bool batchActive = previewBatch || allowedRealBatch;
         int effectiveBatchId = previewBatch
@@ -460,6 +461,10 @@ public sealed class LoadingOverlayController : MonoBehaviour
         if (preferredCanvasView != null)
             return preferredCanvasView;
 
+        LoadingOverlayView sceneView = FindActiveSceneOverlayView();
+        if (sceneView != null)
+            return sceneView;
+
         if (!allowRuntimeFallback)
             return GetComponentInChildren<LoadingOverlayView>(includeInactive: true);
 
@@ -468,6 +473,24 @@ public sealed class LoadingOverlayController : MonoBehaviour
             return runtimeFallbackView;
 
         return GetComponentInChildren<LoadingOverlayView>(includeInactive: true);
+    }
+
+    private static LoadingOverlayView FindActiveSceneOverlayView()
+    {
+        Scene activeScene = SceneManager.GetActiveScene();
+        LoadingOverlayView[] candidates =
+            FindObjectsByType<LoadingOverlayView>(FindObjectsInactive.Include);
+
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            LoadingOverlayView candidate = candidates[i];
+            if (candidate == null || candidate.gameObject.scene != activeScene)
+                continue;
+
+            return candidate;
+        }
+
+        return null;
     }
 
     private void ClearResolvedView()

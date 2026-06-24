@@ -42,6 +42,22 @@ internal readonly struct TitleProfileLaunchResult
 
 internal static class TitleProfileLaunchService
 {
+    public static bool PreparePreloadWindow(
+        TitleProfileLaunchRequest request,
+        GameDataManager gameDataManager)
+    {
+        if (!request.IsValid)
+            return false;
+
+        if (gameDataManager != null)
+        {
+            PresentationPreloadService.EnsureInstance();
+            gameDataManager.LoadSlot(request.SlotIndex);
+        }
+
+        return true;
+    }
+
     public static TitleProfileLaunchResult PrepareLaunch(
         TitleProfileLaunchRequest request,
         GameDataManager gameDataManager)
@@ -51,6 +67,7 @@ internal static class TitleProfileLaunchService
 
         if (gameDataManager != null)
         {
+            PresentationPreloadService.EnsureInstance();
             gameDataManager.LoadSlot(request.SlotIndex);
             gameDataManager.EnsureData().hasInitializedProfile = true;
             gameDataManager.SaveData();

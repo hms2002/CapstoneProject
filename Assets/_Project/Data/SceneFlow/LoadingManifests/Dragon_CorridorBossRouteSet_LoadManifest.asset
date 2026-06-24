@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8787860025352749643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54a5ab6f6e2990e49baff1289a56ee26, type: 3}
+  m_Name: Dragon_CorridorBossRouteSet_Corridor
+  m_EditorClassIdentifier: Assembly-CSharp::LoadManifestSO
+  scopeKind: 2
+  prefabAssets:
+  - {fileID: 5992347863573343322, guid: 38e9dd3c667a35a4eb873d65aef72150, type: 3}
+  - {fileID: 6578129014226894282, guid: 225d580cb9ca3624c9d81e307cbfce64, type: 3}
+  - {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  - {fileID: 7326883398652249423, guid: 65aed765b26cc4745a94999e32542d6c, type: 3}
+  - {fileID: 6955305126709057867, guid: 6b49f710022e5e64bb337a1da469af91, type: 3}
+  - {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  - {fileID: 827981175415890305, guid: b9febceb6e3458b4aaa9d31cefa9bfb0, type: 3}
+  - {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
+  - {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
+  - {fileID: 5433486041897825252, guid: e67c0e27f47424648af599f14420164d, type: 3}
+  - {fileID: 3760106881503541346, guid: ca526788b6ca8554e85d442937407f1e, type: 3}
+  - {fileID: 625522859161183429, guid: a4a67a3598fb4cfbb4bfda7759db598a, type: 3}
+  - {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}
+  - {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
+  - {fileID: 170880958126991584, guid: 64509a90bf026d84792768de01688456, type: 3}
+  - {fileID: 6821349489537912191, guid: 53c48d36675d8be4a95ddf04536c6c68, type: 3}
+  cueAssets: []
+  dataAssets: []
+  extraAssets: []
+  prewarmPrefabs: []
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 301f57600f7db1f4bb96559621cfdd8c, type: 3}
+  m_Name: Dragon_CorridorBossRouteSet_LoadManifest
+  m_EditorClassIdentifier: Assembly-CSharp::RouteSetLoadManifestSO
+  sharedManifest: {fileID: 3754820492034082365}
+  corridorManifest: {fileID: -8787860025352749643}
+  bossManifest: {fileID: 3042225168199226722}
+--- !u!114 &3042225168199226722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54a5ab6f6e2990e49baff1289a56ee26, type: 3}
+  m_Name: Dragon_CorridorBossRouteSet_Boss
+  m_EditorClassIdentifier: Assembly-CSharp::LoadManifestSO
+  scopeKind: 2
+  prefabAssets:
+  - {fileID: 5055118451258413439, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
+  - {fileID: 6738498832634369492, guid: 568ffe4436c45db418e1510196a9fb69, type: 3}
+  - {fileID: 4251223848648810675, guid: fc620d7fcc12f9e4e8acfdd983cc69ce, type: 3}
+  - {fileID: 100000, guid: 89bb6f5066de4f58b67868061d73acfd, type: 3}
+  - {fileID: 963607331306312377, guid: 9d5c33dc1ee804944aa93e24179d028a, type: 3}
+  - {fileID: 8924184836679570375, guid: 49c6c927d7274e9489ca51616a131a7f, type: 3}
+  - {fileID: 396419754517208651, guid: 8564ea69668e7544a8c8bb7220832c1b, type: 3}
+  cueAssets: []
+  dataAssets:
+  - {fileID: 11400000, guid: 73f94fed09a844d4fa580676170cabb7, type: 2}
+  - {fileID: 11400000, guid: 736a27640b1e92243903f03bd369e986, type: 2}
+  - {fileID: 11400000, guid: efb8cce34a2819545b863edad3307a32, type: 2}
+  extraAssets: []
+  prewarmPrefabs: []
+--- !u!114 &3754820492034082365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54a5ab6f6e2990e49baff1289a56ee26, type: 3}
+  m_Name: Dragon_CorridorBossRouteSet_Shared
+  m_EditorClassIdentifier: Assembly-CSharp::LoadManifestSO
+  scopeKind: 2
+  prefabAssets: []
+  cueAssets: []
+  dataAssets:
+  - {fileID: 11400000, guid: 9fde1aac665d3cb48a2f3227bf0c5e5a, type: 2}
+  - {fileID: 11400000, guid: 3903a30b290836e4bb4413a07b019990, type: 2}
+  extraAssets: []
+  prewarmPrefabs: []

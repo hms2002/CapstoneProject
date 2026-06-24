@@ -307,7 +307,9 @@ namespace CapstonePresentation
             GameObject instance = pooledInstance.gameObject;
             instance.SetActive(true);
             InitializeSpawnedInstance(instance, hook.useUnscaledTime);
+#if UNITY_EDITOR
             PrewarmTraceRuntime.RecordSpawn(resolvedPrefab, coldSpawn);
+#endif
 
             if (scheduleAutoRelease && hook.ShouldAutoRelease)
             {

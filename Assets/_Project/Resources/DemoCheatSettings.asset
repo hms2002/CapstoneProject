@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98f7de8021644458a6b83188c7495e60, type: 3}
   m_Name: DemoCheatSettings
   m_EditorClassIdentifier: 
-  enableDemoCheats: 1
+  enableDemoCheats: 0
   cheatGuideKey: 256
   warpToRunSpecialNpcKey: 262
   addMagicStoneKey: 260

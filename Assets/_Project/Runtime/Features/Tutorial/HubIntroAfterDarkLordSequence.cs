@@ -231,7 +231,10 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         yield return ReturnCameraRoutine();
 
         if (markSeenOnComplete)
+        {
             HubIntroProgressGate.MarkHubIntroSeen(hubIntroSeenId);
+            PresentationPreloadService.RefreshFirstRunIntroWindow("Hub intro seen");
+        }
 
         hasPlayedThisScene = true;
         sequenceRoutine = null;

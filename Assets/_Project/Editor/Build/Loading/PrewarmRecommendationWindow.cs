@@ -197,7 +197,7 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
 
         EditorGUILayout.Space(8f);
         EditorGUILayout.LabelField($"Unmapped Trace Entries ({unmappedEntries.Count})", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox("These prefabs were traced but could not be mapped to Boot/RunCommon/Shared/Corridor/Boss manifests.", MessageType.Warning);
+        EditorGUILayout.HelpBox("These prefabs were traced but could not be mapped to Boot/FirstRunIntro/RunCommon/Shared/Corridor/Boss manifests.", MessageType.Warning);
 
         for (int i = 0; i < unmappedEntries.Count; i++)
         {
@@ -617,7 +617,10 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
         var lookup = new ManifestLookup();
 
         if (bootstrapConfig != null)
+        {
             lookup.AddManifest("Boot", bootstrapConfig.BootManifest);
+            lookup.AddManifest("FirstRunIntro", bootstrapConfig.FirstRunIntroManifest);
+        }
 
         List<LoadManifestSO> runCommonManifests = FindRunCommonManifests(routeSet);
         for (int i = 0; i < runCommonManifests.Count; i++)
@@ -686,6 +689,7 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
     private static bool IsFrontLoadedScope(string targetScopeLabel)
     {
         return string.Equals(targetScopeLabel, "Boot", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(targetScopeLabel, "FirstRunIntro", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(targetScopeLabel, "RunCommon", StringComparison.OrdinalIgnoreCase);
     }
 
@@ -693,6 +697,9 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
     {
         if (string.Equals(targetScopeLabel, "Boot", StringComparison.OrdinalIgnoreCase))
             return 80;
+
+        if (string.Equals(targetScopeLabel, "FirstRunIntro", StringComparison.OrdinalIgnoreCase))
+            return 70;
 
         if (string.Equals(targetScopeLabel, "RunCommon", StringComparison.OrdinalIgnoreCase))
             return 60;

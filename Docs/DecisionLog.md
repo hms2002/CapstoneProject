@@ -2168,3 +2168,44 @@ Implications:
 - Durable profile save fields need a source of truth, commit timing, and overwrite guard before save collection changes; use `ProfileSaveOwnershipArchitecture.md`.
 - Scene evidence must be classified; current structure decisions default to `ProtoType*` scenes, while legacy scenes are reference-only; use `SceneClassificationArchitecture.md`.
 - `GameDataManager.SaveData()` item unlock preservation with `ItemManager.IsReady` is the next P0 code follow-up, not part of the policy-only documentation slice.
+
+## 2026-06-18 - Prewarm Trace Is Editor-Only
+
+Decision:
+`PrewarmTraceRuntime` is an editor-only measurement tool for prewarm recommendation authoring. Player builds must not create the trace runtime service or write `PrewarmTrace.json` under `Application.persistentDataPath`.
+
+Reason:
+Prewarm trace data is used before release to identify presentation prefabs that may need manifest prewarm entries. Keeping it active in player builds adds unnecessary runtime file I/O and leaves development measurement data in user save locations without improving release loading behavior.
+
+Implications:
+- `PresentationSpawnService` may record spawn trace data in the editor only.
+- `PrewarmRecommendationWindow` remains the consumer of editor trace files.
+- Release loading readiness still depends on manifest, Addressables registry, Addressables content build, and clean build validation rather than runtime trace capture.
+
+## 2026-06-18 - FirstRun Intro Uses A Separate Loading Scope
+
+Decision:
+The title-to-tutorial-to-first-Hub-intro path uses a separate `FirstRunIntro` loading scope instead of being folded into always-on Boot or active-run RouteSet manifests.
+
+Reason:
+The intro/tutorial path is shown once per save file and now sits before the Hub start portal creates a RouteSet load window. Keeping those assets in Boot would retain one-time tutorial assets for the whole app session, while keeping them in RouteSet would miss the pre-run tutorial scenes.
+
+Implications:
+- `LoadingBootstrapConfigSO.firstRunIntroManifest` is retained while the loaded profile has not completed `hub_intro_after_darklord_seen`.
+- The FirstRun manifest is released when the Hub intro marks the configured completion tutorial id as seen.
+- Existing saves that initialized a profile but did not finish the DarkLord tutorial route back to `TutorialCorridor` instead of jumping straight to Hub.
+- After the DarkLord forced-defeat completion id is saved, unfinished first-Hub-intro saves route to Hub so the Hub intro can complete.
+- Release validation must regenerate manifest assets, rebuild the Addressables registry/content, and verify the first-run path separately from run RouteSets.
+
+## 2026-06-18 - Loading Manifests Store Root-Loadable Assets
+
+Decision:
+Generated loading manifests should list root-loadable assets only. Dependency-only Unity assets such as sprites, textures, materials, animation clips, animator controllers, tile assets, shaders, and compute shaders should be reached through their owning prefab or ScriptableObject rather than listed directly.
+
+Reason:
+Scene dependency collection is intentionally broad and can pull route, boss, monster, weapon, and art dependencies into Boot just because a scene references a manager, database, or presentation object. Listing every dependency directly makes Boot too large and hides the intended split between Boot, FirstRunIntro, and RouteSet scopes.
+
+Implications:
+- `RouteSetLoadManifestBuilderWindow` filters dependency-only assets and known non-Boot route content before writing generated manifests.
+- If a dependency asset must be directly preloaded, add an explicit root asset or a narrow allowlist instead of broadening Boot.
+- Existing generated manifest assets must be regenerated after this policy change, then the Addressables registry/content should be rebuilt before release validation.

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
@@ -5,27 +6,36 @@ using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public static class LoadingAddressableRegistryBuilder
 {
     private const string AutoGroupName = "CapstoneLoadingRuntime";
     private const int MissingPreviewCount = 8;
+    private static readonly char[] InvalidAddressCharacters = { '[', ']' };
 
     [MenuItem("Tools/Loading/Build Addressable Registry")]
-    private static void BuildRegistry()
+    private static void BuildRegistryMenu()
+    {
+        BuildRegistry();
+    }
+
+    public static string BuildRegistry()
     {
         AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.GetSettings(true);
         if (settings == null)
         {
-            Debug.LogError("[LoadingAddressableRegistryBuilder] Failed to create or load Addressables settings.");
-            return;
+            const string message = "[LoadingAddressableRegistryBuilder] Failed to create or load Addressables settings.";
+            Debug.LogError(message);
+            return null;
         }
 
         AddressableAssetGroup targetGroup = EnsureTargetGroup(settings);
         if (targetGroup == null)
         {
-            Debug.LogError("[LoadingAddressableRegistryBuilder] Failed to find or create an Addressables group.");
-            return;
+            const string message = "[LoadingAddressableRegistryBuilder] Failed to find or create an Addressables group.";
+            Debug.LogError(message);
+            return null;
         }
 
         LoadingAddressableRegistrySO registry =
@@ -38,10 +48,12 @@ public static class LoadingAddressableRegistryBuilder
 
         var registryEntries = new List<AddressableAssetKeyEntry>();
         var seenAssetPaths = new HashSet<string>();
+        var usedAddressKeys = new HashSet<string>(StringComparer.Ordinal);
         var missingAssetPaths = new List<string>();
         string[] manifestGuids = AssetDatabase.FindAssets("t:LoadManifestSO");
         int createdEntryCount = 0;
         int existingEntryCount = 0;
+        int updatedAddressCount = 0;
 
         for (int i = 0; i < manifestGuids.Length; i++)
         {
@@ -67,11 +79,10 @@ public static class LoadingAddressableRegistryBuilder
                 else
                     existingEntryCount++;
 
-                string addressKey = string.IsNullOrWhiteSpace(entry.address) ? assetPath : entry.address;
-                if (string.IsNullOrWhiteSpace(entry.address))
-                    entry.address = addressKey;
+                if (EnsureSafeAddress(entry, assetPath, usedAddressKeys))
+                    updatedAddressCount++;
 
-                registryEntries.Add(new AddressableAssetKeyEntry(asset, addressKey));
+                registryEntries.Add(new AddressableAssetKeyEntry(asset, entry.address));
             }
         }
 
@@ -84,7 +95,14 @@ public static class LoadingAddressableRegistryBuilder
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        Debug.Log(BuildSummary(registryEntries.Count, createdEntryCount, existingEntryCount, missingAssetPaths), registry);
+        string summary = BuildSummary(
+            registryEntries.Count,
+            createdEntryCount,
+            existingEntryCount,
+            updatedAddressCount,
+            missingAssetPaths);
+        Debug.Log(summary, registry);
+        return summary;
     }
 
     private static bool TryGetRuntimeAssetPath(Object asset, HashSet<string> seenAssetPaths, out string assetPath)
@@ -126,6 +144,68 @@ public static class LoadingAddressableRegistryBuilder
         entry.address = assetPath;
         createdNow = true;
         return entry;
+    }
+
+    private static bool EnsureSafeAddress(
+        AddressableAssetEntry entry,
+        string assetPath,
+        HashSet<string> usedAddressKeys)
+    {
+        if (entry == null)
+            return false;
+
+        string sourceAddress = string.IsNullOrWhiteSpace(entry.address) ? assetPath : entry.address;
+        string safeAddress = SanitizeAddressKey(sourceAddress);
+        if (string.IsNullOrWhiteSpace(safeAddress))
+            safeAddress = SanitizeAddressKey(assetPath);
+
+        string assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
+        safeAddress = EnsureUniqueAddressKey(safeAddress, assetGuid, usedAddressKeys);
+
+        if (string.Equals(entry.address, safeAddress, StringComparison.Ordinal))
+            return false;
+
+        entry.address = safeAddress;
+        return true;
+    }
+
+    private static string SanitizeAddressKey(string addressKey)
+    {
+        if (string.IsNullOrWhiteSpace(addressKey))
+            return string.Empty;
+
+        string trimmedAddress = addressKey.Trim();
+        if (trimmedAddress.IndexOfAny(InvalidAddressCharacters) < 0)
+            return trimmedAddress;
+
+        return trimmedAddress
+            .Replace("[", string.Empty)
+            .Replace("]", string.Empty);
+    }
+
+    private static string EnsureUniqueAddressKey(
+        string addressKey,
+        string assetGuid,
+        HashSet<string> usedAddressKeys)
+    {
+        if (usedAddressKeys == null)
+            return addressKey;
+
+        if (usedAddressKeys.Add(addressKey))
+            return addressKey;
+
+        string suffix = string.IsNullOrWhiteSpace(assetGuid)
+            ? Guid.NewGuid().ToString("N")[..8]
+            : assetGuid[..Mathf.Min(8, assetGuid.Length)];
+        string uniqueAddress = $"{addressKey}__{suffix}";
+        int duplicateIndex = 2;
+        while (!usedAddressKeys.Add(uniqueAddress))
+        {
+            uniqueAddress = $"{addressKey}__{suffix}_{duplicateIndex}";
+            duplicateIndex++;
+        }
+
+        return uniqueAddress;
     }
 
     private static AddressableAssetGroup EnsureTargetGroup(AddressableAssetSettings settings)
@@ -177,11 +257,12 @@ public static class LoadingAddressableRegistryBuilder
         int registryEntryCount,
         int createdEntryCount,
         int existingEntryCount,
+        int updatedAddressCount,
         List<string> missingAssetPaths)
     {
         var builder = new StringBuilder();
         builder.Append(
-            $"[LoadingAddressableRegistryBuilder] Built registry with {registryEntryCount} entries. Existing entries reused: {existingEntryCount}, new addressable entries created: {createdEntryCount}.");
+            $"[LoadingAddressableRegistryBuilder] Built registry with {registryEntryCount} entries. Existing entries reused: {existingEntryCount}, new addressable entries created: {createdEntryCount}, address keys updated: {updatedAddressCount}.");
 
         if (missingAssetPaths == null || missingAssetPaths.Count == 0)
             return builder.ToString();

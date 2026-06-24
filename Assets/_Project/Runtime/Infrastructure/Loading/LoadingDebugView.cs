@@ -153,6 +153,7 @@ public sealed class LoadingDebugView : MonoBehaviour
             GUILayout.Space(6f);
             DrawSection("Active Preload Window");
             DrawBodyLine($"Boot: {SafeName(preload != null ? preload.ActiveBootManifest : null)}");
+            DrawBodyLine($"FirstRunIntro: {SafeName(preload != null ? preload.ActiveFirstRunIntroManifest : null)}");
             DrawBodyLine($"RunCommon: {SafeName(preload != null ? preload.ActiveRunCommonManifest : null)}");
             DrawBodyLine($"Current: {SafeName(preload != null ? preload.ActiveCurrentStageManifest : null)}");
             DrawBodyLine($"Next: {SafeName(preload != null ? preload.ActiveNextStageManifest : null)}");
@@ -273,7 +274,7 @@ public sealed class LoadingDebugView : MonoBehaviour
         {
             PresentationPreloadService.DebugWindowEvent entry = entries[i];
             DrawBodyLine(
-                $"[{entry.RealtimeSeconds:0.0}] {entry.Reason} | boot={entry.BootManifestName}, run={entry.RunCommonManifestName}, current={entry.CurrentManifestName}, next={entry.NextManifestName}");
+                $"[{entry.RealtimeSeconds:0.0}] {entry.Reason} | boot={entry.BootManifestName}, firstRun={entry.FirstRunIntroManifestName}, run={entry.RunCommonManifestName}, current={entry.CurrentManifestName}, next={entry.NextManifestName}");
         }
     }
 

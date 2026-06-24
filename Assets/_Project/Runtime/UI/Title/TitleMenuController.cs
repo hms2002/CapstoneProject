@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
@@ -11,6 +12,7 @@ using UnityEngine.InputSystem.UI;
 public sealed class TitleMenuController : MonoBehaviour
 {
     private const string DontDestroyOnLoadSceneName = "DontDestroyOnLoad";
+    private const float LaunchPreloadTimeoutSeconds = 30f;
 
     [Header("Main Menu")]
     [SerializeField] private Button newGameButton;
@@ -189,13 +191,7 @@ public sealed class TitleMenuController : MonoBehaviour
         if (!service.TryCreateLaunchRequest(slotIndex, out TitleProfileLaunchRequest request))
             return;
 
-        if (ShouldPlayIntroBeforeLaunch(request))
-        {
-            BeginIntroLaunch(request);
-            return;
-        }
-
-        PrepareAndLoad(request);
+        StartCoroutine(CoLaunchFromSlot(request));
     }
 
     private bool ShouldPlayIntroBeforeLaunch(TitleProfileLaunchRequest request)
@@ -205,49 +201,93 @@ public sealed class TitleMenuController : MonoBehaviour
                introPlayer != null;
     }
 
-    private void BeginIntroLaunch(TitleProfileLaunchRequest request)
+    private IEnumerator CoLaunchFromSlot(TitleProfileLaunchRequest request)
     {
+        isLoading = true;
         StopMainMenuUnlockLead();
         SetMainMenuInteractable(false);
         SetProfileSlotPanelInteractionBlocked(true);
 
-        bool didStartIntro =
-            introPlayer != null &&
-            introPlayer.TryPlay(() => PrepareAndLoad(request), keepViewVisibleOnCompleted: true);
-        if (!didStartIntro)
-        {
-            PrepareAndLoad(request);
-            return;
-        }
-    }
+        LoadingOverlayController loadingOverlay = LoadingOverlayController.EnsureInstance();
+        loadingOverlay?.BeginManagedPresentation(showImmediately: true);
+        yield return null;
 
-    private void PrepareAndLoad(TitleProfileLaunchRequest request)
-    {
+        if (!TitleProfileLaunchService.PreparePreloadWindow(request, GameDataManager.Instance))
+        {
+            AbortLaunch(loadingOverlay);
+            yield break;
+        }
+
+        yield return WaitForLaunchPreload();
+        loadingOverlay?.ForceHidePresentation();
+
+        if (ShouldPlayIntroBeforeLaunch(request))
+            yield return PlayIntroBeforeLaunch();
+
         TitleProfileLaunchResult launchResult =
             TitleProfileLaunchService.PrepareLaunch(request, GameDataManager.Instance);
         if (!launchResult.Succeeded)
         {
-            introPlayer?.HideViewImmediate();
-            SetProfileSlotPanelInteractionBlocked(false);
-            SetMainMenuInteractable(true);
-            return;
+            AbortLaunch(null);
+            yield break;
         }
 
-        LoadScene(launchResult.TargetSceneName);
+        LoadPreparedScene(launchResult.TargetSceneName);
     }
 
-    private void LoadScene(string targetSceneName)
+    private IEnumerator WaitForLaunchPreload()
     {
-        if (isLoading || string.IsNullOrWhiteSpace(targetSceneName))
-            return;
+        float elapsed = 0f;
+        while (PresentationPreloadService.GetPendingProviderOperationCount() > 0)
+        {
+            if (elapsed >= LaunchPreloadTimeoutSeconds)
+            {
+                Debug.LogWarning(
+                    "[TitleMenuController] Timed out waiting for title launch preload. Continuing launch.",
+                    this);
+                break;
+            }
 
-        isLoading = true;
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+    }
+
+    private IEnumerator PlayIntroBeforeLaunch()
+    {
+        bool introCompleted = false;
+        bool didStartIntro =
+            introPlayer != null &&
+            introPlayer.TryPlay(() => introCompleted = true, keepViewVisibleOnCompleted: true);
+        if (!didStartIntro)
+            yield break;
+
+        while (!introCompleted && introPlayer != null && introPlayer.IsPlaying)
+            yield return null;
+    }
+
+    private void LoadPreparedScene(string targetSceneName)
+    {
+        if (string.IsNullOrWhiteSpace(targetSceneName))
+        {
+            AbortLaunch(null);
+            return;
+        }
 
         SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.EnsureInstance();
         if (transitionCoordinator != null && transitionCoordinator.TryLoadScene(targetSceneName))
             return;
 
         SceneManager.LoadScene(targetSceneName);
+    }
+
+    private void AbortLaunch(LoadingOverlayController loadingOverlay)
+    {
+        loadingOverlay?.ForceHidePresentation();
+        introPlayer?.HideViewImmediate();
+        isLoading = false;
+        SetProfileSlotPanelInteractionBlocked(false);
+        SetMainMenuInteractable(true);
     }
 
     private bool IsIntroActive => introPlayer != null && introPlayer.IsPlaying;

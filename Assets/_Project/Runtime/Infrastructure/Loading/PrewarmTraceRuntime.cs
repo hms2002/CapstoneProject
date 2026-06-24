@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -361,3 +363,5 @@ public sealed class PrewarmTraceRuntime : MonoBehaviour
             paths.Add(fullPath);
     }
 }
+
+#endif

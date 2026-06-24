@@ -17,7 +17,7 @@ MonoBehaviour:
   description: "\uC0C1\uC790\uC758 \uB0B4\uC6A9\uBB3C\uC744 \uB9AC\uB864 \uD560 \uC218
     \uC788\uB2E4."
   icon: {fileID: 7898049890347936799, guid: 826417d7210a94a45b9d4c5f713591a5, type: 3}
-  price: 0
+  price: 5
   effects:
   - {fileID: 11400000, guid: 795c6aa610974d3c8b01b6ebdbdf328e, type: 2}
   unlockedNodeIDs: 

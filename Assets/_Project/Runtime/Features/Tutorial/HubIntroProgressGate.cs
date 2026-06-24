@@ -31,6 +31,31 @@ public static class HubIntroProgressGate
         return TutorialProgressStore.MarkCompleted(ResolveSeenId(hubIntroSeenId), saveImmediately);
     }
 
+    public static bool IsDarkLordTutorialForcedDefeatCompleted(
+        GameData data,
+        string darkLordTutorialCompletionId = DefaultDarkLordTutorialCompletionId)
+    {
+        return IsCompleted(data, ResolveCompletionId(darkLordTutorialCompletionId));
+    }
+
+    public static bool IsHubIntroSeen(
+        GameData data,
+        string hubIntroSeenId = DefaultHubIntroSeenId)
+    {
+        return IsCompleted(data, ResolveSeenId(hubIntroSeenId));
+    }
+
+    public static bool ShouldRouteTitleLaunchToTutorial(
+        GameData data,
+        string darkLordTutorialCompletionId = DefaultDarkLordTutorialCompletionId,
+        string hubIntroSeenId = DefaultHubIntroSeenId)
+    {
+        if (data == null || IsHubIntroSeen(data, hubIntroSeenId))
+            return false;
+
+        return !IsDarkLordTutorialForcedDefeatCompleted(data, darkLordTutorialCompletionId);
+    }
+
     public static string ResolveCompletionId(string darkLordTutorialCompletionId)
     {
         return ResolveId(darkLordTutorialCompletionId, DefaultDarkLordTutorialCompletionId);
@@ -53,5 +78,14 @@ public static class HubIntroProgressGate
 #else
         return false;
 #endif
+    }
+
+    private static bool IsCompleted(GameData data, string tutorialId)
+    {
+        if (data == null || data.tutorialData == null)
+            return false;
+
+        data.tutorialData.Normalize();
+        return data.tutorialData.IsCompleted(tutorialId);
     }
 }

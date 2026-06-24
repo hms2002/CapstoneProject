@@ -38,6 +38,7 @@ public sealed class PresentationPreloadService : MonoBehaviour
             float realtimeSeconds,
             string reason,
             string bootManifestName,
+            string firstRunIntroManifestName,
             string runCommonManifestName,
             string currentManifestName,
             string nextManifestName)
@@ -45,6 +46,7 @@ public sealed class PresentationPreloadService : MonoBehaviour
             RealtimeSeconds = realtimeSeconds;
             Reason = reason;
             BootManifestName = bootManifestName;
+            FirstRunIntroManifestName = firstRunIntroManifestName;
             RunCommonManifestName = runCommonManifestName;
             CurrentManifestName = currentManifestName;
             NextManifestName = nextManifestName;
@@ -53,6 +55,7 @@ public sealed class PresentationPreloadService : MonoBehaviour
         public float RealtimeSeconds { get; }
         public string Reason { get; }
         public string BootManifestName { get; }
+        public string FirstRunIntroManifestName { get; }
         public string RunCommonManifestName { get; }
         public string CurrentManifestName { get; }
         public string NextManifestName { get; }
@@ -104,7 +107,9 @@ public sealed class PresentationPreloadService : MonoBehaviour
     private readonly List<DebugWindowEvent> windowHistory = new();
     private readonly List<TrackedProviderOperation> providerOperationHistory = new();
     private PortalRouteManager boundRouteManager;
+    private GameDataManager boundGameDataManager;
     private LoadManifestSO activeBootManifest;
+    private LoadManifestSO activeFirstRunIntroManifest;
     private LoadManifestSO activeRunCommonManifest;
     private RouteSetLoadManifestSO activeCurrentStageManifest;
     private RouteSetLoadManifestSO activeNextStageManifest;
@@ -113,6 +118,7 @@ public sealed class PresentationPreloadService : MonoBehaviour
     private bool currentProviderBatchHasOperations;
 
     public LoadManifestSO ActiveBootManifest => activeBootManifest;
+    public LoadManifestSO ActiveFirstRunIntroManifest => activeFirstRunIntroManifest;
     public LoadManifestSO ActiveRunCommonManifest => activeRunCommonManifest;
     public RouteSetLoadManifestSO ActiveCurrentStageManifest => activeCurrentStageManifest;
     public RouteSetLoadManifestSO ActiveNextStageManifest => activeNextStageManifest;
@@ -181,6 +187,13 @@ public sealed class PresentationPreloadService : MonoBehaviour
         return service != null ? service.currentProviderBatchId : 0;
     }
 
+    public static void RefreshFirstRunIntroWindow(string reason = null)
+    {
+        PresentationPreloadService service = EnsureInstance();
+        service?.RefreshFirstRunIntroManifest(
+            string.IsNullOrWhiteSpace(reason) ? "Explicit first-run intro refresh" : reason);
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -192,19 +205,23 @@ public sealed class PresentationPreloadService : MonoBehaviour
         Instance = this;
         RuntimeServiceOwnership.Adopt(this);
         BindRouteManager(PortalRouteManager.Instance);
+        BindGameDataManager(GameDataManager.Instance);
         RefreshBootManifest("Initial boot manifest");
+        RefreshFirstRunIntroManifest("Initial first-run intro manifest");
         RefreshLoadWindow("Initial load window");
     }
 
     private void OnEnable()
     {
         PortalRouteManager.InstanceChanged += HandleRouteManagerInstanceChanged;
+        BindGameDataManager(GameDataManager.Instance);
     }
 
     private void OnDisable()
     {
         PortalRouteManager.InstanceChanged -= HandleRouteManagerInstanceChanged;
         BindRouteManager(null);
+        BindGameDataManager(null);
     }
 
     private void OnDestroy()
@@ -234,6 +251,11 @@ public sealed class PresentationPreloadService : MonoBehaviour
         RefreshLoadWindow("Load window changed");
     }
 
+    private void HandleGameDataLoaded(GameData data, int slotIndex)
+    {
+        RefreshFirstRunIntroManifest($"Profile slot {slotIndex + 1} loaded");
+    }
+
     public void RefreshActiveLoadWindow(string reason = null)
     {
         RefreshLoadWindow(string.IsNullOrWhiteSpace(reason) ? "Explicit load window refresh" : reason);
@@ -251,6 +273,20 @@ public sealed class PresentationPreloadService : MonoBehaviour
 
         if (boundRouteManager != null)
             boundRouteManager.LoadWindowChanged += HandleLoadWindowChanged;
+    }
+
+    private void BindGameDataManager(GameDataManager manager)
+    {
+        if (boundGameDataManager == manager)
+            return;
+
+        if (boundGameDataManager != null)
+            boundGameDataManager.OnDataLoaded -= HandleGameDataLoaded;
+
+        boundGameDataManager = manager;
+
+        if (boundGameDataManager != null)
+            boundGameDataManager.OnDataLoaded += HandleGameDataLoaded;
     }
 
     private void RefreshLoadWindow(string reason = null)
@@ -274,11 +310,12 @@ public sealed class PresentationPreloadService : MonoBehaviour
         if (verboseLogging)
         {
             string bootName = activeBootManifest != null ? activeBootManifest.name : "<none>";
+            string firstRunIntroName = activeFirstRunIntroManifest != null ? activeFirstRunIntroManifest.name : "<none>";
             string runCommonName = activeRunCommonManifest != null ? activeRunCommonManifest.name : "<none>";
             string currentName = activeCurrentStageManifest != null ? activeCurrentStageManifest.name : "<none>";
             string nextName = activeNextStageManifest != null ? activeNextStageManifest.name : "<none>";
             Debug.Log(
-                $"[PresentationPreloadService] Active load window updated. boot={bootName}, runCommon={runCommonName}, current={currentName}, next={nextName}",
+                $"[PresentationPreloadService] Active load window updated. boot={bootName}, firstRunIntro={firstRunIntroName}, runCommon={runCommonName}, current={currentName}, next={nextName}",
                 this);
         }
     }
@@ -289,6 +326,12 @@ public sealed class PresentationPreloadService : MonoBehaviour
         ApplyManifest(
             "Boot",
             ref activeBootManifest,
+            null,
+            assetProvider: assetProvider,
+            allowProviderCreation: allowProviderCreation);
+        ApplyManifest(
+            "FirstRunIntro",
+            ref activeFirstRunIntroManifest,
             null,
             assetProvider: assetProvider,
             allowProviderCreation: allowProviderCreation);
@@ -320,6 +363,44 @@ public sealed class PresentationPreloadService : MonoBehaviour
         bool changed = ApplyManifest("Boot", ref activeBootManifest, desiredBootManifest, batchId);
         if (changed || !string.IsNullOrEmpty(reason))
             RecordWindowEvent(string.IsNullOrEmpty(reason) ? "Boot manifest refresh" : reason);
+    }
+
+    private void RefreshFirstRunIntroManifest(string reason = null)
+    {
+        int batchId = BeginProviderBatch();
+        LoadManifestSO desiredFirstRunIntroManifest = ResolveFirstRunIntroManifest();
+        bool changed = ApplyManifest("FirstRunIntro", ref activeFirstRunIntroManifest, desiredFirstRunIntroManifest, batchId);
+        if (changed || !string.IsNullOrEmpty(reason))
+            RecordWindowEvent(string.IsNullOrEmpty(reason) ? "First-run intro manifest refresh" : reason);
+    }
+
+    private static LoadManifestSO ResolveFirstRunIntroManifest()
+    {
+        LoadingBootstrapConfigSO config = LoadBootstrapConfig();
+        if (config == null || config.FirstRunIntroManifest == null)
+            return null;
+
+        return ShouldKeepFirstRunIntroManifestLoaded(config)
+            ? config.FirstRunIntroManifest
+            : null;
+    }
+
+    private static bool ShouldKeepFirstRunIntroManifestLoaded(LoadingBootstrapConfigSO config)
+    {
+        if (config == null)
+            return false;
+
+        GameDataManager manager = GameDataManager.Instance;
+        GameData data = manager != null ? manager.Data : null;
+        if (data == null)
+            return false;
+
+        TutorialSaveData tutorialData = data.tutorialData;
+        if (tutorialData == null)
+            return true;
+
+        tutorialData.Normalize();
+        return !tutorialData.IsCompleted(config.FirstRunIntroCompletionTutorialId);
     }
 
     private bool ApplyManifest(
@@ -469,6 +550,7 @@ public sealed class PresentationPreloadService : MonoBehaviour
             Time.realtimeSinceStartup,
             string.IsNullOrEmpty(reason) ? "Load window refresh" : reason,
             SafeName(activeBootManifest),
+            SafeName(activeFirstRunIntroManifest),
             SafeName(activeRunCommonManifest),
             SafeName(activeCurrentStageManifest),
             SafeName(activeNextStageManifest)));
