@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 [DisallowMultipleComponent]
+// 이 클래스의 책임: 씬 전환 중 페이드, 플레이어 입력 잠금, 로드 직후 안정화 대기를 한 곳에서 관리한다.
 public sealed class SceneFadeTransitionService : MonoBehaviour
 {
     private const int ActiveOverlaySortingOrder = short.MaxValue;
@@ -18,8 +19,8 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
     [SerializeField] private bool deactivateOverlayWhenIdle = true;
 
     [Header("Post Load Hold")]
-    [SerializeField, Min(0)] private int postLoadBlackFrames = 2;
-    [SerializeField, Min(0f)] private float postLoadBlackHoldSeconds = 0.1f;
+    [SerializeField, Min(0)] private int postLoadBlackFrames = 4;
+    [SerializeField, Min(0f)] private float postLoadBlackHoldSeconds = 1f;
 
     [Header("Overlay Refs")]
     [SerializeField] private GameObject overlayRoot;

@@ -1,0 +1,134 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: RouteCorridor_ShadowCorridorBossRouteSet
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: RouteCorridor_ShadowCorridorBossRouteSet
+  m_GUID: a6c11e8a2735f6242bf3107cac784b92
+  m_SerializeEntries:
+  - m_GUID: 04af824bf0cb4e8a8b00c9f435d8a7d6
+    m_Address: Assets/_Project/Prefabs/Items/Chests/LowRewardTreasureChest.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 065ccc09df0a48a46971d59786e0cd92
+    m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowMonster/ShadowMonster_AttackReady.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0a3f9d329d660c24ab77d13b8b5d1b29
+    m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/LowRewardChest_Open.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b51d4a4499f87a48946b57538449b77
+    m_Address: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowMonster.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 162048fde42ec0942a0b4752a23c38ed
+    m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowMonster/ShadowMonster.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17a53c06a7ed2d4439d515dae9bfcb60
+    m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowMonster/ShadowMonster_Move.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28441196a97f8fb44a03f7d46679b998
+    m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/ShadowMonsterAttributeOverrideInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 349ab909529296a4096f41602498ece4
+    m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/LowRewardChest_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48c0d20d195000141a93c7aaadeaf287
+    m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowServant/ShadowServant.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e89eb95f23546e9bd1a9c08f9fdcb2c
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Monsters/Shadow/AD_ShadowServantAttack.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78ad9bb39ac5f284bbe1dc2c6595339d
+    m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowServant/ShadowServant.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d2c9297acea33d41a8b5a8554ecbf0b
+    m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/LowRewardChest_Opened.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1e8bdfe44ef425ab0be125a3a3a71c1
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Monsters/Shadow/AL_ShadowServantAttack.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a95925cffbc64a42b58ad7d53844cec7
+    m_Address: Assets/_Project/Prefabs/Items/Chests/LowRewardKillLockTreasureChest.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa497140abd1a2e4cb58421e0a525ae7
+    m_Address: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/ShadowServant.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab6145f2779856c4197eda25849837e8
+    m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowMonster/ShadowMonster_Die.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b78c6f586f83aa04eb00ab0d8a97f5d2
+    m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowMonster/ShadowMonster_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d03a0c35534b8824885f982988d3a59e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_227.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d5ff37767c10f0a41bfb6b71b379437c
+    m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowMonster/Shadowling Sprite
+      Sheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e21dfb54139197d40836cba8c82609dd
+    m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/LowRewardChestAnimCnt.overrideController
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7be3ad5779e20541ab5d6f8a0efdc8a
+    m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/ShadowServantAttributeOverrideInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2d4459affba18d458fa47f6aae358df
+    m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowMonster/ShadowMonster_Attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 9ef90cf2eef2ae24db0d43755d108ed4, type: 2}
+    - {fileID: 11400000, guid: 608095f7593bc40448d1e193c4abf4a9, type: 2}

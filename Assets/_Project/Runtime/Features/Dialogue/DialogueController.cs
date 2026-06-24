@@ -4,6 +4,11 @@ using Ink.Runtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// 책임:
+/// - Ink 대화 세션을 실제 UI, 초상화, 태그 처리, 선택지 입력으로 재생한다.
+/// - DialogueService에 자신을 등록해 전역 대화 시작 요청을 현재 씬의 대화 UI로 연결한다.
+/// </summary>
 public class DialogueController : MonoBehaviour
 {
     public static DialogueController Instance { get; private set; }
@@ -44,12 +49,13 @@ public class DialogueController : MonoBehaviour
 
         Instance = this;
         ResolveRuntimeReferences();
-        DialogueService.Instance?.RegisterController(this);
+        DialogueService.EnsureInstance()?.RegisterController(this);
         BindTagHandler(tagHandler);
     }
 
     private void OnEnable()
     {
+        DialogueService.EnsureInstance()?.RegisterController(this);
         SceneManager.sceneLoaded += HandleSceneLoaded;
     }
 

@@ -28,5 +28,5 @@ MonoBehaviour:
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
-  loadManifest: {fileID: 0}
+  loadManifest: {fileID: 11400000, guid: e68c23f722984e44d980337a72680912, type: 2}
   bossSpecialRewardPreset: {fileID: 0}

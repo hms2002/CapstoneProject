@@ -6,6 +6,11 @@ using UnityEditor.AddressableAssets.Settings;
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 using UnityEngine;
 
+/// <summary>
+/// 책임 :
+/// - 실제 로딩 시스템이 소유한 manifest asset들을 Addressables entry와 registry key로 동기화한다.
+/// - 직접 참조 fallback을 유지하되, Addressables mode에서 사용할 주소 lookup table을 공식 빌드한다.
+/// </summary>
 public static class LoadingAddressableRegistryBuilder
 {
     private const string AutoGroupName = "CapstoneLoadingRuntime";
@@ -39,14 +44,15 @@ public static class LoadingAddressableRegistryBuilder
         var registryEntries = new List<AddressableAssetKeyEntry>();
         var seenAssetPaths = new HashSet<string>();
         var missingAssetPaths = new List<string>();
-        string[] manifestGuids = AssetDatabase.FindAssets("t:LoadManifestSO");
         int createdEntryCount = 0;
         int existingEntryCount = 0;
+        List<LoadingManifestEditorCollector.ManifestUsage> manifestUsages =
+            LoadingManifestEditorCollector.CollectOwnedManifestUsages();
+        LogManifestAuthoringIssues();
 
-        for (int i = 0; i < manifestGuids.Length; i++)
+        for (int i = 0; i < manifestUsages.Count; i++)
         {
-            string manifestPath = AssetDatabase.GUIDToAssetPath(manifestGuids[i]);
-            LoadManifestSO manifest = AssetDatabase.LoadAssetAtPath<LoadManifestSO>(manifestPath);
+            LoadManifestSO manifest = manifestUsages[i].Manifest;
             if (manifest == null)
                 continue;
 
@@ -85,6 +91,20 @@ public static class LoadingAddressableRegistryBuilder
         AssetDatabase.Refresh();
 
         Debug.Log(BuildSummary(registryEntries.Count, createdEntryCount, existingEntryCount, missingAssetPaths), registry);
+    }
+
+    private static void LogManifestAuthoringIssues()
+    {
+        List<LoadingManifestEditorCollector.ManifestIssue> issues =
+            LoadingManifestEditorCollector.CollectManifestIssues();
+        for (int i = 0; i < issues.Count; i++)
+        {
+            string message = $"[LoadingAddressableRegistryBuilder] Manifest authoring {issues[i].Severity}: {issues[i].Message}";
+            if (string.Equals(issues[i].Severity, "Error", System.StringComparison.OrdinalIgnoreCase))
+                Debug.LogError(message, issues[i].Context);
+            else
+                Debug.LogWarning(message, issues[i].Context);
+        }
     }
 
     private static bool TryGetRuntimeAssetPath(Object asset, HashSet<string> seenAssetPaths, out string assetPath)
@@ -137,7 +157,10 @@ public static class LoadingAddressableRegistryBuilder
         {
             AddressableAssetGroup group = settings.groups[i];
             if (group != null && string.Equals(group.Name, AutoGroupName))
+            {
+                ApplyPackTogether(group);
                 return group;
+            }
         }
 
         AddressableAssetGroup createdGroup = settings.CreateGroup(
@@ -149,7 +172,18 @@ public static class LoadingAddressableRegistryBuilder
             typeof(ContentUpdateGroupSchema),
             typeof(BundledAssetGroupSchema));
 
+        ApplyPackTogether(createdGroup);
         return createdGroup ?? settings.DefaultGroup;
+    }
+
+    private static void ApplyPackTogether(AddressableAssetGroup group)
+    {
+        if (group == null)
+            return;
+
+        BundledAssetGroupSchema schema = group.GetSchema<BundledAssetGroupSchema>();
+        if (schema != null)
+            schema.BundleMode = BundledAssetGroupSchema.BundlePackingMode.PackTogether;
     }
 
     private static void LinkBootstrapConfig(LoadingAddressableRegistrySO registry)

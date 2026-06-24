@@ -35,6 +35,8 @@ namespace UnityGAS
             if (prefab == null)
                 return null;
 
+            GameObject resolvedPrefab = PresentationAssetProvider.ResolvePrefab(prefab);
+            prefab = resolvedPrefab != null ? resolvedPrefab : prefab;
             int prefabId = prefab.GetInstanceID();
             if (s_poolByPrefabId.TryGetValue(prefabId, out Stack<GameplayCue_HitSparkParticles> pool))
             {

@@ -2,6 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
+/// <summary>
+/// 책임 :
+/// - 전역 UI 캔버스와 UI 서비스 루트를 보관하고 씬 전환 후에도 유지한다.
+/// - UI 기능들이 이름/계층 의존을 직접 갖지 않도록 공통 캔버스 탐색 API를 제공한다.
+/// </summary>
 public sealed class GlobalUIRoot : MonoBehaviour
 {
     public static GlobalUIRoot Instance { get; private set; }
@@ -133,7 +138,9 @@ public sealed class GlobalUIRoot : MonoBehaviour
         dialogueCanvas ??= FindChildCanvas(GetCanvasName(GlobalCanvasLayer.Dialogue));
         popupCanvas ??= FindChildCanvas(GetCanvasName(GlobalCanvasLayer.Popup));
         hoverCanvas ??= FindChildCanvas(GetCanvasName(GlobalCanvasLayer.Hover));
-        promptCanvas ??= FindChildCanvas(GetCanvasName(GlobalCanvasLayer.Prompt));
+        promptCanvas ??= FindChildCanvas(GetCanvasName(GlobalCanvasLayer.Prompt)) ??
+                          FindChildCanvas("PromptLayout") ??
+                          ResolvePromptCanvasFromController();
         rewardCanvas ??= FindChildCanvas(GetCanvasName(GlobalCanvasLayer.Reward));
         damagePopupCanvas ??= FindChildCanvas(GetCanvasName(GlobalCanvasLayer.DamagePopup));
         bossHudCanvas ??= FindChildCanvas(GetCanvasName(GlobalCanvasLayer.BossHUD));
@@ -189,6 +196,12 @@ public sealed class GlobalUIRoot : MonoBehaviour
 
         Canvas canvas = child.GetComponent<Canvas>();
         return canvas != null ? canvas : child.GetComponentInChildren<Canvas>(true);
+    }
+
+    private static Canvas ResolvePromptCanvasFromController()
+    {
+        WorldInteractionPromptController promptController = WorldInteractionPromptController.Instance;
+        return promptController != null ? promptController.GetComponentInParent<Canvas>(true) : null;
     }
 
     private static string GetCanvasName(GlobalCanvasLayer layer)

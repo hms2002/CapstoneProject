@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 [DefaultExecutionOrder(-830)]
 [DisallowMultipleComponent]
+// 이 클래스의 책임:
+// 로딩/프리로드/Addressables 상태를 개발 중에 관찰하고, 필요한 진단 리포트를 수동으로 생성한다.
 public sealed class LoadingDebugView : MonoBehaviour
 {
     private readonly struct SceneEventEntry
@@ -27,6 +29,7 @@ public sealed class LoadingDebugView : MonoBehaviour
     private const int MaxSceneHistoryEntries = 32;
 
     [SerializeField] private KeyCode toggleKey = KeyCode.F8;
+    [SerializeField] private KeyCode dumpRetainedAssetsKey = KeyCode.F9;
     [SerializeField] private bool startVisible;
     [SerializeField, Min(4)] private int maxListedEntries = 12;
 
@@ -109,6 +112,9 @@ public sealed class LoadingDebugView : MonoBehaviour
     {
         if (Input.GetKeyDown(toggleKey))
             s_visible = !s_visible;
+
+        if (Input.GetKeyDown(dumpRetainedAssetsKey))
+            DumpRetainedAssets();
     }
 
     private void OnGUI()
@@ -144,6 +150,7 @@ public sealed class LoadingDebugView : MonoBehaviour
             scrollPosition = scroll.scrollPosition;
 
             DrawHeaderLine($"Toggle: {toggleKey}");
+            DrawHeaderLine($"Dump Retained Assets: {dumpRetainedAssetsKey}");
             DrawHeaderLine($"Route Catalog: {SafeName(routeManager != null ? routeManager.ActiveRouteCatalog : null)}");
             DrawHeaderLine($"Current Stage: {BuildStageLabel(routeManager)}");
             DrawHeaderLine($"Current RouteSet: {SafeName(routeManager != null ? routeManager.CurrentStageSet : null)}");
@@ -224,6 +231,19 @@ public sealed class LoadingDebugView : MonoBehaviour
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         RecordSceneEvent($"Loaded {SafeSceneName(scene)} ({mode})");
+    }
+
+    private void DumpRetainedAssets()
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        if (AddressableAssetProvider.Instance == null)
+        {
+            Debug.LogWarning("[LoadingDebugView] AddressableAssetProvider is not active; retained asset report was not written.", this);
+            return;
+        }
+
+        AddressableAssetProvider.Instance.DumpRetainedAssetsToTextFile();
+#endif
     }
 
     private void HandleSceneUnloaded(Scene scene)

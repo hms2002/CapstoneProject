@@ -1,0 +1,180 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: CombatCommon
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: CombatCommon
+  m_GUID: 37794f7ab529f9747afa50f375d03f8f
+  m_SerializeEntries:
+  - m_GUID: 00f1fafd0cfe23f499ee39e4a1b6405c
+    m_Address: Assets/_Project/Art/Sprites/VFX/Common/SlimeQueenP2Long_WaterPillarEffect.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08ed1d711ee0fa343ab688dbaa6e3b66
+    m_Address: Assets/_Project/Art/Sprites/VFX/Common/Spell Projectiles Sprite Sheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1201a937dc6f03447afe7cabc122dd43
+    m_Address: Assets/_Project/Art/Sprites/VFX/Common/Energy Wave Attack Front Sprite
+      Sheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16ffb49732edc764eb8ce5872b3e5d13
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/AClip_AttackSmoke_GoblinTank.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a3ab0dc090843ed9c77ee62bddbd2bb
+    m_Address: Assets/_Project/Data/Abilities/TelegraphStyles/Bosses/ShadowBoss/AttackTelegraphStyle_WitchNormalAttack1Hit.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 240379a1019f569448e1cc275c9ac590
+    m_Address: Assets/_Project/Art/Sprites/VFX/Common/Explosion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2754fb692d9dac648b9e4705944cc83f
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/AC_Effect_AcaneTankGolemSlamFront.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3501acfcd1ee29746a9b3ac239c64457
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/SlimeCorridorTeleportEffectAnimCnt.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 36e8de909969b71439d78cf3be869967
+    m_Address: Assets/_Project/Prefabs/VFX/Common/Effeect_FallingRock.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4900ff9f4d202364dae20e9a4eba6f10
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/AClip_Effect_GoblinGunnerShot.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ce61ff6e934dd140b20e6087dc5bb70
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/AClip_Effect_AcaneTankGolemSlamBack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 518c6a6f3647b2c45b5057bf01c9bacf
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/AC_Stun_Spark.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5bf277f48ad55f942bde31f15e1c5d4f
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/AC_SlimeQueenP2Long_WaterPillarEffect.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7
+    m_Address: Assets/_Project/Data/Abilities/TelegraphStyles/Bosses/ShadowBoss/AttackTelegraphStyle_WitchMapWideWarning.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67d9efdbe6d8e4e499a5f2a825dcc433
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/SlimeCorridorTeleportEffectAnim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68d471bd638efcb46873796071d022b2
+    m_Address: Assets/_Project/Art/Sprites/VFX/Common/ManyFireProjectile.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76e4b5285e1ab88478a6e9984138d40f
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/AClip_Effect_AcaneTankGolemSlamFront.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80887572fb543c54ab92e347139c0eac
+    m_Address: Assets/_Project/Prefabs/VFX/Common/Effect_SlimeQueenP2Long_WaterPillar.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80d266c90ff9c4d458d715b8d37a677b
+    m_Address: Assets/_Project/Prefabs/VFX/Common/Effect_Stun_Sprak.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f479052aa51019459025261cab6334c
+    m_Address: Assets/_Project/Art/Sprites/VFX/Common/Status Effects Sprite Sheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97e390b3455e4ce44b939e28446baa9f
+    m_Address: Assets/_Project/Art/Sprites/VFX/Common/AttackSmoke.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a007a9f51facfcb428c22ce2d3727a82
+    m_Address: Assets/_Project/Prefabs/VFX/Common/Effect_AttackSmoke_GoblinTank.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b15f18602ec87284d80cbd57720425f1
+    m_Address: Assets/_Project/Data/Abilities/TelegraphStyles/Monsters/AttackTelegraphStyle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf57765bce650384a9c73e962bb181ae
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/AC_Effect_GoblinGunnerShot.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d579f2466bb155e469dcf0bc0f5d2c08
+    m_Address: Assets/_Project/Prefabs/VFX/Common/Effect_GoblinGunnerShot.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d71abec495559bf46ad1bf79d38f86c7
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/AClip_SlimeQueenP2Long_WaterPillarEffect.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e37bfa3d00b2ec4448f8689804511918
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/AC_AttackSmoke_GoblinTank.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3ee7ea38d68c574592d3964ecbc045b
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/AClip_StunSpark.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f066bc56efd3e6740a6263d5bf90c122
+    m_Address: Assets/_Project/Art/Sprites/VFX/Common/Energy Wave Attack Back Sprite
+      Sheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f166f23f9f48da94cb907ee26c5ca34c
+    m_Address: Assets/_Project/Prefabs/VFX/Common/Effect_AcaneTankGolemSlam.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f57ffa3e4197f6f45bf4b4b15f11519f
+    m_Address: Assets/_Project/Art/Animations/VFX/Common/AC_Effect_AcaneTankGolemSlamBack.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: e445ca66045de8547adcf90f82f676b1, type: 2}
+    - {fileID: 11400000, guid: 667c8a8c123d9d84baf9f145908c60f5, type: 2}

@@ -1,0 +1,453 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Boss_HeoMinSeok_Boss_Dragon
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Boss_HeoMinSeok_Boss_Dragon
+  m_GUID: bb463032542656e49841835cc0824fff
+  m_SerializeEntries:
+  - m_GUID: 01e2ef8ca9e07bf47a25ba11254d78ee
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_573.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0770d2014475ca74ab36f4cdda465980
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07ff4ca68bb14e77a0c5f6c6457a55ee
+    m_Address: Assets/_Project/Data/Abilities/Definitions/AD_DragonDashCombo.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0800329f230e525478c3d819b58fafda
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_541.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 086022e6486c3f8499d774773f161528
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/drink.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13ea886059064c24187f247454aa489c
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_276.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 167a35ffba70b4f40b17c9f2eb2eab51
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_542.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d467fa179791eb499edef8d99441420
+    m_Address: Assets/_Project/Art/Animations/Bosses/DragonBoss/DragonBoss.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1dba2e72cb8a16142a86360d6edaf945
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_Drink.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 245a41a4876d05b4db585bb688499784
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_486.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c0f3238fdbf4c6429b55717d0319536
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_532.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 385f92fd7d1873449b8402cfb2266fbd
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Jump.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3fc3cb1772985e94486709d3cca30f34
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/Dragon_BossLevelSet_76.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 435300d8e208bf949a7adee776b8178f
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Landing.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44090fbb9bcc4934f8a50b3b9bee28c8
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_FirePrepare.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 45473f5063c20c04aa3d7399e0045689
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/throw.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 457e1722508b80940b448b6827524c8d
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_Throw.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 509365983026c2e4ab51bad8dda953f0
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_389.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51424e041d42dcf4ab659dda1b1791e4
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_Fire.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54bb3194d9aabe345a630c4f7b004158
+    m_Address: Assets/_Project/Prefabs/VFX/PF_Dragon_InhaleWind.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5516b69f2cf384e4fa9c0a4b2c6fe61b
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/throw_Ready2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 568ffe4436c45db418e1510196a9fb69
+    m_Address: Assets/_Project/Prefabs/Bosses/DragonBoss/DragonSpinProjectile2D .prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 586e6b8c14d74f11b7b7dea1527c0c9d
+    m_Address: Assets/_Project/Data/Abilities/Definitions/AD_DragonSlam.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59d50f5f273c4f2db3dd04df489b80ad
+    m_Address: Assets/_Project/Data/Abilities/Strategies/AL_DragonSlam.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ab81e01570ef8e4e87307e1edb7367e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_477.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f57d0cf6cc24a40a9d65b165fbc4e2f
+    m_Address: Assets/_Project/Data/Dialogue/SpeechData/DragonBossSpeechData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 610eaadae78ed47428547938e32b2316
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/throw_Ready1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61e4bc896c1542549b156a514e7485af
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/DragonMeleeAttack.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61f50df50569e294aa68e614f8b5c5a2
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/Dragon_BossLevelSet_28.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68e43bfd5b5400c43bd40cb5a0ac177d
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_ThrowReady.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69f361477ab13cb469045903bed6a96e
+    m_Address: Assets/_Project/Prefabs/Bosses/DragonBoss/DragonBoss.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c08b14d566b41469d302aaa22d34b09
+    m_Address: Assets/_Project/Data/Abilities/Strategies/AL_DragonAlcoholThrow.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e4fa393415e4d544ac3f833706f8d87
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_478.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71709714168060f43bd5ee5a9ebdecf6
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/AC_DragonMeleeAttack.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 719b3f154eb69e147a7fbac908bb5c1b
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_492.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71dd9501ffbc1424089994d003d6fc28
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_479.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 736a27640b1e92243903f03bd369e986
+    m_Address: Assets/_Project/Data/Loot/Tables/Table_Stage3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73f94fed09a844d4fa580676170cabb7
+    m_Address: Assets/_Project/Data/Loot/Tables/Table_Stage2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7cbee83d9023419cbd635ea930ffddfe
+    m_Address: Assets/_Project/Data/Abilities/Definitions/AD_DragonAlcoholThrow.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e0fa7e41aff7db4d94c950be3b53ddf
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_Jump.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e2f4c42d7474e3f9bb3f46cbe9bb2d2
+    m_Address: Assets/_Project/Data/Abilities/Strategies/AL_DragonAbsorbPuddles.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8232ae1c3ce19aa4f8f14360fe035a39
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_Recover.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 885106c6ddc11d644b30301ac429e9d5
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_439.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8865b7ff4aa66ce4c9aa88cd0ce02f4e
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_Groggy.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89bb6f5066de4f58b67868061d73acfd
+    m_Address: Assets/_Project/Prefabs/Bosses/DragonBoss/PF_DragonThrownKeg.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8cb3941448f14a5cb67a302b60835e20
+    m_Address: Assets/_Project/Data/Attributes/InitProfiles/DragonBossAttributeOverrideInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9365a00829e55f04288aae0f0d519b93
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Attack_ready.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94b36b6bbd7148b469fc2029bfd4c6c4
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_Rotation.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a9cf78633634060af987352815150db
+    m_Address: Assets/_Project/Data/Abilities/Definitions/AD_DragonRotation.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c848d0c2f318884aab48779b6a1c4e8
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_523.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2bec6d07a548a145b1cad3947abb647
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Attack.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2d0601b1d2d4b269653538fced1c008
+    m_Address: Assets/_Project/Data/Abilities/Definitions/AD_DragonAbsorbPuddles.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a32d957a25fbb894ebe953387547bce5
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Idle1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5a1f8efcdafe0c47b085bf82e07edf3
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_Landing.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a72c9cd849bbffb48908c39050939057
+    m_Address: Assets/_Project/Art/Animations/Bosses/DragonBoss/Animation_DragonSpinProjectile.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: afbb87128a9612d46978c48599e4378a
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Fire.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b06167f36a15ac340af2c14040b91153
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_DashAttack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb77eca97c4e3474a90a67aa011599de
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_391.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1ddf6b5e8047c741892d7f4e922d3b2
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_DashReady.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c4d01ec0a10b46e7a1ce43d426f0d859
+    m_Address: Assets/_Project/Resources/Tags/State.Dead.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c763d5f3e74581f4db94796576b7e65f
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_525.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7f1b3791fe1fdd4397259d384fbe2bc
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_Inhale.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8c33100ea5ce0c4fa0b9496b032c2af
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Effect_DragonMeleeAttack.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb41af0172afc664ea1925b4270ee67d
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/rotation.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd6e907135ad7ac4e96b379afafccd94
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_440.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d116510f9e264bd4b93a321e9ee82565
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/AClip_DragonMeleeAttack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2edc019ec0740c0b0a58c11d9f43faa
+    m_Address: Assets/_Project/Data/Abilities/Strategies/AL_DragonDashCombo.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3c200cd4ff0ff344b6a9345e6f91600
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_491.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d493763c3023bac43999d4f0807c4ae7
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/Dragon_BossLevelSet_85.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d51eec0e97d64284284201aaf87acb77
+    m_Address: Assets/_Project/Prefabs/VFX/PF_Dragon_LandingDust.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ddeef2c7d0fd1c24197ecc2c63aa8d7b
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_FallDown2.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5906c89b7887b84481d7ee66729447d
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_390.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e98d31f5eb00e1c4199651028e2e2927
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Dragon_Dead.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea9f239732b9e9048868ce8b5d8037db
+    m_Address: Assets/_Project/Art/Animations/Bosses/DragonBoss/Animator_DragonSpinProjectile.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eaba83047a7944138d57498fcf8f2524
+    m_Address: Assets/_Project/Data/Abilities/Strategies/AL_DragonRotation.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebab1daec55d92541a9367f5714270e6
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/Dragon_BossLevelSet_5.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebe23f97341d18f43b19bf1f14a7a2b8
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_493.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efb8cce34a2819545b863edad3307a32
+    m_Address: Assets/_Project/Data/Monsters/HudThemes/BossHudHealthBarTheme_Dragon.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2ad3b51a097e9749a03053967069dc3
+    m_Address: Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f6d941728300f554fa1e77fb2d88742f
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_543.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9c175a555eb00c4eaa78917b134207a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_441.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fadcfc96af0d3a54ea22f7d87cae0c2f
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/Inhalation or firing preparation.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc55164cce72df4409a3891dffb07fb0
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/FallDown2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc620d7fcc12f9e4e8acfdd983cc69ce
+    m_Address: Assets/_Project/Prefabs/Bosses/DragonBoss/PF_DragonFireBreathVisual.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fce32966b4f44126bf2c41a48df49bc9
+    m_Address: Assets/_Project/Data/Abilities/Strategies/AL_DragonFireBreath.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fefc4bf903004739a97af945c2a1e9fe
+    m_Address: Assets/_Project/Data/Abilities/Definitions/AD_DragonFireBreath.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 3cbd811df723c2f4fb25751d33815129, type: 2}
+    - {fileID: 11400000, guid: 0f66a696e42ddff4c96a64dd1c2563fa, type: 2}

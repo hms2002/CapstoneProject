@@ -571,7 +571,8 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         Transform anchor = deathEffectAnchor != null ? deathEffectAnchor : transform;
         Vector3 spawnPosition = anchor.position + deathVanishEffectOffset;
-        GameObject effectInstance = Instantiate(deathVanishEffectPrefab, spawnPosition, Quaternion.identity);
+        GameObject resolvedPrefab = PresentationAssetProvider.ResolvePrefab(deathVanishEffectPrefab);
+        GameObject effectInstance = Instantiate(resolvedPrefab != null ? resolvedPrefab : deathVanishEffectPrefab, spawnPosition, Quaternion.identity);
         float destroyDelay = ResolveEffectCleanupDelay(effectInstance);
         if (destroyDelay > 0f)
             Destroy(effectInstance, destroyDelay);

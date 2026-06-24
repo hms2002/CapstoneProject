@@ -24,7 +24,10 @@ namespace UnityGAS.Sample
             Vector3 position = OddIronAbilityUtility.ResolveSpawnPosition(system, direction, data.vfxOffset);
 
             if (data.dryFireVfxPrefab != null)
-                Object.Instantiate(data.dryFireVfxPrefab, position, Quaternion.identity);
+            {
+                GameObject resolvedPrefab = PresentationAssetProvider.ResolvePrefab(data.dryFireVfxPrefab);
+                Object.Instantiate(resolvedPrefab != null ? resolvedPrefab : data.dryFireVfxPrefab, position, Quaternion.identity);
+            }
 
             AbilityAudioRouter.PlayOneShot(data.dryFireSound, system, spec, sourceObjectOverride: data);
         }
