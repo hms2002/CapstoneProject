@@ -68,7 +68,10 @@ namespace UnityGAS
             Vector3 position = transform.position;
 
             if (impactVfxPrefab != null)
-                Object.Instantiate(impactVfxPrefab, position, Quaternion.identity);
+            {
+                GameObject resolvedPrefab = PresentationAssetProvider.ResolvePrefab(impactVfxPrefab);
+                Object.Instantiate(resolvedPrefab != null ? resolvedPrefab : impactVfxPrefab, position, Quaternion.identity);
+            }
 
             if (!impactSound.IsSet)
                 return;

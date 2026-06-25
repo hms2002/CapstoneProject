@@ -7,6 +7,9 @@ using UnityEditor;
 
 public class DialogueTrigger : InteractableBase
 {
+    // 이 클래스의 책임:
+    // 월드 NPC/오브젝트의 상호작용 진입점으로서 NPCData와 Ink 대사를 DialogueService에 전달한다.
+
     [Header("Dialogue Data")]
     [SerializeField] private NPCData npcData;
     [FormerlySerializedAs("inkJSON")]
@@ -62,11 +65,12 @@ public class DialogueTrigger : InteractableBase
 
     public override bool CanInteract(IPlayerInteractor player)
     {
-        DialogueService dialogueService = DialogueService.Instance;
+        DialogueService dialogueService = DialogueService.EnsureInstance();
+        TextAsset dialogueInk = ResolveInk();
         return player != null &&
                player.CurrentState == InteractState.Idle &&
                npcData != null &&
-               ResolveInk() != null &&
+               dialogueInk != null &&
                dialogueService != null &&
                !dialogueService.IsPlaying;
     }
@@ -90,7 +94,7 @@ public class DialogueTrigger : InteractableBase
             return;
 
         List<NPCData> participants = new() { npcData };
-        DialogueService.Instance?.TryStartDialogue(dialogueInk, participants, featureController);
+        DialogueService.EnsureInstance()?.TryStartDialogue(dialogueInk, participants, featureController);
     }
 
     public override InteractState GetInteractType() => InteractState.Talking;

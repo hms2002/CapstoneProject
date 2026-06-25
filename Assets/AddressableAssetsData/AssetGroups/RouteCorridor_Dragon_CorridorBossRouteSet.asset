@@ -1,0 +1,853 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: RouteCorridor_Dragon_CorridorBossRouteSet
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: RouteCorridor_Dragon_CorridorBossRouteSet
+  m_GUID: 4eac20f29c2616b48889e1dfb0e0a2a5
+  m_SerializeEntries:
+  - m_GUID: 0554cf286ba6d4f499d2a2989e4c5912
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_818.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06cb6e37005b17849a4e50df07f24dc5
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_920.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0798359a390ab3b47b9b84c96e86d03a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_72.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 096dd6e38160d7c418181b90ecb55199
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_224.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d3dbd63877db31499d8d31c203dbd2c
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_883.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f401c44f7a87b0469c91ff1b4b35430
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_936.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 12f796d4e8e6aed438f77c8ec8c794e4
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_671.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 151683f1dd6db9241948e8b826df80e8
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_736.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15a1bf215ca98ac4fae40a51b9ac22a2
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_125.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16751c1b42968834884238d795b4c130
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_338.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 176f7c9e584d79642a8c048cf8b039a2
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_318.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 188a3a9b4174a604697a5c10c5cffa16
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_340.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 193d9458f711446469e9222b350953d7
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_931.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b2bf97bde393a54b87552067ac4c497
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_878.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ebe9aefec2b02542a1055d513250dd9
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_241.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f49a9f1a18bdbe43ad80661dc45027e
+    m_Address: Assets/_Project/Art/Sprites/Monsters/DragonLevel_BeerMonster/Idle_DragonLevel_BeerMonster.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 234d2cb4a839742419bc5d5eeac4317a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_395.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 237746ea805ce814b89f94105e44a163
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_269.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24d2e62a47f0a6540af06c4fcc9ed078
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_61.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28235905638a8e34b991c0102cd5a58c
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_222.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 289d74fd511a02746a5f2e5bcf4a72bf
+    m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/Lever.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2917ad140a322a44998bddf2c4624798
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_106.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2963bebb1a406d348a389333135398fe
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_205.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a2d471680d2cfe4782420940e65e11f
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_314.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b75cf2008595ed48883fd975cba0f5c
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_619.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c52306d4bba7184181272d2100fefd7
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_742.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2cd5142751955dc409549aa1db87ebf9
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_743.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ec75054d812b0d4da1ffd0b46d0ddac
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_98.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2eec8d01fd95ef9419c137ee9537303d
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_899.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 317b1c4232aeda6438c21aa6b8d59bc8
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_289.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32a9f53e457af4145ab6b0ea73d2d74e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_62.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 335f0f6ec642f0649a10fbe0b2319658
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_882.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33b854f19d6b46b199fec6dd94c30040
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Monsters/Common/AL_BeerMonsterShot.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3426509cdd854d7408fa08f7ffd95021
+    m_Address: Assets/_Project/Art/Sprites/Monsters/DragonLevel_BeerMonster/Die_DragonLevel_BeerMonster.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 38135bfcbcca77c46933b58c068894b0
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_676.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 38e9dd3c667a35a4eb873d65aef72150
+    m_Address: Assets/_Project/Prefabs/Map/ShortCut/Lever.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a6b04dee2d0a3f4e9a29e9779317103
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_58.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3bfb8d0968916a74db3547d9000b42ef
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_256.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c70c4b5b93c4e94a800922c7b957af1
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_124.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3df748d55c71c364b9cfb094fde5daa4
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_254.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ea136f8742850d418035443de98fcb7
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_212.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f5ff6b5c99e4e5da8df23347c49d472
+    m_Address: Assets/_Project/Prefabs/Monsters/BeerMonster.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3fb5d17ff0ffc494e8b9ea619590d4e4
+    m_Address: Assets/_Project/Art/Sprites/VFX/BeerMonster/Beer Barrage.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4447e3852753aa94b8d59963e1f180da
+    m_Address: Assets/_Project/Art/Sprites/Monsters/DragonLevel_BeerMonster/DragonLevel_BeerMonster.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4912891e9529f6044ab4bb6b33d14b09
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_898.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4953bf6b196f50248ab973ab4c3fcfff
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_734.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4be511edb13b64d4e92cb212b169cc9d
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_110.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e83188148d8cea4e93e9afa96bc8053
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_724.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4fc1c9e4296cef340b57721f6366482a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_238.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 519a868c47cf431197fc4a31a8afbf48
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Monsters/Common/AD_BeerMonsterShot.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52c4e2a2cf042444592e6a777bfd5cc1
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_983.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 535041453fcfc724b82fae76bc7243f3
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_745.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54ca107a20decb343aa81e2ba4fce581
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_315.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55167b781031f30468d022951e86c50a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_84.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 556cfcf3bb21ab3458e76abb179d4b39
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_873.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59240353e3b3040459e61ec6f4deea3f
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_774.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5acaf53c333775b4fbc3cdb73683a58e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_123.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b0d65f558b21204fa7fdd54e43cde89
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_748.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e37f3ef431675f419c2269b6702eb58
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_917.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e4578746e612064984c191e9f4328ee
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_820.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f1f67befa236b9438150ea6962473eb
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_897.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 631127939e35a5c4098200ef5478e0ba
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_96.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63857ddcdf0871d4696d69b10a00f429
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_674.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63baae14624fa5e4794a456455cd25dd
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_722.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64495c1e1ce90f449b5ebbcddbdd84cf
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_807.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64509a90bf026d84792768de01688456
+    m_Address: Assets/_Project/Prefabs/VFX/Particle/LeverSpark.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64771a9ee0b00a2409241923afd634ae
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_73.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64b15d343623510448bd9d9157c7e7ab
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_319.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 659169f94e458b1459f2477cacd0fe9a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_233.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65bab97809511614da848a42583cefe4
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_916.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65ca1f2eee8b2d24d9c87f09a5118827
+    m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/BeerMonsterAttributeOverrideInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6987b2667505a464f8468da5630a0847
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_827.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b811d02e0fffac4b96850568abe200d
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_367.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e90ddb6099fb9345a76d85b50493525
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_303.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7424af4d2487817458fe21ae2c3ac747
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_626.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74325b31eed4384438d7a328501cd779
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_723.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 745aba2abe1ef9a4296d8545773c239e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_575.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75595640c763d8d4697d5c4bdaf960aa
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_744.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 762727fb4f8d91d4287e0c8a9620d38a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_782.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76986edfc2f756a4c8730a714d122fae
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_747.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76facdc95e4cb7e45a74ce02ab34963e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_332.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7802d097770d8e64982fa1b66a7881b3
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_940.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 787fe1fba48940049bc8f25a3ea4819c
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_31.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 797655f2bab2ee142bfdb8717afb9f83
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_924.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7eae5f14c1dfe904cb7cbb80be3bb818
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_775.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f29e70721213a24abd332d4755a86cf
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_223.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8387b08da36b5b0459e009fe368997ea
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_809.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 839146d5aaef50643a0d960e4e9d5097
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_905.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84a03c64c9b77f94795afca6da120246
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_871.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86ce0c3243257ec4f9290c6c269ccaca
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_48.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 88159deb932b9e448bc9e6d7e781fdd3
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_369.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 88abc3fdac385d4439503422a35359d0
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_937.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a81e2448e0c0cf4686f30379027ddb4
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_378.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a9779b3533b16d4188fdf0ae644cf08
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_735.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c1b3b0d7f5805647ad2ee96534a59ca
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_56.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c87ca3f319b19d4e928d9b3fae9d3e1
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_264.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d1a2eeee1538ad4bb62068452441d95
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_932.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f37c6b686f0ed54b811b2771dbb1ad9
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_370.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93b78bcb390da1a4e9656d9c213b51d2
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_59.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94a7b6267d2540d4194db2f8e945d879
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_741.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a64a25ca749dcf49b43e037cf4dfa43
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_253.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ada4fca07b6735418e1d33c8d9ff753
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_786.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b0555cc07bfca749a9cff6952a633b2
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_927.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f7c6e94b2aae8743b2eaeacb2c7e607
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_764.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f84f74af625ad44fb768f46d19482c8
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_206.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a218aba022402e349bea6a5bac66ff3a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_808.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a592332d9fc0d234f95d13d4d38a370b
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_933.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a59ca49d4dd9c4e4aad4c81a49dadf19
+    m_Address: Assets/_Project/Art/Animations/VFX/BeerMonster/AClip_BeerBarrage.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a616e84613040f94baf99e6be23a1067
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_274.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa1ae8d78c5facb40bb9ba8600083644
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_925.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae4ce080a9b8cb94cb581b03764f3e8e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_923.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae8d1b65071f8354b8ef8b940b8c55a7
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_733.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aeca95b14bb7ad0438f3196998cb758f
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_904.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af0ae111f7e6f8546a59998a6e4a87b9
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_776.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b06d3c95ecb6aa1459d031cfa10b69e2
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_765.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b16bb01fd938a3b4e9511e980f30fec3
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_57.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b57f120cfddffd343a9aee82c78adb36
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_371.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6dee8d27166a08489b380602f71c3ed
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_618.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b936c661ddf6b834eab58b9b515efddc
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_257.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb45ea58d9a1f8c448fec573b5127fba
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_902.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc99840252ee83741bb03b6f9712386f
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_95.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bcd46356b317f6e4aadc4d65e6d237e0
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_293.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd242e69bc144924bac1a8ec79edc7b6
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_669.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be24bc92b6cb215438c87a45bc44371c
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_372.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfaab3f554627814ebb5ec9de685e871
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_336.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1ae242efd90a434e8c8f0300e7f3956
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_313.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1f9d536189a6474c984c00386d8a830
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_877.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2e92e73771510d42bb68741b8f23814
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_80.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2f639f00806343408ea7dbd0561a5e9
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_901.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c33f649ab1ffe1448aa00f3577f3c516
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_29.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c4bfbb1258d12a34f933125bfe7c3276
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_935.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6a7883a66c4a2f44a762a6afcfbeb3a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_101.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7c4d5911287d4b4c88a6311e8eb3ca0
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_821.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c97740227abe0b54d82051e2f6580023
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_777.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca526788b6ca8554e85d442937407f1e
+    m_Address: Assets/_Project/Prefabs/Monsters/Projectiles/PF_BeerMonsterProjectile.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb002a853f6ee0f42933258bd610c29b
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_472.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1a0bf8d770ee1d4692887c4fc3f349f
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_63.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d32eac80f89b3f04b98864d54d7f5d62
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_884.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d42e94d30015d8c49a39187fff28ad5e
+    m_Address: Assets/_Project/Art/Animations/VFX/BeerMonster/AC_BeerBarrage.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d55c5f76c9aeca4449b4595892b29d93
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_267.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d98f1c8ec758b834d80bc64a12466892
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_97.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db5f490de529a6c48abf84000f3d9a9e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_915.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc2290416144f0044a1dcb0c04dcbdff
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_794.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc8368d5fdd45d94db098175a33e7aa9
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_474.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dcc6a9c4578805e4fba08966120d8657
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_870.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dcc9a17f39587d546977bfb9d122e2b2
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_862.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df7fb2d469480cc4687961eda510e72d
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_829.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1f6f25b588bd624ba6f118dcf10f833
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_620.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e22e14921872fae47b4a54dca6ad52f0
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_577.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e57d1fea91545e546b3f1e06bdf56d08
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_526.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e882b82e433cc6e4cbdc91348880c1d2
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_524.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9075ffbdfcce6e45aff05708d54d764
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_831.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee95ad87e1ed7ca488d0da37afb937fd
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_60.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efd4e8cff87377e4994fe850f31b7172
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_258.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0d418cfb40c1cb4290808329c069969
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_903.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f10acac41b0e3354583ee3e3e3c04fc0
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_880.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f1c1d513e036a694fbab2aa07ad2519e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_69.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f394667f544a08d4c9e3dde7501c19da
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_334.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f66f36006bf65de4396a15fc941735c2
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_763.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8e4bb1aac70fcb4f8c192c061159426
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_819.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8fcc08a7336723449b99d2bc9d75f8c
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_335.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd0d0c3c15ba9af49b73d44eb7814268
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_890.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd1eec628c90d5f46b04ff859592b880
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_889.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe94de977acc945419e69aadfaf5e367
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_290.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ffbdb065c3981b94aae7fde5a0165b1f
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_204.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ffd709de42592704dbc28237a0174f9f
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_815.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: c1e136bab3ce42140ac2edb3876ce0a9, type: 2}
+    - {fileID: 11400000, guid: 25dcd4b796721c74199e117a736c4d16, type: 2}

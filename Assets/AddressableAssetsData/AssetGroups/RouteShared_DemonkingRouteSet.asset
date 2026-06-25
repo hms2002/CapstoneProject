@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: RouteShared_DemonkingRouteSet
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: RouteShared_DemonkingRouteSet
+  m_GUID: b924f75de7638bd43a73d98e4a95978c
+  m_SerializeEntries:
+  - m_GUID: 74af22737976f6147aa08cc9a5b1bedb
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_1430.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79175a3b00bbc42498552767075d1e1a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_604.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a278b6dc5442b0c49ae0af91cff51c97
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_550.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7bc6f96f7900254f951f507d530510a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_1489.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 66dcdebc84bd9824584aabcf92406f59, type: 2}
+    - {fileID: 11400000, guid: dab92d66a547ef3458cde918c7236e4b, type: 2}

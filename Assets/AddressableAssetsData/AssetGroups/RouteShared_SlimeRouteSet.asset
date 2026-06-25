@@ -1,0 +1,605 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: RouteShared_SlimeRouteSet
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: RouteShared_SlimeRouteSet
+  m_GUID: f06c07d593e17f546be7cd5f6a15c2eb
+  m_SerializeEntries:
+  - m_GUID: 0056ddefeb3ebf94d80b1cdd98143193
+    m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/KnightAttributeOverrideInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 00e14fb0365f4564bb434a6db18a81bc
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/MageSlime.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 01d95a6fa8f9ddd439ad79e892f9cd3d
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_744
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 02c47aadf42d90f448a43f3b7dc62057
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_883
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03fcd1be4cf852342b4f5d07699fa841
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_749
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08d30921786c4e4ebbe5fd1efb862613
+    m_Address: Assets/_Project/Resources/Tags/State.Status.StaggerImmune.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0be85f611b02f8849aafc4ab348f498a
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_RookSlime_Move.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f27eb6d38bf4ab438fe84f07ad9ed6c
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_MageSlime_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10b7d3454ac328146be52682222f1212
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_923
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1383bc6d7ca259e42b1e3a7475f8ceb3
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_PawnSlime_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 18d42adbb3a7c624abe8f1661ea9a5ad
+    m_Address: Assets/_Project/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1921a38ea9bc71c47817fd2c437f2f66
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/PawnSlime.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b27844a37a1c2f499acccb6f2ed71ad
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_743
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d42c0fbc90607541a34100ac10c3b27
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_230
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e68d66e6ab24f41aacc998be5dbb752
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Monsters/Slime/AL_KnightJumpSlam.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e873a50d173e4c4db1f927887aa65b7
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_871
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2215c40a61b75e041b83bf35c94a1d8b
+    m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/PawnAttributeOverrideInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2327e9837a564ed58b0ae70d7c8e00b1
+    m_Address: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Pawn.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 254f9730898a78946afdcd578046279d
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_873
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ed2f4140059f244697c7f7ee698371c
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/KnightSlime.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32821c9182728954ebb78b1b6533ee96
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_PawnSlime_Move.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 368e00c0c77684842a16bf263c966aa3
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_116
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 38d1ab1d7f794178823925e66f70a62b
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Monsters/Slime/AL_WizardScatterShot.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a4eaa031631ba24eb2542a515503aba
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_870
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c40b57afec0d354f93bd76e1457220f
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_321
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f7ff6e96527acb45b76964d7285d530
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_919
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41930bc3b04f4f2abadc76ca5f64a4ce
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Monsters/Slime/AD_WizardScatterShot.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4479160cec5b06c4799b02736567072e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_902
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4593f17459429224e8eba341d4823ec8
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_905
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48f6ac26b7e0e34448bf0930ef5cdc99
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_915
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a4bd51c5403a6a4caf48b11bca616f2
+    m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/WizardAttributeOverrideInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a7ea9f5e4df4e39877c3818b6700005
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Monsters/Slime/AL_RookCharge.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a7ea9f5e4df4e39877c3818b6700006
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Monsters/Slime/AD_RookCharge.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a7ea9f5e4df4e39877c3818b6700007
+    m_Address: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Rook.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4c120d14b57b4436a325443f7b0caa3f
+    m_Address: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Bishop.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51a5584eb396c8c48bfbdf2c9881fdac
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_BishopSlime_Casting.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5707bf8ca42b4d747b81f292583069c5
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_100
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5bdfce96561d469ba894ae5f6bac2af0
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Monsters/Slime/AD_KnightJumpSlam.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5be22507bfbd9ab44a07739f1c03a48f
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_257
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5fad5445f778d174eafec79148c6a67c
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_102
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62786630ae1c97b4e9bf872c73951b3b
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_381
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63b4b910aec2cd44aa6ba12dc919db64
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AC_KnightSlime.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64821aa85a55ca64aa34ba01fd221b3c
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_357
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 655b55c532d544b41aeb7b576b2457ba
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_320
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65b9b657be4753644b8d0857778ba6d7
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_260
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 660c1a84d0a18f6499eb14f7ba92dcc8
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/RookSlime.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66a4ec10a50936e449f2c1fd782999b2
+    m_Address: Assets/_Project/Art/Sprites/Player/Pixel_Plains_Premium_Pack/Characters
+      24x24/Shadow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 671f5d2f7d123904d89d54d06004f714
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/BishopSlime.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69b0764eedd58544bbee6fbb0c56b652
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_228
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b645af3ed326994c9906ed18397b621
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_KnightSlime_Move.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6bbc9323c0e0bee47bc2de8c9d412fbe
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_KnightSlime_Land.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6de800f03a512b3479816e50389bc62e
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_MageSlime_Attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 709bc9390b43cda42a756c2f89d39fec
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_356
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72779e9a2d3645c4593224b860e0b69f
+    m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/RookAttributeOverrideInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 77ee2dd3c46281e41ae55a6fadf8ac06
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_231
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79bda97250316f14ca45c7d322af9306
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_901
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b18d1b5d84528047baa435450aed381
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_903
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e75003bc02bc3f4d87fa49522344163
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_210
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ea9b5ff603f09244b0bc3f06377f2d7
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_486
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80cb5923c05249faa61549d67b91061b
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Monsters/Slime/AL_BishopLineBlast.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 823ac20425c67c94294bb96a668f6ef1
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_793
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8865aaf3d6c662b459f323cd7ffd1731
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_836
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8910b54f18284224f90f42b267d14f29
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AC_PawnSlime.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91e869ea36210a144aa911e5e0bd259b
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_782
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ae009596abb6ac408eb882ada8c7885
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_920
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1365e9c0af9480b9dc3169f803a951d
+    m_Address: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Knight.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a3fa9aee054154245b85e76784476274
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AC_BishopSlime.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a42cd06de49472042bc6a6bfc9797eb9
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_917
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9f45e4b5a65126469c75ba40d06be3e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_226
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac64d27c105a4234d9f61be993f0fee0
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_327
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae7192526d01f014684a59bac1129b9c
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_BishopSlime_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b034ee8274af655439034965d80606d5
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_325
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b62832bb568851c4086a821857047e74
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_KnightSlime_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6705fc9063d4dd4b9fa461d19b961c5
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_326
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7d3e340a82ea3e4397118f1cbde31ba
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_256
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8c9c6df785c18f4994ebf1b066a5681
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AC_RookSlime.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd1df149fbaa7634c94473e7f4b5ef18
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_355
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf5282b3894014647bbe73e48ba674c2
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_MageSlime_Move.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c259b92105eb54d479d3629fe5e08154
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_897
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c261a43fcb0d48c4ab765a56e277e86e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_261
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c3415041ebdde11498631e287cede813
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_RookSlime_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c960eec44745bfb4d839d237b9c067a7
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_RookSlime_AttackPrepare.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cad0e7eea27a3b34398ee309ee92b848
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_898
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb0bb61312b54db4d8faad9a97265a19
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_827
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cccaaaec57c61bb49b45661aba7b31ac
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_924
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d113ba150533ea6488f7e6ed0de996dc
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_916
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d18966565254432a82dc5a7b4acdb6cb
+    m_Address: Assets/_Project/Prefabs/Monsters/SlimeCorridor/Wizard.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1b819fee34efc040820d1a14860992d
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_MageSlime_AttackPrepare.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d22ca366a7dd37443b462758e5d2c868
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_884
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9a42c16c591c3445bb8dbea6e5da221
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_BishopSlime_Move.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da3895d0e2d8b094d902967618400718
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_RookSlime_Attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd7798c3640471b43913534e1bda89c6
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_227
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e29c9edce5725124a82c1c283e14bd8a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_258
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2e29187eec5f744392c90979f9e6269
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_BishopSlime_MagicAttack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e33f7724115f3df40bf08eb15f901333
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_209
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5bb5d72366cf0a40bb975f92f621851
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AC_MageSlime.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec7264d63d8f88142822e03048377d24
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_899
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef8596f5fb4eb7941a31a45921b1277e
+    m_Address: Assets/_Project/Art/Sprites/Monsters/SlimeMonster/AClip_KnightSlime_Jump.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f24fb0b7f79db1142b3d5dc1b565dbfa
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_208
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f264f7b13c414cdeadcf0053d2ccb1ed
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Monsters/Slime/AD_BishopLineBlast.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f32113439c11be74884f1a06da01fd06
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_747
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f43e5eff8cb99a7439a6261dae61081d
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_829
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f6e65cf948426d14c8be3a48d8cc4ef2
+    m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/BishopAttributeOverrideInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f92a6e5f92e0b9e4f9914c663cd715f7
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_741
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc04bb1968cd97b418d76aca09db4834
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_831
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 9398d53285fffcc499a40128d1e58081, type: 2}
+    - {fileID: 11400000, guid: 8e24d7d54d1f14044accca9399dce00a, type: 2}

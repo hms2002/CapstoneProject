@@ -36861,8 +36861,8 @@ MonoBehaviour:
   fadeInDuration: 0.5
   fadeColor: {r: 0, g: 0, b: 0, a: 1}
   deactivateOverlayWhenIdle: 1
-  postLoadBlackFrames: 2
-  postLoadBlackHoldSeconds: 0.1
+  postLoadBlackFrames: 4
+  postLoadBlackHoldSeconds: 1
   overlayRoot: {fileID: 147047364}
   overlayCanvasGroup: {fileID: 147047366}
   overlayImage: {fileID: 147047365}

@@ -25,6 +25,6 @@ MonoBehaviour:
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
-  runCommonLoadManifest: {fileID: 0}
+  runCommonLoadManifest: {fileID: 11400000, guid: 5f12488e0a120b04186da5c1403f97b8, type: 2}
   hubSceneName: ProtoTypeHub
   hubEntryPointId: Default

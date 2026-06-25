@@ -2,6 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
+/// <summary>
+/// 책임 :
+/// - 플레이어 상호작용 센서에 들어온 IInteractable 후보들을 overlap 수와 함께 추적한다.
+/// - 현재 플레이어가 상호작용할 수 있는 가장 가까운 후보를 resolver에 제공한다.
+/// </summary>
 public sealed class PlayerInteractableTracker2D : MonoBehaviour
 {
     private readonly List<IInteractable> nearbyObjects = new();

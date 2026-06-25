@@ -65,7 +65,6 @@
     <type fullname="BeerMonsterShotRunner" preserve="all" />
     <type fullname="Bishop" preserve="all" />
     <type fullname="BishopLineBlastRunner" preserve="all" />
-    <type fullname="BookWorldSpriteSequencePresentation" preserve="all" />
     <type fullname="BossDeathPresentation" preserve="all" />
     <type fullname="BossDialogueRunner" preserve="all" />
     <type fullname="BossEncounterDirector" preserve="all" />
@@ -109,7 +108,6 @@
     <type fullname="DamagePopupWorldText" preserve="all" />
     <type fullname="DeadsSkeleton" preserve="all" />
     <type fullname="DeadsSkeletonSelfDestructPatternExecutor" preserve="all" />
-    <type fullname="DemonKingEgoLaserVfx" preserve="all" />
     <type fullname="DestroyAfterAnimationPlayback" preserve="all" />
     <type fullname="DialogueCanvasRaycastGate" preserve="all" />
     <type fullname="DialogueChoiceHighlightPresentation" preserve="all" />
@@ -129,10 +127,8 @@
     <type fullname="ElementGaugeSlotView" preserve="all" />
     <type fullname="EmoteController" preserve="all" />
     <type fullname="EncyclopediaBookPresentation" preserve="all" />
-    <type fullname="EncyclopediaCatalogSO" preserve="all" />
     <type fullname="EncyclopediaEntryButton" preserve="all" />
     <type fullname="EncyclopediaEntryGridView" preserve="all" />
-    <type fullname="EncyclopediaInteractable" preserve="all" />
     <type fullname="EncyclopediaItemLeftPage" preserve="all" />
     <type fullname="EncyclopediaItemRightPage" preserve="all" />
     <type fullname="EncyclopediaItemTab" preserve="all" />
@@ -210,7 +206,6 @@
     <type fullname="MagicStonePickup" preserve="all" />
     <type fullname="MenuButtonHighlightPresentation" preserve="all" />
     <type fullname="MirroredLocalSocket2D" preserve="all" />
-    <type fullname="Mob" preserve="all" />
     <type fullname="MobAbilityCoordinator" preserve="all" />
     <type fullname="MonsterDifficultyReceiver" preserve="all" />
     <type fullname="MonsterElementGaugeAnchor2D" preserve="all" />
@@ -309,9 +304,7 @@
     <type fullname="ShadowMonsterGaugeVisibilityFilter" preserve="all" />
     <type fullname="ShadowServant" preserve="all" />
     <type fullname="ShadowServantAttackRunner" preserve="all" />
-    <type fullname="ShopDefinitionSO" preserve="all" />
     <type fullname="ShopRunModifierUpgradeEffect" preserve="all" />
-    <type fullname="ShopSlot" preserve="all" />
     <type fullname="SimpleTextAnimator" preserve="all" />
     <type fullname="SlimeQueen" preserve="all" />
     <type fullname="SlimeQueenCastlingAvailableCondition" preserve="all" />
@@ -335,10 +328,7 @@
     <type fullname="StrangeCandlestickAttackRunner" preserve="all" />
     <type fullname="SwapWeaponSkillHUD2D" preserve="all" />
     <type fullname="TackleAttack" preserve="all" />
-    <type fullname="TrainingDummy2D" preserve="all" />
-    <type fullname="TrainingDummyDamageReadout2D" preserve="all" />
     <type fullname="TreasureChest" preserve="all" />
-    <type fullname="TreasureMonster" preserve="all" />
     <type fullname="TutorialInfoPanel" preserve="all" />
     <type fullname="UIChainDropPresentation" preserve="all" />
     <type fullname="UILakeSurfaceImage" preserve="all" />
@@ -478,94 +468,88 @@
     <type fullname="WorldInteractionPromptController" preserve="all" />
     <type fullname="WorldItemDropTweenAnimator" preserve="all" />
     <type fullname="WorldItemPickup2D" preserve="all" />
-    <type fullname="AbilityLogic_DeadsSkeletonSelfDestruct/PatternData" preserve="nothing" serialized="true" />
-    <type fullname="AbilityLogic_DemonKingBase/JumpMotionProfile" preserve="nothing" serialized="true" />
-    <type fullname="AbilityLogic_ShadowServantAttack/PatternData" preserve="nothing" serialized="true" />
-    <type fullname="AbilityLogic_StrangeCandlestickAttack/PatternData" preserve="nothing" serialized="true" />
-    <type fullname="AffectionReward" preserve="nothing" serialized="true" />
-    <type fullname="ApprenticeHeroSwordAttackComboConfig" preserve="nothing" serialized="true" />
-    <type fullname="ApprenticeHeroSwordAttackStep" preserve="nothing" serialized="true" />
-    <type fullname="ApprenticeHeroSwordDamageConfig" preserve="nothing" serialized="true" />
-    <type fullname="ApprenticeHeroSwordHitboxConfig" preserve="nothing" serialized="true" />
-    <type fullname="ArcaneMeleeGolem/ChargeStep" preserve="nothing" serialized="true" />
-    <type fullname="BossDeathPresentation/AnimationStepSettings" preserve="nothing" serialized="true" />
-    <type fullname="BossEncounterDialogueCondition" preserve="nothing" serialized="true" />
-    <type fullname="BossEncounterDialogueEntry" preserve="nothing" serialized="true" />
     <type fullname="BossPatternEntry" preserve="nothing" serialized="true" />
     <type fullname="BossPhaseConfig" preserve="nothing" serialized="true" />
     <type fullname="BossSpeechEntry" preserve="nothing" serialized="true" />
     <type fullname="CameraShakeHook" preserve="nothing" serialized="true" />
-    <type fullname="CapstoneAudio.AudioCatalogEntry" preserve="nothing" serialized="true" />
     <type fullname="CapstoneAudio.SoundRef" preserve="nothing" serialized="true" />
     <type fullname="CapstonePresentation.SpawnedPresentationHook" preserve="nothing" serialized="true" />
     <type fullname="CapstonePresentation.WorldPresentationHook" preserve="nothing" serialized="true" />
+    <type fullname="SpeechBubbleThemeSettings" preserve="nothing" serialized="true" />
+    <type fullname="UnityGAS.AttributeInitProfileSO/Entry" preserve="nothing" serialized="true" />
+    <type fullname="UnityGAS.AttributeSet/MaxLink" preserve="nothing" serialized="true" />
+    <type fullname="UnityGAS.ElementGaugeSystem/ElementGaugeState" preserve="nothing" serialized="true" />
+    <type fullname="UnityGAS.GameplayPresentationDefinition" preserve="nothing" serialized="true" />
+    <type fullname="UnityGAS.WorldObjectPresentationDefinition" preserve="nothing" serialized="true" />
+    <type fullname="BossEncounterDialogueCondition" preserve="nothing" serialized="true" />
+    <type fullname="BossEncounterDialogueEntry" preserve="nothing" serialized="true" />
+    <type fullname="CapstoneAudio.AudioCatalogEntry" preserve="nothing" serialized="true" />
     <type fullname="ChestInventory" preserve="nothing" serialized="true" />
     <type fullname="ChestLootOverrideProfile" preserve="nothing" serialized="true" />
     <type fullname="CountRangeWeightProfile" preserve="nothing" serialized="true" />
-    <type fullname="DemonKingBodyAnimationRef" preserve="nothing" serialized="true" />
-    <type fullname="DemonKingVfxCueRef" preserve="nothing" serialized="true" />
     <type fullname="DialogueView/DialogueCameraShakeProfileSettings" preserve="nothing" serialized="true" />
     <type fullname="DropCountOption" preserve="nothing" serialized="true" />
-    <type fullname="EncyclopediaBossEntry" preserve="nothing" serialized="true" />
     <type fullname="EncyclopediaItemTab/TitlePreset" preserve="nothing" serialized="true" />
-    <type fullname="EncyclopediaMonsterEntry" preserve="nothing" serialized="true" />
-    <type fullname="EncyclopediaWeaponEntry" preserve="nothing" serialized="true" />
-    <type fullname="EndingOutroSlide" preserve="nothing" serialized="true" />
-    <type fullname="FloweringBaseAttackComboConfig" preserve="nothing" serialized="true" />
-    <type fullname="FloweringBaseAttackElementDamageGroup" preserve="nothing" serialized="true" />
-    <type fullname="FloweringBaseAttackPrefabConfig" preserve="nothing" serialized="true" />
-    <type fullname="FloweringBaseAttackStep" preserve="nothing" serialized="true" />
-    <type fullname="GroggyCounterBranchVisual" preserve="nothing" serialized="true" />
     <type fullname="HoldActionButton/FloatEvent" preserve="nothing" serialized="true" />
-    <type fullname="ItemDisplayIconSettings" preserve="nothing" serialized="true" />
-    <type fullname="ItemDisplaySpriteSettings" preserve="nothing" serialized="true" />
-    <type fullname="LightningSpearHitConfig" preserve="nothing" serialized="true" />
-    <type fullname="LizardWarrior/ChargeStep" preserve="nothing" serialized="true" />
-    <type fullname="MerchantPriceSettings" preserve="nothing" serialized="true" />
     <type fullname="MouseCursorDomainDefinition" preserve="nothing" serialized="true" />
     <type fullname="MouseCursorEncyclopediaDomainDefinition" preserve="nothing" serialized="true" />
     <type fullname="MouseCursorSpriteDefinition" preserve="nothing" serialized="true" />
     <type fullname="PlayerConsumableHUD2D/ConsumableSlotUI" preserve="nothing" serialized="true" />
-    <type fullname="PlayerSpeechEntry" preserve="nothing" serialized="true" />
-    <type fullname="PrewarmPrefabEntry" preserve="nothing" serialized="true" />
     <type fullname="RelicLogic_MoveSpeedByCurrentHealth_Managed/Rule" preserve="nothing" serialized="true" />
     <type fullname="RelicLogic_StatModifiers/Entry" preserve="nothing" serialized="true" />
-    <type fullname="RelicLogic_TimedStatOnGameplayEvent_Managed/PassiveEntry" preserve="nothing" serialized="true" />
     <type fullname="SettingStepperControl" preserve="nothing" serialized="true" />
-    <type fullname="ShopSlotItemFilter" preserve="nothing" serialized="true" />
-    <type fullname="ShopStockRollWeights" preserve="nothing" serialized="true" />
-    <type fullname="SpeechBubbleThemeSettings" preserve="nothing" serialized="true" />
-    <type fullname="StatueShortcut/StatueVisualProfile" preserve="nothing" serialized="true" />
     <type fullname="UIChainConstraintBinding" preserve="nothing" serialized="true" />
     <type fullname="UIParticleBurst" preserve="nothing" serialized="true" />
-    <type fullname="UnityGAS.AttributeInitProfileSO/Entry" preserve="nothing" serialized="true" />
-    <type fullname="UnityGAS.AttributeSet/MaxLink" preserve="nothing" serialized="true" />
     <type fullname="UnityGAS.DamagePayloadConfig" preserve="nothing" serialized="true" />
-    <type fullname="UnityGAS.DurationMultiModifierEffect/ModifierEntry" preserve="nothing" serialized="true" />
     <type fullname="UnityGAS.ElementBuildUpFormulaEntry" preserve="nothing" serialized="true" />
     <type fullname="UnityGAS.ElementDamageInput" preserve="nothing" serialized="true" />
     <type fullname="UnityGAS.ElementFormulaEntry" preserve="nothing" serialized="true" />
-    <type fullname="UnityGAS.ElementGaugeSystem/ElementGaugeState" preserve="nothing" serialized="true" />
-    <type fullname="UnityGAS.GameplayPresentationDefinition" preserve="nothing" serialized="true" />
-    <type fullname="UnityGAS.Sample.LightningSpearAttackComboConfig" preserve="nothing" serialized="true" />
-    <type fullname="UnityGAS.Sample.LightningSpearAttackElementDamageGroup" preserve="nothing" serialized="true" />
-    <type fullname="UnityGAS.Sample.LightningSpearAttackPrefabConfig" preserve="nothing" serialized="true" />
-    <type fullname="UnityGAS.Sample.LightningSpearAttackStep" preserve="nothing" serialized="true" />
     <type fullname="UnityGAS.Sample.SwordCombo2DData/ElementDamageGroup" preserve="nothing" serialized="true" />
     <type fullname="UnityGAS.Sample.SwordCombo2DData/SwordComboStepData" preserve="nothing" serialized="true" />
     <type fullname="UnityGAS.ScaledStatFormula/Term" preserve="nothing" serialized="true" />
     <type fullname="UnityGAS.StackStatFormula/Instruction" preserve="nothing" serialized="true" />
     <type fullname="UnityGAS.StatTypeBindings/Binding" preserve="nothing" serialized="true" />
     <type fullname="UnityGAS.StatTypeBindings/Composite" preserve="nothing" serialized="true" />
-    <type fullname="UnityGAS.WorldObjectPresentationDefinition" preserve="nothing" serialized="true" />
     <type fullname="UpgradeLakePresentationSettings" preserve="nothing" serialized="true" />
     <type fullname="WeaponAbilityBlockView/InputHintSpriteEntry" preserve="nothing" serialized="true" />
-    <type fullname="WeaponAimPresentationSettings" preserve="nothing" serialized="true" />
     <type fullname="WeaponDefinition/WeaponStatModifier" preserve="nothing" serialized="true" />
     <type fullname="WeaponPersistentStatePayload" preserve="nothing" serialized="true" />
     <type fullname="WeaponSkillHUD2D/SkillSlotUI" preserve="nothing" serialized="true" />
     <type fullname="WeaponVisualSetup/HandVisualPose" preserve="nothing" serialized="true" />
+    <type fullname="AbilityLogic_ShadowServantAttack/PatternData" preserve="nothing" serialized="true" />
+    <type fullname="AbilityLogic_DeadsSkeletonSelfDestruct/PatternData" preserve="nothing" serialized="true" />
+    <type fullname="BossDeathPresentation/AnimationStepSettings" preserve="nothing" serialized="true" />
+    <type fullname="AbilityLogic_StrangeCandlestickAttack/PatternData" preserve="nothing" serialized="true" />
+    <type fullname="ArcaneMeleeGolem/ChargeStep" preserve="nothing" serialized="true" />
+    <type fullname="LizardWarrior/ChargeStep" preserve="nothing" serialized="true" />
+    <type fullname="PrewarmPrefabEntry" preserve="nothing" serialized="true" />
+    <type fullname="StatueShortcut/StatueVisualProfile" preserve="nothing" serialized="true" />
+    <type fullname="AffectionReward" preserve="nothing" serialized="true" />
+    <type fullname="ApprenticeHeroSwordAttackComboConfig" preserve="nothing" serialized="true" />
+    <type fullname="ApprenticeHeroSwordAttackStep" preserve="nothing" serialized="true" />
+    <type fullname="ApprenticeHeroSwordDamageConfig" preserve="nothing" serialized="true" />
+    <type fullname="ApprenticeHeroSwordHitboxConfig" preserve="nothing" serialized="true" />
+    <type fullname="FloweringBaseAttackComboConfig" preserve="nothing" serialized="true" />
+    <type fullname="FloweringBaseAttackElementDamageGroup" preserve="nothing" serialized="true" />
+    <type fullname="FloweringBaseAttackPrefabConfig" preserve="nothing" serialized="true" />
+    <type fullname="FloweringBaseAttackStep" preserve="nothing" serialized="true" />
+    <type fullname="ItemDisplayIconSettings" preserve="nothing" serialized="true" />
+    <type fullname="ItemDisplaySpriteSettings" preserve="nothing" serialized="true" />
+    <type fullname="LightningSpearHitConfig" preserve="nothing" serialized="true" />
+    <type fullname="PlayerSpeechEntry" preserve="nothing" serialized="true" />
+    <type fullname="RelicLogic_TimedStatOnGameplayEvent_Managed/PassiveEntry" preserve="nothing" serialized="true" />
+    <type fullname="UnityGAS.Sample.LightningSpearAttackComboConfig" preserve="nothing" serialized="true" />
+    <type fullname="UnityGAS.Sample.LightningSpearAttackElementDamageGroup" preserve="nothing" serialized="true" />
+    <type fullname="UnityGAS.Sample.LightningSpearAttackPrefabConfig" preserve="nothing" serialized="true" />
+    <type fullname="UnityGAS.Sample.LightningSpearAttackStep" preserve="nothing" serialized="true" />
+    <type fullname="WeaponAimPresentationSettings" preserve="nothing" serialized="true" />
     <type fullname="WitchShieldVisualController/ShieldAnimationSettings" preserve="nothing" serialized="true" />
+    <type fullname="UnityGAS.DurationMultiModifierEffect/ModifierEntry" preserve="nothing" serialized="true" />
+    <type fullname="AbilityLogic_DemonKingBase/JumpMotionProfile" preserve="nothing" serialized="true" />
+    <type fullname="DemonKingBodyAnimationRef" preserve="nothing" serialized="true" />
+    <type fullname="DemonKingVfxCueRef" preserve="nothing" serialized="true" />
+    <type fullname="EndingOutroSlide" preserve="nothing" serialized="true" />
+    <type fullname="GroggyCounterBranchVisual" preserve="nothing" serialized="true" />
   </assembly>
   <assembly fullname="Unity.2D.Animation.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
     <type fullname="UnityEngine.U2D.Animation.SpriteLibrary" preserve="all" />
@@ -642,7 +626,6 @@
     <type fullname="UnityEngine.Material" preserve="all" />
     <type fullname="UnityEngine.MeshFilter" preserve="all" />
     <type fullname="UnityEngine.MeshRenderer" preserve="all" />
-    <type fullname="UnityEngine.MonoBehaviour" preserve="all" />
     <type fullname="UnityEngine.Object" preserve="all" />
     <type fullname="UnityEngine.RectTransform" preserve="all" />
     <type fullname="UnityEngine.Shader" preserve="all" />
@@ -673,9 +656,6 @@
   </assembly>
   <assembly fullname="UnityEngine.SpriteMaskModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
     <type fullname="UnityEngine.SpriteMask" preserve="all" />
-  </assembly>
-  <assembly fullname="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-    <type fullname="UnityEngine.Font" preserve="all" />
   </assembly>
   <assembly fullname="UnityEngine.TilemapModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
     <type fullname="UnityEngine.Tilemaps.Tile" preserve="all" />
@@ -717,8 +697,5 @@
     <type fullname="UnityEngine.TextCore.Glyph" preserve="nothing" serialized="true" />
     <type fullname="UnityEngine.TextCore.GlyphMetrics" preserve="nothing" serialized="true" />
     <type fullname="UnityEngine.TextCore.GlyphRect" preserve="nothing" serialized="true" />
-    <type fullname="UnityEngine.TextCore.LowLevel.GlyphAdjustmentRecord" preserve="nothing" serialized="true" />
-    <type fullname="UnityEngine.TextCore.LowLevel.GlyphPairAdjustmentRecord" preserve="nothing" serialized="true" />
-    <type fullname="UnityEngine.TextCore.LowLevel.GlyphValueRecord" preserve="nothing" serialized="true" />
   </assembly>
 </linker>

@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+/// <summary>
+/// 책임 :
+/// - 보스 조우/기본 대사 데이터를 선택하고 DialogueService에 순차 재생 요청을 전달한다.
+/// - 조우 대사 진행 기록을 남겨 같은 보스 대사가 반복 재생되지 않도록 한다.
+/// </summary>
 public class BossDialogueRunner : MonoBehaviour
 {
     [SerializeField] private NPCData npcData;
@@ -30,7 +35,8 @@ public class BossDialogueRunner : MonoBehaviour
             yield break;
         }
 
-        if (DialogueService.Instance == null)
+        DialogueService dialogueService = DialogueService.EnsureInstance();
+        if (dialogueService == null)
         {
             Debug.LogError("[BossDialogueRunner] DialogueService instance was not found.", this);
             yield break;
@@ -52,7 +58,7 @@ public class BossDialogueRunner : MonoBehaviour
             yield break;
         }
 
-        if (!DialogueService.Instance.TryStartDialogueSequence(storySegments, participants))
+        if (!dialogueService.TryStartDialogueSequence(storySegments, participants))
             yield break;
 
         yield return WaitForDialogueToFinish();

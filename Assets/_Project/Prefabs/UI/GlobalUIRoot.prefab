@@ -19806,8 +19806,8 @@ MonoBehaviour:
   fadeInDuration: 0.2
   fadeColor: {r: 0, g: 0, b: 0, a: 1}
   deactivateOverlayWhenIdle: 1
-  postLoadBlackFrames: 2
-  postLoadBlackHoldSeconds: 0.1
+  postLoadBlackFrames: 4
+  postLoadBlackHoldSeconds: 1
   overlayRoot: {fileID: 7210055881861697875}
   overlayCanvasGroup: {fileID: 5193905711257483987}
   overlayImage: {fileID: 4293319952928553376}
@@ -33813,7 +33813,7 @@ MonoBehaviour:
   dialogueCanvas: {fileID: 2940143059412046538}
   popupCanvas: {fileID: 4927727796378230666}
   hoverCanvas: {fileID: 1529223594273257941}
-  promptCanvas: {fileID: 0}
+  promptCanvas: {fileID: 918450001000000003}
   rewardCanvas: {fileID: 8017398280050356475}
   damagePopupCanvas: {fileID: 5937847735298254093}
   bossHudCanvas: {fileID: 8862188657633301750}

@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 책임:
+/// - 씬에 존재하는 DialogueController와 전역 대화 재생 요청을 연결한다.
+/// - 대화 재생 중 입력 잠금, 비대화 UI 숨김, 런 타이머 일시정지를 일관되게 관리한다.
+/// </summary>
 public sealed class DialogueService : MonoBehaviour
 {
     public static DialogueService Instance { get; private set; }
@@ -44,15 +49,23 @@ public sealed class DialogueService : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
     {
-        if (Instance != null || s_isQuitting)
-            return;
+        EnsureInstance();
+    }
 
-        DialogueService existing = Object.FindFirstObjectByType<DialogueService>();
+    public static DialogueService EnsureInstance()
+    {
+        if (Instance != null || s_isQuitting)
+            return Instance;
+
+        DialogueService existing = Object.FindFirstObjectByType<DialogueService>(FindObjectsInactive.Include);
         if (existing != null)
-            return;
+        {
+            Instance = existing;
+            return Instance;
+        }
 
         GameObject root = new GameObject(nameof(DialogueService));
-        root.AddComponent<DialogueService>();
+        return root.AddComponent<DialogueService>();
     }
 
     private void Awake()
@@ -225,13 +238,27 @@ public sealed class DialogueService : MonoBehaviour
     {
         if (activeController == null)
         {
-            Debug.LogError("[DialogueService] 현재 씬에 등록된 DialogueController가 없어 대화를 시작할 수 없습니다.");
-            return false;
+            ResolveActiveController();
+            if (activeController == null)
+            {
+                Debug.LogError("[DialogueService] 현재 씬에 등록된 DialogueController가 없어 대화를 시작할 수 없습니다.");
+                return false;
+            }
         }
 
         activeController.EnterDialogueSequence(storySegments, participants, featureController, presentationOptions);
         SyncDialogueFlowState();
         return true;
+    }
+
+    private void ResolveActiveController()
+    {
+        if (activeController != null)
+            return;
+
+        DialogueController controller = Object.FindFirstObjectByType<DialogueController>(FindObjectsInactive.Exclude);
+        if (controller != null)
+            RegisterController(controller);
     }
 
     private void SyncDialogueFlowState()

@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 1002
   npcName: "\uB300\uC7A5\uC7A5\uC774"
   isBoss: 0
-  primaryInk: {fileID: 4900000, guid: 03d06cf1512504d4ab8d288f4a626c48, type: 3}
+  primaryInk: {fileID: 4900000, guid: 14f4a5a5e94b1f04483e3bbc494f8033, type: 3}
   bossEncounterInk: {fileID: 0}
   bossEncounterDialogues: []
   dialogueTheme: {fileID: 11400000, guid: 2df553bfa70756f4c8272d84231479aa, type: 2}

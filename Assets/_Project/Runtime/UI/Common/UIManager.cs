@@ -4,8 +4,15 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityGAS;
 
+/// <summary>
+/// 책임 :
+/// - 전역 UI 서비스와 공통 캔버스 진입점을 관리하고, 씬 전환 시 UI 상태를 정리한다.
+/// - gameplay 계층이 구체 UI 구현을 직접 알지 않도록 팝업/프롬프트/잠금 요청을 중계한다.
+/// </summary>
 public class UIManager : MonoBehaviour
 {
+    private const string BlockControlByUiTagSetResourcePath = "Tags/TagSet/TS_BlockControlByUI";
+
     public static UIManager Instance { get; private set; }
 
     [Header("Controllers")]
@@ -35,7 +42,6 @@ public class UIManager : MonoBehaviour
     private PlayerUIControlLockBridge activeControlLockBridge;
     private bool isControlLockApplied;
     private bool isTimeFrozenByUi;
-    private const string BlockControlByUiTagSetResourcePath = "Tags/TagSet/TS_BlockControlByUI";
 
     public bool IsExternalUiInputBlocked => HasExternalUiInputBlockers();
 

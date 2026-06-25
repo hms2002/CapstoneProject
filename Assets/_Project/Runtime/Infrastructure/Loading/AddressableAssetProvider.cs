@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using CapstonePresentation;
 using CapstoneRuntime;
 using UnityEngine;
@@ -17,8 +19,12 @@ using UnityEditor;
 /// </summary>
 [DefaultExecutionOrder(-871)]
 [DisallowMultipleComponent]
+// 이 클래스의 책임:
+// Loading manifest가 요구한 presentation 에셋을 Addressables로 보유/해제하고, 런타임 진단용 로드 상태를 제공한다.
 public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IAssetProviderDebugInfo
 {
+    // 이 클래스의 책임:
+    // 직접 참조 에셋 하나가 Addressables 로드 큐/활성 핸들/직접 참조 fallback 중 어디에 있는지 추적한다.
     private sealed class LoadState
     {
         public int SourceId;
@@ -29,6 +35,7 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
         public bool HasHandle;
         public AssetProviderOperation ActiveLoadOperation;
         public bool ReleaseWhenLoaded;
+        public bool IsQueued;
     }
 
     public static AddressableAssetProvider Instance { get; private set; }
@@ -45,13 +52,26 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
     private readonly Dictionary<int, UnityEngine.Object> trackedAssets = new();
     private readonly Dictionary<int, LoadState> loadStates = new();
     private readonly List<PresentationAssetProvider.DebugEventEntry> debugHistory = new();
+    private readonly Queue<LoadState> pendingLoadQueue = new();
 
     [SerializeField] private LoadingAddressableRegistrySO registry;
+    [Header("Load Smoothing")]
+    [SerializeField, Min(1)] private int maxConcurrentAddressableLoads = 4;
+    [SerializeField, Min(1)] private int maxAddressableLoadStartsPerFrame = 2;
+    [Header("Diagnostics")]
+    [SerializeField] private bool logFallbackWarnings;
+    [SerializeField] private bool logRetainedAssetDumpPath = true;
+
+    private Coroutine loadQueueRoutine;
+    private int activeAddressableLoadCount;
 
     public int LoadedManifestCount => manifestRefCounts.Count;
     public int LoadedRouteManifestCount => routeManifestRefCounts.Count;
     public int RetainedAssetCount => assetRefCounts.Count;
     public int PrewarmedPrefabCount => prewarmRefCounts.Count;
+    public int PendingQueuedLoadCount => pendingLoadQueue.Count;
+    public int ActiveAddressableLoadCount => activeAddressableLoadCount;
+    public int TrackedLoadStateCount => loadStates.Count;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
@@ -385,56 +405,121 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
                 SourceAsset = sourceAsset,
                 LoadedAsset = sourceAsset
             };
-            RecordDebugEvent($"Address key missing for {sourceAsset.name}; using direct reference.");
+            RecordFallbackEvent($"Address missing for {sourceAsset.name}; fallback used with direct reference.");
             return AssetProviderOperation.Completed(BuildOperationLabel("ResolveDirectAsset", sourceAsset));
         }
 
-        if (!HasAddressableLocation(addressKey))
-        {
-            loadStates[sourceId] = new LoadState
-            {
-                SourceId = sourceId,
-                SourceAsset = sourceAsset,
-                AddressKey = addressKey,
-                LoadedAsset = sourceAsset
-            };
-            RecordDebugEvent($"Address key not found for {sourceAsset.name} [{addressKey}]; using direct reference.");
-            return AssetProviderOperation.Completed(BuildOperationLabel("ResolveDirectAsset", sourceAsset));
-        }
-
-        AsyncOperationHandle<UnityEngine.Object> handle;
-        try
-        {
-            handle = Addressables.LoadAssetAsync<UnityEngine.Object>(addressKey);
-        }
-        catch (Exception ex)
-        {
-            RecordDebugEvent($"Addressables start failed for {sourceAsset.name} [{addressKey}]: {ex.Message}. Using fallback.");
-            loadStates[sourceId] = new LoadState
-            {
-                SourceId = sourceId,
-                SourceAsset = sourceAsset,
-                AddressKey = addressKey,
-                LoadedAsset = sourceAsset
-            };
-            return AssetProviderOperation.Completed(BuildOperationLabel("ResolveDirectAsset", sourceAsset));
-        }
-
+        var operation = new AssetProviderOperation(BuildOperationLabel("LoadAddressableAsset", sourceAsset));
         var state = new LoadState
         {
             SourceId = sourceId,
             SourceAsset = sourceAsset,
             AddressKey = addressKey,
-            Handle = handle,
-            HasHandle = true
+            ActiveLoadOperation = operation,
+            IsQueued = true
         };
         loadStates[sourceId] = state;
+        EnqueueLoadState(state);
 
-        var operation = new AssetProviderOperation(BuildOperationLabel("LoadAddressableAsset", sourceAsset));
-        state.ActiveLoadOperation = operation;
-        operation.ReportProgress(handle.PercentComplete);
-        StartCoroutine(CompleteLoadOperation(state, operation));
         return operation;
+    }
+
+    private void EnqueueLoadState(LoadState state)
+    {
+        if (state == null)
+            return;
+
+        pendingLoadQueue.Enqueue(state);
+        if (loadQueueRoutine == null)
+            loadQueueRoutine = StartCoroutine(ProcessLoadQueue());
+    }
+
+    private IEnumerator ProcessLoadQueue()
+    {
+        while (pendingLoadQueue.Count > 0)
+        {
+            int startedThisFrame = 0;
+            while (pendingLoadQueue.Count > 0 &&
+                   activeAddressableLoadCount < Mathf.Max(1, maxConcurrentAddressableLoads) &&
+                   startedThisFrame < Mathf.Max(1, maxAddressableLoadStartsPerFrame))
+            {
+                LoadState state = pendingLoadQueue.Dequeue();
+                if (!CanStartQueuedLoad(state))
+                    continue;
+
+                StartQueuedLoad(state);
+                startedThisFrame++;
+            }
+
+            yield return null;
+        }
+
+        loadQueueRoutine = null;
+    }
+
+    private bool CanStartQueuedLoad(LoadState state)
+    {
+        if (state == null || !state.IsQueued)
+            return false;
+
+        if (!loadStates.TryGetValue(state.SourceId, out LoadState currentState) || currentState != state)
+            return false;
+
+        if (state.ReleaseWhenLoaded && !assetRefCounts.ContainsKey(state.SourceId))
+        {
+            CompleteQueuedLoadWithoutStarting(state);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void CompleteQueuedLoadWithoutStarting(LoadState state)
+    {
+        state.IsQueued = false;
+        state.LoadedAsset = state.SourceAsset;
+        state.ActiveLoadOperation?.Complete();
+        state.ActiveLoadOperation = null;
+        loadStates.Remove(state.SourceId);
+    }
+
+    private void StartQueuedLoad(LoadState state)
+    {
+        if (state == null)
+            return;
+
+        state.IsQueued = false;
+        AssetProviderOperation operation = state.ActiveLoadOperation;
+
+        if (!HasAddressableLocation(state.AddressKey))
+        {
+            state.LoadedAsset = state.SourceAsset;
+            state.ActiveLoadOperation = null;
+            trackedAssets[state.SourceId] = state.SourceAsset;
+            RecordFallbackEvent($"Address not found for {state.SourceAsset.name} [{state.AddressKey}]; fallback used with direct reference.");
+            operation?.Complete();
+            return;
+        }
+
+        try
+        {
+            state.Handle = Addressables.LoadAssetAsync<UnityEngine.Object>(state.AddressKey);
+            state.HasHandle = true;
+        }
+        catch (Exception ex)
+        {
+            state.LoadedAsset = state.SourceAsset;
+            state.ActiveLoadOperation = null;
+            trackedAssets[state.SourceId] = state.SourceAsset;
+            RecordFallbackEvent($"Addressables start failed for {state.SourceAsset.name} [{state.AddressKey}]: {ex.Message}. Fallback used with direct reference.");
+            operation?.Complete();
+            return;
+        }
+
+        activeAddressableLoadCount++;
+        state.ActiveLoadOperation = operation;
+        operation.ReportProgress(state.Handle.PercentComplete);
+        StartCoroutine(CompleteLoadOperation(state, operation));
     }
 
     private static bool HasAddressableLocation(string addressKey)
@@ -491,11 +576,12 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
         trackedAssets[state.SourceId] = loadedAsset != null ? loadedAsset : state.SourceAsset;
 
         if (!string.IsNullOrWhiteSpace(errorMessage))
-            RecordDebugEvent($"Addressables load failed for {state.SourceAsset.name}: {errorMessage}. Using fallback.");
+            RecordFallbackEvent($"Addressables load failed for {state.SourceAsset.name}: {errorMessage}. Fallback used with direct reference.");
         else
             RecordDebugEvent($"Addressables load completed for {state.SourceAsset.name} [{state.AddressKey}]");
 
-        operation.Complete(errorMessage);
+        operation.Complete();
+        activeAddressableLoadCount = Mathf.Max(0, activeAddressableLoadCount - 1);
 
         if (state.ReleaseWhenLoaded && !assetRefCounts.ContainsKey(state.SourceId))
             ReleaseLoadedState(state);
@@ -833,6 +919,191 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
         debugHistory.Add(new PresentationAssetProvider.DebugEventEntry(Time.realtimeSinceStartup, message));
         if (debugHistory.Count > MaxDebugHistoryEntries)
             debugHistory.RemoveRange(0, debugHistory.Count - MaxDebugHistoryEntries);
+    }
+
+    private void RecordFallbackEvent(string message)
+    {
+        RecordDebugEvent(message);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        if (logFallbackWarnings)
+            Debug.LogWarning($"[AddressableAssetProvider] {message}", this);
+#endif
+    }
+
+    public string BuildRuntimeQueueDiagnosticSummary()
+    {
+        return BuildQueueDiagnosticMessage("Runtime status");
+    }
+
+    public string DumpRetainedAssetsToTextFile()
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        string projectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
+        string reportDirectory = Path.Combine(projectRoot, "Logs", "Addressables");
+        Directory.CreateDirectory(reportDirectory);
+
+        string fileName = $"RuntimeRetainedAssets_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+        string reportPath = Path.Combine(reportDirectory, fileName);
+        File.WriteAllText(reportPath, BuildRetainedAssetsReport(), Encoding.UTF8);
+
+        if (logRetainedAssetDumpPath)
+            Debug.Log($"[AddressableAssetProvider] Retained asset report written: {reportPath}", this);
+        RecordDebugEvent($"Retained asset report written: {reportPath}");
+        return reportPath;
+#else
+        Debug.LogWarning("[AddressableAssetProvider] Retained asset dump is only available in editor/development builds.", this);
+        return null;
+#endif
+    }
+
+    private string BuildRetainedAssetsReport()
+    {
+        var builder = new StringBuilder(256 * 1024);
+        builder.AppendLine("# Runtime Retained Addressable Assets");
+        builder.AppendLine($"Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+        builder.AppendLine(BuildQueueDiagnosticMessage("Provider"));
+        builder.AppendLine($"LoadedManifestCount: {LoadedManifestCount}");
+        builder.AppendLine($"LoadedRouteManifestCount: {LoadedRouteManifestCount}");
+        builder.AppendLine($"RetainedAssetCount: {RetainedAssetCount}");
+        builder.AppendLine($"PrewarmedPrefabCount: {PrewarmedPrefabCount}");
+        builder.AppendLine();
+
+        builder.AppendLine("## Route Manifests");
+        AppendCountSnapshot(builder, BuildRouteManifestSnapshot());
+        builder.AppendLine();
+
+        builder.AppendLine("## Manifests");
+        AppendCountSnapshot(builder, BuildManifestSnapshot());
+        builder.AppendLine();
+
+        builder.AppendLine("## Retained Assets");
+        builder.AppendLine("refCount\tqueued\tactive\taddress\tassetName\tloadedName\tpath");
+        foreach (RetainedAssetReportEntry entry in BuildRetainedAssetReportEntries())
+        {
+            builder.Append(entry.RefCount);
+            builder.Append('\t');
+            builder.Append(entry.IsQueued ? "yes" : "no");
+            builder.Append('\t');
+            builder.Append(entry.IsActive ? "yes" : "no");
+            builder.Append('\t');
+            builder.Append(entry.AddressKey);
+            builder.Append('\t');
+            builder.Append(entry.AssetName);
+            builder.Append('\t');
+            builder.Append(entry.LoadedName);
+            builder.Append('\t');
+            builder.AppendLine(entry.AssetPath);
+        }
+
+        builder.AppendLine();
+        builder.AppendLine("## Prewarm Refs");
+        AppendCountSnapshot(builder, BuildPrewarmSnapshot(int.MaxValue));
+        return builder.ToString();
+    }
+
+    private static void AppendCountSnapshot(StringBuilder builder, PresentationAssetProvider.DebugCountEntry[] entries)
+    {
+        if (entries == null || entries.Length == 0)
+        {
+            builder.AppendLine("<none>");
+            return;
+        }
+
+        for (int i = 0; i < entries.Length; i++)
+            builder.AppendLine($"{entries[i].Count}\t{entries[i].Name}");
+    }
+
+    private List<RetainedAssetReportEntry> BuildRetainedAssetReportEntries()
+    {
+        var entries = new List<RetainedAssetReportEntry>(assetRefCounts.Count);
+        foreach (KeyValuePair<int, int> pair in assetRefCounts)
+        {
+            UnityEngine.Object sourceAsset = null;
+            trackedAssets.TryGetValue(pair.Key, out UnityEngine.Object trackedAsset);
+
+            if (loadStates.TryGetValue(pair.Key, out LoadState state))
+                sourceAsset = state.SourceAsset;
+
+            sourceAsset ??= trackedAsset;
+            string assetName = sourceAsset != null ? sourceAsset.name : pair.Key.ToString();
+            string loadedName = trackedAsset != null ? trackedAsset.name : "<none>";
+            string assetPath = ResolveDebugAssetPath(sourceAsset);
+            string addressKey = state != null && !string.IsNullOrWhiteSpace(state.AddressKey)
+                ? state.AddressKey
+                : "<direct/fallback>";
+            bool isActive = state != null && state.HasHandle && !state.Handle.IsDone;
+
+            entries.Add(new RetainedAssetReportEntry(
+                pair.Value,
+                state != null && state.IsQueued,
+                isActive,
+                addressKey,
+                assetName,
+                loadedName,
+                assetPath));
+        }
+
+        entries.Sort((left, right) =>
+        {
+            int pathCompare = string.Compare(left.AssetPath, right.AssetPath, StringComparison.OrdinalIgnoreCase);
+            if (pathCompare != 0)
+                return pathCompare;
+
+            return string.Compare(left.AssetName, right.AssetName, StringComparison.OrdinalIgnoreCase);
+        });
+        return entries;
+    }
+
+    private static string ResolveDebugAssetPath(UnityEngine.Object asset)
+    {
+        if (asset == null)
+            return "<missing>";
+
+#if UNITY_EDITOR
+        string path = AssetDatabase.GetAssetPath(asset);
+        return string.IsNullOrWhiteSpace(path) ? "<runtime>" : path;
+#else
+        return "<editor-only-path>";
+#endif
+    }
+
+    private readonly struct RetainedAssetReportEntry
+    {
+        public RetainedAssetReportEntry(
+            int refCount,
+            bool isQueued,
+            bool isActive,
+            string addressKey,
+            string assetName,
+            string loadedName,
+            string assetPath)
+        {
+            RefCount = refCount;
+            IsQueued = isQueued;
+            IsActive = isActive;
+            AddressKey = string.IsNullOrWhiteSpace(addressKey) ? "<none>" : addressKey;
+            AssetName = string.IsNullOrWhiteSpace(assetName) ? "<unnamed>" : assetName;
+            LoadedName = string.IsNullOrWhiteSpace(loadedName) ? "<none>" : loadedName;
+            AssetPath = string.IsNullOrWhiteSpace(assetPath) ? "<unknown>" : assetPath;
+        }
+
+        public int RefCount { get; }
+        public bool IsQueued { get; }
+        public bool IsActive { get; }
+        public string AddressKey { get; }
+        public string AssetName { get; }
+        public string LoadedName { get; }
+        public string AssetPath { get; }
+    }
+
+    private string BuildQueueDiagnosticMessage(string prefix)
+    {
+        int queuedCount = pendingLoadQueue.Count;
+        int activeCount = activeAddressableLoadCount;
+        int retainedCount = assetRefCounts.Count;
+        int stateCount = loadStates.Count;
+        int prewarmCount = prewarmRefCounts.Count;
+        return $"{prefix}: queued={queuedCount}, active={activeCount}, states={stateCount}, retained={retainedCount}, prewarm={prewarmCount}";
     }
 
     private static string BuildOperationLabel(string action, UnityEngine.Object target)

@@ -14,6 +14,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
     [Header("Loading Handoff")]
     [SerializeField, Min(0f)] private float loadingCompletionTimeoutSeconds = 15f;
     [SerializeField] private bool completePresentationPreloadBeforeSceneLoad = true;
+    [SerializeField] private bool logLoadingHandoffDiagnostics;
 
     private Coroutine transitionRoutine;
     public bool IsTransitionActive => transitionRoutine != null;
@@ -153,16 +154,19 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
             loadingOverlay = LoadingOverlayController.EnsureInstance();
             loadingOverlay?.BeginManagedPresentation(showImmediately: false);
             preloadService?.RefreshActiveLoadWindow("Managed transition loading window");
+            LogLoadingHandoffDiagnostics("after RefreshActiveLoadWindow");
             loadingPhaseStartedRealtime = Time.realtimeSinceStartup;
 
             if (completePresentationPreloadBeforeSceneLoad && loadingOverlay != null)
             {
+                LogLoadingHandoffDiagnostics("before pre-scene WaitForManagedLoadingReady");
                 yield return WaitForManagedLoadingReady(
                     loadingOverlay,
                     fadeService,
                     loadingPhaseStartedRealtime,
                     () => loadingPresentationRevealed,
                     value => loadingPresentationRevealed = value);
+                LogLoadingHandoffDiagnostics("after pre-scene WaitForManagedLoadingReady");
             }
         }
 
@@ -199,6 +203,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
                 ref loadingPresentationRevealed);
             yield return null;
         }
+        LogLoadingHandoffDiagnostics("after scene LoadSceneAsync completed");
 
         fadeService = ResolvePostLoadFadeService(fadeService, targetSceneName, this);
         if (fadeService == null)
@@ -208,30 +213,36 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
         }
 
         yield return fadeService.WaitForPostLoadSettleAsync();
+        LogLoadingHandoffDiagnostics("after post-load settle");
 
         if (loadingOverlay != null)
         {
             if (!completePresentationPreloadBeforeSceneLoad)
             {
+                LogLoadingHandoffDiagnostics("before post-scene WaitForManagedLoadingReady");
                 yield return WaitForManagedLoadingReady(
                     loadingOverlay,
                     fadeService,
                     loadingPhaseStartedRealtime,
                     () => loadingPresentationRevealed,
                     value => loadingPresentationRevealed = value);
+                LogLoadingHandoffDiagnostics("after post-scene WaitForManagedLoadingReady");
             }
 
             routeManager?.CompleteLoadPresentationContext("Managed loading presentation completed.");
             fadeService.ShowBlackImmediately();
             loadingOverlay.ForceHidePresentation();
             yield return FadeInAsync(fadeService, fadeInDurationOverride);
+            LogLoadingHandoffDiagnostics("after managed fade-in before player unlock");
         }
         else
         {
             yield return FadeInAsync(fadeService, fadeInDurationOverride);
+            LogLoadingHandoffDiagnostics("after fade-in before player unlock");
         }
 
         fadeService.EndTransitionSession();
+        LogLoadingHandoffDiagnostics("after EndTransitionSession");
         transitionRoutine = null;
     }
 
@@ -344,7 +355,27 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
         {
             Debug.LogError(
                 $"[SceneTransitionCoordinator] Failed to load scene '{targetSceneName}' without transition fade: {ex.Message}",
-                this);
+            this);
         }
+    }
+
+    private void LogLoadingHandoffDiagnostics(string phase)
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        if (!logLoadingHandoffDiagnostics)
+            return;
+
+        int currentBatchId = PresentationPreloadService.GetCurrentProviderBatchId();
+        int currentBatchPending = PresentationPreloadService.GetCurrentBatchPendingProviderOperationCount();
+        int totalPending = PresentationPreloadService.GetPendingProviderOperationCount();
+        float progress = PresentationPreloadService.GetCurrentProviderProgress01();
+        string providerStatus = AddressableAssetProvider.Instance != null
+            ? AddressableAssetProvider.Instance.BuildRuntimeQueueDiagnosticSummary()
+            : "AddressableAssetProvider=null";
+
+        Debug.Log(
+            $"[LoadingHandoffDiagnostics] {phase}: batch={currentBatchId}, currentPending={currentBatchPending}, totalPending={totalPending}, progress={progress * 100f:0.0}%, {providerStatus}",
+            this);
+#endif
     }
 }

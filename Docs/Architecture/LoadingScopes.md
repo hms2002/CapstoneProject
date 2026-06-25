@@ -2,7 +2,7 @@
 status: active
 authority: source-of-truth
 category: architecture
-last_reviewed: 2026-05-05
+last_reviewed: 2026-06-25
 ---
 
 # Loading Scopes
@@ -56,3 +56,38 @@ last_reviewed: 2026-05-05
 3. 이후 `AssetProvider` / `PreloadService`가 이 manifest를 소비하도록 만드는 것
 
 을 목표로 한다.
+
+## Manifest-First Addressables
+
+Addressables를 도입하더라도 `LoadManifestSO / RouteSetLoadManifestSO`가 로딩 기준이다. 직접 참조는 제거하지 않고 authoring source, fallback, registry lookup key로 유지한다.
+
+1차 적용 범위는 VFX / Presentation 에셋이다. 몬스터 본체, 보스 본체, 무기 actor, projectile / hitbox 같은 gameplay actor는 후순위로 둔다.
+
+### Runtime Policy
+
+- `LoadingBootstrapConfigSO.assetProviderMode`가 Addressables면 `AddressableAssetProvider`가 `PresentationAssetProvider` override로 설치된다.
+- Addressables load 성공 시 loaded asset을 사용한다.
+- address 누락, Addressables location 누락, load 시작 실패, load 실패는 direct reference fallback을 사용한다.
+- fallback은 operation success로 완료하되 에디터 / 개발 빌드에서 warning과 loading debug history를 남긴다.
+
+### Editor Workflow
+
+새 route / scene 작업 후 권장 순서는 다음과 같다.
+
+1. `Tools/Loading/RouteSet Manifest Builder`
+2. `Tools/Loading/Addressable Bundle Planner`
+3. `Tools/Loading/Build Addressable Registry`
+4. Addressables Content Build
+5. Play test + Loading Debug 확인
+
+### Group Policy
+
+- `BootCommon`: 로딩 / 기본 UI / 부팅 필수 에셋
+- `RunCommon`: 런 전체 공통 에셋
+- `CombatCommon`: telegraph, damage popup, 공통 전투 VFX
+- `RouteShared_{RouteName}`: 같은 route의 corridor / boss 공유 에셋
+- `RouteCorridor_{RouteName}`: corridor 전용 에셋
+- `Boss_{BossName}`: 보스 전용 대형 VFX / 대사 / 패턴 에셋
+- `ReviewNeeded`: 자동 분류가 애매한 에셋
+
+초기 packing은 `Pack Together`만 사용한다. `Pack Separately`는 큰 에셋이 같은 group 안에서 독립적으로 사용되는 문제가 확인될 때 후속으로 검토한다.

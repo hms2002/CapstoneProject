@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: RouteCorridor_SlimeRouteSet
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: RouteCorridor_SlimeRouteSet
+  m_GUID: f2877ebb707114844aea7799175b104f
+  m_SerializeEntries:
+  - m_GUID: 19722557f3904b74d91d9fec4532783c
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/NPC/image (7).png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d3e2bbb1e1867242add50e34bd3901b
+    m_Address: Assets/_Project/Prefabs/VFX/Effect_SlimeCorridorTeleport.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: bdead2fbef5cae04b8d1fb5ea3894827, type: 2}
+    - {fileID: 11400000, guid: 66cb7117e7d44f845ae05738625c1c64, type: 2}
