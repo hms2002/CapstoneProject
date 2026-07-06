@@ -20,7 +20,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
     private EnemyChaseIntent2D detectionSensor;
     private IMobAbilityHelperAccess helperAccess;
     private CandlestickSeal candlestickSeal;
-    private AttackTelegraphService telegraphService;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private AttackTelegraphStyle runtimeLockOnStyle;
     private float nextProjectileFireTime;
     private bool hasLoggedInvalidConfig;
@@ -33,7 +33,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
         base.Awake();
         detectionSensor = GetComponent<EnemyChaseIntent2D>();
         candlestickSeal = GetComponent<CandlestickSeal>();
-        telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(this);
         runtimeLockOnStyle = null;
 
         if (abilityCoordinator == null)
@@ -343,8 +343,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
 
     private void HideLockOnTelegraph()
     {
-        if (telegraphService != null)
-            telegraphService.HideCurrent();
+        telegraphPresenter?.HideCurrent();
     }
 
     public AttackTelegraphSpec MakeLockOnSpec(GameObject explicitTarget, float durationOverride = -1f)

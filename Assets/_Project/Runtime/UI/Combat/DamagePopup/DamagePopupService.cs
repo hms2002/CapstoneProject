@@ -9,8 +9,20 @@ using UnityEngine;
 public sealed class DamagePopupService : MonoBehaviour
 {
     private const string DefaultFormatProfileResourcePath = "DamagePopup/DamagePopupFormatProfile_Default";
+    private static readonly IDamagePopupBackend s_playbackBackend = new DamagePopupServiceBackend();
 
     public static DamagePopupService Instance { get; private set; }
+
+    /// <summary>
+    /// 책임: Core의 DamagePopupPlayback 요청을 실제 DamagePopupService 인스턴스 표시로 연결한다.
+    /// </summary>
+    private sealed class DamagePopupServiceBackend : IDamagePopupBackend
+    {
+        public void Show(DamagePopupRequest request)
+        {
+            DamagePopupService.Show(request);
+        }
+    }
 
     [Header("Prefab")]
     [SerializeField] private DamagePopupWorldText popupPrefab;
@@ -64,6 +76,12 @@ public sealed class DamagePopupService : MonoBehaviour
         new Vector2Int(-1, 1)
     };
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void RegisterPlaybackBackend()
+    {
+        DamagePopupPlayback.RegisterBackend(s_playbackBackend);
+    }
+
     /// <summary>
     /// 책임 :
     /// - 최근 생성된 데미지 팝업이 차지한 월드 위치와 만료 시각을 보관한다.
@@ -91,6 +109,7 @@ public sealed class DamagePopupService : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        DamagePopupPlayback.RegisterBackend(s_playbackBackend);
         ResolveFormatProfile();
         LogPopupServiceLifecycle("awake and registered as Instance");
     }

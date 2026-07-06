@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+// 책임: 호감도 레벨 상승 구간에 해당하는 보상 효과를 수집하고 지급한다.
 public sealed class AffectionRewardProcessor
 {
     public bool HasRewardsInRange(NPCData data, int fromLevel, int toLevel)
@@ -21,9 +22,9 @@ public sealed class AffectionRewardProcessor
     {
         List<AffectionEffect> earnedEffects = CollectRewards(data, fromLevel, toLevel);
 
-        if (earnedEffects.Count > 0 && RewardDisplayService.Instance != null)
+        if (earnedEffects.Count > 0)
         {
-            RewardDisplayService.Instance.ShowFlowOwnedReward(null, earnedEffects, onComplete);
+            RewardDisplayPlayback.ShowFlowOwnedReward(null, earnedEffects, onComplete);
             return;
         }
 

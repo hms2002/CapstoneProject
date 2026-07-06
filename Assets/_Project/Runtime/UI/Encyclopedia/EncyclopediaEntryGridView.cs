@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// 책임 : 도감 엔트리 슬롯 풀을 구성하고 현재 페이지의 항목 목록을 채운다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class EncyclopediaEntryGridView : MonoBehaviour
 {
@@ -37,7 +40,7 @@ public sealed class EncyclopediaEntryGridView : MonoBehaviour
     private void AutoWireReferences()
     {
         ResolveReferences();
-        UnityEditor.EditorUtility.SetDirty(this);
+        EditorAuthoringPlayback.MarkDirty(this);
     }
 #endif
 

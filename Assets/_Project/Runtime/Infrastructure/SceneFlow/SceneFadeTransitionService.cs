@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 [DisallowMultipleComponent]
 // 이 클래스의 책임: 씬 전환 중 페이드, 플레이어 입력 잠금, 로드 직후 안정화 대기를 한 곳에서 관리한다.
-public sealed class SceneFadeTransitionService : MonoBehaviour
+public sealed class SceneFadeTransitionService : MonoBehaviour, ISceneFadeTransitionHandle
 {
     private const int ActiveOverlaySortingOrder = short.MaxValue;
 
@@ -36,8 +36,15 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
     private bool savedOverlayCanvasOverrideSorting;
     private int savedOverlayCanvasSortingOrder;
     private readonly Dictionary<int, Object> externalPlayerUnlockBlockers = new();
+    private static readonly ISceneFadeTransitionBackend PlaybackBackend = new SceneFadeTransitionBackend();
 
     public bool IsTransitionActive => isTransitionActive;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void RegisterPlaybackBackend()
+    {
+        SceneFadeTransitionPlayback.RegisterBackend(PlaybackBackend);
+    }
 
     public void SetPlayerUnlockBlocked(Object owner, bool blocked)
     {
@@ -107,6 +114,7 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
         }
 
         Instance = this;
+        SceneFadeTransitionPlayback.RegisterBackend(PlaybackBackend);
         Initialize();
     }
 
@@ -135,6 +143,19 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
 
         if (Instance == this)
             Instance = null;
+    }
+
+    /// <summary>
+    /// 책임 : Core의 씬 페이드 playback 요청을 현재 런타임 SceneFadeTransitionService static 진입점으로 연결한다.
+    /// </summary>
+    private sealed class SceneFadeTransitionBackend : ISceneFadeTransitionBackend
+    {
+        public ISceneFadeTransitionHandle Instance => SceneFadeTransitionService.Instance;
+
+        public ISceneFadeTransitionHandle EnsureInstance(bool allowRuntimeFallback = false)
+        {
+            return SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback);
+        }
     }
 
     public bool TryLoadScene(string targetSceneName)
@@ -333,12 +354,9 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
 
     private void PrepareTransitionUi()
     {
-        if (UIManager.Instance == null)
-            return;
-
-        UIManager.Instance.CloseAllPopups();
-        UIManager.Instance.HideHoverImmediate();
-        UIManager.Instance.HideWorldPrompt();
+        UiCommandPlayback.CloseAllPopups(force: true);
+        UiCommandPlayback.HideHoverImmediate();
+        UiCommandPlayback.HideWorldPrompt();
     }
 
     private void LockCurrentPlayer()
@@ -398,10 +416,10 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
 
     private void EnsurePersistence()
     {
-        if (GetComponent<GlobalUIRoot>() != null)
+        if (GetComponent<IGlobalCanvasRootMarker>() != null)
             return;
 
-        GlobalUIRoot.AdoptService(transform);
+        GlobalCanvasPlayback.AdoptService(transform);
 
         if (transform.parent == null)
             DontDestroyOnLoad(gameObject);

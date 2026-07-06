@@ -94,7 +94,7 @@ namespace UnityGAS.Sample
             if (system == null || !step.attackSound.IsSet)
                 return;
 
-            SoundManager.EnsureInstance().Play(step.attackSound, new SoundPlaybackContext
+            SoundPlaybackUtility.Play(step.attackSound, new SoundPlaybackContext
             {
                 Instigator = system.gameObject,
                 Causer = system.gameObject,
@@ -206,7 +206,7 @@ namespace UnityGAS.Sample
                              + perp * (step.sideOffset * sideSign);
 
 #if UNITY_EDITOR
-            if (system.TryGetComponent<UnityGAS.Sample.RealtimeHitboxGizmo2D>(out var gizmo))
+            if (system.TryGetComponent<IRealtimeHitboxGizmo2D>(out var gizmo))
             {
                 int stepIndex = abilitySpec.GetInt(KEY_COMBO_INDEX, 0);
                 var col = (stepIndex == 0) ? Color.green : (stepIndex == 1 ? Color.yellow : Color.cyan);

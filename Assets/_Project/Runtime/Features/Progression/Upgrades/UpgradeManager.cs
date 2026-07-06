@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
 
+/// <summary>
+/// 책임 :
+/// - 업그레이드 진행도, 구매 처리, 런타임 효과 적용을 관리한다.
+/// - 업그레이드 화면 표시는 구체 UI 타입 대신 IUpgradeUiBackend playback 계약으로 요청한다.
+/// </summary>
 public class UpgradeManager : MonoBehaviour
 {
     private static readonly SoundRef UpgradeSuccessSound = SoundRef.FromKey("sound_ui_UpgradeSuccess");
@@ -10,7 +15,7 @@ public class UpgradeManager : MonoBehaviour
 
     public static UpgradeManager Instance { get; private set; }
 
-    [SerializeField] private UpgradeTreeUI upgradeTreeUI;
+    [SerializeField] private MonoBehaviour upgradeTreeUI;
     [SerializeField] private UpgradeDatabase upgradeDatabase;
 
     [Header("Open Presentation")]
@@ -33,7 +38,7 @@ public class UpgradeManager : MonoBehaviour
     private UpgradeProgressService progressService;
     private UpgradeEffectApplier effectApplier;
     private readonly Queue<UpgradeCinematicRequest> pendingCinematics = new Queue<UpgradeCinematicRequest>();
-    private UpgradeUiOpenFlow uiOpenFlow;
+    private IUpgradeUiBackend upgradeUiBackend;
     private UpgradeRuntimeEffectService runtimeEffectService;
     private UpgradePurchaseCompletionService purchaseCompletionService;
     private UpgradeRuntimeLifecycleService runtimeLifecycleService;
@@ -47,7 +52,6 @@ public class UpgradeManager : MonoBehaviour
 
         ResolveUpgradeTreeUiReference();
         notifications = new UpgradeNotificationService(this);
-        uiOpenFlow = new UpgradeUiOpenFlow(this, ResolveUpgradeTreeUiForFlow);
         progressService = new UpgradeProgressService(upgradeDatabase);
         progressSaveService = new UpgradeProgressSaveService(
             progressService,
@@ -79,7 +83,7 @@ public class UpgradeManager : MonoBehaviour
     private void OnDestroy()
     {
         runtimeLifecycleService?.Unsubscribe();
-        uiOpenFlow?.Cleanup();
+        UpgradeUiPlayback.Cleanup();
 
         if (Instance == this)
             UpgradeManagerLifetimeService.ReleaseInstance(this, () => Instance, value => Instance = value);
@@ -97,22 +101,25 @@ public class UpgradeManager : MonoBehaviour
 
     private void OnDisable()
     {
-        uiOpenFlow?.Cleanup();
+        UpgradeUiPlayback.Cleanup();
         runtimeLifecycleService?.Unsubscribe();
     }
 
     private void ResolveUpgradeTreeUiReference()
     {
-        if (upgradeTreeUI != null)
+        if (upgradeUiBackend != null && upgradeUiBackend.BackendComponent != null)
             return;
 
-        upgradeTreeUI = UpgradeTreeUI.EnsureInstance();
-    }
+        upgradeUiBackend = upgradeTreeUI as IUpgradeUiBackend;
+        if (upgradeUiBackend != null)
+        {
+            UpgradeUiPlayback.RegisterBackend(upgradeUiBackend);
+            return;
+        }
 
-    private UpgradeTreeUI ResolveUpgradeTreeUiForFlow()
-    {
-        ResolveUpgradeTreeUiReference();
-        return upgradeTreeUI;
+        upgradeUiBackend = UpgradeUiPlayback.ResolveBackend();
+        if (upgradeUiBackend != null && upgradeTreeUI == null)
+            upgradeTreeUI = upgradeUiBackend.BackendComponent as MonoBehaviour;
     }
 
     private PlayerInteractor2D ResolveCurrentPlayer()
@@ -158,32 +165,24 @@ public class UpgradeManager : MonoBehaviour
         };
 
         if (warningCode != WarningPopupCode.None)
-            UIManager.Instance?.ShowWarning(warningCode);
+            WarningPopupPlayback.Show(warningCode);
     }
 
     private static bool IsRunActive()
     {
-        return GamePlayDataManager.Instance != null
-            && GamePlayDataManager.Instance.Data != null
-            && GamePlayDataManager.Instance.Data.isRunActive;
+        return RunSessionStore.IsRunActive;
     }
 
     public void ToggleUI()
     {
-        EnsureUiOpenFlow().Toggle(useFadePresentationOnOpen, openFadeOutDuration, openFadeInDuration);
+        ResolveUpgradeTreeUiReference();
+        UpgradeUiPlayback.Toggle(useFadePresentationOnOpen, openFadeOutDuration, openFadeInDuration);
     }
 
     public void CloseUI()
     {
-        EnsureUiOpenFlow().Close();
-    }
-
-    private UpgradeUiOpenFlow EnsureUiOpenFlow()
-    {
-        if (uiOpenFlow == null)
-            uiOpenFlow = new UpgradeUiOpenFlow(this, ResolveUpgradeTreeUiForFlow);
-
-        return uiOpenFlow;
+        ResolveUpgradeTreeUiReference();
+        UpgradeUiPlayback.Close();
     }
 
     public void NotifyUIClosed()

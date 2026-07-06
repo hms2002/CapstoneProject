@@ -15,16 +15,16 @@ internal sealed class SceneMonsterSpawnDirector
     private readonly List<MonsterSpawnRoomGroup> spawnRooms;
     private readonly List<GameObject> spawnedMonsters = new();
 
-    private MonsterElementGaugeViewInstaller gaugeViewInstaller;
+    private MonoBehaviour gaugeViewInstaller;
     private TilemapPathfinder2D pathfinder;
 
-    public MonsterElementGaugeViewInstaller GaugeViewInstaller => gaugeViewInstaller;
+    public MonoBehaviour GaugeViewInstaller => gaugeViewInstaller;
     public TilemapPathfinder2D Pathfinder => pathfinder;
 
     public SceneMonsterSpawnDirector(
         List<MonsterSpawnContainer> spawnPoints,
         List<MonsterSpawnRoomGroup> spawnRooms,
-        MonsterElementGaugeViewInstaller gaugeViewInstaller,
+        MonoBehaviour gaugeViewInstaller,
         TilemapPathfinder2D pathfinder)
     {
         this.spawnPoints = spawnPoints ?? new List<MonsterSpawnContainer>();
@@ -151,7 +151,7 @@ internal sealed class SceneMonsterSpawnDirector
     public void ResolveSceneServices()
     {
         Scene activeScene = SceneManager.GetActiveScene();
-        gaugeViewInstaller = ResolveSceneObject(gaugeViewInstaller, activeScene);
+        gaugeViewInstaller = ResolveSceneContract<IMonsterElementGaugeViewInstaller>(gaugeViewInstaller, activeScene);
         pathfinder = ResolveSceneObject(pathfinder, activeScene);
     }
 
@@ -197,11 +197,12 @@ internal sealed class SceneMonsterSpawnDirector
 
     private void InstallViews(GameObject monster)
     {
-        if (!IsSceneServiceCurrent(gaugeViewInstaller))
+        IMonsterElementGaugeViewInstaller installer = gaugeViewInstaller as IMonsterElementGaugeViewInstaller;
+        if (installer == null || !IsSceneServiceCurrent(installer.InstallerComponent))
             ResolveSceneServices();
 
-        if (gaugeViewInstaller != null)
-            gaugeViewInstaller.Install(monster);
+        installer = gaugeViewInstaller as IMonsterElementGaugeViewInstaller;
+        installer?.InstallFor(monster);
     }
 
     private void ApplySpawnContext(GameObject monster, MonsterSpawnRequest request)
@@ -257,6 +258,35 @@ internal sealed class SceneMonsterSpawnDirector
                 continue;
 
             return candidate;
+        }
+
+        return null;
+    }
+
+    private MonoBehaviour ResolveSceneContract<TContract>(MonoBehaviour current, Scene activeScene)
+        where TContract : class
+    {
+        if (current != null &&
+            current.gameObject.scene == activeScene &&
+            current is TContract)
+        {
+            return current;
+        }
+
+#if UNITY_2023_1_OR_NEWER
+        MonoBehaviour[] candidates = Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#else
+        MonoBehaviour[] candidates = Object.FindObjectsOfType<MonoBehaviour>(true);
+#endif
+
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            MonoBehaviour candidate = candidates[i];
+            if (candidate == null || candidate.gameObject.scene != activeScene)
+                continue;
+
+            if (candidate is TContract)
+                return candidate;
         }
 
         return null;

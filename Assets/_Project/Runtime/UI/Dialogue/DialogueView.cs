@@ -9,15 +9,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using CapstoneAudio;
 
-public enum DialogueAnimType
-{
-    Normal,
-    Slow,
-    Angry,
-    Whisper,
-    Cold
-}
-
 public enum DialogueCameraShakePreset
 {
     None,
@@ -26,6 +17,7 @@ public enum DialogueCameraShakePreset
     High
 }
 
+// 책임: 대사 텍스트 특정 문자 위치에서 적용할 inline pause 시간을 보관한다.
 public readonly struct DialogueInlinePause
 {
     public DialogueInlinePause(int characterIndex, float seconds)
@@ -49,6 +41,7 @@ public enum DialogueTextEffectType
     SlowShake
 }
 
+// 책임: 대사 텍스트 효과가 적용될 문자 범위와 효과 파라미터를 보관한다.
 public readonly struct DialogueTextEffectRange
 {
     public DialogueTextEffectRange(
@@ -81,6 +74,7 @@ public readonly struct DialogueTextEffectRange
     }
 }
 
+// 책임: 태그를 제거한 표시 문자열과 inline pause/effect 범위를 묶어 전달한다.
 public readonly struct DialogueTextRevealPlan
 {
     public DialogueTextRevealPlan(
@@ -98,6 +92,7 @@ public readonly struct DialogueTextRevealPlan
     public List<DialogueTextEffectRange> Effects { get; }
 }
 
+// 책임: 대사 타입별 문자 출력 지연과 문장부호 pause 배율을 보관한다.
 public readonly struct DialogueTextRevealProfile
 {
     public DialogueTextRevealProfile(float characterDelay, float punctuationPauseScale)
@@ -110,6 +105,7 @@ public readonly struct DialogueTextRevealProfile
     public float PunctuationPauseScale { get; }
 }
 
+// 책임: 대사 충격 연출의 시작 시간, 지속 시간, 문자 흔들림 파라미터를 보관한다.
 public readonly struct DialogueTextImpactState
 {
     public DialogueTextImpactState(
@@ -155,10 +151,12 @@ public readonly struct DialogueTextImpactState
     }
 }
 
+// 책임: 대사 원문 태그를 표시 문자열, pause, 텍스트 효과 계획으로 파싱하고 적용한다.
 public static class DialogueTextRevealUtility
 {
     private const string PauseTagPrefix = "[pause=";
 
+    // 책임: 파싱 중 아직 닫히지 않은 텍스트 효과 태그의 시작 위치와 랜덤 크기 값을 보관한다.
     private readonly struct ActiveEffectTag
     {
         public ActiveEffectTag(
@@ -857,6 +855,7 @@ public static class DialogueTextRevealUtility
     }
 }
 
+// 책임: 대화 UI의 텍스트, 선택지, 캐릭터 이미지, 카메라 흔들림/타이핑 연출을 표시한다.
 public class DialogueView : MonoBehaviour
 {
     private static readonly SoundRef TalkUiIntroSound = SoundRef.FromKey("sound_ui_TalkUIIntro");
@@ -902,6 +901,7 @@ public class DialogueView : MonoBehaviour
         public float CameraMinIntervalSeconds { get; }
     }
 
+    // 책임: 대사 카메라 흔들림 preset별 패널/텍스트/카메라 흔들림 설정을 직렬화한다.
     [Serializable]
     private sealed class DialogueCameraShakeProfileSettings
     {
@@ -1815,7 +1815,7 @@ public class DialogueView : MonoBehaviour
         if (profile.CameraAmplitude <= 0f)
             return;
 
-        CameraShakeService.Play(new CameraShakeRequest(
+        CameraShakePlayback.Play(new CameraShakeRequest(
             profile.CameraAmplitude,
             Vector3.up,
             gameObject,

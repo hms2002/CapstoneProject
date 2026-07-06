@@ -1,6 +1,7 @@
 using System;
 using UnityEngine.SceneManagement;
 
+// 책임: 씬/런 생명주기에 맞춰 업그레이드 해금, 런 시작 효과, 런타임 효과 재적용을 관리한다.
 internal sealed class UpgradeRuntimeLifecycleService
 {
     private const string TitleSceneName = "TitleScene";
@@ -44,12 +45,8 @@ internal sealed class UpgradeRuntimeLifecycleService
         PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
         SceneManager.sceneLoaded += HandleSceneLoaded;
 
-        GamePlayDataManager gameplay = GamePlayDataManager.EnsureInstance();
-        if (gameplay != null)
-        {
-            gameplay.OnRunStarted += HandleRunStarted;
-            gameplay.OnRunEnded += HandleRunEnded;
-        }
+        RunSessionStore.OnRunStarted += HandleRunStarted;
+        RunSessionStore.OnRunEnded += HandleRunEnded;
 
         isSubscribed = true;
     }
@@ -62,11 +59,8 @@ internal sealed class UpgradeRuntimeLifecycleService
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         SceneManager.sceneLoaded -= HandleSceneLoaded;
 
-        if (GamePlayDataManager.Instance != null)
-        {
-            GamePlayDataManager.Instance.OnRunStarted -= HandleRunStarted;
-            GamePlayDataManager.Instance.OnRunEnded -= HandleRunEnded;
-        }
+        RunSessionStore.OnRunStarted -= HandleRunStarted;
+        RunSessionStore.OnRunEnded -= HandleRunEnded;
 
         isSubscribed = false;
     }

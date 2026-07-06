@@ -2,6 +2,9 @@ using System.Collections;
 using System.Globalization;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : 런 특수 NPC의 공사 진행도, 비용 지불, 완료 보상 문 개방 흐름을 관리한다.
+/// </summary>
 public sealed class RunConstructionNpcFeature : RunSpecialNpcFeatureBase
 {
     [Header("Stable ID")]
@@ -218,7 +221,7 @@ public sealed class RunConstructionNpcFeature : RunSpecialNpcFeatureBase
             return;
         }
 
-        if (saveShortcutOnCompletion && ShortcutProgressService.Instance != null)
-            ShortcutProgressService.Instance.UnlockShortcut(targetDoor.mapID, targetDoor.doorID);
+        if (saveShortcutOnCompletion)
+            ShortcutProgressStore.UnlockShortcut(targetDoor.mapID, targetDoor.doorID, instigator);
     }
 }

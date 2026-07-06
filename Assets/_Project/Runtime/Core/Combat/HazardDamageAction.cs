@@ -8,6 +8,7 @@ namespace UnityGAS
     /// - 전투용 HitConfirmed / KillConfirmed는 다루지 않음
     /// - 실제 HP가 감소했을 때만 target AbilitySystem의 DamagedTag를 발행
     /// </summary>
+    // 책임: 위험 지형/트랩 피해 판정을 공통 Attribute 피해 처리로 변환해 적용한다.
     public static class HazardDamageAction
     {
         private static readonly SoundRef PlayerEvadeSound = SoundRef.FromKey("sound_player_Evade");
@@ -38,7 +39,7 @@ namespace UnityGAS
             if (!ignoreEvasion && CombatEvasionUtil.TryRollEvasion(target))
             {
                 LogDebug(logDebug, $"blocked: evaded. target={target.name}, damage={finalHpDamage:0.###}", target);
-                DamagePopupService.ShowText("EVADE", target.transform.position);
+                DamagePopupPlayback.ShowText("EVADE", target.transform.position);
                 TryPlayPlayerEvadeSound(target);
                 return;
             }
@@ -214,10 +215,11 @@ namespace UnityGAS
             if (appliedDamage <= 0f)
                 return;
 
-            DamagePopupService.Show(DamagePopupRequest.Damage(appliedDamage, target.transform.position));
+            DamagePopupPlayback.Show(DamagePopupRequest.Damage(appliedDamage, target.transform.position));
             DamagePopupDuplicateSuppressor.Register(target, appliedDamage);
         }
 
+        // 책임: hazard 피해 적용 전후 HP 차이를 계산하기 위한 대상 HP 스냅샷을 보관한다.
         private readonly struct HpCheckData
         {
             public readonly float PreHp;

@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityGAS;
 
+// 책임: NPC 상호작용에서 업그레이드 UI 열기와 플레이어 조작 차단 인계를 수행한다.
 public class UpgradeFeature : MonoBehaviour, INPCFeature
 {
     private const string ControlBlockTagSetResourcePath = "Tags/TagSet/TS_BlockControlByUI";
@@ -61,10 +62,10 @@ public class UpgradeFeature : MonoBehaviour, INPCFeature
     {
         try
         {
-            while (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+            while (DialoguePlayback.IsPlaying)
                 yield return null;
 
-            while (UIManager.Instance != null && UIManager.Instance.IsExternalUiInputBlocked)
+            while (UiInteractionStateQuery.IsExternalUiInputBlocked())
                 yield return null;
 
             OpenUpgradeUI();

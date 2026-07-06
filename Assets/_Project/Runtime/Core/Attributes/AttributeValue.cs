@@ -1,4 +1,3 @@
-using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +27,7 @@ namespace UnityGAS
     - Percent(%) 의미가 '지속(overlay)'인지 '커밋(base 변경)'인지 섞이면 혼란/버그가 발생한다.
     - 이 Attribute가 HP처럼 '상태값'이라면 Modifier 허용 여부를 명확히 규정한다.
     */
+    // 책임: 단일 AttributeDefinition의 런타임 값, modifier, clamp/recalculate 상태를 보관한다.
     [Serializable]
     public class AttributeValue : IReadOnlyAttributeValue
     {

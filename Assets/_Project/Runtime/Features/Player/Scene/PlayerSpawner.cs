@@ -42,10 +42,7 @@ public sealed class PlayerSpawner : MonoBehaviour
             return;
         }
 
-        var gameplay = GamePlayDataManager.Instance;
-        var transitionContext = gameplay != null
-            ? gameplay.PeekPendingTransition()
-            : null;
+        var transitionContext = RunSessionStore.PeekPendingTransition();
 
         var spawnPoint = ResolveSpawnPoint(transitionContext);
         if (spawnPoint == null)
@@ -54,7 +51,7 @@ public sealed class PlayerSpawner : MonoBehaviour
             return;
         }
 
-        ApplySpawnRuntimePolicy(spawnPoint, gameplay);
+        ApplySpawnRuntimePolicy(spawnPoint);
 
         var player = Instantiate(
             playerPrefab,
@@ -86,11 +83,10 @@ public sealed class PlayerSpawner : MonoBehaviour
         if (player == null)
             return;
 
-        if (!SceneDomainScenePolicy.IsHubSceneName(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
+        if (!SceneDomainNamePolicy.IsHubSceneName(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
             return;
 
-        GamePlayDataManager gameplay = GamePlayDataManager.Instance;
-        if (gameplay == null || !gameplay.ConsumePendingHubReturnFullHeal())
+        if (!RunSessionStore.ConsumePendingHubReturnFullHeal())
             return;
 
         PlayerHealthRestoreUtility.FillLinkedHealthToMax(player, player);
@@ -104,11 +100,10 @@ public sealed class PlayerSpawner : MonoBehaviour
         if (player == null)
             return;
 
-        if (!SceneDomainScenePolicy.IsHubSceneName(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
+        if (!SceneDomainNamePolicy.IsHubSceneName(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
             return;
 
-        GamePlayDataManager gameplay = GamePlayDataManager.Instance;
-        if (gameplay == null || gameplay.PeekPendingPlayerState() != null || !gameplay.ConsumePendingHubLoadFullHeal())
+        if (RunSessionStore.PeekPendingPlayerState() != null || !RunSessionStore.ConsumePendingHubLoadFullHeal())
             return;
 
         PlayerHealthRestoreUtility.FillLinkedHealthToMax(player, player);
@@ -172,16 +167,14 @@ public sealed class PlayerSpawner : MonoBehaviour
         return null;
     }
 
-    private static void ApplySpawnRuntimePolicy(
-        PlayerSpawnPoint spawnPoint,
-        GamePlayDataManager gameplay)
+    private static void ApplySpawnRuntimePolicy(PlayerSpawnPoint spawnPoint)
     {
-        if (spawnPoint == null || gameplay == null)
+        if (spawnPoint == null)
             return;
 
         if (spawnPoint.runtimePolicy != PlayerSpawnRuntimePolicy.ResetToSceneDefault)
             return;
 
-        gameplay.ClearPendingPlayerState();
+        RunSessionStore.ClearPendingPlayerState();
     }
 }

@@ -3,8 +3,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>
+/// 책임 :
+/// - 월드 공간의 상호작용 대상 설명과 입력 아이콘을 표시한다.
+/// - Core 프롬프트 뷰 계약을 구현해 gameplay 계층이 UI 구체 타입 없이 프롬프트를 갱신할 수 있게 한다.
+/// </summary>
 [DisallowMultipleComponent]
-public sealed class WorldInteractionPromptController : MonoBehaviour
+public sealed class WorldInteractionPromptController : MonoBehaviour, IWorldInteractionPromptView
 {
     private const InputActionId PromptAction = InputActionId.Interact;
     private const string RuntimeCanvasName = "PromptLayout";

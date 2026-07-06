@@ -12,7 +12,7 @@ using UnityGAS;
 public sealed class AbilityLogic_SlimeQueenCrossWaterPillar : AbilityLogic
 {
     [Header("Effect")]
-    [Tooltip("물기둥 피해 지점마다 출력할 이펙트 프리팹입니다. TimedAnimatedHitEffect2D가 붙어 있어야 애니메이션 이벤트 기반 피해 판정이 동작합니다.")]
+    [Tooltip("물기둥 피해 지점마다 출력할 이펙트 프리팹입니다. ITimedHitEffect2D 구현이 붙어 있어야 애니메이션 이벤트 기반 피해 판정이 동작합니다.")]
     [SerializeField] private GameObject blastEffectPrefab;
 
     [Header("Sound")]

@@ -2,9 +2,11 @@
 using UnityEngine;
 #if UNITY_EDITOR
 using System.IO;
-using UnityEditor;
 #endif
 
+/// <summary>
+/// 책임: 입력 액션별 기본 키 바인딩을 제공하고, 에디터 authoring 중 기본 Resources 에셋을 복구한다.
+/// </summary>
 [CreateAssetMenu(menuName = "Input/Input Binding Defaults", fileName = "InputBindingDefaults")]
 public sealed class InputBindingDefaultsSO : ScriptableObject
 {
@@ -174,7 +176,7 @@ public sealed class InputBindingDefaultsSO : ScriptableObject
 #if UNITY_EDITOR
     private static InputBindingDefaultsSO CreateOrRestoreEditorAsset()
     {
-        InputBindingDefaultsSO defaults = AssetDatabase.LoadAssetAtPath<InputBindingDefaultsSO>(EditorAssetPath);
+        InputBindingDefaultsSO defaults = EditorAuthoringPlayback.LoadAssetAtPath<InputBindingDefaultsSO>(EditorAssetPath);
         bool created = false;
 
         if (defaults == null)
@@ -185,7 +187,7 @@ public sealed class InputBindingDefaultsSO : ScriptableObject
 
             defaults = CreateInstance<InputBindingDefaultsSO>();
             defaults.ResetToBuiltInDefaults();
-            AssetDatabase.CreateAsset(defaults, EditorAssetPath);
+            EditorAuthoringPlayback.CreateAsset(defaults, EditorAssetPath);
             created = true;
         }
 
@@ -196,9 +198,9 @@ public sealed class InputBindingDefaultsSO : ScriptableObject
 
         if (created)
         {
-            EditorUtility.SetDirty(defaults);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            EditorAuthoringPlayback.MarkDirty(defaults);
+            EditorAuthoringPlayback.SaveAssets();
+            EditorAuthoringPlayback.RefreshAssets();
         }
 
         InputBindingDefaultsSO loadedFromResources = Resources.Load<InputBindingDefaultsSO>(ResourcePath);

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// 책임: 무덤/상자/상점/보스 보상 기반 런 변형치를 저장 데이터와 현재 런 상태에 맞춰 집계한다.
 public class RunModifierService : MonoBehaviour
 {
     public static RunModifierService Instance { get; private set; }
@@ -121,8 +122,8 @@ public class RunModifierService : MonoBehaviour
                 cachedUpgradeNodes,
                 UpgradeManager.Instance,
                 NPCManager.Instance,
-                GameDataManager.Instance != null ? GameDataManager.Instance.Data : null,
-                GamePlayDataManager.Instance != null ? GamePlayDataManager.Instance.Data : null,
+                GameDataStore.Data,
+                RunSessionStore.Data,
                 UpgradeNodeResourcesPath));
 
         ApplyRebuildResult(result);
@@ -148,13 +149,14 @@ public class RunModifierService : MonoBehaviour
 
     private static UpgradeSaveData TryGetUpgradeSaveData()
     {
-        if (GameDataManager.Instance == null || GameDataManager.Instance.Data == null)
+        GameData data = GameDataStore.Data;
+        if (data == null)
             return null;
 
-        if (GameDataManager.Instance.Data.upgradeData == null)
-            GameDataManager.Instance.Data.upgradeData = new UpgradeSaveData();
+        if (data.upgradeData == null)
+            data.upgradeData = new UpgradeSaveData();
 
-        return GameDataManager.Instance.Data.upgradeData;
+        return data.upgradeData;
     }
 
     private void OnDestroy()

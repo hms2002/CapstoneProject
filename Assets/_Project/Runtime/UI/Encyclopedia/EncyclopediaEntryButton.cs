@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+/// <summary>
+/// 책임 : 도감 목록의 단일 엔트리 버튼 입력과 선택/잠금/호버 표시를 관리한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class EncyclopediaEntryButton : MonoBehaviour,
     IPointerEnterHandler,
@@ -66,7 +69,7 @@ public sealed class EncyclopediaEntryButton : MonoBehaviour,
     {
         ResolveReferences();
         CaptureIconDefaultState();
-        UnityEditor.EditorUtility.SetDirty(this);
+        EditorAuthoringPlayback.MarkDirty(this);
     }
 #endif
 

@@ -9,7 +9,7 @@ using UnityEngine;
 public class BossEncounterDirector : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private CameraPresentationDirector cameraDirector;
+    [SerializeField] private MonoBehaviour cameraDirector;
     [SerializeField] private BossDialogueRunner dialogueRunner;
     [SerializeField] private BossControllerBase bossController;
 
@@ -32,6 +32,7 @@ public class BossEncounterDirector : MonoBehaviour
 
     public bool IsSequenceRunning => runningSequence != null;
     public bool HasPlayed => hasPlayed;
+    private ICameraPresentationDirector CameraDirector => CameraPresentationPlayback.FromBehaviour(cameraDirector);
 
     private void OnEnable()
     {
@@ -63,8 +64,7 @@ public class BossEncounterDirector : MonoBehaviour
         ReleasePlayerCinematicProtection();
         RestorePlayerState();
 
-        if (cameraDirector != null)
-            cameraDirector.RestoreDefaultState();
+        CameraDirector?.RestoreDefaultState();
     }
 
     private void TryBeginIfPlayerAlreadyExists()
@@ -119,7 +119,8 @@ public class BossEncounterDirector : MonoBehaviour
 
     private IEnumerator SequenceRoutine()
     {
-        if (cameraDirector == null)
+        ICameraPresentationDirector resolvedCameraDirector = CameraDirector;
+        if (resolvedCameraDirector == null)
         {
             Debug.LogError("[BossEncounterDirector] cameraDirector is missing.", this);
             ReleaseTransitionPlayerLock();
@@ -152,9 +153,9 @@ public class BossEncounterDirector : MonoBehaviour
         yield return new WaitUntil(IsSceneTransitionReady);
         ReleaseTransitionPlayerLock();
 
-        yield return cameraDirector.FocusBossRoutine();
+        yield return resolvedCameraDirector.FocusBossRoutine();
         yield return dialogueRunner.PlayDialogueRoutine();
-        yield return cameraDirector.ReturnToPlayerRoutine();
+        yield return resolvedCameraDirector.ReturnToPlayerRoutine();
 
         shouldHoldPlayerLock = false;
         ReleasePlayerCinematicProtection();
@@ -308,7 +309,7 @@ public class BossEncounterDirector : MonoBehaviour
 
     private static bool IsSceneTransitionReady()
     {
-        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance();
+        ISceneFadeTransitionHandle transitionService = SceneFadeTransitionPlayback.EnsureInstance();
         return transitionService == null || !transitionService.IsTransitionActive;
     }
 
@@ -317,7 +318,7 @@ public class BossEncounterDirector : MonoBehaviour
         if (holdsTransitionPlayerLock)
             return;
 
-        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance();
+        ISceneFadeTransitionHandle transitionService = SceneFadeTransitionPlayback.EnsureInstance();
         if (transitionService == null)
             return;
 
@@ -330,7 +331,7 @@ public class BossEncounterDirector : MonoBehaviour
         if (!holdsTransitionPlayerLock)
             return;
 
-        SceneFadeTransitionService transitionService = SceneFadeTransitionService.Instance;
+        ISceneFadeTransitionHandle transitionService = SceneFadeTransitionPlayback.Instance;
         if (transitionService != null)
             transitionService.SetPlayerUnlockBlocked(this, false);
 
@@ -398,7 +399,7 @@ public class BossEncounterDirector : MonoBehaviour
         }
 
         bossController.BeginCombatEncounter(PlayerRuntimeRegistry.GetPlayerTransform());
-        RunRouteBgmService.EnsureInstance()?.NotifyBossCombatStarted();
+        RunRouteBgmPlayback.NotifyBossCombatStarted();
     }
 
     private void ResolveBossController()

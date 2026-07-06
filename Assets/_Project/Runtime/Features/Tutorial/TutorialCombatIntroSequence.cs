@@ -1,10 +1,11 @@
 using System.Collections;
-using Cainos.PixelArtTopDown_Basic;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 
 [DisallowMultipleComponent]
+/// <summary>
+/// 책임 : 전투 튜토리얼 시작 컷씬의 카메라, 대사, 입력 잠금, 레터박스 흐름을 조율한다.
+/// </summary>
 public sealed class TutorialCombatIntroSequence : MonoBehaviour
 {
     [Header("Playback")]
@@ -37,7 +38,7 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
 
     [Header("Prompt")]
     [SerializeField] private TutorialInfoTrigger attackSkillTutorialTrigger;
-    [SerializeField] private TutorialInfoPanel infoPanel;
+    [SerializeField] private MonoBehaviour infoPanel;
     [SerializeField] private bool waitForPromptClose = true;
     [SerializeField, Min(0f)] private float promptOpenGraceSeconds = 0.1f;
 
@@ -50,21 +51,11 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
     [SerializeField] private UnityEvent onSequenceCanceled = new();
 
     private Coroutine sequenceRoutine;
-    private CinematicLetterboxOverlay letterboxOverlay;
+    private ICinematicLetterboxOverlayHandle letterboxOverlay;
     private GameFlowInputBlocker inputBlocker;
     private PlayerCinematicProtection playerProtection;
     private PlayerTargetabilityBlocker targetabilityBlocker;
-    private CinemachineCamera gameplayCamera;
-    private CinemachineBrain cameraBrain;
-    private CameraFollow legacyFollowCamera;
-    private Transform cachedCameraFollow;
-    private Transform cachedCameraLookAt;
-    private int cachedCameraPriority;
-    private float cachedCameraOrthographicSize;
-    private bool cachedLegacyFollowEnabled;
-    private bool cachedBrainIgnoreTimeScale;
-    private bool hasCachedCameraState;
-    private bool hasCachedCameraLens;
+    private IGameplayCameraFocusSession cameraFocusSession;
     private bool hasPlayed;
     private bool hasAcquiredPlayerProtection;
     private bool hasAcquiredTargetabilityBlock;
@@ -121,7 +112,7 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
 
         if (useLetterbox)
         {
-            letterboxOverlay = new CinematicLetterboxOverlay();
+            letterboxOverlay = CinematicLetterboxPlayback.CreateOverlay();
             yield return PlayLetterboxInRoutine();
         }
 
@@ -189,7 +180,7 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
 
     private IEnumerator WaitForPromptCloseRoutine()
     {
-        TutorialInfoPanel panel = ResolveInfoPanel();
+        ITutorialInfoPanel panel = ResolveInfoPanel();
         if (panel == null)
             yield break;
 
@@ -221,8 +212,8 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
         Transform restoreTarget = ResolvePlayerTransform();
         SetCameraTarget(restoreTarget);
 
-        float restoreOrthographicSize = hasCachedCameraLens
-            ? cachedCameraOrthographicSize
+        float restoreOrthographicSize = cameraFocusSession != null && cameraFocusSession.HasOrthographicSize
+            ? cameraFocusSession.CachedOrthographicSize
             : focusOrthographicSize;
 
         yield return ZoomCameraWhileWaitingRoutine(
@@ -240,22 +231,25 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
         Transform settleTarget)
     {
         float waitDuration = Mathf.Max(0f, minimumWaitSeconds);
-        if (!zoomGameplayCameraDuringFocus || gameplayCamera == null)
+        if (!zoomGameplayCameraDuringFocus ||
+            cameraFocusSession == null ||
+            !cameraFocusSession.HasOrthographicSize)
         {
             yield return WaitForPresentationSeconds(waitDuration);
-            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
+            if (cameraFocusSession != null)
+                yield return cameraFocusSession.WaitForSettle(settleTarget);
             yield break;
         }
 
-        float startOrthographicSize = GetCameraOrthographicSize(gameplayCamera, targetOrthographicSize);
+        float startOrthographicSize = cameraFocusSession.CurrentOrthographicSize;
         float clampedTargetSize = Mathf.Max(0.01f, targetOrthographicSize);
         float clampedZoomDuration = Mathf.Max(0f, zoomDuration);
         float totalDuration = Mathf.Max(waitDuration, clampedZoomDuration);
 
         if (totalDuration <= 0f)
         {
-            SetCameraOrthographicSize(gameplayCamera, clampedTargetSize);
-            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
+            cameraFocusSession.SetOrthographicSize(clampedTargetSize);
+            yield return cameraFocusSession.WaitForSettle(settleTarget);
             yield break;
         }
 
@@ -267,16 +261,15 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
             if (clampedZoomDuration > 0f)
             {
                 float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / clampedZoomDuration));
-                SetCameraOrthographicSize(
-                    gameplayCamera,
+                cameraFocusSession.SetOrthographicSize(
                     Mathf.Lerp(startOrthographicSize, clampedTargetSize, t));
             }
 
             yield return null;
         }
 
-        SetCameraOrthographicSize(gameplayCamera, clampedTargetSize);
-        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
+        cameraFocusSession.SetOrthographicSize(clampedTargetSize);
+        yield return cameraFocusSession.WaitForSettle(settleTarget);
     }
 
     private static IEnumerator WaitForPresentationSeconds(float seconds)
@@ -351,17 +344,39 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
         return playerTransform;
     }
 
-    private TutorialInfoPanel ResolveInfoPanel()
+    private ITutorialInfoPanel ResolveInfoPanel()
     {
-        if (infoPanel != null)
-            return infoPanel;
+        if (TryGetInfoPanel(infoPanel, out ITutorialInfoPanel panel))
+            return panel;
 
+        MonoBehaviour foundPanel = FindInfoPanelBehaviour();
+        if (!TryGetInfoPanel(foundPanel, out panel))
+            return null;
+
+        infoPanel = foundPanel;
+        return panel;
+    }
+
+    private static bool TryGetInfoPanel(MonoBehaviour source, out ITutorialInfoPanel panel)
+    {
+        panel = source as ITutorialInfoPanel;
+        return panel != null;
+    }
+
+    private static MonoBehaviour FindInfoPanelBehaviour()
+    {
 #if UNITY_2023_1_OR_NEWER
-        infoPanel = FindAnyObjectByType<TutorialInfoPanel>(FindObjectsInactive.Include);
+        MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 #else
-        infoPanel = FindObjectOfType<TutorialInfoPanel>(true);
+        MonoBehaviour[] behaviours = FindObjectsOfType<MonoBehaviour>(true);
 #endif
-        return infoPanel;
+        foreach (MonoBehaviour behaviour in behaviours)
+        {
+            if (behaviour is ITutorialInfoPanel)
+                return behaviour;
+        }
+
+        return null;
     }
 
     private void AcquireInputBlocker()
@@ -429,102 +444,23 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
 
     private void CacheCameraState()
     {
-        if (hasCachedCameraState)
+        if (cameraFocusSession != null)
             return;
 
-        CameraBootstrap.EnsureRuntimeRigForCurrentScene();
-
-        gameplayCamera = CameraBootstrap.GetPlayerCamera();
-        cameraBrain = CameraBootstrap.GetBrain();
-        legacyFollowCamera = CameraBootstrap.GetLegacyFollow();
-
-        if (gameplayCamera != null)
-        {
-            cachedCameraFollow = gameplayCamera.Follow;
-            cachedCameraLookAt = gameplayCamera.LookAt;
-            cachedCameraPriority = gameplayCamera.Priority;
-            cachedCameraOrthographicSize = GetCameraOrthographicSize(gameplayCamera, focusOrthographicSize);
-            hasCachedCameraLens = true;
-        }
-
-        if (legacyFollowCamera != null)
-            cachedLegacyFollowEnabled = legacyFollowCamera.enabled;
-
-        if (cameraBrain != null)
-            cachedBrainIgnoreTimeScale = cameraBrain.IgnoreTimeScale;
-
-        hasCachedCameraState = true;
+        cameraFocusSession = GameplayCameraFocusPlayback.Capture(this);
     }
 
     private void SetCameraTarget(Transform target)
     {
-        if (target == null)
-            return;
-
-        if (cameraBrain != null)
-            cameraBrain.IgnoreTimeScale = true;
-
-        if (legacyFollowCamera != null)
-            legacyFollowCamera.enabled = false;
-
-        if (gameplayCamera == null)
-            return;
-
-        gameplayCamera.Follow = target;
-        gameplayCamera.LookAt = target;
+        cameraFocusSession?.SetTarget(target);
     }
 
     private void RestoreCameraState(Transform preferredTarget)
     {
-        if (!hasCachedCameraState)
+        if (cameraFocusSession == null)
             return;
 
-        Transform restoreFollow = preferredTarget != null ? preferredTarget : cachedCameraFollow;
-        Transform restoreLookAt = preferredTarget != null ? preferredTarget : cachedCameraLookAt;
-
-        if (gameplayCamera != null)
-        {
-            gameplayCamera.Follow = restoreFollow;
-            gameplayCamera.LookAt = restoreLookAt;
-            gameplayCamera.Priority = cachedCameraPriority;
-
-            if (hasCachedCameraLens)
-                SetCameraOrthographicSize(gameplayCamera, cachedCameraOrthographicSize);
-        }
-
-        if (legacyFollowCamera != null)
-        {
-            if (restoreFollow != null)
-                legacyFollowCamera.BindTarget(restoreFollow, snap: false);
-
-            legacyFollowCamera.enabled = cachedLegacyFollowEnabled;
-        }
-
-        if (cameraBrain != null)
-            cameraBrain.IgnoreTimeScale = cachedBrainIgnoreTimeScale;
-
-        cachedCameraFollow = null;
-        cachedCameraLookAt = null;
-        hasCachedCameraState = false;
-        hasCachedCameraLens = false;
-    }
-
-    private static float GetCameraOrthographicSize(CinemachineCamera camera, float fallbackOrthographicSize)
-    {
-        if (camera == null)
-            return Mathf.Max(0.01f, fallbackOrthographicSize);
-
-        var lens = camera.Lens;
-        return Mathf.Max(0.01f, lens.OrthographicSize);
-    }
-
-    private static void SetCameraOrthographicSize(CinemachineCamera camera, float orthographicSize)
-    {
-        if (camera == null)
-            return;
-
-        var lens = camera.Lens;
-        lens.OrthographicSize = Mathf.Max(0.01f, orthographicSize);
-        camera.Lens = lens;
+        cameraFocusSession.Restore(preferredTarget);
+        cameraFocusSession = null;
     }
 }

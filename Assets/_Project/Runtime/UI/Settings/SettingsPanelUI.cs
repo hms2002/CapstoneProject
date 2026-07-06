@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+// 책임: 설정 화면의 좌우 stepper 버튼과 현재 값 텍스트 참조를 묶어 보관한다.
 [Serializable]
 public sealed class SettingStepperControl
 {
@@ -17,7 +18,10 @@ public sealed class SettingStepperControl
     public TMP_Text ValueText => valueText;
 }
 
-public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
+/// <summary>
+/// 책임 : 게임 설정 패널의 표시, 설정값 편집, 적용/닫기 흐름을 담당한다.
+/// </summary>
+public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePersistentCleanupTarget
 {
     private const float DisabledStepperAlpha = 0.45f;
     private const float EnabledStepperAlpha = 1f;

@@ -5,11 +5,15 @@ using UnityEngine.SceneManagement;
 
 [DefaultExecutionOrder(-857)]
 [DisallowMultipleComponent]
-public sealed class SceneTransitionCoordinator : MonoBehaviour
+/// <summary>
+/// 책임 : 씬 전환 요청을 단일 코루틴으로 직렬화하고 페이드, 로딩 표시, Addressables 프리로드 handoff를 조율한다.
+/// </summary>
+public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransitionHandle
 {
     public static SceneTransitionCoordinator Instance { get; private set; }
 
     private static bool s_isQuitting;
+    private static readonly ISceneTransitionBackend PlaybackBackend = new SceneTransitionBackend();
 
     [Header("Loading Handoff")]
     [SerializeField, Min(0f)] private float loadingCompletionTimeoutSeconds = 15f;
@@ -22,6 +26,8 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
     {
+        SceneTransitionPlayback.RegisterBackend(PlaybackBackend);
+
         if (s_isQuitting || Instance != null)
             return;
 
@@ -56,6 +62,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
         }
 
         Instance = this;
+        SceneTransitionPlayback.RegisterBackend(PlaybackBackend);
         RuntimeServiceOwnership.Adopt(this);
     }
 
@@ -63,6 +70,19 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
     {
         if (Instance == this)
             Instance = null;
+    }
+
+    /// <summary>
+    /// 책임 : Core의 씬 전환 playback 요청을 현재 런타임 SceneTransitionCoordinator static 진입점으로 연결한다.
+    /// </summary>
+    private sealed class SceneTransitionBackend : ISceneTransitionBackend
+    {
+        public ISceneTransitionHandle Instance => SceneTransitionCoordinator.Instance;
+
+        public ISceneTransitionHandle EnsureInstance()
+        {
+            return SceneTransitionCoordinator.EnsureInstance();
+        }
     }
 
     private void OnApplicationQuit()

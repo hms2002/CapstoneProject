@@ -7,6 +7,7 @@ using UnityGAS;
 /// PlayerSpawner? 吏곸젒 寃고빀?섏? ?딄퀬, ?덉??ㅽ듃由??대깽?몄? ?ъ떆?꾨? ?듯빐 蹂듭썝 ??대컢???≪닔?쒕떎.
 /// </summary>
 [DisallowMultipleComponent]
+// 책임: 씬 진입 후 pending 플레이어 런타임 상태를 찾아 현재 플레이어에 한 번 복원한다.
 public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
 {
     [Header("Resolver")]
@@ -119,7 +120,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
             elapsed += retryInterval;
         }
 
-        if (!hasRestored && GamePlayDataManager.Instance != null && GamePlayDataManager.Instance.PeekPendingPlayerState() != null)
+        if (!hasRestored && RunSessionStore.PeekPendingPlayerState() != null)
         {
             Debug.LogWarning("[PlayerSceneRestoreBootstrapper] ?쒗븳 ?쒓컙 ?댁뿉 PlayerRuntimeState 蹂듭썝???꾨즺?섏? 紐삵뻽?듬땲??", this);
         }
@@ -150,23 +151,22 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         if (hasRestored || isRestoreConfirmationPending)
             return false;
 
-        var gameplay = GamePlayDataManager.Instance;
-        if (gameplay == null)
+        if (!RunSessionStore.IsAvailable)
         {
-            Debug.LogWarning("[PlayerSceneRestoreBootstrapper] GamePlayDataManager.Instance媛 ?놁뒿?덈떎.", this);
+            Debug.LogWarning("[PlayerSceneRestoreBootstrapper] RunSessionStore backend is missing.", this);
             return false;
         }
 
-        var pendingState = gameplay.PeekPendingPlayerState();
+        var pendingState = RunSessionStore.PeekPendingPlayerState();
         if (pendingState == null)
             return false;
 
         if (player == null)
             return false;
 
-        var restoreRequest = new PlayerRuntimeRestoreRequest(player, gameplay, pendingState);
+        var restoreRequest = new PlayerRuntimeRestoreRequest(player, pendingState);
 
-        if (!PlayerSceneRestorePlanner.IsRestoreAllowedForCurrentScene(gameplay))
+        if (!PlayerSceneRestorePlanner.IsRestoreAllowedForCurrentScene())
             return false;
 
         if (!PlayerSceneRestorePlanner.IsItemRestoreReady())
@@ -200,7 +200,6 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
 
         isRestoreConfirmationPending = true;
         restoreConfirmRoutine = StartCoroutine(ConfirmRestoreNextFrame(
-            restoreResult.Gameplay,
             restoreResult.PendingState,
             restoreResult.Player));
         return true;
@@ -225,7 +224,6 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
     /// Start/OnEnable 珥덇린?붽? ?ㅻ뒭寃?蹂듭썝 寃곌낵瑜???뒗 寃쎌슦瑜??먯??섍퀬, ?ㅽ뙣 ??pending state瑜??뚮퉬?섏? ?딅뒗??
     /// </summary>
     private IEnumerator ConfirmRestoreNextFrame(
-        GamePlayDataManager gameplay,
         PlayerRuntimeState pendingState,
         GameObject player)
     {
@@ -240,7 +238,6 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         }
 
         bool confirmed = PlayerSceneRestoreConfirmationService.TryConfirm(
-            gameplay,
             pendingState,
             player,
             this);
@@ -254,7 +251,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         hasRestored = true;
         isRestoreConfirmationPending = false;
 
-        ApplyPendingHubLoadFullHealAfterRestore(gameplay, player);
+        ApplyPendingHubLoadFullHealAfterRestore(player);
 
         if (restoreRoutine != null)
         {
@@ -268,15 +265,15 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
     /// <summary>
     /// 책임 : 저장/씬 복원이 끝난 뒤 타이틀 프로필 Hub 진입 회복 요청을 소비해 복원값이 회복값을 덮어쓰지 않게 한다.
     /// </summary>
-    private static void ApplyPendingHubLoadFullHealAfterRestore(GamePlayDataManager gameplay, GameObject player)
+    private static void ApplyPendingHubLoadFullHealAfterRestore(GameObject player)
     {
-        if (gameplay == null || player == null)
+        if (player == null)
             return;
 
-        if (!SceneDomainScenePolicy.IsHubSceneName(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
+        if (!SceneDomainNamePolicy.IsHubSceneName(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name))
             return;
 
-        if (!gameplay.ConsumePendingHubLoadFullHeal())
+        if (!RunSessionStore.ConsumePendingHubLoadFullHeal())
             return;
 
         PlayerHealthRestoreUtility.FillLinkedHealthToMax(player, player);

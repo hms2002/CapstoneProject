@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: tutorial-support
-last_reviewed: 2026-05-30
+last_reviewed: 2026-07-04
 ---
 
 # Tutorial Support Structure
@@ -13,8 +13,8 @@ The tutorial support layer provides reusable authoring pieces for future tutoria
 
 ## Current Structure
 
-- `TutorialInfoPanel` is the scene/prefab-authored UI driver for a tutorial explanation panel, including optional shared hold-button progress projection.
-- `TutorialInfoTrigger` opens a panel from a 2D trigger or from public methods such as `Fire`, `FireNow`, and `FireAfterDelay`. A `Collider2D` is needed only for trigger-entry activation, not for direct UnityEvent/code calls.
+- `TutorialInfoPanel` is the scene/prefab-authored UI driver for a tutorial explanation panel, including optional shared hold-button progress projection. The concrete implementation lives under `Assets/_Project/Runtime/UI/Tutorial` and implements Gameplay `ITutorialInfoPanel`.
+- `TutorialInfoTrigger` opens a panel through `ITutorialInfoPanel` from a 2D trigger or from public methods such as `Fire`, `FireNow`, and `FireAfterDelay`. A `Collider2D` is needed only for trigger-entry activation, not for direct UnityEvent/code calls.
 - `TutorialProgressStore` reads and writes tutorial completion through `GameDataManager`.
 - `HubIntroProgressGate` centralizes the post-DarkLord Hub intro ids: `darklord_tutorial_forced_defeat_completed` and `hub_intro_after_darklord_seen`. It also owns the editor-only bypass check used by both the Hub fall presentation and the Hub intro sequence.
 - `TutorialSaveData` stores completed tutorial ids in `GameData.tutorialData.completedTutorialIds`.
@@ -44,7 +44,7 @@ The tutorial support layer provides reusable authoring pieces for future tutoria
 - The hold-confirm button is only active/usable on the final page. Before the final page, `TutorialInfoPanel` resets hold progress, disables the authored `HoldActionButton`, and deactivates the authored hold-button root.
 - Panel progress uses an authored `HoldActionButton` when assigned. In that mode the button's own hold time, input settings, and reset policy are the source of truth.
 - If no `HoldActionButton` is assigned, `TutorialInfoPanel` falls back to the existing `InputBindingService` `DialogueAdvance` binding and uses request/panel hold seconds.
-- `TutorialInfoTrigger` can be placed on a trigger collider for player entry, or fired directly from code/UnityEvent for specific timing. Direct-call triggers do not need a `Collider2D`.
+- `TutorialInfoTrigger` can be placed on a trigger collider for player entry, or fired directly from code/UnityEvent for specific timing. Direct-call triggers do not need a `Collider2D`. Its `infoPanel` field is a `MonoBehaviour` reference that must point to a component implementing `ITutorialInfoPanel`.
 - `TutorialSceneSequenceDirector` can optionally wait for an active `SceneTransitionCoordinator` / `SceneFadeTransitionService` transition to finish before firing scene-start events. By default it starts its scene-start delay as soon as the tutorial scene is loaded, which is the intended path for post-title FadeOut startup beats.
 - Completion persistence is opt-in per request/trigger and should use stable non-empty tutorial ids.
 - Open presentation is owned by the panel: an optional authored `dimPanel` `CanvasGroup` fades in while an optional authored `tutorialPanel` root moves up from `hiddenPanelOffset` using an overshoot ease. Close plays the reverse and deactivates the root after the presentation finishes.
@@ -55,7 +55,7 @@ The tutorial support layer provides reusable authoring pieces for future tutoria
 - `TutorialBossEncounterSequence.keepPlayerLockedAfterSequence` is enabled for `DarkLord_Tutorial` because the scene has no intended player-control window. Completion cleanup releases camera, letterbox, UI input blocker, and timer pause, but keeps player protection/targetability and the transition unlock blocker until the component disables or the scene unloads.
 - `TutorialBossEncounterSequence` keeps letterbox bars off while Ink dialogue is visible. It turns the bars on only for non-dialogue presentation beats, so Dialogue UI, speaker name, and choices are not covered.
 - In `DarkLord_Tutorial`, the authoring tool disables the `CameraPresentationDirector` path and uses `BossFocusTarget` / `PlayerFocusTarget` through the gameplay camera. This keeps the tutorial sequence independent from real boss `BossCam` authoring.
-- Fake tutorial game-over calls `GameOverPresentationController.TryShow(...)` with `GameOverPresentationRequest.EndRunOnReturn = false`, tutorial-only `ReturnButtonLabel = "추락"`, message override `처치자 마왕`, location override `마왕의 알현실`, and hidden remaining-time text; real HP, real death components, normal game-over text, and run end state are not changed by the tutorial sequence.
+- Fake tutorial game-over calls `GameOverPresentationPlayback.TryShow(...)` with `GameOverPresentationRequest.EndRunOnReturn = false`, tutorial-only `ReturnButtonLabel = "추락"`, message override `처치자 마왕`, location override `마왕의 알현실`, and hidden remaining-time text; real HP, real death components, normal game-over text, and run end state are not changed by the tutorial sequence.
 - Before fake tutorial game-over opens, `TutorialBossEncounterSequence` marks `darklord_tutorial_forced_defeat_completed` so Hub-side introduction gates can distinguish this route from ordinary first Hub entry.
 - `PlayerHubSpawnPresentation2D` can keep its default `AnyHubSpawn` behavior, or be set to `AfterDarkLordTutorialUntilSeen` for the post-DarkLord Hub route. In that mode it uses `HubIntroProgressGate` and can wake the player automatically through `autoWakeWithoutInput` / `autoWakeDelaySeconds`.
 - `HubIntroAfterDarkLordSequence` hides only the existing `GameplayHUDCanvas` and restores its previous enabled state on completion/cancel. It does not author or instantiate gameplay HUD UI.
@@ -78,7 +78,7 @@ The tutorial support layer provides reusable authoring pieces for future tutoria
 
 ## Extension Entry Points
 
-- Add authored panel prefab/scene wiring by assigning `TutorialInfoPanel` references.
+- Add authored panel prefab/scene wiring by assigning a `TutorialInfoPanel` component to the `MonoBehaviour` fields that expect `ITutorialInfoPanel`.
 - Leave `hideOnPlayStart` enabled for scene-authored tutorial UI so test runs start with the panel hidden. Disable it only for a focused UI preview scene that intentionally starts with the panel visible.
 - Add tutorial content by filling `TutorialInfoTrigger.pages`. Page data is the only tutorial content path; empty pages open a blank panel and should be treated as an authoring miss.
 - Assign `previousPageButton` / `nextPageButton` and, when the clickable visual root differs from the Button GameObject, assign `previousPageRoot` / `nextPageRoot` so the controls can stay visible while their `Button.interactable` state changes. Assign `pageNumberText` when the authored layout should show `current/total`.
@@ -102,7 +102,7 @@ The tutorial support layer provides reusable authoring pieces for future tutoria
 - Add tutorial-only default loadout by placing `TutorialDefaultWeaponBootstrap`, assigning the intended `defaultWeapon`, and leaving `clearOtherWeaponSlots` enabled when the scene must start with only that weapon.
 - Add a tutorial-only fixed portal by placing an interactable object with a trigger `Collider2D`, adding `TutorialScenePortal`, and setting `targetSceneName` to the destination scene, for example `DarkLord_Tutorial`. Leave `resetPlayerRuntimeStateOnTravel` disabled when the destination should keep the tutorial loadout. The destination scene must be in BuildSettings.
 - Add a simple combat-room close prompt by placing `TutorialDoorClosedTrigger` on or near the target door, assigning the `DoorObject`, optionally assigning the room's `RoomDoorMonsterKillLock`, and wiring `OnDoorClosed` to `TutorialInfoTrigger.FireNow()` or a `TutorialSceneSequenceDirector` method.
-- Add the attack/skill combat intro by placing `TutorialCombatIntroSequence`, assigning the same `TutorialDoorClosedTrigger` or wiring the trigger's `OnDoorClosed` to `BeginSequence`, assigning `focusTarget` to an authored marker near the monster/chest composition, assigning the attack/skill `TutorialInfoTrigger`, and assigning the shared `TutorialInfoPanel` when the sequence should wait until the panel closes. Leave `useLetterbox` enabled for the cinematic bars. Leave `fadeGlobalUiDuringLetterbox` disabled unless the target tutorial panel is on a layer that will stay visible.
+- Add the attack/skill combat intro by placing `TutorialCombatIntroSequence`, assigning the same `TutorialDoorClosedTrigger` or wiring the trigger's `OnDoorClosed` to `BeginSequence`, assigning `focusTarget` to an authored marker near the monster/chest composition, assigning the attack/skill `TutorialInfoTrigger`, and assigning the shared `TutorialInfoPanel` component to the sequence `infoPanel` field when the sequence should wait until the panel closes. Leave `useLetterbox` enabled for the cinematic bars. Leave `fadeGlobalUiDuringLetterbox` disabled unless the target tutorial panel is on a layer that will stay visible.
 - Use `TutorialCombatIntroSequence.OnGameplayReleased` for authored events that should happen only after the camera returns to the player, letterbox-out completes, and control/targetability are restored.
 - Add post-combat chest guidance by assigning `TutorialSceneSequenceDirector.chestMonsterKillLock` or `roomDoorMonsterKillLock`, starting its monster-clear wait from the combat-start/release beat, and wiring `OnMonstersCleared` to the chest-open `TutorialInfoTrigger.FireNow()`.
 - Add chest-open continuation by placing `TutorialChestOpenedTrigger` on the target chest or a nearby scene object, assigning the target `TreasureChest`, and wiring `OnChestOpened` to `TutorialSceneSequenceDirector.NotifyChestOpened()` plus any next `TutorialInfoTrigger.FireNow()` call.
@@ -120,6 +120,7 @@ The tutorial support layer provides reusable authoring pieces for future tutoria
 - The Hub intro sequence adds `PlayerCinematicProtection` at runtime only as the existing protection pattern when the player lacks it; it does not add a new manager or persistent object.
 - Unity import/compile must refresh new script and sprite metadata before prefab wiring.
 - `TutorialInfoTrigger` no longer requires a `Collider2D`. If a tutorial should fire from player entry, the scene object must still have an authored trigger `Collider2D`; otherwise only `Fire`, `FireNow`, or `FireAfterDelay` calls will open it.
+- `TutorialInfoTrigger.infoPanel` and `TutorialCombatIntroSequence.infoPanel` are widened to `MonoBehaviour` for assembly separation; assigning a component that does not implement `ITutorialInfoPanel` will be ignored at runtime and should be treated as an authoring error.
 - Do not expect `TutorialInfoTrigger.holdSeconds` to override an assigned `HoldActionButton`; change the button prefab/variant when a button-led tutorial needs a different hold duration.
 - Page title text comes from `TutorialInfoPage.title`. Leave a page title empty only when the authored panel title should be blank for that page.
 - Page key guide sprites are visual-only. Changing a KeyGlyph Image sprite manually can be overwritten from `InputGlyphDatabase`; change `previousPageKey` / `nextPageKey` for actual keyboard navigation.

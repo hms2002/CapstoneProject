@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 #endif
 
+// 책임: 입력 액션 하나에 연결된 primary/secondary KeyCode를 보관한다.
 [Serializable]
 public struct InputBinding
 {
@@ -19,7 +20,8 @@ public struct InputBinding
     }
 }
 
-internal static class InputKeyCompatibility
+// 책임: Unity 버전 차이를 감싼 KeyCode 입력 질의 API를 제공한다.
+public static class InputKeyCompatibility
 {
     public static bool IsPressed(KeyCode key)
     {
@@ -109,7 +111,7 @@ internal static class InputKeyCompatibility
         return false;
     }
 
-    internal static bool TryGetButtonControl(KeyCode key, out ButtonControl control)
+    public static bool TryGetButtonControl(KeyCode key, out ButtonControl control)
     {
         if (TryGetMouseButtonControl(key, out control))
             return true;
@@ -254,6 +256,7 @@ internal static class InputKeyCompatibility
 #endif
 }
 
+// 책임: 저장/기본값 authoring용 입력 액션과 바인딩 키 쌍을 직렬화한다.
 [Serializable]
 public struct InputBindingEntry
 {
@@ -274,8 +277,13 @@ public struct InputBindingEntry
     }
 }
 
+/// <summary>
+/// 책임 :
+/// - 플레이어 입력 바인딩 저장/조회와 실제 키 상태 판정을 담당하는 Infrastructure 입력 backend이다.
+/// - Gameplay 호출자는 Core InputActionQuery를 통해 접근하고, UI 설정 화면은 구체 바인딩 편집 API를 직접 사용할 수 있다.
+/// </summary>
 [DefaultExecutionOrder(-950)]
-public sealed class InputBindingService : MonoBehaviour
+public sealed class InputBindingService : MonoBehaviour, IInputActionQueryBackend
 {
     private const string PrefKeyPrefix = "settings.input.";
 
@@ -283,6 +291,8 @@ public sealed class InputBindingService : MonoBehaviour
 
     private readonly Dictionary<InputActionId, InputBinding> bindings = new();
     private bool initialized;
+
+    public Component BackendComponent => this;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Bootstrap()
@@ -303,6 +313,7 @@ public sealed class InputBindingService : MonoBehaviour
         if (existing != null)
         {
             Instance = existing;
+            InputActionQuery.RegisterBackend(existing);
             existing.EnsureInitialized();
             return existing;
         }
@@ -329,6 +340,16 @@ public sealed class InputBindingService : MonoBehaviour
     public bool IsPressed(InputActionId action)
     {
         return Matches(action, InputKeyCompatibility.IsPressed);
+    }
+
+    public bool IsKeyPressed(KeyCode key)
+    {
+        return InputKeyCompatibility.IsPressed(key);
+    }
+
+    public bool WasKeyReleasedThisFrame(KeyCode key)
+    {
+        return InputKeyCompatibility.WasReleasedThisFrame(key);
     }
 
     public Vector2 GetMoveVectorRaw()
@@ -637,6 +658,7 @@ public sealed class InputBindingService : MonoBehaviour
         }
 
         Instance = this;
+        InputActionQuery.RegisterBackend(this);
         DontDestroyOnLoad(gameObject);
         ApplyImePolicy();
         EnsureInitialized();
@@ -650,6 +672,8 @@ public sealed class InputBindingService : MonoBehaviour
 
     private void OnDestroy()
     {
+        InputActionQuery.UnregisterBackend(this);
+
         if (Instance == this)
             Instance = null;
     }

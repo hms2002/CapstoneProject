@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityGAS;
 
 [CreateAssetMenu(fileName = "AL_ApprenticeHeroSwordChargeSpin", menuName = "GAS/Weapon/Apprentice Hero Sword/Logic Charge Spin")]
+// 책임: 수습 용사 검 차지 회전 공격의 차지, 반복 히트박스, 시전/정리 연출을 실행한다.
 public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
 {
     private readonly Dictionary<AbilitySpec, List<MeleeHitboxActor>> activeHitboxesBySpec = new();
@@ -28,14 +29,13 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
 
             ApprenticeHeroSwordChargePresentationRuntime chargePresentation = BeginChargePresentation(system, spec, data);
 
-            InputBindingService input = InputBindingService.EnsureInstance();
-            if (input == null)
+            if (!InputActionQuery.IsAvailable)
             {
-                Debug.LogError("[ApprenticeHeroSwordChargeSpin] InputBindingService is required for hold-release timing.");
+                Debug.LogError("[ApprenticeHeroSwordChargeSpin] InputActionQuery backend is required for hold-release timing.");
                 yield break;
             }
 
-            InputActionId chargeInputAction = ResolveChargeInputAction(input);
+            InputActionId chargeInputAction = ResolveChargeInputAction();
             float chargeElapsed = 0f;
             chargePresentation?.Update(0f);
             while (true)
@@ -46,7 +46,8 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
                     yield break;
                 }
 
-                bool released = input.WasReleasedThisFrame(chargeInputAction) || !input.IsPressed(chargeInputAction);
+                bool released = InputActionQuery.WasReleasedThisFrame(chargeInputAction) ||
+                                !InputActionQuery.IsPressed(chargeInputAction);
                 if (released)
                     break;
 
@@ -213,19 +214,16 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
         system.TryPlayAnimationTriggerHash(Animator.StringToHash(animationTrigger), definition);
     }
 
-    private static InputActionId ResolveChargeInputAction(InputBindingService input)
+    private static InputActionId ResolveChargeInputAction()
     {
-        if (input != null)
-        {
-            if (input.WasPressedThisFrame(InputActionId.Skill1))
-                return InputActionId.Skill1;
+        if (InputActionQuery.WasPressedThisFrame(InputActionId.Skill1))
+            return InputActionId.Skill1;
 
-            if (input.WasPressedThisFrame(InputActionId.Skill2))
-                return InputActionId.Skill2;
+        if (InputActionQuery.WasPressedThisFrame(InputActionId.Skill2))
+            return InputActionId.Skill2;
 
-            if (input.IsPressed(InputActionId.Skill1))
-                return InputActionId.Skill1;
-        }
+        if (InputActionQuery.IsPressed(InputActionId.Skill1))
+            return InputActionId.Skill1;
 
         return InputActionId.Skill2;
     }
@@ -251,6 +249,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             predicate: eventData => eventData.Spec == spec);
     }
 
+    // 책임: 수습 용사 검 차지 중 생성된 파티클/방향 마스크/완충 VFX의 수명을 관리한다.
     private sealed class ApprenticeHeroSwordChargePresentationRuntime
     {
         private const int RevealMaskTextureSize = 16;

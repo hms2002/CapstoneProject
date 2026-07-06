@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// - 상태 HUD가 특정 프리팹 authoring 없이도 런타임에 표시될 수 있도록 기본 루트와 엔트리 뷰를 코드로 구성한다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class StatusHudPresenter : MonoBehaviour
+public sealed class StatusHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarget
 {
     private static StatusHudPresenter instance;
 

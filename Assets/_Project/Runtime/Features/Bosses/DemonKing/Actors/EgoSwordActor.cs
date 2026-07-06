@@ -5,11 +5,8 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityGAS;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 [DisallowMultipleComponent]
+// 책임: 에고소드 소환체의 보유, 투척, 정지, 회수, 충돌 상태를 제어한다.
 public sealed class EgoSwordActor : MonoBehaviour
 {
     private const string EgoSwordAuraControllerResourcePath = "DemonKing/Vfx/EgoSwordAttackAuraVfx";
@@ -158,7 +155,7 @@ public sealed class EgoSwordActor : MonoBehaviour
     private bool recallLiftReady;
     private bool subPatternAbilityRunning;
     private AbilitySpec activeSubPatternSpec;
-    private SpriteAfterimageEmitter2D afterimageEmitter;
+    private IAfterimageEmitter2D afterimageEmitter;
     private AudioHandle throwLoopHandle;
 
     public bool IsHeld => state == SwordState.Held;
@@ -1038,7 +1035,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         if (IsSubPatternCancelled(spec))
             yield break;
 
-        AttackTelegraphService telegraph = owner.GetTelegraphService();
+        IAttackTelegraphPresenter telegraph = owner.GetTelegraphService();
         Vector2 laserOrigin = transform.position;
         LaserLine firstWarningLine = ResolveWallClippedLaserLine(laserOrigin, firstDirection);
         LaserLine secondWarningLine = ResolveWallClippedLaserLine(laserOrigin, secondDirection);
@@ -1293,7 +1290,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         if (IsSubPatternCancelled(spec))
             yield break;
 
-        AttackTelegraphService telegraph = owner.GetTelegraphService();
+        IAttackTelegraphPresenter telegraph = owner.GetTelegraphService();
         Vector2 groundTarget = owner.CurrentTarget != null
             ? (Vector2)owner.CurrentTarget.position
             : (Vector2)transform.position;
@@ -1304,7 +1301,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         PlayVerticalAuraAnimation();
         BeginAfterimage();
 
-        AttackTelegraphView warning = telegraph?.SpawnDetachedView(
+        IAttackTelegraphHandle warning = telegraph?.SpawnDetachedView(
             AttackTelegraphSpecUtility.WithThinWarningOutline(
                 DemonKingCombatUtil.CreateTopDownCircleWarningSpec(
                     owner,
@@ -1684,7 +1681,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         if (!enableAfterimage || !isActiveAndEnabled)
             return;
 
-        SpriteAfterimageEmitter2D emitter = ResolveAfterimageEmitter();
+        IAfterimageEmitter2D emitter = ResolveAfterimageEmitter();
         if (emitter == null)
             return;
 
@@ -1706,14 +1703,12 @@ public sealed class EgoSwordActor : MonoBehaviour
             afterimageEmitter.ClearSpawnedGhosts();
     }
 
-    private SpriteAfterimageEmitter2D ResolveAfterimageEmitter()
+    private IAfterimageEmitter2D ResolveAfterimageEmitter()
     {
         if (afterimageEmitter != null)
             return afterimageEmitter;
 
-        if (!TryGetComponent(out afterimageEmitter))
-            afterimageEmitter = gameObject.AddComponent<SpriteAfterimageEmitter2D>();
-
+        afterimageEmitter = AfterimageEmitterPlayback.GetOrAdd(gameObject);
         return afterimageEmitter;
     }
 
@@ -2126,8 +2121,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         Gizmos.color = color;
         Gizmos.DrawLine(origin, position);
         Gizmos.DrawWireSphere(position, SocketGizmoRadius);
-        Handles.color = color;
-        Handles.Label(position + Vector3.up * 0.14f, label);
+        EditorAuthoringPlayback.DrawHandleLabel(position + Vector3.up * 0.14f, label, color);
     }
 
     private void DrawLaserOffsetGizmo()
@@ -2146,7 +2140,6 @@ public sealed class EgoSwordActor : MonoBehaviour
         };
 
         Gizmos.color = LaserGizmoColor;
-        Handles.color = LaserGizmoColor;
         for (int i = 0; i < directions.Length; i++)
         {
             Vector3 point = center + directions[i] * offset;
@@ -2154,7 +2147,10 @@ public sealed class EgoSwordActor : MonoBehaviour
             Gizmos.DrawWireSphere(point, SocketGizmoRadius * 0.75f);
         }
 
-        Handles.Label(center + Vector3.up * (offset + 0.18f), "Laser VFX Origin Offset");
+        EditorAuthoringPlayback.DrawHandleLabel(
+            center + Vector3.up * (offset + 0.18f),
+            "Laser VFX Origin Offset",
+            LaserGizmoColor);
     }
 
     private void DrawImpactGizmo()
@@ -2162,11 +2158,14 @@ public sealed class EgoSwordActor : MonoBehaviour
         Vector3 center = transform.position;
         Gizmos.color = ImpactGizmoColor;
         Gizmos.DrawWireSphere(center, verticalStrikeDiameter * 0.5f);
-        Handles.color = ImpactGizmoColor;
-        Handles.Label(center + Vector3.up * (verticalStrikeDiameter * 0.5f + 0.12f), "Vertical/Plant Impact");
+        EditorAuthoringPlayback.DrawHandleLabel(
+            center + Vector3.up * (verticalStrikeDiameter * 0.5f + 0.12f),
+            "Vertical/Plant Impact",
+            ImpactGizmoColor);
     }
 #endif
 
+    // 책임: 에고소드 레이저의 원점, 방향, 중심, 크기, 회전값을 보관한다.
     private readonly struct LaserLine
     {
         public Vector2 Origin { get; }

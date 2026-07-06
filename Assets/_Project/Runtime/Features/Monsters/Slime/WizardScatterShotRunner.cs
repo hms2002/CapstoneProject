@@ -13,7 +13,7 @@ public class WizardScatterShotRunner : MonoBehaviour, IMobPatternRunner
 {
     [SerializeField] private Wizard owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private MonoBehaviour telegraphService;
 
     [Header("Telegraph Clipping")]
     [SerializeField] private LayerMask telegraphWallClipLayers = 1 << 30;
@@ -21,6 +21,7 @@ public class WizardScatterShotRunner : MonoBehaviour, IMobPatternRunner
     [SerializeField, Min(0f)] private float telegraphWallClipSkinWidth = 0.03f;
 
     private AttackTelegraphStyle scatterTelegraphStyle;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private bool isRunning;
     private bool cancelRequested;
 
@@ -34,8 +35,7 @@ public class WizardScatterShotRunner : MonoBehaviour, IMobPatternRunner
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
 
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
 
         scatterTelegraphStyle = MakeScatterTelegraphStyle();
     }
@@ -99,7 +99,7 @@ public class WizardScatterShotRunner : MonoBehaviour, IMobPatternRunner
     /// </summary>
     private void ShowTelegraph(Wizard.ScatterShotContext context, float duration)
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
         if (context.Direction.sqrMagnitude <= 0.0001f)
@@ -118,13 +118,13 @@ public class WizardScatterShotRunner : MonoBehaviour, IMobPatternRunner
                 telegraphWallClipSampleCount,
                 telegraphWallClipSkinWidth);
 
-        telegraphService.Show(spec);
+        telegraphPresenter.Show(spec);
     }
 
     /// <summary>현재 표시 중인 Wizard 산탄 경고를 즉시 숨깁니다.</summary>
     private void HideTelegraph()
     {
-        telegraphService?.HideCurrent();
+        telegraphPresenter?.HideCurrent();
     }
 
     /// <summary>어빌리티 취소 여부를 확인합니다.</summary>

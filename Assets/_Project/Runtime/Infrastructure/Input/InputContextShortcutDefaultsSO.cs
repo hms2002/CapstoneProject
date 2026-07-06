@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
 using System.IO;
-using UnityEditor;
 #endif
 
+/// <summary>
+/// 책임: 입력 컨텍스트별 보조 단축키 기본값을 직렬화 가능한 entry로 보존한다.
+/// </summary>
 [Serializable]
 public struct InputContextShortcutEntry
 {
@@ -19,6 +21,9 @@ public struct InputContextShortcutEntry
     }
 }
 
+/// <summary>
+/// 책임: 입력 컨텍스트 단축키 기본값을 제공하고, 에디터 authoring 중 기본 Resources 에셋을 복구한다.
+/// </summary>
 [CreateAssetMenu(menuName = "Input/Input Context Shortcut Defaults", fileName = "InputContextShortcutDefaults")]
 public sealed class InputContextShortcutDefaultsSO : ScriptableObject
 {
@@ -148,7 +153,7 @@ public sealed class InputContextShortcutDefaultsSO : ScriptableObject
 #if UNITY_EDITOR
     private static InputContextShortcutDefaultsSO CreateOrRestoreEditorAsset()
     {
-        InputContextShortcutDefaultsSO defaults = AssetDatabase.LoadAssetAtPath<InputContextShortcutDefaultsSO>(EditorAssetPath);
+        InputContextShortcutDefaultsSO defaults = EditorAuthoringPlayback.LoadAssetAtPath<InputContextShortcutDefaultsSO>(EditorAssetPath);
         bool created = false;
 
         if (defaults == null)
@@ -159,7 +164,7 @@ public sealed class InputContextShortcutDefaultsSO : ScriptableObject
 
             defaults = CreateInstance<InputContextShortcutDefaultsSO>();
             defaults.ResetToBuiltInDefaults();
-            AssetDatabase.CreateAsset(defaults, EditorAssetPath);
+            EditorAuthoringPlayback.CreateAsset(defaults, EditorAssetPath);
             created = true;
         }
 
@@ -170,9 +175,9 @@ public sealed class InputContextShortcutDefaultsSO : ScriptableObject
 
         if (created)
         {
-            EditorUtility.SetDirty(defaults);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            EditorAuthoringPlayback.MarkDirty(defaults);
+            EditorAuthoringPlayback.SaveAssets();
+            EditorAuthoringPlayback.RefreshAssets();
         }
 
         InputContextShortcutDefaultsSO loadedFromResources = Resources.Load<InputContextShortcutDefaultsSO>(ResourcePath);

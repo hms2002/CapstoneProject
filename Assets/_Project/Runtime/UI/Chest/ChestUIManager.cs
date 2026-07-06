@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public class ChestUIManager : MonoBehaviour
+/// <summary>
+/// 책임 : 상자 전리품 UI 열기와 현재 열린 상자의 새로고침 요청을 실제 Inventory UI에 연결한다.
+/// </summary>
+public class ChestUIManager : MonoBehaviour, IChestUiOpenBackend
 {
     public static ChestUIManager Instance { get; private set; }
 
@@ -18,6 +21,7 @@ public class ChestUIManager : MonoBehaviour
         }
 
         Instance = this;
+        ChestUiOpenPlayback.RegisterBackend(this);
         ResolveInventoryRootReference();
         ResolveChestScreenReference();
 
@@ -107,6 +111,9 @@ public class ChestUIManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (Instance == this)
+            ChestUiOpenPlayback.RegisterBackend(null);
+
         if (Instance == this)
             Instance = null;
     }

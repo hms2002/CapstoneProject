@@ -17,7 +17,7 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
 
     [SerializeField] private Knight owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private MonoBehaviour telegraphService;
     [Header("Landing VFX")]
     [SerializeField] private GameObject landingEffectPrefab;
     [SerializeField] private Vector3 landingEffectOffset;
@@ -27,7 +27,8 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
     private CombatHeightState2D heightState;
     private EntityCollisionProfile2D collisionProfile;
     private AttackTelegraphStyle impactStyle;
-    private AttackTelegraphView impactWarning;
+    private IAttackTelegraphPresenter telegraphPresenter;
+    private IAttackTelegraphHandle impactWarning;
     private Knight.JumpSlamContext currentContext;
     private bool isRunning;
     private bool cancelRequested;
@@ -42,8 +43,7 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
 
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
 
         motionController = GetComponent<AbilityMotionController2D>();
         heightState = GetComponent<CombatHeightState2D>();
@@ -127,7 +127,8 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
     /// <summary>착지 위치에 원형 경고를 표시합니다.</summary>
     private void ShowWarning(Knight.JumpSlamContext context, float duration)
     {
-        if (telegraphService == null) return;
+        IAttackTelegraphPresenter presenter = ResolveTelegraphPresenter();
+        if (presenter == null) return;
 
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
             context.ImpactPos,
@@ -136,7 +137,7 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
             impactStyle);
 
         spec = AttackTelegraphSpecUtility.WithThinWarningOutline(spec);
-        impactWarning = telegraphService.SpawnDetachedView(spec);
+        impactWarning = presenter.SpawnDetachedView(spec);
     }
 
     /// <summary>현재 착지 경고를 숨깁니다.</summary>
@@ -144,9 +145,18 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
     {
         if (impactWarning == null) return;
 
-        impactWarning.HideImmediate();
-        Destroy(impactWarning.gameObject);
+        impactWarning.Release();
         impactWarning = null;
+    }
+
+    /// <summary>구체 텔레그래프 컴포넌트 없이 현재 공격 경고 presenter 계약을 찾습니다.</summary>
+    private IAttackTelegraphPresenter ResolveTelegraphPresenter()
+    {
+        if (telegraphPresenter != null)
+            return telegraphPresenter;
+
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
+        return telegraphPresenter;
     }
 
     /// <summary>목표 위치를 향한 점프 이동을 시작합니다.</summary>

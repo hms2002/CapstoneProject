@@ -37,7 +37,7 @@ public sealed class DragonController : BossControllerBase
 
     private DragonRuntimeData runtimeData;
     private int faceTargetLockCount;
-    private SpriteAfterimageEmitter2D jumpAfterimageEmitter;
+    private IAfterimageEmitter2D jumpAfterimageEmitter;
     private bool hasForcedFirstSlamPatternForDemo;
 
     public DragonRuntimeData RuntimeData
@@ -319,7 +319,7 @@ public sealed class DragonController : BossControllerBase
         if (!enableJumpAfterimage || !isActiveAndEnabled)
             return;
 
-        SpriteAfterimageEmitter2D emitter = ResolveJumpAfterimageEmitter();
+        IAfterimageEmitter2D emitter = ResolveJumpAfterimageEmitter();
         if (emitter == null)
             return;
 
@@ -405,14 +405,12 @@ public sealed class DragonController : BossControllerBase
             sprite.flipX = false;
     }
 
-    private SpriteAfterimageEmitter2D ResolveJumpAfterimageEmitter()
+    private IAfterimageEmitter2D ResolveJumpAfterimageEmitter()
     {
         if (jumpAfterimageEmitter != null)
             return jumpAfterimageEmitter;
 
-        if (!TryGetComponent(out jumpAfterimageEmitter))
-            jumpAfterimageEmitter = gameObject.AddComponent<SpriteAfterimageEmitter2D>();
-
+        jumpAfterimageEmitter = AfterimageEmitterPlayback.GetOrAdd(gameObject);
         return jumpAfterimageEmitter;
     }
 

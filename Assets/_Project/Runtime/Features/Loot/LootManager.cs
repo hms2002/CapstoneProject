@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
+/// <summary>
+/// 책임: 현재 스테이지 loot table을 기준으로 전리품 추첨, 생성, 에디터 기본 prefab 보정을 조율한다.
+/// </summary>
 public class LootManager : MonoBehaviour
 {
     private const string DefaultFieldItemPrefabResourcePath = "PF_FieldHealPickup2D";
@@ -78,7 +78,7 @@ public class LootManager : MonoBehaviour
         // Avoid asset loading during import/build-time validation. Unity invokes OnValidate
         // while opening scenes for player builds, and Resources.Load from there trips
         // editor-only SendMessage restrictions.
-        if (EditorApplication.isCompiling || EditorApplication.isUpdating)
+        if (EditorAuthoringPlayback.IsUpdatingOrCompiling())
             return;
 
         TryAssignEditorDefaultPrefabs();
@@ -327,7 +327,7 @@ public class LootManager : MonoBehaviour
         }
 
         if (changed)
-            EditorUtility.SetDirty(this);
+            EditorAuthoringPlayback.MarkDirty(this);
     }
 
     /// <summary>
@@ -341,14 +341,14 @@ public class LootManager : MonoBehaviour
         if (string.IsNullOrWhiteSpace(prefabNameWithoutExtension))
             return false;
 
-        string[] guids = AssetDatabase.FindAssets($"{prefabNameWithoutExtension} t:Prefab");
-        if (guids == null || guids.Length == 0)
+        string[] paths = EditorAuthoringPlayback.FindAssetPaths($"{prefabNameWithoutExtension} t:Prefab");
+        if (paths == null || paths.Length == 0)
             return false;
 
         string fallbackPath = null;
-        for (int i = 0; i < guids.Length; i++)
+        for (int i = 0; i < paths.Length; i++)
         {
-            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+            string path = paths[i];
             if (string.IsNullOrWhiteSpace(path))
                 continue;
 
@@ -358,7 +358,7 @@ public class LootManager : MonoBehaviour
 
             if (path.IndexOf("/Resources/", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                prefab = EditorAuthoringPlayback.LoadAssetAtPath<GameObject>(path);
                 return prefab != null;
             }
 
@@ -368,7 +368,7 @@ public class LootManager : MonoBehaviour
         if (string.IsNullOrWhiteSpace(fallbackPath))
             return false;
 
-        prefab = AssetDatabase.LoadAssetAtPath<GameObject>(fallbackPath);
+        prefab = EditorAuthoringPlayback.LoadAssetAtPath<GameObject>(fallbackPath);
         return prefab != null;
     }
 #endif

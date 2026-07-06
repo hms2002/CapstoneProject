@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityGAS;
 
-public class MonsterElementGaugeViewInstaller : MonoBehaviour
+public class MonsterElementGaugeViewInstaller : MonoBehaviour, IMonsterElementGaugeViewInstaller
 {
     // 이 클래스의 책임:
     // 몬스터 생성 시 ElementGaugeSystem에 대응하는 월드 게이지 View를 생성하고 대상 수명에 맞춰 정리한다.
@@ -11,6 +11,8 @@ public class MonsterElementGaugeViewInstaller : MonoBehaviour
     [SerializeField] private bool installOnStart = true;
 
     private MonsterElementGaugeView installedView;
+
+    public Component InstallerComponent => this;
 
     private void Start()
     {
@@ -53,6 +55,11 @@ public class MonsterElementGaugeViewInstaller : MonoBehaviour
         view.Bind(monster.transform, gaugeSystem);
         installedView = view;
         return installedView;
+    }
+
+    public void InstallFor(GameObject monster)
+    {
+        Install(monster);
     }
 
     public void Uninstall()

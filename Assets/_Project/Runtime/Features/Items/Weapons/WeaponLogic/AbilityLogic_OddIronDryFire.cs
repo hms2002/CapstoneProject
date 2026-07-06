@@ -25,8 +25,8 @@ namespace UnityGAS.Sample
 
             if (data.dryFireVfxPrefab != null)
             {
-                GameObject resolvedPrefab = PresentationAssetProvider.ResolvePrefab(data.dryFireVfxPrefab);
-                Object.Instantiate(resolvedPrefab != null ? resolvedPrefab : data.dryFireVfxPrefab, position, Quaternion.identity);
+                GameObject resolvedPrefab = PresentationAssetPlayback.ResolvePrefab(data.dryFireVfxPrefab);
+                Object.Instantiate(resolvedPrefab, position, Quaternion.identity);
             }
 
             AbilityAudioRouter.PlayOneShot(data.dryFireSound, system, spec, sourceObjectOverride: data);

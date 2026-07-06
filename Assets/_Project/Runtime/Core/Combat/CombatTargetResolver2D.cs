@@ -20,7 +20,7 @@ namespace UnityGAS
                 return null;
 
             // 공격용 히트박스가 플레이어/몬스터 루트로 역참조되어 오탐 피해를 내지 않도록 공통 차단한다.
-            if (other.GetComponentInParent<AttackBase>() != null)
+            if (IsAttackCollisionSource(other))
                 return null;
 
             CombatHurtbox2D hurtbox = other.GetComponent<CombatHurtbox2D>();
@@ -34,6 +34,24 @@ namespace UnityGAS
 
             WarnMissingHurtbox(other);
             return null;
+        }
+
+        private static bool IsAttackCollisionSource(Collider2D other)
+        {
+            Transform current = other != null ? other.transform : null;
+            while (current != null)
+            {
+                MonoBehaviour[] behaviours = current.GetComponents<MonoBehaviour>();
+                for (int i = 0; i < behaviours.Length; i++)
+                {
+                    if (behaviours[i] is IAttackCollisionSource2D)
+                        return true;
+                }
+
+                current = current.parent;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -86,13 +104,17 @@ namespace UnityGAS
         }
     }
 
+    /// <summary>
+    /// 책임: 탑다운 원형 경고와 실제 피해 판정이 공유하는 2D 타원 포함 판정을 제공한다.
+    /// </summary>
     public static class TopDownEllipseHitUtility2D
     {
+        public const float DefaultTopDownCircleYScale = 0.70f;
         private const float MinRadius = 0.005f;
 
         public static bool ContainsPoint(Vector2 center, float diameter, Vector2 point)
         {
-            return ContainsPoint(center, diameter, AttackTelegraphSpec.TopDownCircleWarningYScale, point);
+            return ContainsPoint(center, diameter, DefaultTopDownCircleYScale, point);
         }
 
         public static bool ContainsPoint(Vector2 center, float diameter, float yScale, Vector2 point)
@@ -106,7 +128,7 @@ namespace UnityGAS
 
         public static bool ContainsCollider(Collider2D collider, Vector2 center, float diameter)
         {
-            return ContainsCollider(collider, center, diameter, AttackTelegraphSpec.TopDownCircleWarningYScale);
+            return ContainsCollider(collider, center, diameter, DefaultTopDownCircleYScale);
         }
 
         public static bool ContainsCollider(Collider2D collider, Vector2 center, float diameter, float yScale)

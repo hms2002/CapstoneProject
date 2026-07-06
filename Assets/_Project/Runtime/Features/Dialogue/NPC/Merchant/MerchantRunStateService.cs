@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+// 책임: 런 세션에 저장되는 상인 재고 상태를 생성, 조회, 갱신한다.
 public sealed class MerchantRunStateService
 {
     public delegate List<MerchantStockEntryState> StockFactory(
@@ -15,7 +16,7 @@ public sealed class MerchantRunStateService
         if (string.IsNullOrWhiteSpace(merchantId))
             return new MerchantRuntimeState(string.Empty, CreateEntries(slotCount, stockFactory, null));
 
-        GamePlayData data = GamePlayDataManager.Instance != null ? GamePlayDataManager.Instance.Data : null;
+        GamePlayData data = RunSessionStore.Data;
         if (data == null)
             return new MerchantRuntimeState(merchantId, CreateEntries(slotCount, stockFactory, null));
 

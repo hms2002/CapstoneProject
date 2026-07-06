@@ -4,7 +4,7 @@ using UnityEngine;
 
 /// <summary>
 /// 책임 :
-/// - 런의 남은 제한 시간을 진실 소스로 관리하고 GamePlayDataManager와 동기화한다.
+/// - 런의 남은 제한 시간을 진실 소스로 관리하고 Core 런 세션 저장소와 동기화한다.
 /// - 현재 스테이지 정책에 따라 시간 감소 여부를 판정하고, 시간 초과 시 런 실패를 트리거한다.
 /// </summary>
 [DisallowMultipleComponent]
@@ -62,11 +62,8 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        if (GamePlayDataManager.Instance != null)
-        {
-            GamePlayDataManager.Instance.OnRunStarted += HandleRunStarted;
-            GamePlayDataManager.Instance.OnRunEnded += HandleRunEnded;
-        }
+        RunSessionStore.OnRunStarted += HandleRunStarted;
+        RunSessionStore.OnRunEnded += HandleRunEnded;
     }
 
     private void Start()
@@ -76,11 +73,8 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
 
     private void OnDisable()
     {
-        if (GamePlayDataManager.Instance != null)
-        {
-            GamePlayDataManager.Instance.OnRunStarted -= HandleRunStarted;
-            GamePlayDataManager.Instance.OnRunEnded -= HandleRunEnded;
-        }
+        RunSessionStore.OnRunStarted -= HandleRunStarted;
+        RunSessionStore.OnRunEnded -= HandleRunEnded;
     }
 
     private void OnDestroy()
@@ -147,14 +141,14 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
     /// </summary>
     private void TryRestoreOrBootstrapActiveRun()
     {
-        if (hasInitializedFromRun || config == null || GamePlayDataManager.Instance == null)
+        if (hasInitializedFromRun || config == null || !RunSessionStore.IsAvailable)
             return;
 
-        GamePlayData data = GamePlayDataManager.Instance.Data;
+        GamePlayData data = RunSessionStore.Data;
         if (data == null || !data.isRunActive)
             return;
 
-        float savedRemaining = GamePlayDataManager.Instance.GetRunRemainingSeconds();
+        float savedRemaining = RunSessionStore.GetRunRemainingSeconds();
         if (savedRemaining > 0f)
         {
             SetRemainingTimeInternal(savedRemaining, persistToGamePlayData: false);
@@ -211,8 +205,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
         float next = Mathf.Max(0f, remainingSeconds - clampedDelta);
         SetRemainingTimeInternal(next, persistToGamePlayData: true);
 
-        if (GamePlayDataManager.Instance != null)
-            GamePlayDataManager.Instance.TickRunTimer(clampedDelta);
+        RunSessionStore.TickRunTimer(clampedDelta);
 
         if (remainingSeconds > 0f)
             return;
@@ -231,8 +224,8 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
         if (remainingSeconds > 0f)
             hasExpired = false;
 
-        if (persistToGamePlayData && GamePlayDataManager.Instance != null)
-            GamePlayDataManager.Instance.SetRunRemainingSeconds(remainingSeconds);
+        if (persistToGamePlayData)
+            RunSessionStore.SetRunRemainingSeconds(remainingSeconds);
 
         OnRemainingTimeChanged?.Invoke(remainingSeconds);
     }

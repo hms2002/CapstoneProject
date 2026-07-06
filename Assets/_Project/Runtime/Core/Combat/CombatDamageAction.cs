@@ -212,7 +212,7 @@ public static class CombatDamageAction
 
         if (CombatEvasionUtil.TryRollEvasion(target))
         {
-            DamagePopupService.ShowText("EVADE", target.transform.position);
+            DamagePopupPlayback.ShowText("EVADE", target.transform.position);
             TryPlayPlayerEvadeSound(target);
             return;
         }
@@ -304,6 +304,7 @@ public static class CombatDamageAction
         system.EffectRunner.ApplyEffectSpec(knockbackSpec, target);
     }
 
+    // 책임: 피해 적용 전후 HP 차이를 계산하기 위한 대상 HP 스냅샷을 보관한다.
     private readonly struct HpCheckData
     {
         public readonly float PreHp;
@@ -391,7 +392,7 @@ public static class CombatDamageAction
             return;
 
         Vector3 popupPosition = hitWorldPosition != Vector3.zero ? hitWorldPosition : target.transform.position;
-        DamagePopupService.Show(DamagePopupRequest.Damage(appliedDamage, popupPosition, isCriticalHit));
+        DamagePopupPlayback.Show(DamagePopupRequest.Damage(appliedDamage, popupPosition, isCriticalHit));
         DamagePopupDuplicateSuppressor.Register(target, appliedDamage);
     }
 
@@ -408,7 +409,7 @@ public static class CombatDamageAction
         float postHp = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr);
         if (postHp >= hpCheck.PreHp) return;
 
-        CombatHitAudioRouter.PlayImpact(
+        CombatHitAudioPlayback.PlayImpact(
             sourceSystem,
             sourceSpec,
             damageEffect,

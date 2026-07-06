@@ -1,0 +1,407 @@
+using UnityEngine;
+
+/// <summary>
+/// 책임 :
+/// - 월드 드롭/상점 진열 등 아이템 표시 지점에 맞는 커스텀 비주얼 또는 sprite fallback을 출력한다.
+/// - 표시 비주얼의 정규화, sorting, outline 대상 갱신을 한 곳에서 관리한다.
+/// </summary>
+[DisallowMultipleComponent]
+public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour, IItemDisplayVisualPresenter
+{
+    private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
+    private static readonly SpriteRenderer[] EmptyRenderers = new SpriteRenderer[0];
+    private const string RuntimeVisualRootName = "__ItemDisplayVisualRoot";
+
+    [SerializeField] private ItemDisplayContext context = ItemDisplayContext.WorldDrop;
+    [SerializeField] private Transform visualRoot;
+    [SerializeField] private SpriteRenderer fallbackSpriteRenderer;
+    [SerializeField] private bool copyHostSortingToCustomVisual = true;
+
+    private GameObject activeCustomVisual;
+    private SpriteRenderer[] outlineRenderers = EmptyRenderers;
+    private MaterialPropertyBlock outlinePropertyBlock;
+    private Vector3 fallbackBaseLocalPosition;
+    private Quaternion fallbackBaseLocalRotation;
+    private Vector3 fallbackBaseLocalScale;
+    private bool hasFallbackBaseTransform;
+    private bool outlineEnabled;
+
+    public SpriteRenderer FallbackRenderer
+    {
+        get
+        {
+            ResolveReferences();
+            return fallbackSpriteRenderer;
+        }
+    }
+
+    public void Apply(ScriptableObject item)
+    {
+        ResolveReferences();
+
+        if (item == null)
+        {
+            ClearVisual();
+            return;
+        }
+
+        IInventoryItemDefinition definition = item.AsDef();
+        Sprite sprite = definition != null ? definition.Icon : null;
+        ItemDisplayVisualProfileSO profile = ResolveProfile(item);
+
+        if (profile != null)
+        {
+            ItemDisplayContext effectiveContext = ResolveEffectiveContext();
+            GameObject customPrefab = profile.GetVisualPrefab(effectiveContext);
+            if (customPrefab != null)
+            {
+                ApplyCustomPrefab(customPrefab);
+                return;
+            }
+
+            Sprite spriteOverride = profile.GetSpriteOverride(effectiveContext);
+            if (spriteOverride != null)
+                sprite = spriteOverride;
+        }
+
+        ItemDisplaySpriteSettings settings = ResolveSpriteSettings(profile, definition);
+        ApplySprite(sprite, settings);
+    }
+
+    public void SetOutline(bool enabled)
+    {
+        outlineEnabled = enabled;
+
+        if (outlinePropertyBlock == null)
+            outlinePropertyBlock = new MaterialPropertyBlock();
+
+        for (int i = 0; i < outlineRenderers.Length; i++)
+        {
+            SpriteRenderer renderer = outlineRenderers[i];
+            if (renderer == null)
+                continue;
+
+            renderer.GetPropertyBlock(outlinePropertyBlock);
+            outlinePropertyBlock.SetFloat(OutlineEnabledID, enabled ? 1f : 0f);
+            renderer.SetPropertyBlock(outlinePropertyBlock);
+        }
+    }
+
+    public void ClearVisual()
+    {
+        ClearCustomVisual();
+
+        if (fallbackSpriteRenderer != null)
+        {
+            ResetFallbackTransform();
+            fallbackSpriteRenderer.sprite = null;
+            fallbackSpriteRenderer.enabled = false;
+        }
+
+        outlineRenderers = fallbackSpriteRenderer != null
+            ? new[] { fallbackSpriteRenderer }
+            : EmptyRenderers;
+
+        SetOutline(false);
+    }
+
+    public bool TryResolveVisualBoundsWorld(out Bounds bounds)
+    {
+        if (activeCustomVisual != null)
+            return TryResolveRendererBounds(activeCustomVisual.GetComponentsInChildren<SpriteRenderer>(includeInactive: true), out bounds);
+
+        if (fallbackSpriteRenderer != null && fallbackSpriteRenderer.enabled && fallbackSpriteRenderer.sprite != null)
+        {
+            bounds = fallbackSpriteRenderer.bounds;
+            return true;
+        }
+
+        bounds = default;
+        return false;
+    }
+
+    private void ApplyCustomPrefab(GameObject prefab)
+    {
+        if (prefab == null)
+            return;
+
+        ClearCustomVisual();
+
+        if (fallbackSpriteRenderer != null)
+        {
+            ResetFallbackTransform();
+            fallbackSpriteRenderer.enabled = false;
+        }
+
+        Transform parent = ResolveVisualRoot();
+        activeCustomVisual = Instantiate(prefab, parent, false);
+        activeCustomVisual.transform.localPosition = Vector3.zero;
+        activeCustomVisual.transform.localRotation = Quaternion.identity;
+        activeCustomVisual.transform.localScale = Vector3.one;
+
+        if (copyHostSortingToCustomVisual)
+            ApplyHostSorting(activeCustomVisual);
+
+        ItemDisplayVisualInstance2D instance = activeCustomVisual.GetComponent<ItemDisplayVisualInstance2D>()
+            ?? activeCustomVisual.GetComponentInChildren<ItemDisplayVisualInstance2D>(includeInactive: true);
+
+        outlineRenderers = instance != null
+            ? instance.ResolveOutlineRenderers()
+            : activeCustomVisual.GetComponentsInChildren<SpriteRenderer>(includeInactive: true);
+
+        SetOutline(outlineEnabled);
+    }
+
+    private void ApplySprite(Sprite sprite, ItemDisplaySpriteSettings settings)
+    {
+        ClearCustomVisual();
+
+        if (fallbackSpriteRenderer == null)
+            return;
+
+        ResetFallbackTransform();
+        fallbackSpriteRenderer.sprite = sprite;
+        fallbackSpriteRenderer.enabled = sprite != null;
+        outlineRenderers = new[] { fallbackSpriteRenderer };
+
+        if (sprite != null)
+            ApplySpriteTransform(sprite, settings);
+
+        SetOutline(outlineEnabled);
+    }
+
+    private void ApplySpriteTransform(Sprite sprite, ItemDisplaySpriteSettings settings)
+    {
+        if (sprite == null || fallbackSpriteRenderer == null || settings == null)
+            return;
+
+        CaptureFallbackBaseTransform();
+        ResetFallbackTransform();
+
+        Bounds bounds = sprite.bounds;
+        if (bounds.size.x <= 0f || bounds.size.y <= 0f)
+            return;
+
+        float uniformScale = ResolveUniformScale(bounds, settings);
+        Transform rendererTransform = fallbackSpriteRenderer.transform;
+        Vector3 localScale = rendererTransform.localScale;
+        rendererTransform.localScale = new Vector3(uniformScale, uniformScale, localScale.z);
+
+        Vector3 localPosition = fallbackBaseLocalPosition + (Vector3)settings.AnchorOffset;
+        if (settings.CenterX)
+            localPosition.x += -bounds.center.x * uniformScale;
+
+        localPosition.y += settings.AnchorMode == ItemDisplayAnchorMode.Bottom
+            ? -bounds.min.y * uniformScale
+            : -bounds.center.y * uniformScale;
+
+        rendererTransform.localPosition = localPosition;
+    }
+
+    private static float ResolveUniformScale(Bounds bounds, ItemDisplaySpriteSettings settings)
+    {
+        if (!settings.Normalize || settings.NormalizeMode == ItemDisplayNormalizeMode.RawSpriteSize)
+            return 1f;
+
+        if (settings.NormalizeMode == ItemDisplayNormalizeMode.FitBox)
+        {
+            Vector2 targetBox = settings.TargetBoxSize;
+            float widthScale = targetBox.x / bounds.size.x;
+            float heightScale = targetBox.y / bounds.size.y;
+            return Mathf.Min(widthScale, heightScale);
+        }
+
+        return settings.TargetHeight / bounds.size.y;
+    }
+
+    private ItemDisplaySpriteSettings ResolveSpriteSettings(
+        ItemDisplayVisualProfileSO profile,
+        IInventoryItemDefinition definition)
+    {
+        ItemDisplayContext effectiveContext = ResolveEffectiveContext();
+        if (profile != null && profile.TryGetSpriteSettings(effectiveContext, out ItemDisplaySpriteSettings profileSettings))
+            return profileSettings;
+
+        return ItemDisplaySpriteSettings.DefaultFor(effectiveContext, definition != null ? definition.Kind : (InventoryItemKind?)null);
+    }
+
+    private static ItemDisplayVisualProfileSO ResolveProfile(ScriptableObject item)
+    {
+        return item is WeaponDefinition weapon ? weapon.DisplayVisualProfile : null;
+    }
+
+    private void ApplyHostSorting(GameObject instance)
+    {
+        if (instance == null || fallbackSpriteRenderer == null)
+            return;
+
+        int sortingLayerId = fallbackSpriteRenderer.sortingLayerID;
+        int baseSortingOrder = fallbackSpriteRenderer.sortingOrder;
+
+        SpriteRenderer[] renderers = instance.GetComponentsInChildren<SpriteRenderer>(includeInactive: true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            SpriteRenderer renderer = renderers[i];
+            if (renderer == null)
+                continue;
+
+            renderer.sortingLayerID = sortingLayerId;
+            renderer.sortingOrder += baseSortingOrder;
+        }
+
+        SpriteMask[] masks = instance.GetComponentsInChildren<SpriteMask>(includeInactive: true);
+        for (int i = 0; i < masks.Length; i++)
+        {
+            SpriteMask mask = masks[i];
+            if (mask == null)
+                continue;
+
+            mask.frontSortingLayerID = sortingLayerId;
+            mask.backSortingLayerID = sortingLayerId;
+            mask.frontSortingOrder += baseSortingOrder;
+            mask.backSortingOrder += baseSortingOrder;
+        }
+    }
+
+    private void ClearCustomVisual()
+    {
+        if (!IsAlive(activeCustomVisual))
+        {
+            activeCustomVisual = null;
+            return;
+        }
+
+        activeCustomVisual.SetActive(false);
+
+        if (Application.isPlaying)
+            Destroy(activeCustomVisual);
+        else
+            DestroyImmediate(activeCustomVisual);
+
+        activeCustomVisual = null;
+    }
+
+    private void CaptureFallbackBaseTransform()
+    {
+        if (hasFallbackBaseTransform || fallbackSpriteRenderer == null)
+            return;
+
+        Transform rendererTransform = fallbackSpriteRenderer.transform;
+        fallbackBaseLocalPosition = rendererTransform.localPosition;
+        fallbackBaseLocalRotation = rendererTransform.localRotation;
+        fallbackBaseLocalScale = rendererTransform.localScale;
+        hasFallbackBaseTransform = true;
+    }
+
+    private void ResetFallbackTransform()
+    {
+        if (!hasFallbackBaseTransform || fallbackSpriteRenderer == null)
+            return;
+
+        Transform rendererTransform = fallbackSpriteRenderer.transform;
+        rendererTransform.localPosition = fallbackBaseLocalPosition;
+        rendererTransform.localRotation = fallbackBaseLocalRotation;
+        rendererTransform.localScale = fallbackBaseLocalScale;
+    }
+
+    private void ResolveReferences()
+    {
+        visualRoot = ResolveVisualRoot();
+
+        if (fallbackSpriteRenderer == null)
+            fallbackSpriteRenderer = GetComponentInChildren<SpriteRenderer>(includeInactive: true);
+
+        CaptureFallbackBaseTransform();
+    }
+
+    private ItemDisplayContext ResolveEffectiveContext()
+    {
+        return context == ItemDisplayContext.ShopDisplay
+            ? ItemDisplayContext.WorldDrop
+            : context;
+    }
+
+    private Transform ResolveVisualRoot()
+    {
+        if (IsAlive(visualRoot))
+            return visualRoot;
+
+        Transform existingRuntimeRoot = transform.Find(RuntimeVisualRootName);
+        if (existingRuntimeRoot != null)
+        {
+            visualRoot = existingRuntimeRoot;
+            return visualRoot;
+        }
+
+        visualRoot = transform;
+        return visualRoot;
+    }
+
+    private static bool IsAlive(Object unityObject)
+    {
+        if (unityObject == null)
+            return false;
+
+        try
+        {
+            _ = unityObject.name;
+            return true;
+        }
+        catch (MissingReferenceException)
+        {
+            return false;
+        }
+    }
+
+    private static bool TryResolveRendererBounds(SpriteRenderer[] renderers, out Bounds bounds)
+    {
+        bounds = default;
+        bool hasBounds = false;
+
+        if (renderers == null)
+            return false;
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            SpriteRenderer renderer = renderers[i];
+            if (renderer == null || !renderer.enabled || renderer.sprite == null)
+                continue;
+
+            if (!hasBounds)
+            {
+                bounds = renderer.bounds;
+                hasBounds = true;
+            }
+            else
+            {
+                bounds.Encapsulate(renderer.bounds);
+            }
+        }
+
+        return hasBounds;
+    }
+
+    private void Reset()
+    {
+        ResolveReferences();
+    }
+
+    private void Awake()
+    {
+        ResolveReferences();
+        outlinePropertyBlock = new MaterialPropertyBlock();
+
+        if (fallbackSpriteRenderer != null)
+            outlineRenderers = new[] { fallbackSpriteRenderer };
+    }
+
+    private void OnValidate()
+    {
+        ResolveReferences();
+    }
+
+    private void OnDestroy()
+    {
+        ClearCustomVisual();
+    }
+}

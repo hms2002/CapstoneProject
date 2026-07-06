@@ -4,9 +4,11 @@ using UnityEngine;
 namespace UnityGAS.Sample
 {
     [ExecuteAlways]
-    public class RealtimeHitboxGizmo2D : MonoBehaviour
+    // 책임: 런타임 히트박스 디버그 박스를 기록하고 Scene 뷰 Gizmo로 표시한다.
+    public class RealtimeHitboxGizmo2D : MonoBehaviour, IRealtimeHitboxGizmo2D
     {
         [System.Serializable]
+        // 책임: 개별 히트박스 기즈모 박스의 위치, 크기, 회전, 수명, 색상을 보관한다.
         private struct Box
         {
             public Vector2 center;

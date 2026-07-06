@@ -41,6 +41,7 @@ public enum BossDialogueComparison
     BetweenInclusive
 }
 
+// 책임: 보스 조우 대사 한 항목의 조건 목록과 출력할 대사 데이터를 보관한다.
 [Serializable]
 public sealed class BossEncounterDialogueEntry
 {
@@ -82,6 +83,7 @@ public sealed class BossEncounterDialogueEntry
     }
 }
 
+// 책임: 보스 조우 대사 선택에 필요한 런타임 조건 하나를 직렬화하고 판정한다.
 [Serializable]
 public sealed class BossEncounterDialogueCondition
 {
@@ -251,6 +253,7 @@ public sealed class BossEncounterDialogueCondition
     }
 }
 
+// 책임: 보스 조우 대화 조건 평가에 필요한 저장, 런, 플레이어 인벤토리/스탯 상태를 제공한다.
 public sealed class BossEncounterDialogueContext
 {
     private readonly NPCData ownerNpc;
@@ -269,8 +272,8 @@ public sealed class BossEncounterDialogueContext
     public BossEncounterDialogueContext(NPCData ownerNpc)
     {
         this.ownerNpc = ownerNpc;
-        gameData = GameDataManager.Instance != null ? GameDataManager.Instance.Data : null;
-        gameplayData = GamePlayDataManager.Instance != null ? GamePlayDataManager.Instance.Data : null;
+        gameData = GameDataStore.Data;
+        gameplayData = RunSessionStore.Data;
     }
 
     public int OwnerNpcId => ownerNpc != null ? ownerNpc.id : 0;
@@ -282,9 +285,7 @@ public sealed class BossEncounterDialogueContext
             if (RunTimeLimitSystem.Instance != null)
                 return Mathf.Max(0f, RunTimeLimitSystem.Instance.RemainingSeconds);
 
-            return GamePlayDataManager.Instance != null
-                ? GamePlayDataManager.Instance.GetRunRemainingSeconds()
-                : 0f;
+            return RunSessionStore.GetRunRemainingSeconds();
         }
     }
 
@@ -310,8 +311,7 @@ public sealed class BossEncounterDialogueContext
         get
         {
             int amount = gameData != null ? gameData.magicStone : 0;
-            if (GamePlayDataManager.Instance != null)
-                amount += GamePlayDataManager.Instance.GetPendingRunMagicStoneDelta();
+            amount += RunSessionStore.GetPendingRunMagicStoneDelta();
 
             return amount;
         }
@@ -594,6 +594,7 @@ public sealed class BossEncounterDialogueContext
     }
 }
 
+// 책임: NPCData의 보스 조우 대사 후보 중 현재 조건에 맞는 항목을 선택한다.
 public static class BossEncounterDialogueSelector
 {
     public static bool TrySelect(NPCData npcData, out BossEncounterDialogueEntry selectedEntry)

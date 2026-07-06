@@ -31,6 +31,7 @@ public enum DemonKingBuiltInVfxKind
     HomingProjectile
 }
 
+// 책임: 마왕 몸체 애니메이션 클립과 fallback state/sample 방식을 직렬화해 패턴 로직에 전달한다.
 [Serializable]
 public struct DemonKingBodyAnimationRef
 {
@@ -60,6 +61,7 @@ public struct DemonKingBodyAnimationRef
     }
 }
 
+// 책임: 마왕 패턴 VFX의 prefab override, built-in fallback, socket, 크기/회전 설정을 보관한다.
 [Serializable]
 public struct DemonKingVfxCueRef
 {
@@ -136,6 +138,7 @@ public struct DemonKingVfxCueRef
     }
 }
 
+// 책임: groggy 회복 반격의 검/손 분기별 자세, 반격 애니메이션, 충격 VFX 설정을 보관한다.
 [Serializable]
 public struct GroggyCounterBranchVisual
 {
@@ -190,6 +193,7 @@ public struct GroggyCounterBranchVisual
     }
 }
 
+// 책임: 마왕 보스 능력들이 공유하는 타겟, 이동, 경고, 피해, 연출 유틸리티를 제공한다.
 public abstract class AbilityLogic_DemonKingBase : AbilityLogic
 {
     private static readonly RaycastHit2D[] WallHitBuffer = new RaycastHit2D[12];
@@ -232,6 +236,7 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         }
     }
 
+    // 책임: 선형 공격 구역의 중심, 크기, 회전값을 피해/경고 처리에 전달한다.
     protected readonly struct LineArea
     {
         public Vector2 Center { get; }
@@ -407,7 +412,7 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
                     demon.DefaultWarningStyle)));
     }
 
-    protected static AttackTelegraphView ShowSectorWarningView(
+    protected static IAttackTelegraphHandle ShowSectorWarningView(
         DemonKingController demon,
         Vector2 origin,
         Vector2 direction,
@@ -432,7 +437,7 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
     }
 
     protected static void UpdateSectorWarning(
-        AttackTelegraphView view,
+        IAttackTelegraphHandle view,
         DemonKingController demon,
         Vector2 origin,
         Vector2 direction,
@@ -764,7 +769,7 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         return Mathf.Lerp(safeHeight * profile.preDropHeightScale, 0f, easedDrop);
     }
 
-    protected static AttackTelegraphView ShowLineWarning(
+    protected static IAttackTelegraphHandle ShowLineWarning(
         DemonKingController demon,
         Vector2 start,
         Vector2 end,
@@ -788,7 +793,7 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
     }
 
     protected static void UpdateLineWarning(
-        AttackTelegraphView view,
+        IAttackTelegraphHandle view,
         DemonKingController demon,
         Vector2 start,
         Vector2 end,
@@ -958,7 +963,7 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         return Mathf.Max(0.01f, distance / speed);
     }
 
-    protected static AttackTelegraphView ShowLineAreaWarning(
+    protected static IAttackTelegraphHandle ShowLineAreaWarning(
         DemonKingController demon,
         LineArea line,
         float duration,
@@ -978,7 +983,7 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
     }
 
     protected static void UpdateLineAreaWarning(
-        AttackTelegraphView view,
+        IAttackTelegraphHandle view,
         DemonKingController demon,
         LineArea line,
         float duration,
@@ -1044,6 +1049,7 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
     }
 }
 
+// 책임: 마왕의 연속 찌르기 이동/경고/피해 콤보 패턴을 실행한다.
 public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(1)] private int pierceCount = 3;
@@ -1082,8 +1088,8 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
 
             Vector2 start = demon.transform.position;
             demon.PushFaceTargetLock();
-            AttackTelegraphView trackingWarning = null;
-            AttackTelegraphView lockOnWarning = null;
+            IAttackTelegraphHandle trackingWarning = null;
+            IAttackTelegraphHandle lockOnWarning = null;
             AttackTelegraphStyle lockOnStyle = null;
 
             try
@@ -1220,6 +1226,7 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
     }
 }
 
+// 책임: 마왕의 강베기 이동, 휘두르기 경고, 범위 피해, 후딜 처리를 실행한다.
 public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(0.1f)] private float moveSpeedMultiplier = 4f;
@@ -1306,7 +1313,7 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
                 out Vector2 lockedFacingDirection);
 
             AttackTelegraphStyle trackingStyle = CreateRuntimeWarningStyle(demon.DefaultWarningStyle, blinkFromStart: false);
-            AttackTelegraphView trackingWarning = trackingSeconds > 0f
+            IAttackTelegraphHandle trackingWarning = trackingSeconds > 0f
                 ? ShowSectorWarningView(demon, lockedOrigin, lockedDirection, slashRadius, slashAngle, trackingSeconds, trackingStyle)
                 : null;
             float trackingElapsed = 0f;
@@ -1347,7 +1354,7 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
             if (safeLockOnSeconds > 0f)
             {
                 AttackTelegraphStyle lockOnStyle = CreateRuntimeWarningStyle(demon.DefaultWarningStyle, blinkFromStart: true);
-                AttackTelegraphView lockOnWarning = ShowSectorWarningView(
+                IAttackTelegraphHandle lockOnWarning = ShowSectorWarningView(
                     demon,
                     lockedOrigin,
                     lockedDirection,
@@ -1671,6 +1678,7 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
     }
 }
 
+// 책임: 에고소드 투척, 착탄, 회수, 말풍선 타이밍을 포함한 원거리 패턴을 실행한다.
 public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
 {
     private const float ThrowSpeechSafetyMarginSeconds = 0.1f;
@@ -1729,7 +1737,7 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
             SpeakPattern(demon, BossSpeechSituationEnum.DemonKingThrowEgoSword, preReleaseSpeechSeconds);
             SpeakThrowReaction(demon, sword, spec, preReleaseSpeechSeconds);
 
-            AttackTelegraphView aimWarning = releaseDelaySeconds > 0f
+            IAttackTelegraphHandle aimWarning = releaseDelaySeconds > 0f
                 ? ShowLineWarning(
                     demon,
                     animationOrigin,
@@ -1907,6 +1915,7 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
     }
 }
 
+// 책임: 마왕의 유도 마법 생성, 조준, 발사, 명중 처리를 실행한다.
 public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
 {
     private const string StockOrbVisualResourcePath = "DemonKing/Vfx/HomingMagicBaltStockVfx";
@@ -1983,7 +1992,7 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
                 PlayBodyAnimation(demon, castAnimation, DemonKingController.DarkLordHandBaltState);
 
                 float aimSeconds = Mathf.Max(0f, aimWarningSeconds);
-                AttackTelegraphView aimWarning = aimSeconds > 0f
+                IAttackTelegraphHandle aimWarning = aimSeconds > 0f
                     ? ShowLineWarning(
                         demon,
                         spawnPosition,
@@ -2369,6 +2378,7 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
     }
 }
 
+// 책임: 마왕 폭격 패턴의 차지, 차선 경고, 연속 폭발 피해 흐름을 실행한다.
 public class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(1)] private int strikeCount = 6;
@@ -2511,6 +2521,7 @@ public class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
     }
 }
 
+// 책임: 마왕의 폭발 점프 이동, 착지 경고, 폭발 피해와 카메라 피드백을 실행한다.
 public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(0.1f)] private float travelSeconds = 0.7f;
@@ -2662,7 +2673,7 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
             maxLength = Mathf.Max(maxLength, lines[i].Length);
 
         HashSet<GameObject> fallbackDamagedTargets = new();
-        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry = new();
+        SharedHitRegistry2D sharedHitRegistry = new();
         for (float distance = spacing; distance <= maxLength + 0.01f; distance += spacing)
         {
             if (IsAbilityCancelled(spec))
@@ -2734,6 +2745,7 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
     }
 }
 
+// 책임: 에고소드 회수 패턴의 대사, 회수 이동, 완료 자세 복구 흐름을 실행한다.
 public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(0.1f)] private float recallSpeedMultiplier = 5f;
@@ -2857,6 +2869,7 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
     }
 }
 
+// 책임: 에고소드 세로 베기 패턴 실행을 검 액터에 위임하고 관련 대사를 재생한다.
 public class AbilityLogic_DemonKingEgoSwordVerticalStrike : AbilityLogic_DemonKingBase
 {
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -2877,6 +2890,7 @@ public class AbilityLogic_DemonKingEgoSwordVerticalStrike : AbilityLogic_DemonKi
     }
 }
 
+// 책임: 에고소드 십자 레이저 패턴 실행을 검 액터에 위임하고 발사 사운드를 전달한다.
 public class AbilityLogic_DemonKingEgoSwordCrossLaser : AbilityLogic_DemonKingBase
 {
     [SerializeField] private SoundRef laserFireSound;
@@ -2899,6 +2913,7 @@ public class AbilityLogic_DemonKingEgoSwordCrossLaser : AbilityLogic_DemonKingBa
     }
 }
 
+// 책임: 마왕의 벽 반사 돌진 경로 계산, 경고, 돌진 피해 처리를 실행한다.
 public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(1)] private int wallBounceCount = 4;
@@ -2948,6 +2963,7 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
     [SerializeField] private CameraShakeHook rushEndpointCameraShake = CameraShakeHook.Create(0.08f, 1f, 0.18f, 0.08f);
     [SerializeField] private CameraShakeHook finalLandingCameraShake = CameraShakeHook.Create(0.18f, 1f, 0.35f, 0.04f);
 
+    // 책임: 벽 돌진 후보 경로의 방향과 거리, 끝점을 보관한다.
     private readonly struct WallRushTrajectory
     {
         public WallRushTrajectory(Vector2 direction, float distance)
@@ -3012,7 +3028,7 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
             WallRushTrajectory warningTrajectory = ResolveRushTrajectory(demon, warningStart, direction);
             direction = warningTrajectory.Direction;
             LineArea warningLine = ResolveRushLineArea(warningStart, warningTrajectory);
-            AttackTelegraphView warningView = ShowLineAreaWarning(demon, warningLine, warningSeconds);
+            IAttackTelegraphHandle warningView = ShowLineAreaWarning(demon, warningLine, warningSeconds);
 
             float elapsed = 0f;
             while (elapsed < warningSeconds)
@@ -3273,6 +3289,7 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
     }
 }
 
+// 책임: groggy 회복 반격의 암전, 눈빛 경고, 분기별 충격 피해 흐름을 실행한다.
 public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(0f)] private float attackDelaySeconds = 0.4f;
@@ -3505,6 +3522,7 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
     }
 }
 
+// 책임: 마왕 최후 발악 패턴의 중앙 이동, 폭탄 투하, 교차 레이저 시퀀스를 실행한다.
 public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
 {
     private const string FinalLaserVfxResourcePath = "DemonKing/DemonKingEgoLaserVfx";

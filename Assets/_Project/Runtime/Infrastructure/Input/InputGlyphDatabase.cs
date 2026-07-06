@@ -5,9 +5,11 @@ using UnityEngine;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using UnityEditor;
 #endif
 
+/// <summary>
+/// 책임: 입력 키에 표시 라벨과 선택적 아이콘을 연결하는 직렬화 entry이다.
+/// </summary>
 [Serializable]
 public struct InputGlyphEntry
 {
@@ -23,6 +25,9 @@ public struct InputGlyphEntry
     }
 }
 
+/// <summary>
+/// 책임: UI가 입력 키 표시 텍스트와 아이콘을 함께 조회할 수 있게 하는 읽기 모델이다.
+/// </summary>
 public readonly struct InputGlyphPresentation
 {
     public InputGlyphPresentation(KeyCode key, string displayLabel, Sprite icon)
@@ -38,6 +43,9 @@ public readonly struct InputGlyphPresentation
     public bool HasIcon => Icon != null;
 }
 
+/// <summary>
+/// 책임: 입력 키 glyph 데이터베이스를 로드/복구하고 런타임 입력 표시 정보를 제공한다.
+/// </summary>
 [CreateAssetMenu(menuName = "Input/Input Glyph Database", fileName = "InputGlyphDatabase")]
 public sealed class InputGlyphDatabase : ScriptableObject
 {
@@ -334,18 +342,12 @@ public sealed class InputGlyphDatabase : ScriptableObject
     }
 
 #if UNITY_EDITOR
-    [InitializeOnLoadMethod]
-    private static void EnsureEditorDatabaseAssetExistsOnLoad()
+    public static void EnsureEditorDatabaseAssetExistsForEditor()
     {
-        EditorApplication.delayCall += EnsureEditorDatabaseAssetExistsDelayed;
-    }
-
-    private static void EnsureEditorDatabaseAssetExistsDelayed()
-    {
-        if (EditorApplication.isPlayingOrWillChangePlaymode)
+        if (EditorAuthoringPlayback.IsPlayingOrWillChangePlaymode())
             return;
 
-        InputGlyphDatabase database = AssetDatabase.LoadAssetAtPath<InputGlyphDatabase>(EditorAssetPath);
+        InputGlyphDatabase database = EditorAuthoringPlayback.LoadAssetAtPath<InputGlyphDatabase>(EditorAssetPath);
         if (database == null)
         {
             CreateOrRestoreEditorAsset();
@@ -353,10 +355,13 @@ public sealed class InputGlyphDatabase : ScriptableObject
         }
 
         database.EnsureEditorIconMapping();
-        EditorUtility.SetDirty(database);
-        AssetDatabase.SaveAssets();
+        EditorAuthoringPlayback.MarkDirty(database);
+        EditorAuthoringPlayback.SaveAssets();
     }
 
+    /// <summary>
+    /// 책임: 키보드맵 sprite sheet의 sprite index와 KeyCode를 연결하는 에디터 authoring entry이다.
+    /// </summary>
     private readonly struct GlyphSpriteBinding
     {
         public GlyphSpriteBinding(KeyCode key, int spriteIndex)
@@ -371,7 +376,7 @@ public sealed class InputGlyphDatabase : ScriptableObject
 
     private static InputGlyphDatabase CreateOrRestoreEditorAsset()
     {
-        InputGlyphDatabase database = AssetDatabase.LoadAssetAtPath<InputGlyphDatabase>(EditorAssetPath);
+        InputGlyphDatabase database = EditorAuthoringPlayback.LoadAssetAtPath<InputGlyphDatabase>(EditorAssetPath);
         bool created = false;
 
         if (database == null)
@@ -382,7 +387,7 @@ public sealed class InputGlyphDatabase : ScriptableObject
 
             database = CreateInstance<InputGlyphDatabase>();
             database.ResetToDefaultEntries();
-            AssetDatabase.CreateAsset(database, EditorAssetPath);
+            EditorAuthoringPlayback.CreateAsset(database, EditorAssetPath);
             created = true;
         }
 
@@ -393,9 +398,9 @@ public sealed class InputGlyphDatabase : ScriptableObject
             database.ResetToDefaultEntries();
 
         database.EnsureEditorIconMapping();
-        EditorUtility.SetDirty(database);
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
+        EditorAuthoringPlayback.MarkDirty(database);
+        EditorAuthoringPlayback.SaveAssets();
+        EditorAuthoringPlayback.RefreshAssets();
 
         InputGlyphDatabase loadedFromResources = Resources.Load<InputGlyphDatabase>(ResourcePath);
         return loadedFromResources != null ? loadedFromResources : database;
@@ -440,8 +445,7 @@ public sealed class InputGlyphDatabase : ScriptableObject
 
     private static Sprite[] LoadKeyboardMapSprites()
     {
-        return AssetDatabase.LoadAllAssetsAtPath(KeyboardMapPath)
-            .OfType<Sprite>()
+        return EditorAuthoringPlayback.LoadAllAssetsAtPath<Sprite>(KeyboardMapPath)
             .OrderBy(GetSpriteIndex)
             .ToArray();
     }

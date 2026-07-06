@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [DisallowMultipleComponent]
+/// <summary>
+/// 책임 : 튜토리얼 보스 레이저 경고/타격 연출을 순서대로 재생하고 presentation HP 감소 신호를 보낸다.
+/// </summary>
 public sealed class TutorialBossLaserPresentation : MonoBehaviour
 {
     [Serializable]
@@ -37,7 +40,7 @@ public sealed class TutorialBossLaserPresentation : MonoBehaviour
     [SerializeField] private SoundRef laserFireSound = SoundRef.FromKey("sound_boss_darklord_laser");
 
     [Header("Presentation HP")]
-    [SerializeField] private TutorialPresentationHpView presentationHpView;
+    [SerializeField] private MonoBehaviour presentationHpView;
     [SerializeField] private bool reduceHpOnEachStep = true;
 
     [Header("Events")]
@@ -55,6 +58,8 @@ public sealed class TutorialBossLaserPresentation : MonoBehaviour
     public UnityEvent OnSequenceCompleted => onSequenceCompleted;
     public IntEvent OnStepStarted => onStepStarted;
     public IntEvent OnStepHit => onStepHit;
+    private ITutorialPresentationHpView PresentationHpView =>
+        presentationHpView as ITutorialPresentationHpView;
 
     private void OnDisable()
     {
@@ -136,8 +141,9 @@ public sealed class TutorialBossLaserPresentation : MonoBehaviour
         if (cancelRequested)
             yield break;
 
-        if (reduceHpOnEachStep && presentationHpView != null)
-            presentationHpView.ReduceOne();
+        ITutorialPresentationHpView resolvedPresentationHpView = PresentationHpView;
+        if (reduceHpOnEachStep && resolvedPresentationHpView != null)
+            resolvedPresentationHpView.ReduceOne();
 
         onStepHit?.Invoke(stepIndex);
         PlayLaserFireSound(origin);

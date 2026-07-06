@@ -6,7 +6,6 @@ using UnityEngine.Serialization;
 using UnityGAS;
 
 [DisallowMultipleComponent]
-[RequireComponent(typeof(AttackTelegraphView))]
 // 이 클래스의 책임:
 // - 마녀 보스 평타1의 개별 타일 경고, 타격 표시, 피해 판정을 같은 기하 데이터로 실행한다.
 // - 경고/타격/피해 범위가 어긋날 때 진단할 수 있도록 타일 단위 로그를 제공한다.
@@ -14,7 +13,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
 {
     private const float HitTime = 0.12f;
 
-    private AttackTelegraphView telegraphView;
+    private IAttackTelegraphHandle telegraphView;
     private AttackTelegraphStyle warningStyle;
     private AttackTelegraphStyle hitStyle;
     private GameObject targetObject;
@@ -51,7 +50,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     private void Awake()
     {
         MigrateLegacyHitPresentation();
-        telegraphView = GetComponent<AttackTelegraphView>();
+        telegraphView = ResolveTelegraphView();
     }
 
     private void OnValidate()
@@ -191,7 +190,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         Vector3 hitDirection = ResolveHitDirection();
         Quaternion presentationRotation = Quaternion.Euler(0f, 0f, angleDeg);
         LogHitPresentation(presentationRotation);
-        WorldPresentationRuntime.PlayDeferredAsync(
+        WorldPresentationPlayback.PlayDeferredAsync(
             hitPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: hitPayload != null && hitPayload.sourceSystem != null ? hitPayload.sourceSystem.gameObject : gameObject,
@@ -284,6 +283,19 @@ public class WitchNormalAttack1Tile : MonoBehaviour
             $"effect={effectName}, effectScale={hitPresentation.effect.EffectiveScaleMultiplier}, " +
             $"particle={particleName}, particleScale={hitPresentation.particle.EffectiveScaleMultiplier}",
             this);
+    }
+
+    private IAttackTelegraphHandle ResolveTelegraphView()
+    {
+        MonoBehaviour[] behaviours = GetComponents<MonoBehaviour>();
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is IAttackTelegraphHandle handle)
+                return handle;
+        }
+
+        Debug.LogError($"[{nameof(WitchNormalAttack1Tile)}] 공격 타일에 텔레그래프 뷰 계약 구현이 없습니다.", this);
+        return null;
     }
 
     private static Vector3[] BuildRectangleCorners(Vector3 center, Vector2 size, float angle)

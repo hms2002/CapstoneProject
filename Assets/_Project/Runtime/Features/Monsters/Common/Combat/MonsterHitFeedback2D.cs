@@ -25,7 +25,7 @@ namespace UnityGAS
         [SerializeField] private string hitLoopBool = "IsHit";
 
         [Header("Flash")]
-        [SerializeField] private SpriteHitFlashController hitFlashController;
+        [SerializeField] private MonoBehaviour hitFlashController;
 
         [Header("Optional Tags")]
         [Tooltip("선택: 피격 중 상태 자체를 설명하는 태그")]
@@ -42,6 +42,7 @@ namespace UnityGAS
         [SerializeField] private GameplayTag hitReactImmuneTag;
 
         private TagSystem _tags;
+        private IHitFlashController2D _hitFlash;
         private Coroutine _reactionRoutine;
 
         private int _hitEnterTriggerHash;
@@ -54,8 +55,7 @@ namespace UnityGAS
             if (animator == null)
                 animator = GetComponentInChildren<Animator>();
 
-            if (hitFlashController == null)
-                hitFlashController = GetComponentInChildren<SpriteHitFlashController>();
+            _hitFlash = ResolveHitFlash();
 
             _hitEnterTriggerHash = string.IsNullOrWhiteSpace(hitEnterTrigger) ? 0 : Animator.StringToHash(hitEnterTrigger);
             _hitLoopBoolHash = string.IsNullOrWhiteSpace(hitLoopBool) ? 0 : Animator.StringToHash(hitLoopBool);
@@ -96,8 +96,7 @@ namespace UnityGAS
 
             PlayHitEnterAnimation();
 
-            if (hitFlashController != null)
-                hitFlashController.PlayFlash();
+            _hitFlash?.PlayFlash();
 
             yield return new WaitForSeconds(hitEnterSeconds);
 
@@ -123,6 +122,21 @@ namespace UnityGAS
             return hitReactImmuneTag != null &&
                    _tags != null &&
                    _tags.HasTag(hitReactImmuneTag);
+        }
+
+        /// <summary>
+        /// 책임 : authored component 또는 하위 컴포넌트에서 피격 플래시 계약 구현체를 찾는다.
+        /// </summary>
+        private IHitFlashController2D ResolveHitFlash()
+        {
+            if (hitFlashController is IHitFlashController2D authoredFlash)
+                return authoredFlash;
+
+            IHitFlashController2D discoveredFlash = GetComponentInChildren<IHitFlashController2D>();
+            if (discoveredFlash is MonoBehaviour discoveredBehaviour)
+                hitFlashController = discoveredBehaviour;
+
+            return discoveredFlash;
         }
 
         /// <summary>

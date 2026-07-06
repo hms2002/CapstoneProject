@@ -5,7 +5,7 @@ using UnityEngine;
 namespace UnityGAS
 {
     /// <summary>
-    /// 캐릭터(AbilitySystem) 당 AbilityDefinition 1개를 소유할 때 생기는 "런타임 상태"를 담는 그릇.
+    /// 책임: 캐릭터(AbilitySystem) 당 AbilityDefinition 1개를 소유할 때 생기는 "런타임 상태"를 담는 그릇.
     /// - Definition(SO)은 불변 데이터
     /// - Spec은 캐릭터별 고유 상태(쿨다운 남은 시간, 레벨, 차지/스택, 임시 런타임 변수 등)
     /// </summary>
@@ -35,12 +35,12 @@ namespace UnityGAS
         public override string ToString()
             => Definition != null ? $"{Definition.abilityName} (Lv.{Level})" : "Null AbilitySpec";
 
-        internal bool TryGetFloat(string v, out float outValue)
+        public bool TryGetFloat(string v, out float outValue)
         {
             return FloatVars.TryGetValue(v, out outValue);
         }
 
-        internal int GetInt(string key, int v)
+        public int GetInt(string key, int v)
         {
             if (IntVars.TryGetValue(key, out int value))
             {
@@ -49,7 +49,7 @@ namespace UnityGAS
             else return v;
         }
 
-        internal float GetFloat(string key, float v)
+        public float GetFloat(string key, float v)
         {
             if (FloatVars.TryGetValue(key, out float value))
             {
@@ -58,16 +58,17 @@ namespace UnityGAS
             else return v;
         }
 
-        internal void SetFloat(string key, float value)
+        public void SetFloat(string key, float value)
         {
             FloatVars[key] = value;
         }
 
-        internal void SetInt(string key, int value)
+        public void SetInt(string key, int value)
         {
-            IntVars[key] = value; // ✅
+            IntVars[key] = value;
         }
-        internal bool GetBool(string key, bool fallback = false)
+
+        public bool GetBool(string key, bool fallback = false)
         {
             if (BoolVars.TryGetValue(key, out bool value))
                 return value;
@@ -75,12 +76,12 @@ namespace UnityGAS
             return fallback;
         }
 
-        internal void SetBool(string key, bool value)
+        public void SetBool(string key, bool value)
         {
             BoolVars[key] = value;
         }
 
-        internal void ClearRuntimeVars()
+        public void ClearRuntimeVars()
         {
             FloatVars.Clear();
             IntVars.Clear();

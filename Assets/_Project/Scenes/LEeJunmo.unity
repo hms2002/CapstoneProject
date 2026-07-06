@@ -1060,7 +1060,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 211461868}
-        m_TargetAssemblyTypeName: UnlockResultUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: RewardDisplayUI, UI
         m_MethodName: Close
         m_Mode: 1
         m_Arguments:

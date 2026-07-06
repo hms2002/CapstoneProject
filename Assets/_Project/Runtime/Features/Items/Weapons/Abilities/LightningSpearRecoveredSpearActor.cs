@@ -1,10 +1,36 @@
 using System.Collections;
-using DG.Tweening;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : 번개 창 회수 창 actor의 소유자 추적, 배치 전환, 부유 연출, 생성/소멸 presentation 이벤트를 관리한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class LightningSpearRecoveredSpearActor : MonoBehaviour
 {
+    private enum Ease
+    {
+        Unset = 0,
+        Linear = 1,
+        InSine = 2,
+        OutSine = 3,
+        InOutSine = 4,
+        InQuad = 5,
+        OutQuad = 6,
+        InOutQuad = 7,
+        InCubic = 8,
+        OutCubic = 9,
+        InOutCubic = 10,
+        InQuart = 11,
+        OutQuart = 12,
+        InOutQuart = 13,
+        InQuint = 14,
+        OutQuint = 15,
+        InOutQuint = 16,
+        InBack = 26,
+        OutBack = 27,
+        InOutBack = 28
+    }
+
     [Header("Visual")]
     [SerializeField] private Transform visualRoot;
     [SerializeField] private GameObject bodyVisual;
@@ -45,9 +71,8 @@ public sealed class LightningSpearRecoveredSpearActor : MonoBehaviour
     private bool spawnCompleted;
     private bool despawnCompleted;
     private bool despawning;
-    private Tweener offsetTween;
-    private Tweener rotationTween;
-    private Tweener floatTween;
+    private Coroutine layoutMoveRoutine;
+    private Coroutine floatRoutine;
     private Coroutine spawnRoutine;
     private Coroutine effectHideRoutine;
     private Coroutine bodyHideRoutine;
@@ -117,11 +142,7 @@ public sealed class LightningSpearRecoveredSpearActor : MonoBehaviour
         visualForwardOffset = Mathf.Max(0f, forwardOffset);
         ApplyVisualOffset();
 
-        if (offsetTween != null && offsetTween.IsActive())
-            offsetTween.Kill();
-
-        if (rotationTween != null && rotationTween.IsActive())
-            rotationTween.Kill();
+        StopLayoutMoveRoutine();
 
         if (moveTweenSeconds <= 0f)
         {
@@ -131,33 +152,12 @@ public sealed class LightningSpearRecoveredSpearActor : MonoBehaviour
             return;
         }
 
-        Vector2 startOffset = localOffset;
-        offsetTween = DOTween.To(
-                () => startOffset,
-                value =>
-                {
-                    startOffset = value;
-                    localOffset = value;
-                    ApplyWorldPosition(false);
-                },
-                offset,
-                moveTweenSeconds)
-            .SetEase(moveEase)
-            .SetLink(gameObject);
-
-        float startRotation = layoutRotationDegrees;
-        rotationTween = DOTween.To(
-                () => startRotation,
-                value =>
-                {
-                    startRotation = value;
-                    layoutRotationDegrees = value;
-                    ApplyWorldPosition(false);
-                },
-                rotationDegrees,
-                moveTweenSeconds)
-            .SetEase(moveEase)
-            .SetLink(gameObject);
+        layoutMoveRoutine = StartCoroutine(PlayLayoutMoveRoutine(
+            localOffset,
+            offset,
+            layoutRotationDegrees,
+            rotationDegrees,
+            moveTweenSeconds));
     }
 
     public void PlayDespawnAndDestroy(float fallbackSeconds)
@@ -176,9 +176,8 @@ public sealed class LightningSpearRecoveredSpearActor : MonoBehaviour
             spawnRoutine = null;
         }
 
-        KillTween(ref offsetTween);
-        KillTween(ref rotationTween);
-        KillTween(ref floatTween);
+        StopLayoutMoveRoutine();
+        StopFloatRoutine();
         PlayDespawnPresentation();
 
         if (bodyHideRoutine != null)
@@ -283,24 +282,13 @@ public sealed class LightningSpearRecoveredSpearActor : MonoBehaviour
 
     private void RestartFloating()
     {
-        KillTween(ref floatTween);
+        StopFloatRoutine();
         floatOffsetY = 0f;
 
         if (floatAmplitude <= 0f)
             return;
 
-        floatTween = DOTween.To(
-                () => floatOffsetY,
-                value =>
-                {
-                    floatOffsetY = value;
-                    ApplyWorldPosition(false);
-                },
-                floatAmplitude,
-                floatDuration * 0.5f)
-            .SetEase(floatEase)
-            .SetLoops(-1, LoopType.Yoyo)
-            .SetLink(gameObject);
+        floatRoutine = StartCoroutine(PlayFloatRoutine());
     }
 
     private void PlaySpawnPresentation()
@@ -395,18 +383,130 @@ public sealed class LightningSpearRecoveredSpearActor : MonoBehaviour
 
     private void OnDestroy()
     {
-        KillTween(ref offsetTween);
-        KillTween(ref rotationTween);
-        KillTween(ref floatTween);
+        StopLayoutMoveRoutine();
+        StopFloatRoutine();
         Destroyed?.Invoke(this);
         Destroyed = null;
     }
 
-    private static void KillTween(ref Tweener tween)
+    private void StopLayoutMoveRoutine()
     {
-        if (tween != null && tween.IsActive())
-            tween.Kill();
+        if (layoutMoveRoutine == null)
+            return;
 
-        tween = null;
+        StopCoroutine(layoutMoveRoutine);
+        layoutMoveRoutine = null;
+    }
+
+    private void StopFloatRoutine()
+    {
+        if (floatRoutine == null)
+            return;
+
+        StopCoroutine(floatRoutine);
+        floatRoutine = null;
+    }
+
+    private IEnumerator PlayLayoutMoveRoutine(
+        Vector2 startOffset,
+        Vector2 targetOffset,
+        float startRotation,
+        float targetRotation,
+        float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration && !despawning)
+        {
+            elapsed += Time.deltaTime;
+            float t = duration > 0f ? elapsed / duration : 1f;
+            float easedT = EvaluateEase(moveEase, t);
+
+            localOffset = Vector2.LerpUnclamped(startOffset, targetOffset, easedT);
+            layoutRotationDegrees = Mathf.LerpUnclamped(startRotation, targetRotation, easedT);
+            ApplyWorldPosition(false);
+            yield return null;
+        }
+
+        if (!despawning)
+        {
+            localOffset = targetOffset;
+            layoutRotationDegrees = targetRotation;
+            ApplyWorldPosition(false);
+        }
+
+        layoutMoveRoutine = null;
+    }
+
+    private IEnumerator PlayFloatRoutine()
+    {
+        float halfDuration = Mathf.Max(0.01f, floatDuration * 0.5f);
+
+        while (!despawning)
+        {
+            yield return PlayFloatHalfCycle(0f, floatAmplitude, halfDuration);
+            yield return PlayFloatHalfCycle(floatAmplitude, 0f, halfDuration);
+        }
+    }
+
+    private IEnumerator PlayFloatHalfCycle(float startValue, float targetValue, float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration && !despawning)
+        {
+            elapsed += Time.deltaTime;
+            float t = duration > 0f ? elapsed / duration : 1f;
+            floatOffsetY = Mathf.LerpUnclamped(startValue, targetValue, EvaluateEase(floatEase, t));
+            ApplyWorldPosition(false);
+            yield return null;
+        }
+
+        if (!despawning)
+        {
+            floatOffsetY = targetValue;
+            ApplyWorldPosition(false);
+        }
+    }
+
+    private static float EvaluateEase(Ease ease, float t)
+    {
+        t = Mathf.Clamp01(t);
+        return ease switch
+        {
+            Ease.InSine => 1f - Mathf.Cos(t * Mathf.PI * 0.5f),
+            Ease.OutSine => Mathf.Sin(t * Mathf.PI * 0.5f),
+            Ease.InOutSine => -(Mathf.Cos(Mathf.PI * t) - 1f) * 0.5f,
+            Ease.InQuad => t * t,
+            Ease.OutQuad => 1f - (1f - t) * (1f - t),
+            Ease.InOutQuad => t < 0.5f
+                ? 2f * t * t
+                : 1f - Mathf.Pow(-2f * t + 2f, 2f) * 0.5f,
+            Ease.InCubic => t * t * t,
+            Ease.OutCubic => 1f - Mathf.Pow(1f - t, 3f),
+            Ease.InOutCubic => t < 0.5f
+                ? 4f * t * t * t
+                : 1f - Mathf.Pow(-2f * t + 2f, 3f) * 0.5f,
+            Ease.InQuart => t * t * t * t,
+            Ease.OutQuart => 1f - Mathf.Pow(1f - t, 4f),
+            Ease.InOutQuart => t < 0.5f
+                ? 8f * t * t * t * t
+                : 1f - Mathf.Pow(-2f * t + 2f, 4f) * 0.5f,
+            Ease.InQuint => t * t * t * t * t,
+            Ease.OutQuint => 1f - Mathf.Pow(1f - t, 5f),
+            Ease.InOutQuint => t < 0.5f
+                ? 16f * t * t * t * t * t
+                : 1f - Mathf.Pow(-2f * t + 2f, 5f) * 0.5f,
+            Ease.InBack => EaseInBack(t),
+            Ease.OutBack => 1f - EaseInBack(1f - t),
+            Ease.InOutBack => t < 0.5f
+                ? EaseInBack(t * 2f) * 0.5f
+                : 1f - EaseInBack((1f - t) * 2f) * 0.5f,
+            _ => t
+        };
+    }
+
+    private static float EaseInBack(float t)
+    {
+        const float back = 1.70158f;
+        return (back + 1f) * t * t * t - back * t * t;
     }
 }

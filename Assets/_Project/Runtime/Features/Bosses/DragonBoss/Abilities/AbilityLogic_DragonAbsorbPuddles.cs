@@ -90,7 +90,7 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
             yield break;
 
         CombatHeightState2D heightState = EnsureHeightState(dragon);
-        AttackTelegraphService telegraphService = dragon.GetComponent<AttackTelegraphService>();
+        IAttackTelegraphPresenter telegraphService = AttackTelegraphPresenterResolver.Resolve(dragon);
         Vector2 start = dragon.transform.position;
         Vector2 target = dragon.ArenaCenterPosition;
         if (Vector2.Distance(start, target) <= centerArriveDistance)
@@ -98,7 +98,7 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
 
         float duration = Mathf.Max(0.01f, centerJumpSeconds);
         float elapsed = 0f;
-        AttackTelegraphView impactTelegraph = ShowCenterImpactTelegraph(telegraphService, target, duration);
+        IAttackTelegraphHandle impactTelegraph = ShowCenterImpactTelegraph(telegraphService, target, duration);
 
         try
         {
@@ -151,7 +151,7 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
         if (dragon == null || !centerJumpPresentation.HasAnyContent)
             return;
 
-        WorldPresentationRuntime.Play(
+        WorldPresentationPlayback.Play(
             centerJumpPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: dragon.gameObject,
@@ -177,7 +177,7 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
         Vector2 origin = dragon.ResolveFireBreathMouthPosition(direction, fallbackForwardOffset: 0f);
         float angleDeg = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-        WorldPresentationRuntime.Play(
+        WorldPresentationPlayback.Play(
             inhalePresentation,
             WorldPresentationContext.AtWorld(
                 instigator: dragon.gameObject,
@@ -197,7 +197,7 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
         if (dragon == null || !centerLandingPresentation.HasAnyContent)
             return;
 
-        WorldPresentationRuntime.Play(
+        WorldPresentationPlayback.Play(
             centerLandingPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: dragon.gameObject,
@@ -238,8 +238,8 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
         return 1f - Mathf.Pow(normalizedDrop, centerLandingDropSharpness);
     }
 
-    private AttackTelegraphView ShowCenterImpactTelegraph(
-        AttackTelegraphService telegraphService,
+    private IAttackTelegraphHandle ShowCenterImpactTelegraph(
+        IAttackTelegraphPresenter telegraphService,
         Vector2 impactPosition,
         float duration)
     {

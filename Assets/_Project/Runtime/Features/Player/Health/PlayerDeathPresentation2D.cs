@@ -68,17 +68,17 @@ public sealed class PlayerDeathPresentation2D : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 책임 :
-    /// - 플레이어 사망 연출 시작 시 전용 사운드를 1회 재생한다.
-    /// - SoundManager 문맥에 플레이어 자신을 실어 추후 앵커 정책과 카탈로그 규칙을 재사용한다.
-    /// </summary>
+        /// <summary>
+        /// 책임 :
+        /// - 플레이어 사망 연출 시작 시 전용 사운드를 1회 재생한다.
+        /// - Core 오디오 문맥에 플레이어 자신을 실어 앵커 정책과 카탈로그 규칙을 재사용한다.
+        /// </summary>
     private void PlayDeathSound()
     {
         if (!deathSound.IsSet)
             return;
 
-        SoundManager.EnsureInstance().Play(deathSound, new SoundPlaybackContext
+        SoundPlaybackUtility.Play(deathSound, new SoundPlaybackContext
         {
             Instigator = gameObject,
             Causer = gameObject,

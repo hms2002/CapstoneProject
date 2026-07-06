@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-30
+last_reviewed: 2026-07-04
 ---
 
 # Run Special NPC Structure
@@ -19,7 +19,7 @@ This is a structure-memory map. It does not override `Docs/Architecture/Dialogue
 | --- | --- |
 | Interaction entry | `RunSpecialNpcInteractor` derives from `InteractableBase`, so player prompt, proximity, and interact-state gating stay aligned with other world objects. |
 | Speech bubble dialogue | `RunSpecialNpcInteractor` sequences `RunSpecialNpcDialogueSetSO` branches through `SpeechBubbleComponent`. It does not call `DialogueController`, Ink, portrait UI, or `DialogueView` choices. |
-| Choice UI | `RunSpecialNpcChoicePresenter` projects an authored `CanvasGroup`, `Button[]`, and `TMP_Text[]`. `RunSpecialNpcChoiceAnchorFollower` can position that screen-space panel from a player world anchor. It relays clicks and number-key selection after an input guard. If a choice button root has the existing `DialogueChoiceKeyGlyph`, the presenter uses that component; otherwise it can bind an authored slot image named `KeyNav`, `Nav KeyGlyph`, or `KeyGlyph` under the button or slot parent to the visible `1`/`2`/`3` keyboard guide icon. It does not create UI hierarchy. A scene may explicitly enable single-choice execution without a presenter for one-action bootstrap authoring, but multi-choice NPCs still need an authored presenter. |
+| Choice UI | `RunSpecialNpcInteractor` talks to choice presentation through `IRunSpecialNpcChoicePresenter` and `IRunSpecialNpcChoiceAnchorFollower`. Concrete UI `RunSpecialNpcChoicePresenter` projects an authored `CanvasGroup`, `Button[]`, and `TMP_Text[]` under UI/Dialogue/RunSpecial. `RunSpecialNpcChoiceAnchorFollower` can position that screen-space panel from a player world anchor. It relays clicks and number-key selection after an input guard. If a choice button root has the existing `DialogueChoiceKeyGlyph`, the presenter uses that component; otherwise it can bind an authored slot image named `KeyNav`, `Nav KeyGlyph`, or `KeyGlyph` under the button or slot parent to the visible `1`/`2`/`3` keyboard guide icon. It does not create UI hierarchy. A scene may explicitly enable single-choice execution without a presenter for one-action bootstrap authoring, but multi-choice NPCs still need an authored presenter. |
 | Flow ownership | `RunSpecialNpcInteractor` owns the active flow, SO branch execution, input blocker, run-timer pause, `Time.timeScale` pause, line skip input, letterbox lifetime, camera focus/restore, player talking state, and cleanup. |
 | Feature modules | `RunSpecialNpcFeatureBase` is the shared feature entry. Current modules are `RunConstructionNpcFeature` and `RunSameSceneTeleportNpcFeature`. Features can opt into post-presentation execution through `ExecuteAfterRunSpecialPresentationClose`. |
 | Dialogue data | `RunSpecialNpcDialogueSetSO` owns authored line/choice branches. The primary `RunSpecialNpcFeatureBase` chooses the branch key and resolves feature-specific line text. The custom Inspector normalizes newly added line entries to the existing speech-bubble default duration and theme values. At playback time, line breaks inside one text field are expanded into separate speech-bubble lines. |
@@ -28,16 +28,17 @@ This is a structure-memory map. It does not override `Docs/Architecture/Dialogue
 
 ## Key Files
 
-- `Assets/LeeJunMo/Script/Dialogue/NPC/RunSpecial/RunSpecialNpcInteractor.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/RunSpecial/RunSpecialNpcChoicePresenter.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/RunSpecial/RunSpecialNpcChoiceAnchorFollower.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/RunSpecial/RunSpecialNpcFeatureBase.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/RunSpecial/RunSpecialNpcModels.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/RunSpecial/RunSpecialNpcBranch.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/RunSpecial/RunSpecialNpcDialogueSetSO.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/RunSpecial/RunSpecialNpcConstructionProgress.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/RunSpecial/RunConstructionNpcFeature.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/RunSpecial/RunSameSceneTeleportNpcFeature.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/RunSpecial/RunSpecialNpcInteractor.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/RunSpecial/RunSpecialNpcChoicePresentationContracts.cs`
+- `Assets/_Project/Runtime/UI/Dialogue/RunSpecial/RunSpecialNpcChoicePresenter.cs`
+- `Assets/_Project/Runtime/UI/Dialogue/RunSpecial/RunSpecialNpcChoiceAnchorFollower.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/RunSpecial/RunSpecialNpcFeatureBase.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/RunSpecial/RunSpecialNpcModels.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/RunSpecial/RunSpecialNpcBranch.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/RunSpecial/RunSpecialNpcDialogueSetSO.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/RunSpecial/RunSpecialNpcConstructionProgress.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/RunSpecial/RunConstructionNpcFeature.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/RunSpecial/RunSameSceneTeleportNpcFeature.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Characters/Runtime/PlayerCinematicProtection.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Characters/Runtime/PlayerTargetabilityBlocker.cs`
 - `Assets/Script/Enemy/Enemy.cs`
@@ -116,7 +117,7 @@ This is a structure-memory map. It does not override `Docs/Architecture/Dialogue
 
 - The flow owner owns active conversation state, dialogue-set branch execution, input-blocking window, run-timer pause, and cleanup.
 - `RunSpecialNpcDialogueSetSO` owns authored line/choice data, while the primary feature owns feature-specific branch-key selection and line text formatting.
-- The flow owner also owns the local `Time.timeScale` pause, letterbox overlay lifetime, and temporary camera focus state. Speech bubble and choice UI own only presentation and input relay.
+- The flow owner also owns the local `Time.timeScale` pause, letterbox overlay lifetime, and temporary camera focus state. Speech bubble and choice UI own only presentation and input relay. The flow should depend on `IRunSpecialNpcChoicePresenter` / `IRunSpecialNpcChoiceAnchorFollower`, not concrete UI classes.
 - Run-special camera focus reuses `CameraBootstrap.GetPlayerCamera()`, `GetBrain()`, and `GetLegacyFollow()`. It caches Follow/LookAt/Priority, legacy follow enabled state, and `CinemachineBrain.IgnoreTimeScale`, then restores them on normal exit or cleanup.
 - Run-special HUD fade reuses `CinematicLetterboxOverlay`, but passes an explicit layer list that fades `GameplayHUD`, `Popup`, `Hover`, `Prompt`, `Reward`, `DamagePopup`, and `BossHUD`. `Dialogue` is intentionally excluded because run-special choices are authored there.
 - `SpeechBubble` tweens run on unscaled time so run-special dialogue can continue while `Time.timeScale` is paused.
@@ -135,7 +136,7 @@ This is a structure-memory map. It does not override `Docs/Architecture/Dialogue
 - Add authored line/choice data in `RunSpecialNpcDialogueSetSO`.
 - Add new feature dialogue state by extending the feature's branch-key API and the dialogue set SO/editor branch surface; do not add feature-specific branch checks to `RunSpecialNpcInteractor`.
 - Add feature modules by deriving from `RunSpecialNpcFeatureBase`.
-- Add presenter prefabs/scene objects with `RunSpecialNpcChoicePresenter` and serialized button/text references. Add the existing `DialogueChoiceKeyGlyph` to each button root or an authored slot-owned `KeyNav` / `Nav KeyGlyph` / `KeyGlyph` image when the button should show a keyboard shortcut guide icon.
+- Add presenter prefabs/scene objects with UI `RunSpecialNpcChoicePresenter` and serialized button/text references. `RunSpecialNpcInteractor.choicePresenter` is a `MonoBehaviour` slot and the assigned object must implement `IRunSpecialNpcChoicePresenter`. Add the existing `DialogueChoiceKeyGlyph` to each button root or an authored slot-owned `KeyNav` / `Nav KeyGlyph` / `KeyGlyph` image when the button should show a keyboard shortcut guide icon.
 - Add scene/prefab references for speech bubble anchors, choice anchors, teleport destinations, and construction site modules. A construction site should contain `BlockedState` with temporary wall tilemap/colliders and `OpenState` with open ground, optional wall edges, Door/Shortcut anchors, and optional Chest.
 - Add validation later if these NPCs become common: missing destination, missing speech bubble, missing target shortcut, invalid cost, invalid construction id, too many choices for authored buttons, and missing gate target.
 

@@ -4,6 +4,9 @@ using CapstoneAudio;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : 아이템 도감의 하위 탭, 페이지 이동, 항목 선택, 책장 연출 연계를 조율한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class EncyclopediaItemTab : MonoBehaviour
 {
@@ -77,7 +80,7 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
     private void AutoWireReferences()
     {
         ResolveReferences();
-        UnityEditor.EditorUtility.SetDirty(this);
+        EditorAuthoringPlayback.MarkDirty(this);
     }
 #endif
 

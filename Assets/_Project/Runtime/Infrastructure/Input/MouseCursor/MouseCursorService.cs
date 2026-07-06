@@ -22,6 +22,7 @@ public enum MouseCursorVariant
     InteractablePressed = 4
 }
 
+// 책임: 커서 스프라이트, hotspot, 소프트웨어 커서 scale 설정을 보관한다.
 [Serializable]
 public sealed class MouseCursorSpriteDefinition
 {
@@ -30,6 +31,7 @@ public sealed class MouseCursorSpriteDefinition
     [Min(0.1f)] public float scale = 1f;
 }
 
+// 책임: 일반 커서 도메인의 variant별 커서 스프라이트 설정을 보관한다.
 [Serializable]
 public sealed class MouseCursorDomainDefinition
 {
@@ -51,6 +53,7 @@ public sealed class MouseCursorDomainDefinition
     }
 }
 
+// 책임: 도감 UI 전용 커서 도메인의 variant별 커서 스프라이트 설정을 보관한다.
 [Serializable]
 public sealed class MouseCursorEncyclopediaDomainDefinition
 {
@@ -74,7 +77,7 @@ public sealed class MouseCursorEncyclopediaDomainDefinition
 [DefaultExecutionOrder(1000)]
 [DisallowMultipleComponent]
 // Responsibility: resolves the active cursor domain/variant and presents a safe software or hardware cursor at runtime.
-public sealed class MouseCursorService : MonoBehaviour
+public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
 {
     private const string DefaultThemeResourcePath = "DefaultMouseCursorTheme";
     private const int DialogueDomainPriority = 50;
@@ -87,6 +90,7 @@ public sealed class MouseCursorService : MonoBehaviour
         public long order;
     }
 
+    // 책임: 커서 상태를 요청한 owner 객체의 생존 여부를 추적한다.
     private sealed class OwnerFlag
     {
         public UnityEngine.Object owner;
@@ -195,6 +199,7 @@ public sealed class MouseCursorService : MonoBehaviour
         }
 
         Instance = this;
+        MouseCursorPlayback.RegisterBackend(this);
         MarkPersistent();
         EnsureThemeLoaded();
     }
@@ -210,6 +215,8 @@ public sealed class MouseCursorService : MonoBehaviour
 
     private void OnDestroy()
     {
+        MouseCursorPlayback.UnregisterBackend(this);
+
         if (Instance == this)
             Instance = null;
 
@@ -484,7 +491,7 @@ public sealed class MouseCursorService : MonoBehaviour
         int highestPriority = int.MinValue;
         long latestOrder = long.MinValue;
 
-        if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+        if (DialoguePlayback.IsPlaying)
         {
             resolved = MouseCursorDomain.NpcUi;
             highestPriority = DialogueDomainPriority;

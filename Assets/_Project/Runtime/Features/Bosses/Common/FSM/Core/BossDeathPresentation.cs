@@ -46,10 +46,10 @@ public sealed class BossDeathPresentation : MonoBehaviour
     [SerializeField, Min(0f)] private float deathCinematicOutroDuration = 0.35f;
 
     [Header("References")]
-    [SerializeField] private CameraPresentationDirector deathCameraDirector;
+    [SerializeField] private MonoBehaviour deathCameraDirector;
     [SerializeField] private Animator deathAnimator;
     [SerializeField] private Transform deathEffectAnchor;
-    [SerializeField] private BossSpeechController speechController;
+    [SerializeField] private MonoBehaviour speechController;
 
     [Header("Animation")]
     [SerializeField] private AnimationStepSettings breakdownAnimation = new AnimationStepSettings
@@ -81,7 +81,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private BossControllerBase owner;
     private Coroutine runningSequence;
-    private CinematicLetterboxOverlay overlay;
+    private ICinematicLetterboxOverlayHandle overlay;
     private readonly List<Renderer> cachedDeathRenderers = new();
 
     private GameFlowInputBlocker inputBlocker;
@@ -94,6 +94,8 @@ public sealed class BossDeathPresentation : MonoBehaviour
     public bool ShouldDeferDeathAnimation => HandlesDeathFlow;
     public bool IsRunning => runningSequence != null;
     public bool CompletedViaTerminalEnding => completedViaTerminalEnding;
+    private ICameraPresentationDirector DeathCameraDirector =>
+        CameraPresentationPlayback.FromBehaviour(deathCameraDirector);
 
     private void Awake()
     {
@@ -154,9 +156,9 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private IEnumerator RunDeathPresentationRoutine()
     {
-        SoundManager.EnsureInstance().StopMusic();
+        SoundPlaybackUtility.StopMusic();
         LockPlayerControls();
-        overlay = new CinematicLetterboxOverlay();
+        overlay = CinematicLetterboxPlayback.CreateOverlay();
         bool hasTerminalEnding = TryGetTerminalEndingSequence(out BossDefeatEndingSequence endingSequence);
         if (hasTerminalEnding)
             AcquireTerminalNonDialogueUiSuppression();
@@ -172,8 +174,9 @@ public sealed class BossDeathPresentation : MonoBehaviour
                 deathLetterboxScreenHeightRatio,
                 deathUiTargetAlpha));
 
-        if (deathCameraDirector != null)
-            yield return deathCameraDirector.FocusBossWithDeathLensRoutine();
+        ICameraPresentationDirector resolvedDeathCameraDirector = DeathCameraDirector;
+        if (resolvedDeathCameraDirector != null)
+            yield return resolvedDeathCameraDirector.FocusBossWithDeathLensRoutine();
 
         yield return overlayIntroRoutine;
         yield return WaitForPresentationSeconds(deathPreSpeechDelaySeconds);
@@ -191,9 +194,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
             }
             else
             {
-                bool transitionStarted =
-                    SceneTransitionCoordinator.Instance != null &&
-                    SceneTransitionCoordinator.Instance.IsTransitionActive;
+                bool transitionStarted = SceneTransitionPlayback.IsTransitionActive;
                 ReleaseTerminalNonDialogueUiSuppression(restoreIfIncomplete: !transitionStarted);
             }
 
@@ -215,8 +216,9 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         Coroutine overlayOutroRoutine = StartCoroutine(overlay.PlayOut(deathCinematicOutroDuration));
 
-        if (deathCameraDirector != null)
-            yield return deathCameraDirector.ReturnToPlayerRoutine();
+        resolvedDeathCameraDirector = DeathCameraDirector;
+        if (resolvedDeathCameraDirector != null)
+            yield return resolvedDeathCameraDirector.ReturnToPlayerRoutine();
 
         yield return overlayOutroRoutine;
 
@@ -242,17 +244,17 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private void ResolveReferences()
     {
-        if (deathCameraDirector == null)
-            deathCameraDirector = GetComponent<CameraPresentationDirector>();
+        if (DeathCameraDirector == null)
+            deathCameraDirector = CameraPresentationPlayback.Get(this) as MonoBehaviour;
 
-        if (deathCameraDirector == null)
-            deathCameraDirector = FindAnyObjectByType<CameraPresentationDirector>();
+        if (DeathCameraDirector == null)
+            deathCameraDirector = CameraPresentationPlayback.FindAny() as MonoBehaviour;
 
         if (deathAnimator == null)
             deathAnimator = GetComponent<Animator>();
 
-        if (speechController == null)
-            speechController = GetComponent<BossSpeechController>();
+        if (speechController == null || speechController is not IBossSpeechPlayback)
+            speechController = ResolveSpeechPlaybackBehaviour();
 
         if (terminalEndingSequence == null)
             terminalEndingSequence = GetComponent<BossDefeatEndingSequence>();
@@ -304,11 +306,10 @@ public sealed class BossDeathPresentation : MonoBehaviour
         if (hasTerminalNonDialogueUiSuppression)
             return;
 
-        DialogueService service = DialogueService.Instance;
-        if (service == null)
+        if (!DialoguePlayback.IsAvailable)
             return;
 
-        service.AcquireNonDialogueUiSuppression(this);
+        DialoguePlayback.AcquireNonDialogueUiSuppression(this);
         hasTerminalNonDialogueUiSuppression = true;
     }
 
@@ -317,13 +318,12 @@ public sealed class BossDeathPresentation : MonoBehaviour
         if (!hasTerminalNonDialogueUiSuppression)
             return;
 
-        DialogueService service = DialogueService.Instance;
-        if (service != null)
+        if (DialoguePlayback.IsAvailable)
         {
             if (restoreIfIncomplete)
-                service.ReleaseNonDialogueUiSuppression(this);
+                DialoguePlayback.ReleaseNonDialogueUiSuppression(this);
             else
-                service.ReleaseNonDialogueUiSuppressionWithoutRestore(this);
+                DialoguePlayback.ReleaseNonDialogueUiSuppressionWithoutRestore(this);
         }
 
         hasTerminalNonDialogueUiSuppression = false;
@@ -346,21 +346,22 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private IEnumerator PlayDeathSpeechAndWait(bool useTerminalEndingSpeechTiming)
     {
-        if (speechController == null)
+        IBossSpeechPlayback speechPlayback = speechController as IBossSpeechPlayback;
+        if (speechPlayback == null)
         {
-            Debug.LogWarning("[BossDeathPresentation] BossSpeechController is missing.", this);
+            Debug.LogWarning("[BossDeathPresentation] Boss speech playback is missing.", this);
             yield break;
         }
 
         bool bubbleHidden = false;
         bool started = useTerminalEndingSpeechTiming
-            ? speechController.TrySpeakSituationAnimated(
+            ? speechPlayback.TrySpeakSituationAnimated(
                 deathSpeechSituation,
                 deathSpeechDuration,
                 DialogueAnimType.Slow,
                 () => bubbleHidden = true,
                 ApplyTerminalDeathSpeechMotion)
-            : speechController.TrySpeakSituation(
+            : speechPlayback.TrySpeakSituation(
                 deathSpeechSituation,
                 deathSpeechDuration,
                 () => bubbleHidden = true);
@@ -557,7 +558,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         if (owner != null)
         {
-            RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(owner);
+            RunProgressPlayback.NotifyBossRewardsReady(owner);
             return;
         }
 
@@ -571,8 +572,8 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         Transform anchor = deathEffectAnchor != null ? deathEffectAnchor : transform;
         Vector3 spawnPosition = anchor.position + deathVanishEffectOffset;
-        GameObject resolvedPrefab = PresentationAssetProvider.ResolvePrefab(deathVanishEffectPrefab);
-        GameObject effectInstance = Instantiate(resolvedPrefab != null ? resolvedPrefab : deathVanishEffectPrefab, spawnPosition, Quaternion.identity);
+        GameObject resolvedPrefab = PresentationAssetPlayback.ResolvePrefab(deathVanishEffectPrefab);
+        GameObject effectInstance = Instantiate(resolvedPrefab, spawnPosition, Quaternion.identity);
         float destroyDelay = ResolveEffectCleanupDelay(effectInstance);
         if (destroyDelay > 0f)
             Destroy(effectInstance, destroyDelay);
@@ -636,17 +637,32 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private IEnumerator RestoreCameraAfterIncompleteTerminalEndingRoutine()
     {
-        if (deathCameraDirector == null)
+        ICameraPresentationDirector resolvedDeathCameraDirector = DeathCameraDirector;
+        if (resolvedDeathCameraDirector == null)
             yield break;
 
-        yield return deathCameraDirector.ReturnToPlayerRoutine();
+        yield return resolvedDeathCameraDirector.ReturnToPlayerRoutine();
     }
 
     private void RestoreCameraAfterIncompleteTerminalEnding()
     {
-        if (completedViaTerminalEnding || deathCameraDirector == null)
+        ICameraPresentationDirector resolvedDeathCameraDirector = DeathCameraDirector;
+        if (completedViaTerminalEnding || resolvedDeathCameraDirector == null)
             return;
 
-        deathCameraDirector.RestoreDefaultState();
+        resolvedDeathCameraDirector.RestoreDefaultState();
+    }
+
+    private MonoBehaviour ResolveSpeechPlaybackBehaviour()
+    {
+        MonoBehaviour[] behaviours = GetComponents<MonoBehaviour>();
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+            if (behaviour is IBossSpeechPlayback)
+                return behaviour;
+        }
+
+        return null;
     }
 }

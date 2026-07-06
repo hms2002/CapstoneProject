@@ -6,6 +6,7 @@ using UnityGAS;
 /// WeaponPresentationRig2D.
 /// </summary>
 [DisallowMultipleComponent]
+// 책임: 플레이어 마우스 월드 위치와 조준 방향을 계산해 전투 입력/무기 로직에 제공한다.
 public sealed class PlayerAim2D : MonoBehaviour, IAimDirectionSource2D
 {
     private const string AimBlockedTagResourcePath = "Tags/State.Aim.Blocked";
@@ -61,7 +62,7 @@ public sealed class PlayerAim2D : MonoBehaviour, IAimDirectionSource2D
         if (tagSystem != null && aimLockedTag != null && tagSystem.HasTag(aimLockedTag))
             return;
 
-        var world = InputBindingService.EnsureInstance().GetPointerWorldPosition(mainCamera, 0f);
+        var world = InputActionQuery.GetPointerWorldPosition(mainCamera, 0f);
         MouseWorld = world;
 
         Vector2 dir = world - transform.position;

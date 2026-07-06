@@ -1,0 +1,39 @@
+{
+    "name": "Editor",
+    "rootNamespace": "",
+    "references": [
+        "Core",
+        "Gameplay",
+        "Infrastructure",
+        "Presentation",
+        "UI",
+        "Ink-Libraries",
+        "InkEditor",
+        "Unity.Addressables",
+        "Unity.Addressables.Editor",
+        "Unity.ResourceManager",
+        "Unity.Cinemachine",
+        "Unity.Cinemachine.Editor",
+        "Unity.TextMeshPro",
+        "Unity.TextMeshPro.Editor",
+        "UnityEngine.UI",
+        "UnityEditor.UI",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Universal.2D.Runtime",
+        "Unity.RenderPipelines.Universal.Editor",
+        "Unity.2D.Animation.Runtime",
+        "Unity.2D.Animation.Editor",
+        "Unity.2D.PixelPerfect"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

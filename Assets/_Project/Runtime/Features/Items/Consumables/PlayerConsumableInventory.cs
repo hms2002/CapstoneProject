@@ -240,7 +240,7 @@ public class PlayerConsumableInventory : MonoBehaviour
     /// </summary>
     private void PlayConsumableUseSound()
     {
-        SoundManager.EnsureInstance().Play(EatPotionSound, new SoundPlaybackContext
+        SoundPlaybackUtility.Play(EatPotionSound, new SoundPlaybackContext
         {
             Instigator = gameObject,
             Causer = gameObject,
@@ -251,6 +251,7 @@ public class PlayerConsumableInventory : MonoBehaviour
     }
 }
 
+// 책임: 소모품 사용 시 플레이어에 부착되는 회복 파티클의 재생과 정리 시간을 처리한다.
 internal static class PlayerHealParticlePlayback
 {
     private const float MinimumDestroyDelay = 0.1f;

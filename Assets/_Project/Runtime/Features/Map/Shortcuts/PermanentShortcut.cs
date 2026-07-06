@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// 책임 : 영구 해금 가능한 숏컷 상호작용의 공통 성공 처리와 저장된 활성화 표시 복원을 담당한다.
+/// </summary>
 public abstract class PermanentShortcut : ShortcutBase
 {
     protected override bool RequiredDoorIsPermanent => true;
@@ -15,10 +18,10 @@ public abstract class PermanentShortcut : ShortcutBase
 
     protected virtual void Start()
     {
-        if (targetDoor == null || ShortcutProgressService.Instance == null)
+        if (targetDoor == null || !ShortcutProgressStore.IsAvailable)
             return;
 
-        if (ShortcutProgressService.Instance.IsShortcutUnlocked(targetDoor.mapID, targetDoor.doorID))
+        if (ShortcutProgressStore.IsShortcutUnlocked(targetDoor.mapID, targetDoor.doorID))
             SetActivatedVisual();
     }
 

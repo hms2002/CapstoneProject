@@ -53,7 +53,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
         if (dragon == null)
             yield break;
 
-        AttackTelegraphService telegraphService = dragon.GetComponent<AttackTelegraphService>();
+        IAttackTelegraphPresenter telegraphService = AttackTelegraphPresenterResolver.Resolve(dragon);
 
         try
         {
@@ -75,7 +75,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
 
     private IEnumerator RunFireBreathSequence(
         DragonController dragon,
-        AttackTelegraphService telegraphService,
+        IAttackTelegraphPresenter telegraphService,
         AbilitySpec spec)
     {
         dragon.PlayPatternTrigger(DragonAnimationKeys.FirePrepare);
@@ -247,7 +247,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
         Vector2 direction = dragon.GetDirectionToTargetOrFacing();
         WorldPresentationContext context = BuildInhalePresentationContext(dragon, direction);
 
-        WorldPresentationRuntime.PlaySignalOnly(inhalePreparePresentation, context);
+        WorldPresentationPlayback.PlaySignalOnly(inhalePreparePresentation, context);
         AddFollowedPresentationVisual(visuals, inhalePreparePresentation.effect, context);
         AddFollowedPresentationVisual(visuals, inhalePreparePresentation.particle, context);
         return visuals;
@@ -301,7 +301,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
         if (visuals == null || !hook.HasContent)
             return;
 
-        GameObject instance = PresentationSpawnService.SpawnPersistent(hook, context);
+        GameObject instance = WorldPresentationPlayback.SpawnPersistent(hook, context);
         if (instance != null)
             visuals.Add(new FollowedPresentationVisual(instance, hook));
     }
@@ -354,7 +354,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
     }
 
     private void ShowOrUpdateWarningTelegraph(
-        AttackTelegraphService telegraphService,
+        IAttackTelegraphPresenter telegraphService,
         ConeAimSnapshot aim,
         float duration)
     {
@@ -561,7 +561,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
 
     /// <summary>
     /// 책임:
-    /// PresentationSpawnService로 생성된 준비 이펙트 인스턴스를 특정 월드 프레젠테이션 문맥에 맞춰 갱신하고 해제한다.
+    /// Core 월드 프레젠테이션 계약으로 생성된 준비 이펙트 인스턴스를 특정 월드 프레젠테이션 문맥에 맞춰 갱신하고 해제한다.
     /// </summary>
     private readonly struct FollowedPresentationVisual
     {
@@ -590,7 +590,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
         public void Release()
         {
             if (instance != null)
-                PresentationSpawnService.Release(instance);
+                WorldPresentationPlayback.Release(instance);
         }
     }
 }

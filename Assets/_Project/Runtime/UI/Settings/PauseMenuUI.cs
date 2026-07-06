@@ -1,7 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public sealed class PauseMenuUI : MonoBehaviour, IStackableUI
+/// <summary>
+/// 책임 : 일시정지 메뉴 화면의 버튼 입력, UI stack 상태, 타이틀/설정 진입 명령을 처리한다.
+/// </summary>
+public sealed class PauseMenuUI : MonoBehaviour, IStackableUI, ITitleScenePersistentCleanupTarget
 {
     private const int SystemCursorPriority = 300;
 

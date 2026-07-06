@@ -8,7 +8,10 @@ using UnityEngine.UI;
 
 [DefaultExecutionOrder(-858)]
 [DisallowMultipleComponent]
-public sealed class LoadingOverlayController : MonoBehaviour
+/// <summary>
+/// 책임 : 씬 로딩 중 표시되는 전역 로딩 오버레이의 표시 상태, 진행률, 여행 비주얼, managed presentation 수명을 관리한다.
+/// </summary>
+public sealed class LoadingOverlayController : MonoBehaviour, ILoadingPresentationStateBackend
 {
     public static LoadingOverlayController Instance { get; private set; }
     public bool IsActiveLoadingPresentation { get; private set; }
@@ -255,6 +258,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         }
 
         Instance = this;
+        LoadingPresentationQuery.RegisterBackend(this);
         RuntimeServiceOwnership.Adopt(this);
         ResolveViewIfNeeded(allowRuntimeFallback: false);
         ForceHidePresentation();
@@ -274,7 +278,10 @@ public sealed class LoadingOverlayController : MonoBehaviour
         RestoreOverlayCanvasSorting();
         IsActiveLoadingPresentation = false;
         if (Instance == this)
+        {
             Instance = null;
+            LoadingPresentationQuery.UnregisterBackend(this);
+        }
     }
 
     private void OnApplicationQuit()
@@ -445,7 +452,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
     private LoadingOverlayView ResolveDesiredView(bool allowRuntimeFallback)
     {
         LoadingOverlayView preferredCanvasView = null;
-        Canvas loadingCanvas = GlobalUIRoot.GetCanvas(GlobalCanvasLayer.Loading);
+        Canvas loadingCanvas = GlobalCanvasPlayback.GetCanvas(GlobalCanvasLayer.Loading);
         if (loadingCanvas != null)
         {
             preferredCanvasView = loadingCanvas.GetComponentInChildren<LoadingOverlayView>(includeInactive: true);
@@ -735,7 +742,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         RuntimePresentationFallbackAudit.Record(
             this,
             "Loading overlay fallback",
-            "a scene-authored LoadingOverlayView or GlobalUIRoot loading overlay prefab");
+            "a scene-authored LoadingOverlayView or global loading overlay prefab");
 
         runtimeFallbackCanvas = new GameObject(
             "RuntimeLoadingCanvas",

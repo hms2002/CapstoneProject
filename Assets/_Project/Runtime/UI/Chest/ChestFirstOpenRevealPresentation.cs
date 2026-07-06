@@ -14,6 +14,7 @@ using UnityEngine.UI;
 /// </summary>
 [ExecuteAlways]
 [DisallowMultipleComponent]
+// 책임: 첫 상자 오픈 UI의 프레임, 보상 슬롯, 충돌/개방 연출을 재생하고 정리한다.
 public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 {
     private static readonly SoundRef UiCollisionSound = SoundRef.FromKey("sound_ui_CollisionEachUI");
@@ -180,6 +181,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     public bool IsOpenPresentationPlaying =>
         activeRoutine != null || (inputBlocker != null && inputBlocker.IsBlocking);
 
+    // 책임: 첫 상자 개봉 reveal 레이아웃 계산에 필요한 프레임 크기와 grid 크기를 보관한다.
     private readonly struct LayoutMetrics
     {
         public readonly float Width;
@@ -1621,7 +1623,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         if (!playImpactCameraShake || impactCameraShakeAmplitude <= 0f || impactCameraShakeDuration <= 0f)
             return;
 
-        CameraShakeService.Play(new CameraShakeRequest(
+        CameraShakePlayback.Play(new CameraShakeRequest(
             impactCameraShakeAmplitude,
             Vector3.up,
             gameObject,
@@ -2190,6 +2192,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         return t * t * t;
     }
 
+    // 책임: 상자/인벤토리 패널의 한 쌍 위치를 충돌/정착 연출 단계에 전달한다.
     private readonly struct PanelPairPosition
     {
         public readonly Vector2 Chest;
@@ -2202,6 +2205,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         }
     }
 
+    // 책임: 상자/인벤토리 패널의 측면 진입 시작, 저항, 충돌, 최종 위치를 보관한다.
     private readonly struct SideEntryPose
     {
         public readonly Vector2 ChestStart;

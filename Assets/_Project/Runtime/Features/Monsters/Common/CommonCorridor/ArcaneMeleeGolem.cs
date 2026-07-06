@@ -34,6 +34,7 @@ public sealed class ArcaneMeleeGolem : Mob, IMobAttackDecisionSource
     public ChargeStep FirstStep => Logic != null ? Logic.FirstStep : default;
     public ChargeStep SecondStep => Logic != null ? Logic.SecondStep : default;
 
+    // 책임: 마도 근접 골렘 돌진 단계에 필요한 타겟, 방향, 피해 정보를 보관한다.
     public readonly struct ChargeContext
     {
         public readonly GameObject Target;
@@ -200,7 +201,7 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
 
     [SerializeField] private ArcaneMeleeGolem owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private MonoBehaviour telegraphService;
 
     [Header("Telegraph Clipping")]
     [SerializeField] private LayerMask telegraphWallClipLayers = 1 << 30;
@@ -208,6 +209,7 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
     [SerializeField, Min(0f)] private float telegraphWallClipSkinWidth = 0.03f;
 
     private AttackTelegraphStyle warningStyle;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private bool isRunning;
     private bool cancelRequested;
 
@@ -219,8 +221,7 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
             owner = GetComponent<ArcaneMeleeGolem>();
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
         warningStyle = CreateWarningStyle();
     }
 
@@ -338,7 +339,7 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
 
     private void ShowWarning(Vector2 start, Vector2 direction, ArcaneMeleeGolem.ChargeStep step, float warningSeconds)
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
         Vector3 center = (Vector3)start + (Vector3)(direction.normalized * step.dashDistance * 0.5f);
@@ -354,12 +355,12 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
                 telegraphWallClipSampleCount,
                 telegraphWallClipSkinWidth);
 
-        telegraphService.Show(spec);
+        telegraphPresenter.Show(spec);
     }
 
     private void HideWarning()
     {
-        telegraphService?.HideCurrent();
+        telegraphPresenter?.HideCurrent();
     }
 
     /// <summary>마도 근접 골렘의 1타/2타 돌진 시작 타이밍에 대응 사운드를 재생합니다.</summary>

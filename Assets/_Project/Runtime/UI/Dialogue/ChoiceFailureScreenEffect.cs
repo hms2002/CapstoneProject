@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// 책임 : 보스 대화 선택지에서 호감도 실패/부정 리액션 화면 연출을 재생한다.
 /// 실제 호감도 수치 감소가 없어도 부정 판정 자체의 피드백을 담당한다.
 /// </summary>
-public sealed class ChoiceFailureScreenEffect : MonoBehaviour
+public sealed class ChoiceFailureScreenEffect : MonoBehaviour, IChoiceFailurePresentationBackend
 {
     [Header("Canvas")]
     [SerializeField] private Canvas targetCanvas;
@@ -46,6 +46,11 @@ public sealed class ChoiceFailureScreenEffect : MonoBehaviour
     private Sequence borderSequence;
     private bool warnedMissingSceneSetup;
 
+    private void Awake()
+    {
+        ChoiceFailurePresentationPlayback.RegisterBackend(this);
+    }
+
     public static ChoiceFailureScreenEffect PrepareSceneInstance()
     {
         ChoiceFailureScreenEffect[] effects =
@@ -57,6 +62,11 @@ public sealed class ChoiceFailureScreenEffect : MonoBehaviour
         ChoiceFailureScreenEffect effect = effects[0];
         effect.PrepareSceneOwnedOverlay();
         return effect;
+    }
+
+    public void PrepareChoiceFailurePresentation()
+    {
+        PrepareSceneOwnedOverlay();
     }
 
     public void PrepareSceneOwnedOverlay()
@@ -76,6 +86,7 @@ public sealed class ChoiceFailureScreenEffect : MonoBehaviour
 
     private void OnDestroy()
     {
+        ChoiceFailurePresentationPlayback.UnregisterBackend(this);
         StopActiveEffect();
     }
 

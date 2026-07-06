@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-17
+last_reviewed: 2026-07-04
 ---
 
 # Shop Structure
@@ -17,7 +17,8 @@ Map the merchant shop slot, stock roll, and purchase presentation flow so future
 - `ShopDefinitionSO` owns availability, visible slot count, max weapon/consumable caps, stock weights, prices, and refresh policy.
 - `MerchantRunStateService` owns per-run stock state and sold/refresh state.
 - `ShopInventoryRoll` owns weapon/relic/consumable stock selection and now respects per-slot `ShopSlotItemFilter`.
-- `ShopSlot` owns interaction, highlight/detail display, price display, sold presentation, and its stock filter.
+- `ShopSlot` owns interaction, highlight/detail display, price display, sold presentation, and its stock filter. Its authored `priceText` field is a generic `Component`; text value, preferred-width, and mesh refresh requests go through Core `TextPresentationBinding` so shop gameplay source does not directly reference TextMeshPro.
+- `MerchantRefreshInteractable` owns refresh interaction and button animation. Its authored `remainingCountText` field is a generic `Component` and updates through Core `TextPresentationBinding`, so the merchant gameplay source does not directly reference TextMeshPro for this count label.
 - `MerchantPurchaseService` owns item grant/currency purchase checks and failure result types.
 
 ## Prefab Slot Authoring
@@ -33,11 +34,13 @@ Map the merchant shop slot, stock roll, and purchase presentation flow so future
 
 ## Key Files
 
-- `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Merchant/MerchantNPC.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Merchant/ShopSlot.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Merchant/ShopInventoryRoll.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Merchant/ShopDefinitionSO.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Merchant/MerchantPurchaseService.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantNPC.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopSlot.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantRefreshInteractable.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopInventoryRoll.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/ShopDefinitionSO.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantPurchaseService.cs`
+- `Assets/_Project/Runtime/Core/Presentation/TextPresentationBinding.cs`
 - `Assets/LeeJunMo/Script/Editor/SceneSetupValidatorWindow.cs` (`ValidateMerchantShops`, `MerchantShopSlotPrefabMigrationWindow`)
 - `Assets/LeeJunMo/Prefab/Dialogue/ShopSlot.prefab`
 - `Assets/Scenes/ProtoTypeHub.unity`

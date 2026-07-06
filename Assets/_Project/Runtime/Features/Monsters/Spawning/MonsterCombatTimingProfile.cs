@@ -19,7 +19,7 @@ namespace UnityGAS
     /// - v1에서는 공격 경고 telegraph 시간이 공격속도 영향을 받을지만 개별 override한다.
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class MonsterCombatTimingProfile : MonoBehaviour
+    public sealed class MonsterCombatTimingProfile : MonoBehaviour, ICombatTimingProfile
     {
         [SerializeField] private MonsterTimingOverrideMode attackWarningTiming = MonsterTimingOverrideMode.UseGlobal;
 

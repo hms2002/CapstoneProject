@@ -1,15 +1,13 @@
+using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : 전역 어둠 오버레이와 플레이어 시야 마스크를 관리하고, 여러 시야 제한 요청자의 상태를 합산한다.
+/// </summary>
 [DisallowMultipleComponent]
 public class GlobalVisionMaskController : MonoBehaviour
 {
-    // 이 클래스의 책임:
-    // - 전역 어둠 오버레이 알파를 관리한다.
-    // - 플레이어 시야 마스크 프리팹을 생성하고 추적을 붙인다.
-    // - 여러 요청자가 동시에 시야 제한을 요청해도 안정적으로 상태를 유지한다.
-
     private static GlobalVisionMaskController instance;
 
     [SerializeField] private GameObject darkMaskRoot;
@@ -26,7 +24,7 @@ public class GlobalVisionMaskController : MonoBehaviour
 
     private readonly HashSet<int> activeRequesterIds = new();
     private PlayerVisionMaskFollower spawnedVisionMaskFollower;
-    private Tween overlayAlphaTween;
+    private Coroutine overlayAlphaFadeCoroutine;
     private bool hasCapturedBaseSortingOrder;
     private int baseOverlaySortingOrder;
 
@@ -50,8 +48,7 @@ public class GlobalVisionMaskController : MonoBehaviour
 
     private void OnDestroy()
     {
-        overlayAlphaTween?.Kill();
-        overlayAlphaTween = null;
+        StopOverlayAlphaFade();
 
         if (instance == this)
             instance = null;
@@ -161,8 +158,7 @@ public class GlobalVisionMaskController : MonoBehaviour
         if (darkOverlayRenderer == null)
             return;
 
-        overlayAlphaTween?.Kill();
-        overlayAlphaTween = null;
+        StopOverlayAlphaFade();
 
         targetAlpha = Mathf.Clamp01(targetAlpha);
 
@@ -174,20 +170,49 @@ public class GlobalVisionMaskController : MonoBehaviour
             return;
         }
 
-        overlayAlphaTween = DOTween.To(
-                () => darkOverlayRenderer != null ? darkOverlayRenderer.color.a : targetAlpha,
-                value =>
-                {
-                    if (darkOverlayRenderer == null)
-                        return;
+        overlayAlphaFadeCoroutine = StartCoroutine(FadeOverlayAlphaRoutine(targetAlpha, duration));
+    }
 
-                    Color tweenColor = darkOverlayRenderer.color;
-                    tweenColor.a = value;
-                    darkOverlayRenderer.color = tweenColor;
-                },
-                targetAlpha,
-                duration)
-            .SetEase(Ease.OutSine)
-            .SetUpdate(useUnscaledOverlayFadeTime);
+    private void StopOverlayAlphaFade()
+    {
+        if (overlayAlphaFadeCoroutine == null)
+            return;
+
+        StopCoroutine(overlayAlphaFadeCoroutine);
+        overlayAlphaFadeCoroutine = null;
+    }
+
+    private IEnumerator FadeOverlayAlphaRoutine(float targetAlpha, float duration)
+    {
+        float startAlpha = darkOverlayRenderer != null
+            ? darkOverlayRenderer.color.a
+            : targetAlpha;
+        float elapsed = 0f;
+
+        while (elapsed < duration && darkOverlayRenderer != null)
+        {
+            elapsed += useUnscaledOverlayFadeTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            float t = duration > 0f ? elapsed / duration : 1f;
+            SetOverlayAlpha(Mathf.LerpUnclamped(startAlpha, targetAlpha, EaseOutSine(t)));
+            yield return null;
+        }
+
+        SetOverlayAlpha(targetAlpha);
+        overlayAlphaFadeCoroutine = null;
+    }
+
+    private void SetOverlayAlpha(float alpha)
+    {
+        if (darkOverlayRenderer == null)
+            return;
+
+        Color color = darkOverlayRenderer.color;
+        color.a = Mathf.Clamp01(alpha);
+        darkOverlayRenderer.color = color;
+    }
+
+    private static float EaseOutSine(float t)
+    {
+        return Mathf.Sin(Mathf.Clamp01(t) * Mathf.PI * 0.5f);
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// 책임: 루팅 후보 제외 계산에 필요한 루팅 컨텍스트와 현재 제외 소스 집합을 묶어 전달한다.
 internal readonly struct LootPoolWeaponExclusionRequest
 {
     public LootPoolContext Context { get; }
@@ -15,6 +16,7 @@ internal readonly struct LootPoolWeaponExclusionRequest
     }
 }
 
+// 책임: 플레이어/월드/씬/상인별로 이미 노출된 무기 ID 집합을 보관한다.
 internal readonly struct LootPoolWeaponExclusionSourceSet
 {
     private readonly HashSet<string> playerWeaponIds;
@@ -68,6 +70,7 @@ internal readonly struct LootPoolWeaponExclusionSourceSet
     }
 }
 
+// 책임: 루팅 후보에서 제외해야 할 무기 ID 결과 집합을 외부 변경 없이 반환한다.
 internal readonly struct LootPoolWeaponExclusionResult
 {
     private readonly HashSet<string> weaponIds;
@@ -83,6 +86,7 @@ internal readonly struct LootPoolWeaponExclusionResult
     }
 }
 
+// 책임: 루팅 컨텍스트가 요청한 출처들의 무기 ID를 통합해 제외 결과를 만든다.
 internal static class LootPoolWeaponExclusionProvider
 {
     public static LootPoolWeaponExclusionResult Collect(LootPoolWeaponExclusionRequest request)
@@ -104,6 +108,7 @@ internal static class LootPoolWeaponExclusionProvider
     }
 }
 
+// 책임: 플레이어/월드/씬/상인 상태에서 현재 루팅 후보에서 제외할 무기 ID 집합을 수집한다.
 internal static class LootPoolLiveWeaponExclusionSourceProvider
 {
     public static LootPoolWeaponExclusionSourceSet Collect(LootPoolContext context)
@@ -150,7 +155,7 @@ internal static class LootPoolLiveWeaponExclusionSourceProvider
     {
         var weaponIds = new HashSet<string>();
 
-        GamePlayData data = GamePlayDataManager.Instance != null ? GamePlayDataManager.Instance.Data : null;
+        GamePlayData data = RunSessionStore.Data;
         if (data?.merchantStates == null)
             return weaponIds;
 

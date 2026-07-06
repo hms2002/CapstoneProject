@@ -6,7 +6,7 @@ using UnityEngine;
 /// 스프라이트 피격 플래시를 재생한다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class SpriteHitFlashController : MonoBehaviour
+public sealed class SpriteHitFlashController : MonoBehaviour, IHitFlashController2D
 {
     [Header("Targets")]
     [SerializeField] private SpriteRenderer[] targetRenderers;

@@ -79,8 +79,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
 
     private void Update()
     {
-        InputBindingService input = InputBindingService.EnsureInstance();
-        SyncAttackHoldWithRealInput(input);
+        SyncAttackHoldWithRealInput();
 
         if (IsGameplayInputBlockedByUiOrFlow())
         {
@@ -96,8 +95,8 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
 
         if (IsCombatBlocked())
         {
-            TryHandleBlockedWeaponAbilityInput(input);
-            ReleaseAttackHoldIfInputEnded(input);
+            TryHandleBlockedWeaponAbilityInput();
+            ReleaseAttackHoldIfInputEnded();
             return;
         }
 
@@ -106,10 +105,9 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
 
     private void HandleCombatInput()
     {
-        InputBindingService input = InputBindingService.EnsureInstance();
         var atk = GetBasicAttack();
 
-        if (input.WasPressedThisFrame(InputActionId.PrimaryAttack))
+        if (InputActionQuery.WasPressedThisFrame(InputActionId.PrimaryAttack))
         {
             isHoldingAttack = true;
             SendGameplayEventSafe(attackPressedEvent);
@@ -119,7 +117,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
                 TryActivateSafe(WeaponAbilitySlot.Attack, atk);
         }
 
-        if (input.WasReleasedThisFrame(InputActionId.PrimaryAttack))
+        if (InputActionQuery.WasReleasedThisFrame(InputActionId.PrimaryAttack))
         {
             isHoldingAttack = false;
             SendGameplayEventSafe(attackReleasedEvent);
@@ -154,20 +152,17 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
             }
         }
 
-        if (input.WasPressedThisFrame(InputActionId.Skill1)) TryActivateSafe(WeaponAbilitySlot.Skill1, GetSkill1());
-        if (input.WasPressedThisFrame(InputActionId.Skill2)) TryActivateSafe(WeaponAbilitySlot.Skill2, GetSkill2());
-        if (input.WasPressedThisFrame(InputActionId.Dash)) TryActivateSafe(default, dash);
+        if (InputActionQuery.WasPressedThisFrame(InputActionId.Skill1)) TryActivateSafe(WeaponAbilitySlot.Skill1, GetSkill1());
+        if (InputActionQuery.WasPressedThisFrame(InputActionId.Skill2)) TryActivateSafe(WeaponAbilitySlot.Skill2, GetSkill2());
+        if (InputActionQuery.WasPressedThisFrame(InputActionId.Dash)) TryActivateSafe(default, dash);
 
-        if (weaponInventory != null && input.WasPressedThisFrame(InputActionId.SwapWeapon))
+        if (weaponInventory != null && InputActionQuery.WasPressedThisFrame(InputActionId.SwapWeapon))
             weaponInventory.Swap();
     }
 
-    private void TryHandleBlockedWeaponAbilityInput(InputBindingService input)
+    private void TryHandleBlockedWeaponAbilityInput()
     {
-        if (input == null)
-            return;
-
-        if (input.WasPressedThisFrame(InputActionId.Skill1))
+        if (InputActionQuery.WasPressedThisFrame(InputActionId.Skill1))
             TryHandleCurrentWeaponAbilityInput(WeaponAbilitySlot.Skill1, GetSkill1());
     }
 
@@ -183,20 +178,16 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
 
     private static bool IsGameplayInputBlockedByUiOrFlow()
     {
-        if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+        if (DialoguePlayback.IsPlaying)
             return true;
 
-        if (UIManager.Instance != null && UIManager.Instance.HasBlockingUI())
+        if (UiInteractionStateQuery.HasBlockingUI())
             return true;
 
-        if (SceneTransitionCoordinator.Instance != null &&
-            SceneTransitionCoordinator.Instance.IsTransitionActive)
-        {
+        if (SceneTransitionPlayback.IsTransitionActive)
             return true;
-        }
 
-        return LoadingOverlayController.Instance != null &&
-               LoadingOverlayController.Instance.IsActiveLoadingPresentation;
+        return LoadingPresentationQuery.IsActiveLoadingPresentation;
     }
 
     /// <summary>
@@ -217,12 +208,12 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     /// - 피격 경직처럼 짧은 전투 차단 상태에서는 실제 공격 입력이 유지되는 한 홀드 판정을 보존한다.
     /// - 실제 입력이 끝난 경우에만 release 이벤트를 보내 차지/홀드 무기 상태가 고착되지 않게 한다.
     /// </summary>
-    private void ReleaseAttackHoldIfInputEnded(InputBindingService input)
+    private void ReleaseAttackHoldIfInputEnded()
     {
         if (!isHoldingAttack)
             return;
 
-        if (input != null && input.IsPressed(InputActionId.PrimaryAttack))
+        if (InputActionQuery.IsPressed(InputActionId.PrimaryAttack))
             return;
 
         ReleaseAttackHoldIfNeeded();
@@ -233,12 +224,12 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     /// - Update 초반에 실제 입력 눌림 상태와 내부 홀드 캐시를 동기화한다.
     /// - UI/상호작용/상태 전환 중 KeyUp 이벤트를 놓쳐도 자동 공격이 고착되지 않게 막는다.
     /// </summary>
-    private void SyncAttackHoldWithRealInput(InputBindingService input)
+    private void SyncAttackHoldWithRealInput()
     {
-        if (!isHoldingAttack || input == null)
+        if (!isHoldingAttack)
             return;
 
-        if (!input.IsPressed(InputActionId.PrimaryAttack))
+        if (!InputActionQuery.IsPressed(InputActionId.PrimaryAttack))
             ReleaseAttackHoldIfNeeded();
     }
 

@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-30
+last_reviewed: 2026-07-05
 ---
 
 # Loading Presentation Structure
@@ -59,7 +59,7 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 - `Assets/LeeJunMo/Script/UIStructure/GameFlowInputBlocker.cs`
 - `Assets/LeeJunMo/Script/Loading/Runtime/LoadingOverlayController.cs`
 - `Assets/LeeJunMo/Script/Loading/Runtime/PresentationPreloadService.cs`
-- `Assets/_Project/Runtime/Infrastructure/Loading/PrewarmTraceRuntime.cs`
+- `Assets/_Project/Editor/Build/Loading/PrewarmTraceRuntime.cs`
 - `Assets/LeeJunMo/Script/Presentation/Runtime/TopDownDebrisBounceEmitter2D.cs`
 - `Assets/Editor/ExplosionDebrisBouncePrefabBuilder.cs`
 - `Assets/Editor/ExplosionDebrisBouncePreviewWindow.cs`
@@ -77,7 +77,7 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 - `RouteSetLoadManifestBuilderWindow` provides a release loading set button for `Boot -> FirstRunIntro -> all RouteSets -> Addressable Registry`. Addressables content build remains an explicit separate release step.
 - Loading cleanup paths must not recreate runtime provider services. `PresentationPreloadService` release-on-destroy uses non-creating provider lookup and clears active manifest references even when the provider is already gone.
 - `SceneFadeTransitionService` may create a runtime fallback overlay when a transition begins from a scene without an authored fade service, but title-origin transitions should prefer a scene-root authored `SceneFadeTransitionService` so fade timing is Inspector-tuned. If the loaded scene brings in an authored service during any active transition, replacement is deferred until `EndTransitionSession()` so the same overlay that faded to black can fade the next scene back in. The deferred authored overlay is reset transparent/inactive while pending.
-- `PrewarmTraceRuntime` is editor-only trace capture. It writes tester/machine-specific `PrewarmTrace_*.json` files under `Assets/_Project/Data/SceneFlow/LoadingManifests/` and keeps the older legacy `PrewarmTrace.json` source readable for recommendations. Player builds must not create the trace service or write `PrewarmTrace.json` under `Application.persistentDataPath`.
+- `PrewarmTraceRuntime` is editor-only trace capture in the Editor assembly. Runtime presentation spawn paths record through Core `PresentationPrewarmTracePlayback`, and the Editor backend writes tester/machine-specific `PrewarmTrace_*.json` files under `Assets/_Project/Data/SceneFlow/LoadingManifests/` while keeping the older legacy `PrewarmTrace.json` source readable for recommendations. Player builds must not create the trace service or write `PrewarmTrace.json` under `Application.persistentDataPath`.
 - Camera/audio/settings/speech bubble scripts are presentation support and should not own progression state.
 - `TopDownDebrisBounceEmitter2D` is visual-only. It simulates debris ground XY plus virtual height, supports circular or rotated-ellipse ground spread through prefab-facing fields, updates child ParticleSystems, and emits contact puffs on bounce; it must not own damage, hit timing, gameplay tags, or flow blocking.
 

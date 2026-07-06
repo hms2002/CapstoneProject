@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [DisallowMultipleComponent]
+// 책임: 튜토리얼 씬의 시작/트리거 조건, 플레이어 잠금, 방 진행, 연출 이벤트 순서를 조율한다.
 public sealed class TutorialSceneSequenceDirector : MonoBehaviour
 {
     [Header("Scene Start")]
@@ -247,11 +248,10 @@ public sealed class TutorialSceneSequenceDirector : MonoBehaviour
 
     private static bool IsSceneTransitionActive()
     {
-        SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.Instance;
-        if (transitionCoordinator != null && transitionCoordinator.IsTransitionActive)
+        if (SceneTransitionPlayback.IsTransitionActive)
             return true;
 
-        SceneFadeTransitionService fadeService = SceneFadeTransitionService.Instance;
+        ISceneFadeTransitionHandle fadeService = SceneFadeTransitionPlayback.Instance;
         return fadeService != null && fadeService.IsTransitionActive;
     }
 

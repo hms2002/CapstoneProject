@@ -1,0 +1,17 @@
+{
+    "name": "Ink.Demos.Basic",
+    "rootNamespace": "",
+    "references": [
+        "Ink-Libraries",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

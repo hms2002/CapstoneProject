@@ -1,7 +1,9 @@
 using CapstoneAudio;
-using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : MerchantNPC 상점 재고 새로고침 상호작용, 남은 횟수 표시 요청, 버튼 애니메이션, outline 상태를 관리한다.
+/// </summary>
 [RequireComponent(typeof(Collider2D))]
 public sealed class MerchantRefreshInteractable : InteractableBase, IInteractionTargetCandidate, IInteractionPromptState
 {
@@ -16,7 +18,7 @@ public sealed class MerchantRefreshInteractable : InteractableBase, IInteraction
     [SerializeField] private string interactPromptText = "새로고침";
 
     [Header("Count")]
-    [SerializeField] private TMP_Text remainingCountText;
+    [SerializeField] private Component remainingCountText;
 
     [Header("Animation")]
     [SerializeField] private Animator refreshButtonAnimator;
@@ -147,7 +149,7 @@ public sealed class MerchantRefreshInteractable : InteractableBase, IInteraction
             owner = GetComponentInParent<MerchantNPC>();
 
         if (remainingCountText == null)
-            remainingCountText = GetComponentInChildren<TMP_Text>(true);
+            TextPresentationBinding.TryResolveInChildren(transform, out remainingCountText);
 
         if (refreshButtonAnimator == null)
             refreshButtonAnimator = GetComponentInChildren<Animator>(true);
@@ -203,7 +205,9 @@ public sealed class MerchantRefreshInteractable : InteractableBase, IInteraction
             return;
 
         int remainingCount = owner != null ? owner.GetRemainingRefreshCount() : 0;
-        remainingCountText.text = string.Format("{0}\uBC88 \uB0A8\uC74C", remainingCount);
+        TextPresentationBinding.TrySetText(
+            remainingCountText,
+            string.Format("{0}\uBC88 \uB0A8\uC74C", remainingCount));
     }
 
     private bool CanShowRefreshTarget()

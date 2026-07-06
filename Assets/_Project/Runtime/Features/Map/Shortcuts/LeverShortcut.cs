@@ -1,9 +1,10 @@
 using System.Collections;
 using CapstoneAudio;
-using Cainos.PixelArtTopDown_Basic;
-using Unity.Cinemachine;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : 영구 레버 숏컷의 활성화 상태와 문 공개 컷씬 연출을 관리한다.
+/// </summary>
 public class LeverShortcut : PermanentShortcut
 {
     private static readonly SoundRef SwitchSound = SoundRef.FromKey("sound_lever_Switch");
@@ -31,19 +32,11 @@ public class LeverShortcut : PermanentShortcut
 
     private Sprite defaultSprite;
     private Coroutine cinematicRoutine;
-    private CinematicLetterboxOverlay overlay;
+    private ICinematicLetterboxOverlayHandle overlay;
     private GameFlowInputBlocker inputBlocker;
     private PlayerCinematicProtection lockedPlayerProtection;
-    private CinemachineCamera gameplayCamera;
-    private CinemachineBrain cameraBrain;
-    private CameraFollow legacyFollowCamera;
+    private IGameplayCameraFocusSession cameraFocusSession;
     private Transform cameraMoveTarget;
-    private Transform cachedCameraFollow;
-    private Transform cachedCameraLookAt;
-    private int cachedCameraPriority;
-    private bool cachedLegacyFollowEnabled;
-    private bool cachedBrainIgnoreTimeScale;
-    private bool hasCachedCameraState;
     private bool isCinematicPlaying;
     private bool holdsTimeScalePause;
     private bool holdsRunTimerPause;
@@ -120,7 +113,7 @@ public class LeverShortcut : PermanentShortcut
         AcquireInputBlocker();
         LockPlayerControls();
 
-        overlay = new CinematicLetterboxOverlay();
+        overlay = CinematicLetterboxPlayback.CreateOverlay();
         Coroutine overlayInRoutine = StartCoroutine(
             overlay.PlayIn(cinematicIntroDuration, letterboxScreenHeightRatio, uiTargetAlpha));
 
@@ -162,21 +155,22 @@ public class LeverShortcut : PermanentShortcut
         SetCameraTarget(moveTarget);
         yield return MoveCameraTargetToRoutine(moveTarget, focusTarget);
         yield return WaitForPresentationSeconds(cameraFocusWaitSeconds);
-        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, focusTarget);
+        if (cameraFocusSession != null)
+            yield return cameraFocusSession.WaitForSettle(focusTarget);
     }
 
     private IEnumerator ReturnCameraRoutine()
     {
-        if (!hasCachedCameraState)
+        if (cameraFocusSession == null)
             yield break;
 
         Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
-        Transform restoreTarget = playerTransform != null ? playerTransform : cachedCameraFollow;
+        Transform restoreTarget = playerTransform != null ? playerTransform : cameraFocusSession.CachedFollow;
         Transform moveTarget = EnsureCameraMoveTarget();
         SetCameraTarget(moveTarget != null ? moveTarget : restoreTarget);
         yield return MoveCameraTargetToRoutine(moveTarget, restoreTarget);
         yield return WaitForPresentationSeconds(cameraReturnWaitSeconds);
-        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, restoreTarget);
+        yield return cameraFocusSession.WaitForSettle(restoreTarget);
         RestoreCameraState(restoreTarget);
     }
 
@@ -243,93 +237,33 @@ public class LeverShortcut : PermanentShortcut
 
     private Vector3 ResolveCameraCenterPosition()
     {
-        Camera mainCamera = CameraBootstrap.GetMainCamera();
-        if (mainCamera != null)
-            return new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, 0f);
-
-        if (gameplayCamera != null)
-            return new Vector3(gameplayCamera.transform.position.x, gameplayCamera.transform.position.y, 0f);
-
-        if (cachedCameraFollow != null)
-            return cachedCameraFollow.position;
+        IGameplayCameraFocusSession session = cameraFocusSession ?? GameplayCameraFocusPlayback.Capture(this);
+        if (session != null)
+            return session.CurrentCenter;
 
         return transform.position;
     }
 
     private void CacheCameraState()
     {
-        if (hasCachedCameraState)
+        if (cameraFocusSession != null)
             return;
 
-        CameraBootstrap.EnsureRuntimeRigForCurrentScene();
-
-        gameplayCamera = CameraBootstrap.GetPlayerCamera();
-        cameraBrain = CameraBootstrap.GetBrain();
-        legacyFollowCamera = CameraBootstrap.GetLegacyFollow();
-
-        if (gameplayCamera != null)
-        {
-            cachedCameraFollow = gameplayCamera.Follow;
-            cachedCameraLookAt = gameplayCamera.LookAt;
-            cachedCameraPriority = gameplayCamera.Priority;
-        }
-
-        if (legacyFollowCamera != null)
-            cachedLegacyFollowEnabled = legacyFollowCamera.enabled;
-
-        if (cameraBrain != null)
-            cachedBrainIgnoreTimeScale = cameraBrain.IgnoreTimeScale;
-
-        hasCachedCameraState = true;
+        cameraFocusSession = GameplayCameraFocusPlayback.Capture(this);
     }
 
     private void SetCameraTarget(Transform target)
     {
-        if (target == null)
-            return;
-
-        if (cameraBrain != null)
-            cameraBrain.IgnoreTimeScale = true;
-
-        if (legacyFollowCamera != null)
-            legacyFollowCamera.enabled = false;
-
-        if (gameplayCamera == null)
-            return;
-
-        gameplayCamera.Follow = target;
-        gameplayCamera.LookAt = target;
+        cameraFocusSession?.SetTarget(target);
     }
 
     private void RestoreCameraState(Transform preferredTarget)
     {
-        if (!hasCachedCameraState)
+        if (cameraFocusSession == null)
             return;
 
-        Transform restoreFollow = preferredTarget != null ? preferredTarget : cachedCameraFollow;
-        Transform restoreLookAt = preferredTarget != null ? preferredTarget : cachedCameraLookAt;
-
-        if (gameplayCamera != null)
-        {
-            gameplayCamera.Follow = restoreFollow;
-            gameplayCamera.LookAt = restoreLookAt;
-            gameplayCamera.Priority = cachedCameraPriority;
-        }
-
-        if (legacyFollowCamera != null)
-        {
-            if (restoreFollow != null)
-                legacyFollowCamera.BindTarget(restoreFollow, snap: false);
-
-            legacyFollowCamera.enabled = cachedLegacyFollowEnabled;
-        }
-
-        if (cameraBrain != null)
-            cameraBrain.IgnoreTimeScale = cachedBrainIgnoreTimeScale;
-
-        cachedCameraFollow = null;
-        cachedCameraLookAt = null;
-        hasCachedCameraState = false;
+        cameraFocusSession.Restore(preferredTarget);
+        cameraFocusSession = null;
     }
 
     private void DestroyCameraMoveTarget()
@@ -406,7 +340,7 @@ public class LeverShortcut : PermanentShortcut
     {
         if (pauseWorldTimeDuringCinematic && !holdsTimeScalePause)
         {
-            TimeScalePauseService.Acquire(this);
+            TimeScalePausePlayback.Acquire(this);
             holdsTimeScalePause = true;
         }
 
@@ -427,7 +361,7 @@ public class LeverShortcut : PermanentShortcut
         holdsRunTimerPause = false;
 
         if (holdsTimeScalePause)
-            TimeScalePauseService.Release(this);
+            TimeScalePausePlayback.Release(this);
         holdsTimeScalePause = false;
     }
 }

@@ -21,6 +21,7 @@ public sealed class GoblinTank : Mob, IMobAttackDecisionSource
     private bool hasLoggedInvalidConfig;
     private AbilityLogic_GoblinTankSlam Logic => slamAbility != null ? slamAbility.logic as AbilityLogic_GoblinTankSlam : null;
 
+    // 책임: 고블린 탱크 범위 내려찍기의 중심, 경고 시간, 피해 정보를 보관한다.
     public readonly struct SlamContext
     {
         public readonly Vector2 Center;
@@ -160,9 +161,10 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
 
     [SerializeField] private GoblinTank owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private MonoBehaviour telegraphService;
 
     private AttackTelegraphStyle warningStyle;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private bool isRunning;
     private bool cancelRequested;
 
@@ -174,8 +176,7 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
             owner = GetComponent<GoblinTank>();
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
         warningStyle = CreateWarningStyle();
     }
 
@@ -249,7 +250,7 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
 
     private void ShowWarning(GoblinTank.SlamContext context, float warningSeconds)
     {
-        telegraphService?.Show(AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+        telegraphPresenter?.Show(AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             context.Center,
             context.ImpactDiameter,
             warningSeconds,
@@ -258,7 +259,7 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
 
     private void HideWarning()
     {
-        telegraphService?.HideCurrent();
+        telegraphPresenter?.HideCurrent();
     }
 
     /// <summary>고블린 탱커 내려찍기 피해 타이밍에 임팩트 사운드를 재생합니다.</summary>

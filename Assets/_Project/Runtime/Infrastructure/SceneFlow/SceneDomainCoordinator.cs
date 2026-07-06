@@ -5,10 +5,10 @@ using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityGAS;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
+/// <summary>
+/// 책임: 씬 로드 시 전역 도메인 서비스를 준비하고 에디터 직접 시작 보정 흐름을 조율한다.
+/// </summary>
 [DefaultExecutionOrder(-950)]
 [DisallowMultipleComponent]
 public sealed class SceneDomainCoordinator : MonoBehaviour
@@ -113,7 +113,7 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
 #if UNITY_EDITOR
     private IEnumerator EditorPostSceneBootstrapRoutine(SceneDomainSceneInfo sceneInfo)
     {
-        if (!SceneDomainEditorDirectStartPolicy.ShouldRunPostSceneBootstrap(
+        if (!SceneDomainDevelopmentStartPolicy.ShouldRunPostSceneBootstrap(
                 s_editorDirectGameplayStartActive,
                 sceneInfo))
         {
@@ -178,7 +178,7 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
             return;
 
         s_editorDirectStartDecisionMade = true;
-        s_editorDirectGameplayStartActive = SceneDomainEditorDirectStartPolicy.IsDirectGameplayStart(sceneInfo);
+        s_editorDirectGameplayStartActive = SceneDomainDevelopmentStartPolicy.IsDirectGameplayStart(sceneInfo);
         s_editorDirectStartSceneName = s_editorDirectGameplayStartActive ? sceneInfo.SceneName : null;
         s_editorDirectBootstrapApplied = false;
     }
@@ -195,7 +195,7 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
             FindFirstObjectByType<GameDataManager>(FindObjectsInactive.Include);
         if (gameDataManager != null)
         {
-            gameDataManager.LoadSlot(SceneDomainEditorDirectStartPolicy.DevelopmentDefaultSlotIndex);
+            gameDataManager.LoadSlot(SceneDomainDevelopmentStartPolicy.DevelopmentDefaultSlotIndex);
             gameDataManager.EnsureData().hasInitializedProfile = true;
         }
 
@@ -232,11 +232,10 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
 
     private static CorridorBossRouteSetSO FindRouteSetForScene(string sceneName)
     {
-        string[] guids = AssetDatabase.FindAssets("t:CorridorBossRouteSetSO");
-        for (int i = 0; i < guids.Length; i++)
+        string[] paths = EditorAuthoringPlayback.FindAssetPaths("t:CorridorBossRouteSetSO");
+        for (int i = 0; i < paths.Length; i++)
         {
-            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-            CorridorBossRouteSetSO stageSet = AssetDatabase.LoadAssetAtPath<CorridorBossRouteSetSO>(path);
+            CorridorBossRouteSetSO stageSet = EditorAuthoringPlayback.LoadAssetAtPath<CorridorBossRouteSetSO>(paths[i]);
             if (stageSet == null)
                 continue;
 
@@ -255,11 +254,10 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         if (routeSet == null)
             return null;
 
-        string[] guids = AssetDatabase.FindAssets("t:RunRouteCatalogSO");
-        for (int i = 0; i < guids.Length; i++)
+        string[] paths = EditorAuthoringPlayback.FindAssetPaths("t:RunRouteCatalogSO");
+        for (int i = 0; i < paths.Length; i++)
         {
-            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-            RunRouteCatalogSO catalog = AssetDatabase.LoadAssetAtPath<RunRouteCatalogSO>(path);
+            RunRouteCatalogSO catalog = EditorAuthoringPlayback.LoadAssetAtPath<RunRouteCatalogSO>(paths[i]);
             if (catalog == null)
                 continue;
 
@@ -289,13 +287,13 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         protection?.ForceReleaseAll();
 
         GameplayTagSet blockControlTagSet =
-            Resources.Load<GameplayTagSet>(SceneDomainEditorDirectStartPolicy.BlockControlByUiTagSetResourcePath);
+            Resources.Load<GameplayTagSet>(SceneDomainDevelopmentStartPolicy.BlockControlByUiTagSetResourcePath);
         PlayerUIControlLockBridge uiLockBridge = player.GetComponent<PlayerUIControlLockBridge>();
         if (uiLockBridge != null && blockControlTagSet != null)
             uiLockBridge.ForceReleaseAll(blockControlTagSet);
 
         GameplayTag interactBlockedTag =
-            Resources.Load<GameplayTag>(SceneDomainEditorDirectStartPolicy.InteractBlockedTagResourcePath);
+            Resources.Load<GameplayTag>(SceneDomainDevelopmentStartPolicy.InteractBlockedTagResourcePath);
         TagSystem tagSystem = player.GetComponent<TagSystem>();
         if (tagSystem != null && interactBlockedTag != null)
         {

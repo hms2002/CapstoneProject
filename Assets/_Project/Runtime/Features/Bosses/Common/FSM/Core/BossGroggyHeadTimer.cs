@@ -7,7 +7,7 @@ using UnityGAS;
 /// - 링 fill, 색 변화, 종료 직전 pulse를 한 곳에서 제어해 플레이어가 스턴 종료 시점을 직관적으로 읽게 만든다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class BossGroggyHeadTimer : MonoBehaviour
+public sealed class BossGroggyHeadTimer : MonoBehaviour, IStaggerGaugePresentationBinding
 {
     private static readonly int FillAmountId = Shader.PropertyToID("_FillAmount");
     private static int TempEnemyLayer;
@@ -53,6 +53,20 @@ public sealed class BossGroggyHeadTimer : MonoBehaviour
         groggyEffect = effect;
         effectRunner = runner != null ? runner : boss != null ? boss.GetComponent<GameplayEffectRunner>() : null;
         followAnchor = boss != null ? boss.transform : followAnchor;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - Core StaggerGaugeSystem이 보스 UI 타입을 직접 참조하지 않고도 이 타이머에 필요한 바인딩을 주입하게 한다.
+    /// - 실제 보스 참조는 타이머 쪽에서 같은 GameObject의 BossControllerBase로 해석한다.
+    /// </summary>
+    public void ConfigureForStaggerGauge(
+        StaggerGaugeSystem gaugeSystem,
+        GameplayEffect effect,
+        GameplayEffectRunner runner)
+    {
+        BossControllerBase boss = gaugeSystem != null ? gaugeSystem.GetComponent<BossControllerBase>() : null;
+        ConfigureForBoss(boss, gaugeSystem, effect, runner);
     }
 
     private void Awake()

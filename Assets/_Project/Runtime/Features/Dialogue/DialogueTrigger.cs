@@ -1,14 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 public class DialogueTrigger : InteractableBase
 {
     // 이 클래스의 책임:
-    // 월드 NPC/오브젝트의 상호작용 진입점으로서 NPCData와 Ink 대사를 DialogueService에 전달한다.
+    // 월드 NPC/오브젝트의 상호작용 진입점으로서 NPCData와 Ink 대사를 DialoguePlayback에 전달한다.
 
     [Header("Dialogue Data")]
     [SerializeField] private NPCData npcData;
@@ -39,7 +36,7 @@ public class DialogueTrigger : InteractableBase
     private void OnValidate()
     {
         if (TryMigrateLegacyInk())
-            EditorUtility.SetDirty(npcData);
+            EditorAuthoringPlayback.MarkDirty(npcData);
     }
 #endif
 
@@ -65,14 +62,13 @@ public class DialogueTrigger : InteractableBase
 
     public override bool CanInteract(IPlayerInteractor player)
     {
-        DialogueService dialogueService = DialogueService.EnsureInstance();
         TextAsset dialogueInk = ResolveInk();
         return player != null &&
                player.CurrentState == InteractState.Idle &&
                npcData != null &&
                dialogueInk != null &&
-               dialogueService != null &&
-               !dialogueService.IsPlaying;
+               DialoguePlayback.IsAvailable &&
+               !DialoguePlayback.IsPlaying;
     }
 
     public override void OnPlayerInteract(IPlayerInteractor player)
@@ -94,7 +90,7 @@ public class DialogueTrigger : InteractableBase
             return;
 
         List<NPCData> participants = new() { npcData };
-        DialogueService.EnsureInstance()?.TryStartDialogue(dialogueInk, participants, featureController);
+        DialoguePlayback.TryStartDialogue(dialogueInk, participants, featureController);
     }
 
     public override InteractState GetInteractType() => InteractState.Talking;

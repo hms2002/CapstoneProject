@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 
+// 책임: 업그레이드 데이터베이스의 노드 조회, 잠금 상태, 구매 가능 여부와 해금 변화를 계산한다.
 public sealed class UpgradeProgressService
 {
     private readonly UpgradeDatabase upgradeDatabase;
@@ -131,10 +132,7 @@ public sealed class UpgradeProgressService
 
     private static UpgradeSaveData TryGetSaveData()
     {
-        if (GameDataManager.Instance == null)
-            return null;
-
-        GameData data = GameDataManager.Instance.EnsureData();
+        GameData data = GameDataStore.EnsureData();
         if (data == null)
             return null;
 

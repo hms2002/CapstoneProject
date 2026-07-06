@@ -24,7 +24,7 @@ namespace UnityGAS
         [SerializeField] private bool debugLog;
 
         private CombatHitPayload payload;
-        private TimedAnimatedHitEffect2D.SharedHitRegistry sharedRegistry;
+        private SharedHitRegistry2D sharedRegistry;
         private ContactFilter2D contactFilter;
         private Coroutine tickRoutine;
         private bool isActive;
@@ -64,7 +64,7 @@ namespace UnityGAS
             EnforceColliderSettings(disableColliders: true);
         }
 
-        public void Play(CombatHitPayload hitPayload, TimedAnimatedHitEffect2D.SharedHitRegistry registry = null)
+        public void Play(CombatHitPayload hitPayload, SharedHitRegistry2D registry = null)
         {
             Stop();
 

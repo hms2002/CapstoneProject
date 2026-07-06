@@ -1,3 +1,4 @@
+// 책임: 튜토리얼 완료 여부를 저장 데이터에 조회/기록하고 즉시 저장 요청을 중계한다.
 public static class TutorialProgressStore
 {
     public static bool IsCompleted(string tutorialId)
@@ -15,7 +16,7 @@ public static class TutorialProgressStore
 
         bool changed = tutorialData.MarkCompleted(tutorialId);
         if (changed && saveImmediately)
-            GameDataManager.Instance.SaveData();
+            GameDataStore.SaveData();
 
         return changed;
     }
@@ -27,7 +28,7 @@ public static class TutorialProgressStore
 
         bool changed = tutorialData.ClearCompleted(tutorialId);
         if (changed && saveImmediately)
-            GameDataManager.Instance.SaveData();
+            GameDataStore.SaveData();
 
         return changed;
     }
@@ -36,11 +37,7 @@ public static class TutorialProgressStore
     {
         tutorialData = null;
 
-        GameDataManager manager = GameDataManager.Instance;
-        if (manager == null)
-            return false;
-
-        GameData data = createManagerData ? manager.EnsureData() : manager.Data;
+        GameData data = createManagerData ? GameDataStore.EnsureData() : GameDataStore.Data;
         if (data == null)
             return false;
 

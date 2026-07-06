@@ -8,6 +8,7 @@ using UnityGAS;
 /// <summary>
 /// 슬라임 여왕 2페이즈 근거리 퀸 컨트롤러입니다.
 /// </summary>
+// 책임: 2페이즈 근거리 슬라임퀸의 연속 내려찍기, 독성 돌진, 배화술법, 합동 패턴 참여를 실행한다.
 public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
 {
     private static readonly int IsRushingHash = Animator.StringToHash("isRushing");
@@ -83,7 +84,7 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
     [Tooltip("독구름 피해에 사용할 GAS Damage Effect입니다. 비우면 프리팹 기본값을 사용합니다.")]
     [SerializeField] private GE_Damage_Spec poisonCloudDamageEffect;
 
-    private readonly List<AttackTelegraphView> toxicRushWarningViews = new List<AttackTelegraphView>();
+    private readonly List<IAttackTelegraphHandle> toxicRushWarningViews = new List<IAttackTelegraphHandle>();
     private Coroutine toxicRushPitFallSlamRoutine;
     private Vector3 lastPoisonCloudSpawnPosition;
     private bool hasLastPoisonCloudSpawnPosition;
@@ -154,6 +155,7 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
         PlayAnimatorStateIfExists(IdleStateHash);
     }
 
+    // 책임: 독성 돌진의 시작/끝/방향/거리 정보를 경고와 이동 처리에 전달한다.
     public readonly struct ToxicRushSegment
     {
         public readonly Vector3 Start;
@@ -222,7 +224,7 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
         if (!segment.IsValid)
             return;
 
-        AttackTelegraphService service = GetTelegraphService();
+        IAttackTelegraphPresenter service = GetTelegraphService();
         if (service == null)
             return;
 
@@ -233,7 +235,7 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
             ToxicRushWarningSeconds,
             toxicRushWarningStyle));
 
-        AttackTelegraphView view = service.SpawnDetachedView(spec);
+        IAttackTelegraphHandle view = service.SpawnDetachedView(spec);
         if (view != null)
             toxicRushWarningViews.Add(view);
     }
@@ -503,7 +505,7 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
         nextToxicRushPitFallSlamHeightLogTime = Time.time + 0.12f;
 
         CombatHeightState2D heightState = GetComponent<CombatHeightState2D>();
-        CombatHeightPresentation2D heightPresentation = GetComponent<CombatHeightPresentation2D>();
+        ICombatHeightPresentation2D heightPresentation = GetComponent<ICombatHeightPresentation2D>();
         Transform visualRoot = heightPresentation != null && heightPresentation.VisualRoot != null
             ? heightPresentation.VisualRoot
             : sprite != null
@@ -627,16 +629,15 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
     }
 
     /// <summary>생성된 텔레그래프 뷰 목록을 제거합니다.</summary>
-    private static void ClearViews(List<AttackTelegraphView> views)
+    private static void ClearViews(List<IAttackTelegraphHandle> views)
     {
         if (views == null)
             return;
 
         for (int i = 0; i < views.Count; i++)
         {
-            AttackTelegraphView view = views[i];
-            if (view != null)
-                Destroy(view.gameObject);
+            IAttackTelegraphHandle view = views[i];
+            view?.Release();
         }
 
         views.Clear();

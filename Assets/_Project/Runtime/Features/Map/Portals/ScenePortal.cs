@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
-using DG.Tweening;
 using UnityEngine;
 using UnityGAS;
 #if UNITY_EDITOR
@@ -11,7 +10,7 @@ using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 책임 : 플레이어 상호작용을 받아 포탈 이동을 요청하는 진입점이다.
-/// 실제 경로 해석은 현재 런 계획을 가진 PortalRouteManager에 위임한다.
+/// 실제 경로 해석은 현재 런 계획 backend를 감싼 RunRoutePlayback에 위임한다.
 /// </summary>
 public sealed class ScenePortal : InteractableBase
 {
@@ -47,7 +46,6 @@ public sealed class ScenePortal : InteractableBase
     private bool acceptedTravel;
     private bool hasActiveEntranceSnapshot;
     private Coroutine entranceRoutine;
-    private Sequence entranceSequence;
     private PortalEntranceSnapshot activeEntranceSnapshot;
     private PlayerCinematicProtection lockedPlayerProtection;
     private GameFlowInputBlocker entranceInputBlocker;
@@ -128,10 +126,8 @@ public sealed class ScenePortal : InteractableBase
         bool hasPlayer = player != null;
         bool isIdle = hasPlayer && player.CurrentState == InteractState.Idle;
         bool transitionIdle = !IsSceneTransitionActive();
-        PortalRouteManager routeManager = PortalRouteManager.EnsureInstance();
         bool canResolve = HasOneShotDestinationOverride ||
-                          routeManager != null &&
-                          routeManager.CanResolveRoute(this);
+                          RunRoutePlayback.CanResolveRoute(this);
 
         bool canInteract =
             !isTransitioning &&
@@ -227,8 +223,7 @@ public sealed class ScenePortal : InteractableBase
 
     private static bool IsSceneTransitionActive()
     {
-        SceneTransitionCoordinator coordinator = SceneTransitionCoordinator.Instance;
-        return coordinator != null && coordinator.IsTransitionActive;
+        return SceneTransitionPlayback.IsTransitionActive;
     }
 
     private IEnumerator PlayEntranceAndTravelRoutine(IPlayerInteractor player)
@@ -268,7 +263,6 @@ public sealed class ScenePortal : InteractableBase
         }
         finally
         {
-            KillEntranceSequence();
             ReleasePlayerCinematicProtection();
             ReleaseInputBlocker();
             entranceRoutine = null;
@@ -286,38 +280,11 @@ public sealed class ScenePortal : InteractableBase
         if (snapshot.PlayerTransform == null)
             yield break;
 
-        KillEntranceSequence();
-
         Vector3 targetPosition = ResolveEntranceTargetPosition(snapshot.PlayerTransform);
         Vector3 targetRotation = snapshot.LocalRotation.eulerAngles +
                                  new Vector3(0f, 0f, entranceRotationDegrees);
 
-        if (!TryCreateEntranceSequence(snapshot, targetPosition, targetRotation))
-            yield break;
-
-        yield return entranceSequence.WaitForCompletion();
-        entranceSequence = null;
-    }
-
-    private bool TryCreateEntranceSequence(
-        PortalEntranceSnapshot snapshot,
-        Vector3 targetPosition,
-        Vector3 targetRotation)
-    {
-        try
-        {
-            entranceSequence = DOTween.Sequence();
-            entranceSequence.Join(snapshot.PlayerTransform.DOMove(targetPosition, entranceDuration).SetEase(Ease.OutQuart));
-            entranceSequence.Join(snapshot.PlayerTransform.DOScale(Vector3.zero, entranceDuration).SetEase(Ease.InBack));
-            entranceSequence.Join(snapshot.PlayerTransform.DOLocalRotate(targetRotation, entranceDuration, RotateMode.FastBeyond360).SetEase(Ease.InCubic));
-            return true;
-        }
-        catch (Exception ex)
-        {
-            KillEntranceSequence();
-            Debug.LogError($"[ScenePortal] Entrance presentation failed. portal={name}, error={ex}", this);
-            return false;
-        }
+        yield return PlayEntranceTransformRoutine(snapshot, targetPosition, targetRotation);
     }
 
     private Vector3 ResolveEntranceTargetPosition(Transform playerTransform)
@@ -335,11 +302,11 @@ public sealed class ScenePortal : InteractableBase
 
     private IEnumerator WaitForAcceptedTransitionToFinish()
     {
-        SceneTransitionCoordinator coordinator = SceneTransitionCoordinator.Instance;
+        ISceneTransitionHandle coordinator = SceneTransitionPlayback.Instance;
         while (coordinator != null && coordinator.IsTransitionActive)
         {
             yield return null;
-            coordinator = SceneTransitionCoordinator.Instance;
+            coordinator = SceneTransitionPlayback.Instance;
         }
     }
 
@@ -359,7 +326,7 @@ public sealed class ScenePortal : InteractableBase
     {
         try
         {
-            return ScenePortalTravelService.TryTravel(this);
+            return ScenePortalTravelPlayback.TryTravel(this);
         }
         catch (Exception ex)
         {
@@ -413,8 +380,6 @@ public sealed class ScenePortal : InteractableBase
             entranceRoutine = null;
         }
 
-        KillEntranceSequence();
-
         if (restoreSnapshot && hasActiveEntranceSnapshot)
         {
             if (acceptedTravel)
@@ -431,15 +396,6 @@ public sealed class ScenePortal : InteractableBase
         ReleaseInputBlocker();
     }
 
-    private void KillEntranceSequence()
-    {
-        if (entranceSequence == null)
-            return;
-
-        entranceSequence.Kill();
-        entranceSequence = null;
-    }
-
     private void EnsurePortalId()
     {
         if (string.IsNullOrWhiteSpace(portalId) || HasDuplicatePortalId())
@@ -451,11 +407,7 @@ public sealed class ScenePortal : InteractableBase
         if (transitionType != TransitionType.HubToRunStart)
             return;
 
-        PortalRouteManager routeManager = PortalRouteManager.EnsureInstance();
-        if (routeManager == null)
-            return;
-
-        routeManager.EnsurePendingPlan(this);
+        RunRoutePlayback.EnsurePendingPlan(this);
     }
 
     private bool HasDuplicatePortalId()
@@ -480,6 +432,7 @@ public sealed class ScenePortal : InteractableBase
         return false;
     }
 
+    // 책임: 포탈 입장 연출 실패 시 복구할 플레이어 transform/rigidbody 상태를 보관한다.
     private readonly struct PortalEntranceSnapshot
     {
         public readonly Transform PlayerTransform;
@@ -586,6 +539,77 @@ public sealed class ScenePortal : InteractableBase
         }
     }
 
+    private IEnumerator PlayEntranceTransformRoutine(
+        PortalEntranceSnapshot snapshot,
+        Vector3 targetPosition,
+        Vector3 targetRotation)
+    {
+        Transform playerTransform = snapshot.PlayerTransform;
+        if (playerTransform == null)
+            yield break;
+
+        Vector3 startPosition = playerTransform.position;
+        Vector3 startScale = playerTransform.localScale;
+        Vector3 startRotation = snapshot.LocalRotation.eulerAngles;
+        float elapsed = 0f;
+
+        while (elapsed < entranceDuration && playerTransform != null)
+        {
+            elapsed += Time.deltaTime;
+            float t = entranceDuration > 0f ? elapsed / entranceDuration : 1f;
+            ApplyEntranceTransformFrame(
+                playerTransform,
+                startPosition,
+                targetPosition,
+                startScale,
+                startRotation,
+                targetRotation,
+                t);
+            yield return null;
+        }
+
+        if (playerTransform != null)
+        {
+            playerTransform.position = targetPosition;
+            playerTransform.localScale = Vector3.zero;
+            playerTransform.localRotation = Quaternion.Euler(targetRotation);
+        }
+    }
+
+    private static void ApplyEntranceTransformFrame(
+        Transform playerTransform,
+        Vector3 startPosition,
+        Vector3 targetPosition,
+        Vector3 startScale,
+        Vector3 startRotation,
+        Vector3 targetRotation,
+        float t)
+    {
+        playerTransform.position = Vector3.LerpUnclamped(startPosition, targetPosition, EaseOutQuart(t));
+        playerTransform.localScale = Vector3.LerpUnclamped(startScale, Vector3.zero, EaseInBack(t));
+        playerTransform.localRotation = Quaternion.Euler(Vector3.LerpUnclamped(startRotation, targetRotation, EaseInCubic(t)));
+    }
+
+    private static float EaseOutQuart(float t)
+    {
+        t = Mathf.Clamp01(t);
+        float inverse = 1f - t;
+        return 1f - inverse * inverse * inverse * inverse;
+    }
+
+    private static float EaseInCubic(float t)
+    {
+        t = Mathf.Clamp01(t);
+        return t * t * t;
+    }
+
+    private static float EaseInBack(float t)
+    {
+        t = Mathf.Clamp01(t);
+        const float back = 1.70158f;
+        return (back + 1f) * t * t * t - back * t * t;
+    }
+
 #if UNITY_EDITOR
     private void EmitEditorDiagnosticIfBlocked(
         IPlayerInteractor player,
@@ -605,10 +629,7 @@ public sealed class ScenePortal : InteractableBase
         if (now < nextEditorDiagnosticLogTime)
             return;
 
-        PortalRouteManager routeManager = PortalRouteManager.EnsureInstance();
-        string routeDebug = routeManager != null
-            ? routeManager.GetDebugResolveStatus(this)
-            : "manager=null";
+        string routeDebug = RunRoutePlayback.GetDebugResolveStatus(this);
 
         string message =
             $"[ScenePortal] Hub start portal blocked. portal={name}, " +

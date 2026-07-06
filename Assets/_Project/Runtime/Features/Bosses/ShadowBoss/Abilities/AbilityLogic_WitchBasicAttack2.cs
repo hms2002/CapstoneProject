@@ -73,21 +73,21 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
         float outerRadius = ComputeOuterRadius(witch);
         float innerSafeRadius = ComputeInnerSafeRadius(initialTarget != null ? initialTarget.transform : witch.CurrentTarget);
         float resolvedWarningSeconds = GetWarningSeconds();
-        AttackTelegraphView ringTelegraph = null;
+        IAttackTelegraphHandle ringTelegraph = null;
 
         witch.PlayPatternAttackMotion();
         ringTelegraph = SpawnRingTelegraph(witch, center, outerRadius, innerSafeRadius, resolvedWarningSeconds);
 
         yield return new WaitForSeconds(resolvedWarningSeconds);
         if (ringTelegraph != null)
-            Object.Destroy(ringTelegraph.gameObject);
+            ringTelegraph.Release();
 
         PlayHitPresentation(center, outerRadius, innerSafeRadius);
         DealRingDamage(witch, center, outerRadius, innerSafeRadius, initialTarget);
     }
 
     /// <summary>평타2 전용 도넛 텔레그래프를 생성하고 표시합니다.</summary>
-    private AttackTelegraphView SpawnRingTelegraph(
+    private IAttackTelegraphHandle SpawnRingTelegraph(
         Witch witch,
         Vector3 center,
         float outerRadius,
@@ -97,7 +97,7 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
         if (witch == null)
             return null;
 
-        AttackTelegraphService telegraphService = witch.GetComponent<AttackTelegraphService>();
+        IAttackTelegraphPresenter telegraphService = AttackTelegraphPresenterResolver.Resolve(witch);
         if (telegraphService == null)
             return null;
 
@@ -235,7 +235,7 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
             outerRadius,
             innerSafeRadius);
 
-        WorldPresentationRuntime.PlaySignalOnly(
+        WorldPresentationPlayback.PlaySignalOnly(
             hitPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: null,
@@ -261,7 +261,7 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
 
         if (spawnCount <= 1)
         {
-            WorldPresentationRuntime.SpawnVisualDeferredAsync(
+            WorldPresentationPlayback.SpawnOneShotDeferredAsync(
                 visualHook,
                 WorldPresentationContext.AtWorld(
                     instigator: null,
@@ -280,7 +280,7 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
             Vector3 direction = Quaternion.Euler(0f, 0f, angleDeg) * Vector3.right;
             Vector3 ringPoint = center + (direction * spawnRadius);
 
-            WorldPresentationRuntime.SpawnVisualDeferredAsync(
+            WorldPresentationPlayback.SpawnOneShotDeferredAsync(
                 visualHook,
                 WorldPresentationContext.AtWorld(
                     instigator: null,

@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
+/// <summary>
+/// 책임: 데몬킹 VFX가 참조하는 논리 소켓 식별자를 정의한다.
+/// </summary>
 public enum DemonKingVfxSocketId
 {
     EyeFlash,
@@ -23,6 +22,9 @@ public enum DemonKingVfxSocketId
     SwordSlashOrigin
 }
 
+/// <summary>
+/// 책임: 데몬킹 VFX 소켓 하나의 anchor, 좌우 반전 offset, 에디터 표시 설정을 보관한다.
+/// </summary>
 [Serializable]
 public sealed class DemonKingVfxSocketEntry
 {
@@ -59,6 +61,9 @@ public sealed class DemonKingVfxSocketEntry
     }
 }
 
+/// <summary>
+/// 책임: 데몬킹 본체 기준 VFX 소켓 위치를 해석하고 에디터 gizmo로 표시한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class DemonKingVfxSocketMap : MonoBehaviour
 {
@@ -223,10 +228,10 @@ public sealed class DemonKingVfxSocketMap : MonoBehaviour
 
 #if UNITY_EDITOR
             if (showLabels)
-            {
-                Handles.color = entry.GizmoColor;
-                Handles.Label(worldPosition + Vector3.up * (radius + 0.05f), entry.Id.ToString());
-            }
+                EditorAuthoringPlayback.DrawHandleLabel(
+                    worldPosition + Vector3.up * (radius + 0.05f),
+                    entry.Id.ToString(),
+                    entry.GizmoColor);
 #endif
         }
     }

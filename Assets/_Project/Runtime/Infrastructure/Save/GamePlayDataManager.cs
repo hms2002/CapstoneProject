@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
 
-public sealed class GamePlayDataManager : MonoBehaviour
+// 책임: 런 세션 데이터를 유지하고 Core RunSessionStore 백엔드를 등록해 런 시작/종료 상태를 중계한다.
+public sealed class GamePlayDataManager : MonoBehaviour, IRunSessionStoreBackend
 {
     public static GamePlayDataManager Instance { get; private set; }
 
@@ -49,6 +50,7 @@ public sealed class GamePlayDataManager : MonoBehaviour
         }
 
         Instance = this;
+        RunSessionStore.RegisterBackend(this);
         DontDestroyOnLoad(gameObject);
     }
 
@@ -59,6 +61,8 @@ public sealed class GamePlayDataManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        RunSessionStore.UnregisterBackend(this);
+
         if (Instance == this)
             Instance = null;
     }

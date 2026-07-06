@@ -31,6 +31,7 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
     [HideInInspector, FormerlySerializedAs("candleAttackSound")]
     [SerializeField] private SoundRef legacyCandleAttackSound;
 
+    // 책임: 봉인 촛불 난사에서 각 촛불 발사체의 시작점, 방향, 피해 적용 정보를 보관한다.
     private struct CandleBurstShotPlan
     {
         public Candlestick candle;
@@ -55,8 +56,8 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
         GameObject targetObject = initialTarget != null ? initialTarget : witch.CurrentTarget != null ? witch.CurrentTarget.gameObject : null;
         List<Candlestick> sealedCandles = new List<Candlestick>();
         List<CandleBurstShotPlan> burstPlans = new List<CandleBurstShotPlan>();
-        List<AttackTelegraphView> warningViews = new List<AttackTelegraphView>();
-        AttackTelegraphService telegraphService = witch.GetComponent<AttackTelegraphService>();
+        List<IAttackTelegraphHandle> warningViews = new List<IAttackTelegraphHandle>();
+        IAttackTelegraphPresenter telegraphService = AttackTelegraphPresenterResolver.Resolve(witch);
 
         witch.CollectSealedCandles(sealedCandles);
         if (sealedCandles.Count == 0)
@@ -87,7 +88,7 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
                 if (plan.candle == null)
                     continue;
 
-                WorldPresentationRuntime.PlayDeferredAsync(
+                WorldPresentationPlayback.PlayDeferredAsync(
                     candleAttackPresentation,
                     WorldPresentationContext.AtWorld(
                         instigator: witch.gameObject,
@@ -147,10 +148,10 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
     }
 
     private void SpawnBurstWarnings(
-        AttackTelegraphService telegraphService,
+        IAttackTelegraphPresenter telegraphService,
         List<CandleBurstShotPlan> burstPlans,
         float duration,
-        List<AttackTelegraphView> warningViews,
+        List<IAttackTelegraphHandle> warningViews,
         float radius)
     {
         DestroyWarningViews(warningViews);
@@ -173,7 +174,7 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
                 duration,
                 telegraphStyle));
 
-            AttackTelegraphView view = telegraphService.SpawnDetachedView(spec);
+            IAttackTelegraphHandle view = telegraphService.SpawnDetachedView(spec);
             if (view != null)
                 warningViews.Add(view);
         }
@@ -223,16 +224,16 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
         return projectileDamageEffect != null;
     }
 
-    private static void DestroyWarningViews(List<AttackTelegraphView> warningViews)
+    private static void DestroyWarningViews(List<IAttackTelegraphHandle> warningViews)
     {
         if (warningViews == null)
             return;
 
         for (int i = 0; i < warningViews.Count; i++)
         {
-            AttackTelegraphView view = warningViews[i];
+            IAttackTelegraphHandle view = warningViews[i];
             if (view != null)
-                Object.Destroy(view.gameObject);
+                view.Release();
         }
 
         warningViews.Clear();

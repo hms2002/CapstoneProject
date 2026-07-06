@@ -16,7 +16,7 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
 
     [SerializeField] private GoblinWarrior owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private MonoBehaviour telegraphService;
 
     [Header("Telegraph Clipping")]
     [SerializeField] private LayerMask telegraphWallClipLayers = 1 << 30;
@@ -24,6 +24,7 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
     [SerializeField, Min(0f)] private float telegraphWallClipSkinWidth = 0.03f;
 
     private AttackTelegraphStyle warningStyle;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private bool isRunning;
     private bool cancelRequested;
     private bool hitTarget;
@@ -36,8 +37,7 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
             owner = GetComponent<GoblinWarrior>();
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
         warningStyle = MakeWarningStyle();
     }
 
@@ -129,7 +129,7 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
 
     private void ShowWarning(GoblinWarrior.ChargeContext context, float warningSeconds)
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
         Vector3 center = (Vector3)context.StartPosition + (Vector3)(context.Direction.normalized * context.DashDistance * 0.5f);
@@ -145,12 +145,12 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
                 telegraphWallClipSampleCount,
                 telegraphWallClipSkinWidth);
 
-        telegraphService.Show(spec);
+        telegraphPresenter.Show(spec);
     }
 
     private void HideWarning()
     {
-        telegraphService?.HideCurrent();
+        telegraphPresenter?.HideCurrent();
     }
 
     private void TryHitTarget(GoblinWarrior.ChargeContext context)

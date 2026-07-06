@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Cainos.PixelArtTopDown_Basic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityGAS;
@@ -120,6 +119,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 
     private Coroutine sequenceRoutine;
     private Transform cameraAnchor;
+    private IGameplayCameraFocusSession cameraFocusSession;
     private GameFlowInputBlocker inputBlocker;
 
     private Transform originalShadowParent;
@@ -169,6 +169,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
             SetFadeTransitionUnlockBlocked(false);
 
         ReleaseInputBlocker();
+        ReleaseCameraFocusSession();
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -295,6 +296,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         presentationPrepared = false;
         SetFadeTransitionUnlockBlocked(false);
         sequenceRoutine = null;
+        ReleaseCameraFocusSession();
         InvokePresentationCompleted();
     }
 
@@ -355,6 +357,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
             ReattachShadow();
             RestoreCameraBindingToPlayer();
             CleanupCameraAnchor();
+            ReleaseCameraFocusSession();
         }
 
         RestoreGameplayControl();
@@ -669,20 +672,17 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         SetFadeTransitionUnlockBlocked(false);
         CleanupCameraAnchor();
         ReleaseInputBlocker();
+        ReleaseCameraFocusSession();
     }
 
     private bool HasWakeInput()
     {
-        InputBindingService input = InputBindingService.EnsureInstance();
-        if (input == null)
-            return false;
-
-        if (input.GetMoveVectorRaw().sqrMagnitude > 0.0001f)
+        if (InputActionQuery.GetMoveVectorRaw().sqrMagnitude > 0.0001f)
             return true;
 
         for (int i = 0; i < WakeInputActions.Length; i++)
         {
-            if (input.IsPressed(WakeInputActions[i]))
+            if (InputActionQuery.IsPressed(WakeInputActions[i]))
                 return true;
         }
 
@@ -734,41 +734,20 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         cameraAnchor = anchorObject.transform;
         cameraAnchor.position = targetPosition;
 
-        CameraFollow legacyFollow = CameraBootstrap.GetLegacyFollow();
-        if (legacyFollow != null)
-        {
-            legacyFollow.BindTarget(cameraAnchor, true);
-            legacyFollow.SnapToTarget();
-            return;
-        }
-
-        var playerCamera = CameraBootstrap.GetPlayerCamera();
-        if (playerCamera != null)
-        {
-            playerCamera.Follow = cameraAnchor;
-            playerCamera.LookAt = cameraAnchor;
-        }
+        EnsureCameraFocusSession();
+        cameraFocusSession?.SetTarget(cameraAnchor);
+        cameraFocusSession?.SnapToTarget(cameraAnchor);
     }
 
     private void BindCameraToPlayer(bool snap)
     {
         CleanupCameraAnchor();
 
-        CameraFollow legacyFollow = CameraBootstrap.GetLegacyFollow();
-        if (legacyFollow != null)
-        {
-            legacyFollow.BindTarget(transform, snap);
-            if (snap)
-                legacyFollow.SnapToTarget();
-            return;
-        }
+        EnsureCameraFocusSession();
+        cameraFocusSession?.SetTarget(transform);
 
-        var playerCamera = CameraBootstrap.GetPlayerCamera();
-        if (playerCamera != null)
-        {
-            playerCamera.Follow = transform;
-            playerCamera.LookAt = transform;
-        }
+        if (snap)
+            cameraFocusSession?.SnapToTarget(transform);
     }
 
     private void ApplyCameraPresentationMode(Vector3 targetPosition)
@@ -800,11 +779,24 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         cameraAnchor = null;
     }
 
+    private void EnsureCameraFocusSession()
+    {
+        if (cameraFocusSession != null)
+            return;
+
+        cameraFocusSession = GameplayCameraFocusPlayback.Capture(this);
+    }
+
+    private void ReleaseCameraFocusSession()
+    {
+        cameraFocusSession = null;
+    }
+
     private Vector3 ResolveStartPosition(Vector3 targetPosition)
     {
         float startY = targetPosition.y + minimumStartHeight;
 
-        Camera mainCamera = CameraBootstrap.GetMainCamera();
+        Camera mainCamera = GameplayCameraViewQuery.GetMainCamera();
         if (mainCamera == null)
             mainCamera = Camera.main;
 
@@ -893,9 +885,10 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
             return;
 
         fadeUnlockBlocked = blocked;
-        SceneFadeTransitionService.Instance?.SetPlayerUnlockBlocked(this, blocked);
+        SceneFadeTransitionPlayback.Instance?.SetPlayerUnlockBlocked(this, blocked);
     }
 
+    // 책임: 허브 스폰 연출 중 임시로 끈 Behaviour의 이전 enabled 상태를 보관한다.
     private readonly struct ManagedBehaviourState
     {
         public readonly Behaviour behaviour;
@@ -908,6 +901,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         }
     }
 
+    // 책임: 허브 스폰 연출 중 임시로 끈 Collider2D의 이전 enabled 상태를 보관한다.
     private readonly struct ColliderState
     {
         public readonly Collider2D collider;
@@ -920,6 +914,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         }
     }
 
+    // 책임: 허브 스폰 연출 중 임시로 끈 Rigidbody2D의 이전 simulated 상태를 보관한다.
     private readonly struct RigidbodyState
     {
         public readonly Rigidbody2D body;

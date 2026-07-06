@@ -8,6 +8,8 @@ using UnityEngine;
 /// </summary>
 public static class TimeScalePauseService
 {
+    private static readonly ITimeScalePauseBackend PlaybackBackend = new TimeScalePauseBackend();
+
     /// <summary>
     /// 책임:
     /// - TimeScalePauseService가 보유한 owner 중 씬 전환 등으로 파괴된 owner를 매 프레임 청소한다.
@@ -45,6 +47,7 @@ public static class TimeScalePauseService
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Bootstrap()
     {
+        TimeScalePausePlayback.RegisterBackend(PlaybackBackend);
         EnsureRunner();
     }
 
@@ -136,6 +139,29 @@ public static class TimeScalePauseService
         {
             Time.timeScale = restoreTimeScale > 0f ? restoreTimeScale : 1f;
             restoreTimeScale = 1f;
+        }
+    }
+
+    /// <summary>
+    /// 책임 : Core의 time-scale pause playback 요청을 기존 정적 TimeScalePauseService로 연결한다.
+    /// </summary>
+    private sealed class TimeScalePauseBackend : ITimeScalePauseBackend
+    {
+        public bool IsPaused => TimeScalePauseService.IsPaused;
+
+        public bool IsHeldBy(Object owner)
+        {
+            return TimeScalePauseService.IsHeldBy(owner);
+        }
+
+        public bool Acquire(Object owner)
+        {
+            return TimeScalePauseService.Acquire(owner);
+        }
+
+        public bool Release(Object owner)
+        {
+            return TimeScalePauseService.Release(owner);
         }
     }
 }

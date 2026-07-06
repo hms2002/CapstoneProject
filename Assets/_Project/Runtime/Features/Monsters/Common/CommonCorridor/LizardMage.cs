@@ -26,6 +26,7 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
     public int ShotCount => Logic != null ? Logic.ShotCount : 0;
     public float ShotInterval => Logic != null ? Logic.ShotInterval : 0f;
 
+    // 책임: 리자드 마법사 연사 공격의 타겟, 조준 방향, 사거리, 피해 정보를 보관한다.
     public readonly struct BurstContext
     {
         public readonly GameObject Target;
@@ -239,9 +240,10 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
 {
     [SerializeField] private LizardMage owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private MonoBehaviour telegraphService;
 
     private AttackTelegraphStyle warningStyle;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private bool isRunning;
     private bool cancelRequested;
 
@@ -253,8 +255,7 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
             owner = GetComponent<LizardMage>();
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
         warningStyle = CreateWarningStyle();
     }
 
@@ -359,18 +360,18 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
 
     private void ShowWarning(LizardMage.BurstContext context, float warningSeconds)
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
-        telegraphService.Show(CreateWarningSpec(context, warningSeconds));
+        telegraphPresenter.Show(CreateWarningSpec(context, warningSeconds));
     }
 
     private void UpdateWarning(LizardMage.BurstContext context, float warningSeconds)
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
-        telegraphService.UpdateCurrentGeometry(CreateWarningSpec(context, warningSeconds));
+        telegraphPresenter.UpdateCurrentGeometry(CreateWarningSpec(context, warningSeconds));
     }
 
     /// <summary>
@@ -395,7 +396,7 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
 
     private void HideWarning()
     {
-        telegraphService?.HideCurrent();
+        telegraphPresenter?.HideCurrent();
     }
 
     private static bool IsCancelled(AbilitySpec spec)

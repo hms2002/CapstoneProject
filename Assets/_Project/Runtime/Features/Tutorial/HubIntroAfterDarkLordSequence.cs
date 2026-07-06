@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
-using Cainos.PixelArtTopDown_Basic;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
+/// <summary>
+/// 책임 : 허브 인트로 컷씬에서 포커스 단계, 대사, 입력 잠금, UI 레터박스 흐름을 순차 실행한다.
+/// </summary>
 public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
 {
     [System.Serializable]
@@ -79,7 +80,7 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float uiTargetAlpha = 0f;
 
     [Header("NPC")]
-    [SerializeField] private SpeechBubbleComponent npcSpeechBubble;
+    [SerializeField] private MonoBehaviour npcSpeechBubble;
     [SerializeField] private Transform npcFocusTarget;
     [SerializeField] private NPCData narratorNpcData;
     [SerializeField] private string openingSpeechText;
@@ -127,21 +128,11 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
 
     private Coroutine sequenceRoutine;
     private GameFlowInputBlocker inputBlocker;
-    private CinematicLetterboxOverlay letterboxOverlay;
+    private ICinematicLetterboxOverlayHandle letterboxOverlay;
     private PlayerCinematicProtection playerProtection;
     private Transform protectedPlayerTransform;
     private Canvas gameplayHudCanvas;
-    private CinemachineCamera gameplayCamera;
-    private CinemachineBrain cameraBrain;
-    private CameraFollow legacyFollowCamera;
-    private Transform cachedCameraFollow;
-    private Transform cachedCameraLookAt;
-    private int cachedCameraPriority;
-    private float cachedCameraOrthographicSize;
-    private bool cachedLegacyFollowEnabled;
-    private bool cachedBrainIgnoreTimeScale;
-    private bool hasCachedCameraState;
-    private bool hasCachedCameraLens;
+    private IGameplayCameraFocusSession cameraFocusSession;
     private bool hasCachedGameplayHudState;
     private bool cachedGameplayHudEnabled;
     private bool hasAcquiredPlayerProtection;
@@ -210,7 +201,7 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
 
         if (useLetterbox)
         {
-            letterboxOverlay = new CinematicLetterboxOverlay();
+            letterboxOverlay = CinematicLetterboxPlayback.CreateOverlay();
             yield return PlayLetterboxInRoutine();
         }
 
@@ -233,7 +224,7 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         if (markSeenOnComplete)
         {
             HubIntroProgressGate.MarkHubIntroSeen(hubIntroSeenId);
-            PresentationPreloadService.RefreshFirstRunIntroWindow("Hub intro seen");
+            PresentationPreloadPlayback.RefreshFirstRunIntroWindow("Hub intro seen");
         }
 
         hasPlayedThisScene = true;
@@ -288,9 +279,9 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
             yield break;
         }
 
-        if (DialogueService.Instance == null)
+        if (!DialoguePlayback.IsAvailable)
         {
-            Debug.LogError("[HubIntroAfterDarkLordSequence] DialogueService instance was not found.", this);
+            Debug.LogError("[HubIntroAfterDarkLordSequence] Dialogue playback backend was not found.", this);
             yield break;
         }
 
@@ -300,15 +291,16 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         };
         List<NPCData> participants = new() { narratorNpcData };
 
-        if (!DialogueService.Instance.TryStartDialogueSequence(segments, participants, null, presentationOptions))
+        if (!DialoguePlayback.TryStartDialogueSequence(segments, participants, null, presentationOptions))
             yield break;
 
-        yield return new WaitUntil(() => DialogueService.Instance == null || !DialogueService.Instance.IsPlaying);
+        yield return new WaitUntil(() => !DialoguePlayback.IsPlaying);
     }
 
     private IEnumerator PlayOpeningSpeechRoutine()
     {
-        if (npcSpeechBubble == null || string.IsNullOrWhiteSpace(openingSpeechText))
+        ISpeechBubblePlayback bubblePlayback = ResolveNpcSpeechBubble();
+        if (bubblePlayback == null || string.IsNullOrWhiteSpace(openingSpeechText))
             yield break;
 
         bool hidden = false;
@@ -326,12 +318,16 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
 
     private void SpeakOpeningSpeech(float duration, System.Action onHidden)
     {
+        ISpeechBubblePlayback bubblePlayback = ResolveNpcSpeechBubble();
+        if (bubblePlayback == null)
+            return;
+
         if (preSizeOpeningSpeechBubbleBeforeTyping)
         {
             float minWidth = Mathf.Max(1f, openingSpeechBubbleMinTextWidth);
             float maxWidth = Mathf.Max(minWidth, openingSpeechBubbleMaxTextWidth);
             float minHeight = Mathf.Max(1f, openingSpeechBubbleMinTextHeight);
-            npcSpeechBubble.SpeakWithPreSizedLayout(
+            bubblePlayback.SpeakWithPreSizedLayout(
                 openingSpeechText,
                 duration,
                 openingSpeechTheme,
@@ -342,7 +338,7 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
             return;
         }
 
-        npcSpeechBubble.Speak(openingSpeechText, duration, openingSpeechTheme, onHidden);
+        bubblePlayback.Speak(openingSpeechText, duration, openingSpeechTheme, onHidden);
     }
 
     private IEnumerator PlayLetterboxInRoutine()
@@ -390,14 +386,14 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
 
     private IEnumerator ReturnCameraRoutine()
     {
-        if (!hasCachedCameraState)
+        if (cameraFocusSession == null)
             yield break;
 
         Transform restoreTarget = ResolvePlayerTransform();
         SetCameraTarget(restoreTarget);
 
-        float restoreOrthographicSize = hasCachedCameraLens
-            ? cachedCameraOrthographicSize
+        float restoreOrthographicSize = cameraFocusSession.HasOrthographicSize
+            ? cameraFocusSession.CachedOrthographicSize
             : defaultFocusOrthographicSize;
 
         yield return ZoomCameraWhileWaitingRoutine(
@@ -415,22 +411,25 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         Transform settleTarget)
     {
         float waitDuration = Mathf.Max(0f, minimumWaitSeconds);
-        if (!zoomGameplayCameraDuringFocus || gameplayCamera == null)
+        if (!zoomGameplayCameraDuringFocus ||
+            cameraFocusSession == null ||
+            !cameraFocusSession.HasOrthographicSize)
         {
             yield return WaitForPresentationSeconds(waitDuration);
-            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
+            if (cameraFocusSession != null)
+                yield return cameraFocusSession.WaitForSettle(settleTarget);
             yield break;
         }
 
-        float startOrthographicSize = GetCameraOrthographicSize(gameplayCamera, targetOrthographicSize);
+        float startOrthographicSize = cameraFocusSession.CurrentOrthographicSize;
         float clampedTargetSize = Mathf.Max(0.01f, targetOrthographicSize);
         float clampedZoomDuration = Mathf.Max(0f, zoomDuration);
         float totalDuration = Mathf.Max(waitDuration, clampedZoomDuration);
 
         if (totalDuration <= 0f)
         {
-            SetCameraOrthographicSize(gameplayCamera, clampedTargetSize);
-            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
+            cameraFocusSession.SetOrthographicSize(clampedTargetSize);
+            yield return cameraFocusSession.WaitForSettle(settleTarget);
             yield break;
         }
 
@@ -442,16 +441,15 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
             if (clampedZoomDuration > 0f)
             {
                 float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / clampedZoomDuration));
-                SetCameraOrthographicSize(
-                    gameplayCamera,
+                cameraFocusSession.SetOrthographicSize(
                     Mathf.Lerp(startOrthographicSize, clampedTargetSize, t));
             }
 
             yield return null;
         }
 
-        SetCameraOrthographicSize(gameplayCamera, clampedTargetSize);
-        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
+        cameraFocusSession.SetOrthographicSize(clampedTargetSize);
+        yield return cameraFocusSession.WaitForSettle(settleTarget);
     }
 
     private IEnumerator WaitForPlayerTransformRoutine()
@@ -492,8 +490,8 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
     private void AcquireGlobalPresentationState()
     {
         CacheAndHideGameplayHud();
-        UIManager.Instance?.HideWorldPrompt();
-        UIManager.Instance?.HideHoverImmediate();
+        UiCommandPlayback.HideWorldPrompt();
+        UiCommandPlayback.HideHoverImmediate();
 
         if (!blockExternalInput)
             return;
@@ -504,7 +502,7 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
 
     private void CleanupSequenceState()
     {
-        npcSpeechBubble?.HideActive();
+        ResolveNpcSpeechBubble()?.HideActive();
         DisposeLetterboxOverlay();
         RestoreCameraState(ResolvePlayerTransform());
         ReleasePlayerProtection();
@@ -535,7 +533,7 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         if (!hideGameplayHud || hasCachedGameplayHudState)
             return;
 
-        gameplayHudCanvas = GlobalUIRoot.GetCanvas(GlobalCanvasLayer.GameplayHUD);
+        gameplayHudCanvas = GlobalCanvasPlayback.GetCanvas(GlobalCanvasLayer.GameplayHUD);
         if (gameplayHudCanvas == null)
             return;
 
@@ -570,10 +568,31 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         if (npcFocusTarget != null)
             return npcFocusTarget;
 
-        if (npcSpeechBubble != null)
-            return npcSpeechBubble.transform;
+        ISpeechBubblePlayback bubblePlayback = ResolveNpcSpeechBubble();
+        if (bubblePlayback != null)
+            return bubblePlayback.BubbleTransform;
 
         return transform;
+    }
+
+    private ISpeechBubblePlayback ResolveNpcSpeechBubble()
+    {
+        if (npcSpeechBubble is ISpeechBubblePlayback existing)
+            return existing;
+
+        MonoBehaviour[] behaviours = GetComponentsInChildren<MonoBehaviour>(includeInactive: true);
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+            if (behaviour is ISpeechBubblePlayback playback)
+            {
+                npcSpeechBubble = behaviour;
+                return playback;
+            }
+        }
+
+        npcSpeechBubble = null;
+        return null;
     }
 
     private Transform ResolvePlayerTransform()
@@ -622,87 +641,24 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
 
     private void CacheCameraState()
     {
-        if (hasCachedCameraState)
+        if (cameraFocusSession != null)
             return;
 
-        CameraBootstrap.EnsureRuntimeRigForCurrentScene();
-
-        gameplayCamera = CameraBootstrap.GetPlayerCamera();
-        cameraBrain = CameraBootstrap.GetBrain();
-        legacyFollowCamera = CameraBootstrap.GetLegacyFollow();
-
-        if (gameplayCamera != null)
-        {
-            cachedCameraFollow = gameplayCamera.Follow;
-            cachedCameraLookAt = gameplayCamera.LookAt;
-            cachedCameraPriority = gameplayCamera.Priority;
-            cachedCameraOrthographicSize = GetCameraOrthographicSize(gameplayCamera, defaultFocusOrthographicSize);
-            hasCachedCameraLens = true;
-        }
-
-        if (legacyFollowCamera != null)
-            cachedLegacyFollowEnabled = legacyFollowCamera.enabled;
-
-        if (cameraBrain != null)
-            cachedBrainIgnoreTimeScale = cameraBrain.IgnoreTimeScale;
-
-        hasCachedCameraState = true;
+        cameraFocusSession = GameplayCameraFocusPlayback.Capture(this);
     }
 
     private void SetCameraTarget(Transform target)
     {
-        if (target == null)
-            return;
-
-        if (cameraBrain != null)
-            cameraBrain.IgnoreTimeScale = true;
-
-        if (legacyFollowCamera != null)
-            legacyFollowCamera.enabled = false;
-
-        if (gameplayCamera == null)
-            return;
-
-        gameplayCamera.Follow = target;
-        gameplayCamera.LookAt = target;
+        cameraFocusSession?.SetTarget(target);
     }
 
     private void RestoreCameraState(Transform preferredTarget)
     {
-        if (!hasCachedCameraState)
+        if (cameraFocusSession == null)
             return;
 
-        Transform restoreFollow = preferredTarget != null ? preferredTarget : cachedCameraFollow;
-        Transform restoreLookAt = preferredTarget != null ? preferredTarget : cachedCameraLookAt;
-
-        if (gameplayCamera != null)
-        {
-            gameplayCamera.Follow = restoreFollow;
-            gameplayCamera.LookAt = restoreLookAt;
-            gameplayCamera.Priority = cachedCameraPriority;
-
-            if (hasCachedCameraLens)
-                SetCameraOrthographicSize(gameplayCamera, cachedCameraOrthographicSize);
-        }
-
-        if (legacyFollowCamera != null)
-        {
-            if (restoreFollow != null)
-                legacyFollowCamera.BindTarget(restoreFollow, snap: false);
-
-            legacyFollowCamera.enabled = cachedLegacyFollowEnabled;
-        }
-
-        if (cameraBrain != null)
-            cameraBrain.IgnoreTimeScale = cachedBrainIgnoreTimeScale;
-
-        gameplayCamera = null;
-        cameraBrain = null;
-        legacyFollowCamera = null;
-        cachedCameraFollow = null;
-        cachedCameraLookAt = null;
-        hasCachedCameraState = false;
-        hasCachedCameraLens = false;
+        cameraFocusSession.Restore(preferredTarget);
+        cameraFocusSession = null;
     }
 
     private bool IsHubScene()
@@ -728,22 +684,4 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         }
     }
 
-    private static float GetCameraOrthographicSize(CinemachineCamera camera, float fallbackOrthographicSize)
-    {
-        if (camera == null)
-            return Mathf.Max(0.01f, fallbackOrthographicSize);
-
-        var lens = camera.Lens;
-        return Mathf.Max(0.01f, lens.OrthographicSize);
-    }
-
-    private static void SetCameraOrthographicSize(CinemachineCamera camera, float orthographicSize)
-    {
-        if (camera == null)
-            return;
-
-        var lens = camera.Lens;
-        lens.OrthographicSize = Mathf.Max(0.01f, orthographicSize);
-        camera.Lens = lens;
-    }
 }

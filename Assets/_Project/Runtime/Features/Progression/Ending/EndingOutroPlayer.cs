@@ -4,6 +4,9 @@ using CapstoneAudio;
 using UnityEngine;
 
 [DisallowMultipleComponent]
+/// <summary>
+/// 책임 : 엔딩 아웃트로 시퀀스 재생, 스킵 입력, view 탐색과 표시 상태를 관리한다.
+/// </summary>
 public sealed class EndingOutroPlayer : MonoBehaviour
 {
     private const float TypingSoundSkipFadeOutSeconds = 0.2f;
@@ -12,7 +15,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
     [SerializeField] private EndingOutroSequenceSO sequence;
 
     [Header("View")]
-    [SerializeField] private EndingOutroView view;
+    [SerializeField] private MonoBehaviour view;
     [SerializeField] private bool hideViewOnAwake = true;
     [SerializeField] private bool hideViewWhenCompleted;
 
@@ -36,17 +39,19 @@ public sealed class EndingOutroPlayer : MonoBehaviour
     private bool hasHiddenCursor;
 
     public bool IsPlaying => playRoutine != null;
+    private IEndingOutroView View => view != null ? view as IEndingOutroView : null;
 
     public bool CanPlay
     {
         get
         {
             ResolveRuntimeReferences();
+            IEndingOutroView resolvedView = View;
             return isActiveAndEnabled &&
                    sequence != null &&
                    sequence.SlideCount > 0 &&
-                   view != null &&
-                   view.IsReady;
+                   resolvedView != null &&
+                   resolvedView.IsReady;
         }
     }
 
@@ -105,24 +110,31 @@ public sealed class EndingOutroPlayer : MonoBehaviour
 
     public bool ResolveRuntimeReferences()
     {
-        if (view == null || !view.IsReady)
+        IEndingOutroView resolvedView = View;
+        if (resolvedView == null || !resolvedView.IsReady)
             view = FindGlobalRootOutroView();
 
-        if (view == null || !view.IsReady)
+        resolvedView = View;
+        if (resolvedView == null || !resolvedView.IsReady)
             view = FindSingleSceneOutroView();
 
-        return view != null && view.IsReady;
+        resolvedView = View;
+        return resolvedView != null && resolvedView.IsReady;
     }
 
     private IEnumerator PlayRoutine(Action onCompleted, bool keepViewVisibleOnCompleted)
     {
+        IEndingOutroView resolvedView = View;
+        if (resolvedView == null)
+            yield break;
+
         skipOutroRequested = false;
         ResetInputState();
         AcquireCursorHidden();
-        view.Show(skipKey);
-        view.ApplySkipFillColor(sequence.SkipFillColor);
-        view.SetRootAlpha(0f);
-        view.SetSkipPromptAlpha(0f);
+        resolvedView.Show(skipKey);
+        resolvedView.ApplySkipFillColor(sequence.SkipFillColor);
+        resolvedView.SetRootAlpha(0f);
+        resolvedView.SetSkipPromptAlpha(0f);
 
         yield return FadeOutroRootAsync(1f, sequence.OutroStartFadeDuration);
         if (skipOutroRequested)
@@ -137,8 +149,8 @@ public sealed class EndingOutroPlayer : MonoBehaviour
             if (slide == null)
                 continue;
 
-            view.SetSlideSprite(slide.Image);
-            view.SetSlideAlpha(0f);
+            resolvedView.SetSlideSprite(slide.Image);
+            resolvedView.SetSlideAlpha(0f);
 
             string text = slide.Text;
             float fadeInDuration = i == 0
@@ -170,10 +182,14 @@ public sealed class EndingOutroPlayer : MonoBehaviour
 
     private IEnumerator FadeOutroRootAsync(float targetAlpha, float duration)
     {
-        float startAlpha = view.RootAlpha;
+        IEndingOutroView resolvedView = View;
+        if (resolvedView == null)
+            yield break;
+
+        float startAlpha = resolvedView.RootAlpha;
         if (duration <= 0f)
         {
-            view.SetRootAlpha(targetAlpha);
+            resolvedView.SetRootAlpha(targetAlpha);
             yield break;
         }
 
@@ -185,17 +201,17 @@ public sealed class EndingOutroPlayer : MonoBehaviour
             {
                 skipOutroRequested = true;
                 FadeTypingSoundOnSkipRequest();
-                view.SetRootAlpha(targetAlpha);
+                resolvedView.SetRootAlpha(targetAlpha);
                 yield break;
             }
 
             elapsed += Time.unscaledDeltaTime;
             float normalized = Mathf.Clamp01(elapsed / duration);
-            view.SetRootAlpha(Mathf.Lerp(startAlpha, targetAlpha, normalized));
+            resolvedView.SetRootAlpha(Mathf.Lerp(startAlpha, targetAlpha, normalized));
             yield return null;
         }
 
-        view.SetRootAlpha(targetAlpha);
+        resolvedView.SetRootAlpha(targetAlpha);
     }
 
     private IEnumerator TypeTextAndFadeInAsync(
@@ -204,8 +220,12 @@ public sealed class EndingOutroPlayer : MonoBehaviour
         bool ignoreAdvanceUntilFadeComplete,
         bool fadeSkipPromptWithSlide)
     {
+        IEndingOutroView resolvedView = View;
+        if (resolvedView == null)
+            yield break;
+
         text ??= string.Empty;
-        view.SetText(string.Empty);
+        resolvedView.SetText(string.Empty);
         nextTypingSoundTime = 0f;
         typingStartSoundPlayed = false;
 
@@ -213,7 +233,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
         bool textComplete = text.Length == 0;
         if (!textComplete && secondsPerCharacter <= 0f)
         {
-            view.SetText(text);
+            resolvedView.SetText(text);
             TryPlayTypingSound();
             textComplete = true;
         }
@@ -221,13 +241,13 @@ public sealed class EndingOutroPlayer : MonoBehaviour
         int visibleCharacters = 0;
         float elapsedForNextCharacter = 0f;
         float fadeElapsed = 0f;
-        float startAlpha = view.SlideAlpha;
+        float startAlpha = resolvedView.SlideAlpha;
         bool fadeComplete = fadeDuration <= 0f;
         if (fadeComplete)
         {
-            view.SetSlideAlpha(1f);
+            resolvedView.SetSlideAlpha(1f);
             if (fadeSkipPromptWithSlide)
-                view.SetSkipPromptAlpha(1f);
+                resolvedView.SetSkipPromptAlpha(1f);
         }
 
         while (!textComplete || !fadeComplete)
@@ -237,10 +257,10 @@ public sealed class EndingOutroPlayer : MonoBehaviour
             {
                 skipOutroRequested = true;
                 FadeTypingSoundOnSkipRequest();
-                view.SetText(text);
-                view.SetSlideAlpha(1f);
+                resolvedView.SetText(text);
+                resolvedView.SetSlideAlpha(1f);
                 if (fadeSkipPromptWithSlide)
-                    view.SetSkipPromptAlpha(1f);
+                    resolvedView.SetSkipPromptAlpha(1f);
                 yield break;
             }
 
@@ -249,10 +269,10 @@ public sealed class EndingOutroPlayer : MonoBehaviour
                 bool canAdvance = !ignoreAdvanceUntilFadeComplete || fadeComplete;
                 if (canAdvance)
                 {
-                    view.SetText(text);
-                    view.SetSlideAlpha(1f);
+                    resolvedView.SetText(text);
+                    resolvedView.SetSlideAlpha(1f);
                     if (fadeSkipPromptWithSlide)
-                        view.SetSkipPromptAlpha(1f);
+                        resolvedView.SetSkipPromptAlpha(1f);
                     yield break;
                 }
             }
@@ -271,7 +291,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
 
                 if (changed)
                 {
-                    view.SetText(text.Substring(0, visibleCharacters));
+                    resolvedView.SetText(text.Substring(0, visibleCharacters));
                     TryPlayTypingSound();
                 }
 
@@ -282,19 +302,19 @@ public sealed class EndingOutroPlayer : MonoBehaviour
             {
                 fadeElapsed += deltaTime;
                 float normalized = Mathf.Clamp01(fadeElapsed / fadeDuration);
-                view.SetSlideAlpha(Mathf.Lerp(startAlpha, 1f, normalized));
+                resolvedView.SetSlideAlpha(Mathf.Lerp(startAlpha, 1f, normalized));
                 if (fadeSkipPromptWithSlide)
-                    view.SetSkipPromptAlpha(normalized);
+                    resolvedView.SetSkipPromptAlpha(normalized);
                 fadeComplete = fadeElapsed >= fadeDuration;
             }
 
             yield return null;
         }
 
-        view.SetText(text);
-        view.SetSlideAlpha(1f);
+        resolvedView.SetText(text);
+        resolvedView.SetSlideAlpha(1f);
         if (fadeSkipPromptWithSlide)
-            view.SetSkipPromptAlpha(1f);
+            resolvedView.SetSkipPromptAlpha(1f);
     }
 
     private IEnumerator WaitAfterTextAsync(float waitSeconds)
@@ -320,10 +340,14 @@ public sealed class EndingOutroPlayer : MonoBehaviour
 
     private IEnumerator FadeSlideAsync(float targetAlpha, float duration)
     {
-        float startAlpha = view.SlideAlpha;
+        IEndingOutroView resolvedView = View;
+        if (resolvedView == null)
+            yield break;
+
+        float startAlpha = resolvedView.SlideAlpha;
         if (duration <= 0f)
         {
-            view.SetSlideAlpha(targetAlpha);
+            resolvedView.SetSlideAlpha(targetAlpha);
             yield break;
         }
 
@@ -343,15 +367,16 @@ public sealed class EndingOutroPlayer : MonoBehaviour
 
             elapsed += Time.unscaledDeltaTime;
             float normalized = Mathf.Clamp01(elapsed / duration);
-            view.SetSlideAlpha(Mathf.Lerp(startAlpha, targetAlpha, normalized));
+            resolvedView.SetSlideAlpha(Mathf.Lerp(startAlpha, targetAlpha, normalized));
             yield return null;
         }
 
-        view.SetSlideAlpha(targetAlpha);
+        resolvedView.SetSlideAlpha(targetAlpha);
     }
 
     private EndingOutroInputCommand PollInput()
     {
+        IEndingOutroView resolvedView = View;
         bool keyHoldPressed = IsSkipKeyOrAdvancePressed();
         bool mouseHoldPressed = IsSkipPromptMouseHoldPressed();
         if (keyHoldPressed || mouseHoldPressed)
@@ -364,12 +389,12 @@ public sealed class EndingOutroPlayer : MonoBehaviour
             float skipHoldSeconds = sequence != null ? sequence.SkipHoldSeconds : 0f;
             if (skipHoldSeconds <= 0f)
             {
-                view.SetSkipFill(1f);
+                resolvedView?.SetSkipFill(1f);
                 return EndingOutroInputCommand.SkipOutro;
             }
 
             float normalized = Mathf.Clamp01(skipHoldElapsed / skipHoldSeconds);
-            view.SetSkipFill(normalized);
+            resolvedView?.SetSkipFill(normalized);
             if (skipHoldElapsed >= skipHoldSeconds)
                 return EndingOutroInputCommand.SkipOutro;
         }
@@ -408,27 +433,26 @@ public sealed class EndingOutroPlayer : MonoBehaviour
 
     private bool IsSkipKeyOrAdvancePressed()
     {
-        if (InputKeyCompatibility.IsPressed(skipKey))
+        if (InputActionQuery.IsKeyPressed(skipKey))
             return true;
 
-        InputBindingService input = InputBindingService.Instance;
-        return input != null && input.IsPressed(InputActionId.DialogueAdvance);
+        return InputActionQuery.IsPressed(InputActionId.DialogueAdvance);
     }
 
     private bool WasSkipKeyOrAdvanceReleasedThisFrame()
     {
-        if (InputKeyCompatibility.WasReleasedThisFrame(skipKey))
+        if (InputActionQuery.WasKeyReleasedThisFrame(skipKey))
             return true;
 
-        InputBindingService input = InputBindingService.Instance;
-        return input != null && input.WasReleasedThisFrame(InputActionId.DialogueAdvance);
+        return InputActionQuery.WasReleasedThisFrame(InputActionId.DialogueAdvance);
     }
 
     private bool IsSkipPromptMouseHoldPressed()
     {
+        IEndingOutroView resolvedView = View;
         return Input.GetMouseButton(0) &&
-               view != null &&
-               view.ContainsSkipPromptScreenPoint(Input.mousePosition);
+               resolvedView != null &&
+               resolvedView.ContainsSkipPromptScreenPoint(Input.mousePosition);
     }
 
     private bool WasAdvanceInputConsumedThisFrame()
@@ -472,12 +496,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
 
     private void AcquireCursorHidden()
     {
-        MouseCursorService service = MouseCursorService.EnsureInstance();
-        if (service == null)
-            return;
-
-        service.SetHidden(this, true);
-        hasHiddenCursor = true;
+        hasHiddenCursor = MouseCursorPlayback.SetHidden(this, true);
     }
 
     private void ReleaseCursorHidden()
@@ -485,7 +504,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
         if (!hasHiddenCursor)
             return;
 
-        MouseCursorService.Instance?.SetHidden(this, false);
+        MouseCursorPlayback.SetHidden(this, false);
         hasHiddenCursor = false;
     }
 
@@ -503,19 +522,21 @@ public sealed class EndingOutroPlayer : MonoBehaviour
 
     private bool HasLiveView()
     {
-        return view != null;
+        return View != null;
     }
 
     private void HideViewIfAlive()
     {
-        if (HasLiveView())
-            view.HideImmediate();
+        IEndingOutroView resolvedView = View;
+        if (resolvedView != null)
+            resolvedView.HideImmediate();
     }
 
     private void SetSkipFillIfViewAlive(float normalized)
     {
-        if (HasLiveView())
-            view.SetSkipFill(normalized);
+        IEndingOutroView resolvedView = View;
+        if (resolvedView != null)
+            resolvedView.SetSkipFill(normalized);
     }
 
     private enum EndingOutroInputCommand
@@ -525,33 +546,29 @@ public sealed class EndingOutroPlayer : MonoBehaviour
         SkipOutro
     }
 
-    private static EndingOutroView FindGlobalRootOutroView()
+    private static MonoBehaviour FindGlobalRootOutroView()
     {
-        GlobalUIRoot root = GlobalUIRoot.Instance;
-        if (root == null)
-            return null;
-
-        EndingOutroView[] views = root.GetComponentsInChildren<EndingOutroView>(true);
-        for (int i = 0; i < views.Length; i++)
+        MonoBehaviour[] behaviours = GlobalCanvasPlayback.GetComponentsInRoot<MonoBehaviour>(includeInactive: true);
+        for (int i = 0; i < behaviours.Length; i++)
         {
-            EndingOutroView candidate = views[i];
-            if (candidate != null && candidate.IsReady)
+            MonoBehaviour candidate = behaviours[i];
+            if (candidate is IEndingOutroView endingView && endingView.IsReady)
                 return candidate;
         }
 
         return null;
     }
 
-    private static EndingOutroView FindSingleSceneOutroView()
+    private static MonoBehaviour FindSingleSceneOutroView()
     {
-        EndingOutroView[] views = FindObjectsByType<EndingOutroView>(FindObjectsInactive.Include);
+        MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include);
 
-        EndingOutroView found = null;
+        MonoBehaviour found = null;
         int foundCount = 0;
-        for (int i = 0; i < views.Length; i++)
+        for (int i = 0; i < behaviours.Length; i++)
         {
-            EndingOutroView candidate = views[i];
-            if (candidate == null || !candidate.IsReady)
+            MonoBehaviour candidate = behaviours[i];
+            if (candidate is not IEndingOutroView endingView || !endingView.IsReady)
                 continue;
 
             found = candidate;

@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : 현재 런의 포탈 route plan, stage 진행도, 로딩 문맥을 보관하고 Gameplay route 계약의 backend로 동작하는 Infrastructure manager이다.
+/// </summary>
 [DisallowMultipleComponent]
-public sealed class PortalRouteManager : MonoBehaviour
+public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
 {
     public readonly struct DebugTransitionEntry
     {
@@ -17,6 +20,7 @@ public sealed class PortalRouteManager : MonoBehaviour
         public string Message { get; }
     }
 
+    // 책임: 특정 포탈에 아직 확정 적용되지 않은 route catalog와 stage 목록을 보관한다.
     private sealed class PendingPortalPlan
     {
         public PendingPortalPlan(RunRouteCatalogSO catalog, List<CorridorBossRouteSetSO> stages)
@@ -83,6 +87,7 @@ public sealed class PortalRouteManager : MonoBehaviour
         }
 
         Instance = this;
+        RunRoutePlayback.RegisterBackend(this);
         InstanceChanged?.Invoke(this);
 
         if (persistAcrossScenes)
@@ -91,6 +96,8 @@ public sealed class PortalRouteManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        RunRoutePlayback.UnregisterBackend(this);
+
         if (Instance == this)
         {
             Instance = null;

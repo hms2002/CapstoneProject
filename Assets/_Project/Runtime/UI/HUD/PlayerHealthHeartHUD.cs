@@ -2,7 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
-public class PlayerHealthHeartHUD : MonoBehaviour
+/// <summary>
+/// 책임 :
+/// - 플레이어 체력/소울하트 값을 하트 토큰 HUD로 표시한다.
+/// - 기본 HUD 숨김 흐름에서 플레이어 체력 HUD 루트로 식별된다.
+/// </summary>
+public class PlayerHealthHeartHUD : MonoBehaviour, IDefaultHudVisibilityTarget
 {
     private const string SoulHeartAttributeName = "SoulHeart";
 

@@ -4,10 +4,13 @@ using UnityEngine.Events;
 using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
+/// <summary>
+/// 책임 : 플레이어 트리거 진입 또는 명시 호출 시 튜토리얼 안내 패널 표시 요청을 만든다.
+/// </summary>
 public sealed class TutorialInfoTrigger : MonoBehaviour
 {
     [Header("Target")]
-    [SerializeField] private TutorialInfoPanel infoPanel;
+    [SerializeField] private MonoBehaviour infoPanel;
     [SerializeField] private bool playerOnly = true;
 
     [Header("Pages")]
@@ -44,7 +47,7 @@ public sealed class TutorialInfoTrigger : MonoBehaviour
         if (triggerCollider != null)
             triggerCollider.isTrigger = true;
 
-        infoPanel = FindTutorialInfoPanel();
+        infoPanel = FindTutorialInfoPanelBehaviour();
     }
 
     private void Awake()
@@ -72,7 +75,7 @@ public sealed class TutorialInfoTrigger : MonoBehaviour
         if (!CanFire())
             return;
 
-        TutorialInfoPanel panel = ResolvePanel();
+        ITutorialInfoPanel panel = ResolvePanel();
         if (panel == null)
             return;
 
@@ -158,31 +161,47 @@ public sealed class TutorialInfoTrigger : MonoBehaviour
         return true;
     }
 
-    private TutorialInfoPanel ResolvePanel()
+    private ITutorialInfoPanel ResolvePanel()
     {
-        if (infoPanel != null)
-            return infoPanel;
+        if (TryGetPanel(infoPanel, out ITutorialInfoPanel panel))
+            return panel;
 
-        infoPanel = FindTutorialInfoPanel();
-        if (infoPanel != null)
-            return infoPanel;
+        MonoBehaviour foundPanel = FindTutorialInfoPanelBehaviour();
+        if (TryGetPanel(foundPanel, out panel))
+        {
+            infoPanel = foundPanel;
+            return panel;
+        }
 
         if (!missingPanelWarningLogged)
         {
-            Debug.LogWarning("[TutorialInfoTrigger] Missing TutorialInfoPanel reference.", this);
+            Debug.LogWarning("[TutorialInfoTrigger] Missing tutorial info panel reference.", this);
             missingPanelWarningLogged = true;
         }
 
         return null;
     }
 
-    private static TutorialInfoPanel FindTutorialInfoPanel()
+    private static bool TryGetPanel(MonoBehaviour source, out ITutorialInfoPanel panel)
+    {
+        panel = source as ITutorialInfoPanel;
+        return panel != null;
+    }
+
+    private static MonoBehaviour FindTutorialInfoPanelBehaviour()
     {
 #if UNITY_2023_1_OR_NEWER
-        return FindAnyObjectByType<TutorialInfoPanel>(FindObjectsInactive.Include);
+        MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 #else
-        return FindObjectOfType<TutorialInfoPanel>(true);
+        MonoBehaviour[] behaviours = FindObjectsOfType<MonoBehaviour>(true);
 #endif
+        foreach (MonoBehaviour behaviour in behaviours)
+        {
+            if (behaviour is ITutorialInfoPanel)
+                return behaviour;
+        }
+
+        return null;
     }
 
     private static bool IsPlayerCollider(Collider2D other)

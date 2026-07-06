@@ -1,10 +1,32 @@
 using UnityEngine;
 
+/// <summary>
+/// 책임 : ScenePortal 이동 요청을 씬 전환 coordinator, run/session 상태, route 계획에 연결하는 Infrastructure 진입점이다.
+/// </summary>
 public static class ScenePortalTravelService
 {
+    private static readonly IScenePortalTravelBackend PlaybackBackend = new ScenePortalTravelBackend();
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void RegisterPlaybackBackend()
+    {
+        ScenePortalTravelPlayback.RegisterBackend(PlaybackBackend);
+    }
+
     public static bool TryTravel(ScenePortal portal)
     {
         return ScenePortalTravelCoordinator.TryTravel(portal);
+    }
+
+    /// <summary>
+    /// 책임 : Gameplay의 ScenePortalTravelPlayback 요청을 기존 Infrastructure 이동 실행기로 전달한다.
+    /// </summary>
+    private sealed class ScenePortalTravelBackend : IScenePortalTravelBackend
+    {
+        public bool TryTravel(ScenePortal portal)
+        {
+            return ScenePortalTravelCoordinator.TryTravel(portal);
+        }
     }
 }
 

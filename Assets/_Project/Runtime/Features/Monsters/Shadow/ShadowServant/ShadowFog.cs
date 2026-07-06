@@ -245,7 +245,7 @@ public class ShadowFog : MonoBehaviour
     /// </summary>
     private void ReleaseToPool()
     {
-        PresentationSpawnService.Release(gameObject);
+        WorldPresentationPlayback.Release(gameObject);
     }
 
     private bool HasAnimatorTrigger(string triggerName)

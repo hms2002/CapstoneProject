@@ -164,8 +164,7 @@ namespace UnityGAS.Sample
             if (intent != null && intent.RawMoveInput.sqrMagnitude > 0.0001f)
                 return intent.RawMoveInput.normalized;
 
-            InputBindingService input = InputBindingService.EnsureInstance();
-            var move = input.GetMoveVectorRaw();
+            Vector2 move = InputActionQuery.GetMoveVectorRaw();
             if (move.sqrMagnitude > 0.0001f)
                 return move.normalized;
 
@@ -179,9 +178,9 @@ namespace UnityGAS.Sample
             if (fallbackToAim)
             {
                 Camera cam = Camera.main;
-                if (cam != null && input != null)
+                if (cam != null)
                 {
-                    Vector3 w = input.GetPointerWorldPosition(cam, 0f);
+                    Vector3 w = InputActionQuery.GetPointerWorldPosition(cam, 0f);
                     Vector2 d = (Vector2)(w - system.transform.position);
                     if (d.sqrMagnitude > 0.0001f)
                         return d.normalized;

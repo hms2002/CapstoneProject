@@ -1,9 +1,16 @@
 ﻿<Solution>
-  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Gameplay.csproj" />
+  <Project Path="Core.csproj" />
+  <Project Path="Editor.csproj" />
+  <Project Path="UI.csproj" />
+  <Project Path="Presentation.csproj" />
+  <Project Path="Infrastructure.csproj" />
   <Project Path="Ink-Libraries.csproj" />
-  <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="InkEditor.csproj" />
-  <Project Path="Assembly-CSharp-firstpass.csproj" />
+  <Project Path="DOTween.Modules.csproj" />
   <Project Path="PlayModeTests.csproj" />
-  <Project Path="Assembly-CSharp-Editor-firstpass.csproj" />
+  <Project Path="DOTweenPro.Scripts.Editor.csproj" />
+  <Project Path="DOTweenPro.Scripts.csproj" />
+  <Project Path="Ink.Demos.Basic.csproj" />
+  <Project Path="Ink.Demos.Basic.Editor.csproj" />
 </Solution>

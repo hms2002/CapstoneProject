@@ -74,7 +74,7 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
 
         AbilityMotionController2D motion = dragon.GetComponent<AbilityMotionController2D>();
         EntityCollisionProfile2D collisionProfile = dragon.GetComponent<EntityCollisionProfile2D>();
-        AttackTelegraphService telegraphService = dragon.GetComponent<AttackTelegraphService>();
+        IAttackTelegraphPresenter telegraphService = AttackTelegraphPresenterResolver.Resolve(dragon);
         int dashCount = ResolveDashCount();
         dragon.RuntimeData.SetLastDashComboCount(dashCount);
 
@@ -217,7 +217,7 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
     }
 
     private void ShowDashTelegraph(
-        AttackTelegraphService telegraphService,
+        IAttackTelegraphPresenter telegraphService,
         Vector2 start,
         Vector2 direction,
         float distance,
@@ -341,7 +341,7 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
                 sourceObject: this);
         }
 
-        WorldPresentationRuntime.PlaySignalOnly(signalPresentation, context);
+        WorldPresentationPlayback.PlaySignalOnly(signalPresentation, context);
         SpawnDashAttackVisual(dashAttackPresentation.effect, context, presentationScale);
         SpawnDashAttackVisual(dashAttackPresentation.particle, context, presentationScale);
     }
@@ -388,7 +388,7 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
         if (!hook.HasContent)
             return;
 
-        GameObject instance = PresentationSpawnService.SpawnOneShot(hook, context);
+        GameObject instance = WorldPresentationPlayback.SpawnOneShot(hook, context);
         if (instance == null)
             return;
 
@@ -411,7 +411,7 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
         float angleDeg = Mathf.Atan2(safeDirection.y, safeDirection.x) * Mathf.Rad2Deg;
 
-        WorldPresentationRuntime.Play(
+        WorldPresentationPlayback.Play(
             dashHitPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: dragon.gameObject,
@@ -431,9 +431,9 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
         if (!enableDashAfterimage || dragon == null)
             return;
 
-        SpriteAfterimageEmitter2D emitter = dragon.GetComponent<SpriteAfterimageEmitter2D>();
+        IAfterimageEmitter2D emitter = AfterimageEmitterPlayback.GetOrAdd(dragon.gameObject);
         if (emitter == null)
-            emitter = dragon.gameObject.AddComponent<SpriteAfterimageEmitter2D>();
+            return;
 
         Transform sourceRoot = dragon.BodyVisualRoot != null ? dragon.BodyVisualRoot : dragon.transform;
         emitter.Begin(sourceRoot, afterimageEmissionInterval, afterimageLifetimeSeconds, afterimageColor);
@@ -448,7 +448,7 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
         if (dragon == null)
             return;
 
-        SpriteAfterimageEmitter2D emitter = dragon.GetComponent<SpriteAfterimageEmitter2D>();
+        IAfterimageEmitter2D emitter = AfterimageEmitterPlayback.Get(dragon.gameObject);
         if (emitter == null)
             return;
 

@@ -33,6 +33,7 @@ public class RelicInventory : MonoBehaviour
         HealthTooLowForRelicChange
     }
 
+    // 책임: 인벤토리 안의 단일 유물 정의, 레벨, 런타임 토큰을 직렬화해 보관한다.
     [Serializable]
     private class Entry
     {
@@ -41,7 +42,7 @@ public class RelicInventory : MonoBehaviour
         public Object token; // 유물 인스턴스 식별용
     }
 
-    // 유물 1개당 1개 생성할 런타임 토큰(중복 구분)
+    // 책임: 유물 1개당 1개 생성되어 동일 유물 인스턴스를 구분하는 런타임 토큰이다.
     private class RelicRuntimeToken : ScriptableObject { }
 
     [SerializeField] private int capacity = 12;
@@ -815,7 +816,7 @@ public class RelicInventory : MonoBehaviour
     /// </summary>
     private void PlayRelicLevelUpSound()
     {
-        SoundManager.EnsureInstance().Play(ItemLevelUpSound, new SoundPlaybackContext
+        SoundPlaybackUtility.Play(ItemLevelUpSound, new SoundPlaybackContext
         {
             Instigator = gameObject,
             Causer = gameObject,

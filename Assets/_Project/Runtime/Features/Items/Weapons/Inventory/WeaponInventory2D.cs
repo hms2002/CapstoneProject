@@ -385,7 +385,7 @@ public class WeaponInventory2D : MonoBehaviour
         if (IsActiveWeaponChangeBlocked()) return;
         if (CountFilledSlots() <= 1)
         {
-            UIManager.Instance?.ShowWarning(WarningPopupCode.LastWeaponCannotLeaveInventory);
+            WarningPopupPlayback.Show(WarningPopupCode.LastWeaponCannotLeaveInventory);
             return;
         }
 
@@ -454,7 +454,7 @@ public class WeaponInventory2D : MonoBehaviour
     private void PlayRuntimeSwapSound()
     {
         SoundRef sound = ResolveRuntimeSwapSound();
-        SoundManager.EnsureInstance().Play(sound, new SoundPlaybackContext
+        SoundPlaybackUtility.Play(sound, new SoundPlaybackContext
         {
             Instigator = gameObject,
             Causer = gameObject,

@@ -5,6 +5,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [AddComponentMenu("Capstone/Boss/Boss Defeat Ending Sequence")]
+// 책임: 보스 처치 후 대화, 엔딩 아웃트로, 승리 종료 또는 씬 이동 흐름을 순서대로 진행한다.
 public sealed class BossDefeatEndingSequence : MonoBehaviour
 {
     private enum TerminalCompletionMode
@@ -117,9 +118,9 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
             yield break;
         }
 
-        if (DialogueService.Instance == null)
+        if (!DialoguePlayback.IsAvailable)
         {
-            Debug.LogWarning("[BossDefeatEndingSequence] DialogueService instance was not found.", this);
+            Debug.LogWarning("[BossDefeatEndingSequence] Dialogue playback backend was not found.", this);
             yield break;
         }
 
@@ -129,10 +130,10 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
         };
         List<NPCData> participants = new() { dialogueNpcData };
 
-        if (!DialogueService.Instance.TryStartDialogueSequence(segments, participants))
+        if (!DialoguePlayback.TryStartDialogueSequence(segments, participants))
             yield break;
 
-        yield return new WaitUntil(() => DialogueService.Instance == null || !DialogueService.Instance.IsPlaying);
+        yield return new WaitUntil(() => !DialoguePlayback.IsPlaying);
     }
 
     private IEnumerator PlayOutroRoutine()
@@ -173,10 +174,7 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
 
     private bool CompleteRunWithVictoryGameOver()
     {
-        GamePlayDataManager gameplay = GamePlayDataManager.Instance;
-        int magicStoneRewardAmount = gameplay != null
-            ? Mathf.Max(0, gameplay.GetPendingRunMagicStoneDelta())
-            : 0;
+        int magicStoneRewardAmount = Mathf.Max(0, RunSessionStore.GetPendingRunMagicStoneDelta());
 
         GameOverPresentationRequest request = GameOverPresentationRequest.Victory(
             PlayerRuntimeRegistry.GetPlayerTransform(),
@@ -186,7 +184,7 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
 
         ReleaseTerminalState();
 
-        if (GameOverPresentationController.TryShow(request))
+        if (GameOverPresentationPlayback.TryShow(request))
             return true;
 
         Debug.LogWarning(
@@ -197,9 +195,7 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
 
     private bool CompleteRunAndLoadTargetScene()
     {
-        GamePlayDataManager gameplay = GamePlayDataManager.EnsureInstance();
-        if (gameplay != null)
-            gameplay.EndRun(endRunReason);
+        RunSessionStore.EndRun(endRunReason);
 
         if (string.IsNullOrWhiteSpace(targetSceneName))
         {
@@ -207,10 +203,10 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
             return false;
         }
 
-        SceneTransitionCoordinator coordinator = SceneTransitionCoordinator.EnsureInstance();
+        ISceneTransitionHandle coordinator = SceneTransitionPlayback.EnsureInstance();
         if (coordinator == null)
         {
-            Debug.LogWarning("[BossDefeatEndingSequence] SceneTransitionCoordinator could not be resolved.", this);
+            Debug.LogWarning("[BossDefeatEndingSequence] Scene transition service could not be resolved.", this);
             return false;
         }
 

@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
+/// <summary>
+/// 책임 : 아이템 도감 왼쪽 페이지의 탭, 페이지네이션, 목록 선택 상태를 표시한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class EncyclopediaItemLeftPage : MonoBehaviour
 {
@@ -66,7 +69,7 @@ public sealed class EncyclopediaItemLeftPage : MonoBehaviour
     private void AutoWireReferences()
     {
         ResolveReferences();
-        UnityEditor.EditorUtility.SetDirty(this);
+        EditorAuthoringPlayback.MarkDirty(this);
     }
 #endif
 

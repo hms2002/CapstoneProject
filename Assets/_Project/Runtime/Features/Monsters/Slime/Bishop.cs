@@ -41,6 +41,7 @@ public class Bishop : Slime
     private bool hasDieTrigger;
     private bool hasLoggedInvalidConfig;
 
+    // 책임: 비숍 직선 폭발의 경고선, 폭발 개수/크기, 타겟 정보를 보관한다.
     public readonly struct LineBlastContext
     {
         public readonly GameObject Target;
@@ -255,7 +256,7 @@ public class Bishop : Slime
     /// <summary>
     /// 책임:
     /// - Bishop 폭발 이펙트가 애니메이션 이벤트 기반 피해 판정을 수행할 수 있도록 현재 공격 피해 스냅샷을 만든다.
-    /// - 즉시 Overlap 판정과 TimedAnimatedHitEffect2D 경로가 같은 피해 수치를 공유하게 한다.
+    /// - 즉시 Overlap 판정과 ITimedHitEffect2D 경로가 같은 피해 수치를 공유하게 한다.
     /// </summary>
     public CombatHitPayload BuildBlastHitPayload(AbilitySystem system, AbilitySpec spec)
     {

@@ -203,7 +203,7 @@ namespace UnityGAS
             }
 
             Vector3 normal = cueParams.Normal.sqrMagnitude > 0.0001f ? cueParams.Normal : Vector3.up;
-            WorldPresentationRuntime.PlayMerged(
+            WorldPresentationPlayback.PlayMerged(
                 hitConfirmedPhase.Presentation,
                 default,
                 hitConfirmedPhase.CameraShake,

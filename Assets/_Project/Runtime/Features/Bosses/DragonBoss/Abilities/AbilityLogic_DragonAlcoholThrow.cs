@@ -49,7 +49,7 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
         if (dragon == null || alcoholPuddlePrefab == null)
             yield break;
 
-        AttackTelegraphService telegraphService = dragon.GetComponent<AttackTelegraphService>();
+        IAttackTelegraphPresenter telegraphService = AttackTelegraphPresenterResolver.Resolve(dragon);
         int count = 1;
         List<Vector3> impactPositions = new(count) { ResolveTrackedImpactPosition(dragon) };
 
@@ -89,7 +89,7 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
     /// </summary>
     private IEnumerator TrackImpactTelegraphs(
         DragonController dragon,
-        AttackTelegraphService telegraphService,
+        IAttackTelegraphPresenter telegraphService,
         List<Vector3> impactPositions,
         AbilitySpec spec)
     {
@@ -103,8 +103,8 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
         }
 
         Vector3 impactPosition = ResolveTrackedImpactPosition(dragon);
-        AttackTelegraphView impactView = SpawnImpactTelegraph(telegraphService, impactPosition, duration);
-        AttackTelegraphView aimLineView = SpawnAimLineTelegraph(telegraphService, dragon, impactPosition, duration);
+        IAttackTelegraphHandle impactView = SpawnImpactTelegraph(telegraphService, impactPosition, duration);
+        IAttackTelegraphHandle aimLineView = SpawnAimLineTelegraph(telegraphService, dragon, impactPosition, duration);
 
         float elapsed = 0f;
         try
@@ -151,7 +151,7 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
         return center;
     }
 
-    private AttackTelegraphView SpawnImpactTelegraph(AttackTelegraphService telegraphService, Vector3 impactPosition, float duration)
+    private IAttackTelegraphHandle SpawnImpactTelegraph(IAttackTelegraphPresenter telegraphService, Vector3 impactPosition, float duration)
     {
         if (telegraphService == null)
             return null;
@@ -166,7 +166,7 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
         return telegraphService.SpawnDetachedView(spec);
     }
 
-    private void UpdateImpactTelegraph(AttackTelegraphView view, Vector3 impactPosition, float duration)
+    private void UpdateImpactTelegraph(IAttackTelegraphHandle view, Vector3 impactPosition, float duration)
     {
         if (view == null)
             return;
@@ -180,8 +180,8 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
         view.UpdateGeometry(AttackTelegraphSpecUtility.WithThinWarningOutline(spec));
     }
 
-    private AttackTelegraphView SpawnAimLineTelegraph(
-        AttackTelegraphService telegraphService,
+    private IAttackTelegraphHandle SpawnAimLineTelegraph(
+        IAttackTelegraphPresenter telegraphService,
         DragonController dragon,
         Vector3 impactPosition,
         float duration)
@@ -193,7 +193,7 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
     }
 
     private void UpdateAimLineTelegraph(
-        AttackTelegraphView view,
+        IAttackTelegraphHandle view,
         DragonController dragon,
         Vector3 impactPosition,
         float duration)
@@ -346,7 +346,7 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
         if (fallbackDirection.sqrMagnitude <= 0.0001f)
             fallbackDirection = Vector3.up;
 
-        WorldPresentationRuntime.Play(
+        WorldPresentationPlayback.Play(
             kegImpactPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: dragon != null ? dragon.gameObject : null,

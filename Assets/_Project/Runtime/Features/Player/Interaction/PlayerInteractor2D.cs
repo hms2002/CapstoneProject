@@ -22,10 +22,10 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
     public Collider2D BodyCollider => bodyCollider;
 
     [Header("Interaction")]
-    [SerializeField] private WorldInteractionPromptController interactionPrompt;
+    [SerializeField] private MonoBehaviour interactionPrompt;
 
     [Header("Speech System")]
-    [SerializeField] private SpeechBubbleComponent speechBubble;
+    [SerializeField] private MonoBehaviour speechBubble;
     [SerializeField] private PlayerSpeechData speechData;
     [SerializeField] private TagSystem tagSystem;
     [SerializeField] private GameplayTag interactBlockedTag;
@@ -88,8 +88,7 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
         IInteractable currentTarget = RefreshInteractionTarget();
         promptPresenter?.RefreshPrompt(currentTarget, CurrentState);
 
-        InputBindingService input = InputBindingService.EnsureInstance();
-        if (input.WasPressedThisFrame(InputActionId.Interact) && currentTarget != null)
+        if (InputActionQuery.WasPressedThisFrame(InputActionId.Interact) && currentTarget != null)
         {
             bool canInteract = currentTarget.CanInteract(this);
             Debug.Log($"[Player] currentTarget.CanInteract = {canInteract}");
@@ -178,9 +177,6 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
 
     private void MigrateLegacySerializedReferences()
     {
-        if (interactionPrompt == null)
-            interactionPrompt = WorldInteractionPromptController.Instance ?? FindFirstObjectByType<WorldInteractionPromptController>();
-
         promptPresenter?.SetPromptController(interactionPrompt);
         speechController?.SetSpeechDependencies(speechBubble, speechData);
     }

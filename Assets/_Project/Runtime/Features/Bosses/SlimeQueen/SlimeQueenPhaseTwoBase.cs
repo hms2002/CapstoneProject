@@ -8,6 +8,7 @@ using UnityGAS;
 /// 슬라임 여왕 2페이즈 개체가 공유하는 접촉 피해와 향후 패턴 실행 기반입니다.
 /// </summary>
 [RequireComponent(typeof(SlimeQueenVanishParticleEffect))]
+// 책임: 2페이즈 슬라임퀸 공통 접촉 피해, 배수구 상태, 사망 지연/컷씬 연동을 관리한다.
 public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBodyInflateHost
 {
     private static readonly int IsDeadHash = Animator.StringToHash("isDead");
@@ -116,8 +117,8 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     private Coroutine splitLandingRoutine;
     private bool? hasIsDeadParameter;
     private SlimeQueenVanishParticleEffect finaleVanishEffect;
-    private readonly List<AttackTelegraphView> bodyInflateWarningViews = new List<AttackTelegraphView>();
-    private readonly List<AttackTelegraphView> castlingWarningViews = new List<AttackTelegraphView>();
+    private readonly List<IAttackTelegraphHandle> bodyInflateWarningViews = new List<IAttackTelegraphHandle>();
+    private readonly List<IAttackTelegraphHandle> castlingWarningViews = new List<IAttackTelegraphHandle>();
     private SpriteRenderer[] phaseTwoSpriteRenderers;
     private Color[] phaseTwoSpriteBaseColors;
 
@@ -131,6 +132,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
 
     public float CastlingRushSpeed => Mathf.Max(0.1f, castlingRushSpeed);
 
+    // 책임: 캐슬링 시작 시점의 두 P2 슬라임퀸과 교대 위치/방향 정보를 보관한다.
     public readonly struct CastlingContext
     {
         public readonly SlimeQueenP2Short ShortQueen;
@@ -398,7 +400,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         if (!context.IsValid)
             return;
 
-        AttackTelegraphService service = GetTelegraphService();
+        IAttackTelegraphPresenter service = GetTelegraphService();
         if (service == null)
             return;
 
@@ -417,7 +419,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
             CastlingWarningSeconds,
             castlingWarningStyle));
 
-        AttackTelegraphView view = service.SpawnDetachedView(spec);
+        IAttackTelegraphHandle view = service.SpawnDetachedView(spec);
         if (view != null)
             castlingWarningViews.Add(view);
     }
@@ -549,7 +551,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     /// <summary>페이즈 2 연속 내려찍기 경고 원을 표시합니다.</summary>
     public void ShowPhase2SlamWarning(Vector3 landingPosition)
     {
-        AttackTelegraphService service = GetTelegraphService();
+        IAttackTelegraphPresenter service = GetTelegraphService();
         if (service == null)
             return;
 
@@ -637,7 +639,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     {
         CleanupBodyInflatePresentation();
 
-        AttackTelegraphService service = GetTelegraphService();
+        IAttackTelegraphPresenter service = GetTelegraphService();
         if (service == null)
             return;
 
@@ -647,7 +649,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
             bodyInflateWarningSeconds,
             bodyInflateWarningStyle));
 
-        AttackTelegraphView view = service.SpawnDetachedView(spec);
+        IAttackTelegraphHandle view = service.SpawnDetachedView(spec);
         if (view != null)
             bodyInflateWarningViews.Add(view);
     }
@@ -1067,19 +1069,15 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         return castlingDamageEffect != null ? castlingDamageEffect : contactDamageEffect;
     }
 
-    private static void ClearViews(List<AttackTelegraphView> views)
+    private static void ClearViews(List<IAttackTelegraphHandle> views)
     {
         if (views == null)
             return;
 
         for (int i = 0; i < views.Count; i++)
         {
-            AttackTelegraphView view = views[i];
-            if (view != null)
-            {
-                view.HideImmediate();
-                Destroy(view.gameObject);
-            }
+            IAttackTelegraphHandle view = views[i];
+            view?.Release();
         }
 
         views.Clear();
@@ -1118,6 +1116,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         nextContactDamageTime = Time.time + Mathf.Max(0f, contactDamageCooldownSeconds);
     }
 
+    // 책임: P2 슬라임퀸이 행동 불가/대기 중일 때 기본 전투 idle 상태로 머물게 한다.
     private sealed class PhaseTwoWaitingState : BossCombatIdleState
     {
         public PhaseTwoWaitingState(BossControllerBase boss) : base(boss)

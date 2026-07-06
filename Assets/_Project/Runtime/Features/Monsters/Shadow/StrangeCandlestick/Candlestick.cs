@@ -14,7 +14,7 @@ public class Candlestick : MonoBehaviour, IDamageReceiver
     private static readonly List<Candlestick> instances = new();
 
     private CandlestickSeal candlestickSeal;
-    private SpriteHitFlashController hitFlash;
+    private IHitFlashController2D hitFlash;
     private Animator animator;
     private int defaultLayer;
     private int sealedLayer;
@@ -25,7 +25,7 @@ public class Candlestick : MonoBehaviour, IDamageReceiver
     private void Awake()
     {
         candlestickSeal = GetComponent<CandlestickSeal>();
-        hitFlash = GetComponent<SpriteHitFlashController>();
+        hitFlash = GetComponent<IHitFlashController2D>();
         animator = GetComponent<Animator>();
         defaultLayer = gameObject.layer;
         sealedLayer = GetSealedLayer();

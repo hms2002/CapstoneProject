@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-30
+last_reviewed: 2026-07-04
 ---
 
 # Dialogue NPC Affection Structure
@@ -26,7 +26,7 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 | Dialogue Core | 12 | Dialogue service/controller, variables/session/tag handling, trigger, participant registry, runtime resolver, audio info, story segment, emotes, and knot selector. |
 | Merchant Feature | 10 | Merchant NPC, activation cinematic, run state, refresh, purchase, shop definition/policy/roll/slot, and world item detail presenter. |
 | Upgrade Effects | 9 | Upgrade effect ScriptableObjects for unlocks, shop/chest/grave modifiers, run-start rewards, attributes, and empty effects. |
-| Affection Runtime / UI | 7 | Affection manager, progress/reward processing, UI, gradient border, gain screen effect, and base effect. |
+| Affection Runtime / UI | 7 | Affection manager, progress/reward processing, gameplay presentation contract, UI, gradient border, gain screen effect, and base effect. |
 | Boss Dialogue / Encounter Dialogue | 5 | Boss dialogue runner, progress store, encounter director/dialogue, and boss talk manager. |
 | Affection Effects | 3 | Unlock item, info-only, and boss run modifier affection effects. |
 | NPC Data / Manager | 3 | NPC database, data, and manager. |
@@ -45,18 +45,22 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 
 ## Key Files
 
-- `Assets/LeeJunMo/Script/Dialogue/DialogueService.cs`
-- `Assets/LeeJunMo/Script/Dialogue/UI/DialogueView.cs`
+- `Assets/_Project/Runtime/UI/Dialogue/DialogueService.cs`
+- `Assets/_Project/Runtime/UI/Dialogue/DialogueView.cs`
+- `Assets/_Project/Runtime/UI/Dialogue/EmoteController.cs`
 - `Assets/LeeJunMo/Script/Dialogue/UI/DialogueTextAnimationProfileSO.cs`
 - `Assets/LeeJunMo/Script/Dialogue/UI/DialogueTextAnimationUtility.cs`
 - `Assets/LeeJunMo/Script/SpeechBubble/SpeechBubble.cs`
 - `Assets/LeeJunMo/Script/SpeechBubble/SpeechBubbleComponent.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Upgrade/UpgradeFeature.cs`
-- `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Merchant/MerchantNPC.cs`
-- `Assets/LeeJunMo/Script/Dialogue/Affection/AffectionManager.cs`
-- `Assets/LeeJunMo/Script/Dialogue/Affection/AffectionUI.cs`
-- `Assets/LeeJunMo/Script/Dialogue/Affection/AffectionRewardProcessor.cs`
-- `Assets/LeeJunMo/Script/UIStructure/RewardDisplayService.cs`
+- `Assets/_Project/Runtime/Features/Progression/Upgrades/UpgradeFeature.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/NPC/Merchant/MerchantNPC.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/Affection/AffectionManager.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/Affection/IAffectionPresentationView.cs`
+- `Assets/_Project/Runtime/UI/Dialogue/Affection/AffectionUI.cs`
+- `Assets/_Project/Runtime/UI/Dialogue/Affection/AffectionGainScreenEffect.cs`
+- `Assets/_Project/Runtime/Presentation/Common/AffectionGradientBorderGraphic.cs`
+- `Assets/_Project/Runtime/Features/Dialogue/Affection/AffectionRewardProcessor.cs`
+- `Assets/_Project/Runtime/UI/Chest/RewardDisplayService.cs`
 - `Assets/LeeJunMo/Script/Editor/NpcCustomizationHub/NpcCustomizationHubWindow.cs`
 - `Assets/LeeJunMo/Script/Editor/DialogueTextAnimationTunerWindow.cs`
 - `Assets/LeeJunMo/Datas/Inks/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.ink`
@@ -69,13 +73,14 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 - NPC features that open stack UI after dialogue should wait for dialogue blockers to release before opening their UI.
 - Merchant stock and upgrade progress are run/save-policy sensitive; do not treat UI state as the source of truth.
 - Affection should contribute modifiers/rewards without bypassing base progression reward rules.
-- Affection gain presentation gates dialogue continuation, so interrupted DOTween sequences must still invoke their pending completion callback exactly once.
+- Affection gain presentation gates dialogue continuation, so interrupted DOTween sequences must still invoke their pending completion callback exactly once. Gameplay `AffectionManager` should call only `IAffectionPresentationView`; concrete `AffectionUI` and `AffectionGainScreenEffect` live under UI, while shared gradient drawing lives under Presentation/Common.
 - Affection reward popups are part of the dialogue flow: after affection gain presentation, show the reward UI through `RewardDisplayService.ShowFlowOwnedReward(...)`, keep the dialogue continuation as the reward close callback, and resume dialogue only after the reward UI closes.
 - Boss reward affection effects author their own additive fields and convert them into `BossRewardModifierAggregate` at runtime; they should not depend on a separate modifier ScriptableObject asset.
 - Dialogue line rhythm is owned by `DialogueView` plus `DialogueTextAnimationUtility`: `DialogueController` resolves line-level `anim` Ink tags, while inline `[pause=seconds]` and scoped motion/TextAnimating tags are stripped before TMP display and applied through unscaled reveal delays plus TMP vertex offsets/scales.
 - TextAnimating values are tuned through `DialogueTextAnimationProfileSO`. `DialogueView.textAnimationProfileOverride` is optional; the default profile is loaded from `Assets/LeeJunMo/Datas/Resources/Dialogue/DefaultDialogueTextAnimationProfile.asset`, with code defaults as fallback.
 - The Text Animation Tuner preview should mirror the default DialoguePanel rendering context. It resolves `GlobalUIRoot.prefab` `DialogueView.dialogueText`, renders through a hidden world-space `Canvas + TextMeshProUGUI` into a `RenderTexture` with a dedicated preview camera, and copies the source font, rect, wrapping, spacing, alignment, and color before applying `DialogueTextAnimationUtility`. If the source text rect has a zero or invalid size, preview-only sizing resolves width/height from the parent `DialogueTextCon` container before falling back to `1720 x 250`.
 - Drunk/slurred dialogue can use `[rand_size=min,max]...[/rand_size]` to give each visible character a stable pseudo-random scale inside the configured clamp range, and `[slowshake]...[/slowshake]` for low-speed per-character shake.
+- Dialogue portrait emote playback is presentation-owned under UI/Dialogue. `DialogueTagHandler` raises emote tag requests, while UI `DialogueController` / `PortraitController` resolve the target portrait and play `EmoteController`.
 - Dialogue background Effect switching is owned by `DialogueController` through the line-level `effect` Ink tag. `DialogueView.ApplyDialogueEffectTheme(...)` changes only the DialogueEffect AnimatorOverrideController and leaves textbox/speaker colors under the speaker theme.
 - Dialogue impact shake is owned by `DialogueController` through the line-level `CameraShake` Ink tag. `DialogueView` applies TextBoxGroup panel shake, DOShake-like per-character TMP impact offsets, dialogue text inertia, and the existing `CameraShakeService`; the camera part respects the screen-shake setting while UI motion still plays. Low/Middle/High strengths plus a global intensity multiplier are tuned in `DialogueTextAnimationProfileSO`.
 - SpeechBubble reveal timing is opt-in through animated APIs on `SpeechBubbleComponent`; existing `Speak(...)` callers keep the legacy behavior unless they explicitly route through the animated path.
@@ -89,7 +94,7 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 | Upgrade runtime | `UpgradeManager` owns upgrade public compatibility entry points and public UI/data-change event surface. Purchase transaction policy delegates to `UpgradePurchaseService`, purchase success ordering delegates to `UpgradePurchaseCompletionService`, runtime effect reapply/run-start/hub-target handoff delegates to `UpgradeRuntimeEffectService`, run-start eligibility/timing delegates to `UpgradeRunStartEffectPolicy`, UI open fade/input-blocker/toggle execution delegates to `UpgradeUiOpenFlow`, scene/run/player lifecycle subscription plus run-start guard state delegates to `UpgradeRuntimeLifecycleService`, unlock-check save execution delegates to `UpgradeProgressSaveService`, notification/save dispatch delegates to `UpgradeNotificationService`, and singleton/persistent root adoption delegates to `UpgradeManagerLifetimeService`. | P2 target is a compatibility facade, not a rename. Keep new behavior out of the MonoBehaviour body and reopen only for effect-application ownership or planned scene/prefab migration. |
 | Run modifiers | `RunModifierService` and its delta/snapshot/aggregation/rebuild/provider helpers live under `Assets/LeeJunMo/Script/Progression/RunModifiers/`. It aggregates upgrade and affection contributors for grave, chest, shop, and boss reward modifiers. Reward-facing consumers use `RunRewardModifierSnapshot`, aggregation traversal/calculation runs through `RunModifierAggregationService`, upgrade node loading/merge policy runs through `RunModifierUpgradeNodeProvider`, and rebuild execution orchestration runs through `RunModifierRebuildService`. | System-wide progression/run modifier owner, not upgrade-only. The current singleton/public API surface remains as the compatibility facade. |
 | Merchant policy | `MerchantNPC` combines `ShopDefinitionSO`, `RunModifierService.ShopModifiers`, `MerchantShopPolicy`, and `MerchantRunStateService`. | Boundary is acceptable. Continue treating stock as run/session state and shop definition as authored policy. |
-| Boss dialogue sequence | `BossEncounterDirector` is the current encounter dialogue/camera/combat-start path; `BossTalkManager` remains a legacy bridge with similar sequence responsibilities. | Watch as legacy/current bridge. Do not create a separate backlog entry until prefab migration or duplicate sequence behavior becomes an active task. |
+| Boss dialogue sequence | `BossEncounterDirector` is the current encounter dialogue/camera/combat-start path; `BossTalkManager` remains a legacy bridge with similar sequence responsibilities. Its legacy camera references are generic `Component` fields and are forwarded to the Core `ICameraPresentationSettingsReceiver` contract, while the concrete Cinemachine handling stays in Presentation. | Watch as legacy/current bridge. Do not create a separate backlog entry until prefab migration or duplicate sequence behavior becomes an active task. |
 | Run-internal special NPCs | Construction and same-scene teleport NPCs use `RunSpecialNpcInteractor`, `SpeechBubbleComponent`, and local authored choices rather than `DialogueController`, Ink, portraits, or `DialogueView`. | Keep this flow separate from the existing Ink dialogue stack. Use `Docs/StructureMemory/ScriptSystems/RunSpecialNpcStructure.md` for implementation details. |
 | NPC editor authoring | `NpcCustomizationHubWindow` is the shared editor surface for existing `NPCData` profile/dialogue/presentation/affection asset edits, Ink template creation, usage scans, and validation. | V1 mutates only `NPCData` and selected `NPCDatabase` assets. Scene/prefab usage and RunSpecial NPC data remain read-only until a later authoring-risk review. |
 

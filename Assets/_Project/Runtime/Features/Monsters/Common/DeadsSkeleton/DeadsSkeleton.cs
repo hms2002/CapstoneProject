@@ -1,6 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
-using DG.Tweening;
 using UnityEngine;
 using UnityGAS;
 
@@ -53,13 +53,13 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
 
     private readonly HashSet<GameObject> damagedTargets = new();
 
-    private AttackTelegraphService telegraphService;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private AttackTelegraphStyle introWarningStyle;
     private AttackTelegraphStyle armedWarningStyle;
     private SpriteMask sightMask;
     private Transform sightMaskTransform;
     private Vector3 defaultSightMaskScale = Vector3.one;
-    private Tween sightMaskScaleTween;
+    private Coroutine sightMaskScaleCoroutine;
     private bool isSelfDestruct;
     private bool hasEnteredArmedPhase;
     private bool canCancelSelfDestruct = true;
@@ -71,7 +71,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     protected override void Awake()
     {
         base.Awake();
-        telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(this);
         introWarningStyle = MakeIntroWarningStyle();
         armedWarningStyle = MakeArmedWarningStyle();
         sightMask = GetComponentInChildren<SpriteMask>(true);
@@ -478,7 +478,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     /// <summary>자폭 인트로 동안 애니메이션 길이에 맞춰 채워지는 경고를 표시합니다.</summary>
     private void ShowIntroWarning(float introDuration)
     {
-        if (telegraphService == null) return;
+        if (telegraphPresenter == null) return;
 
         AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
             transform.position,
@@ -486,7 +486,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
             Mathf.Max(0f, introDuration),
             introWarningStyle));
 
-        telegraphService.Show(spec);
+        telegraphPresenter.Show(spec);
     }
 
     /// <summary>자폭 모드가 완전히 활성화된 뒤에는 꽉 찬 경고를 유지한 채 돌진하도록 전환합니다.</summary>
@@ -513,7 +513,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     /// <summary>자폭 모드 활성화 후에는 진행도가 꽉 찬 원형 경고를 유지합니다.</summary>
     private void ShowArmedWarning()
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
         AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
@@ -522,13 +522,13 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
             0f,
             armedWarningStyle));
 
-        telegraphService.Show(spec);
+        telegraphPresenter.Show(spec);
     }
 
     /// <summary>활성화된 자폭 경고가 해골과 함께 이동하도록 원형 위치를 갱신합니다.</summary>
     private void UpdateArmedWarningGeometry()
     {
-        if (telegraphService == null || IsPlayingSelfDestructIntro())
+        if (telegraphPresenter == null || IsPlayingSelfDestructIntro())
             return;
 
         AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
@@ -537,14 +537,14 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
             0f,
             armedWarningStyle));
 
-        telegraphService.UpdateCurrentGeometry(spec);
+        telegraphPresenter.UpdateCurrentGeometry(spec);
     }
 
     /// <summary>자폭 경고를 숨깁니다.</summary>
     private void HideWarning()
     {
-        if (telegraphService != null)
-            telegraphService.HideCurrent();
+        if (telegraphPresenter != null)
+            telegraphPresenter.HideCurrent();
     }
 
     /// <summary>
@@ -564,26 +564,22 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         if (sightMask == null || sightMaskTransform == null || sightMask.sprite == null)
             return;
 
+        StopSightMaskScaleCoroutine();
+
         if (introDuration <= 0f)
         {
             sightMaskTransform.localScale = GetExplosionSightMaskScale();
             return;
         }
 
-        if (sightMaskScaleTween != null && sightMaskScaleTween.IsActive())
-            sightMaskScaleTween.Kill();
-
         sightMaskTransform.localScale = defaultSightMaskScale;
-        sightMaskScaleTween = sightMaskTransform
-            .DOScale(GetExplosionSightMaskScale(), introDuration)
-            .SetEase(Ease.Linear);
+        StartSightMaskScale(GetExplosionSightMaskScale(), introDuration);
     }
 
     /// <summary>시야 마스크 크기를 기본값으로 되돌립니다.</summary>
     private void ResetSightMaskScale()
     {
-        if (sightMaskScaleTween != null && sightMaskScaleTween.IsActive())
-            sightMaskScaleTween.Kill();
+        StopSightMaskScaleCoroutine();
 
         if (sightMaskTransform != null)
             sightMaskTransform.localScale = defaultSightMaskScale;
@@ -598,12 +594,54 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         float introDuration = GetSelfDestructIntroDuration();
         float resetDuration = introDuration > 0f ? introDuration : 0.15f;
 
-        if (sightMaskScaleTween != null && sightMaskScaleTween.IsActive())
-            sightMaskScaleTween.Kill();
+        StopSightMaskScaleCoroutine();
+        StartSightMaskScale(defaultSightMaskScale, resetDuration);
+    }
 
-        sightMaskScaleTween = sightMaskTransform
-            .DOScale(defaultSightMaskScale, resetDuration)
-            .SetEase(Ease.Linear);
+    private void StopSightMaskScaleCoroutine()
+    {
+        if (sightMaskScaleCoroutine == null)
+            return;
+
+        StopCoroutine(sightMaskScaleCoroutine);
+        sightMaskScaleCoroutine = null;
+    }
+
+    private void StartSightMaskScale(Vector3 targetScale, float duration)
+    {
+        if (sightMaskTransform == null)
+            return;
+
+        sightMaskScaleCoroutine = StartCoroutine(ScaleSightMaskRoutine(
+            sightMaskTransform.localScale,
+            targetScale,
+            Mathf.Max(0f, duration)));
+    }
+
+    private IEnumerator ScaleSightMaskRoutine(Vector3 startScale, Vector3 targetScale, float duration)
+    {
+        if (duration <= 0f)
+        {
+            if (sightMaskTransform != null)
+                sightMaskTransform.localScale = targetScale;
+
+            sightMaskScaleCoroutine = null;
+            yield break;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < duration && sightMaskTransform != null)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            sightMaskTransform.localScale = Vector3.LerpUnclamped(startScale, targetScale, t);
+            yield return null;
+        }
+
+        if (sightMaskTransform != null)
+            sightMaskTransform.localScale = targetScale;
+
+        sightMaskScaleCoroutine = null;
     }
 
     /// <summary>플레이어와 닿았을 때 폭발을 처리합니다.</summary>
@@ -629,7 +667,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         if (isDead)
             return false;
 
-        DamagePopupService.ShowText("0", transform.position);
+        DamagePopupPlayback.ShowText("0", transform.position);
         return true;
     }
 
@@ -981,8 +1019,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     {
         base.OnDestroy();
 
-        if (sightMaskScaleTween != null && sightMaskScaleTween.IsActive())
-            sightMaskScaleTween.Kill();
+        StopSightMaskScaleCoroutine();
 
         if (introWarningStyle != null)
             Destroy(introWarningStyle);

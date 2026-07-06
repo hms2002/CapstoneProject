@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using Cainos.PixelArtTopDown_Basic;
-using Unity.Cinemachine;
 using UnityEngine;
 
 [DisallowMultipleComponent]
+/// <summary>
+/// 책임 : 런 특수 NPC의 상호작용, 선택지 표시, 기능 실행 전후 컷씬 프레젠테이션을 조율한다.
+/// </summary>
 public sealed class RunSpecialNpcInteractor : InteractableBase
 {
     [Header("Prompt")]
@@ -12,12 +13,12 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
     [SerializeField] private string interactPromptText = "Talk";
 
     [Header("Speech")]
-    [SerializeField] private SpeechBubbleComponent speechBubble;
+    [SerializeField] private MonoBehaviour speechBubble;
     [SerializeField] private RunSpecialNpcDialogueSetSO dialogueSet;
     [SerializeField] private RunSpecialNpcFeatureBase primaryFeature;
 
     [Header("Choices")]
-    [SerializeField] private RunSpecialNpcChoicePresenter choicePresenter;
+    [SerializeField] private MonoBehaviour choicePresenter;
     [SerializeField] private bool executeSingleChoiceWithoutPresenter;
     [SerializeField, Min(0f)] private float choiceInputGuardSeconds = 0.15f;
     [SerializeField] private bool allowNumberKeySelection = true;
@@ -77,30 +78,22 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
     private MaterialPropertyBlock propertyBlock;
     private Coroutine activeFlow;
     private IPlayerInteractor activePlayer;
-    private RunSpecialNpcChoiceAnchorFollower choiceAnchorFollower;
+    private IRunSpecialNpcChoicePresenter resolvedChoicePresenter;
+    private IRunSpecialNpcChoiceAnchorFollower choiceAnchorFollower;
     private InteractState previousPlayerState = InteractState.Idle;
     private GameFlowInputBlocker inputBlocker;
-    private CinematicLetterboxOverlay letterboxOverlay;
-    private CinemachineCamera gameplayCamera;
-    private CinemachineBrain cameraBrain;
-    private CameraFollow legacyFollowCamera;
-    private Transform cachedCameraFollow;
-    private Transform cachedCameraLookAt;
-    private int cachedCameraPriority;
-    private bool cachedLegacyFollowEnabled;
-    private bool cachedBrainIgnoreTimeScale;
+    private ICinematicLetterboxOverlayHandle letterboxOverlay;
+    private IGameplayCameraFocusSession cameraFocusSession;
     private bool isFlowActive;
     private bool holdsRunTimerPause;
     private bool holdsTimeScalePause;
-    private bool hasCachedCameraState;
     private RunSpecialNpcFeatureBase featureToExecuteAfterPresentationClose;
 
     private void Awake()
     {
         propertyBlock = new MaterialPropertyBlock();
 
-        if (speechBubble == null)
-            speechBubble = GetComponentInChildren<SpeechBubbleComponent>(includeInactive: true);
+        ResolveSpeechBubble();
 
         ResolvePrimaryFeature();
         ResolveChoicePresenter();
@@ -125,7 +118,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         return player != null &&
                player.CurrentState == InteractState.Idle &&
                !isFlowActive &&
-               speechBubble != null;
+               ResolveSpeechBubble() != null;
     }
 
     public override void OnPlayerInteract(IPlayerInteractor player)
@@ -205,7 +198,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         }
 
         int selectedIndex = -1;
-        if (choicePresenter == null)
+        if (resolvedChoicePresenter == null)
         {
             if (!executeSingleChoiceWithoutPresenter || visibleChoices.Count != 1)
             {
@@ -222,20 +215,20 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
             if (choiceAnchorFollower != null)
                 choiceAnchorFollower.SetFollowTarget(player?.Transform);
 
-            choicePresenter.Show(
+            resolvedChoicePresenter.Show(
                 visibleChoiceLabels,
                 index => selectedIndex = index,
                 choiceInputGuardSeconds);
 
             while (selectedIndex < 0 && isFlowActive)
             {
-                if (allowNumberKeySelection && choicePresenter.CanAcceptInput)
+                if (allowNumberKeySelection && resolvedChoicePresenter.CanAcceptInput)
                     TryConfirmNumberKeyChoice(visibleChoices.Count);
 
                 yield return null;
             }
 
-            choicePresenter.Hide();
+            resolvedChoicePresenter.Hide();
         }
 
         if (selectedIndex < 0 || selectedIndex >= visibleChoices.Count)
@@ -336,10 +329,9 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
 
     private IEnumerator PlayLines(RunSpecialNpcLine[] lines, RunSpecialNpcFeatureContext context)
     {
-        if (lines == null || speechBubble == null)
+        ISpeechBubblePlayback bubblePlayback = ResolveSpeechBubble();
+        if (lines == null || bubblePlayback == null)
             yield break;
-
-        InputBindingService input = allowLineSkip ? InputBindingService.EnsureInstance() : null;
 
         for (int i = 0; i < lines.Length; i++)
         {
@@ -364,9 +356,9 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
                 {
                     if (allowLineSkip &&
                         Time.unscaledTime >= skipInputReadyAt &&
-                        WasLineSkipPressed(input))
+                        WasLineSkipPressed())
                     {
-                        if (speechBubble.TryAdvanceActive())
+                        if (bubblePlayback.TryAdvanceActive())
                             skipInputReadyAt = Time.unscaledTime + lineSkipInputGuardSeconds;
                     }
 
@@ -382,9 +374,13 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
 
     private void SpeakLine(RunSpecialNpcLine line, string lineText, float duration, System.Action onHidden)
     {
+        ISpeechBubblePlayback bubblePlayback = ResolveSpeechBubble();
+        if (bubblePlayback == null)
+            return;
+
         if (preSizeSpeechBubbleBeforeTyping)
         {
-            speechBubble.SpeakWithPreSizedLayout(
+            bubblePlayback.SpeakWithPreSizedLayout(
                 lineText,
                 duration,
                 line.Theme,
@@ -395,7 +391,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
             return;
         }
 
-        speechBubble.Speak(lineText, duration, line.Theme, onHidden);
+        bubblePlayback.Speak(lineText, duration, line.Theme, onHidden);
     }
 
     private string ResolveLineText(RunSpecialNpcLine line, RunSpecialNpcFeatureContext context)
@@ -459,7 +455,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         activePlayer = player;
         previousPlayerState = player != null ? player.CurrentState : InteractState.Idle;
 
-        UIManager.Instance?.HideWorldPrompt();
+        UiCommandPlayback.HideWorldPrompt();
 
         if (setPlayerTalkingState && player != null)
             player.SetInteractState(InteractState.Talking);
@@ -528,7 +524,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         if (!showLetterbox)
             yield break;
 
-        letterboxOverlay ??= new CinematicLetterboxOverlay();
+        letterboxOverlay ??= CinematicLetterboxPlayback.CreateOverlay();
         if (fadeHudDuringPresentation)
         {
             yield return letterboxOverlay.PlayIn(
@@ -576,19 +572,20 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         CacheCameraState();
         SetCameraTarget(focusTarget);
         yield return WaitForPresentationSeconds(cameraFocusWaitSeconds);
-        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, focusTarget);
+        if (cameraFocusSession != null)
+            yield return cameraFocusSession.WaitForSettle(focusTarget);
     }
 
     private IEnumerator PlayCameraReturn()
     {
-        if (!restoreCameraAfterDialogue || !hasCachedCameraState)
+        if (!restoreCameraAfterDialogue || cameraFocusSession == null)
             yield break;
 
         Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
-        Transform restoreTarget = playerTransform != null ? playerTransform : cachedCameraFollow;
+        Transform restoreTarget = playerTransform != null ? playerTransform : cameraFocusSession.CachedFollow;
         SetCameraTarget(restoreTarget);
         yield return WaitForPresentationSeconds(cameraReturnWaitSeconds);
-        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, restoreTarget);
+        yield return cameraFocusSession.WaitForSettle(restoreTarget);
         RestoreCameraState(restoreTarget);
     }
 
@@ -611,95 +608,39 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         if (cameraFocusTarget != null)
             return cameraFocusTarget;
 
-        if (speechBubble != null)
-            return speechBubble.transform;
+        ISpeechBubblePlayback bubblePlayback = ResolveSpeechBubble();
+        if (bubblePlayback != null)
+            return bubblePlayback.BubbleTransform;
 
         return transform;
     }
 
     private void CacheCameraState()
     {
-        if (hasCachedCameraState)
+        if (cameraFocusSession != null)
             return;
 
-        CameraBootstrap.EnsureRuntimeRigForCurrentScene();
-
-        gameplayCamera = CameraBootstrap.GetPlayerCamera();
-        cameraBrain = CameraBootstrap.GetBrain();
-        legacyFollowCamera = CameraBootstrap.GetLegacyFollow();
-
-        if (gameplayCamera != null)
-        {
-            cachedCameraFollow = gameplayCamera.Follow;
-            cachedCameraLookAt = gameplayCamera.LookAt;
-            cachedCameraPriority = gameplayCamera.Priority;
-        }
-
-        if (legacyFollowCamera != null)
-            cachedLegacyFollowEnabled = legacyFollowCamera.enabled;
-
-        if (cameraBrain != null)
-            cachedBrainIgnoreTimeScale = cameraBrain.IgnoreTimeScale;
-
-        hasCachedCameraState = true;
+        cameraFocusSession = GameplayCameraFocusPlayback.Capture(this);
     }
 
     private void SetCameraTarget(Transform target)
     {
-        if (target == null)
-            return;
-
-        if (cameraBrain != null)
-            cameraBrain.IgnoreTimeScale = true;
-
-        if (legacyFollowCamera != null)
-            legacyFollowCamera.enabled = false;
-
-        if (gameplayCamera == null)
-            return;
-
-        gameplayCamera.Follow = target;
-        gameplayCamera.LookAt = target;
+        cameraFocusSession?.SetTarget(target);
     }
 
     private void RestoreCameraState(Transform preferredTarget)
     {
-        if (!hasCachedCameraState)
+        if (cameraFocusSession == null)
             return;
 
-        Transform restoreFollow = preferredTarget != null ? preferredTarget : cachedCameraFollow;
-        Transform restoreLookAt = preferredTarget != null ? preferredTarget : cachedCameraLookAt;
-
-        if (gameplayCamera != null)
-        {
-            gameplayCamera.Follow = restoreFollow;
-            gameplayCamera.LookAt = restoreLookAt;
-            gameplayCamera.Priority = cachedCameraPriority;
-        }
-
-        if (legacyFollowCamera != null)
-        {
-            if (restoreFollow != null)
-                legacyFollowCamera.BindTarget(restoreFollow, snap: false);
-
-            legacyFollowCamera.enabled = cachedLegacyFollowEnabled;
-        }
-
-        if (cameraBrain != null)
-            cameraBrain.IgnoreTimeScale = cachedBrainIgnoreTimeScale;
-
-        gameplayCamera = null;
-        cameraBrain = null;
-        legacyFollowCamera = null;
-        cachedCameraFollow = null;
-        cachedCameraLookAt = null;
-        hasCachedCameraState = false;
+        cameraFocusSession.Restore(preferredTarget);
+        cameraFocusSession = null;
     }
 
     private void HideChoicePresenterIfAlive()
     {
-        if (choicePresenter != null)
-            choicePresenter.Hide();
+        if (resolvedChoicePresenter != null)
+            resolvedChoicePresenter.Hide();
     }
 
     private void ClearChoiceFollowTargetIfAlive()
@@ -710,8 +651,27 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
 
     private void HideSpeechBubbleIfAlive()
     {
-        if (speechBubble != null)
-            speechBubble.HideActive();
+        ResolveSpeechBubble()?.HideActive();
+    }
+
+    private ISpeechBubblePlayback ResolveSpeechBubble()
+    {
+        if (speechBubble is ISpeechBubblePlayback existing)
+            return existing;
+
+        MonoBehaviour[] behaviours = GetComponentsInChildren<MonoBehaviour>(includeInactive: true);
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+            if (behaviour is ISpeechBubblePlayback playback)
+            {
+                speechBubble = behaviour;
+                return playback;
+            }
+        }
+
+        speechBubble = null;
+        return null;
     }
 
     private void PauseTimeScaleIfNeeded()
@@ -719,7 +679,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         if (!pauseTimeScale || holdsTimeScalePause)
             return;
 
-        TimeScalePauseService.Acquire(this);
+        TimeScalePausePlayback.Acquire(this);
         holdsTimeScalePause = true;
     }
 
@@ -728,7 +688,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         if (!holdsTimeScalePause)
             return;
 
-        TimeScalePauseService.Release(this);
+        TimeScalePausePlayback.Release(this);
         holdsTimeScalePause = false;
     }
 
@@ -751,23 +711,36 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
 
     private void ResolveChoicePresenter()
     {
-        if (choicePresenter != null)
+        if (resolvedChoicePresenter != null && !IsUnityObjectDestroyed(resolvedChoicePresenter))
             return;
 
-        choicePresenter = GetComponentInChildren<RunSpecialNpcChoicePresenter>(includeInactive: true);
-        if (choicePresenter != null)
+        resolvedChoicePresenter = null;
+        if (choicePresenter is IRunSpecialNpcChoicePresenter serializedPresenter)
+        {
+            resolvedChoicePresenter = serializedPresenter;
             return;
+        }
 
-        RunSpecialNpcChoicePresenter[] presenters = Object.FindObjectsByType<RunSpecialNpcChoicePresenter>(
+        if (TryResolvePresenter(GetComponentsInChildren<MonoBehaviour>(includeInactive: true), out IRunSpecialNpcChoicePresenter localPresenter))
+        {
+            resolvedChoicePresenter = localPresenter;
+            choicePresenter = localPresenter.PresenterComponent as MonoBehaviour;
+            return;
+        }
+
+        MonoBehaviour[] presenters = Object.FindObjectsByType<MonoBehaviour>(
             FindObjectsInactive.Include,
             FindObjectsSortMode.None);
 
         for (int i = 0; i < presenters.Length; i++)
         {
-            RunSpecialNpcChoicePresenter presenter = presenters[i];
+            if (presenters[i] is not IRunSpecialNpcChoicePresenter presenter)
+                continue;
+
             if (presenter != null && presenter.AllowGlobalLookup)
             {
-                choicePresenter = presenter;
+                resolvedChoicePresenter = presenter;
+                choicePresenter = presenter.PresenterComponent as MonoBehaviour;
                 return;
             }
         }
@@ -775,8 +748,9 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
 
     private void ResolveChoiceAnchorFollower()
     {
-        choiceAnchorFollower = choicePresenter != null
-            ? choicePresenter.GetComponent<RunSpecialNpcChoiceAnchorFollower>()
+        Component presenterComponent = resolvedChoicePresenter?.PresenterComponent;
+        choiceAnchorFollower = presenterComponent != null
+            ? presenterComponent.GetComponent<IRunSpecialNpcChoiceAnchorFollower>()
             : null;
     }
 
@@ -789,16 +763,41 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
             KeyCode keypadKey = (KeyCode)((int)KeyCode.Keypad1 + i);
             if (Input.GetKeyDown(alphaKey) || Input.GetKeyDown(keypadKey))
             {
-                choicePresenter.ConfirmChoiceAt(i);
+                resolvedChoicePresenter.ConfirmChoiceAt(i);
                 return;
             }
         }
     }
 
-    private static bool WasLineSkipPressed(InputBindingService input)
+    private static bool TryResolvePresenter(
+        MonoBehaviour[] candidates,
+        out IRunSpecialNpcChoicePresenter presenter)
+    {
+        presenter = null;
+        if (candidates == null)
+            return false;
+
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            if (candidates[i] is IRunSpecialNpcChoicePresenter candidate)
+            {
+                presenter = candidate;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsUnityObjectDestroyed(IRunSpecialNpcChoicePresenter value)
+    {
+        return value is Object unityObject && unityObject == null;
+    }
+
+    private static bool WasLineSkipPressed()
     {
         return Input.GetMouseButtonDown(0) ||
-               (input != null && input.WasPressedThisFrame(InputActionId.DialogueAdvance));
+               InputActionQuery.WasPressedThisFrame(InputActionId.DialogueAdvance);
     }
 
     private void SetOutlineEnabled(bool enabled)

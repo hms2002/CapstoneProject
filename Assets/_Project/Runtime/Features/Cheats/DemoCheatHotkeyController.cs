@@ -146,11 +146,8 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
             return;
 
         float duration = durationOverride > 0f ? durationOverride : settings.NotificationDuration;
-        if (UIManager.Instance != null)
-        {
-            UIManager.Instance.ShowWarning(result.Message, duration);
+        if (WarningPopupPlayback.ShowMessage(result.Message, duration))
             return;
-        }
 
         string prefix = result.Success ? "알림" : "실패";
         Debug.Log($"[DemoCheat] {prefix}: {result.Message}", this);
@@ -163,7 +160,6 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
 
     private static bool IsSceneTransitionActive()
     {
-        return SceneTransitionCoordinator.Instance != null &&
-               SceneTransitionCoordinator.Instance.IsTransitionActive;
+        return SceneTransitionPlayback.IsTransitionActive;
     }
 }

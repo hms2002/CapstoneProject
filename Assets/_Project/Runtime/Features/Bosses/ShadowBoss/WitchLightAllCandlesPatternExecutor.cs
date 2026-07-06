@@ -29,7 +29,7 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
         owner.ActivateShield();
         owner.EnableStaggerImmuneDuringPhaseTransition();
 
-        CameraPresentationDirector phaseCameraDirector = owner.GetCameraPresentationDirector();
+        ICameraPresentationDirector phaseCameraDirector = owner.GetCameraPresentationDirector();
         bool shouldReturnPhaseCamera = false;
         if (phaseCameraDirector != null)
         {
@@ -55,7 +55,7 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
             float chargeProgress = Mathf.InverseLerp(chargeStartTime, deadlineTime, Time.time);
             UpdateChargeOrb(logic, chargeOrbInstance, chargeProgress);
             UpdateChargeLoopPitch(logic, chargeProgress);
-            WorldPresentationRuntime.PlaySignalOnly(
+            WorldPresentationPlayback.PlaySignalOnly(
                 logic.ChargePulsePresentation,
                 WorldPresentationContext.AtWorld(
                     instigator: owner.gameObject,
@@ -145,7 +145,7 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
             return null;
 
         instance.transform.localScale = logic.ChargeOrbStartScale;
-        WorldPresentationRuntime.InitializeSpawnedPresentation(instance, useUnscaledTime: false);
+        WorldPresentationPlayback.InitializeSpawnedPresentation(instance, useUnscaledTime: false);
         return instance;
     }
 
@@ -174,7 +174,7 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
             ? owner.transform.TransformPoint(logic.ChargeOrbImpactLocalOffset)
             : logic.ChargeOrbImpactLocalOffset;
 
-        WorldPresentationRuntime.PlaySignalOnly(
+        WorldPresentationPlayback.PlaySignalOnly(
             logic.OrbLaunchPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: owner != null ? owner.gameObject : null,
@@ -205,7 +205,7 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
 
         CleanupChargeOrb(chargeOrbInstance);
 
-        WorldPresentationRuntime.PlayDeferredAsync(
+        WorldPresentationPlayback.PlayDeferredAsync(
             logic.FailureImpactPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: owner != null ? owner.gameObject : null,

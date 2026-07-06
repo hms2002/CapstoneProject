@@ -99,6 +99,23 @@
             "startedUtc": "2026-06-01T06:37:53.2165890Z",
             "endedUtc": "2026-06-01T06:37:55.9186824Z",
             "entries": []
+        },
+        {
+            "sessionId": "4536ca8d0df34b96a6d6bf99af9c9ddc",
+            "startedUtc": "2026-07-06T09:44:46.9966540Z",
+            "endedUtc": "2026-07-06T09:47:01.2049439Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 23,
+                    "coldSpawns": 18,
+                    "firstSeenSeconds": 48.1690673828125,
+                    "lastSeenSeconds": 134.19488525390626,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ShadowCorridor"
+                }
+            ]
         }
     ]
 }

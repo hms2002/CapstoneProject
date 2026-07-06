@@ -1,8 +1,8 @@
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
+/// <summary>
+/// 책임 : 로딩 부트스트랩 설정 에셋을 현재 로드된 객체나 에디터 asset path fallback에서 찾아 반환한다.
+/// </summary>
 public static class LoadingBootstrapConfigResolver
 {
     public static LoadingBootstrapConfigSO Load()
@@ -10,7 +10,7 @@ public static class LoadingBootstrapConfigResolver
         LoadingBootstrapConfigSO config = FindPreloaded();
 #if UNITY_EDITOR
         if (config == null)
-            config = AssetDatabase.LoadAssetAtPath<LoadingBootstrapConfigSO>(LoadingBootstrapConfigSO.SourceAssetPath);
+            config = EditorAuthoringPlayback.LoadAssetAtPath<LoadingBootstrapConfigSO>(LoadingBootstrapConfigSO.SourceAssetPath);
 #endif
         return config;
     }
@@ -28,7 +28,7 @@ public static class LoadingBootstrapConfigResolver
             if (candidate == null)
                 continue;
 
-            string assetPath = AssetDatabase.GetAssetPath(candidate);
+            string assetPath = EditorAuthoringPlayback.GetAssetPath(candidate);
             if (string.Equals(assetPath, LoadingBootstrapConfigSO.SourceAssetPath, System.StringComparison.OrdinalIgnoreCase))
                 return candidate;
         }

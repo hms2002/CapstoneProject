@@ -34,8 +34,8 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     [Tooltip("태클 중 추적 이동을 막는 태그입니다.")]
     [SerializeField] private GameplayTag blockMoveTag;
 
-    [Tooltip("태클 경고를 표시할 서비스입니다.")]
-    [SerializeField] private AttackTelegraphService telegraph;
+    [Tooltip("태클 경고를 표시할 presenter 컴포넌트입니다.")]
+    [SerializeField] private MonoBehaviour telegraph;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
 
     [Header("Sound")]
@@ -63,15 +63,17 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     private bool attackPreparationMoveBlocked;
     private bool hasContext;
     private TackleContext tackleContext;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private int attackReadyTriggerHash;
     private int attackTriggerHash;
     private bool hasAttackReadyTrigger;
     private bool hasAttackTrigger;
 
     public float RangeRadius => Mathf.Max(0f, attackRangeDiameter * 0.5f);
-    public bool IsPreparing => telegraph != null && telegraph.HasActiveTelegraph;
+    public bool IsPreparing => telegraphPresenter != null && telegraphPresenter.HasActiveTelegraph;
     public bool HasDelay => delayTime > 0f;
 
+    // 책임: 태클 공격의 대상, 시작점, 방향, 돌진 거리와 경고 폭을 보관한다.
     public struct TackleContext
     {
         public GameObject Target;
@@ -90,8 +92,7 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
             abilityCoordinator = gameObject.AddComponent<MobAbilityCoordinator>();
         helperAccess = abilityCoordinator as IMobAbilityHelperAccess;
 
-        if (telegraph == null)
-            telegraph = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraph, this);
 
         if (animator == null)
             animator = GetComponentInChildren<Animator>(true);
@@ -333,8 +334,7 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     /// <summary>현재 태클 경고를 숨깁니다.</summary>
     public void HideTelegraph()
     {
-        if (telegraph != null)
-            telegraph.HideCurrent();
+        telegraphPresenter?.HideCurrent();
     }
 
     /// <summary>태클 준비 구간 동안 추적 이동을 막을지 설정합니다.</summary>
@@ -358,7 +358,7 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     /// <summary>태클 경고를 화면에 표시합니다.</summary>
     public void ShowTelegraph(TackleContext context, float duration, AttackTelegraphStyle style = null)
     {
-        if (telegraph == null) return;
+        if (telegraphPresenter == null) return;
 
         float length = Mathf.Max(0f, context.LungeDistance);
         Vector3 center = context.StartPos + context.Direction * (length * 0.5f);
@@ -372,7 +372,7 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
             style);
 
         spec = ApplyMonsterSpecificTelegraphPresentation(spec);
-        telegraph.Show(spec);
+        telegraphPresenter.Show(spec);
     }
 
     /// <summary>몬스터별 경고선 표시 정책을 적용합니다.</summary>

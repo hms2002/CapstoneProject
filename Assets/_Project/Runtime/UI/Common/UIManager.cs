@@ -9,7 +9,7 @@ using UnityGAS;
 /// - 전역 UI 서비스와 공통 캔버스 진입점을 관리하고, 씬 전환 시 UI 상태를 정리한다.
 /// - gameplay 계층이 구체 UI 구현을 직접 알지 않도록 팝업/프롬프트/잠금 요청을 중계한다.
 /// </summary>
-public class UIManager : MonoBehaviour
+public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStateBackend, IUiCommandBackend, IUiStackBackend, ITitleScenePersistentCleanupTarget
 {
     private const string BlockControlByUiTagSetResourcePath = "Tags/TagSet/TS_BlockControlByUI";
 
@@ -54,6 +54,10 @@ public class UIManager : MonoBehaviour
         }
 
         Instance = this;
+        WarningPopupPlayback.RegisterBackend(this);
+        UiInteractionStateQuery.RegisterBackend(this);
+        UiCommandPlayback.RegisterBackend(this);
+        UiStackPlayback.RegisterBackend(this);
         GlobalUIRoot.AdoptService(transform);
         MarkPersistent();
 
@@ -82,6 +86,14 @@ public class UIManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (Instance == this)
+        {
+            WarningPopupPlayback.RegisterBackend(null);
+            UiInteractionStateQuery.RegisterBackend(null);
+            UiCommandPlayback.RegisterBackend(null);
+            UiStackPlayback.RegisterBackend(null);
+        }
+
         if (Instance == this)
             Instance = null;
     }
@@ -368,11 +380,7 @@ public class UIManager : MonoBehaviour
         if (GamePlayDataManager.Instance != null)
             GamePlayDataManager.Instance.EndRun(RunEndReason.None);
 
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        ApplicationQuitPlayback.Quit();
     }
 
     private PauseMenuUI ResolvePauseMenu()
@@ -566,10 +574,10 @@ public class UIManager : MonoBehaviour
         ApplyGameplayHudCurrencyVisibility();
     }
 
-    public void SetExternalUiInputBlocked(Object owner, bool blocked)
+    public bool SetExternalUiInputBlocked(Object owner, bool blocked)
     {
         if (owner == null)
-            return;
+            return false;
 
         if (blocked)
         {
@@ -577,11 +585,12 @@ public class UIManager : MonoBehaviour
             HideHoverImmediate();
             HideWorldPrompt();
             ApplyGameplayLockState();
-            return;
+            return true;
         }
 
         externalUiInputBlockOwners.Remove(owner);
         ApplyGameplayLockState();
+        return true;
     }
 
     private void ApplyGameplayHudCurrencyVisibility()
@@ -627,6 +636,29 @@ public class UIManager : MonoBehaviour
     private WarningPopupService ResolveWarningPopupService()
     {
         return warningPopupService;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - Core 경고 팝업 요청을 UIManager가 보유한 WarningPopupService 출력 경로로 변환한다.
+    /// - 요청이 duration을 생략하면 기존 UI 기본 표시 시간을 그대로 사용한다.
+    /// </summary>
+    void IWarningPopupBackend.ShowWarning(in WarningPopupRequest request)
+    {
+        if (request.Code != WarningPopupCode.None)
+        {
+            if (request.HasDuration)
+                ShowWarning(request.Code, request.Duration);
+            else
+                ShowWarning(request.Code);
+
+            return;
+        }
+
+        if (request.HasDuration)
+            ShowWarning(request.Message, request.Duration);
+        else
+            ShowWarning(request.Message);
     }
 
     /// <summary>

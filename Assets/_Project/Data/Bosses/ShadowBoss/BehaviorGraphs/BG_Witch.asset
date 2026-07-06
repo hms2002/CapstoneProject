@@ -23,7 +23,7 @@ MonoBehaviour:
   - rid: 6415103045726634087
   - rid: 6415103045726634092
   - rid: 6415103045726634135
-  m_VersionTimestamp: 639111867604799958
+  m_VersionTimestamp: 639187925097131365
   m_SerializedVersion: 2
   m_DebugInfo: {fileID: 1459767931411977020}
   m_RuntimeGraph: {fileID: 5723419198226221412}
@@ -67,7 +67,7 @@ MonoBehaviour:
     IsPlaceholder: 0
   - Name: Random Selector
     Story: Run Random Child
-    RuntimeTypeString: BT_RandomSelector, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    RuntimeTypeString: BT_RandomSelector, Gameplay, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 211166596959498
@@ -77,7 +77,7 @@ MonoBehaviour:
     IsPlaceholder: 0
   - Name: Activate GAS Ability
     Story: 'Use [Ability] on [Target]'
-    RuntimeTypeString: ActivateGASAbilityAction, Assembly-CSharp, Version=0.0.0.0,
+    RuntimeTypeString: ActivateGASAbilityAction, Gameplay, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 48147657141256202
@@ -85,7 +85,7 @@ MonoBehaviour:
     Variables:
     - Name: Ability
       Type:
-        m_SerializableType: UnityGAS.AbilityDefinition, Assembly-CSharp, Version=0.0.0.0,
+        m_SerializableType: UnityGAS.AbilityDefinition, Core, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
       Tooltip: 
     - Name: Target
@@ -106,6 +106,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2468850623048319253
       type: {class: StartNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
@@ -163,7 +165,7 @@ MonoBehaviour:
         GUID:
           m_Value0: 0
           m_Value1: 0
-        Name: 
+        Name: ''
         m_Value: {fileID: 0}
     - rid: 2668037834883727641
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
@@ -171,7 +173,7 @@ MonoBehaviour:
         GUID:
           m_Value0: 0
           m_Value1: 0
-        Name: 
+        Name: ''
         m_Value: {fileID: 0}
     - rid: 2668037834883727642
       type: {class: 'TypedVariableModel`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
@@ -183,6 +185,44 @@ MonoBehaviour:
         IsExposed: 1
         m_IsShared: 0
         m_Value: {fileID: 5628018141983903104, guid: ef67ba864d1ecc042b5f4cf48455c0a6, type: 3}
+    - rid: 3850443642094485504
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: Ability
+        Type:
+          m_SerializableType: UnityGAS.AbilityDefinition, Core, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 3850443642094485506
+        LinkedVariable:
+          rid: -2
+    - rid: 3850443642094485505
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: Ability
+        Type:
+          m_SerializableType: UnityGAS.AbilityDefinition, Core, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        LocalValue:
+          rid: 3850443642094485507
+        LinkedVariable:
+          rid: -2
+    - rid: 3850443642094485506
+      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Core]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: ''
+        m_Value: {fileID: 0}
+    - rid: 3850443642094485507
+      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Core]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: ''
+        m_Value: {fileID: 0}
     - rid: 6415103001750405338
       type: {class: CompositeNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
@@ -269,7 +309,7 @@ MonoBehaviour:
         - rid: 6415103020215828556
         - rid: 6415103020215828557
         NodeType:
-          m_SerializableType: BT_RandomSelector, Assembly-CSharp, Version=0.0.0.0,
+          m_SerializableType: BT_RandomSelector, Gameplay, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         NodeTypeID:
           m_Value0: 211166596959498
@@ -308,13 +348,13 @@ MonoBehaviour:
         - rid: 6415103045726634076
         - rid: 6415103045726634077
         NodeType:
-          m_SerializableType: ActivateGASAbilityAction, Assembly-CSharp, Version=0.0.0.0,
+          m_SerializableType: ActivateGASAbilityAction, Gameplay, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         NodeTypeID:
           m_Value0: 48147657141256202
           m_Value1: 0
         m_FieldValues:
-        - rid: 6415103045726634078
+        - rid: 3850443642094485504
         - rid: 2668037834883727638
     - rid: 6415103045726634076
       type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
@@ -335,25 +375,6 @@ MonoBehaviour:
         m_NodeModel:
           rid: 6415103045726634075
         m_Connections: []
-    - rid: 6415103045726634078
-      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
-      data:
-        FieldName: Ability
-        Type:
-          m_SerializableType: UnityGAS.AbilityDefinition, Assembly-CSharp, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-        LocalValue:
-          rid: 6415103045726634081
-        LinkedVariable:
-          rid: 6415103045726634129
-    - rid: 6415103045726634081
-      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 0
-          m_Value1: 0
-        Name: 
-        m_Value: {fileID: 0}
     - rid: 6415103045726634087
       type: {class: StickyNoteModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
@@ -374,16 +395,6 @@ MonoBehaviour:
         Parents: []
         PortModels: []
         Text: "\uC5EC\uAE34 \uADF8\uB85C\uAE30"
-    - rid: 6415103045726634129
-      type: {class: 'TypedVariableModel`1[[UnityGAS.AbilityDefinition, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
-      data:
-        ID:
-          m_Value0: 14204471165461185586
-          m_Value1: 16025058708561238227
-        Name: AD_Wave
-        IsExposed: 1
-        m_IsShared: 0
-        m_Value: {fileID: 0}
     - rid: 6415103045726634135
       type: {class: ActionNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
@@ -396,13 +407,13 @@ MonoBehaviour:
         - rid: 6415103045726634136
         - rid: 6415103045726634137
         NodeType:
-          m_SerializableType: ActivateGASAbilityAction, Assembly-CSharp, Version=0.0.0.0,
+          m_SerializableType: ActivateGASAbilityAction, Gameplay, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         NodeTypeID:
           m_Value0: 48147657141256202
           m_Value1: 0
         m_FieldValues:
-        - rid: 6415103045726634138
+        - rid: 3850443642094485505
         - rid: 2668037834883727639
     - rid: 6415103045726634136
       type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
@@ -423,35 +434,6 @@ MonoBehaviour:
         m_NodeModel:
           rid: 6415103045726634135
         m_Connections: []
-    - rid: 6415103045726634138
-      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
-      data:
-        FieldName: Ability
-        Type:
-          m_SerializableType: UnityGAS.AbilityDefinition, Assembly-CSharp, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-        LocalValue:
-          rid: 6415103045726634141
-        LinkedVariable:
-          rid: 6415103045726634155
-    - rid: 6415103045726634141
-      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 0
-          m_Value1: 0
-        Name: 
-        m_Value: {fileID: 0}
-    - rid: 6415103045726634155
-      type: {class: 'TypedVariableModel`1[[UnityGAS.AbilityDefinition, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
-      data:
-        ID:
-          m_Value0: 8840543212337881465
-          m_Value1: 15028187573117453122
-        Name: AD_Ambush
-        IsExposed: 1
-        m_IsShared: 0
-        m_Value: {fileID: 0}
 --- !u!114 &1459767931411977020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513,7 +495,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: {fileID: 5628018141983903104, guid: ef67ba864d1ecc042b5f4cf48455c0a6, type: 3}
     - rid: 6415103045726634098
-      type: {class: 'TypedVariableModel`1[[UnityGAS.AbilityDefinition, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[UnityGAS.AbilityDefinition, Core]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 14204471165461185586
@@ -523,7 +505,7 @@ MonoBehaviour:
         m_IsShared: 0
         m_Value: {fileID: 0}
     - rid: 6415103045726634112
-      type: {class: 'TypedVariableModel`1[[UnityGAS.AbilityDefinition, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      type: {class: 'TypedVariableModel`1[[UnityGAS.AbilityDefinition, Core]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
         ID:
           m_Value0: 8840543212337881465
@@ -564,8 +546,8 @@ MonoBehaviour:
           rid: 2468850623048319257
         BlackboardGroupReferences: []
         Root:
-          rid: 2668038107570896971
-        m_VersionTimestamp: 639111867604799958
+          rid: 3850443642094485508
+        m_VersionTimestamp: 639187925097131365
     - rid: 2468850623048319257
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -597,7 +579,7 @@ MonoBehaviour:
         Name: Target
         m_Value: {fileID: 5628018141983903104, guid: ef67ba864d1ecc042b5f4cf48455c0a6, type: 3}
     - rid: 2668037834883727657
-      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Core]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 14204471165461185586
@@ -605,14 +587,14 @@ MonoBehaviour:
         Name: AD_Wave
         m_Value: {fileID: 0}
     - rid: 2668037834883727658
-      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Core]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 8840543212337881465
           m_Value1: 15028187573117453122
         Name: AD_Ambush
         m_Value: {fileID: 0}
-    - rid: 2668038107570896971
+    - rid: 3850443642094485508
       type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -623,10 +605,10 @@ MonoBehaviour:
         m_Parent:
           rid: -2
         m_Child:
-          rid: 2668038107570896972
+          rid: 3850443642094485509
         Repeat: 1
         AllowMultipleRepeatsPerTick: 0
-    - rid: 2668038107570896972
+    - rid: 3850443642094485509
       type: {class: SelectorComposite, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -635,12 +617,12 @@ MonoBehaviour:
         Graph:
           rid: 2468850623048319256
         m_Parent:
-          rid: 2668038107570896971
+          rid: 3850443642094485508
         m_Children:
-        - rid: 2668038107570896973
+        - rid: 3850443642094485510
         m_RegisteredObservers: []
-    - rid: 2668038107570896973
-      type: {class: BT_RandomSelector, ns: , asm: Assembly-CSharp}
+    - rid: 3850443642094485510
+      type: {class: BT_RandomSelector, ns: , asm: Gameplay}
       data:
         ID:
           m_Value0: 11698181117508244752
@@ -648,13 +630,13 @@ MonoBehaviour:
         Graph:
           rid: 2468850623048319256
         m_Parent:
-          rid: 2668038107570896972
+          rid: 3850443642094485509
         m_Children:
-        - rid: 2668038107570896974
-        - rid: 2668038107570896975
+        - rid: 3850443642094485511
+        - rid: 3850443642094485512
         m_RegisteredObservers: []
-    - rid: 2668038107570896974
-      type: {class: ActivateGASAbilityAction, ns: , asm: Assembly-CSharp}
+    - rid: 3850443642094485511
+      type: {class: ActivateGASAbilityAction, ns: , asm: Gameplay}
       data:
         ID:
           m_Value0: 17129291100652068023
@@ -662,13 +644,13 @@ MonoBehaviour:
         Graph:
           rid: 2468850623048319256
         m_Parent:
-          rid: 2668038107570896973
+          rid: 3850443642094485510
         Ability:
-          rid: 2668037834883727657
+          rid: 3850443642094485513
         Target:
           rid: 2668037834883727656
-    - rid: 2668038107570896975
-      type: {class: ActivateGASAbilityAction, ns: , asm: Assembly-CSharp}
+    - rid: 3850443642094485512
+      type: {class: ActivateGASAbilityAction, ns: , asm: Gameplay}
       data:
         ID:
           m_Value0: 9308625515439014994
@@ -676,11 +658,27 @@ MonoBehaviour:
         Graph:
           rid: 2468850623048319256
         m_Parent:
-          rid: 2668038107570896973
+          rid: 3850443642094485510
         Ability:
-          rid: 2668037834883727658
+          rid: 3850443642094485514
         Target:
           rid: 2668037834883727656
+    - rid: 3850443642094485513
+      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Core]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: ''
+        m_Value: {fileID: 0}
+    - rid: 3850443642094485514
+      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Core]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: ''
+        m_Value: {fileID: 0}
 --- !u!114 &8459624539162266045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -707,6 +705,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2468850623048319263
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -724,7 +724,7 @@ MonoBehaviour:
         Name: Target
         m_Value: {fileID: 5628018141983903104, guid: ef67ba864d1ecc042b5f4cf48455c0a6, type: 3}
     - rid: 6415103045726634103
-      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Core]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 14204471165461185586
@@ -732,7 +732,7 @@ MonoBehaviour:
         Name: AD_Wave
         m_Value: {fileID: 0}
     - rid: 6415103045726634118
-      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Core]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 8840543212337881465

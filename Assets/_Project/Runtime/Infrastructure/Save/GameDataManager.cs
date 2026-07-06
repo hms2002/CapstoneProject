@@ -1,6 +1,7 @@
 using UnityEngine;
 
-public class GameDataManager : MonoBehaviour
+// 책임: 영구 게임 저장 데이터를 로드/저장하고 Core GameDataStore 백엔드를 등록한다.
+public class GameDataManager : MonoBehaviour, IGameDataStoreBackend
 {
     public static GameDataManager Instance { get; private set; }
 
@@ -31,6 +32,7 @@ public class GameDataManager : MonoBehaviour
         }
 
         Instance = this;
+        GameDataStore.RegisterBackend(this);
         DontDestroyOnLoad(gameObject);
 
         repository = new GameDataRepository(ActiveSlotIndex);
@@ -39,8 +41,25 @@ public class GameDataManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        GameDataStore.UnregisterBackend(this);
+
         if (Instance == this)
             Instance = null;
+    }
+
+    public void RequestImmediateSave(Object requester)
+    {
+        GameDataSaveCoordinator.RequestImmediateSave(requester);
+    }
+
+    public void RequestDeferredSave(Object requester)
+    {
+        GameDataSaveCoordinator.RequestDeferredSave(requester);
+    }
+
+    public void FlushSave(Object requester)
+    {
+        GameDataSaveCoordinator.FlushNow(requester);
     }
 
     public void LoadData()

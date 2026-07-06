@@ -94,7 +94,7 @@ public sealed class AbilityLogic_SlimeQueenWaterCannon : AbilityLogic
         AbilitySpec spec,
         SlimeQueenP2Long.WaterCannonLine line)
     {
-        AttackTelegraphView warningView = slimeQueen.ShowWaterCannonShotWarning(line);
+        IAttackTelegraphHandle warningView = slimeQueen.ShowWaterCannonShotWarning(line);
 
         float warningElapsedSeconds = 0f;
         while (warningElapsedSeconds < slimeQueen.WaterCannonShotWarningSeconds)

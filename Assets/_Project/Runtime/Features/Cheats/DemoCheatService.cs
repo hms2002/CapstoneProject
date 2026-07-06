@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityGAS;
@@ -53,7 +52,7 @@ public sealed class DemoCheatService
     private GameplayTag demoInvulnerabilityTag;
     private DemoInvulnerabilitySourceState manualInvulnerability;
     private DemoInvulnerabilitySourceState autoInvulnerability;
-    private MapZoomCameraSnapshot mapZoomSnapshot;
+    private IGameplayCameraMapZoomSession mapZoomSession;
     private Coroutine mapZoomRoutine;
     private MonoBehaviour mapZoomRoutineOwner;
 
@@ -434,7 +433,7 @@ public sealed class DemoCheatService
             return DemoCheatResult.Succeeded($"슬라임 퀸 멜타 호감도가 +{amount} 증가했습니다.");
         }
 
-        GameData gameData = GameDataManager.Instance?.EnsureData();
+        GameData gameData = GameDataStore.EnsureData();
         if (gameData == null)
             return Fail("호감도 시스템을 찾을 수 없습니다.");
 
@@ -452,7 +451,7 @@ public sealed class DemoCheatService
             record.amount += amount;
         }
 
-        GameDataSaveCoordinator.RequestImmediateSave(logContext);
+        GameDataStore.RequestImmediateSave(logContext);
         Log($"슬라임 퀸 멜타 호감도 저장 데이터 직접 증가. npcId={npcId}, amount={record.amount - amount}->{record.amount}");
         return DemoCheatResult.Succeeded($"슬라임 퀸 멜타 호감도가 +{amount} 증가했습니다.");
     }
@@ -571,7 +570,7 @@ public sealed class DemoCheatService
             return;
 
         StopMapZoomRoutine();
-        ApplyMapZoomSnapshot(mapZoomSnapshot);
+        mapZoomSession?.Restore();
         ClearMapZoomSnapshot();
         Log("맵 줌을 즉시 복구했습니다.");
     }
@@ -589,32 +588,29 @@ public sealed class DemoCheatService
         if (!TryResolveMapZoomTarget(settings, out Vector2 targetCenter, out Vector2 mapSize, out float padding, out string sourceLabel))
             return Fail("맵 줌 크기는 0보다 커야 합니다.");
 
-        CinemachineCamera gameplayCamera = CameraBootstrap.GetPlayerCamera();
-        if (gameplayCamera == null || !gameplayCamera.gameObject.activeInHierarchy)
+        IGameplayCameraMapZoomSession zoomSession = GameplayCameraMapZoomPlayback.Capture();
+        if (zoomSession == null || !zoomSession.IsValid)
             return Fail("맵 줌에 사용할 게임플레이 카메라를 찾을 수 없습니다.");
 
-        Camera mainCamera = CameraBootstrap.GetMainCamera();
-        float aspect = ResolveCameraAspect(mainCamera);
+        float aspect = zoomSession.Aspect;
         float targetSize = Mathf.Max(
             mapSize.y * 0.5f,
             mapSize.x / (2f * aspect)) + padding;
         targetSize = Mathf.Max(0.01f, targetSize);
 
         StopMapZoomRoutine();
-        mapZoomSnapshot = CaptureMapZoomSnapshot(gameplayCamera);
+        mapZoomSession = zoomSession;
         hasMapZoomSnapshot = true;
 
-        gameplayCamera.Follow = null;
-        gameplayCamera.LookAt = null;
-        gameplayCamera.Priority = Mathf.Max(gameplayCamera.Priority, 10000);
+        zoomSession.Begin(10000);
 
-        Vector2 startCenter = ResolveCurrentCameraCenter(mainCamera, gameplayCamera);
-        float startSize = GetCameraOrthographicSize(gameplayCamera, targetSize);
+        Vector2 startCenter = zoomSession.CurrentCenter;
+        float startSize = zoomSession.CurrentOrthographicSize;
         float transitionSeconds = settings.MapZoomTransitionSeconds;
 
         mapZoomRoutineOwner = routineOwner;
         mapZoomRoutine = routineOwner.StartCoroutine(AnimateMapZoomRoutine(
-            gameplayCamera,
+            zoomSession,
             startCenter,
             startSize,
             targetCenter,
@@ -632,8 +628,8 @@ public sealed class DemoCheatService
 
     private DemoCheatResult RestoreMapZoom(DemoCheatSettingsSO settings, MonoBehaviour routineOwner)
     {
-        CinemachineCamera gameplayCamera = mapZoomSnapshot.Camera;
-        if (gameplayCamera == null)
+        IGameplayCameraMapZoomSession zoomSession = mapZoomSession;
+        if (zoomSession == null || !zoomSession.IsValid)
         {
             StopMapZoomRoutine();
             ClearMapZoomSnapshot();
@@ -642,22 +638,22 @@ public sealed class DemoCheatService
 
         StopMapZoomRoutine();
 
-        Vector2 startCenter = ResolveCurrentCameraCenter(CameraBootstrap.GetMainCamera(), gameplayCamera);
-        float startSize = GetCameraOrthographicSize(gameplayCamera, mapZoomSnapshot.OrthographicSize);
-        Vector2 targetCenter = ResolveRestoreCameraCenter(mapZoomSnapshot);
+        Vector2 startCenter = zoomSession.CurrentCenter;
+        float startSize = zoomSession.CurrentOrthographicSize;
+        Vector2 targetCenter = zoomSession.ResolveRestoreCenter();
         float transitionSeconds = settings != null ? settings.MapZoomTransitionSeconds : 0f;
 
         mapZoomRoutineOwner = routineOwner;
         mapZoomRoutine = routineOwner.StartCoroutine(AnimateMapZoomRoutine(
-            gameplayCamera,
+            zoomSession,
             startCenter,
             startSize,
             targetCenter,
-            mapZoomSnapshot.OrthographicSize,
+            zoomSession.CachedOrthographicSize,
             transitionSeconds,
             () =>
             {
-                ApplyMapZoomSnapshot(mapZoomSnapshot);
+                zoomSession.Restore();
                 ClearMapZoomSnapshot();
                 Log("맵 줌을 복구했습니다.");
             }));
@@ -1009,7 +1005,7 @@ public sealed class DemoCheatService
     }
 
     private IEnumerator AnimateMapZoomRoutine(
-        CinemachineCamera camera,
+        IGameplayCameraMapZoomSession zoomSession,
         Vector2 startCenter,
         float startOrthographicSize,
         Vector2 targetCenter,
@@ -1017,19 +1013,19 @@ public sealed class DemoCheatService
         float transitionSeconds,
         Action onComplete)
     {
-        if (camera == null)
+        if (zoomSession == null || !zoomSession.IsValid)
             yield break;
 
         float duration = Mathf.Max(0f, transitionSeconds);
         if (duration <= 0f)
         {
-            ApplyMapZoomCameraState(camera, targetCenter, targetOrthographicSize);
+            zoomSession.Apply(targetCenter, targetOrthographicSize);
             onComplete?.Invoke();
             yield break;
         }
 
         float elapsed = 0f;
-        while (elapsed < duration && camera != null)
+        while (elapsed < duration && zoomSession.IsValid)
         {
             elapsed += Time.unscaledDeltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
@@ -1037,49 +1033,20 @@ public sealed class DemoCheatService
 
             Vector2 center = Vector2.Lerp(startCenter, targetCenter, easedT);
             float orthographicSize = Mathf.Lerp(startOrthographicSize, targetOrthographicSize, easedT);
-            ApplyMapZoomCameraState(camera, center, orthographicSize);
+            zoomSession.Apply(center, orthographicSize);
             yield return null;
         }
 
-        if (camera != null)
-            ApplyMapZoomCameraState(camera, targetCenter, targetOrthographicSize);
+        if (zoomSession.IsValid)
+            zoomSession.Apply(targetCenter, targetOrthographicSize);
 
         onComplete?.Invoke();
-    }
-
-    private static MapZoomCameraSnapshot CaptureMapZoomSnapshot(CinemachineCamera camera)
-    {
-        return new MapZoomCameraSnapshot(
-            camera,
-            camera != null ? camera.Follow : null,
-            camera != null ? camera.LookAt : null,
-            camera != null ? camera.Priority : 0,
-            camera != null ? camera.Lens.OrthographicSize : 6f,
-            camera != null ? camera.transform.position : Vector3.zero,
-            camera != null ? camera.transform.rotation : Quaternion.identity);
-    }
-
-    private static void ApplyMapZoomSnapshot(MapZoomCameraSnapshot snapshot)
-    {
-        CinemachineCamera camera = snapshot.Camera;
-        if (camera == null)
-            return;
-
-        camera.Priority = snapshot.Priority;
-        camera.Follow = snapshot.Follow;
-        camera.LookAt = snapshot.LookAt;
-        SetCameraOrthographicSize(camera, snapshot.OrthographicSize);
-        Vector2 restoreCenter = ResolveRestoreCameraCenter(snapshot);
-        Vector3 restorePosition = snapshot.Position;
-        restorePosition.x = restoreCenter.x;
-        restorePosition.y = restoreCenter.y;
-        camera.ForceCameraPosition(restorePosition, snapshot.Rotation);
     }
 
     private void ClearMapZoomSnapshot()
     {
         hasMapZoomSnapshot = false;
-        mapZoomSnapshot = default;
+        mapZoomSession = null;
         mapZoomRoutine = null;
         mapZoomRoutineOwner = null;
     }
@@ -1091,71 +1058,6 @@ public sealed class DemoCheatService
 
         mapZoomRoutine = null;
         mapZoomRoutineOwner = null;
-    }
-
-    private static void ApplyMapZoomCameraState(
-        CinemachineCamera camera,
-        Vector2 center,
-        float orthographicSize)
-    {
-        if (camera == null)
-            return;
-
-        SetCameraOrthographicSize(camera, orthographicSize);
-        Vector3 position = camera.transform.position;
-        position.x = center.x;
-        position.y = center.y;
-        camera.ForceCameraPosition(position, camera.transform.rotation);
-    }
-
-    private static float GetCameraOrthographicSize(CinemachineCamera camera, float fallbackOrthographicSize)
-    {
-        if (camera == null)
-            return Mathf.Max(0.01f, fallbackOrthographicSize);
-
-        return Mathf.Max(0.01f, camera.Lens.OrthographicSize);
-    }
-
-    private static void SetCameraOrthographicSize(CinemachineCamera camera, float orthographicSize)
-    {
-        if (camera == null)
-            return;
-
-        var lens = camera.Lens;
-        lens.OrthographicSize = Mathf.Max(0.01f, orthographicSize);
-        camera.Lens = lens;
-    }
-
-    private static Vector2 ResolveCurrentCameraCenter(Camera mainCamera, CinemachineCamera gameplayCamera)
-    {
-        if (mainCamera != null)
-            return mainCamera.transform.position;
-
-        return gameplayCamera != null
-            ? new Vector2(gameplayCamera.transform.position.x, gameplayCamera.transform.position.y)
-            : Vector2.zero;
-    }
-
-    private static Vector2 ResolveRestoreCameraCenter(MapZoomCameraSnapshot snapshot)
-    {
-        if (snapshot.Follow != null)
-            return snapshot.Follow.position;
-
-        if (snapshot.LookAt != null)
-            return snapshot.LookAt.position;
-
-        return new Vector2(snapshot.Position.x, snapshot.Position.y);
-    }
-
-    private static float ResolveCameraAspect(Camera camera)
-    {
-        if (camera != null && camera.aspect > 0f)
-            return camera.aspect;
-
-        if (Screen.height > 0)
-            return Mathf.Max(0.01f, (float)Screen.width / Screen.height);
-
-        return 16f / 9f;
     }
 
     private static int CompareCheatGuideKeys(KeyCode left, KeyCode right)
@@ -1208,32 +1110,4 @@ public sealed class DemoCheatService
         return DemoCheatResult.Failed(message);
     }
 
-    private readonly struct MapZoomCameraSnapshot
-    {
-        public readonly CinemachineCamera Camera;
-        public readonly Transform Follow;
-        public readonly Transform LookAt;
-        public readonly int Priority;
-        public readonly float OrthographicSize;
-        public readonly Vector3 Position;
-        public readonly Quaternion Rotation;
-
-        public MapZoomCameraSnapshot(
-            CinemachineCamera camera,
-            Transform follow,
-            Transform lookAt,
-            int priority,
-            float orthographicSize,
-            Vector3 position,
-            Quaternion rotation)
-        {
-            Camera = camera;
-            Follow = follow;
-            LookAt = lookAt;
-            Priority = priority;
-            OrthographicSize = Mathf.Max(0.01f, orthographicSize);
-            Position = position;
-            Rotation = rotation;
-        }
-    }
 }

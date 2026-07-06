@@ -814,7 +814,7 @@ Implications:
 ## 2026-05-26 - Tutorial Boss Encounter Uses Presentation-Only Failure
 
 Decision:
-Tutorial boss encounter support uses scene-authored presentation scripts for lasers, HP loss, collapse, and fake game-over. The scripted lasers reduce `TutorialPresentationHpView` only, and fake game-over calls `GameOverPresentationController.TryShow(...)` with `EndRunOnReturn = false`.
+Tutorial boss encounter support uses scene-authored presentation scripts for lasers, HP loss, collapse, and fake game-over. The scripted lasers reduce the tutorial presentation HP view through `ITutorialPresentationHpView` only, and fake game-over calls `GameOverPresentationPlayback.TryShow(...)` with `EndRunOnReturn = false`.
 
 Reason:
 The tutorial needs to teach a forced failure beat without mutating real player HP, triggering real death components, or ending the active run. Keeping the sequence presentation-only lets the same authored UI and game-over presentation be reused while avoiding save/runtime side effects.
@@ -2209,3 +2209,685 @@ Implications:
 - `RouteSetLoadManifestBuilderWindow` filters dependency-only assets and known non-Boot route content before writing generated manifests.
 - If a dependency asset must be directly preloaded, add an explicit root asset or a narrow allowlist instead of broadening Boot.
 - Existing generated manifest assets must be regenerated after this policy change, then the Addressables registry/content should be rebuilt before release validation.
+
+## 2026-07-04 - Core Audio Requests Use Backend Contract
+
+Decision:
+Core-owned gameplay, cue, and damage code requests sound through Core-level `SoundRef`, `SoundPlaybackContext`, `AudioHandle`, `SoundPlaybackUtility`, and `ISoundPlaybackBackend`. `SoundManager` remains Infrastructure-owned and registers itself as the runtime backend.
+
+Reason:
+The asmdef split requires `Core` to stop depending upward on Infrastructure. Audio request data is safe Core contract data, but catalog lookup, pooled sources, looping sources, and volume control remain concrete Infrastructure responsibilities.
+
+Implications:
+- Keep `SoundPlaybackUtility` free of direct `SoundManager` calls.
+- `SoundManager` may depend on the Core audio contract and provide the backend.
+- Core callers should not call `SoundManager.EnsureInstance()` directly.
+- Gameplay feature callers should use `SoundPlaybackUtility` for one-shot/loop playback, music start/stop, and combat SFX ducking instead of calling `SoundManager`.
+- If a new audio operation is needed by Core, add it to the Core backend contract only when there is a real Core caller, then implement it in Infrastructure.
+
+## 2026-07-04 - Core Presentation Requests Use Backend Contracts
+
+Decision:
+Core-owned combat, ability, cue, and effect code may own presentation request data and lightweight routing contracts, but concrete UI/VFX/camera services remain outside Core and register backend implementations. Current Core-facing contracts include `CameraShakePlayback`, `WorldPresentationPlayback`, `DamagePopupPlayback`, `IChainPointPresentation`, `IStaggerGaugePresentationBinding`, and `ITimedHitEffect2D`.
+
+Reason:
+The asmdef split requires Core to stop depending on Infrastructure/UI/Feature implementations while preserving existing gameplay data and serialized authoring fields. Moving request data into Core and routing execution through backend contracts preserves call sites and lets concrete presentation services stay in their owning layers.
+
+Implications:
+- Do not add direct Core calls to `SoundManager`, `CameraShakeService`, `WorldPresentationRuntime`, `PresentationSpawnService`, `DamagePopupService`, boss UI components, or concrete VFX components.
+- If Core needs a new presentation action, add the smallest Core request/backend contract first and implement it in the owning Infrastructure/UI/Feature layer.
+- Gameplay feature callers should use `WorldPresentationPlayback` and `ITimedHitEffect2D` instead of concrete `WorldPresentationRuntime`, `PresentationSpawnService`, or `TimedAnimatedHitEffect2D`.
+- Generic Unity `GameObject` presentation fields still need later classification; they do not create project-assembly dependencies, but they are not proof that the final Presentation split is complete.
+
+## 2026-07-04 - Core Cue Manager Uses Provider Contracts For Concrete Cue Pools
+
+Decision:
+`GameplayCueManager` may own generic cue execution, placement, and auto-destroy timing, but concrete cue prefab pooling/lifetime exceptions are registered through Core `IGameplayCuePrefabInstanceProvider` providers. `GameplayCue_HitSparkParticles` now registers its provider from Presentation and keeps the existing HitSpark pool behavior outside Core.
+
+Reason:
+The Core asmdef split exposed `GameplayCueManager`'s direct `GameplayCue_HitSparkParticles` checks as a Core-to-Presentation implementation dependency. Removing the checks outright would change HitSpark pooling and auto-destroy behavior. A tiny provider contract preserves behavior while keeping dependency direction `Presentation -> Core`.
+
+Implications:
+- Do not add concrete cue notify type checks inside `GameplayCueManager`.
+- Cue-specific pooling or manager auto-destroy suppression should be implemented as a Presentation provider registered against `GameplayCuePrefabInstanceProviders`.
+- If several cue providers need ordering, keep provider selection explicit and small rather than turning Core cue execution into a full presentation service locator.
+
+## 2026-07-04 - Screen Shake Settings Use Core Query Contract
+
+Decision:
+Presentation-owned camera shake code reads the screen-shake setting through Core `GameSettingsQuery` / `IGameSettingsBackend`. The UI-owned `GameSettingsService` registers the backend and remains the concrete owner of saved settings, display settings, and UI scale application.
+
+Reason:
+`CameraShakeService` is Presentation code and must not depend on UI's concrete `GameSettingsService` when asmdefs are introduced. A Core query contract preserves the existing user setting behavior while keeping the dependency direction `UI -> Core` and `Presentation -> Core`.
+
+Implications:
+- Do not call `GameSettingsService` directly from Core or Presentation code.
+- Add new Core settings queries only when a non-UI assembly has a real caller.
+- Keep display/UI-scale application in the UI settings layer until a separate settings architecture pass is approved.
+
+## 2026-07-04 - Telegraph Data Lives In Core And Renderers Live In Presentation
+
+Decision:
+Attack telegraph request/style data lives under Core (`AttackTelegraphSpec`, `AttackTelegraphShape`, `AttackTelegraphStyle`, `AttackTelegraphStyleUtility`), while concrete telegraph rendering and lifecycle components live under Presentation (`AttackTelegraphService`, `AttackTelegraphView`, `AttackTelegraphWallClippedMeshView`).
+
+Reason:
+Gameplay patterns need stable request data for warning shapes, timing, and style references, but the renderer/view lifecycle is a concrete presentation implementation. Splitting data from renderers removes the old Infrastructure ownership ambiguity and prepares the remaining Gameplay-to-Presentation calls for a smaller contract pass.
+
+Implications:
+- Core may own telegraph request data and style assets, but must not own renderer/view objects.
+- Presentation telegraph renderers may depend on Core telegraph data.
+- Gameplay should reference `IAttackTelegraphPresenter` and `IAttackTelegraphHandle` instead of concrete `AttackTelegraphService`/`AttackTelegraphView`.
+- SlimeQueen, DemonKing, DragonBoss, Knight jump slam, general monsters, Shadow monsters, and ShadowBoss telegraph usage have been moved to the Core telegraph contracts. Static search under `Assets/_Project/Runtime/Features` should remain free of concrete telegraph implementation references before `Gameplay.asmdef` is introduced.
+
+## 2026-07-04 - Core Runtime State DTOs And Narrow Markers Stay In Core
+
+Decision:
+Runtime DTOs produced or consumed by Core services live in Core even when UI or player save systems display/store them. Current examples are `DamagePopupDuplicateSuppressor`, `ElementGaugeUiModel`, `ActiveGameplayEffectSnapshot`, and `ExplicitTagSnapshot`. Concrete gameplay components should expose only narrow Core contracts when Core needs classification, such as `ICombatTimingProfile` and `IAttackCollisionSource2D`.
+
+Reason:
+`Core.asmdef` cannot depend on UI/Features implementations, but Core systems still need stable state snapshots and small classification surfaces. Moving DTOs and marker contracts into Core keeps dependency direction `Features/UI -> Core` while avoiding broad moves of concrete gameplay or UI classes.
+
+Implications:
+- Do not place Core-produced state DTOs in UI/Features just because they are displayed or persisted there.
+- If Core only needs a boolean/classification capability from a gameplay component, add a narrow Core interface instead of referencing the concrete class.
+- Infrastructure/Presentation/UI adapters may register or implement Core contracts, but Core must not call those concrete adapters directly.
+
+## 2026-07-04 - Gameplay Warning Popups Use Core Playback Contract
+
+Decision:
+Reusable warning popup reasons and requests live in Core through `WarningPopupCode`, `WarningPopupRequest`, `IWarningPopupBackend`, and `WarningPopupPlayback`. `UIManager` remains the concrete UI owner that resolves localized warning messages and forwards them to `WarningPopupService`.
+
+Reason:
+Gameplay systems need to request warning feedback for inventory, shop, upgrade, shortcut, pickup, and debug-cheat outcomes, but they should not depend on the concrete UIManager implementation. Moving the request code and playback contract to Core keeps dependency direction `Gameplay -> Core` and `UI -> Core`.
+
+Implications:
+- Features should call `WarningPopupPlayback` instead of `UIManager.Instance.ShowWarning(...)`.
+- Keep warning text resolution in UI unless a localization/domain text architecture is explicitly introduced.
+- Add new reusable warning reasons to `WarningPopupCode` only when more than one caller or a durable gameplay result needs the code.
+
+## 2026-07-04 - Gameplay Reads UI Block State Through Core Query
+
+Decision:
+Gameplay code reads UI input-blocking and popup-open state through Core `UiInteractionStateQuery` / `IUiInteractionStateBackend`. `UIManager` remains the concrete owner of popup stack and external UI input blockers.
+
+Reason:
+Player input, upgrade handoff, merchant cinematic, and ability input cancellation need to know whether UI currently blocks gameplay input, but they do not need to know the concrete UIManager implementation. A narrow Core query contract removes Gameplay-to-UI dependency without moving UI command ownership.
+
+Implications:
+- Features should not call `UIManager.Instance.HasBlockingUI`, `UIManager.Instance.HasActivePopup`, or `UIManager.Instance.IsExternalUiInputBlocked` directly.
+- Keep command-style UI operations separate; do not expand the query contract with screen opening, prompt updates, or popup closing without a separate command contract decision.
+- Backend-missing behavior is intentionally non-blocking to match the previous `UIManager.Instance == null` checks.
+
+## 2026-07-04 - Gameplay Sends Common UI Commands Through Core Playback
+
+Decision:
+Gameplay code sends common UI cleanup and world-prompt commands through Core `UiCommandPlayback` / `IUiCommandBackend`. `UIManager` remains the concrete UI owner that closes popups, hides hover/prompt UI, and refreshes the world prompt.
+
+Reason:
+Dialogue flow, player death, run timeout, encyclopedia interaction, and player prompt code need to request simple UI cleanup without depending on the concrete UIManager assembly. A narrow command backend keeps the dependency direction `Gameplay -> Core` and `UI -> Core` while preserving the existing no-op behavior when no UIManager exists.
+
+Implications:
+- Features should not call `UIManager.Instance.CloseAllPopups`, `HideHoverImmediate`, `HideWorldPrompt`, or `RefreshWorldPrompt` directly.
+- Do not add screen-opening commands such as `TryPushUI` or `CanOpenUI` to this generic command contract until UI screen ownership and serialized screen references are handled separately.
+- Keep command methods no-op when no backend is registered, matching legacy null-check behavior.
+
+## 2026-07-04 - UI Stack Ownership Contracts Live In Core
+
+Decision:
+Shared UI stack contracts and external UI input-block ownership live in Core through `IUIView`, `IStackableUI`, `ICloseRequestHandler`, `GameFlowInputBlocker`, `IUiStackBackend`, and `UiStackPlayback`. `UIManager` remains the concrete backend that owns popup stack rules, gameplay locking, and external blocker storage.
+
+Reason:
+Gameplay and presentation flow code need to acquire input locks and sometimes open a UI that belongs to that lock, but they should not reference the concrete UI manager assembly. Keeping only the contract and blocker ownership object in Core preserves the dependency direction `Gameplay -> Core` and `UI -> Core`.
+
+Implications:
+- Features should use `GameFlowInputBlocker` / `UiStackPlayback` rather than `UIManager.Instance` for owned UI input-block flows.
+- Keep concrete stack policy, popup conflict checks, and gameplay lock application in UI.
+- Add new stack operations only when a non-UI assembly has a concrete caller; do not turn this into a broad UI service locator.
+
+## 2026-07-04 - Gameplay UI Open Requests Use Narrow Playback Contracts
+
+Decision:
+Feature-specific UI open/detail requests should use the narrowest viable playback contract instead of concrete UI singletons. Chest opening uses Gameplay-owned `ChestUiOpenPlayback` because the UI backend consumes concrete `TreasureChest`/`ChestInventory` data. World item hover uses Core `WorldItemHoverPlayback` because callers only need to pass a `Transform`, `ScriptableObject`, and optional relic level.
+
+Reason:
+Not every UI request belongs in Core. Contracts that expose concrete gameplay data can live in Gameplay and be implemented by UI, while pure presentation requests with Unity base types can live in Core. This removes Gameplay-to-UI references without forcing gameplay-specific inventory models into Core prematurely.
+
+Implications:
+- `TreasureChest` should not call `ChestUIManager` directly; use `ChestUiOpenPlayback`.
+- World drops, weapon drops, and shop slots should not call `WorldItemDetailPresenter` directly; use `WorldItemHoverPlayback`.
+- If `ChestInventory` later becomes Core-safe, the chest UI open contract can be reconsidered and possibly moved down to Core.
+
+## 2026-07-04 - Cinematic Letterbox And Global Canvas Access Use Core Contracts
+
+Decision:
+Gameplay/cutscene code creates and drives cinematic letterbox overlays through Core `CinematicLetterboxPlayback` / `ICinematicLetterboxOverlayHandle`, while UI `CinematicLetterboxOverlay` remains the concrete implementation. Global canvas identity and lookup flow through Core `GlobalCanvasLayer`, `IGlobalCanvasBackend`, and `GlobalCanvasPlayback`, while UI `GlobalUIRoot` remains the concrete owner of authored canvas references and service-root parenting.
+
+Reason:
+Cutscenes, dialogue flows, game-over presentation, and tutorial sequences need to fade/hide authored UI layers or parent service objects, but they should not depend on concrete UI root or overlay classes. Moving only the identifiers and request handles to Core preserves the dependency direction `Gameplay -> Core` and `UI -> Core` without moving actual UI hierarchy creation or canvas ownership into Gameplay/Core.
+
+Implications:
+- Features should not instantiate `CinematicLetterboxOverlay` or call `GlobalUIRoot` directly.
+- Add new cross-layer canvas operations to `GlobalCanvasPlayback` only when a non-UI assembly has a concrete caller.
+- Keep authored canvas references, fallback hierarchy lookup, and actual overlay object creation in UI.
+
+## 2026-07-04 - Dialogue Playback Uses Gameplay Contract And UI Implementation
+
+Decision:
+Gameplay dialogue callers use `DialoguePlayback` / `IDialoguePlaybackBackend` for dialogue start requests, dialogue-active checks, and dialogue-owned non-dialogue UI suppression. Concrete `DialogueService`, `DialogueController`, and `DialogueRuntimeReferenceResolver` live under UI/Dialogue because they own or resolve `DialogueView`, `CinematicDirector`, `PortraitController`, canvas suppression, and input blocking behavior.
+
+Reason:
+Dialogue requests are gameplay-driven and use gameplay data such as `NPCData`, `DialogueStorySegment`, `NPCFeatureController`, and `DialoguePresentationOptions`, so the request contract currently belongs in Gameplay rather than Core. The implementation is UI-facing and must not remain in Gameplay once asmdefs separate `Gameplay` from `UI`.
+
+Implications:
+- Features should not call `DialogueService.Instance` or `DialogueService.EnsureInstance()` directly.
+- UI `DialogueService` registers the active backend and remains responsible for controller discovery, dialogue input blocking, run timer pause, and UI layer suppression.
+- If dialogue request data is later promoted to Core, `DialoguePlayback` can be reconsidered for Core ownership; do not move it there while it exposes gameplay-specific dialogue data.
+
+## 2026-07-04 - Camera Presentation Uses Core Playback Contract
+
+Decision:
+Gameplay/cutscene code requests boss focus, death/phase lens focus, target focus, and return-to-player camera sequences through Core `CameraPresentationPlayback` / `ICameraPresentationDirector`. Concrete `CameraPresentationDirector` remains under Presentation/Camera because it owns Cinemachine camera references, priorities, lens animation, and legacy camera follow coordination.
+
+Reason:
+Boss dialogue, tutorial, death, ShadowBoss phase, and SlimeQueen finale flows need camera presentation, but they should not reference a Presentation implementation once `Gameplay.asmdef` and `Presentation.asmdef` are separated. The Core contract exposes only sequence operations and Unity base types. Legacy setup still uses `ICameraPresentationSettingsReceiver` with `Component` arguments so Core does not depend on Cinemachine.
+
+Implications:
+- Features should not declare or search for concrete `CameraPresentationDirector`; use `MonoBehaviour` serialized references plus `CameraPresentationPlayback` resolution when authored references are needed.
+- Presentation `CameraPresentationDirector` registers the factory backend for old `BossTalkManager` auto-add behavior.
+- Scene/prefab validation must confirm widened `MonoBehaviour` fields preserve existing component references after Unity import.
+
+## 2026-07-04 - GameOver Presentation Uses Gameplay Contract And UI Implementation
+
+Decision:
+Gameplay game-over callers use `GameOverPresentationPlayback` / `IGameOverPresentationBackend` for defeat, time-over, victory, and tutorial fake-game-over presentation requests. Concrete `GameOverPresentationController` lives under UI/GameOver because it owns Canvas/TMP/Button presentation, return animation, UI layer sorting, and `InventoryScreen` inspection-mode integration.
+
+Reason:
+The request data is gameplay/run outcome data: player transform, cause kind, run-end reason, remaining time, location, reward amount, hub scene, and tutorial override flags. The implementation is UI-heavy and should not remain in Gameplay once `Gameplay.asmdef` and `UI.asmdef` are separated. A Gameplay-owned playback contract lets UI depend downward on Gameplay data while removing Gameplay-to-UI implementation references.
+
+Implications:
+- Features should call `GameOverPresentationPlayback.TryShow(...)`, not `GameOverPresentationController.TryShow(...)`.
+- UI may keep direct coordination between `InventoryUIManager`, `InventoryScreen`, and `GameOverPresentationController` because that behavior is inside the UI assembly boundary.
+- Scene/prefab validation must confirm the moved controller keeps its authored references through the preserved `.meta` GUID.
+
+## 2026-07-04 - Ending Outro View Uses Gameplay Contract And UI Implementation
+
+Decision:
+`EndingOutroPlayer` uses Gameplay `IEndingOutroView` to drive ending outro slides, text, root alpha, slide alpha, skip prompt, and skip fill. Concrete `EndingOutroView` lives under UI/Progression/Ending because it owns TMP, Image, CanvasGroup, glyph rendering, and authored UI widget references.
+
+Reason:
+The player owns gameplay-flow concerns: sequence selection, skip/advance input, typing audio cadence, completion callbacks, and runtime view discovery. The view owns UI rendering details. Splitting these through `IEndingOutroView` removes a Gameplay-to-UI implementation dependency while preserving scene-authored references by keeping the serialized field name and moved script GUID.
+
+Implications:
+- Features should not reference concrete `EndingOutroView`; use `IEndingOutroView` through the `EndingOutroPlayer.view` MonoBehaviour field or runtime discovery.
+- UI `EndingOutroView` may keep UI/input glyph dependencies because it is inside the UI implementation boundary.
+- Scene/prefab validation must confirm the widened `EndingOutroPlayer.view` field keeps its assigned view after Unity import.
+
+## 2026-07-04 - Tutorial Presentation HP Uses Gameplay Contract And UI Implementation
+
+Decision:
+Tutorial boss sequence and laser playback use Gameplay `ITutorialPresentationHpView` for presentation HP reset, reduction, visibility, refresh, current HP, and depletion event subscription. Concrete `TutorialPresentationHpView` lives under UI/Tutorial because it owns TMP text, CanvasGroup visibility, authored slot roots, and heart UI widgets.
+
+Reason:
+The tutorial sequence owns the scripted failure timing and fake-game-over flow, while the HP view owns authored UI rendering. Splitting these through `ITutorialPresentationHpView` removes a Gameplay-to-UI implementation dependency without moving tutorial gameplay timing into UI.
+
+Implications:
+- Features should not reference concrete `TutorialPresentationHpView`; use `ITutorialPresentationHpView` through the serialized `presentationHpView` MonoBehaviour field.
+- UI `TutorialPresentationHpView` may keep `HeartTokenUI`, TMP, and Unity UI dependencies because it is inside the UI implementation boundary.
+- Scene/prefab validation must confirm widened `presentationHpView` fields keep their assigned view after Unity import.
+
+## 2026-07-04 - Tutorial Info Panel Uses Gameplay Contract And UI Implementation
+
+Decision:
+Tutorial trigger and combat intro flows use Gameplay `ITutorialInfoPanel` for panel show requests and open-state checks. Concrete `TutorialInfoPanel` lives under UI/Tutorial because it owns TMP text, Images, Buttons, CanvasGroups, hold-button progress UI, input glyph rendering, and open/close presentation.
+
+Reason:
+Tutorial gameplay owns request timing, completion gating, collider/direct-call activation, camera/letterbox timing, and prompt wait flow. The panel owns authored UI rendering and interaction widgets. Splitting these through `ITutorialInfoPanel` removes a Gameplay-to-UI implementation dependency without moving tutorial request data or completion timing into UI.
+
+Implications:
+- Features should not reference concrete `TutorialInfoPanel`; use `ITutorialInfoPanel` through serialized `infoPanel` MonoBehaviour fields or runtime discovery.
+- UI `TutorialInfoPanel` may keep `HoldActionButton`, `HoldFillButtonView`, `InputGlyphDatabase`, TMP, and Unity UI dependencies because it is inside the UI implementation boundary.
+- Scene/prefab validation must confirm widened `infoPanel` fields keep their assigned panel after Unity import.
+
+## 2026-07-04 - Gameplay Features Avoid DOTween Source Dependency
+
+Decision:
+`Assets/_Project/Runtime/Features` should not reference DOTween directly while preparing for `Gameplay.asmdef`. Small gameplay-local presentation motions are implemented as Unity coroutines, and `LightningSpearRecoveredSpearActor` keeps its serialized `moveEase` / `floatEase` field names with local numeric ease values instead of referencing `DG.Tweening.Ease`.
+
+Reason:
+DOTween is a concrete presentation/tweening implementation dependency. Leaving it in Gameplay would force the future Gameplay assembly to reference that package for local animation helpers. The lightning spear prefab already stores `moveEase: 6` and `floatEase: 4`; matching those numeric values preserves the current serialized authoring while removing the source dependency.
+
+Implications:
+- Do not reintroduce `using DG.Tweening` under `Assets/_Project/Runtime/Features` without an explicit assembly-boundary reason.
+- New gameplay-local motion should use a local coroutine or a lower-layer contract; reusable presentation-heavy tweening should live under Presentation/UI/Infrastructure as appropriate.
+- Unity import/playtest must validate the lightning spear recovered-spear movement because the enum type changed while field names and numeric values were preserved.
+
+## 2026-07-04 - Scene Flow Infrastructure Uses Core Playback Contracts
+
+Decision:
+Gameplay/Features code should not reference concrete Infrastructure flow services such as `SceneTransitionCoordinator`, `SceneFadeTransitionService`, `LoadingOverlayController`, or `TimeScalePauseService`. Scene transition requests use Core `SceneTransitionPlayback`, fade/unlock-blocking uses Core `SceneFadeTransitionPlayback`, loading input-block checks use Core `LoadingPresentationQuery`, and global time-scale pause tokens use Core `TimeScalePausePlayback`.
+
+Reason:
+These services are runtime Infrastructure implementations. Leaving direct references in Gameplay would force a future `Gameplay.asmdef` to depend on Infrastructure or the default assembly. The Core contracts expose only the narrow operations gameplay needs: transition state/load requests, fade state/session control, loading presentation activity, and pause acquire/release.
+
+Implications:
+- Features should not call those concrete Infrastructure service types directly.
+- Infrastructure remains responsible for bootstrap, fallback creation, overlay ownership, loading UI behavior, and actual `Time.timeScale` restoration.
+- Add new flow operations to these Core playback contracts only when a non-Infrastructure caller has a concrete need; do not turn them into broad service locators.
+
+## 2026-07-04 - Gameplay Audio Helpers Use Core Audio Contracts
+
+Decision:
+Gameplay/Features code should use Core audio helper entry points for ability sounds, typing sounds, and run-route BGM notifications. `AbilityAudioRouter`, `TypingAudioUtility`, and `RunRouteBgmPlayback` live in Core, while `SoundManager` and `RunRouteBgmService` remain Infrastructure implementations registered through Core contracts.
+
+Reason:
+Ability and typing callers only need Core gameplay/audio context, not concrete audio service ownership. Leaving these helpers under Infrastructure would force a future `Gameplay.asmdef` to depend on Infrastructure just to play authored sounds. Tracked one-shot playback is now part of `ISoundPlaybackBackend` because `EndingOutroPlayer` needs a valid `AudioHandle` for skip/stop behavior.
+
+Implications:
+- Features should not call `SoundManager`, `RunRouteBgmService`, `CombatHitAudioRouter`, or audio catalog implementation types directly.
+- Add Core audio contract methods only for operations with concrete non-Infrastructure callers.
+- Infrastructure remains responsible for catalog resolution, pooling, BGM service bootstrap, and actual audio source lifetime.
+
+## 2026-07-04 - Status HUD Data And Source Registry Live In Core
+
+Decision:
+Status HUD display contracts and source registration live in Core through `StatusHudDefinition`, `StatusHudEntry`, `StatusHudGroup`, `IStatusHudSource`, and `StatusHudSourceRegistry`. Gameplay-owned source adapters such as `PlayerStatusHudSource` and `SunMoonStatusHudSource` live beside their gameplay owner systems, while UI `StatusHudService` remains a facade that collects from the Core registry for HUD rendering.
+
+Reason:
+Gameplay systems author and publish status HUD data, but they should not depend on UI implementation services. The source list must also be available even if UI service initialization order changes. Keeping the contracts and registry in Core preserves `Gameplay -> Core` and `UI -> Core` dependency direction while leaving concrete rendering in UI.
+
+Implications:
+- Features should register status HUD sources through `StatusHudSourceRegistry`, not `StatusHudService`.
+- UI should render collected `StatusHudEntry` data and avoid owning gameplay source adapters that read concrete gameplay runtime components.
+- New status HUD source contracts should stay narrow and data-oriented; renderer widgets such as presenters, views, and tooltips stay in UI.
+
+## 2026-07-04 - Item Detail Contracts Belong To Gameplay, Gauge Visibility Filter To Core
+
+Decision:
+Item inventory/detail projection contracts live with Gameplay/Features when they expose gameplay item concepts or container operations. Current examples are `IItemContainer`, `IRelicLevelProvider`, `IRelicSlotReceiver`, `ItemDetailContext`, `ItemDetailActionHint`, `AbilityTooltipVariant`, `IAbilityTooltipVariantProvider`, `IDetailProvider`, `ItemDetailBlock`, and `InventoryWeaponRetentionPolicy`. Monster element gauge visibility uses the neutral Core `IMonsterGaugeVisibilityFilter` contract because UI queries it and monster feature components implement it.
+
+Reason:
+Gameplay item data builds tooltip variants and detail blocks, while UI only renders them. Keeping these contracts in UI forced gameplay item definitions to depend upward on UI. The gauge visibility filter is not item gameplay data or UI implementation; it is a small capability query between a renderer and a target component, so Core is the appropriate dependency-inversion layer.
+
+Implications:
+- Features should not add item tooltip/detail provider interfaces under UI folders.
+- UI inventory/detail views may depend on Gameplay item contracts to render authored item data.
+- Monster-specific gauge display suppression should implement `IMonsterGaugeVisibilityFilter` rather than introducing UI-specific monster references.
+
+## 2026-07-04 - Ability Runtime Visual Components Use Core Playback Contracts
+
+Decision:
+Gameplay ability and boss pattern code should request spec-owned or owner-owned runtime visuals through Core playback contracts instead of directly adding Presentation components. Current contracts are `AfterimageEmitterPlayback` / `IAfterimageEmitter2D` and `MotionAlignedParticlePlayback` / `IMotionAlignedParticleVisual2D`; Presentation `SpriteAfterimageEmitter2D` and `MotionAlignedParticleVisual2D` register the concrete backends.
+
+Reason:
+The timing and cleanup of Rush/boss afterimages and wind particles belong to Gameplay patterns, but SpriteRenderer cloning and ParticleSystem placement are Presentation implementation details. Direct `AddComponent<SpriteAfterimageEmitter2D>()` or `GetOrAddOwnedComponent<MotionAlignedParticleVisual2D>()` calls would force a future Gameplay assembly to depend on Presentation.
+
+Implications:
+- Features should not directly reference concrete runtime visual components for afterimages or motion-aligned particles.
+- Add new ability runtime visual surfaces as narrow Core playback contracts only when Gameplay has a concrete timing/lifetime caller.
+- Presentation remains responsible for component creation, particle instance ownership, renderer cloning, and backend registration.
+
+## 2026-07-04 - Speech Data And Playback Contracts Live In Core
+
+Decision:
+Speech situation enums, speech data assets, speech theme settings, dialogue animation keys, and narrow speech playback contracts live in Core. UI `BossSpeechController` and `SpeechBubbleComponent` remain concrete implementations and expose themselves through `IBossSpeechPlayback` / `ISpeechBubblePlayback`. Gameplay code stores legacy scene references as generic `MonoBehaviour` where needed and casts only to the Core contracts.
+
+Reason:
+Boss, player, NPC, tutorial, and SlimeQueen gameplay code need to request speech by situation or line text, but should not depend on UI implementation classes. Moving the shared data and request surface into Core preserves `Gameplay -> Core` and `UI -> Core` direction while leaving TMP/pooling/layout behavior in UI.
+
+Implications:
+- Features should not add new direct references to `BossSpeechController` or `SpeechBubbleComponent`.
+- Serialized gameplay fields that point at speech UI components should use `MonoBehaviour` plus `IBossSpeechPlayback` / `ISpeechBubblePlayback` validation until a prefab-side contract component strategy is approved.
+- UI remains responsible for speech bubble prefab pooling, typing layout, and concrete rendering.
+
+## 2026-07-04 - Damage Payload Config Is Core Combat Data
+
+Decision:
+`DamagePayloadConfig` and `ElementFormulaEntry` live in Core combat code because Core `DamageSnapshotBuilder` consumes them directly. Weapon and ability gameplay data can still serialize the config, but the defining type is no longer owned by Features.
+
+Reason:
+Leaving `DamagePayloadConfig` under weapon Features forced `Core.asmdef` to depend upward on Gameplay/Features. The payload config is a generic combat hit contract, not a weapon-specific implementation, so Core is the correct owner.
+
+Implications:
+- New fields consumed by Core damage snapshot/application code should be added to the Core config, not to a Features-only wrapper.
+- Weapon data may reference `UnityGAS.DamagePayloadConfig`, but should not introduce another global or feature-owned type with the same name.
+
+## 2026-07-04 - HUD Requests Use Core Playback Contracts
+
+Decision:
+Gameplay code requests monster element-gauge view installation and boss HUD registration through Core contracts. `IMonsterElementGaugeViewInstaller` abstracts the concrete UI gauge installer. `IBossHudSource`, `IBossHudBackend`, and `BossHudPlayback` abstract boss HUD registration, defeat marking, and unbinding. `BossHudHealthBarTheme` lives in Core as shared HUD authoring data.
+
+Reason:
+Monster spawning, boss death cleanup, and boss combat activation are gameplay responsibilities, but concrete HUD components and Canvas slot management are UI responsibilities. Direct references from `Features` to `MonsterElementGaugeViewInstaller` or `BossHudController` would force a future Gameplay assembly to depend upward on UI.
+
+Implications:
+- Features should not call `BossHudController.Instance` or concrete monster gauge UI installers directly.
+- UI HUD implementations may depend on Core contracts and register themselves as backends.
+- Serialized cross-boundary component references should use `MonoBehaviour` plus contract validation until prefab-side contract authoring is fully migrated.
+- HUD authoring data that must live in Core should not expose Unity UI implementation enums directly; use Core-owned value enums with preserved numeric values when serialized compatibility matters.
+
+## 2026-07-04 - Gameplay Does Not Own Concrete World Prompt Or Upgrade UI Types
+
+Decision:
+Player interaction prompt display routes through Core `UiCommandPlayback` / `IWorldInteractionPromptView`, and upgrade screen opening routes through Gameplay `UpgradeUiPlayback` / `IUpgradeUiBackend`. `WorldInteractionPromptController`, `UpgradeTreeUI`, and `UpgradeUiOpenFlow` remain UI implementation details.
+
+Reason:
+Interaction scanning and upgrade purchase/progress are gameplay responsibilities, but prompt rendering and upgrade screen open/close flow are UI responsibilities. Direct references from Features to UI implementation types would force a future Gameplay assembly to depend upward on UI.
+
+Implications:
+- Features should not serialize or search for concrete `WorldInteractionPromptController`, `UpgradeTreeUI`, or `UpgradeUiOpenFlow`.
+- Cross-boundary scene fields should stay as `MonoBehaviour` plus contract casts until prefab-side authoring is migrated.
+- UI may depend downward on gameplay upgrade data and manager APIs, but open/close orchestration should be exposed to gameplay only through `IUpgradeUiBackend`.
+
+## 2026-07-04 - Player Backpack Inventory Is Gameplay State
+
+Decision:
+`PlayerBackpackInventory` lives under `Assets/_Project/Runtime/Features/Player/Inventory`, not UI.
+
+Reason:
+The component stores player-owned weapon/relic slots and is queried by boss dialogue/gameplay conditions. It does not render UI. Keeping it under UI made gameplay condition evaluation depend upward on the UI source folder.
+
+Implications:
+- UI screens may render or edit the backpack, but the owning runtime component belongs with player gameplay.
+- Dialogue, loot, and inventory gameplay code may reference `PlayerBackpackInventory` without importing UI.
+
+## 2026-07-04 - Shared Presentation Authoring And Lock Bridges Do Not Belong To UI
+
+Decision:
+`DialogueThemeSO`, `PlayerUIControlLockBridge`, and `IDefaultHudVisibilityTarget` live in Core/Presentation. Gameplay, Infrastructure, and UI may depend on these shared contracts/data, while concrete widgets and views remain in UI.
+
+Reason:
+`DialogueThemeSO` is serialized by gameplay dialogue data and consumed by UI rendering. `PlayerUIControlLockBridge` applies player tag locks for UI, cutscenes, scene-domain cleanup, and upgrade flows. `IDefaultHudVisibilityTarget` lets gameplay cutscenes hide HUD roots without knowing concrete HUD classes. Keeping any of these under UI forced lower layers to import UI implementation folders.
+
+Implications:
+- Do not add gameplay references to concrete HUD widget classes for visibility control; add or reuse a Core marker/contract.
+- Shared ScriptableObject authoring data may live in Core when gameplay serializes it and UI only consumes it.
+- Player control-lock tag application should route through the Core bridge, not a UI-owned component.
+
+## 2026-07-04 - Reward Display Requests Use Gameplay Playback Contract
+
+Decision:
+Affection and upgrade gameplay request reward presentation through `RewardDisplayPlayback` / `IRewardDisplayBackend`. UI `RewardDisplayService` remains the concrete queue/view owner and registers as the backend.
+
+Reason:
+Reward display data carries gameplay upgrade and affection effect types, so the request contract belongs with Gameplay. The queue, UI open gating, view registration, and `RewardDisplayUI` rendering are UI responsibilities. This preserves `Gameplay -> Gameplay contract` and `UI -> Gameplay contract/data`, without `Features` depending upward on UI services.
+
+Implications:
+- Features should not call `RewardDisplayService.Instance` directly.
+- New reward presentation requests should be added to `IRewardDisplayBackend` only when gameplay has a concrete caller.
+- UI remains responsible for deciding whether a reward view can open, retrying presentation, and invoking completion callbacks.
+
+## 2026-07-04 - Save And Transition DTOs Belong To Core
+
+Decision:
+Serializable save/session/transition DTOs shared by Gameplay and Infrastructure live in Core. Current examples are `GameData`, `GamePlayData`, `MerchantRuntimeState`, `MerchantStockEntryState`, `RunEndReason`, `TransitionType`, `SceneTransitionContext`, and `PlayerRuntimeState`. Concrete services such as `GameDataManager`, `GamePlayDataManager`, and scene route managers remain Infrastructure until they are hidden behind narrower contracts.
+
+Reason:
+Gameplay features need to read and write run/session/save state, while Infrastructure owns persistence, scene transition execution, and service lifetime. Keeping shared DTO definitions in Infrastructure forced Gameplay to depend on Infrastructure implementation folders even when it only needed serialized data contracts.
+
+Implications:
+- Shared save DTOs should stay data-oriented and avoid calling Feature services or Infrastructure managers.
+- Feature-specific lookup helpers, such as merchant stock item-definition resolution through `ItemManager`, should live with the feature code rather than on Core DTOs.
+- Remaining Gameplay-to-Infrastructure references to `GameDataManager`, `GamePlayDataManager`, `PortalRouteManager`, and related services should be handled through query/command contracts or facade extraction in later slices.
+
+## 2026-07-04 - Save And Run Session Access Uses Core Gateways
+
+Decision:
+Gameplay code should access persistent save state through `GameDataStore` and active run/session state through `RunSessionStore`. `GameDataManager` and `GamePlayDataManager` remain Infrastructure-owned concrete lifecycle/persistence components and register as `IGameDataStoreBackend` / `IRunSessionStoreBackend`.
+
+Reason:
+Many Features only need data reads, save requests, run-active checks, pending reward deltas, or run timer events. Directly importing the concrete Infrastructure managers for these operations would keep the future Gameplay assembly dependent on Infrastructure. A Core gateway keeps the dependency direction `Gameplay -> Core <- Infrastructure`.
+
+Implications:
+- New gameplay code should not call `GameDataManager.Instance`, `GamePlayDataManager.Instance`, or `GameDataSaveCoordinator` for ordinary data access/save requests.
+- If gameplay needs a new run/session operation, add it to the narrow Core backend only after confirming a concrete caller.
+- Player restore, tutorial portal compatibility paths, and boss defeat ending completion now use `RunSessionStore`; keep future pending player/transition state operations on that Core gateway rather than reintroducing manager-typed parameters.
+
+## 2026-07-04 - Shortcut Progress Uses Core Gateway
+
+Decision:
+Gameplay code should query and unlock permanent shortcuts through Core `ShortcutProgressStore` / `IShortcutProgressStoreBackend`. `ShortcutProgressService` remains the Infrastructure-owned concrete implementation that combines durable map save data with active run-session pending shortcut unlocks.
+
+Reason:
+Doors, permanent shortcuts, and construction completion flows need shortcut progress state, but importing `ShortcutProgressService` directly keeps the future Gameplay assembly dependent on Infrastructure. A Core gateway preserves the dependency direction `Gameplay -> Core <- Infrastructure` while leaving save/run-session coordination in the existing service.
+
+Implications:
+- Features should not call `ShortcutProgressService.Instance` or serialize the concrete service type.
+- Shortcut progress operations that are broadly needed by gameplay should be added to `IShortcutProgressStoreBackend` only after a concrete caller exists.
+- `ShortcutProgressService` can keep using `GameDataStore` and `RunSessionStore` internally, but gameplay callers should stay on `ShortcutProgressStore`.
+
+## 2026-07-04 - Gameplay Cursor State Requests Use Core Playback
+
+Decision:
+Gameplay code should request cursor interactable and hidden states through Core `MouseCursorPlayback` / `IMouseCursorBackend`. `MouseCursorService` remains the Infrastructure-owned concrete cursor domain/theme/rendering service.
+
+Reason:
+Weapon selection feedback and ending outro playback need to influence cursor state, but they do not need the concrete cursor renderer, cursor theme, or UI domain implementation. Routing the narrow state requests through Core removes another direct `Features -> Infrastructure` dependency without moving cursor presentation details out of Infrastructure.
+
+Implications:
+- Features should not call `MouseCursorService.Instance` or `MouseCursorService.EnsureInstance()` for cursor state requests.
+- Add new cursor operations to `IMouseCursorBackend` only when gameplay has a real caller.
+- UI may continue using the concrete cursor service until the UI assembly boundary is reviewed separately.
+
+## 2026-07-04 - Hub Intro Preload Refresh Uses Core Playback
+
+Decision:
+Gameplay code should request first-run intro preload window refresh through Core `PresentationPreloadPlayback` / `IPresentationPreloadBackend`. `PresentationPreloadService` remains the Infrastructure-owned concrete preload manifest/provider owner.
+
+Reason:
+The hub intro sequence only needs to notify that the first-run intro preload window should refresh after the intro is marked seen. Directly calling the Infrastructure preload service from Gameplay keeps the future Gameplay assembly dependent on Infrastructure for a presentation preload side effect.
+
+Implications:
+- Features should not call `PresentationPreloadService.RefreshFirstRunIntroWindow(...)` directly.
+- Add preload playback operations only for concrete cross-layer callers; do not expose the full preload debug/provider surface through Core.
+- Loading/debug UI and Infrastructure transition services may continue using concrete preload APIs until their assembly boundaries are reviewed separately.
+
+## 2026-07-04 - Scene Portal Travel Uses Gameplay-Owned Playback Contract
+
+Decision:
+`ScenePortal` requests travel through Gameplay `ScenePortalTravelPlayback` / `IScenePortalTravelBackend`. Infrastructure `ScenePortalTravelService` registers the backend and keeps the concrete route planning, run/session mutation, player runtime capture, and scene transition coordinator integration.
+
+Reason:
+The travel request API uses the Gameplay `ScenePortal` type, so putting this contract in Core would make Core depend on Gameplay. Keeping the contract beside `ScenePortal` preserves `Gameplay <- Infrastructure` for this service while removing the direct `Features -> Infrastructure` call.
+
+Implications:
+- Scene portal gameplay should call `ScenePortalTravelPlayback`, not `ScenePortalTravelService`.
+- Infrastructure travel code may depend on the Gameplay portal contract and data, but Gameplay should not import the concrete scene-flow service.
+- If portal travel request data is later extracted away from `ScenePortal`, this contract can be reconsidered for Core promotion.
+
+## 2026-07-04 - Hit Flash Presentation Uses Core Contract
+
+Decision:
+Gameplay hit feedback code uses Core `IHitFlashController2D` for sprite hit flash playback. Infrastructure `SpriteHitFlashController` implements the contract and remains the concrete shader/property-block presentation component.
+
+Reason:
+Player, monster, and candlestick gameplay need to trigger hit flash timing, but they should not depend on a concrete Infrastructure rendering component. The contract is narrow enough for Gameplay to call and for the concrete presentation component to implement without moving shader/rendering details into Gameplay.
+
+Implications:
+- Features should not add new direct references to `SpriteHitFlashController`.
+- Serialized gameplay fields that point to hit flash components should use `MonoBehaviour` plus `IHitFlashController2D` resolution until prefab-side contract authoring is fully migrated.
+- Unity import/play-mode validation is required for widened serialized hit flash fields.
+
+## 2026-07-04 - Route And Run Progress Managers Stay Behind Gameplay Contracts
+
+Decision:
+Gameplay route users should call `RunRoutePlayback` / `IRunRouteBackend`, and boss progress users should call `RunProgressPlayback` / `IRunProgressBackend`. `PortalRouteManager` and `RunProgressCoordinator` remain Infrastructure-owned concrete runtime services and register as the corresponding backends.
+
+Reason:
+`ScenePortal`, boss reward policy, game-over location naming, and monster stage scaling need run route state, but they do not need the concrete manager lifecycle, DDOL ownership, route-history logging, or scene-flow implementation. Boss gameplay also needs to announce combat/defeat/reward readiness without importing the concrete coordinator. Keeping both manager types out of Features removes a blocker for a future `Gameplay.asmdef`.
+
+Implications:
+- Features should not call `PortalRouteManager.Instance`, `PortalRouteManager.EnsureInstance()`, or `RunProgressCoordinator` directly.
+- New route operations needed by gameplay should be added to `IRunRouteBackend` only when a concrete caller exists.
+- `PortalRouteManager` can keep owning route plan mutation and load-presentation context inside Infrastructure.
+
+## 2026-07-04 - Route Authoring Data Moves To Gameplay, Shared Load Data Moves To Core
+
+Decision:
+`CorridorBossRouteSetSO` and `RunRouteCatalogSO` live under Gameplay/Features because they are route authoring data used by gameplay portals, rewards, and stage scaling. `PortalRouteDecision`, `LoadManifestSO`, `RouteSetLoadManifestSO`, and `LoadScopeKind` live in Core because they are shared route/loading data contracts used by both Gameplay and Infrastructure.
+
+Reason:
+Keeping route authoring ScriptableObjects under Infrastructure forced Gameplay to depend on Infrastructure for serialized gameplay route data. Keeping manifest and route decision DTOs in Infrastructure caused the same dependency even though they are shared contracts, not concrete services.
+
+Implications:
+- Preserve moved `.meta` GUIDs for all route and loading ScriptableObjects/DTOs.
+- Infrastructure services may depend on the Gameplay route authoring data, but Gameplay should access concrete route services only through `RunRoutePlayback`.
+- Core loading data must remain data-oriented and should not gain provider, Addressables, scene transition, or route manager behavior.
+
+## 2026-07-04 - Presentation Asset Resolve Uses Core Playback
+
+Decision:
+Gameplay and Presentation code should resolve presentation prefabs through Core `PresentationAssetPlayback` / `IPresentationAssetBackend`. Infrastructure `PresentationAssetProvider` remains the concrete provider and registers the backend.
+
+Reason:
+Gameplay and Presentation callers only need prefab resolve semantics, not preload reference counting, Addressables resolution, debug snapshots, or provider lifetime. A Core playback gateway removes direct references to the concrete provider from future non-Infrastructure assemblies.
+
+Implications:
+- Do not add new `PresentationAssetProvider.ResolvePrefab(...)` calls outside Infrastructure.
+- Add async/preload operations to Core only if a non-Infrastructure caller has a concrete need.
+- Provider ownership, manifests, and Addressables behavior stay in Infrastructure.
+
+## 2026-07-04 - Project Runtime Folders Receive Explicit Asmdefs
+
+Decision:
+Project-owned runtime folders are split into `Core`, `Gameplay`, `Infrastructure`, `Presentation`, and `UI` asmdefs, with `Editor` as an Editor-only asmdef over `Assets/_Project/Editor`.
+
+Reason:
+Dependency inversion work has removed the main direct `Gameplay/Core/Infrastructure -> UI/Presentation concrete implementation` blockers. Explicit asmdefs now make the desired boundary enforceable by Unity instead of relying only on folder conventions and static searches.
+
+Implications:
+- `Core` must keep an empty project reference list.
+- `Gameplay` may depend on `Core` and package data it directly uses, such as Ink runtime.
+- `Infrastructure` may depend on `Core` and `Gameplay` to implement concrete runtime services for gameplay-owned contracts.
+- `Presentation` may depend on `Infrastructure` while it still uses concrete camera/bootstrap/presentation provider services.
+- `UI` is the highest project-owned runtime presentation layer and may depend on `Presentation`, `Infrastructure`, `Gameplay`, and `Core`.
+- Unity import/compile is now the next authoritative check; stale generated `.csproj` files are not enough to prove this split.
+
+## 2026-07-04 - DOTweenPro Remains A Vendor Boundary Decision
+
+Decision:
+Do not fold `Assets/Plugins/Demigiant/DOTweenPro` source into the six project-owned assemblies as part of the project asmdef split.
+
+Reason:
+DOTweenPro is third-party/vendor source, not project-owned gameplay/UI architecture. Forcing it into `Core`, `Gameplay`, `Infrastructure`, `Presentation`, `UI`, or `Editor` would blur package ownership and make the six project assemblies responsible for vendor maintenance.
+
+Implications:
+- If default `Assembly-CSharp` residual cleanup must include vendor source, add a separate vendor asmdef or package-specific decision instead of moving DOTweenPro into project-owned assemblies.
+- Project-owned asmdefs should continue depending on the narrow `DOTween.Modules` support asmdef only where DOTween extension methods are used.
+
+## 2026-07-04 - Vendor And Demo Residual Source Gets Package-Owned Asmdefs
+
+Decision:
+Remaining non-project `.cs` source is covered by package/demo asmdefs instead of being moved into the six project-owned assemblies. DOTweenPro companion source uses `DOTweenPro.Scripts` and `DOTweenPro.Scripts.Editor`; Ink basic demo source uses `Ink.Demos.Basic` and `Ink.Demos.Basic.Editor`.
+
+Reason:
+The default assembly residual scan showed only DOTweenPro vendor source and Ink demo source. These files should compile outside default `Assembly-CSharp`, but they are not project-owned gameplay architecture. Naming DOTweenPro source asmdefs after the existing DLL assembly names would also risk collision with `DOTweenPro.dll` and `DOTweenProEditor.dll`, so the source companions use distinct names.
+
+Implications:
+- Do not move third-party vendor or demo source into `Core`, `Gameplay`, `Infrastructure`, `Presentation`, `UI`, or `Editor`.
+- If Unity import reports hidden package reference errors, fix the specific vendor/demo asmdef reference list instead of changing project-owned assembly direction.
+- Default `Assembly-CSharp` residual cleanup must distinguish project-owned source from package/demo support source.
+
+## 2026-07-04 - Missing Script Recovery Prefers Historical GUID Compatibility Only When Type Is Gone
+
+Decision:
+When a missing `m_Script` GUID maps to a deleted legacy type and there is no current replacement type with the same class name, restore a narrow compatibility script with the historical `.meta` GUID. When the same class already exists under a current MonoScript GUID, do not add a duplicate compatibility class; migrate or reserialize the affected asset/prefab to the current script GUID instead.
+
+Reason:
+Restoring `DamagePopupSceneAnchor`, `MonsterDefinition`, `UIHoverKeepAliveArea`, and `BossDrop` with their historical GUIDs reduced missing script references without touching scene/prefab/ScriptableObject YAML. In contrast, old `Boss` and `AttackTelegraphStyle` GUIDs point to classes that already exist under current GUIDs, so adding duplicate class definitions would either fail compilation or silently change serialized asset type semantics.
+
+Implications:
+- Compatibility scripts must keep serialized field names needed by old assets but should avoid reintroducing obsolete service dependencies.
+- Remaining old `Boss` / `AttackTelegraphStyle` references require serialized GUID migration or Unity reserialization, not another code-only stub.
+- Visual Scripting missing GUIDs should be solved by package restoration or graph/component removal, not by project-owned fake replacements.
+
+## 2026-07-04 - Addressables Linker Preserves Project Types By Target Assembly
+
+Decision:
+`Assets/AddressableAssetsData/link.xml` should preserve project-owned runtime types under their actual asmdef assemblies (`Core`, `Gameplay`, `Infrastructure`, `Presentation`, `UI`) instead of the legacy `Assembly-CSharp` assembly.
+
+Reason:
+After the asmdef split, project-owned runtime types no longer compile into `Assembly-CSharp`. Leaving the generated preserve block under `Assembly-CSharp` keeps a stale linker dependency and can fail to preserve the intended types in player builds. Current source ownership can map every former `Assembly-CSharp` type entry to one of the five runtime assemblies.
+
+Implications:
+- When adding project runtime types that need linker preservation, place them under the owning asmdef assembly in `link.xml`.
+- Prefer Unity/Addressables regeneration when possible, but generated output must still be checked for stale `Assembly-CSharp` after asmdef changes.
+- Editor-only types should not be added to the runtime linker preserve list.
+
+## 2026-07-04 - Serialized Assembly String Migration Requires Classification
+
+Decision:
+Serialized `Assembly-CSharp` strings and missing `m_Script` GUIDs should be classified before migration. Known-safe UnityEvent `m_TargetAssemblyTypeName` entries may be migrated by exact type-to-assembly replacements when the target class still exists. Missing script GUIDs may be migrated only when the current replacement MonoScript is known. Stale `m_EditorClassIdentifier` entries should be treated as reserialization cache data unless Unity reports an import problem. Deleted or renamed UnityEvent target types must stay manual.
+
+Reason:
+After the asmdef split, the remaining serialized references are not equivalent. `UpgradeTreeUI` and tutorial scene target types still exist and only need an assembly-name change, while `DialogueManager` no longer exists as a class and cannot be safely repaired by a blind assembly rename. Legacy `UnlockResultUI` strings are safe only when the UnityEvent target component's MonoScript GUID proves the actual target is current `RewardDisplayUI`. Old `Boss` and `AttackTelegraphStyle` GUIDs map to current replacement MonoScripts, while Visual Scripting GUIDs depend on package/graph migration.
+
+Implications:
+- Use `Tools/Validation/Assembly Split Serialized References` to report the remaining serialized references.
+- Do not broad-replace `Assembly-CSharp` across scenes/prefabs.
+- Add explicit safe replacements only after proving the target class or target MonoScript exists in the intended asmdef assembly.
+
+## 2026-07-04 - Visual Scripting Assembly Options Follow Runtime Asmdefs
+
+Decision:
+Visual Scripting `assemblyOptions` should list the current project runtime assemblies (`Core`, `Gameplay`, `Infrastructure`, `Presentation`, `UI`) instead of the removed default assemblies (`Assembly-CSharp-firstpass`, `Assembly-CSharp`).
+
+Reason:
+The assembly split goal removes project-owned code from Unity's default assemblies. Keeping Visual Scripting configured against `Assembly-CSharp` preserves a stale default-assembly dependency even if the graph assets themselves do not currently serialize project type names.
+
+Implications:
+- Do not re-add `Assembly-CSharp` or `Assembly-CSharp-firstpass` to Visual Scripting project settings during future package restoration.
+- If Visual Scripting is restored, regenerate or validate its options against actual asmdef names rather than default assembly names.
+- Editor-only project assembly types should not be exposed to runtime Visual Scripting graphs unless a separate Editor-only graph use case is explicitly authored.
+
+## 2026-07-04 - Visual Scripting Residuals Require Explicit Restore Or Cleanup
+
+Decision:
+Do not restore `com.unity.visualscripting` blindly just to satisfy missing-script scans. Treat current Visual Scripting references as stale residuals unless a live scene/prefab reference proves they are still authored gameplay/tooling content.
+
+Reason:
+`com.unity.visualscripting` is absent from both `Packages/manifest.json` and `Library/PackageCache`, while the remaining graph asset GUIDs are not referenced outside their own `.meta` files in the current static scan. PixelLightTest's ScaleWave behavior already has a code replacement path, so re-adding the full package would reintroduce a package dependency for content that appears obsolete.
+
+Implications:
+- PixelLightTest Visual Scripting scene variables/components should be removed through the dedicated Editor cleanup tool or deliberate scene authoring, then revalidated.
+- Unreferenced graph assets under `Assets/_Project/Data/VisualScripting/Graphs` can be deleted only after an explicit asset cleanup decision.
+- `ProjectSettings/VisualScriptingSettings.asset` should either be removed with a ProjectSettings cleanup decision or kept only if the Visual Scripting package is intentionally restored.
+- The preferred cleanup entry point is `Tools/Validation/Assembly Split/Apply Visual Scripting Residual Cleanup`, which refuses to run if `com.unity.visualscripting` is installed and checks graph GUID references before deleting graph assets.
+
+## 2026-07-04 - Null-Target UnityEvents Are Removed, Not Repointed
+
+Decision:
+When a serialized UnityEvent points at `Assembly-CSharp` but its `m_Target` is `{fileID: 0}` and the named target type no longer exists, remove the stale persistent call instead of inventing a new target assembly/type.
+
+Reason:
+The `DialogueManager, Assembly-CSharp` entries in `Choice0.prefab` and `TextCanvas.prefab` had no target object and `DialogueManager` no longer exists in source. Repointing these entries would preserve dead serialized state and could imply a live dependency that is not present.
+
+Implications:
+- Treat null-target UnityEvents as stale authoring residue after proving the target type is gone.
+- Do not replace deleted type names by guesswork.
+- Prefer changing the event list back to Unity's empty `m_Calls: []` form when the call list contains only the dead entry.
+
+## 2026-07-05 - Pre-Existing Missing Asset GUIDs Do Not Block Asmdef Split Regression Gate
+
+Decision:
+Generic serialized asset references whose target GUID is missing from current metadata should block the asmdef split only when the missing GUID reference is newly introduced by the current worktree. If the same GUID reference already existed in the same file at `HEAD`, report it as `PreExistingMissingAssetReference` info and keep it as content debt outside the asmdef split completion gate.
+
+Reason:
+The stronger generic asset reference scan found 110 missing non-script GUID references, but every one already existed in the same file at `HEAD` and the referenced `.meta` files were absent from both current metadata and `HEAD`. Treating those as current split regressions would hide real split status behind unrelated legacy content debt. Some refs are also unsafe to auto-fix: old `UpgradeTreePanel` prefab refs carry obsolete prefab fileIDs, `legacyInkJSON` still acts as fallback data when `NPCData.PrimaryInk` is empty, and several dialogue JSON assets are absent.
+
+Implications:
+- `MissingAssetReference` remains an error for newly introduced missing non-script asset GUIDs.
+- `PreExistingMissingAssetReference` is information for content repair planning, not a green light to ignore broken authored content.
+- Do not broad-replace missing GUIDs in scenes/prefabs/assets. Restore missing assets, rewire via Unity authoring, or clear obsolete refs only after a per-GUID content decision.
+
+## 2026-07-05 - Addressables ConfigFolder link.xml Is Temporary
+
+Decision:
+Do not treat `Assets/AddressableAssetsData/link.xml` as a persistent completion artifact for the asmdef split. For Addressables 2021.2+ behavior, validate the generated `Library/com.unity.addressables/aa/<BuildTarget>/AddressablesLink/link.xml` output instead.
+
+Reason:
+`AddressablesPlayerBuildProcessor.CleanTemporaryPlayerBuildData()` runs on editor load and removes the ConfigFolder `link.xml`. During a player build, Addressables copies the generated `Addressables.BuildPath/AddressablesLink/link.xml` into the ConfigFolder only temporarily for Unity linker processing. Forcing the ConfigFolder file to remain restored fights the package lifecycle and is deleted again by Unity import/editor load.
+
+Implications:
+- The completion gate must run an Addressables player content build validation and check the generated `AddressablesLink/link.xml` for stale `Assembly-CSharp` references.
+- `Assets/AddressableAssetsData/link.xml` and `.meta` can stay deleted after the split when the generated Addressables build link output is clean.
+- Future linker-preserve validation should distinguish the temporary ConfigFolder copy from the generated Addressables build output.

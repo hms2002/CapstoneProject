@@ -3,7 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RewardDisplayService : MonoBehaviour
+/// <summary>
+/// 책임 :
+/// - 보상 표시 요청을 대기열로 관리하고 현재 RewardDisplayUI 뷰에 전달한다.
+/// - Gameplay 보상 흐름에는 IRewardDisplayBackend로만 노출된다.
+/// </summary>
+public class RewardDisplayService : MonoBehaviour, IRewardDisplayBackend
 {
     public static RewardDisplayService Instance { get; private set; }
 
@@ -14,6 +19,8 @@ public class RewardDisplayService : MonoBehaviour
     private RewardDisplayUI currentView;
     private Coroutine presentationRetryRoutine;
     private bool isShowingReward;
+
+    public Component BackendComponent => this;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
@@ -34,11 +41,14 @@ public class RewardDisplayService : MonoBehaviour
         }
 
         Instance = this;
+        RewardDisplayPlayback.RegisterBackend(this);
         DontDestroyOnLoad(gameObject);
     }
 
     private void OnDestroy()
     {
+        RewardDisplayPlayback.UnregisterBackend(this);
+
         if (Instance == this)
             Instance = null;
     }
@@ -194,6 +204,7 @@ public class RewardDisplayService : MonoBehaviour
         TryPresentNext();
     }
 
+    // 책임: 보상 UI에 표시할 업그레이드/호감도 보상과 완료 콜백을 큐에 보관한다.
     private readonly struct PendingRewardRequest
     {
         public readonly List<UpgradeEffectSO> upgradeEffects;

@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
-using Cainos.PixelArtTopDown_Basic;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityGAS;
 
 [DisallowMultipleComponent]
+/// <summary>
+/// 책임 : 튜토리얼 보스 조우 컷씬의 카메라 이동, 대사, HUD 숨김, 입력 잠금 흐름을 실행한다.
+/// </summary>
 public sealed class TutorialBossEncounterSequence : MonoBehaviour
 {
     [Header("Playback")]
@@ -29,7 +30,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
     [SerializeField] private bool hideDefaultHudDuringSequence = true;
 
     [Header("Camera")]
-    [SerializeField] private CameraPresentationDirector cameraDirector;
+    [SerializeField] private MonoBehaviour cameraDirector;
     [SerializeField] private bool useCameraPresentationDirector;
     [SerializeField] private Transform bossFocusTarget;
     [SerializeField, Min(0f)] private float cameraFocusWaitSeconds = 0.65f;
@@ -77,7 +78,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     [Header("Laser And HP")]
     [SerializeField] private TutorialBossLaserPresentation laserPresentation;
-    [SerializeField] private TutorialPresentationHpView presentationHpView;
+    [SerializeField] private MonoBehaviour presentationHpView;
 
     [Header("Timing")]
     [SerializeField, Min(0f)] private float delayAfterFirstDialogueSeconds = 0.2f;
@@ -110,7 +111,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
     [SerializeField] private UnityEvent onSequenceCanceled = new();
 
     private Coroutine sequenceRoutine;
-    private CinematicLetterboxOverlay letterboxOverlay;
+    private ICinematicLetterboxOverlayHandle letterboxOverlay;
     private GameFlowInputBlocker inputBlocker;
     private PlayerCinematicProtection playerProtection;
     private PlayerAnimatorController2D playerAnimatorLock;
@@ -122,17 +123,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
     private Transform targetabilityBlockedPlayerTransform;
     private Transform playerPresentationLockedTransform;
     private Transform cachedPlayerPresentationTransform;
-    private CinemachineCamera gameplayCamera;
-    private CinemachineBrain cameraBrain;
-    private CameraFollow legacyFollowCamera;
-    private Transform cachedCameraFollow;
-    private Transform cachedCameraLookAt;
-    private int cachedCameraPriority;
-    private float cachedCameraOrthographicSize;
-    private bool cachedLegacyFollowEnabled;
-    private bool cachedBrainIgnoreTimeScale;
-    private bool hasCachedCameraState;
-    private bool hasCachedCameraLens;
+    private IGameplayCameraFocusSession cameraFocusSession;
     private Vector3 cachedBossVisualScale;
     private bool hasCachedBossVisualScale;
     private bool hasPlayed;
@@ -155,6 +146,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         GlobalCanvasLayer.BossHUD
     };
 
+    // 책임: 튜토리얼 보스 연출 동안 숨긴 HUD 오브젝트의 이전 활성 상태를 보관한다.
     private readonly struct HudObjectActiveState
     {
         public HudObjectActiveState(GameObject gameObject, bool wasActive)
@@ -169,6 +161,9 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     public bool IsRunning => sequenceRoutine != null;
     public bool HasPlayed => hasPlayed;
+    private ICameraPresentationDirector CameraDirector => CameraPresentationPlayback.FromBehaviour(cameraDirector);
+    private ITutorialPresentationHpView PresentationHpView =>
+        presentationHpView as ITutorialPresentationHpView;
 
     private void OnEnable()
     {
@@ -178,7 +173,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private void Start()
     {
-        presentationHpView?.SetVisible(false);
+        PresentationHpView?.SetVisible(false);
 
         if (playOnStart)
             BeginSequence();
@@ -224,8 +219,8 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         hasStartedPlayerDeathPresentation = false;
         hasInvokedPlayerCollapse = false;
         playerDeathPresentationRoutine = null;
-        presentationHpView?.ResetToMax();
-        presentationHpView?.SetVisible(false);
+        PresentationHpView?.ResetToMax();
+        PresentationHpView?.SetVisible(false);
 
         onSequenceStarted?.Invoke();
 
@@ -243,18 +238,18 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
         PrepareLaserHpHud();
         yield return PlayLetterboxInIfNeededRoutine();
-        presentationHpView?.SetVisible(true);
+        PresentationHpView?.SetVisible(true);
 
         if (focusPlayerBeforeLaser)
             yield return FocusPlayerForLaserRoutine();
 
         onBeforeLaser?.Invoke();
-        presentationHpView?.SetVisible(true);
+        PresentationHpView?.SetVisible(true);
         if (laserPresentation != null)
             yield return laserPresentation.PlayRoutine();
         onLaserCompleted?.Invoke();
         yield return WaitForPresentationSeconds(delayAfterLaserSeconds);
-        presentationHpView?.SetVisible(false);
+        PresentationHpView?.SetVisible(false);
         yield return WaitForPlayerDeathPresentationIfRunningRoutine();
 
         yield return PlayLetterboxOutIfNeededRoutine();
@@ -291,9 +286,9 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
             yield break;
         }
 
-        if (DialogueService.Instance == null)
+        if (!DialoguePlayback.IsAvailable)
         {
-            Debug.LogError("[TutorialBossEncounterSequence] DialogueService instance was not found.", this);
+            Debug.LogError("[TutorialBossEncounterSequence] Dialogue playback backend was not found.", this);
             yield break;
         }
 
@@ -303,10 +298,10 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         };
         List<NPCData> participants = new() { tutorialBossNpcData };
 
-        if (!DialogueService.Instance.TryStartDialogueSequence(segments, participants))
+        if (!DialoguePlayback.TryStartDialogueSequence(segments, participants))
             yield break;
 
-        yield return new WaitUntil(() => DialogueService.Instance == null || !DialogueService.Instance.IsPlaying);
+        yield return new WaitUntil(() => !DialoguePlayback.IsPlaying);
     }
 
     private IEnumerator PlayLetterboxInRoutine()
@@ -329,13 +324,14 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private void PrepareLaserHpHud()
     {
-        if (presentationHpView == null)
+        ITutorialPresentationHpView resolvedPresentationHpView = PresentationHpView;
+        if (resolvedPresentationHpView == null)
             return;
 
         EnsurePresentationHpViewRenderable();
-        presentationHpView.ResetToMax();
-        presentationHpView.Refresh();
-        presentationHpView.SetVisible(true);
+        resolvedPresentationHpView.ResetToMax();
+        resolvedPresentationHpView.Refresh();
+        resolvedPresentationHpView.SetVisible(true);
     }
 
     private void EnsurePresentationHpViewRenderable()
@@ -363,7 +359,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         if (!useLetterbox)
             yield break;
 
-        letterboxOverlay ??= new CinematicLetterboxOverlay();
+        letterboxOverlay ??= CinematicLetterboxPlayback.CreateOverlay();
         yield return PlayLetterboxInRoutine();
     }
 
@@ -388,9 +384,10 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private IEnumerator FocusInitialPlayerRoutine()
     {
-        if (useCameraPresentationDirector && cameraDirector != null)
+        ICameraPresentationDirector resolvedCameraDirector = CameraDirector;
+        if (useCameraPresentationDirector && resolvedCameraDirector != null)
         {
-            yield return cameraDirector.ReturnToPlayerRoutine();
+            yield return resolvedCameraDirector.ReturnToPlayerRoutine();
             yield return WaitForPresentationSeconds(initialPlayerFocusWaitSeconds);
             yield break;
         }
@@ -400,7 +397,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
             yield break;
 
         CacheCameraState();
-        CameraBootstrap.CenterGameplayCameraOn(target);
+        cameraFocusSession?.SnapToTarget(target);
         SetCameraTarget(target);
         yield return ZoomCameraWhileWaitingRoutine(
             playerFocusOrthographicSize,
@@ -411,9 +408,10 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private IEnumerator FocusCameraRoutine()
     {
-        if (useCameraPresentationDirector && cameraDirector != null)
+        ICameraPresentationDirector resolvedCameraDirector = CameraDirector;
+        if (useCameraPresentationDirector && resolvedCameraDirector != null)
         {
-            yield return cameraDirector.FocusBossWithPhaseLensRoutine();
+            yield return resolvedCameraDirector.FocusBossWithPhaseLensRoutine();
             yield break;
         }
 
@@ -429,9 +427,10 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private IEnumerator FocusPlayerForLaserRoutine()
     {
-        if (useCameraPresentationDirector && cameraDirector != null)
+        ICameraPresentationDirector resolvedCameraDirector = CameraDirector;
+        if (useCameraPresentationDirector && resolvedCameraDirector != null)
         {
-            yield return cameraDirector.ReturnToPlayerRoutine();
+            yield return resolvedCameraDirector.ReturnToPlayerRoutine();
             yield break;
         }
 
@@ -447,9 +446,10 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private IEnumerator RefocusBossAfterLaserRoutine()
     {
-        if (useCameraPresentationDirector && cameraDirector != null)
+        ICameraPresentationDirector resolvedCameraDirector = CameraDirector;
+        if (useCameraPresentationDirector && resolvedCameraDirector != null)
         {
-            yield return cameraDirector.FocusBossWithPhaseLensRoutine();
+            yield return resolvedCameraDirector.FocusBossWithPhaseLensRoutine();
             yield break;
         }
 
@@ -465,17 +465,18 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private IEnumerator ReturnCameraRoutine()
     {
-        if (useCameraPresentationDirector && cameraDirector != null)
+        ICameraPresentationDirector resolvedCameraDirector = CameraDirector;
+        if (useCameraPresentationDirector && resolvedCameraDirector != null)
         {
-            yield return cameraDirector.ReturnToPlayerRoutine();
+            yield return resolvedCameraDirector.ReturnToPlayerRoutine();
             yield break;
         }
 
         Transform restoreTarget = ResolvePlayerTransform();
         SetCameraTarget(restoreTarget);
 
-        float restoreOrthographicSize = hasCachedCameraLens
-            ? cachedCameraOrthographicSize
+        float restoreOrthographicSize = cameraFocusSession != null && cameraFocusSession.HasOrthographicSize
+            ? cameraFocusSession.CachedOrthographicSize
             : focusOrthographicSize;
         yield return ZoomCameraWhileWaitingRoutine(
             restoreOrthographicSize,
@@ -529,22 +530,25 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         Transform settleTarget)
     {
         float waitDuration = Mathf.Max(0f, minimumWaitSeconds);
-        if (!zoomGameplayCameraDuringFocus || gameplayCamera == null)
+        if (!zoomGameplayCameraDuringFocus ||
+            cameraFocusSession == null ||
+            !cameraFocusSession.HasOrthographicSize)
         {
             yield return WaitForPresentationSeconds(waitDuration);
-            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
+            if (cameraFocusSession != null)
+                yield return cameraFocusSession.WaitForSettle(settleTarget);
             yield break;
         }
 
-        float startOrthographicSize = GetCameraOrthographicSize(gameplayCamera, targetOrthographicSize);
+        float startOrthographicSize = cameraFocusSession.CurrentOrthographicSize;
         float clampedTargetSize = Mathf.Max(0.01f, targetOrthographicSize);
         float clampedZoomDuration = Mathf.Max(0f, zoomDuration);
         float totalDuration = Mathf.Max(waitDuration, clampedZoomDuration);
 
         if (totalDuration <= 0f)
         {
-            SetCameraOrthographicSize(gameplayCamera, clampedTargetSize);
-            yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
+            cameraFocusSession.SetOrthographicSize(clampedTargetSize);
+            yield return cameraFocusSession.WaitForSettle(settleTarget);
             yield break;
         }
 
@@ -556,16 +560,15 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
             if (clampedZoomDuration > 0f)
             {
                 float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / clampedZoomDuration));
-                SetCameraOrthographicSize(
-                    gameplayCamera,
+                cameraFocusSession.SetOrthographicSize(
                     Mathf.Lerp(startOrthographicSize, clampedTargetSize, t));
             }
 
             yield return null;
         }
 
-        SetCameraOrthographicSize(gameplayCamera, clampedTargetSize);
-        yield return CameraCinematicWaitUtility.WaitForCameraSettle(cameraBrain, null, settleTarget);
+        cameraFocusSession.SetOrthographicSize(clampedTargetSize);
+        yield return cameraFocusSession.WaitForSettle(settleTarget);
     }
 
     private IEnumerator WaitForPresentationSeconds(float seconds)
@@ -606,11 +609,10 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private static bool IsSceneTransitionActive()
     {
-        SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.Instance;
-        if (transitionCoordinator != null && transitionCoordinator.IsTransitionActive)
+        if (SceneTransitionPlayback.IsTransitionActive)
             return true;
 
-        SceneFadeTransitionService fadeService = SceneFadeTransitionService.Instance;
+        ISceneFadeTransitionHandle fadeService = SceneFadeTransitionPlayback.Instance;
         return fadeService != null && fadeService.IsTransitionActive;
     }
 
@@ -685,7 +687,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         request.AllowInventoryDuringPresentation = false;
         request.ShowInventoryKeyHint = false;
 
-        GameOverPresentationController.TryShow(request);
+        GameOverPresentationPlayback.TryShow(request);
     }
 
     private static string ResolveFakeGameOverText(string value, string legacyValue, string fallback)
@@ -726,7 +728,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
     {
         UnsubscribePresentationEvents();
         laserPresentation?.Cancel();
-        presentationHpView?.SetVisible(false);
+        PresentationHpView?.SetVisible(false);
 
         if (releasePlayerLocks && playerDeathPresentationRoutine != null)
         {
@@ -745,7 +747,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         if (!useCameraPresentationDirector)
             RestoreCameraState(ResolvePlayerTransform());
         else
-            cameraDirector?.RestoreDefaultState();
+            CameraDirector?.RestoreDefaultState();
 
         if (releasePlayerLocks)
         {
@@ -771,7 +773,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
         for (int i = 0; i < DefaultHudLayersToHide.Length; i++)
         {
-            Canvas canvas = GlobalUIRoot.GetCanvas(DefaultHudLayersToHide[i]);
+            Canvas canvas = GlobalCanvasPlayback.GetCanvas(DefaultHudLayersToHide[i]);
             if (canvas == null)
                 continue;
 
@@ -787,20 +789,11 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         if (canvasRoot == null)
             return;
 
-        HideHudComponentRoots<PlayerHealthHeartHUD>(canvasRoot);
-        HideHudComponentRoots<WeaponSkillHUD2D>(canvasRoot);
-        HideHudComponentRoots<PlayerConsumableHUD2D>(canvasRoot);
-        HideHudComponentRoots<StatusHudPresenter>(canvasRoot);
-        HideHudComponentRoots<BossHealthBarUI>(canvasRoot);
-    }
-
-    private void HideHudComponentRoots<T>(Transform canvasRoot) where T : Component
-    {
-        T[] components = canvasRoot.GetComponentsInChildren<T>(true);
+        MonoBehaviour[] components = canvasRoot.GetComponentsInChildren<MonoBehaviour>(true);
         for (int i = 0; i < components.Length; i++)
         {
-            T component = components[i];
-            if (component != null)
+            MonoBehaviour component = components[i];
+            if (component is IDefaultHudVisibilityTarget)
                 CaptureAndSetHudObjectActive(component.gameObject, false);
         }
     }
@@ -885,19 +878,21 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private void SubscribePresentationHpEvents()
     {
-        if (presentationHpView == null || subscribedToHpDepleted)
+        ITutorialPresentationHpView resolvedPresentationHpView = PresentationHpView;
+        if (resolvedPresentationHpView == null || subscribedToHpDepleted)
             return;
 
-        presentationHpView.OnDepleted.AddListener(HandlePresentationHpDepleted);
+        resolvedPresentationHpView.OnDepleted.AddListener(HandlePresentationHpDepleted);
         subscribedToHpDepleted = true;
     }
 
     private void UnsubscribePresentationHpEvents()
     {
-        if (presentationHpView == null || !subscribedToHpDepleted)
+        ITutorialPresentationHpView resolvedPresentationHpView = PresentationHpView;
+        if (resolvedPresentationHpView == null || !subscribedToHpDepleted)
             return;
 
-        presentationHpView.OnDepleted.RemoveListener(HandlePresentationHpDepleted);
+        resolvedPresentationHpView.OnDepleted.RemoveListener(HandlePresentationHpDepleted);
         subscribedToHpDepleted = false;
     }
 
@@ -905,7 +900,8 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
     {
         PlayPlayerHitPresentation();
 
-        if (presentationHpView != null && presentationHpView.CurrentHp <= 0)
+        ITutorialPresentationHpView resolvedPresentationHpView = PresentationHpView;
+        if (resolvedPresentationHpView != null && resolvedPresentationHpView.CurrentHp <= 0)
             StartPlayerDeathPresentationIfNeeded();
 
         onPlayerHit?.Invoke();
@@ -1191,7 +1187,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         if (holdsTransitionPlayerUnlockBlock)
             return;
 
-        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance();
+        ISceneFadeTransitionHandle transitionService = SceneFadeTransitionPlayback.EnsureInstance();
         if (transitionService == null)
             return;
 
@@ -1204,7 +1200,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         if (!holdsTransitionPlayerUnlockBlock)
             return;
 
-        SceneFadeTransitionService transitionService = SceneFadeTransitionService.Instance;
+        ISceneFadeTransitionHandle transitionService = SceneFadeTransitionPlayback.Instance;
         if (transitionService != null)
             transitionService.SetPlayerUnlockBlocked(this, false);
 
@@ -1213,84 +1209,24 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private void CacheCameraState()
     {
-        if (hasCachedCameraState)
+        if (cameraFocusSession != null)
             return;
 
-        CameraBootstrap.EnsureRuntimeRigForCurrentScene();
-
-        gameplayCamera = CameraBootstrap.GetPlayerCamera();
-        cameraBrain = CameraBootstrap.GetBrain();
-        legacyFollowCamera = CameraBootstrap.GetLegacyFollow();
-
-        if (gameplayCamera != null)
-        {
-            cachedCameraFollow = gameplayCamera.Follow;
-            cachedCameraLookAt = gameplayCamera.LookAt;
-            cachedCameraPriority = gameplayCamera.Priority;
-            cachedCameraOrthographicSize = GetCameraOrthographicSize(gameplayCamera, focusOrthographicSize);
-            hasCachedCameraLens = true;
-        }
-
-        if (legacyFollowCamera != null)
-            cachedLegacyFollowEnabled = legacyFollowCamera.enabled;
-
-        if (cameraBrain != null)
-            cachedBrainIgnoreTimeScale = cameraBrain.IgnoreTimeScale;
-
-        hasCachedCameraState = true;
+        cameraFocusSession = GameplayCameraFocusPlayback.Capture(this);
     }
 
     private void SetCameraTarget(Transform target)
     {
-        if (target == null)
-            return;
-
-        if (cameraBrain != null)
-            cameraBrain.IgnoreTimeScale = true;
-
-        if (legacyFollowCamera != null)
-            legacyFollowCamera.enabled = false;
-
-        if (gameplayCamera == null)
-            return;
-
-        gameplayCamera.Follow = target;
-        gameplayCamera.LookAt = target;
+        cameraFocusSession?.SetTarget(target);
     }
 
     private void RestoreCameraState(Transform preferredTarget)
     {
-        if (!hasCachedCameraState)
+        if (cameraFocusSession == null)
             return;
 
-        Transform restoreFollow = preferredTarget != null ? preferredTarget : cachedCameraFollow;
-        Transform restoreLookAt = preferredTarget != null ? preferredTarget : cachedCameraLookAt;
-
-        if (gameplayCamera != null)
-        {
-            gameplayCamera.Follow = restoreFollow;
-            gameplayCamera.LookAt = restoreLookAt;
-            gameplayCamera.Priority = cachedCameraPriority;
-
-            if (hasCachedCameraLens)
-                SetCameraOrthographicSize(gameplayCamera, cachedCameraOrthographicSize);
-        }
-
-        if (legacyFollowCamera != null)
-        {
-            if (restoreFollow != null)
-                legacyFollowCamera.BindTarget(restoreFollow, snap: false);
-
-            legacyFollowCamera.enabled = cachedLegacyFollowEnabled;
-        }
-
-        if (cameraBrain != null)
-            cameraBrain.IgnoreTimeScale = cachedBrainIgnoreTimeScale;
-
-        cachedCameraFollow = null;
-        cachedCameraLookAt = null;
-        hasCachedCameraState = false;
-        hasCachedCameraLens = false;
+        cameraFocusSession.Restore(preferredTarget);
+        cameraFocusSession = null;
     }
 
     private void RestoreBossVisualScaleImmediate()
@@ -1302,22 +1238,4 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         hasCachedBossVisualScale = false;
     }
 
-    private static float GetCameraOrthographicSize(CinemachineCamera camera, float fallbackOrthographicSize)
-    {
-        if (camera == null)
-            return Mathf.Max(0.01f, fallbackOrthographicSize);
-
-        var lens = camera.Lens;
-        return Mathf.Max(0.01f, lens.OrthographicSize);
-    }
-
-    private static void SetCameraOrthographicSize(CinemachineCamera camera, float orthographicSize)
-    {
-        if (camera == null)
-            return;
-
-        var lens = camera.Lens;
-        lens.OrthographicSize = Mathf.Max(0.01f, orthographicSize);
-        camera.Lens = lens;
-    }
 }

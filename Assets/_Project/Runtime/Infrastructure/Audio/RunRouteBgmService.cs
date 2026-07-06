@@ -9,11 +9,12 @@ using UnityEngine.SceneManagement;
 /// - 타이틀/허브/복도/보스 전투 BGM 전환 규칙을 한 곳에서 관리한다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class RunRouteBgmService : MonoBehaviour
+public sealed class RunRouteBgmService : MonoBehaviour, IRunRouteBgmBackend
 {
     public static RunRouteBgmService Instance { get; private set; }
 
     private static bool s_isQuitting;
+    private static readonly IRunRouteBgmBackend NullBackend = new NullRunRouteBgmBackend();
 
 #pragma warning disable 0414
     [HideInInspector, SerializeField, Min(0f)] private float sceneBgmFadeDuration = 0.5f;
@@ -28,6 +29,8 @@ public sealed class RunRouteBgmService : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
     {
+        RunRouteBgmPlayback.RegisterBackend(NullBackend);
+
         if (s_isQuitting)
             return;
 
@@ -83,6 +86,7 @@ public sealed class RunRouteBgmService : MonoBehaviour
         }
 
         Instance = this;
+        RunRouteBgmPlayback.RegisterBackend(this);
         DontDestroyOnLoad(gameObject);
     }
 
@@ -109,7 +113,20 @@ public sealed class RunRouteBgmService : MonoBehaviour
     private void OnDestroy()
     {
         if (Instance == this)
+        {
             Instance = null;
+            RunRouteBgmPlayback.RegisterBackend(NullBackend);
+        }
+    }
+
+    /// <summary>
+    /// 책임 : BGM 서비스가 아직 생성되지 않은 초기 호출을 안전하게 무시하는 no-op backend다.
+    /// </summary>
+    private sealed class NullRunRouteBgmBackend : IRunRouteBgmBackend
+    {
+        public void NotifyBossCombatStarted()
+        {
+        }
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)

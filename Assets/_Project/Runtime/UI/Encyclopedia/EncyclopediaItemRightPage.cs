@@ -6,6 +6,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityGAS;
 
+/// <summary>
+/// 책임 : 아이템 도감 오른쪽 페이지에 무기/유물/소모품 상세 정보를 표시한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class EncyclopediaItemRightPage : MonoBehaviour
 {
@@ -123,7 +126,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
     private void AutoWireReferences()
     {
         ResolveReferences();
-        UnityEditor.EditorUtility.SetDirty(this);
+        EditorAuthoringPlayback.MarkDirty(this);
     }
 #endif
 
@@ -216,7 +219,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
 #if UNITY_EDITOR
         if (abilityBlockPrefab == null && !Application.isPlaying)
-            abilityBlockPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<WeaponAbilityBlockView>(AbilityBlockPrefabPath);
+            abilityBlockPrefab = EditorAuthoringPlayback.LoadAssetAtPath<WeaponAbilityBlockView>(AbilityBlockPrefabPath);
 #endif
 
         if (relicPreviewRoot == null || relicPreviewRoot == weaponStatsRoot)
@@ -1110,6 +1113,9 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
             target.SetActive(active);
     }
 
+    /// <summary>
+    /// 책임 : 무기 능력 블록에 표시할 제목, 아이콘, 입력, 쿨다운, 설명 상태를 묶는다.
+    /// </summary>
     private readonly struct AbilityDisplayState
     {
         public AbilityDisplayState(string title, Sprite icon, string inputHint, float cooldownSeconds, string extraMeta, string body)
@@ -1130,6 +1136,9 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         public string Body { get; }
     }
 
+    /// <summary>
+    /// 책임 : 변형 가능한 능력 블록의 표시 상태 목록과 현재 선택 인덱스를 보관한다.
+    /// </summary>
     private sealed class VariantAbilityEntry
     {
         public VariantAbilityEntry(

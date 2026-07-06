@@ -1,6 +1,9 @@
 using CapstoneAudio;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : 월드에 떨어진 아이템의 상호작용, 획득 전달, outline과 상세 hover 요청을 관리한다.
+/// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class WorldItemPickup2D : InteractableBase
 {
@@ -12,9 +15,9 @@ public class WorldItemPickup2D : InteractableBase
     [SerializeField] private string interactPromptText = "획득하기";
 
     [Header("Visual (optional)")]
-    [SerializeField] private ItemDisplayVisualPresenter2D itemDisplayPresenter;
+    [SerializeField] private Component itemDisplayPresenter;
     [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField] private WorldDropSpritePresenter2D dropSpritePresenter;
+    [SerializeField] private Component dropSpritePresenter;
 
     [SerializeField] private bool interactionLocked;
     [SerializeField] private int relicLevel = 0;
@@ -24,6 +27,8 @@ public class WorldItemPickup2D : InteractableBase
 
     public ScriptableObject Item => item;
     public int RelicLevel => relicLevel;
+    private IItemDisplayVisualPresenter ItemDisplayPresenter => itemDisplayPresenter as IItemDisplayVisualPresenter;
+    private IWorldDropSpritePresenter DropSpritePresenter => dropSpritePresenter as IWorldDropSpritePresenter;
 
     public void SetItem(ScriptableObject so, int relicLevelOverride = 0)
     {
@@ -59,7 +64,7 @@ public class WorldItemPickup2D : InteractableBase
     private void OnDisable()
     {
         WorldItemRegistry.Unregister(this);
-        WorldItemDetailPresenter.Instance?.Hide(GetDetailAnchor());
+        WorldItemHoverPlayback.Hide(GetDetailAnchor());
     }
 
     public override bool CanInteract(IPlayerInteractor player)
@@ -72,9 +77,10 @@ public class WorldItemPickup2D : InteractableBase
         if (item == null || interactionLocked)
             return;
 
-        if (itemDisplayPresenter != null)
+        IItemDisplayVisualPresenter presenter = ItemDisplayPresenter;
+        if (presenter != null)
         {
-            itemDisplayPresenter.SetOutline(true);
+            presenter.SetOutline(true);
         }
         else if (spriteRenderer != null)
         {
@@ -83,14 +89,15 @@ public class WorldItemPickup2D : InteractableBase
             spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
         }
 
-        WorldItemDetailPresenter.Instance?.Show(GetDetailAnchor(), item, RelicLevel);
+        WorldItemHoverPlayback.Show(GetDetailAnchor(), item, RelicLevel);
     }
 
     public override void OnUnHighlight()
     {
-        if (itemDisplayPresenter != null)
+        IItemDisplayVisualPresenter presenter = ItemDisplayPresenter;
+        if (presenter != null)
         {
-            itemDisplayPresenter.SetOutline(false);
+            presenter.SetOutline(false);
         }
         else if (spriteRenderer != null)
         {
@@ -99,7 +106,7 @@ public class WorldItemPickup2D : InteractableBase
             spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
         }
 
-        WorldItemDetailPresenter.Instance?.Hide(GetDetailAnchor());
+        WorldItemHoverPlayback.Hide(GetDetailAnchor());
     }
 
     public override void OnPlayerInteract(IPlayerInteractor player)
@@ -145,7 +152,7 @@ public class WorldItemPickup2D : InteractableBase
     private static void ShowPickupWarning(WarningPopupCode code)
     {
         if (code != WarningPopupCode.None)
-            UIManager.Instance?.ShowWarning(code);
+            WarningPopupPlayback.Show(code);
     }
 
     private static void SpeakPickupFailed(IPlayerInteractor player)
@@ -165,20 +172,22 @@ public class WorldItemPickup2D : InteractableBase
 
     private void RefreshVisual()
     {
-        if (itemDisplayPresenter != null)
+        IItemDisplayVisualPresenter presenter = ItemDisplayPresenter;
+        if (presenter != null)
         {
-            itemDisplayPresenter.Apply(item);
-            spriteRenderer = itemDisplayPresenter.FallbackRenderer;
+            presenter.Apply(item);
+            spriteRenderer = presenter.FallbackRenderer;
             return;
         }
 
         var def = item != null ? item.AsDef() : null;
         Sprite sprite = def != null ? def.Icon : null;
 
-        if (dropSpritePresenter != null)
+        IWorldDropSpritePresenter dropPresenter = DropSpritePresenter;
+        if (dropPresenter != null)
         {
-            dropSpritePresenter.Apply(sprite, item is WeaponDefinition);
-            spriteRenderer = dropSpritePresenter.Renderer;
+            dropPresenter.Apply(sprite, item is WeaponDefinition);
+            spriteRenderer = dropPresenter.Renderer;
             return;
         }
 
@@ -191,19 +200,33 @@ public class WorldItemPickup2D : InteractableBase
 
     private void ResolveVisualRefs()
     {
-        if (itemDisplayPresenter == null)
-            itemDisplayPresenter = GetComponentInChildren<ItemDisplayVisualPresenter2D>(includeInactive: true);
+        if (itemDisplayPresenter is not IItemDisplayVisualPresenter)
+            itemDisplayPresenter = FindPresentationComponent<IItemDisplayVisualPresenter>();
 
-        if (itemDisplayPresenter != null)
-            spriteRenderer = itemDisplayPresenter.FallbackRenderer;
+        IItemDisplayVisualPresenter presenter = ItemDisplayPresenter;
+        if (presenter != null)
+            spriteRenderer = presenter.FallbackRenderer;
 
-        if (dropSpritePresenter == null)
-            dropSpritePresenter = GetComponentInChildren<WorldDropSpritePresenter2D>(includeInactive: true);
+        if (dropSpritePresenter is not IWorldDropSpritePresenter)
+            dropSpritePresenter = FindPresentationComponent<IWorldDropSpritePresenter>();
 
-        if (itemDisplayPresenter == null && dropSpritePresenter != null)
-            spriteRenderer = dropSpritePresenter.Renderer;
+        IWorldDropSpritePresenter dropPresenter = DropSpritePresenter;
+        if (presenter == null && dropPresenter != null)
+            spriteRenderer = dropPresenter.Renderer;
 
         if (spriteRenderer == null)
             spriteRenderer = GetComponentInChildren<SpriteRenderer>(includeInactive: true);
+    }
+
+    private Component FindPresentationComponent<TContract>() where TContract : class
+    {
+        MonoBehaviour[] behaviours = GetComponentsInChildren<MonoBehaviour>(includeInactive: true);
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is TContract)
+                return behaviours[i];
+        }
+
+        return null;
     }
 }

@@ -1,16 +1,18 @@
 using UnityEngine;
 
+/// <summary>
+/// 책임 :
+/// - 플레이어 상호작용 상태와 현재 대상에 맞춰 월드 프롬프트 표시/숨김 명령을 요청한다.
+/// - UI 명령 백엔드가 없을 때는 serialized 프롬프트 뷰 계약으로만 fallback 한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class PlayerInteractionPromptPresenter : MonoBehaviour
 {
-    [SerializeField] private WorldInteractionPromptController interactionPrompt;
+    [SerializeField] private MonoBehaviour interactionPrompt;
 
-    private void Awake()
-    {
-        ResolvePromptController();
-    }
+    private IWorldInteractionPromptView InteractionPromptView => interactionPrompt as IWorldInteractionPromptView;
 
-    public void SetPromptController(WorldInteractionPromptController promptController)
+    public void SetPromptController(MonoBehaviour promptController)
     {
         if (promptController != null)
             interactionPrompt = promptController;
@@ -18,31 +20,19 @@ public sealed class PlayerInteractionPromptPresenter : MonoBehaviour
 
     public void RefreshPrompt(IInteractable currentTarget, InteractState currentState)
     {
-        ResolvePromptController();
-
         if (currentState != InteractState.Idle || currentTarget == null)
         {
             HidePrompt();
             return;
         }
 
-        if (UIManager.Instance != null)
-            UIManager.Instance.RefreshWorldPrompt(currentTarget);
-        else
-            interactionPrompt?.Refresh(currentTarget);
+        if (!UiCommandPlayback.RefreshWorldPrompt(currentTarget))
+            InteractionPromptView?.Refresh(currentTarget);
     }
 
     public void HidePrompt()
     {
-        if (UIManager.Instance != null)
-            UIManager.Instance.HideWorldPrompt();
-        else
-            interactionPrompt?.Hide();
-    }
-
-    private void ResolvePromptController()
-    {
-        if (interactionPrompt == null)
-            interactionPrompt = WorldInteractionPromptController.Instance ?? FindFirstObjectByType<WorldInteractionPromptController>();
+        if (!UiCommandPlayback.HideWorldPrompt())
+            InteractionPromptView?.Hide();
     }
 }

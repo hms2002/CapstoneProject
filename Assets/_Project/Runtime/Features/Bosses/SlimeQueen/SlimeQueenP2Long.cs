@@ -7,6 +7,7 @@ using UnityGAS;
 /// <summary>
 /// 슬라임 여왕 2페이즈 원거리 퀸 컨트롤러입니다.
 /// </summary>
+// 책임: 2페이즈 원거리 슬라임퀸의 랜덤 이동, 물대포, 독성 투하, 합동 패턴 참여를 실행한다.
 public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandomJumpHost
 {
     private const float MinCrossWaterPillarCastDistance = 40f;
@@ -242,18 +243,18 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     [Tooltip("독구름 피해에 사용할 GAS Damage Effect입니다. 비우면 프리팹 기본값을 사용합니다.")]
     [SerializeField] private GE_Damage_Spec toxicDropPoisonCloudDamageEffect;
 
-    private readonly List<AttackTelegraphView> crossWaterPillarWarningViews = new List<AttackTelegraphView>();
-    private readonly List<AttackTelegraphView> crossWaterPillarBlastViews = new List<AttackTelegraphView>();
+    private readonly List<IAttackTelegraphHandle> crossWaterPillarWarningViews = new List<IAttackTelegraphHandle>();
+    private readonly List<IAttackTelegraphHandle> crossWaterPillarBlastViews = new List<IAttackTelegraphHandle>();
     private readonly List<GameObject> crossWaterPillarBlastEffects = new List<GameObject>();
     private readonly List<GameObject> crossWaterPillarParticles = new List<GameObject>();
-    private readonly List<AttackTelegraphView> toxicDropWarningViews = new List<AttackTelegraphView>();
+    private readonly List<IAttackTelegraphHandle> toxicDropWarningViews = new List<IAttackTelegraphHandle>();
     private readonly List<SlimeQueenToxicDropProjectileVisual> toxicDropProjectileVisuals = new List<SlimeQueenToxicDropProjectileVisual>();
-    private readonly List<AttackTelegraphView> waterCannonShotWarningViews = new List<AttackTelegraphView>();
-    private readonly List<AttackTelegraphView> waterCannonShotBeamViews = new List<AttackTelegraphView>();
+    private readonly List<IAttackTelegraphHandle> waterCannonShotWarningViews = new List<IAttackTelegraphHandle>();
+    private readonly List<IAttackTelegraphHandle> waterCannonShotBeamViews = new List<IAttackTelegraphHandle>();
     private readonly List<WaterZetLaserVfx> waterCannonLaserVfxViews = new List<WaterZetLaserVfx>();
     private readonly List<GameObject> waterCannonWallHitEffectViews = new List<GameObject>();
-    private AttackTelegraphView waterCannonWarningView;
-    private AttackTelegraphView waterCannonBeamView;
+    private IAttackTelegraphHandle waterCannonWarningView;
+    private IAttackTelegraphHandle waterCannonBeamView;
     private SlimeQueenWaterCannonBeamVisual waterCannonBeamVisual;
     private Vector2 waterCannonLockedBeamDirection;
     private bool waterCannonHasLockedBeamDirection;
@@ -289,6 +290,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         PlayAnimatorStateIfExists(IdleStateHash);
     }
 
+    // 책임: 십자 물기둥 한 줄기의 시작/끝/중심/방향/회전 정보를 보관한다.
     public readonly struct CrossWaterPillarSegment
     {
         public readonly Vector2 Start;
@@ -311,6 +313,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         }
     }
 
+    // 책임: 물대포의 고정 발사 라인과 충돌 판정 크기 정보를 보관한다.
     public readonly struct WaterCannonLine
     {
         public readonly Vector2 Start;
@@ -357,7 +360,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     /// <summary>점프 착지 경고를 표시합니다.</summary>
     public void ShowJumpWarning(Vector3 landingPosition)
     {
-        AttackTelegraphService service = GetTelegraphService();
+        IAttackTelegraphPresenter service = GetTelegraphService();
         if (service == null)
             return;
 
@@ -464,7 +467,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     {
         CleanupCrossWaterPillarPresentation();
 
-        AttackTelegraphService service = GetTelegraphService();
+        IAttackTelegraphPresenter service = GetTelegraphService();
         if (service == null || segments == null)
             return;
 
@@ -481,7 +484,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
                 crossWaterPillarWarningSeconds,
                 crossWaterPillarWarningStyle));
 
-            AttackTelegraphView view = service.SpawnDetachedView(spec);
+            IAttackTelegraphHandle view = service.SpawnDetachedView(spec);
             if (view != null)
                 crossWaterPillarWarningViews.Add(view);
         }
@@ -504,7 +507,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 
         float interval = Mathf.Max(0.1f, crossWaterPillarBlastInterval);
         CombatHitPayload hitPayload = BuildCrossWaterPillarHitPayload(sourceSystem, sourceSpec);
-        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry = new TimedAnimatedHitEffect2D.SharedHitRegistry();
+        SharedHitRegistry2D sharedHitRegistry = new SharedHitRegistry2D();
 
         for (int i = 0; i < segments.Count; i++)
         {
@@ -569,12 +572,12 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     }
 
     /// <summary>물대포 샷 직전의 짧은 경고선을 표시합니다.</summary>
-    public AttackTelegraphView ShowWaterCannonShotWarning(WaterCannonLine line)
+    public IAttackTelegraphHandle ShowWaterCannonShotWarning(WaterCannonLine line)
     {
         if (!line.IsValid)
             return null;
 
-        AttackTelegraphService service = GetTelegraphService();
+        IAttackTelegraphPresenter service = GetTelegraphService();
         if (service == null)
             return null;
 
@@ -584,7 +587,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             WaterCannonShotWarningSeconds,
             waterCannonWarningStyle);
 
-        AttackTelegraphView view = service.SpawnDetachedView(spec);
+        IAttackTelegraphHandle view = service.SpawnDetachedView(spec);
         if (view != null)
             waterCannonShotWarningViews.Add(view);
 
@@ -592,13 +595,13 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     }
 
     /// <summary>물대포 샷 경고선을 즉시 제거합니다.</summary>
-    public void ClearWaterCannonShotWarning(AttackTelegraphView view)
+    public void ClearWaterCannonShotWarning(IAttackTelegraphHandle view)
     {
         if (view == null)
             return;
 
         waterCannonShotWarningViews.Remove(view);
-        Destroy(view.gameObject);
+        view.Release();
     }
 
     /// <summary>현재 물대포 샷의 경고/레이저 표시만 제거하고 다음 샷 조준 상태는 유지합니다.</summary>
@@ -621,7 +624,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         if (!line.IsValid)
             return false;
 
-        AttackTelegraphService service = GetTelegraphService();
+        IAttackTelegraphPresenter service = GetTelegraphService();
         if (service != null && waterCannonBeamStyle != null)
         {
             AttackTelegraphSpec spec = CreateWaterCannonLineSpec(
@@ -630,7 +633,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
                 WaterCannonShotActiveSeconds,
                 waterCannonBeamStyle);
 
-            AttackTelegraphView view = service.SpawnDetachedView(spec);
+            IAttackTelegraphHandle view = service.SpawnDetachedView(spec);
             if (view != null)
                 waterCannonShotBeamViews.Add(view);
         }
@@ -703,7 +706,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     {
         ClearToxicDropWarnings();
 
-        AttackTelegraphService service = GetTelegraphService();
+        IAttackTelegraphPresenter service = GetTelegraphService();
         if (service == null || dropPositions == null)
             return;
 
@@ -715,7 +718,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
                 ToxicDropWarningSeconds,
                 toxicDropWarningStyle));
 
-            AttackTelegraphView view = service.SpawnDetachedView(spec);
+            IAttackTelegraphHandle view = service.SpawnDetachedView(spec);
             if (view != null)
                 toxicDropWarningViews.Add(view);
         }
@@ -876,7 +879,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         Vector3 blastPosition,
         GameObject blastEffectPrefab,
         CombatHitPayload hitPayload,
-        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry)
+        SharedHitRegistry2D sharedHitRegistry)
     {
         if (ShouldSkipCrossWaterPillarBlastPosition(blastPosition))
             return;
@@ -892,7 +895,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 
         crossWaterPillarBlastEffects.Add(effect);
 
-        TimedAnimatedHitEffect2D timedHitEffect = effect.GetComponentInChildren<TimedAnimatedHitEffect2D>(true);
+        ITimedHitEffect2D timedHitEffect = effect.GetComponentInChildren<ITimedHitEffect2D>(true);
         if (timedHitEffect != null)
         {
             timedHitEffect.Play(crossWaterPillarBlastViewSeconds, hitPayload, sharedHitRegistry);
@@ -902,7 +905,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         if (WarnedMissingCrossWaterPillarTimedHitEffectPrefabs.Add(blastEffectPrefab.GetInstanceID()))
         {
             Debug.LogWarning(
-                $"[{nameof(SlimeQueenP2Long)}] CrossWaterPillar blast effect prefab has no {nameof(TimedAnimatedHitEffect2D)}. " +
+                $"[{nameof(SlimeQueenP2Long)}] CrossWaterPillar blast effect prefab has no {nameof(ITimedHitEffect2D)} implementation. " +
                 "물기둥 이펙트는 표시되지만 이펙트 콜리더 피해 타이밍은 적용되지 않습니다.",
                 blastEffectPrefab);
         }
@@ -1369,25 +1372,23 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     }
 
     /// <summary>생성된 단일 텔레그래프 뷰를 제거합니다.</summary>
-    private static void ClearView(ref AttackTelegraphView view)
+    private static void ClearView(ref IAttackTelegraphHandle view)
     {
-        if (view != null)
-            Destroy(view.gameObject);
+        view?.Release();
 
         view = null;
     }
 
     /// <summary>생성된 텔레그래프 뷰 목록을 제거합니다.</summary>
-    private static void ClearViews(List<AttackTelegraphView> views)
+    private static void ClearViews(List<IAttackTelegraphHandle> views)
     {
         if (views == null)
             return;
 
         for (int i = 0; i < views.Count; i++)
         {
-            AttackTelegraphView view = views[i];
-            if (view != null)
-                Destroy(view.gameObject);
+            IAttackTelegraphHandle view = views[i];
+            view?.Release();
         }
 
         views.Clear();

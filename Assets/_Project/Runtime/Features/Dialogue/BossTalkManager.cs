@@ -1,8 +1,10 @@
 using System.Collections;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+/// <summary>
+/// 책임 : 레거시 보스 대화 조우에서 카메라 포커스, 대화 재생, 전투 시작 전환을 순서대로 실행한다.
+/// </summary>
 public class BossTalkManager : MonoBehaviour
 {
     [Header("Legacy Data")]
@@ -11,8 +13,8 @@ public class BossTalkManager : MonoBehaviour
     [SerializeField, HideInInspector] private TextAsset legacyInkJSON;
 
     [Header("Legacy Camera Settings")]
-    [SerializeField] private CinemachineCamera playerCam;
-    [SerializeField] private CinemachineCamera bossCam;
+    [SerializeField] private Component playerCam;
+    [SerializeField] private Component bossCam;
     [SerializeField] private int normalPriority = 10;
     [SerializeField] private int focusPriority = 100;
     [SerializeField] private bool playOnStart = true;
@@ -20,7 +22,7 @@ public class BossTalkManager : MonoBehaviour
     [SerializeField] private float blendWaitFallbackSeconds = 2f;
 
     [Header("Sequence")]
-    [SerializeField] private CameraPresentationDirector cameraDirector;
+    [SerializeField] private MonoBehaviour cameraDirector;
     [SerializeField] private BossDialogueRunner dialogueRunner;
     [SerializeField] private BossControllerBase bossController;
     [SerializeField] private bool startBossCombatAfterDialogue = true;
@@ -36,6 +38,7 @@ public class BossTalkManager : MonoBehaviour
     private bool holdsRunTimerPause;
 
     public bool IsSequenceRunning => runningSequence != null;
+    private ICameraPresentationDirector CameraDirector => CameraPresentationPlayback.FromBehaviour(cameraDirector);
 
     private void Awake()
     {
@@ -71,8 +74,7 @@ public class BossTalkManager : MonoBehaviour
         ReleasePlayerCinematicProtection();
         RestorePlayerState();
 
-        if (cameraDirector != null)
-            cameraDirector.RestoreDefaultState();
+        CameraDirector?.RestoreDefaultState();
     }
 
     public void BeginEncounterSequence()
@@ -106,9 +108,10 @@ public class BossTalkManager : MonoBehaviour
         TryCacheAndLockPlayer();
         yield return new WaitUntil(IsSceneTransitionReady);
         ReleaseTransitionPlayerLock();
-        yield return cameraDirector.FocusBossRoutine();
+        ICameraPresentationDirector resolvedCameraDirector = CameraDirector;
+        yield return resolvedCameraDirector.FocusBossRoutine();
         yield return dialogueRunner.PlayDialogueRoutine();
-        yield return cameraDirector.ReturnToPlayerRoutine();
+        yield return resolvedCameraDirector.ReturnToPlayerRoutine();
 
         ReleasePlayerCinematicProtection();
         RestorePlayerState();
@@ -120,7 +123,7 @@ public class BossTalkManager : MonoBehaviour
 
     private bool ValidateSetup()
     {
-        if (cameraDirector == null)
+        if (CameraDirector == null)
         {
             Debug.LogError("[BossTalkManager] cameraDirector is missing.", this);
             return false;
@@ -137,11 +140,8 @@ public class BossTalkManager : MonoBehaviour
 
     private void CacheDependencies()
     {
-        if (cameraDirector == null)
-            cameraDirector = GetComponent<CameraPresentationDirector>();
-
-        if (cameraDirector == null)
-            cameraDirector = gameObject.AddComponent<CameraPresentationDirector>();
+        if (CameraDirector == null)
+            cameraDirector = CameraPresentationPlayback.GetOrAdd(gameObject) as MonoBehaviour;
 
         if (dialogueRunner == null)
             dialogueRunner = GetComponent<BossDialogueRunner>();
@@ -152,9 +152,11 @@ public class BossTalkManager : MonoBehaviour
 
     private void ConfigureLegacyAdapters()
     {
-        if (cameraDirector != null)
+        ICameraPresentationSettingsReceiver cameraSettingsReceiver =
+            CameraPresentationPlayback.AsSettingsReceiver(cameraDirector);
+        if (cameraSettingsReceiver != null)
         {
-            cameraDirector.ApplyPresentationSettings(
+            cameraSettingsReceiver.ApplyPresentationSettings(
                 playerCam,
                 bossCam,
                 normalPriority,
@@ -254,7 +256,7 @@ public class BossTalkManager : MonoBehaviour
 
     private static bool IsSceneTransitionReady()
     {
-        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance();
+        ISceneFadeTransitionHandle transitionService = SceneFadeTransitionPlayback.EnsureInstance();
         return transitionService == null || !transitionService.IsTransitionActive;
     }
 
@@ -263,7 +265,7 @@ public class BossTalkManager : MonoBehaviour
         if (holdsTransitionPlayerLock)
             return;
 
-        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance();
+        ISceneFadeTransitionHandle transitionService = SceneFadeTransitionPlayback.EnsureInstance();
         if (transitionService == null)
             return;
 
@@ -276,7 +278,7 @@ public class BossTalkManager : MonoBehaviour
         if (!holdsTransitionPlayerLock)
             return;
 
-        SceneFadeTransitionService transitionService = SceneFadeTransitionService.Instance;
+        ISceneFadeTransitionHandle transitionService = SceneFadeTransitionPlayback.Instance;
         if (transitionService != null)
             transitionService.SetPlayerUnlockBlocked(this, false);
 
@@ -351,7 +353,7 @@ public class BossTalkManager : MonoBehaviour
         }
 
         bossController.BeginCombatEncounter(PlayerRuntimeRegistry.GetPlayerTransform());
-        RunRouteBgmService.EnsureInstance()?.NotifyBossCombatStarted();
+        RunRouteBgmPlayback.NotifyBossCombatStarted();
     }
 
     private void HandlePlayerRegistered(PlayerInteractor2D player)

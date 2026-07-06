@@ -45,15 +45,13 @@ public class PlayerConsumableInput2D : MonoBehaviour
         if (IsUseBlocked())
             return;
 
-        InputBindingService input = InputBindingService.EnsureInstance();
-
-        if (input.WasPressedThisFrame(InputActionId.ConsumableSlot1))
+        if (InputActionQuery.WasPressedThisFrame(InputActionId.ConsumableSlot1))
             consumableInventory.TryUseAt(0);
-        else if (input.WasPressedThisFrame(InputActionId.ConsumableSlot2))
+        else if (InputActionQuery.WasPressedThisFrame(InputActionId.ConsumableSlot2))
             consumableInventory.TryUseAt(1);
-        else if (input.WasPressedThisFrame(InputActionId.ConsumableSlot3))
+        else if (InputActionQuery.WasPressedThisFrame(InputActionId.ConsumableSlot3))
             consumableInventory.TryUseAt(2);
-        else if (input.WasPressedThisFrame(InputActionId.ConsumableSlot4))
+        else if (InputActionQuery.WasPressedThisFrame(InputActionId.ConsumableSlot4))
             consumableInventory.TryUseAt(3);
     }
 
@@ -75,19 +73,15 @@ public class PlayerConsumableInput2D : MonoBehaviour
 
     private static bool IsGameplayInputBlockedByUiOrFlow()
     {
-        if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+        if (DialoguePlayback.IsPlaying)
             return true;
 
-        if (UIManager.Instance != null && UIManager.Instance.HasBlockingUI())
+        if (UiInteractionStateQuery.HasBlockingUI())
             return true;
 
-        if (SceneTransitionCoordinator.Instance != null &&
-            SceneTransitionCoordinator.Instance.IsTransitionActive)
-        {
+        if (SceneTransitionPlayback.IsTransitionActive)
             return true;
-        }
 
-        return LoadingOverlayController.Instance != null &&
-               LoadingOverlayController.Instance.IsActiveLoadingPresentation;
+        return LoadingPresentationQuery.IsActiveLoadingPresentation;
     }
 }

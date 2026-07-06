@@ -1,6 +1,9 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : 타이틀 화면의 프로필 실행 요청이 새 런/이어하기 중 어떤 의미인지 표현한다.
+/// </summary>
 public enum TitleProfileLaunchAction
 {
     None = 0,
@@ -8,6 +11,9 @@ public enum TitleProfileLaunchAction
     ContinueRun = 2
 }
 
+/// <summary>
+/// 책임 : 타이틀 화면에서 선택한 슬롯, 실행 동작, 이동 대상 씬 이름을 전달하는 요청 데이터이다.
+/// </summary>
 [Serializable]
 public struct TitleProfileLaunchRequest
 {
@@ -28,6 +34,9 @@ public struct TitleProfileLaunchRequest
     public bool IsValid => action != TitleProfileLaunchAction.None && !string.IsNullOrWhiteSpace(targetSceneName);
 }
 
+/// <summary>
+/// 책임 : 타이틀 프로필 실행 준비 결과와 실제 이동할 씬 이름을 반환한다.
+/// </summary>
 internal readonly struct TitleProfileLaunchResult
 {
     public readonly bool Succeeded;
@@ -40,6 +49,9 @@ internal readonly struct TitleProfileLaunchResult
     }
 }
 
+/// <summary>
+/// 책임 : 타이틀 프로필 실행 전 저장 슬롯 로드, preload 창 준비, 허브 진입 회복 예약을 조율한다.
+/// </summary>
 internal static class TitleProfileLaunchService
 {
     public static bool PreparePreloadWindow(
@@ -73,7 +85,7 @@ internal static class TitleProfileLaunchService
             gameDataManager.SaveData();
         }
 
-        if (SceneDomainScenePolicy.IsHubSceneName(request.TargetSceneName))
+        if (SceneDomainNamePolicy.IsHubSceneName(request.TargetSceneName))
             GamePlayDataManager.EnsureInstance()?.RequestPendingHubLoadFullHeal();
 
         return new TitleProfileLaunchResult(true, request.TargetSceneName);

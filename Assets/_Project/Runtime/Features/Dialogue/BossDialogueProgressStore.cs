@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// 책임: 보스 NPC별 조우/승리/패배 대화 진행 카운트를 저장 데이터에 기록하고 조회한다.
 public static class BossDialogueProgressStore
 {
     public static int GetEncounterCount(int npcId)
@@ -62,7 +63,7 @@ public static class BossDialogueProgressStore
 
     private static BossDialogueRecord GetRecord(int npcId)
     {
-        GameData data = GameDataManager.Instance != null ? GameDataManager.Instance.Data : null;
+        GameData data = GameDataStore.Data;
         if (data == null || data.bossDialogueData == null || data.bossDialogueData.bossRecords == null)
             return null;
 
@@ -71,23 +72,21 @@ public static class BossDialogueProgressStore
 
     private static BossDialogueRecord GetOrCreateRecord(int npcId)
     {
-        if (GameDataManager.Instance == null)
+        GameData data = GameDataStore.EnsureData();
+        if (data == null)
             return null;
 
-        GameData data = GameDataManager.Instance.EnsureData();
         data.bossDialogueData ??= new BossDialogueSaveData();
         return data.bossDialogueData.GetOrCreateRecord(npcId);
     }
 
     private static float GetCurrentTotalPlaySeconds()
     {
-        float total = GameDataManager.Instance != null && GameDataManager.Instance.Data != null
-            ? Mathf.Max(0f, GameDataManager.Instance.Data.totalPlaySeconds)
+        float total = GameDataStore.Data != null
+            ? Mathf.Max(0f, GameDataStore.Data.totalPlaySeconds)
             : 0f;
 
-        GamePlayData gameplayData = GamePlayDataManager.Instance != null
-            ? GamePlayDataManager.Instance.Data
-            : null;
+        GamePlayData gameplayData = RunSessionStore.Data;
 
         if (gameplayData != null && gameplayData.isRunActive)
             total += Mathf.Max(0f, gameplayData.runElapsedSeconds);
@@ -97,13 +96,11 @@ public static class BossDialogueProgressStore
 
     private static void RequestSaveIfSafe()
     {
-        GamePlayData gameplayData = GamePlayDataManager.Instance != null
-            ? GamePlayDataManager.Instance.Data
-            : null;
+        GamePlayData gameplayData = RunSessionStore.Data;
 
         if (gameplayData != null && gameplayData.isRunActive)
             return;
 
-        GameDataSaveCoordinator.RequestImmediateSave();
+        GameDataStore.RequestImmediateSave();
     }
 }

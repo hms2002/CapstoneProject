@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityGAS;
 
+// 책임: 씬 전환 후 플레이어 런타임 복구 요청을 현재 씬 컨텍스트와 결합해 결과를 만든다.
 internal static class PlayerSceneRestoreExecutionService
 {
     public static PlayerRuntimeRestoreResult CreateResult(
@@ -25,35 +26,32 @@ internal static class PlayerSceneRestoreExecutionService
         return new PlayerRuntimeRestoreResult(
             false,
             request.Player,
-            request.Gameplay,
             request.PendingState,
             resolver,
             default);
     }
 }
 
+// 책임: 복구 대상 플레이어와 대기 중인 런타임 상태를 함께 전달한다.
 internal readonly struct PlayerRuntimeRestoreRequest
 {
     public readonly GameObject Player;
-    public readonly GamePlayDataManager Gameplay;
     public readonly PlayerRuntimeState PendingState;
 
     public PlayerRuntimeRestoreRequest(
         GameObject player,
-        GamePlayDataManager gameplay,
         PlayerRuntimeState pendingState)
     {
         Player = player;
-        Gameplay = gameplay;
         PendingState = pendingState;
     }
 }
 
+// 책임: 플레이어 복구 계획의 성공 여부, 대상, resolver, 시스템 컨텍스트를 보관한다.
 internal readonly struct PlayerRuntimeRestoreResult
 {
     public readonly bool Succeeded;
     public readonly GameObject Player;
-    public readonly GamePlayDataManager Gameplay;
     public readonly PlayerRuntimeState PendingState;
     public readonly IPlayerRuntimeResolver Resolver;
     public readonly PlayerSystemContext Context;
@@ -61,20 +59,19 @@ internal readonly struct PlayerRuntimeRestoreResult
     public PlayerRuntimeRestoreResult(
         bool succeeded,
         GameObject player,
-        GamePlayDataManager gameplay,
         PlayerRuntimeState pendingState,
         IPlayerRuntimeResolver resolver,
         PlayerSystemContext context)
     {
         Succeeded = succeeded;
         Player = player;
-        Gameplay = gameplay;
         PendingState = pendingState;
         Resolver = resolver;
         Context = context;
     }
 }
 
+// 책임: pending 플레이어 복원 상태와 현재 플레이어 컴포넌트를 수집해 복원 계획/결과를 만든다.
 internal static class PlayerSceneRestorePlanner
 {
     public static GameObject FindPlayer()
@@ -96,11 +93,9 @@ internal static class PlayerSceneRestorePlanner
     {
         return new PlayerRuntimeRestoreResult(
             request.Player != null
-            && request.Gameplay != null
             && request.PendingState != null
             && resolver != null,
             request.Player,
-            request.Gameplay,
             request.PendingState,
             resolver,
             context);
@@ -139,12 +134,9 @@ internal static class PlayerSceneRestorePlanner
         return true;
     }
 
-    public static bool IsRestoreAllowedForCurrentScene(GamePlayDataManager gameplay)
+    public static bool IsRestoreAllowedForCurrentScene()
     {
-        if (gameplay == null)
-            return false;
-
-        SceneTransitionContext transition = gameplay.PeekPendingTransition();
+        SceneTransitionContext transition = RunSessionStore.PeekPendingTransition();
         if (transition == null || string.IsNullOrEmpty(transition.toScene))
             return true;
 

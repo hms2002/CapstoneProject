@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// 책임: 런 특수 NPC 건설 진행도의 시작/완료 상태를 런 클리어 카운트 기준으로 계산한다.
 public static class RunSpecialNpcConstructionProgress
 {
     public static bool HasStarted(string constructionId)
@@ -43,7 +44,7 @@ public static class RunSpecialNpcConstructionProgress
 
         if (IsRunActive())
         {
-            GamePlayDataManager.Instance.AddPendingRunSpecialNpcConstructionStart(
+            RunSessionStore.AddPendingRunSpecialNpcConstructionStart(
                 constructionId,
                 startedClearCount);
             return true;
@@ -53,7 +54,7 @@ public static class RunSpecialNpcConstructionProgress
             return false;
 
         saveData.GetOrCreateConstructionRecord(constructionId, startedClearCount);
-        GameDataSaveCoordinator.RequestImmediateSave();
+        GameDataStore.RequestImmediateSave();
         return true;
     }
 
@@ -71,7 +72,7 @@ public static class RunSpecialNpcConstructionProgress
             return;
 
         record.completed = true;
-        GameDataSaveCoordinator.RequestImmediateSave();
+        GameDataStore.RequestImmediateSave();
     }
 
     public static bool TryGetStartedClearCount(string constructionId, out int startedClearCount)
@@ -85,7 +86,7 @@ public static class RunSpecialNpcConstructionProgress
         }
 
         if (IsRunActive() &&
-            GamePlayDataManager.Instance.TryGetPendingRunSpecialNpcConstructionStart(
+            RunSessionStore.TryGetPendingRunSpecialNpcConstructionStart(
                 constructionId,
                 out int pendingStartedClearCount))
         {
@@ -111,10 +112,10 @@ public static class RunSpecialNpcConstructionProgress
     {
         saveData = null;
 
-        if (GameDataManager.Instance == null)
+        GameData data = GameDataStore.EnsureData();
+        if (data == null)
             return false;
 
-        GameData data = GameDataManager.Instance.EnsureData();
         data.runSpecialNpcData ??= new RunSpecialNpcSaveData();
         data.runSpecialNpcData.constructionRecords ??= new System.Collections.Generic.List<RunSpecialNpcConstructionRecord>();
         saveData = data.runSpecialNpcData;
@@ -123,8 +124,8 @@ public static class RunSpecialNpcConstructionProgress
 
     private static int GetCurrentClearCount()
     {
-        return GameDataManager.Instance != null && GameDataManager.Instance.Data != null
-            ? Mathf.Max(0, GameDataManager.Instance.Data.clearCount)
+        return GameDataStore.Data != null
+            ? Mathf.Max(0, GameDataStore.Data.clearCount)
             : 0;
     }
 
@@ -137,8 +138,6 @@ public static class RunSpecialNpcConstructionProgress
 
     private static bool IsRunActive()
     {
-        return GamePlayDataManager.Instance != null &&
-               GamePlayDataManager.Instance.Data != null &&
-               GamePlayDataManager.Instance.Data.isRunActive;
+        return RunSessionStore.IsRunActive;
     }
 }

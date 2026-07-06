@@ -18,9 +18,9 @@ public class WeaponDrop2D : InteractableBase
     [SerializeField] private WeaponPersistentStatePayload payload;
 
     [Header("Visual (optional)")]
-    [SerializeField] private ItemDisplayVisualPresenter2D itemDisplayPresenter;
+    [SerializeField] private Component itemDisplayPresenter;
     [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField] private WorldDropSpritePresenter2D dropSpritePresenter;
+    [SerializeField] private Component dropSpritePresenter;
 
     private MaterialPropertyBlock outlinePropertyBlock;
     private Collider2D triggerCollider;
@@ -28,6 +28,8 @@ public class WeaponDrop2D : InteractableBase
 
     public WeaponDefinition Weapon => weapon;
     public WeaponPersistentStatePayload Payload => payload;
+    private IItemDisplayVisualPresenter ItemDisplayPresenter => itemDisplayPresenter as IItemDisplayVisualPresenter;
+    private IWorldDropSpritePresenter DropSpritePresenter => dropSpritePresenter as IWorldDropSpritePresenter;
 
     public void SetWeapon(WeaponDefinition def, WeaponPersistentStatePayload runtimePayload = null)
     {
@@ -40,11 +42,17 @@ public class WeaponDrop2D : InteractableBase
     {
         SetInteractionLocked(true);
 
-        WorldItemDropTweenAnimator animator = GetComponent<WorldItemDropTweenAnimator>();
-        if (animator == null)
-            animator = gameObject.AddComponent<WorldItemDropTweenAnimator>();
+        if (WorldItemDropAnimationPlayback.TryPlayDrop(
+                gameObject,
+                startPosition,
+                landingPosition,
+                () => SetInteractionLocked(false)))
+        {
+            return;
+        }
 
-        animator.PlayDrop(startPosition, landingPosition, () => SetInteractionLocked(false));
+        transform.position = landingPosition;
+        SetInteractionLocked(false);
     }
 
     public void SetInteractionLocked(bool locked)
@@ -79,7 +87,7 @@ public class WeaponDrop2D : InteractableBase
 
     private void OnDisable()
     {
-        WorldItemDetailPresenter.Instance?.Hide(GetDetailAnchor());
+        WorldItemHoverPlayback.Hide(GetDetailAnchor());
     }
 
     public override bool CanInteract(IPlayerInteractor player)
@@ -109,9 +117,10 @@ public class WeaponDrop2D : InteractableBase
         if (weapon == null || interactionLocked)
             return;
 
-        if (itemDisplayPresenter != null)
+        IItemDisplayVisualPresenter presenter = ItemDisplayPresenter;
+        if (presenter != null)
         {
-            itemDisplayPresenter.SetOutline(true);
+            presenter.SetOutline(true);
         }
         else if (spriteRenderer != null)
         {
@@ -120,14 +129,15 @@ public class WeaponDrop2D : InteractableBase
             spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
         }
 
-        WorldItemDetailPresenter.Instance?.Show(GetDetailAnchor(), weapon);
+        WorldItemHoverPlayback.Show(GetDetailAnchor(), weapon);
     }
 
     public override void OnUnHighlight()
     {
-        if (itemDisplayPresenter != null)
+        IItemDisplayVisualPresenter presenter = ItemDisplayPresenter;
+        if (presenter != null)
         {
-            itemDisplayPresenter.SetOutline(false);
+            presenter.SetOutline(false);
         }
         else if (spriteRenderer != null)
         {
@@ -136,7 +146,7 @@ public class WeaponDrop2D : InteractableBase
             spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
         }
 
-        WorldItemDetailPresenter.Instance?.Hide(GetDetailAnchor());
+        WorldItemHoverPlayback.Hide(GetDetailAnchor());
     }
 
     public override InteractState GetInteractType() => InteractState.Idle;
@@ -160,19 +170,21 @@ public class WeaponDrop2D : InteractableBase
 
     private void RefreshVisual()
     {
-        if (itemDisplayPresenter != null)
+        IItemDisplayVisualPresenter presenter = ItemDisplayPresenter;
+        if (presenter != null)
         {
-            itemDisplayPresenter.Apply(weapon);
-            spriteRenderer = itemDisplayPresenter.FallbackRenderer;
+            presenter.Apply(weapon);
+            spriteRenderer = presenter.FallbackRenderer;
             return;
         }
 
         Sprite sprite = weapon != null ? weapon.Icon : null;
 
-        if (dropSpritePresenter != null)
+        IWorldDropSpritePresenter dropPresenter = DropSpritePresenter;
+        if (dropPresenter != null)
         {
-            dropSpritePresenter.Apply(sprite);
-            spriteRenderer = dropSpritePresenter.Renderer;
+            dropPresenter.Apply(sprite);
+            spriteRenderer = dropPresenter.Renderer;
             return;
         }
 
@@ -190,19 +202,33 @@ public class WeaponDrop2D : InteractableBase
     /// </summary>
     private void ResolveVisualRefs()
     {
-        if (itemDisplayPresenter == null)
-            itemDisplayPresenter = GetComponentInChildren<ItemDisplayVisualPresenter2D>(includeInactive: true);
+        if (itemDisplayPresenter is not IItemDisplayVisualPresenter)
+            itemDisplayPresenter = FindPresentationComponent<IItemDisplayVisualPresenter>();
 
-        if (itemDisplayPresenter != null)
-            spriteRenderer = itemDisplayPresenter.FallbackRenderer;
+        IItemDisplayVisualPresenter presenter = ItemDisplayPresenter;
+        if (presenter != null)
+            spriteRenderer = presenter.FallbackRenderer;
 
-        if (dropSpritePresenter == null)
-            dropSpritePresenter = GetComponentInChildren<WorldDropSpritePresenter2D>(includeInactive: true);
+        if (dropSpritePresenter is not IWorldDropSpritePresenter)
+            dropSpritePresenter = FindPresentationComponent<IWorldDropSpritePresenter>();
 
-        if (itemDisplayPresenter == null && dropSpritePresenter != null)
-            spriteRenderer = dropSpritePresenter.Renderer;
+        IWorldDropSpritePresenter dropPresenter = DropSpritePresenter;
+        if (presenter == null && dropPresenter != null)
+            spriteRenderer = dropPresenter.Renderer;
 
         if (spriteRenderer == null)
             spriteRenderer = GetComponentInChildren<SpriteRenderer>(includeInactive: true);
+    }
+
+    private Component FindPresentationComponent<TContract>() where TContract : class
+    {
+        MonoBehaviour[] behaviours = GetComponentsInChildren<MonoBehaviour>(includeInactive: true);
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is TContract)
+                return behaviours[i];
+        }
+
+        return null;
     }
 }

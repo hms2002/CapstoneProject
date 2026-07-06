@@ -173,7 +173,7 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
         return BossRunProgressPolicy.Evaluate(
             new BossRunProgressRequest(
                 rewardBoss,
-                PortalRouteManager.Instance,
+                RunRoutePlayback.Backend,
                 modifiers)).ToRewardContext();
     }
 
@@ -292,13 +292,13 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
         if (!logDebug)
             return;
 
-        PortalRouteManager routeManager = PortalRouteManager.Instance;
-        string catalogName = routeManager != null && routeManager.ActiveRouteCatalog != null
-            ? routeManager.ActiveRouteCatalog.name
+        RunRouteCatalogSO activeCatalog = RunRoutePlayback.ActiveRouteCatalog;
+        string catalogName = activeCatalog != null
+            ? activeCatalog.name
             : "None";
-        bool hasActivePlan = routeManager != null && routeManager.HasActivePlan;
-        int currentStageIndex = routeManager != null ? routeManager.CurrentStageIndex : -1;
-        int totalStageCount = routeManager != null ? routeManager.TotalStageCount : 0;
+        bool hasActivePlan = RunRoutePlayback.HasActivePlan;
+        int currentStageIndex = RunRoutePlayback.CurrentStageIndexOrInvalid;
+        int totalStageCount = RunRoutePlayback.TotalStageCount;
 
         LogDebug(
             $"Reward context. RouteSet={ResolveRouteSetName(context)}, " +

@@ -8,6 +8,7 @@ using UnityEngine.Serialization;
 
 namespace UnityGAS
 {
+    // 책임: GameplayCueDefinition 요청을 실제 cue 프리팹 재생/해제 흐름으로 중계한다.
     public class GameplayCueManager : MonoBehaviour
     {
         [SerializeField] private GameplayCueDatabase cueDatabase;
@@ -44,6 +45,7 @@ namespace UnityGAS
         }
 
         [Serializable]
+        // 책임: cue tag/target/source 조합을 active cue dictionary key로 식별한다.
         private struct CueKey : IEquatable<CueKey>
         {
             public int TagId;
@@ -78,6 +80,7 @@ namespace UnityGAS
             }
         }
 
+        // 책임: 실행 중인 cue prefab, notify, transform/audio handle을 추적한다.
         private sealed class ActiveCueInstance
         {
             public GameplayCueDefinition Def;
@@ -343,7 +346,7 @@ namespace UnityGAS
 
             if (inst.Instance != null && def.autoDestroySeconds > 0f)
             {
-                if (inst.Notify is not GameplayCue_HitSparkParticles)
+                if (!GameplayCuePrefabInstanceProviders.ShouldSuppressAutoDestroy(inst.Notify))
                     Destroy(inst.Instance, def.autoDestroySeconds);
             }
         }
@@ -473,8 +476,8 @@ namespace UnityGAS
         /// </summary>
         private static GameObject AcquireCuePrefabInstance(GameObject cuePrefab)
         {
-            if (cuePrefab != null && cuePrefab.GetComponent<GameplayCue_HitSparkParticles>() != null)
-                return GameplayCue_HitSparkParticles.AcquireInstance(cuePrefab);
+            if (GameplayCuePrefabInstanceProviders.TryAcquire(cuePrefab, out GameObject instance))
+                return instance;
 
             return Instantiate(cuePrefab);
         }
@@ -488,11 +491,8 @@ namespace UnityGAS
             if (instance == null)
                 return;
 
-            if (notify is GameplayCue_HitSparkParticles)
-            {
-                instance.SetActive(false);
+            if (GameplayCuePrefabInstanceProviders.TryRelease(instance, notify))
                 return;
-            }
 
             Destroy(instance);
         }
@@ -693,7 +693,7 @@ namespace UnityGAS
             if (def == null)
                 return;
 
-            WorldPresentationRuntime.PlayMerged(
+            WorldPresentationPlayback.PlayMerged(
                 def.presentationOnExecute,
                 def.audioOnExecute,
                 def.cameraShakeOnExecute,
@@ -705,7 +705,7 @@ namespace UnityGAS
             if (def == null)
                 return;
 
-            WorldPresentationRuntime.PlayMerged(
+            WorldPresentationPlayback.PlayMerged(
                 def.presentationOnRemove,
                 def.audioOnRemove,
                 def.cameraShakeOnRemove,
@@ -717,11 +717,10 @@ namespace UnityGAS
             if (inst == null || inst.Def == null || !inst.Def.audioWhileActive.IsSet)
                 return;
 
-            SoundManager manager = SoundManager.EnsureInstance();
-            if (manager.IsPlaying(inst.AudioLoopHandle))
+            if (SoundPlaybackUtility.IsPlaying(inst.AudioLoopHandle))
                 return;
 
-            inst.AudioLoopHandle = manager.Play(inst.Def.audioWhileActive, BuildSoundContext(p));
+            inst.AudioLoopHandle = SoundPlaybackUtility.Play(inst.Def.audioWhileActive, BuildSoundContext(p));
         }
 
         private static void PlayCueWhileActiveShake(GameplayCueDefinition def, in GameplayCueParams p)
@@ -729,7 +728,7 @@ namespace UnityGAS
             if (def == null)
                 return;
 
-            WorldPresentationRuntime.PlayMerged(
+            WorldPresentationPlayback.PlayMerged(
                 def.presentationWhileActive,
                 default,
                 def.cameraShakeWhileActive,
@@ -754,7 +753,7 @@ namespace UnityGAS
             if (inst == null || !inst.AudioLoopHandle.IsValid)
                 return;
 
-            SoundManager.EnsureInstance().Stop(inst.AudioLoopHandle);
+            SoundPlaybackUtility.Stop(inst.AudioLoopHandle);
             inst.AudioLoopHandle = AudioHandle.Invalid;
         }
     }

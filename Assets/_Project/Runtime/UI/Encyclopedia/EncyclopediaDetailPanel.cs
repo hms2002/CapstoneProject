@@ -7,6 +7,9 @@ using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityGAS;
 
+/// <summary>
+/// 책임 : 도감 항목의 상세 정보, 아이콘, 설명, 인벤토리 전용 상세 뷰를 표시한다.
+/// </summary>
 [AddComponentMenu("")]
 [DisallowMultipleComponent]
 public sealed class EncyclopediaDetailPanel : MonoBehaviour
@@ -82,7 +85,7 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
     private void AutoWireReferences()
     {
         ResolveReferences();
-        UnityEditor.EditorUtility.SetDirty(this);
+        EditorAuthoringPlayback.MarkDirty(this);
     }
 #endif
 

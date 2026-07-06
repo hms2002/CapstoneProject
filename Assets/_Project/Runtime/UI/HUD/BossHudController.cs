@@ -12,13 +12,13 @@ using UnityEngine.SceneManagement;
 /// - 씬 전환, 보스 파괴, 강제 해제 상황에서 남은 HUD 슬롯을 안전하게 정리한다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class BossHudController : MonoBehaviour
+public sealed class BossHudController : MonoBehaviour, IBossHudBackend
 {
     public static BossHudController Instance { get; private set; }
 
     [Header("Binding")]
     [Tooltip("씬에서 직접 연결할 보스 엔티티입니다.")]
-    [SerializeField] private BossControllerBase targetBoss;
+    [SerializeField] private MonoBehaviour targetBoss;
     [SerializeField] private bool autoFindBossOnSceneLoad = true;
 
     [Tooltip("비어 있으면 보스 오브젝트 이름을 그대로 사용합니다.")]
@@ -66,7 +66,7 @@ public sealed class BossHudController : MonoBehaviour
     /// </summary>
     private sealed class BossHudRegistration
     {
-        public BossControllerBase Boss;
+        public IBossHudSource Boss;
         public BossHudSlotView Slot;
         public string DisplayNameOverride;
         public BossHudHealthBarTheme HealthBarTheme;
@@ -82,6 +82,7 @@ public sealed class BossHudController : MonoBehaviour
         }
 
         Instance = this;
+        BossHudPlayback.RegisterBackend(this);
         EnsureSlotLayout();
         ResolveBossBinding();
     }
@@ -107,6 +108,8 @@ public sealed class BossHudController : MonoBehaviour
     {
         if (Instance == this)
             Instance = null;
+
+        BossHudPlayback.UnregisterBackend(this);
     }
 
     private void Update()
@@ -159,7 +162,7 @@ public sealed class BossHudController : MonoBehaviour
     /// - 활성 보스가 자신을 HUD에 명시적으로 등록할 수 있는 단일 진입점을 제공한다.
     /// - 씬 탐색보다 우선하는 명시적 바인딩 경로를 통해 다중 보스/타이밍 문제를 줄인다.
     /// </summary>
-    public void BindBoss(BossControllerBase boss)
+    public void BindBoss(IBossHudSource boss)
     {
         RegisterBoss(boss);
         if (!TryRefreshRegisteredBosses(allowFallbackBind: false))
@@ -171,7 +174,7 @@ public sealed class BossHudController : MonoBehaviour
     /// - 현재 HUD source가 소유한 보스가 해제될 때만 안전하게 참조를 비운다.
     /// - 다중 보스 source는 남은 보스 snapshot을 만들 수 있으면 HUD 표시를 유지한다.
     /// </summary>
-    public void UnbindBoss(BossControllerBase boss)
+    public void UnbindBoss(IBossHudSource boss)
     {
         UnregisterBoss(boss);
         if (TryRefreshRegisteredBosses(allowFallbackBind: false))
@@ -185,7 +188,7 @@ public sealed class BossHudController : MonoBehaviour
     /// - 호출자가 display name 없이 체력바 테마만 요청할 때 인자 순서를 헷갈리지 않는 진입점을 제공한다.
     /// - 내부 등록 정책은 문자열 override를 받는 기본 RegisterBoss 경로로 모은다.
     /// </summary>
-    public void RegisterBoss(BossControllerBase boss, BossHudHealthBarTheme healthBarTheme)
+    public void RegisterBoss(IBossHudSource boss, BossHudHealthBarTheme healthBarTheme)
     {
         RegisterBoss(boss, null, healthBarTheme);
     }
@@ -196,7 +199,7 @@ public sealed class BossHudController : MonoBehaviour
     /// - 이미 등록된 보스는 중복 슬롯 없이 사망 표시만 해제합니다.
     /// </summary>
     public void RegisterBoss(
-        BossControllerBase boss,
+        IBossHudSource boss,
         string bossDisplayNameOverride = null,
         BossHudHealthBarTheme healthBarTheme = null)
     {
@@ -240,7 +243,7 @@ public sealed class BossHudController : MonoBehaviour
     /// - 보스 사망 시작 시 HUD 슬롯을 제거하지 않고 체력 0 상태로 유지하도록 표시한다.
     /// - 처치 연출과 실제 HUD 제거 타이밍을 분리해 다중 보스 피드백을 안정화한다.
     /// </summary>
-    public void MarkBossDefeated(BossControllerBase boss)
+    public void MarkBossDefeated(IBossHudSource boss)
     {
         if (boss == null)
             return;
@@ -264,7 +267,7 @@ public sealed class BossHudController : MonoBehaviour
     /// - 보스 처치 연출 종료, Destroy, 강제 전투 종료 시 해당 보스 슬롯을 실제로 제거한다.
     /// - 남은 보스가 없으면 HUD 전체를 숨긴다.
     /// </summary>
-    public void UnregisterBoss(BossControllerBase boss)
+    public void UnregisterBoss(IBossHudSource boss)
     {
         if (boss == null)
         {
@@ -300,9 +303,9 @@ public sealed class BossHudController : MonoBehaviour
 
     private bool TryBindFallbackBoss()
     {
-        BossControllerBase boss = targetBoss;
+        IBossHudSource boss = targetBoss as IBossHudSource;
         if (boss == null && ShouldUseAutoFindFallback())
-            boss = FindAnyObjectByType<BossControllerBase>();
+            boss = FindAnyBossHudSource();
 
         if (boss == null)
             return false;
@@ -371,7 +374,7 @@ public sealed class BossHudController : MonoBehaviour
 
     private void ApplyRegistration(BossHudRegistration registration)
     {
-        if (registration == null || registration.Boss == null)
+        if (registration == null || IsBossSourceMissing(registration.Boss))
         {
             return;
         }
@@ -384,7 +387,7 @@ public sealed class BossHudController : MonoBehaviour
         BossHudSlotSnapshot snapshot = BossHudSlotSnapshot.FromBoss(
             registration.Boss,
             registration.DisplayNameOverride,
-            registration.IsDefeated || registration.Boss.IsDead || registration.Boss.HasDeadTag(),
+            registration.IsDefeated || registration.Boss.IsBossHudDead,
             registration.HealthBarTheme);
 
         if (registration.Slot != null)
@@ -423,7 +426,7 @@ public sealed class BossHudController : MonoBehaviour
         ApplyGroggyLabel(snapshot.IsGroggy);
     }
 
-    private BossHudRegistration FindRegistration(BossControllerBase boss)
+    private BossHudRegistration FindRegistration(IBossHudSource boss)
     {
         if (boss == null)
             return null;
@@ -443,7 +446,7 @@ public sealed class BossHudController : MonoBehaviour
         for (int i = registrations.Count - 1; i >= 0; i--)
         {
             BossHudRegistration registration = registrations[i];
-            if (registration == null || registration.Boss == null)
+            if (registration == null || IsBossSourceMissing(registration.Boss))
             {
                 if (registration != null)
                     DestroySlot(registration.Slot);
@@ -451,6 +454,28 @@ public sealed class BossHudController : MonoBehaviour
                 registrations.RemoveAt(i);
             }
         }
+    }
+
+    private static bool IsBossSourceMissing(IBossHudSource boss)
+    {
+        return boss == null || boss.HudSourceComponent == null;
+    }
+
+    private IBossHudSource FindAnyBossHudSource()
+    {
+#if UNITY_2023_1_OR_NEWER
+        MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+#else
+        MonoBehaviour[] behaviours = FindObjectsOfType<MonoBehaviour>();
+#endif
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is IBossHudSource source)
+                return source;
+        }
+
+        return null;
     }
 
     private BossHudSlotView CreateSlotView()

@@ -6,6 +6,9 @@ using static UnityGAS.AbilityDefinition;
 
 namespace UnityGAS
 {
+    /// <summary>
+    /// 책임 : AbilityDefinition 실행, 쿨다운, 태그 이벤트, 효과 적용, spec 단위 표현 수명 정리를 소유하는 Core 전투 능력 런타임이다.
+    /// </summary>
     public class AbilitySystem : MonoBehaviour
     {
         [Header("Initial Abilities (Definitions)")]
@@ -210,6 +213,7 @@ namespace UnityGAS
                 spec.Token?.Cancel();
             }
         }
+        // 책임: AbilityDefinition별 충전 수와 남은 재충전 시간을 저장한다.
         private struct ChargeState
         {
             public int charges;
@@ -250,7 +254,7 @@ namespace UnityGAS
         public GameObject CurrentTargetGameObject => isCasting ? currentTarget : currentExecTarget;
 
         internal AbilityPresentationRouter PresentationRouter => presentationRouter;
-        internal AbilityVisualRouter VisualRouter => visualRouter;
+        public AbilityVisualRouter VisualRouter => visualRouter;
         internal AbilityCooldownController CooldownController => cooldownController;
 
         public Action<AbilityDefinition> OnAbilityCastStart;
@@ -383,7 +387,6 @@ namespace UnityGAS
             }
         }
 
-
         public AbilitySpec GiveAbility(AbilityDefinition def)
         {
             if (def == null)
@@ -399,8 +402,6 @@ namespace UnityGAS
             RestoreChargeStateIfNeeded(def, spec);
             return spec;
         }
-        
-    
 
     public bool TakeAbility(AbilityDefinition def)
         {
@@ -931,7 +932,7 @@ namespace UnityGAS
             return gameplayEventChannel?.Wait(tag, ownerSpec);
         }
 
-        internal void SubscribeGameplayEvent(Action<GameplayTag, AbilityEventData> handler)
+        public void SubscribeGameplayEvent(Action<GameplayTag, AbilityEventData> handler)
         {
             if (handler == null || gameplayEventChannel == null)
                 return;
@@ -939,7 +940,7 @@ namespace UnityGAS
             gameplayEventChannel.GameplayEventRaised += handler;
         }
 
-        internal void UnsubscribeGameplayEvent(Action<GameplayTag, AbilityEventData> handler)
+        public void UnsubscribeGameplayEvent(Action<GameplayTag, AbilityEventData> handler)
         {
             if (handler == null || gameplayEventChannel == null)
                 return;

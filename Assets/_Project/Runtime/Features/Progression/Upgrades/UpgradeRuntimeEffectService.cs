@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+// 책임: 런타임 플레이어에게 구매/해금된 업그레이드 효과를 중복 없이 적용한다.
 internal sealed class UpgradeRuntimeEffectService
 {
     private readonly Func<PlayerInteractor2D> resolveCurrentPlayer;
@@ -40,10 +41,10 @@ internal sealed class UpgradeRuntimeEffectService
             return false;
 
         PlayerInteractor2D player = ResolveCurrentPlayer();
-        if (player == null || GameDataManager.Instance == null || progressService == null || effectApplier == null)
+        if (player == null || !GameDataStore.IsAvailable || progressService == null || effectApplier == null)
             return false;
 
-        GameData data = GameDataManager.Instance.EnsureData();
+        GameData data = GameDataStore.EnsureData();
         if (data?.upgradeData?.purchasedIDs == null)
             return false;
 
@@ -59,10 +60,10 @@ internal sealed class UpgradeRuntimeEffectService
         if (player == null)
             player = ResolveCurrentPlayer();
 
-        if (player == null || GameDataManager.Instance == null || progressService == null || effectApplier == null)
+        if (player == null || !GameDataStore.IsAvailable || progressService == null || effectApplier == null)
             return;
 
-        GameData data = GameDataManager.Instance.EnsureData();
+        GameData data = GameDataStore.EnsureData();
         if (data?.upgradeData?.purchasedIDs == null)
             return;
 
@@ -86,10 +87,10 @@ internal sealed class UpgradeRuntimeEffectService
 
     private void ReapplyPurchasedEffects(PlayerInteractor2D player)
     {
-        if (player == null || GameDataManager.Instance == null || progressService == null || effectApplier == null)
+        if (player == null || !GameDataStore.IsAvailable || progressService == null || effectApplier == null)
             return;
 
-        GameData data = GameDataManager.Instance.EnsureData();
+        GameData data = GameDataStore.EnsureData();
         if (data == null)
             return;
 

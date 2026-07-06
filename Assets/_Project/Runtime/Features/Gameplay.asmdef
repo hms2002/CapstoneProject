@@ -1,0 +1,19 @@
+{
+    "name": "Gameplay",
+    "rootNamespace": "",
+    "references": [
+        "Core",
+        "Ink-Libraries",
+        "Unity.Behavior",
+        "Unity.2D.Animation.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

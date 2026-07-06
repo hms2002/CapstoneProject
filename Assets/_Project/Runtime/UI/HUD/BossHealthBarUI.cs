@@ -9,7 +9,7 @@ using UnityEngine.UI;
 /// - 체력 감소 중 추가 피격이 오면 잔상 시작 타이머를 리셋해, 큰 피해가 누적되는 체감을 유지한다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class BossHealthBarUI : MonoBehaviour
+public sealed class BossHealthBarUI : MonoBehaviour, IDefaultHudVisibilityTarget
 {
     [Header("Sliders")]
     [Tooltip("실제 보스 체력을 즉시 표시하는 앞쪽 슬라이더입니다.")]
@@ -86,7 +86,7 @@ public sealed class BossHealthBarUI : MonoBehaviour
 
         frameImage.sprite = nextSprite;
         frameImage.type = theme != null && theme.FrameSprite != null
-            ? theme.FrameImageType
+            ? ResolveImageType(theme.FrameImageType)
             : defaultFrameImageType;
         frameImage.pixelsPerUnitMultiplier = theme != null && theme.FrameSprite != null
             ? theme.PixelsPerUnitMultiplier
@@ -136,6 +136,18 @@ public sealed class BossHealthBarUI : MonoBehaviour
         }
 
         previousHealthRatio = currentRatio;
+    }
+
+    private static Image.Type ResolveImageType(BossHudFrameImageType imageType)
+    {
+        return imageType switch
+        {
+            BossHudFrameImageType.Simple => Image.Type.Simple,
+            BossHudFrameImageType.Sliced => Image.Type.Sliced,
+            BossHudFrameImageType.Tiled => Image.Type.Tiled,
+            BossHudFrameImageType.Filled => Image.Type.Filled,
+            _ => Image.Type.Sliced
+        };
     }
 
     /// <summary>

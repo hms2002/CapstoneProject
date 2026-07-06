@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
+// 책임: 방 안의 남은 몬스터가 화면 밖에 있을 때 방향 화살표를 생성하고 갱신한다.
 public sealed class RoomEnemyNavigationOverlay : MonoBehaviour
 {
     [Header("Arrow")]
@@ -168,7 +169,7 @@ public sealed class RoomEnemyNavigationOverlay : MonoBehaviour
         if (worldCamera != null && worldCamera.isActiveAndEnabled)
             return worldCamera;
 
-        Camera camera = CameraBootstrap.GetMainCamera();
+        Camera camera = GameplayCameraViewQuery.GetMainCamera();
         return camera != null ? camera : Camera.main;
     }
 

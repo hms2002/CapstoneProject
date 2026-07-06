@@ -1,14 +1,15 @@
 using CapstoneAudio;
+using System.Collections;
 using UnityEngine;
-using DG.Tweening;
 using UnityGAS;
 
+/// <summary>
+/// 책임 : 월드 체력 회복 픽업의 수집 판정, 회복 적용, 드롭/대기/수집 표현을 관리한다.
+/// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
 public class FieldHealPickup2D : MonoBehaviour
 {
-    // 이 클래스의 책임:
-    // 월드에 떨어진 체력 회복 픽업을 관리하고, 유효한 PickupCollector2D와 접촉했을 때만 회복 후 자신을 제거한다.
     private static readonly SoundRef CollectSound = SoundRef.FromKey("sound_player_GetFiledHeart");
 
     [Header("Heal")]
@@ -42,7 +43,7 @@ public class FieldHealPickup2D : MonoBehaviour
 
     private bool collected;
     private bool interactionLocked;
-    private Sequence dropSequence;
+    private Coroutine dropRoutine;
     private Vector3 visualBaseLocalPosition;
     private Vector3 visualBaseLocalScale = Vector3.one;
     private bool hasVisualBaseTransform;
@@ -93,12 +94,12 @@ public class FieldHealPickup2D : MonoBehaviour
 
     private void OnDestroy()
     {
-        KillDropSequence();
+        StopDropRoutine();
     }
 
     public void PlayDrop(Vector3 startPosition, Vector3 landingPosition)
     {
-        KillDropSequence();
+        StopDropRoutine();
         CaptureVisualBaseTransform();
         ResetVisualTransform();
 
@@ -109,23 +110,7 @@ public class FieldHealPickup2D : MonoBehaviour
         float duration = Mathf.Clamp(minDropDuration + distance * dropDurationPerUnit, minDropDuration, maxDropDuration);
         float arcHeight = Mathf.Clamp(minDropArcHeight + distance * dropArcHeightPerUnit, minDropArcHeight, maxDropArcHeight);
 
-        dropSequence = DOTween.Sequence()
-            .SetLink(gameObject, LinkBehaviour.KillOnDestroy)
-            .SetUpdate(UpdateType.Normal);
-
-        dropSequence.Append(DOVirtual.Float(0f, 1f, duration, t =>
-            {
-                transform.position = EvaluateDropPosition(startPosition, landingPosition, arcHeight, t);
-            })
-            .SetEase(Ease.Linear));
-
-        dropSequence.OnComplete(() =>
-        {
-            dropSequence = null;
-            transform.position = landingPosition;
-            interactionLocked = false;
-            ResetVisualTransform();
-        });
+        dropRoutine = StartCoroutine(PlayDropRoutine(startPosition, landingPosition, arcHeight, duration));
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -275,13 +260,30 @@ public class FieldHealPickup2D : MonoBehaviour
         Destroy(particle.gameObject, Mathf.Max(0.1f, lifetime));
     }
 
-    private void KillDropSequence()
+    private void StopDropRoutine()
     {
-        if (dropSequence == null)
+        if (dropRoutine == null)
             return;
 
-        dropSequence.Kill();
-        dropSequence = null;
+        StopCoroutine(dropRoutine);
+        dropRoutine = null;
+    }
+
+    private IEnumerator PlayDropRoutine(Vector3 startPosition, Vector3 landingPosition, float arcHeight, float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = duration > 0f ? elapsed / duration : 1f;
+            transform.position = EvaluateDropPosition(startPosition, landingPosition, arcHeight, t);
+            yield return null;
+        }
+
+        dropRoutine = null;
+        transform.position = landingPosition;
+        interactionLocked = false;
+        ResetVisualTransform();
     }
 
     private static Vector3 EvaluateDropPosition(Vector3 startPosition, Vector3 landingPosition, float arcHeight, float t)

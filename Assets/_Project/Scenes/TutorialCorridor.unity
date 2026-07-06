@@ -171,7 +171,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1256246606}
-        m_TargetAssemblyTypeName: TutorialSceneSequenceDirector, Assembly-CSharp
+        m_TargetAssemblyTypeName: TutorialSceneSequenceDirector, Gameplay
         m_MethodName: NotifyChestOpened
         m_Mode: 1
         m_Arguments:
@@ -24686,7 +24686,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1256246608}
-        m_TargetAssemblyTypeName: TutorialPlayerAutoMove, Assembly-CSharp
+        m_TargetAssemblyTypeName: TutorialPlayerAutoMove, Gameplay
         m_MethodName: MoveToTarget
         m_Mode: 1
         m_Arguments:
@@ -24707,7 +24707,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11447036}
-        m_TargetAssemblyTypeName: TutorialInfoTrigger, Assembly-CSharp
+        m_TargetAssemblyTypeName: TutorialInfoTrigger, Gameplay
         m_MethodName: FireNow
         m_Mode: 1
         m_Arguments:
@@ -29419,7 +29419,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2106631547}
-        m_TargetAssemblyTypeName: TutorialCombatIntroSequence, Assembly-CSharp
+        m_TargetAssemblyTypeName: TutorialCombatIntroSequence, Gameplay
         m_MethodName: BeginSequence
         m_Mode: 1
         m_Arguments:

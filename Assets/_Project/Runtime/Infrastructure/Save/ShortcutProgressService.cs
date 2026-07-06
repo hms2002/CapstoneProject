@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public sealed class ShortcutProgressService : MonoBehaviour
+/// <summary>
+/// 책임 : 영구 저장 데이터와 런 세션 임시 데이터를 합쳐 숏컷 해금 상태를 관리하는 Infrastructure 저장 backend이다.
+/// </summary>
+public sealed class ShortcutProgressService : MonoBehaviour, IShortcutProgressStoreBackend
 {
     public static ShortcutProgressService Instance { get; private set; }
 
@@ -25,11 +28,14 @@ public sealed class ShortcutProgressService : MonoBehaviour
         }
 
         Instance = this;
+        ShortcutProgressStore.RegisterBackend(this);
         DontDestroyOnLoad(gameObject);
     }
 
     private void OnDestroy()
     {
+        ShortcutProgressStore.UnregisterBackend(this);
+
         if (Instance == this)
             Instance = null;
     }
@@ -41,15 +47,20 @@ public sealed class ShortcutProgressService : MonoBehaviour
 
     public void UnlockShortcut(string mapID, string doorID)
     {
+        UnlockShortcut(mapID, doorID, this);
+    }
+
+    public void UnlockShortcut(string mapID, string doorID, Object requester)
+    {
         if (!TryGetMapData(out MapSaveData mapData))
             return;
 
-        if (IsRunActive())
+        if (RunSessionStore.IsRunActive)
         {
             if (IsShortcutUnlocked(mapID, doorID))
                 return;
 
-            GamePlayDataManager.Instance.AddPendingShortcutUnlock(mapID, doorID);
+            RunSessionStore.AddPendingShortcutUnlock(mapID, doorID);
             return;
         }
 
@@ -57,13 +68,13 @@ public sealed class ShortcutProgressService : MonoBehaviour
         if (!stageData.unlockedShortcuts.Contains(doorID))
         {
             stageData.unlockedShortcuts.Add(doorID);
-            GameDataSaveCoordinator.RequestImmediateSave(this);
+            GameDataStore.RequestImmediateSave(requester != null ? requester : this);
         }
     }
 
     public bool IsShortcutUnlocked(string mapID, string doorID)
     {
-        if (IsRunActive() && GamePlayDataManager.Instance.HasPendingShortcutUnlock(mapID, doorID))
+        if (RunSessionStore.IsRunActive && RunSessionStore.HasPendingShortcutUnlock(mapID, doorID))
             return true;
 
         if (!TryGetMapData(out MapSaveData mapData))
@@ -77,20 +88,13 @@ public sealed class ShortcutProgressService : MonoBehaviour
     {
         mapData = null;
 
-        if (GameDataManager.Instance == null || GameDataManager.Instance.Data == null)
+        if (GameDataStore.Data == null)
             return false;
 
-        if (GameDataManager.Instance.Data.mapData == null)
-            GameDataManager.Instance.Data.mapData = new MapSaveData();
+        if (GameDataStore.Data.mapData == null)
+            GameDataStore.Data.mapData = new MapSaveData();
 
-        mapData = GameDataManager.Instance.Data.mapData;
+        mapData = GameDataStore.Data.mapData;
         return true;
-    }
-
-    private static bool IsRunActive()
-    {
-        return GamePlayDataManager.Instance != null
-            && GamePlayDataManager.Instance.Data != null
-            && GamePlayDataManager.Instance.Data.isRunActive;
     }
 }

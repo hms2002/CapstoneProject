@@ -2,7 +2,7 @@
 status: resolved
 authority: refactor-backlog
 category: refactor-item
-last_reviewed: 2026-05-15
+last_reviewed: 2026-07-05
 ---
 
 # Scene Domain Bootstrap Boundary Split
@@ -36,7 +36,7 @@ Completed slice:
 - Removed unused `TitleProfileLaunchContext`.
 - Added same-file `TitleProfileLaunchResult` and `TitleProfileLaunchService` in `TitleProfileSlotService.cs`.
 - Kept valid title launches loading their target scene even when `GameDataManager.Instance` is unavailable, matching previous behavior.
-- Added same-file `SceneDomainLoadAction`, `SceneDomainSceneInfo`, `SceneDomainLoadDecision`, `SceneDomainScenePolicy`, `SceneDomainAppScopeServices`, `SceneDomainGameplaySessionScope`, `SceneDomainTitleCleanupScope`, and editor-only `SceneDomainEditorDirectStartPolicy` in `SceneDomainCoordinator.cs`.
+- Added same-file `SceneDomainLoadAction`, `SceneDomainSceneInfo`, `SceneDomainLoadDecision`, `SceneDomainScenePolicy`, `SceneDomainAppScopeServices`, `SceneDomainGameplaySessionScope`, `SceneDomainTitleCleanupScope`, and development direct-start policy helper now named `SceneDomainDevelopmentStartPolicy`.
 - Kept `SceneDomainCoordinator` as the Unity lifecycle owner while moving loaded-scene action selection and runtime scope service execution behind helper boundaries.
 - Added same-file `TitleReturnRequest`, `TitleReturnResult`, `TitleSceneNameResolver`, and `TitleReturnService` in `UIManager.cs`.
 - Kept `UIManager.ReturnToTitleScreen()` as the compatibility wrapper while moving UI cleanup handoff, run end, scene transition, and direct load fallback into the title return helper.

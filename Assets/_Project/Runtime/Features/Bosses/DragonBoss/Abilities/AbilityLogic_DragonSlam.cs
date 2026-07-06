@@ -74,14 +74,14 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
 
         AbilityMotionController2D motion = dragon.GetComponent<AbilityMotionController2D>();
         EntityCollisionProfile2D collisionProfile = dragon.GetComponent<EntityCollisionProfile2D>();
-        AttackTelegraphService telegraphService = dragon.GetComponent<AttackTelegraphService>();
+        IAttackTelegraphPresenter telegraphService = AttackTelegraphPresenterResolver.Resolve(dragon);
         CombatHeightState2D heightState = EnsureHeightState(dragon);
 
         Vector2 start = dragon.transform.position;
         Vector2 impactPosition = ResolveImpactPosition(dragon, initialTarget);
         float duration = Mathf.Max(0.01f, travelSeconds);
 
-        AttackTelegraphView impactTelegraph = ShowImpactTelegraph(telegraphService, impactPosition, duration);
+        IAttackTelegraphHandle impactTelegraph = ShowImpactTelegraph(telegraphService, impactPosition, duration);
         collisionProfile?.SetBodyCollisionMode(EntityCollisionProfile2D.BodyCollisionMode.PassThroughActors);
         heightState?.SetAirborne(0f, airborneBodyZHeight);
         dragon.FacePatternDirection(impactPosition - start);
@@ -213,8 +213,8 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
             dragon.transform.position = impactPosition;
     }
 
-    private AttackTelegraphView ShowImpactTelegraph(
-        AttackTelegraphService telegraphService,
+    private IAttackTelegraphHandle ShowImpactTelegraph(
+        IAttackTelegraphPresenter telegraphService,
         Vector2 impactPosition,
         float duration)
     {
@@ -299,7 +299,7 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
             return;
 
         Vector3 position = new(startPosition.x, startPosition.y, dragon != null ? dragon.transform.position.z : 0f);
-        WorldPresentationRuntime.Play(
+        WorldPresentationPlayback.Play(
             jumpStartPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: dragon != null ? dragon.gameObject : null,
@@ -320,7 +320,7 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
             return;
 
         Vector3 position = new(impactPosition.x, impactPosition.y, dragon != null ? dragon.transform.position.z : 0f);
-        WorldPresentationRuntime.Play(
+        WorldPresentationPlayback.Play(
             landingPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: dragon != null ? dragon.gameObject : null,
@@ -334,7 +334,7 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
     private IEnumerator ScatterKegsAfterImpact(
         DragonController dragon,
         AbilitySystem sourceSystem,
-        AttackTelegraphService telegraphService,
+        IAttackTelegraphPresenter telegraphService,
         Vector2 impactPosition,
         AbilitySpec spec)
     {
@@ -454,7 +454,7 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
         return results;
     }
 
-    private void ShowScatteredKegTelegraphs(AttackTelegraphService telegraphService, IReadOnlyList<Vector3> kegTargets)
+    private void ShowScatteredKegTelegraphs(IAttackTelegraphPresenter telegraphService, IReadOnlyList<Vector3> kegTargets)
     {
         if (telegraphService == null || kegTargets == null || scatteredKegWarningSeconds <= 0f)
             return;
@@ -528,7 +528,7 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
         if (fallbackDirection.sqrMagnitude <= 0.0001f)
             fallbackDirection = Vector3.up;
 
-        WorldPresentationRuntime.Play(
+        WorldPresentationPlayback.Play(
             scatteredKegImpactPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: dragon != null ? dragon.gameObject : null,

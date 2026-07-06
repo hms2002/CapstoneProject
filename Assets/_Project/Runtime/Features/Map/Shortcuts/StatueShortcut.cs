@@ -1,11 +1,11 @@
 using CapstoneAudio;
-using TMPro;
 using UnityEngine;
 using UnityGAS;
 
 /// <summary>
 /// 제물 비용 타입에 따라 석상 비주얼을 전환하고, 지불 성공 후 석상 애니메이션 이벤트로 숏컷 개방을 완료합니다.
 /// </summary>
+// 책임: 석상 제물 비용 판정, 시각 상태 전환, 애니메이션 이벤트 기반 숏컷 개방을 처리한다.
 public class StatueShortcut : TemporaryShortcut
 {
     private static readonly SoundRef OfferMagicStoneSound = SoundRef.FromKey("sound_player_OfferMagicstone");
@@ -27,7 +27,7 @@ public class StatueShortcut : TemporaryShortcut
     private const int OfferingStateFilled = 2;
 
     /// <summary>
-    /// 석상 비용 타입 하나에 대응하는 본체 스프라이트와 AnimatorController 세트를 보관합니다.
+    /// 책임: 석상 비용 타입 하나에 대응하는 본체 스프라이트와 AnimatorController 세트를 보관합니다.
     /// </summary>
     [System.Serializable]
     private struct StatueVisualProfile
@@ -50,7 +50,7 @@ public class StatueShortcut : TemporaryShortcut
     [Header("월드 표시")]
     [SerializeField] private GameObject requirementRoot;
     [SerializeField] private SpriteRenderer requirementIconRenderer;
-    [SerializeField] private TMP_Text requirementAmountText;
+    [SerializeField] private Component requirementAmountText;
     [SerializeField] private GameObject interactPromptRoot;
     [SerializeField] private GameObject activatedRoot;
     [SerializeField] private Sprite magicStoneIcon;
@@ -242,7 +242,7 @@ public class StatueShortcut : TemporaryShortcut
     protected override void OnFail(IPlayerInteractor player)
     {
         base.OnFail(player);
-        UIManager.Instance?.ShowWarning(InsufficientOfferingMessage);
+        WarningPopupPlayback.ShowMessage(InsufficientOfferingMessage);
     }
 
     private bool IsActivated => targetDoor != null && targetDoor.IsOpen;
@@ -269,8 +269,7 @@ public class StatueShortcut : TemporaryShortcut
 
     private void ApplyCostTypeVisual()
     {
-        if (requirementAmountText != null)
-            requirementAmountText.text = costAmount.ToString();
+        TextPresentationBinding.TrySetText(requirementAmountText, costAmount.ToString());
 
         StatueVisualProfile visual = costType == CostType.MagicStone ? magicStoneVisual : hpVisual;
 

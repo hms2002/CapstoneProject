@@ -4,9 +4,12 @@ using CapstonePresentation;
 using CapstoneRuntime;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : presentation 관련 prefab/cue/manifest asset resolve와 preload reference count를 관리하는 Infrastructure provider이다.
+/// </summary>
 [DefaultExecutionOrder(-870)]
 [DisallowMultipleComponent]
-public sealed class PresentationAssetProvider : MonoBehaviour, IAssetProvider, IAssetProviderDebugInfo
+public sealed class PresentationAssetProvider : MonoBehaviour, IAssetProvider, IAssetProviderDebugInfo, IPresentationAssetBackend
 {
     public readonly struct DebugCountEntry
     {
@@ -20,6 +23,7 @@ public sealed class PresentationAssetProvider : MonoBehaviour, IAssetProvider, I
         public int Count { get; }
     }
 
+    // 책임: PresentationAssetProvider 디버그 히스토리의 시각과 메시지를 보관한다.
     public readonly struct DebugEventEntry
     {
         public DebugEventEntry(float realtimeSeconds, string message)
@@ -323,11 +327,14 @@ public sealed class PresentationAssetProvider : MonoBehaviour, IAssetProvider, I
         }
 
         Instance = this;
+        PresentationAssetPlayback.RegisterBackend(this);
         RuntimeServiceOwnership.Adopt(this);
     }
 
     private void OnDestroy()
     {
+        PresentationAssetPlayback.UnregisterBackend(this);
+
         if (Instance == this)
             Instance = null;
     }
@@ -335,6 +342,11 @@ public sealed class PresentationAssetProvider : MonoBehaviour, IAssetProvider, I
     private void OnApplicationQuit()
     {
         s_isQuitting = true;
+    }
+
+    GameObject IPresentationAssetBackend.ResolvePrefab(GameObject prefab)
+    {
+        return ResolvePrefab(prefab);
     }
 
     void IAssetProvider.PreloadManifest(LoadManifestSO manifest)

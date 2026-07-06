@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// 책임:
+/// - 시작 시점의 Transform scale을 기준으로 사인파 스케일 펄스를 적용한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class ScaleWave : MonoBehaviour
 {

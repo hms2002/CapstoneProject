@@ -4,6 +4,11 @@ using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임 :
+/// - 마왕 보스의 페이즈, 패턴 역할, 검 모드, 전용 연출 상태를 BossControllerBase 위에서 조율한다.
+/// - 말풍선/텔레그래프/잔상 같은 표현 요청은 Core 계약을 통해 외부 구현과 분리한다.
+/// </summary>
 public sealed class DemonKingController : BossControllerBase
 {
     private const int DefaultWallLayer = 30;
@@ -69,11 +74,11 @@ public sealed class DemonKingController : BossControllerBase
     private readonly HashSet<string> patternAnimationWarnings = new();
     private readonly HashSet<string> playedPatternAnimationStartStates = new();
     private DemonKingRuntimeData runtimeData;
-    private AttackTelegraphService telegraphService;
-    private BossSpeechController speechController;
+    private IAttackTelegraphPresenter telegraphPresenter;
+    private IBossSpeechPlayback speechController;
     private GameplayTag staggerImmuneTag;
     private GameplayTag knockbackImmuneTag;
-    private SpriteAfterimageEmitter2D bodyAfterimageEmitter;
+    private IAfterimageEmitter2D bodyAfterimageEmitter;
     private SpriteRenderer bodySpriteRenderer;
     private int faceTargetLockCount;
     private int thresholdStaggerGuardCount;
@@ -129,7 +134,7 @@ public sealed class DemonKingController : BossControllerBase
     {
         base.Awake();
         runtimeData = new DemonKingRuntimeData();
-        telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(this);
         bodySpriteRenderer = GetComponent<SpriteRenderer>();
         NormalizeBodySorting();
         staggerImmuneTag = Resources.Load<GameplayTag>(StaggerImmuneTagResourcePath);
@@ -332,12 +337,12 @@ public sealed class DemonKingController : BossControllerBase
             RestoreCombatPose();
     }
 
-    public AttackTelegraphService GetTelegraphService()
+    public IAttackTelegraphPresenter GetTelegraphService()
     {
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        if (telegraphPresenter == null)
+            telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(this);
 
-        return telegraphService;
+        return telegraphPresenter;
     }
 
     public bool TrySpeakPattern(BossSpeechSituationEnum situation, float duration)
@@ -351,7 +356,7 @@ public sealed class DemonKingController : BossControllerBase
         Transform anchor,
         Vector3 offsetDelta)
     {
-        BossSpeechController controller = ResolveSpeechController();
+        IBossSpeechPlayback controller = ResolveSpeechController();
         return controller != null &&
                controller.TrySpeakSituationParallelAt(situation, duration, anchor, offsetDelta);
     }
@@ -362,7 +367,7 @@ public sealed class DemonKingController : BossControllerBase
         Func<Vector3> anchorPositionResolver,
         Vector3 offsetDelta)
     {
-        BossSpeechController controller = ResolveSpeechController();
+        IBossSpeechPlayback controller = ResolveSpeechController();
         return controller != null &&
                controller.TrySpeakSituationParallelAt(situation, duration, anchorPositionResolver, offsetDelta);
     }
@@ -374,15 +379,15 @@ public sealed class DemonKingController : BossControllerBase
         Func<Quaternion> anchorRotationResolver,
         Vector3 offsetDelta)
     {
-        BossSpeechController controller = ResolveSpeechController();
+        IBossSpeechPlayback controller = ResolveSpeechController();
         return controller != null &&
                controller.TrySpeakSituationParallelAt(situation, duration, anchorPositionResolver, anchorRotationResolver, offsetDelta);
     }
 
-    private BossSpeechController ResolveSpeechController()
+    private IBossSpeechPlayback ResolveSpeechController()
     {
         if (speechController == null)
-            speechController = GetComponent<BossSpeechController>();
+            speechController = GetComponent<IBossSpeechPlayback>();
 
         return speechController;
     }
@@ -760,7 +765,7 @@ public sealed class DemonKingController : BossControllerBase
         if (!enableBodyAfterimage || !isActiveAndEnabled)
             return;
 
-        SpriteAfterimageEmitter2D emitter = ResolveBodyAfterimageEmitter();
+        IAfterimageEmitter2D emitter = ResolveBodyAfterimageEmitter();
         if (emitter == null)
             return;
 
@@ -881,14 +886,12 @@ public sealed class DemonKingController : BossControllerBase
         return egoSword;
     }
 
-    private SpriteAfterimageEmitter2D ResolveBodyAfterimageEmitter()
+    private IAfterimageEmitter2D ResolveBodyAfterimageEmitter()
     {
         if (bodyAfterimageEmitter != null)
             return bodyAfterimageEmitter;
 
-        if (!TryGetComponent(out bodyAfterimageEmitter))
-            bodyAfterimageEmitter = gameObject.AddComponent<SpriteAfterimageEmitter2D>();
-
+        bodyAfterimageEmitter = AfterimageEmitterPlayback.GetOrAdd(gameObject);
         return bodyAfterimageEmitter;
     }
 

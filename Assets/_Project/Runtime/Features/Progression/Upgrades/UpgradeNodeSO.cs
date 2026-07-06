@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 public enum LockType { Locked, UnLocked, Purchased }
 
+/// <summary>
+/// 책임 : 강화 노드의 비용, 효과, 선행/후행 관계, UI 배치 데이터를 보관한다.
+/// </summary>
 [CreateAssetMenu(fileName = "NewUpgradeNode", menuName = "Game/Upgrade Node")]
 public class UpgradeNodeSO : ScriptableObject
 {
@@ -83,7 +82,7 @@ public class UpgradeNodeSO : ScriptableObject
         if (nodeID != currentHash)
         {
             nodeID = currentHash;
-            EditorUtility.SetDirty(this);
+            EditorAuthoringPlayback.MarkDirty(this);
         }
 
         SyncList(nextNodes, ref unlockedNodeIDs);

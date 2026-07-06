@@ -2,7 +2,10 @@ using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-internal static class BossRewardFallbackService
+/// <summary>
+/// 책임 : 보스 보상/포탈 처리 이벤트가 소비되지 않았을 때 개발용 fallback 경고를 기록한다.
+/// </summary>
+public static class BossRewardFallbackService
 {
     public static void HandleUnhandledFallbacks(BossRewardContext context)
     {

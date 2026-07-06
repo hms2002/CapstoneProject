@@ -1,4 +1,3 @@
-using System;
 using UnityEngine.SceneManagement;
 
 internal enum SceneDomainLoadAction
@@ -8,6 +7,7 @@ internal enum SceneDomainLoadAction
     EnsureGameplaySessionScope = 2
 }
 
+// 책임: 로드된 Scene의 이름, 유효성, 타이틀/허브 여부를 계산해 보관한다.
 internal readonly struct SceneDomainSceneInfo
 {
     public readonly Scene Scene;
@@ -28,6 +28,7 @@ internal readonly struct SceneDomainSceneInfo
     public bool IsGameplayScene => IsValid && !IsTitleScene;
 }
 
+// 책임: 씬 도메인 정보와 그에 따른 bootstrap/session 처리 액션을 함께 전달한다.
 internal readonly struct SceneDomainLoadDecision
 {
     public readonly SceneDomainSceneInfo SceneInfo;
@@ -44,11 +45,9 @@ internal readonly struct SceneDomainLoadDecision
     public bool RequiresGameplaySessionScope => Action == SceneDomainLoadAction.EnsureGameplaySessionScope;
 }
 
+// 책임: 로드된 씬 이름/종류에 따라 타이틀 정리 또는 게임플레이 세션 보장 정책을 결정한다.
 internal static class SceneDomainScenePolicy
 {
-    private const string TitleSceneName = "TitleScene";
-    private const string HubSceneName = "ProtoTypeHub";
-
     public static SceneDomainLoadDecision CreateLoadDecision(Scene scene)
     {
         SceneDomainSceneInfo sceneInfo = new SceneDomainSceneInfo(scene);
@@ -63,11 +62,11 @@ internal static class SceneDomainScenePolicy
 
     public static bool IsTitleSceneName(string sceneName)
     {
-        return string.Equals(sceneName, TitleSceneName, StringComparison.OrdinalIgnoreCase);
+        return SceneDomainNamePolicy.IsTitleSceneName(sceneName);
     }
 
     public static bool IsHubSceneName(string sceneName)
     {
-        return string.Equals(sceneName, HubSceneName, StringComparison.OrdinalIgnoreCase);
+        return SceneDomainNamePolicy.IsHubSceneName(sceneName);
     }
 }

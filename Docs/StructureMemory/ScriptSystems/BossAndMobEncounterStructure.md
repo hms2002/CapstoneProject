@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-06-02
+last_reviewed: 2026-07-04
 ---
 
 # Boss And Mob Encounter Structure
@@ -34,7 +34,7 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 | Mob Population / Spawn | `MonsterSpawner`, `SceneMonsterSpawnDirector`, spawn containers, room groups/profiles, difficulty/context/pathfinding injection. | Instantiate and configure general mobs. This is the normal placement entry point for mobs, not a boss-style encounter. |
 | Mob Battle Runtime | `Mob`, mob FSM, chase/facing/home return, attack decision source, `MobAbilityCoordinator`, pattern runners, mob ability logic. | Keep spawned mobs battle-ready, run chase/attack behavior, and perform cleanup according to `Docs/Contracts/MobCleanupContract.md`. |
 | Mob Death Result | `Mob.OnDeathStarted`, monster loot spawn, runtime no-loot marker, spawned-monster tracking cleanup. | Convert mob death into immediate results. Spawn-registered mobs drop normally; runtime split and boss/local summoned mobs can suppress the monster loot request. Long-term clear/lock semantics should not be assumed from root GameObject destruction alone. |
-| Room / Chest Lock Overlay | `RoomDoorMonsterKillLock`, `ChestMonsterKillLock`, `ChestMonsterKillLockNavigationView`, `RoomEnemyNavigationOverlay`, spawn-time lock registration. | Observe registered combatants, unlock doors/chests, and show local chest/room guidance presentation. Count spawn-registered tracking units; Slime split descendants join the parent's unit and do not create additional lock counts. Room enemy guidance is camera-edge placement from the active `MonsterSpawnRoomGroup`, not a scene-wide enemy scan. |
+| Room / Chest Lock Overlay | `RoomDoorMonsterKillLock`, `ChestMonsterKillLock`, `ChestMonsterKillLockView`, `ChestMonsterKillLockNavigationView`, `RoomEnemyNavigationOverlay`, spawn-time lock registration. | Observe registered combatants, unlock doors/chests, and show local chest/room guidance presentation. Count spawn-registered tracking units; Slime split descendants join the parent's unit and do not create additional lock counts. Room enemy guidance is camera-edge placement from the active `MonsterSpawnRoomGroup`, not a scene-wide enemy scan. |
 | Hazards / Puddles | Puddle runtime, conversion service, hazard damage, puddle visuals, boss-specific puddle interaction triggers. | Battle environment. Boss-specific triggers can live in boss ability logic, but hazard actors should avoid accumulating boss-specific policy. |
 | Enemy Shared Combat | `Enemy`, death command, shared cleanup utility. | Shared enemy combat base, cleanup helpers, and canonical player target resolution for player-owned child/orbit colliders. |
 
@@ -142,7 +142,7 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 | --- | ---: | --- |
 | Spawn Core / Request / Profile | 9 | Scene spawn director/policy, spawner/container/context/request, spawn profile, and spawn context receiver. This is mob population, not boss-style encounter flow. |
 | Room / Door Lock Overlay | 4 | Room area/group, entry trigger, door monster-kill lock, and scene-level enemy navigation overlay. Treat these as observers over spawned mobs. |
-| Chest Lock Bridge | planned boundary | `MonsterSpawnContainer` and `SceneMonsterSpawnDirector` currently bridge spawned mobs to `ChestMonsterKillLock`. `ChestMonsterKillLockNavigationView` reads the lock's alive registered monsters for presentation only. Keep this boundary visible when reviewing spawn code. |
+| Chest Lock Bridge | planned boundary | `MonsterSpawnContainer` and `SceneMonsterSpawnDirector` currently bridge spawned mobs to `ChestMonsterKillLock`. `ChestMonsterKillLockView` and `ChestMonsterKillLockNavigationView` live under Presentation/Loot and read the lock state for presentation only. Keep this boundary visible when reviewing spawn code. |
 | Difficulty Receivers | 3 | Difficulty modifier and difficulty receiver contracts/components. |
 | Pathfinding | 1 | Tilemap pathfinder helper. |
 | Puddle Presentation | 3 | Shader, particle, and blob visuals. |
@@ -178,7 +178,8 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/MonsterSpawn/RoomDoorMonsterKillLock.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/MonsterSpawn/RoomEnemyNavigationOverlay.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Inventory/Chest/Runtime/LockedChest/ChestMonsterKillLock.cs`
-- `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Inventory/Chest/Runtime/LockedChest/ChestMonsterKillLockNavigationView.cs`
+- `Assets/_Project/Runtime/Presentation/Loot/ChestMonsterKillLockView.cs`
+- `Assets/_Project/Runtime/Presentation/Loot/ChestMonsterKillLockNavigationView.cs`
 - `Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/KillLockMonsterNavigationArrow.prefab`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Puddles/Runtime/FirePuddleArea.cs`
 - `Assets/LeeJunMo/Script/Editor/RoomEnemyNavigationOverlayValidator.cs`
@@ -210,7 +211,7 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 - Boss encounter presentation also owns player visual-facing locks while the intro sequence is active. `BossEncounterDirector`, legacy `BossTalkManager`, and `TutorialBossEncounterSequence` acquire owner-token locks on `PlayerAnimatorController2D` and `WeaponPresentationRig2D` so the player body and weapon presentation do not continue following cached Aim during the encounter. `PlayerCinematicProtection` remains the input/invulnerability owner; do not make every cinematic protection flow freeze facing unless that flow explicitly needs it.
 - General mobs are spawned through population systems, then stay battle-ready through their own runtime FSM. Do not treat all mob work as encounter work.
 - Spawn systems own instantiation/configuration and may bridge to lock overlays, but lock semantics are not the same as spawn semantics.
-- `ChestMonsterKillLockNavigationView` is presentation-only: it reads alive registered monsters from `ChestMonsterKillLock`, spawns authored arrow prefabs locally, and must not decide unlock, spawn, or combatant counting rules. The authored arrow prefab is SpriteRenderer-only; avoid renderer-driving scripts and MeshRenderer/MeshFilter presentation for this 2D guidance. Its selected-object gizmos are authoring/debug visualization only.
+- `ChestMonsterKillLockView` and `ChestMonsterKillLockNavigationView` are presentation-only and live under `Assets/_Project/Runtime/Presentation/Loot`: the view reads lock state for text/effect display, while the navigation view reads alive registered monsters from `ChestMonsterKillLock`, spawns authored arrow prefabs locally, and must not decide unlock, spawn, or combatant counting rules. The authored arrow prefab is SpriteRenderer-only; avoid renderer-driving scripts and MeshRenderer/MeshFilter presentation for this 2D guidance. Its selected-object gizmos are authoring/debug visualization only.
 - `RoomEnemyNavigationOverlay` is also presentation-only: one scene-level overlay listens to `MonsterSpawnRoomGroup.ActiveRoomEntered/ActiveRoomExited`, reads `GetAliveRegisteredMonstersNonAlloc(...)`, and pools the same SpriteRenderer arrow prefab. It hides while no room is active, above its threshold, after clear, on room exit, or when an individual target is already in the camera viewport. Camera-edge placement is computed in viewport space through `CameraBootstrap.GetMainCamera()` with `Camera.main` fallback.
 - Puddles/hazards are battle environment systems and should stay separate from boss-specific policy unless the boss ability owns only a trigger.
 - `PitFallExecutor` opens a mob pitfall death resolution window before applying trap damage and keeps it active through pitfall completion handling. General `Mob` death skips monster loot during that window, and `Slime` uses the same window to mark pitfall death before HP damage can synchronously trigger normal split logic.

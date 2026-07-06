@@ -25,7 +25,7 @@ public class MonsterSpawner : MonoBehaviour
     [SerializeField, Min(0f)] private float hpMultiplierPerClearedStage = 0.5f;
 
     [Header("Installers")]
-    [SerializeField] private MonsterElementGaugeViewInstaller gaugeViewInstaller;
+    [SerializeField] private MonoBehaviour gaugeViewInstaller;
 
     [Header("Navigation")]
     [SerializeField] private TilemapPathfinder2D pathfinder;
@@ -242,16 +242,12 @@ public class MonsterSpawner : MonoBehaviour
 
     /// <summary>
     /// 책임:
-    /// - PortalRouteManager의 현재 런 스테이지 index를 난이도 보정 입력값으로 정규화한다.
+    /// - RunRoutePlayback의 현재 런 스테이지 index를 난이도 보정 입력값으로 정규화한다.
     /// - 개발/테스트 씬처럼 active plan이 없으면 첫 스테이지로 취급한다.
     /// </summary>
     private static int ResolveCurrentStageIndex()
     {
-        PortalRouteManager routeManager = PortalRouteManager.Instance;
-        if (routeManager == null || !routeManager.HasActivePlan)
-            return 0;
-
-        return Mathf.Max(0, routeManager.CurrentStageIndex);
+        return RunRoutePlayback.CurrentStageIndexOrDefault;
     }
 
     private void SyncSceneServiceReferences()

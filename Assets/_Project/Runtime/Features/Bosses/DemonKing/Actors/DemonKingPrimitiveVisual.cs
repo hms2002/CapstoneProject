@@ -4,6 +4,7 @@ using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
+// 책임: 마왕 패턴에서 런타임 생성되는 단순 사각/원형 경고 및 타격 비주얼을 표시한다.
 [DisallowMultipleComponent]
 public sealed class DemonKingPrimitiveVisual : MonoBehaviour
 {
@@ -201,6 +202,7 @@ public sealed class DemonKingPrimitiveVisual : MonoBehaviour
     }
 }
 
+// 책임: groggy 반격 등 마왕 패턴 중 월드 암전 오버레이의 알파와 수명을 관리한다.
 [DisallowMultipleComponent]
 public sealed class DemonKingWorldDimmingOverlay : MonoBehaviour
 {
@@ -283,6 +285,7 @@ public sealed class DemonKingWorldDimmingOverlay : MonoBehaviour
     }
 }
 
+// 책임: 마왕 패턴에서 사용하는 임시 VFX 프리팹과 기본 효과를 생성한다.
 public static class DemonKingPatternVfx
 {
     private const string ExplosionVfxPath = "DemonKing/Vfx/DemonKingExplosionVfx";
@@ -350,7 +353,7 @@ public static class DemonKingPatternVfx
         DemonKingController owner,
         float diameter,
         CombatHitPayload payload,
-        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry,
+        SharedHitRegistry2D sharedHitRegistry,
         Action onHitWindowOpened)
     {
         if (visual == null || owner == null)
@@ -809,7 +812,7 @@ public static class DemonKingPatternVfx
             new Vector3(center.x, center.y, 0f),
             Vector3.up,
             sourceObject: prefab);
-        PresentationSpawnService.SpawnOneShot(hook, context);
+        WorldPresentationPlayback.SpawnOneShot(hook, context);
     }
 
     private static GameObject ResolveHighArcDebrisPrefab()
@@ -829,6 +832,7 @@ public static class DemonKingPatternVfx
 }
 
 [DisallowMultipleComponent]
+// 책임: 마왕 패턴용 애니메이션 클립 비주얼을 생성하고 재생 수명과 정렬을 관리한다.
 public sealed class DemonKingAnimationClipVisual : MonoBehaviour
 {
     private const float VisualZ = -0.06f;
@@ -1104,10 +1108,10 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
         float worldDiameter,
         LayerMask targetLayers,
         CombatHitPayload payload,
-        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry,
+        SharedHitRegistry2D sharedHitRegistry,
         Action onHitWindowOpened)
     {
-        TimedAnimatedHitEffect2D timedHitEffect = GetComponentInChildren<TimedAnimatedHitEffect2D>(true);
+        ITimedHitEffect2D timedHitEffect = GetComponentInChildren<ITimedHitEffect2D>(true);
         if (timedHitEffect == null)
             return false;
 
@@ -1123,7 +1127,7 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
 
     public bool TryPlayTimedSignal(Action onHitWindowOpened)
     {
-        TimedAnimatedHitEffect2D timedHitEffect = GetComponentInChildren<TimedAnimatedHitEffect2D>(true);
+        ITimedHitEffect2D timedHitEffect = GetComponentInChildren<ITimedHitEffect2D>(true);
         if (timedHitEffect == null)
             return false;
 

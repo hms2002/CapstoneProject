@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
 
-internal sealed class PlayerConsumableContainerAdapter : IItemContainer, IDisposable
+// 책임: 플레이어 소모품 인벤토리를 공용 IItemContainer 계약으로 노출한다.
+public sealed class PlayerConsumableContainerAdapter : IItemContainer, IDisposable
 {
     private readonly PlayerConsumableInventory inventory;
     public event Action OnChanged;
@@ -59,7 +60,8 @@ internal sealed class PlayerConsumableContainerAdapter : IItemContainer, IDispos
     }
 }
 
-internal sealed class PlayerWeaponContainerAdapter : IItemContainer, IDisposable
+// 책임: 플레이어 무기 인벤토리를 공용 IItemContainer 계약으로 노출한다.
+public sealed class PlayerWeaponContainerAdapter : IItemContainer, IDisposable
 {
     private readonly WeaponInventory2D inventory;
     public event Action OnChanged;
@@ -117,7 +119,8 @@ internal sealed class PlayerWeaponContainerAdapter : IItemContainer, IDisposable
     }
 }
 
-internal sealed class PlayerRelicContainerAdapter : IItemContainer, IDisposable, IRelicLevelProvider, IRelicSlotReceiver
+// 책임: 유물 인벤토리를 공통 아이템 컨테이너/레벨/수신 인터페이스로 노출한다.
+public sealed class PlayerRelicContainerAdapter : IItemContainer, IDisposable, IRelicLevelProvider, IRelicSlotReceiver
 {
     private readonly RelicInventory inventory;
     public event Action OnChanged;
@@ -196,14 +199,14 @@ internal sealed class PlayerRelicContainerAdapter : IItemContainer, IDisposable,
         return ok;
     }
 
-    internal bool HasExistingRelic(RelicDefinition relic)
+    public bool HasExistingRelic(RelicDefinition relic)
     {
         return inventory != null
             && relic != null
             && inventory.TryGetRelicLevelById(relic.relicId, out _);
     }
 
-    internal bool TryMergeExistingRelicWithLevel(RelicDefinition relic, int level)
+    public bool TryMergeExistingRelicWithLevel(RelicDefinition relic, int level)
     {
         if (!HasExistingRelic(relic))
             return false;
@@ -239,13 +242,10 @@ internal sealed class PlayerRelicContainerAdapter : IItemContainer, IDisposable,
 
     private static void ShowRelicWarning(RelicInventory.AcquireResult result)
     {
-        if (UIManager.Instance == null)
-            return;
-
         WarningPopupCode code = InventoryDeliveryWarningResolver.FromRelicAcquireResult(result);
 
         if (code != WarningPopupCode.None)
-            UIManager.Instance.ShowWarning(code);
+            WarningPopupPlayback.Show(code);
     }
 
     private RelicInventory.AcquireResult ResolveRelicFailure(RelicDefinition relic, int incomingLevel)

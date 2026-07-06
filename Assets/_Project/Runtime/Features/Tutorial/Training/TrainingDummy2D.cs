@@ -86,7 +86,7 @@ public class TrainingDummy2D : MonoBehaviour
                 : !isSuppressed;
 
             if (shouldShowPopup)
-                DamagePopupService.Show(damage, transform.position);
+                DamagePopupPlayback.Show(DamagePopupRequest.Damage(damage, transform.position));
 
             PlayHurt();
         }

@@ -4,7 +4,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
-public sealed class RunProgressCoordinator : MonoBehaviour
+/// <summary>
+/// 책임 : 보스 처치/보상 준비 상태를 런 route와 타이머 정지 정책에 연결하는 Infrastructure coordinator이다.
+/// </summary>
+public sealed class RunProgressCoordinator : MonoBehaviour, IRunProgressBackend
 {
     public static RunProgressCoordinator Instance { get; private set; }
 
@@ -55,6 +58,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour
         }
 
         Instance = this;
+        RunProgressPlayback.RegisterBackend(this);
         DontDestroyOnLoad(gameObject);
     }
 
@@ -88,6 +92,8 @@ public sealed class RunProgressCoordinator : MonoBehaviour
 
     private void OnDestroy()
     {
+        RunProgressPlayback.UnregisterBackend(this);
+
         if (Instance == this)
             Instance = null;
     }
@@ -162,7 +168,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour
         return BossRunProgressPolicy.Evaluate(
             new BossRunProgressRequest(
                 boss,
-                PortalRouteManager.Instance,
+                RunRoutePlayback.Backend,
                 modifiers));
     }
 

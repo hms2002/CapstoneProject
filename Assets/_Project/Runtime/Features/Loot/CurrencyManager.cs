@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+// 책임: 매직스톤 재화 값을 저장 데이터와 동기화하고 변경 이벤트를 발행한다.
 public class CurrencyManager : MonoBehaviour
 {
     public static CurrencyManager Instance { get; private set; }
@@ -41,8 +42,8 @@ public class CurrencyManager : MonoBehaviour
             return 0;
 
         int amount = data.magicStone;
-        if (IsRunActive())
-            amount += GamePlayDataManager.Instance.GetPendingRunMagicStoneDelta();
+        if (RunSessionStore.IsRunActive)
+            amount += RunSessionStore.GetPendingRunMagicStoneDelta();
 
         return amount;
     }
@@ -55,16 +56,16 @@ public class CurrencyManager : MonoBehaviour
         if (amount == 0)
             return;
 
-        if (IsRunActive())
+        if (RunSessionStore.IsRunActive)
         {
-            GamePlayDataManager.Instance.AddPendingRunMagicStoneDelta(amount);
+            RunSessionStore.AddPendingRunMagicStoneDelta(amount);
             OnMagicStoneChanged?.Invoke(GetMagicStone());
             return;
         }
 
         data.magicStone += amount;
         OnMagicStoneChanged?.Invoke(data.magicStone);
-        GameDataSaveCoordinator.RequestImmediateSave(this);
+        GameDataStore.RequestImmediateSave(this);
     }
 
     public bool SpendMagicStone(int amount)
@@ -78,30 +79,23 @@ public class CurrencyManager : MonoBehaviour
             return false;
         }
 
-        if (IsRunActive())
+        if (RunSessionStore.IsRunActive)
         {
-            GamePlayDataManager.Instance.AddPendingRunMagicStoneDelta(-amount);
+            RunSessionStore.AddPendingRunMagicStoneDelta(-amount);
             OnMagicStoneChanged?.Invoke(GetMagicStone());
             return true;
         }
 
         data.magicStone -= amount;
         OnMagicStoneChanged?.Invoke(data.magicStone);
-        GameDataSaveCoordinator.RequestImmediateSave(this);
+        GameDataStore.RequestImmediateSave(this);
         return true;
     }
 
     private static bool TryGetData(out GameData data)
     {
-        data = GameDataManager.Instance != null ? GameDataManager.Instance.Data : null;
+        data = GameDataStore.Data;
         return data != null;
-    }
-
-    private static bool IsRunActive()
-    {
-        return GamePlayDataManager.Instance != null
-            && GamePlayDataManager.Instance.Data != null
-            && GamePlayDataManager.Instance.Data.isRunActive;
     }
 
     private void OnDestroy()

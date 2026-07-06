@@ -44,7 +44,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     private WitchNormalAttack1PatternExecutor normalAttack1PatternExecutor;
     private WitchRetreatPatternExecutor retreatPatternExecutor;
     private WitchCandleService candleService;
-    private AttackTelegraphService telegraphService;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private bool hasAttackTrigger;
     private WitchRuntimeData runtimeData;
     private bool hasLoggedRuntimeDataReady;
@@ -56,7 +56,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     private readonly List<DeadsSkeleton> activeRetreatSummons = new();
     private WitchShieldController shieldController;
     private WitchShieldVisualController shieldVisualController;
-    private CameraPresentationDirector cameraPresentationDirector;
+    private ICameraPresentationDirector cameraPresentationDirector;
     private GameplayTag staggerImmuneTag;
     private bool hasAppliedStaggerImmuneTag;
 
@@ -79,7 +79,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         candleService = GetComponent<WitchCandleService>();
         if (candleService == null)
             candleService = gameObject.AddComponent<WitchCandleService>();
-        telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(this);
         hasAttackTrigger = CheckAttackTrigger();
         shieldController = GetComponent<WitchShieldController>();
         if (shieldController == null)
@@ -87,7 +87,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         shieldVisualController = GetComponent<WitchShieldVisualController>();
         if (shieldVisualController == null)
             shieldVisualController = gameObject.AddComponent<WitchShieldVisualController>();
-        cameraPresentationDirector = GetComponent<CameraPresentationDirector>();
+        cameraPresentationDirector = CameraPresentationPlayback.Get(this);
         staggerImmuneTag = Resources.Load<GameplayTag>(StaggerImmuneTagResourcePath);
     }
 
@@ -124,7 +124,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
             DisableStaggerImmuneDuringPhaseTransition();
             if (!IsDead)
             {
-                CameraPresentationDirector phaseCameraDirector = GetCameraPresentationDirector();
+                ICameraPresentationDirector phaseCameraDirector = GetCameraPresentationDirector();
                 if (phaseCameraDirector != null)
                     phaseCameraDirector.RestoreDefaultState();
             }
@@ -146,17 +146,17 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     public float ProjectileSpeed => projectileSpeed;
     public bool HasProjectilePatternConfig => lightBeadPrefab != null;
     public WitchShieldController ShieldController => shieldController;
-    public AttackTelegraphService ExtinguishTelegraphService => telegraphService;
+    public IAttackTelegraphPresenter ExtinguishTelegraphService => telegraphPresenter;
     public Transform ExtinguishExplosionVisualSocket => extinguishExplosionVisualSocket;
     public WitchLightAllCandlesPatternExecutor LightAllCandlesPatternExecutor => lightAllCandlesPatternExecutor;
 
-    public CameraPresentationDirector GetCameraPresentationDirector()
+    public ICameraPresentationDirector GetCameraPresentationDirector()
     {
         if (cameraPresentationDirector == null)
-            cameraPresentationDirector = GetComponent<CameraPresentationDirector>();
+            cameraPresentationDirector = CameraPresentationPlayback.Get(this);
 
         if (cameraPresentationDirector == null)
-            cameraPresentationDirector = FindAnyObjectByType<CameraPresentationDirector>();
+            cameraPresentationDirector = CameraPresentationPlayback.FindAny();
 
         return cameraPresentationDirector;
     }
@@ -200,7 +200,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     public override bool IsDialogueActive()
     {
         return dialogueRoutine != null ||
-               (DialogueService.Instance != null && DialogueService.Instance.IsPlaying);
+               DialoguePlayback.IsPlaying;
     }
 
     /// <summary>패턴 공용 공격 모션을 재생합니다.</summary>
@@ -766,7 +766,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// <summary>벽 레이어를 기준으로 맵 전체 피해 경고를 표시합니다.</summary>
     public void ShowMapWideWarning(Vector3 center, float warningTime, AttackTelegraphStyle warningStyle)
     {
-        if (telegraphService == null || warningStyle == null)
+        if (telegraphPresenter == null || warningStyle == null)
             return;
 
         ResolveArenaRectangle(center, out Vector3 rectCenter, out Vector2 rectSize);
@@ -778,7 +778,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
             Mathf.Max(0f, warningTime),
             warningStyle));
 
-        telegraphService.Show(spec);
+        telegraphPresenter.Show(spec);
     }
 
     /// <summary>
@@ -796,10 +796,10 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// <summary>맵 전체 피해 경고 텔레그래프를 즉시 숨깁니다.</summary>
     public void HideMapWideWarning()
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
-        telegraphService.HideCurrent();
+        telegraphPresenter.HideCurrent();
     }
 
     /// <summary>현재 타깃에게 맵 전체 피해를 적용합니다.</summary>

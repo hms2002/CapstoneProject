@@ -29,7 +29,7 @@ namespace UnityGAS
         [SerializeField] private bool clearHitLoopWhenMoving = true;
 
         [Header("Flash")]
-        [SerializeField] private SpriteHitFlashController hitFlashController;
+        [SerializeField] private MonoBehaviour hitFlashController;
 
         [Header("Camera Shake")]
         [SerializeField] private CameraShakeHook hitCameraShake = CameraShakeHook.Create(
@@ -79,6 +79,7 @@ namespace UnityGAS
         private TagSystem _tags;
         private AbilitySystem _abilitySystem;
         private IMovementStateProvider _movementStateProvider;
+        private IHitFlashController2D _hitFlash;
 
         private int _hitEnterTriggerHash;
         private int _hitLoopBoolHash;
@@ -101,8 +102,7 @@ namespace UnityGAS
             if (animator == null)
                 animator = GetComponentInChildren<Animator>();
 
-            if (hitFlashController == null)
-                hitFlashController = GetComponentInChildren<SpriteHitFlashController>();
+            _hitFlash = ResolveHitFlash();
 
             if (movementStateProviderSource != null)
                 _movementStateProvider = movementStateProviderSource as IMovementStateProvider;
@@ -155,8 +155,7 @@ namespace UnityGAS
                 _reactionRoutine = null;
             }
 
-            if (hitFlashController != null)
-                hitFlashController.StopFlash();
+            _hitFlash?.StopFlash();
 
             SetHitLoop(false);
             ClearReactionTags();
@@ -181,8 +180,7 @@ namespace UnityGAS
 
             PlayHitEnterAnimation();
 
-            if (hitFlashController != null)
-                hitFlashController.PlayFlash();
+            _hitFlash?.PlayFlash();
 
             if (shake > 0f)
             {
@@ -269,6 +267,21 @@ namespace UnityGAS
                 s_defaultDeadTag = Resources.Load<GameplayTag>(DefaultDeadTagResourcePath);
 
             return s_defaultDeadTag != null && _tags.HasTag(s_defaultDeadTag);
+        }
+
+        /// <summary>
+        /// 책임 : authored component 또는 하위 컴포넌트에서 피격 플래시 계약 구현체를 찾는다.
+        /// </summary>
+        private IHitFlashController2D ResolveHitFlash()
+        {
+            if (hitFlashController is IHitFlashController2D authoredFlash)
+                return authoredFlash;
+
+            IHitFlashController2D discoveredFlash = GetComponentInChildren<IHitFlashController2D>();
+            if (discoveredFlash is MonoBehaviour discoveredBehaviour)
+                hitFlashController = discoveredBehaviour;
+
+            return discoveredFlash;
         }
 
         /// <summary>

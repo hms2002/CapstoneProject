@@ -30,8 +30,9 @@ public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner, 
 
     [SerializeField] private StrangeCandlestick owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private MonoBehaviour telegraphService;
 
+    private IAttackTelegraphPresenter telegraphPresenter;
     private bool isRunning;
     private bool cancelRequested;
 
@@ -45,8 +46,7 @@ public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner, 
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
 
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
     }
 
     public IEnumerator Run(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -110,28 +110,27 @@ public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner, 
 
     private void ShowWarning(AttackContext context, float duration)
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
-        telegraphService.Show(owner.MakeLockOnSpec(context.TargetObject, duration));
+        telegraphPresenter.Show(owner.MakeLockOnSpec(context.TargetObject, duration));
     }
 
     private void UpdateWarning(AttackContext context, float duration)
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
         AttackTelegraphSpec spec = owner.MakeLockOnSpec(context.TargetObject, duration);
-        if (telegraphService.HasActiveTelegraph)
-            telegraphService.UpdateCurrentGeometry(spec);
+        if (telegraphPresenter.HasActiveTelegraph)
+            telegraphPresenter.UpdateCurrentGeometry(spec);
         else
-            telegraphService.Show(spec);
+            telegraphPresenter.Show(spec);
     }
 
     private void HideWarning()
     {
-        if (telegraphService != null)
-            telegraphService.HideCurrent();
+        telegraphPresenter?.HideCurrent();
     }
 
     /// <summary>

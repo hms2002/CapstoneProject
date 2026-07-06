@@ -199,7 +199,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
             return false;
 
         isDeathSequenceRunning = true;
-        SoundManager.EnsureInstance().DuckCombatSfx(combatSfxDuckVolumeOnDeath, combatSfxDuckFadeSeconds);
+        SoundPlaybackUtility.DuckCombatSfx(combatSfxDuckVolumeOnDeath, combatSfxDuckFadeSeconds);
         StartCoroutine(CoDeathSequence(causeKind, causeName, endRunReason, targetHubSceneName, useSceneTransitionService));
         return true;
     }
@@ -233,12 +233,9 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     {
         ApplyDeathStateTags();
 
-        if (UIManager.Instance != null)
-        {
-            UIManager.Instance.CloseAllPopups();
-            UIManager.Instance.HideHoverImmediate();
-            UIManager.Instance.HideWorldPrompt();
-        }
+        UiCommandPlayback.CloseAllPopups();
+        UiCommandPlayback.HideHoverImmediate();
+        UiCommandPlayback.HideWorldPrompt();
 
         hitFeedback?.ForceEndReaction();
 
@@ -283,7 +280,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
 
     private void CenterCameraOnDeath()
     {
-        CameraBootstrap.CenterGameplayCameraOn(transform);
+        GameplayCameraFocusPlayback.SnapToTarget(this, transform);
     }
 
     private bool TryShowGameOverPresentation(
@@ -301,7 +298,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
         request.EndRunOnReturn = true;
         request.EndRunReason = endRunReason;
 
-        return GameOverPresentationController.TryShow(request);
+        return GameOverPresentationPlayback.TryShow(request);
     }
 
     private void CaptureDamageSource(object causer, object instigator)
@@ -404,14 +401,13 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
 
     private void ReturnToHub(RunEndReason endRunReason, string targetHubSceneName, bool useSceneTransitionService)
     {
-        if (GamePlayDataManager.Instance != null)
-            GamePlayDataManager.Instance.EndRun(endRunReason);
+        RunSessionStore.EndRun(endRunReason);
 
         string resolvedHubSceneName = ResolveHubSceneName(targetHubSceneName);
 
         if (useSceneTransitionService)
         {
-            SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.Instance;
+            ISceneTransitionHandle transitionCoordinator = SceneTransitionPlayback.Instance;
             if (transitionCoordinator != null && transitionCoordinator.TryLoadScene(resolvedHubSceneName))
                 return;
         }

@@ -21,6 +21,7 @@ namespace UnityGAS
     /// - 넉백은 GE_Knockback_Spec 등 별도 외압 Effect로 분리한다.
     /// </summary>
     [CreateAssetMenu(fileName = "GE_Damage_Spec", menuName = "GAS/Effects/Damage (Spec)")]
+    // 책임: SetByCaller 피해량을 Attribute/토큰 체력 피해와 피격 피드백으로 적용하는 GameplayEffect 사양이다.
     public class GE_Damage_Spec : GameplayEffect, ISpecGameplayEffect
     {
         private const string DefaultDeadTagResourcePath = "Tags/State.Dead";
@@ -309,7 +310,7 @@ namespace UnityGAS
                 $"show element popup appliedDamage={appliedDamage:0.###}, preHp={preHp:0.###}, postHp={postHp:0.###}, remainingDamage={remainingDamage:0.###}, position={popupPosition}",
                 popupElementTag,
                 target);
-            DamagePopupService.Show(DamagePopupRequest.Element(appliedDamage, popupPosition, popupElementTag));
+            DamagePopupPlayback.Show(DamagePopupRequest.Element(appliedDamage, popupPosition, popupElementTag));
             DamagePopupDuplicateSuppressor.Register(
                 target,
                 appliedDamage,

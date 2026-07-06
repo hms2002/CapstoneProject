@@ -20,6 +20,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         }
     }
 
+    // 책임: 회수된 번개창 일제사격의 기준 방향과 발사 요청 목록을 보관한다.
     private sealed class RecoveredSpearVolleyContext
     {
         public readonly Vector2 baseDirection;
@@ -34,6 +35,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         public bool HasShots => shots != null && shots.Count > 0;
     }
 
+    // 책임: 번개창 표식 생성 위치와 해당 방 정보를 함께 전달한다.
     private readonly struct MarkSpawnRequest
     {
         public readonly Vector2 position;
@@ -1681,7 +1683,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             return;
 
         cursorInteractableSet = active;
-        MouseCursorService.Instance?.SetInteractable(this, active);
+        MouseCursorPlayback.SetInteractable(this, active);
     }
 
     private void DestroyFeedbackObjects()
@@ -1993,27 +1995,23 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
     private static bool IsGameplayInputBlockedByUiOrFlow()
     {
-        if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+        if (DialoguePlayback.IsPlaying)
             return true;
 
-        if (UIManager.Instance != null && UIManager.Instance.HasBlockingUI())
+        if (UiInteractionStateQuery.HasBlockingUI())
             return true;
 
-        if (SceneTransitionCoordinator.Instance != null &&
-            SceneTransitionCoordinator.Instance.IsTransitionActive)
-        {
+        if (SceneTransitionPlayback.IsTransitionActive)
             return true;
-        }
 
-        return LoadingOverlayController.Instance != null &&
-               LoadingOverlayController.Instance.IsActiveLoadingPresentation;
+        return LoadingPresentationQuery.IsActiveLoadingPresentation;
     }
 
     private Vector2 ResolveCursorWorld(AbilitySystem system)
     {
         Camera camera = Camera.main;
         if (camera != null)
-            return InputBindingService.EnsureInstance().GetPointerWorldPosition(camera, 0f);
+            return InputActionQuery.GetPointerWorldPosition(camera, 0f);
 
         if (aimSource != null)
             return aimSource.MouseWorld;

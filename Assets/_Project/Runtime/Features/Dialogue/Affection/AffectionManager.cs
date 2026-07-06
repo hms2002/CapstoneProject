@@ -14,8 +14,8 @@ public class AffectionManager : MonoBehaviour
     private readonly AffectionRewardProcessor rewardProcessor = new AffectionRewardProcessor();
 
     private int currentNpcId;
-    private AffectionUI linkedUI;
-    private bool isSubscribedToGameDataManager;
+    private IAffectionPresentationView linkedUI;
+    private bool isSubscribedToGameDataStore;
 
     public event Action<int, int> OnAffectionChanged;
 
@@ -43,24 +43,24 @@ public class AffectionManager : MonoBehaviour
 
     private void OnEnable()
     {
-        TrySubscribeToGameDataManager();
+        TrySubscribeToGameDataStore();
     }
 
     private void OnDisable()
     {
-        if (GameDataManager.Instance != null && isSubscribedToGameDataManager)
-            GameDataManager.Instance.OnDataLoaded -= HandleGameDataLoaded;
+        if (isSubscribedToGameDataStore)
+            GameDataStore.OnDataLoaded -= HandleGameDataLoaded;
 
-        isSubscribedToGameDataManager = false;
+        isSubscribedToGameDataStore = false;
     }
 
     private void Start()
     {
-        TrySubscribeToGameDataManager();
+        TrySubscribeToGameDataStore();
         LoadAffectionData();
     }
 
-    public void SetLinkedUI(AffectionUI ui)
+    public void SetLinkedUI(IAffectionPresentationView ui)
     {
         linkedUI = ui;
         linkedUI?.Setup(GetAffection(currentNpcId));
@@ -93,7 +93,7 @@ public class AffectionManager : MonoBehaviour
 
         bool isRunActive = IsRunActive();
         AffectionChangeResult change = progressStore.AddAffection(
-            GameDataManager.Instance?.Data,
+            GameDataStore.Data,
             data.id,
             amount,
             syncToGameData: !isRunActive);
@@ -105,9 +105,9 @@ public class AffectionManager : MonoBehaviour
             PlayAffectionChangeSound(change.Delta);
 
             if (isRunActive)
-                GamePlayDataManager.Instance?.AddPendingAffectionDelta(data.id, change.Delta);
+                RunSessionStore.AddPendingAffectionDelta(data.id, change.Delta);
             else
-                GameDataSaveCoordinator.RequestImmediateSave(this);
+                GameDataStore.RequestImmediateSave(this);
         }
 
         bool hasReward = rewardProcessor.HasRewardsInRange(data, change.PreviousAmount, change.NewAmount);
@@ -124,15 +124,15 @@ public class AffectionManager : MonoBehaviour
     {
         int previousValue = progressStore.GetAffection(npcId);
         bool isRunActive = IsRunActive();
-        progressStore.SetAffection(GameDataManager.Instance?.Data, npcId, value, syncToGameData: !isRunActive);
+        progressStore.SetAffection(GameDataStore.Data, npcId, value, syncToGameData: !isRunActive);
         if (previousValue != value)
         {
             PlayAffectionChangeSound(value - previousValue);
 
             if (isRunActive)
-                GamePlayDataManager.Instance?.AddPendingAffectionDelta(npcId, value - previousValue);
+                RunSessionStore.AddPendingAffectionDelta(npcId, value - previousValue);
             else
-                GameDataSaveCoordinator.RequestImmediateSave(this);
+                GameDataStore.RequestImmediateSave(this);
 
             if (currentNpcId == npcId)
                 linkedUI?.Setup(value);
@@ -152,19 +152,19 @@ public class AffectionManager : MonoBehaviour
 
     private void LoadAffectionData()
     {
-        progressStore.Load(GameDataManager.Instance?.Data);
-        int recordCount = GameDataManager.Instance?.Data?.affectionData?.affectionRecords?.Count ?? 0;
+        progressStore.Load(GameDataStore.Data);
+        int recordCount = GameDataStore.Data?.affectionData?.affectionRecords?.Count ?? 0;
         Debug.Log($"[AffectionManager] Loaded affection data. NPC count: {recordCount}");
     }
 
-    /// <summary>GameDataManager 생성 순서와 무관하게 호감도 캐시 갱신 이벤트를 한 번만 구독합니다.</summary>
-    private void TrySubscribeToGameDataManager()
+    /// <summary>GameData 저장소 생성 순서와 무관하게 호감도 캐시 갱신 이벤트를 한 번만 구독합니다.</summary>
+    private void TrySubscribeToGameDataStore()
     {
-        if (isSubscribedToGameDataManager || GameDataManager.Instance == null)
+        if (isSubscribedToGameDataStore || !GameDataStore.IsAvailable)
             return;
 
-        GameDataManager.Instance.OnDataLoaded += HandleGameDataLoaded;
-        isSubscribedToGameDataManager = true;
+        GameDataStore.OnDataLoaded += HandleGameDataLoaded;
+        isSubscribedToGameDataStore = true;
     }
 
     /// <summary>슬롯 변경/삭제 후 새 저장 데이터 기준으로 호감도 캐시와 UI를 다시 맞춥니다.</summary>
@@ -178,7 +178,7 @@ public class AffectionManager : MonoBehaviour
 
     private void RunAffectionPresentation(NPCData data, AffectionChangeResult change, bool hasReward, Action onComplete)
     {
-        if (linkedUI != null && linkedUI.gameObject.activeInHierarchy)
+        if (linkedUI != null && linkedUI.IsPresentationActive)
         {
             linkedUI.PlayGainAnimation(change.PreviousAmount, change.NewAmount, () =>
             {
@@ -214,8 +214,6 @@ public class AffectionManager : MonoBehaviour
 
     private static bool IsRunActive()
     {
-        return GamePlayDataManager.Instance != null
-            && GamePlayDataManager.Instance.Data != null
-            && GamePlayDataManager.Instance.Data.isRunActive;
+        return RunSessionStore.IsRunActive;
     }
 }

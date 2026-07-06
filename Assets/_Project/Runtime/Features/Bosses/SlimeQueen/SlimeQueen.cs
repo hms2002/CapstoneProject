@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityGAS;
 
 [RequireComponent(typeof(SlimeQueenVanishParticleEffect))]
+// 책임: 슬라임퀸 1페이즈 패턴, 배화술법, 분열 연출과 2페이즈 전환을 제어한다.
 public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost, ISlimeQueenRandomJumpHost
 {
     private const float PhaseTwoSplitBlockedSkin = 0.08f;
@@ -196,7 +197,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
 
     private SlimeQueenVanishParticleEffect phaseOneVanishEffect;
     private Coroutine callSlimeSpeechAnimationRoutine;
-    private readonly List<AttackTelegraphView> bodyInflateWarningViews = new List<AttackTelegraphView>();
+    private readonly List<IAttackTelegraphHandle> bodyInflateWarningViews = new List<IAttackTelegraphHandle>();
     private readonly RaycastHit2D[] phase2SplitRaycastHits = new RaycastHit2D[8];
     private readonly Collider2D[] phase2SplitOverlapHits = new Collider2D[12];
     private bool runtimePatternsConfigured;
@@ -321,7 +322,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     /// <summary>소환 위치 경고 원을 AttackTelegraph로 표시합니다.</summary>
     public void ShowSummonWarning(Vector3 landingPosition)
     {
-        AttackTelegraphService service = GetTelegraphService();
+        IAttackTelegraphPresenter service = GetTelegraphService();
         if (service == null)
             return;
 
@@ -337,7 +338,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     /// <summary>패턴 2의 랜덤 점프 착지 경고 원을 표시합니다.</summary>
     public void ShowJumpWarning(Vector3 landingPosition)
     {
-        AttackTelegraphService service = GetTelegraphService();
+        IAttackTelegraphPresenter service = GetTelegraphService();
         if (service == null)
             return;
 
@@ -517,7 +518,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     {
         CleanupBodyInflatePresentation();
 
-        AttackTelegraphService service = GetTelegraphService();
+        IAttackTelegraphPresenter service = GetTelegraphService();
         if (service == null)
             return;
 
@@ -527,7 +528,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             bodyInflateWarningSeconds,
             bodyInflateWarningStyle));
 
-        AttackTelegraphView view = service.SpawnDetachedView(spec);
+        IAttackTelegraphHandle view = service.SpawnDetachedView(spec);
         if (view != null)
             bodyInflateWarningViews.Add(view);
     }
@@ -639,19 +640,15 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         animator.SetBool(parameterHash, value);
     }
 
-    private static void ClearViews(List<AttackTelegraphView> views)
+    private static void ClearViews(List<IAttackTelegraphHandle> views)
     {
         if (views == null)
             return;
 
         for (int i = 0; i < views.Count; i++)
         {
-            AttackTelegraphView view = views[i];
-            if (view != null)
-            {
-                view.HideImmediate();
-                Destroy(view.gameObject);
-            }
+            IAttackTelegraphHandle view = views[i];
+            view?.Release();
         }
 
         views.Clear();

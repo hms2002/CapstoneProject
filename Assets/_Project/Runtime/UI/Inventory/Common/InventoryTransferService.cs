@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// 책임: 인벤토리 간 아이템 이동에 필요한 source/target 컨테이너와 슬롯 정보를 전달한다.
 public readonly struct InventoryTransferRequest
 {
     public IItemContainer Source { get; }
@@ -40,6 +41,7 @@ public enum InventoryTransferFailureReason
     LastWeaponProtected
 }
 
+// 책임: 인벤토리 이동 성공 여부와 실패 사유, 경고 팝업 코드를 반환한다.
 public readonly struct InventoryTransferResult
 {
     public bool Succeeded { get; }
@@ -67,40 +69,7 @@ public readonly struct InventoryTransferResult
     }
 }
 
-public static class InventoryDeliveryWarningResolver
-{
-    public static WarningPopupCode FromItem(ScriptableObject item)
-    {
-        return item switch
-        {
-            WeaponDefinition => WarningPopupCode.WeaponInventoryFull,
-            RelicDefinition => WarningPopupCode.RelicInventoryFull,
-            ConsumableDefinition => WarningPopupCode.ConsumableInventoryFull,
-            _ => WarningPopupCode.None
-        };
-    }
-
-    public static WarningPopupCode FromRelicAcquireResult(RelicInventory.AcquireResult result)
-    {
-        return result switch
-        {
-            RelicInventory.AcquireResult.InventoryFull => WarningPopupCode.RelicInventoryFull,
-            RelicInventory.AcquireResult.AlreadyMaxLevel => WarningPopupCode.RelicAlreadyMaxLevel,
-            RelicInventory.AcquireResult.HealthTooLowForRelicChange => WarningPopupCode.RelicChangeWouldDefeatPlayer,
-            _ => WarningPopupCode.None
-        };
-    }
-
-    public static WarningPopupCode FromConsumableAcquireResult(PlayerConsumableInventory.AcquireResult result)
-    {
-        return result switch
-        {
-            PlayerConsumableInventory.AcquireResult.InventoryFull => WarningPopupCode.ConsumableInventoryFull,
-            _ => WarningPopupCode.None
-        };
-    }
-}
-
+// 책임: 공용 아이템 컨테이너 간 이동/교환/유물 병합 규칙을 적용한다.
 public static class InventoryTransferService
 {
     public static InventoryTransferResult TryTransfer(InventoryTransferRequest request)

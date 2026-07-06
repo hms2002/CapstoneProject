@@ -31,10 +31,10 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
     private bool hasObservedPhaseTwo;
     private bool hasObservedPhaseTwoShort;
     private bool hasObservedPhaseTwoLong;
-    private CinematicLetterboxOverlay finaleOverlay;
+    private ICinematicLetterboxOverlayHandle finaleOverlay;
     private Coroutine finaleOverlayIntroRoutine;
     private Coroutine finaleOverlayOutroRoutine;
-    private CameraPresentationDirector finaleCameraDirector;
+    private ICameraPresentationDirector finaleCameraDirector;
     private GameObject finaleFocusAnchorObject;
     private GameFlowInputBlocker finaleInputBlocker;
     private PlayerCinematicProtection finalePlayerProtection;
@@ -174,15 +174,15 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
 
     private IEnumerator RunPhaseTwoFinaleRoutine(SlimeQueenP2Short shortQueen, SlimeQueenP2Long longQueen)
     {
-        SoundManager.EnsureInstance().StopMusic();
+        SoundPlaybackUtility.StopMusic();
 
         CleanupFinaleRuntimeState();
         finalePlayerProtection = AcquirePlayerProtection();
         finaleInputBlocker = GameFlowInputBlocker.GetOrAdd(this);
         finaleInputBlocker?.Acquire();
 
-        finaleOverlay = new CinematicLetterboxOverlay();
-        finaleCameraDirector = FindAnyObjectByType<CameraPresentationDirector>();
+        finaleOverlay = CinematicLetterboxPlayback.CreateOverlay();
+        finaleCameraDirector = CameraPresentationPlayback.FindAny();
         finaleFocusAnchorObject = new GameObject("SlimeQueenPhaseTwoFinaleCameraTarget");
         finaleFocusAnchorObject.hideFlags = HideFlags.DontSave;
         Transform focusAnchor = finaleFocusAnchorObject.transform;

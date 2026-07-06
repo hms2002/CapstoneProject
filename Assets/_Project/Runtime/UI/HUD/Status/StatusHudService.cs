@@ -3,15 +3,13 @@ using UnityEngine;
 
 /// <summary>
 /// 책임 :
-/// - 상태 HUD source의 등록/해제를 관리하고, 현재 활성 source들로부터 HUD 엔트리를 수집하는 중앙 서비스를 제공한다.
-/// - HUD가 상태 소유자를 직접 추적하지 않고도 같은 진입점으로 현재 표시 목록을 다시 읽게 만든다.
+/// - UI 계층에서 상태 HUD source registry에 접근하는 facade를 제공한다.
+/// - HUD presenter가 상태 소유자를 직접 추적하지 않고도 Core registry를 통해 현재 표시 목록을 다시 읽게 만든다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class StatusHudService : MonoBehaviour
 {
     private static StatusHudService instance;
-    private readonly HashSet<IStatusHudSource> sources = new();
-
     public static StatusHudService Current => instance;
     public static StatusHudService Instance => EnsureInstance();
 
@@ -49,27 +47,16 @@ public sealed class StatusHudService : MonoBehaviour
 
     public void RegisterSource(IStatusHudSource source)
     {
-        if (source != null)
-            sources.Add(source);
+        StatusHudSourceRegistry.RegisterSource(source);
     }
 
     public void UnregisterSource(IStatusHudSource source)
     {
-        if (source != null)
-            sources.Remove(source);
+        StatusHudSourceRegistry.UnregisterSource(source);
     }
 
     public void CollectEntries(List<StatusHudEntry> buffer)
     {
-        if (buffer == null)
-            return;
-
-        buffer.Clear();
-
-        if (sources.Count == 0)
-            return;
-
-        foreach (IStatusHudSource source in sources)
-            source?.CollectStatusHudEntries(buffer);
+        StatusHudSourceRegistry.CollectEntries(buffer);
     }
 }

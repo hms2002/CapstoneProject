@@ -60,14 +60,27 @@ namespace UnityGAS
                 CombatTimingSlot.AbilityRecovery or
                 CombatTimingSlot.AbilityCooldown;
 
-            MonsterCombatTimingProfile profile = system != null
-                ? system.GetComponentInParent<MonsterCombatTimingProfile>()
-                : null;
+            ICombatTimingProfile profile = ResolveTimingProfile(system);
 
             if (profile != null && profile.TryResolveTimingSlotScale(slot, globalValue, out bool resolvedValue))
                 return resolvedValue;
 
             return globalValue;
+        }
+
+        private static ICombatTimingProfile ResolveTimingProfile(AbilitySystem system)
+        {
+            if (system == null)
+                return null;
+
+            MonoBehaviour[] behaviours = system.GetComponentsInParent<MonoBehaviour>(true);
+            for (int i = 0; i < behaviours.Length; i++)
+            {
+                if (behaviours[i] is ICombatTimingProfile profile)
+                    return profile;
+            }
+
+            return null;
         }
 
         private static MonsterStageHpScalingSettings ResolveSettings()

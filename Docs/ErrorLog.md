@@ -25,6 +25,20 @@ Prevention:
 
 ## Active Entries
 
+## 2026-07-04 - Runtime Core Contained Editor-Only Menu Tool
+
+Context:
+Assembly-definition migration found `InteractableTool.cs` under `Assets/_Project/Runtime/Core/Interaction/` even though it was a UnityEditor `MenuItem` tool wrapped in `#if UNITY_EDITOR`.
+
+Cause:
+The compile guard prevented player-build compilation, but the file still lived under a runtime ownership folder. That makes runtime Core assembly boundaries ambiguous and blocks clean `Core.asmdef` migration.
+
+Fix:
+Move editor-only menu/tool scripts and their `.meta` files into `Assets/_Project/Editor/...` so Unity GUIDs are preserved while runtime folders contain only runtime-owned source.
+
+Prevention:
+Do not keep `UnityEditor` tooling in `Runtime` folders, even behind `#if UNITY_EDITOR`. For asmdef-safe structure, file location must match ownership: runtime code under Runtime assemblies, editor tooling under the Editor assembly.
+
 ## 2026-06-02 - SpeechBubble Negative Scale Flip Shifted Layout Semantics
 
 Context:
@@ -1608,3 +1622,45 @@ Keep catalog-backed sources parented under the persistent `SoundManager` roots. 
 
 Prevention:
 Persistent runtime service pools must own the lifetime of their pooled GameObjects. Do not parent pooled service objects under scene-owned transforms; follow scene targets by storing a reference and projecting world position instead. Before recycling a Unity object from a persistent pool, treat Unity fake-null as a destroyed entry and recreate it.
+
+## 2026-07-04 - Contract Inversion Left Dangling Fallback Branch
+
+Context:
+During the assembly split, `PlayerInteractionPromptPresenter` was partially converted from concrete `WorldInteractionPromptController` calls to `UiCommandPlayback`.
+
+Cause:
+The direct call was inserted before the old fallback `else` branch was removed or wrapped in a backend-handled check, leaving a dangling `else` and an immediate compile break.
+
+Fix:
+`UiCommandPlayback.HideWorldPrompt()` and `RefreshWorldPrompt(...)` now return whether a backend handled the request. `PlayerInteractionPromptPresenter` uses that return value before falling back to the serialized `IWorldInteractionPromptView` contract.
+
+Prevention:
+When replacing concrete UI calls with playback contracts, convert the primary path and fallback branch in one edit. Search the touched file for orphaned `else` branches and run targeted syntax/reference searches before moving on to the next boundary.
+
+## 2026-07-04 - Serialized Missing Script References Pre-Exist Assembly Split
+
+Context:
+During the assembly-definition split verification, a static YAML scan checked scene, prefab, and asset `m_Script` references against all `.meta` GUIDs under `Assets`, `Packages`, and `Library/PackageCache`.
+
+Cause:
+The first scan found `35` missing `m_Script` GUID references. `git grep` against `HEAD` found the same GUID references in committed assets/scenes, so this is a pre-existing serialization state rather than damage from the current asmdef moves. Known affected categories include ShadowBoss telegraph style assets, monster balance assets, Visual Scripting graph assets, multiple scenes with the same missing component GUID, `PixelLightTest`, `Frog_BOSS`, and `_Recovery` scenes.
+
+Fix:
+Partially fixed during the asmdef verification slice by restoring four legacy compatibility scripts with their historical MonoScript GUIDs: `DamagePopupSceneAnchor`, `MonsterDefinition`, `UIHoverKeepAliveArea`, and `BossDrop`. A later serialized GUID repair moved the two ShadowBoss `AttackTelegraphStyle` assets to the current `AttackTelegraphStyle` MonoScript GUID. A subsequent serialized cleanup moved `Frog_BOSS.prefab` from the old `Boss` GUID to the current `Boss` MonoScript GUID. The current static missing `m_Script` count is `6` project references, all Visual Scripting package/graph/settings references.
+
+Prevention:
+Before declaring scene/prefab/ScriptableObject validation complete, run a missing `m_Script` GUID audit after Unity import and either restore the missing scripts/packages, remove obsolete components/assets, or document intentionally ignored recovery/demo assets separately from active game content. Do not create duplicate compatibility classes for GUIDs whose current class already exists under another MonoScript GUID; migrate the serialized asset to the current script GUID instead.
+
+## 2026-07-04 - Asmdef Meta Missing Importer Block Prevents Trustworthy Unity Assembly Output
+
+Context:
+During the six-assembly split verification, all target asmdef files existed and the static asmdef graph was valid, but Unity still had no `Core.dll`, `Gameplay.dll`, `Infrastructure.dll`, `Presentation.dll`, `UI.dll`, or `Editor.dll` under `Library/ScriptAssemblies`.
+
+Cause:
+`Assets/_Project/Runtime/Core/Core.asmdef.meta` only contained `fileFormatVersion` and `guid`; it was missing the `AssemblyDefinitionImporter` block present on the other asmdef metas. A bare GUID meta can preserve the GUID text but still make the asset importer state suspicious for Unity asmdef recognition.
+
+Fix:
+Restored the `AssemblyDefinitionImporter` block in `Core.asmdef.meta` while preserving GUID `560ed2d5beb94299be88e3bbd2aac48f`. Added asmdef meta importer checks to both the external static audit script and the Unity Editor validation window.
+
+Prevention:
+When adding or moving `.asmdef` files, verify the `.asmdef.meta` file keeps the same GUID and contains `AssemblyDefinitionImporter`. Do not treat a valid `.asmdef` JSON file as sufficient evidence that Unity imported the assembly definition asset.

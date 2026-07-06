@@ -57,7 +57,7 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
         if (dragon == null)
             yield break;
 
-        AttackTelegraphService telegraphService = dragon.GetComponent<AttackTelegraphService>();
+        IAttackTelegraphPresenter telegraphService = AttackTelegraphPresenterResolver.Resolve(dragon);
         Vector2 center = dragon.transform.position;
 
         ShowWarningTelegraph(telegraphService, center);
@@ -205,7 +205,7 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
             visualRoot);
     }
 
-    private void ShowWarningTelegraph(AttackTelegraphService telegraphService, Vector2 center)
+    private void ShowWarningTelegraph(IAttackTelegraphPresenter telegraphService, Vector2 center)
     {
         if (telegraphService == null)
             return;

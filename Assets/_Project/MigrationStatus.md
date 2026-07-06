@@ -6,13 +6,23 @@ This document records the current migration state for the `_Project` hierarchy.
 
 The target `_Project` folder tree from the v2 plan was created with Unity `.meta` files.
 
+## Assembly Split Updates
+
+The original structure migration has since been adjusted for asmdef ownership:
+
+- `Runtime/Core/Core.asmdef` now marks Core as a project-owned runtime assembly source folder.
+- `Runtime/Presentation/Combat` contains combat-height visual presentation.
+- `Runtime/Presentation/VFX` contains concrete cue/VFX/world presentation scripts previously listed under `Runtime/Infrastructure/VFX`.
+- `Runtime/Presentation/Camera` contains concrete camera shake and camera presentation scripts.
+- `Runtime/Infrastructure/Camera` now keeps only runtime camera rig bootstrap/policy/follow responsibilities.
+
 Runtime infrastructure scripts moved into `_Project`:
 
 - `Runtime/Infrastructure/Loading`
 - `Runtime/Infrastructure/Input`
 - `Runtime/Infrastructure/Input/MouseCursor`
 - `Runtime/Infrastructure/Audio`
-- `Runtime/Infrastructure/Camera`
+- `Runtime/Infrastructure/Camera` (bootstrap/policy/follow only after assembly split updates)
 - `Runtime/Infrastructure/Save`
 - `Runtime/Infrastructure/SceneFlow`
 - `Runtime/Infrastructure/ServiceLifetime`
@@ -23,11 +33,14 @@ Runtime infrastructure scripts moved into `_Project`:
 - `Runtime/Infrastructure/Rendering/Lighting`
 - `Runtime/Infrastructure/Rendering/Tilemaps`
 - `Runtime/Infrastructure/Time`
-- `Runtime/Infrastructure/VFX`
-- `Runtime/Infrastructure/VFX/AbilityPresentation`
-- `Runtime/Infrastructure/VFX/Afterimages`
-- `Runtime/Infrastructure/VFX/Cues`
-- `Runtime/Infrastructure/VFX/Presentation`
+- `Runtime/Presentation/VFX`
+- `Runtime/Presentation/VFX/AbilityPresentation`
+- `Runtime/Presentation/VFX/Afterimages`
+- `Runtime/Presentation/VFX/Cues`
+- `Runtime/Presentation/VFX/Presentation`
+- `Runtime/Presentation/Camera`
+- `Runtime/Presentation/Camera/Cues`
+- `Runtime/Presentation/Combat`
 
 Editor tools moved into `_Project`:
 

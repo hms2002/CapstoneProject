@@ -5,7 +5,10 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseRequestHandler
+/// <summary>
+/// 책임 : 키 바인딩 편집 화면의 행 생성, 입력 대기, 적용/초기화/닫기 흐름을 담당한다.
+/// </summary>
+public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseRequestHandler, ITitleScenePersistentCleanupTarget
 {
     private const int SystemCursorPriority = 300;
     private const string TitleSceneName = "TitleScene";

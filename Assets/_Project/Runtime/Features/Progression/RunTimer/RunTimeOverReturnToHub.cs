@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
+// 책임: 런 시간 제한 종료 이벤트를 허브 복귀 씬 전환으로 연결한다.
 public sealed class RunTimeOverReturnToHub : MonoBehaviour
 {
     [Header("Transition")]
@@ -13,8 +14,7 @@ public sealed class RunTimeOverReturnToHub : MonoBehaviour
 
     private void OnEnable()
     {
-        if (GamePlayDataManager.Instance != null)
-            GamePlayDataManager.Instance.OnRunStarted += HandleRunStarted;
+        RunSessionStore.OnRunStarted += HandleRunStarted;
 
         RunTimeLimitSystem.InstanceChanged += HandleTimeLimitSystemChanged;
         BindTimeLimitSystem(RunTimeLimitSystem.Instance);
@@ -22,8 +22,7 @@ public sealed class RunTimeOverReturnToHub : MonoBehaviour
 
     private void OnDisable()
     {
-        if (GamePlayDataManager.Instance != null)
-            GamePlayDataManager.Instance.OnRunStarted -= HandleRunStarted;
+        RunSessionStore.OnRunStarted -= HandleRunStarted;
 
         RunTimeLimitSystem.InstanceChanged -= HandleTimeLimitSystemChanged;
         BindTimeLimitSystem(null);
@@ -90,19 +89,15 @@ public sealed class RunTimeOverReturnToHub : MonoBehaviour
 
     private void FallbackReturnToHub()
     {
-        if (UIManager.Instance != null)
-        {
-            UIManager.Instance.CloseAllPopups();
-            UIManager.Instance.HideHoverImmediate();
-            UIManager.Instance.HideWorldPrompt();
-        }
+        UiCommandPlayback.CloseAllPopups();
+        UiCommandPlayback.HideHoverImmediate();
+        UiCommandPlayback.HideWorldPrompt();
 
-        if (GamePlayDataManager.Instance != null)
-            GamePlayDataManager.Instance.EndRun(RunEndReason.TimeOver);
+        RunSessionStore.EndRun(RunEndReason.TimeOver);
 
         if (useFadeTransitionService)
         {
-            SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.Instance;
+            ISceneTransitionHandle transitionCoordinator = SceneTransitionPlayback.Instance;
             if (transitionCoordinator != null && transitionCoordinator.TryLoadScene(hubSceneName))
                 return;
         }

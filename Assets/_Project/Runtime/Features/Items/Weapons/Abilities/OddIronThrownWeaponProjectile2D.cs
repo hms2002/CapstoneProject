@@ -69,14 +69,14 @@ namespace UnityGAS
 
             if (impactVfxPrefab != null)
             {
-                GameObject resolvedPrefab = PresentationAssetProvider.ResolvePrefab(impactVfxPrefab);
-                Object.Instantiate(resolvedPrefab != null ? resolvedPrefab : impactVfxPrefab, position, Quaternion.identity);
+                GameObject resolvedPrefab = PresentationAssetPlayback.ResolvePrefab(impactVfxPrefab);
+                Object.Instantiate(resolvedPrefab, position, Quaternion.identity);
             }
 
             if (!impactSound.IsSet)
                 return;
 
-            SoundManager.EnsureInstance().Play(impactSound, new SoundPlaybackContext
+            SoundPlaybackUtility.Play(impactSound, new SoundPlaybackContext
             {
                 Instigator = OwnerSystem != null ? OwnerSystem.gameObject : null,
                 Causer = Causer,

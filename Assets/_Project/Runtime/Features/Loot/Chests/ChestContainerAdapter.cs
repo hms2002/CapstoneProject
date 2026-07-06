@@ -1,7 +1,10 @@
 using System;
 using UnityEngine;
 
-internal sealed class ChestContainerAdapter : IItemContainer, IDisposable, IRelicLevelProvider, IRelicSlotReceiver
+/// <summary>
+/// 책임 : 상자 인벤토리를 공용 아이템 컨테이너/유물 레벨/유물 수신 계약으로 노출한다.
+/// </summary>
+public sealed class ChestContainerAdapter : IItemContainer, IDisposable, IRelicLevelProvider, IRelicSlotReceiver
 {
     private readonly ChestInventory inventory;
     public event Action OnChanged;

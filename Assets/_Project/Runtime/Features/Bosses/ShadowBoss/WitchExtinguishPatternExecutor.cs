@@ -3,6 +3,7 @@ using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
+// 책임: 그림자 보스 촛불 소등 패턴의 경고, 안개 연출, 폭발 피해 실행을 조율한다.
 public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
 {
     public readonly struct PatternContext
@@ -34,7 +35,7 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         public WorldPresentationHook ExplosionPresentation { get; }
     }
 
-    private readonly List<AttackTelegraphView> activeWarningViews = new();
+    private readonly List<IAttackTelegraphHandle> activeWarningViews = new();
     private Witch owner;
 
     private void Awake()
@@ -181,7 +182,7 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
                 clampedWarningTime,
                 warningStyle));
 
-            AttackTelegraphView view = owner.ExtinguishTelegraphService.SpawnDetachedView(spec);
+            IAttackTelegraphHandle view = owner.ExtinguishTelegraphService.SpawnDetachedView(spec);
             if (view != null)
                 activeWarningViews.Add(view);
         }
@@ -191,9 +192,9 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
     {
         for (int i = 0; i < activeWarningViews.Count; i++)
         {
-            AttackTelegraphView view = activeWarningViews[i];
+            IAttackTelegraphHandle view = activeWarningViews[i];
             if (view != null)
-                Destroy(view.gameObject);
+                view.Release();
         }
 
         activeWarningViews.Clear();
@@ -232,7 +233,7 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         if (!context.FogPresentation.HasContent)
             return false;
 
-        GameObject fogInstance = PresentationSpawnService.SpawnPersistent(
+        GameObject fogInstance = WorldPresentationPlayback.SpawnPersistent(
             context.FogPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: owner.gameObject,
@@ -257,7 +258,7 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         if (shakeDirection.sqrMagnitude <= 0.0001f)
             shakeDirection = Vector3.up;
 
-        WorldPresentationRuntime.PlayDeferredAsync(
+        WorldPresentationPlayback.PlayDeferredAsync(
             context.ExplosionPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: owner.gameObject,

@@ -1024,12 +1024,13 @@ public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
     private static void DrawGizmoLabel(Vector3 position, string text, Color color)
     {
 #if UNITY_EDITOR
-        GUIStyle style = new GUIStyle(UnityEditor.EditorStyles.boldLabel);
-        style.normal.textColor = color;
-        UnityEditor.Handles.Label(position, text, style);
+        EditorAuthoringPlayback.DrawHandleLabel(position, text, color, bold: true);
 #endif
     }
 
+    /// <summary>
+    /// 책임: reward reveal 동안 임시 변경한 SpriteRenderer mask 상태를 복구하기 위해 보관한다.
+    /// </summary>
     private readonly struct RendererMaskState
     {
         public RendererMaskState(SpriteRenderer renderer, SpriteMaskInteraction maskInteraction)
@@ -1042,6 +1043,9 @@ public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
         public SpriteMaskInteraction MaskInteraction { get; }
     }
 
+    /// <summary>
+    /// 책임: reward reveal 동안 임시 변경한 SpriteMask sorting range 상태를 복구하기 위해 보관한다.
+    /// </summary>
     private readonly struct SpriteMaskRangeState
     {
         public SpriteMaskRangeState(SpriteMask mask)
@@ -1062,6 +1066,9 @@ public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
         public int BackSortingOrder { get; }
     }
 
+    /// <summary>
+    /// 책임: reward reveal 동안 임시 변경한 Collider2D 활성 상태를 복구하기 위해 보관한다.
+    /// </summary>
     private readonly struct ColliderState
     {
         public ColliderState(Collider2D collider, bool wasEnabled)
@@ -1074,6 +1081,9 @@ public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
         public bool WasEnabled { get; }
     }
 
+    /// <summary>
+    /// 책임: reward reveal 파티클 연출 후 Transform parent/local 값을 복구하기 위해 보관한다.
+    /// </summary>
     private readonly struct ParticleTransformState
     {
         public ParticleTransformState(Transform transform)

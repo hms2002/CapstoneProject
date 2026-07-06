@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[DisallowMultipleComponent]
 /// <summary>
 /// 책임 :
 /// - 전역 UI 캔버스와 UI 서비스 루트를 보관하고 씬 전환 후에도 유지한다.
 /// - UI 기능들이 이름/계층 의존을 직접 갖지 않도록 공통 캔버스 탐색 API를 제공한다.
 /// </summary>
-public sealed class GlobalUIRoot : MonoBehaviour
+[DisallowMultipleComponent]
+public sealed class GlobalUIRoot : MonoBehaviour, IGlobalCanvasBackend, IGlobalCanvasRootMarker, ITitleScenePersistentCleanupTarget
 {
     public static GlobalUIRoot Instance { get; private set; }
 
@@ -41,6 +41,7 @@ public sealed class GlobalUIRoot : MonoBehaviour
         }
 
         Instance = this;
+        GlobalCanvasPlayback.RegisterBackend(this);
         DontDestroyOnLoad(gameObject);
         ResolveReferences();
     }
@@ -52,6 +53,9 @@ public sealed class GlobalUIRoot : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (Instance == this)
+            GlobalCanvasPlayback.RegisterBackend(null);
+
         if (Instance == this)
             Instance = null;
     }
@@ -85,6 +89,22 @@ public sealed class GlobalUIRoot : MonoBehaviour
     public static Canvas GetCanvas(GlobalCanvasLayer layer)
     {
         return TryResolveInstance(out var root) ? root.GetCanvasInternal(layer) : null;
+    }
+
+    Canvas IGlobalCanvasBackend.GetCanvas(GlobalCanvasLayer layer)
+    {
+        return GetCanvasInternal(layer);
+    }
+
+    void IGlobalCanvasBackend.AdoptService(Transform target)
+    {
+        GlobalUIRoot.AdoptService(target);
+    }
+
+    public T[] GetComponentsInRoot<T>(bool includeInactive)
+        where T : Component
+    {
+        return GetComponentsInChildren<T>(includeInactive);
     }
 
     /// <summary>

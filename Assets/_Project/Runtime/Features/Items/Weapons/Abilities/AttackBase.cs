@@ -37,7 +37,7 @@ namespace UnityGAS
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Collider2D))]
-    public abstract class AttackBase : MonoBehaviour
+    public abstract class AttackBase : MonoBehaviour, IAttackCollisionSource2D
     {
         protected AbilitySystem OwnerSystem { get; private set; }
         protected AbilitySpec SourceSpec { get; private set; }

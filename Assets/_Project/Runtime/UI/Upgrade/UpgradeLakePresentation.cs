@@ -540,6 +540,7 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
     private readonly Vector4[] surfaceRippleData = new Vector4[MaxSurfaceRipples];
     private readonly Vector4[] surfaceRippleExtra = new Vector4[MaxSurfaceRipples];
 
+    // 책임: 업그레이드 호수 표면에 발생한 단일 파문 시뮬레이션 값을 보관한다.
     private struct SurfaceRipple
     {
         public Vector2 Uv;
@@ -651,8 +652,8 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
 
 #if UNITY_EDITOR
         if (!Application.isPlaying &&
-            (UnityEditor.EditorUtility.IsPersistent(this) ||
-             UnityEditor.EditorUtility.IsPersistent(viewportRoot)))
+            (EditorAuthoringPlayback.IsPersistent(this) ||
+             EditorAuthoringPlayback.IsPersistent(viewportRoot)))
         {
             return;
         }
@@ -727,7 +728,7 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
             return null;
 
 #if UNITY_EDITOR
-        if (!Application.isPlaying && UnityEditor.EditorUtility.IsPersistent(viewportRoot))
+        if (!Application.isPlaying && EditorAuthoringPlayback.IsPersistent(viewportRoot))
             return null;
 #endif
 
@@ -1322,7 +1323,7 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
     {
 #if UNITY_EDITOR
         if (!Application.isPlaying)
-            return (float)(UnityEditor.EditorApplication.timeSinceStartup % 100000.0);
+            return (float)(EditorAuthoringPlayback.GetTimeSinceStartup() % 100000.0);
 #endif
 
         return settings.useUnscaledTime ? Time.unscaledTime : Time.time;

@@ -18,7 +18,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
 
     [SerializeField] private Rook owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private MonoBehaviour telegraphService;
     [SerializeField] private GameplayTag staggerImmuneTag;
 
     [Header("Telegraph Clipping")]
@@ -45,7 +45,8 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
 
     private AbilityMotionController2D motionController;
     private AttackTelegraphStyle warningStyle;
-    private AttackTelegraphView warningTelegraphView;
+    private IAttackTelegraphPresenter telegraphPresenter;
+    private IAttackTelegraphHandle warningTelegraphView;
     private Rook.ChargeContext currentContext;
     private bool isRunning;
     private bool isDashing;
@@ -100,8 +101,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
 
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
 
         tagSystem = GetComponent<TagSystem>();
         if (staggerImmuneTag == null)
@@ -219,7 +219,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     /// <summary>룩의 경고 직사각형을 화면에 표시합니다.</summary>
     private void ShowWarning(Rook.ChargeContext context, float duration)
     {
-        if (telegraphService == null) return;
+        if (telegraphPresenter == null) return;
 
         HideWarning();
 
@@ -236,7 +236,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
                 telegraphWallClipSkinWidth);
 
         // 룩 프리팹의 root scale이 telegraph 길이에 섞이지 않도록 경고 뷰만 월드에 분리 생성한다.
-        warningTelegraphView = telegraphService.SpawnDetachedView(spec);
+        warningTelegraphView = telegraphPresenter.SpawnDetachedView(spec);
     }
 
     /// <summary>현재 표시 중인 룩 경고를 숨깁니다.</summary>
@@ -244,11 +244,11 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     {
         if (warningTelegraphView != null)
         {
-            warningTelegraphView.HideImmediate();
+            warningTelegraphView.Release();
             warningTelegraphView = null;
         }
 
-        telegraphService?.HideCurrent();
+        telegraphPresenter?.HideCurrent();
     }
 
     /// <summary>룩이 고정 방향으로 돌진을 시작합니다.</summary>

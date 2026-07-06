@@ -10,6 +10,7 @@ public enum DemonKingDelayedExplosionVfxKind
     DarkLordExplosion2
 }
 
+// 책임: 마왕 패턴의 지연 피해 영역을 경고 후 활성화하고 충돌 피해/폭발 연출을 처리한다.
 public sealed class DemonKingDelayedDamageArea : MonoBehaviour
 {
     private static readonly Color WarningColor = new(1f, 0.15f, 0.08f, 0.35f);
@@ -179,7 +180,7 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         if (owner != null && !owner.IsDead && (ignoreOwnerGroggy || !owner.HasGroggyTag()))
         {
             CombatHitPayload payload = DemonKingCombatUtil.MakePayload(owner, owner.DefaultDamageEffect, damage);
-            TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry = new();
+            SharedHitRegistry2D sharedHitRegistry = new();
             bool presentationPlayed = false;
             void PlayImpactPresentationOnce()
             {
@@ -296,7 +297,7 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         DemonKingDelayedExplosionVfxKind explosionVfxKind,
         DemonKingVfxCueRef explosionVfxCue,
         CombatHitPayload payload,
-        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry,
+        SharedHitRegistry2D sharedHitRegistry,
         System.Action onHitWindowOpened,
         out bool spawnedVisual)
     {

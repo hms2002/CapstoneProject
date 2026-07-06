@@ -45,10 +45,11 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner, IMobP
 
     [SerializeField] private ShadowServant owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private MonoBehaviour telegraphService;
 
     private readonly HashSet<GameObject> damagedTargets = new();
     private AttackTelegraphStyle warningStyle;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private bool isRunning;
     private bool cancelRequested;
 
@@ -62,8 +63,7 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner, IMobP
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
 
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
 
         warningStyle = MakeWarningStyle();
     }
@@ -122,7 +122,7 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner, IMobP
 
     private void ShowWarning(AttackContext context, float duration)
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
         AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateTopDownCircle(
@@ -131,13 +131,12 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner, IMobP
             duration,
             warningStyle));
 
-        telegraphService.Show(spec);
+        telegraphPresenter.Show(spec);
     }
 
     private void HideWarning()
     {
-        if (telegraphService != null)
-            telegraphService.HideCurrent();
+        telegraphPresenter?.HideCurrent();
     }
 
     /// <summary>

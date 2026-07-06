@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using CapstoneRuntime;
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
+/// <summary>
+/// 책임 : 씬/런 진행 상황에 맞춰 프레젠테이션 preload manifest window와 provider 작업 상태를 관리하는 Infrastructure 서비스이다.
+/// </summary>
 [DefaultExecutionOrder(-865)]
 [DisallowMultipleComponent]
-public sealed class PresentationPreloadService : MonoBehaviour
+public sealed class PresentationPreloadService : MonoBehaviour, IPresentationPreloadBackend
 {
     private sealed class TrackedProviderOperation
     {
@@ -32,6 +32,7 @@ public sealed class PresentationPreloadService : MonoBehaviour
         public AssetProviderOperation Operation { get; }
     }
 
+    // 책임: Presentation preload window 갱신 사유와 관련 manifest 이름을 디버그 기록으로 보관한다.
     public readonly struct DebugWindowEvent
     {
         public DebugWindowEvent(
@@ -61,6 +62,7 @@ public sealed class PresentationPreloadService : MonoBehaviour
         public string NextManifestName { get; }
     }
 
+    // 책임: provider operation 디버그 스냅샷에 필요한 slot/action/asset/count 상태를 보관한다.
     public readonly struct DebugProviderOperationEntry
     {
         public DebugProviderOperationEntry(
@@ -203,6 +205,7 @@ public sealed class PresentationPreloadService : MonoBehaviour
         }
 
         Instance = this;
+        PresentationPreloadPlayback.RegisterBackend(this);
         RuntimeServiceOwnership.Adopt(this);
         BindRouteManager(PortalRouteManager.Instance);
         BindGameDataManager(GameDataManager.Instance);
@@ -226,6 +229,7 @@ public sealed class PresentationPreloadService : MonoBehaviour
 
     private void OnDestroy()
     {
+        PresentationPreloadPlayback.UnregisterBackend(this);
         ReleaseAllActiveManifests(PresentationAssetProvider.GetCurrentProviderWithoutCreating());
 
         if (Instance == this)
@@ -235,6 +239,12 @@ public sealed class PresentationPreloadService : MonoBehaviour
     private void OnApplicationQuit()
     {
         s_isQuitting = true;
+    }
+
+    void IPresentationPreloadBackend.RefreshFirstRunIntroWindow(string reason)
+    {
+        RefreshFirstRunIntroManifest(
+            string.IsNullOrWhiteSpace(reason) ? "Explicit first-run intro refresh" : reason);
     }
 
     private void HandleRouteManagerInstanceChanged(PortalRouteManager manager)
@@ -632,7 +642,7 @@ public sealed class PresentationPreloadService : MonoBehaviour
                 if (candidate == null)
                     continue;
 
-                string assetPath = AssetDatabase.GetAssetPath(candidate);
+                string assetPath = EditorAuthoringPlayback.GetAssetPath(candidate);
                 if (string.Equals(assetPath, LoadingBootstrapConfigSO.SourceAssetPath, System.StringComparison.OrdinalIgnoreCase))
                     return candidate;
             }
@@ -643,7 +653,7 @@ public sealed class PresentationPreloadService : MonoBehaviour
         }
 
 #if UNITY_EDITOR
-        return AssetDatabase.LoadAssetAtPath<LoadingBootstrapConfigSO>(LoadingBootstrapConfigSO.SourceAssetPath);
+        return EditorAuthoringPlayback.LoadAssetAtPath<LoadingBootstrapConfigSO>(LoadingBootstrapConfigSO.SourceAssetPath);
 #else
         return null;
 #endif

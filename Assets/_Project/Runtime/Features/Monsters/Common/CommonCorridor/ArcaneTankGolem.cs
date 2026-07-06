@@ -23,6 +23,7 @@ public sealed class ArcaneTankGolem : Mob, IMobAttackDecisionSource
     private bool hasSlamFacingLock;
     private AbilityLogic_ArcaneTankGolemSlam Logic => slamAbility != null ? slamAbility.logic as AbilityLogic_ArcaneTankGolemSlam : null;
 
+    // 책임: 마도 탱크 골렘 내려찍기의 출발/착지 위치, 범위, 피해 정보를 보관한다.
     public readonly struct SlamContext
     {
         public readonly GameObject Target;
@@ -227,12 +228,13 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
 
     [SerializeField] private ArcaneTankGolem owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private MonoBehaviour telegraphService;
 
-    private readonly List<AttackTelegraphView> detachedWarnings = new();
+    private readonly List<IAttackTelegraphHandle> detachedWarnings = new();
     private readonly List<GameObject> spawnedRockFallVisuals = new();
     private AttackTelegraphStyle landingWarningStyle;
     private AttackTelegraphStyle rockWarningStyle;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private CombatHeightState2D heightState;
     private bool isRunning;
     private bool cancelRequested;
@@ -245,8 +247,7 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
             owner = GetComponent<ArcaneTankGolem>();
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
         heightState = GetComponent<CombatHeightState2D>();
         if (heightState == null)
             heightState = gameObject.AddComponent<CombatHeightState2D>();
@@ -440,7 +441,7 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
 
     private void ShowLandingWarning(ArcaneTankGolem.SlamContext context, float warningSeconds)
     {
-        telegraphService?.Show(AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+        telegraphPresenter?.Show(AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             context.LandingPosition,
             context.LandingDiameter,
             warningSeconds,
@@ -449,12 +450,12 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
 
     private void ShowRockWarnings(Vector2[] centers, ArcaneTankGolem.SlamContext context, float warningSeconds)
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
         for (int i = 0; i < centers.Length; i++)
         {
-            AttackTelegraphView view = telegraphService.SpawnDetachedView(AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+            IAttackTelegraphHandle view = telegraphPresenter.SpawnDetachedView(AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
                 centers[i],
                 context.RockDiameter,
                 warningSeconds,
@@ -466,7 +467,7 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
 
     private void HideCurrentWarning()
     {
-        telegraphService?.HideCurrent();
+        telegraphPresenter?.HideCurrent();
     }
 
     private void HideDetachedWarnings()
@@ -474,7 +475,7 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
         for (int i = 0; i < detachedWarnings.Count; i++)
         {
             if (detachedWarnings[i] != null)
-                detachedWarnings[i].HideImmediate();
+                detachedWarnings[i].Release();
         }
 
         detachedWarnings.Clear();

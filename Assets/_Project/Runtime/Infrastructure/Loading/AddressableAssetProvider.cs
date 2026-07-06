@@ -10,9 +10,6 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 /// <summary>
 /// Loading manifest assets을 Addressables로 유지하되, 누락된 주소는 직접 참조로 안전하게 대체하는 provider입니다.
@@ -1060,13 +1057,14 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
             return "<missing>";
 
 #if UNITY_EDITOR
-        string path = AssetDatabase.GetAssetPath(asset);
+        string path = EditorAuthoringPlayback.GetAssetPath(asset);
         return string.IsNullOrWhiteSpace(path) ? "<runtime>" : path;
 #else
         return "<editor-only-path>";
 #endif
     }
 
+    // 책임: retained/queued/active asset debug report 한 줄에 필요한 상태 값을 보관한다.
     private readonly struct RetainedAssetReportEntry
     {
         public RetainedAssetReportEntry(
@@ -1124,7 +1122,7 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
                 if (candidate == null)
                     continue;
 
-                string assetPath = AssetDatabase.GetAssetPath(candidate);
+                string assetPath = EditorAuthoringPlayback.GetAssetPath(candidate);
                 if (string.Equals(assetPath, LoadingBootstrapConfigSO.SourceAssetPath, StringComparison.OrdinalIgnoreCase))
                     return candidate;
             }
@@ -1135,7 +1133,7 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
         }
 
 #if UNITY_EDITOR
-        return AssetDatabase.LoadAssetAtPath<LoadingBootstrapConfigSO>(LoadingBootstrapConfigSO.SourceAssetPath);
+        return EditorAuthoringPlayback.LoadAssetAtPath<LoadingBootstrapConfigSO>(LoadingBootstrapConfigSO.SourceAssetPath);
 #else
         return null;
 #endif

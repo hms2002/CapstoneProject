@@ -4,6 +4,9 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// 책임: InputGlyphDatabase 에셋 생성, 선택, 키보드맵 sprite 매핑을 에디터 메뉴와 로드 시점에서 보조한다.
+/// </summary>
 public static class InputGlyphDatabaseEditorUtility
 {
     private const string AssetPath = "Assets/_Project/Resources/InputGlyphDatabase.asset";
@@ -11,6 +14,9 @@ public static class InputGlyphDatabaseEditorUtility
 
     private static readonly Regex SpriteIndexPattern = new(@"_(\d+)$", RegexOptions.Compiled);
 
+    /// <summary>
+    /// 책임: 키보드맵 sprite sheet의 sprite index와 KeyCode를 연결하는 에디터 매핑 entry이다.
+    /// </summary>
     private readonly struct GlyphSpriteBinding
     {
         public GlyphSpriteBinding(KeyCode key, int spriteIndex)
@@ -21,6 +27,12 @@ public static class InputGlyphDatabaseEditorUtility
 
         public KeyCode Key { get; }
         public int SpriteIndex { get; }
+    }
+
+    [InitializeOnLoadMethod]
+    private static void EnsureDatabaseAssetExistsOnLoad()
+    {
+        EditorApplication.delayCall += InputGlyphDatabase.EnsureEditorDatabaseAssetExistsForEditor;
     }
 
     [MenuItem("Tools/Input/Open Or Create Input Glyph Database")]

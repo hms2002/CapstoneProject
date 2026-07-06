@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
 
+/// <summary>
+/// 책임 :
+/// - 상인 런타임 재고, 구매 처리, 갱신 상호작용, 구매 실패 피드백을 조율한다.
+/// - 말풍선과 경고 팝업은 Core/UI 계약을 통해 호출하고 상점 도메인 상태는 내부 서비스에 위임한다.
+/// </summary>
 public sealed class MerchantNPC : MonoBehaviour
 {
     private static readonly SoundRef PurchaseSound = SoundRef.FromKey("ui.shop.purchase");
@@ -50,7 +55,7 @@ public sealed class MerchantNPC : MonoBehaviour
 #pragma warning restore 0414
 
     [Header("Speech Bubble")]
-    [SerializeField] private SpeechBubbleComponent speechBubble;
+    [SerializeField] private MonoBehaviour speechBubble;
     [SerializeField] private string notEnoughCurrencySpeech = "마정석이 부족하군.";
     [SerializeField] private string inventoryFullSpeech = "가방이 가득 찼군.";
 
@@ -67,9 +72,9 @@ public sealed class MerchantNPC : MonoBehaviour
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        if (string.IsNullOrEmpty(merchantId) && !UnityEditor.PrefabUtility.IsPartOfPrefabAsset(this))
+        if (string.IsNullOrEmpty(merchantId) && !EditorAuthoringPlayback.IsPrefabAsset(this))
         {
-            UnityEditor.EditorApplication.delayCall += () =>
+            EditorAuthoringPlayback.QueueDelayCall(() =>
             {
                 if (this == null)
                     return;
@@ -77,7 +82,7 @@ public sealed class MerchantNPC : MonoBehaviour
                 GenerateID();
                 ResolveShopSlotReferences();
                 CollectRefreshInteractablesFromChildren();
-            };
+            });
             return;
         }
 
@@ -90,7 +95,7 @@ public sealed class MerchantNPC : MonoBehaviour
         string cleanName = name.Replace("(Clone)", string.Empty).Trim();
         string guid = System.Guid.NewGuid().ToString().Substring(0, 8);
         merchantId = $"{cleanName}_{guid}";
-        UnityEditor.EditorUtility.SetDirty(this);
+        EditorAuthoringPlayback.MarkDirty(this);
     }
 #endif
 
@@ -102,8 +107,7 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private void Awake()
     {
-        if (speechBubble == null)
-            speechBubble = GetComponent<SpeechBubbleComponent>();
+        ResolveSpeechBubble();
 
         ResolveShopSlotReferences();
         CollectRefreshInteractablesFromChildren();
@@ -451,9 +455,6 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private void SpeakFailure(MerchantPurchaseResultType resultType)
     {
-        if (speechBubble == null)
-            return;
-
         string line = resultType switch
         {
             MerchantPurchaseResultType.NotEnoughCurrency => notEnoughCurrencySpeech,
@@ -463,13 +464,34 @@ public sealed class MerchantNPC : MonoBehaviour
             _ => string.Empty
         };
 
-        if (!string.IsNullOrWhiteSpace(line))
-            speechBubble.Speak(line);
+        ISpeechBubblePlayback bubblePlayback = ResolveSpeechBubble();
+        if (!string.IsNullOrWhiteSpace(line) && bubblePlayback != null)
+            bubblePlayback.Speak(line);
+    }
+
+    private ISpeechBubblePlayback ResolveSpeechBubble()
+    {
+        if (speechBubble is ISpeechBubblePlayback existing)
+            return existing;
+
+        MonoBehaviour[] behaviours = GetComponentsInChildren<MonoBehaviour>(includeInactive: true);
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+            if (behaviour is ISpeechBubblePlayback playback)
+            {
+                speechBubble = behaviour;
+                return playback;
+            }
+        }
+
+        speechBubble = null;
+        return null;
     }
 
     /// <summary>
     /// 책임 :
-    /// - 상점 구매 실패 사유를 공통 경고 팝업 코드로 변환해 UIManager에 전달한다.
+    /// - 상점 구매 실패 사유를 공통 경고 팝업 코드로 변환해 WarningPopupPlayback에 전달한다.
     /// - 상점 도메인 로직이 실제 UI 문구나 팝업 구현에 직접 의존하지 않도록 분리한다.
     /// </summary>
     private static void ShowPurchaseWarning(MerchantPurchaseResultType resultType)
@@ -485,7 +507,7 @@ public sealed class MerchantNPC : MonoBehaviour
         };
 
         if (code != WarningPopupCode.None)
-            UIManager.Instance?.ShowWarning(code);
+            WarningPopupPlayback.Show(code);
     }
 
     private void ResolveShopSlotReferences()

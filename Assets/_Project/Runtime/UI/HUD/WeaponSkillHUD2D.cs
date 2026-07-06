@@ -8,7 +8,7 @@ using UnityGAS;
 /// - 현재 장착 무기의 Skill1, Skill2 쿨다운/충전 HUD를 플레이어 상태에 맞춰 갱신한다.
 /// - 플레이어 등록/해제와 무기 장착 변경에 반응해 HUD 표시 대상을 안전하게 동기화한다.
 /// </summary>
-public class WeaponSkillHUD2D : MonoBehaviour
+public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
 {
     /// <summary>
     /// 책임 :

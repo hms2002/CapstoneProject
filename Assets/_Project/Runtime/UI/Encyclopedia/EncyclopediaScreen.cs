@@ -2,6 +2,9 @@ using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// 책임 : 도감 화면의 열림/닫힘, 메인 탭 상태, 입력 잠금, 책장 프레젠테이션을 조율한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequestHandler
 {
@@ -92,7 +95,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
     private void AutoWireReferences()
     {
         ResolveReferences();
-        UnityEditor.EditorUtility.SetDirty(this);
+        EditorAuthoringPlayback.MarkDirty(this);
     }
 #endif
 
@@ -676,6 +679,9 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
     }
 }
 
+/// <summary>
+/// 책임 : 도감 UI 하위 오브젝트와 컴포넌트를 이름 후보 기반으로 찾아 authoring 누락을 보완한다.
+/// </summary>
 internal static class EncyclopediaReferenceResolver
 {
     public static Transform FindChild(Transform root, string childName)

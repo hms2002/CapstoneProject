@@ -3,8 +3,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-// 책임: 업그레이드 트리 슬롯/라인 UI를 생성하고, 입력에 따른 트리 탐색과 슬롯 구매 요청을 중계한다.
-public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
+// 책임: 업그레이드 트리 슬롯/라인 UI를 생성하고, 입력에 따른 트리 탐색과 슬롯 구매 요청 및 화면 열기 backend를 중계한다.
+public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSource, IUpgradeUiBackend
 {
     public static UpgradeTreeUI EnsureInstance()
     {
@@ -77,7 +77,9 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     private bool hasUpOverflowArrowBasePosition;
     private bool hasDownOverflowArrowBasePosition;
     private bool isExplicitOpenActivation;
+    private UpgradeUiOpenFlow openFlow;
 
+    public Component BackendComponent => this;
     public bool IsActive => gameObject.activeSelf;
     public bool CanCloseOnEscape => true;
     public UIOpenGroup OpenGroup => UIOpenGroup.ExclusiveModal;
@@ -87,6 +89,8 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     private void Awake()
     {
+        UpgradeUiPlayback.RegisterBackend(this);
+
         if (Application.isPlaying && !isExplicitOpenActivation)
         {
             gameObject.SetActive(false);
@@ -173,6 +177,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     private void OnEnable()
     {
+        UpgradeUiPlayback.RegisterBackend(this);
         MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.NpcUi, priority: 100);
         BindOverflowArrowButtons();
         CaptureOverflowArrowBasePositions();
@@ -188,12 +193,40 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     private void OnDisable()
     {
         MouseCursorService.Instance?.ClearDomain(this);
+        openFlow?.Cleanup();
 
         if (UpgradeManager.Instance != null)
             UpgradeManager.Instance.OnDataChanged -= RefreshAll;
 
         if (UIManager.Instance != null)
             UIManager.Instance.SetGameplayHudCurrencyHidden(this, false);
+    }
+
+    private void OnDestroy()
+    {
+        openFlow?.Cleanup();
+        UpgradeUiPlayback.UnregisterBackend(this);
+    }
+
+    public void Toggle(bool useFadePresentationOnOpen, float openFadeOutDuration, float openFadeInDuration)
+    {
+        EnsureOpenFlow().Toggle(useFadePresentationOnOpen, openFadeOutDuration, openFadeInDuration);
+    }
+
+    public void Close()
+    {
+        EnsureOpenFlow().Close();
+    }
+
+    public void Cleanup()
+    {
+        openFlow?.Cleanup();
+    }
+
+    private UpgradeUiOpenFlow EnsureOpenFlow()
+    {
+        openFlow ??= new UpgradeUiOpenFlow(this, () => this);
+        return openFlow;
     }
 
     public void BuildUI()
@@ -334,7 +367,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     private void EnsureLakePresentation()
     {
 #if UNITY_EDITOR
-        if (!Application.isPlaying && UnityEditor.EditorUtility.IsPersistent(this))
+        if (!Application.isPlaying && EditorAuthoringPlayback.IsPersistent(this))
             return;
 #endif
 

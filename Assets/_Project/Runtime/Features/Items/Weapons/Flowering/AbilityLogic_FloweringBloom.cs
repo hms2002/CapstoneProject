@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityGAS;
 
 [CreateAssetMenu(fileName = "AL_FloweringBloom", menuName = "GAS/Weapon/Flowering/Logic Bloom")]
+// 책임: Flowering Bloom 스킬의 시간 정지, 연출 요청, 강화 상태 적용을 실행한다.
 public sealed class AbilityLogic_FloweringBloom : AbilityLogic
 {
     private bool timeScalePaused;
@@ -107,7 +108,7 @@ public sealed class AbilityLogic_FloweringBloom : AbilityLogic
         if (timeScalePaused)
             return;
 
-        TimeScalePauseService.Acquire(this);
+        TimeScalePausePlayback.Acquire(this);
         timeScalePaused = true;
     }
 
@@ -116,7 +117,7 @@ public sealed class AbilityLogic_FloweringBloom : AbilityLogic
         if (!timeScalePaused)
             return;
 
-        TimeScalePauseService.Release(this);
+        TimeScalePausePlayback.Release(this);
         timeScalePaused = false;
     }
 }

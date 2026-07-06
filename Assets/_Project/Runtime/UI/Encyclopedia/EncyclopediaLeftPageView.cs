@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
+/// <summary>
+/// 책임 : 도감 왼쪽 페이지의 공통 제목, 하위 탭, 페이지네이션 UI를 표시한다.
+/// </summary>
 [AddComponentMenu("")]
 [DisallowMultipleComponent]
 public sealed class EncyclopediaLeftPageView : MonoBehaviour
@@ -66,7 +69,7 @@ public sealed class EncyclopediaLeftPageView : MonoBehaviour
     private void AutoWireReferences()
     {
         ResolveReferences();
-        UnityEditor.EditorUtility.SetDirty(this);
+        EditorAuthoringPlayback.MarkDirty(this);
     }
 #endif
 

@@ -7,7 +7,7 @@ using UnityGAS;
 /// - 강제 이동 및 이동 차단 tag를 함께 반영해 현재 상태에 맞는 최종 이동 입력만 내보낸다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
+public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D, IAbilityMoveInputSource2D
 {
     private const string MoveBlockedTagResourcePath = "Tags/State.Move.Intent.Blocked";
 
@@ -35,6 +35,8 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
     /// </summary>
     public Vector2 MoveInput { get; private set; }
 
+    public Vector2 AbilityMoveInput => MoveInput;
+
     private void Awake()
     {
         if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
@@ -45,7 +47,7 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
 
     private void Update()
     {
-        RawMoveInput = InputBindingService.EnsureInstance().GetMoveVectorNormalized();
+        RawMoveInput = InputActionQuery.GetMoveVectorNormalized();
 
         if (player != null && player.CurrentState != InteractState.Idle)
         {

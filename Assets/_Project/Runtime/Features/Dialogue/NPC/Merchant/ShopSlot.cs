@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -47,9 +46,9 @@ public sealed class ShopSlot : InteractableBase
 
     [Header("View")]
     [SerializeField] private GameObject itemVisualRoot;
-    [SerializeField] private ItemDisplayVisualPresenter2D itemDisplayPresenter;
+    [SerializeField] private Component itemDisplayPresenter;
     [SerializeField] private SpriteRenderer itemSpriteRenderer;
-    [SerializeField] private TMP_Text priceText;
+    [SerializeField] private Component priceText;
 
     [Header("Legacy Item Sprite Normalization")]
     [SerializeField, HideInInspector] private bool normalizeItemSprite = true;
@@ -75,6 +74,7 @@ public sealed class ShopSlot : InteractableBase
     private ScriptableObject currentDefinition;
     private Vector3 itemSpriteBaseLocalPosition;
     private bool hasItemSpriteBaseLocalPosition;
+    private IItemDisplayVisualPresenter ItemDisplayPresenter => itemDisplayPresenter as IItemDisplayVisualPresenter;
 
     private void Awake()
     {
@@ -157,13 +157,13 @@ public sealed class ShopSlot : InteractableBase
         if (currentDefinition == null || currentState == null || currentState.isSold)
             return;
 
-        WorldItemDetailPresenter.Instance?.Show(GetDetailAnchor(), currentDefinition);
+        WorldItemHoverPlayback.Show(GetDetailAnchor(), currentDefinition);
     }
 
     public override void OnUnHighlight()
     {
         SetOutline(false);
-        WorldItemDetailPresenter.Instance?.Hide(GetDetailAnchor());
+        WorldItemHoverPlayback.Hide(GetDetailAnchor());
     }
 
     public override InteractState GetInteractType() => InteractState.Idle;
@@ -195,12 +195,13 @@ public sealed class ShopSlot : InteractableBase
         if (itemVisualRoot != null)
             itemVisualRoot.SetActive(hasActiveItem);
 
-        if (itemDisplayPresenter != null)
+        IItemDisplayVisualPresenter presenter = ItemDisplayPresenter;
+        if (presenter != null)
         {
             if (hasActiveItem)
-                itemDisplayPresenter.Apply(currentDefinition);
+                presenter.Apply(currentDefinition);
             else
-                itemDisplayPresenter.ClearVisual();
+                presenter.ClearVisual();
         }
         else
         {
@@ -210,9 +211,9 @@ public sealed class ShopSlot : InteractableBase
         if (priceText != null)
         {
             if (currentState == null || !currentState.HasItem)
-                priceText.text = string.Empty;
+                TextPresentationBinding.TrySetText(priceText, string.Empty);
             else
-                priceText.text = currentState.isSold ? soldLabel : currentState.price.ToString();
+                TextPresentationBinding.TrySetText(priceText, currentState.isSold ? soldLabel : currentState.price.ToString());
         }
 
         RefreshPriceIcon(hasActiveItem && currentState != null && !currentState.isSold);
@@ -319,7 +320,7 @@ public sealed class ShopSlot : InteractableBase
 
         priceIconRenderer.sprite = currencyIconSprite;
         ApplyPriceIconScale();
-        priceText.ForceMeshUpdate();
+        TextPresentationBinding.TryForceMeshUpdate(priceText);
 
         float iconDistanceFromTextCenter = ResolvePriceIconDistanceFromTextCenter();
         Vector3 targetLocalPosition =
@@ -335,11 +336,12 @@ public sealed class ShopSlot : InteractableBase
         if (owner == null)
             owner = GetComponentInParent<MerchantNPC>();
 
-        if (itemDisplayPresenter == null)
-            itemDisplayPresenter = GetComponentInChildren<ItemDisplayVisualPresenter2D>(includeInactive: true);
+        if (itemDisplayPresenter is not IItemDisplayVisualPresenter)
+            itemDisplayPresenter = FindPresentationComponent<IItemDisplayVisualPresenter>();
 
-        if (itemDisplayPresenter != null)
-            itemSpriteRenderer = itemDisplayPresenter.FallbackRenderer;
+        IItemDisplayVisualPresenter presenter = ItemDisplayPresenter;
+        if (presenter != null)
+            itemSpriteRenderer = presenter.FallbackRenderer;
 
         if (itemSpriteRenderer == null)
             itemSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -374,7 +376,8 @@ public sealed class ShopSlot : InteractableBase
         switch (priceIconPositionMode)
         {
             case PriceIconPositionMode.RenderedWidth:
-                return Mathf.Max(0f, priceText.preferredWidth * 0.5f) + ResolvePriceIconHalfWidth() + priceIconSpacing;
+                TextPresentationBinding.TryGetPreferredWidth(priceText, out float preferredWidth);
+                return Mathf.Max(0f, preferredWidth * 0.5f) + ResolvePriceIconHalfWidth() + priceIconSpacing;
 
             case PriceIconPositionMode.FixedDistance:
                 return Mathf.Max(0f, priceIconFixedDistance);
@@ -387,11 +390,10 @@ public sealed class ShopSlot : InteractableBase
 
     private float ResolvePriceCharacterCountHalfWidth()
     {
-        if (priceText == null || string.IsNullOrEmpty(priceText.text))
+        if (priceText == null || !TextPresentationBinding.TryGetText(priceText, out string label) || string.IsNullOrEmpty(label))
             return 0f;
 
         int visibleCharacterCount = 0;
-        string label = priceText.text;
         for (int i = 0; i < label.Length; i++)
         {
             if (!char.IsWhiteSpace(label[i]))
@@ -417,9 +419,10 @@ public sealed class ShopSlot : InteractableBase
 
     private void SetOutline(bool enabled)
     {
-        if (itemDisplayPresenter != null)
+        IItemDisplayVisualPresenter presenter = ItemDisplayPresenter;
+        if (presenter != null)
         {
-            itemDisplayPresenter.SetOutline(enabled);
+            presenter.SetOutline(enabled);
             return;
         }
 
@@ -429,5 +432,17 @@ public sealed class ShopSlot : InteractableBase
         itemSpriteRenderer.GetPropertyBlock(outlinePropertyBlock);
         outlinePropertyBlock.SetFloat(OutlineEnabledID, enabled ? 1f : 0f);
         itemSpriteRenderer.SetPropertyBlock(outlinePropertyBlock);
+    }
+
+    private Component FindPresentationComponent<TContract>() where TContract : class
+    {
+        MonoBehaviour[] behaviours = GetComponentsInChildren<MonoBehaviour>(includeInactive: true);
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is TContract)
+                return behaviours[i];
+        }
+
+        return null;
     }
 }

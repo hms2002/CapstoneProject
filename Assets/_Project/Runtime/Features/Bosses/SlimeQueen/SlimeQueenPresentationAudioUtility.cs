@@ -49,7 +49,7 @@ internal static class SlimeQueenPresentationAudioUtility
             sourceObject,
             causer: causer);
 
-        WorldPresentationRuntime.PlaySignalOnly(presentation, context);
+        WorldPresentationPlayback.PlaySignalOnly(presentation, context);
         SpawnVisualWithFallback(presentation.effect, context);
         SpawnVisualWithFallback(presentation.particle, context);
     }
@@ -59,7 +59,7 @@ internal static class SlimeQueenPresentationAudioUtility
         if (!hook.HasContent)
             return;
 
-        GameObject spawned = PresentationSpawnService.SpawnOneShot(hook, context);
+        GameObject spawned = WorldPresentationPlayback.SpawnOneShot(hook, context);
         if (spawned != null)
             return;
 
@@ -77,7 +77,7 @@ internal static class SlimeQueenPresentationAudioUtility
         if (hook.attachToTarget && context.Target != null)
             instance.transform.SetParent(context.Target.transform, worldPositionStays: true);
 
-        WorldPresentationRuntime.InitializeSpawnedPresentation(instance, hook.useUnscaledTime);
+        WorldPresentationPlayback.InitializeSpawnedPresentation(instance, hook.useUnscaledTime);
 
         float lifetimeSeconds = ResolveFallbackLifetime(instance, hook);
         if (lifetimeSeconds > 0f)

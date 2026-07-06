@@ -12,6 +12,29 @@ public static class CombatHitAudioRouter
 {
     private const string DefaultDeadTagResourcePath = "Tags/State.Dead";
     private static GameplayTag s_defaultDeadTag;
+    private static readonly ICombatHitAudioBackend s_backend = new CombatHitAudioBackend();
+
+    /// <summary>
+    /// 책임 : Core의 CombatHitAudioPlayback 요청을 기존 CombatHitAudioRouter 규칙으로 연결한다.
+    /// </summary>
+    private sealed class CombatHitAudioBackend : ICombatHitAudioBackend
+    {
+        public void PlayImpact(in CombatHitAudioRequest request)
+        {
+            CombatHitAudioRouter.PlayImpact(
+                request.System,
+                request.Spec,
+                request.DamageEffect,
+                request.Target,
+                request.Causer);
+        }
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void RegisterPlaybackBackend()
+    {
+        CombatHitAudioPlayback.RegisterBackend(s_backend);
+    }
 
     /// <summary>
     /// 책임 :

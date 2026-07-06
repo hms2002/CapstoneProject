@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-20
+last_reviewed: 2026-07-05
 ---
 
 # Scene Runtime Save Structure
@@ -60,7 +60,7 @@ Map scene/run transition, title-to-game bootstrap, player runtime capture/restor
 
 - Scene transition should coordinate route/portal flow without owning player runtime state semantics.
 - Title/game scene bootstrap rules should follow `Docs/Architecture/SceneDomainBootstrapArchitecture.md`: `TitleScene` is the app entry scene and gameplay session boundary.
-- `SceneDomainCoordinator` is the current app-scope/gameplay-scope bootstrap lifecycle owner. It owns singleton lifecycle, Unity scene-loaded subscription, and editor direct-start orchestration, while helper files now own loaded-scene classification (`SceneDomainScenePolicy`), app-scope service ensure (`SceneDomainAppScopeServices`), gameplay session service ensure (`SceneDomainGameplaySessionScope`), title cleanup (`SceneDomainTitleCleanupScope`), and editor direct-start constants/eligibility (`SceneDomainEditorDirectStartPolicy`).
+- `SceneDomainCoordinator` is the current app-scope/gameplay-scope bootstrap lifecycle owner. It owns singleton lifecycle, Unity scene-loaded subscription, and development direct-start orchestration, while helper files now own loaded-scene classification (`SceneDomainScenePolicy`), app-scope service ensure (`SceneDomainAppScopeServices`), gameplay session service ensure (`SceneDomainGameplaySessionScope`), title cleanup (`SceneDomainTitleCleanupScope`), and development direct-start constants/eligibility (`SceneDomainDevelopmentStartPolicy`).
 - `TitleMenuController` owns title-local menu flow and scene load request. `TitleProfileSlotService` resolves the launch request target and slot action: empty-slot `StartNewRun` uses `newProfileTargetSceneName` (`TutorialCorridor` by default), while existing/default launches use `targetSceneName`. `TitleProfileLaunchService` prepares the selected durable profile through `GameDataManager`.
 - `UIManager.ReturnToTitleScreen()` remains the stack UI compatibility entry point for gameplay-to-title return. Same-file `TitleSceneNameResolver` and `TitleReturnService` now own title scene name resolution, UI prompt/popup cleanup handoff, run end, `SceneTransitionCoordinator` scene load request, and direct `SceneManager.LoadScene(...)` fallback.
 - Player runtime capture/restore should follow `Docs/Architecture/RuntimeSaveArchitecture.md`.

@@ -4,6 +4,17 @@ using UnityEngine;
 namespace UnityGAS
 {
     /// <summary>
+    /// 책임: StaggerGaugeSystem이 구체 UI/보스 타입을 알지 않고 선택적 스태거 presentation 인스턴스에 런타임 바인딩 정보를 전달하게 한다.
+    /// </summary>
+    public interface IStaggerGaugePresentationBinding
+    {
+        void ConfigureForStaggerGauge(
+            StaggerGaugeSystem gaugeSystem,
+            GameplayEffect staggeredEffect,
+            GameplayEffectRunner effectRunner);
+    }
+
+    /// <summary>
     /// 책임 :
     /// - 대상의 스태거 게이지 누적/트리거를 관리한다.
     /// - 스태거 관련 월드 UI가 공통 기준점을 잡을 수 있도록 선택적 표현 오프셋 정보를 제공한다.
@@ -28,7 +39,7 @@ namespace UnityGAS
         [SerializeField] private Vector3 presentationWorldOffset = new(0f, 1.6f, 0f);
         [SerializeField] private Transform presentationAnchor;
         [SerializeField] private SpriteRenderer presentationBoundsSource;
-        [SerializeField] private BossGroggyHeadTimer groggyTimerPrefab;
+        [SerializeField] private MonoBehaviour groggyTimerPrefab;
         [SerializeField] private Transform groggyTimerParent;
 
         public event Action<float, float> OnGaugeChanged; // old,new
@@ -36,7 +47,7 @@ namespace UnityGAS
 
         private GameplayEffectRunner _runner;
         private AttributeSet _attr;
-        private BossGroggyHeadTimer _spawnedGroggyTimer;
+        private MonoBehaviour _spawnedGroggyTimer;
 
         public bool AllowPresentationOffset => allowPresentationOffset;
         public Vector3 PresentationWorldOffset => presentationWorldOffset;
@@ -197,13 +208,10 @@ namespace UnityGAS
             if (groggyTimerPrefab == null || _spawnedGroggyTimer != null)
                 return;
 
-            BossControllerBase boss = GetComponent<BossControllerBase>();
-            if (boss == null)
-                return;
-
             Transform parent = groggyTimerParent != null ? groggyTimerParent : transform;
             _spawnedGroggyTimer = Instantiate(groggyTimerPrefab, parent);
-            _spawnedGroggyTimer.ConfigureForBoss(boss, this, staggeredEffect, _runner);
+            if (_spawnedGroggyTimer is IStaggerGaugePresentationBinding binding)
+                binding.ConfigureForStaggerGauge(this, staggeredEffect, _runner);
         }
     }
 }

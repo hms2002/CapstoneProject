@@ -1,9 +1,14 @@
 using UnityEngine;
 
+/// <summary>
+/// 책임 :
+/// - PlayerSpeechData 상황 키를 플레이어 말풍선 출력으로 변환한다.
+/// - 실제 말풍선 UI 구현은 ISpeechBubblePlayback 계약으로만 접근한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class PlayerSpeechController : MonoBehaviour
 {
-    [SerializeField] private SpeechBubbleComponent speechBubble;
+    [SerializeField] private MonoBehaviour speechBubble;
     [SerializeField] private PlayerSpeechData speechData;
 
     private void Awake()
@@ -11,9 +16,9 @@ public sealed class PlayerSpeechController : MonoBehaviour
         ResolveSpeechBubble();
     }
 
-    public void SetSpeechDependencies(SpeechBubbleComponent bubble, PlayerSpeechData data)
+    public void SetSpeechDependencies(MonoBehaviour bubble, PlayerSpeechData data)
     {
-        if (bubble != null)
+        if (bubble is ISpeechBubblePlayback)
             speechBubble = bubble;
 
         if (data != null)
@@ -24,20 +29,36 @@ public sealed class PlayerSpeechController : MonoBehaviour
     {
         ResolveSpeechBubble();
 
-        if (speechData == null || speechBubble == null)
+        ISpeechBubblePlayback bubblePlayback = speechBubble as ISpeechBubblePlayback;
+        if (speechData == null || bubblePlayback == null)
         {
-            Debug.LogWarning("[PlayerSpeechController] Missing SpeechData or SpeechBubbleComponent.", this);
+            Debug.LogWarning("[PlayerSpeechController] Missing SpeechData or speech bubble playback.", this);
             return;
         }
 
         string line = speechData.GetLine(situation);
         if (!string.IsNullOrEmpty(line))
-            speechBubble.Speak(line, duration, speechData.BubbleTheme);
+            bubblePlayback.Speak(line, duration, speechData.BubbleTheme);
     }
 
     private void ResolveSpeechBubble()
     {
-        if (speechBubble == null)
-            speechBubble = GetComponentInChildren<SpeechBubbleComponent>(includeInactive: true);
+        if (speechBubble is ISpeechBubblePlayback)
+            return;
+
+        speechBubble = ResolveSpeechBubbleBehaviour();
+    }
+
+    private MonoBehaviour ResolveSpeechBubbleBehaviour()
+    {
+        MonoBehaviour[] behaviours = GetComponentsInChildren<MonoBehaviour>(includeInactive: true);
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+            if (behaviour is ISpeechBubblePlayback)
+                return behaviour;
+        }
+
+        return null;
     }
 }

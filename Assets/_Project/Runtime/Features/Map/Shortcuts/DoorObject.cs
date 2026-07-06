@@ -1,11 +1,7 @@
 using System.Collections;
 using CapstoneAudio;
 using UnityEngine;
-using DG.Tweening;
 using UnityGAS;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 /// <summary>
 /// 책임:
@@ -86,7 +82,8 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
     public event System.Action<DoorObject> ClosedPresentationCompleted;
 
     private Transform runtimePromptAnchor;
-    private Tween shakeTween;
+    private Coroutine shakeCoroutine;
+    private Coroutine modelMoveCoroutine;
     private Vector3 closedModelLocalPosition;
     private bool hasClosedModelLocalPosition;
     private const float VerticalPromptAngleTolerance = 1f;
@@ -103,13 +100,13 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
 
     private void OnValidate()
     {
-        if (string.IsNullOrEmpty(doorID) && !UnityEditor.PrefabUtility.IsPartOfPrefabAsset(this))
+        if (string.IsNullOrEmpty(doorID) && !EditorAuthoringPlayback.IsPrefabAsset(this))
         {
-            UnityEditor.EditorApplication.delayCall += () =>
+            EditorAuthoringPlayback.QueueDelayCall(() =>
             {
                 if (this == null) return;
                 GenerateID();
-            };
+            });
         }
 
         oneWayOpenThreshold = Mathf.Clamp(oneWayOpenThreshold, 0f, 1f);
@@ -122,7 +119,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         string cleanName = name.Replace("(Clone)", "").Trim();
         string guid = System.Guid.NewGuid().ToString().Substring(0, 8);
         doorID = $"{cleanName}_{guid}";
-        UnityEditor.EditorUtility.SetDirty(this);
+        EditorAuthoringPlayback.MarkDirty(this);
     }
 #endif
 
@@ -152,7 +149,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
 
     private void Start()
     {
-        if (isPermanent && ShortcutProgressService.Instance != null && ShortcutProgressService.Instance.IsShortcutUnlocked(mapID, doorID))
+        if (isPermanent && ShortcutProgressStore.IsShortcutUnlocked(mapID, doorID))
             ForceOpen(immediate: true, playPresentation: false);
 
         InitializeAffectionDoorState();
@@ -270,9 +267,10 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         IsOpen = true;
         ApplyCurrentDoorRenderLayerState();
 
-        if (save && ShortcutProgressService.Instance != null)
-            ShortcutProgressService.Instance.UnlockShortcut(mapID, doorID);
+        if (save)
+            ShortcutProgressStore.UnlockShortcut(mapID, doorID, this);
 
+        StopModelMoveCoroutine();
         ResetModelAfterShake();
         if (playPresentation)
             PlayOpenPresentation(instigator);
@@ -297,7 +295,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
                 if (immediate)
                     model.localPosition += Vector3.up * 3f;
                 else
-                    model.DOLocalMoveY(3f, 1f).SetRelative().SetEase(Ease.OutQuart);
+                    StartModelLocalMove(model.localPosition + Vector3.up * 3f, 1f);
             }
 
             DisableObstacle();
@@ -316,7 +314,8 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         ApplyCurrentDoorRenderLayerState();
         BeginCloseCompletionWait();
         EnableObstacle();
-        KillShakeTween();
+        StopShakeCoroutine();
+        StopModelMoveCoroutine();
         PlayDoorSound(CloseSound);
 
         if (animator != null && animator.runtimeAnimatorController != null)
@@ -349,9 +348,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
             return;
         }
 
-        model.DOLocalMove(closedModelLocalPosition, 0.5f)
-            .SetEase(Ease.OutQuart)
-            .OnComplete(CompleteClosePresentation);
+        StartModelLocalMove(closedModelLocalPosition, 0.5f, CompleteClosePresentation);
     }
 
     /// <summary>
@@ -435,7 +432,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
             return;
 
         ResetModelAfterShake();
-        shakeTween = model.DOShakePosition(0.5f, 0.1f).OnComplete(ResetModelAfterShake);
+        shakeCoroutine = StartCoroutine(PlayModelShakeRoutine(0.5f, 0.1f));
     }
 
     public override InteractState GetInteractType() => InteractState.Idle;
@@ -489,7 +486,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         if (doorType != DoorType.OneWay)
             return;
 
-        if (UnityEditor.Selection.activeGameObject == gameObject)
+        if (EditorAuthoringPlayback.IsSelectedGameObject(gameObject))
             return;
 
         DrawOneWayGizmo(selected: false);
@@ -554,10 +551,18 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         if (!selected)
             return;
 
-        UnityEditor.Handles.color = Color.white;
-        UnityEditor.Handles.Label(origin + allowedDirection * (zoneDepth + 0.45f), $"OPEN  {oneWayOpenSide}");
-        UnityEditor.Handles.Label(origin + blockedDirection * (zoneDepth + 0.45f), "BLOCK");
-        UnityEditor.Handles.Label(thresholdOrigin + perpendicular * ((planeWidth * 0.5f) + 0.15f), $"Threshold {oneWayOpenThreshold:0.00}");
+        EditorAuthoringPlayback.DrawHandleLabel(
+            origin + allowedDirection * (zoneDepth + 0.45f),
+            $"OPEN  {oneWayOpenSide}",
+            Color.white);
+        EditorAuthoringPlayback.DrawHandleLabel(
+            origin + blockedDirection * (zoneDepth + 0.45f),
+            "BLOCK",
+            Color.white);
+        EditorAuthoringPlayback.DrawHandleLabel(
+            thresholdOrigin + perpendicular * ((planeWidth * 0.5f) + 0.15f),
+            $"Threshold {oneWayOpenThreshold:0.00}",
+            Color.white);
     }
 
     private void DrawOneWayZone(Vector3 center, Vector3 allowedDirection, float width, float depth, Color fillColor)
@@ -611,8 +616,10 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         Gizmos.DrawLine(transform.position, promptPosition);
         Gizmos.DrawSphere(promptPosition, 0.06f);
 
-        UnityEditor.Handles.color = new Color(0.25f, 0.9f, 1f, 1f);
-        UnityEditor.Handles.Label(promptPosition + Vector3.up * 0.12f, "Prompt");
+        EditorAuthoringPlayback.DrawHandleLabel(
+            promptPosition + Vector3.up * 0.12f,
+            "Prompt",
+            new Color(0.25f, 0.9f, 1f, 1f));
     }
 #endif
 
@@ -740,7 +747,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         if (!changed || Application.isPlaying)
             return;
 
-        EditorUtility.SetDirty(this);
+        EditorAuthoringPlayback.MarkDirty(this);
     }
 #endif
 
@@ -849,7 +856,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
 
     private void ResetModelAfterShake()
     {
-        KillShakeTween();
+        StopShakeCoroutine();
         ResetClosedModelPosition();
     }
 
@@ -861,12 +868,91 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         model.localPosition = closedModelLocalPosition;
     }
 
-    private void KillShakeTween()
+    private void StopShakeCoroutine()
     {
-        if (shakeTween != null && shakeTween.IsActive())
-            shakeTween.Kill(false);
+        if (shakeCoroutine == null)
+            return;
 
-        shakeTween = null;
+        StopCoroutine(shakeCoroutine);
+        shakeCoroutine = null;
+    }
+
+    private void StopModelMoveCoroutine()
+    {
+        if (modelMoveCoroutine == null)
+            return;
+
+        StopCoroutine(modelMoveCoroutine);
+        modelMoveCoroutine = null;
+    }
+
+    private void StartModelLocalMove(Vector3 targetLocalPosition, float duration, System.Action onCompleted = null)
+    {
+        StopModelMoveCoroutine();
+        modelMoveCoroutine = StartCoroutine(MoveModelLocalPositionRoutine(targetLocalPosition, duration, onCompleted));
+    }
+
+    private IEnumerator MoveModelLocalPositionRoutine(Vector3 targetLocalPosition, float duration, System.Action onCompleted)
+    {
+        if (model == null)
+        {
+            modelMoveCoroutine = null;
+            onCompleted?.Invoke();
+            yield break;
+        }
+
+        Vector3 startLocalPosition = model.localPosition;
+        float elapsed = 0f;
+
+        while (elapsed < duration && model != null)
+        {
+            elapsed += Time.deltaTime;
+            float t = duration > 0f ? elapsed / duration : 1f;
+            model.localPosition = Vector3.LerpUnclamped(
+                startLocalPosition,
+                targetLocalPosition,
+                EaseOutQuart(t));
+            yield return null;
+        }
+
+        if (model != null)
+            model.localPosition = targetLocalPosition;
+
+        modelMoveCoroutine = null;
+        onCompleted?.Invoke();
+    }
+
+    private IEnumerator PlayModelShakeRoutine(float duration, float strength)
+    {
+        if (model == null)
+        {
+            shakeCoroutine = null;
+            yield break;
+        }
+
+        Vector3 baseLocalPosition = hasClosedModelLocalPosition
+            ? closedModelLocalPosition
+            : model.localPosition;
+        float elapsed = 0f;
+
+        while (elapsed < duration && model != null)
+        {
+            elapsed += Time.deltaTime;
+            float remaining = duration > 0f ? 1f - Mathf.Clamp01(elapsed / duration) : 0f;
+            Vector2 offset = Random.insideUnitCircle * (strength * remaining);
+            model.localPosition = baseLocalPosition + new Vector3(offset.x, offset.y, 0f);
+            yield return null;
+        }
+
+        shakeCoroutine = null;
+        ResetClosedModelPosition();
+    }
+
+    private static float EaseOutQuart(float t)
+    {
+        t = Mathf.Clamp01(t);
+        float inverse = 1f - t;
+        return 1f - inverse * inverse * inverse * inverse;
     }
 
     private bool HasAnimatorTrigger(string triggerName)
@@ -990,6 +1076,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
             StopCoroutine(deferredAffectionRefreshCoroutine);
 
         UnsubscribeFromAffectionChanges();
+        StopModelMoveCoroutine();
         ResetModelAfterShake();
 
         if (runtimePromptAnchor == null)

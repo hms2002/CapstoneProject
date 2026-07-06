@@ -1,4 +1,3 @@
-using Unity.AppUI.Redux;
 using UnityEngine;
 
 namespace UnityGAS
@@ -6,6 +5,8 @@ namespace UnityGAS
     //  AttributeStatProvider = (AttributeSet + StatTypeBindings)를 묶어서 StatId로 값을 읽어오는 어댑터((Base + Add) * Mul 형태의 final stat 계산을 지원한다)
     //  IStatProvider는 공식/데이터가 “어떤 AttributeDef를 쓰는지”와 분리되도록 해주는 인터페이스
     /// <summary>
+    /// 책임: AttributeSet과 StatTypeBindings를 조합해 StatId 기반 최종 스탯 값을 계산하는 Core stat provider이다.
+    ///
     /// Reads stats from an <see cref="AttributeSet"/> using <see cref="StatTypeBindings"/>.
     ///
     /// Supports composite final stats:

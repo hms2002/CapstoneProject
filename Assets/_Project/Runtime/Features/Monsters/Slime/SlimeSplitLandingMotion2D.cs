@@ -30,7 +30,7 @@ public sealed class SlimeSplitLandingMotion2D : MonoBehaviour
 
     private Coroutine activeRoutine;
     private CombatHeightState2D heightState;
-    private CombatHeightPresentation2D heightPresentation;
+    private ICombatHeightPresentation2D heightPresentation;
     private Transform runtimeShadowRoot;
     private SpriteRenderer runtimeShadowRenderer;
 
@@ -115,7 +115,7 @@ public sealed class SlimeSplitLandingMotion2D : MonoBehaviour
         if (heightState == null)
             heightState = gameObject.AddComponent<CombatHeightState2D>();
 
-        heightPresentation = GetComponent<CombatHeightPresentation2D>();
+        heightPresentation = GetComponent<ICombatHeightPresentation2D>();
     }
 
     /// <summary>프리팹에 높이 프레젠터가 없을 때 분열 착지 동안만 사용할 지상 그림자를 생성한다.</summary>

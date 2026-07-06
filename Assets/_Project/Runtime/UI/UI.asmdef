@@ -1,0 +1,26 @@
+{
+    "name": "UI",
+    "rootNamespace": "",
+    "references": [
+        "Core",
+        "Gameplay",
+        "Infrastructure",
+        "Presentation",
+        "Ink-Libraries",
+        "Unity.InputSystem",
+        "Unity.2D.Animation.Runtime",
+        "Unity.TextMeshPro",
+        "UnityEngine.UI",
+        "DOTween.Modules",
+        "DOTweenPro.Scripts"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

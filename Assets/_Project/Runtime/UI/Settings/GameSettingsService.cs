@@ -4,6 +4,9 @@ using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// 책임: 게임 창 표시 방식의 사용자 설정 값을 나타낸다.
+/// </summary>
 public enum GameWindowMode
 {
     Windowed = 0,
@@ -11,6 +14,9 @@ public enum GameWindowMode
     Fullscreen = 2,
 }
 
+/// <summary>
+/// 책임: 전역 UI 배율의 사용자 선택 프리셋을 나타낸다.
+/// </summary>
 public enum UiScalePreset
 {
     Small = 0,
@@ -18,11 +24,17 @@ public enum UiScalePreset
     Large = 2,
 }
 
+/// <summary>
+/// 책임: 게임 언어 설정의 사용자 선택 값을 나타낸다.
+/// </summary>
 public enum GameLanguageOption
 {
     Korean = 0,
 }
 
+/// <summary>
+/// 책임: 설정 UI와 디스플레이 적용 코드가 공유하는 해상도 옵션 값을 보관한다.
+/// </summary>
 [Serializable]
 public struct DisplayResolutionOption
 {
@@ -41,6 +53,9 @@ public struct DisplayResolutionOption
     }
 }
 
+/// <summary>
+/// 책임: 저장된 게임/디스플레이/UI 설정을 로드하고 런타임 서비스에 적용하는 전역 설정 서비스이다.
+/// </summary>
 [DefaultExecutionOrder(-900)]
 public sealed class GameSettingsService : MonoBehaviour
 {
@@ -60,6 +75,8 @@ public sealed class GameSettingsService : MonoBehaviour
     };
 
     public static GameSettingsService Instance { get; private set; }
+
+    private static readonly IGameSettingsBackend s_settingsBackend = new GameSettingsBackend();
 
     private readonly List<DisplayResolutionOption> resolutionOptions = new();
 
@@ -82,9 +99,27 @@ public sealed class GameSettingsService : MonoBehaviour
     public UiScalePreset CurrentUiScalePreset => uiScalePreset;
     public GameLanguageOption CurrentLanguage => language;
 
+    /// <summary>
+    /// 책임: Core의 GameSettingsQuery 요청을 현재 GameSettingsService 인스턴스 상태로 연결한다.
+    /// </summary>
+    private sealed class GameSettingsBackend : IGameSettingsBackend
+    {
+        public bool IsScreenShakeEnabled()
+        {
+            return GameSettingsService.IsScreenShakeEnabled();
+        }
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void RegisterSettingsBackend()
+    {
+        GameSettingsQuery.RegisterBackend(s_settingsBackend);
+    }
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Bootstrap()
     {
+        RegisterSettingsBackend();
         EnsureInstance();
     }
 

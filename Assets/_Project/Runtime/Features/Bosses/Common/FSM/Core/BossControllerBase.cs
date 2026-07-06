@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
-public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
+public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBossHudSource
 {
     // 이 클래스의 책임:
     // Enemy의 공통 전투/사망 처리 위에 보스 전용 전투 상태, 페이즈, 반응 전환을 조율한다.
@@ -62,7 +62,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     private BossEncounterDirector encounterDirector;
     private BossTalkManager bossTalkManager;
     private BossDeathPresentation deathPresentation;
-    private BossSpeechController speechController;
+    private IBossSpeechPlayback speechController;
 
     private bool combatActive;
     private bool hasCombatOverride;
@@ -96,7 +96,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         base.Awake();
 
         CacheComponents();
-        speechController = GetComponent<BossSpeechController>();
+        speechController = GetComponent<IBossSpeechPlayback>();
         ResolveDeathPresentation();
 
         blackboard = CreateBlackboard();
@@ -157,6 +157,10 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     public bool IsCombatActive => combatActive;
 
     public BossHudHealthBarTheme HudHealthBarTheme => hudHealthBarTheme;
+    public Component HudSourceComponent => this;
+    public string BossHudDisplayName => EnemyName;
+    public bool IsBossHudDead => IsDead || HasDeadTag();
+    public bool HasBossHudGroggyTag => HasGroggyTag();
 
     public void SetCombatActive(bool isActive)
     {
@@ -166,11 +170,10 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         if (!isActive && hasInitializedBossRuntime)
             AbortCurrentPattern();
 
-        RunProgressCoordinator coordinator = RunProgressCoordinator.EnsureInstance();
         if (isActive)
-            coordinator?.NotifyBossCombatStarted(this);
+            RunProgressPlayback.NotifyBossCombatStarted(this);
         else
-            coordinator?.NotifyBossCombatEnded(this);
+            RunProgressPlayback.NotifyBossCombatEnded(this);
 
         SyncBossHudRegistration();
     }
@@ -485,9 +488,9 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
 
         CleanupStatusPresentationForDeath();
 
-        RunProgressCoordinator.EnsureInstance()?.NotifyBossCombatEnded(this);
-        BossHudController.Instance?.MarkBossDefeated(this);
-        RunProgressCoordinator.EnsureInstance()?.NotifyBossDefeated(this);
+        RunProgressPlayback.NotifyBossCombatEnded(this);
+        BossHudPlayback.MarkBossDefeated(this);
+        RunProgressPlayback.NotifyBossDefeated(this);
         ResolveDeathPresentation();
         deathPresentation?.NotifyDeathStarted();
     }
@@ -497,12 +500,12 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         TryEndGroggyStateImmediately();
         effectRunner?.ClearAllActiveEffects();
         GetComponent<ElementGaugeSystem>()?.ClearAll();
-        GetComponent<MonsterElementGaugeViewInstaller>()?.Uninstall();
+        GetComponent<IMonsterElementGaugeViewInstaller>()?.Uninstall();
     }
 
     protected override void OnDestroy()
     {
-        RunProgressCoordinator.Instance?.NotifyBossCombatEnded(this);
+        RunProgressPlayback.NotifyBossCombatEnded(this);
         SyncBossHudRegistration(forceUnbind: true);
         base.OnDestroy();
     }
@@ -514,7 +517,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
             return;
 
         if (!BossEncounterEndDirector.SuppressesAutomaticRewardReady(this))
-            RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(this);
+            RunProgressPlayback.NotifyBossRewardsReady(this);
 
         base.DestroyAfterDelay();
     }
@@ -663,18 +666,18 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     /// </summary>
     private void SyncBossHudRegistration(bool forceUnbind = false)
     {
-        if (BossHudController.Instance == null)
+        if (!BossHudPlayback.IsAvailable)
         {
             return;
         }
 
         if (forceUnbind || !combatActive)
         {
-            BossHudController.Instance.UnbindBoss(this);
+            BossHudPlayback.UnbindBoss(this);
             return;
         }
 
-        BossHudController.Instance.RegisterBoss(this, hudHealthBarTheme);
+        BossHudPlayback.RegisterBoss(this, healthBarTheme: hudHealthBarTheme);
     }
 
     /// <summary>
@@ -802,7 +805,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     /// <summary>보스 대화가 진행 중인지 확인합니다.</summary>
     public virtual bool IsDialogueActive()
     {
-        return DialogueService.Instance != null && DialogueService.Instance.IsPlaying;
+        return DialoguePlayback.IsPlaying;
     }
 
     /// <summary>보스 대화 종료를 기록합니다.</summary>
@@ -1055,6 +1058,6 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     private void ResolveSpeechController()
     {
         if (speechController == null)
-            speechController = GetComponent<BossSpeechController>();
+            speechController = GetComponent<IBossSpeechPlayback>();
     }
 }

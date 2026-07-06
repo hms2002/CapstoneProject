@@ -534,11 +534,7 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
     /// </summary>
     private static int ResolveCurrentStageIndex()
     {
-        PortalRouteManager routeManager = PortalRouteManager.Instance;
-        if (routeManager == null || !routeManager.HasActivePlan)
-            return 0;
-
-        return Mathf.Max(0, routeManager.CurrentStageIndex);
+        return RunRoutePlayback.CurrentStageIndexOrDefault;
     }
 
     /// <summary>간단한 셔플로 방 안 스폰 포인트 순서를 무작위화합니다.</summary>

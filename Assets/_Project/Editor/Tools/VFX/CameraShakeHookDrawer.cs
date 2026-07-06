@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
+// 책임: CameraShakeHook 직렬화 필드를 인스펙터에서 조작하기 쉬운 형태로 그린다.
 [CustomPropertyDrawer(typeof(CameraShakeHook))]
 public sealed class CameraShakeHookDrawer : PropertyDrawer
 {
@@ -177,7 +178,7 @@ public sealed class CameraShakeHookDrawer : PropertyDrawer
             GameObject source = (owner as Component)?.gameObject;
             string debugReason = owner != null ? $"{owner.name}.{label.text}.Preview" : $"{label.text}.Preview";
 
-            CameraShakeService.Play(new CameraShakeRequest(
+            CameraShakePlayback.Play(new CameraShakeRequest(
                 amplitude,
                 direction,
                 source,

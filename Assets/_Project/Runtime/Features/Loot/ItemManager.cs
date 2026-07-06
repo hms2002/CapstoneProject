@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// 책임: 아이템 데이터베이스 로드, 무기/유물 해금 상태, 저장 데이터 반영을 관리한다.
 public class ItemManager : MonoBehaviour
 {
     public static ItemManager Instance { get; private set; }
@@ -147,10 +148,10 @@ public class ItemManager : MonoBehaviour
 
     private void TryInitializeFromGameData()
     {
-        if (isInitialized || GameDataManager.Instance == null)
+        if (isInitialized || !GameDataStore.IsAvailable)
             return;
 
-        Initialize(GameDataManager.Instance.Data != null ? GameDataManager.Instance.Data.itemData : null);
+        Initialize(GameDataStore.Data != null ? GameDataStore.Data.itemData : null);
     }
 
     private void TryAdoptDatabase(ItemDatabase incomingDatabase)
@@ -173,7 +174,7 @@ public class ItemManager : MonoBehaviour
 
         if (!isInitialized)
         {
-            Initialize(pendingSaveData ?? (GameDataManager.Instance != null ? GameDataManager.Instance.Data?.itemData : null));
+            Initialize(pendingSaveData ?? GameDataStore.Data?.itemData);
         }
     }
 

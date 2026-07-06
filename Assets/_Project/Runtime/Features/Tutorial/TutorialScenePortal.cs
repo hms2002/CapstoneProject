@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityGAS;
@@ -40,7 +39,6 @@ public sealed class TutorialScenePortal : InteractableBase
     private bool acceptedTravel;
     private bool hasActiveEntranceSnapshot;
     private Coroutine entranceRoutine;
-    private Sequence entranceSequence;
     private TutorialPortalEntranceSnapshot activeEntranceSnapshot;
     private PlayerCinematicProtection lockedPlayerProtection;
     private GameFlowInputBlocker entranceInputBlocker;
@@ -140,18 +138,12 @@ public sealed class TutorialScenePortal : InteractableBase
 
     private PreparedTutorialTravel PrepareTutorialTravel(IPlayerInteractor player)
     {
-        GamePlayDataManager gameplay = GamePlayDataManager.Instance;
-        PlayerRuntimeState previousPlayerState = gameplay != null
-            ? gameplay.PeekPendingPlayerState()
-            : null;
-        SceneTransitionContext previousTransitionContext = gameplay != null
-            ? gameplay.PeekPendingTransition()
-            : null;
-        bool capturedPlayerState = TryCapturePlayerRuntimeState(player, gameplay);
-        bool preparedTransitionContext = TryPrepareTransitionContext(gameplay);
+        PlayerRuntimeState previousPlayerState = RunSessionStore.PeekPendingPlayerState();
+        SceneTransitionContext previousTransitionContext = RunSessionStore.PeekPendingTransition();
+        bool capturedPlayerState = TryCapturePlayerRuntimeState(player);
+        bool preparedTransitionContext = TryPrepareTransitionContext();
 
         return new PreparedTutorialTravel(
-            gameplay,
             previousPlayerState,
             previousTransitionContext,
             capturedPlayerState,
@@ -204,7 +196,6 @@ public sealed class TutorialScenePortal : InteractableBase
         }
         finally
         {
-            KillEntranceSequence();
             ReleasePlayerCinematicProtection();
             ReleaseInputBlocker();
             entranceRoutine = null;
@@ -219,38 +210,11 @@ public sealed class TutorialScenePortal : InteractableBase
         if (!snapshot.IsValid || snapshot.PlayerTransform == null)
             yield break;
 
-        KillEntranceSequence();
-
         Vector3 targetPosition = ResolveEntranceTargetPosition(snapshot.PlayerTransform);
         Vector3 targetRotation = snapshot.LocalRotation.eulerAngles +
                                  new Vector3(0f, 0f, entranceRotationDegrees);
 
-        if (!TryCreateEntranceSequence(snapshot, targetPosition, targetRotation))
-            yield break;
-
-        yield return entranceSequence.WaitForCompletion();
-        entranceSequence = null;
-    }
-
-    private bool TryCreateEntranceSequence(
-        TutorialPortalEntranceSnapshot snapshot,
-        Vector3 targetPosition,
-        Vector3 targetRotation)
-    {
-        try
-        {
-            entranceSequence = DOTween.Sequence();
-            entranceSequence.Join(snapshot.PlayerTransform.DOMove(targetPosition, entranceDuration).SetEase(Ease.OutQuart));
-            entranceSequence.Join(snapshot.PlayerTransform.DOScale(Vector3.zero, entranceDuration).SetEase(Ease.InBack));
-            entranceSequence.Join(snapshot.PlayerTransform.DOLocalRotate(targetRotation, entranceDuration, RotateMode.FastBeyond360).SetEase(Ease.InCubic));
-            return true;
-        }
-        catch (Exception ex)
-        {
-            KillEntranceSequence();
-            Debug.LogError($"[TutorialScenePortal] Entrance presentation failed. portal={name}, error={ex}", this);
-            return false;
-        }
+        yield return PlayEntranceTransformRoutine(snapshot, targetPosition, targetRotation);
     }
 
     private Vector3 ResolveEntranceTargetPosition(Transform playerTransform)
@@ -268,11 +232,11 @@ public sealed class TutorialScenePortal : InteractableBase
 
     private IEnumerator WaitForAcceptedTransitionToFinish()
     {
-        SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.Instance;
+        ISceneTransitionHandle transitionCoordinator = SceneTransitionPlayback.Instance;
         while (transitionCoordinator != null && transitionCoordinator.IsTransitionActive)
         {
             yield return null;
-            transitionCoordinator = SceneTransitionCoordinator.Instance;
+            transitionCoordinator = SceneTransitionPlayback.Instance;
         }
     }
 
@@ -307,7 +271,7 @@ public sealed class TutorialScenePortal : InteractableBase
             return false;
         }
 
-        SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.EnsureInstance();
+        ISceneTransitionHandle transitionCoordinator = SceneTransitionPlayback.EnsureInstance();
         if (transitionCoordinator != null)
         {
             if (transitionCoordinator.TryLoadScene(targetSceneName))
@@ -376,8 +340,6 @@ public sealed class TutorialScenePortal : InteractableBase
             entranceRoutine = null;
         }
 
-        KillEntranceSequence();
-
         if (restoreSnapshot && hasActiveEntranceSnapshot)
         {
             if (acceptedTravel)
@@ -394,23 +356,14 @@ public sealed class TutorialScenePortal : InteractableBase
         ReleaseInputBlocker();
     }
 
-    private void KillEntranceSequence()
-    {
-        if (entranceSequence == null)
-            return;
-
-        entranceSequence.Kill();
-        entranceSequence = null;
-    }
-
-    private bool TryCapturePlayerRuntimeState(IPlayerInteractor player, GamePlayDataManager gameplay)
+    private bool TryCapturePlayerRuntimeState(IPlayerInteractor player)
     {
         if (resetPlayerRuntimeStateOnTravel)
             return false;
 
-        if (gameplay == null)
+        if (!RunSessionStore.IsAvailable)
         {
-            Debug.LogWarning("[TutorialScenePortal] GamePlayDataManager is missing. Player runtime state was not preserved.", this);
+            Debug.LogWarning("[TutorialScenePortal] RunSessionStore backend is missing. Player runtime state was not preserved.", this);
             return false;
         }
 
@@ -430,13 +383,13 @@ public sealed class TutorialScenePortal : InteractableBase
             return false;
         }
 
-        gameplay.PreparePlayerState(captureBridge.CaptureRuntimeState());
+        RunSessionStore.PreparePlayerState(captureBridge.CaptureRuntimeState());
         return true;
     }
 
-    private bool TryPrepareTransitionContext(GamePlayDataManager gameplay)
+    private bool TryPrepareTransitionContext()
     {
-        if (skipTransitionContextPreparation || gameplay == null || string.IsNullOrWhiteSpace(targetSceneName))
+        if (skipTransitionContextPreparation || !RunSessionStore.IsAvailable || string.IsNullOrWhiteSpace(targetSceneName))
             return false;
 
         var context = new SceneTransitionContext
@@ -450,25 +403,24 @@ public sealed class TutorialScenePortal : InteractableBase
             transitionType = TransitionType.None
         };
 
-        gameplay.PrepareTransition(context);
+        RunSessionStore.PrepareTransition(context);
         return true;
     }
 
     private static void RestorePendingRuntimeState(
-        GamePlayDataManager gameplay,
         PlayerRuntimeState previousPlayerState,
         SceneTransitionContext previousTransitionContext,
         bool capturedPlayerState,
         bool preparedTransitionContext)
     {
-        if (gameplay == null)
+        if (!RunSessionStore.IsAvailable)
             return;
 
         if (capturedPlayerState)
-            gameplay.PreparePlayerState(previousPlayerState);
+            RunSessionStore.PreparePlayerState(previousPlayerState);
 
         if (preparedTransitionContext)
-            gameplay.PrepareTransition(previousTransitionContext);
+            RunSessionStore.PrepareTransition(previousTransitionContext);
     }
 
     private static GameObject ResolvePlayerObject(IPlayerInteractor player)
@@ -517,20 +469,17 @@ public sealed class TutorialScenePortal : InteractableBase
     /// </summary>
     private readonly struct PreparedTutorialTravel
     {
-        private readonly GamePlayDataManager gameplay;
         private readonly PlayerRuntimeState previousPlayerState;
         private readonly SceneTransitionContext previousTransitionContext;
         private readonly bool capturedPlayerState;
         private readonly bool preparedTransitionContext;
 
         public PreparedTutorialTravel(
-            GamePlayDataManager gameplay,
             PlayerRuntimeState previousPlayerState,
             SceneTransitionContext previousTransitionContext,
             bool capturedPlayerState,
             bool preparedTransitionContext)
         {
-            this.gameplay = gameplay;
             this.previousPlayerState = previousPlayerState;
             this.previousTransitionContext = previousTransitionContext;
             this.capturedPlayerState = capturedPlayerState;
@@ -540,7 +489,6 @@ public sealed class TutorialScenePortal : InteractableBase
         public void RestorePendingRuntimeState()
         {
             TutorialScenePortal.RestorePendingRuntimeState(
-                gameplay,
                 previousPlayerState,
                 previousTransitionContext,
                 capturedPlayerState,
@@ -655,5 +603,76 @@ public sealed class TutorialScenePortal : InteractableBase
 
             RestorePhysics();
         }
+    }
+
+    private IEnumerator PlayEntranceTransformRoutine(
+        TutorialPortalEntranceSnapshot snapshot,
+        Vector3 targetPosition,
+        Vector3 targetRotation)
+    {
+        Transform playerTransform = snapshot.PlayerTransform;
+        if (playerTransform == null)
+            yield break;
+
+        Vector3 startPosition = playerTransform.position;
+        Vector3 startScale = playerTransform.localScale;
+        Vector3 startRotation = snapshot.LocalRotation.eulerAngles;
+        float elapsed = 0f;
+
+        while (elapsed < entranceDuration && playerTransform != null)
+        {
+            elapsed += Time.deltaTime;
+            float t = entranceDuration > 0f ? elapsed / entranceDuration : 1f;
+            ApplyEntranceTransformFrame(
+                playerTransform,
+                startPosition,
+                targetPosition,
+                startScale,
+                startRotation,
+                targetRotation,
+                t);
+            yield return null;
+        }
+
+        if (playerTransform != null)
+        {
+            playerTransform.position = targetPosition;
+            playerTransform.localScale = Vector3.zero;
+            playerTransform.localRotation = Quaternion.Euler(targetRotation);
+        }
+    }
+
+    private static void ApplyEntranceTransformFrame(
+        Transform playerTransform,
+        Vector3 startPosition,
+        Vector3 targetPosition,
+        Vector3 startScale,
+        Vector3 startRotation,
+        Vector3 targetRotation,
+        float t)
+    {
+        playerTransform.position = Vector3.LerpUnclamped(startPosition, targetPosition, EaseOutQuart(t));
+        playerTransform.localScale = Vector3.LerpUnclamped(startScale, Vector3.zero, EaseInBack(t));
+        playerTransform.localRotation = Quaternion.Euler(Vector3.LerpUnclamped(startRotation, targetRotation, EaseInCubic(t)));
+    }
+
+    private static float EaseOutQuart(float t)
+    {
+        t = Mathf.Clamp01(t);
+        float inverse = 1f - t;
+        return 1f - inverse * inverse * inverse * inverse;
+    }
+
+    private static float EaseInCubic(float t)
+    {
+        t = Mathf.Clamp01(t);
+        return t * t * t;
+    }
+
+    private static float EaseInBack(float t)
+    {
+        t = Mathf.Clamp01(t);
+        const float back = 1.70158f;
+        return (back + 1f) * t * t * t - back * t * t;
     }
 }

@@ -5,6 +5,7 @@ using UnityGAS;
 /// <summary>
 /// 슬라임 여왕 계열 보스가 공유하는 타겟 방향, 이동 차단, 경고 표시 기반 기능입니다.
 /// </summary>
+// 책임: 슬라임퀸 계열 보스의 공통 이동, 경고, 내려찍기, 피격/그로기 기반 기능을 제공한다.
 public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSource2D
 {
     private const string GroggyTagResourcePath = "Tags/State.Status.Groggy";
@@ -61,12 +62,12 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     [Tooltip("몸 부풀림 Visual 스케일 변화 단계를 몇 단계로 끊어 보일지 설정합니다. 0이면 부드럽게 보간합니다.")]
     [SerializeField, Min(0)] private int bodyInflateVisualScaleSteps = 5;
 
-    private AttackTelegraphService telegraphService;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private CombatHeightState2D combatHeightState;
-    private CombatHeightPresentation2D combatHeightPresentation;
+    private ICombatHeightPresentation2D combatHeightPresentation;
     private EntityCollisionProfile2D heightCollisionProfile;
     private CombatHeightCollisionBinder2D heightCollisionBinder;
-    private SpriteAfterimageEmitter2D patternAfterimageEmitter;
+    private IAfterimageEmitter2D patternAfterimageEmitter;
     private Collider2D[] heightCollisionBodyColliders;
     private GameplayTag patternMoveInvulnerableTag;
     private GameplayEffect runtimeGroggyStatusEffect;
@@ -86,7 +87,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     private bool patternFacingLockedFlipX;
     private bool isDeathFacingFrozen;
     private bool deathFacingFrozenFlipX;
-    private SpeechBubbleComponent slimeQueenSpeechBubble;
+    private ISpeechBubblePlayback slimeQueenSpeechBubble;
 
     public bool IsPatternMoveDamageBlocked => isPatternMoveDamageBlocked;
 
@@ -97,9 +98,9 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     protected override void Awake()
     {
         base.Awake();
-        telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(this);
         combatHeightState = GetComponent<CombatHeightState2D>();
-        combatHeightPresentation = GetComponent<CombatHeightPresentation2D>();
+        combatHeightPresentation = GetComponent<ICombatHeightPresentation2D>();
         EnsureCombatHeightCollisionBinding();
         patternMoveInvulnerableTag = Resources.Load<GameplayTag>("Tags/State.Invulnerable");
         EnsureGroggyGauge();
@@ -191,7 +192,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         if (string.IsNullOrWhiteSpace(line))
             return false;
 
-        SpeechBubbleComponent speechBubble = ResolveSlimeQueenSpeechBubble();
+        ISpeechBubblePlayback speechBubble = ResolveSlimeQueenSpeechBubble();
         if (speechBubble == null)
         {
             Debug.Log($"SlimeQueen Speech: {line}", this);
@@ -207,7 +208,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     /// <summary>피날레 소멸처럼 현재 출력 중인 전용 말풍선을 즉시 닫아야 할 때 사용합니다.</summary>
     protected void HideSlimeQueenSpeechBubble()
     {
-        SpeechBubbleComponent speechBubble = ResolveSlimeQueenSpeechBubble();
+        ISpeechBubblePlayback speechBubble = ResolveSlimeQueenSpeechBubble();
         if (speechBubble != null)
             speechBubble.HideActive();
     }
@@ -222,16 +223,26 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         return !string.IsNullOrWhiteSpace(line);
     }
 
-    private SpeechBubbleComponent ResolveSlimeQueenSpeechBubble()
+    private ISpeechBubblePlayback ResolveSlimeQueenSpeechBubble()
     {
         if (slimeQueenSpeechBubble != null)
             return slimeQueenSpeechBubble;
 
-        slimeQueenSpeechBubble = GetComponent<SpeechBubbleComponent>();
-        if (slimeQueenSpeechBubble == null)
-            slimeQueenSpeechBubble = GetComponentInChildren<SpeechBubbleComponent>(includeInactive: true);
-
+        slimeQueenSpeechBubble = ResolveSpeechBubblePlayback();
         return slimeQueenSpeechBubble;
+    }
+
+    private ISpeechBubblePlayback ResolveSpeechBubblePlayback()
+    {
+        MonoBehaviour[] behaviours = GetComponentsInChildren<MonoBehaviour>(includeInactive: true);
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+            if (behaviour is ISpeechBubblePlayback playback)
+                return playback;
+        }
+
+        return null;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -426,7 +437,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         if (!enablePatternAfterimage || !isActiveAndEnabled)
             return;
 
-        SpriteAfterimageEmitter2D emitter = ResolvePatternAfterimageEmitter();
+        IAfterimageEmitter2D emitter = ResolvePatternAfterimageEmitter();
         if (emitter == null)
             return;
 
@@ -465,7 +476,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         ClearCombatHeightPresentation();
     }
 
-    /// <summary>AttackTelegraphService가 소유한 모든 경고 표시를 회수합니다.</summary>
+    /// <summary>텔레그래프 presenter가 소유한 모든 경고 표시를 회수합니다.</summary>
     protected void CleanupAllTelegraphs()
     {
         GetTelegraphService()?.ClearAll();
@@ -558,7 +569,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     /// <summary>CombatHeightState2D가 가진 현재 높이를 smoothing 없이 즉시 렌더 위치에 반영합니다.</summary>
     protected void SnapCombatHeightPresentationToState()
     {
-        CombatHeightPresentation2D heightPresentation = GetComponent<CombatHeightPresentation2D>();
+        ICombatHeightPresentation2D heightPresentation = GetComponent<ICombatHeightPresentation2D>();
         heightPresentation?.SnapToCurrentState();
     }
 
@@ -705,21 +716,19 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         return Mathf.Clamp01(Mathf.Ceil(progress * steps) / steps);
     }
 
-    private SpriteAfterimageEmitter2D ResolvePatternAfterimageEmitter()
+    private IAfterimageEmitter2D ResolvePatternAfterimageEmitter()
     {
         if (patternAfterimageEmitter != null)
             return patternAfterimageEmitter;
 
-        if (!TryGetComponent(out patternAfterimageEmitter))
-            patternAfterimageEmitter = gameObject.AddComponent<SpriteAfterimageEmitter2D>();
-
+        patternAfterimageEmitter = AfterimageEmitterPlayback.GetOrAdd(gameObject);
         return patternAfterimageEmitter;
     }
 
     private bool CanUseCombatHeightPresentation()
     {
         if (combatHeightPresentation == null)
-            combatHeightPresentation = GetComponent<CombatHeightPresentation2D>();
+            combatHeightPresentation = GetComponent<ICombatHeightPresentation2D>();
 
         return combatHeightPresentation != null;
     }
@@ -985,13 +994,13 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         return false;
     }
 
-    /// <summary>AttackTelegraphService 참조를 반환합니다.</summary>
-    protected AttackTelegraphService GetTelegraphService()
+    /// <summary>구체 텔레그래프 컴포넌트 없이 공격 경고 presenter 계약을 반환합니다.</summary>
+    protected IAttackTelegraphPresenter GetTelegraphService()
     {
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        if (telegraphPresenter == null)
+            telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(this);
 
-        return telegraphService;
+        return telegraphPresenter;
     }
 
     /// <summary>슬라임 여왕 계열 보스가 다른 보스처럼 공용 스태거/그로기 게이지를 사용하도록 보장합니다.</summary>

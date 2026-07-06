@@ -79,7 +79,6 @@ namespace UnityGAS
                 PlayRushStackAdvanceSound(system, spec, initialTarget, 0);
                 BeginOrUpdateRushAfterimage(system, spec, 0);
                 BeginOrUpdateRushWindParticles(system, spec, 0);
-                InputBindingService input = InputBindingService.EnsureInstance();
 
                 for (int s = 1; s < stacks; s++)
                 {
@@ -117,7 +116,7 @@ namespace UnityGAS
                         }
 
                         if (CanReadRushCancelInput() &&
-                            TryHandleRushCancelInput(input, system, spec, initialTarget, state))
+                            TryHandleRushCancelInput(system, spec, initialTarget, state))
                         {
                             yield break;
                         }
@@ -163,7 +162,7 @@ namespace UnityGAS
                     }
 
                     if (CanReadRushCancelInput() &&
-                        TryHandleRushCancelInput(input, system, spec, initialTarget, state))
+                        TryHandleRushCancelInput(system, spec, initialTarget, state))
                     {
                         break;
                     }
@@ -205,7 +204,7 @@ namespace UnityGAS
             if (router == null)
                 return;
 
-            SpriteAfterimageEmitter2D emitter = router.GetOrAddOwnedComponent<SpriteAfterimageEmitter2D>(spec);
+            IAfterimageEmitter2D emitter = AfterimageEmitterPlayback.GetOrAddOwned(router, spec);
             if (emitter == null)
                 return;
 
@@ -230,7 +229,7 @@ namespace UnityGAS
             if (router == null)
                 return;
 
-            MotionAlignedParticleVisual2D visual = router.GetOrAddOwnedComponent<MotionAlignedParticleVisual2D>(spec);
+            IMotionAlignedParticleVisual2D visual = MotionAlignedParticlePlayback.GetOrAddOwned(router, spec);
             if (visual == null)
                 return;
 
@@ -258,7 +257,7 @@ namespace UnityGAS
             if (router == null)
                 return;
 
-            SpriteAfterimageEmitter2D emitter = router.GetOwnedComponent<SpriteAfterimageEmitter2D>(spec);
+            IAfterimageEmitter2D emitter = AfterimageEmitterPlayback.GetOwned(router, spec);
             if (emitter == null)
                 return;
 
@@ -282,7 +281,7 @@ namespace UnityGAS
             if (router == null)
                 return;
 
-            MotionAlignedParticleVisual2D visual = router.GetOwnedComponent<MotionAlignedParticleVisual2D>(spec);
+            IMotionAlignedParticleVisual2D visual = MotionAlignedParticlePlayback.GetOwned(router, spec);
             if (visual == null)
                 return;
 
@@ -348,7 +347,7 @@ namespace UnityGAS
         /// <summary>
         /// 책임 :
         /// - Rush가 입력 취소로 종료될 때 LogicData 전용 취소 사운드를 재생한다.
-        /// - 실제 재생은 공통 AbilityAudioRouter를 통해 SoundManager 정책을 그대로 따른다.
+        /// - 실제 재생은 공통 AbilityAudioRouter를 통해 Core 오디오 재생 계약으로 위임한다.
         /// </summary>
         private void PlayRushInputCancelSound(AbilitySystem system, AbilitySpec spec, GameObject target)
         {
@@ -371,17 +370,16 @@ namespace UnityGAS
         }
 
         private bool TryHandleRushCancelInput(
-            InputBindingService input,
             AbilitySystem system,
             AbilitySpec spec,
             GameObject initialTarget,
             RushRuntimeState state)
         {
-            if (input == null || system == null || state == null)
+            if (system == null || state == null)
                 return false;
 
-            if (input.WasPressedThisFrame(InputActionId.PrimaryAttack) ||
-                input.WasPressedThisFrame(InputActionId.Skill1))
+            if (InputActionQuery.WasPressedThisFrame(InputActionId.PrimaryAttack) ||
+                InputActionQuery.WasPressedThisFrame(InputActionId.Skill1))
             {
                 state.ShouldApplyHandoff = true;
                 PlayRushInputCancelSound(system, spec, initialTarget);
@@ -389,7 +387,7 @@ namespace UnityGAS
                 return true;
             }
 
-            if (!input.WasPressedThisFrame(InputActionId.Skill2))
+            if (!InputActionQuery.WasPressedThisFrame(InputActionId.Skill2))
                 return false;
 
             if (TryBeginDeferredSkill2Cancel(system, state))
@@ -403,20 +401,16 @@ namespace UnityGAS
 
         private static bool IsGameplayInputBlockedByUiOrFlow()
         {
-            if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+            if (DialoguePlayback.IsPlaying)
                 return true;
 
-            if (UIManager.Instance != null && UIManager.Instance.HasBlockingUI())
+            if (UiInteractionStateQuery.HasBlockingUI())
                 return true;
 
-            if (SceneTransitionCoordinator.Instance != null &&
-                SceneTransitionCoordinator.Instance.IsTransitionActive)
-            {
+            if (SceneTransitionPlayback.IsTransitionActive)
                 return true;
-            }
 
-            return LoadingOverlayController.Instance != null &&
-                   LoadingOverlayController.Instance.IsActiveLoadingPresentation;
+            return LoadingPresentationQuery.IsActiveLoadingPresentation;
         }
 
         /// <summary>

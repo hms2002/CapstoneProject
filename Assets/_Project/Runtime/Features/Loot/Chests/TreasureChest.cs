@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임 : 상자 전리품 생성/보관과 오픈 프렐류드 상태를 관리하고 UI 열기 요청은 계약으로 위임한다.
+/// </summary>
 public class TreasureChest : MonoBehaviour
 {
     private static readonly Color RewardRevealDustGizmoColor = new Color(1f, 0.82f, 0.12f, 0.95f);
@@ -175,10 +178,7 @@ public class TreasureChest : MonoBehaviour
         bool playSlideFadePresentation = true,
         GameFlowInputBlocker inputBlocker = null)
     {
-        if (ChestUIManager.Instance == null)
-            return false;
-
-        return ChestUIManager.Instance.OpenChest(this, playSlideFadePresentation, inputBlocker);
+        return ChestUiOpenPlayback.OpenChest(this, playSlideFadePresentation, inputBlocker);
     }
 
     private void GenerateSelfLoot()
@@ -443,7 +443,7 @@ public class TreasureChest : MonoBehaviour
         if (!freezeTimeOnFirstOpen || isPreludeTimeFrozen)
             return;
 
-        TimeScalePauseService.Acquire(this);
+        TimeScalePausePlayback.Acquire(this);
         isPreludeTimeFrozen = true;
     }
 
@@ -452,7 +452,7 @@ public class TreasureChest : MonoBehaviour
         if (!isPreludeTimeFrozen)
             return;
 
-        TimeScalePauseService.Release(this);
+        TimeScalePausePlayback.Release(this);
         isPreludeTimeFrozen = false;
     }
 

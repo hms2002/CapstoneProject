@@ -5,6 +5,14 @@ using UnityEngine;
 namespace UnityGAS
 {
     /// <summary>
+    /// 책임: GE_ElectricShockTrigger가 구체 VFX 타입을 알지 않고 연쇄 지점 목록만 presentation 구현에 전달하게 한다.
+    /// </summary>
+    public interface IChainPointPresentation
+    {
+        void Play(IReadOnlyList<Vector3> worldPoints);
+    }
+
+    /// <summary>
     /// 책임 : 전기 게이지가 발현됐을 때 감전 상태 부여, 연쇄 대상 탐색, 전기 발현 피해 적용을 수행한다.
     /// 전기 발현 피해가 일반 피해 팝업으로 섞이지 않도록 팝업용 속성 태그도 함께 전달한다.
     /// </summary>
@@ -28,7 +36,7 @@ namespace UnityGAS
         [SerializeField] private LayerMask chainTargetLayers = ~0;
 
         [Header("Visual")]
-        [SerializeField] private ElectricChainRibbonVfx chainVfxPrefab;
+        [SerializeField] private MonoBehaviour chainVfxPrefab;
 
         private void OnValidate()
         {
@@ -268,8 +276,15 @@ namespace UnityGAS
             if (chainVfxPrefab == null || chainPoints == null || chainPoints.Count == 0)
                 return;
 
-            ElectricChainRibbonVfx instance = Instantiate(chainVfxPrefab);
-            instance.Play(chainPoints);
+            MonoBehaviour instance = Instantiate(chainVfxPrefab);
+            if (instance is IChainPointPresentation chainPresentation)
+            {
+                chainPresentation.Play(chainPoints);
+                return;
+            }
+
+            if (instance != null)
+                Destroy(instance.gameObject);
         }
     }
 }

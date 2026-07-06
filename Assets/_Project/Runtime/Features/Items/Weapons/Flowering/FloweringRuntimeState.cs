@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임 : Flowering 무기의 Bloom gameplay 상태, 버프, 이벤트 반응, HUD 지속시간 override를 관리한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class FloweringRuntimeState :
     WeaponAbilityRuntimeState,
@@ -18,7 +21,7 @@ public sealed class FloweringRuntimeState :
     private AbilityGameplayEventRelay eventRelay;
     private FloweringRuntimeData runtimeData;
     private FloweringBloomData bloomData;
-    private FloweringBloomPresentationController presentation;
+    private IFloweringBloomPresentation presentation;
     private PlayerStatusRuntime statusRuntime;
     private StatusHandle bloomStatusHandle;
     private GameFlowInputBlocker cutInInputBlocker;
@@ -69,7 +72,7 @@ public sealed class FloweringRuntimeState :
         Bind(system);
         cutInPresentationPrepared = false;
 
-        FloweringBloomPresentationController controller = EnsurePresentation(data);
+        IFloweringBloomPresentation controller = EnsurePresentation(data);
         if (controller == null)
             yield break;
 
@@ -105,7 +108,7 @@ public sealed class FloweringRuntimeState :
     public IEnumerator PlayBloomEndTransition(AbilitySystem system, AbilitySpec spec, FloweringBloomData data)
     {
         Bind(system);
-        FloweringBloomPresentationController controller = EnsurePresentation(data);
+        IFloweringBloomPresentation controller = EnsurePresentation(data);
         if (controller == null)
             yield break;
 
@@ -271,19 +274,25 @@ public sealed class FloweringRuntimeState :
         EndBloomSkillSwapLock();
     }
 
-    private FloweringBloomPresentationController EnsurePresentation(FloweringBloomData data)
+    private IFloweringBloomPresentation EnsurePresentation(FloweringBloomData data)
     {
         if (abilitySystem == null)
             return null;
 
-        if (presentation == null)
-            presentation = abilitySystem.GetComponent<FloweringBloomPresentationController>();
+        if (IsUnityObjectDestroyed(presentation))
+            presentation = null;
 
         if (presentation == null)
-            presentation = abilitySystem.gameObject.AddComponent<FloweringBloomPresentationController>();
+            presentation = FloweringBloomPresentationPlayback.GetOrAdd(abilitySystem.gameObject, data);
+        else
+            presentation.Initialize(abilitySystem.gameObject, data);
 
-        presentation.Initialize(abilitySystem.gameObject, data);
         return presentation;
+    }
+
+    private static bool IsUnityObjectDestroyed(IFloweringBloomPresentation value)
+    {
+        return value is Object unityObject && unityObject == null;
     }
 
     private void ApplyModifiers()

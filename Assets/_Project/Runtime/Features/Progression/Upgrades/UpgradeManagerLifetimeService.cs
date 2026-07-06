@@ -1,6 +1,9 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : UpgradeManager 싱글턴 소유권, 전역 UI 서비스 부모 지정, DontDestroyOnLoad 유지 처리를 캡슐화한다.
+/// </summary>
 internal static class UpgradeManagerLifetimeService
 {
     public static bool TryClaimInstance(
@@ -19,7 +22,7 @@ internal static class UpgradeManagerLifetimeService
         }
 
         setCurrent?.Invoke(manager);
-        GlobalUIRoot.AdoptService(manager.transform);
+        GlobalCanvasPlayback.AdoptService(manager.transform);
         MarkPersistent(manager.transform);
         return true;
     }

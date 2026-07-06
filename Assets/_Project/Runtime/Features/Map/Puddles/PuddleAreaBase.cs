@@ -28,9 +28,9 @@ namespace UnityGAS
         [SerializeField, Min(0.01f)] private float arriveDistance = 0.15f;
 
         [Header("Presentation")]
-        [SerializeField] private PuddleShaderVisual shaderVisual;
-        [SerializeField] private PuddleParticleVisual particleVisual;
-        [SerializeField] private PuddleBlobVisual blobVisual;
+        [SerializeField] private Component shaderVisual;
+        [SerializeField] private Component particleVisual;
+        [SerializeField] private Component blobVisual;
         [SerializeField] private bool logDebugMessages;
 
         private Coroutine absorbRoutine;
@@ -49,9 +49,9 @@ namespace UnityGAS
         public bool IsAbsorbTransitioning => Mode == PuddleAreaMode.AbsorbPreparing;
         public bool CanApplyProjectileEffect => Mode == PuddleAreaMode.AbsorbProjectile;
         public bool IsGroundActive => Mode == PuddleAreaMode.Ground || Mode == PuddleAreaMode.Igniting;
-        protected PuddleShaderVisual ShaderVisual => shaderVisual;
-        protected PuddleParticleVisual ParticleVisual => particleVisual;
-        protected PuddleBlobVisual BlobVisual => blobVisual;
+        protected IPuddleShaderVisual ShaderVisual => shaderVisual as IPuddleShaderVisual;
+        protected IPuddleParticleVisual ParticleVisual => particleVisual as IPuddleParticleVisual;
+        protected IPuddleBlobVisual BlobVisual => blobVisual as IPuddleBlobVisual;
 
         protected virtual void Awake()
         {
@@ -59,8 +59,8 @@ namespace UnityGAS
             CachePresentation();
             SyncPresentationContext();
             ApplyColliderMode(PuddleAreaMode.Ground);
-            shaderVisual?.SetMode(PuddleAreaMode.Ground);
-            particleVisual?.ApplyMode(PuddleAreaMode.Ground);
+            ShaderVisual?.SetMode(PuddleAreaMode.Ground);
+            ParticleVisual?.ApplyMode(PuddleAreaMode.Ground);
         }
 
         protected virtual void OnEnable()
@@ -70,8 +70,8 @@ namespace UnityGAS
             SyncPresentationContext();
             PuddleManager.ResolveForScene()?.Register(this);
             ApplyColliderMode(Mode);
-            shaderVisual?.SetMode(Mode);
-            particleVisual?.ApplyMode(Mode);
+            ShaderVisual?.SetMode(Mode);
+            ParticleVisual?.ApplyMode(Mode);
         }
 
         protected virtual void OnDisable()
@@ -107,7 +107,7 @@ namespace UnityGAS
             StopAbsorbMotion();
             onAbsorbArrived = onArrived;
             modeBeforeAbsorb = IsGroundActive ? Mode : PuddleAreaMode.Ground;
-            shaderVisual?.SetAbsorbAnchor(absorbAnchor);
+            ShaderVisual?.SetAbsorbAnchor(absorbAnchor);
             SetMode(PuddleAreaMode.AbsorbPreparing);
 
             float speed = speedOverride > 0f ? speedOverride : absorbMoveSpeed;
@@ -309,8 +309,8 @@ namespace UnityGAS
             Mode = newMode;
             projectileHitTargets.Clear();
             ApplyColliderMode(newMode);
-            shaderVisual?.SetMode(newMode);
-            particleVisual?.ApplyMode(newMode);
+            ShaderVisual?.SetMode(newMode);
+            ParticleVisual?.ApplyMode(newMode);
             // Blob visual + outline은 Noita풍 particle field 전환 테스트 동안 비활성화한다.
             // ApplyBlobVisualMode(newMode);
             HandleModeChanged(previousMode, newMode);
@@ -336,14 +336,14 @@ namespace UnityGAS
 
         private void CachePresentation()
         {
-            if (shaderVisual == null)
-                shaderVisual = GetComponentInChildren<PuddleShaderVisual>(true);
+            if (shaderVisual is not IPuddleShaderVisual)
+                shaderVisual = FindPresentationComponent<IPuddleShaderVisual>();
 
-            if (particleVisual == null)
-                particleVisual = GetComponentInChildren<PuddleParticleVisual>(true);
+            if (particleVisual is not IPuddleParticleVisual)
+                particleVisual = FindPresentationComponent<IPuddleParticleVisual>();
 
-            if (blobVisual == null)
-                blobVisual = GetComponentInChildren<PuddleBlobVisual>(true);
+            if (blobVisual is not IPuddleBlobVisual)
+                blobVisual = FindPresentationComponent<IPuddleBlobVisual>();
         }
 
         protected void RefreshPresentationReferences()
@@ -354,18 +354,19 @@ namespace UnityGAS
 
         private void ApplyBlobVisualMode(PuddleAreaMode mode)
         {
-            if (blobVisual == null)
+            IPuddleBlobVisual visual = BlobVisual;
+            if (visual == null)
                 return;
 
             if (mode == PuddleAreaMode.AbsorbProjectile)
             {
-                blobVisual.SetAbsorbTarget(1f);
-                blobVisual.SetProjectileMotion(true);
+                visual.SetAbsorbTarget(1f);
+                visual.SetProjectileMotion(true);
                 return;
             }
 
-            blobVisual.SetAbsorbTarget(0f);
-            blobVisual.SetProjectileMotion(false);
+            visual.SetAbsorbTarget(0f);
+            visual.SetProjectileMotion(false);
         }
 
         private void SyncColliderRadii()
@@ -385,18 +386,33 @@ namespace UnityGAS
 
         private void SyncPresentationContext()
         {
-            if (shaderVisual != null)
+            IPuddleShaderVisual shader = ShaderVisual;
+            if (shader != null)
             {
-                shaderVisual.SetElementType(ElementType);
-                shaderVisual.SetRadii(groundRadius, projectileRadius);
-                shaderVisual.SetMode(Mode);
+                shader.SetElementType(ElementType);
+                shader.SetRadii(groundRadius, projectileRadius);
+                shader.SetMode(Mode);
             }
 
-            if (particleVisual != null)
+            IPuddleParticleVisual particle = ParticleVisual;
+            if (particle != null)
             {
-                particleVisual.SetElementType(ElementType);
-                particleVisual.SetSurfaceRadius(groundRadius);
+                particle.SetElementType(ElementType);
+                particle.SetSurfaceRadius(groundRadius);
             }
+        }
+
+        private Component FindPresentationComponent<TContract>() where TContract : class
+        {
+            Component[] components = GetComponentsInChildren<Component>(true);
+            for (int i = 0; i < components.Length; i++)
+            {
+                Component component = components[i];
+                if (component is TContract)
+                    return component;
+            }
+
+            return null;
         }
 
         private void LogDebug(string message)

@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// 책임 : 전투/보상 gameplay가 월드 픽업, 회복 픽업, 재화 픽업을 생성하고 낙하 위치를 계산하게 한다.
+/// </summary>
 public sealed class LootSpawnService
 {
     private const float FieldHealDropMinDistance = 0.25f;
@@ -36,11 +39,16 @@ public sealed class LootSpawnService
 
         pickup.SetInteractionLocked(true);
 
-        WorldItemDropTweenAnimator animator = pickup.GetComponent<WorldItemDropTweenAnimator>();
-        if (animator == null)
-            animator = pickup.gameObject.AddComponent<WorldItemDropTweenAnimator>();
+        if (!WorldItemDropAnimationPlayback.TryPlayDrop(
+                pickup.gameObject,
+                spawnPosition,
+                landingPosition,
+                () => pickup.SetInteractionLocked(false)))
+        {
+            pickup.transform.position = landingPosition;
+            pickup.SetInteractionLocked(false);
+        }
 
-        animator.PlayDrop(spawnPosition, landingPosition, () => pickup.SetInteractionLocked(false));
         return pickup;
     }
 

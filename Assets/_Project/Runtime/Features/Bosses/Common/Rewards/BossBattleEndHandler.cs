@@ -2,6 +2,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [AddComponentMenu("Capstone/Boss/Boss Battle End Handler")]
+// 책임: 보스 전투 종료 시 보상, 진행도, 탈출 포탈 처리를 한 번만 실행한다.
 public sealed class BossBattleEndHandler : MonoBehaviour
 {
     [Header("Boss")]
@@ -29,15 +30,12 @@ public sealed class BossBattleEndHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        RunProgressCoordinator coordinator = RunProgressCoordinator.EnsureInstance();
-        if (coordinator != null)
-            coordinator.BossRewardsReady += HandleBossRewardsReady;
+        RunProgressPlayback.BossRewardsReady += HandleBossRewardsReady;
     }
 
     private void OnDisable()
     {
-        if (RunProgressCoordinator.Instance != null)
-            RunProgressCoordinator.Instance.BossRewardsReady -= HandleBossRewardsReady;
+        RunProgressPlayback.BossRewardsReady -= HandleBossRewardsReady;
     }
 
     private void HandleBossRewardsReady(BossRewardContext context)

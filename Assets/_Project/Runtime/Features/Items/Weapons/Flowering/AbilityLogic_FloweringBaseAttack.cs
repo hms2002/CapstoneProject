@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityGAS;
 
 [CreateAssetMenu(fileName = "AL_FloweringBaseAttack", menuName = "GAS/Weapon/Flowering/Logic Base Attack")]
+// 책임: Flowering 무기의 기본 공격 콤보, 피해 적용, 오디오/프레젠테이션 요청을 실행한다.
 public sealed class AbilityLogic_FloweringBaseAttack : AbilityLogic
 {
     private const string KeyComboIndex = "FloweringBaseAttack.ComboIndex";
@@ -104,7 +105,7 @@ public sealed class AbilityLogic_FloweringBaseAttack : AbilityLogic
         if (system == null || !attackSound.IsSet)
             return;
 
-        SoundManager.EnsureInstance().Play(attackSound, new SoundPlaybackContext
+        SoundPlaybackUtility.Play(attackSound, new SoundPlaybackContext
         {
             Instigator = system.gameObject,
             Causer = system.gameObject,
@@ -209,7 +210,7 @@ public sealed class AbilityLogic_FloweringBaseAttack : AbilityLogic
                          + perp * (step.sideOffset * sideSign);
 
 #if UNITY_EDITOR
-        if (system.TryGetComponent<UnityGAS.Sample.RealtimeHitboxGizmo2D>(out var gizmo))
+        if (system.TryGetComponent<IRealtimeHitboxGizmo2D>(out var gizmo))
         {
             Color color = comboIndex == 0 ? Color.green : comboIndex == 1 ? Color.yellow : Color.cyan;
             gizmo.RecordBox(center, step.attackPrefab.HitboxSize, 0f, 0.15f, color);

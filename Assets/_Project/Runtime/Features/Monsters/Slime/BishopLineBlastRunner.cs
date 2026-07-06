@@ -51,11 +51,12 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
 
     [SerializeField] private Bishop owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private MonoBehaviour telegraphService;
 
     private readonly List<Vector3> blastPoints = new();
     private readonly List<GameObject> spawnedBlastParticles = new();
     private AttackTelegraphStyle lineStyle;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private Bishop.LineBlastContext currentContext;
     private bool isRunning;
     private bool cancelRequested;
@@ -70,8 +71,7 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
 
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
 
         lineStyle = MakeLineStyle();
     }
@@ -145,7 +145,7 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
     /// <summary>비숍의 긴 직사각형 경고선을 표시합니다.</summary>
     private void ShowLine(Bishop.LineBlastContext context, float duration)
     {
-        if (telegraphService == null) return;
+        if (telegraphPresenter == null) return;
 
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateLine(
             context.LineStart,
@@ -154,15 +154,15 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
             duration,
             lineStyle);
 
-        telegraphService.Show(spec);
+        telegraphPresenter.Show(spec);
     }
 
     /// <summary>현재 표시 중인 긴 경고선을 숨깁니다.</summary>
     private void HideLine()
     {
-        if (telegraphService == null) return;
+        if (telegraphPresenter == null) return;
 
-        telegraphService.HideCurrent();
+        telegraphPresenter.HideCurrent();
     }
 
     /// <summary>경고선 위의 원형 폭발들을 동시에 발생시킵니다.</summary>
@@ -197,7 +197,7 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
 
         float scale = Mathf.Max(0.01f, context.BlastDiameter * config.ScaleMultiplier);
         CombatHitPayload hitPayload = owner.BuildBlastHitPayload(system, spec);
-        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry = null;
+        SharedHitRegistry2D sharedHitRegistry = null;
         bool spawnedTimedHitEffect = false;
 
         for (int i = 0; i < blastPoints.Count; i++)
@@ -207,10 +207,10 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
                 continue;
 
             effect.transform.localScale = Vector3.Scale(effect.transform.localScale, new Vector3(scale, scale, 1f));
-            TimedAnimatedHitEffect2D timedHitEffect = effect.GetComponentInChildren<TimedAnimatedHitEffect2D>(true);
+            ITimedHitEffect2D timedHitEffect = effect.GetComponentInChildren<ITimedHitEffect2D>(true);
             if (timedHitEffect != null && hitPayload != null)
             {
-                sharedHitRegistry ??= new TimedAnimatedHitEffect2D.SharedHitRegistry();
+                sharedHitRegistry ??= new SharedHitRegistry2D();
                 timedHitEffect.Play(context.BlastViewTime, hitPayload, sharedHitRegistry);
                 spawnedTimedHitEffect = true;
                 continue;

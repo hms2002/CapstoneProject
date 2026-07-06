@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityGAS;
 
+// 책임: 런 특수 NPC의 같은 씬 순간이동 연출, 착지 위치 검증, 플레이어 이동 제어를 수행한다.
 public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
 {
     private const float HoleCheckRadius = 0.2f;
@@ -103,8 +104,8 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
         PlayerTargetabilityBlocker targetabilityBlocker = AcquirePlayerTargetabilityBlocker(playerTransform);
         BodyColliderSuppression arrivalColliderSuppression = null;
 
-        SceneFadeTransitionService transitionService = useFade
-            ? SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: allowRuntimeFadeFallback)
+        ISceneFadeTransitionHandle transitionService = useFade
+            ? SceneFadeTransitionPlayback.EnsureInstance(allowRuntimeFallback: allowRuntimeFadeFallback)
             : null;
 
         bool fadeSessionStarted = false;
@@ -276,7 +277,7 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
             rotation: rotation,
             causer: gameObject);
 
-        WorldPresentationRuntime.SpawnVisual(landingStartParticle, presentationContext);
+        WorldPresentationPlayback.SpawnOneShot(landingStartParticle, presentationContext);
     }
 
     private bool WarpPlayer(
@@ -454,6 +455,7 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
         return PlayerRuntimeRegistry.GetPlayerTransform();
     }
 
+    // 책임: 같은 씬 텔레포트 도착 처리 중 플레이어 body collider 비활성 상태를 임시 보관하고 복구한다.
     private sealed class BodyColliderSuppression
     {
         private readonly Collider2D bodyCollider;

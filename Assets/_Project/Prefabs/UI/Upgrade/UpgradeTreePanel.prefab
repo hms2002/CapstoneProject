@@ -686,7 +686,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5022250120612758010}
-        m_TargetAssemblyTypeName: UpgradeTreeUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: UpgradeTreeUI, UI
         m_MethodName: OnClickClose
         m_Mode: 1
         m_Arguments:

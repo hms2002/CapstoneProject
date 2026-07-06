@@ -1,8 +1,13 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// 책임 :
+/// - BossSpeechData 상황 키를 실제 말풍선 UI 출력으로 변환한다.
+/// - gameplay 계층에는 IBossSpeechPlayback 계약만 노출하고, SpeechBubbleComponent 구체 호출은 UI 계층 안에 가둔다.
+/// </summary>
 [DisallowMultipleComponent]
-public sealed class BossSpeechController : MonoBehaviour
+public sealed class BossSpeechController : MonoBehaviour, IBossSpeechPlayback
 {
     [SerializeField] private SpeechBubbleComponent speechBubble;
     [SerializeField] private BossSpeechData speechData;

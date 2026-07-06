@@ -1,5 +1,6 @@
 using System;
 
+// 책임: 업그레이드 노드 잠금 해제 결과를 저장 요청과 UI 갱신 알림으로 연결한다.
 internal sealed class UpgradeProgressSaveService
 {
     private readonly UpgradeProgressService progressService;
@@ -15,7 +16,7 @@ internal sealed class UpgradeProgressSaveService
 
     public void CheckAndUnlockNodes(bool requestSaveOnChange = true)
     {
-        if (progressService == null || GameDataManager.Instance == null)
+        if (progressService == null || !GameDataStore.IsAvailable)
             return;
 
         bool isChanged = progressService.CheckAndUnlockNodes();
@@ -44,6 +45,7 @@ internal sealed class UpgradeProgressSaveService
     }
 }
 
+// 책임: 업그레이드 진행도 변경, 저장 요청, UI 닫힘 이벤트를 외부로 알린다.
 internal sealed class UpgradeNotificationService
 {
     private readonly UnityEngine.Object saveRequester;
@@ -58,7 +60,7 @@ internal sealed class UpgradeNotificationService
 
     public void RequestImmediateSave()
     {
-        GameDataSaveCoordinator.RequestImmediateSave(saveRequester);
+        GameDataStore.RequestImmediateSave(saveRequester);
     }
 
     public void NotifyDataChanged()

@@ -142,8 +142,8 @@ namespace UnityGAS.Sample
             if (prefab == null)
                 return;
 
-            GameObject resolvedPrefab = PresentationAssetProvider.ResolvePrefab(prefab);
-            Object.Instantiate(resolvedPrefab != null ? resolvedPrefab : prefab, position, rotation);
+            GameObject resolvedPrefab = PresentationAssetPlayback.ResolvePrefab(prefab);
+            Object.Instantiate(resolvedPrefab, position, rotation);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 
+// 책임: 업그레이드 구매 완료 후 효과 적용, 시네마틱 요청, 저장/갱신 알림을 조율한다.
 internal sealed class UpgradePurchaseCompletionService
 {
     private readonly Func<PlayerInteractor2D> resolveCurrentPlayer;
@@ -37,8 +38,7 @@ internal sealed class UpgradePurchaseCompletionService
         QueueUpgradeCinematics(node);
         RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
 
-        if (RewardDisplayService.Instance != null)
-            RewardDisplayService.Instance.ShowUpgradeReward(node);
+        RewardDisplayPlayback.ShowUpgradeReward(node);
 
         checkAndUnlockNodesAfterPurchase();
         notifications?.RequestImmediateSave();

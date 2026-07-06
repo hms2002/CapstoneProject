@@ -7,11 +7,11 @@ using UnityEngine.SceneManagement;
 
 namespace CapstoneAudio
 {
+    /// <summary>
+    /// 책임: 카탈로그 기반 사운드 재생, 루프 핸들 관리, 오디오 풀링, 볼륨/피치 런타임 제어를 총괄한다.
+    /// </summary>
     public sealed class SoundManager : MonoBehaviour
     {
-        // 이 클래스의 책임:
-        // 카탈로그 기반 사운드 재생, 루프 핸들 관리, 오디오 풀링, 볼륨/피치 런타임 제어를 총괄한다.
-
         /// <summary>
         /// 책임:
         /// 사용자 볼륨 설정과 별개로 런타임 ducking을 다시 계산할 수 있도록 AudioSource별 원본 재생 정보를 보관한다.
@@ -34,6 +34,7 @@ namespace CapstoneAudio
                 !string.IsNullOrWhiteSpace(SoundKey);
         }
 
+        // 책임: 같은 소스에서 같은 one-shot 사운드가 과도하게 반복되는 것을 억제할 key를 제공한다.
         private readonly struct SameSourceOneShotKey : IEquatable<SameSourceOneShotKey>
         {
             public SameSourceOneShotKey(string soundKey, int sourceId)
@@ -68,12 +69,60 @@ namespace CapstoneAudio
             }
         }
 
+        /// <summary>
+        /// 책임: Core의 SoundPlaybackUtility 요청을 실제 SoundManager 인스턴스 재생으로 연결한다.
+        /// </summary>
+        private sealed class SoundManagerPlaybackBackend : ISoundPlaybackBackend
+        {
+            public AudioHandle Play(in SoundRef soundRef, in SoundPlaybackContext context)
+            {
+                return EnsureInstance().Play(soundRef, context);
+            }
+
+            public AudioHandle PlayTrackedOneShot(in SoundRef soundRef, in SoundPlaybackContext context)
+            {
+                return EnsureInstance().PlayTrackedOneShot(soundRef, context);
+            }
+
+            public void PlayMusic(in SoundRef soundRef)
+            {
+                EnsureInstance().PlayMusic(soundRef);
+            }
+
+            public void StopMusic()
+            {
+                EnsureInstance().StopMusic();
+            }
+
+            public void DuckCombatSfx(float targetVolume, float fadeSeconds)
+            {
+                EnsureInstance().DuckCombatSfx(targetVolume, fadeSeconds);
+            }
+
+            public bool IsPlaying(AudioHandle handle)
+            {
+                return EnsureInstance().IsPlaying(handle);
+            }
+
+            public void Stop(AudioHandle handle, float fadeOutDuration = 0f)
+            {
+                EnsureInstance().Stop(handle, fadeOutDuration);
+            }
+
+            public void SetPitch(AudioHandle handle, float pitch)
+            {
+                EnsureInstance().SetPitch(handle, pitch);
+            }
+        }
+
         public const string DefaultCatalogResourcesPath = "Audio/DefaultAudioCatalog";
         private const string MasterVolumePrefKey = "settings.audio.master";
         private const string MusicVolumePrefKey = "settings.audio.music";
         private const string SfxVolumePrefKey = "settings.audio.sfx";
         private const float SameSourceOneShotSuppressSeconds = 0.05f;
         private const int SameSourceOneShotPruneThreshold = 256;
+
+        private static readonly ISoundPlaybackBackend s_playbackBackend = new SoundManagerPlaybackBackend();
 
         public static SoundManager Instance { get; private set; }
 
@@ -121,9 +170,16 @@ namespace CapstoneAudio
         private float combatSfxDuckVolume = 1f;
         private Tween combatSfxDuckTween;
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void RegisterPlaybackBackend()
+        {
+            SoundPlaybackUtility.RegisterBackend(s_playbackBackend);
+        }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Bootstrap()
         {
+            RegisterPlaybackBackend();
             EnsureInstance();
         }
 

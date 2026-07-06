@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityGAS;
 
 [CreateAssetMenu(fileName = "AL_ApprenticeHeroSwordAttack", menuName = "GAS/Weapon/Apprentice Hero Sword/Logic Attack")]
+// 책임: 수습 용사 검 기본 공격 콤보 입력 상태, 히트박스, 연출 타이밍을 실행한다.
 public sealed class AbilityLogic_ApprenticeHeroSwordAttack : AbilityLogic
 {
     private const string KeyComboIndex = "ApprenticeHeroSword.Attack.ComboIndex";
@@ -77,7 +78,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordAttack : AbilityLogic
                          + perp * (step.sideOffset * sideSign);
 
 #if UNITY_EDITOR
-        if (system.TryGetComponent<UnityGAS.Sample.RealtimeHitboxGizmo2D>(out var gizmo))
+        if (system.TryGetComponent<IRealtimeHitboxGizmo2D>(out var gizmo))
         {
             Color color = comboIndex == 0 ? Color.green : comboIndex == 1 ? Color.yellow : Color.cyan;
             gizmo.RecordBox(center, step.hitbox.HitboxSize, 0f, 0.15f, color);

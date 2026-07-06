@@ -1,0 +1,20 @@
+{
+    "name": "Ink.Demos.Basic.Editor",
+    "rootNamespace": "",
+    "references": [
+        "Ink-Libraries",
+        "InkEditor",
+        "Ink.Demos.Basic"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

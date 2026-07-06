@@ -25,6 +25,7 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
     private AbilityLogic_GoblinGunnerShot Logic => shotAbility != null ? shotAbility.logic as AbilityLogic_GoblinGunnerShot : null;
     public AbilityLogic_GoblinGunnerShot ShotLogic => Logic;
 
+    // 책임: 고블린 총병 투사체 발사에 필요한 타겟, 방향, 사거리, 피해 정보를 보관한다.
     public readonly struct ShotContext
     {
         public readonly GameObject Target;
@@ -260,9 +261,10 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
 {
     [SerializeField] private GoblinGunner owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private MonoBehaviour telegraphService;
 
     private AttackTelegraphStyle warningStyle;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private bool isRunning;
     private bool cancelRequested;
     private float nextWallClipProbeLogTime;
@@ -275,8 +277,7 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
             owner = GetComponent<GoblinGunner>();
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
         warningStyle = CreateWarningStyle();
     }
 
@@ -368,18 +369,18 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
 
     private void ShowWarning(GoblinGunner.ShotContext context, float warningSeconds)
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
-        telegraphService.Show(CreateWarningSpec(context, warningSeconds));
+        telegraphPresenter.Show(CreateWarningSpec(context, warningSeconds));
     }
 
     private void UpdateWarning(GoblinGunner.ShotContext context, float warningSeconds)
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
-        telegraphService.UpdateCurrentGeometry(CreateWarningSpec(context, warningSeconds));
+        telegraphPresenter.UpdateCurrentGeometry(CreateWarningSpec(context, warningSeconds));
     }
 
     private AttackTelegraphSpec CreateWarningSpec(GoblinGunner.ShotContext context, float warningSeconds)
@@ -431,7 +432,7 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
 
     private void HideWarning()
     {
-        telegraphService?.HideCurrent();
+        telegraphPresenter?.HideCurrent();
     }
 
     /// <summary>Runner가 직접 데이터를 소유하지 않고 현재 AD에 연결된 사격 AL 데이터를 조회한다.</summary>

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 /// - 플레이어의 1회용 아이템 4칸 상태를 HUD 슬롯 UI에 반영한다.
 /// - 플레이어 등록/해제와 consumable 인벤토리 변경에 반응해 아이콘 표시를 동기화한다.
 /// </summary>
-public class PlayerConsumableHUD2D : MonoBehaviour
+public class PlayerConsumableHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
 {
     [System.Serializable]
     public class ConsumableSlotUI

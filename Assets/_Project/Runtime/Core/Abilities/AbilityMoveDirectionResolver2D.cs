@@ -14,9 +14,9 @@ namespace UnityGAS
             if (owner == null)
                 return fallbackDirection;
 
-            var intent = owner.GetComponent<PlayerIntentInput2D>();
-            if (intent != null && intent.MoveInput.sqrMagnitude > 0.0001f)
-                return intent.MoveInput.normalized;
+            var intent = owner.GetComponent<IAbilityMoveInputSource2D>();
+            if (intent != null && intent.AbilityMoveInput.sqrMagnitude > 0.0001f)
+                return intent.AbilityMoveInput.normalized;
 
             return AbilityAimResolver2D.Resolve(owner, fallbackDirection);
         }

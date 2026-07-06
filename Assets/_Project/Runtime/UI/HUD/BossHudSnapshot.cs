@@ -68,7 +68,7 @@ public struct BossHudSlotSnapshot
     }
 
     public static BossHudSlotSnapshot FromBoss(
-        BossControllerBase boss,
+        IBossHudSource boss,
         string displayNameOverride,
         bool isDefeated,
         BossHudHealthBarTheme healthBarTheme)
@@ -106,7 +106,7 @@ public struct BossHudSlotSnapshot
 public static class BossHudValueUtility
 {
     public static BossHudChannelSnapshot BuildBossChannel(
-        BossControllerBase boss,
+        IBossHudSource boss,
         string label,
         bool showGroggyFallback)
     {
@@ -118,7 +118,7 @@ public static class BossHudValueUtility
         {
             hasGroggyGauge = true;
             groggyRatio = 0f;
-            isGroggy = boss.HasGroggyTag();
+            isGroggy = boss.HasBossHudGroggyTag;
         }
 
         return new BossHudChannelSnapshot(
@@ -129,7 +129,7 @@ public static class BossHudValueUtility
             isGroggy);
     }
 
-    public static bool TryGetBossGroggyRatio(BossControllerBase boss, out float ratio, out bool isGroggy)
+    public static bool TryGetBossGroggyRatio(IBossHudSource boss, out float ratio, out bool isGroggy)
     {
         ratio = 0f;
         isGroggy = false;
@@ -137,16 +137,20 @@ public static class BossHudValueUtility
         if (boss == null)
             return false;
 
-        StaggerGaugeSystem staggerGaugeSystem = boss.GetComponent<StaggerGaugeSystem>();
+        Component sourceComponent = boss.HudSourceComponent;
+        if (sourceComponent == null)
+            return false;
+
+        StaggerGaugeSystem staggerGaugeSystem = sourceComponent.GetComponent<StaggerGaugeSystem>();
         if (staggerGaugeSystem == null)
             return false;
 
-        bool hasGroggyTag = boss.HasGroggyTag();
-        GameplayEffectRunner effectRunner = boss.GetComponent<GameplayEffectRunner>();
+        bool hasGroggyTag = boss.HasBossHudGroggyTag;
+        GameplayEffectRunner effectRunner = sourceComponent.GetComponent<GameplayEffectRunner>();
         GameplayEffect groggyEffect = staggerGaugeSystem.staggeredEffect;
         if (effectRunner != null && groggyEffect != null && groggyEffect.duration > 0f)
         {
-            float remaining = effectRunner.GetRemainingTime(groggyEffect, boss.gameObject);
+            float remaining = effectRunner.GetRemainingTime(groggyEffect, sourceComponent.gameObject);
             if (remaining > 0.001f)
             {
                 ratio = 1f - Mathf.Clamp01(remaining / groggyEffect.duration);
@@ -169,17 +173,19 @@ public static class BossHudValueUtility
         return true;
     }
 
-    public static string ResolveBossDisplayName(BossControllerBase boss, string displayNameOverride)
+    public static string ResolveBossDisplayName(IBossHudSource boss, string displayNameOverride)
     {
         if (boss == null)
             return string.Empty;
 
         string resolvedBossName = string.IsNullOrWhiteSpace(displayNameOverride)
-            ? boss.EnemyName
+            ? boss.BossHudDisplayName
             : displayNameOverride;
 
         if (string.IsNullOrWhiteSpace(resolvedBossName))
-            resolvedBossName = boss.gameObject.name;
+            resolvedBossName = boss.HudSourceComponent != null
+                ? boss.HudSourceComponent.gameObject.name
+                : string.Empty;
 
         return resolvedBossName;
     }

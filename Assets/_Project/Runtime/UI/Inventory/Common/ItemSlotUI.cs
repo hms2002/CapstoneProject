@@ -1,28 +1,8 @@
 using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 using System.Collections;
 using TMPro;
-
-public interface IItemContainer
-{
-    int SlotCount { get; }
-    event Action OnChanged;
-    ScriptableObject Get(int index);
-    bool CanPlace(ScriptableObject item, int index, int ignoreIndex = -1);
-    bool TrySet(int index, ScriptableObject item);
-    bool TrySwap(int a, int b);
-}
-public interface IRelicLevelProvider
-{
-    bool TryGetRelicLevel(int index, out int level);
-}
-
-public interface IRelicSlotReceiver
-{
-    bool TrySetRelicWithLevel(int index, RelicDefinition relic, int level);
-}
 
 /// <summary>
 /// 책임 : 개별 인벤토리 슬롯 UI를 표시하고 drag, drop, quick move 입력을 컨테이너 동작으로 변환한다.

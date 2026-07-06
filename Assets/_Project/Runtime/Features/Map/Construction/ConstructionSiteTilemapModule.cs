@@ -4,6 +4,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 
 [DisallowMultipleComponent]
+/// <summary>
+/// 책임 : 공사 완료 상태에 맞춰 타일맵/경로 탐색/연결 문 상태를 동기화하는 맵 모듈이다.
+/// </summary>
 public sealed class ConstructionSiteTilemapModule : MonoBehaviour
 {
     [Header("Stable ID")]
@@ -37,7 +40,7 @@ public sealed class ConstructionSiteTilemapModule : MonoBehaviour
     {
         if (!applySavedStateOnEnable ||
             string.IsNullOrWhiteSpace(constructionId) ||
-            GameDataManager.Instance == null)
+            !GameDataStore.IsAvailable)
             return;
 
         ApplyState(RunSpecialNpcConstructionProgress.IsMarkedCompleted(constructionId));
@@ -103,8 +106,8 @@ public sealed class ConstructionSiteTilemapModule : MonoBehaviour
             return;
         }
 
-        if (saveShortcutOnCompletion && ShortcutProgressService.Instance != null)
-            ShortcutProgressService.Instance.UnlockShortcut(targetDoor.mapID, targetDoor.doorID);
+        if (saveShortcutOnCompletion)
+            ShortcutProgressStore.UnlockShortcut(targetDoor.mapID, targetDoor.doorID, instigator != null ? instigator : gameObject);
     }
 
     private void SyncPathfinders(bool completed)

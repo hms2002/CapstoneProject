@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class SpeechBubbleComponent : MonoBehaviour
+/// <summary>
+/// 책임 :
+/// - 월드 말풍선 prefab pool, typing, 위치 보정, 병렬 말풍선 layout을 관리한다.
+/// - gameplay 호출부에는 ISpeechBubblePlayback 계약으로만 노출되는 UI 구현체다.
+/// </summary>
+public class SpeechBubbleComponent : MonoBehaviour, ISpeechBubblePlayback
 {
     private const int DefaultPoolCapacity = 2;
     private const int MaxPooledBubbles = 8;
@@ -53,6 +58,8 @@ public class SpeechBubbleComponent : MonoBehaviour
     private SpeechBubble activeBubble;
     private readonly List<SpeechBubble> parallelBubbles = new List<SpeechBubble>();
     private readonly List<BubblePlacementCandidate> placementObstacles = new List<BubblePlacementCandidate>();
+
+    public Transform BubbleTransform => transform;
 
     private void Awake()
     {
@@ -761,6 +768,7 @@ public class SpeechBubbleComponent : MonoBehaviour
         return penalty;
     }
 
+    // 책임: 말풍선 단일 배치 후보의 꼬리 방향, bounds, 목표 위치, 점수를 보관한다.
     private struct BubblePlacementCandidate
     {
         public SpeechBubble Bubble { get; }
@@ -804,6 +812,7 @@ public class SpeechBubbleComponent : MonoBehaviour
         }
     }
 
+    // 책임: 활성/병렬 말풍선 후보 조합과 최종 배치 점수를 보관한다.
     private struct PairPlacementResult
     {
         public BubblePlacementCandidate ActiveCandidate { get; }

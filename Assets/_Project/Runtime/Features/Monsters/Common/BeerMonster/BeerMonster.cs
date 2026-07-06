@@ -36,6 +36,7 @@ public class BeerMonster : Mob, IMobAttackDecisionSource
     private AbilityLogic_BeerMonsterShot Logic => shotAbility != null ? shotAbility.logic as AbilityLogic_BeerMonsterShot : null;
     public AbilityLogic_BeerMonsterShot ShotLogic => Logic;
 
+    // 책임: 맥주 몬스터 투사체 발사에 필요한 타겟, 방향, 사거리, 피해 정보를 보관한다.
     public readonly struct ShotContext
     {
         public readonly GameObject Target;
@@ -266,9 +267,10 @@ public sealed partial class BeerMonsterShotRunner : MonoBehaviour, IMobPatternRu
 {
     [SerializeField] private BeerMonster owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
-    [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private MonoBehaviour telegraphService;
 
     private AttackTelegraphStyle warningStyle;
+    private IAttackTelegraphPresenter telegraphPresenter;
     private bool isRunning;
     private bool cancelRequested;
     private float nextWallClipProbeLogTime;
@@ -281,8 +283,7 @@ public sealed partial class BeerMonsterShotRunner : MonoBehaviour, IMobPatternRu
             owner = GetComponent<BeerMonster>();
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
+        telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(telegraphService, this);
         warningStyle = CreateWarningStyle();
     }
 
@@ -374,18 +375,18 @@ public sealed partial class BeerMonsterShotRunner : MonoBehaviour, IMobPatternRu
 
     private void ShowWarning(BeerMonster.ShotContext context, float warningSeconds)
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
-        telegraphService.Show(CreateWarningSpec(context, warningSeconds));
+        telegraphPresenter.Show(CreateWarningSpec(context, warningSeconds));
     }
 
     private void UpdateWarning(BeerMonster.ShotContext context, float warningSeconds)
     {
-        if (telegraphService == null)
+        if (telegraphPresenter == null)
             return;
 
-        telegraphService.UpdateCurrentGeometry(CreateWarningSpec(context, warningSeconds));
+        telegraphPresenter.UpdateCurrentGeometry(CreateWarningSpec(context, warningSeconds));
     }
 
     private AttackTelegraphSpec CreateWarningSpec(BeerMonster.ShotContext context, float warningSeconds)
@@ -437,7 +438,7 @@ public sealed partial class BeerMonsterShotRunner : MonoBehaviour, IMobPatternRu
 
     private void HideWarning()
     {
-        telegraphService?.HideCurrent();
+        telegraphPresenter?.HideCurrent();
     }
 
     /// <summary>Runner가 직접 데이터를 소유하지 않고 현재 AD에 연결된 맥주 몬스터 사격 AL 데이터를 조회한다.</summary>

@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 
 /// <summary>
-/// Tracks all active world item pickups.
-/// Used by InventoryScreen to show nearby loot while the inventory UI is open.
+/// 책임 : 현재 활성화된 월드 아이템 픽업 목록을 보관해 inventory UI가 근처 loot를 조회할 수 있게 한다.
 /// </summary>
 public static class WorldItemRegistry
 {
