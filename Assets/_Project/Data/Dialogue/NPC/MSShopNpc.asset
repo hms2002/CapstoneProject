@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ca3e3429f4d51841b586ade79545d41, type: 3}
+  m_Name: MSShopNpc
+  m_EditorClassIdentifier: 
+  id: 1001
+  npcName: "\uC0C1\uC778"
+  isBoss: 0
+  primaryInk: {fileID: 4900000, guid: ecf743cc4771eb243b241e9b1fe6a1c3, type: 3}
+  bossEncounterInk: {fileID: 0}
+  bossEncounterDialogues: []
+  dialogueTheme: {fileID: 11400000, guid: 2df553bfa70756f4c8272d84231479aa, type: 2}
+  affectionRewards: []
+  spriteLibraryAsset: {fileID: 7108339969198208228, guid: 738261c1c46adaa4a9eba68347b79fa5, type: 3}
+  emoteOffset: {x: 75, y: 100}

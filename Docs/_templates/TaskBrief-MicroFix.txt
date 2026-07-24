@@ -1,0 +1,44 @@
+Mode: Micro-fix
+Risk: Low
+Target Type: [Leaf / Documentation]
+
+Task:
+[작고 명확한 문제]를 최소 수정한다.
+
+Goal:
+[완료 시 바로 확인 가능한 동작/문서 상태]
+
+Intent:
+[왜 작은 수정으로 충분한지, 건드리면 안 되는 큰 구조]
+
+Context:
+[증상, 관련 파일, 실패한 명령, 최근 변경]
+
+Allowed:
+- Make only the local low-risk edit required for this issue.
+- [수정 허용 파일/폴더/시스템]
+
+Forbidden:
+- Public API changes.
+- Broad refactors.
+- Out-of-scope fixes.
+- scene/prefab/SO/serialized field changes unless explicitly approved.
+- Architecture/Contracts changes unless explicitly approved.
+- unrelated cleanup.
+- Claiming compile, Unity import, Play Mode, or build success unless actually run.
+
+Done Criteria:
+- [문제가 해결되었음을 보여주는 조건]
+- [변경 범위가 작게 유지되었음을 보여주는 조건]
+- [검증하지 못한 항목 보고]
+
+Verification:
+- Static checks: [rg/git diff/static analysis/doc link checks]
+- Unity checks: [compile/batchmode/Play Mode/manual check, or Not Verified]
+- Report unexecuted checks as Not Verified.
+
+Assumptions:
+- [Codex가 멋대로 추정하면 안 되는 누락 정보]
+
+Out-of-scope:
+- Report out-of-scope findings under Suggested Later instead of fixing them.

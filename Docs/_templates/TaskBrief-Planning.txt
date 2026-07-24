@@ -1,0 +1,49 @@
+Mode: Planning
+Risk: Medium
+Target Type: [Core / Framework / Leaf / Documentation]
+Do not edit files.
+
+Task:
+[목표]를 구현하기 위한 계획을 세운다.
+
+Goal:
+[계획이 완료되면 구현자가 결정 없이 실행할 수 있어야 하는 것]
+
+Intent:
+[왜 이 계획이 필요한지, 지켜야 할 구조 방향, 피해야 할 shortcut]
+
+Context:
+[증상, 관련 scene/prefab/asset/script/docs, 최근 결정, 조사 결과]
+
+Allowed:
+- Read relevant files and routed docs.
+- Run non-mutating static inspection commands.
+- Produce a phased implementation plan.
+
+Forbidden:
+- File edits.
+- Implementation.
+- Out-of-scope fixes.
+- scene/prefab/SO/serialized field changes unless explicitly approved.
+- Architecture/Contracts changes unless explicitly approved.
+- unrelated cleanup.
+
+Output:
+- Change scope.
+- Forbidden scope.
+- Expected changed files.
+- Risk level.
+- Verification method.
+- Rollback method.
+- Questions required before implementation.
+
+Verification:
+- Static checks: [rg/git diff/static analysis/doc link checks]
+- Unity compile/batchmode/Play Mode: not run unless explicitly required and allowed.
+- Report unexecuted checks as Not Verified.
+
+Assumptions:
+- [Codex가 멋대로 추정하면 안 되는 누락 정보]
+
+Out-of-scope:
+- Report out-of-scope findings under Suggested Later instead of fixing them.

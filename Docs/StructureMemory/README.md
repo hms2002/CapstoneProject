@@ -7,7 +7,7 @@ last_reviewed: 2026-05-14
 
 # Structure Memory
 
-`StructureMemory` documents are feature-level maps for fast context reconstruction. They are not source-of-truth architecture or contract documents.
+`StructureMemory` documents are feature-level current-structure maps for fast context reconstruction. They are not source-of-truth architecture or contract documents.
 
 Use these documents when a future task needs to quickly understand an existing flow before editing code. For official rules, prefer `Docs/Contracts/` and `Docs/Architecture/`.
 
@@ -23,11 +23,15 @@ Use these documents when a future task needs to quickly understand an existing f
 Each feature document should include:
 
 - Purpose
+- last_verified
+- source_of_truth
 - Current Structure
 - Key Files
 - Ownership And Lifecycle
 - Extension Entry Points
 - Known Pitfalls
+- Recent Structural Changes
+- Recovery Notes
 - Promotion Candidate
 
 ## Boundaries
@@ -35,10 +39,12 @@ Each feature document should include:
 - Do not record every task diff here.
 - Do not use this folder for unverified guesses.
 - Do not treat this folder as more authoritative than `Contracts` or `Architecture`.
+- Do not mass-update existing StructureMemory files just to add new template fields. Add missing fields when a document is already being updated for a related task.
 - If a structure becomes stable enough to guide future implementations, propose promoting it to `Architecture` or `Contracts`.
 
 ## Current Documents
 
+- [Audio Catalog Runtime Tuning](./AudioCatalogRuntimeTuning.md)
 - [Script System Map](./ScriptSystemMap.md)
 - [Script Systems](./ScriptSystems/README.md)
 - [UI Flow Input Blocking](./UIFlowInputBlocking.md)

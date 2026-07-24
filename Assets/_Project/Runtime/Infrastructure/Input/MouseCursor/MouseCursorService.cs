@@ -1,0 +1,915 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+public enum MouseCursorDomain
+{
+    Combat = 0,
+    Inventory = 1,
+    NpcUi = 2,
+    SystemUi = 3,
+    Encyclopedia = 4
+}
+
+public enum MouseCursorVariant
+{
+    Default = 0,
+    Interactable = 1,
+    Pressed = 2,
+    Dragging = 3,
+    InteractablePressed = 4
+}
+
+[Serializable]
+public sealed class MouseCursorSpriteDefinition
+{
+    public Sprite sprite;
+    public Vector2 hotspotPixels;
+    [Min(0.1f)] public float scale = 1f;
+}
+
+[Serializable]
+public sealed class MouseCursorDomainDefinition
+{
+    public MouseCursorSpriteDefinition defaultCursor = new MouseCursorSpriteDefinition();
+    public MouseCursorSpriteDefinition interactableCursor = new MouseCursorSpriteDefinition();
+    public MouseCursorSpriteDefinition pressedCursor = new MouseCursorSpriteDefinition();
+    public MouseCursorSpriteDefinition draggingCursor = new MouseCursorSpriteDefinition();
+
+    public MouseCursorSpriteDefinition GetDefinition(MouseCursorVariant variant)
+    {
+        return variant switch
+        {
+            MouseCursorVariant.Interactable => interactableCursor,
+            MouseCursorVariant.Pressed => pressedCursor,
+            MouseCursorVariant.InteractablePressed => pressedCursor,
+            MouseCursorVariant.Dragging => draggingCursor,
+            _ => defaultCursor
+        };
+    }
+}
+
+[Serializable]
+public sealed class MouseCursorEncyclopediaDomainDefinition
+{
+    public MouseCursorSpriteDefinition defaultCursor = new MouseCursorSpriteDefinition();
+    public MouseCursorSpriteDefinition defaultPressedCursor = new MouseCursorSpriteDefinition();
+    public MouseCursorSpriteDefinition itemSlotCursor = new MouseCursorSpriteDefinition();
+    public MouseCursorSpriteDefinition itemSlotPressedCursor = new MouseCursorSpriteDefinition();
+
+    public MouseCursorSpriteDefinition GetDefinition(MouseCursorVariant variant)
+    {
+        return variant switch
+        {
+            MouseCursorVariant.Interactable => itemSlotCursor,
+            MouseCursorVariant.Pressed => defaultPressedCursor,
+            MouseCursorVariant.InteractablePressed => itemSlotPressedCursor,
+            _ => defaultCursor
+        };
+    }
+}
+
+[DefaultExecutionOrder(1000)]
+[DisallowMultipleComponent]
+// Responsibility: resolves the active cursor domain/variant and presents a safe software or hardware cursor at runtime.
+public sealed class MouseCursorService : MonoBehaviour
+{
+    private const string DefaultThemeResourcePath = "DefaultMouseCursorTheme";
+    private const int DialogueDomainPriority = 50;
+
+    private sealed class DomainRequest
+    {
+        public UnityEngine.Object owner;
+        public MouseCursorDomain domain;
+        public int priority;
+        public long order;
+    }
+
+    private sealed class OwnerFlag
+    {
+        public UnityEngine.Object owner;
+    }
+
+    public static MouseCursorService Instance { get; private set; }
+    private static bool bootstrapCreationRequested;
+
+    [Header("Theme")]
+    [SerializeField] private MouseCursorTheme themeOverride;
+
+    [Header("Authoring")]
+    [SerializeField] private Canvas authoredCursorCanvas;
+    [SerializeField] private RectTransform authoredCursorRect;
+    [SerializeField] private Image authoredCursorImage;
+
+    [Header("Software Cursor Presentation")]
+    [SerializeField] private bool hideSystemCursorWhileSpriteActive = true;
+    [SerializeField] private bool preferHardwareCursorWhenAvailable = true;
+    [SerializeField] private bool preferHardwareCursorInExclusiveFullscreen = true;
+    [SerializeField] private bool keepSystemCursorVisibleWhenUsingSoftwareCursor;
+    [SerializeField] private bool keepSystemCursorVisibleInExclusiveFullscreenFallback;
+    [SerializeField] private int overlaySortingOrder = short.MaxValue;
+    [SerializeField] private bool scaleWithScreenHeight = true;
+    [SerializeField, Min(1f)] private float referenceScreenHeight = 1080f;
+    [SerializeField, Min(0.1f)] private float minResolutionScale = 0.1f;
+    [SerializeField, Min(0.1f)] private float maxResolutionScale = 2.5f;
+
+    private readonly Dictionary<int, DomainRequest> domainRequests = new Dictionary<int, DomainRequest>();
+    private readonly Dictionary<int, OwnerFlag> interactableOwners = new Dictionary<int, OwnerFlag>();
+    private readonly Dictionary<int, OwnerFlag> draggingOwners = new Dictionary<int, OwnerFlag>();
+    private readonly Dictionary<int, OwnerFlag> hiddenOwners = new Dictionary<int, OwnerFlag>();
+    private readonly Dictionary<int, Texture2D> generatedCursorTextures = new Dictionary<int, Texture2D>();
+    private readonly HashSet<int> unreadableSpriteWarnings = new HashSet<int>();
+    private readonly List<RaycastResult> uiRaycastResults = new List<RaycastResult>(8);
+
+    private Canvas cursorCanvas;
+    private RectTransform cursorRect;
+    private Image cursorImage;
+    private EventSystem pointerEventSystem;
+    private PointerEventData pointerEventData;
+    private long nextOrder;
+    private bool isBootstrapInstance;
+    private bool defaultThemeLoadAttempted;
+    private bool defaultThemeMissingLogged;
+    private MouseCursorTheme loadedTheme;
+    private Texture2D appliedCursorTexture;
+    private Vector2 appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
+    private MouseCursorDomain currentDomain = MouseCursorDomain.Combat;
+    private MouseCursorVariant currentVariant = MouseCursorVariant.Default;
+    private int lastScreenWidth = -1;
+    private int lastScreenHeight = -1;
+    private FullScreenMode lastFullScreenMode;
+    private bool hasCapturedDisplayState;
+    private bool forceCursorTextureReapply;
+    private int displayTransitionRecoveryFrames;
+
+    public MouseCursorDomain CurrentDomain => currentDomain;
+    public MouseCursorVariant CurrentVariant => currentVariant;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void Bootstrap()
+    {
+        bootstrapCreationRequested = true;
+        EnsureInstance(markBootstrap: false);
+        bootstrapCreationRequested = false;
+    }
+
+    public static MouseCursorService EnsureInstance()
+    {
+        return EnsureInstance(markBootstrap: false);
+    }
+
+    private static MouseCursorService EnsureInstance(bool markBootstrap)
+    {
+        if (Instance != null)
+            return Instance;
+
+        MouseCursorService existing = FindFirstObjectByType<MouseCursorService>();
+        if (existing != null)
+            return existing;
+
+        GameObject root = new GameObject(nameof(MouseCursorService));
+        MouseCursorService service = root.AddComponent<MouseCursorService>();
+        service.isBootstrapInstance = markBootstrap;
+        return service;
+    }
+
+    private void Awake()
+    {
+        if (bootstrapCreationRequested)
+            isBootstrapInstance = true;
+
+        if (Instance != null && Instance != this)
+        {
+            if (Instance.isBootstrapInstance && !isBootstrapInstance)
+            {
+                Destroy(Instance.gameObject);
+                Instance = null;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
+        }
+
+        Instance = this;
+        MarkPersistent();
+        EnsureThemeLoaded();
+    }
+
+    private void LateUpdate()
+    {
+        EnsureThemeLoaded();
+        PruneDeadOwners();
+        RefreshDisplayState();
+        ApplyResolvedCursor();
+        UpdateCursorPosition();
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+
+        RestoreSystemCursor();
+        ReleaseGeneratedTextures();
+    }
+
+    private void MarkPersistent()
+    {
+        Transform persistentRoot = transform.root;
+        if (persistentRoot == null)
+            return;
+
+        if (persistentRoot.parent != null)
+            return;
+
+        DontDestroyOnLoad(persistentRoot.gameObject);
+    }
+
+    public void SetDomain(UnityEngine.Object owner, MouseCursorDomain domain, int priority = 0)
+    {
+        if (owner == null)
+            return;
+
+        int ownerId = owner.GetInstanceID();
+        if (!domainRequests.TryGetValue(ownerId, out DomainRequest request))
+        {
+            request = new DomainRequest();
+            domainRequests.Add(ownerId, request);
+        }
+
+        request.owner = owner;
+        request.domain = domain;
+        request.priority = priority;
+        request.order = ++nextOrder;
+    }
+
+    public void ClearDomain(UnityEngine.Object owner)
+    {
+        if (owner == null)
+            return;
+
+        domainRequests.Remove(owner.GetInstanceID());
+    }
+
+    public void SetInteractable(UnityEngine.Object owner, bool active)
+    {
+        SetOwnerFlag(interactableOwners, owner, active);
+    }
+
+    public void SetDragging(UnityEngine.Object owner, bool active)
+    {
+        SetOwnerFlag(draggingOwners, owner, active);
+    }
+
+    public void SetHidden(UnityEngine.Object owner, bool hidden)
+    {
+        SetOwnerFlag(hiddenOwners, owner, hidden);
+    }
+
+    public void NotifyDisplayConfigurationChanged()
+    {
+        displayTransitionRecoveryFrames = Mathf.Max(displayTransitionRecoveryFrames, 60);
+        ClearSystemCursorTexture();
+        forceCursorTextureReapply = true;
+        Cursor.visible = true;
+    }
+
+    private void SetOwnerFlag(Dictionary<int, OwnerFlag> owners, UnityEngine.Object owner, bool active)
+    {
+        if (owner == null)
+            return;
+
+        int ownerId = owner.GetInstanceID();
+        if (!active)
+        {
+            owners.Remove(ownerId);
+            return;
+        }
+
+        if (!owners.TryGetValue(ownerId, out OwnerFlag ownerFlag))
+        {
+            ownerFlag = new OwnerFlag();
+            owners.Add(ownerId, ownerFlag);
+        }
+
+        ownerFlag.owner = owner;
+    }
+
+    private void EnsureRuntimePresentation()
+    {
+        if (cursorCanvas != null && cursorRect != null && cursorImage != null)
+            return;
+
+        if (TryBindAuthoredRuntimePresentation())
+            return;
+
+        Transform canvasTransform = transform.Find("MouseCursorCanvas");
+        if (canvasTransform == null)
+        {
+            RuntimePresentationFallbackAudit.Record(
+                this,
+                "Mouse cursor canvas fallback",
+                "an authored cursor canvas/image under the cursor service prefab or global UI root");
+
+            GameObject canvasObject = new GameObject("MouseCursorCanvas", typeof(RectTransform), typeof(Canvas));
+            canvasTransform = canvasObject.transform;
+            canvasTransform.SetParent(transform, false);
+        }
+
+        Canvas canvas = canvasTransform.GetComponent<Canvas>();
+        if (canvas == null)
+            canvas = canvasTransform.gameObject.AddComponent<Canvas>();
+
+        cursorCanvas = canvas;
+        cursorCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        cursorCanvas.overrideSorting = true;
+        cursorCanvas.sortingOrder = overlaySortingOrder;
+
+        Transform imageTransform = canvasTransform.Find("CursorImage");
+        if (imageTransform == null)
+        {
+            GameObject imageObject = new GameObject("CursorImage", typeof(RectTransform), typeof(Image));
+            imageTransform = imageObject.transform;
+            imageTransform.SetParent(canvasTransform, false);
+        }
+
+        cursorRect = imageTransform as RectTransform;
+        cursorImage = imageTransform.GetComponent<Image>();
+        if (cursorImage != null)
+            cursorImage.raycastTarget = false;
+
+        if (cursorRect != null)
+        {
+            cursorRect.anchorMin = Vector2.zero;
+            cursorRect.anchorMax = Vector2.zero;
+            cursorRect.anchoredPosition = Vector2.zero;
+        }
+    }
+
+    private bool TryBindAuthoredRuntimePresentation()
+    {
+        if (authoredCursorCanvas == null || authoredCursorImage == null)
+            return false;
+
+        cursorCanvas = authoredCursorCanvas;
+        cursorImage = authoredCursorImage;
+        cursorRect = authoredCursorRect != null ? authoredCursorRect : authoredCursorImage.rectTransform;
+        if (cursorRect == null)
+            return false;
+
+        cursorCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        cursorCanvas.overrideSorting = true;
+        cursorCanvas.sortingOrder = overlaySortingOrder;
+        cursorImage.raycastTarget = false;
+        cursorRect.anchorMin = Vector2.zero;
+        cursorRect.anchorMax = Vector2.zero;
+        cursorRect.anchoredPosition = Vector2.zero;
+        return true;
+    }
+
+    private void EnsureThemeLoaded()
+    {
+        if (themeOverride != null || defaultThemeLoadAttempted)
+            return;
+
+        defaultThemeLoadAttempted = true;
+        loadedTheme = Resources.Load<MouseCursorTheme>(DefaultThemeResourcePath);
+        if (loadedTheme == null && !defaultThemeMissingLogged)
+        {
+            defaultThemeMissingLogged = true;
+            Debug.LogWarning(
+                $"[MouseCursorService] Default mouse cursor theme could not be loaded from Resources/{DefaultThemeResourcePath}.",
+                this);
+        }
+    }
+
+    private void PruneDeadOwners()
+    {
+        PruneDeadDomainRequests();
+        PruneDeadOwnerFlags(interactableOwners);
+        PruneDeadOwnerFlags(draggingOwners);
+        PruneDeadOwnerFlags(hiddenOwners);
+    }
+
+    private void PruneDeadDomainRequests()
+    {
+        if (domainRequests.Count == 0)
+            return;
+
+        List<int> deadOwnerIds = null;
+        foreach (KeyValuePair<int, DomainRequest> pair in domainRequests)
+        {
+            if (pair.Value != null && pair.Value.owner != null)
+                continue;
+
+            deadOwnerIds ??= new List<int>();
+            deadOwnerIds.Add(pair.Key);
+        }
+
+        if (deadOwnerIds == null)
+            return;
+
+        for (int i = 0; i < deadOwnerIds.Count; i++)
+            domainRequests.Remove(deadOwnerIds[i]);
+    }
+
+    private static void PruneDeadOwnerFlags(Dictionary<int, OwnerFlag> owners)
+    {
+        if (owners.Count == 0)
+            return;
+
+        List<int> deadOwnerIds = null;
+        foreach (KeyValuePair<int, OwnerFlag> pair in owners)
+        {
+            if (pair.Value != null && pair.Value.owner != null)
+                continue;
+
+            deadOwnerIds ??= new List<int>();
+            deadOwnerIds.Add(pair.Key);
+        }
+
+        if (deadOwnerIds == null)
+            return;
+
+        for (int i = 0; i < deadOwnerIds.Count; i++)
+            owners.Remove(deadOwnerIds[i]);
+    }
+
+    private void ApplyResolvedCursor()
+    {
+        if (HasAnyOwner(hiddenOwners))
+        {
+            HideSoftwareCursor();
+            ClearSystemCursorTexture();
+            Cursor.visible = false;
+            return;
+        }
+
+        currentDomain = ResolveDomain();
+        currentVariant = ResolveVariant();
+
+        MouseCursorSpriteDefinition definition = ResolveDefinition(currentDomain, currentVariant);
+        if (definition == null || definition.sprite == null)
+        {
+            HideSoftwareCursor();
+            RestoreSystemCursor();
+            return;
+        }
+
+        if (ShouldPreferHardwareCursor() && TryApplyHardwareCursor(definition))
+        {
+            HideSoftwareCursor();
+            Cursor.visible = true;
+            return;
+        }
+
+        if (!ApplySoftwareCursor(definition))
+            RestoreSystemCursor();
+    }
+
+    private bool ShouldPreferHardwareCursor()
+    {
+        return preferHardwareCursorWhenAvailable ||
+               preferHardwareCursorInExclusiveFullscreen &&
+               Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen;
+    }
+
+    private MouseCursorDomain ResolveDomain()
+    {
+        MouseCursorDomain resolved = MouseCursorDomain.Combat;
+        int highestPriority = int.MinValue;
+        long latestOrder = long.MinValue;
+
+        if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+        {
+            resolved = MouseCursorDomain.NpcUi;
+            highestPriority = DialogueDomainPriority;
+        }
+
+        foreach (DomainRequest request in domainRequests.Values)
+        {
+            if (request == null || request.owner == null)
+                continue;
+
+            if (request.priority < highestPriority)
+                continue;
+
+            if (request.priority == highestPriority && request.order <= latestOrder)
+                continue;
+
+            highestPriority = request.priority;
+            latestOrder = request.order;
+            resolved = request.domain;
+        }
+
+        return resolved;
+    }
+
+    private MouseCursorVariant ResolveVariant()
+    {
+        if (HasAnyOwner(draggingOwners))
+            return MouseCursorVariant.Dragging;
+
+        bool hasInteractableOwner = HasAnyOwner(interactableOwners);
+        bool isMousePressed = IsAnyMouseButtonPressed();
+        if (hasInteractableOwner && isMousePressed)
+            return MouseCursorVariant.InteractablePressed;
+
+        if (isMousePressed)
+        {
+            if (currentDomain == MouseCursorDomain.SystemUi && IsPointerOverInteractableSystemUi())
+                return MouseCursorVariant.InteractablePressed;
+
+            return MouseCursorVariant.Pressed;
+        }
+
+        if (hasInteractableOwner)
+            return MouseCursorVariant.Interactable;
+
+        if (currentDomain == MouseCursorDomain.SystemUi && IsPointerOverInteractableSystemUi())
+            return MouseCursorVariant.Interactable;
+
+        return MouseCursorVariant.Default;
+    }
+
+    private static bool HasAnyOwner(Dictionary<int, OwnerFlag> owners)
+    {
+        foreach (OwnerFlag ownerFlag in owners.Values)
+        {
+            if (ownerFlag != null && ownerFlag.owner != null)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsAnyMouseButtonPressed()
+    {
+        return Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2);
+    }
+
+    private bool IsPointerOverInteractableSystemUi()
+    {
+        EventSystem eventSystem = EventSystem.current;
+        if (eventSystem == null)
+            return false;
+
+        if (pointerEventData == null || pointerEventSystem != eventSystem)
+        {
+            pointerEventData = new PointerEventData(eventSystem);
+            pointerEventSystem = eventSystem;
+        }
+
+        pointerEventData.Reset();
+        pointerEventData.position = Input.mousePosition;
+
+        uiRaycastResults.Clear();
+        eventSystem.RaycastAll(pointerEventData, uiRaycastResults);
+
+        for (int i = 0; i < uiRaycastResults.Count; i++)
+        {
+            GameObject target = uiRaycastResults[i].gameObject;
+            if (target == null)
+                continue;
+
+            Selectable selectable = target.GetComponentInParent<Selectable>();
+            if (selectable != null && selectable.IsInteractable() && selectable.IsActive())
+                return true;
+        }
+
+        return false;
+    }
+
+    private MouseCursorSpriteDefinition ResolveDefinition(MouseCursorDomain domain, MouseCursorVariant variant)
+    {
+        MouseCursorSpriteDefinition definition = GetDefinition(domain, variant);
+        if (HasSprite(definition))
+            return definition;
+
+        if (variant != MouseCursorVariant.Default)
+        {
+            definition = GetDefinition(domain, MouseCursorVariant.Default);
+            if (HasSprite(definition))
+                return definition;
+        }
+
+        if (domain != MouseCursorDomain.Combat)
+        {
+            definition = GetDefinition(MouseCursorDomain.Combat, variant);
+            if (HasSprite(definition))
+                return definition;
+
+            if (variant != MouseCursorVariant.Default)
+            {
+                definition = GetDefinition(MouseCursorDomain.Combat, MouseCursorVariant.Default);
+                if (HasSprite(definition))
+                    return definition;
+            }
+        }
+
+        return null;
+    }
+
+    private MouseCursorSpriteDefinition GetDefinition(MouseCursorDomain domain, MouseCursorVariant variant)
+    {
+        MouseCursorTheme theme = themeOverride != null ? themeOverride : loadedTheme;
+        return theme != null ? theme.GetDefinition(domain, variant) : null;
+    }
+
+    private static bool HasSprite(MouseCursorSpriteDefinition definition)
+    {
+        return definition != null && definition.sprite != null;
+    }
+
+    private bool TryApplyHardwareCursor(MouseCursorSpriteDefinition definition)
+    {
+        if (!TryResolveCursorTexture(definition, out Texture2D texture, out Vector2 hotspot))
+            return false;
+
+        if (!forceCursorTextureReapply && appliedCursorTexture == texture && appliedCursorHotspot == hotspot)
+            return true;
+
+        Cursor.SetCursor(texture, hotspot, CursorMode.Auto);
+        appliedCursorTexture = texture;
+        appliedCursorHotspot = hotspot;
+        forceCursorTextureReapply = false;
+        return true;
+    }
+
+    private bool TryResolveCursorTexture(MouseCursorSpriteDefinition definition, out Texture2D texture, out Vector2 hotspot)
+    {
+        texture = null;
+        hotspot = definition.hotspotPixels;
+
+        Sprite sprite = definition.sprite;
+        if (sprite == null)
+            return false;
+
+        Texture2D sourceTexture = sprite.texture;
+        if (sourceTexture == null)
+            return false;
+
+        Rect rect = sprite.rect;
+        bool usesFullTexture = Mathf.Approximately(rect.x, 0f) &&
+                               Mathf.Approximately(rect.y, 0f) &&
+                               Mathf.Approximately(rect.width, sourceTexture.width) &&
+                               Mathf.Approximately(rect.height, sourceTexture.height);
+        if (usesFullTexture)
+        {
+            texture = sourceTexture;
+            return true;
+        }
+
+        int spriteId = sprite.GetInstanceID();
+        if (generatedCursorTextures.TryGetValue(spriteId, out Texture2D cachedTexture) && cachedTexture != null)
+        {
+            texture = cachedTexture;
+            return true;
+        }
+
+        if (!sourceTexture.isReadable)
+        {
+            if (unreadableSpriteWarnings.Add(spriteId))
+            {
+                Debug.LogWarning(
+                    $"[MouseCursorService] Sprite '{sprite.name}' uses only a sub-rect of a non-readable texture. Falling back to software cursor rendering.",
+                    this);
+            }
+
+            return false;
+        }
+
+        int width = Mathf.RoundToInt(rect.width);
+        int height = Mathf.RoundToInt(rect.height);
+        if (width <= 0 || height <= 0)
+            return false;
+
+        Color[] pixels = sourceTexture.GetPixels(
+            Mathf.RoundToInt(rect.x),
+            Mathf.RoundToInt(rect.y),
+            width,
+            height);
+
+        Texture2D generatedTexture = new Texture2D(width, height, TextureFormat.RGBA32, mipChain: false);
+        generatedTexture.name = $"{sprite.name}_CursorTexture";
+        generatedTexture.filterMode = FilterMode.Point;
+        generatedTexture.wrapMode = TextureWrapMode.Clamp;
+        generatedTexture.SetPixels(pixels);
+        generatedTexture.Apply(updateMipmaps: false, makeNoLongerReadable: false);
+
+        generatedCursorTextures[spriteId] = generatedTexture;
+        texture = generatedTexture;
+        return true;
+    }
+
+    private bool ApplySoftwareCursor(MouseCursorSpriteDefinition definition)
+    {
+        EnsureRuntimePresentation();
+        if (cursorImage == null || cursorRect == null)
+        {
+            HideSoftwareCursor();
+            return false;
+        }
+
+        Sprite sprite = definition.sprite;
+        if (sprite == null)
+        {
+            HideSoftwareCursor();
+            return false;
+        }
+
+        cursorImage.sprite = sprite;
+        cursorImage.enabled = true;
+        cursorImage.SetNativeSize();
+        cursorRect.localScale = Vector3.one * ResolveSoftwareCursorScale(definition);
+        cursorRect.pivot = ResolvePivot(sprite, definition.hotspotPixels);
+        cursorRect.SetAsLastSibling();
+
+        if (cursorCanvas != null)
+            cursorCanvas.enabled = true;
+
+        Cursor.visible = ShouldKeepSystemCursorVisibleWithSoftwareFallback() ||
+                         keepSystemCursorVisibleWhenUsingSoftwareCursor ||
+                         !hideSystemCursorWhileSpriteActive;
+        appliedCursorTexture = null;
+        appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
+        forceCursorTextureReapply = false;
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        return true;
+    }
+
+    private void RefreshDisplayState()
+    {
+        int screenWidth = Screen.width;
+        int screenHeight = Screen.height;
+        FullScreenMode fullScreenMode = Screen.fullScreenMode;
+
+        if (!hasCapturedDisplayState)
+        {
+            lastScreenWidth = screenWidth;
+            lastScreenHeight = screenHeight;
+            lastFullScreenMode = fullScreenMode;
+            hasCapturedDisplayState = true;
+            return;
+        }
+
+        if (lastScreenWidth == screenWidth &&
+            lastScreenHeight == screenHeight &&
+            lastFullScreenMode == fullScreenMode)
+        {
+            return;
+        }
+
+        lastScreenWidth = screenWidth;
+        lastScreenHeight = screenHeight;
+        lastFullScreenMode = fullScreenMode;
+        forceCursorTextureReapply = true;
+        displayTransitionRecoveryFrames = Mathf.Max(displayTransitionRecoveryFrames, 60);
+    }
+
+    private bool ShouldKeepSystemCursorVisibleWithSoftwareFallback()
+    {
+        return keepSystemCursorVisibleInExclusiveFullscreenFallback &&
+               Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen;
+    }
+
+    private float ResolveSoftwareCursorScale(MouseCursorSpriteDefinition definition)
+    {
+        float authoredScale = definition != null ? Mathf.Max(0.1f, definition.scale) : 1f;
+        if (!scaleWithScreenHeight)
+            return authoredScale;
+
+        float safeReferenceHeight = Mathf.Max(1f, referenceScreenHeight);
+        float resolutionScale = Mathf.Clamp(Screen.height / safeReferenceHeight, minResolutionScale, maxResolutionScale);
+        return authoredScale * resolutionScale;
+    }
+
+    private void UpdateCursorPosition()
+    {
+        if (displayTransitionRecoveryFrames > 0)
+            displayTransitionRecoveryFrames--;
+
+        if (cursorCanvas == null || cursorRect == null || cursorImage == null || !cursorImage.enabled)
+            return;
+
+        cursorRect.position = ResolveVisibleCursorPosition(Input.mousePosition);
+    }
+
+    private Vector2 ResolveVisibleCursorPosition(Vector2 rawPosition)
+    {
+        int screenWidth = Screen.width;
+        int screenHeight = Screen.height;
+        if (screenWidth <= 1 || screenHeight <= 1)
+            return HasFiniteComponents(rawPosition) ? rawPosition : Vector2.zero;
+
+        Vector2 cursorSize = ResolveVisibleCursorSize();
+        Vector2 pivot = cursorRect != null ? cursorRect.pivot : new Vector2(0f, 1f);
+
+        float minX = cursorSize.x * pivot.x;
+        float maxX = screenWidth - cursorSize.x * (1f - pivot.x);
+        float minY = cursorSize.y * pivot.y;
+        float maxY = screenHeight - cursorSize.y * (1f - pivot.y);
+
+        return new Vector2(
+            ClampToVisibleAxis(rawPosition.x, minX, maxX, screenWidth * 0.5f),
+            ClampToVisibleAxis(rawPosition.y, minY, maxY, screenHeight * 0.5f));
+    }
+
+    private Vector2 ResolveVisibleCursorSize()
+    {
+        if (cursorRect == null)
+            return Vector2.one;
+
+        Rect rect = cursorRect.rect;
+        Vector3 scale = cursorRect.lossyScale;
+        float width = Mathf.Abs(rect.width * scale.x);
+        float height = Mathf.Abs(rect.height * scale.y);
+        return new Vector2(Mathf.Max(1f, width), Mathf.Max(1f, height));
+    }
+
+    private static float ClampToVisibleAxis(float value, float min, float max, float fallback)
+    {
+        if (!IsFinite(value))
+            return fallback;
+
+        if (min > max)
+            return fallback;
+
+        return Mathf.Clamp(value, min, max);
+    }
+
+    private static bool HasFiniteComponents(Vector2 value)
+    {
+        return IsFinite(value.x) && IsFinite(value.y);
+    }
+
+    private static bool IsFinite(float value)
+    {
+        return !float.IsNaN(value) && !float.IsInfinity(value);
+    }
+
+    private void HideSoftwareCursor()
+    {
+        if (cursorCanvas != null)
+            cursorCanvas.enabled = false;
+
+        if (cursorImage != null)
+            cursorImage.enabled = false;
+    }
+
+    private void RestoreSystemCursor()
+    {
+        if (appliedCursorTexture == null && appliedCursorHotspot == new Vector2(float.MinValue, float.MinValue))
+        {
+            Cursor.visible = true;
+            return;
+        }
+
+        appliedCursorTexture = null;
+        appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
+        forceCursorTextureReapply = false;
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        Cursor.visible = true;
+    }
+
+    private void ClearSystemCursorTexture()
+    {
+        if (appliedCursorTexture == null && appliedCursorHotspot == new Vector2(float.MinValue, float.MinValue))
+            return;
+
+        appliedCursorTexture = null;
+        appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
+        forceCursorTextureReapply = false;
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+    }
+
+    private void ReleaseGeneratedTextures()
+    {
+        foreach (Texture2D texture in generatedCursorTextures.Values)
+        {
+            if (texture != null)
+                Destroy(texture);
+        }
+
+        generatedCursorTextures.Clear();
+        unreadableSpriteWarnings.Clear();
+    }
+
+    private static Vector2 ResolvePivot(Sprite sprite, Vector2 hotspotPixels)
+    {
+        if (sprite == null)
+            return new Vector2(0f, 1f);
+
+        Rect rect = sprite.rect;
+        if (rect.width <= 0f || rect.height <= 0f)
+            return new Vector2(0f, 1f);
+
+        float pivotX = Mathf.Clamp01(hotspotPixels.x / rect.width);
+        float pivotY = Mathf.Clamp01(1f - (hotspotPixels.y / rect.height));
+        return new Vector2(pivotX, pivotY);
+    }
+}

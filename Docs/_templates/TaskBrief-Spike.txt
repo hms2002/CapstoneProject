@@ -1,0 +1,43 @@
+Mode: Spike
+Risk: Medium
+Target Type: [Core / Framework / Leaf / Documentation]
+
+Task:
+[실험/prototype 주제]를 disposable하게 확인한다.
+
+Goal:
+[스파이크가 끝났을 때 결정해야 하는 것: adopt / discard / formalize]
+
+Intent:
+[왜 실험이 필요한지, 본 구현에 섞으면 안 되는 것]
+
+Context:
+[확인하려는 가설, 관련 파일/시스템, 제한 시간 또는 중단 기준]
+
+Allowed:
+- Run a narrow disposable experiment.
+- Keep changes isolated to [파일/폴더/시스템].
+
+Forbidden:
+- Treating spike code as production-ready without approval.
+- Broad refactors.
+- Out-of-scope fixes.
+- scene/prefab/SO/serialized field changes unless explicitly approved.
+- Architecture/Contracts changes unless explicitly approved.
+- unrelated cleanup.
+
+Done Criteria:
+- Hypothesis result is reported.
+- Adopt/discard/formalize recommendation is stated.
+- Any temporary changes are listed for cleanup or adoption.
+
+Verification:
+- Static checks: [rg/git diff/static analysis/doc link checks]
+- Unity checks: [compile/batchmode/Play Mode/manual check, or Not Verified]
+- Report unexecuted checks as Not Verified.
+
+Assumptions:
+- [Codex가 멋대로 추정하면 안 되는 누락 정보]
+
+Out-of-scope:
+- Report out-of-scope findings under Suggested Later instead of fixing them.

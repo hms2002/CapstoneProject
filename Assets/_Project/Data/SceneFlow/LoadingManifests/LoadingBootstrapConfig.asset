@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fb72661942d4b70a3f704b0a3d56153, type: 3}
+  m_Name: LoadingBootstrapConfig
+  m_EditorClassIdentifier: Assembly-CSharp::LoadingBootstrapConfigSO
+  bootManifest: {fileID: 11400000, guid: 96590720c1a6a394ab11ae5c0bafa47f, type: 2}
+  firstRunIntroManifest: {fileID: 11400000, guid: 46906141dfc26c54481ed3afc78fff8d, type: 2}
+  firstRunIntroCompletionTutorialId: hub_intro_after_darklord_seen
+  assetProviderMode: 1
+  addressableRegistry: {fileID: 11400000, guid: 71c74798328058e489990b344078a59e, type: 2}

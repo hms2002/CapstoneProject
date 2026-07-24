@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 251da8bed3e9c1a4cbe56be8f469f57c, type: 3}
+  m_Name: DarkLordBossSpeechData
+  m_EditorClassIdentifier: 
+  bubbleTheme:
+    useCustomColors: 1
+    borderColor: {r: 0.7294118, g: 0.42352942, b: 0.75686276, a: 1}
+    fillColor: {r: 0.25882354, g: 0.2, b: 0.30588236, a: 1}
+    fontColor: {r: 0.7294118, g: 0.42352942, b: 0.75686276, a: 1}
+  entries:
+  - situation: 0
+    lines: []
+  - situation: 1
+    lines: []
+  - situation: 2
+    lines:
+    - "\uD06C\uC73D.."
+  - situation: 3
+    lines: []
+  - situation: 4
+    lines:
+    - "...\uC774\uAC74 \uC880 \uC544\uD50C\uAC70\uC57C"
+  - situation: 5
+    lines: []
+  - situation: 17
+    lines:
+    - "\uCC0C\uB978\uB2E4!"
+    - "\uC798 \uBCF4\uACE0 \uD53C\uD574\uBD10!"
+  - situation: 18
+    lines:
+    - "\uBCA0\uC5B4\uC8FC\uB9C8!"
+    - "\uC774\uAC74 \uB9DE\uC73C\uBA74 \uC9C4\uC9DC \uC544\uD30C?"
+  - situation: 19
+    lines:
+    - "\uB358\uC9C4\uB2E4!"
+  - situation: 20
+    lines:
+    - "\uC5B4\uB514\uAE4C\uC9C0 \uB3C4\uB9DD\uAC00\uB098 \uBCFC\uAE4C?"
+    - "\uC5B4\uB514\uD55C\uBC88 \uD53C\uD574\uBCF4\uC2DC\uC9C0!"
+  - situation: 21
+    lines:
+    - "\uD130\uC838\uBCFC\uB798?"
+  - situation: 22
+    lines:
+    - "\uCC29\uC9C0\uD55C\uB2E4, \uBE44\uCF1C!"
+    - "\uBE44\uCF1C! \uC560\uC1A1\uC774!"
+  - situation: 23
+    lines:
+    - "\uB3CC\uC544\uC640, \uC544\uC9C1 \uC548 \uB05D\uB0AC\uC5B4!"
+    - "\uC774\uB9AC\uC640!"
+  - situation: 24
+    lines:
+    - "\uC7A1\uD788\uBA74 \uC8FD\uC5B4!"
+  - situation: 25
+    lines:
+    - "\uBC29\uC2EC\uD588\uC9C0?"
+  - situation: 26
+    lines:
+    - "\uC7A5\uB09C\uC740 \uC5EC\uAE30\uAE4C\uC9C0\uC57C."
+    - "\uC870\uAE08 \uC9C4\uC2EC\uC744 \uB0B4\uBCFC\uAE4C"
+  - situation: 29
+    lines:
+    - "\uC57C\uC57C\uC57C, \uB358\uC9C0\uC9C0 \uB9C8!"
+    - "\uC124\uB9C8 \uB610 \uB358\uC9C0\uB824\uACE0?"
+    - "\uC7A0\uAE50, \uB098 \uC900\uBE44 \uC548 \uB410\uB294\uB370?!"
+  - situation: 30
+    lines:
+    - "\uC774\uC81C \uC640\uC11C \uBD80\uB974\uB0D0?!"
+    - "\uADF8\uB798\uADF8\uB798, \uC5C6\uC73C\uBA74 \uC548 \uB418\uACA0\uC9C0?"
+    - "\uD765, \uC774\uBC88\uB9CC \uB3C4\uC640\uC900\uB2E4."
+    - "\uADF8\uB798, \uACB0\uAD6D \uB0B4\uAC00 \uD544\uC694\uD558\uC9C0?"
+  - situation: 33
+    lines:
+    - "\uC73C\uC544\uC544\uC544\uC544\uC545!!"
+  - situation: 34
+    lines:
+    - "\uD55C \uB9C8\uB514\uB9CC \uB354\uD574\uB77C"
+  - situation: 35
+    lines:
+    - ....
+  - situation: 36
+    lines:
+    - "\uC6B0\uC6E9.."
+    - "\uAC10\uD788.. \uC774 \uBAB8\uC744.."
+    - "\uD22C\uCC99\uC6A9 \uAC80\uC774 \uC544\uB2C8\uB77C\uACE0!!"

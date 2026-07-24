@@ -1,0 +1,333 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: RouteShared_ShadowCorridorBossRouteSet
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: RouteShared_ShadowCorridorBossRouteSet
+  m_GUID: b4791066f9327d848a07a37c4faa3f04
+  m_SerializeEntries:
+  - m_GUID: 00ed69b295c1e5c478f601bb400c2e4e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_671.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 02e59dd4fcb845f4c9e618066bb01154
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_260.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 099368cf7cc116b46a32acfe18767990
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_228.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 0ffeb9f1ddd83004581da65f89f54a94
+    m_Address: Assets/_Project/Data/Attributes/InitProfiles/Dead'sSkeletonAttributeOverrideInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 1f2cc6f17006f3b47a80490d440fde2d
+    m_Address: Assets/_Project/Art/Sprites/Monsters/Dead'sSkeleton/DeadsSkeleton_Die.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 279fc959a7b15f4458e2bf984a609133
+    m_Address: Assets/_Project/Art/Sprites/Monsters/Explosion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29a94cbd416087845bf8d3bf3dacdb23
+    m_Address: Assets/_Project/Art/Sprites/Monsters/Dead'sSkeleton/DeadsSkeleton_Float.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b1a7aa1e58dce841aca2bd0c629b77c
+    m_Address: Assets/_Project/Art/Sprites/Monsters/Dead'sSkeleton/Dead'sSkeleton_BeSelfDestructionMode.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4003c6b7fb5f50047b885f88eaa49cac
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_628.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41fdf63df8899de488f3f5e02ec96f3e
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_372.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 4429a472918e4189afc5e29e85f1b122
+    m_Address: Assets/_Project/Data/Abilities/Effects/BDAD_ShadowFogRestrictedVision.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 582a43a76f5f4dd2bc1c8686af69b0aa
+    m_Address: Assets/_Project/Data/Abilities/Effects/GE_ShadowFogRestrictedVision.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 5c31084ebbb4f95408dc108afc0380f5
+    m_Address: Assets/_Project/Art/Sprites/Monsters/Dead'sSkeleton/DeadsSkeleton_Float(SelfDestructionMode).anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 625028b95917ad740b850baab6ffc9de
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_369.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65633814affcc704fbd9de0c57f8591b
+    m_Address: Assets/_Project/Art/Sprites/Monsters/Dead'sSkeleton/Dead'sSkeleton_Float.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65e930176fa19f749a2e1ede32f697d2
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_577.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 668d0e41bacb27740af1d6ac80869444
+    m_Address: Assets/_Project/Art/Sprites/Monsters/Dead'sSkeleton/DeadsSkeleton_BeSelfDestructionMode.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69f733b1a66915c4ab104ee8deb2d6a8
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_475.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b631fbbc3a183646841c0930b2c12cb
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_669.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 6c1118ae2aa440f692b692b537fc4e3d
+    m_Address: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/WitchShieldBreakerProjectile.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c6c92ecdb89485ca634667cf8ab6788
+    m_Address: Assets/_Project/Data/Abilities/Effects/SHD_ShadowFogRestrictedVision.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 6fbe7179acdd9654690e1ed0df36687e
+    m_Address: Assets/_Project/Art/Sprites/Monsters/AC_DeadSkeletonExplosionPurple.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76eb9c2698e5b8743a3ea6cc9ca3e830
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_623.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e2c3f8292c43304ab461d4b1cdccb2f
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_476.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 7e3dd9b93aa3a5b498afc1b7b958ee42
+    m_Address: Assets/_Project/Prefabs/VFX/Particle/ExplosionParticle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 7f52a2908dd5a5a4e8f8f0ede3f4c230
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_668.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f5e6bfa0a2a7d240ae68f54ca7400ce
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_666.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 8205271ee5fb4886a1be52f209910f74
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Monsters/Common/AL_DeadsSkeletonSelfDestruct.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 83cf1c06b1eab384b9bccc342c1f51d9
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_209.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 84e107a2d896c944b86df050ad0becb7
+    m_Address: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/Candlestick.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 8d8bdbd510131be4a8a5ecc3b935cdd0
+    m_Address: Assets/_Project/Art/Sprites/Monsters/Explosion(Purple).anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9084d82457d28de40b970c239cfd6bfa
+    m_Address: Assets/_Project/Art/Sprites/Monsters/Dead'sSkeleton/Dead'sSkeleton_Die.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90bd01b7bba893d41ad286371eae510a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_670.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 983d63dce5dc9454a9a74287a2ed4d94
+    m_Address: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/Fog.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 9a7d6384d742c5145997d3e7376776ea
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_673.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a47b10b397794fc4fafd10750496ac75
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_522.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5fa2872f1e74d345a9da42c4e6b490c
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_230.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: a6b7d8d7626f416cb0dca7f4dca90fb3
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Monsters/Common/AD_DeadsSkeletonSelfDestruct.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: a97f02dd8f414d54f8766fd718eadbb0
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_626.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: b1f84c1064c662345a49453bf9a8fd34
+    m_Address: Assets/_Project/Prefabs/Monsters/ShadowCorridor/Dead'sSkeleton.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: b3108cbb23fff4c489b9325eb7d51737
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_627.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b79e332a875dcab4f926b4ec8fae7952
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_226.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc6788b1854f50a449c086094610b311
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_261.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc853b59969402340bfd66698e8886aa
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_231.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2b2e139003f22c4883c7658c4f5a844
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_579.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da789bafa309b6a47b699cf170d3f259
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_624.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc5b9f26a69afea4997140509a4343aa
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_672.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2be3219b5e1a904c9d9bbf4c1060864
+    m_Address: Assets/_Project/Art/Sprites/Monsters/Dead'sSkeleton/DeadsSkeleton_SelfDestructionModeOff.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e37ad57746df2374fb2aca83c6124bad
+    m_Address: Assets/_Project/Art/Sprites/Monsters/Dead'sSkeleton/Dead'sSkeleton_Float(SelfDestructionMode).png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e86c7adf8fc98144d81aa044b8b1c453
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_667.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8c76902933c322439398a3e0c171085
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_367.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb6db995b31d0ad4ca09fe5e0540e130
+    m_Address: Assets/_Project/Art/Sprites/Monsters/Dead'sSkeleton/DeadsSkeleton.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed56e4343829425479b81f25d5168714
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_575.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: f3e6d674c38bfa3459b9aa0e37af577d
+    m_Address: Assets/_Project/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: fb155a11063b8d1468da0d19178440fe
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_576.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff5a9505530d7e948b31beb2f7dc8fed
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_622.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 5ce463744b922594d93e95fa520c4492, type: 2}
+    - {fileID: 11400000, guid: 6986ebb916291294ea88c04b57106ce1, type: 2}

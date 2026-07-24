@@ -1,0 +1,466 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Boss_SangHyup_Boss_SlimeQueen
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Boss_SangHyup_Boss_SlimeQueen
+  m_GUID: 40ab2656d36c0b448bd841a6006d47d4
+  m_SerializeEntries:
+  - m_GUID: 01bc2cb95f185f64b9cdcebd5a16ab43
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeB_Die.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 0df316e3ac6d4d60b65070e8a01c4b4d
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenBodyInflateImpact.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 0e90c4fc15a93a4469f29132b2ada2fe
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_928
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0fb739f097ec34f4185fd6a8d9ce8d8c
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeA_Giantization.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 150ee18194255bc4b9091c89ba99f707
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeC_Idle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 280142343b90bdc449f2b27e403e79c9
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeQueenA_Ready.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e94bab546cea6b47a40fcf9034d64be
+    m_Address: Assets/_Project/Data/Dialogue/SpeechData/SlimeBossSpeechData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 380486034db0ab24c9fbf64758f0445f
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeC_Die.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e6989b159152494da4fa82598b7f471
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/SlimeQueenP2Short.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 3ec7b4634d524e0d84ec605c177e6b86
+    m_Address: Assets/_Project/Prefabs/Bosses/SlimeQueen/PF_SlimeQueenWaterCannonBeam.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f6a98b2c4d14d5da45f3a2d6f9b8c71
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/SlimeQueen/AL_SlimeQueenRepeatedSlam.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 438fd28835668744381b456d2173b2c0
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeQueenB_Sink.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 49af12b356cc28f44b507ec5c166c272
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeQueenB_Die.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 4e951eab6cb84cf295af59321d67343a
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/SlimeQueen/AL_SlimeQueenRandomJump.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 4ea175411a41b49419f2624016b7fcb0
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/SlimeBall.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 4ef68433f5814e86abef2e0debf7c646
+    m_Address: Assets/_Project/Data/Attributes/InitProfiles/SlimeQueenGroggyOverrideInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 564e42aa467b2ca4eb22b84b8c3c47e5
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_780
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 5b8f4241e1bc46a08b4d97f2b386aaef
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenRandomJump.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 5e911b1081bfabe4ea6a5da5b2c7f9b9
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeQueenC_Landing.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 633f2e7e51113d74497f94a1e359e74b
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeA_Ready.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64294df080c53fa4aa1d01bd44c8bb5a
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/Dragon_BossLevelSet_17.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65212f38213f1864689cdb9aa8b16ba9
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeA_shout.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 654d1710c65295440a1f9f2a0c5a52ae
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_485
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 663c11f31c1957f409e38bd8bc069ce5
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeQueenB_Giantization.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67a02762ed46d49448f612bb39ef0f47
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeC_Jump.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 683148424c7a4c840ae8114be04a47f0
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeB_Giantization.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a27f09a62b570b4f9a1b87442aba6cd
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeQueenA_Landing.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d63303f54f6d4646929e13bcb847713
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeA_Landing.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d8224d87a6149b45aad04643555cb94
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeQueenC_waterJet.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 6f740a2bae934c608a0f6b5395d1f137
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenCastling.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 708888a4c398edb42af9c84d6908162b
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeQueenC_waterJet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71b320f3c0148f444b99ca13d0d12d2f
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeB_Fold.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 753d7e90cd7c80b46a7a217325887501
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeQueenA_Giantization.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 758073a39d4dea843b511f209e3d4af4
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeQueenA_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 77a09e2387dc8d249bc763fe2bc2261a
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeQueenB_Ready.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 7c32a5e8d1f64ea0b1b296f3d74391ac
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenRepeatedSlam.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80b0cddaec7c48d1b185feef604688b7
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/SlimeQueen/AL_SlimeQueenCastling.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 81101e0022953c1499bff4fa8cb382fe
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeC_Landing.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81643724080443a48aba9407c54fc9b7
+    m_Address: Assets/_Project/Art/Sprites/Map/Gimmicks/DrainPipe/hole.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 817b75f7036065b4aacf6b2882315a59
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/SlimeQueenP2Long.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 855b176ab03742fba2d5013cc9ada7b7
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/SlimeQueen/AL_SlimeQueenWaterCannon.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87a91f5b2e2e4f91afbd0ca48d090216
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/SlimeQueen/AL_SlimeQueenCrossWaterPillar.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89e3c4b570f044d0a2f8c1b9d6a7e35f
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/SlimeQueen/AL_SlimeQueenBodyInflateImpact.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 8e836c23d4c7ce746933cf04b90bea12
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeQueenC_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 8ea8b838df4742a48685ade6b4fa2482
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/SlimeQueen/AL_SlimeQueenToxicRush.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 8f6b2cefe5582d741a945f97723e3e3a
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeB_Ready.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 91ef41aa8bfef59498e0d63842c08bc4
+    m_Address: Assets/_Project/Prefabs/VFX/Effect_DrainPipeParticle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 92394a4ae681acf4ca92cfc804c55beb
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeQueenB_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 94f5d0338cf4434786909b0e2e640550
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenWaterCannon.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a18e617b0b1f4ce4b730c4d1d950f627
+    m_Address: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Long.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a3e81cce57ef4d0c9e5fba18ee227fb6
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenCrossWaterPillar.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: a69c5957497f2814eba337b9da67b274
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeA_Jump.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7a2bb8c68c473a499abf3a13e4469f5
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeQueenC_Die.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab28b9fbe2eb38947b615f750e67cafe
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_926
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0270b43dd9b8e645aa5f2ab78aebd1f
+    m_Address: Assets/_Project/Art/Sprites/Map/Gimmicks/DrainPipe/stopper.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: b6b3270ae0b64527be3bc8398bbdcd6e
+    m_Address: Assets/_Project/Data/Abilities/Conditions/Bosses/SlimeQueen/COND_SlimeQueenCastlingAvailable.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: ba8bf343e793c4f469bff434d450dd63
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeQueenB_Rush.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc623bc4d02001b47ba0324cbb0def88
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeB_Rush.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: c0a22b38484774e4e82564f837979fba
+    m_Address: Assets/_Project/Data/Monsters/HudThemes/BossHudHealthBarTheme_Slime.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: c87dd432906d7f14e94e6276dc7f89c1
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeQueenA_Shout.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: cf12d26d19bc4f30ba32dea4e586847b
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenToxicRush.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1c98a1a57f44e43bb4b806f44ad9273
+    m_Address: Assets/_Project/Prefabs/Map/Gimmicks/SlimeCorridor/DrainPipe.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: d22a8d5b30f694e4c8496130188ad544
+    m_Address: Assets/_Project/Art/Sprites/Map/Gimmicks/DrainPipe/blocked_hole.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d54fff3e12c49874187daf6b1d0a27f2
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeA_Idle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: d6d1a71573e8467c9ed8fa63b7f4bd14
+    m_Address: Assets/_Project/Prefabs/Bosses/SlimeQueen/PF_SlimeQueenToxicDropProjectile.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d84fb7a441404cf4ba049fe22336cdb3
+    m_Address: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueen.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dbbf1275096a4e49b0c834526f071a15
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenToxicDrop.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: dc0f51c738a5c4b4483711fc70afe272
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/SlimeQueen.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e025421bfa96ff64bbb0d194d78305f3
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_823
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4e723c40ea244f4a9f8b3fe50295ac3
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_779
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: e7647f3f3a20430db99f72fb47dd1c0d
+    m_Address: Assets/_Project/Prefabs/Map/Puddles/PoisonCloud.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9272496ad2e4838b964c59d6b4a94bb
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/SlimeQueen/AL_SlimeQueenToxicDrop.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: f001940946a272045b54dcbdd7bc01b5
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_824
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f328d71c07177ee40b9f2219d93b9923
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeQueenA_Jump.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8356400402995740ad92c4dd4592a78
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeQueenC_Jump.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: f8460f5e737a48218760688ff5643ca3
+    m_Address: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Short.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: fe7928f602c8bc440b66e4e3de4f2ed2
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeB_Idle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 804e4aae591fccd41aa337127443e4e5, type: 2}
+    - {fileID: 11400000, guid: a07b2286638625643ad8b4ab55d35d5e, type: 2}

@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2102aa7a028d42f8acca7f250a3e2dd4, type: 3}
+  m_Name: AL_DemonKing_ThrowEgoSword
+  m_EditorClassIdentifier: 
+  warningSeconds: 1.4
+  aimWarningWidth: 0.22
+  throwReleaseDelaySeconds: 1.5
+  throwSpeedMultiplier: 5
+  wallBounceCount: 5
+  throwEndPoseHoldSeconds: 0.12
+  throwReactionDelaySeconds: 0
+  throwReleaseSpeechSeconds: 1.1
+  rotateReleaseSpeechWithSword: 0
+  aimAnimation:
+    clip: {fileID: 0}
+    sampleMode: 1
+    frameIndex: 0
+    fallbackStateName: DarkLord_Sword_Idle
+  throwAnimation:
+    clip: {fileID: 0}
+    sampleMode: 0
+    frameIndex: 0
+    fallbackStateName: DarkLord_Sword_Throwing
+  throwEndPoseAnimation:
+    clip: {fileID: 0}
+    sampleMode: 3
+    frameIndex: 0
+    fallbackStateName: DarkLord_Sword_Throwing
+  throwReleaseSound:
+    key: sound_boss_darklord_common_woosh_short
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  throwLoopSound:
+    key: sound_boss_darklord_egosword_throw_loop
+    volumeMultiplier: 1
+    anchorPolicy: 4
+    localOffset: {x: 0, y: 0, z: 0}

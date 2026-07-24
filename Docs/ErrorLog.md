@@ -25,6 +25,62 @@ Prevention:
 
 ## Active Entries
 
+## 2026-06-02 - SpeechBubble Negative Scale Flip Shifted Layout Semantics
+
+Context:
+DemonKing and EgoSword parallel speech bubbles needed tails to face the speaker during short back-and-forth dialogue.
+
+Cause:
+The first implementation flipped the whole background with negative X scale and counter-flipped the text, but did not treat tail side, layout padding, anchor position, and bounds relayout as one policy. This let the tail direction change while the text start position and bubble bounds still reflected the unflipped layout.
+
+Fix:
+Parallel speech now evaluates tail side, layout offset, world bounds, and tail pivot distance together before applying a placement. Active/single bubbles keep their position, active parallel-dialogue bubbles may only flip tail side, and parallel bubbles use a small candidate set so overlap fixes do not pull the bubble far away from its speaker root.
+
+Prevention:
+When flipping UI that owns layout children, do not only negate scale or decide tail direction as a late visual pass. Cache and restore the anchor-facing transform defaults, mirror directional padding/spacing semantics, measure bounds for each candidate state, then choose the tail side and any layout nudge as one placement decision.
+
+## 2026-06-01 - Debris Final Contact Puff Looked Like Growing Fade
+
+Context:
+DemonKing explosion used the `Debris High` particle path. After fragments broke apart, the final disappearance could look like transparent particles growing larger instead of debris pieces fading out.
+
+Cause:
+The debris bounce emitter emitted contact puffs on final ground contact. Those puffs intentionally grow while fading, which is correct for impact dust but wrong as the final disappearance representation for debris fragments.
+
+Fix:
+`TopDownDebrisBounceEmitter2D` now keeps final fragments in the render-particle buffer and fades their alpha in place before deactivating the piece. Bounce contacts can still emit normal non-final puffs.
+
+Prevention:
+Keep final debris disappearance separate from impact-dust presentation. If a debris piece should vanish, fade the fragment itself; reserve expanding puffs for readable contact impacts.
+
+## 2026-06-01 - Unity Null-Conditional Access Hit Destroyed Presentation Objects
+
+Context:
+Editor logs showed `MissingReferenceException` from `EndingOutroView` while stopping the ending outro during disable/scene transition cleanup. A follow-up scan found the same cleanup pattern on the title intro view and GameOver inventory inspection path.
+
+Cause:
+Presentation cleanup used C# null-conditional calls such as `view?.SetSkipFill(...)`, `outroPlayer?.HideViewImmediate()`, and `inventoryScreen?.ReleaseInspectionOnlyMode(...)`. Unity destroyed objects can still have a non-null C# reference, so `?.` can call into a destroyed `UnityEngine.Object` instead of using Unity's overloaded null comparison.
+
+Fix:
+Outro and title-intro cleanup now use explicit Unity null checks before hiding the view or resetting skip fill. The DemonKing Victory GameOver handoff checks the `EndingOutroPlayer` before hiding its view. The GameOver inventory exception checks the `InventoryScreen` before applying or releasing inspection-only mode.
+
+Prevention:
+Do not use `?.` for cleanup calls on `UnityEngine.Object` references that may be destroyed during scene unload, disable, or global UI replacement. Use `if (obj != null)` before calling methods so Unity's destroyed-object null semantics are respected.
+
+## 2026-06-01 - Consumable And Weapon Input Relied On One Block Tag
+
+Context:
+Potions could be used during dialogue or authored presentation flows. Lightning Spear `Skill1` and an active real-weapon Rush also had paths that could read gameplay input outside the normal combat input gate.
+
+Cause:
+`PlayerConsumableInput2D` only checked `State.Skill.Blocked`, and `PlayerCombatInput2D` still forwarded blocked `Skill1` input to the current weapon runtime. If dialogue or presentation flow blocked input through `InteractState`, UI blocking, or transition/loading state without a reliable skill-block tag, consumable and weapon-specific runtime input could leak.
+
+Fix:
+Consumable, combat, Lightning Spear MarkRush, and real-weapon Rush direct-input paths now check the gameplay input suppression sources directly: non-idle player interaction state where relevant, blocking UI, active dialogue, scene transition, and loading presentation.
+
+Prevention:
+Gameplay input entry points should not rely on a single gameplay tag when the input contract also depends on UI, dialogue, interaction, transition, or loading flow state. Keep tag checks as combat-state gates, but add direct flow/UI gates before consuming items or forwarding weapon runtime input.
+
 ## 2026-06-01 - Pitfall Damage Fired Mob Death Results Before Pitfall Classification
 
 Context:
@@ -129,13 +185,13 @@ Context:
 Changing resolution or screen mode while the custom mouse cursor was active could make the cursor appear to disappear.
 
 Cause:
-`MouseCursorService` hides the OS cursor when its software cursor sprite is active, then positions the UI cursor directly at `Input.mousePosition`. After a resolution or fullscreen-mode transition, Unity can report a pointer position outside the new screen bounds, and some cursor pivots/hotspots can place the entire cursor image outside the visible screen at an edge.
+`MouseCursorService` hides the OS cursor when its software cursor sprite is active, then positions the UI cursor directly at `Input.mousePosition`. After a resolution or fullscreen-mode transition, Unity can report a pointer position outside the new screen bounds, and some cursor pivots/hotspots can place the entire cursor image outside the visible screen at an edge. Hardware cursor mode can also keep using Unity/OS cached cursor texture state unless the cursor texture is explicitly reapplied after the display transition.
 
 Fix:
-The software cursor position is now clamped to a visible screen-space rectangle based on `Screen.width`, `Screen.height`, the cursor rect size, `lossyScale`, and pivot. Non-finite pointer values fall back to the screen center.
+The software cursor position is now clamped to a visible screen-space rectangle based on `Screen.width`, `Screen.height`, the cursor rect size, `lossyScale`, and pivot. Non-finite pointer values fall back to the screen center. `MouseCursorService` also tracks `Screen.width`, `Screen.height`, and `Screen.fullScreenMode` and forces hardware cursor texture reapply after those values change.
 
 Prevention:
-Any software cursor path that hides the OS cursor must keep its rendered image visible across display transitions and screen-edge positions. Do not assume raw `Input.mousePosition` is already valid for the current output size immediately after `Screen.SetResolution(...)`.
+Any cursor path that hides or replaces the OS cursor must keep its rendered image visible across display transitions and screen-edge positions. Do not assume raw `Input.mousePosition` is already valid for the current output size immediately after `Screen.SetResolution(...)`, and do not skip `Cursor.SetCursor(...)` reapply solely because the texture/hotspot cache still matches.
 
 ## 2026-05-31 - DemonKing Laser Warning Was Double-Clipped
 
@@ -1298,15 +1354,19 @@ For first-open chest behavior, keep world and UI presentation timing separate, b
 
 Context:
 After moving dialogue input blocking into `DialogueService` through `GameFlowInputBlocker`, the Upgrade NPC feature stopped opening its popup.
+Later, the same dialogue-exit wait could leave a short player-control gap before the Upgrade UI open flow took over.
 
 Cause:
 `UpgradeFeature.Execute()` called `UpgradeManager.ToggleUI()` before requesting dialogue exit. The dialogue blocker was still active, so `UpgradeManager.OpenUI()` failed the `UIManager.CanOpenUI(...)` gate before its own open-presentation blocker could take ownership.
+The later wait-for-release fix did not add a control-only handoff lock for the period between feature selection and `UpgradeManager.ToggleUI()`.
 
 Fix:
 Request dialogue exit first, then wait until dialogue playback and external UI input blockers are released before opening Upgrade UI.
+During that wait, `UpgradeFeature` now acquires the existing `TS_BlockControlByUI` tag set through `PlayerUIControlLockBridge`, then releases it after `ToggleUI()` starts the normal UI open flow.
 
 Prevention:
 NPC features that open stack UI after dialogue should not open the UI while dialogue is still the active game-flow blocker. End or hand off the dialogue flow first, then open the feature UI.
+If the feature must wait before opening, cover the wait with player-control-only handoff blocking. Do not use a new external UI input blocker for that wait unless the later owned-open exception is explicitly threaded through the same owner.
 
 ## 2026-05-16 - Shared Portal Prefab Carried Start-Run Semantics
 
@@ -1492,3 +1552,59 @@ DashStab and multi-rush body starts use normal per-hit playback, while Slash and
 
 Prevention:
 Before applying a once-per-pattern animation guard, classify whether the state is a single visual commit, a frame sample/hold, or a repeated per-hit state. Also lock DemonKing auto-facing during authored motion windows so sprite flips do not masquerade as animation replay problems.
+
+## 2026-06-02 - KillLock Query Compacted Runtime State Before Owner Refresh
+
+Context:
+Killing the final linked monsters for a KillLock chest at the same time could leave `RemainCount` stale and keep the chest locked, especially when navigation arrows refreshed in the same frame.
+
+Cause:
+`ChestMonsterKillLock.GetAliveMonstersNonAlloc()` looked like a read-only query but compacted the lock's tracked unit list. If it ran from `ChestMonsterKillLockNavigationView.LateUpdate()` after the deaths but before the next lock `Update()`, the lock owner no longer observed a list-count change and did not raise remaining-count or unlock events.
+
+Fix:
+`ChestMonsterKillLock.Update()` now recalculates cached remaining/unlock state every frame, and `GetAliveMonstersNonAlloc()` no longer mutates the lock's tracked unit list.
+
+Prevention:
+Keep gameplay-state compaction and event emission in the owning runtime component. UI/navigation/read-model queries should not mutate owner lists unless they also refresh the owner's cached state and events in the same call.
+
+## 2026-06-02 - Same-Scene Teleport Landing Was Skipped By Ground Hole Path Check
+
+Context:
+`RunSameSceneTeleportNpcFeature` fade out/in was playing, but the player did not visibly move from `appearancePoint` to `landingPoint` for the authored jump-like arrival.
+
+Cause:
+The feature sampled the appearance-to-landing path against `HoleTrap` as if the arrival were grounded movement. When the authored path crossed a hole, it logged the path as blocked and warped directly to the landing point, so the landing presentation never played.
+
+Fix:
+Arrival movement now depends on distinct appearance/landing positions and an authored duration, not on intermediate `HoleTrap` path sampling. The final landing point is still checked for `HoleTrap` overlap, and the player body collider is temporarily disabled during arrival movement so pitfall trigger/stay logic cannot fire mid-cinematic.
+
+Prevention:
+Do not use grounded path-blocking checks for airborne or cinematic arrival paths. Validate the endpoint, then suppress collision/triggers only for the presentation window that needs to cross unsafe space.
+
+## 2026-06-02 - Same-Scene Teleport Appearance Warp Still Used Grounded Target Safety
+
+Context:
+After the path-sampling skip was removed, the same-scene teleport arrival still showed no start particle and no movement when the authored `appearancePoint` was placed over `HoleTrap` space.
+
+Cause:
+The initial warp to `appearancePoint` still called the normal `WarpPlayer(...)` path, which rejects any target position overlapping `HoleTrap`. The arrival path policy had been changed to airborne, but the first warp still treated the airborne start point as a grounded final target.
+
+Fix:
+`WarpPlayer(...)` now has a narrow `allowHoleTrapTarget` option. Only the initial arrival-start warp uses it; final landing warps and non-arrival teleports still reject `HoleTrap` targets.
+
+Prevention:
+Keep arrival-start validation separate from final landing validation. For jump-like or airborne cinematic starts, allow the authored start point to overlap unsafe space only while body collider suppression and cinematic protection are already active. Never apply that exception to the final landing point.
+
+## 2026-06-02 - Persistent SoundManager Sources Were Parentable To Scene Objects
+
+Context:
+The 0.1.5 player build crashed with a Mono access violation shortly after the DarkLord tutorial fake GameOver returned toward `ProtoTypeHub`. The 0.1.4 build passed the same route, while the 0.1.5 crash log stopped after DOTween null-target startup warnings and before the next Hub scene load warnings.
+
+Cause:
+Catalog-backed spatial sounds could reparent pooled `SoundManager` `AudioSource` objects under scene-owned follow targets. Because `SoundManager` is persistent, those pooled sources must not become children of scene objects; a scene unload can destroy the pooled source while the manager still holds it in its pool and runtime dictionaries.
+
+Fix:
+Keep catalog-backed sources parented under the persistent `SoundManager` roots. Store the follow target and local offset in runtime sound state, update followed source world positions in `LateUpdate`, and recreate any destroyed one-shot pool entries before reuse.
+
+Prevention:
+Persistent runtime service pools must own the lifetime of their pooled GameObjects. Do not parent pooled service objects under scene-owned transforms; follow scene targets by storing a reference and projecting world position instead. Before recycling a Unity object from a persistent pool, treat Unity fake-null as a destroyed entry and recreate it.

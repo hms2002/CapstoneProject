@@ -1,0 +1,157 @@
+{
+    "sessions": [
+        {
+            "sessionId": "1fda77c185fb46ff85110678d3796182",
+            "startedUtc": "2026-06-02T05:06:24.1030543Z",
+            "endedUtc": "2026-06-02T05:06:26.6094060Z",
+            "entries": []
+        },
+        {
+            "sessionId": "de31a8ed7379451eb16db857004a514b",
+            "startedUtc": "2026-06-02T05:07:39.7007581Z",
+            "endedUtc": "2026-06-02T05:07:41.9904924Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a8493729661b4343b3725429bbbc60b0",
+            "startedUtc": "2026-06-02T05:08:11.8123500Z",
+            "endedUtc": "2026-06-02T05:08:15.5197381Z",
+            "entries": []
+        },
+        {
+            "sessionId": "1bb45da573504b28bf615b4eb393f9ad",
+            "startedUtc": "2026-06-02T05:09:11.9779343Z",
+            "endedUtc": "2026-06-02T05:09:13.7421807Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d0ec915bfc084118bb4592332e9b810a",
+            "startedUtc": "2026-06-02T05:09:39.4016809Z",
+            "endedUtc": "2026-06-02T05:09:41.5086744Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4471d0b7c23f4381949b182db3a77d6c",
+            "startedUtc": "2026-06-02T05:20:30.8598278Z",
+            "endedUtc": "2026-06-02T05:21:38.0583111Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 257,
+                    "coldSpawns": 89,
+                    "firstSeenSeconds": 21.960765838623048,
+                    "lastSeenSeconds": 66.32929992675781,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
+        },
+        {
+            "sessionId": "adfe7beac29c4f48837c72c33e705c6c",
+            "startedUtc": "2026-06-02T05:25:40.5377803Z",
+            "endedUtc": "2026-06-02T05:27:15.9060693Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 679,
+                    "coldSpawns": 125,
+                    "firstSeenSeconds": 21.736618041992189,
+                    "lastSeenSeconds": 94.52039337158203,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
+        },
+        {
+            "sessionId": "6aae9eac75a94a91bb801f99078a1ffc",
+            "startedUtc": "2026-06-02T05:27:48.7420141Z",
+            "endedUtc": "2026-06-02T05:27:50.3000796Z",
+            "entries": []
+        },
+        {
+            "sessionId": "c903a35fc2f347abadf43eaaa17f2784",
+            "startedUtc": "2026-06-02T05:28:51.1780350Z",
+            "endedUtc": "2026-06-02T05:28:54.1472489Z",
+            "entries": []
+        },
+        {
+            "sessionId": "97163e8ecc704aca859878dc3caf8eca",
+            "startedUtc": "2026-06-02T05:30:44.9347541Z",
+            "endedUtc": "2026-06-02T05:30:48.6333409Z",
+            "entries": []
+        },
+        {
+            "sessionId": "ed8f3a8921a14ab7b71083be17f2be28",
+            "startedUtc": "2026-06-02T06:27:00.4944534Z",
+            "endedUtc": "2026-06-02T06:27:03.5012461Z",
+            "entries": []
+        },
+        {
+            "sessionId": "f5eca95f6e4449509e46470d688922ab",
+            "startedUtc": "2026-06-02T06:28:38.2332086Z",
+            "endedUtc": "2026-06-02T06:28:59.3417641Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Effect_SlimeCorridorTeleport.prefab",
+                    "prefabName": "Effect_SlimeCorridorTeleport",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 21.085987091064454,
+                    "lastSeenSeconds": 21.086589813232423,
+                    "firstSceneName": "SlimeCorridor",
+                    "lastSceneName": "SlimeCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "b42efb12d62f40c0b9edba5d41437b5e",
+            "startedUtc": "2026-06-02T06:31:20.7570806Z",
+            "endedUtc": "2026-06-02T06:31:22.5234142Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4b49d0badd7346e1ba725ff4dea14aa1",
+            "startedUtc": "2026-06-02T06:55:21.7158360Z",
+            "endedUtc": "2026-06-02T06:55:25.0179228Z",
+            "entries": []
+        },
+        {
+            "sessionId": "053f76b47ce0493e9daaa94c429e20df",
+            "startedUtc": "2026-06-02T06:57:10.1129153Z",
+            "endedUtc": "2026-06-02T06:57:13.6097819Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a443ef6a58084143b83d0096a4313628",
+            "startedUtc": "2026-06-18T06:39:23.8460087Z",
+            "endedUtc": "2026-06-18T06:39:26.4839972Z",
+            "entries": []
+        },
+        {
+            "sessionId": "45c37030e85540c2a219c01268a25449",
+            "startedUtc": "2026-06-18T10:20:13.9446108Z",
+            "endedUtc": "2026-06-18T10:20:16.8763125Z",
+            "entries": []
+        },
+        {
+            "sessionId": "c2e9c6dfc7a140e1b2f30a2ab1395f97",
+            "startedUtc": "2026-06-18T10:45:30.8986092Z",
+            "endedUtc": "2026-06-18T10:45:32.2875776Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a064f15ec37b4b67ab570e94b8898fa1",
+            "startedUtc": "2026-06-18T13:03:36.9019234Z",
+            "endedUtc": "2026-06-18T13:03:38.3830590Z",
+            "entries": []
+        },
+        {
+            "sessionId": "b19891fd318b415196d2fcc21a553b54",
+            "startedUtc": "2026-06-18T13:42:52.0553163Z",
+            "endedUtc": "2026-06-18T13:42:53.2597516Z",
+            "entries": []
+        }
+    ]
+}

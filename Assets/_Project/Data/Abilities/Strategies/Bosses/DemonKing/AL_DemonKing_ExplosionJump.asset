@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6bb83acd5ef4eff9c4a16dd9b68726a, type: 3}
+  m_Name: AL_DemonKing_ExplosionJump
+  m_EditorClassIdentifier: 
+  travelSeconds: 0.7
+  impactDiameter: 3.2
+  damage: 1
+  knockback: 12
+  radialWarningSeconds: 0.6
+  radialLineWidth: 1.3
+  radialFallbackLength: 40
+  radialExplosionDiameter: 1.35
+  radialExplosionSpacing: 1.35
+  radialExplosionStepInterval: 0.04
+  radialDamage: 1
+  jumpArcHeight: 1.35
+  landingFrameSwitchRatio: 0.78
+  jumpMotionProfile:
+    travelEndNormalized: 0.28
+    holdEndNormalized: 0.86
+    preDropEndNormalized: 0.96
+    preDropHeightScale: 0.9
+    travelEaseOutPower: 2.2
+    landingDropSharpness: 0.22
+  landingPoseHoldSeconds: 0.14
+  jumpTravelAnimation:
+    clip: {fileID: 0}
+    sampleMode: 1
+    frameIndex: 0
+    fallbackStateName: DarkLord_Hand_JumpAttack
+  jumpLandingAnimation:
+    clip: {fileID: 0}
+    sampleMode: 3
+    frameIndex: 0
+    fallbackStateName: DarkLord_Hand_JumpAttack
+  landingImpactVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 3
+    socketId: 5
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    flipX: 0
+    leaveFragment: 1
+  radialExplosionVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 1
+    socketId: 5
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    flipX: 0
+    leaveFragment: 1
+  jumpStartSound:
+    key: sound_boss_darklord_common_woosh_short
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  landingImpactSound:
+    key: sound_boss_darklord_common_smash
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  radialExplosionSound:
+    key: sound_boss_darklord_common_boom
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  landingImpactCameraShake:
+    amplitude: 0.18
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.35
+    minIntervalSeconds: 0.04
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  radialExplosionCameraShake:
+    amplitude: 0.08
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.18
+    minIntervalSeconds: 0.08
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0

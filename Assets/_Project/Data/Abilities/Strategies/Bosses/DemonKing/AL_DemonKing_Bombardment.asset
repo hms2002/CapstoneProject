@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c91001799674e4db8bea8498f120499, type: 3}
+  m_Name: AL_DemonKing_Bombardment
+  m_EditorClassIdentifier: 
+  strikeCount: 6
+  moveSeconds: 0.5
+  warningSeconds: 0.6
+  warningIntervalSeconds: 0.3
+  sideOffset: 4.8
+  laneWidth: 1.6
+  fallbackMapHeight: 40
+  explosionDiameter: 1.35
+  explosionSpacing: 1.35
+  damage: 1
+  releaseImpactPoseHoldSeconds: 1
+  chargeAnimation:
+    clip: {fileID: 0}
+    sampleMode: 0
+    frameIndex: 0
+    fallbackStateName: DarkLord_Hand_Charge
+  releaseAnimation:
+    clip: {fileID: 0}
+    sampleMode: 0
+    frameIndex: 0
+    fallbackStateName: DarkLord_Hand_GroggyCounter
+  postReleaseAnimation:
+    clip: {fileID: 0}
+    sampleMode: 1
+    frameIndex: 0
+    fallbackStateName: DarkLord_Hand_Idle
+  releaseImpactVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 3
+    socketId: 2
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    leaveFragment: 1
+  laneExplosionVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 2
+    socketId: 2
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1.5, y: 1.5, z: 1}
+    rotationOffsetDeg: 0
+    leaveFragment: 1
+  chargeSound:
+    key: sound_boss_darklord_common_magic_cast
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  releaseSound:
+    key: sound_boss_darklord_common_smash
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  explosionSound:
+    key: sound_boss_darklord_common_boom
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  bombardmentReleaseImpactCameraShake:
+    amplitude: 0.12
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.28
+    minIntervalSeconds: 0.04
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  explosionCameraShake:
+    amplitude: 0.08
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.18
+    minIntervalSeconds: 0.08
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0

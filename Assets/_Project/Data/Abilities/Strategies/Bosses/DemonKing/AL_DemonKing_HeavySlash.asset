@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5115f05ada8341f187efdb5cd78d0261, type: 3}
+  m_Name: AL_DemonKing_HeavySlash
+  m_EditorClassIdentifier: 
+  moveSpeedMultiplier: 4
+  fallbackMoveSeconds: 0.35
+  stopBeforeTargetDistance: 5
+  warningSeconds: 0.75
+  trackingWarningSeconds: 1
+  lockOnSeconds: 0.3
+  slashCommitDashSeconds: 0.16
+  slashCommitDashEaseOutPower: 2
+  slashRadius: 3.9
+  playerAnchorInWarningRadius: 0.5
+  slashAngle: 110
+  damage: 1
+  knockback: 10
+  fallbackLineLength: 40
+  lineWidth: 0.7
+  explosionSpacing: 1.35
+  explosionDiameter: 1.35
+  explosionWarningSeconds: 0.15
+  explosionStepInterval: 0.04
+  explosionDamage: 1
+  slashEndPoseHoldSeconds: 0.8
+  approachAnimation:
+    clip: {fileID: 0}
+    sampleMode: 0
+    frameIndex: 0
+    fallbackStateName: 
+  slashWarningAnimation:
+    clip: {fileID: 0}
+    sampleMode: 2
+    frameIndex: 1
+    fallbackStateName: DarkLord_Sword_Slash
+  slashCommitAnimation:
+    clip: {fileID: 0}
+    sampleMode: 3
+    frameIndex: 0
+    fallbackStateName: DarkLord_Sword_Slash
+  slashVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 7
+    socketId: 13
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 1, y: 1, z: 1}
+    rotationOffsetDeg: 0
+    flipX: 0
+    leaveFragment: 0
+  lineExplosionVfx:
+    prefabOverride: {fileID: 0}
+    fallbackKind: 2
+    socketId: 13
+    fallbackLeftOffset: {x: 0, y: 0}
+    targetSize: {x: 0, y: 0}
+    scale: {x: 2, y: 2, z: 1}
+    rotationOffsetDeg: 0
+    flipX: 0
+    leaveFragment: 1
+  approachSound:
+    key: sound_boss_darklord_common_woosh_short
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  slashCommitSound:
+    key: sound_boss_darklord_slash
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  lineExplosionSound:
+    key: sound_boss_darklord_common_boom
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  slashImpactCameraShake:
+    amplitude: 0.12
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.28
+    minIntervalSeconds: 0.04
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  lineExplosionCameraShake:
+    amplitude: 0.08
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.18
+    minIntervalSeconds: 0.08
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0

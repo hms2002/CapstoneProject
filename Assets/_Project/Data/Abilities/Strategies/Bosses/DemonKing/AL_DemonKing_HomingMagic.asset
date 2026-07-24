@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ea0a27cba5d45bdb8e9aa17f292de2b, type: 3}
+  m_Name: AL_DemonKing_HomingMagic
+  m_EditorClassIdentifier: 
+  projectileCount: 5
+  moveSeconds: 0.18
+  shotIntervalSeconds: 0.4
+  projectileSpeedMultiplier: 5
+  projectileRadius: 0.35
+  projectileDamage: 1
+  lifetimeSeconds: 4
+  orbSpawnRadius: 1.15
+  wallProbeRadius: 0.45
+  stockOrbVisualPrefab: {fileID: 8808659037425602002, guid: 50dd3114f6772a24fa61939f8b68a0e8, type: 3}
+  firedProjectileVisualPrefab: {fileID: 4471607187604428361, guid: 6cad5a6736f3f4645a074609daf12fb3, type: 3}
+  stockOrbBaseLocalOffset: {x: 0, y: 1.6}
+  stockOrbSpacing: 0.45
+  stockOrbArcHeight: 0.35
+  castAnimation:
+    clip: {fileID: 0}
+    sampleMode: 1
+    frameIndex: 0
+    fallbackStateName: DarkLord_Hand_Balt
+  fireAnimation:
+    clip: {fileID: 0}
+    sampleMode: 3
+    frameIndex: 0
+    fallbackStateName: DarkLord_Hand_Balt
+  castSound:
+    key: sound_boss_darklord_common_magic_cast
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  fireSound:
+    key: sound_boss_darklord_homingmagic_launch
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

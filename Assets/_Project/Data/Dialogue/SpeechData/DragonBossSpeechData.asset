@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 251da8bed3e9c1a4cbe56be8f469f57c, type: 3}
+  m_Name: DragonBossSpeechData
+  m_EditorClassIdentifier: 
+  bubbleTheme:
+    useCustomColors: 1
+    borderColor: {r: 0.827451, g: 0.6862745, b: 0.11764706, a: 1}
+    fillColor: {r: 0.6666667, g: 0.019607844, b: 0, a: 1}
+    fontColor: {r: 0.827451, g: 0.6862745, b: 0.11764706, a: 1}
+  entries:
+  - situation: 0
+    lines: []
+  - situation: 1
+    lines: []
+  - situation: 2
+    lines:
+    - "\uC220\uC774... \uBAA8\uC790\uB77C..."
+  - situation: 3
+    lines: []
+  - situation: 4
+    lines: []
+  - situation: 5
+    lines: []
+  - situation: 6
+    lines:
+    - "\uB4E4\uC774\uD0A8\uB2E4!"
+  - situation: 7
+    lines:
+    - "\uD06C\uC73C~ \uCDE8\uD55C\uB2E4~!"
+    - "\uC74C~ \uC88B\uB2E4~"
+  - situation: 8
+    lines:
+    - "\uC557 \uB728\uAC70!"
+  - situation: 9
+    lines:
+    - "\uC5B4\uC9C8\uC5B4\uC9C8\uD558\uAD70..."
+  - situation: 10
+    lines:
+    - "\uC798 \uD53C\uD574\uBD10~"

@@ -16,6 +16,7 @@ Map the upgrade tree UI navigation and purchase feedback flow after the overflow
 - `UpgradeTreeUI` builds node buttons and lines from `UpgradeManager.GetAllUpgrades()`.
 - `UpgradeTreeUI` owns content sizing, clamp/pan behavior, lake presentation hooks, and optional authored overflow arrow buttons.
 - `UpgradeSlotUI` owns node visual state and forwards click attempts to `UpgradeManager`.
+- `UpgradeFeature` blocks player control during the dialogue-exit handoff before `UpgradeManager.ToggleUI()` starts the normal UI open flow.
 - `UpgradeManager.TryBuyUpgrade(...)` is the public purchase entry point. Failed purchases are mapped to `WarningPopupCode`; successful purchases continue through `UpgradePurchaseCompletionService`.
 - `UIManager.ShowWarning(WarningPopupCode)` remains the shared warning popup entry point.
 
@@ -73,6 +74,7 @@ Map the upgrade tree UI navigation and purchase feedback flow after the overflow
 - `Assets/Scenes/LEeJunmo.unity` and `Assets/Scenes/LEeJunmo 1.unity` still contain legacy upgrade panel data from missing old prefab GUID `f323f5e4b95e66b46aa688b37b914038`. They are not build-enabled as of 2026-05-17, but they should be replaced with the current `UpgradeTreePanel.prefab` before being used as verified content.
 - The arrow movement assumes the existing centered content/clamp model. If the content anchor/pivot model changes, re-check direction mapping.
 - Locked nodes are now clickable for feedback. Verify cursor, hover, and disabled-looking presentation together so players understand the click shows a reason rather than purchases the node.
+- Upgrade NPC handoff should not use a `GameFlowInputBlocker` while waiting for dialogue blockers to release, because that would keep `UIManager.IsExternalUiInputBlocked` true and can prevent `UpgradeUiOpenFlow` from opening the owned stack UI. Use the existing player control tag lock for that wait.
 - Warning strings live in `UIManager.ResolveWarningMessage(...)`; avoid feature-local popup text unless the shared warning path becomes insufficient.
 - Generic upgrade reward display intentionally exposes missing node metadata. If a purchased node has no icon or description, fix the `UpgradeNodeSO` instead of restoring effect-level reward metadata for that node.
 - Do not reintroduce automatic or manual edit-mode LakePreview unless the editor mutation boundary is redesigned. The previous preview path was tied to recurring Inspector `EditorStyles.toolbarButtonRight` failures after prefab-asset mutation.

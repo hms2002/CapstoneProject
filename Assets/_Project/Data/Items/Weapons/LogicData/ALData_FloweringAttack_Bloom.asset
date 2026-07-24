@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a63ebaca08944ca85456b2de07751d1, type: 3}
+  m_Name: ALData_FloweringAttack_Bloom
+  m_EditorClassIdentifier:
+  hitboxPrefab: {fileID: 2863281621525748656, guid: f9c8eda549ac4a04b8f21cc4268e9ddb, type: 3}
+  randomHitboxPrefabs:
+  - {fileID: 2863281621525748656, guid: fd1a3d0cc4c0409ca5dd181e608a2a51, type: 3}
+  - {fileID: 2863281621525748656, guid: 9bba339dcc2547a38dca9b2c5ee9660d, type: 3}
+  activeTime: 0.2
+  hitboxSize: {x: 7.25, y: 4.25}
+  hitboxScaleMultiplier: {x: 1, y: 1}
+  overrideSizingMode: 1
+  sizingMode: 0
+  forwardOffset: 1.5
+  sideOffset: 0.5
+  sideSign: 1
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 2147483648
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  recoveryDuration: 0.055
+  nextAttackDelay: 0.055
+  animationTrigger:
+  animationTriggersByHitboxVariant:
+  - Swing_Bloom1
+  - Swing_Bloom2
+  - Swing_Bloom3
+  bloomSlashParticlePrefab: {fileID: 7504802840108214165, guid: cf510ff300e13494c98c0d4aed66f896, type: 3}
+  bloomSlashParticleLifetimeFallback: 1
+  bloomSlashSound:
+    key: ""
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  bloomSlashSoundsByHitboxVariant:
+  - key: sound_weapon_flowring_slash_1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: sound_weapon_flowring_slash_2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: sound_weapon_flowring_slash_3
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  damageConfig:
+    includeStaggerBuildUp: 1
+    includeElementBuildUp: 1
+    staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
+    elementFormulas: []
+    critAffectsElement: 1
+  damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+  damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+  knockbackFormula: {fileID: 11400000, guid: 886233d2a5002ae4facf46de4cb4864d, type: 2}
+  legacyDamage: 7
+  legacyStaggerDamage: 0
+  hitConfirmedTag: {fileID: 0}
+  hitImpactCueKind: 1

@@ -1,0 +1,292 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Boss_HeoMinSeok_Boss_Shadow
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Boss_HeoMinSeok_Boss_Shadow
+  m_GUID: e76f198821219ca488e83e6d1cb25cea
+  m_SerializeEntries:
+  - m_GUID: 0996b1910bd05a54eaad42f7f12f3740
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/shadowBoss_BreakDown.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 0c89c5f9457540d6a5d0c393c44b0c7e
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/ShadowBoss/AD_Witch_NormalAttack1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 0e847e021d5adf34b97d318e8aee2b94
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/AClip_ShadowBoss_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 198745b4e2f043d5a0f0c6e7bc7a6b99
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/ShadowBoss/AL_Witch_LightAllCandles.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 1c6c94b33ce899442a81cd081d857168
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/shadowBoss_Idle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24511839b2f251343810bc33ff5c54fc
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/CombatSprite/EffectSprite/Boss1Shield.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ca58749ac84f62498bc976d942cac64
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/CombatSprite/EffectSprite/Boss1ShieldIdleAnim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d4bfbc8021d90e4d9401d28ae1b1d53
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/CombatSprite/EffectSprite/Boss1NormalAttack2Anim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ec52fe02fb80f44da3a9107bd08a99a
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/CombatSprite/EffectSprite/Boss1ShieldAnim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cd2b238dcf8cbc49beada4f2518f401
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_290.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 3d9f7b2e6c4a4fd5a18be7f0c3d2a941
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/ShadowBoss/AD_Witch_ExtinguishCandle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43ee30a75155c3d4a8b07af31169268e
+    m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/WitchAttributeOverrideInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ff0ebf2f97045f5ae20f7594b681f87
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/ShadowBoss/AL_Witch_SealedCandleRampage.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 503dfd491e32de84889c91ada7e82579
+    m_Address: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1PhaseAttackFireBall.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 511311c3404bd3848af628d6d06f5f7a
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/CombatSprite/EffectSprite/Boss1PhaseAttackFireBall.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 537be2dc596b9474e881fad5fbce523e
+    m_Address: Assets/_Project/Prefabs/VFX/Particle/WitchNormal2AttackTileParticle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5589d56a2ad7cb24b854d45ddeafffd6
+    m_Address: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1Shield.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 573e2c50fe0a61b42a1f503837ef1053
+    m_Address: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1PhaseAttackBoom.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 6206e93e74546c04fa766fecb2bdc218
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/CombatSprite/EffectSprite/Boss1PhaseAttackFireBall_0.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 62f5eb603cb04309a0b2b370b4152ea4
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/ShadowBoss/AL_Witch_BasicAttack2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7282429da9b7468f9340e1de621d2d3c
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/ShadowBoss/AD_Witch_BasicAttack2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 7aa90a5c75e6f3949bfe16a0c1bd2926
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/CombatSprite/EffectSprite/Boss1NormalAttack2AnimCnt.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 7b4c91ec38bc898439801eccdbc0701c
+    m_Address: Assets/_Project/Prefabs/VFX/AnimEffect/Boss1NormalAttack2Boom.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87c8d9c5305f3f94f9e2d2f0faa14727
+    m_Address: Assets/_Project/Prefabs/VFX/Particle/WitchShieldBreakParticle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 882b550aaae4ee847bd7daac6759c19b
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_235.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 8c71a5f0e4db4aa6b3f24ce910d8b542
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/ShadowBoss/AL_Witch_ExtinguishCandle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8dbccf3ca7da42d88efb39ed3d1d2f20
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/ShadowBoss/AD_Witch_RetreatToCandle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 8efa07c22f5a3b44bb66f9cc3068cfa1
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/CombatSprite/EffectSprite/Boss1ShieldAnimCnt.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 900e8eeac487b5b41b95ccbd78628ce3
+    m_Address: Assets/_Project/Prefabs/Bosses/ShadowBoss/Witch.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 948a8aa49eb52f948a3a75538eff2b9e
+    m_Address: Assets/_Project/Prefabs/VFX/Particle/WitchNormal1AttackTileParticle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: 9c0d3fc3ff53c2e41b6e3b19a7ca5dc5
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/AClip_ShadowBoss_BreakDown.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: 9ea88592791f4d3eb7051d5c2e9f9564
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/ShadowBoss/AL_Witch_RetreatToCandle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a07ae8e7f7a349a9a9d79a5c4af4ab96
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/ShadowBoss/AD_Witch_SealedCandleRampage.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: a608ee60fffba8d4eb854d5bc25b5f65
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_578.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7bc0ad6984a5ec4a8737105d6a310c6
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_371.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af947b29830563940a12b445167b2452
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/CombatSprite/EffectSprite/BossPhaseAttackBoom1Anim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: b1f6e8fa2c2b48cc925e3f5ac1ffd2cb
+    m_Address: Assets/_Project/Data/Dialogue/SpeechData/WitchBossSpeechData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: b3cbf6478180162478fd48a8c2b75145
+    m_Address: Assets/_Project/Art/Animations/Bosses/ShadowBoss/Witch_Boss.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: b5241a76782b44ec892e9bff62fbeb80
+    m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/ShadowBoss/AD_Witch_LightAllCandles.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: b7df738cfdc784e45bf7c1f2aeb87dc3
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/CombatSprite/EffectSprite/BossPhaseAttackFireBall.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: bb13154b262064e419b705d221ebd3cb
+    m_Address: Assets/_Project/Prefabs/VFX/Particle/WitchPhasePatternAttackPaticle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd6075224a63408383d85a752fb3d67a
+    m_Address: Assets/_Project/Prefabs/Bosses/ShadowBoss/WitchNormalAttack1Tile.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: cfa34818bb06a9849821f87eacbe6130
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/CombatSprite/EffectSprite/BosePhaseAttackBoom1AnimCnt.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: effc80c402c4f67469668bb55f62e5b5
+    m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/CombatSprite/EffectSprite/376.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+<<<<<<< HEAD
+=======
+  - m_GUID: f14a219b0d1f4df4a16f9bcf6cf1a027
+    m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/ShadowBoss/AL_Witch_NormalAttack1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+>>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
+  - m_GUID: f5ac06d3a4a533043a038a419bce84a5
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/FinalBossLevelSet_6.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 647840fedf74f7e448aa9ca58418f4a4, type: 2}
+    - {fileID: 11400000, guid: 81f7633f36785af439b1b225a420f7a8, type: 2}
