@@ -15,8 +15,6 @@ MonoBehaviour:
   m_GroupName: Boss_LeeJunmo_Boss_DemonKing
   m_GUID: fa102a2f132e1774f9d30a13cea1f8a4
   m_SerializeEntries:
-<<<<<<< HEAD
-=======
   - m_GUID: 02f57a7260fd2a947b9b5c9fae756a28
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_916.asset
     m_ReadOnly: 0
@@ -27,7 +25,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 06f81f8df58f45643921ac066ddebf3c
     m_Address: Assets/_Project/Resources/DemonKing/Vfx/HomingMagicBaltProjectileVfx.controller
     m_ReadOnly: 0
@@ -48,8 +45,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 11bd4f97111209c409f1f59fa6da502f
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_793.asset
     m_ReadOnly: 0
@@ -65,14 +60,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 2b7866abdd17ae3459d6cf0df9f4b70d
     m_Address: Assets/_Project/Resources/DemonKing/Vfx/DemonChargeEffect_Loop.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 2c14532ac50c43ae8bf4014f3e724069
     m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/DemonKing/AL_DemonKing_ThrowEgoSword.asset
     m_ReadOnly: 0
@@ -103,20 +95,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 4630d2e3854bf0b4ca63e5b8fe4a0059
     m_Address: Assets/_Project/Art/Sprites/Bosses/DarkLord/DemonChargeEffectDisapear.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 491f23fc1a4f446b9d96674d3cb80068
     m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/DemonKing/AL_DemonKing_PierceCombo.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 497db6e798841574aaa3fcd284eb40c5
     m_Address: Assets/_Project/Art/Sprites/Bosses/DarkLord/DarkLord_Hand_Balt.anim
     m_ReadOnly: 0
@@ -127,8 +115,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 516a493666894e39b047214c814097ec
     m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/DemonKing/AL_DemonKing_ExplosionJump.asset
     m_ReadOnly: 0
@@ -144,14 +130,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 578f73783f693b64ab21f6740bca4285
     m_Address: Assets/_Project/Art/Sprites/Bosses/DarkLord/DemonKingExplosion.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 5f5e00449fac446081fc24302d5d8d74
     m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/DemonKing/AD_DemonKing_Hp50WallBounceRush.asset
     m_ReadOnly: 0
@@ -162,7 +145,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 63fdd436cc7d6c442ad611a8866338d1
     m_Address: Assets/_Project/Art/Animations/VFX/Attack/HomingMagicBaltProjectile.anim
     m_ReadOnly: 0
@@ -174,8 +156,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 698b3bd018452764eb3c55cca6f6dfc3
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_1627.asset
     m_ReadOnly: 0
@@ -186,7 +166,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6bd014784563abf44b764d7e83b960ed
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/FinalBossLevelSet_5.asset
     m_ReadOnly: 0
@@ -202,14 +181,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 74bbbd3d0fc745c69e7568a2dcf96128
     m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/DemonKing/AD_DemonKing_Bombardment.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 74d08d3d3cfc48b438bafca9e4469443
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/BaseLevel_2.asset
     m_ReadOnly: 0
@@ -220,8 +196,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 770c3edd41c857c499baa568e300c8f5
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_1590.asset
     m_ReadOnly: 0
@@ -232,20 +206,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 80597044822581548835583e4ec06273
     m_Address: Assets/_Project/Resources/DemonKing/Vfx/DemonKingExplosion_Play.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 8084361d79f517e42b1870d2dbd8e673
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_605.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 813f6908a2392d04bac648d97239c952
     m_Address: Assets/_Project/Art/Sprites/UI/IntroAndOutro/Outro/Outro2.png
     m_ReadOnly: 0
@@ -261,21 +231,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 85c430d11d5e45d3b3898a701992af2c
     m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/DemonKing/AL_DemonKing_HeavySlash.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 89cf55cae2c19e34b86ce510f322838b
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/BaseLevel_27.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 8af170295bd34ea47baaef6832962bcc
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_722.asset
     m_ReadOnly: 0
@@ -286,7 +251,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 8b3817e5d6f7b064389312e4b0000cb6
     m_Address: Assets/_Project/Art/Sprites/UI/IntroAndOutro/Outro/Outro1.png
     m_ReadOnly: 0
@@ -297,8 +261,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 9e405c98a3e32a646a7cd6e55958c027
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_918.asset
     m_ReadOnly: 0
@@ -309,7 +271,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a4415387b23521e4da212b581bdf670a
     m_Address: Assets/_Project/Art/Sprites/Bosses/DarkLord/EgoSword.png
     m_ReadOnly: 0
@@ -320,14 +281,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a754b9cf028a4ac982e027f4a5acf930
     m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/DemonKing/AD_DemonKing_PierceCombo.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a855f140929d4864bb0166b56e366c4f
     m_Address: Assets/_Project/Art/Sprites/Bosses/DarkLord/DarkLordSheet.png
     m_ReadOnly: 0
@@ -338,40 +296,31 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: b0a99ab1bf84426394b7f588e8241e4a
     m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/DemonKing/AL_DemonKing_RecallEgoSword.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b12f7980e2b684f4e81cc405d827503f
     m_Address: Assets/_Project/Resources/DemonKing/Vfx/DemonKingExplosionVfx.controller
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: b2adb0112597e9e4aaa6c85af1ca7c8a
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_849.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b470231532be23d40b48fd500ead67b4
     m_Address: Assets/_Project/Art/Sprites/Bosses/DarkLord/DemonChargeEffect.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: bc67ac6429dfaa24c8cc03ae3dbed73d
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_1588.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: bd18f7595ce49f641bb772ea473197c7
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/BaseLevel_61.asset
     m_ReadOnly: 0
@@ -388,8 +337,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: c3e2de8fbd554b60b73e11e71378cc6d
     m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/DemonKing/AL_DemonKing_EgoSwordCrossLaser.asset
     m_ReadOnly: 0
@@ -405,7 +352,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: d1a40000000000000000000000000001
     m_Address: Assets/_Project/Art/Sprites/Bosses/DarkLord/DarkLord_Sword_Idle.anim
     m_ReadOnly: 0
@@ -486,8 +432,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: d6e2ac5f41a14f67a0245b915d098d65
     m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/DemonKing/AD_DemonKing_EgoSwordVerticalStrike.asset
     m_ReadOnly: 0
@@ -508,14 +452,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: e58705b6d8e350149a322f1995a73886
     m_Address: Assets/_Project/Art/Sprites/UI/IntroAndOutro/Outro/Outro4.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: ea03a3381bdd49f7ae1df4d8378330a5
     m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/DemonKing/AD_DemonKing_HomingMagic.asset
     m_ReadOnly: 0
@@ -536,14 +477,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f549480af1b9b0541b2c7bb69e81cbd3
     m_Address: Assets/_Project/Resources/DemonKing/Vfx/DemonChargeEffectDisapear_Play.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: f59aa3373ffe01c41aef9a5fd82a8385
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_1589.asset
     m_ReadOnly: 0
@@ -559,20 +497,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f9c20d8f41913e14d93d1e304ed03f32
     m_Address: Assets/_Project/Art/Sprites/UI/IntroAndOutro/Outro/Outro3.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: fbe1aec036b14f048b1711020005177d
     m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/DemonKing/AD_DemonKing_RecallEgoSword.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
   m_SchemaSet:

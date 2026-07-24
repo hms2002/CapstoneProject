@@ -25,14 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 047ed15abad27984b88db2a1103fc278
     m_Address: Assets/_Project/Data/Attributes/Formulas/SF_ATKx2.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 06fb955e1ce9a9c41abb914e2af4dd01
     m_Address: Assets/_Project/Resources/Tags/Event.Input.Attack.Pressed.asset
     m_ReadOnly: 0
@@ -48,8 +45,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 09cf2a7744186794dbb618d28fc887df
     m_Address: Assets/_Project/Data/Attributes/Definitions/DamageCalcAttribute/SkillAddAttribute.asset
     m_ReadOnly: 0
@@ -65,7 +60,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 0cb9748ff72f7c74ab513387ceba11ad
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Grass/TX Tileset Grass Flower 2.asset
@@ -88,8 +82,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 0e177e1d15e428745b5859fac08ce203
     m_Address: Assets/_Project/Data/Attributes/Definitions/MaxHealthAttribute.asset
     m_ReadOnly: 0
@@ -105,14 +97,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 10c7d7bbe8e71244c8b78798cddf6484
     m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/ChestOpen.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 11045d46d80e1ce41b2cbfe4f6ce9b4d
     m_Address: Assets/_Project/Audio/Cele/1_1.wav
     m_ReadOnly: 0
@@ -123,27 +112,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 120636a7de76b144c88aaf6f02ac5b1f
     m_Address: Assets/_Project/Resources/Tags/Data.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 122086249f809784c84b56e9b99e367e
     m_Address: Assets/_Project/Data/Attributes/Definitions/Bosses/ShadowBoss/CurStagger.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 13c397bf609bfd6419f58cb78f10326a
     m_Address: Assets/_Project/Resources/Tags/State.Status.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 149e958a559e67e4cbe8b2c10926aa47
     m_Address: Assets/_Project/Audio/Player/PlayerActing/OpenInventorySound.wav
     m_ReadOnly: 0
@@ -170,7 +153,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 162b2c3c7ed3c8240995ad1799a0339a
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Grass/TX Tileset Grass Flower 6.asset
@@ -182,14 +164,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 16f1eeaaef50b1143884b22e4da54a5f
     m_Address: Assets/_Project/Data/Attributes/Definitions/KnockbackAttribute/KnockBackPowerMulAttribute.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 185fe7a2d371a914e9f2a7db7ca5129a
     m_Address: Assets/_Project/Resources/Tags/Element.asset
     m_ReadOnly: 0
@@ -201,41 +180,32 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 1a515275e1ca5604a87f1ce3d65e3d83
     m_Address: Assets/_Project/Prefabs/UI/PopupUI/PlayerInventoryUI/InventoryElementPannel.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 1ae37c64e6ecc29439546aa867fdb36e
     m_Address: Assets/_Project/Resources/Tags/TagSet/AllTagSet.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 1c748446d88e6e345b09cba95fad4e23
     m_Address: Assets/_Project/Data/Items/Weapons/Strategies/AL_RW_Attack1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 1c9ed9d1200c29d4cbfd2071028c1cd5
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Texture/TX Tileset Grass.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 1d28e4ac11e90704bacd7e64f1a0b8df
     m_Address: Assets/_Project/Data/Items/Weapons/LogicData/ALData_RW_Attack1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 1d56a304110f63a4fbab81eeacf6910a
     m_Address: Assets/_Project/Art/Sprites/UI/Cursor/_whiteGloveCursor32x32.aseprite
     m_ReadOnly: 0
@@ -257,8 +227,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 1f2641bce49c9884eaec41adfdfa29f3
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_AttackBonusRelic.asset
     m_ReadOnly: 0
@@ -289,14 +257,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 2264b2f6e65af3b41a9a7d89aa77ac0e
     m_Address: Assets/_Project/Resources/Tags/Event.Input.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 22abce9be96413640aed9d47f89c4130
     m_Address: Assets/_Project/Prefabs/UI/Upgrade/line.prefab
     m_ReadOnly: 0
@@ -307,15 +272,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 2367cb1fa5ebd9d4d9082b473634a906
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Grass/TX Tileset Grass Flower 9.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 23db6468e859c6f42b0230a5af7ca81c
     m_Address: Assets/_Project/Data/Attributes/Definitions/MoveSpeedMulAttribute.asset
     m_ReadOnly: 0
@@ -327,7 +289,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 24c3fdd0c9a4e0041aee9bca223e95d9
     m_Address: Assets/_Project/Art/Sprites/Player/Player_Walk.anim
     m_ReadOnly: 0
@@ -338,21 +299,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 265b276ebb1e5ba47afa0d99ea0822ed
     m_Address: Assets/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI_Consumable.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 27ab8ed529a1dc8489075e262f52eab4
     m_Address: Assets/_Project/Resources/Tags/State.Attacking.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 2870c5d0c51a4f8d94cc374194c787b1
     m_Address: Assets/_Project/Data/Abilities/Cues/Def_Cue_Hit_CameraShake.asset
     m_ReadOnly: 0
@@ -368,7 +324,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 29c9cded5e558164aaf8c9bf08aa1510
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Texture/TX Props.png
@@ -380,14 +335,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 2a2133b4854b68e4eb9a420c0bb3e215
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_SpeedMedal.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 2a8769d92a7d9e545aca68636c882ebe
     m_Address: Assets/_Project/Art/Sprites/Player/Player_Damaged.anim
     m_ReadOnly: 0
@@ -399,8 +351,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 2bcd85edc5475484393b3817272724af
     m_Address: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatRowView.prefab
     m_ReadOnly: 0
@@ -411,15 +361,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 2c670dc28da29e54da4c78aac2caebe8
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Grass/TX Tileset Grass Flower 11.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 2c8e2b555f632824fbc8a39cd7bcfc86
     m_Address: Assets/_Project/Data/Attributes/Definitions/DamageCalcAttribute/AttackMulAttribute.asset
     m_ReadOnly: 0
@@ -440,28 +387,22 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 2e2e8bd1bde4f78429bf913fa737505c
     m_Address: Assets/_Project/Resources/Tags/Data.Damage.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 2f5faaf6bd840544cb59f6d23905c40d
     m_Address: Assets/_Project/Data/Abilities/Effects/GE_Knockback_Spec.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 2f7c848c99f5ffc4b83d852b0107c7b2
     m_Address: Assets/_Project/Art/Sprites/Player/Pixel_Plains_Premium_Pack/Spark
       (White Ver.) 7x5.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 2fa45d25bb8e0e945912cde04492e6d1
     m_Address: Assets/_Project/Data/Attributes/Definitions/ElementAttribute/BloodElementBaseAttribute.asset
     m_ReadOnly: 0
@@ -472,14 +413,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 3101241e7fb201a47b74f696a9d89bc2
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/WeaponAnimation/AM_Idle.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 31156f12e65316e409d9858201c3ab8b
     m_Address: Assets/_Project/Data/Attributes/Formulas/StatTypeBindings.asset
     m_ReadOnly: 0
@@ -490,21 +428,17 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 31a959dc9c12f43438e29eb3fbf19a8b
     m_Address: Assets/_Project/Art/Sprites/VFX/Common/Retro Impact Effect Pack 2
       F.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 31f9ab79b532ed047b05bfe7604ef236
     m_Address: Assets/_Project/Data/Items/Weapons/LogicData/ALData_RW_Skill1_Rush.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 34303d25145ab104f8fabf97fe65552d
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Grass/TX Tileset Grass Flower 4.asset
@@ -516,27 +450,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 38bb5596a5afb1849a019e3bd04fe708
     m_Address: Assets/_Project/Data/Progression/Upgrades/New Upgrade Database.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 38fff8b5f0a464f4fa7dd878114bb1b2
     m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/All Chest Sheet.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 3b7c58c25137bb847a4b3ff4e06fed18
     m_Address: Assets/_Project/Prefabs/Camera/Main Camera.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 3c0b5083d360d9f4fab9b49ddfbc6134
     m_Address: Assets/_Project/Resources/Audio/DefaultAudioCatalog.asset
     m_ReadOnly: 0
@@ -547,21 +475,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 3cf73420df1732240b7c90837ff7efab
     m_Address: Assets/_Project/Data/Attributes/Definitions/ElementAttribute/FireElementAddAttribute.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 3d7d2ab34d724604b4063276897c4eb0
     m_Address: Assets/_Project/Resources/Tags/Cue.Status.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 3dbb80240a8ddb744a0525322aad2b6f
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_SpeedMedalBonus.asset
     m_ReadOnly: 0
@@ -613,21 +536,17 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 43f174d55bdb17848bfb4809e9220797
     m_Address: Assets/_Project/Resources/Tags/Event.Anim.SwordSkill2.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 459ea25ccbc709b44bfc9dcce46138d9
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Crit From
       Bonus Move Speed_Managed.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 463040bb33823754e9e159a83e20321a
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Grass/TX Tileset Grass 6.asset
@@ -644,36 +563,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 467ab97574ea03a469a2633a51aae8a3
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Fire Flat
       Bonus.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 46edeb50a3c50454ebceca0f0822b6ad
     m_Address: Assets/_Project/Art/Font/Galmuri9 SDF WhiteOutline.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 47d328b88c893e241a4c084d550218b7
     m_Address: Assets/_Project/Prefabs/VFX/Particle/FallingDust.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 482f111f39d0bb54587ed8f02772d8d6
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Wall/TX Tileset Wall_26.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4a2fd65cb07d41d2b4925014a094b1fe
     m_Address: Assets/_Project/Data/Dialogue/NPC/ShadowBossNpc.asset
     m_ReadOnly: 0
@@ -684,7 +595,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 4af3438a19a9ff54683d8233bd993349
     m_Address: Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_OneDropOfSwiftness.png
     m_ReadOnly: 0
@@ -695,8 +605,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4b0e3c35f3acd0441a039c0489db1967
     m_Address: Assets/_Project/Data/Attributes/Formulas/SF_Bleedx1.asset
     m_ReadOnly: 0
@@ -712,7 +620,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 4c48059ab2744ea42b818114a7133039
     m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/TopDown_Total.png
     m_ReadOnly: 0
@@ -724,14 +631,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4cf98b7d858f198459256a03d954c0d2
     m_Address: Assets/_Project/Data/Attributes/Definitions/DamageCalcAttribute/CritMultiplierAttribute.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 4e1c3565f6c57e34c811431616670c8d
     m_Address: Assets/_Project/Resources/Tags/State.Aim.asset
     m_ReadOnly: 0
@@ -743,28 +647,22 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4e35d4699f5d4db0a66010eb126c4ee1
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Move Speed
       By Current Health_Managed.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 4e4d801731fe93046b5adf65c9b432f7
     m_Address: Assets/_Project/Art/Shaders/M_UIPulseGlow.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4f5d1e3ffdcf18e4bbef58f59b785760
     m_Address: Assets/_Project/Data/Attributes/Definitions/StaggerAttribute/StaggerAddAttribute.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 5030382eb4c06ff479325888be7e06c1
     m_Address: Assets/_Project/Resources/Tags/State.Move.Intent.Blocked.asset
     m_ReadOnly: 0
@@ -781,8 +679,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 508e8a7b9bd177a4db23556497bbf018
     m_Address: Assets/_Project/Data/Attributes/Definitions/DamageCalcAttribute/FinalMulAttribute.asset
     m_ReadOnly: 0
@@ -808,21 +704,17 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 53bdedc3d917f83458902716124fcc3c
     m_Address: Assets/_Project/Resources/Tags/Element.Poison.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 53c44760e96f40b4859c04a3cab84d83
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Evasion From
       Bonus Move Speed_Managed.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 5424fec8c2d9a7642b05de83d75a9df7
     m_Address: Assets/_Project/Resources/Tags/Cue.Ability.Sword.End.asset
     m_ReadOnly: 0
@@ -851,8 +743,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 54b7224b39ab4c9f838f4f4df4198cc6
     m_Address: Assets/_Project/Data/Attributes/Definitions/DamageCalcAttribute/CritChanceBaseAttribute.asset
     m_ReadOnly: 0
@@ -863,7 +753,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 57824cd7e1612d14090d617a256eca53
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Grass/TX Tileset Grass Flower 13.asset
@@ -882,8 +771,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 594473e198894c54988fe51c84b79d3f
     m_Address: Assets/_Project/Data/Items/Weapons/Strategies/AL_SwordCombo2D.asset
     m_ReadOnly: 0
@@ -899,7 +786,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 5b0fa72a7621582478a135416a07cddb
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Grass/TX Tileset Grass Flower 10.asset
@@ -916,8 +802,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 5cc86fef14fe49c49b193dfb4cae2c42
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Move Speed
       Stack On Critical Hit_Managed.asset
@@ -979,15 +863,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 66dc6cbb5247f4842b2db3329d25bcaa
     m_Address: Assets/_Project/Art/Sprites/Player/Pixel_Plains_Premium_Pack/Characters
       24x24/PlayerSleep.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 670b570d06ab5f3419acbe3e7370e3a3
     m_Address: Assets/_Project/Data/Items/Weapons/Strategies/AL_SwordSkill1_Projectile.asset
     m_ReadOnly: 0
@@ -998,7 +879,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6896844baeba3b347b2fbd5bf032e0cc
     m_Address: Assets/_Project/Art/Sprites/UI/Dialogue/SpeechBubble.png
     m_ReadOnly: 0
@@ -1056,14 +936,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 6b22cb4e0ab0a194b968acb6b169cbfb
     m_Address: Assets/_Project/Data/Items/Consumables/CD_HealPotion.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6bc2fd7ae3b74a6f8e6de53d6f89ca42
     m_Address: Assets/_Project/Resources/Tags/Cue.Ability.Sword.Hit.Spark.asset
     m_ReadOnly: 0
@@ -1095,14 +972,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 6dd146133f44c4e45a1839cbed6f7ec4
     m_Address: Assets/_Project/Prefabs/UI/Combat/DamagePopupUI_World.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6e5063279097f8b4abb904145fd23e7c
     m_Address: Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_Stenographer.png
     m_ReadOnly: 0
@@ -1114,8 +988,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 711aa880d087e7947a08c111610ea4da
     m_Address: Assets/_Project/Audio/Cele/1_5.wav
     m_ReadOnly: 0
@@ -1147,7 +1019,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 738ea2b6f57bf694db5e21fc9908bf2d
     m_Address: Assets/_Project/Resources/Tags/Cooldown.Weapon.WingOfIllusion.asset
     m_ReadOnly: 0
@@ -1163,14 +1034,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 74bcbc64a07fc854ca2dade608e8c24c
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Feather Orbit_Managed.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 755ab3c630663d744a96650d8384220b
     m_Address: Assets/_Project/Resources/Tags/State.Move.asset
     m_ReadOnly: 0
@@ -1186,14 +1054,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 766ca51564fbc2149953760a712f78c3
     m_Address: Assets/_Project/Data/Items/Weapons/Strategies/AL_RW_Skill1_Rush.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 76a0eb89921157e448ea699f93e95564
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Grass/TX Tileset Grass 10.asset
@@ -1210,22 +1075,17 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 77a3db6579cf45940a7dae4896dde0db
     m_Address: Assets/_Project/Data/Attributes/Definitions/ElementAttribute/BloodElementAddAttribute.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 78357bde4dab3464886f927c077dc765
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Grass/TX Tileset Grass Flower 3.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 79413769ccdaf76459c9a65b806decda
     m_Address: Assets/_Project/Prefabs/UI/PopupUI/PlayerStatUI/PlayerStatSectionView.prefab
     m_ReadOnly: 0
@@ -1236,7 +1096,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 7b59fac30d8fb9f419829886f5ac309e
     m_Address: Assets/_Project/Art/Animations/UI/Emote Anim/IconAnimCtr.controller
     m_ReadOnly: 0
@@ -1248,8 +1107,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 7b7fd4d273ca49739198391f6ed4d309
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_DrunkenRush.asset
     m_ReadOnly: 0
@@ -1270,20 +1127,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 7c8af04be6bcbb84794e303f3f4c401c
     m_Address: Assets/_Project/Resources/Tags/Element.Fire.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 7d7ef88dcbf743f7b79623379d0cd8c6
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_HawkEmblem.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 7db914fcd0934ab4bfeef776fb3f8c96
     m_Address: Assets/_Project/Resources/Tags/Cue.Ability.Hit.asset
     m_ReadOnly: 0
@@ -1299,14 +1152,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 7e342b954b6721a409232120275d693a
     m_Address: Assets/_Project/Prefabs/Items/Weapons/Sword/Projectiles/PF_SwordSkill1_Projectile.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 7efd10f62effd664a95182d779aecf9b
     m_Address: Assets/_Project/Resources/Tags/Cue.Ability.Sword.CastStart.asset
     m_ReadOnly: 0
@@ -1317,8 +1167,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 7f3731180b19dfd49a133ce75c58992a
     m_Address: Assets/_Project/Data/Attributes/Definitions/DamageCalcAttribute/SkillBaseAttribute.asset
     m_ReadOnly: 0
@@ -1334,7 +1182,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 80e2cdbbf23063546b08b1f0741c8b17
     m_Address: Assets/_Project/Art/Sprites/NPCs/NPC1.png
     m_ReadOnly: 0
@@ -1346,8 +1193,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 81ebe564c6bd7d54a92e1093c59a8161
     m_Address: Assets/_Project/Data/Attributes/Definitions/DamageCalcAttribute/AttackAddAttribute.asset
     m_ReadOnly: 0
@@ -1358,7 +1203,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 82578c30453dcb04a88dce3cd193db5b
     m_Address: Assets/_Project/Resources/Tags/Element.Blood.asset
     m_ReadOnly: 0
@@ -1369,27 +1213,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 833da6051a098464bae9f36c56bf02a8
     m_Address: Assets/_Project/Audio/Cele/4_5.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 837c3c3beac45de458f179f50c7d7500
     m_Address: Assets/_Project/Resources/Tags/State.Move.ForceMove.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 84a4eef749e7f5a4ba2a18524b6ee7a4
     m_Address: Assets/_Project/Audio/Combat/SmallBoom.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 851fface87e33534281fcbb17a5fc4ae
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/WeaponAnimation/AC_GreenWeapon.controller
     m_ReadOnly: 0
@@ -1400,54 +1238,42 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 86f606da826554b40b2d47660998aa30
     m_Address: Assets/_Project/Data/Items/Weapons/Definitions/WD_WindWeapon.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 8743c8559250174429e1d0c2e08b2e77
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Grass/TX Tileset Grass Flower 7.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 87470a9667fda0046a5b54d8ab511e54
     m_Address: Assets/_Project/Data/Abilities/Effects/GE_Relic_MoveSpeedOnKill.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 87c7f3b44e6f74a49ad8cfcb49dae1de
     m_Address: Assets/_Project/Resources/Tags/Cue.HubSpawn.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 886233d2a5002ae4facf46de4cb4864d
     m_Address: Assets/_Project/Data/Attributes/Formulas/SF_KNOCKBACKx1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 88c91c7701d6a4241abc1bff8cbbe657
     m_Address: Assets/_Project/Art/Materials/FlashMat.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 89163a8e6b579e14c874528367814f0c
     m_Address: Assets/_Project/Data/Abilities/Definitions/AD_RW_Attack1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 8962ffe16144980439939f691764cb69
     m_Address: Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_HawkEmblem.png
     m_ReadOnly: 0
@@ -1458,14 +1284,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 8988a66d6fcecdc4d96e726824a7ed18
     m_Address: Assets/_Project/Prefabs/UI/EffectSlotUI.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 89e1aa74278e3db47bd54e4c8ed475a6
     m_Address: Assets/_Project/Resources/Tags/Cue.Ability.asset
     m_ReadOnly: 0
@@ -1486,22 +1309,17 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 8cef9fe746e9a704cb20026789b6fba7
     m_Address: Assets/_Project/Prefabs/Camera/PlayerCam.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 8db82f4787b62ca4091d3ae9b71b58ef
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Wall/TX Tileset Wall_1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 8eb2c7b462a64b63b892ef122f730b2d
     m_Address: Assets/_Project/Prefabs/VFX/HitCameraShake.prefab
     m_ReadOnly: 0
@@ -1517,7 +1335,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 90cc853a47e809d4e8baa4fbcd354709
     m_Address: Assets/_Project/Resources/Tags/State.Invulnerable.asset
     m_ReadOnly: 0
@@ -1539,8 +1356,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 94479dde93479a146a9bd51a982b12ca
     m_Address: Assets/_Project/Data/Attributes/Definitions/DamageCalcAttribute/SkillMulAttribute.asset
     m_ReadOnly: 0
@@ -1557,27 +1372,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 95ce5a36e2ecd1e48b524dbfa0c9c74d
     m_Address: Assets/_Project/Art/Sprites/UI/ToolTipFrame/ToolTipBox.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 965ec98195bcbe34f9512acce3712973
     m_Address: Assets/_Project/Prefabs/Items/Pickups/PF_WorldItemPickup2D.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 96d23f4b8cfcd894c895a2cebb4402fa
     m_Address: Assets/_Project/Art/Materials/SpeechBubbleOutLine.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 98f6e924c8c17394db1e7efbce94cf4c
     m_Address: Assets/_Project/Audio/Player/Pickups/GoldSound.wav
     m_ReadOnly: 0
@@ -1588,7 +1397,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 997f455d3df4c814bb80f597bb01a21f
     m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/ChestIdle.anim
     m_ReadOnly: 0
@@ -1599,41 +1407,32 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 99cd9d723ba00e14e8bf7327129f4aae
     m_Address: Assets/_Project/Prefabs/Map/Portal/ScenePortal.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 9cfe2171135f120429c700c27662a5d0
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Wall/TX Tileset Wall_6.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 9d165f8b57d39174c9634091c1bad251
     m_Address: Assets/_Project/Data/Progression/Upgrades/Effect/GraveRunModifierEffect.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 9d6f4b2a1c3641e59f8ab2d87ec41f73
     m_Address: Assets/_Project/Resources/Tags/State.Relic.OneDropOfSwiftness.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 9de8ce10bc35dcc4b8303cf7c074028a
     m_Address: Assets/_Project/Data/Dialogue/Affection/Effect_Affection_Unlock.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 9eb4d42439a761946a5375b3f3a69f4e
     m_Address: Assets/_Project/Resources/Tags/State.asset
     m_ReadOnly: 0
@@ -1665,21 +1464,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a18c5da0a9e3ce74bb0699bed51accde
     m_Address: Assets/_Project/Prefabs/VFX/Particle/GraveDust.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a1995babf3c4e3248bd2cb2878367096
     m_Address: Assets/_Project/Resources/Upgrades/Nodes/Node_639065978682121833.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a1a1c58fa8202454e90a9b2bf22fbb7b
     m_Address: Assets/_Project/Audio/BGM/HubBGM.wav
     m_ReadOnly: 0
@@ -1690,14 +1484,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a23fffd2b25f3824fb678b34be8c8d8b
     m_Address: Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_DrunkenRush.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a2b3c4d5e6f708192a3b4c5d6e7f8091
     m_Address: Assets/_Project/Data/UI/StatDisplays/PS_StatInfo_BleedDamage.asset
     m_ReadOnly: 0
@@ -1708,15 +1499,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a3de9d9dc10987d4ca90defb86d72c0b
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Wall/TX Tileset Wall_9.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a614422f03de7ff40b35c8b5f4ca74af
     m_Address: Assets/_Project/Data/Attributes/Definitions/ElementAttribute/BloodElementMulAttribute.asset
     m_ReadOnly: 0
@@ -1727,14 +1515,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a6f960d35c215d741a5fa4c9d995bc41
     m_Address: Assets/_Project/Art/Sprites/UI/ToolTipFrame/SlotFrame.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a703341cc9a31ff4aaf1c6e131d61055
     m_Address: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_Npc_Upgrade.spriteLib
     m_ReadOnly: 0
@@ -1745,20 +1530,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a7522a6003348184eafe95ccbb16e5fb
     m_Address: Assets/_Project/Resources/Upgrades/Nodes/Node_639065978627947690.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a901646dacf2764408f638b7cdbb3663
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_BloodBonusRelic.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a92865e26d3cf354ba841c7845806b14
     m_Address: Assets/_Project/Resources/Tags/State.Move.External.asset
     m_ReadOnly: 0
@@ -1775,14 +1556,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: ab12cd34ef56ab78cd90ef12ab34cd56
     m_Address: Assets/_Project/Data/UI/StatDisplays/PS_Section_BasicStats.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: ab3da0d16c8c0bb4db636386a1b79068
     m_Address: Assets/_Project/Resources/Tags/Cooldown.Weapon.WingOfIllusion.Skill1.asset
     m_ReadOnly: 0
@@ -1805,14 +1583,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: ac5ff33387b8e384ea5c5452dcc2efcc
     m_Address: Assets/_Project/Data/Attributes/InitProfiles/BASEAttributeInitProfile.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: adf1e302fb349784ba09184eb69dfd8f
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Wall/TX Tileset Wall_0.asset
@@ -1836,8 +1611,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: b1c2d3e4f5061728394a5b6c7d8e9f01
     m_Address: Assets/_Project/Data/UI/StatDisplays/PS_StatInfo_Attack.asset
     m_ReadOnly: 0
@@ -1848,27 +1621,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b21ecde7f4efbae44b88a07fc7a7610e
     m_Address: Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_TonicGombangdae.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: b251156f213121b499ab9513f1692f66
     m_Address: Assets/_Project/Prefabs/UI/PopupUI/WarningPopupUI.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b34279c6353a8ef47bee1424ebf22a0f
     m_Address: Assets/_Project/Resources/Tags/State.Skill.Blocked.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: b3c4d5e6f708192a3b4c5d6e7f8091a2
     m_Address: Assets/_Project/Data/UI/StatDisplays/PS_StatInfo_PoisonDamage.asset
     m_ReadOnly: 0
@@ -1884,28 +1651,22 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b6bf52d8442ce1847a688215b6ba04da
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Wall/TX Tileset Wall_4.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: b6d023793bc803444983040e2003b1b9
     m_Address: Assets/_Project/Data/Dialogue/NPC/NPC Database.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b6d21e4c9f5a41f1a8c3e7d2b4f690ab
     m_Address: Assets/_Project/Resources/Tags/State.Relic.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: b9c79b9448814f2408077eff50c01aeb
     m_Address: Assets/_Project/Data/Attributes/Definitions/AttributeCatalog.asset
     m_ReadOnly: 0
@@ -1916,7 +1677,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: bab38f133773b06409ea581236ed7215
     m_Address: Assets/_Project/Art/Sprites/VFX/AttackEffects/WindWeapon/Hardslash-Sheet.png
     m_ReadOnly: 0
@@ -1927,61 +1687,47 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: bc23de45f067bc89de01f234bc45de67
     m_Address: Assets/_Project/Data/UI/StatDisplays/PS_Section_CombatStats.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: bc5dc7440ad16f045b3a71f996721562
     m_Address: Assets/_Project/Art/Font/Galmuri9 SDF Material_blackOutline.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: bd078173c9092104dbc43ac575e1d092
     m_Address: Assets/_Project/Data/Attributes/Definitions/StaggerAttribute/StaggerMulAttribute.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: bd1117e312879d84593b0fa7207a79a5
     m_Address: Assets/_Project/Resources/Tags/State.Equip.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: beac3d8a478eebb45a9cbef082420e8f
     m_Address: Assets/_Project/Prefabs/VFX/Particle/ChestDust.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: c086a6521210eb943b1188d8edf40d54
     m_Address: Assets/_Project/Resources/Tags/Event.Anim.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: c0e9e82eb0ce4caa9efb337cb57764ff
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_RunningLedger.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: c0f664a74aa88e144b91be61242700c8
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Wall/TX Tileset Wall_15.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: c11e55e5307a4f61b594d95d8ff8fafe
     m_Address: Assets/_Project/Data/Attributes/Definitions/DamageCalcAttribute/EvasionMulAttribute.asset
     m_ReadOnly: 0
@@ -1997,7 +1743,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: c30a836c12b5ca046b8850c5500adff0
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Wall/TX Tileset Wall_2.asset
@@ -2024,8 +1769,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: c533138d8146e6a4ca87047a09f1c04d
     m_Address: Assets/_Project/Data/Progression/RunTimer/RunTimeLimitConfig.asset
     m_ReadOnly: 0
@@ -2046,27 +1789,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: c7e6d4f3fa724348af1ff1ad85b7df41
     m_Address: Assets/_Project/Resources/Tags/Cue.Ability.Dash.Dust.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: c91e5a6f24b94ef0a2d6c4b8f93e7a12
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Stenographer_Managed.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: cac1046499d28814a91fcb2631757240
     m_Address: Assets/_Project/Resources/Tags/State.Equip.Weapon.Sword.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: cac88c9620b50844baf46e203a9d222c
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_FireBonusRelic.asset
     m_ReadOnly: 0
@@ -2082,7 +1819,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: cc05db3731cb2e447b06a5902cb16b6c
     m_Address: Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedMedal.png
     m_ReadOnly: 0
@@ -2093,14 +1829,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: cd34ef560178cd90ef12a345cd56ef78
     m_Address: Assets/_Project/Data/UI/StatDisplays/PS_PlayerStatPanel.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: cd739c4b4eb31934494017ea1d34324b
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Grass/TX Tileset Grass 15.asset
@@ -2112,14 +1845,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: ceac7d882133b0e4f8d2cc9704e63b44
     m_Address: Assets/_Project/Data/Items/Weapons/LogicData/ALData_SwordSkill2_BigSlashData.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: cf0fd416c24b3fe47951011efb5f02a4
     m_Address: Assets/_Project/Resources/Tags/Cue.Ability.Sword.Commit.asset
     m_ReadOnly: 0
@@ -2136,8 +1866,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: d1158f72c909d4d4c8e74047e7ea8cf0
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Blood Flat
       Bonus.asset
@@ -2159,7 +1887,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: d2373b45df9230f40b4aef0e7fb4d969
     m_Address: Assets/_Project/Resources/Tags/State.Equip.Weapon.asset
     m_ReadOnly: 0
@@ -2180,21 +1907,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: d492a6f1c1a7fc84bb3b44a619dcfd4f
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_RotatingIornBall.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: d4d6195a317245c2a40ea5e3fd767750
     m_Address: Assets/_Project/Resources/Tags/Cue.Ability.Hit.CameraShake.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: d52e56b3618f0a6409f0327c512b094b
     m_Address: Assets/_Project/Audio/Player/Weapon/SwordAtkSound2.wav
     m_ReadOnly: 0
@@ -2210,7 +1932,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: d77199b41d2e31b4a8236dd92440d8d4
     m_Address: Assets/_Project/Resources/Upgrades/Nodes/Node_639065978678803571.asset
     m_ReadOnly: 0
@@ -2221,34 +1942,26 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: d808a1e0c7ccc7e48abc50b9a9884b61
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_TonicGombangdae.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: d8b1bcc7606500d48a89ebd8803f0518
     m_Address: Assets/_Project/Art/Sprites/Player/Player_LookAround.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: d923279fb7e24aa19162adcd29a3c67e
     m_Address: Assets/_Project/Data/Attributes/Definitions/DamageCalcAttribute/CritChanceAddAttribute.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: d950f06d53ce11c41b1f7b2cb791c628
     m_Address: Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_SpeedBoots.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: d9ef2aea03d3ddf4488a762102786dde
     m_Address: Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset
     m_ReadOnly: 0
@@ -2284,15 +1997,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: de17a1cff7186dc4e81bd03c2256da56
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Wall/TX Tileset Wall_18.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: deefe42969a307d40a31e42bcf4d065b
     m_Address: Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/weaponstatLineview.prefab
     m_ReadOnly: 0
@@ -2333,7 +2043,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: e56da427db9e7c147b3012603805adf9
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Wall/TX Tileset Wall_3.asset
@@ -2350,35 +2059,27 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: e6cf7f0dfc7a4f0ab23e38d2b55ccf91
     m_Address: Assets/_Project/Prefabs/VFX/Particle/HitSpark.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: e75f469ea29530246a4a0543396316af
     m_Address: Assets/_Project/Art/Sprites/UI/HeartUIAsset/Free Version 1.1/SpriteSheet/Spritesheet.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: e7c57860bd90b7b428e2c99a0ce96b27
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Attack Flat
       Bonus.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: e809d100ca0f64b49b908914afeaf7eb
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/WeaponAnimation/AM_Swing3.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: e8c66adacdbd18041b772666332adb28
     m_Address: Assets/_Project/Prefabs/UI/PopupUI/PlayerWeaponInfoUI/Panel_AbilityBlock.prefab
     m_ReadOnly: 0
@@ -2389,14 +2090,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: e9f09b62f1bcb1c4a90a88d19e15a81c
     m_Address: Assets/_Project/Resources/Tags/Cue.Ability.Sword.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: eb057c0a7b239b742a001ee568ef4027
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset
     m_ReadOnly: 0
@@ -2407,7 +2105,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: ecf3ef1f54c629e40a9659ab9afec7e8
     m_Address: Assets/_Project/Resources/Tags/Event.Anim.SwordSkill2.Hit.asset
     m_ReadOnly: 0
@@ -2435,8 +2132,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: eda71161947bc124aa945c189b07d07a
     m_Address: Assets/_Project/Prefabs/UI/Portraitlmage.prefab
     m_ReadOnly: 0
@@ -2447,7 +2142,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: ef16b2ddeb64123459076c2c8a541a63
     m_Address: Assets/_Project/Art/Sprites/UI/Dialogue/bubble emotes july update.png
     m_ReadOnly: 0
@@ -2464,8 +2158,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: f09848183e09c7742bef1b7b1deecdfd
     m_Address: Assets/_Project/Prefabs/VFX/Cues/PF_Cue_Falling.prefab
     m_ReadOnly: 0
@@ -2521,20 +2213,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f54e8cb58b4f7c64292067442e9286c7
     m_Address: Assets/_Project/Resources/Tags/Cue.Trap.Falling.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: f569d34990ab7514fa546779656d80cb
     m_Address: Assets/_Project/Data/Dialogue/NPC/MSUpgradeNpc.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f5bce4b9585a8514e81572c61b5b6460
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Wall/TX Tileset Wall_14.asset
@@ -2547,40 +2235,31 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: f78d3b0600533dc48a3e084721856508
     m_Address: Assets/_Project/Audio/Combat/BigBoom.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f7d51401451185841b66a213c785ee31
     m_Address: Assets/_Project/Art/Shaders/SpriteGroggyBreak.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: f836f4795e60fd54f9a4e401de9d7dd9
     m_Address: Assets/_Project/Data/Attributes/Formulas/SF_ATKx1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f891dbf6eb980e447b2d7d8a74a386fd
     m_Address: Assets/_Project/Art/Sprites/Items/RelicIcon/Icon_WindTablet.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: f913bf663f3b49c4999d2d84ce2b0cbe
     m_Address: Assets/_Project/Prefabs/UI/WeaponHUDUI/Skill1UI.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f9d3659cd88f4be428be66ebef6620fd
     m_Address: Assets/_Project/Resources/Tags/State.Move.Intent.asset
     m_ReadOnly: 0
@@ -2596,8 +2275,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: fab1dd76add51c74db9dbb7b0f424204
     m_Address: Assets/_Project/Data/Abilities/Effects/Bosses/ShadowBoss/GE_Groggy_Status.asset
     m_ReadOnly: 0
@@ -2608,7 +2285,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: fde966f9052442118618165742e0c459
     m_Address: Assets/_Project/Resources/Tags/State.Move.Dash.Blocked.asset
     m_ReadOnly: 0

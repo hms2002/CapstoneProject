@@ -36,14 +36,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 1a3ab0dc090843ed9c77ee62bddbd2bb
     m_Address: Assets/_Project/Data/Abilities/TelegraphStyles/Bosses/ShadowBoss/AttackTelegraphStyle_WitchNormalAttack1Hit.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 240379a1019f569448e1cc275c9ac590
     m_Address: Assets/_Project/Art/Sprites/VFX/Common/Explosion.png
     m_ReadOnly: 0
@@ -59,14 +56,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 36e8de909969b71439d78cf3be869967
     m_Address: Assets/_Project/Prefabs/VFX/Common/Effeect_FallingRock.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 4900ff9f4d202364dae20e9a4eba6f10
     m_Address: Assets/_Project/Art/Animations/VFX/Common/AClip_Effect_GoblinGunnerShot.anim
     m_ReadOnly: 0
@@ -87,14 +81,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7
     m_Address: Assets/_Project/Data/Abilities/TelegraphStyles/Bosses/ShadowBoss/AttackTelegraphStyle_WitchMapWideWarning.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 67d9efdbe6d8e4e499a5f2a825dcc433
     m_Address: Assets/_Project/Art/Animations/VFX/Common/SlimeCorridorTeleportEffectAnim.anim
     m_ReadOnly: 0
@@ -110,8 +101,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 80887572fb543c54ab92e347139c0eac
     m_Address: Assets/_Project/Prefabs/VFX/Common/Effect_SlimeQueenP2Long_WaterPillar.prefab
     m_ReadOnly: 0
@@ -122,7 +111,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 8f479052aa51019459025261cab6334c
     m_Address: Assets/_Project/Art/Sprites/VFX/Common/Status Effects Sprite Sheet.png
     m_ReadOnly: 0
@@ -133,8 +121,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a007a9f51facfcb428c22ce2d3727a82
     m_Address: Assets/_Project/Prefabs/VFX/Common/Effect_AttackSmoke_GoblinTank.prefab
     m_ReadOnly: 0
@@ -145,20 +131,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: bf57765bce650384a9c73e962bb181ae
     m_Address: Assets/_Project/Art/Animations/VFX/Common/AC_Effect_GoblinGunnerShot.controller
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: d579f2466bb155e469dcf0bc0f5d2c08
     m_Address: Assets/_Project/Prefabs/VFX/Common/Effect_GoblinGunnerShot.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: d71abec495559bf46ad1bf79d38f86c7
     m_Address: Assets/_Project/Art/Animations/VFX/Common/AClip_SlimeQueenP2Long_WaterPillarEffect.anim
     m_ReadOnly: 0
@@ -180,14 +162,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: f166f23f9f48da94cb907ee26c5ca34c
     m_Address: Assets/_Project/Prefabs/VFX/Common/Effect_AcaneTankGolemSlam.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f57ffa3e4197f6f45bf4b4b15f11519f
     m_Address: Assets/_Project/Art/Animations/VFX/Common/AC_Effect_AcaneTankGolemSlamBack.controller
     m_ReadOnly: 0

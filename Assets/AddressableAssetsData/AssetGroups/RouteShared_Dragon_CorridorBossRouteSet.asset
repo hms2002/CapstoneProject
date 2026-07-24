@@ -25,14 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 063a1b5ad44412642b105047dd0a3a9d
     m_Address: Assets/_Project/Prefabs/Map/Puddles/AlcoholPuddle.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 0756acb3876f2fe41bd0054be40df858
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_210.asset
     m_ReadOnly: 0
@@ -53,14 +50,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 18f972a4ea694f2a8ab0d759de48f6d7
     m_Address: Assets/_Project/Data/Abilities/Effects/GE_Puddle_AlcoholBuff.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 1b301a1163c245547b17e8189427ac10
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_298.asset
     m_ReadOnly: 0
@@ -181,14 +175,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 61d44a21f2254df58be3bc51ab355395
     m_Address: Assets/_Project/Data/Abilities/Effects/SHD_Puddle_AlcoholBuff.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6381a51d56edf6c4089caf6be074034b
     m_Address: Assets/_Project/Art/Sprites/Monsters/DragonLevel_BeerMonster/Drink.png
     m_ReadOnly: 0
@@ -294,14 +285,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: c43ff3a0386243e6a31be32978c1b875
     m_Address: Assets/_Project/Data/Abilities/Effects/CBD_Puddle_AlcoholBuff.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: c8b3b7bb9af1bf141b06b13cfcaf4605
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_672.asset
     m_ReadOnly: 0
@@ -337,14 +325,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: e1c1813b39c39fe4fbf8a71730e056eb
     m_Address: Assets/_Project/Prefabs/Map/Puddles/FirePuddle.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: e5d17e17ae3cfdd4b92a25ec2d03d21c
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_623.asset
     m_ReadOnly: 0

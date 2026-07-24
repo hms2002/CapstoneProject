@@ -15,14 +15,11 @@ MonoBehaviour:
   m_GroupName: RouteCorridor_ShadowCorridorBossRouteSet
   m_GUID: a6c11e8a2735f6242bf3107cac784b92
   m_SerializeEntries:
-<<<<<<< HEAD
-=======
   - m_GUID: 04af824bf0cb4e8a8b00c9f435d8a7d6
     m_Address: Assets/_Project/Prefabs/Items/Chests/LowRewardTreasureChest.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 065ccc09df0a48a46971d59786e0cd92
     m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowMonster/ShadowMonster_AttackReady.anim
     m_ReadOnly: 0
@@ -33,14 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 0b51d4a4499f87a48946b57538449b77
     m_Address: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowMonster.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 162048fde42ec0942a0b4752a23c38ed
     m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowMonster/ShadowMonster.controller
     m_ReadOnly: 0
@@ -51,14 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 28441196a97f8fb44a03f7d46679b998
     m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/ShadowMonsterAttributeOverrideInitProfile.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 349ab909529296a4096f41602498ece4
     m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/LowRewardChest_Idle.anim
     m_ReadOnly: 0
@@ -69,14 +60,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 5e89eb95f23546e9bd1a9c08f9fdcb2c
     m_Address: Assets/_Project/Data/Abilities/Definitions/Monsters/Shadow/AD_ShadowServantAttack.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 78ad9bb39ac5f284bbe1dc2c6595339d
     m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowServant/ShadowServant.png
     m_ReadOnly: 0
@@ -87,8 +75,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a1e8bdfe44ef425ab0be125a3a3a71c1
     m_Address: Assets/_Project/Data/Abilities/Strategies/Monsters/Shadow/AL_ShadowServantAttack.asset
     m_ReadOnly: 0
@@ -104,7 +90,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: ab6145f2779856c4197eda25849837e8
     m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowMonster/ShadowMonster_Die.anim
     m_ReadOnly: 0
@@ -131,14 +116,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: e7be3ad5779e20541ab5d6f8a0efdc8a
     m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/ShadowServantAttributeOverrideInitProfile.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f2d4459affba18d458fa47f6aae358df
     m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowMonster/ShadowMonster_Attack.anim
     m_ReadOnly: 0

@@ -12,15 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 767d1b85a4efadf4d9ef7f6b61591588, type: 3}
   m_Name: DefaultAudioCatalog
   m_EditorClassIdentifier: 
-<<<<<<< HEAD
-<<<<<<< HEAD:Assets/LeeJunMo/Datas/Resources/Audio/DefaultAudioCatalog.asset
-  globalVolumeMultiplier: 1
-=======
   globalVolumeMultiplier: 10
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27:Assets/_Project/Resources/Audio/DefaultAudioCatalog.asset
-=======
-  globalVolumeMultiplier: 10
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   bgmFadeInSeconds: 0.5
   bgmFadeOutSeconds: 0.5
   entries:
@@ -46,7 +38,7 @@ MonoBehaviour:
     variantPlaybackMode: 0
     variants:
     - {fileID: 8300000, guid: 14dc4aac306a3a34ca5a10eb1e2395d2, type: 3}
-    volume: 0.14
+    volume: 0.08
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -1310,7 +1302,7 @@ MonoBehaviour:
     variantPlaybackMode: 0
     variants:
     - {fileID: 8300000, guid: 14e63e180132b0347a0eeda76c9b4eb3, type: 3}
-    volume: 0.2
+    volume: 0.8
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1

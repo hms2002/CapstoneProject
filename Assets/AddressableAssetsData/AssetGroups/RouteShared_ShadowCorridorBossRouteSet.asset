@@ -30,14 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 0ffeb9f1ddd83004581da65f89f54a94
     m_Address: Assets/_Project/Data/Attributes/InitProfiles/Dead'sSkeletonAttributeOverrideInitProfile.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 1f2cc6f17006f3b47a80490d440fde2d
     m_Address: Assets/_Project/Art/Sprites/Monsters/Dead'sSkeleton/DeadsSkeleton_Die.anim
     m_ReadOnly: 0
@@ -68,8 +65,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4429a472918e4189afc5e29e85f1b122
     m_Address: Assets/_Project/Data/Abilities/Effects/BDAD_ShadowFogRestrictedVision.asset
     m_ReadOnly: 0
@@ -80,7 +75,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 5c31084ebbb4f95408dc108afc0380f5
     m_Address: Assets/_Project/Art/Sprites/Monsters/Dead'sSkeleton/DeadsSkeleton_Float(SelfDestructionMode).anim
     m_ReadOnly: 0
@@ -116,8 +110,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 6c1118ae2aa440f692b692b537fc4e3d
     m_Address: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/WitchShieldBreakerProjectile.prefab
     m_ReadOnly: 0
@@ -128,7 +120,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6fbe7179acdd9654690e1ed0df36687e
     m_Address: Assets/_Project/Art/Sprites/Monsters/AC_DeadSkeletonExplosionPurple.controller
     m_ReadOnly: 0
@@ -144,14 +135,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 7e3dd9b93aa3a5b498afc1b7b958ee42
     m_Address: Assets/_Project/Prefabs/VFX/Particle/ExplosionParticle.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 7f52a2908dd5a5a4e8f8f0ede3f4c230
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_668.asset
     m_ReadOnly: 0
@@ -162,27 +150,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 8205271ee5fb4886a1be52f209910f74
     m_Address: Assets/_Project/Data/Abilities/Strategies/Monsters/Common/AL_DeadsSkeletonSelfDestruct.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 83cf1c06b1eab384b9bccc342c1f51d9
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_209.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 84e107a2d896c944b86df050ad0becb7
     m_Address: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/Candlestick.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 8d8bdbd510131be4a8a5ecc3b935cdd0
     m_Address: Assets/_Project/Art/Sprites/Monsters/Explosion(Purple).anim
     m_ReadOnly: 0
@@ -198,14 +180,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 983d63dce5dc9454a9a74287a2ed4d94
     m_Address: Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/Fog.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 9a7d6384d742c5145997d3e7376776ea
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_673.asset
     m_ReadOnly: 0
@@ -221,27 +200,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a6b7d8d7626f416cb0dca7f4dca90fb3
     m_Address: Assets/_Project/Data/Abilities/Definitions/Monsters/Common/AD_DeadsSkeletonSelfDestruct.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a97f02dd8f414d54f8766fd718eadbb0
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_626.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: b1f84c1064c662345a49453bf9a8fd34
     m_Address: Assets/_Project/Prefabs/Monsters/ShadowCorridor/Dead'sSkeleton.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b3108cbb23fff4c489b9325eb7d51737
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_627.asset
     m_ReadOnly: 0
@@ -307,14 +280,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: f3e6d674c38bfa3459b9aa0e37af577d
     m_Address: Assets/_Project/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: fb155a11063b8d1468da0d19178440fe
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_A_576.asset
     m_ReadOnly: 0

@@ -175,14 +175,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 33b854f19d6b46b199fec6dd94c30040
     m_Address: Assets/_Project/Data/Abilities/Strategies/Monsters/Common/AL_BeerMonsterShot.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 3426509cdd854d7408fa08f7ffd95021
     m_Address: Assets/_Project/Art/Sprites/Monsters/DragonLevel_BeerMonster/Die_DragonLevel_BeerMonster.anim
     m_ReadOnly: 0
@@ -193,14 +190,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 38e9dd3c667a35a4eb873d65aef72150
     m_Address: Assets/_Project/Prefabs/Map/ShortCut/Lever.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 3a6b04dee2d0a3f4e9a29e9779317103
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_58.asset
     m_ReadOnly: 0
@@ -226,14 +220,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 3f5ff6b5c99e4e5da8df23347c49d472
     m_Address: Assets/_Project/Prefabs/Monsters/BeerMonster.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 3fb5d17ff0ffc494e8b9ea619590d4e4
     m_Address: Assets/_Project/Art/Sprites/VFX/BeerMonster/Beer Barrage.png
     m_ReadOnly: 0
@@ -269,14 +260,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 519a868c47cf431197fc4a31a8afbf48
     m_Address: Assets/_Project/Data/Abilities/Definitions/Monsters/Common/AD_BeerMonsterShot.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 52c4e2a2cf042444592e6a777bfd5cc1
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_983.asset
     m_ReadOnly: 0
@@ -352,14 +340,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 64509a90bf026d84792768de01688456
     m_Address: Assets/_Project/Prefabs/VFX/Particle/LeverSpark.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 64771a9ee0b00a2409241923afd634ae
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_73.asset
     m_ReadOnly: 0
@@ -380,14 +365,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 65ca1f2eee8b2d24d9c87f09a5118827
     m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/BeerMonsterAttributeOverrideInitProfile.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6987b2667505a464f8468da5630a0847
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_827.asset
     m_ReadOnly: 0
@@ -703,14 +685,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: ca526788b6ca8554e85d442937407f1e
     m_Address: Assets/_Project/Prefabs/Monsters/Projectiles/PF_BeerMonsterProjectile.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: cb002a853f6ee0f42933258bd610c29b
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_B_472.asset
     m_ReadOnly: 0

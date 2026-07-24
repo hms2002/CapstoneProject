@@ -20,21 +20,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 010cc44b39804e8cb732b3fc8d1b3ea6
     m_Address: Assets/_Project/Data/Abilities/Definitions/AD_ApprenticeHeroSwordSkill1_ChargeSpin.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 029c5112df3595748a607069bf530938
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeaponSkill2.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 04127d891a47469988e871b3201c0573
     m_Address: Assets/_Project/Data/Abilities/Definitions/AD_OddIronBarrage.asset
     m_ReadOnly: 0
@@ -50,7 +45,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 059b138e56a064045baf203010c30377
     m_Address: Assets/_Project/Art/Sprites/Map/Environment/Tilemap_WitchBOSS/2D_Dungeon_Asset_Pack_v5.2/2D
       Dungeon Asset Pack_v5.2/character and tileset/Dungeon_Tileset_v2.png
@@ -62,14 +56,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 0679e6aa932c41a79ca7e28373b2f951
     m_Address: Assets/_Project/Data/Items/Weapons/LogicData/ALData_LightningSpearSkill2.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 067f07352189de9448aa613af3827417
     m_Address: Assets/_Project/Art/Sprites/Bosses/Shadow/DialogueSprite/Panic.png
     m_ReadOnly: 0
@@ -86,27 +77,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 0794133353074729a623d0fab2a83a78
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_CurrentShard.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 07a020bb892230e49b5ed93871760797
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/AM_Flowering_Slash2.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 085e3652176349ef82a32deb8f71af92
     m_Address: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearMark.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 089f375622af80747b587b131c054cd2
     m_Address: Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory
       Book SpriteSheet.png
@@ -124,14 +109,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 098ed5d6eb1548c884517bade6c21d73
     m_Address: Assets/_Project/Data/Abilities/Effects/GE_ElectrocutedStatus.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 0ad9353e267c4f169ac2a193dc43a93d
     m_Address: Assets/_Project/Art/Shaders/M_UIBrokenHeartRight.mat
     m_ReadOnly: 0
@@ -157,14 +139,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 0db61d8f688f4ebf84b25f01c6f25353
     m_Address: Assets/_Project/Data/Items/Weapons/LogicData/ALData_OddIronThrow.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 0e08a1c2f98cf8a419bf683f7b6439ed
     m_Address: Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory
       Book/Book Content Appear/Style 1/4.png
@@ -186,8 +165,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 10cb66d876f442c586564246799f60ba
     m_Address: Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab
     m_ReadOnly: 0
@@ -203,27 +180,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 12c600f6573c75e4093e37d3a1147021
     m_Address: Assets/_Project/Art/Sprites/UI/Dialogue/Boss1EffectLoop.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 13dffbd8479746f8980f5ca93f60433a
     m_Address: Assets/_Project/Data/Items/Weapons/LogicData/ALData_ApprenticeHeroSwordChargeSpin.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 15d15ca476f0a9b4c925a84dfbbec846
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/AM_Flowering_Bloom_Slash1.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 15f8359a0ca04b7c83f148b0c75cab86
     m_Address: Assets/_Project/Data/Abilities/Definitions/AD_ApprenticeHeroSwordAttack.asset
     m_ReadOnly: 0
@@ -239,15 +210,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 16daf951cdd4a734e81d86059e9f8d9d
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpearClone
       Copy.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 16de5d7645fe404429b78b7115f05ed0
     m_Address: Assets/_Project/Data/Dialogue/NPC/DialogueTheme/SlimeBossDialogueTheme.asset
     m_ReadOnly: 0
@@ -258,33 +226,26 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 17629281fc740a546b474c104a96e947
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_ON.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 178b0d121243485ea74ea0b937c51928
     m_Address: Assets/_Project/Data/Abilities/Definitions/AD_LightningSpearSkill2.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 17cfd47f91da4f3488cac15399ee0d07
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_Slash2.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 17f28fd3af2d443e86388ce0fa8cca38
     m_Address: Assets/_Project/Data/Items/Weapons/Definitions/WD_LightningSpear.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 19a42207f450d4343a741cf1f2d1245c
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/AM_Flowering_Slash3.anim
     m_ReadOnly: 0
@@ -296,8 +257,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 1a3c46c0c9914eea8cdcba66be7916eb
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_RiftStone.asset
     m_ReadOnly: 0
@@ -308,7 +267,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 1aa96401338e21343a99cdd268595f1a
     m_Address: Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory
       Book/Book Content Appear/Style 1/17.png
@@ -320,8 +278,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 1b61350f80e94140b42e4539148aac40
     m_Address: Assets/_Project/Data/Items/Weapons/Strategies/AL_ApprenticeHeroSwordChargeSpin.asset
     m_ReadOnly: 0
@@ -332,14 +288,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 1e6a0a274de748cfb8c5b4c4fc7df5fe
     m_Address: Assets/_Project/Art/Sprites/UI/Tutorial/TutorialInfoTitleRibbon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 206548ad62ff26f41a9539393334dc62
     m_Address: Assets/_Project/Data/Progression/Upgrades/Effect/Effect_Upgrade_Unlock.asset
     m_ReadOnly: 0
@@ -361,7 +314,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 21aff85470c15d64ab52fda4f973571a
     m_Address: Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory
       Book/Book Content Appear/Style 1/7.png
@@ -440,27 +392,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 2a96f8b9328e4f33a3994c0b543fedba
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_BrokenClock.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 2ac57842d86ce1b40a4cb0cbe9ad0627
     m_Address: Assets/_Project/Art/Sprites/UI/HP_Bar.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 2bb8e243fd06444ebd62bbf51567ee7c
     m_Address: Assets/_Project/Data/Abilities/Effects/SHD_Relic_MoveSpeedStackOnCriticalHit.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 2c76e3a74016c7641a876767a4fd54f1
     m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/DialogueSprite/SpiriNotion/Spiri_Dragon.png
     m_ReadOnly: 0
@@ -472,14 +418,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 2d297b1bcdf6733489edbb3cc6a848d6
     m_Address: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill1_NoMark.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 2df8cf7521f74e241b00cfed31dcdef8
     m_Address: Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory
       Book/Book Content Appear/Style 1/5.png
@@ -502,8 +445,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 3059132543044f2db2741e40f2ebd5d0
     m_Address: Assets/_Project/Data/Items/Weapons/Loadouts/WAS_OddIron.asset
     m_ReadOnly: 0
@@ -519,7 +460,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 327030fb6025c9f4194eb0d684e2aa1a
     m_Address: Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/BookOpen.anim
     m_ReadOnly: 0
@@ -535,21 +475,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 33e0e0859e1fd3145bd568cfd350515f
     m_Address: Assets/_Project/Prefabs/UI/BossHUD_Slot.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 340af4cfb3b1848419310b98a964e9eb
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/WeaponSkill/LightningSpear/LightningSkill1NoMarkIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 34638060c75b50c498fd2bb862e0b49b
     m_Address: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack2.prefab
     m_ReadOnly: 0
@@ -575,20 +510,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 36036934aa6d23147a9006e5e9a09768
     m_Address: Assets/_Project/Art/Sprites/VFX/Common/SlashHitEffect.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 3614db9d97714017a7a6f95f1ff88dcc
     m_Address: Assets/_Project/Data/Items/Weapons/LogicData/ALData_FloweringBloom.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 369e5a5850cde054c8a4361c28ba81b9
     m_Address: Assets/_Project/Art/Sprites/UI/HeartUIAsset/EmptyHeartImage.png
     m_ReadOnly: 0
@@ -609,8 +540,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 375c765e954043b6aa38e9054adf920a
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_ChainCharm.asset
     m_ReadOnly: 0
@@ -626,15 +555,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 387ffa66885a0ee489c8abe9626cf1d0
     m_Address: Assets/_Project/Art/Sprites/Player/Pixel_Plains_Premium_Pack/Characters
       24x24/LoadingWalkCnt.controller
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 3903a30b290836e4bb4413a07b019990
     m_Address: Assets/_Project/Data/Loot/Tables/Table_Stage1.asset
     m_ReadOnly: 0
@@ -645,7 +571,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 39d25640faf637c4ba23f76876329a6a
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/NPC/image (8).png
     m_ReadOnly: 0
@@ -661,8 +586,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 3b565b39b5f44040b3a80145ad3c9a4c
     m_Address: Assets/_Project/Data/Items/Weapons/Strategies/AL_FloweringBloom.asset
     m_ReadOnly: 0
@@ -683,15 +606,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 3d9bdf065e500cd4685989b60f41ca9a
     m_Address: Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory
       Book/Book Content Appear/Style 1/10.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 3ef1664fdf0dac148a47091038acdfd9
     m_Address: Assets/_Project/Data/Dialogue/NPC/DialogueTheme/ShadowBossDialogueTheme.asset
     m_ReadOnly: 0
@@ -707,14 +627,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 3fa4a22379c20c641870d73d6590726c
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_OFF.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 3fb1c87771af4404bf08d3f4ad76d143
     m_Address: Assets/_Project/Data/Abilities/Definitions/AD_OddIronThrow.asset
     m_ReadOnly: 0
@@ -745,27 +662,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 43350c648d0a5b3408f4b3594b695d51
     m_Address: Assets/_Project/Art/Sprites/UI/IntroAndOutro/Intro/intro 2.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 44860a1e49e148fa8cdb24678044cc9e
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_RedContract.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 449fa420d9198034a8864f1f47dd46a7
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeaponSkill2Icon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4778f2d87b1a49cba5c7f18bc60fd7bd
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_FirmStep.asset
     m_ReadOnly: 0
@@ -781,7 +692,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 495a33ee4edfc294cbeb5ffe7713e328
     m_Address: Assets/_Project/Art/Sprites/Bosses/DarkLord/DarkLord_Sad.png
     m_ReadOnly: 0
@@ -792,14 +702,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4a278341ae1b4ef4b8886c04f3517f71
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_LastBreath.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 4a6fa4a84117ac941ad47e4731a2fc2a
     m_Address: Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory
       Book/Book Content Appear/Style 1/2.png
@@ -811,8 +718,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4bd1292e4a60441b8844f38ad03bb1bb
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_ThinArmorShard.asset
     m_ReadOnly: 0
@@ -828,20 +733,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 4d0e310f583fe254ea63ee9f8292962f
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/BaseLevel.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4d60d1e170a74282949a814dab156e09
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_PursuerClaw.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 4d7dbd20e7e72af45bb5ffe30e1f08f3
     m_Address: Assets/_Project/Art/Sprites/Bosses/DarkLord/Dark Lord(Background).png
     m_ReadOnly: 0
@@ -853,14 +754,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4e510d3e5f3464a4b9d9e430be16e07e
     m_Address: Assets/_Project/Prefabs/VFX/Particle/UIParticle/ChestImpactParticle.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 4ead3b0a61bc93f4dad73ea382bf8f23
     m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/DialogueSprite/Boss2Default.png
     m_ReadOnly: 0
@@ -871,14 +769,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4f52c42d434241a596e63aae9d2f6d07
     m_Address: Assets/_Project/Data/Items/Weapons/LogicData/ALData_ApprenticeHeroSwordDashStab.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 4fbcf796c5ef7e74eb1b4b29793273eb
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_Slash1.anim
     m_ReadOnly: 0
@@ -889,8 +784,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 50de7e22ef564f248e334808259dc06a
     m_Address: Assets/_Project/Data/Progression/Upgrades/Effect/ShopActive.asset
     m_ReadOnly: 0
@@ -901,27 +794,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 51d0975cbebfc1e42af87bcae0203495
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/dashImpact.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 5226fb9a69f94756aa5dffa8964d7d5b
     m_Address: Assets/_Project/Data/Items/Weapons/Strategies/AL_LightningSpearAttack.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 522fe167c55eab149b6bf24c2e3fa0ff
     m_Address: Assets/_Project/Art/Sprites/UI/Chest/weaponbox_relicbox.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 545e937c0e631794289077d16108df59
     m_Address: Assets/_Project/Prefabs/VFX/WeaponEffect/OddIron/OddIronSegmentEffect.prefab
     m_ReadOnly: 0
@@ -932,7 +819,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 54d49fcb5010f7c4fba7b7db5af57ab4
     m_Address: Assets/_Project/Art/Sprites/Map/Environment/Tilemap_WitchBOSS/2D_Dungeon_Asset_Pack_v5.2/2D
       Dungeon Asset Pack_v5.2/character and tileset/Dungeon_item_props_v2.png
@@ -955,21 +841,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 582f1f2dfb794402a447a76daf6e7ab3
     m_Address: Assets/_Project/Data/Items/Weapons/Loadouts/WAL_Flowering.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 5885742e6fb2dcc40bb5c130b2b6a747
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/AC_Flowering.controller
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 59fb90448aa54d6086e2f733fb53e47a
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_RunawayShoes.asset
     m_ReadOnly: 0
@@ -980,7 +861,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 5a97597d659f75a4dafac4644674cc59
     m_Address: Assets/_Project/Resources/Upgrades/Nodes/Node_639137637495838365.asset
     m_ReadOnly: 0
@@ -991,21 +871,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 5bcbe73d9f694da4b971d02f13b9d8e1
     m_Address: Assets/_Project/Data/Dialogue/NPC/DragonBossNpc.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 5c0cf4259b6d9324c9cf2c2afcde8845
     m_Address: "Assets/_Project/Art/Sprites/UI/Cursor/\uB3CB\uBCF4\uAE30 \uC2DC\uD2B8.png"
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 5c9b3b05bdd24f4b9eb28a94c7e5b7b7
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_BerserkerCord.asset
     m_ReadOnly: 0
@@ -1016,28 +891,22 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 5ddd4b6d91d441b49ae1c874db2b5ef5
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/WeaponAnimation/LightningSpear/AM_Swing1
       1.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 5dfae16cf310446b821ffaf6e7a1bae3
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_MasterWhetstone.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 5f2f475e839246c191299e25f5f4bef9
     m_Address: Assets/_Project/Art/Materials/M_ElectrocutedSparkParticle.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 5f3a766a57a748e7a7ec8aae1a825ba6
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_SmallHeart.asset
     m_ReadOnly: 0
@@ -1048,27 +917,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 5f66e18bd5e546c6b40af86b62a50431
     m_Address: Assets/_Project/Art/Animations/Encyclopedia/UIBook/ENC_UIBook_ContentAppear.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 60a4651cad205624894cd7cba12bf348
     m_Address: Assets/_Project/Data/Dialogue/NPC/DialogueTheme/DarkLordBossBackgroundAnimOverrideCnt.overrideController
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6110a12bd862ff9419c73f9a2d508033
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeaponSkill1ChargeAura.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 61e45c54f8044c509d733d5a4fa497ff
     m_Address: Assets/_Project/Data/UI/StatDisplays/PS_StatInfo_NormalDamage.asset
     m_ReadOnly: 0
@@ -1084,33 +947,26 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 62c92622a157c7041bbd8eb3af627e95
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_Slash1.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 62ce15cdb6d241539a9646787fe274cf
     m_Address: Assets/_Project/Data/Progression/Upgrades/Effect/RunStartConsumableEffect.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 62f86f06b1cdb7b4d9e82787e28c30fe
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/TileMap_B.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 630d2d639dfa41608b6a44de79394637
     m_Address: Assets/_Project/Data/Attributes/Definitions/ElementAttribute/MaxElectricElementGaugeAttribute.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 63971481aeda8db46a67682cd0e90752
     m_Address: Assets/_Project/Art/Sprites/UI/Common/GameOverArch.png
     m_ReadOnly: 0
@@ -1121,8 +977,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 6657f14bf85d4440b1a6353e784e9c3e
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_FirmStep.asset
     m_ReadOnly: 0
@@ -1133,7 +987,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6732e5e58e559d442a6db3c4ae591c69
     m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/DialogueSprite/Dragon(BackGround).png
     m_ReadOnly: 0
@@ -1154,8 +1007,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 6a6f6c0c5c6046d3afdace16e7237371
     m_Address: Assets/_Project/Data/Items/Weapons/Loadouts/WAL_OddIron.asset
     m_ReadOnly: 0
@@ -1171,7 +1022,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6c06a33c8b4af974295c254969d3fb72
     m_Address: Assets/_Project/Resources/Upgrades/Nodes/Node_639129975995253496.asset
     m_ReadOnly: 0
@@ -1182,8 +1032,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 6e61f67002664297a735902776929cf5
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_RedContract.asset
     m_ReadOnly: 0
@@ -1194,14 +1042,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6ea20d07febe74d4cb33b3b14cbf442f
     m_Address: Assets/_Project/Art/Sprites/Bosses/FirstBossImage.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 6f5a6630cd3b4e0d99cda1710f6e1bb2
     m_Address: Assets/_Project/Prefabs/VFX/Element/ElectricChainRibbonVfx.prefab
     m_ReadOnly: 0
@@ -1212,7 +1057,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6fa85972d9350364b970c41874c8d828
     m_Address: Assets/_Project/Art/Sprites/UI/Common/UpgradeNavigatorArrow.png
     m_ReadOnly: 0
@@ -1244,8 +1088,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 7363eb05f34541d4b7aa78e332715e7a
     m_Address: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredShotSpawnEffect.prefab
     m_ReadOnly: 0
@@ -1261,7 +1103,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 748bd1286788d5f468f9857941b73367
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeapon.png
     m_ReadOnly: 0
@@ -1289,22 +1130,17 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 78214cbbca9b4804ba1be48157d5657e
     m_Address: Assets/_Project/Data/Attributes/InitProfiles/FrogAttributeInitProfile.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 7859508f9fb277142904e154f0761686
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/WeaponAnimation/LightningSpear/AM_Idle
       1.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 795c6aa610974d3c8b01b6ebdbdf328e
     m_Address: Assets/_Project/Data/Progression/Upgrades/Effect/ChestRunModifierEffect.asset
     m_ReadOnly: 0
@@ -1330,27 +1166,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 7c5f414dd88245b6ab049f99d7bc7a0d
     m_Address: Assets/_Project/Art/Shaders/M_UIBrokenHeartLeft.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 7c8c681dbbe24cb68c36637db0844b0c
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_EvasionFeather.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 7ccfeed7c2aea454ab2f34134ad4da04
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpearMarkDropEffect.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 7d20d2a7cdf74a0bb83fccd22ed1c5a6
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_BrokenClock.asset
     m_ReadOnly: 0
@@ -1361,7 +1191,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 7dc0a735b4eed31458fce9e37892fca4
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningMarkDropImpact.anim
     m_ReadOnly: 0
@@ -1373,8 +1202,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 7ed72d4fc66d4fa6a4535f9c5f08f4d7
     m_Address: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_SlimeQueenBoss.spriteLib
     m_ReadOnly: 0
@@ -1385,14 +1212,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 7f8f8c5e8efe4c18869cc469c6056484
     m_Address: Assets/_Project/Resources/Tags/Event.Anim.Flowering.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 7fac5e14458643cba83a84793d2a1a0a
     m_Address: Assets/_Project/Data/Abilities/Effects/SHD_FloweringBloom.asset
     m_ReadOnly: 0
@@ -1403,7 +1227,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 812935a52cbb94e4f932573ef56ea32a
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeaponSkill1Icon.png
     m_ReadOnly: 0
@@ -1414,27 +1237,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 81944daf769c415c84b749e5e0f7a635
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_CalmHeart.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 81e1902b8cef5d747a9b363e1fd1a3a7
     m_Address: Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/BookLeftPage.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 81eca7800b7446598237331ab25b00c8
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_HunterMark.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 826417d7210a94a45b9d4c5f713591a5
     m_Address: Assets/_Project/Art/Sprites/UI/RefreshButton.png
     m_ReadOnly: 0
@@ -1465,8 +1282,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 87c066f70f6d4a5a8214362a974aada5
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_ToughBandage.asset
     m_ReadOnly: 0
@@ -1487,14 +1302,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 88b26797d9445fe44abb4c7c1a716a44
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_Bloom_Slash1.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 8a579f9a96134f98a1381cd22d36aff3
     m_Address: Assets/_Project/Data/Items/Weapons/Definitions/WD_Flowering.asset
     m_ReadOnly: 0
@@ -1505,7 +1317,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 8da3f97672dc9bf43af930fcc794f25b
     m_Address: Assets/_Project/Art/Sprites/UI/ChainLinkSet.png
     m_ReadOnly: 0
@@ -1516,27 +1327,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 8e861bb72f93412d9d271b245c4d9a7f
     m_Address: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearMarkHoverRangeIndicator.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 8f1fbf8b2b02a61458288a9346cb08b4
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/SlimeBossLevelSet.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 8f36be10469749798754f1d4eee556cc
     m_Address: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack2.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 8f73d125f9ad32b42998ae39f6c83873
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/WeaponSkill/LightningSpear/LightningSkill1MarkRushIcon.png
     m_ReadOnly: 0
@@ -1562,14 +1367,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 9213746e50e94a30a907276794dca5a8
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_VictoryFlag.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 9332f7a7d9ef05d43b9b4971f14d98e2
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeaponSlash1.anim
     m_ReadOnly: 0
@@ -1580,8 +1382,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 95081fedc29af6044801e50a4e2d73fb
     m_Address: Assets/_Project/Data/Dialogue/SpeechData/NewPlayerSpeechData.asset
     m_ReadOnly: 0
@@ -1592,7 +1392,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 959fd486b4d99da4687a456b33eb4a27
     m_Address: Assets/_Project/Art/Sprites/Items/Weapons/OddIron/OddIron.png
     m_ReadOnly: 0
@@ -1604,14 +1403,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 9657263b5030492aa04a4b949ea7dd87
     m_Address: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_Skill1_DashStab.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 975a892d9fe6436429967aba3bd0a5dc
     m_Address: Assets/_Project/Art/Sprites/UI/Dialogue/Boss1Effect.png
     m_ReadOnly: 0
@@ -1622,14 +1418,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 97f5916269f2a3349931ac8990d18034
     m_Address: Assets/_Project/Prefabs/UI/PopupUI/Encyclopedia/EncyclopediaUI.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 98af6bdee356356458c659bfcb1feddf
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear_BasicAttack_2.anim
     m_ReadOnly: 0
@@ -1650,14 +1443,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 9bba339dcc2547a38dca9b2c5ee9660d
     m_Address: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash3.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 9bdd35dbad11c724d9562963d477c2ea
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeaponSkill1.anim
     m_ReadOnly: 0
@@ -1673,34 +1463,26 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 9d6f84052a5d453e915f8a543d32ba77
     m_Address: Assets/_Project/Data/Items/Weapons/LogicData/ALData_LightningSpearSkill1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 9da0883a2d2679849b2508136ec1943c
     m_Address: Assets/_Project/Art/Sprites/NPCs/blacksmith/blacksmith.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 9dd3c018352d4622953d4db595efebce
     m_Address: Assets/_Project/Data/Items/Weapons/Strategies/AL_LightningSpearSkill2.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 9e324666c74222d48b9aae6294749c0c
     m_Address: Assets/_Project/Art/Sprites/UI/Common/WhiteSpace.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 9e99f1fbade54ad29e3f29eb867aa1e8
     m_Address: Assets/_Project/Data/Abilities/Definitions/AD_OddIronDryFire.asset
     m_ReadOnly: 0
@@ -1711,14 +1493,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 9f7e709805604741a88b1db0a4774f61
     m_Address: Assets/_Project/Art/Sprites/UI/Common/GameOverReturnCircle.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 9fde1aac665d3cb48a2f3227bf0c5e5a
     m_Address: Assets/_Project/Data/Loot/Tables/GraveLootTable.asset
     m_ReadOnly: 0
@@ -1729,14 +1508,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a04dcc781898f73489b3024fe008f1ba
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/BasicWeapon/BasicWeaponSlash2.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a12e48c4ede64ef78f312e633c892b21
     m_Address: Assets/_Project/Prefabs/Items/Visuals/PF_LightningSpear_ItemDisplayVisual.prefab
     m_ReadOnly: 0
@@ -1747,20 +1523,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a1d4f5110d4049e48d5cb0f39db1d88a
     m_Address: Assets/_Project/Resources/Tags/State.Status.RestrictedVision.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a2a3ad10170b41e5bd89c1d48bcd56a9
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_CombatGloves.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a344968ffff9abb43bb3bc0ffb7a86ae
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningDashTrail.anim
     m_ReadOnly: 0
@@ -1771,34 +1543,26 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a491ffe08c1246b7b39b04fdca100c95
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_BalanceWeight.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a5139c90a7cc6234aa8b17afafe9a505
     m_Address: Assets/_Project/Art/Sprites/UI/ButtonUI.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a53b2ba473004d28a0fb7db9af49ad7a
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_CurrentShard.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a6112c53171f5de45aee14185df4b248
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpearRecoverDespawn.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a65cf29bf8224e549ee8dc889473df75
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_NimbleCloak.asset
     m_ReadOnly: 0
@@ -1809,33 +1573,26 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a7f89c4cb2e6d9742a81af669b7bfb2d
     m_Address: Assets/_Project/Art/Shaders/M_UpgradeLakeSurface.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a8b1a52047dd4cb79e80bdb2ba06e97d
     m_Address: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoverShotTrail.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a8eb8e564a1413a40bea508cc4447d30
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_Slash2.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: a9854d99463b40599716fa99439cc9a2
     m_Address: Assets/_Project/Data/Items/Weapons/Definitions/WD_OddIron.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a99578084c43ee442bdee25e29041870
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/skill_icons13.png
     m_ReadOnly: 0
@@ -1846,21 +1603,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: ab8ed93c87fb0c94a8de69d5249499a6
     m_Address: Assets/_Project/Data/PhysicsMat/PhysicsMat2D_Player.physicsMaterial2D
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: abd5bad311e3b3847bcf4f65f86c6c77
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/AM_Flowering_Bloom_Slash2.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: ac094997d25ae5b43a1db81b9c8a35d3
     m_Address: Assets/_Project/Prefabs/UI/HangPanelChain.prefab
     m_ReadOnly: 0
@@ -1887,14 +1639,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b019e96e2f7c05243acd04c03a911b6a
     m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/DialogueSprite/Boss2embarrassment.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: b1d08dfce4394809b8401f118e27be97
     m_Address: Assets/_Project/Prefabs/Items/Weapons/OddIron/PF_OddIron_Bullet.prefab
     m_ReadOnly: 0
@@ -1905,27 +1654,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b3287ed3fca20324d904e25f0e659af8
     m_Address: Assets/_Project/Art/Sprites/Bosses/DarkLord/Dark Lord_Idle.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: b428edf73ed3b4143a926299b973f6e8
     m_Address: Assets/_Project/Prefabs/VFX/Particle/FlowerParticleMat.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b4e61653f79d408daf1cf148b9ff24f4
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/DialogueSprite/MeltaNotion/Melta_Veryjoy.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: b5a7de5cde874ab0a517a030f2e6503e
     m_Address: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredSpear.prefab
     m_ReadOnly: 0
@@ -1936,14 +1679,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b672abd66c281c247b0398c5d30a73a8
     m_Address: Assets/_Project/Art/Sprites/UI/Dialogue/Boss1EffectIntro.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: b6baaa776b4630343b03436c2e45c464
     m_Address: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_Skill1_MarkRush.prefab
     m_ReadOnly: 0
@@ -1965,7 +1705,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b77696c8945579f4caf987fe95ef3cc4
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpear_BasicAttack_1.anim
     m_ReadOnly: 0
@@ -2001,27 +1740,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: bbbe87684c6f49d43ba913c2eeefb693
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/lobbyLevel.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: bd004ade24235804585748af79df7547
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/SlimeBackgroundIdle.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: bd3599e0184c43cc83826652107c5e89
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_ChainCharm.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: bd783ac71f9946b58a6d1b451cb282f1
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/DialogueSprite/MeltaNotion/Melta_Idle.png
     m_ReadOnly: 0
@@ -2037,8 +1770,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: bf1d70bd58b747e9855a82d836fa4857
     m_Address: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/WeaponPrefab_LightningSpear.prefab
     m_ReadOnly: 0
@@ -2054,7 +1785,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: c0b4a9ea59c74ce4eb1689ef772c6a7a
     m_Address: Assets/_Project/Art/Sprites/Items/OddIron_Skill1_icons.png
     m_ReadOnly: 0
@@ -2065,21 +1795,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: c11aa23a38de461fb2812d4a97512a59
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_BronzeDice.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: c26a7d53f3e4c46438708d2e077d1a18
     m_Address: Assets/_Project/Art/Sprites/Bosses/Dragon/DialogueSprite/Boss2Annoying.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: c2ee947e28344275889d643aa57789de
     m_Address: Assets/_Project/Data/Items/Weapons/Definitions/WD_ApprenticeHeroSword.asset
     m_ReadOnly: 0
@@ -2090,14 +1815,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: c36a0834b3b7432d9a19685020c6219d
     m_Address: Assets/_Project/Data/Progression/Upgrades/Effect/MaxHealthPlusOneEffect_A.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: c3f1d032e5184fc9ac7fc75cf5632436
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_SurvivorNecklace.asset
     m_ReadOnly: 0
@@ -2118,7 +1840,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: c6524e3e747b48c3988ad9784307fbd0
     m_Address: Assets/_Project/Art/Animations/Encyclopedia/UIBook/AC_Encyclopedia_PageCover.controller
     m_ReadOnly: 0
@@ -2130,8 +1851,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: c66cf0880f3d4f2ab3f64fdaf5b9e13a
     m_Address: Assets/_Project/Data/Progression/Upgrades/Effect/RelicInventoryCapacityEffect_III.asset
     m_ReadOnly: 0
@@ -2158,7 +1877,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: c92892d29a884b9c82dde3963c803fdf
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/DialogueSprite/MeltaNotion/Melta_VeryVeryjoy.png
     m_ReadOnly: 0
@@ -2174,14 +1892,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: c9c3a87a6c1ad7847a684f8e5f7e9b02
     m_Address: Assets/_Project/Data/Dialogue/NPC/DialogueTheme/DragonBossBackgroundAnimOverrideCnt.overrideController
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: ca0bb09ad2e14e5e9f6a38fcb954aaf0
     m_Address: Assets/_Project/Art/Shaders/M_UIAffectionGradientBorder.mat
     m_ReadOnly: 0
@@ -2192,8 +1907,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: cb623b7a720dbc545976c41dc1411c46
     m_Address: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack1.prefab
     m_ReadOnly: 0
@@ -2204,27 +1917,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: cc6b9fe4adfab444a8dc6ec69e532b0e
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/SpearDropLightningCnt.controller
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: cce9e7321f8d4b6aa9dc77661650dedd
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_BronzeDice.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: cd07fd15fcb2523438505c47645741ff
     m_Address: Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Content/BookIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: cd582b58892249e4a6ef8ae28bd345e3
     m_Address: Assets/_Project/Data/Attributes/Definitions/KnockbackAttribute/KnockbackResistanceAttribute.asset
     m_ReadOnly: 0
@@ -2240,20 +1947,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: cf7c65c9843448d44be51b387b4ec6bf
     m_Address: Assets/_Project/Resources/Upgrades/Nodes/Node_639129975891255292.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: d029641b2aca4873ad90026a892c1644
     m_Address: Assets/_Project/Data/Items/Weapons/Loadouts/WAS_Flowering.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: d0ee99a3788a4ac8a7058c7e81090a44
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Common/Placeholder_HitboxVisual_OneShot.anim
     m_ReadOnly: 0
@@ -2269,8 +1972,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: d2ec4316baae43aab2c23a88935aab5b
     m_Address: Assets/_Project/Data/UI/StatDisplays/PS_StatInfo_CritDamage.asset
     m_ReadOnly: 0
@@ -2281,7 +1982,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: d35e74cb2a0bfd145920a6f1fa10aa2f
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningDashTrail.png
     m_ReadOnly: 0
@@ -2292,8 +1992,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: d3ebdac3fe8845b6aadeca46ca104e7e
     m_Address: Assets/_Project/Data/UI/StatDisplays/PS_StatInfo_SkillDamage.asset
     m_ReadOnly: 0
@@ -2309,7 +2007,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: d5f3e0a527644bf6ae46b94c89d7a25b
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/DialogueSprite/MeltaNotion/Melta_Funny.png
     m_ReadOnly: 0
@@ -2326,14 +2023,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: d8bc5f34090b49e1b550585e76aca4c4
     m_Address: Assets/_Project/Data/Items/Weapons/LogicData/ALData_FloweringAttack_Bloom.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: d8ea97f098c5b0f4daafdae1493166cd
     m_Address: Assets/_Project/Art/Sprites/UI/HeartUIAsset/Free Version 1.1/SpriteSheet/SoulHeart.png
     m_ReadOnly: 0
@@ -2354,8 +2048,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: db71cfabe6e24aca9beb18837666b8c9
     m_Address: Assets/_Project/Data/Progression/Upgrades/Effect/RunStartSoulHeartEffect.asset
     m_ReadOnly: 0
@@ -2366,20 +2058,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: de149d8ef92377f49bba4de8429971df
     m_Address: Assets/_Project/Art/Sprites/Bosses/DarkLord/Dark Lord_Smile.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: dfd6b6d2319c46acb6a5564fe8798a21
     m_Address: Assets/_Project/Data/Attributes/Definitions/SoulHeartAttribute.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: e02069191efb2db4cb3f0fe037219631
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpearRecoverSpawn.anim
     m_ReadOnly: 0
@@ -2390,14 +2078,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: e05ed47d741a10f48825a4b5222f99c8
     m_Address: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DarkLord.spriteLib
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: e0bc49a667a4ee14d838d4322ffde5cf
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/AM_Flowering_Skill1.anim
     m_ReadOnly: 0
@@ -2408,21 +2093,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: e1758fe267194397b02d9a22e0a4d1c2
     m_Address: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearRecoveredSpearProjectile.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: e1fe641076b2fe84e83aa99cb33bdb0f
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpearRecoverShot.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: e3f9a4eb235a0cc4da7a0c799a104cba
     m_Address: Assets/_Project/Data/Dialogue/NPC/SpriteLibrary/SpriteLibraryAsset_DragonBoss.spriteLib
     m_ReadOnly: 0
@@ -2438,47 +2118,37 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: e5e066ec16be4990b9e8391b7a1b66ac
     m_Address: Assets/_Project/Resources/Tags/State.Relic.FloweringBloomExtension.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: e5fc8afae8f143beb43ab33712a1937c
     m_Address: Assets/_Project/Data/Items/Weapons/DisplayVisuals/IDV_LightningSpear.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: e6789ca2c7a10934bb006d7b21ed57ae
     m_Address: Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory
       Book/Book Content Appear/Style 1/15.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: e776383129b045ac8faac376024d86e6
     m_Address: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BasicAttack1.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: e7cd4998878046cf9603a9bdac777441
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/DialogueSprite/MeltaNotion/Melta_Angry.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: e88ec91ea0494e0ba99bbdb7e6cf485f
     m_Address: Assets/_Project/Data/Abilities/Definitions/AD_FloweringAttack_Base.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: e8c2a5f0d8d14a548a6f2c6d90377b7a
     m_Address: Assets/_Project/Data/Dialogue/Affection/SlimeQueenTeleportNpcAvailableEffect.asset
     m_ReadOnly: 0
@@ -2509,14 +2179,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: edb3a0cf9a254480bbb25a3a8601c8c8
     m_Address: Assets/_Project/Prefabs/Items/Weapons/ApprenticeHeroSword/Hitbox_ApprenticeHeroSword_BasicAttack3.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: ee7ef00ce7d44514584cd5ae9eb1120e
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Eagle-eyed_NoPlayer.png
     m_ReadOnly: 0
@@ -2527,8 +2194,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: eef19b108eae4400bb49fc1753e4aa14
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_WornWhetstone.asset
     m_ReadOnly: 0
@@ -2549,7 +2214,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f0a7d8ce4d68463485bd7719ce0d2ea4
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/DialogueSprite/MeltaNotion/Melta_Smile.png
     m_ReadOnly: 0
@@ -2565,8 +2229,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: f1b05c4cc7b35c9478f97e80fa87562b
     m_Address: Assets/_Project/Prefabs/Items/Weapons/LightningSpear/Hitbox_LightningSpear_BasicAttack3.prefab
     m_ReadOnly: 0
@@ -2577,7 +2239,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f2a95f41a4224614887bd9d4f671dc84
     m_Address: Assets/_Project/Art/Sprites/UI/Encyclopedia/Updated_Paper_Book/Sprites/Inventory
       Book/Book Content Appear/Style 1/13.png
@@ -2600,14 +2261,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: f348b61b6de44d1ca70eb6e1dd23f8c3
     m_Address: Assets/_Project/Data/Items/Weapons/Strategies/AL_OddIronThrow.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f4f0e46e8383c484d8e78f175ac1325f
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/FinalBossLevelSet.png
     m_ReadOnly: 0
@@ -2634,8 +2292,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: f6f4ed2e6a75450a9200b6c6db29ef75
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_HeavyBracelet.asset
     m_ReadOnly: 0
@@ -2656,14 +2312,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f915803aa8fa9a243bd5421686a0b5ae
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/Flowering/Flowering_Bloom_Slash3.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: f9c8eda549ac4a04b8f21cc4268e9ddb
     m_Address: Assets/_Project/Prefabs/Items/Weapons/Flowering/Hitbox_Flowering_BloomSlash1.prefab
     m_ReadOnly: 0
@@ -2689,14 +2342,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: fc9b84cf598a1a64486719cd80f53a10
     m_Address: Assets/_Project/Art/Sprites/UI/Tutorial/PrevArrow.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: fcd257e9b1924b26bd998dd2bfae2bca
     m_Address: Assets/_Project/Data/Items/Relics/Definitions/RD_NimbleCloak.asset
     m_ReadOnly: 0
@@ -2717,7 +2367,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: ffa12c73cd5b91d4697aa57504dd3fe6
     m_Address: Assets/_Project/Art/Sprites/Items/Weapon/LightningSpear/LightningSpearRecoverShot.png
     m_ReadOnly: 0

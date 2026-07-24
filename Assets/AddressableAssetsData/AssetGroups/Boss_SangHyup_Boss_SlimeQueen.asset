@@ -20,14 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 0df316e3ac6d4d60b65070e8a01c4b4d
     m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenBodyInflateImpact.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 0e90c4fc15a93a4469f29132b2ada2fe
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_928
       1.asset
@@ -64,8 +61,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 3ec7b4634d524e0d84ec605c177e6b86
     m_Address: Assets/_Project/Prefabs/Bosses/SlimeQueen/PF_SlimeQueenWaterCannonBeam.prefab
     m_ReadOnly: 0
@@ -76,7 +71,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 438fd28835668744381b456d2173b2c0
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeQueenB_Sink.anim
     m_ReadOnly: 0
@@ -87,41 +81,32 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4e951eab6cb84cf295af59321d67343a
     m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/SlimeQueen/AL_SlimeQueenRandomJump.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 4ea175411a41b49419f2624016b7fcb0
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/SlimeBall.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 4ef68433f5814e86abef2e0debf7c646
     m_Address: Assets/_Project/Data/Attributes/InitProfiles/SlimeQueenGroggyOverrideInitProfile.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 564e42aa467b2ca4eb22b84b8c3c47e5
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_780
       1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 5b8f4241e1bc46a08b4d97f2b386aaef
     m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenRandomJump.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 5e911b1081bfabe4ea6a5da5b2c7f9b9
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeQueenC_Landing.anim
     m_ReadOnly: 0
@@ -178,14 +163,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 6f740a2bae934c608a0f6b5395d1f137
     m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenCastling.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 708888a4c398edb42af9c84d6908162b
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeQueenC_waterJet.png
     m_ReadOnly: 0
@@ -211,8 +193,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 7c32a5e8d1f64ea0b1b296f3d74391ac
     m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenRepeatedSlam.asset
     m_ReadOnly: 0
@@ -223,7 +203,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 81101e0022953c1499bff4fa8cb382fe
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeC_Landing.png
     m_ReadOnly: 0
@@ -239,8 +218,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 855b176ab03742fba2d5013cc9ada7b7
     m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/SlimeQueen/AL_SlimeQueenWaterCannon.asset
     m_ReadOnly: 0
@@ -256,40 +233,31 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 8e836c23d4c7ce746933cf04b90bea12
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/C form/SlimeQueenC_Idle.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 8ea8b838df4742a48685ade6b4fa2482
     m_Address: Assets/_Project/Data/Abilities/Strategies/Bosses/SlimeQueen/AL_SlimeQueenToxicRush.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 8f6b2cefe5582d741a945f97723e3e3a
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeB_Ready.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 91ef41aa8bfef59498e0d63842c08bc4
     m_Address: Assets/_Project/Prefabs/VFX/Effect_DrainPipeParticle.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 92394a4ae681acf4ca92cfc804c55beb
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeQueenB_Idle.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 94f5d0338cf4434786909b0e2e640550
     m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenWaterCannon.asset
     m_ReadOnly: 0
@@ -305,7 +273,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: a69c5957497f2814eba337b9da67b274
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeA_Jump.png
     m_ReadOnly: 0
@@ -327,14 +294,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: b6b3270ae0b64527be3bc8398bbdcd6e
     m_Address: Assets/_Project/Data/Abilities/Conditions/Bosses/SlimeQueen/COND_SlimeQueenCastlingAvailable.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: ba8bf343e793c4f469bff434d450dd63
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeQueenB_Rush.anim
     m_ReadOnly: 0
@@ -345,21 +309,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: c0a22b38484774e4e82564f837979fba
     m_Address: Assets/_Project/Data/Monsters/HudThemes/BossHudHealthBarTheme_Slime.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: c87dd432906d7f14e94e6276dc7f89c1
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/A form/SlimeQueenA_Shout.anim
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: cf12d26d19bc4f30ba32dea4e586847b
     m_Address: Assets/_Project/Data/Abilities/Definitions/Bosses/SlimeQueen/AD_SlimeQueenToxicRush.asset
     m_ReadOnly: 0
@@ -370,7 +329,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: d22a8d5b30f694e4c8496130188ad544
     m_Address: Assets/_Project/Art/Sprites/Map/Gimmicks/DrainPipe/blocked_hole.png
     m_ReadOnly: 0
@@ -381,8 +339,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: d6d1a71573e8467c9ed8fa63b7f4bd14
     m_Address: Assets/_Project/Prefabs/Bosses/SlimeQueen/PF_SlimeQueenToxicDropProjectile.prefab
     m_ReadOnly: 0
@@ -398,7 +354,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: dc0f51c738a5c4b4483711fc70afe272
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/SlimeQueen.controller
     m_ReadOnly: 0
@@ -416,8 +371,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: e7647f3f3a20430db99f72fb47dd1c0d
     m_Address: Assets/_Project/Prefabs/Map/Puddles/PoisonCloud.prefab
     m_ReadOnly: 0
@@ -428,7 +381,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f001940946a272045b54dcbdd7bc01b5
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_824
       1.asset
@@ -445,14 +397,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: f8460f5e737a48218760688ff5643ca3
     m_Address: Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Short.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: fe7928f602c8bc440b66e4e3de4f2ed2
     m_Address: Assets/_Project/Art/Sprites/Bosses/Slime/B form/SlimeB_Idle.png
     m_ReadOnly: 0

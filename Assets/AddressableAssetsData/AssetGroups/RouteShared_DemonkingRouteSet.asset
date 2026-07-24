@@ -14,9 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
   m_GroupName: RouteShared_DemonkingRouteSet
   m_GUID: b924f75de7638bd43a73d98e4a95978c
-<<<<<<< HEAD
-  m_SerializeEntries: []
-=======
   m_SerializeEntries:
   - m_GUID: 74af22737976f6147aa08cc9a5b1bedb
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/lobbyLevel_1430.asset
@@ -38,7 +35,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
   m_SchemaSet:

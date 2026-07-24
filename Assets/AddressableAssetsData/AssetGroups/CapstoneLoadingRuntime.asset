@@ -15,16 +15,6 @@ MonoBehaviour:
   m_GroupName: CapstoneLoadingRuntime
   m_GUID: c70f8634cd69f6242b82abfd44b48b48
   m_SerializeEntries:
-<<<<<<< HEAD
-  - m_GUID: 038211dd4e99af947905dba7138840cf
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_618
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 06174f54b1282254d9961ad382e715cf
-    m_Address: Assets/_Project/Art/Sprites/Monsters/StrangeCandlestick/StrangeCandlestick_Attack.png
-=======
   - m_GUID: 0114fc4ac57bcbe46b3d058d930e3a32
     m_Address: Assets/_Project/Data/Abilities/Definitions/Monsters/Common/AD_Tackle.asset
     m_ReadOnly: 0
@@ -53,7 +43,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0693fa06e07c3e048966bf91e365ae28
     m_Address: Assets/_Project/Data/Abilities/Strategies/Monsters/Common/AL_Tackle.asset
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -72,56 +61,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-  - m_GUID: 091b017bec996c34992f3e1a557ce2c9
-    m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowServant/FogEndAnim.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0ae3faa21854983458a9ba31ff483fff
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_667
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0bfb9d1135536c146bfb819737701432
-    m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/DoorClose.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0cd15dfdc5f4f624ca832f6db92b3067
-    m_Address: Assets/_Project/Art/Sprites/Monsters/DragonLevel_candleMonster/Candlestick.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1047bd6b819d4b647ab0b73402167e90
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_673
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 11f51282e7967b64ea63fe4e7f4a3b56
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_ArcaneTankGolem_ReadyJump.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 14f4a5a5e94b1f04483e3bbc494f8033
-    m_Address: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/UpgradeNpcDialogue_Animated.json
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 150ad282a3b5b91408c3300ba4379711
-    m_Address: Assets/_Project/Art/Sprites/Map/Shortcuts/Statue/AClip_HPStatue_Filled.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 15cc736a7aa4b4343a04c2b2b7424d83
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_620
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-=======
   - m_GUID: 08da978b416319e47889bb7d3e9e0343
     m_Address: Assets/_Project/Prefabs/UI/ElementGaugeUI/Canvas_MonstarElementGaugeView.prefab
     m_ReadOnly: 0
@@ -195,7 +134,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 185805fe76076b44c82df445df53d136
     m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AC_ArcaneTankGolem.controller
     m_ReadOnly: 0
@@ -211,31 +149,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-  - m_GUID: 1a4b49f5f7501574ea46d21d2238d153
-    m_Address: Assets/_Project/Art/Sprites/Monsters/StrangeCandlestick/StrangeCandlestick_Idle.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1dbca2f7ec0909642afeb4a63b137907
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AC_GoblinGunner.controller
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2026c917829e6ff438684394bc7365f4
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_628
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 21e4327d533e754478950da96b4ce523
-    m_Address: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossRepeatEncounterDialogue_Animated.json
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 22b3d431e4a568648a966995540361ed
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_670
-=======
   - m_GUID: 198f8877adfbd1c489a8e2b8754c88c1
     m_Address: Assets/_Project/Data/Abilities/Strategies/Monsters/CommonCorridor/AL_GoblinTankSlam.asset
     m_ReadOnly: 0
@@ -258,65 +171,10 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2026c917829e6ff438684394bc7365f4
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_628
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
       1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-  - m_GUID: 240ee6ae999df1a498a645f368c3ae15
-    m_Address: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/ShadowBossIntroDialogue_Animated.json
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 255c8566eadf1154780b2bd1c6f5b29e
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_ArcaneTankGolem_Land.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 25ecd62c3dae4eb418ab0ff556e51195
-    m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
-      Top Down - Basic/Tile Palette/TP Stone Ground/TX Tileset Stone Ground_1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 286bf32679e440246b2992ef6321f2ee
-    m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/DoorIdle.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 290cc6cdfc1881743b9f03962c768397
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AC_FallingRock.controller
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2bb4b2eb909fb4247bd876515bbeccd9
-    m_Address: Assets/_Project/Art/Sprites/Monsters/StrangeCandlestick/StrangeCandlestick_TurnOff.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2d370c720c67ace438e1a523e59bf411
-    m_Address: Assets/_Project/Art/Sprites/Monsters/StrangeCandlestick/StrangeCandlestick_Idle.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2d7a430c5409e0644a30cf57d42c25d8
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_GoblinWarrior_Attack.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2f02d2f857e9adf46b7ac3cb9e89ce88
-    m_Address: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DemonKingIntroDialogue_Animated.json
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3051fe5ebc1d96c48b83a65af16a3ea4
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_623
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-=======
   - m_GUID: 206e52587599f3b488b1d3c135a7c9cb
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_99
       1.asset
@@ -396,7 +254,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 30d31625da811554c907273ae9a15e7d
     m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/Lizardfolk Warrior
       Sprite Sheet.png
@@ -419,8 +276,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 3ab52170aa066b946a8e0c50af10d7cc
     m_Address: Assets/_Project/Data/Abilities/Definitions/Monsters/CommonCorridor/AD_ArcaneMeleeGolemCharge.asset
     m_ReadOnly: 0
@@ -436,7 +291,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 3ccc8f1952d8da440a82b2c9456b53e5
     m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_LizardMage_Attack.anim
     m_ReadOnly: 0
@@ -452,50 +306,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-  - m_GUID: 49564ea03f698ed4997f8e3f60b52301
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/FinalBossLevelSet_36.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4d80c5e10fe271d4192d09a42f4ecd2c
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_ArcaneTankGolem_Walk.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4d8c6467194409a4a9f9104baa3e9559
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_479
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4dc846127b8e2544f9c55a101646499b
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_GoblinGunner_ShotReady.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4f4602b778fd5764eacc7919c8ac2c55
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_ArcaneMeleeGolem_Idle.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 516940055a11da94a98c5af84702a88f
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_GoblinGunner_Walk.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 532d222b32590d140832cb9f09a038b0
-    m_Address: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/DragonBossIntroDialogue_SpiriNotion_Animated.json
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5392525e4ca65624ebf82109c6d36933
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_19
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-=======
   - m_GUID: 49288bedfccdaf14a9a7248b01f1565e
     m_Address: Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab
     m_ReadOnly: 0
@@ -558,7 +368,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 5619bc353ca27b1479d5f3e783ece376
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_577
       1.asset
@@ -577,60 +386,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5b0069b460a284d46b910a48934a2a0c
     m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_ArcaneMeleeGolem_Die.anim
-<<<<<<< HEAD
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5eefb1cf1070eea4386ab5526300df56
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_LizardWarrior_Attack.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5fcb1d5044a4f0542961c980064f2c5c
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/FinalBossLevelSet_21.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 60f649c5859db864d9164b2a306d557f
-    m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/DoorOpen.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 649d17dd4d7238043b7b4d321c638968
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_76
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 64f1b9af46d6436459359641524a17ba
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_574
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 654d3c09441a67e4d8fc0b7d90b04a99
-    m_Address: Assets/_Project/Art/Sprites/Monsters/StrangeCandlestick/StrangeCandlestick_Attack.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 655bec41cca4b2747ad57830533f72bd
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_579
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 668cc2f351736b241b06d8a9a21d30a9
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/FinalBossLevelSet_17.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 686b04ea4f4028e479740fd8a7b10fae
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_575
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-=======
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -713,7 +468,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6a247ba6d1499d743913a7979c4707d6
     m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_ArcaneTankGolem_Idle.anim
     m_ReadOnly: 0
@@ -724,8 +478,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: 6af12f18002475b4e91c800d48181bb0
     m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/GoblinWarriorAttributeOverrideInitProfile.asset
     m_ReadOnly: 0
@@ -736,7 +488,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 6b50432f8e4555943a74ca0e9fa79543
     m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowServant/Smoke VFX 2.png
     m_ReadOnly: 0
@@ -806,19 +557,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-  - m_GUID: 835a969a0db758a4998e4ddef0631682
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_671
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8409441832c2307489d329746e3a511c
-    m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowServant/FogAnimCnt.controller
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-=======
   - m_GUID: 823ba0bf4348efb4c9e92c593d086d67
     m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/GoblinGunnerAttributeOverrideInitProfile.asset
     m_ReadOnly: 0
@@ -840,7 +578,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 88b2e18ca8303a847801e75e9fd6937c
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_74
       1.asset
@@ -872,19 +609,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-  - m_GUID: 935f21f5f26ec5941adf6a246ad0ab05
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_524
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 93e97cc0ae7f0df46887bca475f7cb7c
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AC_LizardMage.controller
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-=======
   - m_GUID: 929248361764bfd478dbd50355bbff72
     m_Address: Assets/_Project/Data/Abilities/Definitions/Monsters/CommonCorridor/AD_GoblinTankSlam.asset
     m_ReadOnly: 0
@@ -901,7 +625,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: 93fe467960cc9124c88210899cb1a46c
     m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/Orc Brute Sprite
       Sheet.png
@@ -944,70 +667,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-  - m_GUID: 9e26c9457c15af34f91e851bd2cc832c
-    m_Address: Assets/_Project/Art/Sprites/Map/Shortcuts/Statue/AClip_HPStatue_Empty.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9f83c6e5b51cfc3488afb1c7d309aa83
-    m_Address: Assets/_Project/Art/Sprites/Monsters/ShadowServant/FogIdleAnim.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a07735877a3bd644094331b137b71878
-    m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
-      Top Down - Basic/Texture/TX Tileset Stone Ground.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a0b66e4328997904bbf612945eda54e1
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_GoblinWarrior_PrepareAttack.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a8001a286628f85489409db1f7e29f8d
-    m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/Gate sheet all.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a84c5b6d6054466449c84d9ee876eac7
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_LizardWarrior_Walk.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a890501a8d89a5046a1f5303b2acedb0
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_ArcaneMeleeGolem_Attack.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: aa1abcdf3fca9634abe2da7ebf953016
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_622
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: acbbeb4f039c8174f9a7214a1d72ec50
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_ArcaneTankGolem_Die.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ae7af14c5bae8ad4882b65ffc557f371
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/FinalBossLevelSet_32.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: af1d4062cb34c6843983cf8cb9414c35
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/FinalBossLevelSet_18.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b01b934d0af1e9d48973c3c9a64d1553
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/FinalBossLevelSet_35.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-=======
   - m_GUID: 9d5c33dc1ee804944aa93e24179d028a
     m_Address: Assets/_Project/Prefabs/VFX/Particle/ChestReavealDust.prefab
     m_ReadOnly: 0
@@ -1105,7 +764,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b271e16036821b04784f014df3e695a9
     m_Address: Assets/_Project/Art/Sprites/Map/Shortcuts/Statue/stone_statue.png
     m_ReadOnly: 0
@@ -1116,28 +774,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-  - m_GUID: b51a333feec5a3643a7c00a99b8f3000
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_LizardMage_Walk.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b54a591adb3b3f143935071061bb758c
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_LizardWarrior_AttackPrepare.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b75155c57c7122846bd40cbd4668cd82
-    m_Address: Assets/_Project/Art/Sprites/Map/Shortcuts/Statue/AClip_MagicStoneStatue_Filled.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b76eaaa63cc0cf7428beb92cde4ea8c1
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/Arcane Golem Tileset.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-=======
   - m_GUID: b43c9469d7b8ae6489086cdaf3a82442
     m_Address: Assets/_Project/Prefabs/Map/Gimmicks/Witch/GlobalVisionMaskRoot.prefab
     m_ReadOnly: 0
@@ -1163,7 +799,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: b7c0f67da88f36740b91c6e69cea068e
     m_Address: Assets/_Project/Art/Sprites/Monsters/DragonLevel_candleMonster/Die_DragonLevel_candleMonster.anim
     m_ReadOnly: 0
@@ -1174,29 +809,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-  - m_GUID: bbee5e6c94cc4864aa59c124302ad7b4
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_478
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bc258ba60aee7014193da73b69951068
-    m_Address: Assets/_Project/Art/Sprites/Monsters/StrangeCandlestick/StrangeCandlestick_Die.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bc512867e27aaab4c86095a4e1e64e1b
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_ArcaneTankGolem_Jump.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bc8592f6b3ce31a4c8b92c5dab40dd72
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/FinalBossLevelSet_16.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-=======
   - m_GUID: b9d37f5a2c1e4ef2a6d9b3c4810f762e
     m_Address: Assets/_Project/Data/Abilities/Effects/GE_HazardDamage_Spec.asset
     m_ReadOnly: 0
@@ -1238,7 +850,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: befcc014b07caca4a960d0da7a41ece3
     m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_LizardMage_RecoverAttack.anim
     m_ReadOnly: 0
@@ -1307,19 +918,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-  - m_GUID: d18b3ceff19552c4e9903eb48aef8739
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_627
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d2c72e3123de0344ba84c6c87f52cd37
-    m_Address: Assets/_Project/Art/Sprites/Map/Environment/Level/DoorAnimCnt.controller
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-=======
   - m_GUID: d0d1f58317e77a44192aba9f2336d28c
     m_Address: Assets/_Project/Data/Abilities/Strategies/Monsters/CommonCorridor/AL_ArcaneTankGolemSlam.asset
     m_ReadOnly: 0
@@ -1341,7 +939,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: d395da56e5e470f48a2928562cbc0dc4
     m_Address: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/SlimeQueenIntroDialogue_MeltaNotion_Animated.json
     m_ReadOnly: 0
@@ -1374,18 +971,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-  - m_GUID: d959cc7e86e4c134cad99c97f7c1fd01
-    m_Address: Assets/_Project/Art/Sprites/Monsters/StrangeCandlestick/StrangeCandlestick.controller
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: da8d8900d59e1f146945bee25a8bed89
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_LizardMage_Die.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-=======
   - m_GUID: d7ecec296da011c4ca790af9d941b2b2
     m_Address: Assets/_Project/Prefabs/UI/ElementGaugeUI/Panel_ElementGaugeSlotView.prefab
     m_ReadOnly: 0
@@ -1401,7 +986,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: dc56a0898d9b83d4fa8184e462d98739
     m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_576
       1.asset
@@ -1423,44 +1007,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-  - m_GUID: e43916dc8598d6f4191ce8ec5f82c79c
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_GoblinWarrior_Die.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e575ae06a3592f54b85ec3cd0d731658
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_GoblinTank_PrepareAttack.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e658fef220769a34a8e7126a45ab36fa
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_LizardMage_Idle.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e6d5bf87ffe26c948b5f641c075ff341
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_ArcaneMeleeGolem_RecoverAttack.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ead2d0c6ac9b5a943ac8282cde81e21a
-    m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_FallingRock.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ebb40485bf71a7e45b43d5948a9eacc2
-    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/Tiles_LevelSet_new/TileMap_C_624
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ecf743cc4771eb243b241e9b1fe6a1c3
-    m_Address: Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.json
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-=======
   - m_GUID: e22e85baefc12ed479f9161124b50ed6
     m_Address: Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs/GoblinTankAttributeOverrideInitProfile.asset
     m_ReadOnly: 0
@@ -1547,7 +1093,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: f47e27e8e9cbbfb4c8e589f4008e118b
     m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AC_ArcaneMeleeGolem.controller
     m_ReadOnly: 0
@@ -1607,14 +1152,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-<<<<<<< HEAD
-=======
   - m_GUID: fda3cefab78502b40b55e2b827a2ecd1
     m_Address: Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinWarrior.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
->>>>>>> eae0fafa9979ac2638c05203fcabc900f06d9d27
   - m_GUID: ff7b6417adbecbd479c1221c6a78e3e9
     m_Address: Assets/_Project/Art/Sprites/Monsters/CommonMonster/AClip_ArcaneMeleeGolem_PrepareAttack.anim
     m_ReadOnly: 0
