@@ -278,7 +278,10 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
     private IEnumerator PlayDialogueRoutine(TextAsset inkJson, string startPath, string label)
     {
         if (inkJson == null)
+        {
+            Debug.LogError($"[TutorialBossEncounterSequence] Ink JSON is missing for {label} dialogue.", this);
             yield break;
+        }
 
         if (tutorialBossNpcData == null)
         {
@@ -299,7 +302,18 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         List<NPCData> participants = new() { tutorialBossNpcData };
 
         if (!DialoguePlayback.TryStartDialogueSequence(segments, participants))
+        {
+            Debug.LogError($"[TutorialBossEncounterSequence] Failed to start {label} dialogue.", this);
             yield break;
+        }
+
+        if (!DialoguePlayback.IsPlaying)
+        {
+            Debug.LogError(
+                $"[TutorialBossEncounterSequence] {label} dialogue request was accepted, but playback did not start.",
+                this);
+            yield break;
+        }
 
         yield return new WaitUntil(() => !DialoguePlayback.IsPlaying);
     }

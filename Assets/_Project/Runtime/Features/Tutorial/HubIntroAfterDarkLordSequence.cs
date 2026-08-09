@@ -137,6 +137,7 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
     private bool cachedGameplayHudEnabled;
     private bool hasAcquiredPlayerProtection;
     private bool hasPlayedThisScene;
+    private bool hasDialoguePlaybackFailure;
 
     public bool IsRunning => sequenceRoutine != null;
     public bool HasPlayedThisScene => hasPlayedThisScene;
@@ -189,6 +190,7 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
 
     private IEnumerator SequenceRoutine()
     {
+        hasDialoguePlaybackFailure = false;
         AcquireGlobalPresentationState();
         onSequenceStarted?.Invoke();
 
@@ -221,10 +223,16 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
 
         yield return ReturnCameraRoutine();
 
-        if (markSeenOnComplete)
+        if (markSeenOnComplete && !hasDialoguePlaybackFailure)
         {
             HubIntroProgressGate.MarkHubIntroSeen(hubIntroSeenId);
             PresentationPreloadPlayback.RefreshFirstRunIntroWindow("Hub intro seen");
+        }
+        else if (markSeenOnComplete)
+        {
+            Debug.LogError(
+                "[HubIntroAfterDarkLordSequence] Hub intro was not marked as seen because one or more dialogues failed to play.",
+                this);
         }
 
         hasPlayedThisScene = true;
@@ -271,17 +279,20 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         string label)
     {
         if (inkJson == null)
+        {
+            ReportDialoguePlaybackFailure(label, "Ink JSON is missing.");
             yield break;
+        }
 
         if (narratorNpcData == null)
         {
-            Debug.LogError($"[HubIntroAfterDarkLordSequence] Narrator NPCData is missing for {label} dialogue.", this);
+            ReportDialoguePlaybackFailure(label, "Narrator NPCData is missing.");
             yield break;
         }
 
         if (!DialoguePlayback.IsAvailable)
         {
-            Debug.LogError("[HubIntroAfterDarkLordSequence] Dialogue playback backend was not found.", this);
+            ReportDialoguePlaybackFailure(label, "Dialogue playback backend was not found.");
             yield break;
         }
 
@@ -292,9 +303,24 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         List<NPCData> participants = new() { narratorNpcData };
 
         if (!DialoguePlayback.TryStartDialogueSequence(segments, participants, null, presentationOptions))
+        {
+            ReportDialoguePlaybackFailure(label, "Dialogue playback request was rejected.");
             yield break;
+        }
+
+        if (!DialoguePlayback.IsPlaying)
+        {
+            ReportDialoguePlaybackFailure(label, "Dialogue request was accepted, but playback did not start.");
+            yield break;
+        }
 
         yield return new WaitUntil(() => !DialoguePlayback.IsPlaying);
+    }
+
+    private void ReportDialoguePlaybackFailure(string label, string reason)
+    {
+        hasDialoguePlaybackFailure = true;
+        Debug.LogError($"[HubIntroAfterDarkLordSequence] {label} dialogue failed. {reason}", this);
     }
 
     private IEnumerator PlayOpeningSpeechRoutine()

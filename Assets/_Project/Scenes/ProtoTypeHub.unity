@@ -40777,27 +40777,27 @@ MonoBehaviour:
   focusSteps:
   - label: Junk
     focusTarget: {fileID: 594690183}
-    dialogueInk: {fileID: 4900000, guid: 2c312514a4b371c47a70a5048e431b82, type: 3}
+    dialogueInk: {fileID: 4900000, guid: d97f855467714cc449bdb1260b3f7fc9, type: 3}
     dialogueStartPath: HUB_INTRO_JUNK
     focusWaitSeconds: 0.35
     overrideOrthographicSize: 0
     orthographicSize: 4.5
   - label: Training Dummy
     focusTarget: {fileID: 1997102911}
-    dialogueInk: {fileID: 4900000, guid: 7998b0b12b856ca4fb4dec7e82955a83, type: 3}
+    dialogueInk: {fileID: 4900000, guid: a1421e11432d4ea4aa76ff0443a8fe65, type: 3}
     dialogueStartPath: HUB_INTRO_TRAINING_DUMMY
     focusWaitSeconds: 0.35
     overrideOrthographicSize: 0
     orthographicSize: 4.5
   - label: Gate
     focusTarget: {fileID: 669198438}
-    dialogueInk: {fileID: 4900000, guid: fc60a661b78ca0f479d3cc65b8e5e8e5, type: 3}
+    dialogueInk: {fileID: 4900000, guid: eaaa076df92b58e4bb0a2a6e3027e584, type: 3}
     dialogueStartPath: HUB_INTRO_GATE
     focusWaitSeconds: 0.35
     overrideOrthographicSize: 0
     orthographicSize: 4.5
   finalNpcFocusTarget: {fileID: 1462924834}
-  finalDialogueInk: {fileID: 4900000, guid: d5aea7e32f175ae43b66b8c1826a884b, type: 3}
+  finalDialogueInk: {fileID: 4900000, guid: 1d1d6e404d81e914ca85b3503eafa1b0, type: 3}
   finalDialogueStartPath: HUB_INTRO_FINAL
   finalNpcFocusWaitSeconds: 0.35
   finalDialogueUsesFastSilhouette: 1

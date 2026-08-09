@@ -9865,9 +9865,9 @@ MonoBehaviour:
   bossScaleInSeconds: 0
   bossScaleOutSeconds: 0.2
   tutorialBossNpcData: {fileID: 11400000, guid: 47d475aabd71d0245a47a8fa56c6546a, type: 2}
-  firstDialogueInk: {fileID: 4900000, guid: 1bf62a6321c59bc4ab27e2898c15a460, type: 3}
+  firstDialogueInk: {fileID: 4900000, guid: dd94b5586db1a0649810fef993ac8541, type: 3}
   firstDialogueStartPath: script_1
-  secondDialogueInk: {fileID: 4900000, guid: 219d6eef81b84124ba48bc5bf35b8208, type: 3}
+  secondDialogueInk: {fileID: 4900000, guid: 2f81fa734100de14dadd480303dec969, type: 3}
   secondDialogueStartPath: script_2
   laserPresentation: {fileID: 1606454207}
   presentationHpView: {fileID: 309033401}
