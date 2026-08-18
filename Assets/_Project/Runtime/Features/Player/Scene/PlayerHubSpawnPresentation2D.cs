@@ -185,6 +185,9 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         if (!IsHubScene())
             return;
 
+        if (EditorDirectSceneStartContext.IsDirectHubStart(gameObject.scene))
+            return;
+
         if (!ShouldPlayForCondition())
             return;
 

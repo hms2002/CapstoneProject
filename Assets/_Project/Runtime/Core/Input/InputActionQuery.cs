@@ -10,6 +10,7 @@ public interface IInputActionQueryBackend
     bool WasReleasedThisFrame(InputActionId action);
     bool IsPressed(InputActionId action);
     bool IsKeyPressed(KeyCode key);
+    bool WasKeyPressedThisFrame(KeyCode key);
     bool WasKeyReleasedThisFrame(KeyCode key);
     Vector2 GetMoveVectorRaw();
     Vector2 GetMoveVectorNormalized();
@@ -54,6 +55,11 @@ public static class InputActionQuery
     public static bool IsKeyPressed(KeyCode key)
     {
         return IsBackendAlive(backend) && backend.IsKeyPressed(key);
+    }
+
+    public static bool WasKeyPressedThisFrame(KeyCode key)
+    {
+        return IsBackendAlive(backend) && backend.WasKeyPressedThisFrame(key);
     }
 
     public static bool WasKeyReleasedThisFrame(KeyCode key)

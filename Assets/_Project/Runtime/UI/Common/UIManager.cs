@@ -33,6 +33,7 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
     private readonly WorldPromptCoordinator worldPromptCoordinator = new WorldPromptCoordinator();
     private readonly HashSet<int> gameplayHudCurrencyHideOwners = new HashSet<int>();
     private readonly HashSet<Object> externalUiInputBlockOwners = new HashSet<Object>();
+    private readonly Dictionary<IStackableUI, Object> popupExternalBlockOwners = new Dictionary<IStackableUI, Object>();
     private CurrencyUI gameplayHudCurrencyUI;
     private PauseMenuUI pauseMenu;
     private SettingsPanelUI settingsPanel;
@@ -113,6 +114,7 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
     private void Update()
     {
         popupStack.PruneDeadEntries();
+        PruneDeadPopupOwnerEntries();
 
         if (IsInputBlockedByLoading())
             return;
@@ -124,6 +126,7 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         popupStack.Clear();
+        popupExternalBlockOwners.Clear();
         pauseMenu?.RefreshCanvasParent();
         pauseMenu?.CloseUI();
         settingsPanel?.RefreshCanvasParent();
@@ -233,6 +236,11 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
             return;
 
         popupStack.Push(ui);
+        if (allowedExternalBlockOwner != null)
+            popupExternalBlockOwners[ui] = allowedExternalBlockOwner;
+        else
+            popupExternalBlockOwners.Remove(ui);
+
         ui.OpenUI();
         ApplyGameplayLockState();
     }
@@ -253,6 +261,7 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
         if (!popupStack.Remove(ui))
             return;
 
+        popupExternalBlockOwners.Remove(ui);
         ui.CloseUI();
 
         if (ReferenceEquals(ui, keyBindingPanel) && settingsHiddenByKeyBinding)
@@ -279,11 +288,14 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
 
     private void HandleEscapeInput()
     {
-        if (IsInputBlockedByLoading() || IsExternalUiInputBlocked)
+        if (IsInputBlockedByLoading())
             return;
 
         if (popupStack.TryGetTop(out IStackableUI topUI))
         {
+            if (IsEscapeBlockedFor(topUI))
+                return;
+
             if (topUI is ICloseRequestHandler closeHandler && closeHandler.TryHandleCloseRequest())
                 return;
 
@@ -293,7 +305,49 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
             return;
         }
 
+        if (IsExternalUiInputBlocked)
+            return;
+
         TogglePauseMenu();
+    }
+
+    private bool IsEscapeBlockedFor(IStackableUI topUI)
+    {
+        if (!IsExternalUiInputBlocked)
+            return false;
+
+        if (topUI == null ||
+            !popupExternalBlockOwners.TryGetValue(topUI, out Object owner) ||
+            owner == null)
+        {
+            return true;
+        }
+
+        return HasExternalUiInputBlockersExcept(owner);
+    }
+
+    private void PruneDeadPopupOwnerEntries()
+    {
+        if (popupExternalBlockOwners.Count == 0)
+            return;
+
+        List<IStackableUI> deadEntries = null;
+        foreach (KeyValuePair<IStackableUI, Object> entry in popupExternalBlockOwners)
+        {
+            bool deadUi = entry.Key == null ||
+                          entry.Key is Object unityObject && unityObject == null;
+            if (!deadUi && entry.Value != null)
+                continue;
+
+            deadEntries ??= new List<IStackableUI>();
+            deadEntries.Add(entry.Key);
+        }
+
+        if (deadEntries == null)
+            return;
+
+        for (int i = 0; i < deadEntries.Count; i++)
+            popupExternalBlockOwners.Remove(deadEntries[i]);
     }
 
     private void TogglePauseMenu()

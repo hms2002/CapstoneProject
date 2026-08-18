@@ -41,7 +41,7 @@ public sealed class RunTransitionResolver : MonoBehaviour
             defaultDirective,
             rules);
 
-        Destroy(gameObject);
+        Destroy(this);
     }
 
     private void OnDestroy()

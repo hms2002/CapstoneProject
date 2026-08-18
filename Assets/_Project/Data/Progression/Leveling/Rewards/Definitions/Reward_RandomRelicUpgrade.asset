@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92ec912023a8a3d4a89dd503cd4c8554, type: 3}
+  m_Name: Reward_RandomRelicUpgrade
+  m_EditorClassIdentifier: Gameplay::LevelRewardDefinitionSO
+  rewardId: level_reward.random_relic_upgrade
+  allowMultipleSelections: 0
+  displayName: 유물 공명
+  description: 인벤토리의 강화 가능한 유물 중 최대 3개를 무작위로 골라 2레벨씩 강화합니다.
+  icon: {fileID: 0}
+  effects:
+  - {fileID: 11400000, guid: fd24827d8c084c35911bec3c387bc61d, type: 2}

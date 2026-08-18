@@ -50,6 +50,16 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
 
     public event Action<PortalRouteManager> LoadWindowChanged;
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetRuntimeState()
+    {
+        // Enter Play Mode Options can keep static fields while reusing scene objects.
+        // Begin every Play session with a fresh ownership decision and backend binding.
+        s_isQuitting = false;
+        Instance = null;
+        RunRoutePlayback.RegisterBackend(null);
+    }
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
     {
@@ -62,12 +72,15 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
     public static PortalRouteManager EnsureInstance()
     {
         if (Instance != null)
+        {
+            BindInstance(Instance);
             return Instance;
+        }
 
         PortalRouteManager existing = FindFirstObjectByType<PortalRouteManager>(FindObjectsInactive.Include);
         if (existing != null)
         {
-            Instance = existing;
+            BindInstance(existing);
             return existing;
         }
 
@@ -82,16 +95,20 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
 
-        Instance = this;
-        RunRoutePlayback.RegisterBackend(this);
-        InstanceChanged?.Invoke(this);
+        BindInstance(this);
 
         if (persistAcrossScenes)
             DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnEnable()
+    {
+        if (Instance == null || Instance == this)
+            BindInstance(this);
     }
 
     private void OnDestroy()
@@ -108,6 +125,19 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
     private void OnApplicationQuit()
     {
         s_isQuitting = true;
+    }
+
+    private static void BindInstance(PortalRouteManager manager)
+    {
+        if (manager == null)
+            return;
+
+        bool instanceChanged = Instance != manager;
+        Instance = manager;
+        RunRoutePlayback.RegisterBackend(manager);
+
+        if (instanceChanged)
+            InstanceChanged?.Invoke(manager);
     }
 
     public bool HasActivePlan =>

@@ -189,6 +189,8 @@ namespace UnityGAS
             if (postHp >= hpCheck.PreHp)
                 return;
 
+            CombatActivityEvents.RaiseDamageApplied(causer, target, hpCheck.PreHp - postHp);
+
             targetSystem.SendGameplayEvent(targetSystem.DamagedTag, new AbilityEventData
             {
                 AbilitySystem = targetSystem,

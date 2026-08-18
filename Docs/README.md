@@ -74,6 +74,7 @@ Scope Authority는 "이번 스레드에서 무엇을 바꿀 수 있는가"를 �
 - [Task Index](./TaskIndex.md)
 - [Active Tasks](./ActiveTasks/README.md)
 - [Task Brief Guide](./Guides/TaskBriefGuide.md)
+- [Unity External Editing Workflow](./Guides/UnityExternalEditingWorkflow.md)
 - [Task Brief Templates](./_templates/)
 - [Refactoring Guide](./Guides/RefactoringGuide.md)
 - [`Tools/codex-task-brief.ahk`](../Tools/codex-task-brief.ahk): Codex 앱 composer에 Task Brief 템플릿을 붙여넣는 AutoHotkey v2 도구입니다.

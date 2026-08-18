@@ -2891,3 +2891,102 @@ Implications:
 - The completion gate must run an Addressables player content build validation and check the generated `AddressablesLink/link.xml` for stale `Assembly-CSharp` references.
 - `Assets/AddressableAssetsData/link.xml` and `.meta` can stay deleted after the split when the generated Addressables build link output is clean.
 - Future linker-preserve validation should distinguish the temporary ConfigFolder copy from the generated Addressables build output.
+
+## 2026-08-11 - Level-Up Effects Are Run-Owned Definitions With Rebuildable Live Handles
+
+Decision:
+Level-up rewards are separate from permanent `UpgradeEffectSO` purchases. Stable reward/effect IDs and serializable effect payloads live in `GamePlayData`, while player-bound subscriptions and modifiers are rebuilt from registered definitions and disposed through `ILevelRewardEffectHandle`.
+
+Reason:
+Level-up effects reset with the run but must survive gameplay scene transitions. Storing scene object references would violate runtime save ownership, while reusing permanent upgrade effects would mix profile and run lifetimes. Instant rewards also need a durable applied marker so player restoration does not grant them twice.
+
+Implications:
+- UI does not own selected rewards or effect state.
+- Persistent effects must provide deterministic cleanup and reapply behavior.
+- Instant effects must use the `InstantOnce` lifetime and persist `instantApplied`.
+- Reward/effect IDs become run-state compatibility keys and should not be renamed after authoring without migration.
+- `한 자루의 맹세` seals weapon slot index 1 during the run; it must not delete or overwrite the stored slot weapon.
+
+## 2026-08-11 - Level-Up Offers Persist Before UI And Use A Run Seed
+
+Decision:
+The active three-card offer, reroll usage, offer sequence, and reward random seed belong to `LevelProgressionState`. Closing or rebuilding authored UI does not roll again. The normal player selection flow consumes only a reward ID present in the stored active offer.
+
+Reason:
+Candidate identity must survive UI close/reopen and scene/run-state serialization without letting presentation code own randomness or mutate gameplay progression.
+
+Implications:
+- Authored UI reads `LevelRewardSessionController.Candidates` and calls its commands instead of rolling locally.
+- A successful selection clears the current offer, advances the sequence, and rolls the next offer only when another pending reward remains.
+- Reward/effect IDs are persistence keys; renaming authored IDs requires migration.
+
+## 2026-08-17 - Level HUD EXP Progress And Reward Readiness Are Independent
+
+Decision:
+`ExperienceFill` projects only current EXP progress, while `RewardReadyBorder` and `LevelUpPrompt` project whether the reward session can actually be opened. Neither display state derives from the other.
+
+Reason:
+Pending reward choices can coexist with progress toward a later level, and a full or partially filled EXP diamond says nothing about combat, recent damage, dialogue, blocking UI, player registration, or candidate availability. Coupling the visuals would show false R-key prompts or erase valid EXP progress.
+
+Implications:
+- `LevelHudPresenter` updates fill/level from `RunLevelProgression` and readiness from `LevelRewardSessionController.CanOpenSession` through separate paths.
+- Lv.10 forces EXP fill to one but does not automatically show the green reward border.
+- A pending reward does not show the green border while any session-open condition is blocked.
+- Do not attach an active `LevelRewardSessionController` before an authored selection-window consumer can present and close the paused session.
+
+## 2026-08-17 - Level Reward Selection Uses Fixed Escape Close Input
+
+Decision:
+The level-reward selection window closes with `Escape`. This shortcut is fixed and is not part of the player key-mapping surface.
+
+Reason:
+Closing the modal selection window is a UI-stack escape action rather than a configurable gameplay action. Keeping it fixed avoids an unnecessary binding dependency and keeps the authored close control consistent with other modal UI behavior.
+
+Implications:
+- `UIManager` handles the fixed `Escape` request through the top UI-stack entry. A stack UI pushed by its matching external blocker owner may close while that owner is the only blocker; unrelated blockers still suppress the request.
+- `LevelRewardSelectionPresenter` must not also query `Escape` directly, because duplicate handling can close the reward window and open Pause in the same frame depending on script order.
+- Do not add a key-binding action, rebinding row, or binding persistence entry for this close command.
+- Any close hint should display a fixed ESC label/icon rather than a dynamically resolved gameplay binding.
+- Closing must preserve the current offer and reroll state through `LevelRewardSessionController.CloseSession()`.
+
+## 2026-08-18 - Boss EXP Uses Run Stage Position And Encounter Completion
+
+Decision:
+Normal boss EXP is determined by the boss encounter's current run stage position: stage 1 grants 120, stage 2 grants 150, and stage 3 grants 180. The final route set, currently the Demon King, grants no EXP. Boss EXP is emitted once from `BossEncounterEndDirector` after encounter completion rather than from each boss actor's death event.
+
+Reason:
+Normal boss routes are randomized, so boss identity cannot represent progression stage. Split or multi-actor encounters such as Slime Queen also make an individual death subscription capable of duplicate payout. The encounter-end path already owns the one-time clear result and final-route classification.
+
+Implications:
+- Reordering which boss appears in stages 1-3 does not change the stage EXP curve.
+- New multi-actor bosses still pay only once when their clear condition completes.
+- Final-route exclusion uses `BossRewardContext.IsFinalRouteSet`; do not add a Demon King name/type comparison.
+- Boss EXP Square count is capped, but the exact total EXP must remain preserved by the per-pickup amount.
+
+## 2026-08-18 - Level Reward Close Presentation Completes Before Gameplay Resumes
+
+Decision:
+The level-reward modal keeps its session-owned pause and input block until the card, presentation, and blocker OFF sequence is fully transparent and the authored panel is deactivated. A previously revealed active offer skips only its flip when reopened; rerolls and consecutive pending offers use a new reveal identity and run the card replacement reveal.
+
+Reason:
+Releasing the session when close is requested would restart gameplay under a still-visible blocker. Treating every reopen as a new reveal would also repeat information the player already inspected, while treating rerolls as already revealed would hide the intended new-card presentation.
+
+Implications:
+- `LevelRewardSelectionPresenter` holds the UI stack entry during the close coroutine and permits the final pop only after the fade completes.
+- The session controller does not auto-close after the last successful selection; the Presenter completes the normal visual close and then releases the session.
+- Transition input is blocked for card selection, reroll, number keys, close button, and fixed Escape.
+- Reveal memory is presentation-only and keyed by run seed, offer sequence, and reroll usage; gameplay candidate ownership remains unchanged.
+
+## 2026-08-19 - Direct PrototypeHub Play Skips Hub Arrival Presentation
+
+Decision:
+When `ProtoTypeHub` is the first gameplay scene played directly in the Unity Editor, development bootstrap skips both `PlayerHubSpawnPresentation2D` and `HubIntroAfterDarkLordSequence`. It still resets volatile run state, prepares the Hub start portal plan, and normalizes player interaction. Normal Title/tutorial entry and later Hub returns keep their authored arrival presentation.
+
+Reason:
+Direct Hub Play is an iteration path for immediately testing Hub and run-start behavior. Letting either arrival presentation acquire input or cinematic protection makes the correctly authored `HubToRunStart` portal appear broken. The exception must be scoped to the initial direct-Play scene rather than stored in profile, run, portal, or prefab data.
+
+Implications:
+- Core `EditorDirectSceneStartContext` stores only the initial direct Hub scene handle and is a no-op outside `UNITY_EDITOR`.
+- `SceneDomainCoordinator` is the only writer and clears the marker when any later scene loads.
+- Hub spawn and Hub intro presentation must use the same marker; do not restore a one-sided skip.
+- `ScenePortal`, its shared prefab, the Hub scene instance's `HubToRunStart` semantic, and `RunRouteCatalogSO` remain unchanged.

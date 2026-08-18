@@ -155,6 +155,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBoss
     }
 
     public bool IsCombatActive => combatActive;
+    public override bool IsRecognizingPlayer => !isDead && combatActive;
 
     public BossHudHealthBarTheme HudHealthBarTheme => hudHealthBarTheme;
     public Component HudSourceComponent => this;

@@ -10,6 +10,7 @@ internal static class RunSessionLifecycleService
             return;
 
         clearPendingRunProgress?.Invoke();
+        RunSessionStateService.ResetLevelProgression(data);
         data.isRunActive = true;
         data.runElapsedSeconds = 0f;
         data.runRemainingSeconds = 0f;
@@ -39,6 +40,7 @@ internal static class RunSessionLifecycleService
         data.pendingTransition = null;
         data.pendingPlayerState = null;
         data.pendingHubReturnFullHeal = reason != RunEndReason.None;
+        RunSessionStateService.ResetLevelProgression(data);
         clearRoutePlan?.Invoke();
     }
 }
@@ -258,6 +260,13 @@ internal static class RunSessionStateService
         data.pendingPlayerState = null;
         data.pendingHubReturnFullHeal = false;
         data.pendingHubLoadFullHeal = false;
+        ResetLevelProgression(data);
         clearPendingRunProgress?.Invoke();
+    }
+
+    public static void ResetLevelProgression(GamePlayData data)
+    {
+        data.levelProgression ??= new LevelProgressionState();
+        data.levelProgression.Reset();
     }
 }

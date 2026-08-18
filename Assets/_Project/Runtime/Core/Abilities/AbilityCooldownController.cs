@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace UnityGAS
@@ -17,6 +19,8 @@ namespace UnityGAS
         private readonly AttributeDefinition cooldownDurationMultiplierAttribute;
         private readonly AttributeDefinition cooldownFlatReduceSecondsOnHitAttribute;
         private readonly float minCooldownSeconds;
+        private readonly List<ScopedCooldownMultiplier> scopedDurationMultipliers =
+            new List<ScopedCooldownMultiplier>();
 
         private const string KEY_CHARGES = "__Charges";
         private const string KEY_RECHARGE = "__RechargeRemaining";
@@ -58,6 +62,18 @@ namespace UnityGAS
             }
 
             spec.CooldownRemaining = finalCooldown;
+        }
+
+        public IDisposable AddScopedDurationMultiplier(
+            Func<AbilityDefinition, bool> appliesTo,
+            float multiplier)
+        {
+            if (appliesTo == null || multiplier <= 0f)
+                return null;
+
+            var entry = new ScopedCooldownMultiplier(appliesTo, multiplier);
+            scopedDurationMultipliers.Add(entry);
+            return new ScopedCooldownMultiplierHandle(scopedDurationMultipliers, entry);
         }
 
         public bool IsOnCooldown(AbilitySpec spec)
@@ -184,7 +200,56 @@ namespace UnityGAS
             if (mult <= 0f)
                 mult = 1f;
 
+            for (int i = 0; i < scopedDurationMultipliers.Count; i++)
+            {
+                ScopedCooldownMultiplier scoped = scopedDurationMultipliers[i];
+                if (scoped.AppliesTo(def))
+                    mult *= scoped.Multiplier;
+            }
+
             return Mathf.Max(minCooldownSeconds, baseCd * mult);
+        }
+
+        private sealed class ScopedCooldownMultiplier
+        {
+            private readonly Func<AbilityDefinition, bool> appliesTo;
+
+            public ScopedCooldownMultiplier(Func<AbilityDefinition, bool> appliesTo, float multiplier)
+            {
+                this.appliesTo = appliesTo;
+                Multiplier = multiplier;
+            }
+
+            public float Multiplier { get; }
+
+            public bool AppliesTo(AbilityDefinition definition)
+            {
+                return appliesTo != null && appliesTo(definition);
+            }
+        }
+
+        private sealed class ScopedCooldownMultiplierHandle : IDisposable
+        {
+            private List<ScopedCooldownMultiplier> owner;
+            private ScopedCooldownMultiplier entry;
+
+            public ScopedCooldownMultiplierHandle(
+                List<ScopedCooldownMultiplier> owner,
+                ScopedCooldownMultiplier entry)
+            {
+                this.owner = owner;
+                this.entry = entry;
+            }
+
+            public void Dispose()
+            {
+                if (owner == null || entry == null)
+                    return;
+
+                owner.Remove(entry);
+                owner = null;
+                entry = null;
+            }
         }
 
         public void ConsumeChargeOnCommit(AbilitySpec spec, AbilityDefinition def)
@@ -199,7 +264,7 @@ namespace UnityGAS
             if (spec.GetInt(KEY_CHARGES, 0) < def.maxCharges &&
                 spec.GetFloat(KEY_RECHARGE, 0f) <= 0f)
             {
-                spec.SetFloat(KEY_RECHARGE, Mathf.Max(0.01f, def.cooldown));
+                spec.SetFloat(KEY_RECHARGE, Mathf.Max(0.01f, GetFinalCooldownSeconds(def)));
             }
         }
 

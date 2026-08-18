@@ -25,6 +25,34 @@ Prevention:
 
 ## Active Entries
 
+## 2026-08-19 - Direct Hub Presentation Skip Was Removed One-Sidedly
+
+Context:
+Playing `ProtoTypeHub` directly was intended to provide an immediately usable run-start portal. The route bootstrap and correctly authored `HubToRunStart` portal remained present, but direct Play still ran the Hub fall/wake and Hub intro sequences, both of which can own player input and cinematic protection.
+
+Cause:
+The original `ConsumeHubSpawnPresentationSkip()` handoff was removed when Hub spawn presentation was restored for normal Hub arrivals. That change removed the development exception together with the normal-flow behavior, and the later Hub intro path had its own Editor bypass. Route readiness and presentation readiness therefore drifted into separate policies.
+
+Fix:
+Add Core `EditorDirectSceneStartContext`, mark only the initial direct-Play Hub scene from `SceneDomainCoordinator`, and make both `PlayerHubSpawnPresentation2D` and `HubIntroAfterDarkLordSequence` skip from the same marker. Clear the marker on the next scene load and compile it as a player-build no-op.
+
+Prevention:
+Treat direct Hub iteration as one development policy covering volatile run reset, player interaction normalization, Hub portal plan preparation, and all Hub arrival presentation gates. Do not encode this exception in the shared portal prefab, profile completion flags, or only one of the two arrival sequences. Verify direct Hub Play separately from Title-to-tutorial-to-Hub and run-return-to-Hub flows.
+
+## 2026-08-18 - Inspector Rebuilt Before Unity GUI Skin Was Ready
+
+Context:
+While Unity 6.4 remained open, external C# and `GlobalUIRoot.prefab` edits triggered compilation, Domain Reload, prefab import, and Inspector redraw. The Inspector then rendered only partial component fields and repeatedly logged `UnityEditor.EditorStyles.get_toolbarButtonRight()` exceptions.
+
+Cause:
+During Domain Reload, Unity rebuilt `PropertyEditor` preview contents before a current GUI Skin was available. `PropertyEditor.Styles` static initialization failed, so the same Editor session continued throwing `TypeInitializationException` during Inspector updates. Interleaving external C# and prefab saves increased the chance of overlapping reload and Inspector rebuild work, although the uncaught failure is inside Unity Editor code.
+
+Fix:
+Restart the Unity Editor to reset the failed static initializer. If the broken Inspector layout persists, restore the default layout before considering a backed-up `UserSettings/Layouts/default-6000.dwlt` reset.
+
+Prevention:
+Follow `Docs/Guides/UnityExternalEditingWorkflow.md`: batch C# edits first, wait for compilation and Domain Reload to finish, then batch approved prefab/scene changes and perform one final Refresh/verification pass. For multi-file external edits, temporarily disable Auto Refresh when practical. Do not alternate C# and serialized-asset saves during an active reload, and do not add runtime workarounds for UnityEditor GUI style initialization.
+
 ## 2026-07-04 - Runtime Core Contained Editor-Only Menu Tool
 
 Context:
@@ -1664,3 +1692,17 @@ Restored the `AssemblyDefinitionImporter` block in `Core.asmdef.meta` while pres
 
 Prevention:
 When adding or moving `.asmdef` files, verify the `.asmdef.meta` file keeps the same GUID and contains `AssemblyDefinitionImporter`. Do not treat a valid `.asmdef` JSON file as sufficient evidence that Unity imported the assembly definition asset.
+
+## 2026-08-19 - Hub Portal Had Scene Manager But No Route Backend
+
+Context:
+Direct Play from `ProtoTypeHub` correctly skipped Hub arrival presentation and restored the player to `Idle`, but the run-start portal remained non-interactable. The portal diagnostic reported `isTransitioning=False`, `playerState=Idle`, `canResolve=False`, and `route=manager=null`.
+
+Cause:
+The first diagnosis found a real backend-rebinding gap, but fixing it did not resolve the playtest because the rebound manager was destroyed afterward. `ProtoTypeHub/SceneManagers` contains `RunTransitionResolver`, `PortalRouteManager`, and `SceneTransitionPolicyResolver` on one GameObject. Their auto-bootstrap instances can make a scene component a duplicate, and every duplicate path used `Destroy(gameObject)`. A resolver therefore removed the entire shared host, including the valid `PortalRouteManager`, whose `OnDestroy` unregistered `RunRoutePlayback` and produced the observed `manager=null` state.
+
+Fix:
+`PortalRouteManager` still repairs its static backend across Play/recompile lifecycle paths. In addition, the duplicate paths of all three co-located scene-flow services now use `Destroy(this)` so they remove only their own duplicate component and preserve sibling services on the shared host.
+
+Prevention:
+For Unity services that expose a separate static playback/query backend, do not treat a non-null MonoBehaviour instance as proof that the backend is registered. Restore backend registration from instance adoption and enable/reload lifecycle paths. When independently bootstrapped services may share a GameObject, duplicate cleanup must destroy the component rather than the whole host unless whole-host ownership is an explicit invariant.

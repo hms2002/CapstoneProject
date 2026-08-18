@@ -889,6 +889,17 @@ namespace UnityGAS
                    cooldownController.ReduceCooldownRemainingOnHit(def);
         }
 
+        /// <summary>
+        /// 책임: 특정 ability 집합에만 적용되는 쿨다운 시간 배율을 런타임 동안 등록한다.
+        /// 반환 handle을 Dispose하면 즉시 정책이 제거된다.
+        /// </summary>
+        public IDisposable AddScopedCooldownDurationMultiplier(
+            Func<AbilityDefinition, bool> appliesTo,
+            float multiplier)
+        {
+            return cooldownController?.AddScopedDurationMultiplier(appliesTo, multiplier);
+        }
+
         public int GetChargesRemaining(AbilityDefinition def)
         {
             var s = FindSpec(def);
@@ -1062,6 +1073,23 @@ namespace UnityGAS
                 def,
                 Mathf.Max(0f, seconds),
                 currentCharges);
+        }
+
+        /// <summary>현재 부여된 모든 능력의 쿨다운과 차지를 즉시 완전히 회복한다.</summary>
+        public void RestoreAllCooldowns()
+        {
+            if (cooldownController == null)
+                return;
+
+            for (int i = 0; i < runtimeSpecs.Count; i++)
+            {
+                AbilityDefinition def = runtimeSpecs[i]?.Definition;
+                if (def == null)
+                    continue;
+
+                int restoredCharges = def.useCharges ? Mathf.Max(1, def.maxCharges) : 0;
+                cooldownController.TryRestoreCooldownState(def, 0f, restoredCharges);
+            }
         }
 
         private static bool ContainsTag(List<GameplayTag> list, GameplayTag tag)

@@ -27,6 +27,15 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
     [SerializeField] private GameObject exitPortal;
     [SerializeField] private bool hideAuthoredObjectsOnStart = true;
 
+    [Header("Experience Reward")]
+    [SerializeField] private ExperiencePickup2D experiencePickupPrefab;
+    [SerializeField, Min(0)] private int stageOneBossExperience = 120;
+    [SerializeField, Min(0)] private int stageTwoBossExperience = 150;
+    [SerializeField, Min(0)] private int stageThreeBossExperience = 180;
+    [SerializeField, Min(1)] private int experiencePerPickup = 5;
+    [SerializeField, Min(1)] private int maximumExperiencePickupCount = 30;
+    [SerializeField, Min(0f)] private float experiencePickupScatterRadius = 1.2f;
+
     [Header("Debug")]
     [SerializeField] private bool logDebug;
 
@@ -153,6 +162,7 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
 
         LogRewardContext(context);
 
+        HandleExperienceReward(context, rewardOrigin);
         HandleRewards(context, rewardOrigin);
         HandlePortal(context);
         LogDebug("Encounter completed.");
@@ -221,6 +231,38 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
             $"Treasure chest '{treasureChest.name}' activated. " +
             $"AfterActiveSelf={treasureChest.gameObject.activeSelf}.");
         context.MarkRewardsHandled();
+    }
+
+    private void HandleExperienceReward(BossRewardContext context, Vector3 rewardOrigin)
+    {
+        if (context == null || context.IsFinalRouteSet || experiencePickupPrefab == null || !RunSessionStore.IsRunActive)
+            return;
+
+        int stageExperience = ResolveNormalStageBossExperience(RunRoutePlayback.CurrentStageIndexOrInvalid);
+        if (stageExperience <= 0)
+            return;
+
+        int spawnedCount = ExperiencePickupDropSpawner.SpawnDistributed(
+            experiencePickupPrefab,
+            rewardOrigin,
+            stageExperience,
+            experiencePerPickup,
+            maximumExperiencePickupCount,
+            experiencePickupScatterRadius);
+        LogDebug(
+            $"Spawned boss experience. Stage={RunRoutePlayback.CurrentStageIndexOrInvalid + 1}, " +
+            $"TotalExperience={stageExperience}, PickupCount={spawnedCount}.");
+    }
+
+    private int ResolveNormalStageBossExperience(int stageIndex)
+    {
+        return stageIndex switch
+        {
+            0 => stageOneBossExperience,
+            1 => stageTwoBossExperience,
+            2 => stageThreeBossExperience,
+            _ => 0
+        };
     }
 
     private void HandlePortal(BossRewardContext context)
