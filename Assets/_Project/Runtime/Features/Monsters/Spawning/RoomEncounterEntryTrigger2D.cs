@@ -2,7 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
-/// Notifies the room encounter only after the player's body collider is fully inside this room trigger.
+/// 책임:
+/// - 플레이어의 몸 콜라이더가 방 트리거 안에 완전히 들어온 뒤 기존 방 encounter 진입을 알린다.
+/// - 플레이어가 잠금 전에 다시 빠져나가면 기존 방 encounter 이탈을 알린다.
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
@@ -14,6 +16,16 @@ public sealed class RoomEncounterEntryTrigger2D : MonoBehaviour
     private readonly HashSet<Collider2D> activePlayerBodyColliders = new();
     private Collider2D triggerCollider;
     private bool missingRoomGroupWarningLogged;
+
+    public MonsterSpawnRoomGroup TargetRoomGroup => targetRoomGroup;
+
+    /// <summary>런타임 생성 방이 알림을 전달할 기존 방 그룹을 연결합니다.</summary>
+    public void Configure(MonsterSpawnRoomGroup roomGroup)
+    {
+        targetRoomGroup = roomGroup;
+        missingRoomGroupWarningLogged = false;
+        EnsureTriggerCollider();
+    }
 
     private void Reset()
     {

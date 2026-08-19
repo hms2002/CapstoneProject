@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e213893e048dde468ea1fc00324846a, type: 3}
+  m_Name: ProceduralShadowLibrary
+  m_EditorClassIdentifier: Gameplay::RoomThemeLibrarySO
+  themeId: ProceduralShadow
+  rooms:
+  - {fileID: 11400000, guid: 34a83d3377b84084b9b5897057cc7cf5, type: 2}
+  - {fileID: 11400000, guid: 4d3dec9569cc3cb4987a068994c42585, type: 2}
+  - {fileID: 11400000, guid: 47de70b2571a9824b8d66651fc1ec80f, type: 2}
+  - {fileID: 11400000, guid: 42256478e8397a048a258e5d63513b26, type: 2}
+  - {fileID: 11400000, guid: b855a7f5102bc08439fc15cb329e2c1b, type: 2}
+  - {fileID: 11400000, guid: 66b8213996aeb114cacd1c130b42a4e3, type: 2}
+  - {fileID: 11400000, guid: 4f96712c801fb0341836ef85d79d686b, type: 2}
+  - {fileID: 11400000, guid: a30c7ee0438166148857c09a47e475fe, type: 2}

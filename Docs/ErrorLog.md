@@ -1664,3 +1664,59 @@ Restored the `AssemblyDefinitionImporter` block in `Core.asmdef.meta` while pres
 
 Prevention:
 When adding or moving `.asmdef` files, verify the `.asmdef.meta` file keeps the same GUID and contains `AssemblyDefinitionImporter`. Do not treat a valid `.asmdef` JSON file as sufficient evidence that Unity imported the assembly definition asset.
+
+## 2026-08-11 - Opening A Scene Invalidated An Unreferenced ScriptableObject Wrapper
+
+Context:
+The procedural dungeon scene installer created and loaded a valid `RoomThemeLibrarySO`, then opened the corridor-derived target scene before assigning the library to `DungeonGenerator`. The serialized generator reference became null during batch verification.
+
+Cause:
+`EditorSceneManager.OpenScene(...)` triggered Unity asset lifecycle work that invalidated the previously held, otherwise unreferenced ScriptableObject wrapper. Its C# variable still existed, but Unity fake-null semantics treated the object as destroyed.
+
+Fix:
+After opening the target scene, reload `RoomThemeLibrarySO` from its asset path before assigning it to the generator.
+
+Prevention:
+In editor automation, treat scene-open/import boundaries as potential Unity object-lifetime boundaries. Persist asset paths or GUIDs across the boundary and reacquire ScriptableObject references afterward instead of assuming an earlier wrapper remains valid.
+
+## 2026-08-11 - Batch Scene Installation Reserialized Unrelated Tracked Assets
+
+Context:
+The procedural dungeon installer intentionally created `ProceduralDungeonV0Test.unity` from `ProtoTypeCorridor.unity`, but the Unity batch session also changed the tracked source scene and cleared the dynamic glyph/atlas content of the TMP fallback font asset.
+
+Cause:
+Opening, copying, importing, and saving assets in the Unity Editor can upgrade or rewrite serialized data beyond the explicit target. The source scene remained involved in the editor lifecycle, and dynamic TMP font state was rewritten during import.
+
+Fix:
+Keep the intended test-scene output and classify the source-scene and TMP resource diffs as unrelated cleanup candidates. Restore them only after confirming they were clean before the task and receiving explicit approval when restoration could erase user work.
+
+Prevention:
+Capture scoped Git status and diffs immediately before and after Unity editor automation. Prefer direct target-scene creation/open ordering, close or replace source-scene references early, and never bulk-revert editor side effects without separating pre-existing user changes.
+
+## 2026-08-18 - Wall Tile Presence Did Not Physically Seal An Unused Room Socket
+
+Context:
+A generated room with multiple sockets used only one connection, but the player could leave through another unused socket even though its Wall tile had not been removed.
+
+Cause:
+The generated Wall Tilemap initially did not mirror the corridor's `Ground` layer and composite-collider setup. More importantly, the tile's sprite-derived collider shape did not cover the socket cell center. Therefore a serialized Wall tile was visual/data evidence, not proof that physics sealed the exit.
+
+Fix:
+Configured the generated Wall Tilemap with the gameplay layer, static `Rigidbody2D`, and merged `CompositeCollider2D`. `DungeonRoomBuilder` now starts every authored logical socket closed with all of its Wall tiles and one invisible span-sized `BoxCollider2D`, then removes both only when the layout selects that endpoint for a connection. Added authoring and runtime checks for Floor/Wall socket data, connected closure removal, unused closure retention, and actual blocker coverage across the full socket width.
+
+Prevention:
+Validate socket closure as two separate invariants: the tile data must represent a closed socket, and generated collision geometry must cover it. Never infer passability or sealing solely from `Tilemap.HasTile` when tiles use sprite collider shapes.
+
+## 2026-08-18 - Replacing A Scene Prefab Instance Cleared References To Its Stripped Objects
+
+Context:
+The procedural test scene needed the `GlobalUIRoot` configuration from `ProtoTypeHub`. A fresh prefab instance with all Hub property overrides correctly restored the active UI hierarchy and layout.
+
+Cause:
+The Corridor-derived scene's `DialogueController` and `CinematicDirector` referenced `DialogueView` and `PortraitController` as stripped objects inside the old UI prefab instance. Destroying that instance caused Unity to serialize those three external fields as null; copying prefab property overrides does not reconnect references owned by other scene objects.
+
+Fix:
+Before replacement, scan external scene components for serialized object references into the old prefab instance and record each target by its original prefab object. After instantiating the Hub-configured replacement, map original prefab objects to the new instance and rebind the captured properties. Add a targeted fallback and verification for the dialogue UI references so an already-null intermediate scene is repaired safely.
+
+Prevention:
+Treat prefab-instance replacement as a reference migration, not only a hierarchy operation. Preserve and verify all scene-owned references into the instance, and run the migration twice to prove the second run rebinds existing references without fallback repair.

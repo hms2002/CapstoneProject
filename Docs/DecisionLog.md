@@ -2891,3 +2891,176 @@ Implications:
 - The completion gate must run an Addressables player content build validation and check the generated `AddressablesLink/link.xml` for stale `Assembly-CSharp` references.
 - `Assets/AddressableAssetsData/link.xml` and `.meta` can stay deleted after the split when the generated Addressables build link output is clean.
 - Future linker-preserve validation should distinguish the temporary ConfigFolder copy from the generated Addressables build output.
+
+## 2026-08-11 - Procedural Dungeon V0 Uses Theme Libraries And Direct Socket Adjacency
+
+Decision:
+Group room templates by boss/dungeon theme in `RoomThemeLibrarySO` rather than storing theme identity on every room. Keep `DungeonLayoutAssembler` theme-agnostic. For v0, place unrotated rectangular rooms by aligning opposite-facing one-cell sockets in adjacent cells, reject only bounds overlap, and let `DungeonRoomBuilder` remove the connected Wall cells and create one door at the midpoint of each socket connection.
+
+Reason:
+This is the smallest complete data-to-runtime path that preserves the intended responsibility split. Theme selection stays outside layout geometry, room collision remains predictable, and the builder can realize traversable connections without introducing corridor pathfinding or runtime Tilemap hierarchy creation. Connection doors are derived from successful layout edges rather than duplicated in individual room build data.
+
+Implications:
+- Create one room library asset per theme and place the applicable templates in that asset.
+- Start and optional Boss room availability are library validation requirements, not special cases inside room templates.
+- A socket cell must contain both Floor and Wall data. Runtime build starts with every socket closed by its authored Wall and a dedicated one-cell physical blocker, then connected endpoints remove both; sprite-derived tile collision alone may not seal the socket center.
+- One successful socket-pair connection creates one `DoorObject`, centered between the two adjacent socket cells and rotated 90 degrees for left/right connections.
+- V0 connection doors use the shared Door prefab as `Normal`, non-permanent doors; theme-specific door selection and encounter locking are later policies.
+- Room rotation, multi-cell socket width/category, corridor routing, and room-authored object data are later extensions rather than v0 fallback behavior.
+- The assembler's Seed is deterministic relative to library ordering and current template data; reordering weighted candidates can change generated layouts.
+
+## 2026-08-18 - Dungeon Doorways Use One Logical Two-cell Socket
+
+Decision:
+Represent a doorway as one `RoomSocketData` with a canonical start cell, outward direction, and width `2`, rather than two independent one-cell sockets. Up/Down spans advance right from the start cell; Left/Right spans advance upward. Layout compatibility requires opposite directions and equal widths.
+
+Reason:
+The shared Door prefab occupies two cells. Treating its halves as separate sockets could connect each half independently or open only part of the doorway. A single logical socket keeps layout consumption, Wall removal, collision closure, and Door placement atomic.
+
+Implications:
+- Both cells must contain authored Floor and closed Wall tiles.
+- A connected endpoint removes two Wall cells and its one span-sized blocker; an unused endpoint retains both Wall cells and the blocker.
+- One connection still creates exactly one Door, positioned at the midpoint of the full socket spans.
+- `RoomSocketGeometry` is the shared source for span cells and boundary validation across authoring, layout, build, and verification code.
+- Existing serialized sockets with no width field resolve legacy `0` to width `2`, but old room art must still be re-baked if its second socket cell lacks Floor or Wall data.
+
+## 2026-08-18 - Room Gameplay Objects Use Typed Grid-relative Prefab Placements
+
+Decision:
+Store monster, chest, portal, and general prop placements in `RoomBuildData` as a common typed prefab record with a room-local Grid cell, cell-center offset, rotation, and scale. Keep this build data invisible to `DungeonLayoutAssembler`. During runtime realization, route `Monster` through `MonsterSpawner.SpawnOne(...)`; instantiate other kinds directly under the builder-owned generated-object root.
+
+Reason:
+All of these objects share the same room-relative placement problem, while only monsters require centralized difficulty, view installation, pathfinding context, and tracking. A common record avoids one list and coordinate format per object type, and the kind preserves policy/validation without coupling layout geometry to gameplay implementations.
+
+Implications:
+- Placement IDs must be stable and unique within one room template; generated names also include the room placement ID.
+- Placement cells must be inside the reserved room bounds and contain Floor, while the offset handles prefab pivot alignment.
+- Regeneration destroys everything under the dedicated generated-object root; unrelated authored scene objects must never be parented there.
+- Monster placements require an active `MonsterSpawner` in Play Mode and currently spawn at dungeon-build time.
+- Per-room entry encounters, door locking, chest reward overrides, portal destination overrides, and trap-specific data are later layers rather than fields added to the layout assembler.
+
+## 2026-08-18 - Procedural Room Connections Reserve Fixed Straight Corridors
+
+Decision:
+Replace direct socket adjacency in the procedural prototype with a configurable fixed-length straight corridor. A connection records its interior length and a reservation rectangle covering its two-cell Floor span plus both side Walls. Reject placements when a new room or corridor reservation overlaps an existing room or corridor. Keep corridor tiles on `DungeonRoomBuilder`, while the theme-agnostic assembler owns only geometry and spacing.
+
+Reason:
+Direct adjacency made every room read as one dense cluster and did not exercise varied room proportions. Reserving the full corridor footprint keeps the simple rectangular collision model deterministic while producing visible travel distance without introducing bent-path search in the same slice.
+
+Implications:
+- The prototype uses six interior corridor cells, so connected socket start cells are seven cells apart.
+- Corridors remain straight and two cells wide because they inherit the logical socket width; one Wall row/column is painted on each side.
+- Candidate room bounds are checked against existing corridor reservations, and new corridor reservations are checked against all existing rooms and corridors.
+- One Door remains centered between the two socket spans, now at the corridor midpoint.
+- `DungeonRoomBuilder` requires explicit corridor Floor and Wall tiles whenever any connection has positive length.
+- The reproducible prototype library now contains five distinct room sizes and three Combat proportions so the fixed Seed visibly exercises size variation.
+- This supersedes only the direct-adjacency portion of the 2026-08-11 v0 decision; theme-library ownership and theme-agnostic layout responsibility remain unchanged.
+
+## 2026-08-18 - Procedural Chest Kill Locks Reuse Monster Spawn Links
+
+Decision:
+Store an optional target chest Placement Id on each procedural `Monster` placement. Resolve that Id after the room's non-monster objects exist, then pass the resolved `ChestMonsterKillLock` through `MonsterSpawnRequest.LinkedChestKillLock`. The referenced chest prefab owns its gameplay lock component and all presentation; the procedural builder does not add components or depend on concrete Presentation types.
+
+Reason:
+Authored corridor rooms already place the relationship on `MonsterSpawnContainer.linkedChestKillLock`, and `SceneMonsterSpawnDirector` is the established owner of registering a spawned monster with that lock. A chest-side boolean made the procedural builder duplicate this behavior, could not express subsets or multiple locked chests, and encouraged hardcoded prefab or View selection outside room data.
+
+Implications:
+- A room can link different monsters to different locked chests, or leave individual monsters unlinked.
+- The target is stored as a stable room-local Placement Id because baked room data cannot reference a future runtime instance.
+- The room builder creates chests before monsters so it can resolve the target lock before constructing the spawn request.
+- `RoomPieceEditorWindow` offers per-monster target selection plus chest-side bulk link/unlink buttons, but the serialized ownership remains on monster placements.
+- A linked target must be a Chest placement whose authored prefab contains `ChestMonsterKillLock`; lock visuals, text, particles, and sounds remain prefab/presentation configuration.
+- The prototype installer preserves the Kill Lock chest prefab already authored in room data instead of naming a concrete Kill Lock prefab path in code.
+
+## 2026-08-18 - Procedural Monster Rooms Reuse Existing Room Encounter Locks
+
+Decision:
+Create one door at each connected room-socket endpoint. For every generated room containing Monster placement data, create the existing `MonsterSpawnRoomGroup`, `MonsterRoomArea2D`, and `RoomEncounterEntryTrigger2D` composition, then bind each endpoint door owned by that room to `RoomDoorMonsterKillLock`. Pass the generated room group and area through `MonsterSpawnRequest`; do not implement procedural-only monster counting or door state rules.
+
+Reason:
+An endpoint door belongs unambiguously to one room, so a combat room can close all of its entrances and exits without two rooms competing for one shared corridor-center door. The existing encounter system already defines full-body entry detection, spawned-monster registration, split-monster lifetime tracking, outside-room safeguards, clear delay, and door presentation. Reusing it keeps procedural rooms behaviorally consistent with authored corridor rooms.
+
+Implications:
+- One layout connection owns two non-permanent doors, one at each two-cell socket span; this supersedes the earlier corridor-midpoint door placement policy.
+- Only rooms with at least one Monster placement receive a generated encounter group and door locks. Room type alone does not imply a combat lock.
+- All endpoint doors belonging to the entered monster room close together after the player's body is fully inside a dedicated entry trigger inset one cell from the boundary. The full room area remains separate for monster containment checks.
+- Monster containment uses the combined bounds of active non-trigger body colliders rather than the monster transform point. Each generated lock also receives its socket-derived inward direction and keeps its door open until the complete body has crossed the door center plane with clearance.
+- `SceneMonsterSpawnDirector` remains the owner of registering spawned monsters with both chest locks and the source room group.
+- All registered monsters clearing reopens the room doors through the existing `RoomDoorMonsterKillLock`; split descendants and monsters temporarily outside the room retain existing behavior.
+- Procedural encounter objects live under a dedicated generated root and share the builder's regeneration lifecycle.
+
+## 2026-08-18 - Sacrifice Treasure Rooms Reuse a Composite Authored Prop
+
+Decision:
+Represent the DragonCorridor-style offering reward alcove as one composite Prop prefab containing the existing `StatueShortcut`, a linked non-permanent Locked `DoorObject`, and the standard `TreasureChest`. Place that Prop in an `18x12` Treasure room whose tile data owns the internal partition Wall and two-cell doorway. Keep the room's Left/Right traversal sockets independent of the internal reward gate.
+
+Reason:
+The shortcut components already own currency checks, offering animation, feedback, door configuration, and temporary opening. Teaching `DungeonRoomBuilder` to recreate those relationships would duplicate established gameplay behavior and couple a theme-agnostic room implementation layer to one reward-room design. A composite prefab preserves the authored cross-object relationship while `RoomTemplateSO` still stores only one ordinary Grid-relative Prop placement.
+
+Implications:
+- The offering costs five Magic Stones, matching the DragonCorridor fixtures.
+- The internal door is Locked and non-permanent, so no procedural run state is written to permanent shortcut progress.
+- The reward uses the same `TreasureChest.prefab` found in DragonCorridor rather than a procedural-only chest implementation.
+- The main Left/Right route remains traversable without paying; only the optional upper reward alcove is gated.
+- The prototype installer owns reproducible creation and validates the saved prefab reference graph as well as the generated instance.
+- The fixed Seed now selects three Combat rooms and one Treasure room; the final Boss and total six-room topology remain unchanged.
+
+## 2026-08-18 - Boss Themes Are Route-selected Room Libraries
+
+Decision:
+Create one procedural Corridor scene and one `RoomThemeLibrarySO` per boss theme. Reuse the same layout/generation classes for all four themes, and connect them by changing each existing `CorridorBossRouteSetSO.corridorSceneName`. Keep the Hub's single `HubToRunStart` portal and `RunRouteCatalogSO` as the only run-start entry rather than adding boss-specific Hub portals.
+
+Reason:
+The route catalog already selects three normal bosses and the final DemonKing stage, while a route set already owns Corridor-to-Boss pairing, BGM, location text, and loading data. Reusing that seam prevents the Hub, layout assembler, and generated portal from learning boss-theme rules. Separate room libraries let tile and monster content vary without duplicating geometry logic.
+
+Implications:
+- Shadow, Dragon, Slime, and DemonKing each own eight room templates and a dedicated procedural Corridor scene.
+- The installer derives Floor/Wall tile assets from the corresponding authored Corridor and assigns theme-appropriate monsters in room data.
+- Every generated Boss-room portal remains semantically neutral; the active route plan resolves its matching boss scene.
+- New scenes are enabled in Build Settings, while the authored Corridor scenes remain available and are not deleted.
+- RouteSet loading manifests must be rebuilt after installing or changing themed procedural scenes.
+
+## 2026-08-19 - Non-rectangular Rooms Keep Rectangular Reservations
+
+Decision:
+Represent the new `56x56` ㄴ and `60x52` ㄱ Combat rooms with a full rectangular `localBounds`, while storing Floor and Wall tiles only for the two joined 18-cell-thick legs. Keep socket cells on the outer reservation boundary and continue using the existing rectangular room/corridor overlap algorithm.
+
+Reason:
+The room implementation layer already supports sparse tile data inside a reserved area, while the layout assembler intentionally knows only bounds and sockets. A precise concave-polygon overlap system would expand layout responsibility and make corridor collision substantially more complex. Reserving the protruding outer rectangle is conservative but guarantees that another room or corridor cannot occupy the empty inner corner and accidentally cut through the shaped room.
+
+Implications:
+- Both large shapes remain compatible with the existing theme-agnostic assembler, builder, two-cell sockets, endpoint Doors, and encounter locks.
+- The inner cutout is empty, and its exposed leg edges receive Wall tiles and collision.
+- Large rooms use selection weight `0.5`; representative validation Seeds explicitly include both shapes without forcing every random run to do so.
+- Each large room carries eight monsters cycling across at least five theme prefab kinds. Existing rectangular Combat samples increase to `2/4/4` monsters, producing 26 authored monster placements per theme library.
+- Every monster remains linked through `MonsterSpawnRequest` to its room-local Kill Lock chest and generated room encounter group; no large-room-specific combat controller is introduced.
+
+## 2026-08-19 - Shadow Darkness Remains Scene-level Prefab Infrastructure
+
+Decision:
+Install the existing `GlobalVisionMaskRoot.prefab` once at the root of `ProceduralShadowCorridor`, matching `ShadowCorridor`. Do not store the global darkness overlay in individual room templates or recreate its behavior in the procedural builder.
+
+Reason:
+The existing prefab already composes `GlobalVisionMaskController`, `SceneRestrictedVisionController`, the `restricted_vision` status definition, dark overlay, and player-following vision-mask prefab. It also aggregates temporary darkness requests from Shadow monster fog. Reusing the complete prefab preserves the authored presentation and status lifecycle while keeping room data limited to room-local content.
+
+Implications:
+- Persistent Shadow Corridor darkness activates when the runtime player registers and releases with the scene controller lifecycle.
+- Base darkness uses overlay alpha `0.78`; fog requests raise it to `1.0` and share the same mask controller.
+- The scene gimmick survives procedural room regeneration because it is not parented under the builder-owned generated root.
+- The installer replaces stale Shadow mask instances idempotently and validates exactly one global controller, one scene controller, a non-null status definition, player mask prefab, and `VisibleOutsideMask` overlay.
+- Dragon, Slime, and DemonKing procedural scenes must not contain this Shadow prefab.
+
+## 2026-08-19 - Boss Theme Tiles Are Baked From Authored Corridor Palettes
+
+Decision:
+Extract frequent Ground variants and collidable Wall variants from each authored boss Corridor. Classify source Wall cells by eight-direction and cardinal neighbor masks, then bake matching variants into each `RoomTemplateSO`. Give `DungeonRoomBuilder` separate Floor and horizontal/vertical Wall candidate lists for procedural corridors, selected deterministically from the layout Seed, connection index, and cell coordinate.
+
+Reason:
+Using one most-frequent Floor and Wall tile preserved theme colors but flattened every room and corridor into a repeated sprite. Copying whole authored Tilemaps would couple room geometry to source scenes and bypass the room-data pipeline. Palette baking keeps the authored visual language while preserving the existing boundary: layout chooses geometry, room data owns implementation details, and the builder only renders the chosen data.
+
+Implications:
+- The same Seed produces the same tile variation, which keeps screenshots and layout regressions reproducible.
+- Wall selection prefers the exact source topology, falls back to the cardinal topology, then to direction/general candidates.
+- Only collidable concrete `Tile` assets are accepted as generated Wall candidates; the primary Wall remains the compatibility fallback.
+- Existing prototype scenes with empty variant lists continue using their original single Floor/Wall fields.
+- Updating an authored boss Corridor palette requires rerunning `Tools/Dungeon/Install Boss Theme Procedural Corridor Scenes` to rebake theme room assets and scene builder palettes.
