@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
-  m_Name: RD_FireBonusRelic
-  m_EditorClassIdentifier: 
-  relicId: RD_FireBonusRelic
-  displayName: "\uD0C0\uC624\uB974\uB294 \uC2EC\uD575"
+  m_Name: RD_SunFragment
+  m_EditorClassIdentifier:
+  relicId: RD_SunFragment
+  displayName: "\uD0DC\uC591\uC758 \uD30C\uD3B8"
   icon: {fileID: 543113751, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
-  rarity: 0
-  description: "\uD654\uC5FC \uD53C\uD574\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
-  maxLevel: 8
+  rarity: 1
+  description: "\uC8FC\uC704\uB97C \uD68C\uC804\uD558\uB294 \uD0DC\uC591\uC758 \uD30C\uD3B8\uC744 \uC0DD\uC131\uD569\uB2C8\uB2E4."
+  maxLevel: 3
   dropLevel: 1
-  logic: {fileID: 11400000, guid: 467ab97574ea03a469a2633a51aae8a3, type: 2}
+  logic: {fileID: 11400000, guid: c04e1197c2ec43d6805870c2cdb6bb50, type: 2}
   param: {fileID: 0}

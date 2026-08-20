@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4307ae3a847f4176b55c86f76df478ae, type: 3}
+  m_Name: ALData_CrimsonBoundary
+  m_EditorClassIdentifier: 
+  damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  damageLayers:
+    serializedVersion: 2
+    m_Bits: 2147483648
+  projectileSpeed: 18
+  projectileLifetime: 2
+  attackBurnStacks: 3
+  skill1MaxConsume: 5
+  skill1Diameter: 5
+  skill2ImpactDelay: 0.6
+  skill2Diameter: 5
+  skill2BaseMultiplier: 2

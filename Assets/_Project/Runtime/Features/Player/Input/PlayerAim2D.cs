@@ -7,7 +7,7 @@ using UnityGAS;
 /// </summary>
 [DisallowMultipleComponent]
 // 책임: 플레이어 마우스 월드 위치와 조준 방향을 계산해 전투 입력/무기 로직에 제공한다.
-public sealed class PlayerAim2D : MonoBehaviour, IAimDirectionSource2D
+public sealed class PlayerAim2D : MonoBehaviour, IAimDirectionSource2D, ICursorWorldSource2D
 {
     private const string AimBlockedTagResourcePath = "Tags/State.Aim.Blocked";
 
@@ -17,6 +17,7 @@ public sealed class PlayerAim2D : MonoBehaviour, IAimDirectionSource2D
 
     public Vector2 AimDirection { get; private set; } = Vector2.right;
     public Vector2 MouseWorld { get; private set; }
+    public Vector2 CursorWorld => MouseWorld;
 
     private void Awake()
     {

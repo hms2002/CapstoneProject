@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5686dc461c9b6a546991383454aa181f, type: 3}
+  m_Name: WD_CrimsonBoundary
+  m_EditorClassIdentifier: 
+  weaponId: Weapon.CrimsonBoundary
+  displayName: "홍련의 한계선"
+  icon: {fileID: 0}
+  storyText: "타오르는 경계에서 불씨는 끝내 폭발한다."
+  statModifiers:
+  - attribute: {fileID: 11400000, guid: 3cf73420df1732240b7c90837ff7efab, type: 2}
+    type: 0
+    value: 5
+    labelOverride: "화염 공격력"
+  attackInputHint: "좌클릭"
+  skill1InputHint: "우클릭"
+  skill2InputHint: Q
+  weaponPrefab: {fileID: 743167892450702101, guid: 7a27c745bb7748a9a07b77b13c01d3b6, type: 3}
+  displayVisualProfile: {fileID: 0}
+  swapSoundOverride:
+    key: 
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  equippedTag: {fileID: 0}
+  attack: {fileID: 11400000, guid: 5f97a6bb83ed4244b79bf0ba07eff5d9, type: 2}
+  skill1: {fileID: 11400000, guid: b093d5960df6454ea41e8d70aff17fb4, type: 2}
+  skill2: {fileID: 11400000, guid: 2e8d1d1431e940e8a5f013be8e8fcf92, type: 2}
+  abilityLoadout: {fileID: 0}

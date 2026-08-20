@@ -26,9 +26,6 @@ namespace UnityGAS
     /// </summary>
     public static class AttributeLinkedValueCompensator
     {
-        private const string PolicyResourcesPath = "";
-        private static AttributeLinkedValueCompensationPolicySO[] cachedPolicies;
-
         public readonly struct Snapshot
         {
             public bool IsValid { get; }
@@ -142,31 +139,11 @@ namespace UnityGAS
             currentAttribute = null;
             minimumCurrent = 1f;
 
-            AttributeLinkedValueCompensationPolicySO[] policies = GetPolicies();
-            for (int i = 0; i < policies.Length; i++)
-            {
-                AttributeLinkedValueCompensationPolicySO policy = policies[i];
-                if (policy == null || policy.MaxAttribute != maxAttribute || !policy.Allows(context))
-                    continue;
-
-                currentAttribute = policy.CurrentAttribute;
-                minimumCurrent = policy.MinimumCurrentValue;
-                return currentAttribute != null;
-            }
-
-            if (IsRuntimeCompensationContext(context) &&
-                attributeSet.TryGetLinkedValueForMax(maxAttribute, out currentAttribute))
-            {
-                minimumCurrent = 1f;
-                return currentAttribute != null;
-            }
-
-            return false;
-        }
-
-        private static AttributeLinkedValueCompensationPolicySO[] GetPolicies()
-        {
-            return cachedPolicies ??= Resources.LoadAll<AttributeLinkedValueCompensationPolicySO>(PolicyResourcesPath);
+            // AttributeSet.MaxLink is the single source of truth for max-current relationships.
+            // Keeping resolution local avoids a first-use Resources scan during relic acquisition.
+            return IsRuntimeCompensationContext(context) &&
+                   attributeSet.TryGetLinkedValueForMax(maxAttribute, out currentAttribute) &&
+                   currentAttribute != null;
         }
 
         private static bool IsRuntimeCompensationContext(AttributeLinkedValueCompensationContext context)

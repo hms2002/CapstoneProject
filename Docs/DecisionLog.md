@@ -2990,3 +2990,17 @@ Implications:
 - `SceneDomainCoordinator` is the only writer and clears the marker when any later scene loads.
 - Hub spawn and Hub intro presentation must use the same marker; do not restore a one-sided skip.
 - `ScenePortal`, its shared prefab, the Hub scene instance's `HubToRunStart` semantic, and `RunRouteCatalogSO` remain unchanged.
+
+## 2026-08-19 - Burn Coexists Independently With Legacy Element Gauges
+
+Decision:
+Burn is an explicit 0–99 integer-stack status owned by each target and is not represented by `ElementGaugeSystem`. Burn-producing weapon damage supplies an already-resolved empty element-buildup result, and Burn ticks suppress ordinary hit-confirm emission while preserving damage popup, damage-taken flow, and kill attribution. The existing gauge systems and UI remain unchanged until separate explicit user approval.
+
+Reason:
+The new design needs stack count, timed per-stack consumption, and skill-driven consumption semantics that differ from the legacy threshold/decay gauge. Building it independently enables Lean weapon validation without prematurely migrating all existing elements.
+
+Implications:
+- New Burn features extend `BurnStatus2D`, `BurnSourceRuntime`, and the neutral stack-status UI contract rather than Fire gauge definitions.
+- Burn UI is target-child runtime presentation owned by UI and does not modify `MonsterElementGaugeView`.
+- Relics may later modify Burn through source-owned token entries, but no relic is part of this decision's implementation slice.
+- Gauge retirement follows `Docs/RefactorBacklog/ElementGaugeToStackStatusMigration.md` only after explicit approval.
