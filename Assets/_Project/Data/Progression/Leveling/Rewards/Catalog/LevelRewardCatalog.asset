@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea1ff90592799104a83b7b9627454a80, type: 3}
+  m_Name: LevelRewardCatalog
+  m_EditorClassIdentifier: Gameplay::LevelRewardCatalogSO
+  rewards:
+  - {fileID: 11400000, guid: 79d1950cf1364af4a33455b39a31f611, type: 2}
+  - {fileID: 11400000, guid: 76e79d89a8b54266b02704f104d020e2, type: 2}
+  - {fileID: 11400000, guid: 2bad40eb78204209b748c3c8cdcce372, type: 2}
+  - {fileID: 11400000, guid: f1516e36c1bf4f8898b24217198ea523, type: 2}
+  - {fileID: 11400000, guid: ab0aa8aa66f4452faca7ea871ba4542f, type: 2}
+  - {fileID: 11400000, guid: 86f7339a4f8843d499f57431467ba34a, type: 2}
+  - {fileID: 11400000, guid: 5387caf4d3094cf4a7280c89574fd584, type: 2}
+  - {fileID: 11400000, guid: 71b94fd768d74b8991ba25c0bfc7a1f7, type: 2}
+  - {fileID: 11400000, guid: 30dc9967e9584410a4c2e5cedceae53b, type: 2}

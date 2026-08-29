@@ -90,6 +90,7 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
 
 #if UNITY_EDITOR
         DetectEditorDirectSceneStart(decision.SceneInfo);
+        UpdateEditorDirectStartContext(decision.SceneInfo);
 #endif
 
         if (decision.RequiresTitleCleanup)
@@ -170,6 +171,7 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         s_editorDirectGameplayStartActive = false;
         s_editorDirectBootstrapApplied = false;
         s_editorDirectStartSceneName = null;
+        EditorDirectSceneStartContext.Clear();
     }
 
     private static void DetectEditorDirectSceneStart(SceneDomainSceneInfo sceneInfo)
@@ -181,6 +183,22 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         s_editorDirectGameplayStartActive = SceneDomainDevelopmentStartPolicy.IsDirectGameplayStart(sceneInfo);
         s_editorDirectStartSceneName = s_editorDirectGameplayStartActive ? sceneInfo.SceneName : null;
         s_editorDirectBootstrapApplied = false;
+    }
+
+    private static void UpdateEditorDirectStartContext(SceneDomainSceneInfo sceneInfo)
+    {
+        bool isInitialDirectHubStart =
+            s_editorDirectGameplayStartActive &&
+            sceneInfo.IsHubScene &&
+            string.Equals(
+                s_editorDirectStartSceneName,
+                sceneInfo.SceneName,
+                StringComparison.OrdinalIgnoreCase);
+
+        if (isInitialDirectHubStart)
+            EditorDirectSceneStartContext.MarkDirectHubStart(sceneInfo.Scene);
+        else
+            EditorDirectSceneStartContext.Clear();
     }
 
     private static void ApplyEditorDirectSceneBootstrap(SceneDomainSceneInfo sceneInfo)

@@ -15457,6 +15457,13 @@ MonoBehaviour:
   treasureChest: {fileID: 1198733058}
   exitPortal: {fileID: 272070917}
   hideAuthoredObjectsOnStart: 1
+  experiencePickupPrefab: {fileID: 5166873198201453664, guid: b6e90c18c2144c46b8a5f08d4af4a131, type: 3}
+  stageOneBossExperience: 120
+  stageTwoBossExperience: 150
+  stageThreeBossExperience: 180
+  experiencePerPickup: 5
+  maximumExperiencePickupCount: 30
+  experiencePickupScatterRadius: 1.2
   logDebug: 1
 --- !u!1 &1969022361
 GameObject:

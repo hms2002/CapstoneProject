@@ -47,4 +47,5 @@ Each feature document should include:
 - [Audio Catalog Runtime Tuning](./AudioCatalogRuntimeTuning.md)
 - [Script System Map](./ScriptSystemMap.md)
 - [Script Systems](./ScriptSystems/README.md)
+- [Level Progression Structure](./ScriptSystems/LevelProgressionStructure.md)
 - [UI Flow Input Blocking](./UIFlowInputBlocking.md)

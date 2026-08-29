@@ -347,6 +347,11 @@ public sealed class InputBindingService : MonoBehaviour, IInputActionQueryBacken
         return InputKeyCompatibility.IsPressed(key);
     }
 
+    public bool WasKeyPressedThisFrame(KeyCode key)
+    {
+        return InputKeyCompatibility.WasPressedThisFrame(key);
+    }
+
     public bool WasKeyReleasedThisFrame(KeyCode key)
     {
         return InputKeyCompatibility.WasReleasedThisFrame(key);

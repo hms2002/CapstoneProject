@@ -42,6 +42,8 @@ public sealed class AbilityLogic_SlimeQueenCallSlimes : AbilityLogic
         GameObject spawnedSlime = Instantiate(slimePrefab, spawnPosition, Quaternion.identity);
         if (spawnedSlime != null && spawnedSlime.TryGetComponent(out Mob mob))
             mob.SuppressMonsterLootDrop();
+        if (spawnedSlime != null && spawnedSlime.TryGetComponent(out ExperienceRewardSource experienceReward))
+            experienceReward.SetGrantExperience(false);
 
         return spawnedSlime;
     }

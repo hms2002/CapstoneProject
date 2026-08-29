@@ -254,6 +254,7 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
             {
                 nextSlime.InitSplit(target);
                 nextSlime.SuppressMonsterLootDrop();
+                nextSlime.GetComponent<ExperienceRewardSource>()?.SetGrantExperience(false);
                 RegisterLockTrackedChild(spawned);
                 StartSplitLandingMotion(spawned, center, landingPosition);
             }

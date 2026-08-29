@@ -2892,283 +2892,101 @@ Implications:
 - `Assets/AddressableAssetsData/link.xml` and `.meta` can stay deleted after the split when the generated Addressables build link output is clean.
 - Future linker-preserve validation should distinguish the temporary ConfigFolder copy from the generated Addressables build output.
 
-## 2026-08-11 - Procedural Dungeon V0 Uses Theme Libraries And Direct Socket Adjacency
+## 2026-08-11 - Level-Up Effects Are Run-Owned Definitions With Rebuildable Live Handles
 
 Decision:
-Group room templates by boss/dungeon theme in `RoomThemeLibrarySO` rather than storing theme identity on every room. Keep `DungeonLayoutAssembler` theme-agnostic. For v0, place unrotated rectangular rooms by aligning opposite-facing one-cell sockets in adjacent cells, reject only bounds overlap, and let `DungeonRoomBuilder` remove the connected Wall cells and create one door at the midpoint of each socket connection.
+Level-up rewards are separate from permanent `UpgradeEffectSO` purchases. Stable reward/effect IDs and serializable effect payloads live in `GamePlayData`, while player-bound subscriptions and modifiers are rebuilt from registered definitions and disposed through `ILevelRewardEffectHandle`.
 
 Reason:
-This is the smallest complete data-to-runtime path that preserves the intended responsibility split. Theme selection stays outside layout geometry, room collision remains predictable, and the builder can realize traversable connections without introducing corridor pathfinding or runtime Tilemap hierarchy creation. Connection doors are derived from successful layout edges rather than duplicated in individual room build data.
+Level-up effects reset with the run but must survive gameplay scene transitions. Storing scene object references would violate runtime save ownership, while reusing permanent upgrade effects would mix profile and run lifetimes. Instant rewards also need a durable applied marker so player restoration does not grant them twice.
 
 Implications:
-- Create one room library asset per theme and place the applicable templates in that asset.
-- Start and optional Boss room availability are library validation requirements, not special cases inside room templates.
-- A socket cell must contain both Floor and Wall data. Runtime build starts with every socket closed by its authored Wall and a dedicated one-cell physical blocker, then connected endpoints remove both; sprite-derived tile collision alone may not seal the socket center.
-- One successful socket-pair connection creates one `DoorObject`, centered between the two adjacent socket cells and rotated 90 degrees for left/right connections.
-- V0 connection doors use the shared Door prefab as `Normal`, non-permanent doors; theme-specific door selection and encounter locking are later policies.
-- Room rotation, multi-cell socket width/category, corridor routing, and room-authored object data are later extensions rather than v0 fallback behavior.
-- The assembler's Seed is deterministic relative to library ordering and current template data; reordering weighted candidates can change generated layouts.
+- UI does not own selected rewards or effect state.
+- Persistent effects must provide deterministic cleanup and reapply behavior.
+- Instant effects must use the `InstantOnce` lifetime and persist `instantApplied`.
+- Reward/effect IDs become run-state compatibility keys and should not be renamed after authoring without migration.
+- `한 자루의 맹세` seals weapon slot index 1 during the run; it must not delete or overwrite the stored slot weapon.
 
-## 2026-08-18 - Dungeon Doorways Use One Logical Two-cell Socket
+## 2026-08-11 - Level-Up Offers Persist Before UI And Use A Run Seed
 
 Decision:
-Represent a doorway as one `RoomSocketData` with a canonical start cell, outward direction, and width `2`, rather than two independent one-cell sockets. Up/Down spans advance right from the start cell; Left/Right spans advance upward. Layout compatibility requires opposite directions and equal widths.
+The active three-card offer, reroll usage, offer sequence, and reward random seed belong to `LevelProgressionState`. Closing or rebuilding authored UI does not roll again. The normal player selection flow consumes only a reward ID present in the stored active offer.
 
 Reason:
-The shared Door prefab occupies two cells. Treating its halves as separate sockets could connect each half independently or open only part of the doorway. A single logical socket keeps layout consumption, Wall removal, collision closure, and Door placement atomic.
+Candidate identity must survive UI close/reopen and scene/run-state serialization without letting presentation code own randomness or mutate gameplay progression.
 
 Implications:
-- Both cells must contain authored Floor and closed Wall tiles.
-- A connected endpoint removes two Wall cells and its one span-sized blocker; an unused endpoint retains both Wall cells and the blocker.
-- One connection still creates exactly one Door, positioned at the midpoint of the full socket spans.
-- `RoomSocketGeometry` is the shared source for span cells and boundary validation across authoring, layout, build, and verification code.
-- Existing serialized sockets with no width field resolve legacy `0` to width `2`, but old room art must still be re-baked if its second socket cell lacks Floor or Wall data.
+- Authored UI reads `LevelRewardSessionController.Candidates` and calls its commands instead of rolling locally.
+- A successful selection clears the current offer, advances the sequence, and rolls the next offer only when another pending reward remains.
+- Reward/effect IDs are persistence keys; renaming authored IDs requires migration.
 
-## 2026-08-18 - Room Gameplay Objects Use Typed Grid-relative Prefab Placements
+## 2026-08-17 - Level HUD EXP Progress And Reward Readiness Are Independent
 
 Decision:
-Store monster, chest, portal, and general prop placements in `RoomBuildData` as a common typed prefab record with a room-local Grid cell, cell-center offset, rotation, and scale. Keep this build data invisible to `DungeonLayoutAssembler`. During runtime realization, route `Monster` through `MonsterSpawner.SpawnOne(...)`; instantiate other kinds directly under the builder-owned generated-object root.
+`ExperienceFill` projects only current EXP progress, while `RewardReadyBorder` and `LevelUpPrompt` project whether the reward session can actually be opened. Neither display state derives from the other.
 
 Reason:
-All of these objects share the same room-relative placement problem, while only monsters require centralized difficulty, view installation, pathfinding context, and tracking. A common record avoids one list and coordinate format per object type, and the kind preserves policy/validation without coupling layout geometry to gameplay implementations.
+Pending reward choices can coexist with progress toward a later level, and a full or partially filled EXP diamond says nothing about combat, recent damage, dialogue, blocking UI, player registration, or candidate availability. Coupling the visuals would show false R-key prompts or erase valid EXP progress.
 
 Implications:
-- Placement IDs must be stable and unique within one room template; generated names also include the room placement ID.
-- Placement cells must be inside the reserved room bounds and contain Floor, while the offset handles prefab pivot alignment.
-- Regeneration destroys everything under the dedicated generated-object root; unrelated authored scene objects must never be parented there.
-- Monster placements require an active `MonsterSpawner` in Play Mode and currently spawn at dungeon-build time.
-- Per-room entry encounters, door locking, chest reward overrides, portal destination overrides, and trap-specific data are later layers rather than fields added to the layout assembler.
+- `LevelHudPresenter` updates fill/level from `RunLevelProgression` and readiness from `LevelRewardSessionController.CanOpenSession` through separate paths.
+- Lv.10 forces EXP fill to one but does not automatically show the green reward border.
+- A pending reward does not show the green border while any session-open condition is blocked.
+- Do not attach an active `LevelRewardSessionController` before an authored selection-window consumer can present and close the paused session.
 
-## 2026-08-18 - Procedural Room Connections Reserve Fixed Straight Corridors
+## 2026-08-17 - Level Reward Selection Uses Fixed Escape Close Input
 
 Decision:
-Replace direct socket adjacency in the procedural prototype with a configurable fixed-length straight corridor. A connection records its interior length and a reservation rectangle covering its two-cell Floor span plus both side Walls. Reject placements when a new room or corridor reservation overlaps an existing room or corridor. Keep corridor tiles on `DungeonRoomBuilder`, while the theme-agnostic assembler owns only geometry and spacing.
+The level-reward selection window closes with `Escape`. This shortcut is fixed and is not part of the player key-mapping surface.
 
 Reason:
-Direct adjacency made every room read as one dense cluster and did not exercise varied room proportions. Reserving the full corridor footprint keeps the simple rectangular collision model deterministic while producing visible travel distance without introducing bent-path search in the same slice.
+Closing the modal selection window is a UI-stack escape action rather than a configurable gameplay action. Keeping it fixed avoids an unnecessary binding dependency and keeps the authored close control consistent with other modal UI behavior.
 
 Implications:
-- The prototype uses six interior corridor cells, so connected socket start cells are seven cells apart.
-- Corridors remain straight and two cells wide because they inherit the logical socket width; one Wall row/column is painted on each side.
-- Candidate room bounds are checked against existing corridor reservations, and new corridor reservations are checked against all existing rooms and corridors.
-- One Door remains centered between the two socket spans, now at the corridor midpoint.
-- `DungeonRoomBuilder` requires explicit corridor Floor and Wall tiles whenever any connection has positive length.
-- The reproducible prototype library now contains five distinct room sizes and three Combat proportions so the fixed Seed visibly exercises size variation.
-- This supersedes only the direct-adjacency portion of the 2026-08-11 v0 decision; theme-library ownership and theme-agnostic layout responsibility remain unchanged.
+- `UIManager` handles the fixed `Escape` request through the top UI-stack entry. A stack UI pushed by its matching external blocker owner may close while that owner is the only blocker; unrelated blockers still suppress the request.
+- `LevelRewardSelectionPresenter` must not also query `Escape` directly, because duplicate handling can close the reward window and open Pause in the same frame depending on script order.
+- Do not add a key-binding action, rebinding row, or binding persistence entry for this close command.
+- Any close hint should display a fixed ESC label/icon rather than a dynamically resolved gameplay binding.
+- Closing must preserve the current offer and reroll state through `LevelRewardSessionController.CloseSession()`.
 
-## 2026-08-18 - Procedural Chest Kill Locks Reuse Monster Spawn Links
+## 2026-08-18 - Boss EXP Uses Run Stage Position And Encounter Completion
 
 Decision:
-Store an optional target chest Placement Id on each procedural `Monster` placement. Resolve that Id after the room's non-monster objects exist, then pass the resolved `ChestMonsterKillLock` through `MonsterSpawnRequest.LinkedChestKillLock`. The referenced chest prefab owns its gameplay lock component and all presentation; the procedural builder does not add components or depend on concrete Presentation types.
+Normal boss EXP is determined by the boss encounter's current run stage position: stage 1 grants 120, stage 2 grants 150, and stage 3 grants 180. The final route set, currently the Demon King, grants no EXP. Boss EXP is emitted once from `BossEncounterEndDirector` after encounter completion rather than from each boss actor's death event.
 
 Reason:
-Authored corridor rooms already place the relationship on `MonsterSpawnContainer.linkedChestKillLock`, and `SceneMonsterSpawnDirector` is the established owner of registering a spawned monster with that lock. A chest-side boolean made the procedural builder duplicate this behavior, could not express subsets or multiple locked chests, and encouraged hardcoded prefab or View selection outside room data.
+Normal boss routes are randomized, so boss identity cannot represent progression stage. Split or multi-actor encounters such as Slime Queen also make an individual death subscription capable of duplicate payout. The encounter-end path already owns the one-time clear result and final-route classification.
 
 Implications:
-- A room can link different monsters to different locked chests, or leave individual monsters unlinked.
-- The target is stored as a stable room-local Placement Id because baked room data cannot reference a future runtime instance.
-- The room builder creates chests before monsters so it can resolve the target lock before constructing the spawn request.
-- `RoomPieceEditorWindow` offers per-monster target selection plus chest-side bulk link/unlink buttons, but the serialized ownership remains on monster placements.
-- A linked target must be a Chest placement whose authored prefab contains `ChestMonsterKillLock`; lock visuals, text, particles, and sounds remain prefab/presentation configuration.
-- The prototype installer preserves the Kill Lock chest prefab already authored in room data instead of naming a concrete Kill Lock prefab path in code.
+- Reordering which boss appears in stages 1-3 does not change the stage EXP curve.
+- New multi-actor bosses still pay only once when their clear condition completes.
+- Final-route exclusion uses `BossRewardContext.IsFinalRouteSet`; do not add a Demon King name/type comparison.
+- Boss EXP Square count is capped, but the exact total EXP must remain preserved by the per-pickup amount.
 
-## 2026-08-18 - Procedural Monster Rooms Reuse Existing Room Encounter Locks
+## 2026-08-18 - Level Reward Close Presentation Completes Before Gameplay Resumes
 
 Decision:
-Create one door at each connected room-socket endpoint. For every generated room containing Monster placement data, create the existing `MonsterSpawnRoomGroup`, `MonsterRoomArea2D`, and `RoomEncounterEntryTrigger2D` composition, then bind each endpoint door owned by that room to `RoomDoorMonsterKillLock`. Pass the generated room group and area through `MonsterSpawnRequest`; do not implement procedural-only monster counting or door state rules.
+The level-reward modal keeps its session-owned pause and input block until the card, presentation, and blocker OFF sequence is fully transparent and the authored panel is deactivated. A previously revealed active offer skips only its flip when reopened; rerolls and consecutive pending offers use a new reveal identity and run the card replacement reveal.
 
 Reason:
-An endpoint door belongs unambiguously to one room, so a combat room can close all of its entrances and exits without two rooms competing for one shared corridor-center door. The existing encounter system already defines full-body entry detection, spawned-monster registration, split-monster lifetime tracking, outside-room safeguards, clear delay, and door presentation. Reusing it keeps procedural rooms behaviorally consistent with authored corridor rooms.
+Releasing the session when close is requested would restart gameplay under a still-visible blocker. Treating every reopen as a new reveal would also repeat information the player already inspected, while treating rerolls as already revealed would hide the intended new-card presentation.
 
 Implications:
-- One layout connection owns two non-permanent doors, one at each two-cell socket span; this supersedes the earlier corridor-midpoint door placement policy.
-- Only rooms with at least one Monster placement receive a generated encounter group and door locks. Room type alone does not imply a combat lock.
-- All endpoint doors belonging to the entered monster room close together after the player's body is fully inside a dedicated entry trigger inset one cell from the boundary. The full room area remains separate for monster containment checks.
-- Monster containment uses the combined bounds of active non-trigger body colliders rather than the monster transform point. Each generated lock also receives its socket-derived inward direction and keeps its door open until the complete body has crossed the door center plane with clearance.
-- `SceneMonsterSpawnDirector` remains the owner of registering spawned monsters with both chest locks and the source room group.
-- All registered monsters clearing reopens the room doors through the existing `RoomDoorMonsterKillLock`; split descendants and monsters temporarily outside the room retain existing behavior.
-- Procedural encounter objects live under a dedicated generated root and share the builder's regeneration lifecycle.
+- `LevelRewardSelectionPresenter` holds the UI stack entry during the close coroutine and permits the final pop only after the fade completes.
+- The session controller does not auto-close after the last successful selection; the Presenter completes the normal visual close and then releases the session.
+- Transition input is blocked for card selection, reroll, number keys, close button, and fixed Escape.
+- Reveal memory is presentation-only and keyed by run seed, offer sequence, and reroll usage; gameplay candidate ownership remains unchanged.
 
-## 2026-08-18 - Sacrifice Treasure Rooms Reuse a Composite Authored Prop
+## 2026-08-19 - Direct PrototypeHub Play Skips Hub Arrival Presentation
 
 Decision:
-Represent the DragonCorridor-style offering reward alcove as one composite Prop prefab containing the existing `StatueShortcut`, a linked non-permanent Locked `DoorObject`, and the standard `TreasureChest`. Place that Prop in an `18x12` Treasure room whose tile data owns the internal partition Wall and two-cell doorway. Keep the room's Left/Right traversal sockets independent of the internal reward gate.
+When `ProtoTypeHub` is the first gameplay scene played directly in the Unity Editor, development bootstrap skips both `PlayerHubSpawnPresentation2D` and `HubIntroAfterDarkLordSequence`. It still resets volatile run state, prepares the Hub start portal plan, and normalizes player interaction. Normal Title/tutorial entry and later Hub returns keep their authored arrival presentation.
 
 Reason:
-The shortcut components already own currency checks, offering animation, feedback, door configuration, and temporary opening. Teaching `DungeonRoomBuilder` to recreate those relationships would duplicate established gameplay behavior and couple a theme-agnostic room implementation layer to one reward-room design. A composite prefab preserves the authored cross-object relationship while `RoomTemplateSO` still stores only one ordinary Grid-relative Prop placement.
+Direct Hub Play is an iteration path for immediately testing Hub and run-start behavior. Letting either arrival presentation acquire input or cinematic protection makes the correctly authored `HubToRunStart` portal appear broken. The exception must be scoped to the initial direct-Play scene rather than stored in profile, run, portal, or prefab data.
 
 Implications:
-- The offering costs five Magic Stones, matching the DragonCorridor fixtures.
-- The internal door is Locked and non-permanent, so no procedural run state is written to permanent shortcut progress.
-- The reward uses the same `TreasureChest.prefab` found in DragonCorridor rather than a procedural-only chest implementation.
-- The main Left/Right route remains traversable without paying; only the optional upper reward alcove is gated.
-- The prototype installer owns reproducible creation and validates the saved prefab reference graph as well as the generated instance.
-- The fixed Seed now selects three Combat rooms and one Treasure room; the final Boss and total six-room topology remain unchanged.
-
-## 2026-08-18 - Boss Themes Are Route-selected Room Libraries
-
-Decision:
-Create one procedural Corridor scene and one `RoomThemeLibrarySO` per boss theme. Reuse the same layout/generation classes for all four themes, and connect them by changing each existing `CorridorBossRouteSetSO.corridorSceneName`. Keep the Hub's single `HubToRunStart` portal and `RunRouteCatalogSO` as the only run-start entry rather than adding boss-specific Hub portals.
-
-Reason:
-The route catalog already selects three normal bosses and the final DemonKing stage, while a route set already owns Corridor-to-Boss pairing, BGM, location text, and loading data. Reusing that seam prevents the Hub, layout assembler, and generated portal from learning boss-theme rules. Separate room libraries let tile and monster content vary without duplicating geometry logic.
-
-Implications:
-- Shadow, Dragon, Slime, and DemonKing each own eight room templates and a dedicated procedural Corridor scene.
-- The installer derives Floor/Wall tile assets from the corresponding authored Corridor and assigns theme-appropriate monsters in room data.
-- Every generated Boss-room portal remains semantically neutral; the active route plan resolves its matching boss scene.
-- New scenes are enabled in Build Settings, while the authored Corridor scenes remain available and are not deleted.
-- RouteSet loading manifests must be rebuilt after installing or changing themed procedural scenes.
-
-## 2026-08-19 - Non-rectangular Rooms Keep Rectangular Reservations
-
-Decision:
-Represent the new `56x56` ㄴ and `60x52` ㄱ Combat rooms with a full rectangular `localBounds`, while storing Floor and Wall tiles only for the two joined 18-cell-thick legs. Keep socket cells on the outer reservation boundary and continue using the existing rectangular room/corridor overlap algorithm.
-
-Reason:
-The room implementation layer already supports sparse tile data inside a reserved area, while the layout assembler intentionally knows only bounds and sockets. A precise concave-polygon overlap system would expand layout responsibility and make corridor collision substantially more complex. Reserving the protruding outer rectangle is conservative but guarantees that another room or corridor cannot occupy the empty inner corner and accidentally cut through the shaped room.
-
-Implications:
-- Both large shapes remain compatible with the existing theme-agnostic assembler, builder, two-cell sockets, endpoint Doors, and encounter locks.
-- The inner cutout is empty, and its exposed leg edges receive Wall tiles and collision.
-- Large rooms use selection weight `0.5`; representative validation Seeds explicitly include both shapes without forcing every random run to do so.
-- Each large room carries eight monsters cycling across at least five theme prefab kinds. Existing rectangular Combat samples increase to `2/4/4` monsters, producing 26 authored monster placements per theme library.
-- Every monster remains linked through `MonsterSpawnRequest` to its room-local Kill Lock chest and generated room encounter group; no large-room-specific combat controller is introduced.
-
-## 2026-08-19 - Shadow Darkness Remains Scene-level Prefab Infrastructure
-
-Decision:
-Install the existing `GlobalVisionMaskRoot.prefab` once at the root of `ProceduralShadowCorridor`, matching `ShadowCorridor`. Do not store the global darkness overlay in individual room templates or recreate its behavior in the procedural builder.
-
-Reason:
-The existing prefab already composes `GlobalVisionMaskController`, `SceneRestrictedVisionController`, the `restricted_vision` status definition, dark overlay, and player-following vision-mask prefab. It also aggregates temporary darkness requests from Shadow monster fog. Reusing the complete prefab preserves the authored presentation and status lifecycle while keeping room data limited to room-local content.
-
-Implications:
-- Persistent Shadow Corridor darkness activates when the runtime player registers and releases with the scene controller lifecycle.
-- Base darkness uses overlay alpha `0.78`; fog requests raise it to `1.0` and share the same mask controller.
-- The scene gimmick survives procedural room regeneration because it is not parented under the builder-owned generated root.
-- The installer replaces stale Shadow mask instances idempotently and validates exactly one global controller, one scene controller, a non-null status definition, player mask prefab, and `VisibleOutsideMask` overlay.
-- Dragon, Slime, and DemonKing procedural scenes must not contain this Shadow prefab.
-
-## 2026-08-19 - Boss Theme Tiles Are Baked From Authored Corridor Palettes
-
-Decision:
-Extract frequent Ground variants and collidable Wall variants from each authored boss Corridor. Classify source Wall cells by eight-direction and cardinal neighbor masks, then bake matching variants into each `RoomTemplateSO`. Give `DungeonRoomBuilder` separate Floor and horizontal/vertical Wall candidate lists for procedural corridors, selected deterministically from the layout Seed, connection index, and cell coordinate.
-
-Reason:
-Using one most-frequent Floor and Wall tile preserved theme colors but flattened every room and corridor into a repeated sprite. Copying whole authored Tilemaps would couple room geometry to source scenes and bypass the room-data pipeline. Palette baking keeps the authored visual language while preserving the existing boundary: layout chooses geometry, room data owns implementation details, and the builder only renders the chosen data.
-
-Implications:
-- The same Seed produces the same tile variation, which keeps screenshots and layout regressions reproducible.
-- Wall selection prefers the exact source topology, falls back to the cardinal topology, then to direction/general candidates.
-- Only collidable concrete `Tile` assets are accepted as generated Wall candidates; the primary Wall remains the compatibility fallback.
-- Existing prototype scenes with empty variant lists continue using their original single Floor/Wall fields.
-- Updating an authored boss Corridor palette requires rerunning `Tools/Dungeon/Install Boss Theme Procedural Corridor Scenes` to rebake theme room assets and scene builder palettes.
-
-## 2026-08-27 - The V0 Procedural Test Scene Is A Minimal Runtime Shell
-
-Decision:
-Remove the copied `ProtoTypeCorridor` map content from `ProceduralDungeonV0Test` instead of retaining it disabled. Keep only the camera, player spawn, active gameplay services, interaction/UI infrastructure, and the generated dungeon root. Treat this as a one-time scene-data migration; do not retain root-name or prefab-path deletion rules in the installer.
-
-Reason:
-The disabled authored Grid and its fixed doors, shortcuts, rewards, portal, and eleven monster spawn points were no longer inputs to procedural generation. Leaving them in the scene obscured ownership, retained stale cross-object references, increased scene serialization size, and made the Hierarchy imply two competing map implementations.
-
-Implications:
-- `RoomTemplateSO` and `DungeonRoomBuilder` are the only owners of procedural room tiles, room objects, connected doors, encounters, and the terminal portal in the V0 scene.
-- The scene keeps exactly one `MonsterSpawner`, one `PlayerSpawner`, and one `GlobalUIRoot`; the installer verifies these component-level invariants and the absence of authored `MonsterSpawnContainer` components before and after rebuilding.
-- The authored Grid, fixed `MonsterSpawnContainer` roots, map Door/Lever/Statue/Chest/Portal prefab instances, disabled Boss/BossCam, and NPC/dialogue/affection-only managers are absent.
-- `MonsterSpawner` authored spawn lists remain empty. Runtime procedural placements are spawned through `DungeonRoomBuilder` requests.
-- The installer never recreates the V0 scene by copying `ProtoTypeCorridor`. A missing dedicated scene is an explicit installation error.
-- Cleanup code does not inspect or delete root names or prefab asset paths, so running the V0 installer cannot remove content from another scene.
-- This cleanup currently applies only to `ProceduralDungeonV0Test`; boss-theme scene cleanup remains a separate migration.
-
-## 2026-08-27 - Room Authoring Uses An Isolated Designer Workspace
-
-Decision:
-Keep the existing `RoomTemplateSO`, `RoomPieceAuthoring`, socket, object placement, and runtime builder contracts. Replace the Room Piece Editor's scene-dependent one-scroll workflow with a staged designer flow backed by one non-saved additive authoring scene. Publish only validated room assets and an optional explicit reference into the selected `RoomThemeLibrarySO`.
-
-Reason:
-Creating authoring roots in whichever gameplay scene happened to be active risked dirtying or accidentally saving unrelated Corridor content. Requiring designers to browse Project folders, type output paths and IDs, and manually locate compatible prefabs also exposed implementation details instead of the room-design task. The runtime data contract is already adequate, so the safer change is an Editor-only workflow and not a second room format.
-
-Implications:
-- Opening, editing, replacing, and closing a room authoring session cannot search for or mutate roots in a gameplay scene.
-- A dirty loaded unsaved Untitled scene blocks workspace creation; the tool does not auto-save, close, or replace it. Unity's clean startup scene may remain loaded beside the additive workspace.
-- The selected theme library drives the room browser and compatible prefab recommendations from its existing room data. No prefab-folder catalog is hardcoded.
-- Designers move through Basic, Tiles, Sockets, Objects, Validate/Publish, and Map Preview steps; Floor/Wall painting still uses Unity Tile Palette.
-- Socket placement supports four direction shortcuts and Scene View boundary clicks with automatic outward direction, two-cell snapping, collision avoidance, and preview handles.
-- New assets use Unity's save panel. Publishing can register the template with the selected library through a duplicate-safe Editor API.
-- The runtime generator, generated scenes, and existing serialized room schema remain unchanged.
-
-## 2026-08-27 - Dungeon Authoring Preview Reuses Runtime Placement Without Gameplay Instantiation
-
-The Room Piece tool's Map Preview step runs `DungeonLayoutAssembler` against a transient copy of the selected theme library. When requested, the current unsaved room replaces its source template in that copy only. `DungeonRoomBuilder` exposes an explicit visual-only build option that shares room tile, closed-socket, socket-opening, and corridor behavior while skipping connected Doors and gameplay object/encounter creation.
-
-- `DungeonRoomBuilder.TryBuild(layout)` remains the unchanged full runtime entry point.
-- Preview roots live only in `RoomAuthoringWorkspace`; generation and cleanup do not mark the room authoring session dirty.
-- Scene View handles show room roles/bounds, socket connections, and `M/C/P/O` object markers instead of instantiating Monster, Chest, Portal, or Prop prefabs.
-- Corridor tile overrides are explicit UI references; when omitted, the preview derives the most frequent Floor/Wall tiles from the selected transient library without folder scans or project paths.
-- A current room remains a weighted candidate. Preview does not falsify runtime selection by forcing it into the generated layout.
-
-## 2026-08-28 - Scene Connections Are Directional Data Bound To Reusable Endpoints
-
-Decision:
-Keep the existing `ScenePortal` path operational, and add `SceneConnectionSO` as the new data-driven path. A connection owns two scene/endpoint identities and independent A-to-B/B-to-A run actions, restore policies, availability gates, and presentation profiles. Interaction, automatic trigger, and arrival-only media all delegate to the same travel backend. A reusable procedural room stores only a travel Slot Id, medium kind, optional prefab, and local transform; each scene binds that room/slot pair to one side of a connection in `DungeonRoomBuilder`.
-
-Reason:
-Embedding destination scenes in room prefabs would make theme-neutral rooms scene-specific and would duplicate route validation between portals and triggers. Directional data is also required because corridor-to-boss can be blocked after a kill while boss-to-corridor remains available, and pipe-style presentation can differ by direction. Binding after procedural placement lets the endpoint exist before the player is positioned without teaching the layout assembler about themes or scenes.
-
-Implications:
-- Gate validation runs before departure presentation. `BossNotDefeatedThisRun` uses the route set's stable theme Id and shows `BossAlreadyDefeatedThisRun` on failure.
-- Returning to the lobby does not implicitly end a run. A connection ends or starts a run only when its direction explicitly requests that action.
-- `PlayerSpawner` waits for a generated destination endpoint, positions persistent or newly spawned players at its arrival anchor, and holds input lock through the optional arrival presentation.
-- Alpha fade remains the default. A reusable right-to-left horizontal wipe is available without a second transition manager.
-- New rooms author `Interaction`, `Trigger`, or `ArrivalOnly` slots independently of legacy `ScenePortal` object placements.
-- Existing scenes and legacy portals require explicit migration; this decision does not mass-rewrite them.
-
-## 2026-08-28 - Procedural Corridor Reentry Is An Explicit Per-Dungeon Policy
-
-Decision:
-Default every `DungeonGenerator` to `RegenerateOnEntry`. Let designers opt into `ResetContentsKeepLayout` or `PreserveDuringRun` using a stable dungeon state Id. The run store owns resolved seeds and preserved generated-object state, and clears both only at run start/end/reset boundaries.
-
-Reason:
-Corridor regeneration is the safest default for the new lobby/corridor navigation loop, but some designs need a stable route or a revisitable cleared corridor. Keeping this choice on the generator avoids scene-name conditionals and prevents permanent unlock/save data from absorbing run-local dungeon state.
-
-Implications:
-- `RegenerateOnEntry` resolves a fresh seed for every active-run entry.
-- `ResetContentsKeepLayout` reuses the seed but recreates monsters, chests, props, and endpoints.
-- `PreserveDuringRun` reuses the seed and restores destroyed/inactive generated objects plus opened chest visuals and remaining loot slots.
-- State keys combine the generated room placement Id with the authored object Placement Id, so room/object Id stability matters during a run.
-- The data is run-local and is cleared when the run truly ends; changing scenes alone does not clear it.
-
-## 2026-08-28 - Themed Corridors Own Stable Lobby And Boss Travel Slots
-
-Decision:
-Give each themed Start room one `LobbyGate` trigger slot and each themed terminal Boss room one `BossGate` interaction slot. Bind those slots per Corridor scene to dedicated Lobby↔Corridor and Corridor↔Boss connection assets. Replace the themed room's legacy `ExitPortal` placement with a data-driven portal prefab, and place an arrival-only endpoint at the configured spawn point in each authored Boss scene. Do not place or move gates in `ProtoTypeHub` during this Corridor-focused slice.
-
-Reason:
-The procedural Corridor must be able to regenerate its geometry while retaining stable semantic entry and exit identities. Keeping connection data out of the room asset preserves room reuse, while installing the Boss destination endpoint makes Corridor→Boss placement deterministic. Lobby gate positions and specific route-plan activation depend on authored Hub layout decisions and therefore should not be inferred by a Corridor installer.
-
-Implications:
-- The four Corridor generators use stable dungeon state IDs and explicit `RegenerateOnEntry` policy.
-- Corridor→Boss checks `BossNotDefeatedThisRun` before playing departure presentation.
-- Returning from a Corridor to the Lobby does not end the run, and `StartRun` does not reset an already active run.
-- A trigger used as the arrival endpoint suppresses the arriving player until the collider is exited, preventing an immediate reverse transition.
-- Designers can rerun the focused travel installer without regenerating room art, monster samples, or Hub content.
-- The Lobby still needs a complete endpoint/trigger/connection/route-context binding; a raw trigger collider is not a finished gate.
-
-## 2026-08-28 - Exploration Corridors Build A Graph Before Physical Placement
-
-Decision:
-Add an optional `DungeonLayoutPolicySO` above the existing incremental assembler. When a generator has this policy and includes a Boss room, `DungeonGraphLayoutAssembler` first constructs an abstract graph, assigns room roles, selects exact handcrafted templates and directional sockets, and only then embeds the result into physical coordinates. The four boss-theme Corridors share a 15-room prototype policy with Start-to-Boss distance `6..8`, `2..4` meaningful branches, `1..2` cycles, one required Treasure room, and at least four Combat rooms.
-
-Reason:
-Selecting and placing the next room in one step cannot reliably guarantee a critical-path length, branch count, cycle count, or POI distribution. A graph-first phase makes those navigation properties measurable before large and irregular room bounds constrain physical placement, while keeping theme identity, Tilemap sprites, monsters, and object realization out of layout logic.
-
-Implications:
-- A null policy preserves the legacy `DungeonLayoutAssembler` path. The V0 test scene and unrelated generators are not migrated implicitly.
-- Required room roles are assigned before exact templates. Treasure/Event/Shop prefer compatible dead ends and are spread when alternatives exist; a missing exact-role template causes an explicit generation failure.
-- Current theme libraries guarantee Treasure and Combat only. Event and Shop quotas stay zero until those room assets exist.
-- Cycles use square two-node detours and retain the existing straight, two-cell-wide corridor/build contract. Bent corridor pathfinding remains a separate future feature.
-- Physical coordinates derive from the largest selected room extents in each graph row and column. Full rectangular room reservations remain authoritative for the large ㄴ/ㄱ samples.
-- Every graph edge still resolves opposite, equal-width sockets on one row or column. Template/socket assignments that cannot keep this invariant are retried rather than producing a bent or diagonal connection.
-- The installer validates each theme across 64 Seeds and requires every representative scene result to satisfy its graph metrics, room-role quotas, overlap rules, and existing runtime build checks.
+- Core `EditorDirectSceneStartContext` stores only the initial direct Hub scene handle and is a no-op outside `UNITY_EDITOR`.
+- `SceneDomainCoordinator` is the only writer and clears the marker when any later scene loads.
+- Hub spawn and Hub intro presentation must use the same marker; do not restore a one-sided skip.
+- `ScenePortal`, its shared prefab, the Hub scene instance's `HubToRunStart` semantic, and `RunRouteCatalogSO` remain unchanged.

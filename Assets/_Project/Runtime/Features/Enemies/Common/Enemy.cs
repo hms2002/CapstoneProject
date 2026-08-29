@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -15,6 +17,7 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
     private const float DeathStateEnterTimeout = 1f;
     private const float DeathDestroyFailSafeTimeout = 5f;
     private static readonly RaycastHit2D[] DoorSightHitBuffer = new RaycastHit2D[64];
+    private static readonly List<Enemy> ActiveEnemies = new();
 
     // Components =============================
     protected Rigidbody2D       rigid2D;
@@ -52,9 +55,46 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
     public virtual Transform Target => target;
     public bool IsDead => isDead;
     public virtual string EnemyName => enemyName;
+    public virtual bool IsRecognizingPlayer => false;
+
+    /// <summary>
+    /// 책임:
+    /// - 일반 몬스터, 보스, 환경 즉사 등 모든 Enemy 사망 경로가 공통 Die 진입점을 통과했음을 외부 컴포넌트에 알린다.
+    /// - isDead 단일 가드 뒤에서 한 번만 발행해 드롭/진행도 같은 사망 후처리의 중복 실행을 막는다.
+    /// </summary>
+    public event Action<Enemy> DeathStarted;
+    public static event Action<Enemy> AnyDeathStarted;
+
+    public static bool IsAnyEnemyRecognizingPlayer()
+    {
+        for (int i = ActiveEnemies.Count - 1; i >= 0; i--)
+        {
+            Enemy enemy = ActiveEnemies[i];
+            if (enemy == null)
+            {
+                ActiveEnemies.RemoveAt(i);
+                continue;
+            }
+
+            if (enemy.isActiveAndEnabled && !enemy.IsDead && enemy.IsRecognizingPlayer)
+                return true;
+        }
+
+        return false;
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        ActiveEnemies.Clear();
+        AnyDeathStarted = null;
+    }
 
     protected virtual void Awake()
     {
+        if (!ActiveEnemies.Contains(this))
+            ActiveEnemies.Add(this);
+
         rigid2D     = GetComponent<Rigidbody2D>();
         collisionProfile = GetComponent<EntityCollisionProfile2D>();
         collision   = ResolvePrimaryBodyCollider();
@@ -157,6 +197,8 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
 
     protected virtual void OnDestroy()
     {
+        ActiveEnemies.Remove(this);
+
         if (attributeSet != null)
             attributeSet.OnAttributeChanged -= OnEnemyAttributeChanged;
 
@@ -442,6 +484,8 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
         isDead = true;
         deathStartStateHash = animator != null ? animator.GetCurrentAnimatorStateInfo(0).fullPathHash : 0;
         OnDeathStarted();
+        DeathStarted?.Invoke(this);
+        AnyDeathStarted?.Invoke(this);
         StopDeathGameplay();
         PlayDeathAnimation();
         DestroyAfterDelay();

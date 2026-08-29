@@ -34,6 +34,8 @@ public class Mob : Enemy
     protected MonsterSpawnRoomGroup LockTrackingRoomGroup => lockTrackingRoomGroup;
     protected virtual bool SuppressMonsterFieldItemLootDrop => false;
     public bool LogMobFsmDebug => logMobFsmDebug;
+    public override bool IsRecognizingPlayer =>
+        !isDead && aiContext != null && aiContext.HasDetectedTarget();
 
     protected override void Awake()
     {

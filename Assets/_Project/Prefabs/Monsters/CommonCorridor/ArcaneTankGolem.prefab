@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 7700200000000006}
   - component: {fileID: 7700100000000006}
   - component: {fileID: 5059311314080229044}
+  - component: {fileID: 910000000000000001}
   m_Layer: 31
   m_Name: ArcaneTankGolem
   m_TagString: Enemy
@@ -677,6 +678,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterElementGaugeAnchor2D
   anchor: {fileID: 2806285383944537333}
   fallbackOffset: {x: 0, y: -1}
+--- !u!114 &910000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6955305126709057867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be3fbe38ecf06a14ca8a645a059f61d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gameplay::ExperienceRewardSource
+  baseExperience: 15
+  grantExperience: 1
+  experienceMultiplier: 1
+  pickupPrefab: {fileID: 5166873198201453664, guid: b6e90c18c2144c46b8a5f08d4af4a131, type: 3}
+  experiencePerPickup: 5
+  maximumPickupCount: 30
+  pickupScatterRadius: 0.8
 --- !u!1 &7343336548956091957
 GameObject:
   m_ObjectHideFlags: 0

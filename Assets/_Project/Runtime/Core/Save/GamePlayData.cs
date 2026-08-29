@@ -102,6 +102,7 @@ public sealed class GamePlayData
 
     public System.Collections.Generic.List<string> defeatedBossIds = new System.Collections.Generic.List<string>();
     public System.Collections.Generic.List<DungeonRunStateData> dungeonRunStates = new System.Collections.Generic.List<DungeonRunStateData>();
+    public LevelProgressionState levelProgression = new LevelProgressionState();
 
     public int pendingRunMagicStoneDelta;
     public System.Collections.Generic.List<PendingRunAffectionChange> pendingRunAffectionChanges = new System.Collections.Generic.List<PendingRunAffectionChange>();

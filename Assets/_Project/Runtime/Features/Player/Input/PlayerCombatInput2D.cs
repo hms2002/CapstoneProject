@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -37,6 +38,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     [SerializeField] private GameplayTag skillBlockedTag;
 
     private float nextAutoAttackTime;
+    private readonly HashSet<AbilityDefinition> knownBasicAttackAbilities = new();
     private bool wasBusyLastFrame;
     private bool isHoldingAttack;
     private WeaponAbilitySelector weaponAbilitySelector;
@@ -259,16 +261,33 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     {
         if (def == null || weaponAbilityBridge == null) return false;
 
+        RememberBasicAttack(slot, def);
+
         if (TryHandleCurrentWeaponAbilityInput(slot, def))
+        {
             return true;
+        }
 
         bool activated = weaponAbilityBridge.TryActivate(def, null);
         if (activated)
+        {
             NotifyCurrentWeaponAbilityActivated(slot, def);
+        }
         else
             NotifyCurrentWeaponAbilityActivationRejected(slot, def);
 
         return activated;
+    }
+
+    public bool IsKnownBasicAttackAbility(AbilityDefinition ability)
+    {
+        return ability != null && knownBasicAttackAbilities.Contains(ability);
+    }
+
+    private void RememberBasicAttack(WeaponAbilitySlot slot, AbilityDefinition ability)
+    {
+        if (slot == WeaponAbilitySlot.Attack && ability != null)
+            knownBasicAttackAbilities.Add(ability);
     }
 
     private bool TryHandleCurrentWeaponAbilityInput(WeaponAbilitySlot slot, AbilityDefinition ability)

@@ -41,7 +41,7 @@ public sealed class SceneTransitionPolicyResolver : MonoBehaviour
             defaultPolicy,
             rules);
 
-        Destroy(gameObject);
+        Destroy(this);
     }
 
     private void OnDestroy()

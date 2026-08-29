@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 책임: 런 시작과 종료 경계에서 저장 데이터, 진행 상태, 후속 저장 동작을 일관되게 정리한다.
+/// </summary>
 internal static class RunSessionLifecycleService
 {
     public static void StartRun(GamePlayData data, Action clearPendingRunProgress)
@@ -10,6 +13,7 @@ internal static class RunSessionLifecycleService
             return;
 
         clearPendingRunProgress?.Invoke();
+        RunSessionStateService.ResetLevelProgression(data);
         data.isRunActive = true;
         data.runElapsedSeconds = 0f;
         data.runRemainingSeconds = 0f;
@@ -47,10 +51,14 @@ internal static class RunSessionLifecycleService
         data.defeatedBossIds.Clear();
         data.dungeonRunStates ??= new List<DungeonRunStateData>();
         data.dungeonRunStates.Clear();
+        RunSessionStateService.ResetLevelProgression(data);
         clearRoutePlan?.Invoke();
     }
 }
 
+/// <summary>
+/// 책임: 한 런에 귀속되는 보스, 던전, 플레이어 전환 및 레벨 진행 상태를 조회하고 변경한다.
+/// </summary>
 internal static class RunSessionStateService
 {
     public static bool HasDefeatedBoss(GamePlayData data, string bossId)
@@ -426,6 +434,13 @@ internal static class RunSessionStateService
         data.defeatedBossIds.Clear();
         data.dungeonRunStates ??= new List<DungeonRunStateData>();
         data.dungeonRunStates.Clear();
+        ResetLevelProgression(data);
         clearPendingRunProgress?.Invoke();
+    }
+
+    public static void ResetLevelProgression(GamePlayData data)
+    {
+        data.levelProgression ??= new LevelProgressionState();
+        data.levelProgression.Reset();
     }
 }

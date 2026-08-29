@@ -221,6 +221,9 @@ public static class CombatDamageAction
         var geDamage = damageEffect as GE_Damage_Spec;
         var hpCheck = CaptureHpCheck(target, geDamage);
 
+        finalHpDamage = CombatOutgoingDamageModifiers.Apply(
+            new CombatOutgoingDamageContext(system, spec, target, finalHpDamage));
+
         var damageSpec = BuildDamageSpec(
             system,
             spec,
@@ -408,6 +411,11 @@ public static class CombatDamageAction
 
         float postHp = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr);
         if (postHp >= hpCheck.PreHp) return;
+
+        CombatActivityEvents.RaiseDamageApplied(
+            sourceSystem != null ? sourceSystem.gameObject : causer,
+            target,
+            hpCheck.PreHp - postHp);
 
         CombatHitAudioPlayback.PlayImpact(
             sourceSystem,

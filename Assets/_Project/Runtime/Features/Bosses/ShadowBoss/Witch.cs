@@ -667,6 +667,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         }
 
         skeleton.SuppressMonsterLootDrop();
+        skeleton.GetComponent<ExperienceRewardSource>()?.SetGrantExperience(false);
         skeleton.SetBoost(Target, explosionDiameter, speedScale, true);
         RegisterRetreatSummon(skeleton);
         return true;

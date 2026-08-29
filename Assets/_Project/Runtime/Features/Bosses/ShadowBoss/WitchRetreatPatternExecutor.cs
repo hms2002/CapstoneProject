@@ -88,6 +88,7 @@ public sealed class WitchRetreatPatternExecutor : MonoBehaviour
         }
 
         skeleton.SuppressMonsterLootDrop();
+        skeleton.GetComponent<ExperienceRewardSource>()?.SetGrantExperience(false);
         skeleton.SetBoost(
             owner.Target,
             explosionDiameter,

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a66b43a4d31c83409e5f816a624e775, type: 3}
+  m_Name: Effect_LowTimeHaste
+  m_EditorClassIdentifier: Gameplay::LowTimeHasteLevelRewardEffectSO
+  effectId: level_reward_effect.low_time_haste
+  moveSpeedAttribute: {fileID: 11400000, guid: 567fb769f1a0604458f4f84132a1ffa3, type: 2}
+  attackSpeedAttribute: {fileID: 11400000, guid: 40277bede661488094dd09d158341e30, type: 2}
+  thresholdSeconds: 360
+  moveSpeedPercent: 0.4
+  attackSpeedPercent: 0.25

@@ -10,6 +10,10 @@ public sealed class RewardCanvasRaycastGate : CanvasRaycastGateBase
 {
     protected override bool ShouldEnableRaycast()
     {
+        LevelRewardSelectionPresenter levelRewardPresenter = GetComponent<LevelRewardSelectionPresenter>();
+        if (levelRewardPresenter != null && levelRewardPresenter.IsActive)
+            return true;
+
         RewardDisplayUI rewardDisplayUi = RewardDisplayUI.Instance;
         if (rewardDisplayUi == null || !rewardDisplayUi.IsActive)
             return false;

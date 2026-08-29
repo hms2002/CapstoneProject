@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-07-05
+last_reviewed: 2026-08-19
 ---
 
 # Scene Runtime Save Structure
@@ -60,7 +60,7 @@ Map scene/run transition, title-to-game bootstrap, player runtime capture/restor
 
 - Scene transition should coordinate route/portal flow without owning player runtime state semantics.
 - Title/game scene bootstrap rules should follow `Docs/Architecture/SceneDomainBootstrapArchitecture.md`: `TitleScene` is the app entry scene and gameplay session boundary.
-- `SceneDomainCoordinator` is the current app-scope/gameplay-scope bootstrap lifecycle owner. It owns singleton lifecycle, Unity scene-loaded subscription, and development direct-start orchestration, while helper files now own loaded-scene classification (`SceneDomainScenePolicy`), app-scope service ensure (`SceneDomainAppScopeServices`), gameplay session service ensure (`SceneDomainGameplaySessionScope`), title cleanup (`SceneDomainTitleCleanupScope`), and development direct-start constants/eligibility (`SceneDomainDevelopmentStartPolicy`).
+- `SceneDomainCoordinator` is the current app-scope/gameplay-scope bootstrap lifecycle owner. It owns singleton lifecycle, Unity scene-loaded subscription, and development direct-start orchestration, while helper files now own loaded-scene classification (`SceneDomainScenePolicy`), app-scope service ensure (`SceneDomainAppScopeServices`), gameplay session service ensure (`SceneDomainGameplaySessionScope`), title cleanup (`SceneDomainTitleCleanupScope`), and development direct-start constants/eligibility (`SceneDomainDevelopmentStartPolicy`). Core `EditorDirectSceneStartContext` records only the initial direct-Play Hub scene handle: Hub spawn/intro presentation reads it, and the coordinator clears it on every later scene load.
 - `TitleMenuController` owns title-local menu flow and scene load request. `TitleProfileSlotService` resolves the launch request target and slot action: empty-slot `StartNewRun` uses `newProfileTargetSceneName` (`TutorialCorridor` by default), while existing/default launches use `targetSceneName`. `TitleProfileLaunchService` prepares the selected durable profile through `GameDataManager`.
 - `UIManager.ReturnToTitleScreen()` remains the stack UI compatibility entry point for gameplay-to-title return. Same-file `TitleSceneNameResolver` and `TitleReturnService` now own title scene name resolution, UI prompt/popup cleanup handoff, run end, `SceneTransitionCoordinator` scene load request, and direct `SceneManager.LoadScene(...)` fallback.
 - Player runtime capture/restore should follow `Docs/Architecture/RuntimeSaveArchitecture.md`.
@@ -104,6 +104,9 @@ Map scene/run transition, title-to-game bootstrap, player runtime capture/restor
 - Runtime state restore can silently break if ownership shifts between player, weapon, relic, and save data.
 - Title return can silently break if run end, route clear, gameplay UI cleanup, and title scene transition drift apart.
 - Title launch currently prepares profile data directly before target scene load. New profiles enter the tutorial target, while existing/default launches keep the normal target; a future continue-run persistence model would need explicit runtime state and target-scene restore rules.
+- Direct `ProtoTypeHub` Play must skip both `PlayerHubSpawnPresentation2D` and `HubIntroAfterDarkLordSequence` through the same `EditorDirectSceneStartContext`. Skipping only one presentation can leave the other presentation owning input while the development bootstrap reports the Hub portal route as ready.
+- `PortalRouteManager` and `RunRoutePlayback` have separate Unity-object and static-backend lifetimes. Play-session initialization must reset stale static ownership, and an existing/enabled manager must rebind the backend; otherwise Hub portals report `route=manager=null` even when the scene-authored manager object exists.
+- `ProtoTypeHub/SceneManagers` co-locates `RunTransitionResolver`, `PortalRouteManager`, and `SceneTransitionPolicyResolver`. Their duplicate-instance paths must destroy only the duplicate component (`Destroy(this)`), never the shared GameObject, because whole-host destruction removes sibling services and unregisters their static backends.
 - Do not treat pending run data in `GamePlayDataManager` as already-persisted profile data.
 - Scene/run/save helper boundaries have been moved to dedicated helper files. Generated project files now include the recent helper files and Visual Studio MSBuild errors-only verification passes, but Unity Editor import/compile confirmation remains the final verification path for scene-facing flows.
 - Do not split boss progress/reward/portal behavior without checking the resolved `Docs/RefactorBacklog/BossDropResponsibilitySplit.md` and the current battle-end validator behavior.

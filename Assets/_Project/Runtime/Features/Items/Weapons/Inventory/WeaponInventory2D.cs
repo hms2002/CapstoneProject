@@ -36,6 +36,7 @@ public class WeaponInventory2D : MonoBehaviour
     // -----------------------
     public event Action<int, WeaponDefinition, WeaponDefinition> OnSlotChanged; // (slotIndex, prev, now)
     public event Action<int, int, WeaponDefinition, WeaponDefinition> OnEquippedChanged; // (prevIdx, newIdx, prevW, newW)
+    public event Action<int, bool> OnSlotAccessChanged; // (slotIndex, isAccessible)
     public event Action OnInventoryChanged;
     public event Action<WeaponDefinition> OnPickupRejected_Duplicate;
 
@@ -73,6 +74,7 @@ public class WeaponInventory2D : MonoBehaviour
     private WeaponStatBinder statBinder;
     private WeaponPresentationBinder presentationBinder;
     private WeaponEquipRuntime equipRuntime;
+    private readonly Dictionary<int, int> slotSealCounts = new Dictionary<int, int>();
 
     // -----------------------
     // Public getters
@@ -87,6 +89,53 @@ public class WeaponInventory2D : MonoBehaviour
 
     public WeaponDefinition GetWeaponInSlot(int slotIndex)
         => IsValidSlot(slotIndex) ? slots[slotIndex] : null;
+
+    public bool IsSlotAccessible(int slotIndex)
+        => IsValidSlot(slotIndex) && !slotSealCounts.ContainsKey(slotIndex);
+
+    public bool CanAcquireSlotSeal(int slotIndex)
+    {
+        if (!IsValidSlot(slotIndex))
+            return false;
+
+        if (slotIndex != ActiveIndex)
+            return true;
+
+        return FindFirstAccessibleFilledSlot(slotIndex) >= 0 && !IsActiveWeaponChangeBlocked();
+    }
+
+    /// <summary>
+    /// 책임: 지정 슬롯을 삭제하지 않고 런타임 접근만 봉인한다.
+    /// 여러 효과가 같은 슬롯을 봉인해도 각 handle이 해제될 때까지 봉인을 유지한다.
+    /// </summary>
+    public IDisposable TryAcquireSlotSeal(int slotIndex)
+    {
+        if (!CanAcquireSlotSeal(slotIndex))
+            return null;
+
+        if (slotIndex == ActiveIndex)
+        {
+            int fallbackIndex = FindFirstAccessibleFilledSlot(slotIndex);
+            if (fallbackIndex < 0 || IsActiveWeaponChangeBlocked())
+                return null;
+
+            Equip(fallbackIndex);
+            if (ActiveIndex == slotIndex)
+                return null;
+        }
+
+        bool wasAccessible = IsSlotAccessible(slotIndex);
+        slotSealCounts.TryGetValue(slotIndex, out int count);
+        slotSealCounts[slotIndex] = count + 1;
+
+        if (wasAccessible)
+        {
+            OnSlotAccessChanged?.Invoke(slotIndex, false);
+            NotifyInventoryChanged();
+        }
+
+        return new SlotSealHandle(this, slotIndex);
+    }
 
     /// <summary>
     /// 책임 :
@@ -323,6 +372,7 @@ public class WeaponInventory2D : MonoBehaviour
     public void Equip(int slotIndex)
     {
         if (!IsValidSlot(slotIndex)) return;
+        if (!IsSlotAccessible(slotIndex)) return;
         if (slotIndex != ActiveIndex && IsActiveWeaponChangeBlocked()) return;
 
         var newWeapon = slots[slotIndex];
@@ -362,14 +412,14 @@ public class WeaponInventory2D : MonoBehaviour
 
         if (!HasEquippedWeapon)
         {
-            int first = FindFirstFilledSlot();
+            int first = FindFirstAccessibleFilledSlot();
             if (first >= 0) Equip(first);
             NotifyInventoryChanged();
             return;
         }
 
         int other = 1 - current;
-        if (!IsValidSlot(other) || slots[other] == null)
+        if (!IsSlotAccessible(other) || slots[other] == null)
             return;
 
         int previousActiveIndex = ActiveIndex;
@@ -383,7 +433,7 @@ public class WeaponInventory2D : MonoBehaviour
     {
         if (!HasEquippedWeapon) return;
         if (IsActiveWeaponChangeBlocked()) return;
-        if (CountFilledSlots() <= 1)
+        if (CountAccessibleFilledSlots() <= 1)
         {
             WarningPopupPlayback.Show(WarningPopupCode.LastWeaponCannotLeaveInventory);
             return;
@@ -393,7 +443,7 @@ public class WeaponInventory2D : MonoBehaviour
         DropSlot(droppingIndex);
 
         int other = 1 - droppingIndex;
-        if (IsValidSlot(other) && slots[other] != null)
+        if (IsSlotAccessible(other) && slots[other] != null)
             Equip(other);
 
         NotifyInventoryChanged();
@@ -434,7 +484,7 @@ public class WeaponInventory2D : MonoBehaviour
 
         if (equipFallback)
         {
-            int fallbackIndex = FindFirstFilledSlot();
+            int fallbackIndex = FindFirstAccessibleFilledSlot();
             if (fallbackIndex >= 0)
                 Equip(fallbackIndex);
         }
@@ -484,6 +534,7 @@ public class WeaponInventory2D : MonoBehaviour
     public bool CanPlaceWeaponInSlot(int slotIndex, WeaponDefinition weapon)
     {
         if (!IsValidSlot(slotIndex)) return false;
+        if (!IsSlotAccessible(slotIndex)) return false;
         if (weapon == null) return true;
 
         if (disallowDuplicateWeapons)
@@ -501,6 +552,7 @@ public class WeaponInventory2D : MonoBehaviour
     public bool TrySetWeaponSlot(int slotIndex, WeaponDefinition newWeapon, bool autoEquipIfNone = true)
     {
         if (!IsValidSlot(slotIndex)) return false;
+        if (!IsSlotAccessible(slotIndex)) return false;
 
         var oldWeapon = slots[slotIndex];
         if (oldWeapon == newWeapon) return true;
@@ -541,7 +593,7 @@ public class WeaponInventory2D : MonoBehaviour
         }
         else if (wasActive && newWeapon == null)
         {
-            int fallbackIndex = FindFirstFilledSlot();
+            int fallbackIndex = FindFirstAccessibleFilledSlot();
             if (fallbackIndex >= 0)
                 Equip(fallbackIndex);
         }
@@ -561,6 +613,7 @@ public class WeaponInventory2D : MonoBehaviour
     public bool TrySwapWeaponSlots(int a, int b)
     {
         if (!IsValidSlot(a) || !IsValidSlot(b)) return false;
+        if (!IsSlotAccessible(a) || !IsSlotAccessible(b)) return false;
         if (a == b) return true;
         if ((a == ActiveIndex || b == ActiveIndex) && IsActiveWeaponChangeBlocked()) return false;
 
@@ -726,7 +779,7 @@ public class WeaponInventory2D : MonoBehaviour
     {
         for (int i = 0; i < slots.Length; i++)
         {
-            if (slots[i] == null)
+            if (IsSlotAccessible(i) && slots[i] == null)
                 return i;
         }
         return -1;
@@ -734,9 +787,14 @@ public class WeaponInventory2D : MonoBehaviour
 
     private int FindFirstFilledSlot()
     {
+        return FindFirstAccessibleFilledSlot();
+    }
+
+    private int FindFirstAccessibleFilledSlot(int excludedSlotIndex = -1)
+    {
         for (int i = 0; i < slots.Length; i++)
         {
-            if (slots[i] != null)
+            if (i != excludedSlotIndex && IsSlotAccessible(i) && slots[i] != null)
                 return i;
         }
         return -1;
@@ -752,6 +810,55 @@ public class WeaponInventory2D : MonoBehaviour
         }
 
         return count;
+    }
+
+    private int CountAccessibleFilledSlots()
+    {
+        int count = 0;
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (IsSlotAccessible(i) && slots[i] != null)
+                count++;
+        }
+
+        return count;
+    }
+
+    private void ReleaseSlotSeal(int slotIndex)
+    {
+        if (!slotSealCounts.TryGetValue(slotIndex, out int count))
+            return;
+
+        if (count > 1)
+        {
+            slotSealCounts[slotIndex] = count - 1;
+            return;
+        }
+
+        slotSealCounts.Remove(slotIndex);
+        OnSlotAccessChanged?.Invoke(slotIndex, true);
+        NotifyInventoryChanged();
+    }
+
+    private sealed class SlotSealHandle : IDisposable
+    {
+        private WeaponInventory2D owner;
+        private readonly int slotIndex;
+
+        public SlotSealHandle(WeaponInventory2D owner, int slotIndex)
+        {
+            this.owner = owner;
+            this.slotIndex = slotIndex;
+        }
+
+        public void Dispose()
+        {
+            if (owner == null)
+                return;
+
+            owner.ReleaseSlotSeal(slotIndex);
+            owner = null;
+        }
     }
 
     private bool ContainsWeaponId(string weaponId)

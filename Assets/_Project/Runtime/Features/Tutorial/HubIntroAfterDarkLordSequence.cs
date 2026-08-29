@@ -172,6 +172,9 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         if (!IsHubScene())
             return;
 
+        if (EditorDirectSceneStartContext.IsDirectHubStart(gameObject.scene))
+            return;
+
         if (!HubIntroProgressGate.ShouldPlayAfterDarkLordTutorial(
                 darkLordTutorialCompletionId,
                 hubIntroSeenId,
