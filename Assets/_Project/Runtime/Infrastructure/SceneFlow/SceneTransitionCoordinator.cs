@@ -92,13 +92,18 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
 
     public bool TryLoadScene(string targetSceneName)
     {
-        return TryLoadScene(targetSceneName, fadeOutDurationOverride: null, fadeInDurationOverride: null);
+        return TryLoadScene(
+            targetSceneName,
+            SceneTransitionVisualMode.AlphaFade,
+            fadeOutDurationOverride: null,
+            fadeInDurationOverride: null);
     }
 
     public bool TryLoadScene(string targetSceneName, float fadeOutDurationOverride)
     {
         return TryLoadScene(
             targetSceneName,
+            SceneTransitionVisualMode.AlphaFade,
             (float?)Mathf.Max(0f, fadeOutDurationOverride),
             fadeInDurationOverride: null);
     }
@@ -110,12 +115,30 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
     {
         return TryLoadScene(
             targetSceneName,
+            SceneTransitionVisualMode.AlphaFade,
             (float?)Mathf.Max(0f, fadeOutDurationOverride),
             (float?)Mathf.Max(0f, fadeInDurationOverride));
     }
 
+    /// <summary>
+    /// 책임 : 데이터 기반 이동 연결이 선택한 화면 전환 방식과 양쪽 재생 시간을 적용해 씬 로드를 시작한다.
+    /// </summary>
+    public bool TryLoadScene(
+        string targetSceneName,
+        SceneTransitionVisualMode visualMode,
+        float coverDuration,
+        float revealDuration)
+    {
+        return TryLoadScene(
+            targetSceneName,
+            visualMode,
+            (float?)Mathf.Max(0f, coverDuration),
+            (float?)Mathf.Max(0f, revealDuration));
+    }
+
     private bool TryLoadScene(
         string targetSceneName,
+        SceneTransitionVisualMode visualMode,
         float? fadeOutDurationOverride,
         float? fadeInDurationOverride)
     {
@@ -124,6 +147,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
 
         transitionRoutine = StartCoroutine(CoTransition(
             targetSceneName,
+            visualMode,
             fadeOutDurationOverride,
             fadeInDurationOverride));
         return true;
@@ -131,6 +155,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
 
     private IEnumerator CoTransition(
         string targetSceneName,
+        SceneTransitionVisualMode visualMode,
         float? fadeOutDurationOverride,
         float? fadeInDurationOverride)
     {
@@ -160,10 +185,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
             routeManager != null &&
             PortalRouteManager.IsCorridorEntryTransition(routeManager.LastLoadPresentationTransitionType);
 
-        if (fadeOutDurationOverride.HasValue)
-            yield return fadeService.FadeOutAsync(fadeOutDurationOverride.Value);
-        else
-            yield return fadeService.FadeOutAsync();
+        yield return CoverAsync(fadeService, visualMode, fadeOutDurationOverride);
 
         LoadingOverlayController loadingOverlay = null;
         float loadingPhaseStartedRealtime = 0f;
@@ -208,7 +230,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
                 loadingOverlay.ForceHidePresentation();
             }
 
-            yield return FadeInAsync(fadeService, fadeInDurationOverride);
+            yield return RevealAsync(fadeService, visualMode, fadeInDurationOverride);
             fadeService.EndTransitionSession();
             transitionRoutine = null;
             yield break;
@@ -252,12 +274,12 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
             routeManager?.CompleteLoadPresentationContext("Managed loading presentation completed.");
             fadeService.ShowBlackImmediately();
             loadingOverlay.ForceHidePresentation();
-            yield return FadeInAsync(fadeService, fadeInDurationOverride);
+            yield return RevealAsync(fadeService, visualMode, fadeInDurationOverride);
             LogLoadingHandoffDiagnostics("after managed fade-in before player unlock");
         }
         else
         {
-            yield return FadeInAsync(fadeService, fadeInDurationOverride);
+            yield return RevealAsync(fadeService, visualMode, fadeInDurationOverride);
             LogLoadingHandoffDiagnostics("after fade-in before player unlock");
         }
 
@@ -301,12 +323,36 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
         return recovered;
     }
 
-    private static IEnumerator FadeInAsync(
+    private static IEnumerator CoverAsync(
         SceneFadeTransitionService fadeService,
-        float? fadeInDurationOverride)
+        SceneTransitionVisualMode visualMode,
+        float? durationOverride)
     {
-        if (fadeInDurationOverride.HasValue)
-            yield return fadeService.FadeInAsync(fadeInDurationOverride.Value);
+        if (visualMode == SceneTransitionVisualMode.HorizontalWipeRightToLeft)
+        {
+            yield return fadeService.WipeCoverRightToLeftAsync(durationOverride ?? 0.2f);
+            yield break;
+        }
+
+        if (durationOverride.HasValue)
+            yield return fadeService.FadeOutAsync(durationOverride.Value);
+        else
+            yield return fadeService.FadeOutAsync();
+    }
+
+    private static IEnumerator RevealAsync(
+        SceneFadeTransitionService fadeService,
+        SceneTransitionVisualMode visualMode,
+        float? durationOverride)
+    {
+        if (visualMode == SceneTransitionVisualMode.HorizontalWipeRightToLeft)
+        {
+            yield return fadeService.WipeRevealRightToLeftAsync(durationOverride ?? 0.2f);
+            yield break;
+        }
+
+        if (durationOverride.HasValue)
+            yield return fadeService.FadeInAsync(durationOverride.Value);
         else
             yield return fadeService.FadeInAsync();
     }

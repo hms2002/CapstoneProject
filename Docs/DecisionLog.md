@@ -3064,3 +3064,111 @@ Implications:
 - Only collidable concrete `Tile` assets are accepted as generated Wall candidates; the primary Wall remains the compatibility fallback.
 - Existing prototype scenes with empty variant lists continue using their original single Floor/Wall fields.
 - Updating an authored boss Corridor palette requires rerunning `Tools/Dungeon/Install Boss Theme Procedural Corridor Scenes` to rebake theme room assets and scene builder palettes.
+
+## 2026-08-27 - The V0 Procedural Test Scene Is A Minimal Runtime Shell
+
+Decision:
+Remove the copied `ProtoTypeCorridor` map content from `ProceduralDungeonV0Test` instead of retaining it disabled. Keep only the camera, player spawn, active gameplay services, interaction/UI infrastructure, and the generated dungeon root. Treat this as a one-time scene-data migration; do not retain root-name or prefab-path deletion rules in the installer.
+
+Reason:
+The disabled authored Grid and its fixed doors, shortcuts, rewards, portal, and eleven monster spawn points were no longer inputs to procedural generation. Leaving them in the scene obscured ownership, retained stale cross-object references, increased scene serialization size, and made the Hierarchy imply two competing map implementations.
+
+Implications:
+- `RoomTemplateSO` and `DungeonRoomBuilder` are the only owners of procedural room tiles, room objects, connected doors, encounters, and the terminal portal in the V0 scene.
+- The scene keeps exactly one `MonsterSpawner`, one `PlayerSpawner`, and one `GlobalUIRoot`; the installer verifies these component-level invariants and the absence of authored `MonsterSpawnContainer` components before and after rebuilding.
+- The authored Grid, fixed `MonsterSpawnContainer` roots, map Door/Lever/Statue/Chest/Portal prefab instances, disabled Boss/BossCam, and NPC/dialogue/affection-only managers are absent.
+- `MonsterSpawner` authored spawn lists remain empty. Runtime procedural placements are spawned through `DungeonRoomBuilder` requests.
+- The installer never recreates the V0 scene by copying `ProtoTypeCorridor`. A missing dedicated scene is an explicit installation error.
+- Cleanup code does not inspect or delete root names or prefab asset paths, so running the V0 installer cannot remove content from another scene.
+- This cleanup currently applies only to `ProceduralDungeonV0Test`; boss-theme scene cleanup remains a separate migration.
+
+## 2026-08-27 - Room Authoring Uses An Isolated Designer Workspace
+
+Decision:
+Keep the existing `RoomTemplateSO`, `RoomPieceAuthoring`, socket, object placement, and runtime builder contracts. Replace the Room Piece Editor's scene-dependent one-scroll workflow with a staged designer flow backed by one non-saved additive authoring scene. Publish only validated room assets and an optional explicit reference into the selected `RoomThemeLibrarySO`.
+
+Reason:
+Creating authoring roots in whichever gameplay scene happened to be active risked dirtying or accidentally saving unrelated Corridor content. Requiring designers to browse Project folders, type output paths and IDs, and manually locate compatible prefabs also exposed implementation details instead of the room-design task. The runtime data contract is already adequate, so the safer change is an Editor-only workflow and not a second room format.
+
+Implications:
+- Opening, editing, replacing, and closing a room authoring session cannot search for or mutate roots in a gameplay scene.
+- A dirty loaded unsaved Untitled scene blocks workspace creation; the tool does not auto-save, close, or replace it. Unity's clean startup scene may remain loaded beside the additive workspace.
+- The selected theme library drives the room browser and compatible prefab recommendations from its existing room data. No prefab-folder catalog is hardcoded.
+- Designers move through Basic, Tiles, Sockets, Objects, Validate/Publish, and Map Preview steps; Floor/Wall painting still uses Unity Tile Palette.
+- Socket placement supports four direction shortcuts and Scene View boundary clicks with automatic outward direction, two-cell snapping, collision avoidance, and preview handles.
+- New assets use Unity's save panel. Publishing can register the template with the selected library through a duplicate-safe Editor API.
+- The runtime generator, generated scenes, and existing serialized room schema remain unchanged.
+
+## 2026-08-27 - Dungeon Authoring Preview Reuses Runtime Placement Without Gameplay Instantiation
+
+The Room Piece tool's Map Preview step runs `DungeonLayoutAssembler` against a transient copy of the selected theme library. When requested, the current unsaved room replaces its source template in that copy only. `DungeonRoomBuilder` exposes an explicit visual-only build option that shares room tile, closed-socket, socket-opening, and corridor behavior while skipping connected Doors and gameplay object/encounter creation.
+
+- `DungeonRoomBuilder.TryBuild(layout)` remains the unchanged full runtime entry point.
+- Preview roots live only in `RoomAuthoringWorkspace`; generation and cleanup do not mark the room authoring session dirty.
+- Scene View handles show room roles/bounds, socket connections, and `M/C/P/O` object markers instead of instantiating Monster, Chest, Portal, or Prop prefabs.
+- Corridor tile overrides are explicit UI references; when omitted, the preview derives the most frequent Floor/Wall tiles from the selected transient library without folder scans or project paths.
+- A current room remains a weighted candidate. Preview does not falsify runtime selection by forcing it into the generated layout.
+
+## 2026-08-28 - Scene Connections Are Directional Data Bound To Reusable Endpoints
+
+Decision:
+Keep the existing `ScenePortal` path operational, and add `SceneConnectionSO` as the new data-driven path. A connection owns two scene/endpoint identities and independent A-to-B/B-to-A run actions, restore policies, availability gates, and presentation profiles. Interaction, automatic trigger, and arrival-only media all delegate to the same travel backend. A reusable procedural room stores only a travel Slot Id, medium kind, optional prefab, and local transform; each scene binds that room/slot pair to one side of a connection in `DungeonRoomBuilder`.
+
+Reason:
+Embedding destination scenes in room prefabs would make theme-neutral rooms scene-specific and would duplicate route validation between portals and triggers. Directional data is also required because corridor-to-boss can be blocked after a kill while boss-to-corridor remains available, and pipe-style presentation can differ by direction. Binding after procedural placement lets the endpoint exist before the player is positioned without teaching the layout assembler about themes or scenes.
+
+Implications:
+- Gate validation runs before departure presentation. `BossNotDefeatedThisRun` uses the route set's stable theme Id and shows `BossAlreadyDefeatedThisRun` on failure.
+- Returning to the lobby does not implicitly end a run. A connection ends or starts a run only when its direction explicitly requests that action.
+- `PlayerSpawner` waits for a generated destination endpoint, positions persistent or newly spawned players at its arrival anchor, and holds input lock through the optional arrival presentation.
+- Alpha fade remains the default. A reusable right-to-left horizontal wipe is available without a second transition manager.
+- New rooms author `Interaction`, `Trigger`, or `ArrivalOnly` slots independently of legacy `ScenePortal` object placements.
+- Existing scenes and legacy portals require explicit migration; this decision does not mass-rewrite them.
+
+## 2026-08-28 - Procedural Corridor Reentry Is An Explicit Per-Dungeon Policy
+
+Decision:
+Default every `DungeonGenerator` to `RegenerateOnEntry`. Let designers opt into `ResetContentsKeepLayout` or `PreserveDuringRun` using a stable dungeon state Id. The run store owns resolved seeds and preserved generated-object state, and clears both only at run start/end/reset boundaries.
+
+Reason:
+Corridor regeneration is the safest default for the new lobby/corridor navigation loop, but some designs need a stable route or a revisitable cleared corridor. Keeping this choice on the generator avoids scene-name conditionals and prevents permanent unlock/save data from absorbing run-local dungeon state.
+
+Implications:
+- `RegenerateOnEntry` resolves a fresh seed for every active-run entry.
+- `ResetContentsKeepLayout` reuses the seed but recreates monsters, chests, props, and endpoints.
+- `PreserveDuringRun` reuses the seed and restores destroyed/inactive generated objects plus opened chest visuals and remaining loot slots.
+- State keys combine the generated room placement Id with the authored object Placement Id, so room/object Id stability matters during a run.
+- The data is run-local and is cleared when the run truly ends; changing scenes alone does not clear it.
+
+## 2026-08-28 - Themed Corridors Own Stable Lobby And Boss Travel Slots
+
+Decision:
+Give each themed Start room one `LobbyGate` trigger slot and each themed terminal Boss room one `BossGate` interaction slot. Bind those slots per Corridor scene to dedicated Lobby↔Corridor and Corridor↔Boss connection assets. Replace the themed room's legacy `ExitPortal` placement with a data-driven portal prefab, and place an arrival-only endpoint at the configured spawn point in each authored Boss scene. Do not place or move gates in `ProtoTypeHub` during this Corridor-focused slice.
+
+Reason:
+The procedural Corridor must be able to regenerate its geometry while retaining stable semantic entry and exit identities. Keeping connection data out of the room asset preserves room reuse, while installing the Boss destination endpoint makes Corridor→Boss placement deterministic. Lobby gate positions and specific route-plan activation depend on authored Hub layout decisions and therefore should not be inferred by a Corridor installer.
+
+Implications:
+- The four Corridor generators use stable dungeon state IDs and explicit `RegenerateOnEntry` policy.
+- Corridor→Boss checks `BossNotDefeatedThisRun` before playing departure presentation.
+- Returning from a Corridor to the Lobby does not end the run, and `StartRun` does not reset an already active run.
+- A trigger used as the arrival endpoint suppresses the arriving player until the collider is exited, preventing an immediate reverse transition.
+- Designers can rerun the focused travel installer without regenerating room art, monster samples, or Hub content.
+- The Lobby still needs a complete endpoint/trigger/connection/route-context binding; a raw trigger collider is not a finished gate.
+
+## 2026-08-28 - Exploration Corridors Build A Graph Before Physical Placement
+
+Decision:
+Add an optional `DungeonLayoutPolicySO` above the existing incremental assembler. When a generator has this policy and includes a Boss room, `DungeonGraphLayoutAssembler` first constructs an abstract graph, assigns room roles, selects exact handcrafted templates and directional sockets, and only then embeds the result into physical coordinates. The four boss-theme Corridors share a 15-room prototype policy with Start-to-Boss distance `6..8`, `2..4` meaningful branches, `1..2` cycles, one required Treasure room, and at least four Combat rooms.
+
+Reason:
+Selecting and placing the next room in one step cannot reliably guarantee a critical-path length, branch count, cycle count, or POI distribution. A graph-first phase makes those navigation properties measurable before large and irregular room bounds constrain physical placement, while keeping theme identity, Tilemap sprites, monsters, and object realization out of layout logic.
+
+Implications:
+- A null policy preserves the legacy `DungeonLayoutAssembler` path. The V0 test scene and unrelated generators are not migrated implicitly.
+- Required room roles are assigned before exact templates. Treasure/Event/Shop prefer compatible dead ends and are spread when alternatives exist; a missing exact-role template causes an explicit generation failure.
+- Current theme libraries guarantee Treasure and Combat only. Event and Shop quotas stay zero until those room assets exist.
+- Cycles use square two-node detours and retain the existing straight, two-cell-wide corridor/build contract. Bent corridor pathfinding remains a separate future feature.
+- Physical coordinates derive from the largest selected room extents in each graph row and column. Full rectangular room reservations remain authoritative for the large ㄴ/ㄱ samples.
+- Every graph edge still resolves opposite, equal-width sockets on one row or column. Template/socket assignments that cannot keep this invariant are retried rather than producing a bent or diagonal connection.
+- The installer validates each theme across 64 Seeds and requires every representative scene result to satisfy its graph metrics, room-role quotas, overlap rules, and existing runtime build checks.

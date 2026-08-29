@@ -1,4 +1,7 @@
+using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
+using UnityGAS;
 
 public sealed class PlayerSpawner : MonoBehaviour
 {
@@ -8,18 +11,78 @@ public sealed class PlayerSpawner : MonoBehaviour
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private PlayerSpawnPoint defaultSpawnPoint;
     [SerializeField] private PlayerSpawnPoint[] spawnPoints;
+    [SerializeField, Min(0.1f)] private float dynamicEndpointWaitSeconds = 5f;
 
-    private void Start()
+    private IEnumerator Start()
     {
-        SpawnIfNeeded();
+        SceneTransitionContext transitionContext = RunSessionStore.PeekPendingTransition();
+        bool waitsForDynamicEndpoint =
+            transitionContext != null &&
+            !string.IsNullOrWhiteSpace(transitionContext.connectionId) &&
+            !string.IsNullOrWhiteSpace(transitionContext.destinationEndpointId);
+
+        ISceneFadeTransitionHandle fadeService = null;
+        if (waitsForDynamicEndpoint)
+        {
+            fadeService = SceneFadeTransitionPlayback.EnsureInstance(allowRuntimeFallback: true);
+            fadeService?.SetPlayerUnlockBlocked(this, true);
+        }
+
+        SceneTravelEndpoint dynamicEndpoint = null;
+        if (waitsForDynamicEndpoint)
+        {
+            float elapsed = 0f;
+            while (elapsed < dynamicEndpointWaitSeconds &&
+                   !SceneTravelEndpointRegistry.TryGetActiveScene(
+                       transitionContext.destinationEndpointId,
+                       out dynamicEndpoint))
+            {
+                elapsed += Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            if (dynamicEndpoint == null)
+            {
+                Debug.LogWarning(
+                    $"[PlayerSpawner] Timed out waiting for dynamic endpoint '{transitionContext.destinationEndpointId}'. Falling back to PlayerSpawnPoint.",
+                    this);
+            }
+        }
+
+        GameObject player = SpawnIfNeeded(transitionContext, dynamicEndpoint);
+        if (player != null && dynamicEndpoint != null)
+        {
+            SceneTravelTrigger2D arrivalTrigger =
+                dynamicEndpoint.GetComponent<SceneTravelTrigger2D>();
+            arrivalTrigger?.SuppressTravelUntilExit(player.transform);
+            yield return PlayDynamicArrival(player, dynamicEndpoint, transitionContext.travelPresentationProfile);
+        }
+
+        fadeService?.SetPlayerUnlockBlocked(this, false);
     }
 
     public void SpawnIfNeeded()
     {
+        SceneTransitionContext transitionContext = RunSessionStore.PeekPendingTransition();
+        SceneTravelEndpoint dynamicEndpoint = null;
+        if (transitionContext != null && !string.IsNullOrWhiteSpace(transitionContext.destinationEndpointId))
+        {
+            SceneTravelEndpointRegistry.TryGetActiveScene(
+                transitionContext.destinationEndpointId,
+                out dynamicEndpoint);
+        }
+
+        SpawnIfNeeded(transitionContext, dynamicEndpoint);
+    }
+
+    private GameObject SpawnIfNeeded(
+        SceneTransitionContext transitionContext,
+        SceneTravelEndpoint dynamicEndpoint)
+    {
         if (playerPrefab == null)
         {
             Debug.LogError("[PlayerSpawner] playerPrefab is missing.");
-            return;
+            return null;
         }
 
         var playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
@@ -29,6 +92,8 @@ public sealed class PlayerSpawner : MonoBehaviour
 
         if (existingPlayer != null)
         {
+            ApplyDynamicEndpointTransform(existingPlayer, dynamicEndpoint);
+
             var existingInteractor = existingPlayer.GetComponent<PlayerInteractor2D>();
             if (existingInteractor != null)
                 PlayerRuntimeRegistry.Register(existingInteractor);
@@ -39,24 +104,27 @@ public sealed class PlayerSpawner : MonoBehaviour
             TryStartHubSpawnPresentation(existingPlayer);
 
             Debug.Log("[PlayerSpawner] Player already exists in the scene. Skipping spawn.");
-            return;
+            return existingPlayer;
         }
-
-        var transitionContext = RunSessionStore.PeekPendingTransition();
 
         var spawnPoint = ResolveSpawnPoint(transitionContext);
-        if (spawnPoint == null)
+        if (dynamicEndpoint == null && spawnPoint == null)
         {
             Debug.LogError("[PlayerSpawner] Failed to resolve a player spawn point.");
-            return;
+            return null;
         }
 
-        ApplySpawnRuntimePolicy(spawnPoint);
+        if (dynamicEndpoint == null)
+            ApplySpawnRuntimePolicy(spawnPoint);
+
+        Transform spawnTransform = dynamicEndpoint != null
+            ? dynamicEndpoint.ArrivalAnchor
+            : spawnPoint.transform;
 
         var player = Instantiate(
             playerPrefab,
-            spawnPoint.transform.position,
-            spawnPoint.transform.rotation);
+            spawnTransform.position,
+            spawnTransform.rotation);
 
         var playerInteractor = player.GetComponent<PlayerInteractor2D>();
         if (playerInteractor != null)
@@ -72,6 +140,75 @@ public sealed class PlayerSpawner : MonoBehaviour
         ApplyPendingHubReturnFullHeal(player);
         ApplyPendingHubLoadFullHeal(player);
         TryStartHubSpawnPresentation(player);
+        return player;
+    }
+
+    private static void ApplyDynamicEndpointTransform(
+        GameObject player,
+        SceneTravelEndpoint dynamicEndpoint)
+    {
+        if (player == null || dynamicEndpoint == null)
+            return;
+
+        Transform anchor = dynamicEndpoint.ArrivalAnchor;
+        player.transform.SetPositionAndRotation(anchor.position, anchor.rotation);
+    }
+
+    private static IEnumerator PlayDynamicArrival(
+        GameObject player,
+        SceneTravelEndpoint endpoint,
+        SceneTravelPresentationProfileSO profile)
+    {
+        if (player == null || endpoint == null || profile == null ||
+            profile.ArrivalMode == SceneTravelArrivalMode.None)
+        {
+            yield break;
+        }
+
+        Transform playerTransform = player.transform;
+        Transform anchor = endpoint.ArrivalAnchor;
+        Vector3 targetPosition = anchor.position;
+        Quaternion targetRotation = anchor.rotation;
+        Vector3 startPosition = anchor.TransformPoint(profile.ArrivalStartOffset);
+        Quaternion startRotation = targetRotation *
+                                   Quaternion.Euler(0f, 0f, profile.ArrivalRotationDegrees);
+
+        playerTransform.SetPositionAndRotation(startPosition, startRotation);
+
+        var presentationRuntime = new GameplayPresentationRuntime(player);
+        GameplayCueParams cueParams = presentationRuntime.BuildParams(
+            target: player,
+            sourceObject: endpoint,
+            explicitPosition: targetPosition,
+            hasExplicitPosition: true,
+            causer: endpoint.gameObject);
+        presentationRuntime.Start(profile.ArrivalPresentation, cueParams);
+        SoundPlaybackUtility.Play(
+            profile.ArrivalSound,
+            instigator: player,
+            causer: endpoint.gameObject,
+            target: player,
+            position: targetPosition,
+            sourceObject: endpoint);
+
+        float duration = profile.ArrivalDuration;
+        if (profile.ArrivalMode == SceneTravelArrivalMode.MoveFromOffset && duration > 0f)
+        {
+            float elapsed = 0f;
+            while (elapsed < duration && player != null && endpoint != null)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / duration));
+                playerTransform.position = Vector3.LerpUnclamped(startPosition, targetPosition, t);
+                playerTransform.rotation = Quaternion.SlerpUnclamped(startRotation, targetRotation, t);
+                yield return null;
+            }
+        }
+
+        if (player != null)
+            playerTransform.SetPositionAndRotation(targetPosition, targetRotation);
+
+        presentationRuntime.Stop(profile.ArrivalPresentation, cueParams, playRemove: true);
     }
 
     /// <summary>

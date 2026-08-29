@@ -8,12 +8,13 @@ using UnityEngine.Tilemaps;
 
 /// <summary>
 /// 책임:
-/// - ProtoTypeCorridor 복사본에 절차 던전 v0 런타임 Grid, Tilemap, Builder, Generator를 설치한다.
+/// - 전용 V0 테스트 씬에 절차 던전 런타임 Grid, Tilemap, Builder, Generator를 설치한다.
 /// - 서로 다른 크기의 검증용 방과 방 크기 기반 가변 연결 복도, 테마 라이브러리, 연결 문과 방 오브젝트 설정을 재현 가능하게 구성한다.
 /// - 몬스터 방의 기존 encounter 영역과 연결 문 Kill Lock 구성을 설치하고 검증한다.
 /// - DragonCorridor와 동일한 제물 석상, 비영구 잠금 문, 보상 상자 흐름을 Treasure 방에 조립하고 검증한다.
 /// - 각 보스 테마에 50x50 이상 ㄴ/ㄱ 대형 방과 복수 종류/개체의 몬스터 샘플을 설치하고 검증한다.
 /// - 원본 보스 복도의 바닥 변형과 벽 연결 형태별 타일 팔레트를 추출해 절차 방 데이터와 복도 설정에 베이크한다.
+/// - V0 테스트 씬이 필수 스폰 인프라만 하나씩 가지고 authored 몬스터 스폰 포인트는 갖지 않는지 컴포넌트 기준으로 검증한다.
 /// - ShadowCorridor의 전역 어둠/플레이어 시야 마스크 프리팹을 절차 그림자 씬에 동일하게 설치하고 검증한다.
 /// - 보스별 절차 Corridor 씬, 테마 룸 라이브러리, Hub 경로, Build Settings와 로딩 매니페스트를 함께 설치한다.
 /// - 테스트 씬의 GlobalUIRoot를 ProtoTypeHub의 프리팹 오버라이드와 동기화한다.
@@ -21,10 +22,11 @@ using UnityEngine.Tilemaps;
 public static class ProceduralDungeonSceneInstaller
 {
     private const int SingleSocketSeedSweepCount = 128;
+    private const int GraphPolicySeedSweepCount = 64;
+    private const int ExplorationCorridorRoomCount = 15;
     private const int PrototypeMinimumCorridorLength = 4;
     private const float PrototypeCorridorLengthPerRoomCell = 0.35f;
     private const int PrototypeCorridorLengthVariation = 8;
-    private const string SourceScenePath = "Assets/_Project/Scenes/ProtoTypeCorridor.unity";
     private const string HubScenePath = "Assets/_Project/Scenes/ProtoTypeHub.unity";
     private const string TargetScenePath = "Assets/_Project/Scenes/ProceduralDungeonV0Test.unity";
     private const string SourceRoomPath = "Assets/_Project/Data/Dungeon/Rooms/TestTypeStart.asset";
@@ -32,6 +34,8 @@ public static class ProceduralDungeonSceneInstaller
     private const string GeneratedProceduralPrefabFolder = "Assets/_Project/Prefabs/Map/Procedural";
     private const string LibraryFolder = "Assets/_Project/Data/Dungeon/Libraries";
     private const string LibraryPath = LibraryFolder + "/PrototypeCorridorV0Library.asset";
+    private const string ExplorationLayoutPolicyPath =
+        LibraryFolder + "/ExplorationCorridorPrototypePolicy.asset";
     private const string RunRouteCatalogPath =
         "Assets/_Project/Data/SceneFlow/Routes/RunRouteCatalog.asset";
     private const string DoorPrefabPath = "Assets/_Project/Prefabs/Map/ShortCut/Door.prefab";
@@ -143,6 +147,7 @@ public static class ProceduralDungeonSceneInstaller
 
         EnsureFolder(GeneratedProceduralPrefabFolder);
         EnsureFolder(LibraryFolder);
+        DungeonLayoutPolicySO layoutPolicy = CreateOrUpdateExplorationLayoutPolicy();
         GameObject sacrificeRewardAlcovePrefab =
             CreateOrUpdateSacrificeRewardAlcovePrefab(
                 statuePrefab,
@@ -168,11 +173,16 @@ public static class ProceduralDungeonSceneInstaller
             library = AssetDatabase.LoadAssetAtPath<RoomThemeLibrarySO>(spec.LibraryPath);
             if (library == null)
                 throw new InvalidOperationException($"Failed to reload theme library: {spec.LibraryPath}");
+            layoutPolicy =
+                AssetDatabase.LoadAssetAtPath<DungeonLayoutPolicySO>(ExplorationLayoutPolicyPath);
+            if (layoutPolicy == null)
+                throw new InvalidOperationException("Exploration Corridor layout policy became unavailable.");
 
-            int resolvedSeed = ResolveThemeSeed(library, spec.PreferredSeed);
+            int resolvedSeed = ResolveThemeSeed(library, layoutPolicy, spec.PreferredSeed);
             InstallBossThemeScene(
                 spec,
                 library,
+                layoutPolicy,
                 tilePalette,
                 doorPrefabObject.GetComponent<DoorObject>(),
                 resolvedSeed);
@@ -182,9 +192,44 @@ public static class ProceduralDungeonSceneInstaller
 
         AssetDatabase.SaveAssets();
         VerifyHubBossThemeRoutes(specs);
+        ProceduralCorridorTravelInstaller.Install();
         RouteSetLoadManifestBuilderWindow.BuildAllRouteSetsBatch();
         Debug.Log(
             $"Installed and connected {specs.Length} boss-themed procedural Corridor scenes to ProtoTypeHub.");
+    }
+
+    [MenuItem("Tools/Dungeon/Validate Exploration Corridor Layout Policy")]
+    public static void ValidateExplorationCorridorLayoutPolicy()
+    {
+        EnsureFolder(LibraryFolder);
+        DungeonLayoutPolicySO policy = CreateOrUpdateExplorationLayoutPolicy();
+        AssetDatabase.SaveAssets();
+        AssetDatabase.ImportAsset(
+            ExplorationLayoutPolicyPath,
+            ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+        policy = AssetDatabase.LoadAssetAtPath<DungeonLayoutPolicySO>(ExplorationLayoutPolicyPath);
+        if (policy == null)
+            throw new InvalidOperationException("Failed to reload the exploration Corridor layout policy.");
+
+        BossThemeInstallSpec[] specs = CreateBossThemeInstallSpecs();
+        for (int specIndex = 0; specIndex < specs.Length; specIndex++)
+        {
+            BossThemeInstallSpec spec = specs[specIndex];
+            RoomThemeLibrarySO library =
+                AssetDatabase.LoadAssetAtPath<RoomThemeLibrarySO>(spec.LibraryPath);
+            if (library == null)
+                throw new InvalidOperationException($"Missing boss-theme room library: {spec.LibraryPath}");
+
+            int representativeSeed = ResolveThemeSeed(library, policy, spec.PreferredSeed);
+            VerifyGraphFirstPolicyAcrossSeeds(
+                library,
+                policy,
+                ExplorationCorridorRoomCount,
+                maxPlacementAttemptsPerRoom: 512);
+            Debug.Log(
+                $"Exploration layout policy verified. Theme={spec.ThemeId}, " +
+                $"RepresentativeSeed={representativeSeed}");
+        }
     }
 
     private static BossThemeInstallSpec[] CreateBossThemeInstallSpecs()
@@ -236,6 +281,41 @@ public static class ProceduralDungeonSceneInstaller
                 "Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinTank.prefab",
                 "Assets/_Project/Prefabs/Monsters/CommonCorridor/LizardMage.prefab")
         };
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 기획서의 12~18 Area, 보스 거리 6~8, 분기 2~4, 순환 1~2와 필수 보상/전투 수를 공유 정책 에셋으로 설치한다.
+    /// - 네 보스 테마가 같은 탐색 구조를 사용하면서도 개별 씬이나 조립기 코드에 수치를 중복 저장하지 않게 한다.
+    /// </summary>
+    private static DungeonLayoutPolicySO CreateOrUpdateExplorationLayoutPolicy()
+    {
+        DungeonLayoutPolicySO policy =
+            AssetDatabase.LoadAssetAtPath<DungeonLayoutPolicySO>(ExplorationLayoutPolicyPath);
+        if (policy == null)
+        {
+            policy = ScriptableObject.CreateInstance<DungeonLayoutPolicySO>();
+            AssetDatabase.CreateAsset(policy, ExplorationLayoutPolicyPath);
+        }
+
+        policy.EditorConfigure(
+            recommendedMinimumRooms: 12,
+            recommendedMaximumRooms: 18,
+            minimumBossDistance: 6,
+            maximumBossDistance: 8,
+            minimumBranches: 2,
+            maximumBranches: 4,
+            minimumCycles: 1,
+            maximumCycles: 2,
+            topologyAttempts: 512,
+            requiredTreasureRooms: 1,
+            requiredEventRooms: 0,
+            requiredShopRooms: 0,
+            requiredMinimumCombatRooms: 4,
+            shouldPreferSpecialRoomsAtDeadEnds: true);
+        policy.name = "ExplorationCorridorPrototypePolicy";
+        EditorUtility.SetDirty(policy);
+        return policy;
     }
 
     private static BossThemeTilePalette LoadThemeTilePalette(
@@ -1188,18 +1268,20 @@ public static class ProceduralDungeonSceneInstaller
         }
     }
 
-    private static int ResolveThemeSeed(RoomThemeLibrarySO library, int preferredSeed)
+    private static int ResolveThemeSeed(
+        RoomThemeLibrarySO library,
+        DungeonLayoutPolicySO layoutPolicy,
+        int preferredSeed)
     {
-        DungeonLayoutAssembler assembler = new();
         const int searchCount = 4096;
         for (int offset = 0; offset < searchCount; offset++)
         {
             int seed = preferredSeed + offset;
-            DungeonLayoutResult result = assembler.Assemble(
+            DungeonLayoutResult result = new DungeonGraphLayoutAssembler().Assemble(
                 library,
+                layoutPolicy,
                 seed,
-                6,
-                includeBossRoom: true,
+                ExplorationCorridorRoomCount,
                 maxPlacementAttemptsPerRoom: 512,
                 minimumCorridorLength: PrototypeMinimumCorridorLength,
                 corridorLengthPerRoomCell: PrototypeCorridorLengthPerRoomCell,
@@ -1220,8 +1302,15 @@ public static class ProceduralDungeonSceneInstaller
     {
         if (result == null ||
             !result.IsComplete ||
-            result.Rooms.Count != 6 ||
-            result.Connections.Count != 5)
+            result.Rooms.Count != ExplorationCorridorRoomCount ||
+            !result.UsesGraphFirstLayout ||
+            result.BossGraphDistance < 6 ||
+            result.BossGraphDistance > 8 ||
+            result.MeaningfulBranchCount < 2 ||
+            result.MeaningfulBranchCount > 4 ||
+            result.CycleConnectionCount < 1 ||
+            result.CycleConnectionCount > 2 ||
+            result.Connections.Count != result.Rooms.Count - 1 + result.CycleConnectionCount)
         {
             return false;
         }
@@ -1261,6 +1350,7 @@ public static class ProceduralDungeonSceneInstaller
     private static void InstallBossThemeScene(
         BossThemeInstallSpec spec,
         RoomThemeLibrarySO library,
+        DungeonLayoutPolicySO layoutPolicy,
         BossThemeTilePalette tilePalette,
         DoorObject doorPrefab,
         int seed)
@@ -1285,6 +1375,10 @@ public static class ProceduralDungeonSceneInstaller
         library = AssetDatabase.LoadAssetAtPath<RoomThemeLibrarySO>(spec.LibraryPath);
         if (library == null)
             throw new InvalidOperationException($"Theme library is missing: {spec.LibraryPath}");
+        layoutPolicy =
+            AssetDatabase.LoadAssetAtPath<DungeonLayoutPolicySO>(ExplorationLayoutPolicyPath);
+        if (layoutPolicy == null)
+            throw new InvalidOperationException("Exploration Corridor layout policy is missing after scene load.");
 
         SyncHubUiIntoScene(scene);
         InstallThemeSceneGimmicks(spec, scene);
@@ -1345,13 +1439,14 @@ public static class ProceduralDungeonSceneInstaller
             library,
             builder,
             seed,
-            6,
+            ExplorationCorridorRoomCount,
             true,
             512,
             PrototypeMinimumCorridorLength,
             PrototypeCorridorLengthPerRoomCell,
             PrototypeCorridorLengthVariation,
-            true);
+            true,
+            layoutPolicy);
         EditorUtility.SetDirty(builder);
         EditorUtility.SetDirty(generator);
         EditorSceneManager.MarkSceneDirty(scene);
@@ -1367,6 +1462,40 @@ public static class ProceduralDungeonSceneInstaller
             $"Installed {spec.ThemeId} procedural Corridor scene. " +
             $"Scene={spec.TargetScenePath}, Seed={seed}",
             generatedRoot);
+    }
+
+    private static void VerifyPrototypeSceneShell(Scene scene)
+    {
+        if (!scene.IsValid() || !scene.isLoaded)
+            throw new InvalidOperationException("The procedural test Corridor scene must be loaded.");
+
+        GameObject[] roots = scene.GetRootGameObjects();
+        int monsterSpawnerCount = 0;
+        int playerSpawnerCount = 0;
+        int authoredMonsterSpawnPointCount = 0;
+        for (int rootIndex = 0; rootIndex < roots.Length; rootIndex++)
+        {
+            GameObject root = roots[rootIndex];
+            authoredMonsterSpawnPointCount +=
+                root.GetComponentsInChildren<MonsterSpawnContainer>(true).Length;
+            monsterSpawnerCount += root.GetComponentsInChildren<MonsterSpawner>(true).Length;
+            playerSpawnerCount += root.GetComponentsInChildren<PlayerSpawner>(true).Length;
+        }
+
+        if (monsterSpawnerCount != 1 ||
+            playerSpawnerCount != 1 ||
+            authoredMonsterSpawnPointCount != 0)
+        {
+            throw new InvalidOperationException(
+                $"Procedural test Corridor shell is invalid. " +
+                $"MonsterSpawner={monsterSpawnerCount}, PlayerSpawner={playerSpawnerCount}, " +
+                $"AuthoredMonsterSpawnPoints={authoredMonsterSpawnPointCount}");
+        }
+
+        Debug.Log(
+            $"Verified procedural test Corridor shell. Roots={roots.Length}, " +
+            $"MonsterSpawner={monsterSpawnerCount}, PlayerSpawner={playerSpawnerCount}, " +
+            $"AuthoredMonsterSpawnPoints={authoredMonsterSpawnPointCount}");
     }
 
     private static void InstallThemeSceneGimmicks(
@@ -1820,10 +1949,8 @@ public static class ProceduralDungeonSceneInstaller
 
         if (!AssetDatabase.LoadAssetAtPath<SceneAsset>(TargetScenePath))
         {
-            if (!AssetDatabase.CopyAsset(SourceScenePath, TargetScenePath))
-                throw new InvalidOperationException($"Failed to copy scene: {SourceScenePath}");
-
-            AssetDatabase.ImportAsset(TargetScenePath, ImportAssetOptions.ForceSynchronousImport);
+            throw new InvalidOperationException(
+                $"Dedicated procedural test scene is missing: {TargetScenePath}");
         }
 
         Scene scene = EditorSceneManager.OpenScene(TargetScenePath, OpenSceneMode.Single);
@@ -1831,6 +1958,7 @@ public static class ProceduralDungeonSceneInstaller
         if (library == null)
             throw new InvalidOperationException($"Failed to reload room library after opening scene: {LibraryPath}");
 
+        VerifyPrototypeSceneShell(scene);
         SyncHubUiIntoScene(scene);
 
         DoorObject doorPrefab = doorPrefabObject != null
@@ -1842,10 +1970,6 @@ public static class ProceduralDungeonSceneInstaller
         GameObject existingGeneratedRoot = FindInScene(scene, GeneratedRootName);
         if (existingGeneratedRoot != null)
             UnityEngine.Object.DestroyImmediate(existingGeneratedRoot);
-
-        GameObject authoredGrid = FindInScene(scene, "Grid");
-        if (authoredGrid != null)
-            authoredGrid.SetActive(false);
 
         GameObject playerSpawner = FindInScene(scene, "PlayerSpawner");
         Vector3 generatedOrigin = playerSpawner != null
@@ -1916,6 +2040,7 @@ public static class ProceduralDungeonSceneInstaller
 
         VerifyInstalledPipeline(generator, builder);
         builder.ClearGeneratedContent();
+        VerifyPrototypeSceneShell(scene);
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
         AssetDatabase.SaveAssets();
@@ -2605,15 +2730,31 @@ public static class ProceduralDungeonSceneInstaller
         }
 
         DungeonLayoutResult layout = generator.LastLayout;
-        if (layout.Rooms.Count != 6 || layout.Connections.Count != 5)
+        int expectedConnectionCount = layout.UsesGraphFirstLayout
+            ? generator.RoomCount - 1 + layout.CycleConnectionCount
+            : generator.RoomCount - 1;
+        if (layout.Rooms.Count != generator.RoomCount ||
+            layout.Connections.Count != expectedConnectionCount)
         {
             throw new InvalidOperationException(
-                $"Unexpected layout size. Rooms={layout.Rooms.Count}, Connections={layout.Connections.Count}");
+                $"Unexpected layout size. Rooms={layout.Rooms.Count}/{generator.RoomCount}, " +
+                $"Connections={layout.Connections.Count}/{expectedConnectionCount}");
         }
 
         VerifyRoomSizeDiversity(generator.RoomLibrary, layout);
         VerifySingleSocketBossPlacement(layout);
-        VerifySingleSocketBossAcrossSeeds(generator.RoomLibrary);
+        if (generator.LayoutPolicy != null)
+        {
+            VerifyGraphFirstPolicyAcrossSeeds(
+                generator.RoomLibrary,
+                generator.LayoutPolicy,
+                generator.RoomCount,
+                generator.MaxPlacementAttemptsPerRoom);
+        }
+        else
+        {
+            VerifySingleSocketBossAcrossSeeds(generator.RoomLibrary);
+        }
         VerifyAdaptiveStraightCorridors(layout, builder, generator);
         VerifySocketWallAndColliderState(layout, builder);
         VerifyGeneratedRoomObjects(layout, builder);
@@ -2902,11 +3043,15 @@ public static class ProceduralDungeonSceneInstaller
                 (firstDepth + secondDepth) * generator.CorridorLengthPerRoomCell);
             int maximumLength = minimumLength + generator.CorridorLengthVariation;
             int actualLength = connection.CorridorLength;
-            if (actualLength < minimumLength || actualLength > maximumLength)
+            bool invalidLength = layout.UsesGraphFirstLayout
+                ? actualLength < minimumLength
+                : actualLength < minimumLength || actualLength > maximumLength;
+            if (invalidLength)
             {
                 throw new InvalidOperationException(
                     $"Adaptive corridor length is outside its allowed range at connection {connectionIndex}. " +
-                    $"Expected={minimumLength}..{maximumLength}, Actual={actualLength}");
+                    $"Expected={(layout.UsesGraphFirstLayout ? $">={minimumLength}" : $"{minimumLength}..{maximumLength}")}, " +
+                    $"Actual={actualLength}");
             }
 
             generatedLengths.Add(actualLength);
@@ -3504,6 +3649,72 @@ public static class ProceduralDungeonSceneInstaller
 
         Debug.Log(
             $"Single-socket Boss layout verification passed for {SingleSocketSeedSweepCount} seeds.");
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 탐색 정책이 여러 Seed에서도 방 수, 보스 거리, 분기, 순환, 필수 방 역할과 단일 Boss 소켓 계약을 지키는지 검증한다.
+    /// </summary>
+    private static void VerifyGraphFirstPolicyAcrossSeeds(
+        RoomThemeLibrarySO library,
+        DungeonLayoutPolicySO policy,
+        int roomCount,
+        int maxPlacementAttemptsPerRoom)
+    {
+        for (int seed = 0; seed < GraphPolicySeedSweepCount; seed++)
+        {
+            DungeonLayoutResult result = new DungeonGraphLayoutAssembler().Assemble(
+                library,
+                policy,
+                seed,
+                roomCount,
+                maxPlacementAttemptsPerRoom,
+                PrototypeMinimumCorridorLength,
+                PrototypeCorridorLengthPerRoomCell,
+                PrototypeCorridorLengthVariation);
+            int expectedConnections = roomCount - 1 + result.CycleConnectionCount;
+            if (!result.IsComplete ||
+                !result.UsesGraphFirstLayout ||
+                result.Rooms.Count != roomCount ||
+                result.Connections.Count != expectedConnections ||
+                result.BossGraphDistance < policy.MinimumBossGraphDistance ||
+                result.BossGraphDistance > policy.MaximumBossGraphDistance ||
+                result.MeaningfulBranchCount < policy.MinimumMeaningfulBranches ||
+                result.MeaningfulBranchCount > policy.MaximumMeaningfulBranches ||
+                result.CycleConnectionCount < policy.MinimumCycleConnections ||
+                result.CycleConnectionCount > policy.MaximumCycleConnections ||
+                CountRoomType(result, RoomType.Treasure) != policy.TreasureRoomCount ||
+                CountRoomType(result, RoomType.Event) != policy.EventRoomCount ||
+                CountRoomType(result, RoomType.Shop) != policy.ShopRoomCount ||
+                CountRoomType(result, RoomType.Combat) < policy.MinimumCombatRoomCount)
+            {
+                throw new InvalidOperationException(
+                    $"Graph-first policy seed sweep failed at Seed={seed}: {result.FailureReason} " +
+                    $"Rooms={result.Rooms.Count}, Connections={result.Connections.Count}, " +
+                    $"BossDistance={result.BossGraphDistance}, Branches={result.MeaningfulBranchCount}, " +
+                    $"Cycles={result.CycleConnectionCount}.");
+            }
+
+            VerifySingleSocketBossPlacement(result);
+        }
+
+        Debug.Log(
+            $"Graph-first policy verification passed for {GraphPolicySeedSweepCount} seeds. " +
+            $"Rooms={roomCount}, BossDistance={policy.MinimumBossGraphDistance}..{policy.MaximumBossGraphDistance}, " +
+            $"Branches={policy.MinimumMeaningfulBranches}..{policy.MaximumMeaningfulBranches}, " +
+            $"Cycles={policy.MinimumCycleConnections}..{policy.MaximumCycleConnections}.");
+    }
+
+    private static int CountRoomType(DungeonLayoutResult layout, RoomType roomType)
+    {
+        int count = 0;
+        for (int roomIndex = 0; roomIndex < layout.Rooms.Count; roomIndex++)
+        {
+            if (layout.Rooms[roomIndex].Template.LayoutData.roomType == roomType)
+                count++;
+        }
+
+        return count;
     }
 
     private static List<RoomSocketData> CreateFourWaySockets(Vector2Int size)

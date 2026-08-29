@@ -21547,6 +21547,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90321de462d66a740b565c4e066219cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupRoot: {fileID: 0}
+  worldCamera: {fileID: 0}
 --- !u!114 &271044843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29563,6 +29565,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1033677968
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1033677969}
+  - component: {fileID: 1033677970}
+  m_Layer: 0
+  m_Name: CorridorArrival_slime
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1033677969
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033677968}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -22, y: 0, z: -0.030643376}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2102931091}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1033677970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033677968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a43077220f17e524cba96184d5e52fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gameplay::SceneTravelEndpoint
+  endpointId: Boss.slime.Corridor
+  proceduralSlotId: 
+  connection: {fileID: 11400000, guid: b4453678a0e2a6c4d81f374408b53fae, type: 2}
+  connectionSide: 1
+  departureAnchor: {fileID: 0}
+  arrivalAnchor: {fileID: 0}
+  sceneTravelCleanupTagSets: []
 --- !u!1001 &1033997674
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29933,6 +29986,7 @@ MonoBehaviour:
   defaultSpawnPoint: {fileID: 593441122}
   spawnPoints:
   - {fileID: 593441122}
+  dynamicEndpointWaitSeconds: 5
 --- !u!4 &1387817727
 Transform:
   m_ObjectHideFlags: 0
@@ -33597,6 +33651,38 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &2102931090
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2102931091}
+  m_Layer: 0
+  m_Name: '[DataDrivenSceneTravel]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2102931091
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102931090}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1033677969}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2107525437
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37628,3 +37714,4 @@ SceneRoots:
   - {fileID: 406048394}
   - {fileID: 1854268797}
   - {fileID: 647895927}
+  - {fileID: 2102931091}

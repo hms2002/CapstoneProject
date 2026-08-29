@@ -15,6 +15,10 @@ internal static class RunSessionLifecycleService
         data.runRemainingSeconds = 0f;
         data.pendingHubReturnFullHeal = false;
         data.pendingHubLoadFullHeal = false;
+        data.defeatedBossIds ??= new List<string>();
+        data.defeatedBossIds.Clear();
+        data.dungeonRunStates ??= new List<DungeonRunStateData>();
+        data.dungeonRunStates.Clear();
     }
 
     public static void EndRun(
@@ -39,12 +43,172 @@ internal static class RunSessionLifecycleService
         data.pendingTransition = null;
         data.pendingPlayerState = null;
         data.pendingHubReturnFullHeal = reason != RunEndReason.None;
+        data.defeatedBossIds ??= new List<string>();
+        data.defeatedBossIds.Clear();
+        data.dungeonRunStates ??= new List<DungeonRunStateData>();
+        data.dungeonRunStates.Clear();
         clearRoutePlan?.Invoke();
     }
 }
 
 internal static class RunSessionStateService
 {
+    public static bool HasDefeatedBoss(GamePlayData data, string bossId)
+    {
+        if (data?.defeatedBossIds == null || string.IsNullOrWhiteSpace(bossId))
+            return false;
+
+        return data.defeatedBossIds.Exists(
+            candidate => string.Equals(candidate, bossId, StringComparison.Ordinal));
+    }
+
+    public static void MarkBossDefeated(GamePlayData data, string bossId)
+    {
+        if (data == null || string.IsNullOrWhiteSpace(bossId))
+            return;
+
+        data.defeatedBossIds ??= new List<string>();
+        if (!HasDefeatedBoss(data, bossId))
+            data.defeatedBossIds.Add(bossId);
+    }
+
+    public static int ResolveDungeonSeed(
+        GamePlayData data,
+        string dungeonId,
+        DungeonReentryPolicy policy,
+        int fallbackSeed)
+    {
+        if (data == null || !data.isRunActive || string.IsNullOrWhiteSpace(dungeonId))
+            return fallbackSeed;
+
+        data.dungeonRunStates ??= new List<DungeonRunStateData>();
+        DungeonRunStateData state = FindDungeonState(data, dungeonId);
+
+        if (policy == DungeonReentryPolicy.RegenerateOnEntry)
+        {
+            if (state != null)
+                data.dungeonRunStates.Remove(state);
+
+            return Guid.NewGuid().GetHashCode();
+        }
+
+        state ??= CreateDungeonState(data, dungeonId);
+        if (!state.hasResolvedSeed)
+        {
+            state.resolvedSeed = Guid.NewGuid().GetHashCode();
+            state.hasResolvedSeed = true;
+        }
+
+        if (policy == DungeonReentryPolicy.ResetContentsKeepLayout)
+        {
+            state.objectStates ??= new List<DungeonObjectRuntimeStateData>();
+            state.objectStates.Clear();
+        }
+
+        return state.resolvedSeed;
+    }
+
+    public static bool TryGetDungeonObjectStates(
+        GamePlayData data,
+        string dungeonId,
+        List<DungeonObjectRuntimeStateData> destination)
+    {
+        if (destination == null)
+            return false;
+
+        destination.Clear();
+        DungeonRunStateData state = FindDungeonState(data, dungeonId);
+        if (state?.objectStates == null || state.objectStates.Count == 0)
+            return false;
+
+        for (int i = 0; i < state.objectStates.Count; i++)
+        {
+            DungeonObjectRuntimeStateData source = state.objectStates[i];
+            if (source == null)
+                continue;
+
+            destination.Add(CloneDungeonObjectState(source));
+        }
+
+        return destination.Count > 0;
+    }
+
+    public static void SaveDungeonObjectStates(
+        GamePlayData data,
+        string dungeonId,
+        IReadOnlyList<DungeonObjectRuntimeStateData> states)
+    {
+        if (data == null || !data.isRunActive || string.IsNullOrWhiteSpace(dungeonId))
+            return;
+
+        data.dungeonRunStates ??= new List<DungeonRunStateData>();
+        DungeonRunStateData state = FindDungeonState(data, dungeonId) ??
+                                    CreateDungeonState(data, dungeonId);
+        state.objectStates ??= new List<DungeonObjectRuntimeStateData>();
+        state.objectStates.Clear();
+
+        if (states == null)
+            return;
+
+        for (int i = 0; i < states.Count; i++)
+        {
+            DungeonObjectRuntimeStateData source = states[i];
+            if (source == null || string.IsNullOrWhiteSpace(source.stateId))
+                continue;
+
+            state.objectStates.Add(CloneDungeonObjectState(source));
+        }
+    }
+
+    private static DungeonObjectRuntimeStateData CloneDungeonObjectState(
+        DungeonObjectRuntimeStateData source)
+    {
+        var clone = new DungeonObjectRuntimeStateData
+        {
+            stateId = source.stateId,
+            isPresent = source.isPresent,
+            isActive = source.isActive,
+            isChestOpened = source.isChestOpened,
+            chestLoot = new List<DungeonChestLootRuntimeStateData>()
+        };
+
+        if (source.chestLoot == null)
+            return clone;
+
+        for (int i = 0; i < source.chestLoot.Count; i++)
+        {
+            DungeonChestLootRuntimeStateData loot = source.chestLoot[i];
+            if (loot == null)
+                continue;
+
+            clone.chestLoot.Add(new DungeonChestLootRuntimeStateData
+            {
+                slotIndex = loot.slotIndex,
+                item = loot.item,
+                relicLevel = loot.relicLevel
+            });
+        }
+
+        return clone;
+    }
+
+    private static DungeonRunStateData FindDungeonState(GamePlayData data, string dungeonId)
+    {
+        if (data?.dungeonRunStates == null || string.IsNullOrWhiteSpace(dungeonId))
+            return null;
+
+        return data.dungeonRunStates.Find(
+            candidate => candidate != null &&
+                         string.Equals(candidate.dungeonId, dungeonId, StringComparison.Ordinal));
+    }
+
+    private static DungeonRunStateData CreateDungeonState(GamePlayData data, string dungeonId)
+    {
+        var state = new DungeonRunStateData { dungeonId = dungeonId };
+        data.dungeonRunStates.Add(state);
+        return state;
+    }
+
     public static void SetRunRemainingSeconds(GamePlayData data, float remainingSeconds)
     {
         if (data == null)
@@ -258,6 +422,10 @@ internal static class RunSessionStateService
         data.pendingPlayerState = null;
         data.pendingHubReturnFullHeal = false;
         data.pendingHubLoadFullHeal = false;
+        data.defeatedBossIds ??= new List<string>();
+        data.defeatedBossIds.Clear();
+        data.dungeonRunStates ??= new List<DungeonRunStateData>();
+        data.dungeonRunStates.Clear();
         clearPendingRunProgress?.Invoke();
     }
 }

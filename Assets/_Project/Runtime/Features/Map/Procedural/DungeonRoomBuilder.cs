@@ -4,6 +4,47 @@ using UnityEngine.Tilemaps;
 
 /// <summary>
 /// 책임:
+/// - 같은 DungeonRoomBuilder가 런타임 전체 구현과 안전한 시각 미리보기를 구분해 실행하도록 생성 범위를 지정한다.
+/// - 타일/복도 연결 규칙은 공유하되 문과 게임플레이 오브젝트의 생성 여부를 명시적으로 전달한다.
+/// </summary>
+public readonly struct DungeonBuildOptions
+{
+    public bool BuildConnectedDoors { get; }
+    public bool BuildGameplayObjects { get; }
+
+    public static DungeonBuildOptions Full => new(true, true);
+    public static DungeonBuildOptions VisualOnly => new(false, false);
+
+    public DungeonBuildOptions(bool buildConnectedDoors, bool buildGameplayObjects)
+    {
+        BuildConnectedDoors = buildConnectedDoors;
+        BuildGameplayObjects = buildGameplayObjects;
+    }
+}
+
+/// <summary>
+/// 책임 : 재사용 RoomTemplate의 room Id·slot Id를 현재 씬의 SceneConnectionSO 한쪽 endpoint에 결합한다.
+/// </summary>
+[System.Serializable]
+public struct ProceduralRoomTravelBinding
+{
+    [SerializeField] private string roomId;
+    [SerializeField] private string slotId;
+    [SerializeField] private SceneConnectionSO connection;
+    [SerializeField] private SceneConnectionEndpointSide connectionSide;
+
+    public string RoomId => roomId;
+    public string SlotId => slotId;
+    public SceneConnectionSO Connection => connection;
+    public SceneConnectionEndpointSide ConnectionSide => connectionSide;
+    public bool IsConfigured =>
+        !string.IsNullOrWhiteSpace(roomId) &&
+        !string.IsNullOrWhiteSpace(slotId) &&
+        connection != null;
+}
+
+/// <summary>
+/// 책임:
 /// - DungeonLayoutResult의 배치 좌표에 각 방과 연결 복도의 Floor/Wall 타일, 런타임 오브젝트를 구현한다.
 /// - 몬스터 배치는 기존 MonsterSpawner를 경유하고 상자·포털·프롭은 프리팹 인스턴스로 생성한다.
 /// - 몬스터 배치가 지정한 상자 Placement Id를 기존 MonsterSpawnRequest의 Kill Lock 연결로 해석한다.
@@ -11,6 +52,7 @@ using UnityEngine.Tilemaps;
 /// - 모든 2칸 소켓을 Wall 타일과 전용 물리 Collider로 닫은 뒤 연결이 확정된 소켓만 개방한다.
 /// - 개방한 두 소켓 사이에 연결별 가변 길이의 2칸 폭 직선 복도를 만들고 양쪽 소켓 경계에 비영구 문을 하나씩 생성한다.
 /// - 테마 씬에서 추출한 바닥/벽 변형 타일을 레이아웃 Seed와 셀 좌표로 결정해 같은 맵을 항상 같은 모습으로 구현한다.
+/// - 방 템플릿의 이동 슬롯을 씬별 연결 binding과 결합해 상호작용·trigger·도착 전용 endpoint로 구현한다.
 /// - 전투 잠금 정책이 붙기 전 프로토타입에서는 생성 문을 열린 상태로 시작할 수 있게 한다.
 /// </summary>
 [DisallowMultipleComponent]
@@ -37,6 +79,10 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     [Header("Room Objects")]
     [SerializeField] private Transform generatedObjectRoot;
 
+    [Header("Travel Endpoints")]
+    [SerializeField] private Transform generatedTravelEndpointRoot;
+    [SerializeField] private List<ProceduralRoomTravelBinding> travelEndpointBindings = new();
+
     [Header("Room Encounters")]
     [SerializeField] private Transform generatedEncounterRoot;
 
@@ -44,6 +90,9 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     private readonly List<BoxCollider2D> generatedSocketBlockers = new();
     private readonly Dictionary<long, BoxCollider2D> generatedSocketBlockersByEndpoint = new();
     private readonly List<GameObject> generatedRoomObjects = new();
+    private readonly Dictionary<string, GameObject> generatedRoomObjectsByStateId =
+        new(System.StringComparer.Ordinal);
+    private readonly List<SceneTravelEndpoint> generatedTravelEndpoints = new();
     private readonly List<MonsterSpawnRoomGroup> generatedRoomEncounterGroups = new();
     private readonly List<RoomDoorMonsterKillLock> generatedRoomDoorLocks = new();
     private readonly Dictionary<int, MonsterSpawnRoomGroup> generatedRoomGroupsByPlacement = new();
@@ -60,11 +109,13 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     public Transform GeneratedDoorRoot => generatedDoorRoot;
     public Transform GeneratedSocketBlockerRoot => generatedSocketBlockerRoot;
     public Transform GeneratedObjectRoot => generatedObjectRoot;
+    public Transform GeneratedTravelEndpointRoot => generatedTravelEndpointRoot;
     public Transform GeneratedEncounterRoot => generatedEncounterRoot;
     public bool OpenConnectedDoorsInitially => openConnectedDoorsInitially;
     public IReadOnlyList<DoorObject> GeneratedDoors => generatedDoors;
     public IReadOnlyList<BoxCollider2D> GeneratedSocketBlockers => generatedSocketBlockers;
     public IReadOnlyList<GameObject> GeneratedRoomObjects => generatedRoomObjects;
+    public IReadOnlyList<SceneTravelEndpoint> GeneratedTravelEndpoints => generatedTravelEndpoints;
     public IReadOnlyList<MonsterSpawnRoomGroup> GeneratedRoomEncounterGroups => generatedRoomEncounterGroups;
     public IReadOnlyList<RoomDoorMonsterKillLock> GeneratedRoomDoorLocks => generatedRoomDoorLocks;
 
@@ -127,6 +178,11 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         generatedObjectRoot = objectRoot;
     }
 
+    public void EditorAssignTravelEndpointRoot(Transform endpointRoot)
+    {
+        generatedTravelEndpointRoot = endpointRoot;
+    }
+
     public void EditorAssignEncounterRoot(Transform encounterRoot)
     {
         generatedEncounterRoot = encounterRoot;
@@ -143,7 +199,74 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         return hasGroup && hasArea && roomGroup != null && roomArea != null;
     }
 
+    /// <summary>
+    /// 책임 : 현재 생성 오브젝트를 안정적인 방 배치/오브젝트 배치 Id 기준의 런 보존 DTO로 캡처한다.
+    /// </summary>
+    public List<DungeonObjectRuntimeStateData> CaptureGeneratedObjectStates()
+    {
+        var states = new List<DungeonObjectRuntimeStateData>(generatedRoomObjectsByStateId.Count);
+        foreach (KeyValuePair<string, GameObject> pair in generatedRoomObjectsByStateId)
+        {
+            GameObject instance = pair.Value;
+            TreasureChest chest = instance != null
+                ? instance.GetComponentInChildren<TreasureChest>(includeInactive: true)
+                : null;
+            states.Add(new DungeonObjectRuntimeStateData
+            {
+                stateId = pair.Key,
+                isPresent = instance != null,
+                isActive = instance != null && instance.activeSelf,
+                isChestOpened = chest != null && chest.IsOpened,
+                chestLoot = chest != null && chest.IsOpened
+                    ? chest.CaptureDungeonLootState()
+                    : new List<DungeonChestLootRuntimeStateData>()
+            });
+        }
+
+        return states;
+    }
+
+    /// <summary>
+    /// 책임 : 보존된 생존·활성·상자 개봉 상태를 같은 seed로 다시 생성된 오브젝트에 적용한다.
+    /// </summary>
+    public void RestoreGeneratedObjectStates(IReadOnlyList<DungeonObjectRuntimeStateData> states)
+    {
+        if (states == null)
+            return;
+
+        for (int i = 0; i < states.Count; i++)
+        {
+            DungeonObjectRuntimeStateData state = states[i];
+            if (state == null || string.IsNullOrWhiteSpace(state.stateId) ||
+                !generatedRoomObjectsByStateId.TryGetValue(state.stateId, out GameObject instance) ||
+                instance == null)
+            {
+                continue;
+            }
+
+            if (!state.isPresent)
+            {
+                if (Application.isPlaying)
+                    Destroy(instance);
+                else
+                    DestroyImmediate(instance);
+                continue;
+            }
+
+            TreasureChest chest = instance.GetComponentInChildren<TreasureChest>(includeInactive: true);
+            if (state.isChestOpened && chest != null)
+                chest.RestoreOpenedStateForDungeon(state.chestLoot);
+
+            instance.SetActive(state.isActive);
+        }
+    }
+
     public bool TryBuild(DungeonLayoutResult layout)
+    {
+        return TryBuild(layout, DungeonBuildOptions.Full);
+    }
+
+    public bool TryBuild(DungeonLayoutResult layout, DungeonBuildOptions options)
     {
         if (layout == null)
         {
@@ -163,7 +286,17 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             return false;
         }
 
-        if (layout.Connections.Count > 0 && connectedDoorPrefab == null)
+        if (options.BuildGameplayObjects && !options.BuildConnectedDoors)
+        {
+            Debug.LogError(
+                "DungeonRoomBuilder gameplay objects require connected doors for room encounter locks.",
+                this);
+            return false;
+        }
+
+        if (options.BuildConnectedDoors &&
+            layout.Connections.Count > 0 &&
+            connectedDoorPrefab == null)
         {
             Debug.LogError("DungeonRoomBuilder requires a connected Door prefab.", this);
             return false;
@@ -199,7 +332,11 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         for (int i = 0; i < layout.Connections.Count; i++)
         {
             DungeonSocketConnection connection = layout.Connections[i];
-            if (!TryBuildConnection(layout, connection, i))
+            if (!TryBuildConnection(
+                    layout,
+                    connection,
+                    i,
+                    options.BuildConnectedDoors))
             {
                 ClearGeneratedContent();
                 return false;
@@ -212,13 +349,10 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             return false;
         }
 
-        if (!TryBuildRoomEncounters(layout))
-        {
-            ClearGeneratedContent();
-            return false;
-        }
-
-        if (!TryBuildRoomObjects(layout))
+        if (options.BuildGameplayObjects &&
+            (!TryBuildRoomEncounters(layout) ||
+             !TryBuildRoomObjects(layout) ||
+             !TryBuildTravelEndpoints(layout)))
         {
             ClearGeneratedContent();
             return false;
@@ -389,6 +523,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         ClearGeneratedDoors();
         ClearGeneratedSocketBlockers();
         ClearGeneratedRoomObjects();
+        ClearGeneratedTravelEndpoints();
     }
 
     public void ClearGeneratedTiles()
@@ -438,6 +573,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     public void ClearGeneratedRoomObjects()
     {
         generatedRoomObjects.Clear();
+        generatedRoomObjectsByStateId.Clear();
 
         if (generatedObjectRoot == null)
             return;
@@ -445,6 +581,23 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         for (int i = generatedObjectRoot.childCount - 1; i >= 0; i--)
         {
             GameObject child = generatedObjectRoot.GetChild(i).gameObject;
+            if (Application.isPlaying)
+                Destroy(child);
+            else
+                DestroyImmediate(child);
+        }
+    }
+
+    public void ClearGeneratedTravelEndpoints()
+    {
+        generatedTravelEndpoints.Clear();
+
+        if (generatedTravelEndpointRoot == null)
+            return;
+
+        for (int i = generatedTravelEndpointRoot.childCount - 1; i >= 0; i--)
+        {
+            GameObject child = generatedTravelEndpointRoot.GetChild(i).gameObject;
             if (Application.isPlaying)
                 Destroy(child);
             else
@@ -747,10 +900,199 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             }
 
             for (int objectIndex = 0; objectIndex < roomInstances.Length; objectIndex++)
+            {
                 generatedRoomObjects.Add(roomInstances[objectIndex]);
+                generatedRoomObjectsByStateId[CreateRuntimeStateId(
+                    roomPlacement.PlacementId,
+                    objectPlacements[objectIndex].placementId)] = roomInstances[objectIndex];
+            }
         }
 
         return true;
+    }
+
+    private static string CreateRuntimeStateId(int roomPlacementId, string objectPlacementId)
+    {
+        return $"{roomPlacementId}:{objectPlacementId}";
+    }
+
+    private bool TryBuildTravelEndpoints(DungeonLayoutResult layout)
+    {
+        for (int roomIndex = 0; roomIndex < layout.Rooms.Count; roomIndex++)
+        {
+            DungeonRoomPlacement roomPlacement = layout.Rooms[roomIndex];
+            List<RoomTravelEndpointPlacementData> placements =
+                roomPlacement.Template.BuildData.travelEndpointPlacements;
+            if (placements == null || placements.Count == 0)
+                continue;
+
+            var slotIds = new HashSet<string>(System.StringComparer.Ordinal);
+            for (int placementIndex = 0; placementIndex < placements.Count; placementIndex++)
+            {
+                RoomTravelEndpointPlacementData placement = placements[placementIndex];
+                if (string.IsNullOrWhiteSpace(placement.slotId) || !slotIds.Add(placement.slotId))
+                {
+                    Debug.LogError(
+                        $"Room '{roomPlacement.Template.name}' has an empty or duplicate travel slot Id '{placement.slotId}'.",
+                        roomPlacement.Template);
+                    return false;
+                }
+
+                if (!TryBuildTravelEndpoint(roomPlacement, placement, out SceneTravelEndpoint endpoint))
+                    return false;
+
+                generatedTravelEndpoints.Add(endpoint);
+            }
+        }
+
+        return true;
+    }
+
+    private bool TryBuildTravelEndpoint(
+        DungeonRoomPlacement roomPlacement,
+        RoomTravelEndpointPlacementData placement,
+        out SceneTravelEndpoint endpoint)
+    {
+        endpoint = null;
+        Vector2Int worldCell = roomPlacement.Origin + placement.localCell;
+        Vector3Int tileCell = new(worldCell.x, worldCell.y, 0);
+        if (!floorTilemap.HasTile(tileCell))
+        {
+            Debug.LogError(
+                $"Room '{roomPlacement.Template.name}' travel slot '{placement.slotId}' requires a Floor tile at {placement.localCell}.",
+                roomPlacement.Template);
+            return false;
+        }
+
+        GridLayout grid = floorTilemap.layoutGrid;
+        Vector3 worldOffset = grid != null
+            ? grid.transform.TransformVector(new Vector3(placement.localOffset.x, placement.localOffset.y, 0f))
+            : new Vector3(placement.localOffset.x, placement.localOffset.y, 0f);
+        Vector3 worldPosition = floorTilemap.GetCellCenterWorld(tileCell) + worldOffset;
+        Quaternion worldRotation = (grid != null ? grid.transform.rotation : Quaternion.identity) *
+                                   Quaternion.Euler(0f, 0f, placement.localRotationDegrees);
+        Transform endpointRoot = ResolveGeneratedTravelEndpointRoot();
+        GameObject instance = placement.mediumPrefab != null
+            ? Instantiate(placement.mediumPrefab, worldPosition, worldRotation, endpointRoot)
+            : new GameObject();
+
+        if (placement.mediumPrefab == null)
+        {
+            instance.name = $"TravelEndpoint_{roomPlacement.PlacementId}_{placement.slotId}";
+            instance.transform.SetParent(endpointRoot, false);
+            instance.transform.SetPositionAndRotation(worldPosition, worldRotation);
+        }
+        else
+        {
+            instance.name = $"TravelEndpoint_{roomPlacement.PlacementId}_{placement.slotId}_{placement.mediumPrefab.name}";
+        }
+
+        instance.transform.localScale = placement.localScale == Vector3.zero
+            ? placement.mediumPrefab != null ? placement.mediumPrefab.transform.localScale : Vector3.one
+            : placement.localScale;
+
+        endpoint = instance.GetComponentInChildren<SceneTravelEndpoint>(includeInactive: true);
+        if (endpoint == null)
+            endpoint = instance.AddComponent<SceneTravelEndpoint>();
+        endpoint.ConfigureRuntimeSlot(placement.slotId);
+        ConfigureTravelMedium(endpoint.gameObject, placement.kind);
+
+        ProceduralRoomTravelBinding binding = FindTravelBinding(
+            roomPlacement.Template.LayoutData.roomId,
+            placement.slotId);
+        if (!binding.IsConfigured)
+        {
+            SetTravelMediumEnabled(endpoint.gameObject, false);
+            Debug.LogWarning(
+                $"[DungeonRoomBuilder] Travel slot '{roomPlacement.Template.LayoutData.roomId}:{placement.slotId}' " +
+                "has no scene binding and will remain inactive.",
+                this);
+            return true;
+        }
+
+        if (endpoint.BindRuntime(binding.Connection, binding.ConnectionSide))
+            return true;
+
+        Debug.LogError(
+            $"[DungeonRoomBuilder] Failed to bind travel slot '{binding.RoomId}:{binding.SlotId}' " +
+            $"to connection '{binding.Connection.name}'. Check the connection side scene name and duplicate endpoints.",
+            this);
+        return false;
+    }
+
+    private static void SetTravelMediumEnabled(GameObject endpointObject, bool enabled)
+    {
+        if (endpointObject == null)
+            return;
+
+        SceneTravelInteractable interactable = endpointObject.GetComponent<SceneTravelInteractable>();
+        if (interactable != null)
+            interactable.enabled = enabled;
+
+        SceneTravelTrigger2D trigger = endpointObject.GetComponent<SceneTravelTrigger2D>();
+        if (trigger != null)
+            trigger.enabled = enabled;
+    }
+
+    private ProceduralRoomTravelBinding FindTravelBinding(string roomId, string slotId)
+    {
+        if (travelEndpointBindings == null)
+            return default;
+
+        for (int i = 0; i < travelEndpointBindings.Count; i++)
+        {
+            ProceduralRoomTravelBinding binding = travelEndpointBindings[i];
+            if (string.Equals(binding.RoomId, roomId, System.StringComparison.Ordinal) &&
+                string.Equals(binding.SlotId, slotId, System.StringComparison.Ordinal))
+            {
+                return binding;
+            }
+        }
+
+        return default;
+    }
+
+    private static void ConfigureTravelMedium(GameObject endpointObject, RoomTravelEndpointKind kind)
+    {
+        if (endpointObject == null)
+            return;
+
+        SceneTravelInteractable interactable = endpointObject.GetComponent<SceneTravelInteractable>();
+        SceneTravelTrigger2D trigger = endpointObject.GetComponent<SceneTravelTrigger2D>();
+        switch (kind)
+        {
+            case RoomTravelEndpointKind.Interaction:
+                interactable ??= endpointObject.AddComponent<SceneTravelInteractable>();
+                interactable.enabled = true;
+                if (trigger != null)
+                    trigger.enabled = false;
+                EnsureTravelTriggerCollider(endpointObject);
+                break;
+
+            case RoomTravelEndpointKind.Trigger:
+                trigger ??= endpointObject.AddComponent<SceneTravelTrigger2D>();
+                trigger.enabled = true;
+                if (interactable != null)
+                    interactable.enabled = false;
+                EnsureTravelTriggerCollider(endpointObject);
+                break;
+
+            case RoomTravelEndpointKind.ArrivalOnly:
+                if (interactable != null)
+                    interactable.enabled = false;
+                if (trigger != null)
+                    trigger.enabled = false;
+                break;
+        }
+    }
+
+    private static void EnsureTravelTriggerCollider(GameObject endpointObject)
+    {
+        Collider2D collider = endpointObject.GetComponent<Collider2D>();
+        if (collider == null)
+            collider = endpointObject.AddComponent<BoxCollider2D>();
+
+        collider.isTrigger = true;
     }
 
     private bool TryValidateRoomObjectPlacements(
@@ -964,7 +1306,8 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     private bool TryBuildConnection(
         DungeonLayoutResult layout,
         DungeonSocketConnection connection,
-        int connectionIndex)
+        int connectionIndex,
+        bool buildConnectedDoors)
     {
         if (!TryGetPlacedSocket(
                 layout,
@@ -1025,6 +1368,9 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
                 this);
             return false;
         }
+
+        if (!buildConnectedDoors)
+            return true;
 
         Transform doorRoot = ResolveGeneratedDoorRoot();
         Vector3 firstCenter = GetSocketWorldCenter(firstCell, firstSocket);
@@ -1255,6 +1601,17 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         root.transform.SetParent(transform, false);
         generatedObjectRoot = root.transform;
         return generatedObjectRoot;
+    }
+
+    private Transform ResolveGeneratedTravelEndpointRoot()
+    {
+        if (generatedTravelEndpointRoot != null)
+            return generatedTravelEndpointRoot;
+
+        GameObject root = new("GeneratedTravelEndpoints");
+        root.transform.SetParent(transform, false);
+        generatedTravelEndpointRoot = root.transform;
+        return generatedTravelEndpointRoot;
     }
 
     private Transform ResolveGeneratedEncounterRoot()

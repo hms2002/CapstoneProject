@@ -9,22 +9,56 @@ using UnityEngine.Tilemaps;
 /// - 절차 생성용 방 조각 authoring 루트, 2칸 연결 소켓, 런타임 오브젝트 배치를 빠르게 만든다.
 /// - Floor/Wall Tilemap과 몬스터·상자·포털·프롭 배치를 RoomTemplateSO로 bake하고 다시 편집 상태로 복원한다.
 /// - 타일 페인팅은 Unity 기본 Tile Palette에 맡기고, 이 창은 생성/검증/데이터화 흐름만 담당한다.
+/// - 기획자가 테마 라이브러리에서 방을 탐색하고 임시 작업 공간에서 안전하게 편집한 뒤 검증·등록하게 한다.
+/// - 실제 DungeonLayoutAssembler와 시각 전용 DungeonRoomBuilder를 사용해 저장 전 방을 포함한 동적 맵을 미리 보여준다.
 /// </summary>
 public sealed class RoomPieceEditorWindow : EditorWindow
 {
-    private const string DefaultOutputFolder = "Assets/_Project/Data/Dungeon/Rooms";
+    private enum AuthoringStep
+    {
+        Basic,
+        Tiles,
+        Sockets,
+        Objects,
+        Publish,
+        Preview
+    }
+
     private string newRoomId = "Room_New";
     private Vector2Int newRoomSize = new(12, 8);
     private RoomType newRoomType = RoomType.Combat;
     private int newDifficultyTier;
     private float newSelectionWeight = 1f;
-    private string outputFolder = DefaultOutputFolder;
     [SerializeField] private RoomTemplateSO templateToLoad;
+    [SerializeField] private RoomThemeLibrarySO selectedLibrary;
     [SerializeField] private RoomObjectKind objectKindToPlace = RoomObjectKind.Prop;
     [SerializeField] private GameObject objectPrefabToPlace;
-    private RoomPieceAuthoring selectedAuthoring;
+    [SerializeField] private RoomTravelEndpointKind travelEndpointKindToPlace = RoomTravelEndpointKind.Interaction;
+    [SerializeField] private GameObject travelMediumPrefabToPlace;
+    [SerializeField] private RoomPieceAuthoring selectedAuthoring;
+    [SerializeField] private AuthoringStep currentStep;
+    [SerializeField] private bool registerWithSelectedLibrary = true;
+    [SerializeField] private bool filterLibraryByRoomType;
+    [SerializeField] private RoomType libraryRoomTypeFilter = RoomType.Combat;
+    [SerializeField] private string librarySearch = string.Empty;
+    [SerializeField] private bool socketPlacementMode;
+    [SerializeField] private bool previewIncludeCurrentRoom = true;
+    [SerializeField] private DungeonLayoutPolicySO previewLayoutPolicy;
+    [SerializeField] private int previewSeed = 12345;
+    [SerializeField] private int previewRoomCount = 8;
+    [SerializeField] private bool previewIncludeBossRoom = true;
+    [SerializeField] private int previewMaxPlacementAttemptsPerRoom = 128;
+    [SerializeField] private int previewMinimumCorridorLength = 4;
+    [SerializeField] private float previewCorridorLengthPerRoomCell = 0.35f;
+    [SerializeField] private int previewCorridorLengthVariation = 8;
+    [SerializeField] private TileBase previewCorridorFloorTile;
+    [SerializeField] private TileBase previewCorridorWallTile;
+    [SerializeField] private bool previewAdvancedSettings;
     private Vector2 scroll;
+    private double nextAutomaticValidationTime;
     private readonly List<string> validationMessages = new();
+    private string previewStatusMessage = string.Empty;
+    private MessageType previewStatusType = MessageType.None;
 
     [MenuItem("Tools/Dungeon/Room Piece Editor")]
     public static void Open()
@@ -35,6 +69,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     private void OnEnable()
     {
         SceneView.duringSceneGui += DrawSocketSceneHandles;
+        selectedAuthoring = RoomAuthoringWorkspace.FindAuthoring();
     }
 
     private void OnDisable()
@@ -42,31 +77,294 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         SceneView.duringSceneGui -= DrawSocketSceneHandles;
     }
 
+    private void OnInspectorUpdate()
+    {
+        if (EditorApplication.timeSinceStartup < nextAutomaticValidationTime)
+            return;
+
+        nextAutomaticValidationTime = EditorApplication.timeSinceStartup + 0.5d;
+        selectedAuthoring = ResolveSelectedAuthoring();
+        if (selectedAuthoring != null)
+            ValidateSelectedRoomPiece(showDialog: false);
+    }
+
     private void OnGUI()
     {
         scroll = EditorGUILayout.BeginScrollView(scroll);
-        DrawCreateSection();
-        EditorGUILayout.Space(10f);
-        DrawLoadSection();
-        EditorGUILayout.Space(10f);
-        DrawSelectionSection();
-        EditorGUILayout.Space(10f);
-        DrawBakeSection();
+        DrawWorkspaceSection();
+        EditorGUILayout.Space(8f);
+        DrawLibrarySection();
+        EditorGUILayout.Space(8f);
+
+        selectedAuthoring = ResolveSelectedAuthoring();
+        if (selectedAuthoring == null)
+        {
+            DrawCreateSection();
+            EditorGUILayout.Space(10f);
+            DrawLoadSection();
+            EditorGUILayout.Space(10f);
+            DrawLibraryBrowser();
+        }
+        else
+        {
+            DrawAuthoringHeader();
+            DrawStepToolbar();
+            EditorGUILayout.Space(8f);
+            switch (currentStep)
+            {
+                case AuthoringStep.Basic:
+                    DrawSelectionSection();
+                    EditorGUILayout.Space(8f);
+                    DrawLibraryBrowser();
+                    break;
+                case AuthoringStep.Tiles:
+                    DrawTileSection();
+                    break;
+                case AuthoringStep.Sockets:
+                    DrawSocketSection();
+                    break;
+                case AuthoringStep.Objects:
+                    DrawObjectSection();
+                    break;
+                case AuthoringStep.Publish:
+                    DrawBakeSection();
+                    break;
+                case AuthoringStep.Preview:
+                    DrawDungeonPreviewSection();
+                    break;
+            }
+
+            DrawValidationSummary();
+        }
+
         EditorGUILayout.EndScrollView();
+    }
+
+    private void DrawWorkspaceSection()
+    {
+        using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+        {
+            EditorGUILayout.LabelField("안전 작업 공간", EditorStyles.boldLabel);
+            if (RoomAuthoringWorkspace.IsOpen)
+            {
+                EditorGUILayout.HelpBox(
+                    "방 제작 오브젝트는 저장되지 않는 전용 additive 씬에 격리되어 있습니다. 현재 게임 씬은 변경하지 않습니다.",
+                    MessageType.Info);
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    if (GUILayout.Button("작업 공간 활성화"))
+                        RoomAuthoringWorkspace.Open();
+
+                    if (GUILayout.Button("작업 공간 닫기"))
+                    {
+                        if (RoomAuthoringWorkspace.Close(confirmDiscard: true))
+                        {
+                            RoomAuthoringDungeonPreview.Clear();
+                            selectedAuthoring = null;
+                            socketPlacementMode = false;
+                            validationMessages.Clear();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                EditorGUILayout.HelpBox(
+                    "새 방 생성이나 기존 방 편집을 시작하면 전용 임시 작업 공간이 자동으로 열립니다.",
+                    MessageType.None);
+                if (GUILayout.Button("빈 작업 공간 열기"))
+                    RoomAuthoringWorkspace.Open();
+            }
+        }
+    }
+
+    private void DrawLibrarySection()
+    {
+        if (Selection.activeObject is RoomThemeLibrarySO selectedThemeLibrary)
+            selectedLibrary = selectedThemeLibrary;
+
+        selectedLibrary = EditorGUILayout.ObjectField(
+            "테마 룸 라이브러리",
+            selectedLibrary,
+            typeof(RoomThemeLibrarySO),
+            false) as RoomThemeLibrarySO;
+
+        if (selectedLibrary == null)
+        {
+            EditorGUILayout.HelpBox(
+                "라이브러리를 선택하면 방 검색, 프리팹 추천과 저장 후 자동 등록을 사용할 수 있습니다.",
+                MessageType.Info);
+            return;
+        }
+
+        EditorGUILayout.LabelField(
+            "현재 테마",
+            $"{selectedLibrary.ThemeId} · 방 {selectedLibrary.Rooms.Count}개");
+    }
+
+    private void DrawAuthoringHeader()
+    {
+        using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+        {
+            EditorGUILayout.LabelField(
+                $"편집 중: {selectedAuthoring.RoomId}",
+                EditorStyles.boldLabel);
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.LabelField(
+                $"{selectedAuthoring.RoomType} · {selectedAuthoring.Size.x}×{selectedAuthoring.Size.y}",
+                GUILayout.MaxWidth(180f));
+        }
+    }
+
+    private void DrawStepToolbar()
+    {
+        string[] stepLabels =
+        {
+            "1. 기본",
+            "2. 타일",
+            "3. 출입구",
+            "4. 오브젝트",
+            "5. 검증·저장",
+            "6. 맵 미리보기"
+        };
+        AuthoringStep requestedStep =
+            (AuthoringStep)GUILayout.Toolbar((int)currentStep, stepLabels);
+        if (requestedStep != currentStep)
+        {
+            currentStep = requestedStep;
+            if (currentStep != AuthoringStep.Sockets)
+            {
+                socketPlacementMode = false;
+                SceneView.RepaintAll();
+            }
+        }
+    }
+
+    private void DrawLibraryBrowser()
+    {
+        EditorGUILayout.LabelField("라이브러리 방 목록", EditorStyles.boldLabel);
+        if (selectedLibrary == null)
+        {
+            EditorGUILayout.HelpBox("테마 룸 라이브러리를 먼저 선택하세요.", MessageType.Info);
+            return;
+        }
+
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            librarySearch = EditorGUILayout.TextField("검색", librarySearch ?? string.Empty);
+            filterLibraryByRoomType = EditorGUILayout.ToggleLeft(
+                "역할 필터",
+                filterLibraryByRoomType,
+                GUILayout.Width(80f));
+            using (new EditorGUI.DisabledScope(!filterLibraryByRoomType))
+            {
+                libraryRoomTypeFilter = (RoomType)EditorGUILayout.EnumPopup(
+                    libraryRoomTypeFilter,
+                    GUILayout.Width(100f));
+            }
+        }
+
+        RoomTemplateSO requestedTemplate = null;
+        bool duplicateRequested = false;
+        int visibleRoomCount = 0;
+        IReadOnlyList<RoomTemplateSO> rooms = selectedLibrary.Rooms;
+        for (int roomIndex = 0; roomIndex < rooms.Count; roomIndex++)
+        {
+            RoomTemplateSO room = rooms[roomIndex];
+            if (room == null || !MatchesLibraryFilter(room))
+                continue;
+
+            visibleRoomCount++;
+            RoomLayoutData layout = room.LayoutData;
+            int socketCount = layout.sockets != null ? layout.sockets.Count : 0;
+            int monsterCount = CountRoomObjects(room, RoomObjectKind.Monster);
+            using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+            {
+                EditorGUILayout.LabelField(
+                    $"{layout.roomId}  ·  {layout.roomType}  ·  " +
+                    $"{layout.size.x}×{layout.size.y}  ·  소켓 {socketCount}  ·  몬스터 {monsterCount}");
+                if (GUILayout.Button("편집", GUILayout.Width(48f)))
+                {
+                    requestedTemplate = room;
+                    duplicateRequested = false;
+                }
+
+                if (GUILayout.Button("복제", GUILayout.Width(48f)))
+                {
+                    requestedTemplate = room;
+                    duplicateRequested = true;
+                }
+            }
+        }
+
+        if (visibleRoomCount == 0)
+            EditorGUILayout.HelpBox("현재 검색 조건에 맞는 방이 없습니다.", MessageType.None);
+
+        if (requestedTemplate != null)
+        {
+            templateToLoad = requestedTemplate;
+            LoadTemplateForEditing(duplicateRequested);
+            GUIUtility.ExitGUI();
+        }
+    }
+
+    private bool MatchesLibraryFilter(RoomTemplateSO room)
+    {
+        if (filterLibraryByRoomType && room.LayoutData.roomType != libraryRoomTypeFilter)
+            return false;
+
+        if (string.IsNullOrWhiteSpace(librarySearch))
+            return true;
+
+        string roomId = room.LayoutData.roomId ?? string.Empty;
+        return roomId.IndexOf(librarySearch, System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+               room.name.IndexOf(librarySearch, System.StringComparison.OrdinalIgnoreCase) >= 0;
+    }
+
+    private static int CountRoomObjects(RoomTemplateSO room, RoomObjectKind kind)
+    {
+        List<RoomObjectPlacementData> placements = room != null
+            ? room.BuildData.objectPlacements
+            : null;
+        if (placements == null)
+            return 0;
+
+        int count = 0;
+        for (int placementIndex = 0; placementIndex < placements.Count; placementIndex++)
+        {
+            if (placements[placementIndex].kind == kind)
+                count++;
+        }
+
+        return count;
+    }
+
+    private void DrawValidationSummary()
+    {
+        EditorGUILayout.Space(10f);
+        if (validationMessages.Count == 0)
+        {
+            EditorGUILayout.HelpBox("자동 검증 통과 · 저장할 수 있습니다.", MessageType.Info);
+            return;
+        }
+
+        EditorGUILayout.HelpBox(
+            $"확인할 항목 {validationMessages.Count}개 · '검증·저장' 단계에서 자세히 볼 수 있습니다.",
+            MessageType.Warning);
     }
 
     private void DrawCreateSection()
     {
-        EditorGUILayout.LabelField("Create Room Piece", EditorStyles.boldLabel);
-        newRoomId = EditorGUILayout.TextField("Room Id", newRoomId);
-        newRoomType = (RoomType)EditorGUILayout.EnumPopup("Room Type", newRoomType);
-        newRoomSize = EditorGUILayout.Vector2IntField("Size", newRoomSize);
-        newDifficultyTier = EditorGUILayout.IntField("Difficulty Tier", Mathf.Max(0, newDifficultyTier));
-        newSelectionWeight = EditorGUILayout.FloatField("Selection Weight", Mathf.Max(0f, newSelectionWeight));
+        EditorGUILayout.LabelField("새 방 만들기", EditorStyles.boldLabel);
+        newRoomId = EditorGUILayout.TextField("방 ID", newRoomId);
+        newRoomType = (RoomType)EditorGUILayout.EnumPopup("방 역할", newRoomType);
+        newRoomSize = EditorGUILayout.Vector2IntField("예약 크기", newRoomSize);
+        newDifficultyTier = EditorGUILayout.IntField("난이도 단계", Mathf.Max(0, newDifficultyTier));
+        newSelectionWeight = EditorGUILayout.FloatField("등장 가중치", Mathf.Max(0f, newSelectionWeight));
 
         using (new EditorGUI.DisabledScope(string.IsNullOrWhiteSpace(newRoomId)))
         {
-            if (GUILayout.Button("Create Authoring Room Piece"))
+            if (GUILayout.Button("전용 작업 공간에서 새 방 만들기"))
                 CreateAuthoringRoomPiece();
         }
 
@@ -77,21 +375,27 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
     private void DrawLoadSection()
     {
-        EditorGUILayout.LabelField("Edit Existing Room Template", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("기존 방 직접 선택", EditorStyles.boldLabel);
 
         if (Selection.activeObject is RoomTemplateSO selectedTemplate)
             templateToLoad = selectedTemplate;
 
         templateToLoad = EditorGUILayout.ObjectField(
-            "Room Template",
+            "방 템플릿",
             templateToLoad,
             typeof(RoomTemplateSO),
             false) as RoomTemplateSO;
 
         using (new EditorGUI.DisabledScope(templateToLoad == null))
         {
-            if (GUILayout.Button("Load Template for Editing"))
-                LoadTemplateForEditing();
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button("원본 편집"))
+                    LoadTemplateForEditing(asDuplicate: false);
+
+                if (GUILayout.Button("복제해서 새 방 만들기"))
+                    LoadTemplateForEditing(asDuplicate: true);
+            }
         }
 
         EditorGUILayout.HelpBox(
@@ -101,9 +405,9 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
     private void DrawSelectionSection()
     {
-        EditorGUILayout.LabelField("Selected Room Piece", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("방 기본 정보", EditorStyles.boldLabel);
         selectedAuthoring = EditorGUILayout.ObjectField(
-            "Authoring",
+            "편집 대상",
             ResolveSelectedAuthoring(),
             typeof(RoomPieceAuthoring),
             true) as RoomPieceAuthoring;
@@ -116,42 +420,113 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         SerializedObject serializedAuthoring = new(selectedAuthoring);
         serializedAuthoring.Update();
-        EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("roomId"), new GUIContent("Room Id"));
-        EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("roomType"), new GUIContent("Room Type"));
-        EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("size"), new GUIContent("Size"));
+        EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("roomId"), new GUIContent("방 ID"));
+        EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("roomType"), new GUIContent("방 역할"));
+        EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("size"), new GUIContent("예약 크기"));
         EditorGUILayout.PropertyField(
             serializedAuthoring.FindProperty("difficultyTier"),
-            new GUIContent("Difficulty Tier"));
+            new GUIContent("난이도 단계"));
         EditorGUILayout.PropertyField(
             serializedAuthoring.FindProperty("selectionWeight"),
-            new GUIContent("Selection Weight"));
+            new GUIContent("등장 가중치"));
         serializedAuthoring.ApplyModifiedProperties();
 
         EditorGUILayout.ObjectField(
-            "Loaded Source",
+            "원본 템플릿",
             selectedAuthoring.SourceTemplate,
             typeof(RoomTemplateSO),
             false);
-        EditorGUILayout.ObjectField("Grid", selectedAuthoring.Grid, typeof(Grid), true);
-        EditorGUILayout.ObjectField("Floor", selectedAuthoring.FloorTilemap, typeof(Tilemap), true);
-        EditorGUILayout.ObjectField("Wall", selectedAuthoring.WallTilemap, typeof(Tilemap), true);
+        EditorGUILayout.HelpBox(
+            "예약 크기는 레이아웃 배치 충돌을 검사하는 직사각형 영역입니다. 실제 방 모양은 바닥 타일로 결정됩니다.",
+            MessageType.Info);
+    }
 
-        DrawSocketSection();
-        DrawObjectSection();
+    private void DrawTileSection()
+    {
+        EditorGUILayout.LabelField("바닥과 벽 제작", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox(
+            "Unity Tile Palette를 그대로 사용합니다. 아래 버튼으로 그릴 레이어를 선택한 뒤 Scene View에서 페인팅하세요.",
+            MessageType.Info);
 
-        if (GUILayout.Button("Validate Selected Room Piece"))
-            ValidateSelectedRoomPiece(showDialog: true);
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            using (new EditorGUI.DisabledScope(selectedAuthoring.FloorTilemap == null))
+            {
+                if (GUILayout.Button("바닥 레이어 선택"))
+                    SelectAndFrame(selectedAuthoring.FloorTilemap);
+            }
+
+            using (new EditorGUI.DisabledScope(selectedAuthoring.WallTilemap == null))
+            {
+                if (GUILayout.Button("벽 레이어 선택"))
+                    SelectAndFrame(selectedAuthoring.WallTilemap);
+            }
+        }
+
+        int floorCount = CountTiles(
+            selectedAuthoring.FloorTilemap,
+            selectedAuthoring.Size,
+            out int floorOutsideCount);
+        int wallCount = CountTiles(
+            selectedAuthoring.WallTilemap,
+            selectedAuthoring.Size,
+            out int wallOutsideCount);
+
+        EditorGUILayout.LabelField("방 내부 바닥 타일", floorCount.ToString());
+        EditorGUILayout.LabelField("방 내부 벽 타일", wallCount.ToString());
+        if (floorOutsideCount + wallOutsideCount > 0)
+        {
+            EditorGUILayout.HelpBox(
+                $"예약 영역 밖 타일이 {floorOutsideCount + wallOutsideCount}개 있습니다. 저장 데이터에서는 제외됩니다.",
+                MessageType.Warning);
+        }
+
+        EditorGUILayout.HelpBox(
+            "소켓 위치도 샘플 데이터에서는 Floor와 Wall을 모두 칠해 막아 두세요. 실제 연결 시 DungeonRoomBuilder가 해당 벽만 엽니다.",
+            MessageType.None);
+    }
+
+    private static void SelectAndFrame(Object target)
+    {
+        if (target == null)
+            return;
+
+        Selection.activeObject = target;
+        if (SceneView.lastActiveSceneView != null)
+            SceneView.lastActiveSceneView.FrameSelected();
     }
 
     private void DrawSocketSection()
     {
         EditorGUILayout.Space(6f);
-        EditorGUILayout.LabelField("Connection Sockets", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("출입구 소켓", EditorStyles.boldLabel);
 
         using (new EditorGUI.DisabledScope(selectedAuthoring.Grid == null))
         {
-            if (GUILayout.Button("Add Connection Socket"))
-                AddConnectionSocket();
+            bool requestedPlacementMode = GUILayout.Toggle(
+                socketPlacementMode,
+                socketPlacementMode
+                    ? "Scene View 클릭 배치 중 · Esc로 종료"
+                    : "Scene View에서 경계를 클릭해 소켓 배치",
+                "Button");
+            if (requestedPlacementMode != socketPlacementMode)
+            {
+                socketPlacementMode = requestedPlacementMode;
+                SceneView.RepaintAll();
+            }
+
+            EditorGUILayout.LabelField("빠른 중앙 배치", EditorStyles.miniBoldLabel);
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button("위"))
+                    AddConnectionSocket(RoomSocketDirection.Up);
+                if (GUILayout.Button("오른쪽"))
+                    AddConnectionSocket(RoomSocketDirection.Right);
+                if (GUILayout.Button("아래"))
+                    AddConnectionSocket(RoomSocketDirection.Down);
+                if (GUILayout.Button("왼쪽"))
+                    AddConnectionSocket(RoomSocketDirection.Left);
+            }
         }
 
         RoomSocketAuthoring[] sockets = GetSockets(selectedAuthoring);
@@ -192,26 +567,37 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                     EditorGUILayout.HelpBox("부모 RoomPieceAuthoring의 Grid를 찾을 수 없습니다.", MessageType.Error);
                 }
 
-                if (GUILayout.Button("Select Socket"))
-                    Selection.activeObject = socket.gameObject;
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    if (GUILayout.Button("Scene View에서 선택"))
+                        Selection.activeObject = socket.gameObject;
+
+                    if (GUILayout.Button("삭제"))
+                    {
+                        Undo.DestroyObjectImmediate(socket.gameObject);
+                        SceneView.RepaintAll();
+                        Repaint();
+                        return;
+                    }
+                }
             }
         }
 
         EditorGUILayout.HelpBox(
-            "소켓은 표시된 시작 셀에서 오른쪽(Up/Down) 또는 위쪽(Left/Right)으로 2칸을 차지합니다. " +
-            "소켓을 선택하면 Scene 뷰에 이동 핸들이 나타납니다.",
+            "소켓은 경계의 2칸을 차지하며 방향은 방 바깥쪽을 향합니다. 소켓을 선택하면 Scene View에 이동 핸들이 나타납니다.",
             MessageType.Info);
     }
 
     private void DrawObjectSection()
     {
         EditorGUILayout.Space(8f);
-        EditorGUILayout.LabelField("Room Objects", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("방 오브젝트", EditorStyles.boldLabel);
         objectKindToPlace = (RoomObjectKind)EditorGUILayout.EnumPopup(
-            "Object Kind",
+            "종류",
             objectKindToPlace);
+        DrawRecommendedPrefabPopup();
         objectPrefabToPlace = EditorGUILayout.ObjectField(
-            "Prefab",
+            "배치할 프리팹",
             objectPrefabToPlace,
             typeof(GameObject),
             false) as GameObject;
@@ -219,9 +605,11 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         using (new EditorGUI.DisabledScope(
                    selectedAuthoring.Grid == null || objectPrefabToPlace == null))
         {
-            if (GUILayout.Button("Place Object Prefab"))
+            if (GUILayout.Button("방 중앙에 배치 후 Scene View에서 이동"))
                 AddRoomObject();
         }
+
+        DrawTravelEndpointSection();
 
         RoomObjectAuthoring[] objects = GetRoomObjects(selectedAuthoring);
         if (objects.Length == 0)
@@ -283,6 +671,142 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             "Transform을 이동/회전/크기 조절하면 Grid 셀, 셀 중심 오프셋, 로컬 회전과 크기로 저장됩니다. " +
             "Monster는 런타임에서 MonsterSpawner를 통해 생성되며 선택한 Kill Lock 상자 연결도 스폰 요청으로 전달됩니다.",
             MessageType.Info);
+    }
+
+    private void DrawTravelEndpointSection()
+    {
+        EditorGUILayout.Space(10f);
+        EditorGUILayout.LabelField("씬 이동 Endpoint 슬롯", EditorStyles.boldLabel);
+        travelEndpointKindToPlace = (RoomTravelEndpointKind)EditorGUILayout.EnumPopup(
+            "매개체 방식",
+            travelEndpointKindToPlace);
+        travelMediumPrefabToPlace = EditorGUILayout.ObjectField(
+            "매개체 프리팹 (선택)",
+            travelMediumPrefabToPlace,
+            typeof(GameObject),
+            false) as GameObject;
+
+        using (new EditorGUI.DisabledScope(selectedAuthoring.Grid == null))
+        {
+            if (GUILayout.Button("이동 슬롯을 방 중앙에 추가"))
+                AddTravelEndpoint();
+        }
+
+        RoomTravelEndpointAuthoring[] endpoints = GetTravelEndpoints(selectedAuthoring);
+        for (int i = 0; i < endpoints.Length; i++)
+        {
+            RoomTravelEndpointAuthoring endpoint = endpoints[i];
+            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            {
+                SerializedObject serializedEndpoint = new(endpoint);
+                serializedEndpoint.Update();
+                EditorGUILayout.PropertyField(
+                    serializedEndpoint.FindProperty("slotId"),
+                    new GUIContent("Slot Id"));
+                EditorGUILayout.PropertyField(
+                    serializedEndpoint.FindProperty("kind"),
+                    new GUIContent("Medium Kind"));
+                EditorGUILayout.PropertyField(
+                    serializedEndpoint.FindProperty("mediumPrefab"),
+                    new GUIContent("Medium Prefab"));
+                serializedEndpoint.ApplyModifiedProperties();
+
+                if (endpoint.TryGetPlacementData(out RoomTravelEndpointPlacementData placement))
+                {
+                    EditorGUILayout.Vector2IntField("Local Cell", placement.localCell);
+                    EditorGUILayout.Vector2Field("Cell Offset", placement.localOffset);
+                    EditorGUILayout.FloatField("Rotation", placement.localRotationDegrees);
+                }
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    if (GUILayout.Button("Select"))
+                        Selection.activeObject = endpoint.gameObject;
+
+                    if (GUILayout.Button("Delete"))
+                    {
+                        Undo.DestroyObjectImmediate(endpoint.gameObject);
+                        RoomAuthoringWorkspace.MarkDirty();
+                        SceneView.RepaintAll();
+                        Repaint();
+                        return;
+                    }
+                }
+            }
+        }
+
+        EditorGUILayout.HelpBox(
+            "방 템플릿에는 Slot Id와 배치만 저장됩니다. 실제 SceneConnectionSO와 A/B 방향은 " +
+            "각 복도 씬의 DungeonRoomBuilder Travel Endpoint Bindings에서 연결하므로 방 데이터를 다른 테마에도 재사용할 수 있습니다.",
+            MessageType.Info);
+    }
+
+    private void DrawRecommendedPrefabPopup()
+    {
+        List<GameObject> recommendedPrefabs = CollectLibraryPrefabs(objectKindToPlace);
+        if (recommendedPrefabs.Count == 0)
+        {
+            if (selectedLibrary != null)
+            {
+                EditorGUILayout.HelpBox(
+                    "이 라이브러리에서 같은 종류의 기존 프리팹을 찾지 못했습니다. 아래 필드에서 직접 선택할 수 있습니다.",
+                    MessageType.None);
+            }
+
+            return;
+        }
+
+        string[] displayNames = new string[recommendedPrefabs.Count + 1];
+        displayNames[0] = "라이브러리에서 선택...";
+        int selectedIndex = 0;
+        for (int prefabIndex = 0; prefabIndex < recommendedPrefabs.Count; prefabIndex++)
+        {
+            GameObject prefab = recommendedPrefabs[prefabIndex];
+            displayNames[prefabIndex + 1] = prefab.name;
+            if (prefab == objectPrefabToPlace)
+                selectedIndex = prefabIndex + 1;
+        }
+
+        int requestedIndex = EditorGUILayout.Popup(
+            "추천 프리팹",
+            selectedIndex,
+            displayNames);
+        if (requestedIndex > 0)
+            objectPrefabToPlace = recommendedPrefabs[requestedIndex - 1];
+    }
+
+    private List<GameObject> CollectLibraryPrefabs(RoomObjectKind kind)
+    {
+        List<GameObject> results = new();
+        if (selectedLibrary == null)
+            return results;
+
+        HashSet<GameObject> seen = new();
+        IReadOnlyList<RoomTemplateSO> rooms = selectedLibrary.Rooms;
+        for (int roomIndex = 0; roomIndex < rooms.Count; roomIndex++)
+        {
+            RoomTemplateSO room = rooms[roomIndex];
+            List<RoomObjectPlacementData> placements = room != null
+                ? room.BuildData.objectPlacements
+                : null;
+            if (placements == null)
+                continue;
+
+            for (int placementIndex = 0; placementIndex < placements.Count; placementIndex++)
+            {
+                RoomObjectPlacementData placement = placements[placementIndex];
+                if (placement.kind == kind &&
+                    placement.prefab != null &&
+                    IsPrefabCompatibleWithKind(placement.prefab, kind) &&
+                    seen.Add(placement.prefab))
+                {
+                    results.Add(placement.prefab);
+                }
+            }
+        }
+
+        results.Sort((left, right) => string.CompareOrdinal(left.name, right.name));
+        return results;
     }
 
     private static void DrawLinkedChestLockPopup(
@@ -392,27 +916,38 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
     private void DrawBakeSection()
     {
-        EditorGUILayout.LabelField("Save Room Template", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("검증과 저장", EditorStyles.boldLabel);
+
+        if (GUILayout.Button("지금 전체 검증"))
+            ValidateSelectedRoomPiece(showDialog: true);
+
+        registerWithSelectedLibrary = EditorGUILayout.ToggleLeft(
+            "저장 후 선택한 테마 라이브러리에 자동 등록",
+            registerWithSelectedLibrary);
+        if (registerWithSelectedLibrary && selectedLibrary == null)
+        {
+            EditorGUILayout.HelpBox(
+                "자동 등록을 사용하려면 상단에서 테마 룸 라이브러리를 선택하세요.",
+                MessageType.Warning);
+        }
 
         if (selectedAuthoring != null && selectedAuthoring.SourceTemplate != null)
         {
             EditorGUILayout.ObjectField(
-                "Apply Target",
+                "갱신할 원본",
                 selectedAuthoring.SourceTemplate,
                 typeof(RoomTemplateSO),
                 false);
 
-            if (GUILayout.Button("Apply Changes to Loaded RoomTemplateSO"))
+            if (GUILayout.Button("검증 후 원본 템플릿 갱신"))
                 ApplyChangesToLoadedTemplate();
 
             EditorGUILayout.Space(6f);
         }
 
-        outputFolder = EditorGUILayout.TextField("Output Folder", outputFolder);
-
         using (new EditorGUI.DisabledScope(selectedAuthoring == null))
         {
-            if (GUILayout.Button("Save as New RoomTemplateSO"))
+            if (GUILayout.Button("검증 후 새 RoomTemplateSO로 저장"))
                 SaveAsNewRoomTemplate();
         }
 
@@ -420,22 +955,248 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             return;
 
         EditorGUILayout.Space(4f);
-        EditorGUILayout.LabelField("Last Validation", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("검증 결과", EditorStyles.boldLabel);
         for (int i = 0; i < validationMessages.Count; i++)
             EditorGUILayout.HelpBox(validationMessages[i], MessageType.Warning);
     }
 
     private RoomPieceAuthoring ResolveSelectedAuthoring()
     {
-        if (Selection.activeGameObject == null)
-            return selectedAuthoring;
+        if (Selection.activeGameObject != null)
+        {
+            RoomPieceAuthoring selectionAuthoring =
+                Selection.activeGameObject.GetComponentInParent<RoomPieceAuthoring>();
+            if (selectionAuthoring != null &&
+                RoomAuthoringWorkspace.IsInWorkspace(selectionAuthoring.gameObject))
+            {
+                return selectionAuthoring;
+            }
+        }
 
-        RoomPieceAuthoring authoring = Selection.activeGameObject.GetComponentInParent<RoomPieceAuthoring>();
-        return authoring != null ? authoring : selectedAuthoring;
+        if (selectedAuthoring != null &&
+            RoomAuthoringWorkspace.IsInWorkspace(selectedAuthoring.gameObject))
+        {
+            return selectedAuthoring;
+        }
+
+        return RoomAuthoringWorkspace.FindAuthoring();
+    }
+
+    private void DrawDungeonPreviewSection()
+    {
+        EditorGUILayout.LabelField("절차 던전 동적 미리보기", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox(
+            "실제 DungeonLayoutAssembler로 방과 복도를 배치합니다. 타일은 실제 데이터로 만들고, 문과 게임플레이 오브젝트는 실행하지 않고 Scene View 표식으로만 보여줍니다.",
+            MessageType.Info);
+
+        previewIncludeCurrentRoom = EditorGUILayout.ToggleLeft(
+            "저장하지 않은 현재 편집 방 포함",
+            previewIncludeCurrentRoom);
+        if (previewIncludeCurrentRoom)
+        {
+            EditorGUILayout.HelpBox(
+                "원본 방을 편집 중이면 라이브러리의 저장본 대신 현재 작업 복사본을 임시로 사용합니다. 원본 에셋과 라이브러리는 변경하지 않습니다.",
+                MessageType.None);
+        }
+
+        previewLayoutPolicy = EditorGUILayout.ObjectField(
+            "레이아웃 정책",
+            previewLayoutPolicy,
+            typeof(DungeonLayoutPolicySO),
+            false) as DungeonLayoutPolicySO;
+        if (previewLayoutPolicy != null)
+        {
+            EditorGUILayout.HelpBox(
+                "그래프를 먼저 만든 뒤 보스 거리, 분기, 순환로와 필수 방 역할을 보장하는 탐색형 배치를 사용합니다.",
+                MessageType.None);
+        }
+
+        previewSeed = EditorGUILayout.IntField("시드", previewSeed);
+        previewIncludeBossRoom = EditorGUILayout.Toggle("보스 방 포함", previewIncludeBossRoom);
+        previewRoomCount = EditorGUILayout.IntField(
+            "방 개수",
+            Mathf.Max(previewIncludeBossRoom ? 2 : 1, previewRoomCount));
+
+        EditorGUILayout.Space(4f);
+        EditorGUILayout.LabelField("복도 타일", EditorStyles.miniBoldLabel);
+        previewCorridorFloorTile = EditorGUILayout.ObjectField(
+            "바닥 타일 오버라이드",
+            previewCorridorFloorTile,
+            typeof(TileBase),
+            false) as TileBase;
+        previewCorridorWallTile = EditorGUILayout.ObjectField(
+            "벽 타일 오버라이드",
+            previewCorridorWallTile,
+            typeof(TileBase),
+            false) as TileBase;
+        if (previewCorridorFloorTile == null || previewCorridorWallTile == null)
+        {
+            EditorGUILayout.HelpBox(
+                "비어 있는 항목은 선택한 라이브러리에서 가장 많이 사용된 Floor/Wall 타일을 자동으로 고릅니다.",
+                MessageType.None);
+        }
+
+        previewAdvancedSettings = EditorGUILayout.Foldout(
+            previewAdvancedSettings,
+            "고급 배치 설정",
+            true);
+        if (previewAdvancedSettings)
+        {
+            EditorGUI.indentLevel++;
+            previewMaxPlacementAttemptsPerRoom = EditorGUILayout.IntField(
+                "방당 최대 배치 시도",
+                Mathf.Max(1, previewMaxPlacementAttemptsPerRoom));
+            previewMinimumCorridorLength = EditorGUILayout.IntField(
+                "최소 복도 길이",
+                Mathf.Max(0, previewMinimumCorridorLength));
+            previewCorridorLengthPerRoomCell = EditorGUILayout.Slider(
+                "방 크기 반영 비율",
+                Mathf.Clamp01(previewCorridorLengthPerRoomCell),
+                0f,
+                1f);
+            previewCorridorLengthVariation = EditorGUILayout.IntSlider(
+                "복도 길이 난수 폭",
+                Mathf.Clamp(previewCorridorLengthVariation, 0, 32),
+                0,
+                32);
+            EditorGUI.indentLevel--;
+        }
+
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            using (new EditorGUI.DisabledScope(selectedLibrary == null))
+            {
+                if (GUILayout.Button("동적 생성 미리보기", GUILayout.Height(28f)))
+                    GenerateDungeonPreview();
+            }
+
+            if (GUILayout.Button("랜덤 시드", GUILayout.Height(28f)))
+            {
+                previewSeed = System.Guid.NewGuid().GetHashCode();
+                GenerateDungeonPreview();
+            }
+
+            using (new EditorGUI.DisabledScope(!RoomAuthoringDungeonPreview.HasPreview))
+            {
+                if (GUILayout.Button("미리보기 지우기", GUILayout.Height(28f)))
+                {
+                    RoomAuthoringDungeonPreview.Clear();
+                    previewStatusMessage = "미리보기를 지웠습니다.";
+                    previewStatusType = MessageType.None;
+                }
+            }
+        }
+
+        if (selectedLibrary == null)
+        {
+            EditorGUILayout.HelpBox(
+                "상단에서 테마 룸 라이브러리를 선택해야 배치 후보를 구성할 수 있습니다.",
+                MessageType.Warning);
+        }
+
+        if (!string.IsNullOrWhiteSpace(previewStatusMessage))
+            EditorGUILayout.HelpBox(previewStatusMessage, previewStatusType);
+        else if (RoomAuthoringDungeonPreview.HasPreview)
+            EditorGUILayout.HelpBox("Scene View에 마지막 생성 결과가 표시되어 있습니다.", MessageType.Info);
+
+        EditorGUILayout.Space(4f);
+        EditorGUILayout.HelpBox(
+            "표식: 초록 테두리=현재 편집 방, 청록 점선=소켓 연결, M=몬스터, C=상자, P=포털, O=프롭",
+            MessageType.None);
+    }
+
+    private void GenerateDungeonPreview()
+    {
+        selectedAuthoring = ResolveSelectedAuthoring();
+        if (selectedLibrary == null || selectedAuthoring == null || selectedAuthoring.Grid == null)
+        {
+            previewStatusMessage = "라이브러리와 편집 중인 방의 Grid가 필요합니다.";
+            previewStatusType = MessageType.Error;
+            return;
+        }
+
+        RoomLayoutData currentLayout = default;
+        RoomBuildData currentBuild = default;
+        if (previewIncludeCurrentRoom &&
+            !TryCollectSelectedRoomData(
+                out currentLayout,
+                out currentBuild,
+                showFailureDialog: false))
+        {
+            previewStatusMessage = validationMessages.Count > 0
+                ? "현재 방을 먼저 수정해 주세요.\n" + string.Join("\n", validationMessages)
+                : "현재 방 데이터를 미리보기용으로 수집하지 못했습니다.";
+            previewStatusType = MessageType.Error;
+            return;
+        }
+
+        previewRoomCount = Mathf.Max(
+            previewIncludeBossRoom ? 2 : 1,
+            previewRoomCount);
+        previewMaxPlacementAttemptsPerRoom = Mathf.Max(
+            1,
+            previewMaxPlacementAttemptsPerRoom);
+        previewMinimumCorridorLength = Mathf.Max(0, previewMinimumCorridorLength);
+        previewCorridorLengthPerRoomCell = Mathf.Clamp01(
+            previewCorridorLengthPerRoomCell);
+        previewCorridorLengthVariation = Mathf.Clamp(
+            previewCorridorLengthVariation,
+            0,
+            32);
+
+        RoomAuthoringDungeonPreviewRequest request = new(
+            selectedLibrary,
+            previewLayoutPolicy,
+            previewIncludeCurrentRoom,
+            selectedAuthoring.SourceTemplate,
+            currentLayout,
+            currentBuild,
+            selectedAuthoring.Grid,
+            selectedAuthoring.Size,
+            previewCorridorFloorTile,
+            previewCorridorWallTile,
+            previewSeed,
+            previewRoomCount,
+            previewIncludeBossRoom,
+            previewMaxPlacementAttemptsPerRoom,
+            previewMinimumCorridorLength,
+            previewCorridorLengthPerRoomCell,
+            previewCorridorLengthVariation);
+        RoomAuthoringDungeonPreviewResult result =
+            RoomAuthoringDungeonPreview.Generate(request);
+
+        if (!result.WasBuilt)
+        {
+            previewStatusMessage = $"미리보기 생성 실패 · {result.Message}";
+            previewStatusType = MessageType.Error;
+            return;
+        }
+
+        string completionText = result.IsComplete
+            ? "완성"
+            : "부분 생성";
+        string currentRoomText = previewIncludeCurrentRoom
+            ? $" · 현재 방 {result.CurrentRoomPlacementCount}회"
+            : string.Empty;
+        string failureText = string.IsNullOrWhiteSpace(result.Message)
+            ? string.Empty
+            : $"\n배치 중단 사유: {result.Message}";
+        previewStatusMessage =
+            $"{completionText} · Seed {previewSeed} · 방 {result.RoomCount}/{result.RequestedRoomCount} · " +
+            $"연결 {result.ConnectionCount}개{currentRoomText}\n" +
+            $"복도 타일: {result.CorridorFloorTileName} / {result.CorridorWallTileName}" +
+            failureText;
+        previewStatusType = result.IsComplete &&
+            (!previewIncludeCurrentRoom || result.CurrentRoomPlacementCount > 0)
+                ? MessageType.Info
+                : MessageType.Warning;
     }
 
     private void CreateAuthoringRoomPiece()
     {
+        if (!TryPrepareWorkspaceForRoom())
+            return;
+
         Vector2Int roomSize = new(Mathf.Max(1, newRoomSize.x), Mathf.Max(1, newRoomSize.y));
 
         selectedAuthoring = CreateAuthoringRoomPiece(
@@ -445,12 +1206,14 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             newDifficultyTier,
             newSelectionWeight,
             null);
+        currentStep = AuthoringStep.Basic;
+        RoomAuthoringWorkspace.MarkDirty();
         validationMessages.Clear();
     }
 
-    private void LoadTemplateForEditing()
+    private void LoadTemplateForEditing(bool asDuplicate)
     {
-        if (templateToLoad == null)
+        if (templateToLoad == null || !TryPrepareWorkspaceForRoom())
             return;
 
         RoomLayoutData layout = templateToLoad.LayoutData;
@@ -459,6 +1222,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         string roomId = string.IsNullOrWhiteSpace(layout.roomId)
             ? templateToLoad.name
             : layout.roomId;
+        if (asDuplicate)
+            roomId += "_Copy";
 
         int undoGroup = Undo.GetCurrentGroup();
         Undo.SetCurrentGroupName("Load Room Template for Editing");
@@ -469,18 +1234,53 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             roomSize,
             layout.difficultyTier,
             layout.selectionWeight,
-            templateToLoad);
+            asDuplicate ? null : templateToLoad);
 
         RestoreTiles(selectedAuthoring.FloorTilemap, build.floorTiles);
         RestoreTiles(selectedAuthoring.WallTilemap, build.wallTiles);
         RestoreSockets(selectedAuthoring, layout.sockets);
         RestoreObjects(selectedAuthoring, build.objectPlacements);
+        RestoreTravelEndpoints(selectedAuthoring, build.travelEndpointPlacements);
 
         Undo.CollapseUndoOperations(undoGroup);
         validationMessages.Clear();
+        currentStep = AuthoringStep.Basic;
         Selection.activeObject = selectedAuthoring.gameObject;
+        if (asDuplicate)
+            RoomAuthoringWorkspace.MarkDirty();
+        else
+            RoomAuthoringWorkspace.MarkSaved();
+
         SceneView.RepaintAll();
         Repaint();
+    }
+
+    private bool TryPrepareWorkspaceForRoom()
+    {
+        if (!RoomAuthoringWorkspace.Open().IsValid())
+            return false;
+
+        RoomPieceAuthoring existingAuthoring = RoomAuthoringWorkspace.FindAuthoring();
+        if (existingAuthoring == null)
+            return true;
+
+        if (RoomAuthoringWorkspace.HasUnsavedChanges &&
+            !EditorUtility.DisplayDialog(
+                "편집 중인 방 교체",
+                $"'{existingAuthoring.RoomId}'에 저장되지 않은 변경 내용이 있습니다. 버리고 다른 방을 열까요?",
+                "변경 내용 버리기",
+                "계속 편집"))
+        {
+            return false;
+        }
+
+        if (selectedAuthoring == existingAuthoring)
+            selectedAuthoring = null;
+
+        RoomAuthoringDungeonPreview.Clear();
+        UnityEngine.Object.DestroyImmediate(existingAuthoring.gameObject);
+        RoomAuthoringWorkspace.MarkSaved();
+        return true;
     }
 
     private static RoomPieceAuthoring CreateAuthoringRoomPiece(
@@ -495,6 +1295,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         GameObject root = new GameObject(rootName);
         Undo.RegisterCreatedObjectUndo(root, "Create Room Piece");
+        RoomAuthoringWorkspace.MoveToWorkspace(root);
 
         RoomPieceAuthoring authoring = root.AddComponent<RoomPieceAuthoring>();
         SerializedObject serializedAuthoring = new(authoring);
@@ -521,20 +1322,34 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         return authoring;
     }
 
-    private void AddConnectionSocket()
+    private void AddConnectionSocket(RoomSocketDirection direction)
     {
         selectedAuthoring = ResolveSelectedAuthoring();
         if (selectedAuthoring == null || selectedAuthoring.Grid == null)
             return;
 
         RoomSocketAuthoring[] existingSockets = GetSockets(selectedAuthoring);
-        GetDefaultSocketPlacement(
-            selectedAuthoring.Size,
-            existingSockets.Length,
-            out Vector2Int localCell,
-            out RoomSocketDirection direction);
+        int boundaryLength = direction == RoomSocketDirection.Up ||
+                             direction == RoomSocketDirection.Down
+            ? selectedAuthoring.Size.x
+            : selectedAuthoring.Size.y;
+        int preferredStart = Mathf.Max(
+            0,
+            (boundaryLength - RoomSocketGeometry.RequiredWidth) / 2);
+        if (!TryFindAvailableSocketCell(
+                selectedAuthoring,
+                direction,
+                preferredStart,
+                out Vector2Int localCell))
+        {
+            EditorUtility.DisplayDialog(
+                "소켓 배치 실패",
+                $"{direction} 경계에 겹치지 않는 {RoomSocketGeometry.RequiredWidth}칸 소켓을 배치할 공간이 없습니다.",
+                "확인");
+            return;
+        }
 
-        string socketId = $"Socket_{existingSockets.Length + 1:00}";
+        string socketId = CreateNextSocketId(existingSockets);
         RoomSocketAuthoring socket = CreateConnectionSocket(
             selectedAuthoring,
             socketId,
@@ -543,8 +1358,133 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         Selection.activeObject = socket.gameObject;
         EditorUtility.SetDirty(socket);
+        RoomAuthoringWorkspace.MarkDirty();
         SceneView.RepaintAll();
         Repaint();
+    }
+
+    private static string CreateNextSocketId(IReadOnlyList<RoomSocketAuthoring> sockets)
+    {
+        HashSet<string> existingIds = new(System.StringComparer.Ordinal);
+        for (int socketIndex = 0; socketIndex < sockets.Count; socketIndex++)
+        {
+            if (sockets[socketIndex] != null)
+                existingIds.Add(sockets[socketIndex].SocketId);
+        }
+
+        for (int sequence = 1; sequence < int.MaxValue; sequence++)
+        {
+            string candidate = $"Socket_{sequence:00}";
+            if (!existingIds.Contains(candidate))
+                return candidate;
+        }
+
+        return $"Socket_{System.Guid.NewGuid():N}";
+    }
+
+    private static bool TryFindAvailableSocketCell(
+        RoomPieceAuthoring authoring,
+        RoomSocketDirection direction,
+        int preferredStart,
+        out Vector2Int localCell)
+    {
+        localCell = default;
+        int boundaryLength = direction == RoomSocketDirection.Up ||
+                             direction == RoomSocketDirection.Down
+            ? authoring.Size.x
+            : authoring.Size.y;
+        int maxStart = boundaryLength - RoomSocketGeometry.RequiredWidth;
+        if (maxStart < 0)
+            return false;
+
+        HashSet<Vector2Int> occupiedCells = CollectOccupiedSocketCells(authoring);
+        int clampedPreferredStart = Mathf.Clamp(preferredStart, 0, maxStart);
+        for (int distance = 0; distance <= maxStart; distance++)
+        {
+            int forwardCandidate = clampedPreferredStart + distance;
+            if (forwardCandidate <= maxStart &&
+                TryUseSocketStart(
+                    authoring.Size,
+                    direction,
+                    forwardCandidate,
+                    occupiedCells,
+                    out localCell))
+            {
+                return true;
+            }
+
+            int backwardCandidate = clampedPreferredStart - distance;
+            if (distance > 0 &&
+                backwardCandidate >= 0 &&
+                TryUseSocketStart(
+                    authoring.Size,
+                    direction,
+                    backwardCandidate,
+                    occupiedCells,
+                    out localCell))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool TryUseSocketStart(
+        Vector2Int size,
+        RoomSocketDirection direction,
+        int tangentStart,
+        HashSet<Vector2Int> occupiedCells,
+        out Vector2Int localCell)
+    {
+        localCell = direction switch
+        {
+            RoomSocketDirection.Up => new Vector2Int(tangentStart, size.y - 1),
+            RoomSocketDirection.Right => new Vector2Int(size.x - 1, tangentStart),
+            RoomSocketDirection.Down => new Vector2Int(tangentStart, 0),
+            RoomSocketDirection.Left => new Vector2Int(0, tangentStart),
+            _ => default
+        };
+
+        RoomSocketData candidate = new()
+        {
+            localCell = localCell,
+            direction = direction,
+            width = RoomSocketGeometry.RequiredWidth
+        };
+        if (!RoomSocketGeometry.IsValid(candidate, new RectInt(Vector2Int.zero, size)))
+            return false;
+
+        for (int cellIndex = 0; cellIndex < RoomSocketGeometry.RequiredWidth; cellIndex++)
+        {
+            if (occupiedCells.Contains(RoomSocketGeometry.GetLocalCell(candidate, cellIndex)))
+                return false;
+        }
+
+        return true;
+    }
+
+    private static HashSet<Vector2Int> CollectOccupiedSocketCells(RoomPieceAuthoring authoring)
+    {
+        HashSet<Vector2Int> occupiedCells = new();
+        RoomSocketAuthoring[] sockets = GetSockets(authoring);
+        for (int socketIndex = 0; socketIndex < sockets.Length; socketIndex++)
+        {
+            RoomSocketAuthoring socket = sockets[socketIndex];
+            if (!socket.TryGetLocalCell(out Vector2Int localCell))
+                continue;
+
+            RoomSocketData data = new()
+            {
+                localCell = localCell,
+                direction = socket.Direction,
+                width = socket.Width
+            };
+            for (int cellIndex = 0; cellIndex < socket.Width; cellIndex++)
+                occupiedCells.Add(RoomSocketGeometry.GetLocalCell(data, cellIndex));
+        }
+
+        return occupiedCells;
     }
 
     private static RoomSocketAuthoring CreateConnectionSocket(
@@ -641,10 +1581,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         }
 
         RoomObjectAuthoring[] existingObjects = GetRoomObjects(selectedAuthoring);
-        Vector2Int roomSize = selectedAuthoring.Size;
-        Vector2Int defaultCell = new(
-            Mathf.Clamp(roomSize.x / 2, 0, Mathf.Max(0, roomSize.x - 1)),
-            Mathf.Clamp(roomSize.y / 2, 0, Mathf.Max(0, roomSize.y - 1)));
+        Vector2Int defaultCell = ResolveDefaultObjectCell(selectedAuthoring);
         RoomObjectPlacementData placement = new()
         {
             placementId = $"Object_{existingObjects.Length + 1:00}",
@@ -661,6 +1598,86 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         EditorUtility.SetDirty(roomObject);
         SceneView.RepaintAll();
         Repaint();
+    }
+
+    private void AddTravelEndpoint()
+    {
+        selectedAuthoring = ResolveSelectedAuthoring();
+        if (selectedAuthoring == null || selectedAuthoring.Grid == null)
+            return;
+
+        RoomTravelEndpointAuthoring[] existing = GetTravelEndpoints(selectedAuthoring);
+        RoomTravelEndpointPlacementData placement = new()
+        {
+            slotId = CreateNextTravelSlotId(existing),
+            kind = travelEndpointKindToPlace,
+            mediumPrefab = travelMediumPrefabToPlace,
+            localCell = ResolveDefaultObjectCell(selectedAuthoring),
+            localOffset = Vector2.zero,
+            localRotationDegrees = 0f,
+            localScale = travelMediumPrefabToPlace != null
+                ? travelMediumPrefabToPlace.transform.localScale
+                : Vector3.one
+        };
+
+        RoomTravelEndpointAuthoring endpoint = CreateTravelEndpointAuthoring(
+            selectedAuthoring,
+            placement);
+        Selection.activeObject = endpoint.gameObject;
+        RoomAuthoringWorkspace.MarkDirty();
+        SceneView.RepaintAll();
+        Repaint();
+    }
+
+    private static string CreateNextTravelSlotId(
+        IReadOnlyList<RoomTravelEndpointAuthoring> endpoints)
+    {
+        var existingIds = new HashSet<string>(System.StringComparer.Ordinal);
+        for (int i = 0; i < endpoints.Count; i++)
+        {
+            if (endpoints[i] != null)
+                existingIds.Add(endpoints[i].SlotId);
+        }
+
+        for (int sequence = 1; sequence < int.MaxValue; sequence++)
+        {
+            string candidate = $"Travel_{sequence:00}";
+            if (!existingIds.Contains(candidate))
+                return candidate;
+        }
+
+        return $"Travel_{System.Guid.NewGuid():N}";
+    }
+
+    private static Vector2Int ResolveDefaultObjectCell(RoomPieceAuthoring authoring)
+    {
+        Vector2Int size = authoring.Size;
+        Vector2Int center = new(
+            Mathf.Clamp(size.x / 2, 0, Mathf.Max(0, size.x - 1)),
+            Mathf.Clamp(size.y / 2, 0, Mathf.Max(0, size.y - 1)));
+        Tilemap floor = authoring.FloorTilemap;
+        if (floor == null || floor.HasTile(new Vector3Int(center.x, center.y, 0)))
+            return center;
+
+        Vector2Int bestCell = center;
+        int bestDistance = int.MaxValue;
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int y = 0; y < size.y; y++)
+            {
+                if (!floor.HasTile(new Vector3Int(x, y, 0)))
+                    continue;
+
+                int distance = Mathf.Abs(x - center.x) + Mathf.Abs(y - center.y);
+                if (distance >= bestDistance)
+                    continue;
+
+                bestDistance = distance;
+                bestCell = new Vector2Int(x, y);
+            }
+        }
+
+        return bestCell;
     }
 
     private static RoomObjectAuthoring CreateRoomObjectAuthoring(
@@ -713,6 +1730,53 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         return marker;
     }
 
+    private static RoomTravelEndpointAuthoring CreateTravelEndpointAuthoring(
+        RoomPieceAuthoring authoring,
+        RoomTravelEndpointPlacementData placement)
+    {
+        string slotId = string.IsNullOrWhiteSpace(placement.slotId)
+            ? "TravelEndpoint"
+            : placement.slotId;
+        GameObject instance = null;
+        if (placement.mediumPrefab != null)
+        {
+            instance = PrefabUtility.InstantiatePrefab(
+                placement.mediumPrefab,
+                authoring.Grid.transform) as GameObject;
+            instance ??= UnityEngine.Object.Instantiate(
+                placement.mediumPrefab,
+                authoring.Grid.transform);
+        }
+
+        if (instance == null)
+        {
+            instance = new GameObject(slotId);
+            Undo.RegisterCreatedObjectUndo(instance, "Add Room Travel Endpoint");
+            Undo.SetTransformParent(
+                instance.transform,
+                authoring.Grid.transform,
+                "Parent Room Travel Endpoint");
+        }
+        else
+        {
+            Undo.RegisterCreatedObjectUndo(instance, "Add Room Travel Endpoint Prefab");
+        }
+
+        instance.name = placement.mediumPrefab != null
+            ? $"{slotId}_{placement.mediumPrefab.name}"
+            : slotId;
+        RoomTravelEndpointAuthoring marker =
+            instance.GetComponent<RoomTravelEndpointAuthoring>();
+        if (marker == null)
+            marker = Undo.AddComponent<RoomTravelEndpointAuthoring>(instance);
+
+        marker.EditorConfigure(placement.slotId, placement.kind, placement.mediumPrefab);
+        marker.EditorSetPlacement(placement);
+        EditorUtility.SetDirty(marker);
+        EditorUtility.SetDirty(instance.transform);
+        return marker;
+    }
+
     private static void RestoreObjects(
         RoomPieceAuthoring authoring,
         List<RoomObjectPlacementData> objectPlacements)
@@ -722,6 +1786,17 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         for (int i = 0; i < objectPlacements.Count; i++)
             CreateRoomObjectAuthoring(authoring, objectPlacements[i]);
+    }
+
+    private static void RestoreTravelEndpoints(
+        RoomPieceAuthoring authoring,
+        List<RoomTravelEndpointPlacementData> placements)
+    {
+        if (authoring == null || authoring.Grid == null || placements == null)
+            return;
+
+        for (int i = 0; i < placements.Count; i++)
+            CreateTravelEndpointAuthoring(authoring, placements[i]);
     }
 
     private bool ValidateSelectedRoomPiece(bool showDialog)
@@ -737,6 +1812,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         if (string.IsNullOrWhiteSpace(selectedAuthoring.RoomId))
             validationMessages.Add("Room Id가 비어 있습니다.");
+        else
+            ValidateRoomIdAgainstLibrary(selectedAuthoring, validationMessages);
 
         if (selectedAuthoring.Grid == null)
             validationMessages.Add("Grid 참조가 비어 있습니다.");
@@ -758,6 +1835,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         ValidateSockets(selectedAuthoring, validationMessages);
         ValidateObjectPlacements(selectedAuthoring, validationMessages);
+        ValidateTravelEndpointPlacements(selectedAuthoring, validationMessages);
 
         bool valid = validationMessages.Count == 0;
 
@@ -779,19 +1857,58 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         return valid;
     }
 
+    private void ValidateRoomIdAgainstLibrary(
+        RoomPieceAuthoring authoring,
+        List<string> messages)
+    {
+        if (selectedLibrary == null)
+            return;
+
+        IReadOnlyList<RoomTemplateSO> rooms = selectedLibrary.Rooms;
+        for (int roomIndex = 0; roomIndex < rooms.Count; roomIndex++)
+        {
+            RoomTemplateSO room = rooms[roomIndex];
+            if (room == null || room == authoring.SourceTemplate)
+                continue;
+
+            if (string.Equals(
+                    room.LayoutData.roomId,
+                    authoring.RoomId,
+                    System.StringComparison.Ordinal))
+            {
+                messages.Add(
+                    $"선택한 라이브러리에 Room Id '{authoring.RoomId}'를 사용하는 다른 방이 있습니다.");
+                return;
+            }
+        }
+    }
+
     private void SaveAsNewRoomTemplate()
     {
         if (!TryCollectSelectedRoomData(out RoomLayoutData layout, out RoomBuildData build))
             return;
 
-        EnsureFolder(outputFolder);
-
-        string assetPath = AssetDatabase.GenerateUniqueAssetPath(
-            $"{outputFolder.TrimEnd('/', '\\')}/{selectedAuthoring.RoomId}.asset");
+        string assetPath = EditorUtility.SaveFilePanelInProject(
+            "새 방 템플릿 저장",
+            selectedAuthoring.RoomId,
+            "asset",
+            "저장 위치와 에셋 이름을 확인하세요.",
+            ResolveSuggestedOutputFolder());
+        if (string.IsNullOrWhiteSpace(assetPath))
+            return;
+        if (AssetDatabase.LoadMainAssetAtPath(assetPath) != null)
+        {
+            EditorUtility.DisplayDialog(
+                "새 방 저장 취소",
+                "선택한 경로에 이미 에셋이 있습니다. 기존 방을 덮어쓰지 않도록 다른 이름이나 위치를 선택하세요.",
+                "확인");
+            return;
+        }
 
         RoomTemplateSO template = CreateInstance<RoomTemplateSO>();
         template.EditorSetData(layout, build);
         AssetDatabase.CreateAsset(template, assetPath);
+        bool addedToLibrary = RegisterTemplateWithSelectedLibrary(template);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
@@ -800,7 +1917,12 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         EditorUtility.SetDirty(selectedAuthoring);
         templateToLoad = template;
         Selection.activeObject = template;
-        EditorUtility.DisplayDialog("Save Complete", $"RoomTemplateSO 생성 완료:\n{assetPath}", "OK");
+        RoomAuthoringWorkspace.MarkSaved();
+        EditorUtility.DisplayDialog(
+            "방 저장 완료",
+            $"RoomTemplateSO 생성 완료:\n{assetPath}" +
+            (addedToLibrary ? $"\n\n{selectedLibrary.ThemeId} 라이브러리에 등록했습니다." : string.Empty),
+            "확인");
     }
 
     private void ApplyChangesToLoadedTemplate()
@@ -831,24 +1953,77 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         Undo.RecordObject(targetTemplate, "Apply Room Template Changes");
         targetTemplate.EditorSetData(layout, build);
         EditorUtility.SetDirty(targetTemplate);
+        bool addedToLibrary = RegisterTemplateWithSelectedLibrary(targetTemplate);
         AssetDatabase.SaveAssets();
 
         templateToLoad = targetTemplate;
         Selection.activeObject = targetTemplate;
-        EditorUtility.DisplayDialog("Apply Complete", $"RoomTemplateSO 갱신 완료:\n{assetPath}", "OK");
+        RoomAuthoringWorkspace.MarkSaved();
+        EditorUtility.DisplayDialog(
+            "방 갱신 완료",
+            $"RoomTemplateSO 갱신 완료:\n{assetPath}" +
+            (addedToLibrary ? $"\n\n{selectedLibrary.ThemeId} 라이브러리에 등록했습니다." : string.Empty),
+            "확인");
     }
 
-    private bool TryCollectSelectedRoomData(out RoomLayoutData layout, out RoomBuildData build)
+    private string ResolveSuggestedOutputFolder()
+    {
+        RoomTemplateSO source = selectedAuthoring != null
+            ? selectedAuthoring.SourceTemplate
+            : null;
+        if (source == null)
+            source = templateToLoad;
+
+        string sourcePath = source != null ? AssetDatabase.GetAssetPath(source) : string.Empty;
+        if (!string.IsNullOrWhiteSpace(sourcePath))
+            return Path.GetDirectoryName(sourcePath)?.Replace('\\', '/') ?? "Assets";
+
+        if (selectedLibrary != null)
+        {
+            IReadOnlyList<RoomTemplateSO> rooms = selectedLibrary.Rooms;
+            for (int roomIndex = 0; roomIndex < rooms.Count; roomIndex++)
+            {
+                string roomPath = rooms[roomIndex] != null
+                    ? AssetDatabase.GetAssetPath(rooms[roomIndex])
+                    : string.Empty;
+                if (!string.IsNullOrWhiteSpace(roomPath))
+                    return Path.GetDirectoryName(roomPath)?.Replace('\\', '/') ?? "Assets";
+            }
+        }
+
+        return "Assets";
+    }
+
+    private bool RegisterTemplateWithSelectedLibrary(RoomTemplateSO template)
+    {
+        if (!registerWithSelectedLibrary || selectedLibrary == null || template == null)
+            return false;
+
+        Undo.RecordObject(selectedLibrary, "Register Room Template With Theme Library");
+        if (!selectedLibrary.EditorAddRoom(template))
+            return false;
+
+        EditorUtility.SetDirty(selectedLibrary);
+        return true;
+    }
+
+    private bool TryCollectSelectedRoomData(
+        out RoomLayoutData layout,
+        out RoomBuildData build,
+        bool showFailureDialog = true)
     {
         layout = default;
         build = default;
 
         if (!ValidateSelectedRoomPiece(showDialog: false))
         {
-            EditorUtility.DisplayDialog(
-                "Save Failed",
-                string.Join("\n", validationMessages),
-                "OK");
+            if (showFailureDialog)
+            {
+                EditorUtility.DisplayDialog(
+                    "Save Failed",
+                    string.Join("\n", validationMessages),
+                    "OK");
+            }
             return false;
         }
 
@@ -867,7 +2042,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         {
             floorTiles = CollectTiles(selectedAuthoring.FloorTilemap, selectedAuthoring.Size),
             wallTiles = CollectTiles(selectedAuthoring.WallTilemap, selectedAuthoring.Size),
-            objectPlacements = CollectObjectPlacements(selectedAuthoring)
+            objectPlacements = CollectObjectPlacements(selectedAuthoring),
+            travelEndpointPlacements = CollectTravelEndpointPlacements(selectedAuthoring)
         };
         return true;
     }
@@ -1031,6 +2207,41 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         }
     }
 
+    private static void ValidateTravelEndpointPlacements(
+        RoomPieceAuthoring authoring,
+        List<string> messages)
+    {
+        RoomTravelEndpointAuthoring[] endpoints = GetTravelEndpoints(authoring);
+        var slotIds = new HashSet<string>(System.StringComparer.Ordinal);
+        for (int i = 0; i < endpoints.Length; i++)
+        {
+            RoomTravelEndpointAuthoring endpoint = endpoints[i];
+            string displayName = string.IsNullOrWhiteSpace(endpoint.SlotId)
+                ? endpoint.gameObject.name
+                : endpoint.SlotId;
+            if (string.IsNullOrWhiteSpace(endpoint.SlotId))
+                messages.Add($"{endpoint.gameObject.name}: Travel Slot Id가 비어 있습니다.");
+            else if (!slotIds.Add(endpoint.SlotId))
+                messages.Add($"Travel Slot Id '{endpoint.SlotId}'가 중복됩니다.");
+
+            if (!endpoint.TryGetPlacementData(out RoomTravelEndpointPlacementData placement))
+            {
+                messages.Add($"{displayName}: Grid 기준 배치 데이터를 계산할 수 없습니다.");
+                continue;
+            }
+
+            if (!IsInsideRoomBounds(placement.localCell, authoring.Size))
+            {
+                messages.Add($"{displayName}: 이동 슬롯 셀 {placement.localCell}이 방 bounds 밖에 있습니다.");
+                continue;
+            }
+
+            Vector3Int tileCell = new(placement.localCell.x, placement.localCell.y, 0);
+            if (authoring.FloorTilemap != null && !authoring.FloorTilemap.HasTile(tileCell))
+                messages.Add($"{displayName}: 이동 슬롯 셀 {placement.localCell}에 Floor 타일이 필요합니다.");
+        }
+    }
+
     private static bool IsPrefabCompatibleWithKind(GameObject prefab, RoomObjectKind kind)
     {
         if (prefab == null)
@@ -1057,6 +2268,31 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         }
 
         results.Sort(CompareObjectPlacements);
+        return results;
+    }
+
+    private static List<RoomTravelEndpointPlacementData> CollectTravelEndpointPlacements(
+        RoomPieceAuthoring authoring)
+    {
+        RoomTravelEndpointAuthoring[] endpoints = GetTravelEndpoints(authoring);
+        var results = new List<RoomTravelEndpointPlacementData>(endpoints.Length);
+        for (int i = 0; i < endpoints.Length; i++)
+        {
+            if (endpoints[i].TryGetPlacementData(out RoomTravelEndpointPlacementData placement))
+                results.Add(placement);
+        }
+
+        results.Sort((left, right) =>
+        {
+            int xComparison = left.localCell.x.CompareTo(right.localCell.x);
+            if (xComparison != 0)
+                return xComparison;
+
+            int yComparison = left.localCell.y.CompareTo(right.localCell.y);
+            return yComparison != 0
+                ? yComparison
+                : string.CompareOrdinal(left.slotId, right.slotId);
+        });
         return results;
     }
 
@@ -1204,41 +2440,22 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             : new RoomObjectAuthoring[0];
     }
 
-    private static void GetDefaultSocketPlacement(
-        Vector2Int size,
-        int socketIndex,
-        out Vector2Int localCell,
-        out RoomSocketDirection direction)
+    private static RoomTravelEndpointAuthoring[] GetTravelEndpoints(RoomPieceAuthoring authoring)
     {
-        int normalizedIndex = socketIndex % 4;
-        int horizontalStart = Mathf.Max(0, (size.x - RoomSocketGeometry.RequiredWidth) / 2);
-        int verticalStart = Mathf.Max(0, (size.y - RoomSocketGeometry.RequiredWidth) / 2);
-        switch (normalizedIndex)
-        {
-            case 0:
-                direction = RoomSocketDirection.Up;
-                localCell = new Vector2Int(horizontalStart, size.y - 1);
-                break;
-            case 1:
-                direction = RoomSocketDirection.Right;
-                localCell = new Vector2Int(size.x - 1, verticalStart);
-                break;
-            case 2:
-                direction = RoomSocketDirection.Down;
-                localCell = new Vector2Int(horizontalStart, 0);
-                break;
-            default:
-                direction = RoomSocketDirection.Left;
-                localCell = new Vector2Int(0, verticalStart);
-                break;
-        }
+        return authoring != null
+            ? authoring.GetComponentsInChildren<RoomTravelEndpointAuthoring>(true)
+            : new RoomTravelEndpointAuthoring[0];
     }
 
     private void DrawSocketSceneHandles(SceneView sceneView)
     {
+        RoomAuthoringDungeonPreview.DrawSceneHandles();
+
         RoomPieceAuthoring authoring = ResolveSelectedAuthoring();
         if (authoring == null || authoring.Grid == null)
             return;
+
+        HandleSocketPlacementInput(sceneView, authoring);
 
         RoomSocketAuthoring[] sockets = GetSockets(authoring);
         for (int i = 0; i < sockets.Length; i++)
@@ -1291,6 +2508,146 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         }
     }
 
+    private void HandleSocketPlacementInput(
+        SceneView sceneView,
+        RoomPieceAuthoring authoring)
+    {
+        if (!socketPlacementMode)
+            return;
+
+        Event currentEvent = Event.current;
+        if (currentEvent.type == EventType.KeyDown && currentEvent.keyCode == KeyCode.Escape)
+        {
+            socketPlacementMode = false;
+            currentEvent.Use();
+            Repaint();
+            sceneView.Repaint();
+            return;
+        }
+
+        if (currentEvent.type == EventType.Layout)
+            HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
+
+        Ray mouseRay = HandleUtility.GUIPointToWorldRay(currentEvent.mousePosition);
+        Plane gridPlane = new(
+            authoring.Grid.transform.forward,
+            authoring.Grid.transform.position);
+        if (!gridPlane.Raycast(mouseRay, out float enter))
+            return;
+
+        Vector3 worldPosition = mouseRay.GetPoint(enter);
+        Vector3Int rawCell3D = authoring.Grid.WorldToCell(worldPosition);
+        Vector2Int rawCell = new(rawCell3D.x, rawCell3D.y);
+        ResolveNearestBoundary(
+            rawCell,
+            authoring.Size,
+            out RoomSocketDirection direction,
+            out int preferredStart);
+
+        bool hasPlacement = TryFindAvailableSocketCell(
+            authoring,
+            direction,
+            preferredStart,
+            out Vector2Int localCell);
+        if (hasPlacement)
+            DrawSocketPlacementPreview(authoring, direction, localCell);
+
+        if (currentEvent.type != EventType.MouseDown ||
+            currentEvent.button != 0 ||
+            currentEvent.alt)
+        {
+            if (currentEvent.type == EventType.MouseMove)
+                sceneView.Repaint();
+            return;
+        }
+
+        currentEvent.Use();
+        if (!hasPlacement)
+        {
+            sceneView.ShowNotification(new GUIContent("이 경계에는 빈 2칸 소켓 공간이 없습니다."));
+            return;
+        }
+
+        RoomSocketAuthoring[] existingSockets = GetSockets(authoring);
+        RoomSocketAuthoring socket = CreateConnectionSocket(
+            authoring,
+            CreateNextSocketId(existingSockets),
+            direction,
+            localCell);
+        Selection.activeObject = socket.gameObject;
+        EditorUtility.SetDirty(socket);
+        RoomAuthoringWorkspace.MarkDirty();
+        Repaint();
+        sceneView.Repaint();
+    }
+
+    private static void ResolveNearestBoundary(
+        Vector2Int rawCell,
+        Vector2Int size,
+        out RoomSocketDirection direction,
+        out int preferredStart)
+    {
+        int maxX = Mathf.Max(0, size.x - 1);
+        int maxY = Mathf.Max(0, size.y - 1);
+        int leftDistance = Mathf.Abs(rawCell.x);
+        int rightDistance = Mathf.Abs(rawCell.x - maxX);
+        int downDistance = Mathf.Abs(rawCell.y);
+        int upDistance = Mathf.Abs(rawCell.y - maxY);
+        int minimumDistance = Mathf.Min(leftDistance, rightDistance, downDistance, upDistance);
+
+        if (minimumDistance == upDistance)
+        {
+            direction = RoomSocketDirection.Up;
+            preferredStart = rawCell.x;
+        }
+        else if (minimumDistance == rightDistance)
+        {
+            direction = RoomSocketDirection.Right;
+            preferredStart = rawCell.y;
+        }
+        else if (minimumDistance == downDistance)
+        {
+            direction = RoomSocketDirection.Down;
+            preferredStart = rawCell.x;
+        }
+        else
+        {
+            direction = RoomSocketDirection.Left;
+            preferredStart = rawCell.y;
+        }
+    }
+
+    private static void DrawSocketPlacementPreview(
+        RoomPieceAuthoring authoring,
+        RoomSocketDirection direction,
+        Vector2Int localCell)
+    {
+        RoomSocketData preview = new()
+        {
+            localCell = localCell,
+            direction = direction,
+            width = RoomSocketGeometry.RequiredWidth
+        };
+        Vector2Int firstCell = RoomSocketGeometry.GetLocalCell(preview, 0);
+        Vector2Int lastCell = RoomSocketGeometry.GetLocalCell(
+            preview,
+            RoomSocketGeometry.RequiredWidth - 1);
+        Vector3 firstCenter = authoring.Grid.GetCellCenterWorld(
+            new Vector3Int(firstCell.x, firstCell.y, 0));
+        Vector3 lastCenter = authoring.Grid.GetCellCenterWorld(
+            new Vector3Int(lastCell.x, lastCell.y, 0));
+        Vector3 spanCenter = Vector3.Lerp(firstCenter, lastCenter, 0.5f);
+        Vector3 outward = authoring.Grid.transform.TransformDirection(
+            DirectionToVector(direction)).normalized;
+
+        Handles.color = Color.green;
+        Handles.DrawLine(firstCenter, lastCenter, 7f);
+        Handles.DrawWireDisc(firstCenter, authoring.Grid.transform.forward, 0.18f);
+        Handles.DrawWireDisc(lastCenter, authoring.Grid.transform.forward, 0.18f);
+        Handles.DrawLine(spanCenter, spanCenter + outward, 4f);
+        Handles.Label(spanCenter + outward * 1.1f, "클릭하여 출입구 배치");
+    }
+
     private static Vector3 DirectionToVector(RoomSocketDirection direction)
     {
         return direction switch
@@ -1303,24 +2660,4 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         };
     }
 
-    private static void EnsureFolder(string folder)
-    {
-        string normalized = folder.Replace('\\', '/').TrimEnd('/');
-        if (AssetDatabase.IsValidFolder(normalized))
-            return;
-
-        string[] parts = normalized.Split('/');
-        string current = parts[0];
-        for (int i = 1; i < parts.Length; i++)
-        {
-            string next = $"{current}/{parts[i]}";
-            if (!AssetDatabase.IsValidFolder(next))
-                AssetDatabase.CreateFolder(current, parts[i]);
-
-            current = next;
-        }
-
-        if (!Directory.Exists(normalized))
-            AssetDatabase.Refresh();
-    }
 }

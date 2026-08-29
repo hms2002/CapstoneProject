@@ -467,12 +467,12 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: d1a3f73dc8122004b8b72505def5a925, type: 2}
     - localCell: {x: 17, y: 11}
       tile: {fileID: 11400000, guid: 77134a4db70f9a14e97953c120326148, type: 2}
-    objectPlacements:
-    - placementId: ExitPortal
-      kind: 3
-      prefab: {fileID: 4531407902860154786, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+    objectPlacements: []
+    travelEndpointPlacements:
+    - slotId: BossGate
+      kind: 0
+      mediumPrefab: {fileID: 4531407902860154786, guid: 635bbce2ba03a1e4787909e774bd3dac, type: 3}
       localCell: {x: 9, y: 6}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
-      linkedChestLockPlacementId: 

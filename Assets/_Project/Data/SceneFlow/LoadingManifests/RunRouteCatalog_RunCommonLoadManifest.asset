@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LoadManifestSO
   scopeKind: 1
   prefabAssets:
+  - {fileID: 4531407902860154786, guid: 635bbce2ba03a1e4787909e774bd3dac, type: 3}
   - {fileID: 1718124053476297701, guid: fd20831272af9f04692453e99a04a668, type: 3}
   - {fileID: 5992347863573343322, guid: 38e9dd3c667a35a4eb873d65aef72150, type: 3}
   - {fileID: 6578129014226894282, guid: 225d580cb9ca3624c9d81e307cbfce64, type: 3}
@@ -25,6 +26,7 @@ MonoBehaviour:
   dataAssets:
   - {fileID: 11400000, guid: 9fde1aac665d3cb48a2f3227bf0c5e5a, type: 2}
   - {fileID: 11400000, guid: 3903a30b290836e4bb4413a07b019990, type: 2}
+  - {fileID: 11400000, guid: 78250d285c4b95f449ace0417e91c0a4, type: 2}
   extraAssets:
   - {fileID: 4900000, guid: 2f02d2f857e9adf46b7ac3cb9e89ce88, type: 3}
   - {fileID: 4900000, guid: 532d222b32590d140832cb9f09a038b0, type: 3}

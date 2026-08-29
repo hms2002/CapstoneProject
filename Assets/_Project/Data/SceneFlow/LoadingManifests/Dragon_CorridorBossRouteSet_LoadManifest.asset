@@ -21,7 +21,8 @@ MonoBehaviour:
   - {fileID: 5433486041897825252, guid: e67c0e27f47424648af599f14420164d, type: 3}
   - {fileID: 3760106881503541346, guid: ca526788b6ca8554e85d442937407f1e, type: 3}
   cueAssets: []
-  dataAssets: []
+  dataAssets:
+  - {fileID: 11400000, guid: 3a2cf6abff748004ea2650a0613c6996, type: 2}
   extraAssets: []
   prewarmPrefabs: []
 --- !u!114 &11400000
@@ -82,6 +83,7 @@ MonoBehaviour:
   scopeKind: 2
   prefabAssets: []
   cueAssets: []
-  dataAssets: []
+  dataAssets:
+  - {fileID: 11400000, guid: 54cfd9393e4e71a43892cf070ab13f1a, type: 2}
   extraAssets: []
   prewarmPrefabs: []

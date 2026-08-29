@@ -680,6 +680,7 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
             WarningPopupCode.UpgradeNotEnoughMagicStone => "\uB9C8\uC815\uC11D\uC774 \uBD80\uC871\uD569\uB2C8\uB2E4.",
             WarningPopupCode.UpgradeLocked => "\uC544\uC9C1 \uD574\uAE08\uB418\uC9C0 \uC54A\uC740 \uC5C5\uADF8\uB808\uC774\uB4DC\uC785\uB2C8\uB2E4.",
             WarningPopupCode.UpgradeUnavailable => "\uD604\uC7AC \uAD6C\uB9E4\uD560 \uC218 \uC5C6\uB294 \uC5C5\uADF8\uB808\uC774\uB4DC\uC785\uB2C8\uB2E4.",
+            WarningPopupCode.BossAlreadyDefeatedThisRun => "이번 탐험에서 이미 처치한 보스입니다.",
             _ => string.Empty,
         };
     }

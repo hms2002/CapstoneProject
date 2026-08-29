@@ -129,6 +129,7 @@ public static class RoomSocketGeometry
 /// 책임:
 /// - 런타임 방 구현기가 실제 Tilemap에 찍어낼 바닥/벽 타일과 프리팹 배치 데이터를 보관한다.
 /// - 몬스터, 상자, 포털, 일반 프롭을 종류와 로컬 배치 정보로 전달한다.
+/// - 씬 연결 자체와 분리된 이동 endpoint 슬롯의 매개체 종류와 로컬 배치를 전달한다.
 /// - 연결 문은 방 데이터가 아니라 조립 결과의 소켓 연결을 기준으로 DungeonRoomBuilder가 생성한다.
 /// </summary>
 [Serializable]
@@ -137,6 +138,32 @@ public struct RoomBuildData
     public List<RoomTileData> floorTiles;
     public List<RoomTileData> wallTiles;
     public List<RoomObjectPlacementData> objectPlacements;
+    public List<RoomTravelEndpointPlacementData> travelEndpointPlacements;
+}
+
+/// <summary>
+/// 책임 : 방의 이동 슬롯이 상호작용, 자동 trigger, 도착 전용 중 어떤 매개체 동작을 제공하는지 정의한다.
+/// </summary>
+public enum RoomTravelEndpointKind
+{
+    Interaction = 0,
+    Trigger = 1,
+    ArrivalOnly = 2
+}
+
+/// <summary>
+/// 책임 : 재사용 방 템플릿에 씬 연결을 직접 고정하지 않고 이동 슬롯의 안정 Id, 매개체 프리팹과 로컬 배치만 저장한다.
+/// </summary>
+[Serializable]
+public struct RoomTravelEndpointPlacementData
+{
+    public string slotId;
+    public RoomTravelEndpointKind kind;
+    public GameObject mediumPrefab;
+    public Vector2Int localCell;
+    public Vector2 localOffset;
+    public float localRotationDegrees;
+    public Vector3 localScale;
 }
 
 /// <summary>

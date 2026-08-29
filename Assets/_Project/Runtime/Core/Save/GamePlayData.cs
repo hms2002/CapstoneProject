@@ -47,6 +47,44 @@ public sealed class PendingRunSpecialNpcConstructionStart
 }
 
 /// <summary>
+/// 책임 : PreserveDuringRun 던전의 개봉 상자에서 아직 획득하지 않은 슬롯 아이템과 유물 레벨을 저장한다.
+/// </summary>
+[System.Serializable]
+public sealed class DungeonChestLootRuntimeStateData
+{
+    public int slotIndex;
+    public UnityEngine.ScriptableObject item;
+    public int relicLevel;
+}
+
+/// <summary>
+/// 책임 : PreserveDuringRun 던전에서 안정적인 배치 Id별 생존·활성·상자 개봉 및 잔여 보상 상태를 저장한다.
+/// </summary>
+[System.Serializable]
+public sealed class DungeonObjectRuntimeStateData
+{
+    public string stateId;
+    public bool isPresent = true;
+    public bool isActive = true;
+    public bool isChestOpened;
+    public System.Collections.Generic.List<DungeonChestLootRuntimeStateData> chestLoot =
+        new System.Collections.Generic.List<DungeonChestLootRuntimeStateData>();
+}
+
+/// <summary>
+/// 책임 : 한 절차 던전의 현재 런 레이아웃 seed와 선택적으로 보존할 생성 오브젝트 상태를 묶어 저장한다.
+/// </summary>
+[System.Serializable]
+public sealed class DungeonRunStateData
+{
+    public string dungeonId;
+    public bool hasResolvedSeed;
+    public int resolvedSeed;
+    public System.Collections.Generic.List<DungeonObjectRuntimeStateData> objectStates =
+        new System.Collections.Generic.List<DungeonObjectRuntimeStateData>();
+}
+
+/// <summary>
 /// 책임 : 런 진행 중인 임시 상태와 허브 복귀 시 커밋할 대기 변경분을 보관하는 직렬화 루트 DTO다.
 /// </summary>
 [System.Serializable]
@@ -61,6 +99,9 @@ public sealed class GamePlayData
 
     public SceneTransitionContext pendingTransition;
     public PlayerRuntimeState pendingPlayerState;
+
+    public System.Collections.Generic.List<string> defeatedBossIds = new System.Collections.Generic.List<string>();
+    public System.Collections.Generic.List<DungeonRunStateData> dungeonRunStates = new System.Collections.Generic.List<DungeonRunStateData>();
 
     public int pendingRunMagicStoneDelta;
     public System.Collections.Generic.List<PendingRunAffectionChange> pendingRunAffectionChanges = new System.Collections.Generic.List<PendingRunAffectionChange>();

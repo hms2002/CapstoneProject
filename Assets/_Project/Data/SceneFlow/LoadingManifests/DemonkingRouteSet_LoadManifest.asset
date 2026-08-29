@@ -20,7 +20,8 @@ MonoBehaviour:
   - {fileID: 827981175415890305, guid: b9febceb6e3458b4aaa9d31cefa9bfb0, type: 3}
   - {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
   cueAssets: []
-  dataAssets: []
+  dataAssets:
+  - {fileID: 11400000, guid: 74e264bb04ba4c54d869c3ae54112f89, type: 2}
   extraAssets: []
   prewarmPrefabs: []
 --- !u!114 &-3502806408091389427
@@ -102,6 +103,7 @@ MonoBehaviour:
   scopeKind: 2
   prefabAssets: []
   cueAssets: []
-  dataAssets: []
+  dataAssets:
+  - {fileID: 11400000, guid: 50178fd501407dd46ba385fdb3361704, type: 2}
   extraAssets: []
   prewarmPrefabs: []

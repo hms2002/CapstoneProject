@@ -15,5 +15,6 @@ public enum WarningPopupCode
     UpgradeNotEnoughMagicStone,
     UpgradeLocked,
     UpgradeUnavailable,
-    LastWeaponCannotLeaveInventory
+    LastWeaponCannotLeaveInventory,
+    BossAlreadyDefeatedThisRun
 }

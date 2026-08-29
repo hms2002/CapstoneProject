@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 // 책임: 런 세션 데이터를 유지하고 Core RunSessionStore 백엔드를 등록해 런 시작/종료 상태를 중계한다.
@@ -192,6 +193,28 @@ public sealed class GamePlayDataManager : MonoBehaviour, IRunSessionStoreBackend
     public PlayerRuntimeState ConsumePendingPlayerState()
     {
         return RunSessionStateService.ConsumePendingPlayerState(Data);
+    }
+
+    public int ResolveDungeonSeed(
+        string dungeonId,
+        DungeonReentryPolicy policy,
+        int fallbackSeed)
+    {
+        return RunSessionStateService.ResolveDungeonSeed(Data, dungeonId, policy, fallbackSeed);
+    }
+
+    public bool TryGetDungeonObjectStates(
+        string dungeonId,
+        List<DungeonObjectRuntimeStateData> destination)
+    {
+        return RunSessionStateService.TryGetDungeonObjectStates(Data, dungeonId, destination);
+    }
+
+    public void SaveDungeonObjectStates(
+        string dungeonId,
+        IReadOnlyList<DungeonObjectRuntimeStateData> states)
+    {
+        RunSessionStateService.SaveDungeonObjectStates(Data, dungeonId, states);
     }
 
     public void ResetForDevelopmentStart()

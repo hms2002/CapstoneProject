@@ -17,6 +17,11 @@ public sealed class DungeonLayoutResult
     public IReadOnlyList<DungeonSocketConnection> Connections => connections;
     public bool IsComplete { get; private set; }
     public string FailureReason { get; private set; }
+    public bool UsesGraphFirstLayout { get; private set; }
+    public int BossGraphDistance { get; private set; }
+    public int MeaningfulBranchCount { get; private set; }
+    public int CycleConnectionCount { get; private set; }
+    public int DeadEndCount { get; private set; }
 
     internal DungeonLayoutResult(int seed, int requestedRoomCount)
     {
@@ -46,6 +51,19 @@ public sealed class DungeonLayoutResult
     {
         IsComplete = true;
         FailureReason = string.Empty;
+    }
+
+    internal void SetTopologyMetrics(
+        int bossGraphDistance,
+        int meaningfulBranchCount,
+        int cycleConnectionCount,
+        int deadEndCount)
+    {
+        UsesGraphFirstLayout = true;
+        BossGraphDistance = Mathf.Max(0, bossGraphDistance);
+        MeaningfulBranchCount = Mathf.Max(0, meaningfulBranchCount);
+        CycleConnectionCount = Mathf.Max(0, cycleConnectionCount);
+        DeadEndCount = Mathf.Max(0, deadEndCount);
     }
 
     internal void MarkFailed(string reason)
