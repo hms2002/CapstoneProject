@@ -11,6 +11,7 @@ using UnityEngine.Tilemaps;
 /// - 타일 페인팅은 Unity 기본 Tile Palette에 맡기고, 이 창은 생성/검증/데이터화 흐름만 담당한다.
 /// - 기획자가 테마 라이브러리에서 방을 탐색하고 임시 작업 공간에서 안전하게 편집한 뒤 검증·등록하게 한다.
 /// - 실제 DungeonLayoutAssembler와 시각 전용 DungeonRoomBuilder를 사용해 저장 전 방을 포함한 동적 맵을 미리 보여준다.
+/// - 미리보기에서 검증한 생성 수치를 테마별 DungeonGenerationProfileSO에 저장해 실제 복도 생성과 공유한다.
 /// </summary>
 public sealed class RoomPieceEditorWindow : EditorWindow
 {
@@ -35,6 +36,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     [SerializeField] private GameObject objectPrefabToPlace;
     [SerializeField] private RoomTravelEndpointKind travelEndpointKindToPlace = RoomTravelEndpointKind.Interaction;
     [SerializeField] private GameObject travelMediumPrefabToPlace;
+    [SerializeField] private Vector2 travelTriggerSizeToPlace = Vector2.one;
     [SerializeField] private RoomPieceAuthoring selectedAuthoring;
     [SerializeField] private AuthoringStep currentStep;
     [SerializeField] private bool registerWithSelectedLibrary = true;
@@ -43,14 +45,15 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     [SerializeField] private string librarySearch = string.Empty;
     [SerializeField] private bool socketPlacementMode;
     [SerializeField] private bool previewIncludeCurrentRoom = true;
+    [SerializeField] private DungeonGenerationProfileSO previewGenerationProfile;
     [SerializeField] private DungeonLayoutPolicySO previewLayoutPolicy;
     [SerializeField] private int previewSeed = 12345;
     [SerializeField] private int previewRoomCount = 8;
     [SerializeField] private bool previewIncludeBossRoom = true;
     [SerializeField] private int previewMaxPlacementAttemptsPerRoom = 128;
-    [SerializeField] private int previewMinimumCorridorLength = 4;
-    [SerializeField] private float previewCorridorLengthPerRoomCell = 0.35f;
-    [SerializeField] private int previewCorridorLengthVariation = 8;
+    [SerializeField] private int previewMinimumCorridorLength = 2;
+    [SerializeField] private float previewCorridorLengthPerRoomCell = 0.05f;
+    [SerializeField] private int previewCorridorLengthVariation = 2;
     [SerializeField] private TileBase previewCorridorFloorTile;
     [SerializeField] private TileBase previewCorridorWallTile;
     [SerializeField] private bool previewAdvancedSettings;
@@ -59,6 +62,9 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     private readonly List<string> validationMessages = new();
     private string previewStatusMessage = string.Empty;
     private MessageType previewStatusType = MessageType.None;
+    private DungeonGenerationProfileSO cachedSceneReferenceProfile;
+    private int cachedSceneReferenceCount;
+    private bool hasCachedSceneReferenceCount;
 
     [MenuItem("Tools/Dungeon/Room Piece Editor")]
     public static void Open()
@@ -70,6 +76,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     {
         SceneView.duringSceneGui += DrawSocketSceneHandles;
         selectedAuthoring = RoomAuthoringWorkspace.FindAuthoring();
+        InvalidateSceneReferenceCount();
     }
 
     private void OnDisable()
@@ -79,6 +86,9 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
     private void OnInspectorUpdate()
     {
+        if (currentStep == AuthoringStep.Preview)
+            return;
+
         if (EditorApplication.timeSinceStartup < nextAutomaticValidationTime)
             return;
 
@@ -180,6 +190,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
     private void DrawLibrarySection()
     {
+        RoomThemeLibrarySO previousLibrary = selectedLibrary;
         if (Selection.activeObject is RoomThemeLibrarySO selectedThemeLibrary)
             selectedLibrary = selectedThemeLibrary;
 
@@ -188,6 +199,9 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             selectedLibrary,
             typeof(RoomThemeLibrarySO),
             false) as RoomThemeLibrarySO;
+
+        if (selectedLibrary != previousLibrary)
+            SelectPreviewGenerationProfileForLibrary();
 
         if (selectedLibrary == null)
         {
@@ -429,6 +443,10 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         EditorGUILayout.PropertyField(
             serializedAuthoring.FindProperty("selectionWeight"),
             new GUIContent("등장 가중치"));
+        EditorGUILayout.PropertyField(
+            serializedAuthoring.FindProperty("topologyPlacement"),
+            new GUIContent("필수 방 배치 규칙"),
+            includeChildren: true);
         serializedAuthoring.ApplyModifiedProperties();
 
         EditorGUILayout.ObjectField(
@@ -439,6 +457,10 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         EditorGUILayout.HelpBox(
             "예약 크기는 레이아웃 배치 충돌을 검사하는 직사각형 영역입니다. 실제 방 모양은 바닥 타일로 결정됩니다.",
             MessageType.Info);
+        EditorGUILayout.HelpBox(
+            "필수 방 배치 규칙은 생성 프로필의 '필수 포함 방'으로 등록된 템플릿에 적용됩니다. " +
+            "순환 지름길은 메인 경로를 유지하는 우회로에, 최원거리는 시작 방에서 가장 먼 호환 후보에 배치합니다.",
+            MessageType.None);
     }
 
     private void DrawTileSection()
@@ -611,6 +633,12 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         DrawTravelEndpointSection();
 
+        EditorGUILayout.HelpBox(
+            "함정·레버·퍼즐은 현재 Prop 프리팹으로 배치합니다. NPC 기능이 찾을 런타임 앵커는 " +
+            "별도 방 데이터가 아니라 자체 완결형 Prop 프리팹 안의 ProceduralRoomAnchor로 구성하세요. " +
+            "프리팹 내부 단계 상태는 자동 보존되지 않으므로 필요하면 별도 저장·복원 계약이 필요합니다.",
+            MessageType.None);
+
         RoomObjectAuthoring[] objects = GetRoomObjects(selectedAuthoring);
         if (objects.Length == 0)
         {
@@ -680,6 +708,13 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         travelEndpointKindToPlace = (RoomTravelEndpointKind)EditorGUILayout.EnumPopup(
             "매개체 방식",
             travelEndpointKindToPlace);
+        if (travelEndpointKindToPlace == RoomTravelEndpointKind.Trigger)
+        {
+            travelTriggerSizeToPlace = RoomTravelEndpointGeometry.SanitizeTriggerSize(
+                EditorGUILayout.Vector2Field(
+                    "Trigger Size (월드 단위)",
+                    travelTriggerSizeToPlace));
+        }
         travelMediumPrefabToPlace = EditorGUILayout.ObjectField(
             "매개체 프리팹 (선택)",
             travelMediumPrefabToPlace,
@@ -700,22 +735,76 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             {
                 SerializedObject serializedEndpoint = new(endpoint);
                 serializedEndpoint.Update();
+                SerializedProperty endpointKindProperty = serializedEndpoint.FindProperty("kind");
                 EditorGUILayout.PropertyField(
                     serializedEndpoint.FindProperty("slotId"),
                     new GUIContent("Slot Id"));
                 EditorGUILayout.PropertyField(
-                    serializedEndpoint.FindProperty("kind"),
+                    endpointKindProperty,
                     new GUIContent("Medium Kind"));
                 EditorGUILayout.PropertyField(
                     serializedEndpoint.FindProperty("mediumPrefab"),
                     new GUIContent("Medium Prefab"));
-                serializedEndpoint.ApplyModifiedProperties();
+                if ((RoomTravelEndpointKind)endpointKindProperty.enumValueIndex ==
+                    RoomTravelEndpointKind.Trigger)
+                {
+                    EditorGUILayout.PropertyField(
+                        serializedEndpoint.FindProperty("triggerSize"),
+                        new GUIContent("Trigger Size (월드 단위)"));
+                    EditorGUILayout.HelpBox(
+                        "판정 크기는 매개체 Transform Scale과 별개입니다. " +
+                        "Scene View의 파란 사각형이 런타임 Trigger 범위입니다.",
+                        MessageType.None);
+                }
+
+                if (serializedEndpoint.ApplyModifiedProperties())
+                {
+                    RoomAuthoringWorkspace.MarkDirty();
+                    SceneView.RepaintAll();
+                }
+
+                bool requestedSeparateArrival = EditorGUILayout.Toggle(
+                    "도착 위치 별도 지정",
+                    endpoint.UseSeparateArrivalPoint);
+                if (requestedSeparateArrival != endpoint.UseSeparateArrivalPoint)
+                {
+                    Undo.RecordObject(endpoint, "Toggle Separate Travel Arrival Point");
+                    endpoint.EditorSetUseSeparateArrivalPoint(requestedSeparateArrival);
+                    EditorUtility.SetDirty(endpoint);
+                    RoomAuthoringWorkspace.MarkDirty();
+                    SceneView.RepaintAll();
+                }
 
                 if (endpoint.TryGetPlacementData(out RoomTravelEndpointPlacementData placement))
                 {
                     EditorGUILayout.Vector2IntField("Local Cell", placement.localCell);
                     EditorGUILayout.Vector2Field("Cell Offset", placement.localOffset);
                     EditorGUILayout.FloatField("Rotation", placement.localRotationDegrees);
+
+                    if (placement.useSeparateArrivalPoint)
+                    {
+                        EditorGUI.BeginChangeCheck();
+                        Vector2Int requestedArrivalCell = EditorGUILayout.Vector2IntField(
+                            "도착 Local Cell",
+                            placement.arrivalLocalCell);
+                        Vector2 requestedArrivalOffset = EditorGUILayout.Vector2Field(
+                            "도착 Cell Offset",
+                            placement.arrivalLocalOffset);
+                        if (EditorGUI.EndChangeCheck())
+                        {
+                            Undo.RecordObject(endpoint, "Edit Travel Arrival Point");
+                            endpoint.EditorSetArrivalPlacement(
+                                requestedArrivalCell,
+                                requestedArrivalOffset);
+                            EditorUtility.SetDirty(endpoint);
+                            RoomAuthoringWorkspace.MarkDirty();
+                            SceneView.RepaintAll();
+                        }
+
+                        EditorGUILayout.HelpBox(
+                            "Select를 누른 뒤 Scene View의 녹색 도착 핸들을 끌어 착지 위치를 조정할 수 있습니다.",
+                            MessageType.None);
+                    }
                 }
 
                 using (new EditorGUILayout.HorizontalScope())
@@ -737,8 +826,12 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         EditorGUILayout.HelpBox(
             "방 템플릿에는 Slot Id와 배치만 저장됩니다. 실제 SceneConnectionSO와 A/B 방향은 " +
-            "각 복도 씬의 DungeonRoomBuilder Travel Endpoint Bindings에서 연결하므로 방 데이터를 다른 테마에도 재사용할 수 있습니다.",
+            "각 복도 씬의 DungeonRoomBuilder Travel Endpoint Bindings에서 연결하므로 방 데이터를 다른 테마에도 재사용할 수 있습니다. " +
+            "도착 위치를 분리하면 이동 트리거와 겹치지 않는 방 안쪽 안전 지점에 플레이어를 배치할 수 있습니다.",
             MessageType.Info);
+
+        if (GUILayout.Button("이동 연결·연출 편집기 열기"))
+            ProceduralTravelBindingEditorWindow.Open(selectedAuthoring.SourceTemplate);
     }
 
     private void DrawRecommendedPrefabPopup()
@@ -999,6 +1092,52 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                 MessageType.None);
         }
 
+        EditorGUILayout.Space(4f);
+        EditorGUILayout.LabelField("테마 생성 프로필", EditorStyles.miniBoldLabel);
+        DungeonGenerationProfileSO requestedProfile = EditorGUILayout.ObjectField(
+            "생성 프로필",
+            previewGenerationProfile,
+            typeof(DungeonGenerationProfileSO),
+            false) as DungeonGenerationProfileSO;
+        if (requestedProfile != previewGenerationProfile)
+        {
+            previewGenerationProfile = requestedProfile;
+            InvalidateSceneReferenceCount();
+            if (previewGenerationProfile != null)
+                LoadPreviewSettingsFromProfile();
+        }
+
+        bool profileMatchesLibrary = previewGenerationProfile == null ||
+            previewGenerationProfile.RoomLibrary == selectedLibrary;
+        if (!profileMatchesLibrary)
+        {
+            EditorGUILayout.HelpBox(
+                "선택한 생성 프로필이 현재 테마 룸 라이브러리와 연결되어 있지 않습니다. 테마 프로필 찾기/만들기를 사용하세요.",
+                MessageType.Warning);
+        }
+        else if (previewGenerationProfile != null)
+        {
+            int sceneReferenceCount = ResolveSceneReferenceCount();
+            EditorGUILayout.HelpBox(
+                sceneReferenceCount > 0
+                    ? $"이 프로필은 활성 Build Settings 씬 {sceneReferenceCount}곳에서 사용됩니다. 적용한 값은 다음 씬 생성부터 바로 반영됩니다."
+                    : "아직 활성 Build Settings 씬에서 이 프로필을 참조하지 않습니다. 보스 테마 생성 프로필 설치를 먼저 실행하세요.",
+                sceneReferenceCount > 0 ? MessageType.Info : MessageType.Warning);
+            DrawGuaranteedRoomTemplates(previewGenerationProfile, selectedLibrary);
+        }
+
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            if (GUILayout.Button("테마 프로필 찾기/만들기"))
+                EnsurePreviewGenerationProfile();
+
+            using (new EditorGUI.DisabledScope(previewGenerationProfile == null || !profileMatchesLibrary))
+            {
+                if (GUILayout.Button("프로필 값 불러오기"))
+                    LoadPreviewSettingsFromProfile();
+            }
+        }
+
         previewLayoutPolicy = EditorGUILayout.ObjectField(
             "레이아웃 정책",
             previewLayoutPolicy,
@@ -1047,19 +1186,30 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                 "방당 최대 배치 시도",
                 Mathf.Max(1, previewMaxPlacementAttemptsPerRoom));
             previewMinimumCorridorLength = EditorGUILayout.IntField(
-                "최소 복도 길이",
+                "절대 최소 복도 길이",
                 Mathf.Max(0, previewMinimumCorridorLength));
             previewCorridorLengthPerRoomCell = EditorGUILayout.Slider(
-                "방 크기 반영 비율",
+                "방 크기 권장 추가 비율",
                 Mathf.Clamp01(previewCorridorLengthPerRoomCell),
                 0f,
                 1f);
             previewCorridorLengthVariation = EditorGUILayout.IntSlider(
-                "복도 길이 난수 폭",
+                "권장 난수 추가 폭",
                 Mathf.Clamp(previewCorridorLengthVariation, 0, 32),
                 0,
                 32);
             EditorGUI.indentLevel--;
+            EditorGUILayout.HelpBox(
+                "방 크기 비율과 난수 폭은 우선 시도할 추가 길이입니다. " +
+                "충돌하면 절대 최소 길이까지 줄이고, 여러 성공 배치 중 권장 길이 초과가 가장 작은 결과를 우선합니다. " +
+                "짧은 후보가 없어도 가장 나은 성공 배치를 사용하므로 생성 자체를 막지는 않습니다.",
+                MessageType.None);
+        }
+
+        using (new EditorGUI.DisabledScope(selectedLibrary == null || !profileMatchesLibrary))
+        {
+            if (GUILayout.Button("현재 미리보기 설정을 테마에 적용", GUILayout.Height(26f)))
+                ApplyPreviewSettingsToProfile();
         }
 
         using (new EditorGUILayout.HorizontalScope())
@@ -1101,7 +1251,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         EditorGUILayout.Space(4f);
         EditorGUILayout.HelpBox(
-            "표식: 초록 테두리=현재 편집 방, 청록 점선=소켓 연결, M=몬스터, C=상자, P=포털, O=프롭",
+            "표식: 초록 테두리=현재 편집 방, 청록 점선=소켓 연결, M=몬스터, C=상자, P=포털, O=프롭, EI/ET/EA=이동 슬롯",
             MessageType.None);
     }
 
@@ -1161,7 +1311,11 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             previewMaxPlacementAttemptsPerRoom,
             previewMinimumCorridorLength,
             previewCorridorLengthPerRoomCell,
-            previewCorridorLengthVariation);
+            previewCorridorLengthVariation,
+            previewGenerationProfile != null &&
+            previewGenerationProfile.RoomLibrary == selectedLibrary
+                ? previewGenerationProfile.GuaranteedRoomTemplates
+                : null);
         RoomAuthoringDungeonPreviewResult result =
             RoomAuthoringDungeonPreview.Generate(request);
 
@@ -1181,15 +1335,221 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         string failureText = string.IsNullOrWhiteSpace(result.Message)
             ? string.Empty
             : $"\n배치 중단 사유: {result.Message}";
+        string relaxationText = result.UsedCorridorLengthRelaxation
+            ? " · 충돌 회피 자동 축소"
+            : string.Empty;
         previewStatusMessage =
             $"{completionText} · Seed {previewSeed} · 방 {result.RoomCount}/{result.RequestedRoomCount} · " +
             $"연결 {result.ConnectionCount}개{currentRoomText}\n" +
+            $"복도 길이: {result.ShortestCorridorLength}..{result.LongestCorridorLength}{relaxationText}\n" +
             $"복도 타일: {result.CorridorFloorTileName} / {result.CorridorWallTileName}" +
             failureText;
         previewStatusType = result.IsComplete &&
             (!previewIncludeCurrentRoom || result.CurrentRoomPlacementCount > 0)
                 ? MessageType.Info
                 : MessageType.Warning;
+    }
+
+    /// <summary>
+    /// 책임 : 현재 테마 라이브러리에 대응하는 영속 생성 프로필을 선택하고 저장값을 미리보기 입력란에 복원한다.
+    /// </summary>
+    private void SelectPreviewGenerationProfileForLibrary()
+    {
+        previewGenerationProfile =
+            DungeonGenerationProfileAssetUtility.FindForLibrary(selectedLibrary);
+        InvalidateSceneReferenceCount();
+        if (previewGenerationProfile != null)
+            LoadPreviewSettingsFromProfile();
+    }
+
+    /// <summary>
+    /// 책임 : 현재 미리보기 값을 초기값으로 사용해 선택 테마의 생성 프로필을 찾거나 새로 만든다.
+    /// </summary>
+    private void EnsurePreviewGenerationProfile()
+    {
+        if (selectedLibrary == null)
+        {
+            previewStatusMessage = "테마 룸 라이브러리를 먼저 선택하세요.";
+            previewStatusType = MessageType.Warning;
+            return;
+        }
+
+        previewGenerationProfile =
+            DungeonGenerationProfileAssetUtility.FindOrCreateForLibrary(
+                selectedLibrary,
+                previewLayoutPolicy,
+                previewSeed,
+                previewRoomCount,
+                previewIncludeBossRoom,
+                previewMaxPlacementAttemptsPerRoom,
+                previewMinimumCorridorLength,
+                previewCorridorLengthPerRoomCell,
+                previewCorridorLengthVariation);
+        InvalidateSceneReferenceCount();
+        LoadPreviewSettingsFromProfile();
+        Selection.activeObject = previewGenerationProfile;
+        EditorGUIUtility.PingObject(previewGenerationProfile);
+        previewStatusMessage = $"테마 생성 프로필을 준비했습니다: {previewGenerationProfile.name}";
+        previewStatusType = MessageType.Info;
+    }
+
+    /// <summary>
+    /// 책임 : 선택 프로필의 영속 생성 수치를 미리보기 입력값으로 복사한다.
+    /// </summary>
+    private void LoadPreviewSettingsFromProfile()
+    {
+        if (previewGenerationProfile == null)
+            return;
+
+        previewLayoutPolicy = previewGenerationProfile.LayoutPolicy;
+        previewSeed = previewGenerationProfile.Seed;
+        previewRoomCount = previewGenerationProfile.RoomCount;
+        previewIncludeBossRoom = previewGenerationProfile.IncludeBossRoom;
+        previewMaxPlacementAttemptsPerRoom = previewGenerationProfile.MaxPlacementAttemptsPerRoom;
+        previewMinimumCorridorLength = previewGenerationProfile.MinimumCorridorLength;
+        previewCorridorLengthPerRoomCell = previewGenerationProfile.CorridorLengthPerRoomCell;
+        previewCorridorLengthVariation = previewGenerationProfile.CorridorLengthVariation;
+        Repaint();
+    }
+
+    /// <summary>
+    /// 책임 : 기획자가 미리보기로 확인한 수치를 테마 프로필에 저장해 해당 프로필을 참조하는 실제 복도 생성에 반영한다.
+    /// </summary>
+    private void ApplyPreviewSettingsToProfile()
+    {
+        if (selectedLibrary == null)
+            return;
+
+        if (previewGenerationProfile == null)
+        {
+            EnsurePreviewGenerationProfile();
+            if (previewGenerationProfile == null)
+                return;
+        }
+
+        if (previewGenerationProfile.RoomLibrary != selectedLibrary)
+        {
+            previewStatusMessage = "현재 테마와 다른 생성 프로필에는 적용할 수 없습니다.";
+            previewStatusType = MessageType.Error;
+            return;
+        }
+
+        previewRoomCount = Mathf.Max(previewIncludeBossRoom ? 2 : 1, previewRoomCount);
+        previewMaxPlacementAttemptsPerRoom = Mathf.Max(1, previewMaxPlacementAttemptsPerRoom);
+        previewMinimumCorridorLength = Mathf.Max(0, previewMinimumCorridorLength);
+        previewCorridorLengthPerRoomCell = Mathf.Clamp01(previewCorridorLengthPerRoomCell);
+        previewCorridorLengthVariation = Mathf.Clamp(previewCorridorLengthVariation, 0, 32);
+
+        Undo.RecordObject(previewGenerationProfile, "Apply Dungeon Generation Profile");
+        previewGenerationProfile.EditorConfigure(
+            selectedLibrary,
+            previewLayoutPolicy,
+            previewSeed,
+            previewRoomCount,
+            previewIncludeBossRoom,
+            previewMaxPlacementAttemptsPerRoom,
+            previewMinimumCorridorLength,
+            previewCorridorLengthPerRoomCell,
+            previewCorridorLengthVariation);
+        EditorUtility.SetDirty(previewGenerationProfile);
+        AssetDatabase.SaveAssets();
+
+        int sceneReferenceCount = ResolveSceneReferenceCount(forceRefresh: true);
+        previewStatusMessage = sceneReferenceCount > 0
+            ? $"테마 생성 프로필을 저장했습니다. 실제 복도 씬 {sceneReferenceCount}곳에 적용됩니다."
+            : "프로필을 저장했지만 참조하는 활성 복도 씬이 없습니다. 보스 테마 생성 프로필 설치가 필요합니다.";
+        previewStatusType = sceneReferenceCount > 0
+            ? MessageType.Info
+            : MessageType.Warning;
+    }
+
+    /// <summary>
+    /// 책임 : 재귀 씬 의존성 검색 결과를 프로필별로 캐시해 EditorWindow의 반복 OnGUI가 AssetDatabase 전체 검색을 재실행하지 않게 한다.
+    /// </summary>
+    private int ResolveSceneReferenceCount(bool forceRefresh = false)
+    {
+        if (previewGenerationProfile == null)
+            return 0;
+
+        if (!forceRefresh &&
+            hasCachedSceneReferenceCount &&
+            cachedSceneReferenceProfile == previewGenerationProfile)
+        {
+            return cachedSceneReferenceCount;
+        }
+
+        cachedSceneReferenceProfile = previewGenerationProfile;
+        cachedSceneReferenceCount =
+            DungeonGenerationProfileAssetUtility.CountEnabledBuildSceneReferences(
+                previewGenerationProfile);
+        hasCachedSceneReferenceCount = true;
+        return cachedSceneReferenceCount;
+    }
+
+    /// <summary>
+    /// 책임 : 선택 프로필 또는 씬 연결 상태가 바뀐 뒤 다음 표시 시 씬 참조 수를 한 번만 다시 계산하게 한다.
+    /// </summary>
+    private void InvalidateSceneReferenceCount()
+    {
+        cachedSceneReferenceProfile = null;
+        cachedSceneReferenceCount = 0;
+        hasCachedSceneReferenceCount = false;
+    }
+
+    private static void DrawGuaranteedRoomTemplates(
+        DungeonGenerationProfileSO profile,
+        RoomThemeLibrarySO library)
+    {
+        if (profile == null)
+            return;
+
+        var serializedProfile = new SerializedObject(profile);
+        serializedProfile.Update();
+        SerializedProperty roomsProperty =
+            serializedProfile.FindProperty("guaranteedRoomTemplates");
+        if (roomsProperty == null)
+            return;
+
+        EditorGUILayout.Space(3f);
+        EditorGUILayout.PropertyField(
+            roomsProperty,
+            new GUIContent("반드시 포함할 방"),
+            includeChildren: true);
+        if (serializedProfile.ApplyModifiedProperties())
+            EditorUtility.SetDirty(profile);
+
+        IReadOnlyList<RoomTemplateSO> guaranteedRooms = profile.GuaranteedRoomTemplates;
+        for (int roomIndex = 0; roomIndex < guaranteedRooms.Count; roomIndex++)
+        {
+            RoomTemplateSO room = guaranteedRooms[roomIndex];
+            if (room == null)
+            {
+                EditorGUILayout.HelpBox(
+                    $"반드시 포함할 방 {roomIndex + 1}번 항목이 비어 있습니다.",
+                    MessageType.Error);
+                continue;
+            }
+
+            RoomType roomType = room.LayoutData.roomType;
+            if (library == null || !library.ContainsRoom(room))
+            {
+                EditorGUILayout.HelpBox(
+                    $"'{room.name}'은 현재 테마 룸 라이브러리에 등록되어 있지 않습니다.",
+                    MessageType.Error);
+            }
+            else if (roomType == RoomType.Start ||
+                     roomType == RoomType.Boss ||
+                     roomType == RoomType.Exit)
+            {
+                EditorGUILayout.HelpBox(
+                    $"'{room.name}'의 {roomType} 역할은 반드시 포함할 확장 방으로 지정할 수 없습니다.",
+                    MessageType.Error);
+            }
+        }
+
+        EditorGUILayout.HelpBox(
+            "목록의 방은 그래프 배치에서 정확히 한 번 사용되며 일반 랜덤 후보에서는 제외됩니다.",
+            MessageType.None);
     }
 
     private void CreateAuthoringRoomPiece()
@@ -1205,6 +1565,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             roomSize,
             newDifficultyTier,
             newSelectionWeight,
+            default,
             null);
         currentStep = AuthoringStep.Basic;
         RoomAuthoringWorkspace.MarkDirty();
@@ -1234,6 +1595,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             roomSize,
             layout.difficultyTier,
             layout.selectionWeight,
+            layout.topologyPlacement,
             asDuplicate ? null : templateToLoad);
 
         RestoreTiles(selectedAuthoring.FloorTilemap, build.floorTiles);
@@ -1289,6 +1651,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         Vector2Int roomSize,
         int difficultyTier,
         float selectionWeight,
+        RoomTopologyPlacementData topologyPlacement,
         RoomTemplateSO sourceTemplate)
     {
         string rootName = sourceTemplate != null ? $"{roomId}_Editing" : roomId;
@@ -1304,6 +1667,12 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         serializedAuthoring.FindProperty("size").vector2IntValue = roomSize;
         serializedAuthoring.FindProperty("difficultyTier").intValue = Mathf.Max(0, difficultyTier);
         serializedAuthoring.FindProperty("selectionWeight").floatValue = Mathf.Max(0f, selectionWeight);
+        SerializedProperty topologyProperty = serializedAuthoring.FindProperty("topologyPlacement");
+        topologyProperty.FindPropertyRelative("mode").enumValueIndex = (int)topologyPlacement.mode;
+        topologyProperty.FindPropertyRelative("minimumGraphDistanceFromStart").intValue =
+            Mathf.Max(0, topologyPlacement.minimumGraphDistanceFromStart);
+        topologyProperty.FindPropertyRelative("requireDeadEnd").boolValue =
+            topologyPlacement.requireDeadEnd;
         serializedAuthoring.ApplyModifiedPropertiesWithoutUndo();
 
         GameObject gridObject = new GameObject("AuthoringGrid");
@@ -1607,17 +1976,24 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             return;
 
         RoomTravelEndpointAuthoring[] existing = GetTravelEndpoints(selectedAuthoring);
+        Vector2Int defaultCell = ResolveDefaultObjectCell(selectedAuthoring);
         RoomTravelEndpointPlacementData placement = new()
         {
             slotId = CreateNextTravelSlotId(existing),
             kind = travelEndpointKindToPlace,
             mediumPrefab = travelMediumPrefabToPlace,
-            localCell = ResolveDefaultObjectCell(selectedAuthoring),
+            localCell = defaultCell,
             localOffset = Vector2.zero,
             localRotationDegrees = 0f,
             localScale = travelMediumPrefabToPlace != null
                 ? travelMediumPrefabToPlace.transform.localScale
-                : Vector3.one
+                : Vector3.one,
+            triggerSize = travelEndpointKindToPlace == RoomTravelEndpointKind.Trigger
+                ? RoomTravelEndpointGeometry.SanitizeTriggerSize(travelTriggerSizeToPlace)
+                : Vector2.one,
+            useSeparateArrivalPoint = false,
+            arrivalLocalCell = defaultCell,
+            arrivalLocalOffset = Vector2.zero
         };
 
         RoomTravelEndpointAuthoring endpoint = CreateTravelEndpointAuthoring(
@@ -2035,7 +2411,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             localBounds = new RectInt(Vector2Int.zero, selectedAuthoring.Size),
             sockets = CollectSockets(selectedAuthoring),
             difficultyTier = selectedAuthoring.DifficultyTier,
-            selectionWeight = selectedAuthoring.SelectionWeight
+            selectionWeight = selectedAuthoring.SelectionWeight,
+            topologyPlacement = selectedAuthoring.TopologyPlacement
         };
 
         build = new RoomBuildData
@@ -2239,6 +2616,27 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             Vector3Int tileCell = new(placement.localCell.x, placement.localCell.y, 0);
             if (authoring.FloorTilemap != null && !authoring.FloorTilemap.HasTile(tileCell))
                 messages.Add($"{displayName}: 이동 슬롯 셀 {placement.localCell}에 Floor 타일이 필요합니다.");
+
+            if (!placement.useSeparateArrivalPoint)
+                continue;
+
+            if (!IsInsideRoomBounds(placement.arrivalLocalCell, authoring.Size))
+            {
+                messages.Add(
+                    $"{displayName}: 도착 셀 {placement.arrivalLocalCell}이 방 bounds 밖에 있습니다.");
+                continue;
+            }
+
+            Vector3Int arrivalTileCell = new(
+                placement.arrivalLocalCell.x,
+                placement.arrivalLocalCell.y,
+                0);
+            if (authoring.FloorTilemap != null &&
+                !authoring.FloorTilemap.HasTile(arrivalTileCell))
+            {
+                messages.Add(
+                    $"{displayName}: 도착 셀 {placement.arrivalLocalCell}에 Floor 타일이 필요합니다.");
+            }
         }
     }
 
@@ -2455,6 +2853,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         if (authoring == null || authoring.Grid == null)
             return;
 
+        DrawTravelEndpointSceneHandle(sceneView, authoring);
         HandleSocketPlacementInput(sceneView, authoring);
 
         RoomSocketAuthoring[] sockets = GetSockets(authoring);
@@ -2506,6 +2905,45 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             EditorUtility.SetDirty(socket.transform);
             Repaint();
         }
+    }
+
+    /// <summary>
+    /// 책임 : 선택된 이동 슬롯의 별도 도착점을 Scene View 녹색 핸들로 표시하고 방 Grid 로컬 좌표에 기록한다.
+    /// </summary>
+    private void DrawTravelEndpointSceneHandle(
+        SceneView sceneView,
+        RoomPieceAuthoring authoring)
+    {
+        if (Selection.activeGameObject == null)
+            return;
+
+        RoomTravelEndpointAuthoring endpoint =
+            Selection.activeGameObject.GetComponentInParent<RoomTravelEndpointAuthoring>();
+        if (endpoint == null ||
+            endpoint.GetComponentInParent<RoomPieceAuthoring>() != authoring ||
+            !endpoint.TryGetArrivalWorldPosition(out Vector3 arrivalPosition))
+        {
+            return;
+        }
+
+        Handles.color = new Color(0.25f, 1f, 0.45f, 1f);
+        Handles.DrawDottedLine(endpoint.transform.position, arrivalPosition, 4f);
+        Handles.DrawWireDisc(arrivalPosition, authoring.Grid.transform.forward, 0.3f);
+        Handles.Label(arrivalPosition + Vector3.up * 0.35f, "도착 위치");
+
+        EditorGUI.BeginChangeCheck();
+        Vector3 movedPosition = Handles.PositionHandle(
+            arrivalPosition,
+            authoring.Grid.transform.rotation);
+        if (!EditorGUI.EndChangeCheck())
+            return;
+
+        Undo.RecordObject(endpoint, "Move Travel Arrival Point");
+        endpoint.EditorSetArrivalWorldPosition(movedPosition);
+        EditorUtility.SetDirty(endpoint);
+        RoomAuthoringWorkspace.MarkDirty();
+        Repaint();
+        sceneView.Repaint();
     }
 
     private void HandleSocketPlacementInput(

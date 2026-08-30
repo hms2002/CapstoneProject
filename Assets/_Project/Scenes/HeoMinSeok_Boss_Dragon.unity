@@ -16997,57 +16997,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &282318239
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 282318240}
-  - component: {fileID: 282318241}
-  m_Layer: 0
-  m_Name: CorridorArrival_dragon
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &282318240
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 282318239}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -22, y: 0, z: -0.030643376}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 684600621}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &282318241
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 282318239}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a43077220f17e524cba96184d5e52fe2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Gameplay::SceneTravelEndpoint
-  endpointId: Boss.dragon.Corridor
-  proceduralSlotId: 
-  connection: {fileID: 11400000, guid: 54cfd9393e4e71a43892cf070ab13f1a, type: 2}
-  connectionSide: 1
-  departureAnchor: {fileID: 0}
-  arrivalAnchor: {fileID: 0}
-  sceneTravelCleanupTagSets: []
 --- !u!1 &360765173
 GameObject:
   m_ObjectHideFlags: 0
@@ -23364,7 +23313,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 282318240}
+  - {fileID: 1098541119}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &760601612
@@ -23877,6 +23826,57 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 289992003612041814, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
   m_PrefabInstance: {fileID: 6787846962178461537}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1098541118
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1098541119}
+  - component: {fileID: 1098541120}
+  m_Layer: 0
+  m_Name: CorridorArrival_dragon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1098541119
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098541118}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -22, y: 0, z: -0.030643376}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 684600621}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1098541120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098541118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a43077220f17e524cba96184d5e52fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gameplay::SceneTravelEndpoint
+  endpointId: Boss.dragon.Corridor
+  proceduralSlotId: 
+  connection: {fileID: 11400000, guid: 54cfd9393e4e71a43892cf070ab13f1a, type: 2}
+  connectionSide: 1
+  departureAnchor: {fileID: 0}
+  arrivalAnchor: {fileID: 0}
+  sceneTravelCleanupTagSets: []
 --- !u!1 &1196519601
 GameObject:
   m_ObjectHideFlags: 0

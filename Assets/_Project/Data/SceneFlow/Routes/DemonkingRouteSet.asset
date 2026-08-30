@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DemonkingRouteSet
   m_EditorClassIdentifier: 
   themeId: demon_king
-  corridorSceneName: ProceduralDemonkingCorridor
+  corridorSceneName: DemonkingCorridor
   corridorEntryPointId: Default
   bossSceneName: LeeJunmo_Boss_DemonKing
   bossEntryPointId: Default

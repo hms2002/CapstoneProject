@@ -16,6 +16,11 @@ public sealed class RoomThemeLibrarySO : ScriptableObject
     public string ThemeId => themeId;
     public IReadOnlyList<RoomTemplateSO> Rooms => rooms;
 
+    public bool ContainsRoom(RoomTemplateSO room)
+    {
+        return room != null && rooms != null && rooms.Contains(room);
+    }
+
 #if UNITY_EDITOR
     public bool EditorAddRoom(RoomTemplateSO room)
     {
@@ -28,6 +33,11 @@ public sealed class RoomThemeLibrarySO : ScriptableObject
 
         rooms.Add(room);
         return true;
+    }
+
+    public bool EditorRemoveRoom(RoomTemplateSO room)
+    {
+        return room != null && rooms != null && rooms.Remove(room);
     }
 #endif
 

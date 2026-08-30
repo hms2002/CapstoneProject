@@ -13,7 +13,14 @@ MonoBehaviour:
   m_Name: SlimeRouteSet_Corridor
   m_EditorClassIdentifier: Assembly-CSharp::LoadManifestSO
   scopeKind: 2
-  prefabAssets: []
+  prefabAssets:
+  - {fileID: 4531407902860154786, guid: 635bbce2ba03a1e4787909e774bd3dac, type: 3}
+  - {fileID: 1718124053476297701, guid: fd20831272af9f04692453e99a04a668, type: 3}
+  - {fileID: 5992347863573343322, guid: 38e9dd3c667a35a4eb873d65aef72150, type: 3}
+  - {fileID: 6578129014226894282, guid: 225d580cb9ca3624c9d81e307cbfce64, type: 3}
+  - {fileID: 625522859161183429, guid: 32536a7c661f3a445bd9698a356583ad, type: 3}
+  - {fileID: 170880958126991584, guid: 64509a90bf026d84792768de01688456, type: 3}
+  - {fileID: 6821349489537912191, guid: 53c48d36675d8be4a95ddf04536c6c68, type: 3}
   cueAssets: []
   dataAssets:
   - {fileID: 11400000, guid: 0d2fd3c5e31330241855a54fb4af5fd7, type: 2}
@@ -77,6 +84,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LoadManifestSO
   scopeKind: 2
   prefabAssets:
+  - {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}
   - {fileID: 100000, guid: 4c120d14b57b4436a325443f7b0caa3f, type: 3}
   - {fileID: 100000, guid: a1365e9c0af9480b9dc3169f803a951d, type: 3}
   - {fileID: 625522859161183429, guid: 2327e9837a564ed58b0ae70d7c8e00b1, type: 3}

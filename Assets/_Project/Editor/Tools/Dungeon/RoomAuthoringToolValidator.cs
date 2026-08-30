@@ -110,7 +110,8 @@ public static class RoomAuthoringToolValidator
                         maxPlacementAttemptsPerRoom: 64,
                         minimumCorridorLength: 2,
                         corridorLengthPerRoomCell: 0f,
-                        corridorLengthVariation: 0));
+                        corridorLengthVariation: 0,
+                        guaranteedRoomTemplates: null));
             if (!previewResult.WasBuilt ||
                 !previewResult.IsComplete ||
                 previewResult.RoomCount != 3 ||

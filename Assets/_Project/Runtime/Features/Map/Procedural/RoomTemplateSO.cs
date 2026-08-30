@@ -41,6 +41,31 @@ public struct RoomLayoutData
     public List<RoomSocketData> sockets;
     public int difficultyTier;
     public float selectionWeight;
+    public RoomTopologyPlacementData topologyPlacement;
+}
+
+/// <summary>
+/// 책임:
+/// - 필수 방 템플릿이 그래프에서 만족해야 하는 위치 성격과 시작점 최소 거리를 보관한다.
+/// - 콘텐츠별 배치 의도를 방 ID 하드코딩 없이 레이아웃 조립기에 전달한다.
+/// </summary>
+[Serializable]
+public struct RoomTopologyPlacementData
+{
+    public RoomTopologyPlacementMode mode;
+    [Min(0)] public int minimumGraphDistanceFromStart;
+    public bool requireDeadEnd;
+}
+
+/// <summary>
+/// 책임:
+/// - 필수 방을 일반 분산 배치, 순환 지름길, 시작점 최원거리 중 어떤 기준으로 고를지 정의한다.
+/// </summary>
+public enum RoomTopologyPlacementMode
+{
+    Default = 0,
+    CycleDetour = 1,
+    FarthestFromStart = 2
 }
 
 /// <summary>
@@ -152,7 +177,7 @@ public enum RoomTravelEndpointKind
 }
 
 /// <summary>
-/// 책임 : 재사용 방 템플릿에 씬 연결을 직접 고정하지 않고 이동 슬롯의 안정 Id, 매개체 프리팹과 로컬 배치만 저장한다.
+/// 책임 : 재사용 방 템플릿에 씬 연결을 직접 고정하지 않고 이동 슬롯의 안정 Id, 매개체와 출발·도착 로컬 배치를 저장한다.
 /// </summary>
 [Serializable]
 public struct RoomTravelEndpointPlacementData
@@ -164,6 +189,74 @@ public struct RoomTravelEndpointPlacementData
     public Vector2 localOffset;
     public float localRotationDegrees;
     public Vector3 localScale;
+    public Vector2 triggerSize;
+    public bool useSeparateArrivalPoint;
+    public Vector2Int arrivalLocalCell;
+    public Vector2 arrivalLocalOffset;
+}
+
+/// <summary>
+/// 책임 : 이동 Trigger의 기획 크기를 매개체 Transform 크기와 분리하고, 기존 데이터 및 런타임 Collider 크기 변환 규칙을 제공한다.
+/// </summary>
+public static class RoomTravelEndpointGeometry
+{
+    public const float MinimumTriggerSize = 0.05f;
+
+    public static Vector2 ResolveTriggerSize(RoomTravelEndpointPlacementData placement)
+    {
+        if (HasExplicitTriggerSize(placement.triggerSize))
+            return SanitizeTriggerSize(placement.triggerSize);
+
+        Vector3 legacyScale = placement.localScale;
+        if (legacyScale == Vector3.zero)
+        {
+            legacyScale = placement.mediumPrefab != null
+                ? placement.mediumPrefab.transform.localScale
+                : Vector3.one;
+        }
+
+        return SanitizeTriggerSize(new Vector2(
+            Mathf.Abs(legacyScale.x),
+            Mathf.Abs(legacyScale.y)));
+    }
+
+    public static bool HasExplicitTriggerSize(Vector2 size)
+    {
+        return IsFinite(size.x) &&
+               IsFinite(size.y) &&
+               size.x > 0f &&
+               size.y > 0f;
+    }
+
+    public static Vector2 SanitizeTriggerSize(Vector2 size)
+    {
+        return new Vector2(
+            SanitizeDimension(size.x),
+            SanitizeDimension(size.y));
+    }
+
+    public static Vector2 ResolveLocalColliderSize(
+        Vector2 desiredWorldSize,
+        Vector3 colliderLossyScale)
+    {
+        Vector2 sanitizedSize = SanitizeTriggerSize(desiredWorldSize);
+        return new Vector2(
+            sanitizedSize.x / Mathf.Max(0.0001f, Mathf.Abs(colliderLossyScale.x)),
+            sanitizedSize.y / Mathf.Max(0.0001f, Mathf.Abs(colliderLossyScale.y)));
+    }
+
+    private static float SanitizeDimension(float value)
+    {
+        if (!IsFinite(value))
+            return 1f;
+
+        return Mathf.Max(MinimumTriggerSize, Mathf.Abs(value));
+    }
+
+    private static bool IsFinite(float value)
+    {
+        return !float.IsNaN(value) && !float.IsInfinity(value);
+    }
 }
 
 /// <summary>

@@ -101,6 +101,14 @@ public sealed class SceneTravelEndpoint : MonoBehaviour
         proceduralSlotId = slotId ?? string.Empty;
     }
 
+    /// <summary>
+    /// 책임 : 절차 방 빌더가 방 데이터에서 생성한 별도 착지 Transform을 이 endpoint의 도착 위치로 연결한다.
+    /// </summary>
+    public void ConfigureRuntimeArrivalAnchor(Transform target)
+    {
+        arrivalAnchor = target;
+    }
+
 #if UNITY_EDITOR
     public void EditorConfigure(
         string id,

@@ -29,7 +29,7 @@ MonoBehaviour:
     clearAllEffects: 0
     clearCombatOnlyEffects: 0
     gates: []
-    presentationProfile: {fileID: 11400000, guid: 78250d285c4b95f449ace0417e91c0a4, type: 2}
+    presentationProfile: {fileID: 11400000, guid: e4a198bcc44a4ea0b58f915d8f730fa1, type: 2}
   bToA:
     enabled: 1
     runAction: 0
@@ -40,4 +40,4 @@ MonoBehaviour:
     clearAllEffects: 0
     clearCombatOnlyEffects: 0
     gates: []
-    presentationProfile: {fileID: 11400000, guid: 78250d285c4b95f449ace0417e91c0a4, type: 2}
+    presentationProfile: {fileID: 11400000, guid: e4a198bcc44a4ea0b58f915d8f730fa1, type: 2}

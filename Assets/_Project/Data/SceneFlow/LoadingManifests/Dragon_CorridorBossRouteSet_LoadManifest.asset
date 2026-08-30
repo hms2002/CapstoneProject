@@ -14,12 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LoadManifestSO
   scopeKind: 2
   prefabAssets:
+  - {fileID: 4531407902860154786, guid: 635bbce2ba03a1e4787909e774bd3dac, type: 3}
+  - {fileID: 1718124053476297701, guid: fd20831272af9f04692453e99a04a668, type: 3}
+  - {fileID: 5992347863573343322, guid: 38e9dd3c667a35a4eb873d65aef72150, type: 3}
+  - {fileID: 6578129014226894282, guid: 225d580cb9ca3624c9d81e307cbfce64, type: 3}
   - {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
   - {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
   - {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
   - {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
   - {fileID: 5433486041897825252, guid: e67c0e27f47424648af599f14420164d, type: 3}
+  - {fileID: 625522859161183429, guid: 32536a7c661f3a445bd9698a356583ad, type: 3}
   - {fileID: 3760106881503541346, guid: ca526788b6ca8554e85d442937407f1e, type: 3}
+  - {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}
+  - {fileID: 170880958126991584, guid: 64509a90bf026d84792768de01688456, type: 3}
+  - {fileID: 6821349489537912191, guid: 53c48d36675d8be4a95ddf04536c6c68, type: 3}
   cueAssets: []
   dataAssets:
   - {fileID: 11400000, guid: 3a2cf6abff748004ea2650a0613c6996, type: 2}

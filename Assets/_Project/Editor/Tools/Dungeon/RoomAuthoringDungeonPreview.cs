@@ -39,6 +39,7 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
     public int MinimumCorridorLength { get; }
     public float CorridorLengthPerRoomCell { get; }
     public int CorridorLengthVariation { get; }
+    public IReadOnlyList<RoomTemplateSO> GuaranteedRoomTemplates { get; }
 
     public RoomAuthoringDungeonPreviewRequest(
         RoomThemeLibrarySO library,
@@ -57,7 +58,8 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
         int maxPlacementAttemptsPerRoom,
         int minimumCorridorLength,
         float corridorLengthPerRoomCell,
-        int corridorLengthVariation)
+        int corridorLengthVariation,
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates)
     {
         Library = library;
         LayoutPolicy = layoutPolicy;
@@ -76,6 +78,7 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
         MinimumCorridorLength = minimumCorridorLength;
         CorridorLengthPerRoomCell = corridorLengthPerRoomCell;
         CorridorLengthVariation = corridorLengthVariation;
+        GuaranteedRoomTemplates = guaranteedRoomTemplates;
     }
 }
 
@@ -95,6 +98,9 @@ internal readonly struct RoomAuthoringDungeonPreviewResult
     public string Message { get; }
     public string CorridorFloorTileName { get; }
     public string CorridorWallTileName { get; }
+    public int ShortestCorridorLength { get; }
+    public int LongestCorridorLength { get; }
+    public bool UsedCorridorLengthRelaxation { get; }
 
     public RoomAuthoringDungeonPreviewResult(
         bool wasBuilt,
@@ -105,7 +111,10 @@ internal readonly struct RoomAuthoringDungeonPreviewResult
         int currentRoomPlacementCount,
         string message,
         string corridorFloorTileName,
-        string corridorWallTileName)
+        string corridorWallTileName,
+        int shortestCorridorLength,
+        int longestCorridorLength,
+        bool usedCorridorLengthRelaxation)
     {
         WasBuilt = wasBuilt;
         IsComplete = isComplete;
@@ -116,6 +125,9 @@ internal readonly struct RoomAuthoringDungeonPreviewResult
         Message = message ?? string.Empty;
         CorridorFloorTileName = corridorFloorTileName ?? string.Empty;
         CorridorWallTileName = corridorWallTileName ?? string.Empty;
+        ShortestCorridorLength = Mathf.Max(0, shortestCorridorLength);
+        LongestCorridorLength = Mathf.Max(0, longestCorridorLength);
+        UsedCorridorLengthRelaxation = usedCorridorLengthRelaxation;
     }
 
     public static RoomAuthoringDungeonPreviewResult Failed(string message)
@@ -129,7 +141,10 @@ internal readonly struct RoomAuthoringDungeonPreviewResult
             0,
             message,
             string.Empty,
-            string.Empty);
+            string.Empty,
+            0,
+            0,
+            false);
     }
 }
 
@@ -223,6 +238,42 @@ internal static class RoomAuthoringDungeonPreview
 
     /// <summary>
     /// 책임:
+    /// - 실제 이동 매개체를 생성하지 않고 방의 씬 이동 슬롯 종류와 출발·도착 배치를 Scene View 표식으로 표현한다.
+    /// </summary>
+    private readonly struct PreviewTravelEndpointInfo
+    {
+        public RoomTravelEndpointKind Kind { get; }
+        public Vector2Int WorldCell { get; }
+        public Vector2 LocalOffset { get; }
+        public float LocalRotationDegrees { get; }
+        public Vector2 TriggerSize { get; }
+        public bool UseSeparateArrivalPoint { get; }
+        public Vector2Int ArrivalWorldCell { get; }
+        public Vector2 ArrivalLocalOffset { get; }
+
+        public PreviewTravelEndpointInfo(
+            RoomTravelEndpointKind kind,
+            Vector2Int worldCell,
+            Vector2 localOffset,
+            float localRotationDegrees,
+            Vector2 triggerSize,
+            bool useSeparateArrivalPoint,
+            Vector2Int arrivalWorldCell,
+            Vector2 arrivalLocalOffset)
+        {
+            Kind = kind;
+            WorldCell = worldCell;
+            LocalOffset = localOffset;
+            LocalRotationDegrees = localRotationDegrees;
+            TriggerSize = triggerSize;
+            UseSeparateArrivalPoint = useSeparateArrivalPoint;
+            ArrivalWorldCell = arrivalWorldCell;
+            ArrivalLocalOffset = arrivalLocalOffset;
+        }
+    }
+
+    /// <summary>
+    /// 책임:
     /// - 임시 ScriptableObject가 폐기된 뒤에도 Scene View가 그릴 수 있는 복사본과 프리뷰 Grid 참조를 보관한다.
     /// </summary>
     private sealed class PreviewSnapshot
@@ -232,19 +283,22 @@ internal static class RoomAuthoringDungeonPreview
         public IReadOnlyList<PreviewRoomInfo> Rooms { get; }
         public IReadOnlyList<PreviewConnectionInfo> Connections { get; }
         public IReadOnlyList<PreviewObjectInfo> Objects { get; }
+        public IReadOnlyList<PreviewTravelEndpointInfo> TravelEndpoints { get; }
 
         public PreviewSnapshot(
             Grid grid,
             RectInt layoutBounds,
             IReadOnlyList<PreviewRoomInfo> rooms,
             IReadOnlyList<PreviewConnectionInfo> connections,
-            IReadOnlyList<PreviewObjectInfo> objects)
+            IReadOnlyList<PreviewObjectInfo> objects,
+            IReadOnlyList<PreviewTravelEndpointInfo> travelEndpoints)
         {
             Grid = grid;
             LayoutBounds = layoutBounds;
             Rooms = rooms;
             Connections = connections;
             Objects = objects;
+            TravelEndpoints = travelEndpoints;
         }
     }
 
@@ -254,19 +308,7 @@ internal static class RoomAuthoringDungeonPreview
     {
         get
         {
-            RoomAuthoringDungeonPreviewMarker[] markers =
-                Resources.FindObjectsOfTypeAll<RoomAuthoringDungeonPreviewMarker>();
-            for (int markerIndex = 0; markerIndex < markers.Length; markerIndex++)
-            {
-                RoomAuthoringDungeonPreviewMarker marker = markers[markerIndex];
-                if (marker != null &&
-                    RoomAuthoringWorkspace.IsInWorkspace(marker.gameObject))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return lastSnapshot != null && lastSnapshot.Grid != null;
         }
     }
 
@@ -284,6 +326,8 @@ internal static class RoomAuthoringDungeonPreview
         try
         {
             previewLibrary = CreatePreviewLibrary(request, out transientCurrentRoom);
+            IReadOnlyList<RoomTemplateSO> previewGuaranteedRooms =
+                ResolvePreviewGuaranteedRooms(request, transientCurrentRoom);
             DungeonLayoutResult layout = request.LayoutPolicy != null && request.IncludeBossRoom
                 ? new DungeonGraphLayoutAssembler().Assemble(
                     previewLibrary,
@@ -293,7 +337,8 @@ internal static class RoomAuthoringDungeonPreview
                     request.MaxPlacementAttemptsPerRoom,
                     request.MinimumCorridorLength,
                     request.CorridorLengthPerRoomCell,
-                    request.CorridorLengthVariation)
+                    request.CorridorLengthVariation,
+                    previewGuaranteedRooms)
                 : new DungeonLayoutAssembler().Assemble(
                     previewLibrary,
                     request.Seed,
@@ -344,6 +389,10 @@ internal static class RoomAuthoringDungeonPreview
                 transientCurrentRoom);
             FramePreview(lastSnapshot);
             SceneView.RepaintAll();
+            ResolveCorridorLengthRange(
+                layout,
+                out int shortestCorridorLength,
+                out int longestCorridorLength);
 
             return new RoomAuthoringDungeonPreviewResult(
                 true,
@@ -354,7 +403,10 @@ internal static class RoomAuthoringDungeonPreview
                 currentRoomPlacementCount,
                 layout.FailureReason,
                 floorTile != null ? floorTile.name : "없음",
-                wallTile != null ? wallTile.name : "없음");
+                wallTile != null ? wallTile.name : "없음",
+                shortestCorridorLength,
+                longestCorridorLength,
+                layout.UsedCorridorLengthRelaxation);
         }
         catch (Exception exception)
         {
@@ -393,6 +445,7 @@ internal static class RoomAuthoringDungeonPreview
         DrawConnections(snapshot);
         DrawRooms(snapshot);
         DrawObjectMarkers(snapshot);
+        DrawTravelEndpointMarkers(snapshot);
     }
 
     private static RoomThemeLibrarySO CreatePreviewLibrary(
@@ -426,6 +479,30 @@ internal static class RoomAuthoringDungeonPreview
         transientCurrentRoom.EditorSetData(request.CurrentLayout, request.CurrentBuild);
         previewLibrary.EditorAddRoom(transientCurrentRoom);
         return previewLibrary;
+    }
+
+    private static IReadOnlyList<RoomTemplateSO> ResolvePreviewGuaranteedRooms(
+        RoomAuthoringDungeonPreviewRequest request,
+        RoomTemplateSO transientCurrentRoom)
+    {
+        if (request.GuaranteedRoomTemplates == null ||
+            request.GuaranteedRoomTemplates.Count == 0)
+        {
+            return request.GuaranteedRoomTemplates;
+        }
+
+        var resolvedRooms = new List<RoomTemplateSO>(request.GuaranteedRoomTemplates.Count);
+        for (int roomIndex = 0; roomIndex < request.GuaranteedRoomTemplates.Count; roomIndex++)
+        {
+            RoomTemplateSO room = request.GuaranteedRoomTemplates[roomIndex];
+            if (request.IncludeCurrentRoom && room == request.ReplacedTemplate)
+                room = transientCurrentRoom;
+
+            if (room != null && !resolvedRooms.Contains(room))
+                resolvedRooms.Add(room);
+        }
+
+        return resolvedRooms;
     }
 
     private static bool TryCreatePreviewRoot(
@@ -583,6 +660,7 @@ internal static class RoomAuthoringDungeonPreview
     {
         List<PreviewRoomInfo> rooms = new(layout.Rooms.Count);
         List<PreviewObjectInfo> objects = new();
+        List<PreviewTravelEndpointInfo> travelEndpoints = new();
         for (int roomIndex = 0; roomIndex < layout.Rooms.Count; roomIndex++)
         {
             DungeonRoomPlacement placement = layout.Rooms[roomIndex];
@@ -596,15 +674,37 @@ internal static class RoomAuthoringDungeonPreview
 
             List<RoomObjectPlacementData> placements =
                 placement.Template.BuildData.objectPlacements;
-            if (placements == null)
-                continue;
-
-            for (int objectIndex = 0; objectIndex < placements.Count; objectIndex++)
+            if (placements != null)
             {
-                RoomObjectPlacementData objectPlacement = placements[objectIndex];
-                objects.Add(new PreviewObjectInfo(
-                    objectPlacement.kind,
-                    placement.Origin + objectPlacement.localCell));
+                for (int objectIndex = 0; objectIndex < placements.Count; objectIndex++)
+                {
+                    RoomObjectPlacementData objectPlacement = placements[objectIndex];
+                    objects.Add(new PreviewObjectInfo(
+                        objectPlacement.kind,
+                        placement.Origin + objectPlacement.localCell));
+                }
+            }
+
+            List<RoomTravelEndpointPlacementData> endpointPlacements =
+                placement.Template.BuildData.travelEndpointPlacements;
+            if (endpointPlacements != null)
+            {
+                for (int endpointIndex = 0;
+                     endpointIndex < endpointPlacements.Count;
+                     endpointIndex++)
+                {
+                    RoomTravelEndpointPlacementData endpointPlacement =
+                        endpointPlacements[endpointIndex];
+                    travelEndpoints.Add(new PreviewTravelEndpointInfo(
+                        endpointPlacement.kind,
+                        placement.Origin + endpointPlacement.localCell,
+                        endpointPlacement.localOffset,
+                        endpointPlacement.localRotationDegrees,
+                        RoomTravelEndpointGeometry.ResolveTriggerSize(endpointPlacement),
+                        endpointPlacement.useSeparateArrivalPoint,
+                        placement.Origin + endpointPlacement.arrivalLocalCell,
+                        endpointPlacement.arrivalLocalOffset));
+                }
             }
         }
 
@@ -645,7 +745,8 @@ internal static class RoomAuthoringDungeonPreview
             CalculateLayoutBounds(layout),
             rooms,
             connections,
-            objects);
+            objects,
+            travelEndpoints);
     }
 
     private static bool TryResolvePlacedSocket(
@@ -779,6 +880,62 @@ internal static class RoomAuthoringDungeonPreview
         }
     }
 
+    private static void DrawTravelEndpointMarkers(PreviewSnapshot snapshot)
+    {
+        for (int endpointIndex = 0;
+             endpointIndex < snapshot.TravelEndpoints.Count;
+             endpointIndex++)
+        {
+            PreviewTravelEndpointInfo endpoint = snapshot.TravelEndpoints[endpointIndex];
+            Handles.color = ResolveTravelEndpointColor(endpoint.Kind);
+            Vector3 center = ResolvePreviewWorldPosition(
+                snapshot.Grid,
+                endpoint.WorldCell,
+                endpoint.LocalOffset);
+            if (endpoint.Kind == RoomTravelEndpointKind.Trigger)
+            {
+                Matrix4x4 previousMatrix = Handles.matrix;
+                Handles.matrix = Matrix4x4.TRS(
+                    center,
+                    snapshot.Grid.transform.rotation *
+                    Quaternion.Euler(0f, 0f, endpoint.LocalRotationDegrees),
+                    Vector3.one);
+                Handles.DrawWireCube(
+                    Vector3.zero,
+                    new Vector3(endpoint.TriggerSize.x, endpoint.TriggerSize.y, 0.01f));
+                Handles.matrix = previousMatrix;
+            }
+            else
+            {
+                Handles.DrawWireCube(center, Vector3.one * 0.62f);
+            }
+            Handles.Label(center + Vector3.up * 0.12f, ResolveTravelEndpointGlyph(endpoint.Kind));
+
+            if (!endpoint.UseSeparateArrivalPoint)
+                continue;
+
+            Vector3 arrival = ResolvePreviewWorldPosition(
+                snapshot.Grid,
+                endpoint.ArrivalWorldCell,
+                endpoint.ArrivalLocalOffset);
+            Handles.color = new Color(0.25f, 1f, 0.45f, 1f);
+            Handles.DrawDottedLine(center, arrival, 4f);
+            Handles.DrawWireDisc(arrival, snapshot.Grid.transform.forward, 0.3f);
+            Handles.Label(arrival + Vector3.up * 0.12f, "A");
+        }
+    }
+
+    private static Vector3 ResolvePreviewWorldPosition(
+        Grid grid,
+        Vector2Int worldCell,
+        Vector2 localOffset)
+    {
+        Vector3 center = grid.GetCellCenterWorld(
+            new Vector3Int(worldCell.x, worldCell.y, 0));
+        return center + grid.transform.TransformVector(
+            new Vector3(localOffset.x, localOffset.y, 0f));
+    }
+
     private static void DrawCellBounds(Grid grid, RectInt cellBounds)
     {
         Vector3 minimum = grid.CellToWorld(
@@ -842,6 +999,49 @@ internal static class RoomAuthoringDungeonPreview
             RoomObjectKind.Portal => "P",
             _ => "O"
         };
+    }
+
+    private static Color ResolveTravelEndpointColor(RoomTravelEndpointKind kind)
+    {
+        return kind switch
+        {
+            RoomTravelEndpointKind.Interaction => new Color(0.95f, 0.35f, 1f, 1f),
+            RoomTravelEndpointKind.Trigger => new Color(0.2f, 1f, 0.9f, 1f),
+            RoomTravelEndpointKind.ArrivalOnly => new Color(0.35f, 0.65f, 1f, 1f),
+            _ => Color.white
+        };
+    }
+
+    private static string ResolveTravelEndpointGlyph(RoomTravelEndpointKind kind)
+    {
+        return kind switch
+        {
+            RoomTravelEndpointKind.Interaction => "EI",
+            RoomTravelEndpointKind.Trigger => "ET",
+            RoomTravelEndpointKind.ArrivalOnly => "EA",
+            _ => "E"
+        };
+    }
+
+    private static void ResolveCorridorLengthRange(
+        DungeonLayoutResult layout,
+        out int shortestLength,
+        out int longestLength)
+    {
+        shortestLength = 0;
+        longestLength = 0;
+        if (layout == null || layout.Connections.Count == 0)
+            return;
+
+        shortestLength = int.MaxValue;
+        for (int connectionIndex = 0;
+             connectionIndex < layout.Connections.Count;
+             connectionIndex++)
+        {
+            int length = layout.Connections[connectionIndex].CorridorLength;
+            shortestLength = Mathf.Min(shortestLength, length);
+            longestLength = Mathf.Max(longestLength, length);
+        }
     }
 
     private static void FramePreview(PreviewSnapshot snapshot)

@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 책임:
 /// - 룸 라이브러리의 템플릿을 Seed 기반으로 선택해 소켓끼리 연결된 방 배치 결과를 만든다.
-/// - 연결되는 두 방의 진행축 크기와 난수 편차로 각 직선 복도의 길이를 정한다.
+/// - 연결되는 두 방의 진행축 크기와 난수 편차로 권장 길이를 정하고 충돌 시 절대 최소 길이까지 줄인다.
 /// - 방과 복도의 예약 bounds 겹침, 소켓 방향/폭, 방 사이 간격만 판단하며 테마와 Tilemap 구현 세부사항은 알지 않는다.
 /// </summary>
 public sealed class DungeonLayoutAssembler
@@ -171,7 +171,7 @@ public sealed class DungeonLayoutAssembler
                 continue;
 
             RectInt candidateLocalBounds = ResolveLocalBounds(candidate.LayoutData);
-            int corridorLength = ResolveCorridorLength(
+            int preferredCorridorLength = ResolveCorridorLength(
                 sourcePlacement.WorldBounds.size,
                 candidateLocalBounds.size,
                 openSocket.Direction,
@@ -179,46 +179,53 @@ public sealed class DungeonLayoutAssembler
                 corridorLengthPerRoomCell,
                 corridorLengthVariation,
                 random);
-            Vector2Int direction = DirectionToVector(openSocket.Direction);
-            Vector2Int targetWorldCell =
-                openSocket.WorldCell + direction * (corridorLength + 1);
-            Vector2Int candidateOrigin = targetWorldCell - candidateSocket.localCell;
-            RectInt candidateBounds = TranslateBounds(
-                candidateLocalBounds,
-                candidateOrigin);
-            RectInt corridorBounds = CreateCorridorBounds(openSocket, corridorLength);
-
-            if (OverlapsPlacedRoom(candidateBounds, result.Rooms) ||
-                OverlapsExistingCorridor(candidateBounds, result.Connections))
+            for (int corridorLength = preferredCorridorLength;
+                 corridorLength >= minimumCorridorLength;
+                 corridorLength--)
             {
-                continue;
+                Vector2Int direction = DirectionToVector(openSocket.Direction);
+                Vector2Int targetWorldCell =
+                    openSocket.WorldCell + direction * (corridorLength + 1);
+                Vector2Int candidateOrigin = targetWorldCell - candidateSocket.localCell;
+                RectInt candidateBounds = TranslateBounds(
+                    candidateLocalBounds,
+                    candidateOrigin);
+                RectInt corridorBounds = CreateCorridorBounds(openSocket, corridorLength);
+
+                if (OverlapsPlacedRoom(candidateBounds, result.Rooms) ||
+                    OverlapsExistingCorridor(candidateBounds, result.Connections))
+                {
+                    continue;
+                }
+
+                if (corridorLength > 0 &&
+                    (OverlapsPlacedRoom(corridorBounds, result.Rooms) ||
+                     OverlapsExistingCorridor(corridorBounds, result.Connections)))
+                {
+                    continue;
+                }
+
+                int placementId = result.Rooms.Count;
+                DungeonRoomPlacement placement = new(
+                    placementId,
+                    candidate,
+                    candidateOrigin,
+                    candidateBounds);
+                result.AddRoom(placement);
+                result.AddConnection(new DungeonSocketConnection(
+                    openSocket.RoomPlacementId,
+                    openSocket.SocketIndex,
+                    placementId,
+                    candidateSocketIndex,
+                    corridorLength,
+                    corridorBounds));
+                if (corridorLength < preferredCorridorLength)
+                    result.MarkCorridorLengthRelaxed();
+
+                openSockets.RemoveAt(openSocketListIndex);
+                AddOpenSockets(placement, candidateSocketIndex, openSockets);
+                return true;
             }
-
-            if (corridorLength > 0 &&
-                (OverlapsPlacedRoom(corridorBounds, result.Rooms) ||
-                 OverlapsExistingCorridor(corridorBounds, result.Connections)))
-            {
-                continue;
-            }
-
-            int placementId = result.Rooms.Count;
-            DungeonRoomPlacement placement = new(
-                placementId,
-                candidate,
-                candidateOrigin,
-                candidateBounds);
-            result.AddRoom(placement);
-            result.AddConnection(new DungeonSocketConnection(
-                openSocket.RoomPlacementId,
-                openSocket.SocketIndex,
-                placementId,
-                candidateSocketIndex,
-                corridorLength,
-                corridorBounds));
-
-            openSockets.RemoveAt(openSocketListIndex);
-            AddOpenSockets(placement, candidateSocketIndex, openSockets);
-            return true;
         }
 
         return false;

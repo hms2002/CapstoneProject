@@ -16,7 +16,8 @@ using UnityEngine.Tilemaps;
 /// - 원본 보스 복도의 바닥 변형과 벽 연결 형태별 타일 팔레트를 추출해 절차 방 데이터와 복도 설정에 베이크한다.
 /// - V0 테스트 씬이 필수 스폰 인프라만 하나씩 가지고 authored 몬스터 스폰 포인트는 갖지 않는지 컴포넌트 기준으로 검증한다.
 /// - ShadowCorridor의 전역 어둠/플레이어 시야 마스크 프리팹을 절차 그림자 씬에 동일하게 설치하고 검증한다.
-/// - 보스별 절차 Corridor 씬, 테마 룸 라이브러리, Hub 경로, Build Settings와 로딩 매니페스트를 함께 설치한다.
+/// - 세 일반 보스의 절차 Corridor와 최종보스 전용 고정 휴식 Corridor 경로, Build Settings와 로딩 매니페스트를 함께 설치한다.
+/// - 테마별 생성 수치를 DungeonGenerationProfileSO에 보존하고 설치 재실행 시 기획자 조정값을 덮어쓰지 않는다.
 /// - 테스트 씬의 GlobalUIRoot를 ProtoTypeHub의 프리팹 오버라이드와 동기화한다.
 /// </summary>
 public static class ProceduralDungeonSceneInstaller
@@ -24,9 +25,9 @@ public static class ProceduralDungeonSceneInstaller
     private const int SingleSocketSeedSweepCount = 128;
     private const int GraphPolicySeedSweepCount = 64;
     private const int ExplorationCorridorRoomCount = 15;
-    private const int PrototypeMinimumCorridorLength = 4;
-    private const float PrototypeCorridorLengthPerRoomCell = 0.35f;
-    private const int PrototypeCorridorLengthVariation = 8;
+    private const int PrototypeMinimumCorridorLength = 2;
+    private const float PrototypeCorridorLengthPerRoomCell = 0.05f;
+    private const int PrototypeCorridorLengthVariation = 2;
     private const string HubScenePath = "Assets/_Project/Scenes/ProtoTypeHub.unity";
     private const string TargetScenePath = "Assets/_Project/Scenes/ProceduralDungeonV0Test.unity";
     private const string SourceRoomPath = "Assets/_Project/Data/Dungeon/Rooms/TestTypeStart.asset";
@@ -38,6 +39,17 @@ public static class ProceduralDungeonSceneInstaller
         LibraryFolder + "/ExplorationCorridorPrototypePolicy.asset";
     private const string RunRouteCatalogPath =
         "Assets/_Project/Data/SceneFlow/Routes/RunRouteCatalog.asset";
+    private const string FinalDemonKingRouteSetPath =
+        "Assets/_Project/Data/SceneFlow/Routes/DemonkingRouteSet.asset";
+    private const string FinalDemonKingCorridorSceneName = "DemonkingCorridor";
+    private const string FinalDemonKingCorridorScenePath =
+        "Assets/_Project/Scenes/DemonkingCorridor.unity";
+    private const string RetiredProceduralDemonKingCorridorScenePath =
+        "Assets/_Project/Scenes/ProceduralDemonkingCorridor.unity";
+    private const string RetiredDemonKingLobbyConnectionPath =
+        "Assets/_Project/Data/SceneFlow/Connections/Lobby_demon_king_Corridor.asset";
+    private const string RetiredDemonKingBossConnectionPath =
+        "Assets/_Project/Data/SceneFlow/Connections/Corridor_demon_king_Boss.asset";
     private const string DoorPrefabPath = "Assets/_Project/Prefabs/Map/ShortCut/Door.prefab";
     private const string StatuePrefabPath = "Assets/_Project/Prefabs/Map/ShortCut/Statue.prefab";
     private const string SacrificeRewardAlcovePrefabPath =
@@ -64,6 +76,7 @@ public static class ProceduralDungeonSceneInstaller
         public string TargetSceneName { get; }
         public string RoomFolder { get; }
         public string LibraryPath { get; }
+        public string GenerationProfilePath { get; }
         public string RouteSetPath { get; }
         public IReadOnlyList<string> MonsterPrefabPaths { get; }
         public int PreferredSeed { get; }
@@ -82,6 +95,8 @@ public static class ProceduralDungeonSceneInstaller
             TargetScenePath = $"Assets/_Project/Scenes/{targetSceneName}.unity";
             RoomFolder = $"Assets/_Project/Data/Dungeon/Rooms/BossThemes/{themeId}";
             LibraryPath = $"{LibraryFolder}/Procedural{themeId}Library.asset";
+            GenerationProfilePath =
+                $"{DungeonGenerationProfileAssetUtility.ProfileFolder}/Procedural{themeId}GenerationProfile.asset";
             RouteSetPath = routeSetPath;
             MonsterPrefabPaths = monsterPrefabPaths;
             PreferredSeed = preferredSeed;
@@ -178,24 +193,190 @@ public static class ProceduralDungeonSceneInstaller
             if (layoutPolicy == null)
                 throw new InvalidOperationException("Exploration Corridor layout policy became unavailable.");
 
-            int resolvedSeed = ResolveThemeSeed(library, layoutPolicy, spec.PreferredSeed);
+            DungeonGenerationProfileSO generationProfile =
+                CreateOrLoadThemeGenerationProfile(
+                    spec,
+                    library,
+                    layoutPolicy);
             InstallBossThemeScene(
                 spec,
                 library,
-                layoutPolicy,
+                generationProfile,
                 tilePalette,
-                doorPrefabObject.GetComponent<DoorObject>(),
-                resolvedSeed);
+                doorPrefabObject.GetComponent<DoorObject>());
             UpdateRouteSetCorridorScene(spec);
             EnsureSceneInBuildSettings(spec.TargetScenePath);
         }
 
+        RestoreFinalDemonKingRestCorridorRoute();
+        EnsureSceneInBuildSettings(FinalDemonKingCorridorScenePath);
+        DisableRetiredDemonKingProceduralRoute();
+        DemonKingHubPortalInstaller.Install();
         AssetDatabase.SaveAssets();
-        VerifyHubBossThemeRoutes(specs);
+        VerifyBossThemeRoutesAndHubDemonKingPortal(specs);
+        VerifyFinalDemonKingRestCorridorRoute();
         ProceduralCorridorTravelInstaller.Install();
         RouteSetLoadManifestBuilderWindow.BuildAllRouteSetsBatch();
         Debug.Log(
-            $"Installed and connected {specs.Length} boss-themed procedural Corridor scenes to ProtoTypeHub.");
+            $"Installed and connected {specs.Length} normal boss procedural Corridors. " +
+            $"The final DemonKing route remains on fixed rest scene '{FinalDemonKingCorridorSceneName}'.");
+    }
+
+    /// <summary>
+    /// 책임 : 기존 세 일반 보스 절차 복도 씬의 현재 생성값을 테마 프로필로 마이그레이션하고 Generator 참조만 연결한다.
+    /// </summary>
+    [MenuItem("Tools/Dungeon/Install Boss Theme Generation Profiles Only")]
+    public static void InstallBossThemeGenerationProfilesOnly()
+    {
+        if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            return;
+
+        EnsureFolder(DungeonGenerationProfileAssetUtility.ProfileFolder);
+        DungeonLayoutPolicySO fallbackPolicy =
+            AssetDatabase.LoadAssetAtPath<DungeonLayoutPolicySO>(ExplorationLayoutPolicyPath);
+        BossThemeInstallSpec[] specs = CreateBossThemeInstallSpecs();
+        int linkedSceneCount = 0;
+
+        for (int specIndex = 0; specIndex < specs.Length; specIndex++)
+        {
+            BossThemeInstallSpec spec = specs[specIndex];
+            RoomThemeLibrarySO library =
+                AssetDatabase.LoadAssetAtPath<RoomThemeLibrarySO>(spec.LibraryPath);
+            if (library == null)
+                throw new InvalidOperationException($"Missing boss-theme room library: {spec.LibraryPath}");
+
+            Scene scene = EditorSceneManager.OpenScene(spec.TargetScenePath, OpenSceneMode.Single);
+            List<DungeonGenerator> generators = FindComponentsInScene<DungeonGenerator>(scene);
+            if (generators.Count != 1)
+            {
+                throw new InvalidOperationException(
+                    $"Expected exactly one DungeonGenerator in {spec.TargetScenePath}, found {generators.Count}.");
+            }
+
+            DungeonGenerator generator = generators[0];
+            DungeonGenerationProfileSO profile =
+                DungeonGenerationProfileAssetUtility.FindForLibrary(library);
+            if (profile == null)
+            {
+                profile = DungeonGenerationProfileAssetUtility.FindOrCreateForLibrary(
+                    library,
+                    generator.LayoutPolicy != null ? generator.LayoutPolicy : fallbackPolicy,
+                    generator.Seed,
+                    generator.RoomCount,
+                    generator.IncludeBossRoom,
+                    generator.MaxPlacementAttemptsPerRoom,
+                    generator.MinimumCorridorLength,
+                    generator.CorridorLengthPerRoomCell,
+                    generator.CorridorLengthVariation);
+            }
+
+            generator.EditorAssignGenerationProfile(profile);
+            EditorUtility.SetDirty(generator);
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            linkedSceneCount++;
+        }
+
+        AssetDatabase.SaveAssets();
+        Debug.Log(
+            $"Installed persistent generation profiles for {linkedSceneCount} normal boss Corridor scenes.");
+    }
+
+    /// <summary>
+    /// 책임 : 세 일반 보스의 생성 프로필, 활성 씬 참조와 동일 설정의 대표 레이아웃 생성 성공 여부를 검증한다.
+    /// </summary>
+    [MenuItem("Tools/Dungeon/Validate Boss Theme Generation Profiles")]
+    public static void ValidateBossThemeGenerationProfiles()
+    {
+        if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            return;
+
+        HashSet<string> enabledScenePaths = new(StringComparer.Ordinal);
+        EditorBuildSettingsScene[] buildScenes = EditorBuildSettings.scenes;
+        for (int sceneIndex = 0; sceneIndex < buildScenes.Length; sceneIndex++)
+        {
+            if (buildScenes[sceneIndex].enabled)
+                enabledScenePaths.Add(buildScenes[sceneIndex].path);
+        }
+
+        BossThemeInstallSpec[] specs = CreateBossThemeInstallSpecs();
+        for (int specIndex = 0; specIndex < specs.Length; specIndex++)
+        {
+            BossThemeInstallSpec spec = specs[specIndex];
+            RoomThemeLibrarySO library =
+                AssetDatabase.LoadAssetAtPath<RoomThemeLibrarySO>(spec.LibraryPath);
+            DungeonGenerationProfileSO profile =
+                AssetDatabase.LoadAssetAtPath<DungeonGenerationProfileSO>(
+                    spec.GenerationProfilePath);
+            if (library == null || profile == null || profile.RoomLibrary != library)
+            {
+                throw new InvalidOperationException(
+                    $"Theme generation profile contract is invalid: {spec.ThemeId}");
+            }
+
+            if (!enabledScenePaths.Contains(spec.TargetScenePath))
+                throw new InvalidOperationException($"Procedural Corridor scene is not enabled: {spec.TargetScenePath}");
+
+            Scene scene = EditorSceneManager.OpenScene(spec.TargetScenePath, OpenSceneMode.Single);
+            List<DungeonGenerator> generators = FindComponentsInScene<DungeonGenerator>(scene);
+            if (generators.Count != 1 || generators[0].GenerationProfile != profile)
+            {
+                throw new InvalidOperationException(
+                    $"Procedural Corridor scene does not reference its theme generation profile: " +
+                    $"{spec.TargetScenePath}");
+            }
+
+            DungeonGenerator generator = generators[0];
+            if (generator.RoomLibrary != profile.RoomLibrary ||
+                generator.LayoutPolicy != profile.LayoutPolicy ||
+                generator.Seed != profile.Seed ||
+                generator.RoomCount != profile.RoomCount ||
+                generator.IncludeBossRoom != profile.IncludeBossRoom ||
+                generator.MaxPlacementAttemptsPerRoom != profile.MaxPlacementAttemptsPerRoom ||
+                generator.MinimumCorridorLength != profile.MinimumCorridorLength ||
+                !Mathf.Approximately(
+                    generator.CorridorLengthPerRoomCell,
+                    profile.CorridorLengthPerRoomCell) ||
+                generator.CorridorLengthVariation != profile.CorridorLengthVariation ||
+                DungeonGenerationProfileAssetUtility.CountEnabledBuildSceneReferences(profile) < 1)
+            {
+                throw new InvalidOperationException(
+                    $"DungeonGenerator does not resolve the saved theme profile values: {spec.ThemeId}");
+            }
+
+            DungeonLayoutResult result = profile.LayoutPolicy != null && profile.IncludeBossRoom
+                ? new DungeonGraphLayoutAssembler().Assemble(
+                    profile.RoomLibrary,
+                    profile.LayoutPolicy,
+                    profile.Seed,
+                    profile.RoomCount,
+                    profile.MaxPlacementAttemptsPerRoom,
+                    profile.MinimumCorridorLength,
+                    profile.CorridorLengthPerRoomCell,
+                    profile.CorridorLengthVariation,
+                    profile.GuaranteedRoomTemplates)
+                : new DungeonLayoutAssembler().Assemble(
+                    profile.RoomLibrary,
+                    profile.Seed,
+                    profile.RoomCount,
+                    profile.IncludeBossRoom,
+                    profile.MaxPlacementAttemptsPerRoom,
+                    profile.MinimumCorridorLength,
+                    profile.CorridorLengthPerRoomCell,
+                    profile.CorridorLengthVariation);
+            if (!result.IsComplete || result.Rooms.Count != profile.RoomCount)
+            {
+                throw new InvalidOperationException(
+                    $"Saved generation profile cannot produce its requested layout. " +
+                    $"Theme={spec.ThemeId}, Reason={result.FailureReason}");
+            }
+
+            Debug.Log(
+                $"Generation profile verified. Theme={spec.ThemeId}, " +
+                $"Scene={spec.TargetSceneName}, Rooms={profile.RoomCount}, " +
+                $"Corridor={profile.MinimumCorridorLength}+size*{profile.CorridorLengthPerRoomCell}" +
+                $"+random(0..{profile.CorridorLengthVariation})");
+        }
     }
 
     [MenuItem("Tools/Dungeon/Validate Exploration Corridor Layout Policy")]
@@ -220,16 +401,39 @@ public static class ProceduralDungeonSceneInstaller
             if (library == null)
                 throw new InvalidOperationException($"Missing boss-theme room library: {spec.LibraryPath}");
 
-            int representativeSeed = ResolveThemeSeed(library, policy, spec.PreferredSeed);
+            DungeonGenerationProfileSO profile =
+                DungeonGenerationProfileAssetUtility.FindForLibrary(library);
+            int roomCount = profile != null ? profile.RoomCount : ExplorationCorridorRoomCount;
+            int maxPlacementAttempts = profile != null
+                ? profile.MaxPlacementAttemptsPerRoom
+                : 512;
+            DungeonLayoutPolicySO resolvedPolicy = profile != null && profile.LayoutPolicy != null
+                ? profile.LayoutPolicy
+                : policy;
+            int representativeSeed = profile != null
+                ? profile.Seed
+                : ResolveThemeSeed(library, policy, spec.PreferredSeed);
             VerifyGraphFirstPolicyAcrossSeeds(
                 library,
-                policy,
-                ExplorationCorridorRoomCount,
-                maxPlacementAttemptsPerRoom: 512);
+                resolvedPolicy,
+                roomCount,
+                maxPlacementAttempts,
+                profile != null ? profile.MinimumCorridorLength : PrototypeMinimumCorridorLength,
+                profile != null ? profile.CorridorLengthPerRoomCell : PrototypeCorridorLengthPerRoomCell,
+                profile != null ? profile.CorridorLengthVariation : PrototypeCorridorLengthVariation);
             Debug.Log(
                 $"Exploration layout policy verified. Theme={spec.ThemeId}, " +
                 $"RepresentativeSeed={representativeSeed}");
         }
+    }
+
+    /// <summary>
+    /// 책임 : HUB의 최종보스 포탈 목적지가 절차 복도가 아니라 고정 무전투 휴식 복도를 거치는지 수동 검증 진입점을 제공한다.
+    /// </summary>
+    [MenuItem("Tools/Dungeon/Validate Final DemonKing Rest Corridor Route")]
+    public static void ValidateFinalDemonKingRestCorridorRoute()
+    {
+        VerifyFinalDemonKingRestCorridorRoute();
     }
 
     private static BossThemeInstallSpec[] CreateBossThemeInstallSpecs()
@@ -268,53 +472,47 @@ public static class ProceduralDungeonSceneInstaller
                 "Assets/_Project/Prefabs/Monsters/SlimeCorridor/Knight.prefab",
                 "Assets/_Project/Prefabs/Monsters/SlimeCorridor/Wizard.prefab",
                 "Assets/_Project/Prefabs/Monsters/SlimeCorridor/Bishop.prefab",
-                "Assets/_Project/Prefabs/Monsters/SlimeCorridor/Rook.prefab"),
-            new BossThemeInstallSpec(
-                "DemonKing",
-                "Assets/_Project/Scenes/DemonkingCorridor.unity",
-                "ProceduralDemonkingCorridor",
-                "Assets/_Project/Data/SceneFlow/Routes/DemonkingRouteSet.asset",
-                20263851,
-                "Assets/_Project/Prefabs/Monsters/CommonCorridor/ArcaneMeleeGolem.prefab",
-                "Assets/_Project/Prefabs/Monsters/CommonCorridor/ArcaneTankGolem.prefab",
-                "Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinGunner.prefab",
-                "Assets/_Project/Prefabs/Monsters/CommonCorridor/GoblinTank.prefab",
-                "Assets/_Project/Prefabs/Monsters/CommonCorridor/LizardMage.prefab")
+                "Assets/_Project/Prefabs/Monsters/SlimeCorridor/Rook.prefab")
         };
     }
 
     /// <summary>
     /// 책임:
     /// - 기획서의 12~18 Area, 보스 거리 6~8, 분기 2~4, 순환 1~2와 필수 보상/전투 수를 공유 정책 에셋으로 설치한다.
-    /// - 네 보스 테마가 같은 탐색 구조를 사용하면서도 개별 씬이나 조립기 코드에 수치를 중복 저장하지 않게 한다.
+    /// - 세 일반 보스 테마가 같은 탐색 구조를 사용하면서도 개별 씬이나 조립기 코드에 수치를 중복 저장하지 않게 한다.
     /// </summary>
     private static DungeonLayoutPolicySO CreateOrUpdateExplorationLayoutPolicy()
     {
         DungeonLayoutPolicySO policy =
             AssetDatabase.LoadAssetAtPath<DungeonLayoutPolicySO>(ExplorationLayoutPolicyPath);
+        bool wasCreated = policy == null;
         if (policy == null)
         {
             policy = ScriptableObject.CreateInstance<DungeonLayoutPolicySO>();
             AssetDatabase.CreateAsset(policy, ExplorationLayoutPolicyPath);
         }
 
-        policy.EditorConfigure(
-            recommendedMinimumRooms: 12,
-            recommendedMaximumRooms: 18,
-            minimumBossDistance: 6,
-            maximumBossDistance: 8,
-            minimumBranches: 2,
-            maximumBranches: 4,
-            minimumCycles: 1,
-            maximumCycles: 2,
-            topologyAttempts: 512,
-            requiredTreasureRooms: 1,
-            requiredEventRooms: 0,
-            requiredShopRooms: 0,
-            requiredMinimumCombatRooms: 4,
-            shouldPreferSpecialRoomsAtDeadEnds: true);
-        policy.name = "ExplorationCorridorPrototypePolicy";
-        EditorUtility.SetDirty(policy);
+        if (wasCreated)
+        {
+            policy.EditorConfigure(
+                recommendedMinimumRooms: 12,
+                recommendedMaximumRooms: 18,
+                minimumBossDistance: 6,
+                maximumBossDistance: 8,
+                minimumBranches: 2,
+                maximumBranches: 4,
+                minimumCycles: 1,
+                maximumCycles: 2,
+                topologyAttempts: 512,
+                requiredTreasureRooms: 1,
+                requiredEventRooms: 0,
+                requiredShopRooms: 0,
+                requiredMinimumCombatRooms: 4,
+                shouldPreferSpecialRoomsAtDeadEnds: true);
+            policy.name = "ExplorationCorridorPrototypePolicy";
+            EditorUtility.SetDirty(policy);
+        }
+
         return policy;
     }
 
@@ -1268,6 +1466,44 @@ public static class ProceduralDungeonSceneInstaller
         }
     }
 
+    /// <summary>
+    /// 책임 : 기존 테마 생성 프로필은 그대로 보존하고, 최초 설치에서만 대표 Seed와 기본 생성 수치로 새 프로필을 만든다.
+    /// </summary>
+    private static DungeonGenerationProfileSO CreateOrLoadThemeGenerationProfile(
+        BossThemeInstallSpec spec,
+        RoomThemeLibrarySO library,
+        DungeonLayoutPolicySO layoutPolicy)
+    {
+        DungeonGenerationProfileSO profile =
+            AssetDatabase.LoadAssetAtPath<DungeonGenerationProfileSO>(
+                spec.GenerationProfilePath);
+        profile ??= DungeonGenerationProfileAssetUtility.FindForLibrary(library);
+        if (profile != null)
+        {
+            if (profile.RoomLibrary != library)
+            {
+                throw new InvalidOperationException(
+                    $"Generation profile belongs to a different room library: " +
+                    $"{AssetDatabase.GetAssetPath(profile)}");
+            }
+
+            return profile;
+        }
+
+        int resolvedSeed = ResolveThemeSeed(library, layoutPolicy, spec.PreferredSeed);
+        profile = DungeonGenerationProfileAssetUtility.FindOrCreateForLibrary(
+            library,
+            layoutPolicy,
+            resolvedSeed,
+            ExplorationCorridorRoomCount,
+            includeBossRoom: true,
+            maxPlacementAttemptsPerRoom: 512,
+            minimumCorridorLength: PrototypeMinimumCorridorLength,
+            corridorLengthPerRoomCell: PrototypeCorridorLengthPerRoomCell,
+            corridorLengthVariation: PrototypeCorridorLengthVariation);
+        return profile;
+    }
+
     private static int ResolveThemeSeed(
         RoomThemeLibrarySO library,
         DungeonLayoutPolicySO layoutPolicy,
@@ -1350,10 +1586,9 @@ public static class ProceduralDungeonSceneInstaller
     private static void InstallBossThemeScene(
         BossThemeInstallSpec spec,
         RoomThemeLibrarySO library,
-        DungeonLayoutPolicySO layoutPolicy,
+        DungeonGenerationProfileSO generationProfile,
         BossThemeTilePalette tilePalette,
-        DoorObject doorPrefab,
-        int seed)
+        DoorObject doorPrefab)
     {
         if (doorPrefab == null)
             throw new InvalidOperationException($"Connected Door prefab is invalid: {DoorPrefabPath}");
@@ -1375,10 +1610,11 @@ public static class ProceduralDungeonSceneInstaller
         library = AssetDatabase.LoadAssetAtPath<RoomThemeLibrarySO>(spec.LibraryPath);
         if (library == null)
             throw new InvalidOperationException($"Theme library is missing: {spec.LibraryPath}");
-        layoutPolicy =
-            AssetDatabase.LoadAssetAtPath<DungeonLayoutPolicySO>(ExplorationLayoutPolicyPath);
-        if (layoutPolicy == null)
-            throw new InvalidOperationException("Exploration Corridor layout policy is missing after scene load.");
+        string generationProfilePath = AssetDatabase.GetAssetPath(generationProfile);
+        generationProfile =
+            AssetDatabase.LoadAssetAtPath<DungeonGenerationProfileSO>(generationProfilePath);
+        if (generationProfile == null || generationProfile.RoomLibrary != library)
+            throw new InvalidOperationException("Theme generation profile is missing after scene load.");
 
         SyncHubUiIntoScene(scene);
         InstallThemeSceneGimmicks(spec, scene);
@@ -1438,15 +1674,16 @@ public static class ProceduralDungeonSceneInstaller
         generator.EditorConfigure(
             library,
             builder,
-            seed,
-            ExplorationCorridorRoomCount,
+            generationProfile.Seed,
+            generationProfile.RoomCount,
+            generationProfile.IncludeBossRoom,
+            generationProfile.MaxPlacementAttemptsPerRoom,
+            generationProfile.MinimumCorridorLength,
+            generationProfile.CorridorLengthPerRoomCell,
+            generationProfile.CorridorLengthVariation,
             true,
-            512,
-            PrototypeMinimumCorridorLength,
-            PrototypeCorridorLengthPerRoomCell,
-            PrototypeCorridorLengthVariation,
-            true,
-            layoutPolicy);
+            generationProfile.LayoutPolicy,
+            generationProfile);
         EditorUtility.SetDirty(builder);
         EditorUtility.SetDirty(generator);
         EditorSceneManager.MarkSceneDirty(scene);
@@ -1460,7 +1697,8 @@ public static class ProceduralDungeonSceneInstaller
 
         Debug.Log(
             $"Installed {spec.ThemeId} procedural Corridor scene. " +
-            $"Scene={spec.TargetScenePath}, Seed={seed}",
+            $"Scene={spec.TargetScenePath}, Profile={generationProfile.name}, " +
+            $"Seed={generationProfile.Seed}",
             generatedRoot);
     }
 
@@ -1646,6 +1884,218 @@ public static class ProceduralDungeonSceneInstaller
         EditorUtility.SetDirty(routeSet);
     }
 
+    /// <summary>
+    /// 책임 : 최종보스 RouteSet이 일반 보스용 절차 복도가 아니라 전투 없는 고정 휴식 복도를 유지하게 한다.
+    /// </summary>
+    private static void RestoreFinalDemonKingRestCorridorRoute()
+    {
+        CorridorBossRouteSetSO routeSet =
+            AssetDatabase.LoadAssetAtPath<CorridorBossRouteSetSO>(FinalDemonKingRouteSetPath);
+        if (routeSet == null)
+            throw new InvalidOperationException($"Final DemonKing route set is missing: {FinalDemonKingRouteSetPath}");
+
+        SerializedObject serializedRouteSet = new(routeSet);
+        SerializedProperty corridorSceneName =
+            serializedRouteSet.FindProperty("corridorSceneName");
+        if (corridorSceneName == null)
+            throw new InvalidOperationException("CorridorBossRouteSetSO serialization contract changed.");
+
+        corridorSceneName.stringValue = FinalDemonKingCorridorSceneName;
+        serializedRouteSet.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(routeSet);
+    }
+
+    /// <summary>
+    /// 책임 : 런의 final RouteSet, Build Settings와 고정 휴식 씬의 무전투·보스행 포탈 계약을 함께 검증한다.
+    /// </summary>
+    private static void VerifyFinalDemonKingRestCorridorRoute()
+    {
+        RunRouteCatalogSO catalog =
+            AssetDatabase.LoadAssetAtPath<RunRouteCatalogSO>(RunRouteCatalogPath);
+        CorridorBossRouteSetSO routeSet =
+            AssetDatabase.LoadAssetAtPath<CorridorBossRouteSetSO>(FinalDemonKingRouteSetPath);
+        if (catalog == null ||
+            routeSet == null ||
+            catalog.FinalRouteSet != routeSet ||
+            !string.Equals(
+                routeSet.CorridorSceneName,
+                FinalDemonKingCorridorSceneName,
+                StringComparison.Ordinal) ||
+            AssetDatabase.LoadAssetAtPath<SceneAsset>(FinalDemonKingCorridorScenePath) == null)
+        {
+            throw new InvalidOperationException(
+                "The final DemonKing RouteSet is not bound to its fixed rest Corridor scene.");
+        }
+
+        bool buildSceneEnabled = false;
+        EditorBuildSettingsScene[] buildScenes = EditorBuildSettings.scenes;
+        for (int i = 0; i < buildScenes.Length; i++)
+        {
+            if (buildScenes[i].enabled &&
+                string.Equals(
+                    buildScenes[i].path,
+                    FinalDemonKingCorridorScenePath,
+                    StringComparison.Ordinal))
+            {
+                buildSceneEnabled = true;
+                break;
+            }
+        }
+
+        if (!buildSceneEnabled)
+            throw new InvalidOperationException("The fixed DemonKing rest Corridor is disabled in Build Settings.");
+
+        if (IsBuildSceneEnabled(RetiredProceduralDemonKingCorridorScenePath))
+        {
+            throw new InvalidOperationException(
+                "The retired procedural DemonKing Corridor must remain disabled in Build Settings.");
+        }
+
+        VerifyRetiredConnectionDisabled(RetiredDemonKingLobbyConnectionPath);
+        VerifyRetiredConnectionDisabled(RetiredDemonKingBossConnectionPath);
+
+        Scene previousActiveScene = SceneManager.GetActiveScene();
+        Scene restScene = EditorSceneManager.OpenScene(
+            FinalDemonKingCorridorScenePath,
+            OpenSceneMode.Additive);
+        try
+        {
+            int authoredSpawnCount = 0;
+            bool hasCorridorToBossPortal = false;
+            GameObject[] roots = restScene.GetRootGameObjects();
+            for (int rootIndex = 0; rootIndex < roots.Length; rootIndex++)
+            {
+                GameObject root = roots[rootIndex];
+                authoredSpawnCount +=
+                    root.GetComponentsInChildren<MonsterSpawnContainer>(true).Length;
+
+                MonsterSpawner[] spawners = root.GetComponentsInChildren<MonsterSpawner>(true);
+                for (int spawnerIndex = 0; spawnerIndex < spawners.Length; spawnerIndex++)
+                {
+                    SerializedObject serializedSpawner = new(spawners[spawnerIndex]);
+                    SerializedProperty spawnPoints = serializedSpawner.FindProperty("spawnPoints");
+                    SerializedProperty spawnRooms = serializedSpawner.FindProperty("spawnRooms");
+                    authoredSpawnCount += spawnPoints?.arraySize ?? 0;
+                    authoredSpawnCount += spawnRooms?.arraySize ?? 0;
+                }
+
+                ScenePortal[] portals = root.GetComponentsInChildren<ScenePortal>(true);
+                for (int portalIndex = 0; portalIndex < portals.Length; portalIndex++)
+                {
+                    if (portals[portalIndex].PortalTransitionType == TransitionType.CorridorToBoss)
+                    {
+                        hasCorridorToBossPortal = true;
+                        break;
+                    }
+                }
+            }
+
+            if (authoredSpawnCount != 0 || !hasCorridorToBossPortal)
+            {
+                throw new InvalidOperationException(
+                    $"Fixed DemonKing rest Corridor contract failed. " +
+                    $"CombatSpawns={authoredSpawnCount}, HasBossPortal={hasCorridorToBossPortal}");
+            }
+        }
+        finally
+        {
+            EditorSceneManager.CloseScene(restScene, true);
+            if (previousActiveScene.IsValid() && previousActiveScene.isLoaded)
+                SceneManager.SetActiveScene(previousActiveScene);
+        }
+
+        Debug.Log(
+            $"Verified final DemonKing fixed rest Corridor route. " +
+            $"Scene={FinalDemonKingCorridorSceneName}, CombatSpawns=0, HasBossPortal=True, " +
+            "RetiredProceduralRouteDisabled=True.");
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 폐기된 절차 DemonKing 씬을 Build Settings에서 비활성화한다.
+    /// - 남아 있는 레거시 Lobby·Boss 연결 에셋의 양방향 이동을 꺼 정식 고정 휴식 복도와 충돌하지 않게 한다.
+    /// </summary>
+    private static void DisableRetiredDemonKingProceduralRoute()
+    {
+        EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
+        bool buildSettingsChanged = false;
+        for (int index = 0; index < scenes.Length; index++)
+        {
+            if (!string.Equals(
+                    scenes[index].path,
+                    RetiredProceduralDemonKingCorridorScenePath,
+                    StringComparison.Ordinal) ||
+                !scenes[index].enabled)
+            {
+                continue;
+            }
+
+            scenes[index] = new EditorBuildSettingsScene(
+                RetiredProceduralDemonKingCorridorScenePath,
+                false);
+            buildSettingsChanged = true;
+        }
+
+        if (buildSettingsChanged)
+            EditorBuildSettings.scenes = scenes;
+
+        DisableRetiredConnection(RetiredDemonKingLobbyConnectionPath);
+        DisableRetiredConnection(RetiredDemonKingBossConnectionPath);
+    }
+
+    /// <summary>
+    /// 책임 : 레거시 연결 에셋을 삭제하지 않고 양방향만 비활성화해 참조 자산을 안전하게 보관한다.
+    /// </summary>
+    private static void DisableRetiredConnection(string assetPath)
+    {
+        SceneConnectionSO retiredConnection =
+            AssetDatabase.LoadAssetAtPath<SceneConnectionSO>(assetPath);
+        if (retiredConnection == null)
+            return;
+
+        var serializedConnection = new SerializedObject(retiredConnection);
+        serializedConnection.Update();
+        serializedConnection.FindProperty("aToB")
+            .FindPropertyRelative("enabled").boolValue = false;
+        serializedConnection.FindProperty("bToA")
+            .FindPropertyRelative("enabled").boolValue = false;
+        serializedConnection.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(retiredConnection);
+    }
+
+    /// <summary>
+    /// 책임 : 지정한 씬이 현재 Player Build 대상에 활성 상태로 남아 있는지 판정한다.
+    /// </summary>
+    private static bool IsBuildSceneEnabled(string scenePath)
+    {
+        EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
+        for (int index = 0; index < scenes.Length; index++)
+        {
+            if (scenes[index].enabled &&
+                string.Equals(scenes[index].path, scenePath, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 책임 : 보존 중인 레거시 연결 에셋이 다시 활성화되어 정식 DemonKing 동선을 우회하지 않는지 검증한다.
+    /// </summary>
+    private static void VerifyRetiredConnectionDisabled(string assetPath)
+    {
+        SceneConnectionSO retiredConnection =
+            AssetDatabase.LoadAssetAtPath<SceneConnectionSO>(assetPath);
+        if (retiredConnection != null &&
+            (retiredConnection.AToB.Enabled || retiredConnection.BToA.Enabled))
+        {
+            throw new InvalidOperationException(
+                $"Retired DemonKing connection must remain disabled: {assetPath}");
+        }
+    }
+
     private static void EnsureSceneInBuildSettings(string scenePath)
     {
         EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
@@ -1668,7 +2118,7 @@ public static class ProceduralDungeonSceneInstaller
         EditorBuildSettings.scenes = scenes;
     }
 
-    private static void VerifyHubBossThemeRoutes(BossThemeInstallSpec[] specs)
+    private static void VerifyBossThemeRoutesAndHubDemonKingPortal(BossThemeInstallSpec[] specs)
     {
         RunRouteCatalogSO catalog =
             AssetDatabase.LoadAssetAtPath<RunRouteCatalogSO>(RunRouteCatalogPath);
@@ -1717,43 +2167,11 @@ public static class ProceduralDungeonSceneInstaller
             }
         }
 
-        Scene previousActiveScene = SceneManager.GetActiveScene();
-        Scene hubScene = EditorSceneManager.OpenScene(HubScenePath, OpenSceneMode.Additive);
-        try
-        {
-            bool foundRunStartPortal = false;
-            GameObject[] roots = hubScene.GetRootGameObjects();
-            for (int rootIndex = 0; rootIndex < roots.Length && !foundRunStartPortal; rootIndex++)
-            {
-                ScenePortal[] portals =
-                    roots[rootIndex].GetComponentsInChildren<ScenePortal>(true);
-                for (int portalIndex = 0; portalIndex < portals.Length; portalIndex++)
-                {
-                    ScenePortal portal = portals[portalIndex];
-                    if (portal.PortalTransitionType == TransitionType.HubToRunStart &&
-                        portal.StartRunRouteCatalog == catalog)
-                    {
-                        foundRunStartPortal = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!foundRunStartPortal)
-            {
-                throw new InvalidOperationException(
-                    "ProtoTypeHub has no HubToRunStart portal connected to RunRouteCatalog.");
-            }
-        }
-        finally
-        {
-            EditorSceneManager.CloseScene(hubScene, true);
-            if (previousActiveScene.IsValid() && previousActiveScene.isLoaded)
-                SceneManager.SetActiveScene(previousActiveScene);
-        }
+        DemonKingHubPortalInstaller.Validate();
 
         Debug.Log(
-            $"Verified ProtoTypeHub -> {specs.Length} themed Corridor routes -> boss scenes.");
+            $"Verified {specs.Length} normal themed Corridor routes and " +
+            "ProtoTypeHub ScenePortal -> fixed DemonkingCorridor.");
     }
 
     [MenuItem("Tools/Dungeon/Sync Hub UI To V0 Test Scene")]
@@ -2749,11 +3167,18 @@ public static class ProceduralDungeonSceneInstaller
                 generator.RoomLibrary,
                 generator.LayoutPolicy,
                 generator.RoomCount,
-                generator.MaxPlacementAttemptsPerRoom);
+                generator.MaxPlacementAttemptsPerRoom,
+                generator.MinimumCorridorLength,
+                generator.CorridorLengthPerRoomCell,
+                generator.CorridorLengthVariation);
         }
         else
         {
-            VerifySingleSocketBossAcrossSeeds(generator.RoomLibrary);
+            VerifySingleSocketBossAcrossSeeds(
+                generator.RoomLibrary,
+                generator.MinimumCorridorLength,
+                generator.CorridorLengthPerRoomCell,
+                generator.CorridorLengthVariation);
         }
         VerifyAdaptiveStraightCorridors(layout, builder, generator);
         VerifySocketWallAndColliderState(layout, builder);
@@ -3039,18 +3464,20 @@ public static class ProceduralDungeonSceneInstaller
             int secondDepth = horizontal
                 ? secondPlacement.WorldBounds.width
                 : secondPlacement.WorldBounds.height;
-            int minimumLength = generator.MinimumCorridorLength + Mathf.CeilToInt(
+            int preferredLength = generator.MinimumCorridorLength + Mathf.CeilToInt(
                 (firstDepth + secondDepth) * generator.CorridorLengthPerRoomCell);
-            int maximumLength = minimumLength + generator.CorridorLengthVariation;
+            int maximumPreferredLength = preferredLength + generator.CorridorLengthVariation;
             int actualLength = connection.CorridorLength;
             bool invalidLength = layout.UsesGraphFirstLayout
-                ? actualLength < minimumLength
-                : actualLength < minimumLength || actualLength > maximumLength;
+                ? actualLength < generator.MinimumCorridorLength
+                : actualLength < generator.MinimumCorridorLength ||
+                  actualLength > maximumPreferredLength;
             if (invalidLength)
             {
                 throw new InvalidOperationException(
                     $"Adaptive corridor length is outside its allowed range at connection {connectionIndex}. " +
-                    $"Expected={(layout.UsesGraphFirstLayout ? $">={minimumLength}" : $"{minimumLength}..{maximumLength}")}, " +
+                    $"Expected={(layout.UsesGraphFirstLayout ? $">={generator.MinimumCorridorLength}" : $"{generator.MinimumCorridorLength}..{maximumPreferredLength}")}, " +
+                    $"Preferred={preferredLength}..{maximumPreferredLength}, " +
                     $"Actual={actualLength}");
             }
 
@@ -3623,7 +4050,11 @@ public static class ProceduralDungeonSceneInstaller
             throw new InvalidOperationException("The single Boss socket was not consumed by a connection.");
     }
 
-    private static void VerifySingleSocketBossAcrossSeeds(RoomThemeLibrarySO library)
+    private static void VerifySingleSocketBossAcrossSeeds(
+        RoomThemeLibrarySO library,
+        int minimumCorridorLength = PrototypeMinimumCorridorLength,
+        float corridorLengthPerRoomCell = PrototypeCorridorLengthPerRoomCell,
+        int corridorLengthVariation = PrototypeCorridorLengthVariation)
     {
         DungeonLayoutAssembler assembler = new();
         for (int seed = 0; seed < SingleSocketSeedSweepCount; seed++)
@@ -3634,9 +4065,9 @@ public static class ProceduralDungeonSceneInstaller
                 6,
                 includeBossRoom: true,
                 maxPlacementAttemptsPerRoom: 512,
-                minimumCorridorLength: PrototypeMinimumCorridorLength,
-                corridorLengthPerRoomCell: PrototypeCorridorLengthPerRoomCell,
-                corridorLengthVariation: PrototypeCorridorLengthVariation);
+                minimumCorridorLength,
+                corridorLengthPerRoomCell,
+                corridorLengthVariation);
 
             if (!result.IsComplete || result.Rooms.Count != 6 || result.Connections.Count != 5)
             {
@@ -3659,8 +4090,15 @@ public static class ProceduralDungeonSceneInstaller
         RoomThemeLibrarySO library,
         DungeonLayoutPolicySO policy,
         int roomCount,
-        int maxPlacementAttemptsPerRoom)
+        int maxPlacementAttemptsPerRoom,
+        int minimumCorridorLength,
+        float corridorLengthPerRoomCell,
+        int corridorLengthVariation)
     {
+        int shortestCorridorLength = int.MaxValue;
+        int longestCorridorLength = 0;
+        int relaxedLayoutCount = 0;
+        string longestCorridorContext = string.Empty;
         for (int seed = 0; seed < GraphPolicySeedSweepCount; seed++)
         {
             DungeonLayoutResult result = new DungeonGraphLayoutAssembler().Assemble(
@@ -3669,9 +4107,9 @@ public static class ProceduralDungeonSceneInstaller
                 seed,
                 roomCount,
                 maxPlacementAttemptsPerRoom,
-                PrototypeMinimumCorridorLength,
-                PrototypeCorridorLengthPerRoomCell,
-                PrototypeCorridorLengthVariation);
+                minimumCorridorLength,
+                corridorLengthPerRoomCell,
+                corridorLengthVariation);
             int expectedConnections = roomCount - 1 + result.CycleConnectionCount;
             if (!result.IsComplete ||
                 !result.UsesGraphFirstLayout ||
@@ -3696,13 +4134,40 @@ public static class ProceduralDungeonSceneInstaller
             }
 
             VerifySingleSocketBossPlacement(result);
+            if (result.UsedCorridorLengthRelaxation)
+                relaxedLayoutCount++;
+            for (int connectionIndex = 0;
+                 connectionIndex < result.Connections.Count;
+                 connectionIndex++)
+            {
+                int corridorLength = result.Connections[connectionIndex].CorridorLength;
+                shortestCorridorLength = Mathf.Min(shortestCorridorLength, corridorLength);
+                if (corridorLength > longestCorridorLength)
+                {
+                    longestCorridorLength = corridorLength;
+                    DungeonSocketConnection connection = result.Connections[connectionIndex];
+                    DungeonRoomPlacement first = FindPlacement(
+                        result,
+                        connection.FirstRoomPlacementId);
+                    DungeonRoomPlacement second = FindPlacement(
+                        result,
+                        connection.SecondRoomPlacementId);
+                    longestCorridorContext =
+                        $"Seed={seed}, Connection={connectionIndex}, " +
+                        $"First={first.Template.LayoutData.roomId}{first.WorldBounds}, " +
+                        $"Second={second.Template.LayoutData.roomId}{second.WorldBounds}";
+                }
+            }
         }
 
         Debug.Log(
             $"Graph-first policy verification passed for {GraphPolicySeedSweepCount} seeds. " +
             $"Rooms={roomCount}, BossDistance={policy.MinimumBossGraphDistance}..{policy.MaximumBossGraphDistance}, " +
             $"Branches={policy.MinimumMeaningfulBranches}..{policy.MaximumMeaningfulBranches}, " +
-            $"Cycles={policy.MinimumCycleConnections}..{policy.MaximumCycleConnections}.");
+            $"Cycles={policy.MinimumCycleConnections}..{policy.MaximumCycleConnections}, " +
+            $"CorridorLength={shortestCorridorLength}..{longestCorridorLength}, " +
+            $"RelaxedLayouts={relaxedLayoutCount}/{GraphPolicySeedSweepCount}, " +
+            $"Longest=({longestCorridorContext}).");
     }
 
     private static int CountRoomType(DungeonLayoutResult layout, RoomType roomType)

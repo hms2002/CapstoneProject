@@ -11,6 +11,7 @@ using System.Collections.Generic;
 public sealed class DungeonGenerator : MonoBehaviour
 {
     [Header("Dependencies")]
+    [SerializeField] private DungeonGenerationProfileSO generationProfile;
     [SerializeField] private RoomThemeLibrarySO roomLibrary;
     [SerializeField] private DungeonRoomBuilder roomBuilder;
 
@@ -23,22 +24,38 @@ public sealed class DungeonGenerator : MonoBehaviour
     [SerializeField] private bool includeBossRoom = true;
     [SerializeField, Min(1)] private int maxPlacementAttemptsPerRoom = 128;
     [FormerlySerializedAs("corridorLength")]
-    [SerializeField, Min(0)] private int minimumCorridorLength = 4;
-    [SerializeField, Range(0f, 1f)] private float corridorLengthPerRoomCell = 0.35f;
-    [SerializeField, Range(0, 32)] private int corridorLengthVariation = 8;
+    [SerializeField, Min(0)] private int minimumCorridorLength = 2;
+    [SerializeField, Range(0f, 1f)] private float corridorLengthPerRoomCell = 0.05f;
+    [SerializeField, Range(0, 32)] private int corridorLengthVariation = 2;
     [SerializeField] private bool generateOnStart = true;
 
     private DungeonLayoutAssembler layoutAssembler;
 
-    public RoomThemeLibrarySO RoomLibrary => roomLibrary;
+    public DungeonGenerationProfileSO GenerationProfile => generationProfile;
+    public RoomThemeLibrarySO RoomLibrary => generationProfile != null
+        ? generationProfile.RoomLibrary
+        : roomLibrary;
     public DungeonRoomBuilder RoomBuilder => roomBuilder;
-    public DungeonLayoutPolicySO LayoutPolicy => layoutPolicy;
-    public int RoomCount => roomCount;
-    public bool IncludeBossRoom => includeBossRoom;
-    public int MaxPlacementAttemptsPerRoom => maxPlacementAttemptsPerRoom;
-    public int MinimumCorridorLength => minimumCorridorLength;
-    public float CorridorLengthPerRoomCell => corridorLengthPerRoomCell;
-    public int CorridorLengthVariation => corridorLengthVariation;
+    public DungeonLayoutPolicySO LayoutPolicy => generationProfile != null
+        ? generationProfile.LayoutPolicy
+        : layoutPolicy;
+    public int Seed => generationProfile != null ? generationProfile.Seed : seed;
+    public int RoomCount => generationProfile != null ? generationProfile.RoomCount : roomCount;
+    public bool IncludeBossRoom => generationProfile != null
+        ? generationProfile.IncludeBossRoom
+        : includeBossRoom;
+    public int MaxPlacementAttemptsPerRoom => generationProfile != null
+        ? generationProfile.MaxPlacementAttemptsPerRoom
+        : maxPlacementAttemptsPerRoom;
+    public int MinimumCorridorLength => generationProfile != null
+        ? generationProfile.MinimumCorridorLength
+        : minimumCorridorLength;
+    public float CorridorLengthPerRoomCell => generationProfile != null
+        ? generationProfile.CorridorLengthPerRoomCell
+        : corridorLengthPerRoomCell;
+    public int CorridorLengthVariation => generationProfile != null
+        ? generationProfile.CorridorLengthVariation
+        : corridorLengthVariation;
     public string DungeonStateId => ResolveDungeonStateId();
     public DungeonReentryPolicy ReentryPolicy => reentryPolicy;
     public DungeonLayoutResult LastLayout { get; private set; }
@@ -57,9 +74,12 @@ public sealed class DungeonGenerator : MonoBehaviour
         HasCompletedInitialGeneration = false;
         LastGenerationSucceeded = false;
 
-        if (roomLibrary == null)
+        RoomThemeLibrarySO resolvedRoomLibrary = RoomLibrary;
+        if (resolvedRoomLibrary == null)
         {
-            Debug.LogError("DungeonGenerator requires a RoomThemeLibrarySO.", this);
+            Debug.LogError(
+                "DungeonGenerator requires a RoomThemeLibrarySO, directly or through its generation profile.",
+                this);
             return false;
         }
 
@@ -70,28 +90,38 @@ public sealed class DungeonGenerator : MonoBehaviour
         }
 
         string stateId = ResolveDungeonStateId();
-        int resolvedSeed = RunSessionStore.ResolveDungeonSeed(stateId, reentryPolicy, seed);
+        int resolvedSeed = RunSessionStore.ResolveDungeonSeed(stateId, reentryPolicy, Seed);
         LastGenerationSeed = resolvedSeed;
         layoutAssembler ??= new DungeonLayoutAssembler();
-        LastLayout = layoutPolicy != null && includeBossRoom
+        DungeonLayoutPolicySO resolvedLayoutPolicy = LayoutPolicy;
+        int resolvedRoomCount = RoomCount;
+        bool resolvedIncludeBossRoom = IncludeBossRoom;
+        int resolvedMaxPlacementAttempts = MaxPlacementAttemptsPerRoom;
+        int resolvedMinimumCorridorLength = MinimumCorridorLength;
+        float resolvedCorridorLengthPerRoomCell = CorridorLengthPerRoomCell;
+        int resolvedCorridorLengthVariation = CorridorLengthVariation;
+        LastLayout = resolvedLayoutPolicy != null && resolvedIncludeBossRoom
             ? new DungeonGraphLayoutAssembler().Assemble(
-                roomLibrary,
-                layoutPolicy,
+                resolvedRoomLibrary,
+                resolvedLayoutPolicy,
                 resolvedSeed,
-                roomCount,
-                maxPlacementAttemptsPerRoom,
-                minimumCorridorLength,
-                corridorLengthPerRoomCell,
-                corridorLengthVariation)
+                resolvedRoomCount,
+                resolvedMaxPlacementAttempts,
+                resolvedMinimumCorridorLength,
+                resolvedCorridorLengthPerRoomCell,
+                resolvedCorridorLengthVariation,
+                generationProfile != null
+                    ? generationProfile.GuaranteedRoomTemplates
+                    : null)
             : layoutAssembler.Assemble(
-                roomLibrary,
+                resolvedRoomLibrary,
                 resolvedSeed,
-                roomCount,
-                includeBossRoom,
-                maxPlacementAttemptsPerRoom,
-                minimumCorridorLength,
-                corridorLengthPerRoomCell,
-                corridorLengthVariation);
+                resolvedRoomCount,
+                resolvedIncludeBossRoom,
+                resolvedMaxPlacementAttempts,
+                resolvedMinimumCorridorLength,
+                resolvedCorridorLengthPerRoomCell,
+                resolvedCorridorLengthVariation);
 
         if (LastLayout.Rooms.Count == 0)
         {
@@ -123,17 +153,72 @@ public sealed class DungeonGenerator : MonoBehaviour
             return false;
         }
 
+        ResolveCorridorLengthRange(
+            LastLayout,
+            out int shortestCorridorLength,
+            out int longestCorridorLength);
+        string longestCorridorDescription = ResolveLongestCorridorDescription(LastLayout);
         Debug.Log(
-            $"Dungeon generated. Theme={roomLibrary.ThemeId}, Seed={resolvedSeed}, " +
+            $"Dungeon generated. Theme={resolvedRoomLibrary.ThemeId}, Seed={resolvedSeed}, " +
             $"Reentry={reentryPolicy}, Rooms={LastLayout.Rooms.Count}, " +
             $"GraphFirst={LastLayout.UsesGraphFirstLayout}, " +
             $"BossDistance={LastLayout.BossGraphDistance}, " +
             $"Branches={LastLayout.MeaningfulBranchCount}, " +
-            $"Cycles={LastLayout.CycleConnectionCount}",
+            $"Cycles={LastLayout.CycleConnectionCount}, " +
+            $"Corridors={shortestCorridorLength}..{longestCorridorLength}, " +
+            $"LongestCorridor={longestCorridorDescription}, " +
+            $"CorridorRelaxed={LastLayout.UsedCorridorLengthRelaxation}",
             this);
         HasCompletedInitialGeneration = true;
         LastGenerationSucceeded = true;
         return true;
+    }
+
+    private static void ResolveCorridorLengthRange(
+        DungeonLayoutResult layout,
+        out int shortestLength,
+        out int longestLength)
+    {
+        shortestLength = 0;
+        longestLength = 0;
+        if (layout == null || layout.Connections.Count == 0)
+            return;
+
+        shortestLength = int.MaxValue;
+        for (int connectionIndex = 0;
+             connectionIndex < layout.Connections.Count;
+             connectionIndex++)
+        {
+            int length = layout.Connections[connectionIndex].CorridorLength;
+            shortestLength = Mathf.Min(shortestLength, length);
+            longestLength = Mathf.Max(longestLength, length);
+        }
+    }
+
+    private static string ResolveLongestCorridorDescription(DungeonLayoutResult layout)
+    {
+        if (layout == null || layout.Connections.Count == 0)
+            return "None";
+
+        DungeonSocketConnection longest = layout.Connections[0];
+        for (int connectionIndex = 1;
+             connectionIndex < layout.Connections.Count;
+             connectionIndex++)
+        {
+            DungeonSocketConnection candidate = layout.Connections[connectionIndex];
+            if (candidate.CorridorLength > longest.CorridorLength)
+                longest = candidate;
+        }
+
+        DungeonRoomPlacement first = layout.GetRoom(longest.FirstRoomPlacementId);
+        DungeonRoomPlacement second = layout.GetRoom(longest.SecondRoomPlacementId);
+        string firstRoomId = first?.Template != null
+            ? first.Template.LayoutData.roomId
+            : longest.FirstRoomPlacementId.ToString();
+        string secondRoomId = second?.Template != null
+            ? second.Template.LayoutData.roomId
+            : longest.SecondRoomPlacementId.ToString();
+        return $"{firstRoomId}->{secondRoomId}({longest.CorridorLength})";
     }
 
     /// <summary>
@@ -159,8 +244,9 @@ public sealed class DungeonGenerator : MonoBehaviour
         if (!string.IsNullOrWhiteSpace(dungeonStateId))
             return dungeonStateId;
 
-        if (roomLibrary != null && !string.IsNullOrWhiteSpace(roomLibrary.ThemeId))
-            return $"corridor:{roomLibrary.ThemeId}";
+        RoomThemeLibrarySO resolvedRoomLibrary = RoomLibrary;
+        if (resolvedRoomLibrary != null && !string.IsNullOrWhiteSpace(resolvedRoomLibrary.ThemeId))
+            return $"corridor:{resolvedRoomLibrary.ThemeId}";
 
         return $"scene:{gameObject.scene.name}";
     }
@@ -177,8 +263,10 @@ public sealed class DungeonGenerator : MonoBehaviour
         float connectionCorridorLengthPerRoomCell,
         int connectionCorridorLengthVariation,
         bool shouldGenerateOnStart,
-        DungeonLayoutPolicySO generationLayoutPolicy = null)
+        DungeonLayoutPolicySO generationLayoutPolicy = null,
+        DungeonGenerationProfileSO profile = null)
     {
+        generationProfile = profile;
         roomLibrary = library;
         roomBuilder = builder;
         seed = generationSeed;
@@ -190,6 +278,14 @@ public sealed class DungeonGenerator : MonoBehaviour
         corridorLengthVariation = Mathf.Clamp(connectionCorridorLengthVariation, 0, 32);
         generateOnStart = shouldGenerateOnStart;
         layoutPolicy = generationLayoutPolicy;
+    }
+
+    /// <summary>
+    /// 책임 : 제작/마이그레이션 툴이 기존 씬 수치를 손대지 않고 영속 생성 프로필 참조만 연결한다.
+    /// </summary>
+    public void EditorAssignGenerationProfile(DungeonGenerationProfileSO profile)
+    {
+        generationProfile = profile;
     }
 
     /// <summary>

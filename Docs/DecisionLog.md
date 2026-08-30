@@ -2990,3 +2990,75 @@ Implications:
 - `SceneDomainCoordinator` is the only writer and clears the marker when any later scene loads.
 - Hub spawn and Hub intro presentation must use the same marker; do not restore a one-sided skip.
 - `ScenePortal`, its shared prefab, the Hub scene instance's `HubToRunStart` semantic, and `RunRouteCatalogSO` remain unchanged.
+
+## 2026-08-29 - DemonKing Uses The Fixed Final Rest Corridor
+
+Decision:
+Expose HUB-selectable procedural gates only for Shadow, Dragon, and Slime. Keep `DemonkingRouteSet` as the final route and bind its Corridor to the authored `DemonkingCorridor` rather than `ProceduralDemonkingCorridor`. The fixed scene remains a combat-free rest beat whose existing `CorridorToBoss` portal leads to `LeeJunmo_Boss_DemonKing`.
+
+Reason:
+DemonKing is the terminal boss rather than a HUB-selectable theme. The established run flow advances from the last normal boss to `DemonkingCorridor`, and that authored scene already has empty combat spawn lists and the final boss portal.
+
+Implications:
+- There is no HUB DemonKing endpoint or trigger; the staging installer removes the exact installer-owned `LobbyGate_demon_king` object.
+- Normal procedural installers and policy sweeps cover three production themes. Existing procedural DemonKing assets remain disconnected experimental content.
+- The full scene installer restores the final route and rebuilds loading manifests on every run.
+- Final-route validation requires the fixed scene in Build Settings, zero authored combat spawns, and a `CorridorToBoss` portal.
+
+## 2026-08-29 - Procedural Corridor Generation Settings Use Theme Profiles
+
+Decision:
+Store each production theme's library, layout policy, Seed, room count, placement attempts, and adaptive corridor values in a `DungeonGenerationProfileSO`. The Room Piece Map Preview loads and writes that profile, and `DungeonGenerator` reads it at runtime. Scene-local fields remain only as a compatibility fallback.
+
+Reason:
+Preview-only controls could demonstrate corridor changes but could not promote them to production, while the scene installer rewrote hardcoded values. A shared persistent profile makes the previewed and runtime request identical and gives designers one explicit Apply target.
+
+Implications:
+- Shadow, Dragon, and Slime each own one generation profile referenced by their procedural Corridor scene.
+- `현재 미리보기 설정을 테마에 적용` changes future generations in every active scene that references that profile; it does not regenerate an already built map.
+- The full installer creates missing profiles and repairs scene references but does not overwrite existing profile or layout-policy values.
+- Corridor tile overrides remain preview-only because production tile palettes belong to each scene's `DungeonRoomBuilder`.
+
+## 2026-08-30 - Inter-Corridor Pipes Form A One-Way Graph Into Slime
+
+Decision:
+Author exactly two inter-Corridor routes: `Shadow → Slime` and `Dragon → Slime`. Each source route uses a guaranteed far-from-start Event room with an interaction pipe. Slime uses a distinct guaranteed arrival-only Event room for each source. The reverse directions and a Shadow↔Dragon route are not authored.
+
+Reason:
+The level-flow plan converges the two outer theme Corridors into the Slime/Melta region. Encoding that topology in `SceneConnectionSO`, generated-room slots, and additive guaranteed-room data keeps layout generation theme-agnostic while making the intended direction explicit and testable.
+
+Implications:
+- A→B is enabled and uses the shared pipe presentation profile; B→A is disabled.
+- Slime destination rooms contain arrival-only endpoints and therefore expose neither an interaction prompt nor an automatic travel trigger.
+- Travel-room registration must preserve all existing guaranteed rooms, including both Slime NPC rooms.
+- The pipe medium reuses authored visuals and water-arrival presentation, but not the boss DrainPipe damage/gimmick behavior.
+- Adding another route requires a new connection asset, unique source/destination room and slot IDs, and one binding in each participating Corridor scene; it must not be inferred from theme names.
+
+## 2026-08-30 - Procedural Corridors Preserve Layout And Contents During A Run
+
+Decision:
+Use `PreserveDuringRun` for the Shadow, Dragon, and Slime procedural Corridors. Moving between Corridors or returning through HUB during an active run must rebuild the same layout Seed and restore supported generated-object state. Starting or ending a run clears all Corridor state.
+
+Reason:
+Inter-Corridor travel turns independently loaded scenes into one navigable run space. Regenerating a visited map makes spatial memory unreliable and permits cleared encounters or rewards to appear as unrelated content on return.
+
+Implications:
+- Each production Corridor keeps a unique stable dungeon state ID.
+- Formal data-driven scene travel captures state before unloading the source scene.
+- Supported restoration currently covers generated-object presence/active state and opened chest/remaining-loot state; arbitrary component internals need an explicit persistence contract.
+- The scene is still regenerated on load rather than retained in memory, so layout identity depends on stable room/template and placement IDs.
+- Authoring changes that rename or reorder stable IDs can invalidate an in-progress run's runtime-only restoration data.
+
+## 2026-08-30 - The Existing HUB Portal Starts The Fixed DemonKing Route Directly
+
+Decision:
+Keep `LobbyGate_demon_king` absent, but bind the existing interactive `ScenePortal` in `ProtoTypeHub` to a dedicated `DemonkingHubRouteCatalog`. That catalog has zero normal stages and `DemonkingRouteSet` as its final RouteSet, so its first destination is the fixed, combat-free `DemonkingCorridor`.
+
+Reason:
+The three normal themes now have their own selectable trigger gates. Reusing the old all-stage run catalog on the remaining HUB portal would send it to a normal theme instead of the intended final-boss route. Changing the shared catalog to zero stages would also break normal boss direct-Play development context, so the DemonKing portal needs an isolated catalog.
+
+Implications:
+- This supersedes only the earlier statement that DemonKing had no HUB entry; it does not restore the retired procedural DemonKing corridor or its disabled `SceneConnectionSO` assets.
+- The portal's authored position, visuals, interaction prompt, and entrance presentation remain unchanged; only its `startRunRouteCatalog` reference changes.
+- The full procedural scene installer repairs this binding, and the focused HUB portal installer can be run independently.
+- Runtime verification requires the unique HUB `HubToRunStart` portal to resolve `DemonkingCorridor` with `DemonkingRouteSet` as the active stage.

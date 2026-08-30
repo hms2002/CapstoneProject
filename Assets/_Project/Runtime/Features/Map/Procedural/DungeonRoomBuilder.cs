@@ -53,6 +53,7 @@ public struct ProceduralRoomTravelBinding
 /// - 개방한 두 소켓 사이에 연결별 가변 길이의 2칸 폭 직선 복도를 만들고 양쪽 소켓 경계에 비영구 문을 하나씩 생성한다.
 /// - 테마 씬에서 추출한 바닥/벽 변형 타일을 레이아웃 Seed와 셀 좌표로 결정해 같은 맵을 항상 같은 모습으로 구현한다.
 /// - 방 템플릿의 이동 슬롯을 씬별 연결 binding과 결합해 상호작용·trigger·도착 전용 endpoint로 구현한다.
+/// - 모든 방 오브젝트 생성 후 로컬/던전 앵커를 수집하고 NPC 같은 런타임 방 기능의 외부 참조를 연결한다.
 /// - 전투 잠금 정책이 붙기 전 프로토타입에서는 생성 문을 열린 상태로 시작할 수 있게 한다.
 /// </summary>
 [DisallowMultipleComponent]
@@ -92,6 +93,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     private readonly List<GameObject> generatedRoomObjects = new();
     private readonly Dictionary<string, GameObject> generatedRoomObjectsByStateId =
         new(System.StringComparer.Ordinal);
+    private readonly Dictionary<int, List<GameObject>> generatedRoomObjectsByPlacement = new();
     private readonly List<SceneTravelEndpoint> generatedTravelEndpoints = new();
     private readonly List<MonsterSpawnRoomGroup> generatedRoomEncounterGroups = new();
     private readonly List<RoomDoorMonsterKillLock> generatedRoomDoorLocks = new();
@@ -352,7 +354,8 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         if (options.BuildGameplayObjects &&
             (!TryBuildRoomEncounters(layout) ||
              !TryBuildRoomObjects(layout) ||
-             !TryBuildTravelEndpoints(layout)))
+             !TryBuildTravelEndpoints(layout) ||
+             !TryBindGeneratedRoomFeatures(layout)))
         {
             ClearGeneratedContent();
             return false;
@@ -574,6 +577,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     {
         generatedRoomObjects.Clear();
         generatedRoomObjectsByStateId.Clear();
+        generatedRoomObjectsByPlacement.Clear();
 
         if (generatedObjectRoot == null)
             return;
@@ -901,14 +905,173 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
 
             for (int objectIndex = 0; objectIndex < roomInstances.Length; objectIndex++)
             {
-                generatedRoomObjects.Add(roomInstances[objectIndex]);
+                GameObject roomInstance = roomInstances[objectIndex];
+                generatedRoomObjects.Add(roomInstance);
                 generatedRoomObjectsByStateId[CreateRuntimeStateId(
                     roomPlacement.PlacementId,
-                    objectPlacements[objectIndex].placementId)] = roomInstances[objectIndex];
+                    objectPlacements[objectIndex].placementId)] = roomInstance;
+
+                if (!generatedRoomObjectsByPlacement.TryGetValue(
+                        roomPlacement.PlacementId,
+                        out List<GameObject> roomObjectInstances))
+                {
+                    roomObjectInstances = new List<GameObject>();
+                    generatedRoomObjectsByPlacement.Add(
+                        roomPlacement.PlacementId,
+                        roomObjectInstances);
+                }
+
+                roomObjectInstances.Add(roomInstance);
             }
         }
 
         return true;
+    }
+
+    private bool TryBindGeneratedRoomFeatures(DungeonLayoutResult layout)
+    {
+        var localAnchorsByPlacement =
+            new Dictionary<int, Dictionary<string, Transform>>();
+        var dungeonAnchors = new Dictionary<string, Transform>(System.StringComparer.Ordinal);
+
+        for (int roomIndex = 0; roomIndex < layout.Rooms.Count; roomIndex++)
+        {
+            DungeonRoomPlacement roomPlacement = layout.Rooms[roomIndex];
+            var localAnchors = new Dictionary<string, Transform>(System.StringComparer.Ordinal);
+            localAnchorsByPlacement.Add(roomPlacement.PlacementId, localAnchors);
+
+            if (!generatedRoomObjectsByPlacement.TryGetValue(
+                    roomPlacement.PlacementId,
+                    out List<GameObject> roomObjects))
+            {
+                continue;
+            }
+
+            for (int objectIndex = 0; objectIndex < roomObjects.Count; objectIndex++)
+            {
+                GameObject roomObject = roomObjects[objectIndex];
+                if (roomObject == null)
+                    continue;
+
+                ProceduralRoomAnchor[] anchors =
+                    roomObject.GetComponentsInChildren<ProceduralRoomAnchor>(includeInactive: true);
+                for (int anchorIndex = 0; anchorIndex < anchors.Length; anchorIndex++)
+                {
+                    if (!TryRegisterGeneratedRoomAnchor(
+                            roomPlacement,
+                            anchors[anchorIndex],
+                            localAnchors,
+                            dungeonAnchors))
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        for (int roomIndex = 0; roomIndex < layout.Rooms.Count; roomIndex++)
+        {
+            DungeonRoomPlacement roomPlacement = layout.Rooms[roomIndex];
+            if (!generatedRoomObjectsByPlacement.TryGetValue(
+                    roomPlacement.PlacementId,
+                    out List<GameObject> roomObjects))
+            {
+                continue;
+            }
+
+            var context = new ProceduralRoomRuntimeContext(
+                roomPlacement.PlacementId,
+                roomPlacement.Template,
+                localAnchorsByPlacement[roomPlacement.PlacementId],
+                dungeonAnchors,
+                CollectConnectedSocketDirections(layout, roomPlacement));
+            for (int objectIndex = 0; objectIndex < roomObjects.Count; objectIndex++)
+            {
+                GameObject roomObject = roomObjects[objectIndex];
+                if (roomObject == null)
+                    continue;
+
+                MonoBehaviour[] components =
+                    roomObject.GetComponentsInChildren<MonoBehaviour>(includeInactive: true);
+                for (int componentIndex = 0; componentIndex < components.Length; componentIndex++)
+                {
+                    MonoBehaviour component = components[componentIndex];
+                    if (component is not IProceduralRoomRuntimeFeature feature)
+                        continue;
+
+                    if (feature.TryBindProceduralRoom(context, out string failureReason))
+                        continue;
+
+                    Debug.LogError(
+                        $"Room '{roomPlacement.Template.name}' runtime feature " +
+                        $"'{component.GetType().Name}' could not bind: {failureReason}",
+                        component);
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private static IReadOnlyList<RoomSocketDirection> CollectConnectedSocketDirections(
+        DungeonLayoutResult layout,
+        DungeonRoomPlacement roomPlacement)
+    {
+        var directions = new List<RoomSocketDirection>();
+        IReadOnlyList<DungeonSocketConnection> connections = layout.Connections;
+        IReadOnlyList<RoomSocketData> sockets = roomPlacement.Template.LayoutData.sockets;
+        for (int connectionIndex = 0; connectionIndex < connections.Count; connectionIndex++)
+        {
+            DungeonSocketConnection connection = connections[connectionIndex];
+            int socketIndex = connection.FirstRoomPlacementId == roomPlacement.PlacementId
+                ? connection.FirstSocketIndex
+                : connection.SecondRoomPlacementId == roomPlacement.PlacementId
+                    ? connection.SecondSocketIndex
+                    : -1;
+            if (socketIndex < 0 || socketIndex >= sockets.Count)
+                continue;
+
+            RoomSocketDirection direction = sockets[socketIndex].direction;
+            if (!directions.Contains(direction))
+                directions.Add(direction);
+        }
+
+        return directions;
+    }
+
+    private static bool TryRegisterGeneratedRoomAnchor(
+        DungeonRoomPlacement roomPlacement,
+        ProceduralRoomAnchor anchor,
+        Dictionary<string, Transform> localAnchors,
+        Dictionary<string, Transform> dungeonAnchors)
+    {
+        if (anchor == null)
+            return true;
+
+        if (string.IsNullOrWhiteSpace(anchor.SlotId))
+        {
+            Debug.LogError(
+                $"Room '{roomPlacement.Template.name}' contains an empty procedural anchor slot Id.",
+                anchor);
+            return false;
+        }
+
+        Dictionary<string, Transform> destination =
+            anchor.Scope == ProceduralRoomAnchorScope.Dungeon
+                ? dungeonAnchors
+                : localAnchors;
+        if (destination.TryAdd(anchor.SlotId, anchor.Target))
+            return true;
+
+        string scopeLabel = anchor.Scope == ProceduralRoomAnchorScope.Dungeon
+            ? "generated dungeon"
+            : $"room placement {roomPlacement.PlacementId}";
+        Debug.LogError(
+            $"Room '{roomPlacement.Template.name}' has duplicate procedural anchor slot " +
+            $"'{anchor.SlotId}' in {scopeLabel} scope.",
+            anchor);
+        return false;
     }
 
     private static string CreateRuntimeStateId(int roomPlacementId, string objectPlacementId)
@@ -995,7 +1158,43 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         if (endpoint == null)
             endpoint = instance.AddComponent<SceneTravelEndpoint>();
         endpoint.ConfigureRuntimeSlot(placement.slotId);
-        ConfigureTravelMedium(endpoint.gameObject, placement.kind);
+        if (placement.useSeparateArrivalPoint)
+        {
+            Vector2Int arrivalWorldCell = roomPlacement.Origin + placement.arrivalLocalCell;
+            Vector3Int arrivalTileCell = new(arrivalWorldCell.x, arrivalWorldCell.y, 0);
+            if (!floorTilemap.HasTile(arrivalTileCell))
+            {
+                Debug.LogError(
+                    $"Room '{roomPlacement.Template.name}' travel slot '{placement.slotId}' " +
+                    $"requires a Floor tile at separate arrival cell {placement.arrivalLocalCell}.",
+                    roomPlacement.Template);
+                Destroy(instance);
+                endpoint = null;
+                return false;
+            }
+
+            Vector3 arrivalWorldOffset = grid != null
+                ? grid.transform.TransformVector(new Vector3(
+                    placement.arrivalLocalOffset.x,
+                    placement.arrivalLocalOffset.y,
+                    0f))
+                : new Vector3(
+                    placement.arrivalLocalOffset.x,
+                    placement.arrivalLocalOffset.y,
+                    0f);
+            Vector3 arrivalWorldPosition =
+                floorTilemap.GetCellCenterWorld(arrivalTileCell) + arrivalWorldOffset;
+            GameObject arrivalAnchorObject = new("ArrivalAnchor");
+            arrivalAnchorObject.transform.SetParent(instance.transform, worldPositionStays: true);
+            arrivalAnchorObject.transform.SetPositionAndRotation(
+                arrivalWorldPosition,
+                worldRotation);
+            endpoint.ConfigureRuntimeArrivalAnchor(arrivalAnchorObject.transform);
+        }
+        ConfigureTravelMedium(
+            endpoint.gameObject,
+            placement.kind,
+            RoomTravelEndpointGeometry.ResolveTriggerSize(placement));
 
         ProceduralRoomTravelBinding binding = FindTravelBinding(
             roomPlacement.Template.LayoutData.roomId,
@@ -1052,7 +1251,10 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         return default;
     }
 
-    private static void ConfigureTravelMedium(GameObject endpointObject, RoomTravelEndpointKind kind)
+    private static void ConfigureTravelMedium(
+        GameObject endpointObject,
+        RoomTravelEndpointKind kind,
+        Vector2 triggerSize)
     {
         if (endpointObject == null)
             return;
@@ -1074,7 +1276,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
                 trigger.enabled = true;
                 if (interactable != null)
                     interactable.enabled = false;
-                EnsureTravelTriggerCollider(endpointObject);
+                EnsureTravelTriggerBoxCollider(endpointObject, triggerSize);
                 break;
 
             case RoomTravelEndpointKind.ArrivalOnly:
@@ -1093,6 +1295,29 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             collider = endpointObject.AddComponent<BoxCollider2D>();
 
         collider.isTrigger = true;
+    }
+
+    private static void EnsureTravelTriggerBoxCollider(
+        GameObject endpointObject,
+        Vector2 desiredWorldSize)
+    {
+        BoxCollider2D boxCollider = endpointObject.GetComponent<BoxCollider2D>();
+        if (boxCollider == null)
+            boxCollider = endpointObject.AddComponent<BoxCollider2D>();
+
+        Collider2D[] colliders = endpointObject.GetComponents<Collider2D>();
+        for (int colliderIndex = 0; colliderIndex < colliders.Length; colliderIndex++)
+        {
+            Collider2D collider = colliders[colliderIndex];
+            if (collider != boxCollider && collider.isTrigger)
+                collider.enabled = false;
+        }
+
+        boxCollider.enabled = true;
+        boxCollider.isTrigger = true;
+        boxCollider.size = RoomTravelEndpointGeometry.ResolveLocalColliderSize(
+            desiredWorldSize,
+            endpointObject.transform.lossyScale);
     }
 
     private bool TryValidateRoomObjectPlacements(

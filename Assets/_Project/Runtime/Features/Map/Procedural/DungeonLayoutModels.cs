@@ -5,6 +5,7 @@ using UnityEngine;
 /// 책임:
 /// - 한 번의 던전 조립 결과인 방 배치, 소켓 연결, 완성 여부와 실패 사유를 보관한다.
 /// - Tilemap 빌더가 절차 생성 알고리즘을 몰라도 결과를 구현할 수 있는 경계 데이터 역할을 한다.
+/// - 권장 복도 길이를 충돌 회피 목적으로 자동 축소했는지 진단 정보로 제공한다.
 /// </summary>
 public sealed class DungeonLayoutResult
 {
@@ -22,6 +23,7 @@ public sealed class DungeonLayoutResult
     public int MeaningfulBranchCount { get; private set; }
     public int CycleConnectionCount { get; private set; }
     public int DeadEndCount { get; private set; }
+    public bool UsedCorridorLengthRelaxation { get; private set; }
 
     internal DungeonLayoutResult(int seed, int requestedRoomCount)
     {
@@ -71,12 +73,18 @@ public sealed class DungeonLayoutResult
         IsComplete = false;
         FailureReason = reason ?? string.Empty;
     }
+
+    internal void MarkCorridorLengthRelaxed()
+    {
+        UsedCorridorLengthRelaxation = true;
+    }
 }
 
 /// <summary>
 /// 책임:
 /// - 선택된 RoomTemplateSO 하나가 던전 셀 공간에서 차지하는 원점과 예약 bounds를 보관한다.
 /// - 배치 ID를 통해 소켓 연결 데이터와 실제 방 구현 데이터를 이어준다.
+/// - 특수 방 배치 검증에 필요한 시작점 거리, 막다른 길, 순환 우회로 여부를 노출한다.
 /// </summary>
 public sealed class DungeonRoomPlacement
 {
@@ -84,17 +92,26 @@ public sealed class DungeonRoomPlacement
     public RoomTemplateSO Template { get; }
     public Vector2Int Origin { get; }
     public RectInt WorldBounds { get; }
+    public int GraphDistanceFromStart { get; }
+    public bool IsDeadEnd { get; }
+    public bool IsCycleDetour { get; }
 
     internal DungeonRoomPlacement(
         int placementId,
         RoomTemplateSO template,
         Vector2Int origin,
-        RectInt worldBounds)
+        RectInt worldBounds,
+        int graphDistanceFromStart = 0,
+        bool isDeadEnd = false,
+        bool isCycleDetour = false)
     {
         PlacementId = placementId;
         Template = template;
         Origin = origin;
         WorldBounds = worldBounds;
+        GraphDistanceFromStart = Mathf.Max(0, graphDistanceFromStart);
+        IsDeadEnd = isDeadEnd;
+        IsCycleDetour = isCycleDetour;
     }
 }
 

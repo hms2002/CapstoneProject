@@ -6,6 +6,9 @@ using UnityEngine;
 /// 책임:
 /// - 탐색 정책에 맞는 연결 그래프를 먼저 만든 뒤 노드 역할, 방 템플릿, 소켓과 월드 배치를 순서대로 결정한다.
 /// - 보스 거리, 의미 있는 분기, 순환 연결, 필수 방 역할과 물리적 비겹침을 하나의 완성 결과로 검증한다.
+/// - 생성 프로필이 지정한 필수 템플릿을 호환 노드에 정확히 한 번 선점시켜 역할 수 보장과 콘텐츠 보장을 함께 지킨다.
+/// - 방 크기 기반 권장 복도 간격이 충돌하면 절대 최소 길이까지 단계적으로 압축해 같은 그래프를 재사용한다.
+/// - 성공 후보가 여러 개면 권장 길이 초과가 가장 작은 배치를 선택하되, 품질 목표를 못 맞춰도 최선 후보로 생성 성공을 보장한다.
 /// - 테마, 타일, 몬스터 구현을 알지 않고 RoomThemeLibrarySO의 레이아웃 데이터만 소비한다.
 /// </summary>
 public sealed class DungeonGraphLayoutAssembler
@@ -26,6 +29,7 @@ public sealed class DungeonGraphLayoutAssembler
     {
         public Vector2Int GridPosition;
         public bool IsMainPath;
+        public bool IsCycleDetour;
         public int BranchGroup = -1;
         public RoomType Role = RoomType.Combat;
         public RoomTemplateSO Template;
@@ -57,6 +61,107 @@ public sealed class DungeonGraphLayoutAssembler
 
     /// <summary>
     /// 책임:
+    /// - 같은 축 정렬을 공유하는 노드 그룹과 그룹 사이 최소 간격 제약을 보관한다.
+    /// - 논리 좌표 순서를 지키는 차분 제약을 풀어 각 그룹의 압축된 월드 기준축 좌표를 계산한다.
+    /// </summary>
+    private sealed class AxisConstraintLayout
+    {
+        private readonly int[] groupByNode;
+        private readonly int[] logicalCoordinateByGroup;
+        private readonly int[] anchors;
+        private readonly Dictionary<long, int> minimumSeparations = new();
+
+        public AxisConstraintLayout(
+            int[] nodeGroups,
+            int[] groupLogicalCoordinates)
+        {
+            groupByNode = nodeGroups;
+            logicalCoordinateByGroup = groupLogicalCoordinates;
+            anchors = new int[groupLogicalCoordinates.Length];
+        }
+
+        public int GetGroup(int nodeIndex) => groupByNode[nodeIndex];
+
+        public int GetAnchorForNode(int nodeIndex) =>
+            anchors[groupByNode[nodeIndex]];
+
+        public int GetAnchorForGroup(int groupIndex) => anchors[groupIndex];
+
+        public bool AddMinimumSeparation(
+            int lowerGroupIndex,
+            int upperGroupIndex,
+            int minimumSeparation)
+        {
+            if (lowerGroupIndex == upperGroupIndex ||
+                logicalCoordinateByGroup[lowerGroupIndex] >=
+                logicalCoordinateByGroup[upperGroupIndex])
+            {
+                return false;
+            }
+
+            long key = CreateConstraintKey(lowerGroupIndex, upperGroupIndex);
+            int resolvedSeparation = Mathf.Max(0, minimumSeparation);
+            if (minimumSeparations.TryGetValue(key, out int existing) &&
+                existing >= resolvedSeparation)
+            {
+                return false;
+            }
+
+            minimumSeparations[key] = resolvedSeparation;
+            return true;
+        }
+
+        public void Solve()
+        {
+            Array.Clear(anchors, 0, anchors.Length);
+            var orderedGroups = new List<int>(anchors.Length);
+            for (int groupIndex = 0; groupIndex < anchors.Length; groupIndex++)
+                orderedGroups.Add(groupIndex);
+            orderedGroups.Sort((first, second) =>
+            {
+                int coordinateComparison = logicalCoordinateByGroup[first]
+                    .CompareTo(logicalCoordinateByGroup[second]);
+                return coordinateComparison != 0
+                    ? coordinateComparison
+                    : first.CompareTo(second);
+            });
+
+            for (int orderIndex = 0; orderIndex < orderedGroups.Count; orderIndex++)
+            {
+                int upperGroupIndex = orderedGroups[orderIndex];
+                foreach (KeyValuePair<long, int> pair in minimumSeparations)
+                {
+                    DecodeConstraintKey(
+                        pair.Key,
+                        out int lowerGroupIndex,
+                        out int candidateUpperGroupIndex);
+                    if (candidateUpperGroupIndex != upperGroupIndex)
+                        continue;
+
+                    anchors[upperGroupIndex] = Mathf.Max(
+                        anchors[upperGroupIndex],
+                        anchors[lowerGroupIndex] + pair.Value);
+                }
+            }
+        }
+
+        private static long CreateConstraintKey(int lowerGroupIndex, int upperGroupIndex)
+        {
+            return ((long)lowerGroupIndex << 32) | (uint)upperGroupIndex;
+        }
+
+        private static void DecodeConstraintKey(
+            long key,
+            out int lowerGroupIndex,
+            out int upperGroupIndex)
+        {
+            lowerGroupIndex = (int)(key >> 32);
+            upperGroupIndex = (int)key;
+        }
+    }
+
+    /// <summary>
+    /// 책임:
     /// - 한 번의 그래프 생성 시도에서 노드, 간선, 주 경로와 기획 지표를 함께 추적한다.
     /// </summary>
     private sealed class TopologyDraft
@@ -78,7 +183,8 @@ public sealed class DungeonGraphLayoutAssembler
         int maxPlacementAttemptsPerRoom,
         int minimumCorridorLength,
         float corridorLengthPerRoomCell,
-        int corridorLengthVariation)
+        int corridorLengthVariation,
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates = null)
     {
         int roomCount = Mathf.Max(2, requestedRoomCount);
         DungeonLayoutResult failedResult = new(seed, roomCount);
@@ -94,7 +200,20 @@ public sealed class DungeonGraphLayoutAssembler
             return failedResult;
         }
 
-        if (!ValidateRoleBudget(policy, roomCount, out string budgetFailure))
+        if (!ValidateGuaranteedRoomTemplates(
+                library,
+                guaranteedRoomTemplates,
+                out string guaranteedRoomFailure))
+        {
+            failedResult.MarkFailed(guaranteedRoomFailure);
+            return failedResult;
+        }
+
+        if (!ValidateRoleBudget(
+                policy,
+                roomCount,
+                guaranteedRoomTemplates,
+                out string budgetFailure))
         {
             failedResult.MarkFailed(budgetFailure);
             return failedResult;
@@ -117,6 +236,11 @@ public sealed class DungeonGraphLayoutAssembler
             : 0f;
         int resolvedCorridorLengthVariation = Mathf.Clamp(corridorLengthVariation, 0, 32);
         string lastFailure = "No graph-first layout attempt was completed.";
+        DungeonLayoutResult bestPhysicalResult = null;
+        int bestMaximumPreferenceOverrun = int.MaxValue;
+        int bestLongestCorridorLength = int.MaxValue;
+        int physicalCandidateCount = 0;
+        int qualityCandidateLimit = Mathf.Min(attemptCount, 64);
 
         for (int attempt = 0; attempt < attemptCount; attempt++)
         {
@@ -134,8 +258,19 @@ public sealed class DungeonGraphLayoutAssembler
             }
 
             ReorderBossLast(topology);
-            if (!TryAssignRoomRoles(library, policy, topology, random, out lastFailure) ||
-                !TrySelectTemplatesAndSockets(library, topology, random, out lastFailure) ||
+            if (!TryAssignRoomRoles(
+                    library,
+                    policy,
+                    guaranteedRoomTemplates,
+                    topology,
+                    random,
+                    out lastFailure) ||
+                !TrySelectTemplatesAndSockets(
+                    library,
+                    guaranteedRoomTemplates,
+                    topology,
+                    random,
+                    out lastFailure) ||
                 !TryCreatePhysicalLayout(
                     seed,
                     roomCount,
@@ -170,8 +305,40 @@ public sealed class DungeonGraphLayoutAssembler
                 topology.MeaningfulBranchCount,
                 topology.CycleConnectionCount,
                 deadEndCount);
-            result.MarkComplete();
-            return result;
+            physicalCandidateCount++;
+            int maximumPreferenceOverrun = CalculateMaximumCorridorPreferenceOverrun(
+                result,
+                resolvedMinimumCorridorLength,
+                resolvedCorridorLengthPerRoomCell,
+                resolvedCorridorLengthVariation,
+                out int longestCorridorLength);
+            int acceptablePreferenceOverrun = Mathf.Max(
+                2,
+                resolvedMinimumCorridorLength + resolvedCorridorLengthVariation);
+            if (maximumPreferenceOverrun <= acceptablePreferenceOverrun)
+            {
+                result.MarkComplete();
+                return result;
+            }
+
+            if (bestPhysicalResult == null ||
+                maximumPreferenceOverrun < bestMaximumPreferenceOverrun ||
+                maximumPreferenceOverrun == bestMaximumPreferenceOverrun &&
+                longestCorridorLength < bestLongestCorridorLength)
+            {
+                bestPhysicalResult = result;
+                bestMaximumPreferenceOverrun = maximumPreferenceOverrun;
+                bestLongestCorridorLength = longestCorridorLength;
+            }
+
+            if (physicalCandidateCount >= qualityCandidateLimit)
+                break;
+        }
+
+        if (bestPhysicalResult != null)
+        {
+            bestPhysicalResult.MarkComplete();
+            return bestPhysicalResult;
         }
 
         failedResult.MarkFailed(
@@ -179,15 +346,161 @@ public sealed class DungeonGraphLayoutAssembler
         return failedResult;
     }
 
+    private static int CalculateMaximumCorridorPreferenceOverrun(
+        DungeonLayoutResult layout,
+        int minimumCorridorLength,
+        float corridorLengthPerRoomCell,
+        int corridorLengthVariation,
+        out int longestCorridorLength)
+    {
+        int maximumOverrun = 0;
+        longestCorridorLength = 0;
+        for (int connectionIndex = 0;
+             connectionIndex < layout.Connections.Count;
+             connectionIndex++)
+        {
+            DungeonSocketConnection connection = layout.Connections[connectionIndex];
+            DungeonRoomPlacement first = FindPlacement(
+                layout,
+                connection.FirstRoomPlacementId);
+            DungeonRoomPlacement second = FindPlacement(
+                layout,
+                connection.SecondRoomPlacementId);
+            RoomSocketData firstSocket =
+                first.Template.LayoutData.sockets[connection.FirstSocketIndex];
+            bool horizontal = firstSocket.direction == RoomSocketDirection.Left ||
+                firstSocket.direction == RoomSocketDirection.Right;
+            int firstDepth = horizontal
+                ? first.WorldBounds.width
+                : first.WorldBounds.height;
+            int secondDepth = horizontal
+                ? second.WorldBounds.width
+                : second.WorldBounds.height;
+            int maximumPreferredLength = minimumCorridorLength + Mathf.CeilToInt(
+                (firstDepth + secondDepth) * corridorLengthPerRoomCell) +
+                corridorLengthVariation;
+            maximumOverrun = Mathf.Max(
+                maximumOverrun,
+                connection.CorridorLength - maximumPreferredLength);
+            longestCorridorLength = Mathf.Max(
+                longestCorridorLength,
+                connection.CorridorLength);
+        }
+
+        return maximumOverrun;
+    }
+
+    private static DungeonRoomPlacement FindPlacement(
+        DungeonLayoutResult layout,
+        int placementId)
+    {
+        for (int roomIndex = 0; roomIndex < layout.Rooms.Count; roomIndex++)
+        {
+            if (layout.Rooms[roomIndex].PlacementId == placementId)
+                return layout.Rooms[roomIndex];
+        }
+
+        throw new InvalidOperationException(
+            $"Layout connection references missing room placement {placementId}.");
+    }
+
+    private static bool ValidateGuaranteedRoomTemplates(
+        RoomThemeLibrarySO library,
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
+        out string failure)
+    {
+        if (guaranteedRoomTemplates == null || guaranteedRoomTemplates.Count == 0)
+        {
+            failure = string.Empty;
+            return true;
+        }
+
+        var uniqueTemplates = new HashSet<RoomTemplateSO>();
+        for (int templateIndex = 0; templateIndex < guaranteedRoomTemplates.Count; templateIndex++)
+        {
+            RoomTemplateSO template = guaranteedRoomTemplates[templateIndex];
+            if (template == null)
+            {
+                failure = $"Guaranteed room entry {templateIndex} is missing.";
+                return false;
+            }
+
+            if (!uniqueTemplates.Add(template))
+            {
+                failure = $"Guaranteed room '{template.name}' is listed more than once.";
+                return false;
+            }
+
+            if (!library.ContainsRoom(template))
+            {
+                failure =
+                    $"Guaranteed room '{template.name}' does not belong to library '{library.name}'.";
+                return false;
+            }
+
+            RoomType roomType = template.LayoutData.roomType;
+            if (roomType == RoomType.Start ||
+                roomType == RoomType.Boss ||
+                roomType == RoomType.Exit)
+            {
+                failure =
+                    $"Guaranteed room '{template.name}' uses reserved role {roomType}. " +
+                    "Only expansion room roles can be guaranteed.";
+                return false;
+            }
+
+            if (!IsTemplateUsable(template))
+            {
+                failure = $"Guaranteed room '{template.name}' is not a usable room template.";
+                return false;
+            }
+        }
+
+        failure = string.Empty;
+        return true;
+    }
+
+    private static int CountGuaranteedRoomType(
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
+        RoomType roomType)
+    {
+        if (guaranteedRoomTemplates == null)
+            return 0;
+
+        int count = 0;
+        for (int templateIndex = 0; templateIndex < guaranteedRoomTemplates.Count; templateIndex++)
+        {
+            RoomTemplateSO template = guaranteedRoomTemplates[templateIndex];
+            if (template != null && template.LayoutData.roomType == roomType)
+                count++;
+        }
+
+        return count;
+    }
+
     private static bool ValidateRoleBudget(
         DungeonLayoutPolicySO policy,
         int roomCount,
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
         out string failure)
     {
-        int specialRoomCount = policy.TreasureRoomCount +
-            policy.EventRoomCount +
-            policy.ShopRoomCount;
-        int requiredRoomCount = 2 + specialRoomCount + policy.MinimumCombatRoomCount;
+        int guaranteedTreasureCount = CountGuaranteedRoomType(
+            guaranteedRoomTemplates,
+            RoomType.Treasure);
+        int guaranteedEventCount = CountGuaranteedRoomType(
+            guaranteedRoomTemplates,
+            RoomType.Event);
+        int guaranteedShopCount = CountGuaranteedRoomType(
+            guaranteedRoomTemplates,
+            RoomType.Shop);
+        int guaranteedCombatCount = CountGuaranteedRoomType(
+            guaranteedRoomTemplates,
+            RoomType.Combat);
+        int requiredRoomCount = 2 +
+            Mathf.Max(policy.TreasureRoomCount, guaranteedTreasureCount) +
+            Mathf.Max(policy.EventRoomCount, guaranteedEventCount) +
+            Mathf.Max(policy.ShopRoomCount, guaranteedShopCount) +
+            Mathf.Max(policy.MinimumCombatRoomCount, guaranteedCombatCount);
         if (requiredRoomCount > roomCount)
         {
             failure =
@@ -455,9 +768,17 @@ public sealed class DungeonGraphLayoutAssembler
                 }
 
                 int firstDetourIndex = topology.Nodes.Count;
-                topology.Nodes.Add(new PlannedNode { GridPosition = firstDetour });
+                topology.Nodes.Add(new PlannedNode
+                {
+                    GridPosition = firstDetour,
+                    IsCycleDetour = true
+                });
                 int secondDetourIndex = topology.Nodes.Count;
-                topology.Nodes.Add(new PlannedNode { GridPosition = secondDetour });
+                topology.Nodes.Add(new PlannedNode
+                {
+                    GridPosition = secondDetour,
+                    IsCycleDetour = true
+                });
                 topology.Edges.Add(new PlannedEdge(firstNodeIndex, firstDetourIndex, true));
                 topology.Edges.Add(new PlannedEdge(firstDetourIndex, secondDetourIndex, true));
                 topology.Edges.Add(new PlannedEdge(secondDetourIndex, secondNodeIndex, true));
@@ -625,6 +946,7 @@ public sealed class DungeonGraphLayoutAssembler
     private static bool TryAssignRoomRoles(
         RoomThemeLibrarySO library,
         DungeonLayoutPolicySO policy,
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
         TopologyDraft topology,
         System.Random random,
         out string failure)
@@ -635,11 +957,43 @@ public sealed class DungeonGraphLayoutAssembler
         topology.Nodes[topology.BossNodeIndex].Role = RoomType.Boss;
 
         List<int> assignedSpecialNodes = new();
+        if (guaranteedRoomTemplates != null)
+        {
+            for (int templateIndex = 0; templateIndex < guaranteedRoomTemplates.Count; templateIndex++)
+            {
+                if (!TryAssignGuaranteedTemplate(
+                        topology,
+                        guaranteedRoomTemplates[templateIndex],
+                        policy.PreferSpecialRoomsAtDeadEnds,
+                        assignedSpecialNodes,
+                        random,
+                        out failure))
+                {
+                    return false;
+                }
+            }
+        }
+
+        int remainingTreasureCount = Mathf.Max(
+            0,
+            policy.TreasureRoomCount - CountGuaranteedRoomType(
+                guaranteedRoomTemplates,
+                RoomType.Treasure));
+        int remainingEventCount = Mathf.Max(
+            0,
+            policy.EventRoomCount - CountGuaranteedRoomType(
+                guaranteedRoomTemplates,
+                RoomType.Event));
+        int remainingShopCount = Mathf.Max(
+            0,
+            policy.ShopRoomCount - CountGuaranteedRoomType(
+                guaranteedRoomTemplates,
+                RoomType.Shop));
         if (!TryAssignSpecialRole(
                 library,
                 topology,
                 RoomType.Treasure,
-                policy.TreasureRoomCount,
+                remainingTreasureCount,
                 policy.PreferSpecialRoomsAtDeadEnds,
                 assignedSpecialNodes,
                 random,
@@ -648,7 +1002,7 @@ public sealed class DungeonGraphLayoutAssembler
                 library,
                 topology,
                 RoomType.Event,
-                policy.EventRoomCount,
+                remainingEventCount,
                 policy.PreferSpecialRoomsAtDeadEnds,
                 assignedSpecialNodes,
                 random,
@@ -657,7 +1011,7 @@ public sealed class DungeonGraphLayoutAssembler
                 library,
                 topology,
                 RoomType.Shop,
-                policy.ShopRoomCount,
+                remainingShopCount,
                 policy.PreferSpecialRoomsAtDeadEnds,
                 assignedSpecialNodes,
                 random,
@@ -685,6 +1039,105 @@ public sealed class DungeonGraphLayoutAssembler
         return true;
     }
 
+    private static bool TryAssignGuaranteedTemplate(
+        TopologyDraft topology,
+        RoomTemplateSO template,
+        bool preferDeadEnds,
+        List<int> assignedNodes,
+        System.Random random,
+        out string failure)
+    {
+        RoomTopologyPlacementData placementRule = template.LayoutData.topologyPlacement;
+        int minimumDistance = Mathf.Max(0, placementRule.minimumGraphDistanceFromStart);
+        List<int> compatibleNodes = new();
+        List<int> compatibleDeadEnds = new();
+        for (int nodeIndex = 1; nodeIndex < topology.Nodes.Count; nodeIndex++)
+        {
+            if (nodeIndex == topology.BossNodeIndex ||
+                topology.Nodes[nodeIndex].Role != RoomType.Combat ||
+                assignedNodes.Contains(nodeIndex))
+            {
+                continue;
+            }
+
+            List<RoomSocketDirection> requiredDirections = new();
+            CollectRequiredDirections(topology, nodeIndex, requiredDirections);
+            if (!IsTemplateCompatible(template, requiredDirections))
+                continue;
+
+            int graphDistance = CalculateGraphDistance(topology, 0, nodeIndex);
+            bool isDeadEnd = GetNodeDegree(topology, nodeIndex) == 1;
+            if (graphDistance < minimumDistance ||
+                (placementRule.requireDeadEnd && !isDeadEnd) ||
+                (placementRule.mode == RoomTopologyPlacementMode.CycleDetour &&
+                 !topology.Nodes[nodeIndex].IsCycleDetour))
+            {
+                continue;
+            }
+
+            compatibleNodes.Add(nodeIndex);
+            if (isDeadEnd)
+                compatibleDeadEnds.Add(nodeIndex);
+        }
+
+        List<int> candidates = preferDeadEnds && compatibleDeadEnds.Count > 0
+            ? compatibleDeadEnds
+            : compatibleNodes;
+        if (candidates.Count == 0)
+        {
+            failure =
+                $"No unassigned topology node can use guaranteed template " +
+                $"'{template.LayoutData.roomId}' with placement rule " +
+                $"{placementRule.mode}, minimum distance {minimumDistance}, " +
+                $"dead end required={placementRule.requireDeadEnd}.";
+            return false;
+        }
+
+        int selectedNodeIndex = SelectGuaranteedNode(
+            topology,
+            candidates,
+            assignedNodes,
+            placementRule.mode,
+            random);
+        PlannedNode selectedNode = topology.Nodes[selectedNodeIndex];
+        selectedNode.Role = template.LayoutData.roomType;
+        selectedNode.Template = template;
+        assignedNodes.Add(selectedNodeIndex);
+        failure = string.Empty;
+        return true;
+    }
+
+    private static int SelectGuaranteedNode(
+        TopologyDraft topology,
+        IReadOnlyList<int> candidates,
+        IReadOnlyList<int> assignedSpecialNodes,
+        RoomTopologyPlacementMode placementMode,
+        System.Random random)
+    {
+        if (placementMode != RoomTopologyPlacementMode.FarthestFromStart)
+            return SelectSpreadNode(topology, candidates, assignedSpecialNodes, random);
+
+        int farthestDistance = int.MinValue;
+        var farthestCandidates = new List<int>();
+        for (int candidateIndex = 0; candidateIndex < candidates.Count; candidateIndex++)
+        {
+            int nodeIndex = candidates[candidateIndex];
+            int graphDistance = CalculateGraphDistance(topology, 0, nodeIndex);
+            if (graphDistance < farthestDistance)
+                continue;
+
+            if (graphDistance > farthestDistance)
+            {
+                farthestDistance = graphDistance;
+                farthestCandidates.Clear();
+            }
+
+            farthestCandidates.Add(nodeIndex);
+        }
+
+        return SelectSpreadNode(topology, farthestCandidates, assignedSpecialNodes, random);
+    }
+
     private static bool TryAssignSpecialRole(
         RoomThemeLibrarySO library,
         TopologyDraft topology,
@@ -702,7 +1155,8 @@ public sealed class DungeonGraphLayoutAssembler
             for (int nodeIndex = 1; nodeIndex < topology.Nodes.Count; nodeIndex++)
             {
                 if (nodeIndex == topology.BossNodeIndex ||
-                    topology.Nodes[nodeIndex].Role != RoomType.Combat)
+                    topology.Nodes[nodeIndex].Role != RoomType.Combat ||
+                    assignedSpecialNodes.Contains(nodeIndex))
                 {
                     continue;
                 }
@@ -775,6 +1229,7 @@ public sealed class DungeonGraphLayoutAssembler
 
     private static bool TrySelectTemplatesAndSockets(
         RoomThemeLibrarySO library,
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
         TopologyDraft topology,
         System.Random random,
         out string failure)
@@ -785,15 +1240,33 @@ public sealed class DungeonGraphLayoutAssembler
         {
             PlannedNode node = topology.Nodes[nodeIndex];
             CollectRequiredDirections(topology, nodeIndex, requiredDirections);
-            candidates.Clear();
-            library.CollectRooms(node.Role, candidates);
-            for (int candidateIndex = candidates.Count - 1; candidateIndex >= 0; candidateIndex--)
+            RoomTemplateSO selectedTemplate = node.Template;
+            if (selectedTemplate != null &&
+                !IsTemplateCompatible(selectedTemplate, requiredDirections))
             {
-                if (!IsTemplateCompatible(candidates[candidateIndex], requiredDirections))
-                    candidates.RemoveAt(candidateIndex);
+                failure =
+                    $"Guaranteed template '{selectedTemplate.LayoutData.roomId}' no longer supports " +
+                    $"topology node {nodeIndex} directions [{FormatDirections(requiredDirections)}].";
+                return false;
             }
 
-            RoomTemplateSO selectedTemplate = SelectWeightedTemplate(candidates, random);
+            if (selectedTemplate == null)
+            {
+                candidates.Clear();
+                library.CollectRooms(node.Role, candidates);
+                for (int candidateIndex = candidates.Count - 1; candidateIndex >= 0; candidateIndex--)
+                {
+                    RoomTemplateSO candidate = candidates[candidateIndex];
+                    if (ContainsTemplateReference(guaranteedRoomTemplates, candidate) ||
+                        !IsTemplateCompatible(candidate, requiredDirections))
+                    {
+                        candidates.RemoveAt(candidateIndex);
+                    }
+                }
+
+                selectedTemplate = SelectWeightedTemplate(candidates, random);
+            }
+
             if (selectedTemplate == null)
             {
                 failure =
@@ -824,6 +1297,22 @@ public sealed class DungeonGraphLayoutAssembler
         return true;
     }
 
+    private static bool ContainsTemplateReference(
+        IReadOnlyList<RoomTemplateSO> templates,
+        RoomTemplateSO candidate)
+    {
+        if (templates == null || candidate == null)
+            return false;
+
+        for (int templateIndex = 0; templateIndex < templates.Count; templateIndex++)
+        {
+            if (templates[templateIndex] == candidate)
+                return true;
+        }
+
+        return false;
+    }
+
     private static bool TryCreatePhysicalLayout(
         int seed,
         int requestedRoomCount,
@@ -835,58 +1324,78 @@ public sealed class DungeonGraphLayoutAssembler
         out DungeonLayoutResult result,
         out string failure)
     {
-        result = null;
-        Dictionary<int, int> leftExtents = new();
-        Dictionary<int, int> rightExtents = new();
-        Dictionary<int, int> bottomExtents = new();
-        Dictionary<int, int> topExtents = new();
-        List<int> columns = new();
-        List<int> rows = new();
-        CollectAxisExtents(
-            topology,
-            leftExtents,
-            rightExtents,
-            bottomExtents,
-            topExtents,
-            columns,
-            rows);
+        const int relaxationStepCount = 5;
+        int physicalLayoutSeed = random.Next();
+        string lastFailure = string.Empty;
+        for (int stepIndex = 0; stepIndex < relaxationStepCount; stepIndex++)
+        {
+            float preferredExtraLengthScale = 1f -
+                stepIndex / (float)(relaxationStepCount - 1);
+            if (!TryCreatePhysicalLayoutAtScale(
+                    seed,
+                    requestedRoomCount,
+                    topology,
+                    new System.Random(physicalLayoutSeed),
+                    minimumCorridorLength,
+                    corridorLengthPerRoomCell,
+                    corridorLengthVariation,
+                    preferredExtraLengthScale,
+                    out result,
+                    out lastFailure))
+            {
+                continue;
+            }
 
-        Dictionary<int, int> columnAnchors = CreateAxisAnchors(
-            topology,
-            columns,
-            leftExtents,
-            rightExtents,
-            horizontal: true,
-            minimumCorridorLength,
-            corridorLengthPerRoomCell,
-            corridorLengthVariation,
-            random);
-        Dictionary<int, int> rowAnchors = CreateAxisAnchors(
-            topology,
-            rows,
-            bottomExtents,
-            topExtents,
-            horizontal: false,
-            minimumCorridorLength,
-            corridorLengthPerRoomCell,
-            corridorLengthVariation,
-            random);
+            if (stepIndex > 0)
+                result.MarkCorridorLengthRelaxed();
+            failure = string.Empty;
+            return true;
+        }
+
+        result = null;
+        failure =
+            $"Physical layout failed after relaxing preferred corridor extras to zero. " +
+            lastFailure;
+        return false;
+    }
+
+    private static bool TryCreatePhysicalLayoutAtScale(
+        int seed,
+        int requestedRoomCount,
+        TopologyDraft topology,
+        System.Random random,
+        int minimumCorridorLength,
+        float corridorLengthPerRoomCell,
+        int corridorLengthVariation,
+        float preferredExtraLengthScale,
+        out DungeonLayoutResult result,
+        out string failure)
+    {
+        result = null;
+        if (!TryResolveConstraintNodeBounds(
+                topology,
+                random,
+                minimumCorridorLength,
+                corridorLengthPerRoomCell,
+                corridorLengthVariation,
+                preferredExtraLengthScale,
+                out failure))
+        {
+            return false;
+        }
 
         DungeonLayoutResult builtResult = new(seed, requestedRoomCount);
         for (int nodeIndex = 0; nodeIndex < topology.Nodes.Count; nodeIndex++)
         {
             PlannedNode node = topology.Nodes[nodeIndex];
-            node.Origin = new Vector2Int(
-                columnAnchors[node.GridPosition.x] - node.ReferenceX,
-                rowAnchors[node.GridPosition.y] - node.ReferenceY);
-            node.WorldBounds = new RectInt(
-                node.LocalBounds.position + node.Origin,
-                node.LocalBounds.size);
             builtResult.AddRoom(new DungeonRoomPlacement(
                 nodeIndex,
                 node.Template,
                 node.Origin,
-                node.WorldBounds));
+                node.WorldBounds,
+                CalculateGraphDistance(topology, 0, nodeIndex),
+                GetNodeDegree(topology, nodeIndex) == 1,
+                node.IsCycleDetour));
         }
 
         if (HasRoomOverlap(topology))
@@ -964,114 +1473,333 @@ public sealed class DungeonGraphLayoutAssembler
         return true;
     }
 
-    private static void CollectAxisExtents(
+    private static bool TryResolveConstraintNodeBounds(
         TopologyDraft topology,
-        Dictionary<int, int> leftExtents,
-        Dictionary<int, int> rightExtents,
-        Dictionary<int, int> bottomExtents,
-        Dictionary<int, int> topExtents,
-        List<int> columns,
-        List<int> rows)
-    {
-        HashSet<int> columnSet = new();
-        HashSet<int> rowSet = new();
-        for (int nodeIndex = 0; nodeIndex < topology.Nodes.Count; nodeIndex++)
-        {
-            PlannedNode node = topology.Nodes[nodeIndex];
-            int column = node.GridPosition.x;
-            int row = node.GridPosition.y;
-            columnSet.Add(column);
-            rowSet.Add(row);
-            SetMaximum(leftExtents, column, node.ReferenceX - node.LocalBounds.xMin);
-            SetMaximum(rightExtents, column, node.LocalBounds.xMax - 1 - node.ReferenceX);
-            SetMaximum(bottomExtents, row, node.ReferenceY - node.LocalBounds.yMin);
-            SetMaximum(topExtents, row, node.LocalBounds.yMax - 1 - node.ReferenceY);
-        }
-
-        columns.AddRange(columnSet);
-        rows.AddRange(rowSet);
-        columns.Sort();
-        rows.Sort();
-    }
-
-    private static Dictionary<int, int> CreateAxisAnchors(
-        TopologyDraft topology,
-        IReadOnlyList<int> coordinates,
-        IReadOnlyDictionary<int, int> negativeExtents,
-        IReadOnlyDictionary<int, int> positiveExtents,
-        bool horizontal,
+        System.Random random,
         int minimumCorridorLength,
         float corridorLengthPerRoomCell,
         int corridorLengthVariation,
-        System.Random random)
+        float preferredExtraLengthScale,
+        out string failure)
     {
-        Dictionary<int, int> anchors = new();
-        if (coordinates.Count == 0)
-            return anchors;
-
-        anchors.Add(coordinates[0], 0);
-        for (int coordinateIndex = 1; coordinateIndex < coordinates.Count; coordinateIndex++)
-        {
-            int previousCoordinate = coordinates[coordinateIndex - 1];
-            int coordinate = coordinates[coordinateIndex];
-            int gap = ResolveAxisBoundaryGap(
+        if (!TryCreateAxisConstraintLayout(
                 topology,
-                previousCoordinate,
-                coordinate,
-                horizontal,
+                horizontal: true,
                 minimumCorridorLength,
                 corridorLengthPerRoomCell,
                 corridorLengthVariation,
-                random);
-            int coordinateDistance = Mathf.Max(1, coordinate - previousCoordinate);
-            int separation = positiveExtents[previousCoordinate] +
-                negativeExtents[coordinate] +
-                1 +
-                gap * coordinateDistance;
-            anchors.Add(coordinate, anchors[previousCoordinate] + separation);
+                preferredExtraLengthScale,
+                random,
+                out AxisConstraintLayout horizontalLayout,
+                out failure) ||
+            !TryCreateAxisConstraintLayout(
+                topology,
+                horizontal: false,
+                minimumCorridorLength,
+                corridorLengthPerRoomCell,
+                corridorLengthVariation,
+                preferredExtraLengthScale,
+                random,
+                out AxisConstraintLayout verticalLayout,
+                out failure))
+        {
+            return false;
         }
 
-        return anchors;
+        int iterationLimit = Mathf.Max(1, topology.Nodes.Count * topology.Nodes.Count + 1);
+        for (int iteration = 0; iteration < iterationLimit; iteration++)
+        {
+            horizontalLayout.Solve();
+            verticalLayout.Solve();
+            AssignConstraintNodeBounds(topology, horizontalLayout, verticalLayout);
+
+            bool foundOverlap = false;
+            bool addedConstraint = false;
+            for (int firstIndex = 0; firstIndex < topology.Nodes.Count; firstIndex++)
+            {
+                for (int secondIndex = firstIndex + 1;
+                     secondIndex < topology.Nodes.Count;
+                     secondIndex++)
+                {
+                    if (!topology.Nodes[firstIndex].WorldBounds.Overlaps(
+                            topology.Nodes[secondIndex].WorldBounds))
+                    {
+                        continue;
+                    }
+
+                    foundOverlap = true;
+                    addedConstraint |= TryAddRoomOverlapConstraint(
+                        topology,
+                        firstIndex,
+                        secondIndex,
+                        horizontalLayout,
+                        verticalLayout);
+                }
+            }
+
+            if (!foundOverlap)
+            {
+                failure = string.Empty;
+                return true;
+            }
+
+            if (!addedConstraint)
+            {
+                failure =
+                    "Room overlap could not be separated without breaking a required socket alignment.";
+                return false;
+            }
+        }
+
+        failure =
+            $"Room overlap constraints did not converge within {iterationLimit} iterations.";
+        return false;
     }
 
-    private static int ResolveAxisBoundaryGap(
+    private static bool TryCreateAxisConstraintLayout(
         TopologyDraft topology,
-        int lowerCoordinate,
-        int upperCoordinate,
         bool horizontal,
         int minimumCorridorLength,
         float corridorLengthPerRoomCell,
         int corridorLengthVariation,
-        System.Random random)
+        float preferredExtraLengthScale,
+        System.Random random,
+        out AxisConstraintLayout layout,
+        out string failure)
     {
-        int maximumGap = minimumCorridorLength;
+        int nodeCount = topology.Nodes.Count;
+        int[] parents = new int[nodeCount];
+        for (int nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
+            parents[nodeIndex] = nodeIndex;
+
         for (int edgeIndex = 0; edgeIndex < topology.Edges.Count; edgeIndex++)
         {
             PlannedEdge edge = topology.Edges[edgeIndex];
             PlannedNode first = topology.Nodes[edge.FirstNodeIndex];
             PlannedNode second = topology.Nodes[edge.SecondNodeIndex];
-            int firstCoordinate = horizontal ? first.GridPosition.x : first.GridPosition.y;
-            int secondCoordinate = horizontal ? second.GridPosition.x : second.GridPosition.y;
-            if (Mathf.Min(firstCoordinate, secondCoordinate) != lowerCoordinate ||
-                Mathf.Max(firstCoordinate, secondCoordinate) != upperCoordinate)
+            RoomSocketDirection direction = GetDirection(
+                first.GridPosition,
+                second.GridPosition);
+            if (direction == (RoomSocketDirection)(-1))
             {
-                continue;
+                layout = null;
+                failure = $"Topology edge {edgeIndex} does not connect cardinal-neighbor nodes.";
+                return false;
             }
 
-            int firstDepth = horizontal ? first.LocalBounds.width : first.LocalBounds.height;
-            int secondDepth = horizontal ? second.LocalBounds.width : second.LocalBounds.height;
-            int sizeDrivenLength = Mathf.CeilToInt(
-                (Mathf.Max(0, firstDepth) + Mathf.Max(0, secondDepth)) *
-                corridorLengthPerRoomCell);
-            int variation = corridorLengthVariation > 0
-                ? random.Next(corridorLengthVariation + 1)
-                : 0;
-            maximumGap = Mathf.Max(
-                maximumGap,
-                minimumCorridorLength + sizeDrivenLength + variation);
+            bool sharesAxisAnchor = horizontal
+                ? direction == RoomSocketDirection.Up || direction == RoomSocketDirection.Down
+                : direction == RoomSocketDirection.Left || direction == RoomSocketDirection.Right;
+            if (sharesAxisAnchor)
+                UnionNodes(parents, edge.FirstNodeIndex, edge.SecondNodeIndex);
         }
 
-        return maximumGap;
+        Dictionary<int, int> groupByRoot = new();
+        List<int> logicalCoordinates = new();
+        int[] groupByNode = new int[nodeCount];
+        for (int nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
+        {
+            int root = FindRoot(parents, nodeIndex);
+            if (!groupByRoot.TryGetValue(root, out int groupIndex))
+            {
+                groupIndex = logicalCoordinates.Count;
+                groupByRoot.Add(root, groupIndex);
+                logicalCoordinates.Add(ResolveLogicalCoordinate(
+                    topology.Nodes[nodeIndex],
+                    horizontal));
+            }
+
+            int logicalCoordinate = ResolveLogicalCoordinate(
+                topology.Nodes[nodeIndex],
+                horizontal);
+            if (logicalCoordinates[groupIndex] != logicalCoordinate)
+            {
+                layout = null;
+                failure =
+                    $"A required socket alignment crosses multiple logical " +
+                    $"{(horizontal ? "columns" : "rows")}.";
+                return false;
+            }
+
+            groupByNode[nodeIndex] = groupIndex;
+        }
+
+        layout = new AxisConstraintLayout(groupByNode, logicalCoordinates.ToArray());
+        for (int edgeIndex = 0; edgeIndex < topology.Edges.Count; edgeIndex++)
+        {
+            PlannedEdge edge = topology.Edges[edgeIndex];
+            PlannedNode first = topology.Nodes[edge.FirstNodeIndex];
+            PlannedNode second = topology.Nodes[edge.SecondNodeIndex];
+            int firstCoordinate = ResolveLogicalCoordinate(first, horizontal);
+            int secondCoordinate = ResolveLogicalCoordinate(second, horizontal);
+            if (firstCoordinate == secondCoordinate)
+                continue;
+
+            int lowerNodeIndex = firstCoordinate < secondCoordinate
+                ? edge.FirstNodeIndex
+                : edge.SecondNodeIndex;
+            int upperNodeIndex = firstCoordinate < secondCoordinate
+                ? edge.SecondNodeIndex
+                : edge.FirstNodeIndex;
+            PlannedNode lowerNode = topology.Nodes[lowerNodeIndex];
+            PlannedNode upperNode = topology.Nodes[upperNodeIndex];
+            int preferredExtraLength = Mathf.CeilToInt(
+                (ResolveAxisDepth(lowerNode, horizontal) +
+                 ResolveAxisDepth(upperNode, horizontal)) *
+                Mathf.Max(0f, corridorLengthPerRoomCell));
+            if (corridorLengthVariation > 0)
+                preferredExtraLength += random.Next(corridorLengthVariation + 1);
+            int gap = Mathf.Max(0, minimumCorridorLength) + Mathf.CeilToInt(
+                preferredExtraLength * Mathf.Clamp01(preferredExtraLengthScale));
+            int separation = ResolvePositiveExtent(lowerNode, horizontal) +
+                ResolveNegativeExtent(upperNode, horizontal) +
+                1 +
+                gap;
+            layout.AddMinimumSeparation(
+                layout.GetGroup(lowerNodeIndex),
+                layout.GetGroup(upperNodeIndex),
+                separation);
+        }
+
+        failure = string.Empty;
+        return true;
+    }
+
+    private static void AssignConstraintNodeBounds(
+        TopologyDraft topology,
+        AxisConstraintLayout horizontalLayout,
+        AxisConstraintLayout verticalLayout)
+    {
+        for (int nodeIndex = 0; nodeIndex < topology.Nodes.Count; nodeIndex++)
+        {
+            PlannedNode node = topology.Nodes[nodeIndex];
+            node.Origin = new Vector2Int(
+                horizontalLayout.GetAnchorForNode(nodeIndex) - node.ReferenceX,
+                verticalLayout.GetAnchorForNode(nodeIndex) - node.ReferenceY);
+            node.WorldBounds = new RectInt(
+                node.LocalBounds.position + node.Origin,
+                node.LocalBounds.size);
+        }
+    }
+
+    private static bool TryAddRoomOverlapConstraint(
+        TopologyDraft topology,
+        int firstNodeIndex,
+        int secondNodeIndex,
+        AxisConstraintLayout horizontalLayout,
+        AxisConstraintLayout verticalLayout)
+    {
+        bool hasHorizontalCandidate = TryResolveOverlapConstraintCandidate(
+            topology,
+            firstNodeIndex,
+            secondNodeIndex,
+            horizontal: true,
+            horizontalLayout,
+            out int horizontalLowerGroup,
+            out int horizontalUpperGroup,
+            out int horizontalSeparation,
+            out int horizontalMovement);
+        bool hasVerticalCandidate = TryResolveOverlapConstraintCandidate(
+            topology,
+            firstNodeIndex,
+            secondNodeIndex,
+            horizontal: false,
+            verticalLayout,
+            out int verticalLowerGroup,
+            out int verticalUpperGroup,
+            out int verticalSeparation,
+            out int verticalMovement);
+
+        if (hasHorizontalCandidate &&
+            (!hasVerticalCandidate || horizontalMovement <= verticalMovement))
+        {
+            if (horizontalLayout.AddMinimumSeparation(
+                    horizontalLowerGroup,
+                    horizontalUpperGroup,
+                    horizontalSeparation))
+            {
+                return true;
+            }
+        }
+
+        return hasVerticalCandidate && verticalLayout.AddMinimumSeparation(
+            verticalLowerGroup,
+            verticalUpperGroup,
+            verticalSeparation);
+    }
+
+    private static bool TryResolveOverlapConstraintCandidate(
+        TopologyDraft topology,
+        int firstNodeIndex,
+        int secondNodeIndex,
+        bool horizontal,
+        AxisConstraintLayout layout,
+        out int lowerGroup,
+        out int upperGroup,
+        out int separation,
+        out int additionalMovement)
+    {
+        PlannedNode first = topology.Nodes[firstNodeIndex];
+        PlannedNode second = topology.Nodes[secondNodeIndex];
+        int firstCoordinate = ResolveLogicalCoordinate(first, horizontal);
+        int secondCoordinate = ResolveLogicalCoordinate(second, horizontal);
+        int firstGroup = layout.GetGroup(firstNodeIndex);
+        int secondGroup = layout.GetGroup(secondNodeIndex);
+        if (firstCoordinate == secondCoordinate || firstGroup == secondGroup)
+        {
+            lowerGroup = -1;
+            upperGroup = -1;
+            separation = 0;
+            additionalMovement = int.MaxValue;
+            return false;
+        }
+
+        bool firstIsLower = firstCoordinate < secondCoordinate;
+        PlannedNode lowerNode = firstIsLower ? first : second;
+        PlannedNode upperNode = firstIsLower ? second : first;
+        lowerGroup = firstIsLower ? firstGroup : secondGroup;
+        upperGroup = firstIsLower ? secondGroup : firstGroup;
+        separation = ResolvePositiveExtent(lowerNode, horizontal) +
+            ResolveNegativeExtent(upperNode, horizontal) +
+            1;
+        additionalMovement = separation -
+            (layout.GetAnchorForGroup(upperGroup) - layout.GetAnchorForGroup(lowerGroup));
+        return additionalMovement > 0;
+    }
+
+    private static int ResolveLogicalCoordinate(PlannedNode node, bool horizontal) =>
+        horizontal ? node.GridPosition.x : node.GridPosition.y;
+
+    private static int ResolveAxisDepth(PlannedNode node, bool horizontal) =>
+        horizontal ? Mathf.Max(0, node.LocalBounds.width) : Mathf.Max(0, node.LocalBounds.height);
+
+    private static int ResolveNegativeExtent(PlannedNode node, bool horizontal) =>
+        horizontal
+            ? node.ReferenceX - node.LocalBounds.xMin
+            : node.ReferenceY - node.LocalBounds.yMin;
+
+    private static int ResolvePositiveExtent(PlannedNode node, bool horizontal) =>
+        horizontal
+            ? node.LocalBounds.xMax - 1 - node.ReferenceX
+            : node.LocalBounds.yMax - 1 - node.ReferenceY;
+
+    private static int FindRoot(int[] parents, int nodeIndex)
+    {
+        while (parents[nodeIndex] != nodeIndex)
+        {
+            parents[nodeIndex] = parents[parents[nodeIndex]];
+            nodeIndex = parents[nodeIndex];
+        }
+
+        return nodeIndex;
+    }
+
+    private static void UnionNodes(int[] parents, int firstNodeIndex, int secondNodeIndex)
+    {
+        int firstRoot = FindRoot(parents, firstNodeIndex);
+        int secondRoot = FindRoot(parents, secondNodeIndex);
+        if (firstRoot != secondRoot)
+            parents[secondRoot] = firstRoot;
     }
 
     private static bool TryResolveNodeReferences(
@@ -1574,12 +2302,6 @@ public sealed class DungeonGraphLayoutAssembler
             RoomSocketDirection.Left => Vector2Int.left,
             _ => Vector2Int.zero
         };
-    }
-
-    private static void SetMaximum(Dictionary<int, int> values, int key, int value)
-    {
-        if (!values.TryGetValue(key, out int current) || value > current)
-            values[key] = value;
     }
 
     private static int NextInclusive(System.Random random, int minimum, int maximum)

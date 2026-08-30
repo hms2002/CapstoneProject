@@ -1,145 +1,123 @@
 {
     "sessions": [
         {
-            "sessionId": "0d3a4fe9f541451bb024ffb874702f26",
-            "startedUtc": "2026-08-18T07:52:05.7927598Z",
-            "endedUtc": "2026-08-18T07:52:06.7951748Z",
+            "sessionId": "a93dd00105664f22a432d7f683e07996",
+            "startedUtc": "2026-08-29T23:11:39.0033725Z",
+            "endedUtc": "2026-08-29T23:11:40.2741168Z",
             "entries": []
         },
         {
-            "sessionId": "e989d0aa24a04d4f976a71638589070b",
-            "startedUtc": "2026-08-18T07:57:39.5374138Z",
-            "endedUtc": "2026-08-18T07:57:40.5428460Z",
+            "sessionId": "ff58b106dd574e36b1aa8aac58a7e3f4",
+            "startedUtc": "2026-08-29T23:46:01.1753611Z",
+            "endedUtc": "2026-08-29T23:46:01.5197301Z",
             "entries": []
         },
         {
-            "sessionId": "e9fe5aed5a3041b093f601155d4cf4e8",
-            "startedUtc": "2026-08-18T08:23:55.2957271Z",
-            "endedUtc": "2026-08-18T08:23:56.2990803Z",
+            "sessionId": "7acb1f8fb2554600af90270f20ff76bd",
+            "startedUtc": "2026-08-30T00:31:51.2830435Z",
+            "endedUtc": "2026-08-30T00:31:51.6415889Z",
             "entries": []
         },
         {
-            "sessionId": "567315338bec40278ad5b0fae6a0b94a",
-            "startedUtc": "2026-08-18T08:27:16.1313851Z",
-            "endedUtc": "2026-08-18T08:27:17.1340416Z",
+            "sessionId": "aa9a3fac90164f02bbd5189230e255d4",
+            "startedUtc": "2026-08-30T01:48:33.1125889Z",
+            "endedUtc": "2026-08-30T01:48:33.4676847Z",
             "entries": []
         },
         {
-            "sessionId": "96082e9e1c104c7cbef4335c07196e5d",
-            "startedUtc": "2026-08-18T08:33:48.0387176Z",
-            "endedUtc": "2026-08-18T08:33:49.0435858Z",
+            "sessionId": "b8adac5d18534f979b672d9cdcca56d2",
+            "startedUtc": "2026-08-30T06:54:54.0362359Z",
+            "endedUtc": "2026-08-30T06:54:55.0381680Z",
             "entries": []
         },
         {
-            "sessionId": "771bbfcb4e30494b826a0d3220027855",
-            "startedUtc": "2026-08-18T11:02:05.8671193Z",
-            "endedUtc": "2026-08-18T11:02:06.8722978Z",
+            "sessionId": "723e8b4b4cc84b8d954e5c17eadc30bb",
+            "startedUtc": "2026-08-30T06:55:57.9870771Z",
+            "endedUtc": "2026-08-30T06:55:58.9962291Z",
             "entries": []
         },
         {
-            "sessionId": "b50c56628a6a478bab2b8424b93384ec",
-            "startedUtc": "2026-08-18T11:11:13.6572657Z",
-            "endedUtc": "2026-08-18T11:11:14.6607283Z",
+            "sessionId": "69be309a4a6046d8982b4d8ef6b53351",
+            "startedUtc": "2026-08-30T06:56:22.2892252Z",
+            "endedUtc": "2026-08-30T06:56:23.2916784Z",
             "entries": []
         },
         {
-            "sessionId": "a8aed6e04edd43eb9df463d15465fcaf",
-            "startedUtc": "2026-08-18T11:18:33.0577050Z",
-            "endedUtc": "2026-08-18T11:18:34.0643439Z",
+            "sessionId": "231397021e56489cb20abf6bc29c13b9",
+            "startedUtc": "2026-08-30T07:36:26.8076360Z",
+            "endedUtc": "2026-08-30T07:36:27.1342521Z",
             "entries": []
         },
         {
-            "sessionId": "1b57b089f16640829eed53b5f023f411",
-            "startedUtc": "2026-08-18T11:35:41.6300347Z",
-            "endedUtc": "2026-08-18T11:35:42.6346649Z",
+            "sessionId": "1c8f7823180846db9faa6b05fdeed109",
+            "startedUtc": "2026-08-30T07:43:16.5738226Z",
+            "endedUtc": "2026-08-30T07:43:17.5784026Z",
             "entries": []
         },
         {
-            "sessionId": "8784e49fd3ef495b940b7f5a5ad2c908",
-            "startedUtc": "2026-08-18T11:36:55.6044936Z",
-            "endedUtc": "2026-08-18T11:36:56.6106028Z",
+            "sessionId": "e2db12695b3442b8aa9b3b617c19cd24",
+            "startedUtc": "2026-08-30T07:51:35.6576153Z",
+            "endedUtc": "2026-08-30T07:51:36.8316151Z",
             "entries": []
         },
         {
-            "sessionId": "705db5702ee841698559c7975da176ae",
-            "startedUtc": "2026-08-18T12:04:34.0029599Z",
-            "endedUtc": "2026-08-18T12:04:35.0064804Z",
+            "sessionId": "09a7649c93ca46b8b186c6ed2314ec98",
+            "startedUtc": "2026-08-30T07:56:10.9152434Z",
+            "endedUtc": "2026-08-30T07:56:12.1258397Z",
             "entries": []
         },
         {
-            "sessionId": "e47ac739f5994361b3cb2cb4033fa07e",
-            "startedUtc": "2026-08-18T12:05:00.8025495Z",
-            "endedUtc": "2026-08-18T12:05:01.8057998Z",
+            "sessionId": "3bbfd086fb4a4f0bb7c11ed0aea000f4",
+            "startedUtc": "2026-08-30T08:36:20.4062822Z",
+            "endedUtc": "2026-08-30T08:36:21.4083370Z",
             "entries": []
         },
         {
-            "sessionId": "3f92724aef7b45fd82dc295402663929",
-            "startedUtc": "2026-08-18T12:12:02.3093685Z",
-            "endedUtc": "2026-08-18T12:12:03.3132607Z",
+            "sessionId": "c9d09181a4fa4f64adc0c80df4cd61e0",
+            "startedUtc": "2026-08-30T08:38:25.2393912Z",
+            "endedUtc": "2026-08-30T08:38:26.2447631Z",
             "entries": []
         },
         {
-            "sessionId": "9926698b50bf4bcc8c38cdf6e2beac36",
-            "startedUtc": "2026-08-19T04:12:54.7537828Z",
-            "endedUtc": "2026-08-19T04:13:58.5555376Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 2,
-                    "coldSpawns": 2,
-                    "firstSeenSeconds": 57.77204895019531,
-                    "lastSeenSeconds": 63.795005798339847,
-                    "firstSceneName": "ProceduralShadowCorridor",
-                    "lastSceneName": "ProceduralShadowCorridor"
-                }
-            ]
-        },
-        {
-            "sessionId": "6bc80aa8dc914372996abbbc100cd17c",
-            "startedUtc": "2026-08-19T04:33:33.2250342Z",
-            "endedUtc": "2026-08-19T04:34:49.5597638Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 76.32148742675781,
-                    "lastSeenSeconds": 76.32164001464844,
-                    "firstSceneName": "ProceduralShadowCorridor",
-                    "lastSceneName": "ProceduralShadowCorridor"
-                }
-            ]
-        },
-        {
-            "sessionId": "8ad5317cb9c04d5c89709b0da1ca20f3",
-            "startedUtc": "2026-08-19T04:38:04.2583883Z",
-            "endedUtc": "2026-08-19T04:38:05.2625243Z",
+            "sessionId": "be79401a28814a2dbb728020c76ad754",
+            "startedUtc": "2026-08-30T08:40:29.3115355Z",
+            "endedUtc": "2026-08-30T08:40:30.3152479Z",
             "entries": []
         },
         {
-            "sessionId": "d1f9e26d339043bdba41bd97c5ccf2f4",
-            "startedUtc": "2026-08-21T08:08:56.3238591Z",
-            "endedUtc": "2026-08-21T08:08:57.3266830Z",
+            "sessionId": "2cac213b6c314e949ac41bff0aeee7ee",
+            "startedUtc": "2026-08-30T08:54:03.4783771Z",
+            "endedUtc": "2026-08-30T08:54:04.5804379Z",
             "entries": []
         },
         {
-            "sessionId": "c1cedf1892804722b15873a9cfdb71cb",
-            "startedUtc": "2026-08-29T03:15:01.4248115Z",
-            "endedUtc": "2026-08-29T03:15:02.4292820Z",
+            "sessionId": "c487c616cdee4923bc8dba25a001282a",
+            "startedUtc": "2026-08-30T08:55:43.6395905Z",
+            "endedUtc": "2026-08-30T08:55:44.7246589Z",
             "entries": []
         },
         {
-            "sessionId": "1d89872c81304fd5bce50885bb69fe16",
-            "startedUtc": "2026-08-29T03:16:41.0531606Z",
-            "endedUtc": "2026-08-29T03:16:42.0571278Z",
+            "sessionId": "9baa347e8bbb4baa96898af2d96396ba",
+            "startedUtc": "2026-08-30T08:58:12.2754870Z",
+            "endedUtc": "2026-08-30T08:58:13.2776396Z",
             "entries": []
         },
         {
-            "sessionId": "24f122f3dd9541348b805c158d446aa4",
-            "startedUtc": "2026-08-29T03:17:01.0185312Z",
-            "endedUtc": "2026-08-29T03:17:02.0233622Z",
+            "sessionId": "022528e893f842809918179182a85cbf",
+            "startedUtc": "2026-08-30T09:11:30.4204349Z",
+            "endedUtc": "2026-08-30T09:11:30.7482949Z",
+            "entries": []
+        },
+        {
+            "sessionId": "63bb32522e3841c9b7c5b7641e544d20",
+            "startedUtc": "2026-08-30T09:17:46.6584152Z",
+            "endedUtc": "2026-08-30T09:17:47.6621179Z",
+            "entries": []
+        },
+        {
+            "sessionId": "f067946a0bc64241b27bec92e3f85212",
+            "startedUtc": "2026-08-30T09:22:26.9324532Z",
+            "endedUtc": "2026-08-30T09:22:27.9352519Z",
             "entries": []
         }
     ]

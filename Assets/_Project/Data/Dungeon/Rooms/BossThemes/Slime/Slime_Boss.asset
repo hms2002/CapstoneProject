@@ -28,6 +28,10 @@ MonoBehaviour:
       width: 2
     difficultyTier: 1
     selectionWeight: 1
+    topologyPlacement:
+      mode: 0
+      minimumGraphDistanceFromStart: 0
+      requireDeadEnd: 0
   buildData:
     floorTiles:
     - localCell: {x: 1, y: 1}

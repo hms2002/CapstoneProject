@@ -20,7 +20,7 @@ MonoBehaviour:
     sceneName: LeeJunmo_Boss_DemonKing
     endpointId: Boss.demon_king.Corridor
   aToB:
-    enabled: 1
+    enabled: 0
     runAction: 0
     runEndReason: 0
     preservePlayerRuntimeState: 1
@@ -34,7 +34,7 @@ MonoBehaviour:
       failureWarning: 11
     presentationProfile: {fileID: 11400000, guid: 78250d285c4b95f449ace0417e91c0a4, type: 2}
   bToA:
-    enabled: 1
+    enabled: 0
     runAction: 0
     runEndReason: 0
     preservePlayerRuntimeState: 1

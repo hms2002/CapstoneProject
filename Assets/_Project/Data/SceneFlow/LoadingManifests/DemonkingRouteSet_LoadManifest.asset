@@ -13,15 +13,9 @@ MonoBehaviour:
   m_Name: DemonkingRouteSet_Corridor
   m_EditorClassIdentifier: Assembly-CSharp::LoadManifestSO
   scopeKind: 2
-  prefabAssets:
-  - {fileID: 7326883398652249423, guid: 65aed765b26cc4745a94999e32542d6c, type: 3}
-  - {fileID: 6955305126709057867, guid: 6b49f710022e5e64bb337a1da469af91, type: 3}
-  - {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
-  - {fileID: 827981175415890305, guid: b9febceb6e3458b4aaa9d31cefa9bfb0, type: 3}
-  - {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
+  prefabAssets: []
   cueAssets: []
-  dataAssets:
-  - {fileID: 11400000, guid: 74e264bb04ba4c54d869c3ae54112f89, type: 2}
+  dataAssets: []
   extraAssets: []
   prewarmPrefabs: []
 --- !u!114 &-3502806408091389427
@@ -71,6 +65,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5c6cbc85ca649e6428489e9939c28342, type: 2}
   - {fileID: 11400000, guid: 54e5f53ed338f354db8ebcec3fdda0bc, type: 2}
   - {fileID: 11400000, guid: 0d91c9df159665a4aaf50b12b327a52f, type: 2}
+  - {fileID: 11400000, guid: 50178fd501407dd46ba385fdb3361704, type: 2}
   extraAssets: []
   prewarmPrefabs: []
 --- !u!114 &11400000
@@ -103,7 +98,6 @@ MonoBehaviour:
   scopeKind: 2
   prefabAssets: []
   cueAssets: []
-  dataAssets:
-  - {fileID: 11400000, guid: 50178fd501407dd46ba385fdb3361704, type: 2}
+  dataAssets: []
   extraAssets: []
   prewarmPrefabs: []
