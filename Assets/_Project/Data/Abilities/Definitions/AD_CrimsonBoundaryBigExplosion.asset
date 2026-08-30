@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
+  m_Name: AD_CrimsonBoundaryBigExplosion
+  m_EditorClassIdentifier: 
+  abilityName: "대폭발!"
+  description: "커서 지점에 0.6초 뒤 폭발. 화염 공격력 200%와 화상 전량 소모 피해"
+  cooldown: 12
+  executionPolicy: 0
+  useCharges: 0
+  maxCharges: 1
+  startCooldownOnEnd: 0
+  castTime: 0
+  recoveryTime: 0
+  canCastWhileMoving: 1
+  interruptible: 1
+  requireTargetObject: 0
+  cost: 0
+  logic: {fileID: 11400000, guid: 29469f63d12a4ccab4905c113dd3ad0d, type: 2}
+  sourceObject: {fileID: 11400000, guid: 49492591466c45ecb2245a229703c3ac, type: 2}
+  hitCueMagnitude: 1
+  criticalHitCueMagnitudeMultiplier: 2

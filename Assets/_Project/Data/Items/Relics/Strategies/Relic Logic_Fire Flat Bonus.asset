@@ -16,6 +16,14 @@ MonoBehaviour:
   - attribute: {fileID: 11400000, guid: 3cf73420df1732240b7c90837ff7efab, type: 2}
     displayNameOverride: 화염 피해
     type: 0
-    value: 10
-    valueByLevel: []
+    value: 2
+    valueByLevel:
+    - 2
+    - 4
+    - 6
+    - 8
+    - 10
+    - 12
+    - 14
+    - 16
     duration: 0

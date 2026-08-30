@@ -167,7 +167,8 @@ public static class CombatDamageAction
         bool isCriticalHit = false,
         ElementDamageResult[] elementBuildUps = null,
         bool hasResolvedElementBuildUps = false,
-        HitImpactCueKind hitImpactCueKind = HitImpactCueKind.Default)
+        HitImpactCueKind hitImpactCueKind = HitImpactCueKind.Default,
+        bool emitHitConfirmed = true)
     {
         ApplyDamageAndEmitHitInternal(
             system,
@@ -184,7 +185,8 @@ public static class CombatDamageAction
             isCriticalHit,
             elementBuildUps,
             hasResolvedElementBuildUps,
-            hitImpactCueKind);
+            hitImpactCueKind,
+            emitHitConfirmed);
     }
 
     private static void ApplyDamageAndEmitHitInternal(
@@ -202,7 +204,8 @@ public static class CombatDamageAction
         bool isCriticalHit,
         ElementDamageResult[] elementBuildUps,
         bool hasResolvedElementBuildUps,
-        HitImpactCueKind hitImpactCueKind)
+        HitImpactCueKind hitImpactCueKind,
+        bool emitHitConfirmed)
     {
         if (!Validate(system, damageEffect, target))
             return;
@@ -252,7 +255,8 @@ public static class CombatDamageAction
         ApplyStagger(target, finalStaggerBuildUp, system.gameObject, causer);
         ApplyElements(target, system.gameObject, causer, elementBuildUps, hasResolvedElementBuildUps);
 
-        EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag, hitWorldPosition, isCriticalHit, hitImpactCueKind);
+        if (emitHitConfirmed)
+            EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag, hitWorldPosition, isCriticalHit, hitImpactCueKind);
     }
 
     private static bool Validate(AbilitySystem system, GameplayEffect damageEffect, GameObject target)
