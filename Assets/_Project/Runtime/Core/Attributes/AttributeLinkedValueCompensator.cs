@@ -26,11 +26,6 @@ namespace UnityGAS
     /// </summary>
     public static class AttributeLinkedValueCompensator
     {
-        // 책임 : 연결값 보상 정책만 들어 있는 전용 Resources 하위 경로를 지정한다.
-        // 빈 경로는 첫 유물 장착 시 모든 Resources 자산과 의존성을 동기 로드해 큰 프레임 정지를 만들 수 있다.
-        private const string PolicyResourcesPath = "Attributes/LinkedValueCompensationPolicies";
-        private static AttributeLinkedValueCompensationPolicySO[] cachedPolicies;
-
         public readonly struct Snapshot
         {
             public bool IsValid { get; }

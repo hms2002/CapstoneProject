@@ -1,4 +1,4 @@
-using System.Reflection;
+using System.IO;
 using NUnit.Framework;
 using UnityEngine;
 using UnityGAS;
@@ -14,17 +14,16 @@ public sealed class CorePerformanceRegressionEditModeTests
     }
 
     [Test]
-    public void LinkedValuePolicyResourcesPath_IsScopedBelowResourcesRoot()
+    public void LinkedValueCompensator_DoesNotUseLegacyResourcesPolicyLookup()
     {
-        FieldInfo pathField = typeof(AttributeLinkedValueCompensator).GetField(
-            "PolicyResourcesPath",
-            BindingFlags.Static | BindingFlags.NonPublic);
+        string sourcePath = Path.Combine(
+            Application.dataPath,
+            "_Project/Runtime/Core/Attributes/AttributeLinkedValueCompensator.cs");
+        string source = File.ReadAllText(sourcePath);
 
-        Assert.That(pathField, Is.Not.Null);
-
-        string path = pathField.GetRawConstantValue() as string;
-        Assert.That(path, Is.Not.Null.And.Not.Empty);
-        Assert.That(path, Does.Contain("LinkedValueCompensationPolicies"));
+        Assert.That(source, Does.Not.Contain("Resources.LoadAll"));
+        Assert.That(source, Does.Not.Contain("AttributeLinkedValueCompensationPolicySO"));
+        Assert.That(source, Does.Not.Contain("cachedPolicies"));
     }
 
     [Test]
