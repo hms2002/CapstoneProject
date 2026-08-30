@@ -20,6 +20,8 @@ Complete the Corridor-owned half of data-driven Lobby↔Corridor→Boss travel a
 - Scene-local builder bindings and explicit per-Corridor `PreserveDuringRun` policy/state IDs.
 - Each normal-theme layout and supported generated-object state remains stable while the run is active, including Corridor↔Corridor and Corridor↔HUB travel; a new or ended run clears it.
 - Arrival-only destination endpoints in the three normal authored Boss scenes.
+- Three one-way normal Boss→HUB connections. Each post-clear portal returns to its matching HUB gate with the shared wipe profile and `RunAction.None`.
+- Normal Boss exits no longer use `ScenePortal`/`PortalRouteManager` sequential routing; their encounter directors own explicit theme RouteSets so rewards and per-run defeat gates remain data-driven.
 - Arrival trigger reverse-trip suppression.
 - Idempotent focused installer and full-installer chaining.
 - Three active, positioned `ProtoTypeHub` A-side gate objects with configured endpoint Ids, connections, automatic triggers, `2x2` trigger colliders, and local departure/arrival anchors.
@@ -35,7 +37,6 @@ Complete the Corridor-owned half of data-driven Lobby↔Corridor→Boss travel a
 ## Intentionally Pending
 
 - Designer sign-off and final tuning for the three positioned gates in `ProtoTypeHub`.
-- Binding a selected Lobby gate to the matching route catalog/stage context.
 - End-to-end Play Mode traversal and presentation tuning.
 
 ## Verification
@@ -49,3 +50,5 @@ Complete the Corridor-owned half of data-driven Lobby↔Corridor→Boss travel a
 - `DemonKingHubPortalInstaller.Validate` and `DemonKingHubPortalPlayModeTests` verify that the unique HUB start portal resolves `DemonkingCorridor` as its first destination.
 - All connection assets retain a valid `SceneConnectionSO` script GUID.
 - `ProtoTypeHub.unity` contains active Shadow, Dragon, and Slime trigger gates plus the existing interactive portal bound to the DemonKing-only route catalog; no automatic DemonKing trigger gate exists.
+- `InstallNormalBossHubReturns` compiled and completed with return code 0, then verified all three one-way Boss→HUB assets, matching HUB endpoint IDs, shared wipe profiles, explicit encounter RouteSets, data-driven exit interactables, and removal of the legacy `ScenePortal` components.
+- `ProceduralPlayModeTests` passed 15/15 after the migration, including fixed DemonKing routing, run-state preservation, travel endpoint behavior, and arrival suppression coverage.

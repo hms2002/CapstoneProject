@@ -162,6 +162,53 @@ public static class ProceduralCorridorTravelInstaller
     }
 
     /// <summary>
+    /// 책임 : 세 일반 보스의 처치 후 포탈만 데이터 기반 Boss→HUB 이동으로 전환하고 기존 순차 RouteManager 경로를 우회한다.
+    /// </summary>
+    [MenuItem("Tools/Dungeon/Migrate Normal Boss Exit Portals To HUB")]
+    public static void InstallNormalBossHubReturns()
+    {
+        EnsureFolder(ConnectionFolder);
+        SceneTravelPresentationProfileSO lobbyTravelProfile =
+            CreateOrUpdateLobbyToCorridorPresentationProfile();
+        CorridorTravelSpec[] specs = CreateSpecs();
+        for (int i = 0; i < specs.Length; i++)
+        {
+            lobbyTravelProfile = AssetDatabase.LoadAssetAtPath<SceneTravelPresentationProfileSO>(
+                LobbyToCorridorTravelProfilePath);
+            if (lobbyTravelProfile == null)
+            {
+                throw new InvalidOperationException(
+                    $"Missing lobby travel profile: {LobbyToCorridorTravelProfilePath}");
+            }
+
+            CorridorBossRouteSetSO routeSet = LoadRequiredRouteSet(specs[i]);
+            SceneConnectionSO bossConnection =
+                AssetDatabase.LoadAssetAtPath<SceneConnectionSO>(
+                    $"{ConnectionFolder}/Corridor_{SanitizeAssetName(routeSet.StableThemeId)}_Boss.asset");
+            if (bossConnection == null)
+                throw new InvalidOperationException($"Missing Boss connection for '{routeSet.StableThemeId}'.");
+
+            SceneConnectionSO hubReturnConnection =
+                CreateOrUpdateBossHubConnection(routeSet, lobbyTravelProfile);
+            ConfigureBossSceneTravel(
+                routeSet,
+                bossConnection,
+                hubReturnConnection);
+
+            // 씬 저장 중 AssetDatabase refresh가 새 에셋 인스턴스를 교체할 수 있으므로
+            // 검증 직전에는 영속 경로에서 참조를 다시 얻는다.
+            routeSet = LoadRequiredRouteSet(specs[i]);
+            hubReturnConnection = AssetDatabase.LoadAssetAtPath<SceneConnectionSO>(
+                $"{ConnectionFolder}/Boss_{SanitizeAssetName(routeSet.StableThemeId)}_Hub.asset");
+            VerifyBossHubReturnConfiguration(routeSet, hubReturnConnection);
+        }
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+        Debug.Log("Migrated Slime, Shadow and Dragon boss exits to data-driven HUB returns.");
+    }
+
+    /// <summary>
     /// 책임:
     /// - 로비의 일반 보스 A측 이동 게이트 세 개를 설치하거나 누락된 구성을 복구한다.
     /// - 이미 배치된 게이트의 위치와 활성 상태는 보존하고, 새 게이트만 안전한 비활성 상태로 만든다.
@@ -358,6 +405,15 @@ public static class ProceduralCorridorTravelInstaller
         SceneTravelPresentationProfileSO defaultPresentationProfile,
         GameObject travelPortalPrefab)
     {
+        lobbyToCorridorPresentationProfile =
+            AssetDatabase.LoadAssetAtPath<SceneTravelPresentationProfileSO>(
+                LobbyToCorridorTravelProfilePath);
+        if (lobbyToCorridorPresentationProfile == null)
+        {
+            throw new InvalidOperationException(
+                $"Missing lobby travel profile: {LobbyToCorridorTravelProfilePath}");
+        }
+
         CorridorBossRouteSetSO routeSet =
             AssetDatabase.LoadAssetAtPath<CorridorBossRouteSetSO>(spec.RouteSetPath);
         if (routeSet == null || !routeSet.IsValid)
@@ -369,15 +425,19 @@ public static class ProceduralCorridorTravelInstaller
         SceneConnectionSO bossConnection = CreateOrUpdateBossConnection(
             routeSet,
             defaultPresentationProfile);
+        SceneConnectionSO bossHubConnection = CreateOrUpdateBossHubConnection(
+            routeSet,
+            lobbyToCorridorPresentationProfile);
 
         ConfigureRoomTravelSlots(spec, travelPortalPrefab);
         ConfigureCorridorScene(spec, routeSet, lobbyConnection, bossConnection);
-        ConfigureBossArrivalEndpoint(routeSet, bossConnection);
+        ConfigureBossSceneTravel(routeSet, bossConnection, bossHubConnection);
         VerifyThemeConfiguration(
             spec,
             routeSet,
             lobbyConnection,
             bossConnection,
+            bossHubConnection,
             lobbyToCorridorPresentationProfile,
             defaultPresentationProfile);
     }
@@ -732,6 +792,45 @@ public static class ProceduralCorridorTravelInstaller
             profile,
             SceneTravelGateKind.None,
             null);
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(connection);
+        AssetDatabase.SaveAssetIfDirty(connection);
+        return connection;
+    }
+
+    /// <summary>
+    /// 책임 : 일반 보스 씬의 처치 후 포탈을 같은 테마 HUB 게이트 도착점으로 보내는 단방향 연결 데이터를 만든다.
+    /// </summary>
+    private static SceneConnectionSO CreateOrUpdateBossHubConnection(
+        CorridorBossRouteSetSO routeSet,
+        SceneTravelPresentationProfileSO profile)
+    {
+        string themeId = routeSet.StableThemeId;
+        string assetPath = $"{ConnectionFolder}/Boss_{SanitizeAssetName(themeId)}_Hub.asset";
+        SceneConnectionSO connection = LoadOrCreateConnection(assetPath);
+        SerializedObject serialized = new(connection);
+        serialized.FindProperty("connectionId").stringValue = $"boss_hub_{themeId}";
+        ConfigureEndpoint(
+            serialized.FindProperty("endpointA"),
+            routeSet.BossSceneName,
+            $"Boss.{themeId}.Hub");
+        ConfigureEndpoint(
+            serialized.FindProperty("endpointB"),
+            LobbySceneName,
+            $"Lobby.{themeId}.Corridor");
+        ConfigureDirection(
+            serialized.FindProperty("aToB"),
+            SceneTravelRunAction.None,
+            profile,
+            SceneTravelGateKind.None,
+            null);
+        ConfigureDirection(
+            serialized.FindProperty("bToA"),
+            SceneTravelRunAction.None,
+            profile: null,
+            SceneTravelGateKind.None,
+            gateSubjectId: null,
+            enabled: false);
         serialized.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(connection);
         AssetDatabase.SaveAssetIfDirty(connection);
@@ -1349,13 +1448,29 @@ public static class ProceduralCorridorTravelInstaller
         return null;
     }
 
-    private static void ConfigureBossArrivalEndpoint(
+    private static void ConfigureBossSceneTravel(
         CorridorBossRouteSetSO routeSet,
-        SceneConnectionSO bossConnection)
+        SceneConnectionSO bossConnection,
+        SceneConnectionSO hubReturnConnection)
     {
+        string routeSetPath = AssetDatabase.GetAssetPath(routeSet);
+        string bossConnectionPath = AssetDatabase.GetAssetPath(bossConnection);
+        string hubReturnConnectionPath = AssetDatabase.GetAssetPath(hubReturnConnection);
         string scenePath = $"Assets/_Project/Scenes/{routeSet.BossSceneName}.unity";
         RequireSceneAsset(scenePath);
         Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+
+        // OpenScene이 유발하는 동기 refresh 뒤에는 전달받은 UnityEngine.Object가
+        // 폐기된 인스턴스일 수 있으므로 영속 경로에서 다시 해석한다.
+        routeSet = AssetDatabase.LoadAssetAtPath<CorridorBossRouteSetSO>(routeSetPath);
+        bossConnection = AssetDatabase.LoadAssetAtPath<SceneConnectionSO>(bossConnectionPath);
+        hubReturnConnection = AssetDatabase.LoadAssetAtPath<SceneConnectionSO>(hubReturnConnectionPath);
+        if (routeSet == null || bossConnection == null || hubReturnConnection == null)
+        {
+            throw new InvalidOperationException(
+                $"Boss travel assets were invalidated while opening scene: {scenePath}");
+        }
+
         PlayerSpawnPoint spawnPoint = ResolveSpawnPoint(scene, routeSet.BossEntryPointId);
         if (spawnPoint == null)
             throw new InvalidOperationException($"Boss scene has no PlayerSpawnPoint: {scenePath}");
@@ -1381,9 +1496,123 @@ public static class ProceduralCorridorTravelInstaller
             bossConnection,
             SceneConnectionEndpointSide.B);
 
+        BossEncounterEndDirector director = FindBossEncounterEndDirector(scene);
+        if (director == null)
+            throw new InvalidOperationException($"Boss scene has no BossEncounterEndDirector: {scenePath}");
+
+        ConfigureBossExitPortal(director, hubReturnConnection);
+        SerializedObject serializedDirector = new(director);
+        serializedDirector.FindProperty("routeSet").objectReferenceValue = routeSet;
+        serializedDirector.FindProperty("isFinalRouteSet").boolValue = false;
+        serializedDirector.ApplyModifiedPropertiesWithoutUndo();
+
         EditorUtility.SetDirty(endpoint);
+        EditorUtility.SetDirty(director);
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
+    }
+
+    /// <summary>
+    /// 책임 : 보스 종료 디렉터가 활성화하는 기존 포탈 외형을 보존하면서 이동 동작만 SceneConnection endpoint로 교체한다.
+    /// </summary>
+    private static void ConfigureBossExitPortal(
+        BossEncounterEndDirector director,
+        SceneConnectionSO hubReturnConnection)
+    {
+        SerializedObject serializedDirector = new(director);
+        GameObject portalObject = serializedDirector
+            .FindProperty("exitPortal")
+            .objectReferenceValue as GameObject;
+        if (portalObject == null)
+            throw new InvalidOperationException($"Boss encounter '{director.name}' has no exit portal.");
+
+        Transform promptAnchor = portalObject.transform;
+        GameObject highlightTarget = null;
+        string promptText = "HUB로 돌아가기";
+        ScenePortal legacyPortal = portalObject.GetComponent<ScenePortal>();
+        SceneTravelInteractable existingInteractable =
+            portalObject.GetComponent<SceneTravelInteractable>();
+        if (existingInteractable != null)
+        {
+            SerializedObject serializedExisting = new(existingInteractable);
+            string existingPrompt = serializedExisting.FindProperty("interactPromptText")?.stringValue;
+            if (!string.IsNullOrWhiteSpace(existingPrompt))
+                promptText = existingPrompt;
+            highlightTarget = serializedExisting
+                .FindProperty("highlightTarget")?
+                .objectReferenceValue as GameObject;
+        }
+        var cleanupTagSets = new List<UnityEngine.Object>();
+        if (legacyPortal != null)
+        {
+            SerializedObject serializedLegacy = new(legacyPortal);
+            promptAnchor = serializedLegacy.FindProperty("promptAnchor")?.objectReferenceValue as Transform
+                           ?? portalObject.transform;
+            highlightTarget = serializedLegacy.FindProperty("highlightTarget")?.objectReferenceValue as GameObject;
+            string authoredPrompt = serializedLegacy.FindProperty("interactPromptText")?.stringValue;
+            if (!string.IsNullOrWhiteSpace(authoredPrompt))
+                promptText = authoredPrompt;
+            SerializedProperty legacyCleanup = serializedLegacy.FindProperty("sceneTravelCleanupTagSets");
+            for (int cleanupIndex = 0;
+                 legacyCleanup != null && cleanupIndex < legacyCleanup.arraySize;
+                 cleanupIndex++)
+            {
+                cleanupTagSets.Add(
+                    legacyCleanup.GetArrayElementAtIndex(cleanupIndex).objectReferenceValue);
+            }
+            UnityEngine.Object.DestroyImmediate(legacyPortal);
+        }
+
+        SceneTravelEndpoint endpoint = portalObject.GetComponent<SceneTravelEndpoint>();
+        if (endpoint == null)
+            endpoint = portalObject.AddComponent<SceneTravelEndpoint>();
+        endpoint.EditorConfigure(
+            hubReturnConnection.EndpointA.EndpointId,
+            string.Empty,
+            hubReturnConnection,
+            SceneConnectionEndpointSide.A);
+
+        SerializedObject serializedEndpoint = new(endpoint);
+        serializedEndpoint.FindProperty("departureAnchor").objectReferenceValue = promptAnchor;
+        serializedEndpoint.FindProperty("arrivalAnchor").objectReferenceValue = portalObject.transform;
+        SerializedProperty endpointCleanup = serializedEndpoint.FindProperty("sceneTravelCleanupTagSets");
+        endpointCleanup.arraySize = cleanupTagSets.Count;
+        for (int cleanupIndex = 0; cleanupIndex < cleanupTagSets.Count; cleanupIndex++)
+        {
+            endpointCleanup.GetArrayElementAtIndex(cleanupIndex).objectReferenceValue =
+                cleanupTagSets[cleanupIndex];
+        }
+        serializedEndpoint.ApplyModifiedPropertiesWithoutUndo();
+
+        SceneTravelInteractable interactable = existingInteractable;
+        if (interactable == null)
+            interactable = portalObject.AddComponent<SceneTravelInteractable>();
+        SerializedObject serializedInteractable = new(interactable);
+        serializedInteractable.FindProperty("endpoint").objectReferenceValue = endpoint;
+        serializedInteractable.FindProperty("interactPromptText").stringValue = promptText;
+        serializedInteractable.FindProperty("highlightTarget").objectReferenceValue = highlightTarget;
+        serializedInteractable.ApplyModifiedPropertiesWithoutUndo();
+
+        EditorUtility.SetDirty(endpoint);
+        EditorUtility.SetDirty(interactable);
+        EditorUtility.SetDirty(portalObject);
+    }
+
+    /// <summary>
+    /// 책임 : 지정 씬에 존재하는 단일 보스 종료 디렉터를 찾아 반환한다.
+    /// </summary>
+    private static BossEncounterEndDirector FindBossEncounterEndDirector(Scene scene)
+    {
+        GameObject[] roots = scene.GetRootGameObjects();
+        for (int rootIndex = 0; rootIndex < roots.Length; rootIndex++)
+        {
+            BossEncounterEndDirector director =
+                roots[rootIndex].GetComponentInChildren<BossEncounterEndDirector>(true);
+            if (director != null)
+                return director;
+        }
+
+        return null;
     }
 
     private static PlayerSpawnPoint ResolveSpawnPoint(Scene scene, string entryPointId)
@@ -1489,6 +1718,7 @@ public static class ProceduralCorridorTravelInstaller
         CorridorBossRouteSetSO routeSet,
         SceneConnectionSO lobbyConnection,
         SceneConnectionSO bossConnection,
+        SceneConnectionSO bossHubConnection,
         SceneTravelPresentationProfileSO lobbyToCorridorPresentationProfile,
         SceneTravelPresentationProfileSO defaultPresentationProfile)
     {
@@ -1500,6 +1730,11 @@ public static class ProceduralCorridorTravelInstaller
             lobbyConnection.EndpointB.SceneName != routeSet.CorridorSceneName ||
             bossConnection.EndpointA.SceneName != routeSet.CorridorSceneName ||
             bossConnection.EndpointB.SceneName != routeSet.BossSceneName ||
+            bossHubConnection == null ||
+            bossHubConnection.EndpointA.SceneName != routeSet.BossSceneName ||
+            bossHubConnection.EndpointB.SceneName != LobbySceneName ||
+            !bossHubConnection.AToB.Enabled ||
+            bossHubConnection.BToA.Enabled ||
             lobbyToCorridorPresentationProfile == null ||
             lobbyToCorridorPresentationProfile == defaultPresentationProfile ||
             lobbyToCorridorPresentationProfile.DepartureMode != SceneTravelDepartureMode.None ||
@@ -1512,6 +1747,91 @@ public static class ProceduralCorridorTravelInstaller
         {
             throw new InvalidOperationException(
                 $"Travel content verification failed for theme '{routeSet.StableThemeId}'.");
+        }
+
+        VerifyBossHubReturnConfiguration(routeSet, bossHubConnection);
+    }
+
+    /// <summary>
+    /// 책임 : 일반 보스 출구가 레거시 ScenePortal 없이 단방향 Boss→HUB 연결을 사용하는지 씬과 연결 에셋을 함께 검증한다.
+    /// </summary>
+    private static void VerifyBossHubReturnConfiguration(
+        CorridorBossRouteSetSO routeSet,
+        SceneConnectionSO hubReturnConnection)
+    {
+        if (routeSet == null || hubReturnConnection == null)
+        {
+            throw new InvalidOperationException("Boss-to-HUB connection or route set is missing.");
+        }
+
+        SerializedObject serializedConnection = new(hubReturnConnection);
+        serializedConnection.UpdateIfRequiredOrScript();
+        bool aToBEnabled = serializedConnection
+            .FindProperty("aToB")
+            .FindPropertyRelative("enabled")
+            .boolValue;
+        bool bToAEnabled = serializedConnection
+            .FindProperty("bToA")
+            .FindPropertyRelative("enabled")
+            .boolValue;
+        int runAction = serializedConnection
+            .FindProperty("aToB")
+            .FindPropertyRelative("runAction")
+            .enumValueIndex;
+        UnityEngine.Object presentationProfile = serializedConnection
+            .FindProperty("aToB")
+            .FindPropertyRelative("presentationProfile")
+            .objectReferenceValue;
+        string destinationScene = serializedConnection
+            .FindProperty("endpointB")
+            .FindPropertyRelative("sceneName")
+            .stringValue;
+        if (!aToBEnabled ||
+            bToAEnabled ||
+            runAction != (int)SceneTravelRunAction.None ||
+            presentationProfile == null ||
+            !string.Equals(destinationScene, LobbySceneName, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException(
+                $"Boss-to-HUB connection contract is invalid: " +
+                $"A→B={aToBEnabled}, B→A={bToAEnabled}, RunAction={runAction}, " +
+                $"Profile={(presentationProfile != null ? presentationProfile.name : "None")}, " +
+                $"Destination='{destinationScene}'.");
+        }
+
+        string scenePath = $"Assets/_Project/Scenes/{routeSet.BossSceneName}.unity";
+        Scene scene = SceneManager.GetSceneByPath(scenePath);
+        bool openedHere = !scene.IsValid() || !scene.isLoaded;
+        if (openedHere)
+            scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
+
+        try
+        {
+            BossEncounterEndDirector director = FindBossEncounterEndDirector(scene);
+            SerializedObject serializedDirector = director != null ? new SerializedObject(director) : null;
+            GameObject portalObject = serializedDirector != null
+                ? serializedDirector.FindProperty("exitPortal").objectReferenceValue as GameObject
+                : null;
+            SceneTravelEndpoint endpoint =
+                portalObject != null ? portalObject.GetComponent<SceneTravelEndpoint>() : null;
+            if (director == null ||
+                serializedDirector.FindProperty("routeSet").objectReferenceValue != routeSet ||
+                serializedDirector.FindProperty("isFinalRouteSet").boolValue ||
+                portalObject == null ||
+                portalObject.GetComponent<ScenePortal>() != null ||
+                portalObject.GetComponent<SceneTravelInteractable>() == null ||
+                endpoint == null ||
+                endpoint.Connection != hubReturnConnection ||
+                endpoint.ConnectionSide != SceneConnectionEndpointSide.A)
+            {
+                throw new InvalidOperationException(
+                    $"Boss scene HUB return migration failed for '{routeSet.StableThemeId}'.");
+            }
+        }
+        finally
+        {
+            if (openedHere && scene.IsValid() && scene.isLoaded)
+                EditorSceneManager.CloseScene(scene, removeScene: true);
         }
     }
 

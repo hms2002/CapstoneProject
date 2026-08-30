@@ -190,11 +190,17 @@ public sealed class RunProgressCoordinator : MonoBehaviour, IRunProgressBackend
         BossControllerBase boss,
         BossRewardModifierAggregate modifiers)
     {
+        BossEncounterEndDirector.TryResolveRouteContext(
+            boss,
+            out CorridorBossRouteSetSO routeSet,
+            out bool isFinalRouteSet);
         return BossRunProgressPolicy.Evaluate(
             new BossRunProgressRequest(
                 boss,
                 RunRoutePlayback.Backend,
-                modifiers));
+                modifiers,
+                routeSet,
+                isFinalRouteSet));
     }
 
     private void HandleRunStarted()
