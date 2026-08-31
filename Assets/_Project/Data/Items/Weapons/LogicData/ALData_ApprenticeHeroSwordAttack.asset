@@ -40,7 +40,7 @@ MonoBehaviour:
         knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
         damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
         knockbackFormula: {fileID: 0}
-        legacyDamage: 5
+        legacyDamage: 100
         legacyStaggerDamage: 0
         hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
         hitImpactCueKind: 1
@@ -82,7 +82,7 @@ MonoBehaviour:
         knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
         damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
         knockbackFormula: {fileID: 0}
-        legacyDamage: 5
+        legacyDamage: 100
         legacyStaggerDamage: 0
         hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
         hitImpactCueKind: 1
@@ -124,7 +124,7 @@ MonoBehaviour:
         knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
         damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
         knockbackFormula: {fileID: 0}
-        legacyDamage: 8
+        legacyDamage: 160
         legacyStaggerDamage: 0
         hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
         hitImpactCueKind: 1

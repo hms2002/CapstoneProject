@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AttributeInitProfileSO
   entries:
   - attribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-    baseValue: 100
+    baseValue: 14000
   - attribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-    baseValue: 100
+    baseValue: 14000
   - attribute: {fileID: 11400000, guid: cd582b58892249e4a6ef8ae28bd345e3, type: 2}
     baseValue: 1

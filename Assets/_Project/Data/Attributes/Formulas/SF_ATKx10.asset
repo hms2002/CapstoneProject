@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1d3b97f7b6e98034ea6d65cb0257dbf4, type: 3}
-  m_Name: SF_ATKx1
+  m_Name: SF_ATKx10
   m_EditorClassIdentifier: 
   terms:
   - useStatId: 1
     statId: 13
     sourceAttribute: {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
-    rate: 10
+    rate: 100
     flat: 0
