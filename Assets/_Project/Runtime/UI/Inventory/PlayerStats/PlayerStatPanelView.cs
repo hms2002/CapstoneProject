@@ -24,6 +24,7 @@ public sealed class PlayerStatPanelView : MonoBehaviour
     private Transform boundOwner;
     private AttributeSet attributeSet;
     private AttributeStatSource statSource;
+    private bool attributeRefreshPending;
 
     private void OnEnable()
     {
@@ -35,7 +36,17 @@ public sealed class PlayerStatPanelView : MonoBehaviour
 
     private void OnDisable()
     {
+        attributeRefreshPending = false;
         UnbindAttributeEvents();
+    }
+
+    private void LateUpdate()
+    {
+        if (!attributeRefreshPending)
+            return;
+
+        attributeRefreshPending = false;
+        Refresh();
     }
 
     public void Bind(Transform owner)
@@ -115,7 +126,8 @@ public sealed class PlayerStatPanelView : MonoBehaviour
 
     private void HandleAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
     {
-        Refresh();
+        // 한 번의 장착에서 여러 Attribute가 연속 변경되어도 스탯 패널 전체는 프레임당 한 번만 갱신한다.
+        attributeRefreshPending = true;
     }
 
     private string ResolveValueText(StatInfoUIDefinition definition)

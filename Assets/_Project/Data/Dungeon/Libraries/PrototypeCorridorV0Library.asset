@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e213893e048dde468ea1fc00324846a, type: 3}
+  m_Name: PrototypeCorridorV0Library
+  m_EditorClassIdentifier: Gameplay::RoomThemeLibrarySO
+  themeId: PrototypeCorridorV0
+  rooms:
+  - {fileID: 11400000, guid: 9f74edcdbf45f9c4b861a01e85669441, type: 2}
+  - {fileID: 11400000, guid: 367b511caeae847459465332c36f19a4, type: 2}
+  - {fileID: 11400000, guid: 4576368d767aea84cae6a820e6d08761, type: 2}
+  - {fileID: 11400000, guid: dbcfbae50e1c838409b3ac4f23c6a2ae, type: 2}
+  - {fileID: 11400000, guid: 1f33ecd35677a15459a5e11fae0e146b, type: 2}
+  - {fileID: 11400000, guid: 35b2446c75f303846b3437beaa1a0871, type: 2}

@@ -10,6 +10,12 @@ public sealed class SceneTransitionContext
     public string exitPointId;
     public string entryPointId;
 
+    // Data-driven connections use endpoint ids rather than requiring authored PlayerSpawnPoint ids.
+    public string connectionId;
+    public string sourceEndpointId;
+    public string destinationEndpointId;
+    public SceneTravelPresentationProfileSO travelPresentationProfile;
+
     public TransitionType transitionType = TransitionType.None;
 
     public bool fullyHealPlayer;

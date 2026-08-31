@@ -35,6 +35,11 @@ public sealed class SceneFadeTransitionService : MonoBehaviour, ISceneFadeTransi
     private bool hasSavedOverlayCanvasSorting;
     private bool savedOverlayCanvasOverrideSorting;
     private int savedOverlayCanvasSortingOrder;
+    private bool hasSavedOverlayRectLayout;
+    private Vector2 savedOverlayAnchorMin;
+    private Vector2 savedOverlayAnchorMax;
+    private Vector2 savedOverlayOffsetMin;
+    private Vector2 savedOverlayOffsetMax;
     private readonly Dictionary<int, Object> externalPlayerUnlockBlockers = new();
     private static readonly ISceneFadeTransitionBackend PlaybackBackend = new SceneFadeTransitionBackend();
 
@@ -139,6 +144,7 @@ public sealed class SceneFadeTransitionService : MonoBehaviour, ISceneFadeTransi
         if (isTransitionActive)
             RestoreTimeScaleImmediately();
 
+        RestoreOverlayRectLayout();
         RestoreOverlayCanvasSorting();
 
         if (Instance == this)
@@ -219,22 +225,42 @@ public sealed class SceneFadeTransitionService : MonoBehaviour, ISceneFadeTransi
 
     public IEnumerator FadeOutAsync()
     {
+        RestoreOverlayRectLayout();
         yield return FadeCanvasGroup(toAlpha: 1f, duration: fadeOutDuration);
     }
 
     public IEnumerator FadeOutAsync(float duration)
     {
+        RestoreOverlayRectLayout();
         yield return FadeCanvasGroup(toAlpha: 1f, duration: duration);
     }
 
     public IEnumerator FadeInAsync()
     {
+        RestoreOverlayRectLayout();
         yield return FadeCanvasGroup(toAlpha: 0f, duration: fadeInDuration);
     }
 
     public IEnumerator FadeInAsync(float duration)
     {
+        RestoreOverlayRectLayout();
         yield return FadeCanvasGroup(toAlpha: 0f, duration: duration);
+    }
+
+    /// <summary>
+    /// 책임 : 기존 페이드 세션의 입력 잠금과 검은 오버레이를 재사용해 화면 오른쪽에서 왼쪽으로 덮는다.
+    /// </summary>
+    public IEnumerator WipeCoverRightToLeftAsync(float duration)
+    {
+        yield return AnimateHorizontalWipe(cover: true, duration);
+    }
+
+    /// <summary>
+    /// 책임 : 로드 후 검은 오버레이의 오른쪽 경계를 왼쪽으로 이동시켜 같은 방향으로 화면을 드러낸다.
+    /// </summary>
+    public IEnumerator WipeRevealRightToLeftAsync(float duration)
+    {
+        yield return AnimateHorizontalWipe(cover: false, duration);
     }
 
     public bool TryBeginOverlayFadeSession(float initialAlpha = 0f)
@@ -269,6 +295,7 @@ public sealed class SceneFadeTransitionService : MonoBehaviour, ISceneFadeTransi
         if (overlayCanvasGroup != null)
             overlayCanvasGroup.alpha = 0f;
 
+        RestoreOverlayRectLayout();
         if (deactivateOverlayWhenIdle && overlayRoot != null)
             overlayRoot.SetActive(false);
         else
@@ -279,11 +306,13 @@ public sealed class SceneFadeTransitionService : MonoBehaviour, ISceneFadeTransi
 
     public void ShowBlackImmediately()
     {
+        RestoreOverlayRectLayout();
         ApplyOverlayVisualState(alpha: 1f, active: true);
     }
 
     public void HideOverlayImmediately()
     {
+        RestoreOverlayRectLayout();
         ApplyOverlayVisualState(alpha: 0f, active: !deactivateOverlayWhenIdle);
     }
 
@@ -299,6 +328,7 @@ public sealed class SceneFadeTransitionService : MonoBehaviour, ISceneFadeTransi
         RestoreTimeScaleImmediately();
         isTransitionActive = false;
 
+        RestoreOverlayRectLayout();
         if (deactivateOverlayWhenIdle && overlayRoot != null)
             overlayRoot.SetActive(false);
         else
@@ -332,6 +362,79 @@ public sealed class SceneFadeTransitionService : MonoBehaviour, ISceneFadeTransi
         }
 
         ApplyOverlayVisualState(toAlpha, active: true);
+    }
+
+    private IEnumerator AnimateHorizontalWipe(bool cover, float duration)
+    {
+        RectTransform overlayRect = overlayImage != null ? overlayImage.rectTransform : null;
+        if (overlayRect == null || overlayCanvasGroup == null)
+            yield break;
+
+        SaveOverlayRectLayout();
+        ApplyOverlayVisualState(alpha: 1f, active: true);
+
+        if (duration <= 0f)
+        {
+            ApplyHorizontalWipeLayout(overlayRect, cover, 1f);
+        }
+        else
+        {
+            float elapsed = 0f;
+            while (elapsed < duration)
+            {
+                BringOverlayToFront();
+                elapsed += Time.unscaledDeltaTime;
+                ApplyHorizontalWipeLayout(overlayRect, cover, Mathf.Clamp01(elapsed / duration));
+                yield return null;
+            }
+
+            ApplyHorizontalWipeLayout(overlayRect, cover, 1f);
+        }
+
+        if (!cover)
+        {
+            overlayCanvasGroup.alpha = 0f;
+            RestoreOverlayRectLayout();
+        }
+    }
+
+    private void SaveOverlayRectLayout()
+    {
+        if (hasSavedOverlayRectLayout || overlayImage == null)
+            return;
+
+        RectTransform overlayRect = overlayImage.rectTransform;
+        savedOverlayAnchorMin = overlayRect.anchorMin;
+        savedOverlayAnchorMax = overlayRect.anchorMax;
+        savedOverlayOffsetMin = overlayRect.offsetMin;
+        savedOverlayOffsetMax = overlayRect.offsetMax;
+        hasSavedOverlayRectLayout = true;
+    }
+
+    private void RestoreOverlayRectLayout()
+    {
+        if (!hasSavedOverlayRectLayout)
+            return;
+
+        if (overlayImage != null)
+        {
+            RectTransform overlayRect = overlayImage.rectTransform;
+            overlayRect.anchorMin = savedOverlayAnchorMin;
+            overlayRect.anchorMax = savedOverlayAnchorMax;
+            overlayRect.offsetMin = savedOverlayOffsetMin;
+            overlayRect.offsetMax = savedOverlayOffsetMax;
+        }
+
+        hasSavedOverlayRectLayout = false;
+    }
+
+    private static void ApplyHorizontalWipeLayout(RectTransform overlayRect, bool cover, float progress)
+    {
+        float t = Mathf.Clamp01(progress);
+        overlayRect.offsetMin = Vector2.zero;
+        overlayRect.offsetMax = Vector2.zero;
+        overlayRect.anchorMin = cover ? new Vector2(1f - t, 0f) : Vector2.zero;
+        overlayRect.anchorMax = cover ? Vector2.one : new Vector2(1f - t, 1f);
     }
 
     private IEnumerator WaitForPostLoadSettle()

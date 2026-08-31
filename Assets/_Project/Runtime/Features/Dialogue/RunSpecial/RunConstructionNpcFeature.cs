@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 책임 : 런 특수 NPC의 공사 진행도, 비용 지불, 완료 보상 문 개방 흐름을 관리한다.
 /// </summary>
-public sealed class RunConstructionNpcFeature : RunSpecialNpcFeatureBase
+public sealed class RunConstructionNpcFeature : RunSpecialNpcFeatureBase, IProceduralRoomRuntimeFeature
 {
     [Header("Stable ID")]
     [SerializeField] private string constructionId;
@@ -31,6 +31,38 @@ public sealed class RunConstructionNpcFeature : RunSpecialNpcFeatureBase
     private const string RemainingDaysToken = "N\uC77C";
 
     public override RunSpecialNpcFeatureKind DialogueFeatureKind => RunSpecialNpcFeatureKind.Construction;
+
+    public bool TryBindProceduralRoom(
+        ProceduralRoomRuntimeContext context,
+        out string failureReason)
+    {
+        failureReason = string.Empty;
+        if (context == null)
+        {
+            failureReason = "Procedural room context is missing.";
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(constructionId))
+        {
+            failureReason = "Construction ID is missing.";
+            return false;
+        }
+
+        if (constructionSiteModule == null ||
+            string.Equals(
+                constructionId,
+                constructionSiteModule.ConstructionId,
+                System.StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        failureReason =
+            $"Construction feature ID '{constructionId}' does not match site module ID " +
+            $"'{constructionSiteModule.ConstructionId}'.";
+        return false;
+    }
 
     private void OnEnable()
     {

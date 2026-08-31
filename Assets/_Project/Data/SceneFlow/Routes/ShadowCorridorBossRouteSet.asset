@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49e819959f62ded44b5570bd39d55be6, type: 3}
   m_Name: ShadowCorridorBossRouteSet
   m_EditorClassIdentifier: 
-  corridorSceneName: ShadowCorridor
+  themeId: shadow
+  corridorSceneName: ProceduralShadowCorridor
   corridorEntryPointId: Default
   bossSceneName: HeoMinSeok_Boss_Shadow
   bossEntryPointId: Default

@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49e819959f62ded44b5570bd39d55be6, type: 3}
   m_Name: SlimeRouteSet
   m_EditorClassIdentifier: 
-  corridorSceneName: SlimeCorridor
+  themeId: slime
+  corridorSceneName: ProceduralSlimeCorridor
   corridorEntryPointId: Default
   bossSceneName: SangHyup_Boss_SlimeQueen
   bossEntryPointId: Default

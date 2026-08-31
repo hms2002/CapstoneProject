@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 using UnityGAS;
 
 // 책임: 런 특수 NPC의 같은 씬 순간이동 연출, 착지 위치 검증, 플레이어 이동 제어를 수행한다.
-public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
+public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase, IProceduralRoomRuntimeFeature
 {
     private const float HoleCheckRadius = 0.2f;
     private static readonly Collider2D[] HoleOverlapBuffer = new Collider2D[16];
@@ -20,6 +20,12 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
     [SerializeField, FormerlySerializedAs("destination")] private Transform landingPoint;
     [SerializeField] private bool clearExternalMovement = true;
     [SerializeField] private bool clearAbilityMotion = true;
+
+    [Header("Procedural Room Anchors")]
+    [Tooltip("Optional stable anchor used instead of the authored appearancePoint in generated rooms.")]
+    [SerializeField] private ProceduralRoomAnchorReference proceduralAppearancePoint;
+    [Tooltip("Optional stable anchor used instead of the authored landingPoint in generated rooms.")]
+    [SerializeField] private ProceduralRoomAnchorReference proceduralLandingPoint;
 
     [Header("Arrival Movement")]
     [SerializeField, Min(0f)] private float appearanceHoldDuration;
@@ -43,10 +49,56 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase
     [SerializeField] private bool allowRuntimeFadeFallback;
 
     public bool HasDestination => landingPoint != null;
+    public bool HasLandingStartPresentation => landingStartParticle.HasContent;
 
     public override RunSpecialNpcFeatureKind DialogueFeatureKind => RunSpecialNpcFeatureKind.SameSceneTeleport;
 
     public override bool ExecuteAfterRunSpecialPresentationClose => true;
+
+    public bool TryBindProceduralRoom(
+        ProceduralRoomRuntimeContext context,
+        out string failureReason)
+    {
+        failureReason = string.Empty;
+        if (context == null)
+        {
+            failureReason = "Procedural room context is missing.";
+            return false;
+        }
+
+        if (proceduralAppearancePoint.IsConfigured)
+        {
+            if (!proceduralAppearancePoint.TryResolve(context, out Transform resolvedAppearancePoint))
+            {
+                failureReason =
+                    $"Appearance anchor '{proceduralAppearancePoint.SlotId}' " +
+                    $"({proceduralAppearancePoint.Scope}) was not found.";
+                return false;
+            }
+
+            appearancePoint = resolvedAppearancePoint;
+        }
+
+        if (proceduralLandingPoint.IsConfigured)
+        {
+            if (!proceduralLandingPoint.TryResolve(context, out Transform resolvedLandingPoint))
+            {
+                failureReason =
+                    $"Landing anchor '{proceduralLandingPoint.SlotId}' " +
+                    $"({proceduralLandingPoint.Scope}) was not found.";
+                return false;
+            }
+
+            landingPoint = resolvedLandingPoint;
+        }
+
+        if (landingPoint != null)
+            return true;
+
+        failureReason =
+            "Teleport landing point is missing. Assign an authored Transform or a procedural anchor reference.";
+        return false;
+    }
 
     public override RunSpecialNpcDialogueBranchKey GetDialogueBranchKey(RunSpecialNpcFeatureContext context)
     {

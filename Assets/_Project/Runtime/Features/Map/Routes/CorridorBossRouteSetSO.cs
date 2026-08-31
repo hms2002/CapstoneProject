@@ -10,6 +10,9 @@ using UnityEngine;
 /// </summary>
 public sealed class CorridorBossRouteSetSO : ScriptableObject
 {
+    [Header("Stable Theme Identity")]
+    [SerializeField] private string themeId;
+
     [SerializeField] private string corridorSceneName;
     [SerializeField] private string corridorEntryPointId = "Default";
 
@@ -31,6 +34,10 @@ public sealed class CorridorBossRouteSetSO : ScriptableObject
     [Header("Boss Battle End")]
     [SerializeField] private BossSpecialRewardPresetSO bossSpecialRewardPreset;
 
+    public string ThemeId => themeId;
+    public string StableThemeId => !string.IsNullOrWhiteSpace(themeId)
+        ? themeId
+        : name;
     public string CorridorSceneName => corridorSceneName;
     public string CorridorEntryPointId => corridorEntryPointId;
     public string BossSceneName => bossSceneName;

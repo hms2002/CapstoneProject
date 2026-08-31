@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b102c16ec622eb442836481fdf8bc566, type: 3}
+  m_Name: ProceduralDragonGenerationProfile
+  m_EditorClassIdentifier: Gameplay::DungeonGenerationProfileSO
+  roomLibrary: {fileID: 11400000, guid: 1fef20d87c9035941950fdf682db7792, type: 2}
+  layoutPolicy: {fileID: 11400000, guid: 2e4b682cfe896404b95d050953584376, type: 2}
+  seed: 20261831
+  roomCount: 15
+  includeBossRoom: 1
+  maxPlacementAttemptsPerRoom: 512
+  minimumCorridorLength: 2
+  corridorLengthPerRoomCell: 0.05
+  corridorLengthVariation: 2
+  guaranteedRoomTemplates:
+  - {fileID: 11400000, guid: 58e5582eb327532439303c5b22a8b883, type: 2}

@@ -11,6 +11,7 @@ public interface IRunProgressBackend
     void NotifyBossCombatEnded(BossControllerBase boss);
     void NotifyBossDefeated(BossControllerBase boss);
     void NotifyBossRewardsReady(BossControllerBase boss);
+    bool IsBossDefeatedThisRun(string bossId);
 }
 
 /// <summary>
@@ -60,6 +61,11 @@ public static class RunProgressPlayback
     public static void NotifyBossRewardsReady(BossControllerBase boss)
     {
         backend?.NotifyBossRewardsReady(boss);
+    }
+
+    public static bool IsBossDefeatedThisRun(string bossId)
+    {
+        return backend != null && backend.IsBossDefeatedThisRun(bossId);
     }
 
     private static void HandleBossRewardsReady(BossRewardContext context)

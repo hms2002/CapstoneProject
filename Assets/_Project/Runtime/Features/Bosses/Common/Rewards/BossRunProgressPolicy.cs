@@ -7,15 +7,21 @@ public readonly struct BossRunProgressRequest
 {
     public BossControllerBase Boss { get; }
     public IRunRouteBackend RouteBackend { get; }
+    public CorridorBossRouteSetSO RouteSetOverride { get; }
+    public bool IsFinalRouteSetOverride { get; }
     public BossRewardModifierAggregate RewardModifiers { get; }
 
     public BossRunProgressRequest(
         BossControllerBase boss,
         IRunRouteBackend routeBackend,
-        BossRewardModifierAggregate rewardModifiers)
+        BossRewardModifierAggregate rewardModifiers,
+        CorridorBossRouteSetSO routeSetOverride = null,
+        bool isFinalRouteSetOverride = false)
     {
         Boss = boss;
         RouteBackend = routeBackend;
+        RouteSetOverride = routeSetOverride;
+        IsFinalRouteSetOverride = isFinalRouteSetOverride;
         RewardModifiers = rewardModifiers;
     }
 }
@@ -67,9 +73,15 @@ public static class BossRunProgressPolicy
     public static BossRunProgressResult Evaluate(BossRunProgressRequest request)
     {
         IRunRouteBackend routeBackend = request.RouteBackend;
-        CorridorBossRouteSetSO routeSet = routeBackend != null ? routeBackend.CurrentStageSet : null;
-        int routeSetKey = ResolveRouteSetKey(request.Boss, routeBackend);
-        bool isFinalRouteSet = IsCurrentRouteFinalBoss(routeBackend, routeSet);
+        CorridorBossRouteSetSO routeSet = request.RouteSetOverride != null
+            ? request.RouteSetOverride
+            : routeBackend != null
+                ? routeBackend.CurrentStageSet
+                : null;
+        int routeSetKey = ResolveRouteSetKey(request.Boss, routeBackend, routeSet);
+        bool isFinalRouteSet = request.RouteSetOverride != null
+            ? request.IsFinalRouteSetOverride
+            : IsCurrentRouteFinalBoss(routeBackend, routeSet);
         int bossIdentityKey = GetObjectIdentityKey(request.Boss);
 
         return new BossRunProgressResult(
@@ -108,14 +120,14 @@ public static class BossRunProgressPolicy
 
     private static int ResolveRouteSetKey(
         BossControllerBase boss,
-        IRunRouteBackend routeBackend)
+        IRunRouteBackend routeBackend,
+        CorridorBossRouteSetSO routeSet)
     {
+        if (routeSet != null)
+            return GetObjectIdentityKey(routeSet);
+
         if (routeBackend != null && routeBackend.HasActivePlan)
         {
-            CorridorBossRouteSetSO routeSet = routeBackend.CurrentStageSet;
-            if (routeSet != null)
-                return GetObjectIdentityKey(routeSet);
-
             return routeBackend.CurrentStageIndex + 1;
         }
 
