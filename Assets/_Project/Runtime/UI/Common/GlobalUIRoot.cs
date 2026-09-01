@@ -30,6 +30,12 @@ public sealed class GlobalUIRoot : MonoBehaviour, IGlobalCanvasBackend, IGlobalC
     [SerializeField] private StatusHudPresenter statusHudPresenterPrefab;
     [SerializeField] private StatusHudTooltipView statusTooltipPrefab;
 
+    [Header("Dungeon Minimap")]
+    [SerializeField] private DungeonMinimapPresenter dungeonMinimapPresenterPrefab;
+    [SerializeField] private DungeonMinimapIconSetSO dungeonMinimapIconSet;
+
+    private DungeonMinimapPresenter dungeonMinimapPresenter;
+
     private readonly Dictionary<GlobalCanvasLayer, Canvas> canvases = new();
 
     private void Awake()
@@ -44,6 +50,7 @@ public sealed class GlobalUIRoot : MonoBehaviour, IGlobalCanvasBackend, IGlobalC
         GlobalCanvasPlayback.RegisterBackend(this);
         DontDestroyOnLoad(gameObject);
         ResolveReferences();
+        EnsureDungeonMinimapPresenter();
     }
 
     private void OnValidate()
@@ -126,6 +133,41 @@ public sealed class GlobalUIRoot : MonoBehaviour, IGlobalCanvasBackend, IGlobalC
     {
         return TryResolveInstance(out var root) ? root.statusTooltipPrefab : null;
     }
+
+    private void EnsureDungeonMinimapPresenter()
+    {
+        if (dungeonMinimapPresenter != null ||
+            dungeonMinimapPresenterPrefab == null ||
+            dungeonMinimapIconSet == null ||
+            gameplayHudCanvas == null)
+        {
+            return;
+        }
+
+        dungeonMinimapPresenter = GetComponentInChildren<DungeonMinimapPresenter>(true);
+        if (dungeonMinimapPresenter != null)
+        {
+            dungeonMinimapPresenter.Configure(dungeonMinimapIconSet);
+            return;
+        }
+
+        dungeonMinimapPresenter = Instantiate(
+            dungeonMinimapPresenterPrefab,
+            gameplayHudCanvas.transform,
+            false);
+        dungeonMinimapPresenter.name = dungeonMinimapPresenterPrefab.name;
+        dungeonMinimapPresenter.Configure(dungeonMinimapIconSet);
+    }
+
+#if UNITY_EDITOR
+    public void EditorAssignDungeonMinimapSetup(
+        DungeonMinimapPresenter presenterPrefab,
+        DungeonMinimapIconSetSO iconSet)
+    {
+        dungeonMinimapPresenterPrefab = presenterPrefab;
+        dungeonMinimapIconSet = iconSet;
+    }
+#endif
 
     private static bool TryResolveInstance(out GlobalUIRoot root)
     {

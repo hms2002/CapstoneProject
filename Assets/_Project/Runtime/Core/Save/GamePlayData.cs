@@ -72,7 +72,7 @@ public sealed class DungeonObjectRuntimeStateData
 }
 
 /// <summary>
-/// 책임 : 한 절차 던전의 현재 런 레이아웃 seed와 선택적으로 보존할 생성 오브젝트 상태를 묶어 저장한다.
+/// 책임 : 한 절차 던전의 현재 런 레이아웃 seed, 생성 오브젝트 상태와 미니맵 발견 상태를 묶어 저장한다.
 /// </summary>
 [System.Serializable]
 public sealed class DungeonRunStateData
@@ -82,6 +82,10 @@ public sealed class DungeonRunStateData
     public int resolvedSeed;
     public System.Collections.Generic.List<DungeonObjectRuntimeStateData> objectStates =
         new System.Collections.Generic.List<DungeonObjectRuntimeStateData>();
+    public System.Collections.Generic.List<int> visitedRoomPlacementIds =
+        new System.Collections.Generic.List<int>();
+    public System.Collections.Generic.List<int> revealedRoomPlacementIds =
+        new System.Collections.Generic.List<int>();
 }
 
 /// <summary>

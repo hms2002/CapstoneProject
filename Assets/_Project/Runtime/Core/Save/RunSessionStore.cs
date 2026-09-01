@@ -36,6 +36,14 @@ public interface IRunSessionStoreBackend
     int ResolveDungeonSeed(string dungeonId, DungeonReentryPolicy policy, int fallbackSeed);
     bool TryGetDungeonObjectStates(string dungeonId, List<DungeonObjectRuntimeStateData> destination);
     void SaveDungeonObjectStates(string dungeonId, IReadOnlyList<DungeonObjectRuntimeStateData> states);
+    bool TryGetDungeonMapDiscovery(
+        string dungeonId,
+        List<int> visitedRoomPlacementIds,
+        List<int> revealedRoomPlacementIds);
+    void SaveDungeonMapDiscovery(
+        string dungeonId,
+        IReadOnlyList<int> visitedRoomPlacementIds,
+        IReadOnlyList<int> revealedRoomPlacementIds);
     void ResetForDevelopmentStart();
 }
 
@@ -218,6 +226,31 @@ public static class RunSessionStore
     {
         if (IsAvailable)
             backend.SaveDungeonObjectStates(dungeonId, states);
+    }
+
+    public static bool TryGetDungeonMapDiscovery(
+        string dungeonId,
+        List<int> visitedRoomPlacementIds,
+        List<int> revealedRoomPlacementIds)
+    {
+        return IsAvailable && backend.TryGetDungeonMapDiscovery(
+            dungeonId,
+            visitedRoomPlacementIds,
+            revealedRoomPlacementIds);
+    }
+
+    public static void SaveDungeonMapDiscovery(
+        string dungeonId,
+        IReadOnlyList<int> visitedRoomPlacementIds,
+        IReadOnlyList<int> revealedRoomPlacementIds)
+    {
+        if (IsAvailable)
+        {
+            backend.SaveDungeonMapDiscovery(
+                dungeonId,
+                visitedRoomPlacementIds,
+                revealedRoomPlacementIds);
+        }
     }
 
     public static void ResetForDevelopmentStart()

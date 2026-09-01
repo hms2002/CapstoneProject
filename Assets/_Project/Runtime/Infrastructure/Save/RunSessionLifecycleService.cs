@@ -168,6 +168,62 @@ internal static class RunSessionStateService
         }
     }
 
+    public static bool TryGetDungeonMapDiscovery(
+        GamePlayData data,
+        string dungeonId,
+        List<int> visitedRoomPlacementIds,
+        List<int> revealedRoomPlacementIds)
+    {
+        if (visitedRoomPlacementIds == null || revealedRoomPlacementIds == null)
+            return false;
+
+        visitedRoomPlacementIds.Clear();
+        revealedRoomPlacementIds.Clear();
+        DungeonRunStateData state = FindDungeonState(data, dungeonId);
+        if (state == null)
+            return false;
+
+        CopyUniqueRoomPlacementIds(state.visitedRoomPlacementIds, visitedRoomPlacementIds);
+        CopyUniqueRoomPlacementIds(state.revealedRoomPlacementIds, revealedRoomPlacementIds);
+        return visitedRoomPlacementIds.Count > 0 || revealedRoomPlacementIds.Count > 0;
+    }
+
+    public static void SaveDungeonMapDiscovery(
+        GamePlayData data,
+        string dungeonId,
+        IReadOnlyList<int> visitedRoomPlacementIds,
+        IReadOnlyList<int> revealedRoomPlacementIds)
+    {
+        if (data == null || !data.isRunActive || string.IsNullOrWhiteSpace(dungeonId))
+            return;
+
+        data.dungeonRunStates ??= new List<DungeonRunStateData>();
+        DungeonRunStateData state = FindDungeonState(data, dungeonId) ??
+                                    CreateDungeonState(data, dungeonId);
+        state.visitedRoomPlacementIds ??= new List<int>();
+        state.revealedRoomPlacementIds ??= new List<int>();
+        state.visitedRoomPlacementIds.Clear();
+        state.revealedRoomPlacementIds.Clear();
+        CopyUniqueRoomPlacementIds(visitedRoomPlacementIds, state.visitedRoomPlacementIds);
+        CopyUniqueRoomPlacementIds(revealedRoomPlacementIds, state.revealedRoomPlacementIds);
+    }
+
+    private static void CopyUniqueRoomPlacementIds(
+        IReadOnlyList<int> source,
+        List<int> destination)
+    {
+        if (source == null || destination == null)
+            return;
+
+        var uniqueIds = new HashSet<int>();
+        for (int i = 0; i < source.Count; i++)
+        {
+            int placementId = source[i];
+            if (placementId >= 0 && uniqueIds.Add(placementId))
+                destination.Add(placementId);
+        }
+    }
+
     private static DungeonObjectRuntimeStateData CloneDungeonObjectState(
         DungeonObjectRuntimeStateData source)
     {
