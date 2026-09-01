@@ -34,7 +34,6 @@ public static class ProceduralDungeonSceneInstaller
     private const string SourceRoomPath = "Assets/_Project/Data/Dungeon/Rooms/TestTypeStart.asset";
     private const string GeneratedRoomFolder = "Assets/_Project/Data/Dungeon/Rooms/PrototypeV0";
     private const string GeneratedProceduralPrefabFolder = "Assets/_Project/Prefabs/Map/Procedural";
-    private const string MonsterSpawnProfileFolder = "Assets/_Project/Data/Monsters/SpawnProfiles";
     private const string MonsterSpawnSetFolder = "Assets/_Project/Data/Monsters/SpawnSets";
     private const string LibraryFolder = "Assets/_Project/Data/Dungeon/Libraries";
     private const string LibraryPath = LibraryFolder + "/PrototypeCorridorV0Library.asset";
@@ -147,24 +146,6 @@ public static class ProceduralDungeonSceneInstaller
     {
         Nieun,
         Giyeok
-    }
-
-    /// <summary>
-    /// 책임:
-    /// - 한 테마에서 일반 크기와 대형 방에 적용할 진행도 기반 몬스터 스폰 프로필을 함께 전달한다.
-    /// </summary>
-    private readonly struct ThemeMonsterSpawnProfiles
-    {
-        public MonsterRoomSpawnProfileSO Small { get; }
-        public MonsterRoomSpawnProfileSO Big { get; }
-
-        public ThemeMonsterSpawnProfiles(
-            MonsterRoomSpawnProfileSO small,
-            MonsterRoomSpawnProfileSO big)
-        {
-            Small = small;
-            Big = big;
-        }
     }
 
     [MenuItem("Tools/Dungeon/Install Boss Theme Procedural Corridor Scenes")]
@@ -305,19 +286,43 @@ public static class ProceduralDungeonSceneInstaller
 
     /// <summary>
     /// 책임:
-    /// - 이미 제작된 세 일반 보스 방 템플릿에 소형/대형 진행도 스폰 프로필을 비파괴적으로 연결한다.
-    /// - 타일, 소켓, 오브젝트 위치와 기획자가 조정한 생성 프로필 수치는 변경하지 않는다.
+    /// - 세 일반 보스 테마 라이브러리에 기존 테마별 몬스터 후보를 스테이지 고정 프리팹 빠른 선택 목록으로 동기화한다.
+    /// - 방·씬·생성 프로필은 변경하지 않고 Room Piece Editor의 추천 목록 데이터만 갱신한다.
     /// </summary>
-    [MenuItem("Tools/Dungeon/Migrate Procedural Rooms To Progression Monster Spawning")]
-    public static void MigrateProceduralRoomsToProgressionMonsterSpawning()
+    [MenuItem("Tools/Dungeon/Sync Boss Theme Stage Monster Catalogs")]
+    public static void SyncBossThemeStageMonsterCatalogs()
     {
         BossThemeInstallSpec[] specs = CreateBossThemeInstallSpecs();
+        for (int specIndex = 0; specIndex < specs.Length; specIndex++)
+        {
+            BossThemeInstallSpec spec = specs[specIndex];
+            RoomThemeLibrarySO library =
+                AssetDatabase.LoadAssetAtPath<RoomThemeLibrarySO>(spec.LibraryPath);
+            if (library == null)
+                throw new InvalidOperationException($"Missing boss-theme room library: {spec.LibraryPath}");
+
+            ApplyStageMonsterCatalog(library, spec);
+        }
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+        Debug.Log($"Synced stage-monster quick-pick catalogs for {specs.Length} boss themes.");
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 이미 제작된 세 일반 보스 방의 Monster 위치를 Warrior/Mage/Tank 역할 지점으로 변환한다.
+    /// - 타일, 소켓, Placement Id, 오브젝트 위치와 Kill Lock 연결은 변경하지 않는다.
+    /// </summary>
+    [MenuItem("Tools/Dungeon/Migrate Procedural Rooms To Role-Based Monster Spawning")]
+    public static void MigrateProceduralRoomsToRoleBasedMonsterSpawning()
+    {
+        BossThemeInstallSpec[] specs = CreateBossThemeInstallSpecs();
+        StageMonsterSetSO[] roleStageSets = LoadRoleStageMonsterSets();
         int migratedRoomCount = 0;
         for (int specIndex = 0; specIndex < specs.Length; specIndex++)
         {
             BossThemeInstallSpec spec = specs[specIndex];
-            ThemeMonsterSpawnProfiles profiles =
-                CreateOrUpdateThemeMonsterSpawnProfiles(spec);
             RoomThemeLibrarySO library =
                 AssetDatabase.LoadAssetAtPath<RoomThemeLibrarySO>(spec.LibraryPath);
             if (library == null)
@@ -334,12 +339,26 @@ public static class ProceduralDungeonSceneInstaller
                     continue;
                 }
 
-                string roomId = room.LayoutData.roomId ?? string.Empty;
-                bool usesBigProfile =
-                    roomId.IndexOf("Wide", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                    roomId.IndexOf("Large", StringComparison.OrdinalIgnoreCase) >= 0;
                 RoomBuildData build = room.BuildData;
-                build.monsterSpawnProfile = usesBigProfile ? profiles.Big : profiles.Small;
+                int monsterIndex = 0;
+                for (int placementIndex = 0;
+                     placementIndex < build.objectPlacements.Count;
+                     placementIndex++)
+                {
+                    RoomObjectPlacementData placement = build.objectPlacements[placementIndex];
+                    if (placement.kind != RoomObjectKind.Monster)
+                        continue;
+
+                    RoomMonsterSpawnRole role =
+                        (RoomMonsterSpawnRole)(monsterIndex % roleStageSets.Length);
+                    placement.prefab = null;
+                    placement.monsterSpawnRole = role;
+                    placement.monsterStageSet = roleStageSets[(int)role];
+                    placement.localScale = Vector3.one;
+                    build.objectPlacements[placementIndex] = placement;
+                    monsterIndex++;
+                }
+
                 room.EditorSetData(room.LayoutData, build);
                 EditorUtility.SetDirty(room);
                 migratedRoomCount++;
@@ -349,7 +368,8 @@ public static class ProceduralDungeonSceneInstaller
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         Debug.Log(
-            $"Migrated {migratedRoomCount} procedural Combat rooms to room-entry, progression-based monster spawning.");
+            $"Migrated {migratedRoomCount} procedural Combat rooms to explicit " +
+            "Warrior/Mage/Tank spawn positions with stage-based prefab resolution.");
     }
 
     private static bool HasMonsterPlacements(
@@ -366,13 +386,14 @@ public static class ProceduralDungeonSceneInstaller
 
     /// <summary>
     /// 책임:
-    /// - 현재 기획 피드백의 콘텐츠 등록 변경과 몬스터 프로필 마이그레이션을 한 번에 적용한다.
+    /// - 현재 기획 피드백의 콘텐츠 등록 변경과 역할별 몬스터 지점 마이그레이션을 한 번에 적용한다.
     /// - 토관/NPC 원본 에셋은 보존하면서 실제 생성 씬과 데이터만 플레이 가능한 최신 계약으로 동기화한다.
     /// </summary>
     [MenuItem("Tools/Dungeon/Apply Current Designer Feedback Migration")]
     public static void ApplyCurrentDesignerFeedbackMigration()
     {
-        MigrateProceduralRoomsToProgressionMonsterSpawning();
+        MigrateProceduralRoomsToRoleBasedMonsterSpawning();
+        SyncBossThemeStageMonsterCatalogs();
         ProceduralSlimeNpcRoomInstaller.SealInstalledContent();
         ProceduralCorridorTravelInstaller.RemoveDeprecatedCorridorPipeTravel();
         AssetDatabase.SaveAssets();
@@ -892,56 +913,6 @@ public static class ProceduralDungeonSceneInstaller
             target.Add(primary);
     }
 
-    /// <summary>
-    /// 책임:
-    /// - 기존 역할별 StageMonsterSet을 테마의 소형/대형 방 스폰 프로필에 연결한다.
-    /// - 방 데이터가 특정 고블린·리자드 프리팹을 전투 구성으로 확정하지 않고 현재 런 단계에서 실제 종류를 고르게 한다.
-    /// </summary>
-    private static ThemeMonsterSpawnProfiles CreateOrUpdateThemeMonsterSpawnProfiles(
-        BossThemeInstallSpec spec)
-    {
-        string profilePrefix = string.Equals(spec.ThemeId, "Shadow", StringComparison.Ordinal)
-            ? "Witch"
-            : spec.ThemeId;
-        MonsterRoomSpawnProfileSO small = LoadOrCreateMonsterSpawnProfile(
-            $"{MonsterSpawnProfileFolder}/{profilePrefix}_SmallMonsterRoomSpawnProfile.asset");
-        MonsterRoomSpawnProfileSO big = LoadOrCreateMonsterSpawnProfile(
-            $"{MonsterSpawnProfileFolder}/{profilePrefix}_BigMonsterRoomSpawnProfile.asset");
-
-        StageMonsterSetSO[] stageSets =
-        {
-            LoadRequiredStageMonsterSet("CommonMeleeStageMonsterSet.asset"),
-            LoadRequiredStageMonsterSet("CommonRangedStageMonsterSet.asset"),
-            LoadRequiredStageMonsterSet("CommonTankStageMonsterSet.asset")
-        };
-        small.EditorConfigureProgressionTable(
-            "Progression",
-            6,
-            stageSets,
-            new[] { 3f, 2f, 1f });
-        big.EditorConfigureProgressionTable(
-            "Progression",
-            10,
-            stageSets,
-            new[] { 4f, 3f, 2f });
-        EditorUtility.SetDirty(small);
-        EditorUtility.SetDirty(big);
-        return new ThemeMonsterSpawnProfiles(small, big);
-    }
-
-    private static MonsterRoomSpawnProfileSO LoadOrCreateMonsterSpawnProfile(string assetPath)
-    {
-        MonsterRoomSpawnProfileSO profile =
-            AssetDatabase.LoadAssetAtPath<MonsterRoomSpawnProfileSO>(assetPath);
-        if (profile != null)
-            return profile;
-
-        profile = ScriptableObject.CreateInstance<MonsterRoomSpawnProfileSO>();
-        profile.name = System.IO.Path.GetFileNameWithoutExtension(assetPath);
-        AssetDatabase.CreateAsset(profile, assetPath);
-        return profile;
-    }
-
     private static StageMonsterSetSO LoadRequiredStageMonsterSet(string fileName)
     {
         string assetPath = $"{MonsterSpawnSetFolder}/{fileName}";
@@ -951,6 +922,48 @@ public static class ProceduralDungeonSceneInstaller
             throw new InvalidOperationException($"Missing stage monster set: {assetPath}");
 
         return monsterSet;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 설치기와 마이그레이션이 Warrior, Mage, Tank enum 순서와 동일한 공용 진행도 세트를 사용하게 한다.
+    /// </summary>
+    private static StageMonsterSetSO[] LoadRoleStageMonsterSets()
+    {
+        return new[]
+        {
+            LoadRequiredStageMonsterSet("CommonMeleeStageMonsterSet.asset"),
+            LoadRequiredStageMonsterSet("CommonRangedStageMonsterSet.asset"),
+            LoadRequiredStageMonsterSet("CommonTankStageMonsterSet.asset")
+        };
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 설치 사양의 테마 몬스터 경로를 검증된 Enemy 프리팹 목록으로 해석해 해당 룸 라이브러리에 저장한다.
+    /// </summary>
+    private static void ApplyStageMonsterCatalog(
+        RoomThemeLibrarySO library,
+        BossThemeInstallSpec spec)
+    {
+        if (library == null)
+            throw new ArgumentNullException(nameof(library));
+
+        var stageMonsterPrefabs = new List<GameObject>();
+        IReadOnlyList<string> prefabPaths = spec.MonsterPrefabPaths;
+        if (prefabPaths != null)
+        {
+            for (int prefabIndex = 0; prefabIndex < prefabPaths.Count; prefabIndex++)
+            {
+                stageMonsterPrefabs.Add(
+                    LoadRequiredObjectPrefab(
+                        prefabPaths[prefabIndex],
+                        RoomObjectKind.Monster));
+            }
+        }
+
+        library.EditorSetStageMonsterPrefabs(stageMonsterPrefabs);
+        EditorUtility.SetDirty(library);
     }
 
     private static RoomThemeLibrarySO CreateOrUpdateBossThemeLibrary(
@@ -963,22 +976,7 @@ public static class ProceduralDungeonSceneInstaller
     {
         TileBase floorTile = tilePalette.PrimaryFloor;
         TileBase wallTile = tilePalette.PrimaryWall;
-        if (spec.MonsterPrefabPaths == null || spec.MonsterPrefabPaths.Count < 5)
-        {
-            throw new InvalidOperationException(
-                $"Theme '{spec.ThemeId}' requires at least five Combat monster prefabs.");
-        }
-
-        ThemeMonsterSpawnProfiles spawnProfiles =
-            CreateOrUpdateThemeMonsterSpawnProfiles(spec);
-
-        GameObject[] monsters = new GameObject[spec.MonsterPrefabPaths.Count];
-        for (int i = 0; i < monsters.Length; i++)
-        {
-            monsters[i] = LoadRequiredObjectPrefab(
-                spec.MonsterPrefabPaths[i],
-                RoomObjectKind.Monster);
-        }
+        StageMonsterSetSO[] roleStageSets = LoadRoleStageMonsterSets();
 
         Vector2Int startSize = new(12, 8);
         Vector2Int compactCombatSize = new(10, 8);
@@ -1009,22 +1007,20 @@ public static class ProceduralDungeonSceneInstaller
         RoomTemplateSO compactCombatRoom = CreateThemeCombatRoom(
             spec,
             "Combat_Compact",
-            spawnProfiles.Small,
             compactCombatSize,
             floorTile,
             wallTile,
-            monsters,
+            roleStageSets,
             killLockChestPrefab,
             new Vector2Int(3, 3),
             new Vector2Int(6, 4));
         RoomTemplateSO wideCombatRoom = CreateThemeCombatRoom(
             spec,
             "Combat_Wide",
-            spawnProfiles.Big,
             wideCombatSize,
             floorTile,
             wallTile,
-            monsters,
+            roleStageSets,
             killLockChestPrefab,
             new Vector2Int(4, 3),
             new Vector2Int(8, 5),
@@ -1033,11 +1029,10 @@ public static class ProceduralDungeonSceneInstaller
         RoomTemplateSO tallCombatRoom = CreateThemeCombatRoom(
             spec,
             "Combat_Tall",
-            spawnProfiles.Small,
             tallCombatSize,
             floorTile,
             wallTile,
-            monsters,
+            roleStageSets,
             killLockChestPrefab,
             new Vector2Int(3, 3),
             new Vector2Int(6, 5),
@@ -1046,12 +1041,11 @@ public static class ProceduralDungeonSceneInstaller
         RoomTemplateSO largeNieunRoom = CreateOrUpdateLargeCornerCombatRoom(
             spec,
             "Combat_Large_Nieun",
-            spawnProfiles.Big,
             largeNieunSize,
             LargeCornerRoomShape.Nieun,
             floorTile,
             wallTile,
-            monsters,
+            roleStageSets,
             killLockChestPrefab,
             new Vector2Int(8, 46),
             new Vector2Int(13, 36),
@@ -1064,12 +1058,11 @@ public static class ProceduralDungeonSceneInstaller
         RoomTemplateSO largeGiyeokRoom = CreateOrUpdateLargeCornerCombatRoom(
             spec,
             "Combat_Large_Giyeok",
-            spawnProfiles.Big,
             largeGiyeokSize,
             LargeCornerRoomShape.Giyeok,
             floorTile,
             wallTile,
-            monsters,
+            roleStageSets,
             killLockChestPrefab,
             new Vector2Int(8, 42),
             new Vector2Int(20, 47),
@@ -1134,6 +1127,7 @@ public static class ProceduralDungeonSceneInstaller
             largeGiyeokRoom,
             rewardRoom,
             bossRoom);
+        ApplyStageMonsterCatalog(library, spec);
         VerifyBossThemeLibrarySamples(library);
         VerifyBossThemeTilePalette(library, tilePalette);
         return library;
@@ -1331,11 +1325,10 @@ public static class ProceduralDungeonSceneInstaller
     private static RoomTemplateSO CreateThemeCombatRoom(
         BossThemeInstallSpec spec,
         string roomSuffix,
-        MonsterRoomSpawnProfileSO spawnProfile,
         Vector2Int roomSize,
         TileBase floorTile,
         TileBase wallTile,
-        IReadOnlyList<GameObject> monsterPrefabs,
+        IReadOnlyList<StageMonsterSetSO> roleStageSets,
         GameObject killLockChestPrefab,
         params Vector2Int[] monsterCells)
     {
@@ -1350,27 +1343,22 @@ public static class ProceduralDungeonSceneInstaller
             wallTile,
             CreateCombatPlacements(
                 roomSuffix,
-                monsterPrefabs,
+                roleStageSets,
                 monsterCells,
                 killLockChestPrefab,
             GetKillLockChestCell(roomSize)),
             0);
-        RoomBuildData build = room.BuildData;
-        build.monsterSpawnProfile = spawnProfile;
-        room.EditorSetData(room.LayoutData, build);
-        EditorUtility.SetDirty(room);
         return room;
     }
 
     private static RoomTemplateSO CreateOrUpdateLargeCornerCombatRoom(
         BossThemeInstallSpec spec,
         string roomSuffix,
-        MonsterRoomSpawnProfileSO spawnProfile,
         Vector2Int roomSize,
         LargeCornerRoomShape shape,
         TileBase floorTile,
         TileBase wallTile,
-        IReadOnlyList<GameObject> monsterPrefabs,
+        IReadOnlyList<StageMonsterSetSO> roleStageSets,
         GameObject killLockChestPrefab,
         params Vector2Int[] monsterCells)
     {
@@ -1424,12 +1412,11 @@ public static class ProceduralDungeonSceneInstaller
         };
         RoomBuildData build = new()
         {
-            monsterSpawnProfile = spawnProfile,
             floorTiles = floorTiles,
             wallTiles = wallTiles,
             objectPlacements = CreateCombatPlacements(
                 roomSuffix,
-                monsterPrefabs,
+                roleStageSets,
                 monsterCells,
                 killLockChestPrefab,
                 chestCell)
@@ -1442,26 +1429,29 @@ public static class ProceduralDungeonSceneInstaller
 
     private static List<RoomObjectPlacementData> CreateCombatPlacements(
         string roomSuffix,
-        IReadOnlyList<GameObject> monsterPrefabs,
+        IReadOnlyList<StageMonsterSetSO> roleStageSets,
         IReadOnlyList<Vector2Int> monsterCells,
         GameObject killLockChestPrefab,
         Vector2Int chestCell)
     {
-        if (monsterPrefabs == null || monsterPrefabs.Count < 5)
-            throw new InvalidOperationException("Theme Combat rooms require at least five monster kinds.");
+        if (roleStageSets == null || roleStageSets.Count != 3)
+            throw new InvalidOperationException("Theme Combat rooms require Warrior, Mage and Tank stage sets.");
         if (monsterCells == null || monsterCells.Count < 2)
             throw new InvalidOperationException("Theme Combat rooms require at least two monsters.");
 
         List<RoomObjectPlacementData> placements = new(monsterCells.Count + 1);
         for (int i = 0; i < monsterCells.Count; i++)
         {
-            GameObject monsterPrefab = monsterPrefabs[i % monsterPrefabs.Count];
-            placements.Add(CreateObjectPlacement(
+            RoomMonsterSpawnRole role = (RoomMonsterSpawnRole)(i % roleStageSets.Count);
+            RoomObjectPlacementData placement = CreateObjectPlacement(
                 $"{roomSuffix}Monster_{i + 1}",
                 RoomObjectKind.Monster,
-                monsterPrefab,
+                null,
                 monsterCells[i],
-                linkedChestLockPlacementId: "KillLockChest"));
+                linkedChestLockPlacementId: "KillLockChest");
+            placement.monsterSpawnRole = role;
+            placement.monsterStageSet = roleStageSets[(int)role];
+            placements.Add(placement);
         }
 
         placements.Add(CreateObjectPlacement(
@@ -1577,7 +1567,7 @@ public static class ProceduralDungeonSceneInstaller
 
         RoomTemplateSO largeNieunRoom = null;
         RoomTemplateSO largeGiyeokRoom = null;
-        HashSet<GameObject> monsterKinds = new();
+        HashSet<RoomMonsterSpawnRole> monsterRoles = new();
         int totalMonsterCount = 0;
         for (int roomIndex = 0; roomIndex < library.Rooms.Count; roomIndex++)
         {
@@ -1601,23 +1591,28 @@ public static class ProceduralDungeonSceneInstaller
                     continue;
 
                 totalMonsterCount++;
-                if (placement.prefab != null)
-                    monsterKinds.Add(placement.prefab);
+                if (placement.monsterStageSet == null)
+                {
+                    throw new InvalidOperationException(
+                        $"Monster spawn '{placement.placementId}' is missing its role StageMonsterSetSO.");
+                }
+
+                monsterRoles.Add(placement.monsterSpawnRole);
             }
         }
 
         VerifyLargeCornerRoomSample(largeNieunRoom, "ㄴ");
         VerifyLargeCornerRoomSample(largeGiyeokRoom, "ㄱ");
-        if (monsterKinds.Count < 5 || totalMonsterCount < 26)
+        if (monsterRoles.Count != 3 || totalMonsterCount < 26)
         {
             throw new InvalidOperationException(
-                $"Theme monster sample population is too small. " +
-                $"Kinds={monsterKinds.Count}, Count={totalMonsterCount}");
+                $"Theme monster role population is invalid. " +
+                $"Roles={monsterRoles.Count}/3, Count={totalMonsterCount}");
         }
 
         Debug.Log(
             $"Boss theme room samples verified. Theme={library.ThemeId}, " +
-            $"Rooms={library.Rooms.Count}, MonsterKinds={monsterKinds.Count}, " +
+            $"Rooms={library.Rooms.Count}, MonsterRoles={monsterRoles.Count}, " +
             $"MonsterPlacements={totalMonsterCount}, LargeShapes=ㄴ/ㄱ");
     }
 
@@ -2593,6 +2588,8 @@ public static class ProceduralDungeonSceneInstaller
             tallCombatRoom,
             sacrificeRewardRoom,
             bossRoom);
+        library.EditorSetStageMonsterPrefabs(new[] { monsterPrefab });
+        EditorUtility.SetDirty(library);
         AssetDatabase.SaveAssets();
         AssetDatabase.ImportAsset(
             LibraryPath,
@@ -4043,8 +4040,22 @@ public static class ProceduralDungeonSceneInstaller
                         }
                         break;
                     case RoomObjectKind.Monster:
-                        if (instance.GetComponentInChildren<Enemy>(true) == null)
-                            throw new InvalidOperationException($"{expectedName} is missing Enemy.");
+                        MonsterSpawnContainer spawnPoint =
+                            instance.GetComponent<MonsterSpawnContainer>();
+                        if (spawnPoint == null ||
+                            !spawnPoint.TryResolveMonsterPrefab(0, out GameObject resolvedPrefab) ||
+                            resolvedPrefab == null)
+                        {
+                            throw new InvalidOperationException(
+                                $"{expectedName} is missing a resolvable deferred monster spawn source.");
+                        }
+
+                        if (placement.monsterStageSet != null &&
+                            spawnPoint.StageMonsterSet != placement.monsterStageSet)
+                        {
+                            throw new InvalidOperationException(
+                                $"{expectedName} lost its authored role StageMonsterSetSO.");
+                        }
                         monsterCount++;
                         break;
                     case RoomObjectKind.Chest:

@@ -577,12 +577,12 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
     /// <summary>
     /// 책임:
-    /// - 현재 런 진행 단계의 0-based stage index를 스폰 프로파일 해석에 제공한다.
-    /// - 런 플랜이 없는 개발/테스트 씬에서는 첫 단계로 취급해 기존 동작을 유지한다.
+    /// - 이번 런에서 처치한 보스 수를 스폰 프로파일과 역할형 몬스터 세트의 진행 단계로 제공한다.
+    /// - 복도 테마용 route index와 전투 진행도를 분리하고, 런 밖의 개발/테스트 씬은 첫 단계로 취급한다.
     /// </summary>
     private static int ResolveCurrentStageIndex()
     {
-        return RunRoutePlayback.CurrentStageIndexOrDefault;
+        return MonsterRunProgression.CurrentStageIndex;
     }
 
     /// <summary>간단한 셔플로 방 안 스폰 포인트 순서를 무작위화합니다.</summary>

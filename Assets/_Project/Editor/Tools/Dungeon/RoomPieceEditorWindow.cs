@@ -15,6 +15,25 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public sealed class RoomPieceEditorWindow : EditorWindow
 {
+    private const string MonsterSpawnSetFolder =
+        "Assets/_Project/Data/Monsters/SpawnSets";
+
+    /// <summary>
+    /// 책임:
+    /// - 새 Monster 지점을 진행도형 공통 역할과 고정 스테이지 몬스터 중 어떤 소스로 제작할지 구분한다.
+    /// </summary>
+    private enum MonsterPlacementSourceMode
+    {
+        CommonRole,
+        StageFixed
+    }
+
+    private static readonly string[] MonsterPlacementSourceLabels =
+    {
+        "공통 역할 (진행도에 따라 변경)",
+        "스테이지 몬스터 (고정 프리팹)"
+    };
+
     private enum AuthoringStep
     {
         Basic,
@@ -33,6 +52,10 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     [SerializeField] private RoomTemplateSO templateToLoad;
     [SerializeField] private RoomThemeLibrarySO selectedLibrary;
     [SerializeField] private RoomObjectKind objectKindToPlace = RoomObjectKind.Prop;
+    [SerializeField] private MonsterPlacementSourceMode monsterSourceModeToPlace =
+        MonsterPlacementSourceMode.CommonRole;
+    [SerializeField] private RoomMonsterSpawnRole monsterRoleToPlace =
+        RoomMonsterSpawnRole.Warrior;
     [SerializeField] private GameObject objectPrefabToPlace;
     [SerializeField] private RoomTravelEndpointKind travelEndpointKindToPlace = RoomTravelEndpointKind.Interaction;
     [SerializeField] private GameObject travelMediumPrefabToPlace;
@@ -447,11 +470,6 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             serializedAuthoring.FindProperty("topologyPlacement"),
             new GUIContent("필수 방 배치 규칙"),
             includeChildren: true);
-        EditorGUILayout.PropertyField(
-            serializedAuthoring.FindProperty("monsterSpawnProfile"),
-            new GUIContent(
-                "몬스터 스폰 프로필",
-                "방 입장 시 현재 런 진행도에 맞는 몬스터 구성을 고릅니다. 비어 있으면 배치 프리팹을 fallback으로 사용합니다."));
         serializedAuthoring.ApplyModifiedProperties();
 
         EditorGUILayout.ObjectField(
@@ -646,17 +664,73 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         objectKindToPlace = (RoomObjectKind)EditorGUILayout.EnumPopup(
             "종류",
             objectKindToPlace);
-        DrawRecommendedPrefabPopup();
-        objectPrefabToPlace = EditorGUILayout.ObjectField(
-            "배치할 프리팹",
-            objectPrefabToPlace,
-            typeof(GameObject),
-            false) as GameObject;
-
-        using (new EditorGUI.DisabledScope(
-                   selectedAuthoring.Grid == null || objectPrefabToPlace == null))
+        bool placingMonster = objectKindToPlace == RoomObjectKind.Monster;
+        bool placingCommonRoleMonster = false;
+        StageMonsterSetSO selectedRoleSet = null;
+        if (placingMonster)
         {
-            if (GUILayout.Button("방 중앙에 배치 후 Scene View에서 이동"))
+            monsterSourceModeToPlace = (MonsterPlacementSourceMode)EditorGUILayout.Popup(
+                "몬스터 배치 방식",
+                (int)monsterSourceModeToPlace,
+                MonsterPlacementSourceLabels);
+            placingCommonRoleMonster =
+                monsterSourceModeToPlace == MonsterPlacementSourceMode.CommonRole;
+            if (placingCommonRoleMonster)
+            {
+                monsterRoleToPlace = (RoomMonsterSpawnRole)EditorGUILayout.EnumPopup(
+                    "몬스터 역할",
+                    monsterRoleToPlace);
+                selectedRoleSet = LoadRoleStageMonsterSet(monsterRoleToPlace);
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.ObjectField(
+                        "진행도 몬스터 세트",
+                        selectedRoleSet,
+                        typeof(StageMonsterSetSO),
+                        false);
+                }
+
+                DrawStageMonsterSetPreview(selectedRoleSet);
+            }
+            else
+            {
+                DrawRecommendedPrefabPopup();
+                objectPrefabToPlace = EditorGUILayout.ObjectField(
+                    "스테이지 몬스터 프리팹",
+                    objectPrefabToPlace,
+                    typeof(GameObject),
+                    false) as GameObject;
+                if (objectPrefabToPlace != null &&
+                    !IsPrefabCompatibleWithKind(objectPrefabToPlace, RoomObjectKind.Monster))
+                {
+                    EditorGUILayout.HelpBox(
+                        "스테이지 몬스터 프리팹에는 자식 포함 Enemy 컴포넌트가 필요합니다.",
+                        MessageType.Error);
+                }
+            }
+        }
+        else
+        {
+            DrawRecommendedPrefabPopup();
+            objectPrefabToPlace = EditorGUILayout.ObjectField(
+                "배치할 프리팹",
+                objectPrefabToPlace,
+                typeof(GameObject),
+                false) as GameObject;
+        }
+
+        bool sourceIsReady = placingCommonRoleMonster
+            ? selectedRoleSet != null
+            : objectPrefabToPlace != null &&
+              IsPrefabCompatibleWithKind(objectPrefabToPlace, objectKindToPlace);
+        using (new EditorGUI.DisabledScope(selectedAuthoring.Grid == null || !sourceIsReady))
+        {
+            string addButtonLabel = placingCommonRoleMonster
+                ? $"{monsterRoleToPlace} 스폰 지점을 방 중앙에 배치"
+                : placingMonster
+                    ? "스테이지 몬스터 지점을 방 중앙에 배치"
+                    : "방 중앙에 배치 후 Scene View에서 이동";
+            if (GUILayout.Button(addButtonLabel))
                 AddRoomObject();
         }
 
@@ -672,7 +746,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         if (objects.Length == 0)
         {
             EditorGUILayout.HelpBox(
-                "배치된 오브젝트가 없습니다. 몬스터, 상자, 포털 또는 일반 프롭 프리팹을 선택해 추가하세요.",
+                "배치된 오브젝트가 없습니다. Monster는 공통 역할 또는 스테이지 고정 프리팹을, 나머지는 프리팹을 선택해 추가하세요.",
                 MessageType.Info);
             return;
         }
@@ -691,6 +765,59 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                 EditorGUILayout.PropertyField(kindProperty, new GUIContent("Kind"));
                 if ((RoomObjectKind)kindProperty.enumValueIndex == RoomObjectKind.Monster)
                 {
+                    SerializedProperty prefabProperty = serializedObject.FindProperty("prefab");
+                    SerializedProperty stageSetProperty =
+                        serializedObject.FindProperty("monsterStageSet");
+                    MonsterPlacementSourceMode sourceMode =
+                        stageSetProperty.objectReferenceValue != null
+                            ? MonsterPlacementSourceMode.CommonRole
+                            : MonsterPlacementSourceMode.StageFixed;
+                    sourceMode = (MonsterPlacementSourceMode)EditorGUILayout.Popup(
+                        "몬스터 배치 방식",
+                        (int)sourceMode,
+                        MonsterPlacementSourceLabels);
+                    if (sourceMode == MonsterPlacementSourceMode.CommonRole)
+                    {
+                        prefabProperty.objectReferenceValue = null;
+                        SerializedProperty roleProperty =
+                            serializedObject.FindProperty("monsterSpawnRole");
+                        EditorGUILayout.PropertyField(roleProperty, new GUIContent("몬스터 역할"));
+                        RoomMonsterSpawnRole role =
+                            (RoomMonsterSpawnRole)roleProperty.enumValueIndex;
+                        StageMonsterSetSO roleSet = LoadRoleStageMonsterSet(role);
+                        stageSetProperty.objectReferenceValue = roleSet;
+                        using (new EditorGUI.DisabledScope(true))
+                        {
+                            EditorGUILayout.ObjectField(
+                                "진행도 몬스터 세트",
+                                roleSet,
+                                typeof(StageMonsterSetSO),
+                                false);
+                        }
+
+                        DrawStageMonsterSetPreview(roleSet);
+                    }
+                    else
+                    {
+                        stageSetProperty.objectReferenceValue = null;
+                        prefabProperty.objectReferenceValue = EditorGUILayout.ObjectField(
+                            "스테이지 몬스터 프리팹",
+                            prefabProperty.objectReferenceValue,
+                            typeof(GameObject),
+                            false);
+                        GameObject stageMonsterPrefab =
+                            prefabProperty.objectReferenceValue as GameObject;
+                        if (stageMonsterPrefab != null &&
+                            !IsPrefabCompatibleWithKind(
+                                stageMonsterPrefab,
+                                RoomObjectKind.Monster))
+                        {
+                            EditorGUILayout.HelpBox(
+                                "스테이지 몬스터 프리팹에는 자식 포함 Enemy 컴포넌트가 필요합니다.",
+                                MessageType.Error);
+                        }
+                    }
+
                     DrawLinkedChestLockPopup(
                         serializedObject.FindProperty("linkedChestLockPlacementId"),
                         objects);
@@ -700,7 +827,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                 if (roomObject.Kind == RoomObjectKind.Chest)
                     DrawChestKillLockLinks(roomObject, objects);
 
-                EditorGUILayout.ObjectField("Prefab", roomObject.Prefab, typeof(GameObject), false);
+                if (roomObject.Kind != RoomObjectKind.Monster)
+                    EditorGUILayout.ObjectField("Prefab", roomObject.Prefab, typeof(GameObject), false);
                 if (roomObject.TryGetPlacementData(out RoomObjectPlacementData placement))
                 {
                     EditorGUILayout.Vector2IntField("Local Cell", placement.localCell);
@@ -726,8 +854,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         EditorGUILayout.HelpBox(
             "Transform을 이동/회전/크기 조절하면 Grid 셀, 셀 중심 오프셋, 로컬 회전과 크기로 저장됩니다. " +
-            "Monster는 실제 적을 미리 배치하는 항목이 아니라 방 입장 시 사용할 스폰 위치입니다. " +
-            "'몬스터 스폰 프로필'이 있으면 현재 런 진행도별 구성을 사용하고, 배치 프리팹은 프로필 해석 실패 시 fallback입니다. " +
+            "공통 역할 Monster는 Warrior/Mage/Tank의 수와 위치를 저장하고 보스 처치 수에 맞는 적을 생성합니다. " +
+            "스테이지 Monster는 선택한 고정 프리팹을 같은 방 진입 지연 스폰 흐름으로 생성합니다. " +
             "선택한 Kill Lock 상자 연결도 최종 스폰 요청으로 전달됩니다.",
             MessageType.Info);
     }
@@ -899,6 +1027,58 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             objectPrefabToPlace = recommendedPrefabs[requestedIndex - 1];
     }
 
+    /// <summary>
+    /// 책임:
+    /// - 툴의 Warrior/Mage/Tank 선택을 프로젝트 공용 StageMonsterSetSO 에셋에 연결한다.
+    /// - 기획자가 개별 몬스터 프리팹이나 세트 에셋 경로를 직접 찾지 않게 한다.
+    /// </summary>
+    private static StageMonsterSetSO LoadRoleStageMonsterSet(RoomMonsterSpawnRole role)
+    {
+        string fileName = role switch
+        {
+            RoomMonsterSpawnRole.Warrior => "CommonMeleeStageMonsterSet.asset",
+            RoomMonsterSpawnRole.Mage => "CommonRangedStageMonsterSet.asset",
+            RoomMonsterSpawnRole.Tank => "CommonTankStageMonsterSet.asset",
+            _ => string.Empty
+        };
+        return string.IsNullOrEmpty(fileName)
+            ? null
+            : AssetDatabase.LoadAssetAtPath<StageMonsterSetSO>(
+                $"{MonsterSpawnSetFolder}/{fileName}");
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 선택한 역할 지점에서 보스 처치 수 0/1/2에 실제로 생성될 몬스터를 즉시 보여준다.
+    /// </summary>
+    private static void DrawStageMonsterSetPreview(StageMonsterSetSO stageSet)
+    {
+        if (stageSet == null)
+        {
+            EditorGUILayout.HelpBox(
+                "이 역할에 연결할 StageMonsterSetSO를 찾지 못했습니다.",
+                MessageType.Error);
+            return;
+        }
+
+        IReadOnlyList<GameObject> stagePrefabs = stageSet.StagePrefabs;
+        using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+        {
+            EditorGUILayout.LabelField("진행도별 실제 몬스터", EditorStyles.miniBoldLabel);
+            for (int stageIndex = 0; stageIndex < 3; stageIndex++)
+            {
+                GameObject prefab = stagePrefabs != null && stagePrefabs.Count > 0
+                    ? stagePrefabs[Mathf.Min(stageIndex, stagePrefabs.Count - 1)]
+                    : null;
+                EditorGUILayout.ObjectField(
+                    $"보스 {stageIndex}마리 처치",
+                    prefab,
+                    typeof(GameObject),
+                    false);
+            }
+        }
+    }
+
     private List<GameObject> CollectLibraryPrefabs(RoomObjectKind kind)
     {
         List<GameObject> results = new();
@@ -906,6 +1086,23 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             return results;
 
         HashSet<GameObject> seen = new();
+        if (kind == RoomObjectKind.Monster)
+        {
+            IReadOnlyList<GameObject> stageMonsterPrefabs =
+                selectedLibrary.StageMonsterPrefabs;
+            if (stageMonsterPrefabs != null)
+            {
+                for (int prefabIndex = 0;
+                     prefabIndex < stageMonsterPrefabs.Count;
+                     prefabIndex++)
+                {
+                    GameObject prefab = stageMonsterPrefabs[prefabIndex];
+                    if (IsPrefabCompatibleWithKind(prefab, kind) && seen.Add(prefab))
+                        results.Add(prefab);
+                }
+            }
+        }
+
         IReadOnlyList<RoomTemplateSO> rooms = selectedLibrary.Rooms;
         for (int roomIndex = 0; roomIndex < rooms.Count; roomIndex++)
         {
@@ -1628,7 +1825,6 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             layout.selectionWeight,
             layout.topologyPlacement,
             asDuplicate ? null : templateToLoad);
-        selectedAuthoring.EditorAssignMonsterSpawnProfile(build.monsterSpawnProfile);
 
         for (int i = 0; i < RoomTileLayerContract.OrderedLayers.Count; i++)
         {
@@ -1997,8 +2193,21 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     {
         selectedAuthoring = ResolveSelectedAuthoring();
         if (selectedAuthoring == null ||
-            selectedAuthoring.Grid == null ||
-            objectPrefabToPlace == null)
+            selectedAuthoring.Grid == null)
+        {
+            return;
+        }
+
+        bool placingMonster = objectKindToPlace == RoomObjectKind.Monster;
+        bool placingCommonRoleMonster = placingMonster &&
+            monsterSourceModeToPlace == MonsterPlacementSourceMode.CommonRole;
+        StageMonsterSetSO roleSet = placingCommonRoleMonster
+            ? LoadRoleStageMonsterSet(monsterRoleToPlace)
+            : null;
+        if (placingCommonRoleMonster && roleSet == null)
+            return;
+        if (!placingCommonRoleMonster &&
+            !IsPrefabCompatibleWithKind(objectPrefabToPlace, objectKindToPlace))
         {
             return;
         }
@@ -2007,13 +2216,19 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         Vector2Int defaultCell = ResolveDefaultObjectCell(selectedAuthoring);
         RoomObjectPlacementData placement = new()
         {
-            placementId = $"Object_{existingObjects.Length + 1:00}",
+            placementId = placingCommonRoleMonster
+                ? $"{monsterRoleToPlace}_{existingObjects.Length + 1:00}"
+                : placingMonster
+                    ? $"StageMonster_{existingObjects.Length + 1:00}"
+                    : $"Object_{existingObjects.Length + 1:00}",
             kind = objectKindToPlace,
-            prefab = objectPrefabToPlace,
+            prefab = placingCommonRoleMonster ? null : objectPrefabToPlace,
+            monsterSpawnRole = monsterRoleToPlace,
+            monsterStageSet = roleSet,
             localCell = defaultCell,
             localOffset = Vector2.zero,
             localRotationDegrees = 0f,
-            localScale = objectPrefabToPlace.transform.localScale
+            localScale = placingMonster ? Vector3.one : objectPrefabToPlace.transform.localScale
         };
 
         RoomObjectAuthoring roomObject = CreateRoomObjectAuthoring(selectedAuthoring, placement);
@@ -2153,7 +2368,12 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         if (marker == null)
             marker = Undo.AddComponent<RoomObjectAuthoring>(instance);
 
-        marker.EditorConfigure(placement.placementId, placement.kind, placement.prefab);
+        marker.EditorConfigure(
+            placement.placementId,
+            placement.kind,
+            placement.prefab,
+            placement.monsterSpawnRole,
+            placement.monsterStageSet);
         marker.EditorSetPlacement(placement);
         EditorUtility.SetDirty(marker);
         EditorUtility.SetDirty(instance.transform);
@@ -2558,7 +2778,6 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         build = new RoomBuildData
         {
-            monsterSpawnProfile = selectedAuthoring.MonsterSpawnProfile,
             underFloorTiles = CollectTiles(
                 selectedAuthoring.UnderFloorTilemap,
                 selectedAuthoring.Size),
@@ -2679,10 +2898,33 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                 ? roomObject.gameObject.name
                 : roomObject.PlacementId;
 
-            if (roomObject.Prefab == null)
+            if (roomObject.Kind == RoomObjectKind.Monster)
+            {
+                if (roomObject.MonsterStageSet != null && roomObject.Prefab != null)
+                {
+                    messages.Add(
+                        $"{displayName}: 공통 역할 StageMonsterSet과 스테이지 고정 프리팹을 동시에 사용할 수 없습니다.");
+                }
+                else if (roomObject.MonsterStageSet == null && roomObject.Prefab == null)
+                {
+                    messages.Add(
+                        $"{displayName}: 공통 역할 StageMonsterSet 또는 스테이지 몬스터 프리팹이 필요합니다.");
+                }
+                else if (roomObject.MonsterStageSet == null &&
+                         !IsPrefabCompatibleWithKind(roomObject.Prefab, RoomObjectKind.Monster))
+                {
+                    messages.Add(
+                        $"{displayName}: 스테이지 몬스터 프리팹에 자식 포함 Enemy 컴포넌트가 필요합니다.");
+                }
+            }
+            else if (roomObject.Prefab == null)
+            {
                 messages.Add($"{displayName}: 원본 Prefab 참조가 비어 있습니다.");
+            }
             else if (!IsPrefabCompatibleWithKind(roomObject.Prefab, roomObject.Kind))
+            {
                 messages.Add($"{displayName}: Prefab이 {roomObject.Kind} 종류에 필요한 컴포넌트를 포함하지 않습니다.");
+            }
 
             ValidateMonsterChestLockLink(
                 roomObject,

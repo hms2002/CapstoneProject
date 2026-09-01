@@ -41,7 +41,6 @@ MonoBehaviour:
       minimumGraphDistanceFromStart: 0
       requireDeadEnd: 0
   buildData:
-    monsterSpawnProfile: {fileID: 0}
     underFloorTiles: []
     floorTiles:
     - localCell: {x: 0, y: 3}

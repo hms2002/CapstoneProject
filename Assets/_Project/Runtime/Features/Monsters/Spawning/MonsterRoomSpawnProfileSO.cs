@@ -51,43 +51,6 @@ public sealed class MonsterRoomSpawnProfileSO : ScriptableObject
         public IReadOnlyList<WeightedMonsterEntry> Entries => entries;
         public IReadOnlyList<WeightedCommonMonsterEntry> CommonEntries => commonEntries;
 
-#if UNITY_EDITOR
-        /// <summary>
-        /// 책임:
-        /// - 설치기가 이 테이블을 고정 프리팹 없이 진행도별 몬스터 세트만 사용하는 구성으로 초기화한다.
-        /// </summary>
-        public void EditorConfigureProgression(
-            string configuredTableName,
-            int configuredSpawnCount,
-            IReadOnlyList<StageMonsterSetSO> monsterSets,
-            IReadOnlyList<float> weights)
-        {
-            tableName = string.IsNullOrWhiteSpace(configuredTableName)
-                ? "Progression"
-                : configuredTableName;
-            spawnCount = Mathf.Max(0, configuredSpawnCount);
-            entries = new List<WeightedMonsterEntry>();
-            commonEntries = new List<WeightedCommonMonsterEntry>();
-
-            int entryCount = monsterSets != null ? monsterSets.Count : 0;
-            for (int i = 0; i < entryCount; i++)
-            {
-                StageMonsterSetSO monsterSet = monsterSets[i];
-                float weight = weights != null && i < weights.Count
-                    ? weights[i]
-                    : 1f;
-                if (monsterSet == null || weight <= 0f)
-                    continue;
-
-                commonEntries.Add(new WeightedCommonMonsterEntry
-                {
-                    monsterSet = monsterSet,
-                    weight = weight
-                });
-            }
-        }
-#endif
-
         public bool HasAnyResolvableEntry(int stageIndex)
         {
             if (entries != null)
@@ -247,31 +210,6 @@ public sealed class MonsterRoomSpawnProfileSO : ScriptableObject
     [SerializeField] private List<SpawnTable> spawnTables = new();
 
     public IReadOnlyList<SpawnTable> SpawnTables => spawnTables;
-
-#if UNITY_EDITOR
-    /// <summary>
-    /// 책임:
-    /// - 콘텐츠 설치기가 기존 고정 프리팹 테이블을 진행도별 공통 몬스터 세트 테이블로 교체한다.
-    /// - 테마별 방 수치와 런 진행도별 실제 몬스터 선택을 분리한 영속 프로필을 반복 생성한다.
-    /// </summary>
-    public void EditorConfigureProgressionTable(
-        string configuredTableName,
-        int configuredSpawnCount,
-        IReadOnlyList<StageMonsterSetSO> monsterSets,
-        IReadOnlyList<float> weights)
-    {
-        var table = new SpawnTable();
-        table.EditorConfigureProgression(
-            configuredTableName,
-            configuredSpawnCount,
-            monsterSets,
-            weights);
-
-        spawnTables ??= new List<SpawnTable>();
-        spawnTables.Clear();
-        spawnTables.Add(table);
-    }
-#endif
 
     /// <summary>
     /// 책임:

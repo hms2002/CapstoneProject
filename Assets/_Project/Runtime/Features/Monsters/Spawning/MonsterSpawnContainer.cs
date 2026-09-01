@@ -58,19 +58,43 @@ public class MonsterSpawnContainer : MonoBehaviour
 
     /// <summary>
     /// 책임:
-    /// - 절차 생성기가 방 오브젝트의 몬스터 배치를 실제 몬스터가 아닌 지연 스폰 포인트로 변환한다.
-    /// - 기존 고정 프리팹은 방 스폰 프로필이 없을 때 사용할 호환 fallback으로 보관한다.
+    /// - 절차 생성기가 스테이지 고정 몬스터 프리팹을 실제 몬스터가 아닌 지연 스폰 포인트로 구성한다.
+    /// - 방 진입 전에는 생성하지 않고 기존 MonsterSpawner 요청 계약을 그대로 사용한다.
     /// </summary>
     public void ConfigureRuntime(
-        GameObject fallbackMonsterPrefab,
+        GameObject configuredMonsterPrefab,
         MonsterRoomArea2D configuredRoomArea,
         MonsterSpawnRoomGroup configuredRoomGroup,
         ChestMonsterKillLock configuredChestKillLock,
         Action<GameObject> onRuntimeSpawned = null)
     {
-        sourceKind = MonsterSpawnSourceKind.FixedPrefab;
-        monsterPrefab = fallbackMonsterPrefab;
-        stageMonsterSet = null;
+        ConfigureRuntime(
+            configuredStageMonsterSet: null,
+            configuredMonsterPrefab,
+            configuredRoomArea,
+            configuredRoomGroup,
+            configuredChestKillLock,
+            onRuntimeSpawned);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 역할형 절차 몬스터 지점에 연결된 StageMonsterSetSO를 현재 진행도에서 해석할 스폰 소스로 구성한다.
+    /// - StageMonsterSetSO가 없으면 기획자가 지정한 스테이지 고정 프리팹을 스폰 소스로 사용한다.
+    /// </summary>
+    public void ConfigureRuntime(
+        StageMonsterSetSO configuredStageMonsterSet,
+        GameObject configuredMonsterPrefab,
+        MonsterRoomArea2D configuredRoomArea,
+        MonsterSpawnRoomGroup configuredRoomGroup,
+        ChestMonsterKillLock configuredChestKillLock,
+        Action<GameObject> onRuntimeSpawned = null)
+    {
+        sourceKind = configuredStageMonsterSet != null
+            ? MonsterSpawnSourceKind.StageMonsterSet
+            : MonsterSpawnSourceKind.FixedPrefab;
+        monsterPrefab = configuredMonsterPrefab;
+        stageMonsterSet = configuredStageMonsterSet;
         spawnByDefault = true;
         allowExtraSpawn = true;
         spawnAnchor = null;

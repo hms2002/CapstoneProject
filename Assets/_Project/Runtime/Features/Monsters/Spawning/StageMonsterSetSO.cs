@@ -4,12 +4,12 @@ using UnityEngine;
 /// <summary>
 /// 책임:
 /// - 런 진행 단계 인덱스를 실제 몬스터 프리팹으로 해석하는 공통 몬스터 세트를 보관한다.
-/// - MonsterRoomSpawnProfileSO가 고정 프리팹과 단계형 몬스터 세트를 함께 사용할 수 있게 한다.
+/// - 역할형 절차 방 스폰 지점과 기존 MonsterRoomSpawnProfileSO가 같은 진행도별 몬스터 정의를 재사용하게 한다.
 /// </summary>
 [CreateAssetMenu(fileName = "StageMonsterSet", menuName = "Gameplay/Monster Spawn/Stage Monster Set")]
 public sealed class StageMonsterSetSO : ScriptableObject
 {
-    [Tooltip("Element 0은 이번 런의 첫 번째 route set, Element 1은 두 번째 route set에 대응합니다.")]
+    [Tooltip("Element 0/1/2는 각각 이번 런에서 보스를 0/1/2마리 처치한 단계에 대응합니다.")]
     [SerializeField] private List<GameObject> stagePrefabs = new();
 
     public IReadOnlyList<GameObject> StagePrefabs => stagePrefabs;
@@ -32,6 +32,17 @@ public sealed class StageMonsterSetSO : ScriptableObject
     }
 
 #if UNITY_EDITOR
+    /// <summary>
+    /// 책임:
+    /// - 테스트와 콘텐츠 설치기가 보스 처치 단계 순서의 몬스터 프리팹을 명시적으로 구성한다.
+    /// </summary>
+    public void EditorSetStagePrefabs(IReadOnlyList<GameObject> prefabs)
+    {
+        stagePrefabs = prefabs != null
+            ? new List<GameObject>(prefabs)
+            : new List<GameObject>();
+    }
+
     private void OnValidate()
     {
         stagePrefabs ??= new List<GameObject>();

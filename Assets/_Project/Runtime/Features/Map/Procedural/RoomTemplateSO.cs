@@ -153,15 +153,13 @@ public static class RoomSocketGeometry
 /// <summary>
 /// 책임:
 /// - 런타임 방 구현기가 실제 Tilemap에 찍어낼 고정 시각 레이어 타일과 프리팹 배치 데이터를 보관한다.
-/// - 몬스터 스폰 프로필과 스폰 위치, 상자, 포털, 일반 프롭의 로컬 배치 정보를 전달한다.
+/// - 역할별 몬스터 스폰 위치, 상자, 포털, 일반 프롭의 로컬 배치 정보를 전달한다.
 /// - 씬 연결 자체와 분리된 이동 endpoint 슬롯의 매개체 종류와 로컬 배치를 전달한다.
 /// - 연결 문은 방 데이터가 아니라 조립 결과의 소켓 연결을 기준으로 DungeonRoomBuilder가 생성한다.
 /// </summary>
 [Serializable]
 public struct RoomBuildData
 {
-    [Tooltip("몬스터 배치가 있는 방에서 진행도에 따라 실제 몬스터 구성을 결정합니다. 비어 있으면 배치 프리팹을 fallback으로 사용합니다.")]
-    public MonsterRoomSpawnProfileSO monsterSpawnProfile;
     public List<RoomTileData> underFloorTiles;
     public List<RoomTileData> floorTiles;
     public List<RoomTileData> floorDetailTiles;
@@ -388,8 +386,8 @@ public static class RoomTravelEndpointGeometry
 /// <summary>
 /// 책임:
 /// - 방에 배치되는 런타임 오브젝트의 식별자, 종류, 프리팹과 Grid 기준 위치/회전/크기를 보관한다.
-/// - 몬스터 배치에는 기존 스폰 계약으로 전달할 Kill Lock 상자의 안정적인 Placement Id를 선택적으로 보관한다.
-/// - Monster 종류의 prefab은 스폰 프로필이 없거나 해석에 실패했을 때 사용할 미리보기/호환 fallback이다.
+/// - 몬스터 배치에는 공통 Warrior/Mage/Tank 역할 세트 또는 스테이지 고정 프리팹과 Kill Lock 상자의 안정적인 Placement Id를 보관한다.
+/// - Monster 종류는 StageMonsterSetSO와 prefab 중 정확히 하나를 스폰 소스로 사용한다.
 /// - DungeonRoomBuilder가 몬스터 배치는 지연 스폰 포인트로, 나머지는 프리팹 인스턴스로 구현할 수 있게 한다.
 /// </summary>
 [Serializable]
@@ -398,11 +396,25 @@ public struct RoomObjectPlacementData
     public string placementId;
     public RoomObjectKind kind;
     public GameObject prefab;
+    public RoomMonsterSpawnRole monsterSpawnRole;
+    public StageMonsterSetSO monsterStageSet;
     public Vector2Int localCell;
     public Vector2 localOffset;
     public float localRotationDegrees;
     public Vector3 localScale;
     public string linkedChestLockPlacementId;
+}
+
+/// <summary>
+/// 책임:
+/// - 기획자가 전투 방의 각 스폰 위치에 요구하는 전투 역할을 Warrior, Mage, Tank로 명시한다.
+/// - 구체적인 몬스터 프리팹 선택은 역할에 연결된 StageMonsterSetSO와 현재 진행 단계에 맡긴다.
+/// </summary>
+public enum RoomMonsterSpawnRole
+{
+    Warrior = 0,
+    Mage = 1,
+    Tank = 2
 }
 
 /// <summary>

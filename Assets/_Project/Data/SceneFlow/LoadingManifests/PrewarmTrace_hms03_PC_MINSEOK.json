@@ -1,36 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "a93dd00105664f22a432d7f683e07996",
-            "startedUtc": "2026-08-29T23:11:39.0033725Z",
-            "endedUtc": "2026-08-29T23:11:40.2741168Z",
-            "entries": []
-        },
-        {
-            "sessionId": "ff58b106dd574e36b1aa8aac58a7e3f4",
-            "startedUtc": "2026-08-29T23:46:01.1753611Z",
-            "endedUtc": "2026-08-29T23:46:01.5197301Z",
-            "entries": []
-        },
-        {
-            "sessionId": "7acb1f8fb2554600af90270f20ff76bd",
-            "startedUtc": "2026-08-30T00:31:51.2830435Z",
-            "endedUtc": "2026-08-30T00:31:51.6415889Z",
-            "entries": []
-        },
-        {
-            "sessionId": "aa9a3fac90164f02bbd5189230e255d4",
-            "startedUtc": "2026-08-30T01:48:33.1125889Z",
-            "endedUtc": "2026-08-30T01:48:33.4676847Z",
-            "entries": []
-        },
-        {
-            "sessionId": "b8adac5d18534f979b672d9cdcca56d2",
-            "startedUtc": "2026-08-30T06:54:54.0362359Z",
-            "endedUtc": "2026-08-30T06:54:55.0381680Z",
-            "entries": []
-        },
-        {
             "sessionId": "723e8b4b4cc84b8d954e5c17eadc30bb",
             "startedUtc": "2026-08-30T06:55:57.9870771Z",
             "endedUtc": "2026-08-30T06:55:58.9962291Z",
@@ -119,6 +89,113 @@
             "startedUtc": "2026-08-30T09:22:26.9324532Z",
             "endedUtc": "2026-08-30T09:22:27.9352519Z",
             "entries": []
+        },
+        {
+            "sessionId": "b9d1bf48b67844be9ac1d457a390a9d0",
+            "startedUtc": "2026-09-01T08:42:55.2237656Z",
+            "endedUtc": "2026-09-01T08:42:56.2274979Z",
+            "entries": []
+        },
+        {
+            "sessionId": "5efb7793ff7848c2bea808dee064d92c",
+            "startedUtc": "2026-09-01T08:47:04.3157642Z",
+            "endedUtc": "2026-09-01T08:47:31.8257959Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 4,
+                    "coldSpawns": 4,
+                    "firstSeenSeconds": 22.819128036499025,
+                    "lastSeenSeconds": 27.497163772583009,
+                    "firstSceneName": "ProceduralShadowCorridor",
+                    "lastSceneName": "ProceduralShadowCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "6a441860bfff43959678781de42625f7",
+            "startedUtc": "2026-09-01T09:38:13.4338608Z",
+            "endedUtc": "2026-09-01T09:42:42.5922655Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/AnimEffect/SlashHit.prefab",
+                    "prefabName": "SlashHit",
+                    "totalSpawns": 2,
+                    "coldSpawns": 2,
+                    "firstSeenSeconds": 268.1501770019531,
+                    "lastSeenSeconds": 268.448486328125,
+                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
+                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/WitchNormal1AttackTileParticle.prefab",
+                    "prefabName": "WitchNormal1AttackTileParticle",
+                    "totalSpawns": 2,
+                    "coldSpawns": 0,
+                    "firstSeenSeconds": 268.155517578125,
+                    "lastSeenSeconds": 268.4510192871094,
+                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
+                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
+                }
+            ]
+        },
+        {
+            "sessionId": "b1d1425a24a645719ec57bbed9424b69",
+            "startedUtc": "2026-09-01T10:00:44.2074327Z",
+            "endedUtc": "2026-09-01T10:03:42.4577618Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/AnimEffect/SlashHit.prefab",
+                    "prefabName": "SlashHit",
+                    "totalSpawns": 3,
+                    "coldSpawns": 2,
+                    "firstSeenSeconds": 174.5785675048828,
+                    "lastSeenSeconds": 175.17529296875,
+                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
+                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab",
+                    "prefabName": "PF_DeadSkeletonExplosionPurple",
+                    "totalSpawns": 2,
+                    "coldSpawns": 2,
+                    "firstSeenSeconds": 177.20286560058595,
+                    "lastSeenSeconds": 177.2069854736328,
+                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
+                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/WitchNormal1AttackTileParticle.prefab",
+                    "prefabName": "WitchNormal1AttackTileParticle",
+                    "totalSpawns": 3,
+                    "coldSpawns": 0,
+                    "firstSeenSeconds": 174.6051025390625,
+                    "lastSeenSeconds": 175.1776123046875,
+                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
+                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/Fog.prefab",
+                    "prefabName": "Fog",
+                    "totalSpawns": 2,
+                    "coldSpawns": 0,
+                    "firstSeenSeconds": 177.19493103027345,
+                    "lastSeenSeconds": 177.206787109375,
+                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
+                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/ExplosionParticle.prefab",
+                    "prefabName": "ExplosionParticle",
+                    "totalSpawns": 2,
+                    "coldSpawns": 0,
+                    "firstSeenSeconds": 177.24742126464845,
+                    "lastSeenSeconds": 177.24746704101563,
+                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
+                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
+                }
+            ]
         }
     ]
 }

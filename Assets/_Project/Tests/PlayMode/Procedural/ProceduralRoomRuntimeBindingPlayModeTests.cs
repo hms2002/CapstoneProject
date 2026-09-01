@@ -5,15 +5,15 @@ using UnityEngine.TestTools;
 using UnityEngine.Tilemaps;
 
 /// <summary>
-/// 책임 : 절차 생성 방의 고정 시각 레이어, 앵커 바인딩, 이동 도착 경계 보호와 필수 방의 그래프 위치 제약을 회귀 검증한다.
+/// 책임 : 절차 생성 방의 고정 시각 레이어, 몬스터 소스·테마 카탈로그, 앵커 바인딩, 이동 도착 경계 보호와 필수 방의 그래프 위치 제약을 회귀 검증한다.
 /// </summary>
 public sealed class ProceduralRoomRuntimeBindingPlayModeTests
 {
     [Test]
-    public void MonsterSpawnContainer_RuntimeConfigurationKeepsMonsterDeferredAndReportsSpawn()
+    public void MonsterSpawnContainer_StageFixedPrefabStaysDeferredAndReportsSpawn()
     {
         GameObject spawnPoint = new("DeferredSpawnPoint");
-        GameObject fallbackPrefab = new("FallbackMonsterPrefab");
+        GameObject stageMonsterPrefab = new("StageMonsterPrefab");
         GameObject spawnedMonster = new("SpawnedMonster");
         try
         {
@@ -21,14 +21,15 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
                 spawnPoint.AddComponent<MonsterSpawnContainer>();
             GameObject reportedMonster = null;
             container.ConfigureRuntime(
-                fallbackPrefab,
+                stageMonsterPrefab,
                 configuredRoomArea: null,
                 configuredRoomGroup: null,
                 configuredChestKillLock: null,
                 onRuntimeSpawned: result => reportedMonster = result);
 
             Assert.That(container.TryCreateRequest(0, out MonsterSpawnRequest request), Is.True);
-            Assert.That(request.MonsterPrefab, Is.SameAs(fallbackPrefab));
+            Assert.That(container.SourceKind, Is.EqualTo(MonsterSpawnSourceKind.FixedPrefab));
+            Assert.That(request.MonsterPrefab, Is.SameAs(stageMonsterPrefab));
             Assert.That(request.SourceContainer, Is.SameAs(container));
             Assert.That(reportedMonster, Is.Null);
 
@@ -39,8 +40,69 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
         finally
         {
             Object.DestroyImmediate(spawnedMonster);
-            Object.DestroyImmediate(fallbackPrefab);
+            Object.DestroyImmediate(stageMonsterPrefab);
             Object.DestroyImmediate(spawnPoint);
+        }
+    }
+
+    [Test]
+    public void MonsterSpawnContainer_RoleStageSetResolvesBossProgressionAtItsAuthoredPosition()
+    {
+        GameObject spawnPoint = new("WarriorSpawnPoint");
+        GameObject stageZero = new("GoblinWarrior");
+        GameObject stageOne = new("LizardWarrior");
+        GameObject stageTwo = new("ArcaneMeleeGolem");
+        StageMonsterSetSO warriorSet = ScriptableObject.CreateInstance<StageMonsterSetSO>();
+        try
+        {
+            warriorSet.EditorSetStagePrefabs(new[] { stageZero, stageOne, stageTwo });
+            MonsterSpawnContainer container =
+                spawnPoint.AddComponent<MonsterSpawnContainer>();
+            container.ConfigureRuntime(
+                warriorSet,
+                configuredMonsterPrefab: null,
+                configuredRoomArea: null,
+                configuredRoomGroup: null,
+                configuredChestKillLock: null);
+
+            Assert.That(container.TryCreateRequest(0, out MonsterSpawnRequest first), Is.True);
+            Assert.That(container.TryCreateRequest(1, out MonsterSpawnRequest second), Is.True);
+            Assert.That(container.TryCreateRequest(2, out MonsterSpawnRequest third), Is.True);
+            Assert.That(first.MonsterPrefab, Is.SameAs(stageZero));
+            Assert.That(second.MonsterPrefab, Is.SameAs(stageOne));
+            Assert.That(third.MonsterPrefab, Is.SameAs(stageTwo));
+            Assert.That(first.Position, Is.EqualTo(spawnPoint.transform.position));
+        }
+        finally
+        {
+            Object.DestroyImmediate(warriorSet);
+            Object.DestroyImmediate(stageTwo);
+            Object.DestroyImmediate(stageOne);
+            Object.DestroyImmediate(stageZero);
+            Object.DestroyImmediate(spawnPoint);
+        }
+    }
+
+    [Test]
+    public void RoomThemeLibrary_StageMonsterCatalogRemovesNullsAndDuplicates()
+    {
+        RoomThemeLibrarySO library = ScriptableObject.CreateInstance<RoomThemeLibrarySO>();
+        GameObject first = new("ThemeMonsterA");
+        GameObject second = new("ThemeMonsterB");
+        try
+        {
+            library.EditorSetStageMonsterPrefabs(
+                new GameObject[] { first, null, first, second });
+
+            Assert.That(library.StageMonsterPrefabs, Has.Count.EqualTo(2));
+            Assert.That(library.StageMonsterPrefabs[0], Is.SameAs(first));
+            Assert.That(library.StageMonsterPrefabs[1], Is.SameAs(second));
+        }
+        finally
+        {
+            Object.DestroyImmediate(second);
+            Object.DestroyImmediate(first);
+            Object.DestroyImmediate(library);
         }
     }
 

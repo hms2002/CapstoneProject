@@ -45,7 +45,6 @@ MonoBehaviour:
       minimumGraphDistanceFromStart: 0
       requireDeadEnd: 0
   buildData:
-    monsterSpawnProfile: {fileID: 11400000, guid: a16f6663cbbaf8449b03cb946a5b8b5f, type: 2}
     underFloorTiles: []
     floorTiles:
     - localCell: {x: 1, y: 1}
@@ -233,7 +232,9 @@ MonoBehaviour:
     objectPlacements:
     - placementId: Combat_CompactMonster_1
       kind: 1
-      prefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
       localCell: {x: 3, y: 3}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -241,7 +242,9 @@ MonoBehaviour:
       linkedChestLockPlacementId: KillLockChest
     - placementId: Combat_CompactMonster_2
       kind: 1
-      prefab: {fileID: 625522859161183429, guid: a4a67a3598fb4cfbb4bfda7759db598a, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
       localCell: {x: 6, y: 4}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -250,6 +253,8 @@ MonoBehaviour:
     - placementId: KillLockChest
       kind: 2
       prefab: {fileID: 8398461225799451672, guid: 670170a4e9390bc458d0b686227549af, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
       localCell: {x: 7, y: 4}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0

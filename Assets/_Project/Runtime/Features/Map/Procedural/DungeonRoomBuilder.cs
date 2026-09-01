@@ -855,8 +855,6 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             boundaryInsetCells: 0);
 
         roomGroup = encounterObject.AddComponent<MonsterSpawnRoomGroup>();
-        roomGroup.ConfigureSpawnProfile(
-            roomPlacement.Template.BuildData.monsterSpawnProfile);
         roomArea = encounterObject.AddComponent<MonsterRoomArea2D>();
         roomArea.Configure(areaCollider);
 
@@ -1480,11 +1478,12 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
                 return false;
             }
 
-            if (!IsPrefabCompatibleWithKind(objectPlacement.prefab, objectPlacement.kind))
+            if (!IsPlacementSourceCompatible(objectPlacement))
             {
                 Debug.LogError(
-                    $"Room '{roomName}' object '{objectPlacement.placementId}' has an invalid " +
-                    $"{objectPlacement.kind} prefab.",
+                    $"Room '{roomName}' object '{objectPlacement.placementId}' has no valid " +
+                    $"{objectPlacement.kind} source. Monster placements require a common-role " +
+                    $"StageMonsterSetSO or a stage-fixed Enemy prefab.",
                     roomPlacement.Template);
                 return false;
             }
@@ -1598,6 +1597,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
                 instance.AddComponent<MonsterSpawnContainer>();
             GameObject spawnPoint = instance;
             spawnContainer.ConfigureRuntime(
+                objectPlacement.monsterStageSet,
                 objectPlacement.prefab,
                 roomArea,
                 roomGroup,
@@ -1697,6 +1697,22 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             RoomObjectKind.Portal => prefab.GetComponentInChildren<ScenePortal>(true) != null,
             _ => false
         };
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 공통 역할 Monster의 StageMonsterSetSO와 스테이지 고정 Monster의 Enemy 프리팹을 모두 검증한다.
+    /// - 다른 오브젝트 종류는 기존 프리팹 컴포넌트 계약을 그대로 검증한다.
+    /// </summary>
+    private static bool IsPlacementSourceCompatible(RoomObjectPlacementData placement)
+    {
+        if (placement.kind == RoomObjectKind.Monster)
+        {
+            return placement.monsterStageSet != null ||
+                   IsPrefabCompatibleWithKind(placement.prefab, RoomObjectKind.Monster);
+        }
+
+        return IsPrefabCompatibleWithKind(placement.prefab, placement.kind);
     }
 
     private static void PlaceTiles(

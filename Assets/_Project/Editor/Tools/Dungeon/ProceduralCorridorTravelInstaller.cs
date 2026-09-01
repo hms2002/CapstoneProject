@@ -737,11 +737,13 @@ public static class ProceduralCorridorTravelInstaller
         ConfigureEndpoint(
             serialized.FindProperty("endpointA"),
             LobbySceneName,
-            $"Lobby.{themeId}.Corridor");
+            $"Lobby.{themeId}.Corridor",
+            routeContext: null);
         ConfigureEndpoint(
             serialized.FindProperty("endpointB"),
             routeSet.CorridorSceneName,
-            $"Corridor.{themeId}.Lobby");
+            $"Corridor.{themeId}.Lobby",
+            routeSet);
         ConfigureDirection(
             serialized.FindProperty("aToB"),
             SceneTravelRunAction.StartRun,
@@ -772,11 +774,13 @@ public static class ProceduralCorridorTravelInstaller
         ConfigureEndpoint(
             serialized.FindProperty("endpointA"),
             routeSet.CorridorSceneName,
-            $"Corridor.{themeId}.Boss");
+            $"Corridor.{themeId}.Boss",
+            routeSet);
         ConfigureEndpoint(
             serialized.FindProperty("endpointB"),
             routeSet.BossSceneName,
-            $"Boss.{themeId}.Corridor");
+            $"Boss.{themeId}.Corridor",
+            routeSet);
         ConfigureDirection(
             serialized.FindProperty("aToB"),
             SceneTravelRunAction.None,
@@ -810,11 +814,13 @@ public static class ProceduralCorridorTravelInstaller
         ConfigureEndpoint(
             serialized.FindProperty("endpointA"),
             routeSet.BossSceneName,
-            $"Boss.{themeId}.Hub");
+            $"Boss.{themeId}.Hub",
+            routeSet);
         ConfigureEndpoint(
             serialized.FindProperty("endpointB"),
             LobbySceneName,
-            $"Lobby.{themeId}.Corridor");
+            $"Lobby.{themeId}.Corridor",
+            routeContext: null);
         ConfigureDirection(
             serialized.FindProperty("aToB"),
             SceneTravelRunAction.None,
@@ -907,11 +913,13 @@ public static class ProceduralCorridorTravelInstaller
         ConfigureEndpoint(
             serialized.FindProperty("endpointA"),
             sourceRoute.CorridorSceneName,
-            $"Corridor.{sourceRoute.StableThemeId}.To.{destinationRoute.StableThemeId}");
+            $"Corridor.{sourceRoute.StableThemeId}.To.{destinationRoute.StableThemeId}",
+            sourceRoute);
         ConfigureEndpoint(
             serialized.FindProperty("endpointB"),
             destinationRoute.CorridorSceneName,
-            $"Corridor.{destinationRoute.StableThemeId}.From.{sourceRoute.StableThemeId}");
+            $"Corridor.{destinationRoute.StableThemeId}.From.{sourceRoute.StableThemeId}",
+            destinationRoute);
         ConfigureDirection(
             serialized.FindProperty("aToB"),
             SceneTravelRunAction.None,
@@ -948,10 +956,12 @@ public static class ProceduralCorridorTravelInstaller
     private static void ConfigureEndpoint(
         SerializedProperty endpoint,
         string sceneName,
-        string endpointId)
+        string endpointId,
+        SceneRouteContextSO routeContext)
     {
         endpoint.FindPropertyRelative("sceneName").stringValue = sceneName;
         endpoint.FindPropertyRelative("endpointId").stringValue = endpointId;
+        endpoint.FindPropertyRelative("routeContext").objectReferenceValue = routeContext;
     }
 
     private static void ConfigureDirection(
@@ -1727,6 +1737,8 @@ public static class ProceduralCorridorTravelInstaller
             connection.ConnectionId != link.ConnectionId ||
             connection.EndpointA.SceneName != sourceRoute.CorridorSceneName ||
             connection.EndpointB.SceneName != destinationRoute.CorridorSceneName ||
+            connection.EndpointA.RouteContext != sourceRoute ||
+            connection.EndpointB.RouteContext != destinationRoute ||
             !connection.AToB.Enabled ||
             connection.BToA.Enabled ||
             connection.AToB.RunAction != SceneTravelRunAction.None ||
@@ -1783,8 +1795,11 @@ public static class ProceduralCorridorTravelInstaller
             !HasTravelSlot(bossRoom, BossSlotId, RoomTravelEndpointKind.Interaction) ||
             HasLegacyExitPortal(bossRoom) ||
             lobbyConnection.EndpointB.SceneName != routeSet.CorridorSceneName ||
+            lobbyConnection.EndpointB.RouteContext != routeSet ||
             bossConnection.EndpointA.SceneName != routeSet.CorridorSceneName ||
             bossConnection.EndpointB.SceneName != routeSet.BossSceneName ||
+            bossConnection.EndpointA.RouteContext != routeSet ||
+            bossConnection.EndpointB.RouteContext != routeSet ||
             bossHubConnection == null ||
             bossHubConnection.EndpointA.SceneName != routeSet.BossSceneName ||
             bossHubConnection.EndpointB.SceneName != LobbySceneName ||

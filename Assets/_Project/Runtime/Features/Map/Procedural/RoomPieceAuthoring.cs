@@ -17,9 +17,6 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
     [SerializeField, Min(0f)] private float selectionWeight = 1f;
     [SerializeField] private RoomTopologyPlacementData topologyPlacement;
 
-    [Header("Monster Encounter")]
-    [SerializeField] private MonsterRoomSpawnProfileSO monsterSpawnProfile;
-
     [Header("Authoring Tilemaps")]
     [SerializeField] private Grid grid;
     [SerializeField] private Tilemap underFloorTilemap;
@@ -39,7 +36,6 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
     public int DifficultyTier => difficultyTier;
     public float SelectionWeight => selectionWeight;
     public RoomTopologyPlacementData TopologyPlacement => topologyPlacement;
-    public MonsterRoomSpawnProfileSO MonsterSpawnProfile => monsterSpawnProfile;
     public Grid Grid => grid;
     public Tilemap UnderFloorTilemap => underFloorTilemap;
     public Tilemap FloorTilemap => floorTilemap;
@@ -107,15 +103,6 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
     public void EditorAssignSourceTemplate(RoomTemplateSO template)
     {
         sourceTemplate = template;
-    }
-
-    /// <summary>
-    /// 책임:
-    /// - 방 템플릿을 편집 작업 공간으로 복원할 때 진행도 기반 몬스터 스폰 프로필을 함께 복원한다.
-    /// </summary>
-    public void EditorAssignMonsterSpawnProfile(MonsterRoomSpawnProfileSO profile)
-    {
-        monsterSpawnProfile = profile;
     }
 
     private void OnValidate()
