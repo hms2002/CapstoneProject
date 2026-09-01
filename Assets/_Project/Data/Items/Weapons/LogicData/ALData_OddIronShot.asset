@@ -31,7 +31,7 @@ MonoBehaviour:
     critAffectsElement: 1
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
-  fixedDamage: 100
+  fixedDamage: 700
   fixedStaggerDamage: 0
   fixedKnockbackImpulse: 8
   muzzleFlashPrefab: {fileID: 5379966320317882081, guid: f89c42f0b331fde42bbce703000cd556, type: 3}

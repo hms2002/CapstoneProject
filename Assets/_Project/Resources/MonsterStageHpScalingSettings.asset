@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: MonsterStageHpScalingSettings
   m_EditorClassIdentifier: 
   enabled: 1
-  hpMultiplierPerClearedStage: 0.5
-  attackSpeedMultiplierPerClearedStage: 0.5
+  hpMultiplierPerClearedStage: 0.15
+  attackSpeedMultiplierPerClearedStage: 0.15
   scaleAttackWarning: 1
   scaleAttackRecovery: 1
   scaleAttackInterval: 1

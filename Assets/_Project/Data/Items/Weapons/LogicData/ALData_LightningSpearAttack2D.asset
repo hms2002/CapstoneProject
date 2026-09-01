@@ -37,10 +37,11 @@ MonoBehaviour:
       nextAttackDelay: 0
       damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
       knockbackFormula: {fileID: 0}
-      legacyDamage: 10
+      legacyDamage: 100
       legacyStaggerDamage: 0
       elementDamages:
         elements: []
+      hitImpactCueKind: 0
       forwardOffset: 2
       sideOffset: -0.1
       sideSign: 1
@@ -68,10 +69,11 @@ MonoBehaviour:
       nextAttackDelay: 0
       damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
       knockbackFormula: {fileID: 0}
-      legacyDamage: 10
+      legacyDamage: 100
       legacyStaggerDamage: 0
       elementDamages:
         elements: []
+      hitImpactCueKind: 0
       forwardOffset: 2
       sideOffset: 0.15
       sideSign: -1
@@ -99,10 +101,11 @@ MonoBehaviour:
       nextAttackDelay: 0.49
       damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
       knockbackFormula: {fileID: 0}
-      legacyDamage: 30
+      legacyDamage: 160
       legacyStaggerDamage: 0
       elementDamages:
         elements: []
+      hitImpactCueKind: 0
       forwardOffset: 2
       sideOffset: -0.1
       sideSign: 1
