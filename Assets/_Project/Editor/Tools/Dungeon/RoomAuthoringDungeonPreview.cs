@@ -222,16 +222,24 @@ internal static class RoomAuthoringDungeonPreview
 
     /// <summary>
     /// 책임:
-    /// - 실제 프리팹을 생성하지 않고 방 오브젝트의 종류와 배치 셀을 Scene View 아이콘으로 표현한다.
+    /// - 실제 프리팹을 생성하지 않고 방 오브젝트의 종류, 공통 몬스터 역할 또는 스테이지 고정 여부와 배치 셀을 Scene View 아이콘으로 표현한다.
     /// </summary>
     private readonly struct PreviewObjectInfo
     {
         public RoomObjectKind Kind { get; }
+        public RoomMonsterSpawnRole MonsterRole { get; }
+        public bool UsesCommonMonsterRole { get; }
         public Vector2Int WorldCell { get; }
 
-        public PreviewObjectInfo(RoomObjectKind kind, Vector2Int worldCell)
+        public PreviewObjectInfo(
+            RoomObjectKind kind,
+            RoomMonsterSpawnRole monsterRole,
+            bool usesCommonMonsterRole,
+            Vector2Int worldCell)
         {
             Kind = kind;
+            MonsterRole = monsterRole;
+            UsesCommonMonsterRole = usesCommonMonsterRole;
             WorldCell = worldCell;
         }
     }
@@ -525,13 +533,39 @@ internal static class RoomAuthoringDungeonPreview
         previewGrid = root.AddComponent<Grid>();
         CopyGridSettings(request.AnchorGrid, previewGrid);
 
-        Tilemap floorTilemap = CreateTilemapLayer(root.transform, "PreviewFloor", 0);
-        Tilemap wallTilemap = CreateTilemapLayer(root.transform, "PreviewWall", 10);
+        Tilemap underFloorTilemap = CreateTilemapLayer(
+            root.transform,
+            RoomTileLayerKind.UnderFloor);
+        Tilemap floorTilemap = CreateTilemapLayer(root.transform, RoomTileLayerKind.Floor);
+        Tilemap floorDetailTilemap = CreateTilemapLayer(
+            root.transform,
+            RoomTileLayerKind.FloorDetail);
+        Tilemap groundDecorationTilemap = CreateTilemapLayer(
+            root.transform,
+            RoomTileLayerKind.GroundDecoration);
+        Tilemap wallTilemap = CreateTilemapLayer(root.transform, RoomTileLayerKind.Wall);
+        Tilemap wallDetailTilemap = CreateTilemapLayer(
+            root.transform,
+            RoomTileLayerKind.WallDetail);
+        Tilemap foregroundTilemap = CreateTilemapLayer(
+            root.transform,
+            RoomTileLayerKind.Foreground);
+        Tilemap overlayFxTilemap = CreateTilemapLayer(
+            root.transform,
+            RoomTileLayerKind.OverlayFX);
         GameObject blockerRootObject = new("PreviewSocketBlockers");
         blockerRootObject.transform.SetParent(root.transform, false);
 
         DungeonRoomBuilder builder = root.AddComponent<DungeonRoomBuilder>();
-        builder.EditorAssignTilemaps(floorTilemap, wallTilemap);
+        builder.EditorAssignTilemaps(
+            underFloorTilemap,
+            floorTilemap,
+            floorDetailTilemap,
+            groundDecorationTilemap,
+            wallTilemap,
+            wallDetailTilemap,
+            foregroundTilemap,
+            overlayFxTilemap);
         builder.EditorAssignCorridorTiles(corridorFloorTile, corridorWallTile);
         builder.EditorAssignSocketBlockerRoot(blockerRootObject.transform);
 
@@ -575,14 +609,15 @@ internal static class RoomAuthoringDungeonPreview
 
     private static Tilemap CreateTilemapLayer(
         Transform parent,
-        string layerName,
-        int sortingOrder)
+        RoomTileLayerKind layer)
     {
+        string layerName = $"Preview{RoomTileLayerContract.GetLayerName(layer)}";
         GameObject layerObject = new(layerName);
         layerObject.transform.SetParent(parent, false);
         Tilemap tilemap = layerObject.AddComponent<Tilemap>();
         TilemapRenderer renderer = layerObject.AddComponent<TilemapRenderer>();
-        renderer.sortingOrder = sortingOrder;
+        renderer.sortingLayerName = RoomTileLayerContract.GetSortingLayerName(layer);
+        renderer.sortingOrder = RoomTileLayerContract.GetSortingOrder(layer);
         return tilemap;
     }
 
@@ -681,6 +716,8 @@ internal static class RoomAuthoringDungeonPreview
                     RoomObjectPlacementData objectPlacement = placements[objectIndex];
                     objects.Add(new PreviewObjectInfo(
                         objectPlacement.kind,
+                        objectPlacement.monsterSpawnRole,
+                        objectPlacement.monsterStageSet != null,
                         placement.Origin + objectPlacement.localCell));
                 }
             }
@@ -872,11 +909,11 @@ internal static class RoomAuthoringDungeonPreview
         for (int objectIndex = 0; objectIndex < snapshot.Objects.Count; objectIndex++)
         {
             PreviewObjectInfo roomObject = snapshot.Objects[objectIndex];
-            Handles.color = ResolveObjectColor(roomObject.Kind);
+            Handles.color = ResolveObjectColor(roomObject);
             Vector3 center = snapshot.Grid.GetCellCenterWorld(
                 new Vector3Int(roomObject.WorldCell.x, roomObject.WorldCell.y, 0));
             Handles.DrawWireDisc(center, snapshot.Grid.transform.forward, 0.28f);
-            Handles.Label(center + Vector3.up * 0.12f, ResolveObjectGlyph(roomObject.Kind));
+            Handles.Label(center + Vector3.up * 0.12f, ResolveObjectGlyph(roomObject));
         }
     }
 
@@ -979,22 +1016,48 @@ internal static class RoomAuthoringDungeonPreview
         };
     }
 
-    private static Color ResolveObjectColor(RoomObjectKind kind)
+    private static Color ResolveObjectColor(PreviewObjectInfo roomObject)
     {
-        return kind switch
+        if (roomObject.Kind == RoomObjectKind.Monster)
         {
-            RoomObjectKind.Monster => new Color(1f, 0.2f, 0.2f, 1f),
+            if (!roomObject.UsesCommonMonsterRole)
+                return new Color(0.75f, 0.35f, 1f, 1f);
+
+            return roomObject.MonsterRole switch
+            {
+                RoomMonsterSpawnRole.Warrior => new Color(0.95f, 0.3f, 0.2f, 1f),
+                RoomMonsterSpawnRole.Mage => new Color(0.25f, 0.55f, 1f, 1f),
+                RoomMonsterSpawnRole.Tank => new Color(0.8f, 0.7f, 0.15f, 1f),
+                _ => Color.red
+            };
+        }
+
+        return roomObject.Kind switch
+        {
             RoomObjectKind.Chest => new Color(1f, 0.8f, 0.15f, 1f),
             RoomObjectKind.Portal => new Color(0.65f, 0.3f, 1f, 1f),
             _ => Color.white
         };
     }
 
-    private static string ResolveObjectGlyph(RoomObjectKind kind)
+    private static string ResolveObjectGlyph(PreviewObjectInfo roomObject)
     {
-        return kind switch
+        if (roomObject.Kind == RoomObjectKind.Monster)
         {
-            RoomObjectKind.Monster => "M",
+            if (!roomObject.UsesCommonMonsterRole)
+                return "S";
+
+            return roomObject.MonsterRole switch
+            {
+                RoomMonsterSpawnRole.Warrior => "W",
+                RoomMonsterSpawnRole.Mage => "M",
+                RoomMonsterSpawnRole.Tank => "T",
+                _ => "?"
+            };
+        }
+
+        return roomObject.Kind switch
+        {
             RoomObjectKind.Chest => "C",
             RoomObjectKind.Portal => "P",
             _ => "O"

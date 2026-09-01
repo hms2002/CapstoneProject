@@ -40,7 +40,12 @@ MonoBehaviour:
       width: 2
     difficultyTier: 1
     selectionWeight: 0.5
+    topologyPlacement:
+      mode: 0
+      minimumGraphDistanceFromStart: 0
+      requireDeadEnd: 0
   buildData:
+    underFloorTiles: []
     floorTiles:
     - localCell: {x: 43, y: 1}
       tile: {fileID: 11400000, guid: b3ed3d645318a454091132c1b368055f, type: 2}
@@ -3004,6 +3009,8 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 90bd01b7bba893d41ad286371eae510a, type: 2}
     - localCell: {x: 0, y: 43}
       tile: {fileID: 11400000, guid: da789bafa309b6a47b699cf170d3f259, type: 2}
+    floorDetailTiles: []
+    groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 42, y: 0}
       tile: {fileID: 11400000, guid: d03a0c35534b8824885f982988d3a59e, type: 2}
@@ -3443,10 +3450,15 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 058b1c102f8aee845ab0e5455a73ae1b, type: 2}
     - localCell: {x: 59, y: 51}
       tile: {fileID: 11400000, guid: dc5b9f26a69afea4997140509a4343aa, type: 2}
+    wallDetailTiles: []
+    foregroundTiles: []
+    overlayFxTiles: []
     objectPlacements:
     - placementId: Combat_Large_GiyeokMonster_1
       kind: 1
-      prefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
       localCell: {x: 8, y: 42}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -3454,7 +3466,9 @@ MonoBehaviour:
       linkedChestLockPlacementId: KillLockChest
     - placementId: Combat_Large_GiyeokMonster_2
       kind: 1
-      prefab: {fileID: 625522859161183429, guid: a4a67a3598fb4cfbb4bfda7759db598a, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
       localCell: {x: 20, y: 47}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -3462,7 +3476,9 @@ MonoBehaviour:
       linkedChestLockPlacementId: KillLockChest
     - placementId: Combat_Large_GiyeokMonster_3
       kind: 1
-      prefab: {fileID: 625522859161183429, guid: b1f84c1064c662345a49453bf9a8fd34, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 2
+      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
       localCell: {x: 32, y: 40}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -3470,7 +3486,9 @@ MonoBehaviour:
       linkedChestLockPlacementId: KillLockChest
     - placementId: Combat_Large_GiyeokMonster_4
       kind: 1
-      prefab: {fileID: 625522859161183429, guid: aa497140abd1a2e4cb58421e0a525ae7, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
       localCell: {x: 44, y: 46}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -3478,7 +3496,9 @@ MonoBehaviour:
       linkedChestLockPlacementId: KillLockChest
     - placementId: Combat_Large_GiyeokMonster_5
       kind: 1
-      prefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
       localCell: {x: 50, y: 35}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -3486,7 +3506,9 @@ MonoBehaviour:
       linkedChestLockPlacementId: KillLockChest
     - placementId: Combat_Large_GiyeokMonster_6
       kind: 1
-      prefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 2
+      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
       localCell: {x: 46, y: 25}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -3494,7 +3516,9 @@ MonoBehaviour:
       linkedChestLockPlacementId: KillLockChest
     - placementId: Combat_Large_GiyeokMonster_7
       kind: 1
-      prefab: {fileID: 625522859161183429, guid: a4a67a3598fb4cfbb4bfda7759db598a, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
       localCell: {x: 53, y: 15}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -3502,7 +3526,9 @@ MonoBehaviour:
       linkedChestLockPlacementId: KillLockChest
     - placementId: Combat_Large_GiyeokMonster_8
       kind: 1
-      prefab: {fileID: 625522859161183429, guid: b1f84c1064c662345a49453bf9a8fd34, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
       localCell: {x: 47, y: 7}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -3511,6 +3537,8 @@ MonoBehaviour:
     - placementId: KillLockChest
       kind: 2
       prefab: {fileID: 8398461225799451672, guid: 670170a4e9390bc458d0b686227549af, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
       localCell: {x: 51, y: 43}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0

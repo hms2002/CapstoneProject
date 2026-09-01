@@ -5,16 +5,18 @@ using UnityEngine;
 /// 책임:
 /// - 하나의 보스/던전 테마에서 사용할 RoomTemplateSO 후보 목록을 보관한다.
 /// - 레이아웃 조립기가 방 역할별 후보를 조회할 수 있는 가벼운 룸 라이브러리 역할을 한다.
-/// - Editor 제작 툴이 검증 완료된 방을 중복 없이 명시적으로 등록할 수 있게 한다.
+/// - Editor 제작 툴이 검증 완료된 방과 테마에서 허용한 스테이지 고정 몬스터 프리팹을 빠르게 조회하게 한다.
 /// </summary>
 [CreateAssetMenu(fileName = "RoomThemeLibrary", menuName = "Gameplay/Dungeon/Room Theme Library")]
 public sealed class RoomThemeLibrarySO : ScriptableObject
 {
     [SerializeField] private string themeId = "Theme_New";
     [SerializeField] private List<RoomTemplateSO> rooms = new();
+    [SerializeField] private List<GameObject> stageMonsterPrefabs = new();
 
     public string ThemeId => themeId;
     public IReadOnlyList<RoomTemplateSO> Rooms => rooms;
+    public IReadOnlyList<GameObject> StageMonsterPrefabs => stageMonsterPrefabs;
 
     public bool ContainsRoom(RoomTemplateSO room)
     {
@@ -38,6 +40,26 @@ public sealed class RoomThemeLibrarySO : ScriptableObject
     public bool EditorRemoveRoom(RoomTemplateSO room)
     {
         return room != null && rooms != null && rooms.Remove(room);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 테마 설치기와 제작 도구가 사용할 스테이지 고정 몬스터 빠른 선택 목록을 null과 중복 없이 교체한다.
+    /// </summary>
+    public void EditorSetStageMonsterPrefabs(IReadOnlyList<GameObject> prefabs)
+    {
+        stageMonsterPrefabs ??= new List<GameObject>();
+        stageMonsterPrefabs.Clear();
+        if (prefabs == null)
+            return;
+
+        var seen = new HashSet<GameObject>();
+        for (int i = 0; i < prefabs.Count; i++)
+        {
+            GameObject prefab = prefabs[i];
+            if (prefab != null && seen.Add(prefab))
+                stageMonsterPrefabs.Add(prefab);
+        }
     }
 #endif
 

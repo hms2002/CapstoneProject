@@ -1,4 +1,3 @@
-using System;
 using CapstoneAudio;
 using UnityEngine;
 
@@ -8,7 +7,7 @@ using UnityEngine;
 /// <summary>
 /// 복도 씬과 보스 씬을 한 스테이지 진행 단위로 묶고, 포탈 이동 대상 정보를 제공한다.
 /// </summary>
-public sealed class CorridorBossRouteSetSO : ScriptableObject
+public sealed class CorridorBossRouteSetSO : SceneRouteContextSO
 {
     [Header("Stable Theme Identity")]
     [SerializeField] private string themeId;
@@ -38,6 +37,7 @@ public sealed class CorridorBossRouteSetSO : ScriptableObject
     public string StableThemeId => !string.IsNullOrWhiteSpace(themeId)
         ? themeId
         : name;
+    public override string StableContextId => StableThemeId;
     public string CorridorSceneName => corridorSceneName;
     public string CorridorEntryPointId => corridorEntryPointId;
     public string BossSceneName => bossSceneName;
@@ -61,6 +61,11 @@ public sealed class CorridorBossRouteSetSO : ScriptableObject
     public bool MatchesBossScene(string sceneName)
     {
         return SceneNameMatches(sceneName, bossSceneName);
+    }
+
+    public override bool MatchesScene(string sceneName)
+    {
+        return MatchesCorridorScene(sceneName) || MatchesBossScene(sceneName);
     }
 
     public bool TryResolveLocationName(string sceneName, out string locationName)
@@ -89,41 +94,6 @@ public sealed class CorridorBossRouteSetSO : ScriptableObject
 
         return false;
     }
-
-    private static bool SceneNameMatches(string candidateSceneName, string configuredSceneName)
-    {
-        if (string.IsNullOrWhiteSpace(candidateSceneName) || string.IsNullOrWhiteSpace(configuredSceneName))
-            return false;
-
-        if (string.Equals(candidateSceneName, configuredSceneName, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-#if UNITY_EDITOR
-        return IsEditorDuplicateSceneName(candidateSceneName, configuredSceneName);
-#else
-        return false;
-#endif
-    }
-
-#if UNITY_EDITOR
-    private static bool IsEditorDuplicateSceneName(string candidateSceneName, string configuredSceneName)
-    {
-        if (!candidateSceneName.StartsWith(configuredSceneName + " ", StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        int suffixStart = configuredSceneName.Length + 1;
-        if (suffixStart >= candidateSceneName.Length)
-            return false;
-
-        for (int i = suffixStart; i < candidateSceneName.Length; i++)
-        {
-            if (!char.IsDigit(candidateSceneName[i]))
-                return false;
-        }
-
-        return true;
-    }
-#endif
 
     public bool TryCreateCorridorRoute(TransitionType transitionType, out PortalRouteDecision route)
     {

@@ -282,6 +282,41 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
         RaiseLoadWindowChanged();
     }
 
+    /// <summary>
+    /// 책임 : 데이터 기반 SceneConnection이 지정한 목적지 경로 문맥을 단일 스테이지 런 문맥으로 활성화해 BGM·지역명·보스 진행 소비자가 공유하게 한다.
+    /// </summary>
+    public bool ActivateSceneConnectionRouteContext(
+        SceneRouteContextSO routeContext,
+        string destinationSceneName)
+    {
+        if (routeContext is not CorridorBossRouteSetSO stageSet ||
+            !stageSet.IsValid ||
+            !stageSet.MatchesScene(destinationSceneName))
+        {
+            return false;
+        }
+
+        bool alreadyActiveStandaloneContext =
+            activeRouteCatalog == null &&
+            activeRouteStages.Count == 1 &&
+            ReferenceEquals(activeRouteStages[0], stageSet) &&
+            currentStageIndex == 0;
+        if (alreadyActiveStandaloneContext)
+            return true;
+
+        activeRouteStages.Clear();
+        activeRouteStages.Add(stageSet);
+        pendingPlansByPortalId.Clear();
+        activeRouteCatalog = null;
+        currentStageIndex = 0;
+
+        ClearLoadPresentationContext();
+        RecordTransitionEvent(
+            $"Activated SceneConnection route context. destination={destinationSceneName}, stage={stageSet.name}");
+        RaiseLoadWindowChanged();
+        return true;
+    }
+
     private static bool TryBuildDevelopmentPlan(
         RunRouteCatalogSO catalog,
         CorridorBossRouteSetSO currentStageSet,

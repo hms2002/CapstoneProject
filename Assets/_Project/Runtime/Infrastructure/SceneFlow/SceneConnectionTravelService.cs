@@ -165,6 +165,7 @@ internal static class SceneConnectionTravelExecutor
 
         SceneTransitionContext context = CreateTransitionContext(endpoint, resolved, profile);
         RunSessionStore.PrepareTransition(context);
+        ActivateDestinationRouteContext(resolved);
 
         bool accepted = profile != null
             ? transitionCoordinator.TryLoadScene(
@@ -189,6 +190,30 @@ internal static class SceneConnectionTravelExecutor
         playerTransform.SetPositionAndRotation(originalPosition, originalRotation);
         player.SetInteractState(InteractState.Idle);
         WarningPopupPlayback.ShowMessage("지금은 이동할 수 없습니다.");
+    }
+
+    /// <summary>
+    /// 책임 : 승인된 SceneConnection 이동의 목적지 경로 문맥을 기존 PortalRouteManager에 반영해 씬 로드 콜백 전에 BGM·지역명 해석을 준비한다.
+    /// </summary>
+    private static void ActivateDestinationRouteContext(ResolvedSceneTravelDirection resolved)
+    {
+        SceneRouteContextSO routeContext = resolved.Destination.RouteContext;
+        if (routeContext == null)
+            return;
+
+        PortalRouteManager routeManager = PortalRouteManager.EnsureInstance();
+        if (routeManager != null &&
+            routeManager.ActivateSceneConnectionRouteContext(
+                routeContext,
+                resolved.Destination.SceneName))
+        {
+            return;
+        }
+
+        Debug.LogError(
+            $"[SceneConnectionTravelService] Destination route context is invalid. " +
+            $"scene={resolved.Destination.SceneName}, context={routeContext.name}",
+            routeContext);
     }
 
     private static IEnumerator PlayDeparture(

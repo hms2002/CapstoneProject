@@ -16,9 +16,11 @@ MonoBehaviour:
   endpointA:
     sceneName: ProtoTypeHub
     endpointId: Lobby.dragon.Corridor
+    routeContext: {fileID: 0}
   endpointB:
     sceneName: ProceduralDragonCorridor
     endpointId: Corridor.dragon.Lobby
+    routeContext: {fileID: 11400000, guid: 946aaf6b94713064e9f547584fa3e2e3, type: 2}
   aToB:
     enabled: 1
     runAction: 1

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// 책임 : 세 일반 보스 테마 절차 복도의 로비·보스·단방향 복도 간 이동 슬롯, 연결 에셋, 씬별 binding과 도착 endpoint를 재현 가능하게 설치하고 검증한다.
+/// 책임 : 세 일반 보스 테마 절차 복도의 로비·보스 이동 슬롯, 연결 에셋, 씬별 binding과 도착 endpoint를 재현 가능하게 설치하고 검증한다.
 /// </summary>
 public static class ProceduralCorridorTravelInstaller
 {
@@ -115,23 +115,11 @@ public static class ProceduralCorridorTravelInstaller
             CreateOrUpdateDefaultPresentationProfile();
         SceneTravelPresentationProfileSO lobbyToCorridorPresentationProfile =
             CreateOrUpdateLobbyToCorridorPresentationProfile();
-        SceneTravelPresentationProfileSO corridorPipePresentationProfile =
-            CreateOrUpdateCorridorPipePresentationProfile();
         GameObject travelPortalPrefab = CreateOrUpdateTravelPortalPrefab();
-        GameObject corridorTravelPipePrefab = CreateOrUpdateCorridorTravelPipePrefab();
-        corridorPipePresentationProfile =
-            AssetDatabase.LoadAssetAtPath<SceneTravelPresentationProfileSO>(
-                CorridorPipeTravelProfilePath);
-        corridorTravelPipePrefab =
-            AssetDatabase.LoadAssetAtPath<GameObject>(CorridorTravelPipePrefabPath);
-        if (corridorPipePresentationProfile == null || corridorTravelPipePrefab == null)
-        {
-            throw new InvalidOperationException(
-                "Failed to reload the persistent Corridor pipe travel assets.");
-        }
 
         CorridorTravelSpec[] specs = CreateSpecs();
         CorridorLinkSpec[] corridorLinks = CreateCorridorLinkSpecs(specs);
+        UnregisterDeprecatedCorridorLinkRooms(corridorLinks);
 
         for (int i = 0; i < specs.Length; i++)
         {
@@ -142,23 +130,32 @@ public static class ProceduralCorridorTravelInstaller
                 travelPortalPrefab);
         }
 
-        for (int linkIndex = 0; linkIndex < corridorLinks.Length; linkIndex++)
-        {
-            InstallCorridorLink(
-                corridorLinks[linkIndex],
-                corridorPipePresentationProfile,
-                corridorTravelPipePrefab);
-        }
-
-        ConfigureCorridorLinkScenes(specs, corridorLinks);
-
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         Debug.Log(
-            $"Installed and verified data-driven travel configuration for {specs.Length} procedural Corridors " +
-            $"and {corridorLinks.Length} one-way Corridor links. " +
+            $"Installed and verified data-driven Lobby/Boss travel for {specs.Length} procedural Corridors. " +
+            $"Removed {corridorLinks.Length} deprecated one-way pipe link room registrations. " +
             "Lobby-to-Corridor and Corridor-to-Lobby travel share the authored right-to-left black wipe. " +
             "ProtoTypeHub placement is intentionally left for the lobby integration step.");
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 오픈 필드 전용이었던 복도 간 토관 방을 룸 라이브러리와 필수 방 목록에서 봉인한다.
+    /// - 기존 방/연결/프리팹 에셋은 삭제하지 않아 향후 별도 기획에서 재검토할 수 있게 보존한다.
+    /// </summary>
+    [MenuItem("Tools/Dungeon/Remove Deprecated Corridor Pipe Travel")]
+    public static void RemoveDeprecatedCorridorPipeTravel()
+    {
+        CorridorTravelSpec[] specs = CreateSpecs();
+        CorridorLinkSpec[] corridorLinks = CreateCorridorLinkSpecs(specs);
+        UnregisterDeprecatedCorridorLinkRooms(corridorLinks);
+        ConfigureCorridorLinkScenes(specs, corridorLinks: null);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+        Debug.Log(
+            "Removed deprecated Corridor pipe travel from generation libraries, guaranteed rooms and scene bindings. " +
+            "Dormant source assets were preserved.");
     }
 
     /// <summary>
@@ -740,11 +737,13 @@ public static class ProceduralCorridorTravelInstaller
         ConfigureEndpoint(
             serialized.FindProperty("endpointA"),
             LobbySceneName,
-            $"Lobby.{themeId}.Corridor");
+            $"Lobby.{themeId}.Corridor",
+            routeContext: null);
         ConfigureEndpoint(
             serialized.FindProperty("endpointB"),
             routeSet.CorridorSceneName,
-            $"Corridor.{themeId}.Lobby");
+            $"Corridor.{themeId}.Lobby",
+            routeSet);
         ConfigureDirection(
             serialized.FindProperty("aToB"),
             SceneTravelRunAction.StartRun,
@@ -775,11 +774,13 @@ public static class ProceduralCorridorTravelInstaller
         ConfigureEndpoint(
             serialized.FindProperty("endpointA"),
             routeSet.CorridorSceneName,
-            $"Corridor.{themeId}.Boss");
+            $"Corridor.{themeId}.Boss",
+            routeSet);
         ConfigureEndpoint(
             serialized.FindProperty("endpointB"),
             routeSet.BossSceneName,
-            $"Boss.{themeId}.Corridor");
+            $"Boss.{themeId}.Corridor",
+            routeSet);
         ConfigureDirection(
             serialized.FindProperty("aToB"),
             SceneTravelRunAction.None,
@@ -813,11 +814,13 @@ public static class ProceduralCorridorTravelInstaller
         ConfigureEndpoint(
             serialized.FindProperty("endpointA"),
             routeSet.BossSceneName,
-            $"Boss.{themeId}.Hub");
+            $"Boss.{themeId}.Hub",
+            routeSet);
         ConfigureEndpoint(
             serialized.FindProperty("endpointB"),
             LobbySceneName,
-            $"Lobby.{themeId}.Corridor");
+            $"Lobby.{themeId}.Corridor",
+            routeContext: null);
         ConfigureDirection(
             serialized.FindProperty("aToB"),
             SceneTravelRunAction.None,
@@ -910,11 +913,13 @@ public static class ProceduralCorridorTravelInstaller
         ConfigureEndpoint(
             serialized.FindProperty("endpointA"),
             sourceRoute.CorridorSceneName,
-            $"Corridor.{sourceRoute.StableThemeId}.To.{destinationRoute.StableThemeId}");
+            $"Corridor.{sourceRoute.StableThemeId}.To.{destinationRoute.StableThemeId}",
+            sourceRoute);
         ConfigureEndpoint(
             serialized.FindProperty("endpointB"),
             destinationRoute.CorridorSceneName,
-            $"Corridor.{destinationRoute.StableThemeId}.From.{sourceRoute.StableThemeId}");
+            $"Corridor.{destinationRoute.StableThemeId}.From.{sourceRoute.StableThemeId}",
+            destinationRoute);
         ConfigureDirection(
             serialized.FindProperty("aToB"),
             SceneTravelRunAction.None,
@@ -951,10 +956,12 @@ public static class ProceduralCorridorTravelInstaller
     private static void ConfigureEndpoint(
         SerializedProperty endpoint,
         string sceneName,
-        string endpointId)
+        string endpointId,
+        SceneRouteContextSO routeContext)
     {
         endpoint.FindPropertyRelative("sceneName").stringValue = sceneName;
         endpoint.FindPropertyRelative("endpointId").stringValue = endpointId;
+        endpoint.FindPropertyRelative("routeContext").objectReferenceValue = routeContext;
     }
 
     private static void ConfigureDirection(
@@ -1111,6 +1118,64 @@ public static class ProceduralCorridorTravelInstaller
         EditorUtility.SetDirty(profile);
         AssetDatabase.SaveAssetIfDirty(library);
         AssetDatabase.SaveAssetIfDirty(profile);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 모든 폐기된 토관 출발/도착 방을 생성 후보와 필수 포함 목록에서 제거한다.
+    /// </summary>
+    private static void UnregisterDeprecatedCorridorLinkRooms(
+        IReadOnlyList<CorridorLinkSpec> corridorLinks)
+    {
+        for (int linkIndex = 0;
+             corridorLinks != null && linkIndex < corridorLinks.Count;
+             linkIndex++)
+        {
+            CorridorLinkSpec link = corridorLinks[linkIndex];
+            UnregisterRoom(link.Source, link.SourceRoomPath);
+            UnregisterRoom(link.Destination, link.DestinationRoomPath);
+        }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 특정 방 에셋의 보존 여부와 무관하게 해당 테마의 런 생성 등록만 해제한다.
+    /// </summary>
+    private static void UnregisterRoom(CorridorTravelSpec spec, string roomPath)
+    {
+        RoomTemplateSO room = AssetDatabase.LoadAssetAtPath<RoomTemplateSO>(roomPath);
+        if (room == null)
+            return;
+
+        RoomThemeLibrarySO library =
+            AssetDatabase.LoadAssetAtPath<RoomThemeLibrarySO>(spec.LibraryPath);
+        DungeonGenerationProfileSO profile =
+            AssetDatabase.LoadAssetAtPath<DungeonGenerationProfileSO>(spec.GenerationProfilePath);
+        if (library == null || profile == null)
+        {
+            throw new InvalidOperationException(
+                $"Missing Corridor library or generation profile while unregistering '{roomPath}'.");
+        }
+
+        library.EditorRemoveRoom(room);
+        var retainedGuaranteedRooms = new List<RoomTemplateSO>();
+        IReadOnlyList<RoomTemplateSO> existingRooms = profile.GuaranteedRoomTemplates;
+        for (int roomIndex = 0;
+             existingRooms != null && roomIndex < existingRooms.Count;
+             roomIndex++)
+        {
+            RoomTemplateSO existingRoom = existingRooms[roomIndex];
+            if (existingRoom != null &&
+                existingRoom != room &&
+                !retainedGuaranteedRooms.Contains(existingRoom))
+            {
+                retainedGuaranteedRooms.Add(existingRoom);
+            }
+        }
+
+        profile.EditorSetGuaranteedRooms(retainedGuaranteedRooms);
+        EditorUtility.SetDirty(library);
+        EditorUtility.SetDirty(profile);
     }
 
     private static void ConfigureRoomTravelSlots(
@@ -1672,6 +1737,8 @@ public static class ProceduralCorridorTravelInstaller
             connection.ConnectionId != link.ConnectionId ||
             connection.EndpointA.SceneName != sourceRoute.CorridorSceneName ||
             connection.EndpointB.SceneName != destinationRoute.CorridorSceneName ||
+            connection.EndpointA.RouteContext != sourceRoute ||
+            connection.EndpointB.RouteContext != destinationRoute ||
             !connection.AToB.Enabled ||
             connection.BToA.Enabled ||
             connection.AToB.RunAction != SceneTravelRunAction.None ||
@@ -1728,8 +1795,11 @@ public static class ProceduralCorridorTravelInstaller
             !HasTravelSlot(bossRoom, BossSlotId, RoomTravelEndpointKind.Interaction) ||
             HasLegacyExitPortal(bossRoom) ||
             lobbyConnection.EndpointB.SceneName != routeSet.CorridorSceneName ||
+            lobbyConnection.EndpointB.RouteContext != routeSet ||
             bossConnection.EndpointA.SceneName != routeSet.CorridorSceneName ||
             bossConnection.EndpointB.SceneName != routeSet.BossSceneName ||
+            bossConnection.EndpointA.RouteContext != routeSet ||
+            bossConnection.EndpointB.RouteContext != routeSet ||
             bossHubConnection == null ||
             bossHubConnection.EndpointA.SceneName != routeSet.BossSceneName ||
             bossHubConnection.EndpointB.SceneName != LobbySceneName ||

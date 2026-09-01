@@ -40,7 +40,12 @@ MonoBehaviour:
       width: 2
     difficultyTier: 0
     selectionWeight: 1
+    topologyPlacement:
+      mode: 0
+      minimumGraphDistanceFromStart: 0
+      requireDeadEnd: 0
   buildData:
+    underFloorTiles: []
     floorTiles:
     - localCell: {x: 1, y: 1}
       tile: {fileID: 11400000, guid: 93310177dcbf8c6488a8b5092b1be22e, type: 2}
@@ -250,6 +255,8 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: c6b0d4d117a27ed499393c34cb8e8471, type: 2}
     - localCell: {x: 0, y: 4}
       tile: {fileID: 11400000, guid: c508fe3f5d425df46a56e36ac5c50f63, type: 2}
+    floorDetailTiles: []
+    groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 0}
       tile: {fileID: 11400000, guid: 28fc33ae55ac08a45abaf08011c59373, type: 2}
@@ -347,10 +354,15 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: debdf5f2599213540a1f0ada188873fa, type: 2}
     - localCell: {x: 17, y: 7}
       tile: {fileID: 11400000, guid: 9ae009596abb6ac408eb882ada8c7885, type: 2}
+    wallDetailTiles: []
+    foregroundTiles: []
+    overlayFxTiles: []
     objectPlacements:
     - placementId: Combat_WideMonster_1
       kind: 1
-      prefab: {fileID: 625522859161183429, guid: 2327e9837a564ed58b0ae70d7c8e00b1, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
       localCell: {x: 4, y: 3}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -358,7 +370,9 @@ MonoBehaviour:
       linkedChestLockPlacementId: KillLockChest
     - placementId: Combat_WideMonster_2
       kind: 1
-      prefab: {fileID: 100000, guid: a1365e9c0af9480b9dc3169f803a951d, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
       localCell: {x: 8, y: 5}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -366,7 +380,9 @@ MonoBehaviour:
       linkedChestLockPlacementId: KillLockChest
     - placementId: Combat_WideMonster_3
       kind: 1
-      prefab: {fileID: 100000, guid: d18966565254432a82dc5a7b4acdb6cb, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 2
+      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
       localCell: {x: 12, y: 3}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -374,7 +390,9 @@ MonoBehaviour:
       linkedChestLockPlacementId: KillLockChest
     - placementId: Combat_WideMonster_4
       kind: 1
-      prefab: {fileID: 100000, guid: 4c120d14b57b4436a325443f7b0caa3f, type: 3}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
       localCell: {x: 15, y: 5}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -383,6 +401,8 @@ MonoBehaviour:
     - placementId: KillLockChest
       kind: 2
       prefab: {fileID: 8398461225799451672, guid: 670170a4e9390bc458d0b686227549af, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
       localCell: {x: 11, y: 4}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0

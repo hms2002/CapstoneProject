@@ -68,15 +68,36 @@ public static class ProceduralSlimeNpcRoomInstaller
                 minimumGraphDistanceFromStart = TeleportMinimumGraphDistance,
                 requireDeadEnd = true
             });
-        AddDestinationToStartRoom(destinationPrefab);
-        RegisterNpcRooms(constructionRoom, teleportRoom);
+        RemoveDestinationFromStartRoom();
+        SealNpcRooms(constructionRoom, teleportRoom);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        ValidateInstalledContent(constructionRoom, teleportRoom);
+        ValidateSealedContent(constructionRoom, teleportRoom);
         Debug.Log(
-            "[ProceduralSlimeNpcRoomInstaller] Installed self-contained Slime NPC prefabs, " +
-            "the separated shortcut/remote NPC rooms and the Start-room teleport destination.");
+            "[ProceduralSlimeNpcRoomInstaller] Refreshed self-contained Slime NPC assets but kept " +
+            "the shortcut/teleport rooms sealed outside procedural generation.");
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 현재 제작된 Slime 특수 NPC 방과 순간이동 도착 프롭을 절차 생성 등록에서 제거한다.
+    /// - 구현 에셋은 삭제하지 않아 기획 승인 뒤 다시 연결할 수 있게 보존한다.
+    /// </summary>
+    [MenuItem("Tools/Dungeon/Slime NPC Room/Seal Procedural Content")]
+    public static void SealInstalledContent()
+    {
+        RoomTemplateSO constructionRoom =
+            AssetDatabase.LoadAssetAtPath<RoomTemplateSO>(ConstructionRoomPath);
+        RoomTemplateSO teleportRoom =
+            AssetDatabase.LoadAssetAtPath<RoomTemplateSO>(TeleportRoomPath);
+        RemoveDestinationFromStartRoom();
+        SealNpcRooms(constructionRoom, teleportRoom);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+        ValidateSealedContent(constructionRoom, teleportRoom);
+        Debug.Log(
+            "[ProceduralSlimeNpcRoomInstaller] Sealed Slime special NPC rooms and removed their start-room destination.");
     }
 
     public static void ValidateRoomAuthoringIntegration()
@@ -738,7 +759,7 @@ public static class ProceduralSlimeNpcRoomInstaller
         };
     }
 
-    private static void RegisterNpcRooms(
+    private static void SealNpcRooms(
         RoomTemplateSO constructionRoom,
         RoomTemplateSO teleportRoom)
     {
@@ -746,8 +767,8 @@ public static class ProceduralSlimeNpcRoomInstaller
         RoomTemplateSO legacyRoom =
             AssetDatabase.LoadAssetAtPath<RoomTemplateSO>(LegacyNpcRoomPath);
         library.EditorRemoveRoom(legacyRoom);
-        library.EditorAddRoom(constructionRoom);
-        library.EditorAddRoom(teleportRoom);
+        library.EditorRemoveRoom(constructionRoom);
+        library.EditorRemoveRoom(teleportRoom);
         EditorUtility.SetDirty(library);
 
         DungeonGenerationProfileSO profile =
@@ -770,15 +791,65 @@ public static class ProceduralSlimeNpcRoomInstaller
             }
         }
 
-        guaranteedRooms.Add(constructionRoom);
-        guaranteedRooms.Add(teleportRoom);
         profile.EditorSetGuaranteedRooms(guaranteedRooms);
         EditorUtility.SetDirty(profile);
+    }
 
-        if (legacyRoom != null && !AssetDatabase.DeleteAsset(LegacyNpcRoomPath))
+    /// <summary>
+    /// 책임:
+    /// - 봉인된 순간이동 NPC만 사용하던 Slime 시작 방 도착 프롭을 제거한다.
+    /// </summary>
+    private static void RemoveDestinationFromStartRoom()
+    {
+        RoomTemplateSO startRoom =
+            AssetDatabase.LoadAssetAtPath<RoomTemplateSO>(StartRoomPath);
+        if (startRoom == null)
+            return;
+
+        RoomBuildData build = startRoom.BuildData;
+        build.objectPlacements ??= new List<RoomObjectPlacementData>();
+        build.objectPlacements.RemoveAll(
+            placement => string.Equals(
+                placement.placementId,
+                "SlimeTeleportDestination",
+                StringComparison.Ordinal));
+        startRoom.EditorSetData(startRoom.LayoutData, build);
+        EditorUtility.SetDirty(startRoom);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 특수 NPC 방 에셋은 남아 있지만 현재 라이브러리/필수 방/시작 방에는 등록되지 않았는지 검증한다.
+    /// </summary>
+    private static void ValidateSealedContent(
+        RoomTemplateSO constructionRoom,
+        RoomTemplateSO teleportRoom)
+    {
+        RoomThemeLibrarySO library = LoadRequiredAsset<RoomThemeLibrarySO>(SlimeLibraryPath);
+        DungeonGenerationProfileSO profile =
+            LoadRequiredAsset<DungeonGenerationProfileSO>(SlimeProfilePath);
+        if (library.ContainsRoom(constructionRoom) ||
+            library.ContainsRoom(teleportRoom) ||
+            ContainsRoom(profile.GuaranteedRoomTemplates, constructionRoom) ||
+            ContainsRoom(profile.GuaranteedRoomTemplates, teleportRoom))
         {
             throw new InvalidOperationException(
-                $"Could not remove the obsolete combined NPC room: {LegacyNpcRoomPath}");
+                "Slime special NPC rooms remain registered after sealing.");
+        }
+
+        RoomTemplateSO startRoom = LoadRequiredAsset<RoomTemplateSO>(StartRoomPath);
+        IReadOnlyList<RoomObjectPlacementData> placements =
+            startRoom.BuildData.objectPlacements;
+        for (int i = 0; placements != null && i < placements.Count; i++)
+        {
+            if (string.Equals(
+                    placements[i].placementId,
+                    "SlimeTeleportDestination",
+                    StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    "Slime start-room teleport destination remains after NPC sealing.");
+            }
         }
     }
 

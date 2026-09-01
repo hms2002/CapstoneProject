@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
 /// <summary>
 /// 책임:
 /// - 절차 생성용 방 조각 authoring 루트, 2칸 연결 소켓, 런타임 오브젝트 배치를 빠르게 만든다.
-/// - Floor/Wall Tilemap과 몬스터·상자·포털·프롭 배치를 RoomTemplateSO로 bake하고 다시 편집 상태로 복원한다.
+/// - 고정 시각 Tilemap 슬롯과 몬스터·상자·포털·프롭 배치를 RoomTemplateSO로 bake하고 다시 편집 상태로 복원한다.
 /// - 타일 페인팅은 Unity 기본 Tile Palette에 맡기고, 이 창은 생성/검증/데이터화 흐름만 담당한다.
 /// - 기획자가 테마 라이브러리에서 방을 탐색하고 임시 작업 공간에서 안전하게 편집한 뒤 검증·등록하게 한다.
 /// - 실제 DungeonLayoutAssembler와 시각 전용 DungeonRoomBuilder를 사용해 저장 전 방을 포함한 동적 맵을 미리 보여준다.
@@ -15,6 +15,25 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public sealed class RoomPieceEditorWindow : EditorWindow
 {
+    private const string MonsterSpawnSetFolder =
+        "Assets/_Project/Data/Monsters/SpawnSets";
+
+    /// <summary>
+    /// 책임:
+    /// - 새 Monster 지점을 진행도형 공통 역할과 고정 스테이지 몬스터 중 어떤 소스로 제작할지 구분한다.
+    /// </summary>
+    private enum MonsterPlacementSourceMode
+    {
+        CommonRole,
+        StageFixed
+    }
+
+    private static readonly string[] MonsterPlacementSourceLabels =
+    {
+        "공통 역할 (진행도에 따라 변경)",
+        "스테이지 몬스터 (고정 프리팹)"
+    };
+
     private enum AuthoringStep
     {
         Basic,
@@ -33,6 +52,10 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     [SerializeField] private RoomTemplateSO templateToLoad;
     [SerializeField] private RoomThemeLibrarySO selectedLibrary;
     [SerializeField] private RoomObjectKind objectKindToPlace = RoomObjectKind.Prop;
+    [SerializeField] private MonsterPlacementSourceMode monsterSourceModeToPlace =
+        MonsterPlacementSourceMode.CommonRole;
+    [SerializeField] private RoomMonsterSpawnRole monsterRoleToPlace =
+        RoomMonsterSpawnRole.Warrior;
     [SerializeField] private GameObject objectPrefabToPlace;
     [SerializeField] private RoomTravelEndpointKind travelEndpointKindToPlace = RoomTravelEndpointKind.Interaction;
     [SerializeField] private GameObject travelMediumPrefabToPlace;
@@ -465,47 +488,71 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
     private void DrawTileSection()
     {
-        EditorGUILayout.LabelField("바닥과 벽 제작", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("방 타일 레이어 제작", EditorStyles.boldLabel);
         EditorGUILayout.HelpBox(
             "Unity Tile Palette를 그대로 사용합니다. 아래 버튼으로 그릴 레이어를 선택한 뒤 Scene View에서 페인팅하세요.",
             MessageType.Info);
 
-        using (new EditorGUILayout.HorizontalScope())
+        int totalOutsideCount = 0;
+        for (int index = 0; index < RoomTileLayerContract.OrderedLayers.Count; index += 2)
         {
-            using (new EditorGUI.DisabledScope(selectedAuthoring.FloorTilemap == null))
+            using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button("바닥 레이어 선택"))
-                    SelectAndFrame(selectedAuthoring.FloorTilemap);
-            }
-
-            using (new EditorGUI.DisabledScope(selectedAuthoring.WallTilemap == null))
-            {
-                if (GUILayout.Button("벽 레이어 선택"))
-                    SelectAndFrame(selectedAuthoring.WallTilemap);
+                DrawTileLayerSelection(RoomTileLayerContract.OrderedLayers[index], ref totalOutsideCount);
+                if (index + 1 < RoomTileLayerContract.OrderedLayers.Count)
+                {
+                    DrawTileLayerSelection(
+                        RoomTileLayerContract.OrderedLayers[index + 1],
+                        ref totalOutsideCount);
+                }
             }
         }
 
-        int floorCount = CountTiles(
-            selectedAuthoring.FloorTilemap,
-            selectedAuthoring.Size,
-            out int floorOutsideCount);
-        int wallCount = CountTiles(
-            selectedAuthoring.WallTilemap,
-            selectedAuthoring.Size,
-            out int wallOutsideCount);
-
-        EditorGUILayout.LabelField("방 내부 바닥 타일", floorCount.ToString());
-        EditorGUILayout.LabelField("방 내부 벽 타일", wallCount.ToString());
-        if (floorOutsideCount + wallOutsideCount > 0)
+        if (totalOutsideCount > 0)
         {
             EditorGUILayout.HelpBox(
-                $"예약 영역 밖 타일이 {floorOutsideCount + wallOutsideCount}개 있습니다. 저장 데이터에서는 제외됩니다.",
+                $"예약 영역 밖 타일이 {totalOutsideCount}개 있습니다. 저장 데이터에서는 제외됩니다.",
                 MessageType.Warning);
         }
 
         EditorGUILayout.HelpBox(
             "소켓 위치도 샘플 데이터에서는 Floor와 Wall을 모두 칠해 막아 두세요. 실제 연결 시 DungeonRoomBuilder가 해당 벽만 엽니다.",
             MessageType.None);
+        EditorGUILayout.HelpBox(
+            "GroundProp은 타일이 아니라 '오브젝트' 단계에서 Prop으로 배치합니다. 충돌 여부와 물리 레이어는 배치한 프리팹이 소유합니다.",
+            MessageType.None);
+    }
+
+    private void DrawTileLayerSelection(RoomTileLayerKind layer, ref int totalOutsideCount)
+    {
+        Tilemap tilemap = selectedAuthoring.GetTilemap(layer);
+        int tileCount = CountTiles(tilemap, selectedAuthoring.Size, out int outsideCount);
+        totalOutsideCount += outsideCount;
+
+        using (new EditorGUI.DisabledScope(tilemap == null))
+        {
+            string label =
+                $"{RoomTileLayerContract.GetLayerName(layer)} · " +
+                $"{RoomTileLayerContract.GetDisplayName(layer)} ({tileCount})";
+            if (GUILayout.Button(new GUIContent(label, GetTileLayerTooltip(layer))))
+                SelectAndFrame(tilemap);
+        }
+    }
+
+    private static string GetTileLayerTooltip(RoomTileLayerKind layer)
+    {
+        return layer switch
+        {
+            RoomTileLayerKind.UnderFloor => "통과 가능한 바닥 아래 배경. 물리 Ground 판정에 참여하지 않습니다.",
+            RoomTileLayerKind.Floor => "기본 이동 바닥이며 물리 Ground 판정의 기준입니다.",
+            RoomTileLayerKind.FloorDetail => "Floor 위에 그리는 통과 가능한 평면 장식입니다.",
+            RoomTileLayerKind.GroundDecoration => "Floor 위에 그리는 통과 가능한 장식입니다.",
+            RoomTileLayerKind.Wall => "통과할 수 없는 기본 벽이며 Tilemap Collider를 가집니다.",
+            RoomTileLayerKind.WallDetail => "Wall 위에 그리며 아래 Wall의 충돌을 따르는 장식입니다.",
+            RoomTileLayerKind.Foreground => "캐릭터 앞 ForeGround 정렬 레이어에 표시되는 장식입니다.",
+            RoomTileLayerKind.OverlayFX => "안개·빛·어둠 같은 ForeGround 오버레이 효과입니다.",
+            _ => RoomTileLayerContract.GetDisplayName(layer)
+        };
     }
 
     private static void SelectAndFrame(Object target)
@@ -617,17 +664,73 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         objectKindToPlace = (RoomObjectKind)EditorGUILayout.EnumPopup(
             "종류",
             objectKindToPlace);
-        DrawRecommendedPrefabPopup();
-        objectPrefabToPlace = EditorGUILayout.ObjectField(
-            "배치할 프리팹",
-            objectPrefabToPlace,
-            typeof(GameObject),
-            false) as GameObject;
-
-        using (new EditorGUI.DisabledScope(
-                   selectedAuthoring.Grid == null || objectPrefabToPlace == null))
+        bool placingMonster = objectKindToPlace == RoomObjectKind.Monster;
+        bool placingCommonRoleMonster = false;
+        StageMonsterSetSO selectedRoleSet = null;
+        if (placingMonster)
         {
-            if (GUILayout.Button("방 중앙에 배치 후 Scene View에서 이동"))
+            monsterSourceModeToPlace = (MonsterPlacementSourceMode)EditorGUILayout.Popup(
+                "몬스터 배치 방식",
+                (int)monsterSourceModeToPlace,
+                MonsterPlacementSourceLabels);
+            placingCommonRoleMonster =
+                monsterSourceModeToPlace == MonsterPlacementSourceMode.CommonRole;
+            if (placingCommonRoleMonster)
+            {
+                monsterRoleToPlace = (RoomMonsterSpawnRole)EditorGUILayout.EnumPopup(
+                    "몬스터 역할",
+                    monsterRoleToPlace);
+                selectedRoleSet = LoadRoleStageMonsterSet(monsterRoleToPlace);
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.ObjectField(
+                        "진행도 몬스터 세트",
+                        selectedRoleSet,
+                        typeof(StageMonsterSetSO),
+                        false);
+                }
+
+                DrawStageMonsterSetPreview(selectedRoleSet);
+            }
+            else
+            {
+                DrawRecommendedPrefabPopup();
+                objectPrefabToPlace = EditorGUILayout.ObjectField(
+                    "스테이지 몬스터 프리팹",
+                    objectPrefabToPlace,
+                    typeof(GameObject),
+                    false) as GameObject;
+                if (objectPrefabToPlace != null &&
+                    !IsPrefabCompatibleWithKind(objectPrefabToPlace, RoomObjectKind.Monster))
+                {
+                    EditorGUILayout.HelpBox(
+                        "스테이지 몬스터 프리팹에는 자식 포함 Enemy 컴포넌트가 필요합니다.",
+                        MessageType.Error);
+                }
+            }
+        }
+        else
+        {
+            DrawRecommendedPrefabPopup();
+            objectPrefabToPlace = EditorGUILayout.ObjectField(
+                "배치할 프리팹",
+                objectPrefabToPlace,
+                typeof(GameObject),
+                false) as GameObject;
+        }
+
+        bool sourceIsReady = placingCommonRoleMonster
+            ? selectedRoleSet != null
+            : objectPrefabToPlace != null &&
+              IsPrefabCompatibleWithKind(objectPrefabToPlace, objectKindToPlace);
+        using (new EditorGUI.DisabledScope(selectedAuthoring.Grid == null || !sourceIsReady))
+        {
+            string addButtonLabel = placingCommonRoleMonster
+                ? $"{monsterRoleToPlace} 스폰 지점을 방 중앙에 배치"
+                : placingMonster
+                    ? "스테이지 몬스터 지점을 방 중앙에 배치"
+                    : "방 중앙에 배치 후 Scene View에서 이동";
+            if (GUILayout.Button(addButtonLabel))
                 AddRoomObject();
         }
 
@@ -643,7 +746,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         if (objects.Length == 0)
         {
             EditorGUILayout.HelpBox(
-                "배치된 오브젝트가 없습니다. 몬스터, 상자, 포털 또는 일반 프롭 프리팹을 선택해 추가하세요.",
+                "배치된 오브젝트가 없습니다. Monster는 공통 역할 또는 스테이지 고정 프리팹을, 나머지는 프리팹을 선택해 추가하세요.",
                 MessageType.Info);
             return;
         }
@@ -662,6 +765,59 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                 EditorGUILayout.PropertyField(kindProperty, new GUIContent("Kind"));
                 if ((RoomObjectKind)kindProperty.enumValueIndex == RoomObjectKind.Monster)
                 {
+                    SerializedProperty prefabProperty = serializedObject.FindProperty("prefab");
+                    SerializedProperty stageSetProperty =
+                        serializedObject.FindProperty("monsterStageSet");
+                    MonsterPlacementSourceMode sourceMode =
+                        stageSetProperty.objectReferenceValue != null
+                            ? MonsterPlacementSourceMode.CommonRole
+                            : MonsterPlacementSourceMode.StageFixed;
+                    sourceMode = (MonsterPlacementSourceMode)EditorGUILayout.Popup(
+                        "몬스터 배치 방식",
+                        (int)sourceMode,
+                        MonsterPlacementSourceLabels);
+                    if (sourceMode == MonsterPlacementSourceMode.CommonRole)
+                    {
+                        prefabProperty.objectReferenceValue = null;
+                        SerializedProperty roleProperty =
+                            serializedObject.FindProperty("monsterSpawnRole");
+                        EditorGUILayout.PropertyField(roleProperty, new GUIContent("몬스터 역할"));
+                        RoomMonsterSpawnRole role =
+                            (RoomMonsterSpawnRole)roleProperty.enumValueIndex;
+                        StageMonsterSetSO roleSet = LoadRoleStageMonsterSet(role);
+                        stageSetProperty.objectReferenceValue = roleSet;
+                        using (new EditorGUI.DisabledScope(true))
+                        {
+                            EditorGUILayout.ObjectField(
+                                "진행도 몬스터 세트",
+                                roleSet,
+                                typeof(StageMonsterSetSO),
+                                false);
+                        }
+
+                        DrawStageMonsterSetPreview(roleSet);
+                    }
+                    else
+                    {
+                        stageSetProperty.objectReferenceValue = null;
+                        prefabProperty.objectReferenceValue = EditorGUILayout.ObjectField(
+                            "스테이지 몬스터 프리팹",
+                            prefabProperty.objectReferenceValue,
+                            typeof(GameObject),
+                            false);
+                        GameObject stageMonsterPrefab =
+                            prefabProperty.objectReferenceValue as GameObject;
+                        if (stageMonsterPrefab != null &&
+                            !IsPrefabCompatibleWithKind(
+                                stageMonsterPrefab,
+                                RoomObjectKind.Monster))
+                        {
+                            EditorGUILayout.HelpBox(
+                                "스테이지 몬스터 프리팹에는 자식 포함 Enemy 컴포넌트가 필요합니다.",
+                                MessageType.Error);
+                        }
+                    }
+
                     DrawLinkedChestLockPopup(
                         serializedObject.FindProperty("linkedChestLockPlacementId"),
                         objects);
@@ -671,7 +827,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                 if (roomObject.Kind == RoomObjectKind.Chest)
                     DrawChestKillLockLinks(roomObject, objects);
 
-                EditorGUILayout.ObjectField("Prefab", roomObject.Prefab, typeof(GameObject), false);
+                if (roomObject.Kind != RoomObjectKind.Monster)
+                    EditorGUILayout.ObjectField("Prefab", roomObject.Prefab, typeof(GameObject), false);
                 if (roomObject.TryGetPlacementData(out RoomObjectPlacementData placement))
                 {
                     EditorGUILayout.Vector2IntField("Local Cell", placement.localCell);
@@ -697,7 +854,9 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         EditorGUILayout.HelpBox(
             "Transform을 이동/회전/크기 조절하면 Grid 셀, 셀 중심 오프셋, 로컬 회전과 크기로 저장됩니다. " +
-            "Monster는 런타임에서 MonsterSpawner를 통해 생성되며 선택한 Kill Lock 상자 연결도 스폰 요청으로 전달됩니다.",
+            "공통 역할 Monster는 Warrior/Mage/Tank의 수와 위치를 저장하고 보스 처치 수에 맞는 적을 생성합니다. " +
+            "스테이지 Monster는 선택한 고정 프리팹을 같은 방 진입 지연 스폰 흐름으로 생성합니다. " +
+            "선택한 Kill Lock 상자 연결도 최종 스폰 요청으로 전달됩니다.",
             MessageType.Info);
     }
 
@@ -868,6 +1027,58 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             objectPrefabToPlace = recommendedPrefabs[requestedIndex - 1];
     }
 
+    /// <summary>
+    /// 책임:
+    /// - 툴의 Warrior/Mage/Tank 선택을 프로젝트 공용 StageMonsterSetSO 에셋에 연결한다.
+    /// - 기획자가 개별 몬스터 프리팹이나 세트 에셋 경로를 직접 찾지 않게 한다.
+    /// </summary>
+    private static StageMonsterSetSO LoadRoleStageMonsterSet(RoomMonsterSpawnRole role)
+    {
+        string fileName = role switch
+        {
+            RoomMonsterSpawnRole.Warrior => "CommonMeleeStageMonsterSet.asset",
+            RoomMonsterSpawnRole.Mage => "CommonRangedStageMonsterSet.asset",
+            RoomMonsterSpawnRole.Tank => "CommonTankStageMonsterSet.asset",
+            _ => string.Empty
+        };
+        return string.IsNullOrEmpty(fileName)
+            ? null
+            : AssetDatabase.LoadAssetAtPath<StageMonsterSetSO>(
+                $"{MonsterSpawnSetFolder}/{fileName}");
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 선택한 역할 지점에서 보스 처치 수 0/1/2에 실제로 생성될 몬스터를 즉시 보여준다.
+    /// </summary>
+    private static void DrawStageMonsterSetPreview(StageMonsterSetSO stageSet)
+    {
+        if (stageSet == null)
+        {
+            EditorGUILayout.HelpBox(
+                "이 역할에 연결할 StageMonsterSetSO를 찾지 못했습니다.",
+                MessageType.Error);
+            return;
+        }
+
+        IReadOnlyList<GameObject> stagePrefabs = stageSet.StagePrefabs;
+        using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+        {
+            EditorGUILayout.LabelField("진행도별 실제 몬스터", EditorStyles.miniBoldLabel);
+            for (int stageIndex = 0; stageIndex < 3; stageIndex++)
+            {
+                GameObject prefab = stagePrefabs != null && stagePrefabs.Count > 0
+                    ? stagePrefabs[Mathf.Min(stageIndex, stagePrefabs.Count - 1)]
+                    : null;
+                EditorGUILayout.ObjectField(
+                    $"보스 {stageIndex}마리 처치",
+                    prefab,
+                    typeof(GameObject),
+                    false);
+            }
+        }
+    }
+
     private List<GameObject> CollectLibraryPrefabs(RoomObjectKind kind)
     {
         List<GameObject> results = new();
@@ -875,6 +1086,23 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             return results;
 
         HashSet<GameObject> seen = new();
+        if (kind == RoomObjectKind.Monster)
+        {
+            IReadOnlyList<GameObject> stageMonsterPrefabs =
+                selectedLibrary.StageMonsterPrefabs;
+            if (stageMonsterPrefabs != null)
+            {
+                for (int prefabIndex = 0;
+                     prefabIndex < stageMonsterPrefabs.Count;
+                     prefabIndex++)
+                {
+                    GameObject prefab = stageMonsterPrefabs[prefabIndex];
+                    if (IsPrefabCompatibleWithKind(prefab, kind) && seen.Add(prefab))
+                        results.Add(prefab);
+                }
+            }
+        }
+
         IReadOnlyList<RoomTemplateSO> rooms = selectedLibrary.Rooms;
         for (int roomIndex = 0; roomIndex < rooms.Count; roomIndex++)
         {
@@ -1598,8 +1826,11 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             layout.topologyPlacement,
             asDuplicate ? null : templateToLoad);
 
-        RestoreTiles(selectedAuthoring.FloorTilemap, build.floorTiles);
-        RestoreTiles(selectedAuthoring.WallTilemap, build.wallTiles);
+        for (int i = 0; i < RoomTileLayerContract.OrderedLayers.Count; i++)
+        {
+            RoomTileLayerKind layer = RoomTileLayerContract.OrderedLayers[i];
+            RestoreTiles(selectedAuthoring.GetTilemap(layer), build.GetTiles(layer));
+        }
         RestoreSockets(selectedAuthoring, layout.sockets);
         RestoreObjects(selectedAuthoring, build.objectPlacements);
         RestoreTravelEndpoints(selectedAuthoring, build.travelEndpointPlacements);
@@ -1680,10 +1911,27 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         gridObject.transform.SetParent(root.transform, false);
         Grid grid = gridObject.AddComponent<Grid>();
 
-        Tilemap floor = CreateTilemapLayer(gridObject.transform, "Floor");
-        Tilemap wall = CreateTilemapLayer(gridObject.transform, "Wall");
+        Tilemap underFloor = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.UnderFloor);
+        Tilemap floor = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.Floor);
+        Tilemap floorDetail = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.FloorDetail);
+        Tilemap groundDecoration = CreateTilemapLayer(
+            gridObject.transform,
+            RoomTileLayerKind.GroundDecoration);
+        Tilemap wall = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.Wall);
+        Tilemap wallDetail = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.WallDetail);
+        Tilemap foreground = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.Foreground);
+        Tilemap overlayFx = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.OverlayFX);
 
-        authoring.EditorAssignTilemaps(grid, floor, wall);
+        authoring.EditorAssignTilemaps(
+            grid,
+            underFloor,
+            floor,
+            floorDetail,
+            groundDecoration,
+            wall,
+            wallDetail,
+            foreground,
+            overlayFx);
         authoring.EditorAssignSourceTemplate(sourceTemplate);
         EditorUtility.SetDirty(authoring);
 
@@ -1880,15 +2128,17 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         return socket;
     }
 
-    private static Tilemap CreateTilemapLayer(Transform parent, string layerName)
+    private static Tilemap CreateTilemapLayer(Transform parent, RoomTileLayerKind layer)
     {
+        string layerName = RoomTileLayerContract.GetLayerName(layer);
         GameObject layerObject = new GameObject(layerName);
         Undo.RegisterCreatedObjectUndo(layerObject, $"Create {layerName} Tilemap");
         layerObject.transform.SetParent(parent, false);
 
         Tilemap tilemap = layerObject.AddComponent<Tilemap>();
         TilemapRenderer renderer = layerObject.AddComponent<TilemapRenderer>();
-        renderer.sortingOrder = layerName == "Wall" ? 10 : 0;
+        renderer.sortingLayerName = RoomTileLayerContract.GetSortingLayerName(layer);
+        renderer.sortingOrder = RoomTileLayerContract.GetSortingOrder(layer);
         return tilemap;
     }
 
@@ -1943,8 +2193,21 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     {
         selectedAuthoring = ResolveSelectedAuthoring();
         if (selectedAuthoring == null ||
-            selectedAuthoring.Grid == null ||
-            objectPrefabToPlace == null)
+            selectedAuthoring.Grid == null)
+        {
+            return;
+        }
+
+        bool placingMonster = objectKindToPlace == RoomObjectKind.Monster;
+        bool placingCommonRoleMonster = placingMonster &&
+            monsterSourceModeToPlace == MonsterPlacementSourceMode.CommonRole;
+        StageMonsterSetSO roleSet = placingCommonRoleMonster
+            ? LoadRoleStageMonsterSet(monsterRoleToPlace)
+            : null;
+        if (placingCommonRoleMonster && roleSet == null)
+            return;
+        if (!placingCommonRoleMonster &&
+            !IsPrefabCompatibleWithKind(objectPrefabToPlace, objectKindToPlace))
         {
             return;
         }
@@ -1953,13 +2216,19 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         Vector2Int defaultCell = ResolveDefaultObjectCell(selectedAuthoring);
         RoomObjectPlacementData placement = new()
         {
-            placementId = $"Object_{existingObjects.Length + 1:00}",
+            placementId = placingCommonRoleMonster
+                ? $"{monsterRoleToPlace}_{existingObjects.Length + 1:00}"
+                : placingMonster
+                    ? $"StageMonster_{existingObjects.Length + 1:00}"
+                    : $"Object_{existingObjects.Length + 1:00}",
             kind = objectKindToPlace,
-            prefab = objectPrefabToPlace,
+            prefab = placingCommonRoleMonster ? null : objectPrefabToPlace,
+            monsterSpawnRole = monsterRoleToPlace,
+            monsterStageSet = roleSet,
             localCell = defaultCell,
             localOffset = Vector2.zero,
             localRotationDegrees = 0f,
-            localScale = objectPrefabToPlace.transform.localScale
+            localScale = placingMonster ? Vector3.one : objectPrefabToPlace.transform.localScale
         };
 
         RoomObjectAuthoring roomObject = CreateRoomObjectAuthoring(selectedAuthoring, placement);
@@ -2099,7 +2368,12 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         if (marker == null)
             marker = Undo.AddComponent<RoomObjectAuthoring>(instance);
 
-        marker.EditorConfigure(placement.placementId, placement.kind, placement.prefab);
+        marker.EditorConfigure(
+            placement.placementId,
+            placement.kind,
+            placement.prefab,
+            placement.monsterSpawnRole,
+            placement.monsterStageSet);
         marker.EditorSetPlacement(placement);
         EditorUtility.SetDirty(marker);
         EditorUtility.SetDirty(instance.transform);
@@ -2194,20 +2468,67 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         if (selectedAuthoring.Grid == null)
             validationMessages.Add("Grid 참조가 비어 있습니다.");
 
-        if (selectedAuthoring.FloorTilemap == null)
-            validationMessages.Add("Floor Tilemap 참조가 비어 있습니다.");
-
-        if (selectedAuthoring.WallTilemap == null)
-            validationMessages.Add("Wall Tilemap 참조가 비어 있습니다.");
+        Dictionary<Tilemap, RoomTileLayerKind> assignedTilemapLayers = new();
+        for (int layerIndex = 0;
+             layerIndex < RoomTileLayerContract.OrderedLayers.Count;
+             layerIndex++)
+        {
+            RoomTileLayerKind layer = RoomTileLayerContract.OrderedLayers[layerIndex];
+            Tilemap tilemap = selectedAuthoring.GetTilemap(layer);
+            if (tilemap == null)
+            {
+                validationMessages.Add(
+                    $"{RoomTileLayerContract.GetLayerName(layer)} Tilemap 참조가 비어 있습니다.");
+            }
+            else if (assignedTilemapLayers.TryGetValue(
+                         tilemap,
+                         out RoomTileLayerKind existingLayer))
+            {
+                validationMessages.Add(
+                    $"{existingLayer}와 {layer}가 같은 Tilemap을 공유하고 있습니다.");
+            }
+            else
+            {
+                assignedTilemapLayers.Add(tilemap, layer);
+            }
+        }
 
         if (selectedAuthoring.Size.x <= 0 || selectedAuthoring.Size.y <= 0)
             validationMessages.Add("Size는 1 이상의 값이어야 합니다.");
 
-        int floorCount = CountTiles(selectedAuthoring.FloorTilemap, selectedAuthoring.Size, out int floorOutsideCount);
-        int wallCount = CountTiles(selectedAuthoring.WallTilemap, selectedAuthoring.Size, out int wallOutsideCount);
+        int floorCount = CountTiles(
+            selectedAuthoring.FloorTilemap,
+            selectedAuthoring.Size,
+            out _);
+        int wallCount = CountTiles(
+            selectedAuthoring.WallTilemap,
+            selectedAuthoring.Size,
+            out _);
 
         if (floorCount + wallCount <= 0)
             validationMessages.Add("방 bounds 안에 Floor 또는 Wall 타일이 하나 이상 필요합니다.");
+
+        ValidateTilesRestOnBaseLayer(
+            selectedAuthoring.FloorDetailTilemap,
+            selectedAuthoring.FloorTilemap,
+            selectedAuthoring.Size,
+            "FloorDetail",
+            "Floor",
+            validationMessages);
+        ValidateTilesRestOnBaseLayer(
+            selectedAuthoring.GroundDecorationTilemap,
+            selectedAuthoring.FloorTilemap,
+            selectedAuthoring.Size,
+            "GroundDecoration",
+            "Floor",
+            validationMessages);
+        ValidateTilesRestOnBaseLayer(
+            selectedAuthoring.WallDetailTilemap,
+            selectedAuthoring.WallTilemap,
+            selectedAuthoring.Size,
+            "WallDetail",
+            "Wall",
+            validationMessages);
 
         ValidateSockets(selectedAuthoring, validationMessages);
         ValidateObjectPlacements(selectedAuthoring, validationMessages);
@@ -2215,11 +2536,22 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         bool valid = validationMessages.Count == 0;
 
-        if (floorOutsideCount > 0)
-            validationMessages.Add($"Floor Tilemap에 방 bounds 밖 타일 {floorOutsideCount}개가 있습니다. v0 bake에서는 제외됩니다.");
-
-        if (wallOutsideCount > 0)
-            validationMessages.Add($"Wall Tilemap에 방 bounds 밖 타일 {wallOutsideCount}개가 있습니다. v0 bake에서는 제외됩니다.");
+        for (int layerIndex = 0;
+             layerIndex < RoomTileLayerContract.OrderedLayers.Count;
+             layerIndex++)
+        {
+            RoomTileLayerKind layer = RoomTileLayerContract.OrderedLayers[layerIndex];
+            CountTiles(
+                selectedAuthoring.GetTilemap(layer),
+                selectedAuthoring.Size,
+                out int outsideCount);
+            if (outsideCount > 0)
+            {
+                validationMessages.Add(
+                    $"{RoomTileLayerContract.GetLayerName(layer)} Tilemap에 방 bounds 밖 타일 " +
+                    $"{outsideCount}개가 있습니다. bake에서는 제외됩니다.");
+            }
+        }
 
         if (showDialog)
         {
@@ -2231,6 +2563,35 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         Repaint();
         return valid;
+    }
+
+    private static void ValidateTilesRestOnBaseLayer(
+        Tilemap detailTilemap,
+        Tilemap baseTilemap,
+        Vector2Int roomSize,
+        string detailLayerName,
+        string baseLayerName,
+        List<string> messages)
+    {
+        if (detailTilemap == null || baseTilemap == null)
+            return;
+
+        BoundsInt bounds = detailTilemap.cellBounds;
+        for (int x = bounds.xMin; x < bounds.xMax; x++)
+        {
+            for (int y = bounds.yMin; y < bounds.yMax; y++)
+            {
+                Vector3Int cell = new(x, y, 0);
+                if (!IsInsideRoomBounds(cell, roomSize) || !detailTilemap.HasTile(cell))
+                    continue;
+
+                if (!baseTilemap.HasTile(cell))
+                {
+                    messages.Add(
+                        $"{detailLayerName} 셀 ({x}, {y}) 아래에 {baseLayerName} 타일이 필요합니다.");
+                }
+            }
+        }
     }
 
     private void ValidateRoomIdAgainstLibrary(
@@ -2417,8 +2778,26 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         build = new RoomBuildData
         {
+            underFloorTiles = CollectTiles(
+                selectedAuthoring.UnderFloorTilemap,
+                selectedAuthoring.Size),
             floorTiles = CollectTiles(selectedAuthoring.FloorTilemap, selectedAuthoring.Size),
+            floorDetailTiles = CollectTiles(
+                selectedAuthoring.FloorDetailTilemap,
+                selectedAuthoring.Size),
+            groundDecorationTiles = CollectTiles(
+                selectedAuthoring.GroundDecorationTilemap,
+                selectedAuthoring.Size),
             wallTiles = CollectTiles(selectedAuthoring.WallTilemap, selectedAuthoring.Size),
+            wallDetailTiles = CollectTiles(
+                selectedAuthoring.WallDetailTilemap,
+                selectedAuthoring.Size),
+            foregroundTiles = CollectTiles(
+                selectedAuthoring.ForegroundTilemap,
+                selectedAuthoring.Size),
+            overlayFxTiles = CollectTiles(
+                selectedAuthoring.OverlayFxTilemap,
+                selectedAuthoring.Size),
             objectPlacements = CollectObjectPlacements(selectedAuthoring),
             travelEndpointPlacements = CollectTravelEndpointPlacements(selectedAuthoring)
         };
@@ -2519,10 +2898,33 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                 ? roomObject.gameObject.name
                 : roomObject.PlacementId;
 
-            if (roomObject.Prefab == null)
+            if (roomObject.Kind == RoomObjectKind.Monster)
+            {
+                if (roomObject.MonsterStageSet != null && roomObject.Prefab != null)
+                {
+                    messages.Add(
+                        $"{displayName}: 공통 역할 StageMonsterSet과 스테이지 고정 프리팹을 동시에 사용할 수 없습니다.");
+                }
+                else if (roomObject.MonsterStageSet == null && roomObject.Prefab == null)
+                {
+                    messages.Add(
+                        $"{displayName}: 공통 역할 StageMonsterSet 또는 스테이지 몬스터 프리팹이 필요합니다.");
+                }
+                else if (roomObject.MonsterStageSet == null &&
+                         !IsPrefabCompatibleWithKind(roomObject.Prefab, RoomObjectKind.Monster))
+                {
+                    messages.Add(
+                        $"{displayName}: 스테이지 몬스터 프리팹에 자식 포함 Enemy 컴포넌트가 필요합니다.");
+                }
+            }
+            else if (roomObject.Prefab == null)
+            {
                 messages.Add($"{displayName}: 원본 Prefab 참조가 비어 있습니다.");
+            }
             else if (!IsPrefabCompatibleWithKind(roomObject.Prefab, roomObject.Kind))
+            {
                 messages.Add($"{displayName}: Prefab이 {roomObject.Kind} 종류에 필요한 컴포넌트를 포함하지 않습니다.");
+            }
 
             ValidateMonsterChestLockLink(
                 roomObject,

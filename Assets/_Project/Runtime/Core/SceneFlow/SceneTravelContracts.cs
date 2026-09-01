@@ -49,9 +49,11 @@ public struct SceneConnectionEndpointData
 {
     [SerializeField] private string sceneName;
     [SerializeField] private string endpointId;
+    [SerializeField] private SceneRouteContextSO routeContext;
 
     public string SceneName => sceneName;
     public string EndpointId => endpointId;
+    public SceneRouteContextSO RouteContext => routeContext;
     public bool IsValid =>
         !string.IsNullOrWhiteSpace(sceneName) &&
         !string.IsNullOrWhiteSpace(endpointId);

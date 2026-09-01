@@ -99,6 +99,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
     private void OnDisable()
     {
+        targetDoor?.SetExternalOpenBlocked(this, false);
         UnregisterFromRoomGroup();
     }
 
@@ -157,6 +158,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
             return;
 
         targetDoor.ForceOpen(immediate: true, playPresentation: false);
+        targetDoor.SetExternalOpenBlocked(this, false);
         doorClosedByLock = false;
     }
 
@@ -268,6 +270,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
         if (targetDoor == null)
             return;
 
+        targetDoor.SetExternalOpenBlocked(this, false);
         if (!targetDoor.IsOpen)
             targetDoor.ForceOpen(immediate: false, save: false, playPresentation: playPresentation);
 
@@ -279,6 +282,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
         if (targetDoor == null)
             return;
 
+        targetDoor.SetExternalOpenBlocked(this, true);
         if (targetDoor.IsOpen)
             targetDoor.ForceClose(immediate: false);
 

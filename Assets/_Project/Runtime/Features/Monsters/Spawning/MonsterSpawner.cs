@@ -242,12 +242,12 @@ public class MonsterSpawner : MonoBehaviour
 
     /// <summary>
     /// 책임:
-    /// - RunRoutePlayback의 현재 런 스테이지 index를 난이도 보정 입력값으로 정규화한다.
-    /// - 개발/테스트 씬처럼 active plan이 없으면 첫 스테이지로 취급한다.
+    /// - 이번 런에서 처치한 보스 수를 HP와 공격속도 난이도 보정 입력값으로 제공한다.
+    /// - 복도 테마용 route index와 전투 진행도를 분리하고, 런 밖의 개발/테스트 씬은 첫 단계로 취급한다.
     /// </summary>
     private static int ResolveCurrentStageIndex()
     {
-        return RunRoutePlayback.CurrentStageIndexOrDefault;
+        return MonsterRunProgression.CurrentStageIndex;
     }
 
     private void SyncSceneServiceReferences()

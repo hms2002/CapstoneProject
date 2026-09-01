@@ -41,6 +41,7 @@ MonoBehaviour:
       minimumGraphDistanceFromStart: 0
       requireDeadEnd: 0
   buildData:
+    underFloorTiles: []
     floorTiles:
     - localCell: {x: 0, y: 3}
       tile: {fileID: 11400000, guid: 67a308e157149f948a5a11f1553d2948, type: 2}
@@ -178,6 +179,8 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
     - localCell: {x: 11, y: 4}
       tile: {fileID: 11400000, guid: 49e5391f0f0b3bd4a91ceb4b591680eb, type: 2}
+    floorDetailTiles: []
+    groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 0}
       tile: {fileID: 11400000, guid: 28fc33ae55ac08a45abaf08011c59373, type: 2}
@@ -249,15 +252,10 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 24ff6781f02362545b26307ea7846e44, type: 2}
     - localCell: {x: 11, y: 7}
       tile: {fileID: 11400000, guid: 7b18d1b5d84528047baa435450aed381, type: 2}
+    wallDetailTiles: []
+    foregroundTiles: []
+    overlayFxTiles: []
     objectPlacements:
-    - placementId: SlimeTeleportDestination
-      kind: 0
-      prefab: {fileID: 494386212307432751, guid: c7e5de1ae90602041af38cefb57fa711, type: 3}
-      localCell: {x: 10, y: 4}
-      localOffset: {x: -0.06000042, y: -0.17000008}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      linkedChestLockPlacementId: 
     - placementId: StartChest
       kind: 2
       prefab: {fileID: 7530156284439312542, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}

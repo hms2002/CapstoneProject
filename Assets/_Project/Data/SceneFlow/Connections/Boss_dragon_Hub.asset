@@ -16,9 +16,11 @@ MonoBehaviour:
   endpointA:
     sceneName: HeoMinSeok_Boss_Dragon
     endpointId: Boss.dragon.Hub
+    routeContext: {fileID: 11400000, guid: 946aaf6b94713064e9f547584fa3e2e3, type: 2}
   endpointB:
     sceneName: ProtoTypeHub
     endpointId: Lobby.dragon.Corridor
+    routeContext: {fileID: 0}
   aToB:
     enabled: 1
     runAction: 0

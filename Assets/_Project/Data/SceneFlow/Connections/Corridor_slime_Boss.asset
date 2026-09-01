@@ -16,9 +16,11 @@ MonoBehaviour:
   endpointA:
     sceneName: ProceduralSlimeCorridor
     endpointId: Corridor.slime.Boss
+    routeContext: {fileID: 11400000, guid: ac129d8bcfb6e3c4da2f9c2e3e4ead07, type: 2}
   endpointB:
     sceneName: SangHyup_Boss_SlimeQueen
     endpointId: Boss.slime.Corridor
+    routeContext: {fileID: 11400000, guid: ac129d8bcfb6e3c4da2f9c2e3e4ead07, type: 2}
   aToB:
     enabled: 1
     runAction: 0

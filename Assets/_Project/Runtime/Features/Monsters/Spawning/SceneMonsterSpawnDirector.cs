@@ -101,6 +101,8 @@ internal sealed class SceneMonsterSpawnDirector
         if (request.SourceRoomGroup != null)
             request.SourceRoomGroup.NotifyMonsterSpawned(monster);
 
+        request.SourceContainer?.NotifyRuntimeSpawned(monster);
+
         spawnedMonsters.Add(monster);
         return monster;
     }
