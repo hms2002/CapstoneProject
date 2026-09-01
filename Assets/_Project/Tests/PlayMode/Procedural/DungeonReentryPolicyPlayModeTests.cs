@@ -95,4 +95,25 @@ public sealed class DungeonReentryPolicyPlayModeTests
             Is.False);
         Assert.That(restoredStates, Is.Empty);
     }
+
+    [Test]
+    public void PreserveDuringRun_ReusesDungeonMapDiscoveryState()
+    {
+        manager.ResolveDungeonSeed(
+            DungeonId,
+            DungeonReentryPolicy.PreserveDuringRun,
+            fallbackSeed: 17);
+        manager.SaveDungeonMapDiscovery(
+            DungeonId,
+            new[] { 0, 2, 2, -1 },
+            new[] { 0, 1, 2, 3, 3, -1 });
+        var visitedIds = new List<int>();
+        var revealedIds = new List<int>();
+
+        Assert.That(
+            manager.TryGetDungeonMapDiscovery(DungeonId, visitedIds, revealedIds),
+            Is.True);
+        Assert.That(visitedIds, Is.EquivalentTo(new[] { 0, 2 }));
+        Assert.That(revealedIds, Is.EquivalentTo(new[] { 0, 1, 2, 3 }));
+    }
 }

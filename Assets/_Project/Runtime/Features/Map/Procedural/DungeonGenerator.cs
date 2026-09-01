@@ -90,6 +90,8 @@ public sealed class DungeonGenerator : MonoBehaviour
         }
 
         string stateId = ResolveDungeonStateId();
+        DungeonMapRuntimeController mapRuntime = ResolveDungeonMapRuntime();
+        mapRuntime.ClearConfiguration();
         int resolvedSeed = RunSessionStore.ResolveDungeonSeed(stateId, reentryPolicy, Seed);
         LastGenerationSeed = resolvedSeed;
         layoutAssembler ??= new DungeonLayoutAssembler();
@@ -132,6 +134,7 @@ public sealed class DungeonGenerator : MonoBehaviour
 
         if (!roomBuilder.TryBuild(LastLayout))
         {
+            mapRuntime.ClearConfiguration();
             HasCompletedInitialGeneration = true;
             return false;
         }
@@ -145,6 +148,7 @@ public sealed class DungeonGenerator : MonoBehaviour
 
         if (!LastLayout.IsComplete)
         {
+            mapRuntime.ClearConfiguration();
             Debug.LogWarning(
                 $"Dungeon layout built partially ({LastLayout.Rooms.Count}/{LastLayout.RequestedRoomCount} rooms): " +
                 LastLayout.FailureReason,
@@ -152,6 +156,8 @@ public sealed class DungeonGenerator : MonoBehaviour
             HasCompletedInitialGeneration = true;
             return false;
         }
+
+        mapRuntime.Configure(LastLayout, stateId, reentryPolicy);
 
         ResolveCorridorLengthRange(
             LastLayout,
@@ -237,6 +243,18 @@ public sealed class DungeonGenerator : MonoBehaviour
         RunSessionStore.SaveDungeonObjectStates(
             ResolveDungeonStateId(),
             roomBuilder.CaptureGeneratedObjectStates());
+        DungeonMapRuntimeController mapRuntime =
+            roomBuilder.GetComponent<DungeonMapRuntimeController>();
+        mapRuntime?.CaptureDiscoveryState();
+    }
+
+    private DungeonMapRuntimeController ResolveDungeonMapRuntime()
+    {
+        DungeonMapRuntimeController runtime =
+            roomBuilder.GetComponent<DungeonMapRuntimeController>();
+        return runtime != null
+            ? runtime
+            : roomBuilder.gameObject.AddComponent<DungeonMapRuntimeController>();
     }
 
     private string ResolveDungeonStateId()

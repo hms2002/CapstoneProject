@@ -54,6 +54,7 @@ public struct ProceduralRoomTravelBinding
 /// - 테마 씬에서 추출한 바닥/벽 변형 타일을 레이아웃 Seed와 셀 좌표로 결정해 같은 맵을 항상 같은 모습으로 구현한다.
 /// - 방 템플릿의 이동 슬롯을 씬별 연결 binding과 결합해 상호작용·trigger·도착 전용 endpoint로 구현한다.
 /// - 모든 방 오브젝트 생성 후 로컬/던전 앵커를 수집하고 NPC 같은 런타임 방 기능의 외부 참조를 연결한다.
+/// - 전투 여부와 무관하게 모든 생성 방에 미니맵 발견용 내부 진입 트리거를 구성한다.
 /// - 전투 잠금 정책이 붙기 전 프로토타입에서는 생성 문을 열린 상태로 시작할 수 있게 한다.
 /// </summary>
 [DisallowMultipleComponent]
@@ -92,6 +93,9 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
 
     [Header("Room Encounters")]
     [SerializeField] private Transform generatedEncounterRoot;
+
+    [Header("Map Discovery")]
+    [SerializeField] private Transform generatedMapDiscoveryRoot;
 
     private readonly List<DoorObject> generatedDoors = new();
     private readonly List<BoxCollider2D> generatedSocketBlockers = new();
@@ -140,6 +144,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     public Transform GeneratedObjectRoot => generatedObjectRoot;
     public Transform GeneratedTravelEndpointRoot => generatedTravelEndpointRoot;
     public Transform GeneratedEncounterRoot => generatedEncounterRoot;
+    public Transform GeneratedMapDiscoveryRoot => generatedMapDiscoveryRoot;
     public bool OpenConnectedDoorsInitially => openConnectedDoorsInitially;
     public IReadOnlyList<DoorObject> GeneratedDoors => generatedDoors;
     public IReadOnlyList<BoxCollider2D> GeneratedSocketBlockers => generatedSocketBlockers;
@@ -250,6 +255,11 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     public void EditorAssignEncounterRoot(Transform encounterRoot)
     {
         generatedEncounterRoot = encounterRoot;
+    }
+
+    public void EditorAssignMapDiscoveryRoot(Transform discoveryRoot)
+    {
+        generatedMapDiscoveryRoot = discoveryRoot;
     }
 #endif
 
@@ -422,7 +432,8 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             (!TryBuildRoomEncounters(layout) ||
              !TryBuildRoomObjects(layout) ||
              !TryBuildTravelEndpoints(layout) ||
-             !TryBindGeneratedRoomFeatures(layout)))
+             !TryBindGeneratedRoomFeatures(layout) ||
+             !TryBuildRoomDiscoveryTriggers(layout)))
         {
             ClearGeneratedContent();
             return false;
@@ -663,6 +674,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         ClearGeneratedSocketBlockers();
         ClearGeneratedRoomObjects();
         ClearGeneratedTravelEndpoints();
+        ClearGeneratedMapDiscoveryTriggers();
     }
 
     public void ClearGeneratedTiles()
@@ -770,6 +782,68 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
                 DestroyImmediate(child);
             }
         }
+    }
+
+    public void ClearGeneratedMapDiscoveryTriggers()
+    {
+        if (generatedMapDiscoveryRoot == null)
+            return;
+
+        for (int i = generatedMapDiscoveryRoot.childCount - 1; i >= 0; i--)
+        {
+            GameObject child = generatedMapDiscoveryRoot.GetChild(i).gameObject;
+            if (Application.isPlaying)
+            {
+                child.SetActive(false);
+                Destroy(child);
+            }
+            else
+            {
+                DestroyImmediate(child);
+            }
+        }
+    }
+
+    private bool TryBuildRoomDiscoveryTriggers(DungeonLayoutResult layout)
+    {
+        DungeonMapRuntimeController mapRuntime = GetComponent<DungeonMapRuntimeController>();
+        if (mapRuntime == null)
+            return true;
+
+        Transform discoveryRoot = ResolveGeneratedMapDiscoveryRoot();
+        for (int roomIndex = 0; roomIndex < layout.Rooms.Count; roomIndex++)
+        {
+            DungeonRoomPlacement roomPlacement = layout.Rooms[roomIndex];
+            int boundaryInset = roomPlacement.WorldBounds.width > RoomEntryBoundaryInsetCells * 2 &&
+                                roomPlacement.WorldBounds.height > RoomEntryBoundaryInsetCells * 2
+                ? RoomEntryBoundaryInsetCells
+                : 0;
+
+            GameObject triggerObject = new($"RoomDiscovery_{roomPlacement.PlacementId}");
+            triggerObject.SetActive(false);
+            triggerObject.transform.SetParent(discoveryRoot, false);
+            PolygonCollider2D areaCollider = triggerObject.AddComponent<PolygonCollider2D>();
+            areaCollider.isTrigger = true;
+            areaCollider.points = CreateRoomAreaPoints(
+                triggerObject.transform,
+                roomPlacement.WorldBounds,
+                boundaryInset);
+
+            if (areaCollider.points.Length < 3)
+            {
+                Debug.LogError(
+                    $"Room {roomPlacement.PlacementId} could not create a valid map discovery area.",
+                    this);
+                return false;
+            }
+
+            DungeonRoomDiscoveryTrigger2D discoveryTrigger =
+                triggerObject.AddComponent<DungeonRoomDiscoveryTrigger2D>();
+            discoveryTrigger.Configure(mapRuntime, roomPlacement.PlacementId);
+            triggerObject.SetActive(true);
+        }
+
+        return true;
     }
 
     private bool TryBuildRoomEncounters(DungeonLayoutResult layout)
@@ -2054,6 +2128,17 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         root.transform.SetParent(transform, false);
         generatedEncounterRoot = root.transform;
         return generatedEncounterRoot;
+    }
+
+    private Transform ResolveGeneratedMapDiscoveryRoot()
+    {
+        if (generatedMapDiscoveryRoot != null)
+            return generatedMapDiscoveryRoot;
+
+        GameObject root = new("GeneratedMapDiscovery");
+        root.transform.SetParent(transform, false);
+        generatedMapDiscoveryRoot = root.transform;
+        return generatedMapDiscoveryRoot;
     }
 
     private static bool TryGetPlacedSocket(

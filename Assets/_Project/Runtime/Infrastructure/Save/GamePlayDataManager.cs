@@ -217,6 +217,30 @@ public sealed class GamePlayDataManager : MonoBehaviour, IRunSessionStoreBackend
         RunSessionStateService.SaveDungeonObjectStates(Data, dungeonId, states);
     }
 
+    public bool TryGetDungeonMapDiscovery(
+        string dungeonId,
+        List<int> visitedRoomPlacementIds,
+        List<int> revealedRoomPlacementIds)
+    {
+        return RunSessionStateService.TryGetDungeonMapDiscovery(
+            Data,
+            dungeonId,
+            visitedRoomPlacementIds,
+            revealedRoomPlacementIds);
+    }
+
+    public void SaveDungeonMapDiscovery(
+        string dungeonId,
+        IReadOnlyList<int> visitedRoomPlacementIds,
+        IReadOnlyList<int> revealedRoomPlacementIds)
+    {
+        RunSessionStateService.SaveDungeonMapDiscovery(
+            Data,
+            dungeonId,
+            visitedRoomPlacementIds,
+            revealedRoomPlacementIds);
+    }
+
     public void ResetForDevelopmentStart()
     {
         Data ??= new GamePlayData();
