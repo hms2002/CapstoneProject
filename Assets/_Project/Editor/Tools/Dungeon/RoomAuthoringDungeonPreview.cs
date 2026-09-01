@@ -525,13 +525,39 @@ internal static class RoomAuthoringDungeonPreview
         previewGrid = root.AddComponent<Grid>();
         CopyGridSettings(request.AnchorGrid, previewGrid);
 
-        Tilemap floorTilemap = CreateTilemapLayer(root.transform, "PreviewFloor", 0);
-        Tilemap wallTilemap = CreateTilemapLayer(root.transform, "PreviewWall", 10);
+        Tilemap underFloorTilemap = CreateTilemapLayer(
+            root.transform,
+            RoomTileLayerKind.UnderFloor);
+        Tilemap floorTilemap = CreateTilemapLayer(root.transform, RoomTileLayerKind.Floor);
+        Tilemap floorDetailTilemap = CreateTilemapLayer(
+            root.transform,
+            RoomTileLayerKind.FloorDetail);
+        Tilemap groundDecorationTilemap = CreateTilemapLayer(
+            root.transform,
+            RoomTileLayerKind.GroundDecoration);
+        Tilemap wallTilemap = CreateTilemapLayer(root.transform, RoomTileLayerKind.Wall);
+        Tilemap wallDetailTilemap = CreateTilemapLayer(
+            root.transform,
+            RoomTileLayerKind.WallDetail);
+        Tilemap foregroundTilemap = CreateTilemapLayer(
+            root.transform,
+            RoomTileLayerKind.Foreground);
+        Tilemap overlayFxTilemap = CreateTilemapLayer(
+            root.transform,
+            RoomTileLayerKind.OverlayFX);
         GameObject blockerRootObject = new("PreviewSocketBlockers");
         blockerRootObject.transform.SetParent(root.transform, false);
 
         DungeonRoomBuilder builder = root.AddComponent<DungeonRoomBuilder>();
-        builder.EditorAssignTilemaps(floorTilemap, wallTilemap);
+        builder.EditorAssignTilemaps(
+            underFloorTilemap,
+            floorTilemap,
+            floorDetailTilemap,
+            groundDecorationTilemap,
+            wallTilemap,
+            wallDetailTilemap,
+            foregroundTilemap,
+            overlayFxTilemap);
         builder.EditorAssignCorridorTiles(corridorFloorTile, corridorWallTile);
         builder.EditorAssignSocketBlockerRoot(blockerRootObject.transform);
 
@@ -575,14 +601,15 @@ internal static class RoomAuthoringDungeonPreview
 
     private static Tilemap CreateTilemapLayer(
         Transform parent,
-        string layerName,
-        int sortingOrder)
+        RoomTileLayerKind layer)
     {
+        string layerName = $"Preview{RoomTileLayerContract.GetLayerName(layer)}";
         GameObject layerObject = new(layerName);
         layerObject.transform.SetParent(parent, false);
         Tilemap tilemap = layerObject.AddComponent<Tilemap>();
         TilemapRenderer renderer = layerObject.AddComponent<TilemapRenderer>();
-        renderer.sortingOrder = sortingOrder;
+        renderer.sortingLayerName = RoomTileLayerContract.GetSortingLayerName(layer);
+        renderer.sortingOrder = RoomTileLayerContract.GetSortingOrder(layer);
         return tilemap;
     }
 

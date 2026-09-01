@@ -40,7 +40,13 @@ MonoBehaviour:
       width: 2
     difficultyTier: 0
     selectionWeight: 1
+    topologyPlacement:
+      mode: 0
+      minimumGraphDistanceFromStart: 0
+      requireDeadEnd: 0
   buildData:
+    monsterSpawnProfile: {fileID: 11400000, guid: a16f6663cbbaf8449b03cb946a5b8b5f, type: 2}
+    underFloorTiles: []
     floorTiles:
     - localCell: {x: 1, y: 1}
       tile: {fileID: 11400000, guid: ff5a9505530d7e948b31beb2f7dc8fed, type: 2}
@@ -154,6 +160,8 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: da789bafa309b6a47b699cf170d3f259, type: 2}
     - localCell: {x: 0, y: 4}
       tile: {fileID: 11400000, guid: a97f02dd8f414d54f8766fd718eadbb0, type: 2}
+    floorDetailTiles: []
+    groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 0}
       tile: {fileID: 11400000, guid: e83cd85bc15205340a7731701b268036, type: 2}
@@ -219,6 +227,9 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 058b1c102f8aee845ab0e5455a73ae1b, type: 2}
     - localCell: {x: 9, y: 7}
       tile: {fileID: 11400000, guid: dc5b9f26a69afea4997140509a4343aa, type: 2}
+    wallDetailTiles: []
+    foregroundTiles: []
+    overlayFxTiles: []
     objectPlacements:
     - placementId: Combat_CompactMonster_1
       kind: 1

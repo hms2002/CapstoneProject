@@ -19,6 +19,7 @@ using UnityEngine.Tilemaps;
 /// - 세 일반 보스의 절차 Corridor와 최종보스 전용 고정 휴식 Corridor 경로, Build Settings와 로딩 매니페스트를 함께 설치한다.
 /// - 테마별 생성 수치를 DungeonGenerationProfileSO에 보존하고 설치 재실행 시 기획자 조정값을 덮어쓰지 않는다.
 /// - 테스트 씬의 GlobalUIRoot를 ProtoTypeHub의 프리팹 오버라이드와 동기화한다.
+/// - 기존 절차 복도 씬에 고정 방 Tilemap 슬롯을 비파괴적으로 보강하고 렌더·물리 계약을 검증한다.
 /// </summary>
 public static class ProceduralDungeonSceneInstaller
 {
@@ -33,6 +34,8 @@ public static class ProceduralDungeonSceneInstaller
     private const string SourceRoomPath = "Assets/_Project/Data/Dungeon/Rooms/TestTypeStart.asset";
     private const string GeneratedRoomFolder = "Assets/_Project/Data/Dungeon/Rooms/PrototypeV0";
     private const string GeneratedProceduralPrefabFolder = "Assets/_Project/Prefabs/Map/Procedural";
+    private const string MonsterSpawnProfileFolder = "Assets/_Project/Data/Monsters/SpawnProfiles";
+    private const string MonsterSpawnSetFolder = "Assets/_Project/Data/Monsters/SpawnSets";
     private const string LibraryFolder = "Assets/_Project/Data/Dungeon/Libraries";
     private const string LibraryPath = LibraryFolder + "/PrototypeCorridorV0Library.asset";
     private const string ExplorationLayoutPolicyPath =
@@ -144,6 +147,24 @@ public static class ProceduralDungeonSceneInstaller
     {
         Nieun,
         Giyeok
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 한 테마에서 일반 크기와 대형 방에 적용할 진행도 기반 몬스터 스폰 프로필을 함께 전달한다.
+    /// </summary>
+    private readonly struct ThemeMonsterSpawnProfiles
+    {
+        public MonsterRoomSpawnProfileSO Small { get; }
+        public MonsterRoomSpawnProfileSO Big { get; }
+
+        public ThemeMonsterSpawnProfiles(
+            MonsterRoomSpawnProfileSO small,
+            MonsterRoomSpawnProfileSO big)
+        {
+            Small = small;
+            Big = big;
+        }
     }
 
     [MenuItem("Tools/Dungeon/Install Boss Theme Procedural Corridor Scenes")]
@@ -280,6 +301,118 @@ public static class ProceduralDungeonSceneInstaller
         AssetDatabase.SaveAssets();
         Debug.Log(
             $"Installed persistent generation profiles for {linkedSceneCount} normal boss Corridor scenes.");
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 이미 제작된 세 일반 보스 방 템플릿에 소형/대형 진행도 스폰 프로필을 비파괴적으로 연결한다.
+    /// - 타일, 소켓, 오브젝트 위치와 기획자가 조정한 생성 프로필 수치는 변경하지 않는다.
+    /// </summary>
+    [MenuItem("Tools/Dungeon/Migrate Procedural Rooms To Progression Monster Spawning")]
+    public static void MigrateProceduralRoomsToProgressionMonsterSpawning()
+    {
+        BossThemeInstallSpec[] specs = CreateBossThemeInstallSpecs();
+        int migratedRoomCount = 0;
+        for (int specIndex = 0; specIndex < specs.Length; specIndex++)
+        {
+            BossThemeInstallSpec spec = specs[specIndex];
+            ThemeMonsterSpawnProfiles profiles =
+                CreateOrUpdateThemeMonsterSpawnProfiles(spec);
+            RoomThemeLibrarySO library =
+                AssetDatabase.LoadAssetAtPath<RoomThemeLibrarySO>(spec.LibraryPath);
+            if (library == null)
+                throw new InvalidOperationException($"Missing theme library: {spec.LibraryPath}");
+
+            IReadOnlyList<RoomTemplateSO> rooms = library.Rooms;
+            for (int roomIndex = 0; rooms != null && roomIndex < rooms.Count; roomIndex++)
+            {
+                RoomTemplateSO room = rooms[roomIndex];
+                if (room == null ||
+                    room.LayoutData.roomType != RoomType.Combat ||
+                    !HasMonsterPlacements(room.BuildData.objectPlacements))
+                {
+                    continue;
+                }
+
+                string roomId = room.LayoutData.roomId ?? string.Empty;
+                bool usesBigProfile =
+                    roomId.IndexOf("Wide", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    roomId.IndexOf("Large", StringComparison.OrdinalIgnoreCase) >= 0;
+                RoomBuildData build = room.BuildData;
+                build.monsterSpawnProfile = usesBigProfile ? profiles.Big : profiles.Small;
+                room.EditorSetData(room.LayoutData, build);
+                EditorUtility.SetDirty(room);
+                migratedRoomCount++;
+            }
+        }
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+        Debug.Log(
+            $"Migrated {migratedRoomCount} procedural Combat rooms to room-entry, progression-based monster spawning.");
+    }
+
+    private static bool HasMonsterPlacements(
+        IReadOnlyList<RoomObjectPlacementData> placements)
+    {
+        for (int i = 0; placements != null && i < placements.Count; i++)
+        {
+            if (placements[i].kind == RoomObjectKind.Monster)
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 현재 기획 피드백의 콘텐츠 등록 변경과 몬스터 프로필 마이그레이션을 한 번에 적용한다.
+    /// - 토관/NPC 원본 에셋은 보존하면서 실제 생성 씬과 데이터만 플레이 가능한 최신 계약으로 동기화한다.
+    /// </summary>
+    [MenuItem("Tools/Dungeon/Apply Current Designer Feedback Migration")]
+    public static void ApplyCurrentDesignerFeedbackMigration()
+    {
+        MigrateProceduralRoomsToProgressionMonsterSpawning();
+        ProceduralSlimeNpcRoomInstaller.SealInstalledContent();
+        ProceduralCorridorTravelInstaller.RemoveDeprecatedCorridorPipeTravel();
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+        Debug.Log("Applied current procedural Corridor designer feedback migration.");
+    }
+
+    /// <summary>
+    /// 책임 : 기존 세 일반 보스 절차 복도와 V0 테스트 씬의 생성 Grid에 누락된 고정 Tilemap 슬롯만 추가한다.
+    /// </summary>
+    [MenuItem("Tools/Dungeon/Install Fixed Room Tile Layers Only")]
+    public static void InstallFixedRoomTileLayersOnly()
+    {
+        if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            return;
+
+        List<string> scenePaths = new();
+        BossThemeInstallSpec[] specs = CreateBossThemeInstallSpecs();
+        for (int i = 0; i < specs.Length; i++)
+            scenePaths.Add(specs[i].TargetScenePath);
+        scenePaths.Add(TargetScenePath);
+
+        for (int sceneIndex = 0; sceneIndex < scenePaths.Count; sceneIndex++)
+        {
+            string scenePath = scenePaths[sceneIndex];
+            Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+            List<DungeonRoomBuilder> builders = FindComponentsInScene<DungeonRoomBuilder>(scene);
+            if (builders.Count != 1)
+            {
+                throw new InvalidOperationException(
+                    $"Expected exactly one DungeonRoomBuilder in {scenePath}, found {builders.Count}.");
+            }
+
+            InstallFixedRoomTileLayers(builders[0], scenePath);
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+        }
+
+        AssetDatabase.SaveAssets();
+        Debug.Log($"Installed fixed room Tilemap slots in {scenePaths.Count} procedural scenes.");
     }
 
     /// <summary>
@@ -759,6 +892,67 @@ public static class ProceduralDungeonSceneInstaller
             target.Add(primary);
     }
 
+    /// <summary>
+    /// 책임:
+    /// - 기존 역할별 StageMonsterSet을 테마의 소형/대형 방 스폰 프로필에 연결한다.
+    /// - 방 데이터가 특정 고블린·리자드 프리팹을 전투 구성으로 확정하지 않고 현재 런 단계에서 실제 종류를 고르게 한다.
+    /// </summary>
+    private static ThemeMonsterSpawnProfiles CreateOrUpdateThemeMonsterSpawnProfiles(
+        BossThemeInstallSpec spec)
+    {
+        string profilePrefix = string.Equals(spec.ThemeId, "Shadow", StringComparison.Ordinal)
+            ? "Witch"
+            : spec.ThemeId;
+        MonsterRoomSpawnProfileSO small = LoadOrCreateMonsterSpawnProfile(
+            $"{MonsterSpawnProfileFolder}/{profilePrefix}_SmallMonsterRoomSpawnProfile.asset");
+        MonsterRoomSpawnProfileSO big = LoadOrCreateMonsterSpawnProfile(
+            $"{MonsterSpawnProfileFolder}/{profilePrefix}_BigMonsterRoomSpawnProfile.asset");
+
+        StageMonsterSetSO[] stageSets =
+        {
+            LoadRequiredStageMonsterSet("CommonMeleeStageMonsterSet.asset"),
+            LoadRequiredStageMonsterSet("CommonRangedStageMonsterSet.asset"),
+            LoadRequiredStageMonsterSet("CommonTankStageMonsterSet.asset")
+        };
+        small.EditorConfigureProgressionTable(
+            "Progression",
+            6,
+            stageSets,
+            new[] { 3f, 2f, 1f });
+        big.EditorConfigureProgressionTable(
+            "Progression",
+            10,
+            stageSets,
+            new[] { 4f, 3f, 2f });
+        EditorUtility.SetDirty(small);
+        EditorUtility.SetDirty(big);
+        return new ThemeMonsterSpawnProfiles(small, big);
+    }
+
+    private static MonsterRoomSpawnProfileSO LoadOrCreateMonsterSpawnProfile(string assetPath)
+    {
+        MonsterRoomSpawnProfileSO profile =
+            AssetDatabase.LoadAssetAtPath<MonsterRoomSpawnProfileSO>(assetPath);
+        if (profile != null)
+            return profile;
+
+        profile = ScriptableObject.CreateInstance<MonsterRoomSpawnProfileSO>();
+        profile.name = System.IO.Path.GetFileNameWithoutExtension(assetPath);
+        AssetDatabase.CreateAsset(profile, assetPath);
+        return profile;
+    }
+
+    private static StageMonsterSetSO LoadRequiredStageMonsterSet(string fileName)
+    {
+        string assetPath = $"{MonsterSpawnSetFolder}/{fileName}";
+        StageMonsterSetSO monsterSet =
+            AssetDatabase.LoadAssetAtPath<StageMonsterSetSO>(assetPath);
+        if (monsterSet == null)
+            throw new InvalidOperationException($"Missing stage monster set: {assetPath}");
+
+        return monsterSet;
+    }
+
     private static RoomThemeLibrarySO CreateOrUpdateBossThemeLibrary(
         BossThemeInstallSpec spec,
         BossThemeTilePalette tilePalette,
@@ -774,6 +968,9 @@ public static class ProceduralDungeonSceneInstaller
             throw new InvalidOperationException(
                 $"Theme '{spec.ThemeId}' requires at least five Combat monster prefabs.");
         }
+
+        ThemeMonsterSpawnProfiles spawnProfiles =
+            CreateOrUpdateThemeMonsterSpawnProfiles(spec);
 
         GameObject[] monsters = new GameObject[spec.MonsterPrefabPaths.Count];
         for (int i = 0; i < monsters.Length; i++)
@@ -812,6 +1009,7 @@ public static class ProceduralDungeonSceneInstaller
         RoomTemplateSO compactCombatRoom = CreateThemeCombatRoom(
             spec,
             "Combat_Compact",
+            spawnProfiles.Small,
             compactCombatSize,
             floorTile,
             wallTile,
@@ -822,6 +1020,7 @@ public static class ProceduralDungeonSceneInstaller
         RoomTemplateSO wideCombatRoom = CreateThemeCombatRoom(
             spec,
             "Combat_Wide",
+            spawnProfiles.Big,
             wideCombatSize,
             floorTile,
             wallTile,
@@ -834,6 +1033,7 @@ public static class ProceduralDungeonSceneInstaller
         RoomTemplateSO tallCombatRoom = CreateThemeCombatRoom(
             spec,
             "Combat_Tall",
+            spawnProfiles.Small,
             tallCombatSize,
             floorTile,
             wallTile,
@@ -846,6 +1046,7 @@ public static class ProceduralDungeonSceneInstaller
         RoomTemplateSO largeNieunRoom = CreateOrUpdateLargeCornerCombatRoom(
             spec,
             "Combat_Large_Nieun",
+            spawnProfiles.Big,
             largeNieunSize,
             LargeCornerRoomShape.Nieun,
             floorTile,
@@ -863,6 +1064,7 @@ public static class ProceduralDungeonSceneInstaller
         RoomTemplateSO largeGiyeokRoom = CreateOrUpdateLargeCornerCombatRoom(
             spec,
             "Combat_Large_Giyeok",
+            spawnProfiles.Big,
             largeGiyeokSize,
             LargeCornerRoomShape.Giyeok,
             floorTile,
@@ -1129,6 +1331,7 @@ public static class ProceduralDungeonSceneInstaller
     private static RoomTemplateSO CreateThemeCombatRoom(
         BossThemeInstallSpec spec,
         string roomSuffix,
+        MonsterRoomSpawnProfileSO spawnProfile,
         Vector2Int roomSize,
         TileBase floorTile,
         TileBase wallTile,
@@ -1137,7 +1340,7 @@ public static class ProceduralDungeonSceneInstaller
         params Vector2Int[] monsterCells)
     {
         string roomId = $"{spec.ThemeId}_{roomSuffix}";
-        return CreateOrUpdateRoom(
+        RoomTemplateSO room = CreateOrUpdateRoom(
             $"{spec.RoomFolder}/{roomId}.asset",
             roomId,
             RoomType.Combat,
@@ -1150,13 +1353,19 @@ public static class ProceduralDungeonSceneInstaller
                 monsterPrefabs,
                 monsterCells,
                 killLockChestPrefab,
-                GetKillLockChestCell(roomSize)),
+            GetKillLockChestCell(roomSize)),
             0);
+        RoomBuildData build = room.BuildData;
+        build.monsterSpawnProfile = spawnProfile;
+        room.EditorSetData(room.LayoutData, build);
+        EditorUtility.SetDirty(room);
+        return room;
     }
 
     private static RoomTemplateSO CreateOrUpdateLargeCornerCombatRoom(
         BossThemeInstallSpec spec,
         string roomSuffix,
+        MonsterRoomSpawnProfileSO spawnProfile,
         Vector2Int roomSize,
         LargeCornerRoomShape shape,
         TileBase floorTile,
@@ -1215,6 +1424,7 @@ public static class ProceduralDungeonSceneInstaller
         };
         RoomBuildData build = new()
         {
+            monsterSpawnProfile = spawnProfile,
             floorTiles = floorTiles,
             wallTiles = wallTiles,
             objectPlacements = CreateCombatPlacements(
@@ -1641,8 +1851,26 @@ public static class ProceduralDungeonSceneInstaller
         gridObject.transform.SetParent(generatedRoot.transform, false);
         gridObject.AddComponent<Grid>();
 
-        Tilemap floor = CreateRuntimeTilemap(gridObject.transform, "GeneratedFloor", 50, false);
-        Tilemap wall = CreateRuntimeTilemap(gridObject.transform, "GeneratedWall", 60, true);
+        Tilemap underFloor = CreateRuntimeTilemap(
+            gridObject.transform,
+            RoomTileLayerKind.UnderFloor);
+        Tilemap floor = CreateRuntimeTilemap(gridObject.transform, RoomTileLayerKind.Floor);
+        Tilemap floorDetail = CreateRuntimeTilemap(
+            gridObject.transform,
+            RoomTileLayerKind.FloorDetail);
+        Tilemap groundDecoration = CreateRuntimeTilemap(
+            gridObject.transform,
+            RoomTileLayerKind.GroundDecoration);
+        Tilemap wall = CreateRuntimeTilemap(gridObject.transform, RoomTileLayerKind.Wall);
+        Tilemap wallDetail = CreateRuntimeTilemap(
+            gridObject.transform,
+            RoomTileLayerKind.WallDetail);
+        Tilemap foreground = CreateRuntimeTilemap(
+            gridObject.transform,
+            RoomTileLayerKind.Foreground);
+        Tilemap overlayFx = CreateRuntimeTilemap(
+            gridObject.transform,
+            RoomTileLayerKind.OverlayFX);
 
         GameObject doorRootObject = new("GeneratedDoors");
         doorRootObject.transform.SetParent(generatedRoot.transform, false);
@@ -1654,7 +1882,15 @@ public static class ProceduralDungeonSceneInstaller
         encounterRootObject.transform.SetParent(generatedRoot.transform, false);
 
         DungeonRoomBuilder builder = generatedRoot.AddComponent<DungeonRoomBuilder>();
-        builder.EditorAssignTilemaps(floor, wall);
+        builder.EditorAssignTilemaps(
+            underFloor,
+            floor,
+            floorDetail,
+            groundDecoration,
+            wall,
+            wallDetail,
+            foreground,
+            overlayFx);
         builder.EditorAssignCorridorTiles(
             tilePalette.PrimaryFloor,
             tilePalette.PrimaryWall);
@@ -2402,8 +2638,26 @@ public static class ProceduralDungeonSceneInstaller
         gridObject.transform.SetParent(generatedRoot.transform, false);
         gridObject.AddComponent<Grid>();
 
-        Tilemap floor = CreateRuntimeTilemap(gridObject.transform, "GeneratedFloor", 50, false);
-        Tilemap wall = CreateRuntimeTilemap(gridObject.transform, "GeneratedWall", 60, true);
+        Tilemap underFloor = CreateRuntimeTilemap(
+            gridObject.transform,
+            RoomTileLayerKind.UnderFloor);
+        Tilemap floor = CreateRuntimeTilemap(gridObject.transform, RoomTileLayerKind.Floor);
+        Tilemap floorDetail = CreateRuntimeTilemap(
+            gridObject.transform,
+            RoomTileLayerKind.FloorDetail);
+        Tilemap groundDecoration = CreateRuntimeTilemap(
+            gridObject.transform,
+            RoomTileLayerKind.GroundDecoration);
+        Tilemap wall = CreateRuntimeTilemap(gridObject.transform, RoomTileLayerKind.Wall);
+        Tilemap wallDetail = CreateRuntimeTilemap(
+            gridObject.transform,
+            RoomTileLayerKind.WallDetail);
+        Tilemap foreground = CreateRuntimeTilemap(
+            gridObject.transform,
+            RoomTileLayerKind.Foreground);
+        Tilemap overlayFx = CreateRuntimeTilemap(
+            gridObject.transform,
+            RoomTileLayerKind.OverlayFX);
 
         GameObject doorRootObject = new("GeneratedDoors");
         doorRootObject.transform.SetParent(generatedRoot.transform, false);
@@ -2418,7 +2672,15 @@ public static class ProceduralDungeonSceneInstaller
         encounterRootObject.transform.SetParent(generatedRoot.transform, false);
 
         DungeonRoomBuilder builder = generatedRoot.AddComponent<DungeonRoomBuilder>();
-        builder.EditorAssignTilemaps(floor, wall);
+        builder.EditorAssignTilemaps(
+            underFloor,
+            floor,
+            floorDetail,
+            groundDecoration,
+            wall,
+            wallDetail,
+            foreground,
+            overlayFx);
         builder.EditorAssignCorridorTiles(fallbackFloor, fallbackWall);
         builder.EditorAssignConnectedDoorSetup(
             doorPrefab,
@@ -3107,38 +3369,177 @@ public static class ProceduralDungeonSceneInstaller
 
     private static Tilemap CreateRuntimeTilemap(
         Transform parent,
-        string objectName,
-        int sortingOrder,
-        bool addCollider)
+        RoomTileLayerKind layer)
     {
+        string objectName = $"Generated{RoomTileLayerContract.GetLayerName(layer)}";
         GameObject tilemapObject = new(objectName);
         tilemapObject.transform.SetParent(parent, false);
 
-        int groundLayer = LayerMask.NameToLayer("Ground");
-        if (groundLayer < 0)
-            throw new InvalidOperationException("The project requires a Ground physics layer.");
-
-        tilemapObject.layer = groundLayer;
         Tilemap tilemap = tilemapObject.AddComponent<Tilemap>();
-        TilemapRenderer renderer = tilemapObject.AddComponent<TilemapRenderer>();
-        renderer.sortingOrder = sortingOrder;
+        tilemapObject.AddComponent<TilemapRenderer>();
+        ConfigureRuntimeTilemap(tilemap, layer);
+        return tilemap;
+    }
 
-        if (addCollider)
+    private static void InstallFixedRoomTileLayers(
+        DungeonRoomBuilder builder,
+        string scenePath)
+    {
+        if (builder.FloorTilemap == null || builder.WallTilemap == null)
         {
-            TilemapCollider2D tilemapCollider = tilemapObject.AddComponent<TilemapCollider2D>();
-            Rigidbody2D rigidbody = tilemapObject.AddComponent<Rigidbody2D>();
-            rigidbody.bodyType = RigidbodyType2D.Static;
-            tilemapObject.AddComponent<CompositeCollider2D>();
-            tilemapCollider.compositeOperation = Collider2D.CompositeOperation.Merge;
+            throw new InvalidOperationException(
+                $"DungeonRoomBuilder Floor/Wall references are missing: {scenePath}");
         }
 
+        Transform grid = builder.FloorTilemap.transform.parent;
+        if (grid == null || builder.WallTilemap.transform.parent != grid)
+        {
+            throw new InvalidOperationException(
+                $"DungeonRoomBuilder Floor/Wall must share one generated Grid: {scenePath}");
+        }
+
+        Tilemap underFloor = FindOrCreateRuntimeTilemap(grid, RoomTileLayerKind.UnderFloor);
+        Tilemap floor = builder.FloorTilemap;
+        Tilemap floorDetail = FindOrCreateRuntimeTilemap(grid, RoomTileLayerKind.FloorDetail);
+        Tilemap groundDecoration = FindOrCreateRuntimeTilemap(
+            grid,
+            RoomTileLayerKind.GroundDecoration);
+        Tilemap wall = builder.WallTilemap;
+        Tilemap wallDetail = FindOrCreateRuntimeTilemap(grid, RoomTileLayerKind.WallDetail);
+        Tilemap foreground = FindOrCreateRuntimeTilemap(grid, RoomTileLayerKind.Foreground);
+        Tilemap overlayFx = FindOrCreateRuntimeTilemap(grid, RoomTileLayerKind.OverlayFX);
+
+        ConfigureRuntimeTilemap(floor, RoomTileLayerKind.Floor);
+        ConfigureRuntimeTilemap(wall, RoomTileLayerKind.Wall);
+        builder.EditorAssignTilemaps(
+            underFloor,
+            floor,
+            floorDetail,
+            groundDecoration,
+            wall,
+            wallDetail,
+            foreground,
+            overlayFx);
+        EditorUtility.SetDirty(builder);
+        VerifyFixedRoomTileLayers(builder, scenePath);
+    }
+
+    private static Tilemap FindOrCreateRuntimeTilemap(
+        Transform parent,
+        RoomTileLayerKind layer)
+    {
+        string objectName = $"Generated{RoomTileLayerContract.GetLayerName(layer)}";
+        Transform existing = parent.Find(objectName);
+        Tilemap tilemap = existing != null ? existing.GetComponent<Tilemap>() : null;
+        if (existing != null && tilemap == null)
+        {
+            throw new InvalidOperationException(
+                $"'{objectName}' exists but is not a Tilemap under '{parent.name}'.");
+        }
+
+        if (tilemap == null)
+            tilemap = CreateRuntimeTilemap(parent, layer);
+        else
+            ConfigureRuntimeTilemap(tilemap, layer);
+
         return tilemap;
+    }
+
+    private static void ConfigureRuntimeTilemap(Tilemap tilemap, RoomTileLayerKind layer)
+    {
+        GameObject tilemapObject = tilemap.gameObject;
+
+        if (RoomTileLayerContract.UsesGroundPhysicsLayer(layer))
+        {
+            int groundLayer = LayerMask.NameToLayer("Ground");
+            if (groundLayer < 0)
+                throw new InvalidOperationException("The project requires a Ground physics layer.");
+
+            tilemapObject.layer = groundLayer;
+        }
+        else
+        {
+            tilemapObject.layer = 0;
+        }
+
+        TilemapRenderer renderer = tilemapObject.GetComponent<TilemapRenderer>();
+        if (renderer == null)
+            renderer = tilemapObject.AddComponent<TilemapRenderer>();
+        renderer.sortingLayerName = RoomTileLayerContract.GetSortingLayerName(layer);
+        renderer.sortingOrder = RoomTileLayerContract.GetSortingOrder(layer);
+
+        if (RoomTileLayerContract.RequiresCollider(layer))
+        {
+            TilemapCollider2D tilemapCollider = tilemapObject.GetComponent<TilemapCollider2D>();
+            if (tilemapCollider == null)
+                tilemapCollider = tilemapObject.AddComponent<TilemapCollider2D>();
+
+            Rigidbody2D rigidbody = tilemapObject.GetComponent<Rigidbody2D>();
+            if (rigidbody == null)
+                rigidbody = tilemapObject.AddComponent<Rigidbody2D>();
+            rigidbody.bodyType = RigidbodyType2D.Static;
+            if (tilemapObject.GetComponent<CompositeCollider2D>() == null)
+                tilemapObject.AddComponent<CompositeCollider2D>();
+            tilemapCollider.compositeOperation = Collider2D.CompositeOperation.Merge;
+        }
+        else
+        {
+            Collider2D[] colliders = tilemapObject.GetComponents<Collider2D>();
+            for (int colliderIndex = colliders.Length - 1; colliderIndex >= 0; colliderIndex--)
+                UnityEngine.Object.DestroyImmediate(colliders[colliderIndex]);
+
+            Rigidbody2D rigidbody = tilemapObject.GetComponent<Rigidbody2D>();
+            if (rigidbody != null)
+                UnityEngine.Object.DestroyImmediate(rigidbody);
+        }
+
+        EditorUtility.SetDirty(tilemapObject);
+        EditorUtility.SetDirty(tilemap);
+        EditorUtility.SetDirty(renderer);
+    }
+
+    private static void VerifyFixedRoomTileLayers(
+        DungeonRoomBuilder builder,
+        string scenePath)
+    {
+        if (!builder.HasCompleteTilemapSet)
+            throw new InvalidOperationException($"Fixed Tilemap set is incomplete: {scenePath}");
+
+        HashSet<Tilemap> uniqueTilemaps = new();
+        for (int i = 0; i < RoomTileLayerContract.OrderedLayers.Count; i++)
+        {
+            RoomTileLayerKind layer = RoomTileLayerContract.OrderedLayers[i];
+            Tilemap tilemap = builder.GetTilemap(layer);
+            if (!uniqueTilemaps.Add(tilemap))
+            {
+                throw new InvalidOperationException(
+                    $"Multiple fixed layer slots share one Tilemap in {scenePath}: {layer}");
+            }
+
+            int expectedPhysicsLayer = RoomTileLayerContract.UsesGroundPhysicsLayer(layer)
+                ? LayerMask.NameToLayer("Ground")
+                : 0;
+            TilemapRenderer renderer = tilemap.GetComponent<TilemapRenderer>();
+            bool hasCollider = tilemap.GetComponent<Collider2D>() != null;
+            if (tilemap.gameObject.layer != expectedPhysicsLayer ||
+                renderer == null ||
+                renderer.sortingLayerName != RoomTileLayerContract.GetSortingLayerName(layer) ||
+                renderer.sortingOrder != RoomTileLayerContract.GetSortingOrder(layer) ||
+                hasCollider != RoomTileLayerContract.RequiresCollider(layer))
+            {
+                throw new InvalidOperationException(
+                    $"Fixed Tilemap contract mismatch in {scenePath}: {layer}");
+            }
+        }
     }
 
     private static void VerifyInstalledPipeline(
         DungeonGenerator generator,
         DungeonRoomBuilder builder)
     {
+        if (!builder.HasCompleteTilemapSet)
+            throw new InvalidOperationException("DungeonRoomBuilder fixed Tilemap set is incomplete.");
+
         if (!generator.Generate())
         {
             string reason = generator.LastLayout != null

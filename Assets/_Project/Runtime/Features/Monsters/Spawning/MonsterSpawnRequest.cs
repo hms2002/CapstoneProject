@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// 책임 : MonsterSpawner가 몬스터를 생성할 때 필요한 최소 입력값을 묶는다.
 /// 어떤 몬스터를, 어디에, 어떤 회전으로 생성할지와
-/// 스폰 후 어느 상자 잠금 조건에 등록할지를 함께 전달한다.
+/// 스폰 후 어느 방/상자 잠금 조건과 원본 스폰 포인트에 결과를 전달할지를 함께 보관한다.
 /// </summary>
 public readonly struct MonsterSpawnRequest
 {
@@ -13,6 +13,7 @@ public readonly struct MonsterSpawnRequest
     public readonly MonsterRoomArea2D RoomArea;
     public readonly ChestMonsterKillLock LinkedChestKillLock;
     public readonly MonsterSpawnRoomGroup SourceRoomGroup;
+    public readonly MonsterSpawnContainer SourceContainer;
 
     public MonsterSpawnRequest(
         GameObject monsterPrefab,
@@ -20,7 +21,8 @@ public readonly struct MonsterSpawnRequest
         Quaternion rotation,
         MonsterRoomArea2D roomArea,
         ChestMonsterKillLock linkedChestKillLock,
-        MonsterSpawnRoomGroup sourceRoomGroup = null)
+        MonsterSpawnRoomGroup sourceRoomGroup = null,
+        MonsterSpawnContainer sourceContainer = null)
     {
         MonsterPrefab = monsterPrefab;
         Position = position;
@@ -28,6 +30,7 @@ public readonly struct MonsterSpawnRequest
         RoomArea = roomArea;
         LinkedChestKillLock = linkedChestKillLock;
         SourceRoomGroup = sourceRoomGroup;
+        SourceContainer = sourceContainer;
     }
 
     public bool IsValid => MonsterPrefab != null;

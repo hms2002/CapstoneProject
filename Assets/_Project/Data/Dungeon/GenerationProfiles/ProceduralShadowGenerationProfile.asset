@@ -21,5 +21,4 @@ MonoBehaviour:
   minimumCorridorLength: 2
   corridorLengthPerRoomCell: 0.05
   corridorLengthVariation: 2
-  guaranteedRoomTemplates:
-  - {fileID: 11400000, guid: 49db1b58fd6885445ba37261c0aa24b1, type: 2}
+  guaranteedRoomTemplates: []

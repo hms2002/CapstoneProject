@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
 /// <summary>
 /// 책임:
 /// - 절차 생성용 방 조각 authoring 루트, 2칸 연결 소켓, 런타임 오브젝트 배치를 빠르게 만든다.
-/// - Floor/Wall Tilemap과 몬스터·상자·포털·프롭 배치를 RoomTemplateSO로 bake하고 다시 편집 상태로 복원한다.
+/// - 고정 시각 Tilemap 슬롯과 몬스터·상자·포털·프롭 배치를 RoomTemplateSO로 bake하고 다시 편집 상태로 복원한다.
 /// - 타일 페인팅은 Unity 기본 Tile Palette에 맡기고, 이 창은 생성/검증/데이터화 흐름만 담당한다.
 /// - 기획자가 테마 라이브러리에서 방을 탐색하고 임시 작업 공간에서 안전하게 편집한 뒤 검증·등록하게 한다.
 /// - 실제 DungeonLayoutAssembler와 시각 전용 DungeonRoomBuilder를 사용해 저장 전 방을 포함한 동적 맵을 미리 보여준다.
@@ -447,6 +447,11 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             serializedAuthoring.FindProperty("topologyPlacement"),
             new GUIContent("필수 방 배치 규칙"),
             includeChildren: true);
+        EditorGUILayout.PropertyField(
+            serializedAuthoring.FindProperty("monsterSpawnProfile"),
+            new GUIContent(
+                "몬스터 스폰 프로필",
+                "방 입장 시 현재 런 진행도에 맞는 몬스터 구성을 고릅니다. 비어 있으면 배치 프리팹을 fallback으로 사용합니다."));
         serializedAuthoring.ApplyModifiedProperties();
 
         EditorGUILayout.ObjectField(
@@ -465,47 +470,71 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
     private void DrawTileSection()
     {
-        EditorGUILayout.LabelField("바닥과 벽 제작", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("방 타일 레이어 제작", EditorStyles.boldLabel);
         EditorGUILayout.HelpBox(
             "Unity Tile Palette를 그대로 사용합니다. 아래 버튼으로 그릴 레이어를 선택한 뒤 Scene View에서 페인팅하세요.",
             MessageType.Info);
 
-        using (new EditorGUILayout.HorizontalScope())
+        int totalOutsideCount = 0;
+        for (int index = 0; index < RoomTileLayerContract.OrderedLayers.Count; index += 2)
         {
-            using (new EditorGUI.DisabledScope(selectedAuthoring.FloorTilemap == null))
+            using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button("바닥 레이어 선택"))
-                    SelectAndFrame(selectedAuthoring.FloorTilemap);
-            }
-
-            using (new EditorGUI.DisabledScope(selectedAuthoring.WallTilemap == null))
-            {
-                if (GUILayout.Button("벽 레이어 선택"))
-                    SelectAndFrame(selectedAuthoring.WallTilemap);
+                DrawTileLayerSelection(RoomTileLayerContract.OrderedLayers[index], ref totalOutsideCount);
+                if (index + 1 < RoomTileLayerContract.OrderedLayers.Count)
+                {
+                    DrawTileLayerSelection(
+                        RoomTileLayerContract.OrderedLayers[index + 1],
+                        ref totalOutsideCount);
+                }
             }
         }
 
-        int floorCount = CountTiles(
-            selectedAuthoring.FloorTilemap,
-            selectedAuthoring.Size,
-            out int floorOutsideCount);
-        int wallCount = CountTiles(
-            selectedAuthoring.WallTilemap,
-            selectedAuthoring.Size,
-            out int wallOutsideCount);
-
-        EditorGUILayout.LabelField("방 내부 바닥 타일", floorCount.ToString());
-        EditorGUILayout.LabelField("방 내부 벽 타일", wallCount.ToString());
-        if (floorOutsideCount + wallOutsideCount > 0)
+        if (totalOutsideCount > 0)
         {
             EditorGUILayout.HelpBox(
-                $"예약 영역 밖 타일이 {floorOutsideCount + wallOutsideCount}개 있습니다. 저장 데이터에서는 제외됩니다.",
+                $"예약 영역 밖 타일이 {totalOutsideCount}개 있습니다. 저장 데이터에서는 제외됩니다.",
                 MessageType.Warning);
         }
 
         EditorGUILayout.HelpBox(
             "소켓 위치도 샘플 데이터에서는 Floor와 Wall을 모두 칠해 막아 두세요. 실제 연결 시 DungeonRoomBuilder가 해당 벽만 엽니다.",
             MessageType.None);
+        EditorGUILayout.HelpBox(
+            "GroundProp은 타일이 아니라 '오브젝트' 단계에서 Prop으로 배치합니다. 충돌 여부와 물리 레이어는 배치한 프리팹이 소유합니다.",
+            MessageType.None);
+    }
+
+    private void DrawTileLayerSelection(RoomTileLayerKind layer, ref int totalOutsideCount)
+    {
+        Tilemap tilemap = selectedAuthoring.GetTilemap(layer);
+        int tileCount = CountTiles(tilemap, selectedAuthoring.Size, out int outsideCount);
+        totalOutsideCount += outsideCount;
+
+        using (new EditorGUI.DisabledScope(tilemap == null))
+        {
+            string label =
+                $"{RoomTileLayerContract.GetLayerName(layer)} · " +
+                $"{RoomTileLayerContract.GetDisplayName(layer)} ({tileCount})";
+            if (GUILayout.Button(new GUIContent(label, GetTileLayerTooltip(layer))))
+                SelectAndFrame(tilemap);
+        }
+    }
+
+    private static string GetTileLayerTooltip(RoomTileLayerKind layer)
+    {
+        return layer switch
+        {
+            RoomTileLayerKind.UnderFloor => "통과 가능한 바닥 아래 배경. 물리 Ground 판정에 참여하지 않습니다.",
+            RoomTileLayerKind.Floor => "기본 이동 바닥이며 물리 Ground 판정의 기준입니다.",
+            RoomTileLayerKind.FloorDetail => "Floor 위에 그리는 통과 가능한 평면 장식입니다.",
+            RoomTileLayerKind.GroundDecoration => "Floor 위에 그리는 통과 가능한 장식입니다.",
+            RoomTileLayerKind.Wall => "통과할 수 없는 기본 벽이며 Tilemap Collider를 가집니다.",
+            RoomTileLayerKind.WallDetail => "Wall 위에 그리며 아래 Wall의 충돌을 따르는 장식입니다.",
+            RoomTileLayerKind.Foreground => "캐릭터 앞 ForeGround 정렬 레이어에 표시되는 장식입니다.",
+            RoomTileLayerKind.OverlayFX => "안개·빛·어둠 같은 ForeGround 오버레이 효과입니다.",
+            _ => RoomTileLayerContract.GetDisplayName(layer)
+        };
     }
 
     private static void SelectAndFrame(Object target)
@@ -697,7 +726,9 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         EditorGUILayout.HelpBox(
             "Transform을 이동/회전/크기 조절하면 Grid 셀, 셀 중심 오프셋, 로컬 회전과 크기로 저장됩니다. " +
-            "Monster는 런타임에서 MonsterSpawner를 통해 생성되며 선택한 Kill Lock 상자 연결도 스폰 요청으로 전달됩니다.",
+            "Monster는 실제 적을 미리 배치하는 항목이 아니라 방 입장 시 사용할 스폰 위치입니다. " +
+            "'몬스터 스폰 프로필'이 있으면 현재 런 진행도별 구성을 사용하고, 배치 프리팹은 프로필 해석 실패 시 fallback입니다. " +
+            "선택한 Kill Lock 상자 연결도 최종 스폰 요청으로 전달됩니다.",
             MessageType.Info);
     }
 
@@ -1597,9 +1628,13 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             layout.selectionWeight,
             layout.topologyPlacement,
             asDuplicate ? null : templateToLoad);
+        selectedAuthoring.EditorAssignMonsterSpawnProfile(build.monsterSpawnProfile);
 
-        RestoreTiles(selectedAuthoring.FloorTilemap, build.floorTiles);
-        RestoreTiles(selectedAuthoring.WallTilemap, build.wallTiles);
+        for (int i = 0; i < RoomTileLayerContract.OrderedLayers.Count; i++)
+        {
+            RoomTileLayerKind layer = RoomTileLayerContract.OrderedLayers[i];
+            RestoreTiles(selectedAuthoring.GetTilemap(layer), build.GetTiles(layer));
+        }
         RestoreSockets(selectedAuthoring, layout.sockets);
         RestoreObjects(selectedAuthoring, build.objectPlacements);
         RestoreTravelEndpoints(selectedAuthoring, build.travelEndpointPlacements);
@@ -1680,10 +1715,27 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         gridObject.transform.SetParent(root.transform, false);
         Grid grid = gridObject.AddComponent<Grid>();
 
-        Tilemap floor = CreateTilemapLayer(gridObject.transform, "Floor");
-        Tilemap wall = CreateTilemapLayer(gridObject.transform, "Wall");
+        Tilemap underFloor = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.UnderFloor);
+        Tilemap floor = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.Floor);
+        Tilemap floorDetail = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.FloorDetail);
+        Tilemap groundDecoration = CreateTilemapLayer(
+            gridObject.transform,
+            RoomTileLayerKind.GroundDecoration);
+        Tilemap wall = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.Wall);
+        Tilemap wallDetail = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.WallDetail);
+        Tilemap foreground = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.Foreground);
+        Tilemap overlayFx = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.OverlayFX);
 
-        authoring.EditorAssignTilemaps(grid, floor, wall);
+        authoring.EditorAssignTilemaps(
+            grid,
+            underFloor,
+            floor,
+            floorDetail,
+            groundDecoration,
+            wall,
+            wallDetail,
+            foreground,
+            overlayFx);
         authoring.EditorAssignSourceTemplate(sourceTemplate);
         EditorUtility.SetDirty(authoring);
 
@@ -1880,15 +1932,17 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         return socket;
     }
 
-    private static Tilemap CreateTilemapLayer(Transform parent, string layerName)
+    private static Tilemap CreateTilemapLayer(Transform parent, RoomTileLayerKind layer)
     {
+        string layerName = RoomTileLayerContract.GetLayerName(layer);
         GameObject layerObject = new GameObject(layerName);
         Undo.RegisterCreatedObjectUndo(layerObject, $"Create {layerName} Tilemap");
         layerObject.transform.SetParent(parent, false);
 
         Tilemap tilemap = layerObject.AddComponent<Tilemap>();
         TilemapRenderer renderer = layerObject.AddComponent<TilemapRenderer>();
-        renderer.sortingOrder = layerName == "Wall" ? 10 : 0;
+        renderer.sortingLayerName = RoomTileLayerContract.GetSortingLayerName(layer);
+        renderer.sortingOrder = RoomTileLayerContract.GetSortingOrder(layer);
         return tilemap;
     }
 
@@ -2194,20 +2248,67 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         if (selectedAuthoring.Grid == null)
             validationMessages.Add("Grid 참조가 비어 있습니다.");
 
-        if (selectedAuthoring.FloorTilemap == null)
-            validationMessages.Add("Floor Tilemap 참조가 비어 있습니다.");
-
-        if (selectedAuthoring.WallTilemap == null)
-            validationMessages.Add("Wall Tilemap 참조가 비어 있습니다.");
+        Dictionary<Tilemap, RoomTileLayerKind> assignedTilemapLayers = new();
+        for (int layerIndex = 0;
+             layerIndex < RoomTileLayerContract.OrderedLayers.Count;
+             layerIndex++)
+        {
+            RoomTileLayerKind layer = RoomTileLayerContract.OrderedLayers[layerIndex];
+            Tilemap tilemap = selectedAuthoring.GetTilemap(layer);
+            if (tilemap == null)
+            {
+                validationMessages.Add(
+                    $"{RoomTileLayerContract.GetLayerName(layer)} Tilemap 참조가 비어 있습니다.");
+            }
+            else if (assignedTilemapLayers.TryGetValue(
+                         tilemap,
+                         out RoomTileLayerKind existingLayer))
+            {
+                validationMessages.Add(
+                    $"{existingLayer}와 {layer}가 같은 Tilemap을 공유하고 있습니다.");
+            }
+            else
+            {
+                assignedTilemapLayers.Add(tilemap, layer);
+            }
+        }
 
         if (selectedAuthoring.Size.x <= 0 || selectedAuthoring.Size.y <= 0)
             validationMessages.Add("Size는 1 이상의 값이어야 합니다.");
 
-        int floorCount = CountTiles(selectedAuthoring.FloorTilemap, selectedAuthoring.Size, out int floorOutsideCount);
-        int wallCount = CountTiles(selectedAuthoring.WallTilemap, selectedAuthoring.Size, out int wallOutsideCount);
+        int floorCount = CountTiles(
+            selectedAuthoring.FloorTilemap,
+            selectedAuthoring.Size,
+            out _);
+        int wallCount = CountTiles(
+            selectedAuthoring.WallTilemap,
+            selectedAuthoring.Size,
+            out _);
 
         if (floorCount + wallCount <= 0)
             validationMessages.Add("방 bounds 안에 Floor 또는 Wall 타일이 하나 이상 필요합니다.");
+
+        ValidateTilesRestOnBaseLayer(
+            selectedAuthoring.FloorDetailTilemap,
+            selectedAuthoring.FloorTilemap,
+            selectedAuthoring.Size,
+            "FloorDetail",
+            "Floor",
+            validationMessages);
+        ValidateTilesRestOnBaseLayer(
+            selectedAuthoring.GroundDecorationTilemap,
+            selectedAuthoring.FloorTilemap,
+            selectedAuthoring.Size,
+            "GroundDecoration",
+            "Floor",
+            validationMessages);
+        ValidateTilesRestOnBaseLayer(
+            selectedAuthoring.WallDetailTilemap,
+            selectedAuthoring.WallTilemap,
+            selectedAuthoring.Size,
+            "WallDetail",
+            "Wall",
+            validationMessages);
 
         ValidateSockets(selectedAuthoring, validationMessages);
         ValidateObjectPlacements(selectedAuthoring, validationMessages);
@@ -2215,11 +2316,22 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         bool valid = validationMessages.Count == 0;
 
-        if (floorOutsideCount > 0)
-            validationMessages.Add($"Floor Tilemap에 방 bounds 밖 타일 {floorOutsideCount}개가 있습니다. v0 bake에서는 제외됩니다.");
-
-        if (wallOutsideCount > 0)
-            validationMessages.Add($"Wall Tilemap에 방 bounds 밖 타일 {wallOutsideCount}개가 있습니다. v0 bake에서는 제외됩니다.");
+        for (int layerIndex = 0;
+             layerIndex < RoomTileLayerContract.OrderedLayers.Count;
+             layerIndex++)
+        {
+            RoomTileLayerKind layer = RoomTileLayerContract.OrderedLayers[layerIndex];
+            CountTiles(
+                selectedAuthoring.GetTilemap(layer),
+                selectedAuthoring.Size,
+                out int outsideCount);
+            if (outsideCount > 0)
+            {
+                validationMessages.Add(
+                    $"{RoomTileLayerContract.GetLayerName(layer)} Tilemap에 방 bounds 밖 타일 " +
+                    $"{outsideCount}개가 있습니다. bake에서는 제외됩니다.");
+            }
+        }
 
         if (showDialog)
         {
@@ -2231,6 +2343,35 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         Repaint();
         return valid;
+    }
+
+    private static void ValidateTilesRestOnBaseLayer(
+        Tilemap detailTilemap,
+        Tilemap baseTilemap,
+        Vector2Int roomSize,
+        string detailLayerName,
+        string baseLayerName,
+        List<string> messages)
+    {
+        if (detailTilemap == null || baseTilemap == null)
+            return;
+
+        BoundsInt bounds = detailTilemap.cellBounds;
+        for (int x = bounds.xMin; x < bounds.xMax; x++)
+        {
+            for (int y = bounds.yMin; y < bounds.yMax; y++)
+            {
+                Vector3Int cell = new(x, y, 0);
+                if (!IsInsideRoomBounds(cell, roomSize) || !detailTilemap.HasTile(cell))
+                    continue;
+
+                if (!baseTilemap.HasTile(cell))
+                {
+                    messages.Add(
+                        $"{detailLayerName} 셀 ({x}, {y}) 아래에 {baseLayerName} 타일이 필요합니다.");
+                }
+            }
+        }
     }
 
     private void ValidateRoomIdAgainstLibrary(
@@ -2417,8 +2558,27 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         build = new RoomBuildData
         {
+            monsterSpawnProfile = selectedAuthoring.MonsterSpawnProfile,
+            underFloorTiles = CollectTiles(
+                selectedAuthoring.UnderFloorTilemap,
+                selectedAuthoring.Size),
             floorTiles = CollectTiles(selectedAuthoring.FloorTilemap, selectedAuthoring.Size),
+            floorDetailTiles = CollectTiles(
+                selectedAuthoring.FloorDetailTilemap,
+                selectedAuthoring.Size),
+            groundDecorationTiles = CollectTiles(
+                selectedAuthoring.GroundDecorationTilemap,
+                selectedAuthoring.Size),
             wallTiles = CollectTiles(selectedAuthoring.WallTilemap, selectedAuthoring.Size),
+            wallDetailTiles = CollectTiles(
+                selectedAuthoring.WallDetailTilemap,
+                selectedAuthoring.Size),
+            foregroundTiles = CollectTiles(
+                selectedAuthoring.ForegroundTilemap,
+                selectedAuthoring.Size),
+            overlayFxTiles = CollectTiles(
+                selectedAuthoring.OverlayFxTilemap,
+                selectedAuthoring.Size),
             objectPlacements = CollectObjectPlacements(selectedAuthoring),
             travelEndpointPlacements = CollectTravelEndpointPlacements(selectedAuthoring)
         };

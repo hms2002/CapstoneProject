@@ -152,18 +152,144 @@ public static class RoomSocketGeometry
 
 /// <summary>
 /// 책임:
-/// - 런타임 방 구현기가 실제 Tilemap에 찍어낼 바닥/벽 타일과 프리팹 배치 데이터를 보관한다.
-/// - 몬스터, 상자, 포털, 일반 프롭을 종류와 로컬 배치 정보로 전달한다.
+/// - 런타임 방 구현기가 실제 Tilemap에 찍어낼 고정 시각 레이어 타일과 프리팹 배치 데이터를 보관한다.
+/// - 몬스터 스폰 프로필과 스폰 위치, 상자, 포털, 일반 프롭의 로컬 배치 정보를 전달한다.
 /// - 씬 연결 자체와 분리된 이동 endpoint 슬롯의 매개체 종류와 로컬 배치를 전달한다.
 /// - 연결 문은 방 데이터가 아니라 조립 결과의 소켓 연결을 기준으로 DungeonRoomBuilder가 생성한다.
 /// </summary>
 [Serializable]
 public struct RoomBuildData
 {
+    [Tooltip("몬스터 배치가 있는 방에서 진행도에 따라 실제 몬스터 구성을 결정합니다. 비어 있으면 배치 프리팹을 fallback으로 사용합니다.")]
+    public MonsterRoomSpawnProfileSO monsterSpawnProfile;
+    public List<RoomTileData> underFloorTiles;
     public List<RoomTileData> floorTiles;
+    public List<RoomTileData> floorDetailTiles;
+    public List<RoomTileData> groundDecorationTiles;
     public List<RoomTileData> wallTiles;
+    public List<RoomTileData> wallDetailTiles;
+    public List<RoomTileData> foregroundTiles;
+    public List<RoomTileData> overlayFxTiles;
     public List<RoomObjectPlacementData> objectPlacements;
     public List<RoomTravelEndpointPlacementData> travelEndpointPlacements;
+
+    public List<RoomTileData> GetTiles(RoomTileLayerKind layer)
+    {
+        return layer switch
+        {
+            RoomTileLayerKind.UnderFloor => underFloorTiles,
+            RoomTileLayerKind.Floor => floorTiles,
+            RoomTileLayerKind.FloorDetail => floorDetailTiles,
+            RoomTileLayerKind.GroundDecoration => groundDecorationTiles,
+            RoomTileLayerKind.Wall => wallTiles,
+            RoomTileLayerKind.WallDetail => wallDetailTiles,
+            RoomTileLayerKind.Foreground => foregroundTiles,
+            RoomTileLayerKind.OverlayFX => overlayFxTiles,
+            _ => null
+        };
+    }
+}
+
+/// <summary>
+/// 책임 : 기획자가 방 조각에서 사용할 고정 Tilemap 슬롯을 직렬화와 툴 전반에 동일한 식별자로 제공한다.
+/// </summary>
+public enum RoomTileLayerKind
+{
+    UnderFloor = 0,
+    Floor = 1,
+    FloorDetail = 2,
+    GroundDecoration = 3,
+    Wall = 4,
+    WallDetail = 5,
+    Foreground = 6,
+    OverlayFX = 7
+}
+
+/// <summary>
+/// 책임:
+/// - 고정 방 Tilemap 슬롯의 표시 순서, Hierarchy 이름, 렌더 정렬 및 물리 참여 규칙을 한 곳에서 정의한다.
+/// - 제작 툴, 미리보기와 런타임 씬 설치기가 서로 다른 레이어 설정을 만들지 않게 한다.
+/// </summary>
+public static class RoomTileLayerContract
+{
+    private static readonly RoomTileLayerKind[] OrderedLayerValues =
+    {
+        RoomTileLayerKind.UnderFloor,
+        RoomTileLayerKind.Floor,
+        RoomTileLayerKind.FloorDetail,
+        RoomTileLayerKind.GroundDecoration,
+        RoomTileLayerKind.Wall,
+        RoomTileLayerKind.WallDetail,
+        RoomTileLayerKind.Foreground,
+        RoomTileLayerKind.OverlayFX
+    };
+
+    public static IReadOnlyList<RoomTileLayerKind> OrderedLayers => OrderedLayerValues;
+
+    public static string GetLayerName(RoomTileLayerKind layer)
+    {
+        return layer switch
+        {
+            RoomTileLayerKind.UnderFloor => "UnderFloor",
+            RoomTileLayerKind.Floor => "Floor",
+            RoomTileLayerKind.FloorDetail => "FloorDetail",
+            RoomTileLayerKind.GroundDecoration => "GroundDecoration",
+            RoomTileLayerKind.Wall => "Wall",
+            RoomTileLayerKind.WallDetail => "WallDetail",
+            RoomTileLayerKind.Foreground => "Foreground",
+            RoomTileLayerKind.OverlayFX => "OverlayFX",
+            _ => layer.ToString()
+        };
+    }
+
+    public static string GetDisplayName(RoomTileLayerKind layer)
+    {
+        return layer switch
+        {
+            RoomTileLayerKind.UnderFloor => "바닥 아래 배경",
+            RoomTileLayerKind.Floor => "기본 이동 바닥",
+            RoomTileLayerKind.FloorDetail => "바닥 위 평면 장식",
+            RoomTileLayerKind.GroundDecoration => "통과 가능한 입체 장식",
+            RoomTileLayerKind.Wall => "기본 벽과 방 경계",
+            RoomTileLayerKind.WallDetail => "벽 부착 장식",
+            RoomTileLayerKind.Foreground => "캐릭터 앞 상단 장식",
+            RoomTileLayerKind.OverlayFX => "화면·방 오버레이 효과",
+            _ => GetLayerName(layer)
+        };
+    }
+
+    public static int GetSortingOrder(RoomTileLayerKind layer)
+    {
+        return layer switch
+        {
+            RoomTileLayerKind.UnderFloor => 40,
+            RoomTileLayerKind.Floor => 50,
+            RoomTileLayerKind.FloorDetail => 51,
+            RoomTileLayerKind.GroundDecoration => 52,
+            RoomTileLayerKind.Wall => 60,
+            RoomTileLayerKind.WallDetail => 61,
+            RoomTileLayerKind.Foreground => 0,
+            RoomTileLayerKind.OverlayFX => 10,
+            _ => 0
+        };
+    }
+
+    public static string GetSortingLayerName(RoomTileLayerKind layer)
+    {
+        return layer == RoomTileLayerKind.Foreground || layer == RoomTileLayerKind.OverlayFX
+            ? "ForeGround"
+            : "Default";
+    }
+
+    public static bool UsesGroundPhysicsLayer(RoomTileLayerKind layer)
+    {
+        return layer == RoomTileLayerKind.Floor || layer == RoomTileLayerKind.Wall;
+    }
+
+    public static bool RequiresCollider(RoomTileLayerKind layer)
+    {
+        return layer == RoomTileLayerKind.Wall;
+    }
 }
 
 /// <summary>
@@ -263,7 +389,8 @@ public static class RoomTravelEndpointGeometry
 /// 책임:
 /// - 방에 배치되는 런타임 오브젝트의 식별자, 종류, 프리팹과 Grid 기준 위치/회전/크기를 보관한다.
 /// - 몬스터 배치에는 기존 스폰 계약으로 전달할 Kill Lock 상자의 안정적인 Placement Id를 선택적으로 보관한다.
-/// - DungeonRoomBuilder가 몬스터는 스폰 시스템으로, 나머지는 프리팹 인스턴스로 구현할 수 있게 한다.
+/// - Monster 종류의 prefab은 스폰 프로필이 없거나 해석에 실패했을 때 사용할 미리보기/호환 fallback이다.
+/// - DungeonRoomBuilder가 몬스터 배치는 지연 스폰 포인트로, 나머지는 프리팹 인스턴스로 구현할 수 있게 한다.
 /// </summary>
 [Serializable]
 public struct RoomObjectPlacementData

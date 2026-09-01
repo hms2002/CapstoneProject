@@ -40,7 +40,13 @@ MonoBehaviour:
       width: 2
     difficultyTier: 1
     selectionWeight: 0.5
+    topologyPlacement:
+      mode: 0
+      minimumGraphDistanceFromStart: 0
+      requireDeadEnd: 0
   buildData:
+    monsterSpawnProfile: {fileID: 11400000, guid: 8ab67a25d93e4760b5f52295c422d73f, type: 2}
+    underFloorTiles: []
     floorTiles:
     - localCell: {x: 1, y: 1}
       tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
@@ -3004,6 +3010,8 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: a8a87f11b937e72438afde4c9987d6a2, type: 2}
     - localCell: {x: 0, y: 37}
       tile: {fileID: 11400000, guid: c508fe3f5d425df46a56e36ac5c50f63, type: 2}
+    floorDetailTiles: []
+    groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 0}
       tile: {fileID: 11400000, guid: 28fc33ae55ac08a45abaf08011c59373, type: 2}
@@ -3443,6 +3451,9 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: debdf5f2599213540a1f0ada188873fa, type: 2}
     - localCell: {x: 17, y: 55}
       tile: {fileID: 11400000, guid: 77134a4db70f9a14e97953c120326148, type: 2}
+    wallDetailTiles: []
+    foregroundTiles: []
+    overlayFxTiles: []
     objectPlacements:
     - placementId: Combat_Large_NieunMonster_1
       kind: 1

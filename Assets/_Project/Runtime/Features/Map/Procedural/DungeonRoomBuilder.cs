@@ -45,7 +45,7 @@ public struct ProceduralRoomTravelBinding
 
 /// <summary>
 /// 책임:
-/// - DungeonLayoutResult의 배치 좌표에 각 방과 연결 복도의 Floor/Wall 타일, 런타임 오브젝트를 구현한다.
+/// - DungeonLayoutResult의 배치 좌표에 각 방의 고정 시각 Tilemap 슬롯과 연결 복도의 Floor/Wall, 런타임 오브젝트를 구현한다.
 /// - 몬스터 배치는 기존 MonsterSpawner를 경유하고 상자·포털·프롭은 프리팹 인스턴스로 생성한다.
 /// - 몬스터 배치가 지정한 상자 Placement Id를 기존 MonsterSpawnRequest의 Kill Lock 연결로 해석한다.
 /// - 몬스터 방에는 기존 MonsterSpawnRoomGroup/RoomDoorMonsterKillLock 기반 encounter를 구성한다.
@@ -61,8 +61,14 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
 {
     private const int RoomEntryBoundaryInsetCells = 1;
 
+    [SerializeField] private Tilemap underFloorTilemap;
     [SerializeField] private Tilemap floorTilemap;
+    [SerializeField] private Tilemap floorDetailTilemap;
+    [SerializeField] private Tilemap groundDecorationTilemap;
     [SerializeField] private Tilemap wallTilemap;
+    [SerializeField] private Tilemap wallDetailTilemap;
+    [SerializeField] private Tilemap foregroundTilemap;
+    [SerializeField] private Tilemap overlayFxTilemap;
 
     [Header("Corridors")]
     [SerializeField] private TileBase corridorFloorTile;
@@ -100,8 +106,29 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     private readonly Dictionary<int, MonsterSpawnRoomGroup> generatedRoomGroupsByPlacement = new();
     private readonly Dictionary<int, MonsterRoomArea2D> generatedRoomAreasByPlacement = new();
 
+    public Tilemap UnderFloorTilemap => underFloorTilemap;
     public Tilemap FloorTilemap => floorTilemap;
+    public Tilemap FloorDetailTilemap => floorDetailTilemap;
+    public Tilemap GroundDecorationTilemap => groundDecorationTilemap;
     public Tilemap WallTilemap => wallTilemap;
+    public Tilemap WallDetailTilemap => wallDetailTilemap;
+    public Tilemap ForegroundTilemap => foregroundTilemap;
+    public Tilemap OverlayFxTilemap => overlayFxTilemap;
+    public bool HasCompleteTilemapSet
+    {
+        get
+        {
+            HashSet<Tilemap> uniqueTilemaps = new();
+            for (int i = 0; i < RoomTileLayerContract.OrderedLayers.Count; i++)
+            {
+                Tilemap tilemap = GetTilemap(RoomTileLayerContract.OrderedLayers[i]);
+                if (tilemap == null || !uniqueTilemaps.Add(tilemap))
+                    return false;
+            }
+
+            return true;
+        }
+    }
     public TileBase CorridorFloorTile => corridorFloorTile;
     public TileBase CorridorWallTile => corridorWallTile;
     public IReadOnlyList<TileBase> CorridorFloorVariants => corridorFloorVariants;
@@ -121,11 +148,46 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     public IReadOnlyList<MonsterSpawnRoomGroup> GeneratedRoomEncounterGroups => generatedRoomEncounterGroups;
     public IReadOnlyList<RoomDoorMonsterKillLock> GeneratedRoomDoorLocks => generatedRoomDoorLocks;
 
+    public Tilemap GetTilemap(RoomTileLayerKind layer)
+    {
+        return layer switch
+        {
+            RoomTileLayerKind.UnderFloor => underFloorTilemap,
+            RoomTileLayerKind.Floor => floorTilemap,
+            RoomTileLayerKind.FloorDetail => floorDetailTilemap,
+            RoomTileLayerKind.GroundDecoration => groundDecorationTilemap,
+            RoomTileLayerKind.Wall => wallTilemap,
+            RoomTileLayerKind.WallDetail => wallDetailTilemap,
+            RoomTileLayerKind.Foreground => foregroundTilemap,
+            RoomTileLayerKind.OverlayFX => overlayFxTilemap,
+            _ => null
+        };
+    }
+
 #if UNITY_EDITOR
     public void EditorAssignTilemaps(Tilemap floor, Tilemap wall)
     {
+        EditorAssignTilemaps(null, floor, null, null, wall, null, null, null);
+    }
+
+    public void EditorAssignTilemaps(
+        Tilemap underFloor,
+        Tilemap floor,
+        Tilemap floorDetail,
+        Tilemap groundDecoration,
+        Tilemap wall,
+        Tilemap wallDetail,
+        Tilemap foreground,
+        Tilemap overlayFx)
+    {
+        underFloorTilemap = underFloor;
         floorTilemap = floor;
+        floorDetailTilemap = floorDetail;
+        groundDecorationTilemap = groundDecoration;
         wallTilemap = wall;
+        wallDetailTilemap = wallDetail;
+        foregroundTilemap = foreground;
+        overlayFxTilemap = overlayFx;
     }
 
     public void EditorAssignCorridorTiles(TileBase floorTile, TileBase wallTile)
@@ -288,6 +350,12 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             return false;
         }
 
+        if (!ValidateConfiguredTilemapsAreUnique())
+            return false;
+
+        if (!ValidateRequiredTilemaps(layout))
+            return false;
+
         if (options.BuildGameplayObjects && !options.BuildConnectedDoors)
         {
             Debug.LogError(
@@ -319,8 +387,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         {
             DungeonRoomPlacement placement = layout.Rooms[i];
             RoomBuildData buildData = placement.Template.BuildData;
-            PlaceTiles(floorTilemap, buildData.floorTiles, placement.Origin);
-            PlaceTiles(wallTilemap, buildData.wallTiles, placement.Origin);
+            PlaceRoomTileLayers(buildData, placement.Origin);
         }
 
         if (!ValidateAllSocketWallsBeforeOpening(layout))
@@ -361,9 +428,78 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             return false;
         }
 
-        floorTilemap.CompressBounds();
-        wallTilemap.CompressBounds();
+        CompressConfiguredTilemaps();
         return true;
+    }
+
+    private bool ValidateConfiguredTilemapsAreUnique()
+    {
+        Dictionary<Tilemap, RoomTileLayerKind> assignedLayers = new();
+        for (int i = 0; i < RoomTileLayerContract.OrderedLayers.Count; i++)
+        {
+            RoomTileLayerKind layer = RoomTileLayerContract.OrderedLayers[i];
+            Tilemap tilemap = GetTilemap(layer);
+            if (tilemap == null)
+                continue;
+
+            if (assignedLayers.TryGetValue(tilemap, out RoomTileLayerKind existingLayer))
+            {
+                Debug.LogError(
+                    $"DungeonRoomBuilder {existingLayer} and {layer} must use different Tilemaps.",
+                    this);
+                return false;
+            }
+
+            assignedLayers.Add(tilemap, layer);
+        }
+
+        return true;
+    }
+
+    private bool ValidateRequiredTilemaps(DungeonLayoutResult layout)
+    {
+        for (int roomIndex = 0; roomIndex < layout.Rooms.Count; roomIndex++)
+        {
+            DungeonRoomPlacement placement = layout.Rooms[roomIndex];
+            RoomBuildData buildData = placement.Template.BuildData;
+            for (int layerIndex = 0;
+                 layerIndex < RoomTileLayerContract.OrderedLayers.Count;
+                 layerIndex++)
+            {
+                RoomTileLayerKind layer = RoomTileLayerContract.OrderedLayers[layerIndex];
+                List<RoomTileData> tiles = buildData.GetTiles(layer);
+                if (tiles == null || tiles.Count == 0 || GetTilemap(layer) != null)
+                    continue;
+
+                Debug.LogError(
+                    $"DungeonRoomBuilder requires the {RoomTileLayerContract.GetLayerName(layer)} " +
+                    $"Tilemap because room '{placement.Template.name}' contains that layer.",
+                    this);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void PlaceRoomTileLayers(RoomBuildData buildData, Vector2Int roomOrigin)
+    {
+        for (int i = 0; i < RoomTileLayerContract.OrderedLayers.Count; i++)
+        {
+            RoomTileLayerKind layer = RoomTileLayerContract.OrderedLayers[i];
+            PlaceTiles(GetTilemap(layer), buildData.GetTiles(layer), roomOrigin);
+        }
+    }
+
+    private void CompressConfiguredTilemaps()
+    {
+        HashSet<Tilemap> compressed = new();
+        for (int i = 0; i < RoomTileLayerContract.OrderedLayers.Count; i++)
+        {
+            Tilemap tilemap = GetTilemap(RoomTileLayerContract.OrderedLayers[i]);
+            if (tilemap != null && compressed.Add(tilemap))
+                tilemap.CompressBounds();
+        }
     }
 
     private bool ValidateAllSocketWallsBeforeOpening(DungeonLayoutResult layout)
@@ -531,11 +667,13 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
 
     public void ClearGeneratedTiles()
     {
-        if (floorTilemap != null)
-            floorTilemap.ClearAllTiles();
-
-        if (wallTilemap != null && wallTilemap != floorTilemap)
-            wallTilemap.ClearAllTiles();
+        HashSet<Tilemap> cleared = new();
+        for (int i = 0; i < RoomTileLayerContract.OrderedLayers.Count; i++)
+        {
+            Tilemap tilemap = GetTilemap(RoomTileLayerContract.OrderedLayers[i]);
+            if (tilemap != null && cleared.Add(tilemap))
+                tilemap.ClearAllTiles();
+        }
     }
 
     public void ClearGeneratedDoors()
@@ -717,6 +855,8 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             boundaryInsetCells: 0);
 
         roomGroup = encounterObject.AddComponent<MonsterSpawnRoomGroup>();
+        roomGroup.ConfigureSpawnProfile(
+            roomPlacement.Template.BuildData.monsterSpawnProfile);
         roomArea = encounterObject.AddComponent<MonsterRoomArea2D>();
         roomArea.Configure(areaCollider);
 
@@ -1448,27 +1588,26 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             Quaternion.Euler(0f, 0f, objectPlacement.localRotationDegrees);
 
         Transform objectRoot = ResolveGeneratedObjectRoot();
-        if (objectPlacement.kind == RoomObjectKind.Monster && Application.isPlaying)
+        if (objectPlacement.kind == RoomObjectKind.Monster)
         {
-            MonsterSpawner spawner = MonsterSpawner.Instance;
-            if (spawner == null)
-            {
-                Debug.LogError(
-                    $"Room '{roomName}' object '{objectPlacement.placementId}' requires an active MonsterSpawner.",
-                    this);
-                return false;
-            }
-
-            MonsterSpawnRequest request = new(
+            instance = new GameObject();
+            instance.SetActive(false);
+            instance.transform.SetParent(objectRoot, false);
+            instance.transform.SetPositionAndRotation(worldPosition, worldRotation);
+            MonsterSpawnContainer spawnContainer =
+                instance.AddComponent<MonsterSpawnContainer>();
+            GameObject spawnPoint = instance;
+            spawnContainer.ConfigureRuntime(
                 objectPlacement.prefab,
-                worldPosition,
-                worldRotation,
                 roomArea,
+                roomGroup,
                 linkedChestLock,
-                roomGroup);
-            instance = spawner.SpawnOne(request);
-            if (instance != null)
-                instance.transform.SetParent(objectRoot, true);
+                spawnedMonster => HandleGeneratedMonsterSpawned(
+                    roomPlacement.PlacementId,
+                    objectPlacement.placementId,
+                    spawnPoint,
+                    spawnedMonster));
+            instance.SetActive(true);
         }
         else
         {
@@ -1488,10 +1627,61 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         }
 
         instance.name = $"RoomObject_{roomPlacement.PlacementId}_{objectPlacement.placementId}";
-        instance.transform.localScale = objectPlacement.localScale == Vector3.zero
-            ? objectPlacement.prefab.transform.localScale
-            : objectPlacement.localScale;
+        instance.transform.localScale = objectPlacement.kind == RoomObjectKind.Monster
+            ? Vector3.one
+            : objectPlacement.localScale == Vector3.zero
+                ? objectPlacement.prefab.transform.localScale
+                : objectPlacement.localScale;
         return true;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 지연 스폰 포인트가 만든 실제 몬스터를 기존 던전 오브젝트 상태 Id에 인계한다.
+    /// - 복도 이탈 시 살아 있는 몬스터와 처치된 몬스터의 보존 판정이 기존 즉시 스폰 방식과 같게 유지되도록 한다.
+    /// </summary>
+    private void HandleGeneratedMonsterSpawned(
+        int roomPlacementId,
+        string placementId,
+        GameObject spawnPoint,
+        GameObject spawnedMonster)
+    {
+        if (spawnedMonster == null)
+            return;
+
+        string stateId = CreateRuntimeStateId(roomPlacementId, placementId);
+        spawnedMonster.name = $"RoomObject_{roomPlacementId}_{placementId}";
+        spawnedMonster.transform.SetParent(ResolveGeneratedObjectRoot(), true);
+        generatedRoomObjectsByStateId[stateId] = spawnedMonster;
+        ReplaceTrackedGeneratedObject(generatedRoomObjects, spawnPoint, spawnedMonster);
+        if (generatedRoomObjectsByPlacement.TryGetValue(
+                roomPlacementId,
+                out List<GameObject> roomObjects))
+        {
+            ReplaceTrackedGeneratedObject(roomObjects, spawnPoint, spawnedMonster);
+        }
+
+        if (spawnPoint != null)
+            Destroy(spawnPoint);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 생성 오브젝트 추적 목록에서 스폰 포인트를 실제 몬스터로 원자적으로 교체한다.
+    /// </summary>
+    private static void ReplaceTrackedGeneratedObject(
+        List<GameObject> trackedObjects,
+        GameObject previous,
+        GameObject replacement)
+    {
+        if (trackedObjects == null || replacement == null)
+            return;
+
+        int index = trackedObjects.IndexOf(previous);
+        if (index >= 0)
+            trackedObjects[index] = replacement;
+        else if (!trackedObjects.Contains(replacement))
+            trackedObjects.Add(replacement);
     }
 
     private static bool IsPrefabCompatibleWithKind(GameObject prefab, RoomObjectKind kind)
@@ -1514,7 +1704,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         List<RoomTileData> tileData,
         Vector2Int roomOrigin)
     {
-        if (tileData == null)
+        if (target == null || tileData == null)
             return;
 
         for (int i = 0; i < tileData.Count; i++)

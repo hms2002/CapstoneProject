@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: Slime_SmallMonsterRoomSpawnProfile
   m_EditorClassIdentifier: Assembly-CSharp::MonsterRoomSpawnProfileSO
   spawnTables:
-  - tableName: Default
+  - tableName: Progression
     spawnCount: 6
-    entries:
-    - monsterPrefab: {fileID: 625522859161183429, guid: 2327e9837a564ed58b0ae70d7c8e00b1, type: 3}
-      weight: 1
-    - monsterPrefab: {fileID: 100000, guid: a1365e9c0af9480b9dc3169f803a951d, type: 3}
-      weight: 1
-    - monsterPrefab: {fileID: 100000, guid: d18966565254432a82dc5a7b4acdb6cb, type: 3}
+    entries: []
+    commonEntries:
+    - monsterSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      weight: 3
+    - monsterSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
+      weight: 2
+    - monsterSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
       weight: 1

@@ -13,33 +13,13 @@ MonoBehaviour:
   m_Name: Witch_SmallMonsterRoomSpawnProfile
   m_EditorClassIdentifier: Assembly-CSharp::MonsterRoomSpawnProfileSO
   spawnTables:
-  - tableName: OpA
+  - tableName: Progression
     spawnCount: 6
-    entries:
-    - monsterPrefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+    entries: []
+    commonEntries:
+    - monsterSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
       weight: 3
-    - monsterPrefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
-      weight: 1
-    - monsterPrefab: {fileID: 625522859161183429, guid: b1f84c1064c662345a49453bf9a8fd34, type: 3}
+    - monsterSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
       weight: 2
-    commonEntries: []
-  - tableName: OpB
-    spawnCount: 6
-    entries:
-    - monsterPrefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
-      weight: 2
-    - monsterPrefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
+    - monsterSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
       weight: 1
-    - monsterPrefab: {fileID: 625522859161183429, guid: b1f84c1064c662345a49453bf9a8fd34, type: 3}
-      weight: 3
-    commonEntries: []
-  - tableName: OpC
-    spawnCount: 6
-    entries:
-    - monsterPrefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
-      weight: 3
-    - monsterPrefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
-      weight: 0
-    - monsterPrefab: {fileID: 625522859161183429, guid: b1f84c1064c662345a49453bf9a8fd34, type: 3}
-      weight: 3
-    commonEntries: []

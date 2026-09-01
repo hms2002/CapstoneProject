@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -41,6 +42,8 @@ public class MonsterSpawnContainer : MonoBehaviour
     [Tooltip("이 스폰 포인트에서 생성한 몬스터를 특정 상자의 잠금 해제 조건으로 등록할 때 사용")]
     [SerializeField] private ChestMonsterKillLock linkedChestKillLock;
 
+    private Action<GameObject> runtimeSpawnedCallback;
+
     public MonsterSpawnSourceKind SourceKind => sourceKind;
     public GameObject MonsterPrefab => monsterPrefab;
     public StageMonsterSetSO StageMonsterSet => stageMonsterSet;
@@ -52,6 +55,39 @@ public class MonsterSpawnContainer : MonoBehaviour
 
     public Vector3 SpawnPosition => spawnAnchor != null ? spawnAnchor.position : transform.position;
     public Quaternion SpawnRotation => spawnAnchor != null ? spawnAnchor.rotation : transform.rotation;
+
+    /// <summary>
+    /// 책임:
+    /// - 절차 생성기가 방 오브젝트의 몬스터 배치를 실제 몬스터가 아닌 지연 스폰 포인트로 변환한다.
+    /// - 기존 고정 프리팹은 방 스폰 프로필이 없을 때 사용할 호환 fallback으로 보관한다.
+    /// </summary>
+    public void ConfigureRuntime(
+        GameObject fallbackMonsterPrefab,
+        MonsterRoomArea2D configuredRoomArea,
+        MonsterSpawnRoomGroup configuredRoomGroup,
+        ChestMonsterKillLock configuredChestKillLock,
+        Action<GameObject> onRuntimeSpawned = null)
+    {
+        sourceKind = MonsterSpawnSourceKind.FixedPrefab;
+        monsterPrefab = fallbackMonsterPrefab;
+        stageMonsterSet = null;
+        spawnByDefault = true;
+        allowExtraSpawn = true;
+        spawnAnchor = null;
+        roomArea = configuredRoomArea;
+        roomGroup = configuredRoomGroup;
+        linkedChestKillLock = configuredChestKillLock;
+        runtimeSpawnedCallback = onRuntimeSpawned;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 이 포인트에서 실제 몬스터가 생성된 결과를 절차 던전 상태 추적자 같은 런타임 소유자에게 전달한다.
+    /// </summary>
+    public void NotifyRuntimeSpawned(GameObject spawnedMonster)
+    {
+        runtimeSpawnedCallback?.Invoke(spawnedMonster);
+    }
 
     public bool TryResolveMonsterPrefab(int stageIndex, out GameObject resolvedPrefab)
     {
@@ -80,7 +116,8 @@ public class MonsterSpawnContainer : MonoBehaviour
             SpawnRotation,
             roomArea,
             linkedChestKillLock,
-            RoomGroup);
+            RoomGroup,
+            this);
     }
 
     public MonsterSpawnRequest CreateRequest(int stageIndex, GameObject overrideMonsterPrefab = null)

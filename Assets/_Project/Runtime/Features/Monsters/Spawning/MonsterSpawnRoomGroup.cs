@@ -35,6 +35,7 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
     private readonly List<MonsterSpawnContainer> reusableContainers = new();
     private readonly List<GameObject> reusableSpawnPlan = new();
+    private readonly List<MonsterSpawnRequest> reusableSpawnRequests = new();
     private readonly List<RoomDoorMonsterKillLock> runtimeDoorLocks = new();
     private readonly List<MonsterLockTrackingUnit> runtimeSpawnedMonsterUnits = new();
     private readonly List<Coroutine> activeSpawnRoutines = new();
@@ -49,6 +50,16 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
     public bool PlayerEncounterEntered => playerEncounterEntered;
     public int PendingRoomEntrySpawnCount => pendingRoomEntrySpawnCount;
     public int RemainingRegisteredOrPendingCount => CountAliveRegisteredMonsters() + pendingRoomEntrySpawnCount;
+
+    /// <summary>
+    /// 책임:
+    /// - 절차 생성 방이 가진 진행도 기반 스폰 프로필을 런타임 encounter 그룹에 주입한다.
+    /// - 프로필이 없으면 각 스폰 컨테이너의 고정/단계형 설정을 사용하는 기존 동작을 유지한다.
+    /// </summary>
+    public void ConfigureSpawnProfile(MonsterRoomSpawnProfileSO configuredSpawnProfile)
+    {
+        spawnProfile = configuredSpawnProfile;
+    }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStaticEvents()
@@ -81,7 +92,17 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
         if (!table.TryBuildSpawnPlan(reusableSpawnPlan, stageIndex) || reusableSpawnPlan.Count == 0)
             return;
 
-        List<MonsterSpawnContainer> candidates = new List<MonsterSpawnContainer>(reusableContainers);
+        List<MonsterSpawnContainer> candidates = new List<MonsterSpawnContainer>();
+        for (int i = 0; i < reusableContainers.Count; i++)
+        {
+            MonsterSpawnContainer container = reusableContainers[i];
+            if (container != null && container.SpawnByDefault)
+                candidates.Add(container);
+        }
+
+        if (candidates.Count == 0)
+            return;
+
         Shuffle(candidates);
 
         int spawnCount = Mathf.Min(reusableSpawnPlan.Count, candidates.Count);
@@ -240,6 +261,18 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
         RefreshContainersIfNeeded();
         LogRoomEntrySpawn($"start: containers={reusableContainers.Count}");
 
+        reusableSpawnRequests.Clear();
+        BuildSpawnRequests(reusableSpawnRequests);
+        if (reusableSpawnRequests.Count > 0)
+        {
+            LogRoomEntrySpawn(
+                $"profile plan: profile={FormatObject(spawnProfile)}, requests={reusableSpawnRequests.Count}");
+            for (int requestIndex = 0; requestIndex < reusableSpawnRequests.Count; requestIndex++)
+                ScheduleRoomEntrySpawn(reusableSpawnRequests[requestIndex], $"profile[{requestIndex}]");
+
+            return;
+        }
+
         int stageIndex = ResolveCurrentStageIndex();
         for (int i = 0; i < reusableContainers.Count; i++)
         {
@@ -256,11 +289,26 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
                 continue;
             }
 
-            ReservePendingSpawn(request);
-            LogRoomEntrySpawn($"reserved container[{i}]: prefab={FormatObject(request.MonsterPrefab)}, pos={request.Position}, pending={pendingRoomEntrySpawnCount}, chestLock={FormatObject(request.LinkedChestKillLock)}");
-            Coroutine routine = StartCoroutine(SpawnRoomEntryMonsterRoutine(request));
-            activeSpawnRoutines.Add(routine);
+            ScheduleRoomEntrySpawn(request, $"container[{i}]");
         }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 프로필 또는 개별 컨테이너가 만든 스폰 요청을 동일한 pending-lock/VFX 코루틴 흐름에 등록한다.
+    /// - 요청 생성 경로에 따라 문과 상자의 kill lock 처리 순서가 달라지지 않게 한다.
+    /// </summary>
+    private void ScheduleRoomEntrySpawn(MonsterSpawnRequest request, string sourceLabel)
+    {
+        if (!request.IsValid)
+            return;
+
+        ReservePendingSpawn(request);
+        LogRoomEntrySpawn(
+            $"reserved {sourceLabel}: prefab={FormatObject(request.MonsterPrefab)}, pos={request.Position}, " +
+            $"pending={pendingRoomEntrySpawnCount}, chestLock={FormatObject(request.LinkedChestKillLock)}");
+        Coroutine routine = StartCoroutine(SpawnRoomEntryMonsterRoutine(request));
+        activeSpawnRoutines.Add(routine);
     }
 
     private IEnumerator SpawnRoomEntryMonsterRoutine(MonsterSpawnRequest request)
