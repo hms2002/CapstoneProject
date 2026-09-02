@@ -158,6 +158,8 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0
       amplitudeMultiplier: 0
@@ -174,6 +176,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -187,6 +190,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -198,6 +202,8 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0
       amplitudeMultiplier: 0
@@ -214,6 +220,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -227,6 +234,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -238,6 +246,8 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0
       amplitudeMultiplier: 0
@@ -254,6 +264,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -267,6 +278,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -278,6 +290,8 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0
       amplitudeMultiplier: 0
@@ -294,6 +308,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -307,6 +322,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -318,6 +334,8 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0
       amplitudeMultiplier: 0
@@ -334,6 +352,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -347,6 +366,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -358,6 +378,8 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0
       amplitudeMultiplier: 0
@@ -374,6 +396,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -387,6 +410,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -398,6 +422,8 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0
       amplitudeMultiplier: 0
@@ -414,6 +440,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -427,6 +454,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -438,6 +466,8 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0
       amplitudeMultiplier: 0
@@ -454,6 +484,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -467,6 +498,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0

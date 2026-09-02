@@ -159,7 +159,7 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
     }
 
     [Test]
-    public void CorridorDecorationComposer_PreservesDoorClearanceAndIsDeterministic()
+    public void CorridorDecorationComposer_UsesFullCorridorSpanAndIsDeterministic()
     {
         CorridorDecorationProfileSO profile =
             ScriptableObject.CreateInstance<CorridorDecorationProfileSO>();
@@ -186,7 +186,6 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
         try
         {
             profile.EditorConfigure(
-                clearanceCells: 1,
                 landmarkLimit: 1,
                 new[] { start, middle, landmark, filler, end });
 
@@ -197,13 +196,13 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
 
             Assert.That(first, Has.Count.EqualTo(second.Count));
             Assert.That(first, Is.Not.Empty);
-            int previousEnd = 1;
+            int previousEnd = 0;
             int landmarkCount = 0;
             for (int placementIndex = 0; placementIndex < first.Count; placementIndex++)
             {
                 CorridorDecorationPlacement placement = first[placementIndex];
                 Assert.That(placement.ForwardOffset, Is.GreaterThanOrEqualTo(previousEnd));
-                Assert.That(placement.EndOffsetExclusive, Is.LessThanOrEqualTo(13));
+                Assert.That(placement.EndOffsetExclusive, Is.LessThanOrEqualTo(14));
                 Assert.That(second[placementIndex].Module, Is.SameAs(placement.Module));
                 Assert.That(
                     second[placementIndex].ForwardOffset,
@@ -215,7 +214,9 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
 
             Assert.That(landmarkCount, Is.LessThanOrEqualTo(1));
             Assert.That(first[0].Module.Role, Is.EqualTo(CorridorDecorationModuleRole.Start));
+            Assert.That(first[0].ForwardOffset, Is.EqualTo(0));
             Assert.That(first[^1].Module.Role, Is.EqualTo(CorridorDecorationModuleRole.End));
+            Assert.That(first[^1].EndOffsetExclusive, Is.EqualTo(14));
         }
         finally
         {
@@ -229,14 +230,14 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
     }
 
     [Test]
-    public void CorridorDecorationComposer_UsesExactShortModuleForRemainingSpan()
+    public void CorridorDecorationComposer_UsesExactShortModuleForFullSpan()
     {
         CorridorDecorationProfileSO profile =
             ScriptableObject.CreateInstance<CorridorDecorationProfileSO>();
         CorridorDecorationModuleSO shortModule = CreateCorridorModule(
-            "Short4",
+            "Short6",
             CorridorDecorationModuleRole.Short,
-            4);
+            6);
         CorridorDecorationModuleSO filler = CreateCorridorModule(
             "Filler",
             CorridorDecorationModuleRole.Filler,
@@ -244,7 +245,6 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
         try
         {
             profile.EditorConfigure(
-                clearanceCells: 1,
                 landmarkLimit: 0,
                 new[] { filler, shortModule });
 
@@ -253,13 +253,52 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
 
             Assert.That(placements, Has.Count.EqualTo(1));
             Assert.That(placements[0].Module, Is.SameAs(shortModule));
-            Assert.That(placements[0].ForwardOffset, Is.EqualTo(1));
-            Assert.That(placements[0].EndOffsetExclusive, Is.EqualTo(5));
+            Assert.That(placements[0].ForwardOffset, Is.EqualTo(0));
+            Assert.That(placements[0].EndOffsetExclusive, Is.EqualTo(6));
         }
         finally
         {
             Object.DestroyImmediate(filler);
             Object.DestroyImmediate(shortModule);
+            Object.DestroyImmediate(profile);
+        }
+    }
+
+    [Test]
+    public void CorridorDecorationComposer_SelectsOnlyRequestedAxisModules()
+    {
+        CorridorDecorationProfileSO profile =
+            ScriptableObject.CreateInstance<CorridorDecorationProfileSO>();
+        CorridorDecorationModuleSO horizontal = CreateCorridorModule(
+            "HorizontalFiller",
+            CorridorDecorationModuleRole.Filler,
+            1,
+            CorridorDecorationAxis.Horizontal);
+        CorridorDecorationModuleSO vertical = CreateCorridorModule(
+            "VerticalFiller",
+            CorridorDecorationModuleRole.Filler,
+            1,
+            CorridorDecorationAxis.Vertical);
+        try
+        {
+            profile.EditorConfigure(0, new[] { horizontal, vertical });
+
+            List<CorridorDecorationPlacement> placements =
+                CorridorDecorationComposer.Compose(
+                    profile,
+                    corridorLength: 5,
+                    layoutSeed: 100,
+                    connectionIndex: 2,
+                    axis: CorridorDecorationAxis.Vertical);
+
+            Assert.That(placements, Has.Count.EqualTo(5));
+            for (int index = 0; index < placements.Count; index++)
+                Assert.That(placements[index].Module, Is.SameAs(vertical));
+        }
+        finally
+        {
+            Object.DestroyImmediate(vertical);
+            Object.DestroyImmediate(horizontal);
             Object.DestroyImmediate(profile);
         }
     }
@@ -278,6 +317,7 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
             Grid grid = gridObject.AddComponent<Grid>();
             authoring.EditorConfigure(
                 "PivotTest",
+                CorridorDecorationAxis.Horizontal,
                 CorridorDecorationModuleRole.Middle,
                 4,
                 editedModule: null);
@@ -382,11 +422,12 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
                 travelEndpointPlacements = new List<RoomTravelEndpointPlacementData>()
             };
             shortModule.EditorSetData(
-                "Short2",
+                "Short4",
+                CorridorDecorationAxis.Horizontal,
                 CorridorDecorationModuleRole.Short,
-                2,
+                4,
                 decorationBuild);
-            profile.EditorConfigure(1, 0, new[] { shortModule });
+            profile.EditorConfigure(0, new[] { shortModule });
             builder.ConfigureCorridorDecoration(profile);
 
             start = CreateLinearCorridorTemplate(
@@ -439,6 +480,119 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
                 Object.DestroyImmediate(start);
             Object.DestroyImmediate(library);
             Object.DestroyImmediate(propPrefab);
+        }
+    }
+
+    [Test]
+    public void DungeonRoomBuilder_UsesVerticalModuleWithoutQuarterTurn()
+    {
+        GameObject root = new("VerticalCorridorDecorationBuild");
+        RoomThemeLibrarySO library = ScriptableObject.CreateInstance<RoomThemeLibrarySO>();
+        RoomTemplateSO start = null;
+        RoomTemplateSO combat = null;
+        CorridorDecorationProfileSO profile =
+            ScriptableObject.CreateInstance<CorridorDecorationProfileSO>();
+        CorridorDecorationModuleSO verticalModule =
+            ScriptableObject.CreateInstance<CorridorDecorationModuleSO>();
+        Tile baseTile = ScriptableObject.CreateInstance<Tile>();
+        Tile verticalDetailTile = ScriptableObject.CreateInstance<Tile>();
+        try
+        {
+            root.AddComponent<Grid>();
+            Tilemap[] tilemaps = new Tilemap[RoomTileLayerContract.OrderedLayers.Count];
+            for (int layerIndex = 0; layerIndex < tilemaps.Length; layerIndex++)
+            {
+                tilemaps[layerIndex] = CreateTestTilemap(
+                    root.transform,
+                    RoomTileLayerContract.OrderedLayers[layerIndex]);
+            }
+
+            DungeonRoomBuilder builder = root.AddComponent<DungeonRoomBuilder>();
+            builder.EditorAssignTilemaps(
+                tilemaps[0],
+                tilemaps[1],
+                tilemaps[2],
+                tilemaps[3],
+                tilemaps[4],
+                tilemaps[5],
+                tilemaps[6],
+                tilemaps[7]);
+            builder.EditorAssignCorridorTiles(baseTile, baseTile);
+
+            verticalModule.EditorSetData(
+                "VerticalShort4",
+                CorridorDecorationAxis.Vertical,
+                CorridorDecorationModuleRole.Short,
+                4,
+                new RoomBuildData
+                {
+                    floorDetailTiles = new List<RoomTileData>
+                    {
+                        new()
+                        {
+                            localCell = Vector2Int.zero,
+                            tile = verticalDetailTile
+                        }
+                    }
+                });
+            profile.EditorConfigure(0, new[] { verticalModule });
+            builder.ConfigureCorridorDecoration(profile);
+
+            start = CreateLinearCorridorTemplate(
+                "VerticalCorridorStart",
+                RoomType.Start,
+                RoomSocketDirection.Up,
+                baseTile);
+            combat = CreateLinearCorridorTemplate(
+                "VerticalCorridorCombat",
+                RoomType.Combat,
+                RoomSocketDirection.Down,
+                baseTile);
+            library.EditorAddRoom(start);
+            library.EditorAddRoom(combat);
+            DungeonLayoutResult layout = new DungeonLayoutAssembler().Assemble(
+                library,
+                seed: 5519,
+                requestedRoomCount: 2,
+                includeBossRoom: false,
+                maxPlacementAttemptsPerRoom: 64,
+                minimumCorridorLength: 4,
+                corridorLengthPerRoomCell: 0f,
+                corridorLengthVariation: 0);
+
+            Assert.That(layout.IsComplete, Is.True, layout.FailureReason);
+            Assert.That(layout.Connections, Has.Count.EqualTo(1));
+            DungeonSocketConnection connection = layout.Connections[0];
+            DungeonRoomPlacement first = layout.Rooms[connection.FirstRoomPlacementId];
+            RoomSocketData socket =
+                first.Template.LayoutData.sockets[connection.FirstSocketIndex];
+            Assert.That(socket.direction, Is.EqualTo(RoomSocketDirection.Up));
+            Assert.That(
+                builder.TryBuild(layout, new DungeonBuildOptions(false, false, true)),
+                Is.True);
+
+            Vector2Int decoratedCell = first.Origin + socket.localCell + Vector2Int.up;
+            Tilemap detail = tilemaps[2];
+            Vector3Int targetCell = new(decoratedCell.x, decoratedCell.y, 0);
+            Assert.That(detail.GetTile(targetCell), Is.SameAs(verticalDetailTile));
+            Matrix4x4 matrix = detail.GetTransformMatrix(targetCell);
+            Assert.That(matrix.m00, Is.EqualTo(1f).Within(0.0001f));
+            Assert.That(matrix.m01, Is.EqualTo(0f).Within(0.0001f));
+            Assert.That(matrix.m10, Is.EqualTo(0f).Within(0.0001f));
+            Assert.That(matrix.m11, Is.EqualTo(1f).Within(0.0001f));
+        }
+        finally
+        {
+            Object.DestroyImmediate(root);
+            Object.DestroyImmediate(verticalDetailTile);
+            Object.DestroyImmediate(baseTile);
+            Object.DestroyImmediate(verticalModule);
+            Object.DestroyImmediate(profile);
+            if (combat != null)
+                Object.DestroyImmediate(combat);
+            if (start != null)
+                Object.DestroyImmediate(start);
+            Object.DestroyImmediate(library);
         }
     }
 
@@ -1111,11 +1265,12 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
     private static CorridorDecorationModuleSO CreateCorridorModule(
         string moduleId,
         CorridorDecorationModuleRole role,
-        int length)
+        int length,
+        CorridorDecorationAxis axis = CorridorDecorationAxis.Horizontal)
     {
         CorridorDecorationModuleSO module =
             ScriptableObject.CreateInstance<CorridorDecorationModuleSO>();
-        module.EditorSetData(moduleId, role, length, new RoomBuildData());
+        module.EditorSetData(moduleId, axis, role, length, new RoomBuildData());
         return module;
     }
 
@@ -1153,9 +1308,14 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
         TileBase baseTile)
     {
         RoomTemplateSO template = ScriptableObject.CreateInstance<RoomTemplateSO>();
-        Vector2Int socketCell = direction == RoomSocketDirection.Right
-            ? new Vector2Int(1, 0)
-            : Vector2Int.zero;
+        Vector2Int socketCell = direction switch
+        {
+            RoomSocketDirection.Up => new Vector2Int(0, 1),
+            RoomSocketDirection.Right => new Vector2Int(1, 0),
+            RoomSocketDirection.Down => Vector2Int.zero,
+            RoomSocketDirection.Left => Vector2Int.zero,
+            _ => Vector2Int.zero
+        };
         List<RoomTileData> floorTiles = new()
         {
             new() { localCell = new Vector2Int(0, 0), tile = baseTile },

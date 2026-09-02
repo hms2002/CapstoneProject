@@ -1722,7 +1722,53 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             : objectPlacement.localScale == Vector3.zero
                 ? objectPlacement.prefab.transform.localScale
                 : objectPlacement.localScale;
+
+        if (!TryApplyCompositePoseOverrides(
+                roomName,
+                objectPlacement,
+                instance))
+        {
+            Destroy(instance);
+            instance = null;
+            return false;
+        }
+
         return true;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 생성된 복합 프리팹에 현재 방 배치가 저장한 슬롯별 자세 재정의를 기능 연결 전에 적용한다.
+    /// </summary>
+    private bool TryApplyCompositePoseOverrides(
+        string roomName,
+        RoomObjectPlacementData objectPlacement,
+        GameObject instance)
+    {
+        IReadOnlyList<RoomObjectChildPoseOverrideData> overrides =
+            objectPlacement.childPoseOverrides;
+        if (overrides == null || overrides.Count == 0)
+            return true;
+
+        RoomCompositePoseAuthoring composite =
+            instance.GetComponentInChildren<RoomCompositePoseAuthoring>(true);
+        if (composite == null)
+        {
+            Debug.LogError(
+                $"Room '{roomName}' object '{objectPlacement.placementId}' has child pose overrides " +
+                "but its prefab has no RoomCompositePoseAuthoring component.",
+                this);
+            return false;
+        }
+
+        if (composite.TryApplyPoseOverrides(overrides, out string failureReason))
+            return true;
+
+        Debug.LogError(
+            $"Room '{roomName}' object '{objectPlacement.placementId}' could not apply child pose overrides: " +
+            failureReason,
+            this);
+        return false;
     }
 
     /// <summary>
@@ -2033,12 +2079,16 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         if (corridorDecorationProfile == null || corridorLength <= 0)
             return true;
 
+        CorridorDecorationAxis axis = IsHorizontalConnection(socket.direction)
+            ? CorridorDecorationAxis.Horizontal
+            : CorridorDecorationAxis.Vertical;
         List<CorridorDecorationPlacement> placements =
             CorridorDecorationComposer.Compose(
                 corridorDecorationProfile,
                 corridorLength,
                 layoutSeed,
-                connectionIndex);
+                connectionIndex,
+                axis);
         for (int placementIndex = 0; placementIndex < placements.Count; placementIndex++)
         {
             CorridorDecorationPlacement placement = placements[placementIndex];
@@ -2130,18 +2180,24 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     {
         Vector2Int direction = DirectionToVector(socket.direction);
         Vector2Int tangent = RoomSocketGeometry.GetTangent(socket.direction);
-        Matrix4x4 orientation = CreateCorridorOrientationMatrix(direction, tangent);
+        ResolveCorridorModuleBasis(
+            module.Axis,
+            direction,
+            tangent,
+            out Vector2Int basisX,
+            out Vector2Int basisY);
+        Matrix4x4 orientation = CreateCorridorOrientationMatrix(basisX, basisY);
         for (int tileIndex = 0; tileIndex < tiles.Count; tileIndex++)
         {
             RoomTileData tile = tiles[tileIndex];
             if (tile.tile == null)
                 continue;
 
-            if (!IsInsideCorridorModuleFootprint(tile.localCell, module.Length))
+            if (!IsInsideCorridorModuleFootprint(tile.localCell, module))
             {
                 Debug.LogError(
                     $"Corridor decoration '{module.ModuleId}' tile {tile.localCell} is outside " +
-                    $"the canonical x=0..{module.Length - 1}, y=-1..2 footprint.",
+                    $"the canonical {GetCorridorModuleFootprintDescription(module)} footprint.",
                     module);
                 return false;
             }
@@ -2151,7 +2207,8 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
                 direction,
                 tangent,
                 forwardOffset,
-                tile.localCell);
+                tile.localCell,
+                module.Axis);
             Vector3Int targetCell = new(worldCell.x, worldCell.y, 0);
             target.SetTile(targetCell, tile.tile);
             target.SetTileFlags(targetCell, TileFlags.None);
@@ -2175,8 +2232,14 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
 
         Vector2Int direction = DirectionToVector(socket.direction);
         Vector2Int tangent = RoomSocketGeometry.GetTangent(socket.direction);
-        int orientationSign = direction.x * tangent.y - direction.y * tangent.x;
-        float directionDegrees = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        ResolveCorridorModuleBasis(
+            module.Axis,
+            direction,
+            tangent,
+            out Vector2Int basisX,
+            out Vector2Int basisY);
+        int orientationSign = basisX.x * basisY.y - basisX.y * basisY.x;
+        float basisXDegrees = Mathf.Atan2(basisX.y, basisX.x) * Mathf.Rad2Deg;
         GridLayout grid = floorTilemap.layoutGrid;
         Quaternion gridRotation = grid != null ? grid.transform.rotation : Quaternion.identity;
         Transform objectRoot = ResolveGeneratedObjectRoot();
@@ -2194,12 +2257,12 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
 
             if (!IsInsideCorridorModuleFootprint(
                     objectPlacement.localCell,
-                    module.Length))
+                    module))
             {
                 Debug.LogError(
                     $"Corridor decoration '{module.ModuleId}' object " +
                     $"'{objectPlacement.placementId}' Pivot {objectPlacement.localCell} is outside " +
-                    $"the canonical x=0..{module.Length - 1}, y=-1..2 footprint.",
+                    $"the canonical {GetCorridorModuleFootprintDescription(module)} footprint.",
                     module);
                 return false;
             }
@@ -2209,11 +2272,12 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
                 direction,
                 tangent,
                 forwardOffset,
-                objectPlacement.localCell);
+                objectPlacement.localCell,
+                module.Axis);
             Vector3Int targetCell = new(worldCell.x, worldCell.y, 0);
             Vector2 orientedLocalOffset =
-                (Vector2)direction * objectPlacement.localOffset.x +
-                (Vector2)tangent * objectPlacement.localOffset.y;
+                (Vector2)basisX * objectPlacement.localOffset.x +
+                (Vector2)basisY * objectPlacement.localOffset.y;
             Vector3 gridLocalOffset = new(
                 orientedLocalOffset.x,
                 orientedLocalOffset.y,
@@ -2228,7 +2292,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             Quaternion worldRotation = gridRotation * Quaternion.Euler(
                 0f,
                 0f,
-                directionDegrees + localRotation);
+                basisXDegrees + localRotation);
             GameObject instance = Instantiate(
                 objectPlacement.prefab,
                 worldPosition,
@@ -2264,12 +2328,28 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
 
     private static bool IsInsideCorridorModuleFootprint(
         Vector2Int localCell,
-        int moduleLength)
+        CorridorDecorationModuleSO module)
     {
-        return localCell.x >= 0 &&
-               localCell.x < moduleLength &&
-               localCell.y >= -1 &&
-               localCell.y <= RoomSocketGeometry.RequiredWidth;
+        if (module == null)
+            return false;
+
+        return module.Axis == CorridorDecorationAxis.Horizontal
+            ? localCell.x >= 0 &&
+              localCell.x < module.Length &&
+              localCell.y >= -1 &&
+              localCell.y <= RoomSocketGeometry.RequiredWidth
+            : localCell.y >= 0 &&
+              localCell.y < module.Length &&
+              localCell.x >= -1 &&
+              localCell.x <= RoomSocketGeometry.RequiredWidth;
+    }
+
+    private static string GetCorridorModuleFootprintDescription(
+        CorridorDecorationModuleSO module)
+    {
+        return module.Axis == CorridorDecorationAxis.Horizontal
+            ? $"x=0..{module.Length - 1}, y=-1..2"
+            : $"x=-1..2, y=0..{module.Length - 1}";
     }
 
     private static Vector2Int TransformCorridorModuleCell(
@@ -2277,22 +2357,47 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         Vector2Int direction,
         Vector2Int tangent,
         int forwardOffset,
-        Vector2Int localCell)
+        Vector2Int localCell,
+        CorridorDecorationAxis axis)
     {
+        int forward = axis == CorridorDecorationAxis.Horizontal
+            ? localCell.x
+            : localCell.y;
+        int lateral = axis == CorridorDecorationAxis.Horizontal
+            ? localCell.y
+            : localCell.x;
         return firstSocketCell +
-               direction * (forwardOffset + localCell.x + 1) +
-               tangent * localCell.y;
+               direction * (forwardOffset + forward + 1) +
+               tangent * lateral;
+    }
+
+    private static void ResolveCorridorModuleBasis(
+        CorridorDecorationAxis axis,
+        Vector2Int direction,
+        Vector2Int tangent,
+        out Vector2Int basisX,
+        out Vector2Int basisY)
+    {
+        if (axis == CorridorDecorationAxis.Horizontal)
+        {
+            basisX = direction;
+            basisY = tangent;
+            return;
+        }
+
+        basisX = tangent;
+        basisY = direction;
     }
 
     private static Matrix4x4 CreateCorridorOrientationMatrix(
-        Vector2Int direction,
-        Vector2Int tangent)
+        Vector2Int basisX,
+        Vector2Int basisY)
     {
         Matrix4x4 orientation = Matrix4x4.identity;
-        orientation.m00 = direction.x;
-        orientation.m01 = tangent.x;
-        orientation.m10 = direction.y;
-        orientation.m11 = tangent.y;
+        orientation.m00 = basisX.x;
+        orientation.m01 = basisY.x;
+        orientation.m10 = basisX.y;
+        orientation.m11 = basisY.y;
         return orientation;
     }
 

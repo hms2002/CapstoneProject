@@ -25,6 +25,8 @@ namespace UnityGAS
         [Tooltip("EntityCollisionProfile2D가 액터 통과 모드일 때 부드러운 분리 외압도 멈춥니다.")]
         [SerializeField] private bool suspendWhileBodyPassesThroughActors;
         [SerializeField, Min(0f)] private float pushSpeed = 2.8f;
+        [Tooltip("값이 클수록 같은 겹침에서도 덜 밀립니다. Tank처럼 무거운 액터의 소프트 분리 저항에 사용합니다.")]
+        [SerializeField, Min(0.05f)] private float pushResistance = 1f;
         [SerializeField, Min(0.01f)] private float pushDurationSeconds = 0.08f;
         [SerializeField, Min(0f)] private float wallProbeDistance = 0.08f;
         [SerializeField, Min(1)] private int maxActorsPerTick = 8;
@@ -33,6 +35,42 @@ namespace UnityGAS
         private readonly RaycastHit2D[] wallHits = new RaycastHit2D[4];
         private ContactFilter2D actorFilter;
         private ContactFilter2D wallFilter;
+
+        public float PushResistance => pushResistance;
+
+        /// <summary>
+        /// 책임:
+        /// 프리팹 authoring 도구가 자식 body collider와 이동 구성, 역할별 밀림 저항을 명시적으로 저장할 수 있게 한다.
+        /// </summary>
+        public void Configure(
+            Collider2D configuredBodyCollider,
+            Rigidbody2D configuredBody,
+            ExternalMovementController2D configuredExternalMovement,
+            EntityCollisionProfile2D configuredCollisionProfile,
+            LayerMask configuredActorLayers,
+            LayerMask configuredWallLayers,
+            bool suspendForPassThroughMode,
+            float configuredPushSpeed,
+            float configuredPushResistance,
+            float configuredPushDurationSeconds,
+            float configuredWallProbeDistance,
+            int configuredMaxActorsPerTick)
+        {
+            bodyCollider = configuredBodyCollider;
+            body = configuredBody;
+            externalMovement = configuredExternalMovement;
+            collisionProfile = configuredCollisionProfile;
+            actorLayers = configuredActorLayers;
+            wallLayers = configuredWallLayers;
+            suspendWhileBodyPassesThroughActors = suspendForPassThroughMode;
+            pushSpeed = Mathf.Max(0f, configuredPushSpeed);
+            pushResistance = Mathf.Max(0.05f, configuredPushResistance);
+            pushDurationSeconds = Mathf.Max(0.01f, configuredPushDurationSeconds);
+            wallProbeDistance = Mathf.Max(0f, configuredWallProbeDistance);
+            maxActorsPerTick = Mathf.Clamp(configuredMaxActorsPerTick, 1, actorHits.Length);
+
+            ConfigureFilters();
+        }
 
         private void Awake()
         {
@@ -69,7 +107,7 @@ namespace UnityGAS
                 return;
 
             externalMovement.AddTimedVelocity(
-                pushDirection.normalized * pushSpeed,
+                pushDirection.normalized * (pushSpeed / Mathf.Max(0.05f, pushResistance)),
                 pushDurationSeconds,
                 source: this);
         }

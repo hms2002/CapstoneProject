@@ -3,13 +3,15 @@ using UnityEngine.Tilemaps;
 
 /// <summary>
 /// 책임:
-/// - 복도 장식 제작 작업 공간의 +X 진행축 길이, 역할, 고정 Tilemap 슬롯과 원본 모듈 참조를 보관한다.
+/// - 복도 장식 제작 작업 공간의 가로·세로 진행축, 길이, 역할, 고정 Tilemap 슬롯과 원본 모듈 참조를 보관한다.
 /// - 제작 툴이 레이어 타일과 Pivot 기반 GroundProp을 CorridorDecorationModuleSO로 Bake할 기준점을 제공한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class CorridorDecorationModuleAuthoring : MonoBehaviour
 {
     [SerializeField] private string moduleId = "Corridor_Module";
+    [SerializeField] private CorridorDecorationAxis axis =
+        CorridorDecorationAxis.Horizontal;
     [SerializeField] private CorridorDecorationModuleRole role =
         CorridorDecorationModuleRole.Middle;
     [SerializeField, Min(1)] private int length = 2;
@@ -25,6 +27,7 @@ public sealed class CorridorDecorationModuleAuthoring : MonoBehaviour
     [HideInInspector, SerializeField] private CorridorDecorationModuleSO sourceModule;
 
     public string ModuleId => moduleId;
+    public CorridorDecorationAxis Axis => axis;
     public CorridorDecorationModuleRole Role => role;
     public int Length => Mathf.Max(1, length);
     public Grid Grid => grid;
@@ -52,11 +55,13 @@ public sealed class CorridorDecorationModuleAuthoring : MonoBehaviour
     /// </summary>
     public void EditorConfigure(
         string id,
+        CorridorDecorationAxis moduleAxis,
         CorridorDecorationModuleRole moduleRole,
         int moduleLength,
         CorridorDecorationModuleSO editedModule)
     {
         moduleId = id ?? string.Empty;
+        axis = moduleAxis;
         role = moduleRole;
         length = Mathf.Max(1, moduleLength);
         sourceModule = editedModule;
@@ -99,10 +104,18 @@ public sealed class CorridorDecorationModuleAuthoring : MonoBehaviour
         if (grid == null)
             return;
 
-        Vector3 bottomLeft = grid.CellToWorld(new Vector3Int(0, -1, 0));
-        Vector3 bottomRight = grid.CellToWorld(new Vector3Int(Length, -1, 0));
-        Vector3 topRight = grid.CellToWorld(new Vector3Int(Length, 3, 0));
-        Vector3 topLeft = grid.CellToWorld(new Vector3Int(0, 3, 0));
+        Vector3Int minimum = Axis == CorridorDecorationAxis.Horizontal
+            ? new Vector3Int(0, -1, 0)
+            : new Vector3Int(-1, 0, 0);
+        Vector3Int maximum = Axis == CorridorDecorationAxis.Horizontal
+            ? new Vector3Int(Length, 3, 0)
+            : new Vector3Int(3, Length, 0);
+        Vector3 bottomLeft = grid.CellToWorld(minimum);
+        Vector3 bottomRight = grid.CellToWorld(
+            new Vector3Int(maximum.x, minimum.y, 0));
+        Vector3 topRight = grid.CellToWorld(maximum);
+        Vector3 topLeft = grid.CellToWorld(
+            new Vector3Int(minimum.x, maximum.y, 0));
         Gizmos.color = new Color(0.2f, 0.9f, 1f);
         Gizmos.DrawLine(bottomLeft, bottomRight);
         Gizmos.DrawLine(bottomRight, topRight);

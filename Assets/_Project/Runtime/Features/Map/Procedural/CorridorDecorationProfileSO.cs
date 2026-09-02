@@ -4,7 +4,7 @@ using UnityEngine;
 
 /// <summary>
 /// 책임:
-/// - 한 테마에서 사용할 복도 장식 모듈과 문 앞 안전 여백, 복도당 랜드마크 제한을 보관한다.
+/// - 한 테마에서 사용할 복도 장식 모듈과 복도당 랜드마크 제한을 보관한다.
 /// - 런타임 조립기와 제작 미리보기가 동일한 장식 후보 집합을 사용하게 한다.
 /// </summary>
 [CreateAssetMenu(
@@ -12,27 +12,22 @@ using UnityEngine;
     menuName = "Gameplay/Dungeon/Corridor Decoration Profile")]
 public sealed class CorridorDecorationProfileSO : ScriptableObject
 {
-    [Tooltip("각 문과 장식 사이에 비워 두는 복도 셀 수입니다.")]
-    [SerializeField, Min(0)] private int doorClearanceCells = 1;
     [Tooltip("한 연결 복도에 배치할 수 있는 Landmark 조각의 최대 수입니다.")]
     [SerializeField, Min(0)] private int maxLandmarksPerCorridor = 1;
     [SerializeField] private List<CorridorDecorationModuleSO> modules = new();
 
-    public int DoorClearanceCells => Mathf.Max(0, doorClearanceCells);
     public int MaxLandmarksPerCorridor => Mathf.Max(0, maxLandmarksPerCorridor);
     public IReadOnlyList<CorridorDecorationModuleSO> Modules =>
         modules ?? (IReadOnlyList<CorridorDecorationModuleSO>)Array.Empty<CorridorDecorationModuleSO>();
 
 #if UNITY_EDITOR
     /// <summary>
-    /// 책임 : 복도 제작 툴이 안전 여백과 모듈 후보를 중복 없이 테마 장식 프로필에 저장한다.
+    /// 책임 : 복도 제작 툴이 랜드마크 제한과 모듈 후보를 중복 없이 테마 장식 프로필에 저장한다.
     /// </summary>
     public void EditorConfigure(
-        int clearanceCells,
         int landmarkLimit,
         IReadOnlyList<CorridorDecorationModuleSO> decorationModules)
     {
-        doorClearanceCells = Mathf.Max(0, clearanceCells);
         maxLandmarksPerCorridor = Mathf.Max(0, landmarkLimit);
         modules ??= new List<CorridorDecorationModuleSO>();
         modules.Clear();
@@ -59,7 +54,6 @@ public sealed class CorridorDecorationProfileSO : ScriptableObject
 
     private void OnValidate()
     {
-        doorClearanceCells = Mathf.Max(0, doorClearanceCells);
         maxLandmarksPerCorridor = Mathf.Max(0, maxLandmarksPerCorridor);
         modules ??= new List<CorridorDecorationModuleSO>();
         for (int moduleIndex = modules.Count - 1; moduleIndex >= 0; moduleIndex--)
@@ -92,7 +86,7 @@ public readonly struct CorridorDecorationPlacement
 
 /// <summary>
 /// 책임:
-/// - 가변 복도 길이에서 문 앞 여백을 보존하고 Start·Short·Middle·Landmark·Filler·End 모듈을 겹치지 않게 조합한다.
+/// - 가변 복도 전체 길이에 요청 축과 일치하는 Start·Short·Middle·Landmark·Filler·End 모듈을 겹치지 않게 조합한다.
 /// - 레이아웃 Seed와 연결 번호만으로 같은 배치 결과를 반복 생성한다.
 /// </summary>
 public static class CorridorDecorationComposer
@@ -101,28 +95,26 @@ public static class CorridorDecorationComposer
         CorridorDecorationProfileSO profile,
         int corridorLength,
         int layoutSeed,
-        int connectionIndex)
+        int connectionIndex,
+        CorridorDecorationAxis axis = CorridorDecorationAxis.Horizontal)
     {
         var placements = new List<CorridorDecorationPlacement>();
         if (profile == null || corridorLength <= 0 || profile.Modules.Count == 0)
             return placements;
 
-        int clearance = Mathf.Min(
-            profile.DoorClearanceCells,
-            Mathf.Max(0, corridorLength / 2));
-        int spanStart = clearance;
-        int spanEnd = corridorLength - clearance;
-        int spanLength = spanEnd - spanStart;
-        if (spanLength <= 0)
-            return placements;
+        const int spanStart = 0;
+        int spanEnd = corridorLength;
+        int spanLength = corridorLength;
 
         var random = new System.Random(unchecked(
             layoutSeed ^
             (connectionIndex * 486187739) ^
-            (corridorLength * 16777619)));
+            (corridorLength * 16777619) ^
+            ((int)axis * 104729)));
 
         List<CorridorDecorationModuleSO> exactShort = CollectCandidates(
             profile.Modules,
+            axis,
             CorridorDecorationModuleRole.Short,
             spanLength,
             requireExactLength: true);
@@ -137,6 +129,7 @@ public static class CorridorDecorationComposer
         int cursor = spanStart;
         CorridorDecorationModuleSO start = SelectCandidate(
             profile.Modules,
+            axis,
             CorridorDecorationModuleRole.Start,
             spanEnd - cursor,
             random);
@@ -148,6 +141,7 @@ public static class CorridorDecorationComposer
 
         CorridorDecorationModuleSO end = SelectCandidate(
             profile.Modules,
+            axis,
             CorridorDecorationModuleRole.End,
             spanEnd - cursor,
             random);
@@ -167,11 +161,13 @@ public static class CorridorDecorationComposer
             AddCandidates(
                 candidates,
                 profile.Modules,
+                axis,
                 CorridorDecorationModuleRole.Middle,
                 remaining);
             AddCandidates(
                 candidates,
                 profile.Modules,
+                axis,
                 CorridorDecorationModuleRole.Filler,
                 remaining);
             if (landmarkCount < profile.MaxLandmarksPerCorridor)
@@ -179,6 +175,7 @@ public static class CorridorDecorationComposer
                 AddCandidates(
                     candidates,
                     profile.Modules,
+                    axis,
                     CorridorDecorationModuleRole.Landmark,
                     remaining);
             }
@@ -208,12 +205,14 @@ public static class CorridorDecorationComposer
 
     private static CorridorDecorationModuleSO SelectCandidate(
         IReadOnlyList<CorridorDecorationModuleSO> modules,
+        CorridorDecorationAxis axis,
         CorridorDecorationModuleRole role,
         int maximumLength,
         System.Random random)
     {
         List<CorridorDecorationModuleSO> candidates = CollectCandidates(
             modules,
+            axis,
             role,
             maximumLength,
             requireExactLength: false);
@@ -224,6 +223,7 @@ public static class CorridorDecorationComposer
 
     private static List<CorridorDecorationModuleSO> CollectCandidates(
         IReadOnlyList<CorridorDecorationModuleSO> modules,
+        CorridorDecorationAxis axis,
         CorridorDecorationModuleRole role,
         int length,
         bool requireExactLength)
@@ -236,6 +236,7 @@ public static class CorridorDecorationComposer
         {
             CorridorDecorationModuleSO module = modules[moduleIndex];
             if (module == null ||
+                module.Axis != axis ||
                 module.Role != role ||
                 (requireExactLength
                     ? module.Length != length
@@ -253,13 +254,17 @@ public static class CorridorDecorationComposer
     private static void AddCandidates(
         List<CorridorDecorationModuleSO> destination,
         IReadOnlyList<CorridorDecorationModuleSO> modules,
+        CorridorDecorationAxis axis,
         CorridorDecorationModuleRole role,
         int maximumLength)
     {
         for (int moduleIndex = 0; moduleIndex < modules.Count; moduleIndex++)
         {
             CorridorDecorationModuleSO module = modules[moduleIndex];
-            if (module != null && module.Role == role && module.Length <= maximumLength)
+            if (module != null &&
+                module.Axis == axis &&
+                module.Role == role &&
+                module.Length <= maximumLength)
                 destination.Add(module);
         }
     }

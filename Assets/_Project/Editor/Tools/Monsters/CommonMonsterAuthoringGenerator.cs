@@ -21,6 +21,7 @@ public static class CommonMonsterAuthoringGenerator
     private const string LightBeadPrefabPath = "Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/LightBead.prefab";
     private const string DamageEffectPath = "Assets/_Project/Data/Abilities/Effects/GE_MobAttackDamage_Spec.asset";
     private const string KnockbackEffectPath = "Assets/_Project/Data/Abilities/Effects/GE_Knockback_Spec.asset";
+    private const string FlashMaterialPath = "Assets/_Project/Art/Materials/FlashMat.mat";
     private const string RunOnceMarkerPath = "Temp/CommonMonsterAuthoringGenerator.runonce";
     private static readonly string[] EnemyLayerNames = { "Enemy", "TEMP_Enemy_LAYER" };
 
@@ -52,9 +53,16 @@ public static class CommonMonsterAuthoringGenerator
         GE_Knockback_Spec knockbackEffect = LoadOptional<GE_Knockback_Spec>(KnockbackEffectPath);
         GameObject projectilePrefab = LoadRequired<GameObject>(LightBeadPrefabPath);
         GameObject templatePrefab = LoadRequired<GameObject>(TemplatePrefabPath);
+        Material flashMaterial = LoadRequired<Material>(FlashMaterialPath);
 
         var abilities = CreateAbilityAssets();
-        var prefabs = CreateMonsterPrefabs(templatePrefab, abilities, damageEffect, knockbackEffect, projectilePrefab);
+        var prefabs = CreateMonsterPrefabs(
+            templatePrefab,
+            abilities,
+            damageEffect,
+            knockbackEffect,
+            projectilePrefab,
+            flashMaterial);
         CreateStageMonsterSets(prefabs);
         CommonMonsterAnimatorAuthoringGenerator.Configure();
 
@@ -139,11 +147,14 @@ public static class CommonMonsterAuthoringGenerator
         CommonMonsterAbilityAssets abilities,
         GE_Damage_Spec damageEffect,
         GE_Knockback_Spec knockbackEffect,
-        GameObject projectilePrefab)
+        GameObject projectilePrefab,
+        Material flashMaterial)
     {
         GameObject goblinWarrior = CreateMonsterPrefab<GoblinWarrior, GoblinWarriorChargeRunner>(
             templatePrefab,
             "GoblinWarrior",
+            MonsterBodyInteractionPreset.Warrior,
+            flashMaterial,
             abilities.GoblinWarrior,
             damageEffect,
             knockbackEffect,
@@ -153,6 +164,8 @@ public static class CommonMonsterAuthoringGenerator
         GameObject goblinGunner = CreateMonsterPrefab<GoblinGunner, GoblinGunnerShotRunner>(
             templatePrefab,
             "GoblinGunner",
+            MonsterBodyInteractionPreset.Agile,
+            flashMaterial,
             abilities.GoblinGunner,
             damageEffect,
             null,
@@ -162,6 +175,8 @@ public static class CommonMonsterAuthoringGenerator
         GameObject goblinTank = CreateMonsterPrefab<GoblinTank, GoblinTankSlamRunner>(
             templatePrefab,
             "GoblinTank",
+            MonsterBodyInteractionPreset.Tank,
+            flashMaterial,
             abilities.GoblinTank,
             damageEffect,
             knockbackEffect,
@@ -171,6 +186,8 @@ public static class CommonMonsterAuthoringGenerator
         GameObject lizardWarrior = CreateMonsterPrefab<LizardWarrior, LizardWarriorChargeRunner>(
             templatePrefab,
             "LizardWarrior",
+            MonsterBodyInteractionPreset.Warrior,
+            flashMaterial,
             abilities.LizardWarrior,
             damageEffect,
             knockbackEffect,
@@ -180,6 +197,8 @@ public static class CommonMonsterAuthoringGenerator
         GameObject lizardMage = CreateMonsterPrefab<LizardMage, LizardMageBurstRunner>(
             templatePrefab,
             "LizardMage",
+            MonsterBodyInteractionPreset.Agile,
+            flashMaterial,
             abilities.LizardMage,
             damageEffect,
             null,
@@ -189,6 +208,8 @@ public static class CommonMonsterAuthoringGenerator
         GameObject arcaneMeleeGolem = CreateMonsterPrefab<ArcaneMeleeGolem, ArcaneMeleeGolemChargeRunner>(
             templatePrefab,
             "ArcaneMeleeGolem",
+            MonsterBodyInteractionPreset.Warrior,
+            flashMaterial,
             abilities.ArcaneMeleeGolem,
             damageEffect,
             knockbackEffect,
@@ -198,6 +219,8 @@ public static class CommonMonsterAuthoringGenerator
         GameObject arcaneTankGolem = CreateMonsterPrefab<ArcaneTankGolem, ArcaneTankGolemSlamRunner>(
             templatePrefab,
             "ArcaneTankGolem",
+            MonsterBodyInteractionPreset.Tank,
+            flashMaterial,
             abilities.ArcaneTankGolem,
             damageEffect,
             knockbackEffect,
@@ -219,6 +242,8 @@ public static class CommonMonsterAuthoringGenerator
     private static GameObject CreateMonsterPrefab<TMonster, TRunner>(
         GameObject templatePrefab,
         string prefabName,
+        MonsterBodyInteractionPreset bodyInteraction,
+        Material flashMaterial,
         AbilityDefinition ability,
         GE_Damage_Spec damageEffect,
         GE_Knockback_Spec knockbackEffect,
@@ -228,25 +253,43 @@ public static class CommonMonsterAuthoringGenerator
         where TRunner : MonoBehaviour, IMobPatternRunner
     {
         string prefabPath = $"{PrefabFolder}/{prefabName}.prefab";
-        GameObject instance = CreateBaseMonsterInstance(templatePrefab, prefabName);
+        bool editsExistingPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath) != null;
+        GameObject instance = editsExistingPrefab
+            ? PrefabUtility.LoadPrefabContents(prefabPath)
+            : CreateBaseMonsterInstance(templatePrefab, prefabName);
 
-        TMonster monster = instance.GetComponent<TMonster>();
-        if (monster == null)
-            monster = instance.AddComponent<TMonster>();
+        try
+        {
+            TMonster monster = instance.GetComponent<TMonster>();
+            if (monster == null)
+                monster = instance.AddComponent<TMonster>();
 
-        TRunner runner = instance.GetComponent<TRunner>();
-        if (runner == null)
-            runner = instance.AddComponent<TRunner>();
+            TRunner runner = instance.GetComponent<TRunner>();
+            if (runner == null)
+                runner = instance.AddComponent<TRunner>();
 
-        ApplyCommonMonsterReferences(instance, monster, prefabName);
-        ApplyMonsterSpecificReferences(monster, ability, damageEffect, knockbackEffect, projectilePrefab);
-        ApplyRunnerReferences(instance, runner, monster);
-        ConfigureArcaneTankHeightPresentation(instance, prefabName);
-        ConfigureAbilitySystem(instance, ability);
+            EntityCollisionProfile2D collisionProfile = EnsureComponent<EntityCollisionProfile2D>(instance);
+            Collider2D bodyCollider = ResolveAuthoredCollider(instance, "BodyCollision", requireTrigger: false);
+            ConfigureBodyInteraction(instance, bodyCollider, collisionProfile, bodyInteraction);
+            ConfigureHitFlash(instance, flashMaterial);
 
-        configureMonster?.Invoke(monster);
-        PrefabUtility.SaveAsPrefabAsset(instance, prefabPath);
-        UnityEngine.Object.DestroyImmediate(instance);
+            ApplyCommonMonsterReferences(instance, monster, prefabName);
+            ApplyMonsterSpecificReferences(monster, ability, damageEffect, knockbackEffect, projectilePrefab);
+            ApplyRunnerReferences(instance, runner, monster);
+            ConfigureArcaneTankHeightPresentation(instance, prefabName);
+            ConfigureAbilitySystem(instance, ability);
+
+            configureMonster?.Invoke(monster);
+            PrefabUtility.SaveAsPrefabAsset(instance, prefabPath);
+        }
+        finally
+        {
+            if (editsExistingPrefab)
+                PrefabUtility.UnloadPrefabContents(instance);
+            else
+                UnityEngine.Object.DestroyImmediate(instance);
+        }
+
         return AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
     }
 
@@ -275,6 +318,89 @@ public static class CommonMonsterAuthoringGenerator
         CopyTemplateCoreComponents(templatePrefab, instance);
         ConfigureCoreReferences(instance, bodyCollider, hurtboxCollider, chaseIntent, collisionProfile);
         return instance;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 기존 또는 신규 공통 몬스터 프리팹에서 이름으로 구분된 body/hurtbox collider를 안전하게 찾는다.
+    /// </summary>
+    private static Collider2D ResolveAuthoredCollider(
+        GameObject instance,
+        string childName,
+        bool requireTrigger)
+    {
+        Transform child = instance.transform.Find(childName);
+        Collider2D collider = child != null ? child.GetComponent<Collider2D>() : null;
+        if (collider == null || collider.isTrigger != requireTrigger)
+            throw new InvalidOperationException(
+                $"{instance.name}: '{childName}' needs a collider with isTrigger={requireTrigger}.");
+
+        return collider;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 공통 몬스터 프리팹에 Enemy끼리의 소프트 분리와 Player에 대한 실제 몸체 충돌을 저장한다.
+    /// - 역할 프리셋에 따라 Rigidbody 질량과 소프트 분리 저항을 지정한다.
+    /// </summary>
+    private static void ConfigureBodyInteraction(
+        GameObject instance,
+        Collider2D bodyCollider,
+        EntityCollisionProfile2D collisionProfile,
+        MonsterBodyInteractionPreset preset)
+    {
+        Rigidbody2D body = instance.GetComponent<Rigidbody2D>();
+        ExternalMovementController2D externalMovement = instance.GetComponent<ExternalMovementController2D>();
+        ActorSoftCollision2D softCollision = EnsureComponent<ActorSoftCollision2D>(instance);
+        int enemyLayers = ResolveLayerMask(EnemyLayerNames);
+
+        if (body != null)
+            body.mass = preset.Mass;
+
+        SerializedObject profileSerialized = new(collisionProfile);
+        int baseExcludedLayers = profileSerialized.FindProperty("baseExcludedLayers")?.intValue ?? 0;
+        collisionProfile.Configure(
+            new[] { bodyCollider },
+            baseExcludedLayers,
+            enemyLayers,
+            EntityCollisionProfile2D.BodyCollisionMode.PassThroughActors,
+            applyImmediately: true);
+
+        softCollision.Configure(
+            bodyCollider,
+            body,
+            externalMovement,
+            collisionProfile,
+            enemyLayers,
+            LayerMask.GetMask("Wall"),
+            suspendForPassThroughMode: false,
+            configuredPushSpeed: 2.8f,
+            configuredPushResistance: preset.PushResistance,
+            configuredPushDurationSeconds: 0.08f,
+            configuredWallProbeDistance: 0.08f,
+            configuredMaxActorsPerTick: 8);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 공통 몬스터의 주 시각 SpriteRenderer에 전용 Flash 머티리얼과 흰색 0.08초 점멸 설정을 프리팹 데이터로 저장한다.
+    /// </summary>
+    private static void ConfigureHitFlash(GameObject instance, Material flashMaterial)
+    {
+        Transform visual = instance.transform.Find("Visual");
+        SpriteRenderer renderer = visual != null ? visual.GetComponent<SpriteRenderer>() : null;
+        if (renderer == null)
+            throw new InvalidOperationException($"{instance.name}: Visual SpriteRenderer is required for hit flash authoring.");
+
+        renderer.sharedMaterial = flashMaterial;
+
+        SpriteHitFlashController flash = EnsureComponent<SpriteHitFlashController>(instance);
+        SerializedObject serialized = new(flash);
+        SetObjectArray(serialized, "targetRenderers", new UnityEngine.Object[] { renderer });
+        SetColor(serialized, "flashColor", Color.white);
+        SetFloat(serialized, "flashMultiply", 1.5f);
+        SetFloat(serialized, "flashDuration", 0.08f);
+        serialized.ApplyModifiedPropertiesWithoutUndo();
     }
 
     /// <summary>
@@ -402,7 +528,8 @@ public static class CommonMonsterAuthoringGenerator
 
         SerializedObject profile = new SerializedObject(collisionProfile);
         SetObjectArray(profile, "bodyColliders", new UnityEngine.Object[] { bodyCollider });
-        SetLayerMask(profile, "actorLayers", ResolveLayerMask("Player", EnemyLayerNames));
+        SetLayerMask(profile, "actorLayers", ResolveLayerMask(EnemyLayerNames));
+        SetInt(profile, "defaultMode", (int)EntityCollisionProfile2D.BodyCollisionMode.PassThroughActors);
         profile.ApplyModifiedPropertiesWithoutUndo();
 
         AbilitySystem abilitySystem = instance.GetComponent<AbilitySystem>();
@@ -715,6 +842,26 @@ public static class CommonMonsterAuthoringGenerator
         SerializedProperty property = serialized.FindProperty(propertyName);
         if (property != null)
             property.intValue = value;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 공통 몬스터 역할별 Rigidbody 질량과 Enemy 간 소프트 분리 저항 기본값을 함께 전달한다.
+    /// </summary>
+    private readonly struct MonsterBodyInteractionPreset
+    {
+        public static MonsterBodyInteractionPreset Agile => new(0.85f, 0.8f);
+        public static MonsterBodyInteractionPreset Warrior => new(1.25f, 1.25f);
+        public static MonsterBodyInteractionPreset Tank => new(2.5f, 2.25f);
+
+        public MonsterBodyInteractionPreset(float mass, float pushResistance)
+        {
+            Mass = mass;
+            PushResistance = pushResistance;
+        }
+
+        public float Mass { get; }
+        public float PushResistance { get; }
     }
 
     private sealed class CommonMonsterAbilityAssets

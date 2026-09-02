@@ -434,7 +434,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 2147483656
+    m_Bits: 8
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -2186,6 +2186,7 @@ MonoBehaviour:
     m_Bits: 1073741824
   suspendWhileBodyPassesThroughActors: 1
   pushSpeed: 2.8
+  pushResistance: 1
   pushDurationSeconds: 0.08
   wallProbeDistance: 0.08
   maxActorsPerTick: 8
@@ -2208,7 +2209,7 @@ MonoBehaviour:
     m_Bits: 0
   actorLayers:
     serializedVersion: 2
-    m_Bits: 2147483656
+    m_Bits: 8
   defaultMode: 1
 --- !u!114 &-6179936427583040154
 MonoBehaviour:

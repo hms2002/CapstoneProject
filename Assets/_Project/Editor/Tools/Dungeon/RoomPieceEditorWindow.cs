@@ -836,6 +836,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                     EditorGUILayout.FloatField("Rotation", placement.localRotationDegrees);
                 }
 
+                DrawCompositePoseOverrideEditor(roomObject);
+
                 using (new EditorGUILayout.HorizontalScope())
                 {
                     if (GUILayout.Button("Select"))
@@ -858,6 +860,143 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             "스테이지 Monster는 선택한 고정 프리팹을 같은 방 진입 지연 스폰 흐름으로 생성합니다. " +
             "선택한 Kill Lock 상자 연결도 최종 스폰 요청으로 전달됩니다.",
             MessageType.Info);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 복합 프리팹이 공개한 슬롯을 감지해 현재 방에서만 적용되는 위치·회전·크기 재정의를 편집한다.
+    /// </summary>
+    private void DrawCompositePoseOverrideEditor(RoomObjectAuthoring roomObject)
+    {
+        if (roomObject == null ||
+            !roomObject.TryGetCompositePoseAuthoring(out RoomCompositePoseAuthoring composite))
+        {
+            return;
+        }
+
+        IReadOnlyList<RoomCompositePoseSlotData> slots = composite.PoseSlots;
+        if (slots == null || slots.Count == 0)
+            return;
+
+        roomObject.EditorCaptureCompositePoseOverrides();
+        EditorGUILayout.Space(4f);
+        EditorGUILayout.LabelField("복합 오브젝트 세부 배치", EditorStyles.miniBoldLabel);
+        EditorGUILayout.HelpBox(
+            "체크한 슬롯만 현재 방 데이터로 재정의됩니다. 체크하지 않은 슬롯은 프리팹 기본 배치를 계속 따릅니다.",
+            MessageType.None);
+
+        for (int slotIndex = 0; slotIndex < slots.Count; slotIndex++)
+        {
+            RoomCompositePoseSlotData slot = slots[slotIndex];
+            Transform target = slot.Target;
+            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            {
+                EditorGUILayout.LabelField(slot.DisplayName, EditorStyles.miniBoldLabel);
+                if (target == null)
+                {
+                    EditorGUILayout.HelpBox(
+                        $"슬롯 '{slot.SlotId}'의 대상 Transform이 비어 있습니다.",
+                        MessageType.Error);
+                    continue;
+                }
+
+                bool hasOverride = roomObject.EditorTryGetChildPoseOverride(
+                    slot.SlotId,
+                    out RoomObjectChildPoseOverrideData poseOverride);
+                bool requestedOverride = EditorGUILayout.ToggleLeft(
+                    "이 방에서 자세 재정의",
+                    hasOverride);
+                if (requestedOverride != hasOverride)
+                {
+                    Undo.RecordObject(roomObject, "Toggle Composite Object Pose Override");
+                    Undo.RecordObject(target, "Toggle Composite Object Pose Override");
+                    if (requestedOverride)
+                    {
+                        poseOverride = new RoomObjectChildPoseOverrideData
+                        {
+                            slotId = slot.SlotId,
+                            overridePosition = slot.AllowPosition,
+                            localPosition = target.localPosition,
+                            overrideRotation = slot.AllowRotation,
+                            localRotationDegrees = Mathf.DeltaAngle(0f, target.localEulerAngles.z),
+                            overrideScale = slot.AllowScale,
+                            localScale = target.localScale
+                        };
+                        roomObject.EditorSetChildPoseOverride(poseOverride);
+                    }
+                    else
+                    {
+                        roomObject.EditorRemoveChildPoseOverride(
+                            slot.SlotId,
+                            restorePrefabPose: true);
+                    }
+
+                    EditorUtility.SetDirty(roomObject);
+                    EditorUtility.SetDirty(target);
+                    RoomAuthoringWorkspace.MarkDirty();
+                    SceneView.RepaintAll();
+                    hasOverride = requestedOverride;
+                }
+
+                if (hasOverride)
+                {
+                    roomObject.EditorTryGetChildPoseOverride(slot.SlotId, out poseOverride);
+                    EditorGUI.BeginChangeCheck();
+                    if (slot.AllowPosition)
+                    {
+                        poseOverride.overridePosition = EditorGUILayout.Toggle(
+                            "위치 적용",
+                            poseOverride.overridePosition);
+                        using (new EditorGUI.DisabledScope(!poseOverride.overridePosition))
+                        {
+                            poseOverride.localPosition = EditorGUILayout.Vector3Field(
+                                "Local Position",
+                                poseOverride.localPosition);
+                        }
+                    }
+
+                    if (slot.AllowRotation)
+                    {
+                        poseOverride.overrideRotation = EditorGUILayout.Toggle(
+                            "회전 적용",
+                            poseOverride.overrideRotation);
+                        using (new EditorGUI.DisabledScope(!poseOverride.overrideRotation))
+                        {
+                            poseOverride.localRotationDegrees = EditorGUILayout.FloatField(
+                                "Local Rotation Z",
+                                poseOverride.localRotationDegrees);
+                        }
+                    }
+
+                    if (slot.AllowScale)
+                    {
+                        poseOverride.overrideScale = EditorGUILayout.Toggle(
+                            "크기 적용",
+                            poseOverride.overrideScale);
+                        using (new EditorGUI.DisabledScope(!poseOverride.overrideScale))
+                        {
+                            poseOverride.localScale = EditorGUILayout.Vector3Field(
+                                "Local Scale",
+                                poseOverride.localScale);
+                        }
+                    }
+
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(roomObject, "Edit Composite Object Pose Override");
+                        Undo.RecordObject(target, "Edit Composite Object Pose Override");
+                        roomObject.EditorSetChildPoseOverride(poseOverride);
+                        EditorUtility.SetDirty(roomObject);
+                        EditorUtility.SetDirty(target);
+                        RoomAuthoringWorkspace.MarkDirty();
+                        SceneView.RepaintAll();
+                    }
+                }
+
+                if (GUILayout.Button("Scene View에서 대상 선택"))
+                    Selection.activeObject = target.gameObject;
+            }
+        }
     }
 
     private void DrawTravelEndpointSection()
@@ -2957,6 +3096,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                 continue;
             }
 
+            ValidateCompositePoseOverrides(roomObject, placement, displayName, messages);
+
             if (!IsInsideRoomBounds(placement.localCell, authoring.Size))
             {
                 messages.Add($"{displayName}: 배치 셀 {placement.localCell}이 방 bounds 밖에 있습니다.");
@@ -2966,6 +3107,71 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             Vector3Int tileCell = new(placement.localCell.x, placement.localCell.y, 0);
             if (authoring.FloorTilemap != null && !authoring.FloorTilemap.HasTile(tileCell))
                 messages.Add($"{displayName}: 배치 셀 {placement.localCell}에 Floor 타일이 필요합니다.");
+        }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 방별 복합 오브젝트 재정의의 슬롯 누락·중복·허용되지 않은 채널과 0 크기를 저장 전에 검증한다.
+    /// </summary>
+    private static void ValidateCompositePoseOverrides(
+        RoomObjectAuthoring roomObject,
+        RoomObjectPlacementData placement,
+        string displayName,
+        List<string> messages)
+    {
+        IReadOnlyList<RoomObjectChildPoseOverrideData> overrides = placement.childPoseOverrides;
+        if (overrides == null || overrides.Count == 0)
+            return;
+
+        if (!roomObject.TryGetCompositePoseAuthoring(out RoomCompositePoseAuthoring composite))
+        {
+            messages.Add($"{displayName}: 세부 배치 데이터가 있지만 Prefab에 복합 Pose 슬롯이 없습니다.");
+            return;
+        }
+
+        if (!composite.TryValidateSlots(out string slotFailureReason))
+        {
+            messages.Add($"{displayName}: {slotFailureReason}");
+            return;
+        }
+
+        var overrideIds = new HashSet<string>(System.StringComparer.Ordinal);
+        for (int i = 0; i < overrides.Count; i++)
+        {
+            RoomObjectChildPoseOverrideData poseOverride = overrides[i];
+            if (string.IsNullOrWhiteSpace(poseOverride.slotId) ||
+                !overrideIds.Add(poseOverride.slotId))
+            {
+                messages.Add($"{displayName}: 비어 있거나 중복된 복합 Pose Override Slot Id가 있습니다.");
+                continue;
+            }
+
+            if (!composite.TryGetSlot(
+                    poseOverride.slotId,
+                    out RoomCompositePoseSlotData slot))
+            {
+                messages.Add(
+                    $"{displayName}: Prefab에서 Pose 슬롯 '{poseOverride.slotId}'를 찾을 수 없습니다.");
+                continue;
+            }
+
+            if ((poseOverride.overridePosition && !slot.AllowPosition) ||
+                (poseOverride.overrideRotation && !slot.AllowRotation) ||
+                (poseOverride.overrideScale && !slot.AllowScale))
+            {
+                messages.Add(
+                    $"{displayName}: Pose 슬롯 '{poseOverride.slotId}'이 허용하지 않는 Transform 채널을 재정의합니다.");
+            }
+
+            if (poseOverride.overrideScale &&
+                (Mathf.Approximately(poseOverride.localScale.x, 0f) ||
+                 Mathf.Approximately(poseOverride.localScale.y, 0f) ||
+                 Mathf.Approximately(poseOverride.localScale.z, 0f)))
+            {
+                messages.Add(
+                    $"{displayName}: Pose 슬롯 '{poseOverride.slotId}'의 Local Scale은 0이 될 수 없습니다.");
+            }
         }
     }
 
