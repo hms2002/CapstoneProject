@@ -21,6 +21,8 @@ public sealed class RunTimerHUD : MonoBehaviour
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color lowTimeColor = new(1f, 0.35f, 0.25f, 1f);
     [SerializeField] private Color pausedColor = new(0.6f, 0.85f, 1f, 1f);
+    [SerializeField] private Color outlineColor = Color.black;
+    [SerializeField, Range(0f, 1f)] private float outlineWidth = 0.2f;
     [SerializeField] private bool hideWhenTimerInactive = true;
     [SerializeField] private bool pulseWhilePaused = true;
     [SerializeField] private float pausedPulseSpeed = 2.5f;
@@ -38,12 +40,20 @@ public sealed class RunTimerHUD : MonoBehaviour
 
         if (visibleRoot == null)
             visibleRoot = gameObject;
+
+        ApplyTextOutline();
     }
 
     private void OnEnable()
     {
         RunTimeLimitSystem.InstanceChanged += HandleTimeLimitSystemChanged;
+        ApplyTextOutline();
         ResolveTimeLimitBinding();
+    }
+
+    private void OnValidate()
+    {
+        outlineWidth = Mathf.Clamp01(outlineWidth);
     }
 
     private void OnDisable()
@@ -125,6 +135,15 @@ public sealed class RunTimerHUD : MonoBehaviour
         }
 
         timeText.color = targetColor;
+    }
+
+    private void ApplyTextOutline()
+    {
+        if (timeText == null)
+            return;
+
+        timeText.outlineColor = outlineColor;
+        timeText.outlineWidth = outlineWidth;
     }
 
     private void SetVisible(bool isVisible)

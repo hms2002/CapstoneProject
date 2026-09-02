@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-08-19
+last_reviewed: 2026-09-02
 ---
 
 # Scene Runtime Save Structure
@@ -66,6 +66,7 @@ Map scene/run transition, title-to-game bootstrap, player runtime capture/restor
 - Player runtime capture/restore should follow `Docs/Architecture/RuntimeSaveArchitecture.md`.
 - Save data managers/repositories own persistence; UI and scene objects should not become persistence owners.
 - Run timer pause/complete behavior is progression-sensitive and should be coordinated through run progress/timer owners.
+- Editor direct starts in non-Hub gameplay scenes use `SceneDomainDevelopmentRunTimerPolicy` to create the existing run-timer package (`RunTimeLimitSystem`, `DefaultStageTimerPolicy`, and `RunTimeOverReturnToHub`) only when no timer exists. The policy loads the canonical `RunTimeLimitConfig.asset` before the coordinator's development `StartRun()` call, tracks only the instance it created, and destroys that instance on Title-scene cleanup. Hub-authored and Hub-persistent timers remain authoritative when present.
 - Treat `ScenePortalTravelService.TryTravel(...)` as the portal travel compatibility wrapper. It delegates to `ScenePortalTravelCoordinator`, while route resolution, run transition directive selection, transition policy resolution, and transition context construction sit in `ScenePortalTravelPlanner`. Travel execution sits in `ScenePortalTravelExecutor`, and player runtime capture/transition cleanup sits in `ScenePortalPlayerRuntimeCaptureService`.
 - `ScenePortal` owns only the pre-travel entrance presentation: it can pull, shrink, and rotate the player before calling `TryTravel(...)`, then the existing travel service still owns route resolution, run state, transition context, and runtime capture. Temporary `PlayerCinematicProtection` and `GameFlowInputBlocker` locks are released before `TryTravel(...)` so presentation/UI block tags are not captured. Portal interaction must stay disabled while `SceneTransitionCoordinator` is already active, because the delayed post-presentation travel request will be rejected by the travel service.
 - Keep shared `ScenePortal.prefab` semantic-neutral. Hub start portals own `HubToRunStart` plus `RunRouteCatalogSO` on their scene instance, while corridor/boss/battle-end portals can use `TransitionType.None` so `PortalRouteManager` resolves the effective route from the active run plan and portal scene.
@@ -105,6 +106,7 @@ Map scene/run transition, title-to-game bootstrap, player runtime capture/restor
 - Title return can silently break if run end, route clear, gameplay UI cleanup, and title scene transition drift apart.
 - Title launch currently prepares profile data directly before target scene load. New profiles enter the tutorial target, while existing/default launches keep the normal target; a future continue-run persistence model would need explicit runtime state and target-scene restore rules.
 - Direct `ProtoTypeHub` Play must skip both `PlayerHubSpawnPresentation2D` and `HubIntroAfterDarkLordSequence` through the same `EditorDirectSceneStartContext`. Skipping only one presentation can leave the other presentation owning input while the development bootstrap reports the Hub portal route as ready.
+- Direct Boss/Corridor Play does not load the Hub-authored `RunTimeLimitSystemManager`. Keep its editor-only timer fallback before the development `StartRun()` event; creating it afterward misses run initialization and leaves `RunTimerHUD` hidden or inactive.
 - `PortalRouteManager` and `RunRoutePlayback` have separate Unity-object and static-backend lifetimes. Play-session initialization must reset stale static ownership, and an existing/enabled manager must rebind the backend; otherwise Hub portals report `route=manager=null` even when the scene-authored manager object exists.
 - `ProtoTypeHub/SceneManagers` co-locates `RunTransitionResolver`, `PortalRouteManager`, and `SceneTransitionPolicyResolver`. Their duplicate-instance paths must destroy only the duplicate component (`Destroy(this)`), never the shared GameObject, because whole-host destruction removes sibling services and unregisters their static backends.
 - Do not treat pending run data in `GamePlayDataManager` as already-persisted profile data.

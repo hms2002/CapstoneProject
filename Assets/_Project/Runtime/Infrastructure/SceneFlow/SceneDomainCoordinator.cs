@@ -95,6 +95,9 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
 
         if (decision.RequiresTitleCleanup)
         {
+#if UNITY_EDITOR
+            SceneDomainDevelopmentRunTimerPolicy.CleanupOwnedTimer();
+#endif
             SceneDomainTitleCleanupScope.Cleanup();
             return;
         }
@@ -171,6 +174,7 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         s_editorDirectGameplayStartActive = false;
         s_editorDirectBootstrapApplied = false;
         s_editorDirectStartSceneName = null;
+        SceneDomainDevelopmentRunTimerPolicy.ResetOwnership();
         EditorDirectSceneStartContext.Clear();
     }
 
@@ -228,6 +232,8 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
 
         if (sceneInfo.IsHubScene)
             return;
+
+        SceneDomainDevelopmentRunTimerPolicy.EnsureBeforeRunStart();
 
         if (gameplayManager != null)
             gameplayManager.StartRun();

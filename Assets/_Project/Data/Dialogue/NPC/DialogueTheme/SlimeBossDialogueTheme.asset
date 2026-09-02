@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ddf1ef475ec817428bba471c494d75a, type: 3}
   m_Name: SlimeBossDialogueTheme
   m_EditorClassIdentifier: 
-  outlineColor: {r: 0, g: 0.554717, b: 0.3874657, a: 1}
-  speakerFrameFillColor: {r: 0.54905653, g: 1, b: 0.8526185, a: 1}
+  accentColor: {r: 0, g: 0.554717, b: 0.3874657, a: 1}
   effectOverride: {fileID: 22100000, guid: 05703f924f031c24a868baa4028b8e2f, type: 2}

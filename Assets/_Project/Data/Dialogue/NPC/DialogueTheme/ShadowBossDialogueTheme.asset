@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ddf1ef475ec817428bba471c494d75a, type: 3}
   m_Name: ShadowBossDialogueTheme
   m_EditorClassIdentifier: 
-  outlineColor: {r: 0.74717987, g: 0.3699323, b: 0.78113204, a: 1}
-  speakerFrameFillColor: {r: 0.627451, g: 0.53333336, b: 0.7882353, a: 1}
+  accentColor: {r: 0.74717987, g: 0.3699323, b: 0.78113204, a: 1}
   effectOverride: {fileID: 22100000, guid: d6d5d20cf545ee347a035dd2929d6f00, type: 2}
