@@ -126,10 +126,9 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
         IReadOnlyList<DungeonMapRoomNode> rooms = runtime.Graph.Rooms;
         ResolveWorldBounds(rooms, out Vector2 center, out Vector2 span);
         Vector2 mapSize = ResolveRectSize(mapContent);
-        Vector2 nodeSize = ResolveRectSize(roomTemplate.NodeRect);
         Vector2 availableSize = new(
-            Mathf.Max(1f, mapSize.x - contentPadding * 2f - nodeSize.x),
-            Mathf.Max(1f, mapSize.y - contentPadding * 2f - nodeSize.y));
+            Mathf.Max(1f, mapSize.x - contentPadding * 2f),
+            Mathf.Max(1f, mapSize.y - contentPadding * 2f));
         float scaleX = span.x > 0.001f ? availableSize.x / span.x : float.MaxValue;
         float scaleY = span.y > 0.001f ? availableSize.y / span.y : float.MaxValue;
         float graphScale = Mathf.Min(scaleX, scaleY);
@@ -142,7 +141,11 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
             DungeonMinimapNodeView roomView = Instantiate(roomTemplate, roomRoot, false);
             roomView.name = $"Room_{room.PlacementId}_{room.RoomType}";
             roomView.ConfigureIdentity(room.PlacementId, room.RoomType);
+            roomView.ConfigureShape(room.ShapeRectangles, room.ShapeGridSize);
             roomView.NodeRect.anchoredPosition = (room.WorldCenter - center) * graphScale;
+            roomView.NodeRect.sizeDelta = new Vector2(
+                Mathf.Max(1f, room.WorldBounds.width * graphScale),
+                Mathf.Max(1f, room.WorldBounds.height * graphScale));
             roomView.gameObject.SetActive(true);
             roomViews[room.PlacementId] = roomView;
         }
@@ -163,7 +166,12 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
                 continue;
             }
 
-            connectionViews.Add(CreateConnectionView(connection, first, second));
+            connectionViews.Add(CreateConnectionView(
+                connection,
+                center,
+                graphScale,
+                first,
+                second));
         }
 
         RefreshPresentation();
@@ -171,6 +179,8 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
 
     private ConnectionView CreateConnectionView(
         DungeonMapConnection connection,
+        Vector2 graphCenter,
+        float graphScale,
         DungeonMinimapNodeView first,
         DungeonMinimapNodeView second)
     {
@@ -178,8 +188,12 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
         line.name =
             $"Connection_{connection.FirstRoomPlacementId}_{connection.SecondRoomPlacementId}";
         RectTransform lineRect = line.rectTransform;
-        Vector2 firstPosition = first.NodeRect.anchoredPosition;
-        Vector2 secondPosition = second.NodeRect.anchoredPosition;
+        Vector2 firstPosition = connection.HasSocketEndpoints
+            ? (connection.FirstWorldSocketCenter - graphCenter) * graphScale
+            : first.NodeRect.anchoredPosition;
+        Vector2 secondPosition = connection.HasSocketEndpoints
+            ? (connection.SecondWorldSocketCenter - graphCenter) * graphScale
+            : second.NodeRect.anchoredPosition;
         Vector2 delta = secondPosition - firstPosition;
         lineRect.anchorMin = new Vector2(0.5f, 0.5f);
         lineRect.anchorMax = new Vector2(0.5f, 0.5f);
@@ -311,12 +325,12 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
         out Vector2 center,
         out Vector2 span)
     {
-        Vector2 minimum = rooms[0].WorldCenter;
-        Vector2 maximum = rooms[0].WorldCenter;
+        Vector2 minimum = rooms[0].WorldBounds.min;
+        Vector2 maximum = rooms[0].WorldBounds.max;
         for (int roomIndex = 1; roomIndex < rooms.Count; roomIndex++)
         {
-            minimum = Vector2.Min(minimum, rooms[roomIndex].WorldCenter);
-            maximum = Vector2.Max(maximum, rooms[roomIndex].WorldCenter);
+            minimum = Vector2.Min(minimum, rooms[roomIndex].WorldBounds.min);
+            maximum = Vector2.Max(maximum, rooms[roomIndex].WorldBounds.max);
         }
 
         center = (minimum + maximum) * 0.5f;

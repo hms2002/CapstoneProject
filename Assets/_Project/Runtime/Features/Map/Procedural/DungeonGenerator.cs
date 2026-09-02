@@ -132,6 +132,10 @@ public sealed class DungeonGenerator : MonoBehaviour
             return false;
         }
 
+        roomBuilder.ConfigureCorridorDecoration(
+            generationProfile != null
+                ? generationProfile.CorridorDecorationProfile
+                : roomBuilder.CorridorDecorationProfile);
         if (!roomBuilder.TryBuild(LastLayout))
         {
             mapRuntime.ClearConfiguration();

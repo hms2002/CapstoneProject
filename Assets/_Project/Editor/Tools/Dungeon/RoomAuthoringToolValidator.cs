@@ -111,7 +111,8 @@ public static class RoomAuthoringToolValidator
                         minimumCorridorLength: 2,
                         corridorLengthPerRoomCell: 0f,
                         corridorLengthVariation: 0,
-                        guaranteedRoomTemplates: null));
+                        guaranteedRoomTemplates: null,
+                        corridorDecorationProfile: null));
             if (!previewResult.WasBuilt ||
                 !previewResult.IsComplete ||
                 previewResult.RoomCount != 3 ||

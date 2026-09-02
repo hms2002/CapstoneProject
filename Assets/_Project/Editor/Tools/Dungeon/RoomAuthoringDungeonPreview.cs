@@ -40,6 +40,7 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
     public float CorridorLengthPerRoomCell { get; }
     public int CorridorLengthVariation { get; }
     public IReadOnlyList<RoomTemplateSO> GuaranteedRoomTemplates { get; }
+    public CorridorDecorationProfileSO CorridorDecorationProfile { get; }
 
     public RoomAuthoringDungeonPreviewRequest(
         RoomThemeLibrarySO library,
@@ -59,7 +60,8 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
         int minimumCorridorLength,
         float corridorLengthPerRoomCell,
         int corridorLengthVariation,
-        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates)
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
+        CorridorDecorationProfileSO corridorDecorationProfile)
     {
         Library = library;
         LayoutPolicy = layoutPolicy;
@@ -79,6 +81,7 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
         CorridorLengthPerRoomCell = corridorLengthPerRoomCell;
         CorridorLengthVariation = corridorLengthVariation;
         GuaranteedRoomTemplates = guaranteedRoomTemplates;
+        CorridorDecorationProfile = corridorDecorationProfile;
     }
 }
 
@@ -329,6 +332,7 @@ internal static class RoomAuthoringDungeonPreview
         if (request.AnchorGrid == null)
             return RoomAuthoringDungeonPreviewResult.Failed("편집 중인 방의 Grid를 찾을 수 없습니다.");
 
+        CorridorDecorationCompletedPreview.Clear();
         RoomThemeLibrarySO previewLibrary = null;
         RoomTemplateSO transientCurrentRoom = null;
         try
@@ -567,6 +571,7 @@ internal static class RoomAuthoringDungeonPreview
             foregroundTilemap,
             overlayFxTilemap);
         builder.EditorAssignCorridorTiles(corridorFloorTile, corridorWallTile);
+        builder.ConfigureCorridorDecoration(request.CorridorDecorationProfile);
         builder.EditorAssignSocketBlockerRoot(blockerRootObject.transform);
 
         if (!builder.TryBuild(layout, DungeonBuildOptions.VisualOnly))

@@ -1352,6 +1352,14 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                     : "아직 활성 Build Settings 씬에서 이 프로필을 참조하지 않습니다. 보스 테마 생성 프로필 설치를 먼저 실행하세요.",
                 sceneReferenceCount > 0 ? MessageType.Info : MessageType.Warning);
             DrawGuaranteedRoomTemplates(previewGenerationProfile, selectedLibrary);
+            EditorGUILayout.LabelField(
+                "복도 장식",
+                previewGenerationProfile.CorridorDecorationProfile != null
+                    ? $"{previewGenerationProfile.CorridorDecorationProfile.name} · " +
+                      $"모듈 {previewGenerationProfile.CorridorDecorationProfile.Modules.Count}개"
+                    : "미설정");
+            if (GUILayout.Button("복도 장식 제작 툴 열기"))
+                CorridorDecorationEditorWindow.OpenWithProfile(previewGenerationProfile);
         }
 
         using (new EditorGUILayout.HorizontalScope())
@@ -1543,6 +1551,10 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             previewGenerationProfile != null &&
             previewGenerationProfile.RoomLibrary == selectedLibrary
                 ? previewGenerationProfile.GuaranteedRoomTemplates
+                : null,
+            previewGenerationProfile != null &&
+            previewGenerationProfile.RoomLibrary == selectedLibrary
+                ? previewGenerationProfile.CorridorDecorationProfile
                 : null);
         RoomAuthoringDungeonPreviewResult result =
             RoomAuthoringDungeonPreview.Generate(request);
@@ -1854,24 +1866,31 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             return false;
 
         RoomPieceAuthoring existingAuthoring = RoomAuthoringWorkspace.FindAuthoring();
-        if (existingAuthoring == null)
+        CorridorDecorationModuleAuthoring existingCorridor =
+            RoomAuthoringWorkspace.FindCorridorAuthoring();
+        if (existingAuthoring == null && existingCorridor == null)
             return true;
 
         if (RoomAuthoringWorkspace.HasUnsavedChanges &&
             !EditorUtility.DisplayDialog(
-                "편집 중인 방 교체",
-                $"'{existingAuthoring.RoomId}'에 저장되지 않은 변경 내용이 있습니다. 버리고 다른 방을 열까요?",
+                "편집 중인 던전 조각 교체",
+                existingAuthoring != null
+                    ? $"'{existingAuthoring.RoomId}'에 저장되지 않은 변경 내용이 있습니다. 버리고 다른 방을 열까요?"
+                    : $"'{existingCorridor.ModuleId}' 복도 장식에 저장되지 않은 변경 내용이 있습니다. 버리고 방을 열까요?",
                 "변경 내용 버리기",
                 "계속 편집"))
         {
             return false;
         }
 
-        if (selectedAuthoring == existingAuthoring)
+        if (existingAuthoring != null && selectedAuthoring == existingAuthoring)
             selectedAuthoring = null;
 
         RoomAuthoringDungeonPreview.Clear();
-        UnityEngine.Object.DestroyImmediate(existingAuthoring.gameObject);
+        if (existingAuthoring != null)
+            UnityEngine.Object.DestroyImmediate(existingAuthoring.gameObject);
+        if (existingCorridor != null)
+            UnityEngine.Object.DestroyImmediate(existingCorridor.gameObject);
         RoomAuthoringWorkspace.MarkSaved();
         return true;
     }

@@ -18,13 +18,14 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 6. `DungeonGenerator` selects one of two deterministic layout paths. With no layout policy it uses the legacy incremental `DungeonLayoutAssembler`; with a `DungeonLayoutPolicySO` and Boss generation enabled it uses `DungeonGraphLayoutAssembler`.
 7. The graph-first path creates abstract room nodes and edges, validates critical-path distance, meaningful branches, cycles, and POI quotas, assigns room roles, selects compatible templates/sockets, then embeds the graph into physical room coordinates. Both paths reject room/corridor reservation overlap with rectangular `RectInt` checks.
 8. `DungeonRoomBuilder` paints every room across the eight fixed visual Tilemaps with all socket Walls closed, creates one span-sized physical blocker per logical socket, opens only connected endpoints, paints the two-cell-wide straight corridor and side Walls, then creates one non-permanent Door at each connected socket endpoint.
-9. For every room containing a Monster placement, the builder creates a full-bounds rectangular `MonsterRoomArea2D`, a `MonsterSpawnRoomGroup`, and a separate `RoomEncounterEntryTrigger2D` inset one cell from the boundary Walls. Each connected endpoint door owned by that room receives the existing `RoomDoorMonsterKillLock` behavior.
-10. The builder realizes each room's Grid-relative object placements under a dedicated generated root. It creates non-monsters directly, but realizes each Monster placement only as a deferred `MonsterSpawnContainer`. A common-role placement stores Warrior, Mage, or Tank plus its matching `StageMonsterSetSO` and resolves the current boss-progression index. A stage-fixed placement stores one explicit Enemy prefab and resolves it unchanged. On first room entry `SceneMonsterSpawnDirector` instantiates and registers either source through the same encounter contract.
-11. The builder separately realizes room travel slots under a dedicated endpoint root. A scene-local `(roomId, slotId)` binding supplies `SceneConnectionSO` and its A/B side; the selected medium adds the interaction adapter, automatic 2D trigger adapter, or no departure adapter for arrival-only use. Automatic Trigger world size is authored explicitly and compensated against medium Transform scale before applying the generated BoxCollider2D.
-12. `DungeonGenerator` resolves a run-scoped seed according to `RegenerateOnEntry`, `ResetContentsKeepLayout`, or `PreserveDuringRun`. Preserve mode captures stable generated-object states before scene exit and reapplies them immediately after the same layout is built.
-13. `PlayerSpawner` waits for the destination endpoint registry when a data-driven transition targets procedural content, then places the player and completes arrival presentation before releasing the fade service's input lock.
-14. The Room Piece tool's Map Preview step runs the same selected legacy or graph-first assembler against a transient copy of the selected library. The unsaved current room replaces its source template only in memory; `DungeonRoomBuilder` paints tiles/corridors with `DungeonBuildOptions.VisualOnly`, while Scene View handles represent room bounds, connections, and object kinds without instantiating gameplay prefabs.
-15. `현재 미리보기 설정을 테마에 적용` writes the tested values into that library's `DungeonGenerationProfileSO`. The three production procedural Corridor scenes already reference their theme profiles, so the next runtime generation reads the new values without rewriting the scenes.
+9. When the active generation profile references a `CorridorDecorationProfileSO`, `CorridorDecorationComposer` deterministically fills each connection's usable span from registered Start, Short, Middle, Landmark, Filler, and End modules. `DungeonRoomBuilder` transforms the canonical +X module cells and GroundProp pivots into the actual connection direction, replacing base Floor/Wall cells where authored and overlaying all other fixed layers.
+10. For every room containing a Monster placement, the builder creates a full-bounds rectangular `MonsterRoomArea2D`, a `MonsterSpawnRoomGroup`, and a separate `RoomEncounterEntryTrigger2D` inset one cell from the boundary Walls. Each connected endpoint door owned by that room receives the existing `RoomDoorMonsterKillLock` behavior.
+11. The builder realizes each room's Grid-relative object placements under a dedicated generated root. It creates non-monsters directly, but realizes each Monster placement only as a deferred `MonsterSpawnContainer`. A common-role placement stores Warrior, Mage, or Tank plus its matching `StageMonsterSetSO` and resolves the current boss-progression index. A stage-fixed placement stores one explicit Enemy prefab and resolves it unchanged. On first room entry `SceneMonsterSpawnDirector` instantiates and registers either source through the same encounter contract.
+12. The builder separately realizes room travel slots under a dedicated endpoint root. A scene-local `(roomId, slotId)` binding supplies `SceneConnectionSO` and its A/B side; the selected medium adds the interaction adapter, automatic 2D trigger adapter, or no departure adapter for arrival-only use. Automatic Trigger world size is authored explicitly and compensated against medium Transform scale before applying the generated BoxCollider2D.
+13. `DungeonGenerator` resolves a run-scoped seed according to `RegenerateOnEntry`, `ResetContentsKeepLayout`, or `PreserveDuringRun`. Preserve mode captures stable generated-object states before scene exit and reapplies them immediately after the same layout is built.
+14. `PlayerSpawner` waits for the destination endpoint registry when a data-driven transition targets procedural content, then places the player and completes arrival presentation before releasing the fade service's input lock.
+15. The Room Piece tool's Map Preview step runs the same selected legacy or graph-first assembler against a transient copy of the selected library. The unsaved current room replaces its source template only in memory; `DungeonRoomBuilder` paints tiles/corridors with `DungeonBuildOptions.VisualOnly`, while Scene View handles represent room bounds, connections, and object kinds without instantiating gameplay prefabs.
+16. `현재 미리보기 설정을 테마에 적용` writes the tested values into that library's `DungeonGenerationProfileSO`. The three production procedural Corridor scenes already reference their theme profiles, so the next runtime generation reads the new values without rewriting the scenes. `CorridorDecorationCompletedPreview` is a separate non-saving preview that composes one requested straight-corridor length with the same runtime composer and reports its exact module sequence.
 
 ## Key Files
 
@@ -43,7 +44,11 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonLayoutPolicySO.cs`
   - Optional graph topology, critical-path, branch/cycle, and room-role quota policy.
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonGenerationProfileSO.cs`
-  - Theme library, layout policy, Seed, room count, placement attempts, and adaptive corridor settings shared by preview and runtime generation.
+  - Theme library, layout policy, Seed, room count, placement attempts, adaptive corridor settings, and optional theme decoration-profile reference shared by preview and runtime generation.
+- `Assets/_Project/Runtime/Features/Map/Procedural/CorridorDecorationModuleSO.cs`
+  - One canonical +X, two-cell-wide corridor module containing a role, length, eight fixed tile layers, and GroundProp pivot placements.
+- `Assets/_Project/Runtime/Features/Map/Procedural/CorridorDecorationProfileSO.cs`
+  - Per-theme door clearance, landmark limit, registered module catalog, and deterministic `CorridorDecorationComposer`.
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonGraphLayoutAssembler.cs`
   - Graph-first topology construction, role assignment, directional socket/template selection, and size-aware physical embedding.
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonRoomBuilder.cs`
@@ -62,6 +67,12 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
   - Designer-facing staged workflow, theme room browser, create/reload/duplicate, Tilemap selection, socket placement, data-derived prefab suggestions, validation, publish/apply, and dynamic map-preview flow.
 - `Assets/_Project/Editor/Tools/Dungeon/RoomAuthoringDungeonPreview.cs`
   - Editor-only transient library, real assembler-driven tile preview, object plus `EI`/`ET`/`EA` travel-slot markers, and preview-root lifecycle.
+- `Assets/_Project/Editor/Tools/Dungeon/CorridorDecorationEditorWindow.cs`
+  - Designer-facing profile/module authoring, eight-layer Tilemap selection, GroundProp pivot placement, validation, bake, registration, and complete-corridor preview controls.
+- `Assets/_Project/Editor/Tools/Dungeon/CorridorDecorationCompletedPreview.cs`
+  - Non-saving canonical +X preview for one requested length, Seed, and connection index using the runtime composer.
+- `Assets/_Project/Editor/Tools/Dungeon/CorridorDecorationExampleInstaller.cs`
+  - Idempotent Shadow/Dragon/Slime example-profile and six-module installation plus asset and completed-preview validation menus.
 - `Assets/_Project/Editor/Tools/Dungeon/ProceduralTravelBindingEditorWindow.cs`
   - Designer-facing room/slot-to-builder connection-side binding, direction-policy/presentation editing, scene-match validation, and explicit non-saving scene mutation.
 - `Assets/_Project/Editor/Tools/Dungeon/DungeonGenerationProfileAssetUtility.cs`
@@ -83,8 +94,10 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 
 - `RoomThemeLibrarySO` and `RoomTemplateSO` are authored assets and do not own runtime state.
 - `DungeonGenerationProfileSO` owns persistent per-theme generation settings, not generated layout state. Editing it changes the next generation request for every scene that references it.
+- `CorridorDecorationProfileSO` and its module assets own authored visual composition data, not layout length or runtime state. The generation profile owns only the reference to the theme profile.
 - `RoomAuthoringWorkspace` owns temporary Editor objects only. It does not save a scene asset and never searches, removes, or disables gameplay-scene roots.
 - Preview mutations are scoped separately from authoring mutations. Generating or clearing `[Preview] Procedural Dungeon` does not set the room's unsaved-session flag.
+- `[Preview] Completed Corridor` is also transient and mutually exclusive with the full dungeon preview. It never writes profile, module, scene, or room assets.
 - The preview owns transient `RoomThemeLibrarySO`/`RoomTemplateSO` copies only for one generation call and destroys them immediately after copying Scene View display data. Source assets are never edited or registered by preview.
 - A normal room load is marked clean after reconstruction. New rooms, duplicates, Tilemap edits, socket/object changes, and metadata changes remain unsaved until publish/apply.
 - New-room save location is chosen through Unity's asset save panel. The tool does not encode a project room-folder path or scan prefab folders; recommendations come from the selected library's existing room data.
@@ -105,6 +118,11 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 - Collision uses room bounds plus each straight corridor's reserved Floor-and-side-Wall rectangle.
 - Each logical socket has width `2`. Up/Down sockets extend right from `localCell`; Left/Right sockets extend upward from `localCell`.
 - Compatible sockets must have opposite directions and equal width. Their start-cell distance is the configured corridor length plus one boundary step; v0 supports only a straight fixed-width corridor, not bends or pathfinding.
+- Corridor-decoration modules are authored only in canonical +X orientation: `x=0..Length-1`, Floor rows `y=0,1`, and side-Wall rows `y=-1,2`. Runtime direction conversion is builder-owned.
+- A decoration profile's door clearance is applied at both ends and included in the requested total corridor length. An exact usable-span `Short` module takes precedence; otherwise Start and End are optional and the body draws from unweighted Middle, Filler, and eligible Landmark candidates.
+- `MaxLandmarksPerCorridor` is an upper bound, not a minimum. Random selection and remaining length can produce zero landmarks.
+- Decoration module Floor/Wall cells selectively replace the generated base corridor. UnderFloor, FloorDetail, GroundDecoration, WallDetail, Foreground, and OverlayFX are overlaid without changing collision ownership.
+- Decoration objects are currently `RoomObjectKind.Prop` only. Their canonical cell/offset/rotation/scale is transformed with the module; gameplay behavior and collision stay prefab-owned.
 - Both cells of every socket must contain Floor and Wall data. Runtime realization begins with the logical socket closed by both Wall tiles and one span-sized physical blocker; only connected endpoints remove all closure.
 - One connection creates two doors: one at each room socket endpoint, not one per socket cell. Each door sits between the centers of that endpoint's two-cell span.
 - Left/right connections rotate the shared Door prefab 90 degrees; up/down connections keep its default rotation.
@@ -147,6 +165,7 @@ Run `Tools/Dungeon/Install Boss Theme Procedural Corridor Scenes` to rebuild and
 - Every library keeps the same layout contract: `12x8` Start, three rectangular Combat rooms, `56x56` ㄴ-shaped Combat, `60x52` ㄱ-shaped Combat, `18x12` sacrifice Treasure, and a terminal one-socket Boss room. Theme changes data and art, not layout behavior.
 - The three normal-themed generators share `ExplorationCorridorPrototypePolicy.asset` and request 15 rooms. The policy enforces a Start-to-Boss graph distance of `6..8`, `2..4` meaningful branches, `1..2` cycles, at least one Treasure room, and at least four Combat rooms. Event and Shop quotas remain zero until matching room content is authored.
 - Shadow, Dragon, and Slime each own one `Procedural{Theme}GenerationProfile.asset`. The Room Piece tool can load it into Map Preview and save the tested Seed, room count, placement attempts, minimum corridor length, room-size ratio, and random length range back to the theme.
+- The same three profiles reference theme decoration profiles under `Assets/_Project/Data/Dungeon/CorridorDecorations/{Theme}/`. Each example profile registers Start_02, Middle_03, Landmark_04, Filler_01, End_02, and Short_02 modules; the landmark prop differs per theme.
 - All three production procedural Corridors use unique state IDs with `PreserveDuringRun`. Formal scene travel captures object state before exit, rebuilds the same Seed on reentry, and restores supported generated-object state. `StartRun` and `EndRun` clear every stored Corridor state.
 - Re-running the full theme installer creates missing profiles and relinks generators, but preserves existing profile and layout-policy values. Installer constants are first-creation defaults only.
 - Graph-first generation completes abstract topology and room roles before choosing exact handcrafted room templates. Special roles prefer compatible dead ends and are spread across the graph when alternatives exist.
@@ -190,6 +209,9 @@ Run `Tools/Dungeon/Install Boss Theme Procedural Corridor Scenes` to rebuild and
 - `FloorDetail` and `GroundDecoration` authoring cells require Floor below them; `WallDetail` requires Wall below it. `WallDetail` has no duplicate collider and inherits blocking from the base Wall.
 - `GroundProp` is represented by `RoomObjectKind.Prop`, not a ninth Tilemap. Its prefab owns collision and physics-layer configuration.
 - A positive corridor length requires both corridor Floor and Wall tiles on `DungeonRoomBuilder`.
+- Decoration is optional. A missing profile, an empty module catalog, or a cell not covered by a fitting module leaves the deterministic base corridor intact.
+- A one-cell Filler is the safest way to cover arbitrary remaining spans. Without a fitting candidate, the composer advances over that cell rather than stretching or clipping a module.
+- The complete-corridor preview uses canonical +X space and is not evidence that every rotated runtime direction is visually correct; validate all directions in Play Mode.
 - Map Preview corridor tile overrides are optional. When empty, the editor picks the most frequently referenced Floor/Wall tile in the transient preview library; choose explicit overrides when that statistical fallback is not visually representative of the theme.
 - Including the current room makes it a valid weighted candidate, not a forced placement. A complete preview can report zero current-room placements for a particular Seed; change the Seed instead of altering runtime selection weight only for preview.
 - The generated-door root must also be dedicated to generated content because every build destroys all of its children.

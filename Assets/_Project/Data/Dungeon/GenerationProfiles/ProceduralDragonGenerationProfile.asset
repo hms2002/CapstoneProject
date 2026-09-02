@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gameplay::DungeonGenerationProfileSO
   roomLibrary: {fileID: 11400000, guid: 1fef20d87c9035941950fdf682db7792, type: 2}
   layoutPolicy: {fileID: 11400000, guid: 2e4b682cfe896404b95d050953584376, type: 2}
+  corridorDecorationProfile: {fileID: 11400000, guid: 68e10d71b89b07c45a141ec9dd679205, type: 2}
   seed: 20261831
   roomCount: 15
   includeBossRoom: 1

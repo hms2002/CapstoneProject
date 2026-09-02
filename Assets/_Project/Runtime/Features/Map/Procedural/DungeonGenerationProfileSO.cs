@@ -12,6 +12,7 @@ public sealed class DungeonGenerationProfileSO : ScriptableObject
     [Header("Dependencies")]
     [SerializeField] private RoomThemeLibrarySO roomLibrary;
     [SerializeField] private DungeonLayoutPolicySO layoutPolicy;
+    [SerializeField] private CorridorDecorationProfileSO corridorDecorationProfile;
 
     [Header("Generation")]
     [SerializeField] private int seed = 12345;
@@ -31,6 +32,7 @@ public sealed class DungeonGenerationProfileSO : ScriptableObject
 
     public RoomThemeLibrarySO RoomLibrary => roomLibrary;
     public DungeonLayoutPolicySO LayoutPolicy => layoutPolicy;
+    public CorridorDecorationProfileSO CorridorDecorationProfile => corridorDecorationProfile;
     public int Seed => seed;
     public int RoomCount => Mathf.Max(includeBossRoom ? 2 : 1, roomCount);
     public bool IncludeBossRoom => includeBossRoom;
@@ -87,6 +89,14 @@ public sealed class DungeonGenerationProfileSO : ScriptableObject
             if (room != null && !guaranteedRoomTemplates.Contains(room))
                 guaranteedRoomTemplates.Add(room);
         }
+    }
+
+    /// <summary>
+    /// 책임 : 복도 장식 제작 툴이 현재 테마 생성 프로필에 장식 프로필 참조를 연결한다.
+    /// </summary>
+    public void EditorSetCorridorDecorationProfile(CorridorDecorationProfileSO profile)
+    {
+        corridorDecorationProfile = profile;
     }
 
     private void OnValidate()

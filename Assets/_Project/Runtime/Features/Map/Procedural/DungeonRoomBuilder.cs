@@ -11,14 +11,19 @@ public readonly struct DungeonBuildOptions
 {
     public bool BuildConnectedDoors { get; }
     public bool BuildGameplayObjects { get; }
+    public bool BuildDecorationObjects { get; }
 
-    public static DungeonBuildOptions Full => new(true, true);
-    public static DungeonBuildOptions VisualOnly => new(false, false);
+    public static DungeonBuildOptions Full => new(true, true, true);
+    public static DungeonBuildOptions VisualOnly => new(false, false, true);
 
-    public DungeonBuildOptions(bool buildConnectedDoors, bool buildGameplayObjects)
+    public DungeonBuildOptions(
+        bool buildConnectedDoors,
+        bool buildGameplayObjects,
+        bool buildDecorationObjects)
     {
         BuildConnectedDoors = buildConnectedDoors;
         BuildGameplayObjects = buildGameplayObjects;
+        BuildDecorationObjects = buildDecorationObjects;
     }
 }
 
@@ -52,6 +57,7 @@ public struct ProceduralRoomTravelBinding
 /// - 모든 2칸 소켓을 Wall 타일과 전용 물리 Collider로 닫은 뒤 연결이 확정된 소켓만 개방한다.
 /// - 개방한 두 소켓 사이에 연결별 가변 길이의 2칸 폭 직선 복도를 만들고 양쪽 소켓 경계에 비영구 문을 하나씩 생성한다.
 /// - 테마 씬에서 추출한 바닥/벽 변형 타일을 레이아웃 Seed와 셀 좌표로 결정해 같은 맵을 항상 같은 모습으로 구현한다.
+/// - 테마 복도 장식 프로필의 레이어별 모듈과 Pivot 기반 GroundProp을 연결 길이와 방향에 맞춰 조합한다.
 /// - 방 템플릿의 이동 슬롯을 씬별 연결 binding과 결합해 상호작용·trigger·도착 전용 endpoint로 구현한다.
 /// - 모든 방 오브젝트 생성 후 로컬/던전 앵커를 수집하고 NPC 같은 런타임 방 기능의 외부 참조를 연결한다.
 /// - 전투 여부와 무관하게 모든 생성 방에 미니맵 발견용 내부 진입 트리거를 구성한다.
@@ -77,6 +83,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     [SerializeField] private List<TileBase> corridorFloorVariants = new();
     [SerializeField] private List<TileBase> horizontalCorridorWallVariants = new();
     [SerializeField] private List<TileBase> verticalCorridorWallVariants = new();
+    [SerializeField] private CorridorDecorationProfileSO corridorDecorationProfile;
 
     [Header("Connected Doors")]
     [SerializeField] private DoorObject connectedDoorPrefab;
@@ -138,6 +145,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     public IReadOnlyList<TileBase> CorridorFloorVariants => corridorFloorVariants;
     public IReadOnlyList<TileBase> HorizontalCorridorWallVariants => horizontalCorridorWallVariants;
     public IReadOnlyList<TileBase> VerticalCorridorWallVariants => verticalCorridorWallVariants;
+    public CorridorDecorationProfileSO CorridorDecorationProfile => corridorDecorationProfile;
     public DoorObject ConnectedDoorPrefab => connectedDoorPrefab;
     public Transform GeneratedDoorRoot => generatedDoorRoot;
     public Transform GeneratedSocketBlockerRoot => generatedSocketBlockerRoot;
@@ -209,6 +217,14 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         CopyUniqueTiles(floorVariants, corridorFloorVariants);
         CopyUniqueTiles(horizontalWallVariants, horizontalCorridorWallVariants);
         CopyUniqueTiles(verticalWallVariants, verticalCorridorWallVariants);
+    }
+
+    /// <summary>
+    /// 책임 : 런타임 생성기와 에디터 미리보기가 현재 테마의 복도 장식 프로필을 빌드 직전에 지정한다.
+    /// </summary>
+    public void ConfigureCorridorDecoration(CorridorDecorationProfileSO profile)
+    {
+        corridorDecorationProfile = profile;
     }
 
     private static void CopyUniqueTiles(
@@ -415,7 +431,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
                     layout,
                     connection,
                     i,
-                    options.BuildConnectedDoors))
+                    options))
             {
                 ClearGeneratedContent();
                 return false;
@@ -1812,7 +1828,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         DungeonLayoutResult layout,
         DungeonSocketConnection connection,
         int connectionIndex,
-        bool buildConnectedDoors)
+        DungeonBuildOptions options)
     {
         if (!TryGetPlacedSocket(
                 layout,
@@ -1874,7 +1890,21 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             return false;
         }
 
-        if (!buildConnectedDoors)
+        if (!TryBuildCorridorDecorations(
+                firstCell,
+                firstSocket,
+                corridorLength,
+                layout.Seed,
+                connectionIndex,
+                options.BuildDecorationObjects))
+        {
+            Debug.LogError(
+                $"Dungeon connection {connectionIndex} could not build its decoration modules.",
+                this);
+            return false;
+        }
+
+        if (!options.BuildConnectedDoors)
             return true;
 
         Transform doorRoot = ResolveGeneratedDoorRoot();
@@ -1987,6 +2017,294 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// 책임 : 현재 연결 길이에 맞춰 선택된 장식 모듈의 모든 타일 레이어와 Pivot 기반 GroundProp을 복도 방향으로 변환해 구현한다.
+    /// </summary>
+    private bool TryBuildCorridorDecorations(
+        Vector2Int firstSocketCell,
+        RoomSocketData socket,
+        int corridorLength,
+        int layoutSeed,
+        int connectionIndex,
+        bool buildDecorationObjects)
+    {
+        if (corridorDecorationProfile == null || corridorLength <= 0)
+            return true;
+
+        List<CorridorDecorationPlacement> placements =
+            CorridorDecorationComposer.Compose(
+                corridorDecorationProfile,
+                corridorLength,
+                layoutSeed,
+                connectionIndex);
+        for (int placementIndex = 0; placementIndex < placements.Count; placementIndex++)
+        {
+            CorridorDecorationPlacement placement = placements[placementIndex];
+            if (placement.Module == null ||
+                !TryBuildCorridorDecorationModule(
+                    firstSocketCell,
+                    socket,
+                    corridorLength,
+                    connectionIndex,
+                    placementIndex,
+                    placement,
+                    buildDecorationObjects))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool TryBuildCorridorDecorationModule(
+        Vector2Int firstSocketCell,
+        RoomSocketData socket,
+        int corridorLength,
+        int connectionIndex,
+        int placementIndex,
+        CorridorDecorationPlacement placement,
+        bool buildDecorationObjects)
+    {
+        CorridorDecorationModuleSO module = placement.Module;
+        if (placement.ForwardOffset < 0 ||
+            placement.EndOffsetExclusive > corridorLength)
+        {
+            Debug.LogError(
+                $"Corridor decoration '{module.ModuleId}' exceeds connection {connectionIndex} bounds.",
+                module);
+            return false;
+        }
+
+        RoomBuildData buildData = module.BuildData;
+        for (int layerIndex = 0;
+             layerIndex < RoomTileLayerContract.OrderedLayers.Count;
+             layerIndex++)
+        {
+            RoomTileLayerKind layer = RoomTileLayerContract.OrderedLayers[layerIndex];
+            List<RoomTileData> tiles = buildData.GetTiles(layer);
+            if (tiles == null || tiles.Count == 0)
+                continue;
+
+            Tilemap target = GetTilemap(layer);
+            if (target == null)
+            {
+                Debug.LogError(
+                    $"Corridor decoration '{module.ModuleId}' uses {layer}, but the builder has no matching Tilemap.",
+                    module);
+                return false;
+            }
+
+            if (!TryPlaceCorridorDecorationTiles(
+                    target,
+                    tiles,
+                    module,
+                    firstSocketCell,
+                    socket,
+                    placement.ForwardOffset))
+            {
+                return false;
+            }
+        }
+
+        return !buildDecorationObjects ||
+               TryBuildCorridorDecorationObjects(
+                   buildData.objectPlacements,
+                   module,
+                   firstSocketCell,
+                   socket,
+                   placement.ForwardOffset,
+                   connectionIndex,
+                   placementIndex);
+    }
+
+    private bool TryPlaceCorridorDecorationTiles(
+        Tilemap target,
+        IReadOnlyList<RoomTileData> tiles,
+        CorridorDecorationModuleSO module,
+        Vector2Int firstSocketCell,
+        RoomSocketData socket,
+        int forwardOffset)
+    {
+        Vector2Int direction = DirectionToVector(socket.direction);
+        Vector2Int tangent = RoomSocketGeometry.GetTangent(socket.direction);
+        Matrix4x4 orientation = CreateCorridorOrientationMatrix(direction, tangent);
+        for (int tileIndex = 0; tileIndex < tiles.Count; tileIndex++)
+        {
+            RoomTileData tile = tiles[tileIndex];
+            if (tile.tile == null)
+                continue;
+
+            if (!IsInsideCorridorModuleFootprint(tile.localCell, module.Length))
+            {
+                Debug.LogError(
+                    $"Corridor decoration '{module.ModuleId}' tile {tile.localCell} is outside " +
+                    $"the canonical x=0..{module.Length - 1}, y=-1..2 footprint.",
+                    module);
+                return false;
+            }
+
+            Vector2Int worldCell = TransformCorridorModuleCell(
+                firstSocketCell,
+                direction,
+                tangent,
+                forwardOffset,
+                tile.localCell);
+            Vector3Int targetCell = new(worldCell.x, worldCell.y, 0);
+            target.SetTile(targetCell, tile.tile);
+            target.SetTileFlags(targetCell, TileFlags.None);
+            target.SetTransformMatrix(targetCell, orientation);
+        }
+
+        return true;
+    }
+
+    private bool TryBuildCorridorDecorationObjects(
+        IReadOnlyList<RoomObjectPlacementData> objectPlacements,
+        CorridorDecorationModuleSO module,
+        Vector2Int firstSocketCell,
+        RoomSocketData socket,
+        int forwardOffset,
+        int connectionIndex,
+        int modulePlacementIndex)
+    {
+        if (objectPlacements == null)
+            return true;
+
+        Vector2Int direction = DirectionToVector(socket.direction);
+        Vector2Int tangent = RoomSocketGeometry.GetTangent(socket.direction);
+        int orientationSign = direction.x * tangent.y - direction.y * tangent.x;
+        float directionDegrees = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        GridLayout grid = floorTilemap.layoutGrid;
+        Quaternion gridRotation = grid != null ? grid.transform.rotation : Quaternion.identity;
+        Transform objectRoot = ResolveGeneratedObjectRoot();
+        for (int objectIndex = 0; objectIndex < objectPlacements.Count; objectIndex++)
+        {
+            RoomObjectPlacementData objectPlacement = objectPlacements[objectIndex];
+            if (objectPlacement.kind != RoomObjectKind.Prop || objectPlacement.prefab == null)
+            {
+                Debug.LogError(
+                    $"Corridor decoration '{module.ModuleId}' object " +
+                    $"'{objectPlacement.placementId}' must be a Prop with a prefab.",
+                    module);
+                return false;
+            }
+
+            if (!IsInsideCorridorModuleFootprint(
+                    objectPlacement.localCell,
+                    module.Length))
+            {
+                Debug.LogError(
+                    $"Corridor decoration '{module.ModuleId}' object " +
+                    $"'{objectPlacement.placementId}' Pivot {objectPlacement.localCell} is outside " +
+                    $"the canonical x=0..{module.Length - 1}, y=-1..2 footprint.",
+                    module);
+                return false;
+            }
+
+            Vector2Int worldCell = TransformCorridorModuleCell(
+                firstSocketCell,
+                direction,
+                tangent,
+                forwardOffset,
+                objectPlacement.localCell);
+            Vector3Int targetCell = new(worldCell.x, worldCell.y, 0);
+            Vector2 orientedLocalOffset =
+                (Vector2)direction * objectPlacement.localOffset.x +
+                (Vector2)tangent * objectPlacement.localOffset.y;
+            Vector3 gridLocalOffset = new(
+                orientedLocalOffset.x,
+                orientedLocalOffset.y,
+                0f);
+            Vector3 worldOffset = grid != null
+                ? grid.transform.TransformVector(gridLocalOffset)
+                : gridLocalOffset;
+            Vector3 worldPosition = floorTilemap.GetCellCenterWorld(targetCell) + worldOffset;
+            float localRotation = orientationSign < 0
+                ? -objectPlacement.localRotationDegrees
+                : objectPlacement.localRotationDegrees;
+            Quaternion worldRotation = gridRotation * Quaternion.Euler(
+                0f,
+                0f,
+                directionDegrees + localRotation);
+            GameObject instance = Instantiate(
+                objectPlacement.prefab,
+                worldPosition,
+                worldRotation,
+                objectRoot);
+            if (instance == null)
+            {
+                Debug.LogError(
+                    $"Corridor decoration '{module.ModuleId}' object " +
+                    $"'{objectPlacement.placementId}' could not be created.",
+                    module);
+                return false;
+            }
+
+            instance.name =
+                $"CorridorObject_{connectionIndex}_{modulePlacementIndex}_{objectPlacement.placementId}";
+            Vector3 sourceScale = objectPlacement.localScale == Vector3.zero
+                ? objectPlacement.prefab.transform.localScale
+                : objectPlacement.localScale;
+            if (orientationSign < 0)
+                sourceScale.y = -sourceScale.y;
+            instance.transform.localScale = sourceScale;
+            generatedRoomObjects.Add(instance);
+            generatedRoomObjectsByStateId[
+                CreateCorridorRuntimeStateId(
+                    connectionIndex,
+                    modulePlacementIndex,
+                    objectPlacement.placementId)] = instance;
+        }
+
+        return true;
+    }
+
+    private static bool IsInsideCorridorModuleFootprint(
+        Vector2Int localCell,
+        int moduleLength)
+    {
+        return localCell.x >= 0 &&
+               localCell.x < moduleLength &&
+               localCell.y >= -1 &&
+               localCell.y <= RoomSocketGeometry.RequiredWidth;
+    }
+
+    private static Vector2Int TransformCorridorModuleCell(
+        Vector2Int firstSocketCell,
+        Vector2Int direction,
+        Vector2Int tangent,
+        int forwardOffset,
+        Vector2Int localCell)
+    {
+        return firstSocketCell +
+               direction * (forwardOffset + localCell.x + 1) +
+               tangent * localCell.y;
+    }
+
+    private static Matrix4x4 CreateCorridorOrientationMatrix(
+        Vector2Int direction,
+        Vector2Int tangent)
+    {
+        Matrix4x4 orientation = Matrix4x4.identity;
+        orientation.m00 = direction.x;
+        orientation.m01 = tangent.x;
+        orientation.m10 = direction.y;
+        orientation.m11 = tangent.y;
+        return orientation;
+    }
+
+    /// <summary>
+    /// 책임 : 같은 Seed로 재생성된 복도 GroundProp의 파괴·활성 상태를 연결/모듈/Pivot 배치 Id로 다시 찾게 한다.
+    /// </summary>
+    private static string CreateCorridorRuntimeStateId(
+        int connectionIndex,
+        int modulePlacementIndex,
+        string objectPlacementId)
+    {
+        return $"corridor:{connectionIndex}:{modulePlacementIndex}:{objectPlacementId}";
     }
 
     private static TileBase ResolveTileVariant(

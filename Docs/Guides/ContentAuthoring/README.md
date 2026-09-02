@@ -2,7 +2,7 @@
 status: active
 authority: guide
 category: content-authoring
-last_reviewed: 2026-08-27
+last_reviewed: 2026-09-02
 ---
 
 # Content Authoring Pipelines
@@ -35,7 +35,7 @@ last_reviewed: 2026-08-27
 | [Relic Authoring Pipeline](./RelicAuthoringPipeline.md) | 새 유물, 유물 proc, 유물 레벨/툴팁/복원 동작을 만든다. |
 | [Consumable Authoring Pipeline](./ConsumableAuthoringPipeline.md) | 새 소모품, 사용 효과, 소모품 인벤토리 연결을 만든다. |
 | [Loot Reward Integration Pipeline](./LootRewardIntegrationPipeline.md) | 새 콘텐츠를 loot table, item database, chest, boss reward, world pickup에 연결한다. |
-| [절차적 던전 방 제작 툴 사용 가이드](./ProceduralDungeonRoomAuthoringGuide.md) | 테마 방을 새로 만들거나 수정·복제하고, 소켓·오브젝트·Kill Lock을 설정한 뒤 실제 배치 알고리즘으로 미리 본다. |
+| [절차적 던전 방 제작 툴 사용 가이드](./ProceduralDungeonRoomAuthoringGuide.md) | 테마 방과 복도 장식 모듈을 제작하고, 소켓·오브젝트·Kill Lock 및 길이 기반 완성 복도를 실제 조립 규칙으로 미리 본다. |
 | [Gemini Ink Dialogue Authoring Guide](./GeminiInkDialogueAuthoringGuide.txt) | Gemini/Gem으로 Ink 대사 초안, animated variant, NPC/boss 대사 branch를 작성할 때 사용한다. |
 
 ## Related Maps

@@ -39,7 +39,7 @@ internal static class RoomAuthoringWorkspace
     public static bool HasUnsavedChanges =>
         IsOpen &&
         SessionState.GetBool(UnsavedChangesKey, false) &&
-        FindAuthoring() != null;
+        (FindAuthoring() != null || FindCorridorAuthoring() != null);
 
     public static Scene Open()
     {
@@ -89,12 +89,13 @@ internal static class RoomAuthoringWorkspace
             return true;
 
         RoomPieceAuthoring authoring = FindAuthoring();
+        CorridorDecorationModuleAuthoring corridorAuthoring = FindCorridorAuthoring();
         if (confirmDiscard &&
-            authoring != null &&
+            (authoring != null || corridorAuthoring != null) &&
             HasUnsavedChanges &&
             !EditorUtility.DisplayDialog(
-                "방 제작 작업 공간 닫기",
-                "저장되지 않은 방 편집 내용이 있습니다. 작업 공간을 닫고 변경 내용을 버릴까요?",
+                "던전 제작 작업 공간 닫기",
+                "저장되지 않은 방 또는 복도 장식 편집 내용이 있습니다. 작업 공간을 닫고 변경 내용을 버릴까요?",
                 "변경 내용 버리기",
                 "계속 편집"))
         {
@@ -170,6 +171,26 @@ internal static class RoomAuthoringWorkspace
         {
             RoomPieceAuthoring authoring =
                 roots[rootIndex].GetComponentInChildren<RoomPieceAuthoring>(true);
+            if (authoring != null)
+                return authoring;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// 책임 : 현재 임시 작업 공간에서 편집 중인 복도 장식 모듈 루트를 찾는다.
+    /// </summary>
+    public static CorridorDecorationModuleAuthoring FindCorridorAuthoring()
+    {
+        if (!TryGetScene(out Scene workspaceScene))
+            return null;
+
+        GameObject[] roots = workspaceScene.GetRootGameObjects();
+        for (int rootIndex = 0; rootIndex < roots.Length; rootIndex++)
+        {
+            CorridorDecorationModuleAuthoring authoring =
+                roots[rootIndex].GetComponentInChildren<CorridorDecorationModuleAuthoring>(true);
             if (authoring != null)
                 return authoring;
         }

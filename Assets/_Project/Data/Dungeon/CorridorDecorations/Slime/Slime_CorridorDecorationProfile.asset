@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3adf7153b0da493fa698e3a69ab99f76, type: 3}
+  m_Name: Slime_CorridorDecorationProfile
+  m_EditorClassIdentifier: Gameplay::CorridorDecorationProfileSO
+  doorClearanceCells: 1
+  maxLandmarksPerCorridor: 1
+  modules:
+  - {fileID: 11400000, guid: cb6397d871d6ec940be0c4b3913f4cce, type: 2}
+  - {fileID: 11400000, guid: ad1a09d28b0a29946b0ef3721e113b05, type: 2}
+  - {fileID: 11400000, guid: 20f9e5b7bf2c82149912a881971f60a5, type: 2}
+  - {fileID: 11400000, guid: ba0730a0731cc1845b631e4daf038c04, type: 2}
+  - {fileID: 11400000, guid: caee8c4d25639194b92c345636b2f8d5, type: 2}
+  - {fileID: 11400000, guid: ba997bad775d3da4bb880bd01d02afd0, type: 2}

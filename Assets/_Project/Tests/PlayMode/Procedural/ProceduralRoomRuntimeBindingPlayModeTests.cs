@@ -5,7 +5,7 @@ using UnityEngine.TestTools;
 using UnityEngine.Tilemaps;
 
 /// <summary>
-/// 책임 : 절차 생성 방의 고정 시각 레이어, 몬스터 소스·테마 카탈로그, 앵커 바인딩, 이동 도착 경계 보호와 필수 방의 그래프 위치 제약을 회귀 검증한다.
+/// 책임 : 절차 생성 방·복도의 고정 시각 레이어와 장식 조합, 몬스터 소스·테마 카탈로그, 앵커 바인딩, 이동 도착 경계 보호와 필수 방의 그래프 위치 제약을 회귀 검증한다.
 /// </summary>
 public sealed class ProceduralRoomRuntimeBindingPlayModeTests
 {
@@ -156,6 +156,290 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
         Assert.That(
             RoomTileLayerContract.GetSortingLayerName(RoomTileLayerKind.Foreground),
             Is.EqualTo("ForeGround"));
+    }
+
+    [Test]
+    public void CorridorDecorationComposer_PreservesDoorClearanceAndIsDeterministic()
+    {
+        CorridorDecorationProfileSO profile =
+            ScriptableObject.CreateInstance<CorridorDecorationProfileSO>();
+        CorridorDecorationModuleSO start = CreateCorridorModule(
+            "Start",
+            CorridorDecorationModuleRole.Start,
+            2);
+        CorridorDecorationModuleSO middle = CreateCorridorModule(
+            "Middle",
+            CorridorDecorationModuleRole.Middle,
+            3);
+        CorridorDecorationModuleSO landmark = CreateCorridorModule(
+            "Landmark",
+            CorridorDecorationModuleRole.Landmark,
+            2);
+        CorridorDecorationModuleSO filler = CreateCorridorModule(
+            "Filler",
+            CorridorDecorationModuleRole.Filler,
+            1);
+        CorridorDecorationModuleSO end = CreateCorridorModule(
+            "End",
+            CorridorDecorationModuleRole.End,
+            2);
+        try
+        {
+            profile.EditorConfigure(
+                clearanceCells: 1,
+                landmarkLimit: 1,
+                new[] { start, middle, landmark, filler, end });
+
+            List<CorridorDecorationPlacement> first =
+                CorridorDecorationComposer.Compose(profile, 14, 9182, 3);
+            List<CorridorDecorationPlacement> second =
+                CorridorDecorationComposer.Compose(profile, 14, 9182, 3);
+
+            Assert.That(first, Has.Count.EqualTo(second.Count));
+            Assert.That(first, Is.Not.Empty);
+            int previousEnd = 1;
+            int landmarkCount = 0;
+            for (int placementIndex = 0; placementIndex < first.Count; placementIndex++)
+            {
+                CorridorDecorationPlacement placement = first[placementIndex];
+                Assert.That(placement.ForwardOffset, Is.GreaterThanOrEqualTo(previousEnd));
+                Assert.That(placement.EndOffsetExclusive, Is.LessThanOrEqualTo(13));
+                Assert.That(second[placementIndex].Module, Is.SameAs(placement.Module));
+                Assert.That(
+                    second[placementIndex].ForwardOffset,
+                    Is.EqualTo(placement.ForwardOffset));
+                previousEnd = placement.EndOffsetExclusive;
+                if (placement.Module.Role == CorridorDecorationModuleRole.Landmark)
+                    landmarkCount++;
+            }
+
+            Assert.That(landmarkCount, Is.LessThanOrEqualTo(1));
+            Assert.That(first[0].Module.Role, Is.EqualTo(CorridorDecorationModuleRole.Start));
+            Assert.That(first[^1].Module.Role, Is.EqualTo(CorridorDecorationModuleRole.End));
+        }
+        finally
+        {
+            Object.DestroyImmediate(end);
+            Object.DestroyImmediate(filler);
+            Object.DestroyImmediate(landmark);
+            Object.DestroyImmediate(middle);
+            Object.DestroyImmediate(start);
+            Object.DestroyImmediate(profile);
+        }
+    }
+
+    [Test]
+    public void CorridorDecorationComposer_UsesExactShortModuleForRemainingSpan()
+    {
+        CorridorDecorationProfileSO profile =
+            ScriptableObject.CreateInstance<CorridorDecorationProfileSO>();
+        CorridorDecorationModuleSO shortModule = CreateCorridorModule(
+            "Short4",
+            CorridorDecorationModuleRole.Short,
+            4);
+        CorridorDecorationModuleSO filler = CreateCorridorModule(
+            "Filler",
+            CorridorDecorationModuleRole.Filler,
+            1);
+        try
+        {
+            profile.EditorConfigure(
+                clearanceCells: 1,
+                landmarkLimit: 0,
+                new[] { filler, shortModule });
+
+            List<CorridorDecorationPlacement> placements =
+                CorridorDecorationComposer.Compose(profile, 6, 77, 0);
+
+            Assert.That(placements, Has.Count.EqualTo(1));
+            Assert.That(placements[0].Module, Is.SameAs(shortModule));
+            Assert.That(placements[0].ForwardOffset, Is.EqualTo(1));
+            Assert.That(placements[0].EndOffsetExclusive, Is.EqualTo(5));
+        }
+        finally
+        {
+            Object.DestroyImmediate(filler);
+            Object.DestroyImmediate(shortModule);
+            Object.DestroyImmediate(profile);
+        }
+    }
+
+    [Test]
+    public void CorridorGroundPropAuthoring_StoresPivotRelativeToModuleGrid()
+    {
+        GameObject root = new("CorridorAuthoring");
+        GameObject gridObject = new("Grid");
+        GameObject propPrefab = new("PropPrefab");
+        try
+        {
+            CorridorDecorationModuleAuthoring authoring =
+                root.AddComponent<CorridorDecorationModuleAuthoring>();
+            gridObject.transform.SetParent(root.transform, false);
+            Grid grid = gridObject.AddComponent<Grid>();
+            authoring.EditorConfigure(
+                "PivotTest",
+                CorridorDecorationModuleRole.Middle,
+                4,
+                editedModule: null);
+            authoring.EditorAssignTilemaps(
+                grid,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+            GameObject prop = new("GroundProp");
+            prop.transform.SetParent(gridObject.transform, false);
+            RoomObjectAuthoring marker = prop.AddComponent<RoomObjectAuthoring>();
+            marker.EditorConfigure(
+                "GroundProp_01",
+                RoomObjectKind.Prop,
+                propPrefab,
+                RoomMonsterSpawnRole.Warrior,
+                stageMonsterSet: null);
+            Vector3Int pivotCell = new(2, 1, 0);
+            Vector2 pivotOffset = new(0.25f, -0.125f);
+            prop.transform.position = grid.GetCellCenterWorld(pivotCell) +
+                                      new Vector3(pivotOffset.x, pivotOffset.y, 0f);
+
+            Assert.That(marker.TryGetPlacementData(out RoomObjectPlacementData data), Is.True);
+            Assert.That(data.localCell, Is.EqualTo(new Vector2Int(2, 1)));
+            Assert.That(data.localOffset.x, Is.EqualTo(pivotOffset.x).Within(0.0001f));
+            Assert.That(data.localOffset.y, Is.EqualTo(pivotOffset.y).Within(0.0001f));
+            Assert.That(data.prefab, Is.SameAs(propPrefab));
+        }
+        finally
+        {
+            Object.DestroyImmediate(propPrefab);
+            Object.DestroyImmediate(root);
+        }
+    }
+
+    [Test]
+    public void DungeonRoomBuilder_AppliesCorridorModuleLayersAndPivotProp()
+    {
+        GameObject root = new("CorridorDecorationBuild");
+        GameObject propPrefab = new("CorridorPropPrefab");
+        RoomThemeLibrarySO library = ScriptableObject.CreateInstance<RoomThemeLibrarySO>();
+        RoomTemplateSO start = null;
+        RoomTemplateSO combat = null;
+        CorridorDecorationProfileSO profile =
+            ScriptableObject.CreateInstance<CorridorDecorationProfileSO>();
+        CorridorDecorationModuleSO shortModule =
+            ScriptableObject.CreateInstance<CorridorDecorationModuleSO>();
+        Tile baseTile = ScriptableObject.CreateInstance<Tile>();
+        Tile decorationTile = ScriptableObject.CreateInstance<Tile>();
+        try
+        {
+            root.AddComponent<Grid>();
+            Tilemap[] tilemaps = new Tilemap[RoomTileLayerContract.OrderedLayers.Count];
+            for (int layerIndex = 0; layerIndex < tilemaps.Length; layerIndex++)
+            {
+                tilemaps[layerIndex] = CreateTestTilemap(
+                    root.transform,
+                    RoomTileLayerContract.OrderedLayers[layerIndex]);
+            }
+
+            DungeonRoomBuilder builder = root.AddComponent<DungeonRoomBuilder>();
+            builder.EditorAssignTilemaps(
+                tilemaps[0],
+                tilemaps[1],
+                tilemaps[2],
+                tilemaps[3],
+                tilemaps[4],
+                tilemaps[5],
+                tilemaps[6],
+                tilemaps[7]);
+            builder.EditorAssignCorridorTiles(baseTile, baseTile);
+
+            RoomBuildData decorationBuild = new()
+            {
+                underFloorTiles = OneTile(decorationTile),
+                floorTiles = OneTile(decorationTile),
+                floorDetailTiles = OneTile(decorationTile),
+                groundDecorationTiles = OneTile(decorationTile),
+                wallTiles = OneTile(decorationTile),
+                wallDetailTiles = OneTile(decorationTile),
+                foregroundTiles = OneTile(decorationTile),
+                overlayFxTiles = OneTile(decorationTile),
+                objectPlacements = new List<RoomObjectPlacementData>
+                {
+                    new()
+                    {
+                        placementId = "Prop_01",
+                        kind = RoomObjectKind.Prop,
+                        prefab = propPrefab,
+                        localCell = new Vector2Int(1, 1),
+                        localOffset = new Vector2(0.2f, -0.1f),
+                        localRotationDegrees = 15f,
+                        localScale = new Vector3(1.2f, 0.8f, 1f)
+                    }
+                },
+                travelEndpointPlacements = new List<RoomTravelEndpointPlacementData>()
+            };
+            shortModule.EditorSetData(
+                "Short2",
+                CorridorDecorationModuleRole.Short,
+                2,
+                decorationBuild);
+            profile.EditorConfigure(1, 0, new[] { shortModule });
+            builder.ConfigureCorridorDecoration(profile);
+
+            start = CreateLinearCorridorTemplate(
+                "CorridorStart",
+                RoomType.Start,
+                RoomSocketDirection.Right,
+                baseTile);
+            combat = CreateLinearCorridorTemplate(
+                "CorridorCombat",
+                RoomType.Combat,
+                RoomSocketDirection.Left,
+                baseTile);
+            library.EditorAddRoom(start);
+            library.EditorAddRoom(combat);
+            DungeonLayoutResult layout = new DungeonLayoutAssembler().Assemble(
+                library,
+                seed: 3391,
+                requestedRoomCount: 2,
+                includeBossRoom: false,
+                maxPlacementAttemptsPerRoom: 64,
+                minimumCorridorLength: 4,
+                corridorLengthPerRoomCell: 0f,
+                corridorLengthVariation: 0);
+
+            Assert.That(layout.IsComplete, Is.True, layout.FailureReason);
+            Assert.That(layout.Connections, Has.Count.EqualTo(1));
+            Assert.That(layout.Connections[0].CorridorLength, Is.EqualTo(4));
+            Assert.That(
+                builder.TryBuild(layout, new DungeonBuildOptions(false, false, true)),
+                Is.True);
+            for (int layerIndex = 0; layerIndex < tilemaps.Length; layerIndex++)
+                Assert.That(TilemapContains(tilemaps[layerIndex], decorationTile), Is.True);
+            Assert.That(builder.GeneratedRoomObjects, Has.Count.EqualTo(1));
+            Assert.That(builder.GeneratedRoomObjects[0].name, Does.Contain("Prop_01"));
+            List<DungeonObjectRuntimeStateData> states =
+                builder.CaptureGeneratedObjectStates();
+            Assert.That(states, Has.Count.EqualTo(1));
+            Assert.That(states[0].stateId, Does.StartWith("corridor:0:0:"));
+        }
+        finally
+        {
+            Object.DestroyImmediate(root);
+            Object.DestroyImmediate(decorationTile);
+            Object.DestroyImmediate(baseTile);
+            Object.DestroyImmediate(shortModule);
+            Object.DestroyImmediate(profile);
+            if (combat != null)
+                Object.DestroyImmediate(combat);
+            if (start != null)
+                Object.DestroyImmediate(start);
+            Object.DestroyImmediate(library);
+            Object.DestroyImmediate(propPrefab);
+        }
     }
 
     [Test]
@@ -347,6 +631,49 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
         finally
         {
             Object.DestroyImmediate(endpointObject);
+            Object.DestroyImmediate(playerObject);
+        }
+    }
+
+    [Test]
+    public void PlayerBodyColliderResolver_RejectsAttackEffectUnderPlayer()
+    {
+        GameObject playerObject = new("Player");
+        GameObject attackEffectObject = new("AttackEffect");
+        playerObject.SetActive(false);
+        try
+        {
+            BoxCollider2D bodyCollider = playerObject.AddComponent<BoxCollider2D>();
+            PlayerInteractor2D player = playerObject.AddComponent<PlayerInteractor2D>();
+
+            GameObject sensorObject = new("InteractionSensor");
+            sensorObject.transform.SetParent(playerObject.transform, false);
+            BoxCollider2D sensorCollider = sensorObject.AddComponent<BoxCollider2D>();
+            sensorCollider.isTrigger = true;
+            sensorObject.AddComponent<PlayerInteractionSensor2D>();
+
+            attackEffectObject.transform.SetParent(playerObject.transform, false);
+            CircleCollider2D attackCollider =
+                attackEffectObject.AddComponent<CircleCollider2D>();
+            attackCollider.isTrigger = true;
+            playerObject.SetActive(true);
+
+            Assert.That(player.BodyCollider, Is.SameAs(bodyCollider));
+            Assert.That(
+                PlayerBodyColliderResolver2D.TryResolve(
+                    bodyCollider,
+                    out IPlayerInteractor resolvedPlayer),
+                Is.True);
+            Assert.That(resolvedPlayer, Is.SameAs(player));
+            Assert.That(
+                PlayerBodyColliderResolver2D.TryResolve(
+                    attackCollider,
+                    out IPlayerInteractor attackOwner),
+                Is.False);
+            Assert.That(attackOwner, Is.Null);
+        }
+        finally
+        {
             Object.DestroyImmediate(playerObject);
         }
     }
@@ -775,6 +1102,99 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
             {
                 floorTiles = new List<RoomTileData>(),
                 wallTiles = new List<RoomTileData>(),
+                objectPlacements = new List<RoomObjectPlacementData>(),
+                travelEndpointPlacements = new List<RoomTravelEndpointPlacementData>()
+            });
+        return template;
+    }
+
+    private static CorridorDecorationModuleSO CreateCorridorModule(
+        string moduleId,
+        CorridorDecorationModuleRole role,
+        int length)
+    {
+        CorridorDecorationModuleSO module =
+            ScriptableObject.CreateInstance<CorridorDecorationModuleSO>();
+        module.EditorSetData(moduleId, role, length, new RoomBuildData());
+        return module;
+    }
+
+    private static List<RoomTileData> OneTile(TileBase tile)
+    {
+        return new List<RoomTileData>
+        {
+            new()
+            {
+                localCell = Vector2Int.zero,
+                tile = tile
+            }
+        };
+    }
+
+    private static bool TilemapContains(Tilemap tilemap, TileBase expected)
+    {
+        BoundsInt bounds = tilemap.cellBounds;
+        for (int x = bounds.xMin; x < bounds.xMax; x++)
+        {
+            for (int y = bounds.yMin; y < bounds.yMax; y++)
+            {
+                if (tilemap.GetTile(new Vector3Int(x, y, 0)) == expected)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static RoomTemplateSO CreateLinearCorridorTemplate(
+        string roomId,
+        RoomType roomType,
+        RoomSocketDirection direction,
+        TileBase baseTile)
+    {
+        RoomTemplateSO template = ScriptableObject.CreateInstance<RoomTemplateSO>();
+        Vector2Int socketCell = direction == RoomSocketDirection.Right
+            ? new Vector2Int(1, 0)
+            : Vector2Int.zero;
+        List<RoomTileData> floorTiles = new()
+        {
+            new() { localCell = new Vector2Int(0, 0), tile = baseTile },
+            new() { localCell = new Vector2Int(0, 1), tile = baseTile },
+            new() { localCell = new Vector2Int(1, 0), tile = baseTile },
+            new() { localCell = new Vector2Int(1, 1), tile = baseTile }
+        };
+        List<RoomTileData> socketWalls = new()
+        {
+            new() { localCell = socketCell, tile = baseTile },
+            new()
+            {
+                localCell = socketCell + RoomSocketGeometry.GetTangent(direction),
+                tile = baseTile
+            }
+        };
+        template.EditorSetData(
+            new RoomLayoutData
+            {
+                roomId = roomId,
+                roomType = roomType,
+                size = new Vector2Int(2, 2),
+                localBounds = new RectInt(0, 0, 2, 2),
+                sockets = new List<RoomSocketData>
+                {
+                    new()
+                    {
+                        socketId = direction.ToString(),
+                        localCell = socketCell,
+                        direction = direction,
+                        width = 2
+                    }
+                },
+                selectionWeight = 1f
+            },
+            new RoomBuildData
+            {
+                floorTiles = floorTiles,
+                wallTiles = socketWalls,
                 objectPlacements = new List<RoomObjectPlacementData>(),
                 travelEndpointPlacements = new List<RoomTravelEndpointPlacementData>()
             });

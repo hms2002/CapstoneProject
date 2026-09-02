@@ -2,7 +2,7 @@
 status: active
 authority: guide
 category: content-authoring
-last_reviewed: 2026-09-01
+last_reviewed: 2026-09-02
 ---
 
 # 절차적 던전 방 제작 툴 사용 가이드
@@ -15,6 +15,7 @@ last_reviewed: 2026-09-01
 - 기본 바닥·벽과 고정 장식 레이어를 가진 새 방부터 몬스터·상자·포털이 있는 방까지 제작한다.
 - 기존 `RoomTemplateSO`를 불러와 수정하거나 복제한다.
 - 저장하지 않은 현재 방을 실제 배치 알고리즘에 넣어 동적 맵을 미리 본다.
+- 테마별 복도 장식 조각을 만들고 가변 길이에 맞춘 완성 복도를 미리 본다.
 - 검증을 통과한 방만 저장하고 테마 라이브러리에 등록한다.
 
 기술 구조와 런타임 책임이 필요하면 [Procedural Dungeon Room Pipeline](../../StructureMemory/ProceduralDungeonRoomPipeline.md)을 함께 읽습니다.
@@ -32,6 +33,7 @@ Notion 가져오기용 하위 페이지 묶음은 `Docs/NotionImport/ProceduralD
 7. 필요하면 `4. 오브젝트`에서 몬스터, 상자, 포털, 프롭을 배치합니다.
 8. `6. 맵 미리보기`에서 실제 조립 결과를 확인하고, 생성 수치를 바꿨다면 `현재 미리보기 설정을 테마에 적용`합니다.
 9. `5. 검증·저장`에서 검증을 통과시킨 뒤 저장합니다.
+10. 복도 자체를 꾸밀 때는 `Tools > Dungeon > Corridor Decoration Editor`에서 테마 프로필을 선택하고 모듈 또는 완성 복도를 미리 봅니다.
 
 처음 사용할 때는 기존 방 하나를 `복제해서 새 방 만들기`로 열어 각 단계의 완성 상태를 살펴보는 방법이 가장 쉽습니다.
 
@@ -61,6 +63,8 @@ Notion 가져오기용 하위 페이지 묶음은 `Docs/NotionImport/ProceduralD
 | Travel Slot Id | 방의 이동 지점을 식별하는 고유 문자열입니다. 목적 씬 연결은 복도 씬에서 별도로 지정합니다. |
 | 등장 가중치 | 같은 역할의 후보 중 해당 방이 선택될 상대 확률입니다. |
 | Seed | 같은 라이브러리와 생성 설정에서 같은 배치 결과를 재현하는 정수입니다. |
+| 복도 장식 프로필 | 한 테마의 문 앞 안전 여백, Landmark 최대 수와 장식 모듈 목록을 저장하는 `CorridorDecorationProfileSO`입니다. |
+| 복도 장식 모듈 | +X 방향 2칸 폭을 기준으로 만든 짧은 복도 타일·GroundProp 조각인 `CorridorDecorationModuleSO`입니다. |
 
 ## 작업 시작 방법
 
@@ -418,6 +422,83 @@ Shadow, Dragon, Slime 절차 복도 씬은 각자의 프로필을 직접 참조�
 - 역할별 할당 실패: 정책의 Treasure/Event/Shop 수보다 해당 타입의 유효한 템플릿이 적은지 확인합니다. 현재 테마 샘플은 Event와 Shop을 제공하지 않으므로 두 할당량을 `0`으로 둡니다.
 - 그래프 토폴로지 실패: 방 개수가 최소 보스 거리·분기·순환 목표를 함께 만족할 만큼 충분한지, 선택된 방들의 방향별 소켓이 충분한지 확인합니다.
 
+## 7. 복도 장식 모듈과 완성본 미리보기
+
+`Tools > Dungeon > Corridor Decoration Editor`는 방 사이의 길이가 매번 달라져도 같은 테마 장식 규칙으로 복도를 채우는 전용 도구입니다. 방의 위치와 복도 길이는 기존 레이아웃 생성기가 결정하고, 이 도구가 만드는 데이터는 결정된 직선 복도의 시각 타일과 `GroundProp`만 교체하거나 덧씁니다.
+
+### 데이터 연결
+
+`DungeonGenerationProfileSO → CorridorDecorationProfileSO → CorridorDecorationModuleSO`
+
+- 생성 프로필은 해당 테마의 장식 프로필 하나를 참조합니다.
+- 장식 프로필은 양쪽 문 앞 안전 여백, 복도당 Landmark 최대 수와 사용 가능한 모듈 목록을 가집니다.
+- 모듈은 역할, 진행축 길이, 여덟 타일 레이어와 `GroundProp` Pivot 배치를 가집니다.
+- 장식 프로필이나 모듈이 없어도 기본 Floor/Wall 복도는 계속 생성됩니다.
+
+### 제작 좌표와 레이어 규칙
+
+모든 모듈은 왼쪽에서 오른쪽으로 진행하는 `+X` 기준으로 한 번만 제작합니다. 런타임 빌더가 실제 연결 방향에 맞춰 상·하·좌·우로 변환합니다.
+
+| 항목 | 고정 규칙 |
+| --- | --- |
+| 진행축 | `x = 0 .. Length - 1` |
+| 가로 통로 | `Floor`의 `y = 0, 1` |
+| 양쪽 벽 | `Wall`의 `y = -1, 2` |
+| 사용 가능 범위 | 모든 타일과 Prop Pivot은 `x = 0 .. Length - 1`, `y = -1 .. 2` 안에 둡니다. |
+| 타일 레이어 | 방과 동일한 `UnderFloor`, `Floor`, `FloorDetail`, `GroundDecoration`, `Wall`, `WallDetail`, `Foreground`, `OverlayFX`를 유지합니다. |
+| 오브젝트 | 현재는 `GroundProp`만 허용합니다. 프리팹 충돌과 동작은 프리팹이 소유합니다. |
+
+`Floor`와 `Wall`은 기본 복도 타일을 선택적으로 교체합니다. 비어 있는 셀은 생성 프로필의 방 라이브러리에서 찾은 기본 타일 또는 빌더의 테마 복도 타일을 유지합니다. 나머지 여섯 장식 레이어는 기존 복도 위에 그대로 합성됩니다. `GroundProp`은 Transform의 Pivot을 조각 원점 기준 `localCell`, `localOffset`, 회전과 크기로 저장하므로, 타일과 같은 방향 변환을 거쳐 재생성됩니다.
+
+### 모듈 역할
+
+| 역할 | 선택 규칙 |
+| --- | --- |
+| `Start` | 문 앞 안전 여백 다음에 들어갈 수 있는 시작 조각입니다. 공간이 부족하거나 후보가 없으면 생략됩니다. |
+| `Middle` | 본문을 채우는 일반 반복 조각입니다. |
+| `Landmark` | 본문 후보 중 무작위로 선택되는 강조 조각입니다. 프로필 값은 최대 개수이며, 조건에 따라 0개가 나올 수 있습니다. |
+| `Filler` | 남은 길이를 채우는 짧은 보정 조각입니다. 1칸 Filler를 하나 이상 두면 빈 셀을 줄일 수 있습니다. |
+| `End` | 반대쪽 문 앞 안전 여백 직전에 들어갈 수 있는 종료 조각입니다. 공간이 부족하거나 후보가 없으면 생략됩니다. |
+| `Short` | 안전 여백을 제외한 길이와 정확히 일치할 때 다른 역할보다 우선하여 하나만 사용합니다. |
+
+본문의 `Middle`, `Landmark`, `Filler`는 가중치 없이 등록된 후보에서 선택됩니다. 다른 후보가 있으면 같은 모듈을 바로 연속해서 선택하지 않습니다. 어떤 후보도 남은 길이에 들어가지 않으면 그 셀은 기본 복도 모습으로 남습니다.
+
+### 새 모듈 만들기
+
+1. `Tools > Dungeon > Corridor Decoration Editor`를 엽니다.
+2. `테마 생성 프로필`과 연결된 `복도 장식 프로필`을 확인합니다. 새 프로필이면 `생성 프로필에 연결`을 눌러야 런타임에 적용됩니다.
+3. 모듈 ID, 역할, 진행축 길이를 입력하고 `새 복도 조각 만들기`를 누릅니다.
+4. 레이어 버튼으로 Tilemap을 선택하고 Unity Tile Palette로 정해진 범위 안에 그립니다.
+5. 큰 바위·상자 같은 오브젝트가 필요하면 완성된 프리팹을 선택해 `중앙 셀에 GroundProp 추가`한 뒤 Scene View에서 Pivot 위치를 조정합니다.
+6. 검증 오류를 모두 해결하고 `새 모듈 저장 및 프로필 등록`을 누릅니다.
+
+기존 모듈은 프로필의 목록에서 `편집`하거나 `모듈 직접 선택`으로 불러옵니다. 수정 후 `현재 모듈 갱신 및 프로필 등록`을 누르기 전에는 원본 에셋이 바뀌지 않습니다. 작업 공간은 방 제작과 같은 비저장 additive 씬이므로 게임플레이 씬을 자동 저장하거나 수정하지 않습니다.
+
+### 입력 길이로 완성 복도 확인하기
+
+같은 창의 `완성 복도 미리보기`에서 다음 값을 입력합니다.
+
+| 입력 | 의미 |
+| --- | --- |
+| 전체 복도 길이 | 두 방의 소켓 사이에 놓일 전체 셀 수입니다. 양쪽 문 앞 안전 여백도 포함하며 범위는 1~512입니다. |
+| 미리보기 Seed | 런타임 레이아웃 Seed와 같은 값을 넣으면 모듈 선택을 재현할 수 있습니다. |
+| 연결 번호 | 런타임 연결 목록의 인덱스입니다. 길이와 Seed가 같아도 연결마다 구성이 달라질 수 있습니다. |
+
+`완성본 생성/갱신`을 누르면 Scene View 아래쪽에 +X 방향의 완성 복도가 나타납니다. 빨간 반투명 셀은 장식하지 않는 문 앞 안전 여백이고, 각 조각 위에는 모듈 ID와 사용 범위가 표시됩니다. 결과 요약에는 실제 선택된 모듈 순서와 오프셋이 표시됩니다.
+
+이 미리보기는 런타임과 같은 `CorridorDecorationComposer`를 사용하지만 방 배치 전체를 보여 주지는 않습니다. 실제 방 그래프와 모든 복도를 확인하려면 Room Piece Editor의 `동적 생성 미리보기`를 사용합니다. 두 미리보기는 서로의 임시 루트를 정리하며 원본 에셋과 게임플레이 씬은 변경하지 않습니다.
+
+### 현재 제공되는 예제
+
+`Assets/_Project/Data/Dungeon/CorridorDecorations/{Shadow|Dragon|Slime}/`에 테마별 프로필 한 개와 다음 여섯 모듈이 있습니다.
+
+- `Start_02`, `Middle_03`, `Landmark_04`, `Filler_01`, `End_02`, `Short_02`
+- Shadow Landmark: 묘비 계열 GroundProp
+- Dragon Landmark: 부서진 룬 기둥 계열 GroundProp
+- Slime Landmark: 배럴 계열 GroundProp
+
+예제를 다시 설치하려면 `Tools > Dungeon > Examples > Install Theme Corridor Decoration Examples`, 참조와 데이터 범위를 점검하려면 `Validate Theme Corridor Decoration Examples`, 길이 기반 조립을 세 테마에서 점검하려면 `Validate Completed Corridor Previews`를 사용합니다. 설치기는 같은 경로의 예제 에셋을 갱신하고 각 테마 생성 프로필에 연결하므로, 기획자가 수동으로 변형한 예제와 경로가 겹치지 않는지 먼저 확인합니다.
+
 ## 권장 작업 흐름
 
 ### 새 전투 방 한 개 추가
@@ -456,6 +537,10 @@ Start나 Boss처럼 한 개 소켓만 필요한 방은 소켓이 실제 연결�
 | 오브젝트 검증 오류가 난다 | 공통 역할 Monster는 StageMonsterSet, 스테이지 Monster는 자식 포함 `Enemy`가 있는 고정 프리팹인지 확인합니다. Chest와 Portal은 각각 `TreasureChest`, `ScenePortal` 컴포넌트가 자식 포함 존재해야 합니다. |
 | Kill Lock 상자를 선택할 수 없다 | 상자 프리팹에 `ChestMonsterKillLock`이 있고 Chest Kind로 배치되었는지 확인합니다. |
 | 복도가 보이지 않는다 | 복도 길이가 양수라면 Floor/Wall 타일 자동 선택 결과 또는 오버라이드를 확인합니다. |
+| 장식 모듈이 런타임에 나오지 않는다 | 해당 `DungeonGenerationProfileSO`에 올바른 `CorridorDecorationProfileSO`가 연결되어 있고 모듈이 프로필 목록에 등록되었는지 확인합니다. |
+| Landmark가 항상 나오지 않는다 | `복도당 Landmark 제한`은 최대값입니다. Landmark는 Middle/Filler와 함께 무작위 후보이며 길이에 맞지 않으면 0개일 수 있습니다. |
+| 완성 복도 일부가 기본 타일로 남는다 | 남은 길이에 들어가는 모듈이 없다는 뜻입니다. 특히 1칸 `Filler`를 등록했는지 확인합니다. |
+| 완성본 미리보기 버튼이 비활성이다 | 장식 프로필을 선택하고 유효한 모듈을 한 개 이상 등록합니다. |
 | 같은 Seed인데 결과가 달라졌다 | 라이브러리 방 순서, 방 데이터, 가중치 또는 생성 설정이 변경되었는지 확인합니다. |
 | 프로필을 적용했지만 게임 값이 바뀌지 않는다 | 프로필 안내문의 활성 씬 참조 수가 1 이상인지 확인하고, 이미 생성된 씬이 아니라 새로 진입한 복도에서 확인합니다. |
 | 미리보기 표식이 갱신되지 않는다 | 스크립트 컴파일 또는 도메인 리로드 후 `동적 생성 미리보기`를 다시 누릅니다. |
@@ -483,6 +568,10 @@ Start나 Boss처럼 한 개 소켓만 필요한 방은 소켓이 실제 연결�
 - [ ] 현재 방 포함 미리보기를 여러 Seed로 확인했다.
 - [ ] 변경한 생성 수치를 실제 테마에서 사용할 경우 올바른 생성 프로필에 적용했다.
 - [ ] 큰 방 또는 종단형 방이면 부분 생성 가능성을 확인했다.
+- [ ] 복도 장식 프로필을 사용한다면 올바른 생성 프로필에 연결했다.
+- [ ] 모든 복도 모듈의 타일과 GroundProp Pivot이 제작 범위 안에 있다.
+- [ ] 여러 길이·Seed·연결 번호에서 완성 복도 미리보기를 확인했다.
+- [ ] 문 앞 안전 여백에 통행을 막는 장식이나 GroundProp이 없다.
 - [ ] 전체 검증을 통과했다.
 - [ ] 새 저장인지 원본 갱신인지 버튼과 대상 경로를 확인했다.
 
@@ -500,6 +589,8 @@ Start나 Boss처럼 한 개 소켓만 필요한 방은 소켓이 실제 연결�
 - [ ] Kill Lock 상자의 연출과 해금이 정상 동작한다.
 - [ ] Portal, Chest, 복합 Prop의 상호작용이 정상 동작한다.
 - [ ] 같은 Seed를 다시 생성했을 때 같은 레이아웃이 나온다.
+- [ ] 같은 Seed·연결 번호·복도 길이에서 같은 장식 모듈 순서가 나온다.
+- [ ] 가로·세로와 양방향 복도에서 장식 타일 및 GroundProp 방향이 올바르다.
 
 ## 관련 문서와 코드
 
@@ -507,9 +598,14 @@ Start나 Boss처럼 한 개 소켓만 필요한 방은 소켓이 실제 연결�
 - [Content Authoring Pipelines](./README.md)
 - `Assets/_Project/Editor/Tools/Dungeon/RoomPieceEditorWindow.cs`
 - `Assets/_Project/Editor/Tools/Dungeon/RoomAuthoringDungeonPreview.cs`
+- `Assets/_Project/Editor/Tools/Dungeon/CorridorDecorationEditorWindow.cs`
+- `Assets/_Project/Editor/Tools/Dungeon/CorridorDecorationCompletedPreview.cs`
+- `Assets/_Project/Editor/Tools/Dungeon/CorridorDecorationExampleInstaller.cs`
 - `Assets/_Project/Editor/Tools/Dungeon/ProceduralTravelBindingEditorWindow.cs`
 - `Assets/_Project/Runtime/Features/Map/Procedural/RoomTemplateSO.cs`
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonLayoutAssembler.cs`
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonLayoutPolicySO.cs`
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonGraphLayoutAssembler.cs`
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonRoomBuilder.cs`
+- `Assets/_Project/Runtime/Features/Map/Procedural/CorridorDecorationModuleSO.cs`
+- `Assets/_Project/Runtime/Features/Map/Procedural/CorridorDecorationProfileSO.cs`

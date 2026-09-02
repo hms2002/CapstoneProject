@@ -215,13 +215,8 @@ public sealed class SceneTravelTrigger2D : MonoBehaviour
 
     private static IPlayerInteractor ResolvePlayer(Collider2D other)
     {
-        if (other == null)
-            return null;
-
-        IPlayerInteractor player = other.GetComponent<IPlayerInteractor>();
-        if (player != null)
-            return player;
-
-        return other.GetComponentInParent<IPlayerInteractor>();
+        return PlayerBodyColliderResolver2D.TryResolve(other, out IPlayerInteractor player)
+            ? player
+            : null;
     }
 }

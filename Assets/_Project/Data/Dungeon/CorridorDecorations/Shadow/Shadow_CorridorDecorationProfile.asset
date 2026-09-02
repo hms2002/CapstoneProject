@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3adf7153b0da493fa698e3a69ab99f76, type: 3}
+  m_Name: Shadow_CorridorDecorationProfile
+  m_EditorClassIdentifier: Gameplay::CorridorDecorationProfileSO
+  doorClearanceCells: 1
+  maxLandmarksPerCorridor: 1
+  modules:
+  - {fileID: 11400000, guid: a68f163a1724dcd47b4b209382acc517, type: 2}
+  - {fileID: 11400000, guid: 83505d5d248691b48b76ddd2af8a4c2d, type: 2}
+  - {fileID: 11400000, guid: 0c937f0e9e386c8499eff20cc0b621fd, type: 2}
+  - {fileID: 11400000, guid: 3984b302d553ff449a010486c0170823, type: 2}
+  - {fileID: 11400000, guid: cf934ae9e630cea4f9e29f408de99381, type: 2}
+  - {fileID: 11400000, guid: ba3792d9f9732d84589d4e3fcecb7e03, type: 2}
