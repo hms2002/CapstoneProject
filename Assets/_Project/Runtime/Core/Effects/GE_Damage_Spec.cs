@@ -123,14 +123,32 @@ namespace UnityGAS
                 return causer;
             }
 
-            void TrySendHitFeedback(GameObject t, float stun, float shake)
+            bool TrySendHitFeedback(GameObject t, float stun, float shake)
             {
-                if (t == null) return;
-                if (stun <= 0f && shake <= 0f) return;
+                if (t == null) return false;
+                if (stun <= 0f && shake <= 0f) return false;
 
                 var receiver = t.GetComponent<IHitFeedbackReceiver2D>();
-                if (receiver != null)
-                    receiver.OnHitFeedback(new HitFeedbackPayload(ResolveCauser(), stun, shake));
+                if (receiver == null)
+                    return false;
+
+                receiver.OnHitFeedback(new HitFeedbackPayload(ResolveCauser(), stun, shake));
+                return true;
+            }
+
+            void TryPlayStandaloneHitFlash(GameObject t)
+            {
+                if (t == null)
+                    return;
+
+                IHitFlashController2D flashController = t.GetComponentInChildren<IHitFlashController2D>();
+                flashController?.PlayFlash();
+            }
+
+            void DispatchDamagePresentation(GameObject t, float stun, float shake)
+            {
+                if (!TrySendHitFeedback(t, stun, shake))
+                    TryPlayStandaloneHitFlash(t);
             }
 
             float damage = fallbackDamage;
@@ -219,7 +237,8 @@ namespace UnityGAS
                 target);
             TryShowElementDamagePopup(spec, target, attributeSet, preHp, damage);
 
-            TrySendHitFeedback(target, stunSeconds, cameraShake);
+            if (hpModified && postHpAfterModify < preHp)
+                DispatchDamagePresentation(target, stunSeconds, cameraShake);
         }
 
         public override void Apply(GameObject target, GameObject instigator, int stackCount = 1)

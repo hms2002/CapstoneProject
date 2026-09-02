@@ -16,7 +16,6 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
     private static bool s_isQuitting;
     private static readonly GlobalCanvasLayer[] HiddenDuringDialogueLayers =
     {
-        GlobalCanvasLayer.GameplayHUD,
         GlobalCanvasLayer.Popup,
         GlobalCanvasLayer.Hover,
         GlobalCanvasLayer.Prompt,
@@ -31,6 +30,7 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
     private DialogueController activeController;
     private GameFlowInputBlocker inputBlocker;
     private Coroutine nonDialogueUiFadeRoutine;
+    private Coroutine dialoguePersistentHudFadeRoutine;
     private bool wasDialoguePlaying;
 
     /// <summary>
@@ -48,6 +48,7 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
         public bool OriginalBlocksRaycasts = true;
         public bool AddedCanvasGroup;
         public bool TemporarilyVisible;
+        public bool RevealDuringDialogue;
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -128,6 +129,12 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
 
         nonDialogueUiSuppressionOwners.Add(owner);
         if (nonDialogueUiSuppressionOwners.Count == 1)
+        {
+            HideNonDialogueUi(ResolveNonDialogueUiFadeSeconds(fadeSeconds));
+            return;
+        }
+
+        if (!ReferenceEquals(owner, DialoguePlaybackUiSuppressionOwner))
             HideNonDialogueUi(ResolveNonDialogueUiFadeSeconds(fadeSeconds));
     }
 
@@ -136,11 +143,18 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
         if (owner == null)
             return;
 
+        bool releasedDialogueOwner = ReferenceEquals(owner, DialoguePlaybackUiSuppressionOwner);
         if (!RemoveNonDialogueUiSuppressionOwner(owner))
             return;
 
         if (nonDialogueUiSuppressionOwners.Count == 0)
+        {
             RestoreNonDialogueUi(ResolveNonDialogueUiFadeSeconds(fadeSeconds));
+            return;
+        }
+
+        if (releasedDialogueOwner)
+            HideNonDialogueUi(ResolveNonDialogueUiFadeSeconds(fadeSeconds));
     }
 
     public void ReleaseNonDialogueUiSuppressionWithoutRestore(object owner)
@@ -174,6 +188,21 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
 
         HideCapturedNonDialogueUiState(state);
         return true;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 대화 프레임 진입이 끝난 뒤, 대화 중 유지할 gameplay HUD만 다시 페이드인한다.
+    /// - 다른 suppression owner가 있거나 상위 HUD 캔버스가 비활성인 흐름은 강제로 표시하지 않는다.
+    /// </summary>
+    public void RevealDialoguePersistentHud(float fadeSeconds = -1f)
+    {
+        if (!CanRevealDialoguePersistentHud())
+            return;
+
+        StopDialoguePersistentHudFade();
+        dialoguePersistentHudFadeRoutine = StartCoroutine(
+            FadeDialoguePersistentHudRoutine(ResolveNonDialogueUiFadeSeconds(fadeSeconds)));
     }
 
     public void RegisterController(DialogueController controller)
@@ -319,6 +348,8 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
     private void HideNonDialogueUi(float fadeSeconds)
     {
         StopNonDialogueUiFade();
+        StopDialoguePersistentHudFade();
+        ClearDialoguePersistentHudTemporaryVisibility();
 
         if (hiddenLayerStates.Count == 0)
             CaptureNonDialogueUiStates();
@@ -335,6 +366,8 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
 
     private void CaptureNonDialogueUiStates()
     {
+        CaptureGameplayHudNonPersistentRoots();
+
         for (int i = 0; i < HiddenDuringDialogueLayers.Length; i++)
         {
             Canvas canvas = GlobalCanvasPlayback.GetCanvas(HiddenDuringDialogueLayers[i]);
@@ -345,7 +378,83 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
         }
     }
 
-    private void CaptureUiRoot(GlobalCanvasLayer layer, GameObject root)
+    /// <summary>
+    /// 책임:
+    /// - gameplay HUD 전체를 먼저 숨길 수 있도록 캡처하되, 대화 프레임 이후 재등장할 루트를 구분한다.
+    /// - 재등장 대상과 다른 HUD가 같은 authored 그룹 아래에 있으면 필요한 깊이까지만 내려가 분리 캡처한다.
+    /// </summary>
+    private void CaptureGameplayHudNonPersistentRoots()
+    {
+        Canvas gameplayHudCanvas = GlobalCanvasPlayback.GetCanvas(GlobalCanvasLayer.GameplayHUD);
+        if (gameplayHudCanvas == null)
+            return;
+
+        CaptureGameplayHudChildren(gameplayHudCanvas.transform);
+    }
+
+    private void CaptureGameplayHudChildren(Transform parent)
+    {
+        if (parent == null)
+            return;
+
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            Transform child = parent.GetChild(i);
+            if (child == null)
+                continue;
+
+            bool revealDuringDialogue = IsDialoguePersistentHudRoot(child);
+            if (!revealDuringDialogue && ContainsDialoguePersistentHud(child))
+            {
+                CaptureGameplayHudChildren(child);
+                continue;
+            }
+
+            CaptureUiRoot(
+                GlobalCanvasLayer.GameplayHUD,
+                child.gameObject,
+                revealDuringDialogue);
+        }
+    }
+
+    private static bool ContainsDialoguePersistentHud(Transform root)
+    {
+        if (root == null)
+            return false;
+
+        MonoBehaviour[] components = root.GetComponentsInChildren<MonoBehaviour>(true);
+        for (int i = 0; i < components.Length; i++)
+        {
+            MonoBehaviour component = components[i];
+            if (component is PlayerHealthHeartHUD ||
+                component is PlayerConsumableHUD2D ||
+                component is RunTimerHUD ||
+                component is LevelHudPresenter ||
+                component is CurrencyUI)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsDialoguePersistentHudRoot(Transform root)
+    {
+        if (root == null)
+            return false;
+
+        return root.GetComponent<PlayerHealthHeartHUD>() != null ||
+               root.GetComponent<PlayerConsumableHUD2D>() != null ||
+               root.GetComponent<RunTimerHUD>() != null ||
+               root.GetComponent<LevelHudPresenter>() != null ||
+               root.GetComponent<CurrencyUI>() != null;
+    }
+
+    private void CaptureUiRoot(
+        GlobalCanvasLayer layer,
+        GameObject root,
+        bool revealDuringDialogue = false)
     {
         if (root == null || HasCapturedNonDialogueUiRoot(root))
             return;
@@ -370,6 +479,7 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
             OriginalInteractable = group == null || group.interactable,
             OriginalBlocksRaycasts = group == null || group.blocksRaycasts,
             AddedCanvasGroup = addedCanvasGroup,
+            RevealDuringDialogue = revealDuringDialogue,
         });
 
         if (group != null)
@@ -393,6 +503,7 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
     private void RestoreNonDialogueUi(float fadeSeconds)
     {
         StopNonDialogueUiFade();
+        StopDialoguePersistentHudFade();
 
         if (hiddenLayerStates.Count == 0)
             return;
@@ -436,6 +547,53 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
         ApplyNonDialogueUiFadeFrame(startAlphas, targetAlphas, 1f, restoreWhenDone);
         CompleteNonDialogueUiFade(deactivateWhenDone, restoreWhenDone);
         nonDialogueUiFadeRoutine = null;
+    }
+
+    private IEnumerator FadeDialoguePersistentHudRoutine(float duration)
+    {
+        List<HiddenLayerState> revealStates = new();
+        for (int i = 0; i < hiddenLayerStates.Count; i++)
+        {
+            HiddenLayerState state = hiddenLayerStates[i];
+            if (!state.RevealDuringDialogue || !state.WasActive || state.Root == null || state.Group == null)
+                continue;
+
+            state.TemporarilyVisible = true;
+            if (!state.Root.activeSelf)
+                state.Root.SetActive(true);
+
+            state.Group.alpha = 0f;
+            state.Group.interactable = false;
+            state.Group.blocksRaycasts = false;
+            revealStates.Add(state);
+        }
+
+        if (duration > 0f && revealStates.Count > 0)
+        {
+            float elapsed = 0f;
+            while (elapsed < duration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float normalized = Mathf.Clamp01(elapsed / duration);
+                for (int i = 0; i < revealStates.Count; i++)
+                {
+                    HiddenLayerState state = revealStates[i];
+                    if (state.Group != null)
+                        state.Group.alpha = Mathf.Lerp(0f, state.OriginalAlpha, normalized);
+                }
+
+                yield return null;
+            }
+        }
+
+        for (int i = 0; i < revealStates.Count; i++)
+        {
+            HiddenLayerState state = revealStates[i];
+            if (state.Group != null)
+                state.Group.alpha = state.OriginalAlpha;
+        }
+
+        dialoguePersistentHudFadeRoutine = null;
     }
 
     private void PrepareNonDialogueUiFade(bool restoreWhenDone)
@@ -529,9 +687,41 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
         nonDialogueUiFadeRoutine = null;
     }
 
+    private void StopDialoguePersistentHudFade()
+    {
+        if (dialoguePersistentHudFadeRoutine == null)
+            return;
+
+        StopCoroutine(dialoguePersistentHudFadeRoutine);
+        dialoguePersistentHudFadeRoutine = null;
+    }
+
+    private void ClearDialoguePersistentHudTemporaryVisibility()
+    {
+        for (int i = 0; i < hiddenLayerStates.Count; i++)
+        {
+            HiddenLayerState state = hiddenLayerStates[i];
+            if (state.RevealDuringDialogue)
+                state.TemporarilyVisible = false;
+        }
+    }
+
+    private bool CanRevealDialoguePersistentHud()
+    {
+        if (!IsPlaying || nonDialogueUiSuppressionOwners.Count != 1)
+            return false;
+
+        if (!ReferenceEquals(nonDialogueUiSuppressionOwners[0], DialoguePlaybackUiSuppressionOwner))
+            return false;
+
+        Canvas gameplayHudCanvas = GlobalCanvasPlayback.GetCanvas(GlobalCanvasLayer.GameplayHUD);
+        return gameplayHudCanvas != null && gameplayHudCanvas.gameObject.activeInHierarchy;
+    }
+
     private void ClearNonDialogueUiSuppressionStateWithoutRestore()
     {
         StopNonDialogueUiFade();
+        StopDialoguePersistentHudFade();
         hiddenLayerStates.Clear();
     }
 
@@ -588,6 +778,7 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
     private void RestoreNonDialogueUiImmediate()
     {
         StopNonDialogueUiFade();
+        StopDialoguePersistentHudFade();
 
         for (int i = hiddenLayerStates.Count - 1; i >= 0; i--)
         {

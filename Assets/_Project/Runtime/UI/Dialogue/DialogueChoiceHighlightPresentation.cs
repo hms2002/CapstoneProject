@@ -1,4 +1,4 @@
-using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,24 +6,15 @@ using UnityEngine.UI;
 public sealed class DialogueChoiceHighlightPresentation : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private RectTransform iconRoot;
-    [SerializeField] private CanvasGroup iconCanvasGroup;
-    [SerializeField] private Graphic iconGraphic;
+    [SerializeField] private Graphic selectedBackground;
+    [SerializeField] private CanvasGroup canvasGroup;
 
-    [Header("Motion")]
-    [SerializeField] private Vector2 openOffset = new Vector2(0f, -18f);
-    [SerializeField, Min(0f)] private float openDuration = 0.14f;
-    [SerializeField, Min(0f)] private float closeDuration = 0.10f;
-    [SerializeField, Min(0f)] private float hoverAmplitude = 5f;
-    [SerializeField, Min(0.01f)] private float hoverCycleDuration = 0.72f;
-    [SerializeField] private bool keepIconVisibleWhenDeselected;
-    [SerializeField, Range(0f, 1f)] private float deselectedAlpha = 1f;
-
-    private Vector2 openPosition;
-    private bool hasOpenPosition;
+    private Color defaultSelectedColor = Color.white;
+    private Color selectedColor = Color.white;
+    private RectTransform rootRect;
+    private Vector2 layoutAnchoredPosition;
+    private bool hasLayoutAnchoredPosition;
     private bool selected;
-    private Coroutine motionRoutine;
-    private Coroutine hoverRoutine;
 
     private void Reset()
     {
@@ -33,229 +24,153 @@ public sealed class DialogueChoiceHighlightPresentation : MonoBehaviour
     private void Awake()
     {
         ResolveReferences();
-        Snap(false);
+        if (selectedBackground != null)
+        {
+            defaultSelectedColor = selectedBackground.color;
+            defaultSelectedColor.a = 1f;
+            selectedColor = defaultSelectedColor;
+        }
+
+        ApplySelection();
     }
 
     private void OnDisable()
     {
-        StopMotion();
-        StopHover();
+        KillMotion();
         selected = false;
+        ApplySelection();
     }
 
     public void SetSelected(bool isSelected, bool immediate = false)
     {
         ResolveReferences();
-        CaptureOpenPosition();
-
-        if (selected == isSelected && motionRoutine == null)
-            return;
-
         selected = isSelected;
-        StopMotion();
-        StopHover();
-
-        if (immediate)
-        {
-            Snap(isSelected);
-            if (isSelected)
-                StartHover();
-            return;
-        }
-
-        motionRoutine = StartCoroutine(isSelected ? PlayOpen() : PlayClose());
+        ApplySelection();
     }
 
-    private IEnumerator PlayOpen()
+    public void SetThemeColor(Color color)
     {
-        if (iconRoot == null || iconCanvasGroup == null)
-        {
-            motionRoutine = null;
-            yield break;
-        }
-
-        iconRoot.gameObject.SetActive(true);
-        Vector2 fromPosition = keepIconVisibleWhenDeselected ? iconRoot.anchoredPosition : openPosition + openOffset;
-        Vector2 toPosition = openPosition;
-        float fromAlpha = keepIconVisibleWhenDeselected ? iconCanvasGroup.alpha : 0f;
-        float toAlpha = 1f;
-
-        yield return Animate(fromPosition, toPosition, fromAlpha, toAlpha, openDuration, EaseOutCubic);
-        motionRoutine = null;
-        StartHover();
+        selectedColor = color;
+        ApplySelection();
     }
 
-    private IEnumerator PlayClose()
+    public void ResetThemeColor()
     {
-        if (iconRoot == null || iconCanvasGroup == null)
-        {
-            motionRoutine = null;
-            yield break;
-        }
-
-        Vector2 fromPosition = iconRoot.anchoredPosition;
-        Vector2 toPosition = keepIconVisibleWhenDeselected ? openPosition : openPosition + openOffset;
-        float fromAlpha = iconCanvasGroup.alpha;
-        float toAlpha = keepIconVisibleWhenDeselected ? deselectedAlpha : 0f;
-
-        yield return Animate(fromPosition, toPosition, fromAlpha, toAlpha, closeDuration, EaseInCubic);
-        iconRoot.gameObject.SetActive(keepIconVisibleWhenDeselected);
-        motionRoutine = null;
+        selectedColor = defaultSelectedColor;
+        ApplySelection();
     }
 
-    private IEnumerator Animate(
-        Vector2 fromPosition,
-        Vector2 toPosition,
-        float fromAlpha,
-        float toAlpha,
-        float duration,
-        System.Func<float, float> ease)
+    public Tween CreateEnterTween(float moveDistance, float duration)
     {
-        if (duration <= 0f)
+        ResolveReferences();
+        CaptureLayoutPosition();
+        KillMotion();
+
+        if (rootRect != null)
+            rootRect.anchoredPosition = layoutAnchoredPosition + Vector2.down * Mathf.Max(0f, moveDistance);
+
+        if (canvasGroup != null)
         {
-            ApplyPose(toPosition, toAlpha);
-            yield break;
+            canvasGroup.alpha = 0f;
+            SetInteractionEnabled(false);
         }
 
-        float elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.unscaledDeltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            float eased = ease != null ? ease(t) : t;
-            ApplyPose(
-                Vector2.LerpUnclamped(fromPosition, toPosition, eased),
-                Mathf.LerpUnclamped(fromAlpha, toAlpha, eased));
-            yield return null;
-        }
+        Sequence sequence = DOTween.Sequence().SetUpdate(true).Pause();
+        float safeDuration = Mathf.Max(0f, duration);
 
-        ApplyPose(toPosition, toAlpha);
+        if (rootRect != null)
+            sequence.Join(rootRect.DOAnchorPos(layoutAnchoredPosition, safeDuration).SetEase(Ease.OutCubic));
+
+        if (canvasGroup != null)
+            sequence.Join(canvasGroup.DOFade(1f, safeDuration).SetEase(Ease.OutCubic));
+
+        return sequence;
     }
 
-    private void StartHover()
+    public Tween CreateExitTween(bool isSelected, float selectedMoveDistance, float duration)
     {
-        if (iconRoot == null || hoverAmplitude <= 0f)
+        ResolveReferences();
+        CaptureLayoutPosition();
+        KillMotion();
+        SetInteractionEnabled(false);
+
+        Sequence sequence = DOTween.Sequence().SetUpdate(true).Pause();
+        float safeDuration = Mathf.Max(0f, duration);
+
+        if (canvasGroup != null)
+            sequence.Join(canvasGroup.DOFade(0f, safeDuration).SetEase(Ease.InCubic));
+
+        if (isSelected && rootRect != null)
+        {
+            Vector2 targetPosition = layoutAnchoredPosition + Vector2.up * Mathf.Max(0f, selectedMoveDistance);
+            sequence.Join(rootRect.DOAnchorPos(targetPosition, safeDuration).SetEase(Ease.InCubic));
+        }
+
+        return sequence;
+    }
+
+    public void CaptureLayoutPosition()
+    {
+        ResolveReferences();
+        if (rootRect == null)
             return;
 
-        StopHover();
-        hoverRoutine = StartCoroutine(Hover());
+        layoutAnchoredPosition = rootRect.anchoredPosition;
+        hasLayoutAnchoredPosition = true;
     }
 
-    private IEnumerator Hover()
+    public void ResetPresentation(bool visible)
     {
-        float elapsed = 0f;
-        while (selected)
-        {
-            elapsed += Time.unscaledDeltaTime;
-            float phase = elapsed / hoverCycleDuration * Mathf.PI * 2f;
-            iconRoot.anchoredPosition = openPosition + new Vector2(0f, Mathf.Sin(phase) * hoverAmplitude);
-            yield return null;
-        }
+        ResolveReferences();
+        KillMotion();
+
+        if (hasLayoutAnchoredPosition && rootRect != null)
+            rootRect.anchoredPosition = layoutAnchoredPosition;
+
+        if (canvasGroup != null)
+            canvasGroup.alpha = visible ? 1f : 0f;
+
+        SetInteractionEnabled(false);
     }
 
-    private void Snap(bool isSelected)
+    public void SetInteractionEnabled(bool enabled)
     {
-        CaptureOpenPosition();
+        ResolveReferences();
+        if (canvasGroup == null)
+            return;
 
-        if (iconRoot != null)
-        {
-            iconRoot.gameObject.SetActive(isSelected || keepIconVisibleWhenDeselected);
-            iconRoot.anchoredPosition = isSelected || keepIconVisibleWhenDeselected
-                ? openPosition
-                : openPosition + openOffset;
-        }
-
-        if (iconCanvasGroup != null)
-            iconCanvasGroup.alpha = isSelected ? 1f : keepIconVisibleWhenDeselected ? deselectedAlpha : 0f;
+        canvasGroup.interactable = enabled;
+        canvasGroup.blocksRaycasts = enabled;
     }
 
-    private void ApplyPose(Vector2 anchoredPosition, float alpha)
+    public void KillMotion()
     {
-        if (iconRoot != null)
-            iconRoot.anchoredPosition = anchoredPosition;
+        if (rootRect != null)
+            rootRect.DOKill();
 
-        if (iconCanvasGroup != null)
-            iconCanvasGroup.alpha = alpha;
+        if (canvasGroup != null)
+            canvasGroup.DOKill();
+    }
+
+    private void ApplySelection()
+    {
+        if (selectedBackground == null)
+            return;
+
+        Color color = selectedColor;
+        color.a = selected ? selectedColor.a : 0f;
+        selectedBackground.color = color;
     }
 
     private void ResolveReferences()
     {
-        if (iconRoot == null)
-            iconRoot = ResolveIconRoot();
+        if (selectedBackground == null)
+            selectedBackground = GetComponent<Graphic>();
 
-        if (iconRoot == null)
-            return;
+        if (rootRect == null)
+            rootRect = transform as RectTransform;
 
-        if (iconGraphic == null)
-            iconGraphic = iconRoot.GetComponent<Graphic>();
-
-        if (iconCanvasGroup == null)
-            iconCanvasGroup = iconRoot.GetComponent<CanvasGroup>();
-
-        if (iconCanvasGroup == null)
-            iconCanvasGroup = iconRoot.gameObject.AddComponent<CanvasGroup>();
-
-        if (iconGraphic != null)
-            iconGraphic.raycastTarget = false;
-    }
-
-    private RectTransform ResolveIconRoot()
-    {
-        Transform glyph = transform.Find("KeyGlyph");
-        if (glyph != null && glyph != transform)
-            return glyph as RectTransform;
-
-        Transform named = transform.Find("Image");
-        if (named != null && named != transform)
-            return named as RectTransform;
-
-        Image[] images = GetComponentsInChildren<Image>(true);
-        for (int i = 0; i < images.Length; i++)
-        {
-            Image image = images[i];
-            if (image != null && image.transform != transform)
-                return image.transform as RectTransform;
-        }
-
-        return null;
-    }
-
-    private void CaptureOpenPosition()
-    {
-        if (hasOpenPosition || iconRoot == null)
-            return;
-
-        openPosition = iconRoot.anchoredPosition;
-        hasOpenPosition = true;
-    }
-
-    private void StopMotion()
-    {
-        if (motionRoutine == null)
-            return;
-
-        StopCoroutine(motionRoutine);
-        motionRoutine = null;
-    }
-
-    private void StopHover()
-    {
-        if (hoverRoutine == null)
-            return;
-
-        StopCoroutine(hoverRoutine);
-        hoverRoutine = null;
-    }
-
-    private static float EaseOutCubic(float t)
-    {
-        t = 1f - Mathf.Clamp01(t);
-        return 1f - t * t * t;
-    }
-
-    private static float EaseInCubic(float t)
-    {
-        t = Mathf.Clamp01(t);
-        return t * t * t;
+        if (canvasGroup == null)
+            canvasGroup = GetComponent<CanvasGroup>();
     }
 }

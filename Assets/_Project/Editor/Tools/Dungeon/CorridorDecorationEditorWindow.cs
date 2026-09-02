@@ -6,9 +6,9 @@ using UnityEngine.Tilemaps;
 
 /// <summary>
 /// 책임:
-/// - 기획자가 +X 방향의 짧은 복도 조각을 기존 8개 Tilemap 레이어와 Pivot 기반 GroundProp으로 제작·편집·검증하게 한다.
+/// - 기획자가 가로(+X)와 세로(+Y) 전용의 짧은 복도 조각을 기존 8개 Tilemap 레이어와 Pivot 기반 GroundProp으로 제작·편집·검증하게 한다.
 /// - CorridorDecorationModuleSO를 Bake하고 테마 DungeonGenerationProfileSO의 장식 프로필에 등록한다.
-/// - Unity Tile Palette를 그대로 사용하면서 동적 복도 조립에 안전한 x=0..Length-1, y=-1..2 제작 범위를 안내한다.
+/// - Unity Tile Palette를 그대로 사용하면서 선택한 축에 맞는 안전한 제작 범위를 안내한다.
 /// </summary>
 public sealed class CorridorDecorationEditorWindow : EditorWindow
 {
@@ -19,6 +19,8 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
     [SerializeField] private CorridorDecorationProfileSO decorationProfile;
     [SerializeField] private CorridorDecorationModuleSO moduleToLoad;
     [SerializeField] private string newModuleId = "Corridor_Middle_01";
+    [SerializeField] private CorridorDecorationAxis newModuleAxis =
+        CorridorDecorationAxis.Horizontal;
     [SerializeField] private CorridorDecorationModuleRole newModuleRole =
         CorridorDecorationModuleRole.Middle;
     [SerializeField] private int newModuleLength = 4;
@@ -27,6 +29,8 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
     [SerializeField] private int completedPreviewCorridorLength = 16;
     [SerializeField] private int completedPreviewSeed = 20260902;
     [SerializeField] private int completedPreviewConnectionIndex;
+    [SerializeField] private CorridorDecorationAxis completedPreviewAxis =
+        CorridorDecorationAxis.Horizontal;
 
     private readonly List<string> validationMessages = new();
     private Vector2 scroll;
@@ -147,9 +151,6 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
         SerializedObject serializedProfile = new(decorationProfile);
         serializedProfile.Update();
         EditorGUILayout.PropertyField(
-            serializedProfile.FindProperty("doorClearanceCells"),
-            new GUIContent("문 앞 안전 여백"));
-        EditorGUILayout.PropertyField(
             serializedProfile.FindProperty("maxLandmarksPerCorridor"),
             new GUIContent("복도당 Landmark 제한"));
         EditorGUILayout.PropertyField(
@@ -193,10 +194,15 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
                 EditorGUILayout.IntField(
                     new GUIContent(
                         "전체 복도 길이",
-                        "두 방 소켓 사이의 전체 셀 수이며 문 앞 안전 여백도 포함합니다."),
+                        "두 방 소켓 사이에서 장식 모듈이 사용할 전체 셀 수입니다."),
                     completedPreviewCorridorLength),
                 1,
                 512);
+            completedPreviewAxis = (CorridorDecorationAxis)EditorGUILayout.EnumPopup(
+                new GUIContent(
+                    "복도 축",
+                    "Horizontal은 +X 원본, Vertical은 +Y 원본 모듈로 조립합니다."),
+                completedPreviewAxis);
             completedPreviewSeed = EditorGUILayout.IntField(
                 new GUIContent(
                     "미리보기 Seed",
@@ -210,14 +216,12 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
                         "런타임 연결 목록의 인덱스입니다. 길이, Seed와 함께 모듈 순서를 결정합니다."),
                     completedPreviewConnectionIndex));
 
-            int clearance = decorationProfile != null
-                ? Mathf.Min(
-                    decorationProfile.DoorClearanceCells,
-                    completedPreviewCorridorLength / 2)
-                : 0;
+            string previewAxisLabel = completedPreviewAxis == CorridorDecorationAxis.Horizontal
+                ? "가로(+X)"
+                : "세로(+Y)";
             EditorGUILayout.HelpBox(
-                $"+X 방향의 {completedPreviewCorridorLength}칸 복도를 조립합니다. " +
-                $"양 끝 {clearance}칸은 문 앞 안전 여백으로 표시됩니다.",
+                $"{previewAxisLabel} 방향의 {completedPreviewCorridorLength}칸 복도를 조립합니다. " +
+                "Start와 End 모듈은 각각 문에 맞닿은 첫 칸과 마지막 칸부터 사용할 수 있습니다.",
                 MessageType.None);
 
             using (new EditorGUILayout.HorizontalScope())
@@ -257,7 +261,8 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
                 decorationProfile,
                 completedPreviewCorridorLength,
                 completedPreviewSeed,
-                completedPreviewConnectionIndex);
+                completedPreviewConnectionIndex,
+                completedPreviewAxis);
         completedPreviewSummary = result.Message;
         statusMessage = result.Success
             ? "입력 길이에 맞춰 완성 복도 미리보기를 생성했습니다."
@@ -269,16 +274,16 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
     {
         EditorGUILayout.LabelField("새 복도 모듈", EditorStyles.boldLabel);
         newModuleId = EditorGUILayout.TextField("모듈 ID", newModuleId ?? string.Empty);
+        newModuleAxis = (CorridorDecorationAxis)EditorGUILayout.EnumPopup(
+            "복도 축",
+            newModuleAxis);
         newModuleRole = (CorridorDecorationModuleRole)EditorGUILayout.EnumPopup(
             "역할",
             newModuleRole);
         newModuleLength = EditorGUILayout.IntField(
             "진행축 길이",
             Mathf.Max(1, newModuleLength));
-        EditorGUILayout.HelpBox(
-            "기준 방향은 왼쪽에서 오른쪽(+X)입니다. Floor 통로는 y=0,1, 양쪽 Wall은 y=-1,2에 맞추세요. " +
-            "런타임에서 상·하·좌·우 복도 방향으로 자동 변환합니다.",
-            MessageType.Info);
+        EditorGUILayout.HelpBox(GetAxisAuthoringHelp(newModuleAxis), MessageType.Info);
 
         using (new EditorGUI.DisabledScope(string.IsNullOrWhiteSpace(newModuleId)))
         {
@@ -316,7 +321,7 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
             using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
             {
                 EditorGUILayout.LabelField(
-                    $"{module.ModuleId} · {module.Role} · {module.Length}칸");
+                    $"{module.ModuleId} · {module.Axis} · {module.Role} · {module.Length}칸");
                 if (GUILayout.Button("편집", GUILayout.Width(55f)))
                     LoadModule(module);
             }
@@ -329,6 +334,10 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
         string requestedId = EditorGUILayout.TextField(
             "모듈 ID",
             selectedAuthoring.ModuleId ?? string.Empty);
+        CorridorDecorationAxis requestedAxis =
+            (CorridorDecorationAxis)EditorGUILayout.EnumPopup(
+                "복도 축",
+                selectedAuthoring.Axis);
         CorridorDecorationModuleRole requestedRole =
             (CorridorDecorationModuleRole)EditorGUILayout.EnumPopup(
                 "역할",
@@ -338,12 +347,14 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
             selectedAuthoring.Length);
         requestedLength = Mathf.Max(1, requestedLength);
         if (requestedId != selectedAuthoring.ModuleId ||
+            requestedAxis != selectedAuthoring.Axis ||
             requestedRole != selectedAuthoring.Role ||
             requestedLength != selectedAuthoring.Length)
         {
             Undo.RecordObject(selectedAuthoring, "Edit Corridor Decoration Metadata");
             selectedAuthoring.EditorConfigure(
                 requestedId,
+                requestedAxis,
                 requestedRole,
                 requestedLength,
                 selectedAuthoring.SourceModule);
@@ -355,6 +366,9 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
             "각 레이어 버튼으로 대상 Tilemap을 선택한 뒤 Unity Tile Palette로 그리세요. " +
             "Floor/Wall은 기본 복도 위를 선택적으로 교체하며, 나머지 레이어는 그대로 덧씌워집니다.",
             MessageType.Info);
+        EditorGUILayout.HelpBox(
+            GetAxisAuthoringHelp(selectedAuthoring.Axis),
+            MessageType.None);
         DrawLayerSelection();
         EditorGUILayout.Space(8f);
         DrawPropSection();
@@ -497,6 +511,7 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
 
         selectedAuthoring = CreateAuthoringRoot(
             newModuleId,
+            newModuleAxis,
             newModuleRole,
             Mathf.Max(1, newModuleLength),
             sourceModule: null);
@@ -513,6 +528,7 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
 
         selectedAuthoring = CreateAuthoringRoot(
             module.ModuleId,
+            module.Axis,
             module.Role,
             module.Length,
             module);
@@ -569,6 +585,7 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
 
     private static CorridorDecorationModuleAuthoring CreateAuthoringRoot(
         string moduleId,
+        CorridorDecorationAxis axis,
         CorridorDecorationModuleRole role,
         int length,
         CorridorDecorationModuleSO sourceModule)
@@ -578,7 +595,7 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
         RoomAuthoringWorkspace.MoveToWorkspace(root);
         CorridorDecorationModuleAuthoring authoring =
             root.AddComponent<CorridorDecorationModuleAuthoring>();
-        authoring.EditorConfigure(moduleId, role, length, sourceModule);
+        authoring.EditorConfigure(moduleId, axis, role, length, sourceModule);
 
         GameObject gridObject = new("AuthoringGrid");
         Undo.RegisterCreatedObjectUndo(gridObject, "Create Corridor Decoration Grid");
@@ -619,7 +636,9 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
             placementId = $"GroundProp_{existing.Length + 1:00}",
             kind = RoomObjectKind.Prop,
             prefab = propPrefab,
-            localCell = new Vector2Int(selectedAuthoring.Length / 2, 0),
+            localCell = selectedAuthoring.Axis == CorridorDecorationAxis.Horizontal
+                ? new Vector2Int(selectedAuthoring.Length / 2, 0)
+                : new Vector2Int(0, selectedAuthoring.Length / 2),
             localOffset = Vector2.zero,
             localRotationDegrees = 0f,
             localScale = propPrefab.transform.localScale
@@ -661,11 +680,15 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
                 {
                     Vector3Int cell = new(x, y, 0);
                     if (tilemap.GetTile(cell) != null &&
-                        !IsInsideFootprint(new Vector2Int(x, y), selectedAuthoring.Length))
+                        !IsInsideFootprint(
+                            new Vector2Int(x, y),
+                            selectedAuthoring.Length,
+                            selectedAuthoring.Axis))
                     {
                         validationMessages.Add(
                             $"{RoomTileLayerContract.GetLayerName(layer)} 타일 {new Vector2Int(x, y)}이 " +
-                            $"x=0..{selectedAuthoring.Length - 1}, y=-1..2 범위 밖에 있습니다.");
+                            $"{GetFootprintDescription(selectedAuthoring.Length, selectedAuthoring.Axis)} " +
+                            "범위 밖에 있습니다.");
                     }
                 }
             }
@@ -689,11 +712,15 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
             {
                 validationMessages.Add($"{roomObject.gameObject.name}: Grid 기준 Pivot을 계산할 수 없습니다.");
             }
-            else if (!IsInsideFootprint(placement.localCell, selectedAuthoring.Length))
+            else if (!IsInsideFootprint(
+                         placement.localCell,
+                         selectedAuthoring.Length,
+                         selectedAuthoring.Axis))
             {
                 validationMessages.Add(
                     $"{roomObject.PlacementId}: Pivot 셀 {placement.localCell}이 " +
-                    $"x=0..{selectedAuthoring.Length - 1}, y=-1..2 범위 밖에 있습니다.");
+                    $"{GetFootprintDescription(selectedAuthoring.Length, selectedAuthoring.Axis)} " +
+                    "범위 밖에 있습니다.");
             }
         }
     }
@@ -722,12 +749,14 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
 
         module.EditorSetData(
             selectedAuthoring.ModuleId,
+            selectedAuthoring.Axis,
             selectedAuthoring.Role,
             selectedAuthoring.Length,
             buildData);
         EditorUtility.SetDirty(module);
         selectedAuthoring.EditorConfigure(
             selectedAuthoring.ModuleId,
+            selectedAuthoring.Axis,
             selectedAuthoring.Role,
             selectedAuthoring.Length,
             module);
@@ -938,9 +967,30 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
             : new RoomObjectAuthoring[0];
     }
 
-    private static bool IsInsideFootprint(Vector2Int cell, int length)
+    private static bool IsInsideFootprint(
+        Vector2Int cell,
+        int length,
+        CorridorDecorationAxis axis)
     {
-        return cell.x >= 0 && cell.x < length && cell.y >= -1 && cell.y <= 2;
+        return axis == CorridorDecorationAxis.Horizontal
+            ? cell.x >= 0 && cell.x < length && cell.y >= -1 && cell.y <= 2
+            : cell.y >= 0 && cell.y < length && cell.x >= -1 && cell.x <= 2;
+    }
+
+    private static string GetFootprintDescription(
+        int length,
+        CorridorDecorationAxis axis)
+    {
+        return axis == CorridorDecorationAxis.Horizontal
+            ? $"x=0..{length - 1}, y=-1..2"
+            : $"x=-1..2, y=0..{length - 1}";
+    }
+
+    private static string GetAxisAuthoringHelp(CorridorDecorationAxis axis)
+    {
+        return axis == CorridorDecorationAxis.Horizontal
+            ? "가로 기준은 왼쪽에서 오른쪽(+X)입니다. Floor는 y=0,1, 양쪽 Wall은 y=-1,2에 맞추세요."
+            : "세로 기준은 아래에서 위(+Y)입니다. Floor는 x=0,1, 양쪽 Wall은 x=-1,2에 맞추세요.";
     }
 
     private static int CountTiles(Tilemap tilemap)

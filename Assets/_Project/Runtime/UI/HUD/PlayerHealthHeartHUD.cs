@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityGAS;
 
 /// <summary>
@@ -27,6 +28,16 @@ public class PlayerHealthHeartHUD : MonoBehaviour, IDefaultHudVisibilityTarget
     [SerializeField] private Color soulHeartColor = new Color(0.35f, 0.75f, 1f, 1f);
     [SerializeField] private float healthPerHeart = 1f;
 
+    [Header("Heart Layout")]
+    [Tooltip("위치와 크기가 고정되는 하트 배치 영역입니다. 런타임에는 이 RectTransform을 변경하지 않습니다.")]
+    [SerializeField] private RectTransform heartLayoutArea;
+    [SerializeField] private GridLayoutGroup heartGrid;
+    [SerializeField, Min(1)] private int singleRowLimit = 6;
+    [SerializeField, Min(1)] private int designedMaxHeartCount = 12;
+    [SerializeField, Min(1f)] private float minimumHeartSize = 48f;
+    [SerializeField, Min(1f)] private float maximumHeartSize = 72f;
+    [SerializeField] private Vector2 heartSpacing = new Vector2(10f, 8f);
+
     private readonly List<HeartTokenUI> heartTokens = new();
 
     private AttributeSet attrs;
@@ -35,11 +46,14 @@ public class PlayerHealthHeartHUD : MonoBehaviour, IDefaultHudVisibilityTarget
     private int lastDisplayedFilledHearts = -1;
     private int lastDisplayedSoulHearts = -1;
     private int lastDisplayedTotalHearts = -1;
+    private Vector2 lastLayoutAreaSize = new Vector2(float.NaN, float.NaN);
 
     private void Awake()
     {
         if (heartContainer == null)
             heartContainer = transform;
+
+        ResolveLayoutReferences();
 
         TryResolvePlayerAttributes();
         RefreshHearts(forceRebuild: true);
@@ -51,6 +65,7 @@ public class PlayerHealthHeartHUD : MonoBehaviour, IDefaultHudVisibilityTarget
         PlayerRuntimeRegistry.PlayerUnregistered += HandlePlayerUnregistered;
 
         TryResolvePlayerAttributes();
+        ResolveLayoutReferences();
         BindAttributeEvents();
         RefreshHearts(forceRebuild: true);
     }
@@ -66,6 +81,21 @@ public class PlayerHealthHeartHUD : MonoBehaviour, IDefaultHudVisibilityTarget
     {
         if (healthPerHeart <= 0f)
             healthPerHeart = 1f;
+
+        singleRowLimit = Mathf.Max(1, singleRowLimit);
+        designedMaxHeartCount = Mathf.Max(singleRowLimit, designedMaxHeartCount);
+        minimumHeartSize = Mathf.Max(1f, minimumHeartSize);
+        maximumHeartSize = Mathf.Max(minimumHeartSize, maximumHeartSize);
+        heartSpacing.x = Mathf.Max(0f, heartSpacing.x);
+        heartSpacing.y = Mathf.Max(0f, heartSpacing.y);
+
+        ResolveLayoutReferences();
+        RefreshHeartLayout(lastDisplayedTotalHearts, force: true);
+    }
+
+    private void OnRectTransformDimensionsChange()
+    {
+        RefreshHeartLayout(lastDisplayedTotalHearts, force: false);
     }
 
     private void HandlePlayerRegistered(PlayerInteractor2D registeredPlayer)
@@ -147,6 +177,8 @@ public class PlayerHealthHeartHUD : MonoBehaviour, IDefaultHudVisibilityTarget
         if (forceRebuild || totalHearts != lastDisplayedTotalHearts)
             EnsureHeartTokenCount(totalHearts);
 
+        RefreshHeartLayout(totalHearts, forceRebuild || totalHearts != lastDisplayedTotalHearts);
+
         if (forceRebuild
             || filledHearts != lastDisplayedFilledHearts
             || maxHearts != lastDisplayedMaxHearts
@@ -160,6 +192,55 @@ public class PlayerHealthHeartHUD : MonoBehaviour, IDefaultHudVisibilityTarget
         lastDisplayedFilledHearts = filledHearts;
         lastDisplayedSoulHearts = soulHearts;
         lastDisplayedTotalHearts = totalHearts;
+    }
+
+    private void ResolveLayoutReferences()
+    {
+        if (heartLayoutArea == null)
+            heartLayoutArea = heartContainer as RectTransform ?? transform as RectTransform;
+
+        if (heartGrid == null && heartContainer != null)
+            heartGrid = heartContainer.GetComponent<GridLayoutGroup>();
+    }
+
+    private void RefreshHeartLayout(int totalHearts, bool force)
+    {
+        if (totalHearts < 0)
+            return;
+
+        ResolveLayoutReferences();
+        if (heartLayoutArea == null || heartGrid == null)
+            return;
+
+        Vector2 areaSize = heartLayoutArea.rect.size;
+        if (!force && areaSize == lastLayoutAreaSize)
+            return;
+
+        lastLayoutAreaSize = areaSize;
+
+        int safeHeartCount = Mathf.Max(1, totalHearts);
+        int rowCount = safeHeartCount <= singleRowLimit ? 1 : 2;
+        int columnCount = Mathf.Max(1, Mathf.CeilToInt((float)safeHeartCount / rowCount));
+
+        RectOffset padding = heartGrid.padding ?? new RectOffset();
+        float availableWidth = Mathf.Max(0f, areaSize.x - padding.horizontal);
+        float availableHeight = Mathf.Max(0f, areaSize.y - padding.vertical);
+        float widthLimitedSize = (availableWidth - heartSpacing.x * (columnCount - 1)) / columnCount;
+        float heightLimitedSize = (availableHeight - heartSpacing.y * (rowCount - 1)) / rowCount;
+        float fittedSize = Mathf.Min(maximumHeartSize, widthLimitedSize, heightLimitedSize);
+
+        // 12칸까지는 고정 영역 안에서 최소 크기를 보장한다. 그 이상은 영역을 움직이지 않고
+        // 가능한 크기로 계속 축소하여 다른 HUD를 밀어내지 않는다.
+        float resolvedMinimum = safeHeartCount <= designedMaxHeartCount ? minimumHeartSize : 1f;
+        float cellSize = Mathf.Max(resolvedMinimum, fittedSize);
+
+        heartGrid.startCorner = GridLayoutGroup.Corner.UpperLeft;
+        heartGrid.startAxis = GridLayoutGroup.Axis.Horizontal;
+        heartGrid.childAlignment = TextAnchor.UpperLeft;
+        heartGrid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        heartGrid.constraintCount = columnCount;
+        heartGrid.spacing = heartSpacing;
+        heartGrid.cellSize = new Vector2(cellSize, cellSize);
     }
 
     private int GetHeartCount(AttributeDefinition attribute)

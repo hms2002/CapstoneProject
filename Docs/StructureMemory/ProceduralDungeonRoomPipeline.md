@@ -18,7 +18,7 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 6. `DungeonGenerator` selects one of two deterministic layout paths. With no layout policy it uses the legacy incremental `DungeonLayoutAssembler`; with a `DungeonLayoutPolicySO` and Boss generation enabled it uses `DungeonGraphLayoutAssembler`.
 7. The graph-first path creates abstract room nodes and edges, validates critical-path distance, meaningful branches, cycles, and POI quotas, assigns room roles, selects compatible templates/sockets, then embeds the graph into physical room coordinates. Both paths reject room/corridor reservation overlap with rectangular `RectInt` checks.
 8. `DungeonRoomBuilder` paints every room across the eight fixed visual Tilemaps with all socket Walls closed, creates one span-sized physical blocker per logical socket, opens only connected endpoints, paints the two-cell-wide straight corridor and side Walls, then creates one non-permanent Door at each connected socket endpoint.
-9. When the active generation profile references a `CorridorDecorationProfileSO`, `CorridorDecorationComposer` deterministically fills each connection's usable span from registered Start, Short, Middle, Landmark, Filler, and End modules. `DungeonRoomBuilder` transforms the canonical +X module cells and GroundProp pivots into the actual connection direction, replacing base Floor/Wall cells where authored and overlaying all other fixed layers.
+9. When the active generation profile references a `CorridorDecorationProfileSO`, `CorridorDecorationComposer` deterministically fills each connection's usable span from registered Start, Short, Middle, Landmark, Filler, and End modules of the matching axis. `DungeonRoomBuilder` uses Horizontal modules for Right/Left and Vertical modules for Up/Down, reflecting within an axis for the reverse direction without quarter-turning horizontal art into vertical art. Authored Floor/Wall cells replace the base corridor while the other fixed layers overlay it.
 10. For every room containing a Monster placement, the builder creates a full-bounds rectangular `MonsterRoomArea2D`, a `MonsterSpawnRoomGroup`, and a separate `RoomEncounterEntryTrigger2D` inset one cell from the boundary Walls. Each connected endpoint door owned by that room receives the existing `RoomDoorMonsterKillLock` behavior.
 11. The builder realizes each room's Grid-relative object placements under a dedicated generated root. It creates non-monsters directly, but realizes each Monster placement only as a deferred `MonsterSpawnContainer`. A common-role placement stores Warrior, Mage, or Tank plus its matching `StageMonsterSetSO` and resolves the current boss-progression index. A stage-fixed placement stores one explicit Enemy prefab and resolves it unchanged. On first room entry `SceneMonsterSpawnDirector` instantiates and registers either source through the same encounter contract.
 12. The builder separately realizes room travel slots under a dedicated endpoint root. A scene-local `(roomId, slotId)` binding supplies `SceneConnectionSO` and its A/B side; the selected medium adds the interaction adapter, automatic 2D trigger adapter, or no departure adapter for arrival-only use. Automatic Trigger world size is authored explicitly and compensated against medium Transform scale before applying the generated BoxCollider2D.
@@ -46,9 +46,9 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonGenerationProfileSO.cs`
   - Theme library, layout policy, Seed, room count, placement attempts, adaptive corridor settings, and optional theme decoration-profile reference shared by preview and runtime generation.
 - `Assets/_Project/Runtime/Features/Map/Procedural/CorridorDecorationModuleSO.cs`
-  - One canonical +X, two-cell-wide corridor module containing a role, length, eight fixed tile layers, and GroundProp pivot placements.
+  - One axis-specific two-cell-wide corridor module containing Horizontal/Vertical axis, role, length, eight fixed tile layers, and GroundProp pivot placements.
 - `Assets/_Project/Runtime/Features/Map/Procedural/CorridorDecorationProfileSO.cs`
-  - Per-theme door clearance, landmark limit, registered module catalog, and deterministic `CorridorDecorationComposer`.
+  - Per-theme landmark limit, registered module catalog, and deterministic `CorridorDecorationComposer`.
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonGraphLayoutAssembler.cs`
   - Graph-first topology construction, role assignment, directional socket/template selection, and size-aware physical embedding.
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonRoomBuilder.cs`
@@ -70,7 +70,7 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 - `Assets/_Project/Editor/Tools/Dungeon/CorridorDecorationEditorWindow.cs`
   - Designer-facing profile/module authoring, eight-layer Tilemap selection, GroundProp pivot placement, validation, bake, registration, and complete-corridor preview controls.
 - `Assets/_Project/Editor/Tools/Dungeon/CorridorDecorationCompletedPreview.cs`
-  - Non-saving canonical +X preview for one requested length, Seed, and connection index using the runtime composer.
+  - Non-saving Horizontal(+X) or Vertical(+Y) preview for one requested length, Seed, and connection index using the runtime composer.
 - `Assets/_Project/Editor/Tools/Dungeon/CorridorDecorationExampleInstaller.cs`
   - Idempotent Shadow/Dragon/Slime example-profile and six-module installation plus asset and completed-preview validation menus.
 - `Assets/_Project/Editor/Tools/Dungeon/ProceduralTravelBindingEditorWindow.cs`
@@ -118,8 +118,8 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 - Collision uses room bounds plus each straight corridor's reserved Floor-and-side-Wall rectangle.
 - Each logical socket has width `2`. Up/Down sockets extend right from `localCell`; Left/Right sockets extend upward from `localCell`.
 - Compatible sockets must have opposite directions and equal width. Their start-cell distance is the configured corridor length plus one boundary step; v0 supports only a straight fixed-width corridor, not bends or pathfinding.
-- Corridor-decoration modules are authored only in canonical +X orientation: `x=0..Length-1`, Floor rows `y=0,1`, and side-Wall rows `y=-1,2`. Runtime direction conversion is builder-owned.
-- A decoration profile's door clearance is applied at both ends and included in the requested total corridor length. An exact usable-span `Short` module takes precedence; otherwise Start and End are optional and the body draws from unweighted Middle, Filler, and eligible Landmark candidates.
+- Corridor-decoration modules are authored in one explicit axis. Horizontal uses progress `x=0..Length-1`, Floor rows `y=0,1`, and Wall rows `y=-1,2`; Vertical uses progress `y=0..Length-1`, Floor columns `x=0,1`, and Wall columns `x=-1,2`. Runtime axis selection and reverse-direction reflection are builder-owned.
+- Decoration modules may use the complete requested corridor span. An exact full-length `Short` module takes precedence; otherwise optional Start and End modules touch the first and last corridor cells while the body draws from unweighted Middle, Filler, and eligible Landmark candidates.
 - `MaxLandmarksPerCorridor` is an upper bound, not a minimum. Random selection and remaining length can produce zero landmarks.
 - Decoration module Floor/Wall cells selectively replace the generated base corridor. UnderFloor, FloorDetail, GroundDecoration, WallDetail, Foreground, and OverlayFX are overlaid without changing collision ownership.
 - Decoration objects are currently `RoomObjectKind.Prop` only. Their canonical cell/offset/rotation/scale is transformed with the module; gameplay behavior and collision stay prefab-owned.
@@ -165,7 +165,7 @@ Run `Tools/Dungeon/Install Boss Theme Procedural Corridor Scenes` to rebuild and
 - Every library keeps the same layout contract: `12x8` Start, three rectangular Combat rooms, `56x56` ㄴ-shaped Combat, `60x52` ㄱ-shaped Combat, `18x12` sacrifice Treasure, and a terminal one-socket Boss room. Theme changes data and art, not layout behavior.
 - The three normal-themed generators share `ExplorationCorridorPrototypePolicy.asset` and request 15 rooms. The policy enforces a Start-to-Boss graph distance of `6..8`, `2..4` meaningful branches, `1..2` cycles, at least one Treasure room, and at least four Combat rooms. Event and Shop quotas remain zero until matching room content is authored.
 - Shadow, Dragon, and Slime each own one `Procedural{Theme}GenerationProfile.asset`. The Room Piece tool can load it into Map Preview and save the tested Seed, room count, placement attempts, minimum corridor length, room-size ratio, and random length range back to the theme.
-- The same three profiles reference theme decoration profiles under `Assets/_Project/Data/Dungeon/CorridorDecorations/{Theme}/`. Each example profile registers Start_02, Middle_03, Landmark_04, Filler_01, End_02, and Short_02 modules; the landmark prop differs per theme.
+- The same three profiles reference theme decoration profiles under `Assets/_Project/Data/Dungeon/CorridorDecorations/{Theme}/`. Each example profile registers six Horizontal modules (`Start_02`, `Middle_03`, `Landmark_04`, `Filler_01`, `End_02`, `Short_02`) and six matching `Vertical_*` modules; the landmark prop differs per theme.
 - All three production procedural Corridors use unique state IDs with `PreserveDuringRun`. Formal scene travel captures object state before exit, rebuilds the same Seed on reentry, and restores supported generated-object state. `StartRun` and `EndRun` clear every stored Corridor state.
 - Re-running the full theme installer creates missing profiles and relinks generators, but preserves existing profile and layout-policy values. Installer constants are first-creation defaults only.
 - Graph-first generation completes abstract topology and room roles before choosing exact handcrafted room templates. Special roles prefer compatible dead ends and are spread across the graph when alternatives exist.
@@ -211,7 +211,7 @@ Run `Tools/Dungeon/Install Boss Theme Procedural Corridor Scenes` to rebuild and
 - A positive corridor length requires both corridor Floor and Wall tiles on `DungeonRoomBuilder`.
 - Decoration is optional. A missing profile, an empty module catalog, or a cell not covered by a fitting module leaves the deterministic base corridor intact.
 - A one-cell Filler is the safest way to cover arbitrary remaining spans. Without a fitting candidate, the composer advances over that cell rather than stretching or clipping a module.
-- The complete-corridor preview uses canonical +X space and is not evidence that every rotated runtime direction is visually correct; validate all directions in Play Mode.
+- The complete-corridor preview can independently show Horizontal(+X) and Vertical(+Y) source data. It does not prove reverse-direction reflection or room-socket placement, so validate Right/Left/Up/Down in Play Mode.
 - Map Preview corridor tile overrides are optional. When empty, the editor picks the most frequently referenced Floor/Wall tile in the transient preview library; choose explicit overrides when that statistical fallback is not visually representative of the theme.
 - Including the current room makes it a valid weighted candidate, not a forced placement. A complete preview can report zero current-room placements for a particular Seed; change the Seed instead of altering runtime selection weight only for preview.
 - The generated-door root must also be dedicated to generated content because every build destroys all of its children.

@@ -990,11 +990,18 @@ public class DialogueView : MonoBehaviour
 
     [Header("UI Groups (CanvasGroup required)")]
     [SerializeField] private CanvasGroup textBoxGroup;
+    [SerializeField] private CanvasGroup dialogueUpperFrameGroup;
     [SerializeField] private CanvasGroup affectionGroup;
+    [SerializeField] private AffectionUI affectionUI;
 
     [Header("UI Presentation")]
     [SerializeField] private UISlideFadePresentation textBoxPresentation;
+    [SerializeField] private UISlideFadePresentation dialogueUpperFramePresentation;
     [SerializeField] private UISlideFadePresentation affectionPresentation;
+
+    [Header("Opening Header Presentation")]
+    [SerializeField, Min(0f)] private float openingHeaderBeatInterval = 0.06f;
+    [SerializeField, Min(0f)] private float openingHeartScaleDuration = 0.14f;
 
     [Header("Text Components")]
     [SerializeField] private TextMeshProUGUI nameText;
@@ -1002,21 +1009,29 @@ public class DialogueView : MonoBehaviour
 
     [Header("Continue Icon")]
     [SerializeField] private GameObject continueIcon;
+    [SerializeField] private RectTransform continueLeftArrow;
+    [SerializeField] private RectTransform continueRightArrow;
+    [SerializeField, Min(0f)] private float continueArrowMoveDistance = 6f;
+    [SerializeField, Min(0.01f)] private float continueArrowMoveDuration = 0.45f;
 
     [Header("Choice UI")]
     [SerializeField] private Transform choiceContainer;
     [SerializeField] private GameObject choiceButtonPrefab;
-    [SerializeField] private Color normalChoiceColor = Color.gray;
-    [SerializeField] private Color selectedChoiceColor = Color.white;
+    [SerializeField, Min(0f)] private float choiceEnterMoveDistance = 24f;
+    [SerializeField, Min(0f)] private float choiceEnterDuration = 0.12f;
+    [SerializeField, Min(0f)] private float choiceEnterStagger = 0.05f;
+    [SerializeField, Min(0f)] private float unselectedChoiceExitDuration = 0.08f;
+    [SerializeField, Min(0f)] private float selectedChoiceExitMoveDistance = 24f;
+    [SerializeField, Min(0f)] private float selectedChoiceExitDuration = 0.16f;
 
     [Header("Theme")]
-    [SerializeField] private Graphic[] textBoxThemeTargets;
-    [SerializeField] private Graphic[] speakerFrameThemeTargets;
-    [SerializeField] private Color defaultTextBoxFillColor = new Color(0f, 0f, 0f, 0.85f);
+    [SerializeField] private Graphic[] continueIconThemeTargets;
     [SerializeField] private Graphic dimPanelGraphic;
     [SerializeField] private float dimFadeDuration = 0.25f;
     [SerializeField] private float dialogueEffectIntroFallbackDuration = 0.5f;
     [SerializeField] private Animator dialogueEffectAnimator;
+    [SerializeField] private Graphic dialogueEffectGraphic;
+    [SerializeField, Min(0f)] private float dialogueEffectFadeDuration = 0.25f;
     [SerializeField] private string dialogueEffectIdleState = "Idle";
     [SerializeField] private string dialogueEffectIntroState = "Intro";
 
@@ -1037,29 +1052,33 @@ public class DialogueView : MonoBehaviour
     private Coroutine dialogueCameraShakeInertiaRoutine;
     private Tween continueIconTween;
     private Tween dialoguePanelShakeTween;
-    private RectTransform continueIconRect;
+    private Sequence choiceTransitionSequence;
     private RectTransform dialoguePanelShakeRoot;
     private RectTransform dialogueTextRect;
-    private Vector2 continueIconBaseAnchoredPosition;
+    private Vector2 continueLeftArrowBaseAnchoredPosition;
+    private Vector2 continueRightArrowBaseAnchoredPosition;
     private Vector2 dialoguePanelShakeBaseAnchoredPosition;
     private Vector2 dialogueTextBaseAnchoredPosition;
     private DialogueTextImpactState dialogueCharacterImpactState;
-    private bool hasContinueIconBasePosition;
+    private bool hasContinueArrowBasePositions;
     private bool hasDialoguePanelShakeBasePosition;
     private bool hasDialogueTextBaseAnchoredPosition;
     private readonly List<GameObject> activeChoiceButtons = new List<GameObject>();
-    private readonly Dictionary<Graphic, Material> originalThemeMaterials = new Dictionary<Graphic, Material>();
     private readonly Dictionary<Graphic, Color> originalThemeColors = new Dictionary<Graphic, Color>();
-    private readonly Dictionary<Outline, Color> originalOutlineColors = new Dictionary<Outline, Color>();
-    private readonly Dictionary<Graphic, Material> runtimeThemeMaterials = new Dictionary<Graphic, Material>();
 
     private DialogueThemeSO currentTheme;
     private DialogueThemeSO currentEffectTheme;
     private RuntimeAnimatorController defaultEffectController;
     private Color defaultNameTextColor;
     private float defaultDimPanelAlpha;
+    private float defaultDialogueEffectAlpha = 1f;
     private bool isUiVisible;
     private bool choiceInputEnabled;
+    private bool choicePresentationReady;
+    private bool choiceExitInProgress;
+    private bool openingHeaderRevealPending;
+    private bool openingHeaderRevealInProgress;
+    private bool openingHeartRevealPending;
     private int currentChoiceIndex;
     private Action<int> onChoiceSelectedCallback;
     private int lastTypedCharacterCount;
@@ -1077,19 +1096,21 @@ public class DialogueView : MonoBehaviour
             SetDimPanelVisible(false, true);
         }
 
+        if (dialogueEffectGraphic != null)
+            defaultDialogueEffectAlpha = dialogueEffectGraphic.color.a;
+
         ResetDialogueEffectToHiddenIdle();
         if (dialogueEffectAnimator != null)
             dialogueEffectAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
 
         ResolveGroupPresentations();
+        ResolveAffectionUI();
         SnapGroupClosed(textBoxGroup, textBoxPresentation);
+        SnapGroupClosed(dialogueUpperFrameGroup, dialogueUpperFramePresentation);
         SnapGroupClosed(affectionGroup, affectionPresentation);
 
-        if (continueIcon != null)
-        {
-            continueIcon.SetActive(false);
-            CacheContinueIconTransform();
-        }
+        SetContinueIconVisible(false);
+        CacheContinueIconArrowTransforms();
 
         ClearChoices();
         ClearText();
@@ -1100,14 +1121,12 @@ public class DialogueView : MonoBehaviour
         return DialogueTextAnimationProfileSO.Resolve(textAnimationProfileOverride);
     }
 
-    private void OnEnable()
-    {
-        StartContinueIconMotion();
-    }
-
     private void OnDisable()
     {
-        StopContinueIconMotion(true);
+        SetContinueIconVisible(false);
+        StopTypingRoutine();
+        CompleteOpeningHeaderReveal();
+        ClearChoices();
         StopTextEffectRoutine(true);
         StopDialogueCameraShake(true);
     }
@@ -1115,14 +1134,6 @@ public class DialogueView : MonoBehaviour
     private void OnDestroy()
     {
         StopRuntimeTweens();
-
-        foreach (Material runtimeMaterial in runtimeThemeMaterials.Values)
-        {
-            if (runtimeMaterial != null)
-                Destroy(runtimeMaterial);
-        }
-
-        runtimeThemeMaterials.Clear();
     }
 
     public void ClearText()
@@ -1133,7 +1144,10 @@ public class DialogueView : MonoBehaviour
         ResetTypingAudioTracking();
 
         if (nameText != null)
+        {
             nameText.text = string.Empty;
+            nameText.maxVisibleCharacters = int.MaxValue;
+        }
 
         if (dialogueText != null)
         {
@@ -1150,19 +1164,7 @@ public class DialogueView : MonoBehaviour
         if (updateEffectTheme)
             currentEffectTheme = theme;
 
-        RestoreThemeVisuals();
-
-        if (theme == null)
-        {
-            RefreshDialogueEffectOverride();
-            return;
-        }
-
-        ApplyThemeToTargets(textBoxThemeTargets, defaultTextBoxFillColor, theme.outlineColor);
-        ApplyThemeToTargets(speakerFrameThemeTargets, theme.speakerFrameFillColor, theme.outlineColor);
-        if (nameText != null)
-            nameText.color = theme.outlineColor;
-        RefreshDialogueEffectOverride();
+        RefreshThemePresentation(false);
     }
 
     public void ApplyDialogueEffectTheme(DialogueThemeSO theme)
@@ -1177,14 +1179,22 @@ public class DialogueView : MonoBehaviour
         currentTheme = null;
         currentEffectTheme = null;
         RestoreThemeVisuals();
-        if (nameText != null)
-            nameText.color = defaultNameTextColor;
+        RefreshActiveChoiceTheme();
         ResetDialogueEffectOverride();
         ResetDialogueEffectToHiddenIdle();
     }
 
     public void ShowUI(bool isBoss, Action onComplete = null)
     {
+        CompleteOpeningHeaderReveal();
+        openingHeaderRevealPending = true;
+        openingHeartRevealPending = isBoss && ResolveAffectionUI() != null;
+        if (nameText != null)
+            nameText.maxVisibleCharacters = 0;
+
+        if (openingHeartRevealPending)
+            affectionUI.PrepareOpeningReveal();
+
         isUiVisible = true;
         RefreshThemePresentation(false);
         ResolveGroupPresentations();
@@ -1214,10 +1224,21 @@ public class DialogueView : MonoBehaviour
             PlayGroupOpen(textBoxGroup, textBoxPresentation, CompleteAnimation);
         }
 
-        if (isBoss && affectionGroup != null)
+        if (dialogueUpperFrameGroup != null)
         {
             RegisterAnimation();
-            PlayGroupOpen(affectionGroup, affectionPresentation, CompleteAnimation);
+            PlayGroupOpen(dialogueUpperFrameGroup, dialogueUpperFramePresentation, CompleteAnimation);
+        }
+
+        if (isBoss && affectionGroup != null)
+        {
+            if (IsAffectionNestedInTextBox())
+                SnapGroupOpen(affectionGroup, affectionPresentation);
+            else
+            {
+                RegisterAnimation();
+                PlayGroupOpen(affectionGroup, affectionPresentation, CompleteAnimation);
+            }
         }
         else
         {
@@ -1261,11 +1282,27 @@ public class DialogueView : MonoBehaviour
 
         seq.AppendCallback(() =>
         {
+            SetDialogueEffectAlpha(0f);
             SetDialogueEffectVisible(true);
             PlayDialogueEffectIntro();
         });
 
-        seq.AppendInterval(effectDuration);
+        float fadeDuration = dialogueEffectGraphic != null
+            ? Mathf.Max(0f, dialogueEffectFadeDuration)
+            : 0f;
+        if (fadeDuration > 0f)
+        {
+            dialogueEffectGraphic.DOKill();
+            seq.Append(dialogueEffectGraphic
+                .DOFade(defaultDialogueEffectAlpha, fadeDuration)
+                .SetUpdate(true));
+        }
+        else
+        {
+            seq.AppendCallback(() => SetDialogueEffectAlpha(defaultDialogueEffectAlpha));
+        }
+
+        seq.AppendInterval(Mathf.Max(0f, effectDuration - fadeDuration));
         seq.OnComplete(() => onComplete?.Invoke());
     }
 
@@ -1290,16 +1327,19 @@ public class DialogueView : MonoBehaviour
         DialogueCameraShakePreset cameraShakePreset,
         Action onComplete = null)
     {
-        if (nameText != null)
-            nameText.text = speakerName;
-
-        if (continueIcon != null)
-            continueIcon.SetActive(false);
+        SetContinueIconVisible(false);
 
         StopTypingRoutine();
         StopTextEffectRoutine(true);
         StopDialogueCameraShake(true);
         ResetTypingAudioTracking();
+
+        if (nameText != null)
+        {
+            nameText.text = speakerName;
+            nameText.ForceMeshUpdate();
+            nameText.maxVisibleCharacters = openingHeaderRevealPending ? 0 : int.MaxValue;
+        }
 
         if (dialogueText == null)
             return;
@@ -1317,12 +1357,22 @@ public class DialogueView : MonoBehaviour
             ? dialogueText.textInfo.characterCount
             : 0;
 
+        if (openingHeaderRevealPending)
+        {
+            typingRoutine = StartCoroutine(PlayOpeningHeaderThenTypeTextRoutine(
+                revealPlan,
+                animType,
+                visibleCharacterCount,
+                textAnimationProfile,
+                onComplete));
+            return;
+        }
+
         if (visibleCharacterCount <= 0)
         {
             dialogueText.maxVisibleCharacters = int.MaxValue;
 
-            if (continueIcon != null)
-                continueIcon.SetActive(true);
+            SetContinueIconVisible(true);
 
             onComplete?.Invoke();
             return;
@@ -1336,9 +1386,77 @@ public class DialogueView : MonoBehaviour
             onComplete));
     }
 
+    private IEnumerator PlayOpeningHeaderThenTypeTextRoutine(
+        DialogueTextRevealPlan revealPlan,
+        DialogueAnimType animType,
+        int visibleCharacterCount,
+        DialogueTextAnimationProfileSO textAnimationProfile,
+        Action onComplete)
+    {
+        openingHeaderRevealInProgress = true;
+
+        int speakerCharacterCount = 0;
+        if (nameText != null)
+        {
+            nameText.ForceMeshUpdate();
+            speakerCharacterCount = nameText.textInfo != null ? nameText.textInfo.characterCount : 0;
+            nameText.maxVisibleCharacters = 0;
+        }
+
+        float heartRevealDuration = 0f;
+        if (openingHeartRevealPending && ResolveAffectionUI() != null)
+        {
+            heartRevealDuration = affectionUI.PlayOpeningReveal(
+                openingHeaderBeatInterval,
+                openingHeartScaleDuration);
+        }
+
+        float safeBeatInterval = Mathf.Max(0f, openingHeaderBeatInterval);
+        float speakerRevealDuration = speakerCharacterCount > 0
+            ? (speakerCharacterCount - 1) * safeBeatInterval
+            : 0f;
+        float revealDuration = Mathf.Max(speakerRevealDuration, heartRevealDuration);
+        float elapsed = 0f;
+
+        while (elapsed < revealDuration)
+        {
+            if (nameText != null && speakerCharacterCount > 0)
+            {
+                int visibleCount = safeBeatInterval <= 0f
+                    ? speakerCharacterCount
+                    : Mathf.Clamp(Mathf.FloorToInt(elapsed / safeBeatInterval) + 1, 0, speakerCharacterCount);
+                nameText.maxVisibleCharacters = visibleCount;
+            }
+
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        CompleteOpeningHeaderReveal();
+
+        if (visibleCharacterCount <= 0)
+        {
+            typingRoutine = null;
+            if (dialogueText != null)
+                dialogueText.maxVisibleCharacters = int.MaxValue;
+
+            SetContinueIconVisible(true);
+            onComplete?.Invoke();
+            yield break;
+        }
+
+        yield return TypeTextRoutine(
+            revealPlan,
+            animType,
+            visibleCharacterCount,
+            textAnimationProfile,
+            onComplete);
+    }
+
     public void SkipTyping(string fullText)
     {
         StopTypingRoutine();
+        CompleteOpeningHeaderReveal();
 
         if (dialogueText != null)
         {
@@ -1359,8 +1477,7 @@ public class DialogueView : MonoBehaviour
 
         lastTypedCharacterCount = GetCurrentVisibleDialogueCharacterCount();
 
-        if (continueIcon != null)
-            continueIcon.SetActive(true);
+        SetContinueIconVisible(true);
     }
 
     private IEnumerator TypeTextRoutine(
@@ -1419,8 +1536,7 @@ public class DialogueView : MonoBehaviour
             HandleTypingTweenUpdated();
         }
 
-        if (continueIcon != null)
-            continueIcon.SetActive(true);
+        SetContinueIconVisible(true);
 
         onComplete?.Invoke();
     }
@@ -1477,8 +1593,7 @@ public class DialogueView : MonoBehaviour
     {
         ClearChoices();
 
-        if (continueIcon != null)
-            continueIcon.SetActive(false);
+        SetContinueIconVisible(false);
 
         if (choiceContainer == null || choiceButtonPrefab == null)
         {
@@ -1488,8 +1603,15 @@ public class DialogueView : MonoBehaviour
 
         onChoiceSelectedCallback = onChoiceSelected;
         choiceInputEnabled = false;
+        choicePresentationReady = false;
+        choiceExitInProgress = false;
         currentChoiceIndex = -1;
         EventSystem.current?.SetSelectedGameObject(null);
+
+        choiceContainer.gameObject.SetActive(true);
+        LayoutGroup choiceLayoutGroup = choiceContainer.GetComponent<LayoutGroup>();
+        if (choiceLayoutGroup != null)
+            choiceLayoutGroup.enabled = true;
 
         foreach (Ink.Runtime.Choice choice in choices)
         {
@@ -1506,7 +1628,10 @@ public class DialogueView : MonoBehaviour
 
             DialogueChoiceHighlightPresentation choiceHighlight = btnObj.GetComponent<DialogueChoiceHighlightPresentation>();
             if (choiceHighlight != null)
+            {
+                ApplyThemeToChoice(choiceHighlight);
                 choiceHighlight.SetSelected(false, true);
+            }
 
             DialogueChoiceInputRelay inputRelay = btnObj.GetComponent<DialogueChoiceInputRelay>();
             if (inputRelay != null)
@@ -1527,23 +1652,33 @@ public class DialogueView : MonoBehaviour
                 int index = choice.index;
                 btn.onClick.AddListener(() =>
                 {
-                    if (!choiceInputEnabled)
-                        return;
-
-                    Action<int> callback = onChoiceSelectedCallback;
-                    ClearChoices();
-                    callback?.Invoke(index);
+                    TryCommitChoice(listIndex, index);
                 });
             }
         }
 
         HighlightChoice(currentChoiceIndex);
+        Canvas.ForceUpdateCanvases();
+        if (choiceContainer is RectTransform choiceContainerRect)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(choiceContainerRect);
+
+        foreach (GameObject choiceButton in activeChoiceButtons)
+        {
+            DialogueChoiceHighlightPresentation presentation =
+                choiceButton != null ? choiceButton.GetComponent<DialogueChoiceHighlightPresentation>() : null;
+            presentation?.CaptureLayoutPosition();
+        }
+
+        if (choiceLayoutGroup != null)
+            choiceLayoutGroup.enabled = false;
+
+        PlayChoiceEnterPresentation();
         return true;
     }
 
     public void ChangeChoiceSelection(int direction)
     {
-        if (activeChoiceButtons.Count == 0)
+        if (!CanAcceptChoiceInput() || activeChoiceButtons.Count == 0)
             return;
 
         if (currentChoiceIndex < 0)
@@ -1565,7 +1700,7 @@ public class DialogueView : MonoBehaviour
 
     public void ConfirmChoice()
     {
-        if (!choiceInputEnabled || activeChoiceButtons.Count <= 0)
+        if (!CanAcceptChoiceInput() || activeChoiceButtons.Count <= 0)
             return;
 
         if (currentChoiceIndex < 0 || currentChoiceIndex >= activeChoiceButtons.Count)
@@ -1577,7 +1712,7 @@ public class DialogueView : MonoBehaviour
 
     public void ConfirmChoiceAt(int index)
     {
-        if (!choiceInputEnabled || index < 0 || index >= activeChoiceButtons.Count)
+        if (!CanAcceptChoiceInput() || index < 0 || index >= activeChoiceButtons.Count)
             return;
 
         currentChoiceIndex = index;
@@ -1590,11 +1725,12 @@ public class DialogueView : MonoBehaviour
     public void SetChoiceInputEnabled(bool enabled)
     {
         choiceInputEnabled = enabled;
+        RefreshChoiceInteraction();
     }
 
     public void SelectChoiceFromPointer(int index)
     {
-        if (!choiceInputEnabled)
+        if (!CanAcceptChoiceInput())
             return;
 
         SelectChoice(index);
@@ -1611,8 +1747,22 @@ public class DialogueView : MonoBehaviour
 
     public void ClearChoices()
     {
+        if (choiceTransitionSequence != null)
+        {
+            choiceTransitionSequence.Kill(false);
+            choiceTransitionSequence = null;
+        }
+
         choiceInputEnabled = false;
+        choicePresentationReady = false;
+        choiceExitInProgress = false;
         currentChoiceIndex = -1;
+
+        LayoutGroup choiceLayoutGroup = choiceContainer != null
+            ? choiceContainer.GetComponent<LayoutGroup>()
+            : null;
+        if (choiceLayoutGroup != null)
+            choiceLayoutGroup.enabled = true;
 
         foreach (GameObject btn in activeChoiceButtons)
         {
@@ -1621,8 +1771,12 @@ public class DialogueView : MonoBehaviour
                 DialogueChoiceHighlightPresentation choiceHighlight =
                     btn.GetComponent<DialogueChoiceHighlightPresentation>();
                 if (choiceHighlight != null)
+                {
+                    choiceHighlight.ResetPresentation(true);
                     choiceHighlight.SetSelected(false, true);
+                }
 
+                btn.SetActive(false);
                 Destroy(btn);
             }
         }
@@ -1630,35 +1784,175 @@ public class DialogueView : MonoBehaviour
         activeChoiceButtons.Clear();
         onChoiceSelectedCallback = null;
         EventSystem.current?.SetSelectedGameObject(null);
+
+        if (choiceContainer != null)
+            choiceContainer.gameObject.SetActive(false);
     }
 
-    private void CacheContinueIconTransform()
+    private void PlayChoiceEnterPresentation()
+    {
+        if (activeChoiceButtons.Count == 0)
+        {
+            choicePresentationReady = true;
+            RefreshChoiceInteraction();
+            return;
+        }
+
+        choiceTransitionSequence = DOTween.Sequence().SetUpdate(true);
+        int animatedChoiceCount = 0;
+
+        for (int i = 0; i < activeChoiceButtons.Count; i++)
+        {
+            GameObject choiceButton = activeChoiceButtons[i];
+            DialogueChoiceHighlightPresentation presentation =
+                choiceButton != null ? choiceButton.GetComponent<DialogueChoiceHighlightPresentation>() : null;
+            if (presentation == null)
+                continue;
+
+            Tween enterTween = presentation.CreateEnterTween(choiceEnterMoveDistance, choiceEnterDuration);
+            choiceTransitionSequence.Insert(i * choiceEnterStagger, enterTween);
+            animatedChoiceCount++;
+        }
+
+        if (animatedChoiceCount == 0)
+        {
+            choiceTransitionSequence.Kill(false);
+            choiceTransitionSequence = null;
+            choicePresentationReady = true;
+            RefreshChoiceInteraction();
+            return;
+        }
+
+        choiceTransitionSequence.OnComplete(() =>
+        {
+            choiceTransitionSequence = null;
+            choicePresentationReady = true;
+            RefreshChoiceInteraction();
+        });
+    }
+
+    private void TryCommitChoice(int listIndex, int storyChoiceIndex)
+    {
+        if (!CanAcceptChoiceInput() || listIndex < 0 || listIndex >= activeChoiceButtons.Count)
+            return;
+
+        currentChoiceIndex = listIndex;
+        HighlightChoice(currentChoiceIndex);
+
+        choiceInputEnabled = false;
+        choicePresentationReady = false;
+        choiceExitInProgress = true;
+        RefreshChoiceInteraction();
+
+        Action<int> callback = onChoiceSelectedCallback;
+        onChoiceSelectedCallback = null;
+
+        if (choiceTransitionSequence != null)
+        {
+            choiceTransitionSequence.Kill(false);
+            choiceTransitionSequence = null;
+        }
+
+        choiceTransitionSequence = DOTween.Sequence().SetUpdate(true);
+        int animatedChoiceCount = 0;
+
+        for (int i = 0; i < activeChoiceButtons.Count; i++)
+        {
+            GameObject choiceButton = activeChoiceButtons[i];
+            DialogueChoiceHighlightPresentation presentation =
+                choiceButton != null ? choiceButton.GetComponent<DialogueChoiceHighlightPresentation>() : null;
+            if (presentation == null)
+                continue;
+
+            bool isSelected = i == listIndex;
+            float duration = isSelected ? selectedChoiceExitDuration : unselectedChoiceExitDuration;
+            Tween exitTween = presentation.CreateExitTween(
+                isSelected,
+                selectedChoiceExitMoveDistance,
+                duration);
+            choiceTransitionSequence.Insert(0f, exitTween);
+            animatedChoiceCount++;
+        }
+
+        void CompleteSelection()
+        {
+            choiceTransitionSequence = null;
+            ClearChoices();
+            callback?.Invoke(storyChoiceIndex);
+        }
+
+        if (animatedChoiceCount == 0)
+        {
+            choiceTransitionSequence.Kill(false);
+            CompleteSelection();
+            return;
+        }
+
+        choiceTransitionSequence.OnComplete(CompleteSelection);
+    }
+
+    private bool CanAcceptChoiceInput()
+    {
+        return choiceInputEnabled && choicePresentationReady && !choiceExitInProgress;
+    }
+
+    private void RefreshChoiceInteraction()
+    {
+        bool enabled = CanAcceptChoiceInput();
+        foreach (GameObject choiceButton in activeChoiceButtons)
+        {
+            DialogueChoiceHighlightPresentation presentation =
+                choiceButton != null ? choiceButton.GetComponent<DialogueChoiceHighlightPresentation>() : null;
+            presentation?.SetInteractionEnabled(enabled);
+        }
+    }
+
+    private void SetContinueIconVisible(bool visible)
     {
         if (continueIcon == null)
             return;
 
-        continueIconRect = continueIcon.GetComponent<RectTransform>();
-        if (continueIconRect == null)
+        if (!visible)
+        {
+            StopContinueIconMotion(true);
+            continueIcon.SetActive(false);
+            return;
+        }
+
+        continueIcon.SetActive(true);
+        StartContinueIconMotion();
+    }
+
+    private void CacheContinueIconArrowTransforms()
+    {
+        if (continueLeftArrow == null || continueRightArrow == null)
             return;
 
-        continueIconBaseAnchoredPosition = continueIconRect.anchoredPosition;
-        hasContinueIconBasePosition = true;
+        continueLeftArrowBaseAnchoredPosition = continueLeftArrow.anchoredPosition;
+        continueRightArrowBaseAnchoredPosition = continueRightArrow.anchoredPosition;
+        hasContinueArrowBasePositions = true;
     }
 
     private void StartContinueIconMotion()
     {
-        if (continueIconRect == null)
-            CacheContinueIconTransform();
+        if (!hasContinueArrowBasePositions)
+            CacheContinueIconArrowTransforms();
 
-        if (continueIconRect == null)
+        if (!hasContinueArrowBasePositions || continueLeftArrow == null || continueRightArrow == null)
             return;
 
         StopContinueIconMotion(true);
-        continueIconTween = continueIconRect
-            .DOAnchorPosY(continueIconBaseAnchoredPosition.y - 10f, 0.5f)
-            .SetUpdate(true)
-            .SetLoops(-1, LoopType.Yoyo)
-            .SetEase(Ease.InOutSine);
+
+        Sequence arrowSequence = DOTween.Sequence();
+        arrowSequence.SetUpdate(true);
+        arrowSequence.Append(continueLeftArrow
+            .DOAnchorPosX(continueLeftArrowBaseAnchoredPosition.x - continueArrowMoveDistance, continueArrowMoveDuration)
+            .SetEase(Ease.InOutSine));
+        arrowSequence.Join(continueRightArrow
+            .DOAnchorPosX(continueRightArrowBaseAnchoredPosition.x + continueArrowMoveDistance, continueArrowMoveDuration)
+            .SetEase(Ease.InOutSine));
+        arrowSequence.SetLoops(-1, LoopType.Yoyo);
+        continueIconTween = arrowSequence;
     }
 
     private void StopContinueIconMotion(bool resetPosition)
@@ -1666,11 +1960,20 @@ public class DialogueView : MonoBehaviour
         continueIconTween?.Kill();
         continueIconTween = null;
 
-        if (continueIconRect != null)
-            continueIconRect.DOKill();
+        if (continueLeftArrow != null)
+            continueLeftArrow.DOKill();
 
-        if (resetPosition && continueIconRect != null && hasContinueIconBasePosition)
-            continueIconRect.anchoredPosition = continueIconBaseAnchoredPosition;
+        if (continueRightArrow != null)
+            continueRightArrow.DOKill();
+
+        if (resetPosition && hasContinueArrowBasePositions)
+        {
+            if (continueLeftArrow != null)
+                continueLeftArrow.anchoredPosition = continueLeftArrowBaseAnchoredPosition;
+
+            if (continueRightArrow != null)
+                continueRightArrow.anchoredPosition = continueRightArrowBaseAnchoredPosition;
+        }
     }
 
     private void PlayDialogueCameraShake(DialogueCameraShakePreset preset)
@@ -1900,6 +2203,12 @@ public class DialogueView : MonoBehaviour
         StopTextEffectRoutine(true);
         StopDialogueCameraShake(true);
 
+        if (choiceTransitionSequence != null)
+        {
+            choiceTransitionSequence.Kill(false);
+            choiceTransitionSequence = null;
+        }
+
         StopContinueIconMotion(true);
 
         if (dialogueText != null)
@@ -1908,16 +2217,26 @@ public class DialogueView : MonoBehaviour
         if (textBoxGroup != null)
             textBoxGroup.DOKill();
 
+        if (dialogueUpperFrameGroup != null)
+            dialogueUpperFrameGroup.DOKill();
+
         if (affectionGroup != null)
             affectionGroup.DOKill();
 
         if (dimPanelGraphic != null)
             dimPanelGraphic.DOKill();
 
+        if (dialogueEffectGraphic != null)
+            dialogueEffectGraphic.DOKill();
+
         foreach (GameObject choiceButton in activeChoiceButtons)
         {
             if (choiceButton != null)
-                choiceButton.transform.DOKill();
+            {
+                DialogueChoiceHighlightPresentation presentation =
+                    choiceButton.GetComponent<DialogueChoiceHighlightPresentation>();
+                presentation?.KillMotion();
+            }
         }
     }
 
@@ -1926,8 +2245,32 @@ public class DialogueView : MonoBehaviour
         if (typingRoutine == null)
             return;
 
+        bool wasOpeningHeaderReveal = openingHeaderRevealInProgress;
         StopCoroutine(typingRoutine);
         typingRoutine = null;
+
+        if (wasOpeningHeaderReveal)
+            CompleteOpeningHeaderReveal();
+    }
+
+    private void CompleteOpeningHeaderReveal()
+    {
+        if (!openingHeaderRevealPending &&
+            !openingHeaderRevealInProgress &&
+            !openingHeartRevealPending)
+        {
+            return;
+        }
+
+        if (nameText != null)
+            nameText.maxVisibleCharacters = int.MaxValue;
+
+        if (openingHeartRevealPending && ResolveAffectionUI() != null)
+            affectionUI.CompleteOpeningReveal();
+
+        openingHeaderRevealPending = false;
+        openingHeaderRevealInProgress = false;
+        openingHeartRevealPending = false;
     }
 
     private void StartTextEffectRoutine(
@@ -1992,11 +2335,12 @@ public class DialogueView : MonoBehaviour
     public void HideUI(Action onComplete = null)
     {
         ClearChoices();
+        StopTypingRoutine();
+        CompleteOpeningHeaderReveal();
         StopTextEffectRoutine(true);
         StopDialogueCameraShake(true);
 
-        if (continueIcon != null)
-            continueIcon.SetActive(false);
+        SetContinueIconVisible(false);
 
         ResolveGroupPresentations();
 
@@ -2008,9 +2352,23 @@ public class DialogueView : MonoBehaviour
         {
             isUiVisible = false;
 
+            if (IsAffectionNestedInTextBox())
+                SnapGroupClosed(affectionGroup, affectionPresentation);
+
             SetDimPanelVisible(false, true);
             ResetDialogueEffectToHiddenIdle();
             onComplete?.Invoke();
+        }
+
+        void FinishFrameExit()
+        {
+            if (IsDialogueEffectVisible())
+            {
+                PlayDialogueEffectFadeOut(FinishHide);
+                return;
+            }
+
+            FinishHide();
         }
 
         void RegisterAnimation()
@@ -2025,7 +2383,7 @@ public class DialogueView : MonoBehaviour
                 return;
 
             didComplete = true;
-            FinishHide();
+            FinishFrameExit();
         }
 
         if (textBoxGroup != null && textBoxGroup.gameObject.activeSelf)
@@ -2034,7 +2392,13 @@ public class DialogueView : MonoBehaviour
             PlayGroupClose(textBoxGroup, textBoxPresentation, CompleteAnimation);
         }
 
-        if (affectionGroup != null && affectionGroup.gameObject.activeSelf)
+        if (dialogueUpperFrameGroup != null && dialogueUpperFrameGroup.gameObject.activeSelf)
+        {
+            RegisterAnimation();
+            PlayGroupClose(dialogueUpperFrameGroup, dialogueUpperFramePresentation, CompleteAnimation);
+        }
+
+        if (!IsAffectionNestedInTextBox() && affectionGroup != null && affectionGroup.gameObject.activeSelf)
         {
             RegisterAnimation();
             PlayGroupClose(affectionGroup, affectionPresentation, CompleteAnimation);
@@ -2044,7 +2408,7 @@ public class DialogueView : MonoBehaviour
         if (pendingAnimations == 0 && !didComplete)
         {
             didComplete = true;
-            FinishHide();
+            FinishFrameExit();
         }
     }
 
@@ -2112,13 +2476,52 @@ public class DialogueView : MonoBehaviour
         group.gameObject.SetActive(false);
     }
 
+    private void SnapGroupOpen(CanvasGroup group, UISlideFadePresentation presentation)
+    {
+        if (presentation != null)
+        {
+            presentation.SnapOpen();
+            return;
+        }
+
+        if (group == null)
+            return;
+
+        group.DOKill();
+        group.gameObject.SetActive(true);
+        group.alpha = 1f;
+        group.interactable = true;
+        group.blocksRaycasts = true;
+    }
+
     private void ResolveGroupPresentations()
     {
         if (textBoxPresentation == null)
             textBoxPresentation = ResolveGroupPresentation(textBoxGroup);
 
+        if (dialogueUpperFramePresentation == null)
+            dialogueUpperFramePresentation = ResolveGroupPresentation(dialogueUpperFrameGroup);
+
         if (affectionPresentation == null)
             affectionPresentation = ResolveGroupPresentation(affectionGroup);
+    }
+
+    private bool IsAffectionNestedInTextBox()
+    {
+        return affectionGroup != null &&
+               textBoxGroup != null &&
+               affectionGroup.transform.IsChildOf(textBoxGroup.transform);
+    }
+
+    private AffectionUI ResolveAffectionUI()
+    {
+        if (affectionUI != null)
+            return affectionUI;
+
+        if (affectionGroup != null)
+            affectionUI = affectionGroup.GetComponent<AffectionUI>();
+
+        return affectionUI;
     }
 
     private UISlideFadePresentation ResolveGroupPresentation(CanvasGroup group)
@@ -2139,16 +2542,10 @@ public class DialogueView : MonoBehaviour
 
             bool isSelected = index >= 0 && i == index;
 
-            TextMeshProUGUI btnText = choiceButton.GetComponentInChildren<TextMeshProUGUI>();
-            if (btnText != null)
-                btnText.color = isSelected ? selectedChoiceColor : normalChoiceColor;
-
             DialogueChoiceHighlightPresentation choiceHighlight =
                 choiceButton.GetComponent<DialogueChoiceHighlightPresentation>();
             if (choiceHighlight != null)
                 choiceHighlight.SetSelected(isSelected);
-
-            choiceButton.transform.DOScale(isSelected ? 1.05f : 1.0f, 0.1f).SetUpdate(true);
         }
     }
 
@@ -2164,21 +2561,20 @@ public class DialogueView : MonoBehaviour
         if (dialogueEffectAnimator != null && defaultEffectController == null)
             defaultEffectController = dialogueEffectAnimator.runtimeAnimatorController;
 
+        if (dialogueEffectGraphic == null && dialogueEffectAnimator != null)
+            dialogueEffectGraphic = dialogueEffectAnimator.GetComponentInChildren<Graphic>(true);
+
         if (dimPanelGraphic == null)
             dimPanelGraphic = FindGraphicByName("DimPanel");
 
-        if (textBoxThemeTargets == null || textBoxThemeTargets.Length == 0)
+        if (continueIconThemeTargets == null || continueIconThemeTargets.Length == 0)
         {
-            Graphic textBoxGraphic = FindGraphicByName("TextBoxGroup");
-            if (textBoxGraphic != null)
-                textBoxThemeTargets = new[] { textBoxGraphic };
-        }
-
-        if (speakerFrameThemeTargets == null || speakerFrameThemeTargets.Length == 0)
-        {
-            Graphic speakerFrameGraphic = FindGraphicByName("SpeakerFrame");
-            if (speakerFrameGraphic != null)
-                speakerFrameThemeTargets = new[] { speakerFrameGraphic };
+            continueIconThemeTargets = new[]
+            {
+                FindGraphicByName("LeftArrow"),
+                FindGraphicByName("MiddleDot"),
+                FindGraphicByName("RightArrow")
+            };
         }
     }
 
@@ -2189,36 +2585,17 @@ public class DialogueView : MonoBehaviour
             if (graphic == null)
                 continue;
 
-            if (!originalThemeMaterials.ContainsKey(graphic))
-                originalThemeMaterials[graphic] = graphic.material;
-
             if (!originalThemeColors.ContainsKey(graphic))
                 originalThemeColors[graphic] = graphic.color;
-
-            foreach (Outline outline in graphic.GetComponents<Outline>())
-            {
-                if (outline != null && !originalOutlineColors.ContainsKey(outline))
-                    originalOutlineColors[outline] = outline.effectColor;
-            }
         }
     }
 
     private IEnumerable<Graphic> EnumerateThemeTargets()
     {
-        HashSet<Graphic> uniqueTargets = new HashSet<Graphic>();
-
-        if (textBoxThemeTargets != null)
+        if (continueIconThemeTargets != null)
         {
-            foreach (Graphic graphic in textBoxThemeTargets)
-            {
-                if (graphic != null && uniqueTargets.Add(graphic))
-                    yield return graphic;
-            }
-        }
-
-        if (speakerFrameThemeTargets != null)
-        {
-            foreach (Graphic graphic in speakerFrameThemeTargets)
+            HashSet<Graphic> uniqueTargets = new HashSet<Graphic>();
+            foreach (Graphic graphic in continueIconThemeTargets)
             {
                 if (graphic != null && uniqueTargets.Add(graphic))
                     yield return graphic;
@@ -2226,63 +2603,20 @@ public class DialogueView : MonoBehaviour
         }
     }
 
-    private void ApplyThemeToTargets(Graphic[] targets, Color fillColor, Color outlineColor)
+    private void ApplyAccentColor(Color accentColor)
     {
-        if (targets == null)
-            return;
+        if (nameText != null)
+            nameText.color = accentColor;
 
-        foreach (Graphic graphic in targets)
+        foreach (Graphic graphic in EnumerateThemeTargets())
         {
             if (graphic == null)
                 continue;
 
-            Material themedMaterial = GetOrCreateThemeMaterial(graphic);
-            if (themedMaterial != null)
-            {
-                if (themedMaterial.HasProperty("_OutlineColor"))
-                    themedMaterial.SetColor("_OutlineColor", outlineColor);
-
-                graphic.material = themedMaterial;
-            }
-
-            graphic.color = fillColor;
-
-            foreach (Outline outline in graphic.GetComponents<Outline>())
-            {
-                if (outline != null)
-                    outline.effectColor = outlineColor;
-            }
-        }
-    }
-
-    private Material GetOrCreateThemeMaterial(Graphic graphic)
-    {
-        if (graphic == null)
-            return null;
-
-        if (runtimeThemeMaterials.TryGetValue(graphic, out Material cachedMaterial) && cachedMaterial != null)
-            return cachedMaterial;
-
-        originalThemeMaterials.TryGetValue(graphic, out Material originalMaterial);
-        Material themeMaterial = null;
-
-        if (originalMaterial != null && originalMaterial.HasProperty("_OutlineColor"))
-        {
-            themeMaterial = new Material(originalMaterial);
-        }
-        else
-        {
-            Shader outlineShader = Shader.Find("UI/Alpha Outline");
-            if (outlineShader != null)
-                themeMaterial = new Material(outlineShader);
-            else if (originalMaterial != null)
-                themeMaterial = new Material(originalMaterial);
+            graphic.color = accentColor;
         }
 
-        if (themeMaterial != null)
-            runtimeThemeMaterials[graphic] = themeMaterial;
-
-        return themeMaterial;
+        RefreshActiveChoiceTheme();
     }
 
     private void RestoreThemeVisuals()
@@ -2292,18 +2626,12 @@ public class DialogueView : MonoBehaviour
             if (graphic == null)
                 continue;
 
-            if (originalThemeMaterials.TryGetValue(graphic, out Material originalMaterial))
-                graphic.material = originalMaterial;
-
             if (originalThemeColors.TryGetValue(graphic, out Color originalColor))
                 graphic.color = originalColor;
-
-            foreach (Outline outline in graphic.GetComponents<Outline>())
-            {
-                if (outline != null && originalOutlineColors.TryGetValue(outline, out Color originalOutlineColor))
-                    outline.effectColor = originalOutlineColor;
-            }
         }
+
+        if (nameText != null)
+            nameText.color = defaultNameTextColor;
     }
 
     private void RefreshThemePresentation(bool restartEffect)
@@ -2311,8 +2639,7 @@ public class DialogueView : MonoBehaviour
         if (currentTheme == null)
         {
             RestoreThemeVisuals();
-            if (nameText != null)
-                nameText.color = defaultNameTextColor;
+            RefreshActiveChoiceTheme();
 
             RefreshDialogueEffectOverride();
             if (restartEffect)
@@ -2320,16 +2647,37 @@ public class DialogueView : MonoBehaviour
             return;
         }
 
-        ApplyThemeToTargets(textBoxThemeTargets, defaultTextBoxFillColor, currentTheme.outlineColor);
-        ApplyThemeToTargets(speakerFrameThemeTargets, currentTheme.speakerFrameFillColor, currentTheme.outlineColor);
-
-        if (nameText != null)
-            nameText.color = currentTheme.outlineColor;
+        ApplyAccentColor(currentTheme.accentColor);
 
         RefreshDialogueEffectOverride();
 
         if (restartEffect)
             PlayDialogueEffectIntro();
+    }
+
+    private void RefreshActiveChoiceTheme()
+    {
+        foreach (GameObject choiceButton in activeChoiceButtons)
+        {
+            if (choiceButton == null)
+                continue;
+
+            DialogueChoiceHighlightPresentation choiceHighlight =
+                choiceButton.GetComponent<DialogueChoiceHighlightPresentation>();
+            if (choiceHighlight != null)
+                ApplyThemeToChoice(choiceHighlight);
+        }
+    }
+
+    private void ApplyThemeToChoice(DialogueChoiceHighlightPresentation choiceHighlight)
+    {
+        if (choiceHighlight == null)
+            return;
+
+        if (currentTheme != null)
+            choiceHighlight.SetThemeColor(currentTheme.accentColor);
+        else
+            choiceHighlight.ResetThemeColor();
     }
 
     private void ApplyDialogueEffectOverride(AnimatorOverrideController overrideController)
@@ -2349,7 +2697,7 @@ public class DialogueView : MonoBehaviour
 
         dialogueEffectAnimator.runtimeAnimatorController = targetController;
         dialogueEffectAnimator.Rebind();
-        dialogueEffectAnimator.Update(0f);
+        UpdateDialogueEffectAnimatorImmediately();
     }
 
     private void ResetDialogueEffectOverride()
@@ -2362,7 +2710,7 @@ public class DialogueView : MonoBehaviour
 
         dialogueEffectAnimator.runtimeAnimatorController = defaultEffectController;
         dialogueEffectAnimator.Rebind();
-        dialogueEffectAnimator.Update(0f);
+        UpdateDialogueEffectAnimatorImmediately();
     }
 
     private void RefreshDialogueEffectOverride()
@@ -2388,9 +2736,50 @@ public class DialogueView : MonoBehaviour
         if (dialogueEffectAnimator == null)
             return;
 
+        if (dialogueEffectGraphic != null)
+            dialogueEffectGraphic.DOKill();
+
+        SetDialogueEffectAlpha(0f);
         SetDialogueEffectVisible(true);
         PlayDialogueEffectIdle();
         SetDialogueEffectVisible(false);
+    }
+
+    private bool IsDialogueEffectVisible()
+    {
+        return dialogueEffectAnimator != null && dialogueEffectAnimator.gameObject.activeSelf;
+    }
+
+    private void PlayDialogueEffectFadeOut(Action onComplete)
+    {
+        if (!IsDialogueEffectVisible())
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        if (dialogueEffectGraphic == null || dialogueEffectFadeDuration <= 0f)
+        {
+            SetDialogueEffectAlpha(0f);
+            onComplete?.Invoke();
+            return;
+        }
+
+        dialogueEffectGraphic.DOKill();
+        dialogueEffectGraphic
+            .DOFade(0f, dialogueEffectFadeDuration)
+            .SetUpdate(true)
+            .OnComplete(() => onComplete?.Invoke());
+    }
+
+    private void SetDialogueEffectAlpha(float alpha)
+    {
+        if (dialogueEffectGraphic == null)
+            return;
+
+        Color color = dialogueEffectGraphic.color;
+        color.a = alpha;
+        dialogueEffectGraphic.color = color;
     }
 
     private void SetDialogueEffectVisible(bool visible)
@@ -2413,7 +2802,13 @@ public class DialogueView : MonoBehaviour
             return;
 
         dialogueEffectAnimator.Play(stateHash, 0, 0f);
-        dialogueEffectAnimator.Update(0f);
+        UpdateDialogueEffectAnimatorImmediately();
+    }
+
+    private void UpdateDialogueEffectAnimatorImmediately()
+    {
+        if (dialogueEffectAnimator != null && dialogueEffectAnimator.gameObject.activeInHierarchy)
+            dialogueEffectAnimator.Update(0f);
     }
 
     /// <summary>

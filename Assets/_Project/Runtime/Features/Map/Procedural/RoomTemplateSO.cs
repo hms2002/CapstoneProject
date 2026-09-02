@@ -402,7 +402,25 @@ public struct RoomObjectPlacementData
     public Vector2 localOffset;
     public float localRotationDegrees;
     public Vector3 localScale;
+    public List<RoomObjectChildPoseOverrideData> childPoseOverrides;
     public string linkedChestLockPlacementId;
+}
+
+/// <summary>
+/// 책임:
+/// - 복합 방 오브젝트 프리팹의 안정적인 슬롯 하나에 적용할 방별 Transform 재정의를 보관한다.
+/// - 재정의하지 않은 위치·회전·크기는 프리팹 기본값을 계속 따르게 한다.
+/// </summary>
+[Serializable]
+public struct RoomObjectChildPoseOverrideData
+{
+    public string slotId;
+    public bool overridePosition;
+    public Vector3 localPosition;
+    public bool overrideRotation;
+    public float localRotationDegrees;
+    public bool overrideScale;
+    public Vector3 localScale;
 }
 
 /// <summary>

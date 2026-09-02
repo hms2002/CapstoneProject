@@ -437,6 +437,28 @@ public static class ProceduralDungeonSceneInstaller
     }
 
     /// <summary>
+    /// 책임:
+    /// 기존 제물 보상 Alcove의 수동 자식 배치를 보존하면서 방별 편집용 복합 Pose 슬롯 계약만 설치한다.
+    /// </summary>
+    [MenuItem("Tools/Dungeon/Update Sacrifice Reward Alcove Pose Slots")]
+    public static void UpdateSacrificeRewardAlcovePoseSlots()
+    {
+        GameObject statuePrefab = LoadRequiredObjectPrefab(StatuePrefabPath, RoomObjectKind.Prop);
+        GameObject doorPrefab = LoadRequiredObjectPrefab(DoorPrefabPath, RoomObjectKind.Prop);
+        GameObject chestPrefab = LoadRequiredObjectPrefab(ChestPrefabPath, RoomObjectKind.Chest);
+        EnsureFolder(GeneratedProceduralPrefabFolder);
+
+        GameObject alcove = CreateOrUpdateSacrificeRewardAlcovePrefab(
+            statuePrefab,
+            doorPrefab,
+            chestPrefab);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        VerifySacrificeRewardAlcove(alcove, SacrificeRewardAlcovePrefabPath);
+        Debug.Log("Updated SacrificeRewardAlcove with three room-specific pose slots.");
+    }
+
+    /// <summary>
     /// 책임 : 세 일반 보스의 생성 프로필, 활성 씬 참조와 동일 설정의 대표 레이아웃 생성 성공 여부를 검증한다.
     /// </summary>
     [MenuItem("Tools/Dungeon/Validate Boss Theme Generation Profiles")]
@@ -3141,24 +3163,50 @@ public static class ProceduralDungeonSceneInstaller
         if (statuePrefab == null || doorPrefab == null || chestPrefab == null)
             throw new InvalidOperationException("Sacrifice reward alcove requires all source prefabs.");
 
-        GameObject root = new("SacrificeRewardAlcove");
+        bool editsExistingPrefab =
+            AssetDatabase.LoadAssetAtPath<GameObject>(SacrificeRewardAlcovePrefabPath) != null;
+        GameObject root = editsExistingPrefab
+            ? PrefabUtility.LoadPrefabContents(SacrificeRewardAlcovePrefabPath)
+            : new GameObject("SacrificeRewardAlcove");
         try
         {
-            GameObject statueObject = InstantiatePrefabChild(
+            root.name = "SacrificeRewardAlcove";
+            GameObject statueObject = GetOrCreatePrefabChild(
                 statuePrefab,
                 root.transform,
                 "OfferingStatue",
                 Vector3.zero);
-            GameObject doorObject = InstantiatePrefabChild(
+            GameObject doorObject = GetOrCreatePrefabChild(
                 doorPrefab,
                 root.transform,
                 "RewardDoor",
                 new Vector3(2.5f, 2f, 0f));
-            InstantiatePrefabChild(
+            GameObject chestObject = GetOrCreatePrefabChild(
                 chestPrefab,
                 root.transform,
                 "TreasureChest",
                 new Vector3(3f, 4f, 0f));
+
+            RoomCompositePoseAuthoring composite =
+                root.GetComponent<RoomCompositePoseAuthoring>();
+            if (composite == null)
+                composite = root.AddComponent<RoomCompositePoseAuthoring>();
+            composite.EditorSetPoseSlots(new[]
+            {
+                new RoomCompositePoseSlotData(
+                    "OfferingStatue",
+                    "제물 동상",
+                    statueObject.transform),
+                new RoomCompositePoseSlotData(
+                    "RewardDoor",
+                    "보상 문",
+                    doorObject.transform),
+                new RoomCompositePoseSlotData(
+                    "TreasureChest",
+                    "보상 상자",
+                    chestObject.transform)
+            });
+            EditorUtility.SetDirty(composite);
 
             StatueShortcut statue = statueObject.GetComponentInChildren<StatueShortcut>(true);
             DoorObject door = doorObject.GetComponentInChildren<DoorObject>(true);
@@ -3209,16 +3257,27 @@ public static class ProceduralDungeonSceneInstaller
         }
         finally
         {
-            UnityEngine.Object.DestroyImmediate(root);
+            if (editsExistingPrefab)
+                PrefabUtility.UnloadPrefabContents(root);
+            else
+                UnityEngine.Object.DestroyImmediate(root);
         }
     }
 
-    private static GameObject InstantiatePrefabChild(
+    /// <summary>
+    /// 책임:
+    /// 기존 복합 프리팹의 수동 배치 Transform은 보존하고 누락된 구성 오브젝트만 기본 위치로 생성한다.
+    /// </summary>
+    private static GameObject GetOrCreatePrefabChild(
         GameObject sourcePrefab,
         Transform parent,
         string objectName,
         Vector3 localPosition)
     {
+        Transform existing = parent.Find(objectName);
+        if (existing != null)
+            return existing.gameObject;
+
         GameObject instance = PrefabUtility.InstantiatePrefab(sourcePrefab, parent) as GameObject;
         if (instance == null)
             throw new InvalidOperationException($"Failed to instantiate prefab: {sourcePrefab.name}");
@@ -3241,6 +3300,12 @@ public static class ProceduralDungeonSceneInstaller
         int partitionY = roomSize.y / 2 + 1;
         int openingStartX = (roomSize.x - RoomSocketGeometry.RequiredWidth) / 2;
         Vector2Int alcoveRootCell = new(openingStartX - 2, partitionY - 2);
+        RoomObjectPlacementData alcovePlacement = CreateObjectPlacement(
+            "SacrificeRewardAlcove",
+            RoomObjectKind.Prop,
+            sacrificeRewardAlcovePrefab,
+            alcoveRootCell);
+        PreserveExistingRoomObjectPose(assetPath, ref alcovePlacement);
         RoomTemplateSO template = CreateOrUpdateRoom(
             assetPath,
             roomId,
@@ -3254,11 +3319,7 @@ public static class ProceduralDungeonSceneInstaller
             fallbackWall,
             new List<RoomObjectPlacementData>
             {
-                CreateObjectPlacement(
-                    "SacrificeRewardAlcove",
-                    RoomObjectKind.Prop,
-                    sacrificeRewardAlcovePrefab,
-                    alcoveRootCell)
+                alcovePlacement
             },
             0);
 
@@ -3275,6 +3336,39 @@ public static class ProceduralDungeonSceneInstaller
         template.EditorSetData(template.LayoutData, build);
         EditorUtility.SetDirty(template);
         return template;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 설치기 재실행 시 같은 Placement Id에 기획자가 저장한 루트 자세와 복합 자식 자세 재정의를 보존한다.
+    /// </summary>
+    private static void PreserveExistingRoomObjectPose(
+        string roomAssetPath,
+        ref RoomObjectPlacementData replacement)
+    {
+        RoomTemplateSO existingRoom = AssetDatabase.LoadAssetAtPath<RoomTemplateSO>(roomAssetPath);
+        List<RoomObjectPlacementData> existingPlacements =
+            existingRoom != null ? existingRoom.BuildData.objectPlacements : null;
+        for (int i = 0; existingPlacements != null && i < existingPlacements.Count; i++)
+        {
+            RoomObjectPlacementData existing = existingPlacements[i];
+            if (!string.Equals(
+                    existing.placementId,
+                    replacement.placementId,
+                    StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            replacement.localCell = existing.localCell;
+            replacement.localOffset = existing.localOffset;
+            replacement.localRotationDegrees = existing.localRotationDegrees;
+            replacement.localScale = existing.localScale;
+            replacement.childPoseOverrides = existing.childPoseOverrides != null
+                ? new List<RoomObjectChildPoseOverrideData>(existing.childPoseOverrides)
+                : new List<RoomObjectChildPoseOverrideData>();
+            return;
+        }
     }
 
     private static RoomTemplateSO CreateOrUpdateRoom(
@@ -4172,6 +4266,29 @@ public static class ProceduralDungeonSceneInstaller
                 $"Sacrifice reward alcove '{context}' door must be Locked and non-permanent.");
         }
 
+        RoomCompositePoseAuthoring composite =
+            root.GetComponent<RoomCompositePoseAuthoring>();
+        string slotFailureReason = string.Empty;
+        if (composite == null || !composite.TryValidateSlots(out slotFailureReason))
+        {
+            throw new InvalidOperationException(
+                $"Sacrifice reward alcove '{context}' has an invalid composite pose contract: " +
+                (composite == null ? "component is missing." : slotFailureReason));
+        }
+
+        ValidateSacrificeRewardPoseSlot<StatueShortcut>(
+            composite,
+            "OfferingStatue",
+            context);
+        ValidateSacrificeRewardPoseSlot<DoorObject>(
+            composite,
+            "RewardDoor",
+            context);
+        ValidateSacrificeRewardPoseSlot<TreasureChest>(
+            composite,
+            "TreasureChest",
+            context);
+
         SerializedObject serializedStatue = new(statue);
         SerializedProperty costType = serializedStatue.FindProperty("costType");
         SerializedProperty costAmount = serializedStatue.FindProperty("costAmount");
@@ -4182,6 +4299,25 @@ public static class ProceduralDungeonSceneInstaller
         {
             throw new InvalidOperationException(
                 $"Sacrifice reward alcove '{context}' must cost five Magic Stones.");
+        }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 제물 보상 복합 슬롯이 기대한 기능 오브젝트의 루트 Transform을 가리키는지 검증한다.
+    /// </summary>
+    private static void ValidateSacrificeRewardPoseSlot<TComponent>(
+        RoomCompositePoseAuthoring composite,
+        string slotId,
+        string context)
+        where TComponent : Component
+    {
+        if (!composite.TryGetSlot(slotId, out RoomCompositePoseSlotData slot) ||
+            slot.Target == null ||
+            slot.Target.GetComponentInChildren<TComponent>(true) == null)
+        {
+            throw new InvalidOperationException(
+                $"Sacrifice reward alcove '{context}' pose slot '{slotId}' is invalid.");
         }
     }
 

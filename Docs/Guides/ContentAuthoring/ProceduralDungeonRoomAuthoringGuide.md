@@ -63,8 +63,8 @@ Notion 가져오기용 하위 페이지 묶음은 `Docs/NotionImport/ProceduralD
 | Travel Slot Id | 방의 이동 지점을 식별하는 고유 문자열입니다. 목적 씬 연결은 복도 씬에서 별도로 지정합니다. |
 | 등장 가중치 | 같은 역할의 후보 중 해당 방이 선택될 상대 확률입니다. |
 | Seed | 같은 라이브러리와 생성 설정에서 같은 배치 결과를 재현하는 정수입니다. |
-| 복도 장식 프로필 | 한 테마의 문 앞 안전 여백, Landmark 최대 수와 장식 모듈 목록을 저장하는 `CorridorDecorationProfileSO`입니다. |
-| 복도 장식 모듈 | +X 방향 2칸 폭을 기준으로 만든 짧은 복도 타일·GroundProp 조각인 `CorridorDecorationModuleSO`입니다. |
+| 복도 장식 프로필 | 한 테마의 Landmark 최대 수와 장식 모듈 목록을 저장하는 `CorridorDecorationProfileSO`입니다. |
+| 복도 장식 모듈 | 가로(+X) 또는 세로(+Y) 전용 2칸 폭으로 만든 짧은 복도 타일·GroundProp 조각인 `CorridorDecorationModuleSO`입니다. |
 
 ## 작업 시작 방법
 
@@ -431,20 +431,27 @@ Shadow, Dragon, Slime 절차 복도 씬은 각자의 프로필을 직접 참조�
 `DungeonGenerationProfileSO → CorridorDecorationProfileSO → CorridorDecorationModuleSO`
 
 - 생성 프로필은 해당 테마의 장식 프로필 하나를 참조합니다.
-- 장식 프로필은 양쪽 문 앞 안전 여백, 복도당 Landmark 최대 수와 사용 가능한 모듈 목록을 가집니다.
-- 모듈은 역할, 진행축 길이, 여덟 타일 레이어와 `GroundProp` Pivot 배치를 가집니다.
+- 장식 프로필은 복도당 Landmark 최대 수와 사용 가능한 모듈 목록을 가집니다.
+- 모듈은 전용 축(Horizontal/Vertical), 역할, 진행축 길이, 여덟 타일 레이어와 `GroundProp` Pivot 배치를 가집니다.
 - 장식 프로필이나 모듈이 없어도 기본 Floor/Wall 복도는 계속 생성됩니다.
 
 ### 제작 좌표와 레이어 규칙
 
-모든 모듈은 왼쪽에서 오른쪽으로 진행하는 `+X` 기준으로 한 번만 제작합니다. 런타임 빌더가 실제 연결 방향에 맞춰 상·하·좌·우로 변환합니다.
+가로와 세로 모듈을 따로 제작합니다. 가로 그림을 90도 돌려 세로 복도에 쓰지 않으므로, 꺾임·원근·벽 장식처럼 회전에 민감한 타일도 의도한 모습으로 유지됩니다. 런타임은 좌·우 연결에 `Horizontal`, 상·하 연결에 `Vertical` 모듈만 선택합니다. 오른쪽과 위쪽은 제작 원본 그대로, 왼쪽과 아래쪽은 같은 축 안에서 반전해 사용합니다.
 
-| 항목 | 고정 규칙 |
+| 항목 | Horizontal 고정 규칙 | Vertical 고정 규칙 |
+| --- | --- | --- |
+| 기준 진행 방향 | 왼쪽→오른쪽 `+X` | 아래→위 `+Y` |
+| 진행축 | `x = 0 .. Length - 1` | `y = 0 .. Length - 1` |
+| 2칸 Floor | `y = 0, 1` | `x = 0, 1` |
+| 양쪽 Wall | `y = -1, 2` | `x = -1, 2` |
+| 사용 가능 범위 | `x = 0 .. Length - 1`, `y = -1 .. 2` | `x = -1 .. 2`, `y = 0 .. Length - 1` |
+| 런타임 대상 | Right/Left 연결 | Up/Down 연결 |
+
+모든 타일과 Prop Pivot은 선택한 축의 사용 가능 범위 안에 둡니다.
+
+| 공통 항목 | 고정 규칙 |
 | --- | --- |
-| 진행축 | `x = 0 .. Length - 1` |
-| 가로 통로 | `Floor`의 `y = 0, 1` |
-| 양쪽 벽 | `Wall`의 `y = -1, 2` |
-| 사용 가능 범위 | 모든 타일과 Prop Pivot은 `x = 0 .. Length - 1`, `y = -1 .. 2` 안에 둡니다. |
 | 타일 레이어 | 방과 동일한 `UnderFloor`, `Floor`, `FloorDetail`, `GroundDecoration`, `Wall`, `WallDetail`, `Foreground`, `OverlayFX`를 유지합니다. |
 | 오브젝트 | 현재는 `GroundProp`만 허용합니다. 프리팹 충돌과 동작은 프리팹이 소유합니다. |
 
@@ -454,12 +461,12 @@ Shadow, Dragon, Slime 절차 복도 씬은 각자의 프로필을 직접 참조�
 
 | 역할 | 선택 규칙 |
 | --- | --- |
-| `Start` | 문 앞 안전 여백 다음에 들어갈 수 있는 시작 조각입니다. 공간이 부족하거나 후보가 없으면 생략됩니다. |
+| `Start` | 첫 번째 문에 맞닿은 복도 첫 칸부터 들어가는 시작 조각입니다. 공간이 부족하거나 후보가 없으면 생략됩니다. |
 | `Middle` | 본문을 채우는 일반 반복 조각입니다. |
 | `Landmark` | 본문 후보 중 무작위로 선택되는 강조 조각입니다. 프로필 값은 최대 개수이며, 조건에 따라 0개가 나올 수 있습니다. |
 | `Filler` | 남은 길이를 채우는 짧은 보정 조각입니다. 1칸 Filler를 하나 이상 두면 빈 셀을 줄일 수 있습니다. |
-| `End` | 반대쪽 문 앞 안전 여백 직전에 들어갈 수 있는 종료 조각입니다. 공간이 부족하거나 후보가 없으면 생략됩니다. |
-| `Short` | 안전 여백을 제외한 길이와 정확히 일치할 때 다른 역할보다 우선하여 하나만 사용합니다. |
+| `End` | 반대쪽 문에 맞닿은 복도 마지막 칸까지 사용하는 종료 조각입니다. 공간이 부족하거나 후보가 없으면 생략됩니다. |
+| `Short` | 전체 복도 길이와 정확히 일치할 때 다른 역할보다 우선하여 하나만 사용합니다. |
 
 본문의 `Middle`, `Landmark`, `Filler`는 가중치 없이 등록된 후보에서 선택됩니다. 다른 후보가 있으면 같은 모듈을 바로 연속해서 선택하지 않습니다. 어떤 후보도 남은 길이에 들어가지 않으면 그 셀은 기본 복도 모습으로 남습니다.
 
@@ -467,7 +474,7 @@ Shadow, Dragon, Slime 절차 복도 씬은 각자의 프로필을 직접 참조�
 
 1. `Tools > Dungeon > Corridor Decoration Editor`를 엽니다.
 2. `테마 생성 프로필`과 연결된 `복도 장식 프로필`을 확인합니다. 새 프로필이면 `생성 프로필에 연결`을 눌러야 런타임에 적용됩니다.
-3. 모듈 ID, 역할, 진행축 길이를 입력하고 `새 복도 조각 만들기`를 누릅니다.
+3. 모듈 ID, `복도 축`, 역할, 진행축 길이를 입력하고 `새 복도 조각 만들기`를 누릅니다.
 4. 레이어 버튼으로 Tilemap을 선택하고 Unity Tile Palette로 정해진 범위 안에 그립니다.
 5. 큰 바위·상자 같은 오브젝트가 필요하면 완성된 프리팹을 선택해 `중앙 셀에 GroundProp 추가`한 뒤 Scene View에서 Pivot 위치를 조정합니다.
 6. 검증 오류를 모두 해결하고 `새 모듈 저장 및 프로필 등록`을 누릅니다.
@@ -480,24 +487,26 @@ Shadow, Dragon, Slime 절차 복도 씬은 각자의 프로필을 직접 참조�
 
 | 입력 | 의미 |
 | --- | --- |
-| 전체 복도 길이 | 두 방의 소켓 사이에 놓일 전체 셀 수입니다. 양쪽 문 앞 안전 여백도 포함하며 범위는 1~512입니다. |
+| 전체 복도 길이 | 두 방의 소켓 사이에서 장식 모듈이 사용할 전체 셀 수이며 범위는 1~512입니다. |
+| 복도 축 | 가로 완성본은 `Horizontal`, 세로 완성본은 `Vertical`로 선택합니다. 선택 축의 모듈만 조립됩니다. |
 | 미리보기 Seed | 런타임 레이아웃 Seed와 같은 값을 넣으면 모듈 선택을 재현할 수 있습니다. |
 | 연결 번호 | 런타임 연결 목록의 인덱스입니다. 길이와 Seed가 같아도 연결마다 구성이 달라질 수 있습니다. |
 
-`완성본 생성/갱신`을 누르면 Scene View 아래쪽에 +X 방향의 완성 복도가 나타납니다. 빨간 반투명 셀은 장식하지 않는 문 앞 안전 여백이고, 각 조각 위에는 모듈 ID와 사용 범위가 표시됩니다. 결과 요약에는 실제 선택된 모듈 순서와 오프셋이 표시됩니다.
+`완성본 생성/갱신`을 누르면 Scene View 아래쪽에 선택한 축의 완성 복도가 나타납니다. 각 조각 위에는 모듈 ID와 사용 범위가 표시되고, Start와 End는 각각 첫 칸과 마지막 칸까지 사용할 수 있습니다. 결과 요약에는 축, 실제 선택된 모듈 순서와 오프셋이 표시됩니다.
 
 이 미리보기는 런타임과 같은 `CorridorDecorationComposer`를 사용하지만 방 배치 전체를 보여 주지는 않습니다. 실제 방 그래프와 모든 복도를 확인하려면 Room Piece Editor의 `동적 생성 미리보기`를 사용합니다. 두 미리보기는 서로의 임시 루트를 정리하며 원본 에셋과 게임플레이 씬은 변경하지 않습니다.
 
 ### 현재 제공되는 예제
 
-`Assets/_Project/Data/Dungeon/CorridorDecorations/{Shadow|Dragon|Slime}/`에 테마별 프로필 한 개와 다음 여섯 모듈이 있습니다.
+`Assets/_Project/Data/Dungeon/CorridorDecorations/{Shadow|Dragon|Slime}/`에 테마별 프로필 한 개와 다음 열두 모듈이 있습니다.
 
-- `Start_02`, `Middle_03`, `Landmark_04`, `Filler_01`, `End_02`, `Short_02`
+- Horizontal: `Start_02`, `Middle_03`, `Landmark_04`, `Filler_01`, `End_02`, `Short_02`
+- Vertical: `Vertical_Start_02`, `Vertical_Middle_03`, `Vertical_Landmark_04`, `Vertical_Filler_01`, `Vertical_End_02`, `Vertical_Short_02`
 - Shadow Landmark: 묘비 계열 GroundProp
 - Dragon Landmark: 부서진 룬 기둥 계열 GroundProp
 - Slime Landmark: 배럴 계열 GroundProp
 
-예제를 다시 설치하려면 `Tools > Dungeon > Examples > Install Theme Corridor Decoration Examples`, 참조와 데이터 범위를 점검하려면 `Validate Theme Corridor Decoration Examples`, 길이 기반 조립을 세 테마에서 점검하려면 `Validate Completed Corridor Previews`를 사용합니다. 설치기는 같은 경로의 예제 에셋을 갱신하고 각 테마 생성 프로필에 연결하므로, 기획자가 수동으로 변형한 예제와 경로가 겹치지 않는지 먼저 확인합니다.
+누락된 세로 예제만 안전하게 추가하려면 `Tools > Dungeon > Examples > Install Missing Vertical Corridor Decoration Examples`를 사용합니다. 이 메뉴는 등록된 가로 모듈과 이미 존재하는 세로 모듈을 덮어쓰지 않습니다. 전체 예제를 초기 형태로 다시 설치하려면 `Install Theme Corridor Decoration Examples`, 참조와 데이터 범위를 점검하려면 `Validate Theme Corridor Decoration Examples`, 축별 길이 조립을 세 테마에서 점검하려면 `Validate Completed Corridor Previews`를 사용합니다. 전체 설치 메뉴는 같은 경로의 예제 에셋을 갱신하므로 기획자가 수동으로 변형한 예제와 경로가 겹치지 않는지 먼저 확인합니다.
 
 ## 권장 작업 흐름
 
@@ -538,6 +547,8 @@ Start나 Boss처럼 한 개 소켓만 필요한 방은 소켓이 실제 연결�
 | Kill Lock 상자를 선택할 수 없다 | 상자 프리팹에 `ChestMonsterKillLock`이 있고 Chest Kind로 배치되었는지 확인합니다. |
 | 복도가 보이지 않는다 | 복도 길이가 양수라면 Floor/Wall 타일 자동 선택 결과 또는 오버라이드를 확인합니다. |
 | 장식 모듈이 런타임에 나오지 않는다 | 해당 `DungeonGenerationProfileSO`에 올바른 `CorridorDecorationProfileSO`가 연결되어 있고 모듈이 프로필 목록에 등록되었는지 확인합니다. |
+| 가로 복도만 꾸며지고 세로 복도는 기본 타일이다 | 프로필에 `Vertical` 모듈이 등록되어 있는지 확인합니다. 가로 모듈은 세로 연결의 대체 후보로 사용하지 않습니다. |
+| 세로 모듈 검증에서 좌표 오류가 난다 | `Vertical`은 `x=-1..2`, `y=0..Length-1` 범위이며 Floor는 `x=0,1`, Wall은 `x=-1,2`입니다. |
 | Landmark가 항상 나오지 않는다 | `복도당 Landmark 제한`은 최대값입니다. Landmark는 Middle/Filler와 함께 무작위 후보이며 길이에 맞지 않으면 0개일 수 있습니다. |
 | 완성 복도 일부가 기본 타일로 남는다 | 남은 길이에 들어가는 모듈이 없다는 뜻입니다. 특히 1칸 `Filler`를 등록했는지 확인합니다. |
 | 완성본 미리보기 버튼이 비활성이다 | 장식 프로필을 선택하고 유효한 모듈을 한 개 이상 등록합니다. |
@@ -569,9 +580,10 @@ Start나 Boss처럼 한 개 소켓만 필요한 방은 소켓이 실제 연결�
 - [ ] 변경한 생성 수치를 실제 테마에서 사용할 경우 올바른 생성 프로필에 적용했다.
 - [ ] 큰 방 또는 종단형 방이면 부분 생성 가능성을 확인했다.
 - [ ] 복도 장식 프로필을 사용한다면 올바른 생성 프로필에 연결했다.
+- [ ] 가로·세로 복도가 모두 필요하면 Horizontal/Vertical 역할별 모듈을 각각 등록했다.
 - [ ] 모든 복도 모듈의 타일과 GroundProp Pivot이 제작 범위 안에 있다.
 - [ ] 여러 길이·Seed·연결 번호에서 완성 복도 미리보기를 확인했다.
-- [ ] 문 앞 안전 여백에 통행을 막는 장식이나 GroundProp이 없다.
+- [ ] Start와 End의 문 인접 셀에 통행을 막는 GroundProp이 없다.
 - [ ] 전체 검증을 통과했다.
 - [ ] 새 저장인지 원본 갱신인지 버튼과 대상 경로를 확인했다.
 

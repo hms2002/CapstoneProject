@@ -7,25 +7,25 @@ using UnityEngine.Tilemaps;
 
 /// <summary>
 /// 책임:
-/// - 완성 복도 미리보기의 길이, 문 안전 여백과 조립된 모듈 구간을 Scene View 표식으로 보여준다.
+/// - 완성 복도 미리보기의 길이와 조립된 모듈 구간을 Scene View 표식으로 보여준다.
 /// - 미리보기 루트를 식별해 편집 중인 모듈이나 다른 던전 프리뷰와 독립적으로 제거할 수 있게 한다.
 /// </summary>
 [DisallowMultipleComponent]
 internal sealed class CorridorDecorationCompletedPreviewMarker : MonoBehaviour
 {
     private int corridorLength;
-    private int doorClearance;
+    private CorridorDecorationAxis axis;
     private Grid grid;
     private readonly List<CorridorDecorationPreviewSegment> segments = new();
 
     public void EditorConfigure(
         int length,
-        int clearance,
+        CorridorDecorationAxis previewAxis,
         Grid previewGrid,
         IReadOnlyList<CorridorDecorationPlacement> placements)
     {
         corridorLength = Mathf.Max(1, length);
-        doorClearance = Mathf.Clamp(clearance, 0, corridorLength / 2);
+        axis = previewAxis;
         grid = previewGrid;
         segments.Clear();
         if (placements == null)
@@ -49,27 +49,10 @@ internal sealed class CorridorDecorationCompletedPreviewMarker : MonoBehaviour
         if (grid == null || corridorLength <= 0)
             return;
 
-        DrawClearanceCells();
         DrawModuleLabels();
         Handles.color = new Color(0.35f, 0.9f, 1f, 0.95f);
-        Handles.Label(CellCenter(0, 3), "문 A");
-        Handles.Label(CellCenter(corridorLength - 1, 3), "문 B");
-    }
-
-    private void DrawClearanceCells()
-    {
-        Gizmos.color = new Color(1f, 0.35f, 0.2f, 0.18f);
-        for (int x = 0; x < doorClearance; x++)
-        {
-            Gizmos.DrawCube(CellCenter(x, 0), new Vector3(0.92f, 0.92f, 0.02f));
-            Gizmos.DrawCube(CellCenter(x, 1), new Vector3(0.92f, 0.92f, 0.02f));
-        }
-
-        for (int x = corridorLength - doorClearance; x < corridorLength; x++)
-        {
-            Gizmos.DrawCube(CellCenter(x, 0), new Vector3(0.92f, 0.92f, 0.02f));
-            Gizmos.DrawCube(CellCenter(x, 1), new Vector3(0.92f, 0.92f, 0.02f));
-        }
+        Handles.Label(CellCenterByProgress(0, 3), "문 A");
+        Handles.Label(CellCenterByProgress(corridorLength - 1, 3), "문 B");
     }
 
     private void DrawModuleLabels()
@@ -80,14 +63,16 @@ internal sealed class CorridorDecorationCompletedPreviewMarker : MonoBehaviour
             CorridorDecorationPreviewSegment segment = segments[segmentIndex];
             int labelCell = segment.ForwardOffset + Mathf.Max(0, segment.Length - 1) / 2;
             Handles.Label(
-                CellCenter(labelCell, 2) + Vector3.up * 0.65f,
+                CellCenterByProgress(labelCell, 2) + Vector3.up * 0.65f,
                 $"{segment.ModuleId}\n[{segment.ForwardOffset}.." +
                 $"{segment.ForwardOffset + segment.Length - 1}]");
         }
     }
 
-    private Vector3 CellCenter(int x, int y)
+    private Vector3 CellCenterByProgress(int progress, int lateral)
     {
+        int x = axis == CorridorDecorationAxis.Horizontal ? progress : lateral;
+        int y = axis == CorridorDecorationAxis.Horizontal ? lateral : progress;
         return grid.GetCellCenterWorld(new Vector3Int(x, y, 0));
     }
 }
@@ -127,7 +112,7 @@ internal readonly struct CorridorDecorationCompletedPreviewResult
 /// <summary>
 /// 책임:
 /// - 입력받은 전체 복도 길이와 Seed를 런타임 CorridorDecorationComposer에 전달해 같은 모듈 순서를 계산한다.
-/// - 테마 룸 라이브러리의 기본 Floor/Wall 위에 8개 장식 레이어와 Pivot 프롭을 +X 완성 복도로 조립한다.
+/// - 테마 룸 라이브러리의 기본 Floor/Wall 위에 선택한 가로(+X) 또는 세로(+Y) 전용 모듈을 실제 좌표 그대로 조립한다.
 /// - 결과를 저장되지 않는 Room Authoring 작업 공간에만 생성하고 원본 씬과 에셋을 변경하지 않는다.
 /// </summary>
 internal static class CorridorDecorationCompletedPreview
@@ -140,7 +125,8 @@ internal static class CorridorDecorationCompletedPreview
         CorridorDecorationProfileSO decorationProfile,
         int corridorLength,
         int seed,
-        int connectionIndex = 0)
+        int connectionIndex = 0,
+        CorridorDecorationAxis axis = CorridorDecorationAxis.Horizontal)
     {
         if (decorationProfile == null)
         {
@@ -156,7 +142,8 @@ internal static class CorridorDecorationCompletedPreview
                 decorationProfile,
                 corridorLength,
                 seed,
-                connectionIndex);
+                connectionIndex,
+                axis);
 
         try
         {
@@ -167,6 +154,7 @@ internal static class CorridorDecorationCompletedPreview
                     generationProfile,
                     decorationProfile,
                     corridorLength,
+                    axis,
                     placements));
             if (!created)
             {
@@ -179,10 +167,10 @@ internal static class CorridorDecorationCompletedPreview
             return new CorridorDecorationCompletedPreviewResult(
                 true,
                 BuildSummary(
-                    decorationProfile,
                     corridorLength,
                     seed,
                     connectionIndex,
+                    axis,
                     placements));
         }
         catch (Exception exception)
@@ -218,11 +206,12 @@ internal static class CorridorDecorationCompletedPreview
         DungeonGenerationProfileSO generationProfile,
         CorridorDecorationProfileSO decorationProfile,
         int corridorLength,
+        CorridorDecorationAxis axis,
         IReadOnlyList<CorridorDecorationPlacement> placements)
     {
         ClearExistingRoots(workspaceScene);
 
-        GameObject root = new($"{PreviewRootName} · {corridorLength} cells");
+        GameObject root = new($"{PreviewRootName} · {axis} · {corridorLength} cells");
         root.transform.position = new Vector3(0f, PreviewVerticalOffset, 0f);
         SceneManager.MoveGameObjectToScene(root, workspaceScene);
         CorridorDecorationCompletedPreviewMarker marker =
@@ -244,51 +233,56 @@ internal static class CorridorDecorationCompletedPreview
             generationProfile != null ? generationProfile.RoomLibrary : null,
             decorationProfile,
             corridorLength,
+            axis,
             tilemaps);
         for (int placementIndex = 0; placementIndex < placements.Count; placementIndex++)
-            PaintModule(grid, tilemaps, placements[placementIndex], placementIndex);
+            PaintModule(grid, tilemaps, placements[placementIndex], placementIndex, axis);
 
         marker.EditorConfigure(
             corridorLength,
-            decorationProfile.DoorClearanceCells,
+            axis,
             grid,
             placements);
         Selection.activeObject = root;
-        Frame(root.transform.position, corridorLength);
+        Frame(root.transform.position, corridorLength, axis);
     }
 
     private static void PaintBaseCorridor(
         RoomThemeLibrarySO roomLibrary,
         CorridorDecorationProfileSO decorationProfile,
         int corridorLength,
+        CorridorDecorationAxis axis,
         IReadOnlyDictionary<RoomTileLayerKind, Tilemap> tilemaps)
     {
         TileBase underFloor = ResolveBaseTile(
             roomLibrary,
             decorationProfile,
-            RoomTileLayerKind.UnderFloor);
+            RoomTileLayerKind.UnderFloor,
+            axis);
         TileBase floor = ResolveBaseTile(
             roomLibrary,
             decorationProfile,
-            RoomTileLayerKind.Floor);
+            RoomTileLayerKind.Floor,
+            axis);
         TileBase wall = ResolveBaseTile(
             roomLibrary,
             decorationProfile,
-            RoomTileLayerKind.Wall);
+            RoomTileLayerKind.Wall,
+            axis);
         if (floor == null || wall == null)
         {
             throw new InvalidOperationException(
                 "완성 복도 미리보기에는 테마 룸 라이브러리나 장식 모듈의 Floor/Wall 타일이 필요합니다.");
         }
 
-        for (int x = 0; x < corridorLength; x++)
+        for (int progress = 0; progress < corridorLength; progress++)
         {
-            SetTile(tilemaps[RoomTileLayerKind.UnderFloor], x, 0, underFloor);
-            SetTile(tilemaps[RoomTileLayerKind.UnderFloor], x, 1, underFloor);
-            SetTile(tilemaps[RoomTileLayerKind.Floor], x, 0, floor);
-            SetTile(tilemaps[RoomTileLayerKind.Floor], x, 1, floor);
-            SetTile(tilemaps[RoomTileLayerKind.Wall], x, -1, wall);
-            SetTile(tilemaps[RoomTileLayerKind.Wall], x, 2, wall);
+            SetTileByProgress(tilemaps[RoomTileLayerKind.UnderFloor], progress, 0, underFloor, axis);
+            SetTileByProgress(tilemaps[RoomTileLayerKind.UnderFloor], progress, 1, underFloor, axis);
+            SetTileByProgress(tilemaps[RoomTileLayerKind.Floor], progress, 0, floor, axis);
+            SetTileByProgress(tilemaps[RoomTileLayerKind.Floor], progress, 1, floor, axis);
+            SetTileByProgress(tilemaps[RoomTileLayerKind.Wall], progress, -1, wall, axis);
+            SetTileByProgress(tilemaps[RoomTileLayerKind.Wall], progress, 2, wall, axis);
         }
     }
 
@@ -296,11 +290,17 @@ internal static class CorridorDecorationCompletedPreview
         Grid grid,
         IReadOnlyDictionary<RoomTileLayerKind, Tilemap> tilemaps,
         CorridorDecorationPlacement placement,
-        int placementIndex)
+        int placementIndex,
+        CorridorDecorationAxis axis)
     {
         CorridorDecorationModuleSO module = placement.Module;
         if (module == null)
             return;
+        if (module.Axis != axis)
+        {
+            throw new InvalidOperationException(
+                $"'{module.ModuleId}'의 축 {module.Axis}이 미리보기 축 {axis}과 다릅니다.");
+        }
 
         RoomBuildData build = module.BuildData;
         for (int layerIndex = 0;
@@ -318,10 +318,14 @@ internal static class CorridorDecorationCompletedPreview
                 if (tile.tile == null)
                     continue;
                 ValidateLocalCell(module, tile.localCell, $"{layer} tile");
+                Vector2Int previewCell = AddForwardOffset(
+                    tile.localCell,
+                    placement.ForwardOffset,
+                    axis);
                 SetTile(
                     tilemaps[layer],
-                    placement.ForwardOffset + tile.localCell.x,
-                    tile.localCell.y,
+                    previewCell.x,
+                    previewCell.y,
                     tile.tile);
             }
         }
@@ -344,7 +348,8 @@ internal static class CorridorDecorationCompletedPreview
                 placement.ForwardOffset,
                 placementIndex,
                 objectIndex,
-                objectPlacement);
+                objectPlacement,
+                axis);
         }
     }
 
@@ -353,7 +358,8 @@ internal static class CorridorDecorationCompletedPreview
         int forwardOffset,
         int placementIndex,
         int objectIndex,
-        RoomObjectPlacementData placement)
+        RoomObjectPlacementData placement,
+        CorridorDecorationAxis axis)
     {
         GameObject instance = PrefabUtility.InstantiatePrefab(
             placement.prefab,
@@ -363,9 +369,12 @@ internal static class CorridorDecorationCompletedPreview
         if (instance == null)
             throw new InvalidOperationException($"'{placement.placementId}' 프리팹을 생성할 수 없습니다.");
 
-        int x = forwardOffset + placement.localCell.x;
+        Vector2Int previewCell = AddForwardOffset(
+            placement.localCell,
+            forwardOffset,
+            axis);
         Vector3 cellCenter = grid.GetCellCenterWorld(
-            new Vector3Int(x, placement.localCell.y, 0));
+            new Vector3Int(previewCell.x, previewCell.y, 0));
         Vector3 localOffset = new(placement.localOffset.x, placement.localOffset.y, 0f);
         instance.transform.position = cellCenter + grid.transform.TransformVector(localOffset);
         instance.transform.rotation = grid.transform.rotation *
@@ -380,7 +389,8 @@ internal static class CorridorDecorationCompletedPreview
     private static TileBase ResolveBaseTile(
         RoomThemeLibrarySO roomLibrary,
         CorridorDecorationProfileSO decorationProfile,
-        RoomTileLayerKind layer)
+        RoomTileLayerKind layer,
+        CorridorDecorationAxis axis)
     {
         TileBase fromRooms = ResolveMostFrequentRoomTile(roomLibrary, layer);
         if (fromRooms != null)
@@ -390,7 +400,7 @@ internal static class CorridorDecorationCompletedPreview
         for (int moduleIndex = 0; moduleIndex < modules.Count; moduleIndex++)
         {
             CorridorDecorationModuleSO module = modules[moduleIndex];
-            List<RoomTileData> tiles = module != null
+            List<RoomTileData> tiles = module != null && module.Axis == axis
                 ? module.BuildData.GetTiles(layer)
                 : null;
             if (tiles == null)
@@ -473,16 +483,45 @@ internal static class CorridorDecorationCompletedPreview
         tilemap.SetTransformMatrix(cell, Matrix4x4.identity);
     }
 
+    private static void SetTileByProgress(
+        Tilemap tilemap,
+        int progress,
+        int lateral,
+        TileBase tile,
+        CorridorDecorationAxis axis)
+    {
+        if (axis == CorridorDecorationAxis.Horizontal)
+            SetTile(tilemap, progress, lateral, tile);
+        else
+            SetTile(tilemap, lateral, progress, tile);
+    }
+
+    private static Vector2Int AddForwardOffset(
+        Vector2Int localCell,
+        int forwardOffset,
+        CorridorDecorationAxis axis)
+    {
+        return axis == CorridorDecorationAxis.Horizontal
+            ? localCell + Vector2Int.right * forwardOffset
+            : localCell + Vector2Int.up * forwardOffset;
+    }
+
     private static void ValidateLocalCell(
         CorridorDecorationModuleSO module,
         Vector2Int cell,
         string contentName)
     {
-        if (cell.x >= 0 && cell.x < module.Length && cell.y >= -1 && cell.y <= 2)
+        bool inside = module.Axis == CorridorDecorationAxis.Horizontal
+            ? cell.x >= 0 && cell.x < module.Length && cell.y >= -1 && cell.y <= 2
+            : cell.y >= 0 && cell.y < module.Length && cell.x >= -1 && cell.x <= 2;
+        if (inside)
             return;
 
+        string expected = module.Axis == CorridorDecorationAxis.Horizontal
+            ? $"x=0..{module.Length - 1}, y=-1..2"
+            : $"x=-1..2, y=0..{module.Length - 1}";
         throw new InvalidOperationException(
-            $"'{module.ModuleId}' {contentName} {cell}이 x=0..{module.Length - 1}, y=-1..2 범위를 벗어났습니다.");
+            $"'{module.ModuleId}' {contentName} {cell}이 {expected} 범위를 벗어났습니다.");
     }
 
     private static void ClearExistingRoots(Scene workspaceScene)
@@ -496,10 +535,10 @@ internal static class CorridorDecorationCompletedPreview
     }
 
     private static string BuildSummary(
-        CorridorDecorationProfileSO profile,
         int corridorLength,
         int seed,
         int connectionIndex,
+        CorridorDecorationAxis axis,
         IReadOnlyList<CorridorDecorationPlacement> placements)
     {
         var parts = new List<string>(placements.Count);
@@ -517,18 +556,27 @@ internal static class CorridorDecorationCompletedPreview
         string sequence = parts.Count > 0
             ? string.Join(" → ", parts)
             : "배치 모듈 없음";
-        return $"전체 {corridorLength}칸 · 문 앞 여백 {profile.DoorClearanceCells}칸 · " +
-               $"Seed {seed} · 연결 번호 {connectionIndex}\n{sequence}";
+        string axisLabel = axis == CorridorDecorationAxis.Horizontal ? "가로(+X)" : "세로(+Y)";
+        return $"{axisLabel} · 전체 {corridorLength}칸 · Seed {seed} · " +
+               $"연결 번호 {connectionIndex}\n{sequence}";
     }
 
-    private static void Frame(Vector3 rootPosition, int corridorLength)
+    private static void Frame(
+        Vector3 rootPosition,
+        int corridorLength,
+        CorridorDecorationAxis axis)
     {
         SceneView sceneView = SceneView.lastActiveSceneView;
         if (sceneView == null)
             return;
 
-        Vector3 center = rootPosition + new Vector3(corridorLength * 0.5f, 0.5f, 0f);
-        Bounds bounds = new(center, new Vector3(Mathf.Max(6f, corridorLength + 3f), 8f, 1f));
+        Vector3 center = rootPosition + (axis == CorridorDecorationAxis.Horizontal
+            ? new Vector3(corridorLength * 0.5f, 0.5f, 0f)
+            : new Vector3(0.5f, corridorLength * 0.5f, 0f));
+        Vector3 size = axis == CorridorDecorationAxis.Horizontal
+            ? new Vector3(Mathf.Max(6f, corridorLength + 3f), 8f, 1f)
+            : new Vector3(8f, Mathf.Max(6f, corridorLength + 3f), 1f);
+        Bounds bounds = new(center, size);
         sceneView.Frame(bounds, instant: false);
     }
 }
