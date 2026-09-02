@@ -191,6 +191,7 @@ public class DialogueController : MonoBehaviour
             participantRegistry.CurrentNPCData != null && participantRegistry.CurrentNPCData.isBoss,
             currentPresentationOptions,
             openingPortraitLabel,
+            () => DialogueService.Instance?.RevealDialoguePersistentHud(),
             () =>
             {
                 sessionState.EndTransition();

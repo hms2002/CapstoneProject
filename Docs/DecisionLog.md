@@ -3004,3 +3004,46 @@ Implications:
 - Burn UI is target-child runtime presentation owned by UI and does not modify `MonsterElementGaugeView`.
 - Relics may later modify Burn through source-owned token entries, but no relic is part of this decision's implementation slice.
 - Gauge retirement follows `Docs/RefactorBacklog/ElementGaugeToStackStatusMigration.md` only after explicit approval.
+
+## 2026-08-31 - Dialogue NPC Theme Uses One Accent Color
+
+Decision:
+`DialogueThemeSO` exposes one NPC-authored `accentColor`. The Dialogue UI applies it only to the speaker-name text, the selected choice background, and the ContinueIcon arrows/dot. The dialogue panel, speaker frame, choice text, unselected choice state, and KeyGlyph retain their authored colors.
+
+Reason:
+The revised 1920x1080 Dialogue UI uses character identity as a small accent rather than recoloring the full panel. A single value prevents the name, selected choice, and continue prompt from drifting into separate NPC theme colors.
+
+Implications:
+- Existing `outlineColor` asset values migrate to `accentColor`; the former speaker-frame fill value is no longer part of the theme schema.
+- `effectOverride` remains independent so Ink Effect changes do not replace the active speaker accent.
+- Choice selection is represented by one root background covering KeyGlyph and text; KeyGlyph itself is not theme-colored.
+
+## 2026-09-02 - Dialogue Reintroduces Selected Gameplay HUD After Frame Entry
+
+Decision:
+Normal Ink dialogue first fades out gameplay HUD presentation with the rest of non-dialogue UI. After both dialogue frames finish entering, health, consumables, run timer, level, and magic-stone currency fade back in while Status HUD and all other gameplay/boss HUD roots remain suppressed.
+
+Reason:
+The revised 1920x1080 dialogue layout intentionally keeps core run-state information readable, but it still needs the existing clean transition into the dialogue composition. Reintroducing only the selected HUD roots after frame entry preserves both goals without making Dialogue UI own gameplay state.
+
+Implications:
+- `DialogueService` remains the visibility owner and captures/restores each authored HUD root's original active, alpha, interaction, and raycast state.
+- Dialogue HUD FadeIn begins on the same frame-complete beat as portrait intro and uses unscaled time because dialogue pauses the run timer.
+- `StatusHudPresenter`, weapon HUD, swap HUD, inventory guide HUD, and Boss HUD do not re-enter during dialogue.
+- A second suppression owner prevents dialogue HUD re-entry. Terminal ending and other outer suppression flows therefore keep all HUD hidden.
+- An inactive Gameplay HUD canvas is never force-enabled by dialogue. Tutorial Boss and other scene-authored full-HUD suppression flows remain explicit exceptions.
+- The authored canvas order is `DialogueCanvas (50) < GameplayHUDCanvas (75) < PopupCanvas (100)`. HUD-over-dialogue composition is therefore stable without changing sibling order or sorting values at runtime.
+
+## 2026-09-02 - Editor Direct Gameplay Start Supplies the Existing Run Timer Package
+
+Decision:
+When the Unity Editor starts directly in a non-Hub gameplay scene and no `RunTimeLimitSystem` exists, `SceneDomainDevelopmentRunTimerPolicy` creates the existing timer, default stage policy, and time-over return components before `SceneDomainCoordinator` invokes the development `StartRun()` event. It uses the canonical `RunTimeLimitConfig.asset` and destroys only the timer instance it created when Title cleanup runs.
+
+Reason:
+The direct-start policy already resets gameplay data and starts a development run, but the production timer is authored only in the Hub. Starting a Boss scene directly therefore produced a valid run with no timer source, causing `RunTimerHUD` to hide itself and preventing dialogue HUD verification.
+
+Implications:
+- This fallback is compiled and executed only in the Unity Editor.
+- Existing scene-authored or persistent timers always win; no duplicate timer is created.
+- Normal Hub-to-gameplay transitions, saved remaining time, and player builds are unchanged.
+- The fallback remains run-state infrastructure; `RunTimerHUD` continues to project timer state and does not own a fake preview value.

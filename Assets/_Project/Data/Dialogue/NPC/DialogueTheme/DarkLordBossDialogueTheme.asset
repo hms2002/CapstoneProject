@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ddf1ef475ec817428bba471c494d75a, type: 3}
   m_Name: DarkLordBossDialogueTheme
   m_EditorClassIdentifier: 
-  outlineColor: {r: 0.7307217, g: 0.42217866, b: 0.7584905, a: 1}
-  speakerFrameFillColor: {r: 0.25716928, g: 0.20012099, b: 0.3056603, a: 1}
+  accentColor: {r: 0.7307217, g: 0.42217866, b: 0.7584905, a: 1}
   effectOverride: {fileID: 22100000, guid: 60a4651cad205624894cd7cba12bf348, type: 2}

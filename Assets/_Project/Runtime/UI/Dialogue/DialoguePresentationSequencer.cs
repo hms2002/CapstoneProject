@@ -12,6 +12,7 @@ public static class DialoguePresentationSequencer
             isBoss,
             DialoguePresentationOptions.Default,
             null,
+            null,
             onOpened);
     }
 
@@ -22,6 +23,7 @@ public static class DialoguePresentationSequencer
         bool isBoss,
         DialoguePresentationOptions presentationOptions,
         string openingPortraitLabel,
+        Action onFramesOpened,
         Action onOpened)
     {
         if (view == null)
@@ -33,43 +35,48 @@ public static class DialoguePresentationSequencer
         if (!presentationOptions.SuppressOpeningIntroSound)
             view.PlayOpeningIntroSound();
 
-        Action showDialogueUi = () =>
+        Action completeOpening = onOpened;
+        Action playPortraitIntro = () =>
         {
-            view.ShowUI(isBoss && !presentationOptions.ForceDialogueBoxOnly, onOpened);
+            if (presentationOptions.SuppressPortraitIntro || director == null)
+            {
+                completeOpening?.Invoke();
+                return;
+            }
+
+            if (presentationOptions.UseFastSilhouetteIntro)
+            {
+                director.PlayFastSilhouetteIntro(
+                    GetPrimaryParticipant(participants),
+                    presentationOptions.ResolvedFastSilhouettePosition,
+                    presentationOptions.ResolvedFastSilhouetteFadeSeconds,
+                    presentationOptions.FastSilhouetteColorize,
+                    openingPortraitLabel,
+                    completeOpening);
+                return;
+            }
+
+            director.PlayIntro(participants, completeOpening, openingPortraitLabel);
         };
 
-        if (presentationOptions.SuppressPortraitIntro)
+        Action showDialogueFrames = () =>
         {
-            showDialogueUi();
-            return;
-        }
+            view.ShowUI(
+                isBoss && !presentationOptions.ForceDialogueBoxOnly,
+                () =>
+                {
+                    onFramesOpened?.Invoke();
+                    playPortraitIntro();
+                });
+        };
 
-        if (director == null)
-        {
-            showDialogueUi();
-            return;
-        }
-
-        if (presentationOptions.UseFastSilhouetteIntro)
-        {
-            director.PlayFastSilhouetteIntro(
-                GetPrimaryParticipant(participants),
-                presentationOptions.ResolvedFastSilhouettePosition,
-                presentationOptions.ResolvedFastSilhouetteFadeSeconds,
-                presentationOptions.FastSilhouetteColorize,
-                openingPortraitLabel,
-                showDialogueUi);
-            return;
-        }
-
-        Action playPortraitIntro = () => director.PlayIntro(participants, showDialogueUi, openingPortraitLabel);
         if (isBoss && !presentationOptions.SkipBossPrelude && !presentationOptions.ForceDialogueBoxOnly)
         {
-            view.PlayBossPrelude(playPortraitIntro);
+            view.PlayBossPrelude(showDialogueFrames);
             return;
         }
 
-        playPortraitIntro();
+        showDialogueFrames();
     }
 
     public static void PlayClosing(DialogueView view, CinematicDirector director, Action onClosed)
@@ -89,16 +96,15 @@ public static class DialoguePresentationSequencer
             return;
         }
 
-        view.HideUI(() =>
-        {
-            if (director == null || presentationOptions.SuppressPortraitOutro)
-            {
-                onClosed?.Invoke();
-                return;
-            }
+        Action hideDialogueFrames = () => view.HideUI(onClosed);
 
-            director.PlayOutro(onClosed);
-        });
+        if (director == null || presentationOptions.SuppressPortraitOutro)
+        {
+            hideDialogueFrames();
+            return;
+        }
+
+        director.PlayOutro(hideDialogueFrames);
     }
 
     private static NPCData GetPrimaryParticipant(List<NPCData> participants)

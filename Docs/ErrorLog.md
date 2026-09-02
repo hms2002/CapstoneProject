@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: error-log
-last_reviewed: 2026-06-01
+last_reviewed: 2026-09-02
 ---
 
 # Error Log
@@ -1706,3 +1706,44 @@ Fix:
 
 Prevention:
 For Unity services that expose a separate static playback/query backend, do not treat a non-null MonoBehaviour instance as proof that the backend is registered. Restore backend registration from instance adoption and enable/reload lifecycle paths. When independently bootstrapped services may share a GameObject, duplicate cleanup must destroy the component rather than the whole host unless whole-host ownership is an explicit invariant.
+## 2026-09-02 - Scene Prefab Overrides Collapsed Affection Fill Geometry
+
+Context:
+After the dialogue affection display migrated from one Slider to five filled heart Images, affection changes reached the UI and the first Fill reported `fillAmount = 1`, but the heart still looked empty in Play Mode.
+
+Cause:
+Scene instances of `GlobalUIRoot` retained legacy overrides for the original first Fill RectTransform. The overrides forced `m_AnchorMax.x` and `m_AnchorMax.y` to `0` while the updated prefab authored both as `1`. Because size delta remained zero, the runtime Fill rectangle became `0 x 0` even though its value, sprite, color, material, parent area, and sibling order were valid.
+
+Fix:
+Remove the two stale scene-instance overrides so the first Fill inherits the prefab-authored stretch anchors `(0,0)` to `(1,1)`. Twenty-five scene instances were repaired in this slice; `SlimeCorridor.unity` and `SlimeCorridor 1.unity` remain pending because the patch reader could not decode those large YAML files.
+
+Prevention:
+After changing the RectTransform layout of a prefab child that already has scene instances, inspect instance overrides for the old child file ID. A correct prefab value does not repair an existing scene override. Validate the runtime RectTransform size in addition to checking `Image.fillAmount`, and revert obsolete layout overrides across every scene that embeds the prefab.
+
+## 2026-09-02 - Direct Boss Play Started a Run Without the Hub-Authored Timer
+
+Context:
+Dialogue correctly reintroduced the selected gameplay HUD roots, but the time HUD remained absent when Play Mode started directly from `HeoMinSeok_Boss_Dragon`.
+
+Cause:
+The editor direct-start path reset gameplay data and invoked `StartRun()`, while `RunTimeLimitSystemManager` existed only in the Hub scene. `RunTimerHUD` had no state source and disabled its `visibleRoot`; changing Canvas order or dialogue visibility could not make it render.
+
+Fix:
+Before the editor development `StartRun()` event, `SceneDomainDevelopmentRunTimerPolicy` now creates the existing timer package with the canonical config only when no timer exists. It tracks the fallback it owns and removes it during Title cleanup.
+
+Prevention:
+When editor direct-start policy synthesizes a run, verify every required run-scoped source normally inherited from Hub entry exists before emitting the run-start event. Do not patch the HUD with a fake value when its state owner is missing.
+
+## 2026-09-02 - DialogueEffect Animator Was Evaluated After Deactivation
+
+Context:
+Dialogue exit reset the DialogueEffect root to hidden Idle, then theme cleanup could restore its AnimatorOverrideController while the effect GameObject was inactive.
+
+Cause:
+The controller/state refresh paths called `Animator.Update(0f)` unconditionally after `Rebind()` or `Play()`. Unity rejects explicit Animator evaluation on an inactive object and logged `Can't call Animator.Update on inactive object` during dialogue cleanup.
+
+Fix:
+DialogueEffect controller and state refreshes now evaluate immediately only while the Animator GameObject is active in the hierarchy. The next activation still explicitly plays Intro or Idle before evaluation.
+
+Prevention:
+Presentation cleanup may restore serialized/controller state while visuals are inactive. Guard immediate Animator evaluation with `activeInHierarchy`; do not reactivate a hidden presentation solely to force `Animator.Update(0f)`.

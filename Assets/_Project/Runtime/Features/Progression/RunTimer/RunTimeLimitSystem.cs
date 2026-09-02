@@ -41,6 +41,26 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
     private bool isRunCompletionPaused;
     private readonly Dictionary<int, UnityEngine.Object> externalPauseOwners = new();
 
+#if UNITY_EDITOR
+    /// <summary>
+    /// 책임:
+    /// - 에디터 직접 게임플레이 씬 시작에서 생성된 개발용 타이머에 기존 설정과 스테이지 정책을 연결한다.
+    /// - 일반 씬 authoring 값이 이미 있으면 덮어쓰지 않는다.
+    /// </summary>
+    public void ConfigureEditorDevelopmentStart(
+        RunTimeLimitConfig developmentConfig,
+        MonoBehaviour developmentStageTimerPolicySource)
+    {
+        if (config == null)
+            config = developmentConfig;
+
+        if (stageTimerPolicySource == null)
+            stageTimerPolicySource = developmentStageTimerPolicySource;
+
+        stageTimerPolicy = stageTimerPolicySource as IStageTimerPolicy;
+    }
+#endif
+
     private void Awake()
     {
         if (Instance != null && Instance != this)

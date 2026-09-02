@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using DG.Tweening;
 using System;
 
@@ -10,8 +9,8 @@ using System;
 public class AffectionUI : MonoBehaviour, IAffectionPresentationView
 {
     [Header("UI Components")]
-    [SerializeField] private Slider affectionSlider;
-    [SerializeField] private TextMeshProUGUI affectionText;
+    [SerializeField] private RectTransform[] affectionSegmentRoots = new RectTransform[5];
+    [SerializeField] private Image[] affectionFillImages = new Image[5];
     [SerializeField] private CanvasGroup uiCanvasGroup;
     [SerializeField] private AffectionGainScreenEffect gainScreenEffect;
 
@@ -20,6 +19,8 @@ public class AffectionUI : MonoBehaviour, IAffectionPresentationView
     [SerializeField] private float resetDuration = 0.2f;
 
     private Sequence gainSequence;
+    private Sequence openingRevealSequence;
+    private Vector3[] affectionSegmentBaseScales;
     private Action pendingGainComplete;
     private int pendingGainFinalAffection;
     private bool hasPendingGainAnimation;
@@ -29,8 +30,9 @@ public class AffectionUI : MonoBehaviour, IAffectionPresentationView
     private void Awake()
     {
         ResolveGainScreenEffect();
+        CacheSegmentBaseScales();
 
-        if (affectionSlider != null) affectionSlider.value = 0f;
+        SetDisplayedLevel(0);
         if (uiCanvasGroup != null) uiCanvasGroup.alpha = 1f;
     }
 
@@ -45,21 +47,81 @@ public class AffectionUI : MonoBehaviour, IAffectionPresentationView
     private void OnDisable()
     {
         CompletePendingGainAnimation();
+        CompleteOpeningReveal();
         KillTargetTweens();
     }
 
     private void OnDestroy()
     {
         CompletePendingGainAnimation();
+        CompleteOpeningReveal();
     }
 
     public void Setup(int currentAffection)
     {
-        if (affectionText != null)
-            affectionText.text = currentAffection.ToString();
+        SetDisplayedLevel(currentAffection);
+    }
 
-        if (affectionSlider != null)
-            affectionSlider.value = 0f;
+    public void PrepareOpeningReveal()
+    {
+        CacheSegmentBaseScales();
+        KillOpeningRevealSequence();
+
+        for (int i = 0; i < affectionSegmentRoots.Length; i++)
+        {
+            RectTransform segmentRoot = affectionSegmentRoots[i];
+            if (segmentRoot != null)
+                segmentRoot.localScale = Vector3.zero;
+        }
+    }
+
+    public float PlayOpeningReveal(float beatInterval, float scaleDuration)
+    {
+        CacheSegmentBaseScales();
+        KillOpeningRevealSequence();
+
+        float safeBeatInterval = Mathf.Max(0f, beatInterval);
+        float safeScaleDuration = Mathf.Max(0f, scaleDuration);
+        int lastAnimatedIndex = -1;
+
+        openingRevealSequence = DOTween.Sequence().SetUpdate(true);
+        for (int i = 0; i < affectionSegmentRoots.Length; i++)
+        {
+            RectTransform segmentRoot = affectionSegmentRoots[i];
+            if (segmentRoot == null)
+                continue;
+
+            segmentRoot.DOKill(false);
+            segmentRoot.localScale = Vector3.zero;
+            openingRevealSequence.Insert(
+                i * safeBeatInterval,
+                segmentRoot.DOScale(affectionSegmentBaseScales[i], safeScaleDuration)
+                    .SetEase(Ease.OutBack));
+            lastAnimatedIndex = i;
+        }
+
+        if (lastAnimatedIndex < 0)
+        {
+            openingRevealSequence.Kill(false);
+            openingRevealSequence = null;
+            return 0f;
+        }
+
+        openingRevealSequence.OnComplete(() => openingRevealSequence = null);
+        return lastAnimatedIndex * safeBeatInterval + safeScaleDuration;
+    }
+
+    public void CompleteOpeningReveal()
+    {
+        CacheSegmentBaseScales();
+        KillOpeningRevealSequence();
+
+        for (int i = 0; i < affectionSegmentRoots.Length; i++)
+        {
+            RectTransform segmentRoot = affectionSegmentRoots[i];
+            if (segmentRoot != null)
+                segmentRoot.localScale = affectionSegmentBaseScales[i];
+        }
     }
 
     public void PlayGainAnimation(int prevAffection, int newAffection, Action onComplete)
@@ -71,7 +133,7 @@ public class AffectionUI : MonoBehaviour, IAffectionPresentationView
         pendingGainFinalAffection = newAffection;
         hasPendingGainAnimation = true;
 
-        if (affectionText != null) affectionText.text = prevAffection.ToString();
+        SetDisplayedLevel(prevAffection);
 
         if (newAffection > prevAffection)
         {
@@ -82,25 +144,7 @@ public class AffectionUI : MonoBehaviour, IAffectionPresentationView
         gainSequence = DOTween.Sequence();
         gainSequence.SetUpdate(true);
 
-        if (affectionSlider != null)
-            gainSequence.Append(affectionSlider.DOValue(1f, fillDuration).SetUpdate(true).SetEase(Ease.OutQuad));
-        else
-            gainSequence.AppendInterval(fillDuration);
-
-        gainSequence.AppendCallback(() => {
-            if (affectionText != null)
-            {
-                affectionText.text = newAffection.ToString();
-                affectionText.transform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 5, 1f).SetUpdate(true);
-            }
-        });
-
-        gainSequence.AppendInterval(0.4f);
-
-        if (affectionSlider != null)
-            gainSequence.Append(affectionSlider.DOValue(0f, resetDuration).SetUpdate(true).SetEase(Ease.InQuad));
-        else
-            gainSequence.AppendInterval(resetDuration);
+        AppendLevelTransition(gainSequence, prevAffection, newAffection);
 
         gainSequence.OnComplete(CompleteGainAnimation);
         gainSequence.OnKill(() =>
@@ -112,8 +156,51 @@ public class AffectionUI : MonoBehaviour, IAffectionPresentationView
 
     private void KillTargetTweens()
     {
-        if (affectionSlider != null) affectionSlider.DOKill(false);
-        if (affectionText != null) affectionText.transform.DOKill(false);
+        if (affectionFillImages == null)
+            return;
+
+        for (int i = 0; i < affectionFillImages.Length; i++)
+        {
+            if (affectionFillImages[i] != null)
+                affectionFillImages[i].DOKill(false);
+        }
+
+        if (affectionSegmentRoots == null)
+            return;
+
+        for (int i = 0; i < affectionSegmentRoots.Length; i++)
+        {
+            if (affectionSegmentRoots[i] != null)
+                affectionSegmentRoots[i].DOKill(false);
+        }
+    }
+
+    private void CacheSegmentBaseScales()
+    {
+        if (affectionSegmentRoots == null)
+            affectionSegmentRoots = Array.Empty<RectTransform>();
+
+        if (affectionSegmentBaseScales != null &&
+            affectionSegmentBaseScales.Length == affectionSegmentRoots.Length)
+        {
+            return;
+        }
+
+        affectionSegmentBaseScales = new Vector3[affectionSegmentRoots.Length];
+        for (int i = 0; i < affectionSegmentRoots.Length; i++)
+        {
+            RectTransform segmentRoot = affectionSegmentRoots[i];
+            affectionSegmentBaseScales[i] = segmentRoot != null ? segmentRoot.localScale : Vector3.one;
+        }
+    }
+
+    private void KillOpeningRevealSequence()
+    {
+        if (openingRevealSequence != null)
+        {
+            openingRevealSequence.Kill(false);
+            openingRevealSequence = null;
+        }
     }
 
     private void CompletePendingGainAnimation()
@@ -138,15 +225,61 @@ public class AffectionUI : MonoBehaviour, IAffectionPresentationView
         hasPendingGainAnimation = false;
         gainSequence = null;
 
-        if (affectionText != null)
-            affectionText.text = pendingGainFinalAffection.ToString();
-
-        if (affectionSlider != null)
-            affectionSlider.value = 0f;
+        SetDisplayedLevel(pendingGainFinalAffection);
 
         Action complete = pendingGainComplete;
         pendingGainComplete = null;
         complete?.Invoke();
+    }
+
+    private void AppendLevelTransition(Sequence sequence, int previousLevel, int newLevel)
+    {
+        int segmentCount = affectionFillImages != null ? affectionFillImages.Length : 0;
+        int clampedPreviousLevel = Mathf.Clamp(previousLevel, 0, segmentCount);
+        int clampedNewLevel = Mathf.Clamp(newLevel, 0, segmentCount);
+
+        if (clampedNewLevel > clampedPreviousLevel)
+        {
+            for (int i = clampedPreviousLevel; i < clampedNewLevel; i++)
+            {
+                Image fillImage = affectionFillImages[i];
+                if (fillImage != null)
+                    sequence.Append(fillImage.DOFillAmount(1f, fillDuration).SetEase(Ease.OutQuad));
+                else
+                    sequence.AppendInterval(fillDuration);
+            }
+
+            return;
+        }
+
+        if (clampedNewLevel < clampedPreviousLevel)
+        {
+            for (int i = clampedPreviousLevel - 1; i >= clampedNewLevel; i--)
+            {
+                Image fillImage = affectionFillImages[i];
+                if (fillImage != null)
+                    sequence.Append(fillImage.DOFillAmount(0f, resetDuration).SetEase(Ease.InQuad));
+                else
+                    sequence.AppendInterval(resetDuration);
+            }
+
+            return;
+        }
+
+        sequence.AppendInterval(0f);
+    }
+
+    private void SetDisplayedLevel(int level)
+    {
+        if (affectionFillImages == null)
+            return;
+
+        int filledCount = Mathf.Clamp(level, 0, affectionFillImages.Length);
+        for (int i = 0; i < affectionFillImages.Length; i++)
+        {
+            if (affectionFillImages[i] != null)
+                affectionFillImages[i].fillAmount = i < filledCount ? 1f : 0f;
+        }
     }
 
     private void ResolveGainScreenEffect()
