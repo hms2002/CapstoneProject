@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e213893e048dde468ea1fc00324846a, type: 3}
+  m_Name: ProceduralDemonKingLibrary
+  m_EditorClassIdentifier: Gameplay::RoomThemeLibrarySO
+  themeId: ProceduralDemonKing
+  rooms:
+  - {fileID: 11400000, guid: 5de565c67f7575449838f65ab42af443, type: 2}
+  - {fileID: 11400000, guid: 31fa13fb09405f94bb764da90e01805d, type: 2}
+  - {fileID: 11400000, guid: c4fef0749739d784caf5ac638c62fe0a, type: 2}
+  - {fileID: 11400000, guid: 41aa8e4cf31ff324596918cd4231e38f, type: 2}
+  - {fileID: 11400000, guid: 64856c6df36b73c4eb2f0813af09b5e9, type: 2}
+  - {fileID: 11400000, guid: 40c8ec6b784576646ae40ce1d7cc302d, type: 2}
+  - {fileID: 11400000, guid: ba7bea16b1f54de4caef12615acdb889, type: 2}
+  - {fileID: 11400000, guid: e3faf243ade9c3a4aa0fd7baa11f2f58, type: 2}

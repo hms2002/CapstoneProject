@@ -1,0 +1,12 @@
+{
+    "name": "CorePerformanceRegressionEditModeTests",
+    "references": [
+        "Core"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}

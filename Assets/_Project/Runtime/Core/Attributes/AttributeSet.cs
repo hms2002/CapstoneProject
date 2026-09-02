@@ -465,8 +465,8 @@ namespace UnityGAS
 
             foreach (var attribute in attributes.Values)
             {
-                attribute.RemoveModifiersFromSource(source);
-                attribute.ForceRecalculate();
+                if (attribute.RemoveModifiersFromSource(source))
+                    attribute.ForceRecalculate();
             }
         }
 

@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49e819959f62ded44b5570bd39d55be6, type: 3}
   m_Name: Dragon_CorridorBossRouteSet
   m_EditorClassIdentifier: 
-  corridorSceneName: DragonCorridor
+  themeId: dragon
+  corridorSceneName: ProceduralDragonCorridor
   corridorEntryPointId: Default
   bossSceneName: HeoMinSeok_Boss_Dragon
   bossEntryPointId: Default

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -41,6 +42,8 @@ public class MonsterSpawnContainer : MonoBehaviour
     [Tooltip("이 스폰 포인트에서 생성한 몬스터를 특정 상자의 잠금 해제 조건으로 등록할 때 사용")]
     [SerializeField] private ChestMonsterKillLock linkedChestKillLock;
 
+    private Action<GameObject> runtimeSpawnedCallback;
+
     public MonsterSpawnSourceKind SourceKind => sourceKind;
     public GameObject MonsterPrefab => monsterPrefab;
     public StageMonsterSetSO StageMonsterSet => stageMonsterSet;
@@ -52,6 +55,63 @@ public class MonsterSpawnContainer : MonoBehaviour
 
     public Vector3 SpawnPosition => spawnAnchor != null ? spawnAnchor.position : transform.position;
     public Quaternion SpawnRotation => spawnAnchor != null ? spawnAnchor.rotation : transform.rotation;
+
+    /// <summary>
+    /// 책임:
+    /// - 절차 생성기가 스테이지 고정 몬스터 프리팹을 실제 몬스터가 아닌 지연 스폰 포인트로 구성한다.
+    /// - 방 진입 전에는 생성하지 않고 기존 MonsterSpawner 요청 계약을 그대로 사용한다.
+    /// </summary>
+    public void ConfigureRuntime(
+        GameObject configuredMonsterPrefab,
+        MonsterRoomArea2D configuredRoomArea,
+        MonsterSpawnRoomGroup configuredRoomGroup,
+        ChestMonsterKillLock configuredChestKillLock,
+        Action<GameObject> onRuntimeSpawned = null)
+    {
+        ConfigureRuntime(
+            configuredStageMonsterSet: null,
+            configuredMonsterPrefab,
+            configuredRoomArea,
+            configuredRoomGroup,
+            configuredChestKillLock,
+            onRuntimeSpawned);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 역할형 절차 몬스터 지점에 연결된 StageMonsterSetSO를 현재 진행도에서 해석할 스폰 소스로 구성한다.
+    /// - StageMonsterSetSO가 없으면 기획자가 지정한 스테이지 고정 프리팹을 스폰 소스로 사용한다.
+    /// </summary>
+    public void ConfigureRuntime(
+        StageMonsterSetSO configuredStageMonsterSet,
+        GameObject configuredMonsterPrefab,
+        MonsterRoomArea2D configuredRoomArea,
+        MonsterSpawnRoomGroup configuredRoomGroup,
+        ChestMonsterKillLock configuredChestKillLock,
+        Action<GameObject> onRuntimeSpawned = null)
+    {
+        sourceKind = configuredStageMonsterSet != null
+            ? MonsterSpawnSourceKind.StageMonsterSet
+            : MonsterSpawnSourceKind.FixedPrefab;
+        monsterPrefab = configuredMonsterPrefab;
+        stageMonsterSet = configuredStageMonsterSet;
+        spawnByDefault = true;
+        allowExtraSpawn = true;
+        spawnAnchor = null;
+        roomArea = configuredRoomArea;
+        roomGroup = configuredRoomGroup;
+        linkedChestKillLock = configuredChestKillLock;
+        runtimeSpawnedCallback = onRuntimeSpawned;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 이 포인트에서 실제 몬스터가 생성된 결과를 절차 던전 상태 추적자 같은 런타임 소유자에게 전달한다.
+    /// </summary>
+    public void NotifyRuntimeSpawned(GameObject spawnedMonster)
+    {
+        runtimeSpawnedCallback?.Invoke(spawnedMonster);
+    }
 
     public bool TryResolveMonsterPrefab(int stageIndex, out GameObject resolvedPrefab)
     {
@@ -80,7 +140,8 @@ public class MonsterSpawnContainer : MonoBehaviour
             SpawnRotation,
             roomArea,
             linkedChestKillLock,
-            RoomGroup);
+            RoomGroup,
+            this);
     }
 
     public MonsterSpawnRequest CreateRequest(int stageIndex, GameObject overrideMonsterPrefab = null)

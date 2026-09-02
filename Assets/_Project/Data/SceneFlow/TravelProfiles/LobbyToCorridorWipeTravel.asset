@@ -1,0 +1,397 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bbb01ba0c30c5e4083773c981ed0514, type: 3}
+  m_Name: LobbyToCorridorWipeTravel
+  m_EditorClassIdentifier: Core::SceneTravelPresentationProfileSO
+  departureMode: 0
+  departureDuration: 0
+  departureRotationDegrees: 0
+  departureTargetOffset: {x: 0, y: 0, z: 0}
+  departureSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  departurePresentation:
+    audioOnExecute:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    audioWhileActive:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    audioOnRemove:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cameraShakeOnExecute:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    cameraShakeWhileActive:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    cameraShakeOnRemove:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    presentationOnExecute:
+      sound:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      randomSounds: []
+      additionalSounds: []
+      cameraShake:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      effect:
+        prefab: {fileID: 0}
+        localOffset: {x: 0, y: 0, z: 0}
+        rotationOffsetZ: 0
+        scaleMultiplier: {x: 0, y: 0, z: 0}
+        attachToTarget: 0
+        anchorMode: 0
+        scaleMode: 0
+        boundsMode: 0
+        targetBoundsReferenceSize: 0
+        targetBoundsScaleMultiplier: 0
+        lifetimeMode: 0
+        lifetimeOverrideSeconds: 0
+        useUnscaledTime: 0
+      particle:
+        prefab: {fileID: 0}
+        localOffset: {x: 0, y: 0, z: 0}
+        rotationOffsetZ: 0
+        scaleMultiplier: {x: 0, y: 0, z: 0}
+        attachToTarget: 0
+        anchorMode: 0
+        scaleMode: 0
+        boundsMode: 0
+        targetBoundsReferenceSize: 0
+        targetBoundsScaleMultiplier: 0
+        lifetimeMode: 0
+        lifetimeOverrideSeconds: 0
+        useUnscaledTime: 0
+    presentationWhileActive:
+      sound:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      randomSounds: []
+      additionalSounds: []
+      cameraShake:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      effect:
+        prefab: {fileID: 0}
+        localOffset: {x: 0, y: 0, z: 0}
+        rotationOffsetZ: 0
+        scaleMultiplier: {x: 0, y: 0, z: 0}
+        attachToTarget: 0
+        anchorMode: 0
+        scaleMode: 0
+        boundsMode: 0
+        targetBoundsReferenceSize: 0
+        targetBoundsScaleMultiplier: 0
+        lifetimeMode: 0
+        lifetimeOverrideSeconds: 0
+        useUnscaledTime: 0
+      particle:
+        prefab: {fileID: 0}
+        localOffset: {x: 0, y: 0, z: 0}
+        rotationOffsetZ: 0
+        scaleMultiplier: {x: 0, y: 0, z: 0}
+        attachToTarget: 0
+        anchorMode: 0
+        scaleMode: 0
+        boundsMode: 0
+        targetBoundsReferenceSize: 0
+        targetBoundsScaleMultiplier: 0
+        lifetimeMode: 0
+        lifetimeOverrideSeconds: 0
+        useUnscaledTime: 0
+    presentationOnRemove:
+      sound:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      randomSounds: []
+      additionalSounds: []
+      cameraShake:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      effect:
+        prefab: {fileID: 0}
+        localOffset: {x: 0, y: 0, z: 0}
+        rotationOffsetZ: 0
+        scaleMultiplier: {x: 0, y: 0, z: 0}
+        attachToTarget: 0
+        anchorMode: 0
+        scaleMode: 0
+        boundsMode: 0
+        targetBoundsReferenceSize: 0
+        targetBoundsScaleMultiplier: 0
+        lifetimeMode: 0
+        lifetimeOverrideSeconds: 0
+        useUnscaledTime: 0
+      particle:
+        prefab: {fileID: 0}
+        localOffset: {x: 0, y: 0, z: 0}
+        rotationOffsetZ: 0
+        scaleMultiplier: {x: 0, y: 0, z: 0}
+        attachToTarget: 0
+        anchorMode: 0
+        scaleMode: 0
+        boundsMode: 0
+        targetBoundsReferenceSize: 0
+        targetBoundsScaleMultiplier: 0
+        lifetimeMode: 0
+        lifetimeOverrideSeconds: 0
+        useUnscaledTime: 0
+    cuesOnExecute: []
+    cuesWhileActive: []
+    cuesOnRemove: []
+    executeCueMagnitude: 0
+    whileActiveCueMagnitude: 0
+    removeCueMagnitude: 0
+    cueOnExecute: {fileID: 0}
+    cueWhileActive: {fileID: 0}
+    cueOnRemove: {fileID: 0}
+  transitionVisualMode: 1
+  coverDuration: 0.2
+  revealDuration: 0.2
+  arrivalMode: 0
+  arrivalDuration: 0.55
+  arrivalStartOffset: {x: 0, y: 3, z: 0}
+  arrivalRotationDegrees: 720
+  arrivalSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  arrivalPresentation:
+    audioOnExecute:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    audioWhileActive:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    audioOnRemove:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cameraShakeOnExecute:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    cameraShakeWhileActive:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    cameraShakeOnRemove:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    presentationOnExecute:
+      sound:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      randomSounds: []
+      additionalSounds: []
+      cameraShake:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      effect:
+        prefab: {fileID: 0}
+        localOffset: {x: 0, y: 0, z: 0}
+        rotationOffsetZ: 0
+        scaleMultiplier: {x: 0, y: 0, z: 0}
+        attachToTarget: 0
+        anchorMode: 0
+        scaleMode: 0
+        boundsMode: 0
+        targetBoundsReferenceSize: 0
+        targetBoundsScaleMultiplier: 0
+        lifetimeMode: 0
+        lifetimeOverrideSeconds: 0
+        useUnscaledTime: 0
+      particle:
+        prefab: {fileID: 0}
+        localOffset: {x: 0, y: 0, z: 0}
+        rotationOffsetZ: 0
+        scaleMultiplier: {x: 0, y: 0, z: 0}
+        attachToTarget: 0
+        anchorMode: 0
+        scaleMode: 0
+        boundsMode: 0
+        targetBoundsReferenceSize: 0
+        targetBoundsScaleMultiplier: 0
+        lifetimeMode: 0
+        lifetimeOverrideSeconds: 0
+        useUnscaledTime: 0
+    presentationWhileActive:
+      sound:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      randomSounds: []
+      additionalSounds: []
+      cameraShake:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      effect:
+        prefab: {fileID: 0}
+        localOffset: {x: 0, y: 0, z: 0}
+        rotationOffsetZ: 0
+        scaleMultiplier: {x: 0, y: 0, z: 0}
+        attachToTarget: 0
+        anchorMode: 0
+        scaleMode: 0
+        boundsMode: 0
+        targetBoundsReferenceSize: 0
+        targetBoundsScaleMultiplier: 0
+        lifetimeMode: 0
+        lifetimeOverrideSeconds: 0
+        useUnscaledTime: 0
+      particle:
+        prefab: {fileID: 0}
+        localOffset: {x: 0, y: 0, z: 0}
+        rotationOffsetZ: 0
+        scaleMultiplier: {x: 0, y: 0, z: 0}
+        attachToTarget: 0
+        anchorMode: 0
+        scaleMode: 0
+        boundsMode: 0
+        targetBoundsReferenceSize: 0
+        targetBoundsScaleMultiplier: 0
+        lifetimeMode: 0
+        lifetimeOverrideSeconds: 0
+        useUnscaledTime: 0
+    presentationOnRemove:
+      sound:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      randomSounds: []
+      additionalSounds: []
+      cameraShake:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      effect:
+        prefab: {fileID: 0}
+        localOffset: {x: 0, y: 0, z: 0}
+        rotationOffsetZ: 0
+        scaleMultiplier: {x: 0, y: 0, z: 0}
+        attachToTarget: 0
+        anchorMode: 0
+        scaleMode: 0
+        boundsMode: 0
+        targetBoundsReferenceSize: 0
+        targetBoundsScaleMultiplier: 0
+        lifetimeMode: 0
+        lifetimeOverrideSeconds: 0
+        useUnscaledTime: 0
+      particle:
+        prefab: {fileID: 0}
+        localOffset: {x: 0, y: 0, z: 0}
+        rotationOffsetZ: 0
+        scaleMultiplier: {x: 0, y: 0, z: 0}
+        attachToTarget: 0
+        anchorMode: 0
+        scaleMode: 0
+        boundsMode: 0
+        targetBoundsReferenceSize: 0
+        targetBoundsScaleMultiplier: 0
+        lifetimeMode: 0
+        lifetimeOverrideSeconds: 0
+        useUnscaledTime: 0
+    cuesOnExecute: []
+    cuesWhileActive: []
+    cuesOnRemove: []
+    executeCueMagnitude: 0
+    whileActiveCueMagnitude: 0
+    removeCueMagnitude: 0
+    cueOnExecute: {fileID: 0}
+    cueWhileActive: {fileID: 0}
+    cueOnRemove: {fileID: 0}

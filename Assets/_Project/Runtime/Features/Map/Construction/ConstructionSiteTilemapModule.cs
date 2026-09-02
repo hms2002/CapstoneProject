@@ -35,6 +35,10 @@ public sealed class ConstructionSiteTilemapModule : MonoBehaviour
     private bool lastAppliedCompleted;
 
     public string ConstructionId => constructionId;
+    public GameObject BlockedStateRoot => blockedStateRoot;
+    public GameObject OpenStateRoot => openStateRoot;
+    public bool HasAppliedState => hasAppliedState;
+    public bool IsCompletedStateApplied => hasAppliedState && lastAppliedCompleted;
 
     private void OnEnable()
     {

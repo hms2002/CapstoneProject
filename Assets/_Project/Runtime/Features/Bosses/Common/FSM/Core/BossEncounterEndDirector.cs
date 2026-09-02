@@ -23,6 +23,8 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
     [SerializeField, Min(0f)] private float rewardDelayAfterClearSeconds = 0f;
 
     [Header("Rewards")]
+    [SerializeField] private CorridorBossRouteSetSO routeSet;
+    [SerializeField] private bool isFinalRouteSet;
     [SerializeField] private TreasureChest treasureChest;
     [SerializeField] private GameObject exitPortal;
     [SerializeField] private bool hideAuthoredObjectsOnStart = true;
@@ -52,6 +54,36 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
             BossEncounterEndDirector director = ActiveDirectors[i];
             if (director != null && director.SuppressesRewardsFor(boss))
                 return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 책임 : 현재 보스를 관리하는 encounter가 명시한 테마 RouteSet과 최종보스 여부를 진행 시스템에 제공한다.
+    /// </summary>
+    public static bool TryResolveRouteContext(
+        BossControllerBase boss,
+        out CorridorBossRouteSetSO resolvedRouteSet,
+        out bool resolvedIsFinalRouteSet)
+    {
+        resolvedRouteSet = null;
+        resolvedIsFinalRouteSet = false;
+        if (boss == null)
+            return false;
+
+        for (int i = 0; i < ActiveDirectors.Count; i++)
+        {
+            BossEncounterEndDirector director = ActiveDirectors[i];
+            if (director == null ||
+                director.clearCondition == null ||
+                !director.clearCondition.ControlsBoss(boss) ||
+                director.routeSet == null)
+                continue;
+
+            resolvedRouteSet = director.routeSet;
+            resolvedIsFinalRouteSet = director.isFinalRouteSet;
+            return true;
         }
 
         return false;
@@ -177,14 +209,16 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
         return rewardBoss != null ? rewardBoss.GetComponent<BossDeathPresentation>() : null;
     }
 
-    private static BossRewardContext BuildRewardContext(BossControllerBase rewardBoss)
+    private BossRewardContext BuildRewardContext(BossControllerBase rewardBoss)
     {
         BossRewardModifierAggregate modifiers = RunModifierService.CurrentRewardSnapshot.BossRewardModifiers;
         return BossRunProgressPolicy.Evaluate(
             new BossRunProgressRequest(
                 rewardBoss,
                 RunRoutePlayback.Backend,
-                modifiers)).ToRewardContext();
+                modifiers,
+                routeSet,
+                isFinalRouteSet)).ToRewardContext();
     }
 
     private void HandleRewards(BossRewardContext context, Vector3 rewardOrigin)
@@ -238,7 +272,7 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
         if (context == null || context.IsFinalRouteSet || experiencePickupPrefab == null || !RunSessionStore.IsRunActive)
             return;
 
-        int stageExperience = ResolveNormalStageBossExperience(RunRoutePlayback.CurrentStageIndexOrInvalid);
+        int stageExperience = ResolveNormalStageBossExperience(ResolveNormalBossStageIndex(context));
         if (stageExperience <= 0)
             return;
 
@@ -263,6 +297,29 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
             2 => stageThreeBossExperience,
             _ => 0
         };
+    }
+
+    private static int ResolveNormalBossStageIndex(BossRewardContext context)
+    {
+        int routeStageIndex = RunRoutePlayback.CurrentStageIndexOrInvalid;
+        if (routeStageIndex >= 0)
+            return routeStageIndex;
+
+        GamePlayData data = RunSessionStore.Data;
+        if (data?.defeatedBossIds == null)
+            return 0;
+
+        int clearedBeforeCurrent = data.defeatedBossIds.Count;
+        string currentBossId = context?.RouteSet != null
+            ? context.RouteSet.StableThemeId
+            : null;
+        if (!string.IsNullOrWhiteSpace(currentBossId) &&
+            data.defeatedBossIds.Contains(currentBossId))
+        {
+            clearedBeforeCurrent--;
+        }
+
+        return Mathf.Clamp(clearedBeforeCurrent, 0, 2);
     }
 
     private void HandlePortal(BossRewardContext context)

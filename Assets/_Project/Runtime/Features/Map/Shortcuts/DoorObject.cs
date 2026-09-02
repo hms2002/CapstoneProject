@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
@@ -92,6 +93,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
     private Coroutine deferredAffectionRefreshCoroutine;
     private Coroutine closeCompletionCoroutine;
     private bool closeCompletionPending;
+    private readonly HashSet<Object> externalOpenBlockers = new();
 
 #if UNITY_EDITOR
     private const float DefaultOneWayGizmoWidth = 1.2f;
@@ -189,6 +191,9 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         if (player == null)
             return false;
 
+        if (IsExternallyOpenBlocked())
+            return false;
+
         if (doorType == DoorType.Normal)
             return true;
 
@@ -265,6 +270,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
 
         CancelCloseCompletionWait();
         IsOpen = true;
+        DisableObstacle();
         ApplyCurrentDoorRenderLayerState();
 
         if (save)
@@ -447,9 +453,34 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
     }
     public override bool CanInteract(IPlayerInteractor player)
     {
-        if (player == null || player.CurrentState != InteractState.Idle || IsOpen)
+        if (player == null ||
+            player.CurrentState != InteractState.Idle ||
+            IsOpen ||
+            IsExternallyOpenBlocked())
             return false;
         return true;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 전투 방 kill lock 같은 외부 상태 소유자가 플레이어의 수동 문 열기를 일시적으로 차단한다.
+    /// - 문 애니메이션과 물리 통과 상태가 서로 다른 소유자에게서 동시에 변경되는 일을 막는다.
+    /// </summary>
+    public void SetExternalOpenBlocked(Object owner, bool blocked)
+    {
+        if (owner == null)
+            return;
+
+        if (blocked)
+            externalOpenBlockers.Add(owner);
+        else
+            externalOpenBlockers.Remove(owner);
+    }
+
+    private bool IsExternallyOpenBlocked()
+    {
+        externalOpenBlockers.RemoveWhere(owner => owner == null);
+        return externalOpenBlockers.Count > 0;
     }
 
     public override string GetInteractDescription()

@@ -1,0 +1,760 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9359d1c0a3f450940bdda9e15982fe96, type: 3}
+  m_Name: Dragon_Boss
+  m_EditorClassIdentifier: Gameplay::RoomTemplateSO
+  layoutData:
+    roomId: Dragon_Boss
+    roomType: 5
+    size: {x: 18, y: 12}
+    localBounds:
+      x: 0
+      y: 0
+      width: 18
+      height: 12
+    sockets:
+    - socketId: Socket_03
+      localCell: {x: 8, y: 11}
+      direction: 0
+      width: 2
+    - socketId: Socket_02
+      localCell: {x: 17, y: 5}
+      direction: 1
+      width: 2
+    - socketId: Socket_01
+      localCell: {x: 8, y: 0}
+      direction: 2
+      width: 2
+    - socketId: Left
+      localCell: {x: 0, y: 5}
+      direction: 3
+      width: 2
+    difficultyTier: 1
+    selectionWeight: 1
+    topologyPlacement:
+      mode: 0
+      minimumGraphDistanceFromStart: 0
+      requireDeadEnd: 0
+  buildData:
+    floorTiles:
+    - localCell: {x: 0, y: 4}
+      tile: {fileID: 11400000, guid: 84a03c64c9b77f94795afca6da120246, type: 2}
+    - localCell: {x: 0, y: 5}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 0, y: 6}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 0, y: 7}
+      tile: {fileID: 11400000, guid: 2cd5142751955dc409549aa1db87ebf9, type: 2}
+    - localCell: {x: 1, y: 1}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 1, y: 2}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 1, y: 3}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 1, y: 4}
+      tile: {fileID: 11400000, guid: 84a03c64c9b77f94795afca6da120246, type: 2}
+    - localCell: {x: 1, y: 5}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 1, y: 6}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 1, y: 7}
+      tile: {fileID: 11400000, guid: 2cd5142751955dc409549aa1db87ebf9, type: 2}
+    - localCell: {x: 1, y: 8}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 1, y: 9}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 1, y: 10}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 2, y: 1}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 2, y: 2}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 2, y: 3}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 2, y: 4}
+      tile: {fileID: 11400000, guid: 84a03c64c9b77f94795afca6da120246, type: 2}
+    - localCell: {x: 2, y: 5}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 2, y: 6}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 2, y: 7}
+      tile: {fileID: 11400000, guid: 2cd5142751955dc409549aa1db87ebf9, type: 2}
+    - localCell: {x: 2, y: 8}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 2, y: 9}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 2, y: 10}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 3, y: 1}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 3, y: 2}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 3, y: 3}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 3, y: 4}
+      tile: {fileID: 11400000, guid: 84a03c64c9b77f94795afca6da120246, type: 2}
+    - localCell: {x: 3, y: 5}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 3, y: 6}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 3, y: 7}
+      tile: {fileID: 11400000, guid: 2cd5142751955dc409549aa1db87ebf9, type: 2}
+    - localCell: {x: 3, y: 8}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 3, y: 9}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 3, y: 10}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 4, y: 1}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 4, y: 2}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 4, y: 3}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 4, y: 4}
+      tile: {fileID: 11400000, guid: 8f37c6b686f0ed54b811b2771dbb1ad9, type: 2}
+    - localCell: {x: 4, y: 5}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 4, y: 6}
+      tile: {fileID: 11400000, guid: 8f37c6b686f0ed54b811b2771dbb1ad9, type: 2}
+    - localCell: {x: 4, y: 7}
+      tile: {fileID: 11400000, guid: 4fc1c9e4296cef340b57721f6366482a, type: 2}
+    - localCell: {x: 4, y: 8}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 4, y: 9}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 4, y: 10}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 5, y: 1}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 5, y: 2}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 5, y: 3}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 5, y: 4}
+      tile: {fileID: 11400000, guid: 2963bebb1a406d348a389333135398fe, type: 2}
+    - localCell: {x: 5, y: 5}
+      tile: {fileID: 11400000, guid: 4fc1c9e4296cef340b57721f6366482a, type: 2}
+    - localCell: {x: 5, y: 6}
+      tile: {fileID: 11400000, guid: 2963bebb1a406d348a389333135398fe, type: 2}
+    - localCell: {x: 5, y: 7}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 5, y: 8}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 5, y: 9}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 5, y: 10}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 6, y: 1}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 6, y: 2}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 6, y: 3}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 6, y: 4}
+      tile: {fileID: 11400000, guid: 8f37c6b686f0ed54b811b2771dbb1ad9, type: 2}
+    - localCell: {x: 6, y: 5}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 6, y: 6}
+      tile: {fileID: 11400000, guid: 8f37c6b686f0ed54b811b2771dbb1ad9, type: 2}
+    - localCell: {x: 6, y: 7}
+      tile: {fileID: 11400000, guid: 4fc1c9e4296cef340b57721f6366482a, type: 2}
+    - localCell: {x: 6, y: 8}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 6, y: 9}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 6, y: 10}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 7, y: 1}
+      tile: {fileID: 11400000, guid: b6dee8d27166a08489b380602f71c3ed, type: 2}
+    - localCell: {x: 7, y: 2}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 7, y: 3}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 7, y: 4}
+      tile: {fileID: 11400000, guid: 2963bebb1a406d348a389333135398fe, type: 2}
+    - localCell: {x: 7, y: 5}
+      tile: {fileID: 11400000, guid: 4fc1c9e4296cef340b57721f6366482a, type: 2}
+    - localCell: {x: 7, y: 6}
+      tile: {fileID: 11400000, guid: 2963bebb1a406d348a389333135398fe, type: 2}
+    - localCell: {x: 7, y: 7}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 7, y: 8}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 7, y: 9}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 7, y: 10}
+      tile: {fileID: 11400000, guid: b6dee8d27166a08489b380602f71c3ed, type: 2}
+    - localCell: {x: 8, y: 0}
+      tile: {fileID: 11400000, guid: 50d45ef41f8752a40a1570f69340e329, type: 2}
+    - localCell: {x: 8, y: 1}
+      tile: {fileID: 11400000, guid: 2b75cf2008595ed48883fd975cba0f5c, type: 2}
+    - localCell: {x: 8, y: 2}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 8, y: 3}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 8, y: 4}
+      tile: {fileID: 11400000, guid: 8f37c6b686f0ed54b811b2771dbb1ad9, type: 2}
+    - localCell: {x: 8, y: 5}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 8, y: 6}
+      tile: {fileID: 11400000, guid: 8f37c6b686f0ed54b811b2771dbb1ad9, type: 2}
+    - localCell: {x: 8, y: 7}
+      tile: {fileID: 11400000, guid: 4fc1c9e4296cef340b57721f6366482a, type: 2}
+    - localCell: {x: 8, y: 8}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 8, y: 9}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 8, y: 10}
+      tile: {fileID: 11400000, guid: 2b75cf2008595ed48883fd975cba0f5c, type: 2}
+    - localCell: {x: 8, y: 11}
+      tile: {fileID: 11400000, guid: 50d45ef41f8752a40a1570f69340e329, type: 2}
+    - localCell: {x: 9, y: 0}
+      tile: {fileID: 11400000, guid: 5b992ac86ed3e5243b03ee90797fb11b, type: 2}
+    - localCell: {x: 9, y: 1}
+      tile: {fileID: 11400000, guid: 2b75cf2008595ed48883fd975cba0f5c, type: 2}
+    - localCell: {x: 9, y: 2}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 9, y: 3}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 9, y: 4}
+      tile: {fileID: 11400000, guid: 2963bebb1a406d348a389333135398fe, type: 2}
+    - localCell: {x: 9, y: 5}
+      tile: {fileID: 11400000, guid: 4fc1c9e4296cef340b57721f6366482a, type: 2}
+    - localCell: {x: 9, y: 6}
+      tile: {fileID: 11400000, guid: 2963bebb1a406d348a389333135398fe, type: 2}
+    - localCell: {x: 9, y: 7}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 9, y: 8}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 9, y: 9}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 9, y: 10}
+      tile: {fileID: 11400000, guid: 2b75cf2008595ed48883fd975cba0f5c, type: 2}
+    - localCell: {x: 9, y: 11}
+      tile: {fileID: 11400000, guid: 5b992ac86ed3e5243b03ee90797fb11b, type: 2}
+    - localCell: {x: 10, y: 1}
+      tile: {fileID: 11400000, guid: 2b75cf2008595ed48883fd975cba0f5c, type: 2}
+    - localCell: {x: 10, y: 2}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 10, y: 3}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 10, y: 4}
+      tile: {fileID: 11400000, guid: 8f37c6b686f0ed54b811b2771dbb1ad9, type: 2}
+    - localCell: {x: 10, y: 5}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 10, y: 6}
+      tile: {fileID: 11400000, guid: 8f37c6b686f0ed54b811b2771dbb1ad9, type: 2}
+    - localCell: {x: 10, y: 7}
+      tile: {fileID: 11400000, guid: 4fc1c9e4296cef340b57721f6366482a, type: 2}
+    - localCell: {x: 10, y: 8}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 10, y: 9}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 10, y: 10}
+      tile: {fileID: 11400000, guid: e1f6f25b588bd624ba6f118dcf10f833, type: 2}
+    - localCell: {x: 11, y: 1}
+      tile: {fileID: 11400000, guid: e1f6f25b588bd624ba6f118dcf10f833, type: 2}
+    - localCell: {x: 11, y: 2}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 11, y: 3}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 11, y: 4}
+      tile: {fileID: 11400000, guid: 2963bebb1a406d348a389333135398fe, type: 2}
+    - localCell: {x: 11, y: 5}
+      tile: {fileID: 11400000, guid: 4fc1c9e4296cef340b57721f6366482a, type: 2}
+    - localCell: {x: 11, y: 6}
+      tile: {fileID: 11400000, guid: 2963bebb1a406d348a389333135398fe, type: 2}
+    - localCell: {x: 11, y: 7}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 11, y: 8}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 11, y: 9}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 11, y: 10}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 12, y: 1}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 12, y: 2}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 12, y: 3}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 12, y: 4}
+      tile: {fileID: 11400000, guid: 8f37c6b686f0ed54b811b2771dbb1ad9, type: 2}
+    - localCell: {x: 12, y: 5}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 12, y: 6}
+      tile: {fileID: 11400000, guid: 8f37c6b686f0ed54b811b2771dbb1ad9, type: 2}
+    - localCell: {x: 12, y: 7}
+      tile: {fileID: 11400000, guid: 4fc1c9e4296cef340b57721f6366482a, type: 2}
+    - localCell: {x: 12, y: 8}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 12, y: 9}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 12, y: 10}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 13, y: 1}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 13, y: 2}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 13, y: 3}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 13, y: 4}
+      tile: {fileID: 11400000, guid: 2963bebb1a406d348a389333135398fe, type: 2}
+    - localCell: {x: 13, y: 5}
+      tile: {fileID: 11400000, guid: 4fc1c9e4296cef340b57721f6366482a, type: 2}
+    - localCell: {x: 13, y: 6}
+      tile: {fileID: 11400000, guid: 2963bebb1a406d348a389333135398fe, type: 2}
+    - localCell: {x: 13, y: 7}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 13, y: 8}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 13, y: 9}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 13, y: 10}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 14, y: 1}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 14, y: 2}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 14, y: 3}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 14, y: 4}
+      tile: {fileID: 11400000, guid: 84a03c64c9b77f94795afca6da120246, type: 2}
+    - localCell: {x: 14, y: 5}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 14, y: 6}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 14, y: 7}
+      tile: {fileID: 11400000, guid: 2cd5142751955dc409549aa1db87ebf9, type: 2}
+    - localCell: {x: 14, y: 8}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 14, y: 9}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 14, y: 10}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 15, y: 1}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 15, y: 2}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 15, y: 3}
+      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+    - localCell: {x: 15, y: 4}
+      tile: {fileID: 11400000, guid: 84a03c64c9b77f94795afca6da120246, type: 2}
+    - localCell: {x: 15, y: 5}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 15, y: 6}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 15, y: 7}
+      tile: {fileID: 11400000, guid: 2cd5142751955dc409549aa1db87ebf9, type: 2}
+    - localCell: {x: 15, y: 8}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 15, y: 9}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 15, y: 10}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 16, y: 1}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 16, y: 2}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 16, y: 3}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 16, y: 4}
+      tile: {fileID: 11400000, guid: 84a03c64c9b77f94795afca6da120246, type: 2}
+    - localCell: {x: 16, y: 5}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 16, y: 6}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 16, y: 7}
+      tile: {fileID: 11400000, guid: 2cd5142751955dc409549aa1db87ebf9, type: 2}
+    - localCell: {x: 16, y: 8}
+      tile: {fileID: 11400000, guid: 7f29e70721213a24abd332d4755a86cf, type: 2}
+    - localCell: {x: 16, y: 9}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 16, y: 10}
+      tile: {fileID: 11400000, guid: 9e1ceb8ee5c70fe4e86dd003e59d3e2f, type: 2}
+    - localCell: {x: 17, y: 4}
+      tile: {fileID: 11400000, guid: 84a03c64c9b77f94795afca6da120246, type: 2}
+    - localCell: {x: 17, y: 5}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 17, y: 6}
+      tile: {fileID: 11400000, guid: 6987b2667505a464f8468da5630a0847, type: 2}
+    - localCell: {x: 17, y: 7}
+      tile: {fileID: 11400000, guid: 2cd5142751955dc409549aa1db87ebf9, type: 2}
+    wallTiles:
+    - localCell: {x: 0, y: 0}
+      tile: {fileID: 11400000, guid: 3aa57dcf747bdac4f893d924cfd9974b, type: 2}
+    - localCell: {x: 0, y: 1}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 0, y: 2}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 0, y: 3}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 0, y: 4}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 0, y: 5}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 0, y: 6}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 0, y: 7}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 0, y: 8}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 0, y: 9}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 0, y: 10}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 0, y: 11}
+      tile: {fileID: 11400000, guid: fc19a9c81366a1540b5f405102a6775b, type: 2}
+    - localCell: {x: 1, y: 0}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+    - localCell: {x: 1, y: 1}
+      tile: {fileID: 11400000, guid: db5f490de529a6c48abf84000f3d9a9e, type: 2}
+    - localCell: {x: 1, y: 2}
+      tile: {fileID: 11400000, guid: db5f490de529a6c48abf84000f3d9a9e, type: 2}
+    - localCell: {x: 1, y: 3}
+      tile: {fileID: 11400000, guid: 5f1f67befa236b9438150ea6962473eb, type: 2}
+    - localCell: {x: 1, y: 8}
+      tile: {fileID: 11400000, guid: 34029dd71be8a8d4f86307dac1d6db7c, type: 2}
+    - localCell: {x: 1, y: 9}
+      tile: {fileID: 11400000, guid: 34029dd71be8a8d4f86307dac1d6db7c, type: 2}
+    - localCell: {x: 1, y: 10}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
+    - localCell: {x: 1, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 2, y: 0}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+    - localCell: {x: 2, y: 1}
+      tile: {fileID: 11400000, guid: 65bab97809511614da848a42583cefe4, type: 2}
+    - localCell: {x: 2, y: 2}
+      tile: {fileID: 11400000, guid: 65bab97809511614da848a42583cefe4, type: 2}
+    - localCell: {x: 2, y: 3}
+      tile: {fileID: 11400000, guid: 4912891e9529f6044ab4bb6b33d14b09, type: 2}
+    - localCell: {x: 2, y: 8}
+      tile: {fileID: 11400000, guid: 34029dd71be8a8d4f86307dac1d6db7c, type: 2}
+    - localCell: {x: 2, y: 9}
+      tile: {fileID: 11400000, guid: 34029dd71be8a8d4f86307dac1d6db7c, type: 2}
+    - localCell: {x: 2, y: 10}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
+    - localCell: {x: 2, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 3, y: 0}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+    - localCell: {x: 3, y: 1}
+      tile: {fileID: 11400000, guid: 5e37f3ef431675f419c2269b6702eb58, type: 2}
+    - localCell: {x: 3, y: 2}
+      tile: {fileID: 11400000, guid: 5e37f3ef431675f419c2269b6702eb58, type: 2}
+    - localCell: {x: 3, y: 3}
+      tile: {fileID: 11400000, guid: 2eec8d01fd95ef9419c137ee9537303d, type: 2}
+    - localCell: {x: 3, y: 8}
+      tile: {fileID: 11400000, guid: 34029dd71be8a8d4f86307dac1d6db7c, type: 2}
+    - localCell: {x: 3, y: 9}
+      tile: {fileID: 11400000, guid: 34029dd71be8a8d4f86307dac1d6db7c, type: 2}
+    - localCell: {x: 3, y: 10}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
+    - localCell: {x: 3, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 4, y: 0}
+      tile: {fileID: 11400000, guid: cb17778e22049e8489e4f650df2dd0ae, type: 2}
+    - localCell: {x: 4, y: 1}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    - localCell: {x: 4, y: 2}
+      tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
+    - localCell: {x: 4, y: 3}
+      tile: {fileID: 11400000, guid: 0ab1e75c9f34fd64d89f24c4ad3f930b, type: 2}
+    - localCell: {x: 4, y: 4}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 4, y: 5}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 4, y: 7}
+      tile: {fileID: 11400000, guid: 5c0923993c194fb44833c12bcb07c661, type: 2}
+    - localCell: {x: 4, y: 8}
+      tile: {fileID: 11400000, guid: 9ef56a772bc98d141af7821367a21ae7, type: 2}
+    - localCell: {x: 4, y: 9}
+      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+    - localCell: {x: 4, y: 10}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
+    - localCell: {x: 4, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 5, y: 0}
+      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+    - localCell: {x: 5, y: 1}
+      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+    - localCell: {x: 5, y: 2}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+    - localCell: {x: 5, y: 3}
+      tile: {fileID: 11400000, guid: 2d34f38ff2c1419438979669663b50b5, type: 2}
+    - localCell: {x: 5, y: 4}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 5, y: 5}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 5, y: 6}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 5, y: 7}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 5, y: 8}
+      tile: {fileID: 11400000, guid: 59a5642b36711c149ab5f49a54ee62bb, type: 2}
+    - localCell: {x: 5, y: 9}
+      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+    - localCell: {x: 5, y: 10}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
+    - localCell: {x: 5, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 6, y: 0}
+      tile: {fileID: 11400000, guid: 3aa57dcf747bdac4f893d924cfd9974b, type: 2}
+    - localCell: {x: 6, y: 1}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 6, y: 2}
+      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
+    - localCell: {x: 6, y: 3}
+      tile: {fileID: 11400000, guid: 2d34f38ff2c1419438979669663b50b5, type: 2}
+    - localCell: {x: 6, y: 4}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 6, y: 5}
+      tile: {fileID: 11400000, guid: bd242e69bc144924bac1a8ec79edc7b6, type: 2}
+    - localCell: {x: 6, y: 6}
+      tile: {fileID: 11400000, guid: 7c7c0a9dd93ad5844bc92158cab07148, type: 2}
+    - localCell: {x: 6, y: 7}
+      tile: {fileID: 11400000, guid: 745aba2abe1ef9a4296d8545773c239e, type: 2}
+    - localCell: {x: 6, y: 8}
+      tile: {fileID: 11400000, guid: 59a5642b36711c149ab5f49a54ee62bb, type: 2}
+    - localCell: {x: 6, y: 9}
+      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+    - localCell: {x: 6, y: 10}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
+    - localCell: {x: 6, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 7, y: 0}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+    - localCell: {x: 7, y: 2}
+      tile: {fileID: 11400000, guid: 50d45ef41f8752a40a1570f69340e329, type: 2}
+    - localCell: {x: 7, y: 3}
+      tile: {fileID: 11400000, guid: 79eb5405794b236428c83046d8ecd997, type: 2}
+    - localCell: {x: 7, y: 4}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 7, y: 5}
+      tile: {fileID: 11400000, guid: 598ab8e77f4f19e4bbd77fbd43b9618d, type: 2}
+    - localCell: {x: 7, y: 6}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 7, y: 7}
+      tile: {fileID: 11400000, guid: a4538e97210f3ef45ba14a5418cb83de, type: 2}
+    - localCell: {x: 7, y: 8}
+      tile: {fileID: 11400000, guid: 5c0923993c194fb44833c12bcb07c661, type: 2}
+    - localCell: {x: 7, y: 9}
+      tile: {fileID: 11400000, guid: 50d45ef41f8752a40a1570f69340e329, type: 2}
+    - localCell: {x: 7, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 8, y: 0}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+    - localCell: {x: 8, y: 3}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 8, y: 4}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 8, y: 5}
+      tile: {fileID: 11400000, guid: 598ab8e77f4f19e4bbd77fbd43b9618d, type: 2}
+    - localCell: {x: 8, y: 6}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 8, y: 7}
+      tile: {fileID: 11400000, guid: a4538e97210f3ef45ba14a5418cb83de, type: 2}
+    - localCell: {x: 8, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 9, y: 0}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+    - localCell: {x: 9, y: 2}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 9, y: 3}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 9, y: 4}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 9, y: 5}
+      tile: {fileID: 11400000, guid: 598ab8e77f4f19e4bbd77fbd43b9618d, type: 2}
+    - localCell: {x: 9, y: 6}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 9, y: 7}
+      tile: {fileID: 11400000, guid: a4538e97210f3ef45ba14a5418cb83de, type: 2}
+    - localCell: {x: 9, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 10, y: 0}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+    - localCell: {x: 10, y: 2}
+      tile: {fileID: 11400000, guid: 5b992ac86ed3e5243b03ee90797fb11b, type: 2}
+    - localCell: {x: 10, y: 3}
+      tile: {fileID: 11400000, guid: 31ab2849e7689db4bb971fff356efb08, type: 2}
+    - localCell: {x: 10, y: 4}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 10, y: 5}
+      tile: {fileID: 11400000, guid: 598ab8e77f4f19e4bbd77fbd43b9618d, type: 2}
+    - localCell: {x: 10, y: 6}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 10, y: 7}
+      tile: {fileID: 11400000, guid: a4538e97210f3ef45ba14a5418cb83de, type: 2}
+    - localCell: {x: 10, y: 8}
+      tile: {fileID: 11400000, guid: 03fce07eab82ca04fb81f84d4e2d97c0, type: 2}
+    - localCell: {x: 10, y: 9}
+      tile: {fileID: 11400000, guid: 5b992ac86ed3e5243b03ee90797fb11b, type: 2}
+    - localCell: {x: 10, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 11, y: 0}
+      tile: {fileID: 11400000, guid: cb17778e22049e8489e4f650df2dd0ae, type: 2}
+    - localCell: {x: 11, y: 1}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    - localCell: {x: 11, y: 2}
+      tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
+    - localCell: {x: 11, y: 3}
+      tile: {fileID: 11400000, guid: 2d34f38ff2c1419438979669663b50b5, type: 2}
+    - localCell: {x: 11, y: 4}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 11, y: 5}
+      tile: {fileID: 11400000, guid: 12f796d4e8e6aed438f77c8ec8c794e4, type: 2}
+    - localCell: {x: 11, y: 6}
+      tile: {fileID: 11400000, guid: 7424af4d2487817458fe21ae2c3ac747, type: 2}
+    - localCell: {x: 11, y: 7}
+      tile: {fileID: 11400000, guid: e22e14921872fae47b4a54dca6ad52f0, type: 2}
+    - localCell: {x: 11, y: 8}
+      tile: {fileID: 11400000, guid: 59a5642b36711c149ab5f49a54ee62bb, type: 2}
+    - localCell: {x: 11, y: 9}
+      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+    - localCell: {x: 11, y: 10}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
+    - localCell: {x: 11, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 12, y: 0}
+      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+    - localCell: {x: 12, y: 1}
+      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+    - localCell: {x: 12, y: 2}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+    - localCell: {x: 12, y: 3}
+      tile: {fileID: 11400000, guid: 2d34f38ff2c1419438979669663b50b5, type: 2}
+    - localCell: {x: 12, y: 4}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 12, y: 5}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 12, y: 6}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 12, y: 7}
+      tile: {fileID: 11400000, guid: f04952bff5a5fd443ae00b1fa3008647, type: 2}
+    - localCell: {x: 12, y: 8}
+      tile: {fileID: 11400000, guid: 59a5642b36711c149ab5f49a54ee62bb, type: 2}
+    - localCell: {x: 12, y: 9}
+      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+    - localCell: {x: 12, y: 10}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
+    - localCell: {x: 12, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 13, y: 0}
+      tile: {fileID: 11400000, guid: 3aa57dcf747bdac4f893d924cfd9974b, type: 2}
+    - localCell: {x: 13, y: 1}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 13, y: 2}
+      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
+    - localCell: {x: 13, y: 3}
+      tile: {fileID: 11400000, guid: 7da3416952c8d9042aa63e84a591c28a, type: 2}
+    - localCell: {x: 13, y: 4}
+      tile: {fileID: 11400000, guid: 31ab2849e7689db4bb971fff356efb08, type: 2}
+    - localCell: {x: 13, y: 6}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 13, y: 7}
+      tile: {fileID: 11400000, guid: 03fce07eab82ca04fb81f84d4e2d97c0, type: 2}
+    - localCell: {x: 13, y: 8}
+      tile: {fileID: 11400000, guid: 9e43d41ffb1698243954f3e00f161c5d, type: 2}
+    - localCell: {x: 13, y: 9}
+      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+    - localCell: {x: 13, y: 10}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
+    - localCell: {x: 13, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 14, y: 0}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+    - localCell: {x: 14, y: 1}
+      tile: {fileID: 11400000, guid: db5f490de529a6c48abf84000f3d9a9e, type: 2}
+    - localCell: {x: 14, y: 2}
+      tile: {fileID: 11400000, guid: db5f490de529a6c48abf84000f3d9a9e, type: 2}
+    - localCell: {x: 14, y: 3}
+      tile: {fileID: 11400000, guid: 5f1f67befa236b9438150ea6962473eb, type: 2}
+    - localCell: {x: 14, y: 8}
+      tile: {fileID: 11400000, guid: 34029dd71be8a8d4f86307dac1d6db7c, type: 2}
+    - localCell: {x: 14, y: 9}
+      tile: {fileID: 11400000, guid: 34029dd71be8a8d4f86307dac1d6db7c, type: 2}
+    - localCell: {x: 14, y: 10}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
+    - localCell: {x: 14, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 15, y: 0}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+    - localCell: {x: 15, y: 1}
+      tile: {fileID: 11400000, guid: 65bab97809511614da848a42583cefe4, type: 2}
+    - localCell: {x: 15, y: 2}
+      tile: {fileID: 11400000, guid: 65bab97809511614da848a42583cefe4, type: 2}
+    - localCell: {x: 15, y: 3}
+      tile: {fileID: 11400000, guid: 4912891e9529f6044ab4bb6b33d14b09, type: 2}
+    - localCell: {x: 15, y: 8}
+      tile: {fileID: 11400000, guid: 34029dd71be8a8d4f86307dac1d6db7c, type: 2}
+    - localCell: {x: 15, y: 9}
+      tile: {fileID: 11400000, guid: 34029dd71be8a8d4f86307dac1d6db7c, type: 2}
+    - localCell: {x: 15, y: 10}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
+    - localCell: {x: 15, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 16, y: 0}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+    - localCell: {x: 16, y: 1}
+      tile: {fileID: 11400000, guid: 5e37f3ef431675f419c2269b6702eb58, type: 2}
+    - localCell: {x: 16, y: 2}
+      tile: {fileID: 11400000, guid: 5e37f3ef431675f419c2269b6702eb58, type: 2}
+    - localCell: {x: 16, y: 3}
+      tile: {fileID: 11400000, guid: 2eec8d01fd95ef9419c137ee9537303d, type: 2}
+    - localCell: {x: 16, y: 8}
+      tile: {fileID: 11400000, guid: 34029dd71be8a8d4f86307dac1d6db7c, type: 2}
+    - localCell: {x: 16, y: 9}
+      tile: {fileID: 11400000, guid: 34029dd71be8a8d4f86307dac1d6db7c, type: 2}
+    - localCell: {x: 16, y: 10}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
+    - localCell: {x: 16, y: 11}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+    - localCell: {x: 17, y: 0}
+      tile: {fileID: 11400000, guid: cb17778e22049e8489e4f650df2dd0ae, type: 2}
+    - localCell: {x: 17, y: 1}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    - localCell: {x: 17, y: 2}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    - localCell: {x: 17, y: 3}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    - localCell: {x: 17, y: 4}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    - localCell: {x: 17, y: 5}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    - localCell: {x: 17, y: 6}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    - localCell: {x: 17, y: 7}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    - localCell: {x: 17, y: 8}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    - localCell: {x: 17, y: 9}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    - localCell: {x: 17, y: 10}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    - localCell: {x: 17, y: 11}
+      tile: {fileID: 11400000, guid: 8907c6aae7ce28146850ab42c0389ea1, type: 2}
+    objectPlacements: []
+    travelEndpointPlacements:
+    - slotId: BossGate
+      kind: 0
+      mediumPrefab: {fileID: 4531407902860154786, guid: 635bbce2ba03a1e4787909e774bd3dac, type: 3}
+      localCell: {x: 8, y: 6}
+      localOffset: {x: 0.47000027, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      triggerSize: {x: 1, y: 1}
+      useSeparateArrivalPoint: 0
+      arrivalLocalCell: {x: 0, y: 0}
+      arrivalLocalOffset: {x: 0, y: 0}

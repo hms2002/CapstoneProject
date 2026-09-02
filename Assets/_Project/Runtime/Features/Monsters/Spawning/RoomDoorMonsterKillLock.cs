@@ -16,7 +16,11 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
     [Header("Room")]
     [SerializeField] private MonsterSpawnRoomGroup targetRoomGroup;
+    [Tooltip("문에서 방 안쪽을 향하는 월드 방향입니다. Vector2.zero이면 방 중심으로부터 추론합니다.")]
+    [SerializeField] private Vector2 roomInwardDirection;
     [SerializeField] private bool requireTrackedMonstersInsideBeforeClose = true;
+    [Tooltip("몬스터 몸체가 문 중심선을 방 안쪽으로 이 거리만큼 완전히 통과해야 문을 닫습니다.")]
+    [SerializeField, Min(0f)] private float monsterDoorThresholdClearance = 0.1f;
     [Tooltip("몬스터가 방 밖에 감지되어도 이 시간 동안 상태가 유지될 때만 문을 다시 엽니다. 분열/점프 착지 전 순간적인 외부 판정을 흡수합니다.")]
     [SerializeField, Min(0f)] private float openForOutsideMonsterDelaySeconds = 0.35f;
     [Tooltip("몬스터 수가 0이 된 뒤 이 시간 동안 추가 등록이 없을 때만 문을 엽니다. 슬라임 분열처럼 사망 직후 자식 등록 전 공백을 흡수합니다.")]
@@ -26,6 +30,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
     [SerializeField] private bool logDebug;
 
     private readonly List<MonsterLockTrackingUnit> trackedMonsterUnits = new();
+    private readonly List<Collider2D> reusableMonsterBodyColliders = new();
     private bool roomEntered;
     private bool doorClosedByLock;
     private bool missingDoorWarningLogged;
@@ -38,6 +43,48 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
     public bool RoomEntered => roomEntered;
     public bool EncounterEntered => roomEntered;
     public int RemainingMonsterCount => CountRemainingMonsters();
+    public DoorObject TargetDoor => targetDoor;
+    public MonsterSpawnRoomGroup TargetRoomGroup => targetRoomGroup;
+    public Vector2 RoomInwardDirection => roomInwardDirection;
+
+    /// <summary>
+    /// 런타임에 생성된 방 문 잠금 장치를 기존 방 그룹과 문에 연결합니다.
+    /// 활성화 전에 호출하면 OnEnable에서 기존 등록 흐름을 그대로 사용합니다.
+    /// </summary>
+    public void Configure(DoorObject door, MonsterSpawnRoomGroup roomGroup)
+    {
+        Configure(door, roomGroup, Vector2.zero);
+    }
+
+    /// <summary>
+    /// 런타임 생성 문을 방 그룹과 연결하고, 몬스터가 통과해야 할 정확한 방 안쪽 방향을 지정합니다.
+    /// </summary>
+    public void Configure(
+        DoorObject door,
+        MonsterSpawnRoomGroup roomGroup,
+        Vector2 configuredRoomInwardDirection)
+    {
+        Vector2 normalizedInwardDirection = configuredRoomInwardDirection.sqrMagnitude > 0.0001f
+            ? configuredRoomInwardDirection.normalized
+            : Vector2.zero;
+        if (targetDoor == door &&
+            targetRoomGroup == roomGroup &&
+            roomInwardDirection == normalizedInwardDirection)
+        {
+            return;
+        }
+
+        UnregisterFromRoomGroup();
+        targetDoor = door;
+        targetRoomGroup = roomGroup;
+        roomInwardDirection = normalizedInwardDirection;
+        cachedRoomArea = null;
+        missingDoorWarningLogged = false;
+        missingRoomGroupWarningLogged = false;
+
+        if (isActiveAndEnabled)
+            RegisterWithRoomGroup();
+    }
 
     private void Reset()
     {
@@ -52,6 +99,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
     private void OnDisable()
     {
+        targetDoor?.SetExternalOpenBlocked(this, false);
         UnregisterFromRoomGroup();
     }
 
@@ -110,6 +158,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
             return;
 
         targetDoor.ForceOpen(immediate: true, playPresentation: false);
+        targetDoor.SetExternalOpenBlocked(this, false);
         doorClosedByLock = false;
     }
 
@@ -221,6 +270,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
         if (targetDoor == null)
             return;
 
+        targetDoor.SetExternalOpenBlocked(this, false);
         if (!targetDoor.IsOpen)
             targetDoor.ForceOpen(immediate: false, save: false, playPresentation: playPresentation);
 
@@ -232,6 +282,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
         if (targetDoor == null)
             return;
 
+        targetDoor.SetExternalOpenBlocked(this, true);
         if (targetDoor.IsOpen)
             targetDoor.ForceClose(immediate: false);
 
@@ -328,15 +379,97 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
                 continue;
             }
 
-            if (!roomArea.Contains(monster.transform.position))
+            bool hasBodyBounds = TryGetMonsterBodyBounds(monster, out Bounds bodyBounds);
+            bool isFullyInsideRoom = hasBodyBounds
+                ? roomArea.Contains(bodyBounds)
+                : roomArea.Contains(monster.transform.position);
+            if (!isFullyInsideRoom)
             {
                 outsideMonsterName = monster.name;
-                LogDebug($"Keeping door open because '{outsideMonsterName}' is outside room area.");
+                LogDebug(
+                    $"Keeping door open because '{outsideMonsterName}' body is not fully inside room area.");
+                return true;
+            }
+
+            if (hasBodyBounds && !HasBodyClearedTargetDoor(bodyBounds, roomArea))
+            {
+                outsideMonsterName = monster.name;
+                LogDebug(
+                    $"Keeping door open because '{outsideMonsterName}' has not fully crossed the door threshold.");
                 return true;
             }
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 몬스터의 활성 비트리거 콜라이더들을 하나의 월드 bounds로 결합한다.
+    /// - 공격/피격 trigger를 제외해 실제로 문에 걸릴 수 있는 물리 몸체만 판정한다.
+    /// </summary>
+    private bool TryGetMonsterBodyBounds(GameObject monster, out Bounds bodyBounds)
+    {
+        bodyBounds = default;
+        if (monster == null)
+            return false;
+
+        reusableMonsterBodyColliders.Clear();
+        monster.GetComponentsInChildren(false, reusableMonsterBodyColliders);
+
+        bool foundBody = false;
+        for (int i = 0; i < reusableMonsterBodyColliders.Count; i++)
+        {
+            Collider2D candidate = reusableMonsterBodyColliders[i];
+            if (candidate == null || !candidate.enabled || candidate.isTrigger)
+                continue;
+
+            if (!foundBody)
+            {
+                bodyBounds = candidate.bounds;
+                foundBody = true;
+            }
+            else
+            {
+                bodyBounds.Encapsulate(candidate.bounds);
+            }
+        }
+
+        reusableMonsterBodyColliders.Clear();
+        return foundBody;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 현재 잠금이 제어하는 문과 방 중심으로 문 안쪽 방향을 계산한다.
+    /// - 몬스터 몸체 전체가 문 중심선을 안쪽으로 통과하기 전까지 해당 문을 열어 둔다.
+    /// </summary>
+    private bool HasBodyClearedTargetDoor(Bounds bodyBounds, MonsterRoomArea2D roomArea)
+    {
+        if (targetDoor == null || roomArea == null || roomArea.AreaCollider == null)
+            return true;
+
+        Vector2 doorPosition = targetDoor.transform.position;
+        Vector2 inward = roomInwardDirection.sqrMagnitude > 0.0001f
+            ? roomInwardDirection
+            : (Vector2)roomArea.AreaCollider.bounds.center - doorPosition;
+        float clearance = Mathf.Max(0f, monsterDoorThresholdClearance);
+        if (Mathf.Abs(inward.x) >= Mathf.Abs(inward.y))
+        {
+            if (Mathf.Abs(inward.x) <= 0.001f)
+                return true;
+
+            return inward.x > 0f
+                ? bodyBounds.min.x >= doorPosition.x + clearance
+                : bodyBounds.max.x <= doorPosition.x - clearance;
+        }
+
+        if (Mathf.Abs(inward.y) <= 0.001f)
+            return true;
+
+        return inward.y > 0f
+            ? bodyBounds.min.y >= doorPosition.y + clearance
+            : bodyBounds.max.y <= doorPosition.y - clearance;
     }
 
     /// <summary>

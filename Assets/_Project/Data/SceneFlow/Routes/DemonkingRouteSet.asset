@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49e819959f62ded44b5570bd39d55be6, type: 3}
   m_Name: DemonkingRouteSet
   m_EditorClassIdentifier: 
+  themeId: demon_king
   corridorSceneName: DemonkingCorridor
   corridorEntryPointId: Default
   bossSceneName: LeeJunmo_Boss_DemonKing

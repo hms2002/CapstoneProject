@@ -119,6 +119,57 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &97347849
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 97347850}
+  - component: {fileID: 97347851}
+  m_Layer: 0
+  m_Name: CorridorArrival_dragon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &97347850
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 97347849}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -22, y: 0, z: -0.030643376}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 684600621}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &97347851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 97347849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a43077220f17e524cba96184d5e52fe2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Gameplay::SceneTravelEndpoint
+  endpointId: Boss.dragon.Corridor
+  proceduralSlotId:
+  connection: {fileID: 11400000, guid: 54cfd9393e4e71a43892cf070ab13f1a, type: 2}
+  connectionSide: 1
+  departureAnchor: {fileID: 0}
+  arrivalAnchor: {fileID: 0}
+  sceneTravelCleanupTagSets: []
 --- !u!1 &161455600
 GameObject:
   m_ObjectHideFlags: 0
@@ -23284,6 +23335,38 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &684600620
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 684600621}
+  m_Layer: 0
+  m_Name: '[DataDrivenSceneTravel]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &684600621
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684600620}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 97347850}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &760601612
 GameObject:
   m_ObjectHideFlags: 0
@@ -24420,6 +24503,7 @@ MonoBehaviour:
   defaultSpawnPoint: {fileID: 593441122}
   spawnPoints:
   - {fileID: 593441122}
+  dynamicEndpointWaitSeconds: 5
 --- !u!4 &1387817727
 Transform:
   m_ObjectHideFlags: 0
@@ -24599,6 +24683,8 @@ MonoBehaviour:
   finalDeathPresentation: {fileID: 0}
   useFinalDeathPresentation: 1
   rewardDelayAfterClearSeconds: 0
+  routeSet: {fileID: 11400000, guid: 946aaf6b94713064e9f547584fa3e2e3, type: 2}
+  isFinalRouteSet: 0
   treasureChest: {fileID: 501379796}
   exitPortal: {fileID: 1987507146}
   hideAuthoredObjectsOnStart: 1
@@ -24858,13 +24944,20 @@ PrefabInstance:
       propertyPath: transitionType
       value: 4
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5909209640859858232, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4531407902860154786, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1987507149}
+    - targetCorrespondingSourceObject: {fileID: 4531407902860154786, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1987507151}
+    - targetCorrespondingSourceObject: {fileID: 4531407902860154786, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1987507150}
   m_SourcePrefab: {fileID: 100100000, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
 --- !u!61 &1987507145 stripped
 BoxCollider2D:
@@ -24967,6 +25060,40 @@ MonoBehaviour:
   shakeRevealRootDuringReveal: 1
   revealRootShakeAmplitude: {x: 0.5, y: 0.038, z: 0}
   revealRootShakeFrequency: 24
+--- !u!114 &1987507150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987507146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edba4b7cb3d862a45a8f0388e9c60f28, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Gameplay::SceneTravelInteractable
+  endpoint: {fileID: 1987507151}
+  interactPromptText: "\uC774\uB3D9\uD558\uAE30"
+  highlightTarget: {fileID: 0}
+--- !u!114 &1987507151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987507146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a43077220f17e524cba96184d5e52fe2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Gameplay::SceneTravelEndpoint
+  endpointId: Boss.dragon.Hub
+  proceduralSlotId:
+  connection: {fileID: 11400000, guid: c845d155bd87ea749b5990343b56704f, type: 2}
+  connectionSide: 0
+  departureAnchor: {fileID: 1987507148}
+  arrivalAnchor: {fileID: 1987507148}
+  sceneTravelCleanupTagSets: []
 --- !u!1 &1998590699
 GameObject:
   m_ObjectHideFlags: 0
@@ -29157,3 +29284,4 @@ SceneRoots:
   - {fileID: 6787846962178461537}
   - {fileID: 455765621}
   - {fileID: 764281913}
+  - {fileID: 684600621}

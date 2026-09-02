@@ -21547,6 +21547,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90321de462d66a740b565c4e066219cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupRoot: {fileID: 0}
+  worldCamera: {fileID: 0}
 --- !u!114 &271044843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21711,6 +21713,8 @@ MonoBehaviour:
   finalDeathPresentation: {fileID: 0}
   useFinalDeathPresentation: 1
   rewardDelayAfterClearSeconds: 0
+  routeSet: {fileID: 11400000, guid: ac129d8bcfb6e3c4da2f9c2e3e4ead07, type: 2}
+  isFinalRouteSet: 0
   treasureChest: {fileID: 192571271}
   exitPortal: {fileID: 1987507145}
   hideAuthoredObjectsOnStart: 1
@@ -29940,6 +29944,7 @@ MonoBehaviour:
   defaultSpawnPoint: {fileID: 593441122}
   spawnPoints:
   - {fileID: 593441122}
+  dynamicEndpointWaitSeconds: 5
 --- !u!4 &1387817727
 Transform:
   m_ObjectHideFlags: 0
@@ -30362,6 +30367,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1929515942
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1929515943}
+  - component: {fileID: 1929515944}
+  m_Layer: 0
+  m_Name: CorridorArrival_slime
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1929515943
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929515942}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -22, y: 0, z: -0.030643376}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2102931091}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1929515944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929515942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a43077220f17e524cba96184d5e52fe2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Gameplay::SceneTravelEndpoint
+  endpointId: Boss.slime.Corridor
+  proceduralSlotId:
+  connection: {fileID: 11400000, guid: b4453678a0e2a6c4d81f374408b53fae, type: 2}
+  connectionSide: 1
+  departureAnchor: {fileID: 0}
+  arrivalAnchor: {fileID: 0}
+  sceneTravelCleanupTagSets: []
 --- !u!1001 &1958984372
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30619,13 +30675,20 @@ PrefabInstance:
       propertyPath: transitionType
       value: 4
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5909209640859858232, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4531407902860154786, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1987507149}
+    - targetCorrespondingSourceObject: {fileID: 4531407902860154786, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1987507151}
+    - targetCorrespondingSourceObject: {fileID: 4531407902860154786, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1987507150}
   m_SourcePrefab: {fileID: 100100000, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
 --- !u!1 &1987507145 stripped
 GameObject:
@@ -30728,6 +30791,40 @@ MonoBehaviour:
   shakeRevealRootDuringReveal: 1
   revealRootShakeAmplitude: {x: 0.5, y: 0.038, z: 0}
   revealRootShakeFrequency: 24
+--- !u!114 &1987507150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987507145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edba4b7cb3d862a45a8f0388e9c60f28, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Gameplay::SceneTravelInteractable
+  endpoint: {fileID: 1987507151}
+  interactPromptText: "\uC774\uB3D9\uD558\uAE30"
+  highlightTarget: {fileID: 0}
+--- !u!114 &1987507151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987507145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a43077220f17e524cba96184d5e52fe2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Gameplay::SceneTravelEndpoint
+  endpointId: Boss.slime.Hub
+  proceduralSlotId:
+  connection: {fileID: 11400000, guid: 177ffb388fe959540ad632f2bf1bc967, type: 2}
+  connectionSide: 0
+  departureAnchor: {fileID: 1987507148}
+  arrivalAnchor: {fileID: 1987507148}
+  sceneTravelCleanupTagSets: []
 --- !u!1 &1998590699
 GameObject:
   m_ObjectHideFlags: 0
@@ -33604,6 +33701,38 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &2102931090
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2102931091}
+  m_Layer: 0
+  m_Name: '[DataDrivenSceneTravel]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2102931091
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102931090}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1929515943}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2107525437
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37627,3 +37756,4 @@ SceneRoots:
   - {fileID: 406048394}
   - {fileID: 1854268797}
   - {fileID: 647895927}
+  - {fileID: 2102931091}

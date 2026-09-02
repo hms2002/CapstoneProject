@@ -111,7 +111,11 @@ Scope Authority는 "이번 스레드에서 무엇을 바꿀 수 있는가"를 �
 
 ### 새 전투 콘텐츠를 제작 파이프라인 기준으로 만들고 싶다
 - [Content Authoring Pipelines](./Guides/ContentAuthoring/README.md)
-  - 무기, 일반 몬스터, 보스, 유물, 소모품, 루트/보상 연결 순서 포함
+  - 무기, 일반 몬스터, 보스, 유물, 소모품, 절차적 던전 방, 루트/보상 연결 순서 포함
+
+### 절차적 던전 방을 만들고 동적 배치를 미리 보고 싶다
+- [절차적 던전 방 제작 툴 사용 가이드](./Guides/ContentAuthoring/ProceduralDungeonRoomAuthoringGuide.md)
+- [Procedural Dungeon Room Pipeline](./StructureMemory/ProceduralDungeonRoomPipeline.md)
 
 ### 게임오버, 보스 결과, 등장/처치 연출을 수정하고 싶다
 - [Boss Encounter Architecture](./Architecture/BossEncounterArchitecture.md)

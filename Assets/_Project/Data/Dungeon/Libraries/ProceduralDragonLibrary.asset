@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e213893e048dde468ea1fc00324846a, type: 3}
+  m_Name: ProceduralDragonLibrary
+  m_EditorClassIdentifier: Gameplay::RoomThemeLibrarySO
+  themeId: ProceduralDragon
+  rooms:
+  - {fileID: 11400000, guid: 3c5225a23ef2a7a43820a61e111c926d, type: 2}
+  - {fileID: 11400000, guid: 92c24ea154f195f48b9d242a645280c5, type: 2}
+  - {fileID: 11400000, guid: bbfe89d27b469e7479eef04a61e4a561, type: 2}
+  - {fileID: 11400000, guid: aef18fc12258a5a42a01a97f53249f88, type: 2}
+  - {fileID: 11400000, guid: ea89081ed193b514dbe7d3c17230fc6b, type: 2}
+  - {fileID: 11400000, guid: 26dea61341b59804a80ac0766e3528b6, type: 2}
+  - {fileID: 11400000, guid: f927e604907943a43a5e7fc10551f8e9, type: 2}
+  - {fileID: 11400000, guid: ac1026f71c453934d8b014ee743eedab, type: 2}
+  stageMonsterPrefabs:
+  - {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  - {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
+  - {fileID: 5433486041897825252, guid: e67c0e27f47424648af599f14420164d, type: 3}
+  - {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
+  - {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}

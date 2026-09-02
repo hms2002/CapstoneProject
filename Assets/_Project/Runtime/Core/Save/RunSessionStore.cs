@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -32,6 +33,17 @@ public interface IRunSessionStoreBackend
     bool ConsumePendingHubLoadFullHeal();
     PlayerRuntimeState PeekPendingPlayerState();
     PlayerRuntimeState ConsumePendingPlayerState();
+    int ResolveDungeonSeed(string dungeonId, DungeonReentryPolicy policy, int fallbackSeed);
+    bool TryGetDungeonObjectStates(string dungeonId, List<DungeonObjectRuntimeStateData> destination);
+    void SaveDungeonObjectStates(string dungeonId, IReadOnlyList<DungeonObjectRuntimeStateData> states);
+    bool TryGetDungeonMapDiscovery(
+        string dungeonId,
+        List<int> visitedRoomPlacementIds,
+        List<int> revealedRoomPlacementIds);
+    void SaveDungeonMapDiscovery(
+        string dungeonId,
+        IReadOnlyList<int> visitedRoomPlacementIds,
+        IReadOnlyList<int> revealedRoomPlacementIds);
     void ResetForDevelopmentStart();
 }
 
@@ -189,6 +201,56 @@ public static class RunSessionStore
     public static PlayerRuntimeState ConsumePendingPlayerState()
     {
         return IsAvailable ? backend.ConsumePendingPlayerState() : null;
+    }
+
+    public static int ResolveDungeonSeed(
+        string dungeonId,
+        DungeonReentryPolicy policy,
+        int fallbackSeed)
+    {
+        return IsAvailable
+            ? backend.ResolveDungeonSeed(dungeonId, policy, fallbackSeed)
+            : fallbackSeed;
+    }
+
+    public static bool TryGetDungeonObjectStates(
+        string dungeonId,
+        List<DungeonObjectRuntimeStateData> destination)
+    {
+        return IsAvailable && backend.TryGetDungeonObjectStates(dungeonId, destination);
+    }
+
+    public static void SaveDungeonObjectStates(
+        string dungeonId,
+        IReadOnlyList<DungeonObjectRuntimeStateData> states)
+    {
+        if (IsAvailable)
+            backend.SaveDungeonObjectStates(dungeonId, states);
+    }
+
+    public static bool TryGetDungeonMapDiscovery(
+        string dungeonId,
+        List<int> visitedRoomPlacementIds,
+        List<int> revealedRoomPlacementIds)
+    {
+        return IsAvailable && backend.TryGetDungeonMapDiscovery(
+            dungeonId,
+            visitedRoomPlacementIds,
+            revealedRoomPlacementIds);
+    }
+
+    public static void SaveDungeonMapDiscovery(
+        string dungeonId,
+        IReadOnlyList<int> visitedRoomPlacementIds,
+        IReadOnlyList<int> revealedRoomPlacementIds)
+    {
+        if (IsAvailable)
+        {
+            backend.SaveDungeonMapDiscovery(
+                dungeonId,
+                visitedRoomPlacementIds,
+                revealedRoomPlacementIds);
+        }
     }
 
     public static void ResetForDevelopmentStart()

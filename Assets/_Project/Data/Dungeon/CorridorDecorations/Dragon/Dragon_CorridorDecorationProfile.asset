@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3adf7153b0da493fa698e3a69ab99f76, type: 3}
+  m_Name: Dragon_CorridorDecorationProfile
+  m_EditorClassIdentifier: Gameplay::CorridorDecorationProfileSO
+  doorClearanceCells: 1
+  maxLandmarksPerCorridor: 1
+  modules:
+  - {fileID: 11400000, guid: a50bab10abfcfcb4c9c569ebc7ac86ad, type: 2}
+  - {fileID: 11400000, guid: dd3fb6ac09ca09b4fb474aeff470f40d, type: 2}
+  - {fileID: 11400000, guid: 2acb96c208d72f845afbd19d49a83442, type: 2}
+  - {fileID: 11400000, guid: bb9649df8ef71c84781e4a1e214f1941, type: 2}
+  - {fileID: 11400000, guid: d14108c119869f241acb07491e1c6d21, type: 2}
+  - {fileID: 11400000, guid: d84a2f3df2321ce48b8a27ab150a9e10, type: 2}

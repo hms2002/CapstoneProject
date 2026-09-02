@@ -34629,6 +34629,8 @@ MonoBehaviour:
   loadingCanvas: {fileID: 5200600149339355958}
   statusHudPresenterPrefab: {fileID: 1413385795910745094}
   statusTooltipPrefab: {fileID: 3741039668568504364}
+  dungeonMinimapPresenterPrefab: {fileID: 3944435522627739040, guid: 859df1d8384693540ad2fb50916d2b7c, type: 3}
+  dungeonMinimapIconSet: {fileID: 11400000, guid: 667fb452d5d841fab40420ddcb8643cf, type: 2}
 --- !u!1 &6840473046753724264
 GameObject:
   m_ObjectHideFlags: 0

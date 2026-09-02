@@ -101,6 +101,66 @@ public class TreasureChest : MonoBehaviour
         isGenerated = true;
     }
 
+    /// <summary>
+    /// 책임 : PreserveDuringRun 절차 던전 복원 시 이미 연 상자를 빈 개봉 상태로 되돌려 보상을 중복 생성하지 않게 한다.
+    /// </summary>
+    public void RestoreOpenedStateForDungeon(
+        IReadOnlyList<DungeonChestLootRuntimeStateData> savedLoot = null)
+    {
+        inventory ??= new ChestInventory(capacity);
+        inventory.Clear();
+        if (savedLoot != null)
+        {
+            for (int i = 0; i < savedLoot.Count; i++)
+            {
+                DungeonChestLootRuntimeStateData entry = savedLoot[i];
+                if (entry == null || entry.item == null)
+                    continue;
+
+                if (entry.item is RelicDefinition relic)
+                    inventory.SetRelicWithLevel(entry.slotIndex, relic, entry.relicLevel);
+                else
+                    inventory.Set(entry.slotIndex, entry.item);
+            }
+        }
+
+        refreshGuard.Clear();
+        RecordRefreshGuard();
+        isGenerated = true;
+        isOpened = true;
+        isOpening = false;
+        hasRaisedFirstOpenedUi = true;
+        HoldOpenedVisualState();
+    }
+
+    /// <summary>
+    /// 책임 : PreserveDuringRun 저장을 위해 현재 상자 슬롯의 남은 보상과 유물 레벨을 복사한다.
+    /// </summary>
+    public List<DungeonChestLootRuntimeStateData> CaptureDungeonLootState()
+    {
+        var result = new List<DungeonChestLootRuntimeStateData>();
+        if (inventory == null)
+            return result;
+
+        for (int slotIndex = 0; slotIndex < inventory.Capacity; slotIndex++)
+        {
+            ScriptableObject item = inventory.Get(slotIndex);
+            if (item == null)
+                continue;
+
+            result.Add(new DungeonChestLootRuntimeStateData
+            {
+                slotIndex = slotIndex,
+                item = item,
+                relicLevel = item is RelicDefinition
+                    ? inventory.GetRelicLevelInSlot(slotIndex)
+                    : 0
+            });
+        }
+
+        return result;
+    }
+
     public void PlayRewardReveal()
     {
         PlayRewardRevealDust();

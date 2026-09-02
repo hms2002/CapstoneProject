@@ -4,7 +4,9 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 /// <summary>
-/// 책임 : 런 특수 NPC의 상호작용, 선택지 표시, 기능 실행 전후 컷씬 프레젠테이션을 조율한다.
+/// 책임:
+/// - 런 특수 NPC의 상호작용, 선택지 표시, 기능 실행 전후 컷씬 프레젠테이션을 조율한다.
+/// - 씬 전환으로 전역 선택지 UI가 교체되면 파괴 참조를 버리고 현재 Presenter에 다시 연결한다.
 /// </summary>
 public sealed class RunSpecialNpcInteractor : InteractableBase
 {
@@ -212,23 +214,56 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         {
             yield return PlayCameraReturn();
 
-            if (choiceAnchorFollower != null)
+            ResolveChoicePresenter();
+            ResolveChoiceAnchorFollower();
+            IRunSpecialNpcChoicePresenter activePresenter = resolvedChoicePresenter;
+            if (!IsUnityObjectAlive(activePresenter))
+            {
+                Debug.LogWarning(
+                    "[RunSpecialNpcInteractor] Choice presenter was destroyed before choices could be shown.",
+                    this);
+                yield break;
+            }
+
+            if (IsUnityObjectAlive(choiceAnchorFollower))
                 choiceAnchorFollower.SetFollowTarget(player?.Transform);
 
-            resolvedChoicePresenter.Show(
+            activePresenter.Show(
                 visibleChoiceLabels,
                 index => selectedIndex = index,
                 choiceInputGuardSeconds);
 
             while (selectedIndex < 0 && isFlowActive)
             {
-                if (allowNumberKeySelection && resolvedChoicePresenter.CanAcceptInput)
-                    TryConfirmNumberKeyChoice(visibleChoices.Count);
+                if (!IsUnityObjectAlive(activePresenter))
+                {
+                    ResolveChoicePresenter();
+                    ResolveChoiceAnchorFollower();
+                    activePresenter = resolvedChoicePresenter;
+                    if (!IsUnityObjectAlive(activePresenter))
+                    {
+                        Debug.LogWarning(
+                            "[RunSpecialNpcInteractor] Choice presenter was destroyed while choices were visible.",
+                            this);
+                        break;
+                    }
+
+                    if (IsUnityObjectAlive(choiceAnchorFollower))
+                        choiceAnchorFollower.SetFollowTarget(player?.Transform);
+                    activePresenter.Show(
+                        visibleChoiceLabels,
+                        index => selectedIndex = index,
+                        choiceInputGuardSeconds);
+                }
+
+                if (allowNumberKeySelection && activePresenter.CanAcceptInput)
+                    TryConfirmNumberKeyChoice(activePresenter, visibleChoices.Count);
 
                 yield return null;
             }
 
-            resolvedChoicePresenter.Hide();
+            if (IsUnityObjectAlive(activePresenter))
+                activePresenter.Hide();
         }
 
         if (selectedIndex < 0 || selectedIndex >= visibleChoices.Count)
@@ -639,14 +674,18 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
 
     private void HideChoicePresenterIfAlive()
     {
-        if (resolvedChoicePresenter != null)
+        if (IsUnityObjectAlive(resolvedChoicePresenter))
             resolvedChoicePresenter.Hide();
+        else
+            resolvedChoicePresenter = null;
     }
 
     private void ClearChoiceFollowTargetIfAlive()
     {
-        if (choiceAnchorFollower != null)
+        if (IsUnityObjectAlive(choiceAnchorFollower))
             choiceAnchorFollower.ClearFollowTarget();
+        else
+            choiceAnchorFollower = null;
     }
 
     private void HideSpeechBubbleIfAlive()
@@ -656,7 +695,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
 
     private ISpeechBubblePlayback ResolveSpeechBubble()
     {
-        if (speechBubble is ISpeechBubblePlayback existing)
+        if (speechBubble != null && speechBubble is ISpeechBubblePlayback existing)
             return existing;
 
         MonoBehaviour[] behaviours = GetComponentsInChildren<MonoBehaviour>(includeInactive: true);
@@ -711,11 +750,14 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
 
     private void ResolveChoicePresenter()
     {
-        if (resolvedChoicePresenter != null && !IsUnityObjectDestroyed(resolvedChoicePresenter))
+        if (IsUnityObjectAlive(resolvedChoicePresenter))
             return;
 
         resolvedChoicePresenter = null;
-        if (choicePresenter is IRunSpecialNpcChoicePresenter serializedPresenter)
+        if (choicePresenter == null)
+            choicePresenter = null;
+        else if (choicePresenter is IRunSpecialNpcChoicePresenter serializedPresenter &&
+                 IsUnityObjectAlive(serializedPresenter))
         {
             resolvedChoicePresenter = serializedPresenter;
             return;
@@ -737,7 +779,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
             if (presenters[i] is not IRunSpecialNpcChoicePresenter presenter)
                 continue;
 
-            if (presenter != null && presenter.AllowGlobalLookup)
+            if (IsUnityObjectAlive(presenter) && presenter.AllowGlobalLookup)
             {
                 resolvedChoicePresenter = presenter;
                 choicePresenter = presenter.PresenterComponent as MonoBehaviour;
@@ -748,13 +790,21 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
 
     private void ResolveChoiceAnchorFollower()
     {
-        Component presenterComponent = resolvedChoicePresenter?.PresenterComponent;
+        if (!IsUnityObjectAlive(resolvedChoicePresenter))
+        {
+            choiceAnchorFollower = null;
+            return;
+        }
+
+        Component presenterComponent = resolvedChoicePresenter.PresenterComponent;
         choiceAnchorFollower = presenterComponent != null
             ? presenterComponent.GetComponent<IRunSpecialNpcChoiceAnchorFollower>()
             : null;
     }
 
-    private void TryConfirmNumberKeyChoice(int choiceCount)
+    private static void TryConfirmNumberKeyChoice(
+        IRunSpecialNpcChoicePresenter presenter,
+        int choiceCount)
     {
         int max = Mathf.Min(choiceCount, 9);
         for (int i = 0; i < max; i++)
@@ -763,7 +813,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
             KeyCode keypadKey = (KeyCode)((int)KeyCode.Keypad1 + i);
             if (Input.GetKeyDown(alphaKey) || Input.GetKeyDown(keypadKey))
             {
-                resolvedChoicePresenter.ConfirmChoiceAt(i);
+                presenter.ConfirmChoiceAt(i);
                 return;
             }
         }
@@ -779,7 +829,9 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
 
         for (int i = 0; i < candidates.Length; i++)
         {
-            if (candidates[i] is IRunSpecialNpcChoicePresenter candidate)
+            if (candidates[i] != null &&
+                candidates[i] is IRunSpecialNpcChoicePresenter candidate &&
+                IsUnityObjectAlive(candidate))
             {
                 presenter = candidate;
                 return true;
@@ -789,9 +841,10 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         return false;
     }
 
-    private static bool IsUnityObjectDestroyed(IRunSpecialNpcChoicePresenter value)
+    private static bool IsUnityObjectAlive(object value)
     {
-        return value is Object unityObject && unityObject == null;
+        return value != null &&
+               (value is not Object unityObject || unityObject != null);
     }
 
     private static bool WasLineSkipPressed()

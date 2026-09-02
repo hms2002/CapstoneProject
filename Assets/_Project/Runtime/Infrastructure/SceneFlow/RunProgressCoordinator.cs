@@ -16,6 +16,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour, IRunProgressBackend
     private static bool s_isQuitting;
 
     private readonly HashSet<int> defeatedRouteKeys = new HashSet<int>();
+    private readonly HashSet<string> defeatedBossIds = new HashSet<string>(StringComparer.Ordinal);
     private readonly HashSet<int> rewardsReadyRouteKeys = new HashSet<int>();
     private readonly HashSet<int> finalBossCombatOwners = new HashSet<int>();
 
@@ -35,7 +36,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour, IRunProgressBackend
         if (Instance != null)
             return Instance;
 
-        RunProgressCoordinator existing = FindFirstObjectByType<RunProgressCoordinator>(FindObjectsInactive.Include);
+        RunProgressCoordinator existing = FindAnyObjectByType<RunProgressCoordinator>(FindObjectsInactive.Include);
         if (existing != null)
         {
             Instance = existing;
@@ -59,6 +60,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour, IRunProgressBackend
 
         Instance = this;
         RunProgressPlayback.RegisterBackend(this);
+        RestoreDefeatedBossIdsFromRunData();
         DontDestroyOnLoad(gameObject);
     }
 
@@ -71,6 +73,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour, IRunProgressBackend
         if (gameplay == null)
             return;
 
+        RestoreDefeatedBossIdsFromRunData();
         gameplay.OnRunStarted += HandleRunStarted;
         gameplay.OnRunEnded += HandleRunEnded;
         SceneManager.sceneLoaded += HandleSceneLoaded;
@@ -133,7 +136,29 @@ public sealed class RunProgressCoordinator : MonoBehaviour, IRunProgressBackend
         if (!defeatedRouteKeys.Add(progress.RouteSetKey))
             return;
 
+        string bossId = progress.RouteSet != null
+            ? progress.RouteSet.StableThemeId
+            : null;
+        if (!string.IsNullOrWhiteSpace(bossId))
+        {
+            defeatedBossIds.Add(bossId);
+            if (GamePlayDataManager.Instance != null)
+                RunSessionStateService.MarkBossDefeated(GamePlayDataManager.Instance.Data, bossId);
+        }
+
         RunTimeLimitSystem.Instance?.SetRunCompletionPaused(true);
+    }
+
+    public bool IsBossDefeatedThisRun(string bossId)
+    {
+        if (string.IsNullOrWhiteSpace(bossId))
+            return false;
+
+        if (defeatedBossIds.Contains(bossId))
+            return true;
+
+        return GamePlayDataManager.Instance != null &&
+               RunSessionStateService.HasDefeatedBoss(GamePlayDataManager.Instance.Data, bossId);
     }
 
     public void NotifyBossRewardsReady(BossControllerBase boss)
@@ -165,11 +190,17 @@ public sealed class RunProgressCoordinator : MonoBehaviour, IRunProgressBackend
         BossControllerBase boss,
         BossRewardModifierAggregate modifiers)
     {
+        BossEncounterEndDirector.TryResolveRouteContext(
+            boss,
+            out CorridorBossRouteSetSO routeSet,
+            out bool isFinalRouteSet);
         return BossRunProgressPolicy.Evaluate(
             new BossRunProgressRequest(
                 boss,
                 RunRoutePlayback.Backend,
-                modifiers));
+                modifiers,
+                routeSet,
+                isFinalRouteSet));
     }
 
     private void HandleRunStarted()
@@ -195,9 +226,27 @@ public sealed class RunProgressCoordinator : MonoBehaviour, IRunProgressBackend
     private void ClearRunScopedState()
     {
         defeatedRouteKeys.Clear();
+        defeatedBossIds.Clear();
         rewardsReadyRouteKeys.Clear();
         finalBossCombatOwners.Clear();
         ReleaseFinalBossCombatTimerPause();
+    }
+
+    private void RestoreDefeatedBossIdsFromRunData()
+    {
+        defeatedBossIds.Clear();
+        GamePlayData data = GamePlayDataManager.Instance != null
+            ? GamePlayDataManager.Instance.Data
+            : null;
+        if (data?.defeatedBossIds == null)
+            return;
+
+        for (int i = 0; i < data.defeatedBossIds.Count; i++)
+        {
+            string bossId = data.defeatedBossIds[i];
+            if (!string.IsNullOrWhiteSpace(bossId))
+                defeatedBossIds.Add(bossId);
+        }
     }
 
     private void UpdateFinalBossCombatTimerPause()

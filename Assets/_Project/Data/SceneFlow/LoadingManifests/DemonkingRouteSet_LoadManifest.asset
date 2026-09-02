@@ -32,10 +32,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LoadManifestSO
   scopeKind: 2
   prefabAssets:
-  - {fileID: 5393127281608536469, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
-  - {fileID: 4868167822977025523, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
-  - {fileID: 2934128021522589498, guid: 103505e4078985d45bd68ad339bdcb9c, type: 3}
-  - {fileID: 6718438523550872990, guid: a18c5da0a9e3ce74bb0699bed51accde, type: 3}
   - {fileID: 3698878696128690417, guid: 0fa4a3e66d4b60044b5754d9cad794c1, type: 3}
   - {fileID: 299506462241839021, guid: a9e652081951498da6dd6d55011852a3, type: 3}
   - {fileID: 4471607187604428361, guid: 6cad5a6736f3f4645a074609daf12fb3, type: 3}
@@ -54,7 +50,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a754b9cf028a4ac982e027f4a5acf930, type: 2}
   - {fileID: 11400000, guid: fbe1aec036b14f048b1711020005177d, type: 2}
   - {fileID: 11400000, guid: f7dffadf23074815bf397472aab0c6f8, type: 2}
-  - {fileID: 11400000, guid: ee7005012672461fa93d7839b0e8eb8d, type: 2}
   - {fileID: 11400000, guid: e47aec79ca384c928b2e5a49ee79f840, type: 2}
   - {fileID: 11400000, guid: c3e2de8fbd554b60b73e11e71378cc6d, type: 2}
   - {fileID: 11400000, guid: f0d8e9b73a764b13ae8a4e763cebc2fa, type: 2}
@@ -67,10 +62,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 491f23fc1a4f446b9d96674d3cb80068, type: 2}
   - {fileID: 11400000, guid: b0a99ab1bf84426394b7f588e8241e4a, type: 2}
   - {fileID: 11400000, guid: 2c14532ac50c43ae8bf4014f3e724069, type: 2}
-  - {fileID: 11400000, guid: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7, type: 2}
   - {fileID: 11400000, guid: 5c6cbc85ca649e6428489e9939c28342, type: 2}
   - {fileID: 11400000, guid: 54e5f53ed338f354db8ebcec3fdda0bc, type: 2}
   - {fileID: 11400000, guid: 0d91c9df159665a4aaf50b12b327a52f, type: 2}
+  - {fileID: 11400000, guid: 50178fd501407dd46ba385fdb3361704, type: 2}
   extraAssets: []
   prewarmPrefabs: []
 --- !u!114 &11400000

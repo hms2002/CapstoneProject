@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -107,10 +106,17 @@ namespace UnityGAS
             dirty = true;
         }
 
-        public void RemoveModifiersFromSource(UnityEngine.Object source)
+        /// <summary>
+        /// 책임 : 지정 source의 modifier를 제거하고 실제 변경 여부를 반환해 상위 AttributeSet이 필요한 값만 재계산하게 한다.
+        /// </summary>
+        public bool RemoveModifiersFromSource(UnityEngine.Object source)
         {
-            if (modifiers.RemoveAll(mod => mod.Source == source) > 0)
-                dirty = true;
+            int removedCount = modifiers.RemoveAll(mod => mod.Source == source);
+            if (removedCount <= 0)
+                return false;
+
+            dirty = true;
+            return true;
         }
 
         public void ClearAllModifiers()
@@ -126,7 +132,8 @@ namespace UnityGAS
         /// </summary>
         public float GetFlatModifierSum()
         {
-            return modifiers.Where(m => m.Type == ModifierType.Flat).Sum(m => m.Value);
+            GetModifierSums(out float flatSum, out _);
+            return flatSum;
         }
 
         /// <summary>
@@ -135,7 +142,8 @@ namespace UnityGAS
         /// </summary>
         public float GetPercentModifierSum()
         {
-            return modifiers.Where(m => m.Type == ModifierType.Percent).Sum(m => m.Value);
+            GetModifierSums(out _, out float percentSum);
+            return percentSum;
         }
 
         /// <summary>
@@ -272,8 +280,7 @@ namespace UnityGAS
 
             float finalValue = normalizedBase;
 
-            var flatModifiers = modifiers.Where(m => m.Type == ModifierType.Flat).Sum(m => m.Value);
-            var percentModifiers = modifiers.Where(m => m.Type == ModifierType.Percent).Sum(m => m.Value);
+            GetModifierSums(out float flatModifiers, out float percentModifiers);
 
             finalValue += flatModifiers;
             finalValue *= (1f + percentModifiers);
@@ -285,6 +292,27 @@ namespace UnityGAS
                 OnValueChanged?.Invoke(oldValue, CurrentValue);
                 if (CurrentValue < oldValue)
                     lastDamageTime = Time.time;
+            }
+        }
+
+        /// <summary>
+        /// 책임 : 현재 modifier 합계를 할당 없이 한 번의 순회로 계산해 장비 변경과 매 프레임 재계산 비용을 줄인다.
+        /// </summary>
+        private void GetModifierSums(out float flatSum, out float percentSum)
+        {
+            flatSum = 0f;
+            percentSum = 0f;
+
+            for (int i = 0; i < modifiers.Count; i++)
+            {
+                AttributeModifier modifier = modifiers[i];
+                if (modifier == null)
+                    continue;
+
+                if (modifier.Type == ModifierType.Flat)
+                    flatSum += modifier.Value;
+                else if (modifier.Type == ModifierType.Percent)
+                    percentSum += modifier.Value;
             }
         }
     }

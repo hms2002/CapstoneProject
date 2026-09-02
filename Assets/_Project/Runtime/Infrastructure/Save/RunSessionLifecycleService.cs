@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 책임: 런 시작과 종료 경계에서 저장 데이터, 진행 상태, 후속 저장 동작을 일관되게 정리한다.
+/// </summary>
 internal static class RunSessionLifecycleService
 {
     public static void StartRun(GamePlayData data, Action clearPendingRunProgress)
@@ -16,6 +19,10 @@ internal static class RunSessionLifecycleService
         data.runRemainingSeconds = 0f;
         data.pendingHubReturnFullHeal = false;
         data.pendingHubLoadFullHeal = false;
+        data.defeatedBossIds ??= new List<string>();
+        data.defeatedBossIds.Clear();
+        data.dungeonRunStates ??= new List<DungeonRunStateData>();
+        data.dungeonRunStates.Clear();
     }
 
     public static void EndRun(
@@ -40,13 +47,232 @@ internal static class RunSessionLifecycleService
         data.pendingTransition = null;
         data.pendingPlayerState = null;
         data.pendingHubReturnFullHeal = reason != RunEndReason.None;
+        data.defeatedBossIds ??= new List<string>();
+        data.defeatedBossIds.Clear();
+        data.dungeonRunStates ??= new List<DungeonRunStateData>();
+        data.dungeonRunStates.Clear();
         RunSessionStateService.ResetLevelProgression(data);
         clearRoutePlan?.Invoke();
     }
 }
 
+/// <summary>
+/// 책임: 한 런에 귀속되는 보스, 던전, 플레이어 전환 및 레벨 진행 상태를 조회하고 변경한다.
+/// </summary>
 internal static class RunSessionStateService
 {
+    public static bool HasDefeatedBoss(GamePlayData data, string bossId)
+    {
+        if (data?.defeatedBossIds == null || string.IsNullOrWhiteSpace(bossId))
+            return false;
+
+        return data.defeatedBossIds.Exists(
+            candidate => string.Equals(candidate, bossId, StringComparison.Ordinal));
+    }
+
+    public static void MarkBossDefeated(GamePlayData data, string bossId)
+    {
+        if (data == null || string.IsNullOrWhiteSpace(bossId))
+            return;
+
+        data.defeatedBossIds ??= new List<string>();
+        if (!HasDefeatedBoss(data, bossId))
+            data.defeatedBossIds.Add(bossId);
+    }
+
+    public static int ResolveDungeonSeed(
+        GamePlayData data,
+        string dungeonId,
+        DungeonReentryPolicy policy,
+        int fallbackSeed)
+    {
+        if (data == null || !data.isRunActive || string.IsNullOrWhiteSpace(dungeonId))
+            return fallbackSeed;
+
+        data.dungeonRunStates ??= new List<DungeonRunStateData>();
+        DungeonRunStateData state = FindDungeonState(data, dungeonId);
+
+        if (policy == DungeonReentryPolicy.RegenerateOnEntry)
+        {
+            if (state != null)
+                data.dungeonRunStates.Remove(state);
+
+            return Guid.NewGuid().GetHashCode();
+        }
+
+        state ??= CreateDungeonState(data, dungeonId);
+        if (!state.hasResolvedSeed)
+        {
+            state.resolvedSeed = Guid.NewGuid().GetHashCode();
+            state.hasResolvedSeed = true;
+        }
+
+        if (policy == DungeonReentryPolicy.ResetContentsKeepLayout)
+        {
+            state.objectStates ??= new List<DungeonObjectRuntimeStateData>();
+            state.objectStates.Clear();
+        }
+
+        return state.resolvedSeed;
+    }
+
+    public static bool TryGetDungeonObjectStates(
+        GamePlayData data,
+        string dungeonId,
+        List<DungeonObjectRuntimeStateData> destination)
+    {
+        if (destination == null)
+            return false;
+
+        destination.Clear();
+        DungeonRunStateData state = FindDungeonState(data, dungeonId);
+        if (state?.objectStates == null || state.objectStates.Count == 0)
+            return false;
+
+        for (int i = 0; i < state.objectStates.Count; i++)
+        {
+            DungeonObjectRuntimeStateData source = state.objectStates[i];
+            if (source == null)
+                continue;
+
+            destination.Add(CloneDungeonObjectState(source));
+        }
+
+        return destination.Count > 0;
+    }
+
+    public static void SaveDungeonObjectStates(
+        GamePlayData data,
+        string dungeonId,
+        IReadOnlyList<DungeonObjectRuntimeStateData> states)
+    {
+        if (data == null || !data.isRunActive || string.IsNullOrWhiteSpace(dungeonId))
+            return;
+
+        data.dungeonRunStates ??= new List<DungeonRunStateData>();
+        DungeonRunStateData state = FindDungeonState(data, dungeonId) ??
+                                    CreateDungeonState(data, dungeonId);
+        state.objectStates ??= new List<DungeonObjectRuntimeStateData>();
+        state.objectStates.Clear();
+
+        if (states == null)
+            return;
+
+        for (int i = 0; i < states.Count; i++)
+        {
+            DungeonObjectRuntimeStateData source = states[i];
+            if (source == null || string.IsNullOrWhiteSpace(source.stateId))
+                continue;
+
+            state.objectStates.Add(CloneDungeonObjectState(source));
+        }
+    }
+
+    public static bool TryGetDungeonMapDiscovery(
+        GamePlayData data,
+        string dungeonId,
+        List<int> visitedRoomPlacementIds,
+        List<int> revealedRoomPlacementIds)
+    {
+        if (visitedRoomPlacementIds == null || revealedRoomPlacementIds == null)
+            return false;
+
+        visitedRoomPlacementIds.Clear();
+        revealedRoomPlacementIds.Clear();
+        DungeonRunStateData state = FindDungeonState(data, dungeonId);
+        if (state == null)
+            return false;
+
+        CopyUniqueRoomPlacementIds(state.visitedRoomPlacementIds, visitedRoomPlacementIds);
+        CopyUniqueRoomPlacementIds(state.revealedRoomPlacementIds, revealedRoomPlacementIds);
+        return visitedRoomPlacementIds.Count > 0 || revealedRoomPlacementIds.Count > 0;
+    }
+
+    public static void SaveDungeonMapDiscovery(
+        GamePlayData data,
+        string dungeonId,
+        IReadOnlyList<int> visitedRoomPlacementIds,
+        IReadOnlyList<int> revealedRoomPlacementIds)
+    {
+        if (data == null || !data.isRunActive || string.IsNullOrWhiteSpace(dungeonId))
+            return;
+
+        data.dungeonRunStates ??= new List<DungeonRunStateData>();
+        DungeonRunStateData state = FindDungeonState(data, dungeonId) ??
+                                    CreateDungeonState(data, dungeonId);
+        state.visitedRoomPlacementIds ??= new List<int>();
+        state.revealedRoomPlacementIds ??= new List<int>();
+        state.visitedRoomPlacementIds.Clear();
+        state.revealedRoomPlacementIds.Clear();
+        CopyUniqueRoomPlacementIds(visitedRoomPlacementIds, state.visitedRoomPlacementIds);
+        CopyUniqueRoomPlacementIds(revealedRoomPlacementIds, state.revealedRoomPlacementIds);
+    }
+
+    private static void CopyUniqueRoomPlacementIds(
+        IReadOnlyList<int> source,
+        List<int> destination)
+    {
+        if (source == null || destination == null)
+            return;
+
+        var uniqueIds = new HashSet<int>();
+        for (int i = 0; i < source.Count; i++)
+        {
+            int placementId = source[i];
+            if (placementId >= 0 && uniqueIds.Add(placementId))
+                destination.Add(placementId);
+        }
+    }
+
+    private static DungeonObjectRuntimeStateData CloneDungeonObjectState(
+        DungeonObjectRuntimeStateData source)
+    {
+        var clone = new DungeonObjectRuntimeStateData
+        {
+            stateId = source.stateId,
+            isPresent = source.isPresent,
+            isActive = source.isActive,
+            isChestOpened = source.isChestOpened,
+            chestLoot = new List<DungeonChestLootRuntimeStateData>()
+        };
+
+        if (source.chestLoot == null)
+            return clone;
+
+        for (int i = 0; i < source.chestLoot.Count; i++)
+        {
+            DungeonChestLootRuntimeStateData loot = source.chestLoot[i];
+            if (loot == null)
+                continue;
+
+            clone.chestLoot.Add(new DungeonChestLootRuntimeStateData
+            {
+                slotIndex = loot.slotIndex,
+                item = loot.item,
+                relicLevel = loot.relicLevel
+            });
+        }
+
+        return clone;
+    }
+
+    private static DungeonRunStateData FindDungeonState(GamePlayData data, string dungeonId)
+    {
+        if (data?.dungeonRunStates == null || string.IsNullOrWhiteSpace(dungeonId))
+            return null;
+
+        return data.dungeonRunStates.Find(
+            candidate => candidate != null &&
+                         string.Equals(candidate.dungeonId, dungeonId, StringComparison.Ordinal));
+    }
+
+    private static DungeonRunStateData CreateDungeonState(GamePlayData data, string dungeonId)
+    {
+        var state = new DungeonRunStateData { dungeonId = dungeonId };
+        data.dungeonRunStates.Add(state);
+        return state;
+    }
+
     public static void SetRunRemainingSeconds(GamePlayData data, float remainingSeconds)
     {
         if (data == null)
@@ -260,6 +486,10 @@ internal static class RunSessionStateService
         data.pendingPlayerState = null;
         data.pendingHubReturnFullHeal = false;
         data.pendingHubLoadFullHeal = false;
+        data.defeatedBossIds ??= new List<string>();
+        data.defeatedBossIds.Clear();
+        data.dungeonRunStates ??= new List<DungeonRunStateData>();
+        data.dungeonRunStates.Clear();
         ResetLevelProgression(data);
         clearPendingRunProgress?.Invoke();
     }

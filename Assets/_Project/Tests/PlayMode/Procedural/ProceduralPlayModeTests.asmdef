@@ -1,0 +1,11 @@
+{
+  "name": "ProceduralPlayModeTests",
+  "references": [
+    "Gameplay",
+    "Core",
+    "Infrastructure"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
