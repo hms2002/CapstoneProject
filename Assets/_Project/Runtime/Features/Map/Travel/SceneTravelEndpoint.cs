@@ -14,6 +14,7 @@ public sealed class SceneTravelEndpoint : MonoBehaviour
     [SerializeField] private SceneConnectionEndpointSide connectionSide;
     [SerializeField] private Transform departureAnchor;
     [SerializeField] private Transform arrivalAnchor;
+    [SerializeField] private bool registerAsArrivalOnly;
     [SerializeField] private List<GameplayTagSet> sceneTravelCleanupTagSets = new();
 
     private bool isTravelReserved;
@@ -27,7 +28,8 @@ public sealed class SceneTravelEndpoint : MonoBehaviour
     public Transform ArrivalAnchor => arrivalAnchor != null ? arrivalAnchor : transform;
     public IReadOnlyList<GameplayTagSet> SceneTravelCleanupTagSets => sceneTravelCleanupTagSets;
     public bool IsTravelReserved => isTravelReserved;
-    public bool IsBound => connection != null && !string.IsNullOrWhiteSpace(endpointId);
+    public bool IsBound => !string.IsNullOrWhiteSpace(endpointId) && (connection != null || registerAsArrivalOnly);
+    public bool RegisterAsArrivalOnly => registerAsArrivalOnly;
 
     private void OnEnable()
     {
@@ -88,6 +90,7 @@ public sealed class SceneTravelEndpoint : MonoBehaviour
         Unregister();
         connection = targetConnection;
         connectionSide = targetSide;
+        registerAsArrivalOnly = false;
         endpointId = source.EndpointId;
         Register();
         return isRegistered;
@@ -120,6 +123,16 @@ public sealed class SceneTravelEndpoint : MonoBehaviour
         proceduralSlotId = slotId ?? string.Empty;
         connection = targetConnection;
         connectionSide = targetSide;
+        registerAsArrivalOnly = false;
+    }
+
+    public void EditorConfigureArrivalOnly(string id)
+    {
+        endpointId = id ?? string.Empty;
+        proceduralSlotId = string.Empty;
+        connection = null;
+        connectionSide = SceneConnectionEndpointSide.A;
+        registerAsArrivalOnly = true;
     }
 
     private void OnValidate()

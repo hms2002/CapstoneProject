@@ -51,6 +51,7 @@ public sealed class ScenePortal : InteractableBase
     private GameFlowInputBlocker entranceInputBlocker;
     private object oneShotDestinationOverrideOwner;
     private string oneShotDestinationOverrideSceneName;
+    private IScenePortalAccessRule[] accessRules = Array.Empty<IScenePortalAccessRule>();
 
     private MaterialPropertyBlock propBlock;
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
@@ -69,6 +70,7 @@ public sealed class ScenePortal : InteractableBase
     private void Awake()
     {
         EnsurePortalId();
+        RefreshAccessRules();
 
         propBlock = new MaterialPropertyBlock();
         OnUnHighlight();
@@ -76,6 +78,7 @@ public sealed class ScenePortal : InteractableBase
 
     private void OnEnable()
     {
+        RefreshAccessRules();
         EnsurePendingStartRunPlan();
     }
 
@@ -146,6 +149,9 @@ public sealed class ScenePortal : InteractableBase
     public override void OnPlayerInteract(IPlayerInteractor player)
     {
         if (!CanInteract(player))
+            return;
+
+        if (!CanPassAccessRules(player))
             return;
 
         isTransitioning = true;
@@ -408,6 +414,33 @@ public sealed class ScenePortal : InteractableBase
             return;
 
         RunRoutePlayback.EnsurePendingPlan(this);
+    }
+
+    private void RefreshAccessRules()
+    {
+        accessRules = GetComponents<IScenePortalAccessRule>();
+    }
+
+    private bool CanPassAccessRules(IPlayerInteractor player)
+    {
+        if (accessRules == null || accessRules.Length == 0)
+            return true;
+
+        for (int i = 0; i < accessRules.Length; i++)
+        {
+            IScenePortalAccessRule rule = accessRules[i];
+            if (rule == null ||
+                rule is Behaviour { isActiveAndEnabled: false } ||
+                rule.CanAccess(this, player))
+            {
+                continue;
+            }
+
+            rule.HandleAccessDenied(this, player);
+            return false;
+        }
+
+        return true;
     }
 
     private bool HasDuplicatePortalId()

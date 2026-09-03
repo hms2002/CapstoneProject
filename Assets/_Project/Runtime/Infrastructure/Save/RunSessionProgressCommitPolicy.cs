@@ -30,7 +30,10 @@ internal static class RunSessionProgressCommitPolicy
             request.PersistentData.totalPlaySeconds += Mathf.Max(0f, request.RunData.runElapsedSeconds);
 
         if (request.RunData.lastRunEndReason == RunEndReason.Victory)
+        {
             request.PersistentData.clearCount += 1;
+            CommitClearedBosses(request.RunData, request.PersistentData);
+        }
 
         CommitPendingAffectionChanges(request.RunData, request.PersistentData);
         CommitPendingShortcutUnlocks(request.RunData, request.PersistentData);
@@ -50,8 +53,26 @@ internal static class RunSessionProgressCommitPolicy
         runData.pendingRunShortcutUnlocks.Clear();
         runData.pendingRunSpecialNpcConstructionStarts ??= new List<PendingRunSpecialNpcConstructionStart>();
         runData.pendingRunSpecialNpcConstructionStarts.Clear();
+        runData.pendingRunMapEventPlacements ??= new List<PendingRunMapEventPlacement>();
+        runData.pendingRunMapEventPlacements.Clear();
         runData.merchantStates ??= new List<MerchantRuntimeState>();
         runData.merchantStates.Clear();
+    }
+
+    private static void CommitClearedBosses(GamePlayData runData, GameData gameData)
+    {
+        if (runData.defeatedBossIds == null || runData.defeatedBossIds.Count == 0)
+            return;
+
+        gameData.bossClearProgressData ??= new BossClearProgressSaveData();
+        gameData.bossClearProgressData.clearedBossThemeIds ??= new List<string>();
+
+        for (int i = 0; i < runData.defeatedBossIds.Count; i++)
+        {
+            string bossId = runData.defeatedBossIds[i];
+            if (!string.IsNullOrWhiteSpace(bossId))
+                gameData.bossClearProgressData.MarkCleared(bossId);
+        }
     }
 
     private static void CommitPendingAffectionChanges(GamePlayData runData, GameData gameData)

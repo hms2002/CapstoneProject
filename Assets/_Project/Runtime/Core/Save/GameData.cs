@@ -117,6 +117,38 @@ public class BossDialogueSaveData
     }
 }
 
+/// <summary>
+/// 책임 : 영구 진행도에서 보스 테마별 클리어 여부를 보관하고 조회한다.
+/// </summary>
+[System.Serializable]
+public class BossClearProgressSaveData
+{
+    public List<string> clearedBossThemeIds = new List<string>();
+
+    public bool HasCleared(string bossThemeId)
+    {
+        if (clearedBossThemeIds == null || string.IsNullOrWhiteSpace(bossThemeId))
+            return false;
+
+        string normalizedId = bossThemeId.Trim();
+        return clearedBossThemeIds.Exists(candidate => string.Equals(candidate, normalizedId, System.StringComparison.Ordinal));
+    }
+
+    public bool MarkCleared(string bossThemeId)
+    {
+        if (string.IsNullOrWhiteSpace(bossThemeId))
+            return false;
+
+        clearedBossThemeIds ??= new List<string>();
+        string normalizedId = bossThemeId.Trim();
+        if (HasCleared(normalizedId))
+            return false;
+
+        clearedBossThemeIds.Add(normalizedId);
+        return true;
+    }
+}
+
 // =========================================================
 // Run-internal special NPC state
 // =========================================================
@@ -285,6 +317,7 @@ public class GameData
     public MapSaveData mapData = new MapSaveData();
     public AffectionSaveData affectionData = new AffectionSaveData();
     public BossDialogueSaveData bossDialogueData = new BossDialogueSaveData();
+    public BossClearProgressSaveData bossClearProgressData = new BossClearProgressSaveData();
     public RunSpecialNpcSaveData runSpecialNpcData = new RunSpecialNpcSaveData();
     public TutorialSaveData tutorialData = new TutorialSaveData();
 

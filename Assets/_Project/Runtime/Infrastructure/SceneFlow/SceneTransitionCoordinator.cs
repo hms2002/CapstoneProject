@@ -224,6 +224,10 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
 
         if (loadOperation == null)
         {
+            Debug.LogError(
+                $"[SceneTransitionCoordinator] LoadSceneAsync returned null for scene '{targetSceneName}'. Check scene name and Build Settings registration.",
+                this);
+
             if (loadingOverlay != null)
             {
                 fadeService.ShowBlackImmediately();

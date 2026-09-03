@@ -47,6 +47,36 @@ public sealed class PendingRunSpecialNpcConstructionStart
 }
 
 /// <summary>
+/// 책임 : 현재 런에서 절차 이벤트가 후속 복도에 강제로 배치해야 하는 방 요청을 저장하는 직렬화 DTO다.
+/// </summary>
+[System.Serializable]
+public sealed class PendingRunMapEventPlacement
+{
+    public string eventId;
+    public string followUpId;
+    public string sourceRouteThemeId;
+    public string targetRouteThemeId;
+    public bool consumeOnNextUnvisitedRoute;
+    public int payloadCount;
+
+    public PendingRunMapEventPlacement(
+        string eventId,
+        string followUpId,
+        string sourceRouteThemeId,
+        string targetRouteThemeId,
+        bool consumeOnNextUnvisitedRoute,
+        int payloadCount)
+    {
+        this.eventId = eventId;
+        this.followUpId = followUpId;
+        this.sourceRouteThemeId = sourceRouteThemeId;
+        this.targetRouteThemeId = targetRouteThemeId;
+        this.consumeOnNextUnvisitedRoute = consumeOnNextUnvisitedRoute;
+        this.payloadCount = payloadCount;
+    }
+}
+
+/// <summary>
 /// 책임 : PreserveDuringRun 던전의 개봉 상자에서 아직 획득하지 않은 슬롯 아이템과 유물 레벨을 저장한다.
 /// </summary>
 [System.Serializable]
@@ -112,5 +142,9 @@ public sealed class GamePlayData
     public System.Collections.Generic.List<PendingRunAffectionChange> pendingRunAffectionChanges = new System.Collections.Generic.List<PendingRunAffectionChange>();
     public System.Collections.Generic.List<PendingRunShortcutUnlock> pendingRunShortcutUnlocks = new System.Collections.Generic.List<PendingRunShortcutUnlock>();
     public System.Collections.Generic.List<PendingRunSpecialNpcConstructionStart> pendingRunSpecialNpcConstructionStarts = new System.Collections.Generic.List<PendingRunSpecialNpcConstructionStart>();
+    public System.Collections.Generic.List<string> visitedRunMapEventRouteThemeIds = new System.Collections.Generic.List<string>();
+    public System.Collections.Generic.List<string> presentedRunMapEventIds = new System.Collections.Generic.List<string>();
+    public System.Collections.Generic.List<string> completedRunMapEventIds = new System.Collections.Generic.List<string>();
+    public System.Collections.Generic.List<PendingRunMapEventPlacement> pendingRunMapEventPlacements = new System.Collections.Generic.List<PendingRunMapEventPlacement>();
     public System.Collections.Generic.List<MerchantRuntimeState> merchantStates = new System.Collections.Generic.List<MerchantRuntimeState>();
 }
