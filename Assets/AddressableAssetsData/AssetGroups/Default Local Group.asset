@@ -14,7 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
   m_GroupName: Default Local Group
   m_GUID: 30a1899b33c5feb459edbb68b99d2156
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 712218a34b8e05b48b2d5814ae617e48
+    m_Address: Assets/_Project/Art/Tilemaps/TilePallet_Tile/GrandHall_Tilemap.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
   m_SchemaSet:
