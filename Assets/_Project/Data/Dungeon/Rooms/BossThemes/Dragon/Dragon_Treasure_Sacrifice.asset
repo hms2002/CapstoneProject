@@ -655,9 +655,10 @@ MonoBehaviour:
       prefab: {fileID: 1718124053476297701, guid: fd20831272af9f04692453e99a04a668, type: 3}
       monsterSpawnRole: 0
       monsterStageSet: {fileID: 0}
-      localCell: {x: 6, y: 1}
-      localOffset: {x: -0.01999998, y: 0.49}
+      localCell: {x: 6, y: 2}
+      localOffset: {x: 0, y: -0.5}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: 
     travelEndpointPlacements: []

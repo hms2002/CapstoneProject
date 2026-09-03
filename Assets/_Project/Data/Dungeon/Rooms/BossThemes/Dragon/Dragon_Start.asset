@@ -41,6 +41,7 @@ MonoBehaviour:
       minimumGraphDistanceFromStart: 0
       requireDeadEnd: 0
   buildData:
+    underFloorTiles: []
     floorTiles:
     - localCell: {x: 0, y: 3}
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
@@ -154,6 +155,8 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 2d34f38ff2c1419438979669663b50b5, type: 2}
     - localCell: {x: 11, y: 4}
       tile: {fileID: 11400000, guid: 59a5642b36711c149ab5f49a54ee62bb, type: 2}
+    floorDetailTiles: []
+    groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 0}
       tile: {fileID: 11400000, guid: 3aa57dcf747bdac4f893d924cfd9974b, type: 2}
@@ -251,16 +254,19 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 11, y: 7}
       tile: {fileID: 11400000, guid: 8907c6aae7ce28146850ab42c0389ea1, type: 2}
+    wallDetailTiles: []
+    foregroundTiles: []
+    overlayFxTiles: []
     objectPlacements: []
     travelEndpointPlacements:
     - slotId: LobbyGate
       kind: 1
       mediumPrefab: {fileID: 0}
       localCell: {x: 0, y: 4}
-      localOffset: {x: 0.00999999, y: 0}
+      localOffset: {x: 0.100000024, y: 0}
       localRotationDegrees: 0
-      localScale: {x: 2, y: 3, z: 1}
+      localScale: {x: 1, y: 1, z: 1}
       triggerSize: {x: 1, y: 1}
       useSeparateArrivalPoint: 1
-      arrivalLocalCell: {x: 1, y: 4}
-      arrivalLocalOffset: {x: 0.014070988, y: 0}
+      arrivalLocalCell: {x: 10, y: 4}
+      arrivalLocalOffset: {x: 0.009242058, y: 0}

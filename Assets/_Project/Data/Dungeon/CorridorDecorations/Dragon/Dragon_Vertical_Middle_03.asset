@@ -21,39 +21,33 @@ MonoBehaviour:
     floorTiles:
     - localCell: {x: 0, y: 0}
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 1, y: 0}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 0, y: 1}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 1, y: 1}
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 0, y: 2}
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 1, y: 0}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+    - localCell: {x: 1, y: 1}
+      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 1, y: 2}
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    floorDetailTiles:
-    - localCell: {x: 0, y: 1}
-      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
-    groundDecorationTiles:
-    - localCell: {x: 1, y: 1}
-      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
+    floorDetailTiles: []
+    groundDecorationTiles: []
     wallTiles:
     - localCell: {x: -1, y: 0}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
-    - localCell: {x: 2, y: 0}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: -1, y: 1}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
-    - localCell: {x: 2, y: 1}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: -1, y: 2}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
-    - localCell: {x: 2, y: 2}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
-    wallDetailTiles: []
-    foregroundTiles:
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 2, y: 0}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 2, y: 1}
-      tile: {fileID: 11400000, guid: c2f639f00806343408ea7dbd0561a5e9, type: 2}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    - localCell: {x: 2, y: 2}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+    wallDetailTiles: []
+    foregroundTiles: []
     overlayFxTiles: []
     objectPlacements: []
     travelEndpointPlacements: []
