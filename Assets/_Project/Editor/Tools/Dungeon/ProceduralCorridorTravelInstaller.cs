@@ -755,7 +755,8 @@ public static class ProceduralCorridorTravelInstaller
             SceneTravelRunAction.None,
             lobbyTravelProfile,
             SceneTravelGateKind.None,
-            null);
+            null,
+            enabled: false);
         serialized.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(connection);
         AssetDatabase.SaveAssetIfDirty(connection);

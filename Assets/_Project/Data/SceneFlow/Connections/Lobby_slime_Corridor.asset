@@ -33,7 +33,7 @@ MonoBehaviour:
     gates: []
     presentationProfile: {fileID: 11400000, guid: e4a198bcc44a4ea0b58f915d8f730fa1, type: 2}
   bToA:
-    enabled: 1
+    enabled: 0
     runAction: 0
     runEndReason: 0
     preservePlayerRuntimeState: 1
