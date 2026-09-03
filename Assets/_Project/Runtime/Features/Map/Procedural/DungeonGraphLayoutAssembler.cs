@@ -13,6 +13,9 @@ using UnityEngine;
 /// </summary>
 public sealed class DungeonGraphLayoutAssembler
 {
+    private const double DefaultExactSocketDirectionMatchWeightMultiplier = 3d;
+    private const double DefaultExtraSocketDirectionWeightMultiplier = 0.45d;
+
     private static readonly RoomSocketDirection[] AllDirections =
     {
         RoomSocketDirection.Up,
@@ -267,6 +270,7 @@ public sealed class DungeonGraphLayoutAssembler
                     out lastFailure) ||
                 !TrySelectTemplatesAndSockets(
                     library,
+                    policy,
                     guaranteedRoomTemplates,
                     topology,
                     random,
@@ -1229,6 +1233,7 @@ public sealed class DungeonGraphLayoutAssembler
 
     private static bool TrySelectTemplatesAndSockets(
         RoomThemeLibrarySO library,
+        DungeonLayoutPolicySO policy,
         IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
         TopologyDraft topology,
         System.Random random,
@@ -1264,7 +1269,11 @@ public sealed class DungeonGraphLayoutAssembler
                     }
                 }
 
-                selectedTemplate = SelectWeightedTemplate(candidates, random);
+                selectedTemplate = SelectWeightedTemplate(
+                    candidates,
+                    requiredDirections,
+                    policy,
+                    random);
             }
 
             if (selectedTemplate == null)
@@ -2003,23 +2012,111 @@ public sealed class DungeonGraphLayoutAssembler
 
     private static RoomTemplateSO SelectWeightedTemplate(
         IReadOnlyList<RoomTemplateSO> candidates,
+        IReadOnlyList<RoomSocketDirection> requiredDirections,
+        DungeonLayoutPolicySO policy,
         System.Random random)
     {
         double totalWeight = 0d;
         for (int i = 0; i < candidates.Count; i++)
-            totalWeight += candidates[i].LayoutData.selectionWeight;
+            totalWeight += CalculateSocketFitAdjustedWeight(
+                candidates[i],
+                requiredDirections,
+                policy);
         if (totalWeight <= 0d)
             return null;
 
         double selectedWeight = random.NextDouble() * totalWeight;
         for (int i = 0; i < candidates.Count; i++)
         {
-            selectedWeight -= candidates[i].LayoutData.selectionWeight;
+            selectedWeight -= CalculateSocketFitAdjustedWeight(
+                candidates[i],
+                requiredDirections,
+                policy);
             if (selectedWeight <= 0d)
                 return candidates[i];
         }
 
         return candidates.Count > 0 ? candidates[candidates.Count - 1] : null;
+    }
+
+    private static double CalculateSocketFitAdjustedWeight(
+        RoomTemplateSO template,
+        IReadOnlyList<RoomSocketDirection> requiredDirections,
+        DungeonLayoutPolicySO policy)
+    {
+        if (template == null)
+            return 0d;
+
+        float baseWeight = template.LayoutData.selectionWeight;
+        if (baseWeight <= 0f || float.IsNaN(baseWeight) || float.IsInfinity(baseWeight))
+            return 0d;
+
+        int extraDirectionCount = CountExtraValidSocketDirections(
+            template.LayoutData,
+            requiredDirections);
+        double exactMatchMultiplier = policy != null
+            ? policy.ExactSocketDirectionMatchWeightMultiplier
+            : DefaultExactSocketDirectionMatchWeightMultiplier;
+        double extraSocketMultiplier = policy != null
+            ? policy.ExtraSocketDirectionWeightMultiplier
+            : DefaultExtraSocketDirectionWeightMultiplier;
+        double fitMultiplier = extraDirectionCount == 0
+            ? exactMatchMultiplier
+            : System.Math.Pow(extraSocketMultiplier, extraDirectionCount);
+        return baseWeight * fitMultiplier;
+    }
+
+    private static int CountExtraValidSocketDirections(
+        RoomLayoutData layout,
+        IReadOnlyList<RoomSocketDirection> requiredDirections)
+    {
+        int extraDirectionCount = 0;
+        RectInt bounds = ResolveLocalBounds(layout);
+        for (int directionIndex = 0; directionIndex < AllDirections.Length; directionIndex++)
+        {
+            RoomSocketDirection direction = AllDirections[directionIndex];
+            if (IsRequiredDirection(requiredDirections, direction))
+                continue;
+
+            if (HasValidSocketInDirection(layout, bounds, direction))
+                extraDirectionCount++;
+        }
+
+        return extraDirectionCount;
+    }
+
+    private static bool HasValidSocketInDirection(
+        RoomLayoutData layout,
+        RectInt bounds,
+        RoomSocketDirection direction)
+    {
+        if (layout.sockets == null)
+            return false;
+
+        for (int socketIndex = 0; socketIndex < layout.sockets.Count; socketIndex++)
+        {
+            RoomSocketData socket = layout.sockets[socketIndex];
+            if (socket.direction == direction && RoomSocketGeometry.IsValid(socket, bounds))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsRequiredDirection(
+        IReadOnlyList<RoomSocketDirection> requiredDirections,
+        RoomSocketDirection direction)
+    {
+        if (requiredDirections == null)
+            return false;
+
+        for (int directionIndex = 0; directionIndex < requiredDirections.Count; directionIndex++)
+        {
+            if (requiredDirections[directionIndex] == direction)
+                return true;
+        }
+
+        return false;
     }
 
     private static void CollectAllowedBossMovementDirections(

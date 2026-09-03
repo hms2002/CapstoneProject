@@ -8,6 +8,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "DungeonLayoutPolicy", menuName = "Gameplay/Dungeon/Layout Policy")]
 public sealed class DungeonLayoutPolicySO : ScriptableObject
 {
+    private const float DefaultExactSocketDirectionMatchWeightMultiplier = 3f;
+    private const float DefaultExtraSocketDirectionWeightMultiplier = 0.45f;
+
     [Header("Map Scale")]
     [SerializeField, Min(2)] private int recommendedMinimumRoomCount = 12;
     [SerializeField, Min(2)] private int recommendedMaximumRoomCount = 18;
@@ -22,6 +25,16 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
     [SerializeField, Min(0)] private int minimumCycleConnections = 1;
     [SerializeField, Min(0)] private int maximumCycleConnections = 2;
     [SerializeField, Min(1)] private int maximumTopologyAttempts = 256;
+
+    [Header("Room Template Selection")]
+    [Tooltip("필요한 연결 방향과 방 템플릿의 유효 소켓 방향이 정확히 일치할 때 곱할 가중치입니다.")]
+    [SerializeField, Min(1f)]
+    private float exactSocketDirectionMatchWeightMultiplier =
+        DefaultExactSocketDirectionMatchWeightMultiplier;
+    [Tooltip("필요한 방향 외의 유효 소켓 방향이 하나 늘어날 때마다 곱할 가중치입니다.")]
+    [SerializeField, Range(0.01f, 1f)]
+    private float extraSocketDirectionWeightMultiplier =
+        DefaultExtraSocketDirectionWeightMultiplier;
 
     [Header("Guaranteed Room Roles")]
     [SerializeField, Min(0)] private int treasureRoomCount = 1;
@@ -39,6 +52,14 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
     public int MinimumCycleConnections => Mathf.Max(0, minimumCycleConnections);
     public int MaximumCycleConnections => Mathf.Max(MinimumCycleConnections, maximumCycleConnections);
     public int MaximumTopologyAttempts => Mathf.Max(1, maximumTopologyAttempts);
+    public float ExactSocketDirectionMatchWeightMultiplier =>
+        exactSocketDirectionMatchWeightMultiplier > 0f
+            ? Mathf.Max(1f, exactSocketDirectionMatchWeightMultiplier)
+            : DefaultExactSocketDirectionMatchWeightMultiplier;
+    public float ExtraSocketDirectionWeightMultiplier =>
+        extraSocketDirectionWeightMultiplier > 0f
+            ? Mathf.Clamp(extraSocketDirectionWeightMultiplier, 0.01f, 1f)
+            : DefaultExtraSocketDirectionWeightMultiplier;
     public int TreasureRoomCount => Mathf.Max(0, treasureRoomCount);
     public int EventRoomCount => Mathf.Max(0, eventRoomCount);
     public int ShopRoomCount => Mathf.Max(0, shopRoomCount);
@@ -81,6 +102,8 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
         minimumCycleConnections = Mathf.Max(0, minimumCycles);
         maximumCycleConnections = Mathf.Max(minimumCycleConnections, maximumCycles);
         maximumTopologyAttempts = Mathf.Max(1, topologyAttempts);
+        exactSocketDirectionMatchWeightMultiplier = ExactSocketDirectionMatchWeightMultiplier;
+        extraSocketDirectionWeightMultiplier = ExtraSocketDirectionWeightMultiplier;
         treasureRoomCount = Mathf.Max(0, requiredTreasureRooms);
         eventRoomCount = Mathf.Max(0, requiredEventRooms);
         shopRoomCount = Mathf.Max(0, requiredShopRooms);
@@ -99,6 +122,8 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
         minimumCycleConnections = Mathf.Max(0, minimumCycleConnections);
         maximumCycleConnections = Mathf.Max(minimumCycleConnections, maximumCycleConnections);
         maximumTopologyAttempts = Mathf.Max(1, maximumTopologyAttempts);
+        exactSocketDirectionMatchWeightMultiplier = ExactSocketDirectionMatchWeightMultiplier;
+        extraSocketDirectionWeightMultiplier = ExtraSocketDirectionWeightMultiplier;
         treasureRoomCount = Mathf.Max(0, treasureRoomCount);
         eventRoomCount = Mathf.Max(0, eventRoomCount);
         shopRoomCount = Mathf.Max(0, shopRoomCount);

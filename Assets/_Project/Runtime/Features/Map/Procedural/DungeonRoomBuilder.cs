@@ -59,6 +59,7 @@ public struct ProceduralRoomTravelBinding
 /// - 테마 씬에서 추출한 바닥/벽 변형 타일을 레이아웃 Seed와 셀 좌표로 결정해 같은 맵을 항상 같은 모습으로 구현한다.
 /// - 테마 복도 장식 프로필의 레이어별 모듈과 Pivot 기반 GroundProp을 연결 길이와 방향에 맞춰 조합한다.
 /// - 방 템플릿의 이동 슬롯을 씬별 연결 binding과 결합해 상호작용·trigger·도착 전용 endpoint로 구현한다.
+/// - 생성된 방/복도 bounds에 padding을 더한 영역만 별도 Void Fill Tilemap으로 가려 카메라 바깥 빈 공간 노출을 줄인다.
 /// - 모든 방 오브젝트 생성 후 로컬/던전 앵커를 수집하고 NPC 같은 런타임 방 기능의 외부 참조를 연결한다.
 /// - 전투 여부와 무관하게 모든 생성 방에 미니맵 발견용 내부 진입 트리거를 구성한다.
 /// - 전투 잠금 정책이 붙기 전 프로토타입에서는 생성 문을 열린 상태로 시작할 수 있게 한다.
@@ -67,6 +68,9 @@ public struct ProceduralRoomTravelBinding
 public sealed class DungeonRoomBuilder : MonoBehaviour
 {
     private const int RoomEntryBoundaryInsetCells = 1;
+    private const int DefaultVoidFillPaddingCells = 8;
+    private const int VoidFillSortingOrder = 30;
+    private const string VoidFillTilemapName = "GeneratedVoidFill";
 
     [SerializeField] private Tilemap underFloorTilemap;
     [SerializeField] private Tilemap floorTilemap;
@@ -76,6 +80,12 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     [SerializeField] private Tilemap wallDetailTilemap;
     [SerializeField] private Tilemap foregroundTilemap;
     [SerializeField] private Tilemap overlayFxTilemap;
+
+    [Header("Void Fill")]
+    [SerializeField] private Tilemap voidFillTilemap;
+    [SerializeField] private TileBase voidFillTile;
+    [SerializeField, Min(0)] private int voidFillPaddingCells = DefaultVoidFillPaddingCells;
+    [SerializeField] private bool createMissingVoidFillTilemap = true;
 
     [Header("Corridors")]
     [SerializeField] private TileBase corridorFloorTile;
@@ -125,6 +135,9 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     public Tilemap WallDetailTilemap => wallDetailTilemap;
     public Tilemap ForegroundTilemap => foregroundTilemap;
     public Tilemap OverlayFxTilemap => overlayFxTilemap;
+    public Tilemap VoidFillTilemap => voidFillTilemap;
+    public TileBase VoidFillTile => voidFillTile;
+    public int VoidFillPaddingCells => Mathf.Max(0, voidFillPaddingCells);
     public bool HasCompleteTilemapSet
     {
         get
@@ -201,6 +214,13 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         wallDetailTilemap = wallDetail;
         foregroundTilemap = foreground;
         overlayFxTilemap = overlayFx;
+    }
+
+    public void EditorAssignVoidFill(Tilemap tilemap, TileBase tile, int paddingCells)
+    {
+        voidFillTilemap = tilemap;
+        voidFillTile = tile;
+        voidFillPaddingCells = Mathf.Max(0, paddingCells);
     }
 
     public void EditorAssignCorridorTiles(TileBase floorTile, TileBase wallTile)
@@ -408,6 +428,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         }
 
         ClearGeneratedContent();
+        BuildVoidFill(layout);
 
         for (int i = 0; i < layout.Rooms.Count; i++)
         {
@@ -480,6 +501,15 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             assignedLayers.Add(tilemap, layer);
         }
 
+        if (voidFillTilemap != null &&
+            assignedLayers.TryGetValue(voidFillTilemap, out RoomTileLayerKind fixedLayer))
+        {
+            Debug.LogError(
+                $"DungeonRoomBuilder Void Fill must use a Tilemap separate from {fixedLayer}.",
+                this);
+            return false;
+        }
+
         return true;
     }
 
@@ -527,6 +557,10 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             if (tilemap != null && compressed.Add(tilemap))
                 tilemap.CompressBounds();
         }
+
+        Tilemap resolvedVoidFill = ResolveExistingVoidFillTilemap();
+        if (resolvedVoidFill != null && compressed.Add(resolvedVoidFill))
+            resolvedVoidFill.CompressBounds();
     }
 
     private bool ValidateAllSocketWallsBeforeOpening(DungeonLayoutResult layout)
@@ -702,6 +736,175 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             if (tilemap != null && cleared.Add(tilemap))
                 tilemap.ClearAllTiles();
         }
+
+        Tilemap resolvedVoidFill = ResolveExistingVoidFillTilemap();
+        if (resolvedVoidFill != null && cleared.Add(resolvedVoidFill))
+            resolvedVoidFill.ClearAllTiles();
+    }
+
+    private void BuildVoidFill(DungeonLayoutResult layout)
+    {
+        if (voidFillTile == null ||
+            !TryCalculateVoidFillBounds(layout, VoidFillPaddingCells, out RectInt fillBounds))
+        {
+            return;
+        }
+
+        Tilemap target = ResolveVoidFillTilemap();
+        if (target == null)
+            return;
+
+        target.ClearAllTiles();
+        TileBase[] tiles = new TileBase[fillBounds.width * fillBounds.height];
+        for (int i = 0; i < tiles.Length; i++)
+            tiles[i] = voidFillTile;
+
+        target.SetTilesBlock(
+            new BoundsInt(
+                fillBounds.xMin,
+                fillBounds.yMin,
+                0,
+                fillBounds.width,
+                fillBounds.height,
+                1),
+            tiles);
+    }
+
+    private static bool TryCalculateVoidFillBounds(
+        DungeonLayoutResult layout,
+        int paddingCells,
+        out RectInt fillBounds)
+    {
+        fillBounds = default;
+        bool hasBounds = false;
+        int xMin = 0;
+        int yMin = 0;
+        int xMax = 0;
+        int yMax = 0;
+
+        if (layout != null)
+        {
+            for (int i = 0; i < layout.Rooms.Count; i++)
+                IncludeRect(layout.Rooms[i].WorldBounds);
+
+            for (int i = 0; i < layout.Connections.Count; i++)
+                IncludeRect(layout.Connections[i].CorridorBounds);
+        }
+
+        if (!hasBounds)
+            return false;
+
+        int padding = Mathf.Max(0, paddingCells);
+        fillBounds = new RectInt(
+            xMin - padding,
+            yMin - padding,
+            Mathf.Max(1, xMax - xMin + padding * 2),
+            Mathf.Max(1, yMax - yMin + padding * 2));
+        return true;
+
+        void IncludeRect(RectInt rect)
+        {
+            if (rect.width <= 0 || rect.height <= 0)
+                return;
+
+            if (!hasBounds)
+            {
+                xMin = rect.xMin;
+                yMin = rect.yMin;
+                xMax = rect.xMax;
+                yMax = rect.yMax;
+                hasBounds = true;
+                return;
+            }
+
+            xMin = Mathf.Min(xMin, rect.xMin);
+            yMin = Mathf.Min(yMin, rect.yMin);
+            xMax = Mathf.Max(xMax, rect.xMax);
+            yMax = Mathf.Max(yMax, rect.yMax);
+        }
+    }
+
+    private Tilemap ResolveExistingVoidFillTilemap()
+    {
+        if (voidFillTilemap != null)
+            return voidFillTilemap;
+
+        Transform parent = ResolveVoidFillTilemapParent();
+        Transform existing = parent != null ? parent.Find(VoidFillTilemapName) : null;
+        if (existing == null)
+            return null;
+
+        voidFillTilemap = existing.GetComponent<Tilemap>();
+        if (voidFillTilemap == null && createMissingVoidFillTilemap)
+            voidFillTilemap = existing.gameObject.AddComponent<Tilemap>();
+        return voidFillTilemap;
+    }
+
+    private Tilemap ResolveVoidFillTilemap()
+    {
+        Tilemap existing = ResolveExistingVoidFillTilemap();
+        if (existing != null)
+        {
+            ConfigureVoidFillTilemap(existing);
+            return existing;
+        }
+
+        if (!createMissingVoidFillTilemap)
+            return null;
+
+        Transform parent = ResolveVoidFillTilemapParent();
+        if (parent == null)
+            return null;
+
+        GameObject tilemapObject = new(VoidFillTilemapName);
+        tilemapObject.transform.SetParent(parent, false);
+        tilemapObject.transform.SetAsFirstSibling();
+        voidFillTilemap = tilemapObject.AddComponent<Tilemap>();
+        tilemapObject.AddComponent<TilemapRenderer>();
+        ConfigureVoidFillTilemap(voidFillTilemap);
+        return voidFillTilemap;
+    }
+
+    private Transform ResolveVoidFillTilemapParent()
+    {
+        if (floorTilemap != null && floorTilemap.transform.parent != null)
+            return floorTilemap.transform.parent;
+
+        return transform;
+    }
+
+    private static void ConfigureVoidFillTilemap(Tilemap tilemap)
+    {
+        if (tilemap == null)
+            return;
+
+        GameObject tilemapObject = tilemap.gameObject;
+        tilemapObject.layer = 0;
+
+        TilemapRenderer renderer = tilemapObject.GetComponent<TilemapRenderer>();
+        if (renderer == null)
+            renderer = tilemapObject.AddComponent<TilemapRenderer>();
+        renderer.sortingLayerName = RoomTileLayerContract.GetSortingLayerName(RoomTileLayerKind.UnderFloor);
+        renderer.sortingOrder = VoidFillSortingOrder;
+
+        Collider2D[] colliders = tilemapObject.GetComponents<Collider2D>();
+        for (int i = colliders.Length - 1; i >= 0; i--)
+            DestroyGeneratedComponent(colliders[i]);
+
+        Rigidbody2D rigidbody = tilemapObject.GetComponent<Rigidbody2D>();
+        if (rigidbody != null)
+            DestroyGeneratedComponent(rigidbody);
+    }
+
+    private static void DestroyGeneratedComponent(Component component)
+    {
+        if (component == null)
+            return;
+
+        if (Application.isPlaying)
+            UnityEngine.Object.Destroy(component);
+        else
+            UnityEngine.Object.DestroyImmediate(component);
     }
 
     public void ClearGeneratedDoors()
