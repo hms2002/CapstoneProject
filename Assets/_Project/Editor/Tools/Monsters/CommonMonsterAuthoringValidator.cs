@@ -17,7 +17,10 @@ public static class CommonMonsterAuthoringValidator
     private const string AbilityDefinitionFolder = "Assets/_Project/Data/Abilities/Definitions/Monsters/CommonCorridor";
     private const string SpawnDataFolder = "Assets/_Project/Data/Monsters/SpawnSets";
     private const string AnimationFolder = "Assets/_Project/Art/Sprites/Monsters/CommonMonster";
+    private const string PlayerPrefabPath = "Assets/_Project/Prefabs/Player/PF Player.prefab";
+    private const string FlashMaterialPath = "Assets/_Project/Art/Materials/FlashMat.mat";
     private const string MoveBool = "isMoving";
+    private static readonly string[] EnemyLayerNames = { "Enemy", "TEMP_Enemy_LAYER" };
 
     private static readonly string[] ExpectedPrefabNames =
     {
@@ -69,6 +72,7 @@ public static class CommonMonsterAuthoringValidator
     public static void ValidateOrThrow()
     {
         List<string> errors = new();
+        ValidatePlayerCollisionProfile(errors);
         ValidatePrefabs(errors);
         ValidateAbilities(errors);
         ValidateStageMonsterSets(errors);
@@ -117,6 +121,8 @@ public static class CommonMonsterAuthoringValidator
         RequireComponent<MovementMotor2D>(path, prefab, errors);
         RequireComponent<EnemyChaseIntent2D>(path, prefab, errors);
         RequireComponent<EntityCollisionProfile2D>(path, prefab, errors);
+        RequireComponent<ActorSoftCollision2D>(path, prefab, errors);
+        RequireComponent<SpriteHitFlashController>(path, prefab, errors);
         RequireComponent<GroggyOverheadEffectPresenter2D>(path, prefab, errors);
         RequireComponent<CommonMonsterAnimatorBridge>(path, prefab, errors);
         RequireComponent<ElementGaugeSystem>(path, prefab, errors);
@@ -124,12 +130,156 @@ public static class CommonMonsterAuthoringValidator
 
         ValidateVisual(path, prefab, errors);
         ValidateChildColliders(path, prefab, errors);
+        ValidateBodyInteractionAndHitFlash(path, prefab, errors);
         ValidateAbilitySystem(path, prefab, errors);
         ValidateCoordinator(path, prefab, errors);
         ValidateGroggyPresenter(path, prefab, errors);
         ValidateElementGauge(path, prefab, errors);
         ValidateAnimator(path, prefab, errors);
         ValidateHeightPresentation(path, prefab, errors);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// Player 프리팹이 Enemy가 아닌 같은 Player 진영만 통과하도록 authoring되었는지 검증한다.
+    /// </summary>
+    private static void ValidatePlayerCollisionProfile(List<string> errors)
+    {
+        GameObject player = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabPath);
+        if (player == null)
+        {
+            errors.Add($"Missing Player prefab: {PlayerPrefabPath}");
+            return;
+        }
+
+        EntityCollisionProfile2D profile = player.GetComponent<EntityCollisionProfile2D>();
+        if (profile == null)
+        {
+            errors.Add($"{PlayerPrefabPath}: EntityCollisionProfile2D is missing.");
+            return;
+        }
+
+        SerializedObject serialized = new(profile);
+        int actualMask = serialized.FindProperty("actorLayers")?.intValue ?? 0;
+        int expectedMask = LayerMask.GetMask("Player");
+        if (actualMask != expectedMask)
+            errors.Add($"{PlayerPrefabPath}: actorLayers must contain only Player for Player/Enemy body collision.");
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 공통 몬스터의 Enemy 간 소프트 분리, 역할별 무게, Player 실제 충돌, 흰색 0.08초 점멸 authoring을 검증한다.
+    /// </summary>
+    private static void ValidateBodyInteractionAndHitFlash(string path, GameObject prefab, List<string> errors)
+    {
+        int enemyMask = ResolveLayerMask(EnemyLayerNames);
+        EntityCollisionProfile2D profile = prefab.GetComponent<EntityCollisionProfile2D>();
+        if (profile != null)
+        {
+            SerializedObject profileSerialized = new(profile);
+            int actualMask = profileSerialized.FindProperty("actorLayers")?.intValue ?? 0;
+            if (actualMask != enemyMask)
+                errors.Add($"{path}: EntityCollisionProfile2D.actorLayers must contain only Enemy layers.");
+        }
+
+        ActorSoftCollision2D softCollision = prefab.GetComponent<ActorSoftCollision2D>();
+        if (softCollision != null)
+        {
+            SerializedObject softSerialized = new(softCollision);
+            RequireObjectReference(path, softSerialized, "bodyCollider", errors);
+            RequireObjectReference(path, softSerialized, "body", errors);
+            RequireObjectReference(path, softSerialized, "externalMovement", errors);
+            RequireObjectReference(path, softSerialized, "collisionProfile", errors);
+
+            int actualActorMask = softSerialized.FindProperty("actorLayers")?.intValue ?? 0;
+            if (actualActorMask != enemyMask)
+                errors.Add($"{path}: ActorSoftCollision2D.actorLayers must contain only Enemy layers.");
+
+            bool suspendForPassThrough = softSerialized.FindProperty("suspendWhileBodyPassesThroughActors")?.boolValue ?? true;
+            if (suspendForPassThrough)
+                errors.Add($"{path}: ActorSoftCollision2D must stay active while Enemy body colliders pass through each other.");
+
+            ValidateBodyPreset(path, prefab, softSerialized, errors);
+        }
+
+        SpriteHitFlashController flash = prefab.GetComponent<SpriteHitFlashController>();
+        if (flash == null)
+            return;
+
+        Material expectedMaterial = AssetDatabase.LoadAssetAtPath<Material>(FlashMaterialPath);
+        SerializedObject flashSerialized = new(flash);
+        SerializedProperty targets = flashSerialized.FindProperty("targetRenderers");
+        if (targets == null || !targets.isArray || targets.arraySize == 0)
+        {
+            errors.Add($"{path}: SpriteHitFlashController.targetRenderers is empty.");
+        }
+        else
+        {
+            for (int i = 0; i < targets.arraySize; i++)
+            {
+                SpriteRenderer renderer = targets.GetArrayElementAtIndex(i).objectReferenceValue as SpriteRenderer;
+                if (renderer == null)
+                    errors.Add($"{path}: SpriteHitFlashController.targetRenderers[{i}] is null.");
+                else if (renderer.sharedMaterial != expectedMaterial)
+                    errors.Add($"{path}: hit flash renderer '{renderer.name}' does not use FlashMat.");
+            }
+        }
+
+        Color flashColor = flashSerialized.FindProperty("flashColor")?.colorValue ?? Color.clear;
+        float duration = flashSerialized.FindProperty("flashDuration")?.floatValue ?? 0f;
+        if (flashColor != Color.white)
+            errors.Add($"{path}: hit flash color must be white.");
+        if (!Mathf.Approximately(duration, 0.08f))
+            errors.Add($"{path}: hit flash duration must be 0.08 seconds.");
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 공통 몬스터 이름에 대응하는 역할별 Rigidbody 질량과 소프트 분리 저항 프리셋을 검증한다.
+    /// </summary>
+    private static void ValidateBodyPreset(
+        string path,
+        GameObject prefab,
+        SerializedObject softSerialized,
+        List<string> errors)
+    {
+        float expectedMass;
+        float expectedResistance;
+        if (prefab.name.Contains("Tank"))
+        {
+            expectedMass = 2.5f;
+            expectedResistance = 2.25f;
+        }
+        else if (prefab.name.Contains("Gunner") || prefab.name.Contains("Mage"))
+        {
+            expectedMass = 0.85f;
+            expectedResistance = 0.8f;
+        }
+        else
+        {
+            expectedMass = 1.25f;
+            expectedResistance = 1.25f;
+        }
+
+        Rigidbody2D body = prefab.GetComponent<Rigidbody2D>();
+        float resistance = softSerialized.FindProperty("pushResistance")?.floatValue ?? 0f;
+        if (body == null || !Mathf.Approximately(body.mass, expectedMass))
+            errors.Add($"{path}: Rigidbody2D mass must be {expectedMass:0.##} for its role.");
+        if (!Mathf.Approximately(resistance, expectedResistance))
+            errors.Add($"{path}: soft collision resistance must be {expectedResistance:0.##} for its role.");
+    }
+
+    private static int ResolveLayerMask(params string[] layerNames)
+    {
+        int mask = 0;
+        for (int i = 0; i < layerNames.Length; i++)
+        {
+            int layer = LayerMask.NameToLayer(layerNames[i]);
+            if (layer >= 0)
+                mask |= 1 << layer;
+        }
+
+        return mask;
     }
 
     /// <summary>

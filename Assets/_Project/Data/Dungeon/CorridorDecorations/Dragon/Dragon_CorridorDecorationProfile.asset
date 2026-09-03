@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3adf7153b0da493fa698e3a69ab99f76, type: 3}
   m_Name: Dragon_CorridorDecorationProfile
   m_EditorClassIdentifier: Gameplay::CorridorDecorationProfileSO
-  doorClearanceCells: 1
   maxLandmarksPerCorridor: 1
   modules:
   - {fileID: 11400000, guid: a50bab10abfcfcb4c9c569ebc7ac86ad, type: 2}
@@ -21,3 +20,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bb9649df8ef71c84781e4a1e214f1941, type: 2}
   - {fileID: 11400000, guid: d14108c119869f241acb07491e1c6d21, type: 2}
   - {fileID: 11400000, guid: d84a2f3df2321ce48b8a27ab150a9e10, type: 2}
+  - {fileID: 11400000, guid: 09f6f44dd4b1f5148b7b0c7e13586073, type: 2}
+  - {fileID: 11400000, guid: d60ebdaa013f2c046b6b133b043a6afb, type: 2}
+  - {fileID: 11400000, guid: 6b8f6dc60bc617040976081f7c4d458f, type: 2}
+  - {fileID: 11400000, guid: bd61fad4c9becf5468ee94bcef1446af, type: 2}
+  - {fileID: 11400000, guid: a9b4f837e178a6a489a7942150c0de49, type: 2}
+  - {fileID: 11400000, guid: 592308387d935b74c8cc483cffa8ab19, type: 2}

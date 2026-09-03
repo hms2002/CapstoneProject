@@ -45,6 +45,14 @@ MonoBehaviour:
     foregroundTiles:
     - localCell: {x: 0, y: 2}
       tile: {fileID: 11400000, guid: 1eb030c070a37594ea27c520a6e1f646, type: 2}
-    overlayFxTiles: []
+    overlayFxTiles:
+    - localCell: {x: 0, y: -1}
+      tile: {fileID: 11400000, guid: 2a9dcb44261179a44800e8cd7f826da9, type: 2}
+    - localCell: {x: 0, y: 2}
+      tile: {fileID: 11400000, guid: 2a9dcb44261179a44800e8cd7f826da9, type: 2}
+    - localCell: {x: 1, y: -1}
+      tile: {fileID: 11400000, guid: 44c3cccf78017fd4b9e8a902c6b7f3f5, type: 2}
+    - localCell: {x: 1, y: 2}
+      tile: {fileID: 11400000, guid: 44c3cccf78017fd4b9e8a902c6b7f3f5, type: 2}
     objectPlacements: []
     travelEndpointPlacements: []

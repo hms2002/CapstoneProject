@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -14,6 +15,7 @@ public sealed class RoomObjectAuthoring : MonoBehaviour
     [SerializeField] private GameObject prefab;
     [SerializeField] private RoomMonsterSpawnRole monsterSpawnRole = RoomMonsterSpawnRole.Warrior;
     [SerializeField] private StageMonsterSetSO monsterStageSet;
+    [SerializeField] private List<RoomObjectChildPoseOverrideData> childPoseOverrides = new();
     [SerializeField] private string linkedChestLockPlacementId;
 
     public string PlacementId => placementId;
@@ -24,6 +26,7 @@ public sealed class RoomObjectAuthoring : MonoBehaviour
         ? monsterStageSet
         : null;
     public bool UsesCommonMonsterRole => kind == RoomObjectKind.Monster && monsterStageSet != null;
+    public IReadOnlyList<RoomObjectChildPoseOverrideData> ChildPoseOverrides => childPoseOverrides;
     public string LinkedChestLockPlacementId => kind == RoomObjectKind.Monster
         ? linkedChestLockPlacementId
         : string.Empty;
@@ -41,6 +44,10 @@ public sealed class RoomObjectAuthoring : MonoBehaviour
             grid.transform.eulerAngles.z,
             transform.eulerAngles.z);
 
+#if UNITY_EDITOR
+        EditorCaptureCompositePoseOverrides();
+#endif
+
         data = new RoomObjectPlacementData
         {
             placementId = placementId,
@@ -52,9 +59,19 @@ public sealed class RoomObjectAuthoring : MonoBehaviour
             localOffset = new Vector2(localOffset.x, localOffset.y),
             localRotationDegrees = localRotation,
             localScale = transform.localScale,
+            childPoseOverrides = CloneChildPoseOverrides(childPoseOverrides),
             linkedChestLockPlacementId = LinkedChestLockPlacementId
         };
         return true;
+    }
+
+    public bool TryGetCompositePoseAuthoring(out RoomCompositePoseAuthoring composite)
+    {
+        composite = GetComponent<RoomCompositePoseAuthoring>();
+        if (composite == null)
+            composite = GetComponentInChildren<RoomCompositePoseAuthoring>(true);
+
+        return composite != null;
     }
 
     /// <summary>
@@ -105,9 +122,13 @@ public sealed class RoomObjectAuthoring : MonoBehaviour
         linkedChestLockPlacementId = data.kind == RoomObjectKind.Monster
             ? data.linkedChestLockPlacementId ?? string.Empty
             : string.Empty;
+        childPoseOverrides = CloneChildPoseOverrides(data.childPoseOverrides);
 
         if (!TryResolveAuthoringGrid(out Grid grid))
+        {
+            EditorApplyCompositePoseOverrides();
             return;
+        }
 
         Vector3Int cell = new(data.localCell.x, data.localCell.y, 0);
         Vector3 worldOffset = grid.transform.TransformVector(
@@ -116,6 +137,163 @@ public sealed class RoomObjectAuthoring : MonoBehaviour
         transform.rotation = grid.transform.rotation *
             Quaternion.Euler(0f, 0f, data.localRotationDegrees);
         transform.localScale = data.localScale == Vector3.zero ? Vector3.one : data.localScale;
+        EditorApplyCompositePoseOverrides();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 방 제작 툴이 슬롯 하나의 선택적 위치·회전·크기 재정의를 현재 방 배치에 저장하고 미리보기에 반영하게 한다.
+    /// </summary>
+    public void EditorSetChildPoseOverride(RoomObjectChildPoseOverrideData poseOverride)
+    {
+        childPoseOverrides ??= new List<RoomObjectChildPoseOverrideData>();
+        for (int i = 0; i < childPoseOverrides.Count; i++)
+        {
+            if (!string.Equals(
+                    childPoseOverrides[i].slotId,
+                    poseOverride.slotId,
+                    System.StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            childPoseOverrides[i] = poseOverride;
+            EditorApplyCompositePoseOverrides();
+            return;
+        }
+
+        childPoseOverrides.Add(poseOverride);
+        EditorApplyCompositePoseOverrides();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 방별 슬롯 재정의를 제거하고 작업 공간의 대상 Transform을 원본 복합 프리팹 자세로 복구한다.
+    /// </summary>
+    public void EditorRemoveChildPoseOverride(string slotId, bool restorePrefabPose)
+    {
+        if (childPoseOverrides != null)
+        {
+            childPoseOverrides.RemoveAll(entry => string.Equals(
+                entry.slotId,
+                slotId,
+                System.StringComparison.Ordinal));
+        }
+
+        if (!restorePrefabPose ||
+            !TryGetCompositePoseAuthoring(out RoomCompositePoseAuthoring instanceComposite) ||
+            !instanceComposite.TryGetSlot(slotId, out RoomCompositePoseSlotData instanceSlot) ||
+            instanceSlot.Target == null ||
+            prefab == null)
+        {
+            return;
+        }
+
+        RoomCompositePoseAuthoring prefabComposite =
+            prefab.GetComponentInChildren<RoomCompositePoseAuthoring>(true);
+        if (prefabComposite == null ||
+            !prefabComposite.TryGetSlot(slotId, out RoomCompositePoseSlotData prefabSlot) ||
+            prefabSlot.Target == null)
+        {
+            return;
+        }
+
+        instanceSlot.Target.localPosition = prefabSlot.Target.localPosition;
+        instanceSlot.Target.localRotation = prefabSlot.Target.localRotation;
+        instanceSlot.Target.localScale = prefabSlot.Target.localScale;
+    }
+
+    public bool EditorTryGetChildPoseOverride(
+        string slotId,
+        out RoomObjectChildPoseOverrideData poseOverride)
+    {
+        poseOverride = default;
+        if (childPoseOverrides == null)
+            return false;
+
+        for (int i = 0; i < childPoseOverrides.Count; i++)
+        {
+            RoomObjectChildPoseOverrideData candidate = childPoseOverrides[i];
+            if (!string.Equals(candidate.slotId, slotId, System.StringComparison.Ordinal))
+                continue;
+
+            poseOverride = candidate;
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// Scene View에서 직접 움직인 활성 슬롯 Transform을 직렬화할 방별 재정의 값으로 동기화한다.
+    /// </summary>
+    public void EditorCaptureCompositePoseOverrides()
+    {
+        if (childPoseOverrides == null ||
+            childPoseOverrides.Count == 0 ||
+            !TryGetCompositePoseAuthoring(out RoomCompositePoseAuthoring composite))
+        {
+            return;
+        }
+
+        for (int i = 0; i < childPoseOverrides.Count; i++)
+        {
+            RoomObjectChildPoseOverrideData poseOverride = childPoseOverrides[i];
+            if (!composite.TryGetSlot(poseOverride.slotId, out RoomCompositePoseSlotData slot) ||
+                slot.Target == null)
+            {
+                continue;
+            }
+
+            if (poseOverride.overridePosition)
+                poseOverride.localPosition = slot.Target.localPosition;
+            if (poseOverride.overrideRotation)
+            {
+                poseOverride.localRotationDegrees = Mathf.DeltaAngle(
+                    0f,
+                    slot.Target.localEulerAngles.z);
+            }
+            if (poseOverride.overrideScale)
+                poseOverride.localScale = slot.Target.localScale;
+            childPoseOverrides[i] = poseOverride;
+        }
+
+        EditorApplyCompositePoseOverrides();
+    }
+
+    private void EditorApplyCompositePoseOverrides()
+    {
+        if (childPoseOverrides == null || childPoseOverrides.Count == 0)
+            return;
+
+        if (!TryGetCompositePoseAuthoring(out RoomCompositePoseAuthoring composite))
+            return;
+
+        RoomCompositePoseAuthoring prefabComposite = prefab != null
+            ? prefab.GetComponentInChildren<RoomCompositePoseAuthoring>(true)
+            : null;
+        if (prefabComposite != null)
+        {
+            for (int i = 0; i < childPoseOverrides.Count; i++)
+            {
+                string slotId = childPoseOverrides[i].slotId;
+                if (!composite.TryGetSlot(slotId, out RoomCompositePoseSlotData instanceSlot) ||
+                    !prefabComposite.TryGetSlot(slotId, out RoomCompositePoseSlotData prefabSlot) ||
+                    instanceSlot.Target == null ||
+                    prefabSlot.Target == null)
+                {
+                    continue;
+                }
+
+                instanceSlot.Target.localPosition = prefabSlot.Target.localPosition;
+                instanceSlot.Target.localRotation = prefabSlot.Target.localRotation;
+                instanceSlot.Target.localScale = prefabSlot.Target.localScale;
+            }
+        }
+
+        if (!composite.TryApplyPoseOverrides(childPoseOverrides, out string failureReason))
+            Debug.LogError($"{name}: {failureReason}", this);
     }
 
     public void EditorSetLinkedChestLockPlacementId(string targetPlacementId)
@@ -132,6 +310,8 @@ public sealed class RoomObjectAuthoring : MonoBehaviour
 
         if (linkedChestLockPlacementId == null || kind != RoomObjectKind.Monster)
             linkedChestLockPlacementId = string.Empty;
+
+        childPoseOverrides ??= new List<RoomObjectChildPoseOverrideData>();
 
         if (kind != RoomObjectKind.Monster)
             monsterStageSet = null;
@@ -174,4 +354,16 @@ public sealed class RoomObjectAuthoring : MonoBehaviour
         };
     }
 #endif
+
+    private static List<RoomObjectChildPoseOverrideData> CloneChildPoseOverrides(
+        IReadOnlyList<RoomObjectChildPoseOverrideData> source)
+    {
+        if (source == null || source.Count == 0)
+            return new List<RoomObjectChildPoseOverrideData>();
+
+        var clone = new List<RoomObjectChildPoseOverrideData>(source.Count);
+        for (int i = 0; i < source.Count; i++)
+            clone.Add(source[i]);
+        return clone;
+    }
 }

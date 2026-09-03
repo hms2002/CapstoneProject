@@ -163,9 +163,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.ActorSoftCollision2D
   bodyCollider: {fileID: 777000000000000012}
-  body: {fileID: 0}
+  body: {fileID: 1119615970379559667}
   externalMovement: {fileID: 3341026293018187748}
-  collisionProfile: {fileID: 0}
+  collisionProfile: {fileID: 6600200000000001}
   actorLayers:
     serializedVersion: 2
     m_Bits: 2147483648
@@ -174,6 +174,7 @@ MonoBehaviour:
     m_Bits: 1073741824
   suspendWhileBodyPassesThroughActors: 0
   pushSpeed: 2.8
+  pushResistance: 1
   pushDurationSeconds: 0.08
   wallProbeDistance: 0.08
   maxActorsPerTick: 8
@@ -615,7 +616,7 @@ MonoBehaviour:
     m_Bits: 0
   actorLayers:
     serializedVersion: 2
-    m_Bits: 2147483656
+    m_Bits: 2147483648
   defaultMode: 1
 --- !u!114 &880070000000000008
 MonoBehaviour:
@@ -727,7 +728,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 2147483656
+    m_Bits: 2147483648
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

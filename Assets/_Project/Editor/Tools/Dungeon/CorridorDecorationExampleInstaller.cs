@@ -8,9 +8,9 @@ using UnityEngine.Tilemaps;
 
 /// <summary>
 /// 책임:
-/// - Shadow, Dragon, Slime 테마의 기존 방 데이터에서 실제 사용 중인 타일을 수집해 복도 장식 예제 모듈을 만든다.
+/// - Shadow, Dragon, Slime 테마의 기존 방/절차 복도 데이터에서 실제 사용 중인 타일을 수집해 가로·세로 장식 예제 모듈을 만든다.
 /// - 예제 장식 프로필과 모듈을 정해진 경로에 반복 설치하고 각 DungeonGenerationProfileSO에 연결한다.
-/// - 예제 재설치가 방 라이브러리와 생성 수치 등 기획자가 편집한 다른 데이터를 변경하지 않게 한다.
+/// - 세로 전용 설치에서는 기존 가로 모듈과 기획자가 편집한 데이터를 덮어쓰지 않는다.
 /// </summary>
 public static class CorridorDecorationExampleInstaller
 {
@@ -27,29 +27,38 @@ public static class CorridorDecorationExampleInstaller
             "Assets/_Project/Data/Dungeon/GenerationProfiles/" +
             "ProceduralShadowGenerationProfile.asset",
             "Assets/_Project/Scenes/ShadowCorridor.unity",
+            "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
             $"{PropRoot}/PF Props - Gravestone 02.prefab"),
         new(
             "Dragon",
             "Assets/_Project/Data/Dungeon/GenerationProfiles/" +
             "ProceduralDragonGenerationProfile.asset",
             "Assets/_Project/Scenes/DragonCorridor.unity",
+            "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
             $"{PropRoot}/PF Props - Rune Pillar Broken.prefab"),
         new(
             "Slime",
             "Assets/_Project/Data/Dungeon/GenerationProfiles/" +
             "ProceduralSlimeGenerationProfile.asset",
             "Assets/_Project/Scenes/SlimeCorridor.unity",
+            "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
             $"{PropRoot}/PF Props - Barrel 01.prefab")
     };
 
     private static readonly ModuleSpec[] Modules =
     {
-        new("Start_02", CorridorDecorationModuleRole.Start, 2),
-        new("Middle_03", CorridorDecorationModuleRole.Middle, 3),
-        new("Landmark_04", CorridorDecorationModuleRole.Landmark, 4),
-        new("Filler_01", CorridorDecorationModuleRole.Filler, 1),
-        new("End_02", CorridorDecorationModuleRole.End, 2),
-        new("Short_02", CorridorDecorationModuleRole.Short, 2)
+        new("Start_02", CorridorDecorationAxis.Horizontal, CorridorDecorationModuleRole.Start, 2),
+        new("Middle_03", CorridorDecorationAxis.Horizontal, CorridorDecorationModuleRole.Middle, 3),
+        new("Landmark_04", CorridorDecorationAxis.Horizontal, CorridorDecorationModuleRole.Landmark, 4),
+        new("Filler_01", CorridorDecorationAxis.Horizontal, CorridorDecorationModuleRole.Filler, 1),
+        new("End_02", CorridorDecorationAxis.Horizontal, CorridorDecorationModuleRole.End, 2),
+        new("Short_02", CorridorDecorationAxis.Horizontal, CorridorDecorationModuleRole.Short, 2),
+        new("Vertical_Start_02", CorridorDecorationAxis.Vertical, CorridorDecorationModuleRole.Start, 2),
+        new("Vertical_Middle_03", CorridorDecorationAxis.Vertical, CorridorDecorationModuleRole.Middle, 3),
+        new("Vertical_Landmark_04", CorridorDecorationAxis.Vertical, CorridorDecorationModuleRole.Landmark, 4),
+        new("Vertical_Filler_01", CorridorDecorationAxis.Vertical, CorridorDecorationModuleRole.Filler, 1),
+        new("Vertical_End_02", CorridorDecorationAxis.Vertical, CorridorDecorationModuleRole.End, 2),
+        new("Vertical_Short_02", CorridorDecorationAxis.Vertical, CorridorDecorationModuleRole.Short, 2)
     };
 
     [MenuItem("Tools/Dungeon/Examples/Install Theme Corridor Decoration Examples")]
@@ -58,7 +67,7 @@ public static class CorridorDecorationExampleInstaller
         EnsureFolder(RootFolder);
         var installedProfiles = new List<CorridorDecorationProfileSO>(Themes.Length);
         for (int themeIndex = 0; themeIndex < Themes.Length; themeIndex++)
-            installedProfiles.Add(InstallTheme(Themes[themeIndex]));
+            installedProfiles.Add(InstallTheme(Themes[themeIndex], verticalOnly: false));
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -66,6 +75,22 @@ public static class CorridorDecorationExampleInstaller
         Debug.Log(
             $"Installed {installedProfiles.Count} corridor decoration example profiles " +
             $"with {Modules.Length} modules per theme under '{RootFolder}'.");
+    }
+
+    [MenuItem("Tools/Dungeon/Examples/Install Missing Vertical Corridor Decoration Examples")]
+    public static void InstallMissingVerticalExamples()
+    {
+        EnsureFolder(RootFolder);
+        var installedProfiles = new List<CorridorDecorationProfileSO>(Themes.Length);
+        for (int themeIndex = 0; themeIndex < Themes.Length; themeIndex++)
+            installedProfiles.Add(InstallTheme(Themes[themeIndex], verticalOnly: true));
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        Selection.activeObject = installedProfiles.Count > 0 ? installedProfiles[0] : null;
+        Debug.Log(
+            $"Installed missing vertical corridor examples for {installedProfiles.Count} themes " +
+            $"without overwriting registered horizontal modules under '{RootFolder}'.");
     }
 
     [MenuItem("Tools/Dungeon/Examples/Validate Theme Corridor Decoration Examples")]
@@ -111,14 +136,20 @@ public static class CorridorDecorationExampleInstaller
                     generationProfile != null
                         ? generationProfile.CorridorDecorationProfile
                         : null;
-                CorridorDecorationCompletedPreviewResult result =
-                    CorridorDecorationCompletedPreview.Show(
-                        generationProfile,
-                        decorationProfile,
-                        16 + themeIndex * 3,
-                        20260902 + themeIndex);
-                if (!result.Success)
-                    errors.Add($"{spec.ThemeId}: {result.Message}");
+                foreach (CorridorDecorationAxis axis in
+                         new[] { CorridorDecorationAxis.Horizontal, CorridorDecorationAxis.Vertical })
+                {
+                    CorridorDecorationCompletedPreviewResult result =
+                        CorridorDecorationCompletedPreview.Show(
+                            generationProfile,
+                            decorationProfile,
+                            16 + themeIndex * 3,
+                            20260902 + themeIndex,
+                            connectionIndex: 0,
+                            axis: axis);
+                    if (!result.Success)
+                        errors.Add($"{spec.ThemeId}/{axis}: {result.Message}");
+                }
             }
         }
         finally
@@ -139,7 +170,9 @@ public static class CorridorDecorationExampleInstaller
             $"Validated completed corridor previews for {Themes.Length} themes.");
     }
 
-    private static CorridorDecorationProfileSO InstallTheme(ThemeSpec spec)
+    private static CorridorDecorationProfileSO InstallTheme(
+        ThemeSpec spec,
+        bool verticalOnly)
     {
         DungeonGenerationProfileSO generationProfile =
             AssetDatabase.LoadAssetAtPath<DungeonGenerationProfileSO>(
@@ -159,7 +192,8 @@ public static class CorridorDecorationExampleInstaller
 
         ThemeTilePalette palette = ThemeTilePalette.Collect(
             roomLibrary,
-            spec.ReferenceScenePath);
+            spec.ReferenceScenePath,
+            spec.ProceduralScenePath);
         if (!palette.Has(RoomTileLayerKind.Floor) ||
             !palette.Has(RoomTileLayerKind.Wall))
         {
@@ -169,32 +203,47 @@ public static class CorridorDecorationExampleInstaller
 
         string themeFolder = $"{RootFolder}/{spec.ThemeId}";
         EnsureFolder(themeFolder);
-        GameObject landmarkProp = AssetDatabase.LoadAssetAtPath<GameObject>(spec.PropPath);
-        var moduleAssets = new List<CorridorDecorationModuleSO>(Modules.Length);
-        for (int moduleIndex = 0; moduleIndex < Modules.Length; moduleIndex++)
-        {
-            ModuleSpec moduleSpec = Modules[moduleIndex];
-            string moduleId = $"{spec.ThemeId}_{moduleSpec.Suffix}";
-            string modulePath = $"{themeFolder}/{moduleId}.asset";
-            CorridorDecorationModuleSO module =
-                LoadOrCreate<CorridorDecorationModuleSO>(modulePath);
-            GameObject prop = moduleSpec.Role == CorridorDecorationModuleRole.Landmark
-                ? landmarkProp
-                : null;
-            module.EditorSetData(
-                moduleId,
-                moduleSpec.Role,
-                moduleSpec.Length,
-                CreateBuildData(spec.ThemeId, moduleSpec, palette, prop));
-            EditorUtility.SetDirty(module);
-            moduleAssets.Add(module);
-        }
-
         string profilePath =
             $"{themeFolder}/{spec.ThemeId}_CorridorDecorationProfile.asset";
         CorridorDecorationProfileSO decorationProfile =
             LoadOrCreate<CorridorDecorationProfileSO>(profilePath);
-        decorationProfile.EditorConfigure(1, 1, moduleAssets);
+        GameObject landmarkProp = AssetDatabase.LoadAssetAtPath<GameObject>(spec.PropPath);
+        var moduleAssets = verticalOnly
+            ? new List<CorridorDecorationModuleSO>(decorationProfile.Modules)
+            : new List<CorridorDecorationModuleSO>(Modules.Length);
+        for (int moduleIndex = 0; moduleIndex < Modules.Length; moduleIndex++)
+        {
+            ModuleSpec moduleSpec = Modules[moduleIndex];
+            if (verticalOnly && moduleSpec.Axis != CorridorDecorationAxis.Vertical)
+                continue;
+
+            string moduleId = $"{spec.ThemeId}_{moduleSpec.Suffix}";
+            string modulePath = $"{themeFolder}/{moduleId}.asset";
+            CorridorDecorationModuleSO module =
+                AssetDatabase.LoadAssetAtPath<CorridorDecorationModuleSO>(modulePath);
+            bool wasMissing = module == null;
+            if (wasMissing)
+                module = LoadOrCreate<CorridorDecorationModuleSO>(modulePath);
+
+            if (!verticalOnly || wasMissing)
+            {
+                GameObject prop = moduleSpec.Role == CorridorDecorationModuleRole.Landmark
+                    ? landmarkProp
+                    : null;
+                module.EditorSetData(
+                    moduleId,
+                    moduleSpec.Axis,
+                    moduleSpec.Role,
+                    moduleSpec.Length,
+                    CreateBuildData(spec.ThemeId, moduleSpec, palette, prop));
+                EditorUtility.SetDirty(module);
+            }
+
+            if (!moduleAssets.Contains(module))
+                moduleAssets.Add(module);
+        }
+
+        decorationProfile.EditorConfigure(1, moduleAssets);
         EditorUtility.SetDirty(decorationProfile);
 
         generationProfile.EditorSetCorridorDecorationProfile(decorationProfile);
@@ -238,6 +287,7 @@ public static class CorridorDecorationExampleInstaller
             }
 
             if (module.ModuleId != moduleId ||
+                module.Axis != moduleSpec.Axis ||
                 module.Role != moduleSpec.Role ||
                 module.Length != moduleSpec.Length)
             {
@@ -287,9 +337,13 @@ public static class CorridorDecorationExampleInstaller
             for (int tileIndex = 0; tileIndex < tiles.Count; tileIndex++)
             {
                 Vector2Int cell = tiles[tileIndex].localCell;
+                bool inside = module.Axis == CorridorDecorationAxis.Horizontal
+                    ? cell.x >= 0 && cell.x < module.Length &&
+                      cell.y >= -1 && cell.y <= 2
+                    : cell.y >= 0 && cell.y < module.Length &&
+                      cell.x >= -1 && cell.x <= 2;
                 if (tiles[tileIndex].tile == null ||
-                    cell.x < 0 || cell.x >= module.Length ||
-                    cell.y < -1 || cell.y > 2)
+                    !inside)
                 {
                     errors.Add(
                         $"{module.ModuleId}: invalid {layer} tile at {cell}.");
@@ -310,16 +364,59 @@ public static class CorridorDecorationExampleInstaller
         GameObject landmarkProp)
     {
         RoomBuildData build = CreateEmptyBuildData();
-        FillBaseLayer(build.underFloorTiles, palette.First(RoomTileLayerKind.UnderFloor), module.Length, 0, 1);
-        FillBaseLayer(build.floorTiles, palette.First(RoomTileLayerKind.Floor), module.Length, 0, 1);
-        FillBaseLayer(build.wallTiles, palette.First(RoomTileLayerKind.Wall), module.Length, -1, 2);
+        FillBaseLayer(
+            build.underFloorTiles,
+            palette.First(RoomTileLayerKind.UnderFloor, module.Axis),
+            module.Length,
+            0,
+            1,
+            module.Axis);
+        FillBaseLayer(
+            build.floorTiles,
+            palette.First(RoomTileLayerKind.Floor, module.Axis),
+            module.Length,
+            0,
+            1,
+            module.Axis);
+        FillBaseLayer(
+            build.wallTiles,
+            palette.First(RoomTileLayerKind.Wall, module.Axis),
+            module.Length,
+            -1,
+            2,
+            module.Axis);
 
-        int anchorX = ResolveAnchorX(module.Role, module.Length);
-        AddOptionalTile(build.floorDetailTiles, palette.First(RoomTileLayerKind.FloorDetail), anchorX, 0);
-        AddOptionalTile(build.groundDecorationTiles, palette.First(RoomTileLayerKind.GroundDecoration), anchorX, 1);
-        AddOptionalTile(build.wallDetailTiles, palette.First(RoomTileLayerKind.WallDetail), anchorX, 2);
-        AddOptionalTile(build.foregroundTiles, palette.First(RoomTileLayerKind.Foreground), anchorX, 2);
-        AddOptionalTile(build.overlayFxTiles, palette.First(RoomTileLayerKind.OverlayFX), anchorX, 0);
+        int anchorForward = ResolveAnchorForward(module.Role, module.Length);
+        AddOptionalTileByProgress(
+            build.floorDetailTiles,
+            palette.First(RoomTileLayerKind.FloorDetail, module.Axis),
+            anchorForward,
+            0,
+            module.Axis);
+        AddOptionalTileByProgress(
+            build.groundDecorationTiles,
+            palette.First(RoomTileLayerKind.GroundDecoration, module.Axis),
+            anchorForward,
+            1,
+            module.Axis);
+        AddOptionalTileByProgress(
+            build.wallDetailTiles,
+            palette.First(RoomTileLayerKind.WallDetail, module.Axis),
+            anchorForward,
+            2,
+            module.Axis);
+        AddOptionalTileByProgress(
+            build.foregroundTiles,
+            palette.First(RoomTileLayerKind.Foreground, module.Axis),
+            anchorForward,
+            2,
+            module.Axis);
+        AddOptionalTileByProgress(
+            build.overlayFxTiles,
+            palette.First(RoomTileLayerKind.OverlayFX, module.Axis),
+            anchorForward,
+            0,
+            module.Axis);
 
         if (module.Role == CorridorDecorationModuleRole.Landmark && landmarkProp != null)
         {
@@ -328,7 +425,7 @@ public static class CorridorDecorationExampleInstaller
                 placementId = $"{themeId}_CorridorLandmarkProp",
                 kind = RoomObjectKind.Prop,
                 prefab = landmarkProp,
-                localCell = new Vector2Int(anchorX, 2),
+                localCell = ProgressCell(anchorForward, 2, module.Axis),
                 localOffset = Vector2.zero,
                 localRotationDegrees = 0f,
                 localScale = landmarkProp.transform.localScale,
@@ -360,44 +457,56 @@ public static class CorridorDecorationExampleInstaller
         ICollection<RoomTileData> destination,
         TileBase tile,
         int length,
-        int firstY,
-        int secondY)
+        int firstLateral,
+        int secondLateral,
+        CorridorDecorationAxis axis)
     {
         if (tile == null)
             return;
 
-        for (int x = 0; x < length; x++)
+        for (int progress = 0; progress < length; progress++)
         {
             destination.Add(new RoomTileData
             {
-                localCell = new Vector2Int(x, firstY),
+                localCell = ProgressCell(progress, firstLateral, axis),
                 tile = tile
             });
             destination.Add(new RoomTileData
             {
-                localCell = new Vector2Int(x, secondY),
+                localCell = ProgressCell(progress, secondLateral, axis),
                 tile = tile
             });
         }
     }
 
-    private static void AddOptionalTile(
+    private static void AddOptionalTileByProgress(
         ICollection<RoomTileData> destination,
         TileBase tile,
-        int x,
-        int y)
+        int progress,
+        int lateral,
+        CorridorDecorationAxis axis)
     {
         if (tile == null)
             return;
 
         destination.Add(new RoomTileData
         {
-            localCell = new Vector2Int(x, y),
+            localCell = ProgressCell(progress, lateral, axis),
             tile = tile
         });
     }
 
-    private static int ResolveAnchorX(CorridorDecorationModuleRole role, int length)
+    private static Vector2Int ProgressCell(
+        int progress,
+        int lateral,
+        CorridorDecorationAxis axis)
+    {
+        return axis == CorridorDecorationAxis.Horizontal
+            ? new Vector2Int(progress, lateral)
+            : new Vector2Int(lateral, progress);
+    }
+
+    private static int ResolveAnchorForward(CorridorDecorationModuleRole role, int length)
     {
         return role switch
         {
@@ -437,33 +546,42 @@ public static class CorridorDecorationExampleInstaller
         public string ThemeId { get; }
         public string GenerationProfilePath { get; }
         public string ReferenceScenePath { get; }
+        public string ProceduralScenePath { get; }
         public string PropPath { get; }
 
         public ThemeSpec(
             string themeId,
             string generationProfilePath,
             string referenceScenePath,
+            string proceduralScenePath,
             string propPath)
         {
             ThemeId = themeId;
             GenerationProfilePath = generationProfilePath;
             ReferenceScenePath = referenceScenePath;
+            ProceduralScenePath = proceduralScenePath;
             PropPath = propPath;
         }
     }
 
     /// <summary>
-    /// 책임 : 생성할 예제 모듈의 파일 접미사, 조립 역할과 진행축 길이를 정의한다.
+    /// 책임 : 생성할 예제 모듈의 파일 접미사, 전용 축, 조립 역할과 진행축 길이를 정의한다.
     /// </summary>
     private readonly struct ModuleSpec
     {
         public string Suffix { get; }
+        public CorridorDecorationAxis Axis { get; }
         public CorridorDecorationModuleRole Role { get; }
         public int Length { get; }
 
-        public ModuleSpec(string suffix, CorridorDecorationModuleRole role, int length)
+        public ModuleSpec(
+            string suffix,
+            CorridorDecorationAxis axis,
+            CorridorDecorationModuleRole role,
+            int length)
         {
             Suffix = suffix;
+            Axis = axis;
             Role = role;
             Length = length;
         }
@@ -477,6 +595,8 @@ public static class CorridorDecorationExampleInstaller
     private sealed class ThemeTilePalette
     {
         private readonly Dictionary<RoomTileLayerKind, TileBase> tiles = new();
+        private TileBase horizontalCorridorWall;
+        private TileBase verticalCorridorWall;
 
         public bool Has(RoomTileLayerKind layer) => First(layer) != null;
 
@@ -485,9 +605,21 @@ public static class CorridorDecorationExampleInstaller
             return tiles.TryGetValue(layer, out TileBase tile) ? tile : null;
         }
 
+        public TileBase First(RoomTileLayerKind layer, CorridorDecorationAxis axis)
+        {
+            if (layer != RoomTileLayerKind.Wall)
+                return First(layer);
+
+            TileBase directional = axis == CorridorDecorationAxis.Horizontal
+                ? horizontalCorridorWall
+                : verticalCorridorWall;
+            return directional != null ? directional : First(layer);
+        }
+
         public static ThemeTilePalette Collect(
             RoomThemeLibrarySO library,
-            string referenceScenePath)
+            string referenceScenePath,
+            string proceduralScenePath)
         {
             var palette = new ThemeTilePalette();
             for (int layerIndex = 0;
@@ -501,7 +633,63 @@ public static class CorridorDecorationExampleInstaller
             }
 
             palette.SupplementFromReferenceScene(referenceScenePath);
+            palette.SupplementCorridorWalls(proceduralScenePath);
             return palette;
+        }
+
+        private void SupplementCorridorWalls(string scenePath)
+        {
+            if (string.IsNullOrWhiteSpace(scenePath) ||
+                AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath) == null)
+            {
+                return;
+            }
+
+            Scene scene = SceneManager.GetSceneByPath(scenePath);
+            bool openedForSampling = !scene.IsValid() || !scene.isLoaded;
+            if (openedForSampling)
+                scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
+
+            try
+            {
+                GameObject[] roots = scene.GetRootGameObjects();
+                for (int rootIndex = 0; rootIndex < roots.Length; rootIndex++)
+                {
+                    DungeonRoomBuilder builder =
+                        roots[rootIndex].GetComponentInChildren<DungeonRoomBuilder>(true);
+                    if (builder == null)
+                        continue;
+
+                    horizontalCorridorWall = FirstNonNull(
+                        builder.HorizontalCorridorWallVariants,
+                        builder.CorridorWallTile);
+                    verticalCorridorWall = FirstNonNull(
+                        builder.VerticalCorridorWallVariants,
+                        builder.CorridorWallTile);
+                    return;
+                }
+            }
+            finally
+            {
+                if (openedForSampling && scene.IsValid() && scene.isLoaded)
+                    EditorSceneManager.CloseScene(scene, true);
+            }
+        }
+
+        private static TileBase FirstNonNull(
+            IReadOnlyList<TileBase> candidates,
+            TileBase fallback)
+        {
+            if (candidates != null)
+            {
+                for (int index = 0; index < candidates.Count; index++)
+                {
+                    if (candidates[index] != null)
+                        return candidates[index];
+                }
+            }
+
+            return fallback;
         }
 
         private void SupplementFromReferenceScene(string scenePath)

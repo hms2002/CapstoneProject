@@ -12,7 +12,7 @@ public sealed class SpriteHitFlashController : MonoBehaviour, IHitFlashControlle
     [SerializeField] private SpriteRenderer[] targetRenderers;
 
     [Header("Flash")]
-    [SerializeField] private Color flashColor = new Color(1f, 0.2f, 0.2f, 1f);
+    [SerializeField] private Color flashColor = Color.white;
     [SerializeField] private float flashMultiply = 1.5f;
     [SerializeField] private float flashDuration = 0.08f;
 
@@ -30,6 +30,11 @@ public sealed class SpriteHitFlashController : MonoBehaviour, IHitFlashControlle
 
         _mpb = new MaterialPropertyBlock();
         ApplyFlash(0f);
+    }
+
+    private void OnDisable()
+    {
+        StopFlash();
     }
 
     /// <summary>
@@ -86,6 +91,8 @@ public sealed class SpriteHitFlashController : MonoBehaviour, IHitFlashControlle
     {
         if (targetRenderers == null)
             return;
+
+        _mpb ??= new MaterialPropertyBlock();
 
         for (int i = 0; i < targetRenderers.Length; i++)
         {
