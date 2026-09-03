@@ -13,6 +13,7 @@ last_reviewed: 2026-09-02
 
 - 테마 라이브러리를 선택하고 기존 방을 찾는다.
 - 기본 바닥·벽과 고정 장식 레이어를 가진 새 방부터 몬스터·상자·포털이 있는 방까지 제작한다.
+- `SacrificeRewardAlcove` 같은 복합 Prop의 내부 오브젝트를 프리팹 원본을 바꾸지 않고 방마다 조정한다.
 - 기존 `RoomTemplateSO`를 불러와 수정하거나 복제한다.
 - 저장하지 않은 현재 방을 실제 배치 알고리즘에 넣어 동적 맵을 미리 본다.
 - 테마별 복도 장식 조각을 만들고 가변 길이에 맞춘 완성 복도를 미리 본다.
@@ -22,6 +23,10 @@ last_reviewed: 2026-09-02
 
 Notion 가져오기용 하위 페이지 묶음은 `Docs/NotionImport/ProceduralDungeonRoomAuthoring_NotionImport.zip`에 있습니다.
 
+## 최근 업데이트
+
+> 🆕 **2026-09-02** — 복합 Prop의 방별 자식 Pose 편집, 검증·문제 해결 절차와 복도 장식 GroundProp의 편집 범위 설명을 추가했습니다. Notion 파생 문서에서는 새로 바뀐 섹션마다 같은 표시를 사용합니다.
+
 ## 가장 빠른 시작
 
 1. Unity 메뉴에서 `Tools > Dungeon > Room Piece Editor`를 엽니다.
@@ -30,7 +35,7 @@ Notion 가져오기용 하위 페이지 묶음은 `Docs/NotionImport/ProceduralD
 4. `전용 작업 공간에서 새 방 만들기`를 누릅니다.
 5. `2. 타일`에서 Floor와 Wall을 그리고 필요한 장식 레이어를 추가합니다.
 6. `3. 출입구`에서 최소 한 개의 2칸 소켓을 배치합니다.
-7. 필요하면 `4. 오브젝트`에서 몬스터, 상자, 포털, 프롭을 배치합니다.
+7. 필요하면 `4. 오브젝트`에서 몬스터, 상자, 포털, 프롭을 배치합니다. 복합 Prop은 같은 카드에서 방별 세부 배치를 조정합니다.
 8. `6. 맵 미리보기`에서 실제 조립 결과를 확인하고, 생성 수치를 바꿨다면 `현재 미리보기 설정을 테마에 적용`합니다.
 9. `5. 검증·저장`에서 검증을 통과시킨 뒤 저장합니다.
 10. 복도 자체를 꾸밀 때는 `Tools > Dungeon > Corridor Decoration Editor`에서 테마 프로필을 선택하고 모듈 또는 완성 복도를 미리 봅니다.
@@ -60,6 +65,7 @@ Notion 가져오기용 하위 페이지 묶음은 `Docs/NotionImport/ProceduralD
 | 고정 타일 레이어 | `UnderFloor`, `Floor`, `FloorDetail`, `GroundDecoration`, `Wall`, `WallDetail`, `Foreground`, `OverlayFX` 여덟 슬롯입니다. |
 | 소켓 | 다른 방과 연결될 수 있는 경계의 2칸 출입구 후보입니다. |
 | Placement Id | 한 방 안에서 오브젝트를 식별하는 고유 문자열입니다. |
+| 복합 Pose 슬롯 | 복합 Prop이 방별 위치·회전·크기 재정의를 허용한 자식 Transform입니다. 체크하지 않은 슬롯과 채널은 프리팹 기본값을 따릅니다. |
 | Travel Slot Id | 방의 이동 지점을 식별하는 고유 문자열입니다. 목적 씬 연결은 복도 씬에서 별도로 지정합니다. |
 | 등장 가중치 | 같은 역할의 후보 중 해당 방이 선택될 상대 확률입니다. |
 | Seed | 같은 라이브러리와 생성 설정에서 같은 배치 결과를 재현하는 정수입니다. |
@@ -245,6 +251,27 @@ Up/Down 소켓은 Local Cell에서 오른쪽으로 2칸, Left/Right 소켓은 �
 
 Kill Lock 동작과 연출은 상자 프리팹이 소유합니다. 툴이나 던전 빌더가 일반 상자에 Kill Lock 컴포넌트나 연출을 임의로 추가하지 않습니다.
 
+### 복합 오브젝트를 방마다 세부 배치하기
+
+> 🆕 **2026-09-02 업데이트** — 프리팹 원본을 변경하지 않고 공개된 자식 Transform을 현재 방에서만 조정할 수 있습니다.
+
+`SacrificeRewardAlcove`처럼 하나의 프리팹 안에 제물 동상, 보상 문, 보상 상자가 함께 있는 Prop은 두 단계로 배치합니다.
+
+1. 오브젝트 카드의 일반 Transform으로 복합 프리팹 전체 위치·회전·크기를 먼저 정합니다.
+2. 카드 아래 `복합 오브젝트 세부 배치`에서 조정할 슬롯을 찾습니다.
+3. `이 방에서 자세 재정의`를 켭니다.
+4. 실제로 저장할 채널만 `위치 적용`, `회전 적용`, `크기 적용`으로 켭니다.
+5. 숫자를 입력하거나 `Scene View에서 대상 선택`을 누른 뒤 선택한 자식을 이동·회전·크기 조절합니다.
+6. 방을 검증·저장하고 다시 열어 배치가 복원되는지 확인합니다.
+
+현재 `SacrificeRewardAlcove`는 `제물 동상`, `보상 문`, `보상 상자` 슬롯을 제공합니다. 이 값은 현재 `RoomTemplateSO`의 해당 Placement에만 저장되므로 같은 프리팹을 사용하는 다른 방과 프리팹 원본은 바뀌지 않습니다.
+
+- 재정의를 끄면 해당 슬롯은 즉시 프리팹 기본 자세로 돌아갑니다.
+- 위치만 켜면 회전과 크기는 계속 프리팹 기본값을 따릅니다. 프리팹 기본 회전·크기가 나중에 바뀌어도 비활성 채널에는 새 기본값이 반영됩니다.
+- 슬롯은 프리팹이 명시적으로 공개한 자식만 나타납니다. 임의의 모든 자식을 자동 저장하지 않습니다.
+- 프리팹 자체의 슬롯 구성이나 공통 기본 위치를 바꾸려면 별도 프리팹 작업으로 처리합니다. 방별 차이는 Room Piece Editor에서만 작성합니다.
+- 큰 자식 오브젝트의 Collider가 벽·문·다른 자식을 침범하는지는 자동 판정 범위 밖이므로 Scene View와 Play Mode에서 확인합니다.
+
 ### 씬 이동 Endpoint 슬롯
 
 일반 `Portal` 오브젝트와 별도로, 새 데이터 기반 씬 연결에 사용할 이동 슬롯을 같은 단계에서 배치할 수 있습니다.
@@ -312,6 +339,7 @@ Kill Lock 동작과 연출은 상자 프리팹이 소유합니다. 툴이나 던
 - 각 소켓의 두 셀에 Floor와 Wall이 모두 있는가.
 - 오브젝트 Placement Id가 고유하고, Monster는 역할 세트 또는 유효한 스테이지 고정 Enemy 프리팹 중 하나를 가지며 그 외 Kind도 프리팹 종류가 맞는가.
 - 오브젝트 기준 셀이 예약 영역 안이며 Floor 위에 있는가.
+- 복합 오브젝트의 Pose 슬롯 ID가 유효하고 중복되지 않으며, 프리팹이 허용한 위치·회전·크기 채널만 사용하고 크기 축이 0이 아닌가.
 - Monster의 Kill Lock 상자 연결이 실제 상자 Placement Id로 해석되는가.
 - Travel Slot Id가 방 안에서 고유하고 Floor 셀 위에 있는가.
 
@@ -424,6 +452,8 @@ Shadow, Dragon, Slime 절차 복도 씬은 각자의 프로필을 직접 참조�
 
 ## 7. 복도 장식 모듈과 완성본 미리보기
 
+> 🆕 **2026-09-02 보충** — 복도 장식 GroundProp의 편집 범위와 Room Piece Editor의 복합 자식 편집 기능을 구분했습니다.
+
 `Tools > Dungeon > Corridor Decoration Editor`는 방 사이의 길이가 매번 달라져도 같은 테마 장식 규칙으로 복도를 채우는 전용 도구입니다. 방의 위치와 복도 길이는 기존 레이아웃 생성기가 결정하고, 이 도구가 만드는 데이터는 결정된 직선 복도의 시각 타일과 `GroundProp`만 교체하거나 덧씁니다.
 
 ### 데이터 연결
@@ -456,6 +486,8 @@ Shadow, Dragon, Slime 절차 복도 씬은 각자의 프로필을 직접 참조�
 | 오브젝트 | 현재는 `GroundProp`만 허용합니다. 프리팹 충돌과 동작은 프리팹이 소유합니다. |
 
 `Floor`와 `Wall`은 기본 복도 타일을 선택적으로 교체합니다. 비어 있는 셀은 생성 프로필의 방 라이브러리에서 찾은 기본 타일 또는 빌더의 테마 복도 타일을 유지합니다. 나머지 여섯 장식 레이어는 기존 복도 위에 그대로 합성됩니다. `GroundProp`은 Transform의 Pivot을 조각 원점 기준 `localCell`, `localOffset`, 회전과 크기로 저장하므로, 타일과 같은 방향 변환을 거쳐 재생성됩니다.
+
+복도 장식 툴은 `GroundProp` 프리팹 전체 Transform만 저장합니다. Room Piece Editor의 복합 Prop 자식 Pose 재정의와는 별도 기능이므로, 내부 구성이 다른 복도 장식이 필요하면 우선 변형별 완성 프리팹을 사용합니다.
 
 ### 모듈 역할
 
@@ -544,6 +576,9 @@ Start나 Boss처럼 한 개 소켓만 필요한 방은 소켓이 실제 연결�
 | 소켓 검증이 실패한다 | 두 셀이 방 경계 안에 있고 Direction이 바깥쪽인지, Floor와 Wall이 모두 있는지 확인합니다. |
 | 사용하지 않은 출구가 뚫려 보인다 | 방 샘플의 모든 소켓 Wall을 닫아 두었는지 확인합니다. |
 | 오브젝트 검증 오류가 난다 | 공통 역할 Monster는 StageMonsterSet, 스테이지 Monster는 자식 포함 `Enemy`가 있는 고정 프리팹인지 확인합니다. Chest와 Portal은 각각 `TreasureChest`, `ScenePortal` 컴포넌트가 자식 포함 존재해야 합니다. |
+| 복합 오브젝트 세부 배치가 보이지 않는다 | 해당 프리팹에 `RoomCompositePoseAuthoring`과 유효한 Pose 슬롯이 있어야 합니다. 현재 제공 예시는 `SacrificeRewardAlcove`입니다. |
+| 저장 뒤 복합 오브젝트 자식이 기본 위치로 돌아간다 | 해당 슬롯의 `이 방에서 자세 재정의`와 저장할 채널이 켜져 있는지 확인합니다. Scene View 이동은 활성 채널만 방 데이터로 캡처합니다. |
+| 프리팹을 바꿨더니 방별 배치 검증이 실패한다 | 방 데이터가 참조하는 Slot Id가 새 프리팹에도 남아 있는지 확인합니다. 슬롯 이름 변경·삭제는 기존 방 데이터와 함께 마이그레이션해야 합니다. |
 | Kill Lock 상자를 선택할 수 없다 | 상자 프리팹에 `ChestMonsterKillLock`이 있고 Chest Kind로 배치되었는지 확인합니다. |
 | 복도가 보이지 않는다 | 복도 길이가 양수라면 Floor/Wall 타일 자동 선택 결과 또는 오버라이드를 확인합니다. |
 | 장식 모듈이 런타임에 나오지 않는다 | 해당 `DungeonGenerationProfileSO`에 올바른 `CorridorDecorationProfileSO`가 연결되어 있고 모듈이 프로필 목록에 등록되었는지 확인합니다. |
@@ -569,6 +604,8 @@ Start나 Boss처럼 한 개 소켓만 필요한 방은 소켓이 실제 연결�
 - [ ] 연결되지 않은 소켓도 Wall로 닫혀 있다.
 - [ ] 오브젝트 Placement Id가 방 안에서 고유하다.
 - [ ] 모든 오브젝트 기준 셀이 Floor 위에 있다.
+- [ ] 복합 Prop의 전체 Transform과 자식 슬롯별 재정의를 구분해 설정했다.
+- [ ] 필요한 위치·회전·크기 채널만 켰고, 재정의 Scale의 모든 축이 0이 아니다.
 - [ ] Monster와 Kill Lock Chest 연결 수가 의도와 맞다.
 - [ ] 공통 역할 지점의 수·위치·단계별 미리보기와 스테이지 고정 몬스터 프리팹이 의도와 맞다.
 - [ ] 함정·레버·퍼즐은 자체 완결형 Prop이고 내부 Anchor Slot Id가 사용 범위에서 고유하다.
@@ -582,6 +619,7 @@ Start나 Boss처럼 한 개 소켓만 필요한 방은 소켓이 실제 연결�
 - [ ] 복도 장식 프로필을 사용한다면 올바른 생성 프로필에 연결했다.
 - [ ] 가로·세로 복도가 모두 필요하면 Horizontal/Vertical 역할별 모듈을 각각 등록했다.
 - [ ] 모든 복도 모듈의 타일과 GroundProp Pivot이 제작 범위 안에 있다.
+- [ ] 복도 장식 GroundProp은 프리팹 전체 Transform만 저장된다는 범위가 의도와 맞다.
 - [ ] 여러 길이·Seed·연결 번호에서 완성 복도 미리보기를 확인했다.
 - [ ] Start와 End의 문 인접 셀에 통행을 막는 GroundProp이 없다.
 - [ ] 전체 검증을 통과했다.
@@ -600,6 +638,7 @@ Start나 Boss처럼 한 개 소켓만 필요한 방은 소켓이 실제 연결�
 - [ ] 몬스터가 기존 `MonsterSpawner` 경로로 생성되고 처치 판정에 포함된다.
 - [ ] Kill Lock 상자의 연출과 해금이 정상 동작한다.
 - [ ] Portal, Chest, 복합 Prop의 상호작용이 정상 동작한다.
+- [ ] 같은 복합 Prop을 사용하는 다른 방의 자식 배치가 함께 바뀌지 않는다.
 - [ ] 같은 Seed를 다시 생성했을 때 같은 레이아웃이 나온다.
 - [ ] 같은 Seed·연결 번호·복도 길이에서 같은 장식 모듈 순서가 나온다.
 - [ ] 가로·세로와 양방향 복도에서 장식 타일 및 GroundProp 방향이 올바르다.
@@ -615,6 +654,7 @@ Start나 Boss처럼 한 개 소켓만 필요한 방은 소켓이 실제 연결�
 - `Assets/_Project/Editor/Tools/Dungeon/CorridorDecorationExampleInstaller.cs`
 - `Assets/_Project/Editor/Tools/Dungeon/ProceduralTravelBindingEditorWindow.cs`
 - `Assets/_Project/Runtime/Features/Map/Procedural/RoomTemplateSO.cs`
+- `Assets/_Project/Runtime/Features/Map/Procedural/RoomCompositePoseAuthoring.cs`
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonLayoutAssembler.cs`
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonLayoutPolicySO.cs`
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonGraphLayoutAssembler.cs`

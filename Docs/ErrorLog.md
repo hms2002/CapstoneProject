@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: error-log
-last_reviewed: 2026-09-02
+last_reviewed: 2026-09-03
 ---
 
 # Error Log
@@ -108,6 +108,11 @@ Outro and title-intro cleanup now use explicit Unity null checks before hiding t
 
 Prevention:
 Do not use `?.` for cleanup calls on `UnityEngine.Object` references that may be destroyed during scene unload, disable, or global UI replacement. Use `if (obj != null)` before calling methods so Unity's destroyed-object null semantics are respected.
+
+2026-09-03 follow-up - Slime death blocked by expired telegraph handles:
+The July 6 commit `0229db83` changed Knight and SlimeQueen warning references from `AttackTelegraphView` to `IAttackTelegraphHandle`. Interface null checks do not use Unity's destroyed-object comparison. `AttackTelegraphService` can destroy a detached view when its duration expires, leaving the caller's interface reference behind. Existing `Editor-prev.log` stacks confirmed `AttackTelegraphView.Release()` throwing during both Knight and SlimeQueen death cleanup. `Enemy.Die()` had already set `isDead`, so the exception skipped the remaining death flow before the EXP notification and prevented subsequent death attempts.
+
+`AttackTelegraphView.Release()` now checks `this == null` inside the concrete Unity object and uses a non-serialized release flag to make repeated calls before end-of-frame destruction harmless. Interface-backed Unity cleanup must validate the underlying object's lifetime inside the implementation; a caller-side interface null check alone is insufficient. See [the session log](./SessionLogs/2026-09-03.md) for verification and the remaining Play Mode checks.
 
 ## 2026-06-01 - Consumable And Weapon Input Relied On One Block Tag
 

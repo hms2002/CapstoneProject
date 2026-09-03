@@ -50,6 +50,7 @@ namespace UnityGAS
         private float startTime;
         private float duration;
         private bool isVisible;
+        private bool isReleased;
         private AttackTelegraphWallClippedMeshView wallClippedMeshView;
         private LineRenderer lineRenderer;
         private Material lineMaterial;
@@ -205,6 +206,11 @@ namespace UnityGAS
         /// </summary>
         public void Release()
         {
+            // Interface handles can outlive Unity destruction or be released twice before frame end.
+            if (this == null || isReleased)
+                return;
+
+            isReleased = true;
             HideImmediate();
             Destroy(gameObject);
         }
