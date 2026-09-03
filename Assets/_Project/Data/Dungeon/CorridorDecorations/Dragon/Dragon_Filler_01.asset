@@ -22,21 +22,15 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 0, y: 1}
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    floorDetailTiles:
-    - localCell: {x: 0, y: 0}
-      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
-    groundDecorationTiles:
-    - localCell: {x: 0, y: 1}
-      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
+    floorDetailTiles: []
+    groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: -1}
-      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 0, y: 2}
-      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     wallDetailTiles: []
-    foregroundTiles:
-    - localCell: {x: 0, y: 2}
-      tile: {fileID: 11400000, guid: c2f639f00806343408ea7dbd0561a5e9, type: 2}
+    foregroundTiles: []
     overlayFxTiles: []
     objectPlacements: []
     travelEndpointPlacements: []
