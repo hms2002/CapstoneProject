@@ -11,12 +11,13 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
   m_Name: RD_ScorchingSong
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   relicId: RD_ScorchingSong
   displayName: "\uC791\uC5F4\uD558\uB294 \uC1A1"
-  icon: {fileID: 543113751, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  icon: {fileID: -1153950003663563308, guid: 87eece6e269e518438f6bcfb7a730ad0, type: 3}
   rarity: 1
-  description: "\uD654\uC0C1 \uD53C\uD574\uAC00 \uCE58\uBA85\uD0C0\uB85C \uC801\uC6A9\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+  description: "\uD654\uC0C1 \uD53C\uD574\uAC00 \uCE58\uBA85\uD0C0\uB85C \uC801\uC6A9\uB420
+    \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   maxLevel: 1
   dropLevel: 1
   logic: {fileID: 11400000, guid: 00d84f5fdf474fc7b1afbf8f7a0338bf, type: 2}

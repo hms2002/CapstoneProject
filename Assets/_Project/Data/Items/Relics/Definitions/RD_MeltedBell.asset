@@ -11,10 +11,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
   m_Name: RD_MeltedBell
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   relicId: RD_MeltedBell
   displayName: "\uB179\uC544\uB0B4\uB9B0 \uC885"
-  icon: {fileID: 543113751, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  icon: {fileID: -3570171897898288534, guid: 87eece6e269e518438f6bcfb7a730ad0, type: 3}
   rarity: 0
   description: "\uD654\uC0C1 \uC18C\uBAA8 \uC8FC\uAE30\uAC00 \uBE68\uB77C\uC9D1\uB2C8\uB2E4."
   maxLevel: 5

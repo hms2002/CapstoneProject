@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 태양의 파편 유물이 장착/해제될 때 플레이어 주변 궤도 컨트롤러를 구성하는 책임을 가진다.
+/// </summary>
 [CreateAssetMenu(menuName = "Game/Relic Logic/Sun Fragment (Managed)")]
 public sealed class RelicLogic_SunFragment_Managed : RelicLogic
 {
@@ -13,6 +16,7 @@ public sealed class RelicLogic_SunFragment_Managed : RelicLogic
     [SerializeField, Min(0.1f)] private float orbitRadius = 1.2f;
     [SerializeField] private Vector2 orbitCenterLocalOffset = new(0f, 0.55f);
     [SerializeField] private float angularSpeedDegPerSec = 180f;
+    [SerializeField] private GameObject fragmentPrefab;
     [SerializeField, Min(0.05f)] private float fragmentSize = 0.3f;
     [SerializeField, Min(0.01f)] private float contactRadius = 0.18f;
 
@@ -50,6 +54,7 @@ public sealed class RelicLogic_SunFragment_Managed : RelicLogic
             orbitRadius = orbitRadius,
             orbitCenterLocalOffset = orbitCenterLocalOffset,
             angularSpeedDegPerSec = angularSpeedDegPerSec,
+            fragmentPrefab = fragmentPrefab,
             fragmentSize = fragmentSize,
             contactRadius = contactRadius
         });

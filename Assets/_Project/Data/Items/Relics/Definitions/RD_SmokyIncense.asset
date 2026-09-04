@@ -11,10 +11,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
   m_Name: RD_SmokyIncense
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   relicId: RD_SmokyIncense
   displayName: "\uB9E4\uCE90\uD55C \uD5A5\uB85C"
-  icon: {fileID: 543113751, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  icon: {fileID: -6833699381348243336, guid: 87eece6e269e518438f6bcfb7a730ad0, type: 3}
   rarity: 0
   description: "\uD654\uC0C1 \uD53C\uD574 \uACC4\uC218\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   maxLevel: 5
