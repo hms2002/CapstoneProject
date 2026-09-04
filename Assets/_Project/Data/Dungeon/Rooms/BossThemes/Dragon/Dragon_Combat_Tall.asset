@@ -287,13 +287,13 @@ MonoBehaviour:
     groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 5}
-      tile: {fileID: 11400000, guid: 3aa57dcf747bdac4f893d924cfd9974b, type: 2}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 0, y: 6}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 7}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 8}
-      tile: {fileID: 11400000, guid: fc19a9c81366a1540b5f405102a6775b, type: 2}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 1, y: 5}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 1, y: 8}
@@ -327,7 +327,7 @@ MonoBehaviour:
     - localCell: {x: 5, y: 11}
       tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 6, y: 0}
-      tile: {fileID: 11400000, guid: 3aa57dcf747bdac4f893d924cfd9974b, type: 2}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 6, y: 1}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 6, y: 2}
@@ -371,7 +371,7 @@ MonoBehaviour:
     - localCell: {x: 8, y: 13}
       tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 9, y: 0}
-      tile: {fileID: 11400000, guid: cb17778e22049e8489e4f650df2dd0ae, type: 2}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 9, y: 1}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 9, y: 2}
@@ -423,13 +423,13 @@ MonoBehaviour:
     - localCell: {x: 14, y: 8}
       tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 15, y: 5}
-      tile: {fileID: 11400000, guid: cb17778e22049e8489e4f650df2dd0ae, type: 2}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 15, y: 6}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 15, y: 7}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 15, y: 8}
-      tile: {fileID: 11400000, guid: 8907c6aae7ce28146850ab42c0389ea1, type: 2}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     wallDetailTiles: []
     foregroundTiles: []
     overlayFxTiles: []
@@ -443,6 +443,7 @@ MonoBehaviour:
       localOffset: {x: -0.5, y: 0.49}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: 
     - placementId: Warrior_03
       kind: 1
@@ -453,6 +454,7 @@ MonoBehaviour:
       localOffset: {x: -0.5, y: 0.47999954}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: 
     - placementId: Tank_05
       kind: 1
@@ -463,6 +465,7 @@ MonoBehaviour:
       localOffset: {x: -0.46000004, y: -0.5}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: 
     - placementId: Warrior_01
       kind: 1
@@ -473,5 +476,6 @@ MonoBehaviour:
       localOffset: {x: -0.48999977, y: -0.40999985}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: 
     travelEndpointPlacements: []

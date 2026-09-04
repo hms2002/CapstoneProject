@@ -27,7 +27,7 @@ MonoBehaviour:
       direction: 0
       width: 2
     - socketId: Socket_06
-      localCell: {x: 0, y: 1}
+      localCell: {x: 0, y: 2}
       direction: 3
       width: 2
     difficultyTier: 0
@@ -37,6 +37,7 @@ MonoBehaviour:
       minimumGraphDistanceFromStart: 0
       requireDeadEnd: 0
   buildData:
+    underFloorTiles: []
     floorTiles:
     - localCell: {x: 0, y: 1}
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
@@ -326,17 +327,19 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 5b992ac86ed3e5243b03ee90797fb11b, type: 2}
     - localCell: {x: 14, y: 10}
       tile: {fileID: 11400000, guid: 9e43d41ffb1698243954f3e00f161c5d, type: 2}
+    floorDetailTiles: []
+    groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 0}
       tile: {fileID: 11400000, guid: 3aa57dcf747bdac4f893d924cfd9974b, type: 2}
     - localCell: {x: 0, y: 1}
-      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
     - localCell: {x: 0, y: 2}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 3}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 4}
-      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
     - localCell: {x: 0, y: 5}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 6}
@@ -374,7 +377,7 @@ MonoBehaviour:
     - localCell: {x: 6, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 6, y: 11}
-      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
     - localCell: {x: 7, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 7, y: 11}
@@ -386,7 +389,7 @@ MonoBehaviour:
     - localCell: {x: 9, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 9, y: 11}
-      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+      tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
     - localCell: {x: 10, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 10, y: 11}
@@ -459,61 +462,85 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 17, y: 4}
       tile: {fileID: 11400000, guid: 8907c6aae7ce28146850ab42c0389ea1, type: 2}
+    wallDetailTiles: []
+    foregroundTiles: []
+    overlayFxTiles: []
     objectPlacements:
     - placementId: Object_05
       kind: 1
       prefab: {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
       localCell: {x: 2, y: 9}
       localOffset: {x: 0.45000005, y: -0.09000015}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: 
     - placementId: Object_03
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
       localCell: {x: 6, y: 3}
       localOffset: {x: 0.3000002, y: 0.3800001}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: 
     - placementId: Combat_CompactMonster_1
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
       localCell: {x: 8, y: 2}
       localOffset: {x: -0.3800001, y: 0.29999995}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: Object_07
     - placementId: Object_06
       kind: 1
       prefab: {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
       localCell: {x: 8, y: 9}
       localOffset: {x: -0.28999996, y: -0.06000042}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: 
     - placementId: Combat_CompactMonster_2
       kind: 1
       prefab: {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
       localCell: {x: 12, y: 2}
       localOffset: {x: 0.3000002, y: 0.32999992}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: Object_07
     - placementId: Object_04
       kind: 1
       prefab: {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
       localCell: {x: 13, y: 9}
       localOffset: {x: 0.020000458, y: -0.069999695}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: 
     - placementId: Object_07
       kind: 2
       prefab: {fileID: 8398461225799451672, guid: 670170a4e9390bc458d0b686227549af, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
       localCell: {x: 10, y: 10}
       localOffset: {x: 0, y: -0.069999695}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: 
     travelEndpointPlacements: []

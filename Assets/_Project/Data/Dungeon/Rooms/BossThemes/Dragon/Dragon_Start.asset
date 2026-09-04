@@ -165,9 +165,9 @@ MonoBehaviour:
     - localCell: {x: 0, y: 2}
       tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
     - localCell: {x: 0, y: 3}
-      tile: {fileID: 11400000, guid: 3054b56e23c3b8b4b9a5535f24ee880d, type: 2}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 4}
-      tile: {fileID: 11400000, guid: 3054b56e23c3b8b4b9a5535f24ee880d, type: 2}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 5}
       tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
     - localCell: {x: 0, y: 6}
@@ -199,9 +199,9 @@ MonoBehaviour:
     - localCell: {x: 3, y: 7}
       tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 4, y: 0}
-      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
     - localCell: {x: 4, y: 7}
-      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
     - localCell: {x: 5, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 5, y: 7}
@@ -211,9 +211,9 @@ MonoBehaviour:
     - localCell: {x: 6, y: 7}
       tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 7, y: 0}
-      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+      tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
     - localCell: {x: 7, y: 7}
-      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+      tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
     - localCell: {x: 8, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 8, y: 1}
@@ -243,13 +243,13 @@ MonoBehaviour:
     - localCell: {x: 11, y: 1}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 11, y: 2}
-      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+      tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
     - localCell: {x: 11, y: 3}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 11, y: 4}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 11, y: 5}
-      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+      tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
     - localCell: {x: 11, y: 6}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 11, y: 7}
@@ -263,10 +263,10 @@ MonoBehaviour:
       kind: 1
       mediumPrefab: {fileID: 0}
       localCell: {x: 0, y: 4}
-      localOffset: {x: 0.100000024, y: 0}
+      localOffset: {x: -0.16, y: -0.48000002}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       triggerSize: {x: 1, y: 1}
       useSeparateArrivalPoint: 1
-      arrivalLocalCell: {x: 10, y: 4}
-      arrivalLocalOffset: {x: 0.009242058, y: 0}
+      arrivalLocalCell: {x: 6, y: 4}
+      arrivalLocalOffset: {x: -0.48093224, y: -0.49483204}
