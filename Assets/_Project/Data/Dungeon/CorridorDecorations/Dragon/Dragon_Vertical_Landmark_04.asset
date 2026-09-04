@@ -56,11 +56,7 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     wallDetailTiles: []
     foregroundTiles: []
-    overlayFxTiles:
-    - localCell: {x: 0, y: 2}
-      tile: {fileID: 11400000, guid: bb45ea58d9a1f8c448fec573b5127fba, type: 2}
-    - localCell: {x: 1, y: 2}
-      tile: {fileID: 11400000, guid: bb45ea58d9a1f8c448fec573b5127fba, type: 2}
+    overlayFxTiles: []
     objectPlacements:
     - placementId: Dragon_CorridorLandmarkProp
       kind: 0
