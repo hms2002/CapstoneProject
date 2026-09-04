@@ -115,6 +115,9 @@ public class GameDataManager : MonoBehaviour, IGameDataStoreBackend
             Data.bossDialogueData = new BossDialogueSaveData();
         Data.bossDialogueData.bossRecords ??= new System.Collections.Generic.List<BossDialogueRecord>();
 
+        Data.bossClearProgressData ??= new BossClearProgressSaveData();
+        Data.bossClearProgressData.clearedBossThemeIds ??= new System.Collections.Generic.List<string>();
+
         if (Data.runSpecialNpcData == null)
             Data.runSpecialNpcData = new RunSpecialNpcSaveData();
         Data.runSpecialNpcData.constructionRecords ??= new System.Collections.Generic.List<RunSpecialNpcConstructionRecord>();
@@ -150,6 +153,8 @@ public class GameDataManager : MonoBehaviour, IGameDataStoreBackend
         Data.affectionData ??= new AffectionSaveData();
         Data.bossDialogueData ??= new BossDialogueSaveData();
         Data.bossDialogueData.bossRecords ??= new System.Collections.Generic.List<BossDialogueRecord>();
+        Data.bossClearProgressData ??= new BossClearProgressSaveData();
+        Data.bossClearProgressData.clearedBossThemeIds ??= new System.Collections.Generic.List<string>();
         Data.runSpecialNpcData ??= new RunSpecialNpcSaveData();
         Data.runSpecialNpcData.constructionRecords ??= new System.Collections.Generic.List<RunSpecialNpcConstructionRecord>();
         Data.tutorialData ??= new TutorialSaveData();

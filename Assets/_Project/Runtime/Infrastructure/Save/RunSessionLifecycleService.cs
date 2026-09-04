@@ -23,6 +23,7 @@ internal static class RunSessionLifecycleService
         data.defeatedBossIds.Clear();
         data.dungeonRunStates ??= new List<DungeonRunStateData>();
         data.dungeonRunStates.Clear();
+        ClearRunMapEventState(data);
     }
 
     public static void EndRun(
@@ -51,8 +52,24 @@ internal static class RunSessionLifecycleService
         data.defeatedBossIds.Clear();
         data.dungeonRunStates ??= new List<DungeonRunStateData>();
         data.dungeonRunStates.Clear();
+        ClearRunMapEventState(data);
         RunSessionStateService.ResetLevelProgression(data);
         clearRoutePlan?.Invoke();
+    }
+
+    private static void ClearRunMapEventState(GamePlayData data)
+    {
+        if (data == null)
+            return;
+
+        data.visitedRunMapEventRouteThemeIds ??= new List<string>();
+        data.visitedRunMapEventRouteThemeIds.Clear();
+        data.presentedRunMapEventIds ??= new List<string>();
+        data.presentedRunMapEventIds.Clear();
+        data.completedRunMapEventIds ??= new List<string>();
+        data.completedRunMapEventIds.Clear();
+        data.pendingRunMapEventPlacements ??= new List<PendingRunMapEventPlacement>();
+        data.pendingRunMapEventPlacements.Clear();
     }
 }
 
@@ -490,8 +507,24 @@ internal static class RunSessionStateService
         data.defeatedBossIds.Clear();
         data.dungeonRunStates ??= new List<DungeonRunStateData>();
         data.dungeonRunStates.Clear();
+        ClearRunMapEventState(data);
         ResetLevelProgression(data);
         clearPendingRunProgress?.Invoke();
+    }
+
+    private static void ClearRunMapEventState(GamePlayData data)
+    {
+        if (data == null)
+            return;
+
+        data.visitedRunMapEventRouteThemeIds ??= new List<string>();
+        data.visitedRunMapEventRouteThemeIds.Clear();
+        data.presentedRunMapEventIds ??= new List<string>();
+        data.presentedRunMapEventIds.Clear();
+        data.completedRunMapEventIds ??= new List<string>();
+        data.completedRunMapEventIds.Clear();
+        data.pendingRunMapEventPlacements ??= new List<PendingRunMapEventPlacement>();
+        data.pendingRunMapEventPlacements.Clear();
     }
 
     public static void ResetLevelProgression(GamePlayData data)

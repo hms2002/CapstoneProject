@@ -30,6 +30,9 @@ public sealed class DungeonGenerationProfileSO : ScriptableObject
     [Tooltip("Specific expansion rooms that graph-first generation must place exactly once.")]
     [SerializeField] private List<RoomTemplateSO> guaranteedRoomTemplates = new();
 
+    [Header("Run Map Events")]
+    [SerializeField] private RunMapEventGenerationProfileSO runMapEventProfile;
+
     public RoomThemeLibrarySO RoomLibrary => roomLibrary;
     public DungeonLayoutPolicySO LayoutPolicy => layoutPolicy;
     public CorridorDecorationProfileSO CorridorDecorationProfile => corridorDecorationProfile;
@@ -44,6 +47,7 @@ public sealed class DungeonGenerationProfileSO : ScriptableObject
     public int CorridorLengthVariation => Mathf.Clamp(corridorLengthVariation, 0, 32);
     public IReadOnlyList<RoomTemplateSO> GuaranteedRoomTemplates =>
         guaranteedRoomTemplates ?? (IReadOnlyList<RoomTemplateSO>)System.Array.Empty<RoomTemplateSO>();
+    public RunMapEventGenerationProfileSO RunMapEventProfile => runMapEventProfile;
 
 #if UNITY_EDITOR
     /// <summary>
@@ -97,6 +101,14 @@ public sealed class DungeonGenerationProfileSO : ScriptableObject
     public void EditorSetCorridorDecorationProfile(CorridorDecorationProfileSO profile)
     {
         corridorDecorationProfile = profile;
+    }
+
+    /// <summary>
+    /// 책임 : 제작 툴이 복도 생성 프로필에 런 이벤트 선택 프로필을 연결한다.
+    /// </summary>
+    public void EditorSetRunMapEventProfile(RunMapEventGenerationProfileSO profile)
+    {
+        runMapEventProfile = profile;
     }
 
     private void OnValidate()
