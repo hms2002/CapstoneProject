@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aa49f9d3e7540f8a6762bc3d6a16a2f, type: 3}
+  m_Name: MonsterStackStatusIconCatalog
+  m_EditorClassIdentifier: 
+  fallbackIcon: {fileID: 0}
+  entries:
+  - statusId: Burn
+    icon: {fileID: 2487984229299486202, guid: 7030fcc5f40d1f74d9b39bd7f34314b1, type: 3}

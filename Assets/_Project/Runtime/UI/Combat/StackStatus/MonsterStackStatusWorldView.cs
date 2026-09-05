@@ -8,6 +8,8 @@ using UnityGAS;
 public sealed class MonsterStackStatusWorldView : MonoBehaviour
 {
     private const string StatusSortingLayerName = "UI";
+    private static readonly Vector2 IconSize = new(0.24f, 0.24f);
+    private static readonly Vector2 IconPulseSize = new(0.34f, 0.34f);
 
     private sealed class Backend : IMonsterStackStatusViewBackend
     {
@@ -34,6 +36,7 @@ public sealed class MonsterStackStatusWorldView : MonoBehaviour
     private IMonsterStackStatusSource source;
     private GameObject visualRoot;
     private Transform icon;
+    private SpriteRenderer iconRenderer;
     private Transform fill;
     private TextMeshPro countText;
     private Coroutine pulseRoutine;
@@ -46,6 +49,7 @@ public sealed class MonsterStackStatusWorldView : MonoBehaviour
         Unsubscribe();
         source = value;
         EnsureVisuals();
+        RefreshIcon();
         source.StackChanged += Refresh;
         source.PulseRequested += PlayPulse;
         Refresh();
@@ -80,7 +84,9 @@ public sealed class MonsterStackStatusWorldView : MonoBehaviour
         visualRoot.transform.SetParent(transform, false);
         visualRoot.transform.localPosition = new Vector3(0f, 1.25f, 0f);
 
-        icon = CreateSquare("Icon", visualRoot.transform, new Vector3(-0.58f, 0f, 0f), new Vector2(0.24f, 0.24f), source.DisplayColor, 2).transform;
+        GameObject iconObject = CreateSquare("Icon", visualRoot.transform, new Vector3(-0.58f, 0f, 0f), IconSize, source.DisplayColor, 2);
+        icon = iconObject.transform;
+        iconRenderer = iconObject.GetComponent<SpriteRenderer>();
         CreateSquare("BarBackground", visualRoot.transform, Vector3.zero, new Vector2(0.9f, 0.14f), new Color(0.08f, 0.04f, 0.03f, 0.9f), 0);
         fill = CreateSquare("BarFill", visualRoot.transform, new Vector3(-0.45f, 0f, 0f), new Vector2(0.9f, 0.1f), source.DisplayColor, 1).transform;
 
@@ -109,6 +115,17 @@ public sealed class MonsterStackStatusWorldView : MonoBehaviour
         countText.text = source.CurrentStacks.ToString();
     }
 
+    private void RefreshIcon()
+    {
+        if (source == null || iconRenderer == null)
+            return;
+
+        Sprite resolvedIcon = MonsterStackStatusIconCatalog.ResolveIcon(source.StatusId);
+        iconRenderer.sprite = resolvedIcon != null ? resolvedIcon : GetSquareSprite();
+        iconRenderer.color = resolvedIcon != null ? Color.white : source.DisplayColor;
+        SetIconSize(IconSize);
+    }
+
     private void PlayPulse()
     {
         if (pulseRoutine != null) StopCoroutine(pulseRoutine);
@@ -118,10 +135,22 @@ public sealed class MonsterStackStatusWorldView : MonoBehaviour
     private IEnumerator PulseRoutine()
     {
         if (icon == null) yield break;
-        icon.localScale = new Vector3(0.34f, 0.34f, 1f);
+        SetIconSize(IconPulseSize);
         yield return new WaitForSeconds(0.09f);
-        if (icon != null) icon.localScale = new Vector3(0.24f, 0.24f, 1f);
+        if (icon != null) SetIconSize(IconSize);
         pulseRoutine = null;
+    }
+
+    private void SetIconSize(Vector2 size)
+    {
+        if (icon == null)
+            return;
+
+        Sprite sprite = iconRenderer != null ? iconRenderer.sprite : null;
+        Vector2 spriteSize = sprite != null ? sprite.bounds.size : Vector2.one;
+        float scaleX = spriteSize.x > 0f ? size.x / spriteSize.x : size.x;
+        float scaleY = spriteSize.y > 0f ? size.y / spriteSize.y : size.y;
+        icon.localScale = new Vector3(scaleX, scaleY, 1f);
     }
 
     private static GameObject CreateSquare(string name, Transform parent, Vector3 localPosition, Vector2 size, Color color, int sortingOrder)

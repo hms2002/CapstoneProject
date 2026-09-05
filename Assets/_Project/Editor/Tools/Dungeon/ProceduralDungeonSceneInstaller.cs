@@ -689,7 +689,28 @@ public static class ProceduralDungeonSceneInstaller
             EditorUtility.SetDirty(policy);
         }
 
+        if (policy.RequiredCombatRoomRules.Count == 0)
+        {
+            policy.EditorSetRequiredCombatRoomRules(CreateDefaultRequiredCombatRoomRules());
+            EditorUtility.SetDirty(policy);
+        }
+
         return policy;
+    }
+
+    private static IReadOnlyList<RequiredCombatRoomRule> CreateDefaultRequiredCombatRoomRules()
+    {
+        return new[]
+        {
+            new RequiredCombatRoomRule(
+                RoomCombatSizeTag.Normal,
+                RoomKillLockRewardTag.Present,
+                2),
+            new RequiredCombatRoomRule(
+                RoomCombatSizeTag.Large,
+                RoomKillLockRewardTag.Present,
+                1)
+        };
     }
 
     private static BossThemeTilePalette LoadThemeTilePalette(
@@ -1368,8 +1389,13 @@ public static class ProceduralDungeonSceneInstaller
                 roleStageSets,
                 monsterCells,
                 killLockChestPrefab,
-            GetKillLockChestCell(roomSize)),
-            0);
+                GetKillLockChestCell(roomSize)),
+            0,
+            new RoomCombatMetadata
+            {
+                sizeTag = RoomCombatSizeTag.Normal,
+                killLockRewardTag = RoomKillLockRewardTag.Present
+            });
         return room;
     }
 
@@ -1430,7 +1456,12 @@ public static class ProceduralDungeonSceneInstaller
             localBounds = new RectInt(Vector2Int.zero, roomSize),
             sockets = sockets,
             difficultyTier = 1,
-            selectionWeight = 0.5f
+            selectionWeight = 0.5f,
+            combatMetadata = new RoomCombatMetadata
+            {
+                sizeTag = RoomCombatSizeTag.Large,
+                killLockRewardTag = RoomKillLockRewardTag.Present
+            }
         };
         RoomBuildData build = new()
         {
@@ -3380,7 +3411,8 @@ public static class ProceduralDungeonSceneInstaller
         TileBase fallbackFloor,
         TileBase fallbackWall,
         List<RoomObjectPlacementData> objectPlacements,
-        int difficultyTier)
+        int difficultyTier,
+        RoomCombatMetadata combatMetadata = default)
     {
         RoomTemplateSO template = AssetDatabase.LoadAssetAtPath<RoomTemplateSO>(assetPath);
         if (template == null)
@@ -3417,7 +3449,8 @@ public static class ProceduralDungeonSceneInstaller
             localBounds = new RectInt(Vector2Int.zero, roomSize),
             sockets = new List<RoomSocketData>(sockets),
             difficultyTier = difficultyTier,
-            selectionWeight = 1f
+            selectionWeight = 1f,
+            combatMetadata = combatMetadata
         };
         RoomBuildData build = new()
         {

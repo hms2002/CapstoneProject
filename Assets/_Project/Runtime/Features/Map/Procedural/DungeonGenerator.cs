@@ -121,7 +121,8 @@ public sealed class DungeonGenerator : MonoBehaviour
                 resolvedMinimumCorridorLength,
                 resolvedCorridorLengthPerRoomCell,
                 resolvedCorridorLengthVariation,
-                mapEventPlan.GuaranteedRoomTemplates)
+                mapEventPlan.GuaranteedRoomTemplates,
+                resolvedLayoutPolicy.RequiredCombatRoomRules)
             : layoutAssembler.Assemble(
                 resolvedRoomLibrary,
                 resolvedSeed,

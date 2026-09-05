@@ -15,6 +15,7 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
     [SerializeField] private Vector2Int size = new(12, 8);
     [SerializeField, Min(0)] private int difficultyTier;
     [SerializeField, Min(0f)] private float selectionWeight = 1f;
+    [SerializeField] private RoomCombatMetadata combatMetadata;
     [SerializeField] private RoomTopologyPlacementData topologyPlacement;
 
     [Header("Authoring Tilemaps")]
@@ -35,6 +36,7 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
     public Vector2Int Size => size;
     public int DifficultyTier => difficultyTier;
     public float SelectionWeight => selectionWeight;
+    public RoomCombatMetadata CombatMetadata => combatMetadata;
     public RoomTopologyPlacementData TopologyPlacement => topologyPlacement;
     public Grid Grid => grid;
     public Tilemap UnderFloorTilemap => underFloorTilemap;

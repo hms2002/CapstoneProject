@@ -1084,6 +1084,202 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
     }
 
     [Test]
+    public void GraphAssembler_PlacesRequiredCombatMetadataRooms()
+    {
+        RoomThemeLibrarySO library = ScriptableObject.CreateInstance<RoomThemeLibrarySO>();
+        DungeonLayoutPolicySO policy = ScriptableObject.CreateInstance<DungeonLayoutPolicySO>();
+        RoomTemplateSO start = CreateFourSocketTemplate("Start", RoomType.Start);
+        RoomTemplateSO boss = CreateFourSocketTemplate("Boss", RoomType.Boss);
+        RoomTemplateSO plainCombatA = CreateFourSocketTemplate(
+            "PlainCombatA",
+            RoomType.Combat,
+            combatMetadata: new RoomCombatMetadata
+            {
+                sizeTag = RoomCombatSizeTag.Normal,
+                killLockRewardTag = RoomKillLockRewardTag.None
+            });
+        RoomTemplateSO plainCombatB = CreateFourSocketTemplate(
+            "PlainCombatB",
+            RoomType.Combat,
+            combatMetadata: new RoomCombatMetadata
+            {
+                sizeTag = RoomCombatSizeTag.Normal,
+                killLockRewardTag = RoomKillLockRewardTag.None
+            });
+        RoomTemplateSO normalKillLockA = CreateFourSocketTemplate(
+            "NormalKillLockA",
+            RoomType.Combat,
+            combatMetadata: new RoomCombatMetadata
+            {
+                sizeTag = RoomCombatSizeTag.Normal,
+                killLockRewardTag = RoomKillLockRewardTag.Present
+            });
+        RoomTemplateSO normalKillLockB = CreateFourSocketTemplate(
+            "NormalKillLockB",
+            RoomType.Combat,
+            combatMetadata: new RoomCombatMetadata
+            {
+                sizeTag = RoomCombatSizeTag.Normal,
+                killLockRewardTag = RoomKillLockRewardTag.Present
+            });
+        RoomTemplateSO largeKillLock = CreateFourSocketTemplate(
+            "LargeKillLock",
+            RoomType.Combat,
+            combatMetadata: new RoomCombatMetadata
+            {
+                sizeTag = RoomCombatSizeTag.Large,
+                killLockRewardTag = RoomKillLockRewardTag.Present
+            });
+        try
+        {
+            library.EditorAddRoom(start);
+            library.EditorAddRoom(boss);
+            library.EditorAddRoom(plainCombatA);
+            library.EditorAddRoom(plainCombatB);
+            library.EditorAddRoom(normalKillLockA);
+            library.EditorAddRoom(normalKillLockB);
+            library.EditorAddRoom(largeKillLock);
+            policy.EditorConfigure(
+                recommendedMinimumRooms: 8,
+                recommendedMaximumRooms: 8,
+                minimumBossDistance: 3,
+                maximumBossDistance: 4,
+                minimumBranches: 1,
+                maximumBranches: 1,
+                minimumCycles: 0,
+                maximumCycles: 0,
+                topologyAttempts: 512,
+                requiredTreasureRooms: 0,
+                requiredEventRooms: 0,
+                requiredShopRooms: 0,
+                requiredMinimumCombatRooms: 4,
+                shouldPreferSpecialRoomsAtDeadEnds: true);
+            policy.EditorSetRequiredCombatRoomRules(new[]
+            {
+                new RequiredCombatRoomRule(
+                    RoomCombatSizeTag.Normal,
+                    RoomKillLockRewardTag.Present,
+                    2),
+                new RequiredCombatRoomRule(
+                    RoomCombatSizeTag.Large,
+                    RoomKillLockRewardTag.Present,
+                    1)
+            });
+
+            DungeonLayoutResult result = new DungeonGraphLayoutAssembler().Assemble(
+                library,
+                policy,
+                seed: 19937,
+                requestedRoomCount: 8,
+                maxPlacementAttemptsPerRoom: 512,
+                minimumCorridorLength: 2,
+                corridorLengthPerRoomCell: 0f,
+                corridorLengthVariation: 0,
+                guaranteedRoomTemplates: null,
+                requiredCombatRoomRules: policy.RequiredCombatRoomRules);
+
+            Assert.That(result.IsComplete, Is.True, result.FailureReason);
+            Assert.That(
+                CountCombatRooms(
+                    result,
+                    RoomCombatSizeTag.Normal,
+                    RoomKillLockRewardTag.Present),
+                Is.EqualTo(2));
+            Assert.That(
+                CountCombatRooms(
+                    result,
+                    RoomCombatSizeTag.Large,
+                    RoomKillLockRewardTag.Present),
+                Is.EqualTo(1));
+        }
+        finally
+        {
+            Object.DestroyImmediate(largeKillLock);
+            Object.DestroyImmediate(normalKillLockB);
+            Object.DestroyImmediate(normalKillLockA);
+            Object.DestroyImmediate(plainCombatB);
+            Object.DestroyImmediate(plainCombatA);
+            Object.DestroyImmediate(boss);
+            Object.DestroyImmediate(start);
+            Object.DestroyImmediate(policy);
+            Object.DestroyImmediate(library);
+        }
+    }
+
+    [Test]
+    public void GraphAssembler_AvoidsAdjacentDuplicateTemplatesWhenAlternativesExist()
+    {
+        RoomThemeLibrarySO library = ScriptableObject.CreateInstance<RoomThemeLibrarySO>();
+        DungeonLayoutPolicySO policy = ScriptableObject.CreateInstance<DungeonLayoutPolicySO>();
+        RoomTemplateSO start = CreateFourSocketTemplate("Start", RoomType.Start);
+        RoomTemplateSO boss = CreateFourSocketTemplate("Boss", RoomType.Boss);
+        RoomTemplateSO combatA = CreateFourSocketTemplate("CombatA", RoomType.Combat);
+        RoomTemplateSO combatB = CreateFourSocketTemplate("CombatB", RoomType.Combat);
+        RoomTemplateSO combatC = CreateFourSocketTemplate("CombatC", RoomType.Combat);
+        try
+        {
+            library.EditorAddRoom(start);
+            library.EditorAddRoom(boss);
+            library.EditorAddRoom(combatA);
+            library.EditorAddRoom(combatB);
+            library.EditorAddRoom(combatC);
+            policy.EditorConfigure(
+                recommendedMinimumRooms: 7,
+                recommendedMaximumRooms: 7,
+                minimumBossDistance: 3,
+                maximumBossDistance: 4,
+                minimumBranches: 0,
+                maximumBranches: 1,
+                minimumCycles: 0,
+                maximumCycles: 0,
+                topologyAttempts: 512,
+                requiredTreasureRooms: 0,
+                requiredEventRooms: 0,
+                requiredShopRooms: 0,
+                requiredMinimumCombatRooms: 3,
+                shouldPreferSpecialRoomsAtDeadEnds: true);
+
+            DungeonLayoutResult result = new DungeonGraphLayoutAssembler().Assemble(
+                library,
+                policy,
+                seed: 51787,
+                requestedRoomCount: 7,
+                maxPlacementAttemptsPerRoom: 512,
+                minimumCorridorLength: 2,
+                corridorLengthPerRoomCell: 0f,
+                corridorLengthVariation: 0);
+
+            Assert.That(result.IsComplete, Is.True, result.FailureReason);
+            for (int connectionIndex = 0;
+                 connectionIndex < result.Connections.Count;
+                 connectionIndex++)
+            {
+                DungeonSocketConnection connection = result.Connections[connectionIndex];
+                DungeonRoomPlacement first = FindPlacement(
+                    result,
+                    connection.FirstRoomPlacementId);
+                DungeonRoomPlacement second = FindPlacement(
+                    result,
+                    connection.SecondRoomPlacementId);
+                Assert.That(
+                    first.Template,
+                    Is.Not.SameAs(second.Template),
+                    $"Connection {connectionIndex} repeats {first.Template.LayoutData.roomId}.");
+            }
+        }
+        finally
+        {
+            Object.DestroyImmediate(combatC);
+            Object.DestroyImmediate(combatB);
+            Object.DestroyImmediate(combatA);
+            Object.DestroyImmediate(boss);
+            Object.DestroyImmediate(start);
+            Object.DestroyImmediate(policy);
+            Object.DestroyImmediate(library);
+        }
+    }
+
+    [Test]
     public void GraphAssembler_RespectsShortcutAndRemoteRoomPlacementRules()
     {
         RoomThemeLibrarySO library = ScriptableObject.CreateInstance<RoomThemeLibrarySO>();
@@ -1193,6 +1389,42 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
         return null;
     }
 
+    private static DungeonRoomPlacement FindPlacement(
+        DungeonLayoutResult result,
+        int placementId)
+    {
+        for (int roomIndex = 0; roomIndex < result.Rooms.Count; roomIndex++)
+        {
+            if (result.Rooms[roomIndex].PlacementId == placementId)
+                return result.Rooms[roomIndex];
+        }
+
+        return null;
+    }
+
+    private static int CountCombatRooms(
+        DungeonLayoutResult result,
+        RoomCombatSizeTag sizeTag,
+        RoomKillLockRewardTag killLockRewardTag)
+    {
+        int count = 0;
+        for (int roomIndex = 0; roomIndex < result.Rooms.Count; roomIndex++)
+        {
+            RoomTemplateSO template = result.Rooms[roomIndex].Template;
+            if (template == null || template.LayoutData.roomType != RoomType.Combat)
+                continue;
+
+            if (RoomTemplateCombatMetadataUtility.ResolveSizeTag(template) == sizeTag &&
+                RoomTemplateCombatMetadataUtility.ResolveKillLockRewardTag(template) ==
+                killLockRewardTag)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     private static Tilemap CreateTestTilemap(
         Transform parent,
         RoomTileLayerKind layer)
@@ -1207,7 +1439,8 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
     private static RoomTemplateSO CreateFourSocketTemplate(
         string roomId,
         RoomType roomType,
-        RoomTopologyPlacementData? topologyPlacement = null)
+        RoomTopologyPlacementData? topologyPlacement = null,
+        RoomCombatMetadata? combatMetadata = null)
     {
         RoomTemplateSO template = ScriptableObject.CreateInstance<RoomTemplateSO>();
         template.EditorSetData(
@@ -1250,6 +1483,7 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
                 },
                 difficultyTier = 0,
                 selectionWeight = 1f,
+                combatMetadata = combatMetadata ?? default,
                 topologyPlacement = topologyPlacement ?? default
             },
             new RoomBuildData
