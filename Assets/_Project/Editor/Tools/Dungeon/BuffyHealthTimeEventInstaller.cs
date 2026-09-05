@@ -127,6 +127,7 @@ public static class BuffyHealthTimeEventInstaller
                 moveSpeedAttribute,
                 levelConfig);
 
+            RunEventArtInstaller.ConfigureBuffy(root);
             GameObject saved = PrefabUtility.SaveAsPrefabAsset(root, EventModulePrefabPath);
             if (saved == null)
                 throw new InvalidOperationException($"Could not save prefab: {EventModulePrefabPath}");
@@ -226,8 +227,8 @@ public static class BuffyHealthTimeEventInstaller
         GameObject module = LoadRequiredAsset<GameObject>(EventModulePrefabPath);
         BuffyHealthTimeInteractable[] rewardInteractions =
             module.GetComponentsInChildren<BuffyHealthTimeInteractable>(true);
-        BuffyGuideNpcInteractable guideInteraction =
-            module.GetComponentInChildren<BuffyGuideNpcInteractable>(true);
+        DialogueTrigger guideInteraction =
+            module.GetComponentInChildren<DialogueTrigger>(true);
         if (rewardInteractions.Length != 3 || guideInteraction == null)
             throw new InvalidOperationException("Buffy event module needs one guide and three workout interactions.");
 

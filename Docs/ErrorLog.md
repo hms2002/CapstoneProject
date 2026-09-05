@@ -1820,3 +1820,17 @@ Event-room generation now fills the full room bounds with floor tiles and rebuil
 
 Prevention:
 When a temporary room needs only another room's theme and sockets, do not treat that room's full structural tile data as the base layout. Rebuild the intended shell explicitly, but preserve the authored-room contract that every socket cell initially owns both Floor and closed Wall tiles; runtime generation opens connected sockets afterward.
+
+## 2026-09-05 - Event NPC Installer Read Ink JSON Before Auto-Compilation Completed
+
+Symptom:
+The first art installer batch stopped with a missing `ParcelEventDialogue.json` even though C# compilation passed.
+
+Cause:
+Importing the Ink source queued its automatic compiler. Calling `InkCompiler.CompileInk` immediately afterward found the same file already compiling and returned before JSON was available. `ForceSynchronousImport` does not make the separate Ink compiler queue synchronous.
+
+Fix:
+`RunEventArtInstaller` compiles its two self-contained sources with `Ink.Compiler`, writes compiler-generated JSON, and imports that JSON before assigning NPCData. The second Unity batch completed successfully.
+
+Prevention:
+For batch asset authoring, await the Ink compiler's actual completion or synchronously compile self-contained sources before loading their generated asset. Asset import completion alone is not proof of Ink compilation completion. Do not save NPC references to missing JSON.
