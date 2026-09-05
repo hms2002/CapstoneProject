@@ -220,26 +220,32 @@ public class PlayerHealthHeartHUD : MonoBehaviour, IDefaultHudVisibilityTarget
 
         int safeHeartCount = Mathf.Max(1, totalHearts);
         int rowCount = safeHeartCount <= singleRowLimit ? 1 : 2;
-        int columnCount = Mathf.Max(1, Mathf.CeilToInt((float)safeHeartCount / rowCount));
+        int columnCount = Mathf.Min(safeHeartCount, singleRowLimit);
+        if (safeHeartCount > designedMaxHeartCount)
+            columnCount = Mathf.Max(columnCount, Mathf.CeilToInt(safeHeartCount / 2f));
 
         RectOffset padding = heartGrid.padding ?? new RectOffset();
         float availableWidth = Mathf.Max(0f, areaSize.x - padding.horizontal);
         float availableHeight = Mathf.Max(0f, areaSize.y - padding.vertical);
-        float widthLimitedSize = (availableWidth - heartSpacing.x * (columnCount - 1)) / columnCount;
-        float heightLimitedSize = (availableHeight - heartSpacing.y * (rowCount - 1)) / rowCount;
-        float fittedSize = Mathf.Min(maximumHeartSize, widthLimitedSize, heightLimitedSize);
-
-        // 12칸까지는 고정 영역 안에서 최소 크기를 보장한다. 그 이상은 영역을 움직이지 않고
-        // 가능한 크기로 계속 축소하여 다른 HUD를 밀어내지 않는다.
-        float resolvedMinimum = safeHeartCount <= designedMaxHeartCount ? minimumHeartSize : 1f;
-        float cellSize = Mathf.Max(resolvedMinimum, fittedSize);
+        // Six hearts define the minimum size and the row width. Fewer hearts fill
+        // that width with larger cells; adding a second row must not shrink them.
+        float rowWidth = minimumHeartSize * singleRowLimit + heartSpacing.x * (singleRowLimit - 1);
+        float cellSize = Mathf.Min(maximumHeartSize,
+            (rowWidth - heartSpacing.x * (columnCount - 1)) / columnCount);
+        cellSize = Mathf.Max(1f, cellSize);
+        float requiredWidth = cellSize * columnCount + heartSpacing.x * (columnCount - 1);
+        // Reserve both minimum-size rows even while only the first row is visible.
+        float requiredHeight = Mathf.Max(cellSize * rowCount + heartSpacing.y * (rowCount - 1),
+            minimumHeartSize * 2f + heartSpacing.y);
+        float fitScale = Mathf.Min(1f, availableWidth / requiredWidth, availableHeight / requiredHeight);
+        cellSize *= fitScale;
 
         heartGrid.startCorner = GridLayoutGroup.Corner.UpperLeft;
         heartGrid.startAxis = GridLayoutGroup.Axis.Horizontal;
-        heartGrid.childAlignment = TextAnchor.UpperLeft;
+        heartGrid.childAlignment = TextAnchor.MiddleLeft;
         heartGrid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
         heartGrid.constraintCount = columnCount;
-        heartGrid.spacing = heartSpacing;
+        heartGrid.spacing = heartSpacing * fitScale;
         heartGrid.cellSize = new Vector2(cellSize, cellSize);
     }
 

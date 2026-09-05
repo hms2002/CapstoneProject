@@ -7,6 +7,13 @@ last_reviewed: 2026-06-01
 
 # Decision Log
 
+## 2026-09-05 - Heart HUD Six-Column Minimum Size
+
+- Current user instruction overrides the older four-heart minimum wording in the Notion UI change page: hearts shrink until six slots, then keep that size through twelve slots, filling the first six-column row before the second.
+- Normal empty health containers and soul hearts participate in the same layout count. A single row is vertically centered in the fixed authored area; two rows fit without moving consumable or buff HUDs.
+- The production area is 420x104 at top 16, with 48px minimum cells and 8px row spacing; consumable slots start at top 125.
+- Above twelve remains the existing two-row fit fallback pending a separate capacity/balance decision.
+
 ## 2026-06-06 - TaskIndex And ActiveTasks Replace CurrentTask Scope
 
 Decision:

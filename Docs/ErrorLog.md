@@ -7,6 +7,18 @@ last_reviewed: 2026-09-03
 
 # Error Log
 
+## 2026-09-05 - Upgrade Opening Coroutine Ran On Its Inactive Panel
+
+Symptom: From Hub, selecting the NPC upgrade feature did not open the window. Editor.log recorded `Coroutine couldn't be started because the the game object 'UpgradeTreePanel' is inactive!` at `UpgradeUiOpenFlow.Open`.
+
+Cause: UI backend extraction moved the opening coroutine onto `UpgradeTreeUI`, whose GameObject stays inactive until `OpenUI` is called inside that same coroutine.
+
+Fix: `UpgradeUiOpenFlow` runs opening on the existing active `UIManager`, while the panel still owns the flow and its individual input blocker. Panel cleanup stops the routine on the actual host and releases the overlay/input lock. Without an active UI host, use the existing immediate-open path.
+
+Prevention: A hidden UI cannot host the coroutine that first activates it. Keep coroutine execution lifetime separate from panel visibility, and do not share the host's input blocker across independently owned presentations.
+
+Verification: UI Roslyn compilation passed; Hub Play Mode interaction remains unverified.
+
 This file records recurring implementation errors, their causes, and prevention rules.
 
 ## Template

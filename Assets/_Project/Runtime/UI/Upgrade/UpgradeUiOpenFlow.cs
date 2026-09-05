@@ -4,7 +4,8 @@ using UnityEngine;
 
 internal sealed class UpgradeUiOpenFlow
 {
-    private readonly MonoBehaviour coroutineOwner;
+    private readonly MonoBehaviour presentationOwner;
+    private MonoBehaviour coroutineOwner;
     private readonly Func<UpgradeTreeUI> resolveUpgradeTreeUi;
     private Coroutine openPresentationRoutine;
     private GameFlowInputBlocker openPresentationInputBlocker;
@@ -13,7 +14,7 @@ internal sealed class UpgradeUiOpenFlow
         MonoBehaviour coroutineOwner,
         Func<UpgradeTreeUI> resolveUpgradeTreeUi)
     {
-        this.coroutineOwner = coroutineOwner;
+        presentationOwner = coroutineOwner;
         this.resolveUpgradeTreeUi = resolveUpgradeTreeUi;
     }
 
@@ -35,8 +36,17 @@ internal sealed class UpgradeUiOpenFlow
             return;
         }
 
-        if (openPresentationRoutine != null || coroutineOwner == null)
+        if (openPresentationRoutine != null)
             return;
+
+        // A closed panel is inactive and cannot run its own opening coroutine.
+        // Keep the presentation/blocker owned by the panel, but run on the active UI host.
+        coroutineOwner = UIManager.Instance;
+        if (coroutineOwner == null || !coroutineOwner.gameObject.activeInHierarchy)
+        {
+            OpenImmediate();
+            return;
+        }
 
         openPresentationRoutine = coroutineOwner.StartCoroutine(
             OpenWithFadePresentation(openFadeOutDuration, openFadeInDuration));
@@ -143,7 +153,7 @@ internal sealed class UpgradeUiOpenFlow
         if (openPresentationInputBlocker != null && openPresentationInputBlocker.IsBlocking)
             return;
 
-        openPresentationInputBlocker = GameFlowInputBlocker.GetOrAdd(coroutineOwner);
+        openPresentationInputBlocker = GameFlowInputBlocker.GetOrAdd(presentationOwner);
         openPresentationInputBlocker?.Acquire();
     }
 
