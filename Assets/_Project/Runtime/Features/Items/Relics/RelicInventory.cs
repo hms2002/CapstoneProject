@@ -30,7 +30,8 @@ public class RelicInventory : MonoBehaviour
         InvalidDefinition,
         InventoryFull,
         AlreadyMaxLevel,
-        HealthTooLowForRelicChange
+        HealthTooLowForRelicChange,
+        ParcelCarryLimitReached
     }
 
     // 책임: 인벤토리 안의 단일 유물 정의, 레벨, 런타임 토큰을 직렬화해 보관한다.
@@ -111,6 +112,7 @@ public class RelicInventory : MonoBehaviour
             var e = slots[i];
             var d = e.def;
             if (d == null) continue;
+            if (d is ParcelRelicDefinition) continue;
             if (string.IsNullOrEmpty(d.relicId)) continue;
 
             if (!firstIndexById.TryGetValue(d.relicId, out int first))
@@ -159,6 +161,18 @@ public class RelicInventory : MonoBehaviour
         }
     }
 
+    public int CountRelicsOfType<T>() where T : RelicDefinition
+    {
+        int count = 0;
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i].def is T)
+                count++;
+        }
+
+        return count;
+    }
+
     /// <summary>슬롯 전체를 그대로 보여줌(빈 슬롯은 null)</summary>
     public IReadOnlyList<RelicDefinition> EquippedRelics => debugView;
 
@@ -195,6 +209,19 @@ public class RelicInventory : MonoBehaviour
     {
         if (!IsValidSlot(slotIndex)) return false;
         if (relic == null) return true;
+
+        if (relic is ParcelRelicDefinition)
+        {
+            int parcelCount = CountRelicsOfType<ParcelRelicDefinition>();
+            if (ignoreIndex >= 0 &&
+                IsValidSlot(ignoreIndex) &&
+                slots[ignoreIndex].def is ParcelRelicDefinition)
+            {
+                parcelCount--;
+            }
+
+            return parcelCount < ParcelRelicDefinition.MaximumCarryCount;
+        }
 
         return true;
     }
@@ -234,7 +261,10 @@ public class RelicInventory : MonoBehaviour
         if (!IsValidSlot(slotIndex)) return FailBool(AcquireResult.InvalidDefinition);
         if (!CanPlaceRelicInSlot(slotIndex, relic, ignoreIndex: slotIndex)) return FailBool(AcquireResult.InvalidDefinition);
 
-        if (relic != null && enforceUniqueRelicId && !string.IsNullOrEmpty(relic.relicId))
+        if (relic != null &&
+            relic is not ParcelRelicDefinition &&
+            enforceUniqueRelicId &&
+            !string.IsNullOrEmpty(relic.relicId))
         {
             int existing = FindSlotByRelicId(relic.relicId);
             if (existing >= 0 && existing != slotIndex)
@@ -315,7 +345,9 @@ public class RelicInventory : MonoBehaviour
         int incomingLevel = Mathf.Max(1, levelOverride > 0 ? levelOverride : (relic.dropLevel > 0 ? relic.dropLevel : 1));
         incomingLevel = relic.ClampLevel(incomingLevel);
 
-        if (enforceUniqueRelicId && !string.IsNullOrEmpty(relic.relicId))
+        if (relic is not ParcelRelicDefinition &&
+            enforceUniqueRelicId &&
+            !string.IsNullOrEmpty(relic.relicId))
         {
             int existing = FindSlotByRelicId(relic.relicId);
             if (existing >= 0 && existing != slotIndex)
@@ -404,6 +436,9 @@ public class RelicInventory : MonoBehaviour
         if (relic == null)
             return AcquireResult.InvalidDefinition;
 
+        if (relic is ParcelRelicDefinition)
+            return PreviewAcquireParcel();
+
         int gain = gainedLevel > 0 ? gainedLevel : (relic.dropLevel > 0 ? relic.dropLevel : 1);
         int existingIndex = FindSlotByRelicId(relic.relicId);
         if (existingIndex >= 0)
@@ -446,6 +481,9 @@ public class RelicInventory : MonoBehaviour
         if (relic == null)
             return Fail(AcquireResult.InvalidDefinition);
 
+        if (relic is ParcelRelicDefinition parcel)
+            return TryAcquireParcelDetailed(parcel);
+
         int gain = gainedLevel > 0 ? gainedLevel : (relic.dropLevel > 0 ? relic.dropLevel : 1);
 
         int idx = FindSlotByRelicId(relic.relicId);
@@ -484,6 +522,31 @@ public class RelicInventory : MonoBehaviour
     public bool TryAcquireOrUpgrade(RelicDefinition relic, int gainedLevel = -1)
     {
         return TryAcquireOrUpgradeDetailed(relic, gainedLevel) == AcquireResult.Success;
+    }
+
+    public AcquireResult PreviewAcquireParcel()
+    {
+        if (CountRelicsOfType<ParcelRelicDefinition>() >= ParcelRelicDefinition.MaximumCarryCount)
+            return AcquireResult.ParcelCarryLimitReached;
+
+        return FindFirstEmptySlot() >= 0
+            ? AcquireResult.Success
+            : AcquireResult.InventoryFull;
+    }
+
+    public AcquireResult TryAcquireParcelDetailed(ParcelRelicDefinition parcel)
+    {
+        if (parcel == null)
+            return Fail(AcquireResult.InvalidDefinition);
+
+        AcquireResult preview = PreviewAcquireParcel();
+        if (preview != AcquireResult.Success)
+            return Fail(preview);
+
+        int empty = FindFirstEmptySlot();
+        return EquipIntoEmptySlot(empty, parcel, 1)
+            ? AcquireResult.Success
+            : LastFailureResult;
     }
 
     /// <summary>

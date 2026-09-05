@@ -7,6 +7,13 @@ last_reviewed: 2026-06-01
 
 # Decision Log
 
+## 2026-09-05 - Heart HUD Six-Column Minimum Size
+
+- Current user instruction overrides the older four-heart minimum wording in the Notion UI change page: hearts shrink until six slots, then keep that size through twelve slots, filling the first six-column row before the second.
+- Normal empty health containers and soul hearts participate in the same layout count. A single row is vertically centered in the fixed authored area; two rows fit without moving consumable or buff HUDs.
+- The production area is 420x104 at top 16, with 48px minimum cells and 8px row spacing; consumable slots start at top 125.
+- Above twelve remains the existing two-row fit fallback pending a separate capacity/balance decision.
+
 ## 2026-06-06 - TaskIndex And ActiveTasks Replace CurrentTask Scope
 
 Decision:
@@ -3047,3 +3054,58 @@ Implications:
 - Existing scene-authored or persistent timers always win; no duplicate timer is created.
 - Normal Hub-to-gameplay transitions, saved remaining time, and player builds are unchanged.
 - The fallback remains run-state infrastructure; `RunTimerHUD` continues to project timer state and does not own a fake preview value.
+
+## 2026-09-04 - Parcel Acceptance Is Inventory Acquisition From A Permanent Pile
+
+Decision:
+The parcel-delivery event has no accept/decline choice. Its NPC only explains the rule. A fixed, non-consuming parcel pile grants one parcel per interaction, and acquisition itself is acceptance. Parcels are effect-free event cargo that occupy separate relic inventory slots, cap at three, may be rearranged only within that inventory, and cannot be dropped or transferred to a chest.
+
+Reason:
+The intended risk is the player's voluntary use of scarce relic slots rather than a dialogue choice. Treating parcels as ordinary relic duplicates would merge them into levels, while treating them as consumables would use the wrong inventory and remove the intended slot pressure.
+
+Implications:
+- The pile has no stock or consumed visual state; current parcel count is owned by `RelicInventory`.
+- One interaction attempts to grant exactly one parcel. Full inventory and the three-parcel cap reject acquisition without changing the pile.
+- Theme-specific event definitions share the stable `parcel_delivery` ID so appearance in any generated Corridor prevents another appearance during the same run.
+- Parcel definitions must remain available to runtime relic-ID resolution for scene transitions but are excluded from ordinary relic progression presentation.
+- A successful pickup queues the delivery room for the next unvisited normal Boss route. Delivery submits the carried parcels and drops one exact-Epic relic per submitted parcel through the standard world-drop pipeline.
+## 2026-09-04 - Buffy Health Time Grants One Captured Run Reward
+
+Decision:
+`buffy_health_time` is a noncombat, once-per-run generated event. Interacting with Buffy opens the existing authored three-choice presenter and grants exactly one reward: AttackBase +10, MoveSpeed multiplier base +0.15, or the current level's full required experience amount. Attack and movement modify the player's captured Attribute base values so they persist through scene travel but naturally disappear with the run. A maximum-level Log choice does not complete the event, allowing another choice. Completion is recorded in `RunMapEventProgress`, preventing reward duplication on Corridor reentry.
+
+Reason:
+The reward must be immediately testable, survive inter-scene travel, and disappear at the run boundary without adding a new persistent manager or runtime state owner.
+
+Implications:
+- The temporary module reuses the authored global RunSpecial choice presenter instead of creating UI at runtime.
+- The current two-entry event pool can fill only the first two distinct normal Corridors under the no-repeat rule; the third needs another unique event before it can be guaranteed an event room.
+- The temporary event module and themed rooms are test content; final Buffy/equipment art and dialogue remain authored-content follow-up work.
+
+## 2026-09-05 - Grand Hall Is An In-Run Route Checkpoint
+
+Decision:
+The normal progression loop is `Grand Hall -> generated Corridor -> Boss -> Grand Hall`. Returning from a normal Boss and choosing the next Grand Hall portal preserve the same active run and player runtime state. A new run starts only when entering the first route with no active run; normal Grand Hall cycles do not restart it. The final DemonKing completion, death, and explicit return to `ProtoTypeHub` remain run-ending boundaries.
+
+Reason:
+Treating a normal Boss return as a Hub/run-end transition cleared inventory and progression state, while reusing the static `Default` Corridor spawn ignored the generated Start-room travel endpoint.
+
+Implications:
+- Normal Boss exit connections target `Grand Hall / GrandHall.BossClear` with `RunAction.None` and player-state preservation.
+- Grand Hall `HubToRunStart` route selection may replace the completed route plan while a run is active, but it does not apply new-run reset policy.
+- Normal route catalogs enter procedural Corridors through the generated `Corridor.<theme>.Lobby` endpoint.
+- `ProtoTypeHub` remains the actual Hub domain; Grand Hall must not be added to `SceneDomainNamePolicy.IsHubSceneName`.
+
+## 2026-09-05 - Parcel Pickup Queues The Next-Route Delivery Room
+
+Decision:
+A successful parcel acquisition queues one `parcel_delivery_destination` follow-up for the next unvisited normal Boss route. The follow-up occupies that Corridor's single event-room allowance, and interacting with its fixed delivery point removes all carried parcels and completes `parcel_delivery`.
+
+Reason:
+Presenting the pickup room alone did not create pending follow-up state, so the next Corridor correctly logged `consumedFollowUps=0` and had no delivery destination.
+
+Implications:
+- Repeated pile interactions update the existing pending payload count rather than adding duplicate destination rooms.
+- The follow-up resolves through the destination theme's parcel definition and themed delivery-room template.
+- Each submitted parcel produces one exact-Epic relic. Selection uses the unlocked relic pool and its normal non-droppable exclusions; placement and acquisition use the standard ground-tile drop animation and `WorldItemPickup2D` path.
+- Parcels are removed only for rewards that were successfully spawned. If the Epic pool or world-pickup path cannot produce a reward, the corresponding parcel stays in the relic inventory.

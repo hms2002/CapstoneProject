@@ -156,6 +156,9 @@ public sealed class PlayerRelicContainerAdapter : IItemContainer, IDisposable, I
             return false;
         if (item == null)
         {
+            if (inventory.GetRelicInSlot(index) is ParcelRelicDefinition)
+                return false;
+
             bool cleared = inventory.TrySetRelicSlot(index, null);
             if (!cleared)
                 ShowRelicWarning(inventory.LastFailureResult);
@@ -187,6 +190,9 @@ public sealed class PlayerRelicContainerAdapter : IItemContainer, IDisposable, I
             return false;
         if (relic == null)
         {
+            if (inventory.GetRelicInSlot(index) is ParcelRelicDefinition)
+                return false;
+
             bool cleared = inventory.TrySetRelicSlot(index, null);
             if (!cleared)
                 ShowRelicWarning(inventory.LastFailureResult);
@@ -208,6 +214,9 @@ public sealed class PlayerRelicContainerAdapter : IItemContainer, IDisposable, I
 
     public bool TryMergeExistingRelicWithLevel(RelicDefinition relic, int level)
     {
+        if (relic is ParcelRelicDefinition)
+            return false;
+
         if (!HasExistingRelic(relic))
             return false;
 

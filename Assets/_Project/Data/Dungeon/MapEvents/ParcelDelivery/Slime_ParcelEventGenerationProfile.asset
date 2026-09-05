@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82216de2faf64f1ebbc8ba8015400e30, type: 3}
+  m_Name: Slime_ParcelEventGenerationProfile
+  m_EditorClassIdentifier: Gameplay::RunMapEventGenerationProfileSO
+  eventDefinitions:
+  - {fileID: 11400000, guid: 457f21a59b6313f4092d91eb97ac1232, type: 2}
+  - {fileID: 11400000, guid: 78df1df6b4f46094586ba0fb5ead5dbd, type: 2}
+  maximumStartEventsPerCorridor: 1
+  plannedBossRouteVisitCount: 3
+  logSelection: 1

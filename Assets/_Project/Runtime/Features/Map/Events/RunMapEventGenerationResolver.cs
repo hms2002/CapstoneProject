@@ -80,7 +80,9 @@ public static class RunMapEventGenerationResolver
         bool hasRouteContext,
         int nextVisitOrder)
     {
-        int maxCount = profile.MaximumStartEventsPerCorridor;
+        int maxCount = Mathf.Max(
+            0,
+            profile.MaximumStartEventsPerCorridor - plan.ConsumedPendingPlacements.Count);
         if (maxCount <= 0)
             return;
 

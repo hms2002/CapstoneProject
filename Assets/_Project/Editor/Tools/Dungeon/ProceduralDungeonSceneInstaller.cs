@@ -2164,6 +2164,12 @@ public static class ProceduralDungeonSceneInstaller
             throw new InvalidOperationException("CorridorBossRouteSetSO serialization contract changed.");
 
         corridorSceneName.stringValue = spec.TargetSceneName;
+        SerializedProperty corridorEntryPointId =
+            serializedRouteSet.FindProperty("corridorEntryPointId");
+        if (corridorEntryPointId == null)
+            throw new InvalidOperationException("CorridorBossRouteSetSO serialization contract changed.");
+
+        corridorEntryPointId.stringValue = $"Corridor.{routeSet.StableThemeId}.Lobby";
         serializedRouteSet.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(routeSet);
     }

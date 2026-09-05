@@ -18,8 +18,8 @@ MonoBehaviour:
     endpointId: Boss.shadow.Hub
     routeContext: {fileID: 11400000, guid: d35e3630a31b6ef42a9a2b03d2afa4e3, type: 2}
   endpointB:
-    sceneName: ProtoTypeHub
-    endpointId: Lobby.shadow.Corridor
+    sceneName: Grand Hall
+    endpointId: GrandHall.BossClear
     routeContext: {fileID: 0}
   aToB:
     enabled: 1

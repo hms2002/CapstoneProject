@@ -536,7 +536,7 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
         return category switch
         {
             EncyclopediaCategory.Weapon => GetNonNullCount(itemDatabase != null ? itemDatabase.allWeapons : null),
-            EncyclopediaCategory.Relic => GetNonNullCount(itemDatabase != null ? itemDatabase.allRelics : null),
+            EncyclopediaCategory.Relic => GetDisplayRelicCount(itemDatabase != null ? itemDatabase.allRelics : null),
             EncyclopediaCategory.Consumable => GetNonNullCount(itemDatabase != null ? itemDatabase.allConsumables : null),
             _ => 0
         };
@@ -565,7 +565,7 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
         return category switch
         {
             EncyclopediaCategory.Weapon => TryGetNonNullItem(itemDatabase != null ? itemDatabase.allWeapons : null, index, out WeaponDefinition weapon) ? weapon : null,
-            EncyclopediaCategory.Relic => TryGetNonNullItem(itemDatabase != null ? itemDatabase.allRelics : null, index, out RelicDefinition relic) ? relic : null,
+            EncyclopediaCategory.Relic => TryGetDisplayRelic(itemDatabase != null ? itemDatabase.allRelics : null, index, out RelicDefinition relic) ? relic : null,
             EncyclopediaCategory.Consumable => TryGetNonNullItem(itemDatabase != null ? itemDatabase.allConsumables : null, index, out ConsumableDefinition consumable) ? consumable : null,
             _ => null
         };
@@ -656,6 +656,49 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
         }
 
         return count;
+    }
+
+    private static int GetDisplayRelicCount(IReadOnlyList<RelicDefinition> entries)
+    {
+        if (entries == null)
+            return 0;
+
+        int count = 0;
+        for (int i = 0; i < entries.Count; i++)
+        {
+            if (entries[i] != null && entries[i] is not ParcelRelicDefinition)
+                count++;
+        }
+
+        return count;
+    }
+
+    private static bool TryGetDisplayRelic(
+        IReadOnlyList<RelicDefinition> entries,
+        int index,
+        out RelicDefinition relic)
+    {
+        relic = null;
+        if (entries == null || index < 0)
+            return false;
+
+        int currentIndex = 0;
+        for (int i = 0; i < entries.Count; i++)
+        {
+            RelicDefinition candidate = entries[i];
+            if (candidate == null || candidate is ParcelRelicDefinition)
+                continue;
+
+            if (currentIndex == index)
+            {
+                relic = candidate;
+                return true;
+            }
+
+            currentIndex++;
+        }
+
+        return false;
     }
 
     private static bool TryGetNonNullItem<T>(IReadOnlyList<T> entries, int index, out T item) where T : UnityEngine.Object

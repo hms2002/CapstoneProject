@@ -412,7 +412,7 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
         switch (effectiveTransitionType)
         {
             case TransitionType.HubToRunStart:
-                ClearStaleHubStartPlanIfNeeded();
+                ClearStaleHubStartPlanIfNeeded(portal);
                 SetLoadPresentationContext(effectiveTransitionType, null, null);
                 if (!TryActivatePendingPlan(portal))
                     return false;
@@ -576,7 +576,7 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
         if (!TryValidateStartPortal(portal, out _))
             return false;
 
-        ClearStaleHubStartPlanIfNeeded();
+        ClearStaleHubStartPlanIfNeeded(portal);
 
         if (HasActivePlan)
             return false;
@@ -613,7 +613,7 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
 
     private bool TryPrepareHubStartPlan(ScenePortal portal)
     {
-        ClearStaleHubStartPlanIfNeeded();
+        ClearStaleHubStartPlanIfNeeded(portal);
 
         if (!TryValidateStartPortal(portal, out var catalog))
             return false;
@@ -647,24 +647,41 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
         return true;
     }
 
-    private void ClearStaleHubStartPlanIfNeeded()
+    private void ClearStaleHubStartPlanIfNeeded(ScenePortal portal)
     {
         if (!HasActivePlan)
             return;
 
         GamePlayDataManager gameplay = GamePlayDataManager.Instance;
         bool isRunActive = gameplay != null && gameplay.Data != null && gameplay.Data.isRunActive;
-        if (isRunActive)
+        if (isRunActive && !IsInRunCheckpointStartPortal(portal))
             return;
 
         if (verboseLogging)
         {
             Debug.Log(
-                "[PortalRouteManager] Cleared stale hub-start plan because no run is active.",
+                isRunActive
+                    ? "[PortalRouteManager] Replaced the completed route plan at an in-run checkpoint."
+                    : "[PortalRouteManager] Cleared stale hub-start plan because no run is active.",
                 this);
         }
 
         ClearPlan();
+    }
+
+    private static bool IsInRunCheckpointStartPortal(ScenePortal portal)
+    {
+        if (portal == null || portal.PortalTransitionType != TransitionType.HubToRunStart)
+            return false;
+
+        RunRouteCatalogSO catalog = portal.StartRunRouteCatalog;
+        string portalSceneName = ResolvePortalSceneName(portal);
+        return catalog != null &&
+               !SceneDomainNamePolicy.IsHubSceneName(portalSceneName) &&
+               string.Equals(
+                   catalog.HubSceneName,
+                   portalSceneName,
+                   StringComparison.Ordinal);
     }
 
     private bool TryBuildRunPlan(RunRouteCatalogSO catalog, out List<CorridorBossRouteSetSO> stages)

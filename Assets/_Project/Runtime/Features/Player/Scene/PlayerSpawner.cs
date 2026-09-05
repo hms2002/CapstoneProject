@@ -18,7 +18,6 @@ public sealed class PlayerSpawner : MonoBehaviour
         SceneTransitionContext transitionContext = RunSessionStore.PeekPendingTransition();
         bool waitsForDynamicEndpoint =
             transitionContext != null &&
-            !string.IsNullOrWhiteSpace(transitionContext.connectionId) &&
             !string.IsNullOrWhiteSpace(transitionContext.destinationEndpointId);
 
         ISceneFadeTransitionHandle fadeService = null;

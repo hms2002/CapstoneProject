@@ -41,4 +41,29 @@ public sealed class RunMapEventGenerationProfileSO : ScriptableObject
 
         return false;
     }
+
+#if UNITY_EDITOR
+    public void EditorConfigure(
+        IReadOnlyList<RunMapEventDefinitionSO> configuredDefinitions,
+        int configuredMaximumStartEventsPerCorridor,
+        int configuredPlannedBossRouteVisitCount,
+        bool configuredLogSelection)
+    {
+        eventDefinitions ??= new List<RunMapEventDefinitionSO>();
+        eventDefinitions.Clear();
+        if (configuredDefinitions != null)
+        {
+            for (int i = 0; i < configuredDefinitions.Count; i++)
+            {
+                RunMapEventDefinitionSO definition = configuredDefinitions[i];
+                if (definition != null && !eventDefinitions.Contains(definition))
+                    eventDefinitions.Add(definition);
+            }
+        }
+
+        maximumStartEventsPerCorridor = Mathf.Max(0, configuredMaximumStartEventsPerCorridor);
+        plannedBossRouteVisitCount = Mathf.Max(1, configuredPlannedBossRouteVisitCount);
+        logSelection = configuredLogSelection;
+    }
+#endif
 }
