@@ -1,12 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "aea9dc96676146b39b34f0dfb1e968fb",
-            "startedUtc": "2026-09-02T05:16:27.7785255Z",
-            "endedUtc": "2026-09-02T05:16:31.2002968Z",
-            "entries": []
-        },
-        {
             "sessionId": "5d8a9426aca0490c861e239144ff9839",
             "startedUtc": "2026-09-02T05:19:24.5939501Z",
             "endedUtc": "2026-09-02T05:19:49.4630676Z",
@@ -386,6 +380,43 @@
                     "lastSeenSeconds": 36.6451416015625,
                     "firstSceneName": "ProtoTypeHub",
                     "lastSceneName": "ProtoTypeHub"
+                }
+            ]
+        },
+        {
+            "sessionId": "b62a8dacc6fb4572bc6a15fd14c52920",
+            "startedUtc": "2026-09-05T13:00:51.2789248Z",
+            "endedUtc": "2026-09-05T13:03:48.0454785Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab",
+                    "prefabName": "PF_Dragon_KegImpactSplash",
+                    "totalSpawns": 4,
+                    "coldSpawns": 4,
+                    "firstSeenSeconds": 176.7284698486328,
+                    "lastSeenSeconds": 176.73777770996095,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_LandingDust.prefab",
+                    "prefabName": "PF_Dragon_LandingDust",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 175.36480712890626,
+                    "lastSeenSeconds": 175.36480712890626,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/DashDust.prefab",
+                    "prefabName": "DashDust",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 174.29745483398438,
+                    "lastSeenSeconds": 174.2976837158203,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 }
             ]
         }

@@ -125,6 +125,7 @@ public static class ParcelDeliveryEventInstaller
             CreateSpriteChild(pile.transform, "ParcelBox_Right", temporarySprite, boxColor, new Vector3(0.6f, -0.25f, 0f), new Vector3(1.15f, 0.85f, 1f), 0);
             CreateSpriteChild(pile.transform, "ParcelBox_Top", temporarySprite, new Color(0.72f, 0.48f, 0.25f), new Vector3(0f, 0.55f, 0f), new Vector3(1.15f, 0.85f, 1f), 1);
 
+            RunEventArtInstaller.ConfigureParcel(root);
             GameObject saved = PrefabUtility.SaveAsPrefabAsset(root, EventModulePrefabPath);
             if (saved == null)
                 throw new InvalidOperationException($"Could not save prefab: {EventModulePrefabPath}");
@@ -156,6 +157,7 @@ public static class ParcelDeliveryEventInstaller
                 new Vector3(2.4f, 1.8f, 1f),
                 0);
 
+            RunEventArtInstaller.ConfigureDelivery(root);
             GameObject saved = PrefabUtility.SaveAsPrefabAsset(root, DeliveryModulePrefabPath);
             if (saved == null)
                 throw new InvalidOperationException($"Could not save prefab: {DeliveryModulePrefabPath}");
@@ -343,7 +345,7 @@ public static class ParcelDeliveryEventInstaller
 
         GameObject module = LoadRequiredAsset<GameObject>(EventModulePrefabPath);
         if (module.GetComponentInChildren<ParcelPickupInteractable>(true) == null ||
-            module.GetComponentInChildren<ParcelGuideNpcInteractable>(true) == null)
+            module.GetComponentInChildren<DialogueTrigger>(true) == null)
         {
             throw new InvalidOperationException("Parcel event module is missing its pickup or guide interaction.");
         }
