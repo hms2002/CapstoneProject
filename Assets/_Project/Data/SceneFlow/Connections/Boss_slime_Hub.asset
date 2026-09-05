@@ -18,8 +18,8 @@ MonoBehaviour:
     endpointId: Boss.slime.Hub
     routeContext: {fileID: 11400000, guid: ac129d8bcfb6e3c4da2f9c2e3e4ead07, type: 2}
   endpointB:
-    sceneName: ProtoTypeHub
-    endpointId: Lobby.slime.Corridor
+    sceneName: Grand Hall
+    endpointId: GrandHall.BossClear
     routeContext: {fileID: 0}
   aToB:
     enabled: 1

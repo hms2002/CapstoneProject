@@ -21,6 +21,20 @@ public sealed class RunMapEventFollowUpDefinition
     public bool IsConfigured =>
         !string.IsNullOrWhiteSpace(followUpId) &&
         roomTemplate != null;
+
+#if UNITY_EDITOR
+    public void EditorConfigure(
+        string configuredFollowUpId,
+        string configuredDisplayName,
+        RoomTemplateSO configuredRoomTemplate,
+        RunMapEventFollowUpPlacementTiming configuredPlacementTiming)
+    {
+        followUpId = configuredFollowUpId;
+        displayName = configuredDisplayName;
+        roomTemplate = configuredRoomTemplate;
+        placementTiming = configuredPlacementTiming;
+    }
+#endif
 }
 
 /// <summary>
@@ -96,4 +110,34 @@ public sealed class RunMapEventDefinitionSO : ScriptableObject
 
         return false;
     }
+
+#if UNITY_EDITOR
+    public void EditorConfigure(
+        string configuredEventId,
+        string configuredDisplayName,
+        float configuredSelectionWeight,
+        bool configuredAllowRepeatInRun,
+        bool configuredRequireBossRouteContext,
+        int configuredMinimumBossRouteVisitOrder,
+        int configuredMaximumBossRouteVisitOrder,
+        RoomTemplateSO configuredEventRoomTemplate)
+    {
+        eventId = configuredEventId;
+        displayName = configuredDisplayName;
+        selectionWeight = Mathf.Max(0f, configuredSelectionWeight);
+        allowRepeatInRun = configuredAllowRepeatInRun;
+        requireBossRouteContext = configuredRequireBossRouteContext;
+        minimumBossRouteVisitOrder = Mathf.Max(1, configuredMinimumBossRouteVisitOrder);
+        maximumBossRouteVisitOrder = Mathf.Max(0, configuredMaximumBossRouteVisitOrder);
+        eventRoomTemplate = configuredEventRoomTemplate;
+        followUps ??= new List<RunMapEventFollowUpDefinition>();
+    }
+
+    public void EditorSetFollowUps(IEnumerable<RunMapEventFollowUpDefinition> configuredFollowUps)
+    {
+        followUps = configuredFollowUps != null
+            ? new List<RunMapEventFollowUpDefinition>(configuredFollowUps)
+            : new List<RunMapEventFollowUpDefinition>();
+    }
+#endif
 }

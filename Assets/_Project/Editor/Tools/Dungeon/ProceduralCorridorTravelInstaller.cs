@@ -12,6 +12,8 @@ public static class ProceduralCorridorTravelInstaller
 {
     private const string LobbySceneName = "ProtoTypeHub";
     private const string LobbyScenePath = "Assets/_Project/Scenes/ProtoTypeHub.unity";
+    private const string GrandHallSceneName = "Grand Hall";
+    private const string GrandHallBossClearEndpointId = "GrandHall.BossClear";
     private const string RoomRootFolder = "Assets/_Project/Data/Dungeon/Rooms/BossThemes";
     private const string ConnectionFolder = "Assets/_Project/Data/SceneFlow/Connections";
     private const string TravelProfileFolder = "Assets/_Project/Data/SceneFlow/TravelProfiles";
@@ -161,7 +163,7 @@ public static class ProceduralCorridorTravelInstaller
     /// <summary>
     /// 책임 : 세 일반 보스의 처치 후 포탈만 데이터 기반 Boss→HUB 이동으로 전환하고 기존 순차 RouteManager 경로를 우회한다.
     /// </summary>
-    [MenuItem("Tools/Dungeon/Migrate Normal Boss Exit Portals To HUB")]
+    [MenuItem("Tools/Dungeon/Migrate Normal Boss Exit Portals To Grand Hall")]
     public static void InstallNormalBossHubReturns()
     {
         EnsureFolder(ConnectionFolder);
@@ -202,7 +204,7 @@ public static class ProceduralCorridorTravelInstaller
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-        Debug.Log("Migrated Slime, Shadow and Dragon boss exits to data-driven HUB returns.");
+        Debug.Log("Migrated Slime, Shadow and Dragon boss exits to data-driven Grand Hall returns.");
     }
 
     /// <summary>
@@ -416,6 +418,7 @@ public static class ProceduralCorridorTravelInstaller
         if (routeSet == null || !routeSet.IsValid)
             throw new InvalidOperationException($"Invalid route set: {spec.RouteSetPath}");
 
+        ConfigureRouteSetCorridorEntryPoint(routeSet);
         SceneConnectionSO lobbyConnection = CreateOrUpdateLobbyConnection(
             routeSet,
             lobbyToCorridorPresentationProfile);
@@ -763,6 +766,18 @@ public static class ProceduralCorridorTravelInstaller
         return connection;
     }
 
+    private static void ConfigureRouteSetCorridorEntryPoint(CorridorBossRouteSetSO routeSet)
+    {
+        SerializedObject serialized = new(routeSet);
+        SerializedProperty entryPointId = serialized.FindProperty("corridorEntryPointId");
+        if (entryPointId == null)
+            throw new InvalidOperationException("CorridorBossRouteSetSO serialization contract changed.");
+
+        entryPointId.stringValue = $"Corridor.{routeSet.StableThemeId}.Lobby";
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(routeSet);
+    }
+
     private static SceneConnectionSO CreateOrUpdateBossConnection(
         CorridorBossRouteSetSO routeSet,
         SceneTravelPresentationProfileSO profile)
@@ -819,8 +834,8 @@ public static class ProceduralCorridorTravelInstaller
             routeSet);
         ConfigureEndpoint(
             serialized.FindProperty("endpointB"),
-            LobbySceneName,
-            $"Lobby.{themeId}.Corridor",
+            GrandHallSceneName,
+            GrandHallBossClearEndpointId,
             routeContext: null);
         ConfigureDirection(
             serialized.FindProperty("aToB"),
@@ -1796,6 +1811,7 @@ public static class ProceduralCorridorTravelInstaller
             !HasTravelSlot(bossRoom, BossSlotId, RoomTravelEndpointKind.Interaction) ||
             HasLegacyExitPortal(bossRoom) ||
             lobbyConnection.EndpointB.SceneName != routeSet.CorridorSceneName ||
+            lobbyConnection.EndpointB.EndpointId != routeSet.CorridorEntryPointId ||
             lobbyConnection.EndpointB.RouteContext != routeSet ||
             bossConnection.EndpointA.SceneName != routeSet.CorridorSceneName ||
             bossConnection.EndpointB.SceneName != routeSet.BossSceneName ||
@@ -1803,7 +1819,8 @@ public static class ProceduralCorridorTravelInstaller
             bossConnection.EndpointB.RouteContext != routeSet ||
             bossHubConnection == null ||
             bossHubConnection.EndpointA.SceneName != routeSet.BossSceneName ||
-            bossHubConnection.EndpointB.SceneName != LobbySceneName ||
+            bossHubConnection.EndpointB.SceneName != GrandHallSceneName ||
+            bossHubConnection.EndpointB.EndpointId != GrandHallBossClearEndpointId ||
             !bossHubConnection.AToB.Enabled ||
             bossHubConnection.BToA.Enabled ||
             lobbyToCorridorPresentationProfile == null ||
@@ -1861,10 +1878,10 @@ public static class ProceduralCorridorTravelInstaller
             bToAEnabled ||
             runAction != (int)SceneTravelRunAction.None ||
             presentationProfile == null ||
-            !string.Equals(destinationScene, LobbySceneName, StringComparison.Ordinal))
+            !string.Equals(destinationScene, GrandHallSceneName, StringComparison.Ordinal))
         {
             throw new InvalidOperationException(
-                $"Boss-to-HUB connection contract is invalid: " +
+                $"Boss-to-Grand-Hall connection contract is invalid: " +
                 $"A→B={aToBEnabled}, B→A={bToAEnabled}, RunAction={runAction}, " +
                 $"Profile={(presentationProfile != null ? presentationProfile.name : "None")}, " +
                 $"Destination='{destinationScene}'.");

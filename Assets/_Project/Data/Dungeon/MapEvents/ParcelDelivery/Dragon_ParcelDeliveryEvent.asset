@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40ceb7dc58814e1ebb2c8a0318768fc5, type: 3}
+  m_Name: Dragon_ParcelDeliveryEvent
+  m_EditorClassIdentifier: Gameplay::RunMapEventDefinitionSO
+  eventId: parcel_delivery
+  displayName: "\uC18C\uD3EC \uBC30\uB2EC \uB300\uD589"
+  selectionWeight: 1
+  allowRepeatInRun: 0
+  requireBossRouteContext: 1
+  minimumBossRouteVisitOrder: 1
+  maximumBossRouteVisitOrder: 2
+  eventRoomTemplate: {fileID: 11400000, guid: 392102d6d91382d40a22ef1ee478f568, type: 2}
+  followUps:
+  - followUpId: parcel_delivery_destination
+    displayName: "\uC18C\uD3EC \uBC30\uC1A1 \uC9C0\uC810"
+    roomTemplate: {fileID: 11400000, guid: d22c125e230f4cd28db530fb42e03262, type: 2}
+    placementTiming: 0

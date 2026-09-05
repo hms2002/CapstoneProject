@@ -26,6 +26,9 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 14. `PlayerSpawner` waits for the destination endpoint registry when a data-driven transition targets procedural content, then places the player and completes arrival presentation before releasing the fade service's input lock.
 15. The Room Piece tool's Map Preview step runs the same selected legacy or graph-first assembler against a transient copy of the selected library. The unsaved current room replaces its source template only in memory; `DungeonRoomBuilder` paints tiles/corridors with `DungeonBuildOptions.VisualOnly`, while Scene View handles represent room bounds, connections, and object kinds without instantiating gameplay prefabs.
 16. `현재 미리보기 설정을 테마에 적용` writes the tested values into that library's `DungeonGenerationProfileSO`. The three production procedural Corridor scenes already reference their theme profiles, so the next runtime generation reads the new values without rewriting the scenes. `CorridorDecorationCompletedPreview` is a separate non-saving preview that composes one requested straight-corridor length with the same runtime composer and reports its exact module sequence.
+17. Optional `RunMapEventGenerationProfileSO` data selects at most one start-event definition for a Corridor and contributes its `RoomTemplateSO` as guaranteed content. Presented event IDs are committed only after a complete build, so identical IDs across theme-specific definitions enforce the same run-wide no-repeat rule.
+18. The parcel event has themed pickup and delivery Event rooms for Shadow, Dragon, and Slime. Both use a full rectangular floor and closed outer wall shell; the runtime builder opens connected sockets. The pickup guide only explains the rule, while the permanent pile grants separate `ParcelRelicDefinition` slots and queues `parcel_delivery_destination` for the next unvisited normal route. That route consumes the pending follow-up as its single event room. The fixed delivery point submits all carried parcels, drops one exact-Epic relic per parcel through `LootManager`'s unlocked-pool and standard ground world-pickup path, then completes the event. A parcel is retained when its reward cannot be spawned.
+19. The Buffy Health Time event has the same three simple theme-room variants and a shared temporary module. `BuffyGuideNpcInteractable` only explains the three equipment objects. Strength, Wheel, and Log each own a `BuffyHealthTimeInteractable` configured for one direct reward; the first successful interaction records `buffy_health_time` completed and blocks the other two. Attribute base changes travel through the existing `PlayerRuntimeState` capture/restore path. Temporary event renderers use the `Entity` Sorting Layer so base room Floor/Wall tile orders cannot cover them.
 
 ## Key Files
 
@@ -57,6 +60,22 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
   - Runtime Tilemap/object realization, connected socket wall removal, and generated door/blocker/object lifecycle.
 - `Assets/_Project/Runtime/Features/Map/Procedural/DungeonGenerator.cs`
   - Runtime orchestration entry point and per-dungeon reentry policy owner.
+- `Assets/_Project/Runtime/Features/Map/Events/RunMapEventGenerationResolver.cs`
+  - Run route visit, presented-event, weighted selection, and guaranteed event-room planning.
+- `Assets/_Project/Runtime/Features/Map/Events/ParcelPickupInteractable.cs`
+  - Permanent parcel-pile acquisition plus next-unvisited-route follow-up scheduling.
+- `Assets/_Project/Runtime/Features/Map/Events/ParcelDeliveryPointInteractable.cs`
+  - Fixed delivery-point interaction that exchanges carried parcels one-for-one for exact-Epic ground relic drops and completes the event.
+- `Assets/_Project/Runtime/Features/Items/Relics/ParcelRelicDefinition.cs`
+  - Marker definition for non-mergeable, inventory-bound event cargo.
+- `Assets/_Project/Editor/Tools/Dungeon/ParcelDeliveryEventInstaller.cs`
+  - Idempotent creation and validation of the temporary parcel item/module, three themed rooms, event definitions/profiles, and generation-profile bindings.
+- `Assets/_Project/Runtime/Features/Map/Events/BuffyHealthTimeInteractable.cs`
+  - Equipment-owned choice interaction that applies one Buffy run reward before completing the event.
+- `Assets/_Project/Runtime/Features/Map/Events/BuffyGuideNpcInteractable.cs`
+  - Information-only Buffy dialogue; it does not own reward selection or event completion.
+- `Assets/_Project/Editor/Tools/Dungeon/BuffyHealthTimeEventInstaller.cs`
+  - Idempotently creates and validates the temporary Buffy module, three themed rooms, event definitions, and the combined Parcel/Buffy event pools.
 - `Assets/_Project/Runtime/Core/SceneFlow/SceneTravelContracts.cs`
   - Direction endpoint/gate/run/restore contracts and stable reentry policy values.
 - `Assets/_Project/Runtime/Core/SceneFlow/SceneConnectionSO.cs`
@@ -96,6 +115,8 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 
 - `RoomThemeLibrarySO` and `RoomTemplateSO` are authored assets and do not own runtime state.
 - `DungeonGenerationProfileSO` owns persistent per-theme generation settings, not generated layout state. Editing it changes the next generation request for every scene that references it.
+- `RunMapEventGenerationProfileSO` owns the selectable event pool for one theme profile. `RunSessionStore.Data.presentedRunMapEventIds` owns run-wide appearance history; room objects do not own that selection state.
+- `RelicInventory` owns parcel slot count and the three-parcel cap. The permanent pile owns only interaction presentation and never stores or decrements parcel stock.
 - `CorridorDecorationProfileSO` and its module assets own authored visual composition data, not layout length or runtime state. The generation profile owns only the reference to the theme profile.
 - `RoomAuthoringWorkspace` owns temporary Editor objects only. It does not save a scene asset and never searches, removes, or disables gameplay-scene roots.
 - Preview mutations are scoped separately from authoring mutations. Generating or clearing `[Preview] Procedural Dungeon` does not set the room's unsaved-session flag.
@@ -207,6 +228,7 @@ Run `Tools/Dungeon/Install Boss Theme Procedural Corridor Scenes` to rebuild and
 - Enabling the boss option without a usable Boss template returns a partial/failed result.
 - Assigning a graph policy while disabling Boss generation falls back to the legacy assembler; graph-first topology currently requires both Start and Boss anchors.
 - A nonzero required role quota needs at least one usable template of that exact room type. Missing Treasure/Event/Shop candidates fail generation with a role-specific error.
+- A dynamically selected guaranteed event room must also be registered in the active theme's `RoomThemeLibrarySO`. An event definition/profile reference alone is insufficient; graph-first validation rejects a guaranteed template that is outside the library. Event installers should register the room and assemble the production profile once per event room before reporting success.
 - The policy needs enough requested rooms to satisfy the minimum Boss distance, branches, and cycles. The assembler clamps random targets to feasible ranges but does not invent rooms beyond `roomCount`.
 - Opposite left/right sockets selected for a graph edge must share a physical row, and opposite up/down sockets must share a column. The graph embedder chooses compatible sockets and rejects a topology/template assignment that cannot preserve this straight-corridor invariant.
 - Every configured fixed-layer builder reference must be a dedicated Tilemap because every build clears it. New decorative data fails the build explicitly when its target Tilemap reference is missing; old Floor/Wall-only scenes retain compatibility until upgraded.

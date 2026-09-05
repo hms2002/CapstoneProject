@@ -16,11 +16,11 @@ Complete the Corridor-owned half of data-driven Lobby↔Corridor→Boss travel a
 - Three active `LobbyGate` trigger slots in the normal-themed Start rooms.
 - Three active `BossGate` interaction slots using the shared data-driven portal prefab.
 - Six active normal-theme directional connection assets and one reusable travel presentation profile.
-- Both directions of every normal-theme Lobby↔Corridor connection share the authored right-to-left black wipe profile; returning to HUB does not fall back to the default portal transition.
+- Every normal-theme Lobby-to-Corridor connection and Boss-to-Grand-Hall return uses the authored right-to-left black wipe profile instead of falling back to the default portal transition.
 - Scene-local builder bindings and explicit per-Corridor `PreserveDuringRun` policy/state IDs.
-- Each normal-theme layout and supported generated-object state remains stable while the run is active, including Corridor↔Corridor and Corridor↔HUB travel; a new or ended run clears it.
+- Each normal-theme layout and supported generated-object state remains stable while the run is active, including Corridor↔Corridor and Corridor↔Grand Hall travel; a new or ended run clears it.
 - Arrival-only destination endpoints in the three normal authored Boss scenes.
-- Three one-way normal Boss→HUB connections. Each post-clear portal returns to its matching HUB gate with the shared wipe profile and `RunAction.None`.
+- Three one-way normal Boss→Grand Hall connections. Each post-clear portal returns to the shared `GrandHall.BossClear` endpoint with the shared wipe profile and `RunAction.None`.
 - Normal Boss exits no longer use `ScenePortal`/`PortalRouteManager` sequential routing; their encounter directors own explicit theme RouteSets so rewards and per-run defeat gates remain data-driven.
 - Arrival trigger reverse-trip suppression.
 - Idempotent focused installer and full-installer chaining.
@@ -39,6 +39,10 @@ Complete the Corridor-owned half of data-driven Lobby↔Corridor→Boss travel a
 - Designer sign-off and final tuning for the three positioned gates in `ProtoTypeHub`.
 - End-to-end Play Mode traversal and presentation tuning.
 
+## 2026-09-05 Route Loop Correction
+
+The previous Boss-to-`ProtoTypeHub` return is superseded. The current normal-theme contract is Boss-to-Grand-Hall with `RunAction.None`, followed by a Grand Hall route selection that preserves an active run and enters the next generated Corridor through its `Corridor.<theme>.Lobby` Start-room endpoint. The fixed, combat-free DemonKing rest Corridor remains unchanged.
+
 ## Verification
 
 - Unity 6000.4.2f1 compilation returned code 0.
@@ -50,5 +54,5 @@ Complete the Corridor-owned half of data-driven Lobby↔Corridor→Boss travel a
 - `DemonKingHubPortalInstaller.Validate` and `DemonKingHubPortalPlayModeTests` verify that the unique HUB start portal resolves `DemonkingCorridor` as its first destination.
 - All connection assets retain a valid `SceneConnectionSO` script GUID.
 - `ProtoTypeHub.unity` contains active Shadow, Dragon, and Slime trigger gates plus the existing interactive portal bound to the DemonKing-only route catalog; no automatic DemonKing trigger gate exists.
-- `InstallNormalBossHubReturns` compiled and completed with return code 0, then verified all three one-way Boss→HUB assets, matching HUB endpoint IDs, shared wipe profiles, explicit encounter RouteSets, data-driven exit interactables, and removal of the legacy `ScenePortal` components.
+- The historical `InstallNormalBossHubReturns` run verified the data-driven exit interactables and removal of legacy `ScenePortal` components. Its current contract now validates all three one-way Boss→Grand Hall assets and the shared `GrandHall.BossClear` destination.
 - `ProceduralPlayModeTests` passed 15/15 after the migration, including fixed DemonKing routing, run-state preservation, travel endpoint behavior, and arrival suppression coverage.

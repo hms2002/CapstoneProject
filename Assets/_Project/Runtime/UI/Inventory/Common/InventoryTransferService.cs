@@ -100,6 +100,13 @@ public static class InventoryTransferService
         if (srcItem == null)
             return InventoryTransferResult.Failed(InventoryTransferFailureReason.MissingSourceItem);
 
+        if (srcItem is ParcelRelicDefinition)
+        {
+            return InventoryTransferResult.Failed(
+                InventoryTransferFailureReason.SourceRejectedItem,
+                WarningPopupCode.CannotDropHere);
+        }
+
         if (InventoryWeaponRetentionPolicy.WouldRemoveLastPlayerWeapon(
                 source,
                 request.SourceIndex,
@@ -191,6 +198,9 @@ public static class InventoryTransferService
         result = InventoryTransferResult.Failed(InventoryTransferFailureReason.TargetSetFailed);
 
         if (sourceItem is not RelicDefinition sourceRelic)
+            return false;
+
+        if (sourceRelic is ParcelRelicDefinition)
             return false;
 
         if (target is not PlayerRelicContainerAdapter playerRelicTarget)

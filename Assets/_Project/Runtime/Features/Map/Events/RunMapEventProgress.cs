@@ -126,6 +126,28 @@ public static class RunMapEventProgress
             payloadCount);
     }
 
+    public static bool QueueNextUnvisitedBossRouteFollowUp(
+        string eventId,
+        string followUpId,
+        int payloadCount = 1)
+    {
+        if (string.IsNullOrWhiteSpace(eventId) ||
+            string.IsNullOrWhiteSpace(followUpId) ||
+            !TryResolveCurrentBossRouteThemeId(out string sourceRouteThemeId))
+        {
+            return false;
+        }
+
+        return QueuePendingPlacement(
+            RunSessionStore.Data,
+            eventId,
+            followUpId,
+            sourceRouteThemeId,
+            targetRouteThemeId: null,
+            consumeOnNextUnvisitedRoute: true,
+            payloadCount);
+    }
+
     public static bool QueueExplicitRouteFollowUp(
         RunMapEventDefinitionSO definition,
         string followUpId,

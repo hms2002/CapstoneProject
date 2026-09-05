@@ -211,6 +211,35 @@ public class LootManager : MonoBehaviour
         spawnService.SpawnLootObject(position, itemData);
     }
 
+    public int SpawnRelicDropsByRarity(Vector3 origin, ItemRarity rarity, int count)
+    {
+        if (count <= 0)
+            return 0;
+
+        EnsureServices();
+
+        int horizontalRadius = Mathf.Max(1, Mathf.CeilToInt((count - 1) * 0.5f));
+        List<Vector3> landingPositions = spawnService.GetHorizontalGroundPositions(origin, horizontalRadius);
+        int spawnedCount = 0;
+
+        for (int i = 0; i < count; i++)
+        {
+            RelicDefinition relic = GetRandomRelicByRarity(rarity);
+            if (relic == null || relic.rarity != rarity)
+                continue;
+
+            Vector3 landingPosition = landingPositions != null && landingPositions.Count > 0
+                ? landingPositions[spawnedCount % landingPositions.Count]
+                : origin + spawnService.GetRandomScatterOffset();
+
+            WorldItemPickup2D pickup = spawnService.SpawnAnimatedLootObject(origin, landingPosition, relic);
+            if (pickup != null)
+                spawnedCount++;
+        }
+
+        return spawnedCount;
+    }
+
     public void SpawnFieldHealPickup(Vector3 position)
     {
         EnsureServices();

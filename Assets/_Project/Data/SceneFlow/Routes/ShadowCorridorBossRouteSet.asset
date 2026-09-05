@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   themeId: shadow
   corridorSceneName: ProceduralShadowCorridor
-  corridorEntryPointId: Default
+  corridorEntryPointId: Corridor.shadow.Lobby
   bossSceneName: HeoMinSeok_Boss_Shadow
   bossEntryPointId: Default
   corridorLocationName: "\uADF8\uB9BC\uC790 \uAC10\uC625"

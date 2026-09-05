@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82216de2faf64f1ebbc8ba8015400e30, type: 3}
+  m_Name: Shadow_ParcelEventGenerationProfile
+  m_EditorClassIdentifier: Gameplay::RunMapEventGenerationProfileSO
+  eventDefinitions:
+  - {fileID: 11400000, guid: 5d6641126ba444748b851406f0cb6621, type: 2}
+  - {fileID: 11400000, guid: c99c6bb9a9be53843a7c81db0a7a950a, type: 2}
+  maximumStartEventsPerCorridor: 1
+  plannedBossRouteVisitCount: 3
+  logSelection: 1

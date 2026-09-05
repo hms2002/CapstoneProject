@@ -1752,3 +1752,59 @@ DialogueEffect controller and state refreshes now evaluate immediately only whil
 
 Prevention:
 Presentation cleanup may restore serialized/controller state while visuals are inactive. Guard immediate Animator evaluation with `activeInHierarchy`; do not reactivate a hidden presentation solely to force `Animator.Update(0f)`.
+
+## 2026-09-04 - Generated Event Definition Referenced A Room Outside The Theme Library
+
+Symptom:
+Shadow, Dragon, and Slime procedural generation stopped before building any rooms with `Guaranteed room '...' does not belong to library 'Procedural...Library'` after the Parcel and Buffy event definitions were enabled.
+
+Cause:
+The event installers created themed `RoomTemplateSO` assets and connected them through `RunMapEventDefinitionSO`, but did not add those room assets to the corresponding `RoomThemeLibrarySO`. `DungeonGraphLayoutAssembler` intentionally requires every guaranteed room to belong to the active library.
+
+Fix:
+Both installers now add every event-pool room through `RoomThemeLibrarySO.EditorAddRoom(...)`, validate membership, and assemble each event room against the production generation profile before installation succeeds.
+
+Prevention:
+When adding any dynamic or follow-up guaranteed room, treat the event definition and theme-library membership as one atomic authoring operation. Installer validation must cover an actual graph assembly, not only null references and profile bindings.
+
+## 2026-09-05 - Temporary Event Renderers Were Hidden Behind Room Tiles
+
+Symptom:
+The newly generated Parcel and Buffy NPC/object visuals were present and interactive but not visible inside procedural rooms.
+
+Cause:
+Their installer-created SpriteRenderers used the `Default` Sorting Layer with orders 19-21. Procedural room Floor and Wall tilemaps also use `Default`, at orders 50 and 60, so the room tiles rendered over the event visuals.
+
+Fix:
+Both event installers now assign every temporary event SpriteRenderer to the existing `Entity` Sorting Layer and use only local object orders 0-1. Installer validation rejects a generated event module whose renderers are on another sorting layer.
+
+Prevention:
+Editor-generated world actors and interactive props must explicitly set a project sorting layer instead of relying on SpriteRenderer defaults. Validate the saved prefab after generation because a high Order in Layer cannot overcome an earlier Sorting Layer.
+
+## 2026-09-05 - Normal Boss Return Crossed The Hub Boundary And Lost The Generated Entry
+
+Symptom:
+The route became Corridor-to-Boss-to-`ProtoTypeHub` instead of returning to Grand Hall. Continuing from Grand Hall could reset run/player state, and the next procedural Corridor placed the player at an unrelated static spawn.
+
+Cause:
+The three data-driven Boss exit connections still targeted `ProtoTypeHub`, while Grand Hall reused the `HubToRunStart` transition type and therefore reapplied new-run policy. The normal RouteSets also kept `corridorEntryPointId: Default`, so ScenePortal travel did not identify the generated Start-room endpoint.
+
+Fix:
+Normal Boss exits now target `Grand Hall / GrandHall.BossClear` with no run action. Active-run Grand Hall departures replace only the route plan and skip start/reset policy. Normal RouteSets use `Corridor.<theme>.Lobby`, which ScenePortal travel publishes as a dynamic destination endpoint for `PlayerSpawner`.
+
+Prevention:
+When adding an in-run checkpoint, verify the complete boundary in both travel systems: destination scene, run action, player-state capture, route-plan replacement, transition policy, and generated endpoint ID. A scene named or presented like a lobby must not automatically inherit the actual Hub's run lifecycle semantics.
+
+## 2026-09-05 - Temporary Event Room Inherited Internal Treasure-Room Walls
+
+Symptom:
+The Parcel and Buffy NPC/object pair spawned near the room center but was enclosed or obstructed by wall tiles.
+
+Cause:
+The event installers copied the complete `RoomBuildData` from a treasure-room template and removed only decorative layers. Internal structural wall tiles therefore remained in the generated event room.
+
+Fix:
+Event-room generation now fills the full room bounds with floor tiles and rebuilds closed walls along the complete rectangular outer boundary, including socket cells. `DungeonRoomBuilder` remains responsible for opening only the sockets selected by the generated graph. The six existing themed event-room assets were regenerated to match.
+
+Prevention:
+When a temporary room needs only another room's theme and sockets, do not treat that room's full structural tile data as the base layout. Rebuild the intended shell explicitly, but preserve the authored-room contract that every socket cell initially owns both Floor and closed Wall tiles; runtime generation opens connected sockets afterward.

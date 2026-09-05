@@ -65,6 +65,12 @@ internal static class ScenePortalTravelPlanner
 
     public static RunTransitionDirective ResolveRunTransition(PortalRouteDecision route)
     {
+        if (route.TransitionType == TransitionType.HubToRunStart &&
+            RunSessionStore.IsRunActive)
+        {
+            return default;
+        }
+
         if (RunTransitionResolver.Instance != null)
         {
             RunTransitionDirective resolved = RunTransitionResolver.Instance.Resolve(route);
@@ -95,6 +101,12 @@ internal static class ScenePortalTravelPlanner
 
     private static SceneTransitionPolicy ResolveTransitionPolicy(PortalRouteDecision route)
     {
+        if (route.TransitionType == TransitionType.HubToRunStart &&
+            RunSessionStore.IsRunActive)
+        {
+            return default;
+        }
+
         if (SceneTransitionPolicyResolver.Instance == null)
             return default;
 
@@ -114,6 +126,9 @@ internal static class ScenePortalTravelPlanner
             toScene = route.TargetSceneName,
             exitPointId = portal.PortalId,
             entryPointId = route.EntryPointId,
+            destinationEndpointId = IsDynamicEntryPoint(route.EntryPointId)
+                ? route.EntryPointId
+                : null,
             transitionType = route.TransitionType
         };
 
@@ -141,5 +156,11 @@ internal static class ScenePortalTravelPlanner
             default:
                 return default;
         }
+    }
+
+    private static bool IsDynamicEntryPoint(string entryPointId)
+    {
+        return !string.IsNullOrWhiteSpace(entryPointId) &&
+               !string.Equals(entryPointId, "Default", System.StringComparison.Ordinal);
     }
 }

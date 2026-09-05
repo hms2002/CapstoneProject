@@ -94,6 +94,12 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
         if (source == null || item == null)
             return false;
 
+        if (item is ParcelRelicDefinition)
+        {
+            WarningPopupPlayback.Show(WarningPopupCode.CannotDropHere);
+            return false;
+        }
+
         // loot 슬롯을 다시 월드로 드랍 금지
         if (source is WorldLootContainerAdapter)
             return false;

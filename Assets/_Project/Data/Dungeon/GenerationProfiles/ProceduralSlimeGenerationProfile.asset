@@ -23,3 +23,4 @@ MonoBehaviour:
   corridorLengthPerRoomCell: 0.05
   corridorLengthVariation: 2
   guaranteedRoomTemplates: []
+  runMapEventProfile: {fileID: 11400000, guid: 8bb04772bbeabc74ca31a3f210c233b5, type: 2}

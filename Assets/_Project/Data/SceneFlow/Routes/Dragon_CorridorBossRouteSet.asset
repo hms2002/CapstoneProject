@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   themeId: dragon
   corridorSceneName: ProceduralDragonCorridor
-  corridorEntryPointId: Default
+  corridorEntryPointId: Corridor.dragon.Lobby
   bossSceneName: HeoMinSeok_Boss_Dragon
   bossEntryPointId: Default
   corridorLocationName: "\uBCF4\uBB3C\uCC3D\uACE0"
