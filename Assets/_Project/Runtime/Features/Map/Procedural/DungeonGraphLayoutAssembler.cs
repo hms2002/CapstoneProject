@@ -187,7 +187,8 @@ public sealed class DungeonGraphLayoutAssembler
         int minimumCorridorLength,
         float corridorLengthPerRoomCell,
         int corridorLengthVariation,
-        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates = null)
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates = null,
+        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules = null)
     {
         int roomCount = Mathf.Max(2, requestedRoomCount);
         DungeonLayoutResult failedResult = new(seed, roomCount);
@@ -203,6 +204,8 @@ public sealed class DungeonGraphLayoutAssembler
             return failedResult;
         }
 
+        requiredCombatRoomRules ??= policy.RequiredCombatRoomRules;
+
         if (!ValidateGuaranteedRoomTemplates(
                 library,
                 guaranteedRoomTemplates,
@@ -212,10 +215,20 @@ public sealed class DungeonGraphLayoutAssembler
             return failedResult;
         }
 
+        if (!ValidateRequiredCombatRoomRules(
+                library,
+                requiredCombatRoomRules,
+                out string requiredCombatFailure))
+        {
+            failedResult.MarkFailed(requiredCombatFailure);
+            return failedResult;
+        }
+
         if (!ValidateRoleBudget(
                 policy,
                 roomCount,
                 guaranteedRoomTemplates,
+                requiredCombatRoomRules,
                 out string budgetFailure))
         {
             failedResult.MarkFailed(budgetFailure);
@@ -265,6 +278,7 @@ public sealed class DungeonGraphLayoutAssembler
                     library,
                     policy,
                     guaranteedRoomTemplates,
+                    requiredCombatRoomRules,
                     topology,
                     random,
                     out lastFailure) ||
@@ -272,6 +286,7 @@ public sealed class DungeonGraphLayoutAssembler
                     library,
                     policy,
                     guaranteedRoomTemplates,
+                    requiredCombatRoomRules,
                     topology,
                     random,
                     out lastFailure) ||
@@ -482,10 +497,88 @@ public sealed class DungeonGraphLayoutAssembler
         return count;
     }
 
+    private static bool ValidateRequiredCombatRoomRules(
+        RoomThemeLibrarySO library,
+        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules,
+        out string failure)
+    {
+        if (requiredCombatRoomRules == null || requiredCombatRoomRules.Count == 0)
+        {
+            failure = string.Empty;
+            return true;
+        }
+
+        for (int ruleIndex = requiredCombatRoomRules.Count - 1; ruleIndex >= 0; ruleIndex--)
+        {
+            RequiredCombatRoomRule rule = requiredCombatRoomRules[ruleIndex];
+            if (rule == null || rule.Count <= 0)
+                continue;
+
+            List<RoomTemplateSO> candidates = new();
+            CollectRequiredCombatTemplateCandidates(
+                library,
+                rule,
+                requiredDirections: null,
+                excludedTemplates: null,
+                candidates);
+            if (candidates.Count > 0)
+                continue;
+
+            failure =
+                $"Required Combat room rule {ruleIndex} has no matching template. " +
+                $"Size={rule.SizeTag}, KillLock={rule.KillLockRewardTag}, Count={rule.Count}.";
+            return false;
+        }
+
+        failure = string.Empty;
+        return true;
+    }
+
+    private static int CountRequiredCombatRooms(
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
+        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules)
+    {
+        if (requiredCombatRoomRules == null)
+            return 0;
+
+        int count = 0;
+        for (int ruleIndex = requiredCombatRoomRules.Count - 1; ruleIndex >= 0; ruleIndex--)
+        {
+            RequiredCombatRoomRule rule = requiredCombatRoomRules[ruleIndex];
+            if (rule != null)
+                count += Mathf.Max(
+                    0,
+                    rule.Count - CountGuaranteedCombatRoomsMatchingRule(
+                        guaranteedRoomTemplates,
+                        rule));
+        }
+
+        return count;
+    }
+
+    private static int CountGuaranteedCombatRoomsMatchingRule(
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
+        RequiredCombatRoomRule rule)
+    {
+        if (guaranteedRoomTemplates == null || rule == null)
+            return 0;
+
+        int count = 0;
+        for (int templateIndex = 0; templateIndex < guaranteedRoomTemplates.Count; templateIndex++)
+        {
+            RoomTemplateSO template = guaranteedRoomTemplates[templateIndex];
+            if (template != null && rule.Matches(template))
+                count++;
+        }
+
+        return count;
+    }
+
     private static bool ValidateRoleBudget(
         DungeonLayoutPolicySO policy,
         int roomCount,
         IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
+        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules,
         out string failure)
     {
         int guaranteedTreasureCount = CountGuaranteedRoomType(
@@ -500,11 +593,16 @@ public sealed class DungeonGraphLayoutAssembler
         int guaranteedCombatCount = CountGuaranteedRoomType(
             guaranteedRoomTemplates,
             RoomType.Combat);
+        int requiredCombatRoomCount = CountRequiredCombatRooms(
+            guaranteedRoomTemplates,
+            requiredCombatRoomRules);
         int requiredRoomCount = 2 +
             Mathf.Max(policy.TreasureRoomCount, guaranteedTreasureCount) +
             Mathf.Max(policy.EventRoomCount, guaranteedEventCount) +
             Mathf.Max(policy.ShopRoomCount, guaranteedShopCount) +
-            Mathf.Max(policy.MinimumCombatRoomCount, guaranteedCombatCount);
+            Mathf.Max(
+                policy.MinimumCombatRoomCount,
+                guaranteedCombatCount + requiredCombatRoomCount);
         if (requiredRoomCount > roomCount)
         {
             failure =
@@ -951,6 +1049,7 @@ public sealed class DungeonGraphLayoutAssembler
         RoomThemeLibrarySO library,
         DungeonLayoutPolicySO policy,
         IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
+        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules,
         TopologyDraft topology,
         System.Random random,
         out string failure)
@@ -976,6 +1075,19 @@ public sealed class DungeonGraphLayoutAssembler
                     return false;
                 }
             }
+        }
+
+        if (!TryAssignRequiredCombatRoomRules(
+                library,
+                topology,
+                requiredCombatRoomRules,
+                guaranteedRoomTemplates,
+                policy.PreferSpecialRoomsAtDeadEnds,
+                assignedSpecialNodes,
+                random,
+                out failure))
+        {
+            return false;
         }
 
         int remainingTreasureCount = Mathf.Max(
@@ -1041,6 +1153,133 @@ public sealed class DungeonGraphLayoutAssembler
 
         failure = string.Empty;
         return true;
+    }
+
+    private static bool TryAssignRequiredCombatRoomRules(
+        RoomThemeLibrarySO library,
+        TopologyDraft topology,
+        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules,
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
+        bool preferDeadEnds,
+        List<int> assignedNodes,
+        System.Random random,
+        out string failure)
+    {
+        if (requiredCombatRoomRules == null || requiredCombatRoomRules.Count == 0)
+        {
+            failure = string.Empty;
+            return true;
+        }
+
+        List<int> compatibleNodes = new();
+        List<int> compatibleDeadEnds = new();
+        List<RoomTemplateSO> templateCandidates = new();
+        List<RoomSocketDirection> requiredDirections = new();
+        for (int ruleIndex = requiredCombatRoomRules.Count - 1; ruleIndex >= 0; ruleIndex--)
+        {
+            RequiredCombatRoomRule rule = requiredCombatRoomRules[ruleIndex];
+            if (rule == null || rule.Count <= 0)
+                continue;
+
+            int remainingCount = rule.Count - CountAssignedMatchingCombatRooms(topology, rule);
+            for (int placementIndex = 0; placementIndex < remainingCount; placementIndex++)
+            {
+                compatibleNodes.Clear();
+                compatibleDeadEnds.Clear();
+                for (int nodeIndex = 1; nodeIndex < topology.Nodes.Count; nodeIndex++)
+                {
+                    if (nodeIndex == topology.BossNodeIndex ||
+                        topology.Nodes[nodeIndex].Role != RoomType.Combat ||
+                        topology.Nodes[nodeIndex].Template != null ||
+                        assignedNodes.Contains(nodeIndex))
+                    {
+                        continue;
+                    }
+
+                    CollectRequiredDirections(topology, nodeIndex, requiredDirections);
+                    templateCandidates.Clear();
+                    CollectRequiredCombatTemplateCandidates(
+                        library,
+                        rule,
+                        requiredDirections,
+                        guaranteedRoomTemplates,
+                        templateCandidates);
+                    if (templateCandidates.Count == 0)
+                        continue;
+
+                    compatibleNodes.Add(nodeIndex);
+                    if (GetNodeDegree(topology, nodeIndex) == 1)
+                        compatibleDeadEnds.Add(nodeIndex);
+                }
+
+                List<int> candidates = preferDeadEnds && compatibleDeadEnds.Count > 0
+                    ? compatibleDeadEnds
+                    : compatibleNodes;
+                if (candidates.Count == 0)
+                {
+                    failure =
+                        $"No unassigned Combat topology node can satisfy required rule {ruleIndex}. " +
+                        $"Size={rule.SizeTag}, KillLock={rule.KillLockRewardTag}, Count={rule.Count}.";
+                    return false;
+                }
+
+                int selectedNodeIndex = SelectSpreadNode(
+                    topology,
+                    candidates,
+                    assignedNodes,
+                    random);
+                PlannedNode node = topology.Nodes[selectedNodeIndex];
+                CollectRequiredDirections(topology, selectedNodeIndex, requiredDirections);
+                templateCandidates.Clear();
+                CollectRequiredCombatTemplateCandidates(
+                    library,
+                    rule,
+                    requiredDirections,
+                    guaranteedRoomTemplates,
+                    templateCandidates);
+                RemoveAdjacentDuplicateCandidatesIfPossible(
+                    topology,
+                    selectedNodeIndex,
+                    templateCandidates);
+                RoomTemplateSO selectedTemplate = SelectWeightedTemplate(
+                    templateCandidates,
+                    requiredDirections,
+                    policy: null,
+                    random);
+                if (selectedTemplate == null)
+                {
+                    failure =
+                        $"Required Combat rule {ruleIndex} selected node {selectedNodeIndex}, " +
+                        "but no compatible template remained after filtering.";
+                    return false;
+                }
+
+                node.Role = RoomType.Combat;
+                node.Template = selectedTemplate;
+                assignedNodes.Add(selectedNodeIndex);
+            }
+        }
+
+        failure = string.Empty;
+        return true;
+    }
+
+    private static int CountAssignedMatchingCombatRooms(
+        TopologyDraft topology,
+        RequiredCombatRoomRule rule)
+    {
+        if (topology == null || rule == null)
+            return 0;
+
+        int count = 0;
+        for (int nodeIndex = 0; nodeIndex < topology.Nodes.Count; nodeIndex++)
+        {
+            RoomTemplateSO template = topology.Nodes[nodeIndex].Template;
+            if (template != null && rule.Matches(template))
+                count++;
+        }
+
+        return count;
     }
 
     private static bool TryAssignGuaranteedTemplate(
@@ -1235,6 +1474,7 @@ public sealed class DungeonGraphLayoutAssembler
         RoomThemeLibrarySO library,
         DungeonLayoutPolicySO policy,
         IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
+        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules,
         TopologyDraft topology,
         System.Random random,
         out string failure)
@@ -1269,6 +1509,18 @@ public sealed class DungeonGraphLayoutAssembler
                     }
                 }
 
+                if (node.Role == RoomType.Combat)
+                {
+                    RemoveQuotaExceededCombatCandidatesIfPossible(
+                        topology,
+                        requiredCombatRoomRules,
+                        candidates);
+                }
+
+                RemoveAdjacentDuplicateCandidatesIfPossible(
+                    topology,
+                    nodeIndex,
+                    candidates);
                 selectedTemplate = SelectWeightedTemplate(
                     candidates,
                     requiredDirections,
@@ -1320,6 +1572,147 @@ public sealed class DungeonGraphLayoutAssembler
         }
 
         return false;
+    }
+
+    private static void CollectRequiredCombatTemplateCandidates(
+        RoomThemeLibrarySO library,
+        RequiredCombatRoomRule rule,
+        IReadOnlyList<RoomSocketDirection> requiredDirections,
+        IReadOnlyList<RoomTemplateSO> excludedTemplates,
+        List<RoomTemplateSO> results)
+    {
+        if (results == null)
+            return;
+
+        results.Clear();
+        if (library == null || rule == null)
+            return;
+
+        List<RoomTemplateSO> candidates = new();
+        library.CollectRooms(RoomType.Combat, candidates);
+        for (int candidateIndex = 0; candidateIndex < candidates.Count; candidateIndex++)
+        {
+            RoomTemplateSO candidate = candidates[candidateIndex];
+            if (ContainsTemplateReference(excludedTemplates, candidate) ||
+                !rule.Matches(candidate))
+            {
+                continue;
+            }
+
+            if (requiredDirections != null &&
+                !IsTemplateCompatible(candidate, requiredDirections))
+            {
+                continue;
+            }
+
+            results.Add(candidate);
+        }
+    }
+
+    private static void RemoveQuotaExceededCombatCandidatesIfPossible(
+        TopologyDraft topology,
+        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules,
+        List<RoomTemplateSO> candidates)
+    {
+        if (topology == null ||
+            requiredCombatRoomRules == null ||
+            candidates == null ||
+            candidates.Count <= 1)
+        {
+            return;
+        }
+
+        for (int ruleIndex = requiredCombatRoomRules.Count - 1; ruleIndex >= 0; ruleIndex--)
+        {
+            RequiredCombatRoomRule rule = requiredCombatRoomRules[ruleIndex];
+            if (rule == null ||
+                rule.Count <= 0 ||
+                CountAssignedMatchingCombatRooms(topology, rule) < rule.Count)
+            {
+                continue;
+            }
+
+            int remainingCandidateCount = 0;
+            for (int candidateIndex = 0; candidateIndex < candidates.Count; candidateIndex++)
+            {
+                if (!rule.Matches(candidates[candidateIndex]))
+                    remainingCandidateCount++;
+            }
+
+            if (remainingCandidateCount == 0)
+                continue;
+
+            for (int candidateIndex = candidates.Count - 1; candidateIndex >= 0; candidateIndex--)
+            {
+                if (rule.Matches(candidates[candidateIndex]))
+                    candidates.RemoveAt(candidateIndex);
+            }
+        }
+    }
+
+    private static void RemoveAdjacentDuplicateCandidatesIfPossible(
+        TopologyDraft topology,
+        int nodeIndex,
+        List<RoomTemplateSO> candidates)
+    {
+        if (topology == null || candidates == null || candidates.Count <= 1)
+            return;
+
+        int remainingCandidateCount = 0;
+        for (int candidateIndex = 0; candidateIndex < candidates.Count; candidateIndex++)
+        {
+            if (!HasAdjacentSelectedTemplate(topology, nodeIndex, candidates[candidateIndex]))
+                remainingCandidateCount++;
+        }
+
+        if (remainingCandidateCount == 0)
+            return;
+
+        for (int candidateIndex = candidates.Count - 1; candidateIndex >= 0; candidateIndex--)
+        {
+            if (HasAdjacentSelectedTemplate(topology, nodeIndex, candidates[candidateIndex]))
+                candidates.RemoveAt(candidateIndex);
+        }
+    }
+
+    private static bool HasAdjacentSelectedTemplate(
+        TopologyDraft topology,
+        int nodeIndex,
+        RoomTemplateSO candidate)
+    {
+        if (candidate == null)
+            return false;
+
+        for (int edgeIndex = 0; edgeIndex < topology.Edges.Count; edgeIndex++)
+        {
+            PlannedEdge edge = topology.Edges[edgeIndex];
+            int neighborIndex;
+            if (edge.FirstNodeIndex == nodeIndex)
+                neighborIndex = edge.SecondNodeIndex;
+            else if (edge.SecondNodeIndex == nodeIndex)
+                neighborIndex = edge.FirstNodeIndex;
+            else
+                continue;
+
+            if (IsSameRoomTemplate(topology.Nodes[neighborIndex].Template, candidate))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsSameRoomTemplate(RoomTemplateSO first, RoomTemplateSO second)
+    {
+        if (first == null || second == null)
+            return false;
+
+        if (first == second)
+            return true;
+
+        string firstId = first.LayoutData.roomId;
+        string secondId = second.LayoutData.roomId;
+        return !string.IsNullOrWhiteSpace(firstId) &&
+               string.Equals(firstId, secondId, StringComparison.Ordinal);
     }
 
     private static bool TryCreatePhysicalLayout(

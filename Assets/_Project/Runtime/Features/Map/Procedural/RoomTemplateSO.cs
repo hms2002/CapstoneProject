@@ -41,7 +41,125 @@ public struct RoomLayoutData
     public List<RoomSocketData> sockets;
     public int difficultyTier;
     public float selectionWeight;
+    public RoomCombatMetadata combatMetadata;
     public RoomTopologyPlacementData topologyPlacement;
+}
+
+/// <summary>
+/// 책임:
+/// - Combat 방 안에서 생성 규칙이 필터링할 보상 잠금 여부와 크기 성격을 보관한다.
+/// - 기존 방 데이터는 Auto 값을 통해 BuildData와 예약 bounds 기반 추론을 유지한다.
+/// </summary>
+[Serializable]
+public struct RoomCombatMetadata
+{
+    public RoomCombatSizeTag sizeTag;
+    public RoomKillLockRewardTag killLockRewardTag;
+}
+
+/// <summary>
+/// 책임:
+/// - Combat 방의 제작 의도상 크기 분류를 표현한다.
+/// - Auto는 기존 에셋 호환을 위해 방 bounds에서 Normal 또는 Large를 추론하게 한다.
+/// </summary>
+public enum RoomCombatSizeTag
+{
+    Auto = 0,
+    Normal = 1,
+    Large = 2
+}
+
+/// <summary>
+/// 책임:
+/// - Combat 방이 몬스터 처치로 열리는 보상 상자를 포함하는지 표현한다.
+/// - Auto는 기존 에셋 호환을 위해 오브젝트 배치의 KillLock 연결 정보를 추론하게 한다.
+/// </summary>
+public enum RoomKillLockRewardTag
+{
+    Auto = 0,
+    None = 1,
+    Present = 2
+}
+
+/// <summary>
+/// 책임:
+/// - RoomTemplateSO의 새 Combat 메타데이터와 기존 BuildData 관례를 하나의 조회 규칙으로 정규화한다.
+/// - 생성기와 제작 도구가 직렬화 버전에 상관없이 같은 필터링 결과를 사용하게 한다.
+/// </summary>
+public static class RoomTemplateCombatMetadataUtility
+{
+    private const int LargeRoomMinimumDimension = 40;
+    private const int LargeRoomMinimumArea = 1600;
+
+    public static RoomCombatSizeTag ResolveSizeTag(RoomTemplateSO template)
+    {
+        if (template == null)
+            return RoomCombatSizeTag.Normal;
+
+        RoomLayoutData layout = template.LayoutData;
+        RoomCombatSizeTag authoredTag = layout.combatMetadata.sizeTag;
+        if (authoredTag != RoomCombatSizeTag.Auto)
+            return authoredTag;
+
+        RectInt bounds = ResolveLocalBounds(layout);
+        int area = Mathf.Max(0, bounds.width) * Mathf.Max(0, bounds.height);
+        bool inferredLarge =
+            bounds.width >= LargeRoomMinimumDimension ||
+            bounds.height >= LargeRoomMinimumDimension ||
+            area >= LargeRoomMinimumArea ||
+            layout.difficultyTier > 0;
+        return inferredLarge ? RoomCombatSizeTag.Large : RoomCombatSizeTag.Normal;
+    }
+
+    public static RoomKillLockRewardTag ResolveKillLockRewardTag(RoomTemplateSO template)
+    {
+        if (template == null)
+            return RoomKillLockRewardTag.None;
+
+        RoomKillLockRewardTag authoredTag =
+            template.LayoutData.combatMetadata.killLockRewardTag;
+        if (authoredTag != RoomKillLockRewardTag.Auto)
+            return authoredTag;
+
+        return HasInferredKillLockReward(template.BuildData.objectPlacements)
+            ? RoomKillLockRewardTag.Present
+            : RoomKillLockRewardTag.None;
+    }
+
+    private static bool HasInferredKillLockReward(
+        IReadOnlyList<RoomObjectPlacementData> placements)
+    {
+        if (placements == null)
+            return false;
+
+        for (int i = 0; i < placements.Count; i++)
+        {
+            RoomObjectPlacementData placement = placements[i];
+            if (placement.kind == RoomObjectKind.Monster &&
+                !string.IsNullOrWhiteSpace(placement.linkedChestLockPlacementId))
+            {
+                return true;
+            }
+
+            if (placement.kind == RoomObjectKind.Chest &&
+                !string.IsNullOrWhiteSpace(placement.placementId) &&
+                placement.placementId.IndexOf(
+                    "KillLock",
+                    StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static RectInt ResolveLocalBounds(RoomLayoutData layout)
+    {
+        return layout.localBounds.width > 0 && layout.localBounds.height > 0
+            ? layout.localBounds
+            : new RectInt(Vector2Int.zero, layout.size);
+    }
 }
 
 /// <summary>

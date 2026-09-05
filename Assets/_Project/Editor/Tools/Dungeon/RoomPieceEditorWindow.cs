@@ -49,6 +49,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     private RoomType newRoomType = RoomType.Combat;
     private int newDifficultyTier;
     private float newSelectionWeight = 1f;
+    private RoomCombatSizeTag newCombatSizeTag = RoomCombatSizeTag.Normal;
+    private RoomKillLockRewardTag newKillLockRewardTag = RoomKillLockRewardTag.None;
     [SerializeField] private RoomTemplateSO templateToLoad;
     [SerializeField] private RoomThemeLibrarySO selectedLibrary;
     [SerializeField] private RoomObjectKind objectKindToPlace = RoomObjectKind.Prop;
@@ -398,6 +400,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         newRoomSize = EditorGUILayout.Vector2IntField("예약 크기", newRoomSize);
         newDifficultyTier = EditorGUILayout.IntField("난이도 단계", Mathf.Max(0, newDifficultyTier));
         newSelectionWeight = EditorGUILayout.FloatField("등장 가중치", Mathf.Max(0f, newSelectionWeight));
+        if (newRoomType == RoomType.Combat)
+            DrawNewCombatMetadataFields();
 
         using (new EditorGUI.DisabledScope(string.IsNullOrWhiteSpace(newRoomId)))
         {
@@ -408,6 +412,34 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         EditorGUILayout.HelpBox(
             "타일 그리기는 이 창이 직접 구현하지 않습니다. 생성된 Floor/Wall Tilemap을 선택한 뒤 Unity Tile Palette/Tilemap Brush로 그리면 됩니다.",
             MessageType.Info);
+    }
+
+    private void DrawNewCombatMetadataFields()
+    {
+        using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+        {
+            EditorGUILayout.LabelField("전투방 하위 태그", EditorStyles.boldLabel);
+            newCombatSizeTag = (RoomCombatSizeTag)EditorGUILayout.EnumPopup(
+                "크기 유형",
+                newCombatSizeTag);
+            newKillLockRewardTag = (RoomKillLockRewardTag)EditorGUILayout.EnumPopup(
+                "킬락 보상",
+                newKillLockRewardTag);
+            EditorGUILayout.HelpBox(
+                "Auto는 기존 방 호환용 추론 값입니다. 새 Combat 방은 Normal/Large와 None/Present를 명시하는 쪽이 안전합니다.",
+                MessageType.None);
+        }
+    }
+
+    private RoomCombatMetadata ResolveNewCombatMetadata()
+    {
+        return newRoomType == RoomType.Combat
+            ? new RoomCombatMetadata
+            {
+                sizeTag = newCombatSizeTag,
+                killLockRewardTag = newKillLockRewardTag
+            }
+            : default;
     }
 
     private void DrawLoadSection()
@@ -466,6 +498,13 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         EditorGUILayout.PropertyField(
             serializedAuthoring.FindProperty("selectionWeight"),
             new GUIContent("등장 가중치"));
+        if (selectedAuthoring.RoomType == RoomType.Combat)
+        {
+            EditorGUILayout.PropertyField(
+                serializedAuthoring.FindProperty("combatMetadata"),
+                new GUIContent("전투방 하위 태그"),
+                includeChildren: true);
+        }
         EditorGUILayout.PropertyField(
             serializedAuthoring.FindProperty("topologyPlacement"),
             new GUIContent("필수 방 배치 규칙"),
@@ -1944,6 +1983,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             roomSize,
             newDifficultyTier,
             newSelectionWeight,
+            ResolveNewCombatMetadata(),
             default,
             null);
         currentStep = AuthoringStep.Basic;
@@ -1974,6 +2014,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             roomSize,
             layout.difficultyTier,
             layout.selectionWeight,
+            ResolveAuthoringCombatMetadata(templateToLoad, layout),
             layout.topologyPlacement,
             asDuplicate ? null : templateToLoad);
 
@@ -2040,6 +2081,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         Vector2Int roomSize,
         int difficultyTier,
         float selectionWeight,
+        RoomCombatMetadata combatMetadata,
         RoomTopologyPlacementData topologyPlacement,
         RoomTemplateSO sourceTemplate)
     {
@@ -2056,6 +2098,12 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         serializedAuthoring.FindProperty("size").vector2IntValue = roomSize;
         serializedAuthoring.FindProperty("difficultyTier").intValue = Mathf.Max(0, difficultyTier);
         serializedAuthoring.FindProperty("selectionWeight").floatValue = Mathf.Max(0f, selectionWeight);
+        SerializedProperty combatMetadataProperty =
+            serializedAuthoring.FindProperty("combatMetadata");
+        combatMetadataProperty.FindPropertyRelative("sizeTag").enumValueIndex =
+            (int)combatMetadata.sizeTag;
+        combatMetadataProperty.FindPropertyRelative("killLockRewardTag").enumValueIndex =
+            (int)combatMetadata.killLockRewardTag;
         SerializedProperty topologyProperty = serializedAuthoring.FindProperty("topologyPlacement");
         topologyProperty.FindPropertyRelative("mode").enumValueIndex = (int)topologyPlacement.mode;
         topologyProperty.FindPropertyRelative("minimumGraphDistanceFromStart").intValue =
@@ -2095,6 +2143,25 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         Selection.activeObject = root;
         return authoring;
+    }
+
+    private static RoomCombatMetadata ResolveAuthoringCombatMetadata(
+        RoomTemplateSO template,
+        RoomLayoutData layout)
+    {
+        if (layout.roomType != RoomType.Combat)
+            return default;
+
+        RoomCombatMetadata metadata = layout.combatMetadata;
+        if (metadata.sizeTag == RoomCombatSizeTag.Auto)
+            metadata.sizeTag = RoomTemplateCombatMetadataUtility.ResolveSizeTag(template);
+        if (metadata.killLockRewardTag == RoomKillLockRewardTag.Auto)
+        {
+            metadata.killLockRewardTag =
+                RoomTemplateCombatMetadataUtility.ResolveKillLockRewardTag(template);
+        }
+
+        return metadata;
     }
 
     private void AddConnectionSocket(RoomSocketDirection direction)
@@ -2931,6 +2998,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             sockets = CollectSockets(selectedAuthoring),
             difficultyTier = selectedAuthoring.DifficultyTier,
             selectionWeight = selectedAuthoring.SelectionWeight,
+            combatMetadata = selectedAuthoring.CombatMetadata,
             topologyPlacement = selectedAuthoring.TopologyPlacement
         };
 

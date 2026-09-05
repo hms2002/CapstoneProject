@@ -1,4 +1,70 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
+
+/// <summary>
+/// 책임:
+/// - Combat 방 하위 메타데이터 조건과 목표 배치 수를 한 생성 정책 항목으로 보관한다.
+/// - 그래프 조립기가 RoomType을 늘리지 않고도 킬락 보상/크기 조합을 필터링하게 한다.
+/// </summary>
+[Serializable]
+public sealed class RequiredCombatRoomRule
+{
+    [SerializeField] private RoomCombatSizeTag sizeTag = RoomCombatSizeTag.Auto;
+    [SerializeField] private RoomKillLockRewardTag killLockRewardTag = RoomKillLockRewardTag.Auto;
+    [SerializeField, Min(0)] private int count;
+
+    public RoomCombatSizeTag SizeTag => sizeTag;
+    public RoomKillLockRewardTag KillLockRewardTag => killLockRewardTag;
+    public int Count => Mathf.Max(0, count);
+
+    public RequiredCombatRoomRule()
+    {
+    }
+
+    public RequiredCombatRoomRule(
+        RoomCombatSizeTag sizeTag,
+        RoomKillLockRewardTag killLockRewardTag,
+        int count)
+    {
+        this.sizeTag = sizeTag;
+        this.killLockRewardTag = killLockRewardTag;
+        this.count = Mathf.Max(0, count);
+    }
+
+    public bool Matches(RoomTemplateSO template)
+    {
+        if (template == null || template.LayoutData.roomType != RoomType.Combat)
+            return false;
+
+        if (sizeTag != RoomCombatSizeTag.Auto &&
+            RoomTemplateCombatMetadataUtility.ResolveSizeTag(template) != sizeTag)
+        {
+            return false;
+        }
+
+        if (killLockRewardTag != RoomKillLockRewardTag.Auto &&
+            RoomTemplateCombatMetadataUtility.ResolveKillLockRewardTag(template) !=
+            killLockRewardTag)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+#if UNITY_EDITOR
+    public void EditorConfigure(
+        RoomCombatSizeTag requiredSizeTag,
+        RoomKillLockRewardTag requiredKillLockRewardTag,
+        int requiredCount)
+    {
+        sizeTag = requiredSizeTag;
+        killLockRewardTag = requiredKillLockRewardTag;
+        count = Mathf.Max(0, requiredCount);
+    }
+#endif
+}
 
 /// <summary>
 /// 책임:
@@ -42,6 +108,7 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
     [SerializeField, Min(0)] private int shopRoomCount;
     [SerializeField, Min(0)] private int minimumCombatRoomCount = 4;
     [SerializeField] private bool preferSpecialRoomsAtDeadEnds = true;
+    [SerializeField] private List<RequiredCombatRoomRule> requiredCombatRoomRules = new();
 
     public int RecommendedMinimumRoomCount => Mathf.Max(2, recommendedMinimumRoomCount);
     public int RecommendedMaximumRoomCount => Mathf.Max(RecommendedMinimumRoomCount, recommendedMaximumRoomCount);
@@ -65,6 +132,8 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
     public int ShopRoomCount => Mathf.Max(0, shopRoomCount);
     public int MinimumCombatRoomCount => Mathf.Max(0, minimumCombatRoomCount);
     public bool PreferSpecialRoomsAtDeadEnds => preferSpecialRoomsAtDeadEnds;
+    public IReadOnlyList<RequiredCombatRoomRule> RequiredCombatRoomRules =>
+        requiredCombatRoomRules ?? (IReadOnlyList<RequiredCombatRoomRule>)Array.Empty<RequiredCombatRoomRule>();
 
     public bool IsWithinRecommendedRoomCount(int roomCount)
     {
@@ -111,6 +180,29 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
         preferSpecialRoomsAtDeadEnds = shouldPreferSpecialRoomsAtDeadEnds;
     }
 
+    /// <summary>
+    /// 책임 : 제작 툴이 Combat 방 하위 메타데이터 기반 필수 배치 규칙을 중복 없이 교체한다.
+    /// </summary>
+    public void EditorSetRequiredCombatRoomRules(IReadOnlyList<RequiredCombatRoomRule> rules)
+    {
+        requiredCombatRoomRules ??= new List<RequiredCombatRoomRule>();
+        requiredCombatRoomRules.Clear();
+        if (rules == null)
+            return;
+
+        for (int ruleIndex = 0; ruleIndex < rules.Count; ruleIndex++)
+        {
+            RequiredCombatRoomRule rule = rules[ruleIndex];
+            if (rule == null || rule.Count <= 0)
+                continue;
+
+            requiredCombatRoomRules.Add(new RequiredCombatRoomRule(
+                rule.SizeTag,
+                rule.KillLockRewardTag,
+                rule.Count));
+        }
+    }
+
     private void OnValidate()
     {
         recommendedMinimumRoomCount = Mathf.Max(2, recommendedMinimumRoomCount);
@@ -128,6 +220,15 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
         eventRoomCount = Mathf.Max(0, eventRoomCount);
         shopRoomCount = Mathf.Max(0, shopRoomCount);
         minimumCombatRoomCount = Mathf.Max(0, minimumCombatRoomCount);
+        requiredCombatRoomRules ??= new List<RequiredCombatRoomRule>();
+        for (int ruleIndex = requiredCombatRoomRules.Count - 1; ruleIndex >= 0; ruleIndex--)
+        {
+            if (requiredCombatRoomRules[ruleIndex] == null ||
+                requiredCombatRoomRules[ruleIndex].Count <= 0)
+            {
+                requiredCombatRoomRules.RemoveAt(ruleIndex);
+            }
+        }
     }
 #endif
 }
