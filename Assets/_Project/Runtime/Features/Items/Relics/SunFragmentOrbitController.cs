@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 태양의 파편 시각 오브젝트를 플레이어 주변에 생성/회전시키고 접촉 피해를 처리하는 책임을 가진다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class SunFragmentOrbitController : MonoBehaviour
 {
+    /// <summary>
+    /// 태양의 파편 궤도, 시각 프리팹, 피해 판정에 필요한 런타임 설정을 전달하는 값 묶음이다.
+    /// </summary>
     public struct Config
     {
         public AbilitySystem system;
@@ -17,6 +23,7 @@ public sealed class SunFragmentOrbitController : MonoBehaviour
         public float orbitRadius;
         public Vector2 orbitCenterLocalOffset;
         public float angularSpeedDegPerSec;
+        public GameObject fragmentPrefab;
         public float fragmentSize;
         public float contactRadius;
     }
@@ -83,15 +90,32 @@ public sealed class SunFragmentOrbitController : MonoBehaviour
 
     private void SpawnFragment()
     {
-        GameObject fragment = new("SunFragment_Square");
+        GameObject fragment = CreateFragmentVisual(out Vector3 authoredScale);
         fragment.transform.SetParent(transform, false);
-        fragment.transform.localScale = Vector3.one * Mathf.Max(0.05f, config.fragmentSize);
+        fragment.transform.localPosition = Vector3.zero;
+        fragment.transform.localRotation = Quaternion.identity;
+        fragment.transform.localScale = authoredScale * Mathf.Max(0.05f, config.fragmentSize);
+        fragments.Add(fragment);
+    }
+
+    private GameObject CreateFragmentVisual(out Vector3 authoredScale)
+    {
+        if (config.fragmentPrefab != null)
+        {
+            GameObject instance = Instantiate(config.fragmentPrefab);
+            instance.name = config.fragmentPrefab.name;
+            authoredScale = instance.transform.localScale;
+            return instance;
+        }
+
+        GameObject fragment = new("SunFragment_Square");
         SpriteRenderer renderer = fragment.AddComponent<SpriteRenderer>();
         renderer.sprite = GetSquareSprite();
         renderer.color = new Color(1f, 0.48f, 0.05f, 1f);
         renderer.sortingLayerName = "Projectile";
         renderer.sortingOrder = 4;
-        fragments.Add(fragment);
+        authoredScale = Vector3.one;
+        return fragment;
     }
 
     private bool TryHit(GameObject fragment)

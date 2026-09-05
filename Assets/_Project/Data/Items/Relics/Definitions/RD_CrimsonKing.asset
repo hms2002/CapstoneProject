@@ -11,12 +11,13 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
   m_Name: RD_CrimsonKing
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   relicId: RD_CrimsonKing
   displayName: "\uD64D\uB828\uC758 \uC655"
-  icon: {fileID: 543113751, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  icon: {fileID: 8824747318910040432, guid: 87eece6e269e518438f6bcfb7a730ad0, type: 3}
   rarity: 2
-  description: "\uC801\uC758 \uD654\uC0C1 \uC911\uCCA9\uC5D0 \uBE44\uB840\uD574 \uD654\uC0C1 \uD53C\uD574\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  description: "\uC801\uC758 \uD654\uC0C1 \uC911\uCCA9\uC5D0 \uBE44\uB840\uD574 \uD654\uC0C1
+    \uD53C\uD574\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   maxLevel: 3
   dropLevel: 1
   logic: {fileID: 11400000, guid: 72a562a657ef40728e8c235c6d17b71b, type: 2}

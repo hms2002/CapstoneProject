@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_FireBonusRelic
   displayName: "\uD0C0\uC624\uB974\uB294 \uC2EC\uD575"
-  icon: {fileID: 543113751, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  icon: {fileID: 2261922144835837435, guid: 87eece6e269e518438f6bcfb7a730ad0, type: 3}
   rarity: 0
   description: "\uD654\uC5FC \uD53C\uD574\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   maxLevel: 8

@@ -40321,7 +40321,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4394479930539668533, guid: 635bbce2ba03a1e4787909e774bd3dac, type: 3}
       propertyPath: connection
-      value:
+      value: 
       objectReference: {fileID: 11400000, guid: 27be5ba86cd03534584051a816469805, type: 2}
     - target: {fileID: 4394479930539668533, guid: 635bbce2ba03a1e4787909e774bd3dac, type: 3}
       propertyPath: endpointId

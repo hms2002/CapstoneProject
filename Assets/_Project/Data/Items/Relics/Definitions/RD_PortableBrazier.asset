@@ -11,12 +11,13 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
   m_Name: RD_PortableBrazier
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   relicId: RD_PortableBrazier
   displayName: "\uD734\uB300\uC6A9 \uD654\uB85C"
-  icon: {fileID: 543113751, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  icon: {fileID: 3865356431231990622, guid: 87eece6e269e518438f6bcfb7a730ad0, type: 3}
   rarity: 0
-  description: "\uD654\uC0C1\uC774 \uC5C6\uB294 \uC801\uC5D0\uAC8C \uCC98\uC74C \uBD80\uC5EC\uD558\uB294 \uD654\uC0C1\uC774 \uB298\uC5B4\uB0A9\uB2C8\uB2E4."
+  description: "\uD654\uC0C1\uC774 \uC5C6\uB294 \uC801\uC5D0\uAC8C \uCC98\uC74C \uBD80\uC5EC\uD558\uB294
+    \uD654\uC0C1\uC774 \uB298\uC5B4\uB0A9\uB2C8\uB2E4."
   maxLevel: 5
   dropLevel: 1
   logic: {fileID: 11400000, guid: 710ee86ec8b74295be0804c534950228, type: 2}
