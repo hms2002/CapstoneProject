@@ -44,7 +44,15 @@ public interface IProceduralRoomRuntimeFeature
 }
 
 /// <summary>
-/// 책임 : 생성된 방 하나의 안정 Id, 실제 연결 소켓 방향과 로컬/던전 앵커 조회 기능을 방 기능 프리팹에 제공한다.
+/// 책임 : 몬스터 배치가 없어도 방 봉쇄와 RoomArea가 필요한 절차 방 기능을 표시한다.
+/// </summary>
+public interface IProceduralRoomEncounterRequirement
+{
+    bool RequiresProceduralRoomEncounter { get; }
+}
+
+/// <summary>
+/// 책임 : 생성된 방 하나의 안정 Id, 실제 연결 소켓 방향, encounter와 로컬/던전 앵커 조회 기능을 방 기능 프리팹에 제공한다.
 /// </summary>
 public sealed class ProceduralRoomRuntimeContext
 {
@@ -55,15 +63,20 @@ public sealed class ProceduralRoomRuntimeContext
     public int RoomPlacementId { get; }
     public string RoomId { get; }
     public RoomTemplateSO RoomTemplate { get; }
+    public MonsterSpawnRoomGroup RoomGroup { get; }
+    public MonsterRoomArea2D RoomArea { get; }
     public IReadOnlyList<RoomSocketDirection> ConnectedSocketDirections =>
         connectedSocketDirections;
+    public bool HasRoomEncounter => RoomGroup != null && RoomArea != null;
 
     public ProceduralRoomRuntimeContext(
         int roomPlacementId,
         RoomTemplateSO roomTemplate,
         IReadOnlyDictionary<string, Transform> localAnchors,
         IReadOnlyDictionary<string, Transform> dungeonAnchors,
-        IReadOnlyList<RoomSocketDirection> connectedSocketDirections = null)
+        IReadOnlyList<RoomSocketDirection> connectedSocketDirections = null,
+        MonsterSpawnRoomGroup roomGroup = null,
+        MonsterRoomArea2D roomArea = null)
     {
         RoomPlacementId = roomPlacementId;
         RoomTemplate = roomTemplate;
@@ -74,6 +87,8 @@ public sealed class ProceduralRoomRuntimeContext
         this.dungeonAnchors = dungeonAnchors;
         this.connectedSocketDirections = connectedSocketDirections ??
             Array.Empty<RoomSocketDirection>();
+        RoomGroup = roomGroup;
+        RoomArea = roomArea;
     }
 
     public bool IsConnected(RoomSocketDirection direction)

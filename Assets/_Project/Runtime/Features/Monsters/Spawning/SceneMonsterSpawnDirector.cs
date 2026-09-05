@@ -237,6 +237,9 @@ internal sealed class SceneMonsterSpawnDirector
 
         Mob mob = monster.GetComponent<Mob>();
         if (mob == null)
+            mob = monster.GetComponentInChildren<Mob>(includeInactive: true);
+
+        if (mob == null)
             return;
 
         mob.ApplyLockTrackingContext(request.LinkedChestKillLock, request.SourceRoomGroup);

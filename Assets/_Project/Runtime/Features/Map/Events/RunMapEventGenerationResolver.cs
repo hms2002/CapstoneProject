@@ -86,13 +86,25 @@ public static class RunMapEventGenerationResolver
         if (maxCount <= 0)
             return;
 
+        maxCount -= AddGuaranteedStartEventRooms(
+            profile,
+            plan,
+            hasRouteContext,
+            nextVisitOrder,
+            maxCount);
+        if (maxCount <= 0)
+            return;
+
         var candidates = new List<RunMapEventDefinitionSO>();
         IReadOnlyList<RunMapEventDefinitionSO> definitions = profile.EventDefinitions;
         for (int i = 0; i < definitions.Count; i++)
         {
             RunMapEventDefinitionSO definition = definitions[i];
-            if (CanSelectStartEvent(profile, definition, hasRouteContext, nextVisitOrder))
+            if (!plan.PresentedEventIds.Contains(definition?.EventId) &&
+                CanSelectStartEvent(profile, definition, hasRouteContext, nextVisitOrder))
+            {
                 candidates.Add(definition);
+            }
         }
 
         if (candidates.Count == 0)
@@ -109,6 +121,58 @@ public static class RunMapEventGenerationResolver
             plan.AddPresentedEvent(selected.EventId);
             candidates.Remove(selected);
         }
+    }
+
+    private static int AddGuaranteedStartEventRooms(
+        RunMapEventGenerationProfileSO profile,
+        RunMapEventGenerationPlan plan,
+        bool hasRouteContext,
+        int nextVisitOrder,
+        int maxCount)
+    {
+        if (profile == null || plan == null || maxCount <= 0)
+            return 0;
+
+        int addedCount = 0;
+        IReadOnlyList<RunMapEventDefinitionSO> definitions =
+            profile.GuaranteedStartEventDefinitions;
+        for (int i = 0; i < definitions.Count && addedCount < maxCount; i++)
+        {
+            RunMapEventDefinitionSO definition = definitions[i];
+            if (plan.PresentedEventIds.Contains(definition?.EventId) ||
+                !CanForceStartEvent(profile, definition, hasRouteContext, nextVisitOrder))
+            {
+                continue;
+            }
+
+            plan.AddGuaranteedRoom(definition.EventRoomTemplate);
+            plan.AddPresentedEvent(definition.EventId);
+            addedCount++;
+        }
+
+        return addedCount;
+    }
+
+    private static bool CanForceStartEvent(
+        RunMapEventGenerationProfileSO profile,
+        RunMapEventDefinitionSO definition,
+        bool hasRouteContext,
+        int nextVisitOrder)
+    {
+        if (profile == null ||
+            definition == null ||
+            definition.EventRoomTemplate == null)
+        {
+            return false;
+        }
+
+        if (!definition.RequireBossRouteContext)
+            return true;
+
+        return hasRouteContext &&
+               definition.CanStartAtBossRouteVisit(
+                   nextVisitOrder,
+                   profile.PlannedBossRouteVisitCount);
     }
 
     private static bool ShouldConsumePendingPlacement(

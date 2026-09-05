@@ -292,12 +292,30 @@ public class Mob : Enemy
 
     internal static MonsterLockTrackingUnit ResolveOrCreateLockTrackingUnit(GameObject monster)
     {
-        if (monster != null && monster.TryGetComponent(out Mob mob))
+        Mob mob = ResolveMob(monster);
+        if (mob != null)
             return mob.GetOrCreateLockTrackingUnit();
 
         MonsterLockTrackingUnit unit = new MonsterLockTrackingUnit();
         unit.AddMember(monster);
         return unit;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 몬스터 프리팹 루트/자식 배치 차이를 흡수해 방 잠금 추적이 실제 Mob 본체를 찾게 한다.
+    /// - 충돌체와 피격체를 child로 분리한 프리팹에서도 기존 encounter lock API를 그대로 사용할 수 있게 한다.
+    /// </summary>
+    private static Mob ResolveMob(GameObject monster)
+    {
+        if (monster == null)
+            return null;
+
+        Mob mob = monster.GetComponent<Mob>();
+        if (mob != null)
+            return mob;
+
+        return monster.GetComponentInChildren<Mob>(includeInactive: true);
     }
 
     private void OnDisable()
@@ -570,6 +588,9 @@ internal sealed class MonsterLockTrackingUnit
             return false;
 
         Enemy enemy = member.GetComponent<Enemy>();
+        if (enemy == null)
+            enemy = member.GetComponentInChildren<Enemy>(includeInactive: true);
+
         return enemy == null || !enemy.IsDead;
     }
 }
