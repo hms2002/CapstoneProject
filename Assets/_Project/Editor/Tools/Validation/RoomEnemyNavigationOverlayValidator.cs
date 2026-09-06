@@ -13,6 +13,73 @@ public static class RoomEnemyNavigationOverlayValidator
     private const int DefaultShowThreshold = 4;
     private const float DefaultViewportPadding = 0.08f;
 
+    // Scene infrastructure: keep outside the generated room roots so rebuilding rooms cannot remove it.
+    public static void EnsureProceduralSceneOverlay(Scene scene)
+    {
+        if (FindSceneComponents<DungeonGenerator>(scene, includeInactive: true).Count == 0)
+            throw new System.InvalidOperationException($"Not a procedural dungeon scene: {scene.path}");
+
+        List<RoomEnemyNavigationOverlay> overlays = FindSceneComponents<RoomEnemyNavigationOverlay>(scene, true);
+        if (overlays.Count > 1)
+            throw new System.InvalidOperationException($"Duplicate room navigation overlays in {scene.path}; resolve them before wiring.");
+
+        GameObject arrowPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(ArrowPrefabPath);
+        if (arrowPrefab == null)
+            throw new System.InvalidOperationException($"Missing arrow prefab: {ArrowPrefabPath}");
+
+        RoomEnemyNavigationOverlay overlay = EnsureSingleOverlay(scene);
+        if (overlay.transform.parent != null)
+            throw new System.InvalidOperationException($"Room navigation must be a scene root: {scene.path}");
+        WireOverlay(overlay, arrowPrefab);
+        overlay.enabled = true;
+        overlay.gameObject.SetActive(true);
+        EditorSceneManager.MarkSceneDirty(scene);
+    }
+
+    [MenuItem("Tools/Validation/Install Navigation In Procedural Corridor Scenes")]
+    public static void InstallProceduralCorridorScenes()
+    {
+        if (EditorApplication.isPlayingOrWillChangePlaymode)
+            throw new System.InvalidOperationException("Exit Play Mode before wiring navigation.");
+
+        int installed = 0;
+        foreach (string path in CollectRouteCatalogCorridorScenePaths())
+        {
+            Scene scene = FindLoadedSceneByPath(path);
+            bool openedHere = !scene.IsValid() || !scene.isLoaded;
+            if (!openedHere && scene.isDirty)
+                throw new System.InvalidOperationException($"Save scene edits first: {path}");
+            if (openedHere)
+                scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
+            try
+            {
+                if (FindSceneComponents<DungeonGenerator>(scene, true).Count == 0)
+                    continue;
+                EnsureProceduralSceneOverlay(scene);
+                if (!EditorSceneManager.SaveScene(scene))
+                    throw new System.InvalidOperationException($"Could not save scene: {path}");
+                installed++;
+            }
+            finally
+            {
+                if (openedHere) EditorSceneManager.CloseScene(scene, true);
+            }
+        }
+        if (installed == 0)
+            throw new System.InvalidOperationException("No procedural Corridor scenes were resolved from the route catalog.");
+        Debug.Log($"[RoomEnemyNavigationOverlayValidator] Installed procedural navigation: scenes={installed}.");
+    }
+
+    public static void InstallProceduralCorridorScenesBatch()
+    {
+        try { InstallProceduralCorridorScenes(); }
+        catch (System.Exception exception)
+        {
+            Debug.LogException(exception);
+            EditorApplication.Exit(1);
+        }
+    }
+
     [MenuItem("Tools/Validation/Validate Room Enemy Navigation Overlay")]
     public static void ValidateOpenScenes()
     {
@@ -136,7 +203,7 @@ public static class RoomEnemyNavigationOverlayValidator
     {
         if (!SceneNeedsOverlay(scene))
         {
-            Debug.Log($"[RoomEnemyNavigationOverlayValidator] {scene.path}: no room spawn/lock groups found; overlay not required.");
+            Debug.Log($"[RoomEnemyNavigationOverlayValidator] {scene.path}: no procedural dungeon or room spawn/lock groups found; overlay not required.");
             return 0;
         }
 
@@ -175,6 +242,11 @@ public static class RoomEnemyNavigationOverlayValidator
 
         int issueCount = 0;
         SerializedObject serializedOverlay = new SerializedObject(overlay);
+        if (!overlay.isActiveAndEnabled)
+        {
+            Debug.LogWarning($"[RoomEnemyNavigationOverlayValidator] {scene.path}: navigation overlay is inactive.", overlay);
+            issueCount++;
+        }
         SerializedProperty arrowPrefabProperty = serializedOverlay.FindProperty("arrowPrefab");
         SerializedProperty showThresholdProperty = serializedOverlay.FindProperty("showThreshold");
         SerializedProperty viewportPaddingProperty = serializedOverlay.FindProperty("viewportPadding");
@@ -293,7 +365,8 @@ public static class RoomEnemyNavigationOverlayValidator
 
     private static bool SceneNeedsOverlay(Scene scene)
     {
-        return FindSceneComponents<MonsterSpawnRoomGroup>(scene, includeInactive: true).Count > 0
+        return FindSceneComponents<DungeonGenerator>(scene, includeInactive: true).Count > 0
+            || FindSceneComponents<MonsterSpawnRoomGroup>(scene, includeInactive: true).Count > 0
             || FindSceneComponents<RoomDoorMonsterKillLock>(scene, includeInactive: true).Count > 0;
     }
 

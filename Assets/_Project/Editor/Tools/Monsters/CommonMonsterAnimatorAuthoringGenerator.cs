@@ -322,7 +322,8 @@ public static class CommonMonsterAnimatorAuthoringGenerator
                 null,
                 readyState,
                 attackState,
-                recoverState);
+                recoverState,
+                holdAttackReadyUntilNextTrigger: monsterName == "GoblinTank");
         }
 
         public static MonsterAnimatorConfig LizardMage()

@@ -86,7 +86,8 @@ public sealed class GoblinTank : Mob, IMobAttackDecisionSource
     /// <summary>공격 상태 종료 시 취소가 아니라면 회복 애니메이션을 요청한다.</summary>
     public void OnAttackStateExited(MobAttackRequest request, bool wasCancelled)
     {
-        if (!wasCancelled && !IsDead)
+        // AttackReady holds its final pose, so cancelled attacks must also leave it.
+        if (!IsDead)
             CommonMonsterCombatUtility.TriggerAnimation(this, CommonMonsterAnimationCue.Recover);
     }
 

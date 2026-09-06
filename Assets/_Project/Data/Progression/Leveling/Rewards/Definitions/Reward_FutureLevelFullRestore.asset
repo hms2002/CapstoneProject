@@ -15,7 +15,7 @@ MonoBehaviour:
   rewardId: level_reward.future_level_full_restore
   allowMultipleSelections: 0
   displayName: 완전한 성장
-  description: 이후 레벨업할 때마다 모든 하트를 회복하고 모든 재사용 대기시간을 초기화합니다.
+  description: "<color=#FFD76A>이후 레벨업할 때마다</color>\n<color=#72E6C1>모든 하트 회복</color>\n<color=#72E6C1>모든 재사용 대기시간 초기화</color>"
   icon: {fileID: 0}
   effects:
   - {fileID: 11400000, guid: 0fbe11a8d5034bc086c8a871fb4fe0ed, type: 2}

@@ -954,7 +954,8 @@ public static class CommonMonsterAuthoringValidator
                 null,
                 readyState,
                 attackState,
-                recoverState);
+                recoverState,
+                holdAttackReadyUntilNextTrigger: monsterName == "GoblinTank");
         }
 
         public static AnimatorExpectation LizardMage()

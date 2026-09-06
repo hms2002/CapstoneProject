@@ -15,7 +15,7 @@ MonoBehaviour:
   rewardId: level_reward.one_sword_oath
   allowMultipleSelections: 0
   displayName: 한 자루의 맹세
-  description: 2번 무기 슬롯을 봉인합니다. 공격력이 30% 증가하고 1번 무기의 재사용 대기시간이 40% 감소합니다.
+  description: "<color=#FF8A8A>2번 무기 슬롯 봉인</color>\n<color=#72E6C1>공격력 +30%</color>\n1번 무기 재사용 대기시간\n<color=#72E6C1>40% 감소</color>"
   icon: {fileID: 0}
   effects:
   - {fileID: 11400000, guid: 1eba2b1ee3964959aa708df767e13d09, type: 2}

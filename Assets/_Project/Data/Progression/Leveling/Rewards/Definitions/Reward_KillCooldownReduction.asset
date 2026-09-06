@@ -15,7 +15,7 @@ MonoBehaviour:
   rewardId: level_reward.kill_cooldown_reduction
   allowMultipleSelections: 0
   displayName: 연쇄 냉각
-  description: 적을 처치할 때마다 남아 있는 무기 재사용 대기시간이 5% 감소합니다.
+  description: "<color=#FFD76A>적 처치 시</color>\n남은 무기 재사용 대기시간\n<color=#72E6C1>5% 감소</color>"
   icon: {fileID: 0}
   effects:
   - {fileID: 11400000, guid: 34d25c0bd1a6442da428e35ee2d0466e, type: 2}

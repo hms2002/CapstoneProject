@@ -42,6 +42,8 @@ public sealed class RoomEnemyNavigationOverlay : MonoBehaviour
     {
         MonsterSpawnRoomGroup.ActiveRoomEntered -= HandleActiveRoomEntered;
         MonsterSpawnRoomGroup.ActiveRoomExited -= HandleActiveRoomExited;
+        activeRoomGroup = null;
+        aliveMonsters.Clear();
         HideArrowsFrom(0);
     }
 
@@ -61,7 +63,7 @@ public sealed class RoomEnemyNavigationOverlay : MonoBehaviour
 
     private void HandleActiveRoomEntered(MonsterSpawnRoomGroup roomGroup)
     {
-        if (roomGroup == null)
+        if (roomGroup == null || roomGroup.gameObject.scene != gameObject.scene)
             return;
 
         activeRoomGroup = roomGroup;
@@ -81,6 +83,15 @@ public sealed class RoomEnemyNavigationOverlay : MonoBehaviour
     {
         if (!ResolveActiveRoomGroup())
         {
+            aliveMonsters.Clear();
+            HideArrowsFrom(0);
+            return;
+        }
+
+        // A partly spawned room must not briefly look like a nearly cleared room.
+        if (activeRoomGroup.HasPendingRoomEntrySpawns())
+        {
+            aliveMonsters.Clear();
             HideArrowsFrom(0);
             return;
         }
@@ -138,7 +149,8 @@ public sealed class RoomEnemyNavigationOverlay : MonoBehaviour
 
     private bool ResolveActiveRoomGroup()
     {
-        if (activeRoomGroup != null && activeRoomGroup.isActiveAndEnabled && activeRoomGroup.PlayerEncounterEntered)
+        if (activeRoomGroup != null && activeRoomGroup.gameObject.scene == gameObject.scene &&
+            activeRoomGroup.isActiveAndEnabled && activeRoomGroup.PlayerEncounterEntered)
             return true;
 
         activeRoomGroup = null;
@@ -154,7 +166,8 @@ public sealed class RoomEnemyNavigationOverlay : MonoBehaviour
         for (int i = 0; i < roomGroups.Length; i++)
         {
             MonsterSpawnRoomGroup roomGroup = roomGroups[i];
-            if (roomGroup == null || !roomGroup.PlayerEncounterEntered)
+            if (roomGroup == null || roomGroup.gameObject.scene != gameObject.scene ||
+                !roomGroup.isActiveAndEnabled || !roomGroup.PlayerEncounterEntered)
                 continue;
 
             activeRoomGroup = roomGroup;
