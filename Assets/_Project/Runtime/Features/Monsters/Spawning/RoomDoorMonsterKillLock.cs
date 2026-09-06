@@ -220,6 +220,16 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
         RefreshDoorState();
     }
 
+    /// <summary>
+    /// 책임:
+    /// - 웨이브 이벤트의 수동 encounter 점유 변화처럼 몬스터 등록 이벤트가 없는 카운트 변화를 문 상태에 반영한다.
+    /// - 문 잠금 판단의 단일 위치인 RefreshDoorState를 외부에서 제한적으로 호출하게 한다.
+    /// </summary>
+    internal void NotifyRoomEncounterCountChanged()
+    {
+        RefreshDoorState();
+    }
+
     [ContextMenu("Clear Registered Monsters")]
     public void ClearRegisteredMonsters()
     {
@@ -291,7 +301,9 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
     private int CountRemainingMonsters()
     {
-        int count = targetRoomGroup != null ? targetRoomGroup.PendingRoomEntrySpawnCount : 0;
+        int count = targetRoomGroup != null
+            ? targetRoomGroup.PendingRoomEntrySpawnCount + targetRoomGroup.EncounterHoldCount
+            : 0;
         for (int i = 0; i < trackedMonsterUnits.Count; i++)
         {
             MonsterLockTrackingUnit unit = trackedMonsterUnits[i];

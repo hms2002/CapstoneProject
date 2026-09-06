@@ -15,6 +15,10 @@ MonoBehaviour:
   eventDefinitions:
   - {fileID: 11400000, guid: 5d6641126ba444748b851406f0cb6621, type: 2}
   - {fileID: 11400000, guid: c99c6bb9a9be53843a7c81db0a7a950a, type: 2}
+  - {fileID: 11400000, guid: 056df1ce2a524f64aa92d02b197d040c, type: 2}
+  guaranteedStartEventDefinitions:
+  - {fileID: 11400000, guid: 056df1ce2a524f64aa92d02b197d040c, type: 2}
   maximumStartEventsPerCorridor: 1
   plannedBossRouteVisitCount: 3
   logSelection: 1
+

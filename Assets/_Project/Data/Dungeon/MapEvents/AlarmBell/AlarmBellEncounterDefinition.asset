@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdc838b319c04243ab1232f5258a7d80, type: 3}
+  m_Name: AlarmBellEncounterDefinition
+  m_EditorClassIdentifier: 
+  eventId: alarm_bell
+  interactPromptText: "\uACBD\uBCF4 \uC885 \uC6B8\uB9AC\uAE30"
+  activationDelaySeconds: 1
+  nextWaveDelaySeconds: 1.5
+  minimumPlayerSpawnDistance: 3
+  levelProgressionConfig: {fileID: 11400000, guid: 47ab2093c3344ec8ac653060da273ceb, type: 2}
+  tiers:
+  - minimumRecognitionCount: 0
+    completionExperience: 20
+    waves:
+    - monsters:
+      - monsterPrefab: {fileID: 0}
+        stageMonsterSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+        count: 2
+        suppressNonExperienceDrops: 1
+        additionalHpMultiplier: 1.5
+        overrideSpriteTint: 1
+        spriteTint: {r: 1, g: 0.45, b: 0.35, a: 1}
+      - monsterPrefab: {fileID: 0}
+        stageMonsterSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
+        count: 1
+        suppressNonExperienceDrops: 1
+        additionalHpMultiplier: 1.5
+        overrideSpriteTint: 1
+        spriteTint: {r: 1, g: 0.45, b: 0.35, a: 1}

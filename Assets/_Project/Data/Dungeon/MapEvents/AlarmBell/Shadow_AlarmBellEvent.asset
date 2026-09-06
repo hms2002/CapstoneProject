@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40ceb7dc58814e1ebb2c8a0318768fc5, type: 3}
+  m_Name: Shadow_AlarmBellEvent
+  m_EditorClassIdentifier: Gameplay::RunMapEventDefinitionSO
+  eventId: alarm_bell
+  displayName: "\uACBD\uBCF4 \uC885"
+  selectionWeight: 1
+  allowRepeatInRun: 0
+  requireBossRouteContext: 1
+  minimumBossRouteVisitOrder: 1
+  maximumBossRouteVisitOrder: 3
+  eventRoomTemplate: {fileID: 11400000, guid: d20cc7533f4b443c963e29a438f57cb2, type: 2}
+  followUps: []

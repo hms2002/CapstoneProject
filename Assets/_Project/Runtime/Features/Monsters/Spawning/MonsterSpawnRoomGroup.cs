@@ -45,11 +45,14 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
     private bool playerEncounterEntered;
     private bool roomEntrySpawnStarted;
     private int pendingRoomEntrySpawnCount;
+    private int encounterHoldCount;
 
     public MonsterRoomSpawnProfileSO SpawnProfile => spawnProfile;
     public bool PlayerEncounterEntered => playerEncounterEntered;
     public int PendingRoomEntrySpawnCount => pendingRoomEntrySpawnCount;
-    public int RemainingRegisteredOrPendingCount => CountAliveRegisteredMonsters() + pendingRoomEntrySpawnCount;
+    public int EncounterHoldCount => encounterHoldCount;
+    public int RemainingRegisteredOrPendingCount =>
+        CountAliveRegisteredMonsters() + pendingRoomEntrySpawnCount + encounterHoldCount;
 
     /// <summary>
     /// 책임:
@@ -191,6 +194,31 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
         return pendingRoomEntrySpawnCount > 0;
     }
 
+    /// <summary>
+    /// 책임:
+    /// - 경보 종처럼 웨이브 사이에 살아 있는 몬스터가 잠시 0명이 되어도 방 봉쇄를 유지한다.
+    /// - 실제 몬스터 추적과 별개의 수동 encounter 점유 카운트를 제공한다.
+    /// </summary>
+    public void PushEncounterHold()
+    {
+        encounterHoldCount++;
+        RefreshDoorLocksAfterEncounterCountChanged();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 수동 encounter 점유를 안전하게 해제하고, 카운트가 음수가 되지 않게 보호한다.
+    /// - 마지막 홀드가 풀리면 기존 문 잠금 규칙이 즉시 재평가되게 한다.
+    /// </summary>
+    public void PopEncounterHold()
+    {
+        if (encounterHoldCount <= 0)
+            return;
+
+        encounterHoldCount--;
+        RefreshDoorLocksAfterEncounterCountChanged();
+    }
+
     public void NotifyPlayerEnteredEncounter()
     {
         if (playerEncounterEntered)
@@ -240,8 +268,31 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
     private void OnDisable()
     {
+        encounterHoldCount = 0;
         CancelActiveSpawnRoutines();
         ReleaseAllPendingSpawns();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 몬스터 등록/해제가 아닌 수동 encounter 점유 변화도 연결된 문 잠금 장치에 전파한다.
+    /// - 웨이브 이벤트가 문을 한 프레임 이상 늦게 닫거나 열지 않도록 한다.
+    /// </summary>
+    private void RefreshDoorLocksAfterEncounterCountChanged()
+    {
+        CompactRuntimeLists();
+
+        for (int i = runtimeDoorLocks.Count - 1; i >= 0; i--)
+        {
+            RoomDoorMonsterKillLock doorLock = runtimeDoorLocks[i];
+            if (doorLock == null)
+            {
+                runtimeDoorLocks.RemoveAt(i);
+                continue;
+            }
+
+            doorLock.NotifyRoomEncounterCountChanged();
+        }
     }
 
     /// <summary>

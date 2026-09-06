@@ -1070,7 +1070,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         for (int roomIndex = 0; roomIndex < layout.Rooms.Count; roomIndex++)
         {
             DungeonRoomPlacement roomPlacement = layout.Rooms[roomIndex];
-            if (!HasMonsterPlacement(roomPlacement.Template.BuildData.objectPlacements))
+            if (!RequiresRoomEncounter(roomPlacement.Template.BuildData.objectPlacements))
                 continue;
 
             if (!TryCreateRoomEncounter(
@@ -1264,6 +1264,40 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// 책임:
+    /// - 몬스터 배치 또는 경보 종 같은 encounter 요구 프롭이 있는 방을 봉쇄/RoomArea 구성 대상으로 판정한다.
+    /// - 일반 프롭 방은 기존처럼 encounter 비용을 만들지 않게 한다.
+    /// </summary>
+    private static bool RequiresRoomEncounter(IReadOnlyList<RoomObjectPlacementData> placements)
+    {
+        if (HasMonsterPlacement(placements))
+            return true;
+
+        if (placements == null)
+            return false;
+
+        for (int placementIndex = 0; placementIndex < placements.Count; placementIndex++)
+        {
+            RoomObjectPlacementData placement = placements[placementIndex];
+            if (placement.kind == RoomObjectKind.Monster || placement.prefab == null)
+                continue;
+
+            MonoBehaviour[] components =
+                placement.prefab.GetComponentsInChildren<MonoBehaviour>(includeInactive: true);
+            for (int componentIndex = 0; componentIndex < components.Length; componentIndex++)
+            {
+                if (components[componentIndex] is IProceduralRoomEncounterRequirement requirement &&
+                    requirement.RequiresProceduralRoomEncounter)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private bool TryBuildRoomObjects(DungeonLayoutResult layout)
     {
         for (int roomIndex = 0; roomIndex < layout.Rooms.Count; roomIndex++)
@@ -1410,12 +1444,19 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
                 continue;
             }
 
+            TryGetGeneratedRoomEncounter(
+                roomPlacement.PlacementId,
+                out MonsterSpawnRoomGroup roomGroup,
+                out MonsterRoomArea2D roomArea);
+
             var context = new ProceduralRoomRuntimeContext(
                 roomPlacement.PlacementId,
                 roomPlacement.Template,
                 localAnchorsByPlacement[roomPlacement.PlacementId],
                 dungeonAnchors,
-                CollectConnectedSocketDirections(layout, roomPlacement));
+                CollectConnectedSocketDirections(layout, roomPlacement),
+                roomGroup,
+                roomArea);
             for (int objectIndex = 0; objectIndex < roomObjects.Count; objectIndex++)
             {
                 GameObject roomObject = roomObjects[objectIndex];
