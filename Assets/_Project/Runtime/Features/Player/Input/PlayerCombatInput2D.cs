@@ -43,6 +43,10 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     private bool isHoldingAttack;
     private WeaponAbilitySelector weaponAbilitySelector;
     private WeaponAbilityBridge weaponAbilityBridge;
+    private AbilityDefinition pendingApprenticeSkill;
+    private WeaponAbilitySlot pendingApprenticeSlot;
+    private AbilitySpec pendingApprenticeAttack;
+    private bool apprenticeCancelRequested;
 
     private void Awake()
     {
@@ -73,6 +77,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
 
     private void OnDisable()
     {
+        ClearApprenticeSkillInput();
         if (weaponInventory != null)
             weaponInventory.OnEquippedChanged -= HandleEquippedChanged;
 
@@ -85,18 +90,21 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
 
         if (IsGameplayInputBlockedByUiOrFlow())
         {
+            ClearApprenticeSkillInput();
             ReleaseAttackHoldIfNeeded();
             return;
         }
 
         if (player != null && player.CurrentState != InteractState.Idle)
         {
+            ClearApprenticeSkillInput();
             ReleaseAttackHoldIfNeeded();
             return;
         }
 
         if (IsCombatBlocked())
         {
+            ClearApprenticeSkillInput();
             TryHandleBlockedWeaponAbilityInput();
             ReleaseAttackHoldIfInputEnded();
             return;
@@ -107,6 +115,19 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
 
     private void HandleCombatInput()
     {
+        // Resolve this weapon's manual skill before the held basic attack can restart.
+        if (HandleApprenticeSkillInput())
+        {
+            if (InputActionQuery.WasPressedThisFrame(InputActionId.Dash))
+            {
+                ClearApprenticeSkillInput();
+                TryActivateSafe(default, dash);
+            }
+            if (weaponInventory != null && InputActionQuery.WasPressedThisFrame(InputActionId.SwapWeapon))
+                weaponInventory.Swap();
+            return;
+        }
+
         var atk = GetBasicAttack();
 
         if (InputActionQuery.WasPressedThisFrame(InputActionId.PrimaryAttack))
@@ -242,6 +263,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     /// </summary>
     private void HandleEquippedChanged(int previousIndex, int newIndex, WeaponDefinition previousWeapon, WeaponDefinition newWeapon)
     {
+        ClearApprenticeSkillInput();
         if (weaponEquipController == null && weaponInventory != null)
             weaponEquipController = weaponInventory.EquipController;
 
@@ -255,6 +277,83 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
             runtimeState.HandleEquippedWeaponChanged(previousWeapon, newWeapon);
 
         ReleaseAttackHoldIfNeeded();
+    }
+
+    private void ClearApprenticeSkillInput()
+    {
+        pendingApprenticeSkill = null;
+        pendingApprenticeAttack = null;
+        apprenticeCancelRequested = false;
+    }
+
+    private bool HandleApprenticeSkillInput()
+    {
+        if (abilitySystem == null || GetBasicAttack()?.logic is not AbilityLogic_ApprenticeHeroSwordAttack)
+        {
+            ClearApprenticeSkillInput();
+            return false;
+        }
+
+        bool chargePressed = InputActionQuery.WasPressedThisFrame(InputActionId.Skill1);
+        bool dashPressed = InputActionQuery.WasPressedThisFrame(InputActionId.Skill2);
+        if (chargePressed || dashPressed)
+        {
+            WeaponAbilitySlot slot = dashPressed ? WeaponAbilitySlot.Skill2 : WeaponAbilitySlot.Skill1;
+            AbilityDefinition skill = dashPressed ? GetSkill2() : GetSkill1();
+            if (skill != null && abilitySystem.GetNextActivationRemaining(skill) <= 0f &&
+                abilitySystem.GetCooldownRemaining(skill) <= 0f &&
+                skill.CanActivate(gameObject, null))
+            {
+                AbilitySpec attack = abilitySystem.CurrentExecSpec;
+                if (!abilitySystem.IsBusy || attack?.Definition?.logic is AbilityLogic_ApprenticeHeroSwordAttack)
+                {
+                    pendingApprenticeSkill = skill;
+                    pendingApprenticeSlot = slot;
+                    pendingApprenticeAttack = attack;
+                    apprenticeCancelRequested = false;
+                }
+            }
+        }
+
+        if (pendingApprenticeSkill == null)
+            return false;
+
+        if (pendingApprenticeSlot == WeaponAbilitySlot.Skill1 &&
+            !InputActionQuery.IsPressed(InputActionId.Skill1))
+        {
+            ClearApprenticeSkillInput();
+            return false;
+        }
+
+        AbilitySpec current = abilitySystem.CurrentExecSpec;
+        if (abilitySystem.IsBusy)
+        {
+            if (current != pendingApprenticeAttack ||
+                (!apprenticeCancelRequested && current?.Token != null && current.Token.IsCancelled))
+            {
+                ClearApprenticeSkillInput();
+                return false;
+            }
+
+            if (!apprenticeCancelRequested &&
+                (pendingApprenticeSlot == WeaponAbilitySlot.Skill2 ||
+                 current.GetInt(AbilityLogic_ApprenticeHeroSwordAttack.HitSpawnedKey, 0) != 0))
+            {
+                apprenticeCancelRequested = true;
+                abilitySystem.CancelExecution(force: true);
+                // Stop the attack lunge before the next skill starts its own motion.
+                GetComponent<AbilityMotionController2D>()?.CancelMotion();
+            }
+
+            // Cancellation completes through the normal coroutine cleanup before retrying.
+            return true;
+        }
+
+        AbilityDefinition pending = pendingApprenticeSkill;
+        WeaponAbilitySlot pendingSlot = pendingApprenticeSlot;
+        ClearApprenticeSkillInput();
+        TryActivateSafe(pendingSlot, pending);
+        return true;
     }
 
     private bool TryActivateSafe(WeaponAbilitySlot slot, AbilityDefinition def)

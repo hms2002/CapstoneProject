@@ -26,7 +26,7 @@ MonoBehaviour:
   cooldownEffect: {fileID: 0}
   cooldownTag: {fileID: 0}
   startCooldownOnEnd: 1
-  castTime: 0.61
+  castTime: 0
   recoveryTime: 0.2
   canCastWhileMoving: 1
   interruptible: 1

@@ -142,6 +142,10 @@ The concrete risks are narrower than a full combat rewrite.
 
 ### Apprentice Hero Sword Tutorial Weapon Extension
 
+- Apprentice sword attack-to-skill input is handled by `PlayerCombatInput2D`, gated by the selected attack logic type. Q requests immediate attack cancellation; held Skill1 waits for `AbilityLogic_ApprenticeHeroSwordAttack.HitSpawnedKey`, then cancels recovery. The marker means hitbox spawn, not confirmed damage, and is reset on each attack execution.
+- Pending input is local to the player input component and cleared on release (Skill1), combat/UI/interaction blocking, disable, and weapon changes. Cancellation finishes through the existing ASC coroutine before skill activation; pending skills suppress automatic attack restart. Dash input discards the pending request.
+- `AD_ApprenticeHeroSwordSkill1_ChargeSpin.castTime` is zero: charge presentation and charge accumulation begin at ability execution without a separate pre-charge cast delay.
+
 - `ApprenticeHeroSwordChargeSpinData` owns Skill2 charge-presentation tuning for the tutorial default weapon: optional looping charge particle prefab, blade-fill reveal sprite, full-charge reveal sprite/color, player-anchored full-charge VFX prefab, directional local-coordinate mask reveal settings, release attack color/size scaling, sorting offset, and particle stop delay.
 - `AbilityLogic_ApprenticeHeroSwordChargeSpin` keeps the visuals transient and ability-owned. During the charge hold window it instantiates the authored particle under the current weapon render root, creates a runtime `SpriteRenderer` plus `SpriteMask` reveal overlay under the equipped weapon renderer, updates the mask from live charge ratio, plays the full-charge VFX once under the player/`AbilitySystem` transform, and releases the charge objects on Skill2 release/cancel/cleanup.
 - Directional charge reveal uses a generated square `SpriteMask` when no mask sprite is assigned, projects the current reveal sprite bounds onto `chargeRevealMaskLocalDirection`, and mirrors the local direction with the equipped weapon renderer's `flipX`/`flipY`.

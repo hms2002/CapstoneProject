@@ -1,59 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "d735766f6d5743f4b6cc83f3ac8b4993",
-            "startedUtc": "2026-09-04T17:28:31.0976092Z",
-            "endedUtc": "2026-09-04T17:30:08.7859083Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab",
-                    "prefabName": "PF_Dragon_KegImpactSplash",
-                    "totalSpawns": 4,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 94.17425537109375,
-                    "lastSeenSeconds": 94.19005584716797,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Art/Sprites/Bosses/Dragon/Effect_DragonMeleeAttack.prefab",
-                    "prefabName": "Effect_DragonMeleeAttack",
-                    "totalSpawns": 2,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 96.2742691040039,
-                    "lastSeenSeconds": 97.58098602294922,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/DashDust.prefab",
-                    "prefabName": "DashDust",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 91.42817687988281,
-                    "lastSeenSeconds": 91.42838287353516,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_LandingDust.prefab",
-                    "prefabName": "PF_Dragon_LandingDust",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 92.81399536132813,
-                    "lastSeenSeconds": 92.81400299072266,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                }
-            ]
-        },
-        {
-            "sessionId": "204ab26e2d574c389a07d4f4b9adf34c",
-            "startedUtc": "2026-09-04T18:21:10.5547178Z",
-            "endedUtc": "2026-09-04T18:21:11.5625201Z",
-            "entries": []
-        },
-        {
             "sessionId": "c9908d09ac2a4b869b6da32e8dacb81e",
             "startedUtc": "2026-09-04T18:39:26.4810145Z",
             "endedUtc": "2026-09-04T18:39:29.1616449Z",
@@ -336,6 +283,40 @@
             "startedUtc": "2026-09-06T04:25:21.6382957Z",
             "endedUtc": "2026-09-06T04:25:23.1863825Z",
             "entries": []
+        },
+        {
+            "sessionId": "9d37e5a49c5b4524b324464071389f66",
+            "startedUtc": "2026-09-07T02:47:38.8696397Z",
+            "endedUtc": "2026-09-07T02:49:58.1163704Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 17,
+                    "coldSpawns": 5,
+                    "firstSeenSeconds": 26.992904663085939,
+                    "lastSeenSeconds": 128.06773376464845,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ProtoTypeHub"
+                }
+            ]
+        },
+        {
+            "sessionId": "57c48166defd45c8945ff68a8873fa20",
+            "startedUtc": "2026-09-07T03:20:05.1015300Z",
+            "endedUtc": "2026-09-07T03:20:24.2751096Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 5,
+                    "coldSpawns": 5,
+                    "firstSeenSeconds": 6.7566728591918949,
+                    "lastSeenSeconds": 8.976494789123536,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ProtoTypeHub"
+                }
+            ]
         }
     ]
 }
