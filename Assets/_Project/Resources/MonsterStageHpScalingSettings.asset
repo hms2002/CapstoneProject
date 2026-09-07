@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enabled: 1
   hpMultiplierPerClearedStage: 0.15
+  baseAttackSpeedMultiplier: 1.5
   attackSpeedMultiplierPerClearedStage: 0.15
   scaleAttackWarning: 1
   scaleAttackRecovery: 1
@@ -22,5 +23,11 @@ MonoBehaviour:
   scaleAbilityRecovery: 1
   scaleAbilityCooldown: 1
   minimumScaledSeconds: 0.08
+  attackWarningSlotSpeedMultiplier: 1
+  attackRecoverySlotSpeedMultiplier: 1.5
+  attackIntervalSlotSpeedMultiplier: 1.25
+  abilityCastSlotSpeedMultiplier: 1
+  abilityRecoverySlotSpeedMultiplier: 1.5
+  abilityCooldownSlotSpeedMultiplier: 1.25
   logStageScalingDebug: 0
   logCombatTimingDebug: 0

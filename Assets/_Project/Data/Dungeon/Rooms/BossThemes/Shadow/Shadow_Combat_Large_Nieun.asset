@@ -3468,7 +3468,7 @@ MonoBehaviour:
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 1
-      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
+      monsterStageSet: {fileID: 11400000, guid: 0d1e794a28a84e4a8614e4826a98e6af, type: 2}
       localCell: {x: 13, y: 36}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -3488,7 +3488,7 @@ MonoBehaviour:
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
-      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      monsterStageSet: {fileID: 11400000, guid: 4b7f8d6a4d5f4a0c91d537c0a7e3f611, type: 2}
       localCell: {x: 13, y: 13}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
@@ -3507,8 +3507,8 @@ MonoBehaviour:
     - placementId: Combat_Large_NieunMonster_6
       kind: 1
       prefab: {fileID: 0}
-      monsterSpawnRole: 2
-      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 11400000, guid: 9b874f6a72b94cb8b18fd8a3cf2b4a72, type: 2}
       localCell: {x: 34, y: 13}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0

@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityGAS;
 
@@ -65,6 +67,29 @@ public static class CommonMonsterCombatUtility
 
         Vector2 delta = target.transform.position - origin.position;
         return delta.sqrMagnitude <= range * range;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 공격 준비 시간 동안 취소 조건을 매 프레임 확인하며 경고 geometry 갱신 hook을 실행한다.
+    /// - 경고 진행도는 각 telegraph view가 유지하고, 호출자는 위치/회전/크기만 최신화하게 한다.
+    /// </summary>
+    public static IEnumerator WaitAttackWarning(
+        float duration,
+        Func<bool> shouldCancel,
+        Action updateWarningGeometry)
+    {
+        float safeDuration = Mathf.Max(0f, duration);
+        float elapsed = 0f;
+        while (elapsed < safeDuration)
+        {
+            if (shouldCancel != null && shouldCancel())
+                yield break;
+
+            updateWarningGeometry?.Invoke();
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
     }
 
     /// <summary>

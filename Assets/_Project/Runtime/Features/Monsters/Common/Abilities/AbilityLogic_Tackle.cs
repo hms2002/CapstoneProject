@@ -94,7 +94,18 @@ public class AL_Tackle : AbilityLogic
         try
         {
             if (warningSeconds > 0f)
-                yield return AbilityTasks.WaitDelay(caster, spec, warningSeconds);
+            {
+                float elapsed = 0f;
+                while (elapsed < warningSeconds)
+                {
+                    if (IsCancelled(spec))
+                        break;
+
+                    context = tackle.UpdateTelegraphFromCurrentPosition(context, warningSeconds, telegraphStyle);
+                    elapsed += Time.deltaTime;
+                    yield return null;
+                }
+            }
 
             if (IsCancelled(spec))
             {
@@ -103,6 +114,7 @@ public class AL_Tackle : AbilityLogic
                 yield break;
             }
 
+            context.StartPos = caster.transform.position;
             tackle.HideTelegraph();
             tackle.SetAttackPreparationMoveBlocked(false);
             tackle.PlayAttackAnimation();
