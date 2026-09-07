@@ -1,125 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "5d8a9426aca0490c861e239144ff9839",
-            "startedUtc": "2026-09-02T05:19:24.5939501Z",
-            "endedUtc": "2026-09-02T05:19:49.4630676Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab",
-                    "prefabName": "PF_Dragon_KegImpactSplash",
-                    "totalSpawns": 4,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 23.118457794189454,
-                    "lastSeenSeconds": 23.21706771850586,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/DashDust.prefab",
-                    "prefabName": "DashDust",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 20.69693374633789,
-                    "lastSeenSeconds": 20.697139739990236,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_LandingDust.prefab",
-                    "prefabName": "PF_Dragon_LandingDust",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 21.775814056396486,
-                    "lastSeenSeconds": 21.77581787109375,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_InhaleWind.prefab",
-                    "prefabName": "PF_Dragon_InhaleWind",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 24.165939331054689,
-                    "lastSeenSeconds": 24.165943145751954,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                }
-            ]
-        },
-        {
-            "sessionId": "2bb9a16fce2940ceb71d0350bd0aed66",
-            "startedUtc": "2026-09-02T05:30:51.5867224Z",
-            "endedUtc": "2026-09-02T05:31:13.0509830Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab",
-                    "prefabName": "PF_Dragon_KegImpactSplash",
-                    "totalSpawns": 4,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 21.370195388793947,
-                    "lastSeenSeconds": 21.387311935424806,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_LandingDust.prefab",
-                    "prefabName": "PF_Dragon_LandingDust",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 20.023149490356447,
-                    "lastSeenSeconds": 20.02315330505371,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/DashDust.prefab",
-                    "prefabName": "DashDust",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 18.95378303527832,
-                    "lastSeenSeconds": 18.954011917114259,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                }
-            ]
-        },
-        {
-            "sessionId": "1af822ee646f40c7bc772f94ccb7e2a1",
-            "startedUtc": "2026-09-04T14:13:57.5466952Z",
-            "endedUtc": "2026-09-04T14:13:58.5588855Z",
-            "entries": []
-        },
-        {
-            "sessionId": "ab53abf46fa747008ec22a27c9d425b0",
-            "startedUtc": "2026-09-04T14:15:23.7941150Z",
-            "endedUtc": "2026-09-04T14:15:27.8286790Z",
-            "entries": []
-        },
-        {
-            "sessionId": "6b19d395fcc8449db6f163acdc035a27",
-            "startedUtc": "2026-09-04T14:23:06.8893506Z",
-            "endedUtc": "2026-09-04T14:23:11.5212958Z",
-            "entries": []
-        },
-        {
-            "sessionId": "6ded8f8862ed4c409c99a71207622a21",
-            "startedUtc": "2026-09-04T16:36:19.5094939Z",
-            "endedUtc": "2026-09-04T16:40:58.9854148Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 34,
-                    "coldSpawns": 34,
-                    "firstSeenSeconds": 113.87826538085938,
-                    "lastSeenSeconds": 279.4571533203125,
-                    "firstSceneName": "ProceduralDragonCorridor",
-                    "lastSceneName": "ProceduralDragonCorridor"
-                }
-            ]
-        },
-        {
             "sessionId": "d735766f6d5743f4b6cc83f3ac8b4993",
             "startedUtc": "2026-09-04T17:28:31.0976092Z",
             "endedUtc": "2026-09-04T17:30:08.7859083Z",
@@ -419,6 +300,42 @@
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 }
             ]
+        },
+        {
+            "sessionId": "ed6e7c94f75d468c8c3802c5d6816ae3",
+            "startedUtc": "2026-09-05T14:04:31.0130911Z",
+            "endedUtc": "2026-09-05T14:04:32.0235875Z",
+            "entries": []
+        },
+        {
+            "sessionId": "fcd387ad73fb47a78f2750820ef7ada8",
+            "startedUtc": "2026-09-06T00:40:23.3246886Z",
+            "endedUtc": "2026-09-06T00:40:24.3313651Z",
+            "entries": []
+        },
+        {
+            "sessionId": "564344630ffe446eb9f4476ccf51bad3",
+            "startedUtc": "2026-09-06T00:43:21.4519462Z",
+            "endedUtc": "2026-09-06T00:43:27.0693034Z",
+            "entries": []
+        },
+        {
+            "sessionId": "61f6ae8dff1a4ba6b0406308d980f583",
+            "startedUtc": "2026-09-06T03:42:36.7931810Z",
+            "endedUtc": "2026-09-06T03:42:38.1751462Z",
+            "entries": []
+        },
+        {
+            "sessionId": "2ff5b396e8464f80a5b316b0f39d6b12",
+            "startedUtc": "2026-09-06T04:15:23.8109359Z",
+            "endedUtc": "2026-09-06T04:15:26.4016870Z",
+            "entries": []
+        },
+        {
+            "sessionId": "7e3c545ddea9442cafc8647bbd95b0b2",
+            "startedUtc": "2026-09-06T04:25:21.6382957Z",
+            "endedUtc": "2026-09-06T04:25:23.1863825Z",
+            "entries": []
         }
     ]
 }

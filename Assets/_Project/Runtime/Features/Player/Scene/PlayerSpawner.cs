@@ -13,6 +13,8 @@ public sealed class PlayerSpawner : MonoBehaviour
     [SerializeField] private PlayerSpawnPoint[] spawnPoints;
     [SerializeField, Min(0.1f)] private float dynamicEndpointWaitSeconds = 5f;
 
+    private bool hasRequestedInitialHubHeal;
+
     private IEnumerator Start()
     {
         SceneTransitionContext transitionContext = RunSessionStore.PeekPendingTransition();
@@ -91,6 +93,7 @@ public sealed class PlayerSpawner : MonoBehaviour
 
         if (existingPlayer != null)
         {
+            RequestInitialHubSpawnFullHeal();
             ApplyDynamicEndpointTransform(existingPlayer, dynamicEndpoint);
 
             var existingInteractor = existingPlayer.GetComponent<PlayerInteractor2D>();
@@ -120,6 +123,7 @@ public sealed class PlayerSpawner : MonoBehaviour
             ? dynamicEndpoint.ArrivalAnchor
             : spawnPoint.transform;
 
+        RequestInitialHubSpawnFullHeal();
         var player = Instantiate(
             playerPrefab,
             spawnTransform.position,
@@ -140,6 +144,20 @@ public sealed class PlayerSpawner : MonoBehaviour
         ApplyPendingHubLoadFullHeal(player);
         TryStartHubSpawnPresentation(player);
         return player;
+    }
+
+    // Direct Hub starts do not pass through the title's heal request.
+    // Reuse that request so pending state restoration still finishes before healing.
+    private void RequestInitialHubSpawnFullHeal()
+    {
+        if (hasRequestedInitialHubHeal || !RunSessionStore.IsAvailable || RunSessionStore.IsRunActive)
+            return;
+
+        if (!SceneDomainNamePolicy.IsHubSceneName(gameObject.scene.name))
+            return;
+
+        RunSessionStore.RequestPendingHubLoadFullHeal();
+        hasRequestedInitialHubHeal = true;
     }
 
     private static void ApplyDynamicEndpointTransform(

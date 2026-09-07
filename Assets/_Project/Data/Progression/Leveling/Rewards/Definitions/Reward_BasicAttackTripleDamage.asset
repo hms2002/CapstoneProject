@@ -15,7 +15,7 @@ MonoBehaviour:
   rewardId: level_reward.basic_attack_triple_damage
   allowMultipleSelections: 0
   displayName: 치명적 일격
-  description: 기본 공격이 10% 확률로 3배의 피해를 줍니다.
+  description: "기본 공격 시 <color=#FFD76A>10% 확률</color>\n<color=#72E6C1>피해량 3배</color>"
   icon: {fileID: 0}
   effects:
   - {fileID: 11400000, guid: 63740e81281b47dea62d58a6cabf5da0, type: 2}

@@ -15,7 +15,7 @@ MonoBehaviour:
   rewardId: level_reward.soul_heart_grant
   allowMultipleSelections: 0
   displayName: 영혼의 축복
-  description: 소울 하트를 5개 획득합니다.
+  description: "<color=#72E6C1>소울 하트 5개 획득</color>"
   icon: {fileID: 0}
   effects:
   - {fileID: 11400000, guid: 352f84774b7540f38eaec4affd003ca0, type: 2}

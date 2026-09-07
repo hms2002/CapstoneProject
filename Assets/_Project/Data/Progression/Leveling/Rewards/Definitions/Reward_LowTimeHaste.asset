@@ -15,7 +15,7 @@ MonoBehaviour:
   rewardId: level_reward.low_time_haste
   allowMultipleSelections: 0
   displayName: 최후의 질주
-  description: 남은 시간이 6분 이하일 때 이동 속도가 40%, 공격 속도가 25% 증가합니다.
+  description: "<color=#FFD76A>남은 시간 6분 이하일 때</color>\n<color=#72E6C1>이동 속도 +40%</color>\n<color=#72E6C1>공격 속도 +25%</color>"
   icon: {fileID: 0}
   effects:
   - {fileID: 11400000, guid: 6efab7bb5d674d25a6bc7741584f6f9c, type: 2}

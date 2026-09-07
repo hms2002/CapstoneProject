@@ -15,7 +15,7 @@ MonoBehaviour:
   rewardId: level_reward.level_scaled_max_heart
   allowMultipleSelections: 0
   displayName: 성장의 심장
-  description: 선택 시 현재 레벨 3마다 최대 하트가 1 증가합니다.
+  description: "<color=#FFD76A>선택 시 현재 레벨 3마다</color>\n<color=#72E6C1>최대 하트 +1</color>"
   icon: {fileID: 0}
   effects:
   - {fileID: 11400000, guid: e056de34a09043569a1e198e627ff7df, type: 2}

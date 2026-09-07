@@ -15,7 +15,7 @@ MonoBehaviour:
   rewardId: level_reward.random_relic_upgrade
   allowMultipleSelections: 0
   displayName: 유물 공명
-  description: 인벤토리의 강화 가능한 유물 중 최대 3개를 무작위로 골라 2레벨씩 강화합니다.
+  description: "인벤토리의 강화 가능한 유물 중\n무작위 <color=#FFD76A>최대 3개</color>\n<color=#72E6C1>각각 유물 레벨 +2</color>"
   icon: {fileID: 0}
   effects:
   - {fileID: 11400000, guid: fd24827d8c084c35911bec3c387bc61d, type: 2}

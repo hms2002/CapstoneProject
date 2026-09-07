@@ -43,7 +43,7 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
         RunLevelProgression.ExperienceGranted -= HandleExperienceGranted;
         RunLevelProgression.StateChanged -= HandleStateChanged;
         StopFillAnimation();
-        SetRewardReadyVisible(false);
+        SetRewardReadyVisible(false, false);
     }
 
     private void Update()
@@ -166,21 +166,22 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
         bool canOpen = rewardSessionController != null &&
                        rewardSessionController.isActiveAndEnabled &&
                        rewardSessionController.CanOpenSession;
-        SetRewardReadyVisible(canOpen);
+        bool hasPendingReward = (RunLevelProgression.State?.pendingRewardCount ?? 0) > 0;
+        SetRewardReadyVisible(hasPendingReward, canOpen);
     }
 
-    private void SetRewardReadyVisible(bool visible)
+    private void SetRewardReadyVisible(bool borderVisible, bool visible)
     {
         if (isRewardReadyVisible == visible &&
-            (rewardReadyBorder == null || rewardReadyBorder.activeSelf == visible) &&
+            (rewardReadyBorder == null || rewardReadyBorder.activeSelf == borderVisible) &&
             (levelUpPrompt == null || levelUpPrompt.activeSelf == visible))
         {
             return;
         }
 
         isRewardReadyVisible = visible;
-        if (rewardReadyBorder != null && rewardReadyBorder.activeSelf != visible)
-            rewardReadyBorder.SetActive(visible);
+        if (rewardReadyBorder != null && rewardReadyBorder.activeSelf != borderVisible)
+            rewardReadyBorder.SetActive(borderVisible);
         if (levelUpPrompt != null && levelUpPrompt.activeSelf != visible)
             levelUpPrompt.SetActive(visible);
     }

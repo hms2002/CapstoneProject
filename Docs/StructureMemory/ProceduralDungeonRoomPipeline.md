@@ -32,6 +32,12 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 
 ## Key Files
 
+- `Assets/_Project/Runtime/Features/Monsters/Spawning/RoomEnemyNavigationOverlay.cs`
+  - Scene-local projection of the entered `MonsterSpawnRoomGroup`'s live tracking-unit representatives. Existing policy: at most four remaining, offscreen targets only; pending entry spawns suppress guidance. Disable clears the cached room and list; scene destruction releases arrow instances.
+- `Assets/_Project/Editor/Tools/Validation/RoomEnemyNavigationOverlayValidator.cs`
+  - Recognizes procedural scenes through `DungeonGenerator` before rooms exist. `Install Navigation In Procedural Corridor Scenes` wires one active scene-root overlay from the current route catalog; the themed scene installer calls the same wiring entry before saving. Never attach this overlay under generated content.
+  - 2026-09-05 rollout: all three normal procedural Corridor scenes have one active scene-root overlay with the existing arrow prefab. Focused Unity installation completed; Play Mode confirmation remains manual (SessionLog).
+
 - `Assets/_Project/Runtime/Features/Map/Procedural/RoomTemplateSO.cs`
   - Baked layout/build data, typed object placement data, room type, socket data, and shared two-cell socket geometry rules.
 - `Assets/_Project/Runtime/Features/Map/Procedural/RoomObjectAuthoring.cs`

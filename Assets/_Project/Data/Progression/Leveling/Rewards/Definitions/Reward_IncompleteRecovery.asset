@@ -15,7 +15,7 @@ MonoBehaviour:
   rewardId: level_reward.incomplete_recovery
   allowMultipleSelections: 0
   displayName: 미완의 회복
-  description: 적을 20명 처치할 때마다 체력을 1 회복합니다.
+  description: "<color=#FFD76A>적 20명 처치할 때마다</color>\n<color=#72E6C1>체력 1 회복</color>"
   icon: {fileID: 0}
   effects:
   - {fileID: 11400000, guid: 36e28b4605fa448f9ed5759e46d7bef5, type: 2}

@@ -1834,3 +1834,34 @@ Fix:
 
 Prevention:
 For batch asset authoring, await the Ink compiler's actual completion or synchronously compile self-contained sources before loading their generated asset. Asset import completion alone is not proof of Ink compilation completion. Do not save NPC references to missing JSON.
+
+## 2026-09-05 - Procedural Corridor Navigation Omitted Before Runtime Rooms Exist
+
+Symptom:
+Remaining-monster arrows were present in legacy Corridor scenes but absent from the active procedural Corridors.
+
+Cause:
+The scene-level overlay was not authored into the new scenes. The navigation validator/auto-wiring predicate checked only already-authored room groups and door locks, so procedural scenes with runtime-generated groups were incorrectly considered to not need navigation.
+
+Correction status:
+The predicate now recognizes `DungeonGenerator`, and normal themed scene authoring ensures a single scene-root overlay. Runtime display remains a projection of the existing room group's registered monsters, with same-scene filtering and pending-spawn suppression. Code compiled and the focused Unity installer successfully wired all three normal procedural Corridor scenes. Play Mode confirmation remains manual (SessionLog 2026-09-05).
+
+Prevention:
+For procedural scene infrastructure, detect the authored generator rather than requiring its generated objects to exist in Edit Mode. Keep navigation outside roots cleared by room regeneration and retain the existing tracking-unit policy instead of scanning every Enemy in the scene.
+
+## 2026-09-05 - GoblinTank Preparation Returned To Idle During Telegraph
+
+- Cause: the 0.25-second non-looping preparation clip returned to Idle at normalized time 0.95, although the ability warning lasts 2 seconds. The raised-arms frame existed but was not held.
+- Fix: remove the AttackReady-to-Idle transition, align generator/validator hold-ready policy, and send alive cancelled attack exits through the existing Recover cue.
+- Prevention: when a runner owns warning timing, keep its ready pose until the next explicit cue and review cancellation/start-failure/death exits. Asset, authoring generator and validator must agree. Compilation passed; visual confirmation remains manual.
+
+## 2026-09-05 - Direct Hub Spawn Left Permanent Bonus Hearts Empty
+
+Cause:
+Attribute initialization fills the original maximum before upgrade reapplication. Reapply intentionally grants no purchase heal. Direct Hub starts bypass the title's pending full-heal request, so no later Hub fill covers the increased maximum.
+
+Fix:
+PlayerSpawner requests the existing pending Hub-load full heal once for its initial player, only in a Hub outside an active run. Existing no-pending and confirmed-restore paths remain the consumers. Gameplay compilation passed; Play Mode confirmation remains manual.
+
+Prevention:
+Keep initial Hub healing after upgrade registration and state restoration. Do not make upgrade reapply or maximum-health changes universally heal: these also execute during in-run scene travel. Repeated spawn calls must not grant repeated recovery.

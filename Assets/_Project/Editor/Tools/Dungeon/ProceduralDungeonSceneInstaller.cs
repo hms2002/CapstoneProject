@@ -1970,6 +1970,7 @@ public static class ProceduralDungeonSceneInstaller
             generationProfile);
         EditorUtility.SetDirty(builder);
         EditorUtility.SetDirty(generator);
+        RoomEnemyNavigationOverlayValidator.EnsureProceduralSceneOverlay(scene);
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
 
