@@ -244,7 +244,7 @@ MonoBehaviour:
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 1
-      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
+      monsterStageSet: {fileID: 11400000, guid: 0d1e794a28a84e4a8614e4826a98e6af, type: 2}
       localCell: {x: 6, y: 4}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0

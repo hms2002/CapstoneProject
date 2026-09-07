@@ -27,6 +27,8 @@ namespace UnityGAS
             }
 
             float attackSpeed = AbilityAttackSpeedResolver.ResolveFinalAttackSpeed(system);
+            float slotSpeedMultiplier = ResolveSlotSpeedMultiplier(settings, attackSpeed, slot);
+            attackSpeed *= slotSpeedMultiplier;
             if (attackSpeed <= 1.0001f)
             {
                 LogTiming(settings, system, slot, baseSeconds, attackSpeed, baseSeconds, "unchanged");
@@ -90,6 +92,22 @@ namespace UnityGAS
 
             cachedSettings = Resources.Load<MonsterStageHpScalingSettings>(SettingsResourcePath);
             return cachedSettings;
+        }
+
+        /// <summary>
+        /// 책임:
+        /// - 몬스터가 실제로 공격속도 보정을 받은 경우에만 슬롯별 추가 보정 배율을 적용한다.
+        /// - 플레이어나 특수 연출처럼 공격속도 1배인 호출자가 전역 몬스터 설정에 휘말리지 않게 보호한다.
+        /// </summary>
+        private static float ResolveSlotSpeedMultiplier(
+            MonsterStageHpScalingSettings settings,
+            float attackSpeed,
+            CombatTimingSlot slot)
+        {
+            if (settings == null || attackSpeed <= 1.0001f)
+                return 1f;
+
+            return Mathf.Max(0f, settings.ResolveTimingSlotSpeedMultiplier(slot));
         }
 
         /// <summary>

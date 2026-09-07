@@ -67,7 +67,12 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
             float warningSeconds = CombatTimingService.ScaleSeconds(system, context.WarningSeconds, CombatTimingSlot.AttackWarning);
             ShowWarning(context, warningSeconds);
             if (warningSeconds > 0f)
-                yield return AbilityTasks.WaitDelay(system, spec, warningSeconds);
+            {
+                yield return CommonMonsterCombatUtility.WaitAttackWarning(
+                    warningSeconds,
+                    () => cancelRequested || owner.IsDead || IsCancelled(spec),
+                    () => UpdateWarning(context, warningSeconds));
+            }
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
@@ -132,9 +137,25 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
         if (telegraphPresenter == null)
             return;
 
-        Vector3 center = (Vector3)context.StartPosition + (Vector3)(context.Direction.normalized * context.DashDistance * 0.5f);
+        telegraphPresenter.Show(CreateWarningSpec(context, warningSeconds));
+    }
+
+    /// <summary>밀림으로 몬스터 위치가 바뀐 동안에도 돌진 경고가 현재 공격 시작점을 따라가게 갱신합니다.</summary>
+    private void UpdateWarning(GoblinWarrior.ChargeContext context, float warningSeconds)
+    {
+        if (telegraphPresenter == null)
+            return;
+
+        telegraphPresenter.UpdateCurrentGeometry(CreateWarningSpec(context, warningSeconds));
+    }
+
+    /// <summary>돌진 방향은 고정하고, 시작점은 현재 몬스터 위치를 기준으로 경고 사각형을 만듭니다.</summary>
+    private AttackTelegraphSpec CreateWarningSpec(GoblinWarrior.ChargeContext context, float warningSeconds)
+    {
+        Vector3 currentStart = transform.position;
+        Vector3 center = currentStart + (Vector3)(context.Direction.normalized * context.DashDistance * 0.5f);
         float angle = Mathf.Atan2(context.Direction.y, context.Direction.x) * Mathf.Rad2Deg;
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
+        return AttackTelegraphSpec.CreateRectangle(
             center,
             new Vector2(context.DashDistance, context.WarningWidth),
             angle,
@@ -144,8 +165,6 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
                 telegraphWallClipLayers,
                 telegraphWallClipSampleCount,
                 telegraphWallClipSkinWidth);
-
-        telegraphPresenter.Show(spec);
     }
 
     private void HideWarning()
