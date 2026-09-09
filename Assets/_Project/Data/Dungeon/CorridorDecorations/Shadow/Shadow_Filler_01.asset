@@ -20,26 +20,18 @@ MonoBehaviour:
     underFloorTiles: []
     floorTiles:
     - localCell: {x: 0, y: 0}
-      tile: {fileID: 11400000, guid: da789bafa309b6a47b699cf170d3f259, type: 2}
+      tile: {fileID: 11400000, guid: 46fe5094a5deaa044bdb442a16f2fe4b, type: 2}
     - localCell: {x: 0, y: 1}
-      tile: {fileID: 11400000, guid: da789bafa309b6a47b699cf170d3f259, type: 2}
+      tile: {fileID: 11400000, guid: 46fe5094a5deaa044bdb442a16f2fe4b, type: 2}
     floorDetailTiles: []
     groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: -1}
       tile: {fileID: 11400000, guid: 83cf1c06b1eab384b9bccc342c1f51d9, type: 2}
-    - localCell: {x: 0, y: 0}
-      tile: {fileID: 11400000, guid: 3166c8c74e0936f4ea374d928f98c40f, type: 2}
-    - localCell: {x: 0, y: 1}
-      tile: {fileID: 11400000, guid: d8946e5b10e173b48b45b5cf9a40b184, type: 2}
     - localCell: {x: 0, y: 2}
       tile: {fileID: 11400000, guid: 3d9bf2cef47e88041bebd53c8d0133e8, type: 2}
     wallDetailTiles: []
     foregroundTiles: []
-    overlayFxTiles:
-    - localCell: {x: 0, y: 0}
-      tile: {fileID: 11400000, guid: cbc4b944d54093f4e90c7b19ea2532a8, type: 2}
-    - localCell: {x: 0, y: 1}
-      tile: {fileID: 11400000, guid: cbc4b944d54093f4e90c7b19ea2532a8, type: 2}
+    overlayFxTiles: []
     objectPlacements: []
     travelEndpointPlacements: []
