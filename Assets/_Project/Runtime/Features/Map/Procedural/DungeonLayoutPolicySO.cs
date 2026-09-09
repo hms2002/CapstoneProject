@@ -70,12 +70,14 @@ public sealed class RequiredCombatRoomRule
 /// 책임:
 /// - 탐색형 절차 던전의 권장 방 수, 보스 거리, 분기/순환 수와 필수 방 역할 수를 데이터로 보관한다.
 /// - DungeonGenerator와 제작 툴이 구체적인 그래프 생성 규칙을 하드코딩하지 않고 같은 기획 정책을 공유하게 한다.
+/// - 방 템플릿 선택 가중치 보정을 통해 소켓 적합도와 인접 중복 회피 성향을 조정한다.
 /// </summary>
 [CreateAssetMenu(fileName = "DungeonLayoutPolicy", menuName = "Gameplay/Dungeon/Layout Policy")]
 public sealed class DungeonLayoutPolicySO : ScriptableObject
 {
     private const float DefaultExactSocketDirectionMatchWeightMultiplier = 3f;
     private const float DefaultExtraSocketDirectionWeightMultiplier = 0.45f;
+    private const float DefaultAdjacentDuplicateTemplateWeightMultiplier = 0.05f;
 
     [Header("Map Scale")]
     [SerializeField, Min(2)] private int recommendedMinimumRoomCount = 12;
@@ -101,6 +103,10 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
     [SerializeField, Range(0.01f, 1f)]
     private float extraSocketDirectionWeightMultiplier =
         DefaultExtraSocketDirectionWeightMultiplier;
+    [Tooltip("이미 확정된 인접 방과 같은 RoomTemplateSO가 후보에 들어왔을 때 곱할 가중치입니다. 낮을수록 같은 방 연속 배치를 더 뒤로 미룹니다.")]
+    [SerializeField, Range(0.001f, 1f)]
+    private float adjacentDuplicateTemplateWeightMultiplier =
+        DefaultAdjacentDuplicateTemplateWeightMultiplier;
 
     [Header("Guaranteed Room Roles")]
     [SerializeField, Min(0)] private int treasureRoomCount = 1;
@@ -127,6 +133,10 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
         extraSocketDirectionWeightMultiplier > 0f
             ? Mathf.Clamp(extraSocketDirectionWeightMultiplier, 0.01f, 1f)
             : DefaultExtraSocketDirectionWeightMultiplier;
+    public float AdjacentDuplicateTemplateWeightMultiplier =>
+        adjacentDuplicateTemplateWeightMultiplier > 0f
+            ? Mathf.Clamp(adjacentDuplicateTemplateWeightMultiplier, 0.001f, 1f)
+            : DefaultAdjacentDuplicateTemplateWeightMultiplier;
     public int TreasureRoomCount => Mathf.Max(0, treasureRoomCount);
     public int EventRoomCount => Mathf.Max(0, eventRoomCount);
     public int ShopRoomCount => Mathf.Max(0, shopRoomCount);
@@ -173,6 +183,7 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
         maximumTopologyAttempts = Mathf.Max(1, topologyAttempts);
         exactSocketDirectionMatchWeightMultiplier = ExactSocketDirectionMatchWeightMultiplier;
         extraSocketDirectionWeightMultiplier = ExtraSocketDirectionWeightMultiplier;
+        adjacentDuplicateTemplateWeightMultiplier = AdjacentDuplicateTemplateWeightMultiplier;
         treasureRoomCount = Mathf.Max(0, requiredTreasureRooms);
         eventRoomCount = Mathf.Max(0, requiredEventRooms);
         shopRoomCount = Mathf.Max(0, requiredShopRooms);
@@ -216,6 +227,7 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
         maximumTopologyAttempts = Mathf.Max(1, maximumTopologyAttempts);
         exactSocketDirectionMatchWeightMultiplier = ExactSocketDirectionMatchWeightMultiplier;
         extraSocketDirectionWeightMultiplier = ExtraSocketDirectionWeightMultiplier;
+        adjacentDuplicateTemplateWeightMultiplier = AdjacentDuplicateTemplateWeightMultiplier;
         treasureRoomCount = Mathf.Max(0, treasureRoomCount);
         eventRoomCount = Mathf.Max(0, eventRoomCount);
         shopRoomCount = Mathf.Max(0, shopRoomCount);

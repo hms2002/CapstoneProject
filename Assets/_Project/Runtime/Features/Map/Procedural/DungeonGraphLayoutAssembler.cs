@@ -15,6 +15,7 @@ public sealed class DungeonGraphLayoutAssembler
 {
     private const double DefaultExactSocketDirectionMatchWeightMultiplier = 3d;
     private const double DefaultExtraSocketDirectionWeightMultiplier = 0.45d;
+    private const double DefaultAdjacentDuplicateTemplateWeightMultiplier = 0.05d;
 
     private static readonly RoomSocketDirection[] AllDirections =
     {
@@ -1237,15 +1238,13 @@ public sealed class DungeonGraphLayoutAssembler
                     requiredDirections,
                     guaranteedRoomTemplates,
                     templateCandidates);
-                RemoveAdjacentDuplicateCandidatesIfPossible(
-                    topology,
-                    selectedNodeIndex,
-                    templateCandidates);
                 RoomTemplateSO selectedTemplate = SelectWeightedTemplate(
                     templateCandidates,
                     requiredDirections,
-                    policy: null,
-                    random);
+                    null,
+                    random,
+                    topology,
+                    selectedNodeIndex);
                 if (selectedTemplate == null)
                 {
                     failure =
@@ -1517,15 +1516,13 @@ public sealed class DungeonGraphLayoutAssembler
                         candidates);
                 }
 
-                RemoveAdjacentDuplicateCandidatesIfPossible(
-                    topology,
-                    nodeIndex,
-                    candidates);
                 selectedTemplate = SelectWeightedTemplate(
                     candidates,
                     requiredDirections,
                     policy,
-                    random);
+                    random,
+                    topology,
+                    nodeIndex);
             }
 
             if (selectedTemplate == null)
@@ -1647,31 +1644,6 @@ public sealed class DungeonGraphLayoutAssembler
                 if (rule.Matches(candidates[candidateIndex]))
                     candidates.RemoveAt(candidateIndex);
             }
-        }
-    }
-
-    private static void RemoveAdjacentDuplicateCandidatesIfPossible(
-        TopologyDraft topology,
-        int nodeIndex,
-        List<RoomTemplateSO> candidates)
-    {
-        if (topology == null || candidates == null || candidates.Count <= 1)
-            return;
-
-        int remainingCandidateCount = 0;
-        for (int candidateIndex = 0; candidateIndex < candidates.Count; candidateIndex++)
-        {
-            if (!HasAdjacentSelectedTemplate(topology, nodeIndex, candidates[candidateIndex]))
-                remainingCandidateCount++;
-        }
-
-        if (remainingCandidateCount == 0)
-            return;
-
-        for (int candidateIndex = candidates.Count - 1; candidateIndex >= 0; candidateIndex--)
-        {
-            if (HasAdjacentSelectedTemplate(topology, nodeIndex, candidates[candidateIndex]))
-                candidates.RemoveAt(candidateIndex);
         }
     }
 
@@ -2407,29 +2379,65 @@ public sealed class DungeonGraphLayoutAssembler
         IReadOnlyList<RoomTemplateSO> candidates,
         IReadOnlyList<RoomSocketDirection> requiredDirections,
         DungeonLayoutPolicySO policy,
-        System.Random random)
+        System.Random random,
+        TopologyDraft topology = null,
+        int nodeIndex = -1)
     {
         double totalWeight = 0d;
         for (int i = 0; i < candidates.Count; i++)
-            totalWeight += CalculateSocketFitAdjustedWeight(
+            totalWeight += CalculateTemplateSelectionWeight(
                 candidates[i],
                 requiredDirections,
-                policy);
+                policy,
+                topology,
+                nodeIndex);
         if (totalWeight <= 0d)
             return null;
 
         double selectedWeight = random.NextDouble() * totalWeight;
         for (int i = 0; i < candidates.Count; i++)
         {
-            selectedWeight -= CalculateSocketFitAdjustedWeight(
+            selectedWeight -= CalculateTemplateSelectionWeight(
                 candidates[i],
                 requiredDirections,
-                policy);
+                policy,
+                topology,
+                nodeIndex);
             if (selectedWeight <= 0d)
                 return candidates[i];
         }
 
         return candidates.Count > 0 ? candidates[candidates.Count - 1] : null;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 방 템플릿의 기본 선택 가중치에 소켓 적합도와 인접 중복 회피 보정을 함께 적용한다.
+    /// - 인접 중복 후보를 제거하지 않고 낮은 우선순위로 남겨 생성 실패 가능성을 줄인다.
+    /// </summary>
+    private static double CalculateTemplateSelectionWeight(
+        RoomTemplateSO template,
+        IReadOnlyList<RoomSocketDirection> requiredDirections,
+        DungeonLayoutPolicySO policy,
+        TopologyDraft topology,
+        int nodeIndex)
+    {
+        double weight = CalculateSocketFitAdjustedWeight(
+            template,
+            requiredDirections,
+            policy);
+        if (weight <= 0d ||
+            topology == null ||
+            nodeIndex < 0 ||
+            !HasAdjacentSelectedTemplate(topology, nodeIndex, template))
+        {
+            return weight;
+        }
+
+        double adjacentDuplicateMultiplier = policy != null
+            ? policy.AdjacentDuplicateTemplateWeightMultiplier
+            : DefaultAdjacentDuplicateTemplateWeightMultiplier;
+        return weight * System.Math.Max(0.001d, adjacentDuplicateMultiplier);
     }
 
     private static double CalculateSocketFitAdjustedWeight(

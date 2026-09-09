@@ -10,6 +10,8 @@ using UnityEngine;
 /// </summary>
 public sealed class DungeonLayoutAssembler
 {
+    private const double AdjacentDuplicateTemplateWeightMultiplier = 0.05d;
+
     /// <summary>
     /// 책임:
     /// - 아직 다른 방과 연결되지 않은 배치 소켓의 방/소켓 인덱스, 폭, 월드 시작 셀을 추적한다.
@@ -152,7 +154,14 @@ public sealed class DungeonLayoutAssembler
         {
             int openSocketListIndex = random.Next(openSockets.Count);
             OpenSocket openSocket = openSockets[openSocketListIndex];
-            RoomTemplateSO candidate = SelectWeightedTemplate(candidates, random);
+            DungeonRoomPlacement sourcePlacement = result.GetRoom(openSocket.RoomPlacementId);
+            if (sourcePlacement == null)
+                continue;
+
+            RoomTemplateSO candidate = SelectWeightedTemplate(
+                candidates,
+                random,
+                sourcePlacement.Template);
             if (candidate == null)
                 return false;
 
@@ -166,10 +175,6 @@ public sealed class DungeonLayoutAssembler
 
             int candidateSocketIndex = compatibleSocketIndices[random.Next(compatibleSocketIndices.Count)];
             RoomSocketData candidateSocket = candidate.LayoutData.sockets[candidateSocketIndex];
-            DungeonRoomPlacement sourcePlacement = result.GetRoom(openSocket.RoomPlacementId);
-            if (sourcePlacement == null)
-                continue;
-
             RectInt candidateLocalBounds = ResolveLocalBounds(candidate.LayoutData);
             int preferredCorridorLength = ResolveCorridorLength(
                 sourcePlacement.WorldBounds.size,
@@ -338,11 +343,12 @@ public sealed class DungeonLayoutAssembler
 
     private static RoomTemplateSO SelectWeightedTemplate(
         List<RoomTemplateSO> candidates,
-        System.Random random)
+        System.Random random,
+        RoomTemplateSO adjacentTemplate = null)
     {
         double totalWeight = 0d;
         for (int i = 0; i < candidates.Count; i++)
-            totalWeight += candidates[i].LayoutData.selectionWeight;
+            totalWeight += CalculateTemplateSelectionWeight(candidates[i], adjacentTemplate);
 
         if (totalWeight <= 0d)
             return null;
@@ -350,12 +356,49 @@ public sealed class DungeonLayoutAssembler
         double selectedWeight = random.NextDouble() * totalWeight;
         for (int i = 0; i < candidates.Count; i++)
         {
-            selectedWeight -= candidates[i].LayoutData.selectionWeight;
+            selectedWeight -= CalculateTemplateSelectionWeight(candidates[i], adjacentTemplate);
             if (selectedWeight <= 0d)
                 return candidates[i];
         }
 
         return candidates[candidates.Count - 1];
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - legacy 소켓 확장 방식에서도 직전 연결 방과 같은 템플릿의 선택 우선순위를 낮춘다.
+    /// - 후보를 제거하지 않아 작은 라이브러리나 제한된 소켓 조합에서도 생성 실패를 늘리지 않는다.
+    /// </summary>
+    private static double CalculateTemplateSelectionWeight(
+        RoomTemplateSO candidate,
+        RoomTemplateSO adjacentTemplate)
+    {
+        if (candidate == null)
+            return 0d;
+
+        double weight = candidate.LayoutData.selectionWeight;
+        if (weight <= 0d ||
+            adjacentTemplate == null ||
+            !IsSameRoomTemplate(candidate, adjacentTemplate))
+        {
+            return weight;
+        }
+
+        return weight * AdjacentDuplicateTemplateWeightMultiplier;
+    }
+
+    private static bool IsSameRoomTemplate(RoomTemplateSO first, RoomTemplateSO second)
+    {
+        if (first == null || second == null)
+            return false;
+
+        if (first == second)
+            return true;
+
+        string firstId = first.LayoutData.roomId;
+        string secondId = second.LayoutData.roomId;
+        return !string.IsNullOrWhiteSpace(firstId) &&
+               string.Equals(firstId, secondId, StringComparison.Ordinal);
     }
 
     private static bool OverlapsPlacedRoom(

@@ -35,6 +35,25 @@ public sealed class MonsterRoomSpawnProfileSO : ScriptableObject
 
     /// <summary>
     /// 책임:
+    /// - 스폰 테이블이 고른 실제 몬스터 프리팹과 그 출처에서 계산된 추가 HP 배율을 함께 전달한다.
+    /// - 고정 프리팹과 단계형 공통 몬스터를 같은 스폰 플랜 항목으로 다루게 한다.
+    /// </summary>
+    public readonly struct ResolvedMonsterEntry
+    {
+        public readonly GameObject MonsterPrefab;
+        public readonly float Weight;
+        public readonly float HpMultiplier;
+
+        public ResolvedMonsterEntry(GameObject monsterPrefab, float weight, float hpMultiplier = 1f)
+        {
+            MonsterPrefab = monsterPrefab;
+            Weight = weight;
+            HpMultiplier = Mathf.Max(0f, hpMultiplier);
+        }
+    }
+
+    /// <summary>
+    /// 책임:
     /// - 하나의 방 스폰 규칙 테이블을 표현한다.
     /// - 총 스폰 수와 가중치 엔트리 목록을 함께 보관한다.
     /// </summary>
@@ -84,20 +103,20 @@ public sealed class MonsterRoomSpawnProfileSO : ScriptableObject
         /// - 스폰 수와 엔트리 비율을 기준으로 이번 방에서 사용할 몬스터 프리팹 배치를 생성한다.
         /// - weight는 개별 랜덤 확률이 아니라 전체 구성 비율로 해석한다.
         /// </summary>
-        public bool TryBuildSpawnPlan(List<GameObject> results, int stageIndex)
+        public bool TryBuildSpawnPlan(List<ResolvedMonsterEntry> results, int stageIndex)
         {
             if (results == null)
                 return false;
 
             results.Clear();
 
-            List<WeightedMonsterEntry> validEntries = BuildResolvedEntries(stageIndex);
+            List<ResolvedMonsterEntry> validEntries = BuildResolvedEntries(stageIndex);
 
             float totalWeight = 0f;
             for (int i = 0; i < validEntries.Count; i++)
             {
-                WeightedMonsterEntry entry = validEntries[i];
-                totalWeight += entry.weight;
+                ResolvedMonsterEntry entry = validEntries[i];
+                totalWeight += entry.Weight;
             }
 
             if (SpawnCount <= 0 || validEntries.Count == 0 || totalWeight <= 0f)
@@ -109,7 +128,7 @@ public sealed class MonsterRoomSpawnProfileSO : ScriptableObject
 
             for (int i = 0; i < validEntries.Count; i++)
             {
-                float rawCount = (validEntries[i].weight / totalWeight) * SpawnCount;
+                float rawCount = (validEntries[i].Weight / totalWeight) * SpawnCount;
                 int baseCount = Mathf.FloorToInt(rawCount);
                 assignedCounts[i] = baseCount;
                 remainders[i] = rawCount - baseCount;
@@ -131,7 +150,7 @@ public sealed class MonsterRoomSpawnProfileSO : ScriptableObject
             for (int i = 0; i < validEntries.Count; i++)
             {
                 for (int j = 0; j < assignedCounts[i]; j++)
-                    results.Add(validEntries[i].monsterPrefab);
+                    results.Add(validEntries[i]);
             }
 
             Shuffle(results);
@@ -143,9 +162,9 @@ public sealed class MonsterRoomSpawnProfileSO : ScriptableObject
         /// - 고정 프리팹 엔트리와 stage 기반 공통 몬스터 엔트리를 실제 프리팹 엔트리 목록으로 합친다.
         /// - 이후 스폰 수 배분 로직은 기존 WeightedMonsterEntry 흐름을 그대로 재사용한다.
         /// </summary>
-        private List<WeightedMonsterEntry> BuildResolvedEntries(int stageIndex)
+        private List<ResolvedMonsterEntry> BuildResolvedEntries(int stageIndex)
         {
-            var validEntries = new List<WeightedMonsterEntry>();
+            var validEntries = new List<ResolvedMonsterEntry>();
 
             if (entries != null)
             {
@@ -155,7 +174,9 @@ public sealed class MonsterRoomSpawnProfileSO : ScriptableObject
                     if (entry.monsterPrefab == null || entry.weight <= 0f)
                         continue;
 
-                    validEntries.Add(entry);
+                    validEntries.Add(new ResolvedMonsterEntry(
+                        entry.monsterPrefab,
+                        entry.weight));
                 }
             }
 
@@ -167,14 +188,18 @@ public sealed class MonsterRoomSpawnProfileSO : ScriptableObject
                     if (commonEntry.monsterSet == null || commonEntry.weight <= 0f)
                         continue;
 
-                    if (!commonEntry.monsterSet.TryResolveMonsterPrefab(stageIndex, out GameObject resolvedPrefab))
-                        continue;
-
-                    validEntries.Add(new WeightedMonsterEntry
+                    if (!commonEntry.monsterSet.TryResolveMonsterPrefab(
+                        stageIndex,
+                        out GameObject resolvedPrefab,
+                        out float hpMultiplier))
                     {
-                        monsterPrefab = resolvedPrefab,
-                        weight = commonEntry.weight
-                    });
+                        continue;
+                    }
+
+                    validEntries.Add(new ResolvedMonsterEntry(
+                        resolvedPrefab,
+                        commonEntry.weight,
+                        hpMultiplier));
                 }
             }
 
