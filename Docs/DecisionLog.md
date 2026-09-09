@@ -7,6 +7,11 @@ last_reviewed: 2026-06-01
 
 # Decision Log
 
+## 2026-09-07 - Apprentice Sword Attack-to-Skill Input
+
+User-approved policy: Q interrupts the basic attack immediately. Right-click held before the hitbox spawns waits for that spawn; after spawn it cancels recovery and begins charging. Releasing right-click before that boundary cancels the request. Charge has no separate 0.61-second cast delay. Other weapons retain their existing input policy. Normal ASC cancellation cleanup must finish before the next skill activates.
+
+
 ## 2026-09-05 - Heart HUD Six-Column Minimum Size
 
 - Current user instruction overrides the older four-heart minimum wording in the Notion UI change page: hearts shrink until six slots, then keep that size through twelve slots, filling the first six-column row before the second.

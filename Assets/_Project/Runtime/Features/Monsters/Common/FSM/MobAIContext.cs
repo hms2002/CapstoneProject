@@ -24,13 +24,21 @@ public sealed class MobAIContext
     public IMobPatternRunner[] PatternRunnerTargets { get; }
     public IMobPresentationCleanup[] PresentationCleanupTargets { get; }
 
+    private readonly float attackThinkIntervalSeconds;
+    private readonly float attackThinkInitialSpreadSeconds;
+    private readonly float attackThinkJitterSeconds;
+    private float nextAttackThinkTime;
+
     public MobAIContext(
         Mob owner,
         IEnemyChaseIntent chaseIntent,
         IMobAbilityBridge abilityBridge,
         IMobAttackDecisionSource attackDecisionSource,
         IMobPatternRunner[] patternRunnerTargets,
-        IMobPresentationCleanup[] presentationCleanupTargets)
+        IMobPresentationCleanup[] presentationCleanupTargets,
+        float attackThinkIntervalSeconds,
+        float attackThinkInitialSpreadSeconds,
+        float attackThinkJitterSeconds)
     {
         Owner = owner;
         ChaseIntent = chaseIntent;
@@ -38,6 +46,27 @@ public sealed class MobAIContext
         AttackDecisionSource = attackDecisionSource;
         PatternRunnerTargets = patternRunnerTargets;
         PresentationCleanupTargets = presentationCleanupTargets;
+        this.attackThinkIntervalSeconds = Mathf.Max(0f, attackThinkIntervalSeconds);
+        this.attackThinkInitialSpreadSeconds = Mathf.Max(0f, attackThinkInitialSpreadSeconds);
+        this.attackThinkJitterSeconds = Mathf.Max(0f, attackThinkJitterSeconds);
+        nextAttackThinkTime = Time.time + Random.Range(0f, this.attackThinkInitialSpreadSeconds);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 공격 시작 판단처럼 비싼 AI 결정을 일정 간격으로 분산 실행해 한 프레임 몰림을 줄인다.
+    /// - 사망/그로기/타겟 상실 같은 즉시 반응은 상태 Tick에 남기고, 공격 요청 생성만 게이트한다.
+    /// </summary>
+    public bool ConsumeAttackThinkBudget()
+    {
+        if (attackThinkIntervalSeconds <= 0f)
+            return true;
+
+        if (Time.time < nextAttackThinkTime)
+            return false;
+
+        nextAttackThinkTime = Time.time + attackThinkIntervalSeconds + Random.Range(0f, attackThinkJitterSeconds);
+        return true;
     }
 
     public bool HasDetectedTarget()

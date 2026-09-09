@@ -18,7 +18,7 @@ public class ShadowServant : Mob, IMobAttackDecisionSource
     [SerializeField] private ShadowServantAttackRunner attackRunner;
     [Header("FSM")]
     [Tooltip("공격이 끝난 뒤 다음 상태 전이를 잠깐 늦춰 전투 리듬을 만드는 AI 후딜 시간입니다.")]
-    [SerializeField] [Min(0f)] private float postAttackRecoverSeconds = 0.35f;
+    [SerializeField] [Min(0f)] private float postAttackRecoverSeconds = 1f;
 
     private bool hasLoggedInvalidConfig;
     private IMobAbilityHelperAccess helperAccess;
@@ -66,6 +66,16 @@ public class ShadowServant : Mob, IMobAttackDecisionSource
     public override bool CanUseChaseMovement()
     {
         return base.CanUseChaseMovement() && (attackRunner == null || !attackRunner.IsRunning);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - ShadowServant의 공격 후 대기 시간은 전용 필드가 최종 체감값이 되게 한다.
+    /// - 공통 Mob 후딜 보너스가 더해져 인스펙터 값보다 길어지는 일을 막는다.
+    /// </summary>
+    public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
+    {
+        return Mathf.Max(0f, scaledRecoverSeconds);
     }
 
     protected override void OnDeathStarted()

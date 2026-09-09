@@ -1,54 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "d83df91ce0794b34b22095a56b94f89b",
-            "startedUtc": "2026-09-02T06:49:23.1464577Z",
-            "endedUtc": "2026-09-02T06:49:23.7431949Z",
-            "entries": []
-        },
-        {
-            "sessionId": "5c5047ec96b24bb78c7317bd3c4a2171",
-            "startedUtc": "2026-09-02T13:16:24.5980744Z",
-            "endedUtc": "2026-09-02T13:16:24.9011339Z",
-            "entries": []
-        },
-        {
-            "sessionId": "59a7172d1204494ca47d3605fcf15d7f",
-            "startedUtc": "2026-09-02T13:17:23.7627631Z",
-            "endedUtc": "2026-09-02T13:17:25.5444744Z",
-            "entries": []
-        },
-        {
-            "sessionId": "c395c2aabf084ddfa49897e40a8d393c",
-            "startedUtc": "2026-09-02T13:18:12.6494018Z",
-            "endedUtc": "2026-09-02T13:18:12.9830358Z",
-            "entries": []
-        },
-        {
-            "sessionId": "01ecf0bb59374311b77c075d407b9926",
-            "startedUtc": "2026-09-02T13:20:45.2985931Z",
-            "endedUtc": "2026-09-02T13:20:45.6352429Z",
-            "entries": []
-        },
-        {
-            "sessionId": "a829c93cc65d4415b0c7f008bf713b8e",
-            "startedUtc": "2026-09-02T13:21:29.8550359Z",
-            "endedUtc": "2026-09-02T13:21:30.9779528Z",
-            "entries": []
-        },
-        {
-            "sessionId": "486d151fc0774b1a8a2fe5ead41ac3d3",
-            "startedUtc": "2026-09-02T13:23:54.6828691Z",
-            "endedUtc": "2026-09-02T13:23:55.0102479Z",
-            "entries": []
-        },
-        {
-            "sessionId": "4913df4df2bb436e9584163f053588a1",
-            "startedUtc": "2026-09-02T13:31:44.6912566Z",
-            "endedUtc": "2026-09-02T13:31:45.6962063Z",
-            "entries": []
-        },
-        {
             "sessionId": "9d7737b176e14136857549f62c4e07a8",
             "startedUtc": "2026-09-02T13:32:59.4421153Z",
             "endedUtc": "2026-09-02T13:33:00.4623687Z",
@@ -140,6 +92,98 @@
             "sessionId": "f4f00d4c88f1466f80f0b52ea7875f61",
             "startedUtc": "2026-09-05T23:32:36.3036897Z",
             "endedUtc": "2026-09-05T23:32:37.3081204Z",
+            "entries": []
+        },
+        {
+            "sessionId": "cc058afa709a440abc100fd905afab3c",
+            "startedUtc": "2026-09-07T04:06:54.8941310Z",
+            "endedUtc": "2026-09-07T04:07:16.2360230Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 3,
+                    "coldSpawns": 2,
+                    "firstSeenSeconds": 16.54925537109375,
+                    "lastSeenSeconds": 21.33313751220703,
+                    "firstSceneName": "ProceduralShadowCorridor",
+                    "lastSceneName": "ProceduralShadowCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "a79aae9e85744d3f8693be83a56b9297",
+            "startedUtc": "2026-09-07T04:13:31.4159320Z",
+            "endedUtc": "2026-09-07T04:13:32.4202837Z",
+            "entries": []
+        },
+        {
+            "sessionId": "21f65757b81a4c1a8079b29d7868f4c5",
+            "startedUtc": "2026-09-07T04:16:31.8493648Z",
+            "endedUtc": "2026-09-07T04:17:54.9531961Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 11,
+                    "coldSpawns": 10,
+                    "firstSeenSeconds": 17.309240341186525,
+                    "lastSeenSeconds": 83.09126281738281,
+                    "firstSceneName": "ProceduralShadowCorridor",
+                    "lastSceneName": "ProceduralShadowCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "4b30c90c361849d8b3e0f5345b3eb9bc",
+            "startedUtc": "2026-09-07T04:26:09.8216631Z",
+            "endedUtc": "2026-09-07T04:29:16.0965931Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 27,
+                    "coldSpawns": 27,
+                    "firstSeenSeconds": 8.415212631225586,
+                    "lastSeenSeconds": 186.26480102539063,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ProceduralShadowCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "e7aab55bd4c94c31ac43f654bd3b7d58",
+            "startedUtc": "2026-09-07T04:51:32.6485804Z",
+            "endedUtc": "2026-09-07T04:52:52.6994707Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 14,
+                    "coldSpawns": 8,
+                    "firstSeenSeconds": 16.484357833862306,
+                    "lastSeenSeconds": 80.03965759277344,
+                    "firstSceneName": "ProceduralShadowCorridor",
+                    "lastSceneName": "ProceduralShadowCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "ca201a64608f4643bc1ad8ca769121e2",
+            "startedUtc": "2026-09-07T08:16:12.8243259Z",
+            "endedUtc": "2026-09-07T08:16:13.8289418Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a06c584dd0934d73b3ab777ae5c36d5d",
+            "startedUtc": "2026-09-09T12:38:36.5050001Z",
+            "endedUtc": "2026-09-09T12:38:37.5111723Z",
+            "entries": []
+        },
+        {
+            "sessionId": "137dbe24717d405a8d719eed1089d729",
+            "startedUtc": "2026-09-09T12:44:42.6651622Z",
+            "endedUtc": "2026-09-09T12:44:43.6720320Z",
             "entries": []
         }
     ]

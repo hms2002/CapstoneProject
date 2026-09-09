@@ -112,6 +112,8 @@ public static class RoomAuthoringToolValidator
                         corridorLengthPerRoomCell: 0f,
                         corridorLengthVariation: 0,
                         guaranteedRoomTemplates: null,
+                        runMapEventProfile: null,
+                        runMapEventPreviewVisitOrder: 1,
                         corridorDecorationProfile: null));
             if (!previewResult.WasBuilt ||
                 !previewResult.IsComplete ||

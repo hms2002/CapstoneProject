@@ -8,11 +8,14 @@ public sealed class AbilityLogic_ApprenticeHeroSwordAttack : AbilityLogic
 {
     private const string KeyComboIndex = "ApprenticeHeroSword.Attack.ComboIndex";
     private const string KeyComboExpire = "ApprenticeHeroSword.Attack.ComboExpire";
+    public const string HitSpawnedKey = "ApprenticeHeroSword.Attack.HitSpawned";
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
         if (system == null || spec?.Definition == null)
             yield break;
+
+        spec.SetInt(HitSpawnedKey, 0);
 
         ApprenticeHeroSwordAttackData data = spec.Definition.sourceObject as ApprenticeHeroSwordAttackData;
         if (data == null || data.Combo == null)
@@ -94,6 +97,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordAttack : AbilityLogic
             center,
             direction,
             step.sideSign < 0);
+        spec.SetInt(HitSpawnedKey, 1);
     }
 
     private static int ResolveComboIndex(AbilitySpec spec, ApprenticeHeroSwordAttackComboConfig combo)

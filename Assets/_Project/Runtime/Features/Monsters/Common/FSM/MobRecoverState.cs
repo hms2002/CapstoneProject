@@ -9,6 +9,7 @@ public sealed class MobRecoverState : IMobState
 {
     private readonly float recoverSeconds;
     private float recoverEndTime;
+    private bool hasStartedRetreat;
 
     public MobRecoverState(float recoverSeconds)
     {
@@ -24,7 +25,12 @@ public sealed class MobRecoverState : IMobState
             abilitySystem,
             recoverSeconds,
             UnityGAS.CombatTimingSlot.AttackRecovery);
+        scaledRecoverSeconds = context != null && context.Owner != null
+            ? context.Owner.ResolvePostAttackRecoverSeconds(scaledRecoverSeconds)
+            : scaledRecoverSeconds;
         recoverEndTime = Time.time + scaledRecoverSeconds;
+        context?.Owner?.BeginPostAttackRecoveryRetreat(recoverEndTime);
+        hasStartedRetreat = true;
     }
 
     public void Tick(MobStateMachine stateMachine, MobAIContext context)
@@ -35,6 +41,8 @@ public sealed class MobRecoverState : IMobState
         if (MobStateTransitionUtility.TryHandleStaggerTransition(stateMachine, context))
             return;
 
+        context.Owner.TickPostAttackRecoveryRetreat();
+
         if (Time.time < recoverEndTime)
             return;
 
@@ -43,5 +51,7 @@ public sealed class MobRecoverState : IMobState
 
     public void Exit(MobStateMachine stateMachine, MobAIContext context)
     {
+        if (hasStartedRetreat)
+            context?.Owner?.StopPostAttackRecoveryRetreat();
     }
 }

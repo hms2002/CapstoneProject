@@ -81,6 +81,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     [SerializeField] private int previewCorridorLengthVariation = 2;
     [SerializeField] private TileBase previewCorridorFloorTile;
     [SerializeField] private TileBase previewCorridorWallTile;
+    [SerializeField] private bool previewIncludeRunMapEvents = true;
+    [SerializeField] private int previewRunMapEventVisitOrder = 1;
     [SerializeField] private bool previewAdvancedSettings;
     private Vector2 scroll;
     private double nextAutomaticValidationTime;
@@ -1530,6 +1532,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                     : "아직 활성 Build Settings 씬에서 이 프로필을 참조하지 않습니다. 보스 테마 생성 프로필 설치를 먼저 실행하세요.",
                 sceneReferenceCount > 0 ? MessageType.Info : MessageType.Warning);
             DrawGuaranteedRoomTemplates(previewGenerationProfile, selectedLibrary);
+            DrawRunMapEventPreviewSettings(previewGenerationProfile);
             EditorGUILayout.LabelField(
                 "복도 장식",
                 previewGenerationProfile.CorridorDecorationProfile != null
@@ -1730,6 +1733,12 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             previewGenerationProfile.RoomLibrary == selectedLibrary
                 ? previewGenerationProfile.GuaranteedRoomTemplates
                 : null,
+            previewIncludeRunMapEvents &&
+            previewGenerationProfile != null &&
+            previewGenerationProfile.RoomLibrary == selectedLibrary
+                ? previewGenerationProfile.RunMapEventProfile
+                : null,
+            previewRunMapEventVisitOrder,
             previewGenerationProfile != null &&
             previewGenerationProfile.RoomLibrary == selectedLibrary
                 ? previewGenerationProfile.CorridorDecorationProfile
@@ -1809,6 +1818,47 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         EditorGUIUtility.PingObject(previewGenerationProfile);
         previewStatusMessage = $"테마 생성 프로필을 준비했습니다: {previewGenerationProfile.name}";
         previewStatusType = MessageType.Info;
+    }
+
+    /// <summary>
+    /// 책임 : Room Piece 미리보기에서 런 이벤트룸 포함 여부와 방문 순서 조건을 조절하게 한다.
+    /// </summary>
+    private void DrawRunMapEventPreviewSettings(DungeonGenerationProfileSO profile)
+    {
+        if (profile == null)
+            return;
+
+        RunMapEventGenerationProfileSO runMapEventProfile = profile.RunMapEventProfile;
+        EditorGUILayout.LabelField(
+            "런 이벤트",
+            runMapEventProfile != null ? runMapEventProfile.name : "미설정");
+        using (new EditorGUI.DisabledScope(runMapEventProfile == null))
+        {
+            previewIncludeRunMapEvents = EditorGUILayout.ToggleLeft(
+                "미리보기에도 이벤트룸 포함",
+                previewIncludeRunMapEvents);
+            int maxVisitOrder = runMapEventProfile != null
+                ? runMapEventProfile.PlannedBossRouteVisitCount
+                : 1;
+            previewRunMapEventVisitOrder = EditorGUILayout.IntSlider(
+                "미리보기 방문 순서",
+                Mathf.Clamp(previewRunMapEventVisitOrder, 1, maxVisitOrder),
+                1,
+                maxVisitOrder);
+        }
+
+        if (runMapEventProfile == null)
+        {
+            EditorGUILayout.HelpBox(
+                "생성 프로필에 Run Map Event Profile이 없어서 이벤트룸을 미리보기 후보에 넣을 수 없습니다.",
+                MessageType.None);
+        }
+        else if (previewIncludeRunMapEvents)
+        {
+            EditorGUILayout.HelpBox(
+                "실제 런 상태를 저장하지 않고, 선택한 방문 순서 기준으로 시작 이벤트룸만 보장 방 후보에 섞습니다.",
+                MessageType.None);
+        }
     }
 
     /// <summary>

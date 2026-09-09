@@ -258,7 +258,7 @@ GameObject:
   - component: {fileID: 7432201971672798891}
   - component: {fileID: 7377708364023413958}
   m_Layer: 5
-  m_Name: BG_Ect
+  m_Name: BG_SkillName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -547,7 +547,7 @@ GameObject:
   - component: {fileID: 5701978740092987266}
   - component: {fileID: 3003500017203029283}
   m_Layer: 5
-  m_Name: Text_Ect
+  m_Name: Text_SkillName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -859,9 +859,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3246091312989032638}
+  - {fileID: 3088278775733103821}
   - {fileID: 5792709515472642424}
   - {fileID: 240366741617823127}
-  - {fileID: 3088278775733103821}
   m_Father: {fileID: 4810308294019387002}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1280,11 +1280,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cb5680b7b9a8a449ae91f9a9bca73dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  titleText: {fileID: 0}
+  titleText: {fileID: 3003500017203029283}
   iconImage: {fileID: 2809357481012271}
   inputHintImage: {fileID: 2017433256897915187}
   cooldownText: {fileID: 8448772824128204051}
-  extraMetaText: {fileID: 3003500017203029283}
+  extraMetaText: {fileID: 0}
   inputHintSprites:
   - inputHint: Q
     sprite: {fileID: -7925945275110868319, guid: 3cc7769716d9efa46a3c163d7375237e, type: 3}

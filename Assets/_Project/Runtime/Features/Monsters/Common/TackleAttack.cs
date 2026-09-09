@@ -360,6 +360,35 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     {
         if (telegraphPresenter == null) return;
 
+        telegraphPresenter.Show(CreateTelegraphSpec(context, duration, style));
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 태클 준비 중 밀림으로 변한 현재 위치를 공격 시작점과 경고 사각형에 함께 반영한다.
+    /// - 방향은 준비 시점에 확정된 값을 유지해 플레이어 회피 방향에 따라 공격 방향이 흔들리지 않게 한다.
+    /// </summary>
+    public TackleContext UpdateTelegraphFromCurrentPosition(TackleContext context, float duration, AttackTelegraphStyle style = null)
+    {
+        context.StartPos = transform.position;
+        tackleContext = context;
+        hasContext = true;
+
+        if (telegraphPresenter == null)
+            return context;
+
+        AttackTelegraphSpec spec = CreateTelegraphSpec(context, duration, style);
+        if (telegraphPresenter.HasActiveTelegraph)
+            telegraphPresenter.UpdateCurrentGeometry(spec);
+        else
+            telegraphPresenter.Show(spec);
+
+        return context;
+    }
+
+    /// <summary>태클 경고용 사각형 spec을 몬스터별 표시 정책까지 반영해 구성합니다.</summary>
+    private AttackTelegraphSpec CreateTelegraphSpec(TackleContext context, float duration, AttackTelegraphStyle style)
+    {
         float length = Mathf.Max(0f, context.LungeDistance);
         Vector3 center = context.StartPos + context.Direction * (length * 0.5f);
         float angle = Mathf.Atan2(context.Direction.y, context.Direction.x) * Mathf.Rad2Deg;
@@ -371,8 +400,7 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
             duration,
             style);
 
-        spec = ApplyMonsterSpecificTelegraphPresentation(spec);
-        telegraphPresenter.Show(spec);
+        return ApplyMonsterSpecificTelegraphPresentation(spec);
     }
 
     /// <summary>몬스터별 경고선 표시 정책을 적용합니다.</summary>

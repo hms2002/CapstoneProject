@@ -287,9 +287,14 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
             owner.LockFacingForChargeStep(context.Target);
             CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.AttackReady);
             float warningSeconds = CombatTimingService.ScaleSeconds(this, step.warningSeconds, CombatTimingSlot.AttackWarning);
-            ShowWarning(transform.position, direction, step, warningSeconds);
+            ShowWarning(direction, step, warningSeconds);
             if (warningSeconds > 0f)
-                yield return AbilityTasks.WaitDelay(system, spec, warningSeconds);
+            {
+                yield return CommonMonsterCombatUtility.WaitAttackWarning(
+                    warningSeconds,
+                    () => cancelRequested || owner.IsDead || IsCancelled(spec),
+                    () => UpdateWarning(direction, step, warningSeconds));
+            }
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
@@ -337,14 +342,29 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
             CommonMonsterCombatUtility.TryApplyCircleDamage(transform.position, step.warningWidth, owner.ChargeLogic.TargetLayers, gameObject, payload);
     }
 
-    private void ShowWarning(Vector2 start, Vector2 direction, ArcaneMeleeGolem.ChargeStep step, float warningSeconds)
+    private void ShowWarning(Vector2 direction, ArcaneMeleeGolem.ChargeStep step, float warningSeconds)
     {
         if (telegraphPresenter == null)
             return;
 
-        Vector3 center = (Vector3)start + (Vector3)(direction.normalized * step.dashDistance * 0.5f);
+        telegraphPresenter.Show(CreateWarningSpec(direction, step, warningSeconds));
+    }
+
+    /// <summary>준비 중 밀림이 발생해도 돌진 경고의 시작점을 현재 몬스터 위치로 유지합니다.</summary>
+    private void UpdateWarning(Vector2 direction, ArcaneMeleeGolem.ChargeStep step, float warningSeconds)
+    {
+        if (telegraphPresenter == null)
+            return;
+
+        telegraphPresenter.UpdateCurrentGeometry(CreateWarningSpec(direction, step, warningSeconds));
+    }
+
+    /// <summary>확정된 돌진 방향과 현재 몬스터 위치로 마도 근접 골렘 경고 사각형을 구성합니다.</summary>
+    private AttackTelegraphSpec CreateWarningSpec(Vector2 direction, ArcaneMeleeGolem.ChargeStep step, float warningSeconds)
+    {
+        Vector3 center = transform.position + (Vector3)(direction.normalized * step.dashDistance * 0.5f);
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
+        return AttackTelegraphSpec.CreateRectangle(
             center,
             new Vector2(step.dashDistance, step.warningWidth),
             angle,
@@ -354,8 +374,6 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
                 telegraphWallClipLayers,
                 telegraphWallClipSampleCount,
                 telegraphWallClipSkinWidth);
-
-        telegraphPresenter.Show(spec);
     }
 
     private void HideWarning()

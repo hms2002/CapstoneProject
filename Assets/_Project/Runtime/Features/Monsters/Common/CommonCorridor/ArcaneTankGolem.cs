@@ -91,6 +91,21 @@ public sealed class ArcaneTankGolem : Mob, IMobAttackDecisionSource
         return base.CanUseChaseMovement() && (runner == null || !runner.IsRunning);
     }
 
+    public override bool ShouldUsePostAttackRecoverState(float baseRecoverSeconds)
+    {
+        return baseRecoverSeconds > 0f;
+    }
+
+    public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
+    {
+        return Mathf.Max(0f, scaledRecoverSeconds);
+    }
+
+    public override bool CanUsePostAttackRecoveryRetreat()
+    {
+        return false;
+    }
+
     public bool TryBuildAttackRequest(out MobAttackRequest request)
     {
         request = default;
@@ -302,7 +317,7 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
                 yield break;
 
             CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.Jump);
-            PlaySound(JumpSound, context.StartPosition);
+            PlaySound(JumpSound, transform.position);
             yield return JumpToLanding(context, spec);
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
@@ -417,7 +432,7 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
 
     private IEnumerator JumpToLanding(ArcaneTankGolem.SlamContext context, AbilitySpec spec)
     {
-        Vector3 start = context.StartPosition;
+        Vector3 start = transform.position;
         Vector3 end = context.LandingPosition;
         float duration = Mathf.Max(0.01f, context.JumpSeconds);
         float elapsed = 0f;

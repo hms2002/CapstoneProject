@@ -48,6 +48,36 @@ public static class RunMapEventGenerationResolver
         return plan;
     }
 
+    /// <summary>
+    /// 책임 : 에디터 미리보기에서 실제 런 세션을 변경하지 않고 시작 이벤트룸 후보만 보장 방 목록에 섞는다.
+    /// </summary>
+    public static RunMapEventGenerationPlan CreatePreviewPlan(
+        RunMapEventGenerationProfileSO profile,
+        IReadOnlyList<RoomTemplateSO> baseGuaranteedRoomTemplates,
+        int seed,
+        int bossRouteVisitOrder)
+    {
+        var plan = new RunMapEventGenerationPlan(
+            data: null,
+            ResolveBaseGuaranteedRooms(baseGuaranteedRoomTemplates));
+
+        if (profile == null)
+            return plan;
+
+        int previewVisitOrder = Mathf.Clamp(
+            bossRouteVisitOrder,
+            1,
+            profile.PlannedBossRouteVisitCount);
+        AddStartEventRooms(
+            profile,
+            plan,
+            seed,
+            hasRouteContext: true,
+            nextVisitOrder: previewVisitOrder);
+
+        return plan;
+    }
+
     private static void AddPendingFollowUpRooms(
         RunMapEventGenerationProfileSO profile,
         RunMapEventGenerationPlan plan,

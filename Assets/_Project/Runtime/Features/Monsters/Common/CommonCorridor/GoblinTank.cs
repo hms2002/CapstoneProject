@@ -65,6 +65,21 @@ public sealed class GoblinTank : Mob, IMobAttackDecisionSource
         return base.CanUseChaseMovement() && (runner == null || !runner.IsRunning);
     }
 
+    public override bool ShouldUsePostAttackRecoverState(float baseRecoverSeconds)
+    {
+        return baseRecoverSeconds > 0f;
+    }
+
+    public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
+    {
+        return Mathf.Max(0f, scaledRecoverSeconds);
+    }
+
+    public override bool CanUsePostAttackRecoveryRetreat()
+    {
+        return false;
+    }
+
     public bool TryBuildAttackRequest(out MobAttackRequest request)
     {
         request = default;
@@ -206,7 +221,12 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
             float warningSeconds = CombatTimingService.ScaleSeconds(system, context.WarningSeconds, CombatTimingSlot.AttackWarning);
             ShowWarning(context, warningSeconds);
             if (warningSeconds > 0f)
-                yield return AbilityTasks.WaitDelay(system, spec, warningSeconds);
+            {
+                yield return CommonMonsterCombatUtility.WaitAttackWarning(
+                    warningSeconds,
+                    () => cancelRequested || owner.IsDead || IsCancelled(spec),
+                    () => UpdateWarning(context, warningSeconds));
+            }
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
@@ -220,10 +240,11 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
 
-            PlaySlamSound(context.Center);
-            SpawnImpactEffect(context.Center, context.ImpactDiameter, logic);
+            Vector2 impactCenter = transform.position;
+            PlaySlamSound(impactCenter);
+            SpawnImpactEffect(impactCenter, context.ImpactDiameter, logic);
             CommonMonsterCombatUtility.TryApplyCircleDamage(
-                context.Center,
+                impactCenter,
                 context.ImpactDiameter,
                 context.TargetLayers,
                 owner.gameObject,
@@ -251,11 +272,23 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
 
     private void ShowWarning(GoblinTank.SlamContext context, float warningSeconds)
     {
-        telegraphPresenter?.Show(AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
-            context.Center,
+        telegraphPresenter?.Show(CreateWarningSpec(context, warningSeconds));
+    }
+
+    /// <summary>준비 중 밀림이 발생해도 내려찍기 경고 중심을 현재 몬스터 위치로 유지합니다.</summary>
+    private void UpdateWarning(GoblinTank.SlamContext context, float warningSeconds)
+    {
+        telegraphPresenter?.UpdateCurrentGeometry(CreateWarningSpec(context, warningSeconds));
+    }
+
+    /// <summary>고블린 탱커의 현재 위치를 기준으로 원형 내려찍기 경고를 구성합니다.</summary>
+    private AttackTelegraphSpec CreateWarningSpec(GoblinTank.SlamContext context, float warningSeconds)
+    {
+        return AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
+            transform.position,
             context.ImpactDiameter,
             warningSeconds,
-            warningStyle)));
+            warningStyle));
     }
 
     private void HideWarning()
