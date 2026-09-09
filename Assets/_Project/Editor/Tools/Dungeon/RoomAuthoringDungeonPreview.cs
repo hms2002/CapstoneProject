@@ -19,6 +19,7 @@ internal sealed class RoomAuthoringDungeonPreviewMarker : MonoBehaviour
 /// 책임:
 /// - Room Piece 툴이 레이아웃 조립기와 시각 빌더에 전달할 라이브러리, 편집 중인 방, 생성 설정을 묶는다.
 /// - 프리뷰 생성 과정이 에디터 창의 직렬화 필드와 UI 구현을 직접 알지 않게 한다.
+/// - 미리보기 전용 런 이벤트 프로필을 받아 이벤트룸이 실제 생성 후보처럼 배치되는지 확인하게 한다.
 /// </summary>
 internal readonly struct RoomAuthoringDungeonPreviewRequest
 {
@@ -40,6 +41,8 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
     public float CorridorLengthPerRoomCell { get; }
     public int CorridorLengthVariation { get; }
     public IReadOnlyList<RoomTemplateSO> GuaranteedRoomTemplates { get; }
+    public RunMapEventGenerationProfileSO RunMapEventProfile { get; }
+    public int RunMapEventPreviewVisitOrder { get; }
     public CorridorDecorationProfileSO CorridorDecorationProfile { get; }
 
     public RoomAuthoringDungeonPreviewRequest(
@@ -61,6 +64,8 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
         float corridorLengthPerRoomCell,
         int corridorLengthVariation,
         IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
+        RunMapEventGenerationProfileSO runMapEventProfile,
+        int runMapEventPreviewVisitOrder,
         CorridorDecorationProfileSO corridorDecorationProfile)
     {
         Library = library;
@@ -81,6 +86,8 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
         CorridorLengthPerRoomCell = corridorLengthPerRoomCell;
         CorridorLengthVariation = corridorLengthVariation;
         GuaranteedRoomTemplates = guaranteedRoomTemplates;
+        RunMapEventProfile = runMapEventProfile;
+        RunMapEventPreviewVisitOrder = Mathf.Max(1, runMapEventPreviewVisitOrder);
         CorridorDecorationProfile = corridorDecorationProfile;
     }
 }
@@ -340,6 +347,16 @@ internal static class RoomAuthoringDungeonPreview
             previewLibrary = CreatePreviewLibrary(request, out transientCurrentRoom);
             IReadOnlyList<RoomTemplateSO> previewGuaranteedRooms =
                 ResolvePreviewGuaranteedRooms(request, transientCurrentRoom);
+            RunMapEventGenerationPlan previewEventPlan =
+                RunMapEventGenerationResolver.CreatePreviewPlan(
+                    request.RunMapEventProfile,
+                    previewGuaranteedRooms,
+                    request.Seed,
+                    request.RunMapEventPreviewVisitOrder);
+            previewGuaranteedRooms = ResolvePreviewGuaranteedRooms(
+                request,
+                transientCurrentRoom,
+                previewEventPlan.GuaranteedRoomTemplates);
             DungeonLayoutResult layout = request.LayoutPolicy != null && request.IncludeBossRoom
                 ? new DungeonGraphLayoutAssembler().Assemble(
                     previewLibrary,
@@ -497,16 +514,27 @@ internal static class RoomAuthoringDungeonPreview
         RoomAuthoringDungeonPreviewRequest request,
         RoomTemplateSO transientCurrentRoom)
     {
-        if (request.GuaranteedRoomTemplates == null ||
-            request.GuaranteedRoomTemplates.Count == 0)
+        return ResolvePreviewGuaranteedRooms(
+            request,
+            transientCurrentRoom,
+            request.GuaranteedRoomTemplates);
+    }
+
+    private static IReadOnlyList<RoomTemplateSO> ResolvePreviewGuaranteedRooms(
+        RoomAuthoringDungeonPreviewRequest request,
+        RoomTemplateSO transientCurrentRoom,
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates)
+    {
+        if (guaranteedRoomTemplates == null ||
+            guaranteedRoomTemplates.Count == 0)
         {
-            return request.GuaranteedRoomTemplates;
+            return guaranteedRoomTemplates;
         }
 
-        var resolvedRooms = new List<RoomTemplateSO>(request.GuaranteedRoomTemplates.Count);
-        for (int roomIndex = 0; roomIndex < request.GuaranteedRoomTemplates.Count; roomIndex++)
+        var resolvedRooms = new List<RoomTemplateSO>(guaranteedRoomTemplates.Count);
+        for (int roomIndex = 0; roomIndex < guaranteedRoomTemplates.Count; roomIndex++)
         {
-            RoomTemplateSO room = request.GuaranteedRoomTemplates[roomIndex];
+            RoomTemplateSO room = guaranteedRoomTemplates[roomIndex];
             if (request.IncludeCurrentRoom && room == request.ReplacedTemplate)
                 room = transientCurrentRoom;
 

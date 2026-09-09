@@ -65,6 +65,21 @@ public sealed class GoblinTank : Mob, IMobAttackDecisionSource
         return base.CanUseChaseMovement() && (runner == null || !runner.IsRunning);
     }
 
+    public override bool ShouldUsePostAttackRecoverState(float baseRecoverSeconds)
+    {
+        return baseRecoverSeconds > 0f;
+    }
+
+    public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
+    {
+        return Mathf.Max(0f, scaledRecoverSeconds);
+    }
+
+    public override bool CanUsePostAttackRecoveryRetreat()
+    {
+        return false;
+    }
+
     public bool TryBuildAttackRequest(out MobAttackRequest request)
     {
         request = default;

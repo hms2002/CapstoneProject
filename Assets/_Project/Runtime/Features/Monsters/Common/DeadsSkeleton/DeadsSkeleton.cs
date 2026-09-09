@@ -138,6 +138,21 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         return base.CanUseChaseMovement() && !IsPlayingSelfDestructIntro();
     }
 
+    public override bool ShouldUsePostAttackRecoverState(float baseRecoverSeconds)
+    {
+        return baseRecoverSeconds > 0f;
+    }
+
+    public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
+    {
+        return Mathf.Max(0f, scaledRecoverSeconds);
+    }
+
+    public override bool CanUsePostAttackRecoveryRetreat()
+    {
+        return false;
+    }
+
     /// <summary>해골은 체력 Attribute 변화로 사망하지 않도록 공통 체력 처리 훅을 비워 둡니다.</summary>
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
     {

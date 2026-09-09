@@ -848,6 +848,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967291
   chaseIntent: {fileID: 5425966457164236571}
+  attackThinkIntervalSeconds: 0.12
+  attackThinkInitialSpreadSeconds: 0.12
+  attackThinkJitterSeconds: 0.04
+  postAttackRecoveryBonusSeconds: 0.2
+  usePostAttackRecoveryRetreat: 1
+  recoveryRetreatMaxTargetDistance: 3
+  recoveryRetreatMinTargetDistance: 1.1
+  recoveryRetreatSpeedScale: 0.75
+  recoveryRetreatFarSpeedScale: 0.35
+  recoveryRetreatThinkInterval: 0.08
+  recoveryRetreatVelocityDuration: 0.12
+  recoveryRetreatDamping: 0
+  recoveryRetreatWallLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  recoveryRetreatWallProbeDistance: 0.25
   logMobFsmDebug: 0
   chargeAbility: {fileID: 11400000, guid: ea69d910d9db2b2409752ed228876950, type: 2}
   maxHealth: 6

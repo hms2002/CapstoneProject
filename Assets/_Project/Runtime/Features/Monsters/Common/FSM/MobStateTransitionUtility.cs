@@ -34,6 +34,9 @@ public static class MobStateTransitionUtility
         if (context.AbilityBridge.IsAbilityExecutionBusy)
             return false;
 
+        if (!context.ConsumeAttackThinkBudget())
+            return false;
+
         if (!context.AttackDecisionSource.TryBuildAttackRequest(out MobAttackRequest request))
             return false;
 
@@ -60,5 +63,25 @@ public static class MobStateTransitionUtility
             return new MobChaseState();
 
         return new MobIdleState();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 공격 종료 후 몬스터별 후딜 정책에 따라 Recover 상태를 거칠지 결정한다.
+    /// - recoverSeconds가 0인 공격도 Mob 공통 후딜 보너스를 받을 수 있게 후처리 진입점을 단일화한다.
+    /// </summary>
+    public static IMobState CreateRecoverOrPostAttackState(MobAIContext context, float recoverSeconds)
+    {
+        if (context != null &&
+            context.Owner != null &&
+            context.Owner.ShouldUsePostAttackRecoverState(recoverSeconds))
+        {
+            return new MobRecoverState(recoverSeconds);
+        }
+
+        if (recoverSeconds > 0f)
+            return new MobRecoverState(recoverSeconds);
+
+        return CreatePostAttackState(context);
     }
 }
