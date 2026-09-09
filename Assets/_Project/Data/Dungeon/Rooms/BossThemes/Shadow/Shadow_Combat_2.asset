@@ -241,12 +241,18 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: d03a0c35534b8824885f982988d3a59e, type: 2}
     - localCell: {x: 2, y: 0}
       tile: {fileID: 11400000, guid: d03a0c35534b8824885f982988d3a59e, type: 2}
+    - localCell: {x: 2, y: 8}
+      tile: {fileID: 11400000, guid: 8f86780c95e1cd44997cca4b47d3e4ed, type: 2}
+    - localCell: {x: 2, y: 9}
+      tile: {fileID: 11400000, guid: 317ffd462c22c5e418960b4f9ad1de70, type: 2}
     - localCell: {x: 3, y: 0}
       tile: {fileID: 11400000, guid: d03a0c35534b8824885f982988d3a59e, type: 2}
     - localCell: {x: 3, y: 7}
       tile: {fileID: 11400000, guid: dc5b9f26a69afea4997140509a4343aa, type: 2}
     - localCell: {x: 3, y: 8}
       tile: {fileID: 11400000, guid: b3108cbb23fff4c489b9325eb7d51737, type: 2}
+    - localCell: {x: 3, y: 11}
+      tile: {fileID: 11400000, guid: 8f86780c95e1cd44997cca4b47d3e4ed, type: 2}
     - localCell: {x: 4, y: 5}
       tile: {fileID: 11400000, guid: dc5b9f26a69afea4997140509a4343aa, type: 2}
     - localCell: {x: 4, y: 6}
@@ -259,10 +265,16 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 9a7d6384d742c5145997d3e7376776ea, type: 2}
     - localCell: {x: 5, y: 6}
       tile: {fileID: 11400000, guid: 4003c6b7fb5f50047b885f88eaa49cac, type: 2}
+    - localCell: {x: 6, y: 7}
+      tile: {fileID: 11400000, guid: f92d8a26af0b5064c8ef86ebcc633338, type: 2}
     - localCell: {x: 6, y: 8}
       tile: {fileID: 11400000, guid: d03a0c35534b8824885f982988d3a59e, type: 2}
+    - localCell: {x: 7, y: 5}
+      tile: {fileID: 11400000, guid: f92d8a26af0b5064c8ef86ebcc633338, type: 2}
     - localCell: {x: 7, y: 7}
       tile: {fileID: 11400000, guid: d03a0c35534b8824885f982988d3a59e, type: 2}
+    - localCell: {x: 8, y: 5}
+      tile: {fileID: 11400000, guid: 8f86780c95e1cd44997cca4b47d3e4ed, type: 2}
     groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 0}
@@ -461,12 +473,6 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 4177c26a1dcff3547a2be39767443a3d, type: 2}
     - localCell: {x: 0, y: 5}
       tile: {fileID: 11400000, guid: 069090269650fa04ba054b695eed0934, type: 2}
-    - localCell: {x: 2, y: 7}
-      tile: {fileID: 11400000, guid: 8f86780c95e1cd44997cca4b47d3e4ed, type: 2}
-    - localCell: {x: 2, y: 8}
-      tile: {fileID: 11400000, guid: 317ffd462c22c5e418960b4f9ad1de70, type: 2}
-    - localCell: {x: 6, y: 7}
-      tile: {fileID: 11400000, guid: f92d8a26af0b5064c8ef86ebcc633338, type: 2}
     overlayFxTiles: []
     objectPlacements:
     - placementId: Mage_01

@@ -32,7 +32,7 @@ MonoBehaviour:
       sizeTag: 1
       killLockRewardTag: 2
     topologyPlacement:
-      mode: 1
+      mode: 0
       minimumGraphDistanceFromStart: 0
       requireDeadEnd: 1
   buildData:
