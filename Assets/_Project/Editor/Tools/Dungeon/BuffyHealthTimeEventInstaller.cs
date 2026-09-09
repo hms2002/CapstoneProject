@@ -128,7 +128,6 @@ public static class BuffyHealthTimeEventInstaller
                 levelConfig);
 
             RunEventArtInstaller.ConfigureBuffy(root);
-            ConfigureCompositePoseSlots(root);
             GameObject saved = PrefabUtility.SaveAsPrefabAsset(root, EventModulePrefabPath);
             if (saved == null)
                 throw new InvalidOperationException($"Could not save prefab: {EventModulePrefabPath}");
@@ -173,6 +172,18 @@ public static class BuffyHealthTimeEventInstaller
                 RequiredChild(rootTransform, "LogEquipment"))
         });
         EditorUtility.SetDirty(composite);
+    }
+
+    private static Transform RequiredChild(Transform parent, string childName)
+    {
+        Transform child = parent != null ? parent.Find(childName) : null;
+        if (child == null)
+        {
+            string parentName = parent != null ? parent.name : "<null>";
+            throw new InvalidOperationException($"Missing child: {parentName}/{childName}");
+        }
+
+        return child;
     }
 
     private static void InstallTheme(ThemeInstallData theme, GameObject eventModulePrefab)
