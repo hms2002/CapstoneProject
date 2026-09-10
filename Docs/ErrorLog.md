@@ -7,6 +7,18 @@ last_reviewed: 2026-09-03
 
 # Error Log
 
+## 2026-09-11 - Alarm Bell Coupled To Unclaimed Level Rewards
+
+Symptom: An unused alarm bell's interaction prompt disappears when the run has unclaimed level rewards. The same check can stall wave advancement and keep encounter doors locked after all monsters die.
+
+Cause: `AlarmBellInteractable.HasPendingLevelReward` treated pending rewards and a persisted active offer as an executing reward UI flow. Those are saved entitlements/candidate state, not evidence that the UI is open. The bell reused that predicate for both activation and coroutine waits, although rewards are selected on demand with R.
+
+Fix: Remove the predicate and all reward-flow waits from the bell. Keep experience granting after encounter completion, without consuming rewards. Existing player interaction blocking and common pause/input-lock systems remain responsible for an actually opened UI.
+
+Prevention: Do not use pending data or a resumable saved offer as a proxy for active UI execution. Encounter progression should depend on its own combat state, not unrelated unclaimed rewards. Do not duplicate common UI flow ownership in a world interactable.
+
+Verification: Runtime and regression-test compilation passed. Added interaction-gate and cleared-wave/completion tests; Unity Play Mode execution remains unverified.
+
 ## 2026-09-05 - Upgrade Opening Coroutine Ran On Its Inactive Panel
 
 Symptom: From Hub, selecting the NPC upgrade feature did not open the window. Editor.log recorded `Coroutine couldn't be started because the the game object 'UpgradeTreePanel' is inactive!` at `UpgradeUiOpenFlow.Open`.

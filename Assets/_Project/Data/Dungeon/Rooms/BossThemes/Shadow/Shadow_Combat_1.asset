@@ -37,7 +37,7 @@ MonoBehaviour:
     difficultyTier: 0
     selectionWeight: 1
     combatMetadata:
-      sizeTag: 2
+      sizeTag: 1
       killLockRewardTag: 2
     topologyPlacement:
       mode: 0

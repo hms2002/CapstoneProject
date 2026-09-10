@@ -18,8 +18,8 @@ public sealed class AbilityLogic_LizardWarriorCharge : AbilityLogic
     [SerializeField, Min(0f)] private float recoverSeconds = 0.25f;
 
     [Header("Charge Steps")]
-    [SerializeField] private LizardWarrior.ChargeStep firstStep = new() { warningSeconds = 2f, dashDistance = 1.875f, dashSeconds = 0.34f, warningWidth = 0.95f };
-    [SerializeField] private LizardWarrior.ChargeStep secondStep = new() { warningSeconds = 1.4f, dashDistance = 1.875f, dashSeconds = 0.34f, warningWidth = 0.95f };
+    [SerializeField] private LizardWarrior.ChargeStep firstStep = new() { warningSeconds = 1f, dashDistance = 1.875f, dashSeconds = 0.34f, warningWidth = 0.95f };
+    [SerializeField] private LizardWarrior.ChargeStep secondStep = new() { warningSeconds = 0.7f, dashDistance = 1.875f, dashSeconds = 0.34f, warningWidth = 0.95f };
 
     [Header("Collision")]
     [SerializeField] private LayerMask targetLayers;

@@ -10,7 +10,9 @@ using UnityEngine;
 /// </summary>
 public sealed class DungeonLayoutAssembler
 {
-    private const double AdjacentDuplicateTemplateWeightMultiplier = 0.05d;
+    private const int PreferredTemplateRepeatBucket = 0;
+    private const int AdjacentShapeRepeatBucket = 1;
+    private const int AdjacentTemplateRepeatBucket = 2;
 
     /// <summary>
     /// 책임:
@@ -346,45 +348,79 @@ public sealed class DungeonLayoutAssembler
         System.Random random,
         RoomTemplateSO adjacentTemplate = null)
     {
+        int selectedBucket = int.MaxValue;
         double totalWeight = 0d;
         for (int i = 0; i < candidates.Count; i++)
-            totalWeight += CalculateTemplateSelectionWeight(candidates[i], adjacentTemplate);
+        {
+            double weight = CalculateTemplateSelectionWeight(candidates[i]);
+            if (weight <= 0d)
+                continue;
+
+            int bucket = ClassifyAdjacentTemplateRepeatBucket(
+                candidates[i],
+                adjacentTemplate);
+            if (bucket > selectedBucket)
+                continue;
+
+            if (bucket < selectedBucket)
+            {
+                selectedBucket = bucket;
+                totalWeight = 0d;
+            }
+
+            totalWeight += weight;
+        }
 
         if (totalWeight <= 0d)
             return null;
 
         double selectedWeight = random.NextDouble() * totalWeight;
+        RoomTemplateSO fallback = null;
         for (int i = 0; i < candidates.Count; i++)
         {
-            selectedWeight -= CalculateTemplateSelectionWeight(candidates[i], adjacentTemplate);
+            RoomTemplateSO candidate = candidates[i];
+            double weight = CalculateTemplateSelectionWeight(candidate);
+            if (weight <= 0d ||
+                ClassifyAdjacentTemplateRepeatBucket(candidate, adjacentTemplate) != selectedBucket)
+            {
+                continue;
+            }
+
+            fallback = candidate;
+            selectedWeight -= weight;
             if (selectedWeight <= 0d)
-                return candidates[i];
+                return candidate;
         }
 
-        return candidates[candidates.Count - 1];
+        return fallback;
     }
 
     /// <summary>
     /// 책임:
-    /// - legacy 소켓 확장 방식에서도 직전 연결 방과 같은 템플릿의 선택 우선순위를 낮춘다.
-    /// - 후보를 제거하지 않아 작은 라이브러리나 제한된 소켓 조합에서도 생성 실패를 늘리지 않는다.
+    /// - legacy 소켓 확장 방식에서도 직전 연결 방과 같은 템플릿/모양 태그를 후순위 후보군으로 분류한다.
+    /// - 일반 후보가 남아 있으면 반복 후보가 확률 추첨에 들어오지 않게 한다.
     /// </summary>
-    private static double CalculateTemplateSelectionWeight(
+    private static int ClassifyAdjacentTemplateRepeatBucket(
         RoomTemplateSO candidate,
         RoomTemplateSO adjacentTemplate)
+    {
+        if (candidate == null || adjacentTemplate == null)
+            return PreferredTemplateRepeatBucket;
+
+        if (IsSameRoomTemplate(candidate, adjacentTemplate))
+            return AdjacentTemplateRepeatBucket;
+
+        return RoomTemplateShapeUtility.IsSameShape(candidate, adjacentTemplate)
+            ? AdjacentShapeRepeatBucket
+            : PreferredTemplateRepeatBucket;
+    }
+
+    private static double CalculateTemplateSelectionWeight(RoomTemplateSO candidate)
     {
         if (candidate == null)
             return 0d;
 
-        double weight = candidate.LayoutData.selectionWeight;
-        if (weight <= 0d ||
-            adjacentTemplate == null ||
-            !IsSameRoomTemplate(candidate, adjacentTemplate))
-        {
-            return weight;
-        }
-
-        return weight * AdjacentDuplicateTemplateWeightMultiplier;
+        return candidate.LayoutData.selectionWeight;
     }
 
     private static bool IsSameRoomTemplate(RoomTemplateSO first, RoomTemplateSO second)

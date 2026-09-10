@@ -47,6 +47,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     private string newRoomId = "Room_New";
     private Vector2Int newRoomSize = new(12, 8);
     private RoomType newRoomType = RoomType.Combat;
+    private RoomShapeTagSO newShapeTag;
     private int newDifficultyTier;
     private float newSelectionWeight = 1f;
     private RoomCombatSizeTag newCombatSizeTag = RoomCombatSizeTag.Normal;
@@ -399,6 +400,11 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         EditorGUILayout.LabelField("새 방 만들기", EditorStyles.boldLabel);
         newRoomId = EditorGUILayout.TextField("방 ID", newRoomId);
         newRoomType = (RoomType)EditorGUILayout.EnumPopup("방 역할", newRoomType);
+        newShapeTag = EditorGUILayout.ObjectField(
+            "모양 태그",
+            newShapeTag,
+            typeof(RoomShapeTagSO),
+            false) as RoomShapeTagSO;
         newRoomSize = EditorGUILayout.Vector2IntField("예약 크기", newRoomSize);
         newDifficultyTier = EditorGUILayout.IntField("난이도 단계", Mathf.Max(0, newDifficultyTier));
         newSelectionWeight = EditorGUILayout.FloatField("등장 가중치", Mathf.Max(0f, newSelectionWeight));
@@ -493,6 +499,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         serializedAuthoring.Update();
         EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("roomId"), new GUIContent("방 ID"));
         EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("roomType"), new GUIContent("방 역할"));
+        EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("shapeTag"), new GUIContent("모양 태그"));
         EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("size"), new GUIContent("예약 크기"));
         EditorGUILayout.PropertyField(
             serializedAuthoring.FindProperty("difficultyTier"),
@@ -1539,6 +1546,11 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                     ? $"{previewGenerationProfile.CorridorDecorationProfile.name} · " +
                       $"모듈 {previewGenerationProfile.CorridorDecorationProfile.Modules.Count}개"
                     : "미설정");
+            EditorGUILayout.LabelField(
+                "문 소켓 흔적 정리",
+                previewGenerationProfile.SocketCleanupProfile != null
+                    ? previewGenerationProfile.SocketCleanupProfile.name
+                    : "미설정");
             if (GUILayout.Button("복도 장식 제작 툴 열기"))
                 CorridorDecorationEditorWindow.OpenWithProfile(previewGenerationProfile);
         }
@@ -1742,6 +1754,10 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             previewGenerationProfile != null &&
             previewGenerationProfile.RoomLibrary == selectedLibrary
                 ? previewGenerationProfile.CorridorDecorationProfile
+                : null,
+            previewGenerationProfile != null &&
+            previewGenerationProfile.RoomLibrary == selectedLibrary
+                ? previewGenerationProfile.SocketCleanupProfile
                 : null);
         RoomAuthoringDungeonPreviewResult result =
             RoomAuthoringDungeonPreview.Generate(request);
@@ -2030,6 +2046,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         selectedAuthoring = CreateAuthoringRoomPiece(
             newRoomId,
             newRoomType,
+            newShapeTag,
             roomSize,
             newDifficultyTier,
             newSelectionWeight,
@@ -2061,6 +2078,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         selectedAuthoring = CreateAuthoringRoomPiece(
             roomId,
             layout.roomType,
+            layout.shapeTag,
             roomSize,
             layout.difficultyTier,
             layout.selectionWeight,
@@ -2128,6 +2146,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     private static RoomPieceAuthoring CreateAuthoringRoomPiece(
         string roomId,
         RoomType roomType,
+        RoomShapeTagSO shapeTag,
         Vector2Int roomSize,
         int difficultyTier,
         float selectionWeight,
@@ -2145,6 +2164,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         SerializedObject serializedAuthoring = new(authoring);
         serializedAuthoring.FindProperty("roomId").stringValue = roomId;
         serializedAuthoring.FindProperty("roomType").enumValueIndex = (int)roomType;
+        serializedAuthoring.FindProperty("shapeTag").objectReferenceValue = shapeTag;
         serializedAuthoring.FindProperty("size").vector2IntValue = roomSize;
         serializedAuthoring.FindProperty("difficultyTier").intValue = Mathf.Max(0, difficultyTier);
         serializedAuthoring.FindProperty("selectionWeight").floatValue = Mathf.Max(0f, selectionWeight);
@@ -3043,6 +3063,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         {
             roomId = selectedAuthoring.RoomId,
             roomType = selectedAuthoring.RoomType,
+            shapeTag = selectedAuthoring.ShapeTag,
             size = selectedAuthoring.Size,
             localBounds = new RectInt(Vector2Int.zero, selectedAuthoring.Size),
             sockets = CollectSockets(selectedAuthoring),

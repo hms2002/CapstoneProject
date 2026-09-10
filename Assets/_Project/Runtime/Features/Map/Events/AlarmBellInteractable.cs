@@ -14,6 +14,7 @@ public interface IAlarmBellRecognitionCountProvider
 
 /// <summary>
 /// 책임 : 경보 종 상호작용, 런 1회성 처리, 방 봉쇄 유지, 웨이브 소환과 완료 경험치 지급을 관리한다.
+/// 레벨업 보상 수령 상태는 소유하지 않으며, UI 입력 차단과 일시정지는 공통 시스템에 맡긴다.
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
@@ -132,8 +133,7 @@ public sealed class AlarmBellInteractable :
                state == AlarmBellEncounterState.Unused &&
                definition != null &&
                RunSessionStore.IsRunActive &&
-               !IsEventAlreadyUsed() &&
-               !HasPendingLevelReward();
+               !IsEventAlreadyUsed();
     }
 
     public override void OnPlayerInteract(IPlayerInteractor player)
@@ -230,7 +230,6 @@ public sealed class AlarmBellInteractable :
                 state = AlarmBellEncounterState.WaveCombat;
                 SpawnWave(wave, player);
                 yield return WaitForCurrentWaveCleared();
-                yield return WaitForLevelRewardFlowIdle();
 
                 if (waveIndex < waves.Count - 1 && definition.NextWaveDelaySeconds > 0f)
                     yield return new WaitForSeconds(definition.NextWaveDelaySeconds);
@@ -241,9 +240,7 @@ public sealed class AlarmBellInteractable :
             ReleaseEncounterHold();
             CompleteEncounterPresentation();
 
-            yield return WaitForLevelRewardFlowIdle();
             GrantCompletionExperience(tier);
-            yield return WaitForLevelRewardFlowIdle();
         }
         finally
         {
@@ -450,12 +447,6 @@ public sealed class AlarmBellInteractable :
 
             yield return null;
         }
-    }
-
-    private IEnumerator WaitForLevelRewardFlowIdle()
-    {
-        while (HasPendingLevelReward())
-            yield return null;
     }
 
     private void GrantCompletionExperience(AlarmBellEncounterTier tier)
@@ -872,14 +863,6 @@ public sealed class AlarmBellInteractable :
         }
 
         return false;
-    }
-
-    private static bool HasPendingLevelReward()
-    {
-        LevelProgressionState progression = RunLevelProgression.State;
-        return progression != null &&
-               (progression.pendingRewardCount > 0 ||
-                (progression.activeRewardOffer != null && progression.activeRewardOffer.isActive));
     }
 
     private void SetInteractionEnabled(bool enabled)

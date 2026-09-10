@@ -26,12 +26,14 @@ public sealed class DungeonMinimapNodeView : MonoBehaviour
 
     public void ConfigureShape(
         IReadOnlyList<RectInt> shapeRectangles,
-        Vector2Int shapeGridSize)
+        Vector2Int shapeGridSize,
+        Vector2? iconAnchor = null)
     {
         ResolveReferences();
         background?.ConfigureShape(shapeRectangles, shapeGridSize);
         currentMarker?.ConfigureShape(shapeRectangles, shapeGridSize);
-        PositionIconInsideShape(shapeRectangles, shapeGridSize);
+        PositionIconInsideShape(iconAnchor ??
+            DungeonMapRoomShapeBuilder.ResolveInteriorAnchor(shapeRectangles, shapeGridSize));
     }
 
     public void Apply(
@@ -100,40 +102,12 @@ public sealed class DungeonMinimapNodeView : MonoBehaviour
         }
     }
 
-    private void PositionIconInsideShape(
-        IReadOnlyList<RectInt> shapeRectangles,
-        Vector2Int shapeGridSize)
+    private void PositionIconInsideShape(Vector2 normalizedAnchor)
     {
-        if (roomIcon == null || shapeRectangles == null || shapeRectangles.Count == 0)
+        if (roomIcon == null)
             return;
 
-        Vector2 gridCenter = (Vector2)shapeGridSize * 0.5f;
-        Vector2 selectedCellCenter = gridCenter;
-        float shortestDistance = float.MaxValue;
-        for (int rectangleIndex = 0;
-             rectangleIndex < shapeRectangles.Count;
-             rectangleIndex++)
-        {
-            RectInt rectangle = shapeRectangles[rectangleIndex];
-            for (int y = rectangle.yMin; y < rectangle.yMax; y++)
-            {
-                for (int x = rectangle.xMin; x < rectangle.xMax; x++)
-                {
-                    Vector2 cellCenter = new(x + 0.5f, y + 0.5f);
-                    float distance = (cellCenter - gridCenter).sqrMagnitude;
-                    if (distance >= shortestDistance)
-                        continue;
-
-                    selectedCellCenter = cellCenter;
-                    shortestDistance = distance;
-                }
-            }
-        }
-
         RectTransform iconRect = roomIcon.rectTransform;
-        Vector2 normalizedAnchor = new(
-            selectedCellCenter.x / Mathf.Max(1, shapeGridSize.x),
-            selectedCellCenter.y / Mathf.Max(1, shapeGridSize.y));
         iconRect.anchorMin = normalizedAnchor;
         iconRect.anchorMax = normalizedAnchor;
         iconRect.anchoredPosition = Vector2.zero;

@@ -15,6 +15,7 @@ MonoBehaviour:
   layoutData:
     roomId: Dragon_Start
     roomType: 1
+    shapeTag: {fileID: 0}
     size: {x: 12, y: 8}
     localBounds:
       x: 0
@@ -36,6 +37,9 @@ MonoBehaviour:
       width: 2
     difficultyTier: 0
     selectionWeight: 1
+    combatMetadata:
+      sizeTag: 0
+      killLockRewardTag: 0
     topologyPlacement:
       mode: 0
       minimumGraphDistanceFromStart: 0
@@ -163,13 +167,13 @@ MonoBehaviour:
     - localCell: {x: 0, y: 1}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 2}
-      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 3}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 4}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 5}
-      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 6}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 7}

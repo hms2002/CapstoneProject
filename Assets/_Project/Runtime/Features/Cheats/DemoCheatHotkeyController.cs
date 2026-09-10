@@ -1,8 +1,10 @@
+#if UNITY_EDITOR
 using UnityEngine;
 
 /// <summary>
-/// 책임 : 빌드 런타임에서 시연용 치트 단축키를 감지하고 DemoCheatService에 실행을 위임한다.
+/// 책임 : 에디터 Play Mode에서 치트 단축키를 감지하고 DemoCheatService에 실행을 위임한다.
 /// 씬 전환 중이거나 설정에서 치트가 꺼져 있으면 입력을 소비하지 않는다.
+/// 부트스트랩과 실행 코드는 Development Build를 포함한 모든 플레이어 빌드에서 제외한다.
 /// </summary>
 public sealed class DemoCheatHotkeyController : MonoBehaviour
 {
@@ -35,14 +37,23 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
 
     private void OnDisable()
     {
+        ResetCheatState();
+    }
+
+    private void ResetCheatState()
+    {
         service?.RestoreMapZoomImmediate();
         service?.DisablePlayerInvulnerabilityCheat();
+        isAwaitingBossSceneSelection = false;
     }
 
     private void Update()
     {
         if (settings == null || !settings.EnableDemoCheats)
+        {
+            ResetCheatState();
             return;
+        }
 
         if (IsSceneTransitionActive())
         {
@@ -163,3 +174,4 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
         return SceneTransitionPlayback.IsTransitionActive;
     }
 }
+#endif

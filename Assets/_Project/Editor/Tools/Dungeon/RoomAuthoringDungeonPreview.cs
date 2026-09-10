@@ -44,6 +44,7 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
     public RunMapEventGenerationProfileSO RunMapEventProfile { get; }
     public int RunMapEventPreviewVisitOrder { get; }
     public CorridorDecorationProfileSO CorridorDecorationProfile { get; }
+    public RoomSocketCleanupProfileSO SocketCleanupProfile { get; }
 
     public RoomAuthoringDungeonPreviewRequest(
         RoomThemeLibrarySO library,
@@ -66,7 +67,8 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
         IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
         RunMapEventGenerationProfileSO runMapEventProfile,
         int runMapEventPreviewVisitOrder,
-        CorridorDecorationProfileSO corridorDecorationProfile)
+        CorridorDecorationProfileSO corridorDecorationProfile,
+        RoomSocketCleanupProfileSO socketCleanupProfile)
     {
         Library = library;
         LayoutPolicy = layoutPolicy;
@@ -89,6 +91,7 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
         RunMapEventProfile = runMapEventProfile;
         RunMapEventPreviewVisitOrder = Mathf.Max(1, runMapEventPreviewVisitOrder);
         CorridorDecorationProfile = corridorDecorationProfile;
+        SocketCleanupProfile = socketCleanupProfile;
     }
 }
 
@@ -172,12 +175,13 @@ internal static class RoomAuthoringDungeonPreview
 
     /// <summary>
     /// 책임:
-    /// - Scene View에 그릴 방의 예약 영역, 표시 이름과 현재 편집 방 여부를 복사해 보관한다.
+    /// - Scene View에 그릴 방의 예약 영역, 표시 이름, 모양 태그와 현재 편집 방 여부를 복사해 보관한다.
     /// </summary>
     private readonly struct PreviewRoomInfo
     {
         public int PlacementId { get; }
         public string RoomId { get; }
+        public string ShapeTagName { get; }
         public RoomType RoomType { get; }
         public RectInt WorldBounds { get; }
         public bool IsCurrentRoom { get; }
@@ -185,12 +189,14 @@ internal static class RoomAuthoringDungeonPreview
         public PreviewRoomInfo(
             int placementId,
             string roomId,
+            string shapeTagName,
             RoomType roomType,
             RectInt worldBounds,
             bool isCurrentRoom)
         {
             PlacementId = placementId;
             RoomId = roomId ?? string.Empty;
+            ShapeTagName = shapeTagName ?? string.Empty;
             RoomType = roomType;
             WorldBounds = worldBounds;
             IsCurrentRoom = isCurrentRoom;
@@ -600,6 +606,7 @@ internal static class RoomAuthoringDungeonPreview
             overlayFxTilemap);
         builder.EditorAssignCorridorTiles(corridorFloorTile, corridorWallTile);
         builder.ConfigureCorridorDecoration(request.CorridorDecorationProfile);
+        builder.ConfigureSocketCleanup(request.SocketCleanupProfile);
         builder.EditorAssignSocketBlockerRoot(blockerRootObject.transform);
 
         if (!builder.TryBuild(layout, DungeonBuildOptions.VisualOnly))
@@ -736,6 +743,7 @@ internal static class RoomAuthoringDungeonPreview
             rooms.Add(new PreviewRoomInfo(
                 placement.PlacementId,
                 roomLayout.roomId,
+                roomLayout.shapeTag != null ? roomLayout.shapeTag.name : string.Empty,
                 roomLayout.roomType,
                 placement.WorldBounds,
                 placement.Template == transientCurrentRoom));
@@ -901,9 +909,12 @@ internal static class RoomAuthoringDungeonPreview
             Vector3 labelPosition = snapshot.Grid.CellToWorld(
                 new Vector3Int(room.WorldBounds.xMin, room.WorldBounds.yMax, 0));
             string currentLabel = room.IsCurrentRoom ? " · 편집 중" : string.Empty;
+            string shapeLabel = string.IsNullOrWhiteSpace(room.ShapeTagName)
+                ? string.Empty
+                : $" · [{room.ShapeTagName}]";
             Handles.Label(
                 labelPosition + Vector3.up * 0.2f,
-                $"#{room.PlacementId} {room.RoomType} · {room.RoomId}{currentLabel}");
+                $"#{room.PlacementId} {room.RoomType} · {room.RoomId}{shapeLabel}{currentLabel}");
         }
     }
 

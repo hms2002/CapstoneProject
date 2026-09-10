@@ -144,6 +144,10 @@ public sealed class DungeonGenerator : MonoBehaviour
             generationProfile != null
                 ? generationProfile.CorridorDecorationProfile
                 : roomBuilder.CorridorDecorationProfile);
+        roomBuilder.ConfigureSocketCleanup(
+            generationProfile != null
+                ? generationProfile.SocketCleanupProfile
+                : roomBuilder.SocketCleanupProfile);
         if (!roomBuilder.TryBuild(LastLayout))
         {
             mapRuntime.ClearConfiguration();

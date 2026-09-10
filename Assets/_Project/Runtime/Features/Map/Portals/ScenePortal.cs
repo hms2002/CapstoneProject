@@ -423,6 +423,13 @@ public sealed class ScenePortal : InteractableBase
 
     private bool CanPassAccessRules(IPlayerInteractor player)
     {
+        WarningPopupCode routeWarning = RunRoutePlayback.GetTravelBlockWarning(this);
+        if (routeWarning != WarningPopupCode.None)
+        {
+            WarningPopupPlayback.Show(routeWarning);
+            return false;
+        }
+
         if (accessRules == null || accessRules.Length == 0)
             return true;
 

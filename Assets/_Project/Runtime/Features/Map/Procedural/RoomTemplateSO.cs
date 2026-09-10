@@ -36,6 +36,7 @@ public struct RoomLayoutData
 {
     public string roomId;
     public RoomType roomType;
+    public RoomShapeTagSO shapeTag;
     public Vector2Int size;
     public RectInt localBounds;
     public List<RoomSocketData> sockets;
@@ -43,6 +44,55 @@ public struct RoomLayoutData
     public float selectionWeight;
     public RoomCombatMetadata combatMetadata;
     public RoomTopologyPlacementData topologyPlacement;
+}
+
+/// <summary>
+/// 책임:
+/// - 방 템플릿의 직접 지정 모양 태그와 소켓 방향 기반 fallback 모양을 하나의 비교 규칙으로 제공한다.
+/// - 생성기가 roomId 중복과 별개로 "서로 다른 방이지만 같은 모양"인 후보를 후순위로 밀 수 있게 한다.
+/// </summary>
+public static class RoomTemplateShapeUtility
+{
+    public static bool IsSameShape(RoomTemplateSO first, RoomTemplateSO second)
+    {
+        if (first == null || second == null)
+            return false;
+
+        RoomShapeTagSO firstTag = first.LayoutData.shapeTag;
+        RoomShapeTagSO secondTag = second.LayoutData.shapeTag;
+        if (firstTag != null || secondTag != null)
+            return firstTag != null && firstTag == secondTag;
+
+        int firstMask = ResolveSocketDirectionMask(first.LayoutData);
+        int secondMask = ResolveSocketDirectionMask(second.LayoutData);
+        return firstMask != 0 && firstMask == secondMask;
+    }
+
+    public static int ResolveSocketDirectionMask(RoomLayoutData layout)
+    {
+        if (layout.sockets == null)
+            return 0;
+
+        int mask = 0;
+        RectInt bounds = ResolveLocalBounds(layout);
+        for (int socketIndex = 0; socketIndex < layout.sockets.Count; socketIndex++)
+        {
+            RoomSocketData socket = layout.sockets[socketIndex];
+            if (!RoomSocketGeometry.IsValid(socket, bounds))
+                continue;
+
+            mask |= 1 << (int)socket.direction;
+        }
+
+        return mask;
+    }
+
+    private static RectInt ResolveLocalBounds(RoomLayoutData layout)
+    {
+        return layout.localBounds.width > 0 && layout.localBounds.height > 0
+            ? layout.localBounds
+            : new RectInt(Vector2Int.zero, layout.size);
+    }
 }
 
 /// <summary>

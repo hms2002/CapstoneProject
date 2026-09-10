@@ -25,6 +25,7 @@ MonoBehaviour:
   eventRoomCount: 0
   shopRoomCount: 0
   minimumCombatRoomCount: 4
+  maximumLargeCombatRoomCount: 1
   preferSpecialRoomsAtDeadEnds: 1
   requiredCombatRoomRules:
   - sizeTag: 1

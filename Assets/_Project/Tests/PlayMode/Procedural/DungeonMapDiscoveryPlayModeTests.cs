@@ -8,6 +8,73 @@ using UnityEngine.Tilemaps;
 public sealed class DungeonMapDiscoveryPlayModeTests
 {
     [Test]
+    public void InteriorAnchor_RectangleChoosesCenter()
+    {
+        Vector2 anchor = DungeonMapRoomShapeBuilder.ResolveInteriorAnchor(
+            new[] { new RectInt(0, 0, 9, 7) }, new Vector2Int(9, 7));
+        Assert.That(anchor, Is.EqualTo(new Vector2(0.5f, 0.5f)));
+    }
+
+    [Test]
+    public void InteriorAnchor_ConcaveRoomMovesAwayFromInnerEdge()
+    {
+        var rectangles = new[] { new RectInt(0, 6, 9, 3), new RectInt(6, 0, 3, 6) };
+        Vector2 anchor = DungeonMapRoomShapeBuilder.ResolveInteriorAnchor(rectangles, new Vector2Int(9, 9));
+        Vector2 cell = anchor * 9f;
+        Assert.That(IsCovered(rectangles, Vector2Int.FloorToInt(cell)), Is.True);
+        Assert.That(Mathf.Max(cell.x, cell.y), Is.EqualTo(7.5f));
+        Assert.That(Mathf.Min(cell.x, cell.y), Is.EqualTo(4.5f));
+    }
+
+    [Test]
+    public void InteriorAnchor_RectangleSeamsAndOverlapsDoNotChangeResult()
+    {
+        var rectangles = new[]
+        {
+            new RectInt(0, 0, 4, 9), new RectInt(4, 0, 5, 9), new RectInt(2, 2, 5, 5)
+        };
+        Vector2 anchor = DungeonMapRoomShapeBuilder.ResolveInteriorAnchor(rectangles, new Vector2Int(9, 9));
+        Assert.That(anchor, Is.EqualTo(new Vector2(0.5f, 0.5f)));
+    }
+
+    [Test]
+    public void InteriorAnchor_HoleIsNotChosen()
+    {
+        var rectangles = new[]
+        {
+            new RectInt(0, 0, 11, 3), new RectInt(0, 8, 11, 3),
+            new RectInt(0, 3, 3, 5), new RectInt(8, 3, 3, 5)
+        };
+        Vector2 anchor = DungeonMapRoomShapeBuilder.ResolveInteriorAnchor(rectangles, new Vector2Int(11, 11));
+        Assert.That(IsCovered(rectangles, Vector2Int.FloorToInt(anchor * 11f)), Is.True);
+        Assert.That(anchor, Is.Not.EqualTo(new Vector2(0.5f, 0.5f)));
+    }
+
+    [Test]
+    public void InteriorAnchor_EmptyAndInvalidShapesUseCenter()
+    {
+        Assert.That(DungeonMapRoomShapeBuilder.ResolveInteriorAnchor(null, Vector2Int.one),
+            Is.EqualTo(new Vector2(0.5f, 0.5f)));
+        Assert.That(DungeonMapRoomShapeBuilder.ResolveInteriorAnchor(
+            new[] { new RectInt(-3, -3, 1, 1) }, new Vector2Int(9, 9)),
+            Is.EqualTo(new Vector2(0.5f, 0.5f)));
+        Assert.That(DungeonMapRoomShapeBuilder.ResolveInteriorAnchor(
+            new[] { new RectInt(0, 0, 1, 1) }, Vector2Int.zero),
+            Is.EqualTo(new Vector2(0.5f, 0.5f)));
+    }
+
+    [Test]
+    public void InteriorAnchor_ThinRoomStaysInsideAndIsDeterministic()
+    {
+        var rectangles = new[] { new RectInt(3, 0, 1, 9) };
+        Vector2 anchor = DungeonMapRoomShapeBuilder.ResolveInteriorAnchor(rectangles, new Vector2Int(9, 9));
+        Assert.That(anchor.x * 9f, Is.EqualTo(3.5f).Within(0.0001f));
+        Assert.That(anchor.y, Is.EqualTo(0.5f));
+        Assert.That(DungeonMapRoomShapeBuilder.ResolveInteriorAnchor(rectangles, new Vector2Int(9, 9)),
+            Is.EqualTo(anchor));
+    }
+
+    [Test]
     public void RevealStartRoom_OnlyRevealsDirectNeighbor()
     {
         DungeonMapDiscoveryModel model = CreateLinearModel();

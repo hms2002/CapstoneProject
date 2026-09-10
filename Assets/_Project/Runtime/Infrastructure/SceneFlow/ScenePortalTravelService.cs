@@ -30,6 +30,9 @@ public static class ScenePortalTravelService
     }
 }
 
+/// <summary>
+/// 책임 : 포탈 경로의 접근 조건을 재검사하고 승인된 요청만 런 상태 캡처와 씬 전환 실행기로 넘긴다.
+/// </summary>
 internal static class ScenePortalTravelCoordinator
 {
     public static bool TryTravel(ScenePortal portal)
@@ -55,6 +58,15 @@ internal static class ScenePortalTravelCoordinator
         }
 
         var request = ScenePortalTravelRequest.Create(portal);
+        WarningPopupCode routeWarning = request.RouteManager != null
+            ? request.RouteManager.GetTravelBlockWarning(portal)
+            : WarningPopupCode.None;
+        if (routeWarning != WarningPopupCode.None)
+        {
+            WarningPopupPlayback.Show(routeWarning);
+            return false;
+        }
+
         var route = ScenePortalTravelPlanner.ResolveRoute(request);
         if (!route.IsValid)
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 책임 : 현재 런의 포탈 route plan, stage 진행도, 로딩 문맥을 보관하고 Gameplay route 계약의 backend로 동작하는 Infrastructure manager이다.
+/// 책임 : 현재 런의 포탈 route plan, stage 진행도, 로딩 문맥과 복도 재입장 조건을 관리하는 Infrastructure route backend이다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
@@ -370,6 +370,40 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
         }
 
         return TryResolveRoute(portal, out _);
+    }
+
+    /// <summary>
+    /// 책임 : 확정 전 목적지 route의 보스 처치 기록을 검사해 이번 런의 복도 재입장을 차단한다.
+    /// </summary>
+    public WarningPopupCode GetTravelBlockWarning(ScenePortal portal)
+    {
+        if (portal == null || portal.HasOneShotDestinationOverride || !RunSessionStore.IsRunActive)
+            return WarningPopupCode.None;
+
+        CorridorBossRouteSetSO destinationStage = null;
+        switch (ResolveEffectiveTransitionType(portal))
+        {
+            case TransitionType.HubToRunStart:
+                if (TryPrepareHubStartPlan(portal) &&
+                    pendingPlansByPortalId.TryGetValue(portal.PortalId, out var pendingPlan) &&
+                    pendingPlan.Stages.Count > 0)
+                {
+                    destinationStage = pendingPlan.Stages[0];
+                }
+                break;
+
+            case TransitionType.BossToCorridor:
+                destinationStage = NextStageSet;
+                break;
+        }
+
+        if (destinationStage == null)
+            return WarningPopupCode.None;
+
+        string bossId = destinationStage.StableThemeId;
+        bool defeated = RunProgressPlayback.IsBossDefeatedThisRun(bossId) ||
+                        RunSessionStateService.HasDefeatedBoss(RunSessionStore.Data, bossId);
+        return defeated ? WarningPopupCode.BossAlreadyDefeatedThisRun : WarningPopupCode.None;
     }
 
 #if UNITY_EDITOR

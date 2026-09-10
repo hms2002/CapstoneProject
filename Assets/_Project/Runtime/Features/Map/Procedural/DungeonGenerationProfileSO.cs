@@ -5,6 +5,7 @@ using UnityEngine;
 /// 책임:
 /// - 한 테마의 룸 라이브러리, 레이아웃 정책과 반복 조정 가능한 맵 생성 수치를 하나의 영속 에셋으로 보관한다.
 /// - 편집기 미리보기와 런타임 DungeonGenerator가 같은 생성 계약을 읽게 해 씬별 수치 복제와 설치기 하드코딩을 방지한다.
+/// - 복도 장식과 소켓 흔적 제거처럼 테마 생성 후처리에 필요한 시각 프로필을 함께 전달한다.
 /// </summary>
 [CreateAssetMenu(fileName = "DungeonGenerationProfile", menuName = "Gameplay/Dungeon/Generation Profile")]
 public sealed class DungeonGenerationProfileSO : ScriptableObject
@@ -13,6 +14,7 @@ public sealed class DungeonGenerationProfileSO : ScriptableObject
     [SerializeField] private RoomThemeLibrarySO roomLibrary;
     [SerializeField] private DungeonLayoutPolicySO layoutPolicy;
     [SerializeField] private CorridorDecorationProfileSO corridorDecorationProfile;
+    [SerializeField] private RoomSocketCleanupProfileSO socketCleanupProfile;
 
     [Header("Generation")]
     [SerializeField] private int seed = 12345;
@@ -36,6 +38,7 @@ public sealed class DungeonGenerationProfileSO : ScriptableObject
     public RoomThemeLibrarySO RoomLibrary => roomLibrary;
     public DungeonLayoutPolicySO LayoutPolicy => layoutPolicy;
     public CorridorDecorationProfileSO CorridorDecorationProfile => corridorDecorationProfile;
+    public RoomSocketCleanupProfileSO SocketCleanupProfile => socketCleanupProfile;
     public int Seed => seed;
     public int RoomCount => Mathf.Max(includeBossRoom ? 2 : 1, roomCount);
     public bool IncludeBossRoom => includeBossRoom;
@@ -101,6 +104,14 @@ public sealed class DungeonGenerationProfileSO : ScriptableObject
     public void EditorSetCorridorDecorationProfile(CorridorDecorationProfileSO profile)
     {
         corridorDecorationProfile = profile;
+    }
+
+    /// <summary>
+    /// 책임 : 제작 툴이 현재 테마 생성 프로필에 연결 소켓 흔적 제거 프로필 참조를 저장한다.
+    /// </summary>
+    public void EditorSetSocketCleanupProfile(RoomSocketCleanupProfileSO profile)
+    {
+        socketCleanupProfile = profile;
     }
 
     /// <summary>

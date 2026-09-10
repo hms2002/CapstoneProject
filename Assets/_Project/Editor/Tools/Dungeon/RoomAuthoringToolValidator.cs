@@ -114,7 +114,8 @@ public static class RoomAuthoringToolValidator
                         guaranteedRoomTemplates: null,
                         runMapEventProfile: null,
                         runMapEventPreviewVisitOrder: 1,
-                        corridorDecorationProfile: null));
+                        corridorDecorationProfile: null,
+                        socketCleanupProfile: null));
             if (!previewResult.WasBuilt ||
                 !previewResult.IsComplete ||
                 previewResult.RoomCount != 3 ||

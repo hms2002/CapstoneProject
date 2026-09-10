@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ public readonly struct DemoCheatResult
 }
 
 /// <summary>
-/// 책임 : 시연용 치트의 실제 효과를 기존 런타임 시스템 API를 통해 적용한다.
+/// 책임 : 에디터 전용 치트의 실제 효과를 기존 런타임 시스템 API를 통해 적용한다.
 /// AttributeSet, AbilitySystem, WeaponInventory2D, MovementMotor2D를 직접 우회하지 않고 공식 진입점을 사용한다.
 /// </summary>
 public sealed class DemoCheatService
@@ -94,7 +95,7 @@ public sealed class DemoCheatService
         entries.RemoveAll(entry => entry.Key == KeyCode.None);
         entries.Sort((left, right) => CompareCheatGuideKeys(left.Key, right.Key));
 
-        List<string> lines = new() { "시연 치트 키" };
+        List<string> lines = new() { "에디터 전용 치트 키" };
         for (int i = 0; i < entries.Count; i++)
             lines.Add($"{FormatKey(entries[i].Key)}: {entries[i].Description}");
 
@@ -1111,3 +1112,4 @@ public sealed class DemoCheatService
     }
 
 }
+#endif

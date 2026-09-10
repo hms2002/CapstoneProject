@@ -141,7 +141,7 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
             DungeonMinimapNodeView roomView = Instantiate(roomTemplate, roomRoot, false);
             roomView.name = $"Room_{room.PlacementId}_{room.RoomType}";
             roomView.ConfigureIdentity(room.PlacementId, room.RoomType);
-            roomView.ConfigureShape(room.ShapeRectangles, room.ShapeGridSize);
+            roomView.ConfigureShape(room.ShapeRectangles, room.ShapeGridSize, room.IconAnchor);
             roomView.NodeRect.anchoredPosition = (room.WorldCenter - center) * graphScale;
             roomView.NodeRect.sizeDelta = new Vector2(
                 Mathf.Max(1f, room.WorldBounds.width * graphScale),
@@ -299,7 +299,11 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
     private void SetVisible(bool visible)
     {
         if (canvasGroup != null)
+        {
             canvasGroup.alpha = visible ? 1f : 0f;
+            canvasGroup.interactable = visible;
+            canvasGroup.blocksRaycasts = visible;
+        }
     }
 
     private void ResolveReferences()
