@@ -495,12 +495,12 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
     /// <summary>
     /// 책임 :
     /// - HUD가 사용하는 입력 바인딩 서비스 참조를 한 번만 확보해 반복 조회 비용을 줄인다.
-    /// - 서비스가 아직 없으면 필요 시점에 안전하게 다시 찾아 현재 글리프를 읽게 한다.
+    /// - 서비스 생성은 bootstrap에 맡겨 플레이어 해제 중 HUD 갱신이 서비스를 재생성하지 않게 한다.
     /// </summary>
     private InputBindingService GetInputBindingService()
     {
         if (cachedInputBindingService == null)
-            cachedInputBindingService = InputBindingService.EnsureInstance();
+            cachedInputBindingService = InputBindingService.Instance;
 
         return cachedInputBindingService;
     }

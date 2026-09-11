@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
-/// <summary>Owns one generated dungeon's same-scene return sequence and releases all temporary player, camera and timer state.</summary>
+/// <summary>Owns same-scene return safety and portal opening/closing, delegates falling/waking to the existing Hub presentation, and releases temporary state.</summary>
 [DisallowMultipleComponent]
 public sealed class DungeonReturnTravel : MonoBehaviour
 {
@@ -13,8 +13,6 @@ public sealed class DungeonReturnTravel : MonoBehaviour
     [SerializeField] private RoomSocketDirection arrivalDirection = RoomSocketDirection.Down;
     [SerializeField, Min(0f)] private float fadeSeconds = 0.15f;
     [SerializeField, Min(0f)] private float fallHeight = 3f;
-    [SerializeField, Min(0.01f)] private float fallSeconds = 0.45f;
-    [SerializeField, Min(0f)] private float landingHoldSeconds = 0.1f;
     private readonly Dictionary<Collider2D, bool> colliderStates = new();
     private Func<Vector3, float, Transform, bool> landingValidator;
     private DungeonMapRuntimeController map;
@@ -22,12 +20,14 @@ public sealed class DungeonReturnTravel : MonoBehaviour
     private Coroutine sequence;
     private Transform player;
     private PlayerPortalArrivalVisual2D visual;
+    private PlayerHubSpawnPresentation2D arrivalPresentation;
     private PlayerCinematicProtection protection;
     private PlayerTargetabilityBlocker targetability;
     private RunTimeLimitSystem timer;
     private IGameplayCameraFocusSession cameraSession;
     private ISceneFadeTransitionHandle fade;
     private bool ownsFade;
+    private float portalCloseReadyAt;
     public bool IsTravelling { get; private set; }
     public Transform LandingPoint => landingPoint;
 
@@ -49,7 +49,9 @@ public sealed class DungeonReturnTravel : MonoBehaviour
         Transform target = interactor.Transform;
         AbilitySystem abilities = target.GetComponent<AbilitySystem>();
         PlayerPortalArrivalVisual2D playerVisual = target.GetComponent<PlayerPortalArrivalVisual2D>();
+        PlayerHubSpawnPresentation2D hubPresentation = target.GetComponent<PlayerHubSpawnPresentation2D>();
         return (abilities == null || !abilities.IsBusy) && playerVisual != null && playerVisual.IsConfigured &&
+            hubPresentation != null && hubPresentation.isActiveAndEnabled && !hubPresentation.IsPlaying &&
             target.GetComponent<MovementMotor2D>() != null &&
             landingValidator != null && landingValidator(landingPoint.position, ResolveClearance(target), target);
     }
@@ -68,6 +70,7 @@ public sealed class DungeonReturnTravel : MonoBehaviour
         try
         {
             visual = player.GetComponent<PlayerPortalArrivalVisual2D>();
+            arrivalPresentation = player.GetComponent<PlayerHubSpawnPresentation2D>();
             if (visual == null || !visual.Begin()) yield break;
             protection = player.GetComponent<PlayerCinematicProtection>();
             if (protection == null) protection = player.gameObject.AddComponent<PlayerCinematicProtection>();
@@ -83,7 +86,7 @@ public sealed class DungeonReturnTravel : MonoBehaviour
             if (player == null || !landingValidator(landingPoint.position, ResolveClearance(player), player)) yield break;
 
             visual.SetVisible(false);
-            // Body stays at the landing floor; only the authored render roots fall from above it.
+            // Keep collision disabled until the shared fall/wake sequence fully completes.
             foreach (Collider2D collider in player.GetComponentsInChildren<Collider2D>(true))
             {
                 colliderStates[collider] = collider.enabled;
@@ -96,34 +99,34 @@ public sealed class DungeonReturnTravel : MonoBehaviour
             if (player == null) yield break;
             cameraSession?.SetTarget(landingPoint);
             cameraSession?.SnapToTarget(landingPoint);
-            visual.SetHeight(fallHeight, 1f);
+            Vector3 portalPosition = landingPoint.position + Vector3.up * fallHeight;
             if (arrivalPortal != null)
             {
-                arrivalPortal.transform.position = landingPoint.position + Vector3.up * fallHeight;
-                arrivalPortal.Open();
+                arrivalPortal.transform.position = portalPosition;
             }
             if (ownsFade) yield return fade.FadeInAsync(fadeSeconds);
-            if (arrivalPortal != null) yield return new WaitForSecondsRealtime(arrivalPortal.OpenSeconds);
-            visual.SetVisible(true);
-            float elapsed = 0f;
-            while (elapsed < Mathf.Max(0.01f, fallSeconds) && player != null)
-            {
-                elapsed += Time.unscaledDeltaTime;
-                float t = Mathf.Clamp01(elapsed / Mathf.Max(0.01f, fallSeconds));
-                float remaining = 1f - t * t;
-                visual.SetHeight(fallHeight * remaining, remaining);
-                yield return null;
-            }
-            visual?.SetHeight(0f, 0f);
-            map?.NotifyPlayerEnteredRoom(startRoomId);
-            yield return new WaitForSecondsRealtime(Mathf.Max(0f, landingHoldSeconds));
             if (arrivalPortal != null)
             {
-                arrivalPortal.Close();
-                yield return new WaitForSecondsRealtime(arrivalPortal.CloseSeconds);
+                arrivalPortal.Open();
+                yield return new WaitForSecondsRealtime(arrivalPortal.OpenSeconds);
             }
+            portalCloseReadyAt = 0f;
+            if (arrivalPresentation == null ||
+                !arrivalPresentation.TryPlayPortalArrival(this, portalPosition, HandleLanded)) yield break;
+            visual.SetVisible(true);
+            while (arrivalPresentation != null && arrivalPresentation.IsPortalArrivalPlaying(this))
+                yield return null;
+            while (Time.unscaledTime < portalCloseReadyAt) yield return null;
         }
         finally { Restore(); sequence = null; }
+    }
+
+    private void HandleLanded()
+    {
+        map?.NotifyPlayerEnteredRoom(startRoomId);
+        if (arrivalPortal == null) return;
+        arrivalPortal.Close();
+        portalCloseReadyAt = Time.unscaledTime + arrivalPortal.CloseSeconds;
     }
 
     private static float ResolveClearance(Transform target)
@@ -143,6 +146,8 @@ public sealed class DungeonReturnTravel : MonoBehaviour
 
     private void Restore()
     {
+        if (arrivalPresentation != null) arrivalPresentation.CancelPortalArrival(this);
+        arrivalPresentation = null;
         visual?.Restore();
         foreach (var pair in colliderStates)
             if (pair.Key != null) pair.Key.enabled = pair.Value;

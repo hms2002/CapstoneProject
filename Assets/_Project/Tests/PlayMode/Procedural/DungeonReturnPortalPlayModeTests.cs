@@ -11,7 +11,7 @@ using UnityEngine.TestTools;
 using UnityEngine.Tilemaps;
 using Object = UnityEngine.Object;
 
-/// <summary>Verifies return selection, room gating, art-free authoring, persistence and cancellation without scene travel.</summary>
+/// <summary>Verifies return selection, room gating, authored bindings, shared Hub arrival, persistence and cancellation without scene travel.</summary>
 public sealed class DungeonReturnPortalPlayModeTests
 {
     private const string Folder = "Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/";
@@ -130,13 +130,21 @@ public sealed class DungeonReturnPortalPlayModeTests
         Assert.That(portal.CanInteract(player), Is.True, TravelDiagnostic(builder.ReturnTravel, player));
         Assert.That(builder.ReturnTravel.TryTravel(portal, player), Is.True, TravelDiagnostic(builder.ReturnTravel, player));
         Assert.That(builder.ReturnTravel.TryTravel(portal, player), Is.False);
-        yield return new WaitForSecondsRealtime(0.1f);
+        var arrival = player.Transform.GetComponent<PlayerHubSpawnPresentation2D>();
+        float until = Time.realtimeSinceStartup + 3f;
+        while (!arrival.IsPlaying && Time.realtimeSinceStartup < until) yield return null;
+        Assert.That(arrival.IsPlaying, Is.True);
+        yield return null;
         builder.ReturnTravel.Cancel();
         Assert.That(builder.ReturnTravel.IsTravelling, Is.False);
         Assert.That(player.Transform.Find("Render").localPosition, Is.EqualTo(Vector3.zero));
         Assert.That(player.Transform.Find("Render").GetComponent<Renderer>().forceRenderingOff, Is.False);
         Assert.That(player.Transform.GetComponent<Collider2D>().enabled, Is.True);
         Assert.That(player.Transform.GetComponent<PlayerTargetabilityBlocker>().IsTargetable, Is.True);
+        Assert.That(arrival.IsPlaying, Is.False);
+        Assert.That(player.Transform.rotation, Is.EqualTo(Quaternion.identity));
+        Assert.That(player.Transform.GetComponent<Rigidbody2D>().simulated, Is.True);
+        Assert.That(player.Transform.Find("Shadow").localScale, Is.EqualTo(Vector3.one));
     }
 
     [UnityTest]
@@ -154,6 +162,8 @@ public sealed class DungeonReturnPortalPlayModeTests
         Assert.That(Vector2.Distance(player.Transform.position, builder.ReturnTravel.LandingPoint.position), Is.LessThan(0.01f));
         Assert.That(player.Transform.Find("Render").localPosition, Is.EqualTo(Vector3.zero));
         Assert.That(portal.CanInteract(player), Is.True);
+        Assert.That(builder.ReturnTravel.TryTravel(portal, player), Is.True);
+        builder.ReturnTravel.Cancel();
     }
 
     [Test]
@@ -172,18 +182,93 @@ public sealed class DungeonReturnPortalPlayModeTests
     }
 
     [Test]
-    public void AuthoredAssets_ContainNoArt_AndPlayerHasExplicitVisualBinding()
+    public void AuthoredAssets_HaveDirectionalBindings_AndSharedPlayerArrival()
     {
         foreach (string name in new[] { "DungeonReturnPortal", "DungeonReturnTravelRig" })
         {
             GameObject prefab = Load(name);
             Assert.That(prefab.GetComponentsInChildren<SpriteRenderer>(true).Length, Is.EqualTo(4));
-            foreach (var renderer in prefab.GetComponentsInChildren<SpriteRenderer>(true)) Assert.That(renderer.sprite, Is.Null);
-            foreach (var animator in prefab.GetComponentsInChildren<Animator>(true)) Assert.That(animator.runtimeAnimatorController, Is.Null);
+            // Art is supplied by the user after installation; do not require empty slots.
+            Assert.That(prefab.GetComponentsInChildren<Animator>(true).Length, Is.EqualTo(4));
+            var view = prefab.GetComponentInChildren<DungeonReturnPortalView>(true);
+            foreach (string direction in new[] { "up", "right", "down", "left" })
+                Assert.That(Get(view, direction), Is.Not.Null);
             Assert.That(prefab.GetComponent<ScenePortal>(), Is.Null);
         }
         var player = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Player/PF Player.prefab");
         Assert.That(player.GetComponent<PlayerPortalArrivalVisual2D>().IsConfigured, Is.True);
+        Assert.That(player.GetComponent<PlayerHubSpawnPresentation2D>(), Is.Not.Null);
+        var arrival = Load("DungeonReturnTravelRig").GetComponentInChildren<DungeonReturnPortalView>(true);
+        foreach (string direction in new[] { "up", "right", "down", "left" })
+        {
+            var arrivalRoot = (Transform)Get(arrival, direction);
+            Assert.That(arrivalRoot.GetComponent<SpriteRenderer>().sprite, Is.Not.Null);
+            Assert.That(arrivalRoot.GetComponent<Animator>().runtimeAnimatorController, Is.Not.Null);
+        }
+    }
+
+    [UnityTest]
+    public IEnumerator Travel_UsesHubSpinAndShadow_ClosesPortalAtLandingBeforeWake()
+    {
+        var builder = MakeBuilder(); Assert.That(builder.TryBuild(MakeLayout()), Is.True);
+        var player = MakePlayer();
+        var arrival = player.Transform.GetComponent<PlayerHubSpawnPresentation2D>();
+        Set(arrival, "fallDuration", 0.4f);
+        Set(arrival, "landingLockSeconds", 0.5f);
+        int hubCompleted = 0;
+        arrival.PresentationCompleted += _ => hubCompleted++;
+        var portal = builder.GeneratedReturnPortals[0]; portal.RestoreRevealed(true);
+        Assert.That(builder.ReturnTravel.TryTravel(portal, player), Is.True);
+        float until = Time.realtimeSinceStartup + 3f;
+        while (!arrival.IsPlaying && Time.realtimeSinceStartup < until) yield return null;
+        Assert.That(arrival.IsPlaying, Is.True);
+        Assert.That(player.Transform.GetComponent<Rigidbody2D>().simulated, Is.False);
+        Assert.That(player.Transform.position.y, Is.GreaterThan(builder.ReturnTravel.LandingPoint.position.y));
+        Assert.That(Quaternion.Angle(player.Transform.rotation, Quaternion.identity), Is.GreaterThan(0f));
+        var shadow = (Transform)Get(arrival, "shadowTransform");
+        Assert.That(shadow.parent, Is.Null);
+        Assert.That(Vector3.Distance(shadow.position, builder.ReturnTravel.LandingPoint.position), Is.LessThan(0.01f));
+        Assert.That(shadow.localScale.x, Is.GreaterThan(1f));
+        Assert.That(player.Transform.Find("Render").GetComponent<Animator>().enabled, Is.False);
+
+        var view = (DungeonReturnPortalView)Get(builder.ReturnTravel, "arrivalPortal");
+        while (!(bool)Get(view, "closing") && Time.realtimeSinceStartup < until) yield return null;
+        Assert.That((bool)Get(view, "closing"), Is.True);
+        Assert.That(arrival.IsPlaying, Is.True, "Portal closing must not wait for the later wake input/delay.");
+        Assert.That(Quaternion.Angle(player.Transform.rotation, Quaternion.Euler(0f, 0f, 90f)), Is.LessThan(0.1f));
+        while (builder.ReturnTravel.IsTravelling && Time.realtimeSinceStartup < until) yield return null;
+        Assert.That(builder.ReturnTravel.IsTravelling, Is.False);
+        Assert.That(shadow.parent, Is.SameAs(player.Transform));
+        Assert.That(player.Transform.Find("Render").GetComponent<Animator>().enabled, Is.True);
+        Assert.That(hubCompleted, Is.Zero, "Same-scene return must not complete the Hub tutorial.");
+        Assert.That((bool)Get(arrival, "hasPlayedThisScene"), Is.False);
+    }
+
+    [UnityTest]
+    public IEnumerator HubAutomaticArrival_KeepsSceneGateAndCompletionEvent_WhilePortalIsRepeatable()
+    {
+        var player = MakePlayer();
+        var arrival = player.Transform.GetComponent<PlayerHubSpawnPresentation2D>();
+        Set(arrival, "hubSceneName", player.Transform.gameObject.scene.name);
+        int hubCompleted = 0;
+        arrival.PresentationCompleted += _ => hubCompleted++;
+        arrival.TryPlayIfEligible();
+        Assert.That(arrival.IsPlaying, Is.True);
+        float until = Time.realtimeSinceStartup + 3f;
+        while (arrival.IsPlaying && Time.realtimeSinceStartup < until) yield return null;
+        Assert.That(arrival.IsPlaying, Is.False);
+        Assert.That(hubCompleted, Is.EqualTo(1));
+        arrival.TryPlayIfEligible();
+        Assert.That(arrival.IsPlaying, Is.False);
+
+        object owner = new();
+        Assert.That(arrival.TryPlayPortalArrival(owner, player.Transform.position + Vector3.up * 3f, null), Is.True);
+        Assert.That(arrival.TryPlayPortalArrival(new object(), player.Transform.position, null), Is.False);
+        arrival.CancelPortalArrival(new object());
+        Assert.That(arrival.IsPortalArrivalPlaying(owner), Is.True);
+        arrival.CancelPortalArrival(owner);
+        Assert.That(arrival.IsPlaying, Is.False);
+        Assert.That(hubCompleted, Is.EqualTo(1));
     }
 
     [TestCase("Shadow")]
@@ -216,8 +301,14 @@ public sealed class DungeonReturnPortalPlayModeTests
         root.GetComponent<Rigidbody2D>().gravityScale = 0f;
         root.AddComponent<CircleCollider2D>().radius = 0.2f;
         root.AddComponent<UnityGAS.MovementMotor2D>();
-        var render = new GameObject("Render", typeof(SpriteRenderer)); render.transform.SetParent(root.transform, false);
-        root.AddComponent<PlayerPortalArrivalVisual2D>().EditorConfigure(new[] { render.transform }, null);
+        var render = new GameObject("Render", typeof(SpriteRenderer), typeof(Animator)); render.transform.SetParent(root.transform, false);
+        var shadow = new GameObject("Shadow", typeof(SpriteRenderer)); shadow.transform.SetParent(root.transform, false);
+        root.AddComponent<PlayerPortalArrivalVisual2D>().EditorConfigure(new[] { render.transform }, shadow.transform);
+        var arrival = root.AddComponent<PlayerHubSpawnPresentation2D>();
+        Set(arrival, "fallDuration", 0.2f);
+        Set(arrival, "landingLockSeconds", 0.1f);
+        Set(arrival, "autoWakeWithoutInput", true);
+        Set(arrival, "autoWakeDelaySeconds", 0.1f);
         Physics2D.SyncTransforms();
         return new TestPlayerInteractor(root.transform);
     }
@@ -274,5 +365,6 @@ public sealed class DungeonReturnPortalPlayModeTests
     private static T Construct<T>(params object[] args) => (T)Activator.CreateInstance(typeof(T), Private, null, args, null);
     private static GameObject Load(string name) => AssetDatabase.LoadAssetAtPath<GameObject>(Folder + name + ".prefab");
     private static void Set(object owner, string name, object value) => owner.GetType().GetField(name, Private).SetValue(owner, value);
+    private static object Get(object owner, string name) => owner.GetType().GetField(name, Private).GetValue(owner);
 }
 #endif

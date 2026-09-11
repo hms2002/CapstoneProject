@@ -488,6 +488,12 @@ public sealed partial class DungeonGraphLayoutAssembler
                 failure = $"Guaranteed room '{template.name}' is not a usable room template.";
                 return false;
             }
+
+            if (!template.LayoutData.topologyPlacement.TryValidate(out string placementFailure))
+            {
+                failure = $"Guaranteed room '{template.name}' has invalid topology placement. {placementFailure}";
+                return false;
+            }
         }
 
         failure = string.Empty;

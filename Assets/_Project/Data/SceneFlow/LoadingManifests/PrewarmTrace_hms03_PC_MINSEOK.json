@@ -1,48 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "1d96ca25becc4b47baccb84df9823bd3",
-            "startedUtc": "2026-09-11T01:08:42.6590511Z",
-            "endedUtc": "2026-09-11T01:08:43.6617878Z",
-            "entries": []
-        },
-        {
-            "sessionId": "33020822d5b44b4a947a48f0d9bdb873",
-            "startedUtc": "2026-09-11T02:13:13.6035449Z",
-            "endedUtc": "2026-09-11T02:13:14.6083134Z",
-            "entries": []
-        },
-        {
-            "sessionId": "6973bf0437c34ab0a9354ef8dee67cca",
-            "startedUtc": "2026-09-11T05:46:28.2759163Z",
-            "endedUtc": "2026-09-11T05:46:29.0173478Z",
-            "entries": []
-        },
-        {
-            "sessionId": "6deb1846740b42d1a5e75e1868d8a177",
-            "startedUtc": "2026-09-11T05:49:47.8408238Z",
-            "endedUtc": "2026-09-11T05:49:48.3324930Z",
-            "entries": []
-        },
-        {
-            "sessionId": "e34d64a703d840af86203a9029bfb899",
-            "startedUtc": "2026-09-11T05:52:16.9915530Z",
-            "endedUtc": "2026-09-11T05:52:17.4254435Z",
-            "entries": []
-        },
-        {
-            "sessionId": "48aca21d76ce4e0cb57f8cc9bc846eec",
-            "startedUtc": "2026-09-11T05:58:48.9797406Z",
-            "endedUtc": "2026-09-11T05:58:49.4110768Z",
-            "entries": []
-        },
-        {
-            "sessionId": "c3e5e2b43aa0437a96eb0db69a998e53",
-            "startedUtc": "2026-09-11T06:27:54.3661500Z",
-            "endedUtc": "2026-09-11T06:27:54.8116427Z",
-            "entries": []
-        },
-        {
             "sessionId": "dd1a1393512a448691c62c1790662ff7",
             "startedUtc": "2026-09-11T08:05:45.0550669Z",
             "endedUtc": "2026-09-11T08:06:55.8082037Z",
@@ -141,6 +99,59 @@
             "startedUtc": "2026-09-11T10:42:23.8680719Z",
             "endedUtc": "2026-09-11T10:42:24.8725253Z",
             "entries": []
+        },
+        {
+            "sessionId": "caaee7a35f4b41b88ade04ba7d90a912",
+            "startedUtc": "2026-09-11T12:21:54.0644272Z",
+            "endedUtc": "2026-09-11T12:21:55.0699747Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a43b654a7bae45d2b830209174c8eecd",
+            "startedUtc": "2026-09-11T12:34:25.3404642Z",
+            "endedUtc": "2026-09-11T12:34:26.3438490Z",
+            "entries": []
+        },
+        {
+            "sessionId": "de0386ba206d4f64863a889a92733f00",
+            "startedUtc": "2026-09-11T12:44:29.1825735Z",
+            "endedUtc": "2026-09-11T12:44:30.1869299Z",
+            "entries": []
+        },
+        {
+            "sessionId": "0acaf3e58ed7427abd5e9569e92ebc50",
+            "startedUtc": "2026-09-11T12:46:21.0845835Z",
+            "endedUtc": "2026-09-11T12:46:22.0875126Z",
+            "entries": []
+        },
+        {
+            "sessionId": "18689d0e4e6a4b3db1ebee1a5cf96954",
+            "startedUtc": "2026-09-11T13:34:00.7710791Z",
+            "endedUtc": "2026-09-11T13:34:01.7744772Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a83f8b76760e4d6e9502dc88d5b3aa47",
+            "startedUtc": "2026-09-11T13:41:30.4376892Z",
+            "endedUtc": "2026-09-11T13:41:31.4404649Z",
+            "entries": []
+        },
+        {
+            "sessionId": "b726a7e3e63544eb8cd530924309da4b",
+            "startedUtc": "2026-09-11T13:42:00.4926113Z",
+            "endedUtc": "2026-09-11T13:43:57.4108563Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 42,
+                    "coldSpawns": 42,
+                    "firstSeenSeconds": 21.04662322998047,
+                    "lastSeenSeconds": 115.95714569091797,
+                    "firstSceneName": "ProceduralShadowCorridor",
+                    "lastSceneName": "ProceduralShadowCorridor"
+                }
+            ]
         }
     ]
 }

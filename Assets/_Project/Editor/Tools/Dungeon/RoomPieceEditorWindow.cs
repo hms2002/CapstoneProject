@@ -2854,6 +2854,9 @@ public sealed partial class RoomPieceEditorWindow : EditorWindow
             "Wall",
             validationMessages);
 
+        if (!selectedAuthoring.TopologyPlacement.TryValidate(out string topologyFailure))
+            validationMessages.Add($"Topology Placement: {topologyFailure}");
+
         ValidateSockets(selectedAuthoring, validationMessages);
         ValidateObjectPlacements(selectedAuthoring, validationMessages);
         ValidateMonsterWaves(selectedAuthoring, validationMessages);

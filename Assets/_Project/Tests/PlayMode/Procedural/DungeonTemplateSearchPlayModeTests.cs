@@ -208,6 +208,119 @@ public sealed class DungeonTemplateSearchPlayModeTests
 
     private static string Signature(DungeonLayoutResult result) => string.Join("|", result.Rooms.Select(r => $"{r.PlacementId}:{r.Template.LayoutData.roomId}:{r.Origin}"));
 
+    [TestCase(RoomTopologyPlacementMode.Default, true, true)]
+    [TestCase(RoomTopologyPlacementMode.FarthestFromStart, true, true)]
+    [TestCase(RoomTopologyPlacementMode.CycleDetour, false, true)]
+    [TestCase(RoomTopologyPlacementMode.CycleDetour, true, false)]
+    public void TopologyPlacement_RejectsOnlyContradictoryCycleDeadEnd(
+        RoomTopologyPlacementMode mode, bool deadEnd, bool expected)
+    {
+        var placement = new RoomTopologyPlacementData { mode = mode, requireDeadEnd = deadEnd };
+        Assert.That(placement.TryValidate(out _), Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void GuaranteedCycleDeadEnd_FailsBeforeTopologyRetryLoop()
+    {
+        Template("Start", RoomType.Start);
+        Template("Boss", RoomType.Boss);
+        var invalid = Template("ContradictoryEvent", RoomType.Event);
+        var layout = invalid.LayoutData;
+        layout.topologyPlacement = new RoomTopologyPlacementData
+        {
+            mode = RoomTopologyPlacementMode.CycleDetour,
+            minimumGraphDistanceFromStart = 2,
+            requireDeadEnd = true
+        };
+        invalid.EditorSetData(layout, invalid.BuildData);
+        var library = Own(ScriptableObject.CreateInstance<RoomThemeLibrarySO>());
+        foreach (var template in templates) library.EditorAddRoom(template);
+        var result = new DungeonGraphLayoutAssembler().Assemble(
+            library, Policy(), 17, 12, 512, 2, 0f, 0, new[] { invalid });
+        Assert.That(result.Rooms, Is.Empty);
+        StringAssert.Contains("ContradictoryEvent", result.FailureReason);
+        StringAssert.Contains("CycleDetour cannot require a dead end", result.FailureReason);
+        StringAssert.DoesNotContain("after 512 attempts", result.FailureReason);
+    }
+
+    [TestCase("Shadow")]
+    [TestCase("Dragon")]
+    [TestCase("Slime")]
+    public void ProductionRuntimeEventPlans_PlaceEveryStartEventAndFollowUp(string theme)
+    {
+        var profile = AssetDatabase.LoadAssetAtPath<DungeonGenerationProfileSO>(
+            $"Assets/_Project/Data/Dungeon/GenerationProfiles/Procedural{theme}GenerationProfile.asset");
+        Assert.That(profile.RunMapEventProfile, Is.Not.Null);
+        var route = AssetDatabase.FindAssets("t:CorridorBossRouteSetSO")
+            .Select(g => AssetDatabase.LoadAssetAtPath<CorridorBossRouteSetSO>(AssetDatabase.GUIDToAssetPath(g)))
+            .First(r => r.MatchesCorridorScene($"Procedural{theme}Corridor"));
+        var manager = GamePlayDataManager.EnsureInstance();
+        var routes = PortalRouteManager.EnsureInstance();
+        var eventProfile = Own(Object.Instantiate(profile.RunMapEventProfile));
+        eventProfile.EditorConfigure(profile.RunMapEventProfile.EventDefinitions, 1,
+            profile.RunMapEventProfile.PlannedBossRouteVisitCount, false);
+        int checkedLayouts = 0;
+        try
+        {
+            foreach (var definition in eventProfile.EventDefinitions)
+            {
+                manager.ResetForDevelopmentStart();
+                manager.StartRun();
+                routes.ClearPlan();
+                Assert.That(routes.ActivateSceneConnectionRouteContext(route, route.CorridorSceneName), Is.True);
+                for (int visit = 1; visit < definition.MinimumBossRouteVisitOrder; visit++)
+                    manager.Data.visitedRunMapEventRouteThemeIds.Add($"test_previous_route_{visit}");
+                eventProfile.EditorSetGuaranteedStartEvents(new[] { definition });
+                for (int n = 0; n < 3; n++)
+                {
+                    int seed = unchecked(profile.Seed + n * 997);
+                    var plan = RunMapEventGenerationResolver.CreatePlan(eventProfile, profile.GuaranteedRoomTemplates, seed);
+                    Assert.That(plan.GuaranteedRoomTemplates, Does.Contain(definition.EventRoomTemplate));
+                    CheckEventLayout(profile, seed, plan.GuaranteedRoomTemplates);
+                    checkedLayouts++;
+                }
+
+                foreach (var followUp in definition.FollowUps)
+                {
+                    if (followUp == null || !followUp.IsConfigured) continue;
+                    var guaranteed = new List<RoomTemplateSO>(profile.GuaranteedRoomTemplates);
+                    if (!guaranteed.Contains(followUp.RoomTemplate)) guaranteed.Add(followUp.RoomTemplate);
+                    CheckEventLayout(profile, profile.Seed, guaranteed);
+                    checkedLayouts++;
+                }
+            }
+            Assert.That(checkedLayouts, Is.GreaterThan(0));
+            TestContext.WriteLine($"{theme}: {checkedLayouts} runtime start-event / follow-up layouts passed.");
+        }
+        finally
+        {
+            routes.ClearPlan();
+            manager.ResetForDevelopmentStart();
+        }
+    }
+
+    private static void CheckEventLayout(DungeonGenerationProfileSO profile, int seed, IReadOnlyList<RoomTemplateSO> guaranteed)
+    {
+        var result = new DungeonGraphLayoutAssembler().Assemble(profile.RoomLibrary, profile.LayoutPolicy,
+            seed, profile.RoomCount, profile.MaxPlacementAttemptsPerRoom, profile.MinimumCorridorLength,
+            profile.CorridorLengthPerRoomCell, profile.CorridorLengthVariation, guaranteed);
+        Assert.That(result.IsComplete, Is.True, $"{profile.name}, seed={seed}: {result.FailureReason}");
+        Assert.That(result.Rooms.Count, Is.EqualTo(profile.RoomCount));
+        foreach (var rule in profile.LayoutPolicy.RequiredCombatRoomRules)
+            if (rule != null && rule.Count > 0) Assert.That(result.Rooms.Count(r => rule.Matches(r.Template)), Is.EqualTo(rule.Count));
+        Assert.That(result.Rooms.Count(r => r.Template.LayoutData.roomType == RoomType.Combat &&
+            RoomTemplateCombatMetadataUtility.ResolveSizeTag(r.Template) == RoomCombatSizeTag.Large),
+            Is.LessThanOrEqualTo(profile.LayoutPolicy.MaximumLargeCombatRoomCount));
+        foreach (var template in guaranteed)
+        {
+            var rooms = result.Rooms.Where(r => r.Template == template).ToArray();
+            Assert.That(rooms.Length, Is.EqualTo(1), template.name);
+            if (template.LayoutData.topologyPlacement.requireDeadEnd)
+                Assert.That(result.Connections.Count(c => c.FirstRoomPlacementId == rooms[0].PlacementId ||
+                    c.SecondRoomPlacementId == rooms[0].PlacementId), Is.EqualTo(1), template.name);
+        }
+    }
+
     private RoomTemplateSO Template(string id, RoomType role = RoomType.Combat, int mask = 15,
         bool large = false, bool reward = false, float weight = 1f, RoomShapeTagSO shape = null)
     {

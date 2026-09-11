@@ -20,10 +20,10 @@ MonoBehaviour:
     patches:
     - socketSpaceOffset: {x: -1, y: 0}
       tileSource: 0
-      explicitTile: {fileID: 11400000, guid: 83cf1c06b1eab384b9bccc342c1f51d9, type: 2}
+      explicitTile: {fileID: 11400000, guid: 9db6c8ba0cf47c34393a4be92d00c192, type: 2}
     - socketSpaceOffset: {x: 2, y: 0}
       tileSource: 0
-      explicitTile: {fileID: 11400000, guid: 83cf1c06b1eab384b9bccc342c1f51d9, type: 2}
+      explicitTile: {fileID: 11400000, guid: 9db6c8ba0cf47c34393a4be92d00c192, type: 2}
   - matchAnyDirection: 0
     direction: 2
     connectionFilter: 1

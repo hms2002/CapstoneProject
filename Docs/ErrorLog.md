@@ -7,6 +7,16 @@ last_reviewed: 2026-09-03
 
 # Error Log
 
+## 2026-09-11 - Guaranteed Event Required Both Cycle And Dead End
+
+Symptom: runtime Shadow generation exhausted 512 topology attempts when ParcelPickup was selected, despite the static-profile seed sweep passing.
+
+Cause: `Shadow_Event_ParcelPickup` authored `CycleDetour`, minimum start distance 2 and `requireDeadEnd=true`. A cycle detour always has at least two edges; a dead end has one. This fails guaranteed-role assignment before template backtracking. Earlier seed coverage omitted runtime-injected event guarantees.
+
+Fix: change only this asset's mode to `FarthestFromStart`, preserving distance 2 and the dead-end requirement. Share an explicit contradiction check between the Room Piece validation/bake gate and guaranteed-template preflight. Do not automatically relax either hard condition. Cover runtime start-event plans and authored follow-up guarantees, not only the base generation profile.
+
+Related cleanup trap: player unregistration clears weapon HUD slots, whose input getter previously called `EnsureInstance`. If the input service was already destroyed, cleanup could recreate it. Both weapon HUDs now read the bootstrapped `InputBindingService.Instance` without creation; a targeted test destroys the cached service, clears slots and checks that no replacement is spawned, while later normal bootstrap remains discoverable. The service/bootstrap lifecycle itself is unchanged.
+
 ## 2026-09-11 - Greedy Room Selection Committed Before Checking Scarce Neighbors
 
 Symptom: a flexible node selected A even though an adjacent node could use only A, causing consecutive identical rooms despite an alternative B for the first node. Local repeat buckets only saw already assigned neighbors and never reconsidered the first choice. Required Combat reservation also pinned a randomly chosen concrete template too early.
