@@ -93,12 +93,26 @@ public sealed class DungeonChestLootRuntimeStateData
 [System.Serializable]
 public sealed class DungeonObjectRuntimeStateData
 {
+    public DungeonRoomWaveRuntimeStateData roomWaves;
     public string stateId;
     public bool isPresent = true;
     public bool isActive = true;
     public bool isChestOpened;
     public System.Collections.Generic.List<DungeonChestLootRuntimeStateData> chestLoot =
         new System.Collections.Generic.List<DungeonChestLootRuntimeStateData>();
+}
+
+/// <summary>Stores room-wave progress without depending on gameplay implementation types.</summary>
+[System.Serializable]
+public sealed class DungeonRoomWaveRuntimeStateData
+{
+    public bool hasStarted;
+    public bool completed;
+    public string currentWaveId;
+    public float remainingDelaySeconds;
+    public bool delayElapsed;
+
+    public DungeonRoomWaveRuntimeStateData Copy() => (DungeonRoomWaveRuntimeStateData)MemberwiseClone();
 }
 
 /// <summary>

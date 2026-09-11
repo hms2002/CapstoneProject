@@ -11,7 +11,7 @@ using UnityEngine;
 /// - 플레이어의 방 encounter 진입/이탈을 연결된 문 잠금 장치에 전파한다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class MonsterSpawnRoomGroup : MonoBehaviour
+public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
 {
     private const string DefaultRoomEntrySpawnSettingsResourcePath = "MonsterRoomEntrySpawnSettings";
 
@@ -270,9 +270,15 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
     private void OnDisable()
     {
+        PauseRoomWaves();
         encounterHoldCount = 0;
         CancelActiveSpawnRoutines();
         ReleaseAllPendingSpawns();
+    }
+
+    private void OnEnable()
+    {
+        ResumeRoomWavesIfNeeded();
     }
 
     /// <summary>
@@ -310,6 +316,9 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
             return;
         }
 
+        if (RoomWavesCompleted)
+            return;
+
         roomEntrySpawnStarted = true;
         RefreshContainersIfNeeded();
         LogRoomEntrySpawn($"start: containers={reusableContainers.Count}");
@@ -320,9 +329,7 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
         {
             LogRoomEntrySpawn(
                 $"profile plan: profile={FormatObject(spawnProfile)}, requests={reusableSpawnRequests.Count}");
-            for (int requestIndex = 0; requestIndex < reusableSpawnRequests.Count; requestIndex++)
-                ScheduleRoomEntrySpawn(reusableSpawnRequests[requestIndex], $"profile[{requestIndex}]");
-
+            PrepareRoomWaves(reusableSpawnRequests);
             return;
         }
 
@@ -339,11 +346,14 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
             if (!container.TryCreateRequest(stageIndex, out MonsterSpawnRequest request))
             {
                 LogRoomEntrySpawn($"skip container[{i}]: failed request. container={FormatContainer(container)}, stage={stageIndex}");
+                Debug.LogWarning($"[RoomWaves] {name}: cannot resolve '{container.name}' at stage {stageIndex}; skipping spawn.", this);
+                container.NotifyRuntimeSpawned(null);
                 continue;
             }
 
-            ScheduleRoomEntrySpawn(request, $"container[{i}]");
+            reusableSpawnRequests.Add(request);
         }
+        PrepareRoomWaves(reusableSpawnRequests);
     }
 
     /// <summary>
@@ -351,65 +361,59 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
     /// - 프로필 또는 개별 컨테이너가 만든 스폰 요청을 동일한 pending-lock/VFX 코루틴 흐름에 등록한다.
     /// - 요청 생성 경로에 따라 문과 상자의 kill lock 처리 순서가 달라지지 않게 한다.
     /// </summary>
-    private void ScheduleRoomEntrySpawn(MonsterSpawnRequest request, string sourceLabel)
+    private void ScheduleRoomEntrySpawn(WaveSpawnTicket ticket)
     {
+        MonsterSpawnRequest request = ticket.Request;
         if (!request.IsValid)
+        {
+            CompleteWaveTicket(ticket, null);
             return;
+        }
 
-        ReservePendingSpawn(request);
         LogRoomEntrySpawn(
-            $"reserved {sourceLabel}: prefab={FormatObject(request.MonsterPrefab)}, pos={request.Position}, " +
+            $"scheduled wave: prefab={FormatObject(request.MonsterPrefab)}, pos={request.Position}, " +
             $"pending={pendingRoomEntrySpawnCount}, chestLock={FormatObject(request.LinkedChestKillLock)}");
-        Coroutine routine = StartCoroutine(SpawnRoomEntryMonsterRoutine(request));
+        Coroutine routine = StartCoroutine(SpawnRoomEntryMonsterRoutine(ticket));
         activeSpawnRoutines.Add(routine);
     }
 
-    private IEnumerator SpawnRoomEntryMonsterRoutine(MonsterSpawnRequest request)
+    private IEnumerator SpawnRoomEntryMonsterRoutine(WaveSpawnTicket ticket)
     {
+        MonsterSpawnRequest request = ticket.Request;
         GameObject vfx = null;
-        GameObject resolvedVfxPrefab = ResolveSpawnVfxPrefab();
-        float resolvedDelaySeconds = ResolveSpawnVfxDelaySeconds(resolvedVfxPrefab);
-        Vector3 resolvedOffset = ResolveSpawnVfxOffset();
-        SoundRef resolvedSound = ResolveSpawnSound();
-
-        LogRoomEntrySpawn($"routine start: prefab={FormatObject(request.MonsterPrefab)}, pos={request.Position}, vfx={FormatObject(resolvedVfxPrefab)}, delay={resolvedDelaySeconds:0.###}");
-        if (resolvedVfxPrefab != null)
+        try
         {
-            vfx = Instantiate(
-                resolvedVfxPrefab,
-                request.Position + resolvedOffset,
-                request.Rotation);
-            activeSpawnVfx.Add(vfx);
-            LogRoomEntrySpawn($"vfx instantiated: vfx={FormatObject(vfx)}, pos={vfx.transform.position}");
-        }
+            GameObject resolvedVfxPrefab = ResolveSpawnVfxPrefab();
+            float resolvedDelaySeconds = ResolveSpawnVfxDelaySeconds(resolvedVfxPrefab);
+            Vector3 resolvedOffset = ResolveSpawnVfxOffset();
+            SoundRef resolvedSound = ResolveSpawnSound();
 
-        PlaySpawnSound(resolvedSound, request.Position + resolvedOffset);
+            if (resolvedVfxPrefab != null)
+            {
+                vfx = Instantiate(resolvedVfxPrefab, request.Position + resolvedOffset, request.Rotation);
+                activeSpawnVfx.Add(vfx);
+            }
+            PlaySpawnSound(resolvedSound, request.Position + resolvedOffset);
 
-        float delaySeconds = resolvedVfxPrefab != null ? resolvedDelaySeconds : 0f;
-        if (delaySeconds > 0f)
-        {
-            LogRoomEntrySpawn($"wait delay: seconds={delaySeconds:0.###}, prefab={FormatObject(request.MonsterPrefab)}");
-            yield return new WaitForSeconds(delaySeconds);
-        }
+            if (resolvedVfxPrefab != null && resolvedDelaySeconds > 0f)
+                yield return new WaitForSeconds(resolvedDelaySeconds);
 
-        MonsterSpawner spawner = MonsterSpawner.Instance;
-        if (spawner != null)
-        {
-            GameObject spawnedMonster = spawner.SpawnOne(request);
+            MonsterSpawner spawner = MonsterSpawner.Instance;
+            GameObject spawnedMonster = spawner != null ? spawner.SpawnOne(request) : null;
+            if (spawnedMonster == null)
+                Debug.LogWarning($"[RoomWaves] {name}: spawn failed for {FormatObject(request.MonsterPrefab)}; releasing reservation.", this);
+            CompleteWaveTicket(ticket, spawnedMonster);
             ApplyPostSpawnIdlePause(spawnedMonster);
-            LogRoomEntrySpawn($"spawn result: prefab={FormatObject(request.MonsterPrefab)}, monster={FormatObject(spawnedMonster)}");
-            ReleasePendingSpawn(request, releaseChestPending: spawnedMonster == null);
         }
-        else
+        finally
         {
-            LogRoomEntrySpawn($"spawn failed: MonsterSpawner.Instance is null. prefab={FormatObject(request.MonsterPrefab)}");
-            ReleasePendingSpawn(request, releaseChestPending: true);
+            // Interrupted VFX waits stay resumable; a spawn exception must not leave a permanent lock.
+            if (!ticket.Completed && isActiveAndEnabled && !waveSequencePausing)
+                CompleteWaveTicket(ticket, null);
+            activeSpawnVfx.Remove(vfx);
+            if (vfx != null)
+                Destroy(vfx);
         }
-
-        activeSpawnRoutines.RemoveAll(routine => routine == null);
-        activeSpawnVfx.Remove(vfx);
-        if (vfx != null)
-            Destroy(vfx);
     }
 
     /// <summary>

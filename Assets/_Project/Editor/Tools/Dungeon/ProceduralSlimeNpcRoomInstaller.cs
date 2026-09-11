@@ -732,6 +732,7 @@ public static class ProceduralSlimeNpcRoomInstaller
                 ? new List<RoomTileData>(sourceBuild.wallTiles)
                 : new List<RoomTileData>(),
             objectPlacements = objectPlacements,
+            monsterWaves = RoomMonsterWaveDefinition.CopyOrDefault(sourceBuild.monsterWaves),
             travelEndpointPlacements = sourceBuild.travelEndpointPlacements != null
                 ? new List<RoomTravelEndpointPlacementData>(sourceBuild.travelEndpointPlacements)
                 : new List<RoomTravelEndpointPlacementData>()

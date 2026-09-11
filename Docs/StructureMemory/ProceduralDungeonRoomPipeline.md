@@ -247,12 +247,24 @@ Run `Tools/Dungeon/Install Boss Theme Procedural Corridor Scenes` to rebuild and
 ## Extension Points
 
 - Add trap/reward kinds and per-placement configuration without exposing those details to `DungeonLayoutAssembler`.
-- Optionally delay procedural monster creation until entry by feeding generated placement requests into the existing room-entry spawn presentation flow; keep the generated room group as the encounter owner.
+- Author sequential monster waves through the Room Piece Objects step; the generated room group owns encounter entry, pending spawn reservations and wave progress.
 - Generalize the currently fixed width beyond two cells and add socket categories before adding multi-cell corridors.
 - Replace the fixed straight corridor with a routed/bent corridor planner when topology needs turns or intersections.
 - Add room rotation by transforming bounds, tile cells, and socket directions together.
 - Author Event and Shop room templates, then enable their existing policy quotas. Add graph-distance-based difficulty progression as a separate role/content policy rather than changing physical embedding.
 - Move the door prefab/policy into theme data when themes require different door visuals or behavior.
+
+## Room Monster Waves
+
+- `RoomBuildData.monsterWaves` stores ordered `RoomMonsterWaveDefinition` entries (stable ID, display name, start delay). `RoomObjectPlacementData.monsterWaveId` assigns each Monster placement to a wave. Empty legacy lists/IDs resolve to a single `wave_default` wave with no extra delay. Reordering does not rewrite membership.
+- `RoomPieceAuthoring` owns the editable list, and `RoomObjectAuthoring` carries membership through import/bake. `RoomPieceEditorWindow.Waves.cs` supplies the reorderable list, all/selected-wave view, add/remove, membership dropdown, bulk movement, and same-wave close-placement warnings. Deletion asks to move members or delete them; the last wave cannot be removed. The removal destination is selectable. Empty legacy rooms can enable editing via the single-wave edit button.
+- Scene handles use W1/W2 labels and dim overlays for other waves without changing prefab renderer properties. The full dungeon preview includes wave numbers in monster glyphs. Overlap warnings use a 0.35-world-unit center distance, not collider intersection; cross-wave shared locations are allowed.
+- `DungeonRoomBuilder` configures `MonsterSpawnRoomGroup` and each deferred `MonsterSpawnContainer` from room data. `MonsterSpawnRoomGroup.Waves.cs` partitions the existing spawn requests once, sequences pre-wave delay and spawn VFX, and polls only the active wave's tickets/`MonsterLockTrackingUnit`s every 0.1 seconds. Split children share the unit and block progression. No per-frame global search or additional manager is introduced.
+- The wave owner reserves all future requests up front, including explicitly linked chest pending counts. Its separate encounter hold keeps doors and room-bound candidate chests locked during inter-wave gaps. A directly placed chest linked only to wave 1 can unlock after wave 1; it is not silently changed into a whole-room reward. External holds and independently spawned Alarm Bell monsters do not block ordinary wave advancement; they still participate in room/door locking.
+- Disable cancels pending VFX/routines and releases reservations/owned hold. Re-enable resumes incomplete tickets without duplicating already spawned monsters. Invalid sources and failed spawn results warn and release their reservations. The authoring validator rejects invalid stage sources, duplicate/empty wave IDs, missing wave references and invalid delays before saving.
+- `CaptureGeneratedObjectStates` adds a synthetic `room-wave:{roomPlacementId}` entry whose `roomWaves` DTO stores start/completion, current stable wave ID and remaining pre-wave delay. It is metadata, not a physical object. `RunSessionLifecycleService` deep-copies it; the generator restores it before encounter entry. Future anchors remain present, killed anchors become inactive immediately on restore, and completed rooms never restart. Old snapshots without wave metadata remain valid.
+- Monster survival capture uses split-aware lock units, so a dead parent with surviving children does not become an entirely cleared placement. Re-entry still follows the pre-existing presence-only monster restoration policy: it recreates a surviving placement from its authored source/position, not exact health, transforms or an exact remaining split-child roster. Wave progress preservation does not promise a full combat snapshot.
+- Production templates are not automatically split into waves. Designers load a room, use Objects > Monster Waves, add waves/assign monsters, then save the template. Alarm Bell event waves and procedural room selection/quotas are unchanged. This is a structural map, not a replacement for the cleanup contracts.
 
 ## Known Pitfalls
 

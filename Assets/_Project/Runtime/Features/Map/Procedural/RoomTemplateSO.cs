@@ -337,6 +337,7 @@ public struct RoomBuildData
     public List<RoomTileData> foregroundTiles;
     public List<RoomTileData> overlayFxTiles;
     public List<RoomObjectPlacementData> objectPlacements;
+    public List<RoomMonsterWaveDefinition> monsterWaves;
     public List<RoomTravelEndpointPlacementData> travelEndpointPlacements;
 
     public List<RoomTileData> GetTiles(RoomTileLayerKind layer)
@@ -561,6 +562,8 @@ public static class RoomTravelEndpointGeometry
 [Serializable]
 public struct RoomObjectPlacementData
 {
+    // Empty IDs in existing templates belong to the stable default wave.
+    public string monsterWaveId;
     public string placementId;
     public RoomObjectKind kind;
     public GameObject prefab;

@@ -13,7 +13,7 @@ using UnityEngine.Tilemaps;
 /// - 실제 DungeonLayoutAssembler와 시각 전용 DungeonRoomBuilder를 사용해 저장 전 방을 포함한 동적 맵을 미리 보여준다.
 /// - 미리보기에서 검증한 생성 수치를 테마별 DungeonGenerationProfileSO에 저장해 실제 복도 생성과 공유한다.
 /// </summary>
-public sealed class RoomPieceEditorWindow : EditorWindow
+public sealed partial class RoomPieceEditorWindow : EditorWindow
 {
     private const string MonsterSpawnSetFolder =
         "Assets/_Project/Data/Monsters/SpawnSets";
@@ -103,6 +103,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     private void OnEnable()
     {
         SceneView.duringSceneGui += DrawSocketSceneHandles;
+        SceneView.duringSceneGui += DrawWaveSceneHandles;
         selectedAuthoring = RoomAuthoringWorkspace.FindAuthoring();
         InvalidateSceneReferenceCount();
     }
@@ -110,6 +111,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     private void OnDisable()
     {
         SceneView.duringSceneGui -= DrawSocketSceneHandles;
+        SceneView.duringSceneGui -= DrawWaveSceneHandles;
     }
 
     private void OnInspectorUpdate()
@@ -707,6 +709,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
     private void DrawObjectSection()
     {
+        DrawMonsterWaveSection();
         EditorGUILayout.Space(8f);
         EditorGUILayout.LabelField("방 오브젝트", EditorStyles.boldLabel);
         using (new EditorGUILayout.HorizontalScope())
@@ -818,6 +821,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         for (int i = 0; i < objects.Length; i++)
         {
             RoomObjectAuthoring roomObject = objects[i];
+            if (roomObject.Kind == RoomObjectKind.Monster && !IsMonsterInSelectedWave(roomObject))
+                continue;
             using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
             {
                 SerializedObject serializedObject = new(roomObject);
@@ -829,6 +834,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                 EditorGUILayout.PropertyField(kindProperty, new GUIContent("Kind"));
                 if ((RoomObjectKind)kindProperty.enumValueIndex == RoomObjectKind.Monster)
                 {
+                    DrawMonsterWavePopup(serializedObject.FindProperty("monsterWaveId"));
                     SerializedProperty prefabProperty = serializedObject.FindProperty("prefab");
                     SerializedProperty stageSetProperty =
                         serializedObject.FindProperty("monsterStageSet");
@@ -2110,6 +2116,9 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             RestoreTiles(selectedAuthoring.GetTilemap(layer), build.GetTiles(layer));
         }
         RestoreSockets(selectedAuthoring, layout.sockets);
+        selectedAuthoring.EditorSetMonsterWaves(build.monsterWaves);
+        selectedWaveId = null;
+        waveList = null;
         RestoreObjects(selectedAuthoring, build.objectPlacements);
         RestoreTravelEndpoints(selectedAuthoring, build.travelEndpointPlacements);
 
@@ -2538,6 +2547,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             prefab = placingCommonRoleMonster ? null : objectPrefabToPlace,
             monsterSpawnRole = monsterRoleToPlace,
             monsterStageSet = roleSet,
+            monsterWaveId = placingMonster ? ResolvePlacementWaveId() : null,
             localCell = defaultCell,
             localOffset = Vector2.zero,
             localRotationDegrees = 0f,
@@ -2845,6 +2855,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
 
         ValidateSockets(selectedAuthoring, validationMessages);
         ValidateObjectPlacements(selectedAuthoring, validationMessages);
+        ValidateMonsterWaves(selectedAuthoring, validationMessages);
         ValidateTravelEndpointPlacements(selectedAuthoring, validationMessages);
 
         bool valid = validationMessages.Count == 0;
@@ -3114,6 +3125,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                 selectedAuthoring.OverlayFxTilemap,
                 selectedAuthoring.Size),
             objectPlacements = CollectObjectPlacements(selectedAuthoring),
+            monsterWaves = RoomMonsterWaveDefinition.CopyOrDefault(selectedAuthoring.MonsterWaves),
             travelEndpointPlacements = CollectTravelEndpointPlacements(selectedAuthoring)
         };
         return true;

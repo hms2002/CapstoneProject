@@ -15,6 +15,7 @@ public sealed class RoomObjectAuthoring : MonoBehaviour
     [SerializeField] private GameObject prefab;
     [SerializeField] private RoomMonsterSpawnRole monsterSpawnRole = RoomMonsterSpawnRole.Warrior;
     [SerializeField] private StageMonsterSetSO monsterStageSet;
+    [SerializeField] private string monsterWaveId;
     [SerializeField] private List<RoomObjectChildPoseOverrideData> childPoseOverrides = new();
     [SerializeField] private string linkedChestLockPlacementId;
 
@@ -22,6 +23,7 @@ public sealed class RoomObjectAuthoring : MonoBehaviour
     public RoomObjectKind Kind => kind;
     public GameObject Prefab => prefab;
     public RoomMonsterSpawnRole MonsterSpawnRole => monsterSpawnRole;
+    public string MonsterWaveId => RoomMonsterWaveDefinition.ResolveId(monsterWaveId);
     public StageMonsterSetSO MonsterStageSet => kind == RoomObjectKind.Monster
         ? monsterStageSet
         : null;
@@ -55,6 +57,7 @@ public sealed class RoomObjectAuthoring : MonoBehaviour
             prefab = prefab,
             monsterSpawnRole = monsterSpawnRole,
             monsterStageSet = MonsterStageSet,
+            monsterWaveId = kind == RoomObjectKind.Monster ? MonsterWaveId : null,
             localCell = new Vector2Int(cell.x, cell.y),
             localOffset = new Vector2(localOffset.x, localOffset.y),
             localRotationDegrees = localRotation,
@@ -99,6 +102,11 @@ public sealed class RoomObjectAuthoring : MonoBehaviour
     }
 
 #if UNITY_EDITOR
+    public void EditorSetMonsterWaveId(string waveId)
+    {
+        monsterWaveId = RoomMonsterWaveDefinition.ResolveId(waveId);
+    }
+
     public void EditorConfigure(
         string id,
         RoomObjectKind objectKind,
@@ -115,6 +123,7 @@ public sealed class RoomObjectAuthoring : MonoBehaviour
 
     public void EditorSetPlacement(RoomObjectPlacementData data)
     {
+        monsterWaveId = data.monsterWaveId;
         monsterSpawnRole = data.monsterSpawnRole;
         monsterStageSet = data.kind == RoomObjectKind.Monster
             ? data.monsterStageSet

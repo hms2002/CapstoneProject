@@ -3129,3 +3129,17 @@ Implications:
 - No new singleton, persistent manager or per-frame lookup is introduced. Existing backend fading and same-track behavior remain unchanged.
 - Legacy route music fields remain serialized but no longer select runtime BGM. The one-time migration reads them only to preserve existing selections.
 - Read-only `Tools/Audio/Validate Scene BGM` checks scene requesters and playable catalog keys. Ownership/bootstrap Architecture documents need a separately approved update; current implementation guidance is in `Docs/StructureMemory/SceneMusicRequests.md`.
+
+## 2026-09-11 - Room Waves Use Stable Membership And Separate Clear Ownership
+
+Decision:
+Keep room wave order/delay in `RoomTemplateSO.BuildData` and assign placed monsters by stable wave ID, not list index. Empty legacy data means one default wave. The existing room group executes waves and owns a room-wide encounter hold; wave clear only observes its own spawn tickets and split-aware monster units.
+
+Reason:
+Designers need to reorder/edit waves without accidentally moving monsters, and a hold used to keep doors shut must not block the wave's own completion check. Alarm Bell waves remain an independent event owner.
+
+Implications:
+- Whole-room candidate chest locks last through the final wave. Directly authored chest links still wait only for their assigned monsters, including future-wave reservations.
+- Same-run persistence records the wave cursor, delay and completion separately from per-placement survival; future spawn anchors are not consumed monsters.
+- Existing production room templates are not automatically repartitioned. `Room Piece > Objects` is the authoring entry point.
+- Detailed ownership and the existing presence-only monster restore limitation are documented in `StructureMemory/ProceduralDungeonRoomPipeline.md`.
