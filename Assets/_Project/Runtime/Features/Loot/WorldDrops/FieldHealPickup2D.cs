@@ -5,6 +5,7 @@ using UnityGAS;
 
 /// <summary>
 /// 책임 : 월드 체력 회복 픽업의 수집 판정, 회복 적용, 드롭/대기/수집 표현을 관리한다.
+/// 수집 가능 오브젝트의 생성/착지/획득/제거 상태를 외부 관찰자에게 알린다.
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
@@ -42,6 +43,13 @@ public class FieldHealPickup2D : MonoBehaviour
     [SerializeField] private Vector3 healParticleLocalOffset = Vector3.zero;
 
     private bool collected;
+    private Vector3 dropLandingPosition;
+    public bool IsCollected => collected;
+    public Vector3 GroundPosition => interactionLocked ? dropLandingPosition : transform.position;
+    public static event System.Action<FieldHealPickup2D> WorldStateChanged;
+
+    private void OnEnable() => WorldStateChanged?.Invoke(this);
+    private void OnDisable() => WorldStateChanged?.Invoke(this);
     private bool interactionLocked;
     private Coroutine dropRoutine;
     private Vector3 visualBaseLocalPosition;
@@ -104,7 +112,9 @@ public class FieldHealPickup2D : MonoBehaviour
         ResetVisualTransform();
 
         transform.position = startPosition;
+        dropLandingPosition = landingPosition;
         interactionLocked = true;
+        WorldStateChanged?.Invoke(this);
 
         float distance = Vector2.Distance(startPosition, landingPosition);
         float duration = Mathf.Clamp(minDropDuration + distance * dropDurationPerUnit, minDropDuration, maxDropDuration);
@@ -136,6 +146,7 @@ public class FieldHealPickup2D : MonoBehaviour
             return;
 
         collected = true;
+        WorldStateChanged?.Invoke(this);
         SoundPlaybackUtility.Play(CollectSound, instigator: playerTransform.gameObject, causer: gameObject, position: transform.position, sourceObject: this);
         PlayerHealParticlePlayback.PlayAttached(healParticlePrefab, playerTransform, healParticleLocalOffset);
         PlayCollectPresentation();
@@ -284,6 +295,7 @@ public class FieldHealPickup2D : MonoBehaviour
         transform.position = landingPosition;
         interactionLocked = false;
         ResetVisualTransform();
+        WorldStateChanged?.Invoke(this);
     }
 
     private static Vector3 EvaluateDropPosition(Vector3 startPosition, Vector3 landingPosition, float arcHeight, float t)

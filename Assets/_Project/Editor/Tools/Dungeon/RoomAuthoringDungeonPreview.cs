@@ -242,6 +242,7 @@ internal static class RoomAuthoringDungeonPreview
     /// </summary>
     private readonly struct PreviewObjectInfo
     {
+        public bool IsChestCandidate { get; }
         public RoomObjectKind Kind { get; }
         public RoomMonsterSpawnRole MonsterRole { get; }
         public bool UsesCommonMonsterRole { get; }
@@ -251,8 +252,10 @@ internal static class RoomAuthoringDungeonPreview
             RoomObjectKind kind,
             RoomMonsterSpawnRole monsterRole,
             bool usesCommonMonsterRole,
-            Vector2Int worldCell)
+            Vector2Int worldCell,
+            bool isChestCandidate = false)
         {
+            IsChestCandidate = isChestCandidate;
             Kind = kind;
             MonsterRole = monsterRole;
             UsesCommonMonsterRole = usesCommonMonsterRole;
@@ -759,7 +762,8 @@ internal static class RoomAuthoringDungeonPreview
                         objectPlacement.kind,
                         objectPlacement.monsterSpawnRole,
                         objectPlacement.monsterStageSet != null,
-                        placement.Origin + objectPlacement.localCell));
+                        placement.Origin + objectPlacement.localCell,
+                        ChestPossible.TryGet(objectPlacement, out _)));
                 }
             }
 
@@ -1062,6 +1066,9 @@ internal static class RoomAuthoringDungeonPreview
 
     private static Color ResolveObjectColor(PreviewObjectInfo roomObject)
     {
+        if (roomObject.IsChestCandidate)
+            return new Color(1f, 0.8f, 0.15f, 0.7f);
+
         if (roomObject.Kind == RoomObjectKind.Monster)
         {
             if (!roomObject.UsesCommonMonsterRole)
@@ -1086,6 +1093,9 @@ internal static class RoomAuthoringDungeonPreview
 
     private static string ResolveObjectGlyph(PreviewObjectInfo roomObject)
     {
+        if (roomObject.IsChestCandidate)
+            return "C?";
+
         if (roomObject.Kind == RoomObjectKind.Monster)
         {
             if (!roomObject.UsesCommonMonsterRole)

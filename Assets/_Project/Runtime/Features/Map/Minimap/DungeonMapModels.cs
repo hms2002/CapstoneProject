@@ -14,6 +14,7 @@ public enum DungeonMapRoomVisibility
 
 /// <summary>
 /// 책임 : 절차 생성 방 하나를 미니맵에 투영하는 안정 배치 Id, 역할과 실제 점유 영역을 보관한다.
+/// WorldBounds는 기존 이름과 달리 던전 레이아웃 셀 좌표이며 Unity 월드 좌표가 아니다.
 /// </summary>
 public readonly struct DungeonMapRoomNode
 {
@@ -253,6 +254,16 @@ public static class DungeonMapRoomShapeBuilder
         IReadOnlyList<RectInt> rectangles,
         Vector2Int gridSize)
     {
+        return ResolveInteriorAnchor(rectangles, gridSize, out _);
+    }
+
+    // Responsibility: return the largest safe square around the selected anchor as normalized size.
+    public static Vector2 ResolveInteriorAnchor(
+        IReadOnlyList<RectInt> rectangles,
+        Vector2Int gridSize,
+        out Vector2 safeIconSize)
+    {
+        safeIconSize = Vector2.one;
         Vector2 fallback = new(0.5f, 0.5f);
         if (rectangles == null || rectangles.Count == 0 || gridSize.x <= 0 || gridSize.y <= 0)
             return fallback;
@@ -313,6 +324,11 @@ public static class DungeonMapRoomShapeBuilder
             selected = cell;
         }
 
+        if (bestClearance > 0)
+        {
+            float diameter = bestClearance * 2f - 1f;
+            safeIconSize = new Vector2(diameter / width, diameter / height);
+        }
         return new Vector2(selected.x / width, selected.y / height);
     }
 

@@ -321,7 +321,7 @@ MonoBehaviour:
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-    fillToMaxOnInitialize: 0
+    fillToMaxOnInitialize: 1
 --- !u!114 &3329529621526498203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -611,7 +611,6 @@ MonoBehaviour:
   recoveryRetreatWallProbeDistance: 0.25
   logMobFsmDebug: 0
   slamAbility: {fileID: 11400000, guid: 2ef1febba5e93ef41b684fa67bfc5250, type: 2}
-  maxHealth: 28
   chaseSpeedScale: 0.65
 --- !u!114 &239188215090358531
 MonoBehaviour:

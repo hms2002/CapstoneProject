@@ -31,10 +31,13 @@ namespace UnityGAS.Sample
         [Range(0.05f, 1f)] public float minimumDamageScale = 0.35f;
 
         [Header("Skill2 Piercing Follow-up")]
+        [Tooltip("Optional skill-only formula; unset keeps the normal attack formula.")]
+        public ScaledStatFormula piercingDamageFormula;
         [Range(0.05f, 2f)] public float piercingDamageScale = 0.45f;
         [Min(0.01f)] public float piercingDurationSeconds = 0.22f;
         [Min(0f)] public float piercingOvershootDistance = 1.25f;
 
         public DamagePayloadConfig DamageConfig => damageConfig;
+        public ScaledStatFormula PiercingDamageFormula => piercingDamageFormula != null ? piercingDamageFormula : damageFormula;
     }
 }

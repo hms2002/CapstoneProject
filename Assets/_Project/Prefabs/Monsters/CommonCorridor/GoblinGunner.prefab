@@ -383,7 +383,7 @@ MonoBehaviour:
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-    fillToMaxOnInitialize: 0
+    fillToMaxOnInitialize: 1
 --- !u!114 &3305192149074666547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -649,7 +649,6 @@ MonoBehaviour:
   recoveryRetreatWallProbeDistance: 0.25
   logMobFsmDebug: 0
   shotAbility: {fileID: 11400000, guid: 02b4f8969ddbedb4e9e0a6885fd6d0ea, type: 2}
-  maxHealth: 5
   muzzleEffectSocket: {fileID: 8858279587563323237}
 --- !u!114 &2286205519184665686
 MonoBehaviour:

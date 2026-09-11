@@ -12,7 +12,6 @@ using UnityGAS;
 public sealed class GoblinWarrior : Mob, IMobAttackDecisionSource
 {
     [SerializeField] private AbilityDefinition chargeAbility;
-    [SerializeField, Min(0f)] private float maxHealth = 6f;
 
     private GoblinWarriorChargeRunner runner;
     private bool hasLoggedInvalidConfig;
@@ -69,7 +68,6 @@ public sealed class GoblinWarrior : Mob, IMobAttackDecisionSource
     {
         base.Awake();
         runner = GetComponent<GoblinWarriorChargeRunner>();
-        ApplyStats();
     }
 
     protected override void Start()
@@ -184,15 +182,6 @@ public sealed class GoblinWarrior : Mob, IMobAttackDecisionSource
             logic.DashWallSkinWidth,
             payload);
         return true;
-    }
-
-    private void ApplyStats()
-    {
-        if (attributeSet == null)
-            return;
-
-        attributeSet.TrySetBaseValue(maxHealthDef, maxHealth, this);
-        attributeSet.TrySetBaseValue(healthDef, maxHealth, this);
     }
 
     private bool HasRequiredData()

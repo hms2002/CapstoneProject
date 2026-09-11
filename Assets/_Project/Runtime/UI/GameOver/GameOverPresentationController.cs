@@ -320,7 +320,11 @@ public sealed class GameOverPresentationController : MonoBehaviour
         if (!gameOverBgm.IsSet)
             return;
 
-        SoundPlaybackUtility.PlayMusic(gameOverBgm);
+        // This UI can persist across scenes, so use the request's player scene rather than the UI root scene.
+        Scene sourceScene = request.PlayerTransform != null
+            ? request.PlayerTransform.gameObject.scene
+            : SceneManager.GetActiveScene();
+        SoundPlaybackUtility.TryPlayMusic(gameOverBgm, sourceScene);
     }
 
     private GameOverPresentationRequest NormalizeRequest(GameOverPresentationRequest incomingRequest)

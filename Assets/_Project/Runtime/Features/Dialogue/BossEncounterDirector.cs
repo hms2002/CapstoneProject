@@ -1,10 +1,12 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 
 /// <summary>
 /// 책임 :
 /// - 보스 조우 시작 연출의 카메라, 대화, 전투 시작 순서를 조율한다.
 /// - 연출 중 플레이어 조작 보호는 PlayerCinematicProtection에 위임해 보스별 구현 차이를 줄인다.
+/// - 전투 시작 시 이 조우에 설정된 음악을 요청한다.
 /// </summary>
 public class BossEncounterDirector : MonoBehaviour
 {
@@ -17,6 +19,7 @@ public class BossEncounterDirector : MonoBehaviour
     [SerializeField] private bool autoPlayWhenPlayerSpawned = true;
     [SerializeField] private bool playOnlyOnce = true;
     [SerializeField] private bool startBossCombatAfterDialogue = true;
+    [SerializeField] private SoundRef bossCombatBgm;
 
     private Coroutine runningSequence;
     private PlayerInteractor2D cachedPlayer;
@@ -399,7 +402,7 @@ public class BossEncounterDirector : MonoBehaviour
         }
 
         bossController.BeginCombatEncounter(PlayerRuntimeRegistry.GetPlayerTransform());
-        RunRouteBgmPlayback.NotifyBossCombatStarted();
+        SoundPlaybackUtility.TryPlayMusic(bossCombatBgm, gameObject.scene);
     }
 
     private void ResolveBossController()

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 /// 책임:
 /// - 선택된 룸 라이브러리와 생성 설정으로 레이아웃 조립을 요청하고 결과를 DungeonRoomBuilder에 전달한다.
 /// - 방 개수와 방 크기 기반 가변 복도 설정을 포함한 한 번의 던전 생성 진입점, 마지막 생성 결과의 런타임 수명을 소유한다.
+/// - 지도 콘텐츠 위치 판정에 실제 생성 Tilemap의 좌표계를 전달한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class DungeonGenerator : MonoBehaviour
@@ -148,19 +149,25 @@ public sealed class DungeonGenerator : MonoBehaviour
             generationProfile != null
                 ? generationProfile.SocketCleanupProfile
                 : roomBuilder.SocketCleanupProfile);
-        if (!roomBuilder.TryBuild(LastLayout))
+        roomBuilder.ConfigurePossibleChests(generationProfile != null
+            ? generationProfile.MaximumPossibleChests
+            : roomBuilder.MaximumPossibleChests);
+        List<DungeonObjectRuntimeStateData> savedStates = null;
+        if (reentryPolicy == DungeonReentryPolicy.PreserveDuringRun)
+        {
+            var capturedStates = new List<DungeonObjectRuntimeStateData>();
+            if (RunSessionStore.TryGetDungeonObjectStates(stateId, capturedStates))
+                savedStates = capturedStates;
+        }
+
+        if (!roomBuilder.TryBuild(LastLayout, DungeonBuildOptions.Full, savedStates))
         {
             mapRuntime.ClearConfiguration();
             HasCompletedInitialGeneration = true;
             return false;
         }
 
-        if (reentryPolicy == DungeonReentryPolicy.PreserveDuringRun)
-        {
-            var savedStates = new List<DungeonObjectRuntimeStateData>();
-            if (RunSessionStore.TryGetDungeonObjectStates(stateId, savedStates))
-                roomBuilder.RestoreGeneratedObjectStates(savedStates);
-        }
+        roomBuilder.RestoreGeneratedObjectStates(savedStates);
 
         if (!LastLayout.IsComplete)
         {
@@ -173,7 +180,7 @@ public sealed class DungeonGenerator : MonoBehaviour
             return false;
         }
 
-        mapRuntime.Configure(LastLayout, stateId, reentryPolicy);
+        mapRuntime.Configure(LastLayout, stateId, reentryPolicy, roomBuilder.FloorTilemap);
         mapEventPlan.Commit();
 
         ResolveCorridorLengthRange(

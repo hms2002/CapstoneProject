@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityGAS;
 
 [CreateAssetMenu(fileName = "ALData_ApprenticeHeroSwordChargeSpin", menuName = "GAS/Weapon/Apprentice Hero Sword/Charge Spin Data")]
+// Responsibility: author charge timing, damage scaling and presentation for the sword spin.
 public sealed class ApprenticeHeroSwordChargeSpinData : ScriptableObject
 {
     [Header("Animation")]
@@ -91,6 +92,15 @@ public sealed class ApprenticeHeroSwordChargeSpinData : ScriptableObject
     public float MaxRadius => Mathf.Max(MinRadius, maxRadius);
     public float MinDamageScale => Mathf.Max(0f, minDamageScale);
     public float MaxDamageScale => Mathf.Max(MinDamageScale, maxDamageScale);
+
+    public float ResolveDamageScale(float chargeSeconds)
+    {
+        float ratio = MaxChargeSeconds > MinChargeSeconds
+            ? Mathf.InverseLerp(MinChargeSeconds, MaxChargeSeconds, chargeSeconds)
+            : 1f;
+        return Mathf.Lerp(MinDamageScale, MaxDamageScale, ratio);
+    }
+
     public LayerMask HitLayers => hitLayers;
     public ApprenticeHeroSwordHitboxConfig Hitbox => hitbox;
     public ApprenticeHeroSwordDamageConfig Damage => damage;

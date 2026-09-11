@@ -4,10 +4,15 @@ using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 /// <summary>
 /// Responsibility: verify that unclaimed level rewards never gate the bell or its
 /// encounter completion, while restoring the shared run data after each test.
+/// Also verify the authored completion chest and its normal open/save lifecycle.
 /// </summary>
 public sealed class AlarmBellRewardIndependencePlayModeTests
 {
@@ -98,6 +103,8 @@ public sealed class AlarmBellRewardIndependencePlayModeTests
     [Test]
     public void ClearedWaves_ReleaseEncounterAndGrantExperienceWithoutRewardSelection()
     {
+        TreasureChest completionChest = AddCompletionChest();
+        Assert.That(completionChest.gameObject.activeSelf, Is.False);
         // Empty waves isolate already-cleared wave advancement from monster authoring/spawning.
         var tier = new AlarmBellEncounterTier();
         SetField(tier, "waves", new List<AlarmBellWaveDefinition>
@@ -142,11 +149,108 @@ public sealed class AlarmBellRewardIndependencePlayModeTests
             Assert.That(data.levelProgression.pendingRewardCount, Is.EqualTo(2));
             Assert.That(data.levelProgression.activeRewardOffer.isActive, Is.True);
             Assert.That(bell.CanInteract(player), Is.False);
+            Assert.That(completionChest.gameObject.activeInHierarchy, Is.True);
+            Assert.That(bellObject.transform.Find("BellVisual").gameObject.activeSelf, Is.False);
+            Assert.That(bellObject.GetComponent<Collider2D>().enabled, Is.False);
+            Assert.That(completionChest.GetComponent<Collider2D>().enabled, Is.True);
+            Assert.That(completionChest.GetComponent<ChestInteractable>().CanInteract(player), Is.True);
         }
         finally
         {
             while (stack.Count > 0)
                 (stack.Pop() as IDisposable)?.Dispose();
+        }
+    }
+
+    [Test]
+    public void CompletedEvent_RevealsAuthoredChestWithoutResettingRestoredLoot()
+    {
+        TreasureChest chest = AddCompletionChest();
+        data.completedRunMapEventIds.Add(definition.EventId);
+        bellObject.SetActive(false);
+        bellObject.SetActive(true);
+        Assert.That(chest.gameObject.activeInHierarchy, Is.True);
+        chest.RestoreOpenedStateForDungeon();
+        bellObject.SetActive(false);
+        bellObject.SetActive(true);
+        Assert.That(chest.IsOpened, Is.True);
+        Assert.That(chest.CaptureDungeonLootState(), Is.Empty);
+        Assert.That(bellObject.GetComponentsInChildren<TreasureChest>(true).Length, Is.EqualTo(1));
+    }
+
+#if UNITY_EDITOR
+    [UnityTest]
+    public IEnumerator AuthoredModule_ConvertsToInteractableChestAndUsesNormalUiRequest()
+    {
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
+            "Assets/_Project/Prefabs/Map/Procedural/Events/AlarmBellEventModule.prefab");
+        Assert.That(prefab, Is.Not.Null);
+        var oldUiBackend = (IChestUiOpenBackend)typeof(ChestUiOpenPlayback)
+            .GetField("backend", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+        GameObject instance = null;
+        try
+        {
+            var uiBackend = new RecordingChestUiBackend();
+            ChestUiOpenPlayback.RegisterBackend(uiBackend);
+            instance = UnityEngine.Object.Instantiate(prefab);
+            var module = instance.GetComponent<AlarmBellInteractable>();
+            var chest = instance.GetComponentInChildren<TreasureChest>(true);
+            Assert.That(chest, Is.Not.Null);
+            Assert.That(chest.gameObject.activeSelf, Is.False);
+            Assert.That(chest.GetComponent<ChestMonsterKillLock>(), Is.Null);
+            Assert.That(typeof(AlarmBellInteractable).GetField("bellAnimator",
+                BindingFlags.Instance | BindingFlags.NonPublic).GetValue(module), Is.Null,
+                "The bell must not auto-bind the reward chest's Animator.");
+
+            SetField(module, "definition", definition);
+            data.completedRunMapEventIds.Add(definition.EventId);
+            instance.SetActive(false);
+            instance.SetActive(true);
+            Assert.That(chest.gameObject.activeInHierarchy, Is.True);
+            Assert.That(instance.GetComponent<Collider2D>().enabled, Is.False);
+            var interactable = chest.GetComponent<ChestInteractable>();
+            Assert.That(interactable.CanInteract(player), Is.True);
+            chest.InitializeWithLoot(new List<ScriptableObject>());
+            SetField(chest, "freezeTimeOnFirstOpen", false);
+            interactable.OnPlayerInteract(player);
+            float deadline = Time.realtimeSinceStartup + 3f;
+            while (!chest.IsOpened && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            Assert.That(chest.IsOpened, Is.True);
+            Assert.That(uiBackend.OpenCount, Is.EqualTo(1));
+            Assert.That(player.CurrentState, Is.EqualTo(InteractState.Shopping));
+        }
+        finally
+        {
+            if (instance != null) UnityEngine.Object.DestroyImmediate(instance);
+            ChestUiOpenPlayback.RegisterBackend(oldUiBackend);
+        }
+    }
+#endif
+
+    private TreasureChest AddCompletionChest()
+    {
+        var visual = new GameObject("BellVisual");
+        visual.transform.SetParent(bellObject.transform, false);
+        var reward = new GameObject("CompletionChest");
+        reward.SetActive(false);
+        reward.transform.SetParent(bellObject.transform, false);
+        reward.AddComponent<CircleCollider2D>().isTrigger = true;
+        var chest = reward.AddComponent<TreasureChest>();
+        reward.AddComponent<ChestInteractable>();
+        SetField(bell, "bellVisualRoot", visual);
+        SetField(bell, "completionChest", chest);
+        return chest;
+    }
+
+    // Responsibility: observe the real chest's UI handoff without opening global UI during a test.
+    private sealed class RecordingChestUiBackend : IChestUiOpenBackend
+    {
+        public int OpenCount;
+        public bool OpenChest(TreasureChest chest, bool playSlideFadePresentation, GameFlowInputBlocker inputBlocker)
+        {
+            OpenCount++;
+            return true;
         }
     }
 

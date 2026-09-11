@@ -48,6 +48,16 @@ MonoBehaviour:
     silhouetteIcon: {fileID: 21300000, guid: 5b1bfa9c0e7024d4f8f5549b8eca2f3c, type: 3}
     normalIconTint: {r: 1, g: 1, b: 1, a: 1}
     silhouetteIconTint: {r: 1, g: 1, b: 1, a: 0.55}
+  contentIcons:
+  - kind: 0
+    icon: {fileID: -1811123117, guid: 38fff8b5f0a464f4fa7dd878114bb1b2, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
+  - kind: 1
+    icon: {fileID: -1556440333, guid: 38fff8b5f0a464f4fa7dd878114bb1b2, type: 3}
+    tint: {r: 0.75, g: 0.75, b: 0.75, a: 1}
+  - kind: 2
+    icon: {fileID: 21300000, guid: 6842cb98082269a41ad8096aaabc109c, type: 3}
+    tint: {r: 1, g: 1, b: 1, a: 1}
   visitedNodeColor: {r: 0.75, g: 0.78, b: 0.84, a: 0.95}
   revealedNodeColor: {r: 0.25, g: 0.28, b: 0.34, a: 0.72}
   currentNodeColor: {r: 1, g: 0.72, b: 0.2, a: 1}

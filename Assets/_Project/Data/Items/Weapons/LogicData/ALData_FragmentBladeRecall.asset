@@ -20,9 +20,9 @@ MonoBehaviour:
     critAffectsElement: 1
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
-  damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+  damageFormula: {fileID: 11400000, guid: 0980d71ede1bbeb8b348da48c360fdbe, type: 2}
   knockbackFormula: {fileID: 0}
-  legacyDamage: 8
+  legacyDamage: 50
   legacyStaggerDamage: 0
   hitLayers:
     serializedVersion: 2

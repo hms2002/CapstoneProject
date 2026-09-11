@@ -1,9 +1,11 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 /// <summary>
 /// 책임 : 레거시 보스 대화 조우에서 카메라 포커스, 대화 재생, 전투 시작 전환을 순서대로 실행한다.
+/// 전투 시작 음악은 런 경로 추론 없이 이 조우의 설정을 요청한다.
 /// </summary>
 public class BossTalkManager : MonoBehaviour
 {
@@ -26,6 +28,7 @@ public class BossTalkManager : MonoBehaviour
     [SerializeField] private BossDialogueRunner dialogueRunner;
     [SerializeField] private BossControllerBase bossController;
     [SerializeField] private bool startBossCombatAfterDialogue = true;
+    [SerializeField] private SoundRef bossCombatBgm;
 
     private Coroutine runningSequence;
     private PlayerInteractor2D cachedPlayer;
@@ -353,7 +356,7 @@ public class BossTalkManager : MonoBehaviour
         }
 
         bossController.BeginCombatEncounter(PlayerRuntimeRegistry.GetPlayerTransform());
-        RunRouteBgmPlayback.NotifyBossCombatStarted();
+        SoundPlaybackUtility.TryPlayMusic(bossCombatBgm, gameObject.scene);
     }
 
     private void HandlePlayerRegistered(PlayerInteractor2D player)

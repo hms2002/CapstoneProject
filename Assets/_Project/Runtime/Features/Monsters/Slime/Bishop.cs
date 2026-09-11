@@ -19,7 +19,6 @@ public class Bishop : Slime
     private const float AttackRange = 7f;
     private const float WarningTime = 1.6f;
     private const float WarningWidth = 0.35f;
-    private const float MaxHealth = 10f;
     private const float VisualScale = 1.2f;
     private const float ChaseSpeedMultiplier = 0.5f;
     private const float SplitSpread = 0.55f;
@@ -92,7 +91,7 @@ public class Bishop : Slime
             lineBlastRunner = gameObject.AddComponent<BishopLineBlastRunner>();
 
         CacheAnimatorParameters();
-        ApplyStats();
+        ApplyAppearance();
     }
 
     protected override void Start()
@@ -279,10 +278,10 @@ public class Bishop : Slime
             causer: gameObject);
     }
 
-    /// <summary>비숍의 기본 스탯과 크기를 적용합니다.</summary>
-    protected override void ApplyStats()
+    /// <summary>Applies Bishop appearance while preserving profile HP and spawn scaling.</summary>
+    protected override void ApplyAppearance()
     {
-        SetStats("Bishop", MaxHealth, VisualScale);
+        SetAppearance("Bishop", VisualScale);
     }
 
     /// <summary>비숍 중심에서 양방향으로 독립 cast해 실제 직선 마법 선분을 계산합니다.</summary>

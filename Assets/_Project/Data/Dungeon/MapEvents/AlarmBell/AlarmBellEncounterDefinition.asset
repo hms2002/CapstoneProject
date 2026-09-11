@@ -28,6 +28,7 @@ MonoBehaviour:
         count: 2
         suppressNonExperienceDrops: 1
         additionalHpMultiplier: 1.5
+        additionalAttackSpeedMultiplier: 1.5
         overrideSpriteTint: 1
         spriteTint: {r: 1, g: 0.45, b: 0.35, a: 1}
       - monsterPrefab: {fileID: 0}
@@ -35,5 +36,6 @@ MonoBehaviour:
         count: 1
         suppressNonExperienceDrops: 1
         additionalHpMultiplier: 1.5
+        additionalAttackSpeedMultiplier: 1.5
         overrideSpriteTint: 1
         spriteTint: {r: 1, g: 0.45, b: 0.35, a: 1}

@@ -28,6 +28,9 @@ public sealed class DungeonGenerationProfileSO : ScriptableObject
     [Tooltip("우선 시도 길이에 더하는 난수 폭입니다. 배치 충돌 시 자동으로 줄어듭니다.")]
     [SerializeField, Range(0, 32)] private int corridorLengthVariation = 2;
 
+    [Header("Optional Chests")]
+    [Tooltip("Maximum chests selected from ChestPossible markers. Directly placed chests are separate; missing candidates are not synthesized.")]
+    [SerializeField, Min(0)] private int maximumPossibleChests = 3;
     [Header("Guaranteed Content")]
     [Tooltip("Specific expansion rooms that graph-first generation must place exactly once.")]
     [SerializeField] private List<RoomTemplateSO> guaranteedRoomTemplates = new();
@@ -40,6 +43,7 @@ public sealed class DungeonGenerationProfileSO : ScriptableObject
     public CorridorDecorationProfileSO CorridorDecorationProfile => corridorDecorationProfile;
     public RoomSocketCleanupProfileSO SocketCleanupProfile => socketCleanupProfile;
     public int Seed => seed;
+    public int MaximumPossibleChests => Mathf.Max(0, maximumPossibleChests);
     public int RoomCount => Mathf.Max(includeBossRoom ? 2 : 1, roomCount);
     public bool IncludeBossRoom => includeBossRoom;
     public int MaxPlacementAttemptsPerRoom => Mathf.Max(1, maxPlacementAttemptsPerRoom);

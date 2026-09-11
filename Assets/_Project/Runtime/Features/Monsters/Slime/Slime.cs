@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityGAS;
 
+// Responsibility: own slime split lifecycle and appearance; AttributeSet profiles own initial HP.
 public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandler
 {
     private const float SplitWakeSeconds = 1f;
@@ -44,7 +45,7 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
     {
         wakeTime = Time.time + SplitWakeSeconds;
         isPitFallDeath = false;
-        ApplyStats();
+        ApplyAppearance();
 
         if (nextTarget != null)
             SetTarget(nextTarget);
@@ -93,8 +94,8 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
     {
     }
 
-    /// <summary>슬라임 종류별 기본 스탯을 적용합니다.</summary>
-    protected abstract void ApplyStats();
+    /// <summary>Applies type-specific appearance without resetting authored or scaled HP.</summary>
+    protected abstract void ApplyAppearance();
 
     /// <summary>MobAbilityCoordinator를 찾아서 보관합니다.</summary>
     protected void CacheCoordinator()
@@ -117,16 +118,11 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
         splitDeathVanishEffect?.SpawnOneShot(transform.position, sprite);
     }
 
-    /// <summary>슬라임 이름, 체력, 크기를 적용합니다.</summary>
-    protected void SetStats(string slimeName, float maxHealth, float visualScale)
+    /// <summary>Sets the slime display name and visual scale only.</summary>
+    protected void SetAppearance(string slimeName, float visualScale)
     {
         enemyName = slimeName;
         transform.localScale = new Vector3(visualScale, visualScale, 1f);
-
-        if (attributeSet == null) return;
-
-        attributeSet.TrySetBaseValue(maxHealthDef, maxHealth, this);
-        attributeSet.TrySetBaseValue(healthDef, maxHealth, this);
     }
 
     /// <summary>슬라임이 지금 행동 가능한 상태인지 확인합니다.</summary>

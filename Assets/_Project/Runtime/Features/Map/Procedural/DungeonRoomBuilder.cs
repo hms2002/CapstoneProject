@@ -66,7 +66,7 @@ public struct ProceduralRoomTravelBinding
 /// - 연결된 문 소켓 주변의 남는 벽/문 흔적을 생성 프로필의 데이터 패치로 보정한다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class DungeonRoomBuilder : MonoBehaviour
+public sealed partial class DungeonRoomBuilder : MonoBehaviour
 {
     private const int RoomEntryBoundaryInsetCells = 1;
     private const int DefaultVoidFillPaddingCells = 8;
@@ -393,6 +393,12 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
 
     public bool TryBuild(DungeonLayoutResult layout, DungeonBuildOptions options)
     {
+        return TryBuild(layout, options, null);
+    }
+
+    public bool TryBuild(DungeonLayoutResult layout, DungeonBuildOptions options,
+        IReadOnlyList<DungeonObjectRuntimeStateData> savedStates)
+    {
         if (layout == null)
         {
             Debug.LogError("DungeonRoomBuilder requires a layout result.", this);
@@ -485,6 +491,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         if (options.BuildGameplayObjects &&
             (!TryBuildRoomEncounters(layout) ||
              !TryBuildRoomObjects(layout) ||
+             !TryBuildPossibleChests(layout, savedStates) ||
              !TryBuildTravelEndpoints(layout) ||
              !TryBindGeneratedRoomFeatures(layout) ||
              !TryBuildRoomDiscoveryTriggers(layout)))
@@ -963,6 +970,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     public void ClearGeneratedRoomObjects()
     {
         generatedRoomObjects.Clear();
+        chestCandidates.Clear();
         generatedRoomObjectsByStateId.Clear();
         generatedRoomObjectsByPlacement.Clear();
 
@@ -1345,6 +1353,12 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
                 if (objectPlacement.kind == RoomObjectKind.Monster)
                     continue;
 
+                if (ChestPossible.TryGet(objectPlacement, out ChestPossible candidate))
+                {
+                    chestCandidates.Add(new ChestCandidate(roomPlacement, objectPlacement, candidate));
+                    continue;
+                }
+
                 if (!TryBuildRoomObject(
                         roomPlacement,
                         objectPlacement,
@@ -1388,6 +1402,9 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
 
             for (int objectIndex = 0; objectIndex < roomInstances.Length; objectIndex++)
             {
+                if (ChestPossible.TryGet(objectPlacements[objectIndex], out _))
+                    continue;
+
                 GameObject roomInstance = roomInstances[objectIndex];
                 generatedRoomObjects.Add(roomInstance);
                 generatedRoomObjectsByStateId[CreateRuntimeStateId(
@@ -2104,6 +2121,9 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     /// </summary>
     private static bool IsPlacementSourceCompatible(RoomObjectPlacementData placement)
     {
+        if (ChestPossible.TryGet(placement, out ChestPossible candidate))
+            return candidate.ChestPrefab != null;
+
         if (placement.kind == RoomObjectKind.Monster)
         {
             return placement.monsterStageSet != null ||

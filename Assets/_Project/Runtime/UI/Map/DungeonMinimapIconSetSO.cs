@@ -31,7 +31,7 @@ public struct DungeonMinimapRoomIconData
 }
 
 /// <summary>
-/// 책임 : 미니맵의 RoomType별 정상/실루엣 아이콘과 노드, 연결선, 패널의 공통 표시 규칙을 단일 자산으로 제공한다.
+/// 책임 : 미니맵 방 역할/콘텐츠 종류별 아이콘과 노드, 연결선의 표시 규칙을 제공한다.
 /// </summary>
 [CreateAssetMenu(
     fileName = "DungeonMinimapIconSet",
@@ -40,6 +40,18 @@ public sealed class DungeonMinimapIconSetSO : ScriptableObject
 {
     [Header("Room Icons")]
     [SerializeField] private List<DungeonMinimapRoomIconData> roomIcons = new();
+
+    [Header("Visited Room Contents")]
+    [SerializeField] private List<DungeonMinimapContentIconData> contentIcons = new();
+
+    public DungeonMinimapContentIconData GetContentIcon(DungeonMapContentKind kind)
+    {
+        if (contentIcons != null)
+            foreach (var entry in contentIcons)
+                if (entry.Kind == kind)
+                    return entry;
+        return default;
+    }
 
     [Header("Colors")]
     [SerializeField] private Color visitedNodeColor = new(0.75f, 0.78f, 0.84f, 0.95f);
@@ -69,4 +81,16 @@ public sealed class DungeonMinimapIconSetSO : ScriptableObject
         return false;
     }
 
+}
+
+/// <summary>Responsibility: map a gameplay content kind to an authored sprite and tint.</summary>
+[Serializable]
+public struct DungeonMinimapContentIconData
+{
+    [SerializeField] private DungeonMapContentKind kind;
+    [SerializeField] private Sprite icon;
+    [SerializeField] private Color tint;
+    public DungeonMapContentKind Kind => kind;
+    public Sprite Icon => icon;
+    public Color Tint => tint;
 }

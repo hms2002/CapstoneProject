@@ -14,7 +14,9 @@ public interface IAlarmBellRecognitionCountProvider
 
 /// <summary>
 /// 책임 : 경보 종 상호작용, 런 1회성 처리, 방 봉쇄 유지, 웨이브 소환과 완료 경험치 지급을 관리한다.
+/// 소환 직후 해당 인스턴스에만 경보 종 엔트리의 추가 능력치 보정을 적용한다.
 /// 레벨업 보상 수령 상태는 소유하지 않으며, UI 입력 차단과 일시정지는 공통 시스템에 맡긴다.
+/// 완료 시 배치된 보상 상자를 활성화하며 전리품과 개봉 저장 상태는 기존 상자 시스템에 위임한다.
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
@@ -64,6 +66,10 @@ public sealed class AlarmBellInteractable :
     [SerializeField] private string activatedPopupMessage = "경보 종이 울렸다!";
     [SerializeField] private string clearedPopupMessage = "경보 종 전투 완료!";
 
+    [Header("Completion Reward")]
+    [SerializeField] private TreasureChest completionChest;
+    [SerializeField] private GameObject bellVisualRoot;
+
     [Header("Debug")]
     [SerializeField] private bool logDebug;
 
@@ -98,7 +104,9 @@ public sealed class AlarmBellInteractable :
             interactionCollider.isTrigger = true;
 
         if (bellAnimator == null)
-            bellAnimator = GetComponentInChildren<Animator>(includeInactive: true);
+            bellAnimator = bellVisualRoot != null
+                ? bellVisualRoot.GetComponentInChildren<Animator>(includeInactive: true)
+                : GetComponentInChildren<Animator>(includeInactive: true);
 
         if (highlightedRenderers == null || highlightedRenderers.Length == 0)
             highlightedRenderers = GetComponentsInChildren<SpriteRenderer>(includeInactive: true);
@@ -106,12 +114,14 @@ public sealed class AlarmBellInteractable :
         outlinePropertyBlock = new MaterialPropertyBlock();
         RefreshSpawnPointCache();
         RefreshPersistedState();
+        RefreshCompletionReward();
         OnUnHighlight();
     }
 
     private void OnEnable()
     {
         RefreshPersistedState();
+        RefreshCompletionReward();
     }
 
     private void OnDisable()
@@ -486,6 +496,7 @@ public sealed class AlarmBellInteractable :
         }
 
         ApplyAdditionalHpMultiplier(monster, entry.AdditionalHpMultiplier);
+        ApplyAdditionalAttackSpeedMultiplier(monster, entry.AdditionalAttackSpeedMultiplier);
         if (entry.OverrideSpriteTint)
             ApplySpriteTint(monster, entry.SpriteTint);
     }
@@ -532,6 +543,33 @@ public sealed class AlarmBellInteractable :
             ? Mathf.Clamp01(currentHealth / oldMaxHealth)
             : 1f;
         attributes.TrySetBaseValue(health, newMaxHealth * healthRatio, this);
+    }
+
+    /// <summary>
+    /// 책임 : 난이도 보정이 끝난 소환 인스턴스의 공격속도에 경보 종 배율을 한 번 곱한다.
+    /// 공용 프리팹/공격 데이터는 수정하지 않고, 실제 시간 보정은 기존 CombatTimingService에 맡긴다.
+    /// </summary>
+    private void ApplyAdditionalAttackSpeedMultiplier(GameObject monster, float multiplier)
+    {
+        if (monster == null || Mathf.Approximately(multiplier, 1f))
+            return;
+
+        AttributeSet attributes = ResolveComponentInMonster<AttributeSet>(monster);
+        if (attributes == null)
+            return;
+
+        AbilitySystem abilitySystem = ResolveComponentInMonster<AbilitySystem>(monster);
+        AttributeDefinition attackSpeed = ResolveAttribute(
+            attributes,
+            abilitySystem,
+            StatId.AttackSpeedBase,
+            "AttackSpeedBase",
+            "AttackSpeedBaseAttribute");
+        if (attackSpeed == null)
+            return;
+
+        float currentSpeed = attributes.GetBaseValue(attackSpeed);
+        attributes.TrySetBaseValue(attackSpeed, currentSpeed * multiplier, this);
     }
 
     private static AttributeDefinition ResolveAttribute(
@@ -674,6 +712,7 @@ public sealed class AlarmBellInteractable :
         SetInteractionEnabled(false);
         OnUnHighlight();
         TrySetAnimatorTrigger(clearedTrigger);
+        RefreshCompletionReward();
 
         if (!string.IsNullOrWhiteSpace(clearedPopupMessage))
             WarningPopupPlayback.ShowMessage(clearedPopupMessage);
@@ -685,6 +724,20 @@ public sealed class AlarmBellInteractable :
             return;
 
         bellAnimator.SetTrigger(triggerName);
+    }
+
+    private void RefreshCompletionReward()
+    {
+        if (completionChest == null || completionChest.gameObject == gameObject)
+            return;
+
+        bool completed = state == AlarmBellEncounterState.Cleared;
+        completionChest.gameObject.SetActive(completed);
+        if (bellVisualRoot != null && bellVisualRoot != gameObject &&
+            !completionChest.transform.IsChildOf(bellVisualRoot.transform))
+        {
+            bellVisualRoot.SetActive(!completed);
+        }
     }
 
     private void AcquireEncounterHold()

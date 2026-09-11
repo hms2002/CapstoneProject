@@ -23,7 +23,6 @@ public class Rook : Slime, IMobTargetDetectionOverride
     private const float ChargeLinecastSkin = 0.02f;
     private const float WarningWidth = 1.1f;
     private const string WallLayerName = "Wall";
-    private const float MaxHealth = 13f;
     private const float VisualScale = 1.2f;
     private const float ChaseSpeedMultiplier = 0.5f;
     private const float SplitSpread = 0.55f;
@@ -113,7 +112,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
         returnHome = GetComponent<MonsterReturnHome2D>();
         CacheAnimatorParameters();
         SyncChaseIntentRange();
-        ApplyStats();
+        ApplyAppearance();
     }
 
     private void OnValidate()
@@ -382,10 +381,10 @@ public class Rook : Slime, IMobTargetDetectionOverride
         return (ResolveDashBlockerMask() & layerBit) != 0;
     }
 
-    /// <summary>룩의 기본 스탯과 크기를 적용합니다.</summary>
-    protected override void ApplyStats()
+    /// <summary>Applies Rook appearance while preserving profile HP and spawn scaling.</summary>
+    protected override void ApplyAppearance()
     {
-        SetStats("Rook", MaxHealth, VisualScale);
+        SetAppearance("Rook", VisualScale);
     }
 
     /// <summary>

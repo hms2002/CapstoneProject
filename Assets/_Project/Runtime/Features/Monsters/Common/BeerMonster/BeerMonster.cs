@@ -31,6 +31,7 @@ public class BeerMonster : Mob, IMobAttackDecisionSource
     [SerializeField] private bool spawnPuddleOnDeath = true;
 
     private BeerMonsterShotRunner runner;
+    private readonly MobProjectileBurstCadence burstCadence = new();
     private bool hasLoggedInvalidAttackConfig;
     private bool hasSpawnedDeathPuddle;
     private AbilityLogic_BeerMonsterShot Logic => shotAbility != null ? shotAbility.logic as AbilityLogic_BeerMonsterShot : null;
@@ -99,6 +100,9 @@ public class BeerMonster : Mob, IMobAttackDecisionSource
     public bool TryBuildAttackRequest(out MobAttackRequest request)
     {
         request = default;
+        if (burstCadence.IsResting(Time.time))
+            return false;
+
         GameObject targetObject = Target != null ? Target.gameObject : null;
         AbilityLogic_BeerMonsterShot logic = Logic;
         if (!HasRequiredAttackData() || logic == null || !CommonMonsterCombatUtility.InRange(transform, targetObject, logic.AttackRange))
@@ -106,6 +110,12 @@ public class BeerMonster : Mob, IMobAttackDecisionSource
 
         request = new MobAttackRequest(shotAbility, targetObject, logic.RecoverSeconds);
         return request.IsValid;
+    }
+
+    public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
+    {
+        return Mathf.Max(base.ResolvePostAttackRecoverSeconds(scaledRecoverSeconds),
+            burstCadence.GetRemainingRestSeconds(Time.time));
     }
 
     /// <summary>공격 상태 진입 시 탄막 조준 준비 애니메이션을 요청한다.</summary>
@@ -131,6 +141,9 @@ public class BeerMonster : Mob, IMobAttackDecisionSource
     public bool TryBuildShotContext(AbilitySystem system, AbilitySpec spec, GameObject explicitTarget, out ShotContext context)
     {
         context = default;
+        if (burstCadence.IsResting(Time.time))
+            return false;
+
         GameObject targetObject = explicitTarget != null ? explicitTarget : Target != null ? Target.gameObject : null;
         AbilityLogic_BeerMonsterShot logic = Logic;
         if (!HasRequiredAttackData() || logic == null || !CommonMonsterCombatUtility.InRange(transform, targetObject, logic.AttackRange))
@@ -165,6 +178,9 @@ public class BeerMonster : Mob, IMobAttackDecisionSource
 
     public void FireProjectile(ShotContext context)
     {
+        if (burstCadence.IsResting(Time.time))
+            return;
+
         AbilityLogic_BeerMonsterShot logic = Logic;
         if (logic == null || logic.ProjectilePrefab == null)
             return;
@@ -199,6 +215,7 @@ public class BeerMonster : Mob, IMobAttackDecisionSource
             direction = context.Direction,
             speed = context.ProjectileSpeed
         });
+        burstCadence.RecordShot(Time.time);
     }
 
     /// <summary>맥주 몬스터 탄막 발사 타이밍에 사운드를 재생합니다.</summary>

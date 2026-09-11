@@ -15,7 +15,6 @@ using CapstoneAudio;
 public sealed class ArcaneTankGolem : Mob, IMobAttackDecisionSource
 {
     [SerializeField] private AbilityDefinition slamAbility;
-    [SerializeField, Min(0f)] private float maxHealth = 28f;
     [SerializeField, Range(0.1f, 2f)] private float chaseSpeedScale = 0.65f;
 
     private ArcaneTankGolemSlamRunner runner;
@@ -75,7 +74,6 @@ public sealed class ArcaneTankGolem : Mob, IMobAttackDecisionSource
     {
         base.Awake();
         runner = GetComponent<ArcaneTankGolemSlamRunner>();
-        ApplyStats();
         ChaseIntent?.SetSpeedScale(chaseSpeedScale);
     }
 
@@ -200,15 +198,6 @@ public sealed class ArcaneTankGolem : Mob, IMobAttackDecisionSource
             logic.TargetLayers,
             payload);
         return true;
-    }
-
-    private void ApplyStats()
-    {
-        if (attributeSet == null)
-            return;
-
-        attributeSet.TrySetBaseValue(maxHealthDef, maxHealth, this);
-        attributeSet.TrySetBaseValue(healthDef, maxHealth, this);
     }
 
     private bool HasRequiredData()

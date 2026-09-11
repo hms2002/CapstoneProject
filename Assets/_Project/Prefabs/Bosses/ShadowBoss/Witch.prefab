@@ -777,6 +777,11 @@ MonoBehaviour:
   autoPlayWhenPlayerSpawned: 1
   playOnlyOnce: 1
   startBossCombatAfterDialogue: 1
+  bossCombatBgm:
+    key: bgm.boss.shadow
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &8439794030914778521
 MonoBehaviour:
   m_ObjectHideFlags: 0

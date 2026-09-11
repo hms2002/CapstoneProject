@@ -16,6 +16,7 @@ public static class CommonMonsterAuthoringGenerator
     private const string AbilityStrategyFolder = "Assets/_Project/Data/Abilities/Strategies/Monsters/CommonCorridor";
     private const string PrefabFolder = "Assets/_Project/Prefabs/Monsters/CommonCorridor";
     private const string SpawnDataFolder = "Assets/_Project/Data/Monsters/SpawnSets";
+    private const string InitProfileFolder = "Assets/_Project/Data/Attributes/InitProfiles/Enemies/Mobs";
 
     private const string TemplatePrefabPath = "Assets/_Project/Prefabs/Monsters/SlimeCorridor/Rook.prefab";
     private const string LightBeadPrefabPath = "Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/LightBead.prefab";
@@ -158,8 +159,7 @@ public static class CommonMonsterAuthoringGenerator
             abilities.GoblinWarrior,
             damageEffect,
             knockbackEffect,
-            null,
-            monster => SetFloat(new SerializedObject(monster), "maxHealth", 6f));
+            null);
 
         GameObject goblinGunner = CreateMonsterPrefab<GoblinGunner, GoblinGunnerShotRunner>(
             templatePrefab,
@@ -169,8 +169,7 @@ public static class CommonMonsterAuthoringGenerator
             abilities.GoblinGunner,
             damageEffect,
             null,
-            projectilePrefab,
-            monster => SetFloat(new SerializedObject(monster), "maxHealth", 5f));
+            projectilePrefab);
 
         GameObject goblinTank = CreateMonsterPrefab<GoblinTank, GoblinTankSlamRunner>(
             templatePrefab,
@@ -180,8 +179,7 @@ public static class CommonMonsterAuthoringGenerator
             abilities.GoblinTank,
             damageEffect,
             knockbackEffect,
-            null,
-            monster => SetFloat(new SerializedObject(monster), "maxHealth", 18f));
+            null);
 
         GameObject lizardWarrior = CreateMonsterPrefab<LizardWarrior, LizardWarriorChargeRunner>(
             templatePrefab,
@@ -191,8 +189,7 @@ public static class CommonMonsterAuthoringGenerator
             abilities.LizardWarrior,
             damageEffect,
             knockbackEffect,
-            null,
-            monster => SetFloat(new SerializedObject(monster), "maxHealth", 8f));
+            null);
 
         GameObject lizardMage = CreateMonsterPrefab<LizardMage, LizardMageBurstRunner>(
             templatePrefab,
@@ -202,8 +199,7 @@ public static class CommonMonsterAuthoringGenerator
             abilities.LizardMage,
             damageEffect,
             null,
-            projectilePrefab,
-            monster => SetFloat(new SerializedObject(monster), "maxHealth", 7f));
+            projectilePrefab);
 
         GameObject arcaneMeleeGolem = CreateMonsterPrefab<ArcaneMeleeGolem, ArcaneMeleeGolemChargeRunner>(
             templatePrefab,
@@ -213,8 +209,7 @@ public static class CommonMonsterAuthoringGenerator
             abilities.ArcaneMeleeGolem,
             damageEffect,
             knockbackEffect,
-            null,
-            monster => SetFloat(new SerializedObject(monster), "maxHealth", 14f));
+            null);
 
         GameObject arcaneTankGolem = CreateMonsterPrefab<ArcaneTankGolem, ArcaneTankGolemSlamRunner>(
             templatePrefab,
@@ -224,8 +219,7 @@ public static class CommonMonsterAuthoringGenerator
             abilities.ArcaneTankGolem,
             damageEffect,
             knockbackEffect,
-            null,
-            monster => SetFloat(new SerializedObject(monster), "maxHealth", 28f));
+            null);
 
         return new CommonMonsterPrefabs
         {
@@ -247,8 +241,7 @@ public static class CommonMonsterAuthoringGenerator
         AbilityDefinition ability,
         GE_Damage_Spec damageEffect,
         GE_Knockback_Spec knockbackEffect,
-        GameObject projectilePrefab,
-        Action<TMonster> configureMonster)
+        GameObject projectilePrefab)
         where TMonster : Mob, IMobAttackDecisionSource
         where TRunner : MonoBehaviour, IMobPatternRunner
     {
@@ -279,7 +272,7 @@ public static class CommonMonsterAuthoringGenerator
             ConfigureArcaneTankHeightPresentation(instance, prefabName);
             ConfigureAbilitySystem(instance, ability);
 
-            configureMonster?.Invoke(monster);
+            ConfigureInitialAttributes(instance, prefabName, editsExistingPrefab);
             PrefabUtility.SaveAsPrefabAsset(instance, prefabPath);
         }
         finally
@@ -634,6 +627,30 @@ public static class CommonMonsterAuthoringGenerator
             return;
 
         EditorUtility.CopySerialized(source, target);
+    }
+
+    // Responsibility: bind profile-owned initial HP for new prefabs and preserve existing authored overrides.
+    private static void ConfigureInitialAttributes(GameObject instance, string prefabName, bool editsExistingPrefab)
+    {
+        using var serialized = new SerializedObject(instance.GetComponent<AttributeSet>());
+        if (!editsExistingPrefab)
+        {
+            AttributeInitProfileSO profile = LoadRequired<AttributeInitProfileSO>(
+                $"{InitProfileFolder}/{prefabName}AttributeOverrideInitProfile.asset");
+            SetObjectArray(serialized, "overrideInitProfiles", new UnityEngine.Object[] { profile });
+        }
+
+        AttributeDefinition health = LoadByGuid<AttributeDefinition>("3ff045849daafe84d97370c69cd17747");
+        AttributeDefinition maxHealth = LoadByGuid<AttributeDefinition>("0e177e1d15e428745b5859fac08ce203");
+        SerializedProperty links = serialized.FindProperty("maxLinks");
+        for (int i = 0; i < links.arraySize; i++)
+        {
+            SerializedProperty link = links.GetArrayElementAtIndex(i);
+            if (link.FindPropertyRelative("value").objectReferenceValue == health &&
+                link.FindPropertyRelative("max").objectReferenceValue == maxHealth)
+                link.FindPropertyRelative("fillToMaxOnInitialize").boolValue = true;
+        }
+        serialized.ApplyModifiedPropertiesWithoutUndo();
     }
 
     private static void ApplyCommonMonsterReferences(GameObject instance, Mob monster, string enemyName)

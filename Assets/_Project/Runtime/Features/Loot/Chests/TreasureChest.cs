@@ -6,6 +6,7 @@ using UnityGAS;
 
 /// <summary>
 /// 책임 : 상자 전리품 생성/보관과 오픈 프렐류드 상태를 관리하고 UI 열기 요청은 계약으로 위임한다.
+/// 실제 개봉/활성 상태 변경은 UI 열기 성공 여부와 독립적으로 외부 관찰자에게 알린다.
 /// </summary>
 public class TreasureChest : MonoBehaviour
 {
@@ -63,6 +64,9 @@ public class TreasureChest : MonoBehaviour
         refreshGuard);
     public event Action<TreasureChest> OpenedUi;
     public event Action<TreasureChest> FirstOpenedUi;
+    public static event Action<TreasureChest> WorldStateChanged;
+
+    private void OnEnable() => WorldStateChanged?.Invoke(this);
 
     private void Awake()
     {
@@ -83,6 +87,7 @@ public class TreasureChest : MonoBehaviour
 
     private void OnDisable()
     {
+        WorldStateChanged?.Invoke(this);
         ReleaseOpeningUiInputBlockIfNeeded();
         RestorePreludeTimeIfNeeded();
         DestroySpawnedRewardRevealParticles(immediate: true);
@@ -131,6 +136,7 @@ public class TreasureChest : MonoBehaviour
         isOpening = false;
         hasRaisedFirstOpenedUi = true;
         HoldOpenedVisualState();
+        WorldStateChanged?.Invoke(this);
     }
 
     /// <summary>
@@ -206,6 +212,7 @@ public class TreasureChest : MonoBehaviour
 
             isOpened = true;
             HoldOpenedVisualState();
+            WorldStateChanged?.Invoke(this);
             RestorePreludeTimeIfNeeded();
 
             opened = TryOpenUi(playSlideFadePresentation: false, inputBlocker: openingInputBlocker);

@@ -49,6 +49,7 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
     public MonsterRoomSpawnProfileSO SpawnProfile => spawnProfile;
     public bool PlayerEncounterEntered => playerEncounterEntered;
+    public bool RoomEntrySpawnStarted => roomEntrySpawnStarted;
     public int PendingRoomEntrySpawnCount => pendingRoomEntrySpawnCount;
     public int EncounterHoldCount => encounterHoldCount;
     public int RemainingRegisteredOrPendingCount =>

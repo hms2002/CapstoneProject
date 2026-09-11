@@ -18,6 +18,26 @@ MonoBehaviour:
     statId: 13
     sourceAttribute: {fileID: 11400000, guid: 947f52c2a34d008428c105cd897d5efd, type: 2}
     constantValue: 0
+  - opCode: 1
+    useStatId: 0
+    statId: 0
+    sourceAttribute: {fileID: 0}
+    constantValue: 0.3
+  - opCode: 4
+    useStatId: 0
+    statId: 0
+    sourceAttribute: {fileID: 0}
+    constantValue: 0
+  - opCode: 1
+    useStatId: 0
+    statId: 0
+    sourceAttribute: {fileID: 0}
+    constantValue: 7
+  - opCode: 2
+    useStatId: 0
+    statId: 0
+    sourceAttribute: {fileID: 0}
+    constantValue: 0
   - opCode: 0
     useStatId: 1
     statId: 143

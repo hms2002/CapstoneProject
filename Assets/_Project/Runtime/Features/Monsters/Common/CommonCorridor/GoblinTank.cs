@@ -14,7 +14,6 @@ using CapstoneAudio;
 public sealed class GoblinTank : Mob, IMobAttackDecisionSource
 {
     [SerializeField] private AbilityDefinition slamAbility;
-    [SerializeField, Min(0f)] private float maxHealth = 18f;
     [SerializeField, Range(0.1f, 2f)] private float chaseSpeedScale = 0.7f;
 
     private GoblinTankSlamRunner runner;
@@ -49,7 +48,6 @@ public sealed class GoblinTank : Mob, IMobAttackDecisionSource
     {
         base.Awake();
         runner = GetComponent<GoblinTankSlamRunner>();
-        ApplyStats();
         ChaseIntent?.SetSpeedScale(chaseSpeedScale);
     }
 
@@ -136,15 +134,6 @@ public sealed class GoblinTank : Mob, IMobAttackDecisionSource
             logic.TargetLayers,
             payload);
         return true;
-    }
-
-    private void ApplyStats()
-    {
-        if (attributeSet == null)
-            return;
-
-        attributeSet.TrySetBaseValue(maxHealthDef, maxHealth, this);
-        attributeSet.TrySetBaseValue(healthDef, maxHealth, this);
     }
 
     private bool HasRequiredData()

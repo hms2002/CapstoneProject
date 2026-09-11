@@ -47,9 +47,9 @@ MonoBehaviour:
       critAffectsElement: 1
     damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
     knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
-    damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+    damageFormula: {fileID: 11400000, guid: d4c6b38d32a8fae3b53130e4e8e45c3d, type: 2}
     knockbackFormula: {fileID: 0}
-    legacyDamage: 6
+    legacyDamage: 100
     legacyStaggerDamage: 0
     hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
   markRainSpawnStartSound:

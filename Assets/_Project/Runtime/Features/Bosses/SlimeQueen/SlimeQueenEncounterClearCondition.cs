@@ -174,7 +174,7 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
 
     private IEnumerator RunPhaseTwoFinaleRoutine(SlimeQueenP2Short shortQueen, SlimeQueenP2Long longQueen)
     {
-        SoundPlaybackUtility.StopMusic();
+        SoundPlaybackUtility.TryStopMusic(gameObject.scene);
 
         CleanupFinaleRuntimeState();
         finalePlayerProtection = AcquirePlayerProtection();

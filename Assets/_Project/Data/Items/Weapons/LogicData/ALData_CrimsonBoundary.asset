@@ -22,8 +22,10 @@ MonoBehaviour:
   projectileSpeed: 18
   projectileLifetime: 2
   attackBurnStacks: 3
+  skillFireFormula: {fileID: 11400000, guid: f96dd1d7b1554524a799fe34d9f3a041, type: 2}
+  burnConsumptionMultiplier: 6
   skill1MaxConsume: 5
   skill1Diameter: 5
   skill2ImpactDelay: 0.6
   skill2Diameter: 5
-  skill2BaseMultiplier: 2
+  skill2BaseMultiplier: 40

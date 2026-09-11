@@ -709,6 +709,19 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     {
         EditorGUILayout.Space(8f);
         EditorGUILayout.LabelField("방 오브젝트", EditorStyles.boldLabel);
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            if (GUILayout.Button("일반 상자 후보 선택"))
+            {
+                objectKindToPlace = RoomObjectKind.Prop;
+                objectPrefabToPlace = AssetDatabase.LoadAssetAtPath<GameObject>(ChestPossibleAuthoringUtility.NormalPrefabPath);
+            }
+            if (GUILayout.Button("Kill Lock 상자 후보 선택"))
+            {
+                objectKindToPlace = RoomObjectKind.Prop;
+                objectPrefabToPlace = AssetDatabase.LoadAssetAtPath<GameObject>(ChestPossibleAuthoringUtility.KillLockPrefabPath);
+            }
+        }
         objectKindToPlace = (RoomObjectKind)EditorGUILayout.EnumPopup(
             "종류",
             objectKindToPlace);
@@ -766,6 +779,9 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                 typeof(GameObject),
                 false) as GameObject;
         }
+
+        if (objectPrefabToPlace != null && objectPrefabToPlace.TryGetComponent(out ChestPossible _))
+            EditorGUILayout.HelpBox("후보는 Prop으로 배치합니다. 방 배치 완료 후 생성 프로필의 최대 개수만 선택하며, Kill Lock은 해당 방 전체에 자동 연결됩니다. 직접 배치한 Chest는 별도입니다.", MessageType.Info);
 
         bool sourceIsReady = placingCommonRoleMonster
             ? selectedRoleSet != null
@@ -1995,6 +2011,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             return;
 
         EditorGUILayout.Space(3f);
+        EditorGUILayout.PropertyField(serializedProfile.FindProperty("maximumPossibleChests"),
+            new GUIContent("후보 상자 최대 개수", "직접 배치 상자는 별도이며, 후보가 부족하면 있는 만큼만 생성합니다."));
         EditorGUILayout.PropertyField(
             roomsProperty,
             new GUIContent("반드시 포함할 방"),
@@ -3410,6 +3428,9 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     {
         if (prefab == null)
             return false;
+
+        if (prefab.TryGetComponent(out ChestPossible candidate))
+            return kind == RoomObjectKind.Prop && candidate.ChestPrefab != null;
 
         return kind switch
         {

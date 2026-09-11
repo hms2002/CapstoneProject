@@ -20,7 +20,6 @@ public class Wizard : Slime
     private const int WallLayer = 30;
     private const float AttackRange = 6.5f;
     private const float AttackPrepareSeconds = 0.35f;
-    private const float MaxHealth = 6f;
     private const float VisualScale = 0.85f;
     private const float ChaseSpeedMultiplier = 1f;
     private const float ProjectileSpeed = 5.5f;
@@ -37,6 +36,7 @@ public class Wizard : Slime
     [SerializeField, Min(0)] private int splitCount = 4;
 
     private WizardScatterShotRunner scatterShotRunner;
+    private readonly MobProjectileBurstCadence burstCadence = new();
     private bool hasAttackPrepareTrigger;
     private bool hasAttackTrigger;
     private bool hasDieTrigger;
@@ -85,7 +85,7 @@ public class Wizard : Slime
             scatterShotRunner = gameObject.AddComponent<WizardScatterShotRunner>();
 
         CacheAnimatorParameters();
-        ApplyStats();
+        ApplyAppearance();
     }
 
     protected override void Start()
@@ -152,6 +152,7 @@ public class Wizard : Slime
     {
         request = default;
 
+        if (burstCadence.IsResting(Time.time)) return false;
         if (!CanAct()) return false;
         if (!HasShotData()) return false;
 
@@ -162,11 +163,18 @@ public class Wizard : Slime
         return request.IsValid;
     }
 
+    public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
+    {
+        return Mathf.Max(base.ResolvePostAttackRecoverSeconds(scaledRecoverSeconds),
+            burstCadence.GetRemainingRestSeconds(Time.time));
+    }
+
     /// <summary>산탄 발사에 필요한 실행 정보를 만듭니다.</summary>
     public bool TryBuildShotContext(AbilitySystem system, AbilitySpec spec, GameObject explicitTarget, out ScatterShotContext context)
     {
         context = default;
 
+        if (burstCadence.IsResting(Time.time)) return false;
         if (!CanAct()) return false;
         if (!HasShotData()) return false;
 
@@ -188,9 +196,11 @@ public class Wizard : Slime
     /// <summary>LightBead를 산탄 형태로 발사합니다.</summary>
     public void FireScatterShot(ScatterShotContext context)
     {
+        if (burstCadence.IsResting(Time.time)) return;
         if (context.HitPayload == null || !context.HitPayload.IsValid()) return;
 
         PlayShotFireSound(context.Origin);
+        bool hasFired = false;
         for (int i = 0; i < ShotCount; i++)
         {
             Vector2 direction = GetShotDirection(context.Direction);
@@ -220,7 +230,11 @@ public class Wizard : Slime
             };
 
             projectile.Setup(spawnContext);
+            hasFired = true;
         }
+
+        if (hasFired)
+            burstCadence.RecordShot(Time.time);
     }
 
     /// <summary>Wizard 산탄 탄막 묶음 발사 타이밍에 사운드를 한 번 재생합니다.</summary>
@@ -235,10 +249,10 @@ public class Wizard : Slime
             sourceObject: this);
     }
 
-    /// <summary>마법사의 기본 스탯과 크기를 적용합니다.</summary>
-    protected override void ApplyStats()
+    /// <summary>Applies Wizard appearance while preserving profile HP and spawn scaling.</summary>
+    protected override void ApplyAppearance()
     {
-        SetStats("Wizard", MaxHealth, VisualScale);
+        SetAppearance("Wizard", VisualScale);
     }
 
     /// <summary>산탄 범위 안에서 무작위 탄막 방향을 계산합니다.</summary>

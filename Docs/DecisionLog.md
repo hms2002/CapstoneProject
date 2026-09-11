@@ -3114,3 +3114,18 @@ Implications:
 - The follow-up resolves through the destination theme's parcel definition and themed delivery-room template.
 - Each submitted parcel produces one exact-Epic relic. Selection uses the unlocked relic pool and its normal non-droppable exclusions; placement and acquisition use the standard ground-tile drop animation and `WorldItemPickup2D` path.
 - Parcels are removed only for rewards that were successfully spawned. If the Epic pool or world-pickup path cannot produce a reward, the corresponding parcel stays in the relic inventory.
+
+## 2026-09-11 - Scene And Encounter Authors Request Music Explicitly
+
+Decision:
+Scene entry, boss combat and GameOver submit their authored SoundRef through Core `SoundPlaybackUtility` to the existing Infrastructure `SoundManager`. Scene-owned play/stop requests include their source Scene and are accepted only while that scene is loaded and active. Remove `RunRouteBgmService` and `RunRouteBgmPlayback`; do not infer tracks from portals, route plans or return-scene catalogs. This supersedes the earlier audio-helper decision's run-route BGM bridge, not its Core/Infrastructure separation for other audio.
+
+Reason:
+Music must survive independent navigation refactors and run cleanup. Scene-local authoring is visible and predictable; a temporary/default priority stack is unnecessary for the currently approved flows.
+
+Implications:
+- One separately rooted `SceneBgmRequester` per authored scene requests entry music; an empty key requests silence. It never stops music on unload and never reapplies every frame.
+- Boss encounter and GameOver retain their existing trigger timing, but own their music selection. Boss death uses the scene-bound stop API. Current-scene requests replace music without storing a restore stack.
+- No new singleton, persistent manager or per-frame lookup is introduced. Existing backend fading and same-track behavior remain unchanged.
+- Legacy route music fields remain serialized but no longer select runtime BGM. The one-time migration reads them only to preserve existing selections.
+- Read-only `Tools/Audio/Validate Scene BGM` checks scene requesters and playable catalog keys. Ownership/bootstrap Architecture documents need a separately approved update; current implementation guidance is in `Docs/StructureMemory/SceneMusicRequests.md`.

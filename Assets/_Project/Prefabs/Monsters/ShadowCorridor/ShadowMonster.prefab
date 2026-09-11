@@ -334,7 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6e915a26784ef2b8d9df8e2d4d3bf1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tackleAbility: {fileID: 11400000, guid: 0114fc4ac57bcbe46b3d058d930e3a32, type: 2}
+  tackleAbility: {fileID: 11400000, guid: c170d6e85fa340d7a72e32a78cabf5f1, type: 2}
   hitDelay: 1
   attackRangeDiameter: 6
   lungeDistance: 5
@@ -364,7 +364,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialAbilities:
-  - {fileID: 11400000, guid: 0114fc4ac57bcbe46b3d058d930e3a32, type: 2}
+  - {fileID: 11400000, guid: c170d6e85fa340d7a72e32a78cabf5f1, type: 2}
   attributeSet: {fileID: 1535278931212011680}
   effectRunner: {fileID: 5052094422871209493}
   tagSystem: {fileID: 2310470610362802669}
@@ -402,7 +402,7 @@ MonoBehaviour:
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-    fillToMaxOnInitialize: 0
+    fillToMaxOnInitialize: 1
 --- !u!114 &5052094422871209493
 MonoBehaviour:
   m_ObjectHideFlags: 0
