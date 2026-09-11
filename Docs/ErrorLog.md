@@ -1865,3 +1865,9 @@ PlayerSpawner requests the existing pending Hub-load full heal once for its init
 
 Prevention:
 Keep initial Hub healing after upgrade registration and state restoration. Do not make upgrade reapply or maximum-health changes universally heal: these also execute during in-run scene travel. Repeated spawn calls must not grant repeated recovery.
+
+## 2026-09-11 - Lightning Spear Wall Tile Classification Missed Authored Walls
+
+- Cause: ProtoTypeBoss and ProtoTypeCorridor Wall tilemaps use GameObject layer Ground (7) and sorting layer Background. Filtering only physics layer Wall (30) missed them and admitted them to the ground cache. Hub settings were not representative.
+- Fix: mark placement classifies active tilemaps with layer Wall or the existing exact authored name `Wall` as walls, before Ground classification.
+- Prevention: inspect actual target scene tilemap components, not only layer names or a single Hub scene. Collider geometry and tile occupancy are different checks. Name-based compatibility remains tracked in RefactorBacklog/LightningSpearTilemapClassification.md.

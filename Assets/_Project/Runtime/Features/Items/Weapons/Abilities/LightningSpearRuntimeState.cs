@@ -51,6 +51,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
     private readonly List<LightningSpearMarkActor> activeMarks = new List<LightningSpearMarkActor>();
     private readonly List<MarkSpawnRequest> pendingMarkSpawns = new List<MarkSpawnRequest>();
     private readonly List<Tilemap> groundTilemapCache = new List<Tilemap>();
+    private readonly List<Tilemap> wallTilemapCache = new List<Tilemap>();
     private readonly List<LightningSpearRecoveredSpearActor> recoveredSpears = new List<LightningSpearRecoveredSpearActor>();
     private readonly List<LightningSpearRecoveredSpearActor> transientRecoveredSpears = new List<LightningSpearRecoveredSpearActor>();
     private readonly List<LightningSpearRecoveredSpearProjectile2D> recoveredProjectiles = new List<LightningSpearRecoveredSpearProjectile2D>();
@@ -1125,6 +1126,10 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         if (ownerRoom != null && !ownerRoom.Contains(candidate))
             return false;
 
+        // Wall tiles reject placement even when their collider only represents an outline.
+        if (HasWallTileAt(candidate))
+            return false;
+
         if (HasPlacementBlocker(ownerPosition, candidate, loadout.MarkRushBodyRadius, loadout.StrictRushBlockMask))
             return false;
 
@@ -1794,9 +1799,6 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
         float radius = GetLandingProbeRadius(loadout, data);
 
-        if (!HasGroundTileAt(position) && !HasRequiredGroundOverlap(loadout, position, radius))
-            return false;
-
         int blockedMask = loadout.LandingBlockedMask;
         if (blockedMask != 0 &&
             Physics2D.OverlapCircle(position, radius, blockedMask) != null)
@@ -1804,7 +1806,21 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             return false;
         }
 
-        return true;
+        return HasGroundTileAt(position) || HasRequiredGroundOverlap(loadout, position, radius);
+    }
+
+    private bool HasWallTileAt(Vector2 position)
+    {
+        ResolveGroundTilemaps();
+        for (int i = 0; i < wallTilemapCache.Count; i++)
+        {
+            Tilemap tilemap = wallTilemapCache[i];
+            if (tilemap != null && tilemap.isActiveAndEnabled && tilemap.gameObject.activeInHierarchy &&
+                tilemap.HasTile(tilemap.WorldToCell(position)))
+                return true;
+        }
+
+        return false;
     }
 
     private bool HasGroundTileAt(Vector2 position)
@@ -1842,8 +1858,10 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
         groundTilemapCacheFrame = Time.frameCount;
         groundTilemapCache.Clear();
+        wallTilemapCache.Clear();
 
         int groundLayer = ResolveGroundLayer();
+        int wallLayer = LayerMask.NameToLayer("Wall");
 #if UNITY_2023_1_OR_NEWER || UNITY_6000_0_OR_NEWER
         Tilemap[] tilemaps = Object.FindObjectsByType<Tilemap>(
             FindObjectsInactive.Exclude,
@@ -1857,10 +1875,11 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             if (!IsUsableGroundTilemap(tilemap))
                 continue;
 
-            if (tilemap.gameObject.layer != groundLayer)
-                continue;
-
-            groundTilemapCache.Add(tilemap);
+            // Authored prototype Wall tilemaps also use the Ground physics layer.
+            if (tilemap.gameObject.layer == wallLayer || tilemap.name == "Wall")
+                wallTilemapCache.Add(tilemap);
+            else if (tilemap.gameObject.layer == groundLayer)
+                groundTilemapCache.Add(tilemap);
         }
 
         return groundTilemapCache;
