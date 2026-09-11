@@ -15,6 +15,7 @@ MonoBehaviour:
   layoutData:
     roomId: Dragon_Combat_Up
     roomType: 0
+    shapeTag: {fileID: 0}
     size: {x: 12, y: 8}
     localBounds:
       x: 0
@@ -32,6 +33,9 @@ MonoBehaviour:
       width: 2
     difficultyTier: 0
     selectionWeight: 1
+    combatMetadata:
+      sizeTag: 1
+      killLockRewardTag: 1
     topologyPlacement:
       mode: 0
       minimumGraphDistanceFromStart: 0
@@ -315,9 +319,32 @@ MonoBehaviour:
     - localCell: {x: 11, y: 7}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     wallDetailTiles: []
-    foregroundTiles: []
+    foregroundTiles:
+    - localCell: {x: 1, y: 1}
+      tile: {fileID: 11400000, guid: fe250093b1e20e545ad6f4e7253fe5e0, type: 2}
+    - localCell: {x: 2, y: 1}
+      tile: {fileID: 11400000, guid: 67e610292c91d3241a823e1988e5a865, type: 2}
+    - localCell: {x: 3, y: 1}
+      tile: {fileID: 11400000, guid: 9ee3bf9d73271eb4e9247ff0be8fa427, type: 2}
+    - localCell: {x: 8, y: 1}
+      tile: {fileID: 11400000, guid: fe250093b1e20e545ad6f4e7253fe5e0, type: 2}
+    - localCell: {x: 9, y: 1}
+      tile: {fileID: 11400000, guid: 67e610292c91d3241a823e1988e5a865, type: 2}
+    - localCell: {x: 10, y: 1}
+      tile: {fileID: 11400000, guid: 9ee3bf9d73271eb4e9247ff0be8fa427, type: 2}
     overlayFxTiles: []
     objectPlacements:
+    - placementId: Object_06
+      kind: 0
+      prefab: {fileID: 8536156983854311797, guid: e5c3dbe97e8d669459817a5afe1feebe, type: 3}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 8, y: 6}
+      localOffset: {x: -0.06000042, y: -0.07999992}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
     - placementId: Warrior_04
       kind: 1
       prefab: {fileID: 0}

@@ -15,6 +15,7 @@ MonoBehaviour:
   layoutData:
     roomId: Dragon_Treasure_Sacrifice
     roomType: 2
+    shapeTag: {fileID: 0}
     size: {x: 18, y: 12}
     localBounds:
       x: 0
@@ -32,6 +33,9 @@ MonoBehaviour:
       width: 2
     difficultyTier: 0
     selectionWeight: 1
+    combatMetadata:
+      sizeTag: 0
+      killLockRewardTag: 0
     topologyPlacement:
       mode: 0
       minimumGraphDistanceFromStart: 0
@@ -659,6 +663,27 @@ MonoBehaviour:
       localOffset: {x: 0, y: -0.5}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
+      childPoseOverrides:
+      - slotId: OfferingStatue
+        overridePosition: 1
+        localPosition: {x: 0.5, y: 1.16, z: 0}
+        overrideRotation: 1
+        localRotationDegrees: 0
+        overrideScale: 1
+        localScale: {x: 1, y: 1, z: 1}
+      - slotId: RewardDoor
+        overridePosition: 1
+        localPosition: {x: 2.5, y: 2, z: 0}
+        overrideRotation: 1
+        localRotationDegrees: 0
+        overrideScale: 1
+        localScale: {x: 1, y: 1, z: 1}
+      - slotId: TreasureChest
+        overridePosition: 1
+        localPosition: {x: 2.52, y: 5.64, z: 0}
+        overrideRotation: 1
+        localRotationDegrees: 0
+        overrideScale: 1
+        localScale: {x: 1, y: 1, z: 1}
       linkedChestLockPlacementId: 
     travelEndpointPlacements: []

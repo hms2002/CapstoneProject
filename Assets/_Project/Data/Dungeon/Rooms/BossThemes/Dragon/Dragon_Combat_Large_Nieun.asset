@@ -15,6 +15,7 @@ MonoBehaviour:
   layoutData:
     roomId: Dragon_Combat_Large_Nieun
     roomType: 0
+    shapeTag: {fileID: 0}
     size: {x: 26, y: 18}
     localBounds:
       x: 0
@@ -36,6 +37,9 @@ MonoBehaviour:
       width: 2
     difficultyTier: 1
     selectionWeight: 0.5
+    combatMetadata:
+      sizeTag: 2
+      killLockRewardTag: 2
     topologyPlacement:
       mode: 0
       minimumGraphDistanceFromStart: 0
@@ -1112,7 +1116,7 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
+      linkedChestLockPlacementId: KillLockChest
     - placementId: StageMonster_20
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
@@ -1123,7 +1127,7 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
+      linkedChestLockPlacementId: KillLockChest
     - placementId: Warrior_10
       kind: 1
       prefab: {fileID: 0}
@@ -1134,7 +1138,7 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
+      linkedChestLockPlacementId: KillLockChest
     - placementId: Tank_17
       kind: 1
       prefab: {fileID: 0}
@@ -1145,7 +1149,7 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
+      linkedChestLockPlacementId: KillLockChest
     - placementId: Mage_15
       kind: 1
       prefab: {fileID: 0}
@@ -1156,7 +1160,7 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
+      linkedChestLockPlacementId: KillLockChest
     - placementId: Mage_14
       kind: 1
       prefab: {fileID: 0}
@@ -1167,7 +1171,7 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
+      linkedChestLockPlacementId: KillLockChest
     - placementId: StageMonster_19
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
@@ -1178,7 +1182,7 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
+      linkedChestLockPlacementId: KillLockChest
     - placementId: Warrior_12
       kind: 1
       prefab: {fileID: 0}
@@ -1189,7 +1193,7 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
+      linkedChestLockPlacementId: KillLockChest
     - placementId: StageMonster_18
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
@@ -1200,7 +1204,7 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
+      linkedChestLockPlacementId: KillLockChest
     - placementId: Warrior_11
       kind: 1
       prefab: {fileID: 0}
@@ -1211,7 +1215,7 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
+      linkedChestLockPlacementId: KillLockChest
     - placementId: Warrior_13
       kind: 1
       prefab: {fileID: 0}
@@ -1222,7 +1226,7 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
+      linkedChestLockPlacementId: KillLockChest
     - placementId: KillLockChest
       kind: 2
       prefab: {fileID: 8398461225799451672, guid: 670170a4e9390bc458d0b686227549af, type: 3}

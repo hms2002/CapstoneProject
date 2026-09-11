@@ -15,6 +15,7 @@ MonoBehaviour:
   layoutData:
     roomId: Dragon_Combat_Wide
     roomType: 0
+    shapeTag: {fileID: 0}
     size: {x: 21, y: 14}
     localBounds:
       x: 0
@@ -30,12 +31,19 @@ MonoBehaviour:
       localCell: {x: 20, y: 8}
       direction: 1
       width: 2
+    - socketId: Socket_03
+      localCell: {x: 8, y: 0}
+      direction: 2
+      width: 2
     - socketId: Left
       localCell: {x: 0, y: 3}
       direction: 3
       width: 2
     difficultyTier: 0
     selectionWeight: 1
+    combatMetadata:
+      sizeTag: 1
+      killLockRewardTag: 2
     topologyPlacement:
       mode: 0
       minimumGraphDistanceFromStart: 0
@@ -441,7 +449,17 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
     - localCell: {x: 20, y: 10}
       tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
-    floorDetailTiles: []
+    floorDetailTiles:
+    - localCell: {x: 13, y: 4}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 14, y: 4}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 15, y: 4}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 16, y: 4}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 17, y: 4}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
     groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 0}
@@ -521,7 +539,7 @@ MonoBehaviour:
     - localCell: {x: 6, y: 9}
       tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 7, y: 0}
-      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
     - localCell: {x: 7, y: 9}
       tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
     - localCell: {x: 7, y: 10}
@@ -541,9 +559,9 @@ MonoBehaviour:
     - localCell: {x: 9, y: 13}
       tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 10, y: 0}
-      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+      tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
     - localCell: {x: 10, y: 13}
-      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
     - localCell: {x: 11, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 11, y: 13}
@@ -559,13 +577,13 @@ MonoBehaviour:
     - localCell: {x: 13, y: 1}
       tile: {fileID: 11400000, guid: 5acaf53c333775b4fbc3cdb73683a58e, type: 2}
     - localCell: {x: 13, y: 5}
-      tile: {fileID: 11400000, guid: 335f0f6ec642f0649a10fbe0b2319658, type: 2}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
     - localCell: {x: 13, y: 6}
       tile: {fileID: 11400000, guid: cee0c0b7622c34046901aa6996a88dc3, type: 2}
     - localCell: {x: 13, y: 7}
       tile: {fileID: 11400000, guid: 49dd271b35cb6a54397f37fa4149082a, type: 2}
     - localCell: {x: 13, y: 13}
-      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
+      tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
     - localCell: {x: 14, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 14, y: 1}
@@ -573,7 +591,7 @@ MonoBehaviour:
     - localCell: {x: 14, y: 2}
       tile: {fileID: 11400000, guid: 5acaf53c333775b4fbc3cdb73683a58e, type: 2}
     - localCell: {x: 14, y: 5}
-      tile: {fileID: 11400000, guid: 0d3dbd63877db31499d8d31c203dbd2c, type: 2}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
     - localCell: {x: 14, y: 6}
       tile: {fileID: 11400000, guid: 39a26e15549020c4d9e4f2fe60596fe1, type: 2}
     - localCell: {x: 14, y: 7}
@@ -587,7 +605,7 @@ MonoBehaviour:
     - localCell: {x: 15, y: 2}
       tile: {fileID: 11400000, guid: 5acaf53c333775b4fbc3cdb73683a58e, type: 2}
     - localCell: {x: 15, y: 5}
-      tile: {fileID: 11400000, guid: 0d3dbd63877db31499d8d31c203dbd2c, type: 2}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
     - localCell: {x: 15, y: 6}
       tile: {fileID: 11400000, guid: 39a26e15549020c4d9e4f2fe60596fe1, type: 2}
     - localCell: {x: 15, y: 7}
@@ -605,7 +623,7 @@ MonoBehaviour:
     - localCell: {x: 16, y: 2}
       tile: {fileID: 11400000, guid: 5acaf53c333775b4fbc3cdb73683a58e, type: 2}
     - localCell: {x: 16, y: 5}
-      tile: {fileID: 11400000, guid: 0d3dbd63877db31499d8d31c203dbd2c, type: 2}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
     - localCell: {x: 16, y: 6}
       tile: {fileID: 11400000, guid: 39a26e15549020c4d9e4f2fe60596fe1, type: 2}
     - localCell: {x: 16, y: 7}
@@ -619,7 +637,7 @@ MonoBehaviour:
     - localCell: {x: 17, y: 2}
       tile: {fileID: 11400000, guid: 5acaf53c333775b4fbc3cdb73683a58e, type: 2}
     - localCell: {x: 17, y: 5}
-      tile: {fileID: 11400000, guid: d32eac80f89b3f04b98864d54d7f5d62, type: 2}
+      tile: {fileID: 11400000, guid: 3c70c4b5b93c4e94a800922c7b957af1, type: 2}
     - localCell: {x: 17, y: 6}
       tile: {fileID: 11400000, guid: 5f67cf9415e1eda4db237e4c16543c36, type: 2}
     - localCell: {x: 17, y: 7}
@@ -669,99 +687,84 @@ MonoBehaviour:
     wallDetailTiles: []
     foregroundTiles: []
     overlayFxTiles:
-    - localCell: {x: 10, y: 13}
-      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
-    - localCell: {x: 13, y: 13}
-      tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
     - localCell: {x: 20, y: 7}
       tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
     - localCell: {x: 20, y: 10}
       tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
     objectPlacements:
-    - placementId: Object_03
-      kind: 1
-      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 6, y: 4}
-      localOffset: {x: -0.2800002, y: 0.42000008}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: Combat_WideMonster_2
-      kind: 1
-      prefab: {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 8, y: 5}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: KillLockChest
-    - placementId: Object_07
-      kind: 1
-      prefab: {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 10, y: 3}
-      localOffset: {x: 0, y: -0.1400001}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: 
     - placementId: Object_06
-      kind: 1
-      prefab: {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
+      kind: 0
+      prefab: {fileID: 8536156983854311797, guid: e5c3dbe97e8d669459817a5afe1feebe, type: 3}
       monsterSpawnRole: 0
       monsterStageSet: {fileID: 0}
-      localCell: {x: 10, y: 7}
-      localOffset: {x: 0, y: -0.46000004}
+      localCell: {x: 9, y: 5}
+      localOffset: {x: 0.03999996, y: 0.119999886}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Object_05
+    - placementId: Tank_07
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 2
+      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
+      localCell: {x: 7, y: 3}
+      localOffset: {x: -0.26000023, y: 0.44000006}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - placementId: Warrior_04
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 7, y: 7}
+      localOffset: {x: -0.119999886, y: -0.19000006}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - placementId: Warrior_02
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 9, y: 3}
+      localOffset: {x: 0.47999954, y: -0.42000008}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - placementId: StageMonster_05
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 10, y: 11}
-      localOffset: {x: 0, y: -0.4499998}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: Object_08
-      kind: 1
-      prefab: {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 12, y: 3}
-      localOffset: {x: -0.35999966, y: -0.1400001}
-      localRotationDegrees: 0
-      localScale: {x: -1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: Object_04
-      kind: 1
-      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 16, y: 9}
-      localOffset: {x: -0.42000008, y: -0.42000008}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: KillLockChest
-      kind: 2
-      prefab: {fileID: 8398461225799451672, guid: 670170a4e9390bc458d0b686227549af, type: 3}
       monsterSpawnRole: 0
       monsterStageSet: {fileID: 0}
       localCell: {x: 10, y: 5}
-      localOffset: {x: 0, y: -0.01999998}
+      localOffset: {x: 0.17000008, y: -0.03000021}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - placementId: Warrior_01
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 11, y: 7}
+      localOffset: {x: 0.21000004, y: 0.4000001}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - placementId: Warrior_03
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 14, y: 9}
+      localOffset: {x: 0.18999958, y: -0.35000038}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
