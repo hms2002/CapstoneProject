@@ -7,6 +7,28 @@ last_reviewed: 2026-09-03
 
 # Error Log
 
+## 2026-09-11 - Monster AI Overwrote Profile HP And Hid Initial Clamp
+
+Symptom: common monsters and slimes did not reliably use their authored HP. Removing their legacy writes exposed current HP stuck at 100 even when MaxHealth correctly became 220-1100.
+
+Cause: seven common AI classes and the Slime base wrote independent numeric HP during Awake/split setup. MonsterDifficultyReceiver could cache a different baseline depending on Awake order. Separately, Health-before-MaxHealth profile application clamps Health against the earlier maximum, and the affected prefabs had initialization fill disabled.
+
+Fix: remove numeric HP initialization from those AI classes and retain only slime appearance setup. Enable the existing Health-to-MaxHealth initialization fill on the 15 common/slime/Shadow prefabs covered by the balance pass. Capture current HP before reducing MaxHealth in MonsterDifficultyReceiver; reading it afterward used the already-clamped value and incorrectly turned a full-health 900 HP tank into 225/450 under x0.5 scaling. Stage/role/elite coefficients and global AttributeSet behavior are unchanged.
+
+Regression coverage: the real-prefab Play Mode fixture checks authored/full HP, repeated difficulty application and no healing during split setup. Other deliberately partial-health prefabs and global initialization semantics remain outside this slice.
+
+## 2026-09-11 - Alarm Bell Coupled To Unclaimed Level Rewards
+
+Symptom: An unused alarm bell's interaction prompt disappears when the run has unclaimed level rewards. The same check can stall wave advancement and keep encounter doors locked after all monsters die.
+
+Cause: `AlarmBellInteractable.HasPendingLevelReward` treated pending rewards and a persisted active offer as an executing reward UI flow. Those are saved entitlements/candidate state, not evidence that the UI is open. The bell reused that predicate for both activation and coroutine waits, although rewards are selected on demand with R.
+
+Fix: Remove the predicate and all reward-flow waits from the bell. Keep experience granting after encounter completion, without consuming rewards. Existing player interaction blocking and common pause/input-lock systems remain responsible for an actually opened UI.
+
+Prevention: Do not use pending data or a resumable saved offer as a proxy for active UI execution. Encounter progression should depend on its own combat state, not unrelated unclaimed rewards. Do not duplicate common UI flow ownership in a world interactable.
+
+Verification: Runtime and regression-test compilation passed. Added interaction-gate and cleared-wave/completion tests; Unity Play Mode execution remains unverified.
+
 ## 2026-09-05 - Upgrade Opening Coroutine Ran On Its Inactive Panel
 
 Symptom: From Hub, selecting the NPC upgrade feature did not open the window. Editor.log recorded `Coroutine couldn't be started because the the game object 'UpgradeTreePanel' is inactive!` at `UpgradeUiOpenFlow.Open`.
@@ -1866,8 +1888,41 @@ PlayerSpawner requests the existing pending Hub-load full heal once for its init
 Prevention:
 Keep initial Hub healing after upgrade registration and state restoration. Do not make upgrade reapply or maximum-health changes universally heal: these also execute during in-run scene travel. Repeated spawn calls must not grant repeated recovery.
 
-## 2026-09-11 - Lightning Spear Wall Tile Classification Missed Authored Walls
+## 2026-09-11 - Death Return Could Not Resolve Hub Music Without Legacy Portals
 
-- Cause: ProtoTypeBoss and ProtoTypeCorridor Wall tilemaps use GameObject layer Ground (7) and sorting layer Background. Filtering only physics layer Wall (30) missed them and admitted them to the ground cache. Hub settings were not representative.
-- Fix: mark placement classifies active tilemaps with layer Wall or the existing exact authored name `Wall` as walls, before Ground classification.
-- Prevention: inspect actual target scene tilemap components, not only layer names or a single Hub scene. Collider geometry and tile occupancy are different checks. Name-based compatibility remains tracked in RefactorBacklog/LightningSpearTilemapClassification.md.
+Cause:
+RunRouteBgmService could resolve Hub music only from the active route catalog, a single cached catalog return scene, or a HubToRunStart portal in the destination scene. EndRun clears the active plan before loading ProtoTypeHub; Grand Hall catalogs cache Grand Hall as their return scene, and ProtoTypeHub now uses a data-driven Grand Hall connection rather than the old start portal. The resolver therefore returns no Hub music and leaves the previous/GameOver track playing even though scene loading succeeds.
+
+Fix:
+Keep matching authored catalog music first, then use a configurable default Hub SoundRef when SceneDomainNamePolicy classifies the destination as the actual Hub. No death-flow, scene/portal data, run lifecycle or Grand Hall domain change. The existing sceneLoaded cache invalidation still ensures that external GameOver music is replaced.
+
+Verification:
+Production and the new 10-case regression fixture compile with 0 errors. Cases cover Hub-only matching, valid catalog sound, configurable/unset fallback, no active route/no portals, Grand Hall cache mismatch and matching-cache precedence. Native Play Mode tests and audible death-return verification were not executed because the project Editor was open.
+
+Prevention:
+Presentation needed after EndRun must not depend solely on run-owned data that EndRun removes, or on navigation objects that can be retired independently. Keep the actual Hub classification separate from an in-run checkpoint's route return scene.
+
+Superseded later on 2026-09-11:
+The Hub-only fallback and its fixture were replaced by scene-authored music requests. `SceneBgmRequester` requests ProtoTypeHub's `bgm.hub` directly, independent of route state and portals. Core rejects inactive/unloaded scene play/stop requests; unloading a requester never stops destination music. All 18 configured scenes passed native authoring validation and all 11 focused Unity Play Mode cases passed. Audible full death-return playtesting remains manual. See `Docs/StructureMemory/SceneMusicRequests.md`.
+
+## 2026-09-11 - Batch Scene Music Authoring Reserialized Unrelated Data
+
+Cause:
+Saving scenes through the current Unity version also serialized existing Tilemap/default component data and UI poses. Restoring a headless editor's untitled SceneManagerSetup then failed after the requested BGM writes had already succeeded.
+
+Fix:
+Guard setup restoration against unsaved/invalid entries. Preserve only the BGM object, SceneRoots entry and encounter music fields on the verified clean pre-task scene/prefab text. Read-only comparisons established that removing those additions exactly reproduced the originals; duplicate IDs and requester counts were checked before applying. Reopen all 18 resulting scenes through native Unity validation. Final scene/prefab diff contains 985 added lines and no deletions across the 21 approved assets.
+
+Prevention:
+Treat native SaveScene as a potentially broad serialization operation, not proof of a narrow diff. Record the pre-task state, inspect every asset change, preserve unrelated user edits and validate any targeted cleanup natively. An authoring command's cleanup exception does not imply earlier asset saves were rolled back. Keep ongoing validation read-only.
+
+## 2026-09-11 - Minimap Contents Compared World Positions To Layout Cells
+
+Cause:
+DungeonMapRoomNode.WorldBounds copies DungeonRoomPlacement's integer layout-cell bounds despite its legacy name. Content tracking compared those bounds directly to chest transforms and heart landing world positions. ProceduralShadowCorridor's generated root is translated by (-49.35, -2.04), so the nearest-room fallback assigned contents to other rooms. Earlier fixtures only used identity coordinates and missed this boundary.
+
+Fix:
+DungeonGenerator passes the builder's FloorTilemap to DungeonMapRuntimeController and its content tracker. Source positions are converted through GridLayout.WorldToLocal/LocalToCellInterpolated before shape-based room resolution, including on bootstrap and re-enable. No new per-frame search or UI-owned gameplay state is introduced.
+
+Prevention And Verification:
+Document coordinate units even when an existing property name cannot be changed safely. Test translated, rotated and nonuniform grids plus actual drop destination/lifecycle events. Native execution also revealed that test hearts lacked a concrete Collider2D: add CircleCollider2D before FieldHealPickup2D rather than relying on its abstract RequireComponent. After correcting the fixtures, all 22 focused content/bell cases passed in Unity Play Mode.

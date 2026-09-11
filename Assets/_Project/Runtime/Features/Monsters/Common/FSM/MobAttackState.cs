@@ -59,11 +59,9 @@ public sealed class MobAttackState : IMobState
                 if (context.AbilityBridge != null && context.AbilityBridge.IsAbilityExecutionBusy)
                     return;
 
-                if (request.RecoverSeconds > 0f)
-                    stateMachine.ChangeState(new MobRecoverState(request.RecoverSeconds), context);
-                else
-                    stateMachine.ChangeState(MobStateTransitionUtility.CreatePostAttackState(context), context);
-
+                stateMachine.ChangeState(
+                    MobStateTransitionUtility.CreateRecoverOrPostAttackState(context, request.RecoverSeconds),
+                    context);
                 return;
             }
 
@@ -76,10 +74,9 @@ public sealed class MobAttackState : IMobState
         if (context.AbilityBridge != null && context.AbilityBridge.IsAbilityExecutionBusy)
             return;
 
-        if (request.RecoverSeconds > 0f)
-            stateMachine.ChangeState(new MobRecoverState(request.RecoverSeconds), context);
-        else
-            stateMachine.ChangeState(MobStateTransitionUtility.CreatePostAttackState(context), context);
+        stateMachine.ChangeState(
+            MobStateTransitionUtility.CreateRecoverOrPostAttackState(context, request.RecoverSeconds),
+            context);
     }
 
     public void Exit(MobStateMachine stateMachine, MobAIContext context)

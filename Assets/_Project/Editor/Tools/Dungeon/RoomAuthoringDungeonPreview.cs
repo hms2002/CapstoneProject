@@ -19,6 +19,7 @@ internal sealed class RoomAuthoringDungeonPreviewMarker : MonoBehaviour
 /// 책임:
 /// - Room Piece 툴이 레이아웃 조립기와 시각 빌더에 전달할 라이브러리, 편집 중인 방, 생성 설정을 묶는다.
 /// - 프리뷰 생성 과정이 에디터 창의 직렬화 필드와 UI 구현을 직접 알지 않게 한다.
+/// - 미리보기 전용 런 이벤트 프로필을 받아 이벤트룸이 실제 생성 후보처럼 배치되는지 확인하게 한다.
 /// </summary>
 internal readonly struct RoomAuthoringDungeonPreviewRequest
 {
@@ -40,7 +41,10 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
     public float CorridorLengthPerRoomCell { get; }
     public int CorridorLengthVariation { get; }
     public IReadOnlyList<RoomTemplateSO> GuaranteedRoomTemplates { get; }
+    public RunMapEventGenerationProfileSO RunMapEventProfile { get; }
+    public int RunMapEventPreviewVisitOrder { get; }
     public CorridorDecorationProfileSO CorridorDecorationProfile { get; }
+    public RoomSocketCleanupProfileSO SocketCleanupProfile { get; }
 
     public RoomAuthoringDungeonPreviewRequest(
         RoomThemeLibrarySO library,
@@ -61,7 +65,10 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
         float corridorLengthPerRoomCell,
         int corridorLengthVariation,
         IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
-        CorridorDecorationProfileSO corridorDecorationProfile)
+        RunMapEventGenerationProfileSO runMapEventProfile,
+        int runMapEventPreviewVisitOrder,
+        CorridorDecorationProfileSO corridorDecorationProfile,
+        RoomSocketCleanupProfileSO socketCleanupProfile)
     {
         Library = library;
         LayoutPolicy = layoutPolicy;
@@ -81,7 +88,10 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
         CorridorLengthPerRoomCell = corridorLengthPerRoomCell;
         CorridorLengthVariation = corridorLengthVariation;
         GuaranteedRoomTemplates = guaranteedRoomTemplates;
+        RunMapEventProfile = runMapEventProfile;
+        RunMapEventPreviewVisitOrder = Mathf.Max(1, runMapEventPreviewVisitOrder);
         CorridorDecorationProfile = corridorDecorationProfile;
+        SocketCleanupProfile = socketCleanupProfile;
     }
 }
 
@@ -165,12 +175,13 @@ internal static class RoomAuthoringDungeonPreview
 
     /// <summary>
     /// 책임:
-    /// - Scene View에 그릴 방의 예약 영역, 표시 이름과 현재 편집 방 여부를 복사해 보관한다.
+    /// - Scene View에 그릴 방의 예약 영역, 표시 이름, 모양 태그와 현재 편집 방 여부를 복사해 보관한다.
     /// </summary>
     private readonly struct PreviewRoomInfo
     {
         public int PlacementId { get; }
         public string RoomId { get; }
+        public string ShapeTagName { get; }
         public RoomType RoomType { get; }
         public RectInt WorldBounds { get; }
         public bool IsCurrentRoom { get; }
@@ -178,12 +189,14 @@ internal static class RoomAuthoringDungeonPreview
         public PreviewRoomInfo(
             int placementId,
             string roomId,
+            string shapeTagName,
             RoomType roomType,
             RectInt worldBounds,
             bool isCurrentRoom)
         {
             PlacementId = placementId;
             RoomId = roomId ?? string.Empty;
+            ShapeTagName = shapeTagName ?? string.Empty;
             RoomType = roomType;
             WorldBounds = worldBounds;
             IsCurrentRoom = isCurrentRoom;
@@ -229,6 +242,7 @@ internal static class RoomAuthoringDungeonPreview
     /// </summary>
     private readonly struct PreviewObjectInfo
     {
+        public bool IsChestCandidate { get; }
         public RoomObjectKind Kind { get; }
         public RoomMonsterSpawnRole MonsterRole { get; }
         public bool UsesCommonMonsterRole { get; }
@@ -238,8 +252,10 @@ internal static class RoomAuthoringDungeonPreview
             RoomObjectKind kind,
             RoomMonsterSpawnRole monsterRole,
             bool usesCommonMonsterRole,
-            Vector2Int worldCell)
+            Vector2Int worldCell,
+            bool isChestCandidate = false)
         {
+            IsChestCandidate = isChestCandidate;
             Kind = kind;
             MonsterRole = monsterRole;
             UsesCommonMonsterRole = usesCommonMonsterRole;
@@ -340,6 +356,16 @@ internal static class RoomAuthoringDungeonPreview
             previewLibrary = CreatePreviewLibrary(request, out transientCurrentRoom);
             IReadOnlyList<RoomTemplateSO> previewGuaranteedRooms =
                 ResolvePreviewGuaranteedRooms(request, transientCurrentRoom);
+            RunMapEventGenerationPlan previewEventPlan =
+                RunMapEventGenerationResolver.CreatePreviewPlan(
+                    request.RunMapEventProfile,
+                    previewGuaranteedRooms,
+                    request.Seed,
+                    request.RunMapEventPreviewVisitOrder);
+            previewGuaranteedRooms = ResolvePreviewGuaranteedRooms(
+                request,
+                transientCurrentRoom,
+                previewEventPlan.GuaranteedRoomTemplates);
             DungeonLayoutResult layout = request.LayoutPolicy != null && request.IncludeBossRoom
                 ? new DungeonGraphLayoutAssembler().Assemble(
                     previewLibrary,
@@ -497,16 +523,27 @@ internal static class RoomAuthoringDungeonPreview
         RoomAuthoringDungeonPreviewRequest request,
         RoomTemplateSO transientCurrentRoom)
     {
-        if (request.GuaranteedRoomTemplates == null ||
-            request.GuaranteedRoomTemplates.Count == 0)
+        return ResolvePreviewGuaranteedRooms(
+            request,
+            transientCurrentRoom,
+            request.GuaranteedRoomTemplates);
+    }
+
+    private static IReadOnlyList<RoomTemplateSO> ResolvePreviewGuaranteedRooms(
+        RoomAuthoringDungeonPreviewRequest request,
+        RoomTemplateSO transientCurrentRoom,
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates)
+    {
+        if (guaranteedRoomTemplates == null ||
+            guaranteedRoomTemplates.Count == 0)
         {
-            return request.GuaranteedRoomTemplates;
+            return guaranteedRoomTemplates;
         }
 
-        var resolvedRooms = new List<RoomTemplateSO>(request.GuaranteedRoomTemplates.Count);
-        for (int roomIndex = 0; roomIndex < request.GuaranteedRoomTemplates.Count; roomIndex++)
+        var resolvedRooms = new List<RoomTemplateSO>(guaranteedRoomTemplates.Count);
+        for (int roomIndex = 0; roomIndex < guaranteedRoomTemplates.Count; roomIndex++)
         {
-            RoomTemplateSO room = request.GuaranteedRoomTemplates[roomIndex];
+            RoomTemplateSO room = guaranteedRoomTemplates[roomIndex];
             if (request.IncludeCurrentRoom && room == request.ReplacedTemplate)
                 room = transientCurrentRoom;
 
@@ -572,6 +609,7 @@ internal static class RoomAuthoringDungeonPreview
             overlayFxTilemap);
         builder.EditorAssignCorridorTiles(corridorFloorTile, corridorWallTile);
         builder.ConfigureCorridorDecoration(request.CorridorDecorationProfile);
+        builder.ConfigureSocketCleanup(request.SocketCleanupProfile);
         builder.EditorAssignSocketBlockerRoot(blockerRootObject.transform);
 
         if (!builder.TryBuild(layout, DungeonBuildOptions.VisualOnly))
@@ -708,6 +746,7 @@ internal static class RoomAuthoringDungeonPreview
             rooms.Add(new PreviewRoomInfo(
                 placement.PlacementId,
                 roomLayout.roomId,
+                roomLayout.shapeTag != null ? roomLayout.shapeTag.name : string.Empty,
                 roomLayout.roomType,
                 placement.WorldBounds,
                 placement.Template == transientCurrentRoom));
@@ -723,7 +762,8 @@ internal static class RoomAuthoringDungeonPreview
                         objectPlacement.kind,
                         objectPlacement.monsterSpawnRole,
                         objectPlacement.monsterStageSet != null,
-                        placement.Origin + objectPlacement.localCell));
+                        placement.Origin + objectPlacement.localCell,
+                        ChestPossible.TryGet(objectPlacement, out _)));
                 }
             }
 
@@ -873,9 +913,12 @@ internal static class RoomAuthoringDungeonPreview
             Vector3 labelPosition = snapshot.Grid.CellToWorld(
                 new Vector3Int(room.WorldBounds.xMin, room.WorldBounds.yMax, 0));
             string currentLabel = room.IsCurrentRoom ? " · 편집 중" : string.Empty;
+            string shapeLabel = string.IsNullOrWhiteSpace(room.ShapeTagName)
+                ? string.Empty
+                : $" · [{room.ShapeTagName}]";
             Handles.Label(
                 labelPosition + Vector3.up * 0.2f,
-                $"#{room.PlacementId} {room.RoomType} · {room.RoomId}{currentLabel}");
+                $"#{room.PlacementId} {room.RoomType} · {room.RoomId}{shapeLabel}{currentLabel}");
         }
     }
 
@@ -1023,6 +1066,9 @@ internal static class RoomAuthoringDungeonPreview
 
     private static Color ResolveObjectColor(PreviewObjectInfo roomObject)
     {
+        if (roomObject.IsChestCandidate)
+            return new Color(1f, 0.8f, 0.15f, 0.7f);
+
         if (roomObject.Kind == RoomObjectKind.Monster)
         {
             if (!roomObject.UsesCommonMonsterRole)
@@ -1047,6 +1093,9 @@ internal static class RoomAuthoringDungeonPreview
 
     private static string ResolveObjectGlyph(PreviewObjectInfo roomObject)
     {
+        if (roomObject.IsChestCandidate)
+            return "C?";
+
         if (roomObject.Kind == RoomObjectKind.Monster)
         {
             if (!roomObject.UsesCommonMonsterRole)

@@ -15,7 +15,6 @@ using CapstoneAudio;
 public sealed class ArcaneTankGolem : Mob, IMobAttackDecisionSource
 {
     [SerializeField] private AbilityDefinition slamAbility;
-    [SerializeField, Min(0f)] private float maxHealth = 28f;
     [SerializeField, Range(0.1f, 2f)] private float chaseSpeedScale = 0.65f;
 
     private ArcaneTankGolemSlamRunner runner;
@@ -75,7 +74,6 @@ public sealed class ArcaneTankGolem : Mob, IMobAttackDecisionSource
     {
         base.Awake();
         runner = GetComponent<ArcaneTankGolemSlamRunner>();
-        ApplyStats();
         ChaseIntent?.SetSpeedScale(chaseSpeedScale);
     }
 
@@ -89,6 +87,21 @@ public sealed class ArcaneTankGolem : Mob, IMobAttackDecisionSource
     public override bool CanUseChaseMovement()
     {
         return base.CanUseChaseMovement() && (runner == null || !runner.IsRunning);
+    }
+
+    public override bool ShouldUsePostAttackRecoverState(float baseRecoverSeconds)
+    {
+        return baseRecoverSeconds > 0f;
+    }
+
+    public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
+    {
+        return Mathf.Max(0f, scaledRecoverSeconds);
+    }
+
+    public override bool CanUsePostAttackRecoveryRetreat()
+    {
+        return false;
     }
 
     public bool TryBuildAttackRequest(out MobAttackRequest request)
@@ -185,15 +198,6 @@ public sealed class ArcaneTankGolem : Mob, IMobAttackDecisionSource
             logic.TargetLayers,
             payload);
         return true;
-    }
-
-    private void ApplyStats()
-    {
-        if (attributeSet == null)
-            return;
-
-        attributeSet.TrySetBaseValue(maxHealthDef, maxHealth, this);
-        attributeSet.TrySetBaseValue(healthDef, maxHealth, this);
     }
 
     private bool HasRequiredData()

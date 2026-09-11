@@ -5,14 +5,18 @@ using UnityEngine;
 /// 책임:
 /// - 런 진행 단계 인덱스를 실제 몬스터 프리팹으로 해석하는 공통 몬스터 세트를 보관한다.
 /// - 역할형 절차 방 스폰 지점과 기존 MonsterRoomSpawnProfileSO가 같은 진행도별 몬스터 정의를 재사용하게 한다.
+/// - 같은 프리팹을 여러 단계에서 재사용하더라도 단계별 추가 HP 보정을 분리해 제공한다.
 /// </summary>
 [CreateAssetMenu(fileName = "StageMonsterSet", menuName = "Gameplay/Monster Spawn/Stage Monster Set")]
 public sealed class StageMonsterSetSO : ScriptableObject
 {
     [Tooltip("Element 0/1/2는 각각 이번 런에서 보스를 0/1/2마리 처치한 단계에 대응합니다.")]
     [SerializeField] private List<GameObject> stagePrefabs = new();
+    [Tooltip("stagePrefabs와 같은 인덱스의 추가 HP 배율입니다. 비어 있거나 인덱스가 없으면 1배로 처리합니다.")]
+    [SerializeField] private List<float> stageHpMultipliers = new();
 
     public IReadOnlyList<GameObject> StagePrefabs => stagePrefabs;
+    public IReadOnlyList<float> StageHpMultipliers => stageHpMultipliers;
 
     /// <summary>
     /// 책임:
@@ -21,14 +25,38 @@ public sealed class StageMonsterSetSO : ScriptableObject
     /// </summary>
     public bool TryResolveMonsterPrefab(int stageIndex, out GameObject monsterPrefab)
     {
+        return TryResolveMonsterPrefab(stageIndex, out monsterPrefab, out _);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 0-based stageIndex를 받아 해당 단계의 몬스터 프리팹과 추가 HP 배율을 함께 반환한다.
+    /// - HP 배율 데이터가 없는 단계는 기존 밸런스를 유지하도록 1배로 처리한다.
+    /// </summary>
+    public bool TryResolveMonsterPrefab(int stageIndex, out GameObject monsterPrefab, out float hpMultiplier)
+    {
         monsterPrefab = null;
+        hpMultiplier = 1f;
 
         if (stagePrefabs == null || stagePrefabs.Count == 0)
             return false;
 
         int clampedIndex = Mathf.Clamp(stageIndex, 0, stagePrefabs.Count - 1);
         monsterPrefab = stagePrefabs[clampedIndex];
+        hpMultiplier = ResolveStageHpMultiplier(clampedIndex);
         return monsterPrefab != null;
+    }
+
+    private float ResolveStageHpMultiplier(int clampedStageIndex)
+    {
+        if (stageHpMultipliers == null ||
+            clampedStageIndex < 0 ||
+            clampedStageIndex >= stageHpMultipliers.Count)
+        {
+            return 1f;
+        }
+
+        return Mathf.Max(0f, stageHpMultipliers[clampedStageIndex]);
     }
 
 #if UNITY_EDITOR
@@ -46,6 +74,9 @@ public sealed class StageMonsterSetSO : ScriptableObject
     private void OnValidate()
     {
         stagePrefabs ??= new List<GameObject>();
+        stageHpMultipliers ??= new List<float>();
+        for (int i = 0; i < stageHpMultipliers.Count; i++)
+            stageHpMultipliers[i] = Mathf.Max(0f, stageHpMultipliers[i]);
     }
 #endif
 }

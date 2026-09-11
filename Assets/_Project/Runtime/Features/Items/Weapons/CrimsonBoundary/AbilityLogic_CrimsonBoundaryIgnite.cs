@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityGAS;
 
 [CreateAssetMenu(fileName = "AL_CrimsonBoundaryIgnite", menuName = "GAS/Weapon/Crimson Boundary/Ignite Logic")]
+// Responsibility: consume visible burn stacks and execute the resulting overlapping skill explosions.
 public sealed class AbilityLogic_CrimsonBoundaryIgnite : AbilityLogic
 {
     private readonly struct Explosion
@@ -30,7 +31,8 @@ public sealed class AbilityLogic_CrimsonBoundaryIgnite : AbilityLogic
             if (status == null) continue;
             int consumed = status.ConsumeUpTo(data.skill1MaxConsume);
             if (consumed > 0)
-                explosions.Add(new Explosion(status.transform.position, CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, consumed)));
+                explosions.Add(new Explosion(status.transform.position,
+                    CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, consumed, data.burnConsumptionMultiplier, data.skillFireFormula)));
         }
 
         CrimsonBoundaryRuntimeState runtime = CrimsonBoundaryUtility.ResolveRuntimeState(system);

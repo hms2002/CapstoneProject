@@ -306,11 +306,27 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967291
   chaseIntent: {fileID: 0}
+  attackThinkIntervalSeconds: 0.12
+  attackThinkInitialSpreadSeconds: 0.12
+  attackThinkJitterSeconds: 0.04
+  postAttackRecoveryBonusSeconds: 0.2
+  usePostAttackRecoveryRetreat: 1
+  recoveryRetreatMaxTargetDistance: 3
+  recoveryRetreatMinTargetDistance: 1.1
+  recoveryRetreatSpeedScale: 0.75
+  recoveryRetreatFarSpeedScale: 0.35
+  recoveryRetreatThinkInterval: 0.08
+  recoveryRetreatVelocityDuration: 0.12
+  recoveryRetreatDamping: 0
+  recoveryRetreatWallLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  recoveryRetreatWallProbeDistance: 0.25
   logMobFsmDebug: 0
   attackAbilityDefinition: {fileID: 11400000, guid: 5e89eb95f23546e9bd1a9c08f9fdcb2c, type: 2}
   abilityCoordinator: {fileID: 6723412345678901234}
   attackRunner: {fileID: 6723412345678901235}
-  postAttackRecoverSeconds: 0.35
+  postAttackRecoverSeconds: 1
 --- !u!114 &3790217430196525045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -361,7 +377,7 @@ MonoBehaviour:
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-    fillToMaxOnInitialize: 0
+    fillToMaxOnInitialize: 1
 --- !u!114 &5052094422871209493
 MonoBehaviour:
   m_ObjectHideFlags: 0

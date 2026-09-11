@@ -65,7 +65,6 @@ public sealed class SceneConnectionRouteContextPlayModeTests
             yield return null;
             yield return null;
             Assert.That(manager.CurrentStageSet, Is.SameAs(routeSet));
-            RunRouteBgmService.EnsureInstance().ForceRefreshActiveSceneBgm();
 
             float musicTransitionElapsed = 0f;
             while (musicTransitionElapsed < 2f &&

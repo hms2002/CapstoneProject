@@ -47,6 +47,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     private string newRoomId = "Room_New";
     private Vector2Int newRoomSize = new(12, 8);
     private RoomType newRoomType = RoomType.Combat;
+    private RoomShapeTagSO newShapeTag;
     private int newDifficultyTier;
     private float newSelectionWeight = 1f;
     private RoomCombatSizeTag newCombatSizeTag = RoomCombatSizeTag.Normal;
@@ -81,6 +82,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     [SerializeField] private int previewCorridorLengthVariation = 2;
     [SerializeField] private TileBase previewCorridorFloorTile;
     [SerializeField] private TileBase previewCorridorWallTile;
+    [SerializeField] private bool previewIncludeRunMapEvents = true;
+    [SerializeField] private int previewRunMapEventVisitOrder = 1;
     [SerializeField] private bool previewAdvancedSettings;
     private Vector2 scroll;
     private double nextAutomaticValidationTime;
@@ -397,6 +400,11 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         EditorGUILayout.LabelField("새 방 만들기", EditorStyles.boldLabel);
         newRoomId = EditorGUILayout.TextField("방 ID", newRoomId);
         newRoomType = (RoomType)EditorGUILayout.EnumPopup("방 역할", newRoomType);
+        newShapeTag = EditorGUILayout.ObjectField(
+            "모양 태그",
+            newShapeTag,
+            typeof(RoomShapeTagSO),
+            false) as RoomShapeTagSO;
         newRoomSize = EditorGUILayout.Vector2IntField("예약 크기", newRoomSize);
         newDifficultyTier = EditorGUILayout.IntField("난이도 단계", Mathf.Max(0, newDifficultyTier));
         newSelectionWeight = EditorGUILayout.FloatField("등장 가중치", Mathf.Max(0f, newSelectionWeight));
@@ -491,6 +499,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         serializedAuthoring.Update();
         EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("roomId"), new GUIContent("방 ID"));
         EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("roomType"), new GUIContent("방 역할"));
+        EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("shapeTag"), new GUIContent("모양 태그"));
         EditorGUILayout.PropertyField(serializedAuthoring.FindProperty("size"), new GUIContent("예약 크기"));
         EditorGUILayout.PropertyField(
             serializedAuthoring.FindProperty("difficultyTier"),
@@ -700,6 +709,19 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     {
         EditorGUILayout.Space(8f);
         EditorGUILayout.LabelField("방 오브젝트", EditorStyles.boldLabel);
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            if (GUILayout.Button("일반 상자 후보 선택"))
+            {
+                objectKindToPlace = RoomObjectKind.Prop;
+                objectPrefabToPlace = AssetDatabase.LoadAssetAtPath<GameObject>(ChestPossibleAuthoringUtility.NormalPrefabPath);
+            }
+            if (GUILayout.Button("Kill Lock 상자 후보 선택"))
+            {
+                objectKindToPlace = RoomObjectKind.Prop;
+                objectPrefabToPlace = AssetDatabase.LoadAssetAtPath<GameObject>(ChestPossibleAuthoringUtility.KillLockPrefabPath);
+            }
+        }
         objectKindToPlace = (RoomObjectKind)EditorGUILayout.EnumPopup(
             "종류",
             objectKindToPlace);
@@ -757,6 +779,9 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                 typeof(GameObject),
                 false) as GameObject;
         }
+
+        if (objectPrefabToPlace != null && objectPrefabToPlace.TryGetComponent(out ChestPossible _))
+            EditorGUILayout.HelpBox("후보는 Prop으로 배치합니다. 방 배치 완료 후 생성 프로필의 최대 개수만 선택하며, Kill Lock은 해당 방 전체에 자동 연결됩니다. 직접 배치한 Chest는 별도입니다.", MessageType.Info);
 
         bool sourceIsReady = placingCommonRoleMonster
             ? selectedRoleSet != null
@@ -1530,11 +1555,17 @@ public sealed class RoomPieceEditorWindow : EditorWindow
                     : "아직 활성 Build Settings 씬에서 이 프로필을 참조하지 않습니다. 보스 테마 생성 프로필 설치를 먼저 실행하세요.",
                 sceneReferenceCount > 0 ? MessageType.Info : MessageType.Warning);
             DrawGuaranteedRoomTemplates(previewGenerationProfile, selectedLibrary);
+            DrawRunMapEventPreviewSettings(previewGenerationProfile);
             EditorGUILayout.LabelField(
                 "복도 장식",
                 previewGenerationProfile.CorridorDecorationProfile != null
                     ? $"{previewGenerationProfile.CorridorDecorationProfile.name} · " +
                       $"모듈 {previewGenerationProfile.CorridorDecorationProfile.Modules.Count}개"
+                    : "미설정");
+            EditorGUILayout.LabelField(
+                "문 소켓 흔적 정리",
+                previewGenerationProfile.SocketCleanupProfile != null
+                    ? previewGenerationProfile.SocketCleanupProfile.name
                     : "미설정");
             if (GUILayout.Button("복도 장식 제작 툴 열기"))
                 CorridorDecorationEditorWindow.OpenWithProfile(previewGenerationProfile);
@@ -1730,9 +1761,19 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             previewGenerationProfile.RoomLibrary == selectedLibrary
                 ? previewGenerationProfile.GuaranteedRoomTemplates
                 : null,
+            previewIncludeRunMapEvents &&
+            previewGenerationProfile != null &&
+            previewGenerationProfile.RoomLibrary == selectedLibrary
+                ? previewGenerationProfile.RunMapEventProfile
+                : null,
+            previewRunMapEventVisitOrder,
             previewGenerationProfile != null &&
             previewGenerationProfile.RoomLibrary == selectedLibrary
                 ? previewGenerationProfile.CorridorDecorationProfile
+                : null,
+            previewGenerationProfile != null &&
+            previewGenerationProfile.RoomLibrary == selectedLibrary
+                ? previewGenerationProfile.SocketCleanupProfile
                 : null);
         RoomAuthoringDungeonPreviewResult result =
             RoomAuthoringDungeonPreview.Generate(request);
@@ -1809,6 +1850,47 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         EditorGUIUtility.PingObject(previewGenerationProfile);
         previewStatusMessage = $"테마 생성 프로필을 준비했습니다: {previewGenerationProfile.name}";
         previewStatusType = MessageType.Info;
+    }
+
+    /// <summary>
+    /// 책임 : Room Piece 미리보기에서 런 이벤트룸 포함 여부와 방문 순서 조건을 조절하게 한다.
+    /// </summary>
+    private void DrawRunMapEventPreviewSettings(DungeonGenerationProfileSO profile)
+    {
+        if (profile == null)
+            return;
+
+        RunMapEventGenerationProfileSO runMapEventProfile = profile.RunMapEventProfile;
+        EditorGUILayout.LabelField(
+            "런 이벤트",
+            runMapEventProfile != null ? runMapEventProfile.name : "미설정");
+        using (new EditorGUI.DisabledScope(runMapEventProfile == null))
+        {
+            previewIncludeRunMapEvents = EditorGUILayout.ToggleLeft(
+                "미리보기에도 이벤트룸 포함",
+                previewIncludeRunMapEvents);
+            int maxVisitOrder = runMapEventProfile != null
+                ? runMapEventProfile.PlannedBossRouteVisitCount
+                : 1;
+            previewRunMapEventVisitOrder = EditorGUILayout.IntSlider(
+                "미리보기 방문 순서",
+                Mathf.Clamp(previewRunMapEventVisitOrder, 1, maxVisitOrder),
+                1,
+                maxVisitOrder);
+        }
+
+        if (runMapEventProfile == null)
+        {
+            EditorGUILayout.HelpBox(
+                "생성 프로필에 Run Map Event Profile이 없어서 이벤트룸을 미리보기 후보에 넣을 수 없습니다.",
+                MessageType.None);
+        }
+        else if (previewIncludeRunMapEvents)
+        {
+            EditorGUILayout.HelpBox(
+                "실제 런 상태를 저장하지 않고, 선택한 방문 순서 기준으로 시작 이벤트룸만 보장 방 후보에 섞습니다.",
+                MessageType.None);
+        }
     }
 
     /// <summary>
@@ -1929,6 +2011,8 @@ public sealed class RoomPieceEditorWindow : EditorWindow
             return;
 
         EditorGUILayout.Space(3f);
+        EditorGUILayout.PropertyField(serializedProfile.FindProperty("maximumPossibleChests"),
+            new GUIContent("후보 상자 최대 개수", "직접 배치 상자는 별도이며, 후보가 부족하면 있는 만큼만 생성합니다."));
         EditorGUILayout.PropertyField(
             roomsProperty,
             new GUIContent("반드시 포함할 방"),
@@ -1980,6 +2064,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         selectedAuthoring = CreateAuthoringRoomPiece(
             newRoomId,
             newRoomType,
+            newShapeTag,
             roomSize,
             newDifficultyTier,
             newSelectionWeight,
@@ -2011,6 +2096,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         selectedAuthoring = CreateAuthoringRoomPiece(
             roomId,
             layout.roomType,
+            layout.shapeTag,
             roomSize,
             layout.difficultyTier,
             layout.selectionWeight,
@@ -2078,6 +2164,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     private static RoomPieceAuthoring CreateAuthoringRoomPiece(
         string roomId,
         RoomType roomType,
+        RoomShapeTagSO shapeTag,
         Vector2Int roomSize,
         int difficultyTier,
         float selectionWeight,
@@ -2095,6 +2182,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         SerializedObject serializedAuthoring = new(authoring);
         serializedAuthoring.FindProperty("roomId").stringValue = roomId;
         serializedAuthoring.FindProperty("roomType").enumValueIndex = (int)roomType;
+        serializedAuthoring.FindProperty("shapeTag").objectReferenceValue = shapeTag;
         serializedAuthoring.FindProperty("size").vector2IntValue = roomSize;
         serializedAuthoring.FindProperty("difficultyTier").intValue = Mathf.Max(0, difficultyTier);
         serializedAuthoring.FindProperty("selectionWeight").floatValue = Mathf.Max(0f, selectionWeight);
@@ -2993,6 +3081,7 @@ public sealed class RoomPieceEditorWindow : EditorWindow
         {
             roomId = selectedAuthoring.RoomId,
             roomType = selectedAuthoring.RoomType,
+            shapeTag = selectedAuthoring.ShapeTag,
             size = selectedAuthoring.Size,
             localBounds = new RectInt(Vector2Int.zero, selectedAuthoring.Size),
             sockets = CollectSockets(selectedAuthoring),
@@ -3339,6 +3428,9 @@ public sealed class RoomPieceEditorWindow : EditorWindow
     {
         if (prefab == null)
             return false;
+
+        if (prefab.TryGetComponent(out ChestPossible candidate))
+            return kind == RoomObjectKind.Prop && candidate.ChestPrefab != null;
 
         return kind switch
         {

@@ -110,7 +110,7 @@ MonoBehaviour:
   dashSlashActiveTime: 0.08
   dashSlashHitboxSize: {x: 2.4, y: 0.6}
   dashSlashAngleJitter: 90
-  dashSlashDamageScale: 1
+  dashSlashDamageScale: 12
   dashSlashHitLayers:
     serializedVersion: 2
     m_Bits: 2147483648
@@ -125,7 +125,7 @@ MonoBehaviour:
     critAffectsElement: 1
   dashSlashDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   dashSlashKnockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
-  dashSlashDamageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+  dashSlashDamageFormula: {fileID: 11400000, guid: d58090b4f70b40949db7a7771a526d1c, type: 2}
   dashSlashKnockbackFormula: {fileID: 11400000, guid: 886233d2a5002ae4facf46de4cb4864d, type: 2}
   dashSlashLegacyDamage: 5
   dashSlashLegacyStaggerDamage: 0

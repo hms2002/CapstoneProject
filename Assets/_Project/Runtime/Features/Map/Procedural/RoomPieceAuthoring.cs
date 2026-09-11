@@ -12,6 +12,7 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
     [Header("Room Metadata")]
     [SerializeField] private string roomId = "Room_New";
     [SerializeField] private RoomType roomType = RoomType.Combat;
+    [SerializeField] private RoomShapeTagSO shapeTag;
     [SerializeField] private Vector2Int size = new(12, 8);
     [SerializeField, Min(0)] private int difficultyTier;
     [SerializeField, Min(0f)] private float selectionWeight = 1f;
@@ -33,6 +34,7 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
 
     public string RoomId => roomId;
     public RoomType RoomType => roomType;
+    public RoomShapeTagSO ShapeTag => shapeTag;
     public Vector2Int Size => size;
     public int DifficultyTier => difficultyTier;
     public float SelectionWeight => selectionWeight;

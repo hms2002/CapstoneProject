@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9a5f0c08b9e4c149a9d4f33d4b1d6a2, type: 3}
+  m_Name: RoomSocketCleanupProfile_Slime
+  m_EditorClassIdentifier: Gameplay::RoomSocketCleanupProfileSO
+  rules:
+  - matchAnyDirection: 0
+    direction: 0
+    connectionFilter: 1
+    layer: 4
+    patches:
+    - socketSpaceOffset: {x: -1, y: 0}
+      tileSource: 0
+      explicitTile: {fileID: 11400000, guid: 5be22507bfbd9ab44a07739f1c03a48f, type: 2}
+    - socketSpaceOffset: {x: 2, y: 0}
+      tileSource: 0
+      explicitTile: {fileID: 11400000, guid: 5be22507bfbd9ab44a07739f1c03a48f, type: 2}
+  - matchAnyDirection: 0
+    direction: 2
+    connectionFilter: 1
+    layer: 4
+    patches:
+    - socketSpaceOffset: {x: -1, y: 0}
+      tileSource: 0
+      explicitTile: {fileID: 11400000, guid: debdf5f2599213540a1f0ada188873fa, type: 2}
+    - socketSpaceOffset: {x: 2, y: 0}
+      tileSource: 0
+      explicitTile: {fileID: 11400000, guid: debdf5f2599213540a1f0ada188873fa, type: 2}
+  - matchAnyDirection: 0
+    direction: 1
+    connectionFilter: 1
+    layer: 4
+    patches:
+    - socketSpaceOffset: {x: -1, y: 0}
+      tileSource: 0
+      explicitTile: {fileID: 11400000, guid: 24ff6781f02362545b26307ea7846e44, type: 2}
+    - socketSpaceOffset: {x: 2, y: 0}
+      tileSource: 0
+      explicitTile: {fileID: 11400000, guid: 24ff6781f02362545b26307ea7846e44, type: 2}
+  - matchAnyDirection: 0
+    direction: 3
+    connectionFilter: 1
+    layer: 4
+    patches:
+    - socketSpaceOffset: {x: -1, y: 0}
+      tileSource: 0
+      explicitTile: {fileID: 11400000, guid: 24ff6781f02362545b26307ea7846e44, type: 2}
+    - socketSpaceOffset: {x: 2, y: 0}
+      tileSource: 0
+      explicitTile: {fileID: 11400000, guid: 24ff6781f02362545b26307ea7846e44, type: 2}

@@ -222,6 +222,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   chaseIntent: {fileID: 0}
+  attackThinkIntervalSeconds: 0.12
+  attackThinkInitialSpreadSeconds: 0.12
+  attackThinkJitterSeconds: 0.04
+  postAttackRecoveryBonusSeconds: 0.2
+  usePostAttackRecoveryRetreat: 1
+  recoveryRetreatMaxTargetDistance: 3
+  recoveryRetreatMinTargetDistance: 1.1
+  recoveryRetreatSpeedScale: 0.75
+  recoveryRetreatFarSpeedScale: 0.35
+  recoveryRetreatThinkInterval: 0.08
+  recoveryRetreatVelocityDuration: 0.12
+  recoveryRetreatDamping: 0
+  recoveryRetreatWallLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  recoveryRetreatWallProbeDistance: 0.25
   logMobFsmDebug: 0
   splitLandingSeconds: 0.45
   splitLandingArcHeight: 0.55
@@ -282,7 +298,7 @@ MonoBehaviour:
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-    fillToMaxOnInitialize: 0
+    fillToMaxOnInitialize: 1
 --- !u!114 &5052094422871209493
 MonoBehaviour:
   m_ObjectHideFlags: 0

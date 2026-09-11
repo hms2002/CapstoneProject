@@ -383,7 +383,7 @@ MonoBehaviour:
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-    fillToMaxOnInitialize: 0
+    fillToMaxOnInitialize: 1
 --- !u!114 &3305192149074666547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -631,9 +631,24 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967291
   chaseIntent: {fileID: 6174299861768951204}
+  attackThinkIntervalSeconds: 0.12
+  attackThinkInitialSpreadSeconds: 0.12
+  attackThinkJitterSeconds: 0.04
+  postAttackRecoveryBonusSeconds: 0.2
+  usePostAttackRecoveryRetreat: 1
+  recoveryRetreatMaxTargetDistance: 3
+  recoveryRetreatMinTargetDistance: 1.1
+  recoveryRetreatSpeedScale: 0.75
+  recoveryRetreatFarSpeedScale: 0.35
+  recoveryRetreatThinkInterval: 0.08
+  recoveryRetreatVelocityDuration: 0.12
+  recoveryRetreatDamping: 0
+  recoveryRetreatWallLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  recoveryRetreatWallProbeDistance: 0.25
   logMobFsmDebug: 0
   shotAbility: {fileID: 11400000, guid: 02b4f8969ddbedb4e9e0a6885fd6d0ea, type: 2}
-  maxHealth: 5
   muzzleEffectSocket: {fileID: 8858279587563323237}
 --- !u!114 &2286205519184665686
 MonoBehaviour:

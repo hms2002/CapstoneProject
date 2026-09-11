@@ -26,6 +26,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 06fa284e54228bd4395343d134737b56, type: 2}
   - {fileID: 11400000, guid: 71ab58f7c31a4e85ba028704b4266efc, type: 2}
   - {fileID: 11400000, guid: d33c125e230f4cd28db530fb42e03263, type: 2}
+  - {fileID: 11400000, guid: 9c17ab34310976c49824c147d32c37a0, type: 2}
+  - {fileID: 11400000, guid: 8701f16f1829b2a4bad533cb9d47c6fb, type: 2}
+  - {fileID: 11400000, guid: d26e245d1da7a2a43b3dc9938d2f0906, type: 2}
   stageMonsterPrefabs:
   - {fileID: 625522859161183429, guid: 2327e9837a564ed58b0ae70d7c8e00b1, type: 3}
   - {fileID: 100000, guid: a1365e9c0af9480b9dc3169f803a951d, type: 3}

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 /// <summary>
 /// 책임 : 활성 절차 던전의 발견 그래프를 디자이너 제작 미니맵 프리팹의 노드·연결선 템플릿과 지역명 슬롯에 투영한다.
+/// 콘텐츠 변경 시 그래프를 다시 만들지 않고 해당 방의 표시만 갱신한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class DungeonMinimapPresenter : MonoBehaviour
@@ -97,11 +98,17 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
         }
 
         if (runtime != null)
+        {
             runtime.Changed -= HandleRuntimeChanged;
+            runtime.ContentsChanged -= RefreshRoomContents;
+        }
 
         runtime = targetRuntime;
         if (runtime != null)
+        {
             runtime.Changed += HandleRuntimeChanged;
+            runtime.ContentsChanged += RefreshRoomContents;
+        }
 
         RebuildGraphViews();
     }
@@ -109,6 +116,15 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
     private void HandleRuntimeChanged()
     {
         RefreshPresentation();
+    }
+
+    private void RefreshRoomContents(int roomPlacementId)
+    {
+        if (runtime == null || iconSet == null || !roomViews.TryGetValue(roomPlacementId, out var roomView))
+            return;
+        iconSet.TryGetRoomIcon(roomView.RoomType, out DungeonMinimapRoomIconData iconData);
+        roomView.Apply(runtime.GetVisibility(roomPlacementId), runtime.CurrentRoomPlacementId == roomPlacementId,
+            iconData, iconSet, runtime.GetRoomContents(roomPlacementId));
     }
 
     private void RebuildGraphViews()
@@ -141,7 +157,7 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
             DungeonMinimapNodeView roomView = Instantiate(roomTemplate, roomRoot, false);
             roomView.name = $"Room_{room.PlacementId}_{room.RoomType}";
             roomView.ConfigureIdentity(room.PlacementId, room.RoomType);
-            roomView.ConfigureShape(room.ShapeRectangles, room.ShapeGridSize);
+            roomView.ConfigureShape(room.ShapeRectangles, room.ShapeGridSize, room.IconAnchor);
             roomView.NodeRect.anchoredPosition = (room.WorldCenter - center) * graphScale;
             roomView.NodeRect.sizeDelta = new Vector2(
                 Mathf.Max(1f, room.WorldBounds.width * graphScale),
@@ -232,7 +248,7 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
             iconSet.TryGetRoomIcon(
                 roomView.RoomType,
                 out DungeonMinimapRoomIconData iconData);
-            roomView.Apply(visibility, isCurrent, iconData, iconSet);
+            roomView.Apply(visibility, isCurrent, iconData, iconSet, runtime.GetRoomContents(roomView.PlacementId));
         }
 
         for (int connectionIndex = 0;
@@ -299,7 +315,11 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
     private void SetVisible(bool visible)
     {
         if (canvasGroup != null)
+        {
             canvasGroup.alpha = visible ? 1f : 0f;
+            canvasGroup.interactable = visible;
+            canvasGroup.blocksRaycasts = visible;
+        }
     }
 
     private void ResolveReferences()

@@ -16,11 +16,11 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
     private static readonly SoundRef GunShotSound = SoundRef.FromKey("sound_goblinGunner_GunShot");
 
     [SerializeField] private AbilityDefinition shotAbility;
-    [SerializeField, Min(0f)] private float maxHealth = 5f;
     [Header("Presentation Sockets")]
     [SerializeField] private Transform muzzleEffectSocket;
 
     private GoblinGunnerShotRunner runner;
+    private readonly MobProjectileBurstCadence burstCadence = new();
     private bool hasLoggedInvalidConfig;
     private AbilityLogic_GoblinGunnerShot Logic => shotAbility != null ? shotAbility.logic as AbilityLogic_GoblinGunnerShot : null;
     public AbilityLogic_GoblinGunnerShot ShotLogic => Logic;
@@ -71,7 +71,6 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
     {
         base.Awake();
         runner = GetComponent<GoblinGunnerShotRunner>();
-        ApplyStats();
     }
 
     protected override void Start()
@@ -89,6 +88,9 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
     public bool TryBuildAttackRequest(out MobAttackRequest request)
     {
         request = default;
+        if (burstCadence.IsResting(Time.time))
+            return false;
+
         GameObject targetObject = Target != null ? Target.gameObject : null;
         AbilityLogic_GoblinGunnerShot logic = Logic;
         if (!HasRequiredData() || logic == null || !CommonMonsterCombatUtility.InRange(transform, targetObject, logic.AttackRange))
@@ -96,6 +98,12 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
 
         request = new MobAttackRequest(shotAbility, targetObject, logic.RecoverSeconds);
         return request.IsValid;
+    }
+
+    public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
+    {
+        return Mathf.Max(base.ResolvePostAttackRecoverSeconds(scaledRecoverSeconds),
+            burstCadence.GetRemainingRestSeconds(Time.time));
     }
 
     /// <summary>공격 상태 진입 시 조준 준비 애니메이션을 요청한다.</summary>
@@ -120,6 +128,9 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
     public bool TryBuildShotContext(AbilitySystem system, AbilitySpec spec, GameObject explicitTarget, out ShotContext context)
     {
         context = default;
+        if (burstCadence.IsResting(Time.time))
+            return false;
+
         GameObject targetObject = explicitTarget != null ? explicitTarget : Target != null ? Target.gameObject : null;
         AbilityLogic_GoblinGunnerShot logic = Logic;
         if (!HasRequiredData() || logic == null || !CommonMonsterCombatUtility.InRange(transform, targetObject, logic.AttackRange))
@@ -154,6 +165,9 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
 
     public void FireProjectile(ShotContext context)
     {
+        if (burstCadence.IsResting(Time.time))
+            return;
+
         AbilityLogic_GoblinGunnerShot logic = Logic;
         if (logic == null || logic.ProjectilePrefab == null)
             return;
@@ -186,6 +200,7 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
             direction = context.Direction,
             speed = context.ProjectileSpeed
         });
+        burstCadence.RecordShot(Time.time);
     }
 
     private void SpawnMuzzleEffect(AbilityLogic_GoblinGunnerShot logic)
@@ -222,15 +237,6 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
         Vector3 mirroredLocalPosition = muzzleEffectSocket.localPosition;
         mirroredLocalPosition.x *= -1f;
         return muzzleEffectSocket.parent.TransformPoint(mirroredLocalPosition);
-    }
-
-    private void ApplyStats()
-    {
-        if (attributeSet == null)
-            return;
-
-        attributeSet.TrySetBaseValue(maxHealthDef, maxHealth, this);
-        attributeSet.TrySetBaseValue(healthDef, maxHealth, this);
     }
 
     private bool HasRequiredData()

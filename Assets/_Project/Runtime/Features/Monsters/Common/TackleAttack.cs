@@ -6,6 +6,7 @@ using CapstoneAudio;
 /// 책임:
 /// - 태클 발동 가능 여부를 판단하고, 태클 경고/돌진에 필요한 문맥을 준비한다.
 /// - bridge를 통한 태클 실행 요청과 태클 중 이동 차단 상태, 적중 후 재공격 지연을 관리한다.
+/// - 일반 접촉 피해는 프리팹 옵션으로 분리하고, 태클 어빌리티의 범위 피해와 독립적으로 제어한다.
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Mob))]
@@ -21,6 +22,9 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
 
     [Tooltip("태클 피해 후 다시 공격하기까지의 시간입니다.")]
     [SerializeField] private float hitDelay = 1f;
+
+    [Tooltip("접촉 트리거가 직접 피해를 줄지 결정합니다. 꺼도 태클 어빌리티의 범위 피해는 유지됩니다.")]
+    [SerializeField] private bool enableContactDamage = true;
 
     [Tooltip("태클을 시작하는 원형 범위의 지름입니다.")]
     [SerializeField] private float attackRangeDiameter = 6f;
@@ -129,6 +133,9 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
 
     private void OnTriggerStay2D(Collider2D other)
     {
+        if (!enableContactDamage)
+            return;
+
         if (mob == null || mob.IsDead)
             return;
 

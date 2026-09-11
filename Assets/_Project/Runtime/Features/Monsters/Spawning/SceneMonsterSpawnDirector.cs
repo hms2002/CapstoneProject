@@ -90,7 +90,7 @@ internal sealed class SceneMonsterSpawnDirector
             request.Position,
             request.Rotation);
 
-        ApplyDifficulty(monster, difficultyModifiers);
+        ApplyDifficulty(monster, request, difficultyModifiers);
         InstallViews(monster);
         ApplySpawnContext(monster, request);
         ApplyLockTrackingContext(monster, request);
@@ -161,6 +161,11 @@ internal sealed class SceneMonsterSpawnDirector
     {
         spawnPoints.RemoveAll(point => point == null);
         spawnRooms.RemoveAll(room => room == null);
+    }
+
+    private void ApplyDifficulty(GameObject monster, MonsterSpawnRequest request, DifficultyModifiers difficultyModifiers)
+    {
+        ApplyDifficulty(monster, BuildRequestDifficultyModifiers(difficultyModifiers, request));
     }
 
     private void ApplyDifficulty(GameObject monster, DifficultyModifiers difficultyModifiers)
@@ -309,6 +314,27 @@ internal sealed class SceneMonsterSpawnDirector
             if (spawnedMonsters[i] == null)
                 spawnedMonsters.RemoveAt(i);
         }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 전역 난이도 보정과 스폰 출처별 추가 HP 보정을 합친 일회성 난이도 값을 만든다.
+    /// - 추가 보정이 없을 때는 기존 객체를 그대로 사용해 불필요한 복사를 피한다.
+    /// </summary>
+    private static DifficultyModifiers BuildRequestDifficultyModifiers(
+        DifficultyModifiers difficultyModifiers,
+        MonsterSpawnRequest request)
+    {
+        if (difficultyModifiers == null)
+            return null;
+
+        if (Mathf.Approximately(request.SpawnHpMultiplier, 1f))
+            return difficultyModifiers;
+
+        DifficultyModifiers requestModifiers = difficultyModifiers.Clone();
+        requestModifiers.hpMultiplier = Mathf.Max(0f, requestModifiers.hpMultiplier) *
+                                        Mathf.Max(0f, request.SpawnHpMultiplier);
+        return requestModifiers;
     }
 
 }

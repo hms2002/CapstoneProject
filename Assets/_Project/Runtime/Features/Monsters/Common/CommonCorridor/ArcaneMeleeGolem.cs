@@ -23,7 +23,6 @@ public sealed class ArcaneMeleeGolem : Mob, IMobAttackDecisionSource
     }
 
     [SerializeField] private AbilityDefinition chargeAbility;
-    [SerializeField, Min(0f)] private float maxHealth = 14f;
 
     private ArcaneMeleeGolemChargeRunner runner;
     private bool hasLoggedInvalidConfig;
@@ -53,7 +52,6 @@ public sealed class ArcaneMeleeGolem : Mob, IMobAttackDecisionSource
     {
         base.Awake();
         runner = GetComponent<ArcaneMeleeGolemChargeRunner>();
-        ApplyStats();
     }
 
     protected override void Start()
@@ -159,15 +157,6 @@ public sealed class ArcaneMeleeGolem : Mob, IMobAttackDecisionSource
 
         context = new ChargeContext(targetObject, direction, payload);
         return true;
-    }
-
-    private void ApplyStats()
-    {
-        if (attributeSet == null)
-            return;
-
-        attributeSet.TrySetBaseValue(maxHealthDef, maxHealth, this);
-        attributeSet.TrySetBaseValue(healthDef, maxHealth, this);
     }
 
     private bool HasRequiredData()

@@ -14,6 +14,7 @@ public enum DungeonMapRoomVisibility
 
 /// <summary>
 /// 책임 : 절차 생성 방 하나를 미니맵에 투영하는 안정 배치 Id, 역할과 실제 점유 영역을 보관한다.
+/// WorldBounds는 기존 이름과 달리 던전 레이아웃 셀 좌표이며 Unity 월드 좌표가 아니다.
 /// </summary>
 public readonly struct DungeonMapRoomNode
 {
@@ -23,6 +24,7 @@ public readonly struct DungeonMapRoomNode
     public Vector2 WorldCenter => WorldBounds.center;
     public Vector2Int ShapeGridSize { get; }
     public IReadOnlyList<RectInt> ShapeRectangles { get; }
+    public Vector2 IconAnchor { get; }
 
     public DungeonMapRoomNode(int placementId, RoomType roomType, Vector2 worldCenter)
         : this(
@@ -49,7 +51,8 @@ public readonly struct DungeonMapRoomNode
         RoomType roomType,
         Rect worldBounds,
         Vector2Int shapeGridSize,
-        IReadOnlyList<RectInt> shapeRectangles)
+        IReadOnlyList<RectInt> shapeRectangles,
+        Vector2? iconAnchor = null)
     {
         PlacementId = placementId;
         RoomType = roomType;
@@ -58,6 +61,8 @@ public readonly struct DungeonMapRoomNode
             Mathf.Max(1, shapeGridSize.x),
             Mathf.Max(1, shapeGridSize.y));
         ShapeRectangles = shapeRectangles ?? Array.Empty<RectInt>();
+        IconAnchor = iconAnchor ?? DungeonMapRoomShapeBuilder.ResolveInteriorAnchor(
+            ShapeRectangles, ShapeGridSize);
     }
 }
 
@@ -123,6 +128,7 @@ public sealed class DungeonMapGraphSnapshot
         var roomNodes = new List<DungeonMapRoomNode>();
         var roomConnections = new List<DungeonMapConnection>();
         var shapesByTemplate = new Dictionary<RoomTemplateSO, RectInt[]>();
+        var anchorsByTemplate = new Dictionary<RoomTemplateSO, Vector2>();
         if (layout == null)
             return new DungeonMapGraphSnapshot(roomNodes, roomConnections);
 
@@ -141,6 +147,8 @@ public sealed class DungeonMapGraphSnapshot
                     placement.Template.BuildData,
                     localBounds);
                 shapesByTemplate[placement.Template] = shapeRectangles;
+                anchorsByTemplate[placement.Template] =
+                    DungeonMapRoomShapeBuilder.ResolveInteriorAnchor(shapeRectangles, localBounds.size);
             }
 
             roomNodes.Add(new DungeonMapRoomNode(
@@ -152,7 +160,8 @@ public sealed class DungeonMapGraphSnapshot
                     placement.WorldBounds.width,
                     placement.WorldBounds.height),
                 localBounds.size,
-                shapeRectangles));
+                shapeRectangles,
+                anchorsByTemplate[placement.Template]));
         }
 
         for (int connectionIndex = 0;
@@ -237,10 +246,92 @@ public sealed class DungeonMapGraphSnapshot
 }
 
 /// <summary>
-/// 책임 : 방의 Floor와 Wall 타일 셀 합집합을 빈 공간을 보존하는 소수의 직사각형 메시 단위로 압축한다.
+/// 책임 : 방의 타일 합집합을 직사각형 메시로 압축하고, 경계에서 여유가 있는 내부 표시 기준점을 계산한다.
 /// </summary>
 public static class DungeonMapRoomShapeBuilder
 {
+    public static Vector2 ResolveInteriorAnchor(
+        IReadOnlyList<RectInt> rectangles,
+        Vector2Int gridSize)
+    {
+        return ResolveInteriorAnchor(rectangles, gridSize, out _);
+    }
+
+    // Responsibility: return the largest safe square around the selected anchor as normalized size.
+    public static Vector2 ResolveInteriorAnchor(
+        IReadOnlyList<RectInt> rectangles,
+        Vector2Int gridSize,
+        out Vector2 safeIconSize)
+    {
+        safeIconSize = Vector2.one;
+        Vector2 fallback = new(0.5f, 0.5f);
+        if (rectangles == null || rectangles.Count == 0 || gridSize.x <= 0 || gridSize.y <= 0)
+            return fallback;
+
+        int width = gridSize.x;
+        int height = gridSize.y;
+        int stride = width + 2;
+        int[] clearance = new int[stride * (height + 2)];
+        int unvisited = Mathf.Max(width, height) + 1;
+        for (int r = 0; r < rectangles.Count; r++)
+        {
+            RectInt rect = rectangles[r];
+            for (int y = Mathf.Max(0, rect.yMin); y < Mathf.Min(height, rect.yMax); y++)
+            for (int x = Mathf.Max(0, rect.xMin); x < Mathf.Min(width, rect.xMax); x++)
+                clearance[(y + 1) * stride + x + 1] = unvisited;
+        }
+
+        // A padded, eight-neighbor distance transform measures square icon clearance.
+        // Rectangle seams are occupied, not boundaries. Both passes cost O(width * height).
+        for (int y = 1; y <= height; y++)
+        for (int x = 1; x <= width; x++)
+        {
+            int i = y * stride + x;
+            if (clearance[i] == 0)
+                continue;
+            int neighbor = Mathf.Min(clearance[i - 1], clearance[i - stride]);
+            neighbor = Mathf.Min(neighbor, Mathf.Min(clearance[i - stride - 1], clearance[i - stride + 1]));
+            clearance[i] = Mathf.Min(clearance[i], neighbor + 1);
+        }
+
+        for (int y = height; y >= 1; y--)
+        for (int x = width; x >= 1; x--)
+        {
+            int i = y * stride + x;
+            if (clearance[i] == 0)
+                continue;
+            int neighbor = Mathf.Min(clearance[i + 1], clearance[i + stride]);
+            neighbor = Mathf.Min(neighbor, Mathf.Min(clearance[i + stride - 1], clearance[i + stride + 1]));
+            clearance[i] = Mathf.Min(clearance[i], neighbor + 1);
+        }
+
+        Vector2 center = (Vector2)gridSize * 0.5f;
+        Vector2 selected = center;
+        int bestClearance = 0;
+        float bestDistance = float.MaxValue;
+        for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
+        {
+            int distanceToEmpty = clearance[(y + 1) * stride + x + 1];
+            if (distanceToEmpty == 0 || distanceToEmpty < bestClearance)
+                continue;
+            Vector2 cell = new(x + 0.5f, y + 0.5f);
+            float distanceToCenter = (cell - center).sqrMagnitude;
+            if (distanceToEmpty == bestClearance && distanceToCenter >= bestDistance)
+                continue;
+            bestClearance = distanceToEmpty;
+            bestDistance = distanceToCenter;
+            selected = cell;
+        }
+
+        if (bestClearance > 0)
+        {
+            float diameter = bestClearance * 2f - 1f;
+            safeIconSize = new Vector2(diameter / width, diameter / height);
+        }
+        return new Vector2(selected.x / width, selected.y / height);
+    }
+
     public static RectInt[] Build(RoomBuildData buildData, RectInt localBounds)
     {
         if (localBounds.width <= 0 || localBounds.height <= 0)

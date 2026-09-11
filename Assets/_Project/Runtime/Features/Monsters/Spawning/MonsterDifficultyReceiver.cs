@@ -123,14 +123,14 @@ public class MonsterDifficultyReceiver : MonoBehaviour, IMonsterDifficultyReceiv
 
         float hpMultiplier = Mathf.Max(0f, modifiers.hpMultiplier);
         float oldMax = attributeSet.GetAttributeValue(maxHealthAttribute);
+        // Capture HP before changing MaxHealth, which can immediately clamp the linked Health value.
+        float oldHealth = healthAttribute != null ? attributeSet.GetAttributeValue(healthAttribute) : 0f;
 
         float newMax = baseMaxHealth * hpMultiplier;
         attributeSet.TrySetBaseValue(maxHealthAttribute, newMax, this);
 
         if (healthAttribute == null)
             return;
-
-        float oldHealth = attributeSet.GetAttributeValue(healthAttribute);
 
         if (refillHealthToFullAfterScaling)
         {

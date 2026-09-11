@@ -139,6 +139,53 @@ public static class BuffyHealthTimeEventInstaller
         }
     }
 
+    /// <summary>
+    /// 책임 : 버피 이벤트 모듈의 NPC와 운동기구를 방별 세부 배치 슬롯으로 공개한다.
+    /// </summary>
+    public static void ConfigureCompositePoseSlots(GameObject root)
+    {
+        if (root == null)
+            throw new ArgumentNullException(nameof(root));
+
+        RoomCompositePoseAuthoring composite = root.GetComponent<RoomCompositePoseAuthoring>();
+        if (composite == null)
+            composite = root.AddComponent<RoomCompositePoseAuthoring>();
+
+        Transform rootTransform = root.transform;
+        composite.EditorSetPoseSlots(new[]
+        {
+            new RoomCompositePoseSlotData(
+                "BuffyGuideNpc",
+                "Buffy NPC",
+                RequiredChild(rootTransform, "BuffyGuideNpc")),
+            new RoomCompositePoseSlotData(
+                "StrengthEquipment",
+                "Strength Equipment",
+                RequiredChild(rootTransform, "StrengthEquipment")),
+            new RoomCompositePoseSlotData(
+                "WheelEquipment",
+                "Wheel Equipment",
+                RequiredChild(rootTransform, "WheelEquipment")),
+            new RoomCompositePoseSlotData(
+                "LogEquipment",
+                "Log Equipment",
+                RequiredChild(rootTransform, "LogEquipment"))
+        });
+        EditorUtility.SetDirty(composite);
+    }
+
+    private static Transform RequiredChild(Transform parent, string childName)
+    {
+        Transform child = parent != null ? parent.Find(childName) : null;
+        if (child == null)
+        {
+            string parentName = parent != null ? parent.name : "<null>";
+            throw new InvalidOperationException($"Missing child: {parentName}/{childName}");
+        }
+
+        return child;
+    }
+
     private static void InstallTheme(ThemeInstallData theme, GameObject eventModulePrefab)
     {
         RoomTemplateSO sourceRoom = LoadRequiredAsset<RoomTemplateSO>(theme.SourceRoomPath);

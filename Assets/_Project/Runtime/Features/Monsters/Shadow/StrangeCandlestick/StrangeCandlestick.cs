@@ -23,6 +23,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
     private IAttackTelegraphPresenter telegraphPresenter;
     private AttackTelegraphStyle runtimeLockOnStyle;
     private float nextProjectileFireTime;
+    private readonly MobProjectileBurstCadence burstCadence = new();
     private bool hasLoggedInvalidConfig;
 
     public static System.Collections.Generic.IReadOnlyList<StrangeCandlestick> Instances => instances;
@@ -145,7 +146,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
         if (isDead)
             return false;
 
-        if (Time.time < nextProjectileFireTime)
+        if (Time.time < nextProjectileFireTime || burstCadence.IsResting(Time.time))
             return false;
 
         if (helperAccess != null &&
@@ -251,6 +252,12 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
         return request.IsValid;
     }
 
+    public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
+    {
+        return Mathf.Max(base.ResolvePostAttackRecoverSeconds(scaledRecoverSeconds),
+            burstCadence.GetRemainingRestSeconds(Time.time));
+    }
+
     /// <summary>공격 상태 진입 시 StrangeCandlestick이 추가로 처리할 것이 없어 비워 둡니다.</summary>
     public void OnAttackStateEntered(MobAttackRequest request)
     {
@@ -279,7 +286,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
     /// <summary>LightBead를 생성하고 발사 설정을 넘깁니다.</summary>
     public bool FireProjectile(GameObject explicitTarget)
     {
-        if (explicitTarget == null)
+        if (explicitTarget == null || burstCadence.IsResting(Time.time))
             return false;
 
         AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
@@ -318,6 +325,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
 
         PlayShotFireSound();
         lightBead.Setup(context);
+        burstCadence.RecordShot(Time.time);
         nextProjectileFireTime = Time.time + CombatTimingService.ScaleSeconds(
             abilitySystem,
             GetPostShotCooldown(),

@@ -34,7 +34,7 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
     [SerializeField] private bool logRoomEntrySpawnDebug;
 
     private readonly List<MonsterSpawnContainer> reusableContainers = new();
-    private readonly List<GameObject> reusableSpawnPlan = new();
+    private readonly List<MonsterRoomSpawnProfileSO.ResolvedMonsterEntry> reusableSpawnPlan = new();
     private readonly List<MonsterSpawnRequest> reusableSpawnRequests = new();
     private readonly List<RoomDoorMonsterKillLock> runtimeDoorLocks = new();
     private readonly List<MonsterLockTrackingUnit> runtimeSpawnedMonsterUnits = new();
@@ -49,6 +49,7 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
     public MonsterRoomSpawnProfileSO SpawnProfile => spawnProfile;
     public bool PlayerEncounterEntered => playerEncounterEntered;
+    public bool RoomEntrySpawnStarted => roomEntrySpawnStarted;
     public int PendingRoomEntrySpawnCount => pendingRoomEntrySpawnCount;
     public int EncounterHoldCount => encounterHoldCount;
     public int RemainingRegisteredOrPendingCount =>
@@ -111,11 +112,12 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
         int spawnCount = Mathf.Min(reusableSpawnPlan.Count, candidates.Count);
         for (int i = 0; i < spawnCount; i++)
         {
-            GameObject monsterPrefab = reusableSpawnPlan[i];
+            MonsterRoomSpawnProfileSO.ResolvedMonsterEntry spawnEntry = reusableSpawnPlan[i];
+            GameObject monsterPrefab = spawnEntry.MonsterPrefab;
             if (monsterPrefab == null)
                 continue;
 
-            requests.Add(candidates[i].CreateRequest(monsterPrefab));
+            requests.Add(candidates[i].CreateRequest(monsterPrefab, spawnEntry.HpMultiplier));
         }
     }
 

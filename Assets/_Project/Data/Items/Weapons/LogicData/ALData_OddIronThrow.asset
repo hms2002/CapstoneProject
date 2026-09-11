@@ -32,7 +32,7 @@ MonoBehaviour:
     critAffectsElement: 1
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
-  fixedDamage: 60
+  fixedDamage: 700
   fixedStaggerDamage: 0
   fixedKnockbackImpulse: 8
   impactVfxPrefab: {fileID: 5782972530972772327, guid: 545e937c0e631794289077d16108df59, type: 3}

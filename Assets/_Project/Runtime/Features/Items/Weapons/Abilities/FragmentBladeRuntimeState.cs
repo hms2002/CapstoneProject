@@ -282,7 +282,7 @@ public sealed class FragmentBladeRuntimeState : WeaponAbilityRuntimeState
             attackData.DamageConfig,
             attackData.damageEffect,
             attackData.knockbackEffect,
-            attackData.damageFormula,
+            attackData.PiercingDamageFormula,
             attackData.knockbackFormula,
             attackData.legacyDamage,
             attackData.legacyStaggerDamage,

@@ -45,9 +45,9 @@ MonoBehaviour:
       critAffectsElement: 1
     damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
     knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
-    damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+    damageFormula: {fileID: 11400000, guid: 2247b7da7287d4bab0cc1eaa6dae7738, type: 2}
     knockbackFormula: {fileID: 0}
-    legacyDamage: 10
+    legacyDamage: 120
     legacyStaggerDamage: 0
     hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
     hitImpactCueKind: 1

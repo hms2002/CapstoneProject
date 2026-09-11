@@ -112,7 +112,10 @@ public static class RoomAuthoringToolValidator
                         corridorLengthPerRoomCell: 0f,
                         corridorLengthVariation: 0,
                         guaranteedRoomTemplates: null,
-                        corridorDecorationProfile: null));
+                        runMapEventProfile: null,
+                        runMapEventPreviewVisitOrder: 1,
+                        corridorDecorationProfile: null,
+                        socketCleanupProfile: null));
             if (!previewResult.WasBuilt ||
                 !previewResult.IsComplete ||
                 previewResult.RoomCount != 3 ||

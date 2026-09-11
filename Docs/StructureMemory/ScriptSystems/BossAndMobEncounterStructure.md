@@ -16,6 +16,13 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 
 ## Current Inventory Groups
 
+### Tackle Contact Damage Policy (2026-09-11)
+
+- `TackleAttack.enableContactDamage` gates only the trigger-driven direct damage/request path in `OnTriggerStay2D`. It defaults to true to preserve other existing tackle users.
+- `ShadowMonster.prefab` explicitly disables it. Merely overlapping this monster no longer applies contact damage or starts the contact-hit delay. Colliders, hurtboxes and physical collision settings are unchanged.
+- `AL_Tackle.RunPreparedTackle` still owns warning, dash and the existing post-dash target-in-box/path damage check. Disabling trigger contact does not disable the attack ability, but means ShadowMonster no longer gets early trigger hits during the dash either; its ability-owned range check remains the damage route.
+- New prefab tuning should keep the distinction between body overlap damage and ability-owned attack damage. No new manager, type-specific runtime check or shared AL asset modification is involved.
+
 | Area | Count | Responsibility |
 | --- | ---: | --- |
 | Boss Encounter | 102 | Boss FSM core/states/configs, boss-specific controllers, pattern actors, boss presentation, BT/GAS bridge actions. |

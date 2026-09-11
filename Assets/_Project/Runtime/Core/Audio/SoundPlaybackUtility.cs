@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace CapstoneAudio
 {
@@ -19,6 +20,7 @@ namespace CapstoneAudio
 
     /// <summary>
     /// 책임: Core/Gameplay 호출자가 구체 SoundManager 구현 없이 사운드 재생, 정지, 런타임 제어를 요청하게 한다.
+    /// 씬 소속 음악 요청은 현재 활성 씬에서 온 경우에만 전달한다.
     /// </summary>
     public static class SoundPlaybackUtility
     {
@@ -79,6 +81,30 @@ namespace CapstoneAudio
         public static void StopMusic()
         {
             backend?.StopMusic();
+        }
+
+        public static bool TryPlayMusic(in SoundRef soundRef, Scene sourceScene)
+        {
+            if (!soundRef.IsSet || backend == null || !IsCurrentMusicScene(sourceScene))
+                return false;
+
+            backend.PlayMusic(soundRef);
+            return true;
+        }
+
+        public static bool TryStopMusic(Scene sourceScene)
+        {
+            if (backend == null || !IsCurrentMusicScene(sourceScene))
+                return false;
+
+            backend.StopMusic();
+            return true;
+        }
+
+        private static bool IsCurrentMusicScene(Scene sourceScene)
+        {
+            return sourceScene.IsValid() && sourceScene.isLoaded &&
+                   sourceScene.handle == SceneManager.GetActiveScene().handle;
         }
 
         public static void DuckCombatSfx(float targetVolume, float fadeSeconds)

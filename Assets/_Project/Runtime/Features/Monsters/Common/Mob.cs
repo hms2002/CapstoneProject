@@ -12,6 +12,32 @@ public class Mob : Enemy
     [Tooltip("플레이어 추적 범위를 가진 컴포넌트입니다.")]
     [SerializeField] private EnemyChaseIntent2D chaseIntent;
 
+    [Header("AI Thinking")]
+    [Tooltip("공격 시작 여부를 다시 판단하는 최소 간격입니다. 0이면 매 프레임 판단합니다.")]
+    [SerializeField, Min(0f)] private float attackThinkIntervalSeconds = 0.12f;
+    [Tooltip("동시에 스폰된 몬스터의 첫 공격 판단이 한 프레임에 몰리지 않도록 랜덤 분산하는 시간입니다.")]
+    [SerializeField, Min(0f)] private float attackThinkInitialSpreadSeconds = 0.12f;
+    [Tooltip("긴 전투 중 몬스터들의 공격 판단 주기가 다시 같은 프레임으로 맞물리지 않도록 매 판단마다 더하는 랜덤 분산 시간입니다.")]
+    [SerializeField, Min(0f)] private float attackThinkJitterSeconds = 0.04f;
+
+    [Header("Post Attack Spacing")]
+    [Tooltip("공격 후 공통 AI 후딜에 더할 시간입니다. 탱커/자폭형처럼 제외가 필요한 몬스터는 override로 무시합니다.")]
+    [SerializeField, Min(0f)] private float postAttackRecoveryBonusSeconds = 0.2f;
+
+    [Header("Recovery Retreat")]
+    [Tooltip("공격 후 후딜 동안 플레이어에게서 살짝 물러나는 공통 행동을 사용할지 정합니다.")]
+    [SerializeField] private bool usePostAttackRecoveryRetreat = true;
+    [SerializeField, Min(0f)] private float recoveryRetreatMaxTargetDistance = 3f;
+    [SerializeField, Min(0f)] private float recoveryRetreatMinTargetDistance = 1.1f;
+    [SerializeField, Min(0f)] private float recoveryRetreatSpeedScale = 0.75f;
+    [SerializeField, Range(0f, 1f)] private float recoveryRetreatFarSpeedScale = 0.35f;
+    [SerializeField, Min(0.02f)] private float recoveryRetreatThinkInterval = 0.08f;
+    [SerializeField, Min(0.02f)] private float recoveryRetreatVelocityDuration = 0.12f;
+    [SerializeField, Min(0f)] private float recoveryRetreatDamping = 0f;
+    [Tooltip("비워두면 Wall 레이어를 자동으로 사용합니다.")]
+    [SerializeField] private LayerMask recoveryRetreatWallLayers;
+    [SerializeField, Min(0f)] private float recoveryRetreatWallProbeDistance = 0.25f;
+
     [Header("Debug")]
     [Tooltip("켜두면 일반 몬스터 FSM 초기화와 상태 전이 판단 로그를 출력합니다.")]
     [SerializeField] private bool logMobFsmDebug;
@@ -29,6 +55,12 @@ public class Mob : Enemy
     private int pitFallDeathResolutionDepth;
     private int facingLockCount;
     private float spawnIdlePauseUntilTime;
+    private float recoveryRetreatEndTime;
+    private float nextRecoveryRetreatThinkTime;
+    private int recoveryRetreatSideSign = 1;
+    private Vector2 cachedRecoveryRetreatVelocity;
+    private readonly RaycastHit2D[] recoveryRetreatWallHits = new RaycastHit2D[4];
+    private ContactFilter2D recoveryRetreatWallFilter;
 
     protected EnemyChaseIntent2D ChaseIntent => chaseIntent;
     protected MonsterSpawnRoomGroup LockTrackingRoomGroup => lockTrackingRoomGroup;
@@ -46,6 +78,8 @@ public class Mob : Enemy
 
         pitFallReaction = GetComponentInChildren<PitFallReaction2D>(includeInactive: true);
         resolvedChaseIntent = ResolveChaseIntent();
+        recoveryRetreatSideSign = GetInstanceID() % 2 == 0 ? 1 : -1;
+        ConfigureRecoveryRetreatWallFilter();
 
         hasMoveBool = CheckMoveBool();
     }
@@ -106,6 +140,186 @@ public class Mob : Enemy
     public virtual bool CanUseChaseMovement()
     {
         return !IsSpawnIdlePaused();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 공격 후 공통 recover 상태를 사용할지 몬스터별로 결정한다.
+    /// - 기본 recover가 0이어도 공통 후딜 보너스가 있으면 recover 상태를 태워 몬스터 공격 템포를 완화한다.
+    /// </summary>
+    public virtual bool ShouldUsePostAttackRecoverState(float baseRecoverSeconds)
+    {
+        return baseRecoverSeconds > 0f || postAttackRecoveryBonusSeconds > 0f;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 공격속도 보정이 끝난 recover 시간에 일반 몬스터 공통 후딜 보너스를 더한다.
+    /// - 탱커/자폭형처럼 공격 후 바로 버티거나 특수 상태를 유지해야 하는 몬스터가 override로 제외할 수 있게 한다.
+    /// </summary>
+    public virtual float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
+    {
+        return Mathf.Max(0f, scaledRecoverSeconds) + Mathf.Max(0f, postAttackRecoveryBonusSeconds);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 공격 후 recover 동안 플레이어에게서 물러나는 이동을 사용할 수 있는지 몬스터별로 결정한다.
+    /// - Tank/Skeleton 같은 예외 타입은 기존 공격 후 자리잡기 감각을 유지하도록 override로 false를 반환한다.
+    /// </summary>
+    public virtual bool CanUsePostAttackRecoveryRetreat()
+    {
+        return usePostAttackRecoveryRetreat &&
+               !isDead &&
+               target != null &&
+               externalMovement != null &&
+               attributeStatSource != null;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - MobRecoverState 진입 시 후퇴 이동 캐시를 초기화하고, 첫 틱에서 즉시 방향을 계산하게 준비한다.
+    /// - 실제 이동 적용은 ExternalMovementController2D로 위임해 MovementMotor2D의 벽 안전장치를 그대로 사용한다.
+    /// </summary>
+    public void BeginPostAttackRecoveryRetreat(float recoverEndTime)
+    {
+        recoveryRetreatEndTime = Mathf.Max(Time.time, recoverEndTime);
+        nextRecoveryRetreatThinkTime = 0f;
+        cachedRecoveryRetreatVelocity = Vector2.zero;
+        externalMovement?.RemoveTimedVelocitiesFromSource(this);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 공격 후 recover 상태에서 낮은 빈도로 후퇴 방향을 다시 계산하고 짧은 외부 이동으로 적용한다.
+    /// - 매 프레임 주변 탐색을 하지 않고 타겟 방향/벽 캐스트만 사용해 군집 행동 보정 비용을 작게 유지한다.
+    /// </summary>
+    public void TickPostAttackRecoveryRetreat()
+    {
+        if (Time.time >= recoveryRetreatEndTime || !CanUsePostAttackRecoveryRetreat())
+        {
+            StopPostAttackRecoveryRetreat();
+            return;
+        }
+
+        if (Time.time < nextRecoveryRetreatThinkTime)
+            return;
+
+        nextRecoveryRetreatThinkTime = Time.time + Mathf.Max(0.02f, recoveryRetreatThinkInterval);
+        cachedRecoveryRetreatVelocity = ResolveRecoveryRetreatVelocity();
+        externalMovement.RemoveTimedVelocitiesFromSource(this);
+
+        if (cachedRecoveryRetreatVelocity.sqrMagnitude <= 0.0001f)
+            return;
+
+        externalMovement.AddTimedVelocity(
+            cachedRecoveryRetreatVelocity,
+            Mathf.Max(0.02f, recoveryRetreatVelocityDuration),
+            Mathf.Max(0f, recoveryRetreatDamping),
+            this);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - recover 상태 종료/중단 시 이 몬스터가 넣은 후퇴 외부 이동만 정리한다.
+    /// - 넉백이나 다른 시스템이 넣은 외압을 함께 지우지 않도록 source 기반 제거를 사용한다.
+    /// </summary>
+    public void StopPostAttackRecoveryRetreat()
+    {
+        recoveryRetreatEndTime = 0f;
+        cachedRecoveryRetreatVelocity = Vector2.zero;
+        externalMovement?.RemoveTimedVelocitiesFromSource(this);
+    }
+
+    private Vector2 ResolveRecoveryRetreatVelocity()
+    {
+        if (target == null || attributeStatSource == null)
+            return Vector2.zero;
+
+        Vector2 toSelf = (Vector2)(transform.position - target.position);
+        float distance = toSelf.magnitude;
+        float maxDistance = Mathf.Max(0.01f, recoveryRetreatMaxTargetDistance);
+        float minDistance = Mathf.Clamp(recoveryRetreatMinTargetDistance, 0f, maxDistance);
+        if (distance >= maxDistance)
+            return Vector2.zero;
+
+        Vector2 awayDirection = distance > 0.001f
+            ? toSelf / distance
+            : new Vector2(recoveryRetreatSideSign, 0f);
+
+        Vector2 retreatDirection = ResolveWallSafeRecoveryRetreatDirection(awayDirection);
+        if (retreatDirection.sqrMagnitude <= 0.0001f)
+            return Vector2.zero;
+
+        float moveSpeed = Mathf.Max(0f, attributeStatSource.Get(StatId.MoveSpeedFinal));
+        if (moveSpeed <= 0f)
+            return Vector2.zero;
+
+        float closeWeight = Mathf.InverseLerp(maxDistance, minDistance, distance);
+        float distanceScale = Mathf.Lerp(recoveryRetreatFarSpeedScale, 1f, closeWeight);
+        return retreatDirection.normalized * moveSpeed * Mathf.Max(0f, recoveryRetreatSpeedScale) * distanceScale;
+    }
+
+    private Vector2 ResolveWallSafeRecoveryRetreatDirection(Vector2 awayDirection)
+    {
+        if (awayDirection.sqrMagnitude <= 0.0001f)
+            return Vector2.zero;
+
+        awayDirection.Normalize();
+        if (!IsRecoveryRetreatDirectionBlocked(awayDirection))
+            return awayDirection;
+
+        Vector2 tangent = new Vector2(-awayDirection.y, awayDirection.x) * recoveryRetreatSideSign;
+        if (!IsRecoveryRetreatDirectionBlocked(tangent))
+            return tangent;
+
+        tangent = -tangent;
+        return !IsRecoveryRetreatDirectionBlocked(tangent) ? tangent : Vector2.zero;
+    }
+
+    private bool IsRecoveryRetreatDirectionBlocked(Vector2 direction)
+    {
+        if (direction.sqrMagnitude <= 0.0001f ||
+            recoveryRetreatWallLayers.value == 0 ||
+            recoveryRetreatWallProbeDistance <= 0f ||
+            collision == null ||
+            !collision.enabled ||
+            collision.isTrigger)
+        {
+            return false;
+        }
+
+        int hitCount = collision.Cast(
+            direction.normalized,
+            recoveryRetreatWallFilter,
+            recoveryRetreatWallHits,
+            recoveryRetreatWallProbeDistance);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hitCollider = recoveryRetreatWallHits[i].collider;
+            if (hitCollider != null && hitCollider.attachedRigidbody != rigid2D)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void ConfigureRecoveryRetreatWallFilter()
+    {
+        if (recoveryRetreatWallLayers.value == 0)
+        {
+            int wallLayer = LayerMask.NameToLayer("Wall");
+            if (wallLayer >= 0)
+                recoveryRetreatWallLayers = 1 << wallLayer;
+        }
+
+        recoveryRetreatWallFilter = new ContactFilter2D
+        {
+            useLayerMask = true,
+            layerMask = recoveryRetreatWallLayers,
+            useTriggers = false
+        };
     }
 
     /// <summary>이동과 방향 애니메이션을 갱신합니다.</summary>
@@ -321,6 +535,7 @@ public class Mob : Enemy
     private void OnDisable()
     {
         pitFallDeathResolutionDepth = 0;
+        StopPostAttackRecoveryRetreat();
         aiContext?.PerformFailSafeCleanup();
         ShutdownStateMachine();
     }
@@ -354,7 +569,10 @@ public class Mob : Enemy
             abilityBridge,
             attackDecisionSource,
             ResolvePatternRunnerTargets(),
-            ResolvePresentationCleanupTargets());
+            ResolvePresentationCleanupTargets(),
+            attackThinkIntervalSeconds,
+            attackThinkInitialSpreadSeconds,
+            attackThinkJitterSeconds);
         stateMachine = new MobStateMachine();
         stateMachine.SetInitialState(new MobIdleState(), aiContext);
         LogFsmDebug($"FSM 초기화 완료. chaseIntent={(chaseIntent != null ? chaseIntent.name : "null")}, bridge={abilityBridge.GetType().Name}, decisionSource={attackDecisionSource.GetType().Name}");

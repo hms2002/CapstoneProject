@@ -18,12 +18,12 @@ MonoBehaviour:
   knockbackImpulse: 0
   recoverSeconds: 0.25
   firstStep:
-    warningSeconds: 2
+    warningSeconds: 1
     dashDistance: 1.875
     dashSeconds: 0.34
     warningWidth: 0.95
   secondStep:
-    warningSeconds: 1.4
+    warningSeconds: 0.7
     dashDistance: 1.875
     dashSeconds: 0.34
     warningWidth: 0.95

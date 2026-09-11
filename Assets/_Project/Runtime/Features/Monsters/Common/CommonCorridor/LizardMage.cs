@@ -6,7 +6,7 @@ using CapstoneAudio;
 /// <summary>
 /// 책임:
 /// - 리자드맨 마법사의 연속 탄막 공격 판단과 발사 문맥을 소유한다.
-/// - 경고 후 3회 발사 시퀀스는 LizardMageBurstRunner에 위임한다.
+/// - 경고 후 연사는 Runner에 위임하고, 실제 발사 횟수에 따른 휴식은 개체별로 소유한다.
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(MobAbilityCoordinator))]
@@ -16,15 +16,16 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
     private static readonly SoundRef ShotFireSound = SoundRef.FromKey("sound_lizardMage_shotFire");
 
     [SerializeField] private AbilityDefinition burstAbility;
-    [SerializeField, Min(0f)] private float maxHealth = 7f;
 
     private LizardMageBurstRunner runner;
+    private readonly MobProjectileBurstCadence burstCadence = new();
     private bool hasLoggedInvalidConfig;
     private AbilityLogic_LizardMageBurst Logic => burstAbility != null ? burstAbility.logic as AbilityLogic_LizardMageBurst : null;
 
     public AbilityLogic_LizardMageBurst BurstLogic => Logic;
     public int ShotCount => Logic != null ? Logic.ShotCount : 0;
     public float ShotInterval => Logic != null ? Logic.ShotInterval : 0f;
+    public bool IsRestingBetweenBursts => burstCadence.IsResting(Time.time);
 
     // 책임: 리자드 마법사 연사 공격의 타겟, 조준 방향, 사거리, 피해 정보를 보관한다.
     public readonly struct BurstContext
@@ -72,7 +73,6 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
     {
         base.Awake();
         runner = GetComponent<LizardMageBurstRunner>();
-        ApplyStats();
     }
 
     protected override void Start()
@@ -90,6 +90,9 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
     public bool TryBuildAttackRequest(out MobAttackRequest request)
     {
         request = default;
+        if (IsRestingBetweenBursts)
+            return false;
+
         GameObject targetObject = Target != null ? Target.gameObject : null;
         AbilityLogic_LizardMageBurst logic = Logic;
         if (!HasRequiredData() || logic == null || !CommonMonsterCombatUtility.InRange(transform, targetObject, logic.AttackRange))
@@ -97,6 +100,12 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
 
         request = new MobAttackRequest(burstAbility, targetObject, logic.RecoverSeconds);
         return request.IsValid;
+    }
+
+    public override float ResolvePostAttackRecoverSeconds(float scaledRecoverSeconds)
+    {
+        return Mathf.Max(base.ResolvePostAttackRecoverSeconds(scaledRecoverSeconds),
+            burstCadence.GetRemainingRestSeconds(Time.time));
     }
 
     /// <summary>공격 상태 진입 시 마법 준비 애니메이션을 요청한다.</summary>
@@ -121,6 +130,9 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
     public bool TryBuildBurstContext(AbilitySystem system, AbilitySpec spec, GameObject explicitTarget, out BurstContext context)
     {
         context = default;
+        if (IsRestingBetweenBursts)
+            return false;
+
         GameObject targetObject = explicitTarget != null ? explicitTarget : Target != null ? Target.gameObject : null;
         AbilityLogic_LizardMageBurst logic = Logic;
         if (!HasRequiredData() || logic == null || !CommonMonsterCombatUtility.InRange(transform, targetObject, logic.AttackRange))
@@ -155,6 +167,9 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
 
     public void FireProjectile(BurstContext context)
     {
+        if (IsRestingBetweenBursts)
+            return;
+
         Vector2 direction = context.Target != null
             ? CommonMonsterCombatUtility.DirectionToAimPoint(context.Origin, context.Target, sprite != null && sprite.flipX)
             : context.WarningDirection;
@@ -189,6 +204,7 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
             direction = direction,
             speed = context.ProjectileSpeed
         });
+        burstCadence.RecordShot(Time.time);
     }
 
     /// <summary>리자드 메이지의 각 마법탄 발사 타이밍에 사운드를 재생합니다.</summary>
@@ -201,15 +217,6 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
             target: Target != null ? Target.gameObject : null,
             position: origin,
             sourceObject: this);
-    }
-
-    private void ApplyStats()
-    {
-        if (attributeSet == null)
-            return;
-
-        attributeSet.TrySetBaseValue(maxHealthDef, maxHealth, this);
-        attributeSet.TrySetBaseValue(healthDef, maxHealth, this);
     }
 
     private bool HasRequiredData()
@@ -303,6 +310,9 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
                     yield break;
 
                 owner.FireProjectile(context);
+                if (owner.IsRestingBetweenBursts)
+                    break;
+
                 if (i < owner.ShotCount - 1 && owner.ShotInterval > 0f)
                     yield return AbilityTasks.WaitCombatDelay(system, spec, owner.ShotInterval, CombatTimingSlot.AttackInterval);
             }

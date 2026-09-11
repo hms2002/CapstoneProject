@@ -63,9 +63,10 @@ public struct ProceduralRoomTravelBinding
 /// - 모든 방 오브젝트 생성 후 로컬/던전 앵커를 수집하고 NPC 같은 런타임 방 기능의 외부 참조를 연결한다.
 /// - 전투 여부와 무관하게 모든 생성 방에 미니맵 발견용 내부 진입 트리거를 구성한다.
 /// - 전투 잠금 정책이 붙기 전 프로토타입에서는 생성 문을 열린 상태로 시작할 수 있게 한다.
+/// - 연결된 문 소켓 주변의 남는 벽/문 흔적을 생성 프로필의 데이터 패치로 보정한다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class DungeonRoomBuilder : MonoBehaviour
+public sealed partial class DungeonRoomBuilder : MonoBehaviour
 {
     private const int RoomEntryBoundaryInsetCells = 1;
     private const int DefaultVoidFillPaddingCells = 8;
@@ -94,6 +95,9 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     [SerializeField] private List<TileBase> horizontalCorridorWallVariants = new();
     [SerializeField] private List<TileBase> verticalCorridorWallVariants = new();
     [SerializeField] private CorridorDecorationProfileSO corridorDecorationProfile;
+
+    [Header("Socket Cleanup")]
+    [SerializeField] private RoomSocketCleanupProfileSO socketCleanupProfile;
 
     [Header("Connected Doors")]
     [SerializeField] private DoorObject connectedDoorPrefab;
@@ -126,6 +130,8 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     private readonly List<RoomDoorMonsterKillLock> generatedRoomDoorLocks = new();
     private readonly Dictionary<int, MonsterSpawnRoomGroup> generatedRoomGroupsByPlacement = new();
     private readonly Dictionary<int, MonsterRoomArea2D> generatedRoomAreasByPlacement = new();
+    private readonly HashSet<string> socketCleanupWarningKeys =
+        new(System.StringComparer.Ordinal);
 
     public Tilemap UnderFloorTilemap => underFloorTilemap;
     public Tilemap FloorTilemap => floorTilemap;
@@ -159,6 +165,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     public IReadOnlyList<TileBase> HorizontalCorridorWallVariants => horizontalCorridorWallVariants;
     public IReadOnlyList<TileBase> VerticalCorridorWallVariants => verticalCorridorWallVariants;
     public CorridorDecorationProfileSO CorridorDecorationProfile => corridorDecorationProfile;
+    public RoomSocketCleanupProfileSO SocketCleanupProfile => socketCleanupProfile;
     public DoorObject ConnectedDoorPrefab => connectedDoorPrefab;
     public Transform GeneratedDoorRoot => generatedDoorRoot;
     public Transform GeneratedSocketBlockerRoot => generatedSocketBlockerRoot;
@@ -188,6 +195,14 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             RoomTileLayerKind.OverlayFX => overlayFxTilemap,
             _ => null
         };
+    }
+
+    /// <summary>
+    /// 책임 : 런타임 생성기와 에디터 미리보기가 현재 테마의 연결 소켓 흔적 제거 프로필을 빌드 직전에 지정한다.
+    /// </summary>
+    public void ConfigureSocketCleanup(RoomSocketCleanupProfileSO profile)
+    {
+        socketCleanupProfile = profile;
     }
 
 #if UNITY_EDITOR
@@ -378,6 +393,12 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
 
     public bool TryBuild(DungeonLayoutResult layout, DungeonBuildOptions options)
     {
+        return TryBuild(layout, options, null);
+    }
+
+    public bool TryBuild(DungeonLayoutResult layout, DungeonBuildOptions options,
+        IReadOnlyList<DungeonObjectRuntimeStateData> savedStates)
+    {
         if (layout == null)
         {
             Debug.LogError("DungeonRoomBuilder requires a layout result.", this);
@@ -459,6 +480,8 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             }
         }
 
+        ApplySocketCleanup(layout);
+
         if (!ValidateUnconnectedSocketsRemainSealed(layout))
         {
             ClearGeneratedContent();
@@ -468,6 +491,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
         if (options.BuildGameplayObjects &&
             (!TryBuildRoomEncounters(layout) ||
              !TryBuildRoomObjects(layout) ||
+             !TryBuildPossibleChests(layout, savedStates) ||
              !TryBuildTravelEndpoints(layout) ||
              !TryBindGeneratedRoomFeatures(layout) ||
              !TryBuildRoomDiscoveryTriggers(layout)))
@@ -718,6 +742,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
 
     public void ClearGeneratedContent()
     {
+        socketCleanupWarningKeys.Clear();
         ClearGeneratedTiles();
         ClearGeneratedRoomEncounters();
         ClearGeneratedDoors();
@@ -945,6 +970,7 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     public void ClearGeneratedRoomObjects()
     {
         generatedRoomObjects.Clear();
+        chestCandidates.Clear();
         generatedRoomObjectsByStateId.Clear();
         generatedRoomObjectsByPlacement.Clear();
 
@@ -1327,6 +1353,12 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
                 if (objectPlacement.kind == RoomObjectKind.Monster)
                     continue;
 
+                if (ChestPossible.TryGet(objectPlacement, out ChestPossible candidate))
+                {
+                    chestCandidates.Add(new ChestCandidate(roomPlacement, objectPlacement, candidate));
+                    continue;
+                }
+
                 if (!TryBuildRoomObject(
                         roomPlacement,
                         objectPlacement,
@@ -1370,6 +1402,9 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
 
             for (int objectIndex = 0; objectIndex < roomInstances.Length; objectIndex++)
             {
+                if (ChestPossible.TryGet(objectPlacements[objectIndex], out _))
+                    continue;
+
                 GameObject roomInstance = roomInstances[objectIndex];
                 generatedRoomObjects.Add(roomInstance);
                 generatedRoomObjectsByStateId[CreateRuntimeStateId(
@@ -2086,6 +2121,9 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
     /// </summary>
     private static bool IsPlacementSourceCompatible(RoomObjectPlacementData placement)
     {
+        if (ChestPossible.TryGet(placement, out ChestPossible candidate))
+            return candidate.ChestPrefab != null;
+
         if (placement.kind == RoomObjectKind.Monster)
         {
             return placement.monsterStageSet != null ||
@@ -2112,6 +2150,139 @@ public sealed class DungeonRoomBuilder : MonoBehaviour
             Vector2Int worldCell = roomOrigin + entry.localCell;
             target.SetTile(new Vector3Int(worldCell.x, worldCell.y, 0), entry.tile);
         }
+    }
+
+    /// <summary>
+    /// 책임 : 연결/비연결 소켓 상태에 맞는 데이터 패치를 최종 타일맵 위에 얹어 문 주변 시각 흔적을 정리한다.
+    /// </summary>
+    private void ApplySocketCleanup(DungeonLayoutResult layout)
+    {
+        RoomSocketCleanupProfileSO profile = socketCleanupProfile;
+        if (profile == null || layout == null)
+            return;
+
+        IReadOnlyList<RoomSocketCleanupRule> rules = profile.Rules;
+        if (rules.Count == 0)
+            return;
+
+        for (int roomIndex = 0; roomIndex < layout.Rooms.Count; roomIndex++)
+        {
+            DungeonRoomPlacement placement = layout.Rooms[roomIndex];
+            if (placement?.Template == null)
+                continue;
+
+            List<RoomSocketData> sockets = placement.Template.LayoutData.sockets;
+            if (sockets == null)
+                continue;
+
+            for (int socketIndex = 0; socketIndex < sockets.Count; socketIndex++)
+            {
+                RoomSocketData socket = sockets[socketIndex];
+                bool isConnected = IsConnectedSocket(layout, placement.PlacementId, socketIndex);
+                for (int ruleIndex = 0; ruleIndex < rules.Count; ruleIndex++)
+                {
+                    RoomSocketCleanupRule rule = rules[ruleIndex];
+                    if (rule == null || !rule.Matches(socket.direction, isConnected))
+                        continue;
+
+                    ApplySocketCleanupRule(profile, rule, placement, socket);
+                }
+            }
+        }
+    }
+
+    private void ApplySocketCleanupRule(
+        RoomSocketCleanupProfileSO profile,
+        RoomSocketCleanupRule rule,
+        DungeonRoomPlacement placement,
+        RoomSocketData socket)
+    {
+        Tilemap target = GetTilemap(rule.Layer);
+        if (target == null)
+        {
+            LogSocketCleanupWarningOnce(
+                $"{profile.name}:{rule.Layer}:missing-tilemap",
+                $"Socket cleanup profile '{profile.name}' uses {rule.Layer}, but the builder has no matching Tilemap.",
+                profile);
+            return;
+        }
+
+        IReadOnlyList<RoomSocketCleanupTilePatch> patches = rule.Patches;
+        Vector2Int socketWorldStart = placement.Origin + socket.localCell;
+        for (int patchIndex = 0; patchIndex < patches.Count; patchIndex++)
+        {
+            RoomSocketCleanupTilePatch patch = patches[patchIndex];
+            if (!TryResolveSocketCleanupTile(profile, rule, patch, out TileBase tile))
+                continue;
+
+            Vector2Int worldCell = ResolveSocketCleanupWorldCell(
+                socketWorldStart,
+                socket,
+                patch.SocketSpaceOffset);
+            Vector3Int tileCell = new(worldCell.x, worldCell.y, 0);
+            target.SetTile(tileCell, tile);
+            if (tile != null)
+            {
+                target.SetTileFlags(tileCell, TileFlags.None);
+                target.SetTransformMatrix(tileCell, Matrix4x4.identity);
+            }
+        }
+    }
+
+    private bool TryResolveSocketCleanupTile(
+        RoomSocketCleanupProfileSO profile,
+        RoomSocketCleanupRule rule,
+        RoomSocketCleanupTilePatch patch,
+        out TileBase tile)
+    {
+        if (patch.ExplicitTile != null && patch.TileSource != RoomSocketCleanupTileSource.ExplicitTile)
+        {
+            LogSocketCleanupWarningOnce(
+                $"{profile.name}:{rule.Layer}:{patch.TileSource}:explicit-tile-ignored",
+                $"Socket cleanup profile '{profile.name}' has an explicit tile assigned, but Tile Source is {patch.TileSource}. Set Tile Source to ExplicitTile if the assigned tile should be used.",
+                profile);
+        }
+
+        tile = patch.TileSource switch
+        {
+            RoomSocketCleanupTileSource.ExplicitTile => patch.ExplicitTile,
+            RoomSocketCleanupTileSource.Clear => null,
+            RoomSocketCleanupTileSource.CorridorFloorTile => corridorFloorTile,
+            RoomSocketCleanupTileSource.CorridorWallTile => corridorWallTile,
+            _ => null
+        };
+
+        if (patch.TileSource == RoomSocketCleanupTileSource.Clear || tile != null)
+            return true;
+
+        LogSocketCleanupWarningOnce(
+            $"{profile.name}:{rule.Layer}:{patch.TileSource}:missing-tile",
+            $"Socket cleanup profile '{profile.name}' skipped a {rule.Layer} patch because {patch.TileSource} is not assigned.",
+            profile);
+        return false;
+    }
+
+    private static Vector2Int ResolveSocketCleanupWorldCell(
+        Vector2Int socketWorldStart,
+        RoomSocketData socket,
+        Vector2Int socketSpaceOffset)
+    {
+        Vector2Int tangent = RoomSocketGeometry.GetTangent(socket.direction);
+        Vector2Int forward = DirectionToVector(socket.direction);
+        return socketWorldStart +
+               tangent * socketSpaceOffset.x +
+               forward * socketSpaceOffset.y;
+    }
+
+    private void LogSocketCleanupWarningOnce(
+        string key,
+        string message,
+        UnityEngine.Object context)
+    {
+        if (!socketCleanupWarningKeys.Add(key))
+            return;
+
+        Debug.LogWarning(message, context);
     }
 
     private bool TryBuildConnection(

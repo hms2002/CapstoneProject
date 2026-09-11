@@ -3,7 +3,7 @@ using UnityGAS;
 
 /// <summary>
 /// 책임:
-/// - 작은 슬라임 Pawn의 기본 스탯, 이동 속도 배율, 사망 처리를 정의한다.
+/// - 작은 슬라임 Pawn의 외형, 이동 속도 배율, 사망 처리를 정의한다.
 /// - 접촉 피해와 orbit 이동 같은 실행 세부는 전용 컴포넌트에 위임한다.
 /// </summary>
 [DisallowMultipleComponent]
@@ -11,7 +11,6 @@ using UnityGAS;
 public class Pawn : Slime
 {
     private const string DieTriggerName = "die";
-    private const float MaxHealth = 2f;
     private const float VisualScale = 0.55f;
     private const float ChaseSpeedMultiplier = 2f;
 
@@ -29,7 +28,7 @@ public class Pawn : Slime
 
         CacheCoordinator();
         CacheAnimatorParameters();
-        ApplyStats();
+        ApplyAppearance();
     }
 
     public override bool CanUseChaseMovement()
@@ -57,10 +56,10 @@ public class Pawn : Slime
         return false;
     }
 
-    /// <summary>폰의 기본 스탯과 크기를 적용합니다.</summary>
-    protected override void ApplyStats()
+    /// <summary>Applies Pawn appearance while preserving profile HP and spawn scaling.</summary>
+    protected override void ApplyAppearance()
     {
-        SetStats("Pawn", MaxHealth, VisualScale);
+        SetAppearance("Pawn", VisualScale);
     }
 
     /// <summary>Animator Controller에 Pawn 전용 트리거가 있는지 캐시합니다.</summary>

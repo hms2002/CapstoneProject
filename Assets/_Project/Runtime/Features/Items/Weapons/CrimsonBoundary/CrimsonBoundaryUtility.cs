@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+// Responsibility: resolve fire-based combat values, targets and shared Crimson Boundary presentation.
 public static class CrimsonBoundaryUtility
 {
     private static readonly Collider2D[] HitBuffer = new Collider2D[128];
@@ -15,20 +16,29 @@ public static class CrimsonBoundaryUtility
         return provider != null ? Mathf.Max(0f, provider.Get(StatId.FireFinal)) : 0f;
     }
 
-    public static float CalculateDirectDamage(AbilitySystem system, float multiplier, out bool critical)
+    public static float CalculateDirectDamage(AbilitySystem system, float multiplier, out bool critical,
+        ScaledStatFormula fireFormula = null)
     {
         IStatProvider provider = AbilityStatProviderFactory.Create(system);
-        DamageResult result = DamageFormulaUtil.PostProcess(provider, ReadFire(system) * multiplier, 0f);
+        DamageResult result = DamageFormulaUtil.PostProcess(provider, ResolveFire(system, provider, fireFormula) * multiplier, 0f);
         critical = result.isCrit;
         return Mathf.Round(result.hpDamage);
     }
 
-    public static float CalculateBurnConsumptionDamage(AbilitySystem system, int consumedStacks)
+    public static float CalculateBurnConsumptionDamage(AbilitySystem system, int consumedStacks, float fireMultiplier,
+        ScaledStatFormula fireFormula = null)
     {
         if (consumedStacks <= 0) return 0f;
         IStatProvider provider = AbilityStatProviderFactory.Create(system);
         float finalMultiplier = provider != null ? Mathf.Max(0f, provider.Get(StatId.FinalMul)) : 1f;
-        return Mathf.Round(ReadFire(system) * 0.5f * consumedStacks * finalMultiplier);
+        return Mathf.Round(ResolveFire(system, provider, fireFormula) * Mathf.Max(0f, fireMultiplier) * consumedStacks * finalMultiplier);
+    }
+
+    private static float ResolveFire(AbilitySystem system, IStatProvider provider, ScaledStatFormula formula)
+    {
+        if (provider == null) return 0f;
+        float fire = Mathf.Max(0f, provider.Get(StatId.FireFinal));
+        return formula != null ? Mathf.Max(0f, formula.Evaluate(system.AttributeSet, provider, fire)) : fire;
     }
 
     public static void ApplyDamage(AbilitySystem system, AbilitySpec spec, GameplayEffect effect, GameObject target, float damage, bool critical, GameObject causer)

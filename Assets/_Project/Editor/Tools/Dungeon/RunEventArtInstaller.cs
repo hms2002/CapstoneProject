@@ -4,7 +4,9 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
 
-/// <summary>Authors event presentation only; does not rebuild rooms or change event rewards.</summary>
+/// <summary>
+/// 책임 : 이벤트 프리팹의 표시 리소스와 방 제작용 복합 배치 슬롯을 갱신하되 방 구조와 보상 로직은 변경하지 않는다.
+/// </summary>
 public static class RunEventArtInstaller
 {
     private const string Art = "Assets/_Project/Art/Sprites/Events/";
@@ -74,6 +76,8 @@ public static class RunEventArtInstaller
             .GetComponent<SpriteRenderer>().sprite;
         foreach (string name in new[] { "StrengthEquipment", "WheelEquipment", "LogEquipment" })
             SetVisual(RequiredChild(root.transform, name + "/" + name + "Body").GetComponent<SpriteRenderer>(), dummy, 1.8f);
+
+        BuffyHealthTimeEventInstaller.ConfigureCompositePoseSlots(root);
     }
 
     private static NPCData PrepareNpc(string key, string displayName, int id, string portraitPath)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 책임 : 경보 종 웨이브 한 줄에서 어떤 몬스터를 몇 마리 소환할지와 소환 후 보정 정책을 보관한다.
+/// 책임 : 경보 종 웨이브의 몬스터 수와 소환 후 체력/공격속도/외형 보정 정책을 보관한다.
 /// </summary>
 [Serializable]
 public sealed class AlarmBellMonsterEntry
@@ -13,12 +13,18 @@ public sealed class AlarmBellMonsterEntry
     [SerializeField, Min(1)] private int count = 1;
     [SerializeField] private bool suppressNonExperienceDrops = true;
     [SerializeField, Min(0f)] private float additionalHpMultiplier = 1f;
+    [Tooltip("스폰 난이도 보정 후의 공격속도에 곱합니다. 1이면 유지, 1.5이면 50% 빨라집니다.")]
+    [SerializeField, Min(0.01f)] private float additionalAttackSpeedMultiplier = 1f;
     [SerializeField] private bool overrideSpriteTint;
     [SerializeField] private Color spriteTint = new(1f, 0.45f, 0.35f, 1f);
 
     public int Count => Mathf.Max(1, count);
     public bool SuppressNonExperienceDrops => suppressNonExperienceDrops;
     public float AdditionalHpMultiplier => Mathf.Max(0f, additionalHpMultiplier);
+    public float AdditionalAttackSpeedMultiplier =>
+        additionalAttackSpeedMultiplier > 0f && !float.IsInfinity(additionalAttackSpeedMultiplier)
+            ? additionalAttackSpeedMultiplier
+            : 1f;
     public bool OverrideSpriteTint => overrideSpriteTint;
     public Color SpriteTint => spriteTint;
 

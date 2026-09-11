@@ -63,7 +63,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             float chargeRatio = data.MaxChargeSeconds > 0f
                 ? Mathf.Clamp01(effectiveChargeSeconds / data.MaxChargeSeconds)
                 : 1f;
-            float damageScale = Mathf.Lerp(data.MinDamageScale, data.MaxDamageScale, chargeRatio);
+            float damageScale = data.ResolveDamageScale(effectiveChargeSeconds);
             Vector2 releaseSizeMultiplier = data.ResolveChargeReleaseSizeMultiplier(chargeRatio);
             Color releaseVisualColor = data.ResolveChargeReleaseColor(chargeRatio);
 

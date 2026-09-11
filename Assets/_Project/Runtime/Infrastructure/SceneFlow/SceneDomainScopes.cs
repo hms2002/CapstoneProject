@@ -17,7 +17,7 @@ internal static class SceneDomainAppScopeServices
     }
 }
 
-// 책임: 게임플레이 씬 진입 시 카메라, BGM, UI 프레젠테이션 세션을 준비한다.
+// 책임: 게임플레이 씬 진입 시 카메라와 UI 프레젠테이션 세션을 준비한다.
 internal static class SceneDomainGameplaySessionScope
 {
     public static void Ensure(SceneDomainSceneInfo sceneInfo)
@@ -26,7 +26,6 @@ internal static class SceneDomainGameplaySessionScope
             return;
 
         CameraBootstrap.EnsureRuntimeRigForCurrentScene();
-        RunRouteBgmService.EnsureInstance();
         AffectionPresentationPlayback.PrepareSceneInstance();
         ChoiceFailurePresentationPlayback.PrepareSceneInstance();
     }
@@ -40,7 +39,6 @@ internal static class SceneDomainTitleCleanupScope
     public static void Cleanup()
     {
         SoundManager.Instance?.StopMusic();
-        RunRouteBgmService.EnsureInstance()?.ForceRefreshActiveSceneBgm();
         LoadingOverlayController.Instance?.ForceHidePresentation();
         PortalRouteManager.Instance?.ClearPlan();
 

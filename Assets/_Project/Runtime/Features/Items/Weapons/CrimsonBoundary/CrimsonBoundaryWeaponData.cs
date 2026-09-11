@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityGAS;
 
 [CreateAssetMenu(fileName = "CrimsonBoundaryWeaponData", menuName = "GAS/Weapon/Crimson Boundary/Data")]
+// Responsibility: author Crimson Boundary attacks, skill geometry and fire-based damage coefficients.
 public sealed class CrimsonBoundaryWeaponData : ScriptableObject
 {
     [Header("Shared")]
@@ -13,6 +14,11 @@ public sealed class CrimsonBoundaryWeaponData : ScriptableObject
     public float projectileSpeed = 18f;
     public float projectileLifetime = 2f;
     public int attackBurnStacks = 3;
+
+    [Header("Skill Damage")]
+    [Tooltip("Optional skill-only fire scaling; unset keeps raw FireFinal scaling.")]
+    public ScaledStatFormula skillFireFormula;
+    [Min(0f)] public float burnConsumptionMultiplier = 0.5f;
 
     [Header("Skill 1")]
     public int skill1MaxConsume = 5;

@@ -156,7 +156,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private IEnumerator RunDeathPresentationRoutine()
     {
-        SoundPlaybackUtility.StopMusic();
+        SoundPlaybackUtility.TryStopMusic(gameObject.scene);
         LockPlayerControls();
         overlay = CinematicLetterboxPlayback.CreateOverlay();
         bool hasTerminalEnding = TryGetTerminalEndingSequence(out BossDefeatEndingSequence endingSequence);

@@ -13,6 +13,7 @@ public interface IRunRouteBackend
 
     bool EnsurePendingPlan(ScenePortal portal);
     bool CanResolveRoute(ScenePortal portal);
+    WarningPopupCode GetTravelBlockWarning(ScenePortal portal);
 
 #if UNITY_EDITOR
     string GetDebugResolveStatus(ScenePortal portal);
@@ -65,6 +66,11 @@ public static class RunRoutePlayback
     public static bool CanResolveRoute(ScenePortal portal)
     {
         return backend != null && backend.CanResolveRoute(portal);
+    }
+
+    public static WarningPopupCode GetTravelBlockWarning(ScenePortal portal)
+    {
+        return backend != null ? backend.GetTravelBlockWarning(portal) : WarningPopupCode.None;
     }
 
     public static bool TryResolveCurrentLocationName(string sceneName, out string locationName)

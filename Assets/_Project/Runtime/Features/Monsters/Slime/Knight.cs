@@ -23,7 +23,6 @@ public class Knight : Slime
     private const float LandingDropSeconds = 0.04f;
     private const float LandingDropSharpness = 0.22f;
     private const float ImpactDiameter = 3.2f;
-    private const float MaxHealth = 6f;
     private const float VisualScale = 0.9f;
     private const float ChaseSpeedMultiplier = 1f;
     private const float KnockbackImpulse = 12f;
@@ -113,7 +112,7 @@ public class Knight : Slime
             jumpSlamRunner = gameObject.AddComponent<KnightJumpSlamRunner>();
 
         CacheAnimatorParameters();
-        ApplyStats();
+        ApplyAppearance();
     }
 
     protected override void Start()
@@ -375,10 +374,10 @@ public class Knight : Slime
         }
     }
 
-    /// <summary>나이트의 기본 스탯과 크기를 적용합니다.</summary>
-    protected override void ApplyStats()
+    /// <summary>Applies Knight appearance while preserving profile HP and spawn scaling.</summary>
+    protected override void ApplyAppearance()
     {
-        SetStats("Knight", MaxHealth, VisualScale);
+        SetAppearance("Knight", VisualScale);
     }
 
     /// <summary>점프 내려치기 설정이 모두 연결되어 있는지 확인합니다.</summary>

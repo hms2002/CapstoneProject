@@ -70,12 +70,14 @@ public sealed class RequiredCombatRoomRule
 /// 책임:
 /// - 탐색형 절차 던전의 권장 방 수, 보스 거리, 분기/순환 수와 필수 방 역할 수를 데이터로 보관한다.
 /// - DungeonGenerator와 제작 툴이 구체적인 그래프 생성 규칙을 하드코딩하지 않고 같은 기획 정책을 공유하게 한다.
+/// - 방 템플릿 선택 규칙을 통해 소켓 적합도, 근거리 반복 회피와 큰 전투방 총량을 조정한다.
 /// </summary>
 [CreateAssetMenu(fileName = "DungeonLayoutPolicy", menuName = "Gameplay/Dungeon/Layout Policy")]
 public sealed class DungeonLayoutPolicySO : ScriptableObject
 {
     private const float DefaultExactSocketDirectionMatchWeightMultiplier = 3f;
     private const float DefaultExtraSocketDirectionWeightMultiplier = 0.45f;
+    private const int DefaultTemplateRepeatAvoidanceGraphDistance = 2;
 
     [Header("Map Scale")]
     [SerializeField, Min(2)] private int recommendedMinimumRoomCount = 12;
@@ -101,12 +103,17 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
     [SerializeField, Range(0.01f, 1f)]
     private float extraSocketDirectionWeightMultiplier =
         DefaultExtraSocketDirectionWeightMultiplier;
+    [Tooltip("같은 방/모양 태그 반복을 후순위 후보군으로 미룰 그래프 거리입니다. 2면 현재 방 기준 두 방 이내를 검사합니다.")]
+    [SerializeField, Min(1)]
+    private int templateRepeatAvoidanceGraphDistance =
+        DefaultTemplateRepeatAvoidanceGraphDistance;
 
     [Header("Guaranteed Room Roles")]
     [SerializeField, Min(0)] private int treasureRoomCount = 1;
     [SerializeField, Min(0)] private int eventRoomCount;
     [SerializeField, Min(0)] private int shopRoomCount;
     [SerializeField, Min(0)] private int minimumCombatRoomCount = 4;
+    [SerializeField, Min(0)] private int maximumLargeCombatRoomCount = 1;
     [SerializeField] private bool preferSpecialRoomsAtDeadEnds = true;
     [SerializeField] private List<RequiredCombatRoomRule> requiredCombatRoomRules = new();
 
@@ -127,10 +134,13 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
         extraSocketDirectionWeightMultiplier > 0f
             ? Mathf.Clamp(extraSocketDirectionWeightMultiplier, 0.01f, 1f)
             : DefaultExtraSocketDirectionWeightMultiplier;
+    public int TemplateRepeatAvoidanceGraphDistance =>
+        Mathf.Max(1, templateRepeatAvoidanceGraphDistance);
     public int TreasureRoomCount => Mathf.Max(0, treasureRoomCount);
     public int EventRoomCount => Mathf.Max(0, eventRoomCount);
     public int ShopRoomCount => Mathf.Max(0, shopRoomCount);
     public int MinimumCombatRoomCount => Mathf.Max(0, minimumCombatRoomCount);
+    public int MaximumLargeCombatRoomCount => Mathf.Max(0, maximumLargeCombatRoomCount);
     public bool PreferSpecialRoomsAtDeadEnds => preferSpecialRoomsAtDeadEnds;
     public IReadOnlyList<RequiredCombatRoomRule> RequiredCombatRoomRules =>
         requiredCombatRoomRules ?? (IReadOnlyList<RequiredCombatRoomRule>)Array.Empty<RequiredCombatRoomRule>();
@@ -173,10 +183,12 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
         maximumTopologyAttempts = Mathf.Max(1, topologyAttempts);
         exactSocketDirectionMatchWeightMultiplier = ExactSocketDirectionMatchWeightMultiplier;
         extraSocketDirectionWeightMultiplier = ExtraSocketDirectionWeightMultiplier;
+        templateRepeatAvoidanceGraphDistance = TemplateRepeatAvoidanceGraphDistance;
         treasureRoomCount = Mathf.Max(0, requiredTreasureRooms);
         eventRoomCount = Mathf.Max(0, requiredEventRooms);
         shopRoomCount = Mathf.Max(0, requiredShopRooms);
         minimumCombatRoomCount = Mathf.Max(0, requiredMinimumCombatRooms);
+        maximumLargeCombatRoomCount = MaximumLargeCombatRoomCount;
         preferSpecialRoomsAtDeadEnds = shouldPreferSpecialRoomsAtDeadEnds;
     }
 
@@ -216,10 +228,12 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
         maximumTopologyAttempts = Mathf.Max(1, maximumTopologyAttempts);
         exactSocketDirectionMatchWeightMultiplier = ExactSocketDirectionMatchWeightMultiplier;
         extraSocketDirectionWeightMultiplier = ExtraSocketDirectionWeightMultiplier;
+        templateRepeatAvoidanceGraphDistance = TemplateRepeatAvoidanceGraphDistance;
         treasureRoomCount = Mathf.Max(0, treasureRoomCount);
         eventRoomCount = Mathf.Max(0, eventRoomCount);
         shopRoomCount = Mathf.Max(0, shopRoomCount);
         minimumCombatRoomCount = Mathf.Max(0, minimumCombatRoomCount);
+        maximumLargeCombatRoomCount = Mathf.Max(0, maximumLargeCombatRoomCount);
         requiredCombatRoomRules ??= new List<RequiredCombatRoomRule>();
         for (int ruleIndex = requiredCombatRoomRules.Count - 1; ruleIndex >= 0; ruleIndex--)
         {

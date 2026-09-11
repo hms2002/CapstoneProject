@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityGAS;
 
 [CreateAssetMenu(fileName = "AL_CrimsonBoundaryBigExplosion", menuName = "GAS/Weapon/Crimson Boundary/Big Explosion Logic")]
+// Responsibility: execute the delayed area strike and add damage from each target's consumed burn stacks.
 public sealed class AbilityLogic_CrimsonBoundaryBigExplosion : AbilityLogic
 {
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -46,10 +47,11 @@ public sealed class AbilityLogic_CrimsonBoundaryBigExplosion : AbilityLogic
         {
             GameObject target = targets[i];
             bool critical;
-            float baseDamage = CrimsonBoundaryUtility.CalculateDirectDamage(system, data.skill2BaseMultiplier, out critical);
+            float baseDamage = CrimsonBoundaryUtility.CalculateDirectDamage(system, data.skill2BaseMultiplier, out critical, data.skillFireFormula);
             BurnStatus2D burn = target.GetComponent<BurnStatus2D>();
             int consumed = burn != null ? burn.ConsumeAll() : 0;
-            float totalDamage = baseDamage + CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, consumed);
+            float totalDamage = baseDamage +
+                CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, consumed, data.burnConsumptionMultiplier, data.skillFireFormula);
             CrimsonBoundaryUtility.ApplyDamage(system, spec, data.damageEffect, target, totalDamage, critical, system.gameObject);
         }
 

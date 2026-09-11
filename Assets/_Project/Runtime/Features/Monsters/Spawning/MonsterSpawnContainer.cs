@@ -115,7 +115,13 @@ public class MonsterSpawnContainer : MonoBehaviour
 
     public bool TryResolveMonsterPrefab(int stageIndex, out GameObject resolvedPrefab)
     {
+        return TryResolveMonsterPrefab(stageIndex, out resolvedPrefab, out _);
+    }
+
+    public bool TryResolveMonsterPrefab(int stageIndex, out GameObject resolvedPrefab, out float hpMultiplier)
+    {
         resolvedPrefab = null;
+        hpMultiplier = 1f;
         switch (sourceKind)
         {
             case MonsterSpawnSourceKind.FixedPrefab:
@@ -124,14 +130,14 @@ public class MonsterSpawnContainer : MonoBehaviour
 
             case MonsterSpawnSourceKind.StageMonsterSet:
                 return stageMonsterSet != null &&
-                       stageMonsterSet.TryResolveMonsterPrefab(stageIndex, out resolvedPrefab);
+                       stageMonsterSet.TryResolveMonsterPrefab(stageIndex, out resolvedPrefab, out hpMultiplier);
 
             default:
                 return false;
         }
     }
 
-    public MonsterSpawnRequest CreateRequest(GameObject overrideMonsterPrefab = null)
+    public MonsterSpawnRequest CreateRequest(GameObject overrideMonsterPrefab = null, float spawnHpMultiplier = 1f)
     {
         GameObject resolvedPrefab = overrideMonsterPrefab != null ? overrideMonsterPrefab : monsterPrefab;
         return new MonsterSpawnRequest(
@@ -141,7 +147,8 @@ public class MonsterSpawnContainer : MonoBehaviour
             roomArea,
             linkedChestKillLock,
             RoomGroup,
-            this);
+            this,
+            spawnHpMultiplier);
     }
 
     public MonsterSpawnRequest CreateRequest(int stageIndex, GameObject overrideMonsterPrefab = null)
@@ -149,19 +156,19 @@ public class MonsterSpawnContainer : MonoBehaviour
         if (overrideMonsterPrefab != null)
             return CreateRequest(overrideMonsterPrefab);
 
-        TryResolveMonsterPrefab(stageIndex, out GameObject resolvedPrefab);
-        return CreateRequest(resolvedPrefab);
+        TryResolveMonsterPrefab(stageIndex, out GameObject resolvedPrefab, out float hpMultiplier);
+        return CreateRequest(resolvedPrefab, hpMultiplier);
     }
 
     public bool TryCreateRequest(int stageIndex, out MonsterSpawnRequest request)
     {
-        if (!TryResolveMonsterPrefab(stageIndex, out GameObject resolvedPrefab))
+        if (!TryResolveMonsterPrefab(stageIndex, out GameObject resolvedPrefab, out float hpMultiplier))
         {
             request = default;
             return false;
         }
 
-        request = CreateRequest(resolvedPrefab);
+        request = CreateRequest(resolvedPrefab, hpMultiplier);
         return true;
     }
 

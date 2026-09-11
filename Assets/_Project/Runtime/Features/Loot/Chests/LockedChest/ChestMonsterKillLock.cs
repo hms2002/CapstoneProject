@@ -8,6 +8,7 @@ using UnityGAS;
 /// 책임 : 특정 상자에 연결된 몬스터 처치 기반 잠금 상태를 관리한다.
 /// 스폰된 몬스터를 등록받아 살아 있는 대상 수를 추적하고,
 /// 모두 제거되면 잠금이 해제되도록 판정하는 규칙만 담당한다.
+/// 선택적으로 방 encounter와 연결하면 지연 스폰, 분열 생존 개체와 웨이브 홀드도 잠금에 포함한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class ChestMonsterKillLock : MonoBehaviour
@@ -25,6 +26,8 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
     private int remainingAliveCount = 0;
     private int pendingMonsterCount = 0;
     private WorldObjectPresentationRuntime unlockPresentationRuntime;
+    private MonsterSpawnRoomGroup boundRoomGroup;
+    private readonly List<MonsterSpawnContainer> boundRoomSpawnPoints = new();
 
     /// <summary>
     /// 책임 : 잠금 상태가 바뀌었을 때 외부 뷰나 연출 시스템에 알린다.
@@ -47,6 +50,22 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
     /// 책임 : 현재 살아 있는 잠금 대상 몬스터 수를 외부에 제공한다.
     /// </summary>
     public int RemainingAliveCount => remainingAliveCount;
+
+    /// <summary>Opt-in whole-room binding; direct chests keep their existing per-monster links.</summary>
+    public void BindRoomEncounter(MonsterSpawnRoomGroup roomGroup, IReadOnlyList<MonsterSpawnContainer> spawnPoints)
+    {
+        boundRoomGroup = roomGroup;
+        boundRoomSpawnPoints.Clear();
+        if (spawnPoints != null)
+        {
+            foreach (MonsterSpawnContainer point in spawnPoints)
+            {
+                if (point != null && point.RoomGroup == roomGroup && !boundRoomSpawnPoints.Contains(point))
+                    boundRoomSpawnPoints.Add(point);
+            }
+        }
+        RecalculateState(raiseEvents: true);
+    }
 
     /// <summary>
     /// 책임 : 스폰 VFX 대기 중인 잠금 대상 몬스터를 실제 생성 전까지 카운트에 포함한다.
@@ -111,6 +130,8 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
     [ContextMenu("Clear Registered Monsters")]
     public void ClearRegisteredMonsters()
     {
+        boundRoomGroup = null;
+        boundRoomSpawnPoints.Clear();
         trackedMonsterUnits.Clear();
         pendingMonsterCount = 0;
         RecalculateState(raiseEvents: true);
@@ -120,6 +141,9 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
     {
         if (results == null)
             return 0;
+
+        if (boundRoomGroup != null)
+            return boundRoomGroup.GetAliveRegisteredMonstersNonAlloc(results);
 
         results.Clear();
 
@@ -155,6 +179,19 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
         CompactDeadEntries();
 
         int newRemainingCount = trackedMonsterUnits.Count + pendingMonsterCount;
+        if (boundRoomGroup != null)
+        {
+            int roomCount = boundRoomGroup.RemainingRegisteredOrPendingCount;
+            if (!boundRoomGroup.RoomEntrySpawnStarted)
+            {
+                foreach (MonsterSpawnContainer point in boundRoomSpawnPoints)
+                {
+                    if (point != null && point.isActiveAndEnabled && point.SpawnByDefault)
+                        roomCount++;
+                }
+            }
+            newRemainingCount = Mathf.Max(newRemainingCount, roomCount);
+        }
         bool newUnlocked = newRemainingCount == 0;
 
         bool countChanged = remainingAliveCount != newRemainingCount;

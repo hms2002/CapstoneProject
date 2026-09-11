@@ -4,8 +4,8 @@ using UnityEngine.Serialization;
 using UnityGAS;
 
 /// <summary>
-/// 책임 : 빌드에서도 사용할 시연용 치트의 활성화 여부, 단축키, 적용 수치를 보관한다.
-/// Resources에서 읽히는 단일 설정 에셋을 통해 릴리즈 전 치트 비활성화와 키 변경을 가능하게 한다.
+/// 책임 : 에디터 전용 치트의 활성화 여부, 단축키, 적용 수치를 보관한다.
+/// 기존 Resources 에셋의 직렬화를 유지하며 플레이어 빌드에서는 치트 활성화를 허용하지 않는다.
 /// </summary>
 [CreateAssetMenu(fileName = "DemoCheatSettings", menuName = "Game/Demo Cheat Settings")]
 public sealed class DemoCheatSettingsSO : ScriptableObject
@@ -45,7 +45,7 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     [SerializeField] private GameplayTag invulnerableTag;
 
     [Header("Automatic Safety")]
-    [SerializeField] private bool autoEnableInvulnerabilityAtLowHealth = true;
+    [SerializeField] private bool autoEnableInvulnerabilityAtLowHealth = false;
     [SerializeField, Min(0f)] private float autoInvulnerabilityHealthThreshold = 1f;
     [SerializeField] private bool showAutoInvulnerabilityNotification = true;
 
@@ -70,7 +70,17 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     [SerializeField, Min(0.1f)] private float notificationDuration = 1.2f;
     [SerializeField, Min(0.1f)] private float cheatGuideDuration = 4f;
 
-    public bool EnableDemoCheats => enableDemoCheats;
+    public bool EnableDemoCheats
+    {
+        get
+        {
+#if UNITY_EDITOR
+            return enableDemoCheats;
+#else
+            return false;
+#endif
+        }
+    }
     public KeyCode CheatGuideKey => cheatGuideKey;
     public KeyCode WarpToRunSpecialNpcKey => warpToRunSpecialNpcKey;
     public KeyCode AddMagicStoneKey => addMagicStoneKey;
