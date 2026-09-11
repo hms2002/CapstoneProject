@@ -16,7 +16,7 @@ MonoBehaviour:
   layoutPolicy: {fileID: 11400000, guid: 2e4b682cfe896404b95d050953584376, type: 2}
   corridorDecorationProfile: {fileID: 11400000, guid: 197c2a3556eaa8741a8fe35ce407a191, type: 2}
   socketCleanupProfile: {fileID: 11400000, guid: 4f2db047798d4e5398520d28a5a2c178, type: 2}
-  seed: 801194851
+  seed: 853103009
   roomCount: 12
   includeBossRoom: 1
   maxPlacementAttemptsPerRoom: 512

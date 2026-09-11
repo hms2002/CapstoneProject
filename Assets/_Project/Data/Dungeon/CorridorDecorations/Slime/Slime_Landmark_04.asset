@@ -13,53 +13,48 @@ MonoBehaviour:
   m_Name: Slime_Landmark_04
   m_EditorClassIdentifier: Gameplay::CorridorDecorationModuleSO
   moduleId: Slime_Landmark_04
+  axis: 0
   role: 2
   length: 4
   buildData:
     underFloorTiles: []
     floorTiles:
     - localCell: {x: 0, y: 0}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
+      tile: {fileID: 11400000, guid: 5707bf8ca42b4d747b81f292583069c5, type: 2}
     - localCell: {x: 0, y: 1}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
+      tile: {fileID: 11400000, guid: f9ac7361a85311245b2d803b4c962488, type: 2}
     - localCell: {x: 1, y: 0}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
+      tile: {fileID: 11400000, guid: 5707bf8ca42b4d747b81f292583069c5, type: 2}
     - localCell: {x: 1, y: 1}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
+      tile: {fileID: 11400000, guid: f9ac7361a85311245b2d803b4c962488, type: 2}
     - localCell: {x: 2, y: 0}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
+      tile: {fileID: 11400000, guid: 5707bf8ca42b4d747b81f292583069c5, type: 2}
     - localCell: {x: 2, y: 1}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
+      tile: {fileID: 11400000, guid: f9ac7361a85311245b2d803b4c962488, type: 2}
     - localCell: {x: 3, y: 0}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
+      tile: {fileID: 11400000, guid: 5707bf8ca42b4d747b81f292583069c5, type: 2}
     - localCell: {x: 3, y: 1}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
-    floorDetailTiles:
-    - localCell: {x: 2, y: 0}
-      tile: {fileID: 11400000, guid: f33f8f2ad6e96b948a85aad8620d11f0, type: 2}
-    groundDecorationTiles:
-    - localCell: {x: 2, y: 1}
-      tile: {fileID: 11400000, guid: f33f8f2ad6e96b948a85aad8620d11f0, type: 2}
+      tile: {fileID: 11400000, guid: f9ac7361a85311245b2d803b4c962488, type: 2}
+    floorDetailTiles: []
+    groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: -1}
-      tile: {fileID: 11400000, guid: 9ae009596abb6ac408eb882ada8c7885, type: 2}
+      tile: {fileID: 11400000, guid: d48bc535211cd444f8e9c990d770ac9f, type: 2}
     - localCell: {x: 0, y: 2}
-      tile: {fileID: 11400000, guid: 9ae009596abb6ac408eb882ada8c7885, type: 2}
+      tile: {fileID: 11400000, guid: 7218fd283c752eb4bafd312f3cd9db34, type: 2}
     - localCell: {x: 1, y: -1}
-      tile: {fileID: 11400000, guid: 9ae009596abb6ac408eb882ada8c7885, type: 2}
+      tile: {fileID: 11400000, guid: d48bc535211cd444f8e9c990d770ac9f, type: 2}
     - localCell: {x: 1, y: 2}
-      tile: {fileID: 11400000, guid: 9ae009596abb6ac408eb882ada8c7885, type: 2}
+      tile: {fileID: 11400000, guid: 7218fd283c752eb4bafd312f3cd9db34, type: 2}
     - localCell: {x: 2, y: -1}
-      tile: {fileID: 11400000, guid: 9ae009596abb6ac408eb882ada8c7885, type: 2}
+      tile: {fileID: 11400000, guid: d48bc535211cd444f8e9c990d770ac9f, type: 2}
     - localCell: {x: 2, y: 2}
-      tile: {fileID: 11400000, guid: 9ae009596abb6ac408eb882ada8c7885, type: 2}
+      tile: {fileID: 11400000, guid: 7218fd283c752eb4bafd312f3cd9db34, type: 2}
     - localCell: {x: 3, y: -1}
-      tile: {fileID: 11400000, guid: 9ae009596abb6ac408eb882ada8c7885, type: 2}
+      tile: {fileID: 11400000, guid: d48bc535211cd444f8e9c990d770ac9f, type: 2}
     - localCell: {x: 3, y: 2}
-      tile: {fileID: 11400000, guid: 9ae009596abb6ac408eb882ada8c7885, type: 2}
-    wallDetailTiles:
-    - localCell: {x: 2, y: 2}
-      tile: {fileID: 11400000, guid: 92f06371d82abe6419bb9f1ff0d6d61e, type: 2}
+      tile: {fileID: 11400000, guid: 7218fd283c752eb4bafd312f3cd9db34, type: 2}
+    wallDetailTiles: []
     foregroundTiles: []
     overlayFxTiles: []
     objectPlacements:
@@ -72,5 +67,6 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: 
     travelEndpointPlacements: []

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9359d1c0a3f450940bdda9e15982fe96, type: 3}
-  m_Name: Slime_Combat_Wide
+  m_Name: Slime_Combat_Wide_T1
   m_EditorClassIdentifier: Gameplay::RoomTemplateSO
   layoutData:
-    roomId: Slime_Combat_Wide_1
+    roomId: Slime_Combat_Wide_T1
     roomType: 0
     shapeTag: {fileID: 0}
     size: {x: 18, y: 8}
@@ -362,46 +362,57 @@ MonoBehaviour:
     foregroundTiles: []
     overlayFxTiles: []
     objectPlacements:
-    - placementId: StageMonster_01
+    - placementId: Combat_WideMonster_1
       kind: 1
-      prefab: {fileID: 625522859161183429, guid: 4a7ea9f5e4df4e39877c3818b6700007, type: 3}
-      monsterSpawnRole: 2
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 3, y: 5}
-      localOffset: {x: 0.099999905, y: -0.03000021}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 4, y: 3}
+      localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: StageMonster_04
+      linkedChestLockPlacementId: KillLockChest
+    - placementId: Combat_WideMonster_2
       kind: 1
-      prefab: {fileID: 100000, guid: a1365e9c0af9480b9dc3169f803a951d, type: 3}
-      monsterSpawnRole: 2
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 5, y: 2}
-      localOffset: {x: 0.21999979, y: 0.4000001}
+      prefab: {fileID: 0}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
+      localCell: {x: 8, y: 5}
+      localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: StageMonster_03
+      linkedChestLockPlacementId: KillLockChest
+    - placementId: Combat_WideMonster_3
       kind: 1
-      prefab: {fileID: 100000, guid: a1365e9c0af9480b9dc3169f803a951d, type: 3}
+      prefab: {fileID: 0}
       monsterSpawnRole: 2
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 12, y: 5}
-      localOffset: {x: 0.03999996, y: -0.17000008}
+      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
+      localCell: {x: 12, y: 3}
+      localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: StageMonster_02
+      linkedChestLockPlacementId: KillLockChest
+    - placementId: Combat_WideMonster_4
       kind: 1
-      prefab: {fileID: 625522859161183429, guid: 4a7ea9f5e4df4e39877c3818b6700007, type: 3}
-      monsterSpawnRole: 2
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 15, y: 5}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: KillLockChest
+    - placementId: KillLockChest
+      kind: 2
+      prefab: {fileID: 8398461225799451672, guid: 670170a4e9390bc458d0b686227549af, type: 3}
+      monsterSpawnRole: 0
       monsterStageSet: {fileID: 0}
-      localCell: {x: 14, y: 1}
-      localOffset: {x: 0.47999954, y: 0.28999996}
+      localCell: {x: 11, y: 4}
+      localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
