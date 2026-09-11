@@ -23,5 +23,6 @@ MonoBehaviour:
   minimumCorridorLength: 2
   corridorLengthPerRoomCell: 0.05
   corridorLengthVariation: 2
+  maximumPossibleChests: 2
   guaranteedRoomTemplates: []
   runMapEventProfile: {fileID: 11400000, guid: 347288647f200644f9d206a9bd8b371b, type: 2}
