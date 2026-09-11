@@ -246,6 +246,7 @@ internal static class RoomAuthoringDungeonPreview
         public RoomObjectKind Kind { get; }
         public RoomMonsterSpawnRole MonsterRole { get; }
         public bool UsesCommonMonsterRole { get; }
+        public int WaveNumber { get; }
         public Vector2Int WorldCell { get; }
 
         public PreviewObjectInfo(
@@ -253,9 +254,11 @@ internal static class RoomAuthoringDungeonPreview
             RoomMonsterSpawnRole monsterRole,
             bool usesCommonMonsterRole,
             Vector2Int worldCell,
-            bool isChestCandidate = false)
+            bool isChestCandidate = false,
+            int waveNumber = 1)
         {
             IsChestCandidate = isChestCandidate;
+            WaveNumber = waveNumber;
             Kind = kind;
             MonsterRole = monsterRole;
             UsesCommonMonsterRole = usesCommonMonsterRole;
@@ -763,7 +766,8 @@ internal static class RoomAuthoringDungeonPreview
                         objectPlacement.monsterSpawnRole,
                         objectPlacement.monsterStageSet != null,
                         placement.Origin + objectPlacement.localCell,
-                        ChestPossible.TryGet(objectPlacement, out _)));
+                        ChestPossible.TryGet(objectPlacement, out _),
+                        ResolvePreviewWaveNumber(placement.Template, objectPlacement.monsterWaveId)));
                 }
             }
 
@@ -1091,6 +1095,14 @@ internal static class RoomAuthoringDungeonPreview
         };
     }
 
+    private static int ResolvePreviewWaveNumber(RoomTemplateSO template, string waveId)
+    {
+        var waves = template.BuildData.monsterWaves;
+        if (waves == null || waves.Count == 0) return 1;
+        int index = waves.FindIndex(w => w.id == RoomMonsterWaveDefinition.ResolveId(waveId));
+        return index + 1;
+    }
+
     private static string ResolveObjectGlyph(PreviewObjectInfo roomObject)
     {
         if (roomObject.IsChestCandidate)
@@ -1099,15 +1111,16 @@ internal static class RoomAuthoringDungeonPreview
         if (roomObject.Kind == RoomObjectKind.Monster)
         {
             if (!roomObject.UsesCommonMonsterRole)
-                return "S";
+                return $"W{roomObject.WaveNumber}:S";
 
-            return roomObject.MonsterRole switch
+            string role = roomObject.MonsterRole switch
             {
                 RoomMonsterSpawnRole.Warrior => "W",
                 RoomMonsterSpawnRole.Mage => "M",
                 RoomMonsterSpawnRole.Tank => "T",
                 _ => "?"
             };
+            return $"W{roomObject.WaveNumber}:{role}";
         }
 
         return roomObject.Kind switch

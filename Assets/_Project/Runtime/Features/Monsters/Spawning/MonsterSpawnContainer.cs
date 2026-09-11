@@ -27,6 +27,7 @@ public class MonsterSpawnContainer : MonoBehaviour
     [SerializeField] private GameObject monsterPrefab;
     [SerializeField] private StageMonsterSetSO stageMonsterSet;
     [SerializeField] private bool spawnByDefault = true;
+    [SerializeField] private string monsterWaveId;
 
     [Tooltip("추가 난이도 옵션으로 몬스터를 더 뽑을 때 후보가 될 수 있는 위치")]
     [SerializeField] private bool allowExtraSpawn = true;
@@ -48,6 +49,8 @@ public class MonsterSpawnContainer : MonoBehaviour
     public GameObject MonsterPrefab => monsterPrefab;
     public StageMonsterSetSO StageMonsterSet => stageMonsterSet;
     public bool SpawnByDefault => spawnByDefault;
+    public string MonsterWaveId => RoomMonsterWaveDefinition.ResolveId(monsterWaveId);
+    public void ConfigureWave(string waveId) => monsterWaveId = RoomMonsterWaveDefinition.ResolveId(waveId);
     public bool AllowExtraSpawn => allowExtraSpawn;
     public ChestMonsterKillLock LinkedChestKillLock => linkedChestKillLock;
     public MonsterRoomArea2D RoomArea => roomArea;

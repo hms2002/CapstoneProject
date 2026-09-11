@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -18,6 +19,7 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
     [SerializeField, Min(0f)] private float selectionWeight = 1f;
     [SerializeField] private RoomCombatMetadata combatMetadata;
     [SerializeField] private RoomTopologyPlacementData topologyPlacement;
+    [SerializeField] private List<RoomMonsterWaveDefinition> monsterWaves = new();
 
     [Header("Authoring Tilemaps")]
     [SerializeField] private Grid grid;
@@ -40,6 +42,7 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
     public float SelectionWeight => selectionWeight;
     public RoomCombatMetadata CombatMetadata => combatMetadata;
     public RoomTopologyPlacementData TopologyPlacement => topologyPlacement;
+    public IReadOnlyList<RoomMonsterWaveDefinition> MonsterWaves => monsterWaves;
     public Grid Grid => grid;
     public Tilemap UnderFloorTilemap => underFloorTilemap;
     public Tilemap FloorTilemap => floorTilemap;
@@ -68,6 +71,11 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
     }
 
 #if UNITY_EDITOR
+    public void EditorSetMonsterWaves(IReadOnlyList<RoomMonsterWaveDefinition> waves)
+    {
+        monsterWaves = RoomMonsterWaveDefinition.CopyOrDefault(waves);
+    }
+
     public void EditorAssignTilemaps(Grid targetGrid, Tilemap floor, Tilemap wall)
     {
         EditorAssignTilemaps(

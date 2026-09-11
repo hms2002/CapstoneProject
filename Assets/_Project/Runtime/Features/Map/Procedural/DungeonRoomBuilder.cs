@@ -125,6 +125,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
     private readonly Dictionary<string, GameObject> generatedRoomObjectsByStateId =
         new(System.StringComparer.Ordinal);
     private readonly Dictionary<int, List<GameObject>> generatedRoomObjectsByPlacement = new();
+    private readonly Dictionary<string, MonsterLockTrackingUnit> generatedMonsterUnitsByStateId = new();
     private readonly List<SceneTravelEndpoint> generatedTravelEndpoints = new();
     private readonly List<MonsterSpawnRoomGroup> generatedRoomEncounterGroups = new();
     private readonly List<RoomDoorMonsterKillLock> generatedRoomDoorLocks = new();
@@ -333,14 +334,16 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         foreach (KeyValuePair<string, GameObject> pair in generatedRoomObjectsByStateId)
         {
             GameObject instance = pair.Value;
+            bool hasUnit = generatedMonsterUnitsByStateId.TryGetValue(pair.Key, out MonsterLockTrackingUnit unit);
+            bool alive = hasUnit ? unit != null && unit.HasAliveMember() : instance != null;
             TreasureChest chest = instance != null
                 ? instance.GetComponentInChildren<TreasureChest>(includeInactive: true)
                 : null;
             states.Add(new DungeonObjectRuntimeStateData
             {
                 stateId = pair.Key,
-                isPresent = instance != null,
-                isActive = instance != null && instance.activeSelf,
+                isPresent = alive,
+                isActive = hasUnit ? alive : instance != null && instance.activeSelf,
                 isChestOpened = chest != null && chest.IsOpened,
                 chestLoot = chest != null && chest.IsOpened
                     ? chest.CaptureDungeonLootState()
@@ -348,6 +351,16 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
             });
         }
 
+        foreach (var pair in generatedRoomGroupsByPlacement)
+        {
+            if (pair.Value == null)
+                continue;
+            states.Add(new DungeonObjectRuntimeStateData
+            {
+                stateId = $"room-wave:{pair.Key}",
+                roomWaves = pair.Value.CaptureWaveState()
+            });
+        }
         return states;
     }
 
@@ -362,6 +375,15 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         for (int i = 0; i < states.Count; i++)
         {
             DungeonObjectRuntimeStateData state = states[i];
+            if (state?.roomWaves != null)
+            {
+                const string prefix = "room-wave:";
+                if (state.stateId != null && state.stateId.StartsWith(prefix, System.StringComparison.Ordinal) &&
+                    int.TryParse(state.stateId.Substring(prefix.Length), out int roomId) &&
+                    generatedRoomGroupsByPlacement.TryGetValue(roomId, out MonsterSpawnRoomGroup group))
+                    group.RestoreWaveState(state.roomWaves);
+                continue;
+            }
             if (state == null || string.IsNullOrWhiteSpace(state.stateId) ||
                 !generatedRoomObjectsByStateId.TryGetValue(state.stateId, out GameObject instance) ||
                 instance == null)
@@ -371,6 +393,9 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
 
             if (!state.isPresent)
             {
+                // Destroy is deferred in Play Mode; do not collect this dead spawn anchor meanwhile.
+                instance.SetActive(false);
+                generatedRoomObjectsByStateId[state.stateId] = null;
                 if (Application.isPlaying)
                     Destroy(instance);
                 else
@@ -972,6 +997,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         generatedRoomObjects.Clear();
         chestCandidates.Clear();
         generatedRoomObjectsByStateId.Clear();
+        generatedMonsterUnitsByStateId.Clear();
         generatedRoomObjectsByPlacement.Clear();
 
         if (generatedObjectRoot == null)
@@ -1174,6 +1200,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
             boundaryInsetCells: 0);
 
         roomGroup = encounterObject.AddComponent<MonsterSpawnRoomGroup>();
+        roomGroup.ConfigureWaves(roomPlacement.Template.BuildData.monsterWaves);
         roomArea = encounterObject.AddComponent<MonsterRoomArea2D>();
         roomArea.Configure(areaCollider);
 
@@ -1964,6 +1991,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
             instance.transform.SetPositionAndRotation(worldPosition, worldRotation);
             MonsterSpawnContainer spawnContainer =
                 instance.AddComponent<MonsterSpawnContainer>();
+            spawnContainer.ConfigureWave(objectPlacement.monsterWaveId);
             GameObject spawnPoint = instance;
             spawnContainer.ConfigureRuntime(
                 objectPlacement.monsterStageSet,
@@ -2061,10 +2089,19 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         GameObject spawnPoint,
         GameObject spawnedMonster)
     {
-        if (spawnedMonster == null)
-            return;
-
         string stateId = CreateRuntimeStateId(roomPlacementId, placementId);
+        if (spawnedMonster == null)
+        {
+            generatedRoomObjectsByStateId[stateId] = null;
+            if (spawnPoint != null)
+            {
+                spawnPoint.SetActive(false);
+                Destroy(spawnPoint);
+            }
+            return;
+        }
+
+        generatedMonsterUnitsByStateId[stateId] = Mob.ResolveOrCreateLockTrackingUnit(spawnedMonster);
         spawnedMonster.name = $"RoomObject_{roomPlacementId}_{placementId}";
         spawnedMonster.transform.SetParent(ResolveGeneratedObjectRoot(), true);
         generatedRoomObjectsByStateId[stateId] = spawnedMonster;
