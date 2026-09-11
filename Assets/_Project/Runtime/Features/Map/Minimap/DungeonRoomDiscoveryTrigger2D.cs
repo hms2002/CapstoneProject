@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// 책임 : 모든 절차 생성 방의 내부 진입을 플레이어 본체 콜라이더로 감지해 지도 발견 런타임에 안정 배치 Id를 전달한다.
+/// 책임 : 플레이어 본체의 방 진입을 감지해 지도 발견 런타임과 방 진입 구독자에게 안정 배치 Id를 전달한다.
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
@@ -11,6 +11,7 @@ public sealed class DungeonRoomDiscoveryTrigger2D : MonoBehaviour
     [SerializeField] private int roomPlacementId = -1;
 
     public int RoomPlacementId => roomPlacementId;
+    public event System.Action<int> PlayerEnteredRoom;
 
     public void Configure(DungeonMapRuntimeController runtime, int placementId)
     {
@@ -30,7 +31,7 @@ public sealed class DungeonRoomDiscoveryTrigger2D : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (targetRuntime == null || roomPlacementId < 0 || other == null)
+        if (roomPlacementId < 0 || other == null)
             return;
 
         PlayerInteractor2D player = other.GetComponentInParent<PlayerInteractor2D>();
@@ -41,6 +42,7 @@ public sealed class DungeonRoomDiscoveryTrigger2D : MonoBehaviour
         if (bodyCollider == null || bodyCollider != other)
             return;
 
-        targetRuntime.NotifyPlayerEnteredRoom(roomPlacementId);
+        targetRuntime?.NotifyPlayerEnteredRoom(roomPlacementId);
+        PlayerEnteredRoom?.Invoke(roomPlacementId);
     }
 }

@@ -7,6 +7,12 @@ last_reviewed: 2026-06-01
 
 # Decision Log
 
+## 2026-09-11 - Backtrack Templates Before Relaxing Room Repetition
+
+Keep procedural topology and physical embedding separate from template assignment. Precompute compatible node domains, use constrained-node-first assignment and forward checking, and allow bounded rollback of ordinary/provisional Combat templates. Explicitly guaranteed identities remain pinned. Relax nearby repetition first, adjacent shape second and adjacent identical room last; never relax socket/role requirements, positive quota targets or the Large cap. Compare physically valid results by repetition metrics before corridor aesthetics. Record budget exhaustion separately from domain infeasibility instead of claiming every remaining repeat is unavoidable.
+
+Implementation bounds and diagnostic entry points: [Dungeon Template Selection](StructureMemory/DungeonTemplateSelection.md). Same-seed output can change from the former greedy algorithm; new runs use the new deterministic selection.
+
 ## 2026-09-07 - Apprentice Sword Attack-to-Skill Input
 
 User-approved policy: Q interrupts the basic attack immediately. Right-click held before the hitbox spawns waits for that spawn; after spawn it cancels recovery and begins charging. Releasing right-click before that boundary cancels the request. Charge has no separate 0.61-second cast delay. Other weapons retain their existing input policy. Normal ASC cancellation cleanup must finish before the next skill activates.

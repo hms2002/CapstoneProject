@@ -7,6 +7,12 @@ last_reviewed: 2026-09-03
 
 # Error Log
 
+## 2026-09-11 - Greedy Room Selection Committed Before Checking Scarce Neighbors
+
+Symptom: a flexible node selected A even though an adjacent node could use only A, causing consecutive identical rooms despite an alternative B for the first node. Local repeat buckets only saw already assigned neighbors and never reconsidered the first choice. Required Combat reservation also pinned a randomly chosen concrete template too early.
+
+Fix: bounded template search with precomputed domains, minimum-remaining-values ordering, forward checking and rollback; Combat quotas can redistribute across Combat nodes rather than pinning a concrete identity or tag to a provisional slot. Physical success and hard quotas are validated before accepting a candidate. The old quota filter's single-candidate/all-matching escape paths were removed, so repetition fallback cannot silently overfill a hard quota. Regression tests include scarce-neighbor selection, a square-domain contradiction requiring real rollback, provisional quota reassignment and single-candidate hard-count rejection. See [Dungeon Template Selection](StructureMemory/DungeonTemplateSelection.md).
+
 ## 2026-09-11 - Monster AI Overwrote Profile HP And Hid Initial Clamp
 
 Symptom: common monsters and slimes did not reliably use their authored HP. Removing their legacy writes exposed current HP stuck at 100 even when MaxHealth correctly became 220-1100.

@@ -10,6 +10,17 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 
 ## Current Flow
 
+### Bounded Template Selection (2026-09-11)
+
+- Graph creation, role placement and physical room/corridor embedding remain separate. `DungeonGraphLayoutAssembler.TemplateSearch.cs` replaces node-order greedy template selection with precomputed domains, minimum-remaining-values assignment, forward checking and bounded rollback. Combat quota templates can redistribute across Combat nodes instead of staying at provisional reservation nodes; explicitly guaranteed templates stay pinned.
+- Repeat constraints relax only after a stricter search fails or reaches its deterministic budget. Actual placed results are compared by adjacent same-room pairs, adjacent same-shape pairs, nearby same-room/shape pairs, then existing corridor overrun/length metrics. Positive Combat quota counts and the Large cap are hard checks even with a one-candidate library.
+- Runtime generation logs and Map Preview show final metrics, relaxation/search-budget history and remaining repeated-pair explanations. Details, bounds and test entry points are in [Dungeon Template Selection](DungeonTemplateSelection.md).
+
+### Dead End Return Portals (2026-09-11)
+
+- After room objects and encounter bindings are built, `DungeonRoomBuilder.ReturnPortals.cs` creates reusable same-scene return interactions for rooms with exactly one actual graph connection, excluding Start. Source and airborne arrival views are authored, art-free prefabs; this path does not use `ScenePortal`, scene loading or route progression.
+- Placement, unlock rules, player-state ownership, optional room anchors and animation attachment points are mapped in [Dungeon Return Portals](DungeonReturnPortals.md). The three production corridor scenes and the player prefab are wired; standalone visual-only previews remain unchanged.
+
 ### Corridor Void Fill (2026-09-11)
 
 - The saved Shadow, Dragon and Slime procedural Corridor scenes bind `DungeonRoomBuilder.VoidFillTile` to existing `TileMap_B_126.asset` and use 8 cells of padding. This sprite is an opaque 16x16 solid dark background from the existing tile palette (RGB 24/20/37), not a new texture or Rule Tile.

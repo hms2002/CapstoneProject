@@ -429,6 +429,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7563a8a36c91b754f8939c022970c9c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Gameplay::DungeonRoomBuilder
+  maximumPossibleChests: 3
+  returnPortalPrefab: {fileID: 4641769535181210430, guid: 88cfbf18cc24e524cb8b95374fd838ba, type: 3}
+  returnTravelPrefab: {fileID: 922846396448684112, guid: 2a1b6670633c3b8438cde994b9d07a93, type: 3}
+  returnPortalClearance: 0.35
   underFloorTilemap: {fileID: 810962064}
   floorTilemap: {fileID: 534418803}
   floorDetailTilemap: {fileID: 27204340}
@@ -460,6 +464,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
   - {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
   - {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+  corridorDecorationProfile: {fileID: 0}
+  socketCleanupProfile: {fileID: 0}
   connectedDoorPrefab: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
   generatedDoorRoot: {fileID: 882962461}
   generatedSocketBlockerRoot: {fileID: 695694533}
@@ -476,6 +482,7 @@ MonoBehaviour:
     connection: {fileID: 11400000, guid: 54cfd9393e4e71a43892cf070ab13f1a, type: 2}
     connectionSide: 0
   generatedEncounterRoot: {fileID: 1060157518}
+  generatedMapDiscoveryRoot: {fileID: 0}
 --- !u!4 &72557376
 Transform:
   m_ObjectHideFlags: 0
@@ -6647,6 +6654,55 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &225920719
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 225920721}
+  - component: {fileID: 225920720}
+  m_Layer: 0
+  m_Name: SceneBgm
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &225920720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225920719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12565987a9ce4c05beca8baf2fca2921, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Infrastructure::SceneBgmRequester
+  sceneMusic:
+    key: bgm.shadow_corridor
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+--- !u!4 &225920721
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225920719}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &228135707
 GameObject:
   m_ObjectHideFlags: 0
@@ -11782,7 +11838,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3765e7afefdc3d4da8cb3a0cc3903ce, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Gameplay::RoomEnemyNavigationOverlay
   arrowPrefab: {fileID: 6100123456789012345, guid: 397712dcf285471895fbf9ddca3073e0, type: 3}
   showThreshold: 4
@@ -17118,55 +17174,6 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -43.35, y: 1.96, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &225920719
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 225920721}
-  - component: {fileID: 225920720}
-  m_Layer: 0
-  m_Name: SceneBgm
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &225920720
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 225920719}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12565987a9ce4c05beca8baf2fca2921, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Infrastructure::SceneBgmRequester
-  sceneMusic:
-    key: bgm.shadow_corridor
-    volumeMultiplier: 1
-    anchorPolicy: 0
-    localOffset: {x: 0, y: 0, z: 0}
---- !u!4 &225920721
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 225920719}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

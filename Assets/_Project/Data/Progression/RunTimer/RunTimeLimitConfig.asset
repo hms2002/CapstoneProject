@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e457d6cd0bb8c4c9bb2776a2491685, type: 3}
   m_Name: RunTimeLimitConfig
   m_EditorClassIdentifier: Assembly-CSharp::RunTimeLimitConfig
-  initialLimitSeconds: 600
+  initialLimitSeconds: 900
   lowTimeWarningSeconds: 60
   timeoutReason: 3

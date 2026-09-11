@@ -1808,7 +1808,8 @@ public sealed partial class RoomPieceEditorWindow : EditorWindow
             $"연결 {result.ConnectionCount}개{currentRoomText}\n" +
             $"복도 길이: {result.ShortestCorridorLength}..{result.LongestCorridorLength}{relaxationText}\n" +
             $"복도 타일: {result.CorridorFloorTileName} / {result.CorridorWallTileName}" +
-            failureText;
+            failureText + (string.IsNullOrWhiteSpace(result.TemplateSelectionDescription)
+                ? string.Empty : "\n방 템플릿 선택 검증:\n" + result.TemplateSelectionDescription);
         previewStatusType = result.IsComplete &&
             (!previewIncludeCurrentRoom || result.CurrentRoomPlacementCount > 0)
                 ? MessageType.Info

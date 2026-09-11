@@ -8,10 +8,10 @@ using UnityEngine;
 /// - 보스 거리, 의미 있는 분기, 순환 연결, 필수 방 역할과 물리적 비겹침을 하나의 완성 결과로 검증한다.
 /// - 생성 프로필이 지정한 필수 템플릿을 호환 노드에 정확히 한 번 선점시켜 역할 수 보장과 콘텐츠 보장을 함께 지킨다.
 /// - 방 크기 기반 권장 복도 간격이 충돌하면 절대 최소 길이까지 단계적으로 압축해 같은 그래프를 재사용한다.
-/// - 성공 후보가 여러 개면 권장 길이 초과가 가장 작은 배치를 선택하되, 품질 목표를 못 맞춰도 최선 후보로 생성 성공을 보장한다.
+/// - 제한적 템플릿 재탐색 후 실제 배치 결과의 근거리 반복 수, 권장 복도 길이 초과 순으로 품질을 비교한다.
 /// - 테마, 타일, 몬스터 구현을 알지 않고 RoomThemeLibrarySO의 레이아웃 데이터만 소비한다.
 /// </summary>
-public sealed class DungeonGraphLayoutAssembler
+public sealed partial class DungeonGraphLayoutAssembler
 {
     private const double DefaultExactSocketDirectionMatchWeightMultiplier = 3d;
     private const double DefaultExtraSocketDirectionWeightMultiplier = 0.45d;
@@ -272,7 +272,7 @@ public sealed class DungeonGraphLayoutAssembler
         int bestMaximumPreferenceOverrun = int.MaxValue;
         int bestLongestCorridorLength = int.MaxValue;
         int physicalCandidateCount = 0;
-        int qualityCandidateLimit = Mathf.Min(attemptCount, 64);
+        int qualityCandidateLimit = Mathf.Min(attemptCount, 8);
 
         for (int attempt = 0; attempt < attemptCount; attempt++)
         {
@@ -298,19 +298,15 @@ public sealed class DungeonGraphLayoutAssembler
                     topology,
                     random,
                     out lastFailure) ||
-                !TrySelectTemplatesAndSockets(
+                !TrySelectAndPlaceTemplates(
                     library,
                     policy,
                     guaranteedRoomTemplates,
                     requiredCombatRoomRules,
                     topology,
                     random,
-                    out lastFailure) ||
-                !TryCreatePhysicalLayout(
                     seed,
                     roomCount,
-                    topology,
-                    random,
                     resolvedMinimumCorridorLength,
                     resolvedCorridorLengthPerRoomCell,
                     resolvedCorridorLengthVariation,
@@ -350,16 +346,19 @@ public sealed class DungeonGraphLayoutAssembler
             int acceptablePreferenceOverrun = Mathf.Max(
                 2,
                 resolvedMinimumCorridorLength + resolvedCorridorLengthVariation);
-            if (maximumPreferenceOverrun <= acceptablePreferenceOverrun)
+            if (result.TemplateSelection.Metrics.IsRepeatFree &&
+                maximumPreferenceOverrun <= acceptablePreferenceOverrun)
             {
                 result.MarkComplete();
                 return result;
             }
 
             if (bestPhysicalResult == null ||
-                maximumPreferenceOverrun < bestMaximumPreferenceOverrun ||
-                maximumPreferenceOverrun == bestMaximumPreferenceOverrun &&
-                longestCorridorLength < bestLongestCorridorLength)
+                result.TemplateSelection.Metrics.CompareTo(bestPhysicalResult.TemplateSelection.Metrics) < 0 ||
+                result.TemplateSelection.Metrics.CompareTo(bestPhysicalResult.TemplateSelection.Metrics) == 0 &&
+                (maximumPreferenceOverrun < bestMaximumPreferenceOverrun ||
+                 maximumPreferenceOverrun == bestMaximumPreferenceOverrun &&
+                 longestCorridorLength < bestLongestCorridorLength))
             {
                 bestPhysicalResult = result;
                 bestMaximumPreferenceOverrun = maximumPreferenceOverrun;
@@ -1342,6 +1341,7 @@ public sealed class DungeonGraphLayoutAssembler
                 }
 
                 node.Role = RoomType.Combat;
+                // Keep enough Combat roles; the global solver may redistribute quota templates.
                 node.Template = selectedTemplate;
                 assignedNodes.Add(selectedNodeIndex);
             }
@@ -1557,96 +1557,6 @@ public sealed class DungeonGraphLayoutAssembler
         return selectedNodeIndex;
     }
 
-    private static bool TrySelectTemplatesAndSockets(
-        RoomThemeLibrarySO library,
-        DungeonLayoutPolicySO policy,
-        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
-        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules,
-        TopologyDraft topology,
-        System.Random random,
-        out string failure)
-    {
-        List<RoomTemplateSO> candidates = new();
-        List<RoomSocketDirection> requiredDirections = new();
-        for (int nodeIndex = 0; nodeIndex < topology.Nodes.Count; nodeIndex++)
-        {
-            PlannedNode node = topology.Nodes[nodeIndex];
-            CollectRequiredDirections(topology, nodeIndex, requiredDirections);
-            RoomTemplateSO selectedTemplate = node.Template;
-            if (selectedTemplate != null &&
-                !IsTemplateCompatible(selectedTemplate, requiredDirections))
-            {
-                failure =
-                    $"Guaranteed template '{selectedTemplate.LayoutData.roomId}' no longer supports " +
-                    $"topology node {nodeIndex} directions [{FormatDirections(requiredDirections)}].";
-                return false;
-            }
-
-            if (selectedTemplate == null)
-            {
-                candidates.Clear();
-                library.CollectRooms(node.Role, candidates);
-                for (int candidateIndex = candidates.Count - 1; candidateIndex >= 0; candidateIndex--)
-                {
-                    RoomTemplateSO candidate = candidates[candidateIndex];
-                    if (ContainsTemplateReference(guaranteedRoomTemplates, candidate) ||
-                        !IsTemplateCompatible(candidate, requiredDirections))
-                    {
-                        candidates.RemoveAt(candidateIndex);
-                    }
-                }
-
-                if (node.Role == RoomType.Combat)
-                {
-                    RemoveQuotaExceededCombatCandidatesIfPossible(
-                        topology,
-                        requiredCombatRoomRules,
-                        candidates);
-                    RemoveLargeCombatCandidatesOverCap(
-                        topology,
-                        policy,
-                        candidates);
-                }
-
-                selectedTemplate = SelectWeightedTemplate(
-                    candidates,
-                    requiredDirections,
-                    policy,
-                    random,
-                    topology,
-                    nodeIndex);
-            }
-
-            if (selectedTemplate == null)
-            {
-                failure =
-                    $"No usable {node.Role} template supports topology node {nodeIndex} " +
-                    $"with directions [{FormatDirections(requiredDirections)}].";
-                return false;
-            }
-
-            node.Template = selectedTemplate;
-            node.LocalBounds = ResolveLocalBounds(selectedTemplate.LayoutData);
-            node.SocketIndices.Clear();
-            if (!TrySelectSocketIndices(
-                    selectedTemplate.LayoutData,
-                    requiredDirections,
-                    random,
-                    node.SocketIndices))
-            {
-                failure =
-                    $"Template '{selectedTemplate.LayoutData.roomId}' could not resolve a grid-compatible socket set.";
-                return false;
-            }
-
-            if (!TryResolveNodeReferences(node, requiredDirections, out failure))
-                return false;
-        }
-
-        failure = string.Empty;
-        return true;
-    }
-
     private static bool ContainsTemplateReference(
         IReadOnlyList<RoomTemplateSO> templates,
         RoomTemplateSO candidate)
@@ -1696,86 +1606,6 @@ public sealed class DungeonGraphLayoutAssembler
 
             results.Add(candidate);
         }
-    }
-
-    private static void RemoveQuotaExceededCombatCandidatesIfPossible(
-        TopologyDraft topology,
-        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules,
-        List<RoomTemplateSO> candidates)
-    {
-        if (topology == null ||
-            requiredCombatRoomRules == null ||
-            candidates == null ||
-            candidates.Count <= 1)
-        {
-            return;
-        }
-
-        for (int ruleIndex = requiredCombatRoomRules.Count - 1; ruleIndex >= 0; ruleIndex--)
-        {
-            RequiredCombatRoomRule rule = requiredCombatRoomRules[ruleIndex];
-            if (rule == null ||
-                rule.Count <= 0 ||
-                CountAssignedMatchingCombatRooms(topology, rule) < rule.Count)
-            {
-                continue;
-            }
-
-            int remainingCandidateCount = 0;
-            for (int candidateIndex = 0; candidateIndex < candidates.Count; candidateIndex++)
-            {
-                if (!rule.Matches(candidates[candidateIndex]))
-                    remainingCandidateCount++;
-            }
-
-            if (remainingCandidateCount == 0)
-                continue;
-
-            for (int candidateIndex = candidates.Count - 1; candidateIndex >= 0; candidateIndex--)
-            {
-                if (rule.Matches(candidates[candidateIndex]))
-                    candidates.RemoveAt(candidateIndex);
-            }
-        }
-    }
-
-    /// <summary>
-    /// 책임:
-    /// - 정책이 허용한 큰 Combat 방 수를 이미 채운 뒤에는 추가 Large 후보를 일반 선택 후보군에서 제거한다.
-    /// - "필수 1개"와 "최대 1개"를 분리해 큰 방이 일반 Combat 슬롯으로 추가 유입되는 것을 막는다.
-    /// </summary>
-    private static void RemoveLargeCombatCandidatesOverCap(
-        TopologyDraft topology,
-        DungeonLayoutPolicySO policy,
-        List<RoomTemplateSO> candidates)
-    {
-        if (topology == null || policy == null || candidates == null || candidates.Count == 0)
-            return;
-
-        int maximumLargeCombatRoomCount = policy.MaximumLargeCombatRoomCount;
-        if (CountAssignedLargeCombatRooms(topology) < maximumLargeCombatRoomCount)
-            return;
-
-        for (int candidateIndex = candidates.Count - 1; candidateIndex >= 0; candidateIndex--)
-        {
-            if (IsLargeCombatRoom(candidates[candidateIndex]))
-                candidates.RemoveAt(candidateIndex);
-        }
-    }
-
-    private static int CountAssignedLargeCombatRooms(TopologyDraft topology)
-    {
-        if (topology == null)
-            return 0;
-
-        int count = 0;
-        for (int nodeIndex = 0; nodeIndex < topology.Nodes.Count; nodeIndex++)
-        {
-            if (IsLargeCombatRoom(topology.Nodes[nodeIndex].Template))
-                count++;
-        }
-
-        return count;
     }
 
     private static bool IsLargeCombatRoom(RoomTemplateSO template)
