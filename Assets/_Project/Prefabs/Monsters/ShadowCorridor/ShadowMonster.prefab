@@ -336,6 +336,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tackleAbility: {fileID: 11400000, guid: c170d6e85fa340d7a72e32a78cabf5f1, type: 2}
   hitDelay: 1
+  enableContactDamage: 0
   attackRangeDiameter: 6
   lungeDistance: 5
   telegraphWidth: 1

@@ -183,6 +183,10 @@ MonoBehaviour:
   wallDetailTilemap: {fileID: 882813640}
   foregroundTilemap: {fileID: 988761799}
   overlayFxTilemap: {fileID: 506371576}
+  voidFillTilemap: {fileID: 0}
+  voidFillTile: {fileID: 11400000, guid: 391b8886be52b0b48bb3b349b9027d5d, type: 2}
+  voidFillPaddingCells: 8
+  createMissingVoidFillTilemap: 1
   corridorFloorTile: {fileID: 11400000, guid: 67a308e157149f948a5a11f1553d2948, type: 2}
   corridorWallTile: {fileID: 11400000, guid: 81eea49340d905146b72ef30dd74de9f, type: 2}
   corridorFloorVariants:

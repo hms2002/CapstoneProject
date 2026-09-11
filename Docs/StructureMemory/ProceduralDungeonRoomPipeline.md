@@ -10,6 +10,14 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 
 ## Current Flow
 
+### Corridor Void Fill (2026-09-11)
+
+- The saved Shadow, Dragon and Slime procedural Corridor scenes bind `DungeonRoomBuilder.VoidFillTile` to existing `TileMap_B_126.asset` and use 8 cells of padding. This sprite is an opaque 16x16 solid dark background from the existing tile palette (RGB 24/20/37), not a new texture or Rule Tile.
+- `BuildVoidFill` runs once per build before room tiles. It fills the rectangle enclosing room and corridor bounds plus padding through `SetTilesBlock`; it does not perform per-frame empty-cell searches. The rectangle is painted behind the rooms, not only into holes.
+- The existing `createMissingVoidFillTilemap` path owns one `GeneratedVoidFill` child under the room Grid, sorting layer Default/order 30 (below UnderFloor 40 and Floor 50), with no collider or Rigidbody2D. Rebuild reuses it and clears old tiles; `ClearGeneratedContent` clears its contents.
+- The tile reference is scene-owned, not on `DungeonGenerationProfileSO`. A newly authored or fully reinstalled scene still needs that reference; a null tile silently skips the fill. Standalone Room Piece preview builds are not wired by these three scene settings.
+- Verification entry: `DungeonVoidFillPlayModeTests.VerifyAuthoredScenes` checks saved scene bindings without saving or running scene gameplay; its Play Mode fixture checks padded extents, background-only rendering configuration, corridor bounds and rebuild cleanup. Camera zoom beyond the 8-cell margin still needs a larger scene padding value.
+
 ### Optional Chest Candidates (2026-09-11)
 
 - `ChestPossible` is a root prefab marker holding the real `TreasureChest` prefab reference. Author it as `RoomObjectKind.Prop`; no new persistent enum value or RoomTemplate field is required. It contains only a dim authoring sprite/gizmo, not loot, interaction or collision components.

@@ -1,84 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "75c08485ee1a4ff8b61542c75a68dba4",
-            "startedUtc": "2026-09-10T14:26:42.1162928Z",
-            "endedUtc": "2026-09-10T14:26:43.1222093Z",
-            "entries": []
-        },
-        {
-            "sessionId": "a3a20ed5d531427ebb099abaee18b34b",
-            "startedUtc": "2026-09-10T14:29:04.0060221Z",
-            "endedUtc": "2026-09-10T14:29:05.0109691Z",
-            "entries": []
-        },
-        {
-            "sessionId": "b985a00d846741c4a0d6ff7ce5d353f8",
-            "startedUtc": "2026-09-10T14:41:00.5046477Z",
-            "endedUtc": "2026-09-10T14:41:01.5078898Z",
-            "entries": []
-        },
-        {
-            "sessionId": "da17d5e4477e4bdebb5eb6e9fc78aaa9",
-            "startedUtc": "2026-09-10T14:55:34.2237154Z",
-            "endedUtc": "2026-09-10T14:57:45.4204132Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/AnimEffect/SlashHit.prefab",
-                    "prefabName": "SlashHit",
-                    "totalSpawns": 3,
-                    "coldSpawns": 2,
-                    "firstSeenSeconds": 130.1904296875,
-                    "lastSeenSeconds": 130.78549194335938,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/WitchNormal1AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal1AttackTileParticle",
-                    "totalSpawns": 3,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 130.19561767578126,
-                    "lastSeenSeconds": 130.7880859375,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                }
-            ]
-        },
-        {
-            "sessionId": "773ff25d231840208463ee2a8e641bc5",
-            "startedUtc": "2026-09-10T14:58:35.0242853Z",
-            "endedUtc": "2026-09-10T15:07:14.4907298Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 9,
-                    "coldSpawns": 3,
-                    "firstSeenSeconds": 489.5139465332031,
-                    "lastSeenSeconds": 519.4607543945313,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/DashDust.prefab",
-                    "prefabName": "DashDust",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 308.7088928222656,
-                    "lastSeenSeconds": 308.70904541015627,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                }
-            ]
-        },
-        {
-            "sessionId": "383864639d304b0ba1f45a7649d8b52b",
-            "startedUtc": "2026-09-10T15:23:50.8307478Z",
-            "endedUtc": "2026-09-10T15:23:51.8331776Z",
-            "entries": []
-        },
-        {
             "sessionId": "1d96ca25becc4b47baccb84df9823bd3",
             "startedUtc": "2026-09-11T01:08:42.6590511Z",
             "endedUtc": "2026-09-11T01:08:43.6617878Z",
@@ -182,6 +104,42 @@
             "sessionId": "2f68c723ed714444a5ac2b21bb5274cb",
             "startedUtc": "2026-09-11T09:47:35.9108811Z",
             "endedUtc": "2026-09-11T09:47:36.9139848Z",
+            "entries": []
+        },
+        {
+            "sessionId": "2f612a5ad4474d1e82f48811bedfa913",
+            "startedUtc": "2026-09-11T10:26:38.8279240Z",
+            "endedUtc": "2026-09-11T10:26:39.8334547Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a53b5d855fc34dda801323e0f21fe5a4",
+            "startedUtc": "2026-09-11T10:28:20.0429013Z",
+            "endedUtc": "2026-09-11T10:28:21.0463035Z",
+            "entries": []
+        },
+        {
+            "sessionId": "e82775dc336543d7846a5f313d469c33",
+            "startedUtc": "2026-09-11T10:33:08.9438294Z",
+            "endedUtc": "2026-09-11T10:33:09.3980996Z",
+            "entries": []
+        },
+        {
+            "sessionId": "41acf6863f784625aca794e815317c9f",
+            "startedUtc": "2026-09-11T10:35:04.2207043Z",
+            "endedUtc": "2026-09-11T10:35:05.2255798Z",
+            "entries": []
+        },
+        {
+            "sessionId": "dbc1e7e96a54443b822dc53bbcb04082",
+            "startedUtc": "2026-09-11T10:35:15.6328620Z",
+            "endedUtc": "2026-09-11T10:35:16.6387560Z",
+            "entries": []
+        },
+        {
+            "sessionId": "ef97e887c1294682a235f60176a4589e",
+            "startedUtc": "2026-09-11T10:42:23.8680719Z",
+            "endedUtc": "2026-09-11T10:42:24.8725253Z",
             "entries": []
         }
     ]
