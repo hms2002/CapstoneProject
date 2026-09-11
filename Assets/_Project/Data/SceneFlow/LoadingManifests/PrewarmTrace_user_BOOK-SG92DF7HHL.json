@@ -1,12 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "ef51b3d276f6404ab90b2b3025732074",
-            "startedUtc": "2026-09-03T09:46:39.6538564Z",
-            "endedUtc": "2026-09-03T09:46:40.6589412Z",
-            "entries": []
-        },
-        {
             "sessionId": "114db7558c9c4a8aae997b2f6257885d",
             "startedUtc": "2026-09-03T09:48:09.7962318Z",
             "endedUtc": "2026-09-03T09:48:10.8012758Z",
@@ -118,6 +112,12 @@
             "sessionId": "39bb5b5377164a45a1cbded2ea88d085",
             "startedUtc": "2026-09-09T21:26:29.9581925Z",
             "endedUtc": "2026-09-09T21:26:30.9824006Z",
+            "entries": []
+        },
+        {
+            "sessionId": "fba36dd16e4a4e93a52a5ce9e6b59d69",
+            "startedUtc": "2026-09-11T08:20:23.7506466Z",
+            "endedUtc": "2026-09-11T08:20:24.7811207Z",
             "entries": []
         }
     ]

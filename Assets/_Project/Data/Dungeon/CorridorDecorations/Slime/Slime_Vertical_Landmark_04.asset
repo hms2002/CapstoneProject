@@ -20,47 +20,41 @@ MonoBehaviour:
     underFloorTiles: []
     floorTiles:
     - localCell: {x: 0, y: 0}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
-    - localCell: {x: 1, y: 0}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
+      tile: {fileID: 11400000, guid: d6501cb360faf014db5b569aed0dd9c8, type: 2}
     - localCell: {x: 0, y: 1}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
-    - localCell: {x: 1, y: 1}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
+      tile: {fileID: 11400000, guid: d6501cb360faf014db5b569aed0dd9c8, type: 2}
     - localCell: {x: 0, y: 2}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
-    - localCell: {x: 1, y: 2}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
+      tile: {fileID: 11400000, guid: d6501cb360faf014db5b569aed0dd9c8, type: 2}
     - localCell: {x: 0, y: 3}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
-    - localCell: {x: 1, y: 3}
-      tile: {fileID: 11400000, guid: 1f38c8da535aa4d4487725e574012ad7, type: 2}
-    floorDetailTiles:
-    - localCell: {x: 0, y: 2}
-      tile: {fileID: 11400000, guid: f33f8f2ad6e96b948a85aad8620d11f0, type: 2}
-    groundDecorationTiles:
+      tile: {fileID: 11400000, guid: d6501cb360faf014db5b569aed0dd9c8, type: 2}
+    - localCell: {x: 1, y: 0}
+      tile: {fileID: 11400000, guid: 649d17dd4d7238043b7b4d321c638968, type: 2}
+    - localCell: {x: 1, y: 1}
+      tile: {fileID: 11400000, guid: 649d17dd4d7238043b7b4d321c638968, type: 2}
     - localCell: {x: 1, y: 2}
-      tile: {fileID: 11400000, guid: f33f8f2ad6e96b948a85aad8620d11f0, type: 2}
+      tile: {fileID: 11400000, guid: 649d17dd4d7238043b7b4d321c638968, type: 2}
+    - localCell: {x: 1, y: 3}
+      tile: {fileID: 11400000, guid: 649d17dd4d7238043b7b4d321c638968, type: 2}
+    floorDetailTiles: []
+    groundDecorationTiles: []
     wallTiles:
     - localCell: {x: -1, y: 0}
-      tile: {fileID: 11400000, guid: 81eea49340d905146b72ef30dd74de9f, type: 2}
-    - localCell: {x: 2, y: 0}
-      tile: {fileID: 11400000, guid: 81eea49340d905146b72ef30dd74de9f, type: 2}
+      tile: {fileID: 11400000, guid: 69b0764eedd58544bbee6fbb0c56b652, type: 2}
     - localCell: {x: -1, y: 1}
-      tile: {fileID: 11400000, guid: 81eea49340d905146b72ef30dd74de9f, type: 2}
-    - localCell: {x: 2, y: 1}
-      tile: {fileID: 11400000, guid: 81eea49340d905146b72ef30dd74de9f, type: 2}
+      tile: {fileID: 11400000, guid: 69b0764eedd58544bbee6fbb0c56b652, type: 2}
     - localCell: {x: -1, y: 2}
-      tile: {fileID: 11400000, guid: 81eea49340d905146b72ef30dd74de9f, type: 2}
-    - localCell: {x: 2, y: 2}
-      tile: {fileID: 11400000, guid: 81eea49340d905146b72ef30dd74de9f, type: 2}
+      tile: {fileID: 11400000, guid: 69b0764eedd58544bbee6fbb0c56b652, type: 2}
     - localCell: {x: -1, y: 3}
-      tile: {fileID: 11400000, guid: 81eea49340d905146b72ef30dd74de9f, type: 2}
-    - localCell: {x: 2, y: 3}
-      tile: {fileID: 11400000, guid: 81eea49340d905146b72ef30dd74de9f, type: 2}
-    wallDetailTiles:
+      tile: {fileID: 11400000, guid: 69b0764eedd58544bbee6fbb0c56b652, type: 2}
+    - localCell: {x: 2, y: 0}
+      tile: {fileID: 11400000, guid: a9f45e4b5a65126469c75ba40d06be3e, type: 2}
+    - localCell: {x: 2, y: 1}
+      tile: {fileID: 11400000, guid: a9f45e4b5a65126469c75ba40d06be3e, type: 2}
     - localCell: {x: 2, y: 2}
-      tile: {fileID: 11400000, guid: 92f06371d82abe6419bb9f1ff0d6d61e, type: 2}
+      tile: {fileID: 11400000, guid: a9f45e4b5a65126469c75ba40d06be3e, type: 2}
+    - localCell: {x: 2, y: 3}
+      tile: {fileID: 11400000, guid: a9f45e4b5a65126469c75ba40d06be3e, type: 2}
+    wallDetailTiles: []
     foregroundTiles: []
     overlayFxTiles: []
     objectPlacements:
@@ -73,5 +67,6 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
       linkedChestLockPlacementId: 
     travelEndpointPlacements: []
