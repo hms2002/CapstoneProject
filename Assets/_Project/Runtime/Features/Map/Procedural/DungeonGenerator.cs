@@ -7,6 +7,7 @@ using System.Collections.Generic;
 /// - 선택된 룸 라이브러리와 생성 설정으로 레이아웃 조립을 요청하고 결과를 DungeonRoomBuilder에 전달한다.
 /// - 방 개수와 방 크기 기반 가변 복도 설정을 포함한 한 번의 던전 생성 진입점, 마지막 생성 결과의 런타임 수명을 소유한다.
 /// - 지도 콘텐츠 위치 판정에 실제 생성 Tilemap의 좌표계를 전달한다.
+/// - 생성 완료 로그에 최종 방 반복 품질과 탐색 완화 사유를 함께 기록한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class DungeonGenerator : MonoBehaviour
@@ -197,7 +198,8 @@ public sealed class DungeonGenerator : MonoBehaviour
             $"Cycles={LastLayout.CycleConnectionCount}, " +
             $"Corridors={shortestCorridorLength}..{longestCorridorLength}, " +
             $"LongestCorridor={longestCorridorDescription}, " +
-            $"CorridorRelaxed={LastLayout.UsedCorridorLengthRelaxation}",
+            $"CorridorRelaxed={LastLayout.UsedCorridorLengthRelaxation}\n" +
+            (LastLayout.TemplateSelection?.Description ?? string.Empty),
             this);
         HasCompletedInitialGeneration = true;
         LastGenerationSucceeded = true;

@@ -283,8 +283,9 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
 
     private InputBindingService GetInputBindingService()
     {
+        // HUD cleanup can run after the bootstrapped service has already been destroyed.
         if (cachedInputBindingService == null)
-            cachedInputBindingService = InputBindingService.EnsureInstance();
+            cachedInputBindingService = InputBindingService.Instance;
 
         return cachedInputBindingService;
     }

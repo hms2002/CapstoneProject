@@ -9,7 +9,8 @@ using UnityGAS;
 public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 {
     // 이 클래스의 책임:
-    // 허브 진입 시 플레이어 낙하/기상 연출을 재생하고, 연출 중 플레이어 표현·입력·카메라 상태를 안전하게 전환/복구한다.
+    // 허브 진입과 명시적 포탈 도착에서 같은 낙하/기상 연출을 재생하고 표현·입력·물리·카메라 상태를 복구한다.
+    // 허브 전용 등장 조건과 완료 이벤트는 포탈 호출에 적용하지 않는다.
 
     private static readonly InputActionId[] WakeInputActions =
     {
@@ -118,6 +119,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
     private readonly List<RigidbodyState> rigidbodyStates = new();
 
     private Coroutine sequenceRoutine;
+    private object portalArrivalOwner;
     private Transform cameraAnchor;
     private IGameplayCameraFocusSession cameraFocusSession;
     private GameFlowInputBlocker inputBlocker;
@@ -139,7 +141,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
     private Sprite capturedAwakeShadowSprite;
     private GameObject activeSleepEffectInstance;
 
-    public bool IsPlaying => sequenceRoutine != null;
+    public bool IsPlaying => sequenceRoutine != null || presentationPrepared;
     public event Action<PlayerHubSpawnPresentation2D> PresentationCompleted;
 
     private void Awake()
@@ -170,6 +172,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 
         ReleaseInputBlocker();
         ReleaseCameraFocusSession();
+        portalArrivalOwner = null;
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -179,7 +182,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 
     public void TryPlayIfEligible()
     {
-        if (!playOnHubSpawn || hasPlayedThisScene || sequenceRoutine != null)
+        if (!playOnHubSpawn || hasPlayedThisScene || IsPlaying)
             return;
 
         if (!IsHubScene())
@@ -195,9 +198,40 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         sequenceRoutine = StartCoroutine(PlayRoutine());
     }
 
-    private IEnumerator PlayRoutine()
+    public bool TryPlayPortalArrival(object owner, Vector3 startPosition, Action onLanded)
     {
-        hasPlayedThisScene = true;
+        if (owner == null || !isActiveAndEnabled || IsPlaying)
+            return false;
+
+        CacheReferences();
+        portalArrivalOwner = owner;
+        sequenceRoutine = StartCoroutine(PlayRoutine(startPosition, onLanded));
+        return true;
+    }
+
+    public bool IsPortalArrivalPlaying(object owner)
+    {
+        return owner != null && ReferenceEquals(portalArrivalOwner, owner) && IsPlaying;
+    }
+
+    public void CancelPortalArrival(object owner)
+    {
+        if (owner == null || !ReferenceEquals(portalArrivalOwner, owner))
+            return;
+
+        if (sequenceRoutine != null)
+            StopCoroutine(sequenceRoutine);
+        sequenceRoutine = null;
+        if (presentationPrepared)
+            ForceRestorePresentationState(allowHierarchyMutation: gameObject.activeInHierarchy);
+        portalArrivalOwner = null;
+    }
+
+    private IEnumerator PlayRoutine(Vector3? portalStartPosition = null, Action onLanded = null)
+    {
+        bool isPortalArrival = portalStartPosition.HasValue;
+        if (!isPortalArrival)
+            hasPlayedThisScene = true;
         landingPosition = transform.position;
         presentationPrepared = true;
 
@@ -206,7 +240,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         PrepareForPresentation();
         DetachShadow();
 
-        Vector3 startPosition = ResolveStartPosition(landingPosition);
+        Vector3 startPosition = portalStartPosition ?? ResolveStartPosition(landingPosition);
         transform.position = startPosition;
         transform.rotation = Quaternion.identity;
         ApplyShadowScale(0f);
@@ -244,6 +278,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         ZeroAllRigidbodies();
         RestoreCameraBindingToPlayer();
 
+        onLanded?.Invoke();
         yield return new WaitForSeconds(landingLockSeconds);
 
         bool completedWake = false;
@@ -300,7 +335,9 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         SetFadeTransitionUnlockBlocked(false);
         sequenceRoutine = null;
         ReleaseCameraFocusSession();
-        InvokePresentationCompleted();
+        portalArrivalOwner = null;
+        if (!isPortalArrival)
+            InvokePresentationCompleted();
     }
 
     private IEnumerator WaitForWakeInputOrAutoWakeRoutine()

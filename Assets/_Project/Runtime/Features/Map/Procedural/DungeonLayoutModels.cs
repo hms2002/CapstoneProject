@@ -6,6 +6,7 @@ using UnityEngine;
 /// - 한 번의 던전 조립 결과인 방 배치, 소켓 연결, 완성 여부와 실패 사유를 보관한다.
 /// - Tilemap 빌더가 절차 생성 알고리즘을 몰라도 결과를 구현할 수 있는 경계 데이터 역할을 한다.
 /// - 권장 복도 길이를 충돌 회피 목적으로 자동 축소했는지 진단 정보로 제공한다.
+/// - 완성 배치의 방 반복 품질과 제한적 템플릿 탐색 진단을 제작 툴/런타임에 전달한다.
 /// </summary>
 public sealed class DungeonLayoutResult
 {
@@ -24,6 +25,9 @@ public sealed class DungeonLayoutResult
     public int CycleConnectionCount { get; private set; }
     public int DeadEndCount { get; private set; }
     public bool UsedCorridorLengthRelaxation { get; private set; }
+    public DungeonTemplateSelectionReport TemplateSelection { get; private set; }
+
+    internal void SetTemplateSelection(DungeonTemplateSelectionReport report) => TemplateSelection = report;
 
     internal DungeonLayoutResult(int seed, int requestedRoomCount)
     {

@@ -28,9 +28,6 @@ MonoBehaviour:
   maximumLargeCombatRoomCount: 1
   preferSpecialRoomsAtDeadEnds: 1
   requiredCombatRoomRules:
-  - sizeTag: 1
-    killLockRewardTag: 2
-    count: 2
   - sizeTag: 2
-    killLockRewardTag: 2
+    killLockRewardTag: 0
     count: 1

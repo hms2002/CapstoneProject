@@ -7,6 +7,30 @@ last_reviewed: 2026-09-03
 
 # Error Log
 
+## 2026-09-12 - Optional Chest Authoring Left A Mandatory Present Room Quota
+
+Symptom: changing candidate-only Combat rooms from reward tag `Present` to `None` could prevent dungeon generation even though optional chest placement should not require a fixed number of reward rooms.
+
+Cause: the shared production policy still required exactly two Normal + Present rooms and one Large + Present room. Earlier authoring advice explained candidate tags without updating those legacy hard quotas. The generator correctly rejected an unsatisfiable policy; `None` itself was not an invalid tag.
+
+Fix: remove the Normal + Present quota and require one Large room with reward filter `Auto` (unrestricted). Keep the Large cap at one. Align installer defaults so newly installed policies do not reintroduce the old coupling. Preserve candidate selection limits, direct chests and all other hard constraints. Regression coverage uses cloned production libraries with every Combat reward tag set to None, leaving authored assets unchanged.
+
+## 2026-09-11 - Guaranteed Event Required Both Cycle And Dead End
+
+Symptom: runtime Shadow generation exhausted 512 topology attempts when ParcelPickup was selected, despite the static-profile seed sweep passing.
+
+Cause: `Shadow_Event_ParcelPickup` authored `CycleDetour`, minimum start distance 2 and `requireDeadEnd=true`. A cycle detour always has at least two edges; a dead end has one. This fails guaranteed-role assignment before template backtracking. Earlier seed coverage omitted runtime-injected event guarantees.
+
+Fix: change only this asset's mode to `FarthestFromStart`, preserving distance 2 and the dead-end requirement. Share an explicit contradiction check between the Room Piece validation/bake gate and guaranteed-template preflight. Do not automatically relax either hard condition. Cover runtime start-event plans and authored follow-up guarantees, not only the base generation profile.
+
+Related cleanup trap: player unregistration clears weapon HUD slots, whose input getter previously called `EnsureInstance`. If the input service was already destroyed, cleanup could recreate it. Both weapon HUDs now read the bootstrapped `InputBindingService.Instance` without creation; a targeted test destroys the cached service, clears slots and checks that no replacement is spawned, while later normal bootstrap remains discoverable. The service/bootstrap lifecycle itself is unchanged.
+
+## 2026-09-11 - Greedy Room Selection Committed Before Checking Scarce Neighbors
+
+Symptom: a flexible node selected A even though an adjacent node could use only A, causing consecutive identical rooms despite an alternative B for the first node. Local repeat buckets only saw already assigned neighbors and never reconsidered the first choice. Required Combat reservation also pinned a randomly chosen concrete template too early.
+
+Fix: bounded template search with precomputed domains, minimum-remaining-values ordering, forward checking and rollback; Combat quotas can redistribute across Combat nodes rather than pinning a concrete identity or tag to a provisional slot. Physical success and hard quotas are validated before accepting a candidate. The old quota filter's single-candidate/all-matching escape paths were removed, so repetition fallback cannot silently overfill a hard quota. Regression tests include scarce-neighbor selection, a square-domain contradiction requiring real rollback, provisional quota reassignment and single-candidate hard-count rejection. See [Dungeon Template Selection](StructureMemory/DungeonTemplateSelection.md).
+
 ## 2026-09-11 - Monster AI Overwrote Profile HP And Hid Initial Clamp
 
 Symptom: common monsters and slimes did not reliably use their authored HP. Removing their legacy writes exposed current HP stuck at 100 even when MaxHealth correctly became 220-1100.

@@ -364,6 +364,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
                 roomWaves = pair.Value.CaptureWaveState()
             });
         }
+        CaptureReturnPortalStates(states);
         return states;
     }
 
@@ -378,6 +379,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         for (int i = 0; i < states.Count; i++)
         {
             DungeonObjectRuntimeStateData state = states[i];
+            if (RestoreReturnPortalState(state)) continue;
             if (state?.roomWaves != null)
             {
                 const string prefix = "room-wave:";
@@ -530,6 +532,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
              !TryBuildPossibleChests(layout, savedStates) ||
              !TryBuildTravelEndpoints(layout) ||
              !TryBindGeneratedRoomFeatures(layout) ||
+             !TryBuildReturnPortals(layout) ||
              !TryBuildRoomDiscoveryTriggers(layout)))
         {
             ClearGeneratedContent();
@@ -778,6 +781,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
 
     public void ClearGeneratedContent()
     {
+        ClearReturnPortals();
         socketCleanupWarningKeys.Clear();
         ClearGeneratedTiles();
         ClearGeneratedRoomEncounters();
@@ -1089,7 +1093,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
     private bool TryBuildRoomDiscoveryTriggers(DungeonLayoutResult layout)
     {
         DungeonMapRuntimeController mapRuntime = GetComponent<DungeonMapRuntimeController>();
-        if (mapRuntime == null)
+        if (mapRuntime == null && returnTravel == null)
             return true;
 
         Transform discoveryRoot = ResolveGeneratedMapDiscoveryRoot();
@@ -1122,6 +1126,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
             DungeonRoomDiscoveryTrigger2D discoveryTrigger =
                 triggerObject.AddComponent<DungeonRoomDiscoveryTrigger2D>();
             discoveryTrigger.Configure(mapRuntime, roomPlacement.PlacementId);
+            discoveryTrigger.PlayerEnteredRoom += NotifyReturnRoomEntered;
             triggerObject.SetActive(true);
         }
 
