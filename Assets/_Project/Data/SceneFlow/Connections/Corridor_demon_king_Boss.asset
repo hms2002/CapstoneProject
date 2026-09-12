@@ -20,7 +20,7 @@ MonoBehaviour:
     sceneName: LeeJunmo_Boss_DemonKing
     endpointId: Boss.demon_king.Corridor
   aToB:
-    enabled: 0
+    enabled: 1
     runAction: 0
     runEndReason: 0
     preservePlayerRuntimeState: 1

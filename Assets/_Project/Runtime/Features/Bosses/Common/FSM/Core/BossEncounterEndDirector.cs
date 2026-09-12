@@ -38,6 +38,10 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
     [SerializeField, Min(1)] private int maximumExperiencePickupCount = 30;
     [SerializeField, Min(0f)] private float experiencePickupScatterRadius = 1.2f;
 
+    [Header("Run Gold Reward")]
+    [SerializeField] private GoldPickup2D goldPickupPrefab;
+    [SerializeField, Min(0)] private int baseGoldReward = 800;
+
     [Header("Debug")]
     [SerializeField] private bool logDebug;
 
@@ -164,6 +168,8 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
         LogDebug($"Clear condition completed. RewardBoss={(rewardBoss != null ? rewardBoss.name : "None")}.");
         BossRewardContext context = BuildRewardContext(rewardBoss);
         Vector3 rewardOrigin = clearCondition != null ? clearCondition.RewardOrigin : transform.position;
+        // The encounter completion guard pays once, including split bosses and terminal endings.
+        HandleGoldReward(rewardOrigin);
         bool usedCustomFinalePresentation = false;
 
         if (clearCondition is IBossEncounterFinalePresentationProvider finaleProvider &&
@@ -265,6 +271,22 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
             $"Treasure chest '{treasureChest.name}' activated. " +
             $"AfterActiveSelf={treasureChest.gameObject.activeSelf}.");
         context.MarkRewardsHandled();
+    }
+
+    private void HandleGoldReward(Vector3 origin)
+    {
+        if (!RunSessionStore.IsRunActive || goldPickupPrefab == null || baseGoldReward <= 0)
+            return;
+
+        int total = Random.Range(Mathf.CeilToInt(baseGoldReward * 0.85f),
+            Mathf.FloorToInt(baseGoldReward * 1.15f) + 1);
+        int count = Mathf.Min(8, total);
+        for (int i = 0; i < count; i++)
+        {
+            Vector2 offset = Random.insideUnitCircle * experiencePickupScatterRadius;
+            GoldPickup2D pickup = Instantiate(goldPickupPrefab, origin + (Vector3)offset, Quaternion.identity);
+            pickup.Initialize(total / count + (i < total % count ? 1 : 0));
+        }
     }
 
     private void HandleExperienceReward(BossRewardContext context, Vector3 rewardOrigin)

@@ -361,7 +361,8 @@ public sealed class MerchantNPC : MonoBehaviour
                 effectivePriceSettings,
                 lootPoolService.BuildWeaponExclusionSet(LootPoolContext.ShopStock),
                 excludedEntries,
-                BuildSlotFilters(slotCount))
+                BuildSlotFilters(slotCount, excludedEntries?.Count ?? 0),
+                consumablesOnlyInDedicatedSlots: UsesRunGold)
             : new List<MerchantStockEntryState>();
         if (UsesRunGold)
             foreach (var entry in entries)
@@ -369,13 +370,14 @@ public sealed class MerchantNPC : MonoBehaviour
         return entries;
     }
 
-    private IReadOnlyList<ShopSlotItemFilter> BuildSlotFilters(int slotCount)
+    private IReadOnlyList<ShopSlotItemFilter> BuildSlotFilters(int slotCount, int startIndex)
     {
         ShopSlotItemFilter[] filters = new ShopSlotItemFilter[Mathf.Max(0, slotCount)];
         for (int i = 0; i < filters.Length; i++)
         {
-            filters[i] = shopSlots != null && i < shopSlots.Length && shopSlots[i] != null
-                ? shopSlots[i].ItemFilter
+            int slotIndex = startIndex + i;
+            filters[i] = shopSlots != null && slotIndex < shopSlots.Length && shopSlots[slotIndex] != null
+                ? shopSlots[slotIndex].ItemFilter
                 : ShopSlotItemFilter.Any;
         }
 

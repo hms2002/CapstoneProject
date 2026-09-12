@@ -218,7 +218,7 @@ public static class CombatDamageAction
 
         if (CombatEvasionUtil.TryRollEvasion(target))
         {
-            DamagePopupPlayback.ShowText("EVADE", target.transform.position);
+            DamagePopupPlayback.Show(DamagePopupRequest.Text("EVADE", target.transform.position, isPlayerTarget: target.CompareTag("Player")));
             TryPlayPlayerEvadeSound(target);
             return;
         }
@@ -422,7 +422,7 @@ public static class CombatDamageAction
             return;
 
         Vector3 popupPosition = hitWorldPosition != Vector3.zero ? hitWorldPosition : target.transform.position;
-        DamagePopupPlayback.Show(DamagePopupRequest.Damage(appliedDamage, popupPosition, isCriticalHit));
+        DamagePopupPlayback.Show(DamagePopupRequest.Damage(appliedDamage, popupPosition, isCriticalHit, isPlayerTarget: target.CompareTag("Player")));
         DamagePopupDuplicateSuppressor.Register(target, appliedDamage);
     }
 

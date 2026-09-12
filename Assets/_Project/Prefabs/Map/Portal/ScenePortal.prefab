@@ -5532,6 +5532,7 @@ GameObject:
   - component: {fileID: 6050417876131653467}
   - component: {fileID: 8601188347897320943}
   - component: {fileID: 5909209640859858232}
+  - component: {fileID: 912140000000000001}
   m_Layer: 0
   m_Name: ScenePortal
   m_TagString: Untagged
@@ -5687,3 +5688,20 @@ MonoBehaviour:
   entranceCenter: {fileID: 0}
   entranceCenterWorldOffset: {x: 0, y: 0.6406012, z: 0}
   sceneTravelCleanupTagSets: []
+
+--- !u!114 &912140000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4531407902860154786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58d1c50440aa4a0694b6fc4e5838c013, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Gameplay::GrandHallClearedPortalView
+  portal: {fileID: 5909209640859858232}
+  portalSprite: {fileID: 6050417876131653467}
+  disabledSprite: {fileID: 21300000, guid: 2c9df71ed2e0c6e4bb3859720a88b9cd, type: 3}
+  particleRoot: {fileID: 1546023502421080315}

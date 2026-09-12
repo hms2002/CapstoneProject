@@ -329,7 +329,7 @@ namespace UnityGAS
                 $"show element popup appliedDamage={appliedDamage:0.###}, preHp={preHp:0.###}, postHp={postHp:0.###}, remainingDamage={remainingDamage:0.###}, position={popupPosition}",
                 popupElementTag,
                 target);
-            DamagePopupPlayback.Show(DamagePopupRequest.Element(appliedDamage, popupPosition, popupElementTag));
+            DamagePopupPlayback.Show(DamagePopupRequest.Element(appliedDamage, popupPosition, popupElementTag, isPlayerTarget: target.CompareTag("Player")));
             DamagePopupDuplicateSuppressor.Register(
                 target,
                 appliedDamage,

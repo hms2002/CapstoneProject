@@ -506,6 +506,11 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             revealTransform.localRotation = Quaternion.Euler(data.ChargeRevealLocalEulerAngles);
             revealTransform.localScale = data.ChargeRevealLocalScale;
 
+            // Keep this reveal mask local; world/vision masks must not affect the charged blade.
+            var sortingGroup = revealRoot.AddComponent<UnityEngine.Rendering.SortingGroup>();
+            sortingGroup.sortingLayerID = sourceRenderer.sortingLayerID;
+            sortingGroup.sortingOrder = sourceRenderer.sortingOrder + data.ChargeRevealSortingOrderOffset;
+
             GameObject rendererObject = new("Reveal");
             Transform rendererTransform = rendererObject.transform;
             rendererTransform.SetParent(revealTransform, worldPositionStays: false);
@@ -515,7 +520,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             revealRenderer.color = data.ChargeRevealColor;
             revealRenderer.sharedMaterial = sourceRenderer.sharedMaterial;
             revealRenderer.sortingLayerID = sourceRenderer.sortingLayerID;
-            revealRenderer.sortingOrder = sourceRenderer.sortingOrder + data.ChargeRevealSortingOrderOffset;
+            revealRenderer.sortingOrder = 0;
             revealRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
             revealRenderer.drawMode = sourceRenderer.drawMode;
             revealRenderer.size = sourceRenderer.size;

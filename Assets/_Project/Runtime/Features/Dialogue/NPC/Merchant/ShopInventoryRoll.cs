@@ -98,7 +98,8 @@ public sealed class ShopInventoryRoll
         MerchantPriceSettings priceSettings,
         IReadOnlyCollection<string> excludedWeaponIds = null,
         IReadOnlyCollection<MerchantStockEntryState> excludedEntries = null,
-        IReadOnlyList<ShopSlotItemFilter> slotFilters = null)
+        IReadOnlyList<ShopSlotItemFilter> slotFilters = null,
+        bool consumablesOnlyInDedicatedSlots = false)
     {
         var entries = new List<MerchantStockEntryState>(Mathf.Max(0, slotCount));
         if (slotCount <= 0 || ItemManager.Instance == null)
@@ -123,11 +124,15 @@ public sealed class ShopInventoryRoll
         for (int i = 0; i < slotCount; i++)
         {
             ShopSlotItemFilter slotFilter = ResolveSlotFilter(slotFilters, i);
+            ShopStockRollWeights slotWeights = rollWeights;
+            if (consumablesOnlyInDedicatedSlots)
+                slotWeights.consumableWeight = slotFilter == ShopSlotItemFilter.Consumable ? 1 : 0;
+
             List<WeightedKind> availableKinds = BuildAvailableKinds(
                 weaponPool,
                 relicPool,
                 consumablePool,
-                rollWeights,
+                slotWeights,
                 weaponSlotCount,
                 maxWeaponSlots,
                 consumableSlotCount,

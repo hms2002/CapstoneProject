@@ -77,6 +77,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour, IRunProgressBackend
         gameplay.OnRunStarted += HandleRunStarted;
         gameplay.OnRunEnded += HandleRunEnded;
         SceneManager.sceneLoaded += HandleSceneLoaded;
+        RunOfficerQuestProgress.EnterScene(RunSessionStore.Data, SceneManager.GetActiveScene().name);
     }
 
     private void OnDisable()
@@ -206,6 +207,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour, IRunProgressBackend
     private void HandleRunStarted()
     {
         ClearRunScopedState();
+        RunOfficerQuestProgress.EnterScene(RunSessionStore.Data, SceneManager.GetActiveScene().name);
     }
 
     private void HandleRunEnded(RunEndReason reason)
@@ -220,6 +222,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour, IRunProgressBackend
     /// </summary>
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        RunOfficerQuestProgress.EnterScene(RunSessionStore.Data, scene.name);
         RunTimeLimitSystem.Instance?.SetRunCompletionPaused(false);
     }
 

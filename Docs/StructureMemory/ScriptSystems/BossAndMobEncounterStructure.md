@@ -311,3 +311,7 @@ Boss ICombatHitPauseImmune applies to individual local stun, not global attacker
 GoblinGunnerShotRunner, BeerMonsterShotRunner, LizardMageBurstRunner, WizardScatterShotRunner and StrangeCandlestickAttackRunner reserve the last min(0.2s, scaled warning duration) for fixed aim. Their tracking updates end before this interval; firing uses the final warning snapshot. Lizard keeps the same direction for the entire sequential burst. Candlestick snapshots line endpoints and uses the explicit origin/direction FireProjectile overload. The compatibility target-only overload still resolves aim immediately for callers outside this runner.
 
 DragonFireBreath already snapshots aim after prepareSeconds and holds it during preFireDelaySeconds / activeSeconds. The warning now remains visible until actual fire. Cancellation/finally paths retain their existing warning cleanup. Total warning lengths, attack cadence, damage and projectile collision policies are unchanged.
+
+### Dragon breath lock interval tuning (2026-09-12)
+
+AbilityLogic_DragonFireBreath and AL_DragonFireBreath now use preFireDelaySeconds 0.4. Tracking preparation remains 1.8 seconds, and the frozen warning direction is retained through this lock interval before firing. Active duration and repeat count are unchanged.

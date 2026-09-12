@@ -82,12 +82,12 @@ SpriteMask:
   m_MaskInteraction: 0
   m_Sprite: {fileID: -3798297706055941883, guid: 31a959dc9c12f43438e29eb3fbf19a8b, type: 3}
   m_MaskAlphaCutoff: 0.2
-  m_FrontSortingLayerID: 0
-  m_BackSortingLayerID: 0
-  m_FrontSortingLayer: 0
-  m_BackSortingLayer: 0
-  m_FrontSortingOrder: 0
-  m_BackSortingOrder: 0
-  m_IsCustomRangeActive: 0
+  m_FrontSortingLayerID: -1417877795
+  m_BackSortingLayerID: -1417877795
+  m_FrontSortingLayer: 8
+  m_BackSortingLayer: 8
+  m_FrontSortingOrder: 32767
+  m_BackSortingOrder: -32768
+  m_IsCustomRangeActive: 1
   m_SpriteSortPoint: 0
   m_MaskSource: 0

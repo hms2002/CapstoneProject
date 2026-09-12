@@ -96,6 +96,7 @@ namespace UnityGAS
         private void Awake()
         {
             MigrateLegacyCameraShakeIfNeeded();
+            if (activeSkillTag == null) activeSkillTag = Resources.Load<GameplayTag>("Tags/State.Skill");
             _tags = GetComponent<TagSystem>();
             _abilitySystem = GetComponent<AbilitySystem>();
 
@@ -134,7 +135,13 @@ namespace UnityGAS
                 return;
 
             if (ShouldIgnoreBecauseOfSkillState())
+            {
+                _hitFlash?.PlayFlash();
+                float shake = payload.CameraShake > 0f ? payload.CameraShake : defaultShake;
+                if (shake > 0f) hitCameraShake.TryPlayOverrideAmplitude(
+                    shake, gameObject, ResolveShakeDirection(payload.Causer), nameof(PlayerHitFeedback2D));
                 return;
+            }
 
             if (_reactionRoutine != null)
             {
@@ -227,21 +234,22 @@ namespace UnityGAS
         /// <summary>
         /// 책임 :
         /// - 현재 스킬 사용 중이면 피격 연출을 생략할지 판단한다.
-        /// - 일부 스킬은 allowHitReactDuringSkillTag로 예외 허용할 수 있다.
+        /// - 무기 스킬의 시전/실행은 피격으로 취소하지 않는다. 사망 취소는 사망 처리 경로가 소유한다.
         /// </summary>
         private bool ShouldIgnoreBecauseOfSkillState()
         {
-            if (_tags == null || activeSkillTag == null)
-                return false;
+            if (_tags != null && activeSkillTag != null && _tags.HasTag(activeSkillTag))
+                return true;
 
-            if (!_tags.HasTag(activeSkillTag))
-                return false;
+            PlayerCombatInput2D input = GetComponent<PlayerCombatInput2D>();
+            return IsWeaponSkill(_abilitySystem?.CurrentCastSpec?.Definition, input) ||
+                   IsWeaponSkill(_abilitySystem?.CurrentExecSpec?.Definition, input);
+        }
 
-            bool allowDuringSkill =
-                allowHitReactDuringSkillTag != null &&
-                _tags.HasTag(allowHitReactDuringSkillTag);
-
-            return !allowDuringSkill;
+        private bool IsWeaponSkill(AbilityDefinition definition, PlayerCombatInput2D input)
+        {
+            return definition != null && ((input != null && input.IsKnownWeaponSkillAbility(definition)) ||
+                (activeSkillTag != null && definition.grantedTagsWhileActive?.Contains(activeSkillTag) == true));
         }
 
         /// <summary>
