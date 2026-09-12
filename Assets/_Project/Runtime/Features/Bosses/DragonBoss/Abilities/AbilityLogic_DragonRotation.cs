@@ -6,7 +6,7 @@ using UnityGAS;
 
 /// <summary>
 /// 책임:
-/// 취룡 보스의 회전 패턴을 실행하며, 원형 경고, 회전 중 범위 피해/넉백, 랜덤 탄막 발사를 처리한다.
+/// 취룡 보스의 회전 패턴을 실행하며, 원형 경고, 범위 피해/넉백, 고정 수량의 분산/3발마다 조준 탄막을 처리한다.
 /// </summary>
 [CreateAssetMenu(fileName = "AL_DragonRotation", menuName = "GAS/Ability Logic/Dragon/AL_DragonRotation")]
 public sealed class AbilityLogic_DragonRotation : AbilityLogic
@@ -35,6 +35,8 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
     [SerializeField, Min(0f)] private float projectileSpeed = 5f;
     [SerializeField, Min(0.01f)] private float projectileLifetimeSeconds = 4f;
     [SerializeField, Min(0.01f)] private float projectileSpawnIntervalSeconds = 0.4f;
+    [Tooltip("기존 회전 시간/발사 간격으로 계산한 탄막 수의 배수입니다. 회전 시간은 유지하며 균등 분산 발사합니다.")]
+    [SerializeField, Min(1)] private int projectileCountMultiplier = 1;
     [SerializeField, Min(0f)] private float projectileSpawnRadius = 0.65f;
     [SerializeField] private float projectileRotationOffsetDegrees;
     [SerializeField] private LayerMask projectileWallLayers;
@@ -88,7 +90,8 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
         nextDamageAllowedTimes.Clear();
 
         float elapsed = 0f;
-        float nextProjectileTime = 0f;
+        int projectileCount = ResolveProjectileCount();
+        int nextProjectileIndex = 0;
         List<GameObject> spawnedProjectiles = new();
         Transform visualRoot = dragon != null ? dragon.PatternMotionRoot : null;
         Transform shadowRoot = dragon != null ? dragon.PatternShadowMotionRoot : null;
@@ -115,18 +118,18 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
                 ApplyVisualSway(visualRoot, visualBaseLocalPosition, shadowRoot, shadowBaseLocalPosition, elapsed);
                 ApplyAreaHit(dragon);
 
-                if (elapsed >= nextProjectileTime)
-                {
-                    SpawnRandomProjectile(dragon, spawnedProjectiles);
-                    nextProjectileTime += projectileSpawnIntervalSeconds;
-                }
+                SpawnDueProjectiles(dragon, spawnedProjectiles, elapsed, projectileCount, ref nextProjectileIndex);
 
                 elapsed += Time.deltaTime;
                 yield return null;
             }
 
             if (!IsAbilityCancelled(spec))
+            {
+                // A long final frame must not discard the remaining scheduled shots.
+                SpawnDueProjectiles(dragon, spawnedProjectiles, spinSeconds, projectileCount, ref nextProjectileIndex);
                 ApplyAreaHit(dragon);
+            }
         }
         finally
         {
@@ -253,18 +256,45 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
                Time.time >= nextAllowedTime;
     }
 
-    private void SpawnRandomProjectile(DragonController dragon, List<GameObject> spawnedProjectiles)
+    private int ResolveProjectileCount()
+    {
+        int baseCount = Mathf.CeilToInt(Mathf.Max(0f, spinSeconds) / Mathf.Max(0.01f, projectileSpawnIntervalSeconds));
+        return baseCount * Mathf.Max(1, projectileCountMultiplier);
+    }
+
+    private void SpawnDueProjectiles(
+        DragonController dragon,
+        List<GameObject> spawnedProjectiles,
+        float elapsed,
+        int projectileCount,
+        ref int nextProjectileIndex)
+    {
+        while (nextProjectileIndex < projectileCount &&
+               elapsed >= nextProjectileIndex * (spinSeconds / projectileCount))
+        {
+            SpawnProjectile(dragon, spawnedProjectiles, nextProjectileIndex);
+            nextProjectileIndex++;
+        }
+    }
+
+    private void SpawnProjectile(DragonController dragon, List<GameObject> spawnedProjectiles, int projectileIndex)
     {
         if (dragon == null || projectilePrefab == null || projectileDamageEffect == null)
             return;
 
-        Vector2 direction = Random.insideUnitCircle;
-        if (direction.sqrMagnitude <= 0.0001f)
-            direction = Vector2.right;
+        Vector3 center = dragon.transform.position;
+        Vector2? targetPosition = (projectileIndex + 1) % 3 == 0 && dragon.CurrentTarget != null
+            ? CommonMonsterCombatUtility.ResolveAimPoint(dragon.CurrentTarget.gameObject, CombatAimPointKind.ProjectileTarget)
+            : null;
+        Vector2 direction = ResolveProjectileDirection(center, targetPosition);
+        float spawnRadius = Mathf.Max(0f, projectileSpawnRadius);
+        if (targetPosition.HasValue)
+        {
+            // Do not spawn beyond a player standing inside the authored spawn radius.
+            spawnRadius = Mathf.Min(spawnRadius, Vector2.Distance(center, targetPosition.Value) * 0.5f);
+        }
 
-        direction.Normalize();
-
-        Vector3 origin = dragon.transform.position + (Vector3)(direction * projectileSpawnRadius);
+        Vector3 origin = center + (Vector3)(direction * spawnRadius);
         GameObject projectileObject = Object.Instantiate(
             projectilePrefab,
             origin,
@@ -300,6 +330,15 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
             causer: dragon.gameObject,
             position: origin,
             sourceObject: this);
+    }
+
+    private static Vector2 ResolveProjectileDirection(Vector2 origin, Vector2? targetPosition)
+    {
+        Vector2 direction = targetPosition.HasValue ? targetPosition.Value - origin : Vector2.zero;
+        if (direction.sqrMagnitude <= 0.0001f)
+            direction = Random.insideUnitCircle;
+
+        return direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
     }
 
     /// <summary>

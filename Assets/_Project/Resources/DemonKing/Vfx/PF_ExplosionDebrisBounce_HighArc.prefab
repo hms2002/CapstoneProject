@@ -71,8 +71,8 @@ MonoBehaviour:
   frictionRandomMultiplierRange: {x: 0.9, y: 1.05}
   fragmentSizeRange: {x: 0.06, y: 0.1}
   fragmentSpinDegreesRange: {x: -620, y: 620}
-  fragmentColorA: {r: 0.28343263, g: 0, b: 0.4716981, a: 1}
-  fragmentColorB: {r: 0.48660702, g: 0, b: 0.78113204, a: 1}
+  fragmentColorA: {r: 0.4339623, g: 0.4339623, b: 0.4339623, a: 1}
+  fragmentColorB: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 1}
   hotFragmentChance: 0
   contactBurstCountRange: {x: 0, y: 0}
   contactLifetimeRange: {x: 0.12, y: 0.26}

@@ -7,10 +7,10 @@ using UnityGAS;
 
 /// <summary>
 /// 책임:
-/// 취룡 보스의 내려치기 패턴을 실행하며, 목표 위치 예고, 도약 이동, 착지 피해와 넉백을 처리한다.
+/// 취룡 보스의 내려치기 패턴을 실행하며, 도약/착지 피해와 후속 십자 폭발 및 술통 낙하를 조율한다.
 /// </summary>
 [CreateAssetMenu(fileName = "AL_DragonSlam", menuName = "GAS/Ability Logic/Dragon/AL_DragonSlam")]
-public sealed class AbilityLogic_DragonSlam : AbilityLogic
+public sealed partial class AbilityLogic_DragonSlam : AbilityLogic
 {
     [Header("Movement")]
     [SerializeField, Min(0.01f)] private float travelSeconds = 1.4f;
@@ -119,7 +119,7 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
             PlayLandingPresentation(dragon, impactPosition);
             PlayImpactPresentation(dragon, impactPosition);
             ApplyImpactDamage(dragon, impactPosition);
-            yield return ScatterKegsAfterImpact(dragon, system, telegraphService, impactPosition, spec);
+            yield return RunLandingFollowups(dragon, system, telegraphService, impactPosition, spec);
         }
         finally
         {

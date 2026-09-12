@@ -6,6 +6,7 @@ namespace UnityGAS
     /// 책임 :
     /// - 술/불 장판의 본체 표현을 shader material property로 구동한다.
     /// - gameplay 판정은 소유하지 않고, 장판 actor가 전달한 element/mode/radius/흡수 대상 방향을 렌더러에 반영한다.
+    /// - 흡수 준비 중 장판을 축소하며 애니메이션 탄막을 확대하고, 방향과 표시 수명을 관리한다.
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
@@ -40,6 +41,12 @@ namespace UnityGAS
         [SerializeField, Min(0f)] private float projectileFrontPaddingScale = 0.45f;
         [SerializeField, Min(0f)] private float projectileTailPaddingScale = 1.35f;
 
+        [Header("Projectile Prefab Visual")]
+        [Tooltip("장판 루트 아래에 미리 배치한 탄막 비주얼입니다. 크기가 자동 변경되는 셰이더 오브젝트의 자식으로 두지 않습니다. 비어 있으면 기존 셰이더를 사용합니다.")]
+        [SerializeField] private Transform projectileVisualRoot;
+        [Tooltip("오른쪽(+X)을 향한 이미지 기준 회전 보정입니다. 애니메이션은 이 루트 아래 Sprite 자식에서 편집합니다.")]
+        [SerializeField] private float projectileRotationOffsetDegrees;
+
         private MeshFilter meshFilter;
         private MeshRenderer meshRenderer;
         private MaterialPropertyBlock propertyBlock;
@@ -60,6 +67,8 @@ namespace UnityGAS
         private int lastWallClipSampleCount;
         private float lastWallClipSkinWidth = -1f;
         private Transform absorbAnchor;
+        private Transform cachedProjectileVisualRoot;
+        private Vector3 projectileBaseLocalScale = Vector3.one;
         private PuddleElementType elementType = PuddleElementType.Alcohol;
         private PuddleAreaMode mode = PuddleAreaMode.Ground;
         private float groundRadius = 1.35f;
@@ -90,8 +99,22 @@ namespace UnityGAS
             if (mode == PuddleAreaMode.AbsorbPreparing || mode == PuddleAreaMode.AbsorbProjectile)
                 absorbElapsedSeconds += Time.deltaTime;
 
+            if ((UsesProjectileVisual && mode == PuddleAreaMode.AbsorbProjectile) || mode == PuddleAreaMode.Consumed)
+                return;
+
             ApplyVisualScale();
             ApplyProperties();
+        }
+
+        private void LateUpdate()
+        {
+            if (UsesProjectileVisual)
+                ApplyProjectileRotation();
+        }
+
+        private void OnDisable()
+        {
+            ApplyVisualMode();
         }
 
         private void OnValidate()
@@ -129,6 +152,7 @@ namespace UnityGAS
                 MarkWallClipDirty();
             }
 
+            ApplyVisualMode();
             ApplyVisualScale();
             ApplyProperties();
         }
@@ -163,6 +187,7 @@ namespace UnityGAS
         public void SetAbsorbAnchor(Transform newAbsorbAnchor)
         {
             absorbAnchor = newAbsorbAnchor;
+            ApplyProjectileRotation();
             ApplyProperties();
         }
 
@@ -221,9 +246,63 @@ namespace UnityGAS
             if (materialTemplate != null)
                 meshRenderer.sharedMaterial = materialTemplate;
 
-            meshRenderer.enabled = true;
+            ApplyVisualMode();
             meshRenderer.sortingLayerName = sortingLayerName;
             meshRenderer.sortingOrder = sortingOrder;
+        }
+
+        private bool IsPreparingProjectileVisual => projectileVisualRoot != null && mode == PuddleAreaMode.AbsorbPreparing;
+        private bool UsesProjectileVisual => IsPreparingProjectileVisual ||
+            (projectileVisualRoot != null && mode == PuddleAreaMode.AbsorbProjectile);
+
+        private void ApplyVisualMode()
+        {
+            bool showProjectile = isActiveAndEnabled && UsesProjectileVisual;
+            if (projectileVisualRoot != null)
+            {
+                ApplyProjectileScale();
+                if (showProjectile)
+                    ApplyProjectileRotation();
+                if (projectileVisualRoot.gameObject.activeSelf != showProjectile)
+                    projectileVisualRoot.gameObject.SetActive(showProjectile);
+            }
+
+            if (meshRenderer != null)
+                meshRenderer.enabled = isActiveAndEnabled && mode != PuddleAreaMode.Consumed &&
+                    !(UsesProjectileVisual && mode == PuddleAreaMode.AbsorbProjectile);
+        }
+
+        private void ApplyProjectileScale()
+        {
+            if (projectileVisualRoot == null)
+                return;
+
+            if (cachedProjectileVisualRoot != projectileVisualRoot)
+            {
+                cachedProjectileVisualRoot = projectileVisualRoot;
+                projectileBaseLocalScale = projectileVisualRoot.localScale;
+            }
+
+            float scale = isActiveAndEnabled && IsPreparingProjectileVisual ? ResolvePreparingBlend() : 1f;
+            projectileVisualRoot.localScale = projectileBaseLocalScale * scale;
+        }
+
+        private float ResolvePreparingBlend()
+        {
+            return Mathf.SmoothStep(0f, 1f, ResolveAbsorbProgress());
+        }
+
+        private void ApplyProjectileRotation()
+        {
+            if (!UsesProjectileVisual || absorbAnchor == null)
+                return;
+
+            Vector2 direction = absorbAnchor.position - projectileVisualRoot.position;
+            if (direction.sqrMagnitude <= 0.0001f)
+                return;
+
+            projectileVisualRoot.rotation = Quaternion.Euler(0f, 0f,
+                Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + projectileRotationOffsetDegrees);
         }
 
         private void ApplyProperties()
@@ -236,10 +315,11 @@ namespace UnityGAS
 
             meshRenderer.GetPropertyBlock(propertyBlock);
             propertyBlock.SetFloat(ElementTypeId, elementType == PuddleElementType.Fire ? 1f : 0f);
-            propertyBlock.SetFloat(ModeId, (float)mode);
+            // Authored projectiles replace the shader morph; the shrinking surface stays a ground puddle.
+            propertyBlock.SetFloat(ModeId, (float)(IsPreparingProjectileVisual ? PuddleAreaMode.Ground : mode));
             propertyBlock.SetFloat(RadiusId, visualRadius);
             propertyBlock.SetFloat(IgnitionProgressId, ResolveIgnitionProgress());
-            propertyBlock.SetFloat(AbsorbProgressId, ResolveAbsorbProgress());
+            propertyBlock.SetFloat(AbsorbProgressId, IsPreparingProjectileVisual ? 0f : ResolveAbsorbProgress());
             propertyBlock.SetVector(AbsorbDirectionId, ResolveAbsorbDirection());
             propertyBlock.SetFloat(TimeOffsetId, timeOffset);
             meshRenderer.SetPropertyBlock(propertyBlock);
@@ -250,11 +330,16 @@ namespace UnityGAS
             visualRadius = ResolveVisualRadius();
             ApplyRenderRect();
             transform.localScale = Vector3.one * visualRadius * quadScale;
+            ApplyProjectileScale();
         }
 
         private void ApplyRenderRect()
         {
             if (quadMesh == null)
+                return;
+
+            // Shrink the cached ground shape without rebuilding it or raycasting walls every frame.
+            if (IsPreparingProjectileVisual)
                 return;
 
             if (ShouldUseWallClippedGroundMesh())
@@ -460,6 +545,9 @@ namespace UnityGAS
 
         private float ResolveVisualRadius()
         {
+            if (IsPreparingProjectileVisual)
+                return groundRadius * (1f - ResolvePreparingBlend());
+
             if (mode == PuddleAreaMode.AbsorbPreparing)
             {
                 float preparingShrinkProgress = Mathf.InverseLerp(preparingRadiusShrinkStart, 1f, ResolveAbsorbProgress());

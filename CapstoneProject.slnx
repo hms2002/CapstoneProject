@@ -5,8 +5,8 @@
   <Project Path="UI.csproj" />
   <Project Path="Presentation.csproj" />
   <Project Path="Infrastructure.csproj" />
-  <Project Path="Ink-Libraries.csproj" />
   <Project Path="ProceduralPlayModeTests.csproj" />
+  <Project Path="Ink-Libraries.csproj" />
   <Project Path="InkEditor.csproj" />
   <Project Path="DOTween.Modules.csproj" />
   <Project Path="PlayModeTests.csproj" />

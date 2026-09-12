@@ -9738,6 +9738,7 @@ Transform:
   m_Children:
   - {fileID: 3858703649631948663}
   - {fileID: 933084635552715495}
+  - {fileID: 929999999999875713}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4193140718140302002
@@ -9955,7 +9956,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8221001235387522899}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -10074,3 +10075,43 @@ MonoBehaviour:
   preparingRadiusShrinkStart: 0.35
   projectileFrontPaddingScale: 0.45
   projectileTailPaddingScale: 1.35
+  projectileVisualRoot: {fileID: 929999999999875713}
+  projectileRotationOffsetDegrees: 0
+--- !u!1001 &930000000000000001
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5284741336372566075}
+    m_Modifications:
+    - target: {fileID: 100000, guid: 11dada48184646e3bf2539cb69386837, type: 3}
+      propertyPath: m_Name
+      value: AbsorbProjectileVisual
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 11dada48184646e3bf2539cb69386837, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 11dada48184646e3bf2539cb69386837, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 11dada48184646e3bf2539cb69386837, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 11dada48184646e3bf2539cb69386837, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 11dada48184646e3bf2539cb69386837, type: 3}
+--- !u!4 &929999999999875713 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400000, guid: 11dada48184646e3bf2539cb69386837, type: 3}
+  m_PrefabInstance: {fileID: 930000000000000001}
+  m_PrefabAsset: {fileID: 0}
