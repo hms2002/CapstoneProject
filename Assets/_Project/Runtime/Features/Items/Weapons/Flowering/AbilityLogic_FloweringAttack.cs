@@ -71,7 +71,7 @@ public sealed class AbilityLogic_FloweringAttack : AbilityLogic
 
     private static Vector2 ResolveHitboxCenter(AbilitySystem system, FloweringAttackData data, Vector2 dir)
     {
-        Vector2 perp = new(-dir.y, dir.x);
+        Vector2 perp = new(-dir.y * (dir.x < 0f ? -1f : 1f), Mathf.Abs(dir.x));
         return (Vector2)system.transform.position
                + dir * data.ForwardOffset
                + perp * (data.SideOffset * data.SideSign);

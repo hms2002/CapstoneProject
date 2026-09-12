@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gameplay::RoomThemeLibrarySO
   themeId: ProceduralDragon
   rooms:
+  - {fileID: 11400000, guid: da30babfdcbf4837934f11baffd71a97, type: 2}
   - {fileID: 11400000, guid: 3c5225a23ef2a7a43820a61e111c926d, type: 2}
   - {fileID: 11400000, guid: 92c24ea154f195f48b9d242a645280c5, type: 2}
   - {fileID: 11400000, guid: bbfe89d27b469e7479eef04a61e4a561, type: 2}

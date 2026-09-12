@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gameplay::RoomThemeLibrarySO
   themeId: ProceduralDemonKing
   rooms:
+  - {fileID: 11400000, guid: 4cc93c47a69c4970a9b65f23ba1279ad, type: 2}
   - {fileID: 11400000, guid: 5de565c67f7575449838f65ab42af443, type: 2}
   - {fileID: 11400000, guid: 31fa13fb09405f94bb764da90e01805d, type: 2}
   - {fileID: 11400000, guid: c4fef0749739d784caf5ac638c62fe0a, type: 2}

@@ -64,6 +64,11 @@ public sealed class MerchantNPC : MonoBehaviour
     private readonly LootPoolService lootPoolService = new LootPoolService();
     private readonly MerchantPurchaseService purchaseService = new MerchantPurchaseService();
 
+    private bool UsesRunGold => shopDefinition != null && shopDefinition.UsesRunGold;
+    private string StockStateId => UsesRunGold
+        ? $"{gameObject.scene.name}/{merchantId}/{transform.position.x:F2}/{transform.position.y:F2}"
+        : merchantId;
+
     private MerchantRuntimeState runtimeState;
     private MerchantRefreshInteractable[] refreshInteractables;
     private RunModifierService subscribedRunModifierService;
@@ -148,7 +153,7 @@ public sealed class MerchantNPC : MonoBehaviour
         if (!TryGetSlotEntry(slotIndex, out MerchantStockEntryState slotEntry, out ScriptableObject itemDefinition))
             return;
 
-        MerchantPurchaseResult result = purchaseService.TryPurchase(player, slotEntry, itemDefinition);
+        MerchantPurchaseResult result = purchaseService.TryPurchase(player, slotEntry, itemDefinition, UsesRunGold);
         if (result.Succeeded)
         {
             SoundPlaybackUtility.Play(PurchaseSound, sourceObject: this);
@@ -182,7 +187,7 @@ public sealed class MerchantNPC : MonoBehaviour
         }
 
         runtimeState = runStateService.GetOrCreateState(
-            merchantId,
+            StockStateId,
             policy.VisibleSlotCount,
             (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries));
         ApplyEffectivePrices(runtimeState, policy.EffectivePriceSettings);
@@ -312,11 +317,11 @@ public sealed class MerchantNPC : MonoBehaviour
             RefreshSlot(i);
     }
 
-    private static void ApplyEffectivePrices(
+    private void ApplyEffectivePrices(
         MerchantRuntimeState state,
         MerchantPriceSettings effectivePriceSettings)
     {
-        if (state?.slots == null)
+        if (UsesRunGold || state?.slots == null)
             return;
 
         for (int i = 0; i < state.slots.Count; i++)
@@ -332,7 +337,7 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private ShopRunModifierDelta ResolveShopModifiers()
     {
-        return RunModifierService.CurrentRewardSnapshot.ShopModifiers;
+        return UsesRunGold ? default : RunModifierService.CurrentRewardSnapshot.ShopModifiers;
     }
 
     private MerchantShopPolicySnapshot ResolveShopPolicy()
@@ -347,7 +352,7 @@ public sealed class MerchantNPC : MonoBehaviour
         MerchantPriceSettings effectivePriceSettings,
         IReadOnlyCollection<MerchantStockEntryState> excludedEntries)
     {
-        return shopDefinition != null
+        var entries = shopDefinition != null
             ? inventoryRoll.RollStock(
                 slotCount,
                 shopDefinition.StockRollWeights,
@@ -358,6 +363,10 @@ public sealed class MerchantNPC : MonoBehaviour
                 excludedEntries,
                 BuildSlotFilters(slotCount))
             : new List<MerchantStockEntryState>();
+        if (UsesRunGold)
+            foreach (var entry in entries)
+                if (entry != null) entry.price = shopDefinition.RollGoldPrice(entry.ResolveDefinition());
+        return entries;
     }
 
     private IReadOnlyList<ShopSlotItemFilter> BuildSlotFilters(int slotCount)

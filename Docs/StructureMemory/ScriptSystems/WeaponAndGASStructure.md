@@ -271,3 +271,11 @@ Full-execution movement/aim grant tags were removed from the three basic definit
 The latest rule supersedes hold-to-retain direction: the melee control lock ends after animation 80% and active lunge, regardless of held primary input. Auto-repeat waits for this release and the existing re-aim gap; combo expiry remains unchanged. PlayerIntentInput2D.AbilityMoveInput reads live raw input for move-then-aim lunge resolution, while MoveInput remains permission-filtered for walking. Lunge direction/endpoints stay fixed per attack; authored motion distance/timing/easing are untouched.
 
 CombatDamageAction now maps attackerStopSeconds to CombatHitPause2D.ApplyWorldPause, an owner-scoped TimeScalePausePlayback token expiring on unscaled time. Multiple owners/menu pause compose, and disable releases only the component's token. Local Apply remains target stun and continues to exclude bosses. Global hitstop pauses bosses with the rest of the world without assigning Animator.speed=0. Aim/combat input and ability iteration honor global pause.
+
+### Player impact and mirrored slash offsets (2026-09-12)
+
+PlayerHitFeedback2D requests 0.1s world hitstop for live-player damage feedback before pose/skill-reaction immunity checks. CameraShakeService runs Cinemachine impulse envelopes on unscaled time and refreshes the last shake camera during timeScale zero, temporarily bypassing SmartUpdate's physics clock while restoring its policy immediately. Explicit manual shake settings still use the unscaled CameraManualShakeDriver.
+
+Slash center side offsets in ApprenticeHeroSword, Flowering base/bloom, LightningSpearAttack and SwordCombo2D use a perpendicular whose Y is abs(aim.x) and X is -aim.y times the facing sign. Mirrored left/right aim preserves world Y and reflects world X, keeping right-facing authored placement. This convention is for mirrored slash placement, not general direction-local projectile or trail coordinates.
+
+AttackTelegraphView disables clipping for Line/Rectangle/Circle both when shown and updated, after inherited clipping settings are resolved. Sector/Ring preserve clipping. This presentation policy does not change actual hit collision.

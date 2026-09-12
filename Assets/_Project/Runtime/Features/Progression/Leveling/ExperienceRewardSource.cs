@@ -18,6 +18,9 @@ public sealed class ExperienceRewardSource : MonoBehaviour
     [SerializeField, Min(1)] private int maximumPickupCount = 30;
     [SerializeField, Min(0f)] private float pickupScatterRadius = 0.8f;
 
+    [Header("Run Gold")]
+    [SerializeField] private GoldPickup2D goldPickupPrefab;
+
     private Enemy enemy;
 
     public int BaseExperience => baseExperience;
@@ -63,6 +66,21 @@ public sealed class ExperienceRewardSource : MonoBehaviour
         int finalExperience = Mathf.Max(0, Mathf.RoundToInt(baseExperience * experienceMultiplier));
         if (finalExperience <= 0)
             return;
+
+        if (goldPickupPrefab != null)
+        {
+            int baseGold = Mathf.Clamp(baseExperience * 6, 40, 600);
+            int minimumGold = Mathf.CeilToInt(baseGold * 0.85f);
+            int maximumGold = Mathf.FloorToInt(baseGold * 1.15f);
+            int totalGold = Random.Range(minimumGold, maximumGold + 1);
+            int count = Mathf.Clamp(Mathf.CeilToInt(totalGold / 20f), 1, 8);
+            for (int i = 0; i < count; i++)
+            {
+                Vector2 offset = Random.insideUnitCircle * pickupScatterRadius;
+                GoldPickup2D gold = Instantiate(goldPickupPrefab, defeatedEnemy.transform.position + (Vector3)offset, Quaternion.identity);
+                gold.Initialize(totalGold / count + (i < totalGold % count ? 1 : 0));
+            }
+        }
 
         ExperiencePickupDropSpawner.SpawnDistributed(
             pickupPrefab,

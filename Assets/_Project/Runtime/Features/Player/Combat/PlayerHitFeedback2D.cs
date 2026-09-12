@@ -125,6 +125,11 @@ namespace UnityGAS
         /// </summary>
         public void OnHitFeedback(HitFeedbackPayload payload)
         {
+            // Damage feedback is dispatched only after HP loss. Skill reaction immunity
+            // may suppress the pose, but does not suppress the impact freeze.
+            if (!IsDeadState())
+                CombatHitPause2D.ApplyWorldPause(gameObject, 0.1f);
+
             if (ShouldIgnoreHitReaction())
                 return;
 

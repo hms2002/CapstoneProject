@@ -102,6 +102,7 @@ namespace UnityGAS
             isVisible = true;
             activeInnerDiameter = Mathf.Max(0f, spec.innerDiameter);
             activeSectorAngleDeg = Mathf.Clamp(spec.sectorAngleDeg, 0.1f, 360f);
+            spec = ApplyShapeWallClippingPolicy(spec);
             CacheActiveWallClipping(spec);
 
             gameObject.SetActive(true);
@@ -150,7 +151,8 @@ namespace UnityGAS
             if (!isVisible)
                 return;
 
-            spec = InheritActiveWallClipping(spec);
+            spec = ApplyShapeWallClippingPolicy(InheritActiveWallClipping(spec));
+            CacheActiveWallClipping(spec);
             activeInnerDiameter = Mathf.Max(0f, spec.innerDiameter);
             activeSectorAngleDeg = Mathf.Clamp(spec.sectorAngleDeg, 0.1f, 360f);
             float normalizedProgress = GetCurrentNormalizedProgress();
@@ -514,6 +516,17 @@ namespace UnityGAS
 
             lineRenderer.sortingLayerID = referenceRenderer.sortingLayerID;
             lineRenderer.sortingOrder = referenceRenderer.sortingOrder;
+        }
+
+        private static AttackTelegraphSpec ApplyShapeWallClippingPolicy(AttackTelegraphSpec spec)
+        {
+            // Straight and circular warnings show their full authored range.
+            // Sector and ring warnings retain their existing clipping policy.
+            if (spec.shape == AttackTelegraphShape.Line ||
+                spec.shape == AttackTelegraphShape.Rectangle ||
+                spec.shape == AttackTelegraphShape.Circle)
+                spec.useWallClipping = false;
+            return spec;
         }
 
         private void CacheActiveWallClipping(AttackTelegraphSpec spec)

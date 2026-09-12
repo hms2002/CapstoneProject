@@ -3177,3 +3177,11 @@ User approved: exclude bosses from prototype local hit pause; melee basics lock 
 ### 2026-09-12 — Re-aim and quest presentation revision
 
 User supersedes continuous held-direction lock: melee movement/aim unlock at the motion/lunge tail even while attack stays pressed, with a re-aim opportunity before the next auto swing. Attacker hitstop now freezes the scaled world including monsters/bosses; bosses still reject individual target stun. Main quests project tutorial/hub/current-run route progress; run-acquired quests are subquests. Headers are orange 메인 퀘스트 and dark sky blue 서브 퀘스트, individual quest titles are omitted, content is white, and all displayed quest text uses BlackOutline.
+
+### 2026-09-12 — Run gold and unrestricted merchant stock
+
+Gold belongs only to the active run and resets when the run ends (also cleared on new-run initialization). It is separate from persistent magic stones. The user requested themed shop rooms and a reusable placement prefab. Run shops use unrestricted weapon/relic slots rather than reserved categories, initially equal category weights across three slots. Inclusive prices: weapons 1000–1300; Common relics 200–400; Rare 500–800; Epic 900–1200. See [RunGoldAndShop](StructureMemory/RunGoldAndShop.md) for current structure and validation limits.
+
+### 2026-09-12 — Run shop probability tuning
+
+User revision: run-shop weapon/relic category weights are 1:3 (25%/75%), superseding equal weights. Each eligible monster death rolls total gold uniformly within ±15% of its existing baseline, using integer bounds rounded inward. Prices remain unchanged.

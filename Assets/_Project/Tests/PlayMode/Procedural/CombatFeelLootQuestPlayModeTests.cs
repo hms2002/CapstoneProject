@@ -463,6 +463,149 @@ public sealed class CombatFeelLootQuestPlayModeTests
         Assert.AreEqual(1, rows.GetComponentsInChildren(rowType, false).Length);
     }
 
+    [TestCase(0f, 1)]
+    [TestCase(0.6f, 1)]
+    [TestCase(-0.6f, -1)]
+    public void FloweringSlash_MirrorsXWithoutChangingHeight(float y, int sideSign)
+    {
+        var actor = Own(new GameObject("OffsetTest"));
+        var system = actor.AddComponent<AbilitySystem>();
+        var data = Own(ScriptableObject.CreateInstance<FloweringAttackData>());
+        typeof(FloweringAttackData).GetField("sideOffset", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(data, 0.4f);
+        typeof(FloweringAttackData).GetField("sideSign", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(data, sideSign);
+        var resolve = typeof(AbilityLogic_FloweringAttack).GetMethod("ResolveHitboxCenter", BindingFlags.Static | BindingFlags.NonPublic);
+        Vector2 right = new Vector2(0.8f, y).normalized;
+        Vector2 left = new Vector2(-right.x, right.y);
+        var a = (Vector2)resolve.Invoke(null, new object[] { system, data, right });
+        var b = (Vector2)resolve.Invoke(null, new object[] { system, data, left });
+        Assert.AreEqual(-a.x, b.x, 0.0001f);
+        Assert.AreEqual(a.y, b.y, 0.0001f);
+    }
+
+    [UnityTest] public IEnumerator PlayerHit_StartsPointOneSecondWorldPause_AndReleasesIt()
+    {
+        var actor = Own(new GameObject("PlayerHitstopTest"));
+        var feedback = actor.AddComponent<PlayerHitFeedback2D>();
+        // Suppress pose/shake to isolate the damage impact from reaction immunity.
+        var tags = actor.AddComponent<TagSystem>();
+        var immune = Own(ScriptableObject.CreateInstance<GameplayTag>());
+        tags.AddTag(immune);
+        Set(feedback, "_tags", tags);
+        Set(feedback, "hitReactImmuneTag", immune);
+        feedback.OnHitFeedback(new HitFeedbackPayload(null, 0.3f, 0f));
+        Assert.AreEqual(0f, Time.timeScale);
+        var pause = actor.GetComponent<CombatHitPause2D>();
+        float deadline = (float)typeof(CombatHitPause2D).GetField("worldPauseUntil", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(pause);
+        Assert.AreEqual(0.1f, deadline - Time.unscaledTime, 0.001f);
+        yield return new WaitForSecondsRealtime(0.15f);
+        Assert.IsFalse(TimeScalePausePlayback.IsHeldBy(pause));
+        Assert.AreEqual(1f, Time.timeScale);
+    }
+
+    [Test] public void Telegraph_StraightAndCircleIgnoreColliders_WhileSectorAndRingRetainClipping()
+    {
+        Type viewType = Type.GetType("UnityGAS.AttackTelegraphView, Presentation", true);
+        var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/VFX/Telegraphs/AttackTelegraphView.prefab");
+        var actor = Own(Object.Instantiate(prefab));
+        Component view = actor.GetComponent(viewType);
+        var show = viewType.GetMethod("Show", new[] { typeof(AttackTelegraphSpec), typeof(AttackTelegraphStyle) });
+        var update = viewType.GetMethod("UpdateGeometry");
+        var clipping = viewType.GetField("activeUseWallClipping", BindingFlags.Instance | BindingFlags.NonPublic);
+        var wall = Own(new GameObject("WarningWall", typeof(BoxCollider2D)));
+        wall.transform.position = Vector3.right;
+        Physics2D.SyncTransforms();
+        foreach (var shape in new[] { AttackTelegraphShape.Line, AttackTelegraphShape.Rectangle, AttackTelegraphShape.Circle, AttackTelegraphShape.Sector, AttackTelegraphShape.Ring })
+        {
+            var spec = AttackTelegraphSpec.CreateLine(Vector3.zero, Vector3.right * 5f, 0.1f, 1f).WithWallClipping(1);
+            spec.shape = shape;
+            spec.size = new Vector2(5f, 3f);
+            spec.sectorAngleDeg = 90f;
+            spec.innerDiameter = 1f;
+            show.Invoke(view, new object[] { spec, null });
+            bool shouldClip = shape == AttackTelegraphShape.Sector || shape == AttackTelegraphShape.Ring;
+            Assert.AreEqual(shouldClip, clipping.GetValue(view), shape.ToString());
+            spec.lineEnd = Vector3.right * 6f;
+            update.Invoke(view, new object[] { spec });
+            Assert.AreEqual(shouldClip, clipping.GetValue(view), "Geometry update: " + shape);
+            if (shape == AttackTelegraphShape.Line)
+                Assert.AreEqual(spec.lineEnd, actor.GetComponentInChildren<LineRenderer>().GetPosition(1));
+        }
+    }
+
+    [UnityTest] public IEnumerator CameraImpulseClock_ContinuesDuringWorldPause()
+    {
+        Type managerType = Type.GetType("Unity.Cinemachine.CinemachineImpulseManager, Unity.Cinemachine", true);
+        object manager = managerType.GetProperty("Instance").GetValue(null);
+        Type serviceType = Type.GetType("CameraShakeService, Presentation", true);
+        serviceType.GetMethod("RegisterPlaybackBackend", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null);
+        var clock = managerType.GetProperty("CurrentTime");
+        var actor = Own(new GameObject("CameraClockPause"));
+        CombatHitPause2D.ApplyWorldPause(actor, 0.2f);
+        float before = (float)clock.GetValue(manager);
+        float scaled = Time.time;
+        yield return new WaitForSecondsRealtime(0.04f);
+        Assert.Greater((float)clock.GetValue(manager), before);
+        Assert.AreEqual(scaled, Time.time);
+        actor.SetActive(false);
+    }
+
+    [Test] public void RunGold_SpendingAndRunBoundariesAreIndependentOfMagicStone()
+    {
+        Assert.IsNotNull(RunSessionStore.Data);
+        Assert.IsNotNull(CurrencyManager.Instance);
+        var data = RunSessionStore.Data;
+        bool wasActive = data.isRunActive;
+        int previousGold = data.runGold;
+        try
+        {
+            data.isRunActive = true;
+            data.runGold = 0;
+            int stones = CurrencyManager.Instance.GetMagicStone();
+            CurrencyManager.Instance.AddGold(1200);
+            Assert.IsTrue(CurrencyManager.Instance.SpendGold(1000));
+            Assert.AreEqual(200, CurrencyManager.Instance.GetGold());
+            Assert.IsFalse(CurrencyManager.Instance.SpendGold(201));
+            Assert.IsFalse(CurrencyManager.Instance.SpendGold(-1));
+            CurrencyManager.Instance.AddGold(1000); // same refund path used after failed acquisition
+            Assert.AreEqual(1200, CurrencyManager.Instance.GetGold());
+            Assert.AreEqual(stones, CurrencyManager.Instance.GetMagicStone());
+            data.isRunActive = false;
+            Assert.AreEqual(0, CurrencyManager.Instance.GetGold());
+            Assert.IsFalse(CurrencyManager.Instance.SpendGold(0));
+        }
+        finally { data.runGold = previousGold; data.isRunActive = wasActive; }
+
+        var lifecycle = Type.GetType("RunSessionLifecycleService, Infrastructure", true);
+        var isolated = new GamePlayData { runGold = 999 };
+        lifecycle.GetMethod("StartRun").Invoke(null, new object[] { isolated, null });
+        Assert.AreEqual(0, isolated.runGold);
+        isolated.runGold = 999;
+        isolated.isRunActive = false; // avoid the unrelated persistent-save flush in this isolated fixture
+        lifecycle.GetMethod("EndRun").Invoke(null, new object[] { isolated, RunEndReason.None, null, null, null });
+        Assert.AreEqual(0, isolated.runGold);
+    }
+
+    [Test] public void RunShop_PricesStayInRequestedRanges_AndSlotsAreUnrestricted()
+    {
+        var shop = UnityEditor.AssetDatabase.LoadAssetAtPath<ShopDefinitionSO>("Assets/_Project/Data/Dialogue/Merchant/ShopDefinition_RunGold.asset");
+        Assert.IsTrue(shop.UsesRunGold);
+        Assert.AreEqual(3, shop.BaseVisibleSlotCount);
+        Assert.AreEqual(3, shop.MaxWeaponSlots);
+        Assert.AreEqual(0, shop.StockRollWeights.consumableWeight);
+        var weapon = Own(ScriptableObject.CreateInstance<WeaponDefinition>());
+        var relic = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+        for (int i = 0; i < 256; i++)
+        {
+            Assert.That(shop.RollGoldPrice(weapon), Is.InRange(1000, 1300));
+            relic.rarity = ItemRarity.Common;
+            Assert.That(shop.RollGoldPrice(relic), Is.InRange(200, 400));
+            relic.rarity = ItemRarity.Rare;
+            Assert.That(shop.RollGoldPrice(relic), Is.InRange(500, 800));
+            relic.rarity = ItemRarity.Epic;
+            Assert.That(shop.RollGoldPrice(relic), Is.InRange(900, 1200));
+        }
+    }
+
     private static void Set(Component component, string name, object value) =>
         component.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).SetValue(component, value);
     private static bool Transfer(IItemContainer source, int from, IItemContainer target, int to)

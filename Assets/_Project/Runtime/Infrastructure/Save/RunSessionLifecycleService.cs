@@ -17,6 +17,7 @@ internal static class RunSessionLifecycleService
         data.isRunActive = true;
         data.runElapsedSeconds = 0f;
         data.runRemainingSeconds = 0f;
+        data.runGold = 0;
         data.pendingHubReturnFullHeal = false;
         data.pendingHubLoadFullHeal = false;
         data.defeatedBossIds ??= new List<string>();
@@ -45,6 +46,7 @@ internal static class RunSessionLifecycleService
 
         data.isRunActive = false;
         data.runRemainingSeconds = 0f;
+        data.runGold = 0;
         data.pendingTransition = null;
         data.pendingPlayerState = null;
         data.pendingHubReturnFullHeal = reason != RunEndReason.None;
@@ -502,6 +504,7 @@ internal static class RunSessionStateService
         data.isRunActive = false;
         data.runElapsedSeconds = 0f;
         data.runRemainingSeconds = 0f;
+        data.runGold = 0;
         data.lastRunEndReason = RunEndReason.None;
         data.pendingTransition = null;
         data.pendingPlayerState = null;

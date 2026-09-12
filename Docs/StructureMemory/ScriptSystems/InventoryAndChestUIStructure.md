@@ -182,3 +182,7 @@ Related verification: [2026-09-12 session](../../SessionLogs/2026-09-12.md).
 ### Lone first weapon exception (2026-09-12)
 
 WeaponInventory2D.TrySwapWeaponSlots rejects moving a sole weapon from index 0 into empty index 1, including reverse-source drag of that empty slot. This applies with or without a seal. Two occupied slots still swap and a new second weapon can still be acquired. The storage/drop exception for sealed slots otherwise remains.
+
+### Source-specific weapon availability (2026-09-12)
+
+LootPoolItemSelectionService.CanDropWeapon rejects Weapon.WindWeapon globally and gates Weapon.Flowering / Weapon.OddIron behind explicit treasure-chest selection. LootPoolService.GetRandomTreasureChestWeapon is used by normal and override ChestLootGenerationService paths (including reroll/boss rewards). Other generic selection and candidate-based Grave selection exclude them. ShopInventoryRoll applies the same non-chest policy to new stock. Existing owned weapons, saved stock and world pickups are not removed; inventory dropping is not a random loot roll. Weapon definitions/unlock databases remain intact.

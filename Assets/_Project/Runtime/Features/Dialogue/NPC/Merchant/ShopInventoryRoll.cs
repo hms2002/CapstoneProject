@@ -185,7 +185,7 @@ public sealed class ShopInventoryRoll
         for (int i = 0; i < unlockedIds.Count; i++)
         {
             WeaponDefinition definition = ItemManager.Instance.GetWeaponData(unlockedIds[i]);
-            if (definition != null)
+            if (definition != null && LootPoolItemSelectionService.CanDropWeapon(definition.weaponId, false))
                 pool.Add(definition);
         }
 

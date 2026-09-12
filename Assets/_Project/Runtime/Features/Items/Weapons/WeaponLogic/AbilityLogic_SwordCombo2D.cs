@@ -199,7 +199,7 @@ namespace UnityGAS.Sample
             var cfg = data.DamageConfig;
             bool includeStagger = (cfg != null) && cfg.includeStaggerBuildUp;
 
-            Vector2 perp = new Vector2(-dir.y, dir.x);
+            Vector2 perp = new(-dir.y * (dir.x < 0f ? -1f : 1f), Mathf.Abs(dir.x));
             int sideSign = step.sideSign;
 
             Vector2 center = (Vector2)system.transform.position

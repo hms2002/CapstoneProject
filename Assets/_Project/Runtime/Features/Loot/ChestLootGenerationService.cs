@@ -79,7 +79,7 @@ internal sealed class ChestLootGenerationService
             chestModifiers.chestWeaponMaxBonus);
         for (int i = 0; i < weaponCount; i++)
         {
-            WeaponDefinition weapon = poolService.GetRandomWeapon(banList);
+            WeaponDefinition weapon = poolService.GetRandomTreasureChestWeapon(banList);
             if (weapon == null)
                 continue;
 
@@ -118,7 +118,7 @@ internal sealed class ChestLootGenerationService
         int weaponCount = rollService.PickCountInProfile(profile.WeaponCountProfile);
         for (int i = 0; i < weaponCount; i++)
         {
-            WeaponDefinition weapon = poolService.GetRandomWeapon(banList);
+            WeaponDefinition weapon = poolService.GetRandomTreasureChestWeapon(banList);
             if (weapon == null)
                 continue;
 

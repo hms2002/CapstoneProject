@@ -328,17 +328,22 @@ public sealed partial class BeerMonsterShotRunner : MonoBehaviour, IMobPatternRu
         {
             float warningSeconds = CombatTimingService.ScaleSeconds(system, context.WarningSeconds, CombatTimingSlot.AttackWarning);
             ShowWarning(context, warningSeconds);
-            if (warningSeconds > 0f)
-                yield return TrackWarningUntilFire(system, spec, initialTarget, context, warningSeconds);
-
+            float trackingSeconds = Mathf.Max(0f, warningSeconds - 0.2f);
+            float elapsed = 0f;
+            while (elapsed < warningSeconds)
+            {
+                if (cancelRequested || owner.IsDead || IsCancelled(spec))
+                    yield break;
+                if (elapsed < trackingSeconds && owner.TryBuildShotContext(system, spec, initialTarget, out BeerMonster.ShotContext trackedContext))
+                {
+                    context = trackedContext;
+                    UpdateWarning(context, warningSeconds);
+                }
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
-
-            if (owner.TryBuildShotContext(system, spec, initialTarget, out BeerMonster.ShotContext finalContext))
-            {
-                context = finalContext;
-                UpdateWarning(context, warningSeconds);
-            }
 
             HideWarning();
             CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.Attack);
@@ -350,32 +355,6 @@ public sealed partial class BeerMonsterShotRunner : MonoBehaviour, IMobPatternRu
             cancelRequested = false;
             isRunning = false;
             abilityCoordinator?.EndRunner(this);
-        }
-    }
-
-    private IEnumerator TrackWarningUntilFire(
-        AbilitySystem system,
-        AbilitySpec spec,
-        GameObject initialTarget,
-        BeerMonster.ShotContext context,
-        float warningSeconds)
-    {
-        float elapsed = 0f;
-        float duration = Mathf.Max(0f, warningSeconds);
-
-        while (elapsed < duration)
-        {
-            if (cancelRequested || owner.IsDead || IsCancelled(spec))
-                yield break;
-
-            if (owner.TryBuildShotContext(system, spec, initialTarget, out BeerMonster.ShotContext trackedContext))
-            {
-                context = trackedContext;
-                UpdateWarning(context, warningSeconds);
-            }
-
-            elapsed += Time.deltaTime;
-            yield return null;
         }
     }
 

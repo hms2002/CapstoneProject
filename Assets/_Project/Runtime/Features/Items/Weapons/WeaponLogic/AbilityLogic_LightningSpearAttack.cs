@@ -198,7 +198,7 @@ namespace UnityGAS.Sample
             Vector2 direction = attackDirection.sqrMagnitude > 0.0001f
                 ? attackDirection.normalized
                 : Vector2.right;
-            Vector2 perp = new Vector2(-direction.y, direction.x);
+            Vector2 perp = new(-direction.y * (direction.x < 0f ? -1f : 1f), Mathf.Abs(direction.x));
             int sideSign = step.sideSign < 0 ? -1 : 1;
 
             Vector2 center = (Vector2)system.transform.position

@@ -66,7 +66,9 @@ public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner, 
         isRunning = true;
         cancelRequested = false;
         float delaySeconds = CombatTimingService.ScaleSeconds(system, context.DelaySeconds, CombatTimingSlot.AttackWarning);
-        ShowWarning(context, delaySeconds);
+        AttackTelegraphSpec lockedWarning = owner.MakeLockOnSpec(context.TargetObject, delaySeconds);
+        telegraphPresenter?.Show(lockedWarning);
+        float trackingSeconds = Mathf.Max(0f, delaySeconds - 0.2f);
 
         float elapsed = 0f;
 
@@ -77,7 +79,11 @@ public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner, 
                 if (IsCancelled(spec) || cancelRequested || IsSuppressed() || !owner.CanContinueAttack(context.TargetObject))
                     yield break;
 
-                UpdateWarning(context, delaySeconds);
+                if (elapsed < trackingSeconds)
+                {
+                    lockedWarning = owner.MakeLockOnSpec(context.TargetObject, delaySeconds);
+                    telegraphPresenter?.UpdateCurrentGeometry(lockedWarning);
+                }
                 elapsed += Time.deltaTime;
                 yield return null;
             }
@@ -86,7 +92,8 @@ public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner, 
                 yield break;
 
             HideWarning();
-            owner.FireProjectile(context.TargetObject);
+            owner.FireProjectile(context.TargetObject, lockedWarning.lineStart,
+                ((Vector2)(lockedWarning.lineEnd - lockedWarning.lineStart)).normalized);
         }
         finally
         {

@@ -66,8 +66,19 @@ public class WizardScatterShotRunner : MonoBehaviour, IMobPatternRunner
             float prepareSeconds = CombatTimingService.ScaleSeconds(system, context.PrepareSeconds, CombatTimingSlot.AttackWarning);
             ShowTelegraph(context, prepareSeconds);
             owner.PlayAttackPrepareAnimation();
-            if (prepareSeconds > 0f)
-                yield return AbilityTasks.WaitDelay(system, spec, prepareSeconds);
+            float trackingSeconds = Mathf.Max(0f, prepareSeconds - 0.2f);
+            float elapsed = 0f;
+            while (elapsed < prepareSeconds)
+            {
+                if (cancelRequested || owner.IsDead || IsCancelled(spec)) yield break;
+                if (elapsed < trackingSeconds && owner.TryBuildShotContext(system, spec, initialTarget, out Wizard.ScatterShotContext trackedContext))
+                {
+                    context = trackedContext;
+                    ShowTelegraph(context, prepareSeconds);
+                }
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec)) yield break;
 
@@ -118,7 +129,10 @@ public class WizardScatterShotRunner : MonoBehaviour, IMobPatternRunner
                 telegraphWallClipSampleCount,
                 telegraphWallClipSkinWidth);
 
-        telegraphPresenter.Show(spec);
+        if (telegraphPresenter.HasActiveTelegraph)
+            telegraphPresenter.UpdateCurrentGeometry(spec);
+        else
+            telegraphPresenter.Show(spec);
     }
 
     /// <summary>현재 표시 중인 Wizard 산탄 경고를 즉시 숨깁니다.</summary>

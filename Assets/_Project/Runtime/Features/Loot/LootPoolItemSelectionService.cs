@@ -13,7 +13,11 @@ internal static class LootPoolItemSelectionService
         "RD_FeatherOrbit",
     };
 
-    public static WeaponDefinition GetRandomWeapon(HashSet<string> exclusionList)
+    internal static bool CanDropWeapon(string weaponId, bool treasureChest) =>
+        !string.IsNullOrWhiteSpace(weaponId) && weaponId != "Weapon.WindWeapon" &&
+        (treasureChest || (weaponId != "Weapon.Flowering" && weaponId != "Weapon.OddIron"));
+
+    public static WeaponDefinition GetRandomWeapon(HashSet<string> exclusionList, bool treasureChest = false)
     {
         if (ItemManager.Instance == null)
             return null;
@@ -21,7 +25,7 @@ internal static class LootPoolItemSelectionService
         exclusionList ??= new HashSet<string>();
 
         var pool = ItemManager.Instance.GetUnlockedWeaponIDs();
-        var valid = pool.Where(w => !exclusionList.Contains(w)).ToList();
+        var valid = pool.Where(w => CanDropWeapon(w, treasureChest) && !exclusionList.Contains(w)).ToList();
         if (valid.Count == 0)
             return null;
 
@@ -44,7 +48,7 @@ internal static class LootPoolItemSelectionService
             if (weapon == null || string.IsNullOrWhiteSpace(weapon.weaponId))
                 continue;
 
-            if (exclusionList.Contains(weapon.weaponId))
+            if (!CanDropWeapon(weapon.weaponId, false) || exclusionList.Contains(weapon.weaponId))
                 continue;
 
             valid.Add(weapon);
