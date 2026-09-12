@@ -129,6 +129,7 @@ GameObject:
   - component: {fileID: 1082065429}
   - component: {fileID: 1082065428}
   - component: {fileID: 1082065425}
+  - component: {fileID: 1082065427}
   - component: {fileID: 1082065430}
   m_Layer: 0
   m_Name: Trigger
@@ -206,7 +207,7 @@ MonoBehaviour:
   - anchor: {fileID: 2136925989}
     itemFilter: 0
   - anchor: {fileID: 2136925988}
-    itemFilter: 0
+    itemFilter: 3
   shopSlots:
   - {fileID: 0}
   - {fileID: 0}
@@ -1152,3 +1153,21 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+
+--- !u!114 &1082065427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082065424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efc947d353d209e489f1073dcd8df338, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  npcData: {fileID: 11400000, guid: d9ef2aea03d3ddf4488a762102786dde, type: 2}
+  legacyInkJSON: {fileID: 4900000, guid: 1b74491ac05767b4e9e93bc5a9910555, type: 3}
+  promptAnchor: {fileID: 596633812}
+  interactPromptText: "\uB300\uD654\uD558\uAE30"
+  spriteRenderer: {fileID: 61140046}

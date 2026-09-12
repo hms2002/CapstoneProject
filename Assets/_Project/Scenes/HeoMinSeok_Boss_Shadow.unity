@@ -15472,6 +15472,8 @@ MonoBehaviour:
   maximumExperiencePickupCount: 30
   experiencePickupScatterRadius: 1.2
   logDebug: 1
+  goldPickupPrefab: {fileID: 5166873198201453664, guid: d2d2c39b9e0b4c6fbbd950fe7576308a, type: 3}
+  baseGoldReward: 800
 --- !u!1 &1969022361
 GameObject:
   m_ObjectHideFlags: 0

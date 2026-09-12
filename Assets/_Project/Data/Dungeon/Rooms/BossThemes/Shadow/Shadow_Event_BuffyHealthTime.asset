@@ -15,6 +15,7 @@ MonoBehaviour:
   layoutData:
     roomId: Shadow_Event_BuffyHealthTime
     roomType: 4
+    shapeTag: {fileID: 0}
     size: {x: 12, y: 12}
     localBounds:
       x: 0
@@ -487,7 +488,8 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 7ea682233a74ed64382d80472dd3c8d3, type: 2}
     overlayFxTiles: []
     objectPlacements:
-    - placementId: ShadowBuffyHealthTimeEventModule
+    - monsterWaveId: 
+      placementId: ShadowBuffyHealthTimeEventModule
       kind: 0
       prefab: {fileID: 4713061718945016014, guid: 42904e4ffda44b84c82cdb2f1a50175c, type: 3}
       monsterSpawnRole: 0
@@ -496,6 +498,38 @@ MonoBehaviour:
       localOffset: {x: 0.34000015, y: 0.25}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
+      childPoseOverrides:
+      - slotId: BuffyGuideNpc
+        overridePosition: 1
+        localPosition: {x: -1.9, y: -3.44, z: 0}
+        overrideRotation: 1
+        localRotationDegrees: 0
+        overrideScale: 1
+        localScale: {x: 1, y: 1, z: 1}
+      - slotId: StrengthEquipment
+        overridePosition: 1
+        localPosition: {x: -2.36, y: -0.34, z: 0}
+        overrideRotation: 1
+        localRotationDegrees: 0
+        overrideScale: 1
+        localScale: {x: 1, y: 1, z: 1}
+      - slotId: LogEquipment
+        overridePosition: 1
+        localPosition: {x: 2.65, y: -0.34, z: 0}
+        overrideRotation: 1
+        localRotationDegrees: 0
+        overrideScale: 1
+        localScale: {x: 1, y: 1, z: 1}
+      - slotId: WheelEquipment
+        overridePosition: 1
+        localPosition: {x: 0.17, y: 0.14, z: 0}
+        overrideRotation: 1
+        localRotationDegrees: 0
+        overrideScale: 1
+        localScale: {x: 1, y: 1, z: 1}
       linkedChestLockPlacementId: 
+    monsterWaves:
+    - id: wave_default
+      displayName: Wave 1
+      startDelaySeconds: 0
     travelEndpointPlacements: []

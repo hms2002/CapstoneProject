@@ -155,6 +155,8 @@ public sealed class GamePlayData
     public LevelProgressionState levelProgression = new LevelProgressionState();
 
     public int runGold;
+    public bool officerQuestStarted;
+    public bool officerQuestCompletionPresented;
     public int pendingRunMagicStoneDelta;
     public System.Collections.Generic.List<PendingRunAffectionChange> pendingRunAffectionChanges = new System.Collections.Generic.List<PendingRunAffectionChange>();
     public System.Collections.Generic.List<PendingRunShortcutUnlock> pendingRunShortcutUnlocks = new System.Collections.Generic.List<PendingRunShortcutUnlock>();

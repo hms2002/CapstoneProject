@@ -16,6 +16,9 @@ public class MagicStonePickup : MonoBehaviour
     public float magnetSpeed = 10f;       // 날아가는 속도
     public float delayBeforeMagnet = 0.5f;// 드롭 후 대기 시간
 
+    [Header("Acquisition Presentation")]
+    [SerializeField] private ParticleSystem gainParticlePrefab;
+
     private Transform targetPlayer;
     private bool collected;
 
@@ -97,9 +100,9 @@ public class MagicStonePickup : MonoBehaviour
         if (CurrencyManager.Instance != null)
         {
             CurrencyManager.Instance.AddMagicStone(amount);
+            Transform gainTarget = targetPlayer != null ? targetPlayer : PlayerRuntimeRegistry.GetPlayerTransform();
+            PlayerHealParticlePlayback.PlayAttached(gainParticlePrefab, gainTarget, Vector3.zero);
         }
-
-        // TODO: 획득 효과음(Sound)이나 파티클(VFX) 추가 가능
 
         Destroy(gameObject);
     }

@@ -39,7 +39,7 @@ namespace UnityGAS
             if (!ignoreEvasion && CombatEvasionUtil.TryRollEvasion(target))
             {
                 LogDebug(logDebug, $"blocked: evaded. target={target.name}, damage={finalHpDamage:0.###}", target);
-                DamagePopupPlayback.ShowText("EVADE", target.transform.position);
+                DamagePopupPlayback.Show(DamagePopupRequest.Text("EVADE", target.transform.position, isPlayerTarget: target.CompareTag("Player")));
                 TryPlayPlayerEvadeSound(target);
                 return;
             }
@@ -217,7 +217,7 @@ namespace UnityGAS
             if (appliedDamage <= 0f)
                 return;
 
-            DamagePopupPlayback.Show(DamagePopupRequest.Damage(appliedDamage, target.transform.position));
+            DamagePopupPlayback.Show(DamagePopupRequest.Damage(appliedDamage, target.transform.position, isPlayerTarget: target.CompareTag("Player")));
             DamagePopupDuplicateSuppressor.Register(target, appliedDamage);
         }
 

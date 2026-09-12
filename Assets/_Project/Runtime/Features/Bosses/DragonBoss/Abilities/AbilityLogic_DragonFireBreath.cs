@@ -16,7 +16,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
 
     [Header("Timing")]
     [SerializeField, Min(0f)] private float prepareSeconds = 1.8f;
-    [SerializeField, Min(0f)] private float preFireDelaySeconds = 0.2f;
+    [SerializeField, Min(0f)] private float preFireDelaySeconds = 0.4f;
     [SerializeField, Min(0.01f)] private float activeSeconds = 1.4f;
     [SerializeField, Min(1)] private int repeatCount = 3;
     [SerializeField, Min(0.01f)] private float damageIntervalSeconds = 0.65f;

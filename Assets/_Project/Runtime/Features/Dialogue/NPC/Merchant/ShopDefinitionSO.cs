@@ -6,14 +6,15 @@ public sealed class ShopDefinitionSO : ScriptableObject
     [SerializeField] private bool usesRunGold;
     public bool UsesRunGold => usesRunGold;
 
-    public int RollGoldPrice(ScriptableObject item) => item switch
+    public int RollGoldPrice(ScriptableObject item) => ((item switch
     {
         WeaponDefinition => Random.Range(1000, 1301),
         RelicDefinition relic when relic.rarity == ItemRarity.Epic => Random.Range(900, 1201),
         RelicDefinition relic when relic.rarity == ItemRarity.Rare => Random.Range(500, 801),
         RelicDefinition => Random.Range(200, 401),
+        ConsumableDefinition => Random.Range(200, 301),
         _ => 0
-    };
+    }) + 5) / 10 * 10;
 
     [Header("Unlock")]
     [SerializeField] private bool requireShopUpgrade = true;

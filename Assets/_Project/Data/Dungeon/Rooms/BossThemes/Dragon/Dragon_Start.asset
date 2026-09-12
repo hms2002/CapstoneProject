@@ -159,7 +159,11 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 2d34f38ff2c1419438979669663b50b5, type: 2}
     - localCell: {x: 11, y: 4}
       tile: {fileID: 11400000, guid: 59a5642b36711c149ab5f49a54ee62bb, type: 2}
-    floorDetailTiles: []
+    floorDetailTiles:
+    - localCell: {x: 4, y: 6}
+      tile: {fileID: 11400000, guid: f66126b954520424a82896cca06c8dc1, type: 2}
+    - localCell: {x: 7, y: 6}
+      tile: {fileID: 11400000, guid: ecc04cd151d468a4ab5cfdc9dd7a3c45, type: 2}
     groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 0}
@@ -262,6 +266,10 @@ MonoBehaviour:
     foregroundTiles: []
     overlayFxTiles: []
     objectPlacements: []
+    monsterWaves:
+    - id: wave_default
+      displayName: Wave 1
+      startDelaySeconds: 0
     travelEndpointPlacements:
     - slotId: LobbyGate
       kind: 1

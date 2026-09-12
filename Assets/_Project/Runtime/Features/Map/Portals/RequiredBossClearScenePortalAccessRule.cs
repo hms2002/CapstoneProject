@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 /// <summary>
-/// 책임 : 지정된 보스 route theme들이 영구 클리어된 경우에만 ScenePortal 이동을 허용하고, 실패 시 교체 가능한 이벤트를 발행한다.
+/// 책임 : 현재 런에서 지정된 보스 route theme들을 모두 처치한 경우에만 ScenePortal 이동을 허용하고, 실패 시 교체 가능한 이벤트를 발행한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class RequiredBossClearScenePortalAccessRule : MonoBehaviour, IScenePortalAccessRule
@@ -21,9 +21,11 @@ public sealed class RequiredBossClearScenePortalAccessRule : MonoBehaviour, ISce
     public IReadOnlyList<CorridorBossRouteSetSO> RequiredBossRouteSets => requiredBossRouteSets;
     public IReadOnlyList<string> RequiredBossThemeIds => requiredBossThemeIds;
 
+    public bool AreRequirementsMet => RunSessionStore.IsRunActive && AreAllRequirementsCleared();
+
     public bool CanAccess(ScenePortal portal, IPlayerInteractor player)
     {
-        return AreAllRequirementsCleared();
+        return AreRequirementsMet;
     }
 
     public void HandleAccessDenied(ScenePortal portal, IPlayerInteractor player)
@@ -72,8 +74,7 @@ public sealed class RequiredBossClearScenePortalAccessRule : MonoBehaviour, ISce
 
     private static bool IsBossCleared(string bossThemeId)
     {
-        return BossClearProgressStore.HasClearedBoss(bossThemeId) ||
-               RunProgressPlayback.IsBossDefeatedThisRun(bossThemeId);
+        return RunSessionStore.Data?.defeatedBossIds?.Contains(bossThemeId) == true;
     }
 
     private void ShowBlockedPopup()

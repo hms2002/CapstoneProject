@@ -350,10 +350,22 @@ MonoBehaviour:
     floorDetailTiles:
     - localCell: {x: 1, y: 4}
       tile: {fileID: 11400000, guid: 04aec83a2f786d3488716092c45cc087, type: 2}
+    - localCell: {x: 1, y: 16}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
     - localCell: {x: 2, y: 4}
       tile: {fileID: 11400000, guid: 81cbe82e7c6561e41982c09980d6b438, type: 2}
+    - localCell: {x: 2, y: 16}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
     - localCell: {x: 3, y: 4}
       tile: {fileID: 11400000, guid: 8734286020a64a04c9ebd85966fcd07c, type: 2}
+    - localCell: {x: 3, y: 16}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 4, y: 16}
+      tile: {fileID: 11400000, guid: f66126b954520424a82896cca06c8dc1, type: 2}
+    - localCell: {x: 7, y: 16}
+      tile: {fileID: 11400000, guid: ecc04cd151d468a4ab5cfdc9dd7a3c45, type: 2}
+    - localCell: {x: 8, y: 16}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
     - localCell: {x: 9, y: 4}
       tile: {fileID: 11400000, guid: e28b2f97cec9e06488f6029ee0a7df47, type: 2}
     - localCell: {x: 9, y: 5}
@@ -366,6 +378,8 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 2f8e875d7b7a9f04db91b3aa88dc99c1, type: 2}
     - localCell: {x: 9, y: 12}
       tile: {fileID: 11400000, guid: 11a519cacddab2641b0668e1c4e863a4, type: 2}
+    - localCell: {x: 9, y: 16}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
     - localCell: {x: 10, y: 1}
       tile: {fileID: 11400000, guid: b0f5a043dd318e646b9681a43d34d6e2, type: 2}
     - localCell: {x: 10, y: 4}
@@ -380,6 +394,8 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: f50836c342ff7b44ba703db3a2fd34b3, type: 2}
     - localCell: {x: 10, y: 13}
       tile: {fileID: 11400000, guid: 04aec83a2f786d3488716092c45cc087, type: 2}
+    - localCell: {x: 10, y: 16}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
     groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 0}
@@ -562,7 +578,8 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: f0d418cfb40c1cb4290808329c069969, type: 2}
     overlayFxTiles: []
     objectPlacements:
-    - placementId: Object_06
+    - monsterWaveId: 
+      placementId: Object_06
       kind: 0
       prefab: {fileID: 8536156983854311797, guid: e5c3dbe97e8d669459817a5afe1feebe, type: 3}
       monsterSpawnRole: 1
@@ -573,7 +590,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Mage_03
+    - monsterWaveId: wave_default
+      placementId: Mage_03
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 1
@@ -584,7 +602,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Mage_01
+    - monsterWaveId: wave_default
+      placementId: Mage_01
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 1
@@ -595,7 +614,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Tank_05
+    - monsterWaveId: wave_default
+      placementId: Tank_05
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 2
@@ -606,7 +626,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Mage_02
+    - monsterWaveId: wave_default
+      placementId: Mage_02
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 1
@@ -617,7 +638,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Mage_04
+    - monsterWaveId: wave_default
+      placementId: Mage_04
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 1
@@ -628,4 +650,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
+    monsterWaves:
+    - id: wave_default
+      displayName: Wave 1
+      startDelaySeconds: 0
     travelEndpointPlacements: []

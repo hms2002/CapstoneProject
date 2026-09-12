@@ -101,7 +101,7 @@ public sealed class DamagePopupFormatProfileSO : ScriptableObject
 
         return new DamagePopupViewModel(
             content,
-            entry != null ? entry.textColor : Color.white,
+            ResolvePlayerColor(request, entry != null ? entry.textColor : Color.white),
             entry != null ? entry.moveVelocity : new Vector3(0.45f, 1.25f, 0f),
             entry != null ? Mathf.Max(0.05f, entry.lifetime) : 0.75f,
             entry != null ? Mathf.Clamp01(entry.fadeOutRatio) : 0.55f,
@@ -109,6 +109,17 @@ public sealed class DamagePopupFormatProfileSO : ScriptableObject
             entry != null ? Mathf.Max(0.01f, entry.endScale) : 1.1f,
             entry != null ? entry.fontSize : 0f,
             entry != null && entry.fontSize > 0f);
+    }
+
+    public static Color ResolvePlayerColor(DamagePopupRequest request, Color defaultColor)
+    {
+        if (!request.IsPlayerTarget)
+            return defaultColor;
+
+        if (request.Kind == DamagePopupKind.Text)
+            return request.TextOverride == "EVADE" ? new Color32(50, 156, 199, 255) : defaultColor;
+
+        return new Color32(255, 77, 77, 255);
     }
 
     private FormatEntry ResolveEntry(DamagePopupRequest request)

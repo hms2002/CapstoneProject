@@ -166,7 +166,7 @@ MonoBehaviour:
     - localCell: {x: 8, y: 6}
       tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
     - localCell: {x: 8, y: 7}
-      tile: {fileID: 11400000, guid: 745aba2abe1ef9a4296d8545773c239e, type: 2}
+      tile: {fileID: 11400000, guid: a4538e97210f3ef45ba14a5418cb83de, type: 2}
     - localCell: {x: 8, y: 8}
       tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
     - localCell: {x: 8, y: 9}
@@ -299,7 +299,35 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
     - localCell: {x: 17, y: 6}
       tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
-    floorDetailTiles: []
+    floorDetailTiles:
+    - localCell: {x: 1, y: 8}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 2, y: 8}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 3, y: 8}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 4, y: 8}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 5, y: 8}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 6, y: 8}
+      tile: {fileID: 11400000, guid: f66126b954520424a82896cca06c8dc1, type: 2}
+    - localCell: {x: 7, y: 10}
+      tile: {fileID: 11400000, guid: ddeba07978feef74c9817ac530b4f5f1, type: 2}
+    - localCell: {x: 10, y: 10}
+      tile: {fileID: 11400000, guid: ecc04cd151d468a4ab5cfdc9dd7a3c45, type: 2}
+    - localCell: {x: 11, y: 8}
+      tile: {fileID: 11400000, guid: ecc04cd151d468a4ab5cfdc9dd7a3c45, type: 2}
+    - localCell: {x: 12, y: 8}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 13, y: 8}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 14, y: 8}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 15, y: 8}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 16, y: 8}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
     groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 0}
@@ -528,11 +556,10 @@ MonoBehaviour:
     - localCell: {x: 15, y: 10}
       tile: {fileID: 11400000, guid: 9ee3bf9d73271eb4e9247ff0be8fa427, type: 2}
     foregroundTiles: []
-    overlayFxTiles:
-    - localCell: {x: 8, y: 7}
-      tile: {fileID: 11400000, guid: a4538e97210f3ef45ba14a5418cb83de, type: 2}
+    overlayFxTiles: []
     objectPlacements:
-    - placementId: DragonParcelPickupEventModule
+    - monsterWaveId: 
+      placementId: DragonParcelPickupEventModule
       kind: 0
       prefab: {fileID: 3131555577808152921, guid: 865ae8ad885a6c841b6de7dc8767228f, type: 3}
       monsterSpawnRole: 0
@@ -543,4 +570,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
+    monsterWaves:
+    - id: wave_default
+      displayName: Wave 1
+      startDelaySeconds: 0
     travelEndpointPlacements: []

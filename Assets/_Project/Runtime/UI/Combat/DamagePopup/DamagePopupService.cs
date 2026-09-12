@@ -324,7 +324,7 @@ public sealed class DamagePopupService : MonoBehaviour
             ? request.TextOverride
             : Mathf.Max(1, Mathf.CeilToInt(request.Amount)).ToString();
 
-        Color color = ResolveFallbackColor(request);
+        Color color = DamagePopupFormatProfileSO.ResolvePlayerColor(request, ResolveFallbackColor(request));
         Vector3 moveVelocity = request.Kind == DamagePopupKind.Critical
             ? new Vector3(0.58f, 1.48f, 0f)
             : new Vector3(0.45f, 1.25f, 0f);

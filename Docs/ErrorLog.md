@@ -1986,6 +1986,27 @@ World hitstop now uses the existing shared pause-owner service with unscaled exp
 
 Symptom: Flowering, Lightning and shared SwordCombo slash centers shift vertically when aiming left although the right-facing offset is correct. Cause: the ordinary perpendicular (-aim.y, aim.x) rotates its authored side offset downward when aim.x becomes negative, while the visual uses a mirrored facing convention. Fix: match the existing ApprenticeHeroSword basis (-aim.y * facingSign, abs(aim.x)) for these slash centers. Do not apply this convention indiscriminately to direction-local projectiles, trails or bounds projection. Regression coverage: Flowering horizontal/diagonal mirrored center checks in CombatFeelLootQuestPlayModeTests; compiled, PlayMode execution pending.
 
-### 2026-09-13 - Held non-looping landing can miss its exit-time window
+## 2026-09-12 - Cleared portal visual guessed catalog shape instead of using travel gate
 
-Native Dragon slam regression reproduced a landing state that stayed active after holdLanding became false: its non-looping clip had already passed the original exit-time window while the condition blocked transition. The fix retains ordinary landing auto-exit and adds a releaseLanding-triggered, no-exit-time transition from Landing only. Reset stale release triggers on new landing requests. Avoid solving this with a global Idle request or Animator.speed=0, which can interfere with reactive/death presentation. Final native checks cover long hold/release, ordinary landing, groggy/death interruption and cleanup; 39/39 related PlayMode tests passed. See [session](SessionLogs/2026-09-13.md).
+- Symptom: a defeated officer's Grand Hall portal rejected travel but retained the active sprite and center particles.
+- Cause: GrandHallClearedPortalView required exactly one NormalRouteSets entry; all current officer catalogs have an empty list and put their destination in FinalRouteSet. The earlier presentation-only test called ApplyCleared directly and missed Update's real condition.
+- Correction: project the existing RunRoutePlayback BossAlreadyDefeatedThisRun warning used by ScenePortal interaction. Keep run/Grand Hall scope and existing sprite/particle cleanup.
+- Prevention: test destination-driven visual entry conditions, including authored catalog shapes, in addition to the visual mutation method. Do not maintain a separate destination/defeat resolver in presentation code.
+## 2026-09-13 - Final corridor used permanent clears; final boss direction disabled
+
+- Grand Hall's RequiredBossClearScenePortalAccessRule accepted permanent profile clears OR current-run clears. Previous runs therefore unlocked the final corridor without current-run officer kills.
+- The actual ProceduralDemonkingCorridor BossGate binding references Corridor_demon_king_Boss, whose A-to-B direction was disabled, independently preventing boss-room entry.
+- Corrected the requirement to active-run defeatedBossIds, shared it with disabled portal visuals, and enabled only A-to-B while preserving the current-run defeated-boss guard.
+- Check both the scope of progress records and the enabled flag on the actual scene-bound connection when diagnosing travel. Never erase permanent profile progress to fix a run-only gate.
+
+## 2026-09-13 - Chloe entry dialogue HP report remains unresolved
+
+- Report: the first Chloe dialogue immediately after room entry temporarily displays full HP; prior HP returns after dialogue.
+- Investigation correction: normal dialogue uses BlockControlOnly and does not pause Time.timeScale. A scaled restore retry is not evidence of this bug. Reverted the speculative retry patch and pause fixture.
+- No HP writes found in dialogue/cinematic protection; AttributeValue publishes changes after updating CurrentValue. Inspect live scene-entry restoration and HUD bindings to establish the actual cause; no visual fix confirmed.
+
+## 2026-09-13 - Unbounded vision masks overlapped weapon-local reveal masks
+
+- PlayerVisionMask and candle masks had custom ranges disabled. Apprentice reveal ranges alone did not isolate other sprites at the same sorting order, and dropped spear mask had no local sorting scope.
+- Restricted vision masks to MaskRender and isolated charge/dropped-spear masks in local SortingGroups. Host item sorting must target the group instead of rewriting child-local mask/render order.
+- Existing layer IDs/order retained; reference/compile checks passed, simultaneous rendered overlap testing outstanding.

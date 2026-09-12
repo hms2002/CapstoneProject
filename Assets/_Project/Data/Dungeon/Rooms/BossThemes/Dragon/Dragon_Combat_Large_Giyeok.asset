@@ -15,6 +15,7 @@ MonoBehaviour:
   layoutData:
     roomId: Dragon_Combat_Large_Giyeok
     roomType: 0
+    shapeTag: {fileID: 0}
     size: {x: 32, y: 24}
     localBounds:
       x: 0
@@ -32,6 +33,9 @@ MonoBehaviour:
       width: 2
     difficultyTier: 1
     selectionWeight: 0.5
+    combatMetadata:
+      sizeTag: 2
+      killLockRewardTag: 1
     topologyPlacement:
       mode: 0
       minimumGraphDistanceFromStart: 0
@@ -2122,7 +2126,8 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: f4b60ba82e49c5e4d8c9e56fc01e4c5c, type: 2}
     overlayFxTiles: []
     objectPlacements:
-    - placementId: StageMonster_12
+    - monsterWaveId: wave_default
+      placementId: StageMonster_12
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
       monsterSpawnRole: 0
@@ -2132,8 +2137,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: Tank_05
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: Tank_05
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 2
@@ -2143,8 +2149,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: Warrior_11
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: Warrior_11
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -2154,8 +2161,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: StageMonster_14
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: StageMonster_14
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
       monsterSpawnRole: 0
@@ -2165,8 +2173,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: StageMonster_13
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: StageMonster_13
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
       monsterSpawnRole: 0
@@ -2176,8 +2185,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: Tank_06
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: Tank_06
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 2
@@ -2187,8 +2197,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: Warrior_10
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: Warrior_10
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -2198,8 +2209,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: Mage_03
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: Mage_03
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 1
@@ -2209,8 +2221,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: Mage_02
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: Mage_02
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 1
@@ -2220,8 +2233,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: Warrior_07
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: Warrior_07
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -2231,8 +2245,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: StageMonster_16
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: StageMonster_16
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
       monsterSpawnRole: 0
@@ -2242,8 +2257,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: Warrior_09
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: Warrior_09
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -2253,8 +2269,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: Warrior_08
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: Warrior_08
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -2264,8 +2281,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: StageMonster_15
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: StageMonster_15
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
       monsterSpawnRole: 0
@@ -2275,8 +2293,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: Tank_04
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: wave_default
+      placementId: Tank_04
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 2
@@ -2286,8 +2305,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - placementId: KillLockChest
+      linkedChestLockPlacementId: KillLockChest
+    - monsterWaveId: 
+      placementId: KillLockChest
       kind: 2
       prefab: {fileID: 8398461225799451672, guid: 670170a4e9390bc458d0b686227549af, type: 3}
       monsterSpawnRole: 0
@@ -2298,4 +2318,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
+    monsterWaves:
+    - id: wave_default
+      displayName: Wave 1
+      startDelaySeconds: 0
     travelEndpointPlacements: []

@@ -279,3 +279,18 @@ PlayerHitFeedback2D requests 0.1s world hitstop for live-player damage feedback 
 Slash center side offsets in ApprenticeHeroSword, Flowering base/bloom, LightningSpearAttack and SwordCombo2D use a perpendicular whose Y is abs(aim.x) and X is -aim.y times the facing sign. Mirrored left/right aim preserves world Y and reflects world X, keeping right-facing authored placement. This convention is for mirrored slash placement, not general direction-local projectile or trail coordinates.
 
 AttackTelegraphView disables clipping for Line/Rectangle/Circle both when shown and updated, after inherited clipping settings are resolved. Sector/Ring preserve clipping. This presentation policy does not change actual hit collision.
+
+### Player popup target presentation (2026-09-12)
+
+DamagePopupRequest carries an optional IsPlayerTarget flag. CombatDamageAction, HazardDamageAction, GE_Damage_Spec and the AttributeSet listener pass the existing Player-tag classification. DamagePopupFormatProfileSO resolves player damage to #FF4D4D and player EVADE to #329CC7, including the service code fallback. Critical/element format and animation stay intact; non-player colors keep the original profile rules.
+
+### Weapon skills survive hit reactions (2026-09-12)
+
+PlayerHitFeedback2D resolves State.Skill when its authored reference is empty, and also checks the current cast/execution definition against granted State.Skill or PlayerCombatInput2D known Skill1/Skill2 selections. Input records resolved skill definitions before activation so casting and runtime selections are covered. Protected hits retain world hitstop, flash and shake while skipping hit pose/state tags and forced cancellation. Death-owned forced cancellation is unchanged. The legacy allowHitReactDuringSkillTag no longer overrides weapon skill protection under the user revision.
+
+
+## Local weapon mask scopes (2026-09-13)
+
+- Apprentice charge reveal owns a SortingGroup on its existing runtime reveal root; external sorting follows the source weapon plus configured offset, internal reveal order is zero. Group lifetime follows revealRoot destruction.
+- PF_LightningSpear_ItemDisplayVisual authors a SortingGroup. ItemDisplayVisualPresenter2D assigns host sorting to that group and keeps internal sprite/mask ordering local, avoiding interference between simultaneous dropped weapons and charge effects.
+- PlayerVisionMask and StrangeCandlestick vision masks limit their custom range to MaskRender (the existing dark-overlay layer); they do not affect weapon sprite layers. No ProjectSettings sorting layers were added. Validate combined darkness/drop/charge rendering in Editor after changes.

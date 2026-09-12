@@ -117,6 +117,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
 
     private float nextAutoAttackTime;
     private readonly HashSet<AbilityDefinition> knownBasicAttackAbilities = new();
+    private readonly HashSet<AbilityDefinition> knownWeaponSkillAbilities = new();
     private bool wasBusyLastFrame;
     private bool isHoldingAttack;
     private WeaponAbilitySelector weaponAbilitySelector;
@@ -474,10 +475,15 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
         return ability != null && knownBasicAttackAbilities.Contains(ability);
     }
 
+    public bool IsKnownWeaponSkillAbility(AbilityDefinition ability) =>
+        ability != null && knownWeaponSkillAbilities.Contains(ability);
+
     private void RememberBasicAttack(WeaponAbilitySlot slot, AbilityDefinition ability)
     {
         if (slot == WeaponAbilitySlot.Attack && ability != null)
             knownBasicAttackAbilities.Add(ability);
+        else if ((slot == WeaponAbilitySlot.Skill1 || slot == WeaponAbilitySlot.Skill2) && ability != null)
+            knownWeaponSkillAbilities.Add(ability);
     }
 
     private bool TryHandleCurrentWeaponAbilityInput(WeaponAbilitySlot slot, AbilityDefinition ability)
