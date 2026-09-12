@@ -10,12 +10,13 @@ namespace UnityGAS
         {
             if (seconds <= 0f) yield break;
 
-            float end = Time.time + seconds;
-            while (Time.time < end)
+            float remaining = seconds;
+            while (remaining > 0f)
             {
                 if (system == null || spec == null) yield break;
                 if (spec.Token != null && spec.Token.IsCancelled) yield break;
                 yield return null;
+                if (system != null && !CombatHitPause2D.IsPausedOn(system.gameObject)) remaining -= Time.deltaTime;
             }
         }
 

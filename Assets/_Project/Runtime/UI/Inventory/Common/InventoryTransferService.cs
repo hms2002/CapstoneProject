@@ -74,6 +74,52 @@ public static class InventoryTransferService
 {
     public static InventoryTransferResult TryTransfer(InventoryTransferRequest request)
     {
+        if (request.Source == request.Target ||
+            !IsValidIndex(request.Source, request.SourceIndex) ||
+            !IsValidIndex(request.Target, request.TargetIndex))
+            return TryTransferCore(request);
+        ScriptableObject sourceItem = request.Source.Get(request.SourceIndex);
+        if (sourceItem == null) return TryTransferCore(request);
+        int targetIndex = ResolveRelicDropTargetIndex(request.Target, request.TargetIndex, sourceItem);
+
+        ChestInventory sourceChest = (request.Source as ChestContainerAdapter)?.Inventory;
+        ChestInventory targetChest = (request.Target as ChestContainerAdapter)?.Inventory;
+        ScriptableObject targetItem = request.Target.Get(targetIndex);
+        // A player relic merge absorbs the source; the existing target relic is never returned.
+        bool mergesIntoPlayerRelic = request.Target is PlayerRelicContainerAdapter playerRelics &&
+            sourceItem is RelicDefinition relic && sourceItem is not ParcelRelicDefinition &&
+            playerRelics.HasExistingRelic(relic);
+        ScriptableObject returnedToSource = mergesIntoPlayerRelic ? null : targetItem;
+        if ((sourceChest != null && returnedToSource != null && !sourceChest.CanReturnAcquisition(returnedToSource)) ||
+            (targetChest != null && !targetChest.CanReturnAcquisition(sourceItem)))
+        {
+            WarningPopupPlayback.ShowMessage("이 상자에서 가져온 아이템만 돌려놓을 수 있습니다.");
+            return InventoryTransferResult.Failed(InventoryTransferFailureReason.TargetRejectedItem);
+        }
+        bool takesSource = sourceChest != null;
+        bool takesTarget = targetChest != null && targetItem != null;
+        if ((takesSource && !sourceChest.CheckAcquisitionAllowed(returnedToSource)) ||
+            (takesTarget && !targetChest.CheckAcquisitionAllowed(sourceItem)))
+        {
+            WarningPopupPlayback.ShowMessage("한 상자에서 아이템은 2개까지만 획득할 수 있습니다.");
+            return InventoryTransferResult.Failed(InventoryTransferFailureReason.SourceRejectedItem);
+        }
+
+        InventoryTransferResult result = TryTransferCore(request);
+        if (result.Succeeded)
+        {
+            // Refund only an item actually returned by the completed transfer, before charging swaps.
+            if (sourceChest != null && request.Source.Get(request.SourceIndex) == targetItem)
+                sourceChest.RecordReturn(targetItem);
+            if (targetChest != null) targetChest.RecordReturn(sourceItem);
+            if (takesSource) sourceChest.RecordAcquisition(sourceItem);
+            if (takesTarget) targetChest.RecordAcquisition(targetItem);
+        }
+        return result;
+    }
+
+    private static InventoryTransferResult TryTransferCore(InventoryTransferRequest request)
+    {
         IItemContainer source = request.Source;
         IItemContainer target = request.Target;
 

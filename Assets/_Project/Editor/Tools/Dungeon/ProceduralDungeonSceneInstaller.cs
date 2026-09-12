@@ -3580,18 +3580,11 @@ public static class ProceduralDungeonSceneInstaller
     {
         GameObject tilemapObject = tilemap.gameObject;
 
-        if (RoomTileLayerContract.UsesGroundPhysicsLayer(layer))
-        {
-            int groundLayer = LayerMask.NameToLayer("Ground");
-            if (groundLayer < 0)
-                throw new InvalidOperationException("The project requires a Ground physics layer.");
-
-            tilemapObject.layer = groundLayer;
-        }
-        else
-        {
-            tilemapObject.layer = 0;
-        }
+        string physicsLayerName = RoomTileLayerContract.GetPhysicsLayerName(layer);
+        int physicsLayer = LayerMask.NameToLayer(physicsLayerName);
+        if (physicsLayer < 0)
+            throw new InvalidOperationException("The project requires the " + physicsLayerName + " physics layer.");
+        tilemapObject.layer = physicsLayer;
 
         TilemapRenderer renderer = tilemapObject.GetComponent<TilemapRenderer>();
         if (renderer == null)
@@ -3647,9 +3640,7 @@ public static class ProceduralDungeonSceneInstaller
                     $"Multiple fixed layer slots share one Tilemap in {scenePath}: {layer}");
             }
 
-            int expectedPhysicsLayer = RoomTileLayerContract.UsesGroundPhysicsLayer(layer)
-                ? LayerMask.NameToLayer("Ground")
-                : 0;
+            int expectedPhysicsLayer = LayerMask.NameToLayer(RoomTileLayerContract.GetPhysicsLayerName(layer));
             TilemapRenderer renderer = tilemap.GetComponent<TilemapRenderer>();
             bool hasCollider = tilemap.GetComponent<Collider2D>() != null;
             if (tilemap.gameObject.layer != expectedPhysicsLayer ||
@@ -4366,9 +4357,9 @@ public static class ProceduralDungeonSceneInstaller
         DungeonRoomBuilder builder)
     {
         Tilemap wallTilemap = builder.WallTilemap;
-        int groundLayer = LayerMask.NameToLayer("Ground");
-        if (groundLayer < 0 || wallTilemap.gameObject.layer != groundLayer)
-            throw new InvalidOperationException("Generated Wall Tilemap is not on the Ground layer.");
+        int wallLayer = LayerMask.NameToLayer("Wall");
+        if (wallLayer < 0 || wallTilemap.gameObject.layer != wallLayer)
+            throw new InvalidOperationException("Generated Wall Tilemap is not on the Wall layer.");
 
         TilemapCollider2D tilemapCollider = wallTilemap.GetComponent<TilemapCollider2D>();
         CompositeCollider2D compositeCollider = wallTilemap.GetComponent<CompositeCollider2D>();
@@ -4439,7 +4430,7 @@ public static class ProceduralDungeonSceneInstaller
                     bool hasBlocker = HasGeneratedSocketBlockerAt(
                         builder,
                         socketCellCenter,
-                        groundLayer);
+                        wallLayer);
 
                     if (connected)
                     {

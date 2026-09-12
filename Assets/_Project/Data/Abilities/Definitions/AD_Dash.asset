@@ -15,6 +15,10 @@ MonoBehaviour:
   abilityName: AD_Dash
   icon: {fileID: 0}
   description: Ability description.
+  hitFeel:
+    targetStunSeconds: 0.1
+    attackerStopSeconds: 0
+  hitFeelByAttack: []
   cooldown: 1
   executionPolicy: 1
   useCharges: 0

@@ -231,3 +231,43 @@ The concrete risks are narrower than a full combat rewrite.
 ## Promotion Candidate
 
 Some stable rules already exist in `Docs/Architecture/GameplayAbilityWeaponArchitecture.md` and combat architecture. This map should remain `StructureMemory` until a focused task proves a new rule should be promoted.
+
+## Local Hit Feel Prototype and Lunge Presentation (2026-09-12)
+
+- AbilityDefinition.hitFeel supplies targetStunSeconds / attackerStopSeconds; optional hitFeelByAttack entries override zero-based attack indices. Combo logic records Combat.HitFeelIndex before producing a payload. CombatHitPayload snapshots timing, so delayed hits retain their originating attack settings.
+- CombatDamageAction applies local pause only after actual HP loss; dead or stagger-suppressed targets do not receive the target pause. CombatHitPause2D owns the pause deadline, child Animator speed restoration, and disable cleanup. Global time and camera state are unchanged.
+- MovementMotor2D holds movement while paused. AbilitySystem holds casting/new activations; AbilityExecutionCoordinator iterates nested logic with cancellation disposal and pauses recovery. AbilityTasks.WaitDelay excludes local pause time.
+- This is a feel prototype, not a general per-actor time system: weapon-specific absolute Time.time deadlines, independent projectiles/VFX, and legacy non-GAS AI timers still use global time. Consider a separate actor-clock design only if playtesting proves it necessary.
+- AbilityMotionController2D.IsLunging and MovementMotor2D.IsLungeMovement suppress player Walking during lunge, including the final movement tick. Dash is a separate motion kind.
+- Apprentice basic attack grants the existing State.Move.Intent.Blocked tag while active. Its side-offset basis preserves world-up on left-facing attacks, matching the existing visual mirror convention; forward offset follows aim direction. Right-authored values remain unchanged.
+- Current implementation paths: Assets/_Project/Runtime/Core/Combat/CombatHitPause2D.cs, Core/Abilities, Core/Combat/Movement, Features/Items/Weapons, and Features/Player/Animation/PlayerAnimatorController2D.cs. Timing assets are in Data/Abilities/Definitions.
+- Promotion: keep local pause behavior as prototype StructureMemory until the timing policy is playtested.
+
+### Crisp weapon attack lunges (2026-09-12 follow-up)
+
+Four weapon attack call sites now use AbilityMotionController2D.StartAttackLunge: preserve authored distance, use half the authored duration, and travel linearly without a deceleration tail. The following motion tick is zero; attack/recovery ownership still determines normal movement availability. Non-weapon StartLunge callers retain the existing curve and duration. Walking remains suppressed during attack lunges.
+
+
+### Uniform hit-feel tuning (2026-09-12 follow-up)
+
+All 19 weapon attack definitions now use 0.1 seconds for both target stun and attacker stop, including Apprentice combo overrides. AD_Dash also carries these values because FloweringRuntimeState builds its Bloom dash-slash payload from the dash spec. Non-damaging dash motion alone does not trigger hit pause. This is prototype tuning, not a global override of future per-attack authoring.
+
+### Hit-feel refinement (2026-09-12)
+
+CombatDamageAction observes HP decrease synchronously around damage application and unsubscribes in finally. This detects real damage even when TrainingDummy immediately restores HP inside its attribute event. Target stun still respects alive/stagger-suppression gates.
+
+Latest tuning supersedes the earlier uniform attacker-stop prototype: basic attacks and every Flowering attack (including AD_Dash bloom slashes) have attackerStopSeconds=0; targetStunSeconds remains 0.1. Other damaging weapon skills retain attackerStopSeconds=0.1. Timing stays authored per AbilityDefinition/attack override.
+
+Related verification: [2026-09-12 session](../../SessionLogs/2026-09-12.md).
+
+### Melee control and skill hitstop (2026-09-12)
+
+PlayerCombatInput2D owns the basic-attack movement/aim lock, read by PlayerIntentInput2D and PlayerAim2D. It watches attack animation normalized time 0.8 (or 80% scaled recovery/next-activation timing without a usable attack animation), active lunge, and held primary input. Once the motion/lunge gates finish, releasing input unlocks; holding keeps the same aim through auto-attack gaps. Combo expiry remains owned by the existing weapon logic. Skill/dash activation, equipment changes, disabled owner, and UI/flow interruption clear this basic lock. OddIron and CrimsonBoundary ranged basics bypass it.
+
+Full-execution movement/aim grant tags were removed from the three basic definitions that carried them; skill-specific tags remain. Apprentice charge hitFeelByAttack[0] is 0.3 seconds and is selected only on full charge. Its default partial stop is 0.05; DashStab/Q stop is 0.1. Lightning skills retain 0.05. Basic and Flowering attacker-stop zero policy remains.
+
+### Held re-aim and world hitstop revision (2026-09-12)
+
+The latest rule supersedes hold-to-retain direction: the melee control lock ends after animation 80% and active lunge, regardless of held primary input. Auto-repeat waits for this release and the existing re-aim gap; combo expiry remains unchanged. PlayerIntentInput2D.AbilityMoveInput reads live raw input for move-then-aim lunge resolution, while MoveInput remains permission-filtered for walking. Lunge direction/endpoints stay fixed per attack; authored motion distance/timing/easing are untouched.
+
+CombatDamageAction now maps attackerStopSeconds to CombatHitPause2D.ApplyWorldPause, an owner-scoped TimeScalePausePlayback token expiring on unscaled time. Multiple owners/menu pause compose, and disable releases only the component's token. Local Apply remains target stun and continues to exclude bosses. Global hitstop pauses bosses with the rest of the world without assigning Animator.speed=0. Aim/combat input and ability iteration honor global pause.

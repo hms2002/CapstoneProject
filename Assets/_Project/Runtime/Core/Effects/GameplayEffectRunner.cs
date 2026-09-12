@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace UnityGAS
 {
+    // Source owners implementing this recreate conditional effects after scene restore.
+    public interface ISceneReappliedEffectSource { }
+
     /// <summary>
     /// GameplayEffect의 런타임 적용을 조율하는 오케스트레이터.
     ///
@@ -320,6 +323,7 @@ namespace UnityGAS
                 var active = list[i];
                 if (active == null) continue;
                 if (active.Effect == null) continue;
+                if (active.SourceObject is ISceneReappliedEffectSource) continue;
 
                 result.Add(new ActiveGameplayEffectSnapshot
                 {

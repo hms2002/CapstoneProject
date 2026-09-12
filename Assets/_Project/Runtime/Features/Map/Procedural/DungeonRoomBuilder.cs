@@ -345,6 +345,9 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
                 isPresent = alive,
                 isActive = hasUnit ? alive : instance != null && instance.activeSelf,
                 isChestOpened = chest != null && chest.IsOpened,
+                chestAcquiredCount = chest != null ? chest.AcquiredCount : 0,
+                chestOutstandingAcquisitions = chest != null
+                    ? chest.CaptureOutstandingAcquisitions() : new List<ScriptableObject>(),
                 chestLoot = chest != null && chest.IsOpened
                     ? chest.CaptureDungeonLootState()
                     : new List<DungeonChestLootRuntimeStateData>()
@@ -405,7 +408,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
 
             TreasureChest chest = instance.GetComponentInChildren<TreasureChest>(includeInactive: true);
             if (state.isChestOpened && chest != null)
-                chest.RestoreOpenedStateForDungeon(state.chestLoot);
+                chest.RestoreOpenedStateForDungeon(state.chestLoot, state.chestAcquiredCount, state.chestOutstandingAcquisitions);
 
             instance.SetActive(state.isActive);
         }
@@ -435,6 +438,14 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
             Debug.LogError("DungeonRoomBuilder requires Floor and Wall Tilemap references.", this);
             return false;
         }
+
+        int wallPhysicsLayer = LayerMask.NameToLayer(RoomTileLayerContract.GetPhysicsLayerName(RoomTileLayerKind.Wall));
+        if (wallPhysicsLayer < 0)
+        {
+            Debug.LogError("DungeonRoomBuilder requires the Wall physics layer.", this);
+            return false;
+        }
+        wallTilemap.gameObject.layer = wallPhysicsLayer;
 
         if (floorTilemap == wallTilemap)
         {

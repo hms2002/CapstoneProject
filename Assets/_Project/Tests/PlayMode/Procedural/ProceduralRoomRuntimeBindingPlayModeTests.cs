@@ -147,7 +147,9 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
     {
         Assert.That(RoomTileLayerContract.OrderedLayers.Count, Is.EqualTo(8));
         Assert.That(RoomTileLayerContract.UsesGroundPhysicsLayer(RoomTileLayerKind.Floor), Is.True);
-        Assert.That(RoomTileLayerContract.UsesGroundPhysicsLayer(RoomTileLayerKind.Wall), Is.True);
+        Assert.That(RoomTileLayerContract.UsesGroundPhysicsLayer(RoomTileLayerKind.Wall), Is.False);
+        Assert.That(RoomTileLayerContract.GetPhysicsLayerName(RoomTileLayerKind.Wall), Is.EqualTo("Wall"));
+        Assert.That(RoomTileLayerContract.GetPhysicsLayerName(RoomTileLayerKind.Floor), Is.EqualTo("Ground"));
         Assert.That(
             RoomTileLayerContract.UsesGroundPhysicsLayer(RoomTileLayerKind.GroundDecoration),
             Is.False);

@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: "점화!"
   description: "화면 안 화상 대상의 화상을 최대 5 소모해 지름 5칸 폭발"
+  hitFeel:
+    targetStunSeconds: 0.1
+    attackerStopSeconds: 0.05
+  hitFeelByAttack: []
   cooldown: 5
   executionPolicy: 0
   useCharges: 0

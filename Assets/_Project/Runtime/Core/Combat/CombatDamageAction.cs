@@ -168,7 +168,8 @@ public static class CombatDamageAction
         ElementDamageResult[] elementBuildUps = null,
         bool hasResolvedElementBuildUps = false,
         HitImpactCueKind hitImpactCueKind = HitImpactCueKind.Default,
-        bool emitHitConfirmed = true)
+        bool emitHitConfirmed = true,
+        CombatHitFeelTiming? hitFeelOverride = null)
     {
         ApplyDamageAndEmitHitInternal(
             system,
@@ -186,7 +187,8 @@ public static class CombatDamageAction
             elementBuildUps,
             hasResolvedElementBuildUps,
             hitImpactCueKind,
-            emitHitConfirmed);
+            emitHitConfirmed,
+            hitFeelOverride);
     }
 
     private static void ApplyDamageAndEmitHitInternal(
@@ -205,7 +207,8 @@ public static class CombatDamageAction
         ElementDamageResult[] elementBuildUps,
         bool hasResolvedElementBuildUps,
         HitImpactCueKind hitImpactCueKind,
-        bool emitHitConfirmed)
+        bool emitHitConfirmed,
+        CombatHitFeelTiming? hitFeelOverride)
     {
         if (!Validate(system, damageEffect, target))
             return;
@@ -236,7 +239,18 @@ public static class CombatDamageAction
             causer);
 
         ReserveFallbackDamagePopupSuppression(target, hpCheck, geDamage, finalHpDamage);
-        runner.ApplyEffectSpec(damageSpec, target);
+        // Observe the damage event itself: training targets can heal synchronously in that event.
+        bool tookHpDamage = false;
+        void ObserveHpDamage(AttributeDefinition attribute, float oldValue, float newValue)
+        {
+            if (attribute == hpCheck.HpAttr && newValue < oldValue) tookHpDamage = true;
+        }
+        if (hpCheck.IsValid) hpCheck.TargetAttrs.OnAttributeChanged += ObserveHpDamage;
+        try { runner.ApplyEffectSpec(damageSpec, target); }
+        finally
+        {
+            if (hpCheck.IsValid) hpCheck.TargetAttrs.OnAttributeChanged -= ObserveHpDamage;
+        }
 
         TryShowHpDamagePopup(target, hpCheck, hitWorldPosition, isCriticalHit);
 
@@ -249,6 +263,15 @@ public static class CombatDamageAction
             target,
             finalKnockbackImpulse,
             causer);
+
+        if (tookHpDamage)
+        {
+            CombatHitFeelTiming timing = hitFeelOverride ?? (spec?.Definition != null
+                ? spec.Definition.ResolveHitFeel(spec.GetInt("Combat.HitFeelIndex", -1)) : default);
+            CombatHitPause2D.ApplyWorldPause(system.gameObject, timing.attackerStopSeconds);
+            if (hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr) > 0f && !IsStaggerSuppressed(target))
+                CombatHitPause2D.Apply(target, timing.targetStunSeconds);
+        }
 
         TryEmitKillConfirmed(system, spec, target, causer, hpCheck);
 

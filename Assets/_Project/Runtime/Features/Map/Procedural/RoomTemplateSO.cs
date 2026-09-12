@@ -450,7 +450,13 @@ public static class RoomTileLayerContract
 
     public static bool UsesGroundPhysicsLayer(RoomTileLayerKind layer)
     {
-        return layer == RoomTileLayerKind.Floor || layer == RoomTileLayerKind.Wall;
+        return layer == RoomTileLayerKind.Floor;
+    }
+
+    public static string GetPhysicsLayerName(RoomTileLayerKind layer)
+    {
+        return layer == RoomTileLayerKind.Wall ? "Wall" :
+            UsesGroundPhysicsLayer(layer) ? "Ground" : "Default";
     }
 
     public static bool RequiresCollider(RoomTileLayerKind layer)

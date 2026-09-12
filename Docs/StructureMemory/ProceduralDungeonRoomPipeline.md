@@ -311,3 +311,11 @@ Run `Tools/Dungeon/Install Boss Theme Procedural Corridor Scenes` to rebuild and
 ## Promotion Candidate
 
 If this pipeline becomes the production corridor-generation path, promote the stable data boundary and generation invariants into `Docs/Architecture/` or `Docs/Contracts/` with explicit approval.
+
+### Generated wall physics layer correction (2026-09-12)
+
+RoomTileLayerContract.GetPhysicsLayerName maps Wall → Wall, Floor → Ground, and other tile layers → Default. ProceduralDungeonSceneInstaller uses this mapping when authoring/validating tilemaps, and socket-blocker validation queries Wall. DungeonRoomBuilder.TryBuild assigns the wall layer before generating blockers; blockers inherit it.
+
+The five procedural corridor/test scenes store GeneratedWall at layer 30 (Wall). This is a physics layer change, not a sorting-layer or TagManager change. It makes existing Wall-filtered movement safety and heart drop collision queries include generated walls.
+
+Related verification: [2026-09-12 session](../SessionLogs/2026-09-12.md).

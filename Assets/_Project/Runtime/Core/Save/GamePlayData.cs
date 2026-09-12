@@ -98,6 +98,8 @@ public sealed class DungeonObjectRuntimeStateData
     public bool isPresent = true;
     public bool isActive = true;
     public bool isChestOpened;
+    public int chestAcquiredCount;
+    public System.Collections.Generic.List<UnityEngine.ScriptableObject> chestOutstandingAcquisitions = new();
     public System.Collections.Generic.List<DungeonChestLootRuntimeStateData> chestLoot =
         new System.Collections.Generic.List<DungeonChestLootRuntimeStateData>();
 }

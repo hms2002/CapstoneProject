@@ -129,3 +129,9 @@ The active boundary concern is the general loot/chest/world-pickup flow. Reward 
 ## Promotion Candidate
 
 The additive boss reward decision is already recorded in `Docs/DecisionLog.md`. Keep detailed file topology here until a stable Architecture update is approved.
+
+## Heart Wall Reflection (2026-09-12)
+
+- FieldHealPickup2D sweeps its real pickup collider against non-trigger Wall colliders during planar drop motion. A hit reflects velocity at equal magnitude and consumes the remaining travel distance in that direction; initial/final overlap correction keeps the landing collider outside the wall.
+- The parabolic arc and idle float belong to the authored visual child, not the pickup root. A root-only visual skips positional presentation so collision corrections cannot be overwritten. GroundPosition follows the actual reflected position.
+- Ownership remains in the pickup drop coroutine; no Rigidbody or physics material migration is required. The bounded per-frame bounce/overlap passes prevent unbounded corner loops.

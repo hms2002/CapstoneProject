@@ -16,6 +16,8 @@ public sealed class ChestContainerAdapter : IItemContainer, IDisposable, IRelicL
             this.inventory.OnChanged += HandleChanged;
     }
 
+    public ChestInventory Inventory => inventory;
+
     public int SlotCount => inventory != null ? inventory.Capacity : 0;
 
     public ScriptableObject Get(int index)
@@ -25,7 +27,8 @@ public sealed class ChestContainerAdapter : IItemContainer, IDisposable, IRelicL
 
     public bool CanPlace(ScriptableObject item, int index, int ignoreIndex = -1)
     {
-        return true;
+        return inventory != null && index >= 0 && index < inventory.Capacity &&
+            (item == null || inventory.CanReturnAcquisition(item));
     }
 
     public bool TrySet(int index, ScriptableObject item)

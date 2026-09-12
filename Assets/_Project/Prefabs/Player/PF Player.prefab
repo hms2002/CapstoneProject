@@ -1163,6 +1163,8 @@ MonoBehaviour:
   inventory:
     capacity: 0
     slots: []
+    acquiredCount: 0
+    outstandingAcquisitions: []
 --- !u!114 &8864118504763583097
 MonoBehaviour:
   m_ObjectHideFlags: 0

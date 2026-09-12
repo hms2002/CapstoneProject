@@ -250,6 +250,9 @@ internal static class RunSessionStateService
             isPresent = source.isPresent,
             isActive = source.isActive,
             isChestOpened = source.isChestOpened,
+            chestAcquiredCount = source.chestAcquiredCount,
+            chestOutstandingAcquisitions = source.chestOutstandingAcquisitions != null
+                ? new List<ScriptableObject>(source.chestOutstandingAcquisitions) : new List<ScriptableObject>(),
             roomWaves = source.roomWaves?.Copy(),
             chestLoot = new List<DungeonChestLootRuntimeStateData>()
         };

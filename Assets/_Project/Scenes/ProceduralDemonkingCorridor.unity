@@ -12043,7 +12043,7 @@ GameObject:
   - component: {fileID: 981221339}
   - component: {fileID: 981221338}
   - component: {fileID: 981221337}
-  m_Layer: 7
+  m_Layer: 30
   m_Name: GeneratedWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}

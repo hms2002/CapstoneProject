@@ -25,6 +25,17 @@ namespace UnityGAS
         public Sprite icon;
         [TextArea] public string description = "Ability description.";
 
+        [Header("Hit Feel Prototype (seconds; zero disables)")]
+        public CombatHitFeelTiming hitFeel;
+        [Tooltip("Optional combo-step overrides, indexed from zero.")]
+        public CombatHitFeelTiming[] hitFeelByAttack = System.Array.Empty<CombatHitFeelTiming>();
+
+        public CombatHitFeelTiming ResolveHitFeel(int attackIndex)
+        {
+            return hitFeelByAttack != null && attackIndex >= 0 && attackIndex < hitFeelByAttack.Length
+                ? hitFeelByAttack[attackIndex] : hitFeel;
+        }
+
         [Header("Activation")]
         public float cooldown = 0f;
 

@@ -1218,7 +1218,7 @@ public sealed class DemonKingController : BossControllerBase
 
         if (!patternAnimationHoldActive)
         {
-            patternAnimationSpeedBeforeHold = animator.speed;
+            patternAnimationSpeedBeforeHold = CombatHitPause2D.GetUnpausedAnimatorSpeed(animator);
             patternAnimationHoldActive = true;
         }
 

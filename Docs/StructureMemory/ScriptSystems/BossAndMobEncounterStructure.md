@@ -295,3 +295,13 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 ## Promotion Candidate
 
 Stable boss/mob rules already live in Architecture and Contracts. This map should stay in `StructureMemory` until the new Boss Flow, Mob Flow, and Lock Overlay boundaries prove stable enough for promotion.
+
+### Boss hit-pause immunity and pattern speed ownership (2026-09-12)
+
+BossControllerBase and legacy Boss implement Core ICombatHitPauseImmune (declared in CombatHitPause2D.cs). Local hit pause skips these actors and children; this does not disable intentional stagger-gauge groggy or pattern-owned freezes.
+
+DemonKingController captures pattern hold restore speed through CombatHitPause2D.GetUnpausedAnimatorSpeed. A temporary hit-pause speed of zero must not become the pattern hold's restore value. The helper exposes a tracked pre-pause animator speed when available and otherwise preserves the animator's actual speed.
+
+### Shared world hitstop (2026-09-12 revision)
+
+Boss ICombatHitPauseImmune applies to individual local stun, not global attacker hitstop. The new ApplyWorldPause path uses the existing time-scale pause owner service, so monsters and bosses pause on the same scaled timeline. No boss animator speed is overwritten by world hitstop; the previously fixed pattern hold speed snapshot remains in place.

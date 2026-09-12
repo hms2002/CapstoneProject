@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
-public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBossHudSource
+public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBossHudSource, ICombatHitPauseImmune
 {
     // 이 클래스의 책임:
     // Enemy의 공통 전투/사망 처리 위에 보스 전용 전투 상태, 페이즈, 반응 전환을 조율한다.

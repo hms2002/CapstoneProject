@@ -53,6 +53,7 @@ public sealed class AbilityLogic_FloweringBaseAttack : AbilityLogic
         }
 
         spec.SetInt(KeyComboIndex, comboIndex);
+        spec.SetInt("Combat.HitFeelIndex", comboIndex);
         spec.SetFloat(KeyComboExpire, Time.time + combo.ComboResetTime);
         system.SetNextActivationDelay(spec, step.nextAttackDelay);
 
@@ -143,7 +144,7 @@ public sealed class AbilityLogic_FloweringBaseAttack : AbilityLogic
         if (distance > 0f && duration > 0f)
         {
             Vector2 start = system.transform.position;
-            motion.StartLunge(start, direction, distance, duration);
+            motion.StartAttackLunge(start, direction, distance, duration);
         }
 
         float elapsed = 0f;

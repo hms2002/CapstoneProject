@@ -1926,3 +1926,28 @@ DungeonGenerator passes the builder's FloorTilemap to DungeonMapRuntimeControlle
 
 Prevention And Verification:
 Document coordinate units even when an existing property name cannot be changed safely. Test translated, rotated and nonuniform grids plus actual drop destination/lifecycle events. Native execution also revealed that test hearts lacked a concrete Collider2D: add CircleCollider2D before FieldHealPickup2D rather than relying on its abstract RequireComponent. After correcting the fixtures, all 22 focused content/bell cases passed in Unity Play Mode.
+
+## 2026-09-12 - Mirrored Offsets and Conditional Effect Restore
+
+Apprentice slash symptom: positive side offsets appeared above the player facing right but below facing left. The raw perpendicular (-direction.y, direction.x) rotates the vertical basis downward at left-facing aim, whereas the visual mirror mode preserves world-up. The offset now follows the same world-up convention and leaves right-authored values unchanged.
+
+Conditional upgrade lifecycle trap: active-effect snapshots do not preserve the runtime condition owner. Saving the travel-speed GE as an ordinary timed effect would restore an orphan bonus alongside purchased-upgrade reconstruction. ISceneReappliedEffectSource explicitly excludes this runtime-owned conditional effect from snapshots; the upgrade reevaluates room state after reapplication.
+
+Prefab authoring verification also caught layout reflow when adding the acquisition label. Its LayoutElement ignores parent layout; unrelated existing RectTransform values were preserved. New UI should not silently resize existing chest content.
+
+### 2026-09-12 — Instant-heal targets and generated-wall physics drift
+
+- Symptom: hub dummy received HP damage but no prototype hit pause. Cause: synchronous HP restoration hid damage from the post-effect HP comparison. Fix: scoped HP-decrease event observation with finally cleanup in CombatDamageAction; regression covers the authored TrainingDummy prefab.
+- Symptom: GeneratedWall remained Ground and escaped Wall-filtered collision queries. Cause: installer mapping and validator explicitly treated Floor and Wall as Ground. Fix: shared physics-layer name mapping, runtime assignment before socket blockers, five scene layer migrations, updated regression assertion.
+
+Related verification: [2026-09-12 session](SessionLogs/2026-09-12.md).
+
+### 2026-09-12 — Boss pattern saved the hit-pause zero speed
+
+Reported symptom: a boss could stay frozen mid-pattern after hit stun. Code evidence: CombatHitPause2D temporarily writes Animator.speed=0 while DemonKingController.HoldPatternAnimatorSpeed independently snapshots animator.speed; ReleasePatternAnimationHold can subsequently restore that captured zero. Fix: boss local-pause immunity plus reading the pre-pause speed when entering a DemonKing pattern hold. Avoid unconditional speed=1 restoration because intentional holds and authored speed overrides exist. Regression fixtures compile; reported in-game reproduction/PlayMode execution remains unverified.
+
+### 2026-09-12 — Held attack lost its re-aim window and raw lunge direction
+
+Cause: held input extended meleeControlLockActive indefinitely, and automatic repeats could restart before the intended re-aim tail. Separately, AbilityMoveDirectionResolver2D read walking's filtered MoveInput; the attack lock zeroed it, changing the resolver from movement direction to aim fallback during held chains. Fix: release after motion/lunge independently of held input, defer auto-repeat through the existing re-aim gap, and expose raw live input to ability direction resolution. No player Animator root-motion callback was found; authored lunge parameters were preserved.
+
+World hitstop now uses the existing shared pause-owner service with unscaled expiry and disable cleanup, avoiding independent timeScale restore snapshots or boss animation-speed ownership conflicts. Regression fixtures compile; actual reproduction/playtest remains unverified.

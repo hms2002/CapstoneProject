@@ -41,6 +41,7 @@ namespace UnityGAS.Sample
             }
 
             spec.SetInt(KEY_COMBO_INDEX, comboIndex);
+            spec.SetInt("Combat.HitFeelIndex", comboIndex);
             spec.SetFloat(KEY_COMBO_EXPIRE, Time.time + data.comboResetTime);
             system.SetNextActivationDelay(spec, step.nextAttackDelay);
 
@@ -153,7 +154,7 @@ namespace UnityGAS.Sample
             if (distance > 0f && duration > 0f)
             {
                 Vector2 start = system.transform.position;
-                motion.StartLunge(start, dir, distance, duration);
+                motion.StartAttackLunge(start, dir, distance, duration);
             }
 
             float elapsed = 0f;

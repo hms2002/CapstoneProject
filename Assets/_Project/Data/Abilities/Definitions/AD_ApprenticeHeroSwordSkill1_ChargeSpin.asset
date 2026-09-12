@@ -19,6 +19,12 @@ MonoBehaviour:
     \uB530\uB77C \uD53C\uD574\uAC00 {pos:\uC99D\uAC00}\uD558\uACE0 \uACF5\uACA9 \uBC94\uC704\uAC00
     \uCEE4\uC9D0\n\u25CF \uCD5C\uB300 \uCC28\uC9C0 \uC2DC \uD53C\uD574 \uBC30\uC728
     {val:x1.6}, \uACF5\uACA9 \uD06C\uAE30 {val:x2}"
+  hitFeel:
+    targetStunSeconds: 0.1
+    attackerStopSeconds: 0.05
+  hitFeelByAttack:
+  - targetStunSeconds: 0.1
+    attackerStopSeconds: 0.3
   cooldown: 6
   executionPolicy: 0
   useCharges: 0

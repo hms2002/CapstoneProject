@@ -15,6 +15,16 @@ MonoBehaviour:
   abilityName: "\uACAC\uC2B5 \uC5F0\uC18D \uBCA0\uAE30"
   icon: {fileID: 0}
   description: "● 검을 휘둘러 {val:3연속} 근접 공격\n● 세 번째 공격은 더 길게 전진하며 크게 베어낸다"
+  hitFeel:
+    targetStunSeconds: 0.1
+    attackerStopSeconds: 0
+  hitFeelByAttack:
+  - targetStunSeconds: 0.1
+    attackerStopSeconds: 0
+  - targetStunSeconds: 0.1
+    attackerStopSeconds: 0
+  - targetStunSeconds: 0.1
+    attackerStopSeconds: 0
   cooldown: 0
   executionPolicy: 0
   useCharges: 0

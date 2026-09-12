@@ -64,6 +64,7 @@ namespace UnityGAS
         private bool clearExternalOnWarp = true;
         private bool clearMotionOnWarp = true;
 
+        public bool IsLungeMovement { get; private set; }
         public Vector2 LastIntentVelocity { get; private set; }
         public Vector2 LastExternalVelocity { get; private set; }
         public Vector2 LastMotionVelocity { get; private set; }
@@ -183,10 +184,17 @@ namespace UnityGAS
 
         private void FixedUpdate()
         {
+            IsLungeMovement = false;
             if (body == null)
                 return;
 
             HandlePendingWarp();
+
+            if (CombatHitPause2D.IsPausedOn(gameObject))
+            {
+                ApplyVelocities(Vector2.zero, Vector2.zero, Vector2.zero);
+                return;
+            }
 
             float dt = Time.fixedDeltaTime;
 
@@ -218,8 +226,9 @@ namespace UnityGAS
             }
 
             // 4) 특수이동 계산
+            IsLungeMovement = motionController != null && motionController.IsLunging;
             Vector2 motionVelocity = ResolveMotionVelocity(dt);
-            bool hasMotion = motionController != null && motionController.HasActiveMotion;
+            bool hasMotion = IsLungeMovement || (motionController != null && motionController.HasActiveMotion);
 
             // 5) 특수이동 중: 특수이동 + 외압
             if (hasMotion)

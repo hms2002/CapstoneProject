@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -32,6 +33,17 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     [Header("Presentation")]
     [SerializeField] private UISlideFadePresentation slideFadePresentation;
     [SerializeField] private ChestFirstOpenRevealPresentation firstOpenRevealPresentation;
+
+    [Header("Acquisition Limit")]
+    [SerializeField] private TMP_Text acquisitionCountLabel;
+    [SerializeField] private CanvasGroup acquisitionCountGroup;
+    private ItemSlotUI[] returnHighlightSlots = Array.Empty<ItemSlotUI>();
+    private bool counterVisible;
+    private Tween counterFadeTween;
+    private ChestInventory counterInventory;
+    private Tween acquisitionWarningTween;
+    private Vector2 counterRestPosition;
+    private bool counterPoseCaptured;
 
     [Header("Chest Reroll")]
     [SerializeField] private Button rerollButton;
@@ -171,6 +183,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void Awake()
     {
+        CaptureCounterPose();
         ResolvePresentation();
         ResolvePlayerInventoryPanel();
         ResolveRerollHoldControls();
@@ -200,6 +213,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             return;
 
         UpdateRerollReveal();
+        UpdateAcquisitionPresentation();
     }
 
     private void OnEnable()
@@ -239,6 +253,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         DisposeChestAdapter();
         playerInventoryPanel?.ClearBinding();
 
+        BindAcquisitionCounter(chestInventory);
         chestContainer = new ChestContainerAdapter(chestInventory);
         chestAdapterDisposer = chestContainer as IDisposable;
 
@@ -261,6 +276,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             playerInventoryPanel != null ? playerInventoryPanel.WeaponContainer : null,
             playerInventoryPanel != null ? playerInventoryPanel.RelicContainer : null);
 
+        BindReturnHighlights(playerInventoryPanel);
         BuildChestSlots();
         UIManager.Instance?.HideHoverImmediate();
         ResetRerollHoldState();
@@ -277,6 +293,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         ClearChestSlots();
         DisposeChestAdapter();
 
+        BindAcquisitionCounter(chestInventory);
         chestContainer = new ChestContainerAdapter(chestInventory);
         chestAdapterDisposer = chestContainer as IDisposable;
 
@@ -286,6 +303,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             sharedPlayerInventoryPanel != null ? sharedPlayerInventoryPanel.WeaponContainer : null,
             sharedPlayerInventoryPanel != null ? sharedPlayerInventoryPanel.RelicContainer : null);
 
+        BindReturnHighlights(sharedPlayerInventoryPanel);
         BuildChestSlots();
         UIManager.Instance?.HideHoverImmediate();
         ResetRerollHoldState();
@@ -882,9 +900,87 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void DisposeChestAdapter()
     {
+        BindAcquisitionCounter(null);
         chestAdapterDisposer?.Dispose();
         chestAdapterDisposer = null;
         chestContainer = null;
+    }
+
+    private void BindAcquisitionCounter(ChestInventory inventory)
+    {
+        foreach (ItemSlotUI slot in returnHighlightSlots)
+            if (slot != null) slot.SetChestReturnContext(null);
+        returnHighlightSlots = Array.Empty<ItemSlotUI>();
+        counterFadeTween?.Kill();
+        counterFadeTween = null;
+        counterVisible = false;
+        if (acquisitionCountGroup != null) acquisitionCountGroup.alpha = 0f;
+        CaptureCounterPose();
+        if (counterInventory != null)
+        {
+            counterInventory.OnChanged -= RefreshAcquisitionCounter;
+            counterInventory.AcquisitionRejected -= PlayAcquisitionWarning;
+        }
+        acquisitionWarningTween?.Kill();
+        acquisitionWarningTween = null;
+        if (acquisitionCountLabel != null)
+        {
+            acquisitionCountLabel.color = Color.white;
+            acquisitionCountLabel.rectTransform.anchoredPosition = counterRestPosition;
+        }
+        counterInventory = inventory;
+        if (counterInventory != null)
+        {
+            counterInventory.OnChanged += RefreshAcquisitionCounter;
+            counterInventory.AcquisitionRejected += PlayAcquisitionWarning;
+        }
+        RefreshAcquisitionCounter();
+    }
+
+    private void BindReturnHighlights(PlayerInventoryPanelView panel)
+    {
+        returnHighlightSlots = panel != null ? panel.GetComponentsInChildren<ItemSlotUI>(true) : Array.Empty<ItemSlotUI>();
+        foreach (ItemSlotUI slot in returnHighlightSlots) slot.SetChestReturnContext(counterInventory);
+    }
+
+    private void UpdateAcquisitionPresentation()
+    {
+        foreach (ItemSlotUI slot in returnHighlightSlots)
+            if (slot != null) slot.RefreshChestReturnHighlight();
+        bool visible = counterInventory != null && !IsFirstOpenRevealPlaying &&
+            rerollRevealState == RerollRevealState.Idle;
+        if (visible == counterVisible) return;
+        counterVisible = visible;
+        counterFadeTween?.Kill();
+        if (acquisitionCountGroup == null) return;
+        if (visible) counterFadeTween = acquisitionCountGroup.DOFade(1f, 0.25f).SetUpdate(true);
+        else acquisitionCountGroup.alpha = 0f;
+    }
+
+    private void CaptureCounterPose()
+    {
+        if (counterPoseCaptured || acquisitionCountLabel == null) return;
+        counterRestPosition = acquisitionCountLabel.rectTransform.anchoredPosition;
+        counterPoseCaptured = true;
+    }
+
+    private void RefreshAcquisitionCounter()
+    {
+        if (acquisitionCountLabel != null)
+            acquisitionCountLabel.text = $"획득 가능 {counterInventory?.AcquiredCount ?? 0} / {ChestInventory.AcquisitionLimit}";
+    }
+
+    private void PlayAcquisitionWarning()
+    {
+        if (acquisitionCountLabel == null || !isActiveAndEnabled) return;
+        acquisitionWarningTween?.Kill();
+        RectTransform rect = acquisitionCountLabel.rectTransform;
+        rect.anchoredPosition = counterRestPosition;
+        acquisitionCountLabel.color = Color.red;
+        acquisitionWarningTween = DOTween.Sequence().SetUpdate(true)
+            .Append(rect.DOShakeAnchorPos(0.35f, new Vector2(10f, 0f), 18, 0f))
+            .Append(acquisitionCountLabel.DOColor(Color.white, 0.2f))
+            .OnComplete(() => rect.anchoredPosition = counterRestPosition);
     }
 
 }

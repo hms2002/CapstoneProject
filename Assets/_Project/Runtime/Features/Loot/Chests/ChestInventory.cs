@@ -15,6 +15,51 @@ public class ChestInventory
     [SerializeField] private int capacity = 16;
     [SerializeField] private List<Slot> slots = new();
 
+    public const int AcquisitionLimit = 2;
+    [SerializeField] private int acquiredCount;
+    [SerializeField] private List<ScriptableObject> outstandingAcquisitions = new();
+    public int AcquiredCount => acquiredCount;
+    public IReadOnlyList<ScriptableObject> OutstandingAcquisitions => outstandingAcquisitions;
+    public bool CanAcquire => acquiredCount < AcquisitionLimit;
+    public event Action AcquisitionRejected;
+
+    public bool CheckAcquisitionAllowed(ScriptableObject returnedItem = null)
+    {
+        if (CanAcquire || CanReturnAcquisition(returnedItem)) return true;
+        AcquisitionRejected?.Invoke();
+        return false;
+    }
+
+    public bool CanReturnAcquisition(ScriptableObject item) =>
+        acquiredCount > 0 && item != null &&
+        outstandingAcquisitions.Contains(item);
+
+    public void RecordReturn(ScriptableObject item)
+    {
+        if (!CanReturnAcquisition(item)) return;
+        outstandingAcquisitions.Remove(item);
+        acquiredCount--;
+        OnChanged?.Invoke();
+    }
+
+    public void RecordAcquisition(ScriptableObject item)
+    {
+        if (item == null || !CanAcquire) return;
+        acquiredCount = Mathf.Min(AcquisitionLimit, acquiredCount + 1);
+        outstandingAcquisitions.Add(item);
+        OnChanged?.Invoke();
+    }
+
+    public void RestoreAcquiredCount(int count, IReadOnlyList<ScriptableObject> outstandingItems = null)
+    {
+        acquiredCount = Mathf.Clamp(count, 0, AcquisitionLimit);
+        outstandingAcquisitions.Clear();
+        if (outstandingItems != null)
+            for (int i = 0; i < outstandingItems.Count && outstandingAcquisitions.Count < acquiredCount; i++)
+                if (outstandingItems[i] != null) outstandingAcquisitions.Add(outstandingItems[i]);
+        OnChanged?.Invoke();
+    }
+
     public int Capacity => capacity;
     public event Action OnChanged;
 
