@@ -35,7 +35,7 @@ MonoBehaviour:
     selectionWeight: 1
     combatMetadata:
       sizeTag: 1
-      killLockRewardTag: 2
+      killLockRewardTag: 1
     topologyPlacement:
       mode: 0
       minimumGraphDistanceFromStart: 0
@@ -273,7 +273,31 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 5b992ac86ed3e5243b03ee90797fb11b, type: 2}
     - localCell: {x: 14, y: 10}
       tile: {fileID: 11400000, guid: 9e43d41ffb1698243954f3e00f161c5d, type: 2}
-    floorDetailTiles: []
+    floorDetailTiles:
+    - localCell: {x: 1, y: 10}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 2, y: 10}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 3, y: 10}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 4, y: 10}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 5, y: 10}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 6, y: 10}
+      tile: {fileID: 11400000, guid: f66126b954520424a82896cca06c8dc1, type: 2}
+    - localCell: {x: 9, y: 10}
+      tile: {fileID: 11400000, guid: ecc04cd151d468a4ab5cfdc9dd7a3c45, type: 2}
+    - localCell: {x: 10, y: 10}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 11, y: 10}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 12, y: 10}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 13, y: 10}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 14, y: 10}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
     groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 0}
@@ -496,7 +520,8 @@ MonoBehaviour:
     foregroundTiles: []
     overlayFxTiles: []
     objectPlacements:
-    - placementId: Object_08
+    - monsterWaveId: 
+      placementId: Object_08
       kind: 0
       prefab: {fileID: 8536156983854311797, guid: e5c3dbe97e8d669459817a5afe1feebe, type: 3}
       monsterSpawnRole: 0
@@ -507,7 +532,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Warrior_05
+    - monsterWaveId: wave_default
+      placementId: Warrior_05
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -518,7 +544,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Object_03
+    - monsterWaveId: wave_default
+      placementId: Object_03
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
       monsterSpawnRole: 0
@@ -529,7 +556,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Warrior_04
+    - monsterWaveId: wave_default
+      placementId: Warrior_04
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -540,7 +568,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Warrior_07
+    - monsterWaveId: wave_default
+      placementId: Warrior_07
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -551,7 +580,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Mage_06
+    - monsterWaveId: wave_default
+      placementId: Mage_06
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 1
@@ -562,4 +592,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
+    monsterWaves:
+    - id: wave_default
+      displayName: Wave 1
+      startDelaySeconds: 0
     travelEndpointPlacements: []

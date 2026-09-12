@@ -43,7 +43,7 @@ MonoBehaviour:
     selectionWeight: 1
     combatMetadata:
       sizeTag: 1
-      killLockRewardTag: 2
+      killLockRewardTag: 1
     topologyPlacement:
       mode: 0
       minimumGraphDistanceFromStart: 0
@@ -55,26 +55,10 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
     - localCell: {x: 0, y: 4}
       tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
-    - localCell: {x: 1, y: 1}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 1, y: 2}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 1, y: 3}
       tile: {fileID: 11400000, guid: 39a26e15549020c4d9e4f2fe60596fe1, type: 2}
     - localCell: {x: 1, y: 4}
       tile: {fileID: 11400000, guid: 1e374fcee3d53b545b7be1024cde0fcf, type: 2}
-    - localCell: {x: 1, y: 5}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 1, y: 6}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 1, y: 7}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 1, y: 8}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 2, y: 1}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 2, y: 2}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 2, y: 3}
       tile: {fileID: 11400000, guid: 39a26e15549020c4d9e4f2fe60596fe1, type: 2}
     - localCell: {x: 2, y: 4}
@@ -83,14 +67,6 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 01c31e65d65c1dd40b93fd8776483fd9, type: 2}
     - localCell: {x: 2, y: 6}
       tile: {fileID: 11400000, guid: 49dd271b35cb6a54397f37fa4149082a, type: 2}
-    - localCell: {x: 2, y: 7}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 2, y: 8}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 3, y: 1}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 3, y: 2}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 3, y: 3}
       tile: {fileID: 11400000, guid: 39a26e15549020c4d9e4f2fe60596fe1, type: 2}
     - localCell: {x: 3, y: 4}
@@ -99,10 +75,6 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 3, y: 6}
       tile: {fileID: 11400000, guid: 1e374fcee3d53b545b7be1024cde0fcf, type: 2}
-    - localCell: {x: 3, y: 7}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 3, y: 8}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 4, y: 1}
       tile: {fileID: 11400000, guid: cee0c0b7622c34046901aa6996a88dc3, type: 2}
     - localCell: {x: 4, y: 2}
@@ -115,10 +87,6 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 4, y: 6}
       tile: {fileID: 11400000, guid: 1e374fcee3d53b545b7be1024cde0fcf, type: 2}
-    - localCell: {x: 4, y: 7}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 4, y: 8}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 5, y: 1}
       tile: {fileID: 11400000, guid: 39a26e15549020c4d9e4f2fe60596fe1, type: 2}
     - localCell: {x: 5, y: 2}
@@ -269,8 +237,6 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 294b52990d4757247abb27785b722023, type: 2}
     - localCell: {x: 11, y: 13}
       tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
-    - localCell: {x: 12, y: 1}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 12, y: 2}
       tile: {fileID: 11400000, guid: 39a26e15549020c4d9e4f2fe60596fe1, type: 2}
     - localCell: {x: 12, y: 3}
@@ -295,14 +261,12 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: b2ed597ada2ab3b4e9cbc55dcc0cd45f, type: 2}
     - localCell: {x: 12, y: 13}
       tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
-    - localCell: {x: 13, y: 1}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 13, y: 2}
       tile: {fileID: 11400000, guid: 5f67cf9415e1eda4db237e4c16543c36, type: 2}
     - localCell: {x: 13, y: 3}
       tile: {fileID: 11400000, guid: ae244af7304575044af7520acb3e97aa, type: 2}
     - localCell: {x: 13, y: 4}
-      tile: {fileID: 11400000, guid: a4538e97210f3ef45ba14a5418cb83de, type: 2}
+      tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
     - localCell: {x: 13, y: 5}
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 13, y: 6}
@@ -319,14 +283,10 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 8c1b3b0d7f5805647ad2ee96534a59ca, type: 2}
     - localCell: {x: 13, y: 12}
       tile: {fileID: 11400000, guid: 1e374fcee3d53b545b7be1024cde0fcf, type: 2}
-    - localCell: {x: 14, y: 1}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 14, y: 2}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 14, y: 3}
       tile: {fileID: 11400000, guid: 39a26e15549020c4d9e4f2fe60596fe1, type: 2}
     - localCell: {x: 14, y: 4}
-      tile: {fileID: 11400000, guid: a4538e97210f3ef45ba14a5418cb83de, type: 2}
+      tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
     - localCell: {x: 14, y: 5}
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 14, y: 6}
@@ -343,14 +303,10 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: d1e83b34e43ef6542ad88b2cfee025b7, type: 2}
     - localCell: {x: 14, y: 12}
       tile: {fileID: 11400000, guid: b2e924c98e78065499fb45caa7b6966c, type: 2}
-    - localCell: {x: 15, y: 1}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 15, y: 2}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 15, y: 3}
       tile: {fileID: 11400000, guid: 39a26e15549020c4d9e4f2fe60596fe1, type: 2}
     - localCell: {x: 15, y: 4}
-      tile: {fileID: 11400000, guid: a4538e97210f3ef45ba14a5418cb83de, type: 2}
+      tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
     - localCell: {x: 15, y: 5}
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 15, y: 6}
@@ -363,14 +319,10 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
     - localCell: {x: 15, y: 10}
       tile: {fileID: 11400000, guid: 1e374fcee3d53b545b7be1024cde0fcf, type: 2}
-    - localCell: {x: 16, y: 1}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 16, y: 2}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 16, y: 3}
       tile: {fileID: 11400000, guid: 39a26e15549020c4d9e4f2fe60596fe1, type: 2}
     - localCell: {x: 16, y: 4}
-      tile: {fileID: 11400000, guid: a4538e97210f3ef45ba14a5418cb83de, type: 2}
+      tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
     - localCell: {x: 16, y: 5}
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 16, y: 6}
@@ -383,14 +335,10 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
     - localCell: {x: 16, y: 10}
       tile: {fileID: 11400000, guid: 1e374fcee3d53b545b7be1024cde0fcf, type: 2}
-    - localCell: {x: 17, y: 1}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 17, y: 2}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 17, y: 3}
       tile: {fileID: 11400000, guid: 39a26e15549020c4d9e4f2fe60596fe1, type: 2}
     - localCell: {x: 17, y: 4}
-      tile: {fileID: 11400000, guid: a4538e97210f3ef45ba14a5418cb83de, type: 2}
+      tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
     - localCell: {x: 17, y: 5}
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 17, y: 6}
@@ -403,10 +351,6 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
     - localCell: {x: 17, y: 10}
       tile: {fileID: 11400000, guid: 1e374fcee3d53b545b7be1024cde0fcf, type: 2}
-    - localCell: {x: 18, y: 1}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 18, y: 2}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 18, y: 3}
       tile: {fileID: 11400000, guid: 39a26e15549020c4d9e4f2fe60596fe1, type: 2}
     - localCell: {x: 18, y: 4}
@@ -423,10 +367,6 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
     - localCell: {x: 18, y: 10}
       tile: {fileID: 11400000, guid: 1e374fcee3d53b545b7be1024cde0fcf, type: 2}
-    - localCell: {x: 19, y: 1}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
-    - localCell: {x: 19, y: 2}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 19, y: 3}
       tile: {fileID: 11400000, guid: 5f67cf9415e1eda4db237e4c16543c36, type: 2}
     - localCell: {x: 19, y: 4}
@@ -447,18 +387,46 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
     - localCell: {x: 20, y: 9}
       tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
-    - localCell: {x: 20, y: 10}
-      tile: {fileID: 11400000, guid: ffd709de42592704dbc28237a0174f9f, type: 2}
     floorDetailTiles:
-    - localCell: {x: 13, y: 4}
+    - localCell: {x: 1, y: 4}
       tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 5, y: 8}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 6, y: 8}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 7, y: 8}
+      tile: {fileID: 11400000, guid: f66126b954520424a82896cca06c8dc1, type: 2}
+    - localCell: {x: 8, y: 12}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 9, y: 12}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 10, y: 12}
+      tile: {fileID: 11400000, guid: f66126b954520424a82896cca06c8dc1, type: 2}
+    - localCell: {x: 13, y: 4}
+      tile: {fileID: 11400000, guid: 8acf9d9f0f9c3cd429ba631e5610a911, type: 2}
+    - localCell: {x: 13, y: 12}
+      tile: {fileID: 11400000, guid: ecc04cd151d468a4ab5cfdc9dd7a3c45, type: 2}
     - localCell: {x: 14, y: 4}
+      tile: {fileID: 11400000, guid: 63f0c2d8f0681fc4ab6b42fc344650a6, type: 2}
+    - localCell: {x: 14, y: 12}
       tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
     - localCell: {x: 15, y: 4}
-      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+      tile: {fileID: 11400000, guid: 63f0c2d8f0681fc4ab6b42fc344650a6, type: 2}
+    - localCell: {x: 15, y: 10}
+      tile: {fileID: 11400000, guid: ecc04cd151d468a4ab5cfdc9dd7a3c45, type: 2}
     - localCell: {x: 16, y: 4}
+      tile: {fileID: 11400000, guid: 63f0c2d8f0681fc4ab6b42fc344650a6, type: 2}
+    - localCell: {x: 16, y: 10}
       tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
     - localCell: {x: 17, y: 4}
+      tile: {fileID: 11400000, guid: aee9a496706f1a5449e89e70c7126698, type: 2}
+    - localCell: {x: 17, y: 10}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 18, y: 10}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 19, y: 10}
+      tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
+    - localCell: {x: 20, y: 9}
       tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
     groundDecorationTiles: []
     wallTiles:
@@ -675,24 +643,21 @@ MonoBehaviour:
     - localCell: {x: 20, y: 6}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 20, y: 7}
-      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+      tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
     - localCell: {x: 20, y: 8}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 20, y: 9}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 20, y: 10}
-      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+      tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
     - localCell: {x: 20, y: 11}
       tile: {fileID: 11400000, guid: 8907c6aae7ce28146850ab42c0389ea1, type: 2}
     wallDetailTiles: []
     foregroundTiles: []
-    overlayFxTiles:
-    - localCell: {x: 20, y: 7}
-      tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
-    - localCell: {x: 20, y: 10}
-      tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
+    overlayFxTiles: []
     objectPlacements:
-    - placementId: Object_06
+    - monsterWaveId: 
+      placementId: Object_06
       kind: 0
       prefab: {fileID: 8536156983854311797, guid: e5c3dbe97e8d669459817a5afe1feebe, type: 3}
       monsterSpawnRole: 0
@@ -703,7 +668,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Tank_07
+    - monsterWaveId: wave_default
+      placementId: Tank_07
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 2
@@ -714,7 +680,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Warrior_04
+    - monsterWaveId: wave_default
+      placementId: Warrior_04
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -725,7 +692,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Warrior_02
+    - monsterWaveId: wave_default
+      placementId: Warrior_02
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -736,7 +704,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: StageMonster_05
+    - monsterWaveId: wave_default
+      placementId: StageMonster_05
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
       monsterSpawnRole: 0
@@ -747,7 +716,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Warrior_01
+    - monsterWaveId: wave_default
+      placementId: Warrior_01
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -758,7 +728,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Warrior_03
+    - monsterWaveId: wave_default
+      placementId: Warrior_03
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -769,4 +740,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
+    monsterWaves:
+    - id: wave_default
+      displayName: Wave 1
+      startDelaySeconds: 0
     travelEndpointPlacements: []
