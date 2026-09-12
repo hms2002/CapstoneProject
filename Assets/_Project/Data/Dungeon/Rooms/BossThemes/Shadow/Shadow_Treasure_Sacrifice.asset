@@ -15,6 +15,7 @@ MonoBehaviour:
   layoutData:
     roomId: Shadow_Treasure_Sacrifice
     roomType: 2
+    shapeTag: {fileID: 0}
     size: {x: 18, y: 12}
     localBounds:
       x: 0
@@ -645,9 +646,7 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: b79e332a875dcab4f926b4ec8fae7952, type: 2}
     - localCell: {x: 17, y: 11}
       tile: {fileID: 11400000, guid: 02e59dd4fcb845f4c9e618066bb01154, type: 2}
-    wallDetailTiles:
-    - localCell: {x: 4, y: 11}
-      tile: {fileID: 11400000, guid: eb78b515ea89dbe4cb6d98e7c22b78b4, type: 2}
+    wallDetailTiles: []
     foregroundTiles:
     - localCell: {x: 1, y: 10}
       tile: {fileID: 11400000, guid: d2e1803f828e7f74fbd706b7c9d423da, type: 2}
@@ -687,7 +686,8 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: c10937266bc534c4d9a4dddb8f9b390f, type: 2}
     overlayFxTiles: []
     objectPlacements:
-    - placementId: Object_01
+    - monsterWaveId: 
+      placementId: Object_01
       kind: 0
       prefab: {fileID: 1718124053476297701, guid: fd20831272af9f04692453e99a04a668, type: 3}
       monsterSpawnRole: 2
@@ -696,6 +696,24 @@ MonoBehaviour:
       localOffset: {x: 0, y: -0.5}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
+      childPoseOverrides:
+      - slotId: OfferingStatue
+        overridePosition: 1
+        localPosition: {x: 0, y: 1.06, z: 0}
+        overrideRotation: 1
+        localRotationDegrees: 0
+        overrideScale: 1
+        localScale: {x: 1, y: 1, z: 1}
+      - slotId: TreasureChest
+        overridePosition: 1
+        localPosition: {x: 2.47, y: 4.59, z: 0}
+        overrideRotation: 1
+        localRotationDegrees: 0
+        overrideScale: 1
+        localScale: {x: 1, y: 1, z: 1}
       linkedChestLockPlacementId: 
+    monsterWaves:
+    - id: wave_default
+      displayName: Wave 1
+      startDelaySeconds: 0
     travelEndpointPlacements: []

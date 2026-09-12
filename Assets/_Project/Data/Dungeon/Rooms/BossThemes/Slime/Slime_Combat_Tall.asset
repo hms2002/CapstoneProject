@@ -354,7 +354,20 @@ MonoBehaviour:
     foregroundTiles: []
     overlayFxTiles: []
     objectPlacements:
-    - placementId: StageMonster_02
+    - monsterWaveId: 
+      placementId: Object_05
+      kind: 0
+      prefab: {fileID: 8536156983854311797, guid: e5c3dbe97e8d669459817a5afe1feebe, type: 3}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 2, y: 8}
+      localOffset: {x: 0.06999993, y: 0.43999958}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: StageMonster_02
       kind: 1
       prefab: {fileID: 100000, guid: 4c120d14b57b4436a325443f7b0caa3f, type: 3}
       monsterSpawnRole: 2
@@ -365,7 +378,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: StageMonster_04
+    - monsterWaveId: wave_default
+      placementId: StageMonster_04
       kind: 1
       prefab: {fileID: 100000, guid: d18966565254432a82dc5a7b4acdb6cb, type: 3}
       monsterSpawnRole: 2
@@ -376,7 +390,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: StageMonster_03
+    - monsterWaveId: wave_default
+      placementId: StageMonster_03
       kind: 1
       prefab: {fileID: 100000, guid: d18966565254432a82dc5a7b4acdb6cb, type: 3}
       monsterSpawnRole: 2
@@ -387,7 +402,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: StageMonster_01
+    - monsterWaveId: wave_default
+      placementId: StageMonster_01
       kind: 1
       prefab: {fileID: 100000, guid: 4c120d14b57b4436a325443f7b0caa3f, type: 3}
       monsterSpawnRole: 2
@@ -398,4 +414,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
+    monsterWaves:
+    - id: wave_default
+      displayName: Wave 1
+      startDelaySeconds: 0
     travelEndpointPlacements: []

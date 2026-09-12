@@ -258,7 +258,20 @@ MonoBehaviour:
     foregroundTiles: []
     overlayFxTiles: []
     objectPlacements:
-    - placementId: Warrior_03
+    - monsterWaveId: 
+      placementId: Object_05
+      kind: 0
+      prefab: {fileID: 8536156983854311797, guid: e5c3dbe97e8d669459817a5afe1feebe, type: 3}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 6, y: 6}
+      localOffset: {x: -0.46000004, y: -0.19999981}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Warrior_03
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -269,7 +282,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Warrior_01
+    - monsterWaveId: wave_default
+      placementId: Warrior_01
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -280,7 +294,20 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Warrior_02
+    - monsterWaveId: wave_default
+      placementId: StageMonster_04
+      kind: 1
+      prefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 6, y: 3}
+      localOffset: {x: -0.4499998, y: 0.109999895}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Warrior_02
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -291,4 +318,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
+    monsterWaves:
+    - id: wave_default
+      displayName: Wave 1
+      startDelaySeconds: 0
     travelEndpointPlacements: []

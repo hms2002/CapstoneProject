@@ -6,6 +6,7 @@ namespace UnityGAS
     /// 책임 :
     /// - 공통 공격 예고 도형 중 벽 차단 옵션이 켜진 원형/부채꼴/사각형을 raycast 샘플 기반 mesh로 렌더링한다.
     /// - AttackTelegraphView의 보조 렌더러로 동작하며, 공격 판정에는 관여하지 않는다.
+    /// - 벽 차단이 꺼져도 같은 mesh/외곽선 스타일을 재사용하며, 이때 물리 검색은 수행하지 않는다.
     /// </summary>
     public sealed class AttackTelegraphWallClippedMeshView : MonoBehaviour
     {
@@ -197,6 +198,7 @@ namespace UnityGAS
         private bool TryRebuildMesh(AttackTelegraphSpec spec, AttackTelegraphStyle style, float normalizedProgress)
         {
             float fillScale = ResolveFillScale(style, normalizedProgress);
+            LayerMask wallLayers = spec.useWallClipping ? spec.wallClipLayers : default;
             switch (spec.shape)
             {
                 case AttackTelegraphShape.Rectangle:
@@ -208,7 +210,7 @@ namespace UnityGAS
                         rectangleDirection,
                         rectangleLength,
                         Mathf.Max(0.01f, spec.size.y),
-                        spec.wallClipLayers,
+                        wallLayers,
                         spec.wallClipSampleCount,
                         spec.wallClipSkinWidth,
                         fillScale);
@@ -222,7 +224,7 @@ namespace UnityGAS
                             Mathf.Max(0.01f, spec.size.x * 0.5f),
                             Mathf.Max(0.01f, spec.size.y * 0.5f)),
                         360f,
-                        spec.wallClipLayers,
+                        wallLayers,
                         spec.wallClipSampleCount,
                         spec.wallClipSkinWidth,
                         fillScale);
@@ -233,7 +235,7 @@ namespace UnityGAS
                         spec.center,
                         Mathf.Max(spec.size.x, spec.size.y) * 0.5f,
                         Mathf.Max(0f, spec.innerDiameter) * 0.5f,
-                        spec.wallClipLayers,
+                        wallLayers,
                         spec.wallClipSampleCount,
                         spec.wallClipSkinWidth,
                         fillScale);
@@ -245,7 +247,7 @@ namespace UnityGAS
                         Quaternion.Euler(0f, 0f, spec.rotationDeg) * Vector2.right,
                         Mathf.Max(0.01f, spec.size.x),
                         spec.sectorAngleDeg,
-                        spec.wallClipLayers,
+                        wallLayers,
                         spec.wallClipSampleCount,
                         spec.wallClipSkinWidth,
                         fillScale);

@@ -4,6 +4,7 @@ using UnityEngine;
 /// 책임:
 /// - 공통 복도 몬스터의 FSM/Runner가 요구하는 애니메이션 큐를 Animator 파라미터 호출로 변환한다.
 /// - 컨트롤러별로 없는 트리거는 조용히 무시해, 임시/최종 애니메이터를 같은 코드 경로로 사용할 수 있게 한다.
+/// - 사망 큐 이후에는 공격 계열 큐가 사망 상태를 덮어쓰지 못하도록 차단한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class CommonMonsterAnimatorBridge : MonoBehaviour
@@ -16,6 +17,7 @@ public sealed class CommonMonsterAnimatorBridge : MonoBehaviour
     [SerializeField] private string jumpTrigger = "jump";
     [SerializeField] private string landTrigger = "land";
     [SerializeField] private string landEndTrigger = "landEnd";
+    private bool deathRequested;
 
     public Animator Animator => animator;
 
@@ -72,7 +74,20 @@ public sealed class CommonMonsterAnimatorBridge : MonoBehaviour
 
     public void TriggerRecover() => TrySetTrigger(recoverTrigger);
 
-    public void TriggerDie() => TrySetTrigger(dieTrigger);
+    public void TriggerDie()
+    {
+        if (deathRequested)
+            return;
+
+        deathRequested = true;
+        ResetActionTrigger(attackReadyTrigger);
+        ResetActionTrigger(attackTrigger);
+        ResetActionTrigger(recoverTrigger);
+        ResetActionTrigger(jumpTrigger);
+        ResetActionTrigger(landTrigger);
+        ResetActionTrigger(landEndTrigger);
+        TrySetTrigger(dieTrigger, isDeathCue: true);
+    }
 
     public void TriggerJump() => TrySetTrigger(jumpTrigger);
 
@@ -86,8 +101,21 @@ public sealed class CommonMonsterAnimatorBridge : MonoBehaviour
             animator = GetComponentInChildren<Animator>(true);
     }
 
-    private bool TrySetTrigger(string triggerName)
+    private void ResetActionTrigger(string triggerName)
     {
+        if (animator == null || animator.runtimeAnimatorController == null ||
+            string.IsNullOrWhiteSpace(triggerName) || triggerName == dieTrigger)
+            return;
+
+        if (HasParameter(triggerName, AnimatorControllerParameterType.Trigger))
+            animator.ResetTrigger(triggerName);
+    }
+
+    private bool TrySetTrigger(string triggerName, bool isDeathCue = false)
+    {
+        if (deathRequested && !isDeathCue)
+            return false;
+
         if (animator == null || string.IsNullOrWhiteSpace(triggerName) || animator.runtimeAnimatorController == null)
             return false;
 

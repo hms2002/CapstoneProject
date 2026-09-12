@@ -15,6 +15,7 @@ MonoBehaviour:
   layoutData:
     roomId: Shadow_Combat_Tall
     roomType: 0
+    shapeTag: {fileID: 0}
     size: {x: 14, y: 14}
     localBounds:
       x: 0
@@ -323,13 +324,13 @@ MonoBehaviour:
     - localCell: {x: 12, y: 1}
       tile: {fileID: 11400000, guid: fb155a11063b8d1468da0d19178440fe, type: 2}
     - localCell: {x: 12, y: 2}
-      tile: {fileID: 11400000, guid: b40bae298f6630a429bf8575e2c36672, type: 2}
+      tile: {fileID: 11400000, guid: e56ec5938547d004ba8324c696ad7ad3, type: 2}
     - localCell: {x: 12, y: 3}
-      tile: {fileID: 11400000, guid: 8192449845b6f1548bfe8293797fe89e, type: 2}
+      tile: {fileID: 11400000, guid: 03decb4be9e28d447aa66dfae8879ec5, type: 2}
     - localCell: {x: 12, y: 4}
-      tile: {fileID: 11400000, guid: 8192449845b6f1548bfe8293797fe89e, type: 2}
+      tile: {fileID: 11400000, guid: 03decb4be9e28d447aa66dfae8879ec5, type: 2}
     - localCell: {x: 12, y: 5}
-      tile: {fileID: 11400000, guid: b05e420c64abf5741a81395fdbd09710, type: 2}
+      tile: {fileID: 11400000, guid: 8a374b31a49b92b488e4c72111ce6931, type: 2}
     - localCell: {x: 12, y: 6}
       tile: {fileID: 11400000, guid: 00ed69b295c1e5c478f601bb400c2e4e, type: 2}
     - localCell: {x: 12, y: 7}
@@ -523,7 +524,20 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: cc8b1bcc884c1d84f81209a3e89d4343, type: 2}
     overlayFxTiles: []
     objectPlacements:
-    - placementId: Mage_04
+    - monsterWaveId: 
+      placementId: Object_06
+      kind: 0
+      prefab: {fileID: 8536156983854311797, guid: e5c3dbe97e8d669459817a5afe1feebe, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 9, y: 6}
+      localOffset: {x: 0, y: -0.01999998}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Mage_04
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 1
@@ -534,7 +548,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Warrior_02
+    - monsterWaveId: wave_default
+      placementId: Warrior_02
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -545,7 +560,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: Warrior_03
+    - monsterWaveId: wave_default
+      placementId: Warrior_03
       kind: 1
       prefab: {fileID: 0}
       monsterSpawnRole: 0
@@ -556,7 +572,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: StageMonster_01
+    - monsterWaveId: wave_default
+      placementId: StageMonster_01
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
       monsterSpawnRole: 0
@@ -567,7 +584,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - placementId: StageMonster_05
+    - monsterWaveId: wave_default
+      placementId: StageMonster_05
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
       monsterSpawnRole: 1
@@ -578,4 +596,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
+    monsterWaves:
+    - id: wave_default
+      displayName: Wave 1
+      startDelaySeconds: 0
     travelEndpointPlacements: []
