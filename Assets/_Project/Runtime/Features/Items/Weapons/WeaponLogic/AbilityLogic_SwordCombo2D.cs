@@ -41,6 +41,7 @@ namespace UnityGAS.Sample
             }
 
             spec.SetInt(KEY_COMBO_INDEX, comboIndex);
+            spec.SetInt("Combat.HitFeelIndex", comboIndex);
             spec.SetFloat(KEY_COMBO_EXPIRE, Time.time + data.comboResetTime);
             system.SetNextActivationDelay(spec, step.nextAttackDelay);
 
@@ -153,7 +154,7 @@ namespace UnityGAS.Sample
             if (distance > 0f && duration > 0f)
             {
                 Vector2 start = system.transform.position;
-                motion.StartLunge(start, dir, distance, duration);
+                motion.StartAttackLunge(start, dir, distance, duration);
             }
 
             float elapsed = 0f;
@@ -198,7 +199,7 @@ namespace UnityGAS.Sample
             var cfg = data.DamageConfig;
             bool includeStagger = (cfg != null) && cfg.includeStaggerBuildUp;
 
-            Vector2 perp = new Vector2(-dir.y, dir.x);
+            Vector2 perp = new(-dir.y * (dir.x < 0f ? -1f : 1f), Mathf.Abs(dir.x));
             int sideSign = step.sideSign;
 
             Vector2 center = (Vector2)system.transform.position

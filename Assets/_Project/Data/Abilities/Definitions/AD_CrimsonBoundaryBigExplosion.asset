@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: "대폭발!"
   description: "커서 지점에 0.6초 뒤 폭발. 화염 공격력 200%와 화상 전량 소모 피해"
+  hitFeel:
+    targetStunSeconds: 0.1
+    attackerStopSeconds: 0.05
+  hitFeelByAttack: []
   cooldown: 12
   executionPolicy: 0
   useCharges: 0

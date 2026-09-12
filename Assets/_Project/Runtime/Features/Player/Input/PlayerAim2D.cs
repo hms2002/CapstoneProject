@@ -19,8 +19,11 @@ public sealed class PlayerAim2D : MonoBehaviour, IAimDirectionSource2D, ICursorW
     public Vector2 MouseWorld { get; private set; }
     public Vector2 CursorWorld => MouseWorld;
 
+    private PlayerCombatInput2D combatInput;
+
     private void Awake()
     {
+        combatInput = GetComponent<PlayerCombatInput2D>();
         if (mainCamera == null) mainCamera = Camera.main;
         if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
         if (aimLockedTag == null) aimLockedTag = Resources.Load<GameplayTag>(AimBlockedTagResourcePath);
@@ -59,7 +62,8 @@ public sealed class PlayerAim2D : MonoBehaviour, IAimDirectionSource2D, ICursorW
 
     private void UpdateMouseAim()
     {
-        if (mainCamera == null) return;
+        if (mainCamera == null || TimeScalePausePlayback.IsPaused) return;
+        if (combatInput != null && combatInput.IsMeleeControlLocked) return;
         if (tagSystem != null && aimLockedTag != null && tagSystem.HasTag(aimLockedTag))
             return;
 

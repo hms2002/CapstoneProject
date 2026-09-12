@@ -15,6 +15,10 @@ MonoBehaviour:
   abilityName: 꽃잎 연격
   icon: {fileID: 655937068, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
   description: "● 꽃잎을 흩뿌리며 {val:3연속} 베기\n● 세 번째 공격은 더 길게 전진하며 강하게 베어낸다"
+  hitFeel:
+    targetStunSeconds: 0.1
+    attackerStopSeconds: 0
+  hitFeelByAttack: []
   cooldown: 0
   executionPolicy: 0
   useCharges: 0

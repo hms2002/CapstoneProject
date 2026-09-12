@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Crimson Fireball
   description: "화염 공격력 피해를 주고 화상 3을 부여하는 직선 투사체"
+  hitFeel:
+    targetStunSeconds: 0.1
+    attackerStopSeconds: 0
+  hitFeelByAttack: []
   cooldown: 1
   executionPolicy: 0
   useCharges: 0

@@ -12043,7 +12043,7 @@ GameObject:
   - component: {fileID: 981221339}
   - component: {fileID: 981221338}
   - component: {fileID: 981221337}
-  m_Layer: 7
+  m_Layer: 30
   m_Name: GeneratedWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24098,7 +24098,7 @@ MonoBehaviour:
   seed: 20263859
   dungeonStateId: procedural_corridor_demon_king
   reentryPolicy: 0
-  layoutPolicy: {fileID: 11400000, guid: 2e4b682cfe896404b95d050953584376, type: 2}
+  layoutPolicy: {fileID: 11400000, guid: 36b1ceb5dbc748e59621b99988add265, type: 2}
   roomCount: 15
   includeBossRoom: 1
   maxPlacementAttemptsPerRoom: 512

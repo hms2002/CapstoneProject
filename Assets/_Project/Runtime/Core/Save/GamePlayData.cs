@@ -98,6 +98,8 @@ public sealed class DungeonObjectRuntimeStateData
     public bool isPresent = true;
     public bool isActive = true;
     public bool isChestOpened;
+    public int chestAcquiredCount;
+    public System.Collections.Generic.List<UnityEngine.ScriptableObject> chestOutstandingAcquisitions = new();
     public System.Collections.Generic.List<DungeonChestLootRuntimeStateData> chestLoot =
         new System.Collections.Generic.List<DungeonChestLootRuntimeStateData>();
 }
@@ -152,6 +154,7 @@ public sealed class GamePlayData
     public System.Collections.Generic.List<DungeonRunStateData> dungeonRunStates = new System.Collections.Generic.List<DungeonRunStateData>();
     public LevelProgressionState levelProgression = new LevelProgressionState();
 
+    public int runGold;
     public int pendingRunMagicStoneDelta;
     public System.Collections.Generic.List<PendingRunAffectionChange> pendingRunAffectionChanges = new System.Collections.Generic.List<PendingRunAffectionChange>();
     public System.Collections.Generic.List<PendingRunShortcutUnlock> pendingRunShortcutUnlocks = new System.Collections.Generic.List<PendingRunShortcutUnlock>();

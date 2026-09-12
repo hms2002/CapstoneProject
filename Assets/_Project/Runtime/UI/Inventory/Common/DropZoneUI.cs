@@ -117,10 +117,18 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
         if (relicLevel <= 0 && item is RelicDefinition && source is IRelicLevelProvider p)
             p.TryGetRelicLevel(sourceIndex, out relicLevel);
 
+        ChestInventory chest = (source as ChestContainerAdapter)?.Inventory;
+        if (chest != null && !chest.CheckAcquisitionAllowed())
+        {
+            WarningPopupPlayback.ShowMessage("한 상자에서 아이템은 2개까지만 획득할 수 있습니다.");
+            return false;
+        }
+
         bool removed = source.TrySet(sourceIndex, null);
         if (!removed)
             return false;
 
+        chest?.RecordAcquisition(item);
         SpawnWorldItem(item, relicLevel);
         return true;
     }

@@ -89,7 +89,7 @@ namespace UnityGAS
         {
             var def = spec.Definition;
 
-            yield return def.logic.Activate(system, spec, target);
+            yield return CombatHitPause2D.Run(system, spec, def.logic.Activate(system, spec, target));
 
             float recovery = def.recoveryTime;
             if (spec.TryGetFloat("RecoveryOverride", out var overrideRecovery))
@@ -98,13 +98,14 @@ namespace UnityGAS
             if (recovery <= 0f)
                 yield break;
 
-            float end = Time.time + recovery;
-            while (Time.time < end)
+            float remaining = recovery;
+            while (remaining > 0f)
             {
                 if (spec.Token != null && spec.Token.IsCancelled)
                     yield break;
 
                 yield return null;
+                if (!CombatHitPause2D.IsPausedOn(system.gameObject)) remaining -= Time.deltaTime;
             }
         }
 

@@ -1,0 +1,174 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityGAS;
+
+/// <summary>Owns same-scene return safety and portal opening/closing, delegates falling/waking to the existing Hub presentation, and releases temporary state.</summary>
+[DisallowMultipleComponent]
+public sealed class DungeonReturnTravel : MonoBehaviour
+{
+    [SerializeField] private Transform landingPoint;
+    [SerializeField] private DungeonReturnPortalView arrivalPortal;
+    [SerializeField] private RoomSocketDirection arrivalDirection = RoomSocketDirection.Down;
+    [SerializeField, Min(0f)] private float fadeSeconds = 0.15f;
+    [SerializeField, Min(0f)] private float fallHeight = 3f;
+    private readonly Dictionary<Collider2D, bool> colliderStates = new();
+    private Func<Vector3, float, Transform, bool> landingValidator;
+    private DungeonMapRuntimeController map;
+    private int startRoomId;
+    private Coroutine sequence;
+    private Transform player;
+    private PlayerPortalArrivalVisual2D visual;
+    private PlayerHubSpawnPresentation2D arrivalPresentation;
+    private PlayerCinematicProtection protection;
+    private PlayerTargetabilityBlocker targetability;
+    private RunTimeLimitSystem timer;
+    private IGameplayCameraFocusSession cameraSession;
+    private ISceneFadeTransitionHandle fade;
+    private bool ownsFade;
+    private float portalCloseReadyAt;
+    public bool IsTravelling { get; private set; }
+    public Transform LandingPoint => landingPoint;
+
+    public void Configure(Vector3 position, int roomId, DungeonMapRuntimeController mapRuntime,
+        Func<Vector3, float, Transform, bool> validator)
+    {
+        landingPoint.position = position;
+        startRoomId = roomId;
+        map = mapRuntime;
+        landingValidator = validator;
+        arrivalPortal?.SelectDirection(arrivalDirection);
+    }
+
+    public bool CanTravel(IPlayerInteractor interactor)
+    {
+        if (!isActiveAndEnabled || IsTravelling || landingPoint == null || interactor?.Transform == null ||
+            interactor.CurrentState != InteractState.Idle || Time.timeScale <= 0f ||
+            (SceneFadeTransitionPlayback.Instance?.IsTransitionActive ?? false)) return false;
+        Transform target = interactor.Transform;
+        AbilitySystem abilities = target.GetComponent<AbilitySystem>();
+        PlayerPortalArrivalVisual2D playerVisual = target.GetComponent<PlayerPortalArrivalVisual2D>();
+        PlayerHubSpawnPresentation2D hubPresentation = target.GetComponent<PlayerHubSpawnPresentation2D>();
+        return (abilities == null || !abilities.IsBusy) && playerVisual != null && playerVisual.IsConfigured &&
+            hubPresentation != null && hubPresentation.isActiveAndEnabled && !hubPresentation.IsPlaying &&
+            target.GetComponent<MovementMotor2D>() != null &&
+            landingValidator != null && landingValidator(landingPoint.position, ResolveClearance(target), target);
+    }
+
+    public bool TryTravel(DungeonReturnPortal portal, IPlayerInteractor interactor)
+    {
+        if (portal == null || !portal.CanInteract(interactor) || !CanTravel(interactor)) return false;
+        player = interactor.Transform;
+        IsTravelling = true;
+        sequence = StartCoroutine(Run());
+        return true;
+    }
+
+    private IEnumerator Run()
+    {
+        try
+        {
+            visual = player.GetComponent<PlayerPortalArrivalVisual2D>();
+            arrivalPresentation = player.GetComponent<PlayerHubSpawnPresentation2D>();
+            if (visual == null || !visual.Begin()) yield break;
+            protection = player.GetComponent<PlayerCinematicProtection>();
+            if (protection == null) protection = player.gameObject.AddComponent<PlayerCinematicProtection>();
+            protection.Acquire(this);
+            targetability = PlayerTargetabilityBlocker.GetOrAdd(player);
+            targetability.Acquire(this);
+            timer = RunTimeLimitSystem.Instance;
+            timer?.SetExternalPause(this, true);
+            cameraSession = GameplayCameraFocusPlayback.Capture(this);
+            fade = SceneFadeTransitionPlayback.Instance;
+            ownsFade = fade != null && fade.TryBeginOverlayFadeSession();
+            if (ownsFade) yield return fade.FadeOutAsync(fadeSeconds);
+            if (player == null || !landingValidator(landingPoint.position, ResolveClearance(player), player)) yield break;
+
+            visual.SetVisible(false);
+            // Keep collision disabled until the shared fall/wake sequence fully completes.
+            foreach (Collider2D collider in player.GetComponentsInChildren<Collider2D>(true))
+            {
+                colliderStates[collider] = collider.enabled;
+                collider.enabled = false;
+            }
+            MovementMotor2D motor = player.GetComponent<MovementMotor2D>();
+            motor.StopAllMotion();
+            motor.WarpTo(landingPoint.position);
+            yield return new WaitForFixedUpdate();
+            if (player == null) yield break;
+            cameraSession?.SetTarget(landingPoint);
+            cameraSession?.SnapToTarget(landingPoint);
+            Vector3 portalPosition = landingPoint.position + Vector3.up * fallHeight;
+            if (arrivalPortal != null)
+            {
+                arrivalPortal.transform.position = portalPosition;
+            }
+            if (ownsFade) yield return fade.FadeInAsync(fadeSeconds);
+            if (arrivalPortal != null)
+            {
+                arrivalPortal.Open();
+                yield return new WaitForSecondsRealtime(arrivalPortal.OpenSeconds);
+            }
+            portalCloseReadyAt = 0f;
+            if (arrivalPresentation == null ||
+                !arrivalPresentation.TryPlayPortalArrival(this, portalPosition, HandleLanded)) yield break;
+            visual.SetVisible(true);
+            while (arrivalPresentation != null && arrivalPresentation.IsPortalArrivalPlaying(this))
+                yield return null;
+            while (Time.unscaledTime < portalCloseReadyAt) yield return null;
+        }
+        finally { Restore(); sequence = null; }
+    }
+
+    private void HandleLanded()
+    {
+        map?.NotifyPlayerEnteredRoom(startRoomId);
+        if (arrivalPortal == null) return;
+        arrivalPortal.Close();
+        portalCloseReadyAt = Time.unscaledTime + arrivalPortal.CloseSeconds;
+    }
+
+    private static float ResolveClearance(Transform target)
+    {
+        PlayerInteractor2D interactor = target.GetComponent<PlayerInteractor2D>();
+        Collider2D body = interactor != null ? interactor.BodyCollider : target.GetComponentInChildren<Collider2D>();
+        return body != null && body.enabled ? Mathf.Max(0.35f, body.bounds.extents.magnitude +
+            Vector2.Distance(body.bounds.center, target.position)) : 0.35f;
+    }
+
+    public void Cancel()
+    {
+        if (sequence != null) StopCoroutine(sequence);
+        sequence = null;
+        Restore();
+    }
+
+    private void Restore()
+    {
+        if (arrivalPresentation != null) arrivalPresentation.CancelPortalArrival(this);
+        arrivalPresentation = null;
+        visual?.Restore();
+        foreach (var pair in colliderStates)
+            if (pair.Key != null) pair.Key.enabled = pair.Value;
+        colliderStates.Clear();
+        arrivalPortal?.HideImmediate();
+        cameraSession?.Restore(player);
+        cameraSession = null;
+        if (ownsFade) fade?.EndOverlayFadeSession();
+        ownsFade = false;
+        fade = null;
+        if (timer != null) timer.SetExternalPause(this, false);
+        if (targetability != null) targetability.Release(this);
+        if (protection != null) protection.Release(this);
+        timer = null; targetability = null; protection = null; visual = null; player = null;
+        IsTravelling = false;
+    }
+
+    private void OnEnable() => RunSessionStore.OnRunEnded += HandleRunEnded;
+    private void OnDisable() { RunSessionStore.OnRunEnded -= HandleRunEnded; Cancel(); }
+    private void HandleRunEnded(RunEndReason reason) => Cancel();
+#if UNITY_EDITOR
+    public void EditorConfigure(Transform landing, DungeonReturnPortalView portal) { landingPoint = landing; arrivalPortal = portal; }
+#endif
+}

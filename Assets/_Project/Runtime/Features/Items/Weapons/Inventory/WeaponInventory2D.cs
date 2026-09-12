@@ -534,7 +534,6 @@ public class WeaponInventory2D : MonoBehaviour
     public bool CanPlaceWeaponInSlot(int slotIndex, WeaponDefinition weapon)
     {
         if (!IsValidSlot(slotIndex)) return false;
-        if (!IsSlotAccessible(slotIndex)) return false;
         if (weapon == null) return true;
 
         if (disallowDuplicateWeapons)
@@ -552,7 +551,6 @@ public class WeaponInventory2D : MonoBehaviour
     public bool TrySetWeaponSlot(int slotIndex, WeaponDefinition newWeapon, bool autoEquipIfNone = true)
     {
         if (!IsValidSlot(slotIndex)) return false;
-        if (!IsSlotAccessible(slotIndex)) return false;
 
         var oldWeapon = slots[slotIndex];
         if (oldWeapon == newWeapon) return true;
@@ -613,12 +611,18 @@ public class WeaponInventory2D : MonoBehaviour
     public bool TrySwapWeaponSlots(int a, int b)
     {
         if (!IsValidSlot(a) || !IsValidSlot(b)) return false;
-        if (!IsSlotAccessible(a) || !IsSlotAccessible(b)) return false;
         if (a == b) return true;
+        if (((a == 0 && b == 1) || (a == 1 && b == 0)) &&
+            slots[0] != null && slots[1] == null) return false;
         if ((a == ActiveIndex || b == ActiveIndex) && IsActiveWeaponChangeBlocked()) return false;
 
         int prevIndex = ActiveIndex;
         WeaponDefinition prevWeapon = IsValidSlot(prevIndex) ? slots[prevIndex] : null;
+
+        bool crossesSeal = prevIndex >= 0 && (prevIndex == a || prevIndex == b)
+                           && (!IsSlotAccessible(a) || !IsSlotAccessible(b));
+        if (crossesSeal)
+            Unequip();
 
         var wa = slots[a];
         var wb = slots[b];
@@ -637,6 +641,14 @@ public class WeaponInventory2D : MonoBehaviour
         int newIndex = prevIndex;
         if (prevIndex == a) newIndex = b;
         else if (prevIndex == b) newIndex = a;
+
+        if (crossesSeal)
+        {
+            int fallback = FindFirstAccessibleFilledSlot();
+            if (fallback >= 0) Equip(fallback);
+            NotifyInventoryChanged();
+            return true;
+        }
 
         WeaponDefinition newWeapon = IsValidSlot(newIndex) ? slots[newIndex] : null;
 

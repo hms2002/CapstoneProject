@@ -223,6 +223,8 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 - Puddles/hazards are battle environment systems and should stay separate from boss-specific policy unless the boss ability owns only a trigger.
 - `PitFallExecutor` opens a mob pitfall death resolution window before applying trap damage and keeps it active through pitfall completion handling. General `Mob` death skips monster loot during that window, and `Slime` uses the same window to mark pitfall death before HP damage can synchronously trigger normal split logic.
 - Enemy cleanup rules should follow `Docs/Contracts/MobCleanupContract.md` when general mobs are involved.
+- `CommonMonsterAnimatorBridge` treats its first death cue as terminal for that instance: it clears configured action triggers, rejects later action cues and ignores repeated death requests so they do not restart the clip. GoblinWarrior sends its authored death cue through `PlayDeathAnimation` after attack cleanup rather than also calling the missing generic `die` trigger. Its saved controller and the animator generator put the death Any State transition first. Other controller assets and the existing five-second removal fallback are unchanged.
+- `AttackTelegraphView` renders Line/Rectangle/Circle at full requested extent regardless of wall clipping flags or service defaults. Rectangle/Circle retain the thin mesh fill/border path; the mesh renderer uses a zero wall mask when clipping is disabled, avoiding physics queries while preserving progress/color styling. Sector/Ring clipping, attack damage geometry, targeting and puddle rendering remain separate and unchanged.
 - Shared enemy player targeting should resolve to the canonical player root through `PlayerRuntimeRegistry`/`PlayerInteractor2D`; player-attached orbit/effect colliders or directly assigned child transforms should not become the boss target transform.
 - Shared mob perception treats a closed `DoorObject` on the enemy-target sight line as a blocker for acquisition, chase, common attack continuation, and Dead's Skeleton self-destruct flow.
 - DemonKing-owned side actors must stop with the DemonKing battle lifecycle. `EgoSwordActor` has an explicit battle-end cleanup path that cancels active dropped GAS subpattern tokens, stops its independent loop, clears mask/aura/attached VFX, marks the runtime sword held, and deactivates the authored sword actor. A new fight starts with the held sword hidden; the actor is reactivated only by the throw commit path.
@@ -295,3 +297,19 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 ## Promotion Candidate
 
 Stable boss/mob rules already live in Architecture and Contracts. This map should stay in `StructureMemory` until the new Boss Flow, Mob Flow, and Lock Overlay boundaries prove stable enough for promotion.
+
+### Boss hit-pause immunity and pattern speed ownership (2026-09-12)
+
+BossControllerBase and legacy Boss implement Core ICombatHitPauseImmune (declared in CombatHitPause2D.cs). Local hit pause skips these actors and children; this does not disable intentional stagger-gauge groggy or pattern-owned freezes.
+
+DemonKingController captures pattern hold restore speed through CombatHitPause2D.GetUnpausedAnimatorSpeed. A temporary hit-pause speed of zero must not become the pattern hold's restore value. The helper exposes a tracked pre-pause animator speed when available and otherwise preserves the animator's actual speed.
+
+### Shared world hitstop (2026-09-12 revision)
+
+Boss ICombatHitPauseImmune applies to individual local stun, not global attacker hitstop. The new ApplyWorldPause path uses the existing time-scale pause owner service, so monsters and bosses pause on the same scaled timeline. No boss animator speed is overwritten by world hitstop; the previously fixed pattern hold speed snapshot remains in place.
+
+### Ranged tracking / locked warning (2026-09-12)
+
+GoblinGunnerShotRunner, BeerMonsterShotRunner, LizardMageBurstRunner, WizardScatterShotRunner and StrangeCandlestickAttackRunner reserve the last min(0.2s, scaled warning duration) for fixed aim. Their tracking updates end before this interval; firing uses the final warning snapshot. Lizard keeps the same direction for the entire sequential burst. Candlestick snapshots line endpoints and uses the explicit origin/direction FireProjectile overload. The compatibility target-only overload still resolves aim immediately for callers outside this runner.
+
+DragonFireBreath already snapshots aim after prepareSeconds and holds it during preFireDelaySeconds / activeSeconds. The warning now remains visible until actual fire. Cancellation/finally paths retain their existing warning cleanup. Total warning lengths, attack cadence, damage and projectile collision policies are unchanged.

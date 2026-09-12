@@ -114,6 +114,7 @@ internal readonly struct RoomAuthoringDungeonPreviewResult
     public int ShortestCorridorLength { get; }
     public int LongestCorridorLength { get; }
     public bool UsedCorridorLengthRelaxation { get; }
+    public string TemplateSelectionDescription { get; }
 
     public RoomAuthoringDungeonPreviewResult(
         bool wasBuilt,
@@ -127,7 +128,8 @@ internal readonly struct RoomAuthoringDungeonPreviewResult
         string corridorWallTileName,
         int shortestCorridorLength,
         int longestCorridorLength,
-        bool usedCorridorLengthRelaxation)
+        bool usedCorridorLengthRelaxation,
+        string templateSelectionDescription = null)
     {
         WasBuilt = wasBuilt;
         IsComplete = isComplete;
@@ -141,6 +143,7 @@ internal readonly struct RoomAuthoringDungeonPreviewResult
         ShortestCorridorLength = Mathf.Max(0, shortestCorridorLength);
         LongestCorridorLength = Mathf.Max(0, longestCorridorLength);
         UsedCorridorLengthRelaxation = usedCorridorLengthRelaxation;
+        TemplateSelectionDescription = templateSelectionDescription ?? string.Empty;
     }
 
     public static RoomAuthoringDungeonPreviewResult Failed(string message)
@@ -447,7 +450,8 @@ internal static class RoomAuthoringDungeonPreview
                 wallTile != null ? wallTile.name : "없음",
                 shortestCorridorLength,
                 longestCorridorLength,
-                layout.UsedCorridorLengthRelaxation);
+                layout.UsedCorridorLengthRelaxation,
+                layout.TemplateSelection?.Description);
         }
         catch (Exception exception)
         {

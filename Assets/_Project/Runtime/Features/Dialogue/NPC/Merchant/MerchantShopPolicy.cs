@@ -37,7 +37,9 @@ public static class MerchantShopPolicy
         if (definition == null)
             return new MerchantShopPolicySnapshot(false, false, 0, 0, 0f, default);
 
-        bool isAvailable = !definition.RequireShopUpgrade || modifiers.shopEnabled;
+        bool isAvailable = definition.UsesRunGold
+            ? RunSessionStore.IsRunActive
+            : !definition.RequireShopUpgrade || modifiers.shopEnabled;
         int baseSlotCount = definition.BaseVisibleSlotCount > 0
             ? Mathf.Min(definition.BaseVisibleSlotCount, authoredSlotCount)
             : authoredSlotCount;

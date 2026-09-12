@@ -7,6 +7,12 @@ last_reviewed: 2026-06-01
 
 # Decision Log
 
+## 2026-09-11 - Backtrack Templates Before Relaxing Room Repetition
+
+Keep procedural topology and physical embedding separate from template assignment. Precompute compatible node domains, use constrained-node-first assignment and forward checking, and allow bounded rollback of ordinary/provisional Combat templates. Explicitly guaranteed identities remain pinned. Relax nearby repetition first, adjacent shape second and adjacent identical room last; never relax socket/role requirements, positive quota targets or the Large cap. Compare physically valid results by repetition metrics before corridor aesthetics. Record budget exhaustion separately from domain infeasibility instead of claiming every remaining repeat is unavoidable.
+
+Implementation bounds and diagnostic entry points: [Dungeon Template Selection](StructureMemory/DungeonTemplateSelection.md). Same-seed output can change from the former greedy algorithm; new runs use the new deterministic selection.
+
 ## 2026-09-07 - Apprentice Sword Attack-to-Skill Input
 
 User-approved policy: Q interrupts the basic attack immediately. Right-click held before the hitbox spawns waits for that spawn; after spawn it cancels recovery and begins charging. Releasing right-click before that boundary cancels the request. Charge has no separate 0.61-second cast delay. Other weapons retain their existing input policy. Normal ASC cancellation cleanup must finish before the next skill activates.
@@ -3143,3 +3149,39 @@ Implications:
 - Same-run persistence records the wave cursor, delay and completion separately from per-placement survival; future spawn anchors are not consumed monsters.
 - Existing production room templates are not automatically repartitioned. `Room Piece > Objects` is the authoring entry point.
 - Detailed ownership and the existing presence-only monster restore limitation are documented in `StructureMemory/ProceduralDungeonRoomPipeline.md`.
+
+## 2026-09-12 - Combat Feel, Chest Budget, and Quest HUD Scope
+
+User-confirmed scope: target stun and attacker hitstop are local, per-ability/per-attack prototype values. Camera additions are disabled. All lunges slide without Walking; Apprentice basic attacks block ordinary movement and preserve the right-authored offset height when mirrored.
+
+Each chest permits two successful item acquisitions over its lifetime; reopening and reroll do not reset the budget. Sealed weapon slots prohibit equip but allow storage, rearrangement, and drop. The permanent travel upgrade gives +50% speed after room combat, projected as a Buff. Parcel count does not multiply quest rows; one or more parcels display the same delivery text. Quest removal pops upward, exits left, and reflows following rows.
+
+Weapon-specific relics are postponed. Weapon drop count/chance remain user-owned. Travel upgrade node price and placement remain a content decision. See StructureMemory/QuestHud.md and the related ScriptSystems maps for current ownership.
+
+## 2026-09-12 - Crisp attack lunge and refundable chest selection
+
+The user's follow-up supersedes the earlier non-refundable chest budget: returning a taken item refunds one acquisition, and a return/replacement exchange is allowed at the two-item limit. ChestInventory owns receipts and persists them with dungeon state. Equal-definition copies share identity in the existing item model.
+
+Weapon attack lunges should end sharply. Their common entry point preserves distance with half duration and linear travel; non-weapon travel uses the existing API. Acquisition counter text uses the existing Galmuri9 SDF BlackOutline asset.
+
+### 2026-09-12 — Latest chest and hitstop prototype scope
+
+User revision supersedes earlier permissive returns and uniform attacker stop: chest inbound player items require matching outstanding acquisition definitions; all outstanding returns restore reroll eligibility without requiring original slots, but do not refund reroll uses. Unknown legacy receipts fail closed. Basic attacks and all Flowering attacks have zero attacker stop; non-Flowering damaging skills retain 0.1 seconds. Target stun remains 0.1 seconds. Generated wall physics uses Wall, while Floor remains Ground.
+
+Related verification: [2026-09-12 session](SessionLogs/2026-09-12.md).
+
+### 2026-09-12 — Boss and melee control revision
+
+User approved: exclude bosses from prototype local hit pause; melee basics lock movement/aim through the first 80% of motion and active lunge, then retain the lock only while primary input stays held. Releasing and moving does not clear combo expiry. Ranged basics bypass this new lock. A sole first-slot weapon cannot move into empty slot two. Skill tuning: Lightning 0.05 seconds, Apprentice full charge 0.3 (partial remains 0.05), Apprentice Q 0.1. Travel upgrade node added under 체력 증진 I at (1,1), price 5, using the existing +50% buff effect.
+
+### 2026-09-12 — Re-aim and quest presentation revision
+
+User supersedes continuous held-direction lock: melee movement/aim unlock at the motion/lunge tail even while attack stays pressed, with a re-aim opportunity before the next auto swing. Attacker hitstop now freezes the scaled world including monsters/bosses; bosses still reject individual target stun. Main quests project tutorial/hub/current-run route progress; run-acquired quests are subquests. Headers are orange 메인 퀘스트 and dark sky blue 서브 퀘스트, individual quest titles are omitted, content is white, and all displayed quest text uses BlackOutline.
+
+### 2026-09-12 — Run gold and unrestricted merchant stock
+
+Gold belongs only to the active run and resets when the run ends (also cleared on new-run initialization). It is separate from persistent magic stones. The user requested themed shop rooms and a reusable placement prefab. Run shops use unrestricted weapon/relic slots rather than reserved categories, initially equal category weights across three slots. Inclusive prices: weapons 1000–1300; Common relics 200–400; Rare 500–800; Epic 900–1200. See [RunGoldAndShop](StructureMemory/RunGoldAndShop.md) for current structure and validation limits.
+
+### 2026-09-12 — Run shop probability tuning
+
+User revision: run-shop weapon/relic category weights are 1:3 (25%/75%), superseding equal weights. Each eligible monster death rolls total gold uniformly within ±15% of its existing baseline, using integer bounds rounded inward. Prices remain unchanged.

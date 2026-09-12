@@ -214,7 +214,7 @@ public class FieldHealPickup2D : MonoBehaviour
 
     private void ResetVisualTransform()
     {
-        if (visualRoot == null || !hasVisualBaseTransform)
+        if (visualRoot == null || visualRoot == transform || !hasVisualBaseTransform)
             return;
 
         visualRoot.localPosition = visualBaseLocalPosition;
@@ -223,7 +223,7 @@ public class FieldHealPickup2D : MonoBehaviour
 
     private void TickIdlePresentation()
     {
-        if (visualRoot == null)
+        if (visualRoot == null || visualRoot == transform)
             return;
 
         CaptureVisualBaseTransform();
@@ -282,27 +282,84 @@ public class FieldHealPickup2D : MonoBehaviour
 
     private IEnumerator PlayDropRoutine(Vector3 startPosition, Vector3 landingPosition, float arcHeight, float duration)
     {
+        Collider2D pickup = GetComponent<Collider2D>();
+        ContactFilter2D walls = new ContactFilter2D
+        {
+            useLayerMask = true,
+            layerMask = LayerMask.GetMask("Wall"),
+            useTriggers = false
+        };
+        var hits = new RaycastHit2D[16];
+        var overlaps = new Collider2D[16];
+        Vector2 velocity = ((Vector2)landingPosition - (Vector2)startPosition) / Mathf.Max(0.01f, duration);
         float elapsed = 0f;
         while (elapsed < duration)
         {
-            elapsed += Time.deltaTime;
-            float t = duration > 0f ? elapsed / duration : 1f;
-            transform.position = EvaluateDropPosition(startPosition, landingPosition, arcHeight, t);
+            float dt = Mathf.Min(Time.deltaTime, duration - elapsed);
+            elapsed += dt;
+            ResolveDropWallOverlap(pickup, walls, overlaps);
+            float remainingDistance = velocity.magnitude * dt;
+            Vector2 direction = velocity.sqrMagnitude > 0f ? velocity.normalized : Vector2.zero;
+            for (int bounce = 0; bounce < 6 && remainingDistance > 0.0001f; bounce++)
+            {
+                Physics2D.SyncTransforms();
+                int count = pickup.Cast(direction, walls, hits, remainingDistance + 0.02f, ignoreSiblingColliders: false);
+                RaycastHit2D nearest = default;
+                float nearestDistance = float.PositiveInfinity;
+                for (int i = 0; i < count; i++)
+                {
+                    if (hits[i].collider == null || Vector2.Dot(direction, hits[i].normal) >= 0f) continue;
+                    if (hits[i].distance < nearestDistance)
+                    {
+                        nearest = hits[i];
+                        nearestDistance = nearest.distance;
+                    }
+                }
+                if (nearest.collider == null)
+                {
+                    transform.position += (Vector3)(direction * remainingDistance);
+                    break;
+                }
+                float travel = Mathf.Clamp(nearestDistance - 0.02f, 0f, remainingDistance);
+                transform.position += (Vector3)(direction * travel);
+                remainingDistance -= travel;
+                direction = Vector2.Reflect(direction, nearest.normal).normalized;
+                velocity = direction * velocity.magnitude;
+            }
+            ResolveDropWallOverlap(pickup, walls, overlaps);
+            dropLandingPosition = transform.position;
+            if (visualRoot != null && visualRoot != transform)
+            {
+                float t = Mathf.Clamp01(elapsed / Mathf.Max(0.01f, duration));
+                visualRoot.localPosition = visualBaseLocalPosition + Vector3.up * (4f * arcHeight * t * (1f - t));
+            }
             yield return null;
         }
 
+        ResolveDropWallOverlap(pickup, walls, overlaps);
+        dropLandingPosition = transform.position;
         dropRoutine = null;
-        transform.position = landingPosition;
         interactionLocked = false;
         ResetVisualTransform();
         WorldStateChanged?.Invoke(this);
     }
 
-    private static Vector3 EvaluateDropPosition(Vector3 startPosition, Vector3 landingPosition, float arcHeight, float t)
+    private void ResolveDropWallOverlap(Collider2D pickup, ContactFilter2D walls, Collider2D[] overlaps)
     {
-        t = Mathf.Clamp01(t);
-        Vector3 position = Vector3.LerpUnclamped(startPosition, landingPosition, t);
-        position.y += 4f * arcHeight * t * (1f - t);
-        return position;
+        for (int pass = 0; pass < 6; pass++)
+        {
+            Physics2D.SyncTransforms();
+            int count = pickup.Overlap(walls, overlaps);
+            bool corrected = false;
+            for (int i = 0; i < count; i++)
+            {
+                ColliderDistance2D distance = pickup.Distance(overlaps[i]);
+                if (!distance.isOverlapped) continue;
+                transform.position += (Vector3)(distance.normal * (distance.distance - 0.02f));
+                corrected = true;
+                Physics2D.SyncTransforms();
+            }
+            if (!corrected) break;
+        }
     }
 }

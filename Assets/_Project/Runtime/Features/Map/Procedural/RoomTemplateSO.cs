@@ -216,6 +216,7 @@ public static class RoomTemplateCombatMetadataUtility
 /// 책임:
 /// - 필수 방 템플릿이 그래프에서 만족해야 하는 위치 성격과 시작점 최소 거리를 보관한다.
 /// - 콘텐츠별 배치 의도를 방 ID 하드코딩 없이 레이아웃 조립기에 전달한다.
+/// - 제작 도구와 런타임이 공유하는 배치 조건의 모순 검증을 제공한다.
 /// </summary>
 [Serializable]
 public struct RoomTopologyPlacementData
@@ -223,6 +224,19 @@ public struct RoomTopologyPlacementData
     public RoomTopologyPlacementMode mode;
     [Min(0)] public int minimumGraphDistanceFromStart;
     public bool requireDeadEnd;
+
+    public bool TryValidate(out string failure)
+    {
+        if (mode == RoomTopologyPlacementMode.CycleDetour && requireDeadEnd)
+        {
+            failure = "CycleDetour cannot require a dead end: a cycle detour connects to at least two rooms. " +
+                "Use Default/FarthestFromStart for a dead-end room, or disable requireDeadEnd for a cycle room.";
+            return false;
+        }
+
+        failure = string.Empty;
+        return true;
+    }
 }
 
 /// <summary>
@@ -450,7 +464,13 @@ public static class RoomTileLayerContract
 
     public static bool UsesGroundPhysicsLayer(RoomTileLayerKind layer)
     {
-        return layer == RoomTileLayerKind.Floor || layer == RoomTileLayerKind.Wall;
+        return layer == RoomTileLayerKind.Floor;
+    }
+
+    public static string GetPhysicsLayerName(RoomTileLayerKind layer)
+    {
+        return layer == RoomTileLayerKind.Wall ? "Wall" :
+            UsesGroundPhysicsLayer(layer) ? "Ground" : "Default";
     }
 
     public static bool RequiresCollider(RoomTileLayerKind layer)

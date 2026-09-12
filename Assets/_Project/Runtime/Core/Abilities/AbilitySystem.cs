@@ -619,6 +619,7 @@ namespace UnityGAS
 
         public bool TryActivateAbility(AbilitySpec spec, GameObject target = null)
         {
+            if (CombatHitPause2D.IsPausedOn(gameObject)) return false;
             EnsureRuntimeServicesReady();
 
             var def = spec?.Definition;
@@ -776,6 +777,7 @@ namespace UnityGAS
             if (!isCasting)
                 return;
 
+            if (CombatHitPause2D.IsPausedOn(gameObject)) return;
             castTimeRemaining -= Time.deltaTime;
             if (castTimeRemaining <= 0f)
                 CompleteCast();

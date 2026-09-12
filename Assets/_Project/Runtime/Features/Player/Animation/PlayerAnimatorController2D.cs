@@ -31,6 +31,7 @@ public sealed class PlayerAnimatorController2D : MonoBehaviour
     [Header("Flip")]
     [SerializeField] private bool flipWhenFacingLeft = true;
 
+    private AbilityMotionController2D motionController;
     private int isMovingBoolHash;
     private int directionIntHash;
     private int lastDirectionValue;
@@ -58,6 +59,7 @@ public sealed class PlayerAnimatorController2D : MonoBehaviour
         if (aimSource == null)
             aimSource = GetComponent<PlayerAim2D>();
 
+        motionController = GetComponent<AbilityMotionController2D>();
         ResolveVisualRenderers();
 
         isMovingBoolHash = string.IsNullOrWhiteSpace(isMovingBool) ? 0 : Animator.StringToHash(isMovingBool);
@@ -123,7 +125,9 @@ public sealed class PlayerAnimatorController2D : MonoBehaviour
         if (isMovingBoolHash == 0)
             return;
 
-        bool isMoving = movementMotor != null && movementMotor.IsMoving;
+        bool isMoving = movementMotor != null && movementMotor.IsMoving
+                        && !(motionController != null && motionController.IsLunging)
+                        && !movementMotor.IsLungeMovement;
         animator.SetBool(isMovingBoolHash, isMoving);
     }
 

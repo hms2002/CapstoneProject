@@ -17,6 +17,7 @@ public sealed class CameraShakeService : MonoBehaviour
 
     private readonly Dictionary<int, float> lastEmitTimeBySource = new();
     private float lastGlobalEmitTime = -999f;
+    private CinemachineBrain shakeBrain;
 
     /// <summary>
     /// 책임: Core의 CameraShakePlayback 요청을 실제 CameraShakeService 인스턴스로 연결한다.
@@ -33,6 +34,8 @@ public sealed class CameraShakeService : MonoBehaviour
     private static void RegisterPlaybackBackend()
     {
         s_isQuitting = false;
+        // Keep the same impulse clock before, during, and after combat hitstop.
+        CinemachineImpulseManager.Instance.IgnoreTimeScale = true;
         CameraShakePlayback.RegisterBackend(s_playbackBackend);
     }
 
@@ -102,6 +105,29 @@ public sealed class CameraShakeService : MonoBehaviour
         RuntimeServiceOwnership.Adopt(this);
     }
 
+    private void LateUpdate()
+    {
+        if (Time.timeScale > 0.0001f || shakeBrain == null || !shakeBrain.isActiveAndEnabled ||
+            shakeBrain.UpdateMethod == CinemachineBrain.UpdateMethods.ManualUpdate)
+            return;
+
+        // SmartUpdate may keep a Rigidbody target on the stopped physics clock.
+        // Refresh its impulse pipeline without permanently changing the camera policy.
+        var updateMethod = shakeBrain.UpdateMethod;
+        var blendUpdateMethod = shakeBrain.BlendUpdateMethod;
+        try
+        {
+            shakeBrain.UpdateMethod = CinemachineBrain.UpdateMethods.LateUpdate;
+            shakeBrain.BlendUpdateMethod = CinemachineBrain.BrainUpdateMethods.LateUpdate;
+            shakeBrain.ManualUpdate(Time.frameCount, Time.unscaledDeltaTime);
+        }
+        finally
+        {
+            shakeBrain.UpdateMethod = updateMethod;
+            shakeBrain.BlendUpdateMethod = blendUpdateMethod;
+        }
+    }
+
     private void OnDestroy()
     {
         if (Instance == this)
@@ -131,6 +157,8 @@ public sealed class CameraShakeService : MonoBehaviour
         if (camera == null)
             return false;
 
+        shakeBrain = camera.GetComponent<CinemachineBrain>();
+
         Vector3 direction = request.Direction;
         direction.z = 0f;
         if (direction.sqrMagnitude <= 0.0001f)
@@ -143,13 +171,6 @@ public sealed class CameraShakeService : MonoBehaviour
             : CameraManualShakeSettings.Default;
 
         if (request.HasManualShakeSettingsOverride &&
-            TryPlayManualShake(camera.gameObject, request.Amplitude, direction, manualSettings))
-        {
-            RecordEmit(request, now);
-            return true;
-        }
-
-        if (Time.timeScale <= 0.0001f &&
             TryPlayManualShake(camera.gameObject, request.Amplitude, direction, manualSettings))
         {
             RecordEmit(request, now);

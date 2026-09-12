@@ -82,3 +82,16 @@ Map the upgrade tree UI navigation and purchase feedback flow after the overflow
 ## Promotion Candidate
 
 Keep this as StructureMemory until the upgrade UI authoring/presentation contract is stable enough for an Architecture or Contract update.
+
+## Room-Clear Travel Speed Effect (2026-09-12)
+
+- OutOfCombatMoveSpeedUpgradeEffectSO uses the existing PlayerUpgradeEffectSO purchase/reapply flow. It configures a player-owned OutOfCombatMoveSpeedRuntime; no manager or persistent singleton was added.
+- The runtime observes MonsterSpawnRoomGroup enter/exit state. Registered enemies, pending spawns, and encounter holds keep the bonus off through inter-wave delays. With no room group, recognizing enemies block the bonus for legacy/boss encounters. The effect is limited to an active run.
+- Data/Progression/Upgrades/Effect contains Effect_OutOfCombatMoveSpeed, Buff_OutOfCombatMoveSpeed, GE_OutOfCombatMoveSpeed, and SHD_OutOfCombatMoveSpeed. The GE applies Percent +0.5 to MoveSpeedMulAttribute; the status is a Buff without a timer. Its long finite engine duration is refreshed if needed and removed as soon as combat resumes or the owner disables.
+- ISceneReappliedEffectSource excludes this conditional effect from active-effect snapshots. Purchased upgrade reapplication owns reconstruction, avoiding a source-less speed bonus after scene transition. CombatBuffDebuffApplier suppresses duration display for this source category.
+- Upgrade node price and tree placement are not selected; assign Effect_OutOfCombatMoveSpeed to the intended UpgradeNodeSO effect list when that content decision is made. Existing nodes and prices are unchanged.
+- Key runtime files: Assets/_Project/Runtime/Features/Progression/Upgrades/Effects/OutOfCombatMoveSpeedRuntime.cs and OutOfCombatMoveSpeedUpgradeEffectSO.cs. Cleanup and snapshot exclusion also touch Core/Effects/GameplayEffectRunner.cs and Features/Player/Status/CombatBuffDebuffApplier.cs.
+
+### Travel speed node registered (2026-09-12)
+
+Resources/Upgrades/Nodes/Node_OutOfCombatMoveSpeed.asset is registered in the upgrade database and as a child of 체력 증진 I. Price 5, grid (1,1), effect Effect_OutOfCombatMoveSpeed; it reuses the existing travel status icon. The purchased +50% effect and status HUD are still owned by OutOfCombatMoveSpeedRuntime / CombatBuffDebuffApplier, with room-combat gating described in the earlier section. Serialized GUID links and packed parent/child IDs match the UpgradeNodeSO name hash.

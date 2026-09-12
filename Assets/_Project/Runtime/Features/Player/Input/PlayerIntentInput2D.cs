@@ -35,10 +35,14 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
     /// </summary>
     public Vector2 MoveInput { get; private set; }
 
-    public Vector2 AbilityMoveInput => MoveInput;
+    // Lunge direction is intent, not the movement currently permitted by the attack lock.
+    public Vector2 AbilityMoveInput => InputActionQuery.GetMoveVectorNormalized();
+
+    private PlayerCombatInput2D combatInput;
 
     private void Awake()
     {
+        combatInput = GetComponent<PlayerCombatInput2D>();
         if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
         if (aim == null) aim = GetComponent<PlayerAim2D>();
         if (player == null) player = GetComponent<PlayerInteractor2D>();
@@ -48,6 +52,11 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
     private void Update()
     {
         RawMoveInput = InputActionQuery.GetMoveVectorNormalized();
+        if (combatInput != null && combatInput.IsMeleeControlLocked)
+        {
+            MoveInput = Vector2.zero;
+            return;
+        }
 
         if (player != null && player.CurrentState != InteractState.Idle)
         {
@@ -80,6 +89,7 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
 
     public IntentMovementData GetIntent()
     {
+        if (combatInput != null && combatInput.IsMeleeControlLocked) return IntentMovementData.None;
         if (player != null && player.CurrentState != InteractState.Idle)
             return IntentMovementData.None;
 

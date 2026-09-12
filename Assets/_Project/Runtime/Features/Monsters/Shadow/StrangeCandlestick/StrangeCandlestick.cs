@@ -284,19 +284,21 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
     }
 
     /// <summary>LightBead를 생성하고 발사 설정을 넘깁니다.</summary>
-    public bool FireProjectile(GameObject explicitTarget)
+    public bool FireProjectile(GameObject explicitTarget) =>
+        FireProjectile(explicitTarget, transform.position, GetLaunchDirection(explicitTarget));
+
+    public bool FireProjectile(GameObject explicitTarget, Vector2 origin, Vector2 shotDirection)
     {
         if (explicitTarget == null || burstCadence.IsResting(Time.time))
             return false;
 
         AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
-        Vector2 shotDirection = GetLaunchDirection(explicitTarget);
 
         CombatHitPayload payload = MakeHitPayload();
         if (payload == null)
             return false;
 
-        GameObject lightBeadObject = Instantiate(data.projectilePrefab, transform.position, Quaternion.identity);
+        GameObject lightBeadObject = Instantiate(data.projectilePrefab, origin, Quaternion.identity);
         LightBeadProjectile2D lightBead = lightBeadObject.GetComponent<LightBeadProjectile2D>();
 
         if (lightBead == null)

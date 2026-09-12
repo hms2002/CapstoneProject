@@ -115,8 +115,13 @@ public sealed class GoblinWarrior : Mob, IMobAttackDecisionSource
     protected override void OnDeathStarted()
     {
         ReleaseChargeFacingLock();
-        CommonMonsterCombatUtility.TriggerAnimation(this, CommonMonsterAnimationCue.Die);
         base.OnDeathStarted();
+    }
+
+    /// <summary>공격 정리가 끝난 뒤 전용 사망 큐를 요청하고, 존재하지 않는 공용 die 트리거 호출은 대체한다.</summary>
+    protected override void PlayDeathAnimation()
+    {
+        CommonMonsterCombatUtility.TriggerAnimation(this, CommonMonsterAnimationCue.Die);
     }
 
     /// <summary>

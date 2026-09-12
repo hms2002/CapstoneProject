@@ -48,6 +48,11 @@ public sealed class LootPoolService
         return LootPoolItemSelectionService.GetRandomWeapon(exclusionList);
     }
 
+    public WeaponDefinition GetRandomTreasureChestWeapon(HashSet<string> exclusionList)
+    {
+        return LootPoolItemSelectionService.GetRandomWeapon(exclusionList, treasureChest: true);
+    }
+
     public WeaponDefinition GetRandomWeaponFromCandidates(
         IReadOnlyList<WeaponDefinition> candidates,
         HashSet<string> exclusionList)

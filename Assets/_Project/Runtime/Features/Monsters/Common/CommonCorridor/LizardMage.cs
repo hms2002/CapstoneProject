@@ -170,15 +170,13 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
         if (IsRestingBetweenBursts)
             return;
 
-        Vector2 direction = context.Target != null
-            ? CommonMonsterCombatUtility.DirectionToAimPoint(context.Origin, context.Target, sprite != null && sprite.flipX)
-            : context.WarningDirection;
+        Vector2 direction = context.WarningDirection;
 
         AbilityLogic_LizardMageBurst logic = Logic;
         if (logic == null || logic.ProjectilePrefab == null)
             return;
 
-        GameObject projectileObject = Instantiate(logic.ProjectilePrefab, transform.position, Quaternion.identity);
+        GameObject projectileObject = Instantiate(logic.ProjectilePrefab, context.Origin, Quaternion.identity);
         if (projectileObject == null)
             return;
 
@@ -290,17 +288,22 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
         {
             float warningSeconds = CombatTimingService.ScaleSeconds(system, context.WarningSeconds, CombatTimingSlot.AttackWarning);
             ShowWarning(context, warningSeconds);
-            if (warningSeconds > 0f)
-                yield return TrackWarningUntilFire(system, spec, initialTarget, context, warningSeconds);
-
+            float trackingSeconds = Mathf.Max(0f, warningSeconds - 0.2f);
+            float elapsed = 0f;
+            while (elapsed < warningSeconds)
+            {
+                if (cancelRequested || owner.IsDead || IsCancelled(spec))
+                    yield break;
+                if (elapsed < trackingSeconds && owner.TryBuildBurstContext(system, spec, initialTarget, out LizardMage.BurstContext trackedContext))
+                {
+                    context = trackedContext;
+                    UpdateWarning(context, warningSeconds);
+                }
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
-
-            if (owner.TryBuildBurstContext(system, spec, initialTarget, out LizardMage.BurstContext finalContext))
-            {
-                context = finalContext;
-                UpdateWarning(context, warningSeconds);
-            }
 
             HideWarning();
             CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.Attack);
@@ -323,37 +326,6 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
             cancelRequested = false;
             isRunning = false;
             abilityCoordinator?.EndRunner(this);
-        }
-    }
-
-    /// <summary>
-    /// 책임:
-    /// - 발사 직전까지 플레이어 위치를 다시 읽어 리자드맨 마법사의 경고선을 갱신한다.
-    /// - 조준 중 방향 전환과 wall clipping이 실제 발사 방향과 어긋나지 않게 한다.
-    /// </summary>
-    private IEnumerator TrackWarningUntilFire(
-        AbilitySystem system,
-        AbilitySpec spec,
-        GameObject initialTarget,
-        LizardMage.BurstContext context,
-        float warningSeconds)
-    {
-        float elapsed = 0f;
-        float duration = Mathf.Max(0f, warningSeconds);
-
-        while (elapsed < duration)
-        {
-            if (cancelRequested || owner.IsDead || IsCancelled(spec))
-                yield break;
-
-            if (owner.TryBuildBurstContext(system, spec, initialTarget, out LizardMage.BurstContext trackedContext))
-            {
-                context = trackedContext;
-                UpdateWarning(context, warningSeconds);
-            }
-
-            elapsed += Time.deltaTime;
-            yield return null;
         }
     }
 

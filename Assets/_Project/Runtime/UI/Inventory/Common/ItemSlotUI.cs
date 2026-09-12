@@ -26,6 +26,23 @@ public class ItemSlotUI : MonoBehaviour,
     [SerializeField, Min(0f)] private float highlightFadeOutDuration = 0.08f;
     [SerializeField] private bool useUnscaledHighlightTime = true;
 
+    private ChestInventory chestReturnContext;
+    private bool wasChestReturnCandidate;
+    public void SetChestReturnContext(ChestInventory chest)
+    {
+        chestReturnContext = chest;
+        RefreshChestReturnHighlight();
+    }
+
+    public void RefreshChestReturnHighlight()
+    {
+        bool candidate = chestReturnContext != null && container != null &&
+            chestReturnContext.CanReturnAcquisition(container.Get(index));
+        if (candidate == wasChestReturnCandidate) return;
+        wasChestReturnCandidate = candidate;
+        RefreshHoverHighlight();
+    }
+
     private IItemContainer container;
     private int index;
     [SerializeField] private RectTransform slotRect;
@@ -407,6 +424,9 @@ public class ItemSlotUI : MonoBehaviour,
     {
         if (item == null)
             return false;
+
+        if (chestReturnContext != null && chestReturnContext.CanReturnAcquisition(item))
+            return true;
 
         if (IsInventoryInspectionOnly())
             return isPointerOver;

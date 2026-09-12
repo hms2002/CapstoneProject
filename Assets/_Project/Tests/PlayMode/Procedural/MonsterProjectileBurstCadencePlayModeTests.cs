@@ -163,6 +163,58 @@ public sealed class MonsterProjectileBurstCadencePlayModeTests
         Assert.That(GetField(GetCadence(owner), "shotsRemaining"), Is.EqualTo(0));
     }
 
+    [TestCase("CommonCorridor/GoblinGunner.prefab")]
+    [TestCase("CommonCorridor/LizardMage.prefab")]
+    [TestCase("BeerMonster.prefab")]
+    [TestCase("ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab")]
+    public void LockedShot_IgnoresTargetsNewPosition(string path)
+    {
+        Mob owner = CreateMonster(path);
+        var target = new GameObject("MovedAfterLockOn");
+        target.transform.position = owner.transform.position + Vector3.up * 3f;
+        var effect = ScriptableObject.CreateInstance<GE_Damage_Spec>();
+        temporaryAssets.Add(effect);
+        var payload = new CombatHitPayload { sourceSystem = owner.GetComponent<AbilitySystem>(), damageEffect = effect, causer = owner.gameObject, finalHpDamage = 1f };
+        var before = new HashSet<LightBeadProjectile2D>(Object.FindObjectsByType<LightBeadProjectile2D>(FindObjectsSortMode.None));
+        for (int i = 0; i < 2; i++)
+        {
+            if (owner is StrangeCandlestick candle)
+                candle.FireProjectile(target, owner.transform.position, Vector2.right);
+            else
+                Fire(owner, target, payload);
+            target.transform.position += Vector3.left * 2f;
+        }
+        int added = 0;
+        foreach (var projectile in Object.FindObjectsByType<LightBeadProjectile2D>(FindObjectsSortMode.None))
+        {
+            if (before.Contains(projectile)) continue;
+            added++;
+            Assert.That((Vector2)GetField(projectile, "direction"), Is.EqualTo(Vector2.right));
+        }
+        Assert.That(added, Is.EqualTo(2));
+    }
+
+    [TestCase("Weapon.WindWeapon", false, false)]
+    [TestCase("Weapon.WindWeapon", true, false)]
+    [TestCase("Weapon.Flowering", false, false)]
+    [TestCase("Weapon.Flowering", true, true)]
+    [TestCase("Weapon.OddIron", false, false)]
+    [TestCase("Weapon.OddIron", true, true)]
+    [TestCase("Weapon.ApprenticeHeroSword", false, true)]
+    public void WeaponDrops_RespectSourceRestrictions(string id, bool chest, bool expected)
+    {
+        var type = typeof(LootPoolService).Assembly.GetType("LootPoolItemSelectionService", true);
+        var method = type.GetMethod("CanDropWeapon", BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.That(method.Invoke(null, new object[] { id, chest }), Is.EqualTo(expected));
+        if (!chest)
+        {
+            var weapon = ScriptableObject.CreateInstance<WeaponDefinition>();
+            temporaryAssets.Add(weapon);
+            weapon.weaponId = id;
+            Assert.That(new LootPoolService().GetRandomWeaponFromCandidates(new[] { weapon }, new HashSet<string>()) != null, Is.EqualTo(expected));
+        }
+    }
+
     private static int FillBurst(MobProjectileBurstCadence cadence, float now)
     {
         int shots = 0;

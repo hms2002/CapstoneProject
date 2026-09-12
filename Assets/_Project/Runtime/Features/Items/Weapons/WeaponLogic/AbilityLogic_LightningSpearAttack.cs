@@ -41,6 +41,7 @@ namespace UnityGAS.Sample
             }
 
             spec.SetInt(KeyComboIndex, comboIndex);
+            spec.SetInt("Combat.HitFeelIndex", comboIndex);
             spec.SetFloat(KeyComboExpire, Time.time + combo.ComboResetTime);
             system.SetNextActivationDelay(spec, step.nextAttackDelay);
 
@@ -138,7 +139,7 @@ namespace UnityGAS.Sample
             if (distance > 0f && duration > 0f)
             {
                 Vector2 start = system.transform.position;
-                motion.StartLunge(start, direction, distance, duration);
+                motion.StartAttackLunge(start, direction, distance, duration);
             }
 
             float elapsed = 0f;
@@ -197,7 +198,7 @@ namespace UnityGAS.Sample
             Vector2 direction = attackDirection.sqrMagnitude > 0.0001f
                 ? attackDirection.normalized
                 : Vector2.right;
-            Vector2 perp = new Vector2(-direction.y, direction.x);
+            Vector2 perp = new(-direction.y * (direction.x < 0f ? -1f : 1f), Mathf.Abs(direction.x));
             int sideSign = step.sideSign < 0 ? -1 : 1;
 
             Vector2 center = (Vector2)system.transform.position

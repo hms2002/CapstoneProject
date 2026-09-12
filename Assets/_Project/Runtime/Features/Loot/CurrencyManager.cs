@@ -7,6 +7,27 @@ public class CurrencyManager : MonoBehaviour
     public static CurrencyManager Instance { get; private set; }
 
     public event Action<int> OnMagicStoneChanged;
+    public event Action<int> OnGoldChanged;
+
+    public int GetGold() => RunSessionStore.IsRunActive ? Mathf.Max(0, RunSessionStore.Data.runGold) : 0;
+
+    public void AddGold(int amount)
+    {
+        if (amount <= 0 || !RunSessionStore.IsRunActive) return;
+        RunSessionStore.Data.runGold = (int)Math.Min(int.MaxValue, (long)GetGold() + amount);
+        OnGoldChanged?.Invoke(GetGold());
+    }
+
+    public bool SpendGold(int amount)
+    {
+        if (amount < 0 || !RunSessionStore.IsRunActive || GetGold() < amount) return false;
+        RunSessionStore.Data.runGold -= amount;
+        OnGoldChanged?.Invoke(GetGold());
+        return true;
+    }
+
+    private void HandleRunStarted() => OnGoldChanged?.Invoke(GetGold());
+    private void HandleRunEnded(RunEndReason reason) => OnGoldChanged?.Invoke(0);
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
@@ -28,6 +49,8 @@ public class CurrencyManager : MonoBehaviour
         }
 
         Instance = this;
+        RunSessionStore.OnRunStarted += HandleRunStarted;
+        RunSessionStore.OnRunEnded += HandleRunEnded;
         DontDestroyOnLoad(gameObject);
     }
 
@@ -100,6 +123,8 @@ public class CurrencyManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        RunSessionStore.OnRunStarted -= HandleRunStarted;
+        RunSessionStore.OnRunEnded -= HandleRunEnded;
         if (Instance == this)
             Instance = null;
     }

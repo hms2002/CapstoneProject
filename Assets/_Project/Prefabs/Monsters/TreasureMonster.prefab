@@ -337,6 +337,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tackleAbility: {fileID: 11400000, guid: 0114fc4ac57bcbe46b3d058d930e3a32, type: 2}
   hitDelay: 1
+  enableContactDamage: 1
   attackRangeDiameter: 6
   lungeDistance: 5
   telegraphWidth: 1
@@ -820,6 +821,7 @@ MonoBehaviour:
   experiencePerPickup: 5
   maximumPickupCount: 30
   pickupScatterRadius: 0.8
+  goldPickupPrefab: {fileID: 5166873198201453664, guid: d2d2c39b9e0b4c6fbbd950fe7576308a, type: 3}
 --- !u!1 &4223136300970009335
 GameObject:
   m_ObjectHideFlags: 0

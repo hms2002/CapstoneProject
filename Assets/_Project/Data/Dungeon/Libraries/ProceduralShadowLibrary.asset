@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gameplay::RoomThemeLibrarySO
   themeId: ProceduralShadow
   rooms:
+  - {fileID: 11400000, guid: f87d7ac9f09c46dab584524796f2a7f2, type: 2}
   - {fileID: 11400000, guid: 34a83d3377b84084b9b5897057cc7cf5, type: 2}
   - {fileID: 11400000, guid: 4d3dec9569cc3cb4987a068994c42585, type: 2}
   - {fileID: 11400000, guid: 47de70b2571a9824b8d66651fc1ec80f, type: 2}

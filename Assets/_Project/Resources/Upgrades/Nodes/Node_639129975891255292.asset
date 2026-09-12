@@ -19,9 +19,10 @@ MonoBehaviour:
   price: 5
   effects:
   - {fileID: 11400000, guid: c36a0834b3b7432d9a19685020c6219d, type: 2}
-  unlockedNodeIDs: e4bfc335
+  unlockedNodeIDs: e4bfc3353c4f32f4
   requiredParentIDs: 09c60ca7
   nextNodes:
+  - {fileID: 11400000, guid: 8bda59d410874de9a633b89f4be4a40f, type: 2}
   - {fileID: 11400000, guid: 6cb7d8cb1e575f646af0f880b06e502e, type: 2}
   requiredParents:
   - {fileID: 11400000, guid: 93f3aef01a8be844499543c43fca86f6, type: 2}

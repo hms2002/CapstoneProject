@@ -36,7 +36,8 @@ public sealed class MerchantPurchaseService
     public MerchantPurchaseResult TryPurchase(
         IPlayerInteractor player,
         MerchantStockEntryState stockEntry,
-        ScriptableObject definition)
+        ScriptableObject definition,
+        bool useRunGold = false)
     {
         if (player is not Component playerComponent || stockEntry == null)
             return new MerchantPurchaseResult(MerchantPurchaseResultType.InvalidRequest);
@@ -54,12 +55,13 @@ public sealed class MerchantPurchaseService
         if (acquireFailure != MerchantPurchaseResultType.Success)
             return new MerchantPurchaseResult(acquireFailure);
 
-        if (!CurrencyManager.Instance.SpendMagicStone(stockEntry.price))
+        if (!(useRunGold ? CurrencyManager.Instance.SpendGold(stockEntry.price) : CurrencyManager.Instance.SpendMagicStone(stockEntry.price)))
             return new MerchantPurchaseResult(MerchantPurchaseResultType.NotEnoughCurrency);
 
         if (!TryAcquire(playerComponent, definition))
         {
-            CurrencyManager.Instance.AddMagicStone(stockEntry.price);
+            if (useRunGold) CurrencyManager.Instance.AddGold(stockEntry.price);
+            else CurrencyManager.Instance.AddMagicStone(stockEntry.price);
             MerchantPurchaseResultType retryFailure = GetAcquireFailureType(playerComponent, definition);
             return new MerchantPurchaseResult(
                 retryFailure != MerchantPurchaseResultType.Success

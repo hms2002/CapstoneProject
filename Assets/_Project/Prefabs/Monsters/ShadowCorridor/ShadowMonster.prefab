@@ -805,6 +805,7 @@ MonoBehaviour:
   experiencePerPickup: 5
   maximumPickupCount: 30
   pickupScatterRadius: 0.8
+  goldPickupPrefab: {fileID: 5166873198201453664, guid: d2d2c39b9e0b4c6fbbd950fe7576308a, type: 3}
 --- !u!1 &7544634219824897759
 GameObject:
   m_ObjectHideFlags: 0

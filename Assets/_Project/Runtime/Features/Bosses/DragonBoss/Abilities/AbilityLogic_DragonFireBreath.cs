@@ -107,7 +107,6 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
 
         aim = ResolveAimSnapshot(dragon, syncFacing: true);
         ShowOrUpdateWarningTelegraph(telegraphService, aim, prepareSeconds);
-        telegraphService?.HideCurrent();
 
         dragon.PushFaceTargetLock();
         try
@@ -116,6 +115,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
             if (IsAbilityCancelled(spec))
                 yield break;
 
+            telegraphService?.HideCurrent();
             dragon.FacePatternDirection(aim.WarningDirection);
             dragon.PlayPatternTrigger(DragonAnimationKeys.Fire);
             yield return RunFixedFireBreath(dragon, aim, spec);

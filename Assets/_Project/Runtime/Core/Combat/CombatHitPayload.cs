@@ -23,6 +23,7 @@ namespace UnityGAS
         public bool isCriticalHit;
         public ElementDamageResult[] elementBuildUps;
         public bool hasResolvedElementBuildUps;
+        public CombatHitFeelTiming hitFeel;
 
         public bool IsValid()
         {
@@ -41,6 +42,8 @@ namespace UnityGAS
         {
             return new CombatHitPayload
             {
+                hitFeel = sourceSpec?.Definition != null
+                    ? sourceSpec.Definition.ResolveHitFeel(sourceSpec.GetInt("Combat.HitFeelIndex", -1)) : default,
                 sourceSystem = sourceSystem,
                 sourceSpec = sourceSpec,
                 damageEffect = damageEffect,
@@ -88,7 +91,8 @@ namespace UnityGAS
                 isCriticalHit: payload.isCriticalHit,
                 elementBuildUps: payload.elementBuildUps,
                 hasResolvedElementBuildUps: payload.hasResolvedElementBuildUps,
-                hitImpactCueKind: payload.hitImpactCueKind);
+                hitImpactCueKind: payload.hitImpactCueKind,
+                hitFeelOverride: payload.hitFeel);
 
             return true;
         }

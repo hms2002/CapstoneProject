@@ -10,6 +10,17 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 
 ## Current Flow
 
+### Bounded Template Selection (2026-09-11)
+
+- Graph creation, role placement and physical room/corridor embedding remain separate. `DungeonGraphLayoutAssembler.TemplateSearch.cs` replaces node-order greedy template selection with precomputed domains, minimum-remaining-values assignment, forward checking and bounded rollback. Combat quota templates can redistribute across Combat nodes instead of staying at provisional reservation nodes; explicitly guaranteed templates stay pinned.
+- Repeat constraints relax only after a stricter search fails or reaches its deterministic budget. Actual placed results are compared by adjacent same-room pairs, adjacent same-shape pairs, nearby same-room/shape pairs, then existing corridor overrun/length metrics. Positive Combat quota counts and the Large cap are hard checks even with a one-candidate library.
+- Runtime generation logs and Map Preview show final metrics, relaxation/search-budget history and remaining repeated-pair explanations. Details, bounds and test entry points are in [Dungeon Template Selection](DungeonTemplateSelection.md).
+
+### Dead End Return Portals (2026-09-11)
+
+- After room objects and encounter bindings are built, `DungeonRoomBuilder.ReturnPortals.cs` creates reusable same-scene return interactions for rooms with exactly one actual graph connection, excluding Start. Source and airborne arrival views are authored, art-free prefabs; this path does not use `ScenePortal`, scene loading or route progression.
+- Placement, unlock rules, player-state ownership, optional room anchors and animation attachment points are mapped in [Dungeon Return Portals](DungeonReturnPortals.md). The three production corridor scenes and the player prefab are wired; standalone visual-only previews remain unchanged.
+
 ### Corridor Void Fill (2026-09-11)
 
 - The saved Shadow, Dragon and Slime procedural Corridor scenes bind `DungeonRoomBuilder.VoidFillTile` to existing `TileMap_B_126.asset` and use 8 cells of padding. This sprite is an opaque 16x16 solid dark background from the existing tile palette (RGB 24/20/37), not a new texture or Rule Tile.
@@ -24,7 +35,9 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 - `ChestPossible.prefab` and `ChestPossible_KillLock.prefab` live under `Assets/_Project/Prefabs/Items/Chests/`. Room Piece's object section offers selection buttons; use the ordinary add/move/save workflow afterward. The generation preview displays candidates as `C?`, not as confirmed chest spawns.
 - `DungeonGenerationProfileSO.maximumPossibleChests` is the tuning source (default 3, 0 disables candidate generation). The Map Preview profile UI exposes the same field. A legacy generator without a profile uses the builder's equivalent fallback.
 - `DungeonRoomBuilder.ChestCandidates.cs` collects candidates while building room objects, then selects only after all rooms' deferred monster points exist. `ChestPossibleSelection` uses a seed-local System.Random and ordinal state-ID ordering; it does not consume Unity's global random stream. It creates at most the configured count and never adds rooms/markers to reach a quota. Multiple candidate locations in one room remain independently eligible.
-- Existing direct Chest placements and literal scene chests remain unchanged and do not consume this budget. No existing template is automatically converted. Optional candidates are not inferred as guaranteed Kill Lock rewards for layout quotas; existing room metadata/quota policies are unchanged.
+- Existing direct Chest placements and literal scene chests remain unchanged and do not consume this budget. No existing template is automatically converted. Optional candidates are not inferred as guaranteed Kill Lock rewards for layout quotas.
+- The shared production policy and installer defaults require exactly one Large Combat room, independent of its reward tag (`Large + Auto`, count 1, maximum Large count 1). There is no Normal + Present quota. `Auto` in a required rule means no filter on that tag; it is not the same as a template's inferred metadata. Candidate-only Combat rooms can use reward tag `None` without satisfying a guaranteed-chest quota. The separate `maximumPossibleChests` setting is unchanged.
+- Positive custom room-rule counts remain hard exact targets. Removing the last compatible Large template can still prevent generation; removing Present metadata alone no longer does so under the shared production policy. Policy changes apply to fresh generation, not an already preserved layout.
 - Only selected real chests enter generated-object lists and minimap discovery. The marker prefab and its preview sprite are never instantiated by the runtime builder. Root pose comes from the candidate placement; marker scale multiplies the referenced chest prefab's root scale.
 - Each candidate gets the existing room/object runtime state ID even when unselected (`isPresent=false`). `DungeonGenerator` fetches preserved states before building; selection restores presence instead of rerolling/filling vacancies. Opened state, remaining loot, active state and deleted chests then use the existing object restore path. Changing the maximum affects a fresh generation, not a preserved visit. Newly authored candidates without entries in an existing preserved snapshot stay absent until a new/reset run.
 - Selected Kill Lock chests opt into `ChestMonsterKillLock.BindRoomEncounter`. The builder supplies only that room's group and cached deferred points. Before entry, active default points keep the chest locked; afterward, the group's pending spawns, tracking units (including split survivors) and encounter holds keep it locked. Empty rooms and consumed/inactive points do not keep a stale lock. This reuses the lock's existing Update; no per-frame scene scan or new manager is added. Direct chests retain their explicit per-monster links.
@@ -311,3 +324,11 @@ Run `Tools/Dungeon/Install Boss Theme Procedural Corridor Scenes` to rebuild and
 ## Promotion Candidate
 
 If this pipeline becomes the production corridor-generation path, promote the stable data boundary and generation invariants into `Docs/Architecture/` or `Docs/Contracts/` with explicit approval.
+
+### Generated wall physics layer correction (2026-09-12)
+
+RoomTileLayerContract.GetPhysicsLayerName maps Wall → Wall, Floor → Ground, and other tile layers → Default. ProceduralDungeonSceneInstaller uses this mapping when authoring/validating tilemaps, and socket-blocker validation queries Wall. DungeonRoomBuilder.TryBuild assigns the wall layer before generating blockers; blockers inherit it.
+
+The five procedural corridor/test scenes store GeneratedWall at layer 30 (Wall). This is a physics layer change, not a sorting-layer or TagManager change. It makes existing Wall-filtered movement safety and heart drop collision queries include generated walls.
+
+Related verification: [2026-09-12 session](../SessionLogs/2026-09-12.md).

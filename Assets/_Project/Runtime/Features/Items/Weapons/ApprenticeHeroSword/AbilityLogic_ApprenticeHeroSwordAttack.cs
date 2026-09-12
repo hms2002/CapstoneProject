@@ -45,6 +45,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordAttack : AbilityLogic
         }
 
         spec.SetInt(KeyComboIndex, comboIndex);
+        spec.SetInt("Combat.HitFeelIndex", comboIndex);
         spec.SetFloat(KeyComboExpire, Time.time + combo.ComboResetTime);
         system.SetNextActivationDelay(spec, step.nextAttackDelay);
 
@@ -74,7 +75,9 @@ public sealed class AbilityLogic_ApprenticeHeroSwordAttack : AbilityLogic
             yield break;
 
         Vector2 direction = attackDir.sqrMagnitude > 0.0001f ? attackDir.normalized : Vector2.right;
-        Vector2 perp = new(-direction.y, direction.x);
+        // Mirror the right-facing authored offset across world X, preserving height.
+        float facingSign = direction.x < 0f ? -1f : 1f;
+        Vector2 perp = new(-direction.y * facingSign, Mathf.Abs(direction.x));
         int sideSign = step.sideSign < 0 ? -1 : 1;
         Vector2 center = (Vector2)system.transform.position
                          + direction * step.forwardOffset
@@ -132,7 +135,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordAttack : AbilityLogic
         if (distance > 0f && duration > 0f)
         {
             Vector2 start = system.transform.position;
-            motion.StartLunge(start, direction, distance, duration);
+            motion.StartAttackLunge(start, direction, distance, duration);
         }
 
         float elapsed = 0f;

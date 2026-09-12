@@ -32,6 +32,7 @@ namespace UnityGAS
         private float moveToEaseOutPower = 2f;
 
         public bool HasActiveMotion => activeKind != MotionKind.None;
+        public bool IsLunging => activeKind == MotionKind.MoveToPoint;
 
         private bool IsDashLikeActive =>
             activeKind == MotionKind.ConstantVelocity ||
@@ -94,9 +95,15 @@ namespace UnityGAS
         }
 
         /// <summary>
-        /// 일정 시간 동안 시작점에서 끝점까지 보간 이동하는 특수이동 시작.
-        /// 예: 런지, 지정 거리 슬라이드
+        /// 무기 공격용 런지: 같은 거리를 절반 시간 동안 등속 이동한 뒤 즉시 정지.
         /// </summary>
+        public void StartAttackLunge(Vector2 start, Vector2 direction, float distance, float duration)
+        {
+            // Attack steps keep their distance but cut out the long deceleration tail.
+            // The authored attack/recovery timing still owns when normal movement resumes.
+            StartLunge(start, direction, distance, duration * 0.5f, 1f);
+        }
+
         public void StartLunge(Vector2 start, Vector2 direction, float distance, float duration)
         {
             StartLunge(start, direction, distance, duration, 2f);

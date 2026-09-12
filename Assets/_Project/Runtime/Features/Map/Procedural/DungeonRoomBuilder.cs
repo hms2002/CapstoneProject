@@ -345,6 +345,9 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
                 isPresent = alive,
                 isActive = hasUnit ? alive : instance != null && instance.activeSelf,
                 isChestOpened = chest != null && chest.IsOpened,
+                chestAcquiredCount = chest != null ? chest.AcquiredCount : 0,
+                chestOutstandingAcquisitions = chest != null
+                    ? chest.CaptureOutstandingAcquisitions() : new List<ScriptableObject>(),
                 chestLoot = chest != null && chest.IsOpened
                     ? chest.CaptureDungeonLootState()
                     : new List<DungeonChestLootRuntimeStateData>()
@@ -361,6 +364,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
                 roomWaves = pair.Value.CaptureWaveState()
             });
         }
+        CaptureReturnPortalStates(states);
         return states;
     }
 
@@ -375,6 +379,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         for (int i = 0; i < states.Count; i++)
         {
             DungeonObjectRuntimeStateData state = states[i];
+            if (RestoreReturnPortalState(state)) continue;
             if (state?.roomWaves != null)
             {
                 const string prefix = "room-wave:";
@@ -405,7 +410,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
 
             TreasureChest chest = instance.GetComponentInChildren<TreasureChest>(includeInactive: true);
             if (state.isChestOpened && chest != null)
-                chest.RestoreOpenedStateForDungeon(state.chestLoot);
+                chest.RestoreOpenedStateForDungeon(state.chestLoot, state.chestAcquiredCount, state.chestOutstandingAcquisitions);
 
             instance.SetActive(state.isActive);
         }
@@ -435,6 +440,14 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
             Debug.LogError("DungeonRoomBuilder requires Floor and Wall Tilemap references.", this);
             return false;
         }
+
+        int wallPhysicsLayer = LayerMask.NameToLayer(RoomTileLayerContract.GetPhysicsLayerName(RoomTileLayerKind.Wall));
+        if (wallPhysicsLayer < 0)
+        {
+            Debug.LogError("DungeonRoomBuilder requires the Wall physics layer.", this);
+            return false;
+        }
+        wallTilemap.gameObject.layer = wallPhysicsLayer;
 
         if (floorTilemap == wallTilemap)
         {
@@ -519,6 +532,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
              !TryBuildPossibleChests(layout, savedStates) ||
              !TryBuildTravelEndpoints(layout) ||
              !TryBindGeneratedRoomFeatures(layout) ||
+             !TryBuildReturnPortals(layout) ||
              !TryBuildRoomDiscoveryTriggers(layout)))
         {
             ClearGeneratedContent();
@@ -767,6 +781,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
 
     public void ClearGeneratedContent()
     {
+        ClearReturnPortals();
         socketCleanupWarningKeys.Clear();
         ClearGeneratedTiles();
         ClearGeneratedRoomEncounters();
@@ -1078,7 +1093,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
     private bool TryBuildRoomDiscoveryTriggers(DungeonLayoutResult layout)
     {
         DungeonMapRuntimeController mapRuntime = GetComponent<DungeonMapRuntimeController>();
-        if (mapRuntime == null)
+        if (mapRuntime == null && returnTravel == null)
             return true;
 
         Transform discoveryRoot = ResolveGeneratedMapDiscoveryRoot();
@@ -1111,6 +1126,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
             DungeonRoomDiscoveryTrigger2D discoveryTrigger =
                 triggerObject.AddComponent<DungeonRoomDiscoveryTrigger2D>();
             discoveryTrigger.Configure(mapRuntime, roomPlacement.PlacementId);
+            discoveryTrigger.PlayerEnteredRoom += NotifyReturnRoomEntered;
             triggerObject.SetActive(true);
         }
 

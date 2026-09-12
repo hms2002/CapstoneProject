@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gameplay::RoomThemeLibrarySO
   themeId: ProceduralSlime
   rooms:
+  - {fileID: 11400000, guid: b213b40ec78b48778e21bf53d6145501, type: 2}
   - {fileID: 11400000, guid: 52d1beab7110efa49b3e748eb8d04896, type: 2}
   - {fileID: 11400000, guid: c2e09e49692257c4595da5eff672ef66, type: 2}
   - {fileID: 11400000, guid: 3c1b5bbae982e64429db9b0c80679078, type: 2}

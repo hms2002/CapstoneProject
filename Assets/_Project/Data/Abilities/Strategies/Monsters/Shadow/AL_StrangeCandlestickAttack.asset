@@ -17,7 +17,7 @@ MonoBehaviour:
     projectileSpeed: 8
     damageEffect: {fileID: 11400000, guid: a7c21e5f6a1f4d0d8f4c2b3a19e8d725, type: 2}
     damageAmount: 1
-    attackIntervalSeconds: 2
+    attackIntervalSeconds: 4
     lockOnDuration: 0.8
     lockOnLineWidth: 0.28
     lockOnColor: {r: 1, g: 0.15, b: 0.15, a: 1}

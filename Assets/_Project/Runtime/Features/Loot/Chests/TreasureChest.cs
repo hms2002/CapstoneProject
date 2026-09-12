@@ -48,7 +48,6 @@ public class TreasureChest : MonoBehaviour
     private bool isPreludeTimeFrozen;
     private GameFlowInputBlocker openingInputBlocker;
     private WorldObjectPresentationRuntime openPresentationRuntime;
-    private readonly List<ChestLootSnapshot> refreshGuard = new List<ChestLootSnapshot>();
     private readonly List<ParticleSystem> spawnedRewardRevealParticles = new List<ParticleSystem>();
     private int refreshCountUsed;
     private bool hasRaisedFirstOpenedUi;
@@ -60,8 +59,7 @@ public class TreasureChest : MonoBehaviour
         isGenerated,
         inventory,
         LootManager.Instance != null,
-        refreshCountUsed,
-        refreshGuard);
+        refreshCountUsed);
     public event Action<TreasureChest> OpenedUi;
     public event Action<TreasureChest> FirstOpenedUi;
     public static event Action<TreasureChest> WorldStateChanged;
@@ -101,7 +99,6 @@ public class TreasureChest : MonoBehaviour
 
         inventory.Clear();
         FillInventoryWithLoot(loots);
-        RecordRefreshGuard();
 
         isGenerated = true;
     }
@@ -110,10 +107,12 @@ public class TreasureChest : MonoBehaviour
     /// 책임 : PreserveDuringRun 절차 던전 복원 시 이미 연 상자를 빈 개봉 상태로 되돌려 보상을 중복 생성하지 않게 한다.
     /// </summary>
     public void RestoreOpenedStateForDungeon(
-        IReadOnlyList<DungeonChestLootRuntimeStateData> savedLoot = null)
+        IReadOnlyList<DungeonChestLootRuntimeStateData> savedLoot = null, int acquiredCount = 0,
+        IReadOnlyList<ScriptableObject> outstandingAcquisitions = null)
     {
         inventory ??= new ChestInventory(capacity);
         inventory.Clear();
+        inventory.RestoreAcquiredCount(acquiredCount, outstandingAcquisitions);
         if (savedLoot != null)
         {
             for (int i = 0; i < savedLoot.Count; i++)
@@ -129,8 +128,6 @@ public class TreasureChest : MonoBehaviour
             }
         }
 
-        refreshGuard.Clear();
-        RecordRefreshGuard();
         isGenerated = true;
         isOpened = true;
         isOpening = false;
@@ -166,6 +163,11 @@ public class TreasureChest : MonoBehaviour
 
         return result;
     }
+
+    public int AcquiredCount => inventory?.AcquiredCount ?? 0;
+    public List<ScriptableObject> CaptureOutstandingAcquisitions() => inventory != null
+        ? new List<ScriptableObject>(inventory.OutstandingAcquisitions)
+        : new List<ScriptableObject>();
 
     public void PlayRewardReveal()
     {
@@ -255,7 +257,6 @@ public class TreasureChest : MonoBehaviour
 
         ChestLootResult result = LootManager.Instance.GenerateChestLootResult(BuildLootRequest());
         FillInventoryWithLoot(result.Items);
-        RecordRefreshGuard();
     }
 
     public ChestInventory GetInventory() => inventory;
@@ -266,8 +267,7 @@ public class TreasureChest : MonoBehaviour
             isGenerated,
             inventory,
             LootManager.Instance != null,
-            refreshCountUsed,
-            refreshGuard);
+            refreshCountUsed);
     }
 
     public bool TryRefreshLoot()
@@ -284,7 +284,6 @@ public class TreasureChest : MonoBehaviour
         inventory.Clear();
         FillInventoryWithLoot(result.Items);
         refreshCountUsed++;
-        RecordRefreshGuard();
         return true;
     }
 
@@ -315,11 +314,6 @@ public class TreasureChest : MonoBehaviour
             return ChestLootRequest.Default;
 
         return new ChestLootRequest(default, LootPoolContext.PlayerInventory, lootOverrideProfile);
-    }
-
-    private void RecordRefreshGuard()
-    {
-        ChestRewardPolicy.RecordRefreshGuard(inventory, refreshGuard);
     }
 
     private void PlayOpenPresentation(GameObject instigator)

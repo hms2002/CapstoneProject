@@ -90,6 +90,8 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
 
                 Vector2 center = system.transform.position;
                 CombatHitPayload payload = ApprenticeHeroSwordHitUtility.BuildPayload(system, spec, data.Damage, damageScale);
+                if (payload != null && chargeRatio >= 1f)
+                    payload.hitFeel = spec.Definition.ResolveHitFeel(0);
                 MeleeHitboxActor hitbox = ApprenticeHeroSwordHitUtility.SpawnHitbox(
                     system,
                     spec,

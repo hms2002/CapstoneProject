@@ -5,7 +5,7 @@ using UnityGAS;
 /// 책임:
 /// 일반 Enemy의 전투 기능 위에 보스 전용 규칙(그로기, 보스 사망 처리 등)을 추가한다.
 /// </summary>
-public class Boss : Enemy
+public class Boss : Enemy, ICombatHitPauseImmune
 {
     [Header("Boss's Attributes")]
     [SerializeField] protected AttributeDefinition staggerDef;

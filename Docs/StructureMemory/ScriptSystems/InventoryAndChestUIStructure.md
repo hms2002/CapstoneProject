@@ -149,3 +149,40 @@ The current concern is not that the inventory UI lacks a strict MVP pattern. The
 ## Promotion Candidate
 
 Not yet. Some input-blocking behavior is documented in `UIFlowInputBlocking`; inventory/chest rules should stay here until stable enough for Architecture or Contract promotion.
+
+## Chest Acquisition Budget and Sealed Weapons (2026-09-12)
+
+- Current implementation paths are under Assets/_Project/Runtime. ChestInventory owns a lifetime budget of two acquired items; UI observes AcquiredCount and AcquisitionRejected. Successful outward transfers, including swaps and direct world drops, consume one. Failed transfers and rearrangement inside the same chest do not. Returning an item does not refund the budget.
+- InventoryTransferService checks both chest sides of a swap before mutation and records only success. DropZoneUI applies the same policy for direct chest-to-world drops. ChestScreen projects the counter and owns its unscaled red/shake/white tween, releasing subscriptions and tweens when unbound.
+- ChestInventory.Clear deliberately preserves the budget during reroll. DungeonObjectRuntimeStateData.chestAcquiredCount is captured/restored through DungeonRoomBuilder and copied by RunSessionStateService. Old snapshots default to zero.
+- GlobalUIRoot.prefab and ChestUI.prefab author AcquisitionCount; the counter uses LayoutElement.ignoreLayout so it does not resize the chest slots.
+- WeaponInventory2D keeps sealing as an equip restriction. Storage, inventory swaps, and removal remain available; swapping an equipped weapon into a sealed slot unequips it and selects an accessible occupied slot. Existing active-weapon cleanup and Flowering swap restrictions still apply.
+- Known boundary: direct gameplay code mutating ChestInventory.Set is not a player acquisition operation. New player-facing extraction paths must use the acquisition checks.
+
+### Refund receipts and BlackOutline (2026-09-12 follow-up)
+
+This follow-up supersedes the non-refundable budget above. ChestInventory records one item-definition receipt per acquisition. A matching return refunds one receipt; unrelated deposits do not. Copies of the same definition are interchangeable in the existing inventory model.
+
+InventoryTransferService validates a simultaneous return before rejecting an at-limit exchange, and updates receipts only after a completed transaction. Player relic merges never return the existing target relic. DropZoneUI records the removed item's receipt as well.
+
+DungeonObjectRuntimeStateData.chestOutstandingAcquisitions accompanies chestAcquiredCount through TreasureChest, DungeonRoomBuilder, and the run-state clone. Clear/reroll preserves receipts. Old count-only saves/hot-reloaded chests allow one deposit refund per unknown receipt, bounded by their old count; new receipts require the matching definition.
+
+AcquisitionCount in GlobalUIRoot and ChestUI uses Galmuri9 SDF BlackOutline and its embedded material. Face-color warning tweens preserve the black outline.
+
+### Chest return policy and presentation (2026-09-12, supersedes earlier fallback/slot guard)
+
+ChestInventory outstanding receipts now strictly require matching item definitions. ChestContainerAdapter.CanPlace and InventoryTransferService reject foreign inbound deposits/swap replacements; raw setters remain available for transactional rollback. Count-only legacy state fails closed. Copies of the same definition are not uniquely identified by this inventory model.
+
+ChestRewardPolicy uses zero outstanding acquisitions plus the existing generated/manager/reroll-budget conditions. The old slot-index refresh guard was removed so all-item returns to different slots and restored chest state work consistently.
+
+ChestScreen supplies the currently open chest context to player ItemSlotUI instances (including the shared InventoryRoot panel); the existing hover border displays return eligibility and context clears when the chest unbinds. Authored AcquisitionCount is centered under TopChestFrame with a CanvasGroup; it fades in after first-open/reroll reveal. ChestCloseHint is authored at screen top center. CombatFeelAndQuestInstaller preserves these placements and references.
+
+Related verification: [2026-09-12 session](../../SessionLogs/2026-09-12.md).
+
+### Lone first weapon exception (2026-09-12)
+
+WeaponInventory2D.TrySwapWeaponSlots rejects moving a sole weapon from index 0 into empty index 1, including reverse-source drag of that empty slot. This applies with or without a seal. Two occupied slots still swap and a new second weapon can still be acquired. The storage/drop exception for sealed slots otherwise remains.
+
+### Source-specific weapon availability (2026-09-12)
+
+LootPoolItemSelectionService.CanDropWeapon rejects Weapon.WindWeapon globally and gates Weapon.Flowering / Weapon.OddIron behind explicit treasure-chest selection. LootPoolService.GetRandomTreasureChestWeapon is used by normal and override ChestLootGenerationService paths (including reroll/boss rewards). Other generic selection and candidate-based Grave selection exclude them. ShopInventoryRoll applies the same non-chest policy to new stock. Existing owned weapons, saved stock and world pickups are not removed; inventory dropping is not a random loot roll. Weapon definitions/unlock databases remain intact.

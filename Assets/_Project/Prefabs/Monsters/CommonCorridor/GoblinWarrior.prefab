@@ -949,6 +949,7 @@ MonoBehaviour:
   experiencePerPickup: 5
   maximumPickupCount: 30
   pickupScatterRadius: 0.8
+  goldPickupPrefab: {fileID: 5166873198201453664, guid: d2d2c39b9e0b4c6fbbd950fe7576308a, type: 3}
 --- !u!114 &195146988824103527
 MonoBehaviour:
   m_ObjectHideFlags: 0
