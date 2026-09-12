@@ -69,6 +69,8 @@ public static class CommonMonsterAnimatorAuthoringGenerator
         AnimatorState land = AddOptionalState(stateMachine, "Land", config.MonsterName, config.LandClipSuffix, new Vector3(520f, 320f, 0f));
         AnimatorState die = AddOptionalState(stateMachine, "Die", config.MonsterName, config.DieClipSuffix, new Vector3(250f, 300f, 0f));
 
+        // Keep death ahead of action cues when multiple triggers are pending in one frame.
+        AddTriggerTransition(stateMachine, die, config.DieTrigger, null);
         AddTriggerTransition(stateMachine, attackReady, config.AttackReadyTrigger, config.HoldAttackReadyUntilNextTrigger ? null : idle);
         AddTriggerTransition(stateMachine, attack, config.AttackTrigger, config.HoldAttackUntilRecover ? null : idle);
         AddTriggerTransition(stateMachine, recover, config.RecoverTrigger, idle);
@@ -82,8 +84,6 @@ public static class CommonMonsterAnimatorAuthoringGenerator
         {
             AddTriggerTransition(stateMachine, land, config.LandTrigger, idle);
         }
-        AddTriggerTransition(stateMachine, die, config.DieTrigger, null);
-
         EditorUtility.SetDirty(controller);
         return controller;
     }

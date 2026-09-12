@@ -6,6 +6,7 @@ namespace UnityGAS
     /// 책임 :
     /// - 공통 공격 예고 사각형/원형의 위치, 회전, 크기, 진행도 색상 변화를 렌더링한다.
     /// - 실제 공격 판정 로직은 모르고, 전달받은 Spec과 Style만 시각적으로 표현한다.
+    /// - 직선/직사각형/원형은 얇은 경고 비주얼을 유지하면서 지형에 잘리지 않는 전체 범위를 표시한다.
     /// </summary>
     public sealed class AttackTelegraphView : MonoBehaviour, IAttackTelegraphHandle
     {
@@ -265,7 +266,9 @@ namespace UnityGAS
 
         private static bool CanUseWallClippedMesh(AttackTelegraphSpec spec)
         {
-            if (!spec.useWallClipping || spec.wallClipLayers.value == 0)
+            bool useUnclippedOutline = spec.useMeshOutline &&
+                (spec.shape == AttackTelegraphShape.Rectangle || spec.shape == AttackTelegraphShape.Circle);
+            if (!useUnclippedOutline && (!spec.useWallClipping || spec.wallClipLayers.value == 0))
                 return false;
 
             return spec.shape == AttackTelegraphShape.Rectangle ||
@@ -520,12 +523,17 @@ namespace UnityGAS
 
         private static AttackTelegraphSpec ApplyShapeWallClippingPolicy(AttackTelegraphSpec spec)
         {
-            // Straight and circular warnings show their full authored range.
-            // Sector and ring warnings retain their existing clipping policy.
+            // Preserve the thin mesh presentation without letting terrain shorten the warning.
+            // Sector and ring warnings retain their existing rendering/clipping policy.
             if (spec.shape == AttackTelegraphShape.Line ||
                 spec.shape == AttackTelegraphShape.Rectangle ||
                 spec.shape == AttackTelegraphShape.Circle)
+            {
                 spec.useWallClipping = false;
+                spec.wallClipLayers = default;
+                if (spec.shape != AttackTelegraphShape.Line)
+                    spec = spec.WithMeshOutline(spec.wallClipSampleCount > 0 ? spec.wallClipSampleCount : 48);
+            }
             return spec;
         }
 

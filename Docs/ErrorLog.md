@@ -7,6 +7,12 @@ last_reviewed: 2026-09-03
 
 # Error Log
 
+## 2026-09-12 - Pending Action Cues Competed With Death And Disabling Clipping Changed Warning Style
+
+GoblinWarrior had a no-exit-time Any State death path, but action transitions preceded it and the animator bridge left unconsumed action triggers queued. Tests reproduced death not being selected immediately with pending cues. The bridge now clears its action triggers, rejects later action cues and keeps death idempotent. Goblin's death request uses its authored cue after attack cleanup; its controller and the generator prioritize death. The reported intermittent five-second corpse was not reproduced end-to-end, so this is verified transition hardening, not proof that every delayed removal had this cause.
+
+The straight/rectangle/circle wall-clipping disable policy also removed the condition that selected the thin mesh renderer, falling back to sprite borders. Rendering mode and clipping are now independent: Rectangle/Circle keep thin mesh presentation with no wall mask; Line keeps its full authored endpoints; Sector/Ring retain their existing clipping. Tests compare mesh geometry before/after adding a wall and across explicit/inherited geometry updates, including fill progression and color.
+
 ## 2026-09-12 - Optional Chest Authoring Left A Mandatory Present Room Quota
 
 Symptom: changing candidate-only Combat rooms from reward tag `Present` to `None` could prevent dungeon generation even though optional chest placement should not require a fixed number of reward rooms.
