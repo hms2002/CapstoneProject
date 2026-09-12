@@ -702,13 +702,10 @@ public static class ProceduralDungeonSceneInstaller
     {
         return new[]
         {
-            new RequiredCombatRoomRule(
-                RoomCombatSizeTag.Normal,
-                RoomKillLockRewardTag.Present,
-                2),
+            // Room size is mandatory; optional chest selection owns its separate reward budget.
             new RequiredCombatRoomRule(
                 RoomCombatSizeTag.Large,
-                RoomKillLockRewardTag.Present,
+                RoomKillLockRewardTag.Auto,
                 1)
         };
     }

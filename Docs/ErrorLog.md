@@ -7,6 +7,14 @@ last_reviewed: 2026-09-03
 
 # Error Log
 
+## 2026-09-12 - Optional Chest Authoring Left A Mandatory Present Room Quota
+
+Symptom: changing candidate-only Combat rooms from reward tag `Present` to `None` could prevent dungeon generation even though optional chest placement should not require a fixed number of reward rooms.
+
+Cause: the shared production policy still required exactly two Normal + Present rooms and one Large + Present room. Earlier authoring advice explained candidate tags without updating those legacy hard quotas. The generator correctly rejected an unsatisfiable policy; `None` itself was not an invalid tag.
+
+Fix: remove the Normal + Present quota and require one Large room with reward filter `Auto` (unrestricted). Keep the Large cap at one. Align installer defaults so newly installed policies do not reintroduce the old coupling. Preserve candidate selection limits, direct chests and all other hard constraints. Regression coverage uses cloned production libraries with every Combat reward tag set to None, leaving authored assets unchanged.
+
 ## 2026-09-11 - Guaranteed Event Required Both Cycle And Dead End
 
 Symptom: runtime Shadow generation exhausted 512 topology attempts when ParcelPickup was selected, despite the static-profile seed sweep passing.

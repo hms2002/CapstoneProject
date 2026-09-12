@@ -170,6 +170,69 @@ public sealed class DungeonTemplateSearchPlayModeTests
     [TestCase("Shadow")]
     [TestCase("Dragon")]
     [TestCase("Slime")]
+    public void ProductionPolicy_RequiresOnlyOneLargeRoom_WithoutRewardFilter(string theme)
+    {
+        var profile = AssetDatabase.LoadAssetAtPath<DungeonGenerationProfileSO>(
+            $"Assets/_Project/Data/Dungeon/GenerationProfiles/Procedural{theme}GenerationProfile.asset");
+        var policy = AssetDatabase.LoadAssetAtPath<DungeonLayoutPolicySO>(
+            "Assets/_Project/Data/Dungeon/Libraries/ExplorationCorridorPrototypePolicy.asset");
+        Assert.That(policy, Is.Not.Null);
+        Assert.That(profile.LayoutPolicy, Is.SameAs(policy));
+        Assert.That(policy.MaximumLargeCombatRoomCount, Is.EqualTo(1));
+        Assert.That(policy.RequiredCombatRoomRules.Count, Is.EqualTo(1));
+        var rule = policy.RequiredCombatRoomRules[0];
+        Assert.That(rule.SizeTag, Is.EqualTo(RoomCombatSizeTag.Large));
+        Assert.That(rule.KillLockRewardTag, Is.EqualTo(RoomKillLockRewardTag.Auto));
+        Assert.That(rule.Count, Is.EqualTo(1));
+        Assert.That(rule.Matches(Template("LargeNone", large: true)), Is.True);
+        Assert.That(rule.Matches(Template("LargePresent", large: true, reward: true)), Is.True);
+        Assert.That(rule.Matches(Template("NormalPresent", reward: true)), Is.False);
+    }
+
+    [TestCase("Shadow")]
+    [TestCase("Dragon")]
+    [TestCase("Slime")]
+    public void ProductionSeedSweep_AllCombatRewardsNone_StillPlacesExactlyOneLarge(string theme)
+    {
+        var profile = AssetDatabase.LoadAssetAtPath<DungeonGenerationProfileSO>(
+            $"Assets/_Project/Data/Dungeon/GenerationProfiles/Procedural{theme}GenerationProfile.asset");
+        var library = Own(ScriptableObject.CreateInstance<RoomThemeLibrarySO>());
+        var copies = new Dictionary<RoomTemplateSO, RoomTemplateSO>();
+        foreach (var source in profile.RoomLibrary.Rooms)
+        {
+            if (source == null || copies.ContainsKey(source)) continue;
+            // Clone before changing metadata so production assets and other tests remain untouched.
+            var copy = Own(Object.Instantiate(source));
+            var layout = copy.LayoutData;
+            if (layout.roomType == RoomType.Combat)
+                layout.combatMetadata.killLockRewardTag = RoomKillLockRewardTag.None;
+            copy.EditorSetData(layout, copy.BuildData);
+            copies.Add(source, copy);
+            library.EditorAddRoom(copy);
+        }
+        var guaranteed = profile.GuaranteedRoomTemplates.Select(t => copies[t]).ToArray();
+        for (int n = 0; n < 3; n++)
+        {
+            int seed = unchecked(profile.Seed + n * 997);
+            var result = new DungeonGraphLayoutAssembler().Assemble(library, profile.LayoutPolicy,
+                seed, profile.RoomCount, profile.MaxPlacementAttemptsPerRoom, profile.MinimumCorridorLength,
+                profile.CorridorLengthPerRoomCell, profile.CorridorLengthVariation, guaranteed);
+            Assert.That(result.IsComplete, Is.True, $"{theme} seed={seed}: {result.FailureReason}");
+            Assert.That(result.Rooms.Count, Is.EqualTo(profile.RoomCount));
+            var combat = result.Rooms.Where(r => r.Template.LayoutData.roomType == RoomType.Combat).ToArray();
+            Assert.That(combat.Count(r => RoomTemplateCombatMetadataUtility.ResolveSizeTag(r.Template) ==
+                RoomCombatSizeTag.Large), Is.EqualTo(1));
+            Assert.That(combat.All(r => RoomTemplateCombatMetadataUtility.ResolveKillLockRewardTag(r.Template) ==
+                RoomKillLockRewardTag.None), Is.True);
+            foreach (var template in guaranteed)
+                Assert.That(result.Rooms.Count(r => r.Template == template), Is.EqualTo(1));
+            TestContext.WriteLine($"{theme} seed={seed}: all Combat reward tags None, exactly one Large.");
+        }
+    }
+
+    [TestCase("Shadow")]
+    [TestCase("Dragon")]
+    [TestCase("Slime")]
     public void ProductionSeedSweep_PreservesHardRules_AndReproducesSeed(string theme)
     {
         var profile = AssetDatabase.LoadAssetAtPath<DungeonGenerationProfileSO>(
