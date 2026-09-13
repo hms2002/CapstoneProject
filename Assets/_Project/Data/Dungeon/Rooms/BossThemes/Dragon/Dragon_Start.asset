@@ -35,6 +35,10 @@ MonoBehaviour:
       localCell: {x: 5, y: 0}
       direction: 2
       width: 2
+    - socketId: Socket_01
+      localCell: {x: 0, y: 3}
+      direction: 3
+      width: 2
     difficultyTier: 0
     selectionWeight: 1
     combatMetadata:
@@ -48,9 +52,9 @@ MonoBehaviour:
     underFloorTiles: []
     floorTiles:
     - localCell: {x: 0, y: 3}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
     - localCell: {x: 0, y: 4}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
     - localCell: {x: 1, y: 2}
       tile: {fileID: 11400000, guid: 0ab1e75c9f34fd64d89f24c4ad3f930b, type: 2}
     - localCell: {x: 1, y: 3}
@@ -59,6 +63,10 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 50d45ef41f8752a40a1570f69340e329, type: 2}
     - localCell: {x: 1, y: 5}
       tile: {fileID: 11400000, guid: 9ef56a772bc98d141af7821367a21ae7, type: 2}
+    - localCell: {x: 1, y: 6}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+    - localCell: {x: 1, y: 7}
+      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
     - localCell: {x: 2, y: 2}
       tile: {fileID: 11400000, guid: 2d34f38ff2c1419438979669663b50b5, type: 2}
     - localCell: {x: 2, y: 3}
@@ -171,13 +179,13 @@ MonoBehaviour:
     - localCell: {x: 0, y: 1}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 2}
-      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
     - localCell: {x: 0, y: 3}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 4}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 5}
-      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
     - localCell: {x: 0, y: 6}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 7}
@@ -274,8 +282,8 @@ MonoBehaviour:
     - slotId: LobbyGate
       kind: 1
       mediumPrefab: {fileID: 0}
-      localCell: {x: 0, y: 4}
-      localOffset: {x: -0.16, y: -0.48000002}
+      localCell: {x: 1, y: 7}
+      localOffset: {x: 0.20000005, y: -0.3499999}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       triggerSize: {x: 1, y: 1}
