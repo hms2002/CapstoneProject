@@ -110,7 +110,7 @@ MonoBehaviour:
   dashSlashActiveTime: 0.08
   dashSlashHitboxSize: {x: 2.4, y: 0.6}
   dashSlashAngleJitter: 90
-  dashSlashDamageScale: 12
+  dashSlashDamageScale: 2.5
   dashSlashHitLayers:
     serializedVersion: 2
     m_Bits: 2147483648

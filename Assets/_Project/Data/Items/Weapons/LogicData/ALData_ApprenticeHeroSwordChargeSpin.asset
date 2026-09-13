@@ -23,8 +23,8 @@ MonoBehaviour:
   pulseCount: 1
   minRadius: 0
   maxRadius: 0
-  minDamageScale: 18
-  maxDamageScale: 30
+  minDamageScale: 6
+  maxDamageScale: 10
   hitLayers:
     serializedVersion: 2
     m_Bits: 2147483648

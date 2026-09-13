@@ -52,7 +52,7 @@ MonoBehaviour:
     useStatId: 0
     statId: 0
     sourceAttribute: {fileID: 0}
-    constantValue: 3
+    constantValue: 1.5
   - opCode: 4
     useStatId: 0
     statId: 0
