@@ -2010,3 +2010,22 @@ Symptom: Flowering, Lightning and shared SwordCombo slash centers shift vertical
 - PlayerVisionMask and candle masks had custom ranges disabled. Apprentice reveal ranges alone did not isolate other sprites at the same sorting order, and dropped spear mask had no local sorting scope.
 - Restricted vision masks to MaskRender and isolated charge/dropped-spear masks in local SortingGroups. Host item sorting must target the group instead of rewriting child-local mask/render order.
 - Existing layer IDs/order retained; reference/compile checks passed, simultaneous rendered overlap testing outstanding.
+
+## 2026-09-13 - Boss candle seal still referenced the retired light mask
+
+- Candlestick.prefab contained an inactive SightMask and an active PlayerVisionMask(Clone) sibling, but CandlestickSeal.sightMask referenced the former. Seal toggled the obsolete object, leaving the real vision aperture visible; unseal could also reactivate the obsolete mask.
+- Corrected the prefab reference to the active mask rather than changing shared seal code or destroying objects. Existing SetActive(false/true) and light-zone control remain the lifecycle owner.
+- Native prefab regression tests reproduced the wrong binding and persistent aperture before the fix (0/3), then verified binding, three-hit relight/reseal and disabled-parent recovery after it (3/3). When replacing authored visuals, check all control references, not only the visible hierarchy. See [session](SessionLogs/2026-09-13.md).
+
+## 2026-09-13 - Witch tile reused a renderer-owned origin as damage center
+
+- AttackTelegraphWallClippedMeshView places the shared root at a rectangle's start edge. WitchNormalAttack1Tile read that Transform again for its hit spec, then again for damage/presentation after the hit view moved it further. This creates half-length drift at each stage even though size/angle are unchanged.
+- Snapshot the world center before the first Show and use it for all gameplay and world-presentation requests. Debug output should distinguish logical center from renderer origin. Do not repair this with a visual-only offset or by moving the warning to an already shifted damage box.
+- Six-angle real-view, inside/outside HP damage and presentation-context regression fixtures compile. Native execution is pending while Unity remains open; see [session](SessionLogs/2026-09-13.md). Shared renderer ownership in other consumers is outside this fix.
+
+## 2026-09-13 - Empty candle selection killed unrelated Witch summons
+
+- SkeletonDeathDiagnostics recorded newly summoned skeletons dying through an external cleanup command while still transforming. With all candles sealed, extinguish startup returned false; AbortCurrentPattern passed forced=true to Witch.OnPatternEnd, which indiscriminately cleared the retreat summons.
+- Check candle availability during normal/forced pattern evaluation and again before presentation startup. Keep expected target loss as a failed pattern, not a successful completion that queues follow-up abilities.
+- A forced pattern cancellation is not equivalent to combat teardown. Witch now preserves summon ownership across ordinary failure, groggy and phase changes; only boss death/dead tag, combat deactivation or destruction clears surviving summons. Their own light/contact/self-destruct rules remain independent.
+- Production and 14-case regression fixture compile; native execution and player reproduction are pending while Unity is open. See [session](SessionLogs/2026-09-13.md).

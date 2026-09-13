@@ -130,6 +130,12 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 
 ### Mob Battle Runtime Breakdown
 
+Witch normal-attack tile geometry is captured by `WitchNormalAttack1Tile.Play`: `tileCenter`, `tileSize` and `angleDeg` feed both warning/hit specs, the overlap damage probe and world presentation requests. The co-located mesh renderer moves the root Transform to the rectangle's start edge, so that Transform is not the gameplay center after rendering. Callers place a tile before Play; a subsequent Play captures its newly assigned position. Pattern timing and cleanup remain owned by the existing executor/tile coroutine.
+
+Witch extinguish availability is a controller-owned execution constraint: `AdjustPatternEval` excludes the pattern when `WitchCandleService.GetNearestAvailableCandle` finds no active, unsealed candle. The forced-follow-up evaluator applies the same gate. `TryBeginExtinguishPattern` rechecks before starting presentation, and the legacy `StartExtinguish` delegates to it. No additional authoring condition asset is required. An unavailable forced follow-up is consumed and normal pattern selection resumes.
+
+Witch retreat skeletons are combat-owned, not extinguish-pattern-owned. `RegisterRetreatSummon` retains them across ordinary pattern aborts, groggy and phase changes; `OnPatternEnd` clears them only for boss death/dead tag or forced cancellation after combat deactivation. Existing `OnDestroy` remains the final cleanup path. Cleanup uses `CombatEntityCleanupUtil` / `RequestDeath`, separate from each skeleton's natural light/contact/self-destruct death. Do not infer combat termination from the `forced` flag alone or discard surviving summon references on an unrelated pattern failure.
+
 | Area | Count | Responsibility |
 | --- | ---: | --- |
 | FSM Core | 11 | Mob state machine, context, states, attack request/decision source, and transition utility. |
