@@ -6,28 +6,28 @@ using UnityEngine;
 using UnityGAS;
 using Object = UnityEngine.Object;
 
-// Responsibility: verify authored monster HP, 30% skill stat growth, and unchanged normal/fixed damage and speed synergy.
+// Responsibility: verify authored monster HP and approved weapon damage while preserving stat-growth behavior.
 public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
 {
     private const string Prefabs = "Assets/_Project/Prefabs/Monsters/";
     private const string LogicData = "Assets/_Project/Data/Items/Weapons/LogicData/";
     private const string Formulas = "Assets/_Project/Data/Attributes/Formulas/";
 
-    [TestCase("CommonCorridor/GoblinWarrior.prefab", 450f, 1f)]
-    [TestCase("CommonCorridor/GoblinGunner.prefab", 20f, 1f)]
-    [TestCase("CommonCorridor/GoblinTank.prefab", 900f, 0.5f)]
-    [TestCase("CommonCorridor/LizardWarrior.prefab", 500f, 1f)]
-    [TestCase("CommonCorridor/LizardMage.prefab", 350f, 1f)]
-    [TestCase("CommonCorridor/ArcaneMeleeGolem.prefab", 450f, 1f)]
-    [TestCase("CommonCorridor/ArcaneTankGolem.prefab", 900f, 0.5f)]
-    [TestCase("SlimeCorridor/Pawn.prefab", 80f, 1f)]
-    [TestCase("SlimeCorridor/Knight.prefab", 400f, 1f)]
-    [TestCase("SlimeCorridor/Bishop.prefab", 350f, 1f)]
-    [TestCase("SlimeCorridor/Rook.prefab", 1100f, 1f)]
-    [TestCase("SlimeCorridor/Wizard.prefab", 220f, 1f)]
-    [TestCase("ShadowCorridor/ShadowMonster.prefab", 220f, 1f)]
-    [TestCase("ShadowCorridor/ShadowServant/ShadowServant.prefab", 320f, 1f)]
-    [TestCase("ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab", 600f, 1f)]
+    [TestCase("CommonCorridor/GoblinWarrior.prefab", 45f, 1f)]
+    [TestCase("CommonCorridor/GoblinGunner.prefab", 25f, 1f)]
+    [TestCase("CommonCorridor/GoblinTank.prefab", 180f, 0.5f)]
+    [TestCase("CommonCorridor/LizardWarrior.prefab", 45f, 1f)]
+    [TestCase("CommonCorridor/LizardMage.prefab", 30f, 1f)]
+    [TestCase("CommonCorridor/ArcaneMeleeGolem.prefab", 45f, 1f)]
+    [TestCase("CommonCorridor/ArcaneTankGolem.prefab", 180f, 0.5f)]
+    [TestCase("SlimeCorridor/Pawn.prefab", 15f, 1f)]
+    [TestCase("SlimeCorridor/Knight.prefab", 45f, 1f)]
+    [TestCase("SlimeCorridor/Bishop.prefab", 30f, 1f)]
+    [TestCase("SlimeCorridor/Rook.prefab", 90f, 1f)]
+    [TestCase("SlimeCorridor/Wizard.prefab", 30f, 1f)]
+    [TestCase("ShadowCorridor/ShadowMonster.prefab", 45f, 1f)]
+    [TestCase("ShadowCorridor/ShadowServant/ShadowServant.prefab", 45f, 1f)]
+    [TestCase("ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab", 75f, 1f)]
     public void MonsterAwakeAndDifficulty_PreserveAuthoredHp(string relativePath, float baseHp, float roleMultiplier)
     {
         GameObject prefab = Load<GameObject>(Prefabs + relativePath);
@@ -79,12 +79,12 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         }
     }
 
-    [TestCase("ALData_ApprenticeHeroSwordDashStab", "damage.damageFormula", 120f)]
-    [TestCase("ALData_LightningSpearSkill1", "markRushHit.damageFormula", 80f)]
-    [TestCase("ALData_LightningSpearSkill1", "noMarkSweepHit.damageFormula", 120f)]
-    [TestCase("ALData_LightningSpearSkill1", "recoveredSpearProjectileHit.damageFormula", 30f)]
-    [TestCase("ALData_LightningSpearSkill2", "landingHit.damageFormula", 100f)]
-    [TestCase("ALData_FragmentBladeRecall", "damageFormula", 50f)]
+    [TestCase("ALData_ApprenticeHeroSwordDashStab", "damage.damageFormula", 45f)]
+    [TestCase("ALData_LightningSpearSkill1", "markRushHit.damageFormula", 40f)]
+    [TestCase("ALData_LightningSpearSkill1", "noMarkSweepHit.damageFormula", 50f)]
+    [TestCase("ALData_LightningSpearSkill1", "recoveredSpearProjectileHit.damageFormula", 15f)]
+    [TestCase("ALData_LightningSpearSkill2", "landingHit.damageFormula", 50f)]
+    [TestCase("ALData_FragmentBladeRecall", "damageFormula", 10f)]
     public void SkillFormulaReferences_ProduceApprovedDamageAndScaleWithAttack(string asset, string property, float expected)
     {
         ScaledStatFormula formula = ReadFormula(asset, property);
@@ -95,11 +95,11 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(formula.Evaluate(null, new AttackStats(30f)), Is.EqualTo(expected * 1.6f).Within(0.001f));
     }
 
-    [TestCase(0f, 180f)]
-    [TestCase(0.25f, 180f)]
-    [TestCase(0.5f, 220f)]
-    [TestCase(1f, 300f)]
-    [TestCase(2f, 300f)]
+    [TestCase(0f, 60f)]
+    [TestCase(0.25f, 60f)]
+    [TestCase(0.5f, 73.333336f)]
+    [TestCase(1f, 100f)]
+    [TestCase(2f, 100f)]
     public void ChargeSpin_UsesAuthoredDamageEndpoints(float seconds, float expected)
     {
         ApprenticeHeroSwordChargeSpinData data = Load<ApprenticeHeroSwordChargeSpinData>(
@@ -141,17 +141,17 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
             ReadFloat("ALData_FragmentBladeAttack", "piercingDamageScale") * 6, Is.EqualTo(90f));
         Assert.That(fragmentPiercing.Evaluate(null, new AttackStats(20f)) *
             ReadFloat("ALData_FragmentBladeAttack", "piercingDamageScale") * 6, Is.EqualTo(117f).Within(0.001f));
-        Assert.That(ReadFormula("ALData_FragmentBladeRecall", "damageFormula").Evaluate(null, stats) * 6, Is.EqualTo(300f));
+        Assert.That(ReadFormula("ALData_FragmentBladeRecall", "damageFormula").Evaluate(null, stats) * 6, Is.EqualTo(60f));
 
         Assert.That(ReadFormula("ALData_FloweringBloom", "dashSlashDamageFormula").Evaluate(null, stats) *
-            ReadFloat("ALData_FloweringBloom", "dashSlashDamageScale"), Is.EqualTo(120f));
+            ReadFloat("ALData_FloweringBloom", "dashSlashDamageScale"), Is.EqualTo(25f));
         Assert.That(ReadFormula("ALData_FloweringBloom", "dashSlashDamageFormula").Evaluate(null, new AttackStats(20f)) *
-            ReadFloat("ALData_FloweringBloom", "dashSlashDamageScale"), Is.EqualTo(156f).Within(0.001f));
+            ReadFloat("ALData_FloweringBloom", "dashSlashDamageScale"), Is.EqualTo(32.5f).Within(0.001f));
         using (var bloom = new SerializedObject(Load<ScriptableObject>(LogicData + "ALData_FloweringBloom.asset")))
             Assert.That(bloom.FindProperty("dashSlashCount").intValue, Is.EqualTo(3));
 
-        Assert.That(ReadFloat("ALData_OddIronShot", "fixedDamage"), Is.EqualTo(700f));
-        Assert.That(ReadFloat("ALData_OddIronThrow", "fixedDamage"), Is.EqualTo(700f));
+        Assert.That(ReadFloat("ALData_OddIronShot", "fixedDamage"), Is.EqualTo(90f));
+        Assert.That(ReadFloat("ALData_OddIronThrow", "fixedDamage"), Is.EqualTo(90f));
         Assert.That(ReadFloat("ALData_CrimsonBoundary", "burnConsumptionMultiplier"), Is.EqualTo(6f));
         Assert.That(ReadFloat("ALData_CrimsonBoundary", "skill2BaseMultiplier"), Is.EqualTo(40f));
     }
@@ -245,10 +245,10 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(system.AttributeSet.TrySetBaseValue(binding.attribute, value, system), Is.True, id.ToString());
     }
 
-    [TestCase(10f, 5.05f, 151.5f)]
-    [TestCase(20f, 5.05f, 196.95f)]
-    [TestCase(10f, 20.2f, 606f)]
-    [TestCase(20f, 20.2f, 787.8f)]
+    [TestCase(10f, 5.05f, 75.75f)]
+    [TestCase(20f, 5.05f, 98.475f)]
+    [TestCase(10f, 20.2f, 303f)]
+    [TestCase(20f, 20.2f, 393.9f)]
     [TestCase(10f, 0f, 0f)]
     public void SpeedStrike_LimitsAttackGrowthButKeepsFullSpeedLink(float attack, float speed, float expected)
     {
@@ -257,6 +257,35 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(formula, Is.Not.Null);
         Assert.That(formula.TryValidate(out string message), Is.True, message);
         Assert.That(formula.Evaluate(null, new AttackStats(attack, speed: speed)), Is.EqualTo(expected).Within(0.001f));
+    }
+
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenAttributeOverrideInitProfile.asset", 500f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2ShortAttributeOverrideInitProfile.asset", 300f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2LongAttributeOverrideInitProfile.asset", 300f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/WitchAttributeOverrideInitProfile.asset", 1000f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/DragonBossAttributeOverrideInitProfile.asset", 1250f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/WitchBossAttributeOverrideInitProfile.asset", 2800f)]
+    public void BossProfiles_UseApprovedHealth(string path, float expected)
+    {
+        AttributeInitProfileSO profile = Load<AttributeInitProfileSO>(path);
+        Assert.That(ReadProfileValue(profile, "3ff045849daafe84d97370c69cd17747"), Is.EqualTo(expected));
+        Assert.That(ReadProfileValue(profile, "0e177e1d15e428745b5859fac08ce203"), Is.EqualTo(expected));
+    }
+
+    private static float ReadProfileValue(AttributeInitProfileSO profile, string attributeGuid)
+    {
+        Object expectedAttribute = LoadGuid<AttributeDefinition>(attributeGuid);
+        using var serialized = new SerializedObject(profile);
+        SerializedProperty entries = serialized.FindProperty("entries");
+        for (int i = 0; i < entries.arraySize; i++)
+        {
+            SerializedProperty entry = entries.GetArrayElementAtIndex(i);
+            if (entry.FindPropertyRelative("attribute").objectReferenceValue == expectedAttribute)
+                return entry.FindPropertyRelative("baseValue").floatValue;
+        }
+
+        Assert.Fail($"{profile.name} does not define attribute {attributeGuid}.");
+        return 0f;
     }
 
     private static ScaledStatFormula ReadFormula(string asset, string property)
