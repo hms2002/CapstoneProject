@@ -20,7 +20,7 @@ MonoBehaviour:
     valueByLevel:
     - -1
     - -1
-    - -1
+    - 0
     duration: 0
   - attribute: {fileID: 11400000, guid: f466dc1481454c2da49e416aa7749743, type: 2}
     displayNameOverride: "공격속도"

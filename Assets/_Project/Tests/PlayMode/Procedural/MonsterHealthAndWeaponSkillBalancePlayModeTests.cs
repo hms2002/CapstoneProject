@@ -47,7 +47,7 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
 
             for (int stage = 0; stage < 3; stage++)
             {
-                float multiplier = (1f + 0.15f * stage) * roleMultiplier;
+                float multiplier = (1f + 0.35f * stage) * roleMultiplier;
                 receiver.ApplyDifficulty(new DifficultyModifiers { hpMultiplier = multiplier });
                 float expected = baseHp * multiplier;
                 Assert.That(attributes.GetAttributeValue(maxHealth), Is.EqualTo(expected).Within(0.01f));
@@ -270,6 +270,57 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         AttributeInitProfileSO profile = Load<AttributeInitProfileSO>(path);
         Assert.That(ReadProfileValue(profile, "3ff045849daafe84d97370c69cd17747"), Is.EqualTo(expected));
         Assert.That(ReadProfileValue(profile, "0e177e1d15e428745b5859fac08ce203"), Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void MonsterStageScaling_UsesApprovedThirtyFivePercentHealthStep()
+    {
+        ScriptableObject settings = Load<ScriptableObject>(
+            "Assets/_Project/Resources/MonsterStageHpScalingSettings.asset");
+        using var serialized = new SerializedObject(settings);
+        Assert.That(serialized.FindProperty("hpMultiplierPerClearedStage").floatValue,
+            Is.EqualTo(0.35f).Within(0.0001f));
+    }
+
+    [TestCase("Relic Logic_Common_BlackIncense.asset", 1, 0, -0.03f)]
+    [TestCase("Relic Logic_Common_BlackIncense.asset", 1, 1, -0.02f)]
+    [TestCase("Relic Logic_Common_BlackIncense.asset", 1, 2, -0.01f)]
+    [TestCase("Relic Logic_Common_BerserkerCord.asset", 0, 0, -1f)]
+    [TestCase("Relic Logic_Common_BerserkerCord.asset", 0, 1, -1f)]
+    [TestCase("Relic Logic_Common_BerserkerCord.asset", 0, 2, 0f)]
+    [TestCase("Relic Logic_Common_BrokenClock.asset", 1, 0, -0.03f)]
+    [TestCase("Relic Logic_Common_BrokenClock.asset", 1, 1, -0.02f)]
+    [TestCase("Relic Logic_Common_BrokenClock.asset", 1, 2, -0.01f)]
+    [TestCase("Relic Logic_Common_BluntShield.asset", 0, 0, -0.03f)]
+    [TestCase("Relic Logic_Common_BluntShield.asset", 0, 1, -0.02f)]
+    [TestCase("Relic Logic_Common_BluntShield.asset", 0, 2, -0.01f)]
+    [TestCase("Relic Logic_Common_BrokenCrown.asset", 1, 0, -1f)]
+    [TestCase("Relic Logic_Common_BrokenCrown.asset", 1, 1, -1f)]
+    [TestCase("Relic Logic_Common_BrokenCrown.asset", 1, 2, 0f)]
+    [TestCase("Relic Logic_Common_HeavyBracelet.asset", 0, 0, -0.02f)]
+    [TestCase("Relic Logic_Common_HeavyBracelet.asset", 0, 1, -0.01f)]
+    [TestCase("Relic Logic_Common_HeavyBracelet.asset", 0, 2, 0f)]
+    [TestCase("Relic Logic_Common_WarriorOath.asset", 1, 0, -0.03f)]
+    [TestCase("Relic Logic_Common_WarriorOath.asset", 1, 1, -0.02f)]
+    [TestCase("Relic Logic_Common_WarriorOath.asset", 1, 2, -0.01f)]
+    public void TradeoffRelicPenalties_DecreaseWithLevel(
+        string assetName,
+        int entryIndex,
+        int levelIndex,
+        float expected)
+    {
+        ScriptableObject logic = Load<ScriptableObject>(
+            "Assets/_Project/Data/Items/Relics/Strategies/" + assetName);
+        using var serialized = new SerializedObject(logic);
+        SerializedProperty entries = serialized.FindProperty("entries");
+        Assert.That(entries, Is.Not.Null);
+        Assert.That(entryIndex, Is.LessThan(entries.arraySize));
+        SerializedProperty values = entries.GetArrayElementAtIndex(entryIndex)
+            .FindPropertyRelative("valueByLevel");
+        Assert.That(values, Is.Not.Null);
+        Assert.That(levelIndex, Is.LessThan(values.arraySize));
+        Assert.That(values.GetArrayElementAtIndex(levelIndex).floatValue,
+            Is.EqualTo(expected).Within(0.0001f));
     }
 
     private static float ReadProfileValue(AttributeInitProfileSO profile, string attributeGuid)
