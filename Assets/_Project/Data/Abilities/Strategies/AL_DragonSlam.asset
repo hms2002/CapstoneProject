@@ -136,7 +136,7 @@ MonoBehaviour:
       customDirection: {x: 0, y: 0, z: 0}
       ignoreScreenShakeSetting: 0
     effect:
-      prefab: {fileID: 0}
+      prefab: {fileID: 1858016763262642880, guid: c818bb151c31c4a4288ac2fb59def532, type: 3}
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 1, y: 1, z: 1}
@@ -144,7 +144,7 @@ MonoBehaviour:
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
     particle:
-      prefab: {fileID: 2259870330054691741, guid: d51eec0e97d64284284201aaf87acb77, type: 3}
+      prefab: {fileID: 0}
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 1, y: 1, z: 1}

@@ -10,6 +10,7 @@ using UnityEngine;
 /// - 방 크기 기반 권장 복도 간격이 충돌하면 절대 최소 길이까지 단계적으로 압축해 같은 그래프를 재사용한다.
 /// - 제한적 템플릿 재탐색 후 실제 배치 결과의 근거리 반복 수, 권장 복도 길이 초과 순으로 품질을 비교한다.
 /// - 테마, 타일, 몬스터 구현을 알지 않고 RoomThemeLibrarySO의 레이아웃 데이터만 소비한다.
+/// - Reserves every usable Start direction before expanding the graph, within the existing room budget.
 /// </summary>
 public sealed partial class DungeonGraphLayoutAssembler
 {
@@ -259,6 +260,21 @@ public sealed partial class DungeonGraphLayoutAssembler
             return failedResult;
         }
 
+        List<RoomTemplateSO> startCandidates = new();
+        library.CollectRooms(RoomType.Start, startCandidates);
+        List<RoomSocketDirection> startDirections = new();
+        for (int i = startCandidates.Count - 1; i >= 0; i--)
+        {
+            CollectValidSocketDirections(startCandidates[i], startDirections);
+            if (startDirections.Count == 0 || !IsTemplateCompatible(startCandidates[i], startDirections))
+                startCandidates.RemoveAt(i);
+        }
+        if (startCandidates.Count == 0)
+        {
+            failedResult.MarkFailed("The room library has no Start template whose valid socket directions can all be connected (check opposite socket alignment).");
+            return failedResult;
+        }
+
         int attemptCount = Mathf.Max(
             policy.MaximumTopologyAttempts,
             Mathf.Clamp(maxPlacementAttemptsPerRoom, 1, 4096));
@@ -278,9 +294,11 @@ public sealed partial class DungeonGraphLayoutAssembler
         {
             int attemptSeed = unchecked(seed + attempt * 486187739);
             System.Random random = new(attemptSeed);
+            RoomTemplateSO startTemplate = SelectStartTemplate(startCandidates, random);
             if (!TryCreateTopology(
                     policy,
                     roomCount,
+                    startTemplate,
                     allowedBossMovementDirections,
                     random,
                     out TopologyDraft topology,
@@ -724,21 +742,35 @@ public sealed partial class DungeonGraphLayoutAssembler
     private static bool TryCreateTopology(
         DungeonLayoutPolicySO policy,
         int roomCount,
+        RoomTemplateSO startTemplate,
         IReadOnlyList<RoomSocketDirection> allowedBossMovementDirections,
         System.Random random,
         out TopologyDraft topology,
         out string failure)
     {
         topology = null;
-        if (!TryResolveTopologyCounts(
-                policy,
-                roomCount,
-                random,
-                out int bossDistance,
-                out int branchCount,
-                out int cycleCount,
-                out failure))
+        List<RoomSocketDirection> startDirections = new();
+        CollectValidSocketDirections(startTemplate, startDirections);
+        RoomSocketDirection firstDirection = startDirections[random.Next(startDirections.Count)];
+        bool canStartCycle = startDirections.Exists(d => d != firstDirection && d != Opposite(firstDirection));
+        bool startCycle = canStartCycle && policy.MaximumCycleConnections > 0 && random.Next(2) == 0;
+        int bossDistance = 0, branchCount = 0, cycleCount = 0;
+        failure = string.Empty;
+        bool countsResolved = false;
+        for (int choice = 0; choice < 2; choice++)
         {
+            if ((!startCycle || canStartCycle) && TryResolveTopologyCounts(
+                    policy, roomCount, startDirections.Count - 1 - (startCycle ? 1 : 0),
+                    startCycle, random, out bossDistance, out branchCount, out cycleCount, out failure))
+            {
+                countsResolved = true;
+                break;
+            }
+            startCycle = !startCycle;
+        }
+        if (!countsResolved)
+        {
+            failure = $"Start '{startTemplate.name}' requires all {startDirections.Count} socket directions. {failure}";
             return false;
         }
 
@@ -751,6 +783,8 @@ public sealed partial class DungeonGraphLayoutAssembler
         if (!TryBuildMainPath(
                 draft,
                 bossDistance,
+                startDirections,
+                firstDirection,
                 allowedBossMovementDirections,
                 random))
         {
@@ -758,9 +792,16 @@ public sealed partial class DungeonGraphLayoutAssembler
             return false;
         }
 
-        if (!TryAddCycleDetours(draft, cycleCount, random))
+        draft.Nodes[0].Template = startTemplate;
+        if (!TryAddCycleDetours(draft, cycleCount, startDirections, startCycle, random))
         {
             failure = $"Could not place {cycleCount} cycle detours around the critical path.";
+            return false;
+        }
+
+        if (!TryAddStartBranches(draft, startDirections))
+        {
+            failure = "The critical path or a cycle blocked a reserved Start direction.";
             return false;
         }
 
@@ -785,14 +826,23 @@ public sealed partial class DungeonGraphLayoutAssembler
     private static bool TryResolveTopologyCounts(
         DungeonLayoutPolicySO policy,
         int roomCount,
+        int requiredStartBranches,
+        bool startCycle,
         System.Random random,
         out int bossDistance,
         out int branchCount,
         out int cycleCount,
         out string failure)
     {
-        int minimumRequiredExtras =
-            policy.MinimumMeaningfulBranches + policy.MinimumCycleConnections * 2;
+        int minimumBranches = Mathf.Max(policy.MinimumMeaningfulBranches, requiredStartBranches);
+        int minimumCycles = Mathf.Max(policy.MinimumCycleConnections, startCycle ? 1 : 0);
+        if (minimumBranches > policy.MaximumMeaningfulBranches || minimumCycles > policy.MaximumCycleConnections)
+        {
+            bossDistance = branchCount = cycleCount = 0;
+            failure = "Start connections exceed the policy's branch/cycle limits.";
+            return false;
+        }
+        int minimumRequiredExtras = minimumBranches + minimumCycles * 2;
         int maximumBossDistance = Mathf.Min(
             policy.MaximumBossGraphDistance,
             roomCount - 1 - minimumRequiredExtras);
@@ -810,8 +860,8 @@ public sealed partial class DungeonGraphLayoutAssembler
         int extraNodeCount = roomCount - (bossDistance + 1);
         int maximumCycles = Mathf.Min(
             policy.MaximumCycleConnections,
-            (extraNodeCount - policy.MinimumMeaningfulBranches) / 2);
-        if (maximumCycles < policy.MinimumCycleConnections)
+            (extraNodeCount - minimumBranches) / 2);
+        if (maximumCycles < minimumCycles)
         {
             branchCount = 0;
             cycleCount = 0;
@@ -821,12 +871,12 @@ public sealed partial class DungeonGraphLayoutAssembler
 
         cycleCount = NextInclusive(
             random,
-            policy.MinimumCycleConnections,
+            minimumCycles,
             maximumCycles);
         int maximumBranches = Mathf.Min(
             policy.MaximumMeaningfulBranches,
             extraNodeCount - cycleCount * 2);
-        if (maximumBranches < policy.MinimumMeaningfulBranches)
+        if (maximumBranches < minimumBranches)
         {
             branchCount = 0;
             failure = "No feasible branch count remains after reserving cycle detour nodes.";
@@ -835,7 +885,7 @@ public sealed partial class DungeonGraphLayoutAssembler
 
         branchCount = NextInclusive(
             random,
-            policy.MinimumMeaningfulBranches,
+            minimumBranches,
             maximumBranches);
         failure = string.Empty;
         return true;
@@ -844,11 +894,18 @@ public sealed partial class DungeonGraphLayoutAssembler
     private static bool TryBuildMainPath(
         TopologyDraft topology,
         int bossDistance,
+        IReadOnlyList<RoomSocketDirection> startDirections,
+        RoomSocketDirection firstDirection,
         IReadOnlyList<RoomSocketDirection> allowedBossMovementDirections,
         System.Random random)
     {
-        List<Vector2Int> positions = new() { Vector2Int.zero };
+        if (bossDistance == 1 && !IsRequiredDirection(allowedBossMovementDirections, firstDirection))
+            return false;
+        List<Vector2Int> positions = new() { Vector2Int.zero, DirectionToVector(firstDirection) };
         HashSet<Vector2Int> occupied = new() { Vector2Int.zero };
+        // Keep future Start neighbors free; the main path cannot obstruct their branch space.
+        foreach (RoomSocketDirection direction in startDirections)
+            occupied.Add(DirectionToVector(direction));
         if (!TryExtendMainPath(
                 positions,
                 occupied,
@@ -923,15 +980,19 @@ public sealed partial class DungeonGraphLayoutAssembler
     private static bool TryAddCycleDetours(
         TopologyDraft topology,
         int cycleCount,
+        IReadOnlyList<RoomSocketDirection> startDirections,
+        bool startCycle,
         System.Random random)
     {
         if (cycleCount <= 0)
             return true;
 
         List<int> mainEdgeIndices = new();
-        for (int i = 0; i < topology.MainPathNodeIndices.Count - 1; i++)
+        for (int i = 1; i < topology.MainPathNodeIndices.Count - 1; i++)
             mainEdgeIndices.Add(i);
         Shuffle(mainEdgeIndices, random);
+        if (startCycle)
+            mainEdgeIndices.Insert(0, 0);
 
         HashSet<Vector2Int> occupied = CollectOccupiedCells(topology.Nodes);
         int addedCycles = 0;
@@ -956,9 +1017,14 @@ public sealed partial class DungeonGraphLayoutAssembler
             {
                 Vector2Int firstDetour = first + perpendiculars[sideIndex];
                 Vector2Int secondDetour = second + perpendiculars[sideIndex];
+                if (firstNodeIndex == 0 &&
+                    !IsRequiredDirection(startDirections, GetDirection(first, firstDetour)))
+                    continue;
                 if (occupied.Contains(firstDetour) || occupied.Contains(secondDetour) ||
                     HasUnexpectedOccupiedNeighbor(firstDetour, occupied, first) ||
-                    HasUnexpectedOccupiedNeighbor(secondDetour, occupied, second))
+                    HasUnexpectedOccupiedNeighbor(secondDetour, occupied, second) ||
+                    !PreservesStartBranchSpace(startDirections, occupied, firstDetour, secondDetour,
+                        firstNodeIndex == 0))
                 {
                     continue;
                 }
@@ -983,9 +1049,46 @@ public sealed partial class DungeonGraphLayoutAssembler
                 addedCycles++;
                 break;
             }
+            if (startCycle && candidateIndex == 0 && addedCycles == 0)
+                return false;
         }
 
         return addedCycles == cycleCount;
+    }
+
+    private static bool PreservesStartBranchSpace(
+        IReadOnlyList<RoomSocketDirection> directions, HashSet<Vector2Int> occupied,
+        Vector2Int firstDetour, Vector2Int secondDetour, bool isStartCycle)
+    {
+        foreach (RoomSocketDirection direction in directions)
+        {
+            Vector2Int reserved = DirectionToVector(direction);
+            if (occupied.Contains(reserved) || isStartCycle && reserved == firstDetour)
+                continue;
+            Vector2Int toFirst = reserved - firstDetour;
+            Vector2Int toSecond = reserved - secondDetour;
+            if (Mathf.Abs(toFirst.x) + Mathf.Abs(toFirst.y) <= 1 ||
+                Mathf.Abs(toSecond.x) + Mathf.Abs(toSecond.y) <= 1)
+                return false;
+        }
+        return true;
+    }
+
+    private static bool TryAddStartBranches(TopologyDraft topology, IReadOnlyList<RoomSocketDirection> directions)
+    {
+        HashSet<Vector2Int> occupied = CollectOccupiedCells(topology.Nodes);
+        int branchIndex = 0;
+        foreach (RoomSocketDirection direction in directions)
+        {
+            Vector2Int cell = DirectionToVector(direction);
+            if (occupied.Contains(cell)) continue;
+            if (CountOccupiedNeighbors(cell, occupied) != 1) return false;
+            int nodeIndex = topology.Nodes.Count;
+            topology.Nodes.Add(new PlannedNode { GridPosition = cell, BranchGroup = branchIndex++ });
+            topology.Edges.Add(new PlannedEdge(0, nodeIndex, false));
+            occupied.Add(cell);
+        }
+        return true;
     }
 
     private static bool TryAddMeaningfulBranches(
@@ -994,19 +1097,23 @@ public sealed partial class DungeonGraphLayoutAssembler
         int availableNodeCount,
         System.Random random)
     {
-        if (branchCount < 0 || availableNodeCount < branchCount)
+        List<int> branchEndpoints = new();
+        for (int i = 0; i < topology.Nodes.Count; i++)
+            if (topology.Nodes[i].BranchGroup >= 0) branchEndpoints.Add(i);
+        int newBranchCount = branchCount - branchEndpoints.Count;
+        if (newBranchCount < 0 || availableNodeCount < newBranchCount)
             return false;
         if (availableNodeCount == 0)
-            return branchCount == 0;
+            return newBranchCount == 0;
 
         HashSet<Vector2Int> occupied = CollectOccupiedCells(topology.Nodes);
         List<int> attachmentCandidates = new(topology.MainPathNodeIndices);
+        attachmentCandidates.Remove(0);
         attachmentCandidates.Remove(topology.BossNodeIndex);
         Shuffle(attachmentCandidates, random);
-        List<int> branchEndpoints = new();
         HashSet<int> usedAttachments = new();
 
-        for (int branchIndex = 0; branchIndex < branchCount; branchIndex++)
+        for (int branchIndex = branchEndpoints.Count; branchIndex < branchCount; branchIndex++)
         {
             bool added = false;
             for (int attachmentListIndex = 0;
@@ -1052,7 +1159,7 @@ public sealed partial class DungeonGraphLayoutAssembler
                 return false;
         }
 
-        int remainingNodeCount = availableNodeCount - branchCount;
+        int remainingNodeCount = availableNodeCount - newBranchCount;
         for (int nodeOffset = 0; nodeOffset < remainingNodeCount; nodeOffset++)
         {
             bool added = false;
@@ -1156,11 +1263,23 @@ public sealed partial class DungeonGraphLayoutAssembler
         List<int> assignedSpecialNodes = new();
         if (guaranteedRoomTemplates != null)
         {
-            for (int templateIndex = 0; templateIndex < guaranteedRoomTemplates.Count; templateIndex++)
+            List<RoomTemplateSO> pending = new(guaranteedRoomTemplates);
+            List<int> compatible = new();
+            List<int> deadEnds = new();
+            while (pending.Count > 0)
             {
+                // Start spokes leave fewer distant leaves. Reserve scarce event slots before flexible shops.
+                int next = 0, fewest = int.MaxValue;
+                for (int i = 0; i < pending.Count; i++)
+                {
+                    CollectGuaranteedTemplateNodes(topology, pending[i], assignedSpecialNodes, compatible, deadEnds);
+                    if (compatible.Count >= fewest) continue;
+                    next = i;
+                    fewest = compatible.Count;
+                }
                 if (!TryAssignGuaranteedTemplate(
                         topology,
-                        guaranteedRoomTemplates[templateIndex],
+                        pending[next],
                         policy.PreferSpecialRoomsAtDeadEnds,
                         assignedSpecialNodes,
                         random,
@@ -1168,6 +1287,7 @@ public sealed partial class DungeonGraphLayoutAssembler
                 {
                     return false;
                 }
+                pending.RemoveAt(next);
             }
         }
 
@@ -1375,18 +1495,17 @@ public sealed partial class DungeonGraphLayoutAssembler
         return count;
     }
 
-    private static bool TryAssignGuaranteedTemplate(
+    private static void CollectGuaranteedTemplateNodes(
         TopologyDraft topology,
         RoomTemplateSO template,
-        bool preferDeadEnds,
         List<int> assignedNodes,
-        System.Random random,
-        out string failure)
+        List<int> compatibleNodes,
+        List<int> compatibleDeadEnds)
     {
         RoomTopologyPlacementData placementRule = template.LayoutData.topologyPlacement;
         int minimumDistance = Mathf.Max(0, placementRule.minimumGraphDistanceFromStart);
-        List<int> compatibleNodes = new();
-        List<int> compatibleDeadEnds = new();
+        compatibleNodes.Clear();
+        compatibleDeadEnds.Clear();
         for (int nodeIndex = 1; nodeIndex < topology.Nodes.Count; nodeIndex++)
         {
             if (nodeIndex == topology.BossNodeIndex ||
@@ -1415,7 +1534,21 @@ public sealed partial class DungeonGraphLayoutAssembler
             if (isDeadEnd)
                 compatibleDeadEnds.Add(nodeIndex);
         }
+    }
 
+    private static bool TryAssignGuaranteedTemplate(
+        TopologyDraft topology,
+        RoomTemplateSO template,
+        bool preferDeadEnds,
+        List<int> assignedNodes,
+        System.Random random,
+        out string failure)
+    {
+        RoomTopologyPlacementData placementRule = template.LayoutData.topologyPlacement;
+        int minimumDistance = Mathf.Max(0, placementRule.minimumGraphDistanceFromStart);
+        List<int> compatibleNodes = new();
+        List<int> compatibleDeadEnds = new();
+        CollectGuaranteedTemplateNodes(topology, template, assignedNodes, compatibleNodes, compatibleDeadEnds);
         List<int> candidates = preferDeadEnds && compatibleDeadEnds.Count > 0
             ? compatibleDeadEnds
             : compatibleNodes;
@@ -2523,6 +2656,30 @@ public sealed partial class DungeonGraphLayoutAssembler
         }
 
         return false;
+    }
+
+    private static void CollectValidSocketDirections(RoomTemplateSO template, List<RoomSocketDirection> results)
+    {
+        results.Clear();
+        if (!IsTemplateUsable(template)) return;
+        RoomLayoutData layout = template.LayoutData;
+        RectInt bounds = ResolveLocalBounds(layout);
+        foreach (RoomSocketDirection direction in AllDirections)
+            if (HasValidSocketInDirection(layout, bounds, direction)) results.Add(direction);
+    }
+
+    private static RoomTemplateSO SelectStartTemplate(List<RoomTemplateSO> candidates, System.Random random)
+    {
+        // Start has no required directions yet, so use authoring weights without socket-fit penalties.
+        double total = 0d;
+        foreach (RoomTemplateSO candidate in candidates) total += candidate.LayoutData.selectionWeight;
+        double selected = random.NextDouble() * total;
+        foreach (RoomTemplateSO candidate in candidates)
+        {
+            selected -= candidate.LayoutData.selectionWeight;
+            if (selected < 0d) return candidate;
+        }
+        return candidates[candidates.Count - 1];
     }
 
     private static void CollectAllowedBossMovementDirections(

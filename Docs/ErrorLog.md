@@ -2011,6 +2011,12 @@ Symptom: Flowering, Lightning and shared SwordCombo slash centers shift vertical
 - Restricted vision masks to MaskRender and isolated charge/dropped-spear masks in local SortingGroups. Host item sorting must target the group instead of rewriting child-local mask/render order.
 - Existing layer IDs/order retained; reference/compile checks passed, simultaneous rendered overlap testing outstanding.
 
+## 2026-09-13 - Overlay-only vision masks hid ShadowMonster
+
+- The mask-isolation patch restricted PlayerVisionMask and StrangeCandlestick apertures to MaskRender, but ShadowMonster's body/shadow use VisibleInsideMask on Entity. LightBead retained an unrestricted mask, explaining why only its light revealed the monster. The prior isolation test asserted the narrower range without checking the intended monster consumer.
+- Added an Entity-only EntitySightMask child under each affected overlay aperture instead of expanding across Entity through MaskRender: the intervening Projectile layer contains masked LightningSpear trails. The original overlay range and weapon-local SortingGroups remain unchanged; the child inherits position, scale and GameObject activation. No new sorting layers, physics masks, AI or monster render-order changes.
+- Regression checks must cover both intended consumers (dark overlay and hidden monster), unintended weapon-trail consumers, matched aperture geometry and disable/re-enable behavior. An isolation boundary is not correct merely because it excludes the previous interfering consumer.
+
 ## 2026-09-13 - Boss candle seal still referenced the retired light mask
 
 - Candlestick.prefab contained an inactive SightMask and an active PlayerVisionMask(Clone) sibling, but CandlestickSeal.sightMask referenced the former. Seal toggled the obsolete object, leaving the real vision aperture visible; unseal could also reactivate the obsolete mask.

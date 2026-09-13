@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5333529774321123672
+--- !u!1 &1858016763262642880
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,41 +8,39 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8792505288889608944}
-  - component: {fileID: 5827693321632137462}
-  - component: {fileID: 5160641932915163095}
-  - component: {fileID: 5655201201331349045}
-  - component: {fileID: 8633689539320741759}
+  - component: {fileID: 6157172284040423304}
+  - component: {fileID: 3064632191392274055}
+  - component: {fileID: 8018605058423624919}
   m_Layer: 0
-  m_Name: PF_Dragon_CrossExplosion
+  m_Name: PF_Dragon_LandEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8792505288889608944
+--- !u!4 &6157172284040423304
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5333529774321123672}
+  m_GameObject: {fileID: 1858016763262642880}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &5827693321632137462
+--- !u!212 &3064632191392274055
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5333529774321123672}
+  m_GameObject: {fileID: 1858016763262642880}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -80,100 +78,39 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 119640197
-  m_SortingLayer: 7
+  m_SortingLayerID: 673162585
+  m_SortingLayer: 3
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 6669524654171019442, guid: 5d440ab81f1f04f43bf9ee3a62dc980d, type: 3}
+  m_Sprite: {fileID: 6394903474340492644, guid: b28fc2e666904fe419727ed64fd74a05, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.85, y: 1.28}
+  m_Size: {x: 0.64, y: 0.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!95 &5160641932915163095
+--- !u!95 &8018605058423624919
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5333529774321123672}
+  m_GameObject: {fileID: 1858016763262642880}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b329d0af2c1044c4a4417e0eafde89df, type: 2}
+  m_Controller: {fileID: 9100000, guid: e064b919794142f40886472c6170abcb, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage:
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!58 &5655201201331349045
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5333529774321123672}
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.425
---- !u!114 &8633689539320741759
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5333529774321123672}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a419c7bd9074901b5a1822222da7b94, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Presentation::UnityGAS.TimedAnimatedHitEffect2D
-  animator: {fileID: 5160641932915163095}
-  referenceClip: {fileID: 7400000, guid: 6970686f48c54ab3ba3f125c8eabef31, type: 2}
-  hitColliders:
-  - {fileID: 5655201201331349045}
-  targetLayers:
-    serializedVersion: 2
-    m_Bits: 8
-  applyOnlyOncePerEffect: 1
-  damageMode: 0
-  periodicDamageIntervalSeconds: 0.25
-  periodicApplyImmediatelyOnEnable: 1
-  debugPeriodicDamage: 0
-  destroyOnFinished: 1

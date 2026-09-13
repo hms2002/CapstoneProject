@@ -10,7 +10,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-/// <summary>Exercises constrained template assignment, rollback, relaxation, hard quotas and production-seed geometry without changing authored assets.</summary>
+/// <summary>Exercises Start direction coverage, constrained template assignment, rollback, hard quotas and production-seed geometry without changing authored assets.</summary>
 public sealed class DungeonTemplateSearchPlayModeTests
 {
     private const BindingFlags Fields = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
@@ -22,6 +22,121 @@ public sealed class DungeonTemplateSearchPlayModeTests
     {
         for (int i = owned.Count - 1; i >= 0; i--) if (owned[i] != null) Object.DestroyImmediate(owned[i]);
         owned.Clear(); templates.Clear();
+    }
+
+    [TestCase(1)]
+    [TestCase(5)]
+    [TestCase(3)]
+    [TestCase(7)]
+    [TestCase(15)]
+    public void StartDirections_AllConnectWithinRoomBudget(int mask)
+    {
+        Template("Start", RoomType.Start, mask: mask);
+        Template("Boss", RoomType.Boss); Template("Treasure", RoomType.Treasure);
+        Template("A"); Template("B"); Template("C"); Template("D");
+        var library = TestLibrary();
+        for (int seed = 0; seed < 8; seed++)
+        {
+            var result = new DungeonGraphLayoutAssembler().Assemble(library, Policy(), seed, 12, 512, 2, 0f, 0);
+            Assert.That(result.IsComplete, Is.True, $"mask={mask}, seed={seed}: {result.FailureReason}");
+            Assert.That(result.Rooms.Count, Is.EqualTo(12));
+            CheckStartConnections(result);
+            CheckPhysicalConnections(result);
+        }
+    }
+
+    [Test]
+    public void StartDirections_DuplicateAndInvalidSockets_DoNotAddBranches()
+    {
+        var start = Template("Start", RoomType.Start, mask: 5);
+        var layout = start.LayoutData;
+        layout.sockets.Add(new RoomSocketData { direction = RoomSocketDirection.Up, localCell = new(2, 6), width = 2 });
+        layout.sockets.Add(new RoomSocketData { direction = RoomSocketDirection.Right, localCell = new(100, 100), width = 2 });
+        start.EditorSetData(layout, start.BuildData);
+        Template("Boss", RoomType.Boss); Template("Treasure", RoomType.Treasure); Template("Combat");
+        var result = new DungeonGraphLayoutAssembler().Assemble(TestLibrary(), Policy(), 17, 12, 512, 2, 0f, 0);
+        Assert.That(result.IsComplete, Is.True, result.FailureReason);
+        CheckStartConnections(result);
+        Assert.That(result.Connections.Count(c => c.FirstRoomPlacementId == 0 || c.SecondRoomPlacementId == 0), Is.EqualTo(2));
+    }
+
+    [Test]
+    public void StartDirections_InsufficientBudgetFailsInsteadOfClosingSockets()
+    {
+        Template("Start", RoomType.Start); Template("Boss", RoomType.Boss);
+        Template("Treasure", RoomType.Treasure); Template("Combat");
+        var policy = Policy();
+        Set(policy, "minimumBossGraphDistance", 2); Set(policy, "maximumBossGraphDistance", 2);
+        Set(policy, "minimumMeaningfulBranches", 0);
+        Set(policy, "minimumCycleConnections", 0); Set(policy, "maximumCycleConnections", 0);
+        Set(policy, "treasureRoomCount", 0); Set(policy, "minimumCombatRoomCount", 0);
+        // Four neighboring rooms alone need five nodes, before extending the boss path.
+        var result = new DungeonGraphLayoutAssembler().Assemble(TestLibrary(), policy, 11, 4, 32, 2, 0f, 0);
+        Assert.That(result.IsComplete, Is.False);
+        Assert.That(result.Rooms, Is.Empty);
+        StringAssert.Contains("Start", result.FailureReason);
+    }
+
+    [Test]
+    public void StartDirections_MultipleStartsCannotGainUnusedSocketsDuringTemplateSearch()
+    {
+        var narrow = Template("NarrowStart", RoomType.Start, mask: 5);
+        var wide = Template("WideStart", RoomType.Start);
+        Template("Boss", RoomType.Boss); Template("Treasure", RoomType.Treasure);
+        Template("A"); Template("B"); Template("C");
+        var seen = new HashSet<RoomTemplateSO>();
+        var library = TestLibrary();
+        for (int seed = 0; seed < 16; seed++)
+        {
+            var result = new DungeonGraphLayoutAssembler().Assemble(library, Policy(), seed, 12, 512, 2, 0f, 0);
+            Assert.That(result.IsComplete, Is.True, result.FailureReason);
+            CheckStartConnections(result);
+            seen.Add(result.Rooms[0].Template);
+        }
+        Assert.That(seen, Is.EquivalentTo(new[] { narrow, wide }));
+    }
+
+    [Test]
+    public void StartDirections_MisalignedOppositeSocketsFailBeforeRetries()
+    {
+        var start = Template("MisalignedStart", RoomType.Start);
+        var layout = start.LayoutData;
+        var down = layout.sockets[2]; down.localCell = new Vector2Int(3, 0);
+        layout.sockets[2] = down;
+        start.EditorSetData(layout, start.BuildData);
+        Template("Boss", RoomType.Boss); Template("Treasure", RoomType.Treasure); Template("Combat");
+        var result = new DungeonGraphLayoutAssembler().Assemble(TestLibrary(), Policy(), 0, 12, 512, 2, 0f, 0);
+        Assert.That(result.IsComplete, Is.False);
+        StringAssert.Contains("opposite socket alignment", result.FailureReason);
+        StringAssert.DoesNotContain("after 512 attempts", result.FailureReason);
+    }
+
+    [Test]
+    public void GuaranteedRoles_ReserveScarceDistantDeadEndBeforeFlexibleShop()
+    {
+        Template("Start", RoomType.Start); Template("Boss", RoomType.Boss); Template("Combat");
+        var shop = Template("FlexibleShop", RoomType.Shop);
+        var parcel = Template("DistantEvent", RoomType.Event);
+        var layout = parcel.LayoutData;
+        layout.topologyPlacement = new RoomTopologyPlacementData
+            { minimumGraphDistanceFromStart = 3, requireDeadEnd = true, mode = RoomTopologyPlacementMode.FarthestFromStart };
+        parcel.EditorSetData(layout, parcel.BuildData);
+        var topology = Line(5);
+        var nodes = (IList)Get(topology, "Nodes");
+        var edges = (IList)Get(topology, "Edges");
+        Vector2Int[] branches = { new(2, 1), new(0, 1) };
+        for (int i = 0; i < branches.Length; i++)
+        {
+            var node = Activator.CreateInstance(Assembler.GetNestedType("PlannedNode", BindingFlags.NonPublic), true);
+            Set(node, "GridPosition", branches[i]);
+            nodes.Add(node); edges.Add(Edge(i == 0 ? 2 : 0, 5 + i));
+        }
+        var policy = Policy(); Set(policy, "treasureRoomCount", 0); Set(policy, "minimumCombatRoomCount", 0);
+        object[] args = { TestLibrary(), policy, new[] { shop, parcel }, null, topology, new System.Random(0), null };
+        bool success = (bool)Assembler.GetMethod("TryAssignRoomRoles", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, args);
+        Assert.That(success, Is.True, args[6] as string);
+        Assert.That(Get(nodes[5], "Template"), Is.SameAs(parcel));
+        Assert.That(Get(nodes[6], "Template"), Is.SameAs(shop));
     }
 
     [Test]
@@ -238,7 +353,7 @@ public sealed class DungeonTemplateSearchPlayModeTests
         var profile = AssetDatabase.LoadAssetAtPath<DungeonGenerationProfileSO>(
             $"Assets/_Project/Data/Dungeon/GenerationProfiles/Procedural{theme}GenerationProfile.asset");
         var clock = Stopwatch.StartNew();
-        for (int n = 0; n < 8; n++)
+        for (int n = 0; n < 32; n++)
         {
             int seed = unchecked(profile.Seed + n * 997);
             DungeonLayoutResult Build() => new DungeonGraphLayoutAssembler().Assemble(profile.RoomLibrary, profile.LayoutPolicy,
@@ -255,6 +370,11 @@ public sealed class DungeonTemplateSearchPlayModeTests
                 if (rule != null && rule.Count > 0) Assert.That(result.Rooms.Count(r => rule.Matches(r.Template)), Is.EqualTo(rule.Count));
             foreach (var guaranteed in profile.GuaranteedRoomTemplates)
                 Assert.That(result.Rooms.Count(r => r.Template == guaranteed), Is.EqualTo(1));
+            CheckStartConnections(result);
+            CheckPhysicalConnections(result);
+            Assert.That(result.BossGraphDistance, Is.InRange(profile.LayoutPolicy.MinimumBossGraphDistance, profile.LayoutPolicy.MaximumBossGraphDistance));
+            Assert.That(result.MeaningfulBranchCount, Is.InRange(profile.LayoutPolicy.MinimumMeaningfulBranches, profile.LayoutPolicy.MaximumMeaningfulBranches));
+            Assert.That(result.CycleConnectionCount, Is.InRange(profile.LayoutPolicy.MinimumCycleConnections, profile.LayoutPolicy.MaximumCycleConnections));
             Assert.That(result.TemplateSelection.SearchSteps, Is.LessThanOrEqualTo(4096));
             if (n == 0)
             {
@@ -266,7 +386,7 @@ public sealed class DungeonTemplateSearchPlayModeTests
             if (result.TemplateSelection.Metrics.AdjacentTemplates > 0)
                 TestContext.WriteLine(result.TemplateSelection.Description);
         }
-        TestContext.WriteLine($"{theme}: 8 seeds + 1 replay in {clock.ElapsedMilliseconds} ms (Editor/headless, not player-frame profiling).");
+        TestContext.WriteLine($"{theme}: 32 seeds + 1 replay in {clock.ElapsedMilliseconds} ms (Editor/headless, not player-frame profiling).");
     }
 
     private static string Signature(DungeonLayoutResult result) => string.Join("|", result.Rooms.Select(r => $"{r.PlacementId}:{r.Template.LayoutData.roomId}:{r.Origin}"));
@@ -369,6 +489,8 @@ public sealed class DungeonTemplateSearchPlayModeTests
             profile.CorridorLengthPerRoomCell, profile.CorridorLengthVariation, guaranteed);
         Assert.That(result.IsComplete, Is.True, $"{profile.name}, seed={seed}: {result.FailureReason}");
         Assert.That(result.Rooms.Count, Is.EqualTo(profile.RoomCount));
+        CheckStartConnections(result);
+        CheckPhysicalConnections(result);
         foreach (var rule in profile.LayoutPolicy.RequiredCombatRoomRules)
             if (rule != null && rule.Count > 0) Assert.That(result.Rooms.Count(r => rule.Matches(r.Template)), Is.EqualTo(rule.Count));
         Assert.That(result.Rooms.Count(r => r.Template.LayoutData.roomType == RoomType.Combat &&
@@ -381,6 +503,50 @@ public sealed class DungeonTemplateSearchPlayModeTests
             if (template.LayoutData.topologyPlacement.requireDeadEnd)
                 Assert.That(result.Connections.Count(c => c.FirstRoomPlacementId == rooms[0].PlacementId ||
                     c.SecondRoomPlacementId == rooms[0].PlacementId), Is.EqualTo(1), template.name);
+        }
+    }
+
+    private RoomThemeLibrarySO TestLibrary()
+    {
+        var library = Own(ScriptableObject.CreateInstance<RoomThemeLibrarySO>());
+        foreach (var template in templates) library.EditorAddRoom(template);
+        return library;
+    }
+
+    private static void CheckStartConnections(DungeonLayoutResult result)
+    {
+        var start = result.Rooms.Single(r => r.Template.LayoutData.roomType == RoomType.Start);
+        var layout = start.Template.LayoutData;
+        var expected = layout.sockets.Where(s => RoomSocketGeometry.IsValid(s, layout.localBounds))
+            .Select(s => s.direction).Distinct().ToArray();
+        var actual = result.Connections.Where(c => c.FirstRoomPlacementId == start.PlacementId || c.SecondRoomPlacementId == start.PlacementId)
+            .Select(c => layout.sockets[c.FirstRoomPlacementId == start.PlacementId ? c.FirstSocketIndex : c.SecondSocketIndex].direction).ToArray();
+        Assert.That(actual, Is.EquivalentTo(expected), $"{start.Template.name}: every unique usable Start direction must connect exactly once.");
+    }
+
+    private static void CheckPhysicalConnections(DungeonLayoutResult result)
+    {
+        for (int i = 0; i < result.Rooms.Count; i++)
+            for (int j = i + 1; j < result.Rooms.Count; j++)
+                Assert.That(result.Rooms[i].WorldBounds.Overlaps(result.Rooms[j].WorldBounds), Is.False);
+        for (int i = 0; i < result.Connections.Count; i++)
+        {
+            var c = result.Connections[i];
+            var first = result.Rooms.Single(r => r.PlacementId == c.FirstRoomPlacementId);
+            var second = result.Rooms.Single(r => r.PlacementId == c.SecondRoomPlacementId);
+            var a = first.Template.LayoutData.sockets[c.FirstSocketIndex];
+            var b = second.Template.LayoutData.sockets[c.SecondSocketIndex];
+            Assert.That(((int)a.direction + 2) % 4, Is.EqualTo((int)b.direction));
+            Assert.That(RoomSocketGeometry.ResolveWidth(a), Is.EqualTo(RoomSocketGeometry.ResolveWidth(b)));
+            var aCell = first.Origin + a.localCell;
+            var bCell = second.Origin + b.localCell;
+            bool horizontal = a.direction == RoomSocketDirection.Left || a.direction == RoomSocketDirection.Right;
+            Assert.That(horizontal ? aCell.y : aCell.x, Is.EqualTo(horizontal ? bCell.y : bCell.x));
+            if (c.CorridorLength <= 0) continue;
+            foreach (var room in result.Rooms) Assert.That(c.CorridorBounds.Overlaps(room.WorldBounds), Is.False);
+            for (int j = i + 1; j < result.Connections.Count; j++)
+                if (result.Connections[j].CorridorLength > 0)
+                    Assert.That(c.CorridorBounds.Overlaps(result.Connections[j].CorridorBounds), Is.False);
         }
     }
 

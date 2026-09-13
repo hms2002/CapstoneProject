@@ -12,7 +12,7 @@ using UnityEngine.TestTools;
 using UnityGAS;
 using Object = UnityEngine.Object;
 
-/// <summary>Verifies cross-wave visuals/damage, landing pose ownership, detached debris and cleanup.</summary>
+/// <summary>Verifies Dragon presentation wiring, grounded landing timing, cross-wave damage and pose cleanup.</summary>
 public sealed class DragonSlamCrossExplosionPlayModeTests
 {
     private const BindingFlags Private = BindingFlags.NonPublic | BindingFlags.Instance;
@@ -77,6 +77,108 @@ public sealed class DragonSlamCrossExplosionPlayModeTests
         return animator;
     }
 
+    private ICombatHeightPresentation2D CreateHeightPresentation(DragonController dragon, Animator animator,
+        out CombatHeightState2D height)
+    {
+        height = dragon.gameObject.AddComponent<CombatHeightState2D>();
+        var presentationType = Type.GetType("UnityGAS.CombatHeightPresentation2D, Presentation");
+        Assert.That(presentationType, Is.Not.Null);
+        var presentation = (ICombatHeightPresentation2D)dragon.gameObject.AddComponent(presentationType);
+        animator.transform.localPosition = new Vector3(0.25f, 0.4f, 0f);
+        Set(presentation, "heightState", height);
+        Set(presentation, "visualRoot", animator.transform);
+        Set(presentation, "createFallbackShadow", false);
+        // Keep the AI host inactive; explicitly tick the real height renderer without its inactive event shortcut.
+        Invoke(presentation, "Awake");
+        return presentation;
+    }
+
+    [UnityTest]
+    public IEnumerator Slam_KeepsJumpPoseThroughDescent_AndGroundsVisualBeforeLandingPose()
+    {
+        var logic = CreateLogic(out var dragon, out var spec);
+        var animator = CreateBodyAnimator(dragon);
+        var presentation = CreateHeightPresentation(dragon, animator, out var height);
+        Set(logic, "travelSeconds", 0.3f);
+        Set(logic, "jumpStartPresentation", default(WorldPresentationHook));
+        Set(logic, "landingPresentation", default(WorldPresentationHook));
+        Set(logic, "impactSound", default(SoundRef));
+        Set(logic, "impactCameraShake", default(CameraShakeHook));
+        Set(logic, "damageAmount", 0f);
+        var routine = logic.Activate(dragon.AbilitySystem, spec, null);
+        IEnumerator flight = null;
+        try
+        {
+            Assert.That(routine.MoveNext(), Is.True);
+            flight = (IEnumerator)routine.Current;
+            animator.Update(0f);
+            bool sawRaisedVisual = false;
+            while (flight.MoveNext())
+            {
+                Invoke(presentation, "LateUpdate");
+                sawRaisedVisual |= presentation.CurrentVisualHeight > 0.01f;
+                Assert.That(height.IsAirborne, Is.True);
+                Assert.That(animator.GetCurrentAnimatorStateInfo(0).IsName("Dragon_Jump"), Is.True);
+                yield return flight.Current;
+            }
+
+            Assert.That(sawRaisedVisual, Is.True);
+            Assert.That(presentation.CurrentVisualHeight, Is.GreaterThan(0f), "The damped visual still trails the logical height.");
+            Assert.That(routine.MoveNext(), Is.True);
+            animator.Update(0f);
+            Assert.That(height.IsGrounded, Is.True);
+            Assert.That(presentation.CurrentVisualHeight, Is.Zero);
+            Assert.That(animator.transform.localPosition, Is.EqualTo(presentation.VisualBaseLocalPosition));
+            Assert.That(animator.GetCurrentAnimatorStateInfo(0).IsName("Dragon_Landing"), Is.True);
+            Invoke(presentation, "LateUpdate");
+            Assert.That(presentation.CurrentVisualHeight, Is.Zero, "Landing must also clear the damping velocity.");
+        }
+        finally
+        {
+            (flight as IDisposable)?.Dispose();
+            ((IDisposable)routine).Dispose();
+        }
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void Slam_InterruptedFlight_GroundsVisualWithoutStartingLanding(bool dispose)
+    {
+        var logic = CreateLogic(out var dragon, out var spec);
+        var animator = CreateBodyAnimator(dragon);
+        var presentation = CreateHeightPresentation(dragon, animator, out var height);
+        Set(logic, "jumpStartPresentation", default(WorldPresentationHook));
+        var routine = logic.Activate(dragon.AbilitySystem, spec, null);
+        IEnumerator flight = null;
+        try
+        {
+            Assert.That(routine.MoveNext(), Is.True);
+            flight = (IEnumerator)routine.Current;
+            animator.Update(0f);
+            height.SetAirborne(1f);
+            presentation.SnapToCurrentState();
+            if (dispose)
+                ((IDisposable)routine).Dispose();
+            else
+            {
+                spec.Token.Cancel();
+                Assert.That(flight.MoveNext(), Is.False);
+                Assert.That(routine.MoveNext(), Is.False);
+            }
+
+            animator.Update(0f);
+            Assert.That(height.IsGrounded, Is.True);
+            Assert.That(presentation.CurrentVisualHeight, Is.Zero);
+            Assert.That(animator.transform.localPosition, Is.EqualTo(presentation.VisualBaseLocalPosition));
+            Assert.That(animator.GetCurrentAnimatorStateInfo(0).IsName("Dragon_Landing"), Is.False);
+        }
+        finally
+        {
+            (flight as IDisposable)?.Dispose();
+            ((IDisposable)routine).Dispose();
+        }
+    }
+
     [Test]
     public void AuthoredEffect_UsesDragonFramesAndDarkLordHitTiming_WithoutDemonComponents()
     {
@@ -85,7 +187,7 @@ public sealed class DragonSlamCrossExplosionPlayModeTests
         var collider = Prefab.GetComponent<CircleCollider2D>();
         Assert.That(collider.enabled, Is.False);
         Assert.That(collider.isTrigger, Is.True);
-        Assert.That(collider.offset.y, Is.LessThan(0f), "The authored collider marks the ground below the sprite center.");
+        Assert.That(collider.offset, Is.EqualTo(Vector2.zero), "The new ring artwork is centered on the ground anchor.");
         Assert.That(Prefab.GetComponentInChildren<SpriteRenderer>().sharedMaterial, Is.Not.Null);
         var clip = Prefab.GetComponent<Animator>().runtimeAnimatorController.animationClips[0];
         Assert.That(clip.isLooping, Is.False);
@@ -97,9 +199,9 @@ public sealed class DragonSlamCrossExplosionPlayModeTests
         for (int i = 0; i < frames.Length; i++)
         {
             Assert.That(frames[i].value, Is.Not.Null);
-            Assert.That(frames[i].value.name, Is.EqualTo("DragonBossExplosion_" + i));
+            Assert.That(frames[i].value.name, Is.EqualTo("Dragon_LandSideEffect_" + i));
             Assert.That(AssetDatabase.GetAssetPath(frames[i].value),
-                Is.EqualTo("Assets/_Project/Art/Sprites/Bosses/DarkLord/DragonBossExplosion.png"));
+                Is.EqualTo("Assets/_Project/Art/Sprites/VFX/Common/Dragon_LandSideEffect.png"));
         }
         Assert.That(Prefab.GetComponentInChildren<SpriteRenderer>().sprite, Is.EqualTo(frames[0].value));
         Assert.That(clip.events[0].functionName, Is.EqualTo("EnableHitCollision"));
@@ -130,7 +232,7 @@ public sealed class DragonSlamCrossExplosionPlayModeTests
 
     [TestCase(1.35f)]
     [TestCase(2f)]
-    public void EnlargedVisual_PreservesCircularDamageSizeAndGroundAnchor(float diameter)
+    public void UniformVisual_PreservesCircularDamageSizeAndGroundAnchor(float diameter)
     {
         var logic = CreateLogic(out var dragon, out var spec);
         Set(logic, "crossExplosionDiameter", diameter);
@@ -139,9 +241,10 @@ public sealed class DragonSlamCrossExplosionPlayModeTests
         var effect = Own((GameObject)Invoke(logic, "SpawnCrossExplosion", Prefab, center,
             payload, new SharedHitRegistry2D(), (LayerMask)8, null));
         var visualScale = effect.transform.localScale;
-        const float previousScale = 1.1764706f;
-        Assert.That(visualScale.x, Is.EqualTo(previousScale * 1.35f * 1.5f * diameter).Within(0.0001f));
-        Assert.That(visualScale.y, Is.EqualTo(previousScale * 2f * 1.5f * diameter).Within(0.0001f));
+        Assert.That(Prefab.transform.localScale, Is.EqualTo(Vector3.one));
+        Assert.That(visualScale.x, Is.EqualTo(diameter).Within(0.0001f));
+        Assert.That(visualScale.y, Is.EqualTo(diameter).Within(0.0001f));
+        Assert.That(visualScale.z, Is.EqualTo(1f));
 
         var collider = effect.GetComponent<CircleCollider2D>();
         effect.SendMessage("EnableHitCollision");
@@ -154,6 +257,76 @@ public sealed class DragonSlamCrossExplosionPlayModeTests
         {
             Assert.That(collider.OverlapPoint(center + direction * diameter * 0.49f), Is.True);
             Assert.That(collider.OverlapPoint(center + direction * diameter * 0.51f), Is.False);
+        }
+    }
+
+    [Test]
+    public void FireballVisual_UsesAllNineLavaballFrames_WithUnchangedColliderAndLifetime()
+    {
+        var strategy = new SerializedObject(AssetDatabase.LoadMainAssetAtPath("Assets/_Project/Data/Abilities/Strategies/AL_DragonRotation.asset"));
+        var projectile = (GameObject)strategy.FindProperty("projectilePrefab").objectReferenceValue;
+        var collider = projectile.GetComponent<CircleCollider2D>();
+        Assert.That(collider.radius, Is.EqualTo(0.32760787f).Within(0.00001f));
+        Assert.That(collider.offset, Is.EqualTo(new Vector2(0f, -0.3160522f)));
+        Assert.That(strategy.FindProperty("projectileLifetimeSeconds").floatValue, Is.EqualTo(4f));
+        Assert.That(strategy.FindProperty("projectileCountMultiplier").intValue, Is.EqualTo(4));
+        Transform renderSource = projectile.transform.Find("Render");
+        var visual = Own(Object.Instantiate(renderSource.gameObject, Vector3.zero, Quaternion.identity));
+        var renderer = visual.GetComponent<SpriteRenderer>();
+        var animator = visual.GetComponent<Animator>();
+        var clip = animator.runtimeAnimatorController.animationClips[0];
+        Assert.That(clip.isLooping, Is.True);
+        Assert.That(clip.length, Is.EqualTo(1f).Within(0.001f));
+        Assert.That(visual.transform.localScale, Is.EqualTo(new Vector3(3.5f, 3.5f, 1f)));
+        Assert.That(renderSource.localPosition, Is.EqualTo((Vector3)collider.offset));
+        var keys = AnimationUtility.GetObjectReferenceCurve(clip, AnimationUtility.GetObjectReferenceCurveBindings(clip)[0]);
+        Assert.That(keys, Has.Length.EqualTo(9));
+        for (int i = 0; i < keys.Length; i++)
+        {
+            Assert.That(keys[i].value.name, Is.EqualTo("Dragon_Projectile_Lavaball_V2_" + i));
+            animator.Play("Base Layer.Animation_DragonSpinProjectile", 0, (i + 0.1f) / keys.Length);
+            animator.Update(0f);
+            Assert.That(renderer.sprite, Is.EqualTo(keys[i].value));
+        }
+        Assert.That(animator.GetCurrentAnimatorStateInfo(0).speed, Is.EqualTo(2f));
+    }
+
+    [UnityTest]
+    public IEnumerator LandingVisual_UsesSevenFrames_AndReturnsAfterOneShot()
+    {
+        var strategy = AssetDatabase.LoadAssetAtPath<AbilityLogic_DragonSlam>(StrategyPath);
+        var hook = (WorldPresentationHook)typeof(AbilityLogic_DragonSlam).GetField("landingPresentation", Private).GetValue(strategy);
+        Assert.That(hook.effect.prefab.name, Is.EqualTo("PF_Dragon_LandEffect"));
+        Assert.That(hook.particle.prefab, Is.Null, "Only the landing dust is replaced, not shared dust assets.");
+        Assert.That(hook.effect.prefab.GetComponentsInChildren<Collider2D>(true), Is.Empty);
+        var renderer = hook.effect.prefab.GetComponent<SpriteRenderer>();
+        var boss = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Bosses/DragonBoss/DragonBoss.prefab");
+        var bodyRenderer = boss.GetComponentInChildren<Animator>(true).GetComponent<SpriteRenderer>();
+        Assert.That(renderer.sortingLayerName, Is.EqualTo("GroundAOE"));
+        Assert.That(SortingLayer.GetLayerValueFromID(renderer.sortingLayerID),
+            Is.LessThan(SortingLayer.GetLayerValueFromID(bodyRenderer.sortingLayerID)));
+        var clip = hook.effect.prefab.GetComponent<Animator>().runtimeAnimatorController.animationClips[0];
+        Assert.That(clip.isLooping, Is.False);
+        Assert.That(clip.length, Is.EqualTo(7f / 12f).Within(0.001f));
+        var keys = AnimationUtility.GetObjectReferenceCurve(clip, AnimationUtility.GetObjectReferenceCurveBindings(clip)[0]);
+        Assert.That(keys, Has.Length.EqualTo(7));
+        for (int i = 0; i < keys.Length; i++)
+            Assert.That(keys[i].value.name, Is.EqualTo("Dragon_LandEffect_" + i));
+        var instance = WorldPresentationPlayback.SpawnOneShot(hook.effect,
+            WorldPresentationContext.AtWorld(null, new Vector3(100f, 100f, 0f), Vector3.up));
+        Assert.That(instance, Is.Not.Null);
+        try
+        {
+            yield return null;
+            Assert.That(instance.activeInHierarchy, Is.True);
+            Assert.That(instance.GetComponent<SpriteRenderer>().sprite, Is.Not.Null);
+            Assert.That(instance.GetComponent<SpriteRenderer>().sortingLayerID, Is.EqualTo(renderer.sortingLayerID));
+            yield return new WaitForSeconds(1.2f);
+            Assert.That(instance == null || !instance.activeInHierarchy, Is.True, "Presentation owner must release the one-shot.");
+        }
+        finally
+        {
+            if (instance != null && instance.activeInHierarchy) WorldPresentationPlayback.Release(instance);
         }
     }
 

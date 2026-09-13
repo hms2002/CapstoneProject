@@ -75,7 +75,9 @@ public sealed partial class DungeonGraphLayoutAssembler
                 PlannedNode node = topology.Nodes[i];
                 directions[i] = new List<RoomSocketDirection>();
                 CollectRequiredDirections(topology, i, directions[i]);
-                pinned[i] = node.Template != null && ContainsTemplateReference(guaranteed, node.Template);
+                // The chosen Start owns the graph's reserved directions; do not replace it mid-search.
+                pinned[i] = node.Template != null &&
+                    (node.Role == RoomType.Start || ContainsTemplateReference(guaranteed, node.Template));
                 var candidates = new List<RoomTemplateSO>();
                 if (pinned[i]) candidates.Add(node.Template);
                 else library.CollectRooms(node.Role, candidates);
