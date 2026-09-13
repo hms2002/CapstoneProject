@@ -673,8 +673,8 @@ public static class ProceduralDungeonSceneInstaller
             policy.EditorConfigure(
                 recommendedMinimumRooms: 12,
                 recommendedMaximumRooms: 18,
-                minimumBossDistance: 6,
-                maximumBossDistance: 8,
+                minimumBossDistance: 4,
+                maximumBossDistance: 5,
                 minimumBranches: 2,
                 maximumBranches: 4,
                 minimumCycles: 1,

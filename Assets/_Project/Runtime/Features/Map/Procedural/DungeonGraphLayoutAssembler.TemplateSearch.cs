@@ -247,8 +247,12 @@ public sealed partial class DungeonGraphLayoutAssembler
                 node.Template = assigned[i].Template;
                 node.LocalBounds = ResolveLocalBounds(node.Template.LayoutData);
                 node.SocketIndices.Clear();
-                if (!TrySelectSocketIndices(node.Template.LayoutData, directions[i], random, node.SocketIndices) ||
-                    !TryResolveNodeReferences(node, directions[i], out failure)) return false;
+                if (!TrySelectSocketIndices(node.Template.LayoutData, directions[i], random, node.SocketIndices))
+                {
+                    failure = $"Template '{node.Template.name}' has no valid socket selection for node {i}.";
+                    return false;
+                }
+                ResolveNodeReferences(node);
             }
             if (!TryCreatePhysicalLayout(seed, roomCount, topology, random, minimumLength, lengthRatio,
                 lengthVariation, out DungeonLayoutResult result, out failure) || !ValidateFinalAssignment(result)) return false;

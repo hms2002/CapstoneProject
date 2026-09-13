@@ -10,7 +10,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-/// <summary>Exercises Start direction coverage, constrained template assignment, rollback, hard quotas and production-seed geometry without changing authored assets.</summary>
+/// <summary>Exercises per-exit dead ends, Start depth balance, offset placement and constrained template selection without changing authored assets.</summary>
 public sealed class DungeonTemplateSearchPlayModeTests
 {
     private const BindingFlags Fields = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
@@ -96,19 +96,330 @@ public sealed class DungeonTemplateSearchPlayModeTests
         Assert.That(seen, Is.EquivalentTo(new[] { narrow, wide }));
     }
 
-    [Test]
-    public void StartDirections_MisalignedOppositeSocketsFailBeforeRetries()
+    [TestCase(false)]
+    [TestCase(true)]
+    public void StartDirections_OffsetOppositeSocketsConnectWithoutChangingAuthoredCells(bool translatedBounds)
     {
         var start = Template("MisalignedStart", RoomType.Start);
-        var layout = start.LayoutData;
-        var down = layout.sockets[2]; down.localCell = new Vector2Int(3, 0);
-        layout.sockets[2] = down;
-        start.EditorSetData(layout, start.BuildData);
+        OffsetSockets(start, translatedBounds);
+        var before = start.LayoutData.sockets.Select(s => s.localCell).ToArray();
         Template("Boss", RoomType.Boss); Template("Treasure", RoomType.Treasure); Template("Combat");
-        var result = new DungeonGraphLayoutAssembler().Assemble(TestLibrary(), Policy(), 0, 12, 512, 2, 0f, 0);
+        var library = TestLibrary();
+        for (int seed = 0; seed < 8; seed++)
+        {
+            var result = new DungeonGraphLayoutAssembler().Assemble(library, Policy(), seed, 12, 512, 2, 0f, 0);
+            Assert.That(result.IsComplete, Is.True, result.FailureReason);
+            Assert.That(result.Rooms.Count, Is.EqualTo(12));
+            CheckStartConnections(result);
+            CheckPhysicalConnections(result);
+            Assert.That(start.LayoutData.sockets.Select(s => s.localCell), Is.EqualTo(before));
+        }
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void OffsetSockets_AccumulateAcrossStraightChains(bool vertical)
+    {
+        var start = Template("Start", RoomType.Start, mask: vertical ? 1 : 2);
+        var boss = Template("Boss", RoomType.Boss, mask: vertical ? 4 : 8);
+        for (int i = 0; i < 3; i++) OffsetSockets(Template($"Offset_{i}"), i % 2 == 0);
+        var points = Enumerable.Range(0, 5).Select(i => vertical ? new Vector2Int(0, i) : new Vector2Int(i, 0)).ToArray();
+        Assert.That(Solve(Search(Policy(), Topology(points), 8), out var result, out var failure), Is.True, failure);
+        CheckPhysicalConnections(result);
+        var firstCell = result.Rooms[0].Origin + start.LayoutData.sockets[0].localCell;
+        var lastCell = result.Rooms[4].Origin + boss.LayoutData.sockets[0].localCell;
+        // Each intervening room contributes -1 column upward or -2 rows rightward.
+        Assert.That(vertical ? lastCell.x - firstCell.x : lastCell.y - firstCell.y, Is.EqualTo(vertical ? -3 : -6));
+    }
+
+    [Test]
+    public void OffsetSockets_CloseCycleAndPreservePhysicalSeparation()
+    {
+        for (int i = 0; i < 6; i++) OffsetSockets(Template($"Offset_{i}"), i % 2 == 0);
+        var points = new[] { new Vector2Int(0, 0), new(1, 0), new(2, 0), new(2, 1), new(1, 1), new(0, 1) };
+        for (int seed = 0; seed < 8; seed++)
+        {
+            var topology = Topology(points, allCombat: true, closeCycle: true);
+            Assert.That(Solve(Search(Policy(), topology, seed), out var result, out var failure), Is.True, failure);
+            Assert.That(result.Connections.Count, Is.EqualTo(6));
+            CheckPhysicalConnections(result);
+        }
+    }
+
+    [Test]
+    public void StartTerminals_SharedCycleTailCannotSatisfyTwoExits()
+    {
+        var topology = BranchedTopology(new[] { new Vector2Int(0, 0), new(1, 0), new(1, 1), new(0, 1), new(1, 2) },
+            (0, 1), (1, 2), (2, 3), (3, 0), (2, 4));
+        Assert.That(MissingTerminals(topology), Is.EqualTo(2));
+    }
+
+    [Test]
+    public void StartTerminals_TwoSharedLeavesCanMatchTwoDistinctExits()
+    {
+        var topology = BranchedTopology(new[] { new Vector2Int(0, 0), new(1, 0), new(1, 1), new(0, 1), new(1, 2), new(2, 1) },
+            (0, 1), (1, 2), (2, 3), (3, 0), (2, 4), (2, 5));
+        Assert.That(MissingTerminals(topology), Is.Zero);
+    }
+
+    [Test]
+    public void StartTerminals_StartCycleGetsSeparateTail_WithoutRemovingCycle()
+    {
+        var topology = StartCycleWithoutTerminal();
+        Assert.That(MissingTerminals(topology), Is.EqualTo(1));
+        object[] args = { topology, 9, 3, new System.Random(17), null };
+        Assert.That(AddTerminals(args), Is.True, (string)args[4]);
+        var nodes = (IList)Get(topology, "Nodes");
+        Assert.That(nodes.Count, Is.EqualTo(9));
+        Assert.That(((IList)Get(topology, "Edges")).Count - nodes.Count + 1, Is.EqualTo(1));
+        Assert.That(Get(nodes[8], "BranchGroup"), Is.EqualTo(2));
+        Assert.That(((int[])Get(Reach(topology), "ExitMasks"))[8], Is.EqualTo(3));
+        Assert.That(((int[])Get(Reach(topology), "Depths"))[8], Is.EqualTo(3));
+        Assert.That(MissingTerminals(topology), Is.Zero);
+        // Rechecking already covered exits does not create another room or another branch.
+        Assert.That(AddTerminals(args), Is.True);
+        Assert.That(nodes.Count, Is.EqualTo(9));
+    }
+
+    [TestCase(8, 3)]
+    [TestCase(9, 2)]
+    public void StartTerminals_RejectsInsufficientRoomOrBranchBudget(int rooms, int branches)
+    {
+        var topology = StartCycleWithoutTerminal();
+        object[] args = { topology, rooms, branches, new System.Random(17), null };
+        Assert.That(AddTerminals(args), Is.False);
+        Assert.That(((IList)Get(topology, "Nodes")).Count, Is.EqualTo(8));
+        StringAssert.Contains("dead-end terminal", (string)args[4]);
+    }
+
+    [Test]
+    public void StartTerminals_TailReservationPreservesAShortBossTerminal()
+    {
+        var topology = BranchedTopology(new[] { new Vector2Int(0, 0), new(1, 0), new(2, 0),
+            new(0, 1), new(1, 1), new(-1, 0), new(0, -1) },
+            (0, 1), (1, 2), (0, 3), (3, 4), (4, 1), (0, 5), (0, 6));
+        Set(topology, "BossNodeIndex", 2);
+        var nodes = (IList)Get(topology, "Nodes");
+        Set(nodes[5], "BranchGroup", 0); Set(nodes[6], "BranchGroup", 1);
+        object[] args = { topology, 8, 3, new System.Random(17), null };
+        Assert.That(AddTerminals(args), Is.True, (string)args[4]);
+        Assert.That(nodes.Count, Is.EqualTo(8));
+        Assert.That(((IList)Get(topology, "Edges")).Count, Is.EqualTo(8));
+        Assert.That(((int[])Get(Reach(topology), "Depths"))[7], Is.EqualTo(2));
+        Assert.That(((int[])Get(Reach(topology), "ExitMasks"))[7], Is.EqualTo(1));
+        Assert.That(MissingTerminals(topology), Is.Zero);
+    }
+
+    [Test]
+    public void StartTerminals_MatchingLeavesSharedEndpointForTheConstrainedExit()
+    {
+        var topology = BranchedTopology(new[] { new Vector2Int(0, 0), new(1, 0), new(1, 1), new(0, 1),
+            new(2, 1), new(0, 2), new(0, 3) },
+            (0, 1), (1, 2), (2, 3), (3, 0), (2, 4), (3, 5), (5, 6));
+        // Up can use either leaf; Right can only use the shared leaf. Node-order greedy matching loses Right.
+        Assert.That(((int[])Get(Reach(topology), "ExitMasks"))[4], Is.EqualTo(3));
+        Assert.That(((int[])Get(Reach(topology), "ExitMasks"))[6], Is.EqualTo(1));
+        Assert.That(MissingTerminals(topology), Is.Zero);
+    }
+
+    [Test]
+    public void StartTerminals_CyclesNeverUseTheBossEdge()
+    {
+        for (int seed = 0; seed < 32; seed++)
+        {
+            var topology = Line(7);
+            object[] args = { topology, 1, new List<RoomSocketDirection> { RoomSocketDirection.Right }, false, new System.Random(seed) };
+            Assert.That((bool)Assembler.GetMethod("TryAddCycleDetours", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, args), Is.True);
+            Assert.That(((int[])Get(Reach(topology), "Degrees"))[6], Is.EqualTo(1));
+        }
+    }
+
+    [Test]
+    public void StartTerminals_FourExitsCannotBorrowTerminalBudgetFromACycle()
+    {
+        Template("Start", RoomType.Start); Template("Boss", RoomType.Boss);
+        Template("Treasure", RoomType.Treasure); Template("Combat");
+        var policy = Policy(); Set(policy, "maximumMeaningfulBranches", 2);
+        var result = new DungeonGraphLayoutAssembler().Assemble(TestLibrary(), policy, 17, 12, 32, 2, 0f, 0);
         Assert.That(result.IsComplete, Is.False);
-        StringAssert.Contains("opposite socket alignment", result.FailureReason);
-        StringAssert.DoesNotContain("after 512 attempts", result.FailureReason);
+        Assert.That(result.Rooms, Is.Empty);
+        StringAssert.Contains("dedicated dead-end terminal per exit", result.FailureReason);
+    }
+
+    private static object StartCycleWithoutTerminal()
+    {
+        var topology = BranchedTopology(new[] { new Vector2Int(0, 0), new(1, 0), new(2, 0), new(3, 0),
+            new(0, 1), new(1, 1), new(-1, 0), new(0, -1) },
+            (0, 1), (1, 2), (2, 3), (0, 4), (4, 5), (5, 1), (0, 6), (0, 7));
+        Set(topology, "BossNodeIndex", 3);
+        var nodes = (IList)Get(topology, "Nodes");
+        Set(nodes[6], "BranchGroup", 0); Set(nodes[7], "BranchGroup", 1);
+        return topology;
+    }
+
+    [Test]
+    public void StartGrowth_ExtendsExistingBranchesWithoutCountingThemTwice()
+    {
+        var topology = StartCycleWithoutTerminal();
+        Set(topology, "MinimumStartExitDepth", 2);
+        object[] args = { topology, 11, 3, new System.Random(17), null };
+        Assert.That(AddTerminals(args), Is.True, (string)args[4]);
+        Assert.That(((IList)Get(topology, "Nodes")).Count, Is.EqualTo(11));
+        Assert.That(MissingTerminals(topology), Is.Zero);
+        object[] grow = { topology, 3, 0, new System.Random(17) };
+        Assert.That((bool)Assembler.GetMethod("TryAddMeaningfulBranches", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, grow), Is.True);
+    }
+
+    [Test]
+    public void StartGrowth_ReservesSpokeDepthBeforeLongerBossOrOptionalBranches()
+    {
+        var policy = Policy();
+        for (int seed = 0; seed < 32; seed++)
+        {
+            object[] args = { policy, 12, 3, true, new System.Random(seed), null, null, null, null };
+            Assert.That((bool)Assembler.GetMethod("TryResolveTopologyCounts", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, args), Is.True);
+            Assert.That((int)args[5], Is.EqualTo(4));
+            Assert.That((int)args[6], Is.EqualTo(3));
+            Assert.That((int)args[7], Is.EqualTo(1));
+        }
+    }
+
+    [Test]
+    public void StartTerminals_StartCycleCannotUseASingleEdgeBossPath()
+    {
+        var topology = Line(2);
+        object[] args = { topology, 1, new List<RoomSocketDirection> { RoomSocketDirection.Right, RoomSocketDirection.Up }, true, new System.Random(1) };
+        Assert.That((bool)Assembler.GetMethod("TryAddCycleDetours", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, args), Is.False);
+        Assert.That(((int[])Get(Reach(topology), "Degrees"))[1], Is.EqualTo(1));
+    }
+
+    private static int MissingTerminals(object topology)
+    {
+        object reach = Reach(topology);
+        return (int)reach.GetType().GetProperty("MissingTerminalMask").GetValue(reach);
+    }
+
+    private static bool AddTerminals(object[] args) => (bool)Assembler
+        .GetMethod("TryAddMissingStartTerminals", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, args);
+
+    [Test]
+    public void StartBalance_CycleSharesEqualShortestPathsButNotLongerDetours()
+    {
+        var topology = Topology(new[] { new Vector2Int(0, 0), new(1, 0), new(1, 1), new(0, 1) }, allCombat: true, closeCycle: true);
+        object reach = Reach(topology);
+        Assert.That(Get(reach, "Depths"), Is.EqualTo(new[] { 0, 1, 2, 1 }));
+        Assert.That(Get(reach, "ExitMasks"), Is.EqualTo(new[] { 0, 2, 3, 1 }));
+        Assert.That(Get(reach, "ExitRoomUnits"), Is.EqualTo(new[] { 18, 18, 0, 0 }));
+        var node = Activator.CreateInstance(Assembler.GetNestedType("PlannedNode", BindingFlags.NonPublic), true);
+        Set(node, "GridPosition", new Vector2Int(2, 0)); ((IList)Get(topology, "Nodes")).Add(node);
+        ((IList)Get(topology, "Edges")).Add(Edge(1, 4));
+        reach = Reach(topology);
+        Assert.That(((int[])Get(reach, "ExitMasks"))[4], Is.EqualTo(2));
+        Assert.That(Get(reach, "ExitRoomUnits"), Is.EqualTo(new[] { 18, 30, 0, 0 }));
+        Assert.That(((int[])Get(reach, "ExitRoomUnits")).Sum(), Is.EqualTo(4 * 12));
+    }
+
+    [Test]
+    public void StartBalance_FrontierOrderPrefersShallowThenSmallerRegion()
+    {
+        var topology = BranchedTopology(
+            new[] { new Vector2Int(0, 0), new(1, 0), new(2, 0), new(3, 0), new(1, 1), new(-1, 0), new(-2, 0), new(0, -1) },
+            (0, 1), (1, 2), (2, 3), (1, 4), (0, 5), (5, 6), (0, 7));
+        for (int seed = 0; seed < 16; seed++)
+        {
+            var candidates = new List<int> { 3, 4, 6, 7 };
+            OrderGrowth(topology, candidates, seed);
+            Assert.That(candidates, Is.EqualTo(new[] { 7, 6, 4, 3 }));
+        }
+    }
+
+    [Test]
+    public void StartBalance_EqualGrowthPrioritiesRemainSeededAndVaried()
+    {
+        var topology = BranchedTopology(new[] { new Vector2Int(0, 0), new(1, 0), new(-1, 0) }, (0, 1), (0, 2));
+        var seen = new HashSet<int>();
+        for (int seed = 0; seed < 16; seed++)
+        {
+            var first = new List<int> { 1, 2 }; var replay = new List<int> { 1, 2 };
+            OrderGrowth(topology, first, seed); OrderGrowth(topology, replay, seed);
+            Assert.That(first, Is.EqualTo(replay)); seen.Add(first[0]);
+        }
+        Assert.That(seen, Is.EquivalentTo(new[] { 1, 2 }));
+    }
+
+    [Test]
+    public void StartBalance_BlockedShallowFrontierFallsBackWithinBudget()
+    {
+        var topology = BranchedTopology(new[] { new Vector2Int(0, 0), new(0, 1), new(1, 0), new(2, 0),
+            new(2, 1), new(2, 2), new(2, 3), new(1, 3), new(0, 3), new(-1, 0), new(-2, 0), new(-2, 1) },
+            (0, 1), (0, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (0, 9), (9, 10), (10, 11));
+        var nodes = (IList)Get(topology, "Nodes");
+        Set(nodes[1], "BranchGroup", 0); Set(nodes[8], "BranchGroup", 1); Set(nodes[11], "BranchGroup", 2);
+        object[] args = { topology, 3, 1, new System.Random(7) };
+        Assert.That((bool)Assembler.GetMethod("TryAddMeaningfulBranches", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, args), Is.True);
+        Assert.That(nodes.Count, Is.EqualTo(13));
+        var lastEdge = ((IList)Get(topology, "Edges"))[^1];
+        Assert.That(lastEdge.GetType().GetProperty("FirstNodeIndex").GetValue(lastEdge), Is.EqualTo(11));
+        Assert.That(Get(nodes[12], "BranchGroup"), Is.EqualTo(2));
+    }
+
+    [Test]
+    public void StartBalance_GrowthBudgetPreferenceRetainsAllHardValidBranchCounts()
+    {
+        var policy = Policy();
+        Set(policy, "minimumBossGraphDistance", 3); Set(policy, "maximumBossGraphDistance", 3);
+        Set(policy, "minimumCycleConnections", 0); Set(policy, "maximumCycleConnections", 0);
+        var counts = new HashSet<int>();
+        for (int seed = 0; seed < 64; seed++)
+        {
+            object[] args = { policy, 10, 2, false, new System.Random(seed), null, null, null, null };
+            Assert.That((bool)Assembler.GetMethod("TryResolveTopologyCounts", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, args), Is.True);
+            Assert.That((int)args[5], Is.EqualTo(3)); Assert.That((int)args[7], Is.Zero);
+            counts.Add((int)args[6]);
+        }
+        Assert.That(counts, Is.EquivalentTo(new[] { 2, 3, 4 }));
+    }
+
+    [Test]
+    public void StartBalance_NewBranchSitesRetainDistantOptionsForRequiredRooms()
+    {
+        var seen = new HashSet<int>();
+        for (int seed = 0; seed < 32; seed++)
+        {
+            var topology = Line(5);
+            object[] args = { topology, 1, 1, new System.Random(seed) };
+            Assert.That((bool)Assembler.GetMethod("TryAddMeaningfulBranches", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, args), Is.True);
+            var edge = ((IList)Get(topology, "Edges"))[^1];
+            seen.Add((int)edge.GetType().GetProperty("FirstNodeIndex").GetValue(edge));
+        }
+        Assert.That(seen, Is.EquivalentTo(new[] { 1, 2, 3 }));
+    }
+
+    [Test]
+    public void StartBalance_ScorePrefersEvenDepthThenEvenRoomLoad()
+    {
+        Type type = Assembler.GetNestedType("StartDepthBalance", BindingFlags.NonPublic);
+        object Score(int[] depths, int[] sizes) => Activator.CreateInstance(type, Fields, null, new object[] { depths, sizes }, null);
+        var uneven = Score(new[] { 6, 3, 1, 1 }, new[] { 60, 24, 12, 12 });
+        var even = Score(new[] { 6, 2, 2, 1 }, new[] { 60, 24, 12, 12 });
+        Assert.That((int)type.GetMethod("CompareTo").Invoke(even, new[] { uneven }), Is.LessThan(0));
+        var loaded = Score(new[] { 6, 2, 2, 1 }, new[] { 72, 12, 12, 12 });
+        Assert.That((int)type.GetMethod("CompareTo").Invoke(even, new[] { loaded }), Is.LessThan(0));
+    }
+
+    private static object Reach(object topology) => Activator.CreateInstance(
+        Assembler.GetNestedType("StartBranchReach", BindingFlags.NonPublic), Fields, null, new[] { topology }, null);
+
+    private static void OrderGrowth(object topology, List<int> candidates, int seed) => Assembler
+        .GetMethod("OrderExpansionNodes", BindingFlags.Static | BindingFlags.NonPublic)
+        .Invoke(null, new object[] { topology, candidates, new System.Random(seed) });
+
+    private static object BranchedTopology(Vector2Int[] points, params (int first, int second)[] links)
+    {
+        var topology = Topology(points, allCombat: true);
+        var edges = (IList)Get(topology, "Edges"); edges.Clear();
+        foreach (var link in links) edges.Add(Edge(link.first, link.second));
+        return topology;
     }
 
     [Test]
@@ -383,6 +694,8 @@ public sealed class DungeonTemplateSearchPlayModeTests
                 Assert.That(repeat.TemplateSelection.Description, Is.EqualTo(result.TemplateSelection.Description));
             }
             TestContext.WriteLine($"{theme} seed={seed}: {result.TemplateSelection.Metrics}, phase={result.TemplateSelection.RelaxationPhase}, steps={result.TemplateSelection.SearchSteps}, elapsed={perSeed.ElapsedMilliseconds}ms");
+            var balance = MeasureStartDepthBalance(result);
+            TestContext.WriteLine($"StartDepth theme={theme} seed={seed} spread={balance.spread} depthEnergy={balance.depthEnergy} sizeEnergy={balance.sizeEnergy} depths={balance.depths}");
             if (result.TemplateSelection.Metrics.AdjacentTemplates > 0)
                 TestContext.WriteLine(result.TemplateSelection.Description);
         }
@@ -390,6 +703,67 @@ public sealed class DungeonTemplateSearchPlayModeTests
     }
 
     private static string Signature(DungeonLayoutResult result) => string.Join("|", result.Rooms.Select(r => $"{r.PlacementId}:{r.Template.LayoutData.roomId}:{r.Origin}"));
+
+    // Independently assigns equal credit to exits on equally short paths, using one BFS per exit.
+    private static (int spread, long depthEnergy, long sizeEnergy, string depths) MeasureStartDepthBalance(DungeonLayoutResult result)
+    {
+        int n = result.Rooms.Count;
+        var neighbors = Enumerable.Range(0, n).Select(_ => new List<int>()).ToArray();
+        foreach (var c in result.Connections)
+        {
+            neighbors[c.FirstRoomPlacementId].Add(c.SecondRoomPlacementId);
+            neighbors[c.SecondRoomPlacementId].Add(c.FirstRoomPlacementId);
+        }
+        int[] Bfs(int root, bool skipStart)
+        {
+            var distance = Enumerable.Repeat(-1, n).ToArray();
+            var queue = new Queue<int>(); queue.Enqueue(root); distance[root] = 0;
+            while (queue.Count > 0)
+            {
+                int node = queue.Dequeue();
+                foreach (int next in neighbors[node])
+                    if ((!skipStart || next != 0) && distance[next] < 0)
+                    { distance[next] = distance[node] + 1; queue.Enqueue(next); }
+            }
+            return distance;
+        }
+        int[] depth = Bfs(0, false);
+        var roots = neighbors[0];
+        var fromRoots = roots.Select(root => Bfs(root, true)).ToArray();
+        var maxima = new int[roots.Count]; var units = new int[roots.Count];
+        var terminals = Enumerable.Range(0, roots.Count).Select(_ => new List<(int node, int depth)>()).ToArray();
+        for (int node = 1; node < n; node++)
+        {
+            Assert.That(result.Rooms[node].GraphDistanceFromStart, Is.EqualTo(depth[node]));
+            var owners = Enumerable.Range(0, roots.Count).Where(r => fromRoots[r][node] >= 0 && fromRoots[r][node] + 1 == depth[node]).ToArray();
+            Assert.That(owners, Is.Not.Empty);
+            foreach (int owner in owners) { maxima[owner] = Math.Max(maxima[owner], depth[node]); units[owner] += 12 / owners.Length; }
+            if (neighbors[node].Count == 1)
+            {
+                Assert.That(DungeonReturnPortalPlacement.TryGetOnlyConnection(result, node, out _), Is.True);
+                foreach (int owner in owners) terminals[owner].Add((node, depth[node]));
+            }
+        }
+        // Independent backtracking oracle: each exit needs a different farthest leaf, even on shared cycles.
+        var used = new HashSet<int>();
+        bool AssignTerminal(int exit)
+        {
+            if (exit == roots.Count) return true;
+            foreach (var terminal in terminals[exit])
+            {
+                if (terminal.depth != maxima[exit] || terminal.depth < Math.Min(2, result.BossGraphDistance) || !used.Add(terminal.node)) continue;
+                if (AssignTerminal(exit + 1)) return true;
+                used.Remove(terminal.node);
+            }
+            return false;
+        }
+        Assert.That(AssignTerminal(0), Is.True, "Each Start exit needs a distinct degree-one terminal at its greatest graph depth.");
+        long depthEnergy = 0, sizeEnergy = 0;
+        for (int i = 0; i < roots.Count; i++)
+            for (int j = i + 1; j < roots.Count; j++)
+            { long d = maxima[i] - maxima[j], s = units[i] - units[j]; depthEnergy += d * d; sizeEnergy += s * s; }
+        return (maxima.Max() - maxima.Min(), depthEnergy, sizeEnergy, string.Join(",", maxima.OrderBy(x => x)));
+    }
 
     [TestCase(RoomTopologyPlacementMode.Default, true, true)]
     [TestCase(RoomTopologyPlacementMode.FarthestFromStart, true, true)]
@@ -522,6 +896,7 @@ public sealed class DungeonTemplateSearchPlayModeTests
         var actual = result.Connections.Where(c => c.FirstRoomPlacementId == start.PlacementId || c.SecondRoomPlacementId == start.PlacementId)
             .Select(c => layout.sockets[c.FirstRoomPlacementId == start.PlacementId ? c.FirstSocketIndex : c.SecondSocketIndex].direction).ToArray();
         Assert.That(actual, Is.EquivalentTo(expected), $"{start.Template.name}: every unique usable Start direction must connect exactly once.");
+        _ = MeasureStartDepthBalance(result);
     }
 
     private static void CheckPhysicalConnections(DungeonLayoutResult result)
@@ -542,12 +917,31 @@ public sealed class DungeonTemplateSearchPlayModeTests
             var bCell = second.Origin + b.localCell;
             bool horizontal = a.direction == RoomSocketDirection.Left || a.direction == RoomSocketDirection.Right;
             Assert.That(horizontal ? aCell.y : aCell.x, Is.EqualTo(horizontal ? bCell.y : bCell.x));
+            Vector2Int[] directions = { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+            Assert.That(bCell - aCell, Is.EqualTo(directions[(int)a.direction] * (c.CorridorLength + 1)));
             if (c.CorridorLength <= 0) continue;
             foreach (var room in result.Rooms) Assert.That(c.CorridorBounds.Overlaps(room.WorldBounds), Is.False);
             for (int j = i + 1; j < result.Connections.Count; j++)
                 if (result.Connections[j].CorridorLength > 0)
                     Assert.That(c.CorridorBounds.Overlaps(result.Connections[j].CorridorBounds), Is.False);
         }
+    }
+
+    private static void OffsetSockets(RoomTemplateSO template, bool translatedBounds)
+    {
+        var layout = template.LayoutData;
+        var down = layout.sockets[2]; down.localCell = new Vector2Int(3, 0); layout.sockets[2] = down;
+        var left = layout.sockets[3]; left.localCell = new Vector2Int(0, 4); layout.sockets[3] = left;
+        if (translatedBounds)
+        {
+            var shift = new Vector2Int(-4, -7);
+            layout.localBounds.position += shift;
+            for (int i = 0; i < layout.sockets.Count; i++)
+            {
+                var socket = layout.sockets[i]; socket.localCell += shift; layout.sockets[i] = socket;
+            }
+        }
+        template.EditorSetData(layout, template.BuildData);
     }
 
     private RoomTemplateSO Template(string id, RoomType role = RoomType.Combat, int mask = 15,

@@ -2035,3 +2035,15 @@ Symptom: Flowering, Lightning and shared SwordCombo slash centers shift vertical
 - Check candle availability during normal/forced pattern evaluation and again before presentation startup. Keep expected target loss as a failed pattern, not a successful completion that queues follow-up abilities.
 - A forced pattern cancellation is not equivalent to combat teardown. Witch now preserves summon ownership across ordinary failure, groggy and phase changes; only boss death/dead tag, combat deactivation or destruction clears surviving summons. Their own light/contact/self-destruct rules remain independent.
 - Production and 14-case regression fixture compile; native execution and player reproduction are pending while Unity is open. See [session](SessionLogs/2026-09-13.md).
+
+## 2026-09-13 - Shared room axes rejected valid offset doors
+
+- The graph-first embedder treated every opposite socket pair inside a room as one local axis. After Start began reserving every valid direction, the authored four-direction Shadow_Start was rejected before topology retries because its opposite doors use different local rows/columns. Boundary-valid sockets alone were not enough for that old representation.
+- Removing only the candidate rejection would leave placement incorrect. The fix carries per-connection offsets through weighted alignment groups, then translates both initial spacing and overlap-repair constraints into group coordinates. Negative group separation is not necessarily a negative room gap and must not be clamped away.
+- Regression coverage includes offset Starts, negative local bounds, cumulative horizontal/vertical chains, a closed cycle and production seeds. Keep authored socket data unchanged and validate actual connected endpoints/non-overlap after physical placement. See [session](SessionLogs/2026-09-13.md) for native results and separate failures not hidden by this patch.
+
+## 2026-09-13 - Zero-length corridor falsely overlaps geometry at origin (open)
+
+- Verification of offset placement found that `DungeonGraphLayoutAssembler.CreateCorridorBounds` returns a default zero-area rectangle for length zero, while both corridor-overlap helpers still test it against unrelated rooms/existing corridors. `RectInt.Overlaps` can return true when the other bounds span (0,0), even though the zero-length corridor paints no cells. This check predates the offset-door change.
+- Native direct probes reproduced both room and corridor false positives; 62/100 randomized zero-length chains failed. All 300 corresponding positive-length chain cases and 768 current production layouts passed. Current three production profiles have minimum corridor length 2, so these samples do not encounter the zero-length path.
+- Suggested Later: reject empty rectangles from both reservation-overlap queries, with zero-length/negative-origin regression cases. Do not silently permit nonempty corridor intersections or relocate authored doors. No runtime fix was made in the verification-only follow-up; see [session](SessionLogs/2026-09-13.md).

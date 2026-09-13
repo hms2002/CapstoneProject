@@ -11,6 +11,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
     // 이 클래스의 책임:
     // 허브 진입과 명시적 포탈 도착에서 같은 낙하/기상 연출을 재생하고 표현·입력·물리·카메라 상태를 복구한다.
     // 허브 전용 등장 조건과 완료 이벤트는 포탈 호출에 적용하지 않는다.
+    // Portal recovery uses half the authored wait times without modifying Hub settings or falling motion.
 
     private static readonly InputActionId[] WakeInputActions =
     {
@@ -205,7 +206,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 
         CacheReferences();
         portalArrivalOwner = owner;
-        sequenceRoutine = StartCoroutine(PlayRoutine(startPosition, onLanded));
+        sequenceRoutine = StartCoroutine(PlayRoutine(startPosition, onLanded, recoveryTimeScale: 0.5f));
         return true;
     }
 
@@ -227,7 +228,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         portalArrivalOwner = null;
     }
 
-    private IEnumerator PlayRoutine(Vector3? portalStartPosition = null, Action onLanded = null)
+    private IEnumerator PlayRoutine(Vector3? portalStartPosition = null, Action onLanded = null, float recoveryTimeScale = 1f)
     {
         bool isPortalArrival = portalStartPosition.HasValue;
         if (!isPortalArrival)
@@ -279,18 +280,18 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         RestoreCameraBindingToPlayer();
 
         onLanded?.Invoke();
-        yield return new WaitForSeconds(landingLockSeconds);
+        yield return new WaitForSeconds(landingLockSeconds * recoveryTimeScale);
 
         bool completedWake = false;
         if (autoWakeWithoutInput)
         {
-            yield return WaitForWakeInputOrAutoWakeRoutine();
+            yield return WaitForWakeInputOrAutoWakeRoutine(recoveryTimeScale);
             completedWake = true;
         }
         else
         {
             float idleElapsed = 0f;
-            while (idleElapsed < sleepAfterIdleSeconds)
+            while (idleElapsed < sleepAfterIdleSeconds * recoveryTimeScale)
             {
                 if (HasWakeInput())
                 {
@@ -316,7 +317,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
                         ApplyAwakeIdleSprite();
 
                         if (sleepWakeDelaySeconds > 0f)
-                            yield return new WaitForSeconds(sleepWakeDelaySeconds);
+                            yield return new WaitForSeconds(sleepWakeDelaySeconds * recoveryTimeScale);
 
                         WakeIntoGameplay();
                         completedWake = true;
@@ -340,10 +341,10 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
             InvokePresentationCompleted();
     }
 
-    private IEnumerator WaitForWakeInputOrAutoWakeRoutine()
+    private IEnumerator WaitForWakeInputOrAutoWakeRoutine(float recoveryTimeScale)
     {
         float elapsed = 0f;
-        float delaySeconds = Mathf.Max(0f, autoWakeDelaySeconds);
+        float delaySeconds = Mathf.Max(0f, autoWakeDelaySeconds) * recoveryTimeScale;
         while (elapsed < delaySeconds)
         {
             if (HasWakeInput())
