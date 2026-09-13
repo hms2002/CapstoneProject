@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AL_DragonFireBreath
   m_EditorClassIdentifier: 
   prepareSeconds: 1.8
-  preFireDelaySeconds: 0.2
+  preFireDelaySeconds: 0.4
   activeSeconds: 1.4
   repeatCount: 3
   damageIntervalSeconds: 0.65

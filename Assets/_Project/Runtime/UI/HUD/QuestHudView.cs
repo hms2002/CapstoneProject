@@ -12,6 +12,15 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
     [SerializeField] private TMP_Text mainDescription;
     [SerializeField] private TMP_Text subHeading;
     [SerializeField] private RunRouteCatalogSO mainQuestRoutes;
+    [SerializeField] private TMP_Text officerDescription;
+    private Tween officerMotion;
+    private readonly List<Tween> officerLayoutMotions = new();
+    private Vector2 officerRestPosition;
+    private Vector2 descriptionRestPosition;
+    private Vector2 subHeadingRestPosition;
+    private Vector2 rowsRestPosition;
+    private bool officerVisible;
+    private bool officerLeaving;
     private Tween mainMotion;
     private Vector2 mainRestPosition;
     private bool mainVisible;
@@ -21,6 +30,10 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
     private void Awake()
     {
         if (mainGroup != null) mainRestPosition = mainGroup.anchoredPosition;
+        if (officerDescription != null) officerRestPosition = officerDescription.rectTransform.anchoredPosition;
+        if (mainDescription != null) descriptionRestPosition = mainDescription.rectTransform.anchoredPosition;
+        if (subHeading != null) subHeadingRestPosition = subHeading.rectTransform.anchoredPosition;
+        if (rowsRoot != null) rowsRestPosition = rowsRoot.anchoredPosition;
     }
 
     private void Update()
@@ -35,10 +48,8 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
 
     private void RefreshMainQuest()
     {
-        int defeated = 0;
-        foreach (string id in NormalBossIds)
-            if (RunProgressPlayback.IsBossDefeatedThisRun(id) ||
-                RunSessionStore.Data?.defeatedBossIds?.Contains(id) == true) defeated++;
+        int defeated = RunOfficerQuestProgress.CountDefeated(RunSessionStore.Data);
+        RefreshOfficerQuest(defeated);
         string text = ResolveMainQuestText(SceneManager.GetActiveScene().name, defeated, mainQuestRoutes);
         bool visible = !string.IsNullOrEmpty(text);
         if (lastMainText != text && mainDescription != null) mainDescription.text = text;
@@ -56,7 +67,66 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
         }
     }
 
-    private static readonly string[] NormalBossIds = { "slime", "dragon", "shadow" };
+    private void RefreshOfficerQuest(int defeated)
+    {
+        if (officerDescription == null) return;
+        GamePlayData data = RunSessionStore.Data;
+        string scene = SceneManager.GetActiveScene().name;
+        bool visible = RunOfficerQuestProgress.IsVisible(data);
+        if (officerLeaving && (!RunOfficerQuestProgress.CanPresentCompletion(data, scene) || SceneTransitionPlayback.IsTransitionActive))
+        {
+            officerMotion?.Kill();
+            officerLeaving = false;
+            officerDescription.rectTransform.anchoredPosition = officerRestPosition;
+        }
+        if (officerVisible != visible)
+        {
+            officerVisible = visible;
+            officerDescription.gameObject.SetActive(visible);
+            officerDescription.rectTransform.anchoredPosition = officerRestPosition;
+            SetOfficerLayout(visible, false);
+        }
+        if (!visible) return;
+        string text = $"마왕성 간부를 찾아 토벌하자 ({defeated}/3)" + (defeated == 3 ? " · 완료" : "");
+        if (officerDescription.text != text) officerDescription.text = text;
+        if (officerLeaving || !RunOfficerQuestProgress.CanPresentCompletion(data, scene) ||
+            SceneTransitionPlayback.IsTransitionActive || (mainMotion != null && mainMotion.IsActive() && mainMotion.IsPlaying())) return;
+
+        officerLeaving = true;
+        RectTransform rect = officerDescription.rectTransform;
+        officerMotion = DOTween.Sequence().SetUpdate(true)
+            .AppendInterval(0.35f)
+            .Append(rect.DOAnchorPosY(officerRestPosition.y + 12f, 0.12f).SetEase(Ease.OutQuad))
+            .Append(rect.DOAnchorPosX(OffscreenX(rect), exitSeconds).SetEase(Ease.InCubic))
+            .OnComplete(() =>
+            {
+                officerLeaving = false;
+                if (!ReferenceEquals(data, RunSessionStore.Data) ||
+                    !RunOfficerQuestProgress.CanPresentCompletion(data, SceneManager.GetActiveScene().name)) return;
+                RunOfficerQuestProgress.CompletePresentation(data, SceneManager.GetActiveScene().name);
+                officerVisible = false;
+                officerDescription.gameObject.SetActive(false);
+                rect.anchoredPosition = officerRestPosition;
+                SetOfficerLayout(false, true);
+            });
+    }
+
+    private void SetOfficerLayout(bool visible, bool animate)
+    {
+        foreach (Tween motion in officerLayoutMotions) motion?.Kill();
+        officerLayoutMotions.Clear();
+        float offset = visible ? officerDescription.rectTransform.rect.height + rowSpacing : 0f;
+        Move(mainDescription != null ? mainDescription.rectTransform : null, descriptionRestPosition);
+        Move(subHeading != null ? subHeading.rectTransform : null, subHeadingRestPosition);
+        Move(rowsRoot, rowsRestPosition);
+        void Move(RectTransform rect, Vector2 rest)
+        {
+            if (rect == null) return;
+            Vector2 destination = rest + Vector2.down * offset;
+            if (animate) officerLayoutMotions.Add(rect.DOAnchorPos(destination, reflowSeconds).SetEase(Ease.OutCubic).SetUpdate(true));
+            else rect.anchoredPosition = destination;
+        }
+    }
 
     public static string ResolveMainQuestText(string sceneName, int defeatedNormalBosses, RunRouteCatalogSO routes)
     {
@@ -101,6 +171,8 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
         PlayerRuntimeRegistry.PlayerUnregistered += UnbindPlayer;
         if (rowTemplate != null) rowTemplate.gameObject.SetActive(false);
         if (subHeading != null) subHeading.gameObject.SetActive(false);
+        officerVisible = false;
+        if (officerDescription != null) officerDescription.gameObject.SetActive(false);
         lastRunActive = RunSessionStore.IsRunActive;
         BindPlayer(PlayerRuntimeRegistry.CurrentPlayer);
         RefreshMainQuest();
@@ -118,6 +190,16 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
             Destroy(row.gameObject);
         }
         rows.Clear();
+        officerMotion?.Kill();
+        officerMotion = null;
+        officerLeaving = false;
+        officerVisible = false;
+        if (officerDescription != null)
+        {
+            officerDescription.gameObject.SetActive(false);
+            officerDescription.rectTransform.anchoredPosition = officerRestPosition;
+            SetOfficerLayout(false, false);
+        }
         mainMotion?.Kill();
         mainMotion = null;
         mainVisible = false;

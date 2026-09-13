@@ -3185,3 +3185,15 @@ Gold belongs only to the active run and resets when the run ends (also cleared o
 ### 2026-09-12 — Run shop probability tuning
 
 User revision: run-shop weapon/relic category weights are 1:3 (25%/75%), superseding equal weights. Each eligible monster death rolls total gold uniformly within ±15% of its existing baseline, using integer bounds rounded inward. Prices remain unchanged.
+
+### 2026-09-12 — Hub-style run merchant dialogue and four slots
+
+User requested the run merchant closely match the hub Merchant, including dialogue and four slots. Reuse the hub DialogueTrigger and shared NPC dialogue data. Four unrestricted weapon/relic slots supersede the initial three; 25%/75% category weights and run-gold prices remain unchanged.
+
+### 2026-09-12 — Dedicated consumable shop slot
+
+User revision: the fourth run-shop slot is guaranteed Consumable, priced 200–300 gold inclusive. The first three remain weapon/relic 25%/75%, with no random consumables. Existing saved four-slot stock is not replaced; policy applies to newly generated stock.
+
+### 2026-09-12 — Officer objective and cleared Grand Hall portals
+
+Approved: start the fixed officer objective on Grand Hall entry; count the three current-run officer boss IDs independently of the changing scene guidance. Keep (3/3) · 완료 visible after the third defeat; perform removal only after Grand Hall return, then acknowledge once per run. Cleared normal portals use Portal_Disable and stop/disable their particles while retaining existing travel restrictions. Damage popups use the existing BlackOutline font/material.

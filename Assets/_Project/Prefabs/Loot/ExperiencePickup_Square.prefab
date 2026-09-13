@@ -154,3 +154,4 @@ MonoBehaviour:
   progressionConfig: {fileID: 11400000, guid: 47ab2093c3344ec8ac653060da273ceb, type: 2}
   homingDelay: 1
   homingSpeed: 8
+  gainParticlePrefab: {fileID: 361241697615398169, guid: f9ec1dd5c4f54e83864d6193603e98b4, type: 3}

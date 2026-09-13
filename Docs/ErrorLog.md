@@ -1985,3 +1985,47 @@ World hitstop now uses the existing shared pause-owner service with unscaled exp
 ### 2026-09-12 — Mirrored slash placement must mirror its offset basis
 
 Symptom: Flowering, Lightning and shared SwordCombo slash centers shift vertically when aiming left although the right-facing offset is correct. Cause: the ordinary perpendicular (-aim.y, aim.x) rotates its authored side offset downward when aim.x becomes negative, while the visual uses a mirrored facing convention. Fix: match the existing ApprenticeHeroSword basis (-aim.y * facingSign, abs(aim.x)) for these slash centers. Do not apply this convention indiscriminately to direction-local projectiles, trails or bounds projection. Regression coverage: Flowering horizontal/diagonal mirrored center checks in CombatFeelLootQuestPlayModeTests; compiled, PlayMode execution pending.
+
+## 2026-09-12 - Cleared portal visual guessed catalog shape instead of using travel gate
+
+- Symptom: a defeated officer's Grand Hall portal rejected travel but retained the active sprite and center particles.
+- Cause: GrandHallClearedPortalView required exactly one NormalRouteSets entry; all current officer catalogs have an empty list and put their destination in FinalRouteSet. The earlier presentation-only test called ApplyCleared directly and missed Update's real condition.
+- Correction: project the existing RunRoutePlayback BossAlreadyDefeatedThisRun warning used by ScenePortal interaction. Keep run/Grand Hall scope and existing sprite/particle cleanup.
+- Prevention: test destination-driven visual entry conditions, including authored catalog shapes, in addition to the visual mutation method. Do not maintain a separate destination/defeat resolver in presentation code.
+## 2026-09-13 - Final corridor used permanent clears; final boss direction disabled
+
+- Grand Hall's RequiredBossClearScenePortalAccessRule accepted permanent profile clears OR current-run clears. Previous runs therefore unlocked the final corridor without current-run officer kills.
+- The actual ProceduralDemonkingCorridor BossGate binding references Corridor_demon_king_Boss, whose A-to-B direction was disabled, independently preventing boss-room entry.
+- Corrected the requirement to active-run defeatedBossIds, shared it with disabled portal visuals, and enabled only A-to-B while preserving the current-run defeated-boss guard.
+- Check both the scope of progress records and the enabled flag on the actual scene-bound connection when diagnosing travel. Never erase permanent profile progress to fix a run-only gate.
+
+## 2026-09-13 - Chloe entry dialogue HP report remains unresolved
+
+- Report: the first Chloe dialogue immediately after room entry temporarily displays full HP; prior HP returns after dialogue.
+- Investigation correction: normal dialogue uses BlockControlOnly and does not pause Time.timeScale. A scaled restore retry is not evidence of this bug. Reverted the speculative retry patch and pause fixture.
+- No HP writes found in dialogue/cinematic protection; AttributeValue publishes changes after updating CurrentValue. Inspect live scene-entry restoration and HUD bindings to establish the actual cause; no visual fix confirmed.
+
+## 2026-09-13 - Unbounded vision masks overlapped weapon-local reveal masks
+
+- PlayerVisionMask and candle masks had custom ranges disabled. Apprentice reveal ranges alone did not isolate other sprites at the same sorting order, and dropped spear mask had no local sorting scope.
+- Restricted vision masks to MaskRender and isolated charge/dropped-spear masks in local SortingGroups. Host item sorting must target the group instead of rewriting child-local mask/render order.
+- Existing layer IDs/order retained; reference/compile checks passed, simultaneous rendered overlap testing outstanding.
+
+## 2026-09-13 - Boss candle seal still referenced the retired light mask
+
+- Candlestick.prefab contained an inactive SightMask and an active PlayerVisionMask(Clone) sibling, but CandlestickSeal.sightMask referenced the former. Seal toggled the obsolete object, leaving the real vision aperture visible; unseal could also reactivate the obsolete mask.
+- Corrected the prefab reference to the active mask rather than changing shared seal code or destroying objects. Existing SetActive(false/true) and light-zone control remain the lifecycle owner.
+- Native prefab regression tests reproduced the wrong binding and persistent aperture before the fix (0/3), then verified binding, three-hit relight/reseal and disabled-parent recovery after it (3/3). When replacing authored visuals, check all control references, not only the visible hierarchy. See [session](SessionLogs/2026-09-13.md).
+
+## 2026-09-13 - Witch tile reused a renderer-owned origin as damage center
+
+- AttackTelegraphWallClippedMeshView places the shared root at a rectangle's start edge. WitchNormalAttack1Tile read that Transform again for its hit spec, then again for damage/presentation after the hit view moved it further. This creates half-length drift at each stage even though size/angle are unchanged.
+- Snapshot the world center before the first Show and use it for all gameplay and world-presentation requests. Debug output should distinguish logical center from renderer origin. Do not repair this with a visual-only offset or by moving the warning to an already shifted damage box.
+- Six-angle real-view, inside/outside HP damage and presentation-context regression fixtures compile. Native execution is pending while Unity remains open; see [session](SessionLogs/2026-09-13.md). Shared renderer ownership in other consumers is outside this fix.
+
+## 2026-09-13 - Empty candle selection killed unrelated Witch summons
+
+- SkeletonDeathDiagnostics recorded newly summoned skeletons dying through an external cleanup command while still transforming. With all candles sealed, extinguish startup returned false; AbortCurrentPattern passed forced=true to Witch.OnPatternEnd, which indiscriminately cleared the retreat summons.
+- Check candle availability during normal/forced pattern evaluation and again before presentation startup. Keep expected target loss as a failed pattern, not a successful completion that queues follow-up abilities.
+- A forced pattern cancellation is not equivalent to combat teardown. Witch now preserves summon ownership across ordinary failure, groggy and phase changes; only boss death/dead tag, combat deactivation or destruction clears surviving summons. Their own light/contact/self-destruct rules remain independent.
+- Production and 14-case regression fixture compile; native execution and player reproduction are pending while Unity is open. See [session](SessionLogs/2026-09-13.md).

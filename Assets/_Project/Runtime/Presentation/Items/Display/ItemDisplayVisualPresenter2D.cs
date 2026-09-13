@@ -238,6 +238,15 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour, IItemDisplayVi
         int sortingLayerId = fallbackSpriteRenderer.sortingLayerID;
         int baseSortingOrder = fallbackSpriteRenderer.sortingOrder;
 
+        // An authored mask scope sorts as one item while retaining local renderer/mask orders.
+        var maskScope = instance.GetComponent<UnityEngine.Rendering.SortingGroup>();
+        if (maskScope != null)
+        {
+            maskScope.sortingLayerID = sortingLayerId;
+            maskScope.sortingOrder = baseSortingOrder;
+            return;
+        }
+
         SpriteRenderer[] renderers = instance.GetComponentsInChildren<SpriteRenderer>(includeInactive: true);
         for (int i = 0; i < renderers.Length; i++)
         {

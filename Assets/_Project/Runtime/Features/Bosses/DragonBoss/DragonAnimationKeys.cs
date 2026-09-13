@@ -1,6 +1,6 @@
 /// <summary>
 /// 책임:
-/// 취룡 보스 Animator에서 사용할 상태/트리거 이름을 한 곳에 모아 패턴 코드의 문자열 의존을 줄인다.
+/// 취룡 보스 Animator의 상태/파라미터 이름을 한 곳에 모아 패턴 코드의 문자열 의존을 줄인다.
 /// </summary>
 public static class DragonAnimationKeys
 {
@@ -11,6 +11,8 @@ public static class DragonAnimationKeys
     public const string Throw = "throw";
     public const string Jump = "jump";
     public const string Landing = "landing";
+    public const string HoldLanding = "holdLanding";
+    public const string ReleaseLanding = "releaseLanding";
     public const string FirePrepare = "firePrepare";
     public const string Fire = "fire";
     public const string Inhale = "inhale";

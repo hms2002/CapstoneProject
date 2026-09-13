@@ -29,6 +29,7 @@ MonoBehaviour:
   projectileSpeed: 5
   projectileLifetimeSeconds: 4
   projectileSpawnIntervalSeconds: 0.4
+  projectileCountMultiplier: 4
   projectileSpawnRadius: 0.65
   projectileRotationOffsetDegrees: 90
   projectileWallLayers:

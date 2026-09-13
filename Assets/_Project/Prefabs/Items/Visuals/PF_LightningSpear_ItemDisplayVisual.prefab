@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7801000000000000001}
   - component: {fileID: 7801000000000000002}
   - component: {fileID: 7801000000000000003}
+  - component: {fileID: 9131300000000000001}
   m_Layer: 0
   m_Name: PF_LightningSpear_ItemDisplayVisual
   m_TagString: Untagged
@@ -250,3 +251,15 @@ SpriteMask:
   m_IsCustomRangeActive: 0
   m_SpriteSortPoint: 0
   m_MaskSource: 0
+--- !u!210 &9131300000000000001
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7801000000000000000}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0

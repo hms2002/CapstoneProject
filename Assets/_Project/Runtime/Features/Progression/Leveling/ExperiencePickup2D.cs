@@ -1,10 +1,9 @@
 using UnityEngine;
 
 /// <summary>
-/// 책임: 적 사망 위치에서 잠시 대기한 뒤 플레이어를 추적하고, 접촉 시 현재 런에 경험치를 지급한다.
+/// 책임: 적 사망 위치에서 잠시 대기한 뒤 플레이어를 추적하고, 도착 시 현재 런에 경험치를 지급한다.
 /// </summary>
 [DisallowMultipleComponent]
-[RequireComponent(typeof(Collider2D))]
 public sealed class ExperiencePickup2D : MonoBehaviour
 {
     [Header("Progression")]
@@ -13,6 +12,9 @@ public sealed class ExperiencePickup2D : MonoBehaviour
     [Header("Homing")]
     [SerializeField, Min(0f)] private float homingDelay = 1f;
     [SerializeField, Min(0f)] private float homingSpeed = 8f;
+
+    [Header("Acquisition Presentation")]
+    [SerializeField] private ParticleSystem gainParticlePrefab;
 
     private int experienceAmount;
     private float homingStartTime;
@@ -44,11 +46,14 @@ public sealed class ExperiencePickup2D : MonoBehaviour
             transform.position,
             target.position,
             homingSpeed * Time.deltaTime);
+
+        if ((transform.position - target.position).sqrMagnitude <= 0.0001f)
+            TryCollect();
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void TryCollect()
     {
-        if (consumed || experienceAmount <= 0 || !IsPlayerCollider(other))
+        if (consumed || experienceAmount <= 0)
             return;
 
         if (progressionConfig == null)
@@ -59,30 +64,14 @@ public sealed class ExperiencePickup2D : MonoBehaviour
             return;
         }
 
-        if (!RunLevelProgression.TryGrantExperience(progressionConfig, experienceAmount, out _))
-            return;
-
         consumed = true;
+        if (!RunLevelProgression.TryGrantExperience(progressionConfig, experienceAmount, out _))
+        {
+            consumed = false;
+            return;
+        }
+        PlayerHealParticlePlayback.PlayAttached(gainParticlePrefab, target, Vector3.zero);
         Destroy(gameObject);
     }
 
-    private static bool IsPlayerCollider(Collider2D candidate)
-    {
-        if (candidate == null)
-            return false;
-
-        Transform player = PlayerRuntimeRegistry.GetPlayerTransform();
-        if (player != null)
-        {
-            Transform candidateTransform = candidate.transform;
-            if (candidateTransform == player || candidateTransform.IsChildOf(player))
-                return true;
-
-            Rigidbody2D body = candidate.attachedRigidbody;
-            if (body != null && (body.transform == player || body.transform.IsChildOf(player)))
-                return true;
-        }
-
-        return candidate.GetComponentInParent<PlayerInteractor2D>() != null;
-    }
 }

@@ -23,6 +23,7 @@ public readonly struct DamagePopupRequest
     public readonly GameplayTag ElementTag;
     public readonly bool IsCritical;
     public readonly string TextOverride;
+    public readonly bool IsPlayerTarget;
 
     public DamagePopupRequest(
         float amount,
@@ -30,7 +31,8 @@ public readonly struct DamagePopupRequest
         DamagePopupKind kind = DamagePopupKind.Normal,
         GameplayTag elementTag = null,
         bool isCritical = false,
-        string textOverride = null)
+        string textOverride = null,
+        bool isPlayerTarget = false)
     {
         Amount = amount;
         WorldPosition = worldPosition;
@@ -38,35 +40,40 @@ public readonly struct DamagePopupRequest
         ElementTag = elementTag;
         IsCritical = isCritical;
         TextOverride = textOverride;
+        IsPlayerTarget = isPlayerTarget;
     }
 
     public static DamagePopupRequest Damage(
         float amount,
         Vector3 worldPosition,
-        bool isCritical = false)
+        bool isCritical = false,
+        bool isPlayerTarget = false)
     {
         return new DamagePopupRequest(
             amount,
             worldPosition,
             isCritical ? DamagePopupKind.Critical : DamagePopupKind.Normal,
             elementTag: null,
-            isCritical: isCritical);
+            isCritical: isCritical,
+            isPlayerTarget: isPlayerTarget);
     }
 
     public static DamagePopupRequest Element(
         float amount,
         Vector3 worldPosition,
-        GameplayTag elementTag)
+        GameplayTag elementTag,
+        bool isPlayerTarget = false)
     {
         return new DamagePopupRequest(
             amount,
             worldPosition,
             DamagePopupKind.Element,
             elementTag,
-            isCritical: false);
+            isCritical: false,
+            isPlayerTarget: isPlayerTarget);
     }
 
-    public static DamagePopupRequest Text(string text, Vector3 worldPosition)
+    public static DamagePopupRequest Text(string text, Vector3 worldPosition, bool isPlayerTarget = false)
     {
         return new DamagePopupRequest(
             0f,
@@ -74,7 +81,8 @@ public readonly struct DamagePopupRequest
             DamagePopupKind.Text,
             elementTag: null,
             isCritical: false,
-            textOverride: text);
+            textOverride: text,
+            isPlayerTarget: isPlayerTarget);
     }
 }
 

@@ -171,3 +171,32 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 
 - Promote the external `Enemy.DeathStarted` notification ordering to a Combat contract if more death rewards begin depending on it.
 - Promote the independent EXP-progress and reward-readiness projection boundary if additional HUDs begin consuming the same read model.
+
+
+## Approved modular card presentation (2026-09-12)
+
+- `GlobalUIRoot` retains three authored card views and the existing reveal/selection lifecycle. Card visual mounts are 400 x 640 inside their existing layout slots.
+- `Art/Sprites/UI/LevelRewardCards/` contains original PNGs with sprite slices: common modular bounds (16, 8, 80, 128); Attack_Card_1 uses its circle-free second card (112, 160, 80, 128), in Unity bottom-left pixel coordinates.
+- Card root Image supplies the artwork and button tint target. CardFront owns Base, Description, Title_1 and Outline_1 layers, then bound name/description text. No circle module is imported. The legacy icon child remains inactive to preserve the approved artwork.
+- TMP text uses the existing Galmuri9 font with dark text and autosizing inside the title/ivory panels. Nine reward descriptions use darker rich-text emphasis colors for contrast; definitions still own the exact displayed wording.
+- Extension: edit the authored layers or reward display data; do not create UI hierarchy at runtime. Preserve the existing front/back and card-view references when changing art.
+- Verification is static only for this reskin; Unity import, flip rendering and all reward text layouts still require Editor inspection.
+
+
+## EXP / gold gain presentation (2026-09-12)
+
+- ExperiencePickup2D and GoldPickup2D each author gainParticlePrefab and play it after a successful currency/EXP grant at the homing target, before destroying the consumed pickup. Failed grants emit nothing.
+- Prefabs/Loot/ExperiencePickup_Square and GoldPickup reference Prefabs/VFX/Particle/ExpGainParticle and GoldGainParticle. GoldPickup scale is 0.28 on XY (35% of its previous 0.8).
+- The gain prefabs use Art/Sprites/UI/ExpGainParticleSheet and GoldGainParticleSheet, with 5/4 ordered 9x11 sprite frames, lifetime 0.25–0.5s, one lifetime-driven sheet cycle, one random 1–2 burst, and zero movement/continuous emission. Existing heal emission remains independent.
+- Existing PlayerHealParticlePlayback in PlayerConsumableInventory.cs is reused for target-local attachment, stop/clear/play, and delayed destruction after duration + maximum lifetime. Pickup destruction does not destroy the player-attached effect; destroying the player cleans up the child. The helper retains its legacy heal name.
+- Verification: Gameplay MSBuild; static settings/reference checks. Unity visual testing remains outstanding.
+
+
+### Gain particle emission bounds (2026-09-13)
+
+ExpGainParticle and GoldGainParticle author a filled XY Circle with radius 1, shape scale (0.7,0.55,1), and shape offset (0,0.65,0). Particle centers are sampled inside the ellipse bounded by X ±0.7 and Y 0.1–1.2 relative to the player; no Z spread. Keep offset in ShapeModule because PlayerHealParticlePlayback resets the effect root local position. Existing count, lifetime, size and sheet timing remain unchanged.
+
+
+### Magic stone acquisition presentation (2026-09-13)
+
+MagicStonePickup and MagicStonePrefab now bind MagicStoneGainParticle. Five 9x11 frames from MagicStoneGainParticleSheet reuse the approved EXP count, ellipse, lifetime and attached cleanup. Playback occurs after AddMagicStone; the original collector-trigger and magnet mechanism remains unchanged.

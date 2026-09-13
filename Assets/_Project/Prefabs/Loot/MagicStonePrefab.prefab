@@ -154,3 +154,4 @@ MonoBehaviour:
   amount: 10
   magnetSpeed: 8
   delayBeforeMagnet: 0.5
+  gainParticlePrefab: {fileID: 361241697615398169, guid: 911d2b0bd4fa49f0b257cf4a50e436da, type: 3}

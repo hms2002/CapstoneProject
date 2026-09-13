@@ -6,7 +6,7 @@ using UnityGAS;
 
 /// <summary>
 /// 이 클래스의 책임:
-/// 플레이어 추적 중 자폭 조건을 판단하고, 자폭 모드에서만 폭발/광원 사망 규칙이 적용되며 일반 피해는 무시하는 해골 몬스터의 전투 흐름을 관리한다.
+/// 플레이어 추적 중 자폭 조건을 판단하고, 변신 중 광원 사망을 막으며 변신 완료 후 광원 사망과 자폭 전투 흐름을 관리한다. 일반 피해는 무시한다.
 /// </summary>
 public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMobAttackStateResolver, IMobPresentationCleanup
 {
@@ -68,8 +68,21 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     private bool suppressHealthRestore;
     private float runtimeExplosionDiameterOverride = -1f;
 
+    // Temporary death diagnostics: capture the cause before death cleanup resets the sequence.
+    private float diagnosticSpawnTime;
+    private float diagnosticSpawnUnscaledTime;
+    private string diagnosticDeathReason;
+    private string diagnosticDeathEntry;
+    private GameObject diagnosticDeathSource;
+    private CandlestickLightZone diagnosticOverlappingLight;
+
+    // 자폭 모드는 변신 시작부터 켜지므로 광원 사망은 인트로 완료까지 별도로 유예한다.
+    private bool CanDieFromLight => !isDead && isSelfDestruct && !IsPlayingSelfDestructIntro();
+
     protected override void Awake()
     {
+        diagnosticSpawnTime = Time.time;
+        diagnosticSpawnUnscaledTime = Time.unscaledTime;
         base.Awake();
         telegraphPresenter = AttackTelegraphPresenterResolver.Resolve(this);
         introWarningStyle = MakeIntroWarningStyle();
@@ -203,9 +216,9 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         if (lightZone == null)
             lightZone = other.GetComponentInParent<CandlestickLightZone>();
 
-        if (lightZone == null || !isSelfDestruct) return;
+        if (lightZone == null || !CanDieFromLight) return;
 
-        DieFromLight();
+        DieFromLight(lightZone, "trigger-enter");
     }
 
     private void OnTriggerStay2D(Collider2D other)
@@ -330,8 +343,8 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         PlaySightMaskExpand(introDuration);
         ShowIntroWarning(introDuration);
 
-        if (IsInsideCandlestickLight())
-            DieFromLight();
+        if (CanDieFromLight && IsInsideCandlestickLight())
+            DieFromLight(diagnosticOverlappingLight, "intro-start-overlap");
     }
 
     /// <summary>executor가 자폭 시퀀스를 시작할 수 있는지 확인하고 실행 문맥을 만든다.</summary>
@@ -470,9 +483,9 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
             return SelfDestructSequenceStatus.Cancelled;
         }
 
-        if (IsInsideCandlestickLight())
+        if (CanDieFromLight && IsInsideCandlestickLight())
         {
-            DieFromLight();
+            DieFromLight(diagnosticOverlappingLight, "sequence-overlap");
             return SelfDestructSequenceStatus.Completed;
         }
 
@@ -483,7 +496,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
 
         if (IsTargetInExplosionRange())
         {
-            Explode(target != null ? target.gameObject : null);
+            Explode(target != null ? target.gameObject : null, "proximity-explosion");
             return SelfDestructSequenceStatus.Completed;
         }
 
@@ -660,20 +673,86 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     }
 
     /// <summary>플레이어와 닿았을 때 폭발을 처리합니다.</summary>
-    private void Explode(GameObject hitTarget)
+    private void Explode(GameObject hitTarget, string diagnosticReason)
     {
         CombatHitPayload payload = MakeHitPayload();
         if (payload != null)
             DamageTargets(payload, hitTarget);
 
         PlayExplosionPresentation();
+        SetDeathDiagnostic(diagnosticReason, "Explode", hitTarget);
         Die();
     }
 
     /// <summary>광원에 닿았을 때 일반 사망을 처리합니다.</summary>
-    private void DieFromLight()
+    private void DieFromLight(CandlestickLightZone lightZone, string entry)
     {
+        SetDeathDiagnostic("candlestick-light", entry, lightZone != null ? lightZone.gameObject : null);
         Die();
+    }
+
+    /// <summary>사망 조건은 유지하고 공통 사망 정리가 상태를 지우기 전에 임시 원인 로그를 한 번 기록한다.</summary>
+    protected override void Die()
+    {
+        if (isDead)
+            return;
+
+        LogDeathDiagnostic();
+        try
+        {
+            base.Die();
+        }
+        finally
+        {
+            diagnosticDeathReason = null;
+            diagnosticDeathEntry = null;
+            diagnosticDeathSource = null;
+        }
+    }
+
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
+    [System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]
+    private void SetDeathDiagnostic(string reason, string entry, GameObject source)
+    {
+        if (isDead)
+            return;
+
+        diagnosticDeathReason = reason;
+        diagnosticDeathEntry = entry;
+        diagnosticDeathSource = source;
+    }
+
+    /// <summary>해골 사망 원인, 변신 상태, 광원/접촉 대상과 외부 강제 사망 호출 경로를 개발 환경에만 출력한다.</summary>
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
+    [System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]
+    private void LogDeathDiagnostic()
+    {
+        bool externalDeath = diagnosticDeathReason == null;
+        string reason = diagnosticDeathReason ?? "external-death-request";
+        string entry = diagnosticDeathEntry ?? "Die";
+        string source = diagnosticDeathSource != null
+            ? $"{diagnosticDeathSource.name}#{diagnosticDeathSource.GetInstanceID()} " +
+              $"parent={diagnosticDeathSource.transform.parent?.name ?? "none"} " +
+              $"sourcePosition={diagnosticDeathSource.transform.position:F2}"
+            : "none";
+        string targetInfo = target != null
+            ? $"{target.name}#{target.GetInstanceID()} distance={Vector2.Distance(transform.position, target.position):F2}"
+            : "none";
+        AbilityLogic_DeadsSkeletonSelfDestruct.PatternData data = GetSelfDestructPatternData();
+        string message = $"[SkeletonDeathDiagnostics] {name}#{GetInstanceID()} " +
+            $"reason={reason}, entry={entry}, scene={gameObject.scene.name}, frame={Time.frameCount}, " +
+            $"age={Time.time - diagnosticSpawnTime:F3}s, unscaledAge={Time.unscaledTime - diagnosticSpawnUnscaledTime:F3}s, " +
+            $"position={transform.position:F2}, selfDestruct={isSelfDestruct}, " +
+            $"introActive={IsPlayingSelfDestructIntro()}, introRemaining={Mathf.Max(0f, selfDestructIntroEndTime - Time.time):F3}s, " +
+            $"armed={hasEnteredArmedPhase}, ignoreCancelRange={!canCancelSelfDestruct}, " +
+            $"source={source}, target={targetInfo}, " +
+            $"explosionVisualAssigned={data.explosionVisualPrefab != null}, explosionParticleAssigned={data.explosionParticlePrefab != null}";
+
+        // Only external deaths need a caller trace; avoid per-frame or duplicate console stack work.
+        if (externalDeath)
+            message += "\nExternal death caller:\n" + StackTraceUtility.ExtractStackTrace();
+
+        Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, this, "{0}", message);
     }
 
     /// <summary>일반 공격 피해를 무시하고 0 데미지 팝업만 표시합니다.</summary>
@@ -699,7 +778,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         if (contactTarget == null || !contactTarget.CompareTag("Player"))
             return false;
 
-        Explode(contactTarget);
+        Explode(contactTarget, "contact-explosion");
         return true;
     }
 
@@ -710,6 +789,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     /// </summary>
     private bool IsInsideCandlestickLight()
     {
+        diagnosticOverlappingLight = null;
         Collider2D ownCollider = GetComponent<Collider2D>();
         if (ownCollider == null)
             return false;
@@ -726,9 +806,12 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
             if (overlap == null)
                 continue;
 
-            if (overlap.GetComponent<CandlestickLightZone>() != null ||
-                overlap.GetComponentInParent<CandlestickLightZone>() != null)
+            CandlestickLightZone lightZone = overlap.GetComponent<CandlestickLightZone>();
+            if (lightZone == null)
+                lightZone = overlap.GetComponentInParent<CandlestickLightZone>();
+            if (lightZone != null)
             {
+                diagnosticOverlappingLight = lightZone;
                 return true;
             }
         }

@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usesRunGold: 1
   requireShopUpgrade: 0
-  baseVisibleSlotCount: 3
+  baseVisibleSlotCount: 4
   maxWeaponSlots: 3
-  maxConsumableSlots: 0
+  maxConsumableSlots: 1
   stockRollWeights:
     weaponWeight: 1
     relicWeight: 3
@@ -26,4 +26,4 @@ MonoBehaviour:
     commonRelicPrice: 300
     rareRelicPrice: 650
     epicRelicPrice: 1050
-    consumablePrice: 0
+    consumablePrice: 250

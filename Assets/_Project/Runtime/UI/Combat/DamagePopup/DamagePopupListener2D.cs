@@ -85,7 +85,7 @@ public class DamagePopupListener2D : MonoBehaviour
 
         Vector3 pos = (worldAnchor != null ? worldAnchor.position : transform.position) + extraWorldOffset;
         LogFallbackPopup($"show fallback dmg={dmg:0.###}, target={name}, pos={pos}");
-        DamagePopupService.Show(dmg, pos);
+        DamagePopupService.Show(DamagePopupRequest.Damage(dmg, pos, isPlayerTarget: CompareTag("Player")));
     }
 
     private void LogFallbackPopup(string message)

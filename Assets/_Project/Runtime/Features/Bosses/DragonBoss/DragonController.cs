@@ -3,7 +3,7 @@ using UnityGAS;
 
 /// <summary>
 /// 책임:
-/// 취룡 보스 전용 패턴 실행에 필요한 런타임 데이터, 연출 키, 공통 보조 기능을 기존 보스 FSM 위에 제공한다.
+/// 취룡 보스 전용 패턴 데이터, 착지 자세 유지와 연출 제어를 기존 보스 FSM 위에 제공한다.
 /// </summary>
 public sealed class DragonController : BossControllerBase
 {
@@ -72,8 +72,14 @@ public sealed class DragonController : BossControllerBase
 
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
+        SetLandingPoseHeld(false);
         RuntimeData.ResetPatternCounters();
         StopJumpAfterimage(clearGhosts: forced);
+    }
+
+    private void OnDisable()
+    {
+        SetLandingPoseHeld(false);
     }
 
     public override BossPatternEntry SelectNextPattern()
@@ -163,6 +169,23 @@ public sealed class DragonController : BossControllerBase
         return sprite != null && sprite.flipX ? Vector2.left : Vector2.right;
     }
 
+    /// <summary>착지 자세의 자동 Idle 전환만 제어하며, 그로기/사망 애니메이션은 멈추지 않는다.</summary>
+    public void SetLandingPoseHeld(bool held)
+    {
+        if (animator == null || animator.runtimeAnimatorController == null)
+            return;
+        if (held && (IsDead || HasGroggyTag() || HasDeadTag()))
+            return;
+
+        bool wasHeld = animator.GetBool(DragonAnimationKeys.HoldLanding);
+        animator.SetBool(DragonAnimationKeys.HoldLanding, held);
+        if (held)
+            animator.ResetTrigger(DragonAnimationKeys.ReleaseLanding);
+        else if (wasHeld)
+            // A held non-looping clip can pass its exit-time window; release only from the landing state.
+            animator.SetTrigger(DragonAnimationKeys.ReleaseLanding);
+    }
+
     /// <summary>취룡 패턴용 Animator trigger를 안전하게 호출한다.</summary>
     public void PlayPatternTrigger(string triggerName)
     {
@@ -172,6 +195,8 @@ public sealed class DragonController : BossControllerBase
         if (ShouldSuppressPatternTrigger(triggerName))
             return;
 
+        if (triggerName == DragonAnimationKeys.Landing)
+            animator.ResetTrigger(DragonAnimationKeys.ReleaseLanding);
         animator.SetTrigger(triggerName);
     }
 

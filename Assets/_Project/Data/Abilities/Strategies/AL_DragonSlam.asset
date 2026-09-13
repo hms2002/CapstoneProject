@@ -192,3 +192,35 @@ MonoBehaviour:
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
   impactTelegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  crossExplosionPrefab: {fileID: 5333529774321123672, guid: f5ec6f3405a7490a9ecce42b4a3c19d6, type: 3}
+  crossExplosionParticle:
+    prefab: {fileID: 2448575849230576120, guid: e084575585ee8e249bff319f31e1a787, type: 3}
+    localOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetZ: 0
+    scaleMultiplier: {x: 1, y: 1, z: 1}
+    attachToTarget: 0
+    anchorMode: 0
+    scaleMode: 0
+    boundsMode: 0
+    targetBoundsReferenceSize: 1
+    targetBoundsScaleMultiplier: 1
+    lifetimeMode: 0
+    lifetimeOverrideSeconds: 0
+    useUnscaledTime: 0
+  crossWarningSeconds: 0.3
+  crossMaxDistance: 40
+  crossExplosionDiameter: 1.35
+  crossExplosionSpacing: 1.35
+  crossExplosionStepInterval: 0.04
+  crossExplosionLifetime: 0.5
+  crossExplosionDamage: 1
+  crossExplosionKnockback: 12
+  crossExplosionWallLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  crossExplosionWallSkin: 0.03
+  crossExplosionSound:
+    key: sound_boss_darklord_common_boom
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

@@ -549,6 +549,68 @@ public sealed class CombatFeelLootQuestPlayModeTests
         actor.SetActive(false);
     }
 
+    [Test] public void BossGold_DropsConfiguredTotalOnlyDuringAnActiveRun()
+    {
+        var data = RunSessionStore.Data;
+        Assert.IsNotNull(data);
+        bool wasActive = data.isRunActive;
+        var randomState = UnityEngine.Random.state;
+        var prefabObject = Own(new GameObject("BossGoldFixture"));
+        prefabObject.SetActive(false);
+        var prefab = prefabObject.AddComponent<GoldPickup2D>();
+        var director = Own(new GameObject("BossGoldDirector")).AddComponent<BossEncounterEndDirector>();
+        Set(director, "goldPickupPrefab", prefab);
+        Set(director, "baseGoldReward", 800);
+        var drop = typeof(BossEncounterEndDirector).GetMethod("HandleGoldReward", BindingFlags.Instance | BindingFlags.NonPublic);
+        var before = new HashSet<GoldPickup2D>(Object.FindObjectsByType<GoldPickup2D>(FindObjectsInactive.Include, FindObjectsSortMode.None));
+        try
+        {
+            data.isRunActive = false;
+            drop.Invoke(director, new object[] { Vector3.zero });
+            Assert.AreEqual(before.Count, Object.FindObjectsByType<GoldPickup2D>(FindObjectsInactive.Include, FindObjectsSortMode.None).Length);
+            data.isRunActive = true;
+            drop.Invoke(director, new object[] { Vector3.zero });
+            int count = 0, total = 0;
+            foreach (var pickup in Object.FindObjectsByType<GoldPickup2D>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (before.Contains(pickup)) continue;
+                Own(pickup.gameObject);
+                count++;
+                total += pickup.GoldAmount;
+            }
+            Assert.AreEqual(8, count);
+            Assert.That(total, Is.InRange(680, 920));
+        }
+        finally
+        {
+            data.isRunActive = wasActive;
+            UnityEngine.Random.state = randomState;
+        }
+    }
+
+#if UNITY_EDITOR
+    [Test] public void AuthoredVisionMasks_StayOnOverlayLayer_AndDroppedSpearHasLocalScope()
+    {
+        int overlayLayer = SortingLayer.NameToID("MaskRender");
+        foreach (string path in new[] {
+            "Assets/_Project/Prefabs/Map/Gimmicks/Witch/PlayerVisionMask.prefab",
+            "Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab" })
+        {
+            var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            Assert.IsNotNull(prefab, path);
+            foreach (var mask in prefab.GetComponentsInChildren<SpriteMask>(true))
+            {
+                Assert.IsTrue(mask.isCustomRangeActive, path);
+                Assert.AreEqual(overlayLayer, mask.frontSortingLayerID, path);
+                Assert.AreEqual(overlayLayer, mask.backSortingLayerID, path);
+            }
+        }
+        var spear = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+            "Assets/_Project/Prefabs/Items/Visuals/PF_LightningSpear_ItemDisplayVisual.prefab");
+        Assert.IsNotNull(spear.GetComponent<UnityEngine.Rendering.SortingGroup>());
+    }
+#endif
+
     [Test] public void RunGold_SpendingAndRunBoundariesAreIndependentOfMagicStone()
     {
         Assert.IsNotNull(RunSessionStore.Data);
@@ -589,14 +651,17 @@ public sealed class CombatFeelLootQuestPlayModeTests
     {
         var shop = UnityEditor.AssetDatabase.LoadAssetAtPath<ShopDefinitionSO>("Assets/_Project/Data/Dialogue/Merchant/ShopDefinition_RunGold.asset");
         Assert.IsTrue(shop.UsesRunGold);
-        Assert.AreEqual(3, shop.BaseVisibleSlotCount);
+        Assert.AreEqual(4, shop.BaseVisibleSlotCount);
         Assert.AreEqual(3, shop.MaxWeaponSlots);
+        Assert.AreEqual(1, shop.MaxConsumableSlots);
         Assert.AreEqual(0, shop.StockRollWeights.consumableWeight);
         var weapon = Own(ScriptableObject.CreateInstance<WeaponDefinition>());
         var relic = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+        var potion = Own(ScriptableObject.CreateInstance<ConsumableDefinition>());
         for (int i = 0; i < 256; i++)
         {
             Assert.That(shop.RollGoldPrice(weapon), Is.InRange(1000, 1300));
+            Assert.That(shop.RollGoldPrice(potion), Is.InRange(200, 300));
             relic.rarity = ItemRarity.Common;
             Assert.That(shop.RollGoldPrice(relic), Is.InRange(200, 400));
             relic.rarity = ItemRarity.Rare;
@@ -604,6 +669,249 @@ public sealed class CombatFeelLootQuestPlayModeTests
             relic.rarity = ItemRarity.Epic;
             Assert.That(shop.RollGoldPrice(relic), Is.InRange(900, 1200));
         }
+    }
+
+    [Test] public void GoldPickup_CollectsAtDestinationWithoutCollider_OnlyOnce()
+    {
+        var data = RunSessionStore.Data;
+        Assert.IsNotNull(data);
+        Assert.IsNotNull(CurrencyManager.Instance);
+        bool wasActive = data.isRunActive;
+        int previousGold = data.runGold;
+        try
+        {
+            data.isRunActive = true;
+            data.runGold = 0;
+            var destination = Own(new GameObject("PickupDestination"));
+            var pickup = Own(new GameObject("GoldWithoutCollider")).AddComponent<GoldPickup2D>();
+            pickup.Initialize(60);
+            Set(pickup, "target", destination.transform);
+            Set(pickup, "homingStartTime", float.PositiveInfinity);
+            var update = typeof(GoldPickup2D).GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic);
+            update.Invoke(pickup, null);
+            Assert.AreEqual(0, data.runGold, "Arrival must respect the initial homing delay.");
+            Set(pickup, "homingStartTime", float.NegativeInfinity);
+            Set(pickup, "homingSpeed", 0f);
+            pickup.transform.position = Vector3.right;
+            update.Invoke(pickup, null);
+            Assert.AreEqual(0, data.runGold, "Nearby pickups must first reach the destination.");
+            pickup.transform.position = destination.transform.position;
+            update.Invoke(pickup, null);
+            update.Invoke(pickup, null);
+            Assert.IsNull(pickup.GetComponent<Collider2D>());
+            Assert.AreEqual(60, data.runGold);
+        }
+        finally { data.runGold = previousGold; data.isRunActive = wasActive; }
+    }
+
+    [Test] public void PlayerPopupColors_OverrideDamageStylesButPreserveOtherTargets()
+    {
+        var profileType = Type.GetType("DamagePopupFormatProfileSO, UI", true);
+        var profile = Own(ScriptableObject.CreateInstance(profileType));
+        Color PopupColor(DamagePopupRequest request)
+        {
+            object view = profileType.GetMethod("BuildViewModel").Invoke(profile, new object[] { request });
+            return (Color)view.GetType().GetField("TextColor").GetValue(view);
+        }
+        Color red = new Color32(255, 77, 77, 255);
+        Color sky = new Color32(50, 156, 199, 255);
+        Assert.AreEqual(red, PopupColor(DamagePopupRequest.Damage(10, Vector3.zero, isPlayerTarget: true)));
+        Assert.AreEqual(red, PopupColor(DamagePopupRequest.Damage(10, Vector3.zero, true, true)));
+        Assert.AreEqual(red, PopupColor(DamagePopupRequest.Element(10, Vector3.zero, null, true)));
+        Assert.AreEqual(sky, PopupColor(DamagePopupRequest.Text("EVADE", Vector3.zero, true)));
+        Assert.AreEqual(Color.white, PopupColor(DamagePopupRequest.Damage(10, Vector3.zero)));
+        Assert.AreEqual(Color.white, PopupColor(DamagePopupRequest.Text("EVADE", Vector3.zero)));
+    }
+
+    [Test] public void OfficerQuest_CompletionWaitsForGrandHall_AndResetsWithRun()
+    {
+        var data = new GamePlayData { isRunActive = true };
+        Assert.IsFalse(RunOfficerQuestProgress.IsVisible(data));
+        RunOfficerQuestProgress.EnterScene(data, "Grand Hall");
+        Assert.IsTrue(RunOfficerQuestProgress.IsVisible(data));
+        foreach (string boss in RunOfficerQuestProgress.BossIds)
+        {
+            data.defeatedBossIds.Add(boss);
+            Assert.IsTrue(RunOfficerQuestProgress.IsVisible(data));
+        }
+        data.defeatedBossIds.Add("slime");
+        data.defeatedBossIds.Add("demonking");
+        Assert.AreEqual(3, RunOfficerQuestProgress.CountDefeated(data));
+        RunOfficerQuestProgress.CompletePresentation(data, "BossRoom");
+        Assert.IsTrue(RunOfficerQuestProgress.IsVisible(data));
+        Assert.IsFalse(RunOfficerQuestProgress.CanPresentCompletion(data, "BossRoom"));
+        Assert.IsTrue(RunOfficerQuestProgress.CanPresentCompletion(data, "Grand Hall"));
+        RunOfficerQuestProgress.CompletePresentation(data, "Grand Hall");
+        var restored = JsonUtility.FromJson<GamePlayData>(JsonUtility.ToJson(data));
+        RunOfficerQuestProgress.EnterScene(restored, "Grand Hall");
+        Assert.IsFalse(RunOfficerQuestProgress.IsVisible(restored));
+        Type.GetType("RunSessionLifecycleService, Infrastructure", true).GetMethod("StartRun")
+            .Invoke(null, new object[] { restored, null });
+        Assert.IsFalse(restored.officerQuestStarted);
+        Assert.IsFalse(restored.officerQuestCompletionPresented);
+        Assert.AreEqual(0, RunOfficerQuestProgress.CountDefeated(restored));
+    }
+
+    private sealed class PortalWarningBackend : IRunRouteBackend
+    {
+        public WarningPopupCode Warning;
+        public ScenePortal QueriedPortal;
+        public bool HasActivePlan => false;
+        public int CurrentStageIndex => 0;
+        public int TotalStageCount => 0;
+        public RunRouteCatalogSO ActiveRouteCatalog => null;
+        public CorridorBossRouteSetSO CurrentStageSet => null;
+        public bool EnsurePendingPlan(ScenePortal portal) => true;
+        public bool CanResolveRoute(ScenePortal portal) => true;
+        public WarningPopupCode GetTravelBlockWarning(ScenePortal portal)
+        {
+            QueriedPortal = portal;
+            return Warning;
+        }
+#if UNITY_EDITOR
+        public string GetDebugResolveStatus(ScenePortal portal) => "Portal warning fixture";
+#endif
+    }
+
+    [UnityTest] public IEnumerator ClearedPortal_UpdateUsesInteractionGateWithFinalOnlyCatalog()
+    {
+        var data = RunSessionStore.Data;
+        Assert.IsNotNull(data);
+        bool wasActive = data.isRunActive;
+        var previousDefeats = data.defeatedBossIds;
+        var previousBackend = RunRoutePlayback.Backend;
+        var scene = UnityEngine.SceneManagement.SceneManager.CreateScene("Grand Hall");
+        var root = Own(new GameObject("ClearedDragonPortal"));
+        root.SetActive(false);
+        UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(root, scene);
+        var renderer = root.AddComponent<SpriteRenderer>();
+        var texture = Own(new Texture2D(2, 2));
+        var active = Own(Sprite.Create(texture, new Rect(0, 0, 2, 2), Vector2.zero));
+        var disabled = Own(Sprite.Create(texture, new Rect(0, 0, 1, 1), Vector2.zero));
+        renderer.sprite = active;
+        var portal = root.AddComponent<ScenePortal>();
+        var catalog = Own(ScriptableObject.CreateInstance<RunRouteCatalogSO>());
+        var dragon = Own(ScriptableObject.CreateInstance<CorridorBossRouteSetSO>());
+        typeof(CorridorBossRouteSetSO).GetField("themeId", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(dragon, "dragon");
+        typeof(RunRouteCatalogSO).GetField("normalRouteSets", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(catalog, new List<CorridorBossRouteSetSO>());
+        typeof(RunRouteCatalogSO).GetField("finalRouteSet", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(catalog, dragon);
+        Set(portal, "startRunRouteCatalog", catalog);
+        var particles = Own(new GameObject("PortalParticles"));
+        particles.transform.SetParent(root.transform);
+        var requirement = root.AddComponent<RequiredBossClearScenePortalAccessRule>();
+        Set(requirement, "requiredBossThemeIds", new List<string> { "slime", "dragon", "shadow" });
+        requirement.enabled = false;
+        var view = root.AddComponent<GrandHallClearedPortalView>();
+        Set(view, "portal", portal);
+        Set(view, "portalSprite", renderer);
+        Set(view, "disabledSprite", disabled);
+        Set(view, "particleRoot", particles);
+        var backend = new PortalWarningBackend();
+        var update = typeof(GrandHallClearedPortalView).GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic);
+        try
+        {
+            data.isRunActive = true;
+            RunRoutePlayback.RegisterBackend(backend);
+            root.SetActive(true);
+            update.Invoke(view, null);
+            Assert.AreSame(active, renderer.sprite);
+            Assert.IsTrue(particles.activeSelf);
+            backend.Warning = WarningPopupCode.BossAlreadyDefeatedThisRun;
+            update.Invoke(view, null);
+            Assert.AreSame(portal, backend.QueriedPortal);
+            Assert.AreSame(disabled, renderer.sprite);
+            Assert.IsFalse(particles.activeSelf);
+            backend.Warning = WarningPopupCode.None;
+            update.Invoke(view, null);
+            Assert.AreSame(active, renderer.sprite);
+            Assert.IsTrue(particles.activeSelf);
+            requirement.enabled = true;
+            data.defeatedBossIds = new List<string> { "slime", "dragon" };
+            update.Invoke(view, null);
+            Assert.IsFalse(requirement.CanAccess(portal, null));
+            Assert.AreSame(disabled, renderer.sprite, "Two officers cannot unlock the final portal.");
+            Assert.IsFalse(particles.activeSelf);
+            data.defeatedBossIds.Add("shadow");
+            update.Invoke(view, null);
+            Assert.IsTrue(requirement.CanAccess(portal, null));
+            Assert.AreSame(active, renderer.sprite);
+            Assert.IsTrue(particles.activeSelf);
+            backend.Warning = WarningPopupCode.BossAlreadyDefeatedThisRun;
+            update.Invoke(view, null);
+            Assert.AreSame(disabled, renderer.sprite, "Defeated final boss still blocks a qualified portal.");
+            backend.Warning = WarningPopupCode.None;
+            data.defeatedBossIds.Clear();
+            update.Invoke(view, null);
+            Assert.IsFalse(requirement.AreRequirementsMet);
+            Assert.AreSame(disabled, renderer.sprite, "New-run clear history must relock the portal.");
+            requirement.enabled = false;
+            data.isRunActive = false;
+            backend.Warning = WarningPopupCode.BossAlreadyDefeatedThisRun;
+            update.Invoke(view, null);
+            Assert.AreSame(active, renderer.sprite);
+        }
+        finally
+        {
+            root.SetActive(false);
+            RunRoutePlayback.RegisterBackend(previousBackend);
+            data.isRunActive = wasActive;
+            data.defeatedBossIds = previousDefeats;
+            Object.DestroyImmediate(root);
+        }
+        yield return UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(scene);
+    }
+
+    [Test] public void ClearedPortal_ChangesSpriteClearsParticles_AndRestores()
+    {
+        var root = Own(new GameObject("PortalViewTest"));
+        root.SetActive(false);
+        var renderer = root.AddComponent<SpriteRenderer>();
+        var texture = Own(new Texture2D(2, 2));
+        var active = Own(Sprite.Create(texture, new Rect(0, 0, 2, 2), Vector2.zero));
+        var disabled = Own(Sprite.Create(texture, new Rect(0, 0, 1, 1), Vector2.zero));
+        renderer.sprite = active;
+        var particles = Own(new GameObject("Particles"));
+        particles.transform.SetParent(root.transform);
+        var system = particles.AddComponent<ParticleSystem>();
+        var view = root.AddComponent<GrandHallClearedPortalView>();
+        Set(view, "portalSprite", renderer);
+        Set(view, "disabledSprite", disabled);
+        Set(view, "particleRoot", particles);
+        root.SetActive(true);
+        system.Emit(3);
+        view.ApplyCleared(true);
+        Assert.AreSame(disabled, renderer.sprite);
+        Assert.IsFalse(particles.activeSelf);
+        Assert.AreEqual(0, system.particleCount);
+        view.ApplyCleared(false);
+        Assert.AreSame(active, renderer.sprite);
+        Assert.IsTrue(particles.activeSelf);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void WeaponSkill_HitPreservesCastingAndExecution_ButForcedCancelStillWorks(bool casting)
+    {
+        var actor = Own(new GameObject("SkillHitProtection"));
+        var system = actor.AddComponent<AbilitySystem>();
+        var feedback = actor.AddComponent<PlayerHitFeedback2D>();
+        var skillTag = Own(ScriptableObject.CreateInstance<GameplayTag>());
+        var ability = Own(ScriptableObject.CreateInstance<AbilityDefinition>());
+        ability.grantedTagsWhileActive.Add(skillTag);
+        var spec = new AbilitySpec(ability);
+        var token = new AbilityCancellationToken();
+        typeof(AbilitySpec).GetProperty("Token").SetValue(spec, token);
+        Set(system, casting ? "currentCastSpec" : "currentExecSpec", spec);
+        Set(system, casting ? "isCasting" : "isExecuting", true);
+        Set(feedback, "_abilitySystem", system);
+        Set(feedback, "activeSkillTag", skillTag);
+        Set(feedback, "defaultShake", 0f);
+        feedback.OnHitFeedback(new HitFeedbackPayload(null, 0f, 0f));
+        Assert.IsFalse(token.IsCancelled);
+        Assert.IsNull(typeof(PlayerHitFeedback2D).GetField("_reactionRoutine", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(feedback));
+        if (casting) system.CancelCasting(force: true);
+        else system.CancelExecution(force: true);
+        Assert.IsTrue(token.IsCancelled);
     }
 
     private static void Set(Component component, string name, object value) =>
