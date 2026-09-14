@@ -20,6 +20,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     // 평소에는 플레이어 추적 의도 이동을 만들고, 복귀 상태일 때는 집으로 돌아가는 의도 이동을 우선 제공한다.
     // 일반 몬스터 FSM이 Chase 상태 생명주기에 맞춰 추적 시작/정지를 명시적으로 제어할 수 있는 창구를 제공한다.
     // 목표까지 직선 이동이 막힌 경우 스폰 문맥의 타일맵 경로 탐색 결과를 이동 의도로 변환한다.
+    // 원거리 몬스터는 탄막 사선이 막히면 정지 거리를 무시하고 사격 가능한 위치까지 추적한다.
 
     [Header("Refs")]
     [Tooltip("추적 대상 정보를 제공하는 Enemy 컴포넌트입니다.")]
@@ -75,6 +76,129 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     private Vector2 lastPathTargetPosition;
     private TilemapPathfinder2D fallbackPathfinder;
     private bool triedResolveFallbackPathfinder;
+    private float nextFallbackPathfinderSearchTime;
+    private float nextShotLaneCheckTime;
+    private bool shotLaneBlocked;
+    private readonly List<Collider2D> navigationBodies = new();
+    private Rigidbody2D navigationRigidbody;
+    private bool navigationBodiesDirty = true;
+
+    private void OnTransformChildrenChanged() => navigationBodiesDirty = true;
+
+    /// <summary>Supplies current active body bounds, excluding damage triggers and independently simulated children.</summary>
+    public MonsterNavigationFootprint2D GetNavigationFootprint()
+    {
+        if (navigationBodiesDirty)
+        {
+            GetComponentsInChildren(true, navigationBodies);
+            navigationRigidbody = GetComponent<Rigidbody2D>();
+            navigationBodiesDirty = false;
+        }
+        return MonsterNavigationFootprint2D.FromBodies(transform, navigationRigidbody, navigationBodies);
+    }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    private Vector2 diagnosticAnchor;
+    private float diagnosticStationarySince;
+    private float diagnosticNextLogTime;
+    private static float diagnosticGlobalNextLogTime;
+    private int diagnosticLogCount;
+    private string diagnosticIntentReason = "not-sampled";
+    private float diagnosticIntentTime;
+    private string diagnosticSearchResult = "not-run";
+    private int diagnosticVisited;
+    private float diagnosticSearchTime;
+    private Vector2 diagnosticBlockedWaypoint;
+    private bool diagnosticHasBlockedWaypoint;
+    private MovementMotor2D diagnosticMotor;
+    private Rigidbody2D diagnosticBody;
+    private readonly Collider2D[] diagnosticWalls = new Collider2D[16];
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetWallStallDiagnostics() => diagnosticGlobalNextLogTime = 0f;
+
+    // Temporary diagnostics own only sampling/throttling state, never movement decisions.
+    private void LateUpdate()
+    {
+        if (Time.timeScale <= 0f || enemy == null || enemy.IsDead || enemy.Target == null) return;
+        Vector2 position = transform.position;
+        if ((position - diagnosticAnchor).sqrMagnitude > 0.01f)
+        {
+            diagnosticAnchor = position;
+            diagnosticStationarySince = Time.time;
+            return;
+        }
+        if (Time.time - diagnosticStationarySince < 1f || Time.time < diagnosticNextLogTime ||
+            Time.time < diagnosticGlobalNextLogTime || diagnosticLogCount >= 10) return;
+        diagnosticNextLogTime = Time.time + 2f;
+        var finder = spawnContext.Pathfinder != null ? spawnContext.Pathfinder : fallbackPathfinder;
+        if (finder == null || !finder.isActiveAndEnabled || finder.gameObject.scene != gameObject.scene)
+        {
+            finder = null;
+            foreach (var candidate in FindObjectsByType<TilemapPathfinder2D>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+            {
+                if (!candidate.isActiveAndEnabled || candidate.gameObject.scene != gameObject.scene) continue;
+                finder = candidate;
+                break;
+            }
+        }
+        int mask = finder != null ? finder.DiagnosticBlockedLayers : LayerMask.GetMask("Wall");
+        var bodies = GetComponentsInChildren<Collider2D>(true);
+        var details = new System.Text.StringBuilder();
+        bool nearWall = false;
+        foreach (var body in bodies)
+        {
+            if (!body.enabled || !body.gameObject.activeInHierarchy || body.isTrigger) continue;
+            var filter = new ContactFilter2D { useLayerMask = true, layerMask = mask, useTriggers = true };
+            int count = Physics2D.OverlapBox(body.bounds.center, (Vector2)body.bounds.size + Vector2.one * 0.5f,
+                0f, filter, diagnosticWalls);
+            for (int i = 0; i < count; i++)
+            {
+                var wall = diagnosticWalls[i];
+                if (wall == null || wall.transform.IsChildOf(transform)) continue;
+                nearWall = true;
+                ColliderDistance2D separation = Physics2D.Distance(body, wall);
+                details.Append($" body={body.name}#{body.GetInstanceID()}({body.GetType().Name},center={body.bounds.center},size={body.bounds.size},offset={body.offset})" +
+                    $" wall={wall.name}#{wall.GetInstanceID()}(layer={wall.gameObject.layer},trigger={wall.isTrigger})" +
+                    $" distanceValid={separation.isValid}, overlap={separation.isOverlapped}, separation={separation.distance:F4}, normal={separation.normal};");
+            }
+            if (count == diagnosticWalls.Length) details.Append(" overlapBufferFull=true;");
+        }
+        if (!nearWall) return;
+        diagnosticGlobalNextLogTime = Time.time + 0.25f;
+        diagnosticLogCount++;
+        if (diagnosticMotor == null) diagnosticMotor = GetComponent<MovementMotor2D>();
+        if (diagnosticBody == null) diagnosticBody = GetComponent<Rigidbody2D>();
+        Vector2 destination = diagnosticHasBlockedWaypoint ? diagnosticBlockedWaypoint :
+            chasePathIndex < chasePath.Count ? chasePath[chasePathIndex] : (Vector2)enemy.Target.position;
+        string navigation = finder != null ? finder.DescribeWallStall(position, destination, GetNavigationFootprint()) : "finder=none";
+        string motor = diagnosticMotor == null ? "motor=none" :
+            $"motorEnabled={diagnosticMotor.isActiveAndEnabled}, intentVelocity={diagnosticMotor.LastIntentVelocity}, " +
+            $"externalVelocity={diagnosticMotor.LastExternalVelocity}, motionVelocity={diagnosticMotor.LastMotionVelocity}, finalVelocity={diagnosticMotor.LastFinalVelocity}, " +
+            diagnosticMotor.DescribeWallStallGates();
+        Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, this,
+            "[MonsterWallStallDiagnostics] {0}",
+            $"{name}#{GetInstanceID()}, scene={gameObject.scene.name}, sample={diagnosticLogCount}/10, " +
+            $"stationaryFor={Time.time - diagnosticStationarySince:F2}, position={position}, target={enemy.Target.position}, " +
+            $"reason={diagnosticIntentReason}, intentAge={Time.time - diagnosticIntentTime:F2}, chaseEnabled={chaseEnabled}, canChase={(enemy is not Mob mob || mob.CanUseChaseMovement())}, " +
+            $"perceives={enemy.CanPerceiveTarget(enemy.Target)}, ignoreRange={CanIgnoreDetectionRange()}, range={detectionRange}, " +
+            $"stopRange={stopRange}, shotBlocked={shotLaneBlocked}, lastIntent={lastIntent.Direction}, " +
+            $"search={diagnosticSearchResult}, visited={diagnosticVisited}, searchAge={Time.time - diagnosticSearchTime:F2}, " +
+            $"path={chasePathIndex}/{chasePath.Count}, blockedWaypoint={diagnosticHasBlockedWaypoint}, destination={destination}, " +
+            $"retryIn={nextPathRebuildTime - Time.time:F2}, {motor}, " +
+            $"rbVelocity={(diagnosticBody != null ? diagnosticBody.linearVelocity : Vector2.zero)}, rbSimulated={(diagnosticBody != null && diagnosticBody.simulated)}, " +
+            $"{navigation}; contacts:{details}");
+    }
+#endif
+
+    [System.Diagnostics.Conditional("UNITY_EDITOR"), System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]
+    private void TraceIntentReason(string reason)
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        diagnosticIntentReason = reason;
+        diagnosticIntentTime = Time.time;
+#endif
+    }
 
     public float DetectionRange => detectionRange;
     public float StopRange => stopRange;
@@ -87,12 +211,34 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         RefreshReturnHomeReference();
     }
 
+    private void OnEnable()
+    {
+        navigationBodiesDirty = true;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        diagnosticAnchor = transform.position;
+        diagnosticStationarySince = Time.time;
+        diagnosticNextLogTime = 0f;
+        diagnosticLogCount = 0;
+        diagnosticIntentReason = "not-sampled";
+        diagnosticSearchResult = "not-run";
+        diagnosticHasBlockedWaypoint = false;
+#endif
+        fallbackPathfinder = null;
+        triedResolveFallbackPathfinder = false;
+        nextFallbackPathfinderSearchTime = 0f;
+        shotLaneBlocked = false;
+        nextShotLaneCheckTime = Time.time + (uint)GetInstanceID() % 11 * 0.02f;
+        ClearChasePath();
+    }
+
     public IntentMovementData GetIntent()
     {
+        TraceIntentReason("evaluating");
         RefreshReturnHomeReference();
 
         if (returnHome != null && returnHome.TryGetReturnDirection(out Vector2 returnDirection))
         {
+            TraceIntentReason("return-home");
             lastIntent = IntentMovementData.FromDirection(returnDirection, returnSpeedScale);
             return lastIntent;
         }
@@ -105,6 +251,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         if (enemy == null || enemy.Target == null)
         {
             LogChaseThrottled("이동 의도 없음: enemy 또는 target이 없습니다.");
+            TraceIntentReason("no-target");
             lastIntent = IntentMovementData.None;
             return lastIntent;
         }
@@ -112,6 +259,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         Mob mob = enemy as Mob;
         if (mob != null && !mob.CanUseChaseMovement())
         {
+            TraceIntentReason("mob-movement-disabled");
             LogChaseThrottled("이동 의도 없음: Mob.CanUseChaseMovement()가 false입니다.");
             lastIntent = IntentMovementData.None;
             return lastIntent;
@@ -119,6 +267,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
 
         if (!chaseEnabled)
         {
+            TraceIntentReason("fsm-chase-stopped");
             LogChaseThrottled("이동 의도 없음: FSM이 chase를 정지한 상태입니다.");
             lastIntent = IntentMovementData.None;
             return lastIntent;
@@ -126,6 +275,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
 
         if (!enemy.CanPerceiveTarget(enemy.Target))
         {
+            TraceIntentReason("perception-blocked");
             LogChaseThrottled("Movement intent blocked: closed door blocks target perception.");
             lastIntent = IntentMovementData.None;
             return lastIntent;
@@ -134,21 +284,24 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         Vector2 toTarget = (Vector2)(enemy.Target.position - transform.position);
         float sqrDistance = toTarget.sqrMagnitude;
 
-        if (!ignoreDetectionRange && sqrDistance > detectionRange * detectionRange)
+        if (!CanIgnoreDetectionRange() && sqrDistance > detectionRange * detectionRange)
         {
+            TraceIntentReason("outside-detection-range");
             LogChaseThrottled($"이동 의도 없음: 감지 범위 밖입니다. distance={Mathf.Sqrt(sqrDistance):0.00}, detectionRange={detectionRange:0.00}");
             lastIntent = IntentMovementData.None;
             return lastIntent;
         }
 
-        if (sqrDistance <= stopRange * stopRange)
+        bool needsFiringPosition = NeedsFiringPosition();
+        if (!needsFiringPosition && sqrDistance <= stopRange * stopRange)
         {
+            TraceIntentReason("inside-stop-range");
             LogChaseThrottled($"이동 의도 없음: stopRange 안입니다. distance={Mathf.Sqrt(sqrDistance):0.00}, stopRange={stopRange:0.00}");
             lastIntent = IntentMovementData.None;
             return lastIntent;
         }
 
-        Vector2 dir = ResolveChaseDirection(toTarget);
+        Vector2 dir = ResolveChaseDirection(toTarget, needsFiringPosition);
         lastIntent = IntentMovementData.FromDirection(dir, speedScale);
         LogChaseThrottled($"추적 이동 의도 생성. distance={Mathf.Sqrt(sqrDistance):0.00}, dir={dir}, speedScale={speedScale:0.00}");
         return lastIntent;
@@ -217,7 +370,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
 
         Vector2 toTarget = (Vector2)(enemy.Target.position - transform.position);
         float sqrDistance = toTarget.sqrMagnitude;
-        if (!ignoreDetectionRange && sqrDistance > detectionRange * detectionRange)
+        if (!CanIgnoreDetectionRange() && sqrDistance > detectionRange * detectionRange)
         {
             LogChaseThrottled($"감지 실패: 범위 밖입니다. distance={Mathf.Sqrt(sqrDistance):0.00}, detectionRange={detectionRange:0.00}");
             return false;
@@ -225,6 +378,15 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
 
         LogChaseThrottled($"감지 성공. distance={Mathf.Sqrt(sqrDistance):0.00}, detectionRange={detectionRange:0.00}");
         return true;
+    }
+
+    // Room-local pursuit supplements, rather than overwrites, boss-specific detection overrides.
+    private bool CanIgnoreDetectionRange()
+    {
+        return ignoreDetectionRange ||
+               (enemy != null && enemy.Target != null && spawnContext.RoomArea != null &&
+                spawnContext.RoomArea.Contains(transform.position) &&
+                spawnContext.RoomArea.Contains(enemy.Target.position));
     }
 
     /// <summary>런타임에 뒤늦게 추가된 복귀 컴포넌트 참조를 안전하게 다시 잡습니다.</summary>
@@ -250,7 +412,15 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
 
         nextTargetAcquireTime = Time.time + Mathf.Max(0.05f, targetAcquireInterval);
 
-        if (enemy.TryAcquireTargetInRange(detectionRange))
+        float searchRange = detectionRange;
+        if (spawnContext.RoomArea != null && spawnContext.RoomArea.Contains(transform.position))
+        {
+            Bounds bounds = spawnContext.RoomArea.AreaCollider.bounds;
+            searchRange = Mathf.Max(searchRange,
+                Vector2.Distance(transform.position, bounds.center) + ((Vector2)bounds.extents).magnitude);
+        }
+
+        if (enemy.TryAcquireTargetInRange(searchRange))
             LogChase("감지 범위 검색으로 target을 획득했습니다.");
         else
             LogChaseThrottled($"감지 범위 검색 실패. detectionRange={detectionRange:0.00}");
@@ -260,8 +430,20 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     /// 책임:
     /// 열린 공간에서는 타겟 직선 방향을 유지하고, 타일맵 차단물이 사이에 있을 때만 pathfinder waypoint 방향으로 전환한다.
     /// </summary>
-    private Vector2 ResolveChaseDirection(Vector2 directToTarget)
+    private bool NeedsFiringPosition()
     {
+        if (enemy is not IMobProjectileLaneSource ranged) return false;
+        if (Time.time >= nextShotLaneCheckTime)
+        {
+            nextShotLaneCheckTime = Time.time + 0.2f;
+            shotLaneBlocked = !MobProjectileLaneUtility.IsClearToTarget(ranged, transform.position, enemy.Target.gameObject);
+        }
+        return shotLaneBlocked;
+    }
+
+    private Vector2 ResolveChaseDirection(Vector2 directToTarget, bool needsFiringPosition)
+    {
+        TraceIntentReason("legacy-direct");
         TilemapPathfinder2D pathfinder = ResolvePathfinder();
         if (!usePathfindingWhenDirectPathBlocked || pathfinder == null || enemy == null || enemy.Target == null)
             return directToTarget.normalized;
@@ -269,8 +451,9 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         Vector2 currentPosition = transform.position;
         Vector2 targetPosition = enemy.Target.position;
 
-        if (pathfinder.HasDirectWalkableSegment(currentPosition, targetPosition))
+        if (!needsFiringPosition && pathfinder.HasDirectWalkableSegment(currentPosition, targetPosition, GetNavigationFootprint()))
         {
+            TraceIntentReason("direct-clear");
             ClearChasePath();
             return directToTarget.normalized;
         }
@@ -278,8 +461,10 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         if (TryGetPathDirection(pathfinder, targetPosition, out Vector2 pathDirection))
             return pathDirection;
 
-        LogChaseThrottled("경로 추적 실패: pathfinder 경로를 얻지 못해 직선 추적으로 fallback합니다.");
-        return directToTarget.normalized;
+        LogChaseThrottled("Path unavailable: wait for the next retry instead of pushing into a wall.");
+        TraceIntentReason("path-unavailable");
+        return pathfinder.HasDirectWalkableSegment(currentPosition, targetPosition, GetNavigationFootprint())
+            ? directToTarget.normalized : Vector2.zero;
     }
 
     /// <summary>현재 타겟 위치까지의 경로를 필요할 때 갱신하고, 다음 waypoint 방향을 반환합니다.</summary>
@@ -294,11 +479,24 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         if (chasePathIndex >= chasePath.Count)
             return false;
 
+        if (!pathfinder.HasDirectWalkableSegment(transform.position, chasePath[chasePathIndex], GetNavigationFootprint()))
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            diagnosticBlockedWaypoint = chasePath[chasePathIndex];
+            diagnosticHasBlockedWaypoint = true;
+#endif
+            // Keep the retry deadline when a door or another obstacle invalidates a cached segment.
+            chasePath.Clear();
+            chasePathIndex = 0;
+            return false;
+        }
+
         Vector2 toWaypoint = chasePath[chasePathIndex] - (Vector2)transform.position;
         if (toWaypoint.sqrMagnitude <= 0.0001f)
             return false;
 
         direction = toWaypoint.normalized;
+        TraceIntentReason("following-path");
         LogChaseThrottled($"경로 추적 이동 의도 생성. waypointIndex={chasePathIndex}, waypoint={chasePath[chasePathIndex]}, dir={direction}");
         return true;
     }
@@ -306,11 +504,11 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     /// <summary>경로 재계산이 필요한지 시간/타겟 이동량/캐시 유무 기준으로 판단합니다.</summary>
     private bool ShouldRebuildChasePath(Vector2 targetPosition)
     {
-        if (chasePath.Count == 0)
-            return true;
-
         if (Time.time < nextPathRebuildTime)
             return false;
+
+        if (chasePathIndex >= chasePath.Count)
+            return true;
 
         float targetMoveThreshold = Mathf.Max(0.01f, pathTargetMoveThreshold);
         return (targetPosition - lastPathTargetPosition).sqrMagnitude >= targetMoveThreshold * targetMoveThreshold;
@@ -327,7 +525,14 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         if (pathfinder == null)
             return;
 
-        if (!pathfinder.TryBuildPath(transform.position, targetPosition, out IReadOnlyList<Vector2> result))
+        bool pathFound = pathfinder.TryBuildPath(transform.position, targetPosition, out IReadOnlyList<Vector2> result, GetNavigationFootprint());
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        diagnosticSearchResult = pathfinder.DiagnosticSearchResult;
+        diagnosticVisited = pathfinder.DiagnosticVisitedNodes;
+        diagnosticSearchTime = Time.time;
+        diagnosticHasBlockedWaypoint = false;
+#endif
+        if (!pathFound)
         {
             LogChaseThrottled($"경로 추적 실패: current={(Vector2)transform.position}, target={targetPosition}");
             return;
@@ -335,6 +540,12 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
 
         for (int i = 0; i < result.Count; i++)
             chasePath.Add(result[i]);
+
+        // A rebuilt path includes the current cell center. Do not walk backwards to it
+        // if the next waypoint can be reached safely from the actual current position.
+        if (chasePath.Count > 1 &&
+            pathfinder.HasDirectWalkableSegment(transform.position, chasePath[1], GetNavigationFootprint()))
+            chasePathIndex = 1;
 
         AdvanceChaseWaypoints();
         LogChaseThrottled($"경로 추적 성공: waypoints={chasePath.Count}, target={targetPosition}");
@@ -362,17 +573,29 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         nextPathRebuildTime = 0f;
     }
 
-    /// <summary>스폰 문맥이 없는 테스트 배치 몬스터를 위해 씬 pathfinder를 한 번만 fallback 탐색합니다.</summary>
+    /// <summary>직접 배치/늦은 초기화도 지원하되 자기 씬 탐색기만 캐시하고 누락 시 낮은 빈도로 재탐색한다.</summary>
     private TilemapPathfinder2D ResolvePathfinder()
     {
-        if (spawnContext.Pathfinder != null)
+        if (spawnContext.Pathfinder != null && spawnContext.Pathfinder.gameObject.scene == gameObject.scene &&
+            spawnContext.Pathfinder.isActiveAndEnabled)
             return spawnContext.Pathfinder;
 
-        if (triedResolveFallbackPathfinder)
+        if (fallbackPathfinder != null && fallbackPathfinder.gameObject.scene == gameObject.scene &&
+            fallbackPathfinder.isActiveAndEnabled)
             return fallbackPathfinder;
 
+        if (triedResolveFallbackPathfinder && Time.time < nextFallbackPathfinderSearchTime)
+            return null;
+
         triedResolveFallbackPathfinder = true;
-        fallbackPathfinder = FindObjectOfType<TilemapPathfinder2D>();
+        nextFallbackPathfinderSearchTime = Time.time + 1f + (uint)GetInstanceID() % 11 * 0.02f;
+        fallbackPathfinder = null;
+        foreach (var candidate in FindObjectsByType<TilemapPathfinder2D>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+        {
+            if (candidate.gameObject.scene != gameObject.scene || !candidate.isActiveAndEnabled) continue;
+            fallbackPathfinder = candidate;
+            break;
+        }
         if (fallbackPathfinder != null)
             LogChase($"씬 fallback pathfinder를 찾았습니다: {fallbackPathfinder.name}");
 

@@ -12,7 +12,7 @@ using CapstoneAudio;
 [DisallowMultipleComponent]
 [RequireComponent(typeof(MobAbilityCoordinator))]
 [RequireComponent(typeof(BeerMonsterShotRunner))]
-public class BeerMonster : Mob, IMobAttackDecisionSource
+public class BeerMonster : Mob, IMobAttackDecisionSource, IMobProjectileLaneSource
 {
     private static readonly SoundRef ShotFireSound = SoundRef.FromKey("sound_beerMonster_shotFire");
 
@@ -36,6 +36,8 @@ public class BeerMonster : Mob, IMobAttackDecisionSource
     private bool hasSpawnedDeathPuddle;
     private AbilityLogic_BeerMonsterShot Logic => shotAbility != null ? shotAbility.logic as AbilityLogic_BeerMonsterShot : null;
     public AbilityLogic_BeerMonsterShot ShotLogic => Logic;
+    public GameObject ShotProjectilePrefab => Logic != null ? Logic.ProjectilePrefab : null;
+    public LayerMask ShotWallLayers => Logic != null ? Logic.WallLayers : 0;
 
     // 책임: 맥주 몬스터 투사체 발사에 필요한 타겟, 방향, 사거리, 피해 정보를 보관한다.
     public readonly struct ShotContext
@@ -184,6 +186,8 @@ public class BeerMonster : Mob, IMobAttackDecisionSource
         AbilityLogic_BeerMonsterShot logic = Logic;
         if (logic == null || logic.ProjectilePrefab == null)
             return;
+
+        if (!MobProjectileLaneUtility.IsClear(this, context.Origin, context.Direction, 0.2f)) return;
 
         Quaternion rotation = logic.AlignProjectileRotationToDirection
             ? Quaternion.Euler(0f, 0f, Mathf.Atan2(context.Direction.y, context.Direction.x) * Mathf.Rad2Deg + logic.ProjectileRotationOffsetDegrees)

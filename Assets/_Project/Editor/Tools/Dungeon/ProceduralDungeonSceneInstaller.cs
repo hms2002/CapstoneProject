@@ -20,6 +20,7 @@ using UnityEngine.Tilemaps;
 /// - 테마별 생성 수치를 DungeonGenerationProfileSO에 보존하고 설치 재실행 시 기획자 조정값을 덮어쓰지 않는다.
 /// - 테스트 씬의 GlobalUIRoot를 ProtoTypeHub의 프리팹 오버라이드와 동기화한다.
 /// - 기존 절차 복도 씬에 고정 방 Tilemap 슬롯을 비파괴적으로 보강하고 렌더·물리 계약을 검증한다.
+/// - 생성된 바닥과 스포너에 씬 소유 경로 탐색기를 기본 연결한다.
 /// </summary>
 public static class ProceduralDungeonSceneInstaller
 {
@@ -1968,6 +1969,7 @@ public static class ProceduralDungeonSceneInstaller
         EditorUtility.SetDirty(builder);
         EditorUtility.SetDirty(generator);
         RoomEnemyNavigationOverlayValidator.EnsureProceduralSceneOverlay(scene);
+        MonsterSceneNavigationInstaller.EnsureSceneNavigation(scene);
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
 
@@ -2769,6 +2771,7 @@ public static class ProceduralDungeonSceneInstaller
                 $"GeneratorBuilderNull={generator.RoomBuilder == null}");
         }
 
+        MonsterSceneNavigationInstaller.EnsureSceneNavigation(scene);
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
 

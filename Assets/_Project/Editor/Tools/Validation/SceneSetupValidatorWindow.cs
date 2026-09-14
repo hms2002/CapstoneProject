@@ -10,6 +10,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>Reports and repairs scene authoring dependencies, including scene-owned monster navigation.</summary>
 public sealed class SceneSetupValidatorWindow : EditorWindow
 {
     private const string GlobalUiRootPrefabPath = "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab";
@@ -311,6 +312,11 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         ValidateUpgradeTrees(scene);
         ValidateMerchantShops(scene);
         ValidateRuntimePresentationFallbacks(scene);
+        if (MonsterSceneNavigationInstaller.IsMonsterScene(scene))
+        {
+            try { MonsterSceneNavigationInstaller.Validate(scene); }
+            catch (InvalidOperationException error) { AddResult(scene.path, Severity.Error, "Monster navigation: " + error.Message, null, string.Empty); }
+        }
     }
 
     private void AutoFixScene(Scene scene)
@@ -324,6 +330,8 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         AutoFixCinematicDirectors(scene);
         AutoFixDialogueViews(scene);
         AutoFixUpgradeTrees(scene);
+        if (MonsterSceneNavigationInstaller.IsMonsterScene(scene))
+            MonsterSceneNavigationInstaller.EnsureSceneNavigation(scene);
     }
 
     private void CleanupScene(Scene scene)

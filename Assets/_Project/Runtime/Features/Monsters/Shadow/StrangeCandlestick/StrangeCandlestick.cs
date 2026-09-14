@@ -7,8 +7,10 @@ using CapstoneAudio;
 /// - StrangeCandlestick의 발사 조건 판단과 발사 설정 데이터를 보관한다.
 /// - 실제 락온-발사 시퀀스 실행은 AD/runner에 위임하고, 본체는 상위 판단과 데이터 제공에 집중한다.
 /// </summary>
-public class StrangeCandlestick : Mob, IMobAttackDecisionSource
+public class StrangeCandlestick : Mob, IMobAttackDecisionSource, IMobProjectileLaneSource
 {
+    public GameObject ShotProjectilePrefab => GetAttackPatternData().projectilePrefab;
+    public LayerMask ShotWallLayers => 1 << WallLayer;
     private static readonly SoundRef ShotFireSound = SoundRef.FromKey("sound_strangeCandlestick_shotFire");
     private static readonly System.Collections.Generic.List<StrangeCandlestick> instances = new();
     private const int WallLayer = 30;
@@ -298,6 +300,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
         if (payload == null)
             return false;
 
+        if (!MobProjectileLaneUtility.IsClear(this, origin, shotDirection, 0.2f)) return false;
         GameObject lightBeadObject = Instantiate(data.projectilePrefab, origin, Quaternion.identity);
         LightBeadProjectile2D lightBead = lightBeadObject.GetComponent<LightBeadProjectile2D>();
 

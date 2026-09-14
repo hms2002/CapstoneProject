@@ -78690,8 +78690,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 731106cde3b130a4687e22786a70aacf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TilemapPathfinder2D
-  grid: {fileID: 0}
-  groundTilemap: {fileID: 0}
+  grid: {fileID: 551583851}
+  groundTilemap: {fileID: 2143189889}
   additionalGroundTilemaps: []
   blockedLayers:
     serializedVersion: 2
