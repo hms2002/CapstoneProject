@@ -163,6 +163,39 @@ public sealed class MonsterProjectileBurstCadencePlayModeTests
     }
 
     [Test]
+    public void PawnRoomContext_IgnoresRangeOnlyWithinOwningRoom()
+    {
+        Mob owner = CreateMonster("SlimeCorridor/Pawn.prefab");
+        var chase = owner.GetComponent<PawnOrbitContactIntent2D>();
+        var target = new GameObject("FarPawnTarget");
+        target.transform.position = owner.transform.position + Vector3.right * 12f;
+        typeof(Enemy).GetField("target", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(owner, target.transform);
+        var room = new GameObject("PawnRoomContext");
+        room.transform.position = owner.transform.position;
+        var bounds = room.AddComponent<BoxCollider2D>();
+        bounds.isTrigger = true;
+        bounds.size = Vector2.one * 30f;
+        var area = room.AddComponent<MonsterRoomArea2D>();
+        area.Configure(bounds);
+        Physics2D.SyncTransforms();
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.False);
+        chase.ApplySpawnContext(new MonsterSpawnContext(owner.transform.position, Quaternion.identity, area, null));
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.True);
+        target.transform.position += Vector3.right * 10f;
+        Physics2D.SyncTransforms();
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.False);
+        target.transform.position = room.transform.position;
+        owner.transform.position += Vector3.right * 20f;
+        Physics2D.SyncTransforms();
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.False);
+        owner.transform.position = room.transform.position;
+        target.transform.position += Vector3.right * 12f;
+        chase.ApplySpawnContext(default);
+        Physics2D.SyncTransforms();
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.False);
+    }
+
+    [Test]
     public void BlockedShotLane_DoesNotDiscardAnUnfinishedPath()
     {
         var chase = new GameObject("StablePath").AddComponent<EnemyChaseIntent2D>();

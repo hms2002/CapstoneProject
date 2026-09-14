@@ -8,7 +8,7 @@ using UnityGAS;
 /// - 개체별로 엇갈리는 짧은 전진과 휴식을 만들어 기어가는 이동 리듬을 담당한다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSource2D, IEnemyChaseIntent
+public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSource2D, IEnemyChaseIntent, IMonsterSpawnContextReceiver
 {
     [Header("Refs")]
     [SerializeField] private Enemy enemy;
@@ -37,6 +37,7 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
     [SerializeField, Range(0f, 1f)] private float crawlPeakSpeedScale = 0.55f;
 
     private MonsterReturnHome2D returnHome;
+    private MonsterSpawnContext spawnContext;
     private bool chaseEnabled = true;
     private int orbitSign = 1;
     private float nextTargetAcquireTime;
@@ -77,7 +78,7 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
 
         Vector2 toTarget = (Vector2)(enemy.Target.position - transform.position);
         float distance = toTarget.magnitude;
-        if (distance > detectionRange)
+        if (!CanIgnoreDetectionRange() && distance > detectionRange)
             return IntentMovementData.None;
 
         if (distance > approachRange)
@@ -121,7 +122,21 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
             return false;
 
         Vector2 toTarget = enemy.Target.position - transform.position;
-        return toTarget.sqrMagnitude <= detectionRange * detectionRange;
+        return CanIgnoreDetectionRange() || toTarget.sqrMagnitude <= detectionRange * detectionRange;
+    }
+
+    /// <summary>Owns room-scoped pursuit context without changing the authored fallback range.</summary>
+    public void ApplySpawnContext(MonsterSpawnContext context)
+    {
+        spawnContext = context;
+        nextTargetAcquireTime = 0f;
+    }
+
+    private bool CanIgnoreDetectionRange()
+    {
+        return enemy != null && enemy.Target != null && spawnContext.RoomArea != null &&
+               spawnContext.RoomArea.Contains(transform.position) &&
+               spawnContext.RoomArea.Contains(enemy.Target.position);
     }
 
     /// <summary>거리 오차를 보정하는 반경 성분과 접선 성분을 섞어 플레이어 주변을 미끄러지듯 돌게 한다.</summary>
@@ -157,6 +172,14 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
             return false;
 
         nextTargetAcquireTime = Time.time + Mathf.Max(0.05f, targetAcquireInterval);
-        return enemy.TryAcquireTargetInRange(detectionRange);
+        float searchRange = detectionRange;
+        if (spawnContext.RoomArea != null && spawnContext.RoomArea.Contains(transform.position))
+        {
+            Bounds bounds = spawnContext.RoomArea.AreaCollider.bounds;
+            searchRange = Mathf.Max(searchRange,
+                Vector2.Distance(transform.position, bounds.center) + ((Vector2)bounds.extents).magnitude);
+        }
+
+        return enemy.TryAcquireTargetInRange(searchRange);
     }
 }
