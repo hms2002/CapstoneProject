@@ -29,6 +29,9 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
     [Tooltip("스텝 1개당 치확 증가량. 0.01 = +1%p")]
     public float critPerStep = 0.01f;
 
+    [Tooltip("레벨별 스텝당 치확 증가량(레벨1=0번째). 비어있으면 critPerStep을 사용합니다.")]
+    public List<float> critPerStepByLevel = new();
+
     public override void OnEquipped(RelicContext ctx)
     {
         RegisterProc(ctx);
@@ -63,7 +66,7 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
             moveSpeedMultiplierAttributeFallback,
             critChanceAddAttribute,
             Mathf.Max(0.0001f, bonusMoveStep),
-            critPerStep
+            EvaluateCritPerStep(ctx.level)
         );
 
         mgr.Register(proc);
@@ -239,7 +242,15 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
             new Dictionary<string, string>
             {
                 ["bonus_move_step"] = RelicTooltipFormatter.FormatSignedValueToken(bonusMoveStep, true),
-                ["crit_gain_per_step"] = RelicTooltipFormatter.FormatSignedValueToken(critPerStep, true),
+                ["crit_gain_per_step"] = RelicTooltipFormatter.FormatSignedValueToken(EvaluateCritPerStep(previewLevel), true),
             });
+    }
+
+    private float EvaluateCritPerStep(int level)
+    {
+        if (critPerStepByLevel == null || critPerStepByLevel.Count == 0)
+            return Mathf.Max(0f, critPerStep);
+
+        return Mathf.Max(0f, critPerStepByLevel[Mathf.Clamp(level - 1, 0, critPerStepByLevel.Count - 1)]);
     }
 }

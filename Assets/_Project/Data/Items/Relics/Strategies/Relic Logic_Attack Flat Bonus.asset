@@ -16,6 +16,11 @@ MonoBehaviour:
   - attribute: {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
     displayNameOverride: 공격력
     type: 0
-    value: 10
-    valueByLevel: []
+    value: 1
+    valueByLevel:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
     duration: 0

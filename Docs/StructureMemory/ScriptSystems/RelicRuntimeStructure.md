@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-26
+last_reviewed: 2026-09-14
 ---
 
 # Relic Runtime Structure
@@ -20,6 +20,10 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - Critical-hit movement stacking uses the existing `RelicLogic_MoveSpeedStackOnCriticalHit_Managed`.
 - Event-timed stat buffs use `RelicLogic_TimedStatOnGameplayEvent_Managed`.
 - Health-threshold stat buffs use `RelicLogic_StatWhileHealthRatio_Managed`.
+- `RelicLogic_FeatherOrbit_Managed.damageCoefByLevel` and
+  `RelicLogic_CritFromBonusMoveSpeed_Managed.critPerStepByLevel` provide explicit
+  level curves; when the lists are empty, their original scalar fields remain the
+  compatibility fallback.
 
 ## Key Files
 
@@ -54,6 +58,9 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - Boss-specific relics need a reliable boss identity and damage calculation path before they can be implemented safely.
 - New `.cs` files may not be included in the generated `.csproj` until Unity refreshes project files; in that case command-line MSBuild does not cover them.
 - New ScriptableObject logic and YAML assets require Unity import/compile validation before final gameplay confidence.
+- A relic definition with `maxLevel > 1` must either consume `ctx.level` in runtime
+  logic or provide an explicit level table; otherwise upgrades can silently have no
+  gameplay effect even when the inventory level increases.
 - Manually generated Unity YAML should serialize empty lists inline as `field: []`; a split `field:` then `[]` line can make later fields deserialize as defaults.
 
 ## Promotion Candidate

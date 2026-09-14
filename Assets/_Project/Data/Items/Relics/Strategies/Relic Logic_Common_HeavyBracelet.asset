@@ -18,9 +18,9 @@ MonoBehaviour:
     type: 1
     value: -0.02
     valueByLevel:
+    - -0.04
+    - -0.03
     - -0.02
-    - -0.01
-    - 0
     duration: 0
   - attribute: {fileID: 11400000, guid: 2c8e2b555f632824fbc8a39cd7bcfc86, type: 2}
     displayNameOverride: "공격력"
@@ -28,6 +28,6 @@ MonoBehaviour:
     value: 0.06
     valueByLevel:
     - 0.06
-    - 0.12
-    - 0.18
+    - 0.11
+    - 0.16
     duration: 0

@@ -287,23 +287,23 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
     [TestCase("Relic Logic_Common_BlackIncense.asset", 1, 2, -0.01f)]
     [TestCase("Relic Logic_Common_BerserkerCord.asset", 0, 0, -1f)]
     [TestCase("Relic Logic_Common_BerserkerCord.asset", 0, 1, -1f)]
-    [TestCase("Relic Logic_Common_BerserkerCord.asset", 0, 2, 0f)]
+    [TestCase("Relic Logic_Common_BerserkerCord.asset", 0, 2, -1f)]
     [TestCase("Relic Logic_Common_BrokenClock.asset", 1, 0, -0.03f)]
     [TestCase("Relic Logic_Common_BrokenClock.asset", 1, 1, -0.02f)]
     [TestCase("Relic Logic_Common_BrokenClock.asset", 1, 2, -0.01f)]
-    [TestCase("Relic Logic_Common_BluntShield.asset", 0, 0, -0.03f)]
-    [TestCase("Relic Logic_Common_BluntShield.asset", 0, 1, -0.02f)]
-    [TestCase("Relic Logic_Common_BluntShield.asset", 0, 2, -0.01f)]
+    [TestCase("Relic Logic_Common_BluntShield.asset", 0, 0, -0.06f)]
+    [TestCase("Relic Logic_Common_BluntShield.asset", 0, 1, -0.04f)]
+    [TestCase("Relic Logic_Common_BluntShield.asset", 0, 2, -0.02f)]
     [TestCase("Relic Logic_Common_BrokenCrown.asset", 1, 0, -1f)]
     [TestCase("Relic Logic_Common_BrokenCrown.asset", 1, 1, -1f)]
-    [TestCase("Relic Logic_Common_BrokenCrown.asset", 1, 2, 0f)]
-    [TestCase("Relic Logic_Common_HeavyBracelet.asset", 0, 0, -0.02f)]
-    [TestCase("Relic Logic_Common_HeavyBracelet.asset", 0, 1, -0.01f)]
-    [TestCase("Relic Logic_Common_HeavyBracelet.asset", 0, 2, 0f)]
+    [TestCase("Relic Logic_Common_BrokenCrown.asset", 1, 2, -1f)]
+    [TestCase("Relic Logic_Common_HeavyBracelet.asset", 0, 0, -0.04f)]
+    [TestCase("Relic Logic_Common_HeavyBracelet.asset", 0, 1, -0.03f)]
+    [TestCase("Relic Logic_Common_HeavyBracelet.asset", 0, 2, -0.02f)]
     [TestCase("Relic Logic_Common_WarriorOath.asset", 1, 0, -0.03f)]
     [TestCase("Relic Logic_Common_WarriorOath.asset", 1, 1, -0.02f)]
     [TestCase("Relic Logic_Common_WarriorOath.asset", 1, 2, -0.01f)]
-    public void TradeoffRelicPenalties_DecreaseWithLevel(
+    public void TradeoffRelicPenalties_UseApprovedCurve(
         string assetName,
         int entryIndex,
         int levelIndex,
@@ -321,6 +321,71 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(levelIndex, Is.LessThan(values.arraySize));
         Assert.That(values.GetArrayElementAtIndex(levelIndex).floatValue,
             Is.EqualTo(expected).Within(0.0001f));
+    }
+
+    [TestCase("Relic Logic_Attack Flat Bonus.asset", "entries", 0, "valueByLevel", 4, 5f)]
+    [TestCase("Relic Logic_SpeedMedalBonus.asset", "entries", 0, "valueByLevel", 4, 0.12f)]
+    [TestCase("Relic Logic_SpeedMedalBonus.asset", "entries", 1, "valueByLevel", 4, 0.1f)]
+    [TestCase("Relic Logic_Speed Mul Bonus.asset", "entries", 0, "valueByLevel", 2, 0.15f)]
+    [TestCase("Relic Logic_WindTablet.asset", "entries", 1, "valueByLevel", 4, -1f)]
+    [TestCase("Relic Logic_Common_BluntShield.asset", "entries", 1, "valueByLevel", 2, 2f)]
+    [TestCase("Relic Logic_Common_BrokenCrown.asset", "entries", 0, "valueByLevel", 2, 0.13f)]
+    [TestCase("Relic Logic_Common_HeavyBracelet.asset", "entries", 1, "valueByLevel", 2, 0.16f)]
+    [TestCase("Relic Logic_Common_BerserkerCord.asset", "entries", 1, "valueByLevel", 2, 0.16f)]
+    [TestCase("Relic Logic_Common_SurvivorNecklace.asset", "entries", 1, "valueByLevel", 2, 0.07f)]
+    [TestCase("Relic Logic_Common_ThinArmorShard.asset", "entries", 1, "valueByLevel", 2, 0.04f)]
+    public void RelicStatTables_UseApprovedBalance(
+        string assetName,
+        string entriesProperty,
+        int entryIndex,
+        string valuesProperty,
+        int levelIndex,
+        float expected)
+    {
+        ScriptableObject logic = Load<ScriptableObject>(
+            "Assets/_Project/Data/Items/Relics/Strategies/" + assetName);
+        using var serialized = new SerializedObject(logic);
+        SerializedProperty entries = serialized.FindProperty(entriesProperty);
+        Assert.That(entries, Is.Not.Null);
+        SerializedProperty values = entries.GetArrayElementAtIndex(entryIndex)
+            .FindPropertyRelative(valuesProperty);
+        Assert.That(values.GetArrayElementAtIndex(levelIndex).floatValue,
+            Is.EqualTo(expected).Within(0.0001f));
+    }
+
+    [Test]
+    public void ManagedRelics_UseApprovedLevelCurvesAndThresholds()
+    {
+        ScriptableObject feather = Load<ScriptableObject>(
+            "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Feather Orbit_Managed.asset");
+        using (var serialized = new SerializedObject(feather))
+        {
+            SerializedProperty values = serialized.FindProperty("damageCoefByLevel");
+            Assert.That(values.arraySize, Is.EqualTo(5));
+            Assert.That(values.GetArrayElementAtIndex(0).floatValue, Is.EqualTo(0.35f).Within(0.0001f));
+            Assert.That(values.GetArrayElementAtIndex(4).floatValue, Is.EqualTo(0.75f).Within(0.0001f));
+        }
+
+        ScriptableObject tonic = Load<ScriptableObject>(
+            "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Crit From Bonus Move Speed_Managed.asset");
+        using (var serialized = new SerializedObject(tonic))
+        {
+            SerializedProperty values = serialized.FindProperty("critPerStepByLevel");
+            Assert.That(values.arraySize, Is.EqualTo(5));
+            Assert.That(values.GetArrayElementAtIndex(4).floatValue, Is.EqualTo(0.02f).Within(0.0001f));
+        }
+
+        ScriptableObject hawk = Load<ScriptableObject>(
+            "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Evasion From Bonus Move Speed_Managed.asset");
+        using (var serialized = new SerializedObject(hawk))
+        {
+            Assert.That(serialized.FindProperty("bonusMoveStep").floatValue,
+                Is.EqualTo(0.2f).Within(0.0001f));
+        }
+
+        RelicDefinition bandage = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_ToughBandage.asset");
+        Assert.That(bandage.maxLevel, Is.EqualTo(2));
     }
 
     private static float ReadProfileValue(AttributeInitProfileSO profile, string attributeGuid)
