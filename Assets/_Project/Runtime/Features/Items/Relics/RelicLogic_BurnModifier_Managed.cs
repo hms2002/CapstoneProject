@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityGAS;
 
 [CreateAssetMenu(menuName = "Game/Relic Logic/Burn Modifier (Managed)")]
 public sealed class RelicLogic_BurnModifier_Managed : RelicLogic
