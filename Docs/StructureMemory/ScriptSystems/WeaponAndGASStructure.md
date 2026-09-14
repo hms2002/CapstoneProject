@@ -321,3 +321,11 @@ PlayerIntentInput2D uses the walking lock in both Update and GetIntent, while Ab
 IWallSlidingMovementSource2D opts player intent into MovementMotor2D's bounded sweep/slide path for ordinary walking and non-lunge motion without external velocity. Sweeps start from the Rigidbody physics pose (including child collider offsets), spend approach distance, remove inward normal displacement, and recast the remaining tangent up to three times. Lost normal distance is not replenished, and dash duration remains owned by AbilityMotionController2D. Low-speed walking also uses this path. Lunge/external-motion and non-player callers retain the previous wall policy; the final dash tick is retained for opted-in player movement.
 
 This map does not change Contracts/Architecture authority. See the 2026-09-14 SessionLog for validation and remaining playtest coverage.
+
+### Crimson Boundary projectile collision channels (2026-09-14)
+
+`CrimsonBoundaryProjectile2D` owns separate serialized `wallCollider` and `damageCollider` references. `Fireball.prefab` authors two root BoxCollider2D triggers: wall size 0.12 × 0.12 and damage size 0.32 × 0.32. Their local sizes/offsets and transform scale feed independent collider sweeps against WallLayers and DamageLayers. A hard-coded shared box size is no longer used.
+
+The projectile processes the closest valid contact across both sweeps, with walls winning equal-distance ties. Its Enter/Stay overrides deliberately bypass AttackBase trigger handling: otherwise the larger damage trigger would still destroy the projectile on walls. Sweeps include initial overlaps and use growable result lists; an impact guard prevents another hit during deferred destruction. Damage payload, burn application, visual ownership and lifetime cleanup retain their existing paths.
+
+When adjusting this projectile, edit the two referenced colliders in the prefab. Both references must be distinct and assigned. Other AttackBase subclasses keep their original trigger behavior. Actual wall-grazing feel still needs main-project playtesting; this subsection is a structure map, not a new contract.

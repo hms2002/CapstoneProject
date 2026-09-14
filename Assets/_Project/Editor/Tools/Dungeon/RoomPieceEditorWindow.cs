@@ -74,6 +74,7 @@ public sealed partial class RoomPieceEditorWindow : EditorWindow
     [SerializeField] private DungeonGenerationProfileSO previewGenerationProfile;
     [SerializeField] private DungeonLayoutPolicySO previewLayoutPolicy;
     [SerializeField] private int previewSeed = 12345;
+    [SerializeField] private int previewGenerationStage = 1;
     [SerializeField] private int previewRoomCount = 8;
     [SerializeField] private bool previewIncludeBossRoom = true;
     [SerializeField] private int previewMaxPlacementAttemptsPerRoom = 128;
@@ -1602,6 +1603,8 @@ public sealed partial class RoomPieceEditorWindow : EditorWindow
         }
 
         previewSeed = EditorGUILayout.IntField("시드", previewSeed);
+        if (DungeonStageComposition.AppliesTo(selectedLibrary))
+            previewGenerationStage = EditorGUILayout.IntSlider("전투 진행 단계", previewGenerationStage, 1, 3);
         previewIncludeBossRoom = EditorGUILayout.Toggle("보스 방 포함", previewIncludeBossRoom);
         previewRoomCount = EditorGUILayout.IntField(
             "방 개수",
@@ -1780,7 +1783,8 @@ public sealed partial class RoomPieceEditorWindow : EditorWindow
             previewGenerationProfile != null &&
             previewGenerationProfile.RoomLibrary == selectedLibrary
                 ? previewGenerationProfile.SocketCleanupProfile
-                : null);
+                : null,
+            previewGenerationStage);
         RoomAuthoringDungeonPreviewResult result =
             RoomAuthoringDungeonPreview.Generate(request);
 

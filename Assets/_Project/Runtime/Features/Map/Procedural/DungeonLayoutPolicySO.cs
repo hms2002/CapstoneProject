@@ -13,6 +13,8 @@ public sealed class RequiredCombatRoomRule
     [SerializeField] private RoomCombatSizeTag sizeTag = RoomCombatSizeTag.Auto;
     [SerializeField] private RoomKillLockRewardTag killLockRewardTag = RoomKillLockRewardTag.Auto;
     [SerializeField, Min(0)] private int count;
+    // Runtime-only stage constraint; existing policy assets retain their schema.
+    [NonSerialized] private int difficultyTier;
 
     public RoomCombatSizeTag SizeTag => sizeTag;
     public RoomKillLockRewardTag KillLockRewardTag => killLockRewardTag;
@@ -25,16 +27,20 @@ public sealed class RequiredCombatRoomRule
     public RequiredCombatRoomRule(
         RoomCombatSizeTag sizeTag,
         RoomKillLockRewardTag killLockRewardTag,
-        int count)
+        int count,
+        int difficultyTier = 0)
     {
         this.sizeTag = sizeTag;
         this.killLockRewardTag = killLockRewardTag;
         this.count = Mathf.Max(0, count);
+        this.difficultyTier = difficultyTier;
     }
 
     public bool Matches(RoomTemplateSO template)
     {
         if (template == null || template.LayoutData.roomType != RoomType.Combat)
+            return false;
+        if (difficultyTier > 0 && DungeonStageComposition.Tier(template) != difficultyTier)
             return false;
 
         if (sizeTag != RoomCombatSizeTag.Auto &&
@@ -64,6 +70,47 @@ public sealed class RequiredCombatRoomRule
         count = Mathf.Max(0, requiredCount);
     }
 #endif
+}
+
+/// <summary>Pure per-generation count allocation; never mutates room or policy assets.</summary>
+public static class DungeonStageComposition
+{
+    public static bool AppliesTo(RoomThemeLibrarySO library) => library != null &&
+        (library.ThemeId == "ProceduralDragon" || library.ThemeId == "ProceduralShadow" ||
+         library.ThemeId == "ProceduralSlime");
+
+    public static int Tier(RoomTemplateSO template) => Mathf.Max(1, template.LayoutData.difficultyTier);
+
+    public static bool Allows(RoomTemplateSO template, int stage)
+    {
+        if (stage <= 0 || template.LayoutData.roomType != RoomType.Combat) return true;
+        return RoomTemplateCombatMetadataUtility.ResolveSizeTag(template) == RoomCombatSizeTag.Large
+            ? Tier(template) == stage : Tier(template) <= stage;
+    }
+
+    public static int[] Allocate(int normalCount, int stage, int seed)
+    {
+        if (normalCount < 0) throw new ArgumentOutOfRangeException(nameof(normalCount));
+        stage = Mathf.Clamp(stage, 1, 3);
+        int[] percentages = stage == 1 ? new[] { 100, 0, 0 } :
+            stage == 2 ? new[] { 50, 50, 0 } : new[] { 20, 40, 40 };
+        var counts = new int[3]; var remainders = new int[3];
+        int remaining = normalCount;
+        for (int i = 0; i < 3; i++)
+        {
+            counts[i] = normalCount * percentages[i] / 100;
+            remainders[i] = normalCount * percentages[i] % 100;
+            remaining -= counts[i];
+        }
+        int[] order = { 0, 1, 2 };
+        var random = new System.Random(unchecked(seed ^ (stage * 486187739)));
+        for (int i = 2; i > 0; i--) { int j = random.Next(i + 1); (order[i], order[j]) = (order[j], order[i]); }
+        var rank = new int[3]; for (int i = 0; i < 3; i++) rank[order[i]] = i;
+        Array.Sort(order, (a, b) => remainders[b] != remainders[a]
+            ? remainders[b].CompareTo(remainders[a]) : rank[a].CompareTo(rank[b]));
+        for (int i = 0; i < remaining; i++) counts[order[i]]++;
+        return counts;
+    }
 }
 
 /// <summary>
