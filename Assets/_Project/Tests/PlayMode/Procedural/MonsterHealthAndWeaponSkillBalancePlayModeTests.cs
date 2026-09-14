@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEditor;
@@ -259,9 +260,9 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(formula.Evaluate(null, new AttackStats(attack, speed: speed)), Is.EqualTo(expected).Within(0.001f));
     }
 
-    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenAttributeOverrideInitProfile.asset", 500f)]
-    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2ShortAttributeOverrideInitProfile.asset", 300f)]
-    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2LongAttributeOverrideInitProfile.asset", 300f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenAttributeOverrideInitProfile.asset", 550f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2ShortAttributeOverrideInitProfile.asset", 330f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2LongAttributeOverrideInitProfile.asset", 330f)]
     [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/WitchAttributeOverrideInitProfile.asset", 1000f)]
     [TestCase("Assets/_Project/Data/Attributes/InitProfiles/DragonBossAttributeOverrideInitProfile.asset", 1250f)]
     [TestCase("Assets/_Project/Data/Attributes/InitProfiles/WitchBossAttributeOverrideInitProfile.asset", 2800f)]
@@ -270,6 +271,51 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         AttributeInitProfileSO profile = Load<AttributeInitProfileSO>(path);
         Assert.That(ReadProfileValue(profile, "3ff045849daafe84d97370c69cd17747"), Is.EqualTo(expected));
         Assert.That(ReadProfileValue(profile, "0e177e1d15e428745b5859fac08ce203"), Is.EqualTo(expected));
+    }
+
+    [TestCase(
+        "Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueen.prefab",
+        "Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenAttributeOverrideInitProfile.asset")]
+    [TestCase(
+        "Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Short.prefab",
+        "Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2ShortAttributeOverrideInitProfile.asset")]
+    [TestCase(
+        "Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Long.prefab",
+        "Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2LongAttributeOverrideInitProfile.asset")]
+    [TestCase(
+        "Assets/_Project/Prefabs/Bosses/ShadowBoss/Witch.prefab",
+        "Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/WitchAttributeOverrideInitProfile.asset")]
+    public void BossPrefabs_ReferenceApprovedHealthProfile(string prefabPath, string profilePath)
+    {
+        GameObject prefab = Load<GameObject>(prefabPath);
+        AttributeSet attributes = prefab.GetComponent<AttributeSet>();
+        Assert.That(attributes, Is.Not.Null, prefabPath);
+
+        AttributeInitProfileSO expected = Load<AttributeInitProfileSO>(profilePath);
+        using var serialized = new SerializedObject(attributes);
+        SerializedProperty overrides = serialized.FindProperty("overrideInitProfiles");
+        Assert.That(overrides, Is.Not.Null, prefabPath);
+
+        bool found = false;
+        for (int i = 0; i < overrides.arraySize; i++)
+        {
+            if (overrides.GetArrayElementAtIndex(i).objectReferenceValue == expected)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        Assert.That(found, Is.True, $"{prefabPath} does not reference {profilePath}.");
+    }
+
+    [Test]
+    public void ShadowBossScene_DoesNotOverrideDedicatedHealthWithDemonKingProfile()
+    {
+        const string path = "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity";
+        string sceneYaml = File.ReadAllText(path);
+        Assert.That(sceneYaml, Does.Contain("900e8eeac487b5b41b95ccbd78628ce3"));
+        Assert.That(sceneYaml, Does.Not.Contain("5c6cbc85ca649e6428489e9939c28342"));
     }
 
     [Test]
