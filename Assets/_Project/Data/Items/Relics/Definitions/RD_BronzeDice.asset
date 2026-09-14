@@ -15,7 +15,7 @@ MonoBehaviour:
   relicId: RD_BronzeDice
   displayName: "\uCCAD\uB3D9 \uC8FC\uC0AC\uC704"
   icon: {fileID: -8993961506304712746, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
-  rarity: 0
+  rarity: 1
   description: "\uCE58\uBA85\uD0C0 \uD655\uB960\uACFC \uD68C\uD53C\uC728\uC774 \uC870\uAE08
     \uC99D\uAC00\uD569\uB2C8\uB2E4."
   maxLevel: 1

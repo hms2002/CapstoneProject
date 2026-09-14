@@ -101,7 +101,7 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
             new Dictionary<string, string>
             {
                 ["feather_count"] = RelicTooltipFormatter.FormatUnsignedValueToken(featherCount, false),
-                ["damage_coef"] = RelicTooltipFormatter.FormatUnsignedValueToken(EvaluateDamageCoef(previewLevel), false),
+                ["damage_coef"] = RelicTooltipFormatter.FormatUnsignedValueToken(EvaluateDamageCoef(previewLevel), true),
                 ["radius"] = RelicTooltipFormatter.FormatUnsignedValueToken(radius, false),
                 ["hit_cooldown"] = RelicTooltipFormatter.FormatSeconds(basePerTargetHitCooldown),
             });

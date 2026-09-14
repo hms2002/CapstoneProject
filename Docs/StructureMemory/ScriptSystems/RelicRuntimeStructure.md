@@ -19,6 +19,9 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - Common always-on stat relics use `RelicLogic_StatModifiers`.
 - Critical-hit movement stacking uses the existing `RelicLogic_MoveSpeedStackOnCriticalHit_Managed`.
 - Event-timed stat buffs use `RelicLogic_TimedStatOnGameplayEvent_Managed`.
+- `RelicLogic_MoveSpeedOnKill_Managed` registers separate token-owned temporary
+  modifiers for its attack and movement attributes. `회전하는 철구` uses both
+  at +10% for four seconds, while the movement proc alone owns its status HUD.
 - Health-threshold stat buffs use `RelicLogic_StatWhileHealthRatio_Managed`.
 - Timed event buffs can use `valueByLevel`; an empty list preserves the scalar
   `value` fallback for existing assets.

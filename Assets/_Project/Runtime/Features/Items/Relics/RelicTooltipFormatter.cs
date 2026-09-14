@@ -16,6 +16,7 @@ public static class RelicTooltipFormatter
         "회피율",
         "치명타 확률",
         "치명타 피해",
+        "넉백 저항",
         "MoveSpeed",
         "Move Speed",
         "AttackSpeed",
@@ -27,7 +28,9 @@ public static class RelicTooltipFormatter
         "CritMultiplier",
         "CriticalDamage",
         "Critical Damage",
-        "Crit Damage"
+        "Crit Damage",
+        "KnockbackResistance",
+        "Knockback Resistance"
     };
 
     public static float EvaluateLeveledValue(float baseValue, List<float> valuesByLevel, int level)

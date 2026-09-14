@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: "\uD53C \uBD80\uC801"
   icon: {fileID: -1054136223, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
   rarity: 0
-  description: 
+  description: "출혈 피해가 증가합니다."
   maxLevel: 5
   dropLevel: 1
   logic: {fileID: 11400000, guid: d1158f72c909d4d4c8e74047e7ea8cf0, type: 2}

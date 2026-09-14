@@ -323,7 +323,7 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
             Is.EqualTo(expected).Within(0.0001f));
     }
 
-    [TestCase("Relic Logic_Attack Flat Bonus.asset", "entries", 0, "valueByLevel", 4, 5f)]
+    [TestCase("Relic Logic_Attack Flat Bonus.asset", "entries", 0, "valueByLevel", 2, 3f)]
     [TestCase("Relic Logic_SpeedMedalBonus.asset", "entries", 0, "valueByLevel", 4, 0.12f)]
     [TestCase("Relic Logic_SpeedMedalBonus.asset", "entries", 1, "valueByLevel", 4, 0.1f)]
     [TestCase("Relic Logic_Speed Mul Bonus.asset", "entries", 0, "valueByLevel", 2, 0.15f)]
@@ -386,6 +386,58 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         RelicDefinition bandage = Load<RelicDefinition>(
             "Assets/_Project/Data/Items/Relics/Definitions/RD_ToughBandage.asset");
         Assert.That(bandage.maxLevel, Is.EqualTo(2));
+
+        RelicDefinition strengthCharm = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_AttackBonusRelic.asset");
+        Assert.That(strengthCharm.maxLevel, Is.EqualTo(3));
+        using (var serialized = new SerializedObject(strengthCharm.logic))
+        {
+            SerializedProperty values = serialized.FindProperty("entries")
+                .GetArrayElementAtIndex(0)
+                .FindPropertyRelative("valueByLevel");
+            Assert.That(values.arraySize, Is.EqualTo(3));
+        }
+
+        RelicDefinition bronzeDice = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_BronzeDice.asset");
+        Assert.That(bronzeDice.rarity, Is.EqualTo(ItemRarity.Rare));
+    }
+
+    [Test]
+    public void RelicTooltips_MatchApprovedEffects()
+    {
+        Assert.That(RelicTooltipFormatter.ShouldDisplayAsPercent(
+            null,
+            "넉백 저항",
+            ModifierType.Flat), Is.True);
+
+        RelicDefinition ironBall = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_RotatingIornBall.asset");
+        using (var serialized = new SerializedObject(ironBall.logic))
+        {
+            Assert.That(serialized.FindProperty("attackPercentBonus").floatValue,
+                Is.EqualTo(0.1f).Within(0.0001f));
+            Assert.That(serialized.FindProperty("percentBonus").floatValue,
+                Is.EqualTo(0.1f).Within(0.0001f));
+            Assert.That(serialized.FindProperty("durationSeconds").floatValue,
+                Is.EqualTo(4f).Within(0.0001f));
+        }
+
+        string ironBallTooltip = ironBall.logic.BuildTooltip(
+            ironBall,
+            1,
+            default).effectText;
+        Assert.That(ironBallTooltip, Does.Contain("공격력"));
+        Assert.That(ironBallTooltip, Does.Contain("이동속도"));
+        Assert.That(ironBallTooltip, Does.Contain("+10%"));
+
+        RelicDefinition feather = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset");
+        string featherTooltip = feather.logic.BuildTooltip(
+            feather,
+            1,
+            default).effectText;
+        Assert.That(featherTooltip, Does.Contain("35%"));
     }
 
     [Test]
