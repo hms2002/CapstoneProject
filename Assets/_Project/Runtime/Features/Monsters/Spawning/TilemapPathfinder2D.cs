@@ -3,6 +3,36 @@ using UnityEngine;
 using Grid = UnityEngine.Grid;
 using UnityEngine.Tilemaps;
 
+/// <summary>Owns an immutable world-space body envelope and its offset from the actor root for one navigation query.</summary>
+public readonly struct MonsterNavigationFootprint2D
+{
+    public readonly Vector2 Size;
+    public readonly Vector2 CenterOffset;
+    public bool IsValid => Size.x > 0f && Size.y > 0f;
+
+    public MonsterNavigationFootprint2D(Vector2 size, Vector2 centerOffset)
+    {
+        Size = size;
+        CenterOffset = centerOffset;
+    }
+
+    public static MonsterNavigationFootprint2D FromBodies(Transform root, Rigidbody2D ownerBody, IReadOnlyList<Collider2D> colliders)
+    {
+        Bounds bounds = default;
+        bool found = false;
+        for (int i = 0; i < colliders.Count; i++)
+        {
+            Collider2D collider = colliders[i];
+            if (collider == null || !collider.enabled || collider.isTrigger || !collider.gameObject.activeInHierarchy ||
+                collider.attachedRigidbody != ownerBody) continue;
+            if (!found) bounds = collider.bounds;
+            else bounds.Encapsulate(collider.bounds);
+            found = true;
+        }
+        return found ? new MonsterNavigationFootprint2D(bounds.size, bounds.center - root.position) : default;
+    }
+}
+
 /// <summary>
 /// 책임:
 /// - 타일맵 격자 기준으로 월드 좌표 사이의 경로를 계산한다.
@@ -40,32 +70,77 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     private Vector2 lastDebugEnd;
     private bool lastDebugSucceeded;
 
-    /// <summary>시작점에서 목표점까지의 경로를 월드 좌표 waypoint 목록으로 계산합니다.</summary>
-    public bool TryBuildPath(Vector2 startWorld, Vector2 endWorld, out IReadOnlyList<Vector2> path)
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    public string DiagnosticSearchResult { get; private set; } = "not-run";
+    public int DiagnosticVisitedNodes { get; private set; }
+
+    // Read-only snapshot of the navigation probe, not a second path search.
+    public string DescribeWallStall(Vector2 position, Vector2 destination, MonsterNavigationFootprint2D footprint = default)
     {
+        footprint = ResolveFootprint(footprint);
+        Vector2Int cell = WorldToCell(position);
+        Vector2 center = CellToWorld(cell);
+        Collider2D atPosition = Physics2D.OverlapBox(position + footprint.CenterOffset, footprint.Size, 0f, blockedLayers);
+        Collider2D atCenter = Physics2D.OverlapBox(center + footprint.CenterOffset, footprint.Size, 0f, blockedLayers);
+        Vector2 delta = destination - position;
+        RaycastHit2D hit = delta.sqrMagnitude > 0.000001f
+            ? Physics2D.BoxCast(position + footprint.CenterOffset, footprint.Size, 0f, delta.normalized, delta.magnitude, blockedLayers)
+            : default;
+        return $"finder={name}#{GetInstanceID()}, probe={footprint.Size}, probeOffset={footprint.CenterOffset}, mask={blockedLayers.value}, " +
+               $"queriesHitTriggers={Physics2D.queriesHitTriggers}, cell={cell}, center={center}, " +
+               $"ground={HasGroundTile(cell)}, targetCell={WorldToCell(destination)}, " +
+               $"targetGround={HasGroundTile(WorldToCell(destination))}, " +
+               $"positionProbe={DescribeBlocker(atPosition)}, centerProbe={DescribeBlocker(atCenter)}, " +
+               $"segmentHit={DescribeBlocker(hit.collider)}, hitDistance={hit.distance:F3}, " +
+               $"hitNormal={hit.normal}, searchLimit={maxVisitedNodes}, padding={maxPaddingCells}";
+    }
+
+    private static string DescribeBlocker(Collider2D collider)
+    {
+        return collider == null ? "none" :
+            $"{collider.name}#{collider.GetInstanceID()}({collider.GetType().Name},layer={collider.gameObject.layer},trigger={collider.isTrigger})";
+    }
+
+    public int DiagnosticBlockedLayers => blockedLayers.value;
+#endif
+
+    /// <summary>시작점에서 목표점까지의 경로를 월드 좌표 waypoint 목록으로 계산합니다.</summary>
+    public bool TryBuildPath(Vector2 startWorld, Vector2 endWorld, out IReadOnlyList<Vector2> path, MonsterNavigationFootprint2D footprint = default)
+    {
+        footprint = ResolveFootprint(footprint);
         reusablePath.Clear();
         path = reusablePath;
         lastDebugStart = startWorld;
         lastDebugEnd = endWorld;
         lastDebugSucceeded = false;
         lastDebugPath.Clear();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        DiagnosticSearchResult = "searching";
+        DiagnosticVisitedNodes = 0;
+#endif
 
         Vector2Int startCell = WorldToCell(startWorld);
         Vector2Int endCell = WorldToCell(endWorld);
 
         if (startCell == endCell)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DiagnosticSearchResult = "same-cell";
+#endif
             reusablePath.Add(CellToWorld(startCell));
             CacheDebugPath(reusablePath, true);
             LogDebug($"경로 생략: 시작 셀과 목표 셀이 같습니다. start={startCell}");
             return true;
         }
 
-        if (!IsWalkable(endCell))
+        if (!IsWalkable(endCell, footprint))
         {
-            endCell = FindNearestWalkableCell(endCell, radius: 2);
-            if (endCell == startCell && !IsWalkable(endCell))
+            endCell = FindNearestWalkableCell(endCell, radius: 2, footprint);
+            if (endCell == startCell && !IsWalkable(endCell, footprint))
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                DiagnosticSearchResult = "end-unwalkable";
+#endif
                 LogDebug($"경로 실패: 목표 셀과 인접 셀을 모두 사용할 수 없습니다. requestedEnd={WorldToCell(endWorld)}");
                 return false;
             }
@@ -85,12 +160,18 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
         while (openSet.Count > 0 && visited < maxVisitedNodes)
         {
             visited++;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DiagnosticVisitedNodes = visited;
+#endif
 
             int currentIndex = FindBestOpenIndex(endCell);
             Vector2Int current = openSet[currentIndex];
 
             if (current == endCell)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                DiagnosticSearchResult = "success";
+#endif
                 ReconstructPath(current);
                 path = reusablePath;
                 CacheDebugPath(reusablePath, reusablePath.Count > 0);
@@ -109,7 +190,11 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
                 if (closedSet.Contains(neighbor))
                     continue;
 
-                if (!IsWalkable(neighbor))
+                if (!IsWalkable(neighbor, footprint))
+                    continue;
+
+                // Clear cell centers alone do not exclude a thin wall between cells.
+                if (!HasDirectWalkableSegment(CellToWorld(current), CellToWorld(neighbor), footprint))
                     continue;
 
                 int tentativeG = gScore[current] + StepCost(current, neighbor);
@@ -124,6 +209,9 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
             }
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        DiagnosticSearchResult = openSet.Count == 0 ? "open-set-exhausted" : "visit-limit";
+#endif
         LogDebug($"경로 실패: open set 소진 또는 방문 제한 초과. start={startCell}, end={endCell}, visited={visited}");
         return false;
     }
@@ -149,16 +237,17 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     /// 현재 pathfinder의 차단 레이어/탐색 크기 기준으로 두 월드 좌표 사이를 직선 이동할 수 있는지 빠르게 판정한다.
     /// 추적 의도는 이 결과로 열린 공간에서는 직선 추적을 유지하고, 막힌 경우에만 경로 탐색으로 전환한다.
     /// </summary>
-    public bool HasDirectWalkableSegment(Vector2 startWorld, Vector2 endWorld)
+    public bool HasDirectWalkableSegment(Vector2 startWorld, Vector2 endWorld, MonsterNavigationFootprint2D footprint = default)
     {
+        footprint = ResolveFootprint(footprint);
         Vector2 delta = endWorld - startWorld;
         float distance = delta.magnitude;
         if (distance <= 0.001f)
             return true;
 
         RaycastHit2D hit = Physics2D.BoxCast(
-            startWorld,
-            probeSize,
+            startWorld + footprint.CenterOffset,
+            footprint.Size,
             0f,
             delta / distance,
             distance,
@@ -168,9 +257,9 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     }
 
     /// <summary>지정한 셀이 막혀 있다면 인접 셀 중 가장 가까운 이동 가능 셀을 찾습니다.</summary>
-    private Vector2Int FindNearestWalkableCell(Vector2Int center, int radius)
+    private Vector2Int FindNearestWalkableCell(Vector2Int center, int radius, MonsterNavigationFootprint2D footprint)
     {
-        if (IsWalkable(center))
+        if (IsWalkable(center, footprint))
             return center;
 
         for (int r = 1; r <= radius; r++)
@@ -180,7 +269,7 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
                 for (int x = -r; x <= r; x++)
                 {
                     Vector2Int candidate = new Vector2Int(center.x + x, center.y + y);
-                    if (IsWalkable(candidate))
+                    if (IsWalkable(candidate, footprint))
                         return candidate;
                 }
             }
@@ -255,14 +344,19 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     }
 
     /// <summary>지정한 셀이 이동 가능한 셀인지 판정합니다.</summary>
-    private bool IsWalkable(Vector2Int cell)
+    private bool IsWalkable(Vector2Int cell, MonsterNavigationFootprint2D footprint)
     {
         if (!HasGroundTile(cell))
             return false;
 
         Vector2 center = CellToWorld(cell);
-        Collider2D blocker = Physics2D.OverlapBox(center, probeSize, 0f, blockedLayers);
+        Collider2D blocker = Physics2D.OverlapBox(center + footprint.CenterOffset, footprint.Size, 0f, blockedLayers);
         return blocker == null;
+    }
+
+    private MonsterNavigationFootprint2D ResolveFootprint(MonsterNavigationFootprint2D footprint)
+    {
+        return footprint.IsValid ? footprint : new MonsterNavigationFootprint2D(probeSize, Vector2.zero);
     }
 
     private bool HasGroundTile(Vector2Int cell)

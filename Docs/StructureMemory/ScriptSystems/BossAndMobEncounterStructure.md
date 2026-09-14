@@ -140,6 +140,12 @@ Witch retreat skeletons are combat-owned, not extinguish-pattern-owned. `Registe
 | --- | ---: | --- |
 | FSM Core | 11 | Mob state machine, context, states, attack request/decision source, and transition utility. |
 | Slime Mob | 10 | Pawn, rook, bishop, knight, wizard, base slime, and slime pattern runners. |
+
+Scene-owned pathfinder authoring and direct-spawn fallback are mapped in [Monster Scene Navigation](../MonsterSceneNavigation.md). Shipping corridors and boss arenas now have explicit navigation; two dormant legacy scenes remain reported authoring exceptions.
+
+Ranged firing clearance: `IMobProjectileLaneSource` (in CommonMonsterCombatUtility.cs) supplies projectile prefab and wall mask for GoblinGunner, LizardMage, BeerMonster, Wizard and StrangeCandlestick. `MobProjectileLaneUtility` checks the root attack collider's conservative radius, ignoring child light volumes, before attack entry (whole target lane) and before spawn (origin plus first 0.2 units). Blocked fire does not consume burst quota. `EnemyChaseIntent2D` probes at 0.2s per instance, ignores stopRange when blocked, and follows existing pathfinder waypoints until a lane opens; failed/exhausted paths observe the rebuild deadline. Stationary StrangeCandlestick still cannot chase. No pathfinder means legacy direct movement, not guaranteed wall avoidance. This is lane-aware pursuit, not cover/tactical destination selection.
+
+Pawn movement rhythm is owned by `PawnOrbitContactIntent2D`, not the shared motor: approach/orbit/return directions retain their existing logic, while a sin-squared speed pulse alternates short movement and rest. Inspector defaults are 0.22s movement, 0.32s rest, peak multiplier 0.55. An instance-hashed phase avoids synchronized crowds and does not consume gameplay RNG; OnEnable resets the scaled-time epoch for pooling. External knockback, split landing, collision and contact damage remain independently owned. This changes movement only, not sprite scale or Animator authoring.
 | Strange Candlestick Mob | 10 | Strange Candlestick controller, candle/seal/light-zone helpers, projectiles, and attack runner. |
 | Mob Abilities | 8 | Mob ability logic for bishop, skeleton, knight, candlestick, shadow servant, rook, tackle, and wizard attacks. |
 | Mob Root / Shared Runtime | 7 | Base mob component, facing/chase intent, home return, ability bridge/coordinator, and pattern runner interface. |

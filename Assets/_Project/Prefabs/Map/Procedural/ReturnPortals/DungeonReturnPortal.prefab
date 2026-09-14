@@ -579,8 +579,8 @@ Transform:
   - {fileID: 7221544940773903234}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &3013858353107618927
-CircleCollider2D:
+--- !u!70 &3013858353107618927
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -614,7 +614,8 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.6
+  m_Size: {x: 2.2, y: 1.2}
+  m_Direction: 1
 --- !u!114 &4641769535181210430
 MonoBehaviour:
   m_ObjectHideFlags: 0

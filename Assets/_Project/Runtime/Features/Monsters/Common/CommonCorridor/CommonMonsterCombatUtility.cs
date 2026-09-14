@@ -3,6 +3,66 @@ using System.Collections;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>Exposes a ranged mob's projectile geometry and wall policy without coupling navigation to mob types.</summary>
+public interface IMobProjectileLaneSource
+{
+    GameObject ShotProjectilePrefab { get; }
+    LayerMask ShotWallLayers { get; }
+}
+
+/// <summary>Checks spawn clearance and a conservative projectile-width lane without spawning objects or allocating query results.</summary>
+public static class MobProjectileLaneUtility
+{
+    private static readonly Collider2D[] Overlaps = new Collider2D[32];
+    private static readonly RaycastHit2D[] Hits = new RaycastHit2D[32];
+
+    public static bool IsClearToTarget(IMobProjectileLaneSource source, Vector2 origin, GameObject target)
+    {
+        if (target == null) return false;
+        Vector2 delta = CommonMonsterCombatUtility.ResolveAimPoint(target) - origin;
+        return IsClear(source, origin, delta, delta.magnitude);
+    }
+
+    public static bool IsClear(IMobProjectileLaneSource source, Vector2 origin, Vector2 direction, float distance)
+    {
+        GameObject prefab = source.ShotProjectilePrefab;
+        if (prefab == null) return false;
+        // Use the attack root, never the much larger child light/sight trigger.
+        Collider2D collider = prefab.GetComponent<Collider2D>();
+        if (collider == null || !collider.enabled) return false;
+        Vector2 scale = prefab.transform.localScale;
+        float radius;
+        if (collider is CircleCollider2D circle)
+            radius = circle.radius * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.y));
+        else if (collider is BoxCollider2D box)
+            radius = Vector2.Scale(box.size * 0.5f, scale).magnitude;
+        else if (collider is CapsuleCollider2D capsule)
+            radius = Vector2.Scale(capsule.size * 0.5f, scale).magnitude;
+        else return false;
+        radius += Vector2.Scale(collider.offset, scale).magnitude + 0.02f;
+        var filter = new ContactFilter2D { useLayerMask = true, layerMask = source.ShotWallLayers, useTriggers = true };
+        int count = Physics2D.OverlapCircle(origin, radius, filter, Overlaps);
+        if (count == Overlaps.Length) return false;
+        for (int i = 0; i < count; i++)
+            if (Blocks(source, Overlaps[i])) return false;
+        if (distance <= 0f || direction.sqrMagnitude < 0.0001f) return true;
+        count = Physics2D.CircleCast(origin, radius, direction.normalized, filter, Hits, distance);
+        if (count == Hits.Length) return false;
+        for (int i = 0; i < count; i++)
+            if (Blocks(source, Hits[i].collider)) return false;
+        return true;
+    }
+
+    private static bool Blocks(IMobProjectileLaneSource source, Collider2D collider)
+    {
+        if (collider == null) return false;
+        if (source is Component owner && collider.transform.IsChildOf(owner.transform)) return false;
+        // Match LightBeadProjectile2D's existing candle/light-zone exemptions.
+        return collider.GetComponentInParent<Candlestick>() == null &&
+            collider.GetComponentInParent<CandlestickLightZone>() == null;
+    }
+}
+
 /// <summary>
 /// 책임:
 /// - 공통 몬스터 구현들이 반복해서 사용하는 방향 계산, 피해 payload 생성, 단발 범위 피해 같은 순수 전투 보조 함수를 제공한다.

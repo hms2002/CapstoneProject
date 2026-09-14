@@ -14634,6 +14634,7 @@ MonoBehaviour:
   spawnOnStart: 0
   spawnOnSceneLoaded: 1
   clearAliveMonstersBeforeSceneSpawn: 1
+  pathfinder: {fileID: 1798300785}
 --- !u!4 &1038703077
 Transform:
   m_ObjectHideFlags: 0
@@ -16250,6 +16251,62 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 670170a4e9390bc458d0b686227549af, type: 3}
+--- !u!1 &1798300784
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1798300786}
+  - component: {fileID: 1798300785}
+  m_Layer: 0
+  m_Name: MonsterNavigation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1798300786
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798300784}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1798300785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798300784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 731106cde3b130a4687e22786a70aacf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gameplay::TilemapPathfinder2D
+  grid: {fileID: 1764990986}
+  groundTilemap: {fileID: 167450172}
+  additionalGroundTilemaps: []
+  blockedLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  probeSize: {x: 0.7, y: 0.7}
+  allowDiagonal: 0
+  maxPaddingCells: 16
+  maxVisitedNodes: 2048
+  enableDebugLog: 0
+  drawLastPathGizmo: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -16299,3 +16356,4 @@ SceneRoots:
   - {fileID: 1542040510}
   - {fileID: 324345467}
   - {fileID: 899815934}
+  - {fileID: 1798300786}

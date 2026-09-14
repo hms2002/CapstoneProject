@@ -14,6 +14,8 @@ Return from generated dead-end rooms to the same dungeon's Start room without re
 
 ## Runtime Ownership
 
+- The production portal owns a CapsuleCollider2D trigger (long axis 2.2, short axis 1.2). Configure aligns its long axis horizontally for Up/Down walls and vertically for Left/Right, without rotating/scaling the visual or accumulating size on reuse. This extends the old radius-0.6 circle by 0.5 units on each tangential side. Authoring utility creates the same capsule; legacy non-capsule colliders retain their authored shape.
+
 - `DungeonReturnPortalPlacement.cs`: deterministic actual-connection checks, cardinal directions, reachable-cell flood fill and opposite-wall selection. No prefab or physics ownership.
 - `DungeonRoomBuilder.ReturnPortals.cs`: one generation-time post-pass after room objects and encounter binding. Owns the generated rig/portals, cached reachable Start cells, landing validation, optional anchor lookup and reveal snapshots. Rebuild cancels travel before disposing its own generated root.
 - `DungeonRoomDiscoveryTrigger2D.cs`: reports entry by the player's designated body collider to optional map discovery and local subscribers. Portal entry does not require an enabled minimap UI.

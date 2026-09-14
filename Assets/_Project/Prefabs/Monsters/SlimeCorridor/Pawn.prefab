@@ -499,6 +499,9 @@ MonoBehaviour:
   outwardPressure: 0.75
   orbitRadiusDeadZone: 0.12
   returnSpeedScale: 0.9
+  crawlMoveSeconds: 0.22
+  crawlRestSeconds: 0.32
+  crawlPeakSpeedScale: 0.55
 --- !u!114 &1202927576409601092
 MonoBehaviour:
   m_ObjectHideFlags: 0

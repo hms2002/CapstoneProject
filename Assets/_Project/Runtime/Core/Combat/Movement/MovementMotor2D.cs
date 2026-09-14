@@ -72,6 +72,18 @@ namespace UnityGAS
         public Vector2 LastMotionVelocity { get; private set; }
         public Vector2 LastFinalVelocity { get; private set; }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // Read-only motor gates for temporary wall-stall diagnosis; does not tick motion or sample intent.
+        public string DescribeWallStallGates()
+        {
+            return $"hardStopped={IsHardStopped()}, intentAllowed={CanUseIntentMovement()}, " +
+                   $"intentSource={(intentSource == null ? "none" : intentSource.GetType().Name)}, " +
+                   $"wallSafety={preventWallTunneling}, wallSafetyMinSpeed={wallSafetyMinSpeed}, " +
+                   $"motorWallMask={wallCollisionLayers.value}, bodyType={(body != null ? body.bodyType.ToString() : "none")}, " +
+                   $"constraints={(body != null ? body.constraints.ToString() : "none")}";
+        }
+#endif
+
         public bool IsMoving
         {
             get

@@ -28,6 +28,27 @@ public sealed class DungeonReturnPortalPlayModeTests
     }
     private T Own<T>(T value) where T : Object { owned.Add(value); return value; }
 
+    [TestCase(RoomSocketDirection.Up, 2.2f, 1.2f)]
+    [TestCase(RoomSocketDirection.Down, 2.2f, 1.2f)]
+    [TestCase(RoomSocketDirection.Left, 1.2f, 2.2f)]
+    [TestCase(RoomSocketDirection.Right, 1.2f, 2.2f)]
+    public void InteractionCapsule_AlignsToWallWithoutAccumulatingSize(RoomSocketDirection direction, float width, float height)
+    {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(Folder + "DungeonReturnPortal.prefab");
+        var root = Own(Object.Instantiate(prefab));
+        var portal = root.GetComponent<DungeonReturnPortal>();
+        var capsule = root.GetComponent<CapsuleCollider2D>();
+        Assert.That(capsule, Is.Not.Null);
+        portal.Configure(null, 1, null, true, RoomSocketDirection.Left);
+        portal.Configure(null, 1, null, true, direction);
+        portal.Configure(null, 1, null, true, direction);
+        Assert.That(capsule.size, Is.EqualTo(new Vector2(width, height)));
+        Assert.That(capsule.direction, Is.EqualTo(width > height ? CapsuleDirection2D.Horizontal : CapsuleDirection2D.Vertical));
+        Assert.That(capsule.isTrigger, Is.True);
+        Assert.That(capsule.enabled, Is.False);
+        Assert.That(root.transform.localScale, Is.EqualTo(Vector3.one));
+    }
+
     [TestCase(RoomSocketDirection.Left, 5, 3)]
     [TestCase(RoomSocketDirection.Right, 1, 3)]
     [TestCase(RoomSocketDirection.Down, 3, 5)]

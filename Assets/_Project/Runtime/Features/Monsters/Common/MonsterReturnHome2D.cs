@@ -157,7 +157,8 @@ public sealed class MonsterReturnHome2D : MonoBehaviour, IMonsterSpawnContextRec
         if (spawnContext.Pathfinder == null)
             return;
 
-        if (!spawnContext.Pathfinder.TryBuildPath(transform.position, spawnContext.HomePosition, out IReadOnlyList<Vector2> result))
+        if (!spawnContext.Pathfinder.TryBuildPath(transform.position, spawnContext.HomePosition, out IReadOnlyList<Vector2> result,
+                chaseIntent != null ? chaseIntent.GetNavigationFootprint() : default))
         {
             LogDebug($"경로 재계산 실패: current={(Vector2)transform.position}, home={spawnContext.HomePosition}");
             return;

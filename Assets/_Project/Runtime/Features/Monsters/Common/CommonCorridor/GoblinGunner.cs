@@ -11,7 +11,7 @@ using UnityGAS;
 [DisallowMultipleComponent]
 [RequireComponent(typeof(MobAbilityCoordinator))]
 [RequireComponent(typeof(GoblinGunnerShotRunner))]
-public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
+public sealed class GoblinGunner : Mob, IMobAttackDecisionSource, IMobProjectileLaneSource
 {
     private static readonly SoundRef GunShotSound = SoundRef.FromKey("sound_goblinGunner_GunShot");
 
@@ -24,6 +24,8 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
     private bool hasLoggedInvalidConfig;
     private AbilityLogic_GoblinGunnerShot Logic => shotAbility != null ? shotAbility.logic as AbilityLogic_GoblinGunnerShot : null;
     public AbilityLogic_GoblinGunnerShot ShotLogic => Logic;
+    public GameObject ShotProjectilePrefab => Logic != null ? Logic.ProjectilePrefab : null;
+    public LayerMask ShotWallLayers => Logic != null ? Logic.WallLayers : 0;
 
     // 책임: 고블린 총병 투사체 발사에 필요한 타겟, 방향, 사거리, 피해 정보를 보관한다.
     public readonly struct ShotContext
@@ -171,6 +173,8 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
         AbilityLogic_GoblinGunnerShot logic = Logic;
         if (logic == null || logic.ProjectilePrefab == null)
             return;
+
+        if (!MobProjectileLaneUtility.IsClear(this, context.Origin, context.Direction, 0.2f)) return;
 
         SpawnMuzzleEffect(logic);
         SoundPlaybackUtility.Play(GunShotSound, causer: gameObject, position: context.Origin, sourceObject: this);

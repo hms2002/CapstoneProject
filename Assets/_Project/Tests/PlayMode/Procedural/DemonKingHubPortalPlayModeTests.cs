@@ -13,6 +13,95 @@ public sealed class DemonKingHubPortalPlayModeTests
     private const string HubSceneName = "ProtoTypeHub";
     private const string DemonKingCorridorSceneName = "DemonkingCorridor";
 
+#if UNITY_EDITOR
+    // Checks authored scenes and real portal prefabs without running their gameplay Awake/Start flow.
+    [TestCase("DemonkingCorridor")]
+    [TestCase("ProceduralDemonkingCorridor")]
+    public void BossEntrance_ResolvesWithoutRunRouteBackend(string sceneName)
+    {
+        PortalRouteManager manager = PortalRouteManager.Instance;
+        manager?.ClearPlan();
+        RunRoutePlayback.RegisterBackend(null);
+        Scene scene = default;
+        Scene bossScene = default;
+        var originalRoots = new HashSet<GameObject>(SceneManager.GetActiveScene().GetRootGameObjects());
+        try
+        {
+            // Existing MerchantNPC.OnValidate attempts to create four slots while preview-loading
+            // this scene. Account for those exact unrelated errors, not arbitrary travel errors.
+            if (sceneName == "ProceduralDemonkingCorridor")
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    LogAssert.Expect(LogType.Error, "Cannot instantiate objects with a parent which is persistent. New object will be created without a parent.");
+                    LogAssert.Expect(LogType.Error, "Setting the parent of a transform which resides in a Prefab Asset is disabled to prevent data corruption");
+                }
+            }
+            scene = UnityEditor.SceneManagement.EditorSceneManager.OpenPreviewScene($"Assets/_Project/Scenes/{sceneName}.unity");
+            SceneTravelEndpoint endpoint = null;
+            if (sceneName == DemonKingCorridorSceneName)
+            {
+                foreach (var root in scene.GetRootGameObjects())
+                {
+                    foreach (var legacy in root.GetComponentsInChildren<ScenePortal>(true))
+                        Assert.That(legacy.PortalTransitionType, Is.Not.EqualTo(TransitionType.CorridorToBoss));
+                    foreach (var candidate in root.GetComponentsInChildren<SceneTravelEndpoint>(true))
+                        if (candidate.EndpointId == "Corridor.demon_king.RestBoss") endpoint = candidate;
+                }
+            }
+            else
+            {
+                DungeonRoomBuilder builder = null;
+                foreach (var root in scene.GetRootGameObjects())
+                    if (root.GetComponentInChildren<DungeonRoomBuilder>(true) is { } found) builder = found;
+                Assert.That(builder, Is.Not.Null);
+                var bindings = new UnityEditor.SerializedObject(builder).FindProperty("travelEndpointBindings");
+                SceneConnectionSO connection = null;
+                int side = -1;
+                for (int i = 0; i < bindings.arraySize; i++)
+                {
+                    var binding = bindings.GetArrayElementAtIndex(i);
+                    if (binding.FindPropertyRelative("roomId").stringValue != "DemonKing_Boss" ||
+                        binding.FindPropertyRelative("slotId").stringValue != "BossGate") continue;
+                    connection = binding.FindPropertyRelative("connection").objectReferenceValue as SceneConnectionSO;
+                    side = binding.FindPropertyRelative("connectionSide").enumValueIndex;
+                }
+                Assert.That(connection, Is.Not.Null);
+                Assert.That(side, Is.EqualTo(0));
+                var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+                    "Assets/_Project/Prefabs/Map/Procedural/ProceduralSceneTravelPortal.prefab");
+                var portal = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(prefab, scene);
+                endpoint = portal.GetComponent<SceneTravelEndpoint>();
+                endpoint.EditorConfigure(connection.EndpointA.EndpointId, "BossGate", connection, SceneConnectionEndpointSide.A);
+            }
+            Assert.That(endpoint, Is.Not.Null);
+            Assert.That(endpoint.isActiveAndEnabled, Is.True);
+            Assert.That(endpoint.GetComponent<SceneTravelInteractable>(), Is.Not.Null);
+            Assert.That(endpoint.RegisterAsArrivalOnly, Is.False);
+            Assert.That(endpoint.TryResolveDirection(out var direction), Is.True);
+            Assert.That(direction.Destination.SceneName, Is.EqualTo("LeeJunmo_Boss_DemonKing"));
+            Assert.That(direction.Destination.EndpointId, Is.EqualTo("Boss.demon_king.Corridor"));
+            Assert.That(endpoint.Connection.AToB.Enabled, Is.True);
+            Assert.That(endpoint.Connection.BToA.Enabled, Is.False);
+
+            bossScene = UnityEditor.SceneManagement.EditorSceneManager.OpenPreviewScene("Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity");
+            int arrivals = 0;
+            foreach (var root in bossScene.GetRootGameObjects())
+                foreach (var arrival in root.GetComponentsInChildren<SceneTravelEndpoint>(true))
+                    if (arrival.EndpointId == direction.Destination.EndpointId && arrival.isActiveAndEnabled) arrivals++;
+            Assert.That(arrivals, Is.EqualTo(1), "Both sources use one active boss arrival endpoint.");
+        }
+        finally
+        {
+            if (bossScene.IsValid()) UnityEditor.SceneManagement.EditorSceneManager.ClosePreviewScene(bossScene);
+            if (scene.IsValid()) UnityEditor.SceneManagement.EditorSceneManager.ClosePreviewScene(scene);
+            foreach (var root in SceneManager.GetActiveScene().GetRootGameObjects())
+                if (!originalRoots.Contains(root)) Object.DestroyImmediate(root);
+            RunRoutePlayback.RegisterBackend(manager);
+        }
+    }
+#endif
+
     [UnityTest]
     public IEnumerator HubStartPortal_ResolvesFixedDemonKingRestCorridor()
     {

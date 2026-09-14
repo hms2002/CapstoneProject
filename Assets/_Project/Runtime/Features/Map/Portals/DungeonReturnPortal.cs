@@ -1,6 +1,6 @@
 using UnityEngine;
 
-/// <summary>Gates a dead-end room's reusable return interaction using room entry, complete waves and split-aware encounter counts.</summary>
+/// <summary>Gates dead-end return interaction by encounter state and aligns its trigger along the portal wall.</summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
 public sealed class DungeonReturnPortal : InteractableBase
@@ -27,6 +27,14 @@ public sealed class DungeonReturnPortal : InteractableBase
     {
         travel = owner; RoomPlacementId = roomId; group = roomGroup; entryUnlock = revealOnEntry;
         interaction = GetComponent<Collider2D>();
+        if (interaction is CapsuleCollider2D capsule)
+        {
+            float length = Mathf.Max(capsule.size.x, capsule.size.y);
+            float thickness = Mathf.Min(capsule.size.x, capsule.size.y);
+            bool horizontal = wallDirection == RoomSocketDirection.Up || wallDirection == RoomSocketDirection.Down;
+            capsule.direction = horizontal ? CapsuleDirection2D.Horizontal : CapsuleDirection2D.Vertical;
+            capsule.size = horizontal ? new Vector2(length, thickness) : new Vector2(thickness, length);
+        }
         interaction.isTrigger = true;
         interaction.enabled = false;
         view?.SelectDirection(wallDirection);

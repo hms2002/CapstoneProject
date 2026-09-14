@@ -43,6 +43,10 @@ public static class MobStateTransitionUtility
         if (!request.IsValid)
             return false;
 
+        if (context.Owner is IMobProjectileLaneSource ranged &&
+            !MobProjectileLaneUtility.IsClearToTarget(ranged, context.Owner.transform.position, request.ExplicitTarget))
+            return false;
+
         context.Owner.LogFsmDebug($"공격 요청 생성 성공. ability={(request.Ability != null ? request.Ability.name : "null")}, explicitTarget={(request.ExplicitTarget != null ? request.ExplicitTarget.name : "null")}");
 
         if (context.AttackDecisionSource is IMobAttackStateResolver resolver &&
