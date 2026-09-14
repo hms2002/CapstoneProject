@@ -369,6 +369,38 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(serialized.FindProperty("chestRefreshCount").intValue, Is.EqualTo(1));
     }
 
+    [Test]
+    public void LightningSpearAndCurrentShard_UseApprovedElectricProgression()
+    {
+        WeaponDefinition spear = Load<WeaponDefinition>(
+            "Assets/_Project/Data/Items/Weapons/Definitions/WD_LightningSpear.asset");
+        Assert.That(spear.statModifiers.Count, Is.EqualTo(1));
+        WeaponDefinition.WeaponStatModifier spearElectric = spear.statModifiers[0];
+        Assert.That(spearElectric.attribute,
+            Is.SameAs(LoadGuid<AttributeDefinition>("418ca09dfa4c417ca3cadc4fd73bd414")));
+        Assert.That(spearElectric.type, Is.EqualTo(ModifierType.Flat));
+        Assert.That(spearElectric.value, Is.EqualTo(5f));
+
+        ScriptableObject shard = Load<ScriptableObject>(
+            "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_CurrentShard.asset");
+        using var shardSerialized = new SerializedObject(shard);
+        SerializedProperty entry = shardSerialized.FindProperty("entries").GetArrayElementAtIndex(0);
+        Assert.That(entry.FindPropertyRelative("attribute").objectReferenceValue,
+            Is.SameAs(LoadGuid<AttributeDefinition>("f79c86d599c44c8e95bdf6949914f4e3")));
+        Assert.That(entry.FindPropertyRelative("type").enumValueIndex,
+            Is.EqualTo((int)ModifierType.Flat));
+        SerializedProperty values = entry.FindPropertyRelative("valueByLevel");
+        Assert.That(values.arraySize, Is.EqualTo(3));
+        Assert.That(values.GetArrayElementAtIndex(0).floatValue, Is.EqualTo(2f));
+        Assert.That(values.GetArrayElementAtIndex(1).floatValue, Is.EqualTo(4f));
+        Assert.That(values.GetArrayElementAtIndex(2).floatValue, Is.EqualTo(6f));
+
+        ElementBuildUpFormulaProfile profile = Load<ElementBuildUpFormulaProfile>(
+            "Assets/_Project/Data/Attributes/ElementGauges/ElementBuildUpFormulaProfile.asset");
+        Assert.That(CalculateElementBuildUp(profile, 5f), Is.EqualTo(20f).Within(0.001f));
+        Assert.That(CalculateElementBuildUp(profile, 11f), Is.EqualTo(28.333334f).Within(0.001f));
+    }
+
     [TestCase("Relic Logic_Common_BlackIncense.asset", 1, 0, -0.03f)]
     [TestCase("Relic Logic_Common_BlackIncense.asset", 1, 1, -0.02f)]
     [TestCase("Relic Logic_Common_BlackIncense.asset", 1, 2, -0.01f)]
@@ -590,6 +622,12 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(weights.arraySize, Is.EqualTo(1));
         Assert.That(weights.GetArrayElementAtIndex(0).FindPropertyRelative("count").intValue,
             Is.EqualTo(expected));
+    }
+
+    private static float CalculateElementBuildUp(ElementBuildUpFormulaProfile profile, float stat)
+    {
+        return profile.baseValue +
+               (stat * profile.maxCap) / (stat + Mathf.Max(0.0001f, profile.curveConstant));
     }
 
     private static ScaledStatFormula ReadFormula(string asset, string property)
