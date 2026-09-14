@@ -196,13 +196,13 @@ MonoBehaviour:
     - localCell: {x: 8, y: 4}
       tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
     - localCell: {x: 8, y: 5}
-      tile: {fileID: 11400000, guid: 8f37c6b686f0ed54b811b2771dbb1ad9, type: 2}
+      tile: {fileID: 11400000, guid: b6dee8d27166a08489b380602f71c3ed, type: 2}
     - localCell: {x: 8, y: 6}
-      tile: {fileID: 11400000, guid: 2982a06973bb01e47b211031273d4147, type: 2}
+      tile: {fileID: 11400000, guid: b6dee8d27166a08489b380602f71c3ed, type: 2}
     - localCell: {x: 8, y: 7}
-      tile: {fileID: 11400000, guid: 2963bebb1a406d348a389333135398fe, type: 2}
+      tile: {fileID: 11400000, guid: 0ab1e75c9f34fd64d89f24c4ad3f930b, type: 2}
     - localCell: {x: 8, y: 8}
-      tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
+      tile: {fileID: 11400000, guid: 9ef56a772bc98d141af7821367a21ae7, type: 2}
     - localCell: {x: 8, y: 9}
       tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
     - localCell: {x: 8, y: 10}
@@ -216,13 +216,13 @@ MonoBehaviour:
     - localCell: {x: 9, y: 4}
       tile: {fileID: 11400000, guid: 4fc1c9e4296cef340b57721f6366482a, type: 2}
     - localCell: {x: 9, y: 5}
-      tile: {fileID: 11400000, guid: 2963bebb1a406d348a389333135398fe, type: 2}
+      tile: {fileID: 11400000, guid: e1f6f25b588bd624ba6f118dcf10f833, type: 2}
     - localCell: {x: 9, y: 6}
-      tile: {fileID: 11400000, guid: 4fc1c9e4296cef340b57721f6366482a, type: 2}
+      tile: {fileID: 11400000, guid: e1f6f25b588bd624ba6f118dcf10f833, type: 2}
     - localCell: {x: 9, y: 7}
-      tile: {fileID: 11400000, guid: 8f37c6b686f0ed54b811b2771dbb1ad9, type: 2}
+      tile: {fileID: 11400000, guid: 7da3416952c8d9042aa63e84a591c28a, type: 2}
     - localCell: {x: 9, y: 8}
-      tile: {fileID: 11400000, guid: 05269e9964ef06d489cc47b435e57f48, type: 2}
+      tile: {fileID: 11400000, guid: 9e43d41ffb1698243954f3e00f161c5d, type: 2}
     - localCell: {x: 9, y: 9}
       tile: {fileID: 11400000, guid: 796dad184311d6f44a1a38ebbb072cc6, type: 2}
     - localCell: {x: 9, y: 10}
@@ -496,16 +496,6 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 0d3dbd63877db31499d8d31c203dbd2c, type: 2}
     - localCell: {x: 8, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
-    - localCell: {x: 8, y: 4}
-      tile: {fileID: 11400000, guid: b6dee8d27166a08489b380602f71c3ed, type: 2}
-    - localCell: {x: 8, y: 5}
-      tile: {fileID: 11400000, guid: b6dee8d27166a08489b380602f71c3ed, type: 2}
-    - localCell: {x: 8, y: 6}
-      tile: {fileID: 11400000, guid: b6dee8d27166a08489b380602f71c3ed, type: 2}
-    - localCell: {x: 8, y: 7}
-      tile: {fileID: 11400000, guid: 0ab1e75c9f34fd64d89f24c4ad3f930b, type: 2}
-    - localCell: {x: 8, y: 8}
-      tile: {fileID: 11400000, guid: 9ef56a772bc98d141af7821367a21ae7, type: 2}
     - localCell: {x: 8, y: 9}
       tile: {fileID: 11400000, guid: 839146d5aaef50643a0d960e4e9d5097, type: 2}
     - localCell: {x: 8, y: 10}
@@ -514,16 +504,6 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 0d3dbd63877db31499d8d31c203dbd2c, type: 2}
     - localCell: {x: 9, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
-    - localCell: {x: 9, y: 4}
-      tile: {fileID: 11400000, guid: e1f6f25b588bd624ba6f118dcf10f833, type: 2}
-    - localCell: {x: 9, y: 5}
-      tile: {fileID: 11400000, guid: e1f6f25b588bd624ba6f118dcf10f833, type: 2}
-    - localCell: {x: 9, y: 6}
-      tile: {fileID: 11400000, guid: e1f6f25b588bd624ba6f118dcf10f833, type: 2}
-    - localCell: {x: 9, y: 7}
-      tile: {fileID: 11400000, guid: 7da3416952c8d9042aa63e84a591c28a, type: 2}
-    - localCell: {x: 9, y: 8}
-      tile: {fileID: 11400000, guid: 9e43d41ffb1698243954f3e00f161c5d, type: 2}
     - localCell: {x: 9, y: 9}
       tile: {fileID: 11400000, guid: 839146d5aaef50643a0d960e4e9d5097, type: 2}
     - localCell: {x: 9, y: 10}
@@ -654,7 +634,8 @@ MonoBehaviour:
     foregroundTiles: []
     overlayFxTiles: []
     objectPlacements:
-    - placementId: Object_01
+    - monsterWaveId: 
+      placementId: Object_01
       kind: 0
       prefab: {fileID: 1718124053476297701, guid: fd20831272af9f04692453e99a04a668, type: 3}
       monsterSpawnRole: 0
@@ -686,4 +667,8 @@ MonoBehaviour:
         overrideScale: 1
         localScale: {x: 1, y: 1, z: 1}
       linkedChestLockPlacementId: 
+    monsterWaves:
+    - id: wave_default
+      displayName: Wave 1
+      startDelaySeconds: 0
     travelEndpointPlacements: []
