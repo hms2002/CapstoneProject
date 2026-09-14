@@ -12,6 +12,7 @@ namespace UnityGAS
     {
         public AbilitySystem sourceSystem;
         public AbilitySpec sourceSpec;
+        [System.NonSerialized] public HitStopActivation hitStopGroup;
         public GameplayEffect damageEffect;
         public GE_Knockback_Spec knockbackEffect;
         public float finalHpDamage;
@@ -24,6 +25,8 @@ namespace UnityGAS
         public ElementDamageResult[] elementBuildUps;
         public bool hasResolvedElementBuildUps;
         public CombatHitFeelTiming hitFeel;
+        [System.NonSerialized] public CameraShakeRequest? impactCameraOverride;
+        [System.NonSerialized] public float? hitCameraScale;
 
         public bool IsValid()
         {
@@ -46,6 +49,7 @@ namespace UnityGAS
                     ? sourceSpec.Definition.ResolveHitFeel(sourceSpec.GetInt("Combat.HitFeelIndex", -1)) : default,
                 sourceSystem = sourceSystem,
                 sourceSpec = sourceSpec,
+                hitStopGroup = sourceSpec?.HitStopGroup,
                 damageEffect = damageEffect,
                 knockbackEffect = knockbackEffect,
                 finalHpDamage = snapshot.FinalHpDamage,
@@ -92,7 +96,10 @@ namespace UnityGAS
                 elementBuildUps: payload.elementBuildUps,
                 hasResolvedElementBuildUps: payload.hasResolvedElementBuildUps,
                 hitImpactCueKind: payload.hitImpactCueKind,
-                hitFeelOverride: payload.hitFeel);
+                hitFeelOverride: payload.hitFeel,
+                hitStopGroup: payload.hitStopGroup,
+                impactCameraOverride: payload.impactCameraOverride,
+                hitCameraScale: payload.hitCameraScale);
 
             return true;
         }

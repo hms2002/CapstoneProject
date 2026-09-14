@@ -156,6 +156,7 @@ public sealed class DemonKingController : BossControllerBase
 
     protected override void Update()
     {
+        if (UnityGAS.CombatHitPause2D.IsPausedOn(gameObject)) return;
         base.Update();
 
         NormalizeBodySorting();

@@ -34,17 +34,7 @@ public sealed class AbilityLogic_FloweringBloom : AbilityLogic
         runtimeState.BeginBloomSkillSwapLock();
         try
         {
-            runtimeState.AcquireBloomCutInInputBlock();
-            PauseCombatTime();
-            try
-            {
-                yield return runtimeState.PlayBloomCutIn(system, spec, data);
-            }
-            finally
-            {
-                RestoreCombatTime();
-                runtimeState.ReleaseBloomCutInInputBlock();
-            }
+            yield return CombatHitPause2D.RunUnpausedPresentation(PlayCutIn(system, spec, data, runtimeState));
 
             if (IsAbilityCancelled(spec))
             {
@@ -95,6 +85,23 @@ public sealed class AbilityLogic_FloweringBloom : AbilityLogic
 
         runtimeState.EndBloom();
         runtimeState.EndBloomSkillSwapLock();
+    }
+
+    private IEnumerator PlayCutIn(AbilitySystem system, AbilitySpec spec, FloweringBloomData data,
+        FloweringRuntimeState runtimeState)
+    {
+        // Acquire and release inside the unpaused section so its finally remains reachable.
+        runtimeState.AcquireBloomCutInInputBlock();
+        try
+        {
+            PauseCombatTime();
+            yield return runtimeState.PlayBloomCutIn(system, spec, data);
+        }
+        finally
+        {
+            RestoreCombatTime();
+            runtimeState.ReleaseBloomCutInInputBlock();
+        }
     }
 
     private static FloweringRuntimeData ResolveRuntimeData(AbilitySystem system)

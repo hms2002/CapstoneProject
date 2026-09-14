@@ -559,7 +559,8 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         LightningSpearSkill2Data data = ResolveSkill2Data(loadout);
         Vector2 hitOrigin = mark.transform.position;
         LightningSpearHitConfig landingHit = GetLandingHit(loadout, data);
-        if (SpawnHitbox(landingHit, system, spec, hitOrigin, Vector2.right, 1))
+        if (SpawnHitbox(landingHit, system, spec, hitOrigin, Vector2.right, 1,
+            feedbackKind: LightningSpearFeedbackKind.Landing, feedbackGroup: mark.HitStopGroup))
         {
             PlaySoundAt(
                 data != null ? data.MarkRainLandingHitSound : default,
@@ -625,7 +626,8 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
                 yield return new WaitForSeconds(hitDelay);
 
             if (!markRushEffectHandlesHitboxes)
-                SpawnHitbox(markRushHit, system, spec, destination, direction, facingSideSign);
+                SpawnHitbox(markRushHit, system, spec, destination, direction, facingSideSign,
+                    feedbackKind: LightningSpearFeedbackKind.Rush);
             PlaySoundAt(data != null ? data.MarkRushArrivalSound : default, system, spec, destination, data);
 
             RefreshMarkFeedback(loadout, data);
@@ -1013,6 +1015,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         if (payload == null)
             return;
 
+        LightningSpearHitFeedback.Configure(payload, LightningSpearFeedbackKind.RecoveredShot, direction);
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : ResolveAimDirection(system);
         float safetyLifetime =
             data.RecoveredSpearProjectileSpawnFallbackSeconds +
@@ -1432,7 +1435,9 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         Vector2 origin,
         Vector2 direction,
         int facingSideSignOverride = 0,
-        HashSet<int> sharedHitTargetIds = null)
+        HashSet<int> sharedHitTargetIds = null,
+        LightningSpearFeedbackKind feedbackKind = LightningSpearFeedbackKind.Sweep,
+        HitStopActivation feedbackGroup = null)
     {
         if (hitConfig == null || !hitConfig.HasHitbox || system == null || spec == null)
             return false;
@@ -1440,6 +1445,8 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         CombatHitPayload payload = hitConfig.BuildPayload(system, spec);
         if (payload == null)
             return false;
+        LightningSpearHitFeedback.Configure(payload, feedbackKind, direction);
+        if (feedbackGroup != null) payload.hitStopGroup = feedbackGroup;
 
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f
             ? direction.normalized

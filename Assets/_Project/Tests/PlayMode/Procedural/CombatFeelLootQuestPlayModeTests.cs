@@ -24,6 +24,72 @@ public sealed class CombatFeelLootQuestPlayModeTests
         owned.Clear();
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public void CutInPause_NestedPresentationCompletesOrCancels_WithoutReleasingOtherOwners(bool cancel)
+    {
+        var actor = Own(new GameObject("CutInRunner"));
+        var system = actor.AddComponent<AbilitySystem>();
+        var cutInOwner = Own(new GameObject("CutInPauseOwner"));
+        var externalOwner = Own(new GameObject("ExternalPauseOwner"));
+        var spec = new AbilitySpec(null);
+        var token = new AbilityCancellationToken();
+        typeof(AbilitySpec).GetProperty("Token").SetValue(spec, token);
+        bool nestedStarted = false, cutInCleaned = false, gameplayResumed = false, outerCleaned = false;
+        IEnumerator Nested()
+        {
+            nestedStarted = true;
+            yield return null;
+        }
+        IEnumerator CutIn()
+        {
+            TimeScalePausePlayback.Acquire(cutInOwner);
+            try { yield return Nested(); }
+            finally { TimeScalePausePlayback.Release(cutInOwner); cutInCleaned = true; }
+        }
+        IEnumerator Ability()
+        {
+            try
+            {
+                yield return CombatHitPause2D.RunUnpausedPresentation(CutIn());
+                gameplayResumed = true;
+            }
+            finally { outerCleaned = true; }
+        }
+        IEnumerator runner = CombatHitPause2D.Run(system, spec, Ability());
+        try
+        {
+            Assert.IsTrue(TimeScalePausePlayback.Acquire(externalOwner));
+            Assert.IsTrue(runner.MoveNext());
+            Assert.IsFalse(nestedStarted, "Existing hitstop must delay ability entry.");
+            TimeScalePausePlayback.Release(externalOwner);
+            Assert.IsTrue(runner.MoveNext());
+            Assert.IsTrue(nestedStarted, "Nested cut-in must run despite its own pause.");
+            Assert.IsTrue(TimeScalePausePlayback.IsHeldBy(cutInOwner));
+            TimeScalePausePlayback.Acquire(externalOwner);
+            if (cancel) token.Cancel();
+            Assert.AreEqual(!cancel, runner.MoveNext());
+            Assert.IsTrue(cutInCleaned);
+            Assert.IsFalse(TimeScalePausePlayback.IsHeldBy(cutInOwner));
+            Assert.IsTrue(TimeScalePausePlayback.IsHeldBy(externalOwner));
+            Assert.AreEqual(0f, Time.timeScale);
+            Assert.IsFalse(gameplayResumed);
+            TimeScalePausePlayback.Release(externalOwner);
+            if (!cancel)
+            {
+                Assert.IsFalse(runner.MoveNext());
+                Assert.IsTrue(gameplayResumed);
+            }
+            Assert.IsTrue(outerCleaned);
+        }
+        finally
+        {
+            (runner as IDisposable)?.Dispose();
+            TimeScalePausePlayback.Release(cutInOwner);
+            TimeScalePausePlayback.Release(externalOwner);
+        }
+    }
+
     [Test] public void Chest_ThirdTransferIsRejected_AndReopenPreservesCount()
     {
         var chest = new ChestInventory(4);
@@ -175,44 +241,220 @@ public sealed class CombatFeelLootQuestPlayModeTests
         finally { InputActionQuery.RegisterBackend(previous); }
     }
 
-    [UnityTest] public IEnumerator WorldHitstop_FreezesOtherActors_ExpiresUnscaled_AndPreservesMenuPause()
+    [UnityTest] public IEnumerator Impact_FreezesParticipants_SlowsWorld_AndPreservesMenuPause()
     {
-        var source = Own(new GameObject("HitstopSource"));
-        var enemy = Own(new GameObject("HitstopEnemy"));
-        enemy.AddComponent<HitPauseImmuneTestActor>();
-        var body = enemy.AddComponent<Rigidbody2D>();
+        var source = Own(new GameObject("ImpactSource"));
+        var victim = Own(new GameObject("ImpactBoss"));
+        victim.AddComponent<HitPauseImmuneTestActor>();
+        var body = victim.AddComponent<Rigidbody2D>();
         body.gravityScale = 0f;
-        body.linearVelocity = Vector2.right;
-        var animator = enemy.AddComponent<Animator>();
+        body.constraints = RigidbodyConstraints2D.FreezeRotation;
+        var animator = victim.AddComponent<Animator>();
         animator.speed = 0.7f;
+        var other = Own(new GameObject("OtherActor"));
         var menu = Own(new GameObject("PauseMenuOwner"));
         try
         {
-            CombatHitPause2D.ApplyWorldPause(source, 0.08f);
+            CombatHitPause2D.ApplyImpact(source, victim, 0.06f, Vector3.right);
+            Assert.AreEqual(0.15f, Time.timeScale, 0.0001f);
+            Assert.IsFalse(TimeScalePausePlayback.IsPaused);
+            Assert.IsTrue(CombatHitPause2D.IsPausedOn(source));
+            Assert.IsTrue(CombatHitPause2D.IsPausedOn(victim));
+            Assert.IsFalse(CombatHitPause2D.IsPausedOn(other));
+            Assert.AreEqual(0f, animator.speed);
+            Assert.AreEqual(0.7f, CombatHitPause2D.GetUnpausedAnimatorSpeed(animator));
+            Assert.AreEqual(RigidbodyConstraints2D.FreezeAll, body.constraints);
+            TimeScalePausePlayback.Acquire(menu);
+            yield return new WaitForSecondsRealtime(0.08f);
             Assert.AreEqual(0f, Time.timeScale);
-            Assert.IsTrue(CombatHitPause2D.IsPausedOn(enemy), "Boss local-stun immunity must not bypass world hitstop.");
-            Assert.AreEqual(0.7f, animator.speed, "World hitstop must not overwrite pattern animator speeds.");
-            float frozenTime = Time.time;
-            Vector2 frozenPosition = body.position;
-            yield return new WaitForSecondsRealtime(0.03f);
-            Assert.AreEqual(frozenTime, Time.time, 0.001f);
-            Assert.AreEqual(frozenPosition, body.position);
-            Assert.IsTrue(TimeScalePausePlayback.Acquire(menu));
-            yield return new WaitForSecondsRealtime(0.1f);
-            Assert.IsFalse(TimeScalePausePlayback.IsHeldBy(source.GetComponent<CombatHitPause2D>()));
-            Assert.IsTrue(TimeScalePausePlayback.IsHeldBy(menu));
-            Assert.AreEqual(0f, Time.timeScale);
+            Assert.IsTrue(CombatHitPause2D.IsPausedOn(victim));
+            Assert.IsTrue(TimeScalePausePlayback.IsHeldBy(source.GetComponent<CombatHitPause2D>()));
             TimeScalePausePlayback.Release(menu);
+            Assert.AreEqual(0.15f, Time.timeScale, 0.0001f);
+            yield return new WaitForSecondsRealtime(0.12f);
             Assert.AreEqual(1f, Time.timeScale);
-            CombatHitPause2D.ApplyWorldPause(source, 0.3f);
+            Assert.IsFalse(CombatHitPause2D.IsPausedOn(victim));
+            Assert.AreEqual(0.7f, animator.speed);
+            Assert.AreEqual(RigidbodyConstraints2D.FreezeRotation, body.constraints);
+            CombatHitPause2D.Apply(victim, 0.1f);
+            Assert.IsFalse(CombatHitPause2D.IsPausedOn(victim), "Boss still ignores ordinary stagger.");
+            CombatHitPause2D.ApplyWorldPause(source, 0.06f);
             source.SetActive(false);
-            Assert.AreEqual(1f, Time.timeScale, "Disabling the owner must release its hitstop token.");
+            Assert.AreEqual(1f, Time.timeScale);
         }
         finally
         {
-            if (TimeScalePausePlayback.IsHeldBy(menu)) TimeScalePausePlayback.Release(menu);
+            TimeScalePausePlayback.Release(menu);
             source.SetActive(false);
+            victim.SetActive(false);
         }
+    }
+
+    [UnityTest] public IEnumerator ChestImpactCamera_CompletesWhileUiPaused_AndCombatStillWaits()
+    {
+        var pauseOwner = Own(new GameObject("ChestPauseOwner"));
+        var cameraObject = Own(new GameObject("ChestImpactCamera"));
+        var driverType = Type.GetType("CameraManualShakeDriver, Presentation", true);
+        var driver = (Behaviour)cameraObject.AddComponent(driverType);
+        var play = driverType.GetMethod("Play");
+        var remainingField = driverType.GetField("remaining", BindingFlags.Instance | BindingFlags.NonPublic);
+        var backendField = typeof(CameraShakePlayback).GetField("backend", BindingFlags.Static | BindingFlags.NonPublic);
+        var previous = (ICameraShakeBackend)backendField.GetValue(null);
+        var recorder = new LightningCameraRecorder();
+        CameraShakePlayback.RegisterBackend(recorder);
+        try
+        {
+            TimeScalePausePlayback.Acquire(pauseOwner);
+            var chestObject = Own(new GameObject("ChestCollisionPresentation", typeof(RectTransform)));
+            var chestType = Type.GetType("ChestFirstOpenRevealPresentation, UI", true);
+            var chest = chestObject.AddComponent(chestType);
+            chestType.GetMethod("PlayImpactCameraShakeIfNeeded", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(chest, null);
+            Assert.AreEqual(1, recorder.Requests.Count);
+            var request = recorder.Requests[0];
+            Assert.IsTrue(request.PlayWhilePaused);
+            play.Invoke(driver, new object[] { request.Amplitude, request.Direction, request.ManualShakeSettingsOverride,
+                request.PunchDistance, request.PunchSeconds, request.PlayWhilePaused });
+            yield return new WaitForSecondsRealtime(request.ManualShakeSettingsOverride.duration + 0.1f);
+            Assert.LessOrEqual((float)remainingField.GetValue(driver), 0f);
+            Assert.AreEqual(Vector3.zero, cameraObject.transform.position);
+            TimeScalePausePlayback.Release(pauseOwner);
+            yield return null;
+            Assert.IsFalse(driver.enabled, "Closing UI must not replay the completed impact.");
+
+            TimeScalePausePlayback.Acquire(pauseOwner);
+            play.Invoke(driver, new object[] { 1f, Vector3.right, CameraManualShakeSettings.Create(0.08f), 0f, 0f, false });
+            yield return new WaitForSecondsRealtime(0.12f);
+            Assert.AreEqual(0.08f, (float)remainingField.GetValue(driver), 0.0001f, "Combat feedback still waits during full pause.");
+            TimeScalePausePlayback.Release(pauseOwner);
+            yield return new WaitForSecondsRealtime(0.15f);
+            Assert.LessOrEqual((float)remainingField.GetValue(driver), 0f);
+        }
+        finally
+        {
+            TimeScalePausePlayback.Release(pauseOwner);
+            CameraShakePlayback.RegisterBackend(previous);
+        }
+    }
+
+    private sealed class LightningCameraRecorder : ICameraShakeBackend
+    {
+        public readonly List<CameraShakeRequest> Requests = new();
+        public bool Play(in CameraShakeRequest request) { Requests.Add(request); return true; }
+    }
+
+    [TestCase(LightningSpearFeedbackKind.Sweep, 0.12f, 1.4f, 1)]
+    [TestCase(LightningSpearFeedbackKind.Rush, 0.1f, 0.9f, 1)]
+    [TestCase(LightningSpearFeedbackKind.RecoveredShot, 0f, 0f, 0)]
+    [TestCase(LightningSpearFeedbackKind.Landing, 0f, 0f, 1)]
+    public void LightningFeedback_MultipleVictimsShareCameraBudget_WithoutStoppingSupportAttacker(
+        LightningSpearFeedbackKind kind, float stop, float punch, int cameraCount)
+    {
+        var backendField = typeof(CameraShakePlayback).GetField("backend", BindingFlags.Static | BindingFlags.NonPublic);
+        var previous = (ICameraShakeBackend)backendField.GetValue(null);
+        var camera = new LightningCameraRecorder();
+        CameraShakePlayback.RegisterBackend(camera);
+        var source = Own(new GameObject("LightningFeedbackSource"));
+        source.AddComponent<AttributeSet>();
+        source.AddComponent<TagSystem>();
+        source.AddComponent<GameplayEffectRunner>();
+        var system = source.AddComponent<AbilitySystem>();
+        var spec = new AbilitySpec(Own(ScriptableObject.CreateInstance<AbilityDefinition>()));
+        var damage = Own(ScriptableObject.CreateInstance<GE_Damage_Spec>());
+        damage.healthAttribute = UnityEditor.AssetDatabase.LoadAssetAtPath<AttributeDefinition>(
+            UnityEditor.AssetDatabase.GUIDToAssetPath("3ff045849daafe84d97370c69cd17747"));
+        damage.fallbackDamage = 1f;
+        damage.fallbackStunSeconds = 0f;
+        damage.fallbackCameraShake = 0f;
+        var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Monsters/TrainingDummy.prefab");
+        try
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                var victim = Own(Object.Instantiate(prefab, new Vector3(10000f + i * 10f, 10000f), Quaternion.identity));
+                var payload = new CombatHitPayload { sourceSystem = system, sourceSpec = spec,
+                    damageEffect = damage, finalHpDamage = 1f, hitStopGroup = spec.HitStopGroup };
+                LightningSpearHitFeedback.Configure(payload, kind, Vector2.left);
+                CombatHitPayloadApplier.Apply(victim, payload);
+                Assert.IsTrue(CombatHitPause2D.IsPausedOn(victim));
+                Assert.AreEqual(stop, payload.hitFeel.attackerStopSeconds);
+                Assert.AreEqual(0f, payload.hitCameraScale);
+            }
+            Assert.AreEqual(cameraCount, camera.Requests.Count);
+            Assert.AreEqual(stop > 0f, CombatHitPause2D.IsPausedOn(source));
+            Assert.AreEqual(stop > 0f ? 0.15f : 1f, Time.timeScale, 0.0001f);
+            if (cameraCount > 0)
+            {
+                Assert.AreEqual(punch, camera.Requests[0].PunchDistance);
+                Assert.AreEqual((Vector3)Vector2.left, camera.Requests[0].Direction);
+            }
+        }
+        finally { source.SetActive(false); CameraShakePlayback.RegisterBackend(previous); }
+    }
+
+    [Test] public void HitCameraScale_SuppressesOnlyCamera_AndScalesCappedThirdHit()
+    {
+        var backendField = typeof(CameraShakePlayback).GetField("backend", BindingFlags.Static | BindingFlags.NonPublic);
+        var previous = (ICameraShakeBackend)backendField.GetValue(null);
+        var camera = new LightningCameraRecorder();
+        var actor = Own(new GameObject("CameraCueScale"));
+        var cue = actor.AddComponent(Type.GetType("UnityGAS.GameplayCue_CameraShake, Presentation", true));
+        var execute = cue.GetType().GetMethod("OnExecute");
+        CameraShakePlayback.RegisterBackend(camera);
+        try
+        {
+            execute.Invoke(cue, new object[] { new GameplayCueParams { Instigator = actor, Magnitude = 100f } });
+            float baseline = camera.Requests[0].Amplitude;
+            execute.Invoke(cue, new object[] { new GameplayCueParams { Instigator = actor, Magnitude = 100f, HitCameraScale = 1.3f } });
+            Assert.AreEqual(baseline * 1.3f, camera.Requests[1].Amplitude, 0.0001f);
+            execute.Invoke(cue, new object[] { new GameplayCueParams { Instigator = actor, Magnitude = 100f, HitCameraScale = 0f } });
+            Assert.AreEqual(2, camera.Requests.Count);
+        }
+        finally { CameraShakePlayback.RegisterBackend(previous); }
+    }
+
+    [Test] public void HitStop_RequestAndVictimGuardsResetPerActivation()
+    {
+        var spec = new AbilitySpec(null);
+        var victim = Own(new GameObject("ImpactVictim"));
+        var oldShotGroup = spec.HitStopGroup;
+        Assert.IsTrue(spec.TryConsumeHitStop());
+        Assert.IsFalse(spec.TryConsumeHitStop());
+        Assert.IsTrue(spec.TryConsumeVictimHitStop(victim));
+        Assert.IsFalse(spec.TryConsumeVictimHitStop(victim));
+        typeof(AbilitySpec).GetProperty("Token").SetValue(spec, new AbilityCancellationToken());
+        Assert.IsFalse(oldShotGroup.TryConsumeWorld(), "An old projectile must retain its original activation group.");
+        Assert.IsTrue(spec.TryConsumeHitStop());
+        Assert.IsTrue(spec.TryConsumeVictimHitStop(victim));
+    }
+
+    [Test] public void CombatVfx_UnscalesParticles_ButFullPauseAndDisableRestoreSettings()
+    {
+        var owner = Own(new GameObject("SlowOwner"));
+        var menu = Own(new GameObject("MenuOwner"));
+        var visual = Own(new GameObject("PureParticles"));
+        var particle = visual.AddComponent<ParticleSystem>();
+        var main = particle.main;
+        main.useUnscaledTime = false;
+        main.simulationSpeed = 1.3f;
+        var clock = visual.AddComponent<CombatPresentationClock2D>();
+        var tick = typeof(CombatPresentationClock2D).GetMethod("LateUpdate", BindingFlags.Instance | BindingFlags.NonPublic);
+        try
+        {
+            TimeScalePausePlayback.AcquireCombatSlowMotion(owner);
+            tick.Invoke(clock, null);
+            Assert.IsTrue(particle.main.useUnscaledTime);
+            Assert.AreEqual(1.3f, particle.main.simulationSpeed);
+            TimeScalePausePlayback.Acquire(menu);
+            tick.Invoke(clock, null);
+            Assert.AreEqual(0f, particle.main.simulationSpeed);
+            TimeScalePausePlayback.Release(menu);
+            tick.Invoke(clock, null);
+            Assert.AreEqual(1.3f, particle.main.simulationSpeed);
+            visual.SetActive(false);
+            Assert.IsFalse(particle.main.useUnscaledTime);
+            Assert.AreEqual(1.3f, particle.main.simulationSpeed);
+        }
+        finally { TimeScalePausePlayback.Release(menu); TimeScalePausePlayback.Release(owner); }
     }
 
     [Test] public void Chest_ReturnRefundsOnce_AndAllowsExchangeAtTheLimit()
@@ -323,11 +565,11 @@ public sealed class CombatFeelLootQuestPlayModeTests
     {
         AbilityDefinition Load(string name) => UnityEditor.AssetDatabase.LoadAssetAtPath<AbilityDefinition>(
             "Assets/_Project/Data/Abilities/Definitions/" + name + ".asset");
-        Assert.AreEqual(0.05f, Load("AD_LightningSpearSkill1").ResolveHitFeel(-1).attackerStopSeconds);
-        Assert.AreEqual(0.05f, Load("AD_LightningSpearSkill2").ResolveHitFeel(-1).attackerStopSeconds);
-        Assert.AreEqual(0.05f, Load("AD_ApprenticeHeroSwordSkill1_ChargeSpin").ResolveHitFeel(-1).attackerStopSeconds);
+        Assert.AreEqual(0.12f, Load("AD_LightningSpearSkill1").ResolveHitFeel(-1).attackerStopSeconds);
+        Assert.AreEqual(0f, Load("AD_LightningSpearSkill2").ResolveHitFeel(-1).attackerStopSeconds);
+        Assert.AreEqual(0.06f, Load("AD_ApprenticeHeroSwordSkill1_ChargeSpin").ResolveHitFeel(-1).attackerStopSeconds);
         Assert.AreEqual(0.3f, Load("AD_ApprenticeHeroSwordSkill1_ChargeSpin").ResolveHitFeel(0).attackerStopSeconds);
-        Assert.AreEqual(0.1f, Load("AD_ApprenticeHeroSwordSkill2_DashStab").ResolveHitFeel(-1).attackerStopSeconds);
+        Assert.AreEqual(0.11f, Load("AD_ApprenticeHeroSwordSkill2_DashStab").ResolveHitFeel(-1).attackerStopSeconds);
     }
 
     [TestCase(0f)]
@@ -482,7 +724,75 @@ public sealed class CombatFeelLootQuestPlayModeTests
         Assert.AreEqual(a.y, b.y, 0.0001f);
     }
 
-    [UnityTest] public IEnumerator PlayerHit_StartsPointOneSecondWorldPause_AndReleasesIt()
+    private sealed class SoulHeartPopupRecorder : IDamagePopupBackend
+    {
+        public readonly List<DamagePopupRequest> Requests = new();
+        public void Show(DamagePopupRequest request) => Requests.Add(request);
+    }
+
+    [TestCase(20f, false)]
+    [TestCase(10f, false)]
+    [TestCase(5f, false)]
+    [TestCase(20f, true)]
+    public void SoulHeartDamage_TriggersPlayerFeedback_UnlessInvulnerable(float shield, bool invulnerable)
+    {
+        var actor = Own(new GameObject("SoulHeartPlayer"));
+        actor.SetActive(false);
+        actor.tag = "Player";
+        var hp = Own(ScriptableObject.CreateInstance<AttributeDefinition>());
+        var soul = Own(ScriptableObject.CreateInstance<AttributeDefinition>());
+        var catalog = Own(ScriptableObject.CreateInstance<AttributeCatalogSO>());
+        typeof(AttributeCatalogSO).GetField("attributes", BindingFlags.Instance | BindingFlags.NonPublic)
+            .SetValue(catalog, new[] { hp, soul });
+        var attrs = actor.AddComponent<AttributeSet>();
+        Set(attrs, "attributeCatalog", catalog);
+        var tags = actor.AddComponent<TagSystem>();
+        actor.AddComponent<PlayerHitFeedback2D>();
+        actor.SetActive(true);
+        attrs.TrySetBaseValue(hp, 100f, actor);
+        attrs.TrySetBaseValue(soul, shield, actor);
+        var damage = Own(ScriptableObject.CreateInstance<GE_Damage_Spec>());
+        damage.healthAttribute = hp;
+        damage.absorbShieldAttribute = soul;
+        damage.fallbackDamage = 10f;
+        damage.fallbackStunSeconds = 0.1f;
+        damage.fallbackCameraShake = 0.2f;
+        if (invulnerable)
+        {
+            damage.invulnerableTag = Own(ScriptableObject.CreateInstance<GameplayTag>());
+            tags.AddTag(damage.invulnerableTag);
+        }
+        var popupField = typeof(DamagePopupPlayback).GetField("backend", BindingFlags.Static | BindingFlags.NonPublic);
+        var cameraField = typeof(CameraShakePlayback).GetField("backend", BindingFlags.Static | BindingFlags.NonPublic);
+        var previousPopup = (IDamagePopupBackend)popupField.GetValue(null);
+        var previousCamera = (ICameraShakeBackend)cameraField.GetValue(null);
+        var popup = new SoulHeartPopupRecorder();
+        var camera = new LightningCameraRecorder();
+        DamagePopupPlayback.RegisterBackend(popup);
+        CameraShakePlayback.RegisterBackend(camera);
+        try
+        {
+            damage.Apply(spec: null, target: actor);
+            Assert.AreEqual(invulnerable ? shield : Mathf.Max(0f, shield - 10f), attrs.GetAttributeValue(soul));
+            Assert.AreEqual(invulnerable ? 100f : 100f - Mathf.Max(0f, 10f - shield), attrs.GetAttributeValue(hp));
+            Assert.AreEqual(!invulnerable, CombatHitPause2D.IsPausedOn(actor));
+            Assert.AreEqual(invulnerable ? 0 : 1, camera.Requests.Count, "Absorption and HP spillover must not duplicate feedback.");
+            Assert.AreEqual(!invulnerable && shield >= 10f ? 1 : 0, popup.Requests.Count);
+            if (popup.Requests.Count > 0)
+            {
+                Assert.AreEqual(10f, popup.Requests[0].Amount);
+                Assert.IsTrue(popup.Requests[0].IsPlayerTarget);
+            }
+        }
+        finally
+        {
+            actor.SetActive(false);
+            DamagePopupPlayback.RegisterBackend(previousPopup);
+            CameraShakePlayback.RegisterBackend(previousCamera);
+        }
+    }
+
+    [UnityTest] public IEnumerator PlayerHit_StartsPointOneSecondImpact_AndReleasesIt()
     {
         var actor = Own(new GameObject("PlayerHitstopTest"));
         var feedback = actor.AddComponent<PlayerHitFeedback2D>();
@@ -493,10 +803,10 @@ public sealed class CombatFeelLootQuestPlayModeTests
         Set(feedback, "_tags", tags);
         Set(feedback, "hitReactImmuneTag", immune);
         feedback.OnHitFeedback(new HitFeedbackPayload(null, 0.3f, 0f));
-        Assert.AreEqual(0f, Time.timeScale);
+        Assert.AreEqual(0.15f, Time.timeScale, 0.0001f);
         var pause = actor.GetComponent<CombatHitPause2D>();
         float deadline = (float)typeof(CombatHitPause2D).GetField("worldPauseUntil", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(pause);
-        Assert.AreEqual(0.1f, deadline - Time.unscaledTime, 0.001f);
+        Assert.AreEqual(0.1f, deadline, 0.001f);
         yield return new WaitForSecondsRealtime(0.15f);
         Assert.IsFalse(TimeScalePausePlayback.IsHeldBy(pause));
         Assert.AreEqual(1f, Time.timeScale);
@@ -702,6 +1012,79 @@ public sealed class CombatFeelLootQuestPlayModeTests
             Assert.AreEqual(60, data.runGold);
         }
         finally { data.runGold = previousGold; data.isRunActive = wasActive; }
+    }
+
+    [Test] public void HomingPickups_AccelerateAndCapSpeed()
+    {
+        Assert.AreEqual(8f, HomingPickupTravel.Speed(8f, 0f));
+        Assert.AreEqual(18f, HomingPickupTravel.Speed(8f, 0.5f));
+        Assert.AreEqual(28f, HomingPickupTravel.Speed(8f, 1f));
+        Assert.AreEqual(40f, HomingPickupTravel.Speed(8f, 10f));
+    }
+
+    [Test] public void PortalPickupSettlement_OnlyFollowingPlayer_AndOnlyOnce()
+    {
+        var data = RunSessionStore.Data;
+        Assert.IsNotNull(data);
+        Assert.IsNotNull(CurrencyManager.Instance);
+        bool wasActive = data.isRunActive;
+        int previousGold = data.runGold;
+        try
+        {
+            data.isRunActive = true;
+            data.runGold = 0;
+            var player = Own(new GameObject("FollowingPlayer")).transform;
+            var other = Own(new GameObject("OtherPlayer")).transform;
+            var following = Own(new GameObject("FollowingGold")).AddComponent<GoldPickup2D>();
+            following.Initialize(75);
+            following.transform.position = Vector3.right * 100f;
+            Set(following, "target", player);
+            var waiting = Own(new GameObject("WaitingGold")).AddComponent<GoldPickup2D>();
+            waiting.Initialize(30);
+            var foreign = Own(new GameObject("OtherPlayerGold")).AddComponent<GoldPickup2D>();
+            foreign.Initialize(40);
+            Set(foreign, "target", other);
+            Assert.IsTrue(HomingPickupTravel.TryCollectFollowing(player));
+            Assert.AreEqual(75, data.runGold);
+            Assert.IsTrue(HomingPickupTravel.TryCollectFollowing(player));
+            Assert.AreEqual(75, data.runGold, "Deferred Destroy must not grant a second time.");
+            Assert.IsFalse((bool)typeof(GoldPickup2D).GetField("consumed",
+                BindingFlags.Instance | BindingFlags.NonPublic).GetValue(waiting));
+            Assert.IsTrue(foreign.TryCollectForTravel(other));
+            Assert.AreEqual(115, data.runGold);
+        }
+        finally { data.runGold = previousGold; data.isRunActive = wasActive; }
+    }
+
+    [Test] public void MagicStone_ArrivalWithoutCollider_AndTravelCollectionShareSingleGrant()
+    {
+        var data = RunSessionStore.Data;
+        Assert.IsNotNull(data);
+        Assert.IsNotNull(GameDataStore.Data);
+        Assert.IsNotNull(CurrencyManager.Instance);
+        bool wasActive = data.isRunActive;
+        int beforePending = RunSessionStore.GetPendingRunMagicStoneDelta();
+        try
+        {
+            data.isRunActive = true;
+            var player = Own(new GameObject("StoneDestination")).transform;
+            var pickup = Own(new GameObject("StoneWithoutCollider")).AddComponent<MagicStonePickup>();
+            pickup.amount = 7;
+            Set(pickup, "targetPlayer", player);
+            Set(pickup, "homingStartTime", float.NegativeInfinity);
+            pickup.transform.position = player.position;
+            typeof(MagicStonePickup).GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(pickup, null);
+            Assert.IsNull(pickup.GetComponent<Collider2D>());
+            Assert.AreEqual(beforePending + 7, RunSessionStore.GetPendingRunMagicStoneDelta());
+            Assert.IsTrue(pickup.TryCollectForTravel(player));
+            Assert.AreEqual(beforePending + 7, RunSessionStore.GetPendingRunMagicStoneDelta());
+        }
+        finally
+        {
+            RunSessionStore.AddPendingRunMagicStoneDelta(beforePending - RunSessionStore.GetPendingRunMagicStoneDelta());
+            data.isRunActive = wasActive;
+        }
     }
 
     [Test] public void PlayerPopupColors_OverrideDamageStylesButPreserveOtherTargets()

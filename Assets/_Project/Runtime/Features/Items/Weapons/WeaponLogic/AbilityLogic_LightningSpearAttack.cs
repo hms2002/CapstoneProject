@@ -195,6 +195,9 @@ namespace UnityGAS.Sample
             if (payload == null)
                 return;
 
+            payload.hitFeel = new CombatHitFeelTiming { targetStunSeconds = 0.1f };
+            payload.hitCameraScale = comboIndex == 2 ? 1.3f : 1f;
+
             Vector2 direction = attackDirection.sqrMagnitude > 0.0001f
                 ? attackDirection.normalized
                 : Vector2.right;

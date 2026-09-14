@@ -88,6 +88,7 @@ public sealed class LightningSpearDashStabTrailEffect : MonoBehaviour
         if (payload == null)
             return false;
 
+        LightningSpearHitFeedback.Configure(payload, LightningSpearFeedbackKind.Rush, safeDirection);
         float safeImpactDelay = Mathf.Max(0f, impactDelaySeconds);
         var sharedHitTargetIds = new HashSet<int>();
         bool configuredAnyHitbox = false;

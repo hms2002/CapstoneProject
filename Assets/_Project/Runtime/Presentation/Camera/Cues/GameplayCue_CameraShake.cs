@@ -33,7 +33,11 @@ namespace UnityGAS
             MigrateLegacyShakeIfNeeded();
 
             float cueMagnitude = scaleByCueMagnitude ? Mathf.Max(0f, p.Magnitude) : 1f;
-            shake.TryPlay(
+            float cameraScale = Mathf.Max(0f, p.HitCameraScale ?? 1f);
+            var hitShake = shake;
+            hitShake.amplitude *= cameraScale;
+            hitShake.maxAmplitude *= cameraScale;
+            hitShake.TryPlay(
                 p.Causer != null ? p.Causer : p.Instigator,
                 ResolveDirection(p),
                 cueMagnitude,

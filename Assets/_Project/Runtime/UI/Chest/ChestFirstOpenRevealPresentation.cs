@@ -1633,7 +1633,8 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
             hasManualShakeSettingsOverride: true,
             manualShakeSettingsOverride: CameraManualShakeSettings.Create(
                 impactCameraShakeDuration,
-                positionAmplitudeScale: impactCameraShakePositionScale)));
+                positionAmplitudeScale: impactCameraShakePositionScale),
+            playWhilePaused: true));
     }
 
     private Vector3 ResolveImpactWorldPosition()

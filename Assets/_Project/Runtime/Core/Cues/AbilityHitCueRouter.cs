@@ -106,7 +106,8 @@ namespace UnityGAS
                 HasExplicitPosition = hasExplicitPosition,
                 Normal = Vector3.up,
                 SourceObject = definition,
-                Magnitude = finalMagnitude
+                Magnitude = finalMagnitude,
+                HitCameraScale = data.HitCameraScale
             };
         }
 
@@ -203,10 +204,17 @@ namespace UnityGAS
             }
 
             Vector3 normal = cueParams.Normal.sqrMagnitude > 0.0001f ? cueParams.Normal : Vector3.up;
+            var presentation = hitConfirmedPhase.Presentation;
+            var legacyShake = hitConfirmedPhase.CameraShake;
+            float cameraScale = Mathf.Max(0f, cueParams.HitCameraScale ?? 1f);
+            presentation.cameraShake.amplitude *= cameraScale;
+            presentation.cameraShake.maxAmplitude *= cameraScale;
+            legacyShake.amplitude *= cameraScale;
+            legacyShake.maxAmplitude *= cameraScale;
             WorldPresentationPlayback.PlayMerged(
-                hitConfirmedPhase.Presentation,
+                presentation,
                 default,
-                hitConfirmedPhase.CameraShake,
+                legacyShake,
                 WorldPresentationContext.AtWorld(
                     instigator: cueParams.Instigator,
                     position: cueParams.Position,

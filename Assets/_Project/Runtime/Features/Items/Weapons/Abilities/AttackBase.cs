@@ -78,6 +78,7 @@ namespace UnityGAS
             WallLayers = context.wallLayers;
             DamageLayers = context.damageLayers;
             HitPayload = context.hitPayload;
+            if (HitPayload != null) HitPayload.hitStopGroup ??= SourceSpec?.HitStopGroup;
             lifeRemaining = context.lifetime;
             isInitialized = true;
 

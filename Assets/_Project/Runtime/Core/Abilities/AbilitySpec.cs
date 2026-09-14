@@ -4,6 +4,21 @@ using UnityEngine;
 
 namespace UnityGAS
 {
+    /// <summary>Runtime-only impact budget retained by every payload from one activation.</summary>
+    public sealed class HitStopActivation
+    {
+        private bool worldConsumed;
+        private readonly HashSet<int> victims = new();
+        public bool TryConsumeWorld()
+        {
+            if (worldConsumed) return false;
+            worldConsumed = true;
+            return true;
+        }
+        public bool TryConsumeVictim(GameObject victim)
+            => victim != null && victims.Add(victim.GetInstanceID());
+    }
+
     /// <summary>
     /// 책임: 캐릭터(AbilitySystem) 당 AbilityDefinition 1개를 소유할 때 생기는 "런타임 상태"를 담는 그릇.
     /// - Definition(SO)은 불변 데이터
@@ -13,6 +28,22 @@ namespace UnityGAS
     {
         public AbilityDefinition Definition { get; }
         public int Level { get; set; }
+        private AbilityCancellationToken hitStopToken;
+        private HitStopActivation hitStopActivation;
+        public HitStopActivation HitStopGroup
+        {
+            get
+            {
+                if (hitStopActivation == null || !ReferenceEquals(hitStopToken, Token))
+                {
+                    hitStopToken = Token;
+                    hitStopActivation = new HitStopActivation();
+                }
+                return hitStopActivation;
+            }
+        }
+        public bool TryConsumeHitStop() => HitStopGroup.TryConsumeWorld();
+        public bool TryConsumeVictimHitStop(GameObject victim) => HitStopGroup.TryConsumeVictim(victim);
 
         /// <summary>남은 쿨다운(초). 0 이하이면 쿨다운 없음.</summary>
         public float CooldownRemaining { get; internal set; }

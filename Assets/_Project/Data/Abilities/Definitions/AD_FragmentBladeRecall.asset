@@ -17,7 +17,7 @@ MonoBehaviour:
   description: Recalls detached shards. Fails before cooldown if no detached shards are available.
   hitFeel:
     targetStunSeconds: 0.1
-    attackerStopSeconds: 0.05
+    attackerStopSeconds: 0.06
   hitFeelByAttack: []
   cooldown: 2
   executionPolicy: 0

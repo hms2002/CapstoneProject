@@ -120,10 +120,10 @@ public class DamagePopupWorldText : MonoBehaviour
 
     private void Update()
     {
-        _t += Time.deltaTime;
+        _t += TimeScalePausePlayback.PresentationDeltaTime;
         float p = Mathf.Clamp01(_t / _runtimeLifetime);
 
-        transform.position += _runtimeMoveVelocity * Time.deltaTime;
+        transform.position += _runtimeMoveVelocity * TimeScalePausePlayback.PresentationDeltaTime;
         transform.localScale = Vector3.one * Mathf.Lerp(_runtimeStartScale, _runtimeEndScale, p);
 
         if (faceCamera)

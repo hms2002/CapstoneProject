@@ -27,5 +27,6 @@ namespace UnityGAS
         public object Causer;
         public bool IsCriticalHit;
         public HitImpactCueKind HitImpactCueKind;
+        public float? HitCameraScale;
     }
 }

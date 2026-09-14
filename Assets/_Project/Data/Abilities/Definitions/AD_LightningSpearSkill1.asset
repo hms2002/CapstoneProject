@@ -17,7 +17,7 @@ MonoBehaviour:
   description: "● 커서 주변의 [[낙뢰 표식]]이 있으면 {em:뇌창 돌격}으로 전환\n● 표식이 없으면 {em:뇌창 휩쓸기}로 전방 공격\n● 표식 돌격 성공 시 {pos:Skill1 쿨타임 초기화} 및 {val:회수 창 1개} 획득"
   hitFeel:
     targetStunSeconds: 0.1
-    attackerStopSeconds: 0.05
+    attackerStopSeconds: 0.12
   hitFeelByAttack: []
   cooldown: 3
   executionPolicy: 0

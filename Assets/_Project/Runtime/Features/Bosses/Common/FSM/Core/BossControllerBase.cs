@@ -129,6 +129,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBoss
 
     protected virtual void Update()
     {
+        if (UnityGAS.CombatHitPause2D.IsPausedOn(gameObject)) return;
         bool canTickStateMachine = combatActive ||
                                    (stateMachine != null && stateMachine.CurrentState == encounterIntroState);
         if (!canTickStateMachine) return;

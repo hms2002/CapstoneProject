@@ -2010,3 +2010,32 @@ Symptom: Flowering, Lightning and shared SwordCombo slash centers shift vertical
 - PlayerVisionMask and candle masks had custom ranges disabled. Apprentice reveal ranges alone did not isolate other sprites at the same sorting order, and dropped spear mask had no local sorting scope.
 - Restricted vision masks to MaskRender and isolated charge/dropped-spear masks in local SortingGroups. Host item sorting must target the group instead of rewriting child-local mask/render order.
 - Existing layer IDs/order retained; reference/compile checks passed, simultaneous rendered overlap testing outstanding.
+
+
+## 2026-09-13 - Sprite sheet template replacement must preserve YAML indentation boundaries
+
+- During Crimson asset authoring, an unanchored search for the spriteSheet-level outline field matched a nested sprite outline and retained unwanted template slices. Caught by exact frame-count validation and repaired before handoff.
+- Anchor replacement boundaries to complete YAML lines at the intended indentation; verify exact frame count, unique sprite internal IDs, rect bounds, and prefab sprite references. Build success alone does not validate Unity sprite metadata.
+
+
+## 2026-09-14 — Ability-owned cut-in pause blocked its own cleanup
+
+- Symptom: Flowering activation could leave scaled gameplay frozen, including when overlapping hitstop.
+- Cause: CombatHitPause2D.Run stopped every nested iterator while TimeScalePausePlayback.IsPaused; Bloom acquired its own pause before yielding cut-in and released only after that cut-in completed. UnscaledDeltaTime inside the child could not help because MoveNext was never called.
+- Fix: explicit, nested unpaused presentation scope; acquire/release and their finally are both inside the scope. Normal ability frames keep pause gating. Cancellation checks precede the gate and nested disposal remains paired.
+- Regression coverage added for completion/cancellation and independent overlapping pause ownership; Unity execution remains unverified.
+
+
+## 2026-09-14 — Chest collision camera shake deferred until UI close
+
+- Cause: combat impact work added an unconditional full-pause return to CameraManualShakeDriver.LateUpdate. Chest UI legitimately requests manual shake while UIManager holds full pause; remaining duration was never consumed, so the effect played after UI close. Collision request timing itself was correct.
+- Fix: optional runtime CameraShakeRequest.PlayWhilePaused defaults false and is forwarded by the service. Chest collision opts in; manual driver bypasses only its playback pause gate, retaining unscaled duration and transform cleanup. Combat default behavior is unchanged.
+- Regression boundary: shared presentation clocks must distinguish UI presentation under intentional game pause from paused combat presentation. Do not globally remove pause handling or release gameplay pause tokens to play a UI effect.
+- Added compiled regression source for chest completion under pause/no replay after release and subsequent combat request retaining default pause behavior. Unity execution pending.
+
+
+## 2026-09-14 — Soul-heart absorption skipped player damage feedback
+
+- GE_Damage_Spec returned immediately when absorbShieldAttribute consumed all incoming damage. HP stayed unchanged, so neither HP-popup listeners nor the later DispatchDamagePresentation path ran. Mob and hazard damage assets both reference the soul-heart absorb attribute.
+- Before that full-absorption return, actual positive player shield loss now emits a player-styled numeric popup and dispatches the existing hit feedback. Failed shield mutation, zero damage and invulnerability do not create feedback. HP spillover retains the original HP feedback path, avoiding duplicate hit reactions. Existing spillover popup semantics remain HP damage.
+- Regression source covers shield surviving, exactly depleted, HP spillover and invulnerable cases, with real PlayerHitFeedback2D and recording camera/popup backends. Unity execution pending.

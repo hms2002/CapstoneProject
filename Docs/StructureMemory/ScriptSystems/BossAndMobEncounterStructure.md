@@ -304,9 +304,17 @@ BossControllerBase and legacy Boss implement Core ICombatHitPauseImmune (declare
 
 DemonKingController captures pattern hold restore speed through CombatHitPause2D.GetUnpausedAnimatorSpeed. A temporary hit-pause speed of zero must not become the pattern hold's restore value. The helper exposes a tracked pre-pause animator speed when available and otherwise preserves the animator's actual speed.
 
-### Shared world hitstop (2026-09-12 revision)
+### Actor impact freeze and world slow motion (2026-09-14 revision)
 
-Boss ICombatHitPauseImmune applies to individual local stun, not global attacker hitstop. The new ApplyWorldPause path uses the existing time-scale pause owner service, so monsters and bosses pause on the same scaled timeline. No boss animator speed is overwritten by world hitstop; the previously fixed pattern hold speed snapshot remains in place.
+Boss ICombatHitPauseImmune still excludes ordinary local stun. CombatHitPause2D impact freeze instead snapshots animator speeds and Rigidbody2D constraints without switching the boss FSM; boss/mob Update and existing motor/ability gates suspend the affected actor. The pattern hold speed snapshot helper remains essential. Cleanup restores captured state on timeout or disable.
+
+TimeScalePauseService owns both full pause (0) and combat slow motion (0.15); the strongest owner wins. Impact timers use real time and suspend during full menu/cut-in pause. Existing ApplyWorldPause callers now request this impact behavior. HitStopActivation groups the world/attacker request once per activation and freezes each distinct living victim once; projectile payloads retain their original activation group across later casts.
+
+Default enabled skill impact is 0.06 seconds; full-charge apprentice spin is 0.3, apprentice dash stab and Crimson Boundary big explosion are 0.11. Normal attacks and Flowering retain their zero impact settings. Existing player-hit duration remains 0.1.
+
+CombatPresentationClock2D is a spawned-VFX leaf component, not a new service. It restores particle/Animator settings on pool disable and impact end. Pure VFX and popup/fade clocks run in real time during slow motion; full pause still takes precedence. Attack-event animators and collision/trigger particles retain gameplay time. PresentationSpawnService auto-return uses the corresponding clock to avoid shortening damage windows. Impact requests with authored duration >= 0.09 use punch distance 1.8 for 0.12s inside 0.18s total feedback, followed by a short shake at amplitude scale 0.12. Standard feedback stays distance 0.08 / punch 0.035s / total 0.08s / shake scale 0.045. Strong requests bypass the shared cast/hit-shake interval because activation grouping already deduplicates them. CameraManualShakeDriver applies a short directional punch and unscaled shake, removes its offset before camera follow updates, and honors full pause.
+
+Verification boundary: MSBuild includes the new helper through external temporary targets pending Unity project refresh. Play Mode tests cover participant freeze, boss immunity, activation grouping, overlapping pause ownership, VFX restore and timing assets but have not been executed in Unity. Standalone pattern coroutines outside the gated ability runner and animation-event VFX separation remain manual playtest audit points.
 
 ### Ranged tracking / locked warning (2026-09-12)
 

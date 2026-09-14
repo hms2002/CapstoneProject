@@ -10,6 +10,17 @@ public sealed class CrimsonBoundaryWeaponData : ScriptableObject
     public LayerMask wallLayers;
     public LayerMask damageLayers;
 
+    [Header("Authored Presentation")]
+    public CrimsonBoundaryVisual2D projectilePrefab;
+    public CrimsonBoundaryVisual2D projectileHitPrefab;
+    public CrimsonBoundaryVisual2D burnTickPrefab;
+    public CrimsonBoundaryVisual2D burnSustainPrefab;
+    public CrimsonBoundaryVisual2D igniteChargePrefab;
+    public CrimsonBoundaryVisual2D igniteExplosionPrefab;
+    public CrimsonBoundaryVisual2D meteorPrefab;
+    public CrimsonBoundaryVisual2D meteorHitPrefab;
+    [Min(0f)] public float igniteChargeSeconds = 0.24f;
+
     [Header("Attack")]
     public float projectileSpeed = 18f;
     public float projectileLifetime = 2f;

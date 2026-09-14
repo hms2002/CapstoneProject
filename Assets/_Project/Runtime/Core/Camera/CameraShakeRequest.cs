@@ -5,6 +5,9 @@ using UnityEngine;
 /// </summary>
 public readonly struct CameraShakeRequest
 {
+    public readonly bool PlayWhilePaused;
+    public readonly float PunchDistance;
+    public readonly float PunchSeconds;
     public readonly float Amplitude;
     public readonly Vector3 Direction;
     public readonly GameObject Source;
@@ -22,8 +25,12 @@ public readonly struct CameraShakeRequest
         string debugReason = null,
         bool ignoreScreenShakeSetting = false,
         bool hasManualShakeSettingsOverride = false,
-        CameraManualShakeSettings manualShakeSettingsOverride = default)
+        CameraManualShakeSettings manualShakeSettingsOverride = default,
+        float punchDistance = 0f, float punchSeconds = 0f, bool playWhilePaused = false)
     {
+        PlayWhilePaused = playWhilePaused;
+        PunchDistance = Mathf.Max(0f, punchDistance);
+        PunchSeconds = Mathf.Max(0f, punchSeconds);
         Amplitude = amplitude;
         Direction = direction;
         Source = source;

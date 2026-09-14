@@ -85,6 +85,8 @@ public sealed class DungeonReturnTravel : MonoBehaviour
             if (ownsFade) yield return fade.FadeOutAsync(fadeSeconds);
             if (player == null || !landingValidator(landingPoint.position, ResolveClearance(player), player)) yield break;
 
+            if (!HomingPickupTravel.TryCollectFollowing(player)) yield break;
+
             visual.SetVisible(false);
             // Keep collision disabled until the shared fall/wake sequence fully completes.
             foreach (Collider2D collider in player.GetComponentsInChildren<Collider2D>(true))

@@ -107,3 +107,13 @@ This is a fast context map, not the final UI architecture source of truth.
 ## Promotion Candidate
 
 Candidate for future `Docs/Architecture/` or `Docs/Contracts/` promotion after more flows adopt the same pattern and the team wants this to become official UI flow policy.
+
+
+### Flowering cut-in pause execution (2026-09-14)
+
+Flowering's PlayCutIn owns time/input acquisition and release inside CombatHitPause2D.RunUnpausedPresentation. The explicit ability iterator stack propagates unpaused execution to nested cut-in presentation only; the caller's ordinary gameplay remains paused. Cancellation still disposes nested routines and releases the cut-in owner, without releasing other pause owners. Acquire must stay inside this section: acquiring before yielding the section could prevent the enclosing routine from reaching its cleanup.
+
+
+### Chest collision camera while UI owns pause (2026-09-14)
+
+ChestFirstOpenRevealPresentation emits its manual camera shake immediately after ApplyImpactCollisionPose. That request opts into CameraShakeRequest.PlayWhilePaused; CameraShakeService forwards the flag to CameraManualShakeDriver. The driver advances this UI effect on unscaled time even while UIManager owns a full pause, allowing it to finish before the UI closes. Each Play replaces the flag; the default is false, so combat requests still wait during full pause. Screen-shake preferences and offset restoration are unchanged. No UI or gameplay pause token is released for the effect.

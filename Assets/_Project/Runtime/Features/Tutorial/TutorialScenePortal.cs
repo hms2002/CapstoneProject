@@ -124,7 +124,7 @@ public sealed class TutorialScenePortal : InteractableBase
             return;
         }
 
-        if (!TryLoadTargetScene())
+        if (!TryLoadTargetScene(player))
         {
             preparedTravel.RestorePendingRuntimeState();
             isTransitioning = false;
@@ -181,7 +181,7 @@ public sealed class TutorialScenePortal : InteractableBase
             ReleasePlayerCinematicProtection();
             ReleaseInputBlocker();
 
-            travelStarted = TryLoadTargetScene();
+            travelStarted = TryLoadTargetScene(player);
             if (!travelStarted)
             {
                 preparedTravel.RestorePendingRuntimeState();
@@ -263,13 +263,17 @@ public sealed class TutorialScenePortal : InteractableBase
         hasActiveEntranceSnapshot = false;
     }
 
-    private bool TryLoadTargetScene()
+    private bool TryLoadTargetScene(IPlayerInteractor player)
     {
         if (string.IsNullOrWhiteSpace(targetSceneName))
         {
             Debug.LogWarning("[TutorialScenePortal] Target scene name is empty.", this);
             return false;
         }
+
+        if (!HomingPickupTravel.TryCollectFollowing(player?.Transform)) return false;
+        // Refresh capture after rewards and any level-up effects from the entrance interval.
+        TryCapturePlayerRuntimeState(player);
 
         ISceneTransitionHandle transitionCoordinator = SceneTransitionPlayback.EnsureInstance();
         if (transitionCoordinator != null)

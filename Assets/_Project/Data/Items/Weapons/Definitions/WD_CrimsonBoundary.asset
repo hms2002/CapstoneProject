@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponId: Weapon.CrimsonBoundary
   displayName: "홍련의 한계선"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 04aa0b7915194311ae5cd1ef91df55ca, type: 3}
   storyText: "타오르는 경계에서 불씨는 끝내 폭발한다."
   statModifiers:
   - attribute: {fileID: 11400000, guid: 3cf73420df1732240b7c90837ff7efab, type: 2}

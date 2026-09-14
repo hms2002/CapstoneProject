@@ -15,32 +15,33 @@ public sealed class AbilityLogic_CrimsonBoundaryBigExplosion : AbilityLogic
 
         Vector2 impactPosition = CrimsonBoundaryUtility.ResolveCursor(system);
         CrimsonBoundaryRuntimeState runtime = CrimsonBoundaryUtility.ResolveRuntimeState(system);
-        GameObject warning = CrimsonBoundaryUtility.CreateSquare(
-            "CrimsonBoundary_BigExplosionWarning", impactPosition,
-            new Vector2(data.skill2Diameter, data.skill2Diameter * TopDownEllipseHitUtility2D.DefaultTopDownCircleYScale),
-            new Color(0.8f, 0.05f, 0.01f, 0.24f),
-            "AttackTelegraph",
-            1);
-        runtime?.Register(warning);
-
-        yield return WaitForSecondsUnlessCancelled(data.skill2ImpactDelay, spec);
-        if (IsAbilityCancelled(spec))
+        bool hadRuntime = runtime != null;
+        float startY = impactPosition.y + 8f;
+        Camera camera = Camera.main;
+        if (camera != null)
         {
-            runtime?.Forget(warning);
-            if (warning != null) Object.Destroy(warning);
-            yield break;
+            float depth = camera.WorldToViewportPoint(impactPosition).z;
+            startY = Mathf.Max(startY, camera.ViewportToWorldPoint(new Vector3(0.5f, 1f, depth)).y + 2f);
         }
-
-        if (warning != null)
+        Vector3 start = new Vector3(impactPosition.x, startY, 0f);
+        var meteor = CrimsonBoundaryVisual2D.Spawn(data.meteorPrefab, start, Quaternion.identity, runtime);
+        try
         {
-            SpriteRenderer renderer = warning.GetComponent<SpriteRenderer>();
-            if (renderer != null)
+            float elapsed = 0f;
+            while (elapsed < data.skill2ImpactDelay)
             {
-                renderer.color = new Color(1f, 0.22f, 0.01f, 0.65f);
-                renderer.sortingLayerName = "FloatingAOE";
-                renderer.sortingOrder = 1;
+                if ((spec.Token != null && spec.Token.IsCancelled) || (hadRuntime && (runtime == null || !runtime.isActiveAndEnabled))) yield break;
+                if (meteor != null) meteor.transform.position = Vector3.Lerp(start, impactPosition, elapsed / Mathf.Max(0.01f, data.skill2ImpactDelay));
+                yield return null;
+                elapsed += Time.deltaTime;
             }
+            if ((spec.Token != null && spec.Token.IsCancelled) || (hadRuntime && (runtime == null || !runtime.isActiveAndEnabled))) yield break;
         }
+        finally
+        {
+            if (meteor != null) Object.Destroy(meteor.gameObject);
+        }
+        CrimsonBoundaryVisual2D.Spawn(data.meteorHitPrefab, impactPosition, Quaternion.identity, runtime);
 
         List<GameObject> targets = CrimsonBoundaryUtility.CollectTargets(impactPosition, data.skill2Diameter, data.damageLayers);
         for (int i = 0; i < targets.Count; i++)
@@ -55,8 +56,5 @@ public sealed class AbilityLogic_CrimsonBoundaryBigExplosion : AbilityLogic
             CrimsonBoundaryUtility.ApplyDamage(system, spec, data.damageEffect, target, totalDamage, critical, system.gameObject);
         }
 
-        yield return WaitForSecondsUnlessCancelled(0.15f, spec);
-        runtime?.Forget(warning);
-        if (warning != null) Object.Destroy(warning);
     }
 }

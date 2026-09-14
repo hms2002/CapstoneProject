@@ -64,6 +64,7 @@ public sealed class DragonController : BossControllerBase
 
     protected override void Update()
     {
+        if (UnityGAS.CombatHitPause2D.IsPausedOn(gameObject)) return;
         base.Update();
 
         if (faceTargetDuringCombat && faceTargetLockCount <= 0 && CanAutoFaceTarget())

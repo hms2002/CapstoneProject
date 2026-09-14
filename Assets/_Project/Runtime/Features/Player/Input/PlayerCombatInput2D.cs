@@ -120,6 +120,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     private readonly HashSet<AbilityDefinition> knownWeaponSkillAbilities = new();
     private bool wasBusyLastFrame;
     private bool isHoldingAttack;
+    public bool IsHoldingPrimaryAttack => isHoldingAttack;
     private WeaponAbilitySelector weaponAbilitySelector;
     private WeaponAbilityBridge weaponAbilityBridge;
     private AbilityDefinition pendingApprenticeSkill;

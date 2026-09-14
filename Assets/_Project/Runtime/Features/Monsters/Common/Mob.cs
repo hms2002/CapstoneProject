@@ -86,6 +86,7 @@ public class Mob : Enemy
 
     private void Update()
     {
+        if (UnityGAS.CombatHitPause2D.IsPausedOn(gameObject)) return;
         if (isDead) return;
 
         EnsureTargetResolved();

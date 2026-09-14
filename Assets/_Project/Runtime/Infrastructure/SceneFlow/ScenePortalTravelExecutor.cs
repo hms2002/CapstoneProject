@@ -43,6 +43,9 @@ internal static class ScenePortalTravelExecutor
         if (request.Gameplay == null || request.TransitionCoordinator == null)
             return new ScenePortalTravelExecutionResult(false, default);
 
+        if (!HomingPickupTravel.TryCollectFollowing(PlayerRuntimeRegistry.GetPlayerTransform()))
+            return new ScenePortalTravelExecutionResult(false, default);
+
         if (ScenePortalTravelPlanner.ShouldCapturePlayerRuntimeState(request.RunDirective))
         {
             ScenePortalPlayerRuntimeCaptureService.CaptureAndStore(

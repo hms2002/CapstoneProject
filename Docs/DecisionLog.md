@@ -3197,3 +3197,8 @@ User revision: the fourth run-shop slot is guaranteed Consumable, priced 200–3
 ### 2026-09-12 — Officer objective and cleared Grand Hall portals
 
 Approved: start the fixed officer objective on Grand Hall entry; count the three current-run officer boss IDs independently of the changing scene guidance. Keep (3/3) · 완료 visible after the third defeat; perform removal only after Grand Hall return, then acknowledge once per run. Cleared normal portals use Portal_Disable and stop/disable their particles while retaining existing travel restrictions. Damage popups use the existing BlackOutline font/material.
+
+
+### 2026-09-14 — Prototype actor hitstop with world slow motion
+
+User approved attacker/victim freeze at 0.06 real seconds with world scale 0.15, normal-speed VFX, directional camera punch and brief shake. Strong skills use 0.09–0.12 seconds. Existing normal-attack/Flowering exclusions remain; boss ordinary-stun immunity remains separate from the temporary impact freeze. Full menu/cut-in pause has priority and owns its own release. Damage-event animations retain gameplay timing until visual and damage ownership are explicitly separated.

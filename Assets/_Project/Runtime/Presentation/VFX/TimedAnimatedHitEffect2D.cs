@@ -69,6 +69,7 @@ namespace UnityGAS
 
             CacheReferences();
             ConfigureContactFilter();
+            if (payload != null) payload.hitStopGroup ??= payload.sourceSpec?.HitStopGroup;
             ConfigureSustainedHitArea();
             DisableHitCollision();
             ApplyAnimatorSpeed(lifetimeSeconds);

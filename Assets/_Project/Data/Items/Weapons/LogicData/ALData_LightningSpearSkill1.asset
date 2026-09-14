@@ -28,7 +28,7 @@ MonoBehaviour:
   markRushRange: 7
   markRushBodyRadius: 0.25
   markRushArrivalHitDelay: 0.05
-  markRushInternalDelay: 0.15
+  markRushInternalDelay: 0.05
   markRushInputBufferSeconds: 0.35
   markRushTrailEffectPrefab: {fileID: 9102123456789012345, guid: 9537f6a61c484881b61d0da5c6b03dd3, type: 3}
   markRushHit:

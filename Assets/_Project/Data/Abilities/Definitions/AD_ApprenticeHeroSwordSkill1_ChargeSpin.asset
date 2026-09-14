@@ -21,7 +21,7 @@ MonoBehaviour:
     {val:x1.6}, \uACF5\uACA9 \uD06C\uAE30 {val:x2}"
   hitFeel:
     targetStunSeconds: 0.1
-    attackerStopSeconds: 0.05
+    attackerStopSeconds: 0.06
   hitFeelByAttack:
   - targetStunSeconds: 0.1
     attackerStopSeconds: 0.3

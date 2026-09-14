@@ -9,13 +9,25 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
     private int burnStacks;
     private GameplayEffect burnDamageEffect;
     private Collider2D ownCollider;
+    private CrimsonBoundaryVisual2D hitPrefab;
+    private CrimsonBoundaryVisual2D burnPrefab;
+    private CrimsonBoundaryVisual2D burnSustainPrefab;
+    private CrimsonBoundaryRuntimeState visualOwner;
+    private bool impactPlayed;
 
-    public void Setup(ProjectileAttackSpawnContext context, int stacks, GameplayEffect effect)
+    public void Setup(ProjectileAttackSpawnContext context, int stacks, GameplayEffect effect,
+        CrimsonBoundaryVisual2D hitVisual = null, CrimsonBoundaryVisual2D burnVisual = null,
+        CrimsonBoundaryRuntimeState owner = null, CrimsonBoundaryVisual2D burnSustainVisual = null)
     {
         direction = context.direction.sqrMagnitude > 0.0001f ? context.direction.normalized : Vector2.right;
         speed = Mathf.Max(0f, context.speed);
         burnStacks = Mathf.Max(0, stacks);
         burnDamageEffect = effect;
+        hitPrefab = hitVisual;
+        burnPrefab = burnVisual;
+        burnSustainPrefab = burnSustainVisual;
+        visualOwner = owner;
+        impactPlayed = false;
         transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
         SetupBase(context);
     }
@@ -41,6 +53,7 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
             int bit = 1 << hit.gameObject.layer;
             if ((WallLayers.value & bit) != 0)
             {
+                transform.position = sweepHits[i].centroid;
                 OnHitWall(hit.gameObject, hit);
                 return;
             }
@@ -59,8 +72,22 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
 
     protected override void OnHitTarget(GameObject target, Collider2D hitCollider)
     {
-        BurnStatus2D.Apply(target, OwnerSystem, burnDamageEffect, Causer, burnStacks);
+        BurnStatus2D.Apply(target, OwnerSystem, burnDamageEffect, Causer, burnStacks, burnPrefab, burnSustainPrefab);
+        PlayImpact();
         base.OnHitTarget(target, hitCollider);
+    }
+
+    protected override void OnHitWall(GameObject wall, Collider2D hitCollider)
+    {
+        PlayImpact();
+        base.OnHitWall(wall, hitCollider);
+    }
+
+    private void PlayImpact()
+    {
+        if (impactPlayed) return;
+        impactPlayed = true;
+        CrimsonBoundaryVisual2D.Spawn(hitPrefab, transform.position, transform.rotation, visualOwner);
     }
 
     private sealed class RaycastHitDistanceComparer : System.Collections.Generic.IComparer<RaycastHit2D>

@@ -294,3 +294,18 @@ PlayerHitFeedback2D resolves State.Skill when its authored reference is empty, a
 - Apprentice charge reveal owns a SortingGroup on its existing runtime reveal root; external sorting follows the source weapon plus configured offset, internal reveal order is zero. Group lifetime follows revealRoot destruction.
 - PF_LightningSpear_ItemDisplayVisual authors a SortingGroup. ItemDisplayVisualPresenter2D assigns host sorting to that group and keeps internal sprite/mask ordering local, avoiding interference between simultaneous dropped weapons and charge effects.
 - PlayerVisionMask and StrangeCandlestick vision masks limit their custom range to MaskRender (the existing dark-overlay layer); they do not affect weapon sprite layers. No ProjectSettings sorting layers were added. Validate combined darkness/drop/charge rendering in Editor after changes.
+
+
+### Lightning Spear per-attack feedback (2026-09-14)
+
+This revision supersedes the historical Lightning/global-hitstop timing paragraphs above. Current shared slowdown ownership is mapped in BossAndMobEncounterStructure.md. World stays at 0.15 during participant impact freeze; ordinary boss stun immunity remains.
+
+LightningSpearHitFeedback in LightningSpearHitConfig.cs configures runtime payloads by role, without changing serialized schemas or prefab references. Sweep uses actor/victim freeze 0.12s, punch 1.4/0.10s, following shake 0.10/0.05s. Rush uses freeze 0.1s, punch 0.9/0.12s, shake 0.12/0.06s. Both the trail-driven hitboxes and fallback arrival hitbox receive Rush configuration and preserve the actual rush direction. Recovered shots and mark landings use ordinary target stun 0.05s with no attacker/world stop; recovered shots suppress added camera feedback, while landing requests one 0.08-amplitude/0.05s shake per activation.
+
+The three basic hits keep target stun 0.1s and attacker stop zero. The third hit carries camera-only scale 1.3; the other hits carry 1. This scales both amplitude and its cap, leaving cue magnitude, particles and audio unchanged.
+
+CombatHitPayload snapshots optional impactCameraOverride and hitCameraScale. CombatDamageAction executes the custom camera only after damage, with HitStopActivation grouping, and forwards camera scale through AbilityEventData to GameplayCueParams. AbilityHitCueRouter scales only presentation camera hooks; GameplayCue_CameraShake scales only the camera cue. Null metadata preserves existing weapons. CameraManualShakeDriver computes the following shake decay after the punch so punch duration does not consume shake amplitude.
+
+LightningSpearMarkActor captures the activation group during Initialize, so delayed six-mark landings keep their original once-only feedback budget after another cast. Payload references and closures are not stored globally; existing actor/projectile cleanup releases them.
+
+Verification: regression sources exercise two victims sharing one impact/landing request, support attacks leaving the attacker/world unpaused, directional punch values and capped camera scale/suppression. MSBuild passed; Unity execution and visual feel are not yet verified. This is a structure map, not a new Architecture/Contracts authority.

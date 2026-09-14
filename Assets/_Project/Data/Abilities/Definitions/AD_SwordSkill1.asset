@@ -17,7 +17,7 @@ MonoBehaviour:
   description: Ability description.
   hitFeel:
     targetStunSeconds: 0.1
-    attackerStopSeconds: 0.05
+    attackerStopSeconds: 0.06
   hitFeelByAttack: []
   cooldown: 5
   useCharges: 1

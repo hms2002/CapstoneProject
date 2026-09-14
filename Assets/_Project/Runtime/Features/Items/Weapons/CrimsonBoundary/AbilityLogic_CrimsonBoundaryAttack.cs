@@ -11,8 +11,30 @@ public sealed class AbilityLogic_CrimsonBoundaryAttack : AbilityLogic
         if (system == null || data == null || data.damageEffect == null)
             yield break;
 
+        CrimsonBoundaryRuntimeState runtime = CrimsonBoundaryUtility.ResolveRuntimeState(system);
+        if (runtime == null || !runtime.isActiveAndEnabled) yield break;
+
+        runtime.BeginSwing(AbilityAttackSpeedResolver.ResolveFinalAttackSpeed(system));
+        bool released = false;
+        try
+        {
+            while (runtime != null && runtime.isActiveAndEnabled && runtime.SwingTime < 0.12f)
+            {
+                if (spec.Token != null && spec.Token.IsCancelled) yield break;
+                yield return null;
+            }
+            if (runtime == null || !runtime.isActiveAndEnabled ||
+                (spec.Token != null && spec.Token.IsCancelled)) yield break;
+            released = true;
+        }
+        finally
+        {
+            if (!released && runtime != null) runtime.ResetSwing();
+        }
+
         Vector2 direction = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
-        Vector3 position = system.transform.position + (Vector3)(direction * 0.75f);
+        runtime.MarkProjectileReleased();
+        Vector3 position = system.transform.position;
         bool critical;
         float damage = CrimsonBoundaryUtility.CalculateDirectDamage(system, 1f, out critical);
 
@@ -28,19 +50,15 @@ public sealed class AbilityLogic_CrimsonBoundaryAttack : AbilityLogic
             hasResolvedElementBuildUps = true
         };
 
-        GameObject projectileObject = CrimsonBoundaryUtility.CreateSquare(
-            "CrimsonBoundary_Fireball",
-            position,
-            new Vector2(0.32f, 0.32f),
-            new Color(1f, 0.2f, 0.01f, 1f),
-            "Projectile",
-            5);
-        var collider = projectileObject.AddComponent<BoxCollider2D>();
+        var visual = CrimsonBoundaryVisual2D.Spawn(data.projectilePrefab, position, Quaternion.identity, runtime);
+        if (visual == null) yield break;
+        GameObject projectileObject = visual.gameObject;
+        var collider = projectileObject.GetComponent<BoxCollider2D>();
         collider.isTrigger = true;
-        var body = projectileObject.AddComponent<Rigidbody2D>();
+        var body = projectileObject.GetComponent<Rigidbody2D>();
         body.bodyType = RigidbodyType2D.Kinematic;
         body.gravityScale = 0f;
-        var projectile = projectileObject.AddComponent<CrimsonBoundaryProjectile2D>();
+        var projectile = projectileObject.GetComponent<CrimsonBoundaryProjectile2D>();
         projectile.Setup(new ProjectileAttackSpawnContext
         {
             ownerSystem = system,
@@ -53,8 +71,8 @@ public sealed class AbilityLogic_CrimsonBoundaryAttack : AbilityLogic
             hitPayload = payload,
             direction = direction,
             speed = data.projectileSpeed
-        }, data.attackBurnStacks, data.damageEffect);
+        }, data.attackBurnStacks, data.damageEffect, data.projectileHitPrefab, data.burnTickPrefab, runtime, data.burnSustainPrefab);
 
-        CrimsonBoundaryUtility.ResolveRuntimeState(system)?.Register(projectileObject);
+
     }
 }
