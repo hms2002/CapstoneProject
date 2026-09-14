@@ -84,8 +84,8 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
     [SerializeField, Min(2)] private int recommendedMaximumRoomCount = 18;
 
     [Header("Critical Path")]
-    [SerializeField, Min(1)] private int minimumBossGraphDistance = 6;
-    [SerializeField, Min(1)] private int maximumBossGraphDistance = 8;
+    [SerializeField, Min(1)] private int minimumBossGraphDistance = 4;
+    [SerializeField, Min(1)] private int maximumBossGraphDistance = 5;
 
     [Header("Exploration Topology")]
     [SerializeField, Min(0)] private int minimumMeaningfulBranches = 2;

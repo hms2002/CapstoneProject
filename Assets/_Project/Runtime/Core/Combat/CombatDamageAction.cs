@@ -169,7 +169,10 @@ public static class CombatDamageAction
         bool hasResolvedElementBuildUps = false,
         HitImpactCueKind hitImpactCueKind = HitImpactCueKind.Default,
         bool emitHitConfirmed = true,
-        CombatHitFeelTiming? hitFeelOverride = null)
+        CombatHitFeelTiming? hitFeelOverride = null,
+        HitStopActivation hitStopGroup = null,
+        CameraShakeRequest? impactCameraOverride = null,
+        float? hitCameraScale = null)
     {
         ApplyDamageAndEmitHitInternal(
             system,
@@ -188,7 +191,10 @@ public static class CombatDamageAction
             hasResolvedElementBuildUps,
             hitImpactCueKind,
             emitHitConfirmed,
-            hitFeelOverride);
+            hitFeelOverride,
+            hitStopGroup,
+            impactCameraOverride,
+            hitCameraScale);
     }
 
     private static void ApplyDamageAndEmitHitInternal(
@@ -208,7 +214,10 @@ public static class CombatDamageAction
         bool hasResolvedElementBuildUps,
         HitImpactCueKind hitImpactCueKind,
         bool emitHitConfirmed,
-        CombatHitFeelTiming? hitFeelOverride)
+        CombatHitFeelTiming? hitFeelOverride,
+        HitStopActivation hitStopGroup,
+        CameraShakeRequest? impactCameraOverride,
+        float? hitCameraScale)
     {
         if (!Validate(system, damageEffect, target))
             return;
@@ -268,9 +277,24 @@ public static class CombatDamageAction
         {
             CombatHitFeelTiming timing = hitFeelOverride ?? (spec?.Definition != null
                 ? spec.Definition.ResolveHitFeel(spec.GetInt("Combat.HitFeelIndex", -1)) : default);
-            CombatHitPause2D.ApplyWorldPause(system.gameObject, timing.attackerStopSeconds);
-            if (hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr) > 0f && !IsStaggerSuppressed(target))
+            if (timing.attackerStopSeconds > 0f)
+            {
+                hitStopGroup ??= spec?.HitStopGroup;
+                GameObject livingVictim = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr) > 0f ? target : null;
+                if (hitStopGroup == null || hitStopGroup.TryConsumeVictim(livingVictim))
+                    CombatHitPause2D.FreezeVictim(livingVictim, timing.attackerStopSeconds);
+                if (hitStopGroup == null || hitStopGroup.TryConsumeWorld())
+                {
+                    Vector3 direction = target.transform.position - system.transform.position;
+                    CombatHitPause2D.ApplyImpact(system.gameObject, null, timing.attackerStopSeconds, direction, impactCameraOverride);
+                }
+            }
+            else if (hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr) > 0f && !IsStaggerSuppressed(target))
                 CombatHitPause2D.Apply(target, timing.targetStunSeconds);
+
+            if (timing.attackerStopSeconds <= 0f && impactCameraOverride.HasValue &&
+                ((hitStopGroup ?? spec?.HitStopGroup)?.TryConsumeWorld() ?? true))
+                CameraShakePlayback.Play(impactCameraOverride.Value);
         }
 
         TryEmitKillConfirmed(system, spec, target, causer, hpCheck);
@@ -279,7 +303,7 @@ public static class CombatDamageAction
         ApplyElements(target, system.gameObject, causer, elementBuildUps, hasResolvedElementBuildUps);
 
         if (emitHitConfirmed)
-            EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag, hitWorldPosition, isCriticalHit, hitImpactCueKind);
+            EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag, hitWorldPosition, isCriticalHit, hitImpactCueKind, hitCameraScale);
     }
 
     private static bool Validate(AbilitySystem system, GameplayEffect damageEffect, GameObject target)
@@ -574,7 +598,8 @@ public static class CombatDamageAction
         GameplayTag hitConfirmedTag,
         Vector3 hitWorldPosition,
         bool isCriticalHit,
-        HitImpactCueKind hitImpactCueKind)
+        HitImpactCueKind hitImpactCueKind,
+        float? hitCameraScale)
     {
         var resolvedHitConfirmedTag = ResolveHitConfirmedTag(hitConfirmedTag);
         if (resolvedHitConfirmedTag == null)
@@ -589,7 +614,8 @@ public static class CombatDamageAction
             WorldPosition = hitWorldPosition != Vector3.zero ? hitWorldPosition : target.transform.position,
             Causer = causer,
             IsCriticalHit = isCriticalHit,
-            HitImpactCueKind = hitImpactCueKind
+            HitImpactCueKind = hitImpactCueKind,
+            HitCameraScale = hitCameraScale
         });
     }
 

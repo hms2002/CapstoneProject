@@ -2021,21 +2021,44 @@ Symptom: Flowering, Lightning and shared SwordCombo slash centers shift vertical
 - Restricted vision masks to MaskRender and isolated charge/dropped-spear masks in local SortingGroups. Host item sorting must target the group instead of rewriting child-local mask/render order.
 - Existing layer IDs/order retained; reference/compile checks passed, simultaneous rendered overlap testing outstanding.
 
-## 2026-09-13 - Boss candle seal still referenced the retired light mask
 
-- Candlestick.prefab contained an inactive SightMask and an active PlayerVisionMask(Clone) sibling, but CandlestickSeal.sightMask referenced the former. Seal toggled the obsolete object, leaving the real vision aperture visible; unseal could also reactivate the obsolete mask.
-- Corrected the prefab reference to the active mask rather than changing shared seal code or destroying objects. Existing SetActive(false/true) and light-zone control remain the lifecycle owner.
-- Native prefab regression tests reproduced the wrong binding and persistent aperture before the fix (0/3), then verified binding, three-hit relight/reseal and disabled-parent recovery after it (3/3). When replacing authored visuals, check all control references, not only the visible hierarchy. See [session](SessionLogs/2026-09-13.md).
+## 2026-09-13 - Sprite sheet template replacement must preserve YAML indentation boundaries
 
-## 2026-09-13 - Witch tile reused a renderer-owned origin as damage center
+- During Crimson asset authoring, an unanchored search for the spriteSheet-level outline field matched a nested sprite outline and retained unwanted template slices. Caught by exact frame-count validation and repaired before handoff.
+- Anchor replacement boundaries to complete YAML lines at the intended indentation; verify exact frame count, unique sprite internal IDs, rect bounds, and prefab sprite references. Build success alone does not validate Unity sprite metadata.
 
-- AttackTelegraphWallClippedMeshView places the shared root at a rectangle's start edge. WitchNormalAttack1Tile read that Transform again for its hit spec, then again for damage/presentation after the hit view moved it further. This creates half-length drift at each stage even though size/angle are unchanged.
-- Snapshot the world center before the first Show and use it for all gameplay and world-presentation requests. Debug output should distinguish logical center from renderer origin. Do not repair this with a visual-only offset or by moving the warning to an already shifted damage box.
-- Six-angle real-view, inside/outside HP damage and presentation-context regression fixtures compile. Native execution is pending while Unity remains open; see [session](SessionLogs/2026-09-13.md). Shared renderer ownership in other consumers is outside this fix.
 
-## 2026-09-13 - Empty candle selection killed unrelated Witch summons
+## 2026-09-14 — Ability-owned cut-in pause blocked its own cleanup
 
-- SkeletonDeathDiagnostics recorded newly summoned skeletons dying through an external cleanup command while still transforming. With all candles sealed, extinguish startup returned false; AbortCurrentPattern passed forced=true to Witch.OnPatternEnd, which indiscriminately cleared the retreat summons.
-- Check candle availability during normal/forced pattern evaluation and again before presentation startup. Keep expected target loss as a failed pattern, not a successful completion that queues follow-up abilities.
-- A forced pattern cancellation is not equivalent to combat teardown. Witch now preserves summon ownership across ordinary failure, groggy and phase changes; only boss death/dead tag, combat deactivation or destruction clears surviving summons. Their own light/contact/self-destruct rules remain independent.
-- Production and 14-case regression fixture compile; native execution and player reproduction are pending while Unity is open. See [session](SessionLogs/2026-09-13.md).
+- Symptom: Flowering activation could leave scaled gameplay frozen, including when overlapping hitstop.
+- Cause: CombatHitPause2D.Run stopped every nested iterator while TimeScalePausePlayback.IsPaused; Bloom acquired its own pause before yielding cut-in and released only after that cut-in completed. UnscaledDeltaTime inside the child could not help because MoveNext was never called.
+- Fix: explicit, nested unpaused presentation scope; acquire/release and their finally are both inside the scope. Normal ability frames keep pause gating. Cancellation checks precede the gate and nested disposal remains paired.
+- Regression coverage added for completion/cancellation and independent overlapping pause ownership; Unity execution remains unverified.
+
+
+## 2026-09-14 — Chest collision camera shake deferred until UI close
+
+- Cause: combat impact work added an unconditional full-pause return to CameraManualShakeDriver.LateUpdate. Chest UI legitimately requests manual shake while UIManager holds full pause; remaining duration was never consumed, so the effect played after UI close. Collision request timing itself was correct.
+- Fix: optional runtime CameraShakeRequest.PlayWhilePaused defaults false and is forwarded by the service. Chest collision opts in; manual driver bypasses only its playback pause gate, retaining unscaled duration and transform cleanup. Combat default behavior is unchanged.
+- Regression boundary: shared presentation clocks must distinguish UI presentation under intentional game pause from paused combat presentation. Do not globally remove pause handling or release gameplay pause tokens to play a UI effect.
+- Added compiled regression source for chest completion under pause/no replay after release and subsequent combat request retaining default pause behavior. Unity execution pending.
+
+
+## 2026-09-14 — Soul-heart absorption skipped player damage feedback
+
+- GE_Damage_Spec returned immediately when absorbShieldAttribute consumed all incoming damage. HP stayed unchanged, so neither HP-popup listeners nor the later DispatchDamagePresentation path ran. Mob and hazard damage assets both reference the soul-heart absorb attribute.
+- Before that full-absorption return, actual positive player shield loss now emits a player-styled numeric popup and dispatches the existing hit feedback. Failed shield mutation, zero damage and invulnerability do not create feedback. HP spillover retains the original HP feedback path, avoiding duplicate hit reactions. Existing spillover popup semantics remain HP damage.
+- Regression source covers shield surviving, exactly depleted, HP spillover and invulnerable cases, with real PlayerHitFeedback2D and recording camera/popup backends. Unity execution pending.
+
+## 2026-09-14 — Duplicate receipt markers and physics-pose wall casts
+
+- Definition membership (`Contains`) identifies an interchangeable return category, not an individual acquired slot. Applying it independently to every ItemSlotUI highlights every duplicate potion. ChestScreen now allocates at most the outstanding receipt count to matching slots, retaining gameplay's same-definition return policy.
+- Hypothetical wall-slide casts must start from the Rigidbody2D physics pose, with child collider offsets adjusted for body rotation. Reading only Transform.position can use a stale presentation pose. The native regression harness checks low/high-speed tangential movement and corners; keep physics query validation when changing this path.
+- Follow-up correction: using raw held input as a walking lock causes a rejected/repeated press during the released animation tail to stop movement without a new attack. Walking now follows the accepted attack's phase only; held input requests auto-repeat and does not own a movement lock.
+
+## 2026-09-14 — Input-side attack timing diverged from actual GAS execution
+
+- Symptom: walking during basic attacks across weapons after removing the raw-held-input lock.
+- Verified structural causes: input code estimated duration from AbilityDefinition.recoveryTime before logic supplied RecoveryOverride; its animation threshold released at 80%; it compared the executed definition against a possibly changed selection after activation; Animator fallback differed from playback. GAS buffering also returns true for a queued request, so request success cannot represent actual execution start. The current player prefab has buffering disabled; this was a latent path, not evidence that buffering caused the reported current symptom.
+- Correction: real execution start/end notifications, executed-definition classification, actual execution/recovery as a lock floor, full observed animation completion, shared Animator resolution. Old estimates and request-side BeginMeleeControlLock were removed.
+- Regression: real AbilitySystem coroutines with no Animator and prolonged logic, buffered request vs later execution, cancellation/natural completion, player intent output, and the animation tail. Never treat a passing compile or a test that only toggles lock booleans as proof of this lifecycle.

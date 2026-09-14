@@ -175,7 +175,7 @@ ChestInventory outstanding receipts now strictly require matching item definitio
 
 ChestRewardPolicy uses zero outstanding acquisitions plus the existing generated/manager/reroll-budget conditions. The old slot-index refresh guard was removed so all-item returns to different slots and restored chest state work consistently.
 
-ChestScreen supplies the currently open chest context to player ItemSlotUI instances (including the shared InventoryRoot panel); the existing hover border displays return eligibility and context clears when the chest unbinds. Authored AcquisitionCount is centered under TopChestFrame with a CanvasGroup; it fades in after first-open/reroll reveal. ChestCloseHint is authored at screen top center. CombatFeelAndQuestInstaller preserves these placements and references.
+ChestScreen projects the open chest's outstanding receipt quantities onto player ItemSlotUI instances (including the shared InventoryRoot panel). Per-definition marker counts cannot exceed outstanding acquisition counts: newly changed matching slots take priority, followed by existing markers and stable slot order for restored receipts. ItemSlotUI receives a presentation-only boolean; it no longer independently uses definition membership to highlight every duplicate. Same-definition return eligibility remains interchangeable; these markers are not persistent item provenance. Unbinding clears markers. Authored AcquisitionCount is centered under TopChestFrame with a CanvasGroup; it fades in after first-open/reroll reveal. ChestCloseHint is authored at screen top center. CombatFeelAndQuestInstaller preserves these placements and references.
 
 Related verification: [2026-09-12 session](../../SessionLogs/2026-09-12.md).
 

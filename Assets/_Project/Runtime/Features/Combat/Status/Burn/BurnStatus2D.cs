@@ -18,6 +18,9 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
     private float tickElapsed;
     private int stacks;
     private bool viewAttached;
+    private CrimsonBoundaryVisual2D tickVisualPrefab;
+    private CrimsonBoundaryVisual2D sustainVisualPrefab;
+    private CrimsonBoundaryVisual2D sustainVisual;
 
     public string StatusId => "Burn";
     public int CurrentStacks => stacks;
@@ -28,7 +31,7 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
     public event Action StackChanged;
     public event Action PulseRequested;
 
-    public static BurnStatus2D Apply(GameObject target, AbilitySystem source, GameplayEffect effect, GameObject sourceCauser, int baseStacks)
+    public static BurnStatus2D Apply(GameObject target, AbilitySystem source, GameplayEffect effect, GameObject sourceCauser, int baseStacks, CrimsonBoundaryVisual2D tickVisual = null, CrimsonBoundaryVisual2D sustainPrefab = null)
     {
         if (target == null || source == null || effect == null || baseStacks <= 0)
             return null;
@@ -37,6 +40,12 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
         if (status == null)
             status = target.AddComponent<BurnStatus2D>();
 
+        if (tickVisual != null) status.tickVisualPrefab = tickVisual;
+        if (sustainPrefab != null && status.sustainVisualPrefab != sustainPrefab)
+        {
+            status.StopSustainVisual();
+            status.sustainVisualPrefab = sustainPrefab;
+        }
         status.sourceSystem = source;
         status.damageEffect = effect;
         status.causer = sourceCauser != null ? sourceCauser : source.gameObject;
@@ -45,6 +54,7 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
             ? status.sourceRules.ResolveApplicationStacks(baseStacks, status.stacks == 0)
             : baseStacks;
         status.AddStacks(resolvedStacks);
+        status.EnsureSustainVisual();
         return status;
     }
 
@@ -66,6 +76,7 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
     private void OnDisable()
     {
         activeStatuses.Remove(this);
+        StopSustainVisual();
         DetachView();
     }
 
@@ -140,6 +151,7 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
                 emitHitConfirmed: false);
         }
 
+        CrimsonBoundaryVisual2D.Spawn(tickVisualPrefab, transform.position, Quaternion.identity);
         PulseRequested?.Invoke();
         ConsumeUpTo(1);
     }
@@ -147,6 +159,7 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
     private void ActivateView()
     {
         activeStatuses.Add(this);
+        EnsureSustainVisual();
         if (viewAttached) return;
         viewAttached = true;
         MonsterStackStatusViewPlayback.Attach(gameObject, this);
@@ -156,7 +169,25 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
     {
         activeStatuses.Remove(this);
         tickElapsed = 0f;
+        StopSustainVisual();
         DetachView();
+    }
+
+    private void EnsureSustainVisual()
+    {
+        if (!isActiveAndEnabled || stacks <= 0 || sustainVisual != null || sustainVisualPrefab == null) return;
+        sustainVisual = CrimsonBoundaryVisual2D.Spawn(sustainVisualPrefab, transform.position, Quaternion.identity);
+        if (sustainVisual != null) sustainVisual.transform.SetParent(transform, true);
+    }
+
+    private void StopSustainVisual()
+    {
+        if (sustainVisual != null)
+        {
+            sustainVisual.gameObject.SetActive(false);
+            Destroy(sustainVisual.gameObject);
+        }
+        sustainVisual = null;
     }
 
     private void DetachView()

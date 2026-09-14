@@ -132,6 +132,7 @@ namespace UnityGAS
             if (orientToImpactDirection)
                 ApplyRotation(ResolveImpactDirection(p));
 
+            CombatPresentationClock2D.Attach(gameObject);
             RegisterPlaying();
             particleSystemRef.Play(true);
         }

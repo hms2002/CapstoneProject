@@ -1,0 +1,373 @@
+fileFormatVersion: 2
+guid: b28fc2e666904fe419727ed64fd74a05
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6394903474340492644
+    second: Dragon_LandEffect_0
+  - first:
+      213: -1227247069062154561
+    second: Dragon_LandEffect_1
+  - first:
+      213: 522927453496296494
+    second: Dragon_LandEffect_2
+  - first:
+      213: 8457354913354179034
+    second: Dragon_LandEffect_3
+  - first:
+      213: 3076058843218632135
+    second: Dragon_LandEffect_4
+  - first:
+      213: -8704847289443202914
+    second: Dragon_LandEffect_5
+  - first:
+      213: -2167988725215168387
+    second: Dragon_LandEffect_6
+  - first:
+      213: 3486669424508816070
+    second: Dragon_LandEffect_7
+  - first:
+      213: -7176821458668752681
+    second: Dragon_LandEffect_8
+  - first:
+      213: -5437977999735081124
+    second: Dragon_LandEffect_9
+  - first:
+      213: 1253689126901931820
+    second: Dragon_LandEffect_10
+  - first:
+      213: -4270759668504938611
+    second: Dragon_LandEffect_11
+  - first:
+      213: 3598537037392316809
+    second: Dragon_LandEffect_12
+  - first:
+      213: 3545299025436814256
+    second: Dragon_LandEffect_13
+  - first:
+      213: 451680696849439179
+    second: Dragon_LandEffect_14
+  - first:
+      213: 5150718203861536593
+    second: Dragon_LandEffect_15
+  - first:
+      213: -6596008685921504039
+    second: Dragon_LandEffect_16
+  - first:
+      213: -8188196040439612045
+    second: Dragon_LandEffect_17
+  - first:
+      213: 6577197796001017403
+    second: Dragon_LandEffect_18
+  - first:
+      213: 1424265855616848585
+    second: Dragon_LandEffect_19
+  - first:
+      213: -6830311516756238320
+    second: Dragon_LandEffect_20
+  - first:
+      213: 8936174966534135458
+    second: Dragon_LandEffect_21
+  - first:
+      213: 3955139528600343163
+    second: Dragon_LandEffect_22
+  - first:
+      213: -1054042930723494184
+    second: Dragon_LandEffect_23
+  - first:
+      213: 4996113141085948544
+    second: Dragon_LandEffect_24
+  - first:
+      213: 7522958476914974763
+    second: Dragon_LandEffect_25
+  - first:
+      213: -7887133730580136769
+    second: Dragon_LandEffect_26
+  - first:
+      213: 913815140120652781
+    second: Dragon_LandEffect_27
+  - first:
+      213: -3859459956097901137
+    second: Dragon_LandEffect_28
+  - first:
+      213: 6139189849717774401
+    second: Dragon_LandEffect_29
+  - first:
+      213: 768825378508932405
+    second: Dragon_LandEffect_30
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Dragon_LandEffect_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 465f9f804d24fb850800000000000000
+      internalID: 6394903474340492644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dragon_LandEffect_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb639ecfa41f7fee0800000000000000
+      internalID: -1227247069062154561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dragon_LandEffect_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2442f49fbfc14700800000000000000
+      internalID: 522927453496296494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dragon_LandEffect_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad161e51c7f8e5570800000000000000
+      internalID: 8457354913354179034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dragon_LandEffect_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7cdde32683b50ba20800000000000000
+      internalID: 3076058843218632135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dragon_LandEffect_5
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9847b0b28b223780800000000000000
+      internalID: -8704847289443202914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dragon_LandEffect_6
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d787f7cadb1c9e1e0800000000000000
+      internalID: -2167988725215168387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5241fafdee2b0c84c980267ee0465b4a
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":2.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Dragon_LandEffect_0: 6394903474340492644
+      Dragon_LandEffect_1: -1227247069062154561
+      Dragon_LandEffect_2: 522927453496296494
+      Dragon_LandEffect_3: 8457354913354179034
+      Dragon_LandEffect_4: 3076058843218632135
+      Dragon_LandEffect_5: -8704847289443202914
+      Dragon_LandEffect_6: -2167988725215168387
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

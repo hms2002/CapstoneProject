@@ -8,7 +8,6 @@ public static class CrimsonBoundaryUtility
 {
     private static readonly Collider2D[] HitBuffer = new Collider2D[128];
     private static readonly ElementDamageResult[] NoElementBuildUp = Array.Empty<ElementDamageResult>();
-    private static Sprite squareSprite;
 
     public static float ReadFire(AbilitySystem system)
     {
@@ -126,29 +125,4 @@ public static class CrimsonBoundaryUtility
         return system != null ? system.GetComponentInChildren<CrimsonBoundaryRuntimeState>() : null;
     }
 
-    public static GameObject CreateSquare(
-        string name,
-        Vector3 position,
-        Vector2 size,
-        Color color,
-        string sortingLayerName,
-        int sortingOrder)
-    {
-        var go = new GameObject(name);
-        go.transform.position = position;
-        go.transform.localScale = new Vector3(size.x, size.y, 1f);
-        SpriteRenderer renderer = go.AddComponent<SpriteRenderer>();
-        renderer.sprite = GetSquareSprite();
-        renderer.color = color;
-        renderer.sortingLayerName = sortingLayerName;
-        renderer.sortingOrder = sortingOrder;
-        return go;
-    }
-
-    private static Sprite GetSquareSprite()
-    {
-        if (squareSprite == null)
-            squareSprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0f, 0f, 1f, 1f), new Vector2(0.5f, 0.5f), 1f);
-        return squareSprite;
-    }
 }

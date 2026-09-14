@@ -25,6 +25,7 @@ public sealed class LightningSpearMarkActor : MonoBehaviour
     private bool isDestroying;
 
     public MonsterRoomArea2D RoomArea { get; private set; }
+    public HitStopActivation HitStopGroup { get; private set; }
     public bool IsActive => isActive && !isConsumed;
 
     public void Initialize(
@@ -40,6 +41,7 @@ public sealed class LightningSpearMarkActor : MonoBehaviour
         RoomArea = roomArea;
         sourceSystem = abilitySystem;
         sourceSpec = abilitySpec;
+        HitStopGroup = abilitySpec?.HitStopGroup;
         loadout = sourceLoadout;
         activationRemaining = Mathf.Max(0f, activationDelaySeconds);
         lifetimeRemaining = Mathf.Max(0.01f, lifetimeSeconds);

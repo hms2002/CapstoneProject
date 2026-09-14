@@ -24,41 +24,46 @@ public sealed class AbilityLogic_CrimsonBoundaryIgnite : AbilityLogic
         if (statuses.Count == 0)
             yield break;
 
-        var explosions = new List<Explosion>(statuses.Count);
-        for (int i = 0; i < statuses.Count; i++)
-        {
-            BurnStatus2D status = statuses[i];
-            if (status == null) continue;
-            int consumed = status.ConsumeUpTo(data.skill1MaxConsume);
-            if (consumed > 0)
-                explosions.Add(new Explosion(status.transform.position,
-                    CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, consumed, data.burnConsumptionMultiplier, data.skillFireFormula)));
-        }
-
         CrimsonBoundaryRuntimeState runtime = CrimsonBoundaryUtility.ResolveRuntimeState(system);
-        var flashes = new List<GameObject>(explosions.Count);
-        for (int i = 0; i < explosions.Count; i++)
+        bool hadRuntime = runtime != null;
+        var charges = new List<CrimsonBoundaryVisual2D>();
+        try
         {
-            Explosion explosion = explosions[i];
-            GameObject flash = CrimsonBoundaryUtility.CreateSquare(
-                "CrimsonBoundary_IgniteSquare", explosion.Position,
-                new Vector2(data.skill1Diameter, data.skill1Diameter * TopDownEllipseHitUtility2D.DefaultTopDownCircleYScale),
-                new Color(1f, 0.18f, 0.01f, 0.35f),
-                "FloatingAOE",
-                0);
-            runtime?.Register(flash);
-            flashes.Add(flash);
+            foreach (var status in statuses)
+            {
+                if (status == null) continue;
+                var charge = CrimsonBoundaryVisual2D.Spawn(data.igniteChargePrefab, status.transform.position, Quaternion.identity, runtime);
+                if (charge != null)
+                {
+                    charge.transform.SetParent(status.transform, true);
+                    charges.Add(charge);
+                }
+            }
+            yield return WaitForSecondsUnlessCancelled(data.igniteChargeSeconds, spec);
+            if ((spec.Token != null && spec.Token.IsCancelled) || (hadRuntime && (runtime == null || !runtime.isActiveAndEnabled))) yield break;
 
-            List<GameObject> targets = CrimsonBoundaryUtility.CollectTargets(explosion.Position, data.skill1Diameter, data.damageLayers);
-            for (int targetIndex = 0; targetIndex < targets.Count; targetIndex++)
-                CrimsonBoundaryUtility.ApplyDamage(system, spec, data.damageEffect, targets[targetIndex], explosion.Damage, false, system.gameObject);
+            // Snapshot every source before area damage can kill another source.
+            var explosions = new List<Explosion>();
+            foreach (var status in statuses)
+            {
+                if (status == null || !status.isActiveAndEnabled) continue;
+                int consumed = status.ConsumeUpTo(data.skill1MaxConsume);
+                if (consumed > 0)
+                    explosions.Add(new Explosion(status.transform.position,
+                        CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, consumed, data.burnConsumptionMultiplier, data.skillFireFormula)));
+            }
+            foreach (var explosion in explosions)
+            {
+                CrimsonBoundaryVisual2D.Spawn(data.igniteExplosionPrefab, explosion.Position, Quaternion.identity, runtime);
+                List<GameObject> targets = CrimsonBoundaryUtility.CollectTargets(explosion.Position, data.skill1Diameter, data.damageLayers);
+                foreach (var target in targets)
+                    CrimsonBoundaryUtility.ApplyDamage(system, spec, data.damageEffect, target, explosion.Damage, false, system.gameObject);
+            }
         }
-
-        yield return WaitForSecondsUnlessCancelled(0.12f, spec);
-        for (int i = 0; i < flashes.Count; i++)
+        finally
         {
-            runtime?.Forget(flashes[i]);
-            if (flashes[i] != null) Object.Destroy(flashes[i]);
+            foreach (var charge in charges)
+                if (charge != null) Object.Destroy(charge.gameObject);
         }
     }
 }

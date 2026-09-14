@@ -58,9 +58,10 @@ public static class DungeonReturnPortalAuthoringUtility
         var root = new GameObject("DungeonReturnPortal");
         try
         {
-            var collider = root.AddComponent<CircleCollider2D>();
+            var collider = root.AddComponent<CapsuleCollider2D>();
             collider.isTrigger = true;
-            collider.radius = 0.6f;
+            collider.direction = CapsuleDirection2D.Horizontal;
+            collider.size = new Vector2(2.2f, 1.2f);
             var portal = root.AddComponent<DungeonReturnPortal>();
             var prompt = new GameObject("PromptAnchor").transform;
             prompt.SetParent(root.transform, false);

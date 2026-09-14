@@ -47,7 +47,7 @@ Immediately before a Burn tick reaches `CombatDamageAction`, `BurnStatus2D` appl
 - The UI backend attaches a dormant reusable view component to the target and creates only target-child square/text presentation. Target destruction cleans the view hierarchy.
 - `CrimsonBoundaryRuntimeState` belongs to the equipped weapon instance and destroys registered projectile/warning/explosion objects on disable or destroy.
 - `SunFragmentOrbitController` is attached to the relic owner only while needed, owns its generated fragments, and destroys all fragments when its relic token is disabled or the owner is destroyed. The dormant controller may remain attached after unequip but owns no active gameplay state.
-- Runtime-created squares are prototype presentation explicitly accepted for this slice. Replace them with authored prefabs when final visuals are approved.
+- Crimson weapon/attack presentation now uses authored sprite prefabs (see approved graphics section below). The separate monster stack-status UI retains its previous presentation path.
 
 ## Fire Relics
 
@@ -95,3 +95,44 @@ Big Explosion reuses its warning renderer, so impact changes both color and sort
 ## Promotion Candidate
 
 If additional elemental stack statuses adopt this contract, promote the shared stack-status ownership and damage-event rules into Architecture/Contracts with explicit approval.
+
+
+## Approved Crimson graphics (2026-09-13)
+
+- Original FireStaff_asset.zip supplies ten textures under Art/Sprites/Items/Weapon/CrimsonBoundary. Sheets use 32x32 frames in row-major visual order (Unity rect Y converted from top row); skill icons are 24x24. WeaponPrefab_CrimsonBoundary authors a 4-frame FireStaff child with a -45-degree orientation correction. Weapon/skill definitions bind the original icons.
+- CrimsonBoundaryWeaponData owns seven CrimsonBoundaryVisual2D prefab references under Prefabs/VFX/CrimsonBoundary, plus igniteChargeSeconds (.24). Visual2D reads authored sprite frames/duration/loop, destroys finished one-shots, and registers/forgets weapon-owned transients. Projectile/meteor loop until their combat owner removes them. No sprite or presentation hierarchy is generated at runtime.
+- Attack instantiates the authored Fireball prefab (kinematic body, trigger, existing projectile actor). Actor root stays scale 1; child art size is independent of the existing .32 trigger and .28 swept query. Wall sweep advances to contact centroid before Fireball_Hit. Impacts are emitted once; timeout emits no hit.
+- Projectile passes Flame_Explosion into target-owned BurnStatus2D. The status retains its authored effect for subsequent ticks and existing reapplications without one, allowing burn to outlive the equipped weapon. Tick VFX are detached, self-expiring world objects; stack rules and UI pulses are unchanged.
+- Ignite snapshots visible burn targets on cast, plays attached Charge_Fire, then consumes current stacks and applies all explosion damage after .24 seconds. Charge cleanup runs in finally; cancellation/weapon disable before impact consumes no stacks through this skill. Dead targets are skipped. Explosions use current target positions at impact and retain existing overlapping-area behavior.
+- Q captures cursor position once, moves Lavaball down from above camera over existing .6 seconds, removes it in finally, then plays Lavaball_Hit and applies existing damage/consumption at captured point. Preview dashed range guide is not game art.
+- RuntimeState clears registered combat presentation on weapon disable/destroy. Completed visuals remove their registration; dead projectile references are pruned on registration. Burn tick effects expire independently.
+- Validation: new class included via external temporary MSBuild targets; ProceduralPlayModeTests project build exit 0, new type found in Gameplay.dll, sprite counts/bounds/IDs and prefab references checked. Native Unity import/render and Play Mode tests not executed.
+
+
+### Burn sustain / tick frame split (2026-09-13)
+
+- Flame_Sustain loops original Flame_Explosion frames 1–5 over .25 seconds; existing Flame_Explosion now plays frames 6–13 once over .4 seconds, preserving 20 FPS. Both retain prior visual scale.
+- Crimson data/projectile pass both authored prefabs into BurnStatus2D. Status owns exactly one target-child sustain instance, also attaching when an already-capped stack receives its first visual reference. Reapplication with the same prefab does not restart the loop. Zero stacks, skill consumption to zero, disable and target destruction remove sustain. Re-enable with remaining stacks recreates it.
+- Tick effect remains a separate self-expiring world effect; final-stack sustain removal does not cut off the last tick animation. Damage, stack rules and tick intervals are unchanged.
+
+
+### Staff basic attack motion (2026-09-13)
+
+- Equipped prefab follows WeaponVisualRig2D's authored WeaponVisualRoot/MirrorRoot/MotionRoot/RenderRoot hierarchy. Muzzle is a MotionRoot child; FireStaff sprite loop and art correction remain under RenderRoot. Aim/facing continue through WeaponEquipController/WeaponPresentationRig2D.
+- RuntimeState samples three authored AM_Crimson clips (opening/downward/upward) on the weapon only. Opening starts at idle, alternating clips start at the previous stroke's endpoint. Existing PlayerCombatInput2D primary-hold state controls endpoint hold; release resets instantly after .18s. OnDisable resets sequence to opening.
+- Motion clock uses final attack speed captured at activation and respects owner CombatHitPause2D. Basic attack coroutine fires once after .12 motion seconds from the exact authored muzzle pose; cancellation before release resets presentation. No Animator parameters, Animation Events or player root motion added. Existing AD cooldown starts on activation and remains one second.
+- Unity Editor import and Play Mode visual/lifecycle validation remain required; MSBuild only covers C#.
+
+
+### Staff motion source revision (2026-09-13)
+
+- Supersedes the custom preview curves above: AM_CrimsonOpening/Downward now copy Apprentice sword AM_Swing1; AM_CrimsonUpward copies AM_Swing2. Original motion curves and timing retained. Copies remove sword Animation Events and disable looping; source sword assets remain untouched.
+- Runtime samples through actual clip length (~.1833s), holds the endpoint while primary attack remains held, and otherwise snaps to idle after completion. Existing .12s release timing remains. GUIDs and prefab bindings unchanged.
+
+
+### Approved reference motion / player origin revision (2026-09-13)
+
+- Supersedes copied sword curves: AM_CrimsonOpening/Downward/Upward now use approved reference-preview hand translation and rotation (.08s anticipation, .14s endpoint), preserving GUIDs and existing rig. No trail presentation added.
+- Runtime samples these clips and counts .4 seconds after both completion and primary release before snapping to idle; held input clears that timer. Hold uses game delta time without attack-speed scaling and freezes during owner hit pause.
+- Projectile release remains at .12 attack-speed-scaled motion seconds, but the ability now owns spawn position directly: system.transform.position with zero offset. Runtime MarkProjectileReleased only ends release-pending state. Muzzle field and authored child removed.
+- Preview repetition interval (.4s) is not the gameplay cooldown: AD_CrimsonBoundaryAttack retains its existing one-second cooldown. Native Unity visual/lifecycle checks remain outstanding.

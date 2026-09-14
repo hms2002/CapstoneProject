@@ -17,6 +17,7 @@ public sealed class GoldPickup2D : MonoBehaviour
     private float homingStartTime;
     private Transform target;
     private bool consumed;
+    private float trackingSeconds;
 
     public int GoldAmount => goldAmount;
 
@@ -25,6 +26,7 @@ public sealed class GoldPickup2D : MonoBehaviour
         goldAmount = Mathf.Max(0, amount);
         homingStartTime = Time.time + homingDelay;
         target = null;
+        trackingSeconds = 0f;
         consumed = false;
     }
 
@@ -42,10 +44,18 @@ public sealed class GoldPickup2D : MonoBehaviour
         transform.position = Vector3.MoveTowards(
             transform.position,
             target.position,
-            homingSpeed * Time.deltaTime);
+            HomingPickupTravel.Speed(homingSpeed, trackingSeconds) * Time.deltaTime);
+        trackingSeconds += Time.deltaTime;
 
         if ((transform.position - target.position).sqrMagnitude <= 0.0001f)
             TryCollect();
+    }
+
+    public bool TryCollectForTravel(Transform player)
+    {
+        if (consumed || target == null || target != player) return true;
+        TryCollect();
+        return consumed;
     }
 
     private void TryCollect()

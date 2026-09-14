@@ -171,7 +171,7 @@ public sealed class CameraShakeService : MonoBehaviour
             : CameraManualShakeSettings.Default;
 
         if (request.HasManualShakeSettingsOverride &&
-            TryPlayManualShake(camera.gameObject, request.Amplitude, direction, manualSettings))
+            TryPlayManualShake(camera.gameObject, request.Amplitude, direction, manualSettings, request.PunchDistance, request.PunchSeconds, request.PlayWhilePaused))
         {
             RecordEmit(request, now);
             return true;
@@ -190,7 +190,7 @@ public sealed class CameraShakeService : MonoBehaviour
         GameObject cameraObject,
         float amplitude,
         Vector3 direction,
-        in CameraManualShakeSettings shakeSettings)
+        in CameraManualShakeSettings shakeSettings, float punchDistance = 0f, float punchSeconds = 0f, bool playWhilePaused = false)
     {
         if (cameraObject == null || amplitude <= 0f)
             return false;
@@ -201,7 +201,7 @@ public sealed class CameraShakeService : MonoBehaviour
         if (driver == null)
             return false;
 
-        driver.Play(amplitude, direction, shakeSettings);
+        driver.Play(amplitude, direction, shakeSettings, punchDistance, punchSeconds, playWhilePaused);
         return true;
     }
 

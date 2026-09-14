@@ -858,6 +858,7 @@ GameObject:
   - component: {fileID: -6179936427583040154}
   - component: {fileID: 771900000000020001}
   - component: {fileID: 4888629815355529222}
+  - component: {fileID: 771900000000030001}
   m_Layer: 3
   m_Name: PF Player
   m_TagString: Player
@@ -2265,3 +2266,17 @@ MonoBehaviour:
   - {fileID: 2923963001084614867}
   - {fileID: 771900000000010002}
   shadow: {fileID: 647482627083604036}
+--- !u!114 &771900000000030001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1c9441c52b41fd90d3a75c27dad335, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gameplay::PlayerLevelUpEffect2D
+  levelUpEffectPrefab: {fileID: 361241697615398169, guid: 81861865ba1042d2b773bcc5a3350ac0, type: 3}
+  playerRenderer: {fileID: 575076908295244749}

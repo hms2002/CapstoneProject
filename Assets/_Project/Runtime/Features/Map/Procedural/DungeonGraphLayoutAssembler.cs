@@ -10,6 +10,10 @@ using UnityEngine;
 /// - 방 크기 기반 권장 복도 간격이 충돌하면 절대 최소 길이까지 단계적으로 압축해 같은 그래프를 재사용한다.
 /// - 제한적 템플릿 재탐색 후 실제 배치 결과의 근거리 반복 수, 권장 복도 길이 초과 순으로 품질을 비교한다.
 /// - 테마, 타일, 몬스터 구현을 알지 않고 RoomThemeLibrarySO의 레이아웃 데이터만 소비한다.
+/// - Reserves every usable Start direction before expanding the graph, within the existing room budget.
+/// - Aligns each connected socket pair using offsets without requiring opposite doors within a room to share a line.
+/// - Grows shallow Start branches first and compares valid topologies by exit-depth balance after room repetition.
+/// - Reserves a dedicated degree-one terminal for each Start exit, including exits used by a cycle.
 /// </summary>
 public sealed partial class DungeonGraphLayoutAssembler
 {
@@ -72,19 +76,23 @@ public sealed partial class DungeonGraphLayoutAssembler
     /// 책임:
     /// - 같은 축 정렬을 공유하는 노드 그룹과 그룹 사이 최소 간격 제약을 보관한다.
     /// - 논리 좌표 순서를 지키는 차분 제약을 풀어 각 그룹의 압축된 월드 기준축 좌표를 계산한다.
+    /// - Carries per-node socket offsets inside each alignment group, including signed separation constraints.
     /// </summary>
     private sealed class AxisConstraintLayout
     {
         private readonly int[] groupByNode;
+        private readonly int[] offsetByNode;
         private readonly int[] logicalCoordinateByGroup;
         private readonly int[] anchors;
         private readonly Dictionary<long, int> minimumSeparations = new();
 
         public AxisConstraintLayout(
             int[] nodeGroups,
+            int[] nodeOffsets,
             int[] groupLogicalCoordinates)
         {
             groupByNode = nodeGroups;
+            offsetByNode = nodeOffsets;
             logicalCoordinateByGroup = groupLogicalCoordinates;
             anchors = new int[groupLogicalCoordinates.Length];
         }
@@ -92,7 +100,10 @@ public sealed partial class DungeonGraphLayoutAssembler
         public int GetGroup(int nodeIndex) => groupByNode[nodeIndex];
 
         public int GetAnchorForNode(int nodeIndex) =>
-            anchors[groupByNode[nodeIndex]];
+            anchors[groupByNode[nodeIndex]] + offsetByNode[nodeIndex];
+
+        public int ToGroupSeparation(int lowerNodeIndex, int upperNodeIndex, int nodeSeparation) =>
+            nodeSeparation + offsetByNode[lowerNodeIndex] - offsetByNode[upperNodeIndex];
 
         public int GetAnchorForGroup(int groupIndex) => anchors[groupIndex];
 
@@ -109,7 +120,8 @@ public sealed partial class DungeonGraphLayoutAssembler
             }
 
             long key = CreateConstraintKey(lowerGroupIndex, upperGroupIndex);
-            int resolvedSeparation = Mathf.Max(0, minimumSeparation);
+            // A negative group distance can still represent a positive gap between offset room bounds.
+            int resolvedSeparation = minimumSeparation;
             if (minimumSeparations.TryGetValue(key, out int existing) &&
                 existing >= resolvedSeparation)
             {
@@ -182,6 +194,158 @@ public sealed partial class DungeonGraphLayoutAssembler
         public int RequestedBossDistance;
         public int MeaningfulBranchCount;
         public int CycleConnectionCount;
+        public int MinimumStartExitDepth = 1;
+    }
+
+    /// <summary>Compares Start-exit depth spread, depth dispersion and room-load dispersion without changing hard topology rules.</summary>
+    private readonly struct StartDepthBalance : IComparable<StartDepthBalance>
+    {
+        public readonly int DepthSpread, RoomUnitSpread;
+        public readonly long DepthEnergy, RoomEnergy;
+        public bool IsEven => DepthSpread <= 1 && RoomUnitSpread <= 12;
+
+        public StartDepthBalance(int[] depths, int[] roomUnits)
+        {
+            int minDepth = int.MaxValue, maxDepth = 0, minUnits = int.MaxValue, maxUnits = 0;
+            DepthEnergy = RoomEnergy = 0;
+            for (int i = 0; i < depths.Length; i++)
+            {
+                if (depths[i] == 0) continue;
+                minDepth = Math.Min(minDepth, depths[i]); maxDepth = Math.Max(maxDepth, depths[i]);
+                minUnits = Math.Min(minUnits, roomUnits[i]); maxUnits = Math.Max(maxUnits, roomUnits[i]);
+                for (int j = i + 1; j < depths.Length; j++)
+                {
+                    if (depths[j] == 0) continue;
+                    long d = depths[i] - depths[j], size = roomUnits[i] - roomUnits[j];
+                    DepthEnergy += d * d; RoomEnergy += size * size;
+                }
+            }
+            DepthSpread = maxDepth == 0 ? 0 : maxDepth - minDepth;
+            RoomUnitSpread = maxUnits == 0 ? 0 : maxUnits - minUnits;
+        }
+
+        public int CompareTo(StartDepthBalance other)
+        {
+            int comparison = DepthSpread.CompareTo(other.DepthSpread);
+            if (comparison == 0) comparison = DepthEnergy.CompareTo(other.DepthEnergy);
+            return comparison != 0 ? comparison : RoomEnergy.CompareTo(other.RoomEnergy);
+        }
+    }
+
+    /// <summary>Snapshots shortest-path ownership, terminal coverage and fractional exit load for generation-time growth and validation.</summary>
+    private sealed class StartBranchReach
+    {
+        public readonly int[] Depths, ExitMasks, Degrees;
+        private readonly int minimumExitDepth;
+        public readonly int[] ExitDepths = new int[4], ExitRoomUnits = new int[4];
+        public StartDepthBalance Balance => new(ExitDepths, ExitRoomUnits);
+
+        public int MissingTerminalMask
+        {
+            get
+            {
+                int active = 0;
+                for (int d = 0; d < 4; d++)
+                    if (ExitDepths[d] > 0) active |= 1 << d;
+                // Four exits permit a tiny matching DP. One shared-cycle leaf may serve only one exit.
+                var covered = new bool[16];
+                covered[0] = true;
+                for (int node = 1; node < Depths.Length; node++)
+                {
+                    if (Degrees[node] != 1) continue;
+                    int eligible = 0;
+                    for (int d = 0; d < 4; d++)
+                        if ((ExitMasks[node] & (1 << d)) != 0 && Depths[node] == ExitDepths[d] && Depths[node] >= minimumExitDepth)
+                            eligible |= 1 << d;
+                    // Descending masks prevent reusing this leaf through a state just created by it.
+                    for (int mask = 15; mask >= 0; mask--)
+                        if (covered[mask])
+                            for (int d = 0; d < 4; d++)
+                                if ((eligible & ~mask & (1 << d)) != 0)
+                                    covered[mask | (1 << d)] = true;
+                }
+                int best = 0, bestCount = 0;
+                for (int mask = 1; mask < 16; mask++)
+                {
+                    if (!covered[mask]) continue;
+                    int count = 0;
+                    for (int d = 0; d < 4; d++) if ((mask & (1 << d)) != 0) count++;
+                    if (count > bestCount) { best = mask; bestCount = count; }
+                }
+                return active & ~best;
+            }
+        }
+
+        public StartBranchReach(TopologyDraft topology)
+        {
+            int count = topology.Nodes.Count;
+            minimumExitDepth = topology.MinimumStartExitDepth;
+            Depths = new int[count]; ExitMasks = new int[count]; Degrees = new int[count];
+            var neighbors = new List<int>[count];
+            for (int i = 0; i < count; i++) { Depths[i] = -1; neighbors[i] = new List<int>(); }
+            foreach (PlannedEdge edge in topology.Edges)
+            {
+                neighbors[edge.FirstNodeIndex].Add(edge.SecondNodeIndex);
+                neighbors[edge.SecondNodeIndex].Add(edge.FirstNodeIndex);
+                Degrees[edge.FirstNodeIndex]++;
+                Degrees[edge.SecondNodeIndex]++;
+            }
+            if (count == 0) return;
+            var queue = new Queue<int>(); queue.Enqueue(0); Depths[0] = 0;
+            while (queue.Count > 0)
+            {
+                int node = queue.Dequeue();
+                foreach (int next in neighbors[node])
+                {
+                    if (Depths[next] < 0) { Depths[next] = Depths[node] + 1; queue.Enqueue(next); }
+                    if (Depths[next] != Depths[node] + 1) continue;
+                    int direction = node == 0 ? (int)GetDirection(topology.Nodes[0].GridPosition, topology.Nodes[next].GridPosition) : -1;
+                    ExitMasks[next] |= node == 0 && direction >= 0 ? 1 << direction : ExitMasks[node];
+                }
+            }
+            // BFS completes all parents before their children. Equal shortest routes share one room's credit.
+            for (int node = 1; node < count; node++)
+            {
+                int owners = 0;
+                for (int d = 0; d < 4; d++) if ((ExitMasks[node] & (1 << d)) != 0) owners++;
+                if (owners == 0) continue;
+                for (int d = 0; d < 4; d++)
+                    if ((ExitMasks[node] & (1 << d)) != 0)
+                    { ExitDepths[d] = Math.Max(ExitDepths[d], Depths[node]); ExitRoomUnits[d] += 12 / owners; }
+            }
+        }
+
+        public int GetRegionRoomUnits(int node)
+        {
+            int units = 0;
+            for (int d = 0; d < 4; d++)
+                if ((ExitMasks[node] & (1 << d)) != 0) units = Math.Max(units, ExitRoomUnits[d]);
+            return units;
+        }
+    }
+
+    private static void OrderExpansionNodes(TopologyDraft topology, List<int> candidates, System.Random random)
+    {
+        var reach = new StartBranchReach(topology);
+        var branchSizes = new Dictionary<int, int>();
+        foreach (PlannedNode node in topology.Nodes)
+            if (node.BranchGroup >= 0)
+            { branchSizes.TryGetValue(node.BranchGroup, out int size); branchSizes[node.BranchGroup] = size + 1; }
+        Shuffle(candidates, random);
+        var tieRank = new int[topology.Nodes.Count];
+        for (int i = 0; i < candidates.Count; i++) tieRank[candidates[i]] = i;
+        candidates.Sort((first, second) =>
+        {
+            int comparison = reach.Depths[first].CompareTo(reach.Depths[second]);
+            if (comparison == 0) comparison = reach.GetRegionRoomUnits(first).CompareTo(reach.GetRegionRoomUnits(second));
+            if (comparison == 0)
+            {
+                branchSizes.TryGetValue(topology.Nodes[first].BranchGroup, out int firstSize);
+                branchSizes.TryGetValue(topology.Nodes[second].BranchGroup, out int secondSize);
+                comparison = firstSize.CompareTo(secondSize);
+            }
+            return comparison != 0 ? comparison : tieRank[first].CompareTo(tieRank[second]);
+        });
     }
 
     public DungeonLayoutResult Assemble(
@@ -259,6 +423,21 @@ public sealed partial class DungeonGraphLayoutAssembler
             return failedResult;
         }
 
+        List<RoomTemplateSO> startCandidates = new();
+        library.CollectRooms(RoomType.Start, startCandidates);
+        List<RoomSocketDirection> startDirections = new();
+        for (int i = startCandidates.Count - 1; i >= 0; i--)
+        {
+            CollectValidSocketDirections(startCandidates[i], startDirections);
+            if (startDirections.Count == 0 || !IsTemplateCompatible(startCandidates[i], startDirections))
+                startCandidates.RemoveAt(i);
+        }
+        if (startCandidates.Count == 0)
+        {
+            failedResult.MarkFailed("The room library has no usable Start template with valid boundary sockets (check the Start role, selection weight, bounds and socket width).");
+            return failedResult;
+        }
+
         int attemptCount = Mathf.Max(
             policy.MaximumTopologyAttempts,
             Mathf.Clamp(maxPlacementAttemptsPerRoom, 1, 4096));
@@ -271,6 +450,7 @@ public sealed partial class DungeonGraphLayoutAssembler
         DungeonLayoutResult bestPhysicalResult = null;
         int bestMaximumPreferenceOverrun = int.MaxValue;
         int bestLongestCorridorLength = int.MaxValue;
+        StartDepthBalance bestDepthBalance = default;
         int physicalCandidateCount = 0;
         int qualityCandidateLimit = Mathf.Min(attemptCount, 8);
 
@@ -278,9 +458,11 @@ public sealed partial class DungeonGraphLayoutAssembler
         {
             int attemptSeed = unchecked(seed + attempt * 486187739);
             System.Random random = new(attemptSeed);
+            RoomTemplateSO startTemplate = SelectStartTemplate(startCandidates, random);
             if (!TryCreateTopology(
                     policy,
                     roomCount,
+                    startTemplate,
                     allowedBossMovementDirections,
                     random,
                     out TopologyDraft topology,
@@ -330,6 +512,12 @@ public sealed partial class DungeonGraphLayoutAssembler
                 continue;
             }
 
+            var startReach = new StartBranchReach(topology);
+            if (startReach.MissingTerminalMask != 0)
+            {
+                lastFailure = "Placed topology lost a dedicated degree-one terminal for a Start exit.";
+                continue;
+            }
             int deadEndCount = CountExplorationDeadEnds(topology);
             result.SetTopologyMetrics(
                 actualBossDistance,
@@ -337,6 +525,7 @@ public sealed partial class DungeonGraphLayoutAssembler
                 topology.CycleConnectionCount,
                 deadEndCount);
             physicalCandidateCount++;
+            StartDepthBalance depthBalance = startReach.Balance;
             int maximumPreferenceOverrun = CalculateMaximumCorridorPreferenceOverrun(
                 result,
                 resolvedMinimumCorridorLength,
@@ -346,7 +535,7 @@ public sealed partial class DungeonGraphLayoutAssembler
             int acceptablePreferenceOverrun = Mathf.Max(
                 2,
                 resolvedMinimumCorridorLength + resolvedCorridorLengthVariation);
-            if (result.TemplateSelection.Metrics.IsRepeatFree &&
+            if (result.TemplateSelection.Metrics.IsRepeatFree && depthBalance.IsEven &&
                 maximumPreferenceOverrun <= acceptablePreferenceOverrun)
             {
                 result.MarkComplete();
@@ -356,13 +545,16 @@ public sealed partial class DungeonGraphLayoutAssembler
             if (bestPhysicalResult == null ||
                 result.TemplateSelection.Metrics.CompareTo(bestPhysicalResult.TemplateSelection.Metrics) < 0 ||
                 result.TemplateSelection.Metrics.CompareTo(bestPhysicalResult.TemplateSelection.Metrics) == 0 &&
+                (depthBalance.CompareTo(bestDepthBalance) < 0 ||
+                 depthBalance.CompareTo(bestDepthBalance) == 0 &&
                 (maximumPreferenceOverrun < bestMaximumPreferenceOverrun ||
                  maximumPreferenceOverrun == bestMaximumPreferenceOverrun &&
-                 longestCorridorLength < bestLongestCorridorLength))
+                 longestCorridorLength < bestLongestCorridorLength)))
             {
                 bestPhysicalResult = result;
                 bestMaximumPreferenceOverrun = maximumPreferenceOverrun;
                 bestLongestCorridorLength = longestCorridorLength;
+                bestDepthBalance = depthBalance;
             }
 
             if (physicalCandidateCount >= qualityCandidateLimit)
@@ -724,21 +916,35 @@ public sealed partial class DungeonGraphLayoutAssembler
     private static bool TryCreateTopology(
         DungeonLayoutPolicySO policy,
         int roomCount,
+        RoomTemplateSO startTemplate,
         IReadOnlyList<RoomSocketDirection> allowedBossMovementDirections,
         System.Random random,
         out TopologyDraft topology,
         out string failure)
     {
         topology = null;
-        if (!TryResolveTopologyCounts(
-                policy,
-                roomCount,
-                random,
-                out int bossDistance,
-                out int branchCount,
-                out int cycleCount,
-                out failure))
+        List<RoomSocketDirection> startDirections = new();
+        CollectValidSocketDirections(startTemplate, startDirections);
+        RoomSocketDirection firstDirection = startDirections[random.Next(startDirections.Count)];
+        bool canStartCycle = startDirections.Exists(d => d != firstDirection && d != Opposite(firstDirection));
+        bool startCycle = canStartCycle && policy.MaximumCycleConnections > 0 && random.Next(2) == 0;
+        int bossDistance = 0, branchCount = 0, cycleCount = 0;
+        failure = string.Empty;
+        bool countsResolved = false;
+        for (int choice = 0; choice < 2; choice++)
         {
+            if ((!startCycle || canStartCycle) && TryResolveTopologyCounts(
+                    policy, roomCount, startDirections.Count - 1,
+                    startCycle, random, out bossDistance, out branchCount, out cycleCount, out failure))
+            {
+                countsResolved = true;
+                break;
+            }
+            startCycle = !startCycle;
+        }
+        if (!countsResolved)
+        {
+            failure = $"Start '{startTemplate.name}' requires all {startDirections.Count} socket directions and a dedicated dead-end terminal per exit. {failure}";
             return false;
         }
 
@@ -746,11 +952,14 @@ public sealed partial class DungeonGraphLayoutAssembler
         {
             RequestedBossDistance = bossDistance,
             MeaningfulBranchCount = branchCount,
-            CycleConnectionCount = cycleCount
+            CycleConnectionCount = cycleCount,
+            MinimumStartExitDepth = Mathf.Min(2, policy.MinimumBossGraphDistance)
         };
         if (!TryBuildMainPath(
                 draft,
                 bossDistance,
+                startDirections,
+                firstDirection,
                 allowedBossMovementDirections,
                 random))
         {
@@ -758,11 +967,22 @@ public sealed partial class DungeonGraphLayoutAssembler
             return false;
         }
 
-        if (!TryAddCycleDetours(draft, cycleCount, random))
+        draft.Nodes[0].Template = startTemplate;
+        if (!TryAddCycleDetours(draft, cycleCount, startDirections, startCycle, random))
         {
             failure = $"Could not place {cycleCount} cycle detours around the critical path.";
             return false;
         }
+
+        if (!TryAddStartBranches(draft, startDirections))
+        {
+            failure = "The critical path or a cycle blocked a reserved Start direction.";
+            return false;
+        }
+
+        // A Start cycle supplies a connection, but not a terminal. Reserve its tail before optional growth.
+        if (!TryAddMissingStartTerminals(draft, roomCount, branchCount, random, out failure))
+            return false;
 
         int remainingNodeCount = roomCount - draft.Nodes.Count;
         if (!TryAddMeaningfulBranches(draft, branchCount, remainingNodeCount, random))
@@ -777,6 +997,12 @@ public sealed partial class DungeonGraphLayoutAssembler
             return false;
         }
 
+        if (new StartBranchReach(draft).MissingTerminalMask != 0)
+        {
+            failure = "A Start exit has no dedicated degree-one terminal at its greatest graph depth.";
+            return false;
+        }
+
         topology = draft;
         failure = string.Empty;
         return true;
@@ -785,14 +1011,26 @@ public sealed partial class DungeonGraphLayoutAssembler
     private static bool TryResolveTopologyCounts(
         DungeonLayoutPolicySO policy,
         int roomCount,
+        int requiredStartBranches,
+        bool startCycle,
         System.Random random,
         out int bossDistance,
         out int branchCount,
         out int cycleCount,
         out string failure)
     {
-        int minimumRequiredExtras =
-            policy.MinimumMeaningfulBranches + policy.MinimumCycleConnections * 2;
+        int minimumBranches = Mathf.Max(policy.MinimumMeaningfulBranches, requiredStartBranches);
+        int minimumCycles = Mathf.Max(policy.MinimumCycleConnections, startCycle ? 1 : 0);
+        if (minimumBranches > policy.MaximumMeaningfulBranches || minimumCycles > policy.MaximumCycleConnections)
+        {
+            bossDistance = branchCount = cycleCount = 0;
+            failure = "Start connections exceed the policy's branch/cycle limits.";
+            return false;
+        }
+        // Reserve the second room on ordinary Start spokes before optional branches or a longer Boss path.
+        int startGrowthNodes = policy.MinimumBossGraphDistance >= 2
+            ? Mathf.Max(0, requiredStartBranches - (startCycle ? 1 : 0)) : 0;
+        int minimumRequiredExtras = minimumBranches + minimumCycles * 2 + startGrowthNodes;
         int maximumBossDistance = Mathf.Min(
             policy.MaximumBossGraphDistance,
             roomCount - 1 - minimumRequiredExtras);
@@ -802,7 +1040,7 @@ public sealed partial class DungeonGraphLayoutAssembler
             bossDistance = 0;
             branchCount = 0;
             cycleCount = 0;
-            failure = "No feasible boss-distance value remains after reserving branch and cycle nodes.";
+            failure = "No feasible boss-distance value remains after reserving branches, cycles and two-room Start exits.";
             return false;
         }
 
@@ -810,8 +1048,8 @@ public sealed partial class DungeonGraphLayoutAssembler
         int extraNodeCount = roomCount - (bossDistance + 1);
         int maximumCycles = Mathf.Min(
             policy.MaximumCycleConnections,
-            (extraNodeCount - policy.MinimumMeaningfulBranches) / 2);
-        if (maximumCycles < policy.MinimumCycleConnections)
+            (extraNodeCount - minimumBranches - startGrowthNodes) / 2);
+        if (maximumCycles < minimumCycles)
         {
             branchCount = 0;
             cycleCount = 0;
@@ -821,12 +1059,12 @@ public sealed partial class DungeonGraphLayoutAssembler
 
         cycleCount = NextInclusive(
             random,
-            policy.MinimumCycleConnections,
+            minimumCycles,
             maximumCycles);
         int maximumBranches = Mathf.Min(
             policy.MaximumMeaningfulBranches,
-            extraNodeCount - cycleCount * 2);
-        if (maximumBranches < policy.MinimumMeaningfulBranches)
+            extraNodeCount - cycleCount * 2 - startGrowthNodes);
+        if (maximumBranches < minimumBranches)
         {
             branchCount = 0;
             failure = "No feasible branch count remains after reserving cycle detour nodes.";
@@ -835,8 +1073,11 @@ public sealed partial class DungeonGraphLayoutAssembler
 
         branchCount = NextInclusive(
             random,
-            policy.MinimumMeaningfulBranches,
+            minimumBranches,
             maximumBranches);
+        // Prefer leaving rooms to deepen existing Start branches, but retain every policy-valid branch count.
+        if (requiredStartBranches > 0 && maximumBranches > minimumBranches)
+            branchCount = Math.Min(branchCount, NextInclusive(random, minimumBranches, maximumBranches));
         failure = string.Empty;
         return true;
     }
@@ -844,11 +1085,18 @@ public sealed partial class DungeonGraphLayoutAssembler
     private static bool TryBuildMainPath(
         TopologyDraft topology,
         int bossDistance,
+        IReadOnlyList<RoomSocketDirection> startDirections,
+        RoomSocketDirection firstDirection,
         IReadOnlyList<RoomSocketDirection> allowedBossMovementDirections,
         System.Random random)
     {
-        List<Vector2Int> positions = new() { Vector2Int.zero };
+        if (bossDistance == 1 && !IsRequiredDirection(allowedBossMovementDirections, firstDirection))
+            return false;
+        List<Vector2Int> positions = new() { Vector2Int.zero, DirectionToVector(firstDirection) };
         HashSet<Vector2Int> occupied = new() { Vector2Int.zero };
+        // Keep future Start neighbors free; the main path cannot obstruct their branch space.
+        foreach (RoomSocketDirection direction in startDirections)
+            occupied.Add(DirectionToVector(direction));
         if (!TryExtendMainPath(
                 positions,
                 occupied,
@@ -923,15 +1171,22 @@ public sealed partial class DungeonGraphLayoutAssembler
     private static bool TryAddCycleDetours(
         TopologyDraft topology,
         int cycleCount,
+        IReadOnlyList<RoomSocketDirection> startDirections,
+        bool startCycle,
         System.Random random)
     {
         if (cycleCount <= 0)
             return true;
+        if (startCycle && topology.MainPathNodeIndices.Count < 3)
+            return false;
 
         List<int> mainEdgeIndices = new();
-        for (int i = 0; i < topology.MainPathNodeIndices.Count - 1; i++)
+        // Keep the Boss entrance terminal; cycles only join intermediate critical-path edges.
+        for (int i = 1; i < topology.MainPathNodeIndices.Count - 2; i++)
             mainEdgeIndices.Add(i);
         Shuffle(mainEdgeIndices, random);
+        if (startCycle)
+            mainEdgeIndices.Insert(0, 0);
 
         HashSet<Vector2Int> occupied = CollectOccupiedCells(topology.Nodes);
         int addedCycles = 0;
@@ -956,9 +1211,14 @@ public sealed partial class DungeonGraphLayoutAssembler
             {
                 Vector2Int firstDetour = first + perpendiculars[sideIndex];
                 Vector2Int secondDetour = second + perpendiculars[sideIndex];
+                if (firstNodeIndex == 0 &&
+                    !IsRequiredDirection(startDirections, GetDirection(first, firstDetour)))
+                    continue;
                 if (occupied.Contains(firstDetour) || occupied.Contains(secondDetour) ||
                     HasUnexpectedOccupiedNeighbor(firstDetour, occupied, first) ||
-                    HasUnexpectedOccupiedNeighbor(secondDetour, occupied, second))
+                    HasUnexpectedOccupiedNeighbor(secondDetour, occupied, second) ||
+                    !PreservesStartBranchSpace(startDirections, occupied, firstDetour, secondDetour,
+                        firstNodeIndex == 0))
                 {
                     continue;
                 }
@@ -983,9 +1243,120 @@ public sealed partial class DungeonGraphLayoutAssembler
                 addedCycles++;
                 break;
             }
+            if (startCycle && candidateIndex == 0 && addedCycles == 0)
+                return false;
         }
 
         return addedCycles == cycleCount;
+    }
+
+    private static bool PreservesStartBranchSpace(
+        IReadOnlyList<RoomSocketDirection> directions, HashSet<Vector2Int> occupied,
+        Vector2Int firstDetour, Vector2Int secondDetour, bool isStartCycle)
+    {
+        foreach (RoomSocketDirection direction in directions)
+        {
+            Vector2Int reserved = DirectionToVector(direction);
+            if (occupied.Contains(reserved) || isStartCycle && reserved == firstDetour)
+                continue;
+            Vector2Int toFirst = reserved - firstDetour;
+            Vector2Int toSecond = reserved - secondDetour;
+            if (Mathf.Abs(toFirst.x) + Mathf.Abs(toFirst.y) <= 1 ||
+                Mathf.Abs(toSecond.x) + Mathf.Abs(toSecond.y) <= 1)
+                return false;
+        }
+        return true;
+    }
+
+    private static bool TryAddStartBranches(TopologyDraft topology, IReadOnlyList<RoomSocketDirection> directions)
+    {
+        HashSet<Vector2Int> occupied = CollectOccupiedCells(topology.Nodes);
+        int branchIndex = 0;
+        foreach (RoomSocketDirection direction in directions)
+        {
+            Vector2Int cell = DirectionToVector(direction);
+            if (occupied.Contains(cell)) continue;
+            if (CountOccupiedNeighbors(cell, occupied) != 1) return false;
+            int nodeIndex = topology.Nodes.Count;
+            topology.Nodes.Add(new PlannedNode { GridPosition = cell, BranchGroup = branchIndex++ });
+            topology.Edges.Add(new PlannedEdge(0, nodeIndex, false));
+            occupied.Add(cell);
+        }
+        return true;
+    }
+
+    private static bool TryAddMissingStartTerminals(
+        TopologyDraft topology, int roomCount, int branchCount, System.Random random,
+        out string failure)
+    {
+        failure = string.Empty;
+        var reach = new StartBranchReach(topology);
+        int missing = reach.MissingTerminalMask;
+        if (missing == 0) return true;
+
+        int nextBranch = 0;
+        foreach (PlannedNode node in topology.Nodes)
+            nextBranch = Math.Max(nextBranch, node.BranchGroup + 1);
+        HashSet<Vector2Int> occupied = CollectOccupiedCells(topology.Nodes);
+        while (missing != 0)
+        {
+            int d = 0, missingCount = 0;
+            while ((missing & (1 << d)) == 0) d++;
+            for (int bits = missing; bits != 0; bits &= bits - 1) missingCount++;
+            int exitMask = 1 << d;
+            failure = $"Start exit {(RoomSocketDirection)d} needs a dedicated dead-end terminal within the room/branch budget.";
+            if (topology.Nodes.Count >= roomCount)
+                return false;
+
+            List<int> candidates = new();
+            for (int node = 1; node < topology.Nodes.Count; node++)
+                if (node != topology.BossNodeIndex && (reach.ExitMasks[node] & exitMask) != 0 &&
+                    (reach.Degrees[node] > 1 || reach.Depths[node] < topology.MinimumStartExitDepth) &&
+                    reach.Degrees[node] < AllDirections.Length &&
+                    reach.Depths[node] + 1 >= Math.Max(reach.ExitDepths[d], topology.MinimumStartExitDepth))
+                    candidates.Add(node);
+            // A cycle's far side can host a depth-constrained event without spending another room.
+            Shuffle(candidates, random);
+            candidates.Sort((first, second) => reach.Depths[second].CompareTo(reach.Depths[first]));
+            bool added = false;
+            foreach (int parent in candidates)
+            {
+                bool extendsBranch = topology.Nodes[parent].BranchGroup >= 0 && reach.Degrees[parent] == 1;
+                if (!extendsBranch && nextBranch >= branchCount) continue;
+                List<RoomSocketDirection> directions = new(AllDirections);
+                Shuffle(directions, random);
+                foreach (RoomSocketDirection direction in directions)
+                {
+                    Vector2Int cell = topology.Nodes[parent].GridPosition + DirectionToVector(direction);
+                    if (occupied.Contains(cell) || CountOccupiedNeighbors(cell, occupied) != 1)
+                        continue;
+                    int nodeIndex = topology.Nodes.Count;
+                    topology.Nodes.Add(new PlannedNode { GridPosition = cell,
+                        BranchGroup = extendsBranch ? topology.Nodes[parent].BranchGroup : nextBranch });
+                    topology.Edges.Add(new PlannedEdge(parent, nodeIndex, false));
+                    var candidateReach = new StartBranchReach(topology);
+                    int candidateMissing = candidateReach.MissingTerminalMask, candidateMissingCount = 0;
+                    for (int bits = candidateMissing; bits != 0; bits &= bits - 1) candidateMissingCount++;
+                    // A longer shared tail must not invalidate another exit's already covered terminal.
+                    if (candidateMissingCount >= missingCount)
+                    {
+                        topology.Edges.RemoveAt(topology.Edges.Count - 1);
+                        topology.Nodes.RemoveAt(nodeIndex);
+                        continue;
+                    }
+                    reach = candidateReach;
+                    missing = candidateMissing;
+                    if (!extendsBranch) nextBranch++;
+                    occupied.Add(cell);
+                    added = true;
+                    break;
+                }
+                if (added) break;
+            }
+            if (!added) return false;
+        }
+        failure = string.Empty;
+        return true;
     }
 
     private static bool TryAddMeaningfulBranches(
@@ -994,19 +1365,24 @@ public sealed partial class DungeonGraphLayoutAssembler
         int availableNodeCount,
         System.Random random)
     {
-        if (branchCount < 0 || availableNodeCount < branchCount)
+        List<int> branchEndpoints = new();
+        for (int i = 0; i < topology.Nodes.Count; i++)
+            if (topology.Nodes[i].BranchGroup >= 0 && GetNodeDegree(topology, i) == 1) branchEndpoints.Add(i);
+        int newBranchCount = branchCount - branchEndpoints.Count;
+        if (newBranchCount < 0 || availableNodeCount < newBranchCount)
             return false;
         if (availableNodeCount == 0)
-            return branchCount == 0;
+            return newBranchCount == 0;
 
         HashSet<Vector2Int> occupied = CollectOccupiedCells(topology.Nodes);
         List<int> attachmentCandidates = new(topology.MainPathNodeIndices);
+        attachmentCandidates.Remove(0);
         attachmentCandidates.Remove(topology.BossNodeIndex);
+        // Keep distant attachment sites available for guaranteed rooms with minimum-depth requirements.
         Shuffle(attachmentCandidates, random);
-        List<int> branchEndpoints = new();
         HashSet<int> usedAttachments = new();
 
-        for (int branchIndex = 0; branchIndex < branchCount; branchIndex++)
+        for (int branchIndex = branchEndpoints.Count; branchIndex < branchCount; branchIndex++)
         {
             bool added = false;
             for (int attachmentListIndex = 0;
@@ -1052,21 +1428,19 @@ public sealed partial class DungeonGraphLayoutAssembler
                 return false;
         }
 
-        int remainingNodeCount = availableNodeCount - branchCount;
+        int remainingNodeCount = availableNodeCount - newBranchCount;
         for (int nodeOffset = 0; nodeOffset < remainingNodeCount; nodeOffset++)
         {
             bool added = false;
-            List<int> endpointOrder = new();
-            for (int endpointIndex = 0; endpointIndex < branchEndpoints.Count; endpointIndex++)
-                endpointOrder.Add(endpointIndex);
-            Shuffle(endpointOrder, random);
+            List<int> endpointOrder = new(branchEndpoints);
+            OrderExpansionNodes(topology, endpointOrder, random);
 
             for (int endpointOrderIndex = 0;
                  endpointOrderIndex < endpointOrder.Count && !added;
                  endpointOrderIndex++)
             {
-                int endpointSlot = endpointOrder[endpointOrderIndex];
-                int endpointNodeIndex = branchEndpoints[endpointSlot];
+                int endpointNodeIndex = endpointOrder[endpointOrderIndex];
+                int endpointSlot = branchEndpoints.IndexOf(endpointNodeIndex);
                 Vector2Int endpointCell = topology.Nodes[endpointNodeIndex].GridPosition;
                 List<RoomSocketDirection> directions = new(AllDirections);
                 Shuffle(directions, random);
@@ -1156,11 +1530,23 @@ public sealed partial class DungeonGraphLayoutAssembler
         List<int> assignedSpecialNodes = new();
         if (guaranteedRoomTemplates != null)
         {
-            for (int templateIndex = 0; templateIndex < guaranteedRoomTemplates.Count; templateIndex++)
+            List<RoomTemplateSO> pending = new(guaranteedRoomTemplates);
+            List<int> compatible = new();
+            List<int> deadEnds = new();
+            while (pending.Count > 0)
             {
+                // Start spokes leave fewer distant leaves. Reserve scarce event slots before flexible shops.
+                int next = 0, fewest = int.MaxValue;
+                for (int i = 0; i < pending.Count; i++)
+                {
+                    CollectGuaranteedTemplateNodes(topology, pending[i], assignedSpecialNodes, compatible, deadEnds);
+                    if (compatible.Count >= fewest) continue;
+                    next = i;
+                    fewest = compatible.Count;
+                }
                 if (!TryAssignGuaranteedTemplate(
                         topology,
-                        guaranteedRoomTemplates[templateIndex],
+                        pending[next],
                         policy.PreferSpecialRoomsAtDeadEnds,
                         assignedSpecialNodes,
                         random,
@@ -1168,6 +1554,7 @@ public sealed partial class DungeonGraphLayoutAssembler
                 {
                     return false;
                 }
+                pending.RemoveAt(next);
             }
         }
 
@@ -1375,18 +1762,17 @@ public sealed partial class DungeonGraphLayoutAssembler
         return count;
     }
 
-    private static bool TryAssignGuaranteedTemplate(
+    private static void CollectGuaranteedTemplateNodes(
         TopologyDraft topology,
         RoomTemplateSO template,
-        bool preferDeadEnds,
         List<int> assignedNodes,
-        System.Random random,
-        out string failure)
+        List<int> compatibleNodes,
+        List<int> compatibleDeadEnds)
     {
         RoomTopologyPlacementData placementRule = template.LayoutData.topologyPlacement;
         int minimumDistance = Mathf.Max(0, placementRule.minimumGraphDistanceFromStart);
-        List<int> compatibleNodes = new();
-        List<int> compatibleDeadEnds = new();
+        compatibleNodes.Clear();
+        compatibleDeadEnds.Clear();
         for (int nodeIndex = 1; nodeIndex < topology.Nodes.Count; nodeIndex++)
         {
             if (nodeIndex == topology.BossNodeIndex ||
@@ -1415,7 +1801,21 @@ public sealed partial class DungeonGraphLayoutAssembler
             if (isDeadEnd)
                 compatibleDeadEnds.Add(nodeIndex);
         }
+    }
 
+    private static bool TryAssignGuaranteedTemplate(
+        TopologyDraft topology,
+        RoomTemplateSO template,
+        bool preferDeadEnds,
+        List<int> assignedNodes,
+        System.Random random,
+        out string failure)
+    {
+        RoomTopologyPlacementData placementRule = template.LayoutData.topologyPlacement;
+        int minimumDistance = Mathf.Max(0, placementRule.minimumGraphDistanceFromStart);
+        List<int> compatibleNodes = new();
+        List<int> compatibleDeadEnds = new();
+        CollectGuaranteedTemplateNodes(topology, template, assignedNodes, compatibleNodes, compatibleDeadEnds);
         List<int> candidates = preferDeadEnds && compatibleDeadEnds.Count > 0
             ? compatibleDeadEnds
             : compatibleNodes;
@@ -1892,6 +2292,7 @@ public sealed partial class DungeonGraphLayoutAssembler
     {
         int nodeCount = topology.Nodes.Count;
         int[] parents = new int[nodeCount];
+        int[] offsets = new int[nodeCount];
         for (int nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
             parents[nodeIndex] = nodeIndex;
 
@@ -1914,7 +2315,19 @@ public sealed partial class DungeonGraphLayoutAssembler
                 ? direction == RoomSocketDirection.Up || direction == RoomSocketDirection.Down
                 : direction == RoomSocketDirection.Left || direction == RoomSocketDirection.Right;
             if (sharesAxisAnchor)
-                UnionNodes(parents, edge.FirstNodeIndex, edge.SecondNodeIndex);
+            {
+                RoomSocketData firstSocket = first.Template.LayoutData.sockets[first.SocketIndices[direction]];
+                RoomSocketData secondSocket = second.Template.LayoutData.sockets[second.SocketIndices[Opposite(direction)]];
+                int firstLocal = horizontal ? firstSocket.localCell.x - first.ReferenceX : firstSocket.localCell.y - first.ReferenceY;
+                int secondLocal = horizontal ? secondSocket.localCell.x - second.ReferenceX : secondSocket.localCell.y - second.ReferenceY;
+                // anchor(second) - anchor(first) = local(first) - local(second).
+                if (!TryUnionNodes(parents, offsets, edge.FirstNodeIndex, edge.SecondNodeIndex, firstLocal - secondLocal))
+                {
+                    layout = null;
+                    failure = $"Topology edge {edgeIndex} has contradictory socket offsets on the {(horizontal ? "X" : "Y")} axis.";
+                    return false;
+                }
+            }
         }
 
         Dictionary<int, int> groupByRoot = new();
@@ -1922,7 +2335,7 @@ public sealed partial class DungeonGraphLayoutAssembler
         int[] groupByNode = new int[nodeCount];
         for (int nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
         {
-            int root = FindRoot(parents, nodeIndex);
+            int root = FindRoot(parents, offsets, nodeIndex);
             if (!groupByRoot.TryGetValue(root, out int groupIndex))
             {
                 groupIndex = logicalCoordinates.Count;
@@ -1947,7 +2360,7 @@ public sealed partial class DungeonGraphLayoutAssembler
             groupByNode[nodeIndex] = groupIndex;
         }
 
-        layout = new AxisConstraintLayout(groupByNode, logicalCoordinates.ToArray());
+        layout = new AxisConstraintLayout(groupByNode, offsets, logicalCoordinates.ToArray());
         for (int edgeIndex = 0; edgeIndex < topology.Edges.Count; edgeIndex++)
         {
             PlannedEdge edge = topology.Edges[edgeIndex];
@@ -1981,7 +2394,7 @@ public sealed partial class DungeonGraphLayoutAssembler
             layout.AddMinimumSeparation(
                 layout.GetGroup(lowerNodeIndex),
                 layout.GetGroup(upperNodeIndex),
-                separation);
+                layout.ToGroupSeparation(lowerNodeIndex, upperNodeIndex, separation));
         }
 
         failure = string.Empty;
@@ -2085,6 +2498,10 @@ public sealed partial class DungeonGraphLayoutAssembler
         separation = ResolvePositiveExtent(lowerNode, horizontal) +
             ResolveNegativeExtent(upperNode, horizontal) +
             1;
+        separation = layout.ToGroupSeparation(
+            firstIsLower ? firstNodeIndex : secondNodeIndex,
+            firstIsLower ? secondNodeIndex : firstNodeIndex,
+            separation);
         additionalMovement = separation -
             (layout.GetAnchorForGroup(upperGroup) - layout.GetAnchorForGroup(lowerGroup));
         return additionalMovement > 0;
@@ -2106,79 +2523,31 @@ public sealed partial class DungeonGraphLayoutAssembler
             ? node.LocalBounds.xMax - 1 - node.ReferenceX
             : node.LocalBounds.yMax - 1 - node.ReferenceY;
 
-    private static int FindRoot(int[] parents, int nodeIndex)
+    private static int FindRoot(int[] parents, int[] offsets, int nodeIndex)
     {
-        while (parents[nodeIndex] != nodeIndex)
-        {
-            parents[nodeIndex] = parents[parents[nodeIndex]];
-            nodeIndex = parents[nodeIndex];
-        }
-
-        return nodeIndex;
+        int parent = parents[nodeIndex];
+        if (parent == nodeIndex) return nodeIndex;
+        parents[nodeIndex] = FindRoot(parents, offsets, parent);
+        offsets[nodeIndex] += offsets[parent];
+        return parents[nodeIndex];
     }
 
-    private static void UnionNodes(int[] parents, int firstNodeIndex, int secondNodeIndex)
+    private static bool TryUnionNodes(int[] parents, int[] offsets, int firstNodeIndex, int secondNodeIndex, int difference)
     {
-        int firstRoot = FindRoot(parents, firstNodeIndex);
-        int secondRoot = FindRoot(parents, secondNodeIndex);
-        if (firstRoot != secondRoot)
-            parents[secondRoot] = firstRoot;
-    }
-
-    private static bool TryResolveNodeReferences(
-        PlannedNode node,
-        IReadOnlyList<RoomSocketDirection> requiredDirections,
-        out string failure)
-    {
-        bool hasVerticalReference = false;
-        bool hasHorizontalReference = false;
-        int verticalReference = 0;
-        int horizontalReference = 0;
-        for (int directionIndex = 0; directionIndex < requiredDirections.Count; directionIndex++)
-        {
-            RoomSocketDirection direction = requiredDirections[directionIndex];
-            RoomSocketData socket =
-                node.Template.LayoutData.sockets[node.SocketIndices[direction]];
-            if (direction == RoomSocketDirection.Up || direction == RoomSocketDirection.Down)
-            {
-                if (hasVerticalReference && verticalReference != socket.localCell.x)
-                {
-                    failure =
-                        $"Template '{node.Template.LayoutData.roomId}' has vertically opposite sockets " +
-                        "on different grid columns.";
-                    return false;
-                }
-
-                verticalReference = socket.localCell.x;
-                hasVerticalReference = true;
-            }
-            else
-            {
-                if (hasHorizontalReference && horizontalReference != socket.localCell.y)
-                {
-                    failure =
-                        $"Template '{node.Template.LayoutData.roomId}' has horizontally opposite sockets " +
-                        "on different grid rows.";
-                    return false;
-                }
-
-                horizontalReference = socket.localCell.y;
-                hasHorizontalReference = true;
-            }
-        }
-
-        node.ReferenceX = hasVerticalReference
-            ? verticalReference
-            : node.LocalBounds.xMin + Mathf.Max(
-                0,
-                (node.LocalBounds.width - RoomSocketGeometry.RequiredWidth) / 2);
-        node.ReferenceY = hasHorizontalReference
-            ? horizontalReference
-            : node.LocalBounds.yMin + Mathf.Max(
-                0,
-                (node.LocalBounds.height - RoomSocketGeometry.RequiredWidth) / 2);
-        failure = string.Empty;
+        int firstRoot = FindRoot(parents, offsets, firstNodeIndex);
+        int secondRoot = FindRoot(parents, offsets, secondNodeIndex);
+        if (firstRoot == secondRoot)
+            return offsets[secondNodeIndex] - offsets[firstNodeIndex] == difference;
+        parents[secondRoot] = firstRoot;
+        offsets[secondRoot] = difference + offsets[firstNodeIndex] - offsets[secondNodeIndex];
         return true;
+    }
+
+    private static void ResolveNodeReferences(PlannedNode node)
+    {
+        // A stable local origin for extents only; actual alignment belongs to each connected socket pair.
+        node.ReferenceX = node.LocalBounds.xMin + Mathf.Max(0, (node.LocalBounds.width - RoomSocketGeometry.RequiredWidth) / 2);
+        node.ReferenceY = node.LocalBounds.yMin + Mathf.Max(0, (node.LocalBounds.height - RoomSocketGeometry.RequiredWidth) / 2);
     }
 
     private static bool HasCompatibleTemplate(
@@ -2237,72 +2606,12 @@ public sealed partial class DungeonGraphLayoutAssembler
             candidatesByDirection.Add(direction, candidates);
         }
 
-        if (!TrySelectOppositeAxisPair(
-                layout,
-                candidatesByDirection,
-                RoomSocketDirection.Up,
-                RoomSocketDirection.Down,
-                compareX: true,
-                random,
-                results) ||
-            !TrySelectOppositeAxisPair(
-                layout,
-                candidatesByDirection,
-                RoomSocketDirection.Right,
-                RoomSocketDirection.Left,
-                compareX: false,
-                random,
-                results))
-        {
-            return false;
-        }
-
         foreach (KeyValuePair<RoomSocketDirection, List<int>> pair in candidatesByDirection)
         {
-            if (results.ContainsKey(pair.Key))
-                continue;
             int selectedListIndex = random != null ? random.Next(pair.Value.Count) : 0;
             results.Add(pair.Key, pair.Value[selectedListIndex]);
         }
 
-        return true;
-    }
-
-    private static bool TrySelectOppositeAxisPair(
-        RoomLayoutData layout,
-        IReadOnlyDictionary<RoomSocketDirection, List<int>> candidatesByDirection,
-        RoomSocketDirection firstDirection,
-        RoomSocketDirection secondDirection,
-        bool compareX,
-        System.Random random,
-        Dictionary<RoomSocketDirection, int> results)
-    {
-        if (!candidatesByDirection.TryGetValue(firstDirection, out List<int> firstCandidates) ||
-            !candidatesByDirection.TryGetValue(secondDirection, out List<int> secondCandidates))
-        {
-            return true;
-        }
-
-        List<Vector2Int> compatiblePairs = new();
-        for (int firstIndex = 0; firstIndex < firstCandidates.Count; firstIndex++)
-        {
-            RoomSocketData firstSocket = layout.sockets[firstCandidates[firstIndex]];
-            for (int secondIndex = 0; secondIndex < secondCandidates.Count; secondIndex++)
-            {
-                RoomSocketData secondSocket = layout.sockets[secondCandidates[secondIndex]];
-                bool aligned = compareX
-                    ? firstSocket.localCell.x == secondSocket.localCell.x
-                    : firstSocket.localCell.y == secondSocket.localCell.y;
-                if (aligned)
-                    compatiblePairs.Add(new Vector2Int(firstCandidates[firstIndex], secondCandidates[secondIndex]));
-            }
-        }
-
-        if (compatiblePairs.Count == 0)
-            return false;
-        Vector2Int selectedPair = compatiblePairs[random != null ? random.Next(compatiblePairs.Count) : 0];
-        results.Add(firstDirection, selectedPair.x);
-        results.Add(secondDirection, selectedPair.y);
         return true;
     }
 
@@ -2523,6 +2832,30 @@ public sealed partial class DungeonGraphLayoutAssembler
         }
 
         return false;
+    }
+
+    private static void CollectValidSocketDirections(RoomTemplateSO template, List<RoomSocketDirection> results)
+    {
+        results.Clear();
+        if (!IsTemplateUsable(template)) return;
+        RoomLayoutData layout = template.LayoutData;
+        RectInt bounds = ResolveLocalBounds(layout);
+        foreach (RoomSocketDirection direction in AllDirections)
+            if (HasValidSocketInDirection(layout, bounds, direction)) results.Add(direction);
+    }
+
+    private static RoomTemplateSO SelectStartTemplate(List<RoomTemplateSO> candidates, System.Random random)
+    {
+        // Start has no required directions yet, so use authoring weights without socket-fit penalties.
+        double total = 0d;
+        foreach (RoomTemplateSO candidate in candidates) total += candidate.LayoutData.selectionWeight;
+        double selected = random.NextDouble() * total;
+        foreach (RoomTemplateSO candidate in candidates)
+        {
+            selected -= candidate.LayoutData.selectionWeight;
+            if (selected < 0d) return candidate;
+        }
+        return candidates[candidates.Count - 1];
     }
 
     private static void CollectAllowedBossMovementDirections(

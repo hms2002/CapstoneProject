@@ -209,7 +209,7 @@ MonoBehaviour:
   dashDustRotationOffsetDegrees: 0
   dashDustFallbackLifetime: 1.5
   wallImpactCameraShake:
-    amplitude: 1
+    amplitude: 0.5
     amplitudeMultiplier: 1
     maxAmplitude: 1
     minIntervalSeconds: 0.08

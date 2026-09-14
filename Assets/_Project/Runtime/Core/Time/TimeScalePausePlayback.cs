@@ -14,9 +14,21 @@ public interface ITimeScalePauseBackend
 /// <summary>
 /// 책임 : Gameplay/Core 호출자가 Infrastructure time-scale pause 서비스 타입을 직접 참조하지 않게 한다.
 /// </summary>
+public interface ICombatSlowMotionBackend
+{
+    bool IsCombatSlowMotion { get; }
+    bool AcquireCombatSlowMotion(Object owner);
+}
+
 public static class TimeScalePausePlayback
 {
     private static ITimeScalePauseBackend backend;
+
+    public static bool IsCombatSlowMotion => backend is ICombatSlowMotionBackend slow && slow.IsCombatSlowMotion;
+    public static bool AcquireCombatSlowMotion(Object owner)
+        => backend is ICombatSlowMotionBackend slow && slow.AcquireCombatSlowMotion(owner);
+    public static float PresentationDeltaTime => IsPaused ? 0f :
+        IsCombatSlowMotion ? Time.unscaledDeltaTime : Time.deltaTime;
 
     public static bool IsPaused => backend != null && backend.IsPaused;
 

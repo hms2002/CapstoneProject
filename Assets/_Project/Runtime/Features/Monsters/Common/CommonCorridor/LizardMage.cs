@@ -11,7 +11,7 @@ using CapstoneAudio;
 [DisallowMultipleComponent]
 [RequireComponent(typeof(MobAbilityCoordinator))]
 [RequireComponent(typeof(LizardMageBurstRunner))]
-public sealed class LizardMage : Mob, IMobAttackDecisionSource
+public sealed class LizardMage : Mob, IMobAttackDecisionSource, IMobProjectileLaneSource
 {
     private static readonly SoundRef ShotFireSound = SoundRef.FromKey("sound_lizardMage_shotFire");
 
@@ -23,6 +23,8 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
     private AbilityLogic_LizardMageBurst Logic => burstAbility != null ? burstAbility.logic as AbilityLogic_LizardMageBurst : null;
 
     public AbilityLogic_LizardMageBurst BurstLogic => Logic;
+    public GameObject ShotProjectilePrefab => Logic != null ? Logic.ProjectilePrefab : null;
+    public LayerMask ShotWallLayers => Logic != null ? Logic.WallLayers : 0;
     public int ShotCount => Logic != null ? Logic.ShotCount : 0;
     public float ShotInterval => Logic != null ? Logic.ShotInterval : 0f;
     public bool IsRestingBetweenBursts => burstCadence.IsResting(Time.time);
@@ -176,6 +178,7 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
         if (logic == null || logic.ProjectilePrefab == null)
             return;
 
+        if (!MobProjectileLaneUtility.IsClear(this, context.Origin, direction, 0.2f)) return;
         GameObject projectileObject = Instantiate(logic.ProjectilePrefab, context.Origin, Quaternion.identity);
         if (projectileObject == null)
             return;

@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Dragon_Combat_Large_Stage2_Sample",
+    "theme": "Dragon",
+    "tier": 2,
+    "width": 44,
+    "height": 34,
+    "title": "팔각 문양 연회장",
+    "floor": 1228,
+    "walkable": 1220,
+    "reachable": 1228,
+    "monsters": 20
+  },
+  {
+    "name": "Dragon_Combat_Large_Stage3_Sample",
+    "theme": "Dragon",
+    "tier": 3,
+    "width": 54,
+    "height": 42,
+    "title": "엇갈린 삼익 회랑",
+    "floor": 1682,
+    "walkable": 1674,
+    "reachable": 1682,
+    "monsters": 28
+  },
+  {
+    "name": "Shadow_Combat_Large_Stage2_Sample",
+    "theme": "Shadow",
+    "tier": 2,
+    "width": 44,
+    "height": 36,
+    "title": "고리형 봉인전당",
+    "floor": 1292,
+    "walkable": 1284,
+    "reachable": 1292,
+    "monsters": 18
+  },
+  {
+    "name": "Shadow_Combat_Large_Stage3_Sample",
+    "theme": "Shadow",
+    "tier": 3,
+    "width": 54,
+    "height": 44,
+    "title": "비대칭 쌍성 의식장",
+    "floor": 1337,
+    "walkable": 1329,
+    "reachable": 1337,
+    "monsters": 26
+  },
+  {
+    "name": "Slime_Combat_Large_Stage2_Sample",
+    "theme": "Slime",
+    "tier": 2,
+    "width": 44,
+    "height": 36,
+    "title": "십자교 집수장",
+    "floor": 1144,
+    "walkable": 1136,
+    "reachable": 1144,
+    "monsters": 16
+  },
+  {
+    "name": "Slime_Combat_Large_Stage3_Sample",
+    "theme": "Slime",
+    "tier": 3,
+    "width": 54,
+    "height": 44,
+    "title": "사행 수로와 측면 저수지",
+    "floor": 1732,
+    "walkable": 1724,
+    "reachable": 1732,
+    "monsters": 22
+  }
+]

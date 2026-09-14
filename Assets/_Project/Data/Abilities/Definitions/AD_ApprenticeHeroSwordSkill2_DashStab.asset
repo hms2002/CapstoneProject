@@ -17,7 +17,7 @@ MonoBehaviour:
   description: "● 조준 방향으로 {em:돌진}하며 찌르기\n● 돌진 중 전방에 짧은 찌르기 판정 생성"
   hitFeel:
     targetStunSeconds: 0.1
-    attackerStopSeconds: 0.1
+    attackerStopSeconds: 0.11
   hitFeelByAttack: []
   cooldown: 3
   executionPolicy: 0

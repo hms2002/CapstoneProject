@@ -36,3 +36,13 @@ Price rounding: newly rolled run-shop prices round the units digit half-up to mu
 ## Boss encounter gold (2026-09-13)
 
 BossEncounterEndDirector owns baseGoldReward (800 default) and goldPickupPrefab, authored in the four production boss scenes. Its guarded CompleteEncounterRoutine emits 680–920 gold (inclusive +/-15%) across up to eight pickups before finale/terminal-ending presentation, only in an active run. Total integer gold is preserved via quotient/remainder distribution. Payment belongs to encounter completion, including split/multi-phase bosses, rather than each managed enemy death. Tutorial director remains unassigned. Unity pickup/ending timing needs playtest confirmation.
+
+
+## Homing pickups and portal settlement (2026-09-13)
+
+- EXP, gold and magic stones all collect from Update when within .01 world units of the tracked player's position. Stone's authored collider remains a trigger but has no currency-grant callback. Serialized speed/delay fields and prefab values remain unchanged.
+- HomingPickupTravel.Speed evaluates min(40, initialSpeed + 20 * trackingSeconds). Each pickup owns tracking time and target; initial drop delay does not count toward acceleration. Gold/EXP Initialize and stone OnEnable reset tracking state.
+- HomingPickupTravel.TryCollectFollowing performs three active-type queries only on travel, then calls each pickup's guarded collection path for the requested player. It owns no currency, persistent state, scene object or registry. Nonfollowing/disabled/consumed pickups do not grant; failed eligible grants remain and block travel with warning. Existing consumed flags prevent callback/deferred-Destroy double grants.
+- Integration: ScenePortalTravelExecutor before capture/start/end run; SceneConnectionTravelExecutor after departure and before dungeon/player capture/run action; TutorialScenePortal before load plus refreshed player capture; DungeonReturnTravel before warp. Keep this order so level-up-triggered health/cooldown effects enter the outgoing snapshot and magic stones enter the active-run pending ledger before run end.
+- New portal implementations should call this helper after access validation and before state capture/run termination/warp. A denied travel request must not grant loot. Successful individual grants remain consumed if another pickup fails or scene loading fails; retries only grant the remainder.
+- Gameplay -> Core and Infrastructure -> Gameplay dependency directions retained. No new Manager, singleton or DDOL object. No Architecture/Contracts promotion needed for this small helper.

@@ -106,6 +106,8 @@ public sealed partial class AbilityLogic_DragonSlam : AbilityLogic
                     motion?.CancelMotion();
 
                 heightState?.SetGrounded();
+                // Finish the damped visual drop before the landing pose, VFX and damage start.
+                dragon.GetComponent<ICombatHeightPresentation2D>()?.SnapToCurrentState();
                 if (impactTelegraph != null)
                     impactTelegraph.HideImmediate();
 

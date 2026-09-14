@@ -214,6 +214,14 @@ namespace UnityGAS
                     if (damage <= 0f)
                     {
                         LogDamageApplication($"hp skipped: fully absorbed. target={target.name}", target);
+                        // Absorbed player damage is still a hit; no HP listener will emit its popup.
+                        float shieldDamage = Mathf.Max(0f, shield - postShield);
+                        if (shieldModified && shieldDamage > 0f && target.CompareTag("Player"))
+                        {
+                            DamagePopupPlayback.Show(DamagePopupRequest.Damage(
+                                shieldDamage, target.transform.position, isPlayerTarget: true));
+                            DispatchDamagePresentation(target, stunSeconds, cameraShake);
+                        }
                         return;
                     }
                 }

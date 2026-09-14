@@ -10,11 +10,13 @@ using CapstoneAudio;
 [DisallowMultipleComponent]
 [RequireComponent(typeof(MobAbilityCoordinator))]
 [RequireComponent(typeof(WizardScatterShotRunner))]
-public class Wizard : Slime
+public class Wizard : Slime, IMobProjectileLaneSource
 {
     private static readonly SoundRef ShotFireSound = SoundRef.FromKey("sound_wizard_shotFire");
 
     private const string AttackPrepareTriggerName = "attackPrepare";
+    public GameObject ShotProjectilePrefab => projectilePrefab;
+    public LayerMask ShotWallLayers => 1 << WallLayer;
     private const string AttackTriggerName = "attack";
     private const string DieTriggerName = "die";
     private const int WallLayer = 30;
@@ -198,12 +200,14 @@ public class Wizard : Slime
     {
         if (burstCadence.IsResting(Time.time)) return;
         if (context.HitPayload == null || !context.HitPayload.IsValid()) return;
+        if (!MobProjectileLaneUtility.IsClear(this, context.Origin, context.Direction, 0.2f)) return;
 
         PlayShotFireSound(context.Origin);
         bool hasFired = false;
         for (int i = 0; i < ShotCount; i++)
         {
             Vector2 direction = GetShotDirection(context.Direction);
+            if (!MobProjectileLaneUtility.IsClear(this, context.Origin, direction, 0.2f)) continue;
             GameObject projectileObject = Instantiate(projectilePrefab, context.Origin, Quaternion.identity);
             if (projectileObject == null) continue;
 

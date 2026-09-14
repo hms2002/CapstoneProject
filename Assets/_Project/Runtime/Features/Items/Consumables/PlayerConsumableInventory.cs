@@ -276,6 +276,7 @@ internal static class PlayerHealParticlePlayback
 
         GameObject particleObject = particle.gameObject;
         particleObject.SetActive(true);
+        CombatPresentationClock2D.Attach(particleObject);
 
         ParticleSystem[] particleSystems = particleObject.GetComponentsInChildren<ParticleSystem>(includeInactive: true);
         for (int i = 0; i < particleSystems.Length; i++)

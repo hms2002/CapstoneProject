@@ -200,3 +200,16 @@ ExpGainParticle and GoldGainParticle author a filled XY Circle with radius 1, sh
 ### Magic stone acquisition presentation (2026-09-13)
 
 MagicStonePickup and MagicStonePrefab now bind MagicStoneGainParticle. Five 9x11 frames from MagicStoneGainParticleSheet reuse the approved EXP count, ellipse, lifetime and attached cleanup. Playback occurs after AddMagicStone; the original collector-trigger and magnet mechanism remains unchanged.
+
+
+### Player level-up presentation (2026-09-13)
+
+- PF Player authors PlayerLevelUpEffect2D and its LevelUpEffect particle prefab reference. The player component subscribes/unsubscribes ExperienceGranted on enable/disable; only the registered player reacts when LevelsGained > 0. HUD visibility, state refresh and reward selection do not trigger playback. One grant produces one pulse even for multiple levels.
+- Art/Sprites/UI/LevelUpEffect imports the original 640x64 sheet as ten centered 64x64 frames. Prefabs/VFX/Particle/LevelUpEffect emits one stationary particle at the authored PlayerRender SpriteRenderer bounds center, size 1, lifetime .6 seconds, one complete sprite cycle; shape and extra color-over-life fading are disabled.
+- Existing PlayerHealParticlePlayback owns player attachment, playback and delayed cleanup (.61 seconds). Player destruction removes the child effect. No manager, bootstrap, save or UI hierarchy changes. Adjust size/lifetime in the authored VFX prefab.
+- New Gameplay source compiled with a temporary external MSBuild input because generated csproj has not refreshed; Unity import/visual playtest remains outstanding.
+
+
+### Level-up VFX centering revision (2026-09-14)
+
+PlayerLevelUpEffect2D.playerRenderer is authored to PF Player/PlayerRender. On a level gain, its world bounds center is converted into player-local coordinates for attached playback; weapons and shadows do not contribute to the center. LevelUpEffect particle startSize is 1 (half the previous 2), with lifetime and animation unchanged.

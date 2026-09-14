@@ -294,3 +294,30 @@ PlayerHitFeedback2D resolves State.Skill when its authored reference is empty, a
 - Apprentice charge reveal owns a SortingGroup on its existing runtime reveal root; external sorting follows the source weapon plus configured offset, internal reveal order is zero. Group lifetime follows revealRoot destruction.
 - PF_LightningSpear_ItemDisplayVisual authors a SortingGroup. ItemDisplayVisualPresenter2D assigns host sorting to that group and keeps internal sprite/mask ordering local, avoiding interference between simultaneous dropped weapons and charge effects.
 - PlayerVisionMask and StrangeCandlestick vision masks limit their custom range to MaskRender (the existing dark-overlay layer); they do not affect weapon sprite layers. No ProjectSettings sorting layers were added. Validate combined darkness/drop/charge rendering in Editor after changes.
+
+
+### Lightning Spear per-attack feedback (2026-09-14)
+
+This revision supersedes the historical Lightning/global-hitstop timing paragraphs above. Current shared slowdown ownership is mapped in BossAndMobEncounterStructure.md. World stays at 0.15 during participant impact freeze; ordinary boss stun immunity remains.
+
+LightningSpearHitFeedback in LightningSpearHitConfig.cs configures runtime payloads by role, without changing serialized schemas or prefab references. Sweep uses actor/victim freeze 0.12s, punch 1.4/0.10s, following shake 0.10/0.05s. Rush uses freeze 0.1s, punch 0.9/0.12s, shake 0.12/0.06s. Both the trail-driven hitboxes and fallback arrival hitbox receive Rush configuration and preserve the actual rush direction. Recovered shots and mark landings use ordinary target stun 0.05s with no attacker/world stop; recovered shots suppress added camera feedback, while landing requests one 0.08-amplitude/0.05s shake per activation.
+
+The three basic hits keep target stun 0.1s and attacker stop zero. The third hit carries camera-only scale 1.3; the other hits carry 1. This scales both amplitude and its cap, leaving cue magnitude, particles and audio unchanged.
+
+CombatHitPayload snapshots optional impactCameraOverride and hitCameraScale. CombatDamageAction executes the custom camera only after damage, with HitStopActivation grouping, and forwards camera scale through AbilityEventData to GameplayCueParams. AbilityHitCueRouter scales only presentation camera hooks; GameplayCue_CameraShake scales only the camera cue. Null metadata preserves existing weapons. CameraManualShakeDriver computes the following shake decay after the punch so punch duration does not consume shake amplitude.
+
+LightningSpearMarkActor captures the activation group during Initialize, so delayed six-mark landings keep their original once-only feedback budget after another cast. Payload references and closures are not stored globally; existing actor/projectile cleanup releases them.
+
+Verification: regression sources exercise two victims sharing one impact/landing request, support attacks leaving the attacker/world unpaused, directional punch values and capped camera scale/suppression. MSBuild passed; Unity execution and visual feel are not yet verified. This is a structure map, not a new Architecture/Contracts authority.
+
+### Basic attack walking lock and player wall sliding (2026-09-14)
+
+PlayerCombatInput2D's IsBasicAttackMovementLocked projects an execution-owned basic-attack lock. AbilityExecutionCoordinator raises AbilitySystem.AbilityExecutionStarted after creating the execution token and before ability logic runs, and AbilityExecutionEnded before consuming the buffered successor. PlayerCombatInput2D subscribes while enabled, classifies the executed definition using the known basic-attack set (or current selection), and snapshots its spec/token/Animator. Request acceptance is not a start signal: a buffered request or consumed skill input never begins this lock. Comparing against a newly advanced combo selection after activation is no longer used.
+
+Walking remains blocked while the actual attack logic/recovery executes, the observed attack animation is unfinished, or the lunge is active. The old 80% estimate and early animation threshold are removed; animation completion uses normalized time 1 or state exit. Execution duration includes RecoveryOverride and hit-pause handling from the existing coordinator rather than a second input-layer timer. GetAnimationTarget uses the same player/weapon Animator fallback as animation playback. Cancelled tokens, cancellation completion, disable/UI/interaction/equip paths release the lock. Held input requests repeat attacks only and cannot independently lock walking. Combo expiry and raw lunge direction input remain unchanged. Ranged basics use the same lock.
+
+PlayerIntentInput2D uses the walking lock in both Update and GetIntent, while AbilityMoveInput continues reading raw normalized keys for lunge direction. PlayerCombatInput2D refreshes PlayerAim2D before attack activation, respecting current aim locks and avoiding Update-order stale mouse direction.
+
+IWallSlidingMovementSource2D opts player intent into MovementMotor2D's bounded sweep/slide path for ordinary walking and non-lunge motion without external velocity. Sweeps start from the Rigidbody physics pose (including child collider offsets), spend approach distance, remove inward normal displacement, and recast the remaining tangent up to three times. Lost normal distance is not replenished, and dash duration remains owned by AbilityMotionController2D. Low-speed walking also uses this path. Lunge/external-motion and non-player callers retain the previous wall policy; the final dash tick is retained for opted-in player movement.
+
+This map does not change Contracts/Architecture authority. See the 2026-09-14 SessionLog for validation and remaining playtest coverage.

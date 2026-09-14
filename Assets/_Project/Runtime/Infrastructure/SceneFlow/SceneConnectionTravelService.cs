@@ -153,6 +153,14 @@ internal static class SceneConnectionTravelExecutor
         if (endpoint == null || playerTransform == null)
             yield break;
 
+        if (!HomingPickupTravel.TryCollectFollowing(playerTransform))
+        {
+            endpoint.ReleaseTravelReservation();
+            playerTransform.SetPositionAndRotation(originalPosition, originalRotation);
+            player.SetInteractState(InteractState.Idle);
+            yield break;
+        }
+
         DungeonGenerator activeDungeon = Object.FindAnyObjectByType<DungeonGenerator>();
         activeDungeon?.CaptureStateBeforeSceneExit();
 

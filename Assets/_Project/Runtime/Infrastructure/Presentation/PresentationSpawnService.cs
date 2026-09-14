@@ -374,7 +374,18 @@ namespace CapstonePresentation
             if (useUnscaledTime)
                 yield return new WaitForSecondsRealtime(delaySeconds);
             else
-                yield return new WaitForSeconds(delaySeconds);
+            {
+                var clock = pooledInstance.GetComponent<CombatPresentationClock2D>();
+                bool gameplayTiming = clock != null && clock.HasGameplayTiming;
+                float remaining = delaySeconds;
+                while (remaining > 0f)
+                {
+                    yield return null;
+                    if (pooledInstance == null || pooledInstance.activeVersion != activeVersion)
+                        yield break;
+                    remaining -= gameplayTiming ? Time.deltaTime : TimeScalePausePlayback.PresentationDeltaTime;
+                }
+            }
 
             if (pooledInstance == null || pooledInstance.activeVersion != activeVersion)
                 yield break;
@@ -701,6 +712,8 @@ namespace CapstonePresentation
                 particleSystem.Clear(withChildren: true);
                 particleSystem.Play(withChildren: true);
             }
+
+            CombatPresentationClock2D.Attach(instance);
 
             Animation[] animations = instance.GetComponentsInChildren<Animation>(includeInactive: true);
             for (int i = 0; i < animations.Length; i++)

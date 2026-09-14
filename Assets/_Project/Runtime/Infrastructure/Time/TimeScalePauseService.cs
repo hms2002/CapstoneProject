@@ -30,19 +30,35 @@ public static class TimeScalePauseService
     /// </summary>
     private sealed class PauseOwner
     {
-        public PauseOwner(Object owner)
+        public PauseOwner(Object owner, float scale)
         {
             Owner = owner;
+            Scale = scale;
         }
 
         public Object Owner { get; }
+        public float Scale { get; }
     }
 
     private static readonly Dictionary<int, PauseOwner> owners = new();
     private static float restoreTimeScale = 1f;
     private static TimeScalePauseServiceRunner runner;
 
-    public static bool IsPaused => owners.Count > 0;
+    public static bool IsPaused
+    {
+        get { foreach (var entry in owners.Values) if (entry.Scale == 0f) return true; return false; }
+    }
+    public static bool IsCombatSlowMotion
+    {
+        get { foreach (var entry in owners.Values) if (entry.Scale > 0f) return true; return false; }
+    }
+    private static void ApplyRequestedScale()
+    {
+        float scale = restoreTimeScale;
+        foreach (var entry in owners.Values) scale = Mathf.Min(scale, entry.Scale);
+        Time.timeScale = scale > 0f ? scale : 0f;
+        if (owners.Count == 0) restoreTimeScale = 1f;
+    }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Bootstrap()
@@ -60,7 +76,10 @@ public static class TimeScalePauseService
         return owners.ContainsKey(owner.GetInstanceID());
     }
 
-    public static bool Acquire(Object owner)
+    public static bool Acquire(Object owner) => Acquire(owner, 0f);
+    public static bool AcquireCombatSlowMotion(Object owner) => Acquire(owner, 0.15f);
+
+    private static bool Acquire(Object owner, float scale)
     {
         if (owner == null)
             return false;
@@ -75,10 +94,11 @@ public static class TimeScalePauseService
         {
             EnsureRunner();
             restoreTimeScale = Time.timeScale > 0f ? Time.timeScale : 1f;
-            Time.timeScale = 0f;
+
         }
 
-        owners[ownerId] = new PauseOwner(owner);
+        owners[ownerId] = new PauseOwner(owner, scale);
+        ApplyRequestedScale();
         return true;
     }
 
@@ -91,15 +111,7 @@ public static class TimeScalePauseService
         bool removed = owners.Remove(ownerId);
         CleanupDeadOwners();
 
-        if (owners.Count == 0)
-        {
-            Time.timeScale = restoreTimeScale > 0f ? restoreTimeScale : 1f;
-            restoreTimeScale = 1f;
-        }
-        else
-        {
-            Time.timeScale = 0f;
-        }
+        ApplyRequestedScale();
 
         return removed;
     }
@@ -135,19 +147,17 @@ public static class TimeScalePauseService
         for (int i = 0; i < deadOwnerIds.Count; i++)
             owners.Remove(deadOwnerIds[i]);
 
-        if (owners.Count == 0)
-        {
-            Time.timeScale = restoreTimeScale > 0f ? restoreTimeScale : 1f;
-            restoreTimeScale = 1f;
-        }
+        ApplyRequestedScale();
     }
 
     /// <summary>
     /// 책임 : Core의 time-scale pause playback 요청을 기존 정적 TimeScalePauseService로 연결한다.
     /// </summary>
-    private sealed class TimeScalePauseBackend : ITimeScalePauseBackend
+    private sealed class TimeScalePauseBackend : ITimeScalePauseBackend, ICombatSlowMotionBackend
     {
         public bool IsPaused => TimeScalePauseService.IsPaused;
+        public bool IsCombatSlowMotion => TimeScalePauseService.IsCombatSlowMotion;
+        public bool AcquireCombatSlowMotion(Object owner) => TimeScalePauseService.AcquireCombatSlowMotion(owner);
 
         public bool IsHeldBy(Object owner)
         {

@@ -17,7 +17,7 @@ MonoBehaviour:
   description: "● 남은 탄을 모두 소비해 빠르게 연속 발사\n● 탄환마다 {val:고정 피해 100}과 넉백을 적용\n● {val:0.08초} 간격, {val:15도} 탄퍼짐으로 발사\n● 발동 후 잔탄이 {neg:0발}이 됨"
   hitFeel:
     targetStunSeconds: 0.1
-    attackerStopSeconds: 0.05
+    attackerStopSeconds: 0.06
   hitFeelByAttack: []
   cooldown: 0
   executionPolicy: 0

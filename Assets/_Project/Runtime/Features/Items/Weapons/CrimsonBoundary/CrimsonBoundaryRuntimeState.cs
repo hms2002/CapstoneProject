@@ -8,20 +8,89 @@ public sealed class CrimsonBoundaryRuntimeState : WeaponAbilityRuntimeState
 {
     private readonly List<GameObject> transients = new();
 
-    private void Awake()
+    [Header("Basic attack motion")]
+    [SerializeField] private Transform motionRoot;
+    [SerializeField] private AnimationClip openingSwing;
+    [SerializeField] private AnimationClip downwardSwing;
+    [SerializeField] private AnimationClip upwardSwing;
+
+    private PlayerCombatInput2D combatInput;
+    private AbilitySystem ownerSystem;
+    private AnimationClip currentSwing;
+    private float swingTime;
+    private float swingSpeed = 1f;
+    private float idleHoldTime;
+    private bool nextUpward;
+    private bool releasePending;
+
+    public float SwingTime => swingTime;
+
+    private void OnEnable()
     {
-        GameObject visual = CrimsonBoundaryUtility.CreateSquare(
-            "CrimsonBoundary_WeaponSquare",
-            transform.position,
-            new Vector2(1.15f, 0.22f),
-            new Color(0.65f, 0.04f, 0.02f, 1f),
-            "Entity",
-            0);
-        visual.transform.SetParent(transform, false);
-        visual.transform.localPosition = new Vector3(0.55f, 0f, 0f);
+        combatInput = GetComponentInParent<PlayerCombatInput2D>();
+        ownerSystem = GetComponentInParent<AbilitySystem>();
+        ResetSwing();
     }
 
-    private void OnDisable() => ClearTransients();
+    public void BeginSwing(float speed)
+    {
+        currentSwing = currentSwing == null ? openingSwing : nextUpward ? upwardSwing : downwardSwing;
+        nextUpward = !nextUpward;
+        swingTime = 0f;
+        idleHoldTime = 0f;
+        releasePending = true;
+        swingSpeed = Mathf.Max(0.0001f, speed);
+        SampleSwing(0f);
+    }
+
+    private void Update()
+    {
+        if (currentSwing == null) return;
+        if (ownerSystem != null && CombatHitPause2D.IsPausedOn(ownerSystem.gameObject)) return;
+        float previousSwingTime = swingTime;
+        swingTime += Time.deltaTime * swingSpeed;
+        if (combatInput != null && combatInput.IsHoldingPrimaryAttack)
+            idleHoldTime = 0f;
+        else if (!releasePending && swingTime >= currentSwing.length)
+        {
+            // Count only time after the swing finishes, independently of attack speed.
+            idleHoldTime += Mathf.Min(Time.deltaTime,
+                (swingTime - Mathf.Max(previousSwingTime, currentSwing.length)) / swingSpeed);
+            if (idleHoldTime >= 0.4f)
+            {
+                ResetSwing();
+                return;
+            }
+        }
+        SampleSwing(Mathf.Min(swingTime, currentSwing.length));
+    }
+
+    private void SampleSwing(float time)
+    {
+        if (currentSwing != null) currentSwing.SampleAnimation(gameObject, time);
+    }
+
+    public void MarkProjectileReleased()
+    {
+        releasePending = false;
+    }
+
+    public void ResetSwing()
+    {
+        currentSwing = null;
+        releasePending = false;
+        nextUpward = false;
+        idleHoldTime = 0f;
+        if (motionRoot == null) return;
+        motionRoot.localPosition = Vector3.zero;
+        motionRoot.localRotation = Quaternion.Euler(0f, 0f, 25f);
+    }
+
+    private void OnDisable()
+    {
+        ResetSwing();
+        ClearTransients();
+    }
     private void OnDestroy() => ClearTransients();
 
     public override bool TryHandleAbilityInput(WeaponDefinition weapon, WeaponAbilitySlot slot, AbilityDefinition ability)
@@ -35,7 +104,8 @@ public sealed class CrimsonBoundaryRuntimeState : WeaponAbilityRuntimeState
 
     public void Register(GameObject transient)
     {
-        if (transient != null)
+        transients.RemoveAll(item => item == null);
+        if (transient != null && !transients.Contains(transient))
             transients.Add(transient);
     }
 

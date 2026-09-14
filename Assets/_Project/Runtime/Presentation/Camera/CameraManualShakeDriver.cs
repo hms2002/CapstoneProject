@@ -14,16 +14,22 @@ public sealed class CameraManualShakeDriver : MonoBehaviour
     private float duration;
     private float remaining;
     private float seed;
+    private float punchDistance;
+    private float punchSeconds;
     private CameraManualShakeSettings settings;
     private bool hasAppliedOffset;
+    private bool playWhilePaused;
 
-    public void Play(float shakeAmplitude, Vector3 direction, in CameraManualShakeSettings shakeSettings)
+    public void Play(float shakeAmplitude, Vector3 direction, in CameraManualShakeSettings shakeSettings, float impactPunchDistance = 0f, float impactPunchSeconds = 0f, bool allowDuringPause = false)
     {
         float clampedAmplitude = Mathf.Max(0f, shakeAmplitude);
         if (clampedAmplitude <= 0f)
             return;
 
         settings = shakeSettings;
+        playWhilePaused = allowDuringPause;
+        punchDistance = impactPunchDistance;
+        punchSeconds = impactPunchSeconds;
         amplitude = clampedAmplitude;
         duration = settings.duration;
         if (duration <= 0f)
@@ -44,6 +50,9 @@ public sealed class CameraManualShakeDriver : MonoBehaviour
         enabled = false;
     }
 
+    // Remove last frame's offset before Cinemachine writes this frame's follow pose.
+    private void Update() => RestoreBaseTransform();
+
     private void LateUpdate()
     {
         RestoreBaseTransform();
@@ -57,10 +66,16 @@ public sealed class CameraManualShakeDriver : MonoBehaviour
         basePosition = transform.position;
         baseRotation = transform.rotation;
 
+        if (TimeScalePausePlayback.IsPaused && !playWhilePaused) return;
         float deltaTime = Time.unscaledDeltaTime;
         remaining = Mathf.Max(0f, remaining - deltaTime);
 
-        float progress = duration <= 0f ? 1f : 1f - (remaining / duration);
+        float elapsed = duration - remaining;
+        // The following shake owns its own decay; the punch must not consume its amplitude.
+        float shakeDuration = Mathf.Max(0.0001f, duration - punchSeconds);
+        float progress = punchSeconds > 0f
+            ? Mathf.Clamp01((elapsed - punchSeconds) / shakeDuration)
+            : (duration <= 0f ? 1f : 1f - (remaining / duration));
         float fade = 1f - SmoothStep(progress);
 
         float noiseTime = Time.unscaledTime * settings.noiseFrequency;
@@ -76,6 +91,12 @@ public sealed class CameraManualShakeDriver : MonoBehaviour
             rawOffset = right;
 
         Vector3 offset = rawOffset.normalized * (amplitude * settings.positionAmplitudeScale * fade);
+        if (punchSeconds > 0f && elapsed < punchSeconds)
+        {
+            float t = elapsed / punchSeconds;
+            float envelope = t < 0.2f ? t / 0.2f : 1f - SmoothStep((t - 0.2f) / 0.8f);
+            offset = directionBias * (punchDistance * envelope);
+        }
         transform.position = basePosition + offset;
         hasAppliedOffset = true;
     }

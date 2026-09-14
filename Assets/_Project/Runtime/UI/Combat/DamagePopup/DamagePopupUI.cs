@@ -51,11 +51,11 @@ public class DamagePopupUI : MonoBehaviour
 
     private void Update()
     {
-        t += Time.deltaTime;
+        t += TimeScalePausePlayback.PresentationDeltaTime;
         float p = Mathf.Clamp01(t / lifetime);
 
         if (rectTransform != null)
-            rectTransform.anchoredPosition += moveVelocity * Time.deltaTime;
+            rectTransform.anchoredPosition += moveVelocity * TimeScalePausePlayback.PresentationDeltaTime;
 
         transform.localScale = Vector3.one * Mathf.Lerp(startScale, endScale, p);
 

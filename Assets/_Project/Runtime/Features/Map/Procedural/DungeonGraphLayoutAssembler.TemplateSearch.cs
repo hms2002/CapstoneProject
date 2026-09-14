@@ -75,7 +75,9 @@ public sealed partial class DungeonGraphLayoutAssembler
                 PlannedNode node = topology.Nodes[i];
                 directions[i] = new List<RoomSocketDirection>();
                 CollectRequiredDirections(topology, i, directions[i]);
-                pinned[i] = node.Template != null && ContainsTemplateReference(guaranteed, node.Template);
+                // The chosen Start owns the graph's reserved directions; do not replace it mid-search.
+                pinned[i] = node.Template != null &&
+                    (node.Role == RoomType.Start || ContainsTemplateReference(guaranteed, node.Template));
                 var candidates = new List<RoomTemplateSO>();
                 if (pinned[i]) candidates.Add(node.Template);
                 else library.CollectRooms(node.Role, candidates);
@@ -245,8 +247,12 @@ public sealed partial class DungeonGraphLayoutAssembler
                 node.Template = assigned[i].Template;
                 node.LocalBounds = ResolveLocalBounds(node.Template.LayoutData);
                 node.SocketIndices.Clear();
-                if (!TrySelectSocketIndices(node.Template.LayoutData, directions[i], random, node.SocketIndices) ||
-                    !TryResolveNodeReferences(node, directions[i], out failure)) return false;
+                if (!TrySelectSocketIndices(node.Template.LayoutData, directions[i], random, node.SocketIndices))
+                {
+                    failure = $"Template '{node.Template.name}' has no valid socket selection for node {i}.";
+                    return false;
+                }
+                ResolveNodeReferences(node);
             }
             if (!TryCreatePhysicalLayout(seed, roomCount, topology, random, minimumLength, lengthRatio,
                 lengthVariation, out DungeonLayoutResult result, out failure) || !ValidateFinalAssignment(result)) return false;

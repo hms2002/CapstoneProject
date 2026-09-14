@@ -5,6 +5,7 @@ using UnityGAS;
 /// 책임:
 /// - Pawn이 플레이어에게 접근한 뒤 정면으로 밀지 않고 주변을 접선 방향으로 돌며 압박하는 이동 의도를 만든다.
 /// - 일반 몬스터 FSM의 추적 생명주기와 MovementMotor2D 의도 이동 인터페이스를 함께 만족한다.
+/// - 개체별로 엇갈리는 짧은 전진과 휴식을 만들어 기어가는 이동 리듬을 담당한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSource2D, IEnemyChaseIntent
@@ -30,10 +31,25 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
     [Header("Return")]
     [SerializeField, Min(0f)] private float returnSpeedScale = 0.9f;
 
+    [Header("Crawl Rhythm")]
+    [SerializeField, Min(0.02f)] private float crawlMoveSeconds = 0.22f;
+    [SerializeField, Min(0f)] private float crawlRestSeconds = 0.32f;
+    [SerializeField, Range(0f, 1f)] private float crawlPeakSpeedScale = 0.55f;
+
     private MonsterReturnHome2D returnHome;
     private bool chaseEnabled = true;
     private int orbitSign = 1;
     private float nextTargetAcquireTime;
+    private double crawlEpoch;
+    private float crawlPhaseOffset;
+
+    private void OnEnable()
+    {
+        // Hash the instance without consuming gameplay RNG; pooled reuse restarts its clock.
+        uint hash = unchecked((uint)GetInstanceID() * 2654435761u);
+        crawlPhaseOffset = (hash & 0x00ffffffu) / 16777216f;
+        crawlEpoch = Time.timeAsDouble;
+    }
 
     private void Awake()
     {
@@ -47,7 +63,7 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
     public IntentMovementData GetIntent()
     {
         if (returnHome != null && returnHome.TryGetReturnDirection(out Vector2 returnDirection))
-            return IntentMovementData.FromDirection(returnDirection, returnSpeedScale);
+            return CreateCrawlIntent(returnDirection, returnSpeedScale);
 
         if (!EnsureTarget())
             return IntentMovementData.None;
@@ -65,10 +81,25 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
             return IntentMovementData.None;
 
         if (distance > approachRange)
-            return IntentMovementData.FromDirection(toTarget.normalized, approachSpeedScale);
+            return CreateCrawlIntent(toTarget.normalized, approachSpeedScale);
 
         Vector2 direction = ResolveOrbitDirection(toTarget, distance);
-        return IntentMovementData.FromDirection(direction, orbitSpeedScale);
+        return CreateCrawlIntent(direction, orbitSpeedScale);
+    }
+
+    private IntentMovementData CreateCrawlIntent(Vector2 direction, float speedScale)
+    {
+        float moveSeconds = Mathf.Max(0.02f, crawlMoveSeconds);
+        float cycleSeconds = moveSeconds + Mathf.Max(0f, crawlRestSeconds);
+        double elapsed = Time.timeAsDouble - crawlEpoch + crawlPhaseOffset * cycleSeconds;
+        float phase = (float)(elapsed % cycleSeconds);
+        if (phase >= moveSeconds)
+            return IntentMovementData.None;
+
+        // A smooth zero-to-peak-to-zero pulse leaves external knockback to the motor.
+        float pulse = Mathf.Sin(Mathf.PI * phase / moveSeconds);
+        float crawlScale = pulse * pulse * Mathf.Clamp01(crawlPeakSpeedScale);
+        return IntentMovementData.FromDirection(direction, speedScale * crawlScale);
     }
 
     public void StartChase()

@@ -55,3 +55,35 @@ public sealed class LightningSpearHitConfig
             hitImpactCueKind);
     }
 }
+
+// Runtime attack roles, never serialized into weapon assets.
+public enum LightningSpearFeedbackKind { Sweep, Rush, RecoveredShot, Landing }
+
+public static class LightningSpearHitFeedback
+{
+    public static void Configure(CombatHitPayload payload, LightningSpearFeedbackKind kind, Vector2 direction)
+    {
+        if (payload == null) return;
+        bool sweep = kind == LightningSpearFeedbackKind.Sweep;
+        bool rush = kind == LightningSpearFeedbackKind.Rush;
+        float stop = sweep ? 0.12f : rush ? 0.1f : 0f;
+        payload.hitFeel = new CombatHitFeelTiming
+        {
+            attackerStopSeconds = stop,
+            targetStunSeconds = stop > 0f ? 0f : 0.05f
+        };
+        // Retain impact VFX/audio while replacing the ordinary camera cue for these skills.
+        payload.hitCameraScale = 0f;
+        payload.impactCameraOverride = null;
+        if (kind == LightningSpearFeedbackKind.RecoveredShot) return;
+        float punch = sweep ? 1.4f : rush ? 0.9f : 0f;
+        float punchSeconds = sweep ? 0.10f : rush ? 0.12f : 0f;
+        float shakeSeconds = rush ? 0.06f : 0.05f;
+        float amplitude = sweep ? 0.10f : rush ? 0.12f : 0.08f;
+        payload.impactCameraOverride = new CameraShakeRequest(
+            1f, direction, payload.sourceSystem != null ? payload.sourceSystem.gameObject : null,
+            debugReason: "LightningSpear." + kind, hasManualShakeSettingsOverride: true,
+            manualShakeSettingsOverride: CameraManualShakeSettings.Create(punchSeconds + shakeSeconds, amplitude, 32f, 0.3f),
+            punchDistance: punch, punchSeconds: punchSeconds);
+    }
+}

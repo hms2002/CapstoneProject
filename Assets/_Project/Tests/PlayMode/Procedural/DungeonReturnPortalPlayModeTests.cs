@@ -11,7 +11,7 @@ using UnityEngine.TestTools;
 using UnityEngine.Tilemaps;
 using Object = UnityEngine.Object;
 
-/// <summary>Verifies return selection, room gating, authored bindings, shared Hub arrival, persistence and cancellation without scene travel.</summary>
+/// <summary>Verifies return selection, room gating, portal-only recovery timing, shared Hub arrival and cleanup without scene travel.</summary>
 public sealed class DungeonReturnPortalPlayModeTests
 {
     private const string Folder = "Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/";
@@ -27,6 +27,27 @@ public sealed class DungeonReturnPortalPlayModeTests
         owned.Clear(); Time.timeScale = oldTimeScale;
     }
     private T Own<T>(T value) where T : Object { owned.Add(value); return value; }
+
+    [TestCase(RoomSocketDirection.Up, 2.2f, 1.2f)]
+    [TestCase(RoomSocketDirection.Down, 2.2f, 1.2f)]
+    [TestCase(RoomSocketDirection.Left, 1.2f, 2.2f)]
+    [TestCase(RoomSocketDirection.Right, 1.2f, 2.2f)]
+    public void InteractionCapsule_AlignsToWallWithoutAccumulatingSize(RoomSocketDirection direction, float width, float height)
+    {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(Folder + "DungeonReturnPortal.prefab");
+        var root = Own(Object.Instantiate(prefab));
+        var portal = root.GetComponent<DungeonReturnPortal>();
+        var capsule = root.GetComponent<CapsuleCollider2D>();
+        Assert.That(capsule, Is.Not.Null);
+        portal.Configure(null, 1, null, true, RoomSocketDirection.Left);
+        portal.Configure(null, 1, null, true, direction);
+        portal.Configure(null, 1, null, true, direction);
+        Assert.That(capsule.size, Is.EqualTo(new Vector2(width, height)));
+        Assert.That(capsule.direction, Is.EqualTo(width > height ? CapsuleDirection2D.Horizontal : CapsuleDirection2D.Vertical));
+        Assert.That(capsule.isTrigger, Is.True);
+        Assert.That(capsule.enabled, Is.False);
+        Assert.That(root.transform.localScale, Is.EqualTo(Vector3.one));
+    }
 
     [TestCase(RoomSocketDirection.Left, 5, 3)]
     [TestCase(RoomSocketDirection.Right, 1, 3)]
@@ -269,6 +290,44 @@ public sealed class DungeonReturnPortalPlayModeTests
         arrival.CancelPortalArrival(owner);
         Assert.That(arrival.IsPlaying, Is.False);
         Assert.That(hubCompleted, Is.EqualTo(1));
+    }
+
+    [UnityTest]
+    public IEnumerator PortalRecovery_HalvesBothWaits_WithoutChangingHubTimingOrFall()
+    {
+        float oldCaptureDelta = Time.captureDeltaTime;
+        Time.captureDeltaTime = 0.02f;
+        try
+        {
+            var player = MakePlayer();
+            var arrival = player.Transform.GetComponent<PlayerHubSpawnPresentation2D>();
+            Set(arrival, "fallDuration", 0.12f);
+            Set(arrival, "landingLockSeconds", 0.4f);
+            Set(arrival, "autoWakeDelaySeconds", 0.4f);
+            float began = Time.time, landedAt = -1f;
+            object owner = new();
+            Assert.That(arrival.TryPlayPortalArrival(owner, player.Transform.position + Vector3.up * 3f, () => landedAt = Time.time), Is.True);
+            float deadline = Time.realtimeSinceStartup + 4f;
+            while (arrival.IsPlaying && Time.realtimeSinceStartup < deadline) yield return null;
+            Assert.That(arrival.IsPlaying, Is.False);
+            Assert.That(landedAt - began, Is.InRange(0.1f, 0.18f), "Fall duration is not halved.");
+            Assert.That(Time.time - landedAt, Is.InRange(0.38f, 0.6f), "0.4s lock + 0.4s auto-wake should become approximately 0.4s total.");
+            Assert.That((float)Get(arrival, "landingLockSeconds"), Is.EqualTo(0.4f));
+            Assert.That((float)Get(arrival, "autoWakeDelaySeconds"), Is.EqualTo(0.4f));
+
+            Set(arrival, "hubSceneName", player.Transform.gameObject.scene.name);
+            int completed = 0;
+            arrival.PresentationCompleted += _ => completed++;
+            began = Time.time;
+            arrival.TryPlayIfEligible();
+            Assert.That(arrival.IsPlaying, Is.True);
+            deadline = Time.realtimeSinceStartup + 4f;
+            while (arrival.IsPlaying && Time.realtimeSinceStartup < deadline) yield return null;
+            Assert.That(arrival.IsPlaying, Is.False);
+            Assert.That(Time.time - began, Is.InRange(0.9f, 1.14f), "Hub retains full fall/lock/auto-wake duration.");
+            Assert.That(completed, Is.EqualTo(1));
+        }
+        finally { Time.captureDeltaTime = oldCaptureDelta; }
     }
 
     [TestCase("Shadow")]

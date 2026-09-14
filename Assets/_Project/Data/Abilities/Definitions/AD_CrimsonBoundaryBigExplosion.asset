@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: AD_CrimsonBoundaryBigExplosion
   m_EditorClassIdentifier: 
   abilityName: "대폭발!"
+  icon: {fileID: 21300000, guid: 458d06131b5a40f6ac72309652fc918c, type: 3}
   description: "커서 지점에 0.6초 뒤 폭발. 화염 공격력 200%와 화상 전량 소모 피해"
   hitFeel:
     targetStunSeconds: 0.1
-    attackerStopSeconds: 0.05
+    attackerStopSeconds: 0.11
   hitFeelByAttack: []
   cooldown: 12
   executionPolicy: 0

@@ -17,6 +17,7 @@ namespace UnityGAS
 
         public Object SourceObject;
         public float Magnitude;
+        public float? HitCameraScale;
 
         public static GameplayCueParams FromTarget(GameObject target)
         {

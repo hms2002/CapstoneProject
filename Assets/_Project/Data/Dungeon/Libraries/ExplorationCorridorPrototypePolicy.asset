@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gameplay::DungeonLayoutPolicySO
   recommendedMinimumRoomCount: 12
   recommendedMaximumRoomCount: 18
-  minimumBossGraphDistance: 6
-  maximumBossGraphDistance: 8
+  minimumBossGraphDistance: 4
+  maximumBossGraphDistance: 5
   minimumMeaningfulBranches: 2
   maximumMeaningfulBranches: 4
   minimumCycleConnections: 1
