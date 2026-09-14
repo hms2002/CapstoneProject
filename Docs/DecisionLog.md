@@ -3202,3 +3202,15 @@ Approved: start the fixed officer objective on Grand Hall entry; count the three
 ### 2026-09-14 — Prototype actor hitstop with world slow motion
 
 User approved attacker/victim freeze at 0.06 real seconds with world scale 0.15, normal-speed VFX, directional camera punch and brief shake. Strong skills use 0.09–0.12 seconds. Existing normal-attack/Flowering exclusions remain; boss ordinary-stun immunity remains separate from the temporary impact freeze. Full menu/cut-in pause has priority and owns its own release. Damage-event animations retain gameplay timing until visual and damage ownership are explicitly separated.
+
+## 2026-09-14 — Held basic attacks block walking continuously (superseded by motion-based correction below)
+
+The user's current instruction supersedes the 2026-09-12 held re-aim movement allowance and ranged-basic exemption. Holding primary attack blocks ordinary walking even between swings. Raw movement keys select lunge direction; absent keys use mouse aim. Releasing permits walking only after the current attack lock finishes. Repressing inside the existing combo window continues the combo. Keep the held walking lock separate from the per-swing activation/aim lock to avoid deadlocking repeated attacks. No combo expiry or persistent weapon state is reset by this input policy.
+
+## 2026-09-14 — Attack motion owns movement lock; input alone cannot lock
+
+User correction supersedes the continuous raw-held-input walking lock above. An accepted basic attack starts the movement lock, and the existing animation/fallback/lunge unlock releases it. A press during an existing motion's released tail or an otherwise rejected attack does not re-lock movement. Releasing does not cancel an active attack lock; holding only requests subsequent attacks. Lunge direction and combo expiry rules remain unchanged.
+
+## 2026-09-14 — Basic attack locks follow execution lifecycle and complete motion
+
+The user's all-weapons report supersedes the previous input-layer timer/80% animation unlock. AbilityExecutionCoordinator publishes actual execution start/end through AbilitySystem; requests that are rejected, consumed, or buffered do not start a movement lock. PlayerCombatInput2D classifies the executed definition before logic advances selection, and retains the lock while execution/recovery, observed animation (until normalized time 1/state exit), or lunge remains. Playback and observation share Animator fallback resolution. Cancellation/disable/equip cleanup releases the lock. Auto-repeat input, raw lunge direction and combo expiry retain their existing responsibilities. This adds runtime lifecycle notifications, not a new manager or serialized asset contract.

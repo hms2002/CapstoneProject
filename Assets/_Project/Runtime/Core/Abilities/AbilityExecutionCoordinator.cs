@@ -37,6 +37,7 @@ namespace UnityGAS
 
             try
             {
+                system.NotifyExecutionStarted(spec);
                 var def = spec.Definition;
                 if (def.logic == null)
                 {
@@ -131,6 +132,9 @@ namespace UnityGAS
 
             spec.Token?.Cancel();
             spec.Token = null;
+
+            // Finish the old activation before consuming a buffered successor (which may reuse spec).
+            system.NotifyExecutionEnded(spec, cancelled);
 
             if (isParallel)
             {

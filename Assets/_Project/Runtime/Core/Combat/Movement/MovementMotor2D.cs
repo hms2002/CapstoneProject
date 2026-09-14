@@ -56,6 +56,8 @@ namespace UnityGAS
         private TagSystem tagSystem;
         private Collider2D[] bodyColliders;
         private readonly RaycastHit2D[] wallCastHits = new RaycastHit2D[16];
+        private readonly System.Collections.Generic.List<RaycastHit2D> slideHits = new(16);
+        private bool slideCurrentMovement;
         private readonly Collider2D[] wallOverlapHits = new Collider2D[16];
         private ContactFilter2D wallContactFilter;
 
@@ -184,6 +186,7 @@ namespace UnityGAS
 
         private void FixedUpdate()
         {
+            slideCurrentMovement = false;
             IsLungeMovement = false;
             if (body == null)
                 return;
@@ -227,8 +230,12 @@ namespace UnityGAS
 
             // 4) 특수이동 계산
             IsLungeMovement = motionController != null && motionController.IsLunging;
+            bool motionWasActive = motionController != null && motionController.HasActiveMotion;
+            slideCurrentMovement = intentSource is IWallSlidingMovementSource2D &&
+                !IsLungeMovement && externalVelocity.sqrMagnitude <= 0.000001f;
             Vector2 motionVelocity = ResolveMotionVelocity(dt);
-            bool hasMotion = IsLungeMovement || (motionController != null && motionController.HasActiveMotion);
+            bool hasMotion = IsLungeMovement || (motionController != null && motionController.HasActiveMotion) ||
+                (slideCurrentMovement && motionWasActive);
 
             // 5) 특수이동 중: 특수이동 + 외압
             if (hasMotion)
@@ -378,13 +385,16 @@ namespace UnityGAS
             if (speed <= 0.0001f)
                 return velocity;
 
-            if (speed < wallSafetyMinSpeed)
+            if (!slideCurrentMovement && speed < wallSafetyMinSpeed)
                 return velocity;
 
             if (bodyColliders == null || bodyColliders.Length == 0)
                 CacheBodyColliders();
 
             ResolveWallPenetration();
+
+            if (slideCurrentMovement)
+                return ResolveSlidingVelocity(velocity);
 
             float dt = Mathf.Max(Time.fixedDeltaTime, 0.0001f);
             float moveDistance = speed * dt;
@@ -420,9 +430,53 @@ namespace UnityGAS
 
         /// <summary>
         /// 책임 :
-        /// - 물리 콜라이더가 벽 콜라이더와 이미 겹친 상태를 감지하고 최소 이동 벡터에 가깝게 밀어낸다.
-        /// - 강한 넉백이 타일맵 벽 내부에 플레이어를 남기는 상황을 다음 프레임부터 복구한다.
+        /// - 벽까지 이동한 뒤 남은 접선 이동량을 재검사해 걷기/대쉬를 벽을 따라 이동시킨다.
         /// </summary>
+        private Vector2 ResolveSlidingVelocity(Vector2 velocity)
+        {
+            float dt = Mathf.Max(Time.fixedDeltaTime, 0.0001f);
+            Vector2 travelled = Vector2.zero;
+            Vector2 remaining = velocity * dt;
+            for (int iteration = 0; iteration < 3 && remaining.sqrMagnitude > 0.00000001f; iteration++)
+            {
+                float distance = remaining.magnitude;
+                Vector2 direction = remaining / distance;
+                float allowed = distance;
+                Vector2 normal = Vector2.zero;
+                foreach (Collider2D collider in bodyColliders)
+                {
+                    if (!IsUsableBodyCollider(collider) || collider.attachedRigidbody != body) continue;
+                    // Query a hypothetical pose; only the motor's final velocity moves the body.
+                    Quaternion poseCorrection = Quaternion.Euler(0f, 0f,
+                        body.rotation - body.transform.eulerAngles.z);
+                    Vector2 offset = poseCorrection * (collider.transform.position - body.transform.position);
+                    float angle = body.rotation + Mathf.DeltaAngle(body.transform.eulerAngles.z,
+                        collider.transform.eulerAngles.z);
+                    int count = collider.Cast(body.position + offset + travelled,
+                        angle, direction, wallContactFilter, slideHits,
+                        distance + wallCastSkinWidth, true);
+                    for (int i = 0; i < count; i++)
+                    {
+                        RaycastHit2D hit = slideHits[i];
+                        if (hit.collider == null || hit.collider.attachedRigidbody == body ||
+                            Vector2.Dot(direction, hit.normal) >= -0.0001f) continue;
+                        float safeDistance = Mathf.Max(0f, hit.distance - wallCastSkinWidth);
+                        if (safeDistance >= allowed) continue;
+                        allowed = safeDistance;
+                        normal = hit.normal;
+                    }
+                }
+                Vector2 step = direction * allowed;
+                travelled += step;
+                remaining -= step;
+                if (normal == Vector2.zero) break;
+                // Preserve only the unspent tangential component, without restoring lost speed.
+                remaining -= normal * Mathf.Min(0f, Vector2.Dot(remaining, normal));
+            }
+            return travelled / dt;
+        }
+
+        /// <summary>Resolve existing overlaps before performing a wall sweep.</summary>
         private void ResolveWallPenetration()
         {
             for (int iteration = 0; iteration < maxDepenetrationIterations; iteration++)

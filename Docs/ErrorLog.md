@@ -2039,3 +2039,16 @@ Symptom: Flowering, Lightning and shared SwordCombo slash centers shift vertical
 - GE_Damage_Spec returned immediately when absorbShieldAttribute consumed all incoming damage. HP stayed unchanged, so neither HP-popup listeners nor the later DispatchDamagePresentation path ran. Mob and hazard damage assets both reference the soul-heart absorb attribute.
 - Before that full-absorption return, actual positive player shield loss now emits a player-styled numeric popup and dispatches the existing hit feedback. Failed shield mutation, zero damage and invulnerability do not create feedback. HP spillover retains the original HP feedback path, avoiding duplicate hit reactions. Existing spillover popup semantics remain HP damage.
 - Regression source covers shield surviving, exactly depleted, HP spillover and invulnerable cases, with real PlayerHitFeedback2D and recording camera/popup backends. Unity execution pending.
+
+## 2026-09-14 — Duplicate receipt markers and physics-pose wall casts
+
+- Definition membership (`Contains`) identifies an interchangeable return category, not an individual acquired slot. Applying it independently to every ItemSlotUI highlights every duplicate potion. ChestScreen now allocates at most the outstanding receipt count to matching slots, retaining gameplay's same-definition return policy.
+- Hypothetical wall-slide casts must start from the Rigidbody2D physics pose, with child collider offsets adjusted for body rotation. Reading only Transform.position can use a stale presentation pose. The native regression harness checks low/high-speed tangential movement and corners; keep physics query validation when changing this path.
+- Follow-up correction: using raw held input as a walking lock causes a rejected/repeated press during the released animation tail to stop movement without a new attack. Walking now follows the accepted attack's phase only; held input requests auto-repeat and does not own a movement lock.
+
+## 2026-09-14 — Input-side attack timing diverged from actual GAS execution
+
+- Symptom: walking during basic attacks across weapons after removing the raw-held-input lock.
+- Verified structural causes: input code estimated duration from AbilityDefinition.recoveryTime before logic supplied RecoveryOverride; its animation threshold released at 80%; it compared the executed definition against a possibly changed selection after activation; Animator fallback differed from playback. GAS buffering also returns true for a queued request, so request success cannot represent actual execution start. The current player prefab has buffering disabled; this was a latent path, not evidence that buffering caused the reported current symptom.
+- Correction: real execution start/end notifications, executed-definition classification, actual execution/recovery as a lock floor, full observed animation completion, shared Animator resolution. Old estimates and request-side BeginMeleeControlLock were removed.
+- Regression: real AbilitySystem coroutines with no Animator and prolonged logic, buffered request vs later execution, cancellation/natural completion, player intent output, and the animation tail. Never treat a passing compile or a test that only toggles lock booleans as proof of this lifecycle.

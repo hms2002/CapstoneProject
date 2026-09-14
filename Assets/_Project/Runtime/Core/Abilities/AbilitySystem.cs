@@ -240,6 +240,8 @@ namespace UnityGAS
 
         public Animator PlayerAnimator => presentationRouter != null ? presentationRouter.PlayerAnimator : playerAnimator;
         public Animator WeaponAnimator => presentationRouter != null ? presentationRouter.WeaponAnimator : initialWeaponAnimator;
+        public Animator GetAnimationTarget(AbilityDefinition definition) =>
+            presentationRouter?.ResolveAnimationTarget(definition);
 
         public bool IsCasting => isCasting;
         public bool IsExecuting => isExecuting;
@@ -260,6 +262,12 @@ namespace UnityGAS
         public Action<AbilityDefinition> OnAbilityCastStart;
         public Action<AbilityDefinition> OnAbilityCastCompleted;
         public Action<AbilityDefinition> OnAbilityCastCancelled;
+
+        // Raised for actual executions, including buffered and parallel activations, never requests.
+        public event Action<AbilitySpec> AbilityExecutionStarted;
+        public event Action<AbilitySpec, bool> AbilityExecutionEnded;
+        internal void NotifyExecutionStarted(AbilitySpec spec) => AbilityExecutionStarted?.Invoke(spec);
+        internal void NotifyExecutionEnded(AbilitySpec spec, bool cancelled) => AbilityExecutionEnded?.Invoke(spec, cancelled);
 
         public event Action<GameplayTag, AbilityEventData> GameplayEventRaised
         {

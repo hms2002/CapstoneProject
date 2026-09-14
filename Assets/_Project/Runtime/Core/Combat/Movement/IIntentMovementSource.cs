@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace UnityGAS
 {
+    /// <summary>Opt-in for walking and dash wall sliding; AI keeps its existing collision policy.</summary>
+    public interface IWallSlidingMovementSource2D { }
+
     /// <summary>
     /// 책임: 현재 프레임의 "의도 이동값"을 MovementMotor2D에 제공한다.
     /// - 입력, AI, 자동이동 등이 구현 가능

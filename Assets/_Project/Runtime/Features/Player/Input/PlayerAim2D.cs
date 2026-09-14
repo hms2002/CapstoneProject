@@ -39,6 +39,8 @@ public sealed class PlayerAim2D : MonoBehaviour, IAimDirectionSource2D, ICursorW
         return AimDirection;
     }
 
+    public void RefreshAimBeforeAttack() => UpdateMouseAim();
+
     public bool SetAimDirectionForPresentation(Vector2 direction)
     {
         if (direction.sqrMagnitude <= 0.0001f)

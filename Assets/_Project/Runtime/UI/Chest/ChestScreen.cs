@@ -38,6 +38,9 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     [SerializeField] private TMP_Text acquisitionCountLabel;
     [SerializeField] private CanvasGroup acquisitionCountGroup;
     private ItemSlotUI[] returnHighlightSlots = Array.Empty<ItemSlotUI>();
+    private ScriptableObject[] previousReturnItems = Array.Empty<ScriptableObject>();
+    private bool[] nextReturnHighlights = Array.Empty<bool>();
+    private readonly Dictionary<ScriptableObject, int> returnHighlightBudget = new();
     private bool counterVisible;
     private Tween counterFadeTween;
     private ChestInventory counterInventory;
@@ -909,8 +912,11 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private void BindAcquisitionCounter(ChestInventory inventory)
     {
         foreach (ItemSlotUI slot in returnHighlightSlots)
-            if (slot != null) slot.SetChestReturnContext(null);
+            if (slot != null) slot.SetChestReturnHighlight(false);
         returnHighlightSlots = Array.Empty<ItemSlotUI>();
+        previousReturnItems = Array.Empty<ScriptableObject>();
+        nextReturnHighlights = Array.Empty<bool>();
+        returnHighlightBudget.Clear();
         counterFadeTween?.Kill();
         counterFadeTween = null;
         counterVisible = false;
@@ -940,13 +946,48 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private void BindReturnHighlights(PlayerInventoryPanelView panel)
     {
         returnHighlightSlots = panel != null ? panel.GetComponentsInChildren<ItemSlotUI>(true) : Array.Empty<ItemSlotUI>();
-        foreach (ItemSlotUI slot in returnHighlightSlots) slot.SetChestReturnContext(counterInventory);
+        previousReturnItems = new ScriptableObject[returnHighlightSlots.Length];
+        nextReturnHighlights = new bool[returnHighlightSlots.Length];
+        RefreshReturnHighlights();
+    }
+
+    private void RefreshReturnHighlights()
+    {
+        returnHighlightBudget.Clear();
+        if (counterInventory != null)
+            foreach (ScriptableObject item in counterInventory.OutstandingAcquisitions)
+                if (item != null)
+                {
+                    returnHighlightBudget.TryGetValue(item, out int count);
+                    returnHighlightBudget[item] = count + 1;
+                }
+
+        Array.Clear(nextReturnHighlights, 0, nextReturnHighlights.Length);
+        // Prefer a newly acquired slot, then retain existing markers, then allocate restored receipts.
+        for (int pass = 0; pass < 3; pass++)
+            for (int i = 0; i < returnHighlightSlots.Length; i++)
+            {
+                ItemSlotUI slot = returnHighlightSlots[i];
+                ScriptableObject item = slot != null ? slot.CurrentItem : null;
+                if (item == null || nextReturnHighlights[i] ||
+                    !returnHighlightBudget.TryGetValue(item, out int remaining) || remaining <= 0)
+                    continue;
+                if (pass == 0 && item == previousReturnItems[i]) continue;
+                if (pass == 1 && !slot.IsChestReturnHighlighted) continue;
+                nextReturnHighlights[i] = true;
+                returnHighlightBudget[item] = remaining - 1;
+            }
+        for (int i = 0; i < returnHighlightSlots.Length; i++)
+        {
+            ItemSlotUI slot = returnHighlightSlots[i];
+            previousReturnItems[i] = slot != null ? slot.CurrentItem : null;
+            if (slot != null) slot.SetChestReturnHighlight(nextReturnHighlights[i]);
+        }
     }
 
     private void UpdateAcquisitionPresentation()
     {
-        foreach (ItemSlotUI slot in returnHighlightSlots)
-            if (slot != null) slot.RefreshChestReturnHighlight();
+        RefreshReturnHighlights();
         bool visible = counterInventory != null && !IsFirstOpenRevealPlaying &&
             rerollRevealState == RerollRevealState.Idle;
         if (visible == counterVisible) return;

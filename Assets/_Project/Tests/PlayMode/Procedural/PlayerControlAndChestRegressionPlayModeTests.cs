@@ -1,0 +1,200 @@
+#if UNITY_EDITOR
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
+using UnityGAS;
+using Object = UnityEngine.Object;
+
+public sealed class PlayerControlAndChestRegressionPlayModeTests
+{
+    private const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
+    private readonly List<Object> owned = new();
+    private T Own<T>(T value) where T : Object { owned.Add(value); return value; }
+    private static void Set(object target, string field, object value) =>
+        target.GetType().GetField(field, Private).SetValue(target, value);
+    private static void Call(object target, string method, params object[] args) =>
+        target.GetType().GetMethod(method, Private).Invoke(target, args);
+
+    [UnityTest]
+    public IEnumerator ActualExecution_OutlivesEstimatedRecovery_AndCancellationUnlocks()
+    {
+        var actor = Own(new GameObject("Actual attack lifecycle"));
+        actor.AddComponent<AttributeSet>();
+        var system = actor.AddComponent<AbilitySystem>();
+        var combat = actor.AddComponent<PlayerCombatInput2D>();
+        var logic = Own(ScriptableObject.CreateInstance<PlayerControlRegressionLogic>());
+        var attack = Own(ScriptableObject.CreateInstance<AbilityDefinition>());
+        attack.logic = logic;
+        attack.recoveryTime = 0f;
+        system.GiveAbility(attack);
+        Call(combat, "RememberBasicAttack", WeaponAbilitySlot.Attack, attack);
+        Assert.That(system.TryActivateAbility(attack), Is.True);
+        yield return null;
+        Assert.That(combat.IsBasicAttackMovementLocked, Is.True);
+        // Old timer expired in 0.016s without an Animator, even though logic was still running.
+        for (int frame = 0; frame < 12; frame++)
+        {
+            Assert.That(system.IsExecuting, Is.True);
+            Assert.That(combat.IsBasicAttackMovementLocked, Is.True);
+            yield return null;
+        }
+        system.CancelExecution(true);
+        yield return null;
+        Assert.That(combat.IsBasicAttackMovementLocked, Is.False);
+    }
+
+    [UnityTest]
+    public IEnumerator BufferedRequest_DoesNotLock_ButItsDeferredExecutionDoes()
+    {
+        var actor = Own(new GameObject("Buffered attack lifecycle"));
+        actor.AddComponent<AttributeSet>();
+        var system = actor.AddComponent<AbilitySystem>();
+        Set(system, "enableExclusiveActivationBuffer", true);
+        var combat = actor.AddComponent<PlayerCombatInput2D>();
+        var blockerLogic = Own(ScriptableObject.CreateInstance<PlayerControlRegressionLogic>());
+        var attackLogic = Own(ScriptableObject.CreateInstance<PlayerControlRegressionLogic>());
+        var blocker = Own(ScriptableObject.CreateInstance<AbilityDefinition>());
+        var attack = Own(ScriptableObject.CreateInstance<AbilityDefinition>());
+        blocker.logic = blockerLogic;
+        attack.logic = attackLogic;
+        blocker.recoveryTime = attack.recoveryTime = 0f;
+        system.GiveAbility(blocker);
+        system.GiveAbility(attack);
+        Call(combat, "RememberBasicAttack", WeaponAbilitySlot.Attack, attack);
+        Assert.That(system.TryActivateAbility(blocker), Is.True);
+        yield return null;
+        Assert.That(system.TryActivateAbility(attack), Is.True);
+        Assert.That(combat.IsBasicAttackMovementLocked, Is.False, "Buffered success is not execution.");
+        blockerLogic.Complete = true;
+        for (int frame = 0; frame < 30 && system.CurrentExecSpec?.Definition != attack; frame++)
+            yield return null;
+        Assert.That(system.CurrentExecSpec?.Definition, Is.EqualTo(attack));
+        Assert.That(combat.IsBasicAttackMovementLocked, Is.True,
+            "Deferred execution must lock even without another input call or selected weapon.");
+        attackLogic.Complete = true;
+        for (int frame = 0; frame < 30 && system.IsExecuting; frame++) yield return null;
+        yield return null;
+        Assert.That(combat.IsBasicAttackMovementLocked, Is.False);
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        for (int i = owned.Count - 1; i >= 0; i--)
+            if (owned[i] != null) Object.DestroyImmediate(owned[i]);
+        owned.Clear();
+    }
+
+    [Test]
+    public void AttackMotionLocksWalking_RepressWithoutNewAttackDoesNotRelock()
+    {
+        var actor = Own(new GameObject("Attack lock regression"));
+        var combat = actor.AddComponent<PlayerCombatInput2D>();
+        var intent = actor.AddComponent<PlayerIntentInput2D>();
+        Set(intent, "<MoveInput>k__BackingField", Vector2.up);
+        Set(combat, "isHoldingAttack", true);
+        Assert.That(combat.IsMeleeControlLocked, Is.False, "Next swing must not deadlock on the hold lock.");
+        Assert.That(intent.GetIntent().Direction, Is.EqualTo(Vector2.up),
+            "Input alone must not lock walking before a new attack starts.");
+
+        Set(combat, "meleeControlLockActive", true);
+        Set(combat, "meleeTickFrame", Time.frameCount);
+        Assert.That(intent.GetIntent().Direction, Is.EqualTo(Vector2.zero));
+        Call(combat, "ReleaseAttackHoldIfNeeded");
+        Assert.That(combat.IsBasicAttackMovementLocked, Is.True, "Releasing cannot cancel the current phase lock.");
+        Set(combat, "meleeControlLockActive", false);
+        Assert.That(intent.GetIntent().Direction, Is.EqualTo(Vector2.up));
+
+        Set(combat, "isHoldingAttack", true);
+        Assert.That(intent.GetIntent().Direction, Is.EqualTo(Vector2.up),
+            "Repressing during the released motion tail must not lock walking.");
+        Set(combat, "meleeControlLockActive", true);
+        Assert.That(intent.GetIntent().Direction, Is.EqualTo(Vector2.zero),
+            "A newly started attack must lock walking again.");
+        combat.enabled = false;
+        Assert.That(combat.IsHoldingPrimaryAttack, Is.False, "Disable must clear held input.");
+        Assert.That(combat.IsBasicAttackMovementLocked, Is.False);
+    }
+
+    [Test]
+    public void DuplicatePotion_HighlightBudgetTracksAcquisitionsAndReturns()
+    {
+        // UI is intentionally accessed through reflection: this test assembly references Gameplay,
+        // while the production assembly boundary keeps UI out of Gameplay.
+        Type screenType = Type.GetType("ChestScreen, UI", true);
+        Type slotType = Type.GetType("ItemSlotUI, UI", true);
+        var host = Own(new GameObject("Chest marker regression"));
+        host.SetActive(false);
+        Component screen = host.AddComponent(screenType);
+        var potion = Own(ScriptableObject.CreateInstance<ConsumableDefinition>());
+        var inventory = new TestContainer();
+        inventory.Items[0] = potion; // Pre-owned copy.
+        var chest = new ChestInventory();
+        Array slots = Array.CreateInstance(slotType, 3);
+        for (int i = 0; i < 3; i++)
+        {
+            var go = Own(new GameObject("Slot " + i, typeof(RectTransform)));
+            go.SetActive(false);
+            Component slot = go.AddComponent(slotType);
+            Set(slot, "container", inventory);
+            Set(slot, "index", i);
+            slots.SetValue(slot, i);
+        }
+        Set(screen, "counterInventory", chest);
+        Set(screen, "returnHighlightSlots", slots);
+        Set(screen, "previousReturnItems", new ScriptableObject[3]);
+        Set(screen, "nextReturnHighlights", new bool[3]);
+        Call(screen, "RefreshReturnHighlights");
+
+        inventory.Items[1] = potion;
+        chest.RecordAcquisition(potion);
+        Call(screen, "RefreshReturnHighlights");
+        AssertMarkers(false, true, false);
+        Call(screen, "RefreshReturnHighlights");
+        AssertMarkers(false, true, false);
+        inventory.Items[2] = potion;
+        chest.RecordAcquisition(potion);
+        Call(screen, "RefreshReturnHighlights");
+        AssertMarkers(false, true, true);
+
+        inventory.Items[1] = null;
+        chest.RecordReturn(potion);
+        Call(screen, "RefreshReturnHighlights");
+        AssertMarkers(false, false, true);
+        chest.RecordReturn(potion);
+        Call(screen, "RefreshReturnHighlights");
+        AssertMarkers(false, false, false);
+
+        void AssertMarkers(params bool[] expected)
+        {
+            for (int i = 0; i < expected.Length; i++)
+                Assert.That(slotType.GetProperty("IsChestReturnHighlighted").GetValue(slots.GetValue(i)),
+                    Is.EqualTo(expected[i]), "Slot " + i);
+        }
+    }
+
+    private sealed class TestContainer : IItemContainer
+    {
+        public readonly ScriptableObject[] Items = new ScriptableObject[3];
+        public int SlotCount => Items.Length;
+        public event Action OnChanged { add { } remove { } }
+        public ScriptableObject Get(int index) => Items[index];
+        public bool CanPlace(ScriptableObject item, int index, int ignoreIndex = -1) => true;
+        public bool TrySet(int index, ScriptableObject item) { Items[index] = item; return true; }
+        public bool TrySwap(int a, int b) { (Items[a], Items[b]) = (Items[b], Items[a]); return true; }
+    }
+}
+
+public sealed class PlayerControlRegressionLogic : AbilityLogic
+{
+    public bool Complete;
+    public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
+    {
+        while (!Complete && spec.Token != null && !spec.Token.IsCancelled) yield return null;
+    }
+}
+#endif

@@ -218,7 +218,7 @@ namespace UnityGAS
                 causer: cueParams.Causer);
         }
 
-        private Animator ResolveAnimationTarget(AbilityDefinition def)
+        public Animator ResolveAnimationTarget(AbilityDefinition def)
         {
             if (def != null && def.animationChannel == AnimationChannel.Weapon)
                 return weaponAnimator != null ? weaponAnimator : playerAnimator;

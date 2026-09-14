@@ -45,7 +45,9 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     private int meleePreviousStateHash;
     private float meleePreviousNormalizedTime;
     private int meleeAttackStateHash;
-    private float meleeFallbackRemaining;
+    private AbilitySpec meleeExecutionSpec;
+    private AbilityCancellationToken meleeExecutionToken;
+    private bool meleeExecutionRunning;
     private Animator meleeLockAnimator;
     private AbilityMotionController2D meleeMotion;
 
@@ -58,29 +60,42 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
         }
     }
 
-    private void BeginMeleeControlLock(WeaponAbilitySlot slot, AbilityDefinition definition,
-        int previousStateHash, float previousNormalizedTime)
+    // Only an accepted attack starts this lock; pressing/holding alone cannot re-lock walking.
+    public bool IsBasicAttackMovementLocked => IsMeleeControlLocked;
+
+    private void HandleAbilityExecutionStarted(AbilitySpec spec)
     {
-        if (slot != WeaponAbilitySlot.Attack || definition != GetBasicAttack())
+        AbilityDefinition definition = spec?.Definition;
+        if (definition == null) return;
+        if (!IsKnownBasicAttackAbility(definition) && definition != GetBasicAttack())
         {
-            meleeControlLockActive = false;
+            if (definition.executionPolicy == AbilityDefinition.ExecutionPolicy.ExclusiveQueued)
+                meleeControlLockActive = false;
             return;
         }
-        // These two current weapons fire ranged basic attacks.
-        if (definition.logic is UnityGAS.Sample.AbilityLogic_OddIronShot ||
-            definition.logic is AbilityLogic_CrimsonBoundaryAttack) return;
+        // Snapshot before logic advances combo selection or starts the attack animation.
+        GetComponent<PlayerAim2D>()?.RefreshAimBeforeAttack();
+        meleeExecutionSpec = spec;
+        meleeExecutionToken = spec.Token;
+        meleeExecutionRunning = true;
+        meleeLockAnimator = abilitySystem.GetAnimationTarget(definition);
+        AnimatorStateInfo previousState = meleeLockAnimator != null && meleeLockAnimator.runtimeAnimatorController != null
+            ? meleeLockAnimator.GetCurrentAnimatorStateInfo(0) : default;
         meleeControlLockActive = true;
         meleeAnimationObserved = meleeAnimationFinished = false;
         meleeStartFrame = Time.frameCount;
         meleeTickFrame = -1;
-        meleePreviousStateHash = previousStateHash;
-        meleePreviousNormalizedTime = previousNormalizedTime;
-        meleeLockAnimator = definition.animationChannel == AbilityDefinition.AnimationChannel.Weapon
-            ? abilitySystem.WeaponAnimator : abilitySystem.PlayerAnimator;
+        meleePreviousStateHash = previousState.fullPathHash;
+        meleePreviousNormalizedTime = previousState.normalizedTime;
         meleeMotion = abilitySystem.GetComponent<AbilityMotionController2D>();
-        float recovery = definition.recoveryTime / Mathf.Max(0.0001f, AbilityAttackSpeedResolver.ResolveFinalAttackSpeed(abilitySystem));
-        meleeFallbackRemaining = 0.8f * Mathf.Max(0.02f, recovery,
-            weaponAbilityBridge.GetNextActivationRemaining(definition));
+    }
+
+    private void HandleAbilityExecutionEnded(AbilitySpec spec, bool cancelled)
+    {
+        if (spec != meleeExecutionSpec) return;
+        meleeExecutionRunning = false;
+        meleeExecutionToken = null;
+        if (cancelled) meleeControlLockActive = false;
     }
 
     private void RefreshMeleeControlLock()
@@ -88,8 +103,11 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
         if (!meleeControlLockActive || meleeTickFrame == Time.frameCount) return;
         meleeTickFrame = Time.frameCount;
         if (Time.frameCount <= meleeStartFrame) return;
-        if (!CombatHitPause2D.IsPausedOn(gameObject))
-            meleeFallbackRemaining -= Time.deltaTime;
+        if (meleeExecutionRunning && (meleeExecutionToken == null || meleeExecutionToken.IsCancelled))
+        {
+            meleeControlLockActive = false;
+            return;
+        }
         if (meleeLockAnimator != null && meleeLockAnimator.isActiveAndEnabled &&
             meleeLockAnimator.runtimeAnimatorController != null)
         {
@@ -102,15 +120,15 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
                 meleeAnimationObserved = true;
                 meleeAttackStateHash = state.fullPathHash;
             }
-            if (meleeAnimationObserved && (state.fullPathHash != meleeAttackStateHash || state.normalizedTime >= 0.8f))
+            if (meleeAnimationObserved && (state.fullPathHash != meleeAttackStateHash || state.normalizedTime >= 1f))
                 meleeAnimationFinished = true;
         }
-        bool motionPending = meleeAnimationObserved ? !meleeAnimationFinished : meleeFallbackRemaining > 0f;
+        bool motionPending = meleeExecutionRunning || (meleeAnimationObserved && !meleeAnimationFinished);
         bool lunging = meleeMotion != null && meleeMotion.IsLunging;
         if (!motionPending && !lunging)
         {
             meleeControlLockActive = false;
-            // Let aim/movement update in the released tail before a held input starts the next swing.
+            // The completed attack unlocks movement/aim until the next attack actually starts.
             nextAutoAttackTime = Mathf.Max(nextAutoAttackTime, Time.time + reAimGapAfterAttackEnd);
         }
     }
@@ -149,6 +167,11 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
 
     private void OnEnable()
     {
+        if (abilitySystem != null)
+        {
+            abilitySystem.AbilityExecutionStarted += HandleAbilityExecutionStarted;
+            abilitySystem.AbilityExecutionEnded += HandleAbilityExecutionEnded;
+        }
         if (weaponInventory != null)
             weaponInventory.OnEquippedChanged += HandleEquippedChanged;
 
@@ -157,7 +180,16 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
 
     private void OnDisable()
     {
+        if (abilitySystem != null)
+        {
+            abilitySystem.AbilityExecutionStarted -= HandleAbilityExecutionStarted;
+            abilitySystem.AbilityExecutionEnded -= HandleAbilityExecutionEnded;
+        }
+        meleeExecutionSpec = null;
+        meleeExecutionToken = null;
+        meleeExecutionRunning = false;
         meleeControlLockActive = false;
+        ReleaseAttackHoldIfNeeded();
         ClearApprenticeSkillInput();
         if (weaponInventory != null)
             weaponInventory.OnEquippedChanged -= HandleEquippedChanged;
@@ -447,22 +479,19 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     {
         if (def == null || weaponAbilityBridge == null) return false;
 
-        Animator attackAnimator = def.animationChannel == AbilityDefinition.AnimationChannel.Weapon
-            ? abilitySystem.WeaponAnimator : abilitySystem.PlayerAnimator;
-        AnimatorStateInfo previousState = attackAnimator != null && attackAnimator.runtimeAnimatorController != null
-            ? attackAnimator.GetCurrentAnimatorStateInfo(0) : default;
+        if (slot == WeaponAbilitySlot.Attack)
+            GetComponent<PlayerAim2D>()?.RefreshAimBeforeAttack();
+
         RememberBasicAttack(slot, def);
 
         if (TryHandleCurrentWeaponAbilityInput(slot, def))
         {
-            BeginMeleeControlLock(slot, def, previousState.fullPathHash, previousState.normalizedTime);
             return true;
         }
 
         bool activated = weaponAbilityBridge.TryActivate(def, null);
         if (activated)
         {
-            BeginMeleeControlLock(slot, def, previousState.fullPathHash, previousState.normalizedTime);
             NotifyCurrentWeaponAbilityActivated(slot, def);
         }
         else
