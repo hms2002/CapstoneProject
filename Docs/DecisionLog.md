@@ -3197,3 +3197,7 @@ User revision: the fourth run-shop slot is guaranteed Consumable, priced 200–3
 ### 2026-09-12 — Officer objective and cleared Grand Hall portals
 
 Approved: start the fixed officer objective on Grand Hall entry; count the three current-run officer boss IDs independently of the changing scene guidance. Keep (3/3) · 완료 visible after the third defeat; perform removal only after Grand Hall return, then acknowledge once per run. Cleared normal portals use Portal_Disable and stop/disable their particles while retaining existing travel restrictions. Damage popups use the existing BlackOutline font/material.
+
+### 2026-09-14 — Burn starter does not amplify native fire applications
+
+`작열하는 송곳` starts 2/3/4/5/6 burn stacks only when the target remains unburned after the triggering hit. A weapon's native burn is resolved first and suppresses the starter for that hit. The relic provides a minimum Fire value of 2 only for burn tick calculation and never raises an existing higher Fire value or direct weapon damage. This replaces its former burn-critical permission. No attack penalty is used because the non-burning-target gate prevents the dangerous native-burn stack amplification directly.

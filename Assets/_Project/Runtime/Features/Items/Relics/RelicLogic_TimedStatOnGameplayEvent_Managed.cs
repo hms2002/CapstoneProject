@@ -38,6 +38,8 @@ public sealed class RelicLogic_TimedStatOnGameplayEvent_Managed : RelicLogic
     public string displayNameOverride;
     public ModifierType modifierType = ModifierType.Flat;
     public float value;
+    [Tooltip("레벨별 버프 값(레벨1=0번째). 비어있으면 value를 사용합니다.")]
+    public List<float> valueByLevel = new();
     [Min(0.01f)] public float durationSeconds = 4f;
     public bool refreshDuration = true;
 
@@ -86,7 +88,7 @@ public sealed class RelicLogic_TimedStatOnGameplayEvent_Managed : RelicLogic
             actorFilter,
             attribute,
             modifierType,
-            value,
+            EvaluateValue(ctx.level),
             durationSeconds,
             refreshDuration,
             statusDefinition));
@@ -103,7 +105,7 @@ public sealed class RelicLogic_TimedStatOnGameplayEvent_Managed : RelicLogic
                 ["duration"] = RelicTooltipFormatter.FormatSeconds(durationSeconds),
                 ["stat"] = displayName,
                 ["value"] = RelicTooltipFormatter.FormatSignedValueToken(
-                    value,
+                    EvaluateValue(previewLevel),
                     RelicTooltipFormatter.ShouldDisplayAsPercent(attribute, displayName, modifierType))
             });
 
@@ -115,6 +117,14 @@ public sealed class RelicLogic_TimedStatOnGameplayEvent_Managed : RelicLogic
         {
             effectText = $"{passiveText}\n{timedTooltip.effectText}"
         };
+    }
+
+    private float EvaluateValue(int level)
+    {
+        if (valueByLevel == null || valueByLevel.Count == 0)
+            return value;
+
+        return valueByLevel[Mathf.Clamp(level - 1, 0, valueByLevel.Count - 1)];
     }
 
     private string ResolveDisplayName()

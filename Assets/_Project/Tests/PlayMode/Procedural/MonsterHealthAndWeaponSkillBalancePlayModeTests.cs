@@ -388,6 +388,44 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(bandage.maxLevel, Is.EqualTo(2));
     }
 
+    [Test]
+    public void DrunkenSpirit_UsesThreeLevelFinalDamageCurve()
+    {
+        RelicDefinition definition = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_DrunkenRush.asset");
+        Assert.That(definition.displayName, Is.EqualTo("독한 술기운"));
+        Assert.That(definition.maxLevel, Is.EqualTo(3));
+
+        using var serialized = new SerializedObject(definition.logic);
+        SerializedProperty values = serialized.FindProperty("valueByLevel");
+        Assert.That(values.arraySize, Is.EqualTo(3));
+        Assert.That(values.GetArrayElementAtIndex(0).floatValue, Is.EqualTo(0.04f).Within(0.0001f));
+        Assert.That(values.GetArrayElementAtIndex(2).floatValue, Is.EqualTo(0.12f).Within(0.0001f));
+        Assert.That(serialized.FindProperty("durationSeconds").floatValue, Is.EqualTo(6f));
+        Assert.That(serialized.FindProperty("refreshDuration").boolValue, Is.True);
+    }
+
+    [Test]
+    public void ScorchingAwl_UsesNonBurningTargetStarterCurve()
+    {
+        RelicDefinition definition = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_ScorchingSong.asset");
+        Assert.That(definition.displayName, Is.EqualTo("작열하는 송곳"));
+        Assert.That(definition.maxLevel, Is.EqualTo(5));
+
+        using var serialized = new SerializedObject(definition.logic);
+        SerializedProperty values = serialized.FindProperty("starterStacksByLevel");
+        Assert.That(values.arraySize, Is.EqualTo(5));
+        Assert.That(values.GetArrayElementAtIndex(0).intValue, Is.EqualTo(2));
+        Assert.That(values.GetArrayElementAtIndex(4).intValue, Is.EqualTo(6));
+        Assert.That(serialized.FindProperty("minimumFireForBurn").floatValue, Is.EqualTo(2f));
+        Assert.That(serialized.FindProperty("allowCritical").boolValue, Is.False);
+
+        RelicDefinition crown = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKing.asset");
+        Assert.That(crown.displayName, Is.EqualTo("홍련의 왕관"));
+    }
+
     private static float ReadProfileValue(AttributeInitProfileSO profile, string attributeGuid)
     {
         Object expectedAttribute = LoadGuid<AttributeDefinition>(attributeGuid);

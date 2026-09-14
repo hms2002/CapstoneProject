@@ -16,6 +16,7 @@ public sealed class BurnSourceRuntime : MonoBehaviour
         public readonly int StackDamageThreshold;
         public readonly float StackDamageRatioPerStep;
         public readonly float StackDamageRatioMax;
+        public readonly float MinimumFireForBurn;
 
         public Modifier(
             float tickIntervalMultiplier,
@@ -25,7 +26,8 @@ public sealed class BurnSourceRuntime : MonoBehaviour
             bool allowCritical,
             int stackDamageThreshold = 0,
             float stackDamageRatioPerStep = 0f,
-            float stackDamageRatioMax = 0f)
+            float stackDamageRatioMax = 0f,
+            float minimumFireForBurn = 0f)
         {
             TickIntervalMultiplier = tickIntervalMultiplier;
             DamageRatioAdd = damageRatioAdd;
@@ -35,6 +37,7 @@ public sealed class BurnSourceRuntime : MonoBehaviour
             StackDamageThreshold = stackDamageThreshold;
             StackDamageRatioPerStep = stackDamageRatioPerStep;
             StackDamageRatioMax = stackDamageRatioMax;
+            MinimumFireForBurn = minimumFireForBurn;
         }
     }
 
@@ -69,6 +72,17 @@ public sealed class BurnSourceRuntime : MonoBehaviour
             foreach (Modifier modifier in modifiers.Values)
                 if (modifier.AllowCritical) return true;
             return false;
+        }
+    }
+
+    public float MinimumFireForBurn
+    {
+        get
+        {
+            float value = 0f;
+            foreach (Modifier modifier in modifiers.Values)
+                value = Mathf.Max(value, modifier.MinimumFireForBurn);
+            return Mathf.Max(0f, value);
         }
     }
 

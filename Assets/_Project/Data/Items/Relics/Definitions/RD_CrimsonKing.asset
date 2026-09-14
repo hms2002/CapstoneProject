@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RD_CrimsonKing
   m_EditorClassIdentifier: 
   relicId: RD_CrimsonKing
-  displayName: "\uD64D\uB828\uC758 \uC655"
+  displayName: "\uD64D\uB828\uC758 \uC655\uAD00"
   icon: {fileID: 8824747318910040432, guid: 87eece6e269e518438f6bcfb7a730ad0, type: 3}
   rarity: 2
   description: "\uC801\uC758 \uD654\uC0C1 \uC911\uCCA9\uC5D0 \uBE44\uB840\uD574 \uD654\uC0C1

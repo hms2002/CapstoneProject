@@ -107,6 +107,8 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
         {
             IStatProvider provider = AbilityStatProviderFactory.Create(sourceSystem);
             float fire = provider != null ? Mathf.Max(0f, provider.Get(StatId.FireFinal)) : 0f;
+            if (sourceRules != null)
+                fire = Mathf.Max(fire, sourceRules.MinimumFireForBurn);
             float ratio = sourceRules != null ? sourceRules.DamageRatio : 0.5f;
             bool allowCritical = sourceRules != null && sourceRules.AllowCritical;
             DamageResult result = allowCritical

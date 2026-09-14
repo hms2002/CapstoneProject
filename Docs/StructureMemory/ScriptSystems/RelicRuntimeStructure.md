@@ -20,6 +20,12 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - Critical-hit movement stacking uses the existing `RelicLogic_MoveSpeedStackOnCriticalHit_Managed`.
 - Event-timed stat buffs use `RelicLogic_TimedStatOnGameplayEvent_Managed`.
 - Health-threshold stat buffs use `RelicLogic_StatWhileHealthRatio_Managed`.
+- Timed event buffs can use `valueByLevel`; an empty list preserves the scalar
+  `value` fallback for existing assets.
+- Burn modifier assets may optionally register a deferred non-burning-target
+  starter through `RelicProcManager`. `BurnSourceRuntime` owns the token-scoped
+  minimum Fire value used only by burn ticks, so it does not increase native
+  weapon Fire damage.
 - `RelicLogic_FeatherOrbit_Managed.damageCoefByLevel` and
   `RelicLogic_CritFromBonusMoveSpeed_Managed.critPerStepByLevel` provide explicit
   level curves; when the lists are empty, their original scalar fields remain the
@@ -42,6 +48,9 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - Equip and restore paths call the relic logic with a `RelicContext`; modifier sources should be scoped to `ctx.token` unless a temporary buff needs an independent runtime token.
 - Unequip must remove all permanent modifiers sourced by `ctx.token` and unregister any proc objects registered through `RelicProcManager`.
 - Event-driven relics should use `RelicProcManager` instead of adding new long-lived managers or scene objects.
+- Burn starters queue hit targets and evaluate them on the manager tick. This lets
+  a weapon's native post-hit burn application win first; a target that is already
+  burning must not receive starter stacks.
 - UI and tooltip views should project `RelicLogic.BuildTooltip(...)`; gameplay state stays in the logic/proc layer.
 
 ## Extension Points
