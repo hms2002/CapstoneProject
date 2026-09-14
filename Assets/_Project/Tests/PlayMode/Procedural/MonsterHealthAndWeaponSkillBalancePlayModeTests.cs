@@ -307,6 +307,26 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         }
 
         Assert.That(found, Is.True, $"{prefabPath} does not reference {profilePath}.");
+
+        AttributeDefinition health = LoadGuid<AttributeDefinition>("3ff045849daafe84d97370c69cd17747");
+        AttributeDefinition maxHealth = LoadGuid<AttributeDefinition>("0e177e1d15e428745b5859fac08ce203");
+        SerializedProperty maxLinks = serialized.FindProperty("maxLinks");
+        Assert.That(maxLinks, Is.Not.Null, prefabPath);
+
+        bool fillsHealthToMax = false;
+        for (int i = 0; i < maxLinks.arraySize; i++)
+        {
+            SerializedProperty link = maxLinks.GetArrayElementAtIndex(i);
+            if (link.FindPropertyRelative("value").objectReferenceValue == health &&
+                link.FindPropertyRelative("max").objectReferenceValue == maxHealth)
+            {
+                fillsHealthToMax = link.FindPropertyRelative("fillToMaxOnInitialize").boolValue;
+                break;
+            }
+        }
+
+        Assert.That(fillsHealthToMax, Is.True,
+            $"{prefabPath} must fill current health after applying its maximum-health profile.");
     }
 
     [Test]
