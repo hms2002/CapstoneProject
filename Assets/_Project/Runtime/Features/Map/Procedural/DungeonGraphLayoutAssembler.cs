@@ -358,7 +358,8 @@ public sealed partial class DungeonGraphLayoutAssembler
         float corridorLengthPerRoomCell,
         int corridorLengthVariation,
         IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates = null,
-        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules = null)
+        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules = null,
+        int generationStage = 0)
     {
         int roomCount = Mathf.Max(2, requestedRoomCount);
         DungeonLayoutResult failedResult = new(seed, roomCount);
@@ -375,6 +376,19 @@ public sealed partial class DungeonGraphLayoutAssembler
         }
 
         requiredCombatRoomRules ??= policy.RequiredCombatRoomRules;
+        generationStage = Mathf.Clamp(generationStage, 0, 3);
+        if (generationStage > 0)
+        {
+            bool hasLarge = false;
+            foreach (var template in library.Rooms)
+                if (IsTemplateUsable(template) && IsLargeCombatRoom(template) &&
+                    DungeonStageComposition.Tier(template) == generationStage) { hasLarge = true; break; }
+            if (!hasLarge || policy.MaximumLargeCombatRoomCount < 1)
+            {
+                failedResult.MarkFailed($"Stage {generationStage} requires exactly one same-tier Large combat room; check library candidates and Large cap.");
+                return failedResult;
+            }
+        }
 
         if (!ValidateGuaranteedRoomTemplates(
                 library,
@@ -492,6 +506,7 @@ public sealed partial class DungeonGraphLayoutAssembler
                     resolvedMinimumCorridorLength,
                     resolvedCorridorLengthPerRoomCell,
                     resolvedCorridorLengthVariation,
+                    generationStage,
                     out DungeonLayoutResult result,
                     out lastFailure))
             {

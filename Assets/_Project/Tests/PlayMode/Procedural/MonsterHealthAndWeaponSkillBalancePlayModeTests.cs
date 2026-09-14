@@ -273,6 +273,16 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(ReadProfileValue(profile, "0e177e1d15e428745b5859fac08ce203"), Is.EqualTo(expected));
     }
 
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/WitchAttributeOverrideInitProfile.asset", 600f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/SlimeQueenGroggyOverrideInitProfile.asset", 500f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/DragonBossAttributeOverrideInitProfile.asset", 1000f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/WitchBossAttributeOverrideInitProfile.asset", 1100f)]
+    public void BossProfiles_UseApprovedMaximumStagger(string path, float expected)
+    {
+        AttributeInitProfileSO profile = Load<AttributeInitProfileSO>(path);
+        Assert.That(ReadProfileValue(profile, "ddbd05a9b77349441a875c479e48212d"), Is.EqualTo(expected));
+    }
+
     [TestCase(
         "Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueen.prefab",
         "Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenAttributeOverrideInitProfile.asset")]

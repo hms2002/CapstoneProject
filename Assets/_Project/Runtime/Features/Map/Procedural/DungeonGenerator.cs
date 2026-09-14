@@ -105,6 +105,8 @@ public sealed class DungeonGenerator : MonoBehaviour
         float resolvedCorridorLengthPerRoomCell = CorridorLengthPerRoomCell;
         int resolvedCorridorLengthVariation = CorridorLengthVariation;
         bool useGraphFirstLayout = resolvedLayoutPolicy != null && resolvedIncludeBossRoom;
+        int generationStage = DungeonStageComposition.AppliesTo(resolvedRoomLibrary)
+            ? Mathf.Clamp(MonsterRunProgression.CurrentStageIndex + 1, 1, 3) : 0;
         RunMapEventGenerationPlan mapEventPlan = RunMapEventGenerationResolver.CreatePlan(
             useGraphFirstLayout && generationProfile != null
                 ? generationProfile.RunMapEventProfile
@@ -124,7 +126,8 @@ public sealed class DungeonGenerator : MonoBehaviour
                 resolvedCorridorLengthPerRoomCell,
                 resolvedCorridorLengthVariation,
                 mapEventPlan.GuaranteedRoomTemplates,
-                resolvedLayoutPolicy.RequiredCombatRoomRules)
+                resolvedLayoutPolicy.RequiredCombatRoomRules,
+                generationStage)
             : layoutAssembler.Assemble(
                 resolvedRoomLibrary,
                 resolvedSeed,
@@ -133,7 +136,8 @@ public sealed class DungeonGenerator : MonoBehaviour
                 resolvedMaxPlacementAttempts,
                 resolvedMinimumCorridorLength,
                 resolvedCorridorLengthPerRoomCell,
-                resolvedCorridorLengthVariation);
+                resolvedCorridorLengthVariation,
+                generationStage);
 
         if (LastLayout.Rooms.Count == 0)
         {
