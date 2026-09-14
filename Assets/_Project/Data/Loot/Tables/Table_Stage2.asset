@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: Table_Stage2
   m_EditorClassIdentifier: 
   chestWeaponCountProfile:
-    minCount: 1
-    maxCount: 1
+    minCount: 2
+    maxCount: 2
     weights:
-    - count: 5
+    - count: 2
       weight: 100
   chestRelicCountProfile:
-    minCount: 1
-    maxCount: 1
+    minCount: 4
+    maxCount: 4
     weights:
-    - count: 7
+    - count: 4
       weight: 100
   chestConsumableCountProfile:
     minCount: 1
@@ -31,16 +31,16 @@ MonoBehaviour:
     - count: 1
       weight: 100
   bossWeaponCountProfile:
-    minCount: 1
-    maxCount: 1
+    minCount: 2
+    maxCount: 2
     weights:
-    - count: 5
+    - count: 2
       weight: 100
   bossRelicCountProfile:
-    minCount: 1
-    maxCount: 1
+    minCount: 4
+    maxCount: 4
     weights:
-    - count: 7
+    - count: 4
       weight: 100
   bossCommonWeight: 60
   bossRareWeight: 30

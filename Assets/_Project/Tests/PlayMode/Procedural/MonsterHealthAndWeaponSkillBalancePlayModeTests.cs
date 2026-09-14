@@ -48,7 +48,7 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
 
             for (int stage = 0; stage < 3; stage++)
             {
-                float multiplier = (1f + 0.35f * stage) * roleMultiplier;
+                float multiplier = (1f + 0.55f * stage) * roleMultiplier;
                 receiver.ApplyDifficulty(new DifficultyModifiers { hpMultiplier = multiplier });
                 float expected = baseHp * multiplier;
                 Assert.That(attributes.GetAttributeValue(maxHealth), Is.EqualTo(expected).Within(0.01f));
@@ -263,8 +263,8 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
     [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenAttributeOverrideInitProfile.asset", 550f)]
     [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2ShortAttributeOverrideInitProfile.asset", 330f)]
     [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2LongAttributeOverrideInitProfile.asset", 330f)]
-    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/WitchAttributeOverrideInitProfile.asset", 1000f)]
-    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/DragonBossAttributeOverrideInitProfile.asset", 1250f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/WitchAttributeOverrideInitProfile.asset", 1500f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/DragonBossAttributeOverrideInitProfile.asset", 2000f)]
     [TestCase("Assets/_Project/Data/Attributes/InitProfiles/WitchBossAttributeOverrideInitProfile.asset", 2800f)]
     public void BossProfiles_UseApprovedHealth(string path, float expected)
     {
@@ -339,13 +339,34 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
     }
 
     [Test]
-    public void MonsterStageScaling_UsesApprovedThirtyFivePercentHealthStep()
+    public void MonsterStageScaling_UsesApprovedFiftyFivePercentHealthStep()
     {
         ScriptableObject settings = Load<ScriptableObject>(
             "Assets/_Project/Resources/MonsterStageHpScalingSettings.asset");
         using var serialized = new SerializedObject(settings);
         Assert.That(serialized.FindProperty("hpMultiplierPerClearedStage").floatValue,
-            Is.EqualTo(0.35f).Within(0.0001f));
+            Is.EqualTo(0.55f).Within(0.0001f));
+    }
+
+    [TestCase("Assets/_Project/Data/Loot/Tables/Table_Stage1.asset")]
+    [TestCase("Assets/_Project/Data/Loot/Tables/Table_Stage2.asset")]
+    [TestCase("Assets/_Project/Data/Loot/Tables/Table_Stage3.asset")]
+    public void StageLootTables_UseApprovedCandidateCounts(string path)
+    {
+        using var serialized = new SerializedObject(Load<StageLootTable>(path));
+        AssertFixedCountProfile(serialized.FindProperty("chestWeaponCountProfile"), 2);
+        AssertFixedCountProfile(serialized.FindProperty("chestRelicCountProfile"), 4);
+        AssertFixedCountProfile(serialized.FindProperty("bossWeaponCountProfile"), 2);
+        AssertFixedCountProfile(serialized.FindProperty("bossRelicCountProfile"), 4);
+    }
+
+    [Test]
+    public void ChestRefreshUpgrade_UsesApprovedSingleRefresh()
+    {
+        ScriptableObject effect = Load<ScriptableObject>(
+            "Assets/_Project/Data/Progression/Upgrades/Effect/ChestRunModifierEffect.asset");
+        using var serialized = new SerializedObject(effect);
+        Assert.That(serialized.FindProperty("chestRefreshCount").intValue, Is.EqualTo(1));
     }
 
     [TestCase("Relic Logic_Common_BlackIncense.asset", 1, 0, -0.03f)]
@@ -558,6 +579,17 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
 
         Assert.Fail($"{profile.name} does not define attribute {attributeGuid}.");
         return 0f;
+    }
+
+    private static void AssertFixedCountProfile(SerializedProperty profile, int expected)
+    {
+        Assert.That(profile, Is.Not.Null);
+        Assert.That(profile.FindPropertyRelative("minCount").intValue, Is.EqualTo(expected));
+        Assert.That(profile.FindPropertyRelative("maxCount").intValue, Is.EqualTo(expected));
+        SerializedProperty weights = profile.FindPropertyRelative("weights");
+        Assert.That(weights.arraySize, Is.EqualTo(1));
+        Assert.That(weights.GetArrayElementAtIndex(0).FindPropertyRelative("count").intValue,
+            Is.EqualTo(expected));
     }
 
     private static ScaledStatFormula ReadFormula(string asset, string property)
