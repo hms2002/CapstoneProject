@@ -223,7 +223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightVisualRoot: {fileID: 0}
-  sightMask: {fileID: 7564614335323526841}
+  sightMask: {fileID: 6965762523159620766}
   lightZone: {fileID: 771122334455667789}
   presentationBehaviours:
   - {fileID: 2340360555552697333}

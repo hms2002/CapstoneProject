@@ -8,6 +8,7 @@ using UnityGAS;
 [DisallowMultipleComponent]
 // 이 클래스의 책임:
 // - 마녀 보스 평타1의 개별 타일 경고, 타격 표시, 피해 판정을 같은 기하 데이터로 실행한다.
+// - 재생 시작 시 중심을 고정해 렌더러의 Transform 변경이 공격 좌표에 영향을 주지 않게 한다.
 // - 경고/타격/피해 범위가 어긋날 때 진단할 수 있도록 타일 단위 로그를 제공한다.
 public class WitchNormalAttack1Tile : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     private AttackTelegraphStyle hitStyle;
     private GameObject targetObject;
     private CombatHitPayload hitPayload;
+    private Vector3 tileCenter;
     private Vector2 tileSize;
     private float angleDeg;
     private int debugTileIndex = -1;
@@ -72,6 +74,8 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     {
         targetObject = target;
         hitPayload = payload;
+        // The mesh view repositions this shared Transform to the rectangle's start edge.
+        tileCenter = transform.position;
         tileSize = size;
         angleDeg = angle;
         warningStyle = warningTelegraphStyle;
@@ -133,7 +137,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     {
         if (targetObject == null || hitPayload == null || !hitPayload.IsValid()) return;
 
-        Collider2D[] hits = Physics2D.OverlapBoxAll(transform.position, tileSize, angleDeg);
+        Collider2D[] hits = Physics2D.OverlapBoxAll(tileCenter, tileSize, angleDeg);
         int consideredCount = 0;
         string hitNames = string.Empty;
         for (int i = 0; i < hits.Length; i++)
@@ -149,7 +153,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
             if (hitObject != targetObject) continue;
 
             LogDamageProbe(hits.Length, consideredCount, hitNames, true);
-            CombatHitPayloadApplier.Apply(hitObject, hitPayload, transform.position);
+            CombatHitPayloadApplier.Apply(hitObject, hitPayload, tileCenter);
             return;
         }
 
@@ -160,7 +164,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     private AttackTelegraphSpec MakeSpec(float duration, AttackTelegraphStyle style)
     {
         return AttackTelegraphSpec.CreateRectangle(
-            transform.position,
+            tileCenter,
             tileSize,
             angleDeg,
             duration,
@@ -194,7 +198,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
             hitPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: hitPayload != null && hitPayload.sourceSystem != null ? hitPayload.sourceSystem.gameObject : gameObject,
-                position: transform.position,
+                position: tileCenter,
                 fallbackDirection: hitDirection,
                 target: targetObject,
                 sourceObject: this,
@@ -241,14 +245,14 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         if (!logGeometryDebug)
             return;
 
-        Vector3[] corners = BuildRectangleCorners(transform.position, tileSize, angleDeg);
+        Vector3[] corners = BuildRectangleCorners(tileCenter, tileSize, angleDeg);
         Vector3 targetPosition = targetObject != null ? targetObject.transform.position : Vector3.zero;
         string targetName = targetObject != null ? targetObject.name : "null";
         string styleName = spec.style != null ? spec.style.name : "null";
         Debug.Log(
             $"[WitchNormalAttack1Tile] {phase}. " +
             $"tile={debugTileIndex}, object={name}, time={Time.time:0.000}, " +
-            $"center={transform.position}, specCenter={spec.center}, size={tileSize}, angle={angleDeg:0.0}, " +
+            $"center={tileCenter}, renderRoot={transform.position}, specCenter={spec.center}, size={tileSize}, angle={angleDeg:0.0}, " +
             $"duration={phaseDuration:0.000}, showDelay={debugShowDelay:0.000}, hitDelay={debugHitDelay:0.000}, " +
             $"meshOutline={spec.useMeshOutline}, wallClip={spec.useWallClipping}, wallMask={spec.wallClipLayers.value}, style={styleName}, " +
             $"target={targetName}, targetPos={targetPosition}, " +
@@ -264,7 +268,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         Debug.Log(
             $"[WitchNormalAttack1Tile] damage probe. " +
             $"tile={debugTileIndex}, object={name}, time={Time.time:0.000}, " +
-            $"center={transform.position}, size={tileSize}, angle={angleDeg:0.0}, " +
+            $"center={tileCenter}, size={tileSize}, angle={angleDeg:0.0}, " +
             $"rawHits={rawHitCount}, considered={consideredCount}, applied={applied}, hits={hitNames}",
             this);
     }
@@ -279,7 +283,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         Debug.Log(
             $"[WitchNormalAttack1Tile] hit presentation. " +
             $"tile={debugTileIndex}, object={name}, time={Time.time:0.000}, " +
-            $"position={transform.position}, rotationZ={rotation.eulerAngles.z:0.0}, " +
+            $"position={tileCenter}, rotationZ={rotation.eulerAngles.z:0.0}, " +
             $"effect={effectName}, effectScale={hitPresentation.effect.EffectiveScaleMultiplier}, " +
             $"particle={particleName}, particleScale={hitPresentation.particle.EffectiveScaleMultiplier}",
             this);

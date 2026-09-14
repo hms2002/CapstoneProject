@@ -9,7 +9,7 @@ using UnityGAS.Sample;
 public class Witch : BossControllerBase, IWitchPatternStateBridge
 {
     // 이 클래스의 책임:
-    // 마녀 보스 전용 상태, 연출, 패턴 보조 동작을 조율하고 전용 런타임 데이터를 관리한다.
+    // 마녀 전용 패턴의 실행 가능성과 연출을 조율하고, 패턴 취소와 전투 종료의 소환물 정리 정책을 구분한다.
 
     private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
     private const int WallLayer = 30;
@@ -112,7 +112,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         HideExtinguishWarning();
         if (ShouldClearRampageProjectilesOnPatternEnd(forced))
             ClearActiveRampageProjectiles();
-        if (forced)
+        if (ShouldClearRetreatSummonsOnPatternEnd(forced))
             ClearActiveRetreatSummons();
 
         if (patternEntry != null && patternEntry.Ability != null && patternEntry.Ability.logic is AbilityLogic_WitchLightAllCandles)
@@ -259,14 +259,31 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         return HasDeadTag() || HasGroggyTag();
     }
 
-    /// <summary>촛불 끄기 패턴을 시작합니다.</summary>
+    /// <summary>소등 대상이 없는 패턴은 일반 선택과 실행 직전 평가에서 제외한다.</summary>
+    protected override BossPatternEvalResult AdjustPatternEval(BossPatternEntry patternEntry, BossPatternEvalResult result)
+    {
+        if (result.CanUse && IsExtinguishPattern(patternEntry) && GetNearestCandle() == null)
+            return BossPatternEvalResult.HardFail("끌 수 있는 촛불이 없습니다.");
+
+        return result;
+    }
+
+    /// <summary>강제 후속 연계도 소등 대상 유무 같은 실제 실행 조건은 우회하지 않는다.</summary>
+    protected override BossPatternEvalResult EvaluateForcedFollowUpPattern(BossPatternEntry patternEntry)
+    {
+        return AdjustPatternEval(patternEntry, base.EvaluateForcedFollowUpPattern(patternEntry));
+    }
+
+    /// <summary>소환 해골은 전투 종료 시 정리하며, 일반 패턴 취소·그로기·페이즈 전환에서는 유지한다.</summary>
+    private bool ShouldClearRetreatSummonsOnPatternEnd(bool forced)
+    {
+        return IsDead || (forced && (HasDeadTag() || !IsCombatActive));
+    }
+
+    /// <summary>촛불 끄기 패턴을 공통 실행 진입점으로 시작합니다.</summary>
     public bool StartExtinguish(AbilityLogic_WitchExtinguishCandle logic, float warningTime)
     {
-        if (!TryBuildExtinguishPatternContext(logic, warningTime, out WitchExtinguishPatternExecutor.PatternContext context, out _))
-            return false;
-
-        return extinguishPatternExecutor != null &&
-               extinguishPatternExecutor.TryBeginPattern(context, out _);
+        return TryBeginExtinguishPattern(logic, warningTime, out _);
     }
 
     /// <summary>
@@ -276,6 +293,11 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// </summary>
     public bool TryBeginExtinguishPattern(AbilityLogic_WitchExtinguishCandle logic, float warningTimeSeconds, out float resolvedDurationSeconds)
     {
+        resolvedDurationSeconds = Mathf.Max(0f, warningTimeSeconds);
+        // 선택 이후 마지막 촛불이 봉인/제거될 수 있으므로 연출을 시작하기 전에 재검사한다.
+        if (GetNearestCandle() == null)
+            return false;
+
         if (!TryBuildExtinguishPatternContext(logic, warningTimeSeconds, out WitchExtinguishPatternExecutor.PatternContext context, out resolvedDurationSeconds))
             return false;
 
@@ -390,7 +412,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
 
     /// <summary>
     /// 책임 :
-    /// - 피난 패턴이 소환한 강화 해골을 등록해 보스 사망/강제 종료 때 Die 경로로 정리할 수 있게 한다.
+    /// - 피난 패턴이 소환한 강화 해골을 등록해 보스 사망/전투 종료 때 Die 경로로 정리할 수 있게 한다.
     /// - 이미 사라진 참조를 정리하면서 중복 등록을 막아 목록을 안정적으로 유지한다.
     /// </summary>
     public void RegisterRetreatSummon(DeadsSkeleton skeleton)
@@ -424,7 +446,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
 
     /// <summary>
     /// 책임 :
-    /// - 보스 사망/강제 종료 시 피난 패턴이 남긴 강화 해골들에게 Die 경로를 요청한다.
+    /// - 보스 사망/전투 종료 시 피난 패턴이 남긴 강화 해골들에게 Die 경로를 요청한다.
     /// - 해골이 가진 드롭, 사망 연출, 내부 패턴 정리가 Destroy 대신 공통 사망 흐름을 타게 만든다.
     /// </summary>
     public void ClearActiveRetreatSummons()

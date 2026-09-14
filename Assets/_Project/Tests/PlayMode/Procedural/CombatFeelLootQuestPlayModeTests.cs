@@ -8,6 +8,7 @@ using UnityEngine.TestTools;
 using UnityGAS;
 using Object = UnityEngine.Object;
 
+/// <summary>Verifies combat feedback, loot/quest rules and authored presentation isolation while cleaning up test-owned objects.</summary>
 public sealed class CombatFeelLootQuestPlayModeTests
 {
     private readonly List<Object> owned = new();
@@ -899,9 +900,10 @@ public sealed class CombatFeelLootQuestPlayModeTests
     }
 
 #if UNITY_EDITOR
-    [Test] public void AuthoredVisionMasks_StayOnOverlayLayer_AndDroppedSpearHasLocalScope()
+    [Test] public void AuthoredVisionMasks_SeparateOverlayAndEntity_AndDroppedSpearHasLocalScope()
     {
         int overlayLayer = SortingLayer.NameToID("MaskRender");
+        int entityLayer = SortingLayer.NameToID("Entity");
         foreach (string path in new[] {
             "Assets/_Project/Prefabs/Map/Gimmicks/Witch/PlayerVisionMask.prefab",
             "Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab" })
@@ -911,13 +913,72 @@ public sealed class CombatFeelLootQuestPlayModeTests
             foreach (var mask in prefab.GetComponentsInChildren<SpriteMask>(true))
             {
                 Assert.IsTrue(mask.isCustomRangeActive, path);
-                Assert.AreEqual(overlayLayer, mask.frontSortingLayerID, path);
-                Assert.AreEqual(overlayLayer, mask.backSortingLayerID, path);
+                int expectedLayer = mask.name == "EntitySightMask" ? entityLayer : overlayLayer;
+                Assert.AreEqual(expectedLayer, mask.frontSortingLayerID, path);
+                Assert.AreEqual(expectedLayer, mask.backSortingLayerID, path);
+                if (mask.name == "EntitySightMask") continue;
+                var entityMask = mask.transform.Find("EntitySightMask")?.GetComponent<SpriteMask>();
+                Assert.IsNotNull(entityMask, path + ": overlay masking alone cannot reveal Entity sprites.");
+                Assert.AreSame(mask.sprite, entityMask.sprite);
+                Assert.AreEqual(mask.alphaCutoff, entityMask.alphaCutoff);
+                Assert.AreEqual(Vector3.zero, entityMask.transform.localPosition);
+                Assert.AreEqual(Vector3.one, entityMask.transform.localScale);
+                Assert.AreEqual(Quaternion.identity, entityMask.transform.localRotation);
             }
         }
         var spear = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
             "Assets/_Project/Prefabs/Items/Visuals/PF_LightningSpear_ItemDisplayVisual.prefab");
         Assert.IsNotNull(spear.GetComponent<UnityEngine.Rendering.SortingGroup>());
+    }
+
+    [TestCase("Assets/_Project/Prefabs/Map/Gimmicks/Witch/PlayerVisionMask.prefab")]
+    [TestCase("Assets/_Project/Prefabs/Monsters/ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab")]
+    public void VisionMask_RevealsShadowBodyAndShadow_WithoutAffectingProjectileTrails(string path)
+    {
+        var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path);
+        var monster = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+            "Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowMonster.prefab");
+        var trail = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+            "Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearDashStabTrail.prefab");
+        var overlay = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+            "Assets/_Project/Prefabs/Map/Gimmicks/Witch/GlobalVisionMaskRoot.prefab");
+        foreach (var source in prefab.GetComponentsInChildren<SpriteMask>(true))
+        {
+            if (source.name == "EntitySightMask") continue;
+            var instance = Own(Object.Instantiate(source.gameObject));
+            instance.SetActive(true);
+            instance.transform.SetPositionAndRotation(new Vector3(100f, 120f, 0f), Quaternion.Euler(0f, 0f, 25f));
+            instance.transform.localScale = new Vector3(7f, 4f, 1f);
+            var masks = instance.GetComponentsInChildren<SpriteMask>(true);
+            foreach (var renderer in monster.GetComponentsInChildren<SpriteRenderer>(true))
+            {
+                Assert.AreEqual(SpriteMaskInteraction.VisibleInsideMask, renderer.maskInteraction);
+                Assert.IsTrue(Array.Exists(masks, m => VisionMaskCoversRenderer(m, renderer)), renderer.name);
+            }
+            Assert.IsTrue(Array.Exists(masks, m => VisionMaskCoversRenderer(m,
+                overlay.GetComponentInChildren<SpriteRenderer>(true))));
+            foreach (var renderer in trail.GetComponentsInChildren<SpriteRenderer>(true))
+                Assert.IsFalse(Array.Exists(masks, m => VisionMaskCoversRenderer(m, renderer)), renderer.name);
+
+            var parentMask = instance.GetComponent<SpriteMask>();
+            var entityMask = instance.transform.Find("EntitySightMask").GetComponent<SpriteMask>();
+            Assert.That(Vector3.Distance(parentMask.bounds.center, entityMask.bounds.center), Is.LessThan(0.0001f));
+            Assert.That(Vector3.Distance(parentMask.bounds.size, entityMask.bounds.size), Is.LessThan(0.0001f));
+            instance.SetActive(false);
+            foreach (var mask in masks) Assert.IsFalse(mask.enabled && mask.gameObject.activeInHierarchy);
+            instance.SetActive(true);
+            foreach (var mask in masks) Assert.IsTrue(mask.enabled && mask.gameObject.activeInHierarchy);
+        }
+    }
+
+    private static bool VisionMaskCoversRenderer(SpriteMask mask, SpriteRenderer renderer)
+    {
+        int layer = SortingLayer.GetLayerValueFromID(renderer.sortingLayerID);
+        int front = SortingLayer.GetLayerValueFromID(mask.frontSortingLayerID);
+        int back = SortingLayer.GetLayerValueFromID(mask.backSortingLayerID);
+        return !mask.isCustomRangeActive ||
+            ((layer < front || (layer == front && renderer.sortingOrder <= mask.frontSortingOrder)) &&
+             (layer > back || (layer == back && renderer.sortingOrder > mask.backSortingOrder)));
     }
 #endif
 
