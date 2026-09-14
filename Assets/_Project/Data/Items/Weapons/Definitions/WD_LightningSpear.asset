@@ -19,7 +19,7 @@ MonoBehaviour:
   statModifiers:
   - attribute: {fileID: 11400000, guid: 418ca09dfa4c417ca3cadc4fd73bd414, type: 2}
     type: 0
-    value: 100
+    value: 5
     labelOverride: "\uC804\uAE30 \uC18D\uC131"
   attackInputHint: Mouse1
   skill1InputHint: Q

@@ -3,19 +3,25 @@ using UnityGAS;
 using System.Collections.Generic;
 
 /// <summary>
-/// 책임 : 적 처치 이벤트를 감지해 일정 시간 이동속도 버프를 부여하는 유물 로직이다.
+/// 책임 : 적 처치 이벤트를 감지해 일정 시간 공격력과 이동속도 버프를 부여하는 유물 로직이다.
 /// 일반 장착에서는 proc를 등록하고, 복원 장착에서는 앞으로의 이벤트를 받을 runtime hook만 다시 연결한다.
 /// </summary>
 [CreateAssetMenu(menuName = "Game/Relic Logic/Move Speed On Kill (Managed)")]
 public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
 {
-    protected override string DefaultEffectTemplate => "● 적 처치 시 {duration} 동안 [[이동속도]] {move_speed_bonus}";
+    protected override string DefaultEffectTemplate => "● 적 처치 시 {duration} 동안 [[공격력]] {attack_bonus}\n● [[이동속도]] {move_speed_bonus}";
 
     [Header("Trigger")]
     [Tooltip("킬 확정 이벤트 태그. 보통 AbilitySystem.killConfirmedTag에 설정한 태그(Event.KillConfirmed).")]
     public GameplayTag triggerTag;
 
     [Header("Buff")]
+    [Tooltip("공격력(%)을 담당하는 AttributeDefinition.")]
+    public AttributeDefinition attackAttribute;
+
+    [Tooltip("공격력 증가량(Percent modifier). 0.10 = +10%")]
+    public float attackPercentBonus = 0.10f;
+
     [Tooltip("이동속도(%)를 담당하는 AttributeDefinition. (예: MoveSpeedMultiplier 혹은 MoveSpeed)")]
     public AttributeDefinition moveSpeedAttribute;
 
@@ -54,31 +60,44 @@ public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
     private void RegisterProc(RelicContext ctx)
     {
         if (ctx.owner == null || ctx.token == null) return;
-        if (moveSpeedAttribute == null) return;
+        if (attackAttribute == null && moveSpeedAttribute == null) return;
 
         var mgr = ctx.owner.GetComponent<RelicProcManager>();
         if (mgr == null) mgr = ctx.owner.AddComponent<RelicProcManager>();
 
-        var proc = new MoveSpeedOnKillProc(
-            ctx,
-            triggerTag,
-            moveSpeedAttribute,
-            percentBonus,
-            durationSeconds,
-            refreshDuration,
-            statusDefinition
-        );
+        if (attackAttribute != null)
+        {
+            mgr.Register(new MoveSpeedOnKillProc(
+                ctx,
+                triggerTag,
+                attackAttribute,
+                attackPercentBonus,
+                durationSeconds,
+                refreshDuration,
+                null));
+        }
 
-        mgr.Register(proc);
+        if (moveSpeedAttribute != null)
+        {
+            mgr.Register(new MoveSpeedOnKillProc(
+                ctx,
+                triggerTag,
+                moveSpeedAttribute,
+                percentBonus,
+                durationSeconds,
+                refreshDuration,
+                statusDefinition));
+        }
     }
 
     public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
     {
         return BuildTemplatedTooltip(
-            "● 적 처치 시 {duration} 동안 [[이동속도]] {move_speed_bonus}",
+            DefaultEffectTemplate,
             new Dictionary<string, string>
             {
                 ["duration"] = RelicTooltipFormatter.FormatSeconds(durationSeconds),
+                ["attack_bonus"] = RelicTooltipFormatter.FormatSignedValueToken(attackPercentBonus, true),
                 ["move_speed_bonus"] = RelicTooltipFormatter.FormatSignedValueToken(percentBonus, true),
             });
     }

@@ -15,5 +15,5 @@ MonoBehaviour:
   moveSpeedFinalStatId: 143
   moveSpeedMultiplierAttributeFallback: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
   evasionAddAttribute: {fileID: 11400000, guid: 7c73dc1304784f1fa6485f08922031cc, type: 2}
-  bonusMoveStep: 0.4
+  bonusMoveStep: 0.2
   evasionPerStep: 0.03

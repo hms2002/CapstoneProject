@@ -16,8 +16,7 @@ MonoBehaviour:
   displayName: "\uC1A1\uACE8\uB9E4\uC758 \uC99D\uD45C"
   icon: {fileID: 21300000, guid: 8962ffe16144980439939f691764cb69, type: 3}
   rarity: 1
-  description: "[\uCD94\uAC00 \uC774\uB3D9\uC18D\uB3C4] 40% \uB9C8\uB2E4 [\uACF5\uACA9
-    \uD68C\uD53C \uD655\uB960] 3% \uC99D\uAC00"
+  description: "추가 이동속도 20%마다 공격 회피 확률이 3% 증가합니다."
   maxLevel: 1
   dropLevel: 1
   logic: {fileID: 11400000, guid: 53c44760e96f40b4859c04a3cab84d83, type: 2}

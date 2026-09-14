@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Relic Logic_Common_CurrentShard
   m_EditorClassIdentifier:
   entries:
-  - attribute: {fileID: 11400000, guid: 3f69b3af0c3b4c89ab6df3ad1b969919, type: 2}
+  - attribute: {fileID: 11400000, guid: f79c86d599c44c8e95bdf6949914f4e3, type: 2}
     displayNameOverride: "전기 속성"
-    type: 1
-    value: 0.03
+    type: 0
+    value: 2
     valueByLevel:
-    - 0.03
-    - 0.06
-    - 0.1
+    - 2
+    - 4
+    - 6
     duration: 0

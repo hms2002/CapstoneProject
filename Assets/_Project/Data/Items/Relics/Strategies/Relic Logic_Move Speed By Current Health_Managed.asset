@@ -9,21 +9,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f5a3df3c0c24e9791c4f3ab18f48a01, type: 3}
-  m_Name: Relic Logic_Move Speed By Current Health_Managed
-  m_EditorClassIdentifier: 
-  healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  moveSpeedAttribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
-  rules:
-  - minHealthInclusive: 3
-    maxHealthInclusive: 999999
-    percentBonus: -0.1
-    percentBonusByLevel: []
-  - minHealthInclusive: 2
-    maxHealthInclusive: 2
-    percentBonus: 0.15
-    percentBonusByLevel: []
-  - minHealthInclusive: 1
-    maxHealthInclusive: 1
-    percentBonus: 0.35
-    percentBonusByLevel: []
+  m_Script: {fileID: 11500000, guid: 013657e56ada445a9df99cb03d7409a2, type: 3}
+  m_Name: Relic Logic_Drunken Spirit
+  m_EditorClassIdentifier:
+  effectTemplate: "{trigger}: {duration} 동안 [[{stat}]] {value}"
+  triggerTag: {fileID: 11400000, guid: 504085a73b191cb41be6b18bbc36a522, type: 2}
+  actorFilter: 2
+  triggerLabel: "피해를 받으면"
+  passiveEntries: []
+  attribute: {fileID: 11400000, guid: 508e8a7b9bd177a4db23556497bbf018, type: 2}
+  displayNameOverride: "최종 피해"
+  modifierType: 1
+  value: 0.04
+  valueByLevel:
+  - 0.04
+  - 0.08
+  - 0.12
+  durationSeconds: 6
+  refreshDuration: 1
+  statusDefinition: {fileID: 0}

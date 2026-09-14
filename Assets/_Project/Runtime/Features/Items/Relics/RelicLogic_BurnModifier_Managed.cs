@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityGAS;
 
 [CreateAssetMenu(menuName = "Game/Relic Logic/Burn Modifier (Managed)")]
 public sealed class RelicLogic_BurnModifier_Managed : RelicLogic
@@ -16,6 +17,12 @@ public sealed class RelicLogic_BurnModifier_Managed : RelicLogic
     [SerializeField] private List<float> stackDamageRatiosPerStep = new();
     [SerializeField] private float stackDamageRatioMax;
 
+    [Header("Burn Starter")]
+    [SerializeField] private GameplayTag starterHitTag;
+    [SerializeField] private GameplayEffect starterDamageEffect;
+    [SerializeField] private List<int> starterStacksByLevel = new();
+    [SerializeField, Min(0f)] private float minimumFireForBurn;
+
     public override void OnEquipped(RelicContext ctx) => Apply(ctx);
 
     public override void OnUnequipped(RelicContext ctx)
@@ -25,6 +32,9 @@ public sealed class RelicLogic_BurnModifier_Managed : RelicLogic
 
         BurnSourceRuntime runtime = ctx.abilitySystem.GetComponent<BurnSourceRuntime>();
         runtime?.RemoveModifier(ctx.token);
+
+        if (ctx.owner != null && ctx.token != null)
+            ctx.owner.GetComponent<RelicProcManager>()?.UnregisterAll(ctx.token);
     }
 
     public override void OnRestoreAttached(RelicContext ctx) => Apply(ctx);
@@ -46,7 +56,17 @@ public sealed class RelicLogic_BurnModifier_Managed : RelicLogic
             allowCritical: allowCritical,
             stackDamageThreshold: Evaluate(stackDamageThresholds, level, 0),
             stackDamageRatioPerStep: Evaluate(stackDamageRatiosPerStep, level, 0f),
-            stackDamageRatioMax: Mathf.Max(0f, stackDamageRatioMax)));
+            stackDamageRatioMax: Mathf.Max(0f, stackDamageRatioMax),
+            minimumFireForBurn: Mathf.Max(0f, minimumFireForBurn)));
+
+        int starterStacks = Evaluate(starterStacksByLevel, level, 0);
+        if (starterStacks > 0 && starterHitTag != null && starterDamageEffect != null && ctx.owner != null)
+        {
+            RelicProcManager manager = ctx.owner.GetComponent<RelicProcManager>();
+            if (manager == null)
+                manager = ctx.owner.AddComponent<RelicProcManager>();
+            manager.Register(new BurnStarterProc(ctx, starterHitTag, starterDamageEffect, starterStacks));
+        }
     }
 
     public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
@@ -78,6 +98,10 @@ public sealed class RelicLogic_BurnModifier_Managed : RelicLogic
         if (threshold > 0 && ratioPerStep > 0f)
             lines.Add($"● 적의 [[화상]] {threshold}마다 [[화상 피해]] +{ratioPerStep * 100f:0}% (최대 {stackDamageRatioMax * 100f:0}%)");
 
+        int starterStacks = Evaluate(starterStacksByLevel, level, 0);
+        if (starterStacks > 0)
+            lines.Add($"● 대상에게 [[화상]]이 없으면 [[화상]] {starterStacks} 부여");
+
         return new RelicTooltipData { effectText = string.Join("\n", lines) };
     }
 
@@ -93,5 +117,50 @@ public sealed class RelicLogic_BurnModifier_Managed : RelicLogic
         if (values == null || values.Count == 0)
             return fallback;
         return values[Mathf.Clamp(level - 1, 0, values.Count - 1)];
+    }
+
+    private sealed class BurnStarterProc : IRelicProc
+    {
+        public Object Token => ctx.token;
+
+        private readonly RelicContext ctx;
+        private readonly GameplayTag triggerTag;
+        private readonly GameplayEffect damageEffect;
+        private readonly int stacks;
+        private readonly HashSet<GameObject> pendingTargets = new();
+
+        public BurnStarterProc(RelicContext ctx, GameplayTag triggerTag, GameplayEffect damageEffect, int stacks)
+        {
+            this.ctx = ctx;
+            this.triggerTag = triggerTag;
+            this.damageEffect = damageEffect;
+            this.stacks = Mathf.Max(1, stacks);
+        }
+
+        public void Handle(GameplayTag tag, AbilityEventData data)
+        {
+            if (tag != triggerTag || data.Target == null)
+                return;
+            pendingTargets.Add(data.Target);
+        }
+
+        public void Tick(float deltaTime)
+        {
+            if (pendingTargets.Count == 0)
+                return;
+
+            foreach (GameObject target in pendingTargets)
+            {
+                if (target == null)
+                    continue;
+                BurnStatus2D current = target.GetComponent<BurnStatus2D>();
+                if (current != null && current.CurrentStacks > 0)
+                    continue;
+                BurnStatus2D.Apply(target, ctx.abilitySystem, damageEffect, ctx.owner, stacks);
+            }
+            pendingTargets.Clear();
+        }
+
+        public void Dispose() => pendingTargets.Clear();
     }
 }

@@ -2,10 +2,20 @@
 status: active
 authority: project-log
 category: error-log
-last_reviewed: 2026-09-03
+last_reviewed: 2026-09-14
 ---
 
 # Error Log
+
+## 2026-09-14 - Boss HP Tests Validated Orphan Profiles Instead Of Runtime Wiring
+
+Symptom: the balance fixture reported Slime Queen HP as 500/300/300 and the Shadow Witch as 1000, but the playable Slime Queen bodies each initialized at 100 while the Shadow boss scene replaced its prefab profile with the Demon King's 2800 profile.
+
+Cause: the test loaded standalone `AttributeInitProfileSO` assets and asserted their numbers without proving that the production prefabs or scene instances referenced those profiles. All three Slime Queen prefabs referenced only the shared groggy override, and the Shadow scene authored a prefab-instance override to the shared Demon King health profile.
+
+Fix: bind the dedicated 550/330/330 health profiles to the three Slime Queen prefabs, remove the Shadow scene's Demon King profile override so its dedicated 1000 profile wins, and extend regression coverage to inspect production prefab references plus the Shadow scene override GUID.
+
+Prevention: a content-value test is insufficient for serialized gameplay data. Whenever a profile or ScriptableObject is expected to drive a production prefab or scene, test both the value and the final serialized reference path; scene prefab-instance overrides must also be checked because they can supersede a correct prefab.
 
 ## 2026-09-12 - Pending Action Cues Competed With Death And Disabling Clipping Changed Warning Style
 

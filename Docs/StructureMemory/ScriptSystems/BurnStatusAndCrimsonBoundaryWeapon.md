@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-08-20
+last_reviewed: 2026-09-14
 ---
 
 # Burn Status And Crimson Boundary Weapon
@@ -19,7 +19,7 @@ Map the first independent integer-stack elemental status and the Lean weapon use
 
 `BurnSourceRuntime` is source-owned and lazily attached when Burn is first applied. Its default rules are one-second ticks and 50% Fire Damage. Fire relics write token-keyed modifiers for tick interval, damage ratio, application amount, first application, critical permission, and target-stack-based damage scaling. Relic removal removes only its own token.
 
-Immediately before a Burn tick reaches `CombatDamageAction`, `BurnStatus2D` applies the source runtime's target-stack multiplier. This keeps `홍련의 왕` separate from the base Burn coefficient and makes its cap apply to its own contribution.
+Immediately before a Burn tick reaches `CombatDamageAction`, `BurnStatus2D` applies the source runtime's target-stack multiplier. This keeps `홍련의 왕관` separate from the base Burn coefficient and makes its cap apply to its own contribution. A source-level minimum Fire value may also provide a Burn-only floor without increasing the weapon's direct Fire damage.
 
 ## Key Files
 
@@ -58,11 +58,11 @@ Immediately before a Burn tick reaches `CombatDamageAction`, `BurnStatus2D` appl
 | 매캐한 향로 | Burn coefficient +10/+20/+30/+40/+50 percentage points | 5 |
 | 휴대용 화로 | First application to a non-burning target +1/+2/+3/+4/+5 stacks | 5 |
 | 태양의 파편 | Every 2 seconds, generate up to 1/2/3 orbiting squares; contact deals 100% Fire Damage and applies 4/6/8 Burn | 3 |
-| 작열하는 송 | Burn ticks may use normal critical chance and multiplier | 1 |
+| 작열하는 송곳 | After hit resolution, apply 2/3/4/5/6 Burn only if the target is still not burning; its Burn ticks use at least 2 Fire | 5 |
 | 불타는 깃털 | Every Burn application +1/+2/+3 stacks | 3 |
-| 홍련의 왕 | Every 20/15/10 target stacks grants +5/+4/+5% Burn damage, capped at +30% | 3 |
+| 홍련의 왕관 | Every 20/15/10 target stacks grants +5/+4/+5% Burn damage, capped at +30% | 3 |
 
-The Notion table labels `홍련의 왕` as maximum level 5 but defines only three level rows. The Lean implementation intentionally uses three levels until design supplies levels 4–5.
+The source table labels `홍련의 왕관` as maximum level 5 but defines only three level rows. The Lean implementation intentionally uses three levels until design supplies levels 4–5.
 
 ## Ability Semantics
 

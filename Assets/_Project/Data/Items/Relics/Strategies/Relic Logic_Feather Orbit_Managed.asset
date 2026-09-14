@@ -15,7 +15,13 @@ MonoBehaviour:
   featherPrefab: {fileID: 4527847940610973352, guid: f36c0e7c42383ef478d9227fe3cf8030, type: 3}
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   attackStatId: 13
-  damageCoef: 1
+  damageCoef: 0.35
+  damageCoefByLevel:
+  - 0.35
+  - 0.45
+  - 0.55
+  - 0.65
+  - 0.75
   knockbackImpulse: 0
   hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
   featherCount: 1

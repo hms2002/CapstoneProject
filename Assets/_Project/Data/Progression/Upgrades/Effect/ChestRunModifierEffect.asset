@@ -19,5 +19,5 @@ MonoBehaviour:
   chestWeaponMaxBonus: 0
   chestRelicMinBonus: 0
   chestRelicMaxBonus: 0
-  chestRefreshCount: 5
+  chestRefreshCount: 1
   relicLevelBonusChance: 0

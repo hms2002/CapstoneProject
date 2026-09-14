@@ -16,7 +16,16 @@ MonoBehaviour:
   damageRatioAdds: []
   applicationAdds: []
   firstApplicationAdds: []
-  allowCritical: 1
+  allowCritical: 0
   stackDamageThresholds: []
   stackDamageRatiosPerStep: []
   stackDamageRatioMax: 0
+  starterHitTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
+  starterDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  starterStacksByLevel:
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  minimumFireForBurn: 2

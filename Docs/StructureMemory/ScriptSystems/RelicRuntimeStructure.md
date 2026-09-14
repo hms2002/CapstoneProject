@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-26
+last_reviewed: 2026-09-14
 ---
 
 # Relic Runtime Structure
@@ -19,7 +19,20 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - Common always-on stat relics use `RelicLogic_StatModifiers`.
 - Critical-hit movement stacking uses the existing `RelicLogic_MoveSpeedStackOnCriticalHit_Managed`.
 - Event-timed stat buffs use `RelicLogic_TimedStatOnGameplayEvent_Managed`.
+- `RelicLogic_MoveSpeedOnKill_Managed` registers separate token-owned temporary
+  modifiers for its attack and movement attributes. `회전하는 철구` uses both
+  at +10% for four seconds, while the movement proc alone owns its status HUD.
 - Health-threshold stat buffs use `RelicLogic_StatWhileHealthRatio_Managed`.
+- Timed event buffs can use `valueByLevel`; an empty list preserves the scalar
+  `value` fallback for existing assets.
+- Burn modifier assets may optionally register a deferred non-burning-target
+  starter through `RelicProcManager`. `BurnSourceRuntime` owns the token-scoped
+  minimum Fire value used only by burn ticks, so it does not increase native
+  weapon Fire damage.
+- `RelicLogic_FeatherOrbit_Managed.damageCoefByLevel` and
+  `RelicLogic_CritFromBonusMoveSpeed_Managed.critPerStepByLevel` provide explicit
+  level curves; when the lists are empty, their original scalar fields remain the
+  compatibility fallback.
 
 ## Key Files
 
@@ -38,6 +51,9 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - Equip and restore paths call the relic logic with a `RelicContext`; modifier sources should be scoped to `ctx.token` unless a temporary buff needs an independent runtime token.
 - Unequip must remove all permanent modifiers sourced by `ctx.token` and unregister any proc objects registered through `RelicProcManager`.
 - Event-driven relics should use `RelicProcManager` instead of adding new long-lived managers or scene objects.
+- Burn starters queue hit targets and evaluate them on the manager tick. This lets
+  a weapon's native post-hit burn application win first; a target that is already
+  burning must not receive starter stacks.
 - UI and tooltip views should project `RelicLogic.BuildTooltip(...)`; gameplay state stays in the logic/proc layer.
 
 ## Extension Points
@@ -54,6 +70,9 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - Boss-specific relics need a reliable boss identity and damage calculation path before they can be implemented safely.
 - New `.cs` files may not be included in the generated `.csproj` until Unity refreshes project files; in that case command-line MSBuild does not cover them.
 - New ScriptableObject logic and YAML assets require Unity import/compile validation before final gameplay confidence.
+- A relic definition with `maxLevel > 1` must either consume `ctx.level` in runtime
+  logic or provide an explicit level table; otherwise upgrades can silently have no
+  gameplay effect even when the inventory level increases.
 - Manually generated Unity YAML should serialize empty lists inline as `field: []`; a split `field:` then `[]` line can make later fields deserialize as defaults.
 
 ## Promotion Candidate

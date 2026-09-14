@@ -28,6 +28,6 @@ MonoBehaviour:
     value: -0.03
     valueByLevel:
     - -0.03
-    - -0.06
-    - -0.1
+    - -0.02
+    - -0.01
     duration: 0

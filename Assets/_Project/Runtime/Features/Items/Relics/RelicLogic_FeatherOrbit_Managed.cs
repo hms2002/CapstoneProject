@@ -19,6 +19,8 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
     public GE_Knockback_Spec knockbackEffect;
     public StatId attackStatId = StatId.AttackFinal;
     public float damageCoef = 1.0f;
+    [Tooltip("레벨별 피해 계수(레벨1=0번째). 비어있으면 damageCoef를 사용합니다.")]
+    public List<float> damageCoefByLevel = new();
     public float knockbackImpulse = 0f;
     public GameplayTag hitConfirmedTag;
 
@@ -75,7 +77,7 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
             damageEffect = damageEffect,
             knockbackEffect = knockbackEffect,
             attackStatId = attackStatId,
-            damageCoef = damageCoef,
+            damageCoef = EvaluateDamageCoef(ctx.level),
             knockbackImpulse = knockbackImpulse,
             hitConfirmedTag = hitConfirmedTag,
 
@@ -99,9 +101,17 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
             new Dictionary<string, string>
             {
                 ["feather_count"] = RelicTooltipFormatter.FormatUnsignedValueToken(featherCount, false),
-                ["damage_coef"] = RelicTooltipFormatter.FormatUnsignedValueToken(damageCoef, false),
+                ["damage_coef"] = RelicTooltipFormatter.FormatUnsignedValueToken(EvaluateDamageCoef(previewLevel), true),
                 ["radius"] = RelicTooltipFormatter.FormatUnsignedValueToken(radius, false),
                 ["hit_cooldown"] = RelicTooltipFormatter.FormatSeconds(basePerTargetHitCooldown),
             });
+    }
+
+    private float EvaluateDamageCoef(int level)
+    {
+        if (damageCoefByLevel == null || damageCoefByLevel.Count == 0)
+            return Mathf.Max(0f, damageCoef);
+
+        return Mathf.Max(0f, damageCoefByLevel[Mathf.Clamp(level - 1, 0, damageCoefByLevel.Count - 1)]);
     }
 }

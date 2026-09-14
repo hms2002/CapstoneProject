@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEditor;
@@ -6,28 +7,28 @@ using UnityEngine;
 using UnityGAS;
 using Object = UnityEngine.Object;
 
-// Responsibility: verify authored monster HP, 30% skill stat growth, and unchanged normal/fixed damage and speed synergy.
+// Responsibility: verify authored monster HP and approved weapon damage while preserving stat-growth behavior.
 public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
 {
     private const string Prefabs = "Assets/_Project/Prefabs/Monsters/";
     private const string LogicData = "Assets/_Project/Data/Items/Weapons/LogicData/";
     private const string Formulas = "Assets/_Project/Data/Attributes/Formulas/";
 
-    [TestCase("CommonCorridor/GoblinWarrior.prefab", 450f, 1f)]
-    [TestCase("CommonCorridor/GoblinGunner.prefab", 20f, 1f)]
-    [TestCase("CommonCorridor/GoblinTank.prefab", 900f, 0.5f)]
-    [TestCase("CommonCorridor/LizardWarrior.prefab", 500f, 1f)]
-    [TestCase("CommonCorridor/LizardMage.prefab", 350f, 1f)]
-    [TestCase("CommonCorridor/ArcaneMeleeGolem.prefab", 450f, 1f)]
-    [TestCase("CommonCorridor/ArcaneTankGolem.prefab", 900f, 0.5f)]
-    [TestCase("SlimeCorridor/Pawn.prefab", 80f, 1f)]
-    [TestCase("SlimeCorridor/Knight.prefab", 400f, 1f)]
-    [TestCase("SlimeCorridor/Bishop.prefab", 350f, 1f)]
-    [TestCase("SlimeCorridor/Rook.prefab", 1100f, 1f)]
-    [TestCase("SlimeCorridor/Wizard.prefab", 220f, 1f)]
-    [TestCase("ShadowCorridor/ShadowMonster.prefab", 220f, 1f)]
-    [TestCase("ShadowCorridor/ShadowServant/ShadowServant.prefab", 320f, 1f)]
-    [TestCase("ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab", 600f, 1f)]
+    [TestCase("CommonCorridor/GoblinWarrior.prefab", 45f, 1f)]
+    [TestCase("CommonCorridor/GoblinGunner.prefab", 25f, 1f)]
+    [TestCase("CommonCorridor/GoblinTank.prefab", 180f, 0.5f)]
+    [TestCase("CommonCorridor/LizardWarrior.prefab", 45f, 1f)]
+    [TestCase("CommonCorridor/LizardMage.prefab", 30f, 1f)]
+    [TestCase("CommonCorridor/ArcaneMeleeGolem.prefab", 45f, 1f)]
+    [TestCase("CommonCorridor/ArcaneTankGolem.prefab", 180f, 0.5f)]
+    [TestCase("SlimeCorridor/Pawn.prefab", 15f, 1f)]
+    [TestCase("SlimeCorridor/Knight.prefab", 45f, 1f)]
+    [TestCase("SlimeCorridor/Bishop.prefab", 30f, 1f)]
+    [TestCase("SlimeCorridor/Rook.prefab", 90f, 1f)]
+    [TestCase("SlimeCorridor/Wizard.prefab", 30f, 1f)]
+    [TestCase("ShadowCorridor/ShadowMonster.prefab", 45f, 1f)]
+    [TestCase("ShadowCorridor/ShadowServant/ShadowServant.prefab", 45f, 1f)]
+    [TestCase("ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab", 75f, 1f)]
     public void MonsterAwakeAndDifficulty_PreserveAuthoredHp(string relativePath, float baseHp, float roleMultiplier)
     {
         GameObject prefab = Load<GameObject>(Prefabs + relativePath);
@@ -47,7 +48,7 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
 
             for (int stage = 0; stage < 3; stage++)
             {
-                float multiplier = (1f + 0.15f * stage) * roleMultiplier;
+                float multiplier = (1f + 0.55f * stage) * roleMultiplier;
                 receiver.ApplyDifficulty(new DifficultyModifiers { hpMultiplier = multiplier });
                 float expected = baseHp * multiplier;
                 Assert.That(attributes.GetAttributeValue(maxHealth), Is.EqualTo(expected).Within(0.01f));
@@ -79,12 +80,12 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         }
     }
 
-    [TestCase("ALData_ApprenticeHeroSwordDashStab", "damage.damageFormula", 120f)]
-    [TestCase("ALData_LightningSpearSkill1", "markRushHit.damageFormula", 80f)]
-    [TestCase("ALData_LightningSpearSkill1", "noMarkSweepHit.damageFormula", 120f)]
-    [TestCase("ALData_LightningSpearSkill1", "recoveredSpearProjectileHit.damageFormula", 30f)]
-    [TestCase("ALData_LightningSpearSkill2", "landingHit.damageFormula", 100f)]
-    [TestCase("ALData_FragmentBladeRecall", "damageFormula", 50f)]
+    [TestCase("ALData_ApprenticeHeroSwordDashStab", "damage.damageFormula", 45f)]
+    [TestCase("ALData_LightningSpearSkill1", "markRushHit.damageFormula", 40f)]
+    [TestCase("ALData_LightningSpearSkill1", "noMarkSweepHit.damageFormula", 50f)]
+    [TestCase("ALData_LightningSpearSkill1", "recoveredSpearProjectileHit.damageFormula", 15f)]
+    [TestCase("ALData_LightningSpearSkill2", "landingHit.damageFormula", 50f)]
+    [TestCase("ALData_FragmentBladeRecall", "damageFormula", 10f)]
     public void SkillFormulaReferences_ProduceApprovedDamageAndScaleWithAttack(string asset, string property, float expected)
     {
         ScaledStatFormula formula = ReadFormula(asset, property);
@@ -95,11 +96,11 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(formula.Evaluate(null, new AttackStats(30f)), Is.EqualTo(expected * 1.6f).Within(0.001f));
     }
 
-    [TestCase(0f, 180f)]
-    [TestCase(0.25f, 180f)]
-    [TestCase(0.5f, 220f)]
-    [TestCase(1f, 300f)]
-    [TestCase(2f, 300f)]
+    [TestCase(0f, 60f)]
+    [TestCase(0.25f, 60f)]
+    [TestCase(0.5f, 73.333336f)]
+    [TestCase(1f, 100f)]
+    [TestCase(2f, 100f)]
     public void ChargeSpin_UsesAuthoredDamageEndpoints(float seconds, float expected)
     {
         ApprenticeHeroSwordChargeSpinData data = Load<ApprenticeHeroSwordChargeSpinData>(
@@ -141,17 +142,17 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
             ReadFloat("ALData_FragmentBladeAttack", "piercingDamageScale") * 6, Is.EqualTo(90f));
         Assert.That(fragmentPiercing.Evaluate(null, new AttackStats(20f)) *
             ReadFloat("ALData_FragmentBladeAttack", "piercingDamageScale") * 6, Is.EqualTo(117f).Within(0.001f));
-        Assert.That(ReadFormula("ALData_FragmentBladeRecall", "damageFormula").Evaluate(null, stats) * 6, Is.EqualTo(300f));
+        Assert.That(ReadFormula("ALData_FragmentBladeRecall", "damageFormula").Evaluate(null, stats) * 6, Is.EqualTo(60f));
 
         Assert.That(ReadFormula("ALData_FloweringBloom", "dashSlashDamageFormula").Evaluate(null, stats) *
-            ReadFloat("ALData_FloweringBloom", "dashSlashDamageScale"), Is.EqualTo(120f));
+            ReadFloat("ALData_FloweringBloom", "dashSlashDamageScale"), Is.EqualTo(25f));
         Assert.That(ReadFormula("ALData_FloweringBloom", "dashSlashDamageFormula").Evaluate(null, new AttackStats(20f)) *
-            ReadFloat("ALData_FloweringBloom", "dashSlashDamageScale"), Is.EqualTo(156f).Within(0.001f));
+            ReadFloat("ALData_FloweringBloom", "dashSlashDamageScale"), Is.EqualTo(32.5f).Within(0.001f));
         using (var bloom = new SerializedObject(Load<ScriptableObject>(LogicData + "ALData_FloweringBloom.asset")))
             Assert.That(bloom.FindProperty("dashSlashCount").intValue, Is.EqualTo(3));
 
-        Assert.That(ReadFloat("ALData_OddIronShot", "fixedDamage"), Is.EqualTo(700f));
-        Assert.That(ReadFloat("ALData_OddIronThrow", "fixedDamage"), Is.EqualTo(700f));
+        Assert.That(ReadFloat("ALData_OddIronShot", "fixedDamage"), Is.EqualTo(90f));
+        Assert.That(ReadFloat("ALData_OddIronThrow", "fixedDamage"), Is.EqualTo(90f));
         Assert.That(ReadFloat("ALData_CrimsonBoundary", "burnConsumptionMultiplier"), Is.EqualTo(6f));
         Assert.That(ReadFloat("ALData_CrimsonBoundary", "skill2BaseMultiplier"), Is.EqualTo(40f));
     }
@@ -245,10 +246,10 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(system.AttributeSet.TrySetBaseValue(binding.attribute, value, system), Is.True, id.ToString());
     }
 
-    [TestCase(10f, 5.05f, 151.5f)]
-    [TestCase(20f, 5.05f, 196.95f)]
-    [TestCase(10f, 20.2f, 606f)]
-    [TestCase(20f, 20.2f, 787.8f)]
+    [TestCase(10f, 5.05f, 75.75f)]
+    [TestCase(20f, 5.05f, 98.475f)]
+    [TestCase(10f, 20.2f, 303f)]
+    [TestCase(20f, 20.2f, 393.9f)]
     [TestCase(10f, 0f, 0f)]
     public void SpeedStrike_LimitsAttackGrowthButKeepsFullSpeedLink(float attack, float speed, float expected)
     {
@@ -257,6 +258,376 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(formula, Is.Not.Null);
         Assert.That(formula.TryValidate(out string message), Is.True, message);
         Assert.That(formula.Evaluate(null, new AttackStats(attack, speed: speed)), Is.EqualTo(expected).Within(0.001f));
+    }
+
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenAttributeOverrideInitProfile.asset", 1000f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2ShortAttributeOverrideInitProfile.asset", 400f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2LongAttributeOverrideInitProfile.asset", 400f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/WitchAttributeOverrideInitProfile.asset", 1500f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/DragonBossAttributeOverrideInitProfile.asset", 2000f)]
+    [TestCase("Assets/_Project/Data/Attributes/InitProfiles/WitchBossAttributeOverrideInitProfile.asset", 2800f)]
+    public void BossProfiles_UseApprovedHealth(string path, float expected)
+    {
+        AttributeInitProfileSO profile = Load<AttributeInitProfileSO>(path);
+        Assert.That(ReadProfileValue(profile, "3ff045849daafe84d97370c69cd17747"), Is.EqualTo(expected));
+        Assert.That(ReadProfileValue(profile, "0e177e1d15e428745b5859fac08ce203"), Is.EqualTo(expected));
+    }
+
+    [TestCase(
+        "Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueen.prefab",
+        "Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenAttributeOverrideInitProfile.asset")]
+    [TestCase(
+        "Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Short.prefab",
+        "Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2ShortAttributeOverrideInitProfile.asset")]
+    [TestCase(
+        "Assets/_Project/Prefabs/Bosses/SlimeQueen/SlimeQueenP2Long.prefab",
+        "Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/SlimeQueenP2LongAttributeOverrideInitProfile.asset")]
+    [TestCase(
+        "Assets/_Project/Prefabs/Bosses/ShadowBoss/Witch.prefab",
+        "Assets/_Project/Data/Attributes/InitProfiles/Enemies/Bosses/WitchAttributeOverrideInitProfile.asset")]
+    public void BossPrefabs_ReferenceApprovedHealthProfile(string prefabPath, string profilePath)
+    {
+        GameObject prefab = Load<GameObject>(prefabPath);
+        AttributeSet attributes = prefab.GetComponent<AttributeSet>();
+        Assert.That(attributes, Is.Not.Null, prefabPath);
+
+        AttributeInitProfileSO expected = Load<AttributeInitProfileSO>(profilePath);
+        using var serialized = new SerializedObject(attributes);
+        SerializedProperty overrides = serialized.FindProperty("overrideInitProfiles");
+        Assert.That(overrides, Is.Not.Null, prefabPath);
+
+        bool found = false;
+        for (int i = 0; i < overrides.arraySize; i++)
+        {
+            if (overrides.GetArrayElementAtIndex(i).objectReferenceValue == expected)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        Assert.That(found, Is.True, $"{prefabPath} does not reference {profilePath}.");
+
+        AttributeDefinition health = LoadGuid<AttributeDefinition>("3ff045849daafe84d97370c69cd17747");
+        AttributeDefinition maxHealth = LoadGuid<AttributeDefinition>("0e177e1d15e428745b5859fac08ce203");
+        SerializedProperty maxLinks = serialized.FindProperty("maxLinks");
+        Assert.That(maxLinks, Is.Not.Null, prefabPath);
+
+        bool fillsHealthToMax = false;
+        for (int i = 0; i < maxLinks.arraySize; i++)
+        {
+            SerializedProperty link = maxLinks.GetArrayElementAtIndex(i);
+            if (link.FindPropertyRelative("value").objectReferenceValue == health &&
+                link.FindPropertyRelative("max").objectReferenceValue == maxHealth)
+            {
+                fillsHealthToMax = link.FindPropertyRelative("fillToMaxOnInitialize").boolValue;
+                break;
+            }
+        }
+
+        Assert.That(fillsHealthToMax, Is.True,
+            $"{prefabPath} must fill current health after applying its maximum-health profile.");
+    }
+
+    [Test]
+    public void ShadowBossScene_DoesNotOverrideDedicatedHealthWithDemonKingProfile()
+    {
+        const string path = "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity";
+        string sceneYaml = File.ReadAllText(path);
+        Assert.That(sceneYaml, Does.Contain("900e8eeac487b5b41b95ccbd78628ce3"));
+        Assert.That(sceneYaml, Does.Not.Contain("5c6cbc85ca649e6428489e9939c28342"));
+    }
+
+    [Test]
+    public void MonsterStageScaling_UsesApprovedFiftyFivePercentHealthStep()
+    {
+        ScriptableObject settings = Load<ScriptableObject>(
+            "Assets/_Project/Resources/MonsterStageHpScalingSettings.asset");
+        using var serialized = new SerializedObject(settings);
+        Assert.That(serialized.FindProperty("hpMultiplierPerClearedStage").floatValue,
+            Is.EqualTo(0.55f).Within(0.0001f));
+    }
+
+    [TestCase("Assets/_Project/Data/Loot/Tables/Table_Stage1.asset")]
+    [TestCase("Assets/_Project/Data/Loot/Tables/Table_Stage2.asset")]
+    [TestCase("Assets/_Project/Data/Loot/Tables/Table_Stage3.asset")]
+    public void StageLootTables_UseApprovedCandidateCounts(string path)
+    {
+        using var serialized = new SerializedObject(Load<StageLootTable>(path));
+        AssertFixedCountProfile(serialized.FindProperty("chestWeaponCountProfile"), 2);
+        AssertFixedCountProfile(serialized.FindProperty("chestRelicCountProfile"), 4);
+        AssertFixedCountProfile(serialized.FindProperty("bossWeaponCountProfile"), 2);
+        AssertFixedCountProfile(serialized.FindProperty("bossRelicCountProfile"), 4);
+    }
+
+    [Test]
+    public void ChestRefreshUpgrade_UsesApprovedSingleRefresh()
+    {
+        ScriptableObject effect = Load<ScriptableObject>(
+            "Assets/_Project/Data/Progression/Upgrades/Effect/ChestRunModifierEffect.asset");
+        using var serialized = new SerializedObject(effect);
+        Assert.That(serialized.FindProperty("chestRefreshCount").intValue, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void LightningSpearAndCurrentShard_UseApprovedElectricProgression()
+    {
+        WeaponDefinition spear = Load<WeaponDefinition>(
+            "Assets/_Project/Data/Items/Weapons/Definitions/WD_LightningSpear.asset");
+        Assert.That(spear.statModifiers.Count, Is.EqualTo(1));
+        WeaponDefinition.WeaponStatModifier spearElectric = spear.statModifiers[0];
+        Assert.That(spearElectric.attribute,
+            Is.SameAs(LoadGuid<AttributeDefinition>("418ca09dfa4c417ca3cadc4fd73bd414")));
+        Assert.That(spearElectric.type, Is.EqualTo(ModifierType.Flat));
+        Assert.That(spearElectric.value, Is.EqualTo(5f));
+
+        ScriptableObject shard = Load<ScriptableObject>(
+            "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_CurrentShard.asset");
+        using var shardSerialized = new SerializedObject(shard);
+        SerializedProperty entry = shardSerialized.FindProperty("entries").GetArrayElementAtIndex(0);
+        Assert.That(entry.FindPropertyRelative("attribute").objectReferenceValue,
+            Is.SameAs(LoadGuid<AttributeDefinition>("f79c86d599c44c8e95bdf6949914f4e3")));
+        Assert.That(entry.FindPropertyRelative("type").enumValueIndex,
+            Is.EqualTo((int)ModifierType.Flat));
+        SerializedProperty values = entry.FindPropertyRelative("valueByLevel");
+        Assert.That(values.arraySize, Is.EqualTo(3));
+        Assert.That(values.GetArrayElementAtIndex(0).floatValue, Is.EqualTo(2f));
+        Assert.That(values.GetArrayElementAtIndex(1).floatValue, Is.EqualTo(4f));
+        Assert.That(values.GetArrayElementAtIndex(2).floatValue, Is.EqualTo(6f));
+
+        ElementBuildUpFormulaProfile profile = Load<ElementBuildUpFormulaProfile>(
+            "Assets/_Project/Data/Attributes/ElementGauges/ElementBuildUpFormulaProfile.asset");
+        Assert.That(CalculateElementBuildUp(profile, 5f), Is.EqualTo(20f).Within(0.001f));
+        Assert.That(CalculateElementBuildUp(profile, 11f), Is.EqualTo(28.333334f).Within(0.001f));
+    }
+
+    [TestCase("Relic Logic_Common_BlackIncense.asset", 1, 0, -0.03f)]
+    [TestCase("Relic Logic_Common_BlackIncense.asset", 1, 1, -0.02f)]
+    [TestCase("Relic Logic_Common_BlackIncense.asset", 1, 2, -0.01f)]
+    [TestCase("Relic Logic_Common_BerserkerCord.asset", 0, 0, -1f)]
+    [TestCase("Relic Logic_Common_BerserkerCord.asset", 0, 1, -1f)]
+    [TestCase("Relic Logic_Common_BerserkerCord.asset", 0, 2, -1f)]
+    [TestCase("Relic Logic_Common_BrokenClock.asset", 1, 0, -0.03f)]
+    [TestCase("Relic Logic_Common_BrokenClock.asset", 1, 1, -0.02f)]
+    [TestCase("Relic Logic_Common_BrokenClock.asset", 1, 2, -0.01f)]
+    [TestCase("Relic Logic_Common_BluntShield.asset", 0, 0, -0.06f)]
+    [TestCase("Relic Logic_Common_BluntShield.asset", 0, 1, -0.04f)]
+    [TestCase("Relic Logic_Common_BluntShield.asset", 0, 2, -0.02f)]
+    [TestCase("Relic Logic_Common_BrokenCrown.asset", 1, 0, -1f)]
+    [TestCase("Relic Logic_Common_BrokenCrown.asset", 1, 1, -1f)]
+    [TestCase("Relic Logic_Common_BrokenCrown.asset", 1, 2, -1f)]
+    [TestCase("Relic Logic_Common_HeavyBracelet.asset", 0, 0, -0.04f)]
+    [TestCase("Relic Logic_Common_HeavyBracelet.asset", 0, 1, -0.03f)]
+    [TestCase("Relic Logic_Common_HeavyBracelet.asset", 0, 2, -0.02f)]
+    [TestCase("Relic Logic_Common_WarriorOath.asset", 1, 0, -0.03f)]
+    [TestCase("Relic Logic_Common_WarriorOath.asset", 1, 1, -0.02f)]
+    [TestCase("Relic Logic_Common_WarriorOath.asset", 1, 2, -0.01f)]
+    public void TradeoffRelicPenalties_UseApprovedCurve(
+        string assetName,
+        int entryIndex,
+        int levelIndex,
+        float expected)
+    {
+        ScriptableObject logic = Load<ScriptableObject>(
+            "Assets/_Project/Data/Items/Relics/Strategies/" + assetName);
+        using var serialized = new SerializedObject(logic);
+        SerializedProperty entries = serialized.FindProperty("entries");
+        Assert.That(entries, Is.Not.Null);
+        Assert.That(entryIndex, Is.LessThan(entries.arraySize));
+        SerializedProperty values = entries.GetArrayElementAtIndex(entryIndex)
+            .FindPropertyRelative("valueByLevel");
+        Assert.That(values, Is.Not.Null);
+        Assert.That(levelIndex, Is.LessThan(values.arraySize));
+        Assert.That(values.GetArrayElementAtIndex(levelIndex).floatValue,
+            Is.EqualTo(expected).Within(0.0001f));
+    }
+
+    [TestCase("Relic Logic_Attack Flat Bonus.asset", "entries", 0, "valueByLevel", 2, 3f)]
+    [TestCase("Relic Logic_SpeedMedalBonus.asset", "entries", 0, "valueByLevel", 4, 0.12f)]
+    [TestCase("Relic Logic_SpeedMedalBonus.asset", "entries", 1, "valueByLevel", 4, 0.1f)]
+    [TestCase("Relic Logic_Speed Mul Bonus.asset", "entries", 0, "valueByLevel", 2, 0.15f)]
+    [TestCase("Relic Logic_WindTablet.asset", "entries", 1, "valueByLevel", 4, -1f)]
+    [TestCase("Relic Logic_Common_BluntShield.asset", "entries", 1, "valueByLevel", 2, 2f)]
+    [TestCase("Relic Logic_Common_BrokenCrown.asset", "entries", 0, "valueByLevel", 2, 0.13f)]
+    [TestCase("Relic Logic_Common_HeavyBracelet.asset", "entries", 1, "valueByLevel", 2, 0.16f)]
+    [TestCase("Relic Logic_Common_BerserkerCord.asset", "entries", 1, "valueByLevel", 2, 0.16f)]
+    [TestCase("Relic Logic_Common_SurvivorNecklace.asset", "entries", 1, "valueByLevel", 2, 0.07f)]
+    [TestCase("Relic Logic_Common_ThinArmorShard.asset", "entries", 1, "valueByLevel", 2, 0.04f)]
+    public void RelicStatTables_UseApprovedBalance(
+        string assetName,
+        string entriesProperty,
+        int entryIndex,
+        string valuesProperty,
+        int levelIndex,
+        float expected)
+    {
+        ScriptableObject logic = Load<ScriptableObject>(
+            "Assets/_Project/Data/Items/Relics/Strategies/" + assetName);
+        using var serialized = new SerializedObject(logic);
+        SerializedProperty entries = serialized.FindProperty(entriesProperty);
+        Assert.That(entries, Is.Not.Null);
+        SerializedProperty values = entries.GetArrayElementAtIndex(entryIndex)
+            .FindPropertyRelative(valuesProperty);
+        Assert.That(values.GetArrayElementAtIndex(levelIndex).floatValue,
+            Is.EqualTo(expected).Within(0.0001f));
+    }
+
+    [Test]
+    public void ManagedRelics_UseApprovedLevelCurvesAndThresholds()
+    {
+        ScriptableObject feather = Load<ScriptableObject>(
+            "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Feather Orbit_Managed.asset");
+        using (var serialized = new SerializedObject(feather))
+        {
+            SerializedProperty values = serialized.FindProperty("damageCoefByLevel");
+            Assert.That(values.arraySize, Is.EqualTo(5));
+            Assert.That(values.GetArrayElementAtIndex(0).floatValue, Is.EqualTo(0.35f).Within(0.0001f));
+            Assert.That(values.GetArrayElementAtIndex(4).floatValue, Is.EqualTo(0.75f).Within(0.0001f));
+        }
+
+        ScriptableObject tonic = Load<ScriptableObject>(
+            "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Crit From Bonus Move Speed_Managed.asset");
+        using (var serialized = new SerializedObject(tonic))
+        {
+            SerializedProperty values = serialized.FindProperty("critPerStepByLevel");
+            Assert.That(values.arraySize, Is.EqualTo(5));
+            Assert.That(values.GetArrayElementAtIndex(4).floatValue, Is.EqualTo(0.02f).Within(0.0001f));
+        }
+
+        ScriptableObject hawk = Load<ScriptableObject>(
+            "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Evasion From Bonus Move Speed_Managed.asset");
+        using (var serialized = new SerializedObject(hawk))
+        {
+            Assert.That(serialized.FindProperty("bonusMoveStep").floatValue,
+                Is.EqualTo(0.2f).Within(0.0001f));
+        }
+
+        RelicDefinition bandage = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_ToughBandage.asset");
+        Assert.That(bandage.maxLevel, Is.EqualTo(2));
+
+        RelicDefinition strengthCharm = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_AttackBonusRelic.asset");
+        Assert.That(strengthCharm.maxLevel, Is.EqualTo(3));
+        using (var serialized = new SerializedObject(strengthCharm.logic))
+        {
+            SerializedProperty values = serialized.FindProperty("entries")
+                .GetArrayElementAtIndex(0)
+                .FindPropertyRelative("valueByLevel");
+            Assert.That(values.arraySize, Is.EqualTo(3));
+        }
+
+        RelicDefinition bronzeDice = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_BronzeDice.asset");
+        Assert.That(bronzeDice.rarity, Is.EqualTo(ItemRarity.Rare));
+    }
+
+    [Test]
+    public void RelicTooltips_MatchApprovedEffects()
+    {
+        Assert.That(RelicTooltipFormatter.ShouldDisplayAsPercent(
+            null,
+            "넉백 저항",
+            ModifierType.Flat), Is.True);
+
+        RelicDefinition ironBall = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_RotatingIornBall.asset");
+        using (var serialized = new SerializedObject(ironBall.logic))
+        {
+            Assert.That(serialized.FindProperty("attackPercentBonus").floatValue,
+                Is.EqualTo(0.1f).Within(0.0001f));
+            Assert.That(serialized.FindProperty("percentBonus").floatValue,
+                Is.EqualTo(0.1f).Within(0.0001f));
+            Assert.That(serialized.FindProperty("durationSeconds").floatValue,
+                Is.EqualTo(4f).Within(0.0001f));
+        }
+
+        string ironBallTooltip = ironBall.logic.BuildTooltip(
+            ironBall,
+            1,
+            default).effectText;
+        Assert.That(ironBallTooltip, Does.Contain("공격력"));
+        Assert.That(ironBallTooltip, Does.Contain("이동속도"));
+        Assert.That(ironBallTooltip, Does.Contain("+10%"));
+
+        RelicDefinition feather = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset");
+        string featherTooltip = feather.logic.BuildTooltip(
+            feather,
+            1,
+            default).effectText;
+        Assert.That(featherTooltip, Does.Contain("35%"));
+    }
+
+    [Test]
+    public void DrunkenSpirit_UsesThreeLevelFinalDamageCurve()
+    {
+        RelicDefinition definition = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_DrunkenRush.asset");
+        Assert.That(definition.displayName, Is.EqualTo("독한 술기운"));
+        Assert.That(definition.maxLevel, Is.EqualTo(3));
+
+        using var serialized = new SerializedObject(definition.logic);
+        SerializedProperty values = serialized.FindProperty("valueByLevel");
+        Assert.That(values.arraySize, Is.EqualTo(3));
+        Assert.That(values.GetArrayElementAtIndex(0).floatValue, Is.EqualTo(0.04f).Within(0.0001f));
+        Assert.That(values.GetArrayElementAtIndex(2).floatValue, Is.EqualTo(0.12f).Within(0.0001f));
+        Assert.That(serialized.FindProperty("durationSeconds").floatValue, Is.EqualTo(6f));
+        Assert.That(serialized.FindProperty("refreshDuration").boolValue, Is.True);
+    }
+
+    [Test]
+    public void ScorchingAwl_UsesNonBurningTargetStarterCurve()
+    {
+        RelicDefinition definition = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_ScorchingSong.asset");
+        Assert.That(definition.displayName, Is.EqualTo("작열하는 송곳"));
+        Assert.That(definition.maxLevel, Is.EqualTo(5));
+
+        using var serialized = new SerializedObject(definition.logic);
+        SerializedProperty values = serialized.FindProperty("starterStacksByLevel");
+        Assert.That(values.arraySize, Is.EqualTo(5));
+        Assert.That(values.GetArrayElementAtIndex(0).intValue, Is.EqualTo(2));
+        Assert.That(values.GetArrayElementAtIndex(4).intValue, Is.EqualTo(6));
+        Assert.That(serialized.FindProperty("minimumFireForBurn").floatValue, Is.EqualTo(2f));
+        Assert.That(serialized.FindProperty("allowCritical").boolValue, Is.False);
+
+        RelicDefinition crown = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_CrimsonKing.asset");
+        Assert.That(crown.displayName, Is.EqualTo("홍련의 왕관"));
+    }
+
+    private static float ReadProfileValue(AttributeInitProfileSO profile, string attributeGuid)
+    {
+        Object expectedAttribute = LoadGuid<AttributeDefinition>(attributeGuid);
+        using var serialized = new SerializedObject(profile);
+        SerializedProperty entries = serialized.FindProperty("entries");
+        for (int i = 0; i < entries.arraySize; i++)
+        {
+            SerializedProperty entry = entries.GetArrayElementAtIndex(i);
+            if (entry.FindPropertyRelative("attribute").objectReferenceValue == expectedAttribute)
+                return entry.FindPropertyRelative("baseValue").floatValue;
+        }
+
+        Assert.Fail($"{profile.name} does not define attribute {attributeGuid}.");
+        return 0f;
+    }
+
+    private static void AssertFixedCountProfile(SerializedProperty profile, int expected)
+    {
+        Assert.That(profile, Is.Not.Null);
+        Assert.That(profile.FindPropertyRelative("minCount").intValue, Is.EqualTo(expected));
+        Assert.That(profile.FindPropertyRelative("maxCount").intValue, Is.EqualTo(expected));
+        SerializedProperty weights = profile.FindPropertyRelative("weights");
+        Assert.That(weights.arraySize, Is.EqualTo(1));
+        Assert.That(weights.GetArrayElementAtIndex(0).FindPropertyRelative("count").intValue,
+            Is.EqualTo(expected));
+    }
+
+    private static float CalculateElementBuildUp(ElementBuildUpFormulaProfile profile, float stat)
+    {
+        return profile.baseValue +
+               (stat * profile.maxCap) / (stat + Mathf.Max(0.0001f, profile.curveConstant));
     }
 
     private static ScaledStatFormula ReadFormula(string asset, string property)

@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: Relic Logic_Move Speed On Kill_Managed
   m_EditorClassIdentifier: 
   triggerTag: {fileID: 11400000, guid: 165fc11102fdbfb40b1ce7b341ecc8bb, type: 2}
+  attackAttribute: {fileID: 11400000, guid: 2c8e2b555f632824fbc8a39cd7bcfc86, type: 2}
+  attackPercentBonus: 0.1
   moveSpeedAttribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
-  percentBonus: 0.18
+  percentBonus: 0.1
   durationSeconds: 4
   refreshDuration: 1
   statusDefinition: {fileID: 11400000, guid: 5f57fda0cc124357a17c37e5d2c09b1a, type: 2}

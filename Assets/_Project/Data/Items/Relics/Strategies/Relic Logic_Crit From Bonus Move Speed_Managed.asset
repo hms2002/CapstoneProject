@@ -17,3 +17,9 @@ MonoBehaviour:
   critChanceAddAttribute: {fileID: 11400000, guid: d923279fb7e24aa19162adcd29a3c67e, type: 2}
   bonusMoveStep: 0.1
   critPerStep: 0.01
+  critPerStepByLevel:
+  - 0.01
+  - 0.0125
+  - 0.015
+  - 0.0175
+  - 0.02
