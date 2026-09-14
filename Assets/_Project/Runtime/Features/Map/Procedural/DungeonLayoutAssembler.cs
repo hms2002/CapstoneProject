@@ -49,7 +49,8 @@ public sealed class DungeonLayoutAssembler
         int maxPlacementAttemptsPerRoom,
         int minimumCorridorLength,
         float corridorLengthPerRoomCell,
-        int corridorLengthVariation)
+        int corridorLengthVariation,
+        int generationStage = 0)
     {
         int targetRoomCount = Mathf.Max(includeBossRoom ? 2 : 1, requestedRoomCount);
         int resolvedMinimumCorridorLength = Mathf.Max(0, minimumCorridorLength);
@@ -101,10 +102,19 @@ public sealed class DungeonLayoutAssembler
         }
 
         int attempts = Mathf.Max(1, maxPlacementAttemptsPerRoom);
+        List<RoomTemplateSO>[] stagedCandidates = null;
+        if (generationStage > 0 && !TryPlanStageCandidates(expansionCandidates,
+                targetRoomCount - (includeBossRoom ? 2 : 1), Mathf.Clamp(generationStage, 1, 3),
+                seed, out stagedCandidates, out string stageFailure))
+        {
+            result.MarkFailed(stageFailure);
+            return result;
+        }
         for (int roomIndex = 1; roomIndex < targetRoomCount; roomIndex++)
         {
             bool placingBoss = includeBossRoom && roomIndex == targetRoomCount - 1;
             List<RoomTemplateSO> candidates = placingBoss ? bossCandidates : expansionCandidates;
+            if (!placingBoss && stagedCandidates != null) candidates = stagedCandidates[roomIndex - 1];
 
             if (candidates.Count == 0)
             {
@@ -138,6 +148,42 @@ public sealed class DungeonLayoutAssembler
 
         result.MarkComplete();
         return result;
+    }
+
+    private static bool TryPlanStageCandidates(List<RoomTemplateSO> expansion, int slots,
+        int stage, int seed, out List<RoomTemplateSO>[] plan, out string failure)
+    {
+        plan = new List<RoomTemplateSO>[slots]; failure = string.Empty;
+        if (slots < 1) { failure = "Stage composition requires one Large combat slot."; return false; }
+        var large = expansion.FindAll(t => t.LayoutData.roomType == RoomType.Combat &&
+            RoomTemplateCombatMetadataUtility.ResolveSizeTag(t) == RoomCombatSizeTag.Large && DungeonStageComposition.Allows(t, stage));
+        var other = expansion.FindAll(t => t.LayoutData.roomType != RoomType.Combat ||
+            RoomTemplateCombatMetadataUtility.ResolveSizeTag(t) == RoomCombatSizeTag.Normal && DungeonStageComposition.Allows(t, stage));
+        var random = new System.Random(unchecked(seed ^ 718493));
+        int largeSlot = random.Next(slots);
+        plan[largeSlot] = large;
+        var normalSlots = new List<int>();
+        for (int i = 0; i < slots; i++)
+        {
+            if (i == largeSlot) continue;
+            // Freeze role counts before allocating tiers; placement retries cannot reroll the composition.
+            RoomTemplateSO choice = SelectWeightedTemplate(other, random);
+            if (choice == null) { failure = "Stage composition has no usable expansion candidates."; return false; }
+            if (choice.LayoutData.roomType == RoomType.Combat) normalSlots.Add(i);
+            else plan[i] = other.FindAll(t => t.LayoutData.roomType == choice.LayoutData.roomType);
+        }
+        int[] counts = DungeonStageComposition.Allocate(normalSlots.Count, stage, seed);
+        for (int i = normalSlots.Count - 1; i > 0; i--)
+        { int j = random.Next(i + 1); (normalSlots[i], normalSlots[j]) = (normalSlots[j], normalSlots[i]); }
+        int next = 0;
+        for (int tier = 1; tier <= 3; tier++)
+        {
+            var candidates = other.FindAll(t => t.LayoutData.roomType == RoomType.Combat && DungeonStageComposition.Tier(t) == tier);
+            for (int n = 0; n < counts[tier - 1]; n++) plan[normalSlots[next++]] = candidates;
+        }
+        for (int i = 0; i < plan.Length; i++)
+            if (plan[i].Count == 0) { failure = $"Stage {stage} composition has no candidate for slot {i}; quotas were not relaxed."; return false; }
+        return true;
     }
 
     private static bool TryPlaceNextRoom(

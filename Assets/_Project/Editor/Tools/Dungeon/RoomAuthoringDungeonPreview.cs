@@ -34,6 +34,7 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
     public TileBase CorridorFloorTile { get; }
     public TileBase CorridorWallTile { get; }
     public int Seed { get; }
+    public int GenerationStage { get; }
     public int RoomCount { get; }
     public bool IncludeBossRoom { get; }
     public int MaxPlacementAttemptsPerRoom { get; }
@@ -68,7 +69,8 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
         RunMapEventGenerationProfileSO runMapEventProfile,
         int runMapEventPreviewVisitOrder,
         CorridorDecorationProfileSO corridorDecorationProfile,
-        RoomSocketCleanupProfileSO socketCleanupProfile)
+        RoomSocketCleanupProfileSO socketCleanupProfile,
+        int generationStage = 1)
     {
         Library = library;
         LayoutPolicy = layoutPolicy;
@@ -81,6 +83,7 @@ internal readonly struct RoomAuthoringDungeonPreviewRequest
         CorridorFloorTile = corridorFloorTile;
         CorridorWallTile = corridorWallTile;
         Seed = seed;
+        GenerationStage = DungeonStageComposition.AppliesTo(library) ? Mathf.Clamp(generationStage, 1, 3) : 0;
         RoomCount = roomCount;
         IncludeBossRoom = includeBossRoom;
         MaxPlacementAttemptsPerRoom = maxPlacementAttemptsPerRoom;
@@ -382,7 +385,8 @@ internal static class RoomAuthoringDungeonPreview
                     request.MinimumCorridorLength,
                     request.CorridorLengthPerRoomCell,
                     request.CorridorLengthVariation,
-                    previewGuaranteedRooms)
+                    previewGuaranteedRooms,
+                    generationStage: request.GenerationStage)
                 : new DungeonLayoutAssembler().Assemble(
                     previewLibrary,
                     request.Seed,
@@ -391,7 +395,8 @@ internal static class RoomAuthoringDungeonPreview
                     request.MaxPlacementAttemptsPerRoom,
                     request.MinimumCorridorLength,
                     request.CorridorLengthPerRoomCell,
-                    request.CorridorLengthVariation);
+                    request.CorridorLengthVariation,
+                    request.GenerationStage);
 
             if (layout.Rooms.Count == 0)
             {

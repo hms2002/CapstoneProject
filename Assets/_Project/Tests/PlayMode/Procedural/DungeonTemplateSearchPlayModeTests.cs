@@ -18,6 +18,57 @@ public sealed class DungeonTemplateSearchPlayModeTests
     private readonly List<Object> owned = new();
     private readonly List<RoomTemplateSO> templates = new();
     private T Own<T>(T value) where T : Object { owned.Add(value); return value; }
+
+    [TestCase(10, 1, 10, 0, 0)]
+    [TestCase(10, 2, 5, 5, 0)]
+    [TestCase(10, 3, 2, 4, 4)]
+    [TestCase(8, 3, 2, 3, 3)]
+    public void StageComposition_AllocatesCountsRatherThanIndependentRolls(int total, int stage, int a, int b, int c)
+    {
+        CollectionAssert.AreEqual(new[] { a, b, c }, DungeonStageComposition.Allocate(total, stage, 17));
+    }
+
+    [Test]
+    public void StageComposition_RoundingIsStableAndDoesNotAlwaysFavorOneTier()
+    {
+        var winners = new HashSet<int>();
+        for (int seed = 0; seed < 64; seed++)
+        {
+            int[] counts = DungeonStageComposition.Allocate(7, 2, seed);
+            Assert.That(counts.Sum(), Is.EqualTo(7));
+            Assert.That(counts[2], Is.Zero);
+            CollectionAssert.AreEqual(counts, DungeonStageComposition.Allocate(7, 2, seed));
+            winners.Add(counts[0] > counts[1] ? 1 : 2);
+        }
+        Assert.That(winners.Count, Is.EqualTo(2));
+    }
+
+    [TestCase("Dragon", 1)] [TestCase("Dragon", 2)] [TestCase("Dragon", 3)]
+    [TestCase("Shadow", 1)] [TestCase("Shadow", 2)] [TestCase("Shadow", 3)]
+    [TestCase("Slime", 1)] [TestCase("Slime", 2)] [TestCase("Slime", 3)]
+    public void ProductionStageComposition_PreservesExactQuotasAndCurrentLarge(string theme, int stage)
+    {
+        var profile = AssetDatabase.LoadAssetAtPath<DungeonGenerationProfileSO>(
+            $"Assets/_Project/Data/Dungeon/GenerationProfiles/Procedural{theme}GenerationProfile.asset");
+        for (int n = 0; n < 3; n++)
+        {
+            int seed = unchecked(profile.Seed + n * 997);
+            var result = new DungeonGraphLayoutAssembler().Assemble(profile.RoomLibrary, profile.LayoutPolicy,
+                seed, profile.RoomCount, profile.MaxPlacementAttemptsPerRoom, profile.MinimumCorridorLength,
+                profile.CorridorLengthPerRoomCell, profile.CorridorLengthVariation,
+                profile.GuaranteedRoomTemplates, generationStage: stage);
+            Assert.That(result.IsComplete, Is.True, result.FailureReason);
+            var combat = result.Rooms.Select(r => r.Template).Where(t => t.LayoutData.roomType == RoomType.Combat).ToArray();
+            var large = combat.Where(t => RoomTemplateCombatMetadataUtility.ResolveSizeTag(t) == RoomCombatSizeTag.Large).ToArray();
+            Assert.That(large.Length, Is.EqualTo(1));
+            Assert.That(DungeonStageComposition.Tier(large[0]), Is.EqualTo(stage));
+            var normal = combat.Where(t => RoomTemplateCombatMetadataUtility.ResolveSizeTag(t) == RoomCombatSizeTag.Normal).ToArray();
+            var expected = DungeonStageComposition.Allocate(normal.Length, stage, seed);
+            for (int tier = 1; tier <= 3; tier++)
+                Assert.That(normal.Count(t => DungeonStageComposition.Tier(t) == tier), Is.EqualTo(expected[tier - 1]));
+            CheckPhysicalConnections(result);
+        }
+    }
     [TearDown] public void Cleanup()
     {
         for (int i = owned.Count - 1; i >= 0; i--) if (owned[i] != null) Object.DestroyImmediate(owned[i]);
@@ -994,7 +1045,7 @@ public sealed class DungeonTemplateSearchPlayModeTests
         foreach (var template in templates) library.EditorAddRoom(template);
         return Activator.CreateInstance(Assembler.GetNestedType("TemplateSearch", BindingFlags.NonPublic), Fields, null,
             new object[] { library, policy, guaranteed, rules, topology, new System.Random(seed), seed,
-                ((IList)Get(topology, "Nodes")).Count, 2, 0f, 0 }, null);
+                ((IList)Get(topology, "Nodes")).Count, 2, 0f, 0, 0 }, null);
     }
     private static bool Solve(object search, out DungeonLayoutResult result, out string failure)
     {

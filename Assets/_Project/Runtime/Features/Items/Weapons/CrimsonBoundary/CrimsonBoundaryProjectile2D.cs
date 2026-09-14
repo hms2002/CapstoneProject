@@ -3,12 +3,14 @@ using UnityGAS;
 
 public sealed class CrimsonBoundaryProjectile2D : AttackBase
 {
-    private readonly RaycastHit2D[] sweepHits = new RaycastHit2D[12];
+    [SerializeField] private BoxCollider2D wallCollider;
+    [SerializeField] private BoxCollider2D damageCollider;
+    private readonly System.Collections.Generic.List<RaycastHit2D> wallHits = new(12);
+    private readonly System.Collections.Generic.List<RaycastHit2D> damageHits = new(12);
     private Vector2 direction;
     private float speed;
     private int burnStacks;
     private GameplayEffect burnDamageEffect;
-    private Collider2D ownCollider;
     private CrimsonBoundaryVisual2D hitPrefab;
     private CrimsonBoundaryVisual2D burnPrefab;
     private CrimsonBoundaryVisual2D burnSustainPrefab;
@@ -32,43 +34,83 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
         SetupBase(context);
     }
 
-    protected override void OnSetupCompleted() => ownCollider = GetComponent<Collider2D>();
+    protected override void OnSetupCompleted()
+    {
+        if (wallCollider == null || damageCollider == null || wallCollider == damageCollider)
+        {
+            Debug.LogError("Crimson projectile requires separate wall and damage colliders.", this);
+            enabled = false;
+            DestroySelf();
+        }
+    }
+
+    // Sweeps own both collision channels and their ordering. The larger damage
+    // trigger must never invoke AttackBase's wall-destruction path.
+    protected override void OnTriggerEnter2D(Collider2D other) { }
+    protected override void OnTriggerStay2D(Collider2D other) { }
 
     protected override void TickAttack(float deltaTime)
     {
+        if (impactPlayed) return;
         Vector2 displacement = direction * speed * deltaTime;
         float distance = displacement.magnitude;
-        int mask = WallLayers.value | DamageLayers.value;
-        int count = distance > 0f && mask != 0
-            ? Physics2D.BoxCastNonAlloc(transform.position, new Vector2(0.28f, 0.28f), transform.eulerAngles.z, direction, sweepHits, distance, mask)
-            : 0;
-
-        if (count > 1)
-            System.Array.Sort(sweepHits, 0, count, RaycastHitDistanceComparer.Instance);
-
-        for (int i = 0; i < count; i++)
+        Sweep(wallCollider, WallLayers, wallHits, distance);
+        Sweep(damageCollider, DamageLayers, damageHits, distance);
+        RaycastHit2D firstWall = default;
+        float wallDistance = float.PositiveInfinity;
+        for (int i = 0; i < wallHits.Count; i++)
         {
-            Collider2D hit = sweepHits[i].collider;
-            if (hit == null || hit == ownCollider) continue;
-            int bit = 1 << hit.gameObject.layer;
-            if ((WallLayers.value & bit) != 0)
-            {
-                transform.position = sweepHits[i].centroid;
-                OnHitWall(hit.gameObject, hit);
-                return;
-            }
+            RaycastHit2D candidate = wallHits[i];
+            if (IsOwnCollider(candidate.collider) || !CanHitWall(candidate.collider.gameObject, candidate.collider)) continue;
+            if (candidate.distance >= wallDistance) continue;
+            firstWall = candidate;
+            wallDistance = candidate.distance;
+        }
 
+        damageHits.Sort(RaycastHitDistanceComparer.Instance);
+        for (int i = 0; i < damageHits.Count; i++)
+        {
+            RaycastHit2D candidate = damageHits[i];
+            if (candidate.distance >= wallDistance) break;
+            Collider2D hit = candidate.collider;
+            if (IsOwnCollider(hit) || (WallLayers.value & (1 << hit.gameObject.layer)) != 0) continue;
             GameObject target = CombatTargetResolver2D.ResolveDamageTarget(hit);
             if (target == null || IsIgnoredTarget(target)) continue;
             if ((DamageLayers.value & (1 << target.layer)) == 0) continue;
-            transform.position = sweepHits[i].centroid;
-            if (TryApplyHit(target, hit))
-                OnHitTarget(target, hit);
+            if (!CanHitTarget(target)) continue;
+            Vector3 startPosition = transform.position;
+            transform.position += (Vector3)(direction * candidate.distance);
+            if (!TryApplyHit(target, hit))
+            {
+                transform.position = startPosition;
+                continue;
+            }
+            OnHitTarget(target, hit);
             return;
         }
 
+        if (firstWall.collider != null)
+        {
+            transform.position += (Vector3)(direction * wallDistance);
+            OnHitWall(firstWall.collider.gameObject, firstWall.collider);
+            return;
+        }
         transform.position += (Vector3)displacement;
     }
+
+    private void Sweep(BoxCollider2D collider, LayerMask layers,
+        System.Collections.Generic.List<RaycastHit2D> hits, float distance)
+    {
+        hits.Clear();
+        if (layers.value == 0) return;
+        var filter = new ContactFilter2D { useLayerMask = true, layerMask = layers, useTriggers = true };
+        // Explicit pose also supports same-frame spawn/rotation before physics sync.
+        collider.Cast(collider.transform.position, collider.transform.eulerAngles.z,
+            direction, filter, hits, distance, true);
+    }
+
+    private bool IsOwnCollider(Collider2D collider) => collider == null ||
+        collider == wallCollider || collider == damageCollider || collider.transform.IsChildOf(transform);
 
     protected override void OnHitTarget(GameObject target, Collider2D hitCollider)
     {

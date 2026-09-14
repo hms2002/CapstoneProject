@@ -14,11 +14,11 @@ public sealed partial class DungeonGraphLayoutAssembler
         RoomThemeLibrarySO library, DungeonLayoutPolicySO policy,
         IReadOnlyList<RoomTemplateSO> guaranteed, IReadOnlyList<RequiredCombatRoomRule> rules,
         TopologyDraft topology, System.Random random, int seed, int roomCount,
-        int minimumLength, float lengthRatio, int lengthVariation,
+        int minimumLength, float lengthRatio, int lengthVariation, int generationStage,
         out DungeonLayoutResult result, out string failure)
     {
         var search = new TemplateSearch(library, policy, guaranteed, rules, topology, random,
-            seed, roomCount, minimumLength, lengthRatio, lengthVariation);
+            seed, roomCount, minimumLength, lengthRatio, lengthVariation, generationStage);
         return search.TrySolve(out result, out failure);
     }
 
@@ -40,6 +40,8 @@ public sealed partial class DungeonGraphLayoutAssembler
         private readonly System.Random random;
         private readonly int seed, roomCount, minimumLength, lengthVariation;
         private readonly float lengthRatio;
+        private readonly int generationStage;
+        private readonly int[] stageCounts;
         private readonly List<RequiredCombatRoomRule> rules = new();
         private readonly List<TemplateCandidate>[] domains;
         private readonly List<RoomSocketDirection>[] directions;
@@ -57,14 +59,24 @@ public sealed partial class DungeonGraphLayoutAssembler
         public TemplateSearch(RoomThemeLibrarySO library, DungeonLayoutPolicySO policy,
             IReadOnlyList<RoomTemplateSO> guaranteed, IReadOnlyList<RequiredCombatRoomRule> requiredRules,
             TopologyDraft topology, System.Random random, int seed, int roomCount,
-            int minimumLength, float lengthRatio, int lengthVariation)
+            int minimumLength, float lengthRatio, int lengthVariation, int generationStage = 0)
         {
             this.policy = policy; this.topology = topology; this.random = random;
             this.seed = seed; this.roomCount = roomCount; this.minimumLength = minimumLength;
             this.lengthRatio = lengthRatio; this.lengthVariation = lengthVariation;
+            this.generationStage = generationStage;
             if (requiredRules != null)
                 foreach (var rule in requiredRules) if (rule != null && rule.Count > 0) rules.Add(rule);
             int count = topology.Nodes.Count;
+            if (generationStage > 0)
+            {
+                int combatCount = topology.Nodes.FindAll(n => n.Role == RoomType.Combat).Count;
+                stageCounts = DungeonStageComposition.Allocate(Mathf.Max(0, combatCount - 1), generationStage, seed);
+                rules.Add(new RequiredCombatRoomRule(RoomCombatSizeTag.Large, RoomKillLockRewardTag.Auto, 1, generationStage));
+                // Zero-count rules are intentional hard exclusions, never omitted.
+                for (int tier = 1; tier <= 3; tier++)
+                    rules.Add(new RequiredCombatRoomRule(RoomCombatSizeTag.Normal, RoomKillLockRewardTag.Auto, stageCounts[tier - 1], tier));
+            }
             domains = new List<TemplateCandidate>[count];
             directions = new List<RoomSocketDirection>[count];
             assigned = new TemplateCandidate[count]; pinned = new bool[count];
@@ -85,6 +97,7 @@ public sealed partial class DungeonGraphLayoutAssembler
                 foreach (RoomTemplateSO template in candidates)
                 {
                     if (template == null || template.LayoutData.roomType != node.Role ||
+                        !DungeonStageComposition.Allows(template, generationStage) ||
                         !IsTemplateCompatible(template, directions[i]) ||
                         (!pinned[i] && ContainsTemplateReference(guaranteed, template)) ||
                         !SupportsPlacement(template, i)) continue;
@@ -139,6 +152,8 @@ public sealed partial class DungeonGraphLayoutAssembler
                 if (best == null) continue;
                 var details = new StringBuilder();
                 details.AppendLine(best.TemplateSelection.Metrics.ToString());
+                if (generationStage > 0)
+                    details.AppendLine($"Stage={generationStage}; Normal tiers 1/2/3={string.Join("/", stageCounts)}; Large=1 at tier {generationStage} (exact quotas).");
                 details.Append(history);
                 AppendRepeatReasons(best, details);
                 best.SetTemplateSelection(new DungeonTemplateSelectionReport(best.TemplateSelection.Metrics, phase, totalSteps, details.ToString()));
@@ -146,7 +161,9 @@ public sealed partial class DungeonGraphLayoutAssembler
                 return true;
             }
             result = null;
-            reason = $"Template search failed without relaxing hard constraints. {failure}\n{history}";
+            string composition = generationStage > 0
+                ? $"Stage={generationStage}, Normal quotas={string.Join("/", stageCounts)}, Large=1 at current tier. " : string.Empty;
+            reason = $"Template search failed without relaxing hard constraints. {composition}{failure}\n{history}";
             return false;
         }
 
