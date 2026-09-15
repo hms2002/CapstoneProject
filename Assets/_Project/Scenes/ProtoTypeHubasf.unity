@@ -6724,7 +6724,7 @@ MonoBehaviour:
   activeGroup: {fileID: 1735243595}
   merchantFocusTarget: {fileID: 1082065429}
   merchantSpeechBubble: {fileID: 1082065430}
-  merchantSpeechText: "\uC6B0\uB9AC \uAC00\uAC8C \uC815\uC0C1\uC601\uC5C5 \uD569\uB2C8\uB2E4~"
+  merchantSpeechText: "\uC9DC\uC794! \uC624\uB298\uBD80\uD130 \uC815\uC0C1 \uC601\uC5C5\uC774\uC57C!"
   merchantFocusCamera: {fileID: 760601613}
   merchantFocusCameraPriority: 10000
   cinematicIntroDuration: 0.45

@@ -18,7 +18,7 @@ MonoBehaviour:
     targetStunSeconds: 0.1
     attackerStopSeconds: 0
   hitFeelByAttack: []
-  cooldown: 1
+  cooldown: 0.7
   executionPolicy: 0
   useCharges: 0
   maxCharges: 1

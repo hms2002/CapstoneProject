@@ -187,6 +187,16 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(scaledFire * data.burnConsumptionMultiplier, Is.EqualTo(perStack).Within(0.001f));
     }
 
+    [Test]
+    public void CrimsonBasicAttack_UsesApprovedCadenceAndLethalBurstValues()
+    {
+        AbilityDefinition attack = Load<AbilityDefinition>(
+            "Assets/_Project/Data/Abilities/Definitions/AD_CrimsonBoundaryAttack.asset");
+        Assert.That(attack.cooldown, Is.EqualTo(0.7f).Within(0.001f));
+        Assert.That(CrimsonBoundaryProjectile2D.LethalBurstDiameter, Is.EqualTo(2.5f));
+        Assert.That(CrimsonBoundaryProjectile2D.LethalBurstDamageMultiplier, Is.EqualTo(1f));
+    }
+
     [TestCase(5f, 200f, 30f)]
     [TestCase(10f, 260f, 39f)]
     public void CrimsonDamage_SeparatesNormalAndSkillScalingAndPreservesPostProcessing(float fire, float direct, float perStack)

@@ -14,6 +14,8 @@ public sealed partial class MonsterSpawnRoomGroup
     {
         public MonsterSpawnRequest Request;
         public int WaveIndex;
+        public bool HasRunGoldReward;
+        public int RunGoldReward;
         public bool Completed;
         public bool Reserved;
         public MonsterLockTrackingUnit Unit;
@@ -85,8 +87,10 @@ public sealed partial class MonsterSpawnRoomGroup
             : SafeDelay(monsterWaves[currentWaveIndex].startDelaySeconds);
         restoredWaveState = null;
         waveTickets.Clear();
-        foreach (MonsterSpawnRequest request in requests)
+        int[] runGoldRewards = BuildRunGoldAllocations(requests);
+        for (int requestIndex = 0; requestIndex < requests.Count; requestIndex++)
         {
+            MonsterSpawnRequest request = requests[requestIndex];
             string waveId = request.SourceContainer != null
                 ? request.SourceContainer.MonsterWaveId : RoomMonsterWaveDefinition.DefaultId;
             int index = monsterWaves.FindIndex(w => w.id == waveId);
@@ -97,7 +101,13 @@ public sealed partial class MonsterSpawnRoomGroup
             }
             if (index < currentWaveIndex)
                 continue;
-            waveTickets.Add(new WaveSpawnTicket { Request = request, WaveIndex = index });
+            waveTickets.Add(new WaveSpawnTicket
+            {
+                Request = request,
+                WaveIndex = index,
+                HasRunGoldReward = hasConfiguredRunGoldBudget,
+                RunGoldReward = runGoldRewards != null ? runGoldRewards[requestIndex] : 0
+            });
         }
         waveSequencePrepared = true;
         ResumeRoomWavesIfNeeded();
@@ -171,7 +181,17 @@ public sealed partial class MonsterSpawnRoomGroup
     {
         ticket.Completed = true;
         if (monster != null)
+        {
+            if (ticket.HasRunGoldReward)
+            {
+                ExperienceRewardSource rewardSource =
+                    monster.GetComponent<ExperienceRewardSource>() ??
+                    monster.GetComponentInChildren<ExperienceRewardSource>();
+                rewardSource?.SetRuntimeGoldReward(ticket.RunGoldReward);
+            }
+
             ticket.Unit = Mob.ResolveOrCreateLockTrackingUnit(monster);
+        }
         else if (ticket.Request.SourceContainer != null)
             ticket.Request.SourceContainer.NotifyRuntimeSpawned(null);
 
@@ -180,6 +200,58 @@ public sealed partial class MonsterSpawnRoomGroup
             ticket.Reserved = false;
             ReleasePendingSpawn(ticket.Request, releaseChestPending: monster == null);
         }
+    }
+
+    /// <summary>
+    /// 방 예산을 경험치 비율로 모든 예정 스폰에 나눈다.
+    /// 이전 웨이브를 복원할 때도 전체 요청을 기준으로 계산해 이미 끝난 웨이브 몫을 재지급하지 않는다.
+    /// </summary>
+    private int[] BuildRunGoldAllocations(IReadOnlyList<MonsterSpawnRequest> requests)
+    {
+        if (!hasConfiguredRunGoldBudget || requests == null)
+            return null;
+
+        int[] rewards = new int[requests.Count];
+        int[] weights = new int[requests.Count];
+        int totalWeight = 0;
+        for (int i = 0; i < requests.Count; i++)
+        {
+            GameObject prefab = requests[i].MonsterPrefab;
+            ExperienceRewardSource rewardSource = prefab != null
+                ? prefab.GetComponent<ExperienceRewardSource>() ??
+                  prefab.GetComponentInChildren<ExperienceRewardSource>()
+                : null;
+            if (rewardSource == null || !rewardSource.GrantsExperience || rewardSource.BaseExperience <= 0)
+                continue;
+
+            weights[i] = rewardSource.BaseExperience;
+            totalWeight += weights[i];
+        }
+
+        if (totalWeight <= 0 || configuredRunGoldBudget <= 0)
+            return rewards;
+
+        int assigned = 0;
+        for (int i = 0; i < rewards.Length; i++)
+        {
+            if (weights[i] <= 0)
+                continue;
+
+            rewards[i] = configuredRunGoldBudget * weights[i] / totalWeight;
+            assigned += rewards[i];
+        }
+
+        int remainder = configuredRunGoldBudget - assigned;
+        for (int i = 0; i < rewards.Length && remainder > 0; i++)
+        {
+            if (weights[i] <= 0)
+                continue;
+
+            rewards[i]++;
+            remainder--;
+        }
+
+        return rewards;
     }
 
     private void PauseRoomWaves()

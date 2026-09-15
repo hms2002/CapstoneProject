@@ -1094,15 +1094,57 @@ public sealed class CombatFeelLootQuestPlayModeTests
         var potion = Own(ScriptableObject.CreateInstance<ConsumableDefinition>());
         for (int i = 0; i < 256; i++)
         {
-            Assert.That(shop.RollGoldPrice(weapon), Is.InRange(1000, 1300));
-            Assert.That(shop.RollGoldPrice(potion), Is.InRange(200, 300));
+            Assert.That(shop.RollGoldPrice(weapon), Is.InRange(1150, 1250));
+            Assert.That(shop.RollGoldPrice(potion), Is.InRange(850, 950));
             relic.rarity = ItemRarity.Common;
-            Assert.That(shop.RollGoldPrice(relic), Is.InRange(200, 400));
+            Assert.That(shop.RollGoldPrice(relic), Is.InRange(400, 500));
             relic.rarity = ItemRarity.Rare;
-            Assert.That(shop.RollGoldPrice(relic), Is.InRange(500, 800));
+            Assert.That(shop.RollGoldPrice(relic), Is.InRange(600, 700));
             relic.rarity = ItemRarity.Epic;
-            Assert.That(shop.RollGoldPrice(relic), Is.InRange(900, 1200));
+            Assert.That(shop.RollGoldPrice(relic), Is.InRange(900, 1000));
         }
+    }
+
+    [Test] public void CombatRoomGoldBudget_IsPreservedAndWeightedByExperience()
+    {
+        var roomObject = Own(new GameObject("GoldBudgetRoom"));
+        roomObject.SetActive(false);
+        var room = roomObject.AddComponent<MonsterSpawnRoomGroup>();
+        room.ConfigureRunGoldBudget(120);
+
+        var lowPrefab = Own(new GameObject("LowGoldWeight"));
+        lowPrefab.SetActive(false);
+        var lowReward = lowPrefab.AddComponent<ExperienceRewardSource>();
+        Set(lowReward, "baseExperience", 5);
+
+        var highPrefab = Own(new GameObject("HighGoldWeight"));
+        highPrefab.SetActive(false);
+        var highReward = highPrefab.AddComponent<ExperienceRewardSource>();
+        Set(highReward, "baseExperience", 15);
+
+        var requests = new List<MonsterSpawnRequest>
+        {
+            new(lowPrefab, Vector3.zero, Quaternion.identity, null, null),
+            new(highPrefab, Vector3.zero, Quaternion.identity, null, null)
+        };
+        MethodInfo allocate = typeof(MonsterSpawnRoomGroup).GetMethod(
+            "BuildRunGoldAllocations",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        var rewards = (int[])allocate.Invoke(room, new object[] { requests });
+        Assert.AreEqual(120, rewards[0] + rewards[1]);
+        Assert.AreEqual(30, rewards[0]);
+        Assert.AreEqual(90, rewards[1]);
+
+        room.ConfigureRunGoldBudget(0);
+        var suppressedRewards = (int[])allocate.Invoke(room, new object[] { requests });
+        Assert.AreEqual(0, suppressedRewards[0] + suppressedRewards[1]);
+
+        highReward.SetRuntimeGoldReward(17);
+        MethodInfo resolve = typeof(ExperienceRewardSource).GetMethod(
+            "ResolveGoldReward",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.AreEqual(17, resolve.Invoke(highReward, null));
     }
 
     [Test] public void GoldPickup_CollectsAtDestinationWithoutCollider_OnlyOnce()

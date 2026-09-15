@@ -3,6 +3,9 @@ using UnityGAS;
 
 public sealed class CrimsonBoundaryProjectile2D : AttackBase
 {
+    public const float LethalBurstDiameter = 2.5f;
+    public const float LethalBurstDamageMultiplier = 1f;
+
     [SerializeField] private BoxCollider2D wallCollider;
     [SerializeField] private BoxCollider2D damageCollider;
     private readonly System.Collections.Generic.List<RaycastHit2D> wallHits = new(12);
@@ -114,9 +117,44 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
 
     protected override void OnHitTarget(GameObject target, Collider2D hitCollider)
     {
+        bool killedByDirectHit = target != null &&
+                                 target.TryGetComponent(out Enemy enemy) &&
+                                 enemy.IsDead;
         BurnStatus2D.Apply(target, OwnerSystem, burnDamageEffect, Causer, burnStacks, burnPrefab, burnSustainPrefab);
+        if (killedByDirectHit)
+            ApplyLethalBurst(target);
         PlayImpact();
         base.OnHitTarget(target, hitCollider);
+    }
+
+    private void ApplyLethalBurst(GameObject directTarget)
+    {
+        if (OwnerSystem == null || HitPayload == null || burnDamageEffect == null)
+            return;
+
+        float damage = Mathf.Max(0f, HitPayload.finalHpDamage * LethalBurstDamageMultiplier);
+        if (damage <= 0f)
+            return;
+
+        System.Collections.Generic.List<GameObject> targets = CrimsonBoundaryUtility.CollectTargets(
+            transform.position,
+            LethalBurstDiameter,
+            DamageLayers);
+        for (int i = 0; i < targets.Count; i++)
+        {
+            GameObject secondaryTarget = targets[i];
+            if (secondaryTarget == null || secondaryTarget == directTarget)
+                continue;
+
+            CrimsonBoundaryUtility.ApplyDamage(
+                OwnerSystem,
+                SourceSpec,
+                burnDamageEffect,
+                secondaryTarget,
+                damage,
+                HitPayload.isCriticalHit,
+                Causer);
+        }
     }
 
     protected override void OnHitWall(GameObject wall, Collider2D hitCollider)

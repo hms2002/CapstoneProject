@@ -25,6 +25,8 @@ public sealed class AlarmBellInteractable :
     IProceduralRoomRuntimeFeature,
     IProceduralRoomEncounterRequirement
 {
+    private const int EncounterRunGoldBudget = 50;
+
     private enum AlarmBellEncounterState
     {
         Unused,
@@ -83,6 +85,8 @@ public sealed class AlarmBellInteractable :
     private Coroutine encounterRoutine;
     private AlarmBellEncounterState state;
     private bool encounterHoldActive;
+    private int remainingRunGoldBudget;
+    private int remainingRunGoldSpawnCount;
 
     public bool RequiresProceduralRoomEncounter => true;
 
@@ -230,6 +234,7 @@ public sealed class AlarmBellInteractable :
                 yield break;
             }
 
+            PrepareRunGoldBudget(tier, MonsterRunProgression.CurrentStageIndex);
             IReadOnlyList<AlarmBellWaveDefinition> waves = tier.Waves;
             for (int waveIndex = 0; waveIndex < waves.Count; waveIndex++)
             {
@@ -280,7 +285,11 @@ public sealed class AlarmBellInteractable :
             }
 
             for (int spawnIndex = 0; spawnIndex < entry.Count; spawnIndex++)
-                SpawnOneMonster(monsterPrefab, entry, playerTransform);
+                SpawnOneMonster(
+                    monsterPrefab,
+                    entry,
+                    playerTransform,
+                    TakeNextRunGoldReward());
         }
 
         reservedWaveSpawnPositions.Clear();
@@ -289,7 +298,8 @@ public sealed class AlarmBellInteractable :
     private void SpawnOneMonster(
         GameObject monsterPrefab,
         AlarmBellMonsterEntry entry,
-        Transform playerTransform)
+        Transform playerTransform,
+        int runGoldReward)
     {
         if (monsterPrefab == null ||
             !TrySelectSpawnPoint(
@@ -320,9 +330,49 @@ public sealed class AlarmBellInteractable :
         if (MonsterSpawner.Instance == null)
             roomGroup?.NotifyMonsterSpawned(monster);
 
+        ExperienceRewardSource rewardSource =
+            monster.GetComponent<ExperienceRewardSource>() ??
+            monster.GetComponentInChildren<ExperienceRewardSource>();
+        rewardSource?.SetRuntimeGoldReward(runGoldReward);
+
         ApplySpawnedMonsterOptions(monster, entry);
         activeWaveMonsters.Add(monster);
         LogDebug($"Spawned '{monster.name}' at '{spawnPoint.name}'.");
+    }
+
+    private void PrepareRunGoldBudget(AlarmBellEncounterTier tier, int stageIndex)
+    {
+        remainingRunGoldBudget = EncounterRunGoldBudget;
+        remainingRunGoldSpawnCount = 0;
+        if (tier == null)
+            return;
+
+        IReadOnlyList<AlarmBellWaveDefinition> waves = tier.Waves;
+        for (int waveIndex = 0; waveIndex < waves.Count; waveIndex++)
+        {
+            IReadOnlyList<AlarmBellMonsterEntry> monsters = waves[waveIndex]?.Monsters;
+            if (monsters == null)
+                continue;
+
+            for (int entryIndex = 0; entryIndex < monsters.Count; entryIndex++)
+            {
+                AlarmBellMonsterEntry entry = monsters[entryIndex];
+                if (entry != null && entry.TryResolveMonsterPrefab(stageIndex, out _))
+                    remainingRunGoldSpawnCount += entry.Count;
+            }
+        }
+    }
+
+    private int TakeNextRunGoldReward()
+    {
+        if (remainingRunGoldSpawnCount <= 0 || remainingRunGoldBudget <= 0)
+            return 0;
+
+        int reward = Mathf.CeilToInt(
+            remainingRunGoldBudget / (float)remainingRunGoldSpawnCount);
+        remainingRunGoldBudget = Mathf.Max(0, remainingRunGoldBudget - reward);
+        remainingRunGoldSpawnCount--;
+        return reward;
     }
 
     private bool TrySelectSpawnPoint(

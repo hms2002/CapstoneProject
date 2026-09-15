@@ -53,6 +53,22 @@ public class TreasureChest : MonoBehaviour
     private bool hasRaisedFirstOpenedUi;
     public int Capacity => capacity;
     public bool IsOpened => isOpened;
+    // Read-only guidance: never roll loot merely to decide whether to highlight a chest.
+    public bool HasAvailableWeaponReward
+    {
+        get
+        {
+            if (isGenerated)
+            {
+                if (inventory == null || !inventory.CanAcquire) return false;
+                for (int i = 0; i < inventory.Capacity; i++)
+                    if (inventory.Get(i) is WeaponDefinition) return true;
+                return false;
+            }
+            return lootMode == ChestLootMode.OverrideProfile && lootOverrideProfile != null &&
+                lootOverrideProfile.WeaponCountProfile != null && lootOverrideProfile.WeaponCountProfile.minCount > 0;
+        }
+    }
     public int RefreshCountLimit => ChestRewardPolicy.ResolveRefreshLimit();
     public int RefreshCountUsed => refreshCountUsed;
     public int RemainingRefreshCount => ChestRewardPolicy.ResolveRemainingRefreshCount(

@@ -8,11 +8,11 @@ public sealed class ShopDefinitionSO : ScriptableObject
 
     public int RollGoldPrice(ScriptableObject item) => ((item switch
     {
-        WeaponDefinition => Random.Range(1000, 1301),
-        RelicDefinition relic when relic.rarity == ItemRarity.Epic => Random.Range(900, 1201),
-        RelicDefinition relic when relic.rarity == ItemRarity.Rare => Random.Range(500, 801),
-        RelicDefinition => Random.Range(200, 401),
-        ConsumableDefinition => Random.Range(200, 301),
+        WeaponDefinition => Random.Range(1150, 1251),
+        RelicDefinition relic when relic.rarity == ItemRarity.Epic => Random.Range(900, 1001),
+        RelicDefinition relic when relic.rarity == ItemRarity.Rare => Random.Range(600, 701),
+        RelicDefinition => Random.Range(400, 501),
+        ConsumableDefinition => Random.Range(850, 951),
         _ => 0
     }) + 5) / 10 * 10;
 

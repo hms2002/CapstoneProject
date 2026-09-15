@@ -1258,6 +1258,16 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
 
         roomGroup = encounterObject.AddComponent<MonsterSpawnRoomGroup>();
         roomGroup.ConfigureWaves(roomPlacement.Template.BuildData.monsterWaves);
+        int runGoldBudget = 0;
+        if (roomPlacement.Template.LayoutData.roomType == RoomType.Combat)
+        {
+            RoomCombatSizeTag sizeTag =
+                RoomTemplateCombatMetadataUtility.ResolveSizeTag(roomPlacement.Template);
+            runGoldBudget = sizeTag == RoomCombatSizeTag.Large
+                ? MonsterSpawnRoomGroup.LargeCombatRunGoldBudget
+                : MonsterSpawnRoomGroup.NormalCombatRunGoldBudget;
+        }
+        roomGroup.ConfigureRunGoldBudget(runGoldBudget);
         roomArea = encounterObject.AddComponent<MonsterRoomArea2D>();
         roomArea.Configure(areaCollider);
 

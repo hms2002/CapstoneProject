@@ -22,6 +22,8 @@ public sealed class ExperienceRewardSource : MonoBehaviour
     [SerializeField] private GoldPickup2D goldPickupPrefab;
 
     private Enemy enemy;
+    private bool hasRuntimeGoldReward;
+    private int runtimeGoldReward;
 
     public int BaseExperience => baseExperience;
     public bool GrantsExperience => grantExperience;
@@ -58,6 +60,16 @@ public sealed class ExperienceRewardSource : MonoBehaviour
         experienceMultiplier = Mathf.Max(0f, multiplier);
     }
 
+    /// <summary>
+    /// 절차 전투방과 이벤트가 이 몬스터에게 배정한 런 골드를 설정한다.
+    /// 호출되지 않은 수동 배치/테스트 몬스터는 기존 경험치 기반 계산을 유지한다.
+    /// </summary>
+    public void SetRuntimeGoldReward(int amount)
+    {
+        hasRuntimeGoldReward = true;
+        runtimeGoldReward = Mathf.Max(0, amount);
+    }
+
     private void HandleDeathStarted(Enemy defeatedEnemy)
     {
         if (!grantExperience || baseExperience <= 0 || pickupPrefab == null || !RunSessionStore.IsRunActive)
@@ -69,16 +81,16 @@ public sealed class ExperienceRewardSource : MonoBehaviour
 
         if (goldPickupPrefab != null)
         {
-            int baseGold = Mathf.Clamp(baseExperience * 6, 40, 600);
-            int minimumGold = Mathf.CeilToInt(baseGold * 0.85f);
-            int maximumGold = Mathf.FloorToInt(baseGold * 1.15f);
-            int totalGold = Random.Range(minimumGold, maximumGold + 1);
-            int count = Mathf.Clamp(Mathf.CeilToInt(totalGold / 20f), 1, 8);
-            for (int i = 0; i < count; i++)
+            int totalGold = ResolveGoldReward();
+            if (totalGold > 0)
             {
-                Vector2 offset = Random.insideUnitCircle * pickupScatterRadius;
-                GoldPickup2D gold = Instantiate(goldPickupPrefab, defeatedEnemy.transform.position + (Vector3)offset, Quaternion.identity);
-                gold.Initialize(totalGold / count + (i < totalGold % count ? 1 : 0));
+                int count = Mathf.Clamp(Mathf.CeilToInt(totalGold / 20f), 1, 8);
+                for (int i = 0; i < count; i++)
+                {
+                    Vector2 offset = Random.insideUnitCircle * pickupScatterRadius;
+                    GoldPickup2D gold = Instantiate(goldPickupPrefab, defeatedEnemy.transform.position + (Vector3)offset, Quaternion.identity);
+                    gold.Initialize(totalGold / count + (i < totalGold % count ? 1 : 0));
+                }
             }
         }
 
@@ -89,6 +101,17 @@ public sealed class ExperienceRewardSource : MonoBehaviour
             experiencePerPickup,
             maximumPickupCount,
             pickupScatterRadius);
+    }
+
+    private int ResolveGoldReward()
+    {
+        if (hasRuntimeGoldReward)
+            return runtimeGoldReward;
+
+        int baseGold = Mathf.Clamp(baseExperience * 6, 40, 600);
+        int minimumGold = Mathf.CeilToInt(baseGold * 0.85f);
+        int maximumGold = Mathf.FloorToInt(baseGold * 1.15f);
+        return Random.Range(minimumGold, maximumGold + 1);
     }
 }
 
