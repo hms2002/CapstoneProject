@@ -81,6 +81,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
     [SerializeField] private Tilemap wallDetailTilemap;
     [SerializeField] private Tilemap foregroundTilemap;
     [SerializeField] private Tilemap overlayFxTilemap;
+    [SerializeField] private Tilemap holeTilemap;
 
     [Header("Void Fill")]
     [SerializeField] private Tilemap voidFillTilemap;
@@ -141,7 +142,13 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
     public Tilemap WallTilemap => wallTilemap;
     public Tilemap WallDetailTilemap => wallDetailTilemap;
     public Tilemap ForegroundTilemap => foregroundTilemap;
+    /// <summary>Allows tile presentation caches to release old cells before replacement and rebuild after placement.</summary>
+    public event System.Action TileContentClearing;
+    public event System.Action TileContentBuilt;
     public Tilemap OverlayFxTilemap => overlayFxTilemap;
+    public Tilemap HoleTilemap => holeTilemap;
+
+    public void EditorAssignHoleTilemap(Tilemap hole) => holeTilemap = hole;
     public Tilemap VoidFillTilemap => voidFillTilemap;
     public TileBase VoidFillTile => voidFillTile;
     public int VoidFillPaddingCells => Mathf.Max(0, voidFillPaddingCells);
@@ -194,6 +201,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
             RoomTileLayerKind.WallDetail => wallDetailTilemap,
             RoomTileLayerKind.Foreground => foregroundTilemap,
             RoomTileLayerKind.OverlayFX => overlayFxTilemap,
+            RoomTileLayerKind.Hole => holeTilemap,
             _ => null
         };
     }
@@ -220,7 +228,8 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         Tilemap wall,
         Tilemap wallDetail,
         Tilemap foreground,
-        Tilemap overlayFx)
+        Tilemap overlayFx,
+        Tilemap hole = null)
     {
         underFloorTilemap = underFloor;
         floorTilemap = floor;
@@ -230,6 +239,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         wallDetailTilemap = wallDetail;
         foregroundTilemap = foreground;
         overlayFxTilemap = overlayFx;
+        holeTilemap = hole;
     }
 
     public void EditorAssignVoidFill(Tilemap tilemap, TileBase tile, int paddingCells)
@@ -519,6 +529,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         }
 
         ApplySocketCleanup(layout);
+        ApplyHoleTiles();
 
         if (!ValidateUnconnectedSocketsRemainSealed(layout))
         {
@@ -540,6 +551,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         }
 
         CompressConfiguredTilemaps();
+        TileContentBuilt?.Invoke();
         return true;
     }
 
@@ -600,6 +612,34 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         }
 
         return true;
+    }
+
+    // Hole cells retain authored visuals, but cannot count as safe/walkable floor.
+    private void ApplyHoleTiles()
+    {
+        if (holeTilemap == null)
+            return;
+
+        // Apply the shared visual order to existing scenes as well as newly installed tilemaps.
+        var renderer = holeTilemap.GetComponent<TilemapRenderer>();
+        if (renderer != null)
+        {
+            renderer.sortingLayerName = RoomTileLayerContract.GetSortingLayerName(RoomTileLayerKind.Hole);
+            renderer.sortingOrder = RoomTileLayerContract.GetSortingOrder(RoomTileLayerKind.Hole);
+        }
+
+        foreach (Vector3Int cell in holeTilemap.cellBounds.allPositionsWithin)
+        {
+            if (!holeTilemap.HasTile(cell))
+                continue;
+            floorTilemap.SetTile(cell, null);
+            floorDetailTilemap?.SetTile(cell, null);
+            holeTilemap.SetColliderType(cell, Tile.ColliderType.Grid);
+        }
+
+        var collider = holeTilemap.GetComponent<TilemapCollider2D>();
+        if (collider != null && collider.hasTilemapChanges)
+            collider.ProcessTilemapChanges();
     }
 
     private void PlaceRoomTileLayers(RoomBuildData buildData, Vector2Int roomOrigin)
@@ -794,6 +834,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
 
     public void ClearGeneratedTiles()
     {
+        TileContentClearing?.Invoke();
         HashSet<Tilemap> cleared = new();
         for (int i = 0; i < RoomTileLayerContract.OrderedLayers.Count; i++)
         {

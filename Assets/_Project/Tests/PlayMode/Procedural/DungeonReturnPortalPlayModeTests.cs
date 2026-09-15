@@ -28,6 +28,30 @@ public sealed class DungeonReturnPortalPlayModeTests
     }
     private T Own<T>(T value) where T : Object { owned.Add(value); return value; }
 
+    [UnityTest]
+    public IEnumerator DeathReturn_IsOneShotAndDoesNotCompleteTutorial()
+    {
+        var player = MakePlayer();
+        var arrival = player.Transform.GetComponent<PlayerHubSpawnPresentation2D>();
+        int completed = 0;
+        arrival.PresentationCompleted += _ => completed++;
+        PlayerHubSpawnPresentation2D.RequestDeathReturn(player.Transform.gameObject.scene.name);
+        try
+        {
+            arrival.TryPlayIfEligible();
+            Assert.That(arrival.IsPlaying, Is.True, "Explicit death return bypasses the tutorial/Hub gate.");
+            float timeout = Time.realtimeSinceStartup + 5f;
+            while (arrival.IsPlaying && Time.realtimeSinceStartup < timeout) yield return null;
+            Assert.That(arrival.IsPlaying, Is.False);
+            Assert.That(completed, Is.Zero);
+            arrival.TryPlayIfEligible();
+            Assert.That(arrival.IsPlaying, Is.False);
+            Assert.That(typeof(PlayerHubSpawnPresentation2D).GetField("pendingDeathReturnScene",
+                BindingFlags.Static | BindingFlags.NonPublic).GetValue(null), Is.Null);
+        }
+        finally { PlayerHubSpawnPresentation2D.RequestDeathReturn(null); }
+    }
+
     [TestCase(RoomSocketDirection.Up, 2.2f, 1.2f)]
     [TestCase(RoomSocketDirection.Down, 2.2f, 1.2f)]
     [TestCase(RoomSocketDirection.Left, 1.2f, 2.2f)]
@@ -75,6 +99,36 @@ public sealed class DungeonReturnPortalPlayModeTests
         Assert.That(chosen.y, Is.Not.EqualTo(3));
         Assert.That(DungeonReturnPortalPlacement.TryChooseOppositeWall(cells, Vector2Int.zero,
             RoomSocketDirection.Left, c => true, c => false, out _), Is.False);
+    }
+
+    [TestCase(RoomSocketDirection.Left, 5, 3)]
+    [TestCase(RoomSocketDirection.Right, 1, 3)]
+    [TestCase(RoomSocketDirection.Down, 3, 5)]
+    [TestCase(RoomSocketDirection.Up, 3, 1)]
+    public void OppositeWall_UsesCenterDespiteOffCenterEntrance(RoomSocketDirection direction, int x, int y)
+    {
+        var bounds = new RectInt(1, 1, 5, 5);
+        Vector2Int outward = DungeonReturnPortalPlacement.Direction(direction);
+        var tangent = new Vector2Int(-outward.y, outward.x);
+        Vector2Int entrance = new Vector2Int(3, 3) + outward * 2 + tangent * 2;
+        var cells = DungeonReturnPortalPlacement.Reachable(bounds, entrance, _ => true);
+        Assert.That(DungeonReturnPortalPlacement.TryChooseOppositeWall(cells, entrance, direction,
+            c => !bounds.Contains(c), _ => true, out var chosen), Is.True);
+        Assert.That(chosen, Is.EqualTo(new Vector2Int(x, y)));
+        cells.Reverse();
+        DungeonReturnPortalPlacement.TryChooseOppositeWall(cells, entrance, direction,
+            c => !bounds.Contains(c), _ => true, out var reversed);
+        Assert.That(reversed, Is.EqualTo(chosen));
+    }
+
+    [Test]
+    public void OppositeWall_UsesLongestContinuousSegmentNotBoundsCenter()
+    {
+        var cells = new List<Vector2Int>();
+        for (int y = 0; y < 9; y++) if (y != 3 && y != 4) cells.Add(new Vector2Int(5, y));
+        Assert.That(DungeonReturnPortalPlacement.TryChooseOppositeWall(cells, Vector2Int.zero,
+            RoomSocketDirection.Left, _ => true, _ => true, out var chosen), Is.True);
+        Assert.That(chosen, Is.EqualTo(new Vector2Int(5, 6)));
     }
 
     [Test]

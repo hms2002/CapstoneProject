@@ -48,4 +48,5 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 1eb030c070a37594ea27c520a6e1f646, type: 2}
     overlayFxTiles: []
     objectPlacements: []
+    monsterWaves: []
     travelEndpointPlacements: []

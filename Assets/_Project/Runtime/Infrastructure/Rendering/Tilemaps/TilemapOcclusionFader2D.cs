@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 /// 책임:
 /// - 지정된 타일맵의 연결된 전경/기둥 타일 그룹을 캐싱한다.
 /// - 감지 대상 collider가 그룹 셀과 겹칠 때 해당 그룹을 부드럽게 투명화하고, 벗어나면 원래 색으로 복구한다.
+/// - 같은 오브젝트의 절차적 생성기가 타일을 교체할 때 캐시를 복원/폐기하고 생성 완료 후 재구축한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class TilemapOcclusionFader2D : MonoBehaviour
@@ -34,6 +35,7 @@ public sealed class TilemapOcclusionFader2D : MonoBehaviour
     private ContactFilter2D detectionFilter;
     private float nextCheckTime;
     private bool hasBuiltCache;
+    private DungeonRoomBuilder proceduralBuilder;
 
     private static readonly Vector3Int[] CardinalDirections =
     {
@@ -50,15 +52,25 @@ public sealed class TilemapOcclusionFader2D : MonoBehaviour
 
     private void OnEnable()
     {
-        if (!hasBuiltCache)
-            RebuildCache();
+        proceduralBuilder = GetComponent<DungeonRoomBuilder>();
+        if (proceduralBuilder != null)
+        {
+            proceduralBuilder.TileContentClearing += ClearCache;
+            proceduralBuilder.TileContentBuilt += RebuildCache;
+        }
+        RebuildCache();
 
         nextCheckTime = 0f;
     }
 
     private void OnDisable()
     {
-        RestoreAllGroups();
+        if (proceduralBuilder != null)
+        {
+            proceduralBuilder.TileContentClearing -= ClearCache;
+            proceduralBuilder.TileContentBuilt -= RebuildCache;
+        }
+        ClearCache();
     }
 
     private void OnDestroy()
@@ -83,9 +95,7 @@ public sealed class TilemapOcclusionFader2D : MonoBehaviour
     /// <summary>타일맵 타일 구성이 런타임에 바뀐 경우 연결 그룹 캐시를 다시 만듭니다.</summary>
     public void RebuildCache()
     {
-        RestoreAllGroups();
-        activeGroups.Clear();
-        tilemapStates.Clear();
+        ClearCache();
 
         List<Tilemap> tilemaps = ResolveTilemaps();
         foreach (Tilemap tilemap in tilemaps)
@@ -104,6 +114,15 @@ public sealed class TilemapOcclusionFader2D : MonoBehaviour
             useTriggers = includeTriggers,
         };
 
+        hasBuiltCache = true;
+    }
+
+    private void ClearCache()
+    {
+        RestoreAllGroups();
+        activeGroups.Clear();
+        tilemapStates.Clear();
+        // A generated map remains empty until the builder announces successful placement.
         hasBuiltCache = true;
     }
 

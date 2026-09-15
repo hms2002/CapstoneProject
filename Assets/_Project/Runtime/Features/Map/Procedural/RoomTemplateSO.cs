@@ -350,6 +350,7 @@ public struct RoomBuildData
     public List<RoomTileData> wallDetailTiles;
     public List<RoomTileData> foregroundTiles;
     public List<RoomTileData> overlayFxTiles;
+    public List<RoomTileData> holeTiles;
     public List<RoomObjectPlacementData> objectPlacements;
     public List<RoomMonsterWaveDefinition> monsterWaves;
     public List<RoomTravelEndpointPlacementData> travelEndpointPlacements;
@@ -366,6 +367,7 @@ public struct RoomBuildData
             RoomTileLayerKind.WallDetail => wallDetailTiles,
             RoomTileLayerKind.Foreground => foregroundTiles,
             RoomTileLayerKind.OverlayFX => overlayFxTiles,
+            RoomTileLayerKind.Hole => holeTiles,
             _ => null
         };
     }
@@ -383,7 +385,8 @@ public enum RoomTileLayerKind
     Wall = 4,
     WallDetail = 5,
     Foreground = 6,
-    OverlayFX = 7
+    OverlayFX = 7,
+    Hole = 8
 }
 
 /// <summary>
@@ -402,7 +405,8 @@ public static class RoomTileLayerContract
         RoomTileLayerKind.Wall,
         RoomTileLayerKind.WallDetail,
         RoomTileLayerKind.Foreground,
-        RoomTileLayerKind.OverlayFX
+        RoomTileLayerKind.OverlayFX,
+        RoomTileLayerKind.Hole
     };
 
     public static IReadOnlyList<RoomTileLayerKind> OrderedLayers => OrderedLayerValues;
@@ -419,6 +423,7 @@ public static class RoomTileLayerContract
             RoomTileLayerKind.WallDetail => "WallDetail",
             RoomTileLayerKind.Foreground => "Foreground",
             RoomTileLayerKind.OverlayFX => "OverlayFX",
+            RoomTileLayerKind.Hole => "Hole",
             _ => layer.ToString()
         };
     }
@@ -435,6 +440,7 @@ public static class RoomTileLayerContract
             RoomTileLayerKind.WallDetail => "벽 부착 장식",
             RoomTileLayerKind.Foreground => "캐릭터 앞 상단 장식",
             RoomTileLayerKind.OverlayFX => "화면·방 오버레이 효과",
+            RoomTileLayerKind.Hole => "낙하 구덩이",
             _ => GetLayerName(layer)
         };
     }
@@ -451,6 +457,7 @@ public static class RoomTileLayerContract
             RoomTileLayerKind.WallDetail => 61,
             RoomTileLayerKind.Foreground => 0,
             RoomTileLayerKind.OverlayFX => 10,
+            RoomTileLayerKind.Hole => 49,
             _ => 0
         };
     }
@@ -469,13 +476,14 @@ public static class RoomTileLayerContract
 
     public static string GetPhysicsLayerName(RoomTileLayerKind layer)
     {
-        return layer == RoomTileLayerKind.Wall ? "Wall" :
+        return layer == RoomTileLayerKind.Hole ? "HoleTrap" :
+            layer == RoomTileLayerKind.Wall ? "Wall" :
             UsesGroundPhysicsLayer(layer) ? "Ground" : "Default";
     }
 
     public static bool RequiresCollider(RoomTileLayerKind layer)
     {
-        return layer == RoomTileLayerKind.Wall;
+        return layer == RoomTileLayerKind.Wall || layer == RoomTileLayerKind.Hole;
     }
 }
 

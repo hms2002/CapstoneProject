@@ -49,18 +49,41 @@ public static class DungeonReturnPortalPlacement
         chosen = default;
         Vector2Int inward = -Direction(entranceDirection);
         Vector2Int tangent = new(-inward.y, inward.x);
-        float bestScore = float.NegativeInfinity;
+        var boundary = new HashSet<Vector2Int>();
         foreach (Vector2Int cell in reachable)
         {
-            Vector2Int delta = cell - entrance;
-            float depth = Vector2.Dot(delta, inward);
-            if (depth <= 0f || !isWall(cell + inward) || !canPlace(cell)) continue;
-            // Prefer the opposite boundary, then the closest alignment with the entrance.
-            float score = depth * 10000f - Mathf.Abs(Vector2.Dot(delta, tangent));
-            if (score <= bestScore) continue;
-            bestScore = score;
-            chosen = cell;
+            if (Vector2.Dot(cell - entrance, inward) > 0f && isWall(cell + inward))
+                boundary.Add(cell);
         }
-        return bestScore > float.NegativeInfinity;
+        bool found = false;
+        float bestDepth = float.NegativeInfinity;
+        int bestLength = 0;
+        float bestCenterDistance = float.PositiveInfinity;
+        // Keep geometric wall segments intact even when a prop blocks their midpoint.
+        foreach (Vector2Int start in boundary)
+        {
+            if (boundary.Contains(start - tangent)) continue;
+            int length = 1;
+            while (boundary.Contains(start + tangent * length)) length++;
+            float depth = Vector2.Dot(start - entrance, inward);
+            for (int i = 0; i < length; i++)
+            {
+                Vector2Int cell = start + tangent * i;
+                if (!canPlace(cell)) continue;
+                float centerDistance = Mathf.Abs(i - (length - 1) * 0.5f);
+                bool better = !found || depth > bestDepth ||
+                    (depth == bestDepth && (length > bestLength ||
+                    (length == bestLength && (centerDistance < bestCenterDistance ||
+                    (centerDistance == bestCenterDistance &&
+                    (cell.x < chosen.x || (cell.x == chosen.x && cell.y < chosen.y)))))));
+                if (!better) continue;
+                found = true;
+                bestDepth = depth;
+                bestLength = length;
+                bestCenterDistance = centerDistance;
+                chosen = cell;
+            }
+        }
+        return found;
     }
 }

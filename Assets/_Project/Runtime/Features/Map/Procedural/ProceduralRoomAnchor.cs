@@ -14,6 +14,21 @@ public sealed class ProceduralRoomAnchor : MonoBehaviour
     public Transform Target => transform;
 
 #if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if (string.IsNullOrEmpty(slotId) || !slotId.StartsWith("ReturnPortal_", System.StringComparison.Ordinal)) return;
+        if (!System.Enum.TryParse(slotId.Substring("ReturnPortal_".Length), out RoomSocketDirection direction) ||
+            (int)direction < 0 || (int)direction > 3) return;
+        Vector3 axis = (Vector3)(Vector2)DungeonReturnPortalPlacement.Direction(direction);
+        Vector3 side = new Vector3(-axis.y, axis.x) * 0.15f;
+        Vector3 tip = transform.position + axis * 0.6f;
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, 0.2f);
+        Gizmos.DrawLine(transform.position, tip);
+        Gizmos.DrawLine(tip, tip - axis * 0.2f + side);
+        Gizmos.DrawLine(tip, tip - axis * 0.2f - side);
+    }
+
     public void EditorConfigure(string value, ProceduralRoomAnchorScope anchorScope)
     {
         slotId = value;

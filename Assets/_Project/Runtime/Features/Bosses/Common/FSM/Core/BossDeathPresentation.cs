@@ -8,6 +8,7 @@ using UnityGAS;
 /// <summary>
 /// 책임 :
 /// - 보스 처치 시네마틱의 시작/종료를 조율하고 연출 순서를 실행한다.
+/// - 본체를 파괴하지 않는 사망 연출에서도 해당 보스의 HUD 표시 수명을 종료한다.
 /// - 플레이어 보호 자체는 공용 PlayerCinematicProtection에 위임하고, 자신은 연출 시퀀스 오케스트레이션에 집중한다.
 /// </summary>
 [DisallowMultipleComponent]
@@ -112,6 +113,9 @@ public sealed class BossDeathPresentation : MonoBehaviour
         }
 
         if (stoppedRunningSequence)
+            ReleaseBossHud();
+
+        if (stoppedRunningSequence)
             RestoreCameraAfterIncompleteTerminalEnding();
 
         if (stoppedRunningSequence || hasTerminalNonDialogueUiSuppression)
@@ -187,6 +191,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
         {
             yield return endingSequence.RunRoutine(owner, PlayTerminalEndingDialoguePreludeRoutine);
             completedViaTerminalEnding = endingSequence.CompletedViaTerminalEnding;
+            ReleaseBossHud();
             if (!completedViaTerminalEnding)
             {
                 yield return RestoreCameraAfterIncompleteTerminalEndingRoutine();
@@ -331,6 +336,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private void HideBossVisuals()
     {
+        ReleaseBossHud();
         CacheDeathRenderers();
 
         for (int i = 0; i < cachedDeathRenderers.Count; i++)
@@ -342,6 +348,13 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         if (deathAnimator != null)
             deathAnimator.enabled = false;
+    }
+
+    // The cinematic keeps the owner alive for rewards; HUD lifetime must not rely on Destroy.
+    private void ReleaseBossHud()
+    {
+        if (owner != null)
+            BossHudPlayback.UnbindBoss(owner);
     }
 
     private IEnumerator PlayDeathSpeechAndWait(bool useTerminalEndingSpeechTiming)

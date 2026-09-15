@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 
 /// <summary>
 /// 책임:
-/// - 기획자가 가로(+X)와 세로(+Y) 전용의 짧은 복도 조각을 기존 8개 Tilemap 레이어와 Pivot 기반 GroundProp으로 제작·편집·검증하게 한다.
+/// - 기획자가 가로(+X)와 세로(+Y) 전용의 짧은 복도 조각을 고정 Tilemap 레이어와 Pivot 기반 GroundProp으로 제작·편집·검증하게 한다.
 /// - CorridorDecorationModuleSO를 Bake하고 테마 DungeonGenerationProfileSO의 장식 프로필에 등록한다.
 /// - Unity Tile Palette를 그대로 사용하면서 선택한 축에 맞는 안전한 제작 범위를 안내한다.
 /// </summary>
@@ -618,7 +618,8 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
             tilemaps[4],
             tilemaps[5],
             tilemaps[6],
-            tilemaps[7]);
+            tilemaps[7],
+            tilemaps[8]);
         EditorUtility.SetDirty(authoring);
         Selection.activeObject = root;
         return authoring;
@@ -794,6 +795,7 @@ public sealed class CorridorDecorationEditorWindow : EditorWindow
             wallDetailTiles = CollectTiles(authoring.GetTilemap(RoomTileLayerKind.WallDetail)),
             foregroundTiles = CollectTiles(authoring.GetTilemap(RoomTileLayerKind.Foreground)),
             overlayFxTiles = CollectTiles(authoring.GetTilemap(RoomTileLayerKind.OverlayFX)),
+            holeTiles = CollectTiles(authoring.GetTilemap(RoomTileLayerKind.Hole)),
             objectPlacements = CollectProps(authoring),
             travelEndpointPlacements = new List<RoomTravelEndpointPlacementData>()
         };

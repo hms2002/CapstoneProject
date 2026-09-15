@@ -9,6 +9,63 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public sealed class ProceduralRoomRuntimeBindingPlayModeTests
 {
+    [UnityTest]
+    public System.Collections.IEnumerator HoleLayer_RemovesUnsafeFloorAndBlocksNavigationWithoutSolidWall()
+    {
+        GameObject root = new("HoleLayerTest");
+        Tile tile = ScriptableObject.CreateInstance<Tile>();
+        bool previousQueriesHitTriggers = Physics2D.queriesHitTriggers;
+        try
+        {
+            Physics2D.queriesHitTriggers = true;
+            root.AddComponent<Grid>();
+            Tilemap floor = CreateTestTilemap(root.transform, RoomTileLayerKind.Floor);
+            Tilemap wall = CreateTestTilemap(root.transform, RoomTileLayerKind.Wall);
+            Tilemap hole = CreateTestTilemap(root.transform, RoomTileLayerKind.Hole);
+            Tilemap decoration = CreateTestTilemap(root.transform, RoomTileLayerKind.GroundDecoration);
+            var holeRenderer = hole.GetComponent<TilemapRenderer>();
+            holeRenderer.sortingOrder = 53;
+            hole.gameObject.layer = LayerMask.NameToLayer("HoleTrap");
+            hole.gameObject.AddComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+            TilemapCollider2D collider = hole.gameObject.AddComponent<TilemapCollider2D>();
+            collider.isTrigger = true;
+            DungeonRoomBuilder builder = root.AddComponent<DungeonRoomBuilder>();
+            builder.EditorAssignTilemaps(null, floor, null, decoration, wall, null, null, null, hole);
+            decoration.SetTile(Vector3Int.zero, tile);
+            floor.SetTile(Vector3Int.zero, tile);
+            hole.SetTile(Vector3Int.zero, tile);
+            typeof(DungeonRoomBuilder).GetMethod("ApplyHoleTiles",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(builder, null);
+            Assert.That(floor.HasTile(Vector3Int.zero), Is.False);
+            Assert.That(decoration.HasTile(Vector3Int.zero), Is.True);
+            Assert.That(holeRenderer.sortingOrder, Is.EqualTo(RoomTileLayerContract.GetSortingOrder(RoomTileLayerKind.Hole)));
+            Assert.That(holeRenderer.sortingOrder, Is.LessThan(RoomTileLayerContract.GetSortingOrder(RoomTileLayerKind.GroundDecoration)));
+            Assert.That(hole.GetColliderType(Vector3Int.zero), Is.EqualTo(Tile.ColliderType.Grid));
+            Assert.That(wall.HasTile(Vector3Int.zero), Is.False);
+            yield return new WaitForFixedUpdate();
+            Assert.That(collider.shapeCount, Is.GreaterThan(0), "Hole grid collider must generate geometry.");
+            Physics2D.SyncTransforms();
+            TilemapPathfinder2D finder = root.AddComponent<TilemapPathfinder2D>();
+            Vector2 center = collider.bounds.center;
+            Vector2 start = center + Vector2.left * 2f;
+            Vector2 end = center + Vector2.right * 2f;
+            Assert.That(finder.HasDirectWalkableSegment(start, end), Is.False,
+                $"layer={hole.gameObject.layer}, bounds={collider.bounds}");
+            builder.ClearGeneratedTiles();
+            collider.ProcessTilemapChanges();
+            yield return new WaitForFixedUpdate();
+            Physics2D.SyncTransforms();
+            Assert.That(hole.HasTile(Vector3Int.zero), Is.False);
+            Assert.That(finder.HasDirectWalkableSegment(start, end), Is.True);
+        }
+        finally
+        {
+            Physics2D.queriesHitTriggers = previousQueriesHitTriggers;
+            Object.DestroyImmediate(root);
+            Object.DestroyImmediate(tile);
+        }
+    }
+
     [Test]
     public void MonsterSpawnContainer_StageFixedPrefabStaysDeferredAndReportsSpawn()
     {
@@ -145,7 +202,9 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
     [Test]
     public void RoomTileLayerContract_SeparatesVisualLayersFromGroundPhysics()
     {
-        Assert.That(RoomTileLayerContract.OrderedLayers.Count, Is.EqualTo(8));
+        Assert.That(RoomTileLayerContract.OrderedLayers.Count, Is.EqualTo(9));
+        Assert.That(RoomTileLayerContract.GetPhysicsLayerName(RoomTileLayerKind.Hole), Is.EqualTo("HoleTrap"));
+        Assert.That(RoomTileLayerContract.RequiresCollider(RoomTileLayerKind.Hole), Is.True);
         Assert.That(RoomTileLayerContract.UsesGroundPhysicsLayer(RoomTileLayerKind.Floor), Is.True);
         Assert.That(RoomTileLayerContract.UsesGroundPhysicsLayer(RoomTileLayerKind.Wall), Is.False);
         Assert.That(RoomTileLayerContract.GetPhysicsLayerName(RoomTileLayerKind.Wall), Is.EqualTo("Wall"));
@@ -395,7 +454,8 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
                 tilemaps[4],
                 tilemaps[5],
                 tilemaps[6],
-                tilemaps[7]);
+                tilemaps[7],
+                tilemaps[8]);
             builder.EditorAssignCorridorTiles(baseTile, baseTile);
 
             RoomBuildData decorationBuild = new()
@@ -461,7 +521,7 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
                 builder.TryBuild(layout, new DungeonBuildOptions(false, false, true)),
                 Is.True);
             for (int layerIndex = 0; layerIndex < tilemaps.Length; layerIndex++)
-                Assert.That(TilemapContains(tilemaps[layerIndex], decorationTile), Is.True);
+                Assert.That(TilemapContains(tilemaps[layerIndex], decorationTile), Is.EqualTo(layerIndex != (int)RoomTileLayerKind.Hole));
             Assert.That(builder.GeneratedRoomObjects, Has.Count.EqualTo(1));
             Assert.That(builder.GeneratedRoomObjects[0].name, Does.Contain("Prop_01"));
             List<DungeonObjectRuntimeStateData> states =
@@ -518,7 +578,8 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
                 tilemaps[4],
                 tilemaps[5],
                 tilemaps[6],
-                tilemaps[7]);
+                tilemaps[7],
+                tilemaps[8]);
             builder.EditorAssignCorridorTiles(baseTile, baseTile);
 
             verticalModule.EditorSetData(
@@ -625,7 +686,8 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
                 tilemaps[4],
                 tilemaps[5],
                 tilemaps[6],
-                tilemaps[7]);
+                tilemaps[7],
+                tilemaps[8]);
 
             List<RoomTileData> socketBaseTiles = new()
             {
@@ -683,7 +745,12 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
             Assert.That(layout.IsComplete, Is.True, layout.FailureReason);
             Assert.That(builder.TryBuild(layout, DungeonBuildOptions.VisualOnly), Is.True);
             for (int i = 0; i < tilemaps.Length; i++)
-                Assert.That(tilemaps[i].GetUsedTilesCount(), Is.GreaterThan(0));
+            {
+                if (i == (int)RoomTileLayerKind.Hole)
+                    Assert.That(tilemaps[i].GetUsedTilesCount(), Is.Zero);
+                else
+                    Assert.That(tilemaps[i].GetUsedTilesCount(), Is.GreaterThan(0));
+            }
         }
         finally
         {

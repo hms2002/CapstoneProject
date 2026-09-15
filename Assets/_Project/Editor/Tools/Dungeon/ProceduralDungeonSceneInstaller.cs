@@ -405,6 +405,40 @@ public static class ProceduralDungeonSceneInstaller
     /// <summary>
     /// 책임 : 기존 세 일반 보스 절차 복도와 V0 테스트 씬의 생성 Grid에 누락된 고정 Tilemap 슬롯만 추가한다.
     /// </summary>
+    /// <summary>Installs only the authored pit layer in existing procedural scenes, preserving other layer settings.</summary>
+    [MenuItem("Tools/Dungeon/Install Hole Tile Layers Only")]
+    public static void InstallHoleTileLayersOnly()
+    {
+        if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            return;
+
+        SceneSetup[] previousSetup = EditorSceneManager.GetSceneManagerSetup();
+        try
+        {
+            string[] paths = System.IO.Directory.GetFiles("Assets/_Project/Scenes", "Procedural*.unity");
+            foreach (string rawPath in paths)
+            {
+                string path = rawPath.Replace('\\', '/');
+                Scene scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                foreach (DungeonRoomBuilder builder in FindComponentsInScene<DungeonRoomBuilder>(scene))
+                {
+                    if (builder.FloorTilemap == null)
+                        throw new InvalidOperationException($"Missing floor tilemap: {path}");
+                    Tilemap hole = FindOrCreateRuntimeTilemap(builder.FloorTilemap.transform.parent, RoomTileLayerKind.Hole);
+                    builder.EditorAssignHoleTilemap(hole);
+                    EditorUtility.SetDirty(builder);
+                }
+                EditorSceneManager.MarkSceneDirty(scene);
+                EditorSceneManager.SaveScene(scene);
+            }
+        }
+        finally
+        {
+            if (previousSetup.Length > 0 && System.Array.Exists(previousSetup, setup => setup.isLoaded && setup.isActive))
+                EditorSceneManager.RestoreSceneManagerSetup(previousSetup);
+        }
+    }
+
     [MenuItem("Tools/Dungeon/Install Fixed Room Tile Layers Only")]
     public static void InstallFixedRoomTileLayersOnly()
     {
@@ -1937,6 +1971,7 @@ public static class ProceduralDungeonSceneInstaller
             wallDetail,
             foreground,
             overlayFx);
+        builder.EditorAssignHoleTilemap(CreateRuntimeTilemap(gridObject.transform, RoomTileLayerKind.Hole));
         builder.EditorAssignCorridorTiles(
             tilePalette.PrimaryFloor,
             tilePalette.PrimaryWall);
@@ -2738,6 +2773,7 @@ public static class ProceduralDungeonSceneInstaller
             foreground,
             overlayFx);
         builder.EditorAssignCorridorTiles(fallbackFloor, fallbackWall);
+        builder.EditorAssignHoleTilemap(CreateRuntimeTilemap(gridObject.transform, RoomTileLayerKind.Hole));
         builder.EditorAssignConnectedDoorSetup(
             doorPrefab,
             doorRootObject.transform,
@@ -3539,6 +3575,7 @@ public static class ProceduralDungeonSceneInstaller
         Tilemap wallDetail = FindOrCreateRuntimeTilemap(grid, RoomTileLayerKind.WallDetail);
         Tilemap foreground = FindOrCreateRuntimeTilemap(grid, RoomTileLayerKind.Foreground);
         Tilemap overlayFx = FindOrCreateRuntimeTilemap(grid, RoomTileLayerKind.OverlayFX);
+        Tilemap hole = FindOrCreateRuntimeTilemap(grid, RoomTileLayerKind.Hole);
 
         ConfigureRuntimeTilemap(floor, RoomTileLayerKind.Floor);
         ConfigureRuntimeTilemap(wall, RoomTileLayerKind.Wall);
@@ -3550,7 +3587,8 @@ public static class ProceduralDungeonSceneInstaller
             wall,
             wallDetail,
             foreground,
-            overlayFx);
+            overlayFx,
+            hole);
         EditorUtility.SetDirty(builder);
         VerifyFixedRoomTileLayers(builder, scenePath);
     }
@@ -3605,6 +3643,26 @@ public static class ProceduralDungeonSceneInstaller
             if (tilemapObject.GetComponent<CompositeCollider2D>() == null)
                 tilemapObject.AddComponent<CompositeCollider2D>();
             tilemapCollider.compositeOperation = Collider2D.CompositeOperation.Merge;
+            if (layer == RoomTileLayerKind.Hole)
+            {
+                CompositeCollider2D composite = tilemapObject.GetComponent<CompositeCollider2D>();
+                composite.geometryType = CompositeCollider2D.GeometryType.Polygons;
+                composite.isTrigger = true;
+                HoleTrap trap = tilemapObject.GetComponent<HoleTrap>();
+                if (trap == null)
+                {
+                    trap = tilemapObject.AddComponent<HoleTrap>();
+                    SerializedObject settings = new(trap);
+                    settings.FindProperty("damageEffect").objectReferenceValue =
+                        AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(AssetDatabase.GUIDToAssetPath("e4a0c190c04336e4699962b2ee02f9a1"));
+                    settings.FindProperty("fallingEffect").objectReferenceValue =
+                        AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(AssetDatabase.GUIDToAssetPath("f3033dc69e9708347a58b0f11d0759c7"));
+                    settings.FindProperty("ignoreTag").objectReferenceValue =
+                        AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(AssetDatabase.GUIDToAssetPath("c4d6c74817ae3b945b20c041f24f86b0"));
+                    settings.FindProperty("logDebug").boolValue = false;
+                    settings.ApplyModifiedPropertiesWithoutUndo();
+                }
+            }
         }
         else
         {

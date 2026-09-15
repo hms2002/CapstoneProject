@@ -9,6 +9,7 @@ using UnityGAS;
 /// 스폰된 몬스터를 등록받아 살아 있는 대상 수를 추적하고,
 /// 모두 제거되면 잠금이 해제되도록 판정하는 규칙만 담당한다.
 /// 선택적으로 방 encounter와 연결하면 지연 스폰, 분열 생존 개체와 웨이브 홀드도 잠금에 포함한다.
+/// 표시 수에는 몬스터와 예약 스폰만 포함하고, 전투 유지용 홀드는 잠금 조건으로만 사용한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class ChestMonsterKillLock : MonoBehaviour
@@ -37,7 +38,7 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
 
     /// <summary>
     /// 책임 : 남은 몬스터 수가 바뀌었을 때 외부 뷰에 알린다.
-    /// int 인자는 현재 살아 있는 대상 수이다.
+    /// int 인자는 살아 있는 추적 단위와 예약 스폰 수이며, 전투 유지 홀드는 제외한다.
     /// </summary>
     public event Action<int> OnRemainingCountChanged;
 
@@ -47,7 +48,7 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
     public bool IsUnlocked => isUnlocked;
 
     /// <summary>
-    /// 책임 : 현재 살아 있는 잠금 대상 몬스터 수를 외부에 제공한다.
+    /// 책임 : 살아 있는 추적 단위와 예약 스폰 수를 제공한다. 홀드 중에는 0이어도 잠겨 있을 수 있다.
     /// </summary>
     public int RemainingAliveCount => remainingAliveCount;
 
@@ -179,9 +180,12 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
         CompactDeadEntries();
 
         int newRemainingCount = trackedMonsterUnits.Count + pendingMonsterCount;
+        bool hasEncounterHold = false;
         if (boundRoomGroup != null)
         {
-            int roomCount = boundRoomGroup.RemainingRegisteredOrPendingCount;
+            int holdCount = boundRoomGroup.EncounterHoldCount;
+            hasEncounterHold = holdCount > 0;
+            int roomCount = Mathf.Max(0, boundRoomGroup.RemainingRegisteredOrPendingCount - holdCount);
             if (!boundRoomGroup.RoomEntrySpawnStarted)
             {
                 foreach (MonsterSpawnContainer point in boundRoomSpawnPoints)
@@ -192,7 +196,7 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
             }
             newRemainingCount = Mathf.Max(newRemainingCount, roomCount);
         }
-        bool newUnlocked = newRemainingCount == 0;
+        bool newUnlocked = newRemainingCount == 0 && !hasEncounterHold;
 
         bool countChanged = remainingAliveCount != newRemainingCount;
         bool lockStateChanged = isUnlocked != newUnlocked;
