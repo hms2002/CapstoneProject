@@ -31,6 +31,7 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
     [SerializeField] private Tilemap wallDetailTilemap;
     [SerializeField] private Tilemap foregroundTilemap;
     [SerializeField] private Tilemap overlayFxTilemap;
+    [SerializeField] private Tilemap holeTilemap;
 
     [HideInInspector, SerializeField] private RoomTemplateSO sourceTemplate;
 
@@ -52,6 +53,7 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
     public Tilemap WallDetailTilemap => wallDetailTilemap;
     public Tilemap ForegroundTilemap => foregroundTilemap;
     public Tilemap OverlayFxTilemap => overlayFxTilemap;
+    public Tilemap HoleTilemap => holeTilemap;
     public RoomTemplateSO SourceTemplate => sourceTemplate;
 
     public Tilemap GetTilemap(RoomTileLayerKind layer)
@@ -66,6 +68,7 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
             RoomTileLayerKind.WallDetail => wallDetailTilemap,
             RoomTileLayerKind.Foreground => foregroundTilemap,
             RoomTileLayerKind.OverlayFX => overlayFxTilemap,
+            RoomTileLayerKind.Hole => holeTilemap,
             _ => null
         };
     }
@@ -99,7 +102,8 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
         Tilemap wall,
         Tilemap wallDetail,
         Tilemap foreground,
-        Tilemap overlayFx)
+        Tilemap overlayFx,
+        Tilemap hole = null)
     {
         grid = targetGrid;
         underFloorTilemap = underFloor;
@@ -110,6 +114,7 @@ public sealed class RoomPieceAuthoring : MonoBehaviour
         wallDetailTilemap = wallDetail;
         foregroundTilemap = foreground;
         overlayFxTilemap = overlayFx;
+        holeTilemap = hole;
     }
 
     public void EditorAssignSourceTemplate(RoomTemplateSO template)

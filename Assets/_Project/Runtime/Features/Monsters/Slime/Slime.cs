@@ -4,8 +4,16 @@ using UnityEngine.Serialization;
 using UnityGAS;
 
 // Responsibility: own slime split lifecycle and appearance; AttributeSet profiles own initial HP.
-public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandler
+public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandler, IMonsterSpawnContextReceiver
 {
+    private MonsterSpawnContext splitSpawnContext;
+
+    /// <summary>Preserves the owning encounter context for subsequent slime generations.</summary>
+    public void ApplySpawnContext(MonsterSpawnContext context)
+    {
+        splitSpawnContext = context;
+    }
+
     private const float SplitWakeSeconds = 1f;
     private const float PlayerBaseSpeedFallback = 4f;
     private static readonly SoundRef MediumSplitSound = SoundRef.FromKey("sound_mediumSlime_Split");
@@ -252,6 +260,10 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
                 nextSlime.SuppressMonsterLootDrop();
                 nextSlime.GetComponent<ExperienceRewardSource>()?.SetGrantExperience(false);
                 RegisterLockTrackedChild(spawned);
+                var childContext = new MonsterSpawnContext(landingPosition, spawned.transform.rotation,
+                    splitSpawnContext.RoomArea, splitSpawnContext.Pathfinder);
+                foreach (var receiver in spawned.GetComponentsInChildren<IMonsterSpawnContextReceiver>(true))
+                    receiver.ApplySpawnContext(childContext);
                 StartSplitLandingMotion(spawned, center, landingPosition);
             }
         }

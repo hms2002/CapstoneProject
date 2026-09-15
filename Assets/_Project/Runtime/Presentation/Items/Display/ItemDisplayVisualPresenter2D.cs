@@ -235,6 +235,10 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour, IItemDisplayVi
         if (instance == null || fallbackSpriteRenderer == null)
             return;
 
+        var visualSettings = instance.GetComponent<ItemDisplayVisualInstance2D>();
+        if (visualSettings != null && visualSettings.PreserveAuthoredSorting)
+            return;
+
         int sortingLayerId = fallbackSpriteRenderer.sortingLayerID;
         int baseSortingOrder = fallbackSpriteRenderer.sortingOrder;
 

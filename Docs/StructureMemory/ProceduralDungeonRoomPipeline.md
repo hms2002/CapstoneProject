@@ -12,6 +12,12 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
 
 ## Current Flow
 
+### Foreground Occlusion Fade
+
+- Dragon, Shadow and Slime procedural corridor scenes have an authored TilemapOcclusionFader2D alongside DungeonRoomBuilder, explicitly targeting Foreground and OverlayFX. Demonking has no corresponding builder tilemap references and is not migrated.
+- Builder emits TileContentClearing before clearing tiles and TileContentBuilt after successful placement/compression. The Infrastructure fader subscribes without a Gameplay-to-Infrastructure reference, restores/discards old cache before replacement, then rebuilds groups after generation. Disabled faders rebuild on re-enable.
+- Inspector defaults: Player layer (including triggers), 0.08s checks, 0.35 faded alpha, 0.12s fade. Cardinally connected tiles fade as one group. New scenes need an explicitly authored fader and target references; the scene installer is unchanged.
+
 ### Bounded Template Selection (2026-09-11)
 
 - Graph creation, role placement and physical room/corridor embedding remain separate. `DungeonGraphLayoutAssembler.TemplateSearch.cs` replaces node-order greedy template selection with precomputed domains, minimum-remaining-values assignment, forward checking and bounded rollback. Combat quota templates can redistribute across Combat nodes instead of staying at provisional reservation nodes; explicitly guaranteed templates stay pinned.
@@ -381,3 +387,12 @@ Related verification: [2026-09-12 session](../SessionLogs/2026-09-12.md).
 - Transient `TopologyDraft.MinimumStartExitDepth` carries `min(2, policy.MinimumBossGraphDistance)` into terminal coverage. It is not a serialized policy field or a new designer tag. Terminal reservation can extend an under-depth branch leaf using the same `BranchGroup`; the later growth pass gathers only degree-one group endpoints, not every node in an extended group.
 - Existing custom policies are not silently rewritten. A custom 12-room/four-exit policy still insisting on Boss depth 6 may now be infeasible once every exit requires depth 2; adjust the authored Boss range or room budget rather than relying on a hidden fallback. Production 32-seed sweeps per theme yielded sorted exit depths 2,2,3,4 with all existing constraints; this is observed for current content, not a guarantee of identical branch geometry or cardinal assignments for future content.
 - Verification entry: `StartGrowth_*`, the strengthened production/event oracle, and the [2026-09-14 session](../SessionLogs/2026-09-14.md). Work remains generation-only and subject to the existing bounded search.
+## Hole Tile Authoring
+
+- RoomTileLayerKind.Hole is appended as value 8. RoomBuildData.holeTiles is optional for existing assets. Room and corridor authoring serialize/restore this layer and previews draw it.
+- Paint pit visuals on Hole. Runtime generation removes Floor and FloorDetail at these cells and forces full-grid tile colliders. Do not paint pits over entrance/arrival/spawn points or cut every walking route through a room; topology generation does not solve interior hazard connectivity.
+- GeneratedHole uses the existing HoleTrap physics layer, a static Rigidbody2D, trigger CompositeCollider2D (Polygons), TilemapCollider2D and HoleTrap. Existing shared damage/falling/dash-ignore assets are assigned by the editor installer; player damage defaults to 1.
+- Tools/Dungeon/Install Hole Tile Layers Only migrates procedural scenes without reconfiguring other tile layers. It is safe to rerun. Previously open room-authoring workspaces should save and reload their template to create the new layer slot.
+- SafetyTracker already tracks HoleTrap tilemaps. TilemapPathfinder2D additionally checks pit triggers with explicit trigger-enabled, non-allocating casts, including direct movement shortcuts; forced movement and agents that do not use this pathfinder retain their existing fall behavior.
+- Keep the project's Physics2D Queries Hit Triggers enabled. On Unity 6000.4.2f1, the native regression test missed pit triggers with that global setting disabled even with an explicit trigger-enabled contact filter. No global physics setting is changed by runtime navigation.
+- No pit tiles were painted into production room templates automatically. Verify fall/respawn feel and interior accessibility after authoring.

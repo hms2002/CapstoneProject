@@ -10,6 +10,7 @@ using UnityEngine;
 public sealed class StatusHudService : MonoBehaviour
 {
     private static StatusHudService instance;
+    private readonly Dictionary<(string Owner, string Status), int> entryIndices = new();
     public static StatusHudService Current => instance;
     public static StatusHudService Instance => EnsureInstance();
 
@@ -58,5 +59,36 @@ public sealed class StatusHudService : MonoBehaviour
     public void CollectEntries(List<StatusHudEntry> buffer)
     {
         StatusHudSourceRegistry.CollectEntries(buffer);
+        if (buffer == null)
+            return;
+
+        // Collapse duplicate projections, not independent owners or gameplay stacks.
+        entryIndices.Clear();
+        int count = 0;
+        for (int i = 0; i < buffer.Count; i++)
+        {
+            StatusHudEntry entry = buffer[i];
+            if (!entry.IsVisible)
+                continue;
+            if (string.IsNullOrEmpty(entry.OwnerKey) || string.IsNullOrEmpty(entry.StatusId))
+            {
+                buffer[count++] = entry;
+                continue;
+            }
+
+            var key = (entry.OwnerKey, entry.StatusId);
+            if (entryIndices.TryGetValue(key, out int index))
+            {
+                if (entry.RemainingTime > buffer[index].RemainingTime)
+                    buffer[index] = entry;
+                continue;
+            }
+
+            entryIndices.Add(key, count);
+            buffer[count++] = entry;
+        }
+
+        if (count < buffer.Count)
+            buffer.RemoveRange(count, buffer.Count - count);
     }
 }

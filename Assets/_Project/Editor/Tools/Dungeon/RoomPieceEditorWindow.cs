@@ -602,6 +602,7 @@ public sealed partial class RoomPieceEditorWindow : EditorWindow
             RoomTileLayerKind.WallDetail => "Wall 위에 그리며 아래 Wall의 충돌을 따르는 장식입니다.",
             RoomTileLayerKind.Foreground => "캐릭터 앞 ForeGround 정렬 레이어에 표시되는 장식입니다.",
             RoomTileLayerKind.OverlayFX => "안개·빛·어둠 같은 ForeGround 오버레이 효과입니다.",
+            RoomTileLayerKind.Hole => "낙하 구덩이입니다. 생성 시 같은 셀의 이동 바닥을 제거하고 셀 전체에 낙하 판정을 만듭니다.",
             _ => RoomTileLayerContract.GetDisplayName(layer)
         };
     }
@@ -2229,6 +2230,7 @@ public sealed partial class RoomPieceEditorWindow : EditorWindow
         Tilemap wallDetail = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.WallDetail);
         Tilemap foreground = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.Foreground);
         Tilemap overlayFx = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.OverlayFX);
+        Tilemap hole = CreateTilemapLayer(gridObject.transform, RoomTileLayerKind.Hole);
 
         authoring.EditorAssignTilemaps(
             grid,
@@ -2239,7 +2241,8 @@ public sealed partial class RoomPieceEditorWindow : EditorWindow
             wall,
             wallDetail,
             foreground,
-            overlayFx);
+            overlayFx,
+            hole);
         authoring.EditorAssignSourceTemplate(sourceTemplate);
         EditorUtility.SetDirty(authoring);
 
@@ -3132,6 +3135,7 @@ public sealed partial class RoomPieceEditorWindow : EditorWindow
             overlayFxTiles = CollectTiles(
                 selectedAuthoring.OverlayFxTilemap,
                 selectedAuthoring.Size),
+            holeTiles = CollectTiles(selectedAuthoring.HoleTilemap, selectedAuthoring.Size),
             objectPlacements = CollectObjectPlacements(selectedAuthoring),
             monsterWaves = RoomMonsterWaveDefinition.CopyOrDefault(selectedAuthoring.MonsterWaves),
             travelEndpointPlacements = CollectTravelEndpointPlacements(selectedAuthoring)

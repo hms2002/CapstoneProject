@@ -1017,8 +1017,8 @@ SpriteMask:
   m_MaskAlphaCutoff: 0.2
   m_FrontSortingLayerID: -1417877795
   m_BackSortingLayerID: -1417877795
-  m_FrontSortingLayer: 8
-  m_BackSortingLayer: 8
+  m_FrontSortingLayer: 10
+  m_BackSortingLayer: 10
   m_FrontSortingOrder: 32767
   m_BackSortingOrder: -32768
   m_IsCustomRangeActive: 1
@@ -1109,8 +1109,8 @@ SpriteMask:
   m_MaskAlphaCutoff: 0.5
   m_FrontSortingLayerID: -1417877795
   m_BackSortingLayerID: -1417877795
-  m_FrontSortingLayer: 8
-  m_BackSortingLayer: 8
+  m_FrontSortingLayer: 10
+  m_BackSortingLayer: 10
   m_FrontSortingOrder: 32767
   m_BackSortingOrder: -32768
   m_IsCustomRangeActive: 1

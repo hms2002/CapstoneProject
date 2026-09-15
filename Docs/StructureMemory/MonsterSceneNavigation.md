@@ -4,6 +4,8 @@ Navigation aid, not an Architecture or Contracts source of truth.
 
 ## Ownership
 
+- `PawnOrbitContactIntent2D` receives `MonsterSpawnContext` for room-local range bypass and target reacquisition, without changing its crawl/orbit movement. Both actor and target must be inside the owning room. `Slime` preserves and forwards this context through split generations; unscoped summons keep authored detection range. This does not add A* movement to Pawn.
+
 - One active `TilemapPathfinder2D` belongs to each monster scene, on a separate scene root. It must not be parented under the persistent `MonsterSpawner`.
 - The pathfinder uses a scene-local Grid, primary ground Tilemap and optional additional ground Tilemaps sharing that Grid. Procedural scenes reference `DungeonRoomBuilder.FloorTilemap` before generation; the same Tilemap is populated at runtime.
 - `SceneMonsterSpawnDirector` resolves scene services and passes navigation through `MonsterSpawnContext` to receivers. Direct/boss-spawned monsters can use `EnemyChaseIntent2D`'s same-scene fallback.

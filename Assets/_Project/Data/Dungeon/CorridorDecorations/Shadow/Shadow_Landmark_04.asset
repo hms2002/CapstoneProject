@@ -58,7 +58,8 @@ MonoBehaviour:
     foregroundTiles: []
     overlayFxTiles: []
     objectPlacements:
-    - placementId: Shadow_CorridorLandmarkProp
+    - monsterWaveId: 
+      placementId: Shadow_CorridorLandmarkProp
       kind: 0
       prefab: {fileID: 2055102311959635369, guid: 6242b925f1d3e0d44a183102cd3d4c26, type: 3}
       monsterSpawnRole: 0
@@ -69,4 +70,5 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
+    monsterWaves: []
     travelEndpointPlacements: []

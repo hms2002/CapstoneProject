@@ -15,9 +15,95 @@ using Object = UnityEngine.Object;
 /// </summary>
 public sealed class MonsterProjectileBurstCadencePlayModeTests
 {
+    [Test]
+    public void RecoveryRetreat_AvoidsPitChoosesSideAndStopsWhenSurrounded()
+    {
+        bool oldQueries = Physics2D.queriesHitTriggers;
+        try
+        {
+            Physics2D.queriesHitTriggers = true;
+            Mob owner = CreateMonster("CommonCorridor/GoblinGunner.prefab");
+            var resolve = typeof(Mob).GetMethod("ResolveWallSafeRecoveryRetreatDirection", BindingFlags.Instance | BindingFlags.NonPublic);
+            var blocked = typeof(Mob).GetMethod("IsRecoveryRetreatDirectionBlocked", BindingFlags.Instance | BindingFlags.NonPublic);
+            Vector2 center = owner.transform.position;
+            foreach (Collider2D body in owner.GetComponentsInChildren<Collider2D>())
+            {
+                if (body.enabled && !body.isTrigger)
+                {
+                    center = body.bounds.center;
+                    break;
+                }
+            }
+
+            BoxCollider2D AddPit(Vector2 offset, Vector2 size)
+            {
+                var go = new GameObject("RetreatPit");
+                go.layer = LayerMask.NameToLayer("HoleTrap");
+                go.transform.position = center + offset;
+                var pit = go.AddComponent<BoxCollider2D>();
+                pit.size = size;
+                pit.isTrigger = true;
+                return pit;
+            }
+
+            BoxCollider2D back = AddPit(Vector2.right * 1.5f, new Vector2(0.2f, 1f));
+            Physics2D.SyncTransforms();
+            Assert.That((bool)blocked.Invoke(owner, new object[] { Vector2.right, 0.25f }), Is.False);
+            Assert.That((bool)blocked.Invoke(owner, new object[] { Vector2.right, 2f }), Is.True,
+                "A pit beyond the old fixed probe must block a longer retreat.");
+            Vector2 side = (Vector2)resolve.Invoke(owner, new object[] { Vector2.right, 2f });
+            Assert.That(Mathf.Abs(side.y), Is.EqualTo(1f));
+            AddPit(Vector2.up * 1.5f, new Vector2(1f, 0.2f));
+            AddPit(Vector2.down * 1.5f, new Vector2(1f, 0.2f));
+            Physics2D.SyncTransforms();
+            Assert.That((Vector2)resolve.Invoke(owner, new object[] { Vector2.right, 2f }), Is.EqualTo(Vector2.zero));
+            back.enabled = false;
+            Physics2D.SyncTransforms();
+            Assert.That((Vector2)resolve.Invoke(owner, new object[] { Vector2.right, 2f }), Is.EqualTo(Vector2.right));
+        }
+        finally
+        {
+            Physics2D.queriesHitTriggers = oldQueries;
+        }
+    }
+
     private readonly List<Object> temporaryAssets = new();
     private HashSet<GameObject> existingRoots;
     private Random.State randomState;
+
+    [Test]
+    public void OverlappingAlcoholSources_KeepOneHudHandleUntilEffectExpires()
+    {
+        var target = CreateMonster("CommonCorridor/GoblinGunner.prefab").gameObject;
+        var runtime = PlayerStatusRuntime.GetOrAdd(target);
+        var definition = AssetDatabase.LoadAssetAtPath<CombatBuffDebuffApplicationDefinition>(
+            "Assets/_Project/Data/Abilities/Effects/CBD_Puddle_AlcoholBuff.asset");
+        Assert.That(definition, Is.Not.Null);
+        var a = new GameObject("AlcoholSourceA");
+        var b = new GameObject("AlcoholSourceB");
+        var first = CombatBuffDebuffApplier.GetOrAdd(a);
+        var second = CombatBuffDebuffApplier.GetOrAdd(b);
+        for (int i = 0; i < 6; i++)
+        {
+            Assert.That(first.ApplyFromSource(a, target, definition, "Puddle.Alcohol", 0.35f), Is.True);
+            Assert.That(second.ApplyFromSource(b, target, definition, "Puddle.Alcohol", 0.35f), Is.True);
+            Assert.That(runtime.ActiveStatusCount, Is.EqualTo(1));
+        }
+        var recipient = target.GetComponent<CombatBuffDebuffApplier>();
+        Assert.That(recipient, Is.Not.Null);
+        Object.DestroyImmediate(a);
+        Object.DestroyImmediate(b);
+        typeof(CombatBuffDebuffApplier).GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic)
+            .Invoke(recipient, null);
+        Assert.That(runtime.ActiveStatusCount, Is.EqualTo(1), "Independent duration survives both sources.");
+        var runner = target.GetComponent<AbilitySystem>().EffectRunner;
+        var active = runner.FindActiveEffect(definition.GameplayEffect, target);
+        Assert.That(active.StackCount, Is.EqualTo(1));
+        active.TimeRemaining = 0f;
+        typeof(CombatBuffDebuffApplier).GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic)
+            .Invoke(recipient, null);
+        Assert.That(runtime.ActiveStatusCount, Is.Zero);
+    }
 
     [TestCase("CommonCorridor/GoblinGunner.prefab")]
     [TestCase("CommonCorridor/LizardMage.prefab")]
@@ -159,6 +245,39 @@ public sealed class MonsterProjectileBurstCadencePlayModeTests
         Assert.That(chase.IsTargetWithinDetectionRange(), Is.True, "Explicit special-monster overrides remain independent.");
         chase.SetIgnoreDetectionRange(false);
         chase.ApplySpawnContext(default);
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.False);
+    }
+
+    [Test]
+    public void PawnRoomContext_IgnoresRangeOnlyWithinOwningRoom()
+    {
+        Mob owner = CreateMonster("SlimeCorridor/Pawn.prefab");
+        var chase = owner.GetComponent<PawnOrbitContactIntent2D>();
+        var target = new GameObject("FarPawnTarget");
+        target.transform.position = owner.transform.position + Vector3.right * 12f;
+        typeof(Enemy).GetField("target", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(owner, target.transform);
+        var room = new GameObject("PawnRoomContext");
+        room.transform.position = owner.transform.position;
+        var bounds = room.AddComponent<BoxCollider2D>();
+        bounds.isTrigger = true;
+        bounds.size = Vector2.one * 30f;
+        var area = room.AddComponent<MonsterRoomArea2D>();
+        area.Configure(bounds);
+        Physics2D.SyncTransforms();
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.False);
+        chase.ApplySpawnContext(new MonsterSpawnContext(owner.transform.position, Quaternion.identity, area, null));
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.True);
+        target.transform.position += Vector3.right * 10f;
+        Physics2D.SyncTransforms();
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.False);
+        target.transform.position = room.transform.position;
+        owner.transform.position += Vector3.right * 20f;
+        Physics2D.SyncTransforms();
+        Assert.That(chase.IsTargetWithinDetectionRange(), Is.False);
+        owner.transform.position = room.transform.position;
+        target.transform.position += Vector3.right * 12f;
+        chase.ApplySpawnContext(default);
+        Physics2D.SyncTransforms();
         Assert.That(chase.IsTargetWithinDetectionRange(), Is.False);
     }
 
