@@ -23,6 +23,7 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
         public PlayerStatusRuntime PlayerStatusRuntime;
         public CombatBuffDebuffApplicationDefinition Definition;
         public GameplayEffect Effect;
+        public ActiveGameplayEffect ActiveEffect;
         public Object SourceObject;
         public string OwnerKey;
         public float AppliedDuration;
@@ -136,7 +137,21 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
             return;
         }
 
-        TrackedPlayerStatusSync tracked = FindTrackedPlayerStatus(targetRoot, ownerKey);
+        Object resolvedSource = sourceObject != null ? sourceObject : this;
+        // Keep HUD lifetime on the recipient, not on each overlapping or disappearing source.
+        if (gameObject != statusRuntime.gameObject)
+        {
+            GetOrAdd(statusRuntime.gameObject).SyncPlayerStatus(
+                resolvedSource, abilitySystem, targetRoot, definition, ownerKey, durationOverride);
+            return;
+        }
+
+        ActiveGameplayEffect activeEffect = abilitySystem.EffectRunner.FindActiveEffect(
+            definition.GameplayEffect, targetRoot, resolvedSource);
+        if (activeEffect == null)
+            return;
+
+        TrackedPlayerStatusSync tracked = FindTrackedPlayerStatus(targetRoot, ownerKey, activeEffect);
         if (tracked == null)
         {
             tracked = new TrackedPlayerStatusSync
@@ -146,6 +161,7 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
                 PlayerStatusRuntime = statusRuntime,
                 Definition = definition,
                 Effect = definition.GameplayEffect,
+                ActiveEffect = activeEffect,
                 SourceObject = sourceObject != null ? sourceObject : this,
                 OwnerKey = ownerKey,
                 AppliedDuration = durationOverride >= 0f ? durationOverride : definition.GameplayEffect.duration
@@ -159,6 +175,7 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
             tracked.PlayerStatusRuntime = statusRuntime;
             tracked.Definition = definition;
             tracked.Effect = definition.GameplayEffect;
+            tracked.SourceObject = resolvedSource;
             tracked.AppliedDuration = durationOverride >= 0f ? durationOverride : definition.GameplayEffect.duration;
         }
 
@@ -179,6 +196,8 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
             return false;
         }
 
+        // Non-stacking refresh can transfer the same effect to another puddle/source.
+        tracked.SourceObject = tracked.ActiveEffect.SourceObject;
         if (tracked.Definition != null &&
             tracked.Definition.LifetimePolicy == BuffDebuffLifetimePolicy.WhileSourceAlive &&
             tracked.SourceObject == null)
@@ -199,7 +218,7 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
         ActiveGameplayEffect activeEffect = tracked.SourceObject != null
             ? runner.FindActiveEffect(tracked.Effect, tracked.Target, tracked.SourceObject)
             : runner.FindActiveEffect(tracked.Effect, tracked.Target);
-        if (activeEffect == null)
+        if (activeEffect == null || !ReferenceEquals(activeEffect, tracked.ActiveEffect))
         {
             if (allowRelease)
                 ReleaseTrackedPlayerStatus(tracked, endEffect: false);
@@ -268,7 +287,7 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
         tracked.Handle = default;
     }
 
-    private TrackedPlayerStatusSync FindTrackedPlayerStatus(GameObject targetRoot, string ownerKey)
+    private TrackedPlayerStatusSync FindTrackedPlayerStatus(GameObject targetRoot, string ownerKey, ActiveGameplayEffect activeEffect)
     {
         for (int i = 0; i < trackedPlayerStatuses.Count; i++)
         {
@@ -276,7 +295,8 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
             if (tracked == null)
                 continue;
 
-            if (tracked.Target == targetRoot && tracked.OwnerKey == ownerKey)
+            if (tracked.Target == targetRoot && tracked.OwnerKey == ownerKey &&
+                ReferenceEquals(tracked.ActiveEffect, activeEffect))
                 return tracked;
         }
 

@@ -19,6 +19,40 @@ public sealed class MonsterProjectileBurstCadencePlayModeTests
     private HashSet<GameObject> existingRoots;
     private Random.State randomState;
 
+    [Test]
+    public void OverlappingAlcoholSources_KeepOneHudHandleUntilEffectExpires()
+    {
+        var target = CreateMonster("CommonCorridor/GoblinGunner.prefab").gameObject;
+        var runtime = PlayerStatusRuntime.GetOrAdd(target);
+        var definition = AssetDatabase.LoadAssetAtPath<CombatBuffDebuffApplicationDefinition>(
+            "Assets/_Project/Data/Abilities/Effects/CBD_Puddle_AlcoholBuff.asset");
+        Assert.That(definition, Is.Not.Null);
+        var a = new GameObject("AlcoholSourceA");
+        var b = new GameObject("AlcoholSourceB");
+        var first = CombatBuffDebuffApplier.GetOrAdd(a);
+        var second = CombatBuffDebuffApplier.GetOrAdd(b);
+        for (int i = 0; i < 6; i++)
+        {
+            Assert.That(first.ApplyFromSource(a, target, definition, "Puddle.Alcohol", 0.35f), Is.True);
+            Assert.That(second.ApplyFromSource(b, target, definition, "Puddle.Alcohol", 0.35f), Is.True);
+            Assert.That(runtime.ActiveStatusCount, Is.EqualTo(1));
+        }
+        var recipient = target.GetComponent<CombatBuffDebuffApplier>();
+        Assert.That(recipient, Is.Not.Null);
+        Object.DestroyImmediate(a);
+        Object.DestroyImmediate(b);
+        typeof(CombatBuffDebuffApplier).GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic)
+            .Invoke(recipient, null);
+        Assert.That(runtime.ActiveStatusCount, Is.EqualTo(1), "Independent duration survives both sources.");
+        var runner = target.GetComponent<AbilitySystem>().EffectRunner;
+        var active = runner.FindActiveEffect(definition.GameplayEffect, target);
+        Assert.That(active.StackCount, Is.EqualTo(1));
+        active.TimeRemaining = 0f;
+        typeof(CombatBuffDebuffApplier).GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic)
+            .Invoke(recipient, null);
+        Assert.That(runtime.ActiveStatusCount, Is.Zero);
+    }
+
     [TestCase("CommonCorridor/GoblinGunner.prefab")]
     [TestCase("CommonCorridor/LizardMage.prefab")]
     [TestCase("BeerMonster.prefab")]

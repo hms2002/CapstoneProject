@@ -16,6 +16,12 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 
 ## Current Inventory Groups
 
+### Boss Cinematic HUD Lifetime
+
+- `BossControllerBase.OnDeathStarted` marks the registered HUD defeated (zero HP) while death presentation plays. Ordinary destruction unregisters through OnDestroy; split-queen finale destroys its individual owners.
+- `BossDeathPresentation` retains the owner for reward/encounter flow after hiding its renderers. It explicitly unbinds only that owner's HUD on vanish, terminal-ending routine return, or interruption of a running cinematic. Do not replace this with clearing every boss or hiding every dead source immediately: multi-boss death feedback remains intentional.
+- Renderer visibility and HUD registration are separate lifetimes; a retained invisible boss is not a missing Unity object.
+
 ### Tackle Contact Damage Policy (2026-09-11)
 
 - `TackleAttack.enableContactDamage` gates only the trigger-driven direct damage/request path in `OnTriggerStay2D`. It defaults to true to preserve other existing tackle users.

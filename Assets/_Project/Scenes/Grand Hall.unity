@@ -185,7 +185,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5909209640859858232, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
       propertyPath: startRunRouteCatalog
-      value:
+      value: 
       objectReference: {fileID: 11400000, guid: e2de6fd04aec09443a7b3f80c3d10058, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -291,8 +291,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 793c56947995d6e4588faeb8c701013c, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   persistAcrossScenes: 1
   verboseLogging: 0
   worldItemPrefab: {fileID: 4439982264372595963, guid: 965ec98195bcbe34f9512acce3712973, type: 3}
@@ -6720,8 +6720,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b469ddddb21161a4093426def65e57b8, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   npcData: {fileID: 11400000, guid: d9ef2aea03d3ddf4488a762102786dde, type: 2}
   legacyInkJSON: {fileID: 4900000, guid: aef34e203f982094b814e11d115a65ed, type: 3}
   playerCam: {fileID: 361708142}
@@ -7952,7 +7952,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d022bf8745dd7b74999b198c8fbe471e, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TilemapOcclusionFader2D
   targetTilemaps: []
   detectionLayers:
@@ -7965,6 +7965,55 @@ MonoBehaviour:
   fadedAlpha: 0.35
   fadeDuration: 0.12
   drawDetectionBounds: 0
+--- !u!1 &221707339
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 221707341}
+  - component: {fileID: 221707340}
+  m_Layer: 0
+  m_Name: SceneBgm
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &221707340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221707339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12565987a9ce4c05beca8baf2fca2921, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Infrastructure::SceneBgmRequester
+  sceneMusic:
+    key: bgm.hub
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+--- !u!4 &221707341
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221707339}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &236309114
 GameObject:
   m_ObjectHideFlags: 0
@@ -21952,10 +22001,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a43077220f17e524cba96184d5e52fe2, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Gameplay::SceneTravelEndpoint
   endpointId: GrandHall.BossClear
-  proceduralSlotId:
+  proceduralSlotId: 
   connection: {fileID: 0}
   connectionSide: 0
   departureAnchor: {fileID: 310865083}
@@ -21972,7 +22021,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6db0d45142451d4b9e583b9d97c9b44, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Gameplay::PlayerSpawnPoint
   pointId: GrandHall.BossClear
   isDefault: 0
@@ -21986,8 +22035,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &371932436 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1891207895635120300, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
@@ -22020,8 +22069,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 92055a7c4c8e0824fb9a0d2eaedbc4d8, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &400535307
 Transform:
   m_ObjectHideFlags: 0
@@ -22138,7 +22187,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5909209640859858232, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
       propertyPath: startRunRouteCatalog
-      value:
+      value: 
       objectReference: {fileID: 11400000, guid: e00f5ae390a21034c9399e7bfc22075f, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -22168,7 +22217,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b1f34d7526743a0adcff0d02fe6961f, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Gameplay::RequiredBossClearScenePortalAccessRule
   requiredBossRouteSets:
   - {fileID: 11400000, guid: ac129d8bcfb6e3c4da2f9c2e3e4ead07, type: 2}
@@ -22210,8 +22259,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   Priority:
     Enabled: 1
     m_Value: 5
@@ -22268,8 +22317,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b617507da6d07e749b7efdb34e1173e1, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   TrackerSettings:
     BindingMode: 3
     PositionDamping: {x: 1, y: 1, z: 1}
@@ -22304,8 +22353,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 68696bbb701dad74a83df832637ad06b, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &770899548
 Transform:
   m_ObjectHideFlags: 0
@@ -22363,7 +22412,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5419ecec921b49f499f31944ca87dc10, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Gameplay::GrandHallBossDropSpawnPoint
   bossId: 2
 --- !u!1 &988747540
@@ -22424,8 +22473,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a608504f4a153fe478f58decddde0706, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   cueDatabase: {fileID: 11400000, guid: ff2cf50821484d47804f40dd530f2c77, type: 2}
   legacyDefinitions:
   - {fileID: 11400000, guid: 2903e043ebd252a42b711835ac01484e, type: 2}
@@ -22532,8 +22581,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e46908affd274f2419d3e3d26578055f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   spawnPoints: []
   spawnRooms: []
   difficultyModifiers:
@@ -22591,7 +22640,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 731106cde3b130a4687e22786a70aacf, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TilemapPathfinder2D
   grid: {fileID: 1764990986}
   groundTilemap: {fileID: 167450172}
@@ -22647,8 +22696,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6db0d45142451d4b9e583b9d97c9b44, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   pointId: Default
   isDefault: 0
   runtimePolicy: 0
@@ -22709,10 +22758,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a43077220f17e524cba96184d5e52fe2, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Gameplay::SceneTravelEndpoint
   endpointId: GrandHall.Hub
-  proceduralSlotId:
+  proceduralSlotId: 
   connection: {fileID: 11400000, guid: 27be5ba86cd03534584051a816469805, type: 2}
   connectionSide: 1
   departureAnchor: {fileID: 1247979068}
@@ -25039,7 +25088,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5419ecec921b49f499f31944ca87dc10, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Gameplay::GrandHallBossDropSpawnPoint
   bossId: 0
 --- !u!1 &1441605663
@@ -25069,8 +25118,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 523f1b44aa0cf5a458519400bde02950, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   database: {fileID: 11400000, guid: 3f0da48f2a0acc843a80f20a370f3678, type: 2}
 --- !u!4 &1441605665
 Transform:
@@ -40951,7 +41000,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactShakeRoot
-      value:
+      value: 
       objectReference: {fileID: 371932436}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactRushDuration
@@ -40983,11 +41032,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactUiParticleEmitter
-      value:
+      value: 
       objectReference: {fileID: 1531557036}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactPresentationAnchor
-      value:
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: resistancePulseAmplitude
@@ -41011,7 +41060,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: 'impactParticleSystems.Array.data[0]'
-      value:
+      value: 
       objectReference: {fileID: 4496051618483977664, guid: e6cf7f0dfc7a4f0ab23e38d2b55ccf91, type: 3}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactPresentation.cameraShake.amplitude
@@ -41739,7 +41788,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4927727796378230666, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_Camera
-      value:
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4944368382761257632, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -43579,8 +43628,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b5d8e7b0643d744983de9e34822877e, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1531557035 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2408306271992042467, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
@@ -43590,8 +43639,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 098d94856215da74dbbf50659196d131, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1531557036 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8942350213942013994, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
@@ -43601,7 +43650,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b6c2f8e0fb97c4545aee963e45f6179a, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIParticleEmitter
 --- !u!1 &1675587048
 GameObject:
@@ -43630,8 +43679,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8fb16bceff6efc42a16e2740fcfebcb, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   database: {fileID: 11400000, guid: b6d023793bc803444983040e2003b1b9, type: 2}
 --- !u!4 &1675587050
 Transform:
@@ -43714,7 +43763,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5909209640859858232, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
       propertyPath: startRunRouteCatalog
-      value:
+      value: 
       objectReference: {fileID: 11400000, guid: f305f976230b0ab4b89f80addd77cf1e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -43817,7 +43866,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5419ecec921b49f499f31944ca87dc10, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Gameplay::GrandHallBossDropSpawnPoint
   bossId: 1
 --- !u!1 &1918768609
@@ -43882,8 +43931,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a5a89bba5974cf146ba7a0e093a18193, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   view: {fileID: 1531557035}
   director: {fileID: 1969022366}
   portraitController: {fileID: 1531557034}
@@ -43915,8 +43964,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 46755c2955216c64d898b19ea2d16919, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1969022366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43927,8 +43976,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad35f1c6ce09e464bb7c580764532418, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   portraitController: {fileID: 1531557034}
 --- !u!1001 &2005081368
 PrefabInstance:
@@ -44053,7 +44102,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5909209640859858232, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
       propertyPath: startRunRouteCatalog
-      value:
+      value: 
       objectReference: {fileID: 11400000, guid: 398b7c91b21962b4f91574296153473c, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -44092,8 +44141,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a341ad177ad0e554bb18f64af4d40af8, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   playerPrefab: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
   defaultSpawnPoint: {fileID: 1175960435}
   spawnPoints:
@@ -44141,7 +44190,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3765e7afefdc3d4da8cb3a0cc3903ce, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomEnemyNavigationOverlay
   arrowPrefab: {fileID: 6100123456789012345, guid: 397712dcf285471895fbf9ddca3073e0, type: 3}
   showThreshold: 4
@@ -44155,55 +44204,6 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9100206050000}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &221707339
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 221707341}
-  - component: {fileID: 221707340}
-  m_Layer: 0
-  m_Name: SceneBgm
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &221707340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 221707339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12565987a9ce4c05beca8baf2fca2921, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Infrastructure::SceneBgmRequester
-  sceneMusic:
-    key: bgm.hub
-    volumeMultiplier: 1
-    anchorPolicy: 0
-    localOffset: {x: 0, y: 0, z: 0}
---- !u!4 &221707341
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 221707339}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
