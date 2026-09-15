@@ -66,6 +66,7 @@ namespace UnityGAS
         public static void FreezeVictim(GameObject victim, float seconds)
         {
             if (victim == null || !victim.activeInHierarchy || !float.IsFinite(seconds) || seconds <= 0f) return;
+            if (victim.GetComponentInParent<ICombatHitPauseImmune>() != null) return;
             var pause = victim.GetComponent<CombatHitPause2D>();
             if (pause == null) pause = victim.AddComponent<CombatHitPause2D>();
             pause.BeginImpact(seconds);

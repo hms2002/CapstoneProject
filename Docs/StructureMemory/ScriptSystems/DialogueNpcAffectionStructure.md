@@ -13,6 +13,8 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 
 ## Current Structure
 
+- `DialoguePlayback.SetUpperPanelHiddenForCameraDialogue` forwards through DialogueService/DialogueController to DialogueView. It hides only the authored `dialogueUpperFrameGroup` across an entire camera-directed dialogue section and preserves the story/session across Hub segments. It does not block advancing spoken lines; GrandHall's existing feature callback wait still blocks advancement during actual movement. Releasing it uses the existing upper-frame opening presentation only if UI is still visible and not closing. Hub and GrandHall sequence cleanup clear the temporary state.
+
 | Area | Count | Responsibility |
 | --- | ---: | --- |
 | Dialogue / NPC / Affection | 84 | Dialogue service/controller, Ink runtime references, dialogue UI, text animation tuning, boss dialogue, NPC data/database/features, merchant/upgrade features, affection state/rewards/UI. |
@@ -154,3 +156,13 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 ## Promotion Candidate
 
 Stable dialogue rules already live in `Docs/Architecture/DialogueArchitecture.md`. Keep feature-specific structure here until a rule is stable enough to promote.
+
+
+### Retained lower frame between directed dialogue segments
+
+SetLowerPanelRetainedBetweenDialogues is opt-in presentation state forwarded by DialoguePlayback/Service/Controller to DialogueView. HideUI can finish a session while leaving textBoxGroup visible; the next ShowUI consumes that retained frame without another opening animation. Releasing during a new session does not hide its retained frame before deferred opening; releasing between sessions closes the retained panel. If retention is canceled during closing, FinishHide clears the retained root. This does not alter story input or upper-frame/portrait policies.
+
+
+### Retained-frame theme lifetime
+
+ResetTheme preserves currentTheme and visible accent colors while lowerPanelRetained is true. Effect cleanup still runs. The next ApplyTheme replaces that theme normally; releasing retention between sessions closes the frame, clears retention and resets its theme. Actual final dialogue closing also resets normally. Upper-frame camera hiding uses PlayGroupClose with an optional completion callback, enabling GrandHall to wait for its authored exit animation.

@@ -35,4 +35,4 @@ MonoBehaviour:
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   damageAmount: 1
   fogSpawnScaleMultiplier: {x: 1, y: 1, z: 1}
-  attackRadiusMultiplier: 6
+  attackRadiusMultiplier: 4

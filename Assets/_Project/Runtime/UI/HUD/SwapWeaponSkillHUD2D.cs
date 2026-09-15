@@ -31,6 +31,10 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
     [Header("Style")]
     [SerializeField] private Color normalIconColor = Color.white;
 
+    private PlayerCombatInput2D combatInput;
+    private bool weaponInputBlocked;
+    private bool IsWeaponInputBlocked => inventory != null && combatInput != null && combatInput.IsWeaponInputBlocked;
+
     private CanvasGroup hudCanvasGroup;
     private Graphic[] hudGraphics;
     private AbilityDefinition skill1Def;
@@ -76,6 +80,11 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
 
     private void Update()
     {
+        if (weaponInputBlocked != IsWeaponInputBlocked)
+            RefreshAbilityRefs();
+        if (weaponInputBlocked)
+            return;
+
         if (abilitySystem == null)
             return;
 
@@ -141,6 +150,7 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
             weaponEquipController = abilitySystem.GetComponentInChildren<WeaponEquipController>(true);
         if (weaponEquipController == null)
             weaponEquipController = FindFirstObjectByType<WeaponEquipController>();
+        combatInput = inventory != null ? inventory.GetComponent<PlayerCombatInput2D>() : null;
     }
 
     private void RebuildSelector()
@@ -221,11 +231,12 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
 
     private void RefreshVisibility()
     {
+        weaponInputBlocked = IsWeaponInputBlocked;
         if (hudRoot == null)
             return;
 
         bool hasInactiveWeapon = ResolveInactiveWeaponSlotIndex() >= 0;
-        bool hasPlayerRefs = inventory != null && abilitySystem != null && hasInactiveWeapon;
+        bool hasPlayerRefs = inventory != null && abilitySystem != null && hasInactiveWeapon && !weaponInputBlocked;
         if (hudRoot != gameObject)
         {
             if (hudRoot.activeSelf != hasPlayerRefs)
@@ -265,7 +276,7 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
 
         lastSwapGuideKey = currentKey;
 
-        bool visible = ResolveInactiveWeaponSlotIndex() >= 0;
+        bool visible = !IsWeaponInputBlocked && ResolveInactiveWeaponSlotIndex() >= 0;
         if (swapGuideRoot != null)
             swapGuideRoot.SetActive(visible);
 

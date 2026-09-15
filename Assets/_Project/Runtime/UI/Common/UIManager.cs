@@ -29,6 +29,9 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
     [Header("Pause Menu")]
     [SerializeField] private string titleSceneNameOverride = string.Empty;
 
+    [Header("Modal Backdrop")]
+    [SerializeField] private CanvasGroup modalBackdrop;
+
     private readonly PopupStackState popupStack = new PopupStackState();
     private readonly WorldPromptCoordinator worldPromptCoordinator = new WorldPromptCoordinator();
     private readonly HashSet<int> gameplayHudCurrencyHideOwners = new HashSet<int>();
@@ -45,6 +48,7 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
     private bool isTimeFrozenByUi;
 
     public bool IsExternalUiInputBlocked => HasExternalUiInputBlockers();
+    public bool HasModalBackdrop => modalBackdrop != null && modalBackdrop.blocksRaycasts;
 
     private void Awake()
     {
@@ -81,6 +85,11 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
 
     private void OnDisable()
     {
+        if (modalBackdrop != null)
+        {
+            modalBackdrop.alpha = 0f;
+            modalBackdrop.blocksRaycasts = false;
+        }
         SceneManager.sceneLoaded -= HandleSceneLoaded;
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
     }
@@ -115,12 +124,30 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
     {
         popupStack.PruneDeadEntries();
         PruneDeadPopupOwnerEntries();
+        RefreshModalBackdrop();
 
         if (IsInputBlockedByLoading())
             return;
 
         if (Input.GetKeyDown(KeyCode.Escape))
             HandleEscapeInput();
+    }
+
+    private void RefreshModalBackdrop()
+    {
+        if (modalBackdrop == null) return;
+        bool visible = false;
+        foreach (var ui in popupStack.Snapshot())
+        {
+            if (ui is PauseMenuUI || ui is InventoryScreen inventory && inventory.IsChestMode)
+            {
+                visible = true;
+                break;
+            }
+        }
+        modalBackdrop.alpha = Mathf.MoveTowards(modalBackdrop.alpha, visible ? 0.5f : 0f, Time.unscaledDeltaTime * 2.5f);
+        modalBackdrop.interactable = false;
+        modalBackdrop.blocksRaycasts = visible;
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)

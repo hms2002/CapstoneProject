@@ -157,6 +157,8 @@ public sealed class GamePlayData
     public int runGold;
     public bool officerQuestStarted;
     public bool officerQuestCompletionPresented;
+    public int grandHallScribeReturnStage;
+    public bool grandHallAudienceGranted;
     public int pendingRunMagicStoneDelta;
     public System.Collections.Generic.List<PendingRunAffectionChange> pendingRunAffectionChanges = new System.Collections.Generic.List<PendingRunAffectionChange>();
     public System.Collections.Generic.List<PendingRunShortcutUnlock> pendingRunShortcutUnlocks = new System.Collections.Generic.List<PendingRunShortcutUnlock>();

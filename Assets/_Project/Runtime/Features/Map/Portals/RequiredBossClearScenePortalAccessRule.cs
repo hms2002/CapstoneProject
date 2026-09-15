@@ -13,6 +13,7 @@ public sealed class RequiredBossClearScenePortalAccessRule : MonoBehaviour, ISce
     [SerializeField] private List<string> requiredBossThemeIds = new();
     [SerializeField] private string blockedMessage = "세 보스를 모두 처치해야 이동할 수 있습니다.";
     [SerializeField] private bool showDefaultPopup = true;
+    [SerializeField] private bool requireGrandHallAudience;
     [SerializeField, Min(0f)] private float popupDuration = 1.5f;
     [SerializeField] private UnityEvent onAccessDenied = new();
 
@@ -21,7 +22,8 @@ public sealed class RequiredBossClearScenePortalAccessRule : MonoBehaviour, ISce
     public IReadOnlyList<CorridorBossRouteSetSO> RequiredBossRouteSets => requiredBossRouteSets;
     public IReadOnlyList<string> RequiredBossThemeIds => requiredBossThemeIds;
 
-    public bool AreRequirementsMet => RunSessionStore.IsRunActive && AreAllRequirementsCleared();
+    public bool AreRequirementsMet => RunSessionStore.IsRunActive && AreAllRequirementsCleared() &&
+        (!requireGrandHallAudience || RunSessionStore.Data.grandHallAudienceGranted);
 
     public bool CanAccess(ScenePortal portal, IPlayerInteractor player)
     {

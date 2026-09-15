@@ -204,6 +204,33 @@ public sealed class CombatFeelLootQuestPlayModeTests
         Assert.AreEqual(0.75f, animator.speed);
     }
 
+    [Test] public void ImpactFreeze_RespectsBossImmunityIncludingChildVictims_AndStillFreezesOrdinaryVictims()
+    {
+        var boss = Own(new GameObject("ImmuneBoss"));
+        boss.AddComponent<HitPauseImmuneTestActor>();
+        var child = Own(new GameObject("BossChildVictim"));
+        child.transform.SetParent(boss.transform);
+        foreach (var victim in new[] { boss, child })
+        {
+            var animator = victim.AddComponent<Animator>();
+            animator.speed = 0.75f;
+            var body = victim.AddComponent<Rigidbody2D>();
+            body.constraints = RigidbodyConstraints2D.FreezeRotation;
+            CombatHitPause2D.FreezeVictim(victim, 0.3f);
+            Assert.IsNull(victim.GetComponent<CombatHitPause2D>());
+            Assert.AreEqual(0.75f, animator.speed);
+            Assert.AreEqual(RigidbodyConstraints2D.FreezeRotation, body.constraints);
+        }
+
+        var ordinary = Own(new GameObject("OrdinaryVictim"));
+        var ordinaryAnimator = ordinary.AddComponent<Animator>();
+        var ordinaryBody = ordinary.AddComponent<Rigidbody2D>();
+        CombatHitPause2D.FreezeVictim(ordinary, 0.3f);
+        Assert.IsTrue(ordinary.GetComponent<CombatHitPause2D>().IsPaused);
+        Assert.AreEqual(0f, ordinaryAnimator.speed);
+        Assert.AreEqual(RigidbodyConstraints2D.FreezeAll, ordinaryBody.constraints);
+    }
+
     [UnityTest] public IEnumerator MeleeControlLock_HeldInputCanTurnAfterMotion_AndLungeUsesRawInput()
     {
         var actor = Own(new GameObject("MeleeControlTest"));

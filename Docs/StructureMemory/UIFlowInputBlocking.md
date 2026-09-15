@@ -117,3 +117,7 @@ Flowering's PlayCutIn owns time/input acquisition and release inside CombatHitPa
 ### Chest collision camera while UI owns pause (2026-09-14)
 
 ChestFirstOpenRevealPresentation emits its manual camera shake immediately after ApplyImpactCollisionPose. That request opts into CameraShakeRequest.PlayWhilePaused; CameraShakeService forwards the flag to CameraManualShakeDriver. The driver advances this UI effect on unscaled time even while UIManager owns a full pause, allowing it to finish before the UI closes. Each Play replaces the flag; the default is false, so combat requests still wait during full pause. Screen-shake preferences and offset restoration are unchanged. No UI or gameplay pause token is released for the effect.
+
+## Authored pause/chest backdrop
+
+`Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab` contains ModalBackdrop as the first PopupCanvas child. `Runtime/UI/Common/UIManager.cs` owns its unscaled alpha transition to 0.5 while PauseMenuUI or chest-mode InventoryScreen is on the stack. PopupCanvasRaycastGate includes this backdrop even when chest content is on another canvas. InventoryOpenHudButton retains its visuals under popups, but open eligibility still governs clicks; DungeonMinimapSizeController rejects commands during blocking UI. No additional manager or runtime UI hierarchy is involved.

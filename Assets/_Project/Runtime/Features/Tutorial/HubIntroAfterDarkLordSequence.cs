@@ -214,6 +214,8 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         yield return PlayOpeningSpeechRoutine();
         yield return PlayLetterboxOutRoutine();
 
+        DialoguePlayback.SetUpperPanelHiddenForCameraDialogue(true);
+        DialoguePlayback.SetLowerPanelRetainedBetweenDialogues(true);
         if (focusSteps != null)
         {
             for (int i = 0; i < focusSteps.Length; i++)
@@ -222,6 +224,7 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
 
         Transform finalFocusTarget = finalNpcFocusTarget != null ? finalNpcFocusTarget : ResolveNpcFocusTarget();
         yield return FocusCameraRoutine(finalFocusTarget, defaultFocusOrthographicSize, finalNpcFocusWaitSeconds);
+        DialoguePlayback.SetUpperPanelHiddenForCameraDialogue(false);
         yield return PlayFinalDialogueRoutine();
 
         yield return ReturnCameraRoutine();
@@ -272,14 +275,16 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
                 finalDialogueBoxOnly)
             : DialoguePresentationOptions.Default;
 
-        yield return PlayDialogueRoutine(finalDialogueInk, finalDialogueStartPath, options, "final");
+        yield return PlayDialogueRoutine(finalDialogueInk, finalDialogueStartPath, options, "final",
+            releaseLowerPanelRetentionOnStart: true);
     }
 
     private IEnumerator PlayDialogueRoutine(
         TextAsset inkJson,
         string startPath,
         DialoguePresentationOptions presentationOptions,
-        string label)
+        string label,
+        bool releaseLowerPanelRetentionOnStart = false)
     {
         if (inkJson == null)
         {
@@ -310,6 +315,9 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
             ReportDialoguePlaybackFailure(label, "Dialogue playback request was rejected.");
             yield break;
         }
+
+        if (releaseLowerPanelRetentionOnStart)
+            DialoguePlayback.SetLowerPanelRetainedBetweenDialogues(false);
 
         if (!DialoguePlayback.IsPlaying)
         {
@@ -531,6 +539,8 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
 
     private void CleanupSequenceState()
     {
+        DialoguePlayback.SetLowerPanelRetainedBetweenDialogues(false);
+        DialoguePlayback.SetUpperPanelHiddenForCameraDialogue(false);
         ResolveNpcSpeechBubble()?.HideActive();
         DisposeLetterboxOverlay();
         RestoreCameraState(ResolvePlayerTransform());

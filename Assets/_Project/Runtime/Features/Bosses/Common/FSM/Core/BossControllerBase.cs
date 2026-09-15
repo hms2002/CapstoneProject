@@ -480,6 +480,8 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBoss
 
     protected override void OnDeathStarted()
     {
+        // Independent burn stacks are not owned by GameplayEffectRunner.
+        GetComponent<BurnStatus2D>()?.ConsumeAll();
         if (stateMachine != null && deadState != null && stateMachine.CurrentState != deadState)
             ChangeState(deadState);
 

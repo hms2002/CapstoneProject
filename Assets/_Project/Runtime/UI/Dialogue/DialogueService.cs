@@ -122,6 +122,24 @@ public sealed class DialogueService : MonoBehaviour, IDialoguePlaybackBackend
     public bool IsPlaying => activeController != null && activeController.isPlaying;
     public bool HasActiveController => activeController != null;
 
+    public void SetUpperPanelHiddenForCameraDialogue(bool hidden, System.Action onComplete = null)
+    {
+        if (activeController != null)
+            activeController.SetUpperPanelHiddenForCameraDialogue(hidden, onComplete);
+        else
+            onComplete?.Invoke();
+    }
+
+    public void SetPortraitsHiddenForCameraDialogue(bool hidden)
+    {
+        activeController?.SetPortraitsHiddenForCameraDialogue(hidden);
+    }
+
+    public void SetLowerPanelRetainedBetweenDialogues(bool retained)
+    {
+        activeController?.SetLowerPanelRetainedBetweenDialogues(retained);
+    }
+
     public void AcquireNonDialogueUiSuppression(object owner, float fadeSeconds = -1f)
     {
         if (IsInvalidSuppressionOwner(owner) || HasNonDialogueUiSuppressionOwner(owner))

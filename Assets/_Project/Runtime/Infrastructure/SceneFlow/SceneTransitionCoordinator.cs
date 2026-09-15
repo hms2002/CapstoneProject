@@ -187,6 +187,9 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
 
         yield return CoverAsync(fadeService, visualMode, fadeOutDurationOverride);
 
+        // Accept the title preload overlay only after the scene fade fully covers it.
+        LoadingOverlayController.Instance?.ForceHidePresentation();
+
         LoadingOverlayController loadingOverlay = null;
         float loadingPhaseStartedRealtime = 0f;
         bool loadingPresentationRevealed = false;

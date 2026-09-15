@@ -96,7 +96,9 @@ public sealed class InventoryOpenHudButton : MonoBehaviour
         ResolveHudRoot();
 
         bool canOpen = ResolveOpenRequestHandler() && openRequestHandler.CanOpenInventory;
-        bool shouldShow = !hideWhenUnavailable || canOpen;
+        bool pausedHud = PlayerRuntimeRegistry.CurrentPlayer != null &&
+                         UIManager.Instance != null && UIManager.Instance.HasActivePopup();
+        bool shouldShow = !hideWhenUnavailable || canOpen || pausedHud;
         ApplyVisible(shouldShow);
 
         if (button != null)

@@ -25,6 +25,24 @@ public class DialogueController : MonoBehaviour
 
     public bool isPlaying => sessionState.IsPlaying;
 
+    public void SetUpperPanelHiddenForCameraDialogue(bool hidden, System.Action onComplete = null)
+    {
+        if (view != null)
+            view.SetUpperPanelHiddenForCameraDialogue(hidden, onComplete);
+        else
+            onComplete?.Invoke();
+    }
+
+    public void SetPortraitsHiddenForCameraDialogue(bool hidden)
+    {
+        portraitController?.SetHiddenForCameraDialogue(hidden);
+    }
+
+    public void SetLowerPanelRetainedBetweenDialogues(bool retained)
+    {
+        view?.SetLowerPanelRetainedBetweenDialogues(retained, closeRetainedPanel: !isPlaying);
+    }
+
     private readonly DialogueSessionState sessionState = new DialogueSessionState();
     private readonly DialogueParticipantRegistry participantRegistry = new DialogueParticipantRegistry();
     private readonly Queue<DialogueStorySegment> pendingStorySegments = new Queue<DialogueStorySegment>();
