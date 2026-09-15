@@ -1,136 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "7c1a07299a7b4ff4aef0dceb63f9615f",
-            "startedUtc": "2026-09-15T10:14:00.5253384Z",
-            "endedUtc": "2026-09-15T10:14:01.5280338Z",
-            "entries": []
-        },
-        {
-            "sessionId": "521d4c37839c44d1ba7d1c5d8347d4bc",
-            "startedUtc": "2026-09-15T10:18:44.1035729Z",
-            "endedUtc": "2026-09-15T10:18:45.1097381Z",
-            "entries": []
-        },
-        {
-            "sessionId": "b440dcb43f6949a88636304ce23cf039",
-            "startedUtc": "2026-09-15T10:19:06.6845087Z",
-            "endedUtc": "2026-09-15T10:19:07.6937699Z",
-            "entries": []
-        },
-        {
-            "sessionId": "3926ac3d77f54bc28c8e53f5c80c391b",
-            "startedUtc": "2026-09-15T10:19:31.7978640Z",
-            "endedUtc": "2026-09-15T10:19:32.8002212Z",
-            "entries": []
-        },
-        {
-            "sessionId": "3512b3eceb8d437bb18f057d1c41e551",
-            "startedUtc": "2026-09-15T10:19:52.1242156Z",
-            "endedUtc": "2026-09-15T10:19:53.1270049Z",
-            "entries": []
-        },
-        {
-            "sessionId": "1876ebfd2bc54032a78b211995bd98f9",
-            "startedUtc": "2026-09-15T10:20:59.2298564Z",
-            "endedUtc": "2026-09-15T10:21:00.2342300Z",
-            "entries": []
-        },
-        {
-            "sessionId": "ce2055be1b5844e3a4562d672d2c2d35",
-            "startedUtc": "2026-09-15T10:22:00.9818939Z",
-            "endedUtc": "2026-09-15T10:22:01.9847594Z",
-            "entries": []
-        },
-        {
-            "sessionId": "545b67a61fc64197a18eefa84d232719",
-            "startedUtc": "2026-09-15T10:31:04.5645401Z",
-            "endedUtc": "2026-09-15T10:31:05.5692010Z",
-            "entries": []
-        },
-        {
-            "sessionId": "ea82f87002b3400884abc478d2e68e40",
-            "startedUtc": "2026-09-15T10:44:53.5888319Z",
-            "endedUtc": "2026-09-15T10:44:54.5921200Z",
-            "entries": []
-        },
-        {
-            "sessionId": "db09df717b434170a42b07464d43dce8",
-            "startedUtc": "2026-09-15T10:48:52.2046807Z",
-            "endedUtc": "2026-09-15T10:49:50.5160521Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 4,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 42.265098571777347,
-                    "lastSeenSeconds": 57.36024475097656,
-                    "firstSceneName": "ProceduralShadowCorridor",
-                    "lastSceneName": "ProceduralShadowCorridor"
-                }
-            ]
-        },
-        {
-            "sessionId": "584b78252b5d42cfb134ca29e5fb01a6",
-            "startedUtc": "2026-09-15T11:01:22.4818133Z",
-            "endedUtc": "2026-09-15T11:01:23.4853015Z",
-            "entries": []
-        },
-        {
-            "sessionId": "06897de3f3474569a178e8ab0629d58a",
-            "startedUtc": "2026-09-15T11:11:57.2529165Z",
-            "endedUtc": "2026-09-15T11:11:58.2612795Z",
-            "entries": []
-        },
-        {
-            "sessionId": "bd845558c7a44c5a83f8198e772812c9",
-            "startedUtc": "2026-09-15T11:26:47.8129868Z",
-            "endedUtc": "2026-09-15T11:26:48.8161324Z",
-            "entries": []
-        },
-        {
-            "sessionId": "0403d90fe5954de09b3cfef2b803a7af",
-            "startedUtc": "2026-09-15T12:40:25.4840104Z",
-            "endedUtc": "2026-09-15T12:42:04.7723544Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 4,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 55.59250259399414,
-                    "lastSeenSeconds": 99.28234100341797,
-                    "firstSceneName": "ProceduralShadowCorridor",
-                    "lastSceneName": "ProceduralShadowCorridor"
-                }
-            ]
-        },
-        {
-            "sessionId": "69c1f17022e34b558427d088ec6a4c79",
-            "startedUtc": "2026-09-15T13:02:46.5390266Z",
-            "endedUtc": "2026-09-15T13:02:47.5453143Z",
-            "entries": []
-        },
-        {
-            "sessionId": "2872b6fdbafc4fd688c12c2d77210d74",
-            "startedUtc": "2026-09-15T13:03:29.7531640Z",
-            "endedUtc": "2026-09-15T13:03:29.7969140Z",
-            "entries": []
-        },
-        {
-            "sessionId": "bddf05c90c3a432c86c5473459d47a2f",
-            "startedUtc": "2026-09-15T13:04:00.4619206Z",
-            "endedUtc": "2026-09-15T13:04:01.4673813Z",
-            "entries": []
-        },
-        {
-            "sessionId": "81af91d242aa4dfbbb1673b7b66fd51c",
-            "startedUtc": "2026-09-15T13:48:00.8560301Z",
-            "endedUtc": "2026-09-15T13:48:01.8595421Z",
-            "entries": []
-        },
-        {
             "sessionId": "651406615b9641f38267a9a6e24aea03",
             "startedUtc": "2026-09-15T13:57:03.0250778Z",
             "endedUtc": "2026-09-15T13:57:04.0329535Z",
@@ -140,6 +10,114 @@
             "sessionId": "4499883dfde54f7680d1dc036ca7431b",
             "startedUtc": "2026-09-15T14:31:11.9244258Z",
             "endedUtc": "2026-09-15T14:31:12.9276060Z",
+            "entries": []
+        },
+        {
+            "sessionId": "7e58939ff5224102ae751919665c4c7e",
+            "startedUtc": "2026-09-15T14:46:06.5576767Z",
+            "endedUtc": "2026-09-15T14:46:07.5643450Z",
+            "entries": []
+        },
+        {
+            "sessionId": "13cb29511abf4cf2bd0983ceee2ca140",
+            "startedUtc": "2026-09-15T14:52:17.0452596Z",
+            "endedUtc": "2026-09-15T14:52:18.0490491Z",
+            "entries": []
+        },
+        {
+            "sessionId": "540c5c47b40645f8b58bee27b920ad1c",
+            "startedUtc": "2026-09-15T15:00:49.6340511Z",
+            "endedUtc": "2026-09-15T15:00:50.6403297Z",
+            "entries": []
+        },
+        {
+            "sessionId": "f7f1736c9a64494583abe778b6f8d59e",
+            "startedUtc": "2026-09-15T15:01:38.1992711Z",
+            "endedUtc": "2026-09-15T15:01:39.2019149Z",
+            "entries": []
+        },
+        {
+            "sessionId": "b654557719214af2bb3aea939d85b59a",
+            "startedUtc": "2026-09-15T15:02:18.8292173Z",
+            "endedUtc": "2026-09-15T15:02:19.8320373Z",
+            "entries": []
+        },
+        {
+            "sessionId": "09ecf1f20cb14807afdf0a342ed79b90",
+            "startedUtc": "2026-09-15T15:03:04.3664094Z",
+            "endedUtc": "2026-09-15T15:03:05.3685048Z",
+            "entries": []
+        },
+        {
+            "sessionId": "72e82d7344de4f718ab6cc3693a4dc5a",
+            "startedUtc": "2026-09-15T15:03:39.4318784Z",
+            "endedUtc": "2026-09-15T15:03:40.4368475Z",
+            "entries": []
+        },
+        {
+            "sessionId": "58482d11e91143f7bf4ac0ce39190a12",
+            "startedUtc": "2026-09-15T15:04:02.1406913Z",
+            "endedUtc": "2026-09-15T15:04:03.1455088Z",
+            "entries": []
+        },
+        {
+            "sessionId": "2b87fb6058cf462391d566370adc76ab",
+            "startedUtc": "2026-09-15T15:04:53.4160691Z",
+            "endedUtc": "2026-09-15T15:04:54.4202140Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4589d2ad22554e32a4e4fe7ae5e9aeb9",
+            "startedUtc": "2026-09-15T15:08:17.2861273Z",
+            "endedUtc": "2026-09-15T15:08:18.2898226Z",
+            "entries": []
+        },
+        {
+            "sessionId": "fc17ab144d6142df9df7cfc2374c95d5",
+            "startedUtc": "2026-09-15T15:08:57.4847818Z",
+            "endedUtc": "2026-09-15T15:08:58.4871062Z",
+            "entries": []
+        },
+        {
+            "sessionId": "5570a18494fd4543af3c58a9e5336b74",
+            "startedUtc": "2026-09-15T15:09:16.5170528Z",
+            "endedUtc": "2026-09-15T15:09:17.5192996Z",
+            "entries": []
+        },
+        {
+            "sessionId": "5b63bd4c169a422897beeff55e057396",
+            "startedUtc": "2026-09-15T15:09:30.1238272Z",
+            "endedUtc": "2026-09-15T15:09:31.1279448Z",
+            "entries": []
+        },
+        {
+            "sessionId": "6c55ad200b0947598e4b21c84fd3db5e",
+            "startedUtc": "2026-09-15T15:11:13.6371458Z",
+            "endedUtc": "2026-09-15T15:11:14.6437421Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4c0546d2738d483699ae65e6e244bbe9",
+            "startedUtc": "2026-09-15T15:11:35.2381916Z",
+            "endedUtc": "2026-09-15T15:11:36.2409661Z",
+            "entries": []
+        },
+        {
+            "sessionId": "91e4f5f1cb494d01a73af16f50560e25",
+            "startedUtc": "2026-09-15T15:12:08.4893138Z",
+            "endedUtc": "2026-09-15T15:12:09.4967838Z",
+            "entries": []
+        },
+        {
+            "sessionId": "e9f46f4ec3ef4b1f8c633fca68306970",
+            "startedUtc": "2026-09-15T15:12:50.9356559Z",
+            "endedUtc": "2026-09-15T15:12:51.9419778Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d855bd30c93d4595bcc5cf512e14ee37",
+            "startedUtc": "2026-09-15T15:13:33.9123893Z",
+            "endedUtc": "2026-09-15T15:13:34.9154044Z",
             "entries": []
         }
     ]
