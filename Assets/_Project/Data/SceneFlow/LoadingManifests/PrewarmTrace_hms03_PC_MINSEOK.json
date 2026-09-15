@@ -1,137 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "04c99d18121d416dbc1c090c985a8476",
-            "startedUtc": "2026-09-14T12:49:43.9703412Z",
-            "endedUtc": "2026-09-14T12:49:44.9728538Z",
-            "entries": []
-        },
-        {
-            "sessionId": "13807660925d4678b5855b10646a4b16",
-            "startedUtc": "2026-09-14T12:54:11.3404545Z",
-            "endedUtc": "2026-09-14T12:57:28.7170774Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 42,
-                    "coldSpawns": 38,
-                    "firstSeenSeconds": 20.556577682495118,
-                    "lastSeenSeconds": 197.37107849121095,
-                    "firstSceneName": "ProceduralShadowCorridor",
-                    "lastSceneName": "ProceduralShadowCorridor"
-                }
-            ]
-        },
-        {
-            "sessionId": "5941e8618edf489591a2794d03cf3b48",
-            "startedUtc": "2026-09-14T13:02:48.6587886Z",
-            "endedUtc": "2026-09-14T13:06:38.5157022Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 40,
-                    "coldSpawns": 35,
-                    "firstSeenSeconds": 20.538375854492189,
-                    "lastSeenSeconds": 123.85389709472656,
-                    "firstSceneName": "ProceduralShadowCorridor",
-                    "lastSceneName": "ProceduralShadowCorridor"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab",
-                    "prefabName": "PF_DeadSkeletonExplosionPurple",
-                    "totalSpawns": 2,
-                    "coldSpawns": 2,
-                    "firstSeenSeconds": 228.8280029296875,
-                    "lastSeenSeconds": 228.8293914794922,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/Fog.prefab",
-                    "prefabName": "Fog",
-                    "totalSpawns": 2,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 228.82424926757813,
-                    "lastSeenSeconds": 228.82916259765626,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/ExplosionParticle.prefab",
-                    "prefabName": "ExplosionParticle",
-                    "totalSpawns": 2,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 228.84524536132813,
-                    "lastSeenSeconds": 228.84544372558595,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                }
-            ]
-        },
-        {
-            "sessionId": "becdb58b8d514f08ad03ed07183f560e",
-            "startedUtc": "2026-09-14T13:06:59.4792469Z",
-            "endedUtc": "2026-09-14T13:14:44.8212356Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 2,
-                    "coldSpawns": 2,
-                    "firstSeenSeconds": 464.33294677734377,
-                    "lastSeenSeconds": 464.51715087890627,
-                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 418.2872314453125,
-                    "lastSeenSeconds": 418.28741455078127,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                }
-            ]
-        },
-        {
-            "sessionId": "60010d3f036c485ebd827015f6b7551a",
-            "startedUtc": "2026-09-15T09:01:03.8058052Z",
-            "endedUtc": "2026-09-15T09:03:10.5599550Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 2,
-                    "coldSpawns": 2,
-                    "firstSeenSeconds": 117.52754974365235,
-                    "lastSeenSeconds": 126.74356079101563,
-                    "firstSceneName": "ProceduralShadowCorridor",
-                    "lastSceneName": "ProceduralShadowCorridor"
-                }
-            ]
-        },
-        {
-            "sessionId": "5e66b0c6a77f4c2ba8f7d352c2571b45",
-            "startedUtc": "2026-09-15T09:16:27.9358893Z",
-            "endedUtc": "2026-09-15T09:16:55.8616889Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 6,
-                    "coldSpawns": 6,
-                    "firstSeenSeconds": 24.639013290405275,
-                    "lastSeenSeconds": 27.917072296142579,
-                    "firstSceneName": "ProceduralShadowCorridor",
-                    "lastSceneName": "ProceduralShadowCorridor"
-                }
-            ]
-        },
-        {
             "sessionId": "6de3ee6a0aa84feda0cdfc96d279cb8e",
             "startedUtc": "2026-09-15T09:23:36.1535639Z",
             "endedUtc": "2026-09-15T09:25:04.6363776Z",
@@ -378,6 +247,53 @@
             "sessionId": "ce2055be1b5844e3a4562d672d2c2d35",
             "startedUtc": "2026-09-15T10:22:00.9818939Z",
             "endedUtc": "2026-09-15T10:22:01.9847594Z",
+            "entries": []
+        },
+        {
+            "sessionId": "545b67a61fc64197a18eefa84d232719",
+            "startedUtc": "2026-09-15T10:31:04.5645401Z",
+            "endedUtc": "2026-09-15T10:31:05.5692010Z",
+            "entries": []
+        },
+        {
+            "sessionId": "ea82f87002b3400884abc478d2e68e40",
+            "startedUtc": "2026-09-15T10:44:53.5888319Z",
+            "endedUtc": "2026-09-15T10:44:54.5921200Z",
+            "entries": []
+        },
+        {
+            "sessionId": "db09df717b434170a42b07464d43dce8",
+            "startedUtc": "2026-09-15T10:48:52.2046807Z",
+            "endedUtc": "2026-09-15T10:49:50.5160521Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 4,
+                    "coldSpawns": 4,
+                    "firstSeenSeconds": 42.265098571777347,
+                    "lastSeenSeconds": 57.36024475097656,
+                    "firstSceneName": "ProceduralShadowCorridor",
+                    "lastSceneName": "ProceduralShadowCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "584b78252b5d42cfb134ca29e5fb01a6",
+            "startedUtc": "2026-09-15T11:01:22.4818133Z",
+            "endedUtc": "2026-09-15T11:01:23.4853015Z",
+            "entries": []
+        },
+        {
+            "sessionId": "06897de3f3474569a178e8ab0629d58a",
+            "startedUtc": "2026-09-15T11:11:57.2529165Z",
+            "endedUtc": "2026-09-15T11:11:58.2612795Z",
+            "entries": []
+        },
+        {
+            "sessionId": "bd845558c7a44c5a83f8198e772812c9",
+            "startedUtc": "2026-09-15T11:26:47.8129868Z",
+            "endedUtc": "2026-09-15T11:26:48.8161324Z",
             "entries": []
         }
     ]

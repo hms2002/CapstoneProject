@@ -24,6 +24,7 @@ public sealed class CorridorDecorationModuleAuthoring : MonoBehaviour
     [SerializeField] private Tilemap wallDetailTilemap;
     [SerializeField] private Tilemap foregroundTilemap;
     [SerializeField] private Tilemap overlayFxTilemap;
+    [SerializeField] private Tilemap holeTilemap;
     [HideInInspector, SerializeField] private CorridorDecorationModuleSO sourceModule;
 
     public string ModuleId => moduleId;
@@ -45,6 +46,7 @@ public sealed class CorridorDecorationModuleAuthoring : MonoBehaviour
             RoomTileLayerKind.WallDetail => wallDetailTilemap,
             RoomTileLayerKind.Foreground => foregroundTilemap,
             RoomTileLayerKind.OverlayFX => overlayFxTilemap,
+            RoomTileLayerKind.Hole => holeTilemap,
             _ => null
         };
     }
@@ -68,7 +70,7 @@ public sealed class CorridorDecorationModuleAuthoring : MonoBehaviour
     }
 
     /// <summary>
-    /// 책임 : 툴이 생성한 Grid와 8개 고정 레이어 참조를 한 번에 연결한다.
+    /// 책임 : 툴이 생성한 Grid와 고정 레이어 참조를 한 번에 연결한다.
     /// </summary>
     public void EditorAssignTilemaps(
         Grid targetGrid,
@@ -79,7 +81,8 @@ public sealed class CorridorDecorationModuleAuthoring : MonoBehaviour
         Tilemap wall,
         Tilemap wallDetail,
         Tilemap foreground,
-        Tilemap overlayFx)
+        Tilemap overlayFx,
+        Tilemap hole = null)
     {
         grid = targetGrid;
         underFloorTilemap = underFloor;
@@ -90,6 +93,7 @@ public sealed class CorridorDecorationModuleAuthoring : MonoBehaviour
         wallDetailTilemap = wallDetail;
         foregroundTilemap = foreground;
         overlayFxTilemap = overlayFx;
+        holeTilemap = hole;
     }
 
     private void OnValidate()

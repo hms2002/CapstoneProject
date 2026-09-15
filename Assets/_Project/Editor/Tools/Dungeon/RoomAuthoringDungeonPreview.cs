@@ -607,6 +607,7 @@ internal static class RoomAuthoringDungeonPreview
             root.transform,
             RoomTileLayerKind.OverlayFX);
         GameObject blockerRootObject = new("PreviewSocketBlockers");
+        Tilemap holeTilemap = CreateTilemapLayer(root.transform, RoomTileLayerKind.Hole);
         blockerRootObject.transform.SetParent(root.transform, false);
 
         DungeonRoomBuilder builder = root.AddComponent<DungeonRoomBuilder>();
@@ -618,7 +619,8 @@ internal static class RoomAuthoringDungeonPreview
             wallTilemap,
             wallDetailTilemap,
             foregroundTilemap,
-            overlayFxTilemap);
+            overlayFxTilemap,
+            holeTilemap);
         builder.EditorAssignCorridorTiles(corridorFloorTile, corridorWallTile);
         builder.ConfigureCorridorDecoration(request.CorridorDecorationProfile);
         builder.ConfigureSocketCleanup(request.SocketCleanupProfile);

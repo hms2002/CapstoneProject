@@ -5,6 +5,7 @@ using UnityGAS;
 /// <summary>
 /// 이 클래스의 책임:
 /// 일반 몬스터의 공통 FSM 실행, 추적 타깃 회복, 이동 애니메이션과 기본 방향 전환을 관리한다.
+/// 공격 후 후퇴는 몸체 기준 벽/구덩이 안전 검사와 해당 이동의 수명을 관리한다.
 /// </summary>
 public class Mob : Enemy
 {
@@ -60,7 +61,9 @@ public class Mob : Enemy
     private int recoveryRetreatSideSign = 1;
     private Vector2 cachedRecoveryRetreatVelocity;
     private readonly RaycastHit2D[] recoveryRetreatWallHits = new RaycastHit2D[4];
+    private readonly Collider2D[] recoveryRetreatOverlaps = new Collider2D[4];
     private ContactFilter2D recoveryRetreatWallFilter;
+    private int recoveryRetreatHoleLayers;
 
     protected EnemyChaseIntent2D ChaseIntent => chaseIntent;
     protected MonsterSpawnRoomGroup LockTrackingRoomGroup => lockTrackingRoomGroup;
@@ -248,62 +251,76 @@ public class Mob : Enemy
             ? toSelf / distance
             : new Vector2(recoveryRetreatSideSign, 0f);
 
-        Vector2 retreatDirection = ResolveWallSafeRecoveryRetreatDirection(awayDirection);
-        if (retreatDirection.sqrMagnitude <= 0.0001f)
-            return Vector2.zero;
-
         float moveSpeed = Mathf.Max(0f, attributeStatSource.Get(StatId.MoveSpeedFinal));
         if (moveSpeed <= 0f)
             return Vector2.zero;
 
         float closeWeight = Mathf.InverseLerp(maxDistance, minDistance, distance);
         float distanceScale = Mathf.Lerp(recoveryRetreatFarSpeedScale, 1f, closeWeight);
-        return retreatDirection.normalized * moveSpeed * Mathf.Max(0f, recoveryRetreatSpeedScale) * distanceScale;
+        float speed = moveSpeed * Mathf.Max(0f, recoveryRetreatSpeedScale) * distanceScale;
+        float probeDistance = Mathf.Max(recoveryRetreatWallProbeDistance,
+            speed * (Mathf.Max(0.02f, recoveryRetreatVelocityDuration) + Time.fixedDeltaTime));
+        Vector2 retreatDirection = ResolveWallSafeRecoveryRetreatDirection(awayDirection, probeDistance);
+        return retreatDirection.normalized * speed;
     }
 
-    private Vector2 ResolveWallSafeRecoveryRetreatDirection(Vector2 awayDirection)
+    private Vector2 ResolveWallSafeRecoveryRetreatDirection(Vector2 awayDirection, float probeDistance)
     {
         if (awayDirection.sqrMagnitude <= 0.0001f)
             return Vector2.zero;
 
         awayDirection.Normalize();
-        if (!IsRecoveryRetreatDirectionBlocked(awayDirection))
+        if (!IsRecoveryRetreatDirectionBlocked(awayDirection, probeDistance))
             return awayDirection;
 
         Vector2 tangent = new Vector2(-awayDirection.y, awayDirection.x) * recoveryRetreatSideSign;
-        if (!IsRecoveryRetreatDirectionBlocked(tangent))
+        if (!IsRecoveryRetreatDirectionBlocked(tangent, probeDistance))
             return tangent;
 
         tangent = -tangent;
-        return !IsRecoveryRetreatDirectionBlocked(tangent) ? tangent : Vector2.zero;
+        return !IsRecoveryRetreatDirectionBlocked(tangent, probeDistance) ? tangent : Vector2.zero;
     }
 
-    private bool IsRecoveryRetreatDirectionBlocked(Vector2 direction)
+    // Checks the owned body across the entire timed retreat, not just a fixed wall lookahead.
+    private bool IsRecoveryRetreatDirectionBlocked(Vector2 direction, float probeDistance)
     {
         if (direction.sqrMagnitude <= 0.0001f ||
-            recoveryRetreatWallLayers.value == 0 ||
-            recoveryRetreatWallProbeDistance <= 0f ||
             collision == null ||
             !collision.enabled ||
             collision.isTrigger)
         {
-            return false;
+            return true;
         }
+
+        int overlaps = collision.OverlapCollider(recoveryRetreatWallFilter, recoveryRetreatOverlaps);
+        for (int i = 0; i < overlaps; i++)
+        {
+            if (IsRecoveryRetreatObstacle(recoveryRetreatOverlaps[i]))
+                return true;
+        }
+        if (overlaps == recoveryRetreatOverlaps.Length)
+            return true;
 
         int hitCount = collision.Cast(
             direction.normalized,
             recoveryRetreatWallFilter,
             recoveryRetreatWallHits,
-            recoveryRetreatWallProbeDistance);
+            Mathf.Max(0f, probeDistance));
 
         for (int i = 0; i < hitCount; i++)
         {
             Collider2D hitCollider = recoveryRetreatWallHits[i].collider;
-            if (hitCollider != null && hitCollider.attachedRigidbody != rigid2D)
+            if (IsRecoveryRetreatObstacle(hitCollider))
                 return true;
         }
 
-        return false;
+        return hitCount == recoveryRetreatWallHits.Length;
+    }
+
+    private bool IsRecoveryRetreatObstacle(Collider2D collider)
+    {
+        return collider != null && collider.attachedRigidbody != rigid2D &&
+            (!collider.isTrigger || (recoveryRetreatHoleLayers & (1 << collider.gameObject.layer)) != 0);
     }
 
     private void ConfigureRecoveryRetreatWallFilter()
@@ -315,12 +332,10 @@ public class Mob : Enemy
                 recoveryRetreatWallLayers = 1 << wallLayer;
         }
 
-        recoveryRetreatWallFilter = new ContactFilter2D
-        {
-            useLayerMask = true,
-            layerMask = recoveryRetreatWallLayers,
-            useTriggers = false
-        };
+        recoveryRetreatHoleLayers = LayerMask.GetMask("HoleTrap");
+        recoveryRetreatWallFilter = ContactFilter2D.noFilter;
+        recoveryRetreatWallFilter.SetLayerMask(recoveryRetreatWallLayers.value | recoveryRetreatHoleLayers);
+        recoveryRetreatWallFilter.useTriggers = true;
     }
 
     /// <summary>이동과 방향 애니메이션을 갱신합니다.</summary>

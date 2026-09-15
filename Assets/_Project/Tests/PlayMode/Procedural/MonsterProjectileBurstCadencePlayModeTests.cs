@@ -15,6 +15,58 @@ using Object = UnityEngine.Object;
 /// </summary>
 public sealed class MonsterProjectileBurstCadencePlayModeTests
 {
+    [Test]
+    public void RecoveryRetreat_AvoidsPitChoosesSideAndStopsWhenSurrounded()
+    {
+        bool oldQueries = Physics2D.queriesHitTriggers;
+        try
+        {
+            Physics2D.queriesHitTriggers = true;
+            Mob owner = CreateMonster("CommonCorridor/GoblinGunner.prefab");
+            var resolve = typeof(Mob).GetMethod("ResolveWallSafeRecoveryRetreatDirection", BindingFlags.Instance | BindingFlags.NonPublic);
+            var blocked = typeof(Mob).GetMethod("IsRecoveryRetreatDirectionBlocked", BindingFlags.Instance | BindingFlags.NonPublic);
+            Vector2 center = owner.transform.position;
+            foreach (Collider2D body in owner.GetComponentsInChildren<Collider2D>())
+            {
+                if (body.enabled && !body.isTrigger)
+                {
+                    center = body.bounds.center;
+                    break;
+                }
+            }
+
+            BoxCollider2D AddPit(Vector2 offset, Vector2 size)
+            {
+                var go = new GameObject("RetreatPit");
+                go.layer = LayerMask.NameToLayer("HoleTrap");
+                go.transform.position = center + offset;
+                var pit = go.AddComponent<BoxCollider2D>();
+                pit.size = size;
+                pit.isTrigger = true;
+                return pit;
+            }
+
+            BoxCollider2D back = AddPit(Vector2.right * 1.5f, new Vector2(0.2f, 1f));
+            Physics2D.SyncTransforms();
+            Assert.That((bool)blocked.Invoke(owner, new object[] { Vector2.right, 0.25f }), Is.False);
+            Assert.That((bool)blocked.Invoke(owner, new object[] { Vector2.right, 2f }), Is.True,
+                "A pit beyond the old fixed probe must block a longer retreat.");
+            Vector2 side = (Vector2)resolve.Invoke(owner, new object[] { Vector2.right, 2f });
+            Assert.That(Mathf.Abs(side.y), Is.EqualTo(1f));
+            AddPit(Vector2.up * 1.5f, new Vector2(1f, 0.2f));
+            AddPit(Vector2.down * 1.5f, new Vector2(1f, 0.2f));
+            Physics2D.SyncTransforms();
+            Assert.That((Vector2)resolve.Invoke(owner, new object[] { Vector2.right, 2f }), Is.EqualTo(Vector2.zero));
+            back.enabled = false;
+            Physics2D.SyncTransforms();
+            Assert.That((Vector2)resolve.Invoke(owner, new object[] { Vector2.right, 2f }), Is.EqualTo(Vector2.right));
+        }
+        finally
+        {
+            Physics2D.queriesHitTriggers = oldQueries;
+        }
+    }
+
     private readonly List<Object> temporaryAssets = new();
     private HashSet<GameObject> existingRoots;
     private Random.State randomState;

@@ -50,6 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineRenderers:
   - {fileID: 7801000000000000012}
+  preserveAuthoredSorting: 1
 --- !u!114 &7801000000000000003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,9 +247,9 @@ SpriteMask:
   m_BackSortingLayerID: 0
   m_FrontSortingLayer: 0
   m_BackSortingLayer: 0
-  m_FrontSortingOrder: 0
-  m_BackSortingOrder: 0
-  m_IsCustomRangeActive: 0
+  m_FrontSortingOrder: 1
+  m_BackSortingOrder: -1
+  m_IsCustomRangeActive: 1
   m_SpriteSortPoint: 0
   m_MaskSource: 0
 --- !u!210 &9131300000000000001
@@ -259,7 +260,7 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7801000000000000000}
   m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1874529036
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_SortAtRoot: 0

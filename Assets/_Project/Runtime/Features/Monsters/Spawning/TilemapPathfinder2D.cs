@@ -48,6 +48,7 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
 
     [Header("Collision")]
     [SerializeField] private LayerMask blockedLayers = 1 << 30;
+    [SerializeField] private LayerMask holeLayers = 1 << 6;
     [SerializeField] private Vector2 probeSize = new Vector2(0.7f, 0.7f);
 
     [Header("Search")]
@@ -60,6 +61,19 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     [SerializeField] private bool drawLastPathGizmo = true;
 
     private readonly List<Vector2> reusablePath = new();
+    private readonly RaycastHit2D[] holeCastHits = new RaycastHit2D[1];
+    private readonly Collider2D[] holeOverlapHits = new Collider2D[1];
+
+    private ContactFilter2D HoleFilter
+    {
+        get
+        {
+            ContactFilter2D filter = ContactFilter2D.noFilter;
+            filter.SetLayerMask(holeLayers);
+            filter.useTriggers = true;
+            return filter;
+        }
+    }
     private readonly Dictionary<Vector2Int, Vector2Int> cameFrom = new();
     private readonly Dictionary<Vector2Int, int> gScore = new();
     private readonly List<Vector2Int> openSet = new();
@@ -242,6 +256,9 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
         footprint = ResolveFootprint(footprint);
         Vector2 delta = endWorld - startWorld;
         float distance = delta.magnitude;
+        if (Physics2D.OverlapBox(startWorld + footprint.CenterOffset, footprint.Size, 0f,
+                HoleFilter, holeOverlapHits) > 0)
+            return false;
         if (distance <= 0.001f)
             return true;
 
@@ -253,7 +270,9 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
             distance,
             blockedLayers);
 
-        return hit.collider == null;
+        return hit.collider == null && Physics2D.BoxCast(
+            startWorld + footprint.CenterOffset, footprint.Size, 0f, delta / distance,
+            HoleFilter, holeCastHits, distance) == 0;
     }
 
     /// <summary>지정한 셀이 막혀 있다면 인접 셀 중 가장 가까운 이동 가능 셀을 찾습니다.</summary>
@@ -350,6 +369,9 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
             return false;
 
         Vector2 center = CellToWorld(cell);
+        if (Physics2D.OverlapBox(center + footprint.CenterOffset, footprint.Size, 0f,
+                HoleFilter, holeOverlapHits) > 0)
+            return false;
         Collider2D blocker = Physics2D.OverlapBox(center + footprint.CenterOffset, footprint.Size, 0f, blockedLayers);
         return blocker == null;
     }

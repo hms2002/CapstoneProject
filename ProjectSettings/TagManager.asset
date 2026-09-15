@@ -57,6 +57,9 @@ TagManager:
   - name: Entity
     uniqueID: 3255220471
     locked: 0
+  - name: ItemDisplay
+    uniqueID: 1874529036
+    locked: 0
   - name: FloatingAOE
     uniqueID: 3311570059
     locked: 0
