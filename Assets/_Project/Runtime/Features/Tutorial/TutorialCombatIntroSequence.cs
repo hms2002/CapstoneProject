@@ -16,6 +16,7 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
     [SerializeField] private Transform playerTransform;
     [SerializeField] private bool lockPlayerControls = true;
     [SerializeField] private bool blockPlayerTargetability = true;
+    [SerializeField] private bool blockWeaponInputUntilTutorialComplete;
 
     [Header("Camera")]
     [SerializeField] private Transform focusTarget;
@@ -59,6 +60,7 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
     private bool hasPlayed;
     private bool hasAcquiredPlayerProtection;
     private bool hasAcquiredTargetabilityBlock;
+    private PlayerCombatInput2D tutorialWeaponInput;
 
     public bool IsRunning => sequenceRoutine != null;
     public bool HasPlayed => hasPlayed;
@@ -71,16 +73,44 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
 
     private void OnEnable()
     {
+        PlayerRuntimeRegistry.PlayerRegistered += HandleTutorialPlayerRegistered;
+        PlayerRuntimeRegistry.PlayerUnregistered += HandleTutorialPlayerUnregistered;
+        HandleTutorialPlayerRegistered(PlayerRuntimeRegistry.CurrentPlayer);
         if (doorClosedTrigger != null)
             doorClosedTrigger.OnDoorClosed.AddListener(BeginSequence);
     }
 
     private void OnDisable()
     {
+        PlayerRuntimeRegistry.PlayerRegistered -= HandleTutorialPlayerRegistered;
+        PlayerRuntimeRegistry.PlayerUnregistered -= HandleTutorialPlayerUnregistered;
+        ReleaseTutorialWeaponInput();
         if (doorClosedTrigger != null)
             doorClosedTrigger.OnDoorClosed.RemoveListener(BeginSequence);
 
         CancelSequence(invokeCanceled: false);
+    }
+
+    private void HandleTutorialPlayerRegistered(PlayerInteractor2D player)
+    {
+        ReleaseTutorialWeaponInput();
+        if (!blockWeaponInputUntilTutorialComplete || hasPlayed || player == null)
+            return;
+
+        tutorialWeaponInput = player.GetComponent<PlayerCombatInput2D>();
+        tutorialWeaponInput?.SetWeaponInputBlocked(this, true);
+    }
+
+    private void HandleTutorialPlayerUnregistered(PlayerInteractor2D player)
+    {
+        if (tutorialWeaponInput != null && player != null && tutorialWeaponInput.gameObject == player.gameObject)
+            ReleaseTutorialWeaponInput();
+    }
+
+    private void ReleaseTutorialWeaponInput()
+    {
+        tutorialWeaponInput?.SetWeaponInputBlocked(this, false);
+        tutorialWeaponInput = null;
     }
 
     public void Begin()
@@ -128,8 +158,9 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
         if (useLetterbox)
             yield return PlayLetterboxOutRoutine();
 
-        ReleaseSequenceState(invokeGameplayReleased: true);
         hasPlayed = true;
+        ReleaseTutorialWeaponInput();
+        ReleaseSequenceState(invokeGameplayReleased: true);
 
         sequenceRoutine = null;
         onSequenceCompleted?.Invoke();

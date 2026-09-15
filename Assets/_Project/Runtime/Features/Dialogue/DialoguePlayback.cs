@@ -8,6 +8,9 @@ public interface IDialoguePlaybackBackend
 {
     bool IsPlaying { get; }
     bool HasActiveController { get; }
+    void SetUpperPanelHiddenForCameraDialogue(bool hidden, System.Action onComplete = null);
+    void SetPortraitsHiddenForCameraDialogue(bool hidden);
+    void SetLowerPanelRetainedBetweenDialogues(bool retained);
 
     void AcquireNonDialogueUiSuppression(object owner, float fadeSeconds = -1f);
     void ReleaseNonDialogueUiSuppression(object owner, float fadeSeconds = -1f);
@@ -34,6 +37,24 @@ public static class DialoguePlayback
     public static bool IsAvailable => backend != null;
     public static bool IsPlaying => backend != null && backend.IsPlaying;
     public static bool HasActiveController => backend != null && backend.HasActiveController;
+
+    public static void SetUpperPanelHiddenForCameraDialogue(bool hidden, System.Action onComplete = null)
+    {
+        if (backend != null)
+            backend.SetUpperPanelHiddenForCameraDialogue(hidden, onComplete);
+        else
+            onComplete?.Invoke();
+    }
+
+    public static void SetPortraitsHiddenForCameraDialogue(bool hidden)
+    {
+        backend?.SetPortraitsHiddenForCameraDialogue(hidden);
+    }
+
+    public static void SetLowerPanelRetainedBetweenDialogues(bool retained)
+    {
+        backend?.SetLowerPanelRetainedBetweenDialogues(retained);
+    }
 
     public static void RegisterBackend(IDialoguePlaybackBackend dialogueBackend)
     {

@@ -13,6 +13,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 {
     [Header("Door")]
     [SerializeField] private DoorObject targetDoor;
+    [SerializeField] private bool holdAfterCombatUntilReleased;
 
     [Header("Room")]
     [SerializeField] private MonsterSpawnRoomGroup targetRoomGroup;
@@ -32,6 +33,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
     private readonly List<MonsterLockTrackingUnit> trackedMonsterUnits = new();
     private readonly List<Collider2D> reusableMonsterBodyColliders = new();
     private bool roomEntered;
+    private bool afterCombatHoldReleased;
     private bool doorClosedByLock;
     private bool missingDoorWarningLogged;
     private bool missingRoomGroupWarningLogged;
@@ -237,6 +239,12 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
         RefreshDoorState();
     }
 
+    public void ReleaseAfterCombatHold()
+    {
+        afterCombatHoldReleased = true;
+        RefreshDoorState();
+    }
+
     private void RefreshDoorState()
     {
         if (!ResolveDoor())
@@ -254,6 +262,11 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
         if (remainingCount <= 0)
         {
             ResetOutsideMonsterDelay();
+            if (holdAfterCombatUntilReleased && !afterCombatHoldReleased)
+            {
+                CloseDoorIfNeeded();
+                return;
+            }
             if (ShouldDelayOpeningAfterAllCleared())
                 return;
 

@@ -1073,6 +1073,39 @@ public class DialogueView : MonoBehaviour
     private float defaultDimPanelAlpha;
     private float defaultDialogueEffectAlpha = 1f;
     private bool isUiVisible;
+    private bool upperPanelHiddenForCameraDialogue;
+    private bool isUiClosing;
+    private bool retainLowerPanelBetweenDialogues;
+    private bool lowerPanelRetained;
+
+    public void SetLowerPanelRetainedBetweenDialogues(bool retained, bool closeRetainedPanel)
+    {
+        retainLowerPanelBetweenDialogues = retained;
+        if (!retained && closeRetainedPanel && lowerPanelRetained && !isUiVisible)
+        {
+            SnapGroupClosed(textBoxGroup, textBoxPresentation);
+            lowerPanelRetained = false;
+            ResetTheme();
+        }
+    }
+
+    public void SetUpperPanelHiddenForCameraDialogue(bool hidden, System.Action onComplete = null)
+    {
+        if (upperPanelHiddenForCameraDialogue == hidden)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        upperPanelHiddenForCameraDialogue = hidden;
+        ResolveGroupPresentations();
+        if (hidden)
+            PlayGroupClose(dialogueUpperFrameGroup, dialogueUpperFramePresentation, onComplete);
+        else if (isUiVisible && !isUiClosing)
+            PlayGroupOpen(dialogueUpperFrameGroup, dialogueUpperFramePresentation, onComplete);
+        else
+            onComplete?.Invoke();
+    }
     private bool choiceInputEnabled;
     private bool choicePresentationReady;
     private bool choiceExitInProgress;
@@ -1176,10 +1209,15 @@ public class DialogueView : MonoBehaviour
 
     public void ResetTheme()
     {
-        currentTheme = null;
+        // A completed Hub segment can leave its lower frame visible during camera travel.
+        // Keep its speaker accent until the next theme is applied or the frame is closed.
+        if (!lowerPanelRetained)
+        {
+            currentTheme = null;
+            RestoreThemeVisuals();
+            RefreshActiveChoiceTheme();
+        }
         currentEffectTheme = null;
-        RestoreThemeVisuals();
-        RefreshActiveChoiceTheme();
         ResetDialogueEffectOverride();
         ResetDialogueEffectToHiddenIdle();
     }
@@ -1196,6 +1234,7 @@ public class DialogueView : MonoBehaviour
             affectionUI.PrepareOpeningReveal();
 
         isUiVisible = true;
+        isUiClosing = false;
         RefreshThemePresentation(false);
         ResolveGroupPresentations();
 
@@ -1218,13 +1257,14 @@ public class DialogueView : MonoBehaviour
             onComplete?.Invoke();
         }
 
-        if (textBoxGroup != null)
+        if (textBoxGroup != null && !lowerPanelRetained)
         {
             RegisterAnimation();
             PlayGroupOpen(textBoxGroup, textBoxPresentation, CompleteAnimation);
         }
+        lowerPanelRetained = false;
 
-        if (dialogueUpperFrameGroup != null)
+        if (dialogueUpperFrameGroup != null && !upperPanelHiddenForCameraDialogue)
         {
             RegisterAnimation();
             PlayGroupOpen(dialogueUpperFrameGroup, dialogueUpperFramePresentation, CompleteAnimation);
@@ -2334,6 +2374,8 @@ public class DialogueView : MonoBehaviour
 
     public void HideUI(Action onComplete = null)
     {
+        bool keepLowerPanelOpen = retainLowerPanelBetweenDialogues;
+        isUiClosing = true;
         ClearChoices();
         StopTypingRoutine();
         CompleteOpeningHeaderReveal();
@@ -2351,6 +2393,10 @@ public class DialogueView : MonoBehaviour
         void FinishHide()
         {
             isUiVisible = false;
+            if (keepLowerPanelOpen && !retainLowerPanelBetweenDialogues)
+                SnapGroupClosed(textBoxGroup, textBoxPresentation);
+            lowerPanelRetained = retainLowerPanelBetweenDialogues &&
+                textBoxGroup != null && textBoxGroup.gameObject.activeSelf;
 
             if (IsAffectionNestedInTextBox())
                 SnapGroupClosed(affectionGroup, affectionPresentation);
@@ -2386,7 +2432,7 @@ public class DialogueView : MonoBehaviour
             FinishFrameExit();
         }
 
-        if (textBoxGroup != null && textBoxGroup.gameObject.activeSelf)
+        if (!keepLowerPanelOpen && textBoxGroup != null && textBoxGroup.gameObject.activeSelf)
         {
             RegisterAnimation();
             PlayGroupClose(textBoxGroup, textBoxPresentation, CompleteAnimation);

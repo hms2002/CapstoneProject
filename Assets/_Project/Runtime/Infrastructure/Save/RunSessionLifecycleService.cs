@@ -20,6 +20,8 @@ internal static class RunSessionLifecycleService
         data.runGold = 0;
         data.officerQuestStarted = false;
         data.officerQuestCompletionPresented = false;
+        data.grandHallScribeReturnStage = 0;
+        data.grandHallAudienceGranted = false;
         data.pendingHubReturnFullHeal = false;
         data.pendingHubLoadFullHeal = false;
         data.defeatedBossIds ??= new List<string>();
@@ -51,6 +53,8 @@ internal static class RunSessionLifecycleService
         data.runGold = 0;
         data.officerQuestStarted = false;
         data.officerQuestCompletionPresented = false;
+        data.grandHallScribeReturnStage = 0;
+        data.grandHallAudienceGranted = false;
         data.pendingTransition = null;
         data.pendingPlayerState = null;
         data.pendingHubReturnFullHeal = reason != RunEndReason.None;
@@ -511,6 +515,8 @@ internal static class RunSessionStateService
         data.runGold = 0;
         data.officerQuestStarted = false;
         data.officerQuestCompletionPresented = false;
+        data.grandHallScribeReturnStage = 0;
+        data.grandHallAudienceGranted = false;
         data.lastRunEndReason = RunEndReason.None;
         data.pendingTransition = null;
         data.pendingPlayerState = null;

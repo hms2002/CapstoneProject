@@ -85,6 +85,10 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
     [SerializeField] private float activePulseSpeed = 8f;
     [SerializeField] private float activePulseStrength = 0.18f;
 
+    private PlayerCombatInput2D combatInput;
+    private bool weaponInputBlocked;
+    private bool IsWeaponInputBlocked => inventory != null && combatInput != null && combatInput.IsWeaponInputBlocked;
+
     private CanvasGroup hudCanvasGroup;
     private Graphic[] hudGraphics;
     private AbilityDefinition attackDef;
@@ -181,6 +185,7 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
             weaponEquipController = abilitySystem.GetComponentInChildren<WeaponEquipController>(true);
         if (weaponEquipController == null)
             weaponEquipController = FindFirstObjectByType<WeaponEquipController>();
+        combatInput = inventory != null ? inventory.GetComponent<PlayerCombatInput2D>() : null;
     }
 
     private void RebuildSelector()
@@ -250,10 +255,11 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
 
     private void RefreshVisibility()
     {
+        weaponInputBlocked = IsWeaponInputBlocked;
         if (hudRoot == null)
             return;
 
-        bool hasPlayerRefs = inventory != null && abilitySystem != null;
+        bool hasPlayerRefs = inventory != null && abilitySystem != null && !weaponInputBlocked;
         if (hudRoot != gameObject)
         {
             if (hudRoot.activeSelf != hasPlayerRefs)
@@ -339,6 +345,11 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
 
     private void Update()
     {
+        if (weaponInputBlocked != IsWeaponInputBlocked)
+            RefreshAbilityRefs();
+        if (weaponInputBlocked)
+            return;
+
         if (abilitySystem == null) return;
 
         UpdateDynamicIcon(skill1UI, WeaponAbilitySlot.Skill1, skill1Def);

@@ -23,6 +23,7 @@ public sealed class LevelRewardSessionController : MonoBehaviour
     private readonly List<LevelRewardDefinitionSO> eligibilityBuffer = new();
     private float lastPlayerCombatRealtime = float.NegativeInfinity;
     private bool isSessionOpen;
+    private MonsterSpawnRoomGroup currentRoom;
 
     public event Action SessionOpened;
     public event Action SessionChanged;
@@ -45,6 +46,10 @@ public sealed class LevelRewardSessionController : MonoBehaviour
         CombatActivityEvents.DamageApplied += HandleDamageApplied;
         RunSessionStore.OnRunEnded += HandleRunEnded;
         PlayerRuntimeRegistry.PlayerUnregistered += HandlePlayerUnregistered;
+        MonsterSpawnRoomGroup.ActiveRoomEntered += HandleRoomEntered;
+        MonsterSpawnRoomGroup.ActiveRoomExited += HandleRoomExited;
+        foreach (var room in FindObjectsByType<MonsterSpawnRoomGroup>(FindObjectsSortMode.None))
+            if (room.PlayerEncounterEntered) currentRoom = room;
     }
 
     private void OnDisable()
@@ -52,6 +57,9 @@ public sealed class LevelRewardSessionController : MonoBehaviour
         CombatActivityEvents.DamageApplied -= HandleDamageApplied;
         RunSessionStore.OnRunEnded -= HandleRunEnded;
         PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
+        MonsterSpawnRoomGroup.ActiveRoomEntered -= HandleRoomEntered;
+        MonsterSpawnRoomGroup.ActiveRoomExited -= HandleRoomExited;
+        currentRoom = null;
         CloseSession();
     }
 
@@ -184,14 +192,18 @@ public sealed class LevelRewardSessionController : MonoBehaviour
             return false;
         }
 
-        if (DialoguePlayback.IsPlaying || UiInteractionStateQuery.HasBlockingUI() || TimeScalePausePlayback.IsPaused)
+        if (DialoguePlayback.IsPlaying || UiInteractionStateQuery.HasBlockingUI() || TimeScalePausePlayback.IsPaused ||
+            SceneTransitionPlayback.IsTransitionActive || LoadingPresentationQuery.IsActiveLoadingPresentation ||
+            PlayerRuntimeRegistry.CurrentPlayer.CurrentState != InteractState.Idle)
         {
             failureReason = "다른 대화 또는 UI가 진행 중입니다.";
             return false;
         }
 
+        bool hasRoom = currentRoom != null && currentRoom.isActiveAndEnabled && currentRoom.PlayerEncounterEntered;
+        bool roomCleared = hasRoom && currentRoom.RoomWavesCompleted && currentRoom.RemainingRegisteredOrPendingCount == 0;
         bool recentlyInCombat = Time.unscaledTime - lastPlayerCombatRealtime < Mathf.Max(0f, combatGraceSeconds);
-        if (recentlyInCombat || Enemy.IsAnyEnemyRecognizingPlayer())
+        if ((hasRoom && !roomCleared) || (!roomCleared && recentlyInCombat) || Enemy.IsAnyEnemyRecognizingPlayer())
         {
             failureReason = combatBlockedMessage;
             showCombatWarning = true;
@@ -235,11 +247,21 @@ public sealed class LevelRewardSessionController : MonoBehaviour
 
     private void HandleRunEnded(RunEndReason reason)
     {
+        currentRoom = null;
+        lastPlayerCombatRealtime = float.NegativeInfinity;
         CloseSession();
     }
 
     private void HandlePlayerUnregistered(PlayerInteractor2D player)
     {
+        currentRoom = null;
+        lastPlayerCombatRealtime = float.NegativeInfinity;
         CloseSession();
+    }
+
+    private void HandleRoomEntered(MonsterSpawnRoomGroup room) => currentRoom = room;
+    private void HandleRoomExited(MonsterSpawnRoomGroup room)
+    {
+        if (currentRoom == room) currentRoom = null;
     }
 }

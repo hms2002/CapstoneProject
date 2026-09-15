@@ -3219,3 +3219,15 @@ The user's all-weapons report supersedes the previous input-layer timer/80% anim
 The approved rule is a per-dungeon Normal Combat composition, not independent selection probabilities: stage 1 = 100/0/0, stage 2 = 50/50/0, stage 3 = 20/40/40 across tiers 1/2/3. Start/Boss/Treasure/Shop/Event/Exit and Large Combat are excluded from the denominator. Exactly one Large must match the current stage. Legacy difficultyTier 0 is interpreted as tier 1 without rewriting authored room assets.
 
 Allocate fractional counts by largest remainder; resolve equal remainders deterministically from the generation seed. Hold quotas through template rollback, repetition relaxation and topology/physical retries. Failure must not silently downgrade a tier or loosen a quota. Current stage uses the same defeated-boss progression as monster scaling, snapshotted at generation entry. Editor preview supplies an explicit stage independently of event visit order.
+
+## 2026-09-15 — QA room clear, HUD and boss death rules
+
+User approved immediate level-up eligibility after confirmed room clear, superseding the three-second grace period in that case. Pending waves/spawns, living enemies and cinematic/UI/transition restrictions remain distinct blockers. HUD availability projects the same eligibility. Pause/chest screens dim underlying HUD with a 50% black overlay while blocking interaction; the inventory-shaped HUD remains visible. Boss death immediately clears boss status ailments, including separately owned Burn. Quest icon and Grand Hall NPC work are deferred; the scribe document's "recognition" means boss defeat, and first-entry cinematic details await a separate instruction.
+
+## 2026-09-15 — Separate charge and weapon drop SpriteMask channels
+
+User approved retaining SpriteMask and separating Rendering Layers instead of introducing a charge shader. Reserve bit 1 for WeaponDropVisual and bit 2 for WeaponChargeEffect; existing world/vision masks remain on Default bit 0. Assign the matching exclusive bit to both mask and target renderer, preserve Sorting Layers and per-instance SortingGroups. This applies to the Lightning Spear item display and Apprentice Hero Sword charge; other mask systems are outside this slice. Actual Shadow Corridor visual acceptance remains pending.
+
+## 2026-09-15 — Grand Hall scribe slot/run boundaries
+
+User specifies first meeting once per save slot and boss-return presentations once per stage in the current run. Use a dedicated TutorialProgressStore completion ID for the first meeting; use run DTO fields reset on start/end/development reset for return acknowledgements and audience permission. The final portal becomes available at the camera-focused audience cue after the third distinct officer defeat, not immediately on boss-count satisfaction. Existing portal interaction and visual projection share this condition. Three-portal introduction uses one dragon-centered overview; wording is “세 구역에 각각 간부님들이 계십니다.” Original Notion ZIP assets and first-meeting text are used with the user's amendments.

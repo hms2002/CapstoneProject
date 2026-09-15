@@ -46,6 +46,7 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
     private readonly HashSet<int> inspectionOnlyOwnerIds = new HashSet<int>();
 
     public bool IsActive => gameObject.activeSelf;
+    public bool IsChestMode => openMode == OpenMode.Chest;
     public bool IsInspectionOnly => inspectionOnlyOwnerIds.Count > 0;
     public bool CanCloseOnEscape => true;
     public UIOpenGroup OpenGroup => UIOpenGroup.ExclusiveModal;

@@ -24725,7 +24725,19 @@ MonoBehaviour:
         m_CallState: 2
   onChestOpened:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1767554932}
+        m_TargetAssemblyTypeName: RoomDoorMonsterKillLock, Gameplay
+        m_MethodName: ReleaseAfterCombatHold
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
   onPortalEntered:
     m_PersistentCalls:
       m_Calls: []
@@ -29068,6 +29080,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDoorMonsterKillLock
   targetDoor: {fileID: 1767554934}
+  holdAfterCombatUntilReleased: 1
   targetRoomGroup: {fileID: 1561139299}
   requireTrackedMonstersInsideBeforeClose: 1
   openForOutsideMonsterDelaySeconds: 0.35
@@ -29454,6 +29467,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 837d7f5f8f124f64bb86cebcf4029894, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialCombatIntroSequence
+  blockWeaponInputUntilTutorialComplete: 1
   playOnlyOnce: 1
   doorClosedTrigger: {fileID: 2106631544}
   playerTransform: {fileID: 0}
@@ -29470,10 +29484,10 @@ MonoBehaviour:
   letterboxInSeconds: 0.35
   letterboxOutSeconds: 0.25
   letterboxScreenHeightRatio: 0.14
-  fadeGlobalUiDuringLetterbox: 0
+  fadeGlobalUiDuringLetterbox: 1
   uiTargetAlpha: 0
-  useCustomFadedLayers: 0
-  fadedLayers: 
+  useCustomFadedLayers: 1
+  fadedLayers: 0000000007000000
   attackSkillTutorialTrigger: {fileID: 2106631543}
   infoPanel: {fileID: 2037749389}
   waitForPromptClose: 1
