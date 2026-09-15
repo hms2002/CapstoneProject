@@ -203,6 +203,10 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 9cde2ceedd4cea5438611cc289c659ca, type: 2}
     - localCell: {x: 11, y: 4}
       tile: {fileID: 11400000, guid: 9cde2ceedd4cea5438611cc289c659ca, type: 2}
+    - localCell: {x: 11, y: 7}
+      tile: {fileID: 11400000, guid: 9cde2ceedd4cea5438611cc289c659ca, type: 2}
+    - localCell: {x: 11, y: 8}
+      tile: {fileID: 11400000, guid: 9cde2ceedd4cea5438611cc289c659ca, type: 2}
     floorDetailTiles:
     - localCell: {x: 4, y: 1}
       tile: {fileID: 11400000, guid: 6d1b5761fa5cd5044ab1d29a3ef7eb78, type: 2}
@@ -406,8 +410,8 @@ MonoBehaviour:
     - slotId: LobbyGate
       kind: 1
       mediumPrefab: {fileID: 0}
-      localCell: {x: 11, y: 4}
-      localOffset: {x: 0, y: 0}
+      localCell: {x: 11, y: 8}
+      localOffset: {x: 0, y: -0.32999992}
       localRotationDegrees: 0
       localScale: {x: 2, y: 3, z: 1}
       triggerSize: {x: 1, y: 1}
