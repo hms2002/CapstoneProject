@@ -20,7 +20,7 @@
     # anim: normal
     뭐야, 기껏 망치질할 생각에 신나서 화로까지 벌겋게 달궈 놨더니!
     # anim: normal
-    ...쳇, 알았어. 맘 정해지면 다시 와.
+    ...쳇, 알았어. 맘 정해지면 다시 와. 다음엔 사람 기대하게 만들어 놓고 빼기 없기다?
     -> upgrade_end
 
 = open_upgrade
@@ -31,7 +31,4 @@
 -> END
 
 = upgrade_end
-# face: 1002: Normal
-# anim: normal
-다음엔 사람 기대하게 만들어 놓고 빼기 없기다?
 -> END
