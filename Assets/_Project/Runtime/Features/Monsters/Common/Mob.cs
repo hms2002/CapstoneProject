@@ -292,7 +292,7 @@ public class Mob : Enemy
             return true;
         }
 
-        int overlaps = collision.OverlapCollider(recoveryRetreatWallFilter, recoveryRetreatOverlaps);
+        int overlaps = collision.Overlap(recoveryRetreatWallFilter, recoveryRetreatOverlaps);
         for (int i = 0; i < overlaps; i++)
         {
             if (IsRecoveryRetreatObstacle(recoveryRetreatOverlaps[i]))
