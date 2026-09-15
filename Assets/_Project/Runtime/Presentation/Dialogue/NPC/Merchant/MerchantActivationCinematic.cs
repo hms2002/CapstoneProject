@@ -17,7 +17,7 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
     [Header("Merchant Focus")]
     [SerializeField] private Transform merchantFocusTarget;
     [SerializeField] private MonoBehaviour merchantSpeechBubble;
-    [SerializeField] private string merchantSpeechText = "\uC6B0\uB9AC \uAC00\uAC8C \uC815\uC0C1\uC601\uC5C5 \uD569\uB2C8\uB2E4~";
+    [SerializeField] private string merchantSpeechText = "\uC9DC\uC794! \uC624\uB298\uBD80\uD130 \uC815\uC0C1 \uC601\uC5C5\uC774\uC57C!";
 
     [Header("Focus Camera")]
     [SerializeField] private CinemachineCamera merchantFocusCamera;
