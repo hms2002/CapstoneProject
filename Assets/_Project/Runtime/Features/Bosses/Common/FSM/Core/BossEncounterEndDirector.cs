@@ -40,7 +40,7 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
 
     [Header("Run Gold Reward")]
     [SerializeField] private GoldPickup2D goldPickupPrefab;
-    [SerializeField, Min(0)] private int baseGoldReward = 800;
+    [SerializeField, Min(0)] private int baseGoldReward = 50;
 
     [Header("Debug")]
     [SerializeField] private bool logDebug;

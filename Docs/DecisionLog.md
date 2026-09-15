@@ -3194,6 +3194,12 @@ User requested the run merchant closely match the hub Merchant, including dialog
 
 User revision: the fourth run-shop slot is guaranteed Consumable, priced 200–300 gold inclusive. The first three remain weapon/relic 25%/75%, with no random consumables. Existing saved four-slot stock is not replaced; policy applies to newly generated stock.
 
+### 2026-09-16 — Room-budget run gold and purchasing units
+
+User revision supersedes per-monster gold as the primary procedural economy and the earlier run-shop price bands. Normal Combat rooms own 120 gold and Large Combat rooms own 180, distributed across planned monsters in proportion to existing base experience. Non-Combat automatic waves pay zero; Alarm Bell owns a separate 50-gold cap; existing no-experience summons remain no-gold. A standard six-Normal/one-Large combat stage therefore pays 900 before the small event/boss additions. Boss completion base gold is 50.
+
+New run-shop rolls use a roughly 600-gold relic unit: weapons 1150–1250, Common relics 400–500, Rare relics 600–700, Epic relics 900–1000 and consumables 850–950. Existing saved stock is not repriced. Gold pickup movement and collection presentation remain unchanged.
+
 ### 2026-09-12 — Officer objective and cleared Grand Hall portals
 
 Approved: start the fixed officer objective on Grand Hall entry; count the three current-run officer boss IDs independently of the changing scene guidance. Keep (3/3) · 완료 visible after the third defeat; perform removal only after Grand Hall return, then acknowledge once per run. Cleared normal portals use Portal_Disable and stop/disable their particles while retaining existing travel restrictions. Damage popups use the existing BlackOutline font/material.

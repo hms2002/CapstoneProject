@@ -14,6 +14,8 @@ using UnityEngine;
 public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
 {
     private const string DefaultRoomEntrySpawnSettingsResourcePath = "MonsterRoomEntrySpawnSettings";
+    internal const int NormalCombatRunGoldBudget = 120;
+    internal const int LargeCombatRunGoldBudget = 180;
 
     public static event Action<MonsterSpawnRoomGroup> ActiveRoomEntered;
     public static event Action<MonsterSpawnRoomGroup> ActiveRoomExited;
@@ -46,6 +48,8 @@ public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
     private bool roomEntrySpawnStarted;
     private int pendingRoomEntrySpawnCount;
     private int encounterHoldCount;
+    private bool hasConfiguredRunGoldBudget;
+    private int configuredRunGoldBudget;
 
     public MonsterRoomSpawnProfileSO SpawnProfile => spawnProfile;
     public bool PlayerEncounterEntered => playerEncounterEntered;
@@ -63,6 +67,19 @@ public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
     public void ConfigureSpawnProfile(MonsterRoomSpawnProfileSO configuredSpawnProfile)
     {
         spawnProfile = configuredSpawnProfile;
+    }
+
+    /// <summary>
+    /// 절차 전투방이 생성될 때 이 encounter에서 지급할 전체 런 골드 예산을 주입한다.
+    /// 씬에 직접 배치된 기존 encounter는 호출되지 않으므로 기존 몬스터별 계산을 유지한다.
+    /// </summary>
+    public void ConfigureRunGoldBudget(int totalGold)
+    {
+        if (roomEntrySpawnStarted)
+            throw new InvalidOperationException("Cannot change the room gold budget after encounter entry.");
+
+        hasConfiguredRunGoldBudget = true;
+        configuredRunGoldBudget = Mathf.Max(0, totalGold);
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

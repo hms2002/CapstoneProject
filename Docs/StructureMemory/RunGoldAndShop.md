@@ -8,13 +8,15 @@ GamePlayData.runGold owns the current run balance. Existing CurrencyManager expo
 
 ## Drop and HUD flow
 
-ExperienceRewardSource uses its existing valid death-reward gate, so suppressed rewards also suppress gold. It spawns GoldPickup2D from GoldPickup.prefab: a baseline of clamp(baseExperience * 6, 40, 600), then a uniform integer roll within ±15% (ceil lower/floor upper), split across at most eight pickups. Current common base XP values 5/10/15 yield baselines of 40/60/90 gold (random ranges 34–46 / 51–69 / 77–103). Pickup scatter and delayed player homing follow experience pickup behavior. GoldPickup2D and ExperiencePickup2D collect from Update upon reaching the tracked player position (0.01 world-unit tolerance), after the homing delay. They have no trigger callback or required Collider2D; existing authored colliders do not control collection. Collection marks the pickup consumed before reward callbacks to prevent duplicate grants. Nineteen monster prefabs reference the new pickup.
+ExperienceRewardSource uses its existing valid death-reward gate, so suppressed rewards also suppress gold. For procedural room encounters, MonsterSpawnRoomGroup assigns an exact runtime gold share to every planned spawn before combat. Normal Combat rooms carry 120 gold and Large Combat rooms carry 180 gold; shares are weighted by each monster prefab's base experience and sum to the room budget. Non-Combat room waves are explicitly assigned zero so event/treasure-authored monsters cannot fall back to uncapped rewards. AlarmBellInteractable owns a separate 50-gold encounter budget, spread across its planned spawns. Summoned units that already suppress experience continue to suppress gold.
+
+Unconfigured/legacy ExperienceRewardSource users retain the fallback of clamp(baseExperience * 6, 40, 600), followed by a uniform integer roll within ±15% (ceil lower/floor upper). All paths still spawn the existing GoldPickup2D from GoldPickup.prefab and split the total across at most eight pickups. Pickup scatter, delayed homing, collection and HUD flow are unchanged. GoldPickup2D and ExperiencePickup2D collect from Update upon reaching the tracked player position (0.01 world-unit tolerance), after the homing delay. They have no trigger callback or required Collider2D; existing authored colliders do not control collection. Collection marks the pickup consumed before reward callbacks to prevent duplicate grants. Nineteen monster prefabs reference the pickup.
 
 Art/Sprites/Items/gold.png is the supplied image, imported as a point-filtered 16 PPU sprite. GlobalUIRoot contains an authored GoldUI row above the magic-stone row. CurrencyUI.showRunGold selects the balance and event; the UI owns no currency state.
 
 ## Merchant flow
 
-ShopDefinitionSO.usesRunGold selects run-shop behavior. ShopDefinition_RunGold.asset uses three unrestricted weapon/relic slots with category weights of 1:3 (25%/75%) and a fourth dedicated Consumable slot, maximum three weapons and one consumable. ShopInventoryRoll retains existing candidate restrictions, including chest-only weapons. Prices are rolled once into saved stock: weapons 1000–1300; Common relics 200–400; Rare 500–800; Epic 900–1200; consumables 200–300, inclusive.
+ShopDefinitionSO.usesRunGold selects run-shop behavior. ShopDefinition_RunGold.asset uses three unrestricted weapon/relic slots with category weights of 1:3 (25%/75%) and a fourth dedicated Consumable slot, maximum three weapons and one consumable. ShopInventoryRoll retains existing candidate restrictions, including chest-only weapons. Prices are rolled once into saved stock: weapons 1150–1250; Common relics 400–500; Rare 600–700; Epic 900–1000; consumables 850–950, inclusive. The policy centers relic purchasing near a 600-gold unit, potions near 1.5 units (900), and weapons near 2 units (1200).
 
 MerchantNPC stores gold stock under scene/merchant ID/position in existing run merchant states, preserving purchases and prices on revisit. MerchantPurchaseService spends/refunds the selected currency around existing acquisition. MerchantShopPolicy requires an active run. Initial run shops use no hub refresh, discount or slot upgrade modifiers. Hub currency and pricing remain unchanged.
 
@@ -24,7 +26,7 @@ Prefabs/Loot/RunMerchantGroup.prefab is the placement prefab derived from the hu
 
 Each BossThemes Slime/Dragon/Shadow/DemonKing folder has a themed Shop RoomTemplateSO with the merchant placement. All four corresponding libraries include it. Slime/Dragon/Shadow generation profiles guarantee their shop template. DemonKing uses its own DemonKingShopLayoutPolicy with one shop, referenced by ProceduralDemonkingCorridor; the shared corridor policy is unchanged.
 
-Tune drop amounts in ExperienceRewardSource, category weights in ShopDefinition_RunGold, price ranges in ShopDefinitionSO.RollGoldPrice, and visual placement in the authored prefabs/room templates. Initial economy is approximately 17–22 ordinary 60-gold monsters per weapon; actual encounter mix needs playtesting.
+Tune ordinary room budgets in MonsterSpawnRoomGroup, special-event budgets in their event owner, category weights in ShopDefinition_RunGold, price ranges in ShopDefinitionSO.RollGoldPrice, and visual placement in the authored prefabs/room templates. A standard six-Normal/one-Large combat stage pays exactly 900 gold before special-event and boss additions. An Alarm Bell adds at most 50; the boss adds 43–57. This targets about 1.5 baseline relic units per stage and makes a 1200-gold weapon affordable after saving across stages. Actual room composition and purchase cadence still need playtesting.
 
 ## Verification and pitfalls
 
@@ -35,7 +37,7 @@ Price rounding: newly rolled run-shop prices round the units digit half-up to mu
 
 ## Boss encounter gold (2026-09-13)
 
-BossEncounterEndDirector owns baseGoldReward (800 default) and goldPickupPrefab, authored in the four production boss scenes. Its guarded CompleteEncounterRoutine emits 680–920 gold (inclusive +/-15%) across up to eight pickups before finale/terminal-ending presentation, only in an active run. Total integer gold is preserved via quotient/remainder distribution. Payment belongs to encounter completion, including split/multi-phase bosses, rather than each managed enemy death. Tutorial director remains unassigned. Unity pickup/ending timing needs playtest confirmation.
+BossEncounterEndDirector owns baseGoldReward (50 default) and goldPickupPrefab, authored as 50 in the four production boss scenes. Its guarded CompleteEncounterRoutine emits 43–57 gold (inclusive +/-15%) across up to eight pickups before finale/terminal-ending presentation, only in an active run. Total integer gold is preserved via quotient/remainder distribution. Payment belongs to encounter completion, including split/multi-phase bosses, rather than each managed enemy death. Tutorial director remains unassigned. Unity pickup/ending timing needs playtest confirmation.
 
 
 ## Homing pickups and portal settlement (2026-09-13)
