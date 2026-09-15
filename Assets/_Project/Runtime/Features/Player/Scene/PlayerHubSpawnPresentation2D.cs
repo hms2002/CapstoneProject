@@ -42,6 +42,36 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 
     private const string DefaultHubSceneName = "ProtoTypeHub";
     private const string DefaultShadowChildName = "Shadow";
+    private static string pendingDeathReturnScene;
+    private static bool deathReturnSceneLoaded;
+
+    // Own a one-shot arrival request, not persistent tutorial or save progress.
+    public static void RequestDeathReturn(string destinationScene)
+    {
+        ClearDeathReturnRequest();
+        if (string.IsNullOrWhiteSpace(destinationScene))
+            return;
+        pendingDeathReturnScene = destinationScene;
+        SceneManager.sceneLoaded += HandleDeathReturnSceneLoaded;
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ClearDeathReturnRequest()
+    {
+        SceneManager.sceneLoaded -= HandleDeathReturnSceneLoaded;
+        pendingDeathReturnScene = null;
+        deathReturnSceneLoaded = false;
+    }
+
+    private static void HandleDeathReturnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (mode != LoadSceneMode.Single)
+            return;
+        if (deathReturnSceneLoaded || !string.Equals(scene.name, pendingDeathReturnScene, StringComparison.Ordinal))
+            ClearDeathReturnRequest();
+        else
+            deathReturnSceneLoaded = true;
+    }
     [Header("Scene")]
     [SerializeField] private string hubSceneName = DefaultHubSceneName;
     [SerializeField] private bool playOnHubSpawn = true;
@@ -186,6 +216,14 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         if (!playOnHubSpawn || hasPlayedThisScene || IsPlaying)
             return;
 
+        if (string.Equals(gameObject.scene.name, pendingDeathReturnScene, StringComparison.Ordinal))
+        {
+            ClearDeathReturnRequest();
+            CacheReferences();
+            sequenceRoutine = StartCoroutine(PlayRoutine(isDeathReturn: true));
+            return;
+        }
+
         if (!IsHubScene())
             return;
 
@@ -228,7 +266,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         portalArrivalOwner = null;
     }
 
-    private IEnumerator PlayRoutine(Vector3? portalStartPosition = null, Action onLanded = null, float recoveryTimeScale = 1f)
+    private IEnumerator PlayRoutine(Vector3? portalStartPosition = null, Action onLanded = null, float recoveryTimeScale = 1f, bool isDeathReturn = false)
     {
         bool isPortalArrival = portalStartPosition.HasValue;
         if (!isPortalArrival)
@@ -337,7 +375,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         sequenceRoutine = null;
         ReleaseCameraFocusSession();
         portalArrivalOwner = null;
-        if (!isPortalArrival)
+        if (!isPortalArrival && !isDeathReturn)
             InvokePresentationCompleted();
     }
 

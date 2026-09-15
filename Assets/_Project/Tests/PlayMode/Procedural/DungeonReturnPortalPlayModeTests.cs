@@ -28,6 +28,30 @@ public sealed class DungeonReturnPortalPlayModeTests
     }
     private T Own<T>(T value) where T : Object { owned.Add(value); return value; }
 
+    [UnityTest]
+    public IEnumerator DeathReturn_IsOneShotAndDoesNotCompleteTutorial()
+    {
+        var player = MakePlayer();
+        var arrival = player.Transform.GetComponent<PlayerHubSpawnPresentation2D>();
+        int completed = 0;
+        arrival.PresentationCompleted += _ => completed++;
+        PlayerHubSpawnPresentation2D.RequestDeathReturn(player.Transform.gameObject.scene.name);
+        try
+        {
+            arrival.TryPlayIfEligible();
+            Assert.That(arrival.IsPlaying, Is.True, "Explicit death return bypasses the tutorial/Hub gate.");
+            float timeout = Time.realtimeSinceStartup + 5f;
+            while (arrival.IsPlaying && Time.realtimeSinceStartup < timeout) yield return null;
+            Assert.That(arrival.IsPlaying, Is.False);
+            Assert.That(completed, Is.Zero);
+            arrival.TryPlayIfEligible();
+            Assert.That(arrival.IsPlaying, Is.False);
+            Assert.That(typeof(PlayerHubSpawnPresentation2D).GetField("pendingDeathReturnScene",
+                BindingFlags.Static | BindingFlags.NonPublic).GetValue(null), Is.Null);
+        }
+        finally { PlayerHubSpawnPresentation2D.RequestDeathReturn(null); }
+    }
+
     [TestCase(RoomSocketDirection.Up, 2.2f, 1.2f)]
     [TestCase(RoomSocketDirection.Down, 2.2f, 1.2f)]
     [TestCase(RoomSocketDirection.Left, 1.2f, 2.2f)]
