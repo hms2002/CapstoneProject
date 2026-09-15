@@ -3231,3 +3231,10 @@ User approved retaining SpriteMask and separating Rendering Layers instead of in
 ## 2026-09-15 — Grand Hall scribe slot/run boundaries
 
 User specifies first meeting once per save slot and boss-return presentations once per stage in the current run. Use a dedicated TutorialProgressStore completion ID for the first meeting; use run DTO fields reset on start/end/development reset for return acknowledgements and audience permission. The final portal becomes available at the camera-focused audience cue after the third distinct officer defeat, not immediately on boss-count satisfaction. Existing portal interaction and visual projection share this condition. Three-portal introduction uses one dragon-centered overview; wording is “세 구역에 각각 간부님들이 계십니다.” Original Notion ZIP assets and first-meeting text are used with the user's amendments.
+
+
+## 2026-09-16 - Boss Speech Direction Is Independent Of Body Facing
+
+- Boss speech fixes its own tail direction and optional anchor rotation for each displayed bubble, while following the speaker position. It does not freeze the boss body, attack aim or EgoSword.
+- Body facing is controlled separately by the central dead zone and authored per-pattern commit/recovery windows.
+- SlimeQueen castling is excluded from AI selection; existing assets are retained to preserve loading references.

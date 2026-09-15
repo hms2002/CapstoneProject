@@ -24,7 +24,7 @@ public static class RunEventArtInstaller
         ApplyPrefab(Modules + "ParcelDelivery/ParcelDeliveryPointModule.prefab", ConfigureDelivery);
         ApplyPrefab(Modules + "BuffyHealthTime/BuffyHealthTimeEventModule.prefab", ConfigureBuffy);
         AssetDatabase.SaveAssets();
-        Debug.Log("[RunEventArtInstaller] Applied Parcel/Buffy NPC data, portraits, box pile and three dummy visuals. Room generation and rewards unchanged.");
+        Debug.Log("[RunEventArtInstaller] Applied Parcel/Buffy NPC data, portraits, box pile and three exercise equipment visuals. Room generation and rewards unchanged.");
     }
 
     public static void InstallBatch()
@@ -71,13 +71,22 @@ public static class RunEventArtInstaller
             RequiredChild(guide, "BuffyBody").GetComponent<SpriteRenderer>(),
             ImportSprite("Buffy/Orc_SD.png"), 2.1f);
 
-        // Copy the sprite only, never the dummy's combat, health or reward components.
-        Sprite dummy = Required<GameObject>("Assets/_Project/Prefabs/Monsters/TrainingDummy.prefab")
-            .GetComponent<SpriteRenderer>().sprite;
-        foreach (string name in new[] { "StrengthEquipment", "WheelEquipment", "LogEquipment" })
-            SetVisual(RequiredChild(root.transform, name + "/" + name + "Body").GetComponent<SpriteRenderer>(), dummy, 1.8f);
+        ConfigureWorkout(root, "StrengthEquipment", "exercise1.png", "공격력 증가", 1.8f, 0f);
+        ConfigureWorkout(root, "WheelEquipment", "exercise3.png", "이동속도 증가", 0.9f, -0.45f);
+        ConfigureWorkout(root, "LogEquipment", "exercise2.png", "경험치 획득", 1.8f, 0f);
 
         BuffyHealthTimeEventInstaller.ConfigureCompositePoseSlots(root);
+    }
+
+    private static void ConfigureWorkout(GameObject root, string name, string spriteFile, string prompt, float height, float offsetY)
+    {
+        Transform equipment = RequiredChild(root.transform, name);
+        SpriteRenderer renderer = RequiredChild(equipment, name + "Body").GetComponent<SpriteRenderer>();
+        SetVisual(renderer, ImportSprite("Buffy/" + spriteFile), height);
+        renderer.transform.localPosition = new Vector3(0f, offsetY, 0f);
+        var serialized = new SerializedObject(equipment.GetComponent<BuffyHealthTimeInteractable>());
+        serialized.FindProperty("interactPromptText").stringValue = prompt;
+        serialized.ApplyModifiedPropertiesWithoutUndo();
     }
 
     private static NPCData PrepareNpc(string key, string displayName, int id, string portraitPath)

@@ -29,6 +29,8 @@ public sealed class AbilityLogic_SlimeQueenBodyInflateImpact : AbilityLogic
         SlimeQueenP2Short phaseTwoShortQueen = slimeQueen as SlimeQueenP2Short;
         bool shouldHoldBodyInflateAnimation = phaseOneQueen != null || phaseTwoShortQueen != null;
 
+        SlimeQueenBossBase facingOwner = slimeQueen as SlimeQueenBossBase;
+        facingOwner?.BeginPatternFacingLock(initialTarget);
         try
         {
             slimeQueen.FaceCurrentTarget();
@@ -78,6 +80,7 @@ public sealed class AbilityLogic_SlimeQueenBodyInflateImpact : AbilityLogic
         }
         finally
         {
+            facingOwner?.EndPatternFacingLock();
             slimeQueen.CleanupBodyInflatePresentation();
 
             if (phaseOneQueen != null)

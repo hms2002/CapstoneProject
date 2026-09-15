@@ -32,7 +32,7 @@ public sealed class AbilityLogic_SlimeQueenToxicDrop : AbilityLogic
 
         try
         {
-            slimeQueen.FaceCurrentTarget();
+            slimeQueen.BeginPatternFacingLock(initialTarget);
             slimeQueen.ShowToxicDropWarnings(dropPositions);
 
             if (slimeQueen.ToxicDropWarningSeconds > 0f)
@@ -43,6 +43,7 @@ public sealed class AbilityLogic_SlimeQueenToxicDrop : AbilityLogic
 
             slimeQueen.ClearToxicDropWarnings();
             bool launchedProjectiles = slimeQueen.LaunchToxicDropProjectiles(dropPositions, projectileImpactPresentation, this);
+            slimeQueen.EndPatternFacingLock();
             while (launchedProjectiles && !slimeQueen.AreToxicDropProjectilesFinished())
             {
                 if (IsAbilityCancelled(spec))
@@ -60,6 +61,7 @@ public sealed class AbilityLogic_SlimeQueenToxicDrop : AbilityLogic
         }
         finally
         {
+            slimeQueen.EndPatternFacingLock();
             slimeQueen.CleanupToxicDropPresentation();
         }
     }

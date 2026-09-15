@@ -24,7 +24,7 @@ public sealed class WeaponPresentationRig2D : MonoBehaviour
     [SerializeField] private Transform weaponMount;
 
     [Header("Side Switch")]
-    [SerializeField, Min(0f)] private float sideSwitchDeadZone = 0.1f;
+    [SerializeField, Min(0f)] private float sideSwitchDeadZone = 0.2f;
 
     private int currentSideSign = 1;
     private int aimPresentationOverrideToken;
@@ -136,7 +136,10 @@ public sealed class WeaponPresentationRig2D : MonoBehaviour
         RefreshNow();
 
         activeAimPresentationOverrideToken = ++aimPresentationOverrideToken;
-        lockedFacingSideSign = ResolveFacingSideSign(castDirection, currentSideSign);
+        // RefreshNow already resolved the cursor side with the world-space dead zone.
+        lockedFacingSideSign = aimSource != null && ownerTransform != null
+            ? currentSideSign
+            : ResolveFacingSideSign(castDirection, currentSideSign);
         activeAimPresentationMode = mode;
         activeAimPresentationOverrideReleaseTime = Time.time + Mathf.Max(0f, minimumHoldTime);
         activeAimPresentationOverrideReleaseRequested = false;

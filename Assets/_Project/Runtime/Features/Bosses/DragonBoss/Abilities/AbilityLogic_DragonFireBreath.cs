@@ -116,7 +116,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
                 yield break;
 
             telegraphService?.HideCurrent();
-            dragon.FacePatternDirection(aim.WarningDirection);
+            // Facing was committed with the final warning snapshot.
             dragon.PlayPatternTrigger(DragonAnimationKeys.Fire);
             yield return RunFixedFireBreath(dragon, aim, spec);
         }
@@ -200,7 +200,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
     {
         Vector2 direction = dragon.GetDirectionToTargetOrFacing();
         if (syncFacing)
-            dragon.FacePatternDirection(direction);
+            dragon.FaceCurrentTarget();
 
         Vector2 warningOrigin = ResolveWarningOrigin(dragon, direction);
         Vector2 fireOrigin = ResolveFireOrigin(dragon, direction);

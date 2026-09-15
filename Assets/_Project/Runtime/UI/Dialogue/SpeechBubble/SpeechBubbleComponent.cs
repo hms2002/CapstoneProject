@@ -56,6 +56,8 @@ public class SpeechBubbleComponent : MonoBehaviour, ISpeechBubblePlayback
 
     private IObjectPool<SpeechBubble> bubblePool;
     private SpeechBubble activeBubble;
+    private bool freezeBossBubbleDirection;
+    private readonly Dictionary<SpeechBubble, SpeechBubbleTailSide> lockedTailSides = new();
     private readonly List<SpeechBubble> parallelBubbles = new List<SpeechBubble>();
     private readonly List<BubblePlacementCandidate> placementObstacles = new List<BubblePlacementCandidate>();
 
@@ -63,6 +65,7 @@ public class SpeechBubbleComponent : MonoBehaviour, ISpeechBubblePlayback
 
     private void Awake()
     {
+        freezeBossBubbleDirection = GetComponent<IBossSpeechPlayback>() != null;
         bubblePool = new ObjectPool<SpeechBubble>(
             createFunc: () => Instantiate(bubblePrefab),
             actionOnGet: (bubble) => bubble.gameObject.SetActive(true),
@@ -315,6 +318,12 @@ public class SpeechBubbleComponent : MonoBehaviour, ISpeechBubblePlayback
             return;
 
         SpeechBubble bubble = GetBubble(allowParallel);
+        lockedTailSides.Remove(bubble);
+        if (freezeBossBubbleDirection && anchorRotationResolver != null)
+        {
+            Quaternion initialRotation = anchorRotationResolver();
+            anchorRotationResolver = () => initialRotation;
+        }
         Transform resolvedAnchor = anchorOverride != null ? anchorOverride : transform;
 
         if (useAnimatedReveal)
@@ -393,6 +402,9 @@ public class SpeechBubbleComponent : MonoBehaviour, ISpeechBubblePlayback
 
         if (parallelBubbles.Count > 0)
             LayoutParallelBubbles();
+
+        if (freezeBossBubbleDirection)
+            lockedTailSides[bubble] = bubble.TailSide;
     }
 
     private SpeechBubble GetBubble(bool allowParallel)
@@ -435,7 +447,8 @@ public class SpeechBubbleComponent : MonoBehaviour, ISpeechBubblePlayback
         if (bubble == null)
             return;
 
-        bubble.SetPlacement(SpeechBubbleTailSide.Left, Vector3.zero);
+        lockedTailSides.Remove(bubble);
+        bubble.SetPlacement(ResolveRetainedTailSide(bubble), Vector3.zero);
 
         parallelBubbles.Remove(bubble);
         if (parallelBubbles.Count == 0)
@@ -469,16 +482,23 @@ public class SpeechBubbleComponent : MonoBehaviour, ISpeechBubblePlayback
         Canvas.ForceUpdateCanvases();
     }
 
+    private SpeechBubbleTailSide ResolveRetainedTailSide(SpeechBubble bubble)
+    {
+        return lockedTailSides.TryGetValue(bubble, out SpeechBubbleTailSide side)
+            ? side
+            : SpeechBubbleTailSide.Left;
+    }
+
     private void ResetConversationPlacement()
     {
         if (activeBubble != null)
-            activeBubble.SetPlacement(SpeechBubbleTailSide.Left, Vector3.zero);
+            activeBubble.SetPlacement(ResolveRetainedTailSide(activeBubble), Vector3.zero);
 
         for (int i = 0; i < parallelBubbles.Count; i++)
         {
             SpeechBubble bubble = parallelBubbles[i];
             if (bubble != null)
-                bubble.SetPlacement(SpeechBubbleTailSide.Left, Vector3.zero);
+                bubble.SetPlacement(ResolveRetainedTailSide(bubble), Vector3.zero);
         }
     }
 
@@ -495,7 +515,7 @@ public class SpeechBubbleComponent : MonoBehaviour, ISpeechBubblePlayback
             }
             else
             {
-                activeBubble.SetPlacement(SpeechBubbleTailSide.Left, Vector3.zero);
+                activeBubble.SetPlacement(ResolveRetainedTailSide(activeBubble), Vector3.zero);
             }
         }
 
@@ -519,7 +539,7 @@ public class SpeechBubbleComponent : MonoBehaviour, ISpeechBubblePlayback
         }
 
         if (bubble != null)
-            bubble.SetPlacement(SpeechBubbleTailSide.Left, Vector3.zero);
+            bubble.SetPlacement(ResolveRetainedTailSide(bubble), Vector3.zero);
     }
 
     private bool TrySolvePairPlacement(
@@ -635,6 +655,9 @@ public class SpeechBubbleComponent : MonoBehaviour, ISpeechBubblePlayback
         out BubblePlacementCandidate candidate)
     {
         candidate = default;
+
+        if (bubble != null && lockedTailSides.TryGetValue(bubble, out SpeechBubbleTailSide lockedSide) && tailSide != lockedSide)
+            return false;
 
         if (bubble == null)
             return false;

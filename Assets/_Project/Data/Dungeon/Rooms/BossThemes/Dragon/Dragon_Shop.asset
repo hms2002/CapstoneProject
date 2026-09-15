@@ -497,6 +497,7 @@ MonoBehaviour:
     wallDetailTiles: []
     foregroundTiles: []
     overlayFxTiles: []
+    holeTiles: []
     objectPlacements:
     - monsterWaveId: 
       placementId: RunMerchant

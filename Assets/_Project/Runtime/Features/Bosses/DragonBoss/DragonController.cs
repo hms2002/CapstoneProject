@@ -37,6 +37,7 @@ public sealed class DragonController : BossControllerBase
 
     private DragonRuntimeData runtimeData;
     private int faceTargetLockCount;
+    private const float FacingDeadZone = 0.2f;
     private IAfterimageEmitter2D jumpAfterimageEmitter;
     private bool hasForcedFirstSlamPatternForDemo;
 
@@ -73,6 +74,7 @@ public sealed class DragonController : BossControllerBase
 
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
+        faceTargetLockCount = 0;
         SetLandingPoseHeld(false);
         RuntimeData.ResetPatternCounters();
         StopJumpAfterimage(clearGhosts: forced);
@@ -80,6 +82,7 @@ public sealed class DragonController : BossControllerBase
 
     private void OnDisable()
     {
+        faceTargetLockCount = 0;
         SetLandingPoseHeld(false);
     }
 
@@ -330,7 +333,7 @@ public sealed class DragonController : BossControllerBase
     /// <summary>패턴이 확정한 공격 방향과 스프라이트 좌우 반전을 즉시 동기화한다.</summary>
     public void FacePatternDirection(Vector2 direction)
     {
-        if (sprite == null || Mathf.Abs(direction.x) <= 0.0001f)
+        if (sprite == null || Mathf.Abs(direction.x) <= 0.05f)
             return;
 
         sprite.flipX = direction.x < 0f;
@@ -420,14 +423,14 @@ public sealed class DragonController : BossControllerBase
         return Mathf.Max(0f, after - before);
     }
 
-    private void FaceCurrentTarget()
+    public void FaceCurrentTarget()
     {
         if (Target == null || sprite == null)
             return;
 
-        if (transform.position.x > Target.position.x)
+        if (Target.position.x - transform.position.x < -FacingDeadZone)
             sprite.flipX = true;
-        else if (transform.position.x < Target.position.x)
+        else if (Target.position.x - transform.position.x > FacingDeadZone)
             sprite.flipX = false;
     }
 

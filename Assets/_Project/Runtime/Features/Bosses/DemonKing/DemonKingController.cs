@@ -12,7 +12,7 @@ using UnityGAS;
 public sealed class DemonKingController : BossControllerBase
 {
     private const int DefaultWallLayer = 30;
-    private const float AutoFaceTargetDeadZone = 0.05f;
+    private const float AutoFaceTargetDeadZone = 0.2f;
     private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
     private const string KnockbackImmuneTagResourcePath = "Tags/State.Status.KnockbackImmune";
 
@@ -290,6 +290,7 @@ public sealed class DemonKingController : BossControllerBase
 
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
+        faceTargetLockCount = 0;
         ReleasePatternAnimationHold();
         ClearPatternAnimationStartRecords();
 
@@ -463,7 +464,7 @@ public sealed class DemonKingController : BossControllerBase
 
     public void FacePatternDirection(Vector2 direction)
     {
-        if (sprite == null || Mathf.Abs(direction.x) <= 0.0001f)
+        if (sprite == null || Mathf.Abs(direction.x) <= 0.05f)
             return;
 
         ApplyFacingLeft(direction.x < 0f);
@@ -726,6 +727,11 @@ public sealed class DemonKingController : BossControllerBase
         animator.Play(stateHash, 0, Mathf.Clamp01(normalizedTime));
         animator.Update(0f);
         return true;
+    }
+
+    private void OnDisable()
+    {
+        faceTargetLockCount = 0;
     }
 
     public void PushFaceTargetLock()
@@ -1605,7 +1611,7 @@ public sealed class DemonKingController : BossControllerBase
         return IsCombatActive && !HasGroggyTag() && !HasDeadTag();
     }
 
-    private void FaceCurrentTarget()
+    public void FaceCurrentTarget()
     {
         if (CurrentTarget == null)
             return;

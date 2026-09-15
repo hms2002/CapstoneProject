@@ -118,7 +118,7 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
                 if (impactPositions != null && impactPositions.Count > 0)
                     impactPositions[0] = impactPosition;
 
-                dragon.FacePatternDirection(ResolveDirectionToImpact(dragon, impactPosition));
+                dragon.FaceCurrentTarget();
                 UpdateImpactTelegraph(impactView, impactPosition, duration);
                 UpdateAimLineTelegraph(aimLineView, dragon, impactPosition, duration);
 

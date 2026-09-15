@@ -1058,10 +1058,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
             return;
         }
 
-        if (transform.position.x > destination.x)
-            sprite.flipX = true;
-        else if (transform.position.x < destination.x)
-            sprite.flipX = false;
+        SetFacingByWorldX(destination.x);
     }
 
     private GE_Damage_Spec ResolveCastlingDamageEffect()

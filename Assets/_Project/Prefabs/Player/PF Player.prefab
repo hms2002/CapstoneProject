@@ -83,7 +83,7 @@ MonoBehaviour:
   sideOffsetRoot: {fileID: 771900000000010011}
   aimRoot: {fileID: 771900000000010021}
   weaponMount: {fileID: 771900000000010031}
-  sideSwitchDeadZone: 0.1
+  sideSwitchDeadZone: 0.2
 --- !u!1 &771900000000010010
 GameObject:
   m_ObjectHideFlags: 0

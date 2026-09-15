@@ -31,77 +31,84 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
         randomJumpHost.FaceCurrentTarget();
         SlimeQueenBossBase facingLockOwner = randomJumpHost as SlimeQueenBossBase;
         facingLockOwner?.BeginPatternFacingLock(initialTarget);
-        randomJumpHost.ShowJumpWarning(landingPosition);
-        SlimeQueen phaseOneQueen = randomJumpHost as SlimeQueen;
-        SlimeQueenP2Long phaseTwoLongQueen = randomJumpHost as SlimeQueenP2Long;
-        SlimeQueenBossBase afterimageOwner = randomJumpHost as SlimeQueenBossBase;
-        if (phaseOneQueen != null)
-            phaseOneQueen.BeginRandomJumpAnimation();
-        if (phaseTwoLongQueen != null)
-            phaseTwoLongQueen.BeginRandomJumpAnimation();
-        afterimageOwner?.BeginPatternAfterimage();
-
-        SlimeQueenPresentationAudioUtility.PlaySound(
-            jumpSound,
-            hostComponent.gameObject,
-            hostComponent.transform.position,
-            this,
-            initialTarget);
-
-        Vector3 startPosition = hostComponent.transform.position;
-        startPosition.z = landingPosition.z;
-
-        SlimeQueenBossBase pitFallBlockOwner = phaseOneQueen;
-        randomJumpHost.SetPatternMoveDamageBlocked(true);
-        if (pitFallBlockOwner != null)
-            pitFallBlockOwner.PushPitFallTriggerBlock();
 
         try
         {
-            float elapsedSeconds = 0f;
-            while (elapsedSeconds < randomJumpHost.JumpDurationSeconds)
+            randomJumpHost.ShowJumpWarning(landingPosition);
+            SlimeQueen phaseOneQueen = randomJumpHost as SlimeQueen;
+            SlimeQueenP2Long phaseTwoLongQueen = randomJumpHost as SlimeQueenP2Long;
+            SlimeQueenBossBase afterimageOwner = randomJumpHost as SlimeQueenBossBase;
+            if (phaseOneQueen != null)
+                phaseOneQueen.BeginRandomJumpAnimation();
+            if (phaseTwoLongQueen != null)
+                phaseTwoLongQueen.BeginRandomJumpAnimation();
+            afterimageOwner?.BeginPatternAfterimage();
+
+            SlimeQueenPresentationAudioUtility.PlaySound(
+                jumpSound,
+                hostComponent.gameObject,
+                hostComponent.transform.position,
+                this,
+                initialTarget);
+
+            Vector3 startPosition = hostComponent.transform.position;
+            startPosition.z = landingPosition.z;
+
+            SlimeQueenBossBase pitFallBlockOwner = phaseOneQueen;
+            randomJumpHost.SetPatternMoveDamageBlocked(true);
+            if (pitFallBlockOwner != null)
+                pitFallBlockOwner.PushPitFallTriggerBlock();
+
+            try
             {
-                if (IsAbilityCancelled(spec))
+                float elapsedSeconds = 0f;
+                while (elapsedSeconds < randomJumpHost.JumpDurationSeconds)
                 {
-                    randomJumpHost.SnapToJumpLanding(startPosition);
-                    yield break;
+                    if (IsAbilityCancelled(spec))
+                    {
+                        randomJumpHost.SnapToJumpLanding(startPosition);
+                        yield break;
+                    }
+
+                    elapsedSeconds += Time.deltaTime;
+                    float normalizedTime = Mathf.Clamp01(elapsedSeconds / randomJumpHost.JumpDurationSeconds);
+                    randomJumpHost.SetJumpPose(startPosition, landingPosition, normalizedTime);
+                    yield return null;
                 }
 
-                elapsedSeconds += Time.deltaTime;
-                float normalizedTime = Mathf.Clamp01(elapsedSeconds / randomJumpHost.JumpDurationSeconds);
-                randomJumpHost.SetJumpPose(startPosition, landingPosition, normalizedTime);
-                yield return null;
+                randomJumpHost.SnapToJumpLanding(landingPosition);
+            }
+            finally
+            {
+                if (phaseOneQueen != null)
+                    phaseOneQueen.EndRandomJumpAnimation();
+                if (phaseTwoLongQueen != null)
+                    phaseTwoLongQueen.EndRandomJumpAnimation();
+                afterimageOwner?.StopPatternAfterimage(IsAbilityCancelled(spec));
+                // Facing is released after landing presentation, or by the outer cancellation cleanup.
+
+                randomJumpHost.SetPatternMoveDamageBlocked(false);
+                if (pitFallBlockOwner != null)
+                    pitFallBlockOwner.PopPitFallTriggerBlock();
             }
 
-            randomJumpHost.SnapToJumpLanding(landingPosition);
+            randomJumpHost.ApplyJumpLandingDamage(spec, landingPosition);
+            SlimeQueenPresentationAudioUtility.PlayPresentation(
+                landingPresentation,
+                hostComponent.gameObject,
+                landingPosition,
+                this,
+                initialTarget);
+            SlimeQueenPresentationAudioUtility.PlaySound(
+                landSound,
+                hostComponent.gameObject,
+                landingPosition,
+                this,
+                initialTarget);
         }
         finally
         {
-            if (phaseOneQueen != null)
-                phaseOneQueen.EndRandomJumpAnimation();
-            if (phaseTwoLongQueen != null)
-                phaseTwoLongQueen.EndRandomJumpAnimation();
-            afterimageOwner?.StopPatternAfterimage(IsAbilityCancelled(spec));
             facingLockOwner?.EndPatternFacingLock();
-
-            randomJumpHost.SetPatternMoveDamageBlocked(false);
-            if (pitFallBlockOwner != null)
-                pitFallBlockOwner.PopPitFallTriggerBlock();
         }
-
-        randomJumpHost.ApplyJumpLandingDamage(spec, landingPosition);
-        SlimeQueenPresentationAudioUtility.PlayPresentation(
-            landingPresentation,
-            hostComponent.gameObject,
-            landingPosition,
-            this,
-            initialTarget);
-        SlimeQueenPresentationAudioUtility.PlaySound(
-            landSound,
-            hostComponent.gameObject,
-            landingPosition,
-            this,
-            initialTarget);
-        randomJumpHost.FaceCurrentTarget();
     }
 }

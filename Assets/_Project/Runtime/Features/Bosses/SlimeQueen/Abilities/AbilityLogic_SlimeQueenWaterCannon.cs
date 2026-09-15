@@ -31,6 +31,7 @@ public sealed class AbilityLogic_SlimeQueenWaterCannon : AbilityLogic
             if (!slimeQueen.TryBuildNextWaterCannonShot(initialTarget, out SlimeQueenP2Long.WaterCannonLine nextLine))
                 yield break;
 
+            slimeQueen.BeginPatternFacingLockTowards(nextLine.End);
             yield return RunWaterCannonOpeningWarning(slimeQueen, spec, nextLine);
             if (IsAbilityCancelled(spec))
                 yield break;
@@ -42,7 +43,7 @@ public sealed class AbilityLogic_SlimeQueenWaterCannon : AbilityLogic
                 if (IsAbilityCancelled(spec))
                     yield break;
 
-                slimeQueen.FaceCurrentTarget();
+                slimeQueen.BeginPatternFacingLockTowards(nextLine.End);
                 activeShotSequenceCount++;
                 slimeQueen.StartCoroutine(RunWaterCannonShotFireSequence(
                     slimeQueen,
@@ -82,6 +83,7 @@ public sealed class AbilityLogic_SlimeQueenWaterCannon : AbilityLogic
         }
         finally
         {
+            slimeQueen.EndPatternFacingLock();
             slimeQueen.EndWaterCannonAnimation();
             // 정상 종료도 남은 참조 목록은 정리하되, 2초 제한 시점에 진행 중인 레이저를 강제로 끊지는 않는다.
             slimeQueen.CleanupWaterCannonPresentation();

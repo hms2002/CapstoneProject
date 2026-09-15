@@ -46,6 +46,8 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     private WitchCandleService candleService;
     private IAttackTelegraphPresenter telegraphPresenter;
     private bool hasAttackTrigger;
+    private bool isPatternFacingLocked;
+    private const float FacingDeadZone = 0.2f;
     private WitchRuntimeData runtimeData;
     private bool hasLoggedRuntimeDataReady;
     private AbilityDefinition basicAttack2Ability;
@@ -109,6 +111,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
 
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
+        EndPatternFacingLock();
         HideExtinguishWarning();
         if (ShouldClearRampageProjectilesOnPatternEnd(forced))
             ClearActiveRampageProjectiles();
@@ -165,11 +168,13 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     {
         base.Update();
 
-        // 스프라이트 반전
-        if (Target == null) return;
+        if (!isPatternFacingLocked && !HasGroggyTag() && !IsDead && !HasDeadTag())
+            FaceTargetWithDeadZone();
+    }
 
-        if      (transform.position.x > Target.position.x) sprite.flipX = true;
-        else if (transform.position.x < Target.position.x) sprite.flipX = false;
+    private void OnDisable()
+    {
+        EndPatternFacingLock();
     }
 
     protected override void OnDestroy()
@@ -206,8 +211,30 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// <summary>패턴 공용 공격 모션을 재생합니다.</summary>
     public void PlayPatternAttackMotion()
     {
+        BeginPatternFacingLock();
         if (animator != null && hasAttackTrigger)
             animator.SetTrigger("attack");
+    }
+
+    public void BeginPatternFacingLock()
+    {
+        if (!isPatternFacingLocked)
+            FaceTargetWithDeadZone();
+        isPatternFacingLocked = true;
+    }
+
+    public void EndPatternFacingLock()
+    {
+        isPatternFacingLocked = false;
+    }
+
+    private void FaceTargetWithDeadZone()
+    {
+        if (Target == null || sprite == null)
+            return;
+        float deltaX = Target.position.x - transform.position.x;
+        if (Mathf.Abs(deltaX) > FacingDeadZone)
+            sprite.flipX = deltaX < 0f;
     }
 
     /// <summary>촛불 끄기 패턴인지 확인합니다.</summary>

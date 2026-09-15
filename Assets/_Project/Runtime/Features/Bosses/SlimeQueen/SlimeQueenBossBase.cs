@@ -84,6 +84,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     private bool isBodyInflateVisualScaleReleasing;
     private float bodyInflateVisualScaleElapsed;
     private bool isPatternFacingLocked;
+    private const float FacingDeadZone = 0.2f;
     private bool patternFacingLockedFlipX;
     private bool isDeathFacingFrozen;
     private bool deathFacingFrozenFlipX;
@@ -340,7 +341,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
             return;
         }
 
-        if (CurrentTarget == null)
+        if (HasGroggyTag() || CurrentTarget == null)
             return;
 
         SetFacingByWorldX(CurrentTarget.position.x);
@@ -416,14 +417,14 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
             sprite.flipX = deathFacingFrozenFlipX;
     }
 
-    private void SetFacingByWorldX(float targetX)
+    protected void SetFacingByWorldX(float targetX)
     {
         if (sprite == null)
             return;
 
-        if (transform.position.x > targetX)
+        if (targetX - transform.position.x < -FacingDeadZone)
             sprite.flipX = true;
-        else if (transform.position.x < targetX)
+        else if (targetX - transform.position.x > FacingDeadZone)
             sprite.flipX = false;
     }
 

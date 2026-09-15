@@ -41,7 +41,7 @@ public sealed class AbilityLogic_SlimeQueenCrossWaterPillar : AbilityLogic
 
         try
         {
-            slimeQueen.FaceCurrentTarget();
+            slimeQueen.BeginPatternFacingLock(initialTarget);
             slimeQueen.ShowCrossWaterPillarWarnings(segments);
 
             if (slimeQueen.CrossWaterPillarWarningSeconds > 0f)
@@ -66,6 +66,7 @@ public sealed class AbilityLogic_SlimeQueenCrossWaterPillar : AbilityLogic
         }
         finally
         {
+            slimeQueen.EndPatternFacingLock();
             slimeQueen.CleanupCrossWaterPillarPresentation(clearLingeringParticles: !preserveLingeringParticles);
         }
     }

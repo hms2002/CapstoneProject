@@ -25,6 +25,42 @@ public sealed class CombatFeelLootQuestPlayModeTests
         owned.Clear();
     }
 
+    [Test]
+    public void WeaponFacing_CenterJitterAndAttackStart_KeepSideUntilOppositeThreshold()
+    {
+        var player = Own(new GameObject("FacingDeadZonePlayer"));
+        var aim = player.AddComponent<PlayerAim2D>();
+        var sideRoot = Own(new GameObject("SideOffsetRoot"));
+        sideRoot.transform.SetParent(player.transform);
+        var rig = player.AddComponent<WeaponPresentationRig2D>();
+
+        aim.SetAimWorldPositionForPresentation(new Vector2(-1f, 1f));
+        rig.RefreshNow();
+        Assert.AreEqual(-1, rig.CurrentSideSign);
+
+        foreach (float x in new[] { -0.02f, 0.02f, -0.01f, 0.1f })
+        {
+            aim.SetAimWorldPositionForPresentation(new Vector2(x, 1f));
+            rig.RefreshNow();
+            Assert.AreEqual(-1, rig.CurrentSideSign, "Cursor jitter must preserve the previous side.");
+        }
+
+        rig.BeginAimPresentationOverride(WeaponAimPresentationMode.FacingSideOnly, aim.AimDirection);
+        rig.RefreshNow();
+        Assert.AreEqual(-1, rig.CurrentSideSign, "Starting an attack must not bypass the dead zone.");
+        rig.ResetAimPresentationOverrideForWeaponChange();
+
+        aim.SetAimWorldPositionForPresentation(new Vector2(0.3f, 1f));
+        rig.RefreshNow();
+        Assert.AreEqual(1, rig.CurrentSideSign);
+        aim.SetAimWorldPositionForPresentation(new Vector2(-0.1f, 1f));
+        rig.RefreshNow();
+        Assert.AreEqual(1, rig.CurrentSideSign);
+        aim.SetAimWorldPositionForPresentation(new Vector2(-0.3f, 1f));
+        rig.RefreshNow();
+        Assert.AreEqual(-1, rig.CurrentSideSign);
+    }
+
     [TestCase(false)]
     [TestCase(true)]
     public void CutInPause_NestedPresentationCompletesOrCancels_WithoutReleasingOtherOwners(bool cancel)

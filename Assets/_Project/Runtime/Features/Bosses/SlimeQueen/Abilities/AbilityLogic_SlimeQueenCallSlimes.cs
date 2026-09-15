@@ -14,27 +14,35 @@ public sealed class AbilityLogic_SlimeQueenCallSlimes : AbilityLogic
         if (!slimeQueen.TryGetCallSlimeSpawnPositions(out Vector3 mediumSpawnPosition, out Vector3 largeSpawnPosition))
             yield break;
 
-        slimeQueen.FaceCurrentTarget();
-        slimeQueen.ShowCallSlimeSpeech();
+        slimeQueen.BeginPatternFacingLock(initialTarget);
+        try
+        {
+            slimeQueen.FaceCurrentTarget();
+            slimeQueen.ShowCallSlimeSpeech();
 
-        if (slimeQueen.CallSlimeSpawnDelaySeconds > 0f)
-            yield return WaitForSecondsUnlessCancelled(slimeQueen.CallSlimeSpawnDelaySeconds, spec);
+            if (slimeQueen.CallSlimeSpawnDelaySeconds > 0f)
+                yield return WaitForSecondsUnlessCancelled(slimeQueen.CallSlimeSpawnDelaySeconds, spec);
 
-        if (IsAbilityCancelled(spec))
-            yield break;
+            if (IsAbilityCancelled(spec))
+                yield break;
 
-        GameObject mediumSlimePrefab = slimeQueen.GetRandomMediumSlimePrefab();
-        GameObject largeSlimePrefab = slimeQueen.GetRandomLargeSlimePrefab();
+            GameObject mediumSlimePrefab = slimeQueen.GetRandomMediumSlimePrefab();
+            GameObject largeSlimePrefab = slimeQueen.GetRandomLargeSlimePrefab();
 
-        if (mediumSlimePrefab != null)
-            SpawnSummonedSlime(mediumSlimePrefab, mediumSpawnPosition);
+            if (mediumSlimePrefab != null)
+                SpawnSummonedSlime(mediumSlimePrefab, mediumSpawnPosition);
 
-        if (largeSlimePrefab != null)
-            SpawnSummonedSlime(largeSlimePrefab, largeSpawnPosition);
+            if (largeSlimePrefab != null)
+                SpawnSummonedSlime(largeSlimePrefab, largeSpawnPosition);
 
-        float remainingSpeechSeconds = slimeQueen.CallSlimeSpeechSeconds - slimeQueen.CallSlimeSpawnDelaySeconds;
-        if (remainingSpeechSeconds > 0f)
-            yield return WaitForSecondsUnlessCancelled(remainingSpeechSeconds, spec);
+            float remainingSpeechSeconds = slimeQueen.CallSlimeSpeechSeconds - slimeQueen.CallSlimeSpawnDelaySeconds;
+            if (remainingSpeechSeconds > 0f)
+                yield return WaitForSecondsUnlessCancelled(remainingSpeechSeconds, spec);
+        }
+        finally
+        {
+            slimeQueen.EndPatternFacingLock();
+        }
     }
 
     private GameObject SpawnSummonedSlime(GameObject slimePrefab, Vector3 spawnPosition)

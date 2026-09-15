@@ -128,7 +128,7 @@ Designer workflow: [절차적 던전 방 제작 툴 사용 가이드](../Guides/
   - Editor-only art/NPC authoring: Harpy/Orc SD world sprites, standing portraits, information-only Ink, NPC database registration, one Harpy box-pile sprite for both pickup and delivery, and TrainingDummy sprite-only visuals for all three workout objects. No runtime presentation creation or new manager.
   - Menu: `Tools/Dungeon/Run Events/Apply Event NPC Art and Dialogue`. Reapplying preserves prefab GUIDs and gameplay components but rewrites the named event visual children and NPC dialogue references. NPC IDs reject collisions.
 - `Assets/_Project/Editor/Tools/Dungeon/BuffyHealthTimeEventInstaller.cs`
-  - Idempotently creates and validates the temporary Buffy module, three themed rooms, event definitions, and the combined Parcel/Buffy event pools.
+  - Idempotently creates and validates the Buffy module, three themed rooms, event definitions, and the combined Parcel/Buffy event pools.
 - `Assets/_Project/Runtime/Core/SceneFlow/SceneTravelContracts.cs`
   - Direction endpoint/gate/run/restore contracts and stable reentry policy values.
 - `Assets/_Project/Runtime/Core/SceneFlow/SceneConnectionSO.cs`
@@ -402,3 +402,8 @@ Related verification: [2026-09-12 session](../SessionLogs/2026-09-12.md).
 - Player walking opts into `IIntentVelocityFilter2D` via `PlayerIntentInput2D`: the motor passes resolved walking velocity before combining external forces. Walking first sweeps the actual enabled, owned non-trigger bodies against HoleTrap with 0.03-unit clearance. A foot-point-only check was insufficient because the authored foot offset and body extent differ, especially on downward movement. Falling retains its independent 0.1-unit inset and eight surrounding samples. Non-player rules are unchanged.
 - The remaining foot check samples the body-clamped segment in steps up to 0.025 units (256-step cap). If blocked, safe horizontal/vertical components are tested from the real start pose without restoring blocked speed. Existing body overlaps use ColliderDistance2D's separation vector instead of synthetic zero-distance cast normals, permitting escape/tangent motion; the foot test still prevents deeper entry from the non-falling margin. Queries reuse fixed arrays with Queries Hit Triggers enabled. No Rigidbody is moved by the input source.
 - HoleTrap's authored ignore tag applies only to non-player targets. Dash, knockback and forced-aim movement bypass the walking guard; sufficient foot penetration still starts the existing fall pipeline. The executor stops movement, and the independent dash routine observes State.Move.Blocked to release temporary tags. Scene/prefab reassignment is not required.
+
+
+### Buffy exercise equipment art (2026-09-16)
+
+The shared BuffyHealthTimeEventModule now uses original EX.zip PNGs under Art/Sprites/Events/Buffy: StrengthEquipment uses exercise1.png (weights, 공격력 증가), WheelEquipment uses exercise3.png (treadmill, 이동속도 증가), and LogEquipment uses exercise2.png (rings, 경험치 획득). This is the left-to-right order in the module and all three theme-room overrides. Textures are single sprites, Point filtered at 32 PPU, without mipmaps/compression. Body transforms preserve image aspect ratio and align their baseline; equipment interaction positions, colliders and rewards are unchanged. RunEventArtInstaller.ConfigureBuffy and BuffyHealthTimeEventInstaller preserve these sprites/prompts when reauthoring.

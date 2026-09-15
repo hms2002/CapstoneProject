@@ -14,6 +14,17 @@ Map boss, mob, spawn, hazard, lock, and shared enemy combat scripts before any p
 The file name is kept for link stability, but the working boundary is no longer "everything is an encounter".
 Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Population / Spawn -> Battle Runtime -> Death Result`, with optional room/chest lock overlays.
 
+## Facing And Speech Ownership
+
+- Dragon, Witch, SlimeQueen and DemonKing target-facing uses a horizontal world-space dead zone of 0.2 on each side. Explicit pattern directions retain a small near-vertical guard; these are separate from attack aim and movement geometry.
+- Dragon/DemonKing AL routines own counted auto-facing locks. Slam retains its lock through landing follow-ups; DemonKing Throw snapshots its target when the throw animation starts, HomingMagic keeps its casting pose while the orb aims, and Recall/FinalDesperation own locks through their existing end boundaries. Pattern-end and disable clear residual locks.
+- Witch `PlayPatternAttackMotion` begins its local facing lock; `OnPatternEnd` and disable release it. LightAllCandles releases during travel and reacquires at central charge start. The current RetreatToCandle implementation summons skeletons immediately and does not move the Witch.
+- SlimeQueen AL routines own `BeginPatternFacingLock` / `EndPatternFacingLock` with `finally` cleanup. Repeated slam and toxic rush preserve the segment direction through the inter-segment pause. WaterCannon faces its committed shot line instead of the live target. DropMediumSlime/ToxicDrop release after launching the summon/projectiles, without waiting for their full lifetime. Death and disable paths also clear locks.
+- `SpeechBubbleComponent` owns boss bubble direction snapshots, detected through `IBossSpeechPlayback`. Each display fixes its tail side after initial layout; parallel overlap layout can still move the bubble but cannot choose the opposite tail. Optional anchor rotation is captured once while anchor position keeps following the speaker. Replacement/pool release discards the snapshot. Speech never locks the boss body or EgoSword.
+- `EgoSwordActor` retains independent authored flight/bounce, tracking-then-committed vertical strike, fixed-axis cross laser, and moving-owner recall. Main-body facing locks do not propagate to the actor.
+- `SlimeQueenP2Short.prefab` selects only repeated slam, toxic rush and body inflate. Castling is removed from selection; its implementation/assets and loading references are retained. There is no phase progression dependency on a completed castling.
+- Follow-up review: Play Mode tuning of dead-zone width, per-pattern end poses and bubble placement near screen edges. This map does not change the existing architecture/contract boundary.
+
 ## Current Inventory Groups
 
 ### Boss Cinematic HUD Lifetime

@@ -296,6 +296,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
 
     private void OnDisable()
     {
+        EndPatternFacingLock();
         CleanupBodyInflatePresentation();
     }
 

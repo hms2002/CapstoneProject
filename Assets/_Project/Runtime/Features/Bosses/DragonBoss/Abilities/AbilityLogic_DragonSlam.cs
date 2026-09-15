@@ -111,7 +111,7 @@ public sealed partial class AbilityLogic_DragonSlam : AbilityLogic
                 if (impactTelegraph != null)
                     impactTelegraph.HideImmediate();
 
-                dragon.PopFaceTargetLock();
+                // Keep facing through the landing pose and its follow-up attacks.
             }
 
             if (IsAbilityCancelled(spec))
@@ -125,6 +125,7 @@ public sealed partial class AbilityLogic_DragonSlam : AbilityLogic
         }
         finally
         {
+            dragon.PopFaceTargetLock();
             collisionProfile?.RestoreDefaultMode();
         }
     }

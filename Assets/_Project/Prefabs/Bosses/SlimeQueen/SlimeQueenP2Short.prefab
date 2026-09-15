@@ -160,20 +160,6 @@ MonoBehaviour:
       minHpRatio: 0
       maxHpRatio: 1
       additionalConditions: []
-    - ability: {fileID: 11400000, guid: 6f740a2bae934c608a0f6b5395d1f137, type: 2}
-      followUpAbility: {fileID: 0}
-      selectableByAi: 1
-      selectionWeight: 100
-      maxConsecutiveUseCount: 1
-      maxUseCount: 0
-      aiSelectionLockTime: 0.5
-      postPatternDelay: 0.35
-      minDistanceToTarget: 0
-      maxDistanceToTarget: 999
-      minHpRatio: 0
-      maxHpRatio: 1
-      additionalConditions:
-      - {fileID: 11400000, guid: b6b3270ae0b64527be3bc8398bbdcd6e, type: 2}
   slimeQueenSpeechData: {fileID: 11400000, guid: 2e94bab546cea6b47a40fcf9034d64be, type: 2}
   airborneBodyZHeight: 1
   logHeightCollisionDebug: 1

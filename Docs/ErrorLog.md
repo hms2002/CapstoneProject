@@ -2100,3 +2100,10 @@ The previous panel fix restored the upper frame after each camera movement and r
 ## 2026-09-15 — Retained dialogue visuals need matching theme and animation lifetime
 
 Keeping the lower frame visible across Hub session boundaries exposed ResetTheme restoring the name's prefab color during camera travel. Preserve the visible theme until the next ApplyTheme or actual retained-frame close, while still cleaning up dialogue effects. Separately, SnapGroupClosed made an already-visible GrandHall upper frame disappear instantly; use the existing animated PlayGroupClose and wait for completion before movement. Hub had not exposed this snap because its upper frame was hidden before segment opening. Builds/source checks passed; Play Mode visual acceptance pending.
+
+
+## 2026-09-16 - Facing Locks Bypassed By Secondary Update Paths
+
+Boss parallel speech layout could switch tail sides each frame; weapon attack-start presentation derived facing directly from normalized cast direction even though idle facing already used a world-space dead zone. Some boss patterns also called direct facing updates after committing their pose.
+
+The display now retains each boss bubble direction independently; weapon attack start captures the already resolved rig side; affected boss AL routines retain facing through their commit/recovery windows. Review direct setters as well as automatic Update loops when diagnosing flip jitter. Builds and the added regression fixture compilation are checked separately from Unity Play Mode execution.

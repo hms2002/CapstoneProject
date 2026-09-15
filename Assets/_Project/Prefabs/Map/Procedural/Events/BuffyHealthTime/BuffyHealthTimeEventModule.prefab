@@ -99,7 +99,7 @@ MonoBehaviour:
   attackBaseBonus: 10
   moveSpeedMultiplierBonus: 0.15
   promptAnchor: {fileID: 0}
-  interactPromptText: "\uBC14\uD034 \uC6B4\uB3D9\uD558\uAE30"
+  interactPromptText: "이동속도 증가"
   highlightedRenderers: []
 --- !u!1 &810000000000000005
 GameObject:
@@ -127,8 +127,8 @@ Transform:
   m_GameObject: {fileID: 810000000000000005}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.8, y: 1.8, z: 1}
+  m_LocalPosition: {x: 0, y: -0.45, z: 0}
+  m_LocalScale: {x: 0.576, y: 0.576, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 810000000000000002}
@@ -182,7 +182,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: f0220f74a86943e0874047f0414b4cb7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9fe47094bdd346949f2964df490d0685, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -291,7 +291,7 @@ MonoBehaviour:
   attackBaseBonus: 10
   moveSpeedMultiplierBonus: 0.15
   promptAnchor: {fileID: 0}
-  interactPromptText: "\uD1B5\uB098\uBB34 \uC6B4\uB3D9\uD558\uAE30"
+  interactPromptText: "경험치 획득"
   highlightedRenderers: []
 --- !u!1 &820000000000000005
 GameObject:
@@ -320,7 +320,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.8, y: 1.8, z: 1}
+  m_LocalScale: {x: 0.5333333333333333, y: 0.5333333333333333, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 820000000000000002}
@@ -374,7 +374,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: f0220f74a86943e0874047f0414b4cb7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 001400042e944bf9a84334eb91009333, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -483,7 +483,7 @@ MonoBehaviour:
   attackBaseBonus: 10
   moveSpeedMultiplierBonus: 0.15
   promptAnchor: {fileID: 0}
-  interactPromptText: "\uADFC\uB825 \uC6B4\uB3D9\uD558\uAE30"
+  interactPromptText: "공격력 증가"
   highlightedRenderers: []
 --- !u!1 &4603794561614614587
 GameObject:
@@ -705,7 +705,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.8, y: 1.8, z: 1}
+  m_LocalScale: {x: 0.576, y: 0.576, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4346957365819885275}
@@ -759,7 +759,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: f0220f74a86943e0874047f0414b4cb7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5bf6bda70b8d4c889c5cbffd0c8f4d5c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

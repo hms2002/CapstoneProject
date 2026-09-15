@@ -73,8 +73,7 @@ public sealed class AbilityLogic_SlimeQueenToxicRush : AbilityLogic
 
                 slimeQueen.StopPatternAfterimage(IsAbilityCancelled(spec));
                 slimeQueen.EndToxicRushAnimation();
-                slimeQueen.EndPatternFacingLock();
-                slimeQueen.FaceCurrentTarget();
+                // Keep this segment facing through recovery; the next path sets a new direction.
 
                 if (slimeQueen.ToxicRushIntervalSeconds > 0f && rushIndex < slimeQueen.ToxicRushRepeatCount - 1)
                     yield return WaitForSecondsUnlessCancelled(slimeQueen.ToxicRushIntervalSeconds, spec);

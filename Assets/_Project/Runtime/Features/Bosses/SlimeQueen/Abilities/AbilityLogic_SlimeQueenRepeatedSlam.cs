@@ -25,78 +25,85 @@ public sealed class AbilityLogic_SlimeQueenRepeatedSlam : AbilityLogic
         if (slimeQueen == null)
             yield break;
 
-        int slamCount = slimeQueen.Phase2SlamCount;
-        for (int slamIndex = 0; slamIndex < slamCount; slamIndex++)
+
+        try
         {
-            if (!slimeQueen.TryGetPhase2SlamLandingPosition(initialTarget, out Vector3 landingPosition))
-                yield break;
-
-            slimeQueen.FaceCurrentTarget();
-            slimeQueen.BeginPatternFacingLockTowards(landingPosition);
-            slimeQueen.ShowPhase2SlamWarning(landingPosition);
-
-            Vector3 startPosition = slimeQueen.transform.position;
-            startPosition.z = landingPosition.z;
-
-            SlimeQueenBossBase pitFallBlockOwner = slimeQueen is SlimeQueenP2Short ? slimeQueen : null;
-            slimeQueen.SetPatternMoveDamageBlocked(true);
-            if (pitFallBlockOwner != null)
-                pitFallBlockOwner.PushPitFallTriggerBlock();
-
-            try
+            int slamCount = slimeQueen.Phase2SlamCount;
+            for (int slamIndex = 0; slamIndex < slamCount; slamIndex++)
             {
-                float elapsedSeconds = 0f;
-                while (elapsedSeconds < slimeQueen.Phase2SlamIntervalSeconds)
-                {
-                    if (IsAbilityCancelled(spec))
-                    {
-                        slimeQueen.SnapToPhase2SlamLanding(startPosition);
-                        yield break;
-                    }
-
-                    elapsedSeconds += Time.deltaTime;
-                    float normalizedTime = Mathf.Clamp01(elapsedSeconds / slimeQueen.Phase2SlamIntervalSeconds);
-                    slimeQueen.SetPhase2SlamPose(startPosition, landingPosition, normalizedTime);
-                    yield return null;
-                }
-
-                slimeQueen.SnapToPhase2SlamLanding(landingPosition);
-            }
-            finally
-            {
-                slimeQueen.EndPatternFacingLock();
-                slimeQueen.SetPatternMoveDamageBlocked(false);
-                if (pitFallBlockOwner != null)
-                    pitFallBlockOwner.PopPitFallTriggerBlock();
-            }
-
-            slimeQueen.ApplyPhase2SlamDamage(spec, landingPosition);
-            SlimeQueenPresentationAudioUtility.PlayPresentation(
-                landingPresentation,
-                slimeQueen.gameObject,
-                landingPosition,
-                this,
-                initialTarget);
-            SlimeQueenPresentationAudioUtility.PlaySound(
-                slamSound,
-                slimeQueen.gameObject,
-                landingPosition,
-                this,
-                initialTarget);
-            slimeQueen.FaceCurrentTarget();
-
-            if (slamIndex >= slamCount - 1)
-                continue;
-
-            float postLandingElapsedSeconds = 0f;
-            while (postLandingElapsedSeconds < PostLandingPauseSeconds)
-            {
-                if (IsAbilityCancelled(spec))
+                if (!slimeQueen.TryGetPhase2SlamLandingPosition(initialTarget, out Vector3 landingPosition))
                     yield break;
 
-                postLandingElapsedSeconds += Time.deltaTime;
-                yield return null;
+                slimeQueen.FaceCurrentTarget();
+                slimeQueen.BeginPatternFacingLockTowards(landingPosition);
+                slimeQueen.ShowPhase2SlamWarning(landingPosition);
+
+                Vector3 startPosition = slimeQueen.transform.position;
+                startPosition.z = landingPosition.z;
+
+                SlimeQueenBossBase pitFallBlockOwner = slimeQueen is SlimeQueenP2Short ? slimeQueen : null;
+                slimeQueen.SetPatternMoveDamageBlocked(true);
+                if (pitFallBlockOwner != null)
+                    pitFallBlockOwner.PushPitFallTriggerBlock();
+
+                try
+                {
+                    float elapsedSeconds = 0f;
+                    while (elapsedSeconds < slimeQueen.Phase2SlamIntervalSeconds)
+                    {
+                        if (IsAbilityCancelled(spec))
+                        {
+                            slimeQueen.SnapToPhase2SlamLanding(startPosition);
+                            yield break;
+                        }
+
+                        elapsedSeconds += Time.deltaTime;
+                        float normalizedTime = Mathf.Clamp01(elapsedSeconds / slimeQueen.Phase2SlamIntervalSeconds);
+                        slimeQueen.SetPhase2SlamPose(startPosition, landingPosition, normalizedTime);
+                        yield return null;
+                    }
+
+                    slimeQueen.SnapToPhase2SlamLanding(landingPosition);
+                }
+                finally
+                {
+                    // Hold the landing direction through the pause before the next slam.
+                    slimeQueen.SetPatternMoveDamageBlocked(false);
+                    if (pitFallBlockOwner != null)
+                        pitFallBlockOwner.PopPitFallTriggerBlock();
+                }
+
+                slimeQueen.ApplyPhase2SlamDamage(spec, landingPosition);
+                SlimeQueenPresentationAudioUtility.PlayPresentation(
+                    landingPresentation,
+                    slimeQueen.gameObject,
+                    landingPosition,
+                    this,
+                    initialTarget);
+                SlimeQueenPresentationAudioUtility.PlaySound(
+                    slamSound,
+                    slimeQueen.gameObject,
+                    landingPosition,
+                    this,
+                    initialTarget);
+
+                if (slamIndex >= slamCount - 1)
+                    continue;
+
+                float postLandingElapsedSeconds = 0f;
+                while (postLandingElapsedSeconds < PostLandingPauseSeconds)
+                {
+                    if (IsAbilityCancelled(spec))
+                        yield break;
+
+                    postLandingElapsedSeconds += Time.deltaTime;
+                    yield return null;
+                }
             }
+        }
+        finally
+        {
+            slimeQueen.EndPatternFacingLock();
         }
     }
 }

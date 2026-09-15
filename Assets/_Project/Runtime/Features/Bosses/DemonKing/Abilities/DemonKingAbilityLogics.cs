@@ -1110,7 +1110,7 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
                     lockedTarget = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : lockedTarget;
                     Vector2 trackingDirection = lockedTarget - start;
                     if (trackingDirection.sqrMagnitude > 0.0001f)
-                        demon.FacePatternDirection(trackingDirection);
+                        demon.FaceCurrentTarget();
                     UpdateLineWarning(trackingWarning, demon, start, lockedTarget, hitWidth, currentWarningSeconds);
 
                     elapsed += Time.deltaTime;
@@ -1721,6 +1721,7 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
             Vector2 animationOrigin = sword.ResolveThrowOriginPosition();
             Vector2 animationDirection = demon.GetDirectionToTargetOrFacing(animationOrigin);
             demon.FacePatternDirection(animationDirection);
+            Vector2 lockedThrowTarget = ResolveCurrentTargetPosition(demon, animationOrigin, animationDirection);
             PlayBodyAnimation(
                 demon,
                 throwAnimation,
@@ -1741,7 +1742,7 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
                 ? ShowLineWarning(
                     demon,
                     animationOrigin,
-                    ResolveCurrentTargetPosition(demon, animationOrigin, animationDirection),
+                    lockedThrowTarget,
                     aimWarningWidth,
                     releaseDelaySeconds)
                 : null;
@@ -1752,13 +1753,12 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
                     break;
 
                 animationOrigin = sword.ResolveThrowOriginPosition();
-                animationDirection = demon.GetDirectionToTargetOrFacing(animationOrigin);
-                demon.FacePatternDirection(animationDirection);
+                // The throw pose and warning already committed the target.
                 UpdateLineWarning(
                     aimWarning,
                     demon,
                     animationOrigin,
-                    ResolveCurrentTargetPosition(demon, animationOrigin, animationDirection),
+                    lockedThrowTarget,
                     aimWarningWidth,
                     releaseDelaySeconds);
 
@@ -1772,7 +1772,8 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
                 yield break;
 
             Vector2 origin = sword.ResolveThrowOriginPosition();
-            Vector2 direction = demon.GetDirectionToTargetOrFacing(origin);
+            Vector2 direction = lockedThrowTarget - origin;
+            direction = direction.sqrMagnitude > 0.0001f ? direction.normalized : animationDirection;
 
             PlayPatternSound(demon, throwReleaseSound, origin, this);
             sword.Throw(
@@ -2010,7 +2011,7 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
                         spawnPosition = stockPosition;
 
                     fireDirection = ResolveProjectileDirection(demon, spawnPosition);
-                    demon.FacePatternDirection(fireDirection);
+                    // The orb can aim independently; keep the current casting pose facing.
                     UpdateLineWarning(
                         aimWarning,
                         demon,
@@ -2768,6 +2769,8 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
         if (demon == null || sword == null)
             yield break;
 
+        demon.FacePatternDirection(demon.GetDirectionToTargetOrFacing());
+        demon.PushFaceTargetLock();
         demon.StartCoroutine(RunRecallSpeechSequence(demon, sword, spec));
 
         PlayBodyAnimation(demon, recoverAnimation, DemonKingController.DarkLordHandSwordRecoverState);
@@ -2806,6 +2809,7 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
         finally
         {
             demon.ReleasePatternAnimationHold();
+            demon.PopFaceTargetLock();
         }
     }
 
@@ -3570,6 +3574,8 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
         if (demon == null)
             yield break;
 
+        demon.FacePatternDirection(demon.GetDirectionToTargetOrFacing());
+        demon.PushFaceTargetLock();
         SpeakPattern(demon, BossSpeechSituationEnum.DemonKingFinalDesperation);
 
         demon.PushThresholdStaggerGuard();
@@ -3714,6 +3720,7 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
         finally
         {
             demon.StopBodyAfterimage();
+            demon.PopFaceTargetLock();
             demon.ReleaseFinalDesperationHealthClamp();
             demon.PopThresholdStaggerGuard();
             if (demon != null && !demon.IsDead)

@@ -25,6 +25,7 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
             yield break;
 
         owner.PlayPatternAttackMotion();
+        owner.EndPatternFacingLock();
         owner.MoveToPhaseTransitionCenter(logic.MoveToCenterDuration);
         owner.ActivateShield();
         owner.EnableStaggerImmuneDuringPhaseTransition();
@@ -39,6 +40,7 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
 
         yield return new WaitForSeconds(logic.MoveToCenterDuration);
 
+        owner.BeginPatternFacingLock();
         Vector3 center = owner.GetPhaseTransitionCenter();
         owner.SpeakSituation(BossSpeechSituationEnum.UltimateWarning);
         owner.ShowMapWideWarning(center, logic.RelightDeadlineSeconds, logic.MapWideWarningStyleAsset);
@@ -129,6 +131,7 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
     /// <summary>씬 전환 시 남아 있을 수 있는 패턴 연출을 정리합니다.</summary>
     public void CleanupForSceneTransition(AbilityLogic_WitchLightAllCandles logic)
     {
+        owner?.EndPatternFacingLock();
         StopChargeLoopSound(logic);
         owner?.HideMapWideWarning();
     }

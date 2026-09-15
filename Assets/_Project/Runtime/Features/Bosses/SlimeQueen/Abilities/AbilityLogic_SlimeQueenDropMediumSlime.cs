@@ -33,37 +33,46 @@ public sealed class AbilityLogic_SlimeQueenDropMediumSlime : AbilityLogic
         if (target == null)
             yield break;
 
-        slimeQueen.FaceCurrentTarget();
-
-        Vector3 landingPosition = target.position;
-        landingPosition.z = slimeQueen.transform.position.z;
-
-        slimeQueen.ShowSummonWarning(landingPosition);
-        yield return WaitForSecondsUnlessCancelled(slimeQueen.SummonWarningSeconds, spec);
-
-        if (IsAbilityCancelled(spec))
-            yield break;
-
-        GameObject summonPrefab = slimeQueen.GetRandomMediumSlimePrefab();
-        SlimeQueenFallingSummon fallingSummon = slimeQueen.SpawnFallingMediumSlime(
-            summonPrefab,
-            spec,
-            landingPosition,
-            minionLandingPresentation,
-            this);
-
-        if (fallingSummon == null)
-            yield break;
-
-        while (fallingSummon != null && !fallingSummon.IsFinished)
+        slimeQueen.BeginPatternFacingLock(initialTarget);
+        try
         {
-            if (IsAbilityCancelled(spec))
-            {
-                fallingSummon.CancelFall();
-                yield break;
-            }
+            slimeQueen.FaceCurrentTarget();
 
-            yield return null;
+            Vector3 landingPosition = target.position;
+            landingPosition.z = slimeQueen.transform.position.z;
+
+            slimeQueen.ShowSummonWarning(landingPosition);
+            yield return WaitForSecondsUnlessCancelled(slimeQueen.SummonWarningSeconds, spec);
+
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            GameObject summonPrefab = slimeQueen.GetRandomMediumSlimePrefab();
+            SlimeQueenFallingSummon fallingSummon = slimeQueen.SpawnFallingMediumSlime(
+                summonPrefab,
+                spec,
+                landingPosition,
+                minionLandingPresentation,
+                this);
+
+            if (fallingSummon == null)
+                yield break;
+
+            slimeQueen.EndPatternFacingLock();
+            while (fallingSummon != null && !fallingSummon.IsFinished)
+            {
+                if (IsAbilityCancelled(spec))
+                {
+                    fallingSummon.CancelFall();
+                    yield break;
+                }
+
+                yield return null;
+            }
+        }
+        finally
+        {
+            slimeQueen.EndPatternFacingLock();
         }
     }
 }

@@ -11,6 +11,12 @@ last_reviewed: 2026-07-04
 
 Map the weapon, GAS/ability, combat, status, movement, and player-adjacent runtime scripts before any physical reorganization.
 
+## Weapon Facing Dead Zone
+
+- `WeaponPresentationRig2D.UpdateSideOffset` owns the last left/right side. Cursor X within the owner-centered dead zone preserves that side; `PF Player.prefab` and the script default use 0.2 world units per side.
+- `BeginAimPresentationOverride` refreshes the rig and captures that resolved side, so starting an attack cannot bypass hysteresis through the normalized cast direction. Cast direction still supplies the attack aim angle. Existing cinematic locks remain authoritative.
+- `CombatFeelLootQuestPlayModeTests.WeaponFacing_CenterJitterAndAttackStart_KeepSideUntilOppositeThreshold` covers jitter, attack start and crossing both thresholds.
+
 ## Current Structure
 
 ### Skill Damage Authoring
