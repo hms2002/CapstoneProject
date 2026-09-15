@@ -20,7 +20,7 @@ public class HoleTrap : MonoBehaviour
     [SerializeField] private GameplayEffect fallingEffect;
 
     [Header("Ignore Settings")]
-    [Tooltip("이 태그가 있으면 함정이 발동하지 않습니다 (예: State.Move.Dash)")]
+    [Tooltip("플레이어 이외의 대상에 적용할 낙하 면제 태그입니다. 플레이어는 대시 중에도 낙하합니다.")]
     [SerializeField] private GameplayTag ignoreTag;
     [Tooltip("켜져 있으면 ignoreTag가 직접 부여된 경우만 무시하고, 하위 태그로 인한 부모 closure는 무시하지 않습니다.")]
     [SerializeField] private bool useExactIgnoreTag = true;
@@ -29,6 +29,12 @@ public class HoleTrap : MonoBehaviour
     [SerializeField] private bool logDebug = true;
 
     private readonly HashSet<GameObject> activeTargets = new();
+    private Collider2D[] pitColliders;
+
+    private void Awake()
+    {
+        pitColliders = GetComponents<Collider2D>();
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -60,13 +66,16 @@ public class HoleTrap : MonoBehaviour
             return false;
         }
 
+        if (target.Kind == PitFallTargetKind.Player && !ContainsPlayerFoot(target.SafetyTracker.FootPosition))
+            return false;
+
         if (target.Reaction != null && !target.Reaction.CanReactToPitFall(this))
         {
             LogDebug($"ignored target: reaction rejected. target={target.GameObject.name}, reaction={target.Reaction}");
             return false;
         }
 
-        if (ignoreTag != null)
+        if (ignoreTag != null && target.Kind != PitFallTargetKind.Player)
         {
             TagSystem tagSystem = target.AbilitySystem.TagSystem;
             bool hasIgnoreTag = tagSystem != null && HasIgnoreTag(tagSystem);
@@ -109,6 +118,14 @@ public class HoleTrap : MonoBehaviour
         return target.Kind == PitFallTargetKind.Player
             ? Mathf.Max(0f, playerTrapDamage)
             : Mathf.Max(0f, trapDamage);
+    }
+
+    private bool ContainsPlayerFoot(Vector2 foot)
+    {
+        foreach (Collider2D pit in pitColliders)
+            if (PlayerPitFootprint2D.IsInside(pit, foot, PlayerPitFootprint2D.FallInset))
+                return true;
+        return false;
     }
 
     /// <summary>
@@ -172,4 +189,37 @@ public class HoleTrap : MonoBehaviour
         Debug.Log($"[HoleTrap] {name}: {message}", this);
     }
 
+}
+
+/// <summary>Responsibility: share the inset foot-area test between player walking and falling, independent of body size.</summary>
+public static class PlayerPitFootprint2D
+{
+    public const float FallInset = 0.1f;
+    // Walking stops at the outer boundary; falling keeps its independent inset.
+    public const float WalkingInset = 0f;
+
+    public static Vector2 GetExitDirection(Collider2D pit, Vector2 foot)
+    {
+        Vector2 exit = Vector2.zero;
+        for (int x = -1; x <= 1; x++)
+            for (int y = -1; y <= 1; y++)
+            {
+                Vector2 offset = new Vector2(x, y);
+                if (!pit.OverlapPoint(foot + offset * FallInset)) exit += offset;
+            }
+        return exit.normalized;
+    }
+
+    public static bool IsInside(Collider2D pit, Vector2 foot, float inset)
+    {
+        if (pit == null || !pit.enabled || !pit.gameObject.activeInHierarchy || !pit.OverlapPoint(foot))
+            return false;
+        if (inset <= 0f)
+            return true;
+        for (int x = -1; x <= 1; x++)
+            for (int y = -1; y <= 1; y++)
+                if (!pit.OverlapPoint(foot + new Vector2(x * inset, y * inset)))
+                    return false;
+        return true;
+    }
 }

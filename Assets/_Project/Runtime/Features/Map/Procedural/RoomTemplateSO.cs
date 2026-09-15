@@ -457,7 +457,7 @@ public static class RoomTileLayerContract
             RoomTileLayerKind.WallDetail => 61,
             RoomTileLayerKind.Foreground => 0,
             RoomTileLayerKind.OverlayFX => 10,
-            RoomTileLayerKind.Hole => 53,
+            RoomTileLayerKind.Hole => 49,
             _ => 0
         };
     }

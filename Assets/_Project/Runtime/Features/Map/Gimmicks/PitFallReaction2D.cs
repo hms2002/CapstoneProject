@@ -82,6 +82,8 @@ public sealed class PitFallReaction2D : MonoBehaviour, IPitFallReaction
 
     public void OnPitFallStarted(PitFallContext context)
     {
+        // Mob composition can install its coordinator after this component's Awake.
+        CacheTargets();
         isPitFallActive = true;
 
         if (cancelMobAbilityOnStart)

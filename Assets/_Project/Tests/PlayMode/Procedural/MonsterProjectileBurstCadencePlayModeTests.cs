@@ -15,6 +15,273 @@ using Object = UnityEngine.Object;
 /// </summary>
 public sealed class MonsterProjectileBurstCadencePlayModeTests
 {
+    /// <summary>Responsibility: observe cancellation through the production coordinator without starting a real attack.</summary>
+    private sealed class PitTestRunner : IMobPatternRunner
+    {
+        public bool IsRunning { get; private set; } = true;
+        public void Cancel() => IsRunning = false;
+    }
+
+    [TestCase("CommonCorridor/ArcaneMeleeGolem.prefab")]
+    [TestCase("CommonCorridor/ArcaneTankGolem.prefab")]
+    [TestCase("CommonCorridor/GoblinGunner.prefab")]
+    [TestCase("CommonCorridor/GoblinTank.prefab")]
+    [TestCase("CommonCorridor/GoblinWarrior.prefab")]
+    [TestCase("CommonCorridor/LizardMage.prefab")]
+    [TestCase("CommonCorridor/LizardWarrior.prefab")]
+    [TestCase("BeerMonster.prefab")]
+    [TestCase("Frog.prefab")]
+    [TestCase("ShadowCorridor/ShadowMonster.prefab")]
+    [TestCase("ShadowCorridor/ShadowServant/ShadowServant.prefab")]
+    [TestCase("ShadowCorridor/Dead'sSkeleton.prefab")]
+    public void GroundMonsterPitFall_CancelsMotionDiesAndClearsRoomCount(string prefabPath)
+    {
+        Mob owner = CreateMonster(prefabPath);
+        Assert.That(owner, Is.Not.Null);
+        var reaction = owner.GetComponent<PitFallReaction2D>();
+        Assert.That(reaction, Is.Not.Null, "The authored prefab must opt into pit falling.");
+        Collider2D body = null;
+        foreach (var collider in owner.GetComponentsInChildren<Collider2D>())
+            if (collider.enabled && !collider.isTrigger && collider.attachedRigidbody == owner.GetComponent<Rigidbody2D>())
+            { body = collider; break; }
+        Assert.That(body, Is.Not.Null);
+        Assert.That(PitFallTarget.TryCreate(body, out var target), Is.True);
+        Assert.That(target.Reaction, Is.SameAs(reaction));
+        var trap = new GameObject("MonsterPit").AddComponent<HoleTrap>();
+        Assert.That(reaction.CanReactToPitFall(trap), Is.True);
+        var group = new GameObject("PitRoom").AddComponent<MonsterSpawnRoomGroup>();
+        group.NotifyMonsterSpawned(owner.gameObject);
+        Assert.That(group.RemainingRegisteredOrPendingCount, Is.EqualTo(1));
+        var coordinator = owner.GetComponent<MobAbilityCoordinator>();
+        Assert.That(coordinator, Is.Not.Null);
+        var runner = new PitTestRunner();
+        Assert.That(coordinator.TryBeginRunner(runner), Is.True);
+        var motion = owner.GetComponent<AbilityMotionController2D>();
+        Assert.That(motion, Is.Not.Null);
+        motion.StartDash(Vector2.right, 8f, 3f);
+        int deaths = 0;
+        owner.DeathStarted += _ => deaths++;
+        var context = new PitFallContext(target.AbilitySystem, null, target.Transform, trap.gameObject,
+            null, null, 10f, 1f, target.Transform.position, target.Transform.position, trap, reaction);
+        var routine = PitFallExecutor.Execute(context);
+        try
+        {
+            Assert.That(routine.MoveNext(), Is.True);
+            Assert.That(reaction.IsPitFallActive, Is.True);
+            Assert.That(reaction.CanReactToPitFall(trap), Is.False);
+            Assert.That(runner.IsRunning, Is.False);
+            Assert.That(motion.HasActiveMotion, Is.False);
+            Assert.That((bool)typeof(Mob).GetMethod("IsPitFallSuppressed", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(owner, null), Is.True);
+            Assert.That(routine.MoveNext(), Is.False);
+            Assert.That(owner.IsDead, Is.True);
+            Assert.That(deaths, Is.EqualTo(1));
+            Assert.That(group.RemainingRegisteredOrPendingCount, Is.EqualTo(0));
+            owner.RequestDeath();
+            Assert.That(deaths, Is.EqualTo(1), "Repeated contact must not duplicate death.");
+        }
+        finally { (routine as System.IDisposable)?.Dispose(); }
+    }
+
+    [Test]
+    public void PlayerPitWalking_ClampsOwnedBodyButPreservesRawDashDirection()
+    {
+        bool oldQueries = Physics2D.queriesHitTriggers;
+        try
+        {
+            Physics2D.queriesHitTriggers = true;
+            var player = new GameObject("PitWalkingPlayer");
+            player.transform.position = new Vector3(10000f, 10000f);
+            var rb = player.AddComponent<Rigidbody2D>();
+            rb.gravityScale = 0f;
+            var child = new GameObject("BodyCollision");
+            child.transform.SetParent(player.transform, false);
+            child.transform.localPosition = new Vector3(0f, 0.2f);
+            var body = child.AddComponent<BoxCollider2D>();
+            body.size = new Vector2(0.4f, 0.3f);
+            var input = player.AddComponent<PlayerIntentInput2D>();
+            var pit = new GameObject("WalkingPit");
+            pit.layer = LayerMask.NameToLayer("HoleTrap");
+            pit.transform.position = player.transform.position + new Vector3(0.8f, 0.2f);
+            var trigger = pit.AddComponent<BoxCollider2D>();
+            trigger.isTrigger = true;
+            trigger.size = new Vector2(0.4f, 2f);
+            Physics2D.SyncTransforms();
+
+            Vector2 clamped = input.FilterIntentVelocity(Vector2.right * 10f, 0.1f);
+            Assert.That(clamped.x, Is.GreaterThan(3f).And.LessThan(4f));
+            Assert.That(input.FilterIntentVelocity(Vector2.left * 10f, 0.1f), Is.EqualTo(Vector2.left * 10f));
+            Assert.That(input.FilterIntentVelocity(Vector2.up * 10f, 0.1f), Is.EqualTo(Vector2.up * 10f));
+            typeof(PlayerIntentInput2D).GetProperty("RawMoveInput").SetValue(input, Vector2.right);
+            Assert.That(input.RawMoveInput, Is.EqualTo(Vector2.right));
+
+            // The entire physical body must remain outside, not just its foot point.
+            for (int i = 0; i < 20; i++)
+            {
+                rb.position += input.FilterIntentVelocity(Vector2.right * 10f, 0.1f) * 0.1f;
+                Physics2D.SyncTransforms();
+            }
+            Assert.That(PlayerPitFootprint2D.IsInside(trigger, body.bounds.center, PlayerPitFootprint2D.FallInset), Is.False);
+            Assert.That(trigger.OverlapPoint(body.bounds.center), Is.False);
+            Assert.That(body.Distance(trigger).isOverlapped, Is.False);
+            Assert.That(input.FilterIntentVelocity(Vector2.right * 10f, 0.1f).magnitude, Is.LessThan(0.02f));
+            Vector2 slide = input.FilterIntentVelocity(new Vector2(5f, 5f), 0.02f);
+            Assert.That(slide.x, Is.EqualTo(0f).Within(0.001f));
+            Assert.That(slide.y, Is.EqualTo(5f).Within(0.001f));
+            Assert.That(input.FilterIntentVelocity(Vector2.left * 5f, 0.02f), Is.EqualTo(Vector2.left * 5f));
+            rb.position = new Vector2(10000.69f, 10000f);
+            Physics2D.SyncTransforms();
+            Assert.That(input.FilterIntentVelocity(Vector2.left * 0.1f, 0.02f).x, Is.LessThan(0f));
+            Assert.That(input.FilterIntentVelocity(Vector2.up * 2f, 0.02f).y, Is.EqualTo(2f).Within(0.001f));
+            Assert.That(input.FilterIntentVelocity(Vector2.right, 0.02f), Is.EqualTo(Vector2.zero));
+            // A shallow dash entry is also recoverable, even before the old 0.07 inset.
+            rb.position = new Vector2(10000.62f, 10000f);
+            Physics2D.SyncTransforms();
+            Assert.That(input.FilterIntentVelocity(Vector2.left * 0.1f, 0.02f).x, Is.LessThan(0f));
+            Assert.That(input.FilterIntentVelocity(Vector2.up, 0.02f).y, Is.EqualTo(1f).Within(0.001f));
+            Assert.That(input.FilterIntentVelocity(Vector2.right, 0.02f), Is.EqualTo(Vector2.zero));
+        }
+        finally { Physics2D.queriesHitTriggers = oldQueries; }
+    }
+
+    [TestCase(1f, 0f)]
+    [TestCase(-1f, 0f)]
+    [TestCase(0f, 1f)]
+    [TestCase(0f, -1f)]
+    public void PlayerPitAuthoredBody_StopsAndSlidesInAllDirections(float dx, float dy)
+    {
+        bool oldQueries = Physics2D.queriesHitTriggers;
+        try
+        {
+            Physics2D.queriesHitTriggers = true;
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Player/PF Player.prefab");
+            var player = new GameObject("AuthoredPitPlayer");
+            player.transform.position = new Vector3(100f, 100f);
+            player.transform.localScale = prefab.transform.localScale;
+            var rb = player.AddComponent<Rigidbody2D>();
+            rb.gravityScale = 0f;
+            var bodyObject = Object.Instantiate(prefab.transform.Find("BodyCollision").gameObject, player.transform, false);
+            var body = bodyObject.GetComponent<Collider2D>();
+            var tracker = player.AddComponent<SafetyTracker>();
+            var settings = new SerializedObject(prefab.GetComponent<SafetyTracker>());
+            SetField(tracker, "footOffset", settings.FindProperty("footOffset").vector3Value);
+            var input = player.AddComponent<PlayerIntentInput2D>();
+            Physics2D.SyncTransforms();
+            Vector2 direction = new Vector2(dx, dy);
+            Vector2 tangent = new Vector2(-dy, dx);
+            var pitObject = new GameObject("AuthoredBodyPit");
+            pitObject.layer = LayerMask.NameToLayer("HoleTrap");
+            float extent = dx != 0f ? body.bounds.extents.x : body.bounds.extents.y;
+            pitObject.transform.position = (Vector2)body.bounds.center + direction * (extent + 0.9f);
+            var pit = pitObject.AddComponent<BoxCollider2D>();
+            pit.size = dx != 0f ? new Vector2(1f, 4f) : new Vector2(4f, 1f);
+            pit.isTrigger = true;
+            Physics2D.SyncTransforms();
+            for (int i = 0; i < 60; i++)
+            {
+                rb.position += input.FilterIntentVelocity(direction * 5f, 0.02f) * 0.02f;
+                Physics2D.SyncTransforms();
+                Assert.That(body.Distance(pit).isOverlapped, Is.False, "Authored capsule must never enter the pit while walking.");
+            }
+            Assert.That(input.FilterIntentVelocity(direction * 5f, 0.02f).magnitude, Is.LessThan(0.01f));
+            Vector2 slide = input.FilterIntentVelocity((direction + tangent) * 5f, 0.02f);
+            Assert.That(Vector2.Dot(slide, direction), Is.EqualTo(0f).Within(0.001f));
+            Assert.That(Vector2.Dot(slide, tangent), Is.EqualTo(5f).Within(0.001f));
+            Assert.That(input.FilterIntentVelocity(-direction * 5f, 0.02f), Is.EqualTo(-direction * 5f));
+        }
+        finally { Physics2D.queriesHitTriggers = oldQueries; }
+    }
+
+    [Test]
+    public void PlayerPitDash_IgnoreTagDoesNotPreventFallAndMotionIsCancelled()
+    {
+        var player = new GameObject("PitDashPlayer");
+        player.tag = "Player";
+        player.transform.position = new Vector3(10000f, 10000f);
+        var rb = player.AddComponent<Rigidbody2D>();
+        rb.gravityScale = 0f;
+        var body = player.AddComponent<BoxCollider2D>();
+        var tags = player.AddComponent<TagSystem>();
+        player.AddComponent<AbilitySystem>();
+        player.AddComponent<SafetyTracker>();
+        var motion = player.AddComponent<AbilityMotionController2D>();
+        var dashTag = Resources.Load<GameplayTag>("Tags/State.Move.Dash");
+        Assert.That(dashTag, Is.Not.Null);
+        tags.AddTag(dashTag, 1);
+        var pitObject = new GameObject("DashPit");
+        pitObject.transform.position = player.GetComponent<SafetyTracker>().FootPosition;
+        var pitCollider = pitObject.AddComponent<BoxCollider2D>();
+        pitCollider.size = Vector2.one * 2f;
+        pitCollider.isTrigger = true;
+        var trap = pitObject.AddComponent<HoleTrap>();
+        Physics2D.SyncTransforms();
+        SetField(trap, "ignoreTag", dashTag);
+        SetField(trap, "logDebug", false);
+        var args = new object[] { body, default(PitFallContext) };
+        bool accepted = (bool)typeof(HoleTrap).GetMethod("TryBuildFallContext", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(trap, args);
+        Assert.That(accepted, Is.True, "Dash must no longer grant player pit immunity.");
+        motion.StartDash(Vector2.right, 10f, 1f);
+        Assert.That(motion.HasActiveMotion, Is.True);
+        var routine = PitFallExecutor.Execute((PitFallContext)args[1]);
+        try
+        {
+            Assert.That(routine.MoveNext(), Is.True);
+            Assert.That(motion.HasActiveMotion, Is.False, "Pit entry must interrupt dash immediately.");
+            Assert.That(rb.linearVelocity, Is.EqualTo(Vector2.zero));
+        }
+        finally { (routine as System.IDisposable)?.Dispose(); }
+    }
+
+    [Test]
+    public void PlayerPitFootprint_EdgeAndCornerAreSafeButInteriorFalls()
+    {
+        var go = new GameObject("InsetPit");
+        go.transform.position = new Vector3(10000f, 10000f);
+        var pit = go.AddComponent<BoxCollider2D>();
+        pit.size = Vector2.one * 2f;
+        pit.isTrigger = true;
+        Physics2D.SyncTransforms();
+        Vector2 center = go.transform.position;
+        Assert.That(PlayerPitFootprint2D.IsInside(pit, center + new Vector2(0.95f, 0f), 0.1f), Is.False);
+        Assert.That(PlayerPitFootprint2D.IsInside(pit, center + new Vector2(0.95f, 0.95f), 0.1f), Is.False);
+        Assert.That(PlayerPitFootprint2D.IsInside(pit, center + new Vector2(0.85f, 0.85f), 0.1f), Is.True);
+        Assert.That(PlayerPitFootprint2D.IsInside(pit, center, 0.1f), Is.True);
+    }
+
+    [Test]
+    public void PlayerPitDash_HardStopCleansIndependentDashTags()
+    {
+        var player = new GameObject("IndependentDashPlayer");
+        var tags = player.AddComponent<TagSystem>();
+        var system = player.AddComponent<AbilitySystem>();
+        var motion = player.AddComponent<AbilityMotionController2D>();
+        var input = player.AddComponent<PlayerIntentInput2D>();
+        typeof(PlayerIntentInput2D).GetProperty("RawMoveInput").SetValue(input, Vector2.right);
+        var data = ScriptableObject.CreateInstance<UnityGAS.Sample.Dash2DData>();
+        temporaryAssets.Add(data);
+        data.duration = 10f;
+        data.invulnerableTag = Resources.Load<GameplayTag>("Tags/State.Invulnerable");
+        Assert.That(data.invulnerableTag, Is.Not.Null);
+        var definition = ScriptableObject.CreateInstance<AbilityDefinition>();
+        temporaryAssets.Add(definition);
+        definition.sourceObject = data;
+        var logic = ScriptableObject.CreateInstance<UnityGAS.Sample.AbilityLogic_Dash2D>();
+        temporaryAssets.Add(logic);
+        var routine = logic.Activate(system, new AbilitySpec(definition), null);
+        try
+        {
+            Assert.That(routine.MoveNext(), Is.True);
+            Assert.That(motion.HasActiveMotion, Is.True);
+            Assert.That(tags.HasExplicitTag(data.invulnerableTag), Is.True);
+            var hardStop = Resources.Load<GameplayTag>("Tags/State.Move.Blocked");
+            Assert.That(hardStop, Is.Not.Null);
+            tags.AddTag(hardStop, 1);
+            Assert.That(routine.MoveNext(), Is.False);
+            Assert.That(motion.HasActiveMotion, Is.False);
+            Assert.That(tags.HasExplicitTag(data.invulnerableTag), Is.False);
+        }
+        finally { (routine as System.IDisposable)?.Dispose(); }
+    }
+
     [Test]
     public void RecoveryRetreat_AvoidsPitChoosesSideAndStopsWhenSurrounded()
     {

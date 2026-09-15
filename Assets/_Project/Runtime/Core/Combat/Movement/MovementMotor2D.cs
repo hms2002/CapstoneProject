@@ -312,7 +312,10 @@ namespace UnityGAS
                 direction.Normalize();
 
             float finalSpeed = moveSpeed * Mathf.Max(0f, intent.SpeedScale);
-            return direction * finalSpeed;
+            Vector2 velocity = direction * finalSpeed;
+            return intentSource is IIntentVelocityFilter2D filter
+                ? filter.FilterIntentVelocity(velocity, Time.fixedDeltaTime)
+                : velocity;
         }
 
         private Vector2 ResolveExternalVelocity()

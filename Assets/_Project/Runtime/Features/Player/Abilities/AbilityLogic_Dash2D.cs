@@ -8,6 +8,7 @@ namespace UnityGAS.Sample
     /// 책임 :
     /// - 대쉬 실행 중 이동 제어와 임시 태그(무적/에임락)를 관리한다.
     /// - 씬 이동 시 남아 있으면 안 되는 motion/태그를 강제 정리한다.
+    /// - 낙하 등 전체 이동 차단 시 독립 실행 중인 대시도 취소하고 임시 태그를 회수한다.
     /// </summary>
     [CreateAssetMenu(fileName = "AL_Dash2D", menuName = "GAS/Samples/AbilityLogic/Dash 2D")]
     public class AbilityLogic_Dash2D : AbilityLogic
@@ -40,6 +41,7 @@ namespace UnityGAS.Sample
 
             var tags = system.GetComponent<TagSystem>();
             var motion = system.GetComponent<AbilityMotionController2D>();
+            var hardStopTag = Resources.Load<GameplayTag>("Tags/State.Move.Blocked");
 
             if (motion == null)
             {
@@ -74,7 +76,8 @@ namespace UnityGAS.Sample
                 bool cancelled = false;
                 while (elapsed < duration)
                 {
-                    if (spec.Token != null && spec.Token.IsCancelled)
+                    if ((spec.Token != null && spec.Token.IsCancelled) ||
+                        (tags != null && hardStopTag != null && tags.HasTag(hardStopTag)))
                     {
                         cancelled = true;
                         motion.CancelMotion();
