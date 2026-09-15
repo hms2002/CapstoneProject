@@ -74,12 +74,15 @@ public sealed class RoomMonsterWavePlayModeTests
         group.NotifyPlayerEnteredEncounter();
         Assert.That(spawned.Count, Is.EqualTo(1));
         Assert.That(group.PendingRoomEntrySpawnCount, Is.EqualTo(1));
+        Refresh(wholeRoom);
+        Assert.That(wholeRoom.RemainingAliveCount, Is.EqualTo(2), "One alive plus one future spawn, without the wave hold.");
         Object.DestroyImmediate(spawned[0]);
         yield return Until(() => group.CurrentWaveNumber == 2);
         Refresh(direct);
         Refresh(wholeRoom);
         Assert.That(direct.IsUnlocked, Is.False, "A specifically linked future spawn must still lock the chest.");
         Assert.That(wholeRoom.IsUnlocked, Is.False);
+        Assert.That(wholeRoom.RemainingAliveCount, Is.EqualTo(1), "Only the reserved second-wave monster remains.");
         Assert.That(group.EncounterHoldCount, Is.EqualTo(1));
         Assert.That(spawned.Count, Is.EqualTo(1), "The next delay must precede actual spawn.");
         yield return Until(() => spawned.Count == 2);
