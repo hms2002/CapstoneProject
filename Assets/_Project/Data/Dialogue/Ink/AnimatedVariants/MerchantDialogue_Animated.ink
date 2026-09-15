@@ -20,13 +20,10 @@
     # anim: normal
     뭐어?! 진짜 그냥 가게?! 자, 잠깐만! 구경은 공짜니까 조금만 더 보고 가!
     # anim: normal
-    보다 보면 분명 사고 싶어질 거라구! 진짜 아무것도 안 사고 가는 거야?! 다음엔 지갑부터 두둑하게 채워서 와야 한다, 용사님!
+    보다 보면 분명 사고 싶어질 거라구!
     -> merchant_browse_end
 
 = merchant_interest_end
-# face: 1001: Normal
-# anim: normal
-좋아, 천천히 골라봐! 고민하는 동안 가격이 오를지도 모르니까 서두르는 게 좋을걸?
 -> END
 
 = merchant_browse_end
