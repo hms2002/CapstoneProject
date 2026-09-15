@@ -11660,6 +11660,8 @@ MonoBehaviour:
   finalDeathPresentation: {fileID: 0}
   useFinalDeathPresentation: 1
   rewardDelayAfterClearSeconds: 0
+  routeSet: {fileID: 11400000, guid: e51505379253cd7418eede840755f707, type: 2}
+  isFinalRouteSet: 1
   treasureChest: {fileID: 0}
   exitPortal: {fileID: 0}
   hideAuthoredObjectsOnStart: 1

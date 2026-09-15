@@ -31,7 +31,9 @@ Reveal persistence uses a synthetic `return-portal:{placementId}` entry in the e
 
 ## Placement
 
-Start and each dead end are searched from just inside their connected socket. Only reachable floor cells are considered; wall tiles, solid props and hole traps constrain traversal. Portal candidates prefer the wall opposite the entry, then proximity to the entry's lateral coordinate. Interaction placement rejects other interactable triggers as well as solids.
+Start and each dead end are searched from just inside their connected socket. Only reachable floor cells are considered; wall tiles, solid props and hole traps constrain traversal. Automatic portal candidates prefer the deepest opposite boundary, then the longest continuous wall segment, then its midpoint (not the entry's lateral coordinate). Blocked midpoint cells fall back to nearby safe cells; coordinate tie-breaks keep results independent of traversal order. Interaction placement rejects other interactable triggers as well as solids.
+
+Room Piece Editor's object section exposes a return portal direction and guide selection button. Select Up/Right/Down/Left, select the guide, add it using normal object placement, move it in Scene View and save the room. Existing ReturnPortal_DIRECTION Prop prefabs carry the direction through their ProceduralRoomAnchor slot and existing object serialization; cyan gizmos show position/orientation. Prefer one guide per room. A valid guide overrides both position and direction, even when it differs from the wall opposite the entrance. Multiple guides prefer the opposite direction, then Up/Right/Down/Left order. An unsafe chosen guide warns and falls back to automatic placement. No new room schema or installation step is required.
 
 Landing defaults near the Start room's bounds center but must belong to its reachable floor component. Per-use checks include a conservative player body footprint, not only its center. Physics overlap-buffer overflow fails closed. The expensive room search is generation-time only; interaction-time validation is a local overlap/footprint check.
 

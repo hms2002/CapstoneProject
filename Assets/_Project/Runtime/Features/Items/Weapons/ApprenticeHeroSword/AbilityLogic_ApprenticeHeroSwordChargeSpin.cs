@@ -335,6 +335,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
 
             if (revealRenderer != null)
             {
+                revealRenderer.enabled = ratio > 0f;
                 Sprite chargeSprite = data.ChargeRevealSprite != null
                     ? data.ChargeRevealSprite
                     : fallbackRevealSprite;
@@ -506,7 +507,9 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             revealTransform.localRotation = Quaternion.Euler(data.ChargeRevealLocalEulerAngles);
             revealTransform.localScale = data.ChargeRevealLocalScale;
 
-            // Keep this reveal mask local; world/vision masks must not affect the charged blade.
+            // Bit 2 is WeaponChargeEffect in TagManager; exclude Default world/vision masks.
+            const uint chargeRenderingLayerMask = 1u << 2;
+            // Keep per-instance mask scope and the weapon's existing world sorting hierarchy.
             var sortingGroup = revealRoot.AddComponent<UnityEngine.Rendering.SortingGroup>();
             sortingGroup.sortingLayerID = sourceRenderer.sortingLayerID;
             sortingGroup.sortingOrder = sourceRenderer.sortingOrder + data.ChargeRevealSortingOrderOffset;
@@ -516,12 +519,14 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             rendererTransform.SetParent(revealTransform, worldPositionStays: false);
 
             revealRenderer = rendererObject.AddComponent<SpriteRenderer>();
+            revealRenderer.enabled = false;
             revealRenderer.sprite = revealSprite;
             revealRenderer.color = data.ChargeRevealColor;
             revealRenderer.sharedMaterial = sourceRenderer.sharedMaterial;
             revealRenderer.sortingLayerID = sourceRenderer.sortingLayerID;
             revealRenderer.sortingOrder = 0;
             revealRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            revealRenderer.renderingLayerMask = chargeRenderingLayerMask;
             revealRenderer.drawMode = sourceRenderer.drawMode;
             revealRenderer.size = sourceRenderer.size;
             revealRenderer.flipX = sourceRenderer.flipX;
@@ -533,6 +538,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             maskTransform.SetParent(revealTransform, worldPositionStays: false);
 
             revealMask = maskObject.AddComponent<SpriteMask>();
+            revealMask.renderingLayerMask = chargeRenderingLayerMask;
             revealMask.sprite = maskSprite;
             revealMask.alphaCutoff = data.ChargeRevealMaskAlphaCutoff;
             revealMask.isCustomRangeActive = true;

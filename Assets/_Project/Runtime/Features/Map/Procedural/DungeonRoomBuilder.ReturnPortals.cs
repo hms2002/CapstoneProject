@@ -68,6 +68,16 @@ public sealed partial class DungeonRoomBuilder
             RoomSocketDirection wallDirection = DungeonReturnPortalPlacement.Opposite(socket.direction);
             List<Vector2Int> reachable = FindReturnReachableCells(layout, room, out Vector2Int entrance);
             Transform explicitAnchor = FindReturnAnchor(room.PlacementId, "ReturnPortal_" + wallDirection);
+            // A guide can explicitly choose a different wall orientation from the entrance.
+            if (explicitAnchor == null)
+                for (int i = 0; i < 4; i++)
+                {
+                    var direction = (RoomSocketDirection)i;
+                    explicitAnchor = FindReturnAnchor(room.PlacementId, "ReturnPortal_" + direction);
+                    if (explicitAnchor == null) continue;
+                    wallDirection = direction;
+                    break;
+                }
             Vector3 portalPosition;
             if (explicitAnchor != null && reachable.Contains((Vector2Int)floorTilemap.WorldToCell(explicitAnchor.position)) &&
                 IsReturnSpaceClear(explicitAnchor.position, returnPortalClearance, null, false))
@@ -78,6 +88,9 @@ public sealed partial class DungeonRoomBuilder
                 c => !HasReturnFloor(c), c => IsReturnSpaceClear(floorTilemap.GetCellCenterWorld((Vector3Int)c),
                     returnPortalClearance, null, false), out Vector2Int chosen))
             {
+                if (explicitAnchor != null)
+                    Debug.LogWarning($"[ReturnPortal] {room.Template.name}: guide '{explicitAnchor.name}' is unreachable or obstructed; using automatic wall placement.", explicitAnchor);
+                wallDirection = DungeonReturnPortalPlacement.Opposite(socket.direction);
                 portalPosition = floorTilemap.GetCellCenterWorld((Vector3Int)chosen);
             }
             else

@@ -2068,3 +2068,35 @@ Symptom: Flowering, Lightning and shared SwordCombo slash centers shift vertical
 - Cause: a shared 0.28 × 0.28 sweep queried both wall and damage layers, while the 0.32 × 0.32 prefab trigger independently entered AttackBase's wall-destruction path. Reducing only the sweep could not separate wall tolerance from enemy hit reach.
 - Fix: author separate wall/damage colliders in Fireball.prefab, sweep each against its own mask, resolve the nearest valid contact and bypass inherited trigger handling only in CrimsonBoundaryProjectile2D. Preserve existing damage/burn/visual cleanup ownership.
 - Prevention: when separating projectile collision channels, inspect both swept queries and Enter/Stay callbacks; avoid leaving a second wall-destruction path driven by the damage shape.
+
+## 2026-09-15 — Independent Burn survives general boss effect cleanup
+
+Source trace: BossControllerBase cleared GameplayEffectRunner and ElementGaugeSystem at death, but BurnStatus2D stores its own stacks and ticks separately. ConsumeAll is now called at death entry; dead-boss reapplication is rejected. A lethal Burn tick can synchronously invoke this cleanup, so the tick checks remaining stacks before spawning its subsequent pulse/VFX. MSBuild passed; death-presentation reproduction in Unity remains pending.
+
+Related title handoff trap: hiding preload before the intro root or scene fade is opaque exposes the old slot screen. The outgoing cover now remains until its replacement is ready.
+
+## 2026-09-15 — Charge sortAtRoot workaround did not resolve visual defect
+
+The user reproduced premature full-blade charge in Shadow Corridor after the previous sortAtRoot change. That change had only build/static validation; mask interference had not been proven in a rendered frame. Remove that workaround and separate dedicated rendering channels for charge and spear drop mask/renderer pairs. Both sides receive the same exclusive bit, without Default. Do not report this visual defect resolved solely from MSBuild; verify partial charge together with world vision and drop masks in Play Mode. Implementation is applied; rendered acceptance is pending.
+
+## 2026-09-15 — Ink blocking feature can consume the next spoken line
+
+A standalone tag-only `# feature:` line compiled into the following spoken line in the scribe Ink. DialogueController intentionally skips display for blocking features and resumes by advancing, which would lose that dialogue. Give the cue its own nonempty sentinel line (`[camera cue] # feature: scribe_cue`), consumed by the blocking feature, and verify compiled Ink Continue() text/tags. Scribe's three knots were verified with 4/2/0 cues and no spoken text attached to those cues.
+
+## 2026-09-15 — Slot introduction incorrectly waited for an active run
+
+GrandHallScribeSequence waited for RunSessionStore.IsRunActive before presenting its slot-once intro, but the normal Hub_GrandHall connection does not start a run. The user saw no cinematic. The shared continuation predicate also required an active run, so removing only the initial wait would still abort speech/camera/dialogue. Split loaded-slot identity from active-run identity throughout intro continuation and keep return-stage/portal writes run-gated. Build/static checks passed; normal-route Play Mode acceptance pending.
+
+## 2026-09-15 — Default letterbox fade hides Dialogue canvas
+
+Grand Hall used CinematicLetterboxOverlay.PlayIn(duration, ratio, alpha), whose default faded layers include Dialogue. The cutscene continued but dialogue was invisible. Match HubIntroAfterDarkLordSequence's explicit PresentationFadedLayers (excluding Dialogue and GameplayHUD), and leave Dialogue's HUD lifecycle to Dialogue. Removed the redundant sequence-owned non-dialogue suppression. Build and static comparison passed; visual acceptance pending.
+
+
+## 2026-09-15 — Camera-dialogue section visibility mistaken for movement visibility
+
+The previous panel fix restored the upper frame after each camera movement and recreated GrandHall letterbox bars for every cue. The user's intended lifetime is the whole camera-directed dialogue section; Dialogue starts after the letterbox cinematic has ended. Keep the upper-frame hide state across spoken lines/Hub segments, restore only on returning to ordinary NPC dialogue, and never recreate bars inside dialogue cues. Do not couple this view state to advance-input blocking: hidden-panel spoken lines must remain advanceable, while the existing blocking feature callback guards camera movement. Source/scene checks and builds passed; visual acceptance remains pending.
+
+
+## 2026-09-15 — Retained dialogue visuals need matching theme and animation lifetime
+
+Keeping the lower frame visible across Hub session boundaries exposed ResetTheme restoring the name's prefab color during camera travel. Preserve the visible theme until the next ApplyTheme or actual retained-frame close, while still cleaning up dialogue effects. Separately, SnapGroupClosed made an already-visible GrandHall upper frame disappear instantly; use the existing animated PlayGroupClose and wait for completion before movement. Hub had not exposed this snap because its upper frame was hidden before segment opening. Builds/source checks passed; Play Mode visual acceptance pending.

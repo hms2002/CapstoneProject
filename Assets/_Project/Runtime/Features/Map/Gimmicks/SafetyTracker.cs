@@ -33,6 +33,7 @@ public class SafetyTracker : MonoBehaviour
     private List<Tilemap> holeMaps = new List<Tilemap>();
 
     public Vector3 LastSafePosition { get; private set; }
+    public Vector2 FootPosition => transform.position + footOffset;
 
     private AbilitySystem abilitySystem;
 

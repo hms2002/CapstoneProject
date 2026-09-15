@@ -219,20 +219,19 @@ public sealed class TitleMenuController : MonoBehaviour
         }
 
         yield return WaitForLaunchPreload();
-        loadingOverlay?.ForceHidePresentation();
 
         if (ShouldPlayIntroBeforeLaunch(request))
-            yield return PlayIntroBeforeLaunch();
+            yield return PlayIntroBeforeLaunch(loadingOverlay);
 
         TitleProfileLaunchResult launchResult =
             TitleProfileLaunchService.PrepareLaunch(request, GameDataManager.Instance);
         if (!launchResult.Succeeded)
         {
-            AbortLaunch(null);
+            AbortLaunch(loadingOverlay);
             yield break;
         }
 
-        LoadPreparedScene(launchResult.TargetSceneName);
+        yield return LoadPreparedScene(launchResult.TargetSceneName, loadingOverlay);
     }
 
     private IEnumerator WaitForLaunchPreload()
@@ -253,7 +252,7 @@ public sealed class TitleMenuController : MonoBehaviour
         }
     }
 
-    private IEnumerator PlayIntroBeforeLaunch()
+    private IEnumerator PlayIntroBeforeLaunch(LoadingOverlayController loadingOverlay)
     {
         bool introCompleted = false;
         bool didStartIntro =
@@ -262,23 +261,38 @@ public sealed class TitleMenuController : MonoBehaviour
         if (!didStartIntro)
             yield break;
 
+        // Keep the slot screen covered until the intro's black background is opaque.
+        while (introPlayer != null && introPlayer.IsPlaying && !introPlayer.IsViewOpaque)
+            yield return null;
+        if (introPlayer != null && introPlayer.IsViewOpaque)
+            loadingOverlay?.ForceHidePresentation();
+
         while (!introCompleted && introPlayer != null && introPlayer.IsPlaying)
             yield return null;
     }
 
-    private void LoadPreparedScene(string targetSceneName)
+    private IEnumerator LoadPreparedScene(string targetSceneName, LoadingOverlayController loadingOverlay)
     {
         if (string.IsNullOrWhiteSpace(targetSceneName))
         {
-            AbortLaunch(null);
-            return;
+            AbortLaunch(loadingOverlay);
+            yield break;
         }
 
         SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.EnsureInstance();
-        if (transitionCoordinator != null && transitionCoordinator.TryLoadScene(targetSceneName))
-            return;
+        if (transitionCoordinator == null || !transitionCoordinator.TryLoadScene(targetSceneName))
+        {
+            AbortLaunch(loadingOverlay);
+            yield break;
+        }
 
-        SceneManager.LoadScene(targetSceneName);
+        Scene titleScene = gameObject.scene;
+        while (transitionCoordinator != null && transitionCoordinator.IsTransitionActive)
+            yield return null;
+
+        // On success this scene-local controller is destroyed. A surviving title means load failed.
+        if (titleScene.isLoaded && gameObject.scene == titleScene)
+            AbortLaunch(loadingOverlay);
     }
 
     private void AbortLaunch(LoadingOverlayController loadingOverlay)

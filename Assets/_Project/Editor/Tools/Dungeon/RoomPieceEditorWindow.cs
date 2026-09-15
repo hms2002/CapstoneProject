@@ -709,11 +709,21 @@ public sealed partial class RoomPieceEditorWindow : EditorWindow
             MessageType.Info);
     }
 
+    private RoomSocketDirection returnGuideDirection = RoomSocketDirection.Up;
+
     private void DrawObjectSection()
     {
         DrawMonsterWaveSection();
         EditorGUILayout.Space(8f);
         EditorGUILayout.LabelField("방 오브젝트", EditorStyles.boldLabel);
+        returnGuideDirection = (RoomSocketDirection)EditorGUILayout.EnumPopup("귀환 포탈 방향", returnGuideDirection);
+        if (GUILayout.Button("귀환 포탈 위치 가이드 선택"))
+        {
+            objectKindToPlace = RoomObjectKind.Prop;
+            objectPrefabToPlace = AssetDatabase.LoadAssetAtPath<GameObject>(
+                DungeonReturnPortalAuthoringUtility.Folder + "/ReturnPortal_" + returnGuideDirection + ".prefab");
+        }
+        EditorGUILayout.HelpBox("가이드 선택 후 오브젝트 배치로 위치를 지정하세요. 방마다 하나를 권장합니다. 없으면 맞은편 벽 구간 중앙에 자동 배치합니다. 가이드는 이동 가능한 바닥 위에 배치하세요.", MessageType.Info);
         using (new EditorGUILayout.HorizontalScope())
         {
             if (GUILayout.Button("일반 상자 후보 선택"))

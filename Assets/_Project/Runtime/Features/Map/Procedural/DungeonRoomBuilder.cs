@@ -620,6 +620,14 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         if (holeTilemap == null)
             return;
 
+        // Apply the shared visual order to existing scenes as well as newly installed tilemaps.
+        var renderer = holeTilemap.GetComponent<TilemapRenderer>();
+        if (renderer != null)
+        {
+            renderer.sortingLayerName = RoomTileLayerContract.GetSortingLayerName(RoomTileLayerKind.Hole);
+            renderer.sortingOrder = RoomTileLayerContract.GetSortingOrder(RoomTileLayerKind.Hole);
+        }
+
         foreach (Vector3Int cell in holeTilemap.cellBounds.allPositionsWithin)
         {
             if (!holeTilemap.HasTile(cell))

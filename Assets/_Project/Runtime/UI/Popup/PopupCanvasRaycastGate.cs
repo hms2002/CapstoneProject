@@ -18,7 +18,8 @@ public sealed class PopupCanvasRaycastGate : CanvasRaycastGateBase
 
         UIManager uiManager = UIManager.Instance;
         if (uiManager != null)
-            return uiManager.HasActivePopupInCanvas(popupCanvas);
+            return uiManager.HasActivePopupInCanvas(popupCanvas) ||
+                   (targetCanvasLayer == GlobalCanvasLayer.Popup && uiManager.HasModalBackdrop);
 
         return HasActiveStackableUiFallback(popupCanvas.transform);
     }

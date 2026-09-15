@@ -13,6 +13,8 @@ Map scene/run transition, title-to-game bootstrap, player runtime capture/restor
 
 ## Current Structure
 
+- Death/time-over return requests a one-shot destination-scoped fall through `PlayerHubSpawnPresentation2D.RequestDeathReturn` immediately before scene loading (game-over UI and no-UI fallback). PlayerSpawner's existing arrival call consumes it, independently of the tutorial intro gate. Death arrival does not emit the tutorial completion event. Requests reset on play initialization or a subsequent unrelated Single scene load; ordinary travel and victory do not request this presentation.
+
 | Area | Count | Responsibility |
 | --- | ---: | --- |
 | Scene / Run Transition | 39 | Scene domain, player runtime capture/restore, portals, run progress, transition policies, route catalogs, title profile flow. |

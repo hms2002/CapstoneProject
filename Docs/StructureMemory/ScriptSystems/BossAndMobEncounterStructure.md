@@ -355,3 +355,9 @@ DragonFireBreath already snapshots aim after prepareSeconds and holds it during 
 ### Dragon breath lock interval tuning (2026-09-12)
 
 AbilityLogic_DragonFireBreath and AL_DragonFireBreath now use preFireDelaySeconds 0.4. Tracking preparation remains 1.8 seconds, and the frozen warning direction is retained through this lock interval before firing. Active duration and repeat count are unchanged.
+
+### Demon King timer context and victim freeze immunity (2026-09-14)
+
+`LeeJunmo_Boss_DemonKing.unity` explicitly binds `DemonkingRouteSet` and `isFinalRouteSet=true` on its existing BossEncounterEndDirector. Its SingleBossEncounterClearCondition identifies the DemonKing controller. RunProgressCoordinator resolves this authored context before the active route backend, so the combat-start timer pause does not require the route plan to identify the final stage. The same context participates in reward/completion evaluation. Timer ownership and cleanup remain with RunProgressCoordinator.
+
+CombatHitPause2D.FreezeVictim now respects the same parent ICombatHitPauseImmune marker as Apply. BossControllerBase and Boss already implement that marker. This prevents victim impact freeze from stopping immune actors' animators, rigidbodies and gated ability routines; it does not disable groggy build-up, attacker impact feedback or global combat slowdown.

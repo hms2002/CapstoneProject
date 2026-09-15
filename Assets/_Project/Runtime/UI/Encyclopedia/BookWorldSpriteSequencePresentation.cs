@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>Owns the world book's open/closed state and sprite animation sequence.</summary>
 [DisallowMultipleComponent]
 public sealed class BookWorldSpriteSequencePresentation : MonoBehaviour
 {
@@ -27,6 +28,21 @@ public sealed class BookWorldSpriteSequencePresentation : MonoBehaviour
 
     private Coroutine activeRoutine;
     private bool isOpen;
+    public bool IsOpen => isOpen;
+
+    /// <summary>Reports actual base-layer animation identity, excluding loop count and normalized time.</summary>
+    public bool TryGetAnimationStateHash(out int stateHash)
+    {
+        stateHash = 0;
+        if (animator == null || !animator.isInitialized || animator.runtimeAnimatorController == null ||
+            animator.layerCount <= BaseLayer)
+            return false;
+
+        stateHash = animator.IsInTransition(BaseLayer)
+            ? animator.GetNextAnimatorStateInfo(BaseLayer).fullPathHash
+            : animator.GetCurrentAnimatorStateInfo(BaseLayer).fullPathHash;
+        return stateHash != 0;
+    }
 
     private void Awake()
     {

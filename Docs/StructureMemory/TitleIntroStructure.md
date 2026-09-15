@@ -104,3 +104,7 @@ This is a fast structure map, not a final Architecture or Contract document.
 ## Promotion Candidate
 
 Candidate for future `Docs/Architecture/` or `Docs/Contracts/` promotion if title/profile launch flows gain more scene-local presentation steps.
+
+## Loading cover handoff
+
+Current entry points are under `Assets/_Project/Runtime/UI/Title/`. TitleMenuController retains its preload cover until TitleIntroPlayer reports an opaque intro root. Without intro, SceneTransitionCoordinator (under Runtime/Infrastructure/SceneFlow) takes over and hides the inherited loading cover only after CoverAsync completes. A title controller that survives a completed failed transition restores slot/menu interaction. The slot panel is never intentionally revealed between preload and intro/scene cover.

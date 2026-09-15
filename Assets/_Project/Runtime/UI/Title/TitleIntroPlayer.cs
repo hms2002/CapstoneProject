@@ -34,6 +34,7 @@ public sealed class TitleIntroPlayer : MonoBehaviour
     private bool hasHiddenCursor;
 
     public bool IsPlaying => playRoutine != null;
+    public bool IsViewOpaque => view != null && view.RootAlpha >= 1f;
 
     public bool CanPlay
     {

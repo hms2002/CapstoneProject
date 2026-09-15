@@ -267,7 +267,7 @@ public sealed class TutorialSceneSequenceDirector : MonoBehaviour
     private bool IsMonsterClear()
     {
         if (chestMonsterKillLock != null)
-            return chestMonsterKillLock.IsUnlocked || chestMonsterKillLock.RemainingAliveCount <= 0;
+            return chestMonsterKillLock.IsUnlocked;
 
         if (roomDoorMonsterKillLock != null)
             return roomDoorMonsterKillLock.EncounterEntered && roomDoorMonsterKillLock.RemainingMonsterCount <= 0;

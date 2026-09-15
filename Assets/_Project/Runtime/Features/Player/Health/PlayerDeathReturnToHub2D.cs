@@ -404,6 +404,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
         RunSessionStore.EndRun(endRunReason);
 
         string resolvedHubSceneName = ResolveHubSceneName(targetHubSceneName);
+        PlayerHubSpawnPresentation2D.RequestDeathReturn(resolvedHubSceneName);
 
         if (useSceneTransitionService)
         {

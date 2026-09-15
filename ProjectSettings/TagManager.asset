@@ -77,4 +77,6 @@ TagManager:
     locked: 0
   m_RenderingLayers:
   - Default
+  - WeaponDropVisual
+  - WeaponChargeEffect
   m_MigratedRenderPipelines: []

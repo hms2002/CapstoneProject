@@ -13,6 +13,12 @@ The tutorial support layer provides reusable authoring pieces for future tutoria
 
 ## Current Structure
 
+- WeaponSkillHUD2D and SwapWeaponSkillHUD2D project `PlayerCombatInput2D.IsWeaponInputBlocked`: the tutorial prerequisite hides both skill HUDs and restores them from current ability state on unlock. UI does not own or release the block; existing no-player/no-inactive-weapon visibility rules remain.
+
+- TutorialCorridor's gate-facing exit door (door lock fileID `1767554932`, door at local y=27) enables `RoomDoorMonsterKillLock.holdAfterCombatUntilReleased`. After combat it stays closed until `TutorialChestOpenedTrigger` forwards the first successful chest UI open through `TutorialSceneSequenceDirector.onChestOpened` to `ReleaseAfterCombatHold`. Loot collection is not required. The entrance door and other room locks retain the default combat-clear behavior. Release is runtime state for this scene instance and does not bypass remaining monsters.
+- Hub first-entry hides the upper frame with `DialoguePlayback.SetUpperPanelHiddenForCameraDialogue` before all focus-step dialogues and keeps it hidden until the camera returns to the NPC for final dialogue. The initial letterbox ends before these dialogues and never returns. Cancellation clears hiding; dialogue segments still own their normal opening/closing flow.
+- TutorialCorridor enables `TutorialCombatIntroSequence.blockWeaponInputUntilTutorialComplete`. On player registration the scene sequence acquires an owner-scoped weapon-input block on the existing PlayerCombatInput2D. Only basic attacks and weapon skills are withheld; movement and dash remain available before the intro starts. Successful combat tutorial completion releases the block before onGameplayReleased. Cancellation alone keeps the prerequisite locked; player unregistration or component disable releases ownership, and re-enable before completion reacquires it. Cinematic protection can temporarily disable/re-enable the input component without losing this block.
+
 - `TutorialInfoPanel` is the scene/prefab-authored UI driver for a tutorial explanation panel, including optional shared hold-button progress projection. The concrete implementation lives under `Assets/_Project/Runtime/UI/Tutorial` and implements Gameplay `ITutorialInfoPanel`.
 - `TutorialInfoTrigger` opens a panel through `ITutorialInfoPanel` from a 2D trigger or from public methods such as `Fire`, `FireNow`, and `FireAfterDelay`. A `Collider2D` is needed only for trigger-entry activation, not for direct UnityEvent/code calls.
 - `TutorialProgressStore` reads and writes tutorial completion through `GameDataManager`.
@@ -160,3 +166,8 @@ The tutorial support layer provides reusable authoring pieces for future tutoria
 ## Promotion Candidate
 
 This can become a future contract if tutorial authoring rules become shared across multiple scenes.
+
+
+### Lower dialogue frame across Hub camera steps
+
+Hub enables DialoguePlayback.SetLowerPanelRetainedBetweenDialogues across focus-step dialogue sessions. DialogueView skips lower-frame exit and re-entry while retaining the authored panel, so the previous line stays visible during camera travel. Final dialogue consumes that retained frame and disables retention before its own normal closing. Cleanup releases any retained frame between sessions. GrandHall already uses one live dialogue with blocking camera cues, so its lower frame remains visible without this option.

@@ -43,12 +43,14 @@ public sealed class DungeonMinimapSizeController : MonoBehaviour
 
     public void Expand()
     {
+        if (UiInteractionStateQuery.HasBlockingUI()) return;
         sizeLevel = Mathf.Min(Expanded, sizeLevel + 1);
         ApplySize();
     }
 
     public void Shrink()
     {
+        if (UiInteractionStateQuery.HasBlockingUI()) return;
         sizeLevel = Mathf.Max(Collapsed, sizeLevel - 1);
         ApplySize();
     }

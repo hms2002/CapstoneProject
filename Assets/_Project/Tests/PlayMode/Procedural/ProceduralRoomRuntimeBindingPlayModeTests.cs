@@ -22,17 +22,24 @@ public sealed class ProceduralRoomRuntimeBindingPlayModeTests
             Tilemap floor = CreateTestTilemap(root.transform, RoomTileLayerKind.Floor);
             Tilemap wall = CreateTestTilemap(root.transform, RoomTileLayerKind.Wall);
             Tilemap hole = CreateTestTilemap(root.transform, RoomTileLayerKind.Hole);
+            Tilemap decoration = CreateTestTilemap(root.transform, RoomTileLayerKind.GroundDecoration);
+            var holeRenderer = hole.GetComponent<TilemapRenderer>();
+            holeRenderer.sortingOrder = 53;
             hole.gameObject.layer = LayerMask.NameToLayer("HoleTrap");
             hole.gameObject.AddComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             TilemapCollider2D collider = hole.gameObject.AddComponent<TilemapCollider2D>();
             collider.isTrigger = true;
             DungeonRoomBuilder builder = root.AddComponent<DungeonRoomBuilder>();
-            builder.EditorAssignTilemaps(null, floor, null, null, wall, null, null, null, hole);
+            builder.EditorAssignTilemaps(null, floor, null, decoration, wall, null, null, null, hole);
+            decoration.SetTile(Vector3Int.zero, tile);
             floor.SetTile(Vector3Int.zero, tile);
             hole.SetTile(Vector3Int.zero, tile);
             typeof(DungeonRoomBuilder).GetMethod("ApplyHoleTiles",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(builder, null);
             Assert.That(floor.HasTile(Vector3Int.zero), Is.False);
+            Assert.That(decoration.HasTile(Vector3Int.zero), Is.True);
+            Assert.That(holeRenderer.sortingOrder, Is.EqualTo(RoomTileLayerContract.GetSortingOrder(RoomTileLayerKind.Hole)));
+            Assert.That(holeRenderer.sortingOrder, Is.LessThan(RoomTileLayerContract.GetSortingOrder(RoomTileLayerKind.GroundDecoration)));
             Assert.That(hole.GetColliderType(Vector3Int.zero), Is.EqualTo(Tile.ColliderType.Grid));
             Assert.That(wall.HasTile(Vector3Int.zero), Is.False);
             yield return new WaitForFixedUpdate();

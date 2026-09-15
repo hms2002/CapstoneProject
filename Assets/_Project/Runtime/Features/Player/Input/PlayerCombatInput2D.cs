@@ -10,6 +10,16 @@ using UnityGAS;
 [DisallowMultipleComponent]
 public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventListener
 {
+    private readonly System.Collections.Generic.HashSet<object> weaponInputBlockOwners = new();
+    public bool IsWeaponInputBlocked => weaponInputBlockOwners.Count > 0;
+
+    public void SetWeaponInputBlocked(object owner, bool blocked)
+    {
+        if (owner == null) return;
+        if (blocked) weaponInputBlockOwners.Add(owner);
+        else weaponInputBlockOwners.Remove(owner);
+    }
+
     private const string AttackBlockedTagResourcePath = "Tags/State.Attacking.Blocked";
     private const string SkillBlockedTagResourcePath = "Tags/State.Skill.Blocked";
 
@@ -217,6 +227,20 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
             meleeControlLockActive = false;
             ClearApprenticeSkillInput();
             ReleaseAttackHoldIfNeeded();
+            return;
+        }
+
+        if (weaponInputBlockOwners.Count > 0)
+        {
+            ClearApprenticeSkillInput();
+            ReleaseAttackHoldIfNeeded();
+            if (!IsCombatBlocked())
+            {
+                if (InputActionQuery.WasPressedThisFrame(InputActionId.Dash))
+                    TryActivateSafe(default, dash);
+                if (weaponInventory != null && InputActionQuery.WasPressedThisFrame(InputActionId.SwapWeapon))
+                    weaponInventory.Swap();
+            }
             return;
         }
 

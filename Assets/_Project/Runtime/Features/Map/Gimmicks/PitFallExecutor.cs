@@ -28,6 +28,13 @@ public static class PitFallExecutor
             }
 
             context.Reaction?.OnPitFallStarted(context);
+            if (context.SafetyTracker != null && context.TargetTransform.CompareTag("Player"))
+            {
+                context.AbilitySystem.CancelCasting(force: true);
+                context.AbilitySystem.CancelExecution(force: true);
+                context.TargetTransform.GetComponent<MovementMotor2D>()?.StopAllMotion();
+                context.TargetTransform.GetComponent<AbilityMotionController2D>()?.CancelMotion();
+            }
             ApplyFallingEffect(context);
             ResetPhysicsVelocity(context.TargetTransform);
 

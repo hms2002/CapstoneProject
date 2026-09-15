@@ -213,3 +213,7 @@ MagicStonePickup and MagicStonePrefab now bind MagicStoneGainParticle. Five 9x11
 ### Level-up VFX centering revision (2026-09-14)
 
 PlayerLevelUpEffect2D.playerRenderer is authored to PF Player/PlayerRender. On a level gain, its world bounds center is converted into player-local coordinates for attached playback; weapons and shadows do not contribute to the center. LevelUpEffect particle startSize is 1 (half the previous 2), with lifetime and animation unchanged.
+
+## Current room-clear eligibility
+
+LevelRewardSessionController tracks MonsterSpawnRoomGroup through ActiveRoomEntered/ActiveRoomExited, initializing from active groups on enable and clearing references on player unregistration, disable or run end. RoomWavesCompleted plus zero RemainingRegisteredOrPendingCount bypasses the three-second recent-combat grace period. Unfinished encounters and recognizing enemies still block. Dialogue, blocking UI, pause, scene/loading transitions and non-idle player interaction state also block. LevelHudPresenter reads CanOpenSession for the existing R prompt; GlobalUIRoot authors that prompt above the skill bar in #BCF58F, outside skill layout groups.

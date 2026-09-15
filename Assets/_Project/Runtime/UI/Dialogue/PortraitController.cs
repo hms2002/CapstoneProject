@@ -5,6 +5,24 @@ using UnityEngine.U2D.Animation;
 
 public class PortraitController : MonoBehaviour
 {
+    private bool hiddenForCameraDialogue;
+    private bool wasRootActiveBeforeCameraDialogue;
+
+    public void SetHiddenForCameraDialogue(bool hidden)
+    {
+        if (hiddenForCameraDialogue == hidden) return;
+        hiddenForCameraDialogue = hidden;
+        if (hidden)
+        {
+            wasRootActiveBeforeCameraDialogue = gameObject.activeSelf;
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            gameObject.SetActive(wasRootActiveBeforeCameraDialogue);
+        }
+    }
+
     public string targetCategory = "Face";
 
     [Header("프리팹 연결")]

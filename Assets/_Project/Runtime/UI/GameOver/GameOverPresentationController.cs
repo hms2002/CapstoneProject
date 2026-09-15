@@ -392,6 +392,10 @@ public sealed class GameOverPresentationController : MonoBehaviour
             ? DefaultHubSceneName
             : request.HubSceneName;
 
+        if (!request.IsVictory &&
+            (request.EndRunReason == RunEndReason.Defeat || request.EndRunReason == RunEndReason.TimeOver))
+            PlayerHubSpawnPresentation2D.RequestDeathReturn(hubSceneName);
+
         if (request.UseSceneTransitionService)
         {
             SceneTransitionCoordinator coordinator = SceneTransitionCoordinator.Instance;

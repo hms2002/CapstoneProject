@@ -36,6 +36,9 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
         if (target == null || source == null || effect == null || baseStacks <= 0)
             return null;
 
+        if (target.TryGetComponent<BossControllerBase>(out var boss) && boss.IsDead)
+            return null;
+
         BurnStatus2D status = target.GetComponent<BurnStatus2D>();
         if (status == null)
             status = target.AddComponent<BurnStatus2D>();
@@ -150,6 +153,10 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
                 hasResolvedElementBuildUps: true,
                 emitHitConfirmed: false);
         }
+
+        // A lethal tick can synchronously clear this status in the boss death callback.
+        if (stacks <= 0)
+            return;
 
         CrimsonBoundaryVisual2D.Spawn(tickVisualPrefab, transform.position, Quaternion.identity);
         PulseRequested?.Invoke();

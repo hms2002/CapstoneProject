@@ -41,6 +41,10 @@ public static class SceneTravelPlayback
         IPlayerInteractor player,
         SceneTravelActivationKind activationKind)
     {
-        return backend != null && backend.TryTravel(endpoint, player, activationKind);
+        if (backend == null || endpoint == null) return false;
+        var weaponGate = endpoint.GetComponent<HubWeaponDepartureGuide>();
+        if (weaponGate != null && weaponGate.isActiveAndEnabled && !weaponGate.TryAllowDeparture(player))
+            return false;
+        return backend.TryTravel(endpoint, player, activationKind);
     }
 }

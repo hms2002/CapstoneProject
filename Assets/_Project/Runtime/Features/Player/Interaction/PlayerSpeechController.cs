@@ -41,6 +41,15 @@ public sealed class PlayerSpeechController : MonoBehaviour
             bubblePlayback.Speak(line, duration, speechData.BubbleTheme);
     }
 
+    /// <summary>Shows an authored one-off line using the player's existing bubble and theme.</summary>
+    public void SpeakLine(string line, float duration = 2f)
+    {
+        if (string.IsNullOrWhiteSpace(line)) return;
+        ResolveSpeechBubble();
+        if (speechBubble is ISpeechBubblePlayback playback)
+            playback.Speak(line, duration, speechData != null ? speechData.BubbleTheme : null);
+    }
+
     private void ResolveSpeechBubble()
     {
         if (speechBubble is ISpeechBubblePlayback)

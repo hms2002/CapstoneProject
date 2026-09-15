@@ -136,3 +136,7 @@ If additional elemental stack statuses adopt this contract, promote the shared s
 - Runtime samples these clips and counts .4 seconds after both completion and primary release before snapping to idle; held input clears that timer. Hold uses game delta time without attack-speed scaling and freezes during owner hit pause.
 - Projectile release remains at .12 attack-speed-scaled motion seconds, but the ability now owns spawn position directly: system.transform.position with zero offset. Runtime MarkProjectileReleased only ends release-pending state. Muzzle field and authored child removed.
 - Preview repetition interval (.4s) is not the gameplay cooldown: AD_CrimsonBoundaryAttack retains its existing one-second cooldown. Native Unity visual/lifecycle checks remain outstanding.
+
+## Boss death cleanup
+
+BossControllerBase consumes all independent Burn stacks immediately on death entry. Existing GameplayEffectRunner cleanup does not own these stacks. BurnStatus2D rejects application to a dead boss and stops its pulse/VFX continuation if damage synchronously cleared all stacks. ConsumeAll releases the active registry entry, stack view, tick accumulator and sustain visual through the existing status owner.

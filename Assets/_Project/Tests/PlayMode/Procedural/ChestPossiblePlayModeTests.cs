@@ -20,6 +20,47 @@ public sealed class ChestPossiblePlayModeTests
     private HashSet<GameObject> existingRoots;
     private const string ChestPath = "Assets/_Project/Prefabs/Items/Chests/";
 
+    [Test]
+    public void KillLock_EncounterHoldsDoNotCountAsMonstersButKeepChestLocked()
+    {
+        var group = new GameObject("HoldCountRoom").AddComponent<MonsterSpawnRoomGroup>();
+        var chest = new GameObject("HoldCountChest").AddComponent<ChestMonsterKillLock>();
+        var monster = new GameObject("TrackedMonster");
+        group.NotifyMonsterSpawned(monster);
+        group.PushEncounterHold();
+        group.PushEncounterHold();
+        chest.BindRoomEncounter(group, Array.Empty<MonsterSpawnContainer>());
+        Assert.That(chest.RemainingAliveCount, Is.EqualTo(1));
+        Assert.That(chest.IsUnlocked, Is.False);
+        int unlockEvents = 0;
+        int countEvents = 0;
+        chest.OnLockStateChanged += unlocked => { if (unlocked) unlockEvents++; };
+        chest.OnRemainingCountChanged += _ => countEvents++;
+        Object.DestroyImmediate(monster);
+        Refresh(chest);
+        Assert.That(chest.RemainingAliveCount, Is.Zero);
+        Assert.That(chest.IsUnlocked, Is.False, "Zero monsters between waves must not release the chest.");
+        var directorType = AppDomain.CurrentDomain.GetAssemblies()
+            .Select(assembly => assembly.GetType("TutorialSceneSequenceDirector")).First(type => type != null);
+        var tutorialObject = new GameObject("HoldCountTutorial");
+        tutorialObject.SetActive(false);
+        var director = tutorialObject.AddComponent(directorType);
+        SetField(director, "chestMonsterKillLock", chest);
+        var isClear = directorType.GetMethod("IsMonsterClear", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That((bool)isClear.Invoke(director, null), Is.False);
+        group.PopEncounterHold();
+        Refresh(chest);
+        Assert.That(chest.IsUnlocked, Is.False, "Another hold still owns the encounter.");
+        Assert.That(unlockEvents, Is.Zero);
+        group.PopEncounterHold();
+        Refresh(chest);
+        Assert.That(chest.RemainingAliveCount, Is.Zero);
+        Assert.That(chest.IsUnlocked, Is.True);
+        Assert.That((bool)isClear.Invoke(director, null), Is.True);
+        Assert.That(unlockEvents, Is.EqualTo(1));
+        Assert.That(countEvents, Is.EqualTo(1), "Hold release changes lock state, not monster count.");
+    }
+
     [SetUp]
     public void SetUp() => existingRoots = new HashSet<GameObject>(SceneManager.GetActiveScene().GetRootGameObjects());
 
