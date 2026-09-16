@@ -140,6 +140,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
         }
 
         GameObject targetObject = target != null ? target.gameObject : null;
+        LockRoomTargetIfPossible(targetObject);
         bool keepRoomTarget = ShouldKeepLockedRoomTarget(targetObject);
         SyncChaseIntentDetectionOverride(keepRoomTarget);
         if (!keepRoomTarget && !IsTargetWithinChaseAssistRange(targetObject, out float chaseDistance))
@@ -179,6 +180,8 @@ public class Rook : Slime, IMobTargetDetectionOverride
         if (!targetInRoom)
             ClearLockedRoomTarget();
 
+        // Room pursuit must not wait for a clear charge lane or the first short-range detection.
+        LockRoomTargetIfPossible(targetObject);
         if (ShouldKeepLockedRoomTarget(targetObject))
         {
             LogRookFsmThrottled($"HasDetectedTargetForMobFsm=true. reason=locked room target, target={targetObject.name}, position={transform.position}");
@@ -477,13 +480,24 @@ public class Rook : Slime, IMobTargetDetectionOverride
     /// </summary>
     private bool ShouldKeepLockedRoomTarget(GameObject targetObject)
     {
-        return hasLockedRoomTarget && IsTargetInOwnedRoom(targetObject);
+        return hasLockedRoomTarget && IsTargetInSameKnownRoom(targetObject);
+    }
+
+    /// <summary>Enables range-free pursuit only when both actors are inside an explicitly known room.</summary>
+    private bool IsTargetInSameKnownRoom(GameObject targetObject)
+    {
+        if (targetObject == null)
+            return false;
+
+        MonsterRoomArea2D roomArea = ResolveRoomArea();
+        return roomArea != null && roomArea.Contains(transform.position) &&
+               roomArea.Contains(targetObject.transform.position);
     }
 
     /// <summary>현재 타겟이 룩 소속 방 안에 있다면 지속 추적 대상으로 잠급니다.</summary>
     private void LockRoomTargetIfPossible(GameObject targetObject)
     {
-        if (!IsTargetInOwnedRoom(targetObject))
+        if (!IsTargetInSameKnownRoom(targetObject))
             return;
 
         hasLockedRoomTarget = true;
