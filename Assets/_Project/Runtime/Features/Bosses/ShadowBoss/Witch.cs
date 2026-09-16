@@ -344,7 +344,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         if (executorSucceeded)
             return true;
 
-        Debug.LogWarning("[Witch] 평타1 executor 경로가 실패하여 inline fallback을 사용합니다.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[Witch] 평타1 executor 경로가 실패하여 inline fallback을 사용합니다.", this);
         return TryBeginNormalAttack1InlineFallback(context);
     }
 
@@ -371,7 +371,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         if (executorSucceeded)
             return true;
 
-        Debug.LogWarning("[Witch] 피난 executor 경로가 실패하여 inline fallback을 사용합니다.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[Witch] 피난 executor 경로가 실패하여 inline fallback을 사용합니다.", this);
         return TryBeginRetreatInlineFallback(context);
     }
 
@@ -628,7 +628,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     {
         if (abilitySystem == null || Target == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[Witch] 평타1 inline fallback 실패: abilitySystem={(abilitySystem != null)}, target={(Target != null)}",
                 this);
             return false;
@@ -636,7 +636,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
 
         if (context.TilePrefab == null || context.DamageEffect == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[Witch] 평타1 inline fallback 실패: tilePrefab={(context.TilePrefab != null)}, damageEffect={(context.DamageEffect != null)}",
                 this);
             return false;
@@ -645,7 +645,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         Vector2 aimDir = GetAimDirectionValue();
         if (aimDir == Vector2.zero)
         {
-            Debug.LogWarning("[Witch] 평타1 inline fallback 실패: aimDir가 zero입니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[Witch] 평타1 inline fallback 실패: aimDir가 zero입니다.", this);
             return false;
         }
 
@@ -675,7 +675,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
                 context.HitTelegraphStyle);
         }
 
-        Debug.Log($"[Witch] 평타1 inline fallback 실행 성공: tileCount={context.TileCount}, interval={context.IntervalSeconds}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[Witch] 평타1 inline fallback 실행 성공: tileCount={context.TileCount}, interval={context.IntervalSeconds}", this);
         return true;
     }
 
@@ -684,14 +684,14 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     {
         if (context.SkeletonPrefab == null)
         {
-            Debug.LogWarning("[Witch] 피난 inline fallback 실패: skeletonPrefab이 없습니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[Witch] 피난 inline fallback 실패: skeletonPrefab이 없습니다.", this);
             return false;
         }
 
         PlayPatternAttackMotion();
         bool spawnedLeft = SpawnRetreatSkeletonInlineFallback(context.SkeletonPrefab, context.LeftOffset, context.ExplosionDiameter, context.SpeedScale);
         bool spawnedRight = SpawnRetreatSkeletonInlineFallback(context.SkeletonPrefab, context.RightOffset, context.ExplosionDiameter, context.SpeedScale);
-        Debug.Log($"[Witch] 피난 inline fallback 실행 결과: left={spawnedLeft}, right={spawnedRight}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[Witch] 피난 inline fallback 실행 결과: left={spawnedLeft}, right={spawnedRight}", this);
         return spawnedLeft || spawnedRight;
     }
 
@@ -700,7 +700,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     {
         if (skeletonPrefab == null)
         {
-            Debug.LogWarning("[Witch] 피난 inline fallback 소환 실패: skeletonPrefab이 null입니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[Witch] 피난 inline fallback 소환 실패: skeletonPrefab이 null입니다.", this);
             return false;
         }
 
@@ -711,7 +711,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
 
         if (skeleton == null)
         {
-            Debug.LogWarning("[Witch] 피난 inline fallback 소환 실패: Instantiate 결과가 null입니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[Witch] 피난 inline fallback 소환 실패: Instantiate 결과가 null입니다.", this);
             return false;
         }
 
@@ -914,7 +914,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         AbilityLogic_WitchExtinguishCandle config = logic != null ? logic : extinguishPatternLogicTemplate;
         if (fogPrefab == null || config == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[Witch] 촛불 끄기 문맥 구성 실패: fogPrefab={(fogPrefab != null)}, logic={(config != null)}",
                 this);
             return false;
@@ -925,14 +925,14 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         if (warningStyle == null && extinguishPatternLogicTemplate != null && config != extinguishPatternLogicTemplate)
         {
             warningStyle = extinguishPatternLogicTemplate.WarningTelegraphStyle;
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 "[Witch] 촛불 끄기 warningStyle이 비어 있어 pattern logic template의 스타일로 fallback합니다.",
                 this);
         }
 
         if (damageEffect == null || warningStyle == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[Witch] 촛불 끄기 문맥 구성 실패: damageEffect={(damageEffect != null)}, warningStyle={(warningStyle != null)}",
                 this);
             return false;
@@ -1203,7 +1203,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
             return;
 
         hasLoggedRuntimeDataReady = true;
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[BossFSM] {name}: WitchRuntimeData 준비 완료. sealedCandles={GetSealedCandleCount()}, hasSelection={RuntimeData.HasActiveExtinguishSelection}",
             this);
     }

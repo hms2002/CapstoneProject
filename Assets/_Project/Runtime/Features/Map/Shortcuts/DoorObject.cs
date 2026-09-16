@@ -757,7 +757,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
 
             if (resolvedDoorType != shortcutDoorType || resolvedIsPermanent != shortcutIsPermanent)
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     $"[DoorObject] Conflicting shortcut configuration sources found on '{name}'. " +
                     $"Keeping '{linkedShortcut.GetType().Name}' and ignoring '{shortcut.GetType().Name}'.",
                     this);

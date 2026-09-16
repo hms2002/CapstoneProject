@@ -710,12 +710,13 @@ public class Mob : Enemy
     }
 
     /// <summary>FSM 디버그 스위치가 켜진 몬스터만 추적/전이 진단 로그를 남깁니다.</summary>
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     public void LogFsmDebug(string message)
     {
         if (!logMobFsmDebug)
             return;
 
-        Debug.Log($"[MobFSM] {name}: {message}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[MobFSM] {name}: {message}", this);
     }
 
     /// <summary>사망 시 공통 FSM을 명시적인 터미널 상태로 전이시킵니다.</summary>

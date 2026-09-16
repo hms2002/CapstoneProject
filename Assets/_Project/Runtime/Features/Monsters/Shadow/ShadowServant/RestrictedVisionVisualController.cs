@@ -42,7 +42,7 @@ public class RestrictedVisionVisualController : MonoBehaviour
 
         if (logStatusUiFlow)
         {
-            Debug.Log($"[RestrictedVisionVisualController] ApplyFog called. duration={clampedDuration:0.00}", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[RestrictedVisionVisualController] ApplyFog called. duration={clampedDuration:0.00}", this);
         }
 
         if (isDark)
@@ -60,7 +60,7 @@ public class RestrictedVisionVisualController : MonoBehaviour
         isDark = true;
 
         if (logStatusUiFlow)
-            Debug.Log($"[RestrictedVisionVisualController] Darkness acquired. controller={(visionMaskController != null ? visionMaskController.name : "null")}", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[RestrictedVisionVisualController] Darkness acquired. controller={(visionMaskController != null ? visionMaskController.name : "null")}", this);
     }
 
     /// <summary>전역 시야 마스크에서 어둠 요청을 해제합니다.</summary>
@@ -74,7 +74,7 @@ public class RestrictedVisionVisualController : MonoBehaviour
         isDark = false;
 
         if (logStatusUiFlow)
-            Debug.Log("[RestrictedVisionVisualController] Darkness released.", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log("[RestrictedVisionVisualController] Darkness released.", this);
     }
 
     /// <summary>전역 시야 마스크 컨트롤러 참조를 확보합니다.</summary>

@@ -25,7 +25,7 @@ public sealed class RunConstructionNpcDialogueProvider : RunSpecialNpcDialoguePr
 
         if (feature == null)
         {
-            Debug.LogWarning("[RunConstructionNpcDialogueProvider] Construction feature is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RunConstructionNpcDialogueProvider] Construction feature is missing.", this);
             return RunSpecialNpcBranch.Empty;
         }
 

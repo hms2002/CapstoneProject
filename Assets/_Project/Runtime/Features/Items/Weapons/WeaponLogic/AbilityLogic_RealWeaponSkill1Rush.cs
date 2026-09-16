@@ -47,7 +47,7 @@ namespace UnityGAS
 
             if (data.moveSpeedMultiplierAttribute.IsBaseOnly())
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     $"[AbilityLogic_RealWeaponSkill1Rush] '{data.moveSpeedMultiplierAttribute.attributeName}' 은 BaseOnly 속성이므로 Modifier를 적용할 수 없습니다.");
                 yield break;
             }

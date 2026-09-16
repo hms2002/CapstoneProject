@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-07-04
+last_reviewed: 2026-09-17
 ---
 
 # Weapon And GAS Structure
@@ -25,7 +25,7 @@ Map the weapon, GAS/ability, combat, status, movement, and player-adjacent runti
 - Separate formulas: `SF_ApprenticeHeroSwordDashStab`, `SF_LightningSpearMarkRush`, `SF_LightningSpearSweep`, `SF_LightningSpearRecoveredShot`, `SF_LightningSpearMarkRain`, and `SF_FragmentBladeRecall`. Each preserves damage at AttackFinal 10 with 70% baseline plus 30% former attack-scaled damage (for example, sword dash is `84 + 3.6 * AttackFinal`).
 - `SF_Skill_ATK_Growth30` outputs `7 + 0.3 * AttackFinal`. Charge spin and Flowering dash slashes multiply this normalized value by their existing per-skill damage scales. Charge spin resolves its scale over the minimum-to-maximum charge interval; visual charge ratio remains unchanged.
 - Fragment skill-2 follow-up uses `piercingDamageFormula` and `piercingDamageScale`, not the normal formula or `minimumDamageScale`. `PiercingDamageFormula` falls back to the normal formula only for older/unconfigured assets. The authored asset uses `SF_Skill_ATK_Growth30`; normal attacks retain full attack scaling.
-- Crimson's `skillFireFormula` outputs `3.5 + 0.3 * FireFinal`, preserving its equipped baseline FireFinal 5. Both skill call sites pass it to the shared utility; `burnConsumptionMultiplier` and `skill2BaseMultiplier` retain their roles. An unset formula preserves raw-fire behavior, and missing source stats produce no flat damage. Normal shots omit the skill formula, retaining raw FireFinal scaling and burn-stack application.
+- Crimson's `skillFireFormula` outputs `3.5 + 0.3 * FireFinal`, preserving its equipped baseline FireFinal 5. Skill 1 uses `burnConsumptionMultiplier` 6; Skill 2 and its Crimson Lava Ball relic path use `skill2BaseMultiplier` 13 plus the separate `skill2BurnConsumptionMultiplier` 2. This keeps the Q reduction local instead of reducing Ignite. An unset formula preserves raw-fire behavior, and missing source stats produce no flat damage. Normal shots omit the skill formula, retaining raw FireFinal scaling and burn-stack application.
 - Wind `SSF_SpeedStrikeDamage` is `(7 + 0.3 * AttackFinal) * MoveSpeedFinal * 3`: attack growth is reduced, but full movement-speed/rush synergy is deliberately retained. OddIron remains fixed damage; unfinished debug skills are unchanged.
 - The 30% coefficient applies before crit/final modifiers, not to all possible sources of damage growth. Baseline constants assume AttackFinal 10 / equipped Crimson FireFinal 5 and should be revisited if starting stats change.
 - Formula changes still flow through existing damage snapshots, crit/final processing and combat application. No new damage-application path is introduced.

@@ -310,7 +310,7 @@ public sealed class RoomEnemyNavigationOverlay : MonoBehaviour
         if (missingArrowPrefabLogged)
             return;
 
-        Debug.LogWarning("[RoomEnemyNavigationOverlay] Missing arrowPrefab.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RoomEnemyNavigationOverlay] Missing arrowPrefab.", this);
         missingArrowPrefabLogged = true;
     }
 
@@ -319,7 +319,7 @@ public sealed class RoomEnemyNavigationOverlay : MonoBehaviour
         if (missingCameraLogged)
             return;
 
-        Debug.LogWarning("[RoomEnemyNavigationOverlay] Could not resolve a gameplay camera.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RoomEnemyNavigationOverlay] Could not resolve a gameplay camera.", this);
         missingCameraLogged = true;
     }
 }

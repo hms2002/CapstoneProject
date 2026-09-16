@@ -711,7 +711,6 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     }
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    [System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]
     private void SetDeathDiagnostic(string reason, string entry, GameObject source)
     {
         if (isDead)
@@ -724,7 +723,6 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
 
     /// <summary>해골 사망 원인, 변신 상태, 광원/접촉 대상과 외부 강제 사망 호출 경로를 개발 환경에만 출력한다.</summary>
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    [System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]
     private void LogDeathDiagnostic()
     {
         bool externalDeath = diagnosticDeathReason == null;
@@ -752,7 +750,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         if (externalDeath)
             message += "\nExternal death caller:\n" + StackTraceUtility.ExtractStackTrace();
 
-        Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, this, "{0}", message);
+        CapstoneDiagnostics.EditorOnlyLog.LogWithoutStacktrace( this, "{0}", message);
     }
 
     /// <summary>일반 공격 피해를 무시하고 0 데미지 팝업만 표시합니다.</summary>

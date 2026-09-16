@@ -704,7 +704,7 @@ public class WeaponInventory2D : MonoBehaviour
                 var resolved = weaponResolver(weaponId);
                 if (resolved == null)
                 {
-                    Debug.LogWarning($"[WeaponInventory2D] 무기 복원 실패: slot={i}, weaponId={weaponId}", this);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[WeaponInventory2D] 무기 복원 실패: slot={i}, weaponId={weaponId}", this);
                     continue;
                 }
 
@@ -1109,7 +1109,7 @@ public class WeaponInventory2D : MonoBehaviour
         if (!string.IsNullOrEmpty(payload.weaponId) &&
             !string.Equals(payload.weaponId, weapon.weaponId, StringComparison.Ordinal))
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[WeaponInventory2D] 무기 payload 복원 생략: weaponId 불일치 ({payload.weaponId} != {weapon.weaponId})",
                 this);
             return;

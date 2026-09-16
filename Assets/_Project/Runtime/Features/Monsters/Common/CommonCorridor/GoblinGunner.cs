@@ -414,13 +414,13 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
         RaycastHit2D hit = Physics2D.Raycast(start, direction, range, context.WallLayers);
         if (hit.collider == null)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[GoblinGunnerWallClipProbe] no wall hit. origin={start}, dir={direction}, range={range:0.00}, wallMask={context.WallLayers.value}",
                 this);
             return;
         }
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[GoblinGunnerWallClipProbe] wall hit. collider={hit.collider.name}, layer={LayerMask.LayerToName(hit.collider.gameObject.layer)}({hit.collider.gameObject.layer}), trigger={hit.collider.isTrigger}, distance={hit.distance:0.00}, point={hit.point}, wallMask={context.WallLayers.value}",
             hit.collider);
     }

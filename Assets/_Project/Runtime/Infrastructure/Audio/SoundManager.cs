@@ -1323,7 +1323,7 @@ namespace CapstoneAudio
             if (string.IsNullOrWhiteSpace(key) || !missingKeyWarnings.Add(key))
                 return;
 
-            Debug.LogWarning($"[SoundManager] Audio key '{key}' was not found in any loaded catalog.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[SoundManager] Audio key '{key}' was not found in any loaded catalog.", this);
         }
 
         private static Transform ResolveFollowTarget(SoundAnchorPolicy policy, SoundPlaybackContext context)

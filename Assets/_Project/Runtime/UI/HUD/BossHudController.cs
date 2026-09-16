@@ -663,7 +663,7 @@ public sealed class BossHudController : MonoBehaviour, IBossHudBackend
         if (!logSlidePresentation)
             return;
 
-        Debug.Log($"[BossHudSlide] {name}: {message}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[BossHudSlide] {name}: {message}", this);
     }
 
 }

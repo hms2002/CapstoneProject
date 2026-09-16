@@ -17,7 +17,7 @@ public static class RuntimePresentationFallbackAudit
         if (!LoggedFallbacks.Add(key))
             return;
 
-        Debug.LogWarning(
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning(
             $"[RuntimePresentationFallback] {fallbackName} created runtime UI/presentation hierarchy. " +
             $"Author {migrationTarget} before treating this path as build-facing UI.",
             context);

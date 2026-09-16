@@ -14,7 +14,7 @@ public class DialogueVariables
         // 파일이 할당되지 않았으면 로드를 건너뜁니다.
         if (loadGlobalsJSON == null)
         {
-            Debug.Log("전역 변수 JSON이 할당되지 않았습니다. (데이터 동기화 생략)");
+            CapstoneDiagnostics.EditorOnlyLog.Log("전역 변수 JSON이 할당되지 않았습니다. (데이터 동기화 생략)");
             return;
         }
 

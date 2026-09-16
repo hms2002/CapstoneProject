@@ -93,6 +93,6 @@ public class DamagePopupListener2D : MonoBehaviour
         if (!logFallbackPopup)
             return;
 
-        Debug.Log($"[DamagePopupListener2D] {message}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[DamagePopupListener2D] {message}", this);
     }
 }

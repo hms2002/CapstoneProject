@@ -1211,7 +1211,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         if (laserVfxPrefab == null && !laserVfxMissingLogged)
         {
             laserVfxMissingLogged = true;
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"EgoSwordActor could not load animated laser VFX at Resources/{laserVfxResourcePath}. Falling back to primitive laser visuals.",
                 this);
         }
@@ -1915,7 +1915,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         if (auraAnimatorController == null && !auraControllerMissingLogged)
         {
             auraControllerMissingLogged = true;
-            Debug.LogWarning($"EgoSword aura AnimatorController not found at Resources/{EgoSwordAuraControllerResourcePath}.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"EgoSword aura AnimatorController not found at Resources/{EgoSwordAuraControllerResourcePath}.", this);
         }
 
         return auraAnimatorController;
@@ -1987,7 +1987,7 @@ public sealed class EgoSwordActor : MonoBehaviour
             return;
 
         auraControllerInvalidLogged = true;
-        Debug.LogWarning($"EgoSword aura animation is invalid: {reason}.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"EgoSword aura animation is invalid: {reason}.", this);
     }
 
     private RaycastHit2D FindNearestWallHit(Vector2 start, Vector2 direction, float distance)

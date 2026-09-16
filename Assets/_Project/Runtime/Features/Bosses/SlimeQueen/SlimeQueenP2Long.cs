@@ -904,7 +904,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 
         if (WarnedMissingCrossWaterPillarTimedHitEffectPrefabs.Add(blastEffectPrefab.GetInstanceID()))
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[{nameof(SlimeQueenP2Long)}] CrossWaterPillar blast effect prefab has no {nameof(ITimedHitEffect2D)} implementation. " +
                 "물기둥 이펙트는 표시되지만 이펙트 콜리더 피해 타이밍은 적용되지 않습니다.",
                 blastEffectPrefab);
@@ -961,7 +961,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
                 continue;
 
             if (logSkippedCrossWaterPillarOnHole)
-                Debug.Log($"[{nameof(SlimeQueenP2Long)}] CrossWaterPillar skipped on HoleTrap. position={blastPosition}", hit);
+                CapstoneDiagnostics.EditorOnlyLog.Log($"[{nameof(SlimeQueenP2Long)}] CrossWaterPillar skipped on HoleTrap. position={blastPosition}", hit);
 
             return true;
         }

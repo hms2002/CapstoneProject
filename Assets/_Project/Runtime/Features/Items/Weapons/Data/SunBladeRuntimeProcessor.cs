@@ -23,6 +23,6 @@ public sealed class SunBladeRuntimeProcessor : WeaponRuntimeProcessor
         }
 
         data.ConsumeOneHeatStack();
-        Debug.Log($"[SunBladeRuntimeProcessor] Heat stack decayed: {data.HeatStacks}/{data.MaxHeatStacks}, decay={data.HeatDecayRemaining:0.00}s");
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[SunBladeRuntimeProcessor] Heat stack decayed: {data.HeatStacks}/{data.MaxHeatStacks}, decay={data.HeatDecayRemaining:0.00}s");
     }
 }

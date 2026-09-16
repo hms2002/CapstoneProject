@@ -114,13 +114,13 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
 
         if (dialogueNpcData == null)
         {
-            Debug.LogWarning("[BossDefeatEndingSequence] Dialogue NPCData is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossDefeatEndingSequence] Dialogue NPCData is missing.", this);
             yield break;
         }
 
         if (!DialoguePlayback.IsAvailable)
         {
-            Debug.LogWarning("[BossDefeatEndingSequence] Dialogue playback backend was not found.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossDefeatEndingSequence] Dialogue playback backend was not found.", this);
             yield break;
         }
 
@@ -141,7 +141,7 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
         outroPlayer = ResolveOutroPlayerForPlayback();
         if (outroPlayer == null)
         {
-            Debug.LogWarning("[BossDefeatEndingSequence] EndingOutroPlayer is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossDefeatEndingSequence] EndingOutroPlayer is missing.", this);
             yield break;
         }
 
@@ -187,7 +187,7 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
         if (GameOverPresentationPlayback.TryShow(request))
             return true;
 
-        Debug.LogWarning(
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning(
             "[BossDefeatEndingSequence] Victory game-over presentation was not accepted. Falling back to target scene transition.",
             this);
         return false;
@@ -199,14 +199,14 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(targetSceneName))
         {
-            Debug.LogWarning("[BossDefeatEndingSequence] Target scene name is empty.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossDefeatEndingSequence] Target scene name is empty.", this);
             return false;
         }
 
         ISceneTransitionHandle coordinator = SceneTransitionPlayback.EnsureInstance();
         if (coordinator == null)
         {
-            Debug.LogWarning("[BossDefeatEndingSequence] Scene transition service could not be resolved.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossDefeatEndingSequence] Scene transition service could not be resolved.", this);
             return false;
         }
 
@@ -215,7 +215,7 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
                 titleSceneFadeOutDuration,
                 titleSceneFadeInDuration))
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[BossDefeatEndingSequence] Scene transition to '{targetSceneName}' was not accepted.",
                 this);
             return false;
@@ -320,7 +320,7 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
         if (foundCount > 1 && !hasWarnedMultipleOutroPlayers)
         {
             hasWarnedMultipleOutroPlayers = true;
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 "[BossDefeatEndingSequence] Multiple EndingOutroPlayer instances were found. Assign one explicitly.",
                 this);
         }
@@ -350,7 +350,7 @@ public sealed class BossDefeatEndingSequence : MonoBehaviour
         if (foundCount > 1 && !hasWarnedMultipleOutroPlayers)
         {
             hasWarnedMultipleOutroPlayers = true;
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 "[BossDefeatEndingSequence] Multiple playable EndingOutroPlayer instances were found. Assign one explicitly.",
                 this);
         }

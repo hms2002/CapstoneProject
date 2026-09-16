@@ -44,7 +44,7 @@ public sealed class PlayerSpawner : MonoBehaviour
 
             if (dynamicEndpoint == null)
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     $"[PlayerSpawner] Timed out waiting for dynamic endpoint '{transitionContext.destinationEndpointId}'. Falling back to PlayerSpawnPoint.",
                     this);
             }
@@ -105,7 +105,7 @@ public sealed class PlayerSpawner : MonoBehaviour
             ApplyPendingHubLoadFullHeal(existingPlayer);
             TryStartHubSpawnPresentation(existingPlayer);
 
-            Debug.Log("[PlayerSpawner] Player already exists in the scene. Skipping spawn.");
+            CapstoneDiagnostics.EditorOnlyLog.Log("[PlayerSpawner] Player already exists in the scene. Skipping spawn.");
             return existingPlayer;
         }
 
@@ -136,7 +136,7 @@ public sealed class PlayerSpawner : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("[PlayerSpawner] PlayerInteractor2D was not found on the spawned player.");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerSpawner] PlayerInteractor2D was not found on the spawned player.");
         }
 
         TryAttachGlobalVisionMask(player);

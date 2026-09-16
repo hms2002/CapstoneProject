@@ -30,7 +30,7 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
     {
         settings = Resources.Load<DemoCheatSettingsSO>(SettingsResourcePath);
         if (settings == null)
-            Debug.LogWarning($"[DemoCheat] Resources/{SettingsResourcePath} 설정 에셋을 찾지 못했습니다. 시연 치트가 비활성화됩니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[DemoCheat] Resources/{SettingsResourcePath} 설정 에셋을 찾지 못했습니다. 시연 치트가 비활성화됩니다.", this);
 
         service = new DemoCheatService(this);
     }
@@ -161,7 +161,7 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
             return;
 
         string prefix = result.Success ? "알림" : "실패";
-        Debug.Log($"[DemoCheat] {prefix}: {result.Message}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[DemoCheat] {prefix}: {result.Message}", this);
     }
 
     private static bool WasPressed(KeyCode key)

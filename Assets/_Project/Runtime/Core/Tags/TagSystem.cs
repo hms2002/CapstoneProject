@@ -20,12 +20,12 @@ namespace UnityGAS
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         public void PrintHasTags(string title = null)
         {
-            Debug.Log(title);
+            CapstoneDiagnostics.EditorOnlyLog.Log(title);
             for(int i = 1; i < _explicitCounts.Length; i++)
             {
                 if (_explicitCounts[i] > 0)
                 {
-                    Debug.Log(TagRegistry.GetTag(i).Name);
+                    CapstoneDiagnostics.EditorOnlyLog.Log(TagRegistry.GetTag(i).Name);
                 }
             }
         }
@@ -323,7 +323,7 @@ namespace UnityGAS
                 var tag = resolver(entry.tagName);
                 if (tag == null)
                 {
-                    Debug.LogWarning($"[TagSystem] explicit tag 복원 실패: '{entry.tagName}' 을(를) 찾지 못했습니다.", this);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[TagSystem] explicit tag 복원 실패: '{entry.tagName}' 을(를) 찾지 못했습니다.", this);
                     continue;
                 }
 

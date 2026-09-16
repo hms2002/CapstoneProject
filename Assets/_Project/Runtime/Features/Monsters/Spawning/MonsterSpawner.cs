@@ -221,7 +221,7 @@ public class MonsterSpawner : MonoBehaviour
         if (settings == null || !settings.LogStageScalingDebug)
             return;
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[MonsterSpawner] stage={stageIndex}, stageHpMultiplier={stageHpMultiplier:0.###}, stageAttackSpeedMultiplier={stageAttackSpeedMultiplier:0.###}, finalHpMultiplier={runtimeModifiers.hpMultiplier:0.###}, finalAttackSpeedMultiplier={runtimeModifiers.attackSpeedMultiplier:0.###}",
             this);
     }

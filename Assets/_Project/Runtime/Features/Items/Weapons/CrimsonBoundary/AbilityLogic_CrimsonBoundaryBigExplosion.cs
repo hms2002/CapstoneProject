@@ -62,7 +62,7 @@ public sealed class AbilityLogic_CrimsonBoundaryBigExplosion : AbilityLogic
             BurnStatus2D burn = target.GetComponent<BurnStatus2D>();
             int consumed = burn != null ? burn.ConsumeAll() : 0;
             float totalDamage = baseDamage +
-                CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, consumed, data.burnConsumptionMultiplier, data.skillFireFormula);
+                CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, consumed, data.skill2BurnConsumptionMultiplier, data.skillFireFormula);
             CrimsonBoundaryUtility.ApplyDamage(system, spec, data.damageEffect, target, totalDamage, critical, system.gameObject);
         }
 

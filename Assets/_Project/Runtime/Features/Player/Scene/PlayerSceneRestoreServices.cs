@@ -125,7 +125,7 @@ internal static class PlayerSceneRestorePlanner
 
         if (ctx.weaponInventory == null || ctx.consumableInventory == null || ctx.relicInventory == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 "[PlayerSceneRestoreBootstrapper] Player inventory components are missing. Pending PlayerRuntimeState restore will wait.",
                 logOwner);
             return false;
@@ -203,7 +203,7 @@ internal static class PlayerSceneRestorePlanner
             if (runtimeResolver.ResolveWeapon(weaponId) != null)
                 continue;
 
-            Debug.LogWarning($"[PlayerSceneRestoreBootstrapper] 臾닿린 蹂듭썝??蹂대쪟?⑸땲?? ?꾩쭅 ?댁꽍?????녿뒗 weaponId={weaponId}, slot={i}", logOwner);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[PlayerSceneRestoreBootstrapper] 臾닿린 蹂듭썝??蹂대쪟?⑸땲?? ?꾩쭅 ?댁꽍?????녿뒗 weaponId={weaponId}, slot={i}", logOwner);
             return false;
         }
 
@@ -227,7 +227,7 @@ internal static class PlayerSceneRestorePlanner
             if (runtimeResolver.ResolveRelic(slot.relicId) != null)
                 continue;
 
-            Debug.LogWarning($"[PlayerSceneRestoreBootstrapper] ?좊Ъ 蹂듭썝??蹂대쪟?⑸땲?? ?꾩쭅 ?댁꽍?????녿뒗 relicId={slot.relicId}, slot={i}", logOwner);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[PlayerSceneRestoreBootstrapper] ?좊Ъ 蹂듭썝??蹂대쪟?⑸땲?? ?꾩쭅 ?댁꽍?????녿뒗 relicId={slot.relicId}, slot={i}", logOwner);
             return false;
         }
 
@@ -251,7 +251,7 @@ internal static class PlayerSceneRestorePlanner
             if (runtimeResolver.ResolveConsumable(slot.consumableId) != null)
                 continue;
 
-            Debug.LogWarning($"[PlayerSceneRestoreBootstrapper] consumable 蹂듭썝??蹂대쪟?⑸땲?? ?꾩쭅 ?댁꽍?????녿뒗 consumableId={slot.consumableId}, slot={i}", logOwner);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[PlayerSceneRestoreBootstrapper] consumable 蹂듭썝??蹂대쪟?⑸땲?? ?꾩쭅 ?댁꽍?????녿뒗 consumableId={slot.consumableId}, slot={i}", logOwner);
             return false;
         }
 

@@ -103,7 +103,7 @@ namespace UnityGAS
                 return;
 
             s_warnedLegacyElementFormulasIgnored = true;
-            UnityEngine.Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 "[DamageSnapshotBuilder] DamagePayloadConfig.elementFormulas is legacy and no longer " +
                 "produces applied element build-up. Element build-up is resolved from the attacker's " +
                 "ElementOffenseSource at CombatDamageAction application time.");

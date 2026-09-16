@@ -521,7 +521,7 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
             ? heightPresentation.VisualBaseLocalPosition
             : Vector3.zero;
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[SlimeQueenPitFallReturn] {name}: {reason}. " +
             $"normalized={FormatDebugFloat(normalizedTime)}, startHeight={FormatDebugFloat(startVisualHeight)}, " +
             $"landing={FormatDebugVector3(landingPosition)}, root={FormatDebugVector3(transform.position)}, " +

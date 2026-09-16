@@ -77,7 +77,7 @@ public sealed class MoonBladeRuntimeState : WeaponAbilityRuntimeState
             return;
 
         moonData.AddColdStack();
-        Debug.Log($"[MoonBladeRuntimeState] Cold stack gained: {moonData.ColdStacks}/{moonData.MaxColdStacks}, decay={moonData.ColdDecayRemaining:0.00}s", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[MoonBladeRuntimeState] Cold stack gained: {moonData.ColdStacks}/{moonData.MaxColdStacks}, decay={moonData.ColdDecayRemaining:0.00}s", this);
     }
 
     private void CacheInventory()

@@ -683,7 +683,7 @@ namespace UnityGAS
 
             if (!def.IsInstant)
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     $"[AbilitySystem] ParallelIndependent 1차 구현은 Instant Ability만 지원합니다: {def.name}",
                     this);
                 return false;
@@ -1368,7 +1368,7 @@ namespace UnityGAS
             var def = resolver(state.abilityId);
             if (def == null)
             {
-                Debug.LogWarning($"[AbilitySystem] ability 상태 복원 실패: '{state.abilityId}' 을(를) 찾지 못했습니다.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[AbilitySystem] ability 상태 복원 실패: '{state.abilityId}' 을(를) 찾지 못했습니다.", this);
                 return null;
             }
 
@@ -1378,7 +1378,7 @@ namespace UnityGAS
                 spec = GiveAbility(def);
                 if (spec == null)
                 {
-                    Debug.LogWarning($"[AbilitySystem] ability spec 생성 실패: '{state.abilityId}'", this);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[AbilitySystem] ability spec 생성 실패: '{state.abilityId}'", this);
                     return null;
                 }
             }

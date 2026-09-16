@@ -98,7 +98,7 @@ public class RewardDisplayService : MonoBehaviour, IRewardDisplayBackend
     {
         if (currentView == null)
         {
-            Debug.LogWarning("[RewardDisplayService] RewardDisplayUI view is not registered. Flow-owned reward display will be skipped to keep the owning flow moving.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RewardDisplayService] RewardDisplayUI view is not registered. Flow-owned reward display will be skipped to keep the owning flow moving.", this);
             callback?.Invoke();
             return;
         }
@@ -121,7 +121,7 @@ public class RewardDisplayService : MonoBehaviour, IRewardDisplayBackend
             upgradeNode));
 
         if (currentView == null)
-            Debug.LogWarning("[RewardDisplayService] RewardDisplayUI view is not registered yet. Reward display request will be queued.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RewardDisplayService] RewardDisplayUI view is not registered yet. Reward display request will be queued.", this);
 
         TryPresentNext();
     }

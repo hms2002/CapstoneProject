@@ -960,7 +960,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBoss
         BossPatternEntry followUpPattern = FindPatternEntryByAbility(followUpAbility);
         if (followUpPattern == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[BossFSM] {name}: 후속 패턴 Ability '{followUpAbility.name}'를 현재 phase 설정에서 찾지 못했습니다.",
                 this);
             return null;
@@ -969,7 +969,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBoss
         BossPatternEvalResult result = EvaluateForcedFollowUpPattern(followUpPattern);
         if (!result.CanUse)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[BossFSM] {name}: 후속 패턴 '{followUpAbility.name}' 실행 보류. state={result.State}, reason={result.Reason ?? "없음"}",
                 this);
             return null;

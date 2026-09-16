@@ -174,7 +174,7 @@ namespace UnityGAS
         {
             if (firePuddlePrefab == null)
             {
-                Debug.LogWarning("[AlcoholPuddleArea] firePuddlePrefab이 없어 불 장판으로 교체하지 못했습니다.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[AlcoholPuddleArea] firePuddlePrefab이 없어 불 장판으로 교체하지 못했습니다.", this);
                 return;
             }
 

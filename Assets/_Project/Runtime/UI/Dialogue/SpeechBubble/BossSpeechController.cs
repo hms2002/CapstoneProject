@@ -150,7 +150,7 @@ public sealed class BossSpeechController : MonoBehaviour, IBossSpeechPlayback
 
         if (speechData == null || speechBubble == null)
         {
-            Debug.LogWarning("[BossSpeechController] Missing BossSpeechData or SpeechBubbleComponent.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossSpeechController] Missing BossSpeechData or SpeechBubbleComponent.", this);
             line = string.Empty;
             return false;
         }

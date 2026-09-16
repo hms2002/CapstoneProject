@@ -16,7 +16,7 @@ internal static class PlayerSceneRestoreConfirmationService
 
         if (!PlayerSceneRestorePlanner.MatchesPendingEquipmentState(pendingState, ctx))
         {
-            Debug.LogWarning("[PlayerSceneRestoreBootstrapper] Restored equipment state does not match pending state.", logContext);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerSceneRestoreBootstrapper] Restored equipment state does not match pending state.", logContext);
             return false;
         }
 

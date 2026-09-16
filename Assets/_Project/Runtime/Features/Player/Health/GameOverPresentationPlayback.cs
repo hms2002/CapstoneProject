@@ -200,7 +200,7 @@ public static class GameOverPresentationPlayback
         if (backend != null)
             return backend.TryShow(request);
 
-        Debug.LogWarning("[GameOverPresentationPlayback] No game-over presentation backend is registered.");
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationPlayback] No game-over presentation backend is registered.");
         return false;
     }
 }

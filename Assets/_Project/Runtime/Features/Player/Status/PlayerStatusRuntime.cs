@@ -57,7 +57,7 @@ public sealed class PlayerStatusRuntime : MonoBehaviour
         if (request.Definition == null)
         {
             if (logStatusLifecycle)
-                Debug.LogWarning("[PlayerStatusRuntime] Ignored Apply because definition was null.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerStatusRuntime] Ignored Apply because definition was null.", this);
             return default;
         }
 
@@ -67,7 +67,7 @@ public sealed class PlayerStatusRuntime : MonoBehaviour
         ApplyEntryTag(entry);
 
         if (logStatusLifecycle)
-            Debug.Log($"[PlayerStatusRuntime] Applied status '{request.Definition.StatusId}' (id={runtimeId}, ownerKey={entry.OwnerKey})", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[PlayerStatusRuntime] Applied status '{request.Definition.StatusId}' (id={runtimeId}, ownerKey={entry.OwnerKey})", this);
 
         return new StatusHandle(this, runtimeId);
     }
@@ -77,7 +77,7 @@ public sealed class PlayerStatusRuntime : MonoBehaviour
         if (!TryGetEntry(handle, out ActiveStatusEntry entry))
         {
             if (logStatusLifecycle)
-                Debug.LogWarning($"[PlayerStatusRuntime] Failed to update status because handle {handle.RuntimeId} was not active.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[PlayerStatusRuntime] Failed to update status because handle {handle.RuntimeId} was not active.", this);
             return false;
         }
 
@@ -86,7 +86,7 @@ public sealed class PlayerStatusRuntime : MonoBehaviour
         UpdateEntryTag(previousTag, entry.StateTag);
 
         if (logStatusLifecycle && entry.Definition != null)
-            Debug.Log($"[PlayerStatusRuntime] Updated status '{entry.Definition.StatusId}' (id={handle.RuntimeId})", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[PlayerStatusRuntime] Updated status '{entry.Definition.StatusId}' (id={handle.RuntimeId})", this);
 
         return true;
     }
@@ -96,14 +96,14 @@ public sealed class PlayerStatusRuntime : MonoBehaviour
         if (!handle.IsValid)
         {
             if (logStatusLifecycle)
-                Debug.LogWarning("[PlayerStatusRuntime] Ignored Release because handle was invalid.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerStatusRuntime] Ignored Release because handle was invalid.", this);
             return false;
         }
 
         if (!activeEntries.TryGetValue(handle.RuntimeId, out ActiveStatusEntry entry))
         {
             if (logStatusLifecycle)
-                Debug.LogWarning($"[PlayerStatusRuntime] Ignored Release because handle {handle.RuntimeId} was not found.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[PlayerStatusRuntime] Ignored Release because handle {handle.RuntimeId} was not found.", this);
             return false;
         }
 
@@ -111,7 +111,7 @@ public sealed class PlayerStatusRuntime : MonoBehaviour
         RemoveEntryTag(entry);
 
         if (logStatusLifecycle && entry.Definition != null)
-            Debug.Log($"[PlayerStatusRuntime] Released status '{entry.Definition.StatusId}' (id={handle.RuntimeId})", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[PlayerStatusRuntime] Released status '{entry.Definition.StatusId}' (id={handle.RuntimeId})", this);
 
         return true;
     }

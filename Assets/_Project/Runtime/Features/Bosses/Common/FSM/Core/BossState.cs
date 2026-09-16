@@ -22,6 +22,6 @@ public abstract class BossState
 
     protected void LogState(string message)
     {
-        Debug.Log($"[BossFSM] {boss.name}: {message}", boss);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[BossFSM] {boss.name}: {message}", boss);
     }
 }

@@ -45,7 +45,7 @@ public sealed class TutorialPlayerAutoMove : MonoBehaviour
     {
         if (targetPoint == null)
         {
-            Debug.LogWarning("[TutorialPlayerAutoMove] Target point is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[TutorialPlayerAutoMove] Target point is missing.", this);
             return;
         }
 
@@ -56,7 +56,7 @@ public sealed class TutorialPlayerAutoMove : MonoBehaviour
     {
         if (target == null)
         {
-            Debug.LogWarning("[TutorialPlayerAutoMove] Target is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[TutorialPlayerAutoMove] Target is missing.", this);
             return;
         }
 
@@ -70,7 +70,7 @@ public sealed class TutorialPlayerAutoMove : MonoBehaviour
 
         if (playerTransform == null)
         {
-            Debug.LogWarning("[TutorialPlayerAutoMove] Player transform is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[TutorialPlayerAutoMove] Player transform is missing.", this);
             return;
         }
 

@@ -163,7 +163,7 @@ public sealed class TutorialSceneSequenceDirector : MonoBehaviour
 
         if (chestMonsterKillLock == null && roomDoorMonsterKillLock == null)
         {
-            Debug.LogWarning("[TutorialSceneSequenceDirector] No monster clear lock is assigned.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[TutorialSceneSequenceDirector] No monster clear lock is assigned.", this);
             return;
         }
 

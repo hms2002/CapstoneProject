@@ -204,7 +204,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         {
             if (!executeSingleChoiceWithoutPresenter || visibleChoices.Count != 1)
             {
-                Debug.LogWarning("[RunSpecialNpcInteractor] Choice presenter is missing.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RunSpecialNpcInteractor] Choice presenter is missing.", this);
                 yield break;
             }
 
@@ -219,7 +219,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
             IRunSpecialNpcChoicePresenter activePresenter = resolvedChoicePresenter;
             if (!IsUnityObjectAlive(activePresenter))
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     "[RunSpecialNpcInteractor] Choice presenter was destroyed before choices could be shown.",
                     this);
                 yield break;
@@ -242,7 +242,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
                     activePresenter = resolvedChoicePresenter;
                     if (!IsUnityObjectAlive(activePresenter))
                     {
-                        Debug.LogWarning(
+                        CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                             "[RunSpecialNpcInteractor] Choice presenter was destroyed while choices were visible.",
                             this);
                         break;
@@ -281,7 +281,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
 
             string reason = feature.GetUnavailableReason(context);
             if (!string.IsNullOrWhiteSpace(reason))
-                Debug.Log($"[RunSpecialNpcInteractor] Feature unavailable: {reason}", feature);
+                CapstoneDiagnostics.EditorOnlyLog.Log($"[RunSpecialNpcInteractor] Feature unavailable: {reason}", feature);
 
             yield break;
         }
@@ -320,19 +320,19 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
 
         if (dialogueSet == null)
         {
-            Debug.LogWarning("[RunSpecialNpcInteractor] Dialogue set is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RunSpecialNpcInteractor] Dialogue set is missing.", this);
             return RunSpecialNpcBranch.Empty;
         }
 
         if (primaryFeature == null)
         {
-            Debug.LogWarning("[RunSpecialNpcInteractor] Primary feature is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RunSpecialNpcInteractor] Primary feature is missing.", this);
             return RunSpecialNpcBranch.Empty;
         }
 
         if (dialogueSet.FeatureKind != primaryFeature.DialogueFeatureKind)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[RunSpecialNpcInteractor] Dialogue set kind '{dialogueSet.FeatureKind}' does not match primary feature kind '{primaryFeature.DialogueFeatureKind}'.",
                 this);
             return RunSpecialNpcBranch.Empty;

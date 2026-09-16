@@ -29,7 +29,7 @@ public class NPCFeatureController : MonoBehaviour
             }
         }
 
-        Debug.LogWarning($"[NPCFeatureController] '{featureName}' 기능을 찾을 수 없습니다.");
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[NPCFeatureController] '{featureName}' 기능을 찾을 수 없습니다.");
         
         // [핵심 방어코드] 스펠링 실수 등으로 기능을 못 찾았을 때 대화가 영원히 멈추는 것을 방지!
         onComplete?.Invoke(); 

@@ -146,7 +146,7 @@ namespace Cainos.PixelArtTopDown_Basic
             {
                 if (!hasLoggedMissingCamera)
                 {
-                    Debug.LogWarning("[CameraFollow] Could not find an unbound CinemachineCamera to control.", this);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning("[CameraFollow] Could not find an unbound CinemachineCamera to control.", this);
                     hasLoggedMissingCamera = true;
                 }
 

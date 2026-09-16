@@ -70,7 +70,7 @@ public sealed class RunTransitionResolver : MonoBehaviour
 
             if (verboseLogging)
             {
-                Debug.Log(
+                CapstoneDiagnostics.EditorOnlyLog.Log(
                     $"[RunTransitionResolver] Directive resolved for target={route.TargetSceneName}, type={route.TransitionType}, directive={resolved}",
                     this);
             }
@@ -80,7 +80,7 @@ public sealed class RunTransitionResolver : MonoBehaviour
 
         if (verboseLogging)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[RunTransitionResolver] Using default directive for target={route.TargetSceneName}, type={route.TransitionType}, directive={defaultDirective}",
                 this);
         }
@@ -103,7 +103,7 @@ public sealed class RunTransitionResolver : MonoBehaviour
         {
             if (verboseLogging)
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     "[RunTransitionResolver] A scene instance tried to supply another configuration, but the global resolver already has one. Keeping the existing configuration.",
                     this);
             }
@@ -118,7 +118,7 @@ public sealed class RunTransitionResolver : MonoBehaviour
 
         if (verboseLogging)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[RunTransitionResolver] Adopted configuration from a scene instance. ruleCount={rules.Count}, defaultDirective={defaultDirective}",
                 this);
         }

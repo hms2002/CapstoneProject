@@ -324,7 +324,7 @@ public sealed class PresentationPreloadService : MonoBehaviour, IPresentationPre
             string runCommonName = activeRunCommonManifest != null ? activeRunCommonManifest.name : "<none>";
             string currentName = activeCurrentStageManifest != null ? activeCurrentStageManifest.name : "<none>";
             string nextName = activeNextStageManifest != null ? activeNextStageManifest.name : "<none>";
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[PresentationPreloadService] Active load window updated. boot={bootName}, firstRunIntro={firstRunIntroName}, runCommon={runCommonName}, current={currentName}, next={nextName}",
                 this);
         }

@@ -69,7 +69,7 @@ public sealed class ParcelPickupInteractable : InteractableBase
             {
                 inventory.RemoveOne(parcelDefinition);
                 WarningPopupPlayback.ShowMessage("다음 배송 지점을 예약할 수 없습니다.");
-                Debug.LogWarning("[ParcelDelivery] Failed to queue the next-route delivery room.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[ParcelDelivery] Failed to queue the next-route delivery room.", this);
                 return;
             }
 

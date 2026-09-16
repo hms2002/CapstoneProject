@@ -351,7 +351,7 @@ public class BossTalkManager : MonoBehaviour
 
         if (bossController == null)
         {
-            Debug.LogWarning("[BossTalkManager] No BossControllerBase found to start combat.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossTalkManager] No BossControllerBase found to start combat.", this);
             return;
         }
 

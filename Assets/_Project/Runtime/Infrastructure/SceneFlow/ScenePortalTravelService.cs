@@ -51,7 +51,7 @@ internal static class ScenePortalTravelCoordinator
 
         if (transitionCoordinator.IsTransitionActive)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[ScenePortalTravelService] Travel rejected because a scene transition is already active. portal={portal.name}",
                 portal);
             return false;

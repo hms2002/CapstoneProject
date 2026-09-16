@@ -602,7 +602,7 @@ public static class WeaponSkillHudSlotPresenter
         if (fill == null)
         {
             ui.cooldownFillVisibilityWarningLogged = true;
-            Debug.LogWarning($"[WeaponSkillHudSlotPresenter] {slot} active duration override is active, but neither activeDurationFill nor cooldownFill is assigned.");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[WeaponSkillHudSlotPresenter] {slot} active duration override is active, but neither activeDurationFill nor cooldownFill is assigned.");
             return;
         }
 
@@ -616,7 +616,7 @@ public static class WeaponSkillHudSlotPresenter
             return;
 
         ui.cooldownFillVisibilityWarningLogged = true;
-        Debug.LogWarning($"[WeaponSkillHudSlotPresenter] {slot} active duration override is active, but the resolved fill Image may be invisible. Check activeDurationFill/cooldownFill active state, alpha, sprite, and hierarchy order.");
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[WeaponSkillHudSlotPresenter] {slot} active duration override is active, but the resolved fill Image may be invisible. Check activeDurationFill/cooldownFill active state, alpha, sprite, and hierarchy order.");
     }
 
     private static void CaptureCooldownFillConfig(WeaponSkillHUD2D.SkillSlotUI ui)

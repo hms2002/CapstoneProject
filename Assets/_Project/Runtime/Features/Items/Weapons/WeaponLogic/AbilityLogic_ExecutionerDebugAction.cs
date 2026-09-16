@@ -17,7 +17,7 @@ namespace UnityGAS.Sample
         {
             string ownerName = system != null ? system.gameObject.name : "<null>";
             string abilityName = spec?.Definition != null ? spec.Definition.abilityName : "<null>";
-            Debug.Log($"[ExecutionerGreatsword] {debugLabel} activated by {ownerName} via {abilityName}.", system);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[ExecutionerGreatsword] {debugLabel} activated by {ownerName} via {abilityName}.", system);
             yield break;
         }
     }

@@ -98,7 +98,7 @@ public class CurrencyManager : MonoBehaviour
 
         if (GetMagicStone() < amount)
         {
-            Debug.Log("[CurrencyManager] Not enough magic stone.");
+            CapstoneDiagnostics.EditorOnlyLog.Log("[CurrencyManager] Not enough magic stone.");
             return false;
         }
 

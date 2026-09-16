@@ -685,7 +685,7 @@ public sealed class ScenePortal : InteractableBase
 
         lastEditorDiagnosticMessage = message;
         nextEditorDiagnosticLogTime = now + 1f;
-        Debug.LogWarning(message, this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning(message, this);
     }
 #endif
 }

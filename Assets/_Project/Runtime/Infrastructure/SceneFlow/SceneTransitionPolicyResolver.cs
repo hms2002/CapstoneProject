@@ -70,7 +70,7 @@ public sealed class SceneTransitionPolicyResolver : MonoBehaviour
 
             if (verboseLogging)
             {
-                Debug.Log(
+                CapstoneDiagnostics.EditorOnlyLog.Log(
                     $"[SceneTransitionPolicyResolver] Policy resolved for target={route.TargetSceneName}, type={route.TransitionType}, policy={resolved}",
                     this);
             }
@@ -80,7 +80,7 @@ public sealed class SceneTransitionPolicyResolver : MonoBehaviour
 
         if (verboseLogging)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[SceneTransitionPolicyResolver] Using default policy for target={route.TargetSceneName}, type={route.TransitionType}, policy={defaultPolicy}",
                 this);
         }
@@ -103,7 +103,7 @@ public sealed class SceneTransitionPolicyResolver : MonoBehaviour
         {
             if (verboseLogging)
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     "[SceneTransitionPolicyResolver] A scene instance tried to supply another configuration, but the global resolver already has one. Keeping the existing configuration.",
                     this);
             }
@@ -118,7 +118,7 @@ public sealed class SceneTransitionPolicyResolver : MonoBehaviour
 
         if (verboseLogging)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[SceneTransitionPolicyResolver] Adopted configuration from a scene instance. ruleCount={rules.Count}, defaultPolicy={defaultPolicy}",
                 this);
         }

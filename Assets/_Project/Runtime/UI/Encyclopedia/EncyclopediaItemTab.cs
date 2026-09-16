@@ -404,19 +404,19 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
         if (itemDatabase == null && !warnedMissingItemDatabase)
         {
             warnedMissingItemDatabase = true;
-            Debug.LogWarning("[EncyclopediaItemTab] ItemDatabase is not assigned. Item encyclopedia entries cannot be populated.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[EncyclopediaItemTab] ItemDatabase is not assigned. Item encyclopedia entries cannot be populated.", this);
         }
 
         if (leftPage == null && !warnedMissingLeftPage)
         {
             warnedMissingLeftPage = true;
-            Debug.LogWarning("[EncyclopediaItemTab] EncyclopediaItemLeftPage is not assigned. Item tab buttons and grid cannot be populated.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[EncyclopediaItemTab] EncyclopediaItemLeftPage is not assigned. Item tab buttons and grid cannot be populated.", this);
         }
 
         if (rightPage == null && !warnedMissingRightPage)
         {
             warnedMissingRightPage = true;
-            Debug.LogWarning("[EncyclopediaItemTab] EncyclopediaItemRightPage is not assigned. Item detail cannot be displayed.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[EncyclopediaItemTab] EncyclopediaItemRightPage is not assigned. Item detail cannot be displayed.", this);
         }
     }
 

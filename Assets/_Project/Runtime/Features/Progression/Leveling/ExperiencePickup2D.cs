@@ -68,7 +68,7 @@ public sealed class ExperiencePickup2D : MonoBehaviour
 
         if (progressionConfig == null)
         {
-            Debug.LogWarning("[ExperiencePickup2D] LevelProgressionConfig is not assigned.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[ExperiencePickup2D] LevelProgressionConfig is not assigned.", this);
             return;
         }
 

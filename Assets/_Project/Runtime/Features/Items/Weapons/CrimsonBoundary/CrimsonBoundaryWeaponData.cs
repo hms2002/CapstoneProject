@@ -40,4 +40,5 @@ public sealed class CrimsonBoundaryWeaponData : ScriptableObject
     public float skill2ImpactDelay = 0.6f;
     public float skill2Diameter = 5f;
     public float skill2BaseMultiplier = 2f;
+    [Min(0f)] public float skill2BurnConsumptionMultiplier = 0.5f;
 }

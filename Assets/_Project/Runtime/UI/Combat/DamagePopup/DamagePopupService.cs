@@ -136,7 +136,7 @@ public sealed class DamagePopupService : MonoBehaviour
     {
         if (Instance == null)
         {
-            Debug.LogWarning("[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.");
             return;
         }
 
@@ -147,7 +147,7 @@ public sealed class DamagePopupService : MonoBehaviour
     {
         if (Instance == null)
         {
-            Debug.LogWarning("[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.");
             return;
         }
 
@@ -158,7 +158,7 @@ public sealed class DamagePopupService : MonoBehaviour
     {
         if (Instance == null)
         {
-            Debug.LogWarning("[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.");
             return;
         }
 
@@ -207,7 +207,7 @@ public sealed class DamagePopupService : MonoBehaviour
             return;
 
         string elementName = request.ElementTag != null ? request.ElementTag.Path : "none";
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[DamagePopupService] show kind={request.Kind}, amount={request.Amount:0.###}, critical={request.IsCritical}, element={elementName}, profile={profileSource}, text='{viewModel.Text}', color={viewModel.TextColor}, scale={viewModel.StartScale:0.###}->{viewModel.EndScale:0.###}",
             this);
     }
@@ -217,7 +217,7 @@ public sealed class DamagePopupService : MonoBehaviour
         if (!logPopupRequests)
             return;
 
-        Debug.Log($"[DamagePopupService] {message}. scene={gameObject.scene.name}, object={name}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[DamagePopupService] {message}. scene={gameObject.scene.name}, object={name}", this);
     }
 
     private Vector3 ResolveSpawnPosition(Vector3 basePosition, float reservationSeconds)
@@ -308,7 +308,7 @@ public sealed class DamagePopupService : MonoBehaviour
 
             if (runtimeFormatProfile == null && !hasWarnedMissingFormatProfile)
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     $"[DamagePopupService] Damage popup format profile not found at Resources/{DefaultFormatProfileResourcePath}. Using code fallback styles.",
                     this);
                 hasWarnedMissingFormatProfile = true;
@@ -384,7 +384,7 @@ public sealed class DamagePopupService : MonoBehaviour
 
         if (!hasWarnedInvalidPopupParent)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 "[DamagePopupService] popupParent is under a Canvas. World-space damage popups ignore Canvas parents and spawn without it.",
                 this);
             hasWarnedInvalidPopupParent = true;

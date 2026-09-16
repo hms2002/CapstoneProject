@@ -227,7 +227,7 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
         target = found != null ? ResolveTaggedTargetTransform(found.transform) : null;
 
         if (target == null && logWarning)
-            Debug.LogWarning($"{enemyName}: No target found with tag '{targetTag}'");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"{enemyName}: No target found with tag '{targetTag}'");
 
         return target != null;
     }

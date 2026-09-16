@@ -67,7 +67,7 @@ public sealed class OneSwordOathLevelRewardEffectSO : LevelRewardEffectSO
         IDisposable slotSeal = inventory.TryAcquireSlotSeal(sealedWeaponSlotIndex);
         if (slotSeal == null)
         {
-            Debug.LogWarning("[OneSwordOath] Failed to seal the secondary weapon slot.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[OneSwordOath] Failed to seal the secondary weapon slot.", this);
             return null;
         }
 

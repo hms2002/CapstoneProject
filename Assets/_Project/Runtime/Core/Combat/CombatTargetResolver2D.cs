@@ -74,7 +74,7 @@ namespace UnityGAS
                 ? $"상위 허트박스는 있지만 이 콜라이더 자신엔 없습니다. ancestor={ancestorHurtbox.name}"
                 : "상위에도 CombatHurtbox2D가 없습니다.";
 
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[{nameof(CombatTargetResolver2D)}] 충돌한 콜라이더에 CombatHurtbox2D가 없습니다. " +
                 $"name={other.name}, path={hierarchyPath}, layer={LayerMask.LayerToName(other.gameObject.layer)}({other.gameObject.layer}), " +
                 $"isTrigger={other.isTrigger}, attachedRigidbody={(other.attachedRigidbody != null ? other.attachedRigidbody.name : "null")}, " +

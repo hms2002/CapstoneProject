@@ -93,12 +93,13 @@ namespace UnityGAS
         /// - 환경 피해 적용 실패 지점을 선택적으로 출력해 함정/장판 authoring 문제를 빠르게 추적한다.
         /// - 기본값은 비활성으로 두어 일반 장판 tick 로그가 전투 중에 쌓이지 않게 한다.
         /// </summary>
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
         private static void LogDebug(bool enabled, string message, Object context)
         {
             if (!enabled)
                 return;
 
-            Debug.Log($"[HazardDamageAction] {message}", context);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[HazardDamageAction] {message}", context);
         }
 
         private static void LogAppliedDamage(
@@ -115,7 +116,7 @@ namespace UnityGAS
 
             if (!hpCheck.IsValid)
             {
-                Debug.Log(
+                CapstoneDiagnostics.EditorOnlyLog.Log(
                     $"[HazardDamageAction] applied request. target={target.name}, requested={requestedDamage:0.###}, hpCheck=invalid, shield={FormatCheckValueAfter(shieldCheck)}, ignoreInvulnerability={ignoreInvulnerability}, ignoreEvasion={ignoreEvasion}",
                     target);
                 return;
@@ -123,7 +124,7 @@ namespace UnityGAS
 
             float postHp = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr);
             float appliedDamage = Mathf.Max(0f, hpCheck.PreHp - postHp);
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[HazardDamageAction] applied. target={target.name}, requested={requestedDamage:0.###}, applied={appliedDamage:0.###}, hp={hpCheck.PreHp:0.###}->{postHp:0.###}, shield={FormatCheckValueAfter(shieldCheck)}, ignoreInvulnerability={ignoreInvulnerability}, ignoreEvasion={ignoreEvasion}",
                 target);
         }

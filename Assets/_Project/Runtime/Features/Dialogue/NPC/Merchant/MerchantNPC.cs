@@ -666,7 +666,7 @@ public sealed class MerchantNPC : MonoBehaviour
             return;
 
         hasLoggedMissingDefinition = true;
-        Debug.LogWarning(
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning(
             $"[MerchantNPC] ShopDefinitionSO is not assigned. Shop is disabled. merchantId={merchantId}",
             this);
     }

@@ -429,6 +429,7 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
         puddle.gameObject.SetActive(false);
     }
 
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void LogAbsorbedPuddleArrival(
         DragonController dragon,
         PuddleAreaBase puddle,
@@ -440,7 +441,7 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
         if (!logAbsorbResult || dragon == null || puddle == null)
             return;
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[DragonAbsorb] absorbed {puddle.ElementType} projectile. " +
             $"recoveryRatio={staggerRecoveryRatio:0.###}, reducedStagger={reducedStaggerBuildUp:0.###}, " +
             $"buildUpRatio={staggerBuildUpRatio:0.###}, addedStagger={addedStaggerBuildUp:0.###}",
@@ -508,13 +509,14 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
         activeAbsorbProjectiles.Clear();
     }
 
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void LogAbsorbResult(DragonController dragon)
     {
         if (!logAbsorbResult || dragon == null)
             return;
 
         DragonRuntimeData data = dragon.RuntimeData;
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[DragonAbsorb] result alcohol={data.AbsorbedAlcoholProjectileCount}, fire={data.AbsorbedFireProjectileCount}",
             dragon);
     }

@@ -51,7 +51,7 @@ public abstract class CanvasRaycastGateBase : MonoBehaviour
             graphicRaycaster = GetComponent<GraphicRaycaster>();
 
         if (graphicRaycaster == null)
-            Debug.LogWarning($"[{GetType().Name}] GraphicRaycaster reference is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[{GetType().Name}] GraphicRaycaster reference is missing.", this);
 
         return graphicRaycaster;
     }

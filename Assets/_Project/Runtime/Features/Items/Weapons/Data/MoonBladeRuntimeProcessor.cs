@@ -23,6 +23,6 @@ public sealed class MoonBladeRuntimeProcessor : WeaponRuntimeProcessor
         }
 
         data.ConsumeOneColdStack();
-        Debug.Log($"[MoonBladeRuntimeProcessor] Cold stack decayed: {data.ColdStacks}/{data.MaxColdStacks}, decay={data.ColdDecayRemaining:0.00}s");
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[MoonBladeRuntimeProcessor] Cold stack decayed: {data.ColdStacks}/{data.MaxColdStacks}, decay={data.ColdDecayRemaining:0.00}s");
     }
 }

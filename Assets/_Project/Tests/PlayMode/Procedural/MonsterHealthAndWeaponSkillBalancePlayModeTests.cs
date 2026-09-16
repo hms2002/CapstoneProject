@@ -154,7 +154,8 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(ReadFloat("ALData_OddIronShot", "fixedDamage"), Is.EqualTo(90f));
         Assert.That(ReadFloat("ALData_OddIronThrow", "fixedDamage"), Is.EqualTo(90f));
         Assert.That(ReadFloat("ALData_CrimsonBoundary", "burnConsumptionMultiplier"), Is.EqualTo(6f));
-        Assert.That(ReadFloat("ALData_CrimsonBoundary", "skill2BaseMultiplier"), Is.EqualTo(40f));
+        Assert.That(ReadFloat("ALData_CrimsonBoundary", "skill2BaseMultiplier"), Is.EqualTo(13f));
+        Assert.That(ReadFloat("ALData_CrimsonBoundary", "skill2BurnConsumptionMultiplier"), Is.EqualTo(2f));
     }
 
     [Test]
@@ -175,16 +176,18 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         }
     }
 
-    [TestCase(5f, 200f, 30f)]
-    [TestCase(10f, 260f, 39f)]
-    [TestCase(15f, 320f, 48f)]
-    public void CrimsonSkillFormula_PreservesBaseDamageAndLimitsFireGrowth(float fire, float direct, float perStack)
+    [TestCase(5f, 65f, 10f, 30f)]
+    [TestCase(10f, 84.5f, 13f, 39f)]
+    [TestCase(15f, 104f, 16f, 48f)]
+    public void CrimsonSkillFormula_UsesSeparateIgniteAndSkill2Coefficients(
+        float fire, float direct, float skill2PerStack, float ignitePerStack)
     {
         CrimsonBoundaryWeaponData data = Load<CrimsonBoundaryWeaponData>(LogicData + "ALData_CrimsonBoundary.asset");
         Assert.That(data.skillFireFormula, Is.Not.Null);
         float scaledFire = data.skillFireFormula.Evaluate(null, new AttackStats(100f, fire));
         Assert.That(scaledFire * data.skill2BaseMultiplier, Is.EqualTo(direct).Within(0.001f));
-        Assert.That(scaledFire * data.burnConsumptionMultiplier, Is.EqualTo(perStack).Within(0.001f));
+        Assert.That(scaledFire * data.skill2BurnConsumptionMultiplier, Is.EqualTo(skill2PerStack).Within(0.001f));
+        Assert.That(scaledFire * data.burnConsumptionMultiplier, Is.EqualTo(ignitePerStack).Within(0.001f));
     }
 
     [Test]
@@ -197,9 +200,10 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
         Assert.That(CrimsonBoundaryProjectile2D.LethalBurstDamageMultiplier, Is.EqualTo(1f));
     }
 
-    [TestCase(5f, 200f, 30f)]
-    [TestCase(10f, 260f, 39f)]
-    public void CrimsonDamage_SeparatesNormalAndSkillScalingAndPreservesPostProcessing(float fire, float direct, float perStack)
+    [TestCase(5f, 65f, 260f, 10f, 30f)]
+    [TestCase(10f, 84f, 338f, 13f, 39f)]
+    public void CrimsonDamage_SeparatesNormalIgniteAndSkill2ScalingAndPreservesPostProcessing(
+        float fire, float direct, float criticalDirect, float skill2PerStack, float ignitePerStack)
     {
         GameObject instance = Object.Instantiate(Load<GameObject>(Prefabs + "CommonCorridor/GoblinGunner.prefab"),
             new Vector3(10000f, 10000f), Quaternion.identity);
@@ -219,10 +223,12 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
             Assert.That(CrimsonBoundaryUtility.CalculateDirectDamage(system, data.skill2BaseMultiplier, out bool skillCrit,
                 data.skillFireFormula), Is.EqualTo(direct));
             Assert.That(skillCrit, Is.False);
-            Assert.That(CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, 3, data.burnConsumptionMultiplier,
-                data.skillFireFormula), Is.EqualTo(perStack * 3f));
-            Assert.That(CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, 0, data.burnConsumptionMultiplier,
+            Assert.That(CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, 3, data.skill2BurnConsumptionMultiplier,
+                data.skillFireFormula), Is.EqualTo(skill2PerStack * 3f));
+            Assert.That(CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, 0, data.skill2BurnConsumptionMultiplier,
                 data.skillFireFormula), Is.Zero);
+            Assert.That(CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, 3, data.burnConsumptionMultiplier,
+                data.skillFireFormula), Is.EqualTo(ignitePerStack * 3f));
             Assert.That(CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, 1, data.burnConsumptionMultiplier),
                 Is.EqualTo(fire * data.burnConsumptionMultiplier));
 
@@ -230,10 +236,12 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
             SetBoundStat(system, StatId.CritChanceBase, 1f);
             SetBoundStat(system, StatId.CritMultiplier, 2f);
             Assert.That(CrimsonBoundaryUtility.CalculateDirectDamage(system, data.skill2BaseMultiplier, out skillCrit,
-                data.skillFireFormula), Is.EqualTo(direct * 4f));
+                data.skillFireFormula), Is.EqualTo(criticalDirect));
             Assert.That(skillCrit, Is.True);
+            Assert.That(CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, 1, data.skill2BurnConsumptionMultiplier,
+                data.skillFireFormula), Is.EqualTo(skill2PerStack * 2f));
             Assert.That(CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, 1, data.burnConsumptionMultiplier,
-                data.skillFireFormula), Is.EqualTo(perStack * 2f));
+                data.skillFireFormula), Is.EqualTo(ignitePerStack * 2f));
         }
         finally
         {
@@ -245,9 +253,11 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
     public void CrimsonDamage_MissingSourceDoesNotProduceFlatDamage()
     {
         CrimsonBoundaryWeaponData data = Load<CrimsonBoundaryWeaponData>(LogicData + "ALData_CrimsonBoundary.asset");
-        Assert.That(CrimsonBoundaryUtility.CalculateDirectDamage(null, 40f, out bool critical, data.skillFireFormula), Is.Zero);
+        Assert.That(CrimsonBoundaryUtility.CalculateDirectDamage(null, data.skill2BaseMultiplier, out bool critical,
+            data.skillFireFormula), Is.Zero);
         Assert.That(critical, Is.False);
-        Assert.That(CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(null, 3, 6f, data.skillFireFormula), Is.Zero);
+        Assert.That(CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(null, 3,
+            data.skill2BurnConsumptionMultiplier, data.skillFireFormula), Is.Zero);
     }
 
     private static void SetBoundStat(AbilitySystem system, StatId id, float value)

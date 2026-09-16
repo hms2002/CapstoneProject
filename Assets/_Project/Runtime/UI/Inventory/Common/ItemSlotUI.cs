@@ -217,7 +217,7 @@ public class ItemSlotUI : MonoBehaviour,
             return;
 
         loggedMissingBackgroundImage = true;
-        Debug.LogWarning($"{nameof(ItemSlotUI)} on {name} has no background image reference for locked slot presentation.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"{nameof(ItemSlotUI)} on {name} has no background image reference for locked slot presentation.", this);
     }
 
     private void LogMissingLockedSlotSprite()
@@ -226,7 +226,7 @@ public class ItemSlotUI : MonoBehaviour,
             return;
 
         loggedMissingLockedSlotSprite = true;
-        Debug.LogWarning($"{nameof(ItemSlotUI)} on {name} has no locked slot sprite assigned.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"{nameof(ItemSlotUI)} on {name} has no locked slot sprite assigned.", this);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
