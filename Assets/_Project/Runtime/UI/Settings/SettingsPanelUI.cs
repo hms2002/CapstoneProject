@@ -35,13 +35,6 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
         GameWindowMode.Fullscreen,
     };
 
-    private static readonly UiScalePreset[] UiScaleOptions =
-    {
-        UiScalePreset.Small,
-        UiScalePreset.Medium,
-        UiScalePreset.Large,
-    };
-
     private static readonly GameLanguageOption[] LanguageOptions =
     {
         GameLanguageOption.Korean,
@@ -64,9 +57,6 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
     [SerializeField] private TMP_Text masterValueText;
     [SerializeField] private TMP_Text musicValueText;
     [SerializeField] private TMP_Text sfxValueText;
-
-    [Header("UI")]
-    [SerializeField] private SettingStepperControl uiScaleStepper;
 
     [Header("Controls")]
     [SerializeField] private Button keyMappingButton;
@@ -290,7 +280,6 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
 
         RefreshDisplayStepperState(settings);
         RefreshScreenShakeStepper(settings);
-        RefreshUiScaleStepper(settings);
         RefreshLanguageStepper(settings);
 
         if (masterSlider != null)
@@ -321,8 +310,6 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
         BindStepperButton(resolutionStepper?.NextButton, HandleNextResolution);
         BindStepperButton(screenShakeStepper?.PreviousButton, HandlePreviousScreenShake);
         BindStepperButton(screenShakeStepper?.NextButton, HandleNextScreenShake);
-        BindStepperButton(uiScaleStepper?.PreviousButton, HandlePreviousUiScale);
-        BindStepperButton(uiScaleStepper?.NextButton, HandleNextUiScale);
         BindStepperButton(languageStepper?.PreviousButton, HandlePreviousLanguage);
         BindStepperButton(languageStepper?.NextButton, HandleNextLanguage);
 
@@ -383,16 +370,6 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
             settings.GetOnOffLabel(enabled),
             stateIndex > 0,
             stateIndex < 1);
-    }
-
-    private void RefreshUiScaleStepper(GameSettingsService settings)
-    {
-        int index = GetUiScaleOptionIndex(settings.CurrentUiScalePreset);
-        SetStepperState(
-            uiScaleStepper,
-            settings.GetUiScaleLabel(UiScaleOptions[index]),
-            index > 0,
-            index < UiScaleOptions.Length - 1);
     }
 
     private void RefreshLanguageStepper(GameSettingsService settings)
@@ -552,31 +529,6 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
             GameSettingsService.EnsureInstance().SetSfxVolume(value);
     }
 
-    private void HandlePreviousUiScale()
-    {
-        ChangeUiScale(-1);
-    }
-
-    private void HandleNextUiScale()
-    {
-        ChangeUiScale(1);
-    }
-
-    private void ChangeUiScale(int direction)
-    {
-        if (suppressCallbacks)
-            return;
-
-        GameSettingsService settings = GameSettingsService.EnsureInstance();
-        int currentIndex = GetUiScaleOptionIndex(settings.CurrentUiScalePreset);
-        int nextIndex = Mathf.Clamp(currentIndex + direction, 0, UiScaleOptions.Length - 1);
-        if (nextIndex == currentIndex)
-            return;
-
-        settings.SetUiScalePreset(UiScaleOptions[nextIndex]);
-        RefreshUiScaleStepper(settings);
-    }
-
     private void HandlePreviousLanguage()
     {
         ChangeLanguage(-1);
@@ -699,17 +651,6 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
         for (int i = 0; i < WindowModeOptions.Length; i++)
         {
             if (WindowModeOptions[i] == mode)
-                return i;
-        }
-
-        return 0;
-    }
-
-    private static int GetUiScaleOptionIndex(UiScalePreset preset)
-    {
-        for (int i = 0; i < UiScaleOptions.Length; i++)
-        {
-            if (UiScaleOptions[i] == preset)
                 return i;
         }
 

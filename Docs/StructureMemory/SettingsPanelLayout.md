@@ -22,3 +22,9 @@ Stepper arrows remain 60 units wide at opposite ends; the value spans between th
 - Disabled/legacy scenes and alternate GlobalUIRoot prefabs were not migrated. If made active, inspect their settings layout and overrides first.
 - Static geometry checks covered row widths 800, 1025.45, 1200, 1413.33 and 1800. Unity import, actual text rendering, display transitions and player-build visual acceptance were not executed. Very narrow widths still need visual validation.
 - This local authoring map is not currently an Architecture/Contracts promotion candidate.
+
+## UI size option removed (2026-09-17)
+
+The UI size selector is retired. GameSettingsService no longer reads or writes `settings.ui.scale` or changes CanvasScaler reference resolutions/scale factors. Existing saved values are ignored; new runs use authored CanvasScaler settings with normal screen-size adaptation. GameUiScaleController and its meta were removed after confirming no serialized asset references.
+
+SettingsPanelUI no longer contains the selector field, bindings or preset API. The UISize row is inactive in the main prefab, all five alternate prefabs and TitleScene, so vertical layout excludes it. The authored inactive row remains for asset reference stability. This supersedes the UI Small/Medium/Large acceptance checks above. Chain unlock logic was not changed; its 2.5-second delay still needs separate verification.

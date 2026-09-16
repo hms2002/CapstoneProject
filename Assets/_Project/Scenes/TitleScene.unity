@@ -11462,10 +11462,6 @@ MonoBehaviour:
   masterValueText: {fileID: 1472735919}
   musicValueText: {fileID: 2080761277}
   sfxValueText: {fileID: 1964988177}
-  uiScaleStepper:
-    previousButton: {fileID: 276451672}
-    nextButton: {fileID: 1702602160}
-    valueText: {fileID: 748407886}
   keyMappingButton: {fileID: 206007032}
   onRequestOpenKeyMappingPanel:
     m_PersistentCalls:
@@ -37005,7 +37001,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2054706094
 RectTransform:
   m_ObjectHideFlags: 0
