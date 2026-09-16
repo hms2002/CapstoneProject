@@ -3,6 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+public readonly struct BurnKillContext
+{
+    public BurnKillContext(AbilitySystem sourceSystem, Enemy target, Vector3 worldPosition)
+    {
+        SourceSystem = sourceSystem;
+        Target = target;
+        WorldPosition = worldPosition;
+    }
+
+    public AbilitySystem SourceSystem { get; }
+    public Enemy Target { get; }
+    public Vector3 WorldPosition { get; }
+}
+
 /// <summary>대상이 소유하는 독립 화상 스택입니다. 기존 ElementGaugeSystem을 사용하지 않습니다.</summary>
 [DisallowMultipleComponent]
 public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
@@ -27,9 +41,17 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
     public int MaxStacks => StackLimit;
     public Color DisplayColor => new(1f, 0.28f, 0.02f, 1f);
     public static IEnumerable<BurnStatus2D> ActiveStatuses => activeStatuses;
+    public static event Action<BurnKillContext> BurnKillConfirmed;
 
     public event Action StackChanged;
     public event Action PulseRequested;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        activeStatuses.Clear();
+        BurnKillConfirmed = null;
+    }
 
     public static BurnStatus2D Apply(GameObject target, AbilitySystem source, GameplayEffect effect, GameObject sourceCauser, int baseStacks, CrimsonBoundaryVisual2D tickVisual = null, CrimsonBoundaryVisual2D sustainPrefab = null)
     {
@@ -117,6 +139,9 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
 
     private void TickBurn()
     {
+        Enemy enemy = GetComponent<Enemy>();
+        bool canReportKill = enemy != null && !enemy.IsDead;
+
         if (sourceSystem != null && damageEffect != null)
         {
             IStatProvider provider = AbilityStatProviderFactory.Create(sourceSystem);
@@ -152,6 +177,9 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
                 elementBuildUps: NoElementBuildUp,
                 hasResolvedElementBuildUps: true,
                 emitHitConfirmed: false);
+
+            if (canReportKill && enemy != null && enemy.IsDead)
+                BurnKillConfirmed?.Invoke(new BurnKillContext(sourceSystem, enemy, transform.position));
         }
 
         // A lethal tick can synchronously clear this status in the boss death callback.

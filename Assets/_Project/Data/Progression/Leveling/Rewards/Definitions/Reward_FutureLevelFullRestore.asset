@@ -15,7 +15,7 @@ MonoBehaviour:
   rewardId: level_reward.future_level_full_restore
   allowMultipleSelections: 0
   displayName: 완전한 성장
-  description: "<color=#8A5A10>이후 레벨업할 때마다</color>\n<color=#197A67>모든 하트 회복</color>\n<color=#197A67>모든 재사용 대기시간 초기화</color>"
-  icon: {fileID: 21300000, guid: 68d070a601964e6daf3e474c17d5e9a2, type: 3}
+  description: "<color=#8A5A10>레벨업 시</color> <color=#197A67>체력 2 회복</color>\n피해를 받지 않았다면\n<color=#197A67>최대 체력 +1</color> (최대 3회)"
+  icon: {fileID: 21300000, guid: 57dc962702c34d0da8805448565bbb9d, type: 3}
   effects:
   - {fileID: 11400000, guid: 0fbe11a8d5034bc086c8a871fb4fe0ed, type: 2}

@@ -1,9 +1,87 @@
+using System;
 using System.Collections.Generic;
 using CapstonePresentation;
 using UnityEngine;
 
 namespace UnityGAS
 {
+    public readonly struct ElectricDischargeDamageModifierContext
+    {
+        public ElectricDischargeDamageModifierContext(GameObject instigator, GameObject target, float baseDamage)
+        {
+            Instigator = instigator;
+            Target = target;
+            BaseDamage = baseDamage;
+        }
+
+        public GameObject Instigator { get; }
+        public GameObject Target { get; }
+        public float BaseDamage { get; }
+    }
+
+    public static class ElectricDischargeDamageModifiers
+    {
+        private static readonly List<Func<ElectricDischargeDamageModifierContext, float>> Modifiers = new();
+
+        public static IDisposable Register(Func<ElectricDischargeDamageModifierContext, float> modifier)
+        {
+            if (modifier == null)
+                return EmptyHandle.Instance;
+
+            Modifiers.Add(modifier);
+            return new Registration(modifier);
+        }
+
+        internal static float Apply(ElectricDischargeDamageModifierContext context)
+        {
+            float result = Mathf.Max(0f, context.BaseDamage);
+            for (int i = 0; i < Modifiers.Count; i++)
+            {
+                Func<ElectricDischargeDamageModifierContext, float> modifier = Modifiers[i];
+                if (modifier == null)
+                    continue;
+
+                result = Mathf.Max(0f, modifier(new ElectricDischargeDamageModifierContext(
+                    context.Instigator,
+                    context.Target,
+                    result)));
+            }
+
+            return result;
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            Modifiers.Clear();
+        }
+
+        private sealed class Registration : IDisposable
+        {
+            private Func<ElectricDischargeDamageModifierContext, float> modifier;
+
+            public Registration(Func<ElectricDischargeDamageModifierContext, float> modifier)
+            {
+                this.modifier = modifier;
+            }
+
+            public void Dispose()
+            {
+                if (modifier == null)
+                    return;
+
+                Modifiers.Remove(modifier);
+                modifier = null;
+            }
+        }
+
+        private sealed class EmptyHandle : IDisposable
+        {
+            public static readonly EmptyHandle Instance = new();
+            public void Dispose() { }
+        }
+    }
+
     /// <summary>
     /// 책임: GE_ElectricShockTrigger가 구체 VFX 타입을 알지 않고 연쇄 지점 목록만 presentation 구현에 전달하게 한다.
     /// </summary>
@@ -225,6 +303,11 @@ namespace UnityGAS
 
             if (electricDamageEffect != null && electricDamage > 0f)
             {
+                float resolvedElectricDamage = ElectricDischargeDamageModifiers.Apply(
+                    new ElectricDischargeDamageModifierContext(instigator, target, electricDamage));
+                if (resolvedElectricDamage <= 0f)
+                    return;
+
                 GameplayEffectSpec damageSpec = CreateSpec(
                     electricDamageEffect,
                     instigator,
@@ -232,7 +315,7 @@ namespace UnityGAS
                     this,
                     popupElementTag);
                 if (electricDamageKey != null)
-                    damageSpec.SetSetByCallerMagnitude(electricDamageKey, electricDamage);
+                    damageSpec.SetSetByCallerMagnitude(electricDamageKey, resolvedElectricDamage);
 
                 runner.ApplyEffectSpec(damageSpec, target);
             }
@@ -242,7 +325,7 @@ namespace UnityGAS
             GameplayEffect effect,
             GameObject instigator,
             GameObject causer,
-            Object sourceObject,
+            UnityEngine.Object sourceObject,
             GameplayTag popupElementTag)
         {
             var context = new GameplayEffectContext(instigator, causer != null ? causer : instigator)

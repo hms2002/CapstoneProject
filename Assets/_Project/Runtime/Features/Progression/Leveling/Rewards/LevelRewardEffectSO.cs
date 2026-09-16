@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityGAS;
 
 public enum LevelRewardEffectLifetime
 {
@@ -76,4 +77,36 @@ public abstract class LevelRewardEffectSO : ScriptableObject
     /// InstantOnce 효과는 즉시 적용 후 null을 반환할 수 있다.
     /// </summary>
     public abstract ILevelRewardEffectHandle Apply(LevelRewardApplyContext context);
+}
+
+/// <summary>
+/// 레벨업 저주의 "직접 피해"를 현재 장착 무기가 부여한 능력의 피해로 한정한다.
+/// 화상, 전기 발현, 유물 자동 공격, 반사 피해는 이 경로에 포함되지 않는다.
+/// </summary>
+internal static class LevelRewardDirectDamageUtility
+{
+    public static bool IsDirectWeaponDamage(
+        CombatOutgoingDamageContext context,
+        AbilitySystem playerAbilities,
+        WeaponInventory2D inventory)
+    {
+        AbilityDefinition ability = context.SourceSpec?.Definition;
+        if (context.SourceSystem != playerAbilities || inventory == null || ability == null)
+            return false;
+
+        for (int slot = 0; slot < inventory.SlotCount; slot++)
+        {
+            WeaponDefinition weapon = inventory.GetWeaponInSlot(slot);
+            if (weapon == null)
+                continue;
+
+            foreach (AbilityDefinition grantedAbility in weapon.EnumerateGrantedAbilities())
+            {
+                if (grantedAbility == ability)
+                    return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -13,3 +13,9 @@ MonoBehaviour:
   m_Name: Effect_FutureLevelFullRestore
   m_EditorClassIdentifier: Gameplay::FutureLevelFullRestoreLevelRewardEffectSO
   effectId: level_reward_effect.future_level_full_restore
+  healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+  maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  soulHeartAttribute: {fileID: 11400000, guid: dfd6b6d2319c46acb6a5564fe8798a21, type: 2}
+  healPerLevel: 2
+  maxHealthPerFlawlessLevel: 1
+  maximumMaxHealthGrants: 3

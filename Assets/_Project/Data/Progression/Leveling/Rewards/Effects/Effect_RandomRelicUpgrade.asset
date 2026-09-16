@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gameplay::RandomRelicUpgradeLevelRewardEffectSO
   effectId: level_reward_effect.random_relic_upgrade
   relicCount: 3
-  gainedLevels: 2
+  gainedLevels: 1

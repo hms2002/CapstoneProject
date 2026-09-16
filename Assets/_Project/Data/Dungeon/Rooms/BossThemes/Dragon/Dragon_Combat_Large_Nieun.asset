@@ -644,11 +644,7 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
     - localCell: {x: 25, y: 9}
       tile: {fileID: 11400000, guid: ea9e12dce4e112f43a8d853e6d35dccd, type: 2}
-    groundDecorationTiles:
-    - localCell: {x: 7, y: 14}
-      tile: {fileID: 11400000, guid: 35682c4b37be35b45b8b3a2f4d072ac9, type: 2}
-    - localCell: {x: 7, y: 15}
-      tile: {fileID: 11400000, guid: dc2290416144f0044a1dcb0c04dcbdff, type: 2}
+    groundDecorationTiles: []
     wallTiles:
     - localCell: {x: 0, y: 0}
       tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
@@ -1103,8 +1099,13 @@ MonoBehaviour:
       tile: {fileID: 11400000, guid: 797655f2bab2ee142bfdb8717afb9f83, type: 2}
     - localCell: {x: 17, y: 6}
       tile: {fileID: 11400000, guid: f0d418cfb40c1cb4290808329c069969, type: 2}
-    foregroundTiles: []
+    foregroundTiles:
+    - localCell: {x: 7, y: 14}
+      tile: {fileID: 11400000, guid: b7da4441b0724ca4a92afafd2b2228e8, type: 2}
+    - localCell: {x: 7, y: 15}
+      tile: {fileID: 11400000, guid: e4566f8738ebb7e4a9302215270d87cc, type: 2}
     overlayFxTiles: []
+    holeTiles: []
     objectPlacements:
     - monsterWaveId: wave_default
       placementId: Tank_16

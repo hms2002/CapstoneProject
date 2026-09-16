@@ -9,6 +9,7 @@ using UnityGAS;
 /// </summary>
 public static class WeaponSkillHudSlotPresenter
 {
+    private const float CooldownIconBrightness = 0.6f;
     private static readonly int FlashColorId = Shader.PropertyToID("_FlashColor");
     private static readonly int FlashAmountId = Shader.PropertyToID("_FlashAmount");
     private static readonly int FlashMultiplyId = Shader.PropertyToID("_FlashMultiply");
@@ -104,9 +105,45 @@ public static class WeaponSkillHudSlotPresenter
             ui.activeOverlay.SetActive(hasAbility && isActive);
 
         if (ui.icon != null)
-            ui.icon.color = hasAbility && isActive
-                ? EvaluateActiveIconColor(normalIconColor, activeIconColor, activePulseSpeed, activePulseStrength)
-                : normalIconColor;
+        {
+            // 기본 아이콘은 "다시 사용할 수 있는가"를 우선 표시한다.
+            // 실행 중 강조는 activeOverlay가 담당하므로, 실제 쿨타임이 시작되면 즉시 어둡게 한다.
+            if (IsAbilityUnavailableFromCooldown(abilitySystem, def))
+            {
+                ui.icon.color = EvaluateCooldownIconColor(normalIconColor);
+            }
+            else if (hasAbility && isActive)
+            {
+                ui.icon.color = EvaluateActiveIconColor(
+                    normalIconColor,
+                    activeIconColor,
+                    activePulseSpeed,
+                    activePulseStrength);
+            }
+            else
+            {
+                ui.icon.color = normalIconColor;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 시전 강조를 표시하지 않는 교체 무기 HUD에서도 쿨타임 중인 스킬 아이콘을 같은 밝기로 낮춘다.
+    /// - 알파는 유지하고 RGB만 60%로 낮춰 배경에 따라 아이콘이 흐려지는 현상을 피한다.
+    /// </summary>
+    public static void UpdateCooldownIconVisual(
+        WeaponSkillHUD2D.SkillSlotUI ui,
+        AbilityDefinition def,
+        AbilitySystem abilitySystem,
+        Color normalIconColor)
+    {
+        if (ui?.icon == null)
+            return;
+
+        ui.icon.color = IsAbilityUnavailableFromCooldown(abilitySystem, def)
+            ? EvaluateCooldownIconColor(normalIconColor)
+            : normalIconColor;
     }
 
     public static void UpdateCooldownAndCharge(
@@ -467,6 +504,26 @@ public static class WeaponSkillHudSlotPresenter
         float pulse = (Mathf.Sin(Time.unscaledTime * activePulseSpeed) + 1f) * 0.5f;
         float t = Mathf.Lerp(1f - activePulseStrength, 1f, pulse);
         return Color.Lerp(normalIconColor, activeIconColor, t);
+    }
+
+    private static bool IsAbilityUnavailableFromCooldown(AbilitySystem abilitySystem, AbilityDefinition def)
+    {
+        if (abilitySystem == null || def == null)
+            return false;
+
+        if (def.useCharges)
+            return abilitySystem.GetChargesRemaining(def) <= 0;
+
+        return abilitySystem.GetCooldownRemaining(def) > 0f;
+    }
+
+    private static Color EvaluateCooldownIconColor(Color normalIconColor)
+    {
+        return new Color(
+            normalIconColor.r * CooldownIconBrightness,
+            normalIconColor.g * CooldownIconBrightness,
+            normalIconColor.b * CooldownIconBrightness,
+            normalIconColor.a);
     }
 
     private static bool TryApplyActiveDurationOverride(

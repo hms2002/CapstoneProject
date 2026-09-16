@@ -16,5 +16,5 @@ MonoBehaviour:
   mainWeaponSlotIndex: 0
   sealedWeaponSlotIndex: 1
   attackPowerAttribute: {fileID: 11400000, guid: 947f52c2a34d008428c105cd897d5efd, type: 2}
-  attackPowerPercent: 0.3
-  mainWeaponCooldownMultiplier: 0.6
+  attackPowerPercent: 0.25
+  mainWeaponCooldownMultiplier: 0.75

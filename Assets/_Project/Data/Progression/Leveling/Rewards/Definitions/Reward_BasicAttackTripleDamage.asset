@@ -16,6 +16,6 @@ MonoBehaviour:
   allowMultipleSelections: 0
   displayName: 치명적 일격
   description: "기본 공격 시 <color=#8A5A10>10% 확률</color>\n<color=#197A67>피해량 3배</color>"
-  icon: {fileID: 21300000, guid: 976cb36b31c24f10bcdd089d35ebb5a6, type: 3}
+  icon: {fileID: 21300000, guid: 57dc962702c34d0da8805448565bbb9d, type: 3}
   effects:
   - {fileID: 11400000, guid: 63740e81281b47dea62d58a6cabf5da0, type: 2}

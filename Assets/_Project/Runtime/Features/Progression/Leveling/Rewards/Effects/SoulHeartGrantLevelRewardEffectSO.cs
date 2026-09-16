@@ -5,7 +5,7 @@ using UnityGAS;
 public sealed class SoulHeartGrantLevelRewardEffectSO : LevelRewardEffectSO
 {
     [SerializeField] private AttributeDefinition soulHeartAttribute;
-    [SerializeField, Min(0f)] private float amount = 5f;
+    [SerializeField, Min(0f)] private float amount = 3f;
 
     public override LevelRewardEffectLifetime Lifetime => LevelRewardEffectLifetime.InstantOnce;
 

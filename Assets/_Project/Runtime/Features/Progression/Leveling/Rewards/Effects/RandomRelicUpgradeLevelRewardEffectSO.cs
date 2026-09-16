@@ -6,7 +6,7 @@ using UnityEngine;
 public sealed class RandomRelicUpgradeLevelRewardEffectSO : LevelRewardEffectSO
 {
     [SerializeField, Min(1)] private int relicCount = 3;
-    [SerializeField, Min(1)] private int gainedLevels = 2;
+    [SerializeField, Min(1)] private int gainedLevels = 1;
 
     [Serializable]
     private sealed class State { public List<string> upgradedRelicIds = new(); }

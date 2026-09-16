@@ -18,6 +18,44 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
         target.GetType().GetField(field, Private).SetValue(target, value);
     private static void Call(object target, string method, params object[] args) =>
         target.GetType().GetMethod(method, Private).Invoke(target, args);
+    private static T Call<T>(object target, string method, params object[] args) =>
+        (T)target.GetType().GetMethod(method, Private).Invoke(target, args);
+
+    [UnityTest]
+    public IEnumerator SkillCooldownBuffer_WaitsForReadyThenActivatesOnce()
+    {
+        var actor = Own(new GameObject("Skill cooldown input buffer"));
+        actor.AddComponent<AttributeSet>();
+        var system = actor.AddComponent<AbilitySystem>();
+        var inventory = actor.AddComponent<WeaponInventory2D>();
+        var combat = actor.AddComponent<PlayerCombatInput2D>();
+        var logic = Own(ScriptableObject.CreateInstance<PlayerControlRegressionLogic>());
+        var skill = Own(ScriptableObject.CreateInstance<AbilityDefinition>());
+        var weapon = Own(ScriptableObject.CreateInstance<WeaponDefinition>());
+        skill.logic = logic;
+        skill.cooldown = 1f;
+        skill.recoveryTime = 0f;
+        weapon.skill1 = skill;
+
+        Assert.That(inventory.TrySetWeaponSlot(0, weapon), Is.True);
+        Assert.That(system.TrySetCooldownRemaining(skill, 0.05f), Is.True);
+
+        Assert.That(
+            Call<bool>(combat, "TryActivateSafe", WeaponAbilitySlot.Skill1, skill),
+            Is.True,
+            "An input inside the 0.08 second window should be accepted as buffered.");
+        Assert.That(system.IsBusy, Is.False, "Buffering must not execute the skill before cooldown is ready.");
+
+        Call(combat, "TryConsumeCooldownSkillInput");
+        Assert.That(system.IsBusy, Is.False);
+
+        Assert.That(system.TrySetCooldownRemaining(skill, 0f), Is.True);
+        Call(combat, "TryConsumeCooldownSkillInput");
+        Assert.That(system.CurrentExecSpec?.Definition, Is.EqualTo(skill));
+
+        logic.Complete = true;
+        yield return null;
+    }
 
     [UnityTest]
     public IEnumerator ActualExecution_OutlivesEstimatedRecovery_AndCancellationUnlocks()

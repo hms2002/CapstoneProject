@@ -509,9 +509,34 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
             "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Crit From Bonus Move Speed_Managed.asset");
         using (var serialized = new SerializedObject(tonic))
         {
-            SerializedProperty values = serialized.FindProperty("critPerStepByLevel");
+            SerializedProperty values = serialized.FindProperty("chanceByLevel");
             Assert.That(values.arraySize, Is.EqualTo(5));
-            Assert.That(values.GetArrayElementAtIndex(4).floatValue, Is.EqualTo(0.02f).Within(0.0001f));
+            Assert.That(values.GetArrayElementAtIndex(0).floatValue, Is.EqualTo(0.04f).Within(0.0001f));
+            Assert.That(values.GetArrayElementAtIndex(4).floatValue, Is.EqualTo(0.12f).Within(0.0001f));
+            Assert.That(serialized.FindProperty("durationSeconds").floatValue, Is.EqualTo(3f));
+        }
+
+        ScriptableObject firmStep = Load<ScriptableObject>(
+            "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_FirmStep.asset");
+        using (var serialized = new SerializedObject(firmStep))
+        {
+            SerializedProperty values = serialized.FindProperty("chancePerStackByLevel");
+            Assert.That(values.arraySize, Is.EqualTo(3));
+            Assert.That(values.GetArrayElementAtIndex(0).floatValue, Is.EqualTo(0.02f).Within(0.0001f));
+            Assert.That(values.GetArrayElementAtIndex(2).floatValue, Is.EqualTo(0.04f).Within(0.0001f));
+            Assert.That(serialized.FindProperty("maximumStacks").intValue, Is.EqualTo(8));
+        }
+
+        RelicDefinition portableBrazier = Load<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_PortableBrazier.asset");
+        Assert.That(portableBrazier.maxLevel, Is.EqualTo(3));
+        using (var serialized = new SerializedObject(portableBrazier.logic))
+        {
+            SerializedProperty values = serialized.FindProperty("burnStacksByLevel");
+            Assert.That(values.arraySize, Is.EqualTo(3));
+            Assert.That(values.GetArrayElementAtIndex(0).intValue, Is.EqualTo(1));
+            Assert.That(values.GetArrayElementAtIndex(2).intValue, Is.EqualTo(3));
+            Assert.That(serialized.FindProperty("cooldownSeconds").floatValue, Is.EqualTo(0.5f));
         }
 
         ScriptableObject hawk = Load<ScriptableObject>(

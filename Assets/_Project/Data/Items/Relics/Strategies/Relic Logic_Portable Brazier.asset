@@ -9,19 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38444b9dbcb9488881005f99040924a3, type: 3}
+  m_Script: {fileID: 11500000, guid: 3abd60494cb74b3fba2b99f1dd380019, type: 3}
   m_Name: Relic Logic_Portable Brazier
-  m_EditorClassIdentifier:
-  tickIntervalMultipliers: []
-  damageRatioAdds: []
-  applicationAdds: []
-  firstApplicationAdds:
+  m_EditorClassIdentifier: Gameplay::RelicLogic_BurnOnCriticalHit_Managed
+  hitConfirmTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
+  burnDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  burnStacksByLevel:
   - 1
   - 2
   - 3
-  - 4
-  - 5
-  allowCritical: 0
-  stackDamageThresholds: []
-  stackDamageRatiosPerStep: []
-  stackDamageRatioMax: 0
+  cooldownSeconds: 0.5

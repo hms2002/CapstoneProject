@@ -38,9 +38,9 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 10. `OneSwordOathLevelRewardEffectSO` seals weapon slot index 1 without deleting its contents, applies an attack modifier, and scopes cooldown reduction to abilities granted by the weapon currently in slot index 0.
 11. `RunLevelRewardOffers` rolls up to three eligible cards from a persisted run seed, stores the active IDs and reroll usage, and consumes only candidates from that stored offer.
 12. `LevelRewardSessionController` handles manual R-key opening, dialogue/UI/combat eligibility, shared pause/input lock, and consecutive pending selections. Authored UI only projects its events and calls its public commands.
-13. Eight reusable effect SO types cover kill healing, level-scaled max health, basic-attack proc damage, future-level full restore, low-time haste, kill cooldown reduction, random relic upgrade, and soul-heart grant.
+13. Thirteen catalog rewards combine the existing reusable effects with five new effects: Berserker Rush, Hunting Flow, Overheat, Spreading Embers, and High Voltage. The former level-scaled max-heart reward asset is retained for rollback but is no longer cataloged.
 14. `GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/LevelHUD` contains the authored HUD visuals and `LevelHudPresenter`. The presenter projects level/EXP and reward-open eligibility through independent display paths.
-15. `Data/Progression/Leveling/Rewards` contains nine authored reward definitions, their nine effect configurations, and one catalog. Display icons remain intentionally empty so the selection Presenter can apply one shared fallback icon.
+15. `Data/Progression/Leveling/Rewards` contains the authored reward definitions/effect configurations and one 13-entry catalog. Conditional rewards use Thunder_Card_9, instant rewards use Earth_Card_3, and curse rewards use Void_Card_1.
 16. `GlobalUIRoot/RewardCanvas/LevelRewardSelectionRoot` contains the inactive authored selection window with a dim input blocker, title, three centered cards, and close/reroll controls. The rough visual uses only Image, Button, TMP, layout, Presenter, and card-view components.
 17. `LevelRewardSelectionPresenter` projects session events into one to three authored card slots, handles fixed card/reroll inputs, and opens through the session-owned UI-stack path. `LevelRewardCardView` binds one authored card visual without creating UI at runtime.
 
@@ -94,6 +94,10 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - The EXP pickup is an authored gameplay prefab. No runtime UI hierarchy is created by this system.
 - No new Manager, Singleton, or `DontDestroyOnLoad` object was introduced.
 - Persistent live effects must return `ILevelRewardEffectHandle`; `RunLevelRewards` disposes those handles on player unregister, run start/end, and rebuild.
+- Berserker Rush modifies incoming `GE_Damage_Spec` damage before Soul Heart absorption and HP application, so ordinary enemy and hazard damage share the x2 rule.
+- Overheat and High Voltage classify direct damage as damage whose `AbilitySpec.Definition` was granted by a currently equipped weapon. Burn ticks, electric discharge, relic automatic attacks, and reflection are outside that definition.
+- Hunting Flow listens to the owning player's attacker-side `KillConfirmed` event, so scripted despawn/cleanup does not advance its five-kill window.
+- Spreading Embers listens to burn-confirmed kills, searches living `Enemy` instances inside the current gameplay camera viewport, and selects the closest target from the killed enemy. It deliberately ignores walls/darkness and does nothing when no gameplay camera exists.
 - Instant effects use `InstantOnce` and are not repeated during scene restoration.
 - Weapon slot seals are live handle-owned policies. They do not clear or rewrite the serialized slot contents and are released during reward handle cleanup.
 - Scoped cooldown multipliers affect newly started cooldown/recharge calculations for matching abilities; they do not retroactively rewrite an already-running cooldown.
@@ -119,6 +123,7 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - The selection-window close shortcut is fixed to `Escape`. It is not exposed through key mapping and does not resolve a rebinding-dependent glyph.
 - If the reward window implements `IStackableUI`, open it through `TryPushSessionUI(...)` so it can coexist with the session-owned external input block.
 - New effects should derive from `LevelRewardEffectSO`, keep scene references out of JSON state, and return a cleanup handle for live subscriptions/modifiers.
+- Direct-damage curses should reuse `LevelRewardDirectDamageUtility`. Incoming damage, final element buildup, electric discharge damage, and burn-source ratios have narrow registration points; registrations must be disposed by the reward handle.
 - Kill counters and similar state can serialize a narrow payload into `LevelRewardEffectState.json`.
 - UI can query `WeaponInventory2D.IsSlotAccessible(...)` and subscribe to `OnSlotAccessChanged` to render a sealed slot without owning the policy.
 
@@ -138,6 +143,7 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - The level-up sound reference is intentionally unassigned until a project sound key is authored.
 - Combat eligibility should be playtested against every custom enemy subclass. `Mob` uses detection state and `BossControllerBase` uses combat-active state; a future non-Mob `Enemy` that recognizes the player must override `IsRecognizingPlayer`.
 - `Apply(...)` implementations must not leave partial mutations when they throw; validate authoring and eligibility before selection.
+- A future self-damage/cost mechanic must define whether Berserker Rush doubles it; the present modifier intentionally covers all `GE_Damage_Spec` damage targeting the player.
 - Do not release the level-reward session pause/input lock at the start of a visual close. Normal gameplay resumes only after the blocker and presentation roots are fully transparent and inactive.
 - The current PlayMode test asmdef does not reference `Core`; do not change the asmdef without explicit approval.
 
@@ -156,6 +162,8 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - 2026-08-18: Added the green Square EXP pickup prefab, exact-total distributed drops for 18 general-monster prefabs, explicit no-EXP handling for boss summons/runtime slime splits, and stage-position boss EXP with final-route exclusion.
 - 2026-08-18: Connected the previously omitted Dragon-stage `TreasureMonster` prefab at 10 EXP, bringing all 19 current spawn-profile general monsters onto the common EXP reward path.
 - 2026-08-18: Added staggered overshoot card entry, first-view front/back flips, card-only reroll/consecutive-offer replacement, and deferred full-window close fading to the authored selection UI.
+- 2026-09-16: Reworked the existing growth/shield/oath/relic rewards, removed Growth Heart from the catalog, and added Berserker Rush, Hunting Flow, Overheat, Spreading Embers, and High Voltage with category artwork and cleanup-owned runtime modifiers.
+- 2026-09-17: Added the one-shot curse rewards Steel Training and Unextinguished Fire. Both persist their objective progress in effect JSON, project progress through tooltip-only status entries, and replace the Debuff entry with a Buff entry on completion while retaining the same authored icon.
 
 ## Recovery Notes
 

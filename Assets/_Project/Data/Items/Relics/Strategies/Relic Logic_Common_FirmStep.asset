@@ -9,16 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe2f2aa3b7d897b4882187f548f45df1, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c4382cdf24d410ba949ac7636555da4, type: 3}
   m_Name: Relic Logic_Common_FirmStep
-  m_EditorClassIdentifier:
-  entries:
-  - attribute: {fileID: 11400000, guid: cd582b58892249e4a6ef8ae28bd345e3, type: 2}
-    displayNameOverride: "넉백 저항"
-    type: 0
-    value: 0.07
-    valueByLevel:
-    - 0.07
-    - 0.14
-    - 0.2
-    duration: 0
+  m_EditorClassIdentifier: Gameplay::RelicLogic_CritChanceOnNonCriticalHit_Managed
+  hitConfirmTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
+  critChanceAddAttribute: {fileID: 11400000, guid: d923279fb7e24aa19162adcd29a3c67e, type: 2}
+  chancePerStackByLevel:
+  - 0.02
+  - 0.03
+  - 0.04
+  maximumStacks: 8

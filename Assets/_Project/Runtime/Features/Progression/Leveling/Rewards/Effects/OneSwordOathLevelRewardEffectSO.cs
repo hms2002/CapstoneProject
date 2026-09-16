@@ -41,6 +41,12 @@ public sealed class OneSwordOathLevelRewardEffectSO : LevelRewardEffectSO
             return false;
         }
 
+        if (inventory.GetWeaponInSlot(sealedWeaponSlotIndex) == null)
+        {
+            failureReason = "2번 슬롯에 봉인할 무기가 없습니다.";
+            return false;
+        }
+
         if (mainWeaponSlotIndex == sealedWeaponSlotIndex ||
             mainWeaponCooldownMultiplier <= 0f ||
             !inventory.CanAcquireSlotSeal(sealedWeaponSlotIndex))

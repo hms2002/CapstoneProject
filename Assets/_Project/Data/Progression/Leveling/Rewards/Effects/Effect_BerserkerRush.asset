@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0843cee49f2e4c77b7bdab773d4c21f0, type: 3}
+  m_Name: Effect_BerserkerRush
+  m_EditorClassIdentifier: Gameplay::BerserkerRushLevelRewardEffectSO
+  effectId: level_reward_effect.berserker_rush
+  attackSpeedAttribute: {fileID: 11400000, guid: 40277bede661488094dd09d158341e30, type: 2}
+  moveSpeedAttribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
+  incomingDamageMultiplier: 2
+  attackSpeedPercent: 0.4
+  moveSpeedPercent: 0.2

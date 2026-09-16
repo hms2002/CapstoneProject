@@ -16,3 +16,7 @@ MonoBehaviour:
   - {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
   - {fileID: 5433486041897825252, guid: e67c0e27f47424648af599f14420164d, type: 3}
   - {fileID: 7326883398652249423, guid: 65aed765b26cc4745a94999e32542d6c, type: 3}
+  stageHpMultipliers:
+  - 1
+  - 1
+  - 1.5

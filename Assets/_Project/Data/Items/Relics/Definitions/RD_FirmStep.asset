@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: "\uAD73\uC13C \uBC1C\uAC78\uC74C"
   icon: {fileID: -8815494589321632592, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
   rarity: 0
-  description: "\uB109\uBC31 \uC800\uD56D\uC774 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  description: "치명타가 아닌 공격 적중 시 치명타 확률이 2/3/4% 증가합니다. 최대 8회 중첩되며, 치명타 발생 시 초기화됩니다."
   maxLevel: 3
   dropLevel: 1
   logic: {fileID: 11400000, guid: 4778f2d87b1a49cba5c7f18bc60fd7bd, type: 2}

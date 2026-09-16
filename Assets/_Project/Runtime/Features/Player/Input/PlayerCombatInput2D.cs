@@ -22,6 +22,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
 
     private const string AttackBlockedTagResourcePath = "Tags/State.Attacking.Blocked";
     private const string SkillBlockedTagResourcePath = "Tags/State.Skill.Blocked";
+    private const float SkillCooldownInputBufferSeconds = 0.08f;
 
     [Header("Refs")]
     [SerializeField] private AbilitySystem abilitySystem;
@@ -155,6 +156,9 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     private WeaponAbilitySlot pendingApprenticeSlot;
     private AbilitySpec pendingApprenticeAttack;
     private bool apprenticeCancelRequested;
+    private AbilityDefinition pendingCooldownSkill;
+    private WeaponAbilitySlot pendingCooldownSlot;
+    private WeaponDefinition pendingCooldownWeapon;
 
     private void Awake()
     {
@@ -201,6 +205,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
         meleeControlLockActive = false;
         ReleaseAttackHoldIfNeeded();
         ClearApprenticeSkillInput();
+        ClearCooldownSkillInput();
         if (weaponInventory != null)
             weaponInventory.OnEquippedChanged -= HandleEquippedChanged;
 
@@ -216,16 +221,23 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
         {
             meleeControlLockActive = false;
             ClearApprenticeSkillInput();
+            ClearCooldownSkillInput();
             ReleaseAttackHoldIfNeeded();
             return;
         }
 
-        if (TimeScalePausePlayback.IsPaused) return;
+        if (TimeScalePausePlayback.IsPaused)
+        {
+            ClearApprenticeSkillInput();
+            ClearCooldownSkillInput();
+            return;
+        }
 
         if (player != null && player.CurrentState != InteractState.Idle)
         {
             meleeControlLockActive = false;
             ClearApprenticeSkillInput();
+            ClearCooldownSkillInput();
             ReleaseAttackHoldIfNeeded();
             return;
         }
@@ -233,6 +245,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
         if (weaponInputBlockOwners.Count > 0)
         {
             ClearApprenticeSkillInput();
+            ClearCooldownSkillInput();
             ReleaseAttackHoldIfNeeded();
             if (!IsCombatBlocked())
             {
@@ -247,6 +260,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
         if (IsCombatBlocked())
         {
             ClearApprenticeSkillInput();
+            ClearCooldownSkillInput();
             TryHandleBlockedWeaponAbilityInput();
             ReleaseAttackHoldIfInputEnded();
             return;
@@ -269,6 +283,8 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
                 weaponInventory.Swap();
             return;
         }
+
+        TryConsumeCooldownSkillInput();
 
         var atk = GetBasicAttack();
 
@@ -407,6 +423,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     {
         meleeControlLockActive = false;
         ClearApprenticeSkillInput();
+        ClearCooldownSkillInput();
         if (weaponEquipController == null && weaponInventory != null)
             weaponEquipController = weaponInventory.EquipController;
 
@@ -429,6 +446,12 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
         apprenticeCancelRequested = false;
     }
 
+    private void ClearCooldownSkillInput()
+    {
+        pendingCooldownSkill = null;
+        pendingCooldownWeapon = null;
+    }
+
     private bool HandleApprenticeSkillInput()
     {
         if (abilitySystem == null || GetBasicAttack()?.logic is not AbilityLogic_ApprenticeHeroSwordAttack)
@@ -443,8 +466,11 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
         {
             WeaponAbilitySlot slot = dashPressed ? WeaponAbilitySlot.Skill2 : WeaponAbilitySlot.Skill1;
             AbilityDefinition skill = dashPressed ? GetSkill2() : GetSkill1();
+            float cooldownRemaining = skill != null
+                ? abilitySystem.GetCooldownRemaining(skill)
+                : float.PositiveInfinity;
             if (skill != null && abilitySystem.GetNextActivationRemaining(skill) <= 0f &&
-                abilitySystem.GetCooldownRemaining(skill) <= 0f &&
+                cooldownRemaining <= SkillCooldownInputBufferSeconds &&
                 skill.CanActivate(gameObject, null))
             {
                 AbilitySpec attack = abilitySystem.CurrentExecSpec;
@@ -467,6 +493,18 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
             ClearApprenticeSkillInput();
             return false;
         }
+
+        float pendingCooldownRemaining = abilitySystem.GetCooldownRemaining(pendingApprenticeSkill);
+        if (pendingCooldownRemaining > SkillCooldownInputBufferSeconds)
+        {
+            ClearApprenticeSkillInput();
+            return false;
+        }
+
+        // 홀드 차지 입력은 실제 쿨타임이 끝난 뒤부터 차지 시간을 세기 시작한다.
+        // 이 대기 중에는 진행 중인 기본 공격도 미리 취소하지 않는다.
+        if (pendingCooldownRemaining > 0f)
+            return true;
 
         AbilitySpec current = abilitySystem.CurrentExecSpec;
         if (abilitySystem.IsBusy)
@@ -513,6 +551,9 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
             return true;
         }
 
+        if (TryBufferCooldownSkillInput(slot, def))
+            return true;
+
         bool activated = weaponAbilityBridge.TryActivate(def, null);
         if (activated)
         {
@@ -522,6 +563,81 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
             NotifyCurrentWeaponAbilityActivationRejected(slot, def);
 
         return activated;
+    }
+
+    private bool TryBufferCooldownSkillInput(WeaponAbilitySlot slot, AbilityDefinition ability)
+    {
+        if (abilitySystem == null || weaponInventory == null || ability == null)
+            return false;
+
+        if (slot != WeaponAbilitySlot.Skill1 && slot != WeaponAbilitySlot.Skill2)
+            return false;
+
+        float cooldownRemaining = abilitySystem.GetCooldownRemaining(ability);
+        if (cooldownRemaining <= 0f || cooldownRemaining > SkillCooldownInputBufferSeconds)
+            return false;
+
+        // 횟수 충전형 스킬은 충전이 하나라도 남아 있으면 즉시 실행 경로를 사용한다.
+        // 충전이 0일 때만 마지막 재충전 구간을 선입력으로 받는다.
+        if (ability.useCharges && abilitySystem.GetChargesRemaining(ability) > 0)
+            return false;
+
+        // 쿨타임 외의 이유로 실행할 수 없는 입력까지 오래 남지 않게 한다.
+        if (abilitySystem.IsBusy ||
+            abilitySystem.GetNextActivationRemaining(ability) > 0f ||
+            !ability.CanActivate(gameObject, null))
+        {
+            return false;
+        }
+
+        pendingCooldownSkill = ability;
+        pendingCooldownSlot = slot;
+        pendingCooldownWeapon = weaponInventory.ActiveWeapon;
+        return pendingCooldownWeapon != null;
+    }
+
+    private void TryConsumeCooldownSkillInput()
+    {
+        if (pendingCooldownSkill == null)
+            return;
+
+        if (abilitySystem == null || weaponInventory == null ||
+            pendingCooldownWeapon == null || weaponInventory.ActiveWeapon != pendingCooldownWeapon)
+        {
+            ClearCooldownSkillInput();
+            return;
+        }
+
+        AbilityDefinition currentSlotAbility = pendingCooldownSlot == WeaponAbilitySlot.Skill1
+            ? GetSkill1()
+            : GetSkill2();
+        if (currentSlotAbility != pendingCooldownSkill)
+        {
+            ClearCooldownSkillInput();
+            return;
+        }
+
+        float cooldownRemaining = abilitySystem.GetCooldownRemaining(pendingCooldownSkill);
+        if (cooldownRemaining > SkillCooldownInputBufferSeconds || abilitySystem.IsBusy)
+        {
+            ClearCooldownSkillInput();
+            return;
+        }
+
+        if (cooldownRemaining > 0f)
+            return;
+
+        AbilityDefinition bufferedAbility = pendingCooldownSkill;
+        WeaponAbilitySlot bufferedSlot = pendingCooldownSlot;
+        ClearCooldownSkillInput();
+
+        if (abilitySystem.GetNextActivationRemaining(bufferedAbility) > 0f ||
+            !bufferedAbility.CanActivate(gameObject, null))
+        {
+            return;
+        }
+
+        TryActivateSafe(bufferedSlot, bufferedAbility);
     }
 
     public bool IsKnownBasicAttackAbility(AbilityDefinition ability)

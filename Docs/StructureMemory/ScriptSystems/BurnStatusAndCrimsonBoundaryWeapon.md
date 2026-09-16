@@ -56,7 +56,7 @@ Immediately before a Burn tick reaches `CombatDamageAction`, `BurnStatus2D` appl
 | 타오르는 심핵 | `FireAdd` +2 per level | 8 |
 | 녹아내린 종 | Burn interval 0.9/0.8/0.7/0.6/0.5 seconds | 5 |
 | 매캐한 향로 | Burn coefficient +10/+20/+30/+40/+50 percentage points | 5 |
-| 휴대용 화로 | First application to a non-burning target +1/+2/+3/+4/+5 stacks | 5 |
+| 휴대용 화로 | On a critical hit against an already-burning target, apply 1/2/3 Burn; global cooldown 0.5 seconds | 3 |
 | 태양의 파편 | Every 2 seconds, generate up to 1/2/3 orbiting squares; contact deals 100% Fire Damage and applies 4/6/8 Burn | 3 |
 | 작열하는 송곳 | After hit resolution, apply 2/3/4/5/6 Burn only if the target is still not burning; its Burn ticks use at least 2 Fire | 5 |
 | 불타는 깃털 | Every Burn application +1/+2/+3 stacks | 3 |

@@ -15,7 +15,7 @@ MonoBehaviour:
   rewardId: level_reward.random_relic_upgrade
   allowMultipleSelections: 0
   displayName: 유물 공명
-  description: "인벤토리의 강화 가능한 유물 중\n무작위 <color=#8A5A10>최대 3개</color>\n<color=#197A67>각각 유물 레벨 +2</color>"
-  icon: {fileID: 21300000, guid: 5888646edb9b444091f28ea96e122f83, type: 3}
+  description: "강화 가능한 유물 중\n무작위 <color=#8A5A10>최대 3개</color>\n<color=#197A67>각각 유물 레벨 +1</color>"
+  icon: {fileID: 21300000, guid: d8b0725309424a3d981283a0f86e5efe, type: 3}
   effects:
   - {fileID: 11400000, guid: fd24827d8c084c35911bec3c387bc61d, type: 2}

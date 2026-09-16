@@ -16,9 +16,8 @@ MonoBehaviour:
   displayName: "\uD734\uB300\uC6A9 \uD654\uB85C"
   icon: {fileID: 3865356431231990622, guid: 87eece6e269e518438f6bcfb7a730ad0, type: 3}
   rarity: 0
-  description: "\uD654\uC0C1\uC774 \uC5C6\uB294 \uC801\uC5D0\uAC8C \uCC98\uC74C \uBD80\uC5EC\uD558\uB294
-    \uD654\uC0C1\uC774 \uB298\uC5B4\uB0A9\uB2C8\uB2E4."
-  maxLevel: 5
+  description: "화상 상태인 적에게 치명타 적중 시 화상을 1/2/3 부여합니다. (재사용 대기시간: 0.5초)"
+  maxLevel: 3
   dropLevel: 1
   logic: {fileID: 11400000, guid: 710ee86ec8b74295be0804c534950228, type: 2}
   param: {fileID: 0}

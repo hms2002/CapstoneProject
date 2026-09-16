@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92ec912023a8a3d4a89dd503cd4c8554, type: 3}
+  m_Name: Reward_Overheat
+  m_EditorClassIdentifier: Gameplay::LevelRewardDefinitionSO
+  rewardId: level_reward.overheat
+  allowMultipleSelections: 0
+  displayName: 과열
+  description: "<color=#A8324A>직접 피해 -20%</color>\n<color=#197A67>화상 부여량 +2</color>\n<color=#197A67>화상 피해 +30%</color>"
+  icon: {fileID: 21300000, guid: 0f83992babcb4604aacc6d44535607aa, type: 3}
+  effects:
+  - {fileID: 11400000, guid: cc81434640774641b3167fad944bb128, type: 2}

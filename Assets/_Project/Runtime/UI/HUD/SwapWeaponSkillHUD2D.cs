@@ -92,6 +92,8 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
         WeaponSkillHudSlotPresenter.UpdateDynamicIcon(skill2UI, WeaponAbilitySlot.Skill2, skill2Def, null);
         WeaponSkillHudSlotPresenter.UpdateCooldownAndCharge(skill1UI, WeaponAbilitySlot.Skill1, skill1Def, abilitySystem, null);
         WeaponSkillHudSlotPresenter.UpdateCooldownAndCharge(skill2UI, WeaponAbilitySlot.Skill2, skill2Def, abilitySystem, null);
+        WeaponSkillHudSlotPresenter.UpdateCooldownIconVisual(skill1UI, skill1Def, abilitySystem, normalIconColor);
+        WeaponSkillHudSlotPresenter.UpdateCooldownIconVisual(skill2UI, skill2Def, abilitySystem, normalIconColor);
         RefreshSwapGuide(force: false);
     }
 

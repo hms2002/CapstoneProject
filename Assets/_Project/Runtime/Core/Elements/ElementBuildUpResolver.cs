@@ -1,8 +1,93 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace UnityGAS
 {
+    public readonly struct ElementBuildUpModifierContext
+    {
+        public ElementBuildUpModifierContext(
+            GameObject attacker,
+            GameObject target,
+            GameplayTag elementType,
+            float baseAmount)
+        {
+            Attacker = attacker;
+            Target = target;
+            ElementType = elementType;
+            BaseAmount = baseAmount;
+        }
+
+        public GameObject Attacker { get; }
+        public GameObject Target { get; }
+        public GameplayTag ElementType { get; }
+        public float BaseAmount { get; }
+    }
+
+    public static class ElementBuildUpModifiers
+    {
+        private static readonly List<Func<ElementBuildUpModifierContext, float>> Modifiers = new();
+
+        public static IDisposable Register(Func<ElementBuildUpModifierContext, float> modifier)
+        {
+            if (modifier == null)
+                return EmptyHandle.Instance;
+
+            Modifiers.Add(modifier);
+            return new Registration(modifier);
+        }
+
+        internal static float Apply(ElementBuildUpModifierContext context)
+        {
+            float result = Mathf.Max(0f, context.BaseAmount);
+            for (int i = 0; i < Modifiers.Count; i++)
+            {
+                Func<ElementBuildUpModifierContext, float> modifier = Modifiers[i];
+                if (modifier == null)
+                    continue;
+
+                result = Mathf.Max(0f, modifier(new ElementBuildUpModifierContext(
+                    context.Attacker,
+                    context.Target,
+                    context.ElementType,
+                    result)));
+            }
+
+            return result;
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            Modifiers.Clear();
+        }
+
+        private sealed class Registration : IDisposable
+        {
+            private Func<ElementBuildUpModifierContext, float> modifier;
+
+            public Registration(Func<ElementBuildUpModifierContext, float> modifier)
+            {
+                this.modifier = modifier;
+            }
+
+            public void Dispose()
+            {
+                if (modifier == null)
+                    return;
+
+                Modifiers.Remove(modifier);
+                modifier = null;
+            }
+        }
+
+        private sealed class EmptyHandle : IDisposable
+        {
+            public static readonly EmptyHandle Instance = new();
+            public void Dispose() { }
+        }
+    }
+
     public static class ElementBuildUpResolver
     {
         public static List<ElementDamageResult> ResolveForApplication(
@@ -75,6 +160,8 @@ namespace UnityGAS
 
                 amount = amount * Mathf.Max(0f, entry.multiplier) + entry.flatBonus;
                 amount *= targetMultiplier;
+                amount = ElementBuildUpModifiers.Apply(
+                    new ElementBuildUpModifierContext(attacker, target, entry.elementType, amount));
 
                 if (amount <= 0f)
                     continue;

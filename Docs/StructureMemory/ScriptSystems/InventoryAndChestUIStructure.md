@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-20
+last_reviewed: 2026-09-17
 ---
 
 # Inventory And Chest UI Structure
@@ -87,6 +87,14 @@ Map inventory, chest UI, HUD inventory entry points, item details, inventory run
 - Flow-owned reward popups can appear while Dialogue is still suppressing non-dialogue UI. `RewardDisplayUI` owns that exception boundary through `DialogueService`'s captured-layer temporary visibility API: it reopens the authored Reward canvas and the shared non-raycasting Hover canvas for reward slot item details, then hides both again if Dialogue is still active when the reward popup closes.
 - HUD scripts should project player/combat/status state; they should not own the state they display.
 - `PlayerConsumableInventory.TryUseAt(...)` owns successful consumable-use feedback. For heal potions it plays the player-attached `HealParticle` only after `ConsumableDefinition.TryUse(...)` confirms HP increased.
+
+### Weapon skill cooldown feedback and input buffering
+
+- `WeaponSkillHudSlotPresenter` is the shared projection path for both the active and swap-weapon skill HUDs. A skill that cannot be used because of cooldown displays its existing icon at 60% RGB brightness while preserving alpha. Charge-count abilities stay bright while at least one charge remains and darken only at zero charges. Once actual cooldown starts, the base icon darkens immediately even while the ability is still executing; `activeOverlay` independently retains the active-cast feedback.
+- `PlayerCombatInput2D` owns the player-only 0.08-second weapon Skill1/Skill2 cooldown input window. It stores the current weapon, slot and resolved ability, then retries once when cooldown reaches zero. Weapon changes, slot-resolution changes, pause/UI/flow/input blocking, invalid activation state, or a new busy state discard the request rather than producing a delayed surprise cast.
+- Weapon runtime-state input hooks run before the common cooldown buffer, preserving specialized behavior such as Lightning Spear input handling and Crimson Boundary target consumption.
+- Apprentice Hero Sword hold-charge input uses its existing dedicated pending path. Pressing inside the window waits without cancelling the current basic attack; releasing Skill1 before cooldown completion cancels the request. Charge time begins only after actual ability activation, so cooldown wait time never counts as free charge and a released key cannot produce an automatic minimum-charge attack.
+- Key files: `Runtime/Features/Player/Input/PlayerCombatInput2D.cs`, `Runtime/UI/HUD/WeaponSkillHUD2D.cs`, `Runtime/UI/HUD/SwapWeaponSkillHUD2D.cs`, and `Runtime/UI/HUD/WeaponSkillHudSlotPresenter.cs`.
 
 ## Runtime Boundary Review
 

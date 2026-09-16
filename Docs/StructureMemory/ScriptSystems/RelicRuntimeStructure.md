@@ -29,10 +29,13 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
   starter through `RelicProcManager`. `BurnSourceRuntime` owns the token-scoped
   minimum Fire value used only by burn ticks, so it does not increase native
   weapon Fire damage.
-- `RelicLogic_FeatherOrbit_Managed.damageCoefByLevel` and
-  `RelicLogic_CritFromBonusMoveSpeed_Managed.critPerStepByLevel` provide explicit
-  level curves; when the lists are empty, their original scalar fields remain the
-  compatibility fallback.
+- `RelicLogic_FeatherOrbit_Managed.damageCoefByLevel` provides an explicit damage
+  curve for Feather Orbit.
+- Firm Step, Tonic Gombangdae, and Portable Brazier use dedicated hit-confirm
+  procs. Firm Step accumulates critical chance after non-critical hits and clears
+  it on a critical hit; Tonic Gombangdae refreshes a three-second critical-chance
+  modifier on critical hits; Portable Brazier adds Burn only when a critical hit
+  lands on an already-burning target and owns a global proc cooldown.
 
 ## Key Files
 
@@ -42,6 +45,9 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Items/Relics/Runtime/RelicLogic_TimedStatOnGameplayEvent_Managed.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Items/Relics/Runtime/RelicLogic_StatWhileHealthRatio_Managed.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Items/Relics/Runtime/RelicLogic_MoveSpeedStackOnCriticalHit_Managed.cs`
+- `Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_CritChanceOnNonCriticalHit_Managed.cs`
+- `Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_CritChanceAfterCriticalHit_Managed.cs`
+- `Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_BurnOnCriticalHit_Managed.cs`
 - `Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/`
 - `Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/`
 - `Assets/LeeJunMo/Datas/Looting/ItemDatabase.asset`

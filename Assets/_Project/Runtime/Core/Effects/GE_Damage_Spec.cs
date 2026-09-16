@@ -155,6 +155,9 @@ namespace UnityGAS
             if (spec != null && damageKey != null && spec.TryGetSetByCallerMagnitude(damageKey, out var dv))
                 damage = dv;
 
+            damage = CombatIncomingDamageModifiers.Apply(
+                new CombatIncomingDamageContext(target, spec, damage));
+
             float stunSeconds = fallbackStunSeconds;
             if (spec != null && stunSecondsKey != null && spec.TryGetSetByCallerMagnitude(stunSecondsKey, out var sv))
                 stunSeconds = sv;
