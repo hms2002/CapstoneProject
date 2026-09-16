@@ -15,16 +15,6 @@ public enum GameWindowMode
 }
 
 /// <summary>
-/// 책임: 전역 UI 배율의 사용자 선택 프리셋을 나타낸다.
-/// </summary>
-public enum UiScalePreset
-{
-    Small = 0,
-    Medium = 1,
-    Large = 2,
-}
-
-/// <summary>
 /// 책임: 게임 언어 설정의 사용자 선택 값을 나타낸다.
 /// </summary>
 public enum GameLanguageOption
@@ -63,7 +53,6 @@ public sealed class GameSettingsService : MonoBehaviour
     private const string ResolutionWidthPrefKey = "settings.display.width";
     private const string ResolutionHeightPrefKey = "settings.display.height";
     private const string ScreenShakePrefKey = "settings.gameplay.screenshake";
-    private const string UiScalePrefKey = "settings.ui.scale";
     private const string LanguagePrefKey = "settings.language";
 
     private const int DefaultWindowWidth = 1280;
@@ -84,11 +73,9 @@ public sealed class GameSettingsService : MonoBehaviour
     private int resolutionWidth = DefaultWindowWidth;
     private int resolutionHeight = DefaultWindowHeight;
     private bool screenShakeEnabled = true;
-    private UiScalePreset uiScalePreset = UiScalePreset.Medium;
     private GameLanguageOption language = GameLanguageOption.Korean;
     private bool initialized;
     private GamePresentationController presentationController;
-    private GameUiScaleController uiScaleController;
 
     public event Action SettingsChanged;
 
@@ -96,7 +83,6 @@ public sealed class GameSettingsService : MonoBehaviour
     public GameWindowMode CurrentWindowMode => windowMode;
     public int CurrentResolutionWidth => resolutionWidth;
     public int CurrentResolutionHeight => resolutionHeight;
-    public UiScalePreset CurrentUiScalePreset => uiScalePreset;
     public GameLanguageOption CurrentLanguage => language;
 
     /// <summary>
@@ -267,21 +253,6 @@ public sealed class GameSettingsService : MonoBehaviour
         NotifySettingsChanged();
     }
 
-    public void SetUiScalePreset(UiScalePreset preset)
-    {
-        EnsureInitialized();
-        if (uiScalePreset == preset)
-        {
-            ApplyUiScale();
-            return;
-        }
-
-        uiScalePreset = preset;
-        PlayerPrefs.SetInt(UiScalePrefKey, (int)uiScalePreset);
-        ApplyUiScale();
-        NotifySettingsChanged();
-    }
-
     public void SetLanguage(GameLanguageOption newLanguage)
     {
         EnsureInitialized();
@@ -341,16 +312,6 @@ public sealed class GameSettingsService : MonoBehaviour
         return value ? "켜기" : "끄기";
     }
 
-    public string GetUiScaleLabel(UiScalePreset preset)
-    {
-        return preset switch
-        {
-            UiScalePreset.Small => "작게",
-            UiScalePreset.Large => "크게",
-            _ => "중간",
-        };
-    }
-
     public string GetLanguageLabel(GameLanguageOption option)
     {
         return option switch
@@ -404,17 +365,14 @@ public sealed class GameSettingsService : MonoBehaviour
 
         initialized = true;
         EnsurePresentationController();
-        EnsureUiScaleController();
         LoadPreferences();
         BuildResolutionOptions();
         ApplyDisplaySettings(windowMode, resolutionWidth, resolutionHeight);
-        ApplyUiScale();
         ApplyPresentationBounds();
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        ApplyUiScale();
         ApplyPresentationBounds();
     }
 
@@ -428,16 +386,6 @@ public sealed class GameSettingsService : MonoBehaviour
             presentationController = gameObject.AddComponent<GamePresentationController>();
     }
 
-    private void EnsureUiScaleController()
-    {
-        if (uiScaleController != null)
-            return;
-
-        uiScaleController = GetComponent<GameUiScaleController>();
-        if (uiScaleController == null)
-            uiScaleController = gameObject.AddComponent<GameUiScaleController>();
-    }
-
     private void LoadPreferences()
     {
         windowMode = (GameWindowMode)Mathf.Clamp(
@@ -448,10 +396,6 @@ public sealed class GameSettingsService : MonoBehaviour
         resolutionWidth = Mathf.Max(640, PlayerPrefs.GetInt(ResolutionWidthPrefKey, DefaultWindowWidth));
         resolutionHeight = Mathf.Max(360, PlayerPrefs.GetInt(ResolutionHeightPrefKey, DefaultWindowHeight));
         screenShakeEnabled = PlayerPrefs.GetInt(ScreenShakePrefKey, 1) != 0;
-        uiScalePreset = (UiScalePreset)Mathf.Clamp(
-            PlayerPrefs.GetInt(UiScalePrefKey, (int)UiScalePreset.Medium),
-            (int)UiScalePreset.Small,
-            (int)UiScalePreset.Large);
         language = (GameLanguageOption)Mathf.Clamp(
             PlayerPrefs.GetInt(LanguagePrefKey, (int)GameLanguageOption.Korean),
             (int)GameLanguageOption.Korean,
@@ -530,13 +474,6 @@ public sealed class GameSettingsService : MonoBehaviour
     {
         PlayerPrefs.SetInt(ResolutionWidthPrefKey, resolutionWidth);
         PlayerPrefs.SetInt(ResolutionHeightPrefKey, resolutionHeight);
-    }
-
-    private void ApplyUiScale()
-    {
-        EnsureUiScaleController();
-        if (uiScaleController != null)
-            uiScaleController.Apply(uiScalePreset);
     }
 
     private void NotifySettingsChanged()

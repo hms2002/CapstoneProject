@@ -159,6 +159,105 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
     }
 
     [Test]
+    public void InputActionPressBlock_IsOwnerScoped_AndDoesNotBecomeAFullWeaponBlock()
+    {
+        var actor = Own(new GameObject("Skill input block regression"));
+        var combat = actor.AddComponent<PlayerCombatInput2D>();
+        var firstOwner = new object();
+        var secondOwner = new object();
+
+        try
+        {
+            InputActionQuery.SetPressBlocked(InputActionId.Skill1, firstOwner, true);
+            InputActionQuery.SetPressBlocked(InputActionId.Skill1, secondOwner, true);
+
+            Assert.That(InputActionQuery.IsPressBlocked(InputActionId.Skill1), Is.True);
+            Assert.That(combat.IsWeaponInputBlocked, Is.False,
+                "Tooltip inspection must not hide the weapon HUD or block basic attacks.");
+
+            InputActionQuery.SetPressBlocked(InputActionId.Skill1, firstOwner, false);
+            Assert.That(InputActionQuery.IsPressBlocked(InputActionId.Skill1), Is.True,
+                "One tooltip owner cannot release another owner's block.");
+
+            InputActionQuery.SetPressBlocked(InputActionId.Skill1, secondOwner, false);
+            Assert.That(InputActionQuery.IsPressBlocked(InputActionId.Skill1), Is.False);
+        }
+        finally
+        {
+            InputActionQuery.SetPressBlocked(InputActionId.Skill1, firstOwner, false);
+            InputActionQuery.SetPressBlocked(InputActionId.Skill1, secondOwner, false);
+        }
+    }
+
+    [Test]
+    public void WorldItemHover_OwnsBothSkillPressBlocksUntilHidden()
+    {
+        var anchor = Own(new GameObject("World item hover input owner"));
+        var relic = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+        FieldInfo backendField = typeof(WorldItemHoverPlayback).GetField("backend", BindingFlags.Static | BindingFlags.NonPublic);
+        var previous = (IWorldItemHoverBackend)backendField.GetValue(null);
+        WorldItemHoverPlayback.RegisterBackend(null);
+
+        try
+        {
+            WorldItemHoverPlayback.Show(anchor.transform, relic);
+            Assert.That(InputActionQuery.IsPressBlocked(InputActionId.Skill1), Is.True);
+            Assert.That(InputActionQuery.IsPressBlocked(InputActionId.Skill2), Is.True);
+
+            WorldItemHoverPlayback.Hide(anchor.transform);
+            Assert.That(InputActionQuery.IsPressBlocked(InputActionId.Skill1), Is.False);
+            Assert.That(InputActionQuery.IsPressBlocked(InputActionId.Skill2), Is.False);
+        }
+        finally
+        {
+            WorldItemHoverPlayback.Hide();
+            WorldItemHoverPlayback.RegisterBackend(previous);
+        }
+    }
+
+    [Test]
+    public void SkillInputBlock_PreventsPressedSkillFromStarting()
+    {
+        var actor = Own(new GameObject("Blocked skill activation regression"));
+        actor.AddComponent<AttributeSet>();
+        var system = actor.AddComponent<AbilitySystem>();
+        var inventory = actor.AddComponent<WeaponInventory2D>();
+        var combat = actor.AddComponent<PlayerCombatInput2D>();
+        var logic = Own(ScriptableObject.CreateInstance<PlayerControlRegressionLogic>());
+        var skill = Own(ScriptableObject.CreateInstance<AbilityDefinition>());
+        var weapon = Own(ScriptableObject.CreateInstance<WeaponDefinition>());
+        skill.logic = logic;
+        skill.recoveryTime = 0f;
+        weapon.skill1 = skill;
+        Assert.That(inventory.TrySetWeaponSlot(0, weapon), Is.True);
+
+        var input = new PlayerControlTestInput
+        {
+            BackendComponent = actor.transform,
+            PressedAction = InputActionId.Skill1,
+        };
+        FieldInfo backendField = typeof(InputActionQuery).GetField("backend", BindingFlags.Static | BindingFlags.NonPublic);
+        var previous = (IInputActionQueryBackend)backendField.GetValue(null);
+        InputActionQuery.RegisterBackend(input);
+
+        try
+        {
+            InputActionQuery.SetPressBlocked(InputActionId.Skill1, this, true);
+            Call(combat, "Update");
+            Assert.That(system.IsBusy, Is.False);
+
+            InputActionQuery.SetPressBlocked(InputActionId.Skill1, this, false);
+            Call(combat, "Update");
+            Assert.That(system.CurrentExecSpec?.Definition, Is.EqualTo(skill));
+        }
+        finally
+        {
+            InputActionQuery.SetPressBlocked(InputActionId.Skill1, this, false);
+            InputActionQuery.RegisterBackend(previous);
+        }
+    }
+
+    [Test]
     public void DuplicatePotion_HighlightBudgetTracksAcquisitionsAndReturns()
     {
         // UI is intentionally accessed through reflection: this test assembly references Gameplay,
@@ -224,6 +323,22 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
         public bool CanPlace(ScriptableObject item, int index, int ignoreIndex = -1) => true;
         public bool TrySet(int index, ScriptableObject item) { Items[index] = item; return true; }
         public bool TrySwap(int a, int b) { (Items[a], Items[b]) = (Items[b], Items[a]); return true; }
+    }
+
+    private sealed class PlayerControlTestInput : IInputActionQueryBackend
+    {
+        public Component BackendComponent { get; set; }
+        public InputActionId PressedAction;
+
+        public bool WasPressedThisFrame(InputActionId action) => action == PressedAction;
+        public bool WasReleasedThisFrame(InputActionId action) => false;
+        public bool IsPressed(InputActionId action) => false;
+        public bool IsKeyPressed(KeyCode key) => false;
+        public bool WasKeyPressedThisFrame(KeyCode key) => false;
+        public bool WasKeyReleasedThisFrame(KeyCode key) => false;
+        public Vector2 GetMoveVectorRaw() => Vector2.zero;
+        public Vector2 GetMoveVectorNormalized() => Vector2.zero;
+        public Vector3 GetPointerWorldPosition(Camera camera, float z = 0f) => Vector3.zero;
     }
 }
 

@@ -87,7 +87,7 @@ public class WeaponDrop2D : InteractableBase
 
     private void OnDisable()
     {
-        WorldItemHoverPlayback.Hide(GetDetailAnchor());
+        OnUnHighlight();
     }
 
     public override bool CanInteract(IPlayerInteractor player)

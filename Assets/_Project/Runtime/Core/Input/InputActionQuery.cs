@@ -23,6 +23,7 @@ public interface IInputActionQueryBackend
 public static class InputActionQuery
 {
     private static IInputActionQueryBackend backend;
+    private static readonly System.Collections.Generic.Dictionary<InputActionId, System.Collections.Generic.HashSet<object>> pressBlockOwners = new();
 
     public static bool IsAvailable => IsBackendAlive(backend);
 
@@ -39,7 +40,40 @@ public static class InputActionQuery
 
     public static bool WasPressedThisFrame(InputActionId action)
     {
-        return IsBackendAlive(backend) && backend.WasPressedThisFrame(action);
+        return !IsPressBlocked(action) &&
+               IsBackendAlive(backend) &&
+               backend.WasPressedThisFrame(action);
+    }
+
+    public static bool IsPressBlocked(InputActionId action)
+    {
+        return pressBlockOwners.TryGetValue(action, out System.Collections.Generic.HashSet<object> owners) &&
+               owners.Count > 0;
+    }
+
+    public static void SetPressBlocked(InputActionId action, object owner, bool blocked)
+    {
+        if (owner == null)
+            return;
+
+        if (blocked)
+        {
+            if (!pressBlockOwners.TryGetValue(action, out System.Collections.Generic.HashSet<object> owners))
+            {
+                owners = new System.Collections.Generic.HashSet<object>();
+                pressBlockOwners.Add(action, owners);
+            }
+
+            owners.Add(owner);
+            return;
+        }
+
+        if (!pressBlockOwners.TryGetValue(action, out System.Collections.Generic.HashSet<object> existingOwners))
+            return;
+
+        existingOwners.Remove(owner);
+        if (existingOwners.Count == 0)
+            pressBlockOwners.Remove(action);
     }
 
     public static bool WasReleasedThisFrame(InputActionId action)
@@ -85,5 +119,11 @@ public static class InputActionQuery
     private static bool IsBackendAlive(IInputActionQueryBackend candidate)
     {
         return candidate != null && candidate.BackendComponent != null;
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetPressBlocks()
+    {
+        pressBlockOwners.Clear();
     }
 }
