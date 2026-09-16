@@ -140,3 +140,7 @@ If additional elemental stack statuses adopt this contract, promote the shared s
 ## Boss death cleanup
 
 BossControllerBase consumes all independent Burn stacks immediately on death entry. Existing GameplayEffectRunner cleanup does not own these stacks. BurnStatus2D rejects application to a dead boss and stops its pulse/VFX continuation if damage synchronously cleared all stacks. ConsumeAll releases the active registry entry, stack view, tick accumulator and sustain visual through the existing status owner.
+
+### 2026-09-16 — Shared authored monster HUD supersedes independent Burn view
+
+The former runtime-generated Burn bar/view described above is superseded for the 19 migrated monster prefabs. Burn now implements IMonsterStatusSource, registers in MonsterStatusRuntime, and is displayed as an orange icon/count below HP by an authored MonsterWorldHud prefab. Electrocuted shows the actual GE remaining seconds alongside it. Enemy death clears the common hub before subclass callbacks; disable consumes Burn rather than retaining stacks for re-enable. Existing damage rules and weapon/relic APIs remain. See `Docs/StructureMemory/MonsterWorldHudAndStatus.md` for current ownership, scope and validation limits.

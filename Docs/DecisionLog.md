@@ -3277,3 +3277,16 @@ All formerly unbounded sight masks in Candlestick, LightBead, and Dead'sSkeleton
 ## 2026-09-16 — Merchant refresh excludes the immediately preceding stock
 - User requested that the previous shop list not reappear on refresh. Exclude all previous weapon/relic/consumable IDs, including sold entries, from the replacement roll. This is one-generation exclusion rather than permanent run history.
 - When a slot has no eligible candidates, substitute a remaining relic or consumable instead of leaving a weapon-only slot empty. Preserve the existing consumable cap; do not bypass old-list exclusions if all candidates are exhausted.
+
+## 2026-09-16 — Authored monster HUD and common status registration
+User approved Small/Medium/Large HUD widths 0.75/1/1.4, Pawn without an HP bar, left-aligned status icons, orange Burn stack counts and dark-yellow Electrocuted remaining seconds with black outlines. The target status hub now coordinates Burn and configured Electrocuted cleanup; individual owners retain gameplay values. This supersedes the 2026-08-19 runtime-generated Burn-only UI decision for the 19 migrated monster prefabs. Existing gauge gameplay, Burn balance and four-second Electrocuted effect remain. See `StructureMemory/MonsterWorldHudAndStatus.md` for the authored mapping and verification limits.
+
+## 2026-09-17 — Monster damage trail and boss world statuses
+
+Approved monster HP feedback uses an immediate red fill and a white presentation trail: hold 0.3 seconds after the most recent damage, then decrease over 0.5 seconds. Each hit restarts the hold from the current trail position; healing synchronizes both fills. Boss world HUDs display statuses only because boss HP already has dedicated UI. Gameplay status timers and stack ownership remain in their existing runtime systems.
+
+## 2026-09-17 - Exhibition Upgrade Defaults And Reward Lifetime
+
+The exhibition version grants the requested eight upgrade nodes independently of parent connections, preserving existing purchases. The grant uses purchased IDs as the durable source of truth; player effects and run modifiers keep their existing reapply/rebuild owners. Relic unlocks require a ready ItemManager.
+
+The upgrade-window experience reward is 100 additional magic stones once per saved profile, on actual hub window opening. `UpgradeSaveData.exhibitionOpeningRewardGranted` is set before CurrencyManager publishes the balance/save event. Reopening, scene travel and restart do not create another grant; a fresh/reset profile may receive it again. Both authored notices remain on the upgrade window while open. This version has no separate exhibition build toggle; removing the preset later will not revoke persisted purchases.

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,10 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
 {
     private const int MaximumCardCount = 3;
     private const KeyCode RerollKey = KeyCode.R;
+    private static readonly SoundRef SessionOpenSound = SoundRef.FromKey("level.reward.open");
+    private static readonly SoundRef CardDrawSound = SoundRef.FromKey("level.card.draw");
+    private static readonly SoundRef CardFlipSound = SoundRef.FromKey("level.card.flip");
+    private static readonly SoundRef CardSelectSound = SoundRef.FromKey("level.card.select");
 
     [Serializable]
     private sealed class CardSlotBinding
@@ -307,7 +312,10 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
         {
             Debug.LogError("[LevelRewardSelectionPresenter] Failed to push the selection window to the UI stack.", this);
             sessionController.CloseSession();
+            return;
         }
+
+        SoundPlaybackUtility.Play(SessionOpenSound, sourceObject: this);
     }
 
     private void HandleSessionChanged()
@@ -437,6 +445,8 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
             return;
         }
 
+        SoundPlaybackUtility.Play(CardSelectSound, sourceObject: this);
+
         if (sessionController.IsSessionOpen && sessionController.PendingRewardCount > 0)
             BeginTransition(AnimateNextOffer());
         else
@@ -538,15 +548,25 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
         if (enterDuration <= 0f)
         {
             for (int i = 0; i < count; i++)
+            {
+                SoundPlaybackUtility.Play(CardDrawSound, sourceObject: this);
                 visibleCards[i].SetVerticalOffset(0f);
+            }
             yield break;
         }
 
         float totalDuration = enterDuration + stagger * Mathf.Max(0, count - 1);
         float elapsed = 0f;
+        int nextDrawSoundIndex = 0;
         while (elapsed < totalDuration)
         {
             elapsed += Time.unscaledDeltaTime;
+            while (nextDrawSoundIndex < count && elapsed >= stagger * nextDrawSoundIndex)
+            {
+                SoundPlaybackUtility.Play(CardDrawSound, sourceObject: this);
+                nextDrawSoundIndex++;
+            }
+
             for (int i = 0; i < count; i++)
             {
                 float localTime = elapsed - stagger * i;
@@ -583,6 +603,7 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
 
     private IEnumerator AnimateCardFlip(CardSlotBinding slot)
     {
+        SoundPlaybackUtility.Play(CardFlipSound, sourceObject: this);
         float halfDuration = Mathf.Max(0f, cardFlipHalfDuration);
         if (halfDuration <= 0f)
         {

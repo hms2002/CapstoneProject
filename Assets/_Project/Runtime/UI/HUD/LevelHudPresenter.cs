@@ -20,6 +20,7 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
     [SerializeField] private Image experienceFill;
     [SerializeField] private GameObject rewardReadyBorder;
     [SerializeField] private GameObject levelUpPrompt;
+    [SerializeField] private TMP_Text levelUpPromptText;
 
     [Header("Presentation")]
     [SerializeField, Min(0f)] private float fillAnimationDuration = 0.2f;
@@ -30,6 +31,16 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
     private float visualFill;
     private bool skipNextStateSnap;
     private bool isRewardReadyVisible;
+    private float promptColorElapsed;
+    private RectTransform promptRect;
+    private Vector2 promptRestPosition;
+
+    private void Awake()
+    {
+        promptRect = levelUpPrompt != null ? levelUpPrompt.transform as RectTransform : null;
+        if (promptRect != null)
+            promptRestPosition = promptRect.anchoredPosition;
+    }
 
     private void OnEnable()
     {
@@ -44,11 +55,31 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
         RunLevelProgression.StateChanged -= HandleStateChanged;
         StopFillAnimation();
         SetRewardReadyVisible(false, false);
+        if (promptRect != null)
+            promptRect.anchoredPosition = promptRestPosition;
     }
 
     private void Update()
     {
         RefreshRewardAvailability();
+        AnimateRewardPrompt();
+    }
+
+    private void AnimateRewardPrompt()
+    {
+        if (!isRewardReadyVisible || levelUpPromptText == null || !levelUpPromptText.isActiveAndEnabled)
+            return;
+
+        const float colorCycleDuration = 2.4f;
+        promptColorElapsed = Mathf.Repeat(promptColorElapsed + Time.unscaledDeltaTime, colorCycleDuration);
+        float blend = 0.5f - 0.5f * Mathf.Cos(promptColorElapsed * Mathf.PI * 2f / colorCycleDuration);
+        // Change hue only; saturation, value and alpha stay constant.
+        levelUpPromptText.color = Color.HSVToRGB(Mathf.Lerp(0.23f, 0.38f, blend), 0.62f, 1f);
+        if (promptRect != null)
+        {
+            float hoverOffset = 4f * Mathf.Sin(promptColorElapsed * Mathf.PI * 2f / colorCycleDuration);
+            promptRect.anchoredPosition = promptRestPosition + Vector2.up * hoverOffset;
+        }
     }
 
     private void HandleExperienceGranted(LevelProgressionGrantResult result)
@@ -180,6 +211,11 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
         }
 
         isRewardReadyVisible = visible;
+        promptColorElapsed = 0f;
+        if (promptRect != null)
+            promptRect.anchoredPosition = promptRestPosition;
+        if (levelUpPromptText != null)
+            levelUpPromptText.color = Color.HSVToRGB(0.23f, 0.62f, 1f);
         if (rewardReadyBorder != null && rewardReadyBorder.activeSelf != borderVisible)
             rewardReadyBorder.SetActive(borderVisible);
         if (levelUpPrompt != null && levelUpPrompt.activeSelf != visible)

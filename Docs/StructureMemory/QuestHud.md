@@ -43,3 +43,9 @@ This section supersedes the original single 퀘스트 heading/title-plus-body la
 - Main group enters from the left when first shown; changed objective text updates in place. Main tween is killed and pose restored on disable. Run-only parcel state still drives one subquest row; titleLabel is hidden and multiple subquests can use ShowQuest as before.
 - Main group, main description, subheading and catalog references are authored in the prefab. CombatFeelAndQuestInstaller.ConfigureQuestSections upgrades or creates the same structure. Subheading hides while no subquests exist; row exits and subsequent reflow retain the existing animation.
 - Read-only current-run flags prevent previous runs' durable boss-clear achievements from advancing the new run's portal instructions. No new quest manager/save DTO is introduced.
+
+## Combat visibility (2026-09-17)
+
+- QuestHudView uses MonsterSpawnRoomGroup.IsPlayerInCombat, shared with inventory gating, to slide the entire authored QuestHUD root offscreen to the left. Combat end slides it right to its cached authored position, using the existing exitSeconds/InCubic and enterSeconds/OutCubic settings. This follows room encounter/wave state with enemy recognition as the existing fallback, including active bosses.
+- The presenter and content remain active offscreen so inventory updates and combat-end detection continue. LateUpdate starts a tween only when combat state changes; a reversal kills the previous tween and starts at the current position. OnEnable during combat initializes offscreen to avoid a flash; OnDisable kills the parent tween and restores its authored position. Child slide endpoints compensate for the parent offset, keeping row animations offscreen while hidden.
+- Officer completion exit is cancelled/deferred during combat and waits for the return slide; the completion acknowledgement also checks combat state. External HUD-root disable still uses the existing cleanup/rebind lifecycle.

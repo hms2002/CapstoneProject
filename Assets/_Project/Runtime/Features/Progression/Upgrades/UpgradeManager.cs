@@ -185,6 +185,15 @@ public class UpgradeManager : MonoBehaviour
         UpgradeUiPlayback.Close();
     }
 
+    public bool NotifyExhibitionUIOpened()
+    {
+        CheckAndUnlockNodes();
+        RebuildRunModifiers();
+        runtimeEffectService?.TryReapplyAllEffects();
+        return progressService != null &&
+            progressService.TryGrantExhibitionOpeningReward(CurrencyManager.Instance);
+    }
+
     public void NotifyUIClosed()
     {
         EnsureNotifications().NotifyUIClosed();

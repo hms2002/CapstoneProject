@@ -2161,3 +2161,9 @@ The display now retains each boss bubble direction independently; weapon attack 
 - Cause: GlobalUIRoot's three LevelRewardCardView.iconImage references targeted inactive legacy Icon children; visible CardVisualMount Images retained fixed artwork. Data GUID validation alone missed the presentation target.
 - Fix: point the three iconImage references to their existing active card-root Images, which also receive button tint. Keep the legacy children inactive.
 - Prevention: trace definition -> Bind -> serialized Image -> active visible GameObject when verifying authored UI artwork. Check actual Editor rendering separately; static references do not establish visual success.
+
+## 2026-09-17 — Odd Iron burst recaptured a displaced recoil pose
+
+- Symptom: the revolver retained an offset after a barrage. Each PlayFireRecoil cached the current local position before stopping the previous recoil without resetting it. The authored 0.08s barrage interval is shorter than the 0.035s outward + 0.09s return cycle, so each new shot could redefine the resting position while displaced.
+- Fix/prevention: cache the resting position once per recoil Transform, never on each interrupted shot. Restart interpolation from the current pose but keep both the kick target and return target relative to the fixed baseline. Disable/equip cleanup restores that baseline. Related to the cached weapon interrupted-pose issue above.
+- Verification: Gameplay.csproj MSBuild passed and source lifecycle/diff checks passed. Live Unity barrage and disable/re-equip verification remain unexecuted.

@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1baefbaf6f1e490ab036043c3677d72a, type: 3}
   m_Name: AL_OddIronShot
   m_EditorClassIdentifier: 
+  reloadSound:
+    key: weapon.oddiron.reload
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

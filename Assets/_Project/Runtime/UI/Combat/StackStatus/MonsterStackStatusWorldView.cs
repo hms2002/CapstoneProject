@@ -1,176 +1,174 @@
-using System.Collections;
+using System;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityGAS;
 
-/// <summary>정수형 상태를 몬스터 머리 위 사각 아이콘·바·숫자로 표시하는 독립 월드 뷰입니다.</summary>
+/// <summary>Authored monster HUD: HP projection plus left-aligned stack/time status slots.</summary>
 [DisallowMultipleComponent]
 public sealed class MonsterStackStatusWorldView : MonoBehaviour
 {
-    private const string StatusSortingLayerName = "UI";
-    private static readonly Vector2 IconSize = new(0.24f, 0.24f);
-    private static readonly Vector2 IconPulseSize = new(0.34f, 0.34f);
-
-    private sealed class Backend : IMonsterStackStatusViewBackend
+    [Serializable]
+    private sealed class StatusSlot
     {
-        public void Attach(GameObject target, IMonsterStackStatusSource source)
+        public string statusId;
+        public RectTransform root;
+        public RectTransform icon;
+        public TMP_Text valueText;
+        public float width;
+        [NonSerialized] public IMonsterStatusSource source;
+        [NonSerialized] public float pulseUntil;
+        public void Pulse() => pulseUntil = Time.time + 0.09f;
+        public void Bind(IMonsterStatusSource next)
         {
-            if (target == null || source == null) return;
-            MonsterStackStatusWorldView view = target.GetComponent<MonsterStackStatusWorldView>();
-            if (view == null) view = target.AddComponent<MonsterStackStatusWorldView>();
-            view.Bind(source);
-        }
-
-        public void Detach(GameObject target, IMonsterStackStatusSource source)
-        {
-            if (target == null) return;
-            MonsterStackStatusWorldView view = target.GetComponent<MonsterStackStatusWorldView>();
-            if (view != null && ReferenceEquals(view.source, source))
-                view.Unbind(source);
+            if (ReferenceEquals(source, next)) return;
+            if (source != null) source.PulseRequested -= Pulse;
+            source = next;
+            pulseUntil = 0f;
+            if (source != null) source.PulseRequested += Pulse;
         }
     }
 
-    private static readonly Backend SharedBackend = new();
-    private static Sprite squareSprite;
+    [SerializeField] private RectTransform visualRoot;
+    [SerializeField] private RectTransform healthBar;
+    [SerializeField] private Image healthFill;
+    [SerializeField] private Image damageTrail;
+    [SerializeField, Min(0f)] private float damageTrailDelay = 0.3f;
+    [SerializeField, Min(0.01f)] private float damageTrailDuration = 0.5f;
+    [SerializeField] private RectTransform statusRow;
+    [SerializeField] private AttributeDefinition healthAttribute;
+    [SerializeField] private AttributeDefinition maxHealthAttribute;
+    [SerializeField] private float worldScale = 0.014f;
+    [SerializeField] private float statusGap = 5f;
+    [SerializeField] private StatusSlot[] slots;
+    private Enemy enemy;
+    private AttributeSet attributes;
+    private MonsterSizeProfile sizeProfile;
+    private MonsterStatusRuntime statuses;
+    private bool healthInitialized;
+    private float healthRatio;
+    private float trailRatio;
+    private float trailStartRatio;
+    private float lastDamageTime;
 
-    private IMonsterStackStatusSource source;
-    private GameObject visualRoot;
-    private Transform icon;
-    private SpriteRenderer iconRenderer;
-    private Transform fill;
-    private TextMeshPro countText;
-    private Coroutine pulseRoutine;
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    private static void RegisterBackend() => MonsterStackStatusViewPlayback.RegisterBackend(SharedBackend);
-
-    public void Bind(IMonsterStackStatusSource value)
+    private void Awake()
     {
-        Unsubscribe();
-        source = value;
-        EnsureVisuals();
-        RefreshIcon();
-        source.StackChanged += Refresh;
-        source.PulseRequested += PlayPulse;
-        Refresh();
+        enemy = GetComponentInParent<Enemy>();
+        sizeProfile = GetComponentInParent<MonsterSizeProfile>();
+        if (sizeProfile == null) return;
+        attributes = sizeProfile.GetComponent<AttributeSet>();
+        statuses = sizeProfile.GetComponent<MonsterStatusRuntime>();
     }
 
-    private void Unbind(IMonsterStackStatusSource value)
+    private void OnEnable()
     {
-        if (!ReferenceEquals(source, value)) return;
-        Unsubscribe();
-        if (visualRoot != null) visualRoot.SetActive(false);
+        healthInitialized = false;
+        if (attributes != null) attributes.OnAttributeChanged += OnAttributeChanged;
+        if (enemy != null) enemy.DeathStarted += OnDeath;
+        RefreshHealth();
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
-        Unsubscribe();
-        if (visualRoot != null) Destroy(visualRoot);
+        healthInitialized = false;
+        if (attributes != null) attributes.OnAttributeChanged -= OnAttributeChanged;
+        if (enemy != null) enemy.DeathStarted -= OnDeath;
+        if (slots != null) foreach (var slot in slots) slot.Bind(null);
     }
 
-    private void Unsubscribe()
+    private void OnDeath(Enemy _) => visualRoot.gameObject.SetActive(false);
+    private void OnAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
     {
-        if (source == null) return;
-        source.StackChanged -= Refresh;
-        source.PulseRequested -= PlayPulse;
-        source = null;
+        if (attribute == healthAttribute || attribute == maxHealthAttribute)
+            RefreshHealth(attribute == healthAttribute && newValue < oldValue);
     }
 
-    private void EnsureVisuals()
+    private void Start() => RefreshHealth(); // All AttributeSet/appearance initialization has completed.
+
+    private void RefreshHealth(bool damaged = false)
     {
-        if (visualRoot != null) return;
-
-        visualRoot = new GameObject("StackStatusView");
-        visualRoot.transform.SetParent(transform, false);
-        visualRoot.transform.localPosition = new Vector3(0f, 1.25f, 0f);
-
-        GameObject iconObject = CreateSquare("Icon", visualRoot.transform, new Vector3(-0.58f, 0f, 0f), IconSize, source.DisplayColor, 2);
-        icon = iconObject.transform;
-        iconRenderer = iconObject.GetComponent<SpriteRenderer>();
-        CreateSquare("BarBackground", visualRoot.transform, Vector3.zero, new Vector2(0.9f, 0.14f), new Color(0.08f, 0.04f, 0.03f, 0.9f), 0);
-        fill = CreateSquare("BarFill", visualRoot.transform, new Vector3(-0.45f, 0f, 0f), new Vector2(0.9f, 0.1f), source.DisplayColor, 1).transform;
-
-        GameObject textObject = new("Count");
-        textObject.transform.SetParent(visualRoot.transform, false);
-        textObject.transform.localPosition = new Vector3(0.62f, -0.02f, 0f);
-        countText = textObject.AddComponent<TextMeshPro>();
-        countText.alignment = TextAlignmentOptions.Center;
-        countText.fontSize = 2.4f;
-        countText.color = Color.white;
-        countText.sortingLayerID = SortingLayer.NameToID(StatusSortingLayerName);
-        countText.sortingOrder = 3;
-        countText.rectTransform.sizeDelta = new Vector2(0.65f, 0.35f);
+        if (attributes == null || healthFill == null) return;
+        float maximum = attributes.GetAttributeValue(maxHealthAttribute);
+        float ratio = maximum > 0f
+            ? Mathf.Clamp01(attributes.GetAttributeValue(healthAttribute) / maximum) : 0f;
+        ApplyHealthRatio(ratio, damaged, Time.time);
     }
 
-    private void Refresh()
+    private void ApplyHealthRatio(float ratio, bool damaged, float now)
     {
-        if (source == null || visualRoot == null) return;
-        bool visible = source.CurrentStacks > 0;
-        visualRoot.SetActive(visible);
+        ratio = Mathf.Clamp01(ratio);
+        if (!healthInitialized || (!damaged && !Mathf.Approximately(ratio, healthRatio)))
+        {
+            // Initial bind, healing and maximum-HP rescaling do not leave damage feedback behind.
+            trailRatio = trailStartRatio = ratio;
+        }
+        else if (damaged && ratio < healthRatio)
+        {
+            UpdateHealthTrail(now);
+            trailStartRatio = trailRatio = Mathf.Max(trailRatio, healthRatio);
+            lastDamageTime = now;
+        }
+        healthInitialized = true;
+        healthRatio = ratio;
+        SetBarRatio(healthFill, healthRatio);
+        SetBarRatio(damageTrail, trailRatio);
+    }
+
+    private void UpdateHealthTrail(float now)
+    {
+        if (!healthInitialized) return;
+        if (trailRatio > healthRatio)
+        {
+            float elapsed = now - lastDamageTime - damageTrailDelay;
+            if (elapsed >= 0f)
+                trailRatio = Mathf.Lerp(trailStartRatio, healthRatio,
+                    Mathf.Clamp01(elapsed / Mathf.Max(0.01f, damageTrailDuration)));
+        }
+        SetBarRatio(damageTrail, trailRatio);
+    }
+
+    private static void SetBarRatio(Image bar, float ratio)
+    {
+        if (bar == null) return;
+        bar.rectTransform.anchorMax = new Vector2(ratio, 1f);
+        bar.gameObject.SetActive(ratio > 0f);
+    }
+
+    private void LateUpdate()
+    {
+        if (sizeProfile == null || sizeProfile.HudAnchor == null || visualRoot == null) return;
+        bool visible = sizeProfile.isActiveAndEnabled && (enemy == null || (enemy.isActiveAndEnabled && !enemy.IsDead));
+        visualRoot.gameObject.SetActive(visible);
         if (!visible) return;
+        UpdateHealthTrail(Time.time);
 
-        float ratio = Mathf.Clamp01(source.CurrentStacks / (float)Mathf.Max(1, source.MaxStacks));
-        fill.localScale = new Vector3(0.9f * ratio, 0.1f, 1f);
-        fill.localPosition = new Vector3(-0.45f + 0.45f * ratio, 0f, 0f);
-        countText.text = source.CurrentStacks.ToString();
+        // The anchor follows the body. The HUD itself remains upright at a fixed world scale.
+        transform.SetPositionAndRotation(sizeProfile.HudAnchor.position, Quaternion.identity);
+        Vector3 parentScale = transform.parent != null ? transform.parent.lossyScale : Vector3.one;
+        transform.localScale = new Vector3(SafeScale(parentScale.x), SafeScale(parentScale.y), SafeScale(parentScale.z));
+        float width = sizeProfile.HealthBarWidth;
+        healthBar.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+        healthBar.gameObject.SetActive(sizeProfile.ShowHealthBar);
+        statusRow.anchoredPosition = new Vector2(-width * 0.5f, sizeProfile.ShowHealthBar ? -15f : 0f);
+        float x = 0f;
+        if (slots == null) return;
+        foreach (var slot in slots)
+        {
+            IMonsterStatusSource source = null;
+            bool active = statuses != null && statuses.TryGetActive(slot.statusId, out source);
+            slot.Bind(source);
+            slot.root.gameObject.SetActive(active);
+            if (!active) continue;
+            slot.root.anchoredPosition = new Vector2(x, 0f);
+            slot.valueText.color = source.DisplayColor;
+            slot.valueText.text = source.ValueKind == MonsterStatusValueKind.Seconds
+                ? (Mathf.Ceil(source.DisplayValue * 10f) / 10f).ToString("0.0", CultureInfo.InvariantCulture) + "s"
+                : Mathf.RoundToInt(source.DisplayValue).ToString(CultureInfo.InvariantCulture);
+            slot.icon.localScale = Time.time < slot.pulseUntil ? Vector3.one * 1.2f : Vector3.one;
+            x += slot.width + statusGap;
+        }
     }
 
-    private void RefreshIcon()
-    {
-        if (source == null || iconRenderer == null)
-            return;
-
-        Sprite resolvedIcon = MonsterStackStatusIconCatalog.ResolveIcon(source.StatusId);
-        iconRenderer.sprite = resolvedIcon != null ? resolvedIcon : GetSquareSprite();
-        iconRenderer.color = resolvedIcon != null ? Color.white : source.DisplayColor;
-        SetIconSize(IconSize);
-    }
-
-    private void PlayPulse()
-    {
-        if (pulseRoutine != null) StopCoroutine(pulseRoutine);
-        pulseRoutine = StartCoroutine(PulseRoutine());
-    }
-
-    private IEnumerator PulseRoutine()
-    {
-        if (icon == null) yield break;
-        SetIconSize(IconPulseSize);
-        yield return new WaitForSeconds(0.09f);
-        if (icon != null) SetIconSize(IconSize);
-        pulseRoutine = null;
-    }
-
-    private void SetIconSize(Vector2 size)
-    {
-        if (icon == null)
-            return;
-
-        Sprite sprite = iconRenderer != null ? iconRenderer.sprite : null;
-        Vector2 spriteSize = sprite != null ? sprite.bounds.size : Vector2.one;
-        float scaleX = spriteSize.x > 0f ? size.x / spriteSize.x : size.x;
-        float scaleY = spriteSize.y > 0f ? size.y / spriteSize.y : size.y;
-        icon.localScale = new Vector3(scaleX, scaleY, 1f);
-    }
-
-    private static GameObject CreateSquare(string name, Transform parent, Vector3 localPosition, Vector2 size, Color color, int sortingOrder)
-    {
-        var go = new GameObject(name);
-        go.transform.SetParent(parent, false);
-        go.transform.localPosition = localPosition;
-        go.transform.localScale = new Vector3(size.x, size.y, 1f);
-        SpriteRenderer renderer = go.AddComponent<SpriteRenderer>();
-        renderer.sprite = GetSquareSprite();
-        renderer.color = color;
-        renderer.sortingLayerName = StatusSortingLayerName;
-        renderer.sortingOrder = sortingOrder;
-        return go;
-    }
-
-    private static Sprite GetSquareSprite()
-    {
-        if (squareSprite == null)
-            squareSprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0f, 0f, 1f, 1f), new Vector2(0.5f, 0.5f), 1f);
-        return squareSprite;
-    }
+    private float SafeScale(float parentScale) => Mathf.Abs(parentScale) > 0.0001f ? worldScale / parentScale : worldScale;
 }

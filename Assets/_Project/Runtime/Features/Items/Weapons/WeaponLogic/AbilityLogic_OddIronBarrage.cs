@@ -21,7 +21,6 @@ namespace UnityGAS.Sample
             if (data == null || data.projectilePrefab == null || runtimeData == null)
                 yield break;
 
-            if (!runtimeData.HasAmmo) WeaponExclusiveRelics.TryReload(system.gameObject, runtimeData);
             int roundsToFire = runtimeData.CurrentAmmo;
             if (roundsToFire <= 0)
                 yield break;

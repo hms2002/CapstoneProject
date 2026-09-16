@@ -3,6 +3,13 @@ using System.Collections.Generic;
 // 책임: 업그레이드 데이터베이스의 노드 조회, 잠금 상태, 구매 가능 여부와 해금 변화를 계산한다.
 public sealed class UpgradeProgressService
 {
+    // Exhibition preset: bag I/II, relic unlock, graves, chest reroll, shop/refresh/discount.
+    private static readonly int[] ExhibitionNodeIds =
+    {
+        -993005279, 749890120, 1433597785, -1492335095,
+        674725477, -2095978215, -1633135072, 484471810
+    };
+
     private readonly UpgradeDatabase upgradeDatabase;
     private readonly Dictionary<int, UpgradeNodeSO> upgradeMap = new Dictionary<int, UpgradeNodeSO>();
 
@@ -87,6 +94,80 @@ public sealed class UpgradeProgressService
         if (!data.purchasedIDs.Contains(id))
             data.purchasedIDs.Add(id);
 
+        return true;
+    }
+
+    public bool GrantExhibitionDefaults()
+    {
+        UpgradeSaveData data = TryGetSaveData();
+        if (data == null)
+            return false;
+
+        // Validate the whole preset before changing progress. Item unlocks need their ready owner.
+        foreach (int id in ExhibitionNodeIds)
+        {
+            UpgradeNodeSO node = GetUpgradeByID(id);
+            if (node == null)
+                return false;
+
+            if (data.purchasedIDs.Contains(id) || node.effects == null)
+                continue;
+
+            foreach (UpgradeEffectSO effect in node.effects)
+            {
+                if (effect is ItemUnlockUpgradeEffectSO &&
+                    (ItemManager.Instance == null || !ItemManager.Instance.IsReady))
+                    return false;
+            }
+        }
+
+        bool changed = false;
+        foreach (int id in ExhibitionNodeIds)
+        {
+            if (data.purchasedIDs.Contains(id))
+                continue;
+
+            data.unlockedIDs.Remove(id);
+            data.purchasedIDs.Add(id);
+            changed = true;
+
+            UpgradeNodeSO node = GetUpgradeByID(id);
+            if (node.effects == null)
+                continue;
+
+            // Player effects and run modifiers use the existing reapply/rebuild lifecycle.
+            foreach (UpgradeEffectSO effect in node.effects)
+            {
+                if (effect is ItemUnlockUpgradeEffectSO)
+                    effect.ApplyOnPurchase(null);
+            }
+        }
+
+        return changed;
+    }
+
+    public bool TryGrantExhibitionOpeningReward(CurrencyManager currency)
+    {
+        UpgradeSaveData data = TryGetSaveData();
+        if (data == null)
+            return false;
+
+        foreach (int id in ExhibitionNodeIds)
+        {
+            if (!data.purchasedIDs.Contains(id))
+                return false;
+        }
+
+        if (data.exhibitionOpeningRewardGranted)
+            return true;
+
+        // The reward is durable hub currency, never an uncommitted active-run delta.
+        if (currency == null || RunSessionStore.IsRunActive)
+            return false;
+
+        // Set the marker before the currency event/save, including reentrant UI listeners.
+        data.exhibitionOpeningRewardGranted = true;
+        currency.AddMagicStone(100);
         return true;
     }
 

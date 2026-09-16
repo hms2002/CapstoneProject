@@ -512,6 +512,22 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
+  - key: weapon.oddiron.reload
+    bus: 0
+    category: 3
+    variantPlaybackMode: 0
+    variants:
+    - {fileID: 8300000, guid: 07d5febd069f4caba4c37a95d6264d0b, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 1
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
   - key: weapon.oddiron.emptyshot
     bus: 0
     category: 3
@@ -2754,6 +2770,86 @@ MonoBehaviour:
     pitchMax: 1
     loop: 0
     spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: level.reward.open
+    bus: 0
+    category: 1
+    variantPlaybackMode: 0
+    variants:
+    - {fileID: 8300000, guid: 4ce737e3491a4b2b95f9ee1dda6be434, type: 3}
+    volume: 0.1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: level.up.ready
+    bus: 0
+    category: 1
+    variantPlaybackMode: 0
+    variants:
+    - {fileID: 8300000, guid: 5835303374f346e5aa68eb551dab3ac2, type: 3}
+    volume: 0.1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: level.card.draw
+    bus: 0
+    category: 1
+    variantPlaybackMode: 0
+    variants:
+    - {fileID: 8300000, guid: ec688dd69dfc4e15b2d672d8a4a8fe5d, type: 3}
+    volume: 0.1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: level.card.flip
+    bus: 0
+    category: 1
+    variantPlaybackMode: 0
+    variants:
+    - {fileID: 8300000, guid: ee92f083e09a48c2b7502d312319ffbf, type: 3}
+    volume: 0.1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: level.card.select
+    bus: 0
+    category: 1
+    variantPlaybackMode: 0
+    variants:
+    - {fileID: 8300000, guid: 7cf02c44feed4e76848bacec8a3ff1b1, type: 3}
+    volume: 0.1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
     important: 0
     cooldown: 0
     minDistance: 1

@@ -19,11 +19,12 @@ internal sealed class UpgradeProgressSaveService
         if (progressService == null || !GameDataStore.IsAvailable)
             return;
 
-        bool isChanged = progressService.CheckAndUnlockNodes();
+        bool grantedDefaults = progressService.GrantExhibitionDefaults();
+        bool isChanged = progressService.CheckAndUnlockNodes() || grantedDefaults;
         if (!isChanged)
             return;
 
-        if (requestSaveOnChange)
+        if (requestSaveOnChange || grantedDefaults)
             RequestImmediateSave();
 
         NotifyDataChanged();

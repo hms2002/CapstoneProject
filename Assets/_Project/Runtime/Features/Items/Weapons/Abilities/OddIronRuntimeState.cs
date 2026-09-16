@@ -78,7 +78,7 @@ namespace UnityGAS.Sample
         private IEnumerator PlayRecoilRoutine(Transform target, Vector2 direction)
         {
             Vector3 recoilOffset = ResolveLocalRecoilOffset(target, direction);
-            yield return TweenLocalPosition(target, baseLocalPosition, baseLocalPosition + recoilOffset, recoilOutSeconds);
+            yield return TweenLocalPosition(target, target.localPosition, baseLocalPosition + recoilOffset, recoilOutSeconds);
             yield return TweenLocalPosition(target, target.localPosition, baseLocalPosition, recoilReturnSeconds);
             recoilRoutine = null;
         }
@@ -138,6 +138,10 @@ namespace UnityGAS.Sample
         {
             Transform target = ResolveRecoilRoot();
             if (target == null)
+                return;
+
+            // Repeated shots must not capture a displaced recoil pose as the resting position.
+            if (hasBaseLocalPosition && cachedRecoilRoot == target)
                 return;
 
             cachedRecoilRoot = target;

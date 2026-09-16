@@ -68,7 +68,8 @@ public sealed class WeaponAbilitySelector
             WeaponExclusiveRelics.Has(weaponInventory.gameObject, WeaponExclusiveRelics.OddIronMagazine))
         {
             if (slot == WeaponAbilitySlot.Attack) return oddIron.Shot;
-            if (slot == WeaponAbilitySlot.Skill2) return oddIron.Barrage;
+            // Empty barrage input uses the same reload-only activation as a basic attack.
+            if (slot == WeaponAbilitySlot.Skill2) return oddIron.Shot;
         }
         if (loadout != null)
         {

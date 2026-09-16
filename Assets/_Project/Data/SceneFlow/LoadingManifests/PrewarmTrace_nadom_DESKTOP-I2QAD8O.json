@@ -1,230 +1,17 @@
 {
     "sessions": [
         {
-            "sessionId": "360beddbc4ac4619b255c8057b1beb8f",
-            "startedUtc": "2026-09-16T00:55:03.6559112Z",
-            "endedUtc": "2026-09-16T00:55:15.2258217Z",
-            "entries": []
-        },
-        {
-            "sessionId": "05b8abe4598145b482bf9f5969991b7b",
-            "startedUtc": "2026-09-16T01:19:10.7694694Z",
-            "endedUtc": "2026-09-16T01:19:15.9880736Z",
-            "entries": []
-        },
-        {
-            "sessionId": "687d81d3600f46ecb832d07304bce0b7",
-            "startedUtc": "2026-09-16T02:04:27.8948444Z",
-            "endedUtc": "2026-09-16T02:04:30.0194432Z",
-            "entries": []
-        },
-        {
-            "sessionId": "2c4ca8f22a4245eb8f0a0f945a314be8",
-            "startedUtc": "2026-09-16T02:07:58.1746370Z",
-            "endedUtc": "2026-09-16T02:08:06.9629946Z",
-            "entries": []
-        },
-        {
-            "sessionId": "8487f3fc0d684e8f971ae51c53ce287a",
-            "startedUtc": "2026-09-16T02:11:33.0629181Z",
-            "endedUtc": "2026-09-16T02:11:40.9273823Z",
-            "entries": []
-        },
-        {
-            "sessionId": "abc23a29d5884d54b58b0955f6322297",
-            "startedUtc": "2026-09-16T02:16:41.6079976Z",
-            "endedUtc": "2026-09-16T02:16:42.6741316Z",
-            "entries": []
-        },
-        {
-            "sessionId": "04198f6f86bf4066857d409677f33ff0",
-            "startedUtc": "2026-09-16T03:14:41.9992439Z",
-            "endedUtc": "2026-09-16T03:31:27.9944168Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 258,
-                    "coldSpawns": 79,
-                    "firstSeenSeconds": 488.83831787109377,
-                    "lastSeenSeconds": 1002.4863891601563,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 69,
-                    "coldSpawns": 53,
-                    "firstSeenSeconds": 241.0023651123047,
-                    "lastSeenSeconds": 981.3037109375,
-                    "firstSceneName": "ProceduralSlimeCorridor",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab",
-                    "prefabName": "PF_DeadSkeletonExplosionPurple",
-                    "totalSpawns": 10,
-                    "coldSpawns": 10,
-                    "firstSeenSeconds": 848.522705078125,
-                    "lastSeenSeconds": 887.3745727539063,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/ExplosionParticle.prefab",
-                    "prefabName": "ExplosionParticle",
-                    "totalSpawns": 10,
-                    "coldSpawns": 7,
-                    "firstSeenSeconds": 848.6299438476563,
-                    "lastSeenSeconds": 887.3917236328125,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab",
-                    "prefabName": "PF_Dragon_KegImpactSplash",
-                    "totalSpawns": 9,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 489.9139099121094,
-                    "lastSeenSeconds": 515.6756591796875,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/AnimEffect/SlashHit.prefab",
-                    "prefabName": "SlashHit",
-                    "totalSpawns": 3,
-                    "coldSpawns": 2,
-                    "firstSeenSeconds": 889.0986328125,
-                    "lastSeenSeconds": 889.7286987304688,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/DashDust.prefab",
-                    "prefabName": "DashDust",
-                    "totalSpawns": 2,
-                    "coldSpawns": 2,
-                    "firstSeenSeconds": 487.06085205078127,
-                    "lastSeenSeconds": 512.5875854492188,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/Monsters/ShadowCorridor/ShadowServant/Fog.prefab",
-                    "prefabName": "Fog",
-                    "totalSpawns": 10,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 848.5023803710938,
-                    "lastSeenSeconds": 887.373779296875,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_InhaleWind.prefab",
-                    "prefabName": "PF_Dragon_InhaleWind",
-                    "totalSpawns": 8,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 490.9989929199219,
-                    "lastSeenSeconds": 529.7589721679688,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_LandEffect.prefab",
-                    "prefabName": "PF_Dragon_LandEffect",
-                    "totalSpawns": 2,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 488.5278625488281,
-                    "lastSeenSeconds": 514.030517578125,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_LandingDust.prefab",
-                    "prefabName": "PF_Dragon_LandingDust",
-                    "totalSpawns": 2,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 503.9491271972656,
-                    "lastSeenSeconds": 529.7578735351563,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/HitSpark.prefab",
-                    "prefabName": "HitSpark",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 882.3897705078125,
-                    "lastSeenSeconds": 882.3897705078125,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Art/Sprites/Bosses/Dragon/Effect_DragonMeleeAttack.prefab",
-                    "prefabName": "Effect_DragonMeleeAttack",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 508.8473205566406,
-                    "lastSeenSeconds": 508.8473205566406,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 362.0531921386719,
-                    "lastSeenSeconds": 362.0531921386719,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/WitchNormal1AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal1AttackTileParticle",
-                    "totalSpawns": 3,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 889.131103515625,
-                    "lastSeenSeconds": 889.7452392578125,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/WitchNormal2AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal2AttackTileParticle",
-                    "totalSpawns": 2,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 855.9918823242188,
-                    "lastSeenSeconds": 873.1838989257813,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/AnimEffect/Boss1NormalAttack2Boom.prefab",
-                    "prefabName": "Boss1NormalAttack2Boom",
-                    "totalSpawns": 2,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 855.99169921875,
-                    "lastSeenSeconds": 873.1837158203125,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                }
-            ]
-        },
-        {
-            "sessionId": "1b1af038eb414849bb01fa0ae26f4406",
-            "startedUtc": "2026-09-16T04:37:11.5892153Z",
-            "endedUtc": "2026-09-16T04:40:47.1145503Z",
+            "sessionId": "bdb93bba3a5543ada2a5415742d68ccd",
+            "startedUtc": "2026-09-16T14:54:41.0050560Z",
+            "endedUtc": "2026-09-16T14:57:55.1363839Z",
             "entries": [
                 {
                     "prefabPath": "Assets/_Project/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
                     "prefabName": "PF_ExplosionDebrisBounce_HighArc",
                     "totalSpawns": 18,
                     "coldSpawns": 18,
-                    "firstSeenSeconds": 193.09506225585938,
-                    "lastSeenSeconds": 193.35276794433595,
+                    "firstSeenSeconds": 180.3553924560547,
+                    "lastSeenSeconds": 180.56459045410157,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 },
@@ -233,8 +20,8 @@
                     "prefabName": "PF_Dragon_KegImpactSplash",
                     "totalSpawns": 5,
                     "coldSpawns": 4,
-                    "firstSeenSeconds": 194.16900634765626,
-                    "lastSeenSeconds": 201.79188537597657,
+                    "firstSeenSeconds": 181.41490173339845,
+                    "lastSeenSeconds": 185.7154083251953,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 },
@@ -243,18 +30,18 @@
                     "prefabName": "PF_Dragon_InhaleWind",
                     "totalSpawns": 3,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 208.11891174316407,
-                    "lastSeenSeconds": 215.5029754638672,
+                    "firstSeenSeconds": 186.84576416015626,
+                    "lastSeenSeconds": 194.12367248535157,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 },
                 {
                     "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
                     "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 1,
+                    "totalSpawns": 2,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 41.15122985839844,
-                    "lastSeenSeconds": 41.15161895751953,
+                    "firstSeenSeconds": 32.35934066772461,
+                    "lastSeenSeconds": 34.985836029052737,
                     "firstSceneName": "ProceduralDragonCorridor",
                     "lastSceneName": "ProceduralDragonCorridor"
                 },
@@ -263,8 +50,8 @@
                     "prefabName": "DashDust",
                     "totalSpawns": 1,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 191.7156219482422,
-                    "lastSeenSeconds": 191.7156219482422,
+                    "firstSeenSeconds": 178.99105834960938,
+                    "lastSeenSeconds": 178.99105834960938,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 },
@@ -273,239 +60,65 @@
                     "prefabName": "PF_Dragon_LandEffect",
                     "totalSpawns": 1,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 192.80210876464845,
-                    "lastSeenSeconds": 192.80210876464845,
+                    "firstSeenSeconds": 180.06802368164063,
+                    "lastSeenSeconds": 180.06802368164063,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Art/Sprites/Bosses/Dragon/Effect_DragonMeleeAttack.prefab",
+                    "prefabName": "Effect_DragonMeleeAttack",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 183.39039611816407,
+                    "lastSeenSeconds": 183.39039611816407,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 }
             ]
         },
         {
-            "sessionId": "2d107048af8141cfabfea42836593af3",
-            "startedUtc": "2026-09-16T05:02:56.8606879Z",
-            "endedUtc": "2026-09-16T05:06:08.4750792Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 5,
-                    "coldSpawns": 5,
-                    "firstSeenSeconds": 188.4618377685547,
-                    "lastSeenSeconds": 191.5679168701172,
-                    "firstSceneName": "ProtoTypeHub",
-                    "lastSceneName": "ProtoTypeHub"
-                }
-            ]
-        },
-        {
-            "sessionId": "94eb01fdac294c31ab4b2eae2cb92e04",
-            "startedUtc": "2026-09-16T05:23:58.5486462Z",
-            "endedUtc": "2026-09-16T05:27:43.4523975Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 6,
-                    "coldSpawns": 5,
-                    "firstSeenSeconds": 159.89662170410157,
-                    "lastSeenSeconds": 224.8823699951172,
-                    "firstSceneName": "ProtoTypeHub",
-                    "lastSceneName": "ProceduralDragonCorridor"
-                }
-            ]
-        },
-        {
-            "sessionId": "a2ee6fa0f3f04281a64a278df184456d",
-            "startedUtc": "2026-09-16T05:37:50.6083061Z",
-            "endedUtc": "2026-09-16T05:38:29.7264413Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 5,
-                    "coldSpawns": 5,
-                    "firstSeenSeconds": 35.00056457519531,
-                    "lastSeenSeconds": 39.066776275634769,
-                    "firstSceneName": "ProtoTypeHub",
-                    "lastSceneName": "ProtoTypeHub"
-                }
-            ]
-        },
-        {
-            "sessionId": "d1aad9cdae364b20a0bf66daa1bd1e17",
-            "startedUtc": "2026-09-16T05:40:31.9334120Z",
-            "endedUtc": "2026-09-16T05:40:36.9008654Z",
-            "entries": []
-        },
-        {
-            "sessionId": "f4f2e548a3db4fd89bc93ad9adca4eec",
-            "startedUtc": "2026-09-16T05:46:27.1188595Z",
-            "endedUtc": "2026-09-16T05:46:35.6480127Z",
-            "entries": []
-        },
-        {
-            "sessionId": "21692b4d30f941768b7d83b6b8250a77",
-            "startedUtc": "2026-09-16T06:02:22.0311320Z",
-            "endedUtc": "2026-09-16T06:02:27.1741768Z",
-            "entries": []
-        },
-        {
-            "sessionId": "f9b03ec996db41bb89de47c3a5f81070",
-            "startedUtc": "2026-09-16T06:32:20.7459558Z",
-            "endedUtc": "2026-09-16T06:32:22.1587288Z",
-            "entries": []
-        },
-        {
-            "sessionId": "d90047324e07425aaa1924576ba5e14a",
-            "startedUtc": "2026-09-16T06:40:05.5359089Z",
-            "endedUtc": "2026-09-16T06:40:06.5540218Z",
-            "entries": []
-        },
-        {
-            "sessionId": "c75aee6d1c484ac6b46e5fd46ed16bf0",
-            "startedUtc": "2026-09-16T07:21:20.7951815Z",
-            "endedUtc": "2026-09-16T07:21:21.8098812Z",
-            "entries": []
-        },
-        {
-            "sessionId": "f59c46fef6574c088ee2ee0091df629e",
-            "startedUtc": "2026-09-16T07:26:18.4070664Z",
-            "endedUtc": "2026-09-16T07:39:01.7559518Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 32,
-                    "coldSpawns": 18,
-                    "firstSeenSeconds": 257.217529296875,
-                    "lastSeenSeconds": 763.0455932617188,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 14,
-                    "coldSpawns": 12,
-                    "firstSeenSeconds": 111.31037139892578,
-                    "lastSeenSeconds": 762.3212890625,
-                    "firstSceneName": "ProceduralDragonCorridor",
-                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab",
-                    "prefabName": "PF_Dragon_KegImpactSplash",
-                    "totalSpawns": 4,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 258.4586181640625,
-                    "lastSeenSeconds": 258.4680480957031,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/AnimEffect/SlashHit.prefab",
-                    "prefabName": "SlashHit",
-                    "totalSpawns": 3,
-                    "coldSpawns": 2,
-                    "firstSeenSeconds": 410.29180908203127,
-                    "lastSeenSeconds": 410.97869873046877,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/DashDust.prefab",
-                    "prefabName": "DashDust",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 255.50775146484376,
-                    "lastSeenSeconds": 255.50775146484376,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_LandEffect.prefab",
-                    "prefabName": "PF_Dragon_LandEffect",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 256.9282531738281,
-                    "lastSeenSeconds": 256.9282531738281,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/HitSpark.prefab",
-                    "prefabName": "HitSpark",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 419.8537292480469,
-                    "lastSeenSeconds": 419.8537292480469,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_ExplosionWaterPillarBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionWaterPillarBounce_HighArc",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 712.8151245117188,
-                    "lastSeenSeconds": 712.8151245117188,
-                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
-                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/WitchNormal1AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal1AttackTileParticle",
-                    "totalSpawns": 3,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 410.3095397949219,
-                    "lastSeenSeconds": 410.9869689941406,
-                    "firstSceneName": "HeoMinSeok_Boss_Shadow",
-                    "lastSceneName": "HeoMinSeok_Boss_Shadow"
-                }
-            ]
-        },
-        {
-            "sessionId": "9967e0d576fc4c8db66417015b6cf5ae",
-            "startedUtc": "2026-09-16T08:05:09.4683580Z",
-            "endedUtc": "2026-09-16T08:07:24.9885947Z",
+            "sessionId": "20a9f6c7e48c4c17b61a124a851f1e22",
+            "startedUtc": "2026-09-16T15:00:54.6563153Z",
+            "endedUtc": "2026-09-16T15:04:29.4066331Z",
             "entries": [
                 {
                     "prefabPath": "Assets/_Project/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
                     "prefabName": "PF_ExplosionDebrisBounce_HighArc",
                     "totalSpawns": 19,
                     "coldSpawns": 19,
-                    "firstSeenSeconds": 128.33245849609376,
-                    "lastSeenSeconds": 128.67027282714845,
+                    "firstSeenSeconds": 179.35549926757813,
+                    "lastSeenSeconds": 179.6101837158203,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 },
                 {
                     "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab",
                     "prefabName": "PF_Dragon_KegImpactSplash",
-                    "totalSpawns": 4,
+                    "totalSpawns": 5,
                     "coldSpawns": 4,
-                    "firstSeenSeconds": 129.70814514160157,
-                    "lastSeenSeconds": 129.71624755859376,
+                    "firstSeenSeconds": 180.49032592773438,
+                    "lastSeenSeconds": 212.60952758789063,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 },
                 {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 2,
-                    "coldSpawns": 2,
-                    "firstSeenSeconds": 96.01193237304688,
-                    "lastSeenSeconds": 134.4879608154297,
-                    "firstSceneName": "ProceduralDragonCorridor",
+                    "prefabPath": "Assets/_Project/Art/Sprites/Bosses/Dragon/Effect_DragonMeleeAttack.prefab",
+                    "prefabName": "Effect_DragonMeleeAttack",
+                    "totalSpawns": 4,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 182.76156616210938,
+                    "lastSeenSeconds": 214.7406463623047,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 },
                 {
                     "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_InhaleWind.prefab",
                     "prefabName": "PF_Dragon_InhaleWind",
-                    "totalSpawns": 2,
+                    "totalSpawns": 4,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 130.92153930664063,
-                    "lastSeenSeconds": 134.52218627929688,
+                    "firstSeenSeconds": 191.57745361328126,
+                    "lastSeenSeconds": 205.0634307861328,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 },
@@ -514,8 +127,8 @@
                     "prefabName": "DashDust",
                     "totalSpawns": 1,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 126.94812774658203,
-                    "lastSeenSeconds": 126.94812774658203,
+                    "firstSeenSeconds": 177.9796905517578,
+                    "lastSeenSeconds": 177.98008728027345,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 },
@@ -524,17 +137,234 @@
                     "prefabName": "PF_Dragon_LandEffect",
                     "totalSpawns": 1,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 128.0179443359375,
-                    "lastSeenSeconds": 128.0179443359375,
+                    "firstSeenSeconds": 179.04425048828126,
+                    "lastSeenSeconds": 179.04425048828126,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_LandingDust.prefab",
+                    "prefabName": "PF_Dragon_LandingDust",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 205.0587921142578,
+                    "lastSeenSeconds": 205.0587921142578,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 }
             ]
         },
         {
-            "sessionId": "b4b267adc9f644dd81e81841b05d1add",
-            "startedUtc": "2026-09-16T08:17:59.7695793Z",
-            "endedUtc": "2026-09-16T08:18:04.4703915Z",
+            "sessionId": "d23fcdca427145c1878801905225b5f5",
+            "startedUtc": "2026-09-16T15:05:34.4599399Z",
+            "endedUtc": "2026-09-16T15:05:35.4703024Z",
+            "entries": []
+        },
+        {
+            "sessionId": "299ab4f2f98d43e4a14e507a3ae8917e",
+            "startedUtc": "2026-09-16T15:16:45.5523502Z",
+            "endedUtc": "2026-09-16T15:16:57.9835060Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4123260625dd42028adc3f760c068ae1",
+            "startedUtc": "2026-09-16T15:31:49.8811063Z",
+            "endedUtc": "2026-09-16T15:31:50.8899157Z",
+            "entries": []
+        },
+        {
+            "sessionId": "25315f7d44fd49f98820af2170a4d690",
+            "startedUtc": "2026-09-16T15:34:31.1699653Z",
+            "endedUtc": "2026-09-16T15:34:46.0745444Z",
+            "entries": []
+        },
+        {
+            "sessionId": "c2d0dd8b2d074a60973e9ff6e9470af6",
+            "startedUtc": "2026-09-16T15:35:38.3597523Z",
+            "endedUtc": "2026-09-16T15:38:56.3697437Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 36,
+                    "coldSpawns": 19,
+                    "firstSeenSeconds": 166.0571746826172,
+                    "lastSeenSeconds": 186.035888671875,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab",
+                    "prefabName": "PF_Dragon_KegImpactSplash",
+                    "totalSpawns": 9,
+                    "coldSpawns": 4,
+                    "firstSeenSeconds": 167.19268798828126,
+                    "lastSeenSeconds": 189.49530029296876,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/DashDust.prefab",
+                    "prefabName": "DashDust",
+                    "totalSpawns": 2,
+                    "coldSpawns": 2,
+                    "firstSeenSeconds": 164.68991088867188,
+                    "lastSeenSeconds": 183.9859619140625,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_InhaleWind.prefab",
+                    "prefabName": "PF_Dragon_InhaleWind",
+                    "totalSpawns": 7,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 168.23040771484376,
+                    "lastSeenSeconds": 197.996826171875,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_LandEffect.prefab",
+                    "prefabName": "PF_Dragon_LandEffect",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 165.7550048828125,
+                    "lastSeenSeconds": 185.43739318847657,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_LandingDust.prefab",
+                    "prefabName": "PF_Dragon_LandingDust",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 181.15533447265626,
+                    "lastSeenSeconds": 181.15533447265626,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                }
+            ]
+        },
+        {
+            "sessionId": "ed4cf1ad77d2461ebd27f1c5b40aaca9",
+            "startedUtc": "2026-09-16T16:03:42.8277459Z",
+            "endedUtc": "2026-09-16T16:03:58.1752418Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 4,
+                    "coldSpawns": 4,
+                    "firstSeenSeconds": 11.695671081542969,
+                    "lastSeenSeconds": 14.404430389404297,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ProtoTypeHub"
+                }
+            ]
+        },
+        {
+            "sessionId": "a68ffc5b57164264b65dce2d5125ff92",
+            "startedUtc": "2026-09-16T16:07:43.1082355Z",
+            "endedUtc": "2026-09-16T16:08:47.3624088Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 7,
+                    "coldSpawns": 5,
+                    "firstSeenSeconds": 26.289283752441408,
+                    "lastSeenSeconds": 54.907196044921878,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ProtoTypeHub"
+                }
+            ]
+        },
+        {
+            "sessionId": "ae87bc390fd0420c82a301c801535335",
+            "startedUtc": "2026-09-16T16:14:19.9692840Z",
+            "endedUtc": "2026-09-16T16:14:20.9871666Z",
+            "entries": []
+        },
+        {
+            "sessionId": "81a6596ca952418d833fa707b5d8626d",
+            "startedUtc": "2026-09-16T16:28:27.0171078Z",
+            "endedUtc": "2026-09-16T16:28:30.6166745Z",
+            "entries": []
+        },
+        {
+            "sessionId": "2177d85b23de4e32a250fe36283e110d",
+            "startedUtc": "2026-09-16T16:33:03.3816191Z",
+            "endedUtc": "2026-09-16T16:33:09.9846822Z",
+            "entries": []
+        },
+        {
+            "sessionId": "7720cc4a4c934199b073c4afcf9d8780",
+            "startedUtc": "2026-09-16T16:40:24.6638120Z",
+            "endedUtc": "2026-09-16T16:41:02.9981825Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 26.37824821472168,
+                    "lastSeenSeconds": 34.78916931152344,
+                    "firstSceneName": "ProceduralDragonCorridor",
+                    "lastSceneName": "ProceduralDragonCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "0522ed5a38024ba9af5e3faab3ec6113",
+            "startedUtc": "2026-09-16T16:41:59.1914021Z",
+            "endedUtc": "2026-09-16T16:42:07.8936401Z",
+            "entries": []
+        },
+        {
+            "sessionId": "32e3a55ed1d442ad9ab40b69074344ad",
+            "startedUtc": "2026-09-16T16:46:10.2587761Z",
+            "endedUtc": "2026-09-16T16:47:12.5259723Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 4,
+                    "coldSpawns": 3,
+                    "firstSeenSeconds": 37.430908203125,
+                    "lastSeenSeconds": 62.249229431152347,
+                    "firstSceneName": "ProceduralDragonCorridor",
+                    "lastSceneName": "ProceduralDragonCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "2f515541705d455d8ced426f9c4deff8",
+            "startedUtc": "2026-09-16T16:48:21.0822528Z",
+            "endedUtc": "2026-09-16T16:48:24.2018761Z",
+            "entries": []
+        },
+        {
+            "sessionId": "8f1e95e6e7764e8eaf0280972659c5f7",
+            "startedUtc": "2026-09-16T16:49:10.8400476Z",
+            "endedUtc": "2026-09-16T16:49:15.8641505Z",
+            "entries": []
+        },
+        {
+            "sessionId": "0657b09076be49d3a70ee8106ab7801b",
+            "startedUtc": "2026-09-16T16:50:27.6280416Z",
+            "endedUtc": "2026-09-16T16:50:30.9607814Z",
+            "entries": []
+        },
+        {
+            "sessionId": "5f89315e64834e2eb09aca202b3c6f35",
+            "startedUtc": "2026-09-16T16:52:09.9550378Z",
+            "endedUtc": "2026-09-16T16:52:14.1704441Z",
+            "entries": []
+        },
+        {
+            "sessionId": "9d7222b6b5e4420cb15435a931fa0004",
+            "startedUtc": "2026-09-16T16:55:14.2835823Z",
+            "endedUtc": "2026-09-16T16:55:24.7514828Z",
             "entries": []
         }
     ]

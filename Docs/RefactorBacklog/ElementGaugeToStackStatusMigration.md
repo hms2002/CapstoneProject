@@ -38,3 +38,9 @@ Explicit user approval of the element-gauge replacement plan and its migration s
 ## Status
 
 `proposed` — no legacy gauge code or assets were changed in the Burn/Crimson Boundary slice.
+
+## 2026-09-16 partial migration
+
+Status: `partially-refactored`. The approved 19 monster prefabs now use an authored HP/status HUD and a target status hub. Burn-only runtime UI is retired; Burn stacks and Electrocuted GE remaining seconds are projected together. The old gauge view installers were removed from those prefabs. ElementGaugeSystem, element definitions, buildup attacks and other elemental gameplay remain unchanged. Full gauge-to-stack gameplay migration still requires its own rules and approval; do not infer that this UI migration completes it.
+
+Current map: `Docs/StructureMemory/MonsterWorldHudAndStatus.md`.
