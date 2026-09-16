@@ -29,6 +29,35 @@ public sealed class DungeonReturnPortalPlayModeTests
     private T Own<T>(T value) where T : Object { owned.Add(value); return value; }
 
     [UnityTest]
+    public IEnumerator EncounterHide_ShrinksOnceAndCanReopen()
+    {
+        var root = Own(new GameObject("ShrinkPortalView"));
+        var visual = new GameObject("Up").transform;
+        visual.SetParent(root.transform, false);
+        visual.localScale = new Vector3(2f, 3f, 1f);
+        var view = root.AddComponent<DungeonReturnPortalView>();
+        view.EditorConfigure(visual, null, null, null);
+        view.SelectDirection(RoomSocketDirection.Up);
+        view.Open(true);
+        view.ShrinkAndHide(0.4f);
+        Assert.That(visual.gameObject.activeSelf, Is.True);
+        yield return null;
+        yield return null;
+        Assert.That(visual.localScale.x, Is.LessThan(2f));
+        view.ShrinkAndHide(10f);
+        yield return new WaitForSecondsRealtime(0.5f);
+        Assert.That(visual.gameObject.activeSelf, Is.False, "Repeated requests must not restart shrinking.");
+        view.Open(true);
+        Assert.That(visual.localScale, Is.EqualTo(new Vector3(2f, 3f, 1f)));
+        view.ShrinkAndHide(1f);
+        yield return null;
+        view.Open(true);
+        yield return null;
+        Assert.That(visual.gameObject.activeSelf, Is.True);
+        Assert.That(visual.localScale, Is.EqualTo(new Vector3(2f, 3f, 1f)));
+    }
+
+    [UnityTest]
     public IEnumerator DeathReturn_IsOneShotAndDoesNotCompleteTutorial()
     {
         var player = MakePlayer();
@@ -179,8 +208,8 @@ public sealed class DungeonReturnPortalPlayModeTests
         Assert.That(portal.IsRevealed, Is.True);
     }
 
-    [Test]
-    public void EventPortal_RevealsOnEntry_ButBusyEncounterIsSeparate()
+    [UnityTest]
+    public IEnumerator EventPortal_WaitsForBasicWaves_AndHidesDuringBellCombat()
     {
         var group = Own(new GameObject("EventGroup")).AddComponent<MonsterSpawnRoomGroup>();
         var portal = Own(Object.Instantiate(Load("DungeonReturnPortal"))).GetComponent<DungeonReturnPortal>();
@@ -188,12 +217,29 @@ public sealed class DungeonReturnPortalPlayModeTests
         portal.NotifyRoomEntered(2);
         Assert.That(portal.IsRevealed, Is.False);
         portal.NotifyRoomEntered(3);
+        Assert.That(portal.IsRevealed, Is.False, "Entry before scheduling must not expose the portal.");
+        Set(group, "roomEntrySpawnStarted", true);
+        Set(group, "pendingRoomEntrySpawnCount", 1);
+        yield return null;
+        Assert.That(portal.IsRevealed, Is.False, "Delayed basic spawns still own the encounter.");
+        portal.RestoreRevealed(true);
+        Assert.That(portal.IsRevealed, Is.False, "A saved reveal cannot bypass pending combat.");
+        Set(group, "pendingRoomEntrySpawnCount", 0);
+        yield return null;
+        Assert.That(portal.IsRevealed, Is.False, "Zero live monsters between waves is not completion.");
+        Set(group, "roomWavesCompleted", true);
+        yield return new WaitForSecondsRealtime(0.2f);
         Assert.That(portal.IsRevealed, Is.True);
         Assert.That(portal.EncounterBusy, Is.False);
         group.PushEncounterHold();
         Assert.That(portal.EncounterBusy, Is.True);
+        yield return null;
+        Assert.That(portal.IsRevealed, Is.False);
+        Assert.That(portal.GetComponent<Collider2D>().enabled, Is.False);
         group.PopEncounterHold();
         Assert.That(portal.EncounterBusy, Is.False);
+        yield return new WaitForSecondsRealtime(0.2f);
+        Assert.That(portal.IsRevealed, Is.True);
     }
 
     [UnityTest]

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-/// <summary>Owns four authored portal visuals and optional Open/Idle/Close animator states, without owning travel rules.</summary>
+/// <summary>Owns directional portal animation and interruptible encounter-hide scaling, without owning travel rules.</summary>
 [DisallowMultipleComponent]
 public sealed class DungeonReturnPortalView : MonoBehaviour
 {
@@ -19,6 +19,10 @@ public sealed class DungeonReturnPortalView : MonoBehaviour
     private bool closing;
     private bool visible;
     private bool animated;
+    private bool shrinking;
+    private float shrinkElapsed;
+    private float shrinkSeconds;
+    private Vector3 shrinkStartScale;
 
     public bool IsOpening => visible && !closing && progress < 1f;
     public float OpenSeconds => Mathf.Max(0f, openSeconds);
@@ -38,6 +42,7 @@ public sealed class DungeonReturnPortalView : MonoBehaviour
     public void Open(bool immediate = false)
     {
         if (selected == null) return;
+        shrinking = false;
         visible = true;
         closing = false;
         progress = immediate ? 1f : 0f;
@@ -49,13 +54,36 @@ public sealed class DungeonReturnPortalView : MonoBehaviour
     public void Close()
     {
         if (!visible || selected == null) return;
+        shrinking = false;
         closing = true;
         progress = 0f;
         animated = Play(closeState);
     }
 
+    public void ShrinkAndHide(float seconds)
+    {
+        if (!visible || selected == null || shrinking) return;
+        if (seconds <= 0f) { HideImmediate(); return; }
+        closing = true;
+        shrinking = true;
+        shrinkElapsed = 0f;
+        shrinkSeconds = seconds;
+        shrinkStartScale = selected.localScale;
+    }
+
+    private void LateUpdate()
+    {
+        if (!shrinking || selected == null) return;
+        shrinkElapsed += Time.unscaledDeltaTime;
+        float t = Mathf.Clamp01(shrinkElapsed / shrinkSeconds);
+        // Apply after Animator evaluation so authored scale curves cannot cancel the hide.
+        selected.localScale = Vector3.Lerp(shrinkStartScale, Vector3.zero, t);
+        if (t >= 1f) HideImmediate();
+    }
+
     public void HideImmediate()
     {
+        shrinking = false;
         if (selected != null) selected.localScale = fullScale;
         if (up != null) up.gameObject.SetActive(false);
         if (right != null) right.gameObject.SetActive(false);
@@ -66,7 +94,7 @@ public sealed class DungeonReturnPortalView : MonoBehaviour
 
     private void Update()
     {
-        if (!visible || selected == null || progress >= 1f) return;
+        if (shrinking || !visible || selected == null || progress >= 1f) return;
         float seconds = closing ? CloseSeconds : OpenSeconds;
         progress = seconds <= 0f ? 1f : Mathf.Min(1f, progress + Time.unscaledDeltaTime / seconds);
         if (!animated) selected.localScale = fullScale * (closing ? 1f - progress : progress);

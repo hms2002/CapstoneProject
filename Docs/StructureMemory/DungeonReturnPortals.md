@@ -9,7 +9,7 @@ Return from generated dead-end rooms to the same dungeon's Start room without re
 - Dead end means exactly one actual `DungeonSocketConnection`, regardless of unused authored sockets. Start is excluded; a terminal Boss entrance room is included and retains its existing boss-travel gate.
 - Graph-first generation now reserves a distinct farthest degree-one endpoint for each Start exit, including exits participating in a cycle. A shared cycle leaf is not counted for multiple exits. This is a graph guarantee, not a bypass of the builder's safe placement or encounter gates; see [per-exit terminal coverage](ProceduralDungeonRoomPipeline.md#per-exit-terminal-coverage-2026-09-13). Legacy layouts and visual-only preview behavior are unchanged.
 - Combat rooms reveal after the final room wave and all pending/live split-aware units and encounter holds clear, with a short stable-clear delay. Doors opening early is not treated as combat completion.
-- Event rooms reveal on entry, but interaction is blocked while their encounter is busy. Other rooms without an encounter group also reveal on entry.
+- Event rooms with an encounter group reveal only after basic room waves finish and all live/pending units and encounter holds clear. Delayed initial spawns and gaps between waves remain hidden. Starting bell combat hides an already revealed portal and disables its trigger; clearing combat reveals it again. Saved reveal state cannot bypass current encounter readiness. Rooms without an encounter group still reveal on entry.
 - An unavailable or obstructed destination blocks interaction rather than moving the player into geometry. A room with no safe portal placement warns and skips that portal instead of failing dungeon generation.
 
 ## Runtime Ownership
