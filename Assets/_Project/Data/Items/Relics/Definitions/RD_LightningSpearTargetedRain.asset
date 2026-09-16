@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: "뇌창의 추적 낙뢰"
   icon: {fileID: 21300000, guid: 10552735fdb1e6e42a67dd8f5e1ae667, type: 3}
   rarity: 2
-  description: "뇌창 전용 유물\n낙뢰 표식을 적 위치에 0.07초 간격으로 순차 낙하시킵니다. 놓을 수 없거나 다른 뇌창과 가까우면 적에게 가장 가까운 유효 타일을 선점합니다."
+  description: "● {em:뇌창 갈라론} 전용 유물\n● 낙뢰 표식이 적의 위치에 {val:0.07초} 간격으로 순차 낙하\n● 해당 위치에 떨어질 수 없거나 다른 뇌창과 너무 가까우면 적과 가까운 빈 위치에 낙하"
   maxLevel: 1
   dropLevel: 1
   logic: {fileID: 11400000, guid: 08badb6a48354e7897a2d10a379c625d, type: 2}

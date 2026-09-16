@@ -15,7 +15,7 @@ MonoBehaviour:
   weaponId: Weapon.CrimsonBoundary
   displayName: "홍련의 한계선"
   icon: {fileID: 21300000, guid: 04aa0b7915194311ae5cd1ef91df55ca, type: 3}
-  storyText: "타오르는 경계에서 불씨는 끝내 폭발한다."
+  storyText: "<color=#96DCFA>“충분한 거리를 확보한 뒤 사용하십시오.”\n전 사용자는 충분하다는 말을 주관적인 개념으로 받아들였다.</color>"
   statModifiers:
   - attribute: {fileID: 11400000, guid: 3cf73420df1732240b7c90837ff7efab, type: 2}
     type: 0

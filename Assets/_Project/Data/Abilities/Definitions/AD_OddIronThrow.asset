@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: "마지막 투척"
   icon: {fileID: 21300000, guid: 50d914c8cf07388409cca84fa272cf99, type: 3}
-  description: "● {em:기묘한 쇳덩이}를 던져 적에게 {val:고정 피해 60}을 주고 밀쳐냅니다.\n● 던진 무기는 사라지며 {neg:다시 주울 수 없습니다}."
+  description: "● {em:기묘한 쇠덩이}를 던져 적에게 {val:고정 피해 60}을 주고 밀쳐내기\n● 던진 무기는 소멸하며 {neg:다시 획득 불가}"
   hitFeel:
     targetStunSeconds: 0.1
     attackerStopSeconds: 0.06

@@ -76,19 +76,19 @@ public sealed class RelicLogic_BurnModifier_Managed : RelicLogic
 
         float intervalMultiplier = Evaluate(tickIntervalMultipliers, level, 1f);
         if (!Mathf.Approximately(intervalMultiplier, 1f))
-            lines.Add($"● [[화상]] 소모 주기 감소 {(1f - intervalMultiplier) * 100f:0}% (주기 {intervalMultiplier:0.##}초)");
+            lines.Add($"● [[화상]] 소모 주기 {{pos:{(1f - intervalMultiplier) * 100f:0}% 감소}} (주기 {{val:{intervalMultiplier:0.##}초}})");
 
         float damageAdd = Evaluate(damageRatioAdds, level, 0f);
         if (damageAdd > 0f)
-            lines.Add($"● [[화상 피해]] 계수 +{damageAdd * 100f:0}%p");
+            lines.Add($"● [[화상 피해]] 계수 {{pos:+{damageAdd * 100f:0}%p}}");
 
         int applicationAdd = Evaluate(applicationAdds, level, 0);
         if (applicationAdd > 0)
-            lines.Add($"● [[화상]] 부여량 +{applicationAdd}");
+            lines.Add($"● [[화상]] 부여량 {{pos:+{applicationAdd}}}");
 
         int firstApplicationAdd = Evaluate(firstApplicationAdds, level, 0);
         if (firstApplicationAdd > 0)
-            lines.Add($"● 비화상 대상 첫 [[화상]] 부여량 +{firstApplicationAdd}");
+            lines.Add($"● [[화상]]이 없는 적에게 처음 부여하는 [[화상]] {{pos:+{firstApplicationAdd}중첩}}");
 
         if (allowCritical)
             lines.Add("● [[화상 피해]]에 치명타 확률과 치명타 피해 적용");
@@ -96,11 +96,11 @@ public sealed class RelicLogic_BurnModifier_Managed : RelicLogic
         int threshold = Evaluate(stackDamageThresholds, level, 0);
         float ratioPerStep = Evaluate(stackDamageRatiosPerStep, level, 0f);
         if (threshold > 0 && ratioPerStep > 0f)
-            lines.Add($"● 적의 [[화상]] {threshold}마다 [[화상 피해]] +{ratioPerStep * 100f:0}% (최대 {stackDamageRatioMax * 100f:0}%)");
+            lines.Add($"● 대상의 [[화상]] {{val:{threshold}중첩}}마다 [[화상 피해]] {{pos:+{ratioPerStep * 100f:0}%}}\n● 최대 {{val:{stackDamageRatioMax * 100f:0}%}}까지 증가");
 
         int starterStacks = Evaluate(starterStacksByLevel, level, 0);
         if (starterStacks > 0)
-            lines.Add($"● 대상에게 [[화상]]이 없으면 [[화상]] {starterStacks} 부여");
+            lines.Add($"● 대상에게 [[화상]]이 없으면 [[화상]] {{val:{starterStacks}중첩}} 부여");
 
         return new RelicTooltipData { effectText = string.Join("\n", lines) };
     }

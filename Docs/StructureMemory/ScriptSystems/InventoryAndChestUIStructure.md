@@ -206,3 +206,11 @@ InventoryUIManager gates CanOpen, TryOpen and direct Open with MonsterSpawnRoomG
 - HubWeaponDepartureGuide owns guidance sessions until weapon equipment, departure/disable or target replacement. The authored HubWeaponGuidanceArrow prefab uses UI/DownArrow.png, pointing down with identity rotation.
 - GraveInteractable and ChestInteractable merge ordinary interaction highlight with owner-scoped guidance requests through SetGuidanceHighlight. A hover exit does not clear active guidance; releasing one guide leaves other owners intact. Disable clears both states; looted graves suppress their outline. The guide releases its request before replacing/clearing its target. Existing OutlineMaterial supplies the outline.
 - The shared WeaponHUDUI/Skill1UI cooldown TMP is fixed at 26pt (auto size disabled).
+
+
+## Weapon and relic tooltip display sources
+
+- `WeaponDetailViewV2` and `EncyclopediaItemRightPage.BuildWeaponAbilityBlocks` normally project Skill1/Skill2. `Weapon.CrimsonBoundary` additionally projects its Attack definition through the same authored ability-block prefab, before those skills. Its existing clear/rebuild lifecycle owns the extra display block; no gameplay state is stored in it.
+- Weapon copy lives in `WeaponDefinition.storyText` and `AbilityDefinition.description`; LightningSpear Skill1 also supplies variant bodies from `LightningSpearSkill1Data`. Relic effects come from `RelicLogic.BuildTooltip`, with serialized `effectTemplate` overrides taking precedence over C# defaults. Weapon-exclusive relics use `RelicDefinition.description` through `RelicLogic_WeaponExclusive`.
+- `DetailTextFormatter` resolves semantic color tokens and glossary links after relic value substitution. Review both authored overrides and generated bodies when changing copy. Exact input glyphs come from the authored binding service, so code fallback defaults and weapon fallback hint strings alone do not establish the current input mapping.
+- This remains a UI projection map, not an Architecture/Contracts promotion candidate. See [the tooltip copy session](../../SessionLogs/2026-09-17.md#approved-weapon-and-relic-tooltip-copy-pass) for verification limits and the outstanding CrimsonBoundary damage-copy discrepancy.

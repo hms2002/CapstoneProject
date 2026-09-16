@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AD_CrimsonBoundaryAttack
   m_EditorClassIdentifier: 
   abilityName: "홍련 화염탄"
-  description: "화염탄을 직선으로 발사합니다. 적중한 적에게 화염 공격력만큼 피해를 주고 화상 3중첩을 부여합니다."
+  description: "● 조준 방향으로 화염구 발사\n● 적중한 적에게 [[화염 피해]]만큼 피해를 주고 [[화상]] {val:3중첩} 부여"
   hitFeel:
     targetStunSeconds: 0.1
     attackerStopSeconds: 0

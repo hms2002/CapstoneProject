@@ -25,10 +25,10 @@ public sealed class RelicLogic_BurnOnCriticalHit_Managed : RelicLogic
     public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
     {
         return BuildTemplatedTooltip(
-            "● [[화상]] 상태인 적에게 치명타 적중 시 [[화상]] {burn_stacks} 부여\n● 재사용 대기시간: {cooldown}",
+            "● [[화상]] 상태인 적에게 [[치명타]] 적중 시 [[화상]] {burn_stacks}중첩 부여\n● 재사용 대기시간 {cooldown}",
             new Dictionary<string, string>
             {
-                ["burn_stacks"] = EvaluateBurnStacks(previewLevel).ToString(),
+                ["burn_stacks"] = RelicTooltipFormatter.FormatUnsignedValueToken(EvaluateBurnStacks(previewLevel), false),
                 ["cooldown"] = RelicTooltipFormatter.FormatSeconds(cooldownSeconds)
             });
     }

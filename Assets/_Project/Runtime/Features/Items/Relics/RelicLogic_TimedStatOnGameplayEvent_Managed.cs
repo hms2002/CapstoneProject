@@ -23,7 +23,7 @@ public sealed class RelicLogic_TimedStatOnGameplayEvent_Managed : RelicLogic
         TargetIsOwner
     }
 
-    protected override string DefaultEffectTemplate => "{trigger}: {duration} 동안 [[{stat}]] {value}";
+    protected override string DefaultEffectTemplate => "● {trigger} {duration} 동안 [[{stat}]] {value}";
 
     [Header("Trigger")]
     public GameplayTag triggerTag;
@@ -177,7 +177,7 @@ public sealed class RelicLogic_TimedStatOnGameplayEvent_Managed : RelicLogic
             string valueText = RelicTooltipFormatter.FormatSignedValueToken(
                 entry.value,
                 RelicTooltipFormatter.ShouldDisplayAsPercent(entry.attribute, displayName, entry.modifierType));
-            lines.Add($"[[{displayName}]] {valueText}");
+            lines.Add($"● [[{displayName}]] {valueText}");
         }
 
         return string.Join("\n", lines);

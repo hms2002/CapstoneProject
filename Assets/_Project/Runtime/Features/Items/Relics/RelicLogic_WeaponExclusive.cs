@@ -11,7 +11,7 @@ public sealed class RelicLogic_WeaponExclusive : RelicLogic
     {
         string text = definition != null ? definition.description : string.Empty;
         if (definition != null && definition.relicId == WeaponExclusiveRelics.OddIronMagazine)
-            text += $"\n남은 장전 횟수: {definition.ClampLevel(previewLevel)}회";
+            text += $"\n● 남은 장전 횟수: {RelicTooltipFormatter.FormatUnsignedValueToken(definition.ClampLevel(previewLevel), false)}회";
         return new RelicTooltipData { effectText = text };
     }
 }
