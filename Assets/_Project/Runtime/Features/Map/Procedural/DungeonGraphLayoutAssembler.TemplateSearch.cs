@@ -124,9 +124,9 @@ public sealed partial class DungeonGraphLayoutAssembler
         private bool SupportsPlacement(RoomTemplateSO template, int node)
         {
             var placement = template.LayoutData.topologyPlacement;
-            return CalculateGraphDistance(topology, 0, node) >= Mathf.Max(0, placement.minimumGraphDistanceFromStart) &&
+            return CalculateGraphDistance(topology, 0, node) >= ResolvePlacementMinimumDistance(topology, template) &&
                 (!placement.requireDeadEnd || GetNodeDegree(topology, node) == 1) &&
-                (placement.mode != RoomTopologyPlacementMode.CycleDetour || topology.Nodes[node].IsCycleDetour);
+                (!RequiresCyclePlacement(topology, template) || topology.Nodes[node].IsCycleDetour);
         }
 
         public bool TrySolve(out DungeonLayoutResult result, out string reason)

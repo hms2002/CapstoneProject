@@ -26,6 +26,14 @@ public sealed class DungeonLayoutResult
     public int DeadEndCount { get; private set; }
     public bool UsedCorridorLengthRelaxation { get; private set; }
     public DungeonTemplateSelectionReport TemplateSelection { get; private set; }
+    public int RecoveryLevel { get; private set; }
+    public string RecoveryDescription { get; private set; } = string.Empty;
+
+    internal void SetRecovery(int level, string description)
+    {
+        RecoveryLevel = level;
+        RecoveryDescription = description ?? string.Empty;
+    }
 
     internal void SetTemplateSelection(DungeonTemplateSelectionReport report) => TemplateSelection = report;
 

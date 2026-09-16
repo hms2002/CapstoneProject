@@ -85,13 +85,13 @@ public sealed class MerchantNPC : MonoBehaviour
                     return;
 
                 GenerateID();
-                ResolveShopSlotReferences();
+                CollectSlotsFromChildren();
                 CollectRefreshInteractablesFromChildren();
             });
             return;
         }
 
-        ResolveShopSlotReferences();
+        CollectSlotsFromChildren();
         CollectRefreshInteractablesFromChildren();
     }
 
@@ -524,7 +524,7 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private void ResolveShopSlotReferences()
     {
-        if (Application.isPlaying && HasPrefabSlotAuthoring())
+        if (Application.IsPlaying(gameObject) && HasPrefabSlotAuthoring())
         {
             EnsurePrefabSlots();
             return;

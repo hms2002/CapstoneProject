@@ -142,12 +142,24 @@ public sealed class AlarmBellInteractable :
 
     public override bool CanInteract(IPlayerInteractor player)
     {
-        return player != null &&
+        return isActiveAndEnabled &&
+               IsPlayerInsideInteractionArea(player) &&
                player.CurrentState == InteractState.Idle &&
                state == AlarmBellEncounterState.Unused &&
                definition != null &&
                RunSessionStore.IsRunActive &&
                !IsEventAlreadyUsed();
+    }
+
+    // Sensor candidates can outlive an overlap (teleport/disable). Validate the bell's
+    // own trigger again for both target selection and the final interaction request.
+    private bool IsPlayerInsideInteractionArea(IPlayerInteractor player)
+    {
+        return player?.Transform != null &&
+               player.Transform.gameObject.scene == gameObject.scene &&
+               interactionCollider != null && interactionCollider.enabled &&
+               interactionCollider.gameObject.activeInHierarchy &&
+               interactionCollider.OverlapPoint(player.Transform.position);
     }
 
     public override void OnPlayerInteract(IPlayerInteractor player)
