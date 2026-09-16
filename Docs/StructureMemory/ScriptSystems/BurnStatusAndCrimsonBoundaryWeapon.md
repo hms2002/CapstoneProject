@@ -144,3 +144,9 @@ BossControllerBase consumes all independent Burn stacks immediately on death ent
 ### 2026-09-16 — Shared authored monster HUD supersedes independent Burn view
 
 The former runtime-generated Burn bar/view described above is superseded for the 19 migrated monster prefabs. Burn now implements IMonsterStatusSource, registers in MonsterStatusRuntime, and is displayed as an orange icon/count below HP by an authored MonsterWorldHud prefab. Electrocuted shows the actual GE remaining seconds alongside it. Enemy death clears the common hub before subclass callbacks; disable consumes Burn rather than retaining stacks for re-enable. Existing damage rules and weapon/relic APIs remain. See `Docs/StructureMemory/MonsterWorldHudAndStatus.md` for current ownership, scope and validation limits.
+
+### Player-build swing sampling requirement (2026-09-17)
+
+- WeaponPrefab_CrimsonBoundary now authors an enabled Animator on its root, the same GameObject passed to SampleAnimation. It intentionally has no controller and applies no root motion; CrimsonBoundaryRuntimeState retains the manual clip clock, endpoint hold and reset ownership.
+- The player log exposed the missing Animator requirement for non-Legacy clip sampling; Editor playback alone did not reveal it. Clip bindings, ability release timing and the shared basic-attack movement lock are unchanged.
+- Prefab binding checks and C# build passed; native player playback acceptance remains pending. See the 2026-09-17 SessionLog.

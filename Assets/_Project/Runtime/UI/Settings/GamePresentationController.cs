@@ -123,6 +123,10 @@ public sealed class GamePresentationController : MonoBehaviour
             if (!baseCanvasRenderModes.ContainsKey(canvas))
                 baseCanvasRenderModes[canvas] = canvas.renderMode;
 
+            // World prompts follow scene anchors and already use the camera viewport.
+            if (baseCanvasRenderModes[canvas] == RenderMode.WorldSpace)
+                continue;
+
             if (!baseCanvasWorldCameras.ContainsKey(canvas))
                 baseCanvasWorldCameras[canvas] = canvas.worldCamera;
 

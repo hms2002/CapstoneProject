@@ -2167,3 +2167,29 @@ The display now retains each boss bubble direction independently; weapon attack 
 - Symptom: the revolver retained an offset after a barrage. Each PlayFireRecoil cached the current local position before stopping the previous recoil without resetting it. The authored 0.08s barrage interval is shorter than the 0.035s outward + 0.09s return cycle, so each new shot could redefine the resting position while displaced.
 - Fix/prevention: cache the resting position once per recoil Transform, never on each interrupted shot. Restart interpolation from the current pose but keep both the kick target and return target relative to the fixed baseline. Disable/equip cleanup restores that baseline. Related to the cached weapon interrupted-pose issue above.
 - Verification: Gameplay.csproj MSBuild passed and source lifecycle/diff checks passed. Live Unity barrage and disable/re-equip verification remain unexecuted.
+
+## 2026-09-17 - Player-only Crimson sampling and world prompt letterbox mismatch
+
+Context: Crimson basic-attack motion played in Editor but was absent in the player; world interaction prompts appeared fixed at screen center. The user confirmed the basic-attack movement stop is expected.
+
+Cause: Player.log repeatedly reported that non-Legacy clips cannot be sampled outside Editor without an Animator. The Crimson root called SampleAnimation but had no Animator. Separately, GamePresentationController included the world-space PromptLayout in unconditional ScreenSpaceCamera conversion when letterboxing; Editor Play bypassed letterboxing.
+
+Fix: Author a controller-free, root-motion-disabled Animator on the Crimson sampling root. Skip base WorldSpace canvases in both GamePresentationController and PresentationCanvasAdapter. Keep the existing attack clock, clips, movement lock and world anchor owner.
+
+Prevention: Verify manual clip playback in a player build, not only Editor. Screen-aspect adaptation must preserve world-space UI. This is related to the 2026-05-19 SampleAnimation entry, but does not replace the Animator-controller fix for those sprite VFX.
+
+Verification: MSBuild passed with warnings; prefab bindings and scoped whitespace checks passed. Fresh Unity player build/visual acceptance remains pending; do not treat compilation as playback proof.
+
+## 2026-09-17 - Settings layout retained in scene prefab overrides
+
+Settings rows combined fixed widths with left alignment, and gameplay scene instances retained interior RectTransform values as prefab overrides. Changing only the prefab anchors would leave these instances using old geometry after disabling their horizontal layout drivers.
+
+When replacing an authored layout driver with anchors, inspect scene overrides on the affected RectTransforms. Remove only obsolete layout properties so the instance inherits the updated prefab; preserve gameplay, reference and unrelated presentation overrides. This task migrated enabled build scenes only. See [SettingsPanelLayout](./StructureMemory/SettingsPanelLayout.md) and the [session log](./SessionLogs/2026-09-17.md). Static asset/geometry checks passed; Unity/player visual confirmation remains pending.
+
+## 2026-09-17 - Title Overlay obscured software cursor after display-mode change
+
+Evidence: In the rebuilt player, Windowed 1280x1024 -> FullScreenWindow 1920x1080 changed the title Canvas from ScreenSpaceCamera/UI/0 to ScreenSpaceOverlay/UI/0. CursorDiagnostic showed the cursor still enabled/active/opaque, not culled, inside the screen and without a hidden owner, but on Default/32767. The existing UI sorting layer is above Default. Returning to Windowed restored the camera-rendered title and cursor visibility; the user also observed visibility return after game start.
+
+Fix: MouseCursorService assigns the existing UI sorting layer in both software-canvas creation and authored binding, retaining order 32767. Sorting order alone does not put a lower sorting layer above UI. The earlier unreadable-texture fallback warning explains why software rendering is used, but is not itself the display-switch failure. The display letterbox disappears at the logged 16:9 transition, excluding it as the direct occluder for this case.
+
+Prevention: Define both sorting layer and order for overlay cursors. Compare canvas render modes across aspect-ratio/display transitions, not just cursor visibility flags. Keep bounded diagnostics until a rebuilt player confirms Fullscreen and Borderless behavior. Native post-fix visual acceptance remains pending.
