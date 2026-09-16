@@ -376,7 +376,7 @@ public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
             if (!container.TryCreateRequest(stageIndex, out MonsterSpawnRequest request))
             {
                 LogRoomEntrySpawn($"skip container[{i}]: failed request. container={FormatContainer(container)}, stage={stageIndex}");
-                Debug.LogWarning($"[RoomWaves] {name}: cannot resolve '{container.name}' at stage {stageIndex}; skipping spawn.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[RoomWaves] {name}: cannot resolve '{container.name}' at stage {stageIndex}; skipping spawn.", this);
                 container.NotifyRuntimeSpawned(null);
                 continue;
             }
@@ -431,7 +431,7 @@ public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
             MonsterSpawner spawner = MonsterSpawner.Instance;
             GameObject spawnedMonster = spawner != null ? spawner.SpawnOne(request) : null;
             if (spawnedMonster == null)
-                Debug.LogWarning($"[RoomWaves] {name}: spawn failed for {FormatObject(request.MonsterPrefab)}; releasing reservation.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[RoomWaves] {name}: spawn failed for {FormatObject(request.MonsterPrefab)}; releasing reservation.", this);
             CompleteWaveTicket(ticket, spawnedMonster);
             ApplyPostSpawnIdlePause(spawnedMonster);
         }
@@ -694,12 +694,13 @@ public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
         return runtimeSpawnedMonsterUnits.Count;
     }
 
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void LogRoomEntrySpawn(string message)
     {
         if (!logRoomEntrySpawnDebug)
             return;
 
-        Debug.Log($"[RoomEntrySpawn] {name}: {message}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[RoomEntrySpawn] {name}: {message}", this);
     }
 
     private static string FormatContainer(MonsterSpawnContainer container)

@@ -492,19 +492,19 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
         if (bookPresentation == null && playBookOpenOnOpen && !warnedMissingBookPresentation)
         {
             warnedMissingBookPresentation = true;
-            Debug.LogWarning("[EncyclopediaScreen] EncyclopediaBookPresentation is not assigned. Book open/page/close animation will use immediate fallback.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[EncyclopediaScreen] EncyclopediaBookPresentation is not assigned. Book open/page/close animation will use immediate fallback.", this);
         }
 
         if (screenActiveRoot == null && !warnedMissingScreenActiveRoot)
         {
             warnedMissingScreenActiveRoot = true;
-            Debug.LogWarning("[EncyclopediaScreen] screenActiveRoot is not assigned. Wire it to EncyclopediaUI so DimPanel and Book share one active boundary.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[EncyclopediaScreen] screenActiveRoot is not assigned. Wire it to EncyclopediaUI so DimPanel and Book share one active boundary.", this);
         }
 
         if (canvasGroup == null && !warnedMissingCanvasGroup)
         {
             warnedMissingCanvasGroup = true;
-            Debug.LogWarning("[EncyclopediaScreen] CanvasGroup is not assigned. Interaction lock during book animation may not block raycasts.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[EncyclopediaScreen] CanvasGroup is not assigned. Interaction lock during book animation may not block raycasts.", this);
         }
 
         if (itemTab != null)
@@ -581,7 +581,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
             return;
 
         warnedMissingItemTab = true;
-        Debug.LogWarning("[EncyclopediaScreen] EncyclopediaItemTab is not assigned. Item tab UI cannot be populated.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[EncyclopediaScreen] EncyclopediaItemTab is not assigned. Item tab UI cannot be populated.", this);
     }
 
     private void SetMainTabState(Button button, GameObject selectedMarker, bool available, bool selected)

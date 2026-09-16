@@ -479,7 +479,7 @@ namespace UnityGAS
 
             if (definition.IsBaseOnly())
             {
-                Debug.LogWarning($"[AttributeSet] '{definition.attributeName}' 은(는) BaseOnly 속성이므로 Modifier를 적용할 수 없습니다.");
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[AttributeSet] '{definition.attributeName}' 은(는) BaseOnly 속성이므로 Modifier를 적용할 수 없습니다.");
                 return false;
             }
 
@@ -533,12 +533,12 @@ namespace UnityGAS
                 var def = attributeCatalog.Attributes[i];
                 if (def == null)
                 {
-                    Debug.LogWarning($"[AttributeSet] Catalog attribute at index {i} is null.", this);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[AttributeSet] Catalog attribute at index {i} is null.", this);
                     continue;
                 }
 
                 if (!seen.Add(def))
-                    Debug.LogWarning($"[AttributeSet] Duplicate catalog attribute: {def.name}", this);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[AttributeSet] Duplicate catalog attribute: {def.name}", this);
             }
         }
 
@@ -555,12 +555,12 @@ namespace UnityGAS
 
                 if (entry.attribute == null)
                 {
-                    Debug.LogWarning($"[AttributeSet] {label} entry {i} has null attribute.", this);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[AttributeSet] {label} entry {i} has null attribute.", this);
                     continue;
                 }
 
                 if (!local.Add(entry.attribute))
-                    Debug.LogWarning($"[AttributeSet] {label} has duplicate attribute: {entry.attribute.name}", this);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[AttributeSet] {label} has duplicate attribute: {entry.attribute.name}", this);
             }
         }
     }

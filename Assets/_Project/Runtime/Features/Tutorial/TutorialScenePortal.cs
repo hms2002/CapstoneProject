@@ -267,7 +267,7 @@ public sealed class TutorialScenePortal : InteractableBase
     {
         if (string.IsNullOrWhiteSpace(targetSceneName))
         {
-            Debug.LogWarning("[TutorialScenePortal] Target scene name is empty.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[TutorialScenePortal] Target scene name is empty.", this);
             return false;
         }
 
@@ -283,7 +283,7 @@ public sealed class TutorialScenePortal : InteractableBase
 
             if (transitionCoordinator.IsTransitionActive)
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     $"[TutorialScenePortal] Scene transition is already active. target={targetSceneName}",
                     this);
                 return false;
@@ -367,14 +367,14 @@ public sealed class TutorialScenePortal : InteractableBase
 
         if (!RunSessionStore.IsAvailable)
         {
-            Debug.LogWarning("[TutorialScenePortal] RunSessionStore backend is missing. Player runtime state was not preserved.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[TutorialScenePortal] RunSessionStore backend is missing. Player runtime state was not preserved.", this);
             return false;
         }
 
         GameObject playerObject = ResolvePlayerObject(player);
         if (playerObject == null)
         {
-            Debug.LogWarning("[TutorialScenePortal] Player object was not found. Player runtime state was not preserved.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[TutorialScenePortal] Player object was not found. Player runtime state was not preserved.", this);
             return false;
         }
 
@@ -383,7 +383,7 @@ public sealed class TutorialScenePortal : InteractableBase
         PlayerRuntimeCaptureBridge captureBridge = playerObject.GetComponent<PlayerRuntimeCaptureBridge>();
         if (captureBridge == null)
         {
-            Debug.LogWarning("[TutorialScenePortal] PlayerRuntimeCaptureBridge is missing. Player runtime state was not preserved.", playerObject);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[TutorialScenePortal] PlayerRuntimeCaptureBridge is missing. Player runtime state was not preserved.", playerObject);
             return false;
         }
 

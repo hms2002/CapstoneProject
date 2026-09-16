@@ -75,7 +75,7 @@ public sealed class TitleIntroPlayer : MonoBehaviour
 
         if (!CanPlay)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 "[TitleIntroPlayer] Intro cannot play because sequence or view references are missing.",
                 this);
             return false;

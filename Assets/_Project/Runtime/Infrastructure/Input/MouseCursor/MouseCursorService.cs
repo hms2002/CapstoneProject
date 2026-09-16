@@ -147,6 +147,9 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
     private bool hasCapturedDisplayState;
     private bool forceCursorTextureReapply;
     private int displayTransitionRecoveryFrames;
+    private bool cursorDiagnosticPending;
+    private bool cursorDiagnosticSettling;
+    private float cursorDiagnosticDeadline;
 
     public MouseCursorDomain CurrentDomain => currentDomain;
     public MouseCursorVariant CurrentVariant => currentVariant;
@@ -211,6 +214,7 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
         RefreshDisplayState();
         ApplyResolvedCursor();
         UpdateCursorPosition();
+        LogPendingCursorDiagnostics();
     }
 
     private void OnDestroy()
@@ -279,6 +283,8 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
 
     public void NotifyDisplayConfigurationChanged()
     {
+        LogCursorDiagnostic("display-request-before-cursor-reset");
+        ScheduleCursorDiagnostics();
         displayTransitionRecoveryFrames = Mathf.Max(displayTransitionRecoveryFrames, 60);
         ClearSystemCursorTexture();
         forceCursorTextureReapply = true;
@@ -333,6 +339,8 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
 
         cursorCanvas = canvas;
         cursorCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        // Sorting order only applies within a layer; title UI also becomes an overlay.
+        cursorCanvas.sortingLayerID = SortingLayer.NameToID("UI");
         cursorCanvas.overrideSorting = true;
         cursorCanvas.sortingOrder = overlaySortingOrder;
 
@@ -369,6 +377,7 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
             return false;
 
         cursorCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        cursorCanvas.sortingLayerID = SortingLayer.NameToID("UI");
         cursorCanvas.overrideSorting = true;
         cursorCanvas.sortingOrder = overlaySortingOrder;
         cursorImage.raycastTarget = false;
@@ -388,7 +397,7 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
         if (loadedTheme == null && !defaultThemeMissingLogged)
         {
             defaultThemeMissingLogged = true;
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[MouseCursorService] Default mouse cursor theme could not be loaded from Resources/{DefaultThemeResourcePath}.",
                 this);
         }
@@ -682,7 +691,7 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
         {
             if (unreadableSpriteWarnings.Add(spriteId))
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     $"[MouseCursorService] Sprite '{sprite.name}' uses only a sub-rect of a non-readable texture. Falling back to software cursor rendering.",
                     this);
             }
@@ -761,6 +770,7 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
             lastScreenHeight = screenHeight;
             lastFullScreenMode = fullScreenMode;
             hasCapturedDisplayState = true;
+            ScheduleCursorDiagnostics();
             return;
         }
 
@@ -774,8 +784,74 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
         lastScreenWidth = screenWidth;
         lastScreenHeight = screenHeight;
         lastFullScreenMode = fullScreenMode;
+        ScheduleCursorDiagnostics();
         forceCursorTextureReapply = true;
         displayTransitionRecoveryFrames = Mathf.Max(displayTransitionRecoveryFrames, 60);
+    }
+
+    // Diagnostic snapshots only: do not alter cursor recovery or rendering behavior.
+    private void ScheduleCursorDiagnostics()
+    {
+        cursorDiagnosticPending = true;
+        cursorDiagnosticSettling = true;
+        cursorDiagnosticDeadline = Time.realtimeSinceStartup + 2f;
+    }
+
+    private void LogPendingCursorDiagnostics()
+    {
+        if (cursorDiagnosticPending)
+        {
+            cursorDiagnosticPending = false;
+            LogCursorDiagnostic("display-observed-after-cursor-update");
+        }
+
+        if (cursorDiagnosticSettling && Time.realtimeSinceStartup >= cursorDiagnosticDeadline)
+        {
+            cursorDiagnosticSettling = false;
+            LogCursorDiagnostic("display-stable-2s");
+        }
+    }
+
+    private void LogCursorDiagnostic(string phase)
+    {
+        var message = new System.Text.StringBuilder(1024);
+        message.Append($"[CursorDiagnostic] phase={phase} frame={Time.frameCount} " +
+            $"time={Time.realtimeSinceStartup:F2} service={GetInstanceID()} " +
+            $"screen={Screen.width}x{Screen.height} mode={Screen.fullScreenMode} " +
+            $"focused={Application.isFocused} mouse={Input.mousePosition} " +
+            $"systemVisible={Cursor.visible} lock={Cursor.lockState} " +
+            $"domain={currentDomain}/{currentVariant} hiddenOwners={hiddenOwners.Count} " +
+            $"hardwareTexture={(appliedCursorTexture != null ? appliedCursorTexture.name : "none")} " +
+            $"preferHardware={ShouldPreferHardwareCursor()} recoveryFrames={displayTransitionRecoveryFrames}");
+
+        if (cursorCanvas != null)
+            message.Append($" | cursorCanvas={cursorCanvas.name} id={cursorCanvas.GetInstanceID()} " +
+                $"enabled={cursorCanvas.enabled} active={cursorCanvas.gameObject.activeInHierarchy} " +
+                $"mode={cursorCanvas.renderMode} root={cursorCanvas.isRootCanvas} " +
+                $"layer={cursorCanvas.sortingLayerName} order={cursorCanvas.sortingOrder} " +
+                $"override={cursorCanvas.overrideSorting} display={cursorCanvas.targetDisplay} " +
+                $"pixelRect={cursorCanvas.pixelRect} scale={cursorCanvas.scaleFactor}");
+        else
+            message.Append(" | cursorCanvas=none");
+
+        if (cursorImage != null)
+            message.Append($" | imageEnabled={cursorImage.enabled} active={cursorImage.gameObject.activeInHierarchy} " +
+                $"sprite={(cursorImage.sprite != null ? cursorImage.sprite.name : "none")} " +
+                $"colorAlpha={cursorImage.color.a} rendererAlpha={cursorImage.canvasRenderer.GetAlpha()} " +
+                $"inheritedAlpha={cursorImage.canvasRenderer.GetInheritedAlpha()} culled={cursorImage.canvasRenderer.cull}");
+        if (cursorRect != null)
+            message.Append($" | cursorPosition={cursorRect.position} rect={cursorRect.rect} " +
+                $"lossyScale={cursorRect.lossyScale} pivot={cursorRect.pivot}");
+
+        // Capture competing canvases only at the bounded transition snapshots.
+        foreach (Canvas canvas in FindObjectsByType<Canvas>(FindObjectsSortMode.None))
+        {
+            if (!canvas.isActiveAndEnabled || (!canvas.isRootCanvas && !canvas.overrideSorting))
+                continue;
+            message.Append($" | canvas={canvas.name} id={canvas.GetInstanceID()} mode={canvas.renderMode} " +
+                $"layer={canvas.sortingLayerName} order={canvas.sortingOrder} display={canvas.targetDisplay}");
+        }
+        Debug.Log(message.ToString(), this);
     }
 
     private bool ShouldKeepSystemCursorVisibleWithSoftwareFallback()

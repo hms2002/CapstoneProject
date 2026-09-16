@@ -93,7 +93,7 @@ public class ItemManager : MonoBehaviour
         isInitialized = true;
         pendingSaveData = null;
 
-        Debug.Log($"[ItemManager] Initialized. unlockedWeapons={unlockedWeaponIDs.Count}, unlockedRelics={unlockedRelicIDs.Count}");
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[ItemManager] Initialized. unlockedWeapons={unlockedWeaponIDs.Count}, unlockedRelics={unlockedRelicIDs.Count}");
     }
 
     public void UnlockWeapon(string id)
@@ -104,7 +104,7 @@ public class ItemManager : MonoBehaviour
         if (!unlockedWeaponIDs.Contains(id) && database.GetWeaponByID(id) != null)
         {
             unlockedWeaponIDs.Add(id);
-            Debug.Log($"[ItemManager] Weapon unlocked: {id}");
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[ItemManager] Weapon unlocked: {id}");
         }
     }
 
@@ -116,7 +116,7 @@ public class ItemManager : MonoBehaviour
         if (!unlockedRelicIDs.Contains(id) && database.GetRelicByID(id) != null)
         {
             unlockedRelicIDs.Add(id);
-            Debug.Log($"[ItemManager] Relic unlocked: {id}");
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[ItemManager] Relic unlocked: {id}");
         }
     }
 
@@ -163,7 +163,7 @@ public class ItemManager : MonoBehaviour
         {
             if (database != incomingDatabase)
             {
-                Debug.LogWarning("[ItemManager] Different ItemDatabase was supplied by a scene instance. Keeping the existing database.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[ItemManager] Different ItemDatabase was supplied by a scene instance. Keeping the existing database.", this);
             }
 
             return;

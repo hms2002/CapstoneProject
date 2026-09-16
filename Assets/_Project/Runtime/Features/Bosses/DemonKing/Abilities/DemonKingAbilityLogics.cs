@@ -2330,7 +2330,7 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
         if (resolvedStockOrbVisualPrefab == null && !stockOrbVisualMissingLogged)
         {
             stockOrbVisualMissingLogged = true;
-            Debug.LogWarning($"DemonKing HomingMagic stock VFX prefab not found at Resources/{StockOrbVisualResourcePath}. Stock display will be skipped.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"DemonKing HomingMagic stock VFX prefab not found at Resources/{StockOrbVisualResourcePath}. Stock display will be skipped.", this);
         }
 
         return resolvedStockOrbVisualPrefab;
@@ -2347,7 +2347,7 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
         if (resolvedFiredProjectileVisualPrefab == null && !firedProjectileVisualMissingLogged)
         {
             firedProjectileVisualMissingLogged = true;
-            Debug.LogWarning($"DemonKing HomingMagic projectile VFX prefab not found at Resources/{FiredProjectileVisualResourcePath}. Primitive projectile visual will be used.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"DemonKing HomingMagic projectile VFX prefab not found at Resources/{FiredProjectileVisualResourcePath}. Primitive projectile visual will be used.", this);
         }
 
         return resolvedFiredProjectileVisualPrefab;
@@ -3838,7 +3838,7 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
             string path = string.IsNullOrWhiteSpace(laserVfxResourcePath)
                 ? "(empty)"
                 : laserVfxResourcePath;
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"DemonKing FinalDesperation could not load animated laser VFX from override or Resources/{path}. Falling back to primitive laser visuals.",
                 this);
         }

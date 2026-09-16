@@ -366,7 +366,7 @@ namespace UnityGAS
 
             string elementName = popupElementTag != null ? popupElementTag.Path : "none";
             string targetName = target != null ? target.name : "null";
-            Debug.Log($"[GE_Damage_Spec] {name}: target={targetName}, element={elementName}, {message}", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[GE_Damage_Spec] {name}: target={targetName}, element={elementName}, {message}", this);
         }
 
         private void LogDamageSpecEntry(GameplayEffectSpec spec, GameObject target)
@@ -385,7 +385,7 @@ namespace UnityGAS
             float resolvedDamage = fallbackDamage;
             bool hasSetByCaller = spec != null && damageKey != null && spec.TryGetSetByCallerMagnitude(damageKey, out resolvedDamage);
 
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[GE_Damage_Spec] {name}: enter target={targetName}, element={elementName}, damageKey={damageKeyName}, damage={resolvedDamage:0.###}, hasSetByCaller={hasSetByCaller}",
                 this);
         }
@@ -400,7 +400,7 @@ namespace UnityGAS
             if (!logDamageApplication)
                 return;
 
-            Debug.Log($"[GE_Damage_Spec] {name}: {message}", target);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[GE_Damage_Spec] {name}: {message}", target);
         }
 
         private static Vector3 ResolvePopupPosition(GameplayEffectSpec spec, GameObject target)

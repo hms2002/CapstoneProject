@@ -27,7 +27,7 @@ public class CinematicDirector : MonoBehaviour
 
         if (portraitController == null)
         {
-            Debug.LogWarning("[CinematicDirector] PortraitController 참조가 없어 인트로 연출을 건너뜁니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[CinematicDirector] PortraitController 참조가 없어 인트로 연출을 건너뜁니다.", this);
             onComplete?.Invoke();
             return;
         }
@@ -116,7 +116,7 @@ public class CinematicDirector : MonoBehaviour
 
         if (portraitController == null)
         {
-            Debug.LogWarning("[CinematicDirector] PortraitController reference is missing. Fast silhouette intro skipped.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[CinematicDirector] PortraitController reference is missing. Fast silhouette intro skipped.", this);
             onComplete?.Invoke();
             return;
         }

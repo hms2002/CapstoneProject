@@ -362,7 +362,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
         IBossSpeechPlayback speechPlayback = speechController as IBossSpeechPlayback;
         if (speechPlayback == null)
         {
-            Debug.LogWarning("[BossDeathPresentation] Boss speech playback is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossDeathPresentation] Boss speech playback is missing.", this);
             yield break;
         }
 
@@ -575,7 +575,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
             return;
         }
 
-        Debug.LogWarning("[BossDeathPresentation] Cannot notify boss rewards without a BossControllerBase owner.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossDeathPresentation] Cannot notify boss rewards without a BossControllerBase owner.", this);
     }
 
     private void SpawnDeathVanishEffect()

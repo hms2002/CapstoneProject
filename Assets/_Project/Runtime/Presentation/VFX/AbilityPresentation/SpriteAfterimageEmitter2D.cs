@@ -105,7 +105,7 @@ namespace UnityGAS
 
             if (!IsFiniteVector3(sourceRoot.position) || !IsFiniteVector3(sourceRoot.lossyScale))
             {
-                Debug.LogWarning($"[SpriteAfterimageEmitter2D] {name}: sourceRoot transform 값이 비정상이라 잔상 생성을 건너뜁니다. position={sourceRoot.position}, scale={sourceRoot.lossyScale}");
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[SpriteAfterimageEmitter2D] {name}: sourceRoot transform 값이 비정상이라 잔상 생성을 건너뜁니다. position={sourceRoot.position}, scale={sourceRoot.lossyScale}");
                 return;
             }
 
@@ -129,7 +129,7 @@ namespace UnityGAS
                     !IsFiniteQuaternion(source.transform.rotation) ||
                     !IsFiniteVector3(source.transform.lossyScale))
                 {
-                    Debug.LogWarning($"[SpriteAfterimageEmitter2D] {name}: child renderer transform 값이 비정상이라 일부 잔상 생성을 건너뜁니다. renderer={source.name}");
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[SpriteAfterimageEmitter2D] {name}: child renderer transform 값이 비정상이라 일부 잔상 생성을 건너뜁니다. renderer={source.name}");
                     continue;
                 }
 

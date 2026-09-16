@@ -51,7 +51,7 @@ namespace UnityGAS
                         // BaseOnly 속성(예: HP)에는 Percent 즉발 변경 금지
                         if (attribute.IsBaseOnly())
                         {
-                            Debug.LogWarning(
+                            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                                 $"[InstantBaseValueEffect] '{attribute.attributeName}' 은(는) BaseOnly 속성이므로 Percent 즉발 변경을 적용할 수 없습니다. " +
                                 $"Effect: {name}");
                             return;
@@ -68,7 +68,7 @@ namespace UnityGAS
                     }
 
                 default:
-                    Debug.LogWarning($"[InstantBaseValueEffect] 지원하지 않는 ModifierType 입니다. Effect: {name}");
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[InstantBaseValueEffect] 지원하지 않는 ModifierType 입니다. Effect: {name}");
                     break;
             }
         }

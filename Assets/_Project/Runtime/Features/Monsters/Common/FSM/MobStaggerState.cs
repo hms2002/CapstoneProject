@@ -10,7 +10,7 @@ public sealed class MobStaggerState : IMobState
     public void Enter(MobStateMachine stateMachine, MobAIContext context)
     {
         if (context?.Owner != null)
-            Debug.Log($"[MobStaggerState] Enter owner={context.Owner.name}");
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[MobStaggerState] Enter owner={context.Owner.name}");
 
         context?.PerformSuppressionCleanup();
     }
@@ -29,7 +29,7 @@ public sealed class MobStaggerState : IMobState
     public void Exit(MobStateMachine stateMachine, MobAIContext context)
     {
         if (context?.Owner != null)
-            Debug.Log($"[MobStaggerState] Exit owner={context.Owner.name}");
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[MobStaggerState] Exit owner={context.Owner.name}");
     }
 }
 

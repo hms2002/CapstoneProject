@@ -119,6 +119,10 @@ public sealed class PresentationCanvasAdapter : MonoBehaviour
         if (targetCanvas == null)
             return;
 
+        // Preserve world placement; letterboxing only changes screen-space UI canvases.
+        if (baseRenderMode == RenderMode.WorldSpace)
+            return;
+
         bool useFullScreen = PresentationViewportUtility.IsFullViewport(viewportRect);
         if (!useFullScreen && presentationCamera != null)
         {

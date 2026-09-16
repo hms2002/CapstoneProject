@@ -383,7 +383,7 @@ namespace UnityGAS
                 var effect = resolver(entry.effectId);
                 if (effect == null)
                 {
-                    Debug.LogWarning($"[GameplayEffectRunner] effect 복원 실패: '{entry.effectId}' 을(를) 찾지 못했습니다.", this);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[GameplayEffectRunner] effect 복원 실패: '{entry.effectId}' 을(를) 찾지 못했습니다.", this);
                     continue;
                 }
 

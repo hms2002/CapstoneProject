@@ -122,7 +122,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
 
         if (!hasRestored && RunSessionStore.PeekPendingPlayerState() != null)
         {
-            Debug.LogWarning("[PlayerSceneRestoreBootstrapper] ?쒗븳 ?쒓컙 ?댁뿉 PlayerRuntimeState 蹂듭썝???꾨즺?섏? 紐삵뻽?듬땲??", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerSceneRestoreBootstrapper] ?쒗븳 ?쒓컙 ?댁뿉 PlayerRuntimeState 蹂듭썝???꾨즺?섏? 紐삵뻽?듬땲??", this);
         }
 
         restoreRoutine = null;
@@ -153,7 +153,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
 
         if (!RunSessionStore.IsAvailable)
         {
-            Debug.LogWarning("[PlayerSceneRestoreBootstrapper] RunSessionStore backend is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerSceneRestoreBootstrapper] RunSessionStore backend is missing.", this);
             return false;
         }
 
@@ -259,7 +259,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
             restoreRoutine = null;
         }
 
-        Debug.Log("[PlayerSceneRestoreBootstrapper] PlayerRuntimeState 蹂듭썝 ?꾨즺.", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log("[PlayerSceneRestoreBootstrapper] PlayerRuntimeState 蹂듭썝 ?꾨즺.", this);
     }
 
     /// <summary>

@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-09-14
+last_reviewed: 2026-09-17
 ---
 
 # Burn Status And Crimson Boundary Weapon
@@ -68,7 +68,7 @@ The source table labels `홍련의 왕관` as maximum level 5 but defines only t
 
 - Attack / left click: cooldown 0.7 seconds, Fire Damage, Burn 3, destroy on enemy or wall. A direct lethal hit also deals the same resolved shot damage in a diameter-2.5 secondary-only burst; it applies no Burn and cannot recursively create another lethal burst.
 - Skill 1 / right click: cooldown 5 seconds, consumes up to 5 Burn from every visible Burn target, and creates overlapping diameter-5 explosions. With no eligible visible target the runtime state consumes input before ability commit, so cooldown does not start.
-- Skill 2 / Q: cooldown 12 seconds, locks cursor impact position, warns for 0.6 seconds, deals 200% Fire Damage, consumes each target's full Burn, and adds 50% Fire Damage per consumed stack.
+- Skill 2 / Q: cooldown 12 seconds, locks cursor impact position, warns for 0.6 seconds, and consumes each target's full Burn. Its normalized skill Fire value is multiplied by 13 for base damage and by 2 per consumed stack. Both the falling explosion and Crimson Lava Ball relic path use these Skill-2-only coefficients; Skill 1 retains its separate authored burn-consumption multiplier of 6.
 
 ## Lean Presentation Sorting
 
@@ -144,3 +144,9 @@ BossControllerBase consumes all independent Burn stacks immediately on death ent
 ### 2026-09-16 — Shared authored monster HUD supersedes independent Burn view
 
 The former runtime-generated Burn bar/view described above is superseded for the 19 migrated monster prefabs. Burn now implements IMonsterStatusSource, registers in MonsterStatusRuntime, and is displayed as an orange icon/count below HP by an authored MonsterWorldHud prefab. Electrocuted shows the actual GE remaining seconds alongside it. Enemy death clears the common hub before subclass callbacks; disable consumes Burn rather than retaining stacks for re-enable. Existing damage rules and weapon/relic APIs remain. See `Docs/StructureMemory/MonsterWorldHudAndStatus.md` for current ownership, scope and validation limits.
+
+### Player-build swing sampling requirement (2026-09-17)
+
+- WeaponPrefab_CrimsonBoundary now authors an enabled Animator on its root, the same GameObject passed to SampleAnimation. It intentionally has no controller and applies no root motion; CrimsonBoundaryRuntimeState retains the manual clip clock, endpoint hold and reset ownership.
+- The player log exposed the missing Animator requirement for non-Legacy clip sampling; Editor playback alone did not reveal it. Clip bindings, ability release timing and the shared basic-attack movement lock are unchanged.
+- Prefab binding checks and C# build passed; native player playback acceptance remains pending. See the 2026-09-17 SessionLog.

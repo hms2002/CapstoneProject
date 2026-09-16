@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using UnityGAS;
 
@@ -216,7 +216,7 @@ public class AL_Tackle : AbilityLogic
             hitConfirmedTag: hitConfirmedTag,
             causer: caster.gameObject);
 
-        Debug.Log($"[GAS] {caster.name} hit {target.name} for {damageAmount}");
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[GAS] {caster.name} hit {target.name} for {damageAmount}");
         return true;
     }
 

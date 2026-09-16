@@ -195,7 +195,7 @@ public class MonsterDifficultyReceiver : MonoBehaviour, IMonsterDifficultyReceiv
             ? attributeSet.GetAttributeValue(attackSpeedBaseAttribute)
             : 0f;
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[MonsterDifficultyReceiver] target={name}, hpMultiplier={modifiers.hpMultiplier:0.###}, attackMultiplier={modifiers.attackMultiplier:0.###}, attackSpeedMultiplier={modifiers.attackSpeedMultiplier:0.###}, attackSpeedBase={baseAttackSpeed:0.###}->{currentAttackSpeed:0.###}",
             this);
     }

@@ -24,12 +24,11 @@ public static class BossRewardFallbackService
     }
 
     [Conditional("UNITY_EDITOR")]
-    [Conditional("DEVELOPMENT_BUILD")]
     private static void LogFallback(BossRewardContext context, string message)
     {
         Object logContext = context != null && context.Boss != null
             ? context.Boss
             : null;
-        Debug.LogWarning($"[BossRewardFallbackService] {message}", logContext);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[BossRewardFallbackService] {message}", logContext);
     }
 }

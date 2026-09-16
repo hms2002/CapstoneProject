@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 743167892450702102}
   - component: {fileID: 743167892450702103}
+  - component: {fileID: 743167892450702104}
   - component: {fileID: 301}
   m_Layer: 20
   m_Name: WeaponPrefab_CrimsonBoundary
@@ -50,6 +51,28 @@ MonoBehaviour:
   openingSwing: {fileID: 7400000, guid: f01d67cd00f14659b676353f48876d7e, type: 2}
   downwardSwing: {fileID: 7400000, guid: c0c9fd1d94b142eaa7b7a934e9eaef28, type: 2}
   upwardSwing: {fileID: 7400000, guid: e7b6ce4bfa6d48c78e415491c6af480b, type: 2}
+--- !u!95 &743167892450702104
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 743167892450702101}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage:
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &200
 GameObject:
   m_ObjectHideFlags: 0

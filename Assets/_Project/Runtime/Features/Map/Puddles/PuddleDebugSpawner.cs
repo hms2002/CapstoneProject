@@ -191,12 +191,13 @@ namespace UnityGAS
             return fireAbsorbSpeed > 0f ? fireAbsorbSpeed : DefaultFireProjectileSpeed;
         }
 
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
         private void LogDebug(string message)
         {
             if (!logDebugMessages)
                 return;
 
-            Debug.Log($"[PuddleDebugSpawner] {message}", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[PuddleDebugSpawner] {message}", this);
         }
 
         private Vector3 ResolvePointerWorldPosition()

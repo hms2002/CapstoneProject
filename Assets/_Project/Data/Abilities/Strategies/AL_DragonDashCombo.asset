@@ -66,7 +66,7 @@ MonoBehaviour:
       scaleMultiplier: {x: 0.6, y: 0.8, z: 1}
       attachToTarget: 0
       anchorMode: 0
-      scaleMode: 1
+      scaleMode: 0
       boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0

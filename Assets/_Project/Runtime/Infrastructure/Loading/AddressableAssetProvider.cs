@@ -923,7 +923,7 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
         RecordDebugEvent(message);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         if (logFallbackWarnings)
-            Debug.LogWarning($"[AddressableAssetProvider] {message}", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[AddressableAssetProvider] {message}", this);
 #endif
     }
 
@@ -944,11 +944,11 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
         File.WriteAllText(reportPath, BuildRetainedAssetsReport(), Encoding.UTF8);
 
         if (logRetainedAssetDumpPath)
-            Debug.Log($"[AddressableAssetProvider] Retained asset report written: {reportPath}", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[AddressableAssetProvider] Retained asset report written: {reportPath}", this);
         RecordDebugEvent($"Retained asset report written: {reportPath}");
         return reportPath;
 #else
-        Debug.LogWarning("[AddressableAssetProvider] Retained asset dump is only available in editor/development builds.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[AddressableAssetProvider] Retained asset dump is only available in editor/development builds.", this);
         return null;
 #endif
     }

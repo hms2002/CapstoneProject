@@ -28,7 +28,8 @@ MonoBehaviour:
   skill1Diameter: 5
   skill2ImpactDelay: 0.6
   skill2Diameter: 5
-  skill2BaseMultiplier: 40
+  skill2BaseMultiplier: 13
+  skill2BurnConsumptionMultiplier: 2
   projectilePrefab: {fileID: 104, guid: 08ac84ac8c2a468880dd31714eca6bc1, type: 3}
   projectileHitPrefab: {fileID: 104, guid: 25b44c4176574ced9bd5b84d3dd9ef44, type: 3}
   burnTickPrefab: {fileID: 104, guid: 7e4e4f7d022a42e1956e0e69b1ab357f, type: 3}

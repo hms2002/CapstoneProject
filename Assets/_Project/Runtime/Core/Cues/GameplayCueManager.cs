@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
@@ -142,7 +142,7 @@ namespace UnityGAS
             }
 
             isIndexBuilt = true;
-            Debug.Log($"[GameplayCueManager] Cue index rebuilt. ({defByTagId.Count} definitions)");
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[GameplayCueManager] Cue index rebuilt. ({defByTagId.Count} definitions)");
         }
         // ----------------------------------------------------------------
         // Public API
@@ -302,7 +302,7 @@ namespace UnityGAS
             if (!warnedMissingDefinitionKeys.Add(warningKey))
                 return;
 
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[GameplayCueManager] Missing cue definition for {phase}: {tagName}. " +
                 "Check the GameplayCueDatabase asset and confirm the cue definition is registered.");
         }
@@ -319,7 +319,7 @@ namespace UnityGAS
             if (!hasWarnedAboutLegacyDefinitions && legacyDefinitions.Count > 0)
             {
                 hasWarnedAboutLegacyDefinitions = true;
-                Debug.LogWarning("[GameplayCueManager] GameplayCueDatabase was not assigned, so legacy scene definitions are being used as a fallback.");
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameplayCueManager] GameplayCueDatabase was not assigned, so legacy scene definitions are being used as a fallback.");
             }
 
             return legacyDefinitions;
@@ -397,7 +397,7 @@ namespace UnityGAS
                     var type = GetOrCacheNotifyType(def);
                     if (type == null)
                     {
-                        Debug.LogWarning($"[GameplayCueManager] cueNotifyHostPrefab does not contain a GameplayCueNotify: {def.name}");
+                        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[GameplayCueManager] cueNotifyHostPrefab does not contain a GameplayCueNotify: {def.name}");
                         return result.AudioOnly ? result : null;
                     }
 
@@ -413,7 +413,7 @@ namespace UnityGAS
                     var added = p.Target.AddComponent(type) as GameplayCueNotify;
                     if (added == null)
                     {
-                        Debug.LogWarning($"[GameplayCueManager] Failed to add target notify component: {type.FullName}");
+                        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[GameplayCueManager] Failed to add target notify component: {type.FullName}");
                         return result.AudioOnly ? result : null;
                     }
 

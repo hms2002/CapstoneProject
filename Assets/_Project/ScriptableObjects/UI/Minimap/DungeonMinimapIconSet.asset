@@ -29,8 +29,8 @@ MonoBehaviour:
     normalIconTint: {r: 1, g: 1, b: 1, a: 1}
     silhouetteIconTint: {r: 1, g: 1, b: 1, a: 0.55}
   - roomType: 3
-    normalIcon: {fileID: 0}
-    silhouetteIcon: {fileID: 0}
+    normalIcon: {fileID: 21300000, guid: 5e8d2874894f4b56a31374708dacbaec, type: 3}
+    silhouetteIcon: {fileID: 21300000, guid: 5e8d2874894f4b56a31374708dacbaec, type: 3}
     normalIconTint: {r: 1, g: 1, b: 1, a: 1}
     silhouetteIconTint: {r: 1, g: 1, b: 1, a: 0.55}
   - roomType: 4

@@ -78,7 +78,7 @@ public sealed partial class MonsterSpawnRoomGroup
             if (restoredIndex >= 0)
                 currentWaveIndex = restoredIndex;
             else
-                Debug.LogWarning($"[RoomWaves] {name}: saved wave no longer exists; retaining object survival states.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[RoomWaves] {name}: saved wave no longer exists; retaining object survival states.", this);
         }
 
         waveDelayElapsed = restoredWaveState?.hasStarted == true && restoredWaveState.delayElapsed;
@@ -96,7 +96,7 @@ public sealed partial class MonsterSpawnRoomGroup
             int index = monsterWaves.FindIndex(w => w.id == waveId);
             if (index < 0)
             {
-                Debug.LogWarning($"[RoomWaves] {name}: unknown wave '{waveId}', using the first wave.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[RoomWaves] {name}: unknown wave '{waveId}', using the first wave.", this);
                 index = 0;
             }
             if (index < currentWaveIndex)

@@ -214,7 +214,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
         SceneFadeTransitionService fadeService = SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
         if (fadeService == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[SceneTransitionCoordinator] No fade service was available. Loading scene '{targetSceneName}' without transition fade.",
                 this);
             transitionRoutine = null;
@@ -224,7 +224,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
 
         if (!fadeService.TryBeginTransitionSession())
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[SceneTransitionCoordinator] Could not begin a fade transition session. Loading scene '{targetSceneName}' without transition fade.",
                 this);
             transitionRoutine = null;
@@ -360,7 +360,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
             SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
         if (recovered == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[SceneTransitionCoordinator] Fade service was destroyed while loading scene '{targetSceneName}', and no replacement was available for fade-in.",
                 logContext);
             return null;
@@ -374,7 +374,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
             }
             else
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     $"[SceneTransitionCoordinator] Fade service was destroyed while loading scene '{targetSceneName}'. A replacement was found, but it could not begin a recovered fade session.",
                     logContext);
             }
@@ -441,7 +441,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
 
             if (timeoutSeconds > 0f && elapsed >= timeoutSeconds)
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     "[SceneTransitionCoordinator] Timed out waiting for managed loading presentation to complete.",
                     this);
                 break;
@@ -485,6 +485,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
         }
     }
 
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void LogLoadingHandoffDiagnostics(string phase)
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -499,7 +500,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
             ? AddressableAssetProvider.Instance.BuildRuntimeQueueDiagnosticSummary()
             : "AddressableAssetProvider=null";
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[LoadingHandoffDiagnostics] {phase}: batch={currentBatchId}, currentPending={currentBatchPending}, totalPending={totalPending}, progress={progress * 100f:0.0}%, {providerStatus}",
             this);
 #endif

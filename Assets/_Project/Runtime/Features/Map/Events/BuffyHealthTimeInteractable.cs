@@ -165,7 +165,7 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
     private bool ShowRewardConfigurationFailure(string rewardName)
     {
         WarningPopupPlayback.ShowMessage($"{rewardName} 보상을 적용할 수 없습니다.");
-        Debug.LogWarning($"[BuffyHealthTime] Could not apply {rewardName} reward.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[BuffyHealthTime] Could not apply {rewardName} reward.", this);
         return false;
     }
 

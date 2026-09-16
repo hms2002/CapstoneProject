@@ -174,7 +174,7 @@ public sealed class AlarmBellInteractable :
 
         if (!TryValidateConfiguration(out string failureReason))
         {
-            Debug.LogWarning($"[AlarmBell] {failureReason}", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[AlarmBell] {failureReason}", this);
             WarningPopupPlayback.ShowMessage(invalidConfigurationMessage);
             return;
         }
@@ -242,7 +242,7 @@ public sealed class AlarmBellInteractable :
             int recognitionCount = ResolveRecognitionCount();
             if (!definition.TryResolveTier(recognitionCount, out AlarmBellEncounterTier tier))
             {
-                Debug.LogWarning("[AlarmBell] No tier could be resolved.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[AlarmBell] No tier could be resolved.", this);
                 yield break;
             }
 
@@ -529,7 +529,7 @@ public sealed class AlarmBellInteractable :
         LevelProgressionConfigSO progressionConfig = definition.LevelProgressionConfig;
         if (progressionConfig == null)
         {
-            Debug.LogWarning("[AlarmBell] Completion experience requires a LevelProgressionConfigSO.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[AlarmBell] Completion experience requires a LevelProgressionConfigSO.", this);
             return;
         }
 
@@ -1004,11 +1004,12 @@ public sealed class AlarmBellInteractable :
         }
     }
 
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void LogDebug(string message)
     {
         if (!logDebug)
             return;
 
-        Debug.Log($"[AlarmBell] {message}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[AlarmBell] {message}", this);
     }
 }

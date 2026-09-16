@@ -181,7 +181,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
         GameOverPresentationController controller = FindSceneController();
         if (controller == null)
         {
-            Debug.LogWarning("[GameOverPresentationController] No authored scene controller was found. Game-over presentation was skipped.");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] No authored scene controller was found. Game-over presentation was skipped.");
             return false;
         }
 
@@ -425,7 +425,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
         }
 
         if (EventSystem.current == null)
-            Debug.LogWarning("[GameOverPresentationController] EventSystem is missing. The authored return button may not receive input.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] EventSystem is missing. The authored return button may not receive input.", this);
 
         if (playerTransform == null)
             return;
@@ -1220,30 +1220,30 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private void ValidateAuthoredReferences()
     {
         if (rootCanvas == null)
-            Debug.LogWarning("[GameOverPresentationController] Root canvas is not assigned.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] Root canvas is not assigned.", this);
 
         if (blackoutGraphic == null)
-            Debug.LogWarning("[GameOverPresentationController] Blackout graphic is not assigned.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] Blackout graphic is not assigned.", this);
 
         if (infoGroup == null)
-            Debug.LogWarning("[GameOverPresentationController] Info CanvasGroup is not assigned.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] Info CanvasGroup is not assigned.", this);
 
         if (messageText == null || timeText == null || locationText == null)
-            Debug.LogWarning("[GameOverPresentationController] One or more TMP text references are not assigned.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] One or more TMP text references are not assigned.", this);
 
         if (returnButton == null)
-            Debug.LogWarning("[GameOverPresentationController] Return button is not assigned.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] Return button is not assigned.", this);
         else if (returnButtonLabelText == null)
-            Debug.LogWarning("[GameOverPresentationController] Return button label TMP_Text was not found.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] Return button label TMP_Text was not found.", this);
 
         if (returnPresentationGroup == null || returnPlayerImage == null || returnHoleImage == null)
-            Debug.LogWarning("[GameOverPresentationController] One or more UI return presentation references are not assigned.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] One or more UI return presentation references are not assigned.", this);
 
         if (returnHoleImage != null && returnHoleOccluderImage == null)
-            Debug.LogWarning("[GameOverPresentationController] Return hole occluder is not assigned. The falling player will not be covered by the hole front.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] Return hole occluder is not assigned. The falling player will not be covered by the hole front.", this);
 
         if (returnHoleImage != null && returnHoleDownMaskImage == null)
-            Debug.LogWarning("[GameOverPresentationController] Return hole down mask is not assigned. The falling player may remain visible below the hole.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] Return hole down mask is not assigned. The falling player may remain visible below the hole.", this);
     }
 
     private void SetPresentationVisible(bool visible)

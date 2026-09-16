@@ -169,7 +169,7 @@ public class InventoryUIManager : MonoBehaviour
 
         if (currentPlayer == null)
         {
-            Debug.LogWarning("[InventoryUIManager] Cannot open inventory because PlayerRuntimeRegistry.CurrentPlayer is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[InventoryUIManager] Cannot open inventory because PlayerRuntimeRegistry.CurrentPlayer is missing.", this);
             return false;
         }
 
@@ -180,7 +180,7 @@ public class InventoryUIManager : MonoBehaviour
         if (consumableInventory != null && weaponInventory != null && relicInventory != null)
             return true;
 
-        Debug.LogWarning(
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning(
             "[InventoryUIManager] Cannot open inventory because the current player is missing one or more inventory components.",
             currentPlayer);
         return false;

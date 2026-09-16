@@ -20,7 +20,7 @@ namespace UnityGAS
             // BaseOnly 속성(예: HP)에는 Duration Modifier를 얹지 않는다.
             if (attribute.IsBaseOnly())
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     $"[DurationModifierEffect] '{attribute.attributeName}' 은(는) BaseOnly 속성이므로 Duration Modifier를 적용할 수 없습니다. " +
                     $"Effect: {name}");
                 return;

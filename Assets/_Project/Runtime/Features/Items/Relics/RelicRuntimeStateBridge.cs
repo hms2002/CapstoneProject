@@ -106,7 +106,7 @@ public sealed class RelicRuntimeStateBridge : MonoBehaviour, IRelicRuntimeStateC
         currentRelic = relicInventory.GetRelicInSlot(state.slotIndex);
         if (currentRelic == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[RelicRuntimeStateBridge] 슬롯 {state.slotIndex}에 유물이 없어 runtime 복원을 건너뜁니다.");
             return false;
         }
@@ -114,7 +114,7 @@ public sealed class RelicRuntimeStateBridge : MonoBehaviour, IRelicRuntimeStateC
         if (!string.IsNullOrEmpty(state.relicId) &&
             !string.Equals(currentRelic.relicId, state.relicId, StringComparison.Ordinal))
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[RelicRuntimeStateBridge] relicId 불일치로 runtime 복원을 건너뜁니다. saved={state.relicId}, current={currentRelic.relicId}");
             return false;
         }

@@ -113,12 +113,13 @@ namespace UnityGAS
             // instant effect이므로 제거 동작 없음
         }
 
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
         private void Log(string message, Object context)
         {
             if (!debugKnockback)
                 return;
 
-            Debug.Log($"[GE_Knockback_Spec] {message}", context);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[GE_Knockback_Spec] {message}", context);
         }
     }
 }

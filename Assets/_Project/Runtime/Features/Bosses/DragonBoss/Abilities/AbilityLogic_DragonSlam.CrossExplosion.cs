@@ -68,7 +68,7 @@ public sealed partial class AbilityLogic_DragonSlam
         GameObject prefab = PresentationAssetPlayback.ResolvePrefab(crossExplosionPrefab);
         if (prefab.GetComponent<ITimedHitEffect2D>() == null || prefab.GetComponent<CircleCollider2D>() == null)
         {
-            Debug.LogWarning("[DragonSlam] Cross explosion prefab requires a root timed hit effect and circle collider.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[DragonSlam] Cross explosion prefab requires a root timed hit effect and circle collider.", this);
             yield break;
         }
 

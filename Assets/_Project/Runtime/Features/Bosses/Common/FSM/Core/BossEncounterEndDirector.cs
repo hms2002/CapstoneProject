@@ -245,7 +245,7 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
 
         if (treasureChest == null)
         {
-            Debug.LogWarning("[BossEncounterEndDirector] TreasureChest is not assigned.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossEncounterEndDirector] TreasureChest is not assigned.", this);
             return;
         }
 
@@ -351,7 +351,7 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
 
         if (exitPortal == null)
         {
-            Debug.LogWarning("[BossEncounterEndDirector] Exit portal is not assigned.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossEncounterEndDirector] Exit portal is not assigned.", this);
             return;
         }
 
@@ -402,10 +402,11 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
         }
     }
 
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void LogDebug(string message)
     {
         if (logDebug)
-            Debug.Log($"[BossEncounterEndDirector] {message}", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[BossEncounterEndDirector] {message}", this);
     }
 
     private void LogRewardContext(BossRewardContext context)

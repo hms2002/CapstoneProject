@@ -249,7 +249,7 @@ public class HoverUIController : MonoBehaviour
 
         if (logPositioningDebug)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[HoverUIController] Positioned hover view. " +
                 $"canvas={canvas.name}, canvasRect={canvasLocalRect}, " +
                 $"target={targetRect.name}, targetRect={targetLocalRect}, " +

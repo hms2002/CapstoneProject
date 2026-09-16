@@ -70,7 +70,7 @@ public sealed class CrimsonBoundaryLavaProjectile2D : MonoBehaviour, IAttackColl
             float damage = CrimsonBoundaryUtility.CalculateDirectDamage(owner, data.skill2BaseMultiplier, out bool critical, data.skillFireFormula);
             var burn = target.GetComponent<BurnStatus2D>();
             int consumed = burn != null ? burn.ConsumeAll() : 0;
-            damage += CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(owner, consumed, data.burnConsumptionMultiplier, data.skillFireFormula);
+            damage += CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(owner, consumed, data.skill2BurnConsumptionMultiplier, data.skillFireFormula);
             CrimsonBoundaryUtility.ApplyDamage(owner, spec, data.damageEffect, target, damage, critical, gameObject);
         }
         transform.position = origin + direction * wallDistance;

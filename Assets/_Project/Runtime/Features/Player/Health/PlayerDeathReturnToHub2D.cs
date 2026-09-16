@@ -139,7 +139,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     {
         if (!Application.isPlaying)
         {
-            Debug.LogWarning("[PlayerDeathReturnToHub2D] Set Health To 1 is only available in Play Mode.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerDeathReturnToHub2D] Set Health To 1 is only available in Play Mode.", this);
             return false;
         }
 
@@ -148,25 +148,25 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
 
         if (attributeSet == null)
         {
-            Debug.LogWarning("[PlayerDeathReturnToHub2D] AttributeSet is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerDeathReturnToHub2D] AttributeSet is missing.", this);
             return false;
         }
 
         if (hpDef == null)
         {
-            Debug.LogWarning("[PlayerDeathReturnToHub2D] HP AttributeDefinition is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerDeathReturnToHub2D] HP AttributeDefinition is missing.", this);
             return false;
         }
 
         float previousHealth = attributeSet.GetAttributeValue(hpDef);
         if (!attributeSet.TrySetCurrentValue(hpDef, 1f, this))
         {
-            Debug.LogWarning("[PlayerDeathReturnToHub2D] Failed to set player health to 1.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerDeathReturnToHub2D] Failed to set player health to 1.", this);
             return false;
         }
 
         float currentHealth = attributeSet.GetAttributeValue(hpDef);
-        Debug.Log($"[PlayerDeathReturnToHub2D] Player health changed {previousHealth:0.##} -> {currentHealth:0.##}.", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[PlayerDeathReturnToHub2D] Player health changed {previousHealth:0.##} -> {currentHealth:0.##}.", this);
         return true;
     }
 #endif

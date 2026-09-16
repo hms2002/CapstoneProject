@@ -34,7 +34,7 @@ public sealed class PlayerStatusHudSource : MonoBehaviour, IStatusHudSource
         StatusHudSourceRegistry.RegisterSource(this);
 
         if (logStatusHudCollection)
-            Debug.Log($"[PlayerStatusHudSource] Registered. runtime={(runtime != null ? runtime.name : "null")}", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[PlayerStatusHudSource] Registered. runtime={(runtime != null ? runtime.name : "null")}", this);
     }
 
     private void OnDisable()
@@ -47,7 +47,7 @@ public sealed class PlayerStatusHudSource : MonoBehaviour, IStatusHudSource
         if (runtime == null)
         {
             if (logStatusHudCollection)
-                Debug.LogWarning("[PlayerStatusHudSource] Skipped collection because PlayerStatusRuntime was missing.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerStatusHudSource] Skipped collection because PlayerStatusRuntime was missing.", this);
             return;
         }
 
@@ -62,6 +62,6 @@ public sealed class PlayerStatusHudSource : MonoBehaviour, IStatusHudSource
             return;
 
         lastCollectedCount = collectedCount;
-        Debug.Log($"[PlayerStatusHudSource] Collected {collectedCount} player status HUD entr{(collectedCount == 1 ? "y" : "ies")} (activeRuntimeStatuses={runtime.ActiveStatusCount}).", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[PlayerStatusHudSource] Collected {collectedCount} player status HUD entr{(collectedCount == 1 ? "y" : "ies")} (activeRuntimeStatuses={runtime.ActiveStatusCount}).", this);
     }
 }

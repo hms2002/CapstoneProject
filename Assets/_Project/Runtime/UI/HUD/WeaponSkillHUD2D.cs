@@ -595,7 +595,7 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
         if (fill == null)
         {
             ui.cooldownFillVisibilityWarningLogged = true;
-            Debug.LogWarning($"[WeaponSkillHUD2D] {slot} active duration override is active, but neither activeDurationFill nor cooldownFill is assigned.");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[WeaponSkillHUD2D] {slot} active duration override is active, but neither activeDurationFill nor cooldownFill is assigned.");
             return;
         }
 
@@ -609,7 +609,7 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
             return;
 
         ui.cooldownFillVisibilityWarningLogged = true;
-        Debug.LogWarning($"[WeaponSkillHUD2D] {slot} active duration override is active, but the resolved fill Image may be invisible. Check activeDurationFill/cooldownFill active state, alpha, sprite, and hierarchy order.");
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[WeaponSkillHUD2D] {slot} active duration override is active, but the resolved fill Image may be invisible. Check activeDurationFill/cooldownFill active state, alpha, sprite, and hierarchy order.");
     }
 
     private static void CaptureCooldownFillConfig(SkillSlotUI ui)

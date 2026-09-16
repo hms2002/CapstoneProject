@@ -249,7 +249,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         Vector3 targetPosition = targetObject != null ? targetObject.transform.position : Vector3.zero;
         string targetName = targetObject != null ? targetObject.name : "null";
         string styleName = spec.style != null ? spec.style.name : "null";
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[WitchNormalAttack1Tile] {phase}. " +
             $"tile={debugTileIndex}, object={name}, time={Time.time:0.000}, " +
             $"center={tileCenter}, renderRoot={transform.position}, specCenter={spec.center}, size={tileSize}, angle={angleDeg:0.0}, " +
@@ -265,7 +265,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         if (!logGeometryDebug)
             return;
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[WitchNormalAttack1Tile] damage probe. " +
             $"tile={debugTileIndex}, object={name}, time={Time.time:0.000}, " +
             $"center={tileCenter}, size={tileSize}, angle={angleDeg:0.0}, " +
@@ -280,7 +280,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
 
         string effectName = hitPresentation.effect.prefab != null ? hitPresentation.effect.prefab.name : "null";
         string particleName = hitPresentation.particle.prefab != null ? hitPresentation.particle.prefab.name : "null";
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[WitchNormalAttack1Tile] hit presentation. " +
             $"tile={debugTileIndex}, object={name}, time={Time.time:0.000}, " +
             $"position={tileCenter}, rotationZ={rotation.eulerAngles.z:0.0}, " +

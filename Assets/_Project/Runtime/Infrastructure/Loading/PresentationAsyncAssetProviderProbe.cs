@@ -17,7 +17,7 @@ public sealed class PresentationAsyncAssetProviderProbe : MonoBehaviour, IAssetP
         PresentationAssetProvider.SetProviderOverride(this);
 
         if (verboseLogging)
-            Debug.Log("[PresentationAsyncAssetProviderProbe] Installed provider override.", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log("[PresentationAsyncAssetProviderProbe] Installed provider override.", this);
     }
 
     private void OnDisable()
@@ -25,7 +25,7 @@ public sealed class PresentationAsyncAssetProviderProbe : MonoBehaviour, IAssetP
         PresentationAssetProvider.ClearProviderOverride(this);
 
         if (verboseLogging)
-            Debug.Log("[PresentationAsyncAssetProviderProbe] Cleared provider override.", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log("[PresentationAsyncAssetProviderProbe] Cleared provider override.", this);
     }
 
     public void PreloadManifest(LoadManifestSO manifest)

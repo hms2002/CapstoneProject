@@ -203,12 +203,13 @@ public sealed class MonsterReturnHome2D : MonoBehaviour, IMonsterSpawnContextRec
     }
 
     /// <summary>복귀 상태를 이해하기 쉽게 로그로 남깁니다.</summary>
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void LogDebug(string message)
     {
         if (!enableDebugLog)
             return;
 
-        Debug.Log($"[MonsterReturnHome2D] {name}: {message}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[MonsterReturnHome2D] {name}: {message}", this);
     }
 
     private void OnDrawGizmosSelected()

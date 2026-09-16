@@ -239,7 +239,7 @@ public class DialogueController : MonoBehaviour
         }
         catch (Exception exception)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[DialogueController] Failed to start dialogue at path '{startPath}'. Falling back to default root. {exception.Message}",
                 this);
             return true;
@@ -273,7 +273,7 @@ public class DialogueController : MonoBehaviour
         }
         catch (Exception exception)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[DialogueController] Failed to preview opening portrait face tag. {exception.Message}",
                 this);
         }
@@ -466,14 +466,14 @@ public class DialogueController : MonoBehaviour
             default:
                 if (!int.TryParse(normalizedTarget, out _))
                 {
-                    Debug.LogWarning($"[DialogueController] Unsupported dialogue effect target '{target}'.", this);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[DialogueController] Unsupported dialogue effect target '{target}'.", this);
                     return false;
                 }
 
                 themeOwner = participantRegistry.GetOrLoadNPC(normalizedTarget);
                 if (themeOwner == null)
                 {
-                    Debug.LogWarning($"[DialogueController] Dialogue effect target NPC '{target}' was not found.", this);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[DialogueController] Dialogue effect target NPC '{target}' was not found.", this);
                     return false;
                 }
 
@@ -561,7 +561,7 @@ public class DialogueController : MonoBehaviour
         {
             if (npc == null)
             {
-                Debug.LogWarning("[DialogueController] Ignoring a null NPC participant.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[DialogueController] Ignoring a null NPC participant.", this);
                 continue;
             }
 
@@ -855,7 +855,7 @@ public class DialogueController : MonoBehaviour
             if (!warnedChoicePreviewFailure)
             {
                 warnedChoicePreviewFailure = true;
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     $"[DialogueController] Failed to preview dialogue choice tags. {exception.Message}",
                     this);
             }

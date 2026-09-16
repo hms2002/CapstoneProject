@@ -415,12 +415,13 @@ namespace UnityGAS
             return null;
         }
 
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
         private void LogDebug(string message)
         {
             if (!logDebugMessages)
                 return;
 
-            Debug.Log($"[{nameof(PuddleAreaBase)}] {message}", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[{nameof(PuddleAreaBase)}] {message}", this);
         }
     }
 }

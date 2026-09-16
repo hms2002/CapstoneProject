@@ -1097,12 +1097,12 @@ public sealed class DemoCheatService
 
     private void Log(string message)
     {
-        Debug.Log($"[DemoCheat] {message}", logContext);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[DemoCheat] {message}", logContext);
     }
 
     private void LogWarning(string message)
     {
-        Debug.LogWarning($"[DemoCheat] {message}", logContext);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[DemoCheat] {message}", logContext);
     }
 
     private DemoCheatResult Fail(string message)

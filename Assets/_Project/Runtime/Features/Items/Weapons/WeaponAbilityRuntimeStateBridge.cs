@@ -108,14 +108,14 @@ public sealed class WeaponAbilityRuntimeStateBridge : MonoBehaviour, IWeaponRunt
         var weapon = weaponInventory.GetWeaponInSlot(state.slotIndex);
         if (weapon == null)
         {
-            Debug.LogWarning($"[WeaponAbilityRuntimeStateBridge] 슬롯 {state.slotIndex}에 무기가 없어 ability runtime 복원을 건너뜁니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[WeaponAbilityRuntimeStateBridge] 슬롯 {state.slotIndex}에 무기가 없어 ability runtime 복원을 건너뜁니다.", this);
             return;
         }
 
         if (!string.IsNullOrEmpty(state.weaponId) &&
             !string.Equals(state.weaponId, weapon.weaponId, StringComparison.Ordinal))
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[WeaponAbilityRuntimeStateBridge] weaponId 불일치로 복원을 건너뜁니다. saved={state.weaponId}, current={weapon.weaponId}",
                 this);
             return;
@@ -243,7 +243,7 @@ public sealed class WeaponAbilityRuntimeStateBridge : MonoBehaviour, IWeaponRunt
         var state = abilitySystem.ExportPersistentState(ability);
         if (state == null)
         {
-            Debug.LogWarning($"[WeaponAbilityRuntimeStateBridge] 무기 ability state export 실패: {ability.name}", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[WeaponAbilityRuntimeStateBridge] 무기 ability state export 실패: {ability.name}", this);
             return;
         }
 

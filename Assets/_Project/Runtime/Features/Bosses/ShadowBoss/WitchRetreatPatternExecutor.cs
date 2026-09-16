@@ -48,20 +48,20 @@ public sealed class WitchRetreatPatternExecutor : MonoBehaviour
 
         if (owner == null)
         {
-            Debug.LogWarning("[WitchRetreatPatternExecutor] 시작 실패: owner가 없습니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[WitchRetreatPatternExecutor] 시작 실패: owner가 없습니다.", this);
             return false;
         }
 
         if (context.SkeletonPrefab == null)
         {
-            Debug.LogWarning("[WitchRetreatPatternExecutor] 시작 실패: skeletonPrefab이 없습니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[WitchRetreatPatternExecutor] 시작 실패: skeletonPrefab이 없습니다.", this);
             return false;
         }
 
         owner.PlayPatternAttackMotion();
         bool spawnedLeft = SpawnRetreatSkeleton(context.SkeletonPrefab, context.LeftOffset, context.ExplosionDiameter, context.SpeedScale);
         bool spawnedRight = SpawnRetreatSkeleton(context.SkeletonPrefab, context.RightOffset, context.ExplosionDiameter, context.SpeedScale);
-        Debug.Log($"[WitchRetreatPatternExecutor] 피난 executor 경로 실행 결과: left={spawnedLeft}, right={spawnedRight}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[WitchRetreatPatternExecutor] 피난 executor 경로 실행 결과: left={spawnedLeft}, right={spawnedRight}", this);
         return spawnedLeft || spawnedRight;
     }
 
@@ -70,7 +70,7 @@ public sealed class WitchRetreatPatternExecutor : MonoBehaviour
     {
         if (owner == null || skeletonPrefab == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[WitchRetreatPatternExecutor] 소환 실패: owner={(owner != null)}, skeletonPrefab={(skeletonPrefab != null)}",
                 this);
             return false;
@@ -83,7 +83,7 @@ public sealed class WitchRetreatPatternExecutor : MonoBehaviour
 
         if (skeleton == null)
         {
-            Debug.LogWarning("[WitchRetreatPatternExecutor] 소환 실패: Instantiate 결과가 null입니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[WitchRetreatPatternExecutor] 소환 실패: Instantiate 결과가 null입니다.", this);
             return false;
         }
 

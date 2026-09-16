@@ -93,7 +93,7 @@ public class SafetyTracker : MonoBehaviour
         }
 
         // 디버깅 로그 (필요시 주석 해제)
-        // Debug.Log($"[SafetyTracker] 감지됨 - GroundMaps: {groundMaps.Count}, HoleMaps: {holeMaps.Count}");
+        // CapstoneDiagnostics.EditorOnlyLog.Log($"[SafetyTracker] 감지됨 - GroundMaps: {groundMaps.Count}, HoleMaps: {holeMaps.Count}");
     }
 
     private void InitializePosition()

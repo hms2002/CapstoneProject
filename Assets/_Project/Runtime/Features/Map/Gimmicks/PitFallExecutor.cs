@@ -150,11 +150,12 @@ public static class PitFallExecutor
         RemoveFallingEffect(context);
     }
 
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private static void LogDebug(PitFallContext context, string message)
     {
         if (!context.LogDebug)
             return;
 
-        Debug.Log($"[PitFallExecutor] {message}", context.TrapObject);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[PitFallExecutor] {message}", context.TrapObject);
     }
 }

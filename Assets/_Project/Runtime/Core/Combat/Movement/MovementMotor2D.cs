@@ -124,10 +124,10 @@ namespace UnityGAS
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (intentSource == null)
-                Debug.LogWarning($"[MovementMotor2D] {name}: IIntentMovementSource2D를 찾지 못했습니다.");
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[MovementMotor2D] {name}: IIntentMovementSource2D를 찾지 못했습니다.");
 
             if (statProvider == null)
-                Debug.LogWarning($"[MovementMotor2D] {name}: IStatProvider를 찾지 못했습니다. (예: AttributeStatSource 필요)");
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[MovementMotor2D] {name}: IStatProvider를 찾지 못했습니다. (예: AttributeStatSource 필요)");
 #endif
         }
 
@@ -547,7 +547,7 @@ namespace UnityGAS
             if (float.IsFinite(velocity.x) && float.IsFinite(velocity.y))
                 return velocity;
 
-            Debug.LogWarning($"[MovementMotor2D] {name}: {sourceName} 에 비정상 속도 값이 들어와 Vector2.zero 로 치환했습니다. value={velocity}");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[MovementMotor2D] {name}: {sourceName} 에 비정상 속도 값이 들어와 Vector2.zero 로 치환했습니다. value={velocity}");
             return Vector2.zero;
         }
 

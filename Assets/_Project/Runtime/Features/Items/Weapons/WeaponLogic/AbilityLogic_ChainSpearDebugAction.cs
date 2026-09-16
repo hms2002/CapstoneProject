@@ -18,7 +18,7 @@ namespace UnityGAS.Sample
         {
             string ownerName = system != null ? system.gameObject.name : "<null>";
             string abilityName = spec?.Definition != null ? spec.Definition.abilityName : "<null>";
-            Debug.Log($"[ChainSpear] {debugLabel} activated by {ownerName} via {abilityName}.", system);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[ChainSpear] {debugLabel} activated by {ownerName} via {abilityName}.", system);
 
             if (startThrowExecutor)
                 TryStartThrowExecutor(system, spec, initialTarget);

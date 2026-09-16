@@ -51,7 +51,7 @@ public class AffectionShortcut : PermanentShortcut
     protected override bool CheckCondition(IPlayerInteractor player)
     {
         int current = AffectionManager.Instance != null ? AffectionManager.Instance.GetAffection(targetBossID) : 0;
-        Debug.Log($"[안내] {targetBossID}번 보스의 호감도가 부족합니다. (현재:{current} / 필요:{requiredAffection})");
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[안내] {targetBossID}번 보스의 호감도가 부족합니다. (현재:{current} / 필요:{requiredAffection})");
         return false;
     }
 

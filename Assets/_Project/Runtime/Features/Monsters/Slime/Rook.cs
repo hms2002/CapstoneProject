@@ -688,7 +688,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
 
         if (logChargeCastDebug && hitCount >= chargeCastHits.Length)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[RookChargeCast] hit buffer full. caster={name}, hitCount={hitCount}, buffer={chargeCastHits.Length}. " +
                 "벽/문 hit가 누락될 수 있습니다.",
                 this);
@@ -813,7 +813,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
         if (string.IsNullOrWhiteSpace(layerName))
             layerName = hit.collider.gameObject.layer.ToString();
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[RookChargeLineSampleHit] caster={name}, lateralOffset={lateralOffset:F2}, index={index}, " +
             $"collider={hit.collider.name}/{hit.collider.GetType().Name}, layer={layerName}, trigger={hit.collider.isTrigger}, " +
             $"distance={hit.distance:F3}, accepted={accepted}, reason={ResolveChargeCastHitDebugReason(hit, targetObject)}",
@@ -839,7 +839,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
             layerName = hitCollider.gameObject.layer.ToString();
 
         string reason = ResolveChargeCastHitDebugReason(hit, targetObject);
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[RookChargeCastHit] caster={name}, index={index}, collider={hitCollider.name}/{hitCollider.GetType().Name}, " +
             $"layer={layerName}, trigger={hitCollider.isTrigger}, distance={hit.distance:F3}, accepted={accepted}, reason={reason}",
             this);
@@ -900,7 +900,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
             gameObject,
             CombatPathBlockerQuery.Charge);
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[RookChargeBlockerDecision] caster={name}, source={source}, collider={candidate.name}/{candidate.GetType().Name}, " +
             $"layer={layerName}, trigger={candidate.isTrigger}, decision={decision}",
             this);
@@ -922,7 +922,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
 
         lastRookFsmLogMessage = message;
         nextRookFsmLogTime = Time.time + Mathf.Max(0.05f, rookFsmLogInterval);
-        Debug.Log($"[RookFSM] {name}: {message}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[RookFSM] {name}: {message}", this);
     }
 
     /// <summary>

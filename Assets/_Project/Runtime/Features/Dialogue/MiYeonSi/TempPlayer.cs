@@ -100,7 +100,7 @@ public class TempPlayer : MonoBehaviour, IPlayerInteractor
     private void OnTriggerEnter2D(Collider2D other)
     {
         // 1. 물리적 충돌은 감지됨 (로그 확인용)
-        // Debug.Log($"[충돌 감지] {other.name}와 닿았습니다.");
+        // CapstoneDiagnostics.EditorOnlyLog.Log($"[충돌 감지] {other.name}와 닿았습니다.");
 
         // [수정] 자식 콜라이더와 부딪혔을 경우를 대비해 부모까지 검색
         IInteractable interactable = other.GetComponent<IInteractable>();
@@ -117,7 +117,7 @@ public class TempPlayer : MonoBehaviour, IPlayerInteractor
             {
                 nearbyObjects.Add(interactable);
                 interactable.OnPlayerNearby();
-                // Debug.Log($"[리스트 추가] {other.name} 상호작용 대상 등록 완료");
+                // CapstoneDiagnostics.EditorOnlyLog.Log($"[리스트 추가] {other.name} 상호작용 대상 등록 완료");
             }
         }
     }
@@ -144,7 +144,7 @@ public class TempPlayer : MonoBehaviour, IPlayerInteractor
                     currentTarget = null;
                 }
                 nearbyObjects.Remove(interactable);
-                // Debug.Log($"[리스트 제거] {other.name} 상호작용 대상 해제");
+                // CapstoneDiagnostics.EditorOnlyLog.Log($"[리스트 제거] {other.name} 상호작용 대상 해제");
             }
         }
     }

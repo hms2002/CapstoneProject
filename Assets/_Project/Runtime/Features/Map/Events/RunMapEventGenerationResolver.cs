@@ -335,7 +335,7 @@ public static class RunMapEventGenerationResolver
         string routeThemeId,
         int visitOrder)
     {
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[RunMapEventGeneration] profile={profile.name}, route={routeThemeId ?? "<none>"}, " +
             $"visitOrder={visitOrder}, guaranteedRooms={plan.GuaranteedRoomTemplates.Count}, " +
             $"presentedEvents={plan.PresentedEventIds.Count}, consumedFollowUps={plan.ConsumedPendingPlacements.Count}");

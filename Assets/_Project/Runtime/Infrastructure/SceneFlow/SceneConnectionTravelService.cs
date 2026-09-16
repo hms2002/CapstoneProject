@@ -185,7 +185,7 @@ internal static class SceneConnectionTravelExecutor
 
         if (accepted)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[SceneConnectionTravelService] Travel accepted. connection={endpoint.Connection.ConnectionId}, " +
                 $"from={resolved.Source.SceneName}:{resolved.Source.EndpointId}, " +
                 $"to={resolved.Destination.SceneName}:{resolved.Destination.EndpointId}, activation={activationKind}",
@@ -292,7 +292,7 @@ internal static class SceneConnectionTravelExecutor
         PlayerRuntimeCaptureBridge captureBridge = playerObject.GetComponent<PlayerRuntimeCaptureBridge>();
         if (captureBridge == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 "[SceneConnectionTravelService] PlayerRuntimeCaptureBridge is missing; continuing without player state preservation.",
                 playerObject);
             return;

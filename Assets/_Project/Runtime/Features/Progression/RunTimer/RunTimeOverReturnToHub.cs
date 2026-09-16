@@ -59,7 +59,7 @@ public sealed class RunTimeOverReturnToHub : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(hubSceneName))
         {
-            Debug.LogWarning("[RunTimeOverReturnToHub] Hub scene name is empty. TimeOver transition was skipped.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RunTimeOverReturnToHub] Hub scene name is empty. TimeOver transition was skipped.", this);
             return;
         }
 
@@ -75,13 +75,13 @@ public sealed class RunTimeOverReturnToHub : MonoBehaviour
             if (deathReturn.TryStartTimeOverSequence(hubSceneName, useFadeTransitionService))
                 return;
 
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 "[RunTimeOverReturnToHub] Player death return sequence is already running. TimeOver fallback was skipped.",
                 this);
             return;
         }
 
-        Debug.LogWarning(
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning(
             "[RunTimeOverReturnToHub] Player death return component is missing. Falling back to immediate TimeOver return.",
             this);
         FallbackReturnToHub();

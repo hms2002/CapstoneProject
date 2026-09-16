@@ -459,7 +459,7 @@ public sealed class ChoiceFailureScreenEffect : MonoBehaviour, IChoiceFailurePre
             return;
 
         warnedMissingSceneSetup = true;
-        Debug.LogWarning(
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning(
             "[ChoiceFailureScreenEffect] Scene-owned overlay setup is missing. Add a ChoiceFailureScreenEffect object with GradientBorder and BrokenHearts children to the play UI root.",
             this);
     }
