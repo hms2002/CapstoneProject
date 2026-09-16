@@ -28,6 +28,8 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
     [SerializeField] private string interactPromptText = "운동기구 사용하기";
     [SerializeField] private SpriteRenderer[] highlightedRenderers;
 
+    [SerializeField] private MonoBehaviour npcSpeechBubble;
+    private ISpeechBubblePlayback speech;
     private MaterialPropertyBlock outlinePropertyBlock;
     private IPlayerInteractor activePlayer;
 
@@ -35,6 +37,7 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
 
     private void Awake()
     {
+        speech = npcSpeechBubble as ISpeechBubblePlayback;
         Collider2D interactionCollider = GetComponent<Collider2D>();
         if (interactionCollider != null)
             interactionCollider.isTrigger = true;
@@ -46,7 +49,11 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
         OnUnHighlight();
     }
 
-    private void OnDisable() => OnUnHighlight();
+    private void OnDisable()
+    {
+        speech?.HideActive();
+        OnUnHighlight();
+    }
 
     public override bool CanInteract(IPlayerInteractor player)
     {
@@ -61,7 +68,7 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
 
         if (RunMapEventProgress.IsEventCompleted(RunSessionStore.Data, EventId))
         {
-            WarningPopupPlayback.ShowMessage("오늘의 운동은 이미 끝났어. 다음에도 건강하게 만나자!");
+            ShowSpeech("오늘의 운동은 이미 끝났어. 다음에도 건강하게 만나자!");
             return;
         }
 
@@ -107,7 +114,7 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
         if (!attributes.TrySetBaseValue(attackBaseAttribute, nextValue, this))
             return ShowRewardConfigurationFailure("공격력");
 
-        WarningPopupPlayback.ShowMessage($"근력 운동 완료! 공격력이 {attackBaseBonus:0.#} 증가했습니다.");
+        ShowPlayerSpeech($"공격력이 {Mathf.Max(0f, attackBaseBonus):0.#} 올랐어.");
         return true;
     }
 
@@ -121,7 +128,7 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
         if (!attributes.TrySetBaseValue(moveSpeedMultiplierAttribute, nextValue, this))
             return ShowRewardConfigurationFailure("이동속도");
 
-        WarningPopupPlayback.ShowMessage($"바퀴 운동 완료! 이동속도가 {safeBonus * 100f:0.#}% 증가했습니다.");
+        ShowPlayerSpeech($"이동속도가 {safeBonus * 100f:0.#}% 올랐어.");
         return true;
     }
 
@@ -134,14 +141,14 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
         int requiredExperience = levelProgressionConfig.GetRequiredExperience(state.level);
         if (requiredExperience <= 0)
         {
-            WarningPopupPlayback.ShowMessage("이미 최고 레벨입니다. 다른 운동을 선택해 주세요.");
+            ShowSpeech("그건 안해도 되겠는데? 다른 운동을 해봐.");
             return false;
         }
 
         if (!RunLevelProgression.TryGrantExperience(levelProgressionConfig, requiredExperience, out _))
             return ShowRewardConfigurationFailure("경험치");
 
-        WarningPopupPlayback.ShowMessage($"통나무 운동 완료! 경험치 {requiredExperience}을 획득했습니다.");
+        ShowPlayerSpeech("경험치를 받았어.");
         return true;
     }
 
@@ -160,6 +167,17 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
         WarningPopupPlayback.ShowMessage($"{rewardName} 보상을 적용할 수 없습니다.");
         Debug.LogWarning($"[BuffyHealthTime] Could not apply {rewardName} reward.", this);
         return false;
+    }
+
+    private void ShowPlayerSpeech(string message)
+    {
+        if (activePlayer is Component playerComponent)
+            playerComponent.GetComponent<ISpeechBubblePlayback>()?.Speak(message, 4f);
+    }
+
+    private void ShowSpeech(string message)
+    {
+        speech?.Speak(message, 4f);
     }
 
     private void SetOutline(bool enabled)

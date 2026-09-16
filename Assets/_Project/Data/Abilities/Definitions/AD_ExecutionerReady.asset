@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_ExecutionerReady
   m_EditorClassIdentifier: 
-  abilityName: AD_ExecutionerReady
+  abilityName: "처형 준비"
   icon: {fileID: 0}
-  description: Executioner ready state debug ability.
+  description: "처형을 준비합니다. 이어지는 공격으로 처형 기회를 엽니다."
   cooldown: 0
   executionPolicy: 0
   useCharges: 0

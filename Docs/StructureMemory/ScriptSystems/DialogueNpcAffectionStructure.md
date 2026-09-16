@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-08-31
+last_reviewed: 2026-09-16
 ---
 
 # Dialogue NPC Affection Structure
@@ -10,6 +10,15 @@ last_reviewed: 2026-08-31
 ## Purpose
 
 Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scripts.
+
+## Authored world nameplates
+
+- `Runtime/UI/HUD/WorldPrompt/NpcNameplatePresenter.cs` drives `Prefabs/UI/NpcNameplate.prefab`; there is no runtime hierarchy creation. Instances belong to the NPC/stand scene or prefab and are destroyed with it.
+- NPC names and optional role icons come from `NPCData`; the encyclopedia uses authored fallbackName/fallbackIcon because it is not an NPC. Book icon = 도감, smith = 대장장이, store = 상인. 서기관 and other NPCs without an icon keep centered text with no blank icon space.
+- `NameplateAnchor` owns the nameplate prefab instance at zero local offset. It is authored at the previous interaction anchor position. The separate `InteractUIAnchor` sits 0.8 world units above it and is referenced by the presenter’s interactionAnchor; WorldInteractionPromptController projects that transform directly. NPCs without an existing dedicated anchor receive both anchors. Both positions can be edited independently in Unity.
+- The world canvas follows its authored anchor with no additional world offset, keeps upright text and compensates parent scale. Name text is 40 points at 0.01 world scale, matching the interaction prompt; role icons are 40×40 UI units. Horizontal layout preserves centered names when icons are absent. It fades over 0.2 unscaled seconds while DialoguePlayback, a visible cinematic letterbox, or the player Talking state is active.
+- `CinematicLetterboxOverlay.IsAnyVisible` tracks PlayIn through PlayOut/Dispose and resets on subsystem registration. This projects presentation state; it does not own dialogue/gameplay state.
+- 17 friendly NPC instances plus the encyclopedia stand are authored. Combat boss nameplates are not introduced. Existing installers that rebuild entire NPC objects may require preserving/reapplying the shared nameplate instance.
 
 ## Current Structure
 
@@ -166,3 +175,9 @@ SetLowerPanelRetainedBetweenDialogues is opt-in presentation state forwarded by 
 ### Retained-frame theme lifetime
 
 ResetTheme preserves currentTheme and visible accent colors while lowerPanelRetained is true. Effect cleanup still runs. The next ApplyTheme replaces that theme normally; releasing retention between sessions closes the frame, clears retention and resets its theme. Actual final dialogue closing also resets normally. Upper-frame camera hiding uses PlayGroupClose with an optional completion callback, enabling GrandHall to wait for its authored exit animation.
+
+### Common cinematic HUD fade (2026-09-16)
+
+CinematicLetterboxOverlay always captures GameplayHUD and BossHUD and fades them to alpha 0 in every PlayIn overload. Custom layer lists and captureGlobalUiLayers=false now control only non-HUD layers; dialogue and tutorial prompt panels can remain visible independently. Duplicate canvas references are captured once. PlayOut restores the captured original alpha and interaction flags; Dispose retains immediate cancellation cleanup. Existing unscaled-time fade duration follows the caller's letterbox duration. The implementation reuses the existing overlay/CanvasGroup lifecycle; no new runtime UI hierarchy was introduced.
+
+GrandHall's custom list previously omitted GameplayHUD, causing missing pre-dialogue HUD fade. HubIntroAfterDarkLordSequence no longer disables the HUD Canvas before PlayIn when useLetterbox is true, allowing the common fade to render. The existing no-letterbox immediate-hide option is retained. Letterbox completion still precedes Dialogue ownership; dialogue panel/camera-cue rules are unchanged. Already-disabled tutorial-specific HUD roots remain disabled rather than being forcibly activated.

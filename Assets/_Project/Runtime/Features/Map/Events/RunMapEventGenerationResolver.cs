@@ -110,9 +110,14 @@ public static class RunMapEventGenerationResolver
         bool hasRouteContext,
         int nextVisitOrder)
     {
-        int maxCount = Mathf.Max(
-            0,
-            profile.MaximumStartEventsPerCorridor - plan.ConsumedPendingPlacements.Count);
+        int countedFollowUps = 0;
+        foreach (PendingRunMapEventPlacement pending in plan.ConsumedPendingPlacements)
+        {
+            if (!TryResolveFollowUpRoom(profile, pending, out RoomTemplateSO room) ||
+                !ParcelDeliveryPointInteractable.IsDeliveryRoom(room))
+                countedFollowUps++;
+        }
+        int maxCount = Mathf.Max(0, profile.MaximumStartEventsPerCorridor - countedFollowUps);
         if (maxCount <= 0)
             return;
 

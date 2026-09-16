@@ -148,7 +148,8 @@ internal static class ApprenticeHeroSwordHitUtility
         Vector2 visualScaleMultiplier,
         bool applyVisualColor,
         Color visualColor,
-        System.Collections.Generic.HashSet<int> sharedHitTargetIds = null)
+        System.Collections.Generic.HashSet<int> sharedHitTargetIds = null,
+        bool? attachToOwnerOverride = null)
     {
         if (system == null || hitboxConfig == null || hitboxConfig.HitboxPrefab == null || payload == null)
             return null;
@@ -189,7 +190,7 @@ internal static class ApprenticeHeroSwordHitUtility
             flipVisualX = flipVisualX,
             visualMirrorMode = hitboxConfig.VisualMirrorMode,
             overrideAttachToOwnerOnSetup = true,
-            attachToOwnerOnSetup = hitboxConfig.AttachToOwnerOnSetup,
+            attachToOwnerOnSetup = attachToOwnerOverride ?? hitboxConfig.AttachToOwnerOnSetup,
             sharedHitTargetIds = sharedHitTargetIds
         });
 

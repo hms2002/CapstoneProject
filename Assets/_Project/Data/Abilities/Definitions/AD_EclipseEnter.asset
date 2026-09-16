@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_EclipseEnter
   m_EditorClassIdentifier: 
-  abilityName: AD_EclipseEnter
+  abilityName: "월식 자세"
   icon: {fileID: 0}
-  description: Eclipse sword enter stance debug ability.
+  description: "월식 자세를 취해 기본 공격을 월식 연격으로 바꿉니다."
   cooldown: 0
   executionPolicy: 0
   useCharges: 0

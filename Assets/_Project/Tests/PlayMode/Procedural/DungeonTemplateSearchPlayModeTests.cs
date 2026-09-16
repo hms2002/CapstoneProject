@@ -895,6 +895,12 @@ public sealed class DungeonTemplateSearchPlayModeTests
                     if (!guaranteed.Contains(followUp.RoomTemplate)) guaranteed.Add(followUp.RoomTemplate);
                     CheckEventLayout(profile, profile.Seed, guaranteed);
                     checkedLayouts++;
+                    if (ParcelDeliveryPointInteractable.IsDeliveryRoom(followUp.RoomTemplate))
+                    {
+                        guaranteed.Add(definition.EventRoomTemplate);
+                        CheckEventLayout(profile, profile.Seed, guaranteed);
+                        checkedLayouts++;
+                    }
                 }
             }
             Assert.That(checkedLayouts, Is.GreaterThan(0));
@@ -916,6 +922,10 @@ public sealed class DungeonTemplateSearchPlayModeTests
         Assert.That(result.Rooms.Count, Is.EqualTo(profile.RoomCount));
         CheckStartConnections(result);
         CheckPhysicalConnections(result);
+        Assert.That(result.Rooms.Count(r => r.Template.LayoutData.roomType == RoomType.Event &&
+            !ParcelDeliveryPointInteractable.IsDeliveryRoom(r.Template)),
+            Is.GreaterThanOrEqualTo(profile.LayoutPolicy.EventRoomCount),
+            "Parcel destinations must not consume the regular event-room quota.");
         foreach (var rule in profile.LayoutPolicy.RequiredCombatRoomRules)
             if (rule != null && rule.Count > 0) Assert.That(result.Rooms.Count(r => rule.Matches(r.Template)), Is.EqualTo(rule.Count));
         Assert.That(result.Rooms.Count(r => r.Template.LayoutData.roomType == RoomType.Combat &&

@@ -20,7 +20,7 @@ MonoBehaviour:
   explosionParticleOffset: {x: 0, y: 0, z: 0}
   explosionParticleScale: {x: 1, y: 1, z: 1}
   explosionSound:
-    key: sound_shadow_OffCandleLight
+    key: sound_shadow_offcandlelight
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}

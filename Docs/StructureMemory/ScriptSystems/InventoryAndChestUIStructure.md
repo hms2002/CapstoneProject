@@ -186,3 +186,15 @@ WeaponInventory2D.TrySwapWeaponSlots rejects moving a sole weapon from index 0 i
 ### Source-specific weapon availability (2026-09-12)
 
 LootPoolItemSelectionService.CanDropWeapon rejects Weapon.WindWeapon globally and gates Weapon.Flowering / Weapon.OddIron behind explicit treasure-chest selection. LootPoolService.GetRandomTreasureChestWeapon is used by normal and override ChestLootGenerationService paths (including reroll/boss rewards). Other generic selection and candidate-based Grave selection exclude them. ShopInventoryRoll applies the same non-chest policy to new stock. Existing owned weapons, saved stock and world pickups are not removed; inventory dropping is not a random loot roll. Weapon definitions/unlock databases remain intact.
+
+
+## Combat eligibility (2026-09-16)
+
+InventoryUIManager gates CanOpen, TryOpen and direct Open with MonsterSpawnRoomGroup.IsPlayerInCombat. A completed room with no living/reserved/held encounter members permits inventory immediately; no damage grace timer remains. Game-over inventory inspection retains its existing exception. An already open inventory can still close. The same query is used by LevelRewardSessionController; see LevelProgressionStructure.md.
+
+
+## Hub unarmed departure guidance
+
+- HubWeaponDepartureGuide owns guidance sessions until weapon equipment, departure/disable or target replacement. The authored HubWeaponGuidanceArrow prefab uses UI/DownArrow.png, pointing down with identity rotation.
+- GraveInteractable and ChestInteractable merge ordinary interaction highlight with owner-scoped guidance requests through SetGuidanceHighlight. A hover exit does not clear active guidance; releasing one guide leaves other owners intact. Disable clears both states; looted graves suppress their outline. The guide releases its request before replacing/clearing its target. Existing OutlineMaterial supplies the outline.
+- The shared WeaponHUDUI/Skill1UI cooldown TMP is fixed at 26pt (auto size disabled).

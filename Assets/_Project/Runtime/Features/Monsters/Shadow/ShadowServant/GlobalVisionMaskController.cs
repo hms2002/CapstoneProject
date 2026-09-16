@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 /// <summary>
 /// 책임 : 전역 어둠 오버레이와 플레이어 시야 마스크를 관리하고, 여러 시야 제한 요청자의 상태를 합산한다.
@@ -29,6 +30,43 @@ public class GlobalVisionMaskController : MonoBehaviour
     private int baseOverlaySortingOrder;
 
     public static GlobalVisionMaskController Instance => instance;
+
+    private void OnEnable()
+    {
+        RenderPipelineManager.beginCameraRendering += FitOverlayToCamera;
+    }
+
+    private void OnDisable()
+    {
+        RenderPipelineManager.beginCameraRendering -= FitOverlayToCamera;
+    }
+
+    // Resize only the overlay, leaving the player mask and its parent untouched.
+    private void FitOverlayToCamera(ScriptableRenderContext context, Camera camera)
+    {
+        if (camera == null || camera != Camera.main || !camera.orthographic)
+            return;
+
+        EnsureOverlayRenderer();
+        if (darkOverlayRenderer == null || darkOverlayRenderer.sprite == null)
+            return;
+
+        Transform overlay = darkOverlayRenderer.transform;
+        Vector2 spriteSize = darkOverlayRenderer.sprite.bounds.size;
+        Vector3 parentScale = overlay.parent != null ? overlay.parent.lossyScale : Vector3.one;
+        if (spriteSize.x <= 0f || spriteSize.y <= 0f ||
+            Mathf.Abs(parentScale.x) < 0.0001f || Mathf.Abs(parentScale.y) < 0.0001f)
+            return;
+
+        float depth = Vector3.Dot(overlay.position - camera.transform.position, camera.transform.forward);
+        overlay.position = camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, depth));
+        overlay.rotation = camera.transform.rotation;
+        float height = camera.orthographicSize * 4f;
+        overlay.localScale = new Vector3(
+            height * camera.aspect / (spriteSize.x * Mathf.Abs(parentScale.x)),
+            height / (spriteSize.y * Mathf.Abs(parentScale.y)),
+            overlay.localScale.z);
+    }
 
     private void Awake()
     {

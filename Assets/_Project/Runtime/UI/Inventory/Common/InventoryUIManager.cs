@@ -26,7 +26,12 @@ public class InventoryUIManager : MonoBehaviour
         inventoryScreen != null &&
         !IsInputBlockedByLoadingOrTransition() &&
         CanOpenThroughUiManager() &&
+        !IsBlockedByCombat &&
         HasCurrentPlayerInventoryContext();
+    private bool IsBlockedByCombat =>
+        !GameOverPresentationController.CanOpenInventoryFromActiveGameOver(inventoryScreen) &&
+        MonsterSpawnRoomGroup.IsPlayerInCombat;
+
     public bool IsOpen => inventoryScreen != null && inventoryScreen.IsActive;
 
     private void Awake()
@@ -69,7 +74,7 @@ public class InventoryUIManager : MonoBehaviour
 
     public void Open()
     {
-        if (inventoryScreen == null) return;
+        if (!CanOpen || IsOpen) return;
 
         if (!TryResolveCurrentPlayerInventories(
                 out PlayerInteractor2D currentPlayer,
@@ -115,6 +120,12 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (IsOpen)
             return false;
+
+        if (IsBlockedByCombat)
+        {
+            WarningPopupPlayback.ShowMessage("전투가 끝난 뒤 할 수 있어");
+            return false;
+        }
 
         if (!CanOpen)
             return false;

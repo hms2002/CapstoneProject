@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 책임 :
 /// - 기묘한 쇳덩이가 슬롯 단위로 유지해야 하는 잔탄 상태를 보관한다.
-/// - 재장전이 없는 6발 한정 무기 규칙을 장착 프리팹 수명과 분리된 persistent data로 고정한다.
+/// - 기본 6발과 유물 재장전 후 잔탄을 장착 프리팹 수명과 분리해 보존한다.
 /// </summary>
 [Serializable]
 public sealed class OddIronRuntimeData : WeaponRuntimeData, IWeaponRuntimeStatePersistence
@@ -49,11 +49,10 @@ public sealed class OddIronRuntimeData : WeaponRuntimeData, IWeaponRuntimeStateP
         return true;
     }
 
-    /// <summary>
-    /// 책임 :
-    /// - 전탄 난사 시작 시점에 남은 탄을 모두 소비하고 발사할 탄 수를 반환한다.
-    /// - 난사 중 취소되어도 이미 탄을 쏟아낸 것으로 보는 일회용 무기 정책을 고정한다.
-    /// </summary>
+    /// <summary>유물 사용이 승인되면 현재 슬롯의 탄창을 완전히 채운다.</summary>
+    public void RefillAmmo() => currentAmmo = MaxAmmo;
+
+    /// <summary>현재 탄창의 잔탄을 일괄 소비한다. 순차 발사하는 난사는 한 발씩 소비한다.</summary>
     public int ConsumeAllRounds()
     {
         int consumed = CurrentAmmo;

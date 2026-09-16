@@ -19,10 +19,45 @@ public sealed class WeaponVisualRig2D : MonoBehaviour
     [SerializeField] private Transform motionRoot;
     [SerializeField] private Transform renderRoot;
 
+    private bool hasInitialMotionPose;
+    private Vector3 initialMotionPosition;
+    private Quaternion initialMotionRotation;
+    private Vector3 initialMotionScale;
+
     public Transform WeaponVisualRoot => weaponVisualRoot != null ? weaponVisualRoot : transform;
     public Transform MirrorRoot => mirrorRoot != null ? mirrorRoot : WeaponVisualRoot;
     public Transform MotionRoot => motionRoot != null ? motionRoot : MirrorRoot;
     public Transform RenderRoot => renderRoot != null ? renderRoot : MotionRoot;
+
+    private void Awake()
+    {
+        CaptureInitialMotionPose();
+    }
+
+    public void CaptureInitialMotionPose()
+    {
+        if (hasInitialMotionPose)
+            return;
+
+        ResolveReferences();
+        // Do not capture the fallback mirror/root: those have separate owners.
+        if (motionRoot == null)
+            return;
+
+        initialMotionPosition = motionRoot.localPosition;
+        initialMotionRotation = motionRoot.localRotation;
+        initialMotionScale = motionRoot.localScale;
+        hasInitialMotionPose = true;
+    }
+
+    public void RestoreInitialMotionPose()
+    {
+        if (!hasInitialMotionPose || motionRoot == null)
+            return;
+
+        motionRoot.SetLocalPositionAndRotation(initialMotionPosition, initialMotionRotation);
+        motionRoot.localScale = initialMotionScale;
+    }
 
     public void SetFacingSideSign(int sideSign)
     {

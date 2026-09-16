@@ -16,6 +16,6 @@ MonoBehaviour:
   allowMultipleSelections: 0
   displayName: 최후의 질주
   description: "<color=#8A5A10>남은 시간 6분 이하일 때</color>\n<color=#197A67>이동 속도 +40%</color>\n<color=#197A67>공격 속도 +25%</color>"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 020fc7e3d8a4423b961884f7ebdfa960, type: 3}
   effects:
   - {fileID: 11400000, guid: 6efab7bb5d674d25a6bc7741584f6f9c, type: 2}

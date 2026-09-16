@@ -8,6 +8,12 @@ using UnityEngine.UI;
 /// </summary>
 public sealed class CinematicLetterboxOverlay : ICinematicLetterboxOverlayHandle
 {
+    private static readonly HashSet<CinematicLetterboxOverlay> visibleOverlays = new();
+    public static bool IsAnyVisible => visibleOverlays.Count > 0;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetVisibility() => visibleOverlays.Clear();
+
     private static readonly GlobalCanvasLayer[] FadedLayers =
     {
         GlobalCanvasLayer.GameplayHUD,
@@ -17,6 +23,12 @@ public sealed class CinematicLetterboxOverlay : ICinematicLetterboxOverlayHandle
         GlobalCanvasLayer.Prompt,
         GlobalCanvasLayer.Reward,
         GlobalCanvasLayer.DamagePopup,
+        GlobalCanvasLayer.BossHUD,
+    };
+
+    private static readonly GlobalCanvasLayer[] HudLayers =
+    {
+        GlobalCanvasLayer.GameplayHUD,
         GlobalCanvasLayer.BossHUD,
     };
 
@@ -57,6 +69,7 @@ public sealed class CinematicLetterboxOverlay : ICinematicLetterboxOverlayHandle
         public bool OriginalInteractable;
         public bool OriginalBlocksRaycasts;
         public bool AddedCanvasGroup;
+        public bool IsHud;
     }
 
     public IEnumerator PlayIn(float duration, float letterboxHeightRatio, float uiTargetAlpha)
@@ -73,18 +86,19 @@ public sealed class CinematicLetterboxOverlay : ICinematicLetterboxOverlayHandle
         if (isDisposed)
             yield break;
 
+        visibleOverlays.Add(this);
         EnsureOverlayExists();
         if (captureGlobalUiLayers)
             CaptureCanvasStates();
         else
-            RestoreCanvasStatesImmediate();
+            CaptureCanvasStates(null);
 
         float targetBarHeight = ResolveTargetBarHeight(letterboxHeightRatio);
         yield return Animate(
             duration,
             topBarTargetHeight: targetBarHeight,
             bottomBarTargetHeight: targetBarHeight,
-            resolveTargetAlpha: _ => Mathf.Clamp01(uiTargetAlpha),
+            resolveTargetAlpha: state => state.IsHud ? 0f : Mathf.Clamp01(uiTargetAlpha),
             restoreCanvasInteraction: false);
     }
 
@@ -97,6 +111,7 @@ public sealed class CinematicLetterboxOverlay : ICinematicLetterboxOverlayHandle
         if (isDisposed)
             yield break;
 
+        visibleOverlays.Add(this);
         EnsureOverlayExists();
         CaptureCanvasStates(fadedLayers);
 
@@ -105,7 +120,7 @@ public sealed class CinematicLetterboxOverlay : ICinematicLetterboxOverlayHandle
             duration,
             topBarTargetHeight: targetBarHeight,
             bottomBarTargetHeight: targetBarHeight,
-            resolveTargetAlpha: _ => Mathf.Clamp01(uiTargetAlpha),
+            resolveTargetAlpha: state => state.IsHud ? 0f : Mathf.Clamp01(uiTargetAlpha),
             restoreCanvasInteraction: false);
     }
 
@@ -120,6 +135,7 @@ public sealed class CinematicLetterboxOverlay : ICinematicLetterboxOverlayHandle
             bottomBarTargetHeight: 0f,
             resolveTargetAlpha: state => state.OriginalAlpha,
             restoreCanvasInteraction: true);
+        visibleOverlays.Remove(this);
     }
 
     public void Dispose()
@@ -128,6 +144,7 @@ public sealed class CinematicLetterboxOverlay : ICinematicLetterboxOverlayHandle
             return;
 
         isDisposed = true;
+        visibleOverlays.Remove(this);
         RestoreCanvasStatesImmediate();
 
         if (overlayRoot != null)
@@ -289,32 +306,51 @@ public sealed class CinematicLetterboxOverlay : ICinematicLetterboxOverlayHandle
     {
         RestoreCanvasStatesImmediate();
 
+        // HUD fading is common to every cinematic, including callers that keep
+        // dialogue/tutorial panels visible or provide their own layer list.
+        for (int i = 0; i < HudLayers.Length; i++)
+            CaptureCanvasState(HudLayers[i], isHud: true);
+
         if (fadedLayers == null)
             return;
 
         for (int i = 0; i < fadedLayers.Count; i++)
         {
-            Canvas canvas = GlobalUIRoot.GetCanvas(fadedLayers[i]);
-            if (canvas == null)
+            GlobalCanvasLayer layer = fadedLayers[i];
+            if (layer == GlobalCanvasLayer.GameplayHUD || layer == GlobalCanvasLayer.BossHUD)
                 continue;
 
-            CanvasGroup group = canvas.GetComponent<CanvasGroup>();
-            bool addedCanvasGroup = false;
-            if (group == null)
-            {
-                group = canvas.gameObject.AddComponent<CanvasGroup>();
-                addedCanvasGroup = true;
-            }
-
-            canvasStates.Add(new CanvasGroupState
-            {
-                Group = group,
-                OriginalAlpha = group.alpha,
-                OriginalInteractable = group.interactable,
-                OriginalBlocksRaycasts = group.blocksRaycasts,
-                AddedCanvasGroup = addedCanvasGroup,
-            });
+            CaptureCanvasState(layer, isHud: false);
         }
+    }
+
+    private void CaptureCanvasState(GlobalCanvasLayer layer, bool isHud)
+    {
+        Canvas canvas = GlobalUIRoot.GetCanvas(layer);
+        if (canvas == null)
+            return;
+
+        for (int i = 0; i < canvasStates.Count; i++)
+            if (canvasStates[i].Group != null && canvasStates[i].Group.gameObject == canvas.gameObject)
+                return;
+
+        CanvasGroup group = canvas.GetComponent<CanvasGroup>();
+        bool addedCanvasGroup = false;
+        if (group == null)
+        {
+            group = canvas.gameObject.AddComponent<CanvasGroup>();
+            addedCanvasGroup = true;
+        }
+
+        canvasStates.Add(new CanvasGroupState
+        {
+            Group = group,
+            OriginalAlpha = group.alpha,
+            OriginalInteractable = group.interactable,
+            OriginalBlocksRaycasts = group.blocksRaycasts,
+            AddedCanvasGroup = addedCanvasGroup,
+            IsHud = isHud,
+        });
     }
 
     private void RestoreCanvasStatesImmediate()

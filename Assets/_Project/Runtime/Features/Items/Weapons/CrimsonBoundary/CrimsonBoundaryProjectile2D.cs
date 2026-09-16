@@ -19,6 +19,9 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
     private CrimsonBoundaryVisual2D burnSustainPrefab;
     private CrimsonBoundaryRuntimeState visualOwner;
     private bool impactPlayed;
+    private Transform homingTarget;
+
+    public void SetHomingTarget(Transform target) => homingTarget = target;
 
     public void Setup(ProjectileAttackSpawnContext context, int stacks, GameplayEffect effect,
         CrimsonBoundaryVisual2D hitVisual = null, CrimsonBoundaryVisual2D burnVisual = null,
@@ -55,6 +58,15 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
     protected override void TickAttack(float deltaTime)
     {
         if (impactPlayed) return;
+        if (homingTarget != null && (!homingTarget.TryGetComponent(out Enemy enemy) || !enemy.IsDead))
+        {
+            Vector2 aim = (Vector2)homingTarget.position - (Vector2)transform.position;
+            if (aim.sqrMagnitude > 0.0001f)
+            {
+                direction = aim.normalized;
+                transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+            }
+        }
         Vector2 displacement = direction * speed * deltaTime;
         float distance = displacement.magnitude;
         Sweep(wallCollider, WallLayers, wallHits, distance);
@@ -79,6 +91,7 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
             if (IsOwnCollider(hit) || (WallLayers.value & (1 << hit.gameObject.layer)) != 0) continue;
             GameObject target = CombatTargetResolver2D.ResolveDamageTarget(hit);
             if (target == null || IsIgnoredTarget(target)) continue;
+            if (homingTarget != null && target.TryGetComponent(out Enemy deadEnemy) && deadEnemy.IsDead) continue;
             if ((DamageLayers.value & (1 << target.layer)) == 0) continue;
             if (!CanHitTarget(target)) continue;
             Vector3 startPosition = transform.position;

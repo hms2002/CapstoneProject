@@ -12,6 +12,9 @@ namespace UnityGAS
     {
         public abstract IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget);
 
+        // Runtime upgrade policy without mutating the shared authored AbilityDefinition.
+        public virtual bool RequestsParallelExecution(AbilitySystem system, AbilitySpec spec) => false;
+
         /// <summary>
         /// 책임 :
         /// - 씬 이동 직전에 AbilityLogic이 직접 만든 일시 상태(태그, modifier, motion, 구독 등)를 정리한다.

@@ -321,6 +321,15 @@ public sealed class WorldInteractionPromptController : MonoBehaviour, IWorldInte
         if (promptRoot == null || currentAnchor == null)
             return;
 
+        if (currentTarget is MonoBehaviour behaviour)
+        {
+            NpcNameplatePresenter nameplate = behaviour.GetComponentInChildren<NpcNameplatePresenter>();
+            if (nameplate != null && nameplate.InteractionAnchor != null)
+            {
+                promptRoot.position = nameplate.InteractionAnchor.position;
+                return;
+            }
+        }
         promptRoot.position = currentAnchor.position + worldOffset;
     }
 

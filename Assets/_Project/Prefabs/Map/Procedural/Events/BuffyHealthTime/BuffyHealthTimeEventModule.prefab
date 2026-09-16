@@ -1,5 +1,37 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &9161700000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9161700001}
+  m_Layer: 0
+  m_Name: NameplateAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9161700001
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9161700000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.3499999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 9161598144}
+  m_Father: {fileID: 5437311382789251766}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &810000000000000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -99,8 +131,9 @@ MonoBehaviour:
   attackBaseBonus: 10
   moveSpeedMultiplierBonus: 0.15
   promptAnchor: {fileID: 0}
-  interactPromptText: "이동속도 증가"
+  interactPromptText: "\uC774\uB3D9\uC18D\uB3C4 \uC99D\uAC00"
   highlightedRenderers: []
+  npcSpeechBubble: {fileID: 830000000000000099}
 --- !u!1 &810000000000000005
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,8 +324,9 @@ MonoBehaviour:
   attackBaseBonus: 10
   moveSpeedMultiplierBonus: 0.15
   promptAnchor: {fileID: 0}
-  interactPromptText: "경험치 획득"
+  interactPromptText: "\uACBD\uD5D8\uCE58 \uD68D\uB4DD"
   highlightedRenderers: []
+  npcSpeechBubble: {fileID: 830000000000000099}
 --- !u!1 &820000000000000005
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,7 +354,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5333333333333333, y: 0.5333333333333333, z: 1}
+  m_LocalScale: {x: 0.53333336, y: 0.53333336, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 820000000000000002}
@@ -483,8 +517,9 @@ MonoBehaviour:
   attackBaseBonus: 10
   moveSpeedMultiplierBonus: 0.15
   promptAnchor: {fileID: 0}
-  interactPromptText: "공격력 증가"
+  interactPromptText: "\uACF5\uACA9\uB825 \uC99D\uAC00"
   highlightedRenderers: []
+  npcSpeechBubble: {fileID: 830000000000000099}
 --- !u!1 &4603794561614614587
 GameObject:
   m_ObjectHideFlags: 0
@@ -494,6 +529,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5437311382789251766}
+  - component: {fileID: 830000000000000099}
   - component: {fileID: 2351681176388660854}
   - component: {fileID: 875094613599183484}
   m_Layer: 0
@@ -516,10 +552,30 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 9161700001}
   - {fileID: 5221345617393595520}
   - {fileID: 991832203508108772}
   m_Father: {fileID: 2402520010015692871}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &830000000000000099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4603794561614614587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d58f7ddaaeeb3da489b8e9fbafa66102, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bubblePrefab: {fileID: 8482697653009772348, guid: 62446638c99411c4c9669c3f3efc113d, type: 3}
+  bubbleOffset: {x: 0.6, y: 0.8, z: 0}
+  showBubbleOffsetGizmo: 1
+  bubbleOffsetGizmoColor: {r: 1, g: 0.92, b: 0.16, a: 0.9}
+  bubbleOffsetGizmoRadius: 0.12
+  defaultUseTyping: 1
+  defaultTypingSpeed: 0.05
 --- !u!70 &2351681176388660854
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -620,8 +676,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 591115081852a1f48b19a0c8d06add9d, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   poseSlots:
   - slotId: BuffyGuideNpc
     displayName: Buffy NPC
@@ -657,7 +713,7 @@ GameObject:
   m_Component:
   - component: {fileID: 991832203508108772}
   m_Layer: 0
-  m_Name: DialoguePrompt
+  m_Name: InteractUIAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -672,7 +728,7 @@ Transform:
   m_GameObject: {fileID: 7020171586949060769}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.3499999, z: 0}
+  m_LocalPosition: {x: 0, y: 2.1499999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -860,3 +916,49 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1001 &9161600000
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 9161700001}
+    m_Modifications:
+    - target: {fileID: 1140, guid: 8055794acf344ad6a4841e9d1b936801, type: 3}
+      propertyPath: npc
+      value: 
+      objectReference: {fileID: 11400000, guid: aa9f6fae912883847a3c95403c6183ee, type: 2}
+    - target: {fileID: 1140, guid: 8055794acf344ad6a4841e9d1b936801, type: 3}
+      propertyPath: anchor
+      value: 
+      objectReference: {fileID: 9161700001}
+    - target: {fileID: 1140, guid: 8055794acf344ad6a4841e9d1b936801, type: 3}
+      propertyPath: fallbackName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1140, guid: 8055794acf344ad6a4841e9d1b936801, type: 3}
+      propertyPath: interactionAnchor
+      value: 
+      objectReference: {fileID: 991832203508108772}
+    - target: {fileID: 2240, guid: 8055794acf344ad6a4841e9d1b936801, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2240, guid: 8055794acf344ad6a4841e9d1b936801, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2240, guid: 8055794acf344ad6a4841e9d1b936801, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8055794acf344ad6a4841e9d1b936801, type: 3}
+--- !u!224 &9161598144 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2240, guid: 8055794acf344ad6a4841e9d1b936801, type: 3}
+  m_PrefabInstance: {fileID: 9161600000}
+  m_PrefabAsset: {fileID: 0}

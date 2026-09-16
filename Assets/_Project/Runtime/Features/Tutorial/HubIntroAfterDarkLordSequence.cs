@@ -569,7 +569,9 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
 
     private void CacheAndHideGameplayHud()
     {
-        if (!hideGameplayHud || hasCachedGameplayHudState)
+        // The shared letterbox fades HUD; disabling the Canvas here would skip
+        // that animation. Keep immediate hiding only for the no-letterbox mode.
+        if (useLetterbox || !hideGameplayHud || hasCachedGameplayHudState)
             return;
 
         gameplayHudCanvas = GlobalCanvasPlayback.GetCanvas(GlobalCanvasLayer.GameplayHUD);

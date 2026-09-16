@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: WD_MarkSword
   m_EditorClassIdentifier: 
   weaponId: Weapon.MarkSword
-  displayName: Mark Sword
+  displayName: "표식검"
   icon: {fileID: 1718929613, guid: 7e11de47ebfa53a42a94e5fb92a94f06, type: 3}
-  storyText: Experimental paired weapon that builds marks for the execution gun.
+  storyText: "표식을 쌓아 처형총과 함께 싸우는 검."
   statModifiers: []
   attackInputHint: Mouse1
   skill1InputHint: Q

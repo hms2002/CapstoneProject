@@ -371,15 +371,14 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource, IMobProjectileL
         Vector2 direction = delta.sqrMagnitude <= 0.0001f
             ? (sprite != null && sprite.flipX ? Vector2.left : Vector2.right)
             : delta / length;
-        if (delta.sqrMagnitude <= 0.0001f)
-            end = start + direction * 0.01f;
+        end = start + direction * 40f;
 
         return AttackTelegraphSpec.CreateLine(
             start,
             end,
             Mathf.Max(0.01f, data.lockOnLineWidth),
             Mathf.Max(0.01f, durationOverride >= 0f ? durationOverride : data.lockOnDuration),
-            GetLockOnStyle());
+            GetLockOnStyle()).WithWallClipping(ShotWallLayers, 48, 0.03f);
     }
 
     private AttackTelegraphStyle GetLockOnStyle()

@@ -991,6 +991,16 @@ public class WeaponInventory2D : MonoBehaviour
     private void CleanupTransientAbilitiesForWeaponChange()
     {
         abilitySystem?.ResetTransientRuntimeState();
+        if (abilitySystem == null || ActiveWeapon == null)
+            return;
+
+        // Completed attacks can still have a live combo window, so reset owned
+        // attack specs as well as cancelling the currently executing ability.
+        foreach (var ability in ActiveWeapon.EnumerateGrantedAbilities())
+        {
+            if (ability != null && ability.logic is IWeaponAttackComboReset combo)
+                combo.ResetAttackCombo(abilitySystem.FindSpec(ability));
+        }
     }
 
     private void SyncActiveStateFromRuntime()

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_SwordSkill1
   m_EditorClassIdentifier: 
-  abilityName: AD_SwordSkill1
+  abilityName: "검기 발사"
   icon: {fileID: -4954380605711156209, guid: ce2c877b10aec4742943ec6aeacef6da, type: 3}
-  description: Ability description.
+  description: "조준 방향으로 검기를 날립니다."
   hitFeel:
     targetStunSeconds: 0.1
     attackerStopSeconds: 0.06

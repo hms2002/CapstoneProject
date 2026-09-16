@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_SunBladeSolarFinishStarter
   m_EditorClassIdentifier: 
-  abilityName: AD_SunBladeSolarFinishStarter
+  abilityName: "햇빛 공명"
   icon: {fileID: 0}
-  description: Sun blade solar finish starter debug ability.
+  description: "태양도와 월영도에 쌓인 기운으로 햇빛 공명을 시작합니다."
   cooldown: 0
   executionPolicy: 0
   useCharges: 0

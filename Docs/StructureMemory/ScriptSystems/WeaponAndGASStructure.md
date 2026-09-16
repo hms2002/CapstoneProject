@@ -338,6 +338,76 @@ When adjusting this projectile, edit the two referenced colliders in the prefab.
 
 ### SpriteMask rendering channels (2026-09-15)
 
-TagManager Rendering Layers currently reserve Default (bit 0) for existing world/vision presentation, WeaponDropVisual (bit 1) for the authored Lightning Spear display renderer/buried mask, and WeaponChargeEffect (bit 2) for Apprentice Hero Sword runtime charge renderer/reveal mask. These are Rendering Layers, not Sorting Layers or GameObject layers. Dedicated targets omit Default so world masks do not share their channel.
+TagManager Rendering Layers currently reserve Default (bit 0) for existing world/vision presentation, WeaponDropVisual (bit 1) for the authored Lightning Spear display renderer/buried mask, and WeaponChargeEffect (bit 2) for Apprentice Hero Sword runtime charge renderer/reveal mask. These are Rendering Layers, not Sorting Layers or GameObject layers. Dedicated targets omit Default in their rendering channel. This bit assignment alone did not prevent the reported Shadow Corridor charge reveal; do not treat Rendering Layers as verified SpriteMask isolation.
 
-`PF_LightningSpear_ItemDisplayVisual.prefab` owns the drop pair and its per-instance SortingGroup. `ItemDisplayVisualPresenter2D.ApplyHostSorting` updates the group world sorting without changing the rendering channel. ChargeSpin CreateReveal assigns the same bit to both runtime components and retains its local SortingGroup and existing cleanup. The hard-coded charge bit corresponds to TagManager index 2; changing that index requires updating the assignment. Existing world sorting and full-charge threshold remain unchanged. Runtime visual validation is pending; this is a structure map, not an Architecture/Contracts promotion.
+`PF_LightningSpear_ItemDisplayVisual.prefab` owns the drop pair and its per-instance SortingGroup. `ItemDisplayVisualPresenter2D.ApplyHostSorting` updates the group world sorting without changing the rendering channel. ChargeSpin CreateReveal assigns the same bit to both runtime components. Its outer SortingGroup uses the dedicated WeaponChargeEffect Sorting Layer (after Entity, before ItemDisplay) with sortAtRoot enabled. The internal reveal renderer uses Default (ID 0, order 0), and its local mask spans orders -1 through +1. Moving only the internal pair to Default was insufficient: a group still sorted on Entity inherited the active vision stencil. Existing cleanup remains ability-owned. The hard-coded charge bit corresponds to TagManager index 2; changing that index requires updating the assignment. The full-charge threshold is unchanged. Charge now draws above Entity bodies and below ItemDisplay, foreground, and the darkness overlay. This is a structure map, not an Architecture/Contracts promotion.
+
+### Apprentice charge suction and reveal follow-up (2026-09-16)
+
+Suction particles are instantiated under the AbilitySystem owner, using the authored local offset/rotation/scale there. They follow the player without inheriting WeaponVisualRoot aim, MirrorRoot mirroring or RenderRoot authoring rotation. The blade reveal still follows RenderRoot. Full-charge VFX and release/cleanup behavior are unchanged.
+
+`CombatPresentationRegressionPlayModeTests.ApprenticeCharge_RevealsProgressively_WithoutVisionMaskChangingCoverage` captures real rendered alpha coverage at 25%, 65%, and 100%, comparing the authored PlayerVisionMask active/inactive under a nested SortingGroup. The equivalent isolated Unity GPU probe now passes using current Gameplay/Core and URP 17.4; the main-project NUnit runner and interactive corridor acceptance remain separate.
+
+### Charge masking and skill direction lock (2026-09-16 follow-up)
+
+ShadowCorridor uses GlobalVisionMaskRoot without mask-range overrides. PlayerVisionMask and StrangeCandlestick already have separate exact Entity and MaskRender ranges; previously unbounded masks in Candlestick, LightBead and Dead'sSkeleton now have the same split. Each original aperture masks MaskRender, with an authored EntitySightMask child copying its sprite and alpha cutoff. The child inherits scale and activation. Both assets in a pair must be updated if the aperture artwork changes. Rendering Layer bit 2 remains configured, but actual isolation depends on the outer charge Sorting Layer and all external mask ranges.
+
+ChargeSpin captures the release aim before starting its attack animation; DashStab captures initial dash aim before its animation. Each logic holds a per-spec WeaponPresentationRig2D token in LockedAtCast mode, locking angle and facing side. Normal release honors active/recovery minimum hold; cancellation and scene cleanup use CancelAimPresentationOverride(token), which ignores stale tokens. Charging itself still follows aim. No aim data, damage geometry or gameplay timing ownership moved into presentation.
+
+### Player dash and weapon skill overlap
+
+- Global AD_Dash runs ParallelIndependent; weapon skills can activate during it. Apprentice ChargeSpin/DashStab no longer block on State.Move.Dash, while ordinary skill/dash-blocked restrictions and cooldowns remain.
+- AbilityMotionController2D.MotionVersion identifies the current motion revision. Dash2D stores its starting revision on AbilitySpec and only cancels its own still-current motion during cleanup. Motion replacement by a skill is preserved. This does not change StartLunge's existing dash-priority rule or introduce multiple movement channels.
+- Regression source: MonsterProjectileBurstCadencePlayModeTests.PlayerDash_CleanupOnlyStopsItsOwnMotion plus the existing hard-stop cleanup case. The input bridge continues using normal AbilitySystem activation.
+
+
+### Independent weapon relic execution (2026-09-16)
+
+- LightningSpearAttack applies ThirdStrike's 1.2 attack-speed factor to existing combo timing and requests one mark on the third swing regardless of hit. LightningSpearRuntimeState selects an enemy within 1.5 units of the attack endpoint, then uses existing placement validation/fallback nearby. TargetedRain independently prioritizes enemy positions before random valid placements, reserves spacing, and spawns successive marks 0.15 seconds apart with cancellation checks.
+- Crimson Ignite detects its own alive-to-dead damage transitions and spawns one normal projectile from each kill position toward the nearest other enemy (40-unit search). CrimsonBoundaryProjectile2D optionally steers toward this target; no kill-projectile spawning occurs in the projectile path. Dead spawn-source hurtboxes are skipped for homing shots.
+- Crimson BigExplosion preserves the base falling/explosion-only Q branch. LavaBall relic selects an authored Lavaball_RelicPiercing prefab and CrimsonBoundaryLavaProjectile2D instead: swept piercing damage once per target, first solid wall ends travel, wall impact is visual-only Lavaball_Hit. Visual size is copied from the original meteor. Speed is existing projectileSpeed times 0.75 (18 -> 13.5); original falling Q uses interpolation and has no fixed velocity field. Active balls and impact visuals register with CrimsonBoundaryRuntimeState for weapon/scene cleanup.
+- AbilityLogic.RequestsParallelExecution is a default-false runtime policy hook; AbilitySystem checks it after ordinary eligibility/cooldown/movement checks. Only Apprentice DashStab overrides it, gated by ChargeLink. It uses the existing parallel execution list and cancellation lifecycle without mutating shared AbilityDefinition.executionPolicy.
+- ChargeSpin exposes per-spec Holding/Seconds during the hold; Q snapshots damage multiplier, size and color at activation without consuming charge. Right-click release remains charge owner and clears the hold. With ChargeLink, the released spin hitbox attaches to the player so it travels during Q. Existing no-relic geometry and exclusive Q are retained. Explicit scene cleanup clears the snapshot as well as visuals/hitboxes.
+- Native probe: Tools/Validation/WeaponRelicsNativeRegression.cs. Actual charge/Q animation overlap, enemy targeting and corridor placement still need interactive acceptance.
+
+
+### Crimson relic Q authored collision channels (2026-09-16 follow-up)
+
+- ALData_CrimsonBoundary.relicLavaBallPrefab explicitly references Visual component fileID 104 of Lavaball_RelicPiercing (GUID 8d3a284548c54c449788eea30a839434). Missing this reference silently prevented spawn after cooldown was committed; asset-path verification is covered separately from the direct projectile probe.
+- The relic prefab owns a kinematic Rigidbody2D, wall BoxCollider2D (0.12 x 0.12, matching basic Fireball) and damage CircleCollider2D (radius 2.5, retaining prior diameter 5). CrimsonBoundaryLavaProjectile2D serializes both references and sweeps each through its corresponding layer mask. Trigger contact itself never destroys the ball. Runtime no longer derives relic projectile geometry from skill2Diameter; that field remains the base falling Q's explosion geometry. Adjust the relic prefab's damage circle for its enemy collision size.
+- First solid wall limits travel; the broad enemy sweep and line-of-sight check cannot hit through it. The projectile implements IAttackCollisionSource2D so its new trigger colliders cannot be mistaken for victim hurtboxes. Impact remains visual-only and the existing runtime owner releases transient objects.
+- Regression entry point: Tools/Validation/CrimsonRelicAuthoredRegression.cs; isolated copies remap source MonoScript references to current compiled DLL identities while retaining authored object references, shapes and component IDs.
+
+
+### Lightning relic nearest-target placement (2026-09-16)
+
+- Both relic paths share LightningSpearRuntimeState.TryFindNearestMarkPosition. It tests the exact enemy/root ground position first (no tile-center snapping when valid), then orders authored ground tile centers by distance to that target and picks the first valid one. Enumeration is clipped to the existing seven-unit cast range; transformed grid corners bound cell enumeration.
+- Existing room, wall tile, path obstruction, landing clearance, minimum player distance (1.2) and mark spacing (2) checks remain. The pending request list reserves future Q locations; the active mark list also blocks occupied positions. If no tile candidate exists, the original random fallback remains.
+- Q cycles through nearby enemies repeatedly until six positions are reserved, keeping surplus strikes near enemies rather than scattering all surplus immediately. The third-combo mark retains the previously agreed 1.5-unit targeting radius around the attack endpoint. Q sequential spawn spacing is now 0.07 seconds, with the same per-mark activation delay. Positions are fixed ground locations selected at cast/third-strike time; this is not an airborne homing rewrite.
+- Native placement probe: Tools/Validation/LightningRelicPlacementRegression.cs checks exact position, nearest eligible tile, reserved spacing, wall exclusion and no-ground rejection.
+
+
+### Apprentice Q charge-growth correction (2026-09-16)
+
+DashStab now transfers ResolveDamageScale(seconds) / MinDamageScale instead of the raw charge attack coefficient. With current authored scales 6..10, Q multiplies its own damage by 1..1.6667. A zero baseline transfers no increase (1). ChargeSpin's own damage formula and scales are unchanged. Snapshot timing, size/color linkage, charge preservation and parallel execution remain the same. ChargeSpin and ChargeLink descriptions now state approximately 1.67, with the skill tooltip explicitly comparing maximum to minimum charge.
+
+
+### Spear relic training dummy targets (2026-09-16)
+
+Both targeted Q rain and third-strike mark guidance use LightningSpearRuntimeState.FindMarkTargets. It accepts active, alive Enemy roots and active TrainingDummy2D roots discovered through overlapped colliders, deduplicates roots across multiple colliders, and sorts by distance. TrainingDummy2D does not inherit Enemy, so the shared enemy-only relic search could not see hub dummies. This exception is local to spear placement; WeaponExclusiveRelics.FindEnemies and Crimson kill-shot targeting are unchanged. Existing search ranges, tile validation, reservations and spacing still apply.
+
+### Cached weapon motion pose restoration (2026-09-16)
+
+WeaponVisualRig2D owns a nonserialized, capture-once local position/rotation/scale snapshot of the explicit MotionRoot. Awake captures active instances; WeaponEquipController.CreateInstance explicitly captures inactive prefab instances before their first activation. Missing MotionRoot is not replaced by the mirror/root fallback for restoration. WeaponEquipController deactivates the outgoing instance first (allowing weapon-local OnDisable cleanup), then restores its motion pose. Incoming instances restore before activation and Animator.Rebind/Update(0), so an interrupted swing cannot become the cached default pose. Facing/mirror and authored RenderRoot offsets remain owned by their existing paths. Runtime scripts must not recapture the baseline during attacks. Tools/Validation/WeaponSwapPoseRegression.cs exercises the production equip path with synthetic authored rigs, an empty Idle and an animated MotionRoot.
+
+### Timed attack combos end on equipment change (2026-09-16)
+
+WeaponInventory2D.CleanupTransientAbilitiesForWeaponChange first cancels transient executions, then visits the outgoing weapon's granted ability specs. Logic implementing IWeaponAttackComboReset (declared in WeaponRuntimeState.cs) clears its own combo index and expiry. Implementations cover SwordCombo2D, LightningSpearAttack, ApprenticeHeroSwordAttack, FloweringBaseAttack and FloweringAttack's base-attack delegation. This includes an idle gap with a still-valid combo window, not just an active attack. Cooldown, charges, ammo and specialized persistent stance/reward data are not reset. Crimson's separate sampled swing already resets on disable. Equipment changes rejected by existing gates do not reach cleanup.
+
+### Odd Iron overhead ammo HUD (2026-09-16)
+
+PF Player.prefab authors an OddIronAmmoHUD world-space Canvas and AmmoText child at local Y 1.65, scale 0.01, font size 32 using Galmuri9 SDF BlackOutline. OddIronAmmoWorldHUD (UI assembly) has serialized inventory/Canvas/TMP references. It reads the equipped slot's OddIronRuntimeData.CurrentAmmo/MaxAmmo and the owner's OddIronMagazine relic level in LateUpdate; TMP text is updated only when the integers change, using the exact format `{0} / {1}`. The Canvas starts disabled, is shown only for equipped OddIron data, and is disabled with the presenter. The parent follows the player; the presenter holds world rotation upright. No runtime UI creation or ammo state ownership. Display denominator is MaxAmmo * (1 + remaining magazine-relic levels): current magazine capacity plus reserve magazines. Numerator remains CurrentAmmo. This affects display only, not actual magazine capacity.
+
+### Odd Iron barrage consumes ammo per emitted shot (2026-09-16)
+
+AbilityLogic_OddIronBarrage snapshots CurrentAmmo after its existing optional empty-magazine reload, then checks cancellation and available ammo for each shot. FireOnce now reports projectile creation/setup success; each successful emission consumes one round in the same coroutine step, before the inter-shot wait. Failure or cancellation leaves unshot rounds in the magazine. Barrage never reloads inside its loop, so it cannot extend into reserve magazines. OddIronAmmoWorldHUD shows current magazine ammo over capacity including reserve magazines, with spaces (see overhead HUD section). Normal-shot consumption timing remains unchanged.

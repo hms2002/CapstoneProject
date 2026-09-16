@@ -401,7 +401,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &9100000000001042
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4185,10 +4185,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 9100000000001042}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 30, y: -12}
-  m_SizeDelta: {x: 40, y: 30}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &637779858763801180
 CanvasRenderer:
@@ -10762,7 +10762,6 @@ MonoBehaviour:
   rewardCatalog: {fileID: 11400000, guid: 34842aa6fbe8453a85be149bed58d774, type: 2}
   maxRerollsPerOffer: 5
   openKey: 114
-  combatGraceSeconds: 3
   combatBlockedMessage: "\uC804\uD22C\uAC00 \uB05D\uB09C \uB4A4 \uD560 \uC218 \uC788\uC5B4"
 --- !u!114 &8802000000000000002
 MonoBehaviour:
@@ -36521,9 +36520,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 9100000000001042}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 80, y: -12}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &410768171348318153
@@ -36581,8 +36580,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22
-  m_fontSizeBase: 22
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -36598,7 +36597,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -45287,7 +45286,7 @@ MonoBehaviour:
   selectButton: {fileID: 8802000000000000009}
   displayNameText: {fileID: 8802100000000000014}
   descriptionText: {fileID: 8802100000000000034}
-  iconImage: {fileID: 8802100000000000024}
+  iconImage: {fileID: 8802000000000000008}
   shortcutText: {fileID: 0}
 --- !u!225 &9191000000000000003
 CanvasGroup:
@@ -45497,7 +45496,7 @@ MonoBehaviour:
   selectButton: {fileID: 8802000000000000013}
   displayNameText: {fileID: 8802100000000000044}
   descriptionText: {fileID: 8802100000000000064}
-  iconImage: {fileID: 8802100000000000054}
+  iconImage: {fileID: 8802000000000000012}
   shortcutText: {fileID: 0}
 --- !u!225 &9191000000000000004
 CanvasGroup:
@@ -45707,7 +45706,7 @@ MonoBehaviour:
   selectButton: {fileID: 8802000000000000017}
   displayNameText: {fileID: 8802100000000000074}
   descriptionText: {fileID: 8802100000000000094}
-  iconImage: {fileID: 8802100000000000084}
+  iconImage: {fileID: 8802000000000000016}
   shortcutText: {fileID: 0}
 --- !u!225 &9191000000000000005
 CanvasGroup:

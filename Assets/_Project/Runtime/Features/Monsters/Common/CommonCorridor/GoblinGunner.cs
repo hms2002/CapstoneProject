@@ -377,9 +377,12 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
         LogWallClipProbe(context);
 
         Vector2 start = CommonMonsterCombatUtility.ResolveAimPoint(owner.gameObject, CombatAimPointKind.ProjectileTarget);
-        Vector2 end = context.Target != null
-            ? CommonMonsterCombatUtility.ResolveAimPoint(context.Target, CombatAimPointKind.ProjectileTarget)
-            : start + context.Direction.normalized * context.TelegraphRange;
+        Vector2 directionToTarget = context.Target != null
+            ? CommonMonsterCombatUtility.ResolveAimPoint(context.Target, CombatAimPointKind.ProjectileTarget) - start
+            : context.Direction;
+        Vector2 warningDirection = directionToTarget.sqrMagnitude > 0.0001f
+            ? directionToTarget.normalized : context.Direction.normalized;
+        Vector2 end = start + warningDirection * context.TelegraphRange;
 
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateLine(
             start,
@@ -399,9 +402,12 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
         nextWallClipProbeLogTime = Time.time + logic.WallClipProbeLogInterval;
 
         Vector2 start = CommonMonsterCombatUtility.ResolveAimPoint(owner.gameObject, CombatAimPointKind.ProjectileTarget);
-        Vector2 end = context.Target != null
-            ? CommonMonsterCombatUtility.ResolveAimPoint(context.Target, CombatAimPointKind.ProjectileTarget)
-            : start + context.Direction.normalized * context.TelegraphRange;
+        Vector2 directionToTarget = context.Target != null
+            ? CommonMonsterCombatUtility.ResolveAimPoint(context.Target, CombatAimPointKind.ProjectileTarget) - start
+            : context.Direction;
+        Vector2 warningDirection = directionToTarget.sqrMagnitude > 0.0001f
+            ? directionToTarget.normalized : context.Direction.normalized;
+        Vector2 end = start + warningDirection * context.TelegraphRange;
         Vector2 delta = end - start;
         Vector2 direction = delta.sqrMagnitude > 0.0001f ? delta.normalized : Vector2.right;
         float range = Mathf.Max(0.01f, delta.magnitude);

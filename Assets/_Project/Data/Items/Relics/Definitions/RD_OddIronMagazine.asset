@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
+  m_Name: RD_OddIronMagazine
+  m_EditorClassIdentifier:
+  relicId: Relic.OddIron.Magazine
+  displayName: "쇳덩이의 예비 탄창"
+  icon: {fileID: 6943876887964716198, guid: 959fd486b4d99da4687a456b33eb4a27, type: 3}
+  rarity: 2
+  description: "이상한 쇳덩이 전용 유물\n탄약이 없을 때 공격하면 레벨 1을 소모해 완전히 장전하고 즉시 발사합니다. 레벨은 남은 장전 횟수이며 0이 되면 유물이 사라집니다."
+  maxLevel: 3
+  dropLevel: 1
+  logic: {fileID: 11400000, guid: 08badb6a48354e7897a2d10a379c625d, type: 2}
+  param: {fileID: 0}

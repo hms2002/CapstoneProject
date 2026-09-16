@@ -16,6 +16,6 @@ MonoBehaviour:
   allowMultipleSelections: 0
   displayName: 한 자루의 맹세
   description: "<color=#A8324A>2번 무기 슬롯 봉인</color>\n<color=#197A67>공격력 +30%</color>\n1번 무기 재사용 대기시간\n<color=#197A67>40% 감소</color>"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: b67201eb81644ba4885c0edac46e4463, type: 3}
   effects:
   - {fileID: 11400000, guid: 1eba2b1ee3964959aa708df767e13d09, type: 2}

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_ApprenticeHeroSwordSkill2_DashStab
   m_EditorClassIdentifier: 
-  abilityName: "\uB3CC\uC9C4 \uCC0C\uB974\uAE30"
+  abilityName: "돌진 찌르기"
   icon: {fileID: 21300000, guid: 812935a52cbb94e4f932573ef56ea32a, type: 3}
-  description: "● 조준 방향으로 {em:돌진}하며 찌르기\n● 돌진 중 전방에 짧은 찌르기 판정 생성"
+  description: "조준 방향으로 돌진하며 전방의 적을 찌릅니다."
   hitFeel:
     targetStunSeconds: 0.1
     attackerStopSeconds: 0.11
@@ -41,7 +41,6 @@ MonoBehaviour:
   blockedByTags:
   - {fileID: 11400000, guid: b34279c6353a8ef47bee1424ebf22a0f, type: 2}
   - {fileID: 11400000, guid: fde966f9052442118618165742e0c459, type: 2}
-  - {fileID: 11400000, guid: c4d6c74817ae3b945b20c041f24f86b0, type: 2}
   cancelCastingOnTags: []
   cancelExecutionOnTags: []
   requiredTagSets: []

@@ -18,10 +18,13 @@ public sealed class ParcelPickupInteractable : InteractableBase
     [SerializeField] private string interactPromptText = "소포 가져가기";
     [SerializeField] private SpriteRenderer[] highlightedRenderers;
 
+    [SerializeField] private MonoBehaviour npcSpeechBubble;
+    private ISpeechBubblePlayback speech;
     private MaterialPropertyBlock outlinePropertyBlock;
 
     private void Awake()
     {
+        speech = npcSpeechBubble as ISpeechBubblePlayback;
         Collider2D interactionCollider = GetComponent<Collider2D>();
         if (interactionCollider != null)
             interactionCollider.isTrigger = true;
@@ -30,6 +33,12 @@ public sealed class ParcelPickupInteractable : InteractableBase
             highlightedRenderers = GetComponentsInChildren<SpriteRenderer>(includeInactive: true);
 
         outlinePropertyBlock = new MaterialPropertyBlock();
+        OnUnHighlight();
+    }
+
+    private void OnDisable()
+    {
+        speech?.HideActive();
         OnUnHighlight();
     }
 
@@ -65,13 +74,24 @@ public sealed class ParcelPickupInteractable : InteractableBase
             }
 
             SoundPlaybackUtility.Play(PickupSound, causer: gameObject, position: transform.position, sourceObject: this);
-            WarningPopupPlayback.ShowMessage($"소포를 획득했습니다. ({parcelCount}/{ParcelRelicDefinition.MaximumCarryCount})");
+            ShowSpeech(parcelCount switch
+            {
+                1 => "한개? 흠 뭐 고마워.",
+                2 => "두개 정도면 딱 좋지.",
+                _ => "세개? 야 그만 가져가. 나 잘린다고."
+            });
             return;
         }
 
         if (result == RelicInventory.AcquireResult.ParcelCarryLimitReached)
         {
-            WarningPopupPlayback.ShowMessage($"소포는 최대 {ParcelRelicDefinition.MaximumCarryCount}개까지 운반할 수 있습니다.");
+            ShowSpeech("그만가져가라고 했지.");
+            return;
+        }
+
+        if (result == RelicInventory.AcquireResult.InventoryFull)
+        {
+            ShowSpeech("가방을 좀 비우지그래?");
             return;
         }
 
@@ -92,6 +112,11 @@ public sealed class ParcelPickupInteractable : InteractableBase
     public override void OnUnHighlight() => SetOutline(false);
 
     public override void OnPlayerLeave() => OnUnHighlight();
+
+    private void ShowSpeech(string message)
+    {
+        speech?.Speak(message, 4f);
+    }
 
     private void SetOutline(bool enabled)
     {

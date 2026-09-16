@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
+  m_Name: RD_LightningSpearThirdStrike
+  m_EditorClassIdentifier:
+  relicId: Relic.LightningSpear.ThirdStrike
+  displayName: "뇌창의 세 번째 번개"
+  icon: {fileID: 21300000, guid: 10552735fdb1e6e42a67dd8f5e1ae667, type: 3}
+  rarity: 2
+  description: "뇌창 전용 유물\n공격속도가 20% 증가합니다. 기본공격 3타 시 공격 끝 주변의 적을 유도해 뇌창 1개를 낙하시킵니다."
+  maxLevel: 1
+  dropLevel: 1
+  logic: {fileID: 11400000, guid: 08badb6a48354e7897a2d10a379c625d, type: 2}
+  param: {fileID: 0}

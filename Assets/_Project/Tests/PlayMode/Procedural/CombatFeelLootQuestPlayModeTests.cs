@@ -13,6 +13,65 @@ public sealed class CombatFeelLootQuestPlayModeTests
 {
     private readonly List<Object> owned = new();
     private T Own<T>(T value) where T : Object { owned.Add(value); return value; }
+
+    [Test]
+    public void DarknessOverlay_FollowsCameraAtDoubleSize_WithoutScalingSiblingMask()
+    {
+        var root = Own(new GameObject("OverlayTest"));
+        root.SetActive(false);
+        var controller = root.AddComponent<GlobalVisionMaskController>();
+        var overlay = Own(new GameObject("DarkOverlay"));
+        overlay.transform.SetParent(root.transform);
+        var renderer = overlay.AddComponent<SpriteRenderer>();
+        var texture = Own(new Texture2D(20, 20));
+        renderer.sprite = Own(Sprite.Create(texture, new Rect(0, 0, 20, 20), new Vector2(0.5f, 0.5f), 100));
+        typeof(GlobalVisionMaskController).GetField("darkOverlayRenderer", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(controller, renderer);
+        var mask = Own(new GameObject("PlayerMask"));
+        mask.transform.SetParent(root.transform);
+        mask.transform.position = new Vector3(7, 8, 0);
+        root.SetActive(true);
+        var cameraObject = Own(new GameObject("OverlayCamera"));
+        cameraObject.tag = "MainCamera";
+        var camera = cameraObject.AddComponent<Camera>();
+        camera.orthographic = true;
+        camera.aspect = 1.6f;
+        Assert.AreSame(camera, Camera.main, "Run this fixture without an existing MainCamera.");
+        var fit = typeof(GlobalVisionMaskController).GetMethod("FitOverlayToCamera", BindingFlags.Instance | BindingFlags.NonPublic);
+        foreach (float zoom in new[] { 5f, 12f })
+        {
+            camera.orthographicSize = zoom;
+            camera.transform.position = new Vector3(zoom * 100, -zoom * 40, -10);
+            fit.Invoke(controller, new object[] { default(UnityEngine.Rendering.ScriptableRenderContext), camera });
+            Assert.That(renderer.bounds.size.y, Is.EqualTo(zoom * 4).Within(0.001f));
+            Assert.That(renderer.bounds.size.x, Is.EqualTo(zoom * 4 * camera.aspect).Within(0.001f));
+            Assert.AreEqual(new Vector3(camera.transform.position.x, camera.transform.position.y, 0), overlay.transform.position);
+            Assert.AreEqual(new Vector3(7, 8, 0), mask.transform.position);
+            Assert.AreEqual(Vector3.one, mask.transform.localScale);
+        }
+    }
+
+    [UnityTest]
+    public IEnumerator SlimeFinale_CancelsPendingSummonsOnlyAfterBothPhaseTwoTypesAreDefeated()
+    {
+        var root = Own(new GameObject("SlimeClearTest"));
+        var condition = root.AddComponent<SlimeQueenEncounterClearCondition>();
+        var pending = Own(new GameObject("PendingSlime"));
+        var summon = pending.AddComponent<SlimeQueenFallingSummon>();
+        var remainingMob = Own(new GameObject("RemainingSlime"));
+        remainingMob.SetActive(false);
+        remainingMob.AddComponent<Mob>();
+        var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+        typeof(SlimeQueenEncounterClearCondition).GetField("hasObservedPhaseTwoShort", flags).SetValue(condition, true);
+        condition.TryCreateFinalePresentationRoutine(null, out _);
+        Assert.IsFalse(summon.IsFinished, "One defeated phase-two type must not clear adds.");
+        typeof(SlimeQueenEncounterClearCondition).GetField("hasObservedPhaseTwoLong", flags).SetValue(condition, true);
+        condition.TryCreateFinalePresentationRoutine(null, out _);
+        Assert.IsTrue(summon.IsFinished, "Pending summons must stop even when finale actors are unavailable.");
+        Assert.IsFalse(pending.activeSelf);
+        yield return null;
+        Assert.IsTrue(pending == null);
+        Assert.IsTrue(remainingMob == null, "Inactive remaining monsters must also be removed.");
+    }
     [SetUp] public void SetUp()
     {
         // These fixtures do not exercise prewarm tracing; avoid its unrelated Editor JSON writer.
@@ -23,6 +82,54 @@ public sealed class CombatFeelLootQuestPlayModeTests
         Time.timeScale = 1f;
         for (int i = owned.Count - 1; i >= 0; i--) if (owned[i] != null) Object.DestroyImmediate(owned[i]);
         owned.Clear();
+    }
+
+    [Test]
+    public void WeaponGuidanceOutline_SurvivesHoverExitAndOtherOwners_ThenClears()
+    {
+        var actor = Own(new GameObject("GuidedWeaponChest"));
+        var renderer = actor.AddComponent<SpriteRenderer>();
+        var grave = actor.AddComponent<GraveInteractable>();
+        typeof(GraveInteractable).GetField("spriteRenderer", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(grave, renderer);
+        var first = Own(new GameObject("FirstGate"));
+        var second = Own(new GameObject("SecondGate"));
+        var properties = new MaterialPropertyBlock();
+        float Outline()
+        {
+            renderer.GetPropertyBlock(properties);
+            return properties.GetFloat(Shader.PropertyToID("_OutlineEnabled"));
+        }
+        grave.SetGuidanceHighlight(first, true);
+        grave.SetGuidanceHighlight(second, true);
+        grave.OnHighlight();
+        grave.OnUnHighlight();
+        Assert.AreEqual(1f, Outline(), "Moving away must preserve weapon guidance.");
+        grave.SetGuidanceHighlight(first, false);
+        Assert.AreEqual(1f, Outline(), "One gate cannot clear another gate's guidance.");
+        grave.SetGuidanceHighlight(second, false);
+        Assert.AreEqual(0f, Outline());
+        grave.SetGuidanceHighlight(first, true);
+        actor.SetActive(false);
+        Assert.AreEqual(0f, Outline(), "Disabling the chest must clear its outline.");
+    }
+
+    [Test]
+    public void RoomCombat_ClearImmediatelyAllowsMenus_AndDisableReleasesActiveRoom()
+    {
+        var actor = Own(new GameObject("RoomCombatEligibility"));
+        var room = actor.AddComponent<MonsterSpawnRoomGroup>();
+        room.RestoreWaveState(new DungeonRoomWaveRuntimeStateData { hasStarted = true, completed = true });
+        room.NotifyPlayerEnteredEncounter();
+        Assert.AreSame(room, MonsterSpawnRoomGroup.ActiveRoom);
+        Assert.IsFalse(MonsterSpawnRoomGroup.IsPlayerInCombat, "A restored cleared room must immediately permit menus.");
+
+        room.PushEncounterHold();
+        Assert.IsTrue(MonsterSpawnRoomGroup.IsPlayerInCombat, "A pending encounter must continue to block menus.");
+        room.PopEncounterHold();
+        Assert.IsFalse(MonsterSpawnRoomGroup.IsPlayerInCombat, "Releasing the final encounter hold must not start a grace timer.");
+
+        actor.SetActive(false);
+        Assert.IsNull(MonsterSpawnRoomGroup.ActiveRoom, "An unloaded/disabled room must not retain the combat query.");
     }
 
     [Test]
@@ -876,7 +983,7 @@ public sealed class CombatFeelLootQuestPlayModeTests
         Assert.AreEqual(1f, Time.timeScale);
     }
 
-    [Test] public void Telegraph_StraightAndCircleIgnoreColliders_WhileSectorAndRingRetainClipping()
+    [Test] public void Telegraph_RectangleAndCircleIgnoreColliders_WhileLineSectorAndRingClip()
     {
         Type viewType = Type.GetType("UnityGAS.AttackTelegraphView, Presentation", true);
         var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/VFX/Telegraphs/AttackTelegraphView.prefab");
@@ -896,13 +1003,11 @@ public sealed class CombatFeelLootQuestPlayModeTests
             spec.sectorAngleDeg = 90f;
             spec.innerDiameter = 1f;
             show.Invoke(view, new object[] { spec, null });
-            bool shouldClip = shape == AttackTelegraphShape.Sector || shape == AttackTelegraphShape.Ring;
+            bool shouldClip = shape == AttackTelegraphShape.Line || shape == AttackTelegraphShape.Sector || shape == AttackTelegraphShape.Ring;
             Assert.AreEqual(shouldClip, clipping.GetValue(view), shape.ToString());
             spec.lineEnd = Vector3.right * 6f;
             update.Invoke(view, new object[] { spec });
             Assert.AreEqual(shouldClip, clipping.GetValue(view), "Geometry update: " + shape);
-            if (shape == AttackTelegraphShape.Line)
-                Assert.AreEqual(spec.lineEnd, actor.GetComponentInChildren<LineRenderer>().GetPosition(1));
         }
     }
 

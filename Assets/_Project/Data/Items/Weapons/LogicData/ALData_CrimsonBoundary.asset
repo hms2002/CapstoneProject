@@ -36,5 +36,6 @@ MonoBehaviour:
   igniteExplosionPrefab: {fileID: 104, guid: fac3f2301ad94e1eae4ad4a2215ebee6, type: 3}
   meteorPrefab: {fileID: 104, guid: 4d186af99b6d4980ad5fbee3c3eaa35c, type: 3}
   meteorHitPrefab: {fileID: 104, guid: e7b729f1f55044d3a2d7845fd9a148a4, type: 3}
+  relicLavaBallPrefab: {fileID: 104, guid: 8d3a284548c54c449788eea30a839434, type: 3}
   igniteChargeSeconds: 0.24
   burnSustainPrefab: {fileID: 104, guid: 60281231dd8c4be6b499e43b294b59e6, type: 3}

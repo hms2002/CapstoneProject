@@ -52,7 +52,7 @@ public sealed class MerchantRunStateService
         if (runtimeState == null || runtimeState.refreshCountUsed >= Math.Max(0, maxRefreshCount))
             return false;
 
-        runtimeState.slots = CreateEntries(slotCount, stockFactory, null);
+        runtimeState.slots = CreateEntries(slotCount, stockFactory, runtimeState.slots);
         runtimeState.refreshCountUsed++;
         return true;
     }

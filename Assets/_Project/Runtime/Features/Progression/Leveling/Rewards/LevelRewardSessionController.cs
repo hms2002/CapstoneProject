@@ -15,15 +15,12 @@ public sealed class LevelRewardSessionController : MonoBehaviour
 
     [Header("Open Rule")]
     [SerializeField] private KeyCode openKey = KeyCode.R;
-    [SerializeField, Min(0f)] private float combatGraceSeconds = 3f;
     [SerializeField] private string combatBlockedMessage = "전투가 끝난 뒤 할 수 있어";
 
     private GameFlowInputBlocker inputBlocker;
     private RunTimeLimitSystem pausedTimer;
     private readonly List<LevelRewardDefinitionSO> eligibilityBuffer = new();
-    private float lastPlayerCombatRealtime = float.NegativeInfinity;
     private bool isSessionOpen;
-    private MonsterSpawnRoomGroup currentRoom;
 
     public event Action SessionOpened;
     public event Action SessionChanged;
@@ -43,23 +40,14 @@ public sealed class LevelRewardSessionController : MonoBehaviour
     private void OnEnable()
     {
         RunLevelRewards.RegisterCatalog(rewardCatalog);
-        CombatActivityEvents.DamageApplied += HandleDamageApplied;
         RunSessionStore.OnRunEnded += HandleRunEnded;
         PlayerRuntimeRegistry.PlayerUnregistered += HandlePlayerUnregistered;
-        MonsterSpawnRoomGroup.ActiveRoomEntered += HandleRoomEntered;
-        MonsterSpawnRoomGroup.ActiveRoomExited += HandleRoomExited;
-        foreach (var room in FindObjectsByType<MonsterSpawnRoomGroup>(FindObjectsSortMode.None))
-            if (room.PlayerEncounterEntered) currentRoom = room;
     }
 
     private void OnDisable()
     {
-        CombatActivityEvents.DamageApplied -= HandleDamageApplied;
         RunSessionStore.OnRunEnded -= HandleRunEnded;
         PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
-        MonsterSpawnRoomGroup.ActiveRoomEntered -= HandleRoomEntered;
-        MonsterSpawnRoomGroup.ActiveRoomExited -= HandleRoomExited;
-        currentRoom = null;
         CloseSession();
     }
 
@@ -200,10 +188,7 @@ public sealed class LevelRewardSessionController : MonoBehaviour
             return false;
         }
 
-        bool hasRoom = currentRoom != null && currentRoom.isActiveAndEnabled && currentRoom.PlayerEncounterEntered;
-        bool roomCleared = hasRoom && currentRoom.RoomWavesCompleted && currentRoom.RemainingRegisteredOrPendingCount == 0;
-        bool recentlyInCombat = Time.unscaledTime - lastPlayerCombatRealtime < Mathf.Max(0f, combatGraceSeconds);
-        if ((hasRoom && !roomCleared) || (!roomCleared && recentlyInCombat) || Enemy.IsAnyEnemyRecognizingPlayer())
+        if (MonsterSpawnRoomGroup.IsPlayerInCombat)
         {
             failureReason = combatBlockedMessage;
             showCombatWarning = true;
@@ -229,39 +214,14 @@ public sealed class LevelRewardSessionController : MonoBehaviour
         return eligibilityBuffer.Count > 0;
     }
 
-    private void HandleDamageApplied(GameObject source, GameObject target, float amount)
-    {
-        PlayerInteractor2D player = PlayerRuntimeRegistry.CurrentPlayer;
-        if (player == null) return;
-        if (IsPlayerOwned(source, player) || IsPlayerOwned(target, player))
-            lastPlayerCombatRealtime = Time.unscaledTime;
-    }
-
-    private static bool IsPlayerOwned(GameObject candidate, PlayerInteractor2D player)
-    {
-        if (candidate == null || player == null) return false;
-        Transform transform = candidate.transform;
-        return transform == player.transform || transform.IsChildOf(player.transform) ||
-               candidate.GetComponentInParent<PlayerInteractor2D>() == player;
-    }
-
     private void HandleRunEnded(RunEndReason reason)
     {
-        currentRoom = null;
-        lastPlayerCombatRealtime = float.NegativeInfinity;
         CloseSession();
     }
 
     private void HandlePlayerUnregistered(PlayerInteractor2D player)
     {
-        currentRoom = null;
-        lastPlayerCombatRealtime = float.NegativeInfinity;
         CloseSession();
     }
 
-    private void HandleRoomEntered(MonsterSpawnRoomGroup room) => currentRoom = room;
-    private void HandleRoomExited(MonsterSpawnRoomGroup room)
-    {
-        if (currentRoom == room) currentRoom = null;
-    }
 }

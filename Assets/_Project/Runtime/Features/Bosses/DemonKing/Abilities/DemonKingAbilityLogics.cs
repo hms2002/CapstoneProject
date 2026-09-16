@@ -817,6 +817,14 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
                 style != null ? style : demon.DefaultWarningStyle)));
     }
 
+    // Projectile warnings continue through the target to the first wall.
+    protected static Vector2 ResolveProjectileWarningEnd(DemonKingController demon, Vector2 origin, Vector2 target, float range = 40f)
+    {
+        Vector2 delta = target - origin;
+        Vector2 direction = delta.sqrMagnitude > 0.0001f ? delta.normalized : demon.GetDirectionToTargetOrFacing(origin);
+        return origin + direction * ResolveWallDistance(demon, origin, direction, range);
+    }
+
     protected static LineArea ResolveForwardLineArea(
         DemonKingController demon,
         Vector2 origin,
@@ -1742,7 +1750,7 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
                 ? ShowLineWarning(
                     demon,
                     animationOrigin,
-                    lockedThrowTarget,
+                    ResolveProjectileWarningEnd(demon, animationOrigin, lockedThrowTarget),
                     aimWarningWidth,
                     releaseDelaySeconds)
                 : null;
@@ -1758,7 +1766,7 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
                     aimWarning,
                     demon,
                     animationOrigin,
-                    lockedThrowTarget,
+                    ResolveProjectileWarningEnd(demon, animationOrigin, lockedThrowTarget),
                     aimWarningWidth,
                     releaseDelaySeconds);
 
@@ -1997,7 +2005,7 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
                     ? ShowLineWarning(
                         demon,
                         spawnPosition,
-                        ResolveAimTargetPosition(demon, spawnPosition, fireDirection),
+                        ResolveProjectileWarningEnd(demon, spawnPosition, ResolveAimTargetPosition(demon, spawnPosition, fireDirection), demon.PlayerMoveSpeedReference * projectileSpeedMultiplier * lifetimeSeconds),
                         aimWarningWidth,
                         aimSeconds)
                     : null;
@@ -2016,7 +2024,7 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
                         aimWarning,
                         demon,
                         spawnPosition,
-                        ResolveAimTargetPosition(demon, spawnPosition, fireDirection),
+                        ResolveProjectileWarningEnd(demon, spawnPosition, ResolveAimTargetPosition(demon, spawnPosition, fireDirection), demon.PlayerMoveSpeedReference * projectileSpeedMultiplier * lifetimeSeconds),
                         aimWarningWidth,
                         aimSeconds);
 

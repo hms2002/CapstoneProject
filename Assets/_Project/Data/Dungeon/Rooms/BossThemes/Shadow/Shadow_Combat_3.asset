@@ -187,13 +187,13 @@ MonoBehaviour:
     - localCell: {x: 0, y: 1}
       tile: {fileID: 11400000, guid: 099368cf7cc116b46a32acfe18767990, type: 2}
     - localCell: {x: 0, y: 2}
-      tile: {fileID: 11400000, guid: 099368cf7cc116b46a32acfe18767990, type: 2}
+      tile: {fileID: 11400000, guid: c00fb48d724197a4ab915c9ce3b49c1a, type: 2}
     - localCell: {x: 0, y: 3}
       tile: {fileID: 11400000, guid: 099368cf7cc116b46a32acfe18767990, type: 2}
     - localCell: {x: 0, y: 4}
       tile: {fileID: 11400000, guid: 099368cf7cc116b46a32acfe18767990, type: 2}
     - localCell: {x: 0, y: 5}
-      tile: {fileID: 11400000, guid: 099368cf7cc116b46a32acfe18767990, type: 2}
+      tile: {fileID: 11400000, guid: 5ee6b929f150c3640b24dd1d88f004e7, type: 2}
     - localCell: {x: 0, y: 6}
       tile: {fileID: 11400000, guid: 099368cf7cc116b46a32acfe18767990, type: 2}
     - localCell: {x: 0, y: 7}
@@ -243,13 +243,13 @@ MonoBehaviour:
     - localCell: {x: 11, y: 1}
       tile: {fileID: 11400000, guid: b79e332a875dcab4f926b4ec8fae7952, type: 2}
     - localCell: {x: 11, y: 2}
-      tile: {fileID: 11400000, guid: b79e332a875dcab4f926b4ec8fae7952, type: 2}
+      tile: {fileID: 11400000, guid: bf052fe04c4f3704591bae2e9b59d50d, type: 2}
     - localCell: {x: 11, y: 3}
       tile: {fileID: 11400000, guid: b79e332a875dcab4f926b4ec8fae7952, type: 2}
     - localCell: {x: 11, y: 4}
       tile: {fileID: 11400000, guid: b79e332a875dcab4f926b4ec8fae7952, type: 2}
     - localCell: {x: 11, y: 5}
-      tile: {fileID: 11400000, guid: b79e332a875dcab4f926b4ec8fae7952, type: 2}
+      tile: {fileID: 11400000, guid: cd4bd370509667c4a8eb8edf16685ae0, type: 2}
     - localCell: {x: 11, y: 6}
       tile: {fileID: 11400000, guid: b79e332a875dcab4f926b4ec8fae7952, type: 2}
     - localCell: {x: 11, y: 7}
@@ -257,6 +257,7 @@ MonoBehaviour:
     wallDetailTiles: []
     foregroundTiles: []
     overlayFxTiles: []
+    holeTiles: []
     objectPlacements:
     - monsterWaveId: 
       placementId: Object_05

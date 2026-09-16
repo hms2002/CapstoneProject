@@ -141,6 +141,22 @@ public sealed class ShopInventoryRoll
 
             if (availableKinds.Count == 0)
             {
+                // An exhausted dedicated slot may use remaining non-weapon
+                // candidates, but must never reintroduce the previous stock.
+                availableKinds = BuildAvailableKinds(
+                    null, relicPool, consumablePool,
+                    new ShopStockRollWeights
+                    {
+                        relicWeight = Mathf.Max(1, rollWeights.relicWeight),
+                        consumableWeight = Mathf.Max(1, rollWeights.consumableWeight)
+                    },
+                    weaponSlotCount, maxWeaponSlots,
+                    consumableSlotCount, maxConsumableSlots,
+                    ShopSlotItemFilter.Any);
+            }
+
+            if (availableKinds.Count == 0)
+            {
                 entries.Add(MerchantStockEntryState.Empty());
                 continue;
             }
@@ -190,7 +206,7 @@ public sealed class ShopInventoryRoll
         for (int i = 0; i < unlockedIds.Count; i++)
         {
             WeaponDefinition definition = ItemManager.Instance.GetWeaponData(unlockedIds[i]);
-            if (definition != null && LootPoolItemSelectionService.CanDropWeapon(definition.weaponId, false))
+            if (definition != null && LootPoolItemSelectionService.CanDropWeapon(definition.weaponId, treasureChest: true))
                 pool.Add(definition);
         }
 
@@ -205,7 +221,7 @@ public sealed class ShopInventoryRoll
         for (int i = 0; i < unlockedIds.Count; i++)
         {
             RelicDefinition definition = ItemManager.Instance.GetRelicData(unlockedIds[i]);
-            if (definition != null)
+            if (definition != null && LootPoolItemSelectionService.CanDropRelic(definition.relicId))
                 pool.Add(definition);
         }
 

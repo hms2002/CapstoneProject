@@ -47,6 +47,7 @@ public static class RunEventArtInstaller
             ImportSprite("Parcel/Harpy_SD.png"), 1.8f);
 
         Transform pile = RequiredChild(root.transform, "PermanentParcelPile");
+        SetReference(pile.GetComponent<ParcelPickupInteractable>(), "npcSpeechBubble", ConfigureSpeech(guide.gameObject));
         // The supplied box picture already contains the entire pile.
         foreach (string name in new[] { "ParcelBox_Right", "ParcelBox_Top" })
         {
@@ -81,12 +82,27 @@ public static class RunEventArtInstaller
     private static void ConfigureWorkout(GameObject root, string name, string spriteFile, string prompt, float height, float offsetY)
     {
         Transform equipment = RequiredChild(root.transform, name);
+        SpeechBubbleComponent speech = ConfigureSpeech(RequiredChild(root.transform, "BuffyGuideNpc").gameObject);
         SpriteRenderer renderer = RequiredChild(equipment, name + "Body").GetComponent<SpriteRenderer>();
         SetVisual(renderer, ImportSprite("Buffy/" + spriteFile), height);
         renderer.transform.localPosition = new Vector3(0f, offsetY, 0f);
         var serialized = new SerializedObject(equipment.GetComponent<BuffyHealthTimeInteractable>());
         serialized.FindProperty("interactPromptText").stringValue = prompt;
+        serialized.FindProperty("npcSpeechBubble").objectReferenceValue = speech;
         serialized.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private static SpeechBubbleComponent ConfigureSpeech(GameObject owner)
+    {
+        SpeechBubbleComponent speech = owner.GetComponent<SpeechBubbleComponent>();
+        if (speech == null) speech = owner.AddComponent<SpeechBubbleComponent>();
+        var serialized = new SerializedObject(speech);
+        serialized.FindProperty("bubblePrefab").objectReferenceValue =
+            Required<GameObject>("Assets/_Project/Prefabs/UI/SpeechBubble/SpeechBubblePrefab.prefab")
+                .GetComponent<SpeechBubble>();
+        serialized.FindProperty("bubbleOffset").vector3Value = new Vector3(0f, 2f, 0f);
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        return speech;
     }
 
     private static NPCData PrepareNpc(string key, string displayName, int id, string portraitPath)

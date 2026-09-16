@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: WD_ExecutionGun
   m_EditorClassIdentifier: 
   weaponId: Weapon.ExecutionGun
-  displayName: Execution Gun
+  displayName: "처형총"
   icon: {fileID: -4725637515032661049, guid: 2a195b84427e14a4ba63fe519397dd8e, type: 3}
-  storyText: Experimental paired weapon that consumes sword marks and opens a rebound
-    slash.
+  storyText: "표식검이 남긴 표식을 소비하고, 검의 반격 기회를 여는 총."
   statModifiers: []
   attackInputHint: Mouse1
   skill1InputHint: Q

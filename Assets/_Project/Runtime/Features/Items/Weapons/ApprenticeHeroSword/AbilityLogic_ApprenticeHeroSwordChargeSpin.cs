@@ -7,8 +7,12 @@ using UnityGAS;
 // 책임: 수습 용사 검 차지 회전 공격의 차지, 반복 히트박스, 시전/정리 연출을 실행한다.
 public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
 {
+    public const string HoldingChargeKey = "ApprenticeRelic.Holding";
+    public const string ChargeSecondsKey = "ApprenticeRelic.Seconds";
     private readonly Dictionary<AbilitySpec, List<MeleeHitboxActor>> activeHitboxesBySpec = new();
     private readonly Dictionary<AbilitySpec, ApprenticeHeroSwordChargePresentationRuntime> activeChargeVisualsBySpec = new();
+
+    private readonly Dictionary<AbilitySpec, (WeaponPresentationRig2D rig, int token)> aimLocks = new();
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -37,6 +41,8 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
 
             InputActionId chargeInputAction = ResolveChargeInputAction();
             float chargeElapsed = 0f;
+            spec.SetInt(HoldingChargeKey, 1);
+            spec.SetFloat(ChargeSecondsKey, 0f);
             chargePresentation?.Update(0f);
             while (true)
             {
@@ -52,6 +58,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
                     break;
 
                 chargeElapsed += Time.deltaTime;
+                spec.SetFloat(ChargeSecondsKey, chargeElapsed);
                 float liveChargeRatio = data.MaxChargeSeconds > 0f
                     ? Mathf.Clamp01(chargeElapsed / data.MaxChargeSeconds)
                     : 1f;
@@ -59,6 +66,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
                 yield return null;
             }
 
+            spec.SetInt(HoldingChargeKey, 0);
             float effectiveChargeSeconds = Mathf.Clamp(chargeElapsed, data.MinChargeSeconds, data.MaxChargeSeconds);
             float chargeRatio = data.MaxChargeSeconds > 0f
                 ? Mathf.Clamp01(effectiveChargeSeconds / data.MaxChargeSeconds)
@@ -70,13 +78,13 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             chargePresentation?.Update(chargeRatio);
             StopChargePresentation(spec, clearParticles: false);
 
-            TryPlayAnim(system, data.ReleaseAnimationTrigger, spec.Definition);
-            AbilityAudioRouter.PlayOneShot(data.ReleaseSound, system, spec, sourceObjectOverride: data);
-
             Vector2 baseDirection = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
             if (baseDirection.sqrMagnitude <= 0.0001f)
                 baseDirection = Vector2.right;
             baseDirection.Normalize();
+            BeginSkillAimLock(system, spec, baseDirection, data.SpinDuration + data.RecoveryDuration);
+            TryPlayAnim(system, data.ReleaseAnimationTrigger, spec.Definition);
+            AbilityAudioRouter.PlayOneShot(data.ReleaseSound, system, spec, sourceObjectOverride: data);
 
             yield return WaitForReleaseHitEvent(system, spec, data);
 
@@ -104,7 +112,9 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
                     releaseSizeMultiplier,
                     releaseSizeMultiplier,
                     true,
-                    releaseVisualColor);
+                    releaseVisualColor,
+                    attachToOwnerOverride: WeaponExclusiveRelics.Has(system.gameObject, WeaponExclusiveRelics.ApprenticeChargeLink)
+                        ? true : (bool?)null);
 
                 TrackHitbox(spec, hitbox);
                 AbilityAudioRouter.PlayOneShotAtPosition(data.PulseSound, system, spec, center, data);
@@ -135,14 +145,38 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
         }
         finally
         {
+            spec.SetInt(HoldingChargeKey, 0);
+            spec.SetFloat(ChargeSecondsKey, 0f);
             StopChargePresentation(spec, clearParticles: true);
+            EndSkillAimLock(spec, IsAbilityCancelled(spec));
         }
     }
 
     public override void CleanupForSceneTransition(AbilitySystem system, AbilitySpec spec, GameObject target)
     {
+        spec?.SetInt(HoldingChargeKey, 0);
+        spec?.SetFloat(ChargeSecondsKey, 0f);
+        EndSkillAimLock(spec, cancelled: true);
         DestroyTrackedHitboxes(spec);
         StopChargePresentation(spec, clearParticles: true);
+    }
+
+    private void BeginSkillAimLock(AbilitySystem system, AbilitySpec spec, Vector2 direction, float holdTime)
+    {
+        EndSkillAimLock(spec, cancelled: true);
+        var rig = system.GetComponentInChildren<WeaponPresentationRig2D>(true);
+        if (rig == null) return;
+        int token = rig.BeginAimPresentationOverride(WeaponAimPresentationMode.LockedAtCast, direction, holdTime);
+        aimLocks[spec] = (rig, token);
+    }
+
+    private void EndSkillAimLock(AbilitySpec spec, bool cancelled)
+    {
+        if (spec == null || !aimLocks.TryGetValue(spec, out var entry)) return;
+        aimLocks.Remove(spec);
+        if (entry.rig == null) return;
+        if (cancelled) entry.rig.CancelAimPresentationOverride(entry.token);
+        else entry.rig.EndAimPresentationOverride(entry.token);
     }
 
     private void TrackHitbox(AbilitySpec spec, MeleeHitboxActor hitbox)
@@ -293,7 +327,8 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
                 return null;
 
             SpriteRenderer sourceRenderer = ResolveWeaponRenderer(system);
-            Transform particleParent = sourceRenderer != null ? sourceRenderer.transform : system.transform;
+            // Suction is centered on the owner and must not inherit weapon aim or mirroring.
+            Transform particleParent = system.transform;
             ParticleSystem particle = CreateParticle(data, particleParent);
 
             GameObject revealRoot = null;
@@ -507,11 +542,14 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             revealTransform.localRotation = Quaternion.Euler(data.ChargeRevealLocalEulerAngles);
             revealTransform.localScale = data.ChargeRevealLocalScale;
 
-            // Bit 2 is WeaponChargeEffect in TagManager; exclude Default world/vision masks.
+            // Rendering Layers do not isolate the native SpriteMask stencil tests.
             const uint chargeRenderingLayerMask = 1u << 2;
-            // Keep per-instance mask scope and the weapon's existing world sorting hierarchy.
+            // The entire group must be outside Entity/MaskRender vision ranges.
+            // Internal sorting alone still inherits an active world mask stencil.
+            const int chargeLocalSortingLayer = 0;
             var sortingGroup = revealRoot.AddComponent<UnityEngine.Rendering.SortingGroup>();
-            sortingGroup.sortingLayerID = sourceRenderer.sortingLayerID;
+            sortingGroup.sortingLayerName = "WeaponChargeEffect";
+            sortingGroup.sortAtRoot = true;
             sortingGroup.sortingOrder = sourceRenderer.sortingOrder + data.ChargeRevealSortingOrderOffset;
 
             GameObject rendererObject = new("Reveal");
@@ -523,7 +561,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             revealRenderer.sprite = revealSprite;
             revealRenderer.color = data.ChargeRevealColor;
             revealRenderer.sharedMaterial = sourceRenderer.sharedMaterial;
-            revealRenderer.sortingLayerID = sourceRenderer.sortingLayerID;
+            revealRenderer.sortingLayerID = chargeLocalSortingLayer;
             revealRenderer.sortingOrder = 0;
             revealRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
             revealRenderer.renderingLayerMask = chargeRenderingLayerMask;
@@ -542,8 +580,8 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             revealMask.sprite = maskSprite;
             revealMask.alphaCutoff = data.ChargeRevealMaskAlphaCutoff;
             revealMask.isCustomRangeActive = true;
-            revealMask.frontSortingLayerID = sourceRenderer.sortingLayerID;
-            revealMask.backSortingLayerID = sourceRenderer.sortingLayerID;
+            revealMask.frontSortingLayerID = chargeLocalSortingLayer;
+            revealMask.backSortingLayerID = chargeLocalSortingLayer;
             revealMask.frontSortingOrder = revealRenderer.sortingOrder + 1;
             revealMask.backSortingOrder = revealRenderer.sortingOrder - 1;
         }

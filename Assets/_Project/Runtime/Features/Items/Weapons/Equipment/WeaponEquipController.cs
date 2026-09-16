@@ -114,10 +114,11 @@ public class WeaponEquipController : MonoBehaviour, IWeaponRuntimeStateProvider
     {
         if (currentWeaponGO == null) return;
 
+        // Finish weapon-local OnDisable cleanup before restoring the cached pose.
+        currentWeaponGO.SetActive(false);
+        currentVisualRig?.RestoreInitialMotionPose();
         if (!useCache)
             Destroy(currentWeaponGO);
-        else
-            currentWeaponGO.SetActive(false);
 
         currentWeaponGO = null;
         currentPrefab = null;
@@ -134,7 +135,7 @@ public class WeaponEquipController : MonoBehaviour, IWeaponRuntimeStateProvider
         Transform mount = GetWeaponMount();
 
         if (!useCache)
-            return Instantiate(prefab, mount);
+            return CreateInstance(prefab, mount);
 
         if (cache.TryGetValue(prefab, out var inst) && inst != null)
         {
@@ -142,7 +143,7 @@ public class WeaponEquipController : MonoBehaviour, IWeaponRuntimeStateProvider
             return inst;
         }
 
-        inst = Instantiate(prefab, mount);
+        inst = CreateInstance(prefab, mount);
         inst.SetActive(false);
 
         cache[prefab] = inst;
@@ -150,6 +151,14 @@ public class WeaponEquipController : MonoBehaviour, IWeaponRuntimeStateProvider
         TrimCache();
 
         return inst;
+    }
+
+    private static GameObject CreateInstance(GameObject prefab, Transform mount)
+    {
+        var instance = Instantiate(prefab, mount);
+        // Inactive prefabs have not run Awake yet; capture before first activation.
+        instance.GetComponentInChildren<WeaponVisualRig2D>(true)?.CaptureInitialMotionPose();
+        return instance;
     }
 
     private void ActivateInstance(GameObject instance, GameObject prefabKey)
@@ -160,6 +169,8 @@ public class WeaponEquipController : MonoBehaviour, IWeaponRuntimeStateProvider
         instance.transform.localPosition = Vector3.zero;
         instance.transform.localRotation = Quaternion.identity;
         instance.transform.localScale = Vector3.one;
+        // Rebind must see the initial pose, never a cached mid-attack transform.
+        instance.GetComponentInChildren<WeaponVisualRig2D>(true)?.RestoreInitialMotionPose();
         instance.SetActive(true);
 
         var anim = instance.GetComponentInChildren<Animator>();

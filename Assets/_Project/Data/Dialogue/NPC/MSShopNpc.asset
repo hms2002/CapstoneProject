@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: MSShopNpc
   m_EditorClassIdentifier: 
   id: 1001
-  npcName: "\uC0C1\uC778"
+  npcName: "사샤"
+  roleIcon: {fileID: 21300000, guid: 5e8d2874894f4b56a31374708dacbaec, type: 3}
   isBoss: 0
   primaryInk: {fileID: 4900000, guid: ecf743cc4771eb243b241e9b1fe6a1c3, type: 3}
   bossEncounterInk: {fileID: 0}

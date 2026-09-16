@@ -15,7 +15,7 @@ MonoBehaviour:
   weaponId: Weapon.ExecutionerGreatsword
   displayName: 처형자의 대검
   icon: {fileID: -6255143421326930151, guid: e658b351294cef44b8a5c823d1fdcb73, type: 3}
-  storyText: "처형 준비 후 한 차례 참격으로 기회를 열고, 같은 입력으로 처형 성공과 실패가 갈라지는 구조 검증용 대검."
+  storyText: "처형의 기회를 노려 마지막 일격을 준비하는 대검."
   statModifiers: []
   attackInputHint: 우클릭
   skill1InputHint: Q

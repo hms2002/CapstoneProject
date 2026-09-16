@@ -186,6 +186,12 @@ public sealed class WeaponPresentationRig2D : MonoBehaviour
         cinematicLockedAimAngleDeg = 0f;
     }
 
+    public void CancelAimPresentationOverride(int token)
+    {
+        if (token != 0 && token == activeAimPresentationOverrideToken)
+            ClearAimPresentationOverride();
+    }
+
     public void EndAimPresentationOverride(int token)
     {
         if (token == 0 || token != activeAimPresentationOverrideToken)

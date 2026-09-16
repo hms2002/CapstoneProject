@@ -13,9 +13,19 @@ internal static class LootPoolItemSelectionService
         "RD_FeatherOrbit",
     };
 
-    internal static bool CanDropWeapon(string weaponId, bool treasureChest) =>
-        !string.IsNullOrWhiteSpace(weaponId) && weaponId != "Weapon.WindWeapon" &&
-        (treasureChest || (weaponId != "Weapon.Flowering" && weaponId != "Weapon.OddIron"));
+    internal static bool CanDropWeapon(string weaponId, bool treasureChest) => weaponId switch
+    {
+        "Weapon.ApprenticeHeroSword" or "Weapon.LightningSpear" or "Weapon.CrimsonBoundary" => true,
+        "Weapon.Flowering" or "Weapon.OddIron" => treasureChest,
+        _ => false,
+    };
+
+    internal static bool CanDropRelic(string relicId) =>
+        !string.IsNullOrWhiteSpace(relicId) && !NonDroppableRelicIds.Contains(relicId) &&
+        !IsWindWeaponRelic(relicId);
+
+    internal static bool IsWindWeaponRelic(string relicId) =>
+        relicId is "RD_Stenographer" or "RD_OneDropOfSwiftness";
 
     public static WeaponDefinition GetRandomWeapon(HashSet<string> exclusionList, bool treasureChest = false)
     {
@@ -75,7 +85,7 @@ internal static class LootPoolItemSelectionService
 
         foreach (var id in pool)
         {
-            if (NonDroppableRelicIds.Contains(id))
+            if (!CanDropRelic(id))
                 continue;
 
             var relicData = ItemManager.Instance.GetRelicData(id);

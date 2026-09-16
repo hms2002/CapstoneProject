@@ -87,8 +87,13 @@ public sealed class HubWeaponDepartureGuide : MonoBehaviour
     private void RefreshTarget()
     {
         var next = FindTarget(guidedPlayer);
-        if (next != target) started = Time.unscaledTime;
+        if (next != target)
+        {
+            SetTargetOutline(false);
+            started = Time.unscaledTime;
+        }
         target = next;
+        SetTargetOutline(true);
         nextTargetRefresh = Time.unscaledTime + TargetRefreshInterval;
     }
 
@@ -110,7 +115,13 @@ public sealed class HubWeaponDepartureGuide : MonoBehaviour
         float bounce = Mathf.Abs(Mathf.Sin(phase * Mathf.PI)) * bounceHeight;
         Transform anchor = target.GetPromptAnchor();
         arrow.transform.position = (anchor != null ? anchor.position : target.transform.position) + arrowOffset + Vector3.up * bounce;
-        arrow.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
+        arrow.transform.rotation = Quaternion.identity;
+    }
+
+    private void SetTargetOutline(bool enabled)
+    {
+        if (target is GraveInteractable grave) grave.SetGuidanceHighlight(this, enabled);
+        else if (target is ChestInteractable chest) chest.SetGuidanceHighlight(this, enabled);
     }
 
     private void OnDisable() => Clear();
@@ -118,6 +129,7 @@ public sealed class HubWeaponDepartureGuide : MonoBehaviour
     {
         if (arrow != null) { arrow.SetActive(false); Destroy(arrow); }
         arrow = null;
+        SetTargetOutline(false);
         target = null;
         guidedPlayer = null;
     }

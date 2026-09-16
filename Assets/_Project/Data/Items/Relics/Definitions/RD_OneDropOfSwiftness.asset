@@ -16,9 +16,7 @@ MonoBehaviour:
   displayName: "\uD55C\uBC29\uC6B8\uC758 \uC2E0\uC18D"
   icon: {fileID: 21300000, guid: 4af3438a19a9ff54683d8233bd993349, type: 3}
   rarity: 2
-  description: "\uC794\uC601\uC758 \uB0A0\uAC1C \uC804\uC6A9 \uC720\uBB3C\n\uC2A4\uD0AC
-    2\uB85C \uC801\uC744 \uCC98\uCE58\uD558\uBA74 \uC2A4\uD0AC 1 \uC2E4\uD589\uC774
-    \uCDE8\uC18C\uB418\uC9C0 \uC54A\uC74C"
+  description: "잔영의 날개 전용 유물\n스피드 스트라이크로 적을 처치하면 러쉬가 종료되지 않습니다."
   maxLevel: 1
   dropLevel: 1
   logic: {fileID: 11400000, guid: 3e9a1f42bc7d4c6499153f8e6ba2d071, type: 2}

@@ -2107,3 +2107,57 @@ Keeping the lower frame visible across Hub session boundaries exposed ResetTheme
 Boss parallel speech layout could switch tail sides each frame; weapon attack-start presentation derived facing directly from normalized cast direction even though idle facing already used a world-space dead zone. Some boss patterns also called direct facing updates after committing their pose.
 
 The display now retains each boss bubble direction independently; weapon attack start captures the already resolved rig side; affected boss AL routines retain facing through their commit/recovery windows. Review direct setters as well as automatic Update loops when diagnosing flip jitter. Builds and the added regression fixture compilation are checked separately from Unity Play Mode execution.
+
+## 2026-09-16 — Charge still fully visible after rendering-channel split
+
+- User reproduced full yellow blade before full orange charge in Shadow Corridor after the prior bit-2 change.
+- Verified source: reveal/mask still shared Entity sorting with the authored EntitySightMask full order range. Rendering Layer separation is not evidence of sorting/stencil isolation.
+- Correction applied: keep outer group world sorting, move its internal reveal and custom mask range to Default sorting; move suction from RenderRoot to AbilitySystem owner to avoid aim/mirror inheritance.
+- Added a rendered coverage regression in CombatPresentationRegressionPlayModeTests; MSBuild passes, but the rendered test and in-game reproduction were NOT run. Do not mark the visual symptom resolved until those pass.
+- Engine reference: [SpriteMask scope/range](https://docs.unity3d.com/cn/6000.0/ScriptReference/SpriteMask.html).
+
+## 2026-09-16 — External vision stencils still bypassed the sword's local mask
+
+- Reproduction: the user confirmed rotation-independent particles, but charge remained fully exposed in Shadow Corridor after the local Default sorting change.
+- Verified cause 1: the outer charge SortingGroup still rendered on Entity. A real URP/D3D11 capture at 65% showed 431 pixels with sight off and 743 with PlayerVisionMask on; moving the **outer group** outside Entity removed that interference.
+- Verified cause 2: Candlestick (two apertures), LightBead and Dead'sSkeleton had Custom Range disabled. Even a separate charge world layer was fully exposed by these unbounded masks (743 versus the 431-pixel baseline). Searching only PlayerVisionMask missed them.
+- Fix: WeaponChargeEffect Sorting Layer after Entity/before ItemDisplay, sortAtRoot on charge group; all four unbounded apertures changed to exact MaskRender ranges with matching authored EntitySightMask children. Particle parenting remains the user-confirmed working change.
+- Regression: Tools/Validation/ApprenticeChargeRenderProbe.cs uses actual compiled Gameplay/Core, current URP 17.4 renderer settings, charge sprites, PlayerVisionMask and before/after authored monster masks. GPU comparisons at three charge ratios and three rotation/mirror poses passed; world darkness/entity pixel parity and both skill direction locks/scene cancellation/stale-token checks passed. Logs and captures: Temp/apprentice-charge-evidence/. Main game scene interactive testing is still separate.
+- Prevention: audit every active/spawned world mask and its effective outer sorting scope. Neither Rendering Layer bits nor a child renderer's local Sorting Layer prove stencil isolation. Keep IDs as strings or safely-sized integers when editing Unity YAML; verify duplicate IDs and child references before import.
+
+## 2026-09-16 — Duplicate Chloe camera directors hide tuning changes
+
+- Shadow boss scene has both the Witch prefab's CameraPresentationDirector and a scene-added director. Editing the second component does not tune the phase owner selected by CameraPresentationPlayback.Get (first component).
+- The phase camera gizmo uses the same first component. Added an Inspector warning to the duplicate; edit the first director's Phase Lens Scale / Phase Camera Offset.
+- No component was removed or migrated in this task. Before consolidating, verify encounter/death references and scene overrides. Do not diagnose nonresponsive tuning solely as a Scene view repaint problem.
+
+
+## 2026-09-16 — Relic Q consumed cooldown with an unassigned projectile reference
+
+- Symptom: Crimson LavaBall relic Q consumed cooldown and spawned nothing. The actual ALData_CrimsonBoundary.asset had no relicLavaBallPrefab entry; CrimsonBoundaryVisual2D.Spawn(null) returns null and the relic branch then exits. The prefab existed separately.
+- Verification gap: WeaponRelicsNativeRegression constructed the projectile directly and never loaded the real Q data. The previous GUID audit checked only existing references, so it could not detect an absent required field. Earlier completion reporting overstated this asset linkage. The reason the field was absent is not established.
+- Fix: explicitly link the authored Lavaball_RelicPiercing prefab; preserve its GUID and component fileID. Added CrimsonRelicAuthoredRegression to load the real definition/data/prefab dependency chain and activate Q through AbilitySystem. Static verification now asserts the required field exists, not merely that present GUIDs resolve.
+- Related structure: Docs/StructureMemory/ScriptSystems/WeaponAndGASStructure.md.
+
+## 2026-09-16 — Cached weapon re-equipped in its interrupted attack pose
+
+- User confirmed weapons swapped during motion returned frozen in their previous pose. Equip reset only the prefab root before Animator.Rebind/Update(0); attack clips animate the child MotionRoot. The shared weapon prefab disables default-value writes on disable, and inspected Idle clips have no transform curves. Do not rely solely on Rebind or an empty Idle to recover the authored pose of a cached instance.
+- Fix: WeaponVisualRig2D captures the explicit MotionRoot local position/rotation/scale once. WeaponEquipController restores after outgoing disable cleanup and before incoming activation/Rebind. Preserve nonzero authored offsets and scale; do not recapture an animated transform during re-equip. No prefab/Animator asset change.
+- Verification scope: see the current SessionLog and Tools/Validation/WeaponSwapPoseRegression.cs; interactive weapon-by-weapon playtest remains separate from the isolated synthetic regression.
+
+## 2026-09-16 - Checkpoint route queries cleared the committed event context
+- Symptom: after Grand Hall -> procedural Corridor travel, the event planner logged route=<none>, visitOrder=0 and presentedEvents=0, although the ordinary layout generated successfully.
+- Cause: CanResolveRoute/GetTravelBlockWarning reached TryPrepareHubStartPlan, which cleared the active plan for checkpoint portals. Interaction queries could therefore erase a just-activated route before DungeonGenerator.Start; all current start events require that route context.
+- Fix/prevention: keep committed route/load context intact during pending-destination preparation. Replace active stages only in actual activation after preparation succeeds; preserve the pending selection checked by the destination warning. Do not use destructive run cleanup as part of an availability query.
+- Regression: SceneConnectionRouteContextPlayModeTests.CheckpointQueries_PreserveCommittedRouteAndEventCandidates_UntilDeparture. Test source and runtime passed MSBuild; native Unity test execution and manual travel remain unverified.
+
+## 2026-09-16 — Custom cinematic layer lists omitted gameplay HUD
+- GrandHall's explicit PresentationFadedLayers omitted GameplayHUD; the common overlay previously treated caller lists/false capture as permission to skip HUD entirely. Hub separately disabled its HUD Canvas, bypassing visible fade.
+- Shared letterbox PlayIn now always captures/fades GameplayHUD and BossHUD to zero; caller lists/flags only choose other UI. Hub's letterbox path leaves Canvas enabled for the fade. Keep Dialogue/Prompt opt-in separate to avoid hiding tutorial instructions or dialogue panels. Restore captured alpha/interaction rather than forcing a HUD enabled/visible at completion.
+- Verification: source/build results in SessionLog. In-game fade timing and dialogue handoff still require visual confirmation.
+
+## 2026-09-16: Reward artwork bound to an inactive legacy Image
+- Symptom: all level reward cards still showed Attack_Card_1 after assigning distinct definition Icons.
+- Cause: GlobalUIRoot's three LevelRewardCardView.iconImage references targeted inactive legacy Icon children; visible CardVisualMount Images retained fixed artwork. Data GUID validation alone missed the presentation target.
+- Fix: point the three iconImage references to their existing active card-root Images, which also receive button tint. Keep the legacy children inactive.
+- Prevention: trace definition -> Bind -> serialized Image -> active visible GameObject when verifying authored UI artwork. Check actual Editor rendering separately; static references do not establish visual success.

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_FragmentBladeAttack
   m_EditorClassIdentifier: 
-  abilityName: AD_FragmentBladeAttack
+  abilityName: "파편 베기"
   icon: {fileID: 0}
-  description: Fragment blade base attack. Bound shard ratio scales range and damage.
+  description: "검에 결합된 파편이 많을수록 공격 범위와 피해가 증가합니다."
   hitFeel:
     targetStunSeconds: 0.1
     attackerStopSeconds: 0

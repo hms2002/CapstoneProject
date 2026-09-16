@@ -57,7 +57,15 @@ public sealed class AbilityLogic_CrimsonBoundaryIgnite : AbilityLogic
                 CrimsonBoundaryVisual2D.Spawn(data.igniteExplosionPrefab, explosion.Position, Quaternion.identity, runtime);
                 List<GameObject> targets = CrimsonBoundaryUtility.CollectTargets(explosion.Position, data.skill1Diameter, data.damageLayers);
                 foreach (var target in targets)
+                {
+                    Enemy enemy = target != null ? target.GetComponent<Enemy>() : null;
+                    bool wasAlive = enemy != null && !enemy.IsDead;
+                    Vector3 deathPosition = target != null ? target.transform.position : explosion.Position;
                     CrimsonBoundaryUtility.ApplyDamage(system, spec, data.damageEffect, target, explosion.Damage, false, system.gameObject);
+                    if (wasAlive && enemy != null && enemy.IsDead &&
+                        WeaponExclusiveRelics.Has(system.gameObject, WeaponExclusiveRelics.CrimsonKillShot))
+                        CrimsonBoundaryUtility.SpawnRelicKillShot(system, spec, data, runtime, deathPosition, target);
+                }
             }
         }
         finally

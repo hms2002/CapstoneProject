@@ -5,10 +5,18 @@ using UnityGAS;
 
 [CreateAssetMenu(fileName = "AL_FloweringBaseAttack", menuName = "GAS/Weapon/Flowering/Logic Base Attack")]
 // 책임: Flowering 무기의 기본 공격 콤보, 피해 적용, 오디오/프레젠테이션 요청을 실행한다.
-public sealed class AbilityLogic_FloweringBaseAttack : AbilityLogic
+public sealed class AbilityLogic_FloweringBaseAttack : AbilityLogic, IWeaponAttackComboReset
 {
     private const string KeyComboIndex = "FloweringBaseAttack.ComboIndex";
     private const string KeyComboExpire = "FloweringBaseAttack.ComboExpire";
+
+    public void ResetAttackCombo(AbilitySpec spec) => ResetBaseAttackCombo(spec);
+
+    public static void ResetBaseAttackCombo(AbilitySpec spec)
+    {
+        spec?.SetInt(KeyComboIndex, -1);
+        spec?.SetFloat(KeyComboExpire, -1f);
+    }
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {

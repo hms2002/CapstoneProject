@@ -3,9 +3,15 @@ using UnityEngine;
 using UnityGAS;
 
 [CreateAssetMenu(fileName = "AL_FloweringAttack", menuName = "GAS/Weapon/Flowering/Logic Attack")]
-public sealed class AbilityLogic_FloweringAttack : AbilityLogic
+public sealed class AbilityLogic_FloweringAttack : AbilityLogic, IWeaponAttackComboReset
 {
     private const string LastBloomHitboxVariantKey = "Flowering.Bloom.LastHitboxVariant";
+
+    public void ResetAttackCombo(AbilitySpec spec)
+    {
+        if (spec?.Definition?.sourceObject is FloweringBaseAttackData)
+            AbilityLogic_FloweringBaseAttack.ResetBaseAttackCombo(spec);
+    }
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {

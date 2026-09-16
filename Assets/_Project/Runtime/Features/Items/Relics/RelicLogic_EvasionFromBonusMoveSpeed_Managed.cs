@@ -170,7 +170,8 @@ public class RelicLogic_EvasionFromBonusMoveSpeed_Managed : RelicLogic
             float moveMult = ReadMoveSpeedMultiplierX1();
             float bonusMove = Mathf.Max(0f, moveMult - 1f);
 
-            int steps = Mathf.FloorToInt(bonusMove / _step);
+            // 정규화 과정의 float 오차로 정확한 단계 경계에서 보너스가 누락되지 않게 한다.
+            int steps = Mathf.FloorToInt(bonusMove / _step + 0.00001f);
             float bonusEvasion = Mathf.Max(0f, steps) * _evasionPerStep;
 
             ApplyEvasionBonus(bonusEvasion);
@@ -190,6 +191,11 @@ public class RelicLogic_EvasionFromBonusMoveSpeed_Managed : RelicLogic
             {
                 var provider = new AttributeStatProvider(_ctx.attributeSet, bindings);
                 float v = provider.Get(_moveSpeedFinalStatId);
+                if (bindings.TryGetComposite(_moveSpeedFinalStatId, out var composite) && composite != null)
+                {
+                    float baseSpeed = provider.Get(composite.baseId);
+                    return baseSpeed > 0f ? Mathf.Max(0f, v / baseSpeed) : 1f;
+                }
                 return v != 0f ? Mathf.Max(0f, v) : 1f;
             }
 

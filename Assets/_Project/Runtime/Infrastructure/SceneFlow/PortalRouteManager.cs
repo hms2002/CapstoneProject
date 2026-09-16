@@ -446,8 +446,6 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
         switch (effectiveTransitionType)
         {
             case TransitionType.HubToRunStart:
-                ClearStaleHubStartPlanIfNeeded(portal);
-                SetLoadPresentationContext(effectiveTransitionType, null, null);
                 if (!TryActivatePendingPlan(portal))
                     return false;
 
@@ -607,22 +605,10 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
 
     private bool TryActivatePendingPlan(ScenePortal portal)
     {
-        if (!TryValidateStartPortal(portal, out _))
+        if (!TryPrepareHubStartPlan(portal))
             return false;
 
-        ClearStaleHubStartPlanIfNeeded(portal);
-
-        if (HasActivePlan)
-            return false;
-
-        if (!pendingPlansByPortalId.TryGetValue(portal.PortalId, out var pendingPlan))
-        {
-            if (!TryPrepareHubStartPlan(portal))
-                return false;
-
-            if (!pendingPlansByPortalId.TryGetValue(portal.PortalId, out pendingPlan))
-                return false;
-        }
+        PendingPortalPlan pendingPlan = pendingPlansByPortalId[portal.PortalId];
 
         activeRouteStages.Clear();
         activeRouteStages.AddRange(pendingPlan.Stages);
@@ -647,12 +633,10 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
 
     private bool TryPrepareHubStartPlan(ScenePortal portal)
     {
-        ClearStaleHubStartPlanIfNeeded(portal);
-
         if (!TryValidateStartPortal(portal, out var catalog))
             return false;
 
-        if (HasActivePlan)
+        if (HasActivePlan && RunSessionStore.IsRunActive && !IsInRunCheckpointStartPortal(portal))
             return false;
 
         if (pendingPlansByPortalId.TryGetValue(portal.PortalId, out var existingPlan) &&
@@ -661,9 +645,8 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
             return true;
         }
 
-        if (EnsurePendingPlan(portal))
-            return true;
-
+        // Interaction/warning queries may prepare a destination, but must keep the
+        // committed route available to scene loading and event-room generation.
         if (!TryBuildRunPlan(catalog, out var stages))
             return false;
 
@@ -672,35 +655,13 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
         if (verboseLogging)
         {
             Debug.Log(
-                $"[PortalRouteManager] Rebuilt pending run plan from start portal fallback. portal={portal.name}, catalog={catalog.name}, stages={stages.Count}",
+                $"[PortalRouteManager] Prepared pending run plan from start portal. portal={portal.name}, catalog={catalog.name}, stages={stages.Count}",
                 portal);
         }
 
         RecordTransitionEvent(
-            $"Fallback prepared pending plan. portal={portal.name}, catalog={catalog.name}, stages={stages.Count}");
+            $"Prepared pending plan. portal={portal.name}, catalog={catalog.name}, stages={stages.Count}");
         return true;
-    }
-
-    private void ClearStaleHubStartPlanIfNeeded(ScenePortal portal)
-    {
-        if (!HasActivePlan)
-            return;
-
-        GamePlayDataManager gameplay = GamePlayDataManager.Instance;
-        bool isRunActive = gameplay != null && gameplay.Data != null && gameplay.Data.isRunActive;
-        if (isRunActive && !IsInRunCheckpointStartPortal(portal))
-            return;
-
-        if (verboseLogging)
-        {
-            Debug.Log(
-                isRunActive
-                    ? "[PortalRouteManager] Replaced the completed route plan at an in-run checkpoint."
-                    : "[PortalRouteManager] Cleared stale hub-start plan because no run is active.",
-                this);
-        }
-
-        ClearPlan();
     }
 
     private static bool IsInRunCheckpointStartPortal(ScenePortal portal)

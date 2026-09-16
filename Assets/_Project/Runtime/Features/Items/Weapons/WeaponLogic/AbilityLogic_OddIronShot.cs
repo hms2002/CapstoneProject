@@ -21,13 +21,14 @@ namespace UnityGAS.Sample
             if (data == null || data.projectilePrefab == null || runtimeData == null)
                 yield break;
 
+            if (!runtimeData.HasAmmo) WeaponExclusiveRelics.TryReload(system.gameObject, runtimeData);
             if (!runtimeData.TryConsumeOneRound())
                 yield break;
 
             FireOnce(system, spec, data, 0f);
         }
 
-        internal static void FireOnce(AbilitySystem system, AbilitySpec spec, OddIronShotData data, float spreadAngle)
+        internal static bool FireOnce(AbilitySystem system, AbilitySpec spec, OddIronShotData data, float spreadAngle)
         {
             Vector2 baseDirection = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
             Vector2 direction = OddIronAbilityUtility.ApplySpread(baseDirection, spreadAngle);
@@ -45,7 +46,7 @@ namespace UnityGAS.Sample
                 data.fixedKnockbackImpulse);
 
             if (payload == null)
-                return;
+                return false;
 
             GameObject projectileObject = Object.Instantiate(data.projectilePrefab, spawnPosition, Quaternion.identity);
             OddIronAbilityUtility.ApplyProjectileScale(projectileObject, data.projectileScale);
@@ -56,7 +57,7 @@ namespace UnityGAS.Sample
             {
                 if (projectileObject != null)
                     Object.Destroy(projectileObject);
-                return;
+                return false;
             }
 
             projectile.Setup(new ProjectileAttackSpawnContext
@@ -76,6 +77,7 @@ namespace UnityGAS.Sample
             OddIronAbilityUtility.PlayFireRecoil(system, direction);
             OddIronAbilityUtility.SpawnMuzzleFlash(data.muzzleFlashPrefab, spawnPosition, muzzleRotation);
             AbilityAudioRouter.PlayOneShot(data.fireSound, system, spec, sourceObjectOverride: data);
+            return true;
         }
     }
 }

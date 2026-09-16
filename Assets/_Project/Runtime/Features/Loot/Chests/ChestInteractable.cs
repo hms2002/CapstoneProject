@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -7,6 +8,9 @@ using UnityEngine;
 [RequireComponent(typeof(TreasureChest))]
 public class ChestInteractable : InteractableBase
 {
+    private readonly HashSet<Object> guidanceOwners = new();
+    private bool interactionHighlighted;
+
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
 
     [Header("프롬프트")]
@@ -43,22 +47,39 @@ public class ChestInteractable : InteractableBase
 
     public override void OnHighlight()
     {
-        if (spriteRenderer == null)
-            return;
-
-        spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
-        outlinePropertyBlock.SetFloat(OutlineEnabledID, 1f);
-        spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
+        interactionHighlighted = true;
+        RefreshOutline();
     }
 
     public override void OnUnHighlight()
     {
-        if (spriteRenderer == null)
-            return;
+        interactionHighlighted = false;
+        RefreshOutline();
+    }
 
+    public void SetGuidanceHighlight(Object owner, bool enabled)
+    {
+        if (owner == null) return;
+        if (enabled) guidanceOwners.Add(owner);
+        else guidanceOwners.Remove(owner);
+        RefreshOutline();
+    }
+
+    private void RefreshOutline()
+    {
+        if (spriteRenderer == null) return;
+        outlinePropertyBlock ??= new MaterialPropertyBlock();
         spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
-        outlinePropertyBlock.SetFloat(OutlineEnabledID, 0f);
+        outlinePropertyBlock.SetFloat(OutlineEnabledID, isActiveAndEnabled &&
+            (interactionHighlighted || guidanceOwners.Count > 0) ? 1f : 0f);
         spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
+    }
+
+    private void OnDisable()
+    {
+        guidanceOwners.Clear();
+        interactionHighlighted = false;
+        RefreshOutline();
     }
 
     public override string GetInteractDescription()

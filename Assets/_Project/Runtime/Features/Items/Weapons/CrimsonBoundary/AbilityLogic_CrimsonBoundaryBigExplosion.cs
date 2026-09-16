@@ -13,6 +13,16 @@ public sealed class AbilityLogic_CrimsonBoundaryBigExplosion : AbilityLogic
         if (system == null || data == null || data.damageEffect == null)
             yield break;
 
+        if (WeaponExclusiveRelics.Has(system.gameObject, WeaponExclusiveRelics.CrimsonLavaBall))
+        {
+            CrimsonBoundaryRuntimeState relicRuntime = CrimsonBoundaryUtility.ResolveRuntimeState(system);
+            var ball = CrimsonBoundaryVisual2D.Spawn(data.relicLavaBallPrefab, system.transform.position, Quaternion.identity, relicRuntime);
+            if (ball != null)
+                ball.GetComponent<CrimsonBoundaryLavaProjectile2D>().Setup(system, spec, data, relicRuntime,
+                    AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right));
+            yield break;
+        }
+
         Vector2 impactPosition = CrimsonBoundaryUtility.ResolveCursor(system);
         CrimsonBoundaryRuntimeState runtime = CrimsonBoundaryUtility.ResolveRuntimeState(system);
         bool hadRuntime = runtime != null;

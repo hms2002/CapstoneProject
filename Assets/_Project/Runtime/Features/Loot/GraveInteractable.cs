@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
 
@@ -20,6 +21,9 @@ public class GraveInteractable : InteractableBase
     public GameObject destroyEffect;
 
     private MaterialPropertyBlock propBlock;
+    private readonly HashSet<Object> guidanceOwners = new();
+    private bool interactionHighlighted;
+
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
     private bool isLooted;
 
@@ -36,18 +40,39 @@ public class GraveInteractable : InteractableBase
 
     public override void OnHighlight()
     {
-        if (spriteRenderer == null || isLooted) return;
-        spriteRenderer.GetPropertyBlock(propBlock);
-        propBlock.SetFloat(OutlineEnabledID, 1f);
-        spriteRenderer.SetPropertyBlock(propBlock);
+        interactionHighlighted = true;
+        RefreshOutline();
     }
 
     public override void OnUnHighlight()
     {
+        interactionHighlighted = false;
+        RefreshOutline();
+    }
+
+    public void SetGuidanceHighlight(Object owner, bool enabled)
+    {
+        if (owner == null) return;
+        if (enabled) guidanceOwners.Add(owner);
+        else guidanceOwners.Remove(owner);
+        RefreshOutline();
+    }
+
+    private void RefreshOutline()
+    {
         if (spriteRenderer == null) return;
+        propBlock ??= new MaterialPropertyBlock();
         spriteRenderer.GetPropertyBlock(propBlock);
-        propBlock.SetFloat(OutlineEnabledID, 0f);
+        propBlock.SetFloat(OutlineEnabledID, isActiveAndEnabled && !isLooted &&
+            (interactionHighlighted || guidanceOwners.Count > 0) ? 1f : 0f);
         spriteRenderer.SetPropertyBlock(propBlock);
+    }
+
+    private void OnDisable()
+    {
+        guidanceOwners.Clear();
+        interactionHighlighted = false;
+        RefreshOutline();
     }
 
     public override bool CanInteract(IPlayerInteractor player) => !isLooted && player != null && player.CurrentState == InteractState.Idle;

@@ -19,6 +19,7 @@ public sealed class CrimsonBoundaryWeaponData : ScriptableObject
     public CrimsonBoundaryVisual2D igniteExplosionPrefab;
     public CrimsonBoundaryVisual2D meteorPrefab;
     public CrimsonBoundaryVisual2D meteorHitPrefab;
+    public CrimsonBoundaryVisual2D relicLavaBallPrefab;
     [Min(0f)] public float igniteChargeSeconds = 0.24f;
 
     [Header("Attack")]

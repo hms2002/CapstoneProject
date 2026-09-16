@@ -68,14 +68,27 @@ namespace UnityGAS
                 ? Color.Lerp(style.fillColorStart, style.fillColorEnd, curved)
                 : new Color(1f, 0.2f, 0.2f, 0.35f);
 
-            if (style != null &&
-                normalizedProgress >= style.blinkStartNormalized &&
-                style.blinkFrequency > 0f)
+            // Directional warnings use a rectangle whose interior fades from 80% to 0% transparency
+            // over the owner's warning duration. Geometry updates never restart it.
+            if (activeSpec.shape == AttackTelegraphShape.Line)
             {
-                float blinkWave = Mathf.Sin(Time.time * style.blinkFrequency * Mathf.PI * 2f);
-                float blinkMultiplier = Mathf.Lerp(style.blinkAlphaMin, 1f, (blinkWave + 1f) * 0.5f);
-                color.a *= blinkMultiplier;
+                color = Color.red;
+                color.a = Mathf.Lerp(0.2f, 1f, Mathf.Clamp01(normalizedProgress));
             }
+
+            // Directional rectangles share Bishop's imminent-attack pulse, including
+            // authored styles that previously disabled blinking on solid aim lines.
+            bool directionalWarning = activeSpec.shape == AttackTelegraphShape.Line;
+            float blinkStart = directionalWarning ? 0.7f : (style != null ? style.blinkStartNormalized : 1f);
+            float blinkFrequency = directionalWarning ? 4f : (style != null ? style.blinkFrequency : 0f);
+            float blinkAlphaMin = directionalWarning ? 0.45f : (style != null ? style.blinkAlphaMin : 1f);
+            float blinkMultiplier = 1f;
+            if (normalizedProgress >= blinkStart && blinkFrequency > 0f)
+            {
+                float blinkWave = Mathf.Sin(Time.time * blinkFrequency * Mathf.PI * 2f);
+                blinkMultiplier = Mathf.Lerp(blinkAlphaMin, 1f, (blinkWave + 1f) * 0.5f);
+            }
+            color.a *= blinkMultiplier;
 
             material.color = color;
 
@@ -85,14 +98,7 @@ namespace UnityGAS
                     ? Color.Lerp(style.borderColorStart, style.borderColorEnd, curved)
                     : new Color(1f, 0.35f, 0.25f, 0.9f);
 
-                if (style != null &&
-                    normalizedProgress >= style.blinkStartNormalized &&
-                    style.blinkFrequency > 0f)
-                {
-                    float blinkWave = Mathf.Sin(Time.time * style.blinkFrequency * Mathf.PI * 2f);
-                    float blinkMultiplier = Mathf.Lerp(style.blinkAlphaMin, 1f, (blinkWave + 1f) * 0.5f);
-                    borderColor.a *= blinkMultiplier;
-                }
+                borderColor.a *= blinkMultiplier;
 
                 borderMaterial.color = borderColor;
             }
@@ -199,8 +205,20 @@ namespace UnityGAS
         {
             float fillScale = ResolveFillScale(style, normalizedProgress);
             LayerMask wallLayers = spec.useWallClipping ? spec.wallClipLayers : default;
+            borderLineRenderer.widthMultiplier = BorderWidth;
             switch (spec.shape)
             {
+                case AttackTelegraphShape.Line:
+                    Vector2 lineDelta = spec.lineEnd - spec.lineStart;
+                    float lineWidth = Mathf.Max(0.001f, spec.size.y);
+                    RebuildRectangleMesh(
+                        spec.lineStart, lineDelta.normalized, lineDelta.magnitude,
+                        lineWidth, wallLayers,
+                        spec.wallClipSampleCount, spec.wallClipSkinWidth, 1f, true);
+                    // Keep the interior readable even on very narrow aim warnings.
+                    borderLineRenderer.widthMultiplier = Mathf.Min(0.01f, lineWidth * 0.15f);
+                    return true;
+
                 case AttackTelegraphShape.Rectangle:
                     Vector2 rectangleDirection = Quaternion.Euler(0f, 0f, spec.rotationDeg) * Vector2.right;
                     float rectangleLength = Mathf.Max(0.01f, spec.size.x);
@@ -286,7 +304,8 @@ namespace UnityGAS
             LayerMask wallLayers,
             int sampleCount,
             float skinWidth,
-            float fillScale)
+            float fillScale,
+            bool extendToWall = false)
         {
             transform.position = origin;
             transform.rotation = Quaternion.identity;
@@ -298,8 +317,8 @@ namespace UnityGAS
             int segmentCount = safeSampleCount - 1;
             EnsureMeshBuffers(vertexCount, segmentCount * 2);
 
-            float halfWidth = Mathf.Max(0.01f, width) * 0.5f;
-            float safeLength = Mathf.Max(0.01f, length);
+            float halfWidth = Mathf.Max(0.001f, width) * 0.5f;
+            float safeLength = Mathf.Max(0f, length);
             float safeSkin = Mathf.Max(0f, skinWidth);
 
             for (int i = 0; i < safeSampleCount; i++)
@@ -307,7 +326,11 @@ namespace UnityGAS
                 float t = safeSampleCount <= 1 ? 0.5f : i / (float)(safeSampleCount - 1);
                 float offset = Mathf.Lerp(-halfWidth, halfWidth, t);
                 Vector2 lateral = right * offset;
-                float visibleDistance = ResolveVisibleDistance(origin + lateral, forward, safeLength, wallLayers, safeSkin);
+                float visibleDistance = ResolveVisibleDistance(origin + lateral, forward,
+                    extendToWall ? Mathf.Infinity : safeLength, wallLayers, safeSkin);
+                // Open/test maps still need finite geometry when no wall exists.
+                if (float.IsInfinity(visibleDistance))
+                    visibleDistance = Mathf.Max(40f, safeLength);
                 int vertexIndex = i * 2;
                 vertices[vertexIndex] = lateral;
                 vertices[vertexIndex + 1] = lateral + forward * visibleDistance;

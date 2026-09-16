@@ -648,7 +648,8 @@ namespace UnityGAS
             if (!def.CanActivate(gameObject, target))
                 return false;
 
-            if (def.executionPolicy == AbilityDefinition.ExecutionPolicy.ParallelIndependent)
+            if (def.executionPolicy == AbilityDefinition.ExecutionPolicy.ParallelIndependent ||
+                (def.logic != null && def.logic.RequestsParallelExecution(this, spec)))
                 return TryActivateParallelAbility(spec, target);
 
             return TryActivateExclusiveAbility(spec, target);

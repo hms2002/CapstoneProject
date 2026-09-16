@@ -91,7 +91,9 @@ public static class ParcelDeliveryEventInstaller
         definition.dropLevel = 1;
         definition.logic = null;
         definition.param = null;
-        definition.icon = LoadTemporarySprite();
+        definition.icon = AssetDatabase.LoadAssetAtPath<GameObject>(
+            "Assets/_Project/Prefabs/Loot/RelicGrave.prefab")
+            .GetComponentInChildren<SpriteRenderer>(true).sprite;
         EditorUtility.SetDirty(definition);
         return definition;
     }

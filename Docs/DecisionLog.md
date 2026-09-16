@@ -3244,3 +3244,36 @@ User specifies first meeting once per save slot and boss-return presentations on
 - Boss speech fixes its own tail direction and optional anchor rotation for each displayed bubble, while following the speaker position. It does not freeze the boss body, attack aim or EgoSword.
 - Body facing is controlled separately by the central dead zone and authored per-pattern commit/recovery windows.
 - SlimeQueen castling is excluded from AI selection; existing assets are retained to preserve loading references.
+
+
+## 2026-09-16 — Remove combat grace; authored world nameplate layout
+
+User explicitly abolished the post-combat grace period. Inventory and level-up eligibility use the same room-owned combat query: a completed room with zero remaining registered/pending/held encounter members is noncombat immediately, overriding stale recognition. Outside a room, living enemy recognition remains the fallback.
+
+Nameplate order is interaction prompt above, name/icon below, actor below that. Missing icons do not hide the name or leave an empty slot. Names fade during dialogue/cinematics. The supplied book icon belongs to the encyclopedia stand named 도감; the scribe has no role icon.
+
+## 2026-09-16 — Apprentice charge mask isolation follow-up
+
+The earlier WeaponChargeEffect Rendering Layer split remains configured, but its assumption that bits alone isolate vision masks is not accepted as verified behavior: the user reproduced the issue. Charge now uses Default sorting for the internal renderer/mask pair, with Entity world order retained by the enclosing SortingGroup. This retains the requested SpriteMask approach without a new shader or project layer. Acceptance remains pending rendered regression/Shadow Corridor playtest.
+
+## 2026-09-16 — Charge world sorting and bounded sight apertures
+
+The user confirmed the particle fix and reproduced the charge failure again. GPU reproduction shows that a charge SortingGroup still on Entity inherits the global Entity sight stencil even with its internal renderer/mask on Default. Use a dedicated WeaponChargeEffect **Sorting Layer** after Entity/before ItemDisplay and sortAtRoot for the charge group. The existing same-named Rendering Layer bit is not the mask isolation mechanism.
+
+All formerly unbounded sight masks in Candlestick, LightBead, and Dead'sSkeleton are authored as an exact MaskRender aperture plus a matching EntitySightMask child, preserving light/monster reveal while excluding weapon effects. SpriteMask remains the chosen technique; no charge shader was added.
+
+## 2026-09-16 — Weapon swap breaks timed basic-attack combos
+- User decision: swapping weapons ends the current attack combo; re-equipping starts from hit 1 even within the old combo timeout.
+- The outgoing attack logic owns clearing its combo index/expiry through IWeaponAttackComboReset. Inventory invokes it at accepted equipment-change cleanup, including gaps between attacks. Do not implement this by clearing all ability state, cooldowns, ammo or relic state.
+
+## 2026-09-16 — Current release loot selection
+- User selected ordinary weapons ApprenticeHeroSword, LightningSpear (갈라론), CrimsonBoundary (홍련의 한계선). Starter weapon chest excludes special Flowering/OddIron; their existing treasure-chest eligibility stays.
+- Exclude WindWeapon-exclusive Stenographer and OneDropOfSwiftness relics from random acquisition. Keep database lookup records; filter runtime selection too, because saved unlock IDs are unioned with defaults.
+
+## 2026-09-16 — Merchant candidate pool matches treasure chests
+- User correction: Flowering/OddIron must also appear at merchants. Merchant weapon/relic eligibility now uses the treasure-chest weapon branch and common relic filter. This supersedes the earlier treasure-only wording for special weapons; starter exclusions remain.
+- Duplicate exclusion contexts and category/rarity roll weights are separate from candidate eligibility and were investigated, not changed in this slice.
+
+## 2026-09-16 — Merchant refresh excludes the immediately preceding stock
+- User requested that the previous shop list not reappear on refresh. Exclude all previous weapon/relic/consumable IDs, including sold entries, from the replacement roll. This is one-generation exclusion rather than permanent run history.
+- When a slot has no eligible candidates, substitute a remaining relic or consumable instead of leaving a weapon-only slot empty. Preserve the existing consumable cap; do not bypass old-list exclusions if all candidates are exhausted.

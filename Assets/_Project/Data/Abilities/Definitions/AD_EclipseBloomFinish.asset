@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_EclipseBloomFinish
   m_EditorClassIdentifier: 
-  abilityName: AD_EclipseBloomFinish
-  description: Eclipse sword bloom finish debug ability.
+  abilityName: "월식 마무리"
+  description: "월식 자세의 연격을 마무리합니다."
   logic: {fileID: 11400000, guid: 4e3f863af86b4f9da9ecf93c8c146302, type: 2}

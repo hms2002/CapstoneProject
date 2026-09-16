@@ -282,6 +282,46 @@ public sealed class MonsterProjectileBurstCadencePlayModeTests
         finally { (routine as System.IDisposable)?.Dispose(); }
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public void PlayerDash_CleanupOnlyStopsItsOwnMotion(bool skillReplacedMotion)
+    {
+        var player = new GameObject("DashSkillHandoffPlayer");
+        var tags = player.AddComponent<TagSystem>();
+        var system = player.AddComponent<AbilitySystem>();
+        var motion = player.AddComponent<AbilityMotionController2D>();
+        var input = player.AddComponent<PlayerIntentInput2D>();
+        typeof(PlayerIntentInput2D).GetProperty("RawMoveInput").SetValue(input, Vector2.right);
+        var data = ScriptableObject.CreateInstance<UnityGAS.Sample.Dash2DData>();
+        temporaryAssets.Add(data);
+        data.duration = 10f;
+        data.invulnerableTag = Resources.Load<GameplayTag>("Tags/State.Invulnerable");
+        var definition = ScriptableObject.CreateInstance<AbilityDefinition>();
+        temporaryAssets.Add(definition);
+        definition.sourceObject = data;
+        var logic = ScriptableObject.CreateInstance<UnityGAS.Sample.AbilityLogic_Dash2D>();
+        temporaryAssets.Add(logic);
+        var spec = new AbilitySpec(definition);
+        var routine = logic.Activate(system, spec, null);
+        try
+        {
+            Assert.That(routine.MoveNext(), Is.True);
+            if (skillReplacedMotion)
+                motion.StartDash(Vector2.up, 5f, 2f);
+
+            (routine as System.IDisposable)?.Dispose();
+            Assert.That(motion.HasActiveMotion, Is.EqualTo(skillReplacedMotion));
+            Assert.That(tags.HasExplicitTag(data.invulnerableTag), Is.False);
+            logic.CleanupForSceneTransition(system, spec, null);
+            Assert.That(motion.HasActiveMotion, Is.EqualTo(skillReplacedMotion));
+        }
+        finally
+        {
+            (routine as System.IDisposable)?.Dispose();
+            Object.DestroyImmediate(player);
+        }
+    }
+
     [Test]
     public void RecoveryRetreat_AvoidsPitChoosesSideAndStopsWhenSurrounded()
     {

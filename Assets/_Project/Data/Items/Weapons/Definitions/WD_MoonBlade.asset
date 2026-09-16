@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: WD_MoonBlade
   m_EditorClassIdentifier: 
   weaponId: Weapon.MoonBlade
-  displayName: Moon Blade
+  displayName: "월영도"
   icon: {fileID: 1791324355, guid: 7e11de47ebfa53a42a94e5fb92a94f06, type: 3}
-  storyText: A paired blade that accumulates lunar frost and resonates with its sun
-    counterpart.
+  storyText: "달의 냉기를 머금고 태양도와 공명하는 검."
   statModifiers: []
   attackInputHint: Mouse1
   skill1InputHint: Q

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_OddIronThrow
   m_EditorClassIdentifier: 
-  abilityName: 마지막 투척
+  abilityName: "마지막 투척"
   icon: {fileID: 21300000, guid: 50d914c8cf07388409cca84fa272cf99, type: 3}
-  description: "● {em:기묘한 쇳덩이}를 던져 충돌 피해\n● 투척체는 {val:고정 피해 60}과 넉백을 적용\n● 사용 후 현재 슬롯의 무기를 {neg:드롭 없이 영구 제거}"
+  description: "● {em:기묘한 쇳덩이}를 던져 적에게 {val:고정 피해 60}을 주고 밀쳐냅니다.\n● 던진 무기는 사라지며 {neg:다시 주울 수 없습니다}."
   hitFeel:
     targetStunSeconds: 0.1
     attackerStopSeconds: 0.06

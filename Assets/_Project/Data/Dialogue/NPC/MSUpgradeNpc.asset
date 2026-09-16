@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: MSUpgradeNpc
   m_EditorClassIdentifier: 
   id: 1002
-  npcName: "\uB300\uC7A5\uC7A5\uC774"
+  npcName: "벨카"
+  roleIcon: {fileID: 21300000, guid: a867618a0ef04d6dad63807b0014817a, type: 3}
   isBoss: 0
   primaryInk: {fileID: 4900000, guid: 14f4a5a5e94b1f04483e3bbc494f8033, type: 3}
   bossEncounterInk: {fileID: 0}

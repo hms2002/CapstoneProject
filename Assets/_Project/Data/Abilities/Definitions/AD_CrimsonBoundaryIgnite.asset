@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: "점화!"
   icon: {fileID: 21300000, guid: bc1ac4dd5d704964980142f9f0e52242, type: 3}
-  description: "화면 안 화상 대상의 화상을 최대 5 소모해 지름 5칸 폭발"
+  description: "화면 안의 화상에 걸린 적마다 화상을 최대 5중첩 소모해 지름 5칸의 폭발을 일으킵니다."
   hitFeel:
     targetStunSeconds: 0.1
     attackerStopSeconds: 0.06

@@ -5,8 +5,8 @@ namespace UnityGAS.Sample
 {
     /// <summary>
     /// 책임 :
-    /// - 기묘한 쇳덩이 Skill2 전탄 난사의 탄 수 확정, 전탄 소비, 빠른 연속 사격을 담당한다.
-    /// - 난사 시작 시점에 잔탄을 모두 소비해 취소되더라도 일회용 무기 리스크가 유지되게 한다.
+    /// - 기묘한 쇳덩이 Skill2 전탄 난사의 탄 수 확정과 빠른 연속 사격을 담당한다.
+    /// - 실제 발사마다 한 발씩 소비하고, 취소 시 아직 발사하지 않은 잔탄은 보존한다.
     /// </summary>
     [CreateAssetMenu(fileName = "AL_OddIronBarrage", menuName = "GAS/Weapon/Odd Iron/Barrage Logic")]
     public sealed class AbilityLogic_OddIronBarrage : AbilityLogic
@@ -21,7 +21,8 @@ namespace UnityGAS.Sample
             if (data == null || data.projectilePrefab == null || runtimeData == null)
                 yield break;
 
-            int roundsToFire = runtimeData.ConsumeAllRounds();
+            if (!runtimeData.HasAmmo) WeaponExclusiveRelics.TryReload(system.gameObject, runtimeData);
+            int roundsToFire = runtimeData.CurrentAmmo;
             if (roundsToFire <= 0)
                 yield break;
 
@@ -31,7 +32,11 @@ namespace UnityGAS.Sample
                 if (spec.Token != null && spec.Token.IsCancelled)
                     yield break;
 
-                AbilityLogic_OddIronShot.FireOnce(system, spec, data, data.barrageSpreadAngle);
+                if (!runtimeData.HasAmmo ||
+                    !AbilityLogic_OddIronShot.FireOnce(system, spec, data, data.barrageSpreadAngle))
+                    yield break;
+
+                runtimeData.TryConsumeOneRound();
 
                 if (interval > 0f && i < roundsToFire - 1)
                     yield return new WaitForSeconds(interval);

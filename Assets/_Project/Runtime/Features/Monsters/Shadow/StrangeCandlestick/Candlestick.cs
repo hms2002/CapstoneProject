@@ -13,6 +13,19 @@ public class Candlestick : MonoBehaviour, IDamageReceiver
 
     private static readonly List<Candlestick> instances = new();
 
+    [SerializeField] private SpriteRenderer bodyRenderer;
+    [SerializeField] private SpriteRenderer sealedOutline;
+
+    private void LateUpdate()
+    {
+        if (sealedOutline == null) return;
+        sealedOutline.enabled = IsSealed && bodyRenderer != null && bodyRenderer.enabled;
+        if (!sealedOutline.enabled) return;
+        sealedOutline.sprite = bodyRenderer.sprite;
+        sealedOutline.flipX = bodyRenderer.flipX;
+        sealedOutline.flipY = bodyRenderer.flipY;
+    }
+
     private CandlestickSeal candlestickSeal;
     private IHitFlashController2D hitFlash;
     private Animator animator;
@@ -52,6 +65,7 @@ public class Candlestick : MonoBehaviour, IDamageReceiver
     private void OnDisable()
     {
         instances.Remove(this);
+        if (sealedOutline != null) sealedOutline.enabled = false;
     }
 
     /// <summary>촛대를 봉인 상태로 바꿉니다.</summary>
@@ -87,6 +101,7 @@ public class Candlestick : MonoBehaviour, IDamageReceiver
     {
         SyncHitLayer(isSealed);
         SyncAnimation(isSealed);
+        if (sealedOutline != null) sealedOutline.enabled = isSealed;
     }
 
     /// <summary>봉인 상태에서 사용할 레이어를 찾습니다.</summary>

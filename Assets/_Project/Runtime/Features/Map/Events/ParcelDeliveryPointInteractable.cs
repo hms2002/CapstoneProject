@@ -72,7 +72,6 @@ public sealed class ParcelDeliveryPointInteractable : InteractableBase
             return;
 
         RunMapEventProgress.MarkEventCompleted(RunSessionStore.Data, EventId);
-        WarningPopupPlayback.ShowMessage($"소포 {deliveredCount}개를 배송하고 Epic 유물 {rewardedCount}개를 받았습니다.");
     }
 
     public override InteractState GetInteractType() => InteractState.Idle;
@@ -81,6 +80,24 @@ public sealed class ParcelDeliveryPointInteractable : InteractableBase
     public override void OnHighlight() => SetOutline(true);
     public override void OnUnHighlight() => SetOutline(false);
     public override void OnPlayerLeave() => OnUnHighlight();
+
+    public static bool IsDeliveryRoom(RoomTemplateSO template)
+    {
+        if (template == null || template.LayoutData.roomType != RoomType.Event)
+            return false;
+
+        var placements = template.BuildData.objectPlacements;
+        if (placements == null)
+            return false;
+
+        foreach (var placement in placements)
+        {
+            if (placement.prefab != null &&
+                placement.prefab.GetComponentInChildren<ParcelDeliveryPointInteractable>(true) != null)
+                return true;
+        }
+        return false;
+    }
 
     private void SetOutline(bool enabled)
     {

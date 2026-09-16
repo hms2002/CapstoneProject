@@ -10,7 +10,7 @@ using UnityEngine;
 public sealed class GrandHallScribeSequence : InteractableBase, INPCFeature
 {
     private const string IntroSeenId = "grandhall_scribe_intro_seen";
-    // Match HubIntroAfterDarkLordSequence: Dialogue owns its canvas and HUD transitions.
+    // Dialogue owns its canvas; the common letterbox handles Gameplay/Boss HUD fading.
     private static readonly GlobalCanvasLayer[] PresentationFadedLayers =
     {
         GlobalCanvasLayer.Popup,
@@ -76,8 +76,8 @@ public sealed class GrandHallScribeSequence : InteractableBase, INPCFeature
             {
                 bool hidden = false;
                 Speech.Speak(stage == 1
-                    ? "첫번째 승리군요. 생각보다 빠르십니다."
-                    : "이제 마지막 간부입니다. 마왕님께서 기다리고 계십니다. 서두르시길.",
+                    ? "첫번째 승리군요.\n생각보다 빠르십니다."
+                    : "이제 마지막 간부입니다.\n마왕님께서 기다리고 계십니다.\n서두르시길.",
                     greetingSeconds, null, () => hidden = true);
                 while (!hidden && IsCurrentRun) yield return null;
                 if (IsCurrentRun && hidden) run.grandHallScribeReturnStage = stage;

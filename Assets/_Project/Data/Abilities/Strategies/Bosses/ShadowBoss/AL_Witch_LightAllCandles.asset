@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AL_Witch_LightAllCandles
   m_EditorClassIdentifier: 
   moveToCenterDuration: 0.45
-  relightDeadlineSeconds: 8
+  relightDeadlineSeconds: 9
   shieldBreakWaitGraceSeconds: 1.5
   groggyStatusEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
   mapWideWarningStyleAsset: {fileID: 11400000, guid: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7, type: 2}
@@ -27,7 +27,7 @@ MonoBehaviour:
   chargeOrbFailureDropDuration: 0.22
   chargeOrbImpactLocalOffset: {x: 0, y: 0.1, z: -0.05}
   chargeLoopSound:
-    key: sound_shadow_ChargeEnergyLoop
+    key: sound_shadow_chargeenergyloop
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
@@ -63,6 +63,8 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0.4
       amplitudeMultiplier: 0
@@ -76,6 +78,12 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      boundsMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
@@ -84,6 +92,12 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      boundsMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
@@ -93,6 +107,8 @@ MonoBehaviour:
       volumeMultiplier: 1
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0
       amplitudeMultiplier: 0
@@ -106,6 +122,12 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      boundsMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
@@ -114,6 +136,12 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      boundsMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
@@ -136,6 +164,8 @@ MonoBehaviour:
       volumeMultiplier: 1
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 6
       amplitudeMultiplier: 0
@@ -149,6 +179,12 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: -0.05}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 1, y: 1, z: 1}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      boundsMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0.35
       useUnscaledTime: 0
@@ -157,6 +193,12 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 1, y: 1, z: 1}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      boundsMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 1
       useUnscaledTime: 1

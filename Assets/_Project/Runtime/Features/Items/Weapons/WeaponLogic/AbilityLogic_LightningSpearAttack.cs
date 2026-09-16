@@ -9,10 +9,16 @@ namespace UnityGAS.Sample
     /// 번개 창 기본공격 AD의 전용 콤보 진행, 이동, 히트박스 생성, 피해 적용을 실행할 책임을 가집니다.
     /// </summary>
     [CreateAssetMenu(fileName = "AL_LightningSpearAttack", menuName = "GAS/Weapon/Lightning Spear/Logic Attack")]
-    public sealed class AbilityLogic_LightningSpearAttack : AbilityLogic
+    public sealed class AbilityLogic_LightningSpearAttack : AbilityLogic, IWeaponAttackComboReset
     {
         private const string KeyComboIndex = "LightningSpearAttack.ComboIndex";
         private const string KeyComboExpire = "LightningSpearAttack.ComboExpire";
+
+        public void ResetAttackCombo(AbilitySpec spec)
+        {
+            spec?.SetInt(KeyComboIndex, -1);
+            spec?.SetFloat(KeyComboExpire, -1f);
+        }
 
         public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
         {
@@ -30,6 +36,8 @@ namespace UnityGAS.Sample
             Vector2 attackDir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
             Vector2 lungeDir = AbilityMoveDirectionResolver2D.ResolveMoveThenAim(system.gameObject, attackDir);
             float finalAttackSpeed = AbilityAttackSpeedResolver.ResolveFinalAttackSpeed(system);
+            bool thirdStrikeRelic = WeaponExclusiveRelics.Has(system.gameObject, WeaponExclusiveRelics.SpearThirdStrike);
+            if (thirdStrikeRelic) finalAttackSpeed *= 1.2f;
 
             int comboIndex = ResolveComboIndex(spec, combo);
             RuntimeLightningSpearAttackStep step = combo.GetRuntimeStep(comboIndex, finalAttackSpeed);
@@ -63,7 +71,12 @@ namespace UnityGAS.Sample
             spec.SetFloat("RecoveryOverride", recovery);
 
             SpawnHitboxAndEffect(system, spec, combo, step, comboIndex, attackDir, hitboxPrefab);
-            OnStepCompleted(comboIndex);
+            if (!IsAbilityCancelled(spec) && thirdStrikeRelic && comboIndex == 2 && step.attackPrefab != null)
+            {
+                Vector2 tip = (Vector2)system.transform.position + attackDir.normalized *
+                    (step.forwardOffset + step.attackPrefab.HitboxSize.x * step.attackPrefab.HitboxScaleMultiplier.x * 0.5f);
+                system.GetComponentInChildren<LightningSpearRuntimeState>()?.SpawnThirdStrikeMark(system, spec, tip);
+            }
         }
 
         private static int ResolveComboIndex(AbilitySpec spec, LightningSpearAttackComboConfig combo)
@@ -310,9 +323,5 @@ namespace UnityGAS.Sample
             return combo != null ? combo.DefaultHitboxPrefab : null;
         }
 
-        private void OnStepCompleted(int comboIndex)
-        {
-            // Extension point for future Lightning Spear upgrades, e.g. third-hit mark creation.
-        }
     }
 }

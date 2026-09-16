@@ -189,7 +189,7 @@ public sealed class MerchantNPC : MonoBehaviour
         runtimeState = runStateService.GetOrCreateState(
             StockStateId,
             policy.VisibleSlotCount,
-            (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries));
+            (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries, excludedEntries?.Count ?? 0));
         ApplyEffectivePrices(runtimeState, policy.EffectivePriceSettings);
 
         BindSlots();
@@ -253,7 +253,7 @@ public sealed class MerchantNPC : MonoBehaviour
             runtimeState,
             policy.RefreshLimit,
             policy.VisibleSlotCount,
-            (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries));
+            (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries, 0));
 
         if (!refreshed)
             return false;
@@ -350,7 +350,8 @@ public sealed class MerchantNPC : MonoBehaviour
     private List<MerchantStockEntryState> RollStock(
         int slotCount,
         MerchantPriceSettings effectivePriceSettings,
-        IReadOnlyCollection<MerchantStockEntryState> excludedEntries)
+        IReadOnlyCollection<MerchantStockEntryState> excludedEntries,
+        int startSlotIndex)
     {
         var entries = shopDefinition != null
             ? inventoryRoll.RollStock(
@@ -361,7 +362,7 @@ public sealed class MerchantNPC : MonoBehaviour
                 effectivePriceSettings,
                 lootPoolService.BuildWeaponExclusionSet(LootPoolContext.ShopStock),
                 excludedEntries,
-                BuildSlotFilters(slotCount, excludedEntries?.Count ?? 0),
+                BuildSlotFilters(slotCount, startSlotIndex),
                 consumablesOnlyInDedicatedSlots: UsesRunGold)
             : new List<MerchantStockEntryState>();
         if (UsesRunGold)

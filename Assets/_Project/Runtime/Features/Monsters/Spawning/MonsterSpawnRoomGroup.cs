@@ -17,6 +17,14 @@ public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
     internal const int NormalCombatRunGoldBudget = 120;
     internal const int LargeCombatRunGoldBudget = 180;
 
+    public static MonsterSpawnRoomGroup ActiveRoom { get; private set; }
+
+    // Cleared rooms take precedence over leftover enemy recognition; there is no combat grace timer.
+    public static bool IsPlayerInCombat =>
+        ActiveRoom != null && ActiveRoom.isActiveAndEnabled && ActiveRoom.PlayerEncounterEntered
+            ? !ActiveRoom.RoomWavesCompleted || ActiveRoom.RemainingRegisteredOrPendingCount > 0
+            : Enemy.IsAnyEnemyRecognizingPlayer();
+
     public static event Action<MonsterSpawnRoomGroup> ActiveRoomEntered;
     public static event Action<MonsterSpawnRoomGroup> ActiveRoomExited;
 
@@ -85,6 +93,7 @@ public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStaticEvents()
     {
+        ActiveRoom = null;
         ActiveRoomEntered = null;
         ActiveRoomExited = null;
     }
@@ -259,6 +268,7 @@ public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
             doorLock.NotifyRoomEncounterEntered();
         }
 
+        ActiveRoom = this;
         ActiveRoomEntered?.Invoke(this);
     }
 
@@ -282,11 +292,13 @@ public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
             doorLock.NotifyRoomEncounterExited();
         }
 
+        if (ActiveRoom == this) ActiveRoom = null;
         ActiveRoomExited?.Invoke(this);
     }
 
     private void OnDisable()
     {
+        if (ActiveRoom == this) ActiveRoom = null;
         PauseRoomWaves();
         encounterHoldCount = 0;
         CancelActiveSpawnRoutines();
@@ -295,6 +307,7 @@ public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
 
     private void OnEnable()
     {
+        if (playerEncounterEntered) ActiveRoom = this;
         ResumeRoomWavesIfNeeded();
     }
 

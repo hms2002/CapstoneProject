@@ -15,6 +15,101 @@ public sealed class SceneConnectionRouteContextPlayModeTests
     private const string ShadowEndpointId = "Lobby.shadow.Corridor";
     private const string ShadowCorridorSceneName = "ProceduralShadowCorridor";
 
+#if UNITY_EDITOR
+    [Test]
+    public void CheckpointQueries_PreserveCommittedRouteAndEventCandidates_UntilDeparture()
+    {
+        var manager = PortalRouteManager.EnsureInstance();
+        var data = GamePlayDataManager.EnsureInstance().Data;
+        bool wasRunActive = data.isRunActive;
+        var presentedEvents = data.presentedRunMapEventIds;
+        var completedEvents = data.completedRunMapEventIds;
+        var visitedRoutes = data.visitedRunMapEventRouteThemeIds;
+        var pendingPlacements = data.pendingRunMapEventPlacements;
+        var defeatedBosses = data.defeatedBossIds;
+        Scene scene = UnityEditor.SceneManagement.EditorSceneManager.NewPreviewScene();
+        RunRouteCatalogSO catalog = Object.Instantiate(UnityEditor.AssetDatabase.LoadAssetAtPath<RunRouteCatalogSO>(
+            "Assets/_Project/Data/SceneFlow/Routes/GrandHall/GrandHall_DragonRouteCatalog.asset"));
+        try
+        {
+            data.isRunActive = true;
+            data.presentedRunMapEventIds = new();
+            data.completedRunMapEventIds = new();
+            data.visitedRunMapEventRouteThemeIds = new();
+            data.pendingRunMapEventPlacements = new();
+            data.defeatedBossIds = new();
+            SetPrivateField(catalog, "hubSceneName", scene.name);
+            var portalObject = new GameObject("Checkpoint query regression");
+            portalObject.SetActive(false);
+            SceneManager.MoveGameObjectToScene(portalObject, scene);
+            var portal = portalObject.AddComponent<ScenePortal>();
+            SetPrivateField(portal, "portalId", "checkpoint-query-regression");
+            SetPrivateField(portal, "transitionType", TransitionType.HubToRunStart);
+            SetPrivateField(portal, "startRunRouteCatalog", catalog);
+            manager.ClearPlan();
+            Assert.That(manager.TryResolveRoute(portal, out var departure), Is.True);
+            var committedStage = manager.CurrentStageSet;
+            Assert.That(committedStage, Is.Not.Null);
+            Assert.That(departure.TargetSceneName, Is.EqualTo("ProceduralDragonCorridor"));
+
+            var shadowCatalog = UnityEditor.AssetDatabase.LoadAssetAtPath<RunRouteCatalogSO>(
+                "Assets/_Project/Data/SceneFlow/Routes/GrandHall/GrandHall_ShadowRouteCatalog.asset");
+            SetPrivateField(catalog, "finalRouteSet", shadowCatalog.FinalRouteSet);
+            for (int i = 0; i < 3; i++)
+            {
+                Assert.That(manager.CanResolveRoute(portal), Is.True);
+                Assert.That(manager.GetTravelBlockWarning(portal), Is.EqualTo(WarningPopupCode.None));
+                Assert.That(manager.CurrentStageSet, Is.SameAs(committedStage));
+                Assert.That(manager.LastLoadPresentationTargetSceneName, Is.EqualTo(departure.TargetSceneName));
+            }
+
+            Assert.That(RunMapEventProgress.TryResolveCurrentBossRouteThemeId(out var theme), Is.True);
+            Assert.That(theme, Is.EqualTo(committedStage.StableThemeId));
+            var eventProfile = UnityEditor.AssetDatabase.LoadAssetAtPath<RunMapEventGenerationProfileSO>(
+                "Assets/_Project/Data/Dungeon/MapEvents/ParcelDelivery/Dragon_ParcelEventGenerationProfile.asset");
+            var eventPlan = RunMapEventGenerationResolver.CreatePlan(eventProfile, null, 1234);
+            Assert.That(eventPlan.PresentedEventIds.Count, Is.EqualTo(1));
+            Assert.That(eventPlan.GuaranteedRoomTemplates.Count, Is.EqualTo(1));
+
+            data.pendingRunMapEventPlacements.Add(new PendingRunMapEventPlacement(
+                "parcel_delivery", "parcel_delivery_destination", "previous_route", theme, false, 1));
+            var deliveryPlan = RunMapEventGenerationResolver.CreatePlan(eventProfile, null, 1234);
+            Assert.That(deliveryPlan.ConsumedPendingPlacements.Count, Is.EqualTo(1));
+            Assert.That(deliveryPlan.PresentedEventIds.Count, Is.EqualTo(1),
+                "A parcel destination must leave the start-event selection quota available.");
+            Assert.That(deliveryPlan.GuaranteedRoomTemplates.Count, Is.EqualTo(2));
+            data.pendingRunMapEventPlacements.Clear();
+
+            data.defeatedBossIds.Add(shadowCatalog.FinalRouteSet.StableThemeId);
+            Assert.That(manager.GetTravelBlockWarning(portal), Is.EqualTo(WarningPopupCode.BossAlreadyDefeatedThisRun));
+            Assert.That(manager.CurrentStageSet, Is.SameAs(committedStage));
+            data.defeatedBossIds.Clear();
+            Assert.That(manager.TryResolveRoute(portal, out var nextDeparture), Is.True);
+            Assert.That(nextDeparture.TargetSceneName, Is.EqualTo(ShadowCorridorSceneName));
+            Assert.That(manager.CurrentStageSet, Is.SameAs(shadowCatalog.FinalRouteSet));
+        }
+        finally
+        {
+            manager.ClearPlan();
+            data.isRunActive = wasRunActive;
+            data.presentedRunMapEventIds = presentedEvents;
+            data.completedRunMapEventIds = completedEvents;
+            data.visitedRunMapEventRouteThemeIds = visitedRoutes;
+            data.pendingRunMapEventPlacements = pendingPlacements;
+            data.defeatedBossIds = defeatedBosses;
+            UnityEditor.SceneManagement.EditorSceneManager.ClosePreviewScene(scene);
+            Object.DestroyImmediate(catalog);
+        }
+    }
+
+    private static void SetPrivateField(object target, string name, object value)
+    {
+        var field = target.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(field, Is.Not.Null);
+        field.SetValue(target, value);
+    }
+#endif
+
     [UnityTest]
     public IEnumerator ShadowLobbyConnection_ActivatesSharedDestinationRouteContext()
     {

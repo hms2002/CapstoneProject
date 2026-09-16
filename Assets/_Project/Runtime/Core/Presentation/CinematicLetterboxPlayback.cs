@@ -6,6 +6,8 @@ using System.Collections.Generic;
 /// </summary>
 public interface ICinematicLetterboxOverlayHandle
 {
+    // Gameplay/Boss HUD always fade to zero. Optional capture flags/lists and
+    // uiTargetAlpha apply to the other UI layers only.
     IEnumerator PlayIn(float duration, float letterboxHeightRatio, float uiTargetAlpha);
     IEnumerator PlayIn(float duration, float letterboxHeightRatio, float uiTargetAlpha, bool captureGlobalUiLayers);
     IEnumerator PlayIn(float duration, float letterboxHeightRatio, float uiTargetAlpha, IReadOnlyList<GlobalCanvasLayer> fadedLayers);

@@ -6,6 +6,31 @@ using UnityGAS;
 // Responsibility: resolve fire-based combat values, targets and shared Crimson Boundary presentation.
 public static class CrimsonBoundaryUtility
 {
+    public static void SpawnRelicKillShot(AbilitySystem system, AbilitySpec spec, CrimsonBoundaryWeaponData data,
+        CrimsonBoundaryRuntimeState runtime, Vector3 position, GameObject killedTarget)
+    {
+        var enemies = WeaponExclusiveRelics.FindEnemies(position, 40f, killedTarget);
+        if (enemies.Count == 0) return;
+        Enemy target = enemies[0];
+        float damage = CalculateDirectDamage(system, 1f, out bool critical);
+        var visual = CrimsonBoundaryVisual2D.Spawn(data.projectilePrefab, position, Quaternion.identity, runtime);
+        if (visual == null) return;
+        var projectile = visual.GetComponent<CrimsonBoundaryProjectile2D>();
+        projectile.Setup(new ProjectileAttackSpawnContext
+        {
+            ownerSystem = system, sourceSpec = spec, causer = visual.gameObject,
+            ignoreTarget = system.gameObject, lifetime = data.projectileLifetime,
+            wallLayers = data.wallLayers, damageLayers = data.damageLayers,
+            direction = target.transform.position - position, speed = data.projectileSpeed,
+            hitPayload = new CombatHitPayload
+            {
+                sourceSystem = system, sourceSpec = spec, damageEffect = data.damageEffect,
+                finalHpDamage = damage, causer = visual.gameObject, isCriticalHit = critical,
+                elementBuildUps = Array.Empty<ElementDamageResult>(), hasResolvedElementBuildUps = true
+            }
+        }, data.attackBurnStacks, data.damageEffect, data.projectileHitPrefab, data.burnTickPrefab, runtime, data.burnSustainPrefab);
+        projectile.SetHomingTarget(target.transform);
+    }
     private static readonly Collider2D[] HitBuffer = new Collider2D[128];
     private static readonly ElementDamageResult[] NoElementBuildUp = Array.Empty<ElementDamageResult>();
 

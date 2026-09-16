@@ -13,6 +13,8 @@ namespace UnityGAS.Sample
     [CreateAssetMenu(fileName = "AL_Dash2D", menuName = "GAS/Samples/AbilityLogic/Dash 2D")]
     public class AbilityLogic_Dash2D : AbilityLogic
     {
+        private const string MotionVersionKey = "Dash2D.MotionVersion";
+
         public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
         {
             if (system == null || spec == null || spec.Definition == null) yield break;
@@ -63,6 +65,7 @@ namespace UnityGAS.Sample
                 float dashSpeed = distance / duration;
                 Vector2 startPosition = system.transform.position;
                 motion.StartDash(dir, dashSpeed, duration);
+                spec.SetInt(MotionVersionKey, motion.MotionVersion);
                 dashAugment?.HandleDashStarted(
                     system,
                     spec,
@@ -80,7 +83,7 @@ namespace UnityGAS.Sample
                         (tags != null && hardStopTag != null && tags.HasTag(hardStopTag)))
                     {
                         cancelled = true;
-                        motion.CancelMotion();
+                        CancelOwnedMotion(motion, spec);
                         dashAugment?.HandleDashFinished(
                             system,
                             spec,
@@ -148,8 +151,7 @@ namespace UnityGAS.Sample
             var tags = system.GetComponent<TagSystem>();
             var motion = system.GetComponent<AbilityMotionController2D>();
 
-            if (motion != null)
-                motion.CancelMotion();
+            CancelOwnedMotion(motion, spec);
 
             if (tags != null)
             {
@@ -159,6 +161,13 @@ namespace UnityGAS.Sample
                 if (data.aimLockedTag != null)
                     tags.RemoveTag(data.aimLockedTag, 1);
             }
+        }
+
+        private static void CancelOwnedMotion(AbilityMotionController2D motion, AbilitySpec spec)
+        {
+            // A skill can replace the dash's motion before the independent dash execution ends.
+            if (motion != null && spec.GetInt(MotionVersionKey, -1) == motion.MotionVersion)
+                motion.CancelMotion();
         }
 
         private Vector2 ResolveMoveDirection(AbilitySystem system, bool fallbackToAim)

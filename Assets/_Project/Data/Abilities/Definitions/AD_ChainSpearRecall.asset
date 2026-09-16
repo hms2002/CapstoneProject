@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_ChainSpearRecall
   m_EditorClassIdentifier: 
-  abilityName: AD_ChainSpearRecall
+  abilityName: "사슬 회수"
   icon: {fileID: 0}
-  description: Chain recall debug ability.
+  description: "사슬을 회수하고 연결을 해제합니다."
   cooldown: 0
   executionPolicy: 0
   useCharges: 0

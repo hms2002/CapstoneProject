@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: WD_FragmentBlade
   m_EditorClassIdentifier: 
   weaponId: Weapon.FragmentBlade
-  displayName: Fragment Blade
+  displayName: "파편검"
   icon: {fileID: 0}
-  storyText: A blade formed from bound shards. Attacks shed shards, then recalls
-    them through enemies.
+  storyText: "결합한 파편으로 벼린 검. 흩어진 파편은 적을 가르며 돌아온다."
   statModifiers: []
   attackInputHint: "\uC6B0\uD074\uB9AD"
   skill1InputHint: Q

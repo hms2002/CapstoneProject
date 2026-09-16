@@ -366,9 +366,12 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
     private AttackTelegraphSpec CreateWarningSpec(LizardMage.BurstContext context, float warningSeconds)
     {
         Vector2 start = CommonMonsterCombatUtility.ResolveAimPoint(owner.gameObject, CombatAimPointKind.ProjectileTarget);
-        Vector2 end = context.Target != null
-            ? CommonMonsterCombatUtility.ResolveAimPoint(context.Target, CombatAimPointKind.ProjectileTarget)
-            : start + context.WarningDirection.normalized * context.TelegraphRange;
+        Vector2 directionToTarget = context.Target != null
+            ? CommonMonsterCombatUtility.ResolveAimPoint(context.Target, CombatAimPointKind.ProjectileTarget) - start
+            : context.WarningDirection;
+        Vector2 warningDirection = directionToTarget.sqrMagnitude > 0.0001f
+            ? directionToTarget.normalized : context.WarningDirection.normalized;
+        Vector2 end = start + warningDirection * context.TelegraphRange;
 
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateLine(
             start,

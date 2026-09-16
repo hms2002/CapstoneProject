@@ -1,6 +1,12 @@
 using UnityEngine;
 using UnityGAS;
 
+// Implemented by attack logic that retains a timed combo between activations.
+public interface IWeaponAttackComboReset
+{
+    void ResetAttackCombo(AbilitySpec spec);
+}
+
 /// <summary>
 /// 책임 :
 /// - 무기 고유 런타임 상태(자세, 차지, 연계 정보 등)의 소유 경계를 정의한다.

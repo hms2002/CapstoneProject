@@ -371,14 +371,27 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
                 GetMarkRainFallbackSpawnDelay(data));
 
             Vector2 ownerPosition = system.transform.position;
-            List<MarkSpawnRequest> markSpawns = GenerateMarkPositions(loadout, data, ownerPosition);
+            bool targetedRain = WeaponExclusiveRelics.Has(system.gameObject, WeaponExclusiveRelics.SpearTargetedRain);
+            // The persistent placement scratch list can also be used by third-strike marks.
+            List<MarkSpawnRequest> markSpawns = new(GenerateMarkPositions(loadout, data, ownerPosition));
             if (markSpawns.Count > 0)
                 PlaySoundAt(data != null ? data.MarkRainSpawnStartSound : default, system, spec, ownerPosition, data);
 
             for (int i = 0; i < markSpawns.Count; i++)
             {
+                if (spec.Token != null && spec.Token.IsCancelled) yield break;
                 MarkSpawnRequest request = markSpawns[i];
                 SpawnMark(loadout, data, request.position, request.room, system, spec);
+                if (targetedRain && i + 1 < markSpawns.Count)
+                {
+                    float elapsed = 0f;
+                    while (elapsed < 0.07f)
+                    {
+                        if (spec.Token != null && spec.Token.IsCancelled) yield break;
+                        elapsed += Time.deltaTime;
+                        yield return null;
+                    }
+                }
             }
         }
         finally
@@ -1093,6 +1106,23 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             return pendingMarkSpawns;
 
         MonsterRoomArea2D ownerRoom = FindRoomContaining(ownerPosition);
+        if (ownerSystem != null && WeaponExclusiveRelics.Has(ownerSystem.gameObject, WeaponExclusiveRelics.SpearTargetedRain))
+        {
+            List<Transform> targets = FindMarkTargets(ownerPosition, GetFallbackCombatRadius(loadout, data));
+            // Give each enemy a direct strike first, then reserve the nearest free tiles around them.
+            while (pendingMarkSpawns.Count < targetCount)
+            {
+                int previousCount = pendingMarkSpawns.Count;
+                foreach (Transform target in targets)
+                {
+                    if (target == null || !TryFindNearestMarkPosition(loadout, data, ownerPosition,
+                        ownerRoom, target.position, out Vector2 candidate)) continue;
+                    pendingMarkSpawns.Add(new MarkSpawnRequest(candidate, ownerRoom != null ? ownerRoom : FindRoomContaining(candidate)));
+                    if (pendingMarkSpawns.Count >= targetCount) return pendingMarkSpawns;
+                }
+                if (pendingMarkSpawns.Count == previousCount) break;
+            }
+        }
         int sampleCount = Mathf.Max(GetCandidateSamples(loadout, data), targetCount * 12);
         for (int i = 0; i < sampleCount && pendingMarkSpawns.Count < targetCount; i++)
         {
@@ -1106,6 +1136,114 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         }
 
         return pendingMarkSpawns;
+    }
+
+    public void SpawnThirdStrikeMark(AbilitySystem system, AbilitySpec spec, Vector2 attackTip)
+    {
+        CacheOwnerReferences(system);
+        if (!TryResolveActiveLoadout(out LightningSpearLoadout loadout)) return;
+        LightningSpearSkill2Data data = ResolveSkill2Data(loadout);
+        if (GetMarkPrefab(loadout, data) == null) return;
+        pendingMarkSpawns.Clear();
+        Vector2 origin = system.transform.position;
+        MonsterRoomArea2D room = FindRoomContaining(origin);
+        var targets = FindMarkTargets(attackTip, 1.5f);
+        Vector2 preferred = targets.Count > 0 ? (Vector2)targets[0].position : attackTip;
+        if (TryFindNearestMarkPosition(loadout, data, origin, room, preferred, out Vector2 closest))
+        {
+            SpawnMark(loadout, data, closest, room != null ? room : FindRoomContaining(closest), system, spec);
+            return;
+        }
+        int samples = Mathf.Max(1, GetCandidateSamples(loadout, data));
+        for (int i = 0; i < samples; i++)
+        {
+            Vector2 candidate = i == 0 ? preferred : i == 1 ? attackTip : SampleFallbackCandidate(attackTip, 1.5f);
+            if (!ValidateMarkCandidate(loadout, data, origin, room, candidate)) continue;
+            SpawnMark(loadout, data, candidate, room != null ? room : FindRoomContaining(candidate), system, spec);
+            return;
+        }
+    }
+
+    // Training dummies are damageable but deliberately do not inherit Enemy.
+    // Keep this exception local to spear placement, not other relics' enemy/kill targeting.
+    private static List<Transform> FindMarkTargets(Vector2 center, float radius)
+    {
+        var targets = new List<Transform>();
+        var seen = new HashSet<Transform>();
+        foreach (Collider2D hit in Physics2D.OverlapCircleAll(center, radius))
+        {
+            Transform target;
+            Enemy enemy = hit.GetComponentInParent<Enemy>();
+            if (enemy != null)
+            {
+                if (enemy.IsDead || !enemy.isActiveAndEnabled) continue;
+                target = enemy.transform;
+            }
+            else
+            {
+                TrainingDummy2D dummy = hit.GetComponentInParent<TrainingDummy2D>();
+                if (dummy == null || !dummy.isActiveAndEnabled) continue;
+                target = dummy.transform;
+            }
+            if (seen.Add(target)) targets.Add(target);
+        }
+        targets.Sort((a, b) => ((Vector2)a.position - center).sqrMagnitude.CompareTo(
+            ((Vector2)b.position - center).sqrMagnitude));
+        return targets;
+    }
+
+    private bool TryFindNearestMarkPosition(LightningSpearLoadout loadout, LightningSpearSkill2Data data,
+        Vector2 ownerPosition, MonsterRoomArea2D room, Vector2 preferred, out Vector2 result)
+    {
+        // Never snap a valid enemy position to a tile center: the first choice is directly beneath it.
+        if (ValidateMarkCandidate(loadout, data, ownerPosition, room, preferred))
+        {
+            result = preferred;
+            return true;
+        }
+
+        float range = GetFallbackCombatRadius(loadout, data);
+        float rangeSquared = range * range;
+        var candidates = new List<Vector2>();
+        foreach (Tilemap tilemap in ResolveGroundTilemaps())
+        {
+            // Bound enumeration to casting range, not the entire dungeon floor tilemap.
+            Vector3Int lower = tilemap.WorldToCell(ownerPosition - Vector2.one * range);
+            Vector3Int upper = lower;
+            for (int corner = 1; corner < 4; corner++)
+            {
+                Vector2 offset = new Vector2((corner & 1) == 0 ? -range : range, (corner & 2) == 0 ? -range : range);
+                Vector3Int cell = tilemap.WorldToCell(ownerPosition + offset);
+                lower = Vector3Int.Min(lower, cell);
+                upper = Vector3Int.Max(upper, cell);
+            }
+            BoundsInt bounds = tilemap.cellBounds;
+            lower = Vector3Int.Max(bounds.min, lower);
+            upper = Vector3Int.Min(bounds.max, upper + Vector3Int.one);
+            if (lower.x >= upper.x || lower.y >= upper.y || lower.z >= upper.z) continue;
+            bounds.SetMinMax(lower, upper);
+            foreach (Vector3Int cell in bounds.allPositionsWithin)
+            {
+                Vector2 point = tilemap.GetCellCenterWorld(cell);
+                if ((point - ownerPosition).sqrMagnitude <= rangeSquared && tilemap.HasTile(cell))
+                    candidates.Add(point);
+            }
+        }
+        candidates.Sort((a, b) =>
+        {
+            int distance = (a - preferred).sqrMagnitude.CompareTo((b - preferred).sqrMagnitude);
+            if (distance != 0) return distance;
+            int x = a.x.CompareTo(b.x);
+            return x != 0 ? x : a.y.CompareTo(b.y);
+        });
+        foreach (Vector2 candidate in candidates)
+        {
+            if (!ValidateMarkCandidate(loadout, data, ownerPosition, room, candidate)) continue;
+            result = candidate;
+            return true;
+        }
+        result = default;
+        return false;
     }
 
     private static Vector2 SampleFallbackCandidate(Vector2 origin, float radius)

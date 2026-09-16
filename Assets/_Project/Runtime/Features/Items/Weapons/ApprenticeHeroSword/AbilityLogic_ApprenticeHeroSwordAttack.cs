@@ -4,11 +4,17 @@ using UnityGAS;
 
 [CreateAssetMenu(fileName = "AL_ApprenticeHeroSwordAttack", menuName = "GAS/Weapon/Apprentice Hero Sword/Logic Attack")]
 // 책임: 수습 용사 검 기본 공격 콤보 입력 상태, 히트박스, 연출 타이밍을 실행한다.
-public sealed class AbilityLogic_ApprenticeHeroSwordAttack : AbilityLogic
+public sealed class AbilityLogic_ApprenticeHeroSwordAttack : AbilityLogic, IWeaponAttackComboReset
 {
     private const string KeyComboIndex = "ApprenticeHeroSword.Attack.ComboIndex";
     private const string KeyComboExpire = "ApprenticeHeroSword.Attack.ComboExpire";
     public const string HitSpawnedKey = "ApprenticeHeroSword.Attack.HitSpawned";
+
+    public void ResetAttackCombo(AbilitySpec spec)
+    {
+        spec?.SetInt(KeyComboIndex, -1);
+        spec?.SetFloat(KeyComboExpire, -1f);
+    }
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {

@@ -16,6 +16,7 @@ public class GameplayRuntimeDebugWindow : EditorWindow
     private string[] upgradeNodeNames = System.Array.Empty<string>();
     private string[] npcNames = System.Array.Empty<string>();
     private string[] itemDatabaseNames = System.Array.Empty<string>();
+    private readonly Dictionary<ScriptableObject, string> registrationStatuses = new();
 
     private int selectedUpgradeIndex;
     private int selectedNpcIndex;
@@ -72,7 +73,11 @@ public class GameplayRuntimeDebugWindow : EditorWindow
         DrawPersistenceSection();
 
         EditorGUILayout.EndScrollView();
+    }
 
+    // Unity invokes this at 10 Hz. Do not create a continuous OnGUI -> Repaint loop.
+    private void OnInspectorUpdate()
+    {
         if (Application.isPlaying)
             Repaint();
     }
@@ -371,7 +376,7 @@ public class GameplayRuntimeDebugWindow : EditorWindow
 
         List<string> ids = inventory.GetAllWeaponIDs();
         string heldStatus = ids.Contains(weapon.weaponId) ? "Held" : "Not held";
-        return $"{heldStatus} / {BuildRegistrationStatus(weapon, GetSelectedItemDatabase()?.allWeapons)}";
+        return $"{heldStatus} / {GetRegistrationStatus(weapon)}";
     }
 
     private string BuildRelicInventoryStatus(RelicDefinition relic)
@@ -386,7 +391,7 @@ public class GameplayRuntimeDebugWindow : EditorWindow
         string heldStatus = inventory.TryGetRelicLevelById(relic.relicId, out int level)
             ? $"Level {level}/{Mathf.Max(1, relic.maxLevel)}"
             : "Not held";
-        return $"{heldStatus} / {BuildRegistrationStatus(relic, GetSelectedItemDatabase()?.allRelics)}";
+        return $"{heldStatus} / {GetRegistrationStatus(relic)}";
     }
 
     private string BuildConsumableInventoryStatus(ConsumableDefinition consumable)
@@ -398,7 +403,7 @@ public class GameplayRuntimeDebugWindow : EditorWindow
         if (inventory == null)
             return "PlayerConsumableInventory missing";
 
-        return $"Held {inventory.CountConsumable(consumable)}/{inventory.Capacity} / {BuildRegistrationStatus(consumable, GetSelectedItemDatabase()?.allConsumables)}";
+        return $"Held {inventory.CountConsumable(consumable)}/{inventory.Capacity} / {GetRegistrationStatus(consumable)}";
     }
 
     private void GrantWeapon(WeaponDefinition weapon)
@@ -537,17 +542,13 @@ public class GameplayRuntimeDebugWindow : EditorWindow
     private void RefreshItemAssets()
     {
         ItemDatabase database = GetSelectedItemDatabase();
-        if (database == null)
-        {
-            weaponAssets = ToSortedGrantAssetArray<WeaponDefinition>(null, weapon => GetDisplayName(weapon.DisplayName, weapon.name));
-            relicAssets = ToSortedGrantAssetArray<RelicDefinition>(null, relic => GetDisplayName(relic.DisplayName, relic.name));
-            consumableAssets = ToSortedGrantAssetArray<ConsumableDefinition>(null, consumable => GetDisplayName(consumable.DisplayName, consumable.name));
-            return;
-        }
-
-        weaponAssets = ToSortedGrantAssetArray(database.allWeapons, weapon => GetDisplayName(weapon.DisplayName, weapon.name));
-        relicAssets = ToSortedGrantAssetArray(database.allRelics, relic => GetDisplayName(relic.DisplayName, relic.name));
-        consumableAssets = ToSortedGrantAssetArray(database.allConsumables, consumable => GetDisplayName(consumable.DisplayName, consumable.name));
+        weaponAssets = ToSortedGrantAssetArray(database != null ? database.allWeapons : null, (WeaponDefinition weapon) => GetDisplayName(weapon.DisplayName, weapon.name));
+        relicAssets = ToSortedGrantAssetArray(database != null ? database.allRelics : null, (RelicDefinition relic) => GetDisplayName(relic.DisplayName, relic.name));
+        consumableAssets = ToSortedGrantAssetArray(database != null ? database.allConsumables : null, (ConsumableDefinition consumable) => GetDisplayName(consumable.DisplayName, consumable.name));
+        registrationStatuses.Clear();
+        CacheRegistrationStatuses(weaponAssets, database != null ? database.allWeapons : null);
+        CacheRegistrationStatuses(relicAssets, database != null ? database.allRelics : null);
+        CacheRegistrationStatuses(consumableAssets, database != null ? database.allConsumables : null);
     }
 
     private bool HasAnyGrantableItemAssets()
@@ -655,11 +656,31 @@ public class GameplayRuntimeDebugWindow : EditorWindow
         return false;
     }
 
-    private static string BuildRegistrationStatus<T>(T item, IEnumerable<T> databaseEntries)
+    private void CacheRegistrationStatuses<T>(IEnumerable<T> items, IEnumerable<T> databaseEntries)
         where T : ScriptableObject
     {
-        return ContainsAssetReference(databaseEntries, item) ? "Registered" : "Unregistered";
+        var registered = new HashSet<T>();
+        var paths = new HashSet<string>(System.StringComparer.Ordinal);
+        if (databaseEntries != null)
+        {
+            foreach (T entry in databaseEntries)
+            {
+                if (entry == null) continue;
+                registered.Add(entry);
+                string path = AssetDatabase.GetAssetPath(entry);
+                if (!string.IsNullOrEmpty(path)) paths.Add(path);
+            }
+        }
+        foreach (T item in items)
+        {
+            if (item == null) continue;
+            bool isRegistered = registered.Contains(item) || paths.Contains(AssetDatabase.GetAssetPath(item));
+            registrationStatuses[item] = isRegistered ? "Registered" : "Unregistered";
+        }
     }
+
+    private string GetRegistrationStatus(ScriptableObject item) =>
+        registrationStatuses.TryGetValue(item, out string status) ? status : "Unregistered";
 
     private static PlayerInteractor2D ResolveCurrentPlayer()
     {

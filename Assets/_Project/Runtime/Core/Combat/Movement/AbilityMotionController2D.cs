@@ -32,6 +32,7 @@ namespace UnityGAS
         private float moveToEaseOutPower = 2f;
 
         public bool HasActiveMotion => activeKind != MotionKind.None;
+        public int MotionVersion { get; private set; }
         public bool IsLunging => activeKind == MotionKind.MoveToPoint;
 
         private bool IsDashLikeActive =>
@@ -126,6 +127,7 @@ namespace UnityGAS
             else
                 direction.Normalize();
 
+            MotionVersion++;
             activeKind = MotionKind.MoveToPoint;
             moveToStart = start;
             moveToEnd = start + direction * distance;
@@ -140,6 +142,7 @@ namespace UnityGAS
 
         public void CancelMotion()
         {
+            MotionVersion++;
             activeKind = MotionKind.None;
             motionVelocity = Vector2.zero;
             motionRemainingTime = 0f;

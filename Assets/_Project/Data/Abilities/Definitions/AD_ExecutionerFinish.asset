@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_ExecutionerFinish
   m_EditorClassIdentifier: 
-  abilityName: AD_ExecutionerFinish
+  abilityName: "처형"
   icon: {fileID: 0}
-  description: Executioner finish debug ability.
+  description: "처형 기회를 사용해 마무리합니다."
   cooldown: 0
   executionPolicy: 0
   useCharges: 0

@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: WD_SunBlade
   m_EditorClassIdentifier: 
   weaponId: Weapon.SunBlade
-  displayName: Sun Blade
+  displayName: "태양도"
   icon: {fileID: 1718929613, guid: 7e11de47ebfa53a42a94e5fb92a94f06, type: 3}
-  storyText: A paired blade that accumulates solar heat and resonates with its moon
-    counterpart.
+  storyText: "태양의 열기를 머금고 월영도와 공명하는 검."
   statModifiers: []
   attackInputHint: Mouse1
   skill1InputHint: Q

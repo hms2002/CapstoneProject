@@ -64,6 +64,12 @@ public sealed class WeaponAbilitySelector
             return null;
 
         WeaponAbilityLoadout loadout = activeWeapon.abilityLoadout;
+        if (loadout is OddIronLoadout oddIron && runtimeData is OddIronRuntimeData ammo && !ammo.HasAmmo &&
+            WeaponExclusiveRelics.Has(weaponInventory.gameObject, WeaponExclusiveRelics.OddIronMagazine))
+        {
+            if (slot == WeaponAbilitySlot.Attack) return oddIron.Shot;
+            if (slot == WeaponAbilitySlot.Skill2) return oddIron.Barrage;
+        }
         if (loadout != null)
         {
             var context = new WeaponSelectionContext(

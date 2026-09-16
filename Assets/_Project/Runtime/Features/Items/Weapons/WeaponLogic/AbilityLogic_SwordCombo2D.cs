@@ -11,10 +11,16 @@ namespace UnityGAS.Sample
     /// - 콤보 인덱스 결정, 애니메이션/돌진 처리, 히트 이벤트 대기 후 MeleeHitboxActor를 생성한다.
     /// </summary>
     [CreateAssetMenu(fileName = "AL_SwordCombo2D", menuName = "GAS/Samples/AbilityLogic/Sword Combo 2D")]
-    public class AbilityLogic_SwordCombo2D : AbilityLogic
+    public class AbilityLogic_SwordCombo2D : AbilityLogic, IWeaponAttackComboReset
     {
         private const string KEY_COMBO_INDEX = "Sword.ComboIndex";
         private const string KEY_COMBO_EXPIRE = "Sword.ComboExpire";
+
+        public void ResetAttackCombo(AbilitySpec spec)
+        {
+            spec?.SetInt(KEY_COMBO_INDEX, -1);
+            spec?.SetFloat(KEY_COMBO_EXPIRE, -1f);
+        }
 
         public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
         {

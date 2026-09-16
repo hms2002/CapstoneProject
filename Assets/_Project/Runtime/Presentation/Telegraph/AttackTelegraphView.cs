@@ -6,14 +6,13 @@ namespace UnityGAS
     /// 책임 :
     /// - 공통 공격 예고 사각형/원형의 위치, 회전, 크기, 진행도 색상 변화를 렌더링한다.
     /// - 실제 공격 판정 로직은 모르고, 전달받은 Spec과 Style만 시각적으로 표현한다.
-    /// - 직선/직사각형/원형은 얇은 경고 비주얼을 유지하면서 지형에 잘리지 않는 전체 범위를 표시한다.
+    /// - 직선은 지정된 폭으로 벽까지 표시하고, 직사각형/원형은 기존 전체 범위 표시를 유지한다.
     /// </summary>
     public sealed class AttackTelegraphView : MonoBehaviour, IAttackTelegraphHandle
     {
         private const int CircleTextureSize = 128;
         private const float CircleBorderThickness = 0.08f;
         private const string DefaultShaderName = "Sprites/Default";
-        private const int WallClipHitBufferSize = 16;
 
         [Header("Refs")]
         [SerializeField] private Transform fillRoot;
@@ -53,8 +52,6 @@ namespace UnityGAS
         private bool isVisible;
         private bool isReleased;
         private AttackTelegraphWallClippedMeshView wallClippedMeshView;
-        private LineRenderer lineRenderer;
-        private Material lineMaterial;
         private LineRenderer thinOutlineRenderer;
         private Material thinOutlineMaterial;
         private bool activeUseMeshOutline;
@@ -62,10 +59,6 @@ namespace UnityGAS
         private LayerMask activeWallClipLayers;
         private int activeWallClipSampleCount;
         private float activeWallClipSkinWidth;
-        private Vector3 activeLineStart;
-        private Vector3 activeLineEnd;
-        private float activeLineWidth = 0.05f;
-        private readonly RaycastHit2D[] wallClipHitBuffer = new RaycastHit2D[WallClipHitBufferSize];
 
         public bool IsVisible => isVisible;
 
@@ -107,16 +100,7 @@ namespace UnityGAS
             CacheActiveWallClipping(spec);
 
             gameObject.SetActive(true);
-            if (spec.shape == AttackTelegraphShape.Line)
-            {
-                HideWallClippedMesh();
-                SetSpriteRenderersEnabled(false);
-                ApplyLineGeometry(spec);
-                ApplyStyle(0f);
-                return;
-            }
 
-            HideLineRenderer();
             activeShape = spec.shape;
             activeSize = spec.size;
             if (TryApplyWallClippedMesh(spec, 0f))
@@ -157,16 +141,7 @@ namespace UnityGAS
             activeInnerDiameter = Mathf.Max(0f, spec.innerDiameter);
             activeSectorAngleDeg = Mathf.Clamp(spec.sectorAngleDeg, 0.1f, 360f);
             float normalizedProgress = GetCurrentNormalizedProgress();
-            if (spec.shape == AttackTelegraphShape.Line)
-            {
-                HideWallClippedMesh();
-                SetSpriteRenderersEnabled(false);
-                ApplyLineGeometry(spec);
-                ApplyStyle(normalizedProgress);
-                return;
-            }
 
-            HideLineRenderer();
             activeShape = spec.shape;
             activeSize = spec.size;
             if (TryApplyWallClippedMesh(spec, normalizedProgress))
@@ -198,7 +173,6 @@ namespace UnityGAS
                 borderRenderer.enabled = false;
 
             HideWallClippedMesh();
-            HideLineRenderer();
             HideThinOutlineRenderer();
             ClearActiveWallClipping();
         }
@@ -230,7 +204,6 @@ namespace UnityGAS
 
             ApplySortingLayer(fillRenderer, referenceRenderer);
             ApplySortingLayer(borderRenderer, referenceRenderer);
-            ApplyLineSorting();
         }
 
         /// <summary>
@@ -266,6 +239,9 @@ namespace UnityGAS
 
         private static bool CanUseWallClippedMesh(AttackTelegraphSpec spec)
         {
+            if (spec.shape == AttackTelegraphShape.Line)
+                return true;
+
             bool useUnclippedOutline = spec.useMeshOutline &&
                 (spec.shape == AttackTelegraphShape.Rectangle || spec.shape == AttackTelegraphShape.Circle);
             if (!useUnclippedOutline && (!spec.useWallClipping || spec.wallClipLayers.value == 0))
@@ -386,153 +362,23 @@ namespace UnityGAS
                 thinOutlineRenderer.enabled = false;
         }
 
-        /// <summary>
-        /// 책임 :
-        /// - 원거리 조준선처럼 시작점과 끝점이 명확한 선형 텔레그래프의 위치와 길이를 갱신한다.
-        /// - 벽 clipping은 선분 끝점만 줄여 처리하고, 실제 공격 판정에는 관여하지 않는다.
-        /// </summary>
-        private void ApplyLineGeometry(AttackTelegraphSpec spec)
-        {
-            LineRenderer renderer = GetOrCreateLineRenderer();
-            if (renderer == null)
-                return;
-
-            activeShape = AttackTelegraphShape.Line;
-            activeSize = spec.size;
-            activeLineStart = spec.lineStart;
-            activeLineEnd = ResolveLineEndWithWallClipping(spec);
-            activeLineWidth = Mathf.Max(0.001f, spec.size.y);
-
-            transform.rotation = Quaternion.identity;
-            renderer.widthMultiplier = activeLineWidth;
-            renderer.positionCount = 2;
-            renderer.SetPosition(0, activeLineStart);
-            renderer.SetPosition(1, activeLineEnd);
-            renderer.enabled = true;
-        }
-
-        private Vector3 ResolveLineEndWithWallClipping(AttackTelegraphSpec spec)
-        {
-            if (!spec.useWallClipping || spec.wallClipLayers.value == 0)
-                return spec.lineEnd;
-
-            Vector2 start = spec.lineStart;
-            Vector2 end = spec.lineEnd;
-            Vector2 delta = end - start;
-            float distance = delta.magnitude;
-            if (distance <= 0.0001f)
-                return spec.lineEnd;
-
-            Vector2 direction = delta / distance;
-            if (!TryFindNearestWallClipHit(start, direction, distance, spec.wallClipLayers, out RaycastHit2D hit))
-                return spec.lineEnd;
-
-            float visibleDistance = Mathf.Clamp(hit.distance - spec.wallClipSkinWidth, 0f, distance);
-            return start + direction * visibleDistance;
-        }
-
-        /// <summary>경고선 clipping은 실제 벽/문 같은 non-trigger 장애물만 사용하고, HoleTrap 같은 trigger 감지 영역은 무시합니다.</summary>
-        private bool TryFindNearestWallClipHit(
-            Vector2 start,
-            Vector2 direction,
-            float distance,
-            LayerMask wallLayers,
-            out RaycastHit2D nearestHit)
-        {
-            nearestHit = default;
-            if (wallLayers.value == 0)
-                return false;
-
-            ContactFilter2D filter = new ContactFilter2D
-            {
-                useTriggers = false
-            };
-            filter.SetLayerMask(wallLayers);
-
-            int hitCount = Physics2D.Raycast(start, direction, filter, wallClipHitBuffer, distance);
-            bool hasHit = false;
-            for (int i = 0; i < hitCount; i++)
-            {
-                RaycastHit2D hit = wallClipHitBuffer[i];
-                if (hit.collider == null || hit.collider.isTrigger)
-                    continue;
-
-                if (!hasHit || hit.distance < nearestHit.distance)
-                {
-                    nearestHit = hit;
-                    hasHit = true;
-                }
-            }
-
-            return hasHit;
-        }
-
-        private LineRenderer GetOrCreateLineRenderer()
-        {
-            if (lineRenderer != null)
-                return lineRenderer;
-
-            Transform lineRoot = transform.Find("LineTelegraph");
-            if (lineRoot == null)
-            {
-                GameObject lineObject = new GameObject("LineTelegraph");
-                lineRoot = lineObject.transform;
-                lineRoot.SetParent(transform, false);
-            }
-
-            lineRenderer = lineRoot.GetComponent<LineRenderer>();
-            if (lineRenderer == null)
-                lineRenderer = lineRoot.gameObject.AddComponent<LineRenderer>();
-
-            lineRenderer.useWorldSpace = true;
-            lineRenderer.numCapVertices = 0;
-            lineRenderer.numCornerVertices = 0;
-            lineRenderer.alignment = LineAlignment.TransformZ;
-            lineRenderer.textureMode = LineTextureMode.Stretch;
-            lineRenderer.positionCount = 2;
-
-            if (lineMaterial == null)
-            {
-                Shader shader = Shader.Find(DefaultShaderName);
-                lineMaterial = new Material(shader);
-            }
-
-            lineRenderer.sharedMaterial = lineMaterial;
-            ApplyLineSorting();
-            return lineRenderer;
-        }
-
-        private void HideLineRenderer()
-        {
-            if (lineRenderer != null)
-                lineRenderer.enabled = false;
-        }
-
-        private void ApplyLineSorting()
-        {
-            if (lineRenderer == null)
-                return;
-
-            SpriteRenderer referenceRenderer = borderRenderer != null ? borderRenderer : fillRenderer;
-            if (referenceRenderer == null)
-                return;
-
-            lineRenderer.sortingLayerID = referenceRenderer.sortingLayerID;
-            lineRenderer.sortingOrder = referenceRenderer.sortingOrder;
-        }
-
         private static AttackTelegraphSpec ApplyShapeWallClippingPolicy(AttackTelegraphSpec spec)
         {
-            // Preserve the thin mesh presentation without letting terrain shorten the warning.
+            if (spec.shape == AttackTelegraphShape.Line)
+            {
+                LayerMask walls = spec.wallClipLayers.value != 0
+                    ? spec.wallClipLayers : LayerMask.GetMask("Wall");
+                return spec.WithWallClipping(walls, 48, 0.03f);
+            }
+
+            // Preserve the existing Rectangle/Circle policy.
             // Sector and ring warnings retain their existing rendering/clipping policy.
-            if (spec.shape == AttackTelegraphShape.Line ||
-                spec.shape == AttackTelegraphShape.Rectangle ||
+            if (spec.shape == AttackTelegraphShape.Rectangle ||
                 spec.shape == AttackTelegraphShape.Circle)
             {
                 spec.useWallClipping = false;
                 spec.wallClipLayers = default;
-                if (spec.shape != AttackTelegraphShape.Line)
-                    spec = spec.WithMeshOutline(spec.wallClipSampleCount > 0 ? spec.wallClipSampleCount : 48);
+                spec = spec.WithMeshOutline(spec.wallClipSampleCount > 0 ? spec.wallClipSampleCount : 48);
             }
             return spec;
         }
@@ -932,8 +778,6 @@ namespace UnityGAS
             ReleaseRingSprites();
             ReleaseSectorSprites();
 
-            if (lineMaterial != null)
-                Destroy(lineMaterial);
 
             if (thinOutlineMaterial != null)
                 Destroy(thinOutlineMaterial);
@@ -982,12 +826,6 @@ namespace UnityGAS
 
         private void ApplyStyle(float normalized)
         {
-            if (activeShape == AttackTelegraphShape.Line)
-            {
-                ApplyLineStyle(normalized);
-                SetSpriteRenderersEnabled(false);
-                return;
-            }
 
             if (wallClippedMeshView != null && wallClippedMeshView.IsVisible)
             {
@@ -1057,40 +895,6 @@ namespace UnityGAS
 
             thinOutlineRenderer.startColor = color;
             thinOutlineRenderer.endColor = color;
-        }
-
-        private void ApplyLineStyle(float normalized)
-        {
-            if (lineRenderer == null)
-                return;
-
-            float curved = activeStyle != null && activeStyle.progressCurve != null
-                ? Mathf.Clamp01(activeStyle.progressCurve.Evaluate(normalized))
-                : normalized;
-
-            float blinkMultiplier = 1f;
-            if (activeStyle != null &&
-                normalized >= activeStyle.blinkStartNormalized &&
-                activeStyle.blinkFrequency > 0f)
-            {
-                float blinkWave = Mathf.Sin(Time.time * activeStyle.blinkFrequency * Mathf.PI * 2f);
-                blinkMultiplier = Mathf.Lerp(activeStyle.blinkAlphaMin, 1f, (blinkWave + 1f) * 0.5f);
-            }
-
-            Color lineColor = activeStyle != null
-                ? Color.Lerp(activeStyle.borderColorStart, activeStyle.borderColorEnd, curved)
-                : new Color(1f, 0f, 0f, 0.9f);
-
-            lineColor.a *= blinkMultiplier;
-            if (lineMaterial != null)
-                lineMaterial.color = lineColor;
-
-            lineRenderer.startColor = lineColor;
-            lineRenderer.endColor = lineColor;
-            lineRenderer.widthMultiplier = activeLineWidth;
-            lineRenderer.SetPosition(0, activeLineStart);
-            lineRenderer.SetPosition(1, activeLineEnd);
-            lineRenderer.enabled = true;
         }
 
         /// <summary>

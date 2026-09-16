@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_FragmentBladeRecall
   m_EditorClassIdentifier: 
-  abilityName: AD_FragmentBladeRecall
+  abilityName: "파편 회수"
   icon: {fileID: 0}
-  description: Recalls detached shards. Fails before cooldown if no detached shards are available.
+  description: "떨어진 파편을 회수하며 경로의 적을 공격합니다. 회수할 파편이 없으면 사용할 수 없습니다."
   hitFeel:
     targetStunSeconds: 0.1
     attackerStopSeconds: 0.06

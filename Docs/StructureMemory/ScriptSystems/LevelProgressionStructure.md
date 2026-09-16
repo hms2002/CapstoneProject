@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-08-18
+last_reviewed: 2026-09-16
 ---
 
 # Level Progression Structure
@@ -97,7 +97,7 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - Instant effects use `InstantOnce` and are not repeated during scene restoration.
 - Weapon slot seals are live handle-owned policies. They do not clear or rewrite the serialized slot contents and are released during reward handle cleanup.
 - Scoped cooldown multipliers affect newly started cooldown/recharge calculations for matching abilities; they do not retroactively rewrite an already-running cooldown.
-- Actual HP loss emits `CombatActivityEvents.DamageApplied`; only damage involving the registered player updates the level-reward combat grace window.
+- Actual HP loss emits `CombatActivityEvents.DamageApplied` for combat feedback. Menu eligibility no longer subscribes to damage or keeps a combat grace timer.
 - `Enemy.AnyDeathStarted` is emitted once from the same guarded common death entry point as the instance event. Kill-count effects subscribe to the global signal and persist only their narrow counters.
 - The selection Presenter owns projection and input forwarding only. The session controller remains the owner of candidates, reroll usage, pending selections, pause, and input blocking.
 - The Presenter owns only offer-identity presentation memory and transition timing. The session pause/input lock remains held until the full close fade completes and the Presenter allows `UIManager` to remove the stack entry.
@@ -134,7 +134,7 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - Several effect display names were absent from the source plan and currently use provisional names. Their stable `rewardId`/`effectId` values are persistence keys and must not be renamed casually even if visible names change.
 - The selection UI is a rough first-pass layout. Final sprites, card art, borders, responsive polish, and a shared fallback icon remain unassigned.
 - `RewardCanvasRaycastGate` must continue recognizing the active level-reward Presenter; otherwise keyboard input works but authored card/control Buttons cannot receive pointer input.
-- The green border is never an EXP-full indicator. It represents current level-up selection eligibility, including a valid candidate, dialogue/UI/pause state, the three-second damage grace window, and enemy recognition.
+- The green border is never an EXP-full indicator. It represents current level-up selection eligibility, including a valid candidate, dialogue/UI/pause state, the shared active-room combat query.
 - The level-up sound reference is intentionally unassigned until a project sound key is authored.
 - Combat eligibility should be playtested against every custom enemy subclass. `Mob` uses detection state and `BossControllerBase` uses combat-active state; a future non-Mob `Enemy` that recognizes the player must override `IsRecognizingPlayer`.
 - `Apply(...)` implementations must not leave partial mutations when they throw; validate authoring and eligibility before selection.
@@ -164,7 +164,7 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - If level state survives a new run, inspect all three reset calls in `RunSessionLifecycleService`.
 - If a selected effect does not return after a scene transition, confirm its catalog was registered and its definition/effect IDs still match the stored IDs.
 - If an instant reward repeats, confirm its effect uses `InstantOnce` and that `instantApplied` is preserved in `GamePlayData`.
-- If R does not open the selection, check active-run/pending state, input backend registration, blocking dialogue/UI/pause state, the three-second player damage grace window, and active enemy recognition.
+- If R does not open the selection, check active-run/pending state, input backend registration, blocking dialogue/UI/pause state, `MonsterSpawnRoomGroup.IsPlayerInCombat`.
 - If reopening changes candidates, inspect `activeRewardOffer` serialization and ensure UI closes via `CloseSession()` instead of mutating progression state.
 
 ## Promotion Candidate
@@ -177,7 +177,7 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 
 - `GlobalUIRoot` retains three authored card views and the existing reveal/selection lifecycle. Card visual mounts are 400 x 640 inside their existing layout slots.
 - `Art/Sprites/UI/LevelRewardCards/` contains original PNGs with sprite slices: common modular bounds (16, 8, 80, 128); Attack_Card_1 uses its circle-free second card (112, 160, 80, 128), in Unity bottom-left pixel coordinates.
-- Card root Image supplies the artwork and button tint target. CardFront owns Base, Description, Title_1 and Outline_1 layers, then bound name/description text. No circle module is imported. The legacy icon child remains inactive to preserve the approved artwork.
+- Card root Image supplies the artwork and button tint target. Each LevelRewardCardView.iconImage references this active root Image so Bind projects the reward definition Icon onto the visible card artwork. CardFront owns Base, Description, Title_1 and Outline_1 layers, then bound name/description text. No circle module is imported. The legacy icon child remains inactive and is not the binding target.
 - TMP text uses the existing Galmuri9 font with dark text and autosizing inside the title/ivory panels. Nine reward descriptions use darker rich-text emphasis colors for contrast; definitions still own the exact displayed wording.
 - Extension: edit the authored layers or reward display data; do not create UI hierarchy at runtime. Preserve the existing front/back and card-view references when changing art.
 - Verification is static only for this reskin; Unity import, flip rendering and all reward text layouts still require Editor inspection.
@@ -216,4 +216,4 @@ PlayerLevelUpEffect2D.playerRenderer is authored to PF Player/PlayerRender. On a
 
 ## Current room-clear eligibility
 
-LevelRewardSessionController tracks MonsterSpawnRoomGroup through ActiveRoomEntered/ActiveRoomExited, initializing from active groups on enable and clearing references on player unregistration, disable or run end. RoomWavesCompleted plus zero RemainingRegisteredOrPendingCount bypasses the three-second recent-combat grace period. Unfinished encounters and recognizing enemies still block. Dialogue, blocking UI, pause, scene/loading transitions and non-idle player interaction state also block. LevelHudPresenter reads CanOpenSession for the existing R prompt; GlobalUIRoot authors that prompt above the skill bar in #BCF58F, outside skill layout groups.
+LevelRewardSessionController and InventoryUIManager read MonsterSpawnRoomGroup.IsPlayerInCombat. The room group owns ActiveRoom through encounter entry/exit, disable/enable and subsystem reset. RoomWavesCompleted plus zero RemainingRegisteredOrPendingCount immediately ends combat even if stale enemy recognition remains. Pending waves, spawn reservations and encounter holds remain combat; outside an active room the query uses living enemy recognition. The old damage grace timer and serialized combatGraceSeconds have been removed. Dialogue, blocking UI, pause, scene/loading transitions and non-idle player interaction state also block. LevelHudPresenter reads CanOpenSession for the existing R prompt; GlobalUIRoot authors that prompt above the skill bar in #BCF58F, outside skill layout groups.

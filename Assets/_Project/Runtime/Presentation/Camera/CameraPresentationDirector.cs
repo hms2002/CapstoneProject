@@ -28,6 +28,10 @@ public class CameraPresentationDirector : MonoBehaviour, ICameraPresentationDire
     [SerializeField] [Min(0.01f)] private float phaseLensScale = 1.18f;
     [SerializeField] [Min(0f)] private float phaseLensBlendDuration = 0.35f;
 
+    [Header("Phase Camera")]
+    [Tooltip("Additional XY follow offset used only during phase presentation. In the top-down boss rig, positive Y moves the camera up.")]
+    [SerializeField] private Vector2 phaseCameraOffset = Vector2.zero;
+
     private CinemachineBrain brain;
     private CameraFollow legacyFollowCamera;
     private bool previousBrainIgnoreTimeScale;
@@ -37,6 +41,8 @@ public class CameraPresentationDirector : MonoBehaviour, ICameraPresentationDire
     private float cachedBossLensOrthographicSize;
     private float cachedBossLensFieldOfView;
     private Coroutine activeBossLensRoutine;
+    private CinemachineFollow phaseOffsetFollow;
+    private Vector3 savedPhaseFollowOffset;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void RegisterFactoryBackend()
@@ -65,6 +71,7 @@ public class CameraPresentationDirector : MonoBehaviour, ICameraPresentationDire
         PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
         SceneManager.sceneLoaded -= HandleSceneLoaded;
         StopBossLensAnimation();
+        RestorePhaseCameraOffset();
         RestoreBrainIgnoreTimeScale();
         SetLegacyFollowEnabled(true);
     }
@@ -158,6 +165,7 @@ public class CameraPresentationDirector : MonoBehaviour, ICameraPresentationDire
 
         yield return WaitForBlendEnd(PlayerRuntimeRegistry.GetPlayerTransform());
 
+        RestorePhaseCameraOffset();
         RestoreBossLensImmediate();
         RestoreBrainIgnoreTimeScale();
         SetLegacyFollowEnabled(true);
@@ -169,6 +177,7 @@ public class CameraPresentationDirector : MonoBehaviour, ICameraPresentationDire
     public void RestoreDefaultState()
     {
         StopBossLensAnimation();
+        RestorePhaseCameraOffset();
         BindPlayerCameraToCurrentPlayer();
 
         if (bossCam != null)
@@ -190,6 +199,41 @@ public class CameraPresentationDirector : MonoBehaviour, ICameraPresentationDire
     public void BeginBossFocusWithPhaseLens()
     {
         BeginBossFocusWithLens(phaseLensScale, phaseLensBlendDuration);
+        ApplyPhaseCameraOffset();
+    }
+
+    private void ApplyPhaseCameraOffset()
+    {
+        RestorePhaseCameraOffset();
+        if (bossCam == null)
+            return;
+
+        CinemachineFollow follow = bossCam.GetComponent<CinemachineFollow>();
+        if (follow == null || !follow.enabled)
+            return;
+
+        phaseOffsetFollow = follow;
+        savedPhaseFollowOffset = follow.FollowOffset;
+        UpdatePhaseCameraOffset();
+    }
+
+    private void Update()
+    {
+        // Allow Inspector tuning while the phase camera is active without accumulating offsets.
+        UpdatePhaseCameraOffset();
+    }
+
+    private void UpdatePhaseCameraOffset()
+    {
+        if (phaseOffsetFollow != null)
+            phaseOffsetFollow.FollowOffset = savedPhaseFollowOffset + (Vector3)phaseCameraOffset;
+    }
+
+    private void RestorePhaseCameraOffset()
+    {
+        if (phaseOffsetFollow != null)
+            phaseOffsetFollow.FollowOffset = savedPhaseFollowOffset;
+        phaseOffsetFollow = null;
     }
 
     public IEnumerator PlayBossPhasePresentationRoutine(float holdSeconds)
@@ -376,6 +420,7 @@ public class CameraPresentationDirector : MonoBehaviour, ICameraPresentationDire
 
     private void BeginBossFocus()
     {
+        RestorePhaseCameraOffset();
         EnableUnscaledCameraBlend();
         ValidateBossCameraAvailability();
         BindPlayerCameraToCurrentPlayer();

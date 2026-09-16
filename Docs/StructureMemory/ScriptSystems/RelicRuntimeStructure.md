@@ -78,3 +78,12 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 ## Promotion Candidate
 
 If more relics are added before demo lock, the reusable logic selection rules above may be worth promoting into a dedicated content-authoring guide or contract section.
+
+
+### Weapon-exclusive relic gates (2026-09-16)
+
+- Six independent RelicDefinition IDs live in WeaponExclusiveRelics: LightningSpear.ThirdStrike / TargetedRain, OddIron.Magazine, CrimsonBoundary.KillShot / LavaBall, ApprenticeHeroSword.ChargeLink. Each is independently registered in ItemDatabase allRelics/defaultUnlockedRelics. Numbered weapon effects are separate acquisitions.
+- WeaponExclusiveRelics reads the owner's RelicInventory; weapon ability/runtime code owns execution. RelicLogic_WeaponExclusive supplies definition.description to the existing detail UI, plus the magazine's level as remaining reload count. It introduces no runtime hooks or modifiers.
+- OddIron.Magazine has maxLevel 3, dropLevel 1. RelicInventory.TryConsumeLevel uses the existing level-change/removal lifecycle. WeaponAbilitySelector only chooses Shot/Barrage when a reload is possible; successful ability execution consumes a level and refills OddIronRuntimeData before firing. HUD/selection never reloads. Existing relic and ammo persistence remain the state owners.
+- Other five definitions have maxLevel 1. Initial names describe effects and icons reuse their respective weapon artwork; these are authoring placeholders.
+- Extension points: the six definitions, shared RL_WeaponExclusive strategy, and the corresponding weapon execution code. Avoid coupling the two spear or two Crimson gates. No Architecture/Contracts promotion requested.

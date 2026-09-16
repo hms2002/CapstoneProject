@@ -709,7 +709,8 @@ public sealed partial class DungeonGraphLayoutAssembler
 
     private static int CountGuaranteedRoomType(
         IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
-        RoomType roomType)
+        RoomType roomType,
+        bool excludeParcelDelivery = false)
     {
         if (guaranteedRoomTemplates == null)
             return 0;
@@ -718,7 +719,8 @@ public sealed partial class DungeonGraphLayoutAssembler
         for (int templateIndex = 0; templateIndex < guaranteedRoomTemplates.Count; templateIndex++)
         {
             RoomTemplateSO template = guaranteedRoomTemplates[templateIndex];
-            if (template != null && template.LayoutData.roomType == roomType)
+            if (template != null && template.LayoutData.roomType == roomType &&
+                (!excludeParcelDelivery || !ParcelDeliveryPointInteractable.IsDeliveryRoom(template)))
                 count++;
         }
 
@@ -887,7 +889,8 @@ public sealed partial class DungeonGraphLayoutAssembler
             RoomType.Treasure);
         int guaranteedEventCount = CountGuaranteedRoomType(
             guaranteedRoomTemplates,
-            RoomType.Event);
+            RoomType.Event, excludeParcelDelivery: true);
+        int deliveryRoomCount = CountGuaranteedRoomType(guaranteedRoomTemplates, RoomType.Event) - guaranteedEventCount;
         int guaranteedShopCount = CountGuaranteedRoomType(
             guaranteedRoomTemplates,
             RoomType.Shop);
@@ -899,7 +902,7 @@ public sealed partial class DungeonGraphLayoutAssembler
             requiredCombatRoomRules);
         int requiredRoomCount = 2 +
             Mathf.Max(policy.TreasureRoomCount, guaranteedTreasureCount) +
-            Mathf.Max(policy.EventRoomCount, guaranteedEventCount) +
+            Mathf.Max(policy.EventRoomCount, guaranteedEventCount) + deliveryRoomCount +
             Mathf.Max(policy.ShopRoomCount, guaranteedShopCount) +
             Mathf.Max(
                 policy.MinimumCombatRoomCount,
@@ -1595,7 +1598,7 @@ public sealed partial class DungeonGraphLayoutAssembler
             0,
             policy.EventRoomCount - CountGuaranteedRoomType(
                 guaranteedRoomTemplates,
-                RoomType.Event));
+                RoomType.Event, excludeParcelDelivery: true));
         int remainingShopCount = Mathf.Max(
             0,
             policy.ShopRoomCount - CountGuaranteedRoomType(

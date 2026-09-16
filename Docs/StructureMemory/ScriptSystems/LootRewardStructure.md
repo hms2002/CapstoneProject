@@ -135,3 +135,27 @@ The additive boss reward decision is already recorded in `Docs/DecisionLog.md`. 
 - FieldHealPickup2D sweeps its real pickup collider against non-trigger Wall colliders during planar drop motion. A hit reflects velocity at equal magnitude and consumes the remaining travel distance in that direction; initial/final overlap correction keeps the landing collider outside the wall.
 - The parabolic arc and idle float belong to the authored visual child, not the pickup root. A root-only visual skips positional presentation so collision corrections cannot be overwritten. GroundPosition follows the actual reflected position.
 - Ownership remains in the pickup drop coroutine; no Rigidbody or physics material migration is required. The bounded per-frame bounce/overlap passes prevent unbounded corner loops.
+
+### Current playable loot pool (2026-09-16)
+
+- Hub's weaponGravePrefab points to Prefabs/Loot/WeaponGrave.prefab (GraveType.JunkWeapon). Its starter candidate source is Data/Loot/Tables/GraveLootTable.asset.junkWeaponCandidates: ApprenticeHeroSword, LightningSpear, CrimsonBoundary only. Flowering and OddIron are special weapons and are not starter candidates.
+- LootPoolItemSelectionService.CanDropWeapon permits those three for ordinary selection and grave candidates; Flowering/OddIron are eligible for treasure-chest and merchant selection. Other weapon IDs are excluded even if old saves unlock them.
+- ItemDatabase.defaultUnlockedWeapons contains the three ordinary weapons plus both specials. WindWeapon is retained in allWeapons for ID lookup but is no longer a default unlock; ApprenticeHeroSword is now a default unlock.
+- WindWeapon-exclusive relic IDs RD_Stenographer (속기사) and RD_OneDropOfSwiftness (한 방울의 신속) are excluded by loot rarity selection and merchant relic selection, and removed from defaultUnlockedRelics. allRelics retains both for existing references. Existing drop exclusions RD_RunningLedger/RD_FeatherOrbit also apply to merchant selection, matching treasure-chest eligibility.
+- Count profiles, rarity weights, duplicate exclusions, item definitions and special-weapon acquisition eligibility are otherwise unchanged. These lists are the current release selection; expand CanDropWeapon when another weapon becomes playable.
+
+
+### Weapon duplicate exclusions by source (2026-09-16)
+
+ShopInventoryRoll uses CanDropWeapon(..., treasureChest: true) and CanDropRelic, matching treasure-chest candidate eligibility. Category counts/weights and per-source duplicate exclusions remain separately owned.
+
+- Normal/boss chest default context: all player weapon slots, plus previously picked weapons in that same chest roll. World drops, merchant stock and other chest contents are not inspected.
+- Starter/JunkWeapon and Weapon grave: player weapon slots plus all run-session merchant weapon entries; same-roll picks added to the ban list. Merchant collection does not check isSold, so sold entries remain excluded until stock is replaced. World drops/other chest contents are not inspected.
+- Shop new stock: player slots, registered world weapon pickups and active scene WeaponDrop2D objects. DrawFromPool removes each selected definition, preventing duplicates within that roll. Other merchant stock is not included in ShopStock context. Added slots exclude the current stock entries; a full refresh excludes all items in the immediately preceding list, including sold entries. Older offerings can return after being absent from the preceding list.
+- Monster weapon drop default context: player slots only. Current authored stage tables have mobWeaponWeight zero.
+- No global once-per-run weapon history exists in this exclusion path. These are source snapshots at roll time, not automatic removals from already-generated rewards.
+
+
+### Merchant refresh fallback (2026-09-16)
+
+MerchantRunStateService passes old stock before replacing the list. MerchantNPC uses slot offset zero for full refresh and existing count for appended slots. Exhausted slots fall back to remaining relics/consumables with positive weights and the existing consumable cap. Previous-stock exclusions and same-roll deduplication remain enforced. Empty slots remain possible if all permitted alternatives are exhausted.

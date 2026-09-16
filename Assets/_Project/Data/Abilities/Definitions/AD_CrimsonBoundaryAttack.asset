@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_CrimsonBoundaryAttack
   m_EditorClassIdentifier: 
-  abilityName: Crimson Fireball
-  description: "화염 공격력 피해를 주고 화상 3을 부여하는 직선 투사체"
+  abilityName: "홍련 화염탄"
+  description: "화염탄을 직선으로 발사합니다. 적중한 적에게 화염 공격력만큼 피해를 주고 화상 3중첩을 부여합니다."
   hitFeel:
     targetStunSeconds: 0.1
     attackerStopSeconds: 0

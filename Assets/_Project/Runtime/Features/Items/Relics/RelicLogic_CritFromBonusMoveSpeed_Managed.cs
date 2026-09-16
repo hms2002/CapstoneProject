@@ -12,7 +12,7 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
     protected override string DefaultEffectTemplate => "● [[추가 이동속도]] {bonus_move_step}마다 [[치명타 확률]] {crit_gain_per_step} 추가";
 
     [Header("Read MoveSpeed (x1 multiplier)")]
-    [Tooltip("권장: MoveSpeedFinal (x1). StatTypeBindings의 Composite(Final=(Base+Add)*Mul)를 활용합니다.")]
+    [Tooltip("권장: MoveSpeedFinal. Composite 최종 속도를 기본 속도로 나누어 100% 기준 배율로 읽습니다.")]
     public StatId moveSpeedFinalStatId = StatId.MoveSpeedFinal;
 
     [Tooltip("StatTypeBindings가 없거나 특별히 직접 읽고 싶을 때 사용하는 fallback. (x1 배수 Attribute)")]
@@ -184,7 +184,8 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
             float moveMult = ReadMoveSpeedMultiplierX1();
             float bonusMove = Mathf.Max(0f, moveMult - 1f);
 
-            int steps = Mathf.FloorToInt(bonusMove / _step);
+            // 정규화 과정의 float 오차로 정확한 단계 경계에서 보너스가 누락되지 않게 한다.
+            int steps = Mathf.FloorToInt(bonusMove / _step + 0.00001f);
             float bonusCrit = Mathf.Max(0f, steps) * _critPerStep;
 
             ApplyCritBonus(bonusCrit);
@@ -204,6 +205,11 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
             {
                 var provider = new AttributeStatProvider(_ctx.attributeSet, bindings);
                 float v = provider.Get(_moveSpeedFinalStatId);
+                if (bindings.TryGetComposite(_moveSpeedFinalStatId, out var composite) && composite != null)
+                {
+                    float baseSpeed = provider.Get(composite.baseId);
+                    return baseSpeed > 0f ? Mathf.Max(0f, v / baseSpeed) : 1f;
+                }
                 return v != 0f ? Mathf.Max(0f, v) : 1f;
             }
 

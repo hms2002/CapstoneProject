@@ -3875,7 +3875,7 @@ MonoBehaviour:
     - localCell: {x: 0, y: 0}
       tile: {fileID: 11400000, guid: 3aa57dcf747bdac4f893d924cfd9974b, type: 2}
     - localCell: {x: 0, y: 1}
-      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 2}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 3}
@@ -3897,29 +3897,29 @@ MonoBehaviour:
     - localCell: {x: 0, y: 11}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 12}
-      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 13}
       tile: {fileID: 11400000, guid: fc19a9c81366a1540b5f405102a6775b, type: 2}
     - localCell: {x: 0, y: 17}
       tile: {fileID: 11400000, guid: 3aa57dcf747bdac4f893d924cfd9974b, type: 2}
     - localCell: {x: 0, y: 18}
-      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
-    - localCell: {x: 0, y: 19}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
+    - localCell: {x: 0, y: 19}
+      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
     - localCell: {x: 0, y: 20}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 21}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 22}
-      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
-    - localCell: {x: 0, y: 23}
       tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
+    - localCell: {x: 0, y: 23}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 24}
       tile: {fileID: 11400000, guid: fc19a9c81366a1540b5f405102a6775b, type: 2}
     - localCell: {x: 0, y: 27}
       tile: {fileID: 11400000, guid: 3aa57dcf747bdac4f893d924cfd9974b, type: 2}
     - localCell: {x: 0, y: 28}
-      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 29}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 30}
@@ -3943,21 +3943,21 @@ MonoBehaviour:
     - localCell: {x: 0, y: 39}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 40}
-      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
+      tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 0, y: 41}
       tile: {fileID: 11400000, guid: fc19a9c81366a1540b5f405102a6775b, type: 2}
     - localCell: {x: 1, y: 0}
-      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 1, y: 13}
-      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 1, y: 17}
-      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 1, y: 24}
-      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 1, y: 27}
-      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 1, y: 41}
-      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 2, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 2, y: 13}
@@ -4111,7 +4111,7 @@ MonoBehaviour:
     - localCell: {x: 17, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 17, y: 15}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+      tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
     - localCell: {x: 17, y: 16}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 17, y: 17}
@@ -4133,7 +4133,7 @@ MonoBehaviour:
     - localCell: {x: 18, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 18, y: 15}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
     - localCell: {x: 18, y: 16}
       tile: {fileID: 11400000, guid: 24aa6236483153c4284a4f14de692673, type: 2}
     - localCell: {x: 18, y: 17}
@@ -4177,9 +4177,9 @@ MonoBehaviour:
     - localCell: {x: 24, y: 41}
       tile: {fileID: 11400000, guid: 66aafe833f0201f4a80b802e3925e8ec, type: 2}
     - localCell: {x: 25, y: 0}
-      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+      tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
     - localCell: {x: 25, y: 41}
-      tile: {fileID: 11400000, guid: 66aafe833f0201f4a80b802e3925e8ec, type: 2}
+      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
     - localCell: {x: 26, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 26, y: 41}
@@ -4189,9 +4189,9 @@ MonoBehaviour:
     - localCell: {x: 27, y: 41}
       tile: {fileID: 11400000, guid: 66aafe833f0201f4a80b802e3925e8ec, type: 2}
     - localCell: {x: 28, y: 0}
-      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
+      tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
     - localCell: {x: 28, y: 41}
-      tile: {fileID: 11400000, guid: 66aafe833f0201f4a80b802e3925e8ec, type: 2}
+      tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
     - localCell: {x: 29, y: 0}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 29, y: 41}
@@ -4217,9 +4217,9 @@ MonoBehaviour:
     - localCell: {x: 34, y: 41}
       tile: {fileID: 11400000, guid: 66aafe833f0201f4a80b802e3925e8ec, type: 2}
     - localCell: {x: 35, y: 0}
-      tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 35, y: 19}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+      tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
     - localCell: {x: 35, y: 20}
       tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
     - localCell: {x: 35, y: 41}
@@ -4227,7 +4227,7 @@ MonoBehaviour:
     - localCell: {x: 36, y: 0}
       tile: {fileID: 11400000, guid: cb17778e22049e8489e4f650df2dd0ae, type: 2}
     - localCell: {x: 36, y: 1}
-      tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 36, y: 2}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 36, y: 3}
@@ -4245,7 +4245,7 @@ MonoBehaviour:
     - localCell: {x: 36, y: 9}
       tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
     - localCell: {x: 36, y: 19}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 36, y: 20}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 36, y: 41}
@@ -4253,7 +4253,7 @@ MonoBehaviour:
     - localCell: {x: 37, y: 9}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 37, y: 19}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 37, y: 20}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 37, y: 41}
@@ -4261,7 +4261,7 @@ MonoBehaviour:
     - localCell: {x: 38, y: 9}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 38, y: 19}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 38, y: 20}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 38, y: 41}
@@ -4269,7 +4269,7 @@ MonoBehaviour:
     - localCell: {x: 39, y: 9}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 39, y: 19}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 39, y: 20}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 39, y: 41}
@@ -4277,7 +4277,7 @@ MonoBehaviour:
     - localCell: {x: 40, y: 9}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 40, y: 19}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 40, y: 20}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 40, y: 41}
@@ -4285,7 +4285,7 @@ MonoBehaviour:
     - localCell: {x: 41, y: 9}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 41, y: 19}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+      tile: {fileID: 11400000, guid: b936c661ddf6b834eab58b9b515efddc, type: 2}
     - localCell: {x: 41, y: 20}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 41, y: 31}
@@ -4307,13 +4307,13 @@ MonoBehaviour:
     - localCell: {x: 41, y: 39}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 41, y: 40}
-      tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 41, y: 41}
       tile: {fileID: 11400000, guid: 8907c6aae7ce28146850ab42c0389ea1, type: 2}
     - localCell: {x: 42, y: 9}
       tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 42, y: 19}
-      tile: {fileID: 11400000, guid: f464b23de66b52e45b43024de8c13468, type: 2}
+      tile: {fileID: 11400000, guid: efd4e8cff87377e4994fe850f31b7172, type: 2}
     - localCell: {x: 42, y: 20}
       tile: {fileID: 11400000, guid: 0756acb3876f2fe41bd0054be40df858, type: 2}
     - localCell: {x: 42, y: 31}
@@ -4355,13 +4355,13 @@ MonoBehaviour:
     - localCell: {x: 51, y: 31}
       tile: {fileID: 11400000, guid: 66aafe833f0201f4a80b802e3925e8ec, type: 2}
     - localCell: {x: 52, y: 9}
-      tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
+      tile: {fileID: 11400000, guid: fad016eac9f25b748b7a5481a9813bdc, type: 2}
     - localCell: {x: 52, y: 31}
       tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
     - localCell: {x: 53, y: 9}
       tile: {fileID: 11400000, guid: cb17778e22049e8489e4f650df2dd0ae, type: 2}
     - localCell: {x: 53, y: 10}
-      tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 53, y: 11}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 53, y: 12}
@@ -4379,13 +4379,13 @@ MonoBehaviour:
     - localCell: {x: 53, y: 18}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 53, y: 19}
-      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+      tile: {fileID: 11400000, guid: 73d59770a5693cd45b30cb2e8444ddab, type: 2}
     - localCell: {x: 53, y: 20}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 53, y: 21}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 53, y: 22}
-      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
+      tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
     - localCell: {x: 53, y: 23}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 53, y: 24}
@@ -4401,277 +4401,14 @@ MonoBehaviour:
     - localCell: {x: 53, y: 29}
       tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 53, y: 30}
-      tile: {fileID: 11400000, guid: 3bfb8d0968916a74db3547d9000b42ef, type: 2}
+      tile: {fileID: 11400000, guid: 59bd3058d02424f458d26ba352b69fb3, type: 2}
     - localCell: {x: 53, y: 31}
       tile: {fileID: 11400000, guid: 8907c6aae7ce28146850ab42c0389ea1, type: 2}
     wallDetailTiles: []
     foregroundTiles: []
     overlayFxTiles: []
+    holeTiles: []
     objectPlacements:
-    - monsterWaveId: wave_default
-      placementId: Monster_01
-      kind: 1
-      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 13, y: 11}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_02
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 2
-      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
-      localCell: {x: 41, y: 11}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_03
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
-      localCell: {x: 13, y: 31}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_04
-      kind: 1
-      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 41, y: 29}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_05
-      kind: 1
-      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 9, y: 11}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_06
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 2
-      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
-      localCell: {x: 37, y: 11}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_07
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
-      localCell: {x: 9, y: 31}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_08
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 1
-      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
-      localCell: {x: 37, y: 31}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_09
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 1
-      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
-      localCell: {x: 17, y: 11}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_10
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
-      localCell: {x: 45, y: 11}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_11
-      kind: 1
-      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 17, y: 31}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_12
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
-      localCell: {x: 45, y: 29}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_13
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
-      localCell: {x: 13, y: 7}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_14
-      kind: 1
-      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 41, y: 14}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_15
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 2
-      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
-      localCell: {x: 13, y: 27}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_16
-      kind: 1
-      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 41, y: 26}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_17
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 2
-      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
-      localCell: {x: 13, y: 15}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_18
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
-      localCell: {x: 41, y: 17}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_19
-      kind: 1
-      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 13, y: 35}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_20
-      kind: 1
-      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 39, y: 35}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_21
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 2
-      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
-      localCell: {x: 9, y: 7}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_22
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
-      localCell: {x: 34, y: 7}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
     - monsterWaveId: wave_default
       placementId: Monster_23
       kind: 1
@@ -4683,43 +4420,139 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: ''
+      linkedChestLockPlacementId: 
     - monsterWaveId: wave_default
-      placementId: Monster_24
+      placementId: Monster_21
       kind: 1
       prefab: {fileID: 0}
-      monsterSpawnRole: 1
-      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
-      localCell: {x: 37, y: 27}
+      monsterSpawnRole: 2
+      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
+      localCell: {x: 9, y: 7}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: ''
+      linkedChestLockPlacementId: 
     - monsterWaveId: wave_default
-      placementId: Monster_25
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 0
-      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
-      localCell: {x: 20, y: 15}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    - monsterWaveId: wave_default
-      placementId: Monster_26
+      placementId: Monster_05
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
       monsterSpawnRole: 0
       monsterStageSet: {fileID: 0}
-      localCell: {x: 45, y: 15}
+      localCell: {x: 9, y: 11}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: ''
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_07
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 9, y: 31}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_13
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 13, y: 7}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_01
+      kind: 1
+      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 13, y: 11}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_17
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 2
+      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
+      localCell: {x: 13, y: 15}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_15
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 2
+      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
+      localCell: {x: 13, y: 27}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_03
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 13, y: 31}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_19
+      kind: 1
+      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 13, y: 35}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_09
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
+      localCell: {x: 17, y: 11}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_11
+      kind: 1
+      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 17, y: 31}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
     - monsterWaveId: wave_default
       placementId: Monster_27
       kind: 1
@@ -4731,7 +4564,175 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: ''
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_25
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 20, y: 15}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_22
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 34, y: 7}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_06
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 2
+      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
+      localCell: {x: 37, y: 11}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_24
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
+      localCell: {x: 37, y: 27}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_08
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
+      localCell: {x: 37, y: 31}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_20
+      kind: 1
+      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 39, y: 35}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_02
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 2
+      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
+      localCell: {x: 41, y: 11}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_14
+      kind: 1
+      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 41, y: 14}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_18
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 41, y: 17}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_16
+      kind: 1
+      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 41, y: 26}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_04
+      kind: 1
+      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 41, y: 29}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_10
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 45, y: 11}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_26
+      kind: 1
+      prefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 45, y: 15}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_12
+      kind: 1
+      prefab: {fileID: 0}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 11400000, guid: e9116d45fbe558147acec0ceb08c330c, type: 2}
+      localCell: {x: 45, y: 29}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
     - monsterWaveId: wave_default
       placementId: Monster_28
       kind: 1
@@ -4743,9 +4744,9 @@ MonoBehaviour:
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
-      linkedChestLockPlacementId: ''
-    travelEndpointPlacements: []
+      linkedChestLockPlacementId: 
     monsterWaves:
     - id: wave_default
       displayName: Wave 1
       startDelaySeconds: 0
+    travelEndpointPlacements: []

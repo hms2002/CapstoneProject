@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gameplay::ParcelRelicDefinition
   relicId: Relic.Event.Parcel
   displayName: "\uC18C\uD3EC"
-  icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  icon: {fileID: 2914263891378394802, guid: 522fe167c55eab149b6bf24c2e3fa0ff, type: 3}
   rarity: 0
   description: "\uB2E4\uC74C \uAD6C\uC5ED\uC758 \uBC30\uC1A1\uC9C0\uAE4C\uC9C0 \uC6B4\uBC18\uD574\uC57C
     \uD558\uB294 \uC18C\uD3EC\uC785\uB2C8\uB2E4. \uC720\uBB3C \uC2AC\uB86F\uC744

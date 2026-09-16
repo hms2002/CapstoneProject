@@ -903,6 +903,17 @@ public class RelicInventory : MonoBehaviour
         return TrySetRelicSlot(empty, relic);
     }
 
+    /// <summary>Consumes one stored charge, removing the relic at zero through normal cleanup.</summary>
+    public bool TryConsumeLevel(string relicId)
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i].def == null || slots[i].def.relicId != relicId) continue;
+            return slots[i].level <= 1 ? RemoveAt(i) : ReapplyLevel(i, slots[i].level - 1);
+        }
+        return false;
+    }
+
     public bool RemoveAt(int index) => TrySetRelicSlot(index, null);
 
     public bool RemoveOne(RelicDefinition def)

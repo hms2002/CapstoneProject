@@ -21,7 +21,7 @@ public class Wizard : Slime, IMobProjectileLaneSource
     private const string DieTriggerName = "die";
     private const int WallLayer = 30;
     private const float AttackRange = 6.5f;
-    private const float AttackPrepareSeconds = 0.35f;
+    private const float AttackPrepareSeconds = 0.65f;
     private const float VisualScale = 0.85f;
     private const float ChaseSpeedMultiplier = 1f;
     private const float ProjectileSpeed = 5.5f;

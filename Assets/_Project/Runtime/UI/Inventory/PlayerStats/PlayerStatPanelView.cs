@@ -151,6 +151,14 @@ public sealed class PlayerStatPanelView : MonoBehaviour
             }
 
             case PlayerStatValueMode.StatId:
+                if (definition.StatId == StatId.MoveSpeedFinal)
+                {
+                    float baseSpeed = statSource != null ? statSource.Get(StatId.MoveSpeedBase) : 0f;
+                    float finalSpeed = statSource != null ? statSource.Get(StatId.MoveSpeedFinal) : 0f;
+                    // 실제 이동속도를 기본 속도 대비 비율로 투영해 고정 증가량과 배율을 함께 반영한다.
+                    float percent = baseSpeed > 0f ? finalSpeed / baseSpeed * 100f : 0f;
+                    return $"{FormatNumber(percent, definition.DecimalPlaces)}%";
+                }
                 return FormatSingleValue(definition, statSource != null ? statSource.Get(definition.StatId) : 0f);
 
             default:

@@ -103,7 +103,13 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
 
     public bool TryCreateFinalePresentationRoutine(BossEncounterEndDirector director, out IEnumerator routine)
     {
-        ObserveActivePhaseTwoBosses();
+        if (!IsCleared)
+        {
+            routine = null;
+            return false;
+        }
+
+        CleanupRemainingMonsters();
         if (!TryResolveFinalePair(out SlimeQueenP2Short shortQueen, out SlimeQueenP2Long longQueen))
         {
             routine = null;
@@ -112,6 +118,29 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
 
         routine = RunPhaseTwoFinaleRoutine(shortQueen, longQueen);
         return true;
+    }
+
+    private void CleanupRemainingMonsters()
+    {
+        // Cancel pending spawns before removing their already-spawned counterparts.
+        foreach (SlimeQueenFallingSummon summon in FindObjectsByType<SlimeQueenFallingSummon>(FindObjectsInactive.Include))
+        {
+            if (summon == null || summon.gameObject.scene != gameObject.scene)
+                continue;
+
+            summon.gameObject.SetActive(false);
+            summon.CancelFall();
+        }
+
+        foreach (Mob mob in FindObjectsByType<Mob>(FindObjectsInactive.Include))
+        {
+            if (mob == null || mob.gameObject.scene != gameObject.scene)
+                continue;
+
+            // OnDisable cancels AI/abilities; bypass death to avoid splits and rewards.
+            mob.gameObject.SetActive(false);
+            Destroy(mob.gameObject);
+        }
     }
 
     private void OnDisable()
