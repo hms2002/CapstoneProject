@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b808a4e7b164ba780596eac7ffff723, type: 3}
   m_Name: Relic Logic_Common_LastBreath
   m_EditorClassIdentifier:
-  effectTemplate: "체력 {max_ratio} 이하일 때 [[{stat}]] {value}"
+  effectTemplate: "● 체력이 {max_ratio} 이하일 때 [[{stat}]] {value}"
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   minHealthRatioInclusive: 0

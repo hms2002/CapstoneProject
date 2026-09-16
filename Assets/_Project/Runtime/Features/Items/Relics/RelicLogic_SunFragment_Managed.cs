@@ -65,8 +65,8 @@ public sealed class RelicLogic_SunFragment_Managed : RelicLogic
         int level = Mathf.Max(1, previewLevel);
         return new RelicTooltipData
         {
-            effectText = $"● {spawnInterval:0.##}초마다 [[태양의 파편]] 생성 (최대 {Evaluate(maxFragmentsByLevel, level, 1)}개)\n" +
-                         $"● 접촉 시 [[화염 피해]] 100% 및 [[화상]] {Evaluate(burnStacksByLevel, level, 4)} 부여 후 소멸"
+            effectText = $"● {{val:{spawnInterval:0.##}초}}마다 {{em:태양의 파편}} 생성\n● 최대 {{val:{Evaluate(maxFragmentsByLevel, level, 1)}개}} 유지\n" +
+                         $"● 적과 접촉 시 [[화염 피해]] {{val:100%}} 및 [[화상]] {{val:{Evaluate(burnStacksByLevel, level, 4)}중첩}} 부여 후 소멸"
         };
     }
 

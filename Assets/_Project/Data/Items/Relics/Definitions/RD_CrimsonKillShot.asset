@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: "한계선의 잔불 추격"
   icon: {fileID: 21300000, guid: 04aa0b7915194311ae5cd1ef91df55ca, type: 3}
   rarity: 2
-  description: "홍련의 한계선 전용 유물\n우클릭으로 적을 처치하면 그 자리에서 가까운 적을 추적하는 평타 발사체 1개를 생성합니다. 추적할 적이 없으면 생성하지 않으며 연쇄 생성되지 않습니다."
+  description: "● {em:홍련의 한계선} 전용 유물\n● {em:점화!}로 적 처치 시 해당 위치에서 {em:추적 화염탄} {val:1개} 생성\n● 화염탄은 가까운 적을 추적\n● 추적할 적이 없으면 생성되지 않으며, 추적 화염탄으로는 {neg:추가 생성 불가}"
   maxLevel: 1
   dropLevel: 1
   logic: {fileID: 11400000, guid: 08badb6a48354e7897a2d10a379c625d, type: 2}

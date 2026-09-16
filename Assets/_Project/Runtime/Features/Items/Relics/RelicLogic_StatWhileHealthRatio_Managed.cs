@@ -5,7 +5,7 @@ using UnityGAS;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Stat While Health Ratio (Managed)")]
 public sealed class RelicLogic_StatWhileHealthRatio_Managed : RelicLogic
 {
-    protected override string DefaultEffectTemplate => "체력 {min_ratio}~{max_ratio}일 때 [[{stat}]] {value}";
+    protected override string DefaultEffectTemplate => "● 체력이 {min_ratio}~{max_ratio}일 때 [[{stat}]] {value}";
 
     [Header("Watch")]
     public AttributeDefinition healthAttribute;
@@ -79,7 +79,7 @@ public sealed class RelicLogic_StatWhileHealthRatio_Managed : RelicLogic
 
     private static string FormatPercent01(float ratio)
     {
-        return $"{ratio * 100f:0.##}%";
+        return RelicTooltipFormatter.FormatUnsignedValueToken(ratio, true);
     }
 
     private string ResolveDisplayName()

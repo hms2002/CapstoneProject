@@ -25,7 +25,7 @@ public sealed class RelicLogic_CritChanceAfterCriticalHit_Managed : RelicLogic
     public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
     {
         return BuildTemplatedTooltip(
-            "● 치명타 적중 시 {duration} 동안 [[치명타 확률]] {chance} 증가\n● 치명타 적중 시 지속 시간 초기화",
+            "● [[치명타]] 적중 시 {duration} 동안 [[치명타 확률]] {chance}\n● 치명타 재적중 시 {pos:지속 시간 갱신}",
             new Dictionary<string, string>
             {
                 ["duration"] = RelicTooltipFormatter.FormatSeconds(durationSeconds),

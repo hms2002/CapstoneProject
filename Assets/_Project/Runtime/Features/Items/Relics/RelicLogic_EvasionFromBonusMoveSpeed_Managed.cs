@@ -233,7 +233,7 @@ public class RelicLogic_EvasionFromBonusMoveSpeed_Managed : RelicLogic
             "● [[추가 이동속도]] {bonus_move_step}마다 [[공격을 회피할 확률]] {evasion_gain_per_step} 추가",
             new Dictionary<string, string>
             {
-                ["bonus_move_step"] = RelicTooltipFormatter.FormatSignedValueToken(bonusMoveStep, true),
+                ["bonus_move_step"] = RelicTooltipFormatter.FormatUnsignedValueToken(bonusMoveStep, true),
                 ["evasion_gain_per_step"] = RelicTooltipFormatter.FormatSignedValueToken(evasionPerStep, true),
             });
     }
