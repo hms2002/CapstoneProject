@@ -29,6 +29,84 @@ public sealed class DungeonReturnPortalPlayModeTests
     private T Own<T>(T value) where T : Object { owned.Add(value); return value; }
 
     [UnityTest]
+    public IEnumerator BossShortcut_BuilderPersistsUnlock_TravelsToBoss_AndKeepsReturnsUsable()
+    {
+        var builder = MakeBuilder();
+        builder.EditorConfigureBossShortcut(Load("DungeonBossShortcut").GetComponent<DungeonReturnPortal>(),
+            Load("DungeonBossShortcutTravelRig").GetComponent<DungeonReturnTravel>());
+        var layout = MakeLayout(RoomType.Boss);
+        Assert.That(builder.TryBuild(layout), Is.True);
+        var portal = (DungeonReturnPortal)Get(builder, "bossShortcut");
+        Assert.That(portal, Is.Not.Null);
+        Assert.That(portal.transform.position.x, Is.InRange(2f, 5f));
+        typeof(DungeonRoomBuilder).GetMethod("NotifyReturnRoomEntered", Private).Invoke(builder, new object[] { 0 });
+        Assert.That(portal.IsRevealed, Is.False);
+        typeof(DungeonRoomBuilder).GetMethod("NotifyReturnRoomEntered", Private).Invoke(builder, new object[] { 1 });
+        Assert.That(portal.IsRevealed, Is.True);
+        var states = builder.CaptureGeneratedObjectStates();
+        Assert.That(states.Count(s => s.stateId == "boss-shortcut" && s.isActive), Is.EqualTo(1));
+        Assert.That(builder.TryBuild(layout), Is.True);
+        builder.RestoreGeneratedObjectStates(states);
+        portal = (DungeonReturnPortal)Get(builder, "bossShortcut");
+        Assert.That(portal.IsRevealed, Is.True);
+        yield return new WaitForSecondsRealtime(0.4f);
+        var player = MakePlayer();
+        var travel = (DungeonReturnTravel)Get(builder, "bossShortcutTravel");
+        var arrival = (DungeonReturnPortalView)Get(travel, "arrivalPortal");
+        Assert.That((string)Get(arrival, "idleState"), Is.EqualTo("BluePortal"));
+        Assert.That(arrival.GetComponentsInChildren<Animator>(true).All(a => a.runtimeAnimatorController.name == "BluePortal"), Is.True);
+        var returnArrival = (DungeonReturnPortalView)Get(builder.ReturnTravel, "arrivalPortal");
+        Assert.That((string)Get(returnArrival, "idleState"), Is.EqualTo("OrangePortal"));
+        var originalReturn = builder.GeneratedReturnPortals[0];
+        originalReturn.RestoreRevealed(true);
+        Physics2D.SyncTransforms();
+        Assert.That(originalReturn.CanInteract(player), Is.True, "BluePortal trigger must not block the Start landing.");
+        Assert.That(travel.LandingPoint.position.x, Is.GreaterThan(10f));
+        Assert.That(travel.TryTravel(portal, player), Is.True);
+        float deadline = Time.realtimeSinceStartup + 8f;
+        bool sawBlueArrival = false;
+        while (travel.IsTravelling && Time.realtimeSinceStartup < deadline)
+        {
+            var visibleAnimator = arrival.GetComponentInChildren<Animator>();
+            if (visibleAnimator != null && visibleAnimator.GetCurrentAnimatorStateInfo(0).IsName("BluePortal")) sawBlueArrival = true;
+            yield return null;
+        }
+        Assert.That(sawBlueArrival, Is.True, "Boss arrival must actually play BluePortal during travel.");
+        Assert.That(travel.IsTravelling, Is.False);
+        Assert.That(Vector2.Distance(player.Transform.position, travel.LandingPoint.position), Is.LessThan(0.01f));
+        Assert.That(builder.TryBuild(layout, DungeonBuildOptions.VisualOnly), Is.True);
+        Assert.That((DungeonReturnPortal)Get(builder, "bossShortcut") == null, Is.True);
+    }
+
+    [UnityTest]
+    public IEnumerator BossShortcut_OnlyBossVisitUnlocksAndStateRestores()
+    {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(Folder + "DungeonBossShortcut.prefab");
+        Assert.That(prefab, Is.Not.Null);
+        var root = Own(Object.Instantiate(prefab));
+        var portal = root.GetComponent<DungeonReturnPortal>();
+        portal.Configure(null, 42, null, true, RoomSocketDirection.Up);
+        yield return null;
+        Assert.That(portal.IsRevealed, Is.False);
+        portal.NotifyRoomEntered(1);
+        yield return null;
+        Assert.That(portal.IsRevealed, Is.False);
+        portal.NotifyRoomEntered(42);
+        Assert.That(portal.IsRevealed, Is.True);
+        portal.NotifyRoomEntered(42);
+        yield return new WaitForSecondsRealtime(0.4f);
+        var animator = root.GetComponentInChildren<Animator>();
+        Assert.That(animator, Is.Not.Null);
+        Assert.That(animator.runtimeAnimatorController.name, Is.EqualTo("BluePortal"));
+        Assert.That(animator.GetCurrentAnimatorStateInfo(0).IsName("BluePortal"), Is.True);
+        Assert.That(portal.GetInteractDescription(), Is.EqualTo("보스 방으로 이동하기"));
+        var restored = Own(Object.Instantiate(prefab)).GetComponent<DungeonReturnPortal>();
+        restored.Configure(null, 42, null, true, RoomSocketDirection.Up);
+        restored.RestoreRevealed(true);
+        Assert.That(restored.IsRevealed, Is.True);
+    }
+
+    [UnityTest]
     public IEnumerator EncounterHide_ShrinksOnceAndCanReopen()
     {
         var root = Own(new GameObject("ShrinkPortalView"));
@@ -442,6 +520,7 @@ public sealed class DungeonReturnPortalPlayModeTests
             p.CorridorLengthVariation, p.GuaranteedRoomTemplates);
         Assert.That(layout.IsComplete, Is.True, layout.FailureReason);
         var builder = MakeBuilder();
+        builder.EditorConfigureBossShortcut(Load("DungeonBossShortcut").GetComponent<DungeonReturnPortal>());
         foreach (var room in layout.Rooms)
         {
             foreach (var tile in room.Template.BuildData.floorTiles) builder.FloorTilemap.SetTile((Vector3Int)(room.Origin + tile.localCell), tile.tile);
@@ -451,6 +530,16 @@ public sealed class DungeonReturnPortalPlayModeTests
         int expected = layout.Rooms.Count(r => r.Template.LayoutData.roomType != RoomType.Start &&
             DungeonReturnPortalPlacement.TryGetOnlyConnection(layout, r.PlacementId, out _));
         Assert.That(builder.GeneratedReturnPortals.Count, Is.EqualTo(expected));
+        var shortcut = (DungeonReturnPortal)Get(builder, "bossShortcut");
+        Assert.That(shortcut, Is.Not.Null, "Production Boss room needs a reachable landing.");
+        Assert.That(shortcut.IsRevealed, Is.False);
+        var start = layout.Rooms.First(r => r.Template.LayoutData.roomType == RoomType.Start);
+        var boss = layout.Rooms.First(r => r.Template.LayoutData.roomType == RoomType.Boss);
+        Assert.That(start.WorldBounds.Contains((Vector2Int)builder.FloorTilemap.WorldToCell(shortcut.transform.position)), Is.True);
+        var travel = (DungeonReturnTravel)Get(builder, "bossShortcutTravel");
+        Assert.That(boss.WorldBounds.Contains((Vector2Int)builder.FloorTilemap.WorldToCell(travel.LandingPoint.position)), Is.True);
+        shortcut.NotifyRoomEntered(boss.PlacementId);
+        Assert.That(shortcut.IsRevealed, Is.True);
     }
 
     private TestPlayerInteractor MakePlayer()
@@ -495,7 +584,7 @@ public sealed class DungeonReturnPortalPlayModeTests
         return builder;
     }
 
-    private DungeonLayoutResult MakeLayout()
+    private DungeonLayoutResult MakeLayout(RoomType destinationType = RoomType.Event)
     {
         var layout = Construct<DungeonLayoutResult>(7, 2);
         var tile = Own(ScriptableObject.CreateInstance<Tile>()); tile.colliderType = Tile.ColliderType.Grid;
@@ -511,7 +600,7 @@ public sealed class DungeonReturnPortalPlayModeTests
             var sockets = new List<RoomSocketData> { new() { localCell = new Vector2Int(i == 0 ? 6 : 0, 2), direction = i == 0 ? RoomSocketDirection.Right : RoomSocketDirection.Left, width = 2 } };
             // A template can have unused sockets and still be a runtime dead end.
             if (i == 1) sockets.Add(new RoomSocketData { localCell = new Vector2Int(2, 6), direction = RoomSocketDirection.Up, width = 2 });
-            template.EditorSetData(new RoomLayoutData { roomId = "test" + i, roomType = i == 0 ? RoomType.Start : RoomType.Event,
+            template.EditorSetData(new RoomLayoutData { roomId = "test" + i, roomType = i == 0 ? RoomType.Start : destinationType,
                 size = new Vector2Int(7, 7), localBounds = new RectInt(0, 0, 7, 7), sockets = sockets },
                 new RoomBuildData { floorTiles = floor, wallTiles = wall, objectPlacements = new List<RoomObjectPlacementData>() });
             var room = Construct<DungeonRoomPlacement>(i, template, new Vector2Int(i * 10, 0), new RectInt(i * 10, 0, 7, 7), 0, false, false);

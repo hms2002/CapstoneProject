@@ -179,6 +179,8 @@ MonoBehaviour:
   maximumPossibleChests: 3
   returnPortalPrefab: {fileID: 4641769535181210430, guid: 88cfbf18cc24e524cb8b95374fd838ba, type: 3}
   returnTravelPrefab: {fileID: 922846396448684112, guid: 2a1b6670633c3b8438cde994b9d07a93, type: 3}
+  bossShortcutPrefab: {fileID: 7122200111475568810, guid: 467aac444814572499bc8508f5bffa1b, type: 3}
+  bossShortcutTravelPrefab: {fileID: 2755461762165263718, guid: a7a8b523ac7ed8948b8f4bcee37f47d3, type: 3}
   returnPortalClearance: 0.35
   underFloorTilemap: {fileID: 919027256}
   floorTilemap: {fileID: 2066969597}

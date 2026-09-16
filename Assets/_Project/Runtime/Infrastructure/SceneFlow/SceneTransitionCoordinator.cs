@@ -21,6 +21,9 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
     [SerializeField] private bool logLoadingHandoffDiagnostics;
 
     private Coroutine transitionRoutine;
+    private ISceneEntryReadiness failedSceneEntry;
+    private bool retrySceneEntryRequested;
+    private Vector2 sceneFailureScroll;
     public bool IsTransitionActive => transitionRoutine != null;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -51,6 +54,55 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
 
         GameObject host = RuntimeServiceOwnership.CreateServiceHost(nameof(SceneTransitionCoordinator));
         return host.AddComponent<SceneTransitionCoordinator>();
+    }
+
+    private IEnumerator WaitForSceneContentReady(Scene scene)
+    {
+        // Start-time generators must run before checking their result, even with zero settle frames.
+        yield return null;
+        var producers = new System.Collections.Generic.List<MonoBehaviour>();
+        foreach (var root in scene.GetRootGameObjects())
+            producers.AddRange(root.GetComponentsInChildren<MonoBehaviour>(true));
+        try
+        {
+            foreach (var producer in producers)
+            {
+                if (producer is not ISceneEntryReadiness readiness) continue;
+                while (producer != null && producer.isActiveAndEnabled && !readiness.IsSceneEntryReady)
+                {
+                    failedSceneEntry = readiness;
+                    if (retrySceneEntryRequested)
+                    {
+                        retrySceneEntryRequested = false;
+                        readiness.RetrySceneEntry();
+                    }
+                    yield return null;
+                }
+            }
+        }
+        finally
+        {
+            failedSceneEntry = null;
+            retrySceneEntryRequested = false;
+        }
+    }
+
+    private void OnGUI()
+    {
+        if (failedSceneEntry == null || string.IsNullOrEmpty(failedSceneEntry.SceneEntryFailure)) return;
+        int oldDepth = GUI.depth;
+        GUI.depth = -10000;
+        float width = Mathf.Min(620f, Screen.width - 24f);
+        GUI.ModalWindow(GetInstanceID(), new Rect((Screen.width - width) / 2f,
+            Mathf.Max(12f, (Screen.height - 240f) / 2f), width, 240f), _ =>
+        {
+            GUILayout.Label("맵을 준비하지 못했습니다. 빈 맵으로 진입하지 않도록 이동을 보류했습니다.");
+            sceneFailureScroll = GUILayout.BeginScrollView(sceneFailureScroll, GUILayout.Height(130f));
+            GUILayout.Label(failedSceneEntry.SceneEntryFailure, new GUIStyle(GUI.skin.label) { wordWrap = true });
+            GUILayout.EndScrollView();
+            if (GUILayout.Button("다시 시도", GUILayout.Height(36f))) retrySceneEntryRequested = true;
+        }, "맵 생성 실패");
+        GUI.depth = oldDepth;
     }
 
     private void Awake()
@@ -262,6 +314,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
         }
 
         yield return fadeService.WaitForPostLoadSettleAsync();
+        yield return WaitForSceneContentReady(SceneManager.GetActiveScene());
         LogLoadingHandoffDiagnostics("after post-load settle");
 
         if (loadingOverlay != null)

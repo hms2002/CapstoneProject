@@ -10,7 +10,7 @@ using System.Collections.Generic;
 /// - 생성 완료 로그에 최종 방 반복 품질과 탐색 완화 사유를 함께 기록한다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class DungeonGenerator : MonoBehaviour
+public sealed class DungeonGenerator : MonoBehaviour, ISceneEntryReadiness
 {
     [Header("Dependencies")]
     [SerializeField] private DungeonGenerationProfileSO generationProfile;
@@ -64,6 +64,9 @@ public sealed class DungeonGenerator : MonoBehaviour
     public int LastGenerationSeed { get; private set; }
     public bool HasCompletedInitialGeneration { get; private set; }
     public bool LastGenerationSucceeded { get; private set; }
+    public bool IsSceneEntryReady => LastGenerationSucceeded || (!generateOnStart && !HasCompletedInitialGeneration);
+    public string SceneEntryFailure { get; private set; } = string.Empty;
+    public void RetrySceneEntry() => Generate();
 
     private void Start()
     {
@@ -72,6 +75,29 @@ public sealed class DungeonGenerator : MonoBehaviour
     }
 
     public bool Generate()
+    {
+        LastLayout = null;
+        SceneEntryFailure = string.Empty;
+        try
+        {
+            return GenerateInternal();
+        }
+        catch (System.Exception exception)
+        {
+            SceneEntryFailure = exception.Message;
+            Debug.LogException(exception, this);
+            return false;
+        }
+        finally
+        {
+            HasCompletedInitialGeneration = true;
+            if (!LastGenerationSucceeded && string.IsNullOrEmpty(SceneEntryFailure))
+                SceneEntryFailure = !string.IsNullOrEmpty(LastLayout?.FailureReason)
+                    ? LastLayout.FailureReason : "Dungeon construction failed. Check the room library and builder.";
+        }
+    }
+
+    private bool GenerateInternal()
     {
         HasCompletedInitialGeneration = false;
         LastGenerationSucceeded = false;
@@ -145,6 +171,9 @@ public sealed class DungeonGenerator : MonoBehaviour
             HasCompletedInitialGeneration = true;
             return false;
         }
+
+        if (LastLayout.RecoveryLevel > 0)
+            Debug.LogWarning($"Dungeon generation recovered. Seed={resolvedSeed}, Theme={resolvedRoomLibrary.ThemeId}: {LastLayout.RecoveryDescription}", this);
 
         roomBuilder.ConfigureCorridorDecoration(
             generationProfile != null
@@ -265,7 +294,7 @@ public sealed class DungeonGenerator : MonoBehaviour
         if (reentryPolicy != DungeonReentryPolicy.PreserveDuringRun ||
             !RunSessionStore.IsRunActive ||
             roomBuilder == null ||
-            !HasCompletedInitialGeneration)
+            !LastGenerationSucceeded)
         {
             return;
         }

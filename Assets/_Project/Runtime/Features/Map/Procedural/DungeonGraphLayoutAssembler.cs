@@ -195,6 +195,7 @@ public sealed partial class DungeonGraphLayoutAssembler
         public int MeaningfulBranchCount;
         public int CycleConnectionCount;
         public int MinimumStartExitDepth = 1;
+        public int RecoveryLevel;
     }
 
     /// <summary>Compares Start-exit depth spread, depth dispersion and room-load dispersion without changing hard topology rules.</summary>
@@ -348,7 +349,7 @@ public sealed partial class DungeonGraphLayoutAssembler
         });
     }
 
-    public DungeonLayoutResult Assemble(
+    private DungeonLayoutResult AssembleCore(
         RoomThemeLibrarySO library,
         DungeonLayoutPolicySO policy,
         int seed,
@@ -357,9 +358,10 @@ public sealed partial class DungeonGraphLayoutAssembler
         int minimumCorridorLength,
         float corridorLengthPerRoomCell,
         int corridorLengthVariation,
-        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates = null,
-        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules = null,
-        int generationStage = 0)
+        IReadOnlyList<RoomTemplateSO> guaranteedRoomTemplates,
+        IReadOnlyList<RequiredCombatRoomRule> requiredCombatRoomRules,
+        int generationStage,
+        int recoveryLevel)
     {
         int roomCount = Mathf.Max(2, requestedRoomCount);
         DungeonLayoutResult failedResult = new(seed, roomCount);
@@ -486,6 +488,7 @@ public sealed partial class DungeonGraphLayoutAssembler
             }
 
             ReorderBossLast(topology);
+            topology.RecoveryLevel = recoveryLevel;
             if (!TryAssignRoomRoles(
                     library,
                     policy,
@@ -1549,31 +1552,10 @@ public sealed partial class DungeonGraphLayoutAssembler
         if (guaranteedRoomTemplates != null)
         {
             List<RoomTemplateSO> pending = new(guaranteedRoomTemplates);
-            List<int> compatible = new();
-            List<int> deadEnds = new();
-            while (pending.Count > 0)
-            {
-                // Start spokes leave fewer distant leaves. Reserve scarce event slots before flexible shops.
-                int next = 0, fewest = int.MaxValue;
-                for (int i = 0; i < pending.Count; i++)
-                {
-                    CollectGuaranteedTemplateNodes(topology, pending[i], assignedSpecialNodes, compatible, deadEnds);
-                    if (compatible.Count >= fewest) continue;
-                    next = i;
-                    fewest = compatible.Count;
-                }
-                if (!TryAssignGuaranteedTemplate(
-                        topology,
-                        pending[next],
-                        policy.PreferSpecialRoomsAtDeadEnds,
-                        assignedSpecialNodes,
-                        random,
-                        out failure))
-                {
-                    return false;
-                }
-                pending.RemoveAt(next);
-            }
+            int reservationBudget = 4096;
+            if (!TryReserveGuaranteedRooms(topology, pending, assignedSpecialNodes,
+                    policy.PreferSpecialRoomsAtDeadEnds, random, ref reservationBudget, out failure))
+                return false;
         }
 
         if (!TryAssignRequiredCombatRoomRules(
@@ -1788,7 +1770,7 @@ public sealed partial class DungeonGraphLayoutAssembler
         List<int> compatibleDeadEnds)
     {
         RoomTopologyPlacementData placementRule = template.LayoutData.topologyPlacement;
-        int minimumDistance = Mathf.Max(0, placementRule.minimumGraphDistanceFromStart);
+        int minimumDistance = ResolvePlacementMinimumDistance(topology, template);
         compatibleNodes.Clear();
         compatibleDeadEnds.Clear();
         for (int nodeIndex = 1; nodeIndex < topology.Nodes.Count; nodeIndex++)
@@ -1809,7 +1791,7 @@ public sealed partial class DungeonGraphLayoutAssembler
             bool isDeadEnd = GetNodeDegree(topology, nodeIndex) == 1;
             if (graphDistance < minimumDistance ||
                 (placementRule.requireDeadEnd && !isDeadEnd) ||
-                (placementRule.mode == RoomTopologyPlacementMode.CycleDetour &&
+                (RequiresCyclePlacement(topology, template) &&
                  !topology.Nodes[nodeIndex].IsCycleDetour))
             {
                 continue;
@@ -1819,46 +1801,6 @@ public sealed partial class DungeonGraphLayoutAssembler
             if (isDeadEnd)
                 compatibleDeadEnds.Add(nodeIndex);
         }
-    }
-
-    private static bool TryAssignGuaranteedTemplate(
-        TopologyDraft topology,
-        RoomTemplateSO template,
-        bool preferDeadEnds,
-        List<int> assignedNodes,
-        System.Random random,
-        out string failure)
-    {
-        RoomTopologyPlacementData placementRule = template.LayoutData.topologyPlacement;
-        int minimumDistance = Mathf.Max(0, placementRule.minimumGraphDistanceFromStart);
-        List<int> compatibleNodes = new();
-        List<int> compatibleDeadEnds = new();
-        CollectGuaranteedTemplateNodes(topology, template, assignedNodes, compatibleNodes, compatibleDeadEnds);
-        List<int> candidates = preferDeadEnds && compatibleDeadEnds.Count > 0
-            ? compatibleDeadEnds
-            : compatibleNodes;
-        if (candidates.Count == 0)
-        {
-            failure =
-                $"No unassigned topology node can use guaranteed template " +
-                $"'{template.LayoutData.roomId}' with placement rule " +
-                $"{placementRule.mode}, minimum distance {minimumDistance}, " +
-                $"dead end required={placementRule.requireDeadEnd}.";
-            return false;
-        }
-
-        int selectedNodeIndex = SelectGuaranteedNode(
-            topology,
-            candidates,
-            assignedNodes,
-            placementRule.mode,
-            random);
-        PlannedNode selectedNode = topology.Nodes[selectedNodeIndex];
-        selectedNode.Role = template.LayoutData.roomType;
-        selectedNode.Template = template;
-        assignedNodes.Add(selectedNodeIndex);
-        failure = string.Empty;
-        return true;
     }
 
     private static int SelectGuaranteedNode(
