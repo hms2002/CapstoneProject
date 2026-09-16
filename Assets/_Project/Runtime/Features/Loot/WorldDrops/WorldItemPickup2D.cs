@@ -64,7 +64,7 @@ public class WorldItemPickup2D : InteractableBase
     private void OnDisable()
     {
         WorldItemRegistry.Unregister(this);
-        WorldItemHoverPlayback.Hide(GetDetailAnchor());
+        OnUnHighlight();
     }
 
     public override bool CanInteract(IPlayerInteractor player)

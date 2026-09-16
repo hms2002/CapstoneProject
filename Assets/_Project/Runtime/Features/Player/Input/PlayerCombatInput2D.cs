@@ -265,22 +265,32 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
             return;
         }
 
+        bool skillInputBlocked =
+            InputActionQuery.IsPressBlocked(InputActionId.Skill1) ||
+            InputActionQuery.IsPressBlocked(InputActionId.Skill2);
+        if (skillInputBlocked)
+        {
+            ClearApprenticeSkillInput();
+            ClearCooldownSkillInput();
+        }
+
         if (IsCombatBlocked())
         {
             ClearApprenticeSkillInput();
             ClearCooldownSkillInput();
-            TryHandleBlockedWeaponAbilityInput();
+            if (!skillInputBlocked)
+                TryHandleBlockedWeaponAbilityInput();
             ReleaseAttackHoldIfInputEnded();
             return;
         }
 
-        HandleCombatInput();
+        HandleCombatInput(!skillInputBlocked);
     }
 
-    private void HandleCombatInput()
+    private void HandleCombatInput(bool allowSkillInput)
     {
         // Resolve this weapon's manual skill before the held basic attack can restart.
-        if (HandleApprenticeSkillInput())
+        if (allowSkillInput && HandleApprenticeSkillInput())
         {
             if (InputActionQuery.WasPressedThisFrame(InputActionId.Dash))
             {
@@ -292,7 +302,8 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
             return;
         }
 
-        TryConsumeCooldownSkillInput();
+        if (allowSkillInput)
+            TryConsumeCooldownSkillInput();
 
         var atk = GetBasicAttack();
 
@@ -341,8 +352,10 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
             }
         }
 
-        if (InputActionQuery.WasPressedThisFrame(InputActionId.Skill1)) TryActivateSafe(WeaponAbilitySlot.Skill1, GetSkill1());
-        if (InputActionQuery.WasPressedThisFrame(InputActionId.Skill2)) TryActivateSafe(WeaponAbilitySlot.Skill2, GetSkill2());
+        if (allowSkillInput && InputActionQuery.WasPressedThisFrame(InputActionId.Skill1))
+            TryActivateSafe(WeaponAbilitySlot.Skill1, GetSkill1());
+        if (allowSkillInput && InputActionQuery.WasPressedThisFrame(InputActionId.Skill2))
+            TryActivateSafe(WeaponAbilitySlot.Skill2, GetSkill2());
         if (InputActionQuery.WasPressedThisFrame(InputActionId.Dash)) TryActivateSafe(default, dash);
 
         if (weaponInventory != null && InputActionQuery.WasPressedThisFrame(InputActionId.SwapWeapon))

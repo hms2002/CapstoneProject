@@ -14,20 +14,58 @@ public interface IWorldItemHoverBackend
 /// </summary>
 public static class WorldItemHoverPlayback
 {
+    private static readonly object SkillInputBlockOwner = new();
     private static IWorldItemHoverBackend backend;
+    private static Transform activeWorldAnchor;
+
+    public static bool IsShowing => activeWorldAnchor != null;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStaticState()
+    {
+        backend = null;
+        activeWorldAnchor = null;
+        SetSkillPressBlocked(false);
+    }
 
     public static void RegisterBackend(IWorldItemHoverBackend hoverBackend)
     {
         backend = hoverBackend;
+        if (backend == null)
+            ClearActiveState();
     }
 
     public static void Show(Transform worldAnchor, ScriptableObject itemDefinition, int relicLevelOverride = 0)
     {
+        if (worldAnchor == null || itemDefinition == null)
+        {
+            Hide(worldAnchor);
+            return;
+        }
+
+        activeWorldAnchor = worldAnchor;
+        SetSkillPressBlocked(true);
         backend?.ShowWorldItemDetail(worldAnchor, itemDefinition, relicLevelOverride);
     }
 
     public static void Hide(Transform worldAnchor = null)
     {
+        if (worldAnchor != null && activeWorldAnchor != worldAnchor)
+            return;
+
+        ClearActiveState();
         backend?.HideWorldItemDetail(worldAnchor);
+    }
+
+    private static void ClearActiveState()
+    {
+        activeWorldAnchor = null;
+        SetSkillPressBlocked(false);
+    }
+
+    private static void SetSkillPressBlocked(bool blocked)
+    {
+        InputActionQuery.SetPressBlocked(InputActionId.Skill1, SkillInputBlockOwner, blocked);
+        InputActionQuery.SetPressBlocked(InputActionId.Skill2, SkillInputBlockOwner, blocked);
     }
 }
