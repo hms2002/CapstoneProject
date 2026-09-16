@@ -10,6 +10,8 @@ public class GlobalVisionMaskController : MonoBehaviour
 {
     private static GlobalVisionMaskController instance;
 
+    [SerializeField] private MonoBehaviour presentationOverride;
+
     [SerializeField] private GameObject darkMaskRoot;
     [SerializeField] private SpriteRenderer darkOverlayRenderer;
     [SerializeField] private GameObject playerVisionMaskPrefab;
@@ -27,11 +29,16 @@ public class GlobalVisionMaskController : MonoBehaviour
     private Coroutine overlayAlphaFadeCoroutine;
     private bool hasCapturedBaseSortingOrder;
     private int baseOverlaySortingOrder;
+    private float currentOverlayAlpha;
+    private Transform boundPlayer;
+
+    private IGlobalVisionPresentation Presentation => presentationOverride as IGlobalVisionPresentation;
 
     public static GlobalVisionMaskController Instance => instance;
 
     private void Awake()
     {
+        currentOverlayAlpha = defaultOverlayAlpha;
         if (instance != null && instance != this)
         {
             Debug.LogWarning(
@@ -54,18 +61,36 @@ public class GlobalVisionMaskController : MonoBehaviour
             instance = null;
     }
 
+    private void OnEnable()
+    {
+        if (instance == null)
+            instance = this;
+    }
+
+    private void OnDisable()
+    {
+        StopOverlayAlphaFade();
+        activeRequesterIds.Clear();
+        SetOverlayAlpha(defaultOverlayAlpha);
+        DetachFromPlayer(boundPlayer);
+        if (instance == this)
+            instance = null;
+    }
+
     public void AcquireDarkness(Object requester)
     {
+        if (!isActiveAndEnabled)
+            return;
         int requesterId = GetRequesterId(requester);
-        activeRequesterIds.Add(requesterId);
-        SyncMaskState(true, instant: false);
+        if (activeRequesterIds.Add(requesterId) && activeRequesterIds.Count == 1)
+            SyncMaskState(true, instant: false);
     }
 
     public void ReleaseDarkness(Object requester)
     {
         int requesterId = GetRequesterId(requester);
-        activeRequesterIds.Remove(requesterId);
-        SyncMaskState(activeRequesterIds.Count > 0, instant: false);
+        if (activeRequesterIds.Remove(requesterId) && activeRequesterIds.Count == 0)
+            SyncMaskState(false, instant: !isActiveAndEnabled);
     }
 
     public void AttachToPlayer(Transform player)
@@ -73,9 +98,32 @@ public class GlobalVisionMaskController : MonoBehaviour
         if (player == null)
             return;
 
+        boundPlayer = player;
+        if (Presentation != null)
+        {
+            Presentation.BindPlayer(player);
+            return;
+        }
+
         EnsurePlayerVisionMask();
+        if (spawnedVisionMaskFollower != null)
+            spawnedVisionMaskFollower.gameObject.SetActive(true);
         spawnedVisionMaskFollower?.SetLocalOffset(playerVisionMaskOffset);
         spawnedVisionMaskFollower?.Bind(player);
+    }
+
+    public void DetachFromPlayer(Transform player)
+    {
+        if (boundPlayer != player)
+            return;
+
+        boundPlayer = null;
+        Presentation?.BindPlayer(null);
+        if (spawnedVisionMaskFollower != null)
+        {
+            spawnedVisionMaskFollower.Bind(null);
+            spawnedVisionMaskFollower.gameObject.SetActive(false);
+        }
     }
 
     private int GetRequesterId(Object requester)
@@ -101,6 +149,13 @@ public class GlobalVisionMaskController : MonoBehaviour
 
     private void SyncMaskState(bool isActive, bool instant)
     {
+        if (Presentation != null)
+        {
+            ApplyOverlayAlpha(isActive ? fogOverlayAlpha : defaultOverlayAlpha, instant,
+                isActive ? enterFogFadeDuration : exitFogFadeDuration);
+            return;
+        }
+
         if (darkMaskRoot != null && !darkMaskRoot.activeSelf)
             darkMaskRoot.SetActive(true);
 
@@ -155,7 +210,7 @@ public class GlobalVisionMaskController : MonoBehaviour
 
     private void ApplyOverlayAlpha(float targetAlpha, bool instant, float duration)
     {
-        if (darkOverlayRenderer == null)
+        if (darkOverlayRenderer == null && Presentation == null)
             return;
 
         StopOverlayAlphaFade();
@@ -164,9 +219,7 @@ public class GlobalVisionMaskController : MonoBehaviour
 
         if (instant || duration <= 0f)
         {
-            Color immediateColor = darkOverlayRenderer.color;
-            immediateColor.a = targetAlpha;
-            darkOverlayRenderer.color = immediateColor;
+            SetOverlayAlpha(targetAlpha);
             return;
         }
 
@@ -186,10 +239,10 @@ public class GlobalVisionMaskController : MonoBehaviour
     {
         float startAlpha = darkOverlayRenderer != null
             ? darkOverlayRenderer.color.a
-            : targetAlpha;
+            : currentOverlayAlpha;
         float elapsed = 0f;
 
-        while (elapsed < duration && darkOverlayRenderer != null)
+        while (elapsed < duration && (darkOverlayRenderer != null || Presentation != null))
         {
             elapsed += useUnscaledOverlayFadeTime ? Time.unscaledDeltaTime : Time.deltaTime;
             float t = duration > 0f ? elapsed / duration : 1f;
@@ -203,6 +256,13 @@ public class GlobalVisionMaskController : MonoBehaviour
 
     private void SetOverlayAlpha(float alpha)
     {
+        currentOverlayAlpha = Mathf.Clamp01(alpha);
+        if (Presentation != null)
+        {
+            Presentation.SetFogWeight(Mathf.InverseLerp(defaultOverlayAlpha, fogOverlayAlpha, currentOverlayAlpha));
+            return;
+        }
+
         if (darkOverlayRenderer == null)
             return;
 

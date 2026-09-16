@@ -13,9 +13,20 @@ public class ShadowMonsterGaugeVisibilityFilter : MonoBehaviour, IMonsterGaugeVi
 
     private readonly System.Collections.Generic.List<SpriteMask> cachedSpriteMasks = new();
     private float nextRefreshTime;
+    private IMonsterGaugeVisibilityFilter visibilityOverride;
+
+    public Vector3 SamplePoint => GetSamplePoint();
+
+    public void SetVisibilityOverride(IMonsterGaugeVisibilityFilter value)
+    {
+        visibilityOverride = value;
+    }
 
     public bool ShouldShowGauge()
     {
+        if (visibilityOverride != null)
+            return visibilityOverride.ShouldShowGauge();
+
         if (maskedRenderer != null && maskedRenderer.maskInteraction != SpriteMaskInteraction.VisibleInsideMask)
             return true;
 

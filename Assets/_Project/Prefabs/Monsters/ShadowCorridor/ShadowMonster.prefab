@@ -40,6 +40,7 @@ GameObject:
   - component: {fileID: 880070000000000007}
   - component: {fileID: 5001512703588793796}
   - component: {fileID: 910000000000000001}
+  - component: {fileID: 9009161005}
   m_Layer: 31
   m_Name: ShadowMonster
   m_TagString: Enemy
@@ -806,6 +807,23 @@ MonoBehaviour:
   maximumPickupCount: 30
   pickupScatterRadius: 0.8
   goldPickupPrefab: {fileID: 5166873198201453664, guid: d2d2c39b9e0b4c6fbbd950fe7576308a, type: 3}
+--- !u!114 &9009161005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffeea9584fda4e37b9e7f30f23360587, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Infrastructure::ShadowMonsterLightVisibility
+  targetRenderers:
+  - {fileID: 1695031726951874086}
+  - {fileID: 6668266199762727170}
+  revealMaterial: {fileID: 2100000, guid: 27134945dc4f434799afcad61559b2fe, type: 2}
+  gaugeFilter: {fileID: 7001000000000000002}
 --- !u!1 &7544634219824897759
 GameObject:
   m_ObjectHideFlags: 0

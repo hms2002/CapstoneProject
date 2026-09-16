@@ -3219,3 +3219,9 @@ The user's all-weapons report supersedes the previous input-layer timer/80% anim
 The approved rule is a per-dungeon Normal Combat composition, not independent selection probabilities: stage 1 = 100/0/0, stage 2 = 50/50/0, stage 3 = 20/40/40 across tiers 1/2/3. Start/Boss/Treasure/Shop/Event/Exit and Large Combat are excluded from the denominator. Exactly one Large must match the current stage. Legacy difficultyTier 0 is interpreted as tier 1 without rewriting authored room assets.
 
 Allocate fractional counts by largest remainder; resolve equal remainders deterministically from the generation seed. Hold quotas through template rollback, repetition relaxation and topology/physical retries. Failure must not silently downgrade a tier or loosen a quota. Current stage uses the same defeated-boss progression as monster scaling, snapshotted at generation entry. Editor preview supplies an explicit stage independently of event visit order.
+
+## 2026-09-16 - Shadow Lighting Separates Illumination From Reveal
+
+For the user-approved ShadowCorridorForLight migration, Light2D owns visual illumination while explicitly authored local sources own ShadowMonster reveal regions. Global Light/fog brightness and cosmetic ScaleWave pulsation do not change those regions. The body and ground shadow clip per pixel; gauges retain their authored point test against the same selected source set. No valid source means hidden, never a permissive visibility fallback. Wall occlusion is a separate design decision.
+
+The existing vision controller keeps the public fog/player-binding path and forwards to an explicit scene presentation backend. Shared prefab adapters opt in by scene so the unmigrated mask scenes retain their behavior. No new singleton or bootstrap owner is introduced. See [PixelLightingSystem](./StructureMemory/PixelLightingSystem.md) and [migration backlog](./RefactorBacklog/ShadowLightingMaskMigration.md).

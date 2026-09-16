@@ -34,9 +34,27 @@ public class RestrictedVisionVisualController : MonoBehaviour
         RestoreLight();
     }
 
+    private void OnDisable()
+    {
+        ClearFog();
+    }
+
+    public void ClearFog()
+    {
+        RestoreLight();
+        endTime = 0f;
+    }
+
     /// <summary>시야 차단 연출 시간을 적용합니다.</summary>
     public void ApplyFog(float duration)
     {
+        if (!isActiveAndEnabled)
+            return;
+        if (visionMaskController == null)
+        {
+            isDark = false;
+            endTime = 0f;
+        }
         float clampedDuration = Mathf.Max(0f, duration);
         endTime = Mathf.Max(endTime, Time.time + clampedDuration);
 
@@ -68,7 +86,6 @@ public class RestrictedVisionVisualController : MonoBehaviour
     {
         if (!isDark) return;
 
-        EnsureController();
         visionMaskController?.ReleaseDarkness(this);
 
         isDark = false;

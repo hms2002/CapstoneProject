@@ -8,6 +8,7 @@
         "Unity.ResourceManager",
         "Unity.InputSystem",
         "Unity.Cinemachine",
+        "Unity.RenderPipelines.Universal.2D.Runtime",
         "Unity.TextMeshPro",
         "UnityEngine.UI",
         "DOTween.Modules"

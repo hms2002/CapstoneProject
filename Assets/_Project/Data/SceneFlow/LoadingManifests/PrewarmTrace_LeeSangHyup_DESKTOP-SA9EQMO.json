@@ -116,6 +116,36 @@
                     "lastSceneName": "ShadowCorridor"
                 }
             ]
+        },
+        {
+            "sessionId": "f490740998424e579a64e18cf80face0",
+            "startedUtc": "2026-09-14T05:05:15.9986229Z",
+            "endedUtc": "2026-09-14T05:05:17.0039732Z",
+            "entries": []
+        },
+        {
+            "sessionId": "5a5e81fe2bc94c30a741b9a12d97e5e9",
+            "startedUtc": "2026-09-16T03:48:41.4004910Z",
+            "endedUtc": "2026-09-16T03:48:42.4066708Z",
+            "entries": []
+        },
+        {
+            "sessionId": "aba5cd821fee4af28c2dc9df9b9b3ba9",
+            "startedUtc": "2026-09-16T04:25:53.5183127Z",
+            "endedUtc": "2026-09-16T04:25:54.5577268Z",
+            "entries": []
+        },
+        {
+            "sessionId": "37fbadc8c5da47088fd63765b1652965",
+            "startedUtc": "2026-09-16T04:29:49.2110348Z",
+            "endedUtc": "2026-09-16T04:29:50.2170346Z",
+            "entries": []
+        },
+        {
+            "sessionId": "b3d93a325d604181b5104526b9a5c8ee",
+            "startedUtc": "2026-09-16T05:40:37.1681929Z",
+            "endedUtc": "2026-09-16T05:40:38.2031531Z",
+            "entries": []
         }
     ]
 }

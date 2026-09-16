@@ -98,6 +98,12 @@ public sealed class SceneRestrictedVisionController : MonoBehaviour
 
     private void ClearCurrentPlayerState()
     {
+        if (currentPlayer != null && visionMaskController != null)
+        {
+            currentPlayer.GetComponent<RestrictedVisionVisualController>()?.ClearFog();
+            visionMaskController.DetachFromPlayer(currentPlayer.transform);
+        }
+
         if (activeStatusHandle.IsValid)
         {
             if (logFlow)
