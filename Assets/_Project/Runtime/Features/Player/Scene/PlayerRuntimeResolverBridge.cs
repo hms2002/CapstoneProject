@@ -163,7 +163,7 @@ public sealed class PlayerRuntimeResolverBridge : MonoBehaviour, IPlayerRuntimeR
 
         if (dict.ContainsKey(key))
         {
-            //Debug.LogWarning($"[PlayerRuntimeResolverBridge] 중복 {label} 키 감지: '{key}'", value);
+            //CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[PlayerRuntimeResolverBridge] 중복 {label} 키 감지: '{key}'", value);
             return;
         }
 
@@ -180,7 +180,7 @@ public sealed class PlayerRuntimeResolverBridge : MonoBehaviour, IPlayerRuntimeR
 
         if (ItemManager.Instance == null)
         {
-            Debug.LogWarning("[PlayerRuntimeResolverBridge] ItemManager.Instance가 없어 Consumable 조회를 할 수 없습니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerRuntimeResolverBridge] ItemManager.Instance가 없어 Consumable 조회를 할 수 없습니다.", this);
             return null;
         }
 
@@ -197,7 +197,7 @@ public sealed class PlayerRuntimeResolverBridge : MonoBehaviour, IPlayerRuntimeR
 
         if (ItemManager.Instance == null)
         {
-            Debug.LogWarning("[PlayerRuntimeResolverBridge] ItemManager.Instance가 없어 Weapon 조회를 할 수 없습니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerRuntimeResolverBridge] ItemManager.Instance가 없어 Weapon 조회를 할 수 없습니다.", this);
             return null;
         }
 
@@ -214,7 +214,7 @@ public sealed class PlayerRuntimeResolverBridge : MonoBehaviour, IPlayerRuntimeR
 
         if (ItemManager.Instance == null)
         {
-            Debug.LogWarning("[PlayerRuntimeResolverBridge] ItemManager.Instance가 없어 Relic 조회를 할 수 없습니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerRuntimeResolverBridge] ItemManager.Instance가 없어 Relic 조회를 할 수 없습니다.", this);
             return null;
         }
 
@@ -254,7 +254,7 @@ public sealed class PlayerRuntimeResolverBridge : MonoBehaviour, IPlayerRuntimeR
             return null;
 
         abilityById.TryGetValue(abilityId, out var def);
-        Debug.Log($"[Resolver] ResolveAbility id={abilityId}, found={(def != null)}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[Resolver] ResolveAbility id={abilityId}, found={(def != null)}", this);
         return def;
     }
 

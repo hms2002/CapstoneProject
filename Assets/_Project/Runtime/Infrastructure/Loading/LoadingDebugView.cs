@@ -239,7 +239,7 @@ public sealed class LoadingDebugView : MonoBehaviour
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         if (AddressableAssetProvider.Instance == null)
         {
-            Debug.LogWarning("[LoadingDebugView] AddressableAssetProvider is not active; retained asset report was not written.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[LoadingDebugView] AddressableAssetProvider is not active; retained asset report was not written.", this);
             return;
         }
 

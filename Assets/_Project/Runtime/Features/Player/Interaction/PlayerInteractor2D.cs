@@ -60,7 +60,7 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
 
     public void SetInteractState(InteractState state)
     {
-        Debug.Log($"[Player] SetInteractState: {CurrentState} -> {state}");
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[Player] SetInteractState: {CurrentState} -> {state}");
         CurrentState = state;
 
         if (state != InteractState.Idle)
@@ -91,7 +91,7 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
         if (InputActionQuery.WasPressedThisFrame(InputActionId.Interact) && currentTarget != null)
         {
             bool canInteract = currentTarget.CanInteract(this);
-            Debug.Log($"[Player] currentTarget.CanInteract = {canInteract}");
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[Player] currentTarget.CanInteract = {canInteract}");
 
             if (canInteract)
             {
@@ -116,7 +116,7 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
         IInteractable currentTarget = targetResolver.RefreshTarget(this, transform.position);
 
         if (!ReferenceEquals(previousTarget, currentTarget) && currentTarget != null)
-            Debug.Log($"[Player] New currentTarget = {(currentTarget as MonoBehaviour)?.name}");
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[Player] New currentTarget = {(currentTarget as MonoBehaviour)?.name}");
 
         return currentTarget;
     }

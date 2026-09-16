@@ -73,7 +73,7 @@ public class GameDataManager : MonoBehaviour, IGameDataStoreBackend
         repository = new GameDataRepository(ActiveSlotIndex);
         Data = repository.LoadOrCreate();
         NormalizeLoadedData();
-        Debug.Log($"[GameDataManager] Game data loaded for slot {ActiveSlotIndex + 1}.");
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[GameDataManager] Game data loaded for slot {ActiveSlotIndex + 1}.");
         OnDataLoaded?.Invoke(Data, ActiveSlotIndex);
     }
 
@@ -141,7 +141,7 @@ public class GameDataManager : MonoBehaviour, IGameDataStoreBackend
 
         repository ??= new GameDataRepository(ActiveSlotIndex);
         repository.Save(Data);
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[GameDataManager] Save complete. Persistent: {repository.SavePath}, Inspectable: {repository.InspectableSavePath}");
     }
 
@@ -169,7 +169,7 @@ public class GameDataManager : MonoBehaviour, IGameDataStoreBackend
             && GamePlayDataManager.Instance.Data != null
             && GamePlayDataManager.Instance.Data.isRunActive)
         {
-            Debug.Log("[GameDataManager] Skipping save on quit because a run is still active.");
+            CapstoneDiagnostics.EditorOnlyLog.Log("[GameDataManager] Skipping save on quit because a run is still active.");
             return;
         }
 

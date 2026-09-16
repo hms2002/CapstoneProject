@@ -32,7 +32,7 @@ public sealed class WarningPopupService : MonoBehaviour
 
         if (currentView == null)
         {
-            Debug.LogWarning("[WarningPopupService] WarningPopupUI view is not bound yet.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[WarningPopupService] WarningPopupUI view is not bound yet.", this);
             return;
         }
 

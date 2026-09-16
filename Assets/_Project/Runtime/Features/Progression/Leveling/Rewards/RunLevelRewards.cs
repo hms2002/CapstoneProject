@@ -45,7 +45,7 @@ public static class RunLevelRewards
         if (DefinitionsById.TryGetValue(definition.RewardId, out LevelRewardDefinitionSO existing) &&
             existing != null && existing != definition)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[RunLevelRewards] Duplicate rewardId '{definition.RewardId}' was ignored. " +
                 $"existing={existing.name}, incoming={definition.name}",
                 definition);

@@ -61,7 +61,7 @@ public sealed class WitchNormalAttack1PatternExecutor : MonoBehaviour
 
         if (owner == null || owner.AbilitySystem == null || owner.Target == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[WitchNormalAttack1PatternExecutor] 시작 실패: owner={(owner != null)}, abilitySystem={(owner != null && owner.AbilitySystem != null)}, target={(owner != null && owner.Target != null)}",
                 this);
             return false;
@@ -69,7 +69,7 @@ public sealed class WitchNormalAttack1PatternExecutor : MonoBehaviour
 
         if (context.TilePrefab == null || context.DamageEffect == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[WitchNormalAttack1PatternExecutor] 시작 실패: tilePrefab={(context.TilePrefab != null)}, damageEffect={(context.DamageEffect != null)}",
                 this);
             return false;
@@ -78,7 +78,7 @@ public sealed class WitchNormalAttack1PatternExecutor : MonoBehaviour
         Vector2 aimDir = owner.GetAimDirectionValue();
         if (aimDir == Vector2.zero)
         {
-            Debug.LogWarning("[WitchNormalAttack1PatternExecutor] 시작 실패: aimDir가 zero입니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[WitchNormalAttack1PatternExecutor] 시작 실패: aimDir가 zero입니다.", this);
             return false;
         }
 
@@ -113,7 +113,7 @@ public sealed class WitchNormalAttack1PatternExecutor : MonoBehaviour
                 i);
         }
 
-        Debug.Log($"[WitchNormalAttack1PatternExecutor] 평타1 executor 경로 실행 성공: tileCount={context.TileCount}, interval={context.IntervalSeconds}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[WitchNormalAttack1PatternExecutor] 평타1 executor 경로 실행 성공: tileCount={context.TileCount}, interval={context.IntervalSeconds}", this);
         return true;
     }
 }

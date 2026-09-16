@@ -99,7 +99,7 @@ public class ShadowFog : MonoBehaviour
 
         if (logFogSightStatusFlow)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[ShadowFog] HandleTouch. other={other.name}, targetObject={(targetObject != null ? targetObject.name : "null")}, " +
                 $"playerRoot={(player != null ? player.name : "null")}, definition={(restrictedVisionDebuffDefinition != null && restrictedVisionDebuffDefinition.StatusHudDefinition != null ? restrictedVisionDebuffDefinition.StatusHudDefinition.StatusId : "null")}",
                 this);
@@ -108,7 +108,7 @@ public class ShadowFog : MonoBehaviour
         if (player == null)
         {
             if (logFogSightStatusFlow)
-                Debug.LogWarning("[ShadowFog] Skipped fog application because no PlayerInteractor2D root was found.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[ShadowFog] Skipped fog application because no PlayerInteractor2D root was found.", this);
             return;
         }
 
@@ -116,7 +116,7 @@ public class ShadowFog : MonoBehaviour
         if (!playerRoot.CompareTag(PlayerTag))
         {
             if (logFogSightStatusFlow)
-                Debug.LogWarning($"[ShadowFog] Skipped fog application because player root tag was '{playerRoot.tag}', expected '{PlayerTag}'.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[ShadowFog] Skipped fog application because player root tag was '{playerRoot.tag}', expected '{PlayerTag}'.", this);
             return;
         }
 
@@ -125,7 +125,7 @@ public class ShadowFog : MonoBehaviour
         {
             sightLock = playerRoot.AddComponent<RestrictedVisionVisualController>();
             if (logFogSightStatusFlow)
-                Debug.Log($"[ShadowFog] Added RestrictedVisionVisualController to player root '{playerRoot.name}'.", this);
+                CapstoneDiagnostics.EditorOnlyLog.Log($"[ShadowFog] Added RestrictedVisionVisualController to player root '{playerRoot.name}'.", this);
         }
 
         sightLock.ApplyFog(fogDebuffDuration);
@@ -134,7 +134,7 @@ public class ShadowFog : MonoBehaviour
         {
             if (logFogSightStatusFlow)
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     "[ShadowFog] Skipped debuff apply because restrictedVisionDebuffDefinition was not assigned.",
                     this);
             }
@@ -145,7 +145,7 @@ public class ShadowFog : MonoBehaviour
         if (debuffApplier == null)
         {
             if (logFogSightStatusFlow)
-                Debug.LogWarning("[ShadowFog] Skipped debuff apply because CombatBuffDebuffApplier was missing.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[ShadowFog] Skipped debuff apply because CombatBuffDebuffApplier was missing.", this);
             return;
         }
 
@@ -153,7 +153,7 @@ public class ShadowFog : MonoBehaviour
 
         if (logFogSightStatusFlow)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[ShadowFog] Applied fog debuff to '{playerRoot.name}' for {fogDebuffDuration:0.00}s. " +
                 $"sourceKey={sourceKey}, applyResult={applied}",
                 this);

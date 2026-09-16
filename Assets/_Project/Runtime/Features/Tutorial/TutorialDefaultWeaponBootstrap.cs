@@ -95,7 +95,7 @@ public sealed class TutorialDefaultWeaponBootstrap : MonoBehaviour
     {
         if (defaultWeapon == null)
         {
-            Debug.LogWarning("[TutorialDefaultWeaponBootstrap] Default weapon is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[TutorialDefaultWeaponBootstrap] Default weapon is missing.", this);
             InvokeFailureIfRequested(invokeFailureEvent);
             return false;
         }
@@ -103,14 +103,14 @@ public sealed class TutorialDefaultWeaponBootstrap : MonoBehaviour
         WeaponInventory2D inventory = ResolveWeaponInventory();
         if (inventory == null)
         {
-            Debug.LogWarning("[TutorialDefaultWeaponBootstrap] Weapon inventory is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[TutorialDefaultWeaponBootstrap] Weapon inventory is missing.", this);
             InvokeFailureIfRequested(invokeFailureEvent);
             return false;
         }
 
         if (inventory.SlotCount <= 0)
         {
-            Debug.LogWarning("[TutorialDefaultWeaponBootstrap] Weapon inventory has no slots.", inventory);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[TutorialDefaultWeaponBootstrap] Weapon inventory has no slots.", inventory);
             InvokeFailureIfRequested(invokeFailureEvent);
             return false;
         }
@@ -126,7 +126,7 @@ public sealed class TutorialDefaultWeaponBootstrap : MonoBehaviour
 
                 if (!inventory.TrySetWeaponSlot(i, null, autoEquipIfNone: false))
                 {
-                    Debug.LogWarning(
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                         $"[TutorialDefaultWeaponBootstrap] Failed to clear weapon slot {i}.",
                         inventory);
                     InvokeFailureIfRequested(invokeFailureEvent);
@@ -137,7 +137,7 @@ public sealed class TutorialDefaultWeaponBootstrap : MonoBehaviour
 
         if (!inventory.TrySetWeaponSlot(targetIndex, defaultWeapon, autoEquipIfNone: false))
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[TutorialDefaultWeaponBootstrap] Failed to set default weapon '{defaultWeapon.name}' to slot {targetIndex}.",
                 inventory);
             InvokeFailureIfRequested(invokeFailureEvent);

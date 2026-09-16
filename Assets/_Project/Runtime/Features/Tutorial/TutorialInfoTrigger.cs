@@ -175,7 +175,7 @@ public sealed class TutorialInfoTrigger : MonoBehaviour
 
         if (!missingPanelWarningLogged)
         {
-            Debug.LogWarning("[TutorialInfoTrigger] Missing tutorial info panel reference.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[TutorialInfoTrigger] Missing tutorial info panel reference.", this);
             missingPanelWarningLogged = true;
         }
 

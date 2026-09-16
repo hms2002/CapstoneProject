@@ -50,7 +50,7 @@ public sealed class TitleSceneStartInput : MonoBehaviour
     {
         if (string.IsNullOrWhiteSpace(targetSceneName))
         {
-            Debug.LogWarning("[TitleSceneStartInput] Target scene name is empty.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[TitleSceneStartInput] Target scene name is empty.", this);
             return;
         }
 

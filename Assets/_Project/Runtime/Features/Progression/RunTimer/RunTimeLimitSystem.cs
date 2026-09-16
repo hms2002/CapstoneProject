@@ -76,7 +76,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
         stageTimerPolicy = stageTimerPolicySource as IStageTimerPolicy;
         if (stageTimerPolicy == null && stageTimerPolicySource != null)
         {
-            Debug.LogWarning("[RunTimeLimitSystem] Assigned stage timer policy source does not implement IStageTimerPolicy.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RunTimeLimitSystem] Assigned stage timer policy source does not implement IStageTimerPolicy.", this);
         }
     }
 
@@ -151,7 +151,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
         isRunCompletionPaused = paused;
 
         if (verboseLogging)
-            Debug.Log($"[RunTimeLimitSystem] Run completion pause changed. paused={paused}", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[RunTimeLimitSystem] Run completion pause changed. paused={paused}", this);
     }
 
     /// <summary>
@@ -187,7 +187,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
 
         if (config == null)
         {
-            Debug.LogWarning("[RunTimeLimitSystem] RunTimeLimitConfig is missing. Timer will not start.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RunTimeLimitSystem] RunTimeLimitConfig is missing. Timer will not start.", this);
             return;
         }
 
@@ -203,7 +203,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
         SetRemainingTimeInternal(0f, persistToGamePlayData: false);
 
         if (verboseLogging)
-            Debug.Log($"[RunTimeLimitSystem] Run ended. reason={reason}", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[RunTimeLimitSystem] Run ended. reason={reason}", this);
     }
 
     private void InitializeRemainingTime(float initialSeconds)
@@ -213,7 +213,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
         SetRemainingTimeInternal(initialSeconds, persistToGamePlayData: true);
 
         if (verboseLogging)
-            Debug.Log($"[RunTimeLimitSystem] Initialized remaining time. seconds={remainingSeconds:0.00}", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[RunTimeLimitSystem] Initialized remaining time. seconds={remainingSeconds:0.00}", this);
     }
 
     private void Tick(float deltaTime)
@@ -235,7 +235,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
         OnTimeExpired?.Invoke();
 
         if (verboseLogging)
-            Debug.Log("[RunTimeLimitSystem] Time expired. Raised time-over event.", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log("[RunTimeLimitSystem] Time expired. Raised time-over event.", this);
     }
 
     private void SetRemainingTimeInternal(float seconds, bool persistToGamePlayData)

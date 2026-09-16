@@ -99,7 +99,7 @@ namespace UnityGAS
 
                 if (_idByPath.ContainsKey(path))
                 {
-                    Debug.LogWarning($"[TagRegistry] Duplicate tag path detected: '{path}'. (Ignoring later one)");
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[TagRegistry] Duplicate tag path detected: '{path}'. (Ignoring later one)");
                     continue;
                 }
 
@@ -169,7 +169,7 @@ namespace UnityGAS
                 _closureMasks[id] = words;
             }
 
-            // Debug.Log($"[TagRegistry] Build Complete. Total Tags: {_tagCount - 1}");
+            // CapstoneDiagnostics.EditorOnlyLog.Log($"[TagRegistry] Build Complete. Total Tags: {_tagCount - 1}");
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -208,11 +208,11 @@ namespace UnityGAS
 
         public static void PrintTagMaskLog(TagMask tagMask)
         {
-            Debug.Log("ThisIsTagMask");
+            CapstoneDiagnostics.EditorOnlyLog.Log("ThisIsTagMask");
             List<int> ids = Debug_GetIdsFromBits_Fast(tagMask.Words);
             foreach (int id in ids)
             {
-                Debug.Log(GetTag(id).Name);
+                CapstoneDiagnostics.EditorOnlyLog.Log(GetTag(id).Name);
             }
         }
 #endif

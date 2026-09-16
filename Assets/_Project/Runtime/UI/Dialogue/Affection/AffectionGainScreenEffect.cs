@@ -635,7 +635,7 @@ public sealed class AffectionGainScreenEffect : MonoBehaviour
             return;
 
         warnedMissingSceneSetup = true;
-        Debug.LogWarning(
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning(
             "[AffectionGainScreenEffect] Scene-owned overlay setup is missing. Add an AffectionGainScreenEffect object with GradientBorder and Hearts children to the play UI root.",
             this);
     }

@@ -98,7 +98,7 @@ public class AffectionManager : MonoBehaviour
             amount,
             syncToGameData: !isRunActive);
 
-        Debug.Log($"<color=cyan>[AffectionManager] {data.npcName}(ID:{data.id}) affection {change.PreviousAmount} -> {change.NewAmount} (delta {change.Delta})</color>");
+        CapstoneDiagnostics.EditorOnlyLog.Log($"<color=cyan>[AffectionManager] {data.npcName}(ID:{data.id}) affection {change.PreviousAmount} -> {change.NewAmount} (delta {change.Delta})</color>");
 
         if (change.NewAmount != change.PreviousAmount)
         {
@@ -112,7 +112,7 @@ public class AffectionManager : MonoBehaviour
 
         bool hasReward = rewardProcessor.HasRewardsInRange(data, change.PreviousAmount, change.NewAmount);
         if (hasReward)
-            Debug.Log($"<color=green>[AffectionManager] Rewards unlocked in affection range {change.PreviousAmount} -> {change.NewAmount}</color>");
+            CapstoneDiagnostics.EditorOnlyLog.Log($"<color=green>[AffectionManager] Rewards unlocked in affection range {change.PreviousAmount} -> {change.NewAmount}</color>");
 
         RunAffectionPresentation(data, change, hasReward, onComplete);
 
@@ -154,7 +154,7 @@ public class AffectionManager : MonoBehaviour
     {
         progressStore.Load(GameDataStore.Data);
         int recordCount = GameDataStore.Data?.affectionData?.affectionRecords?.Count ?? 0;
-        Debug.Log($"[AffectionManager] Loaded affection data. NPC count: {recordCount}");
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[AffectionManager] Loaded affection data. NPC count: {recordCount}");
     }
 
     /// <summary>GameData 저장소 생성 순서와 무관하게 호감도 캐시 갱신 이벤트를 한 번만 구독합니다.</summary>
@@ -173,7 +173,7 @@ public class AffectionManager : MonoBehaviour
         progressStore.Load(data);
         linkedUI?.Setup(GetAffection(currentNpcId));
         int recordCount = data?.affectionData?.affectionRecords?.Count ?? 0;
-        Debug.Log($"[AffectionManager] Reloaded affection data for slot {slotIndex + 1}. NPC count: {recordCount}");
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[AffectionManager] Reloaded affection data for slot {slotIndex + 1}. NPC count: {recordCount}");
     }
 
     private void RunAffectionPresentation(NPCData data, AffectionChangeResult change, bool hasReward, Action onComplete)

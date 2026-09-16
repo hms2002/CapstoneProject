@@ -57,7 +57,7 @@ public sealed class BossBattleEndHandler : MonoBehaviour
 
         if (boss == null)
         {
-            Debug.LogWarning("[BossBattleEndHandler] Boss is not assigned.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossBattleEndHandler] Boss is not assigned.", this);
             return false;
         }
 
@@ -84,7 +84,7 @@ public sealed class BossBattleEndHandler : MonoBehaviour
 
         if (treasureChest == null)
         {
-            Debug.LogWarning("[BossBattleEndHandler] TreasureChest is not assigned.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossBattleEndHandler] TreasureChest is not assigned.", this);
             return;
         }
 
@@ -110,7 +110,7 @@ public sealed class BossBattleEndHandler : MonoBehaviour
 
         if (exitPortal == null)
         {
-            Debug.LogWarning("[BossBattleEndHandler] Exit portal is not assigned.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossBattleEndHandler] Exit portal is not assigned.", this);
             return;
         }
 

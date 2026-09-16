@@ -120,7 +120,7 @@ namespace UnityGAS
 #if UNITY_EDITOR
                 if (logMissingDefinition)
                 {
-                    Debug.LogWarning(
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                         $"[ElementGaugeSystem] Missing gauge definition for element '{elementType.CachedPath}' on '{name}'. Ignoring build-up.",
                         this);
                 }
@@ -178,7 +178,7 @@ namespace UnityGAS
             if (logWhenTriggered)
             {
                 string srcName = instigator != null ? instigator.name : (causer != null ? causer.name : "null");
-                Debug.Log(
+                CapstoneDiagnostics.EditorOnlyLog.Log(
                     $"[ElementGaugeSystem] TRIGGER {elementType.CachedPath} x{triggerCount} on '{name}' (source='{srcName}')",
                     this);
             }
@@ -201,7 +201,7 @@ namespace UnityGAS
                 if (stateByTag.ContainsKey(def.elementTag))
                 {
 #if UNITY_EDITOR
-                    Debug.LogWarning(
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                         $"[ElementGaugeSystem] Duplicate element tag '{def.elementTag.CachedPath}' in catalog '{catalog.name}'.",
                         catalog);
 #endif

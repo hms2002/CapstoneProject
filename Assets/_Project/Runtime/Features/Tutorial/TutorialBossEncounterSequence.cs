@@ -611,7 +611,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
             elapsed += Time.unscaledDeltaTime;
             if (!warned && elapsed >= 2f)
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     "[TutorialBossEncounterSequence] Waiting for player registration before starting tutorial boss sequence.",
                     this);
                 warned = true;

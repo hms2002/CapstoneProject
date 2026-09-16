@@ -45,7 +45,7 @@ internal static class SceneDomainDevelopmentRunTimerPolicy
         RunTimeLimitSystem existing = Object.FindAnyObjectByType<RunTimeLimitSystem>(FindObjectsInactive.Include);
         if (existing != null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 "[SceneDomainDevelopmentRunTimerPolicy] A RunTimeLimitSystem exists but is not the active " +
                 "instance. Editor direct-start timer creation was skipped.",
                 existing);
@@ -56,7 +56,7 @@ internal static class SceneDomainDevelopmentRunTimerPolicy
             SceneDomainDevelopmentStartPolicy.RunTimeLimitConfigAssetPath);
         if (config == null)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 "[SceneDomainDevelopmentRunTimerPolicy] RunTimeLimitConfig is missing at " +
                 $"'{SceneDomainDevelopmentStartPolicy.RunTimeLimitConfigAssetPath}'.");
             return;

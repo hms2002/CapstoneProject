@@ -711,7 +711,7 @@ public sealed class LoadingOverlayController : MonoBehaviour, ILoadingPresentati
         if (stalledSeconds < stalledBatchTimeoutSeconds)
             return false;
 
-        Debug.LogWarning(
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning(
             $"[LoadingOverlayController] Provider batch {effectiveBatchId} stalled at {effectiveProgress * 100f:0}% for {stalledSeconds:0.0}s. Hiding loading overlay.",
             this);
 

@@ -326,7 +326,7 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
         ISpeechBubblePlayback speechBubble = MerchantSpeechBubble;
         if (speechBubble == null)
         {
-            Debug.LogWarning("[MerchantActivationCinematic] Merchant speech bubble playback is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[MerchantActivationCinematic] Merchant speech bubble playback is missing.", this);
             return;
         }
 
@@ -628,7 +628,7 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
             return;
 
         hasLoggedMissingFocusTarget = true;
-        Debug.LogWarning("[MerchantActivationCinematic] Merchant focus target is missing. Shop activation cinematic skipped.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[MerchantActivationCinematic] Merchant focus target is missing. Shop activation cinematic skipped.", this);
     }
 
     private void WarnInvalidFocusCameraOnce()
@@ -637,7 +637,7 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
             return;
 
         hasLoggedInvalidFocusCamera = true;
-        Debug.LogWarning(
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning(
             "[MerchantActivationCinematic] Merchant focus camera is the gameplay camera. Falling back to direct gameplay camera focus.",
             this);
     }

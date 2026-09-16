@@ -166,7 +166,7 @@ public sealed class RunConstructionNpcFeature : RunSpecialNpcFeatureBase, IProce
     {
         if (string.IsNullOrWhiteSpace(constructionId))
         {
-            Debug.LogWarning("[RunConstructionNpcFeature] Missing constructionId.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RunConstructionNpcFeature] Missing constructionId.", this);
             return false;
         }
 
@@ -181,7 +181,7 @@ public sealed class RunConstructionNpcFeature : RunSpecialNpcFeatureBase, IProce
 
         bool started = RunSpecialNpcConstructionProgress.TryStart(constructionId, out _);
         if (!started)
-            Debug.LogWarning($"[RunConstructionNpcFeature] Could not start construction '{constructionId}'.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[RunConstructionNpcFeature] Could not start construction '{constructionId}'.", this);
 
         return started;
     }

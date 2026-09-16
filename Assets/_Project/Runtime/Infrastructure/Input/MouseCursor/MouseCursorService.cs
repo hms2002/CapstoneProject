@@ -388,7 +388,7 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
         if (loadedTheme == null && !defaultThemeMissingLogged)
         {
             defaultThemeMissingLogged = true;
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[MouseCursorService] Default mouse cursor theme could not be loaded from Resources/{DefaultThemeResourcePath}.",
                 this);
         }
@@ -682,7 +682,7 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
         {
             if (unreadableSpriteWarnings.Add(spriteId))
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     $"[MouseCursorService] Sprite '{sprite.name}' uses only a sub-rect of a non-readable texture. Falling back to software cursor rendering.",
                     this);
             }

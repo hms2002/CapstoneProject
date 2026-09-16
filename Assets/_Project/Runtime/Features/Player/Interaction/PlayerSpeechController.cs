@@ -32,7 +32,7 @@ public sealed class PlayerSpeechController : MonoBehaviour
         ISpeechBubblePlayback bubblePlayback = speechBubble as ISpeechBubblePlayback;
         if (speechData == null || bubblePlayback == null)
         {
-            Debug.LogWarning("[PlayerSpeechController] Missing SpeechData or speech bubble playback.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerSpeechController] Missing SpeechData or speech bubble playback.", this);
             return;
         }
 

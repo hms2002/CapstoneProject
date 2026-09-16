@@ -397,7 +397,7 @@ public class BossEncounterDirector : MonoBehaviour
 
         if (bossController == null)
         {
-            Debug.LogWarning("[BossEncounterDirector] No BossControllerBase found to start combat.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossEncounterDirector] No BossControllerBase found to start combat.", this);
             return;
         }
 

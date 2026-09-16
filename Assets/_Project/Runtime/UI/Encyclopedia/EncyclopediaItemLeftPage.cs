@@ -146,7 +146,7 @@ public sealed class EncyclopediaItemLeftPage : MonoBehaviour
         if (entryGridView == null && !warnedMissingEntryGridView)
         {
             warnedMissingEntryGridView = true;
-            Debug.LogWarning("[EncyclopediaItemLeftPage] EntryGridView is not assigned. The item grid cannot be populated.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[EncyclopediaItemLeftPage] EntryGridView is not assigned. The item grid cannot be populated.", this);
         }
     }
 

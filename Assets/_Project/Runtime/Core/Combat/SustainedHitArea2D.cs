@@ -207,10 +207,11 @@ namespace UnityGAS
             Log($"applied. target={targetRoot.name}, next={nextDamageTimes[targetRoot]:0.###}");
         }
 
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
         private void Log(string message)
         {
             if (debugLog)
-                Debug.Log($"[{nameof(SustainedHitArea2D)}] {message}", this);
+                CapstoneDiagnostics.EditorOnlyLog.Log($"[{nameof(SustainedHitArea2D)}] {message}", this);
         }
     }
 }

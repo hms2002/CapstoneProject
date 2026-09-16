@@ -23,7 +23,7 @@ public static class BossPatternSelector
             {
                 AbilityDefinition ability = patternEntry.Ability;
                 string patternName = ability != null ? ability.name : "None";
-                Debug.Log(
+                CapstoneDiagnostics.EditorOnlyLog.Log(
                     $"[BossFSM] {boss.name}: 패턴 '{patternName}' 후보 탈락. state={result.State}, reason={result.Reason ?? "없음"}",
                     boss);
                 continue;

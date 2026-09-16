@@ -272,7 +272,7 @@ public sealed class ChestMonsterKillLockNavigationView : MonoBehaviour
         if (missingArrowPrefabLogged)
             return;
 
-        Debug.LogWarning("[ChestMonsterKillLockNavigationView] Missing arrowPrefab.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[ChestMonsterKillLockNavigationView] Missing arrowPrefab.", this);
         missingArrowPrefabLogged = true;
     }
 }

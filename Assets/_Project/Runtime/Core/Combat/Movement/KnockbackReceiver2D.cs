@@ -90,12 +90,13 @@ namespace UnityGAS
             externalMovement.ApplyKnockback(velocity, knockbackDominanceTime);
         }
 
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
         private void Log(string message)
         {
             if (!debugKnockback)
                 return;
 
-            Debug.Log($"[KnockbackReceiver2D] {name}: {message}", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[KnockbackReceiver2D] {name}: {message}", this);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TMPro;
@@ -312,19 +312,19 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         if (titleText == null && !warnedMissingHeader)
         {
             warnedMissingHeader = true;
-            Debug.LogWarning("[EncyclopediaItemRightPage] TitleText is not assigned. Item name cannot be displayed.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[EncyclopediaItemRightPage] TitleText is not assigned. Item name cannot be displayed.", this);
         }
 
         if (storyText == null && !warnedMissingDescription)
         {
             warnedMissingDescription = true;
-            Debug.LogWarning("[EncyclopediaItemRightPage] StoryText is not assigned. Item description cannot be displayed.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[EncyclopediaItemRightPage] StoryText is not assigned. Item description cannot be displayed.", this);
         }
 
         if (detailScrollRect == null && !warnedMissingScrollRect)
         {
             warnedMissingScrollRect = true;
-            Debug.LogWarning("[EncyclopediaItemRightPage] ScrollRect is not assigned. Long item details will not auto-reset scroll position.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[EncyclopediaItemRightPage] ScrollRect is not assigned. Long item details will not auto-reset scroll position.", this);
         }
     }
 
@@ -333,7 +333,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         if ((abilityContainer == null || abilityBlockPrefab == null) && !warnedMissingAbilityAuthoring)
         {
             warnedMissingAbilityAuthoring = true;
-            Debug.LogWarning("[EncyclopediaItemRightPage] AbilityContainer or ability block prefab is not assigned. Weapon skills cannot be displayed.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[EncyclopediaItemRightPage] AbilityContainer or ability block prefab is not assigned. Weapon skills cannot be displayed.", this);
         }
     }
 

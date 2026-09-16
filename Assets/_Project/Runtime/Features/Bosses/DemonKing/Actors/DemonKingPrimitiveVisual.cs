@@ -824,7 +824,7 @@ public static class DemonKingPatternVfx
         if (highArcDebrisPrefab == null && !highArcDebrisMissingLogged)
         {
             highArcDebrisMissingLogged = true;
-            Debug.LogWarning($"DemonKing debris VFX prefab not found at Resources/{HighArcDebrisVfxPath}.");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"DemonKing debris VFX prefab not found at Resources/{HighArcDebrisVfxPath}.");
         }
 
         return highArcDebrisPrefab;
@@ -1486,7 +1486,7 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
         string resourcePath = string.IsNullOrWhiteSpace(sourceResourcePath) ? gameObject.name : sourceResourcePath;
         string key = $"{resourcePath}:{reason}";
         if (InvalidPrefabWarnings.Add(key))
-            Debug.LogWarning($"DemonKing VFX at Resources/{resourcePath} is invalid: {reason}.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"DemonKing VFX at Resources/{resourcePath} is invalid: {reason}.", this);
     }
 
     private float ResolveLongestClipLength()
@@ -1525,7 +1525,7 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
         {
             PrefabCache.Remove(resourcePath);
             if (warnIfMissing && MissingPrefabWarnings.Add(resourcePath))
-                Debug.LogWarning($"DemonKing VFX prefab not found at Resources/{resourcePath}.");
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"DemonKing VFX prefab not found at Resources/{resourcePath}.");
         }
 
         return prefab;

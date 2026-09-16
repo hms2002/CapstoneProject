@@ -58,14 +58,14 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
         if (targetRoot == null)
         {
             if (logApplyFlow)
-                Debug.LogWarning("[CombatBuffDebuffApplier] Ignored apply because targetRoot was null.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[CombatBuffDebuffApplier] Ignored apply because targetRoot was null.", this);
             return false;
         }
 
         if (definition == null || definition.GameplayEffect == null)
         {
             if (logApplyFlow)
-                Debug.LogWarning("[CombatBuffDebuffApplier] Ignored apply because definition or GameplayEffect was null.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[CombatBuffDebuffApplier] Ignored apply because definition or GameplayEffect was null.", this);
             return false;
         }
 
@@ -73,7 +73,7 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
         if (abilitySystem == null || abilitySystem.EffectRunner == null)
         {
             if (logApplyFlow)
-                Debug.LogWarning($"[CombatBuffDebuffApplier] Ignored apply because AbilitySystem/EffectRunner was missing on '{targetRoot.name}'.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[CombatBuffDebuffApplier] Ignored apply because AbilitySystem/EffectRunner was missing on '{targetRoot.name}'.", this);
             return false;
         }
 
@@ -93,7 +93,7 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
         if (logApplyFlow)
         {
             float appliedDuration = durationOverride >= 0f ? durationOverride : definition.GameplayEffect.duration;
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[CombatBuffDebuffApplier] Applied '{definition.GameplayEffect.name}' to '{targetRoot.name}' " +
                 $"(ownerKey={ownerKey}, duration={appliedDuration:0.00}, source={sourceObject}, showOnPlayerHud={definition.ShowOnPlayerHud}).",
                 this);
@@ -133,7 +133,7 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
         if (statusRuntime == null)
         {
             if (logApplyFlow)
-                Debug.LogWarning($"[CombatBuffDebuffApplier] Skipped HUD sync because PlayerStatusRuntime was missing on '{targetRoot.name}'.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[CombatBuffDebuffApplier] Skipped HUD sync because PlayerStatusRuntime was missing on '{targetRoot.name}'.", this);
             return;
         }
 
@@ -181,7 +181,7 @@ public sealed class CombatBuffDebuffApplier : MonoBehaviour
 
         if (!RefreshTrackedPlayerStatus(tracked, allowRelease: false) && logApplyFlow)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[CombatBuffDebuffApplier] Failed to sync HUD for '{targetRoot.name}' because no active GE result was found after apply.",
                 this);
         }

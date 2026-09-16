@@ -77,7 +77,7 @@ public sealed class SunBladeRuntimeState : WeaponAbilityRuntimeState
             return;
 
         sunData.AddHeatStack();
-        Debug.Log($"[SunBladeRuntimeState] Heat stack gained: {sunData.HeatStacks}/{sunData.MaxHeatStacks}, decay={sunData.HeatDecayRemaining:0.00}s", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[SunBladeRuntimeState] Heat stack gained: {sunData.HeatStacks}/{sunData.MaxHeatStacks}, decay={sunData.HeatDecayRemaining:0.00}s", this);
     }
 
     private void CacheInventory()

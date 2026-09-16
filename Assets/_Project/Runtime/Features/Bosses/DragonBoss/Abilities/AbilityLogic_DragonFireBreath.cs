@@ -229,7 +229,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
         if (visual != null)
             return visualObject;
 
-        Debug.LogWarning("[DragonFireBreath] Fire breath visual prefab does not contain an IConePatternVisual2D component.", dragon);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[DragonFireBreath] Fire breath visual prefab does not contain an IConePatternVisual2D component.", dragon);
         Destroy(visualObject);
         return null;
     }

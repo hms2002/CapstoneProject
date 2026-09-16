@@ -128,7 +128,7 @@ namespace UnityGAS
                 return;
 
             string casterName = system != null ? system.name : "null";
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[CombatTimingService] caster={casterName}, slot={slot}, base={baseSeconds:0.###}, speed={attackSpeed:0.###}, scaled={scaledSeconds:0.###}, reason={reason}",
                 system);
         }

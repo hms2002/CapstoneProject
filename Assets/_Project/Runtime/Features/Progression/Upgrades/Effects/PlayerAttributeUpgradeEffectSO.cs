@@ -55,7 +55,7 @@ public sealed class PlayerAttributeUpgradeEffectSO : UpgradeEffectSO
         }
         else
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[PlayerAttributeUpgradeEffectSO] '{attribute.name}' does not allow modifiers; reapply is skipped to avoid duplicate base-value grants.",
                 this);
         }

@@ -119,7 +119,7 @@ namespace UnityGAS
         {
             hasReported = true;
             string hierarchy = BuildHierarchyPath(target);
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[ParticleRendererRuntimeGuard2D] Invalid particle transform detected. prefab={sourcePrefabName}, context={spawnContext}, hierarchy={hierarchy}, reason={reason}, position={target.position}, rotation={target.rotation}, scale={target.lossyScale}");
         }
 

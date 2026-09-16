@@ -22,7 +22,7 @@ public sealed class RunSameSceneTeleportNpcDialogueProvider : RunSpecialNpcDialo
 
         if (feature == null)
         {
-            Debug.LogWarning("[RunSameSceneTeleportNpcDialogueProvider] Teleport feature is missing.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RunSameSceneTeleportNpcDialogueProvider] Teleport feature is missing.", this);
             return RunSpecialNpcBranch.LinesOnly(unavailableLines);
         }
 
@@ -33,7 +33,7 @@ public sealed class RunSameSceneTeleportNpcDialogueProvider : RunSpecialNpcDialo
         {
             string reason = feature.GetUnavailableReason(context);
             if (!string.IsNullOrWhiteSpace(reason))
-                Debug.LogWarning($"[RunSameSceneTeleportNpcDialogueProvider] {reason}", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[RunSameSceneTeleportNpcDialogueProvider] {reason}", this);
 
             return RunSpecialNpcBranch.LinesOnly(unavailableLines);
         }

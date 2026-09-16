@@ -501,7 +501,7 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
             elapsed += Time.unscaledDeltaTime;
             if (!warned && elapsed >= playerWaitWarningSeconds)
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     "[HubIntroAfterDarkLordSequence] Waiting for player registration before starting Hub intro.",
                     this);
                 warned = true;

@@ -265,7 +265,7 @@ public sealed class EncyclopediaEntryGridView : MonoBehaviour
             return;
 
         warnedMissingSlotAuthoring = true;
-        Debug.LogWarning("[EncyclopediaEntryGridView] EntryGridRoot/EntrySlotPrefab are not assigned and no serialized fallback slots exist. The encyclopedia grid cannot display entries.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[EncyclopediaEntryGridView] EntryGridRoot/EntrySlotPrefab are not assigned and no serialized fallback slots exist. The encyclopedia grid cannot display entries.", this);
     }
 
 }

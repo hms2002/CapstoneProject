@@ -75,7 +75,7 @@ public sealed class GameDataRepository
 
         GameData freshData = new GameData();
         Save(freshData);
-        Debug.Log($"[GameDataRepository] Save was missing. Recreated fresh data for slot {SlotIndex + 1} at: {InspectableSavePath}");
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[GameDataRepository] Save was missing. Recreated fresh data for slot {SlotIndex + 1} at: {InspectableSavePath}");
         return freshData;
     }
 
@@ -147,7 +147,7 @@ public sealed class GameDataRepository
         }
         catch (Exception e)
         {
-            Debug.LogWarning($"[GameDataRepository] Failed to write inspectable GameData copy: {e.Message}");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[GameDataRepository] Failed to write inspectable GameData copy: {e.Message}");
         }
     }
 
@@ -166,7 +166,7 @@ public sealed class GameDataRepository
         }
         catch (Exception e)
         {
-            Debug.LogWarning($"[GameDataRepository] Failed to delete inspectable GameData copy: {e.Message}");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[GameDataRepository] Failed to delete inspectable GameData copy: {e.Message}");
         }
     }
 
@@ -263,7 +263,7 @@ public sealed class GameDataRepository
         }
         catch (Exception e)
         {
-            Debug.LogWarning($"[GameDataRepository] Failed to delete save file {path}: {e.Message}");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[GameDataRepository] Failed to delete save file {path}: {e.Message}");
         }
     }
 }

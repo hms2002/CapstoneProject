@@ -9,6 +9,6 @@ public class EmptyEffectSO : UpgradeEffectSO
 
     public override void ApplyOnPurchase(PlayerInteractor2D player)
     {
-        Debug.Log($"[EmptyEffect] '{name}' effect ran, but it has no gameplay logic.");
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[EmptyEffect] '{name}' effect ran, but it has no gameplay logic.");
     }
 }

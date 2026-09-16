@@ -119,24 +119,24 @@ public sealed class PlayerRuntimeCaptureBridge : MonoBehaviour
     private void WarnIfMissingCoreComponents()
     {
         if (consumableInventory == null)
-            Debug.LogWarning("[PlayerRuntimeCaptureBridge] PlayerConsumableInventory가 없어 1회용 아이템 상태를 저장하지 못합니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerRuntimeCaptureBridge] PlayerConsumableInventory가 없어 1회용 아이템 상태를 저장하지 못합니다.", this);
 
         if (weaponInventory == null)
-            Debug.LogWarning("[PlayerRuntimeCaptureBridge] WeaponInventory2D가 없어 무기 배치/런타임 상태를 저장하지 못합니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerRuntimeCaptureBridge] WeaponInventory2D가 없어 무기 배치/런타임 상태를 저장하지 못합니다.", this);
 
         if (relicInventory == null)
-            Debug.LogWarning("[PlayerRuntimeCaptureBridge] RelicInventory가 없어 유물 배치/런타임 상태를 저장하지 못합니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerRuntimeCaptureBridge] RelicInventory가 없어 유물 배치/런타임 상태를 저장하지 못합니다.", this);
 
         if (attributeSet == null)
-            Debug.LogWarning("[PlayerRuntimeCaptureBridge] AttributeSet이 없어 Attribute 상태를 저장하지 못합니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerRuntimeCaptureBridge] AttributeSet이 없어 Attribute 상태를 저장하지 못합니다.", this);
 
         if (effectRunner == null)
-            Debug.LogWarning("[PlayerRuntimeCaptureBridge] GameplayEffectRunner가 없어 활성 Effect 상태를 저장하지 못합니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerRuntimeCaptureBridge] GameplayEffectRunner가 없어 활성 Effect 상태를 저장하지 못합니다.", this);
 
         if (tagSystem == null)
-            Debug.LogWarning("[PlayerRuntimeCaptureBridge] TagSystem이 없어 explicit tag 상태를 저장하지 못합니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerRuntimeCaptureBridge] TagSystem이 없어 explicit tag 상태를 저장하지 못합니다.", this);
 
         if (abilitySystem == null)
-            Debug.LogWarning("[PlayerRuntimeCaptureBridge] AbilitySystem이 없어 ability runtime 상태를 저장하지 못합니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[PlayerRuntimeCaptureBridge] AbilitySystem이 없어 ability runtime 상태를 저장하지 못합니다.", this);
     }
 }

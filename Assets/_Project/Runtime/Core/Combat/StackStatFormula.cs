@@ -66,7 +66,7 @@ namespace UnityGAS
             }
 
             lastValidationMessage = message;
-            Debug.LogWarning($"[StackStatFormula] '{name}' expression is invalid: {message}", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[StackStatFormula] '{name}' expression is invalid: {message}", this);
         }
 
         public float Evaluate(AttributeSet source, IStatProvider provider, float defaultIfEmpty = 0f)

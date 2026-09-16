@@ -97,7 +97,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         return MonsterNavigationFootprint2D.FromBodies(transform, navigationRigidbody, navigationBodies);
     }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
     private Vector2 diagnosticAnchor;
     private float diagnosticStationarySince;
     private float diagnosticNextLogTime;
@@ -176,7 +176,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
             $"motorEnabled={diagnosticMotor.isActiveAndEnabled}, intentVelocity={diagnosticMotor.LastIntentVelocity}, " +
             $"externalVelocity={diagnosticMotor.LastExternalVelocity}, motionVelocity={diagnosticMotor.LastMotionVelocity}, finalVelocity={diagnosticMotor.LastFinalVelocity}, " +
             diagnosticMotor.DescribeWallStallGates();
-        Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, this,
+        CapstoneDiagnostics.EditorOnlyLog.LogWithoutStacktrace( this,
             "[MonsterWallStallDiagnostics] {0}",
             $"{name}#{GetInstanceID()}, scene={gameObject.scene.name}, sample={diagnosticLogCount}/10, " +
             $"stationaryFor={Time.time - diagnosticStationarySince:F2}, position={position}, target={enemy.Target.position}, " +
@@ -191,10 +191,10 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     }
 #endif
 
-    [System.Diagnostics.Conditional("UNITY_EDITOR"), System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void TraceIntentReason(string reason)
     {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
         diagnosticIntentReason = reason;
         diagnosticIntentTime = Time.time;
 #endif
@@ -214,7 +214,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     private void OnEnable()
     {
         navigationBodiesDirty = true;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
         diagnosticAnchor = transform.position;
         diagnosticStationarySince = Time.time;
         diagnosticNextLogTime = 0f;
@@ -481,7 +481,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
 
         if (!pathfinder.HasDirectWalkableSegment(transform.position, chasePath[chasePathIndex], GetNavigationFootprint()))
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
             diagnosticBlockedWaypoint = chasePath[chasePathIndex];
             diagnosticHasBlockedWaypoint = true;
 #endif
@@ -526,7 +526,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
             return;
 
         bool pathFound = pathfinder.TryBuildPath(transform.position, targetPosition, out IReadOnlyList<Vector2> result, GetNavigationFootprint());
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
         diagnosticSearchResult = pathfinder.DiagnosticSearchResult;
         diagnosticVisited = pathfinder.DiagnosticVisitedNodes;
         diagnosticSearchTime = Time.time;
@@ -603,15 +603,17 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     }
 
     /// <summary>추적 디버그 스위치가 켜진 인스턴스만 즉시 로그를 남깁니다.</summary>
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void LogChase(string message)
     {
         if (!logChaseDebug)
             return;
 
-        Debug.Log($"[EnemyChaseIntent2D] {name}: {message}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[EnemyChaseIntent2D] {name}: {message}", this);
     }
 
     /// <summary>추적 디버그 스위치가 켜진 인스턴스만 제한된 주기로 로그를 남깁니다.</summary>
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void LogChaseThrottled(string message)
     {
         if (!logChaseDebug)

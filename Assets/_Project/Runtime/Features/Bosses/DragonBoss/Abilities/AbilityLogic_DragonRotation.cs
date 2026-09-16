@@ -179,7 +179,7 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
 
         string targetName = visualRoot != null ? visualRoot.name : "null";
         bool isRootFallback = dragon != null && visualRoot == dragon.transform;
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[DragonRotation] Visual sway start. target={targetName}, rootFallback={isRootFallback}, baseLocal={baseLocalPosition}, amplitude={visualSwayAmplitude}, frequency={visualSwayFrequency}",
             dragon);
     }
@@ -193,7 +193,7 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
         if (frame % 15 != 0)
             return;
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[DragonRotation] Visual sway tick. elapsed={elapsed:F2}, offset={offset:F3}, local={visualRoot.localPosition}",
             visualRoot);
     }
@@ -203,7 +203,7 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
         if (!debugVisualSway)
             return;
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[DragonRotation] Visual sway end. restoredLocal={baseLocalPosition}",
             visualRoot);
     }

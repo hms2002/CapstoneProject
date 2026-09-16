@@ -219,7 +219,7 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
 
         if (verboseLogging)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[PortalRouteManager] Prepared pending run plan. portal={portal.name}, stageCount={stages.Count}, catalog={catalog.name}",
                 portal);
         }
@@ -236,7 +236,7 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
 
         if (verboseLogging)
         {
-            Debug.Log("[PortalRouteManager] Cleared active and pending run plans.", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log("[PortalRouteManager] Cleared active and pending run plans.", this);
         }
 
         ClearLoadPresentationContext();
@@ -481,7 +481,7 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
 
         if (verboseLogging)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[PortalRouteManager] Resolved route. configuredTransitionType={portal.PortalTransitionType}, effectiveTransitionType={effectiveTransitionType}, stageIndex={currentStageIndex}, target={route.TargetSceneName}, entry={route.EntryPointId}",
                 this);
         }
@@ -503,7 +503,7 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
 
             if (verboseLogging)
             {
-                Debug.Log(
+                CapstoneDiagnostics.EditorOnlyLog.Log(
                     $"[PortalRouteManager] Advanced to next stage. currentStageIndex={currentStageIndex}",
                     this);
             }
@@ -618,7 +618,7 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
 
         if (verboseLogging)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[PortalRouteManager] Activated run plan. portal={portal.name}, catalog={activeRouteCatalog.name}, stageCount={activeRouteStages.Count}",
                 portal);
         }
@@ -654,7 +654,7 @@ public sealed class PortalRouteManager : MonoBehaviour, IRunRouteBackend
 
         if (verboseLogging)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[PortalRouteManager] Prepared pending run plan from start portal. portal={portal.name}, catalog={catalog.name}, stages={stages.Count}",
                 portal);
         }

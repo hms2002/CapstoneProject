@@ -241,7 +241,7 @@ public sealed class TitleMenuController : MonoBehaviour
         {
             if (elapsed >= LaunchPreloadTimeoutSeconds)
             {
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     "[TitleMenuController] Timed out waiting for title launch preload. Continuing launch.",
                     this);
                 break;

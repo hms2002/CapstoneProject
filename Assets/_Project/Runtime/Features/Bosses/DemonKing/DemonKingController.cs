@@ -1236,7 +1236,7 @@ public sealed class DemonKingController : BossControllerBase
     {
         string key = $"{stateName}:{reason}";
         if (patternAnimationWarnings.Add(key))
-            Debug.LogWarning($"DemonKing pattern animation '{stateName}' skipped: {reason}.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"DemonKing pattern animation '{stateName}' skipped: {reason}.", this);
     }
 
     private void CleanupEgoSwordForBattleEnd()
@@ -1460,7 +1460,7 @@ public sealed class DemonKingController : BossControllerBase
 
         if (ability.executionPolicy != AbilityDefinition.ExecutionPolicy.ParallelIndependent)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"DemonKing {label} should use ParallelIndependent so it can run outside the main boss pattern timer.",
                 this);
         }
@@ -1475,7 +1475,7 @@ public sealed class DemonKingController : BossControllerBase
             if (!missingEgoSwordSubPatternAbilityLogged)
             {
                 missingEgoSwordSubPatternAbilityLogged = true;
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     $"DemonKing is missing an authored GAS AbilityDefinition for {label}. EgoSword dropped subpatterns will not run.",
                     this);
             }

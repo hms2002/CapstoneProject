@@ -30,11 +30,12 @@ public sealed class UiRaycastDebugProbe : MonoBehaviour
     /// - 현재 마우스 위치로 EventSystem UI 레이캐스트를 수행하고 hit 결과를 사람이 읽기 쉬운 로그 문자열로 변환한다.
     /// - 최상단 하나만 볼지, 전체 순서를 볼지 설정에 따라 디버그 밀도를 조절한다.
     /// </summary>
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     public void LogCurrentPointerHits()
     {
         if (EventSystem.current == null)
         {
-            Debug.LogWarning("[UiRaycastDebugProbe] EventSystem.current is null.");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[UiRaycastDebugProbe] EventSystem.current is null.");
             return;
         }
 
@@ -48,7 +49,7 @@ public sealed class UiRaycastDebugProbe : MonoBehaviour
 
         if (raycastResults.Count == 0)
         {
-            Debug.Log($"[UiRaycastDebugProbe] No UI hit at mouse position {Input.mousePosition}.");
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[UiRaycastDebugProbe] No UI hit at mouse position {Input.mousePosition}.");
             return;
         }
 
@@ -82,7 +83,7 @@ public sealed class UiRaycastDebugProbe : MonoBehaviour
             builder.AppendLine();
         }
 
-        Debug.Log(builder.ToString(), this);
+        CapstoneDiagnostics.EditorOnlyLog.Log(builder.ToString(), this);
     }
 
     /// <summary>

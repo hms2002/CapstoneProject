@@ -21,7 +21,7 @@ public abstract class WitchPatternCondition : BossPatternCondition
         {
             hasLoggedRuntimeDataBridge = true;
             string patternName = ownerPattern != null && ownerPattern.Ability != null ? ownerPattern.Ability.name : "None";
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[BossFSM] {witch.name}: WitchPatternCondition가 runtime data를 정상 수신했습니다. pattern='{patternName}'",
                 witch);
         }

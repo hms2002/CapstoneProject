@@ -127,7 +127,7 @@ public sealed class RoomEncounterEntryTrigger2D : MonoBehaviour
 
         if (!missingRoomGroupWarningLogged)
         {
-            Debug.LogWarning("[RoomEncounterEntryTrigger2D] Missing target MonsterSpawnRoomGroup reference.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RoomEncounterEntryTrigger2D] Missing target MonsterSpawnRoomGroup reference.", this);
             missingRoomGroupWarningLogged = true;
         }
 
@@ -189,12 +189,13 @@ public sealed class RoomEncounterEntryTrigger2D : MonoBehaviour
             !bodyCollider.gameObject.activeInHierarchy);
     }
 
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void LogTrigger(string message)
     {
         if (!logRoomEntryTriggerDebug)
             return;
 
-        Debug.Log($"[RoomEntryTrigger] {name}: {message}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[RoomEntryTrigger] {name}: {message}", this);
     }
 
     private static string FormatCollider(Collider2D collider)

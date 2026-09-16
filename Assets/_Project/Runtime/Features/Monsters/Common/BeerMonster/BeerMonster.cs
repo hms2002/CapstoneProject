@@ -247,7 +247,7 @@ public class BeerMonster : Mob, IMobAttackDecisionSource, IMobProjectileLaneSour
 
         if (alcoholPuddlePrefab == null)
         {
-            Debug.LogWarning($"{nameof(BeerMonster)}: 사망 시 생성할 술 장판 프리팹이 비어 있습니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"{nameof(BeerMonster)}: 사망 시 생성할 술 장판 프리팹이 비어 있습니다.", this);
             return;
         }
 
@@ -431,13 +431,13 @@ public sealed partial class BeerMonsterShotRunner : MonoBehaviour, IMobPatternRu
         RaycastHit2D hit = Physics2D.Raycast(start, direction, range, context.WallLayers);
         if (hit.collider == null)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[BeerMonsterWallClipProbe] no wall hit. origin={start}, dir={direction}, range={range:0.00}, wallMask={context.WallLayers.value}",
                 this);
             return;
         }
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[BeerMonsterWallClipProbe] wall hit. collider={hit.collider.name}, layer={LayerMask.LayerToName(hit.collider.gameObject.layer)}({hit.collider.gameObject.layer}), trigger={hit.collider.isTrigger}, distance={hit.distance:0.00}, point={hit.point}, wallMask={context.WallLayers.value}",
             hit.collider);
     }

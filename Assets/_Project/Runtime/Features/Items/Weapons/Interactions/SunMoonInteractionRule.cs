@@ -37,7 +37,7 @@ public sealed class SunMoonInteractionRule : WeaponPairInteractionRule
             int consumedCold = moonData.ColdStacks;
             coordinator.TryMutateRuntimeData<SunBladeRuntimeData>(context.SourceSlotIndex, static data => data.ClearHeat());
             coordinator.TryMutateRuntimeData<MoonBladeRuntimeData>(context.OtherSlotIndex, static data => data.ClearCold());
-            Debug.Log($"[SunMoonInteractionRule] Solar finish consumed stacks: sun={consumedHeat}, moon={consumedCold}");
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[SunMoonInteractionRule] Solar finish consumed stacks: sun={consumedHeat}, moon={consumedCold}");
             return true;
         }
 
@@ -55,7 +55,7 @@ public sealed class SunMoonInteractionRule : WeaponPairInteractionRule
             int consumedHeat = otherSunData.HeatStacks;
             coordinator.TryMutateRuntimeData<MoonBladeRuntimeData>(context.SourceSlotIndex, static data => data.ClearCold());
             coordinator.TryMutateRuntimeData<SunBladeRuntimeData>(context.OtherSlotIndex, static data => data.ClearHeat());
-            Debug.Log($"[SunMoonInteractionRule] Lunar finish consumed stacks: moon={consumedCold}, sun={consumedHeat}");
+            CapstoneDiagnostics.EditorOnlyLog.Log($"[SunMoonInteractionRule] Lunar finish consumed stacks: moon={consumedCold}, sun={consumedHeat}");
             return true;
         }
 

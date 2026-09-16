@@ -47,7 +47,7 @@ public class NPCManager : MonoBehaviour
         {
             if (database != incomingDatabase)
             {
-                Debug.LogWarning("[NPCManager] Different NPCDatabase was supplied by a scene instance. Keeping the existing database.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[NPCManager] Different NPCDatabase was supplied by a scene instance. Keeping the existing database.", this);
             }
 
             return;

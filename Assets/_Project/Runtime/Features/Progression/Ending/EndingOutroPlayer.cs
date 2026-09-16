@@ -77,7 +77,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
 
         if (!CanPlay)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 "[EndingOutroPlayer] Outro cannot play because sequence or view references are missing.",
                 this);
             return false;

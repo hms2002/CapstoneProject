@@ -181,12 +181,13 @@ public class HoleTrap : MonoBehaviour
         activeTargets.Remove(targetObject);
     }
 
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void LogDebug(string message)
     {
         if (!logDebug)
             return;
 
-        Debug.Log($"[HoleTrap] {name}: {message}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[HoleTrap] {name}: {message}", this);
     }
 
 }

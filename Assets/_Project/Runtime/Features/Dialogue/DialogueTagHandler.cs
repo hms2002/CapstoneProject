@@ -66,7 +66,7 @@ public class DialogueTagHandler : MonoBehaviour
                 case "feature":
                     if (isBlocking)
                     {
-                        Debug.LogWarning($"[TagHandler] 이미 blocking 태그를 처리 중이어서 추가 feature 태그를 무시합니다: {tag}");
+                        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[TagHandler] 이미 blocking 태그를 처리 중이어서 추가 feature 태그를 무시합니다: {tag}");
                         break;
                     }
 
@@ -77,7 +77,7 @@ public class DialogueTagHandler : MonoBehaviour
                 case "add_aff":
                     if (isBlocking)
                     {
-                        Debug.LogWarning($"[TagHandler] 이미 blocking 태그를 처리 중이어서 추가 add_aff 태그를 무시합니다: {tag}");
+                        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[TagHandler] 이미 blocking 태그를 처리 중이어서 추가 add_aff 태그를 무시합니다: {tag}");
                         break;
                     }
 
@@ -93,7 +93,7 @@ public class DialogueTagHandler : MonoBehaviour
                 case "fail_aff":
                     if (isBlocking)
                     {
-                        Debug.LogWarning($"[TagHandler] 이미 blocking 태그를 처리 중이어서 추가 choice_fail 태그를 무시합니다: {tag}");
+                        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[TagHandler] 이미 blocking 태그를 처리 중이어서 추가 choice_fail 태그를 무시합니다: {tag}");
                         break;
                     }
 
@@ -102,7 +102,7 @@ public class DialogueTagHandler : MonoBehaviour
                     break;
 
                 default:
-                    Debug.LogWarning($"[TagHandler] 처리되지 않은 태그: {tag}");
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[TagHandler] 처리되지 않은 태그: {tag}");
                     break;
             }
         }

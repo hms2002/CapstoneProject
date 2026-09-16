@@ -33,7 +33,7 @@ namespace UnityGAS
 
                 if (entry.Attribute.IsBaseOnly())
                 {
-                    Debug.LogWarning(
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                         $"[DurationMultiModifierEffect] '{entry.Attribute.attributeName}' 은(는) BaseOnly 속성이므로 Duration Modifier를 적용할 수 없습니다. Effect: {name}",
                         this);
                     continue;

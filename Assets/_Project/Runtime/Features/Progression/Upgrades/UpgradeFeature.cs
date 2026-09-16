@@ -85,7 +85,7 @@ public class UpgradeFeature : MonoBehaviour, INPCFeature
             return;
         }
 
-        Debug.LogWarning("[UpgradeFeature] UpgradeManager.Instance is missing in the scene.");
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[UpgradeFeature] UpgradeManager.Instance is missing in the scene.");
     }
 
     private void AcquireUpgradeHandoffControlBlock()

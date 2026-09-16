@@ -59,7 +59,7 @@ public class GraveSpawner : MonoBehaviour
     {
         if (spawnPoints == null || spawnPoints.Count == 0)
         {
-            Debug.LogWarning("[GraveSpawner] Spawn points are not configured.");
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GraveSpawner] Spawn points are not configured.");
             return;
         }
 

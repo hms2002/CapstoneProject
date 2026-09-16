@@ -445,7 +445,7 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
             GamePlayDataManager.Instance);
         if (!request.IsValid)
         {
-            Debug.LogWarning("[UIManager] Title scene name could not be resolved.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[UIManager] Title scene name could not be resolved.", this);
             return;
         }
 
@@ -634,7 +634,7 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
         WarningPopupService service = ResolveWarningPopupService();
         if (service == null)
         {
-            Debug.LogWarning("[UIManager] WarningPopupService could not be resolved.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[UIManager] WarningPopupService could not be resolved.", this);
             return;
         }
 

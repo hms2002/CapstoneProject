@@ -15,7 +15,7 @@ public static class MobStateTransitionUtility
         if (!context.IsInStaggerState())
             return false;
 
-        Debug.Log($"[MobStateTransitionUtility] Groggy detected. owner={context.Owner.name}");
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[MobStateTransitionUtility] Groggy detected. owner={context.Owner.name}");
         stateMachine.ChangeState(new MobStaggerState(), context);
         return true;
     }

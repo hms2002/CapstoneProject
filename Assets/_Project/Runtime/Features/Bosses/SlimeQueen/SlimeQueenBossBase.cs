@@ -196,7 +196,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         ISpeechBubblePlayback speechBubble = ResolveSlimeQueenSpeechBubble();
         if (speechBubble == null)
         {
-            Debug.Log($"SlimeQueen Speech: {line}", this);
+            CapstoneDiagnostics.EditorOnlyLog.Log($"SlimeQueen Speech: {line}", this);
             return false;
         }
 
@@ -850,7 +850,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         int playerLayer = LayerMask.NameToLayer(PlayerLayerName);
         int enemyLayer = LayerMask.NameToLayer(EnemyActorLayerName);
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[SlimeQueenHeightCollision] {name}: {reason}. " +
             $"heightMode={(heightState != null ? heightState.Mode.ToString() : "null")}, " +
             $"visualHeight={(heightState != null ? heightState.VisualHeight : -1f):0.00}, " +
@@ -920,7 +920,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         Transform otherRoot = otherCollider != null ? otherCollider.transform.root : null;
         Rigidbody2D otherRigidbody = collision.rigidbody;
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[SlimeQueenAirborneCollision] {name}: {phase}. " +
             $"heightMode={heightState.Mode}, collisionMode={(heightCollisionProfile != null ? heightCollisionProfile.CurrentMode.ToString() : "null")}, " +
             $"own={FormatCollisionCollider(ownCollider)}, " +

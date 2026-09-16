@@ -496,7 +496,7 @@ public sealed class RunSameSceneTeleportNpcFeature : RunSpecialNpcFeatureBase, I
 
     private void LogTeleportWarning(string message)
     {
-        Debug.LogWarning($"[RunSameSceneTeleportNpcFeature] {message}", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[RunSameSceneTeleportNpcFeature] {message}", this);
     }
 
     private static Transform ResolvePlayerTransform(RunSpecialNpcFeatureContext context)

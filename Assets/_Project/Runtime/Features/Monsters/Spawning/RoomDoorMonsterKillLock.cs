@@ -173,7 +173,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
         {
             if (Application.isPlaying && !missingRoomGroupWarningLogged)
             {
-                Debug.LogWarning("[RoomDoorMonsterKillLock] Missing target MonsterSpawnRoomGroup reference.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RoomDoorMonsterKillLock] Missing target MonsterSpawnRoomGroup reference.", this);
                 missingRoomGroupWarningLogged = true;
             }
 
@@ -546,18 +546,19 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
         if (!missingDoorWarningLogged)
         {
-            Debug.LogWarning("[RoomDoorMonsterKillLock] Missing target DoorObject reference.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[RoomDoorMonsterKillLock] Missing target DoorObject reference.", this);
             missingDoorWarningLogged = true;
         }
 
         return false;
     }
 
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void LogDebug(string message)
     {
         if (!logDebug)
             return;
 
-        Debug.Log($"[RoomDoorMonsterKillLock] {name}: {message}", this);
+        CapstoneDiagnostics.EditorOnlyLog.Log($"[RoomDoorMonsterKillLock] {name}: {message}", this);
     }
 }

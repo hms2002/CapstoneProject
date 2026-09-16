@@ -37,7 +37,7 @@ public sealed partial class DungeonRoomBuilder
         List<Vector2Int> startCells = FindReturnReachableCells(layout, start, out _);
         if (startCells.Count == 0)
         {
-            Debug.LogWarning("[ReturnPortal] No reachable Start room landing floor; returns disabled for this build.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[ReturnPortal] No reachable Start room landing floor; returns disabled for this build.", this);
             return true;
         }
         returnLandingCells.UnionWith(startCells);
@@ -59,7 +59,7 @@ public sealed partial class DungeonRoomBuilder
         { landing = desired; found = true; }
         if (!found)
         {
-            Debug.LogWarning("[ReturnPortal] Start room has no clear landing footprint; returns disabled for this build.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[ReturnPortal] Start room has no clear landing footprint; returns disabled for this build.", this);
             return true;
         }
         var root = new GameObject("GeneratedReturnPortals");
@@ -95,13 +95,13 @@ public sealed partial class DungeonRoomBuilder
                     returnPortalClearance, null, false), out Vector2Int chosen))
             {
                 if (explicitAnchor != null)
-                    Debug.LogWarning($"[ReturnPortal] {room.Template.name}: guide '{explicitAnchor.name}' is unreachable or obstructed; using automatic wall placement.", explicitAnchor);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[ReturnPortal] {room.Template.name}: guide '{explicitAnchor.name}' is unreachable or obstructed; using automatic wall placement.", explicitAnchor);
                 wallDirection = DungeonReturnPortalPlacement.Opposite(socket.direction);
                 portalPosition = floorTilemap.GetCellCenterWorld((Vector3Int)chosen);
             }
             else
             {
-                Debug.LogWarning($"[ReturnPortal] {room.Template.name}: no safe opposite-wall position. Add ReturnPortal_{wallDirection} anchor.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[ReturnPortal] {room.Template.name}: no safe opposite-wall position. Add ReturnPortal_{wallDirection} anchor.", this);
                 continue;
             }
             DungeonReturnPortal portal = Instantiate(returnPortalPrefab, portalPosition, floorTilemap.transform.rotation, generatedReturnRoot);
@@ -129,7 +129,7 @@ public sealed partial class DungeonRoomBuilder
         Vector3 desired = floorTilemap.GetCellCenterWorld((Vector3Int)Vector2Int.FloorToInt(boss.WorldBounds.center));
         if (!TryChooseShortcutFloor(reachable, desired, out Vector3 destination))
         {
-            Debug.LogWarning("[BossShortcut] No safe reachable floor in Boss room; shortcut skipped.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossShortcut] No safe reachable floor in Boss room; shortcut skipped.", this);
             return;
         }
         Vector3 center = floorTilemap.GetCellCenterWorld((Vector3Int)Vector2Int.FloorToInt(start.WorldBounds.center));

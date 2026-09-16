@@ -70,7 +70,7 @@ public static class PlayerRuntimeRegistry
 
         if (hasMissingComponent)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 "[PlayerRuntimeRegistry] Player runtime components are missing. " +
                 "The registry no longer creates components; fix the player prefab/bootstrap authoring.",
                 player);
@@ -82,7 +82,7 @@ public static class PlayerRuntimeRegistry
         if (player.GetComponent<T>() != null)
             return false;
 
-        Debug.LogWarning(
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning(
             $"[PlayerRuntimeRegistry] Missing required player runtime component: {typeof(T).Name}",
             player);
         return true;

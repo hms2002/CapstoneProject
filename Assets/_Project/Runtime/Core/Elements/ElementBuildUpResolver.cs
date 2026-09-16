@@ -126,7 +126,7 @@ namespace UnityGAS
             if (statProvider == null)
             {
 #if UNITY_EDITOR
-                Debug.LogWarning(
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                     $"[ElementBuildUpResolver] '{attacker.name}' 에 IStatProvider 가 없습니다. " +
                     "(예: AttributeStatSource) 자동 속성 누적 계산을 건너뜁니다.",
                     attacker);

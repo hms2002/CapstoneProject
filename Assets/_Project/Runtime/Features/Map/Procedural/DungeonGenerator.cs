@@ -173,7 +173,7 @@ public sealed class DungeonGenerator : MonoBehaviour, ISceneEntryReadiness
         }
 
         if (LastLayout.RecoveryLevel > 0)
-            Debug.LogWarning($"Dungeon generation recovered. Seed={resolvedSeed}, Theme={resolvedRoomLibrary.ThemeId}: {LastLayout.RecoveryDescription}", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"Dungeon generation recovered. Seed={resolvedSeed}, Theme={resolvedRoomLibrary.ThemeId}: {LastLayout.RecoveryDescription}", this);
 
         roomBuilder.ConfigureCorridorDecoration(
             generationProfile != null
@@ -206,7 +206,7 @@ public sealed class DungeonGenerator : MonoBehaviour, ISceneEntryReadiness
         if (!LastLayout.IsComplete)
         {
             mapRuntime.ClearConfiguration();
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"Dungeon layout built partially ({LastLayout.Rooms.Count}/{LastLayout.RequestedRoomCount} rooms): " +
                 LastLayout.FailureReason,
                 this);
@@ -222,7 +222,7 @@ public sealed class DungeonGenerator : MonoBehaviour, ISceneEntryReadiness
             out int shortestCorridorLength,
             out int longestCorridorLength);
         string longestCorridorDescription = ResolveLongestCorridorDescription(LastLayout);
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"Dungeon generated. Theme={resolvedRoomLibrary.ThemeId}, Seed={resolvedSeed}, " +
             $"Reentry={reentryPolicy}, Rooms={LastLayout.Rooms.Count}, " +
             $"GraphFirst={LastLayout.UsesGraphFirstLayout}, " +

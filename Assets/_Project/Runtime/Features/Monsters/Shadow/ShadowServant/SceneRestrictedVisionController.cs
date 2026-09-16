@@ -74,7 +74,7 @@ public sealed class SceneRestrictedVisionController : MonoBehaviour
         if (restrictedVisionDefinition == null)
         {
             if (logFlow)
-                Debug.LogWarning("[SceneRestrictedVisionController] Restricted vision definition was missing.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning("[SceneRestrictedVisionController] Restricted vision definition was missing.", this);
             return;
         }
 
@@ -89,7 +89,7 @@ public sealed class SceneRestrictedVisionController : MonoBehaviour
 
         if (logFlow)
         {
-            Debug.Log(
+            CapstoneDiagnostics.EditorOnlyLog.Log(
                 $"[SceneRestrictedVisionController] Applied restricted vision to '{player.name}'. " +
                 $"statusId={restrictedVisionDefinition.StatusId}, handle={activeStatusHandle.RuntimeId}",
                 this);
@@ -102,7 +102,7 @@ public sealed class SceneRestrictedVisionController : MonoBehaviour
         {
             if (logFlow)
             {
-                Debug.Log(
+                CapstoneDiagnostics.EditorOnlyLog.Log(
                     $"[SceneRestrictedVisionController] Releasing restricted vision handle {activeStatusHandle.RuntimeId} " +
                     $"from '{(currentPlayer != null ? currentPlayer.name : "null")}'.",
                     this);

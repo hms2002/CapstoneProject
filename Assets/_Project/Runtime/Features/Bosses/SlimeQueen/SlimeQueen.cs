@@ -420,7 +420,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             return;
 
         StopCallSlimeSpeechAnimation();
-        Debug.LogWarning("[BossFSM] SlimeQueen call slime speech data is missing.", this);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning("[BossFSM] SlimeQueen call slime speech data is missing.", this);
     }
 
     private void BeginCallSlimeSpeechAnimation()
@@ -746,7 +746,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     {
         if (prefab == null)
         {
-            Debug.LogWarning($"[BossFSM] SlimeQueen: {fallbackName} 프리팹이 비어 있어 2페이즈 개체를 생성하지 못했습니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[BossFSM] SlimeQueen: {fallbackName} 프리팹이 비어 있어 2페이즈 개체를 생성하지 못했습니다.", this);
             return null;
         }
 

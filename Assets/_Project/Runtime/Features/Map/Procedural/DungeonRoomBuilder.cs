@@ -1803,7 +1803,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         if (!binding.IsConfigured)
         {
             SetTravelMediumEnabled(endpoint.gameObject, false);
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[DungeonRoomBuilder] Travel slot '{roomPlacement.Template.LayoutData.roomId}:{placement.slotId}' " +
                 "has no scene binding and will remain inactive.",
                 this);
@@ -2386,7 +2386,7 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         if (!socketCleanupWarningKeys.Add(key))
             return;
 
-        Debug.LogWarning(message, context);
+        CapstoneDiagnostics.EditorOnlyLog.LogWarning(message, context);
     }
 
     private bool TryBuildConnection(

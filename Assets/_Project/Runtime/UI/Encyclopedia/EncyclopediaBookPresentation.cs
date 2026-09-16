@@ -491,7 +491,7 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
         if (!warned)
         {
             warned = true;
-            Debug.LogWarning($"[EncyclopediaBookPresentation] {label} clip could not be resolved. Check the authored AnimationClip reference and Animator state motion.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[EncyclopediaBookPresentation] {label} clip could not be resolved. Check the authored AnimationClip reference and Animator state motion.", this);
         }
 
         return 0f;

@@ -49,26 +49,26 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
 
         if (owner == null)
         {
-            Debug.LogWarning("[WitchExtinguishPatternExecutor] 시작 실패: owner가 없습니다.", this);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[WitchExtinguishPatternExecutor] 시작 실패: owner가 없습니다.", this);
             return false;
         }
 
         if (owner.ExtinguishTelegraphService == null)
         {
-            Debug.LogWarning("[WitchExtinguishPatternExecutor] 시작 실패: ExtinguishTelegraphService가 없습니다.", owner);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[WitchExtinguishPatternExecutor] 시작 실패: ExtinguishTelegraphService가 없습니다.", owner);
             return false;
         }
 
         if (!context.FogPresentation.HasContent)
         {
-            Debug.LogWarning("[WitchExtinguishPatternExecutor] 시작 실패: FogPresentation이 없습니다.", owner);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[WitchExtinguishPatternExecutor] 시작 실패: FogPresentation이 없습니다.", owner);
             return false;
         }
 
         List<Candlestick> selectedCandles = BuildSelectionBuffer();
         if (selectedCandles.Count == 0)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[WitchExtinguishPatternExecutor] 시작 실패: 선택 가능한 촛대가 없습니다. total={Candlestick.Instances.Count}, sealed={owner.GetSealedCandleCount()}",
                 owner);
             return false;
@@ -77,7 +77,7 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         float attackRadius = CalculateAttackRadius(context.FogPresentation, context.AttackRadiusMultiplier);
         if (attackRadius <= 0f)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[WitchExtinguishPatternExecutor] 시작 실패: attackRadius가 유효하지 않습니다. radius={attackRadius}, multiplier={context.AttackRadiusMultiplier}",
                 owner);
             return false;

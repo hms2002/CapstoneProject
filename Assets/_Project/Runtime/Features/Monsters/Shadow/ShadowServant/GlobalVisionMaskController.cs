@@ -72,7 +72,7 @@ public class GlobalVisionMaskController : MonoBehaviour
     {
         if (instance != null && instance != this)
         {
-            Debug.LogWarning(
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning(
                 $"[{nameof(GlobalVisionMaskController)}] Duplicate instance detected. Keeping the existing instance active.",
                 this);
             SyncMaskState(false, instant: true);

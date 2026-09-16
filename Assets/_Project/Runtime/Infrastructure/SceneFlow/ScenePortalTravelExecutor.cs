@@ -65,7 +65,7 @@ internal static class ScenePortalTravelExecutor
             request.Route,
             request.RunDirective);
 
-        Debug.Log(
+        CapstoneDiagnostics.EditorOnlyLog.Log(
             $"[ScenePortalTravelService] PrepareTransition from={plan.Context.fromScene} to={plan.Context.toScene}, entry={plan.Context.entryPointId}, exit={plan.Context.exitPointId}, type={plan.Context.transitionType}, run={plan.RunDirective}, policy={plan.TransitionPolicy}",
             request.TravelRequest.Portal);
 
@@ -106,7 +106,7 @@ internal static class ScenePortalPlayerRuntimeCaptureService
 
         if (playerGo == null)
         {
-            Debug.LogWarning($"[ScenePortalTravelService] Failed to find Player for portal {request.Portal.name}", request.Portal);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[ScenePortalTravelService] Failed to find Player for portal {request.Portal.name}", request.Portal);
             return;
         }
 
@@ -115,7 +115,7 @@ internal static class ScenePortalPlayerRuntimeCaptureService
         var captureBridge = playerGo.GetComponent<PlayerRuntimeCaptureBridge>();
         if (captureBridge == null)
         {
-            Debug.LogWarning($"[ScenePortalTravelService] PlayerRuntimeCaptureBridge missing. portal={request.Portal.name}", playerGo);
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[ScenePortalTravelService] PlayerRuntimeCaptureBridge missing. portal={request.Portal.name}", playerGo);
             return;
         }
 
