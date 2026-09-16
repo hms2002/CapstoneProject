@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 013657e56ada445a9df99cb03d7409a2, type: 3}
   m_Name: Relic Logic_Common_RunawayShoes
   m_EditorClassIdentifier:
-  effectTemplate: "{trigger}: {duration} 동안 [[{stat}]] {value}"
+  effectTemplate: "● {trigger} {duration} 동안 [[{stat}]] {value}"
   triggerTag: {fileID: 11400000, guid: 504085a73b191cb41be6b18bbc36a522, type: 2}
   actorFilter: 2
   triggerLabel: "피해를 받으면"

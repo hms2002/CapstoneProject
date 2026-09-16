@@ -15,7 +15,7 @@ MonoBehaviour:
   weaponId: Weapon.EclipseSword
   displayName: "\uC6D4\uC2DD\uB3C4"
   icon: {fileID: -1513936229, guid: 7e11de47ebfa53a42a94e5fb92a94f06, type: 3}
-  storyText: "월식 자세를 취하면 검격의 흐름이 달라지는 검."
+  storyText: "<color=#96DCFA>달빛이 가려지는 순간, 검은 또 다른 궤적을 그린다.</color>"
   statModifiers: []
   attackInputHint: "\uC6B0\uD074\uB9AD"
   skill1InputHint: Q

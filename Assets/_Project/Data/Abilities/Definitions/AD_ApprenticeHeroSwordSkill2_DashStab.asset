@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: "돌진 찌르기"
   icon: {fileID: 21300000, guid: 812935a52cbb94e4f932573ef56ea32a, type: 3}
-  description: "조준 방향으로 돌진하며 전방의 적을 찌릅니다."
+  description: "● 조준 방향으로 {em:돌진}하며 전방의 적을 찌르기"
   hitFeel:
     targetStunSeconds: 0.1
     attackerStopSeconds: 0.11

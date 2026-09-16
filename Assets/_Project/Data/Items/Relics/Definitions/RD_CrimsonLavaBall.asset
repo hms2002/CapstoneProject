@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: "한계선의 관통 용암"
   icon: {fileID: 21300000, guid: 04aa0b7915194311ae5cd1ef91df55ca, type: 3}
   rarity: 2
-  description: "홍련의 한계선 전용 유물\nQ가 적을 관통하는 거대 용암구 발사로 변경됩니다. 벽에서 소멸하며 충돌 이펙트를 출력합니다. 기존 Q 피해와 크기를 유지하고 발사 속도는 평타 투사체의 75%입니다."
+  description: "● {em:홍련의 한계선} 전용 유물\n● {em:대폭발!}이 적을 관통하는 {em:거대 용암구 발사}로 전환\n● 대폭발!의 피해와 크기 유지\n● 용암구 속도는 기본 공격 투사체의 {val:75%}\n● 벽에 닿으면 소멸"
   maxLevel: 1
   dropLevel: 1
   logic: {fileID: 11400000, guid: 08badb6a48354e7897a2d10a379c625d, type: 2}

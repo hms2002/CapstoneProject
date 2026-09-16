@@ -9,6 +9,7 @@ internal static class LootPoolItemSelectionService
 {
     private static readonly HashSet<string> NonDroppableRelicIds = new HashSet<string>
     {
+        "AttackBonusRelic",
         "RD_RunningLedger",
         "RD_FeatherOrbit",
     };

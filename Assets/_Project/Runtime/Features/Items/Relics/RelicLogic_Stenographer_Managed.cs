@@ -10,7 +10,7 @@ using System.Collections.Generic;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Stenographer (Managed)")]
 public class RelicLogic_Stenographer_Managed : RelicLogic
 {
-    protected override string DefaultEffectTemplate => "● [[잔영의 날개]] 전용 유물\n● [[스킬 1]] 변동\n● 사용 시 [[이동속도]] {stage_0_bonus}\n● 3초 후 추가 [[이동속도]] {stage_1_bonus} (총 {stage_1_total})\n● 6초 후 추가 [[이동속도]] {stage_2_bonus} (총 {stage_2_total})";
+    protected override string DefaultEffectTemplate => "● {em:잔영의 날개} 전용 유물\n● {em:러쉬}의 이동속도 보너스 변경\n● 사용 시 [[이동속도]] {stage_0_bonus}\n● {val:3초} 후 [[이동속도]] {stage_1_bonus} 추가, 총 {stage_1_total}\n● {val:6초} 후 [[이동속도]] {stage_2_bonus} 추가, 총 {stage_2_total}";
 
     [Tooltip("속기사 장착 상태를 나타내는 태그.")]
     public GameplayTag grantedTag;
@@ -54,7 +54,7 @@ public class RelicLogic_Stenographer_Managed : RelicLogic
     public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
     {
         return BuildTemplatedTooltip(
-            "● [[잔영의 날개]] 전용 유물\n● [[스킬 1]] 변동\n● 사용 시 [[이동속도]] {stage_0_bonus}\n● 3초 후 추가 [[이동속도]] {stage_1_bonus} (총 {stage_1_total})\n● 6초 후 추가 [[이동속도]] {stage_2_bonus} (총 {stage_2_total})",
+            "● {em:잔영의 날개} 전용 유물\n● {em:러쉬}의 이동속도 보너스 변경\n● 사용 시 [[이동속도]] {stage_0_bonus}\n● {val:3초} 후 [[이동속도]] {stage_1_bonus} 추가, 총 {stage_1_total}\n● {val:6초} 후 [[이동속도]] {stage_2_bonus} 추가, 총 {stage_2_total}",
             new Dictionary<string, string>
             {
                 ["stage_0_bonus"] = "{pos:[+150%]}",

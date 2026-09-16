@@ -214,6 +214,14 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         socketCleanupProfile = profile;
     }
 
+    /// <summary>
+    /// 책임 : 런타임 생성기와 에디터 미리보기가 현재 테마의 복도 장식 프로필을 빌드 직전에 지정한다.
+    /// </summary>
+    public void ConfigureCorridorDecoration(CorridorDecorationProfileSO profile)
+    {
+        corridorDecorationProfile = profile;
+    }
+
 #if UNITY_EDITOR
     public void EditorAssignTilemaps(Tilemap floor, Tilemap wall)
     {
@@ -263,14 +271,6 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
         CopyUniqueTiles(floorVariants, corridorFloorVariants);
         CopyUniqueTiles(horizontalWallVariants, horizontalCorridorWallVariants);
         CopyUniqueTiles(verticalWallVariants, verticalCorridorWallVariants);
-    }
-
-    /// <summary>
-    /// 책임 : 런타임 생성기와 에디터 미리보기가 현재 테마의 복도 장식 프로필을 빌드 직전에 지정한다.
-    /// </summary>
-    public void ConfigureCorridorDecoration(CorridorDecorationProfileSO profile)
-    {
-        corridorDecorationProfile = profile;
     }
 
     private static void CopyUniqueTiles(

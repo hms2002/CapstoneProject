@@ -43,6 +43,9 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
 
         BuildStatLines(weapon);
 
+        if (weapon.weaponId == "Weapon.CrimsonBoundary")
+            AddAbilityBlock("기본 공격", weapon.attack, weapon.attackInputHint, InputActionId.PrimaryAttack, ctx, services);
+
         AddAbilityBlock("스킬 1", weapon.skill1, weapon.skill1InputHint, InputActionId.Skill1, ctx, services);
         AddAbilityBlock("스킬 2", weapon.skill2, weapon.skill2InputHint, InputActionId.Skill2, ctx, services);
 

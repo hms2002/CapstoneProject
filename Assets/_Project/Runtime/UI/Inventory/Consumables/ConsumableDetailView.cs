@@ -44,8 +44,8 @@ public class ConsumableDetailView : MonoBehaviour, IItemDetailView
 
         if (consumable.TargetAttribute != null && consumable.RestoreAmount > 0)
         {
-            sb.AppendLine($"- [[{consumable.TargetAttribute.attributeName}]] {consumable.RestoreAmount} 회복");
-            sb.AppendLine("- 사용 시 1개 소모");
+            sb.AppendLine($"● [[{consumable.TargetAttribute.attributeName}]] {{pos:[+{consumable.RestoreAmount}]}} 회복");
+            sb.AppendLine("● 사용 시 {neg:1개 소모}");
         }
         else
         {

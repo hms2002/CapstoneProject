@@ -485,6 +485,9 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
             return 0;
 
         int count = 0;
+        if (weapon.weaponId == "Weapon.CrimsonBoundary" &&
+            AddAbilityBlock("기본 공격", weapon.GetAbility(WeaponAbilitySlot.Attack), weapon.attackInputHint, InputActionId.PrimaryAttack))
+            count++;
         if (AddAbilityBlock("스킬 1", weapon.GetAbility(WeaponAbilitySlot.Skill1), weapon.skill1InputHint, InputActionId.Skill1))
             count++;
         if (AddAbilityBlock("스킬 2", weapon.GetAbility(WeaponAbilitySlot.Skill2), weapon.skill2InputHint, InputActionId.Skill2))
