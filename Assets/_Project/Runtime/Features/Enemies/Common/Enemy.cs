@@ -482,6 +482,7 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
         if (isDead) return;
 
         isDead = true;
+        GetComponent<MonsterStatusRuntime>()?.ClearAll();
         deathStartStateHash = animator != null ? animator.GetCurrentAnimatorStateInfo(0).fullPathHash : 0;
         OnDeathStarted();
         DeathStarted?.Invoke(this);

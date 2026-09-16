@@ -198,6 +198,16 @@ public sealed class DungeonLayoutPolicySO : ScriptableObject
                roomCount <= RecommendedMaximumRoomCount;
     }
 
+    // Returns a disposable runtime copy; authoring assets and all room quotas remain unchanged.
+    internal DungeonLayoutPolicySO CreateRecoveryPolicy()
+    {
+        var copy = Instantiate(this);
+        copy.hideFlags = HideFlags.HideAndDontSave;
+        copy.minimumCycleConnections = 0;
+        copy.maximumCycleConnections = 0;
+        return copy;
+    }
+
 #if UNITY_EDITOR
     /// <summary>
     /// 책임:

@@ -1,4 +1,5 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 
 namespace UnityGAS.Sample
@@ -11,6 +12,8 @@ namespace UnityGAS.Sample
     [CreateAssetMenu(fileName = "AL_OddIronShot", menuName = "GAS/Weapon/Odd Iron/Shot Logic")]
     public sealed class AbilityLogic_OddIronShot : AbilityLogic
     {
+        [SerializeField] private SoundRef reloadSound;
+
         public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
         {
             if (system == null || spec?.Definition == null)
@@ -21,7 +24,46 @@ namespace UnityGAS.Sample
             if (data == null || data.projectilePrefab == null || runtimeData == null)
                 yield break;
 
-            if (!runtimeData.HasAmmo) WeaponExclusiveRelics.TryReload(system.gameObject, runtimeData);
+            if (!runtimeData.HasAmmo)
+            {
+                OddIronRuntimeState state = OddIronAbilityUtility.ResolveRuntimeState(system);
+                OddIronReloadExecutor executor = state != null ? state.GetComponent<OddIronReloadExecutor>() : null;
+                WeaponExecutorRunner runner = system.GetComponent<WeaponExecutorRunner>();
+                WeaponInventory2D inventory = OddIronAbilityUtility.ResolveInventory(system);
+                if (executor == null || executor.IsRunning || runner == null || inventory == null ||
+                    !WeaponExclusiveRelics.Has(system.gameObject, WeaponExclusiveRelics.OddIronMagazine))
+                    yield break;
+
+                executor.Configure(reloadSound);
+                runner.StartExecutor(executor, new WeaponAbilityExecutionContext
+                {
+                    AbilitySystem = system,
+                    Owner = system.gameObject,
+                    Weapon = inventory.ActiveWeapon,
+                    RuntimeState = state,
+                    Ability = spec.Definition,
+                    Spec = spec
+                });
+                // Keep GAS busy until completion; this input reloads without firing.
+                try
+                {
+                    while (executor != null && executor.IsRunning)
+                    {
+                        if (spec.Token != null && spec.Token.IsCancelled)
+                        {
+                            executor.Cancel();
+                            yield break;
+                        }
+                        yield return null;
+                    }
+                }
+                finally
+                {
+                    if (executor != null && executor.IsRunning)
+                        executor.Cancel();
+                }
+                yield break;
+            }
             if (!runtimeData.TryConsumeOneRound())
                 yield break;
 

@@ -78,6 +78,14 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     {
         AbilityDefinition definition = spec?.Definition;
         if (definition == null) return;
+        // Empty Odd Iron attacks reload without firing; they must not acquire the attack movement lock.
+        if (definition.logic is UnityGAS.Sample.AbilityLogic_OddIronShot &&
+            weaponInventory != null && weaponInventory.ActiveRuntimeData is OddIronRuntimeData ammo &&
+            !ammo.HasAmmo && WeaponExclusiveRelics.Has(gameObject, WeaponExclusiveRelics.OddIronMagazine))
+        {
+            meleeControlLockActive = false;
+            return;
+        }
         if (!IsKnownBasicAttackAbility(definition) && definition != GetBasicAttack())
         {
             if (definition.executionPolicy == AbilityDefinition.ExecutionPolicy.ExclusiveQueued)

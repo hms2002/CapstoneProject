@@ -10,7 +10,7 @@ public sealed class OddIronAmmoWorldHUD : MonoBehaviour
     [SerializeField] private TMP_Text ammoText;
 
     private int displayedAmmo = -1;
-    private int displayedCapacity = -1;
+    private int displayedReserveAmmo = -1;
 
     private void OnEnable() => Refresh();
     private void LateUpdate() => Refresh();
@@ -39,13 +39,13 @@ public sealed class OddIronAmmoWorldHUD : MonoBehaviour
         if (inventory.TryGetComponent<RelicInventory>(out var relics))
             relics.TryGetRelicLevelById(WeaponExclusiveRelics.OddIronMagazine, out reloads);
 
-        // One current magazine plus one full reserve magazine per relic level.
-        int capacityWithReserves = ammo.MaxAmmo * (1 + Mathf.Max(0, reloads));
-        if (ammo.CurrentAmmo == displayedAmmo && capacityWithReserves == displayedCapacity)
+        // Each relic level supplies one reserve magazine; exclude the loaded magazine.
+        int reserveAmmo = ammo.MaxAmmo * Mathf.Max(0, reloads);
+        if (ammo.CurrentAmmo == displayedAmmo && reserveAmmo == displayedReserveAmmo)
             return;
 
         displayedAmmo = ammo.CurrentAmmo;
-        displayedCapacity = capacityWithReserves;
-        ammoText.SetText("{0} / {1}", displayedAmmo, displayedCapacity);
+        displayedReserveAmmo = reserveAmmo;
+        ammoText.SetText("{0} / {1}", displayedAmmo, displayedReserveAmmo);
     }
 }

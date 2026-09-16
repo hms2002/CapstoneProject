@@ -865,7 +865,8 @@ public class RelicInventory : MonoBehaviour
         if (compensateLinkedValues)
             CompleteLinkedValueCompensation();
 
-        PlayRelicLevelUpSound();
+        if (newLevel > oldLevel)
+            PlayRelicLevelUpSound();
         RefreshDebugView();
         OnChanged?.Invoke();
         LastFailureResult = AcquireResult.Success;

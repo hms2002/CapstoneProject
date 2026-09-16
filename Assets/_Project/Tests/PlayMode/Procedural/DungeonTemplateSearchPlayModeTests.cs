@@ -941,6 +941,130 @@ public sealed class DungeonTemplateSearchPlayModeTests
         }
     }
 
+    [TestCase("Shadow", 1)] [TestCase("Shadow", 2)] [TestCase("Shadow", 3)]
+    [TestCase("Dragon", 1)] [TestCase("Dragon", 2)] [TestCase("Dragon", 3)]
+    [TestCase("Slime", 1)] [TestCase("Slime", 2)] [TestCase("Slime", 3)]
+    public void Recovery_DeliveryAndAlarmPreserveAllRequiredRooms(string theme, int stage)
+    {
+        var profile = AssetDatabase.LoadAssetAtPath<DungeonGenerationProfileSO>(
+            $"Assets/_Project/Data/Dungeon/GenerationProfiles/Procedural{theme}GenerationProfile.asset");
+        var guaranteed = new List<RoomTemplateSO>(profile.GuaranteedRoomTemplates);
+        foreach (string suffix in new[] { "ParcelDeliveryPoint", "AlarmBell" })
+        {
+            var room = AssetDatabase.LoadAssetAtPath<RoomTemplateSO>(
+                $"Assets/_Project/Data/Dungeon/Rooms/BossThemes/{theme}/{theme}_Event_{suffix}.asset");
+            Assert.That(room, Is.Not.Null, suffix);
+            guaranteed.Add(room);
+        }
+        string policyBefore = EditorJsonUtility.ToJson(profile.LayoutPolicy);
+        var roomBefore = guaranteed.Select(room => EditorJsonUtility.ToJson(room)).ToArray();
+        for (int n = 0; n < 3; n++)
+        {
+            int seed = unchecked(profile.Seed + n * 997);
+            var result = new DungeonGraphLayoutAssembler().Assemble(profile.RoomLibrary, profile.LayoutPolicy,
+                seed, profile.RoomCount, profile.MaxPlacementAttemptsPerRoom, profile.MinimumCorridorLength,
+                profile.CorridorLengthPerRoomCell, profile.CorridorLengthVariation, guaranteed, generationStage: stage);
+            Assert.That(result.IsComplete, Is.True, $"{theme}, stage={stage}, seed={seed}: {result.FailureReason}");
+            Assert.That(result.Rooms.Count, Is.EqualTo(profile.RoomCount));
+            foreach (var template in guaranteed)
+            {
+                var rooms = result.Rooms.Where(r => r.Template == template).ToArray();
+                Assert.That(rooms.Length, Is.EqualTo(1), template.name);
+                if (template.LayoutData.topologyPlacement.requireDeadEnd)
+                    Assert.That(rooms[0].IsDeadEnd, Is.True, template.name);
+            }
+            CheckStartConnections(result);
+            CheckPhysicalConnections(result);
+            var large = result.Rooms.Where(r => r.Template.LayoutData.roomType == RoomType.Combat &&
+                RoomTemplateCombatMetadataUtility.ResolveSizeTag(r.Template) == RoomCombatSizeTag.Large).ToArray();
+            Assert.That(large.Length, Is.EqualTo(1));
+            Assert.That(DungeonStageComposition.Tier(large[0].Template), Is.EqualTo(stage));
+            TestContext.WriteLine($"{theme}, stage={stage}, seed={seed}, recovery={result.RecoveryLevel}");
+        }
+        Assert.That(EditorJsonUtility.ToJson(profile.LayoutPolicy), Is.EqualTo(policyBefore));
+        CollectionAssert.AreEqual(roomBefore, guaranteed.Select(room => EditorJsonUtility.ToJson(room)).ToArray());
+    }
+
+    [Test]
+    public void Recovery_TreeFallbackIsDeterministicAndKeepsRequiredDeadEnd()
+    {
+        Template("Start", RoomType.Start); Template("Boss", RoomType.Boss);
+        Template("Treasure", RoomType.Treasure); Template("A"); Template("B");
+        var required = Template("Delivery", RoomType.Event);
+        var data = required.LayoutData;
+        data.topologyPlacement = new RoomTopologyPlacementData
+        {
+            mode = RoomTopologyPlacementMode.FarthestFromStart,
+            minimumGraphDistanceFromStart = 100,
+            requireDeadEnd = true
+        };
+        required.EditorSetData(data, required.BuildData);
+        var cycleEvent = Template("Cycle event", RoomType.Event);
+        var cycleData = cycleEvent.LayoutData;
+        cycleData.topologyPlacement = new RoomTopologyPlacementData
+        {
+            mode = RoomTopologyPlacementMode.CycleDetour,
+            minimumGraphDistanceFromStart = 100
+        };
+        cycleEvent.EditorSetData(cycleData, cycleEvent.BuildData);
+        var policy = Policy();
+        Set(policy, "minimumCycleConnections", 0); Set(policy, "maximumCycleConnections", 0);
+        var library = TestLibrary();
+        DungeonLayoutResult Build(bool recover) => new DungeonGraphLayoutAssembler().Assemble(
+            library, policy, 17, 12, 32, 2, 0f, 0, new[] { required, cycleEvent }, allowRecovery: recover);
+        Assert.That(Build(false).IsComplete, Is.False);
+        var first = Build(true);
+        var second = Build(true);
+        Assert.That(first.IsComplete, Is.True, first.FailureReason);
+        Assert.That(first.RecoveryLevel, Is.EqualTo(2));
+        Assert.That(first.CycleConnectionCount, Is.Zero);
+        Assert.That(first.Rooms.Single(r => r.Template == required).IsDeadEnd, Is.True);
+        Assert.That(first.Rooms.Count(r => r.Template == cycleEvent), Is.EqualTo(1));
+        CollectionAssert.AreEqual(first.Rooms.Select(r => (r.Template, r.Origin)).ToArray(),
+            second.Rooms.Select(r => (r.Template, r.Origin)).ToArray());
+        CheckStartConnections(first);
+        CheckPhysicalConnections(first);
+        Assert.That(required.LayoutData.topologyPlacement.minimumGraphDistanceFromStart, Is.EqualTo(100));
+    }
+
+    [Test]
+    public void Recovery_MissingLibraryIsNotAReadyScene()
+    {
+        var host = Own(new GameObject("Failed generator"));
+        var generator = host.AddComponent<DungeonGenerator>();
+        UnityEngine.TestTools.LogAssert.Expect(LogType.Error,
+            "DungeonGenerator requires a RoomThemeLibrarySO, directly or through its generation profile.");
+        Assert.That(generator.Generate(), Is.False);
+        Assert.That(generator.HasCompletedInitialGeneration, Is.True);
+        Assert.That(generator.IsSceneEntryReady, Is.False);
+        Assert.That(generator.SceneEntryFailure, Is.Not.Empty);
+    }
+
+    [Test]
+    public void Recovery_SceneTransitionWaitsUntilRetryIsReady()
+    {
+        var host = Own(new GameObject("Entry readiness test"));
+        var generator = host.AddComponent<DungeonGenerator>();
+        const string expectedError = "DungeonGenerator requires a RoomThemeLibrarySO, directly or through its generation profile.";
+        UnityEngine.TestTools.LogAssert.Expect(LogType.Error, expectedError);
+        generator.Generate();
+        var coordinator = SceneTransitionCoordinator.EnsureInstance();
+        var wait = (IEnumerator)typeof(SceneTransitionCoordinator)
+            .GetMethod("WaitForSceneContentReady", Fields)
+            .Invoke(coordinator, new object[] { host.scene });
+        try
+        {
+            Assert.That(wait.MoveNext(), Is.True, "Allow Start callbacks first.");
+            Assert.That(wait.MoveNext(), Is.True, "Failure must keep the transition covered.");
+            Set(coordinator, "retrySceneEntryRequested", true);
+            UnityEngine.TestTools.LogAssert.Expect(LogType.Error, expectedError);
+            Assert.That(wait.MoveNext(), Is.True, "A failed retry must not unlock the player.");
+            Set(generator, "<LastGenerationSucceeded>k__BackingField", true);
+            Assert.That(wait.MoveNext(), Is.False, "Ready content releases the gate.");
+        }
+        finally { (wait as IDisposable)?.Dispose(); }
+    }
+
     private RoomThemeLibrarySO TestLibrary()
     {
         var library = Own(ScriptableObject.CreateInstance<RoomThemeLibrarySO>());

@@ -27,6 +27,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     public Transform lineParent;
     [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private RectTransform viewportRect;
+    [SerializeField] private GameObject exhibitionNotice;
 
     [Header("Prefabs")]
     public GameObject slotPrefab;
@@ -122,6 +123,11 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         {
             gameObject.SetActive(true);
         }
+
+        bool showExhibitionNotice = UpgradeManager.Instance != null &&
+            UpgradeManager.Instance.NotifyExhibitionUIOpened();
+        if (exhibitionNotice != null)
+            exhibitionNotice.SetActive(showExhibitionNotice);
 
         PrepareLayout();
         EnsureLakePresentation();

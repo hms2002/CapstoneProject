@@ -8,9 +8,15 @@ public sealed partial class DungeonRoomBuilder
     [Header("Dead End Return Portals")]
     [SerializeField] private DungeonReturnPortal returnPortalPrefab;
     [SerializeField] private DungeonReturnTravel returnTravelPrefab;
+    [SerializeField] private DungeonReturnPortal bossShortcutPrefab;
+    [SerializeField] private DungeonReturnTravel bossShortcutTravelPrefab;
     [SerializeField, Min(0.1f)] private float returnPortalClearance = 0.35f;
     private Transform generatedReturnRoot;
     private DungeonReturnTravel returnTravel;
+    private DungeonReturnPortal bossShortcut;
+    private DungeonReturnTravel bossShortcutTravel;
+    private readonly HashSet<Vector2Int> bossLandingCells = new();
+    private const string BossShortcutStateId = "boss-shortcut";
     private readonly List<DungeonReturnPortal> returnPortals = new();
     private readonly Collider2D[] returnOverlapBuffer = new Collider2D[64];
     private readonly HashSet<Vector2Int> returnLandingCells = new();
@@ -105,7 +111,64 @@ public sealed partial class DungeonRoomBuilder
             portal.Configure(returnTravel, room.PlacementId, group, onEntry, wallDirection);
             returnPortals.Add(portal);
         }
+        TryBuildBossShortcut(layout, start, startCells, landing);
         return true;
+    }
+
+    /// <summary>Creates a Start-to-Boss shortcut with independent destination validation and visit-based unlocking.</summary>
+    private void TryBuildBossShortcut(DungeonLayoutResult layout, DungeonRoomPlacement start,
+        List<Vector2Int> startCells, Vector3 fallbackPosition)
+    {
+        if (bossShortcutPrefab == null) return;
+        DungeonRoomPlacement boss = null;
+        foreach (DungeonRoomPlacement room in layout.Rooms)
+            if (room.Template.LayoutData.roomType == RoomType.Boss) { boss = room; break; }
+        if (boss == null) return;
+        List<Vector2Int> reachable = FindReturnReachableCells(layout, boss, out _);
+        bossLandingCells.UnionWith(reachable);
+        Vector3 desired = floorTilemap.GetCellCenterWorld((Vector3Int)Vector2Int.FloorToInt(boss.WorldBounds.center));
+        if (!TryChooseShortcutFloor(reachable, desired, out Vector3 destination))
+        {
+            Debug.LogWarning("[BossShortcut] No safe reachable floor in Boss room; shortcut skipped.", this);
+            return;
+        }
+        Vector3 center = floorTilemap.GetCellCenterWorld((Vector3Int)Vector2Int.FloorToInt(start.WorldBounds.center));
+        Vector3 portalPosition = TryChooseShortcutFloor(startCells, center, out Vector3 chosen) ? chosen : fallbackPosition;
+        bossShortcutTravel = Instantiate(bossShortcutTravelPrefab != null ? bossShortcutTravelPrefab : returnTravelPrefab, generatedReturnRoot);
+        bossShortcutTravel.name = "BossShortcutTravel";
+        bossShortcutTravel.Configure(destination, boss.PlacementId, GetComponent<DungeonMapRuntimeController>(), ValidateBossLanding);
+        bossShortcut = Instantiate(bossShortcutPrefab, portalPosition, floorTilemap.transform.rotation, generatedReturnRoot);
+        bossShortcut.name = "StartToBossPortal";
+        bossShortcut.Configure(bossShortcutTravel, boss.PlacementId, null, true, RoomSocketDirection.Up);
+    }
+
+    private bool TryChooseShortcutFloor(List<Vector2Int> cells, Vector3 desired, out Vector3 chosen)
+    {
+        chosen = default;
+        float best = float.PositiveInfinity;
+        foreach (Vector2Int cell in cells)
+        {
+            Vector3 position = floorTilemap.GetCellCenterWorld((Vector3Int)cell);
+            if (!IsReturnSpaceClear(position, returnPortalClearance, null, false)) continue;
+            bool floor = true;
+            foreach (Vector2 offset in ReturnFootprintDirections)
+                if (!HasReturnFloor((Vector2Int)floorTilemap.WorldToCell(position + (Vector3)(offset * returnPortalClearance))))
+                { floor = false; break; }
+            if (!floor) continue;
+            float distance = (position - desired).sqrMagnitude;
+            if (distance >= best) continue;
+            best = distance;
+            chosen = position;
+        }
+        return !float.IsPositiveInfinity(best);
+    }
+
+    private bool ValidateBossLanding(Vector3 position, float radius, Transform ignoredPlayer)
+    {
+        if (floorTilemap == null || !bossLandingCells.Contains((Vector2Int)floorTilemap.WorldToCell(position))) return false;
+        foreach (Vector2 offset in ReturnFootprintDirections)
+            if (!HasReturnFloor((Vector2Int)floorTilemap.WorldToCell(position + (Vector3)(offset * radius)))) return false;
+        return IsReturnSpaceClear(position, radius, ignoredPlayer, false);
     }
 
     private List<Vector2Int> FindReturnReachableCells(DungeonLayoutResult layout, DungeonRoomPlacement room, out Vector2Int entrance)
@@ -162,6 +225,8 @@ public sealed partial class DungeonRoomBuilder
             if (collider == null || collider.gameObject.scene != gameObject.scene ||
                 (ignoredPlayer != null && collider.transform.IsChildOf(ignoredPlayer))) continue;
             if (collider.GetComponentInParent<HoleTrap>() != null) return false;
+            // Interaction triggers do not obstruct a landing; the Start shortcut can share the return landing floor.
+            if (collider.isTrigger && collider.GetComponentInParent<DungeonReturnPortal>() != null) continue;
             if (traversal && collider.GetComponentInParent<DoorObject>() != null) continue;
             if (!collider.isTrigger || (!traversal && collider.GetComponentInParent<InteractableBase>() != null)) return false;
         }
@@ -180,12 +245,15 @@ public sealed partial class DungeonRoomBuilder
 
     private void NotifyReturnRoomEntered(int roomId)
     {
+        if (bossShortcut != null) bossShortcut.NotifyRoomEntered(roomId);
         foreach (DungeonReturnPortal portal in returnPortals)
             if (portal != null) portal.NotifyRoomEntered(roomId);
     }
 
     private void CaptureReturnPortalStates(List<DungeonObjectRuntimeStateData> states)
     {
+        if (bossShortcut != null) states.Add(new DungeonObjectRuntimeStateData
+        { stateId = BossShortcutStateId, isPresent = true, isActive = bossShortcut.IsRevealed });
         foreach (DungeonReturnPortal portal in returnPortals)
             if (portal != null) states.Add(new DungeonObjectRuntimeStateData
             { stateId = ReturnStatePrefix + portal.RoomPlacementId, isPresent = true, isActive = portal.IsRevealed });
@@ -193,6 +261,11 @@ public sealed partial class DungeonRoomBuilder
 
     private bool RestoreReturnPortalState(DungeonObjectRuntimeStateData state)
     {
+        if (state?.stateId == BossShortcutStateId)
+        {
+            if (bossShortcut != null) bossShortcut.RestoreRevealed(state.isActive);
+            return true;
+        }
         if (state?.stateId == null || !state.stateId.StartsWith(ReturnStatePrefix, System.StringComparison.Ordinal)) return false;
         if (int.TryParse(state.stateId.Substring(ReturnStatePrefix.Length), out int id))
             foreach (DungeonReturnPortal portal in returnPortals)
@@ -202,6 +275,10 @@ public sealed partial class DungeonRoomBuilder
 
     private void ClearReturnPortals()
     {
+        if (bossShortcutTravel != null) bossShortcutTravel.Cancel();
+        bossShortcutTravel = null;
+        bossShortcut = null;
+        bossLandingCells.Clear();
         if (returnTravel != null) returnTravel.Cancel();
         returnTravel = null;
         returnPortals.Clear();
@@ -214,6 +291,8 @@ public sealed partial class DungeonRoomBuilder
     }
 
 #if UNITY_EDITOR
+    public void EditorConfigureBossShortcut(DungeonReturnPortal portal, DungeonReturnTravel travel = null)
+    { bossShortcutPrefab = portal; bossShortcutTravelPrefab = travel; }
     public void EditorConfigureReturnPortals(DungeonReturnPortal portal, DungeonReturnTravel travel)
     { returnPortalPrefab = portal; returnTravelPrefab = travel; }
 #endif

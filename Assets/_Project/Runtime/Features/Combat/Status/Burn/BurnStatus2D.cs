@@ -19,7 +19,7 @@ public readonly struct BurnKillContext
 
 /// <summary>대상이 소유하는 독립 화상 스택입니다. 기존 ElementGaugeSystem을 사용하지 않습니다.</summary>
 [DisallowMultipleComponent]
-public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
+public sealed class BurnStatus2D : MonoBehaviour, IMonsterStatusSource
 {
     public const int StackLimit = 99;
     private static readonly HashSet<BurnStatus2D> activeStatuses = new();
@@ -31,7 +31,7 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
     private BurnSourceRuntime sourceRules;
     private float tickElapsed;
     private int stacks;
-    private bool viewAttached;
+    private MonsterStatusRuntime statusRuntime;
     private CrimsonBoundaryVisual2D tickVisualPrefab;
     private CrimsonBoundaryVisual2D sustainVisualPrefab;
     private CrimsonBoundaryVisual2D sustainVisual;
@@ -39,6 +39,10 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
     public string StatusId => "Burn";
     public int CurrentStacks => stacks;
     public int MaxStacks => StackLimit;
+    public MonsterStatusValueKind ValueKind => MonsterStatusValueKind.Stacks;
+    public float DisplayValue => stacks;
+    public bool IsActive => isActiveAndEnabled && stacks > 0;
+    public void Clear() => ConsumeAll();
     public Color DisplayColor => new(1f, 0.28f, 0.02f, 1f);
     public static IEnumerable<BurnStatus2D> ActiveStatuses => activeStatuses;
     public static event Action<BurnKillContext> BurnKillConfirmed;
@@ -58,12 +62,13 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
         if (target == null || source == null || effect == null || baseStacks <= 0)
             return null;
 
-        if (target.TryGetComponent<BossControllerBase>(out var boss) && boss.IsDead)
+        if (!target.activeInHierarchy || (target.TryGetComponent<Enemy>(out var enemy) && enemy.IsDead))
             return null;
 
         BurnStatus2D status = target.GetComponent<BurnStatus2D>();
         if (status == null)
             status = target.AddComponent<BurnStatus2D>();
+        if (!status.isActiveAndEnabled) return null;
 
         if (tickVisual != null) status.tickVisualPrefab = tickVisual;
         if (sustainPrefab != null && status.sustainVisualPrefab != sustainPrefab)
@@ -100,9 +105,10 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
 
     private void OnDisable()
     {
+        ConsumeAll();
         activeStatuses.Remove(this);
         StopSustainVisual();
-        DetachView();
+        UnregisterStatus();
     }
 
     private void Update()
@@ -195,9 +201,8 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
     {
         activeStatuses.Add(this);
         EnsureSustainVisual();
-        if (viewAttached) return;
-        viewAttached = true;
-        MonsterStackStatusViewPlayback.Attach(gameObject, this);
+        if (statusRuntime == null) statusRuntime = MonsterStatusRuntime.Resolve(gameObject);
+        statusRuntime.Register(this);
     }
 
     private void DeactivateView()
@@ -205,7 +210,7 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
         activeStatuses.Remove(this);
         tickElapsed = 0f;
         StopSustainVisual();
-        DetachView();
+        UnregisterStatus();
     }
 
     private void EnsureSustainVisual()
@@ -225,10 +230,8 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStackStatusSource
         sustainVisual = null;
     }
 
-    private void DetachView()
+    private void UnregisterStatus()
     {
-        if (!viewAttached) return;
-        viewAttached = false;
-        MonsterStackStatusViewPlayback.Detach(gameObject, this);
+        if (statusRuntime != null) statusRuntime.Unregister(this);
     }
 }

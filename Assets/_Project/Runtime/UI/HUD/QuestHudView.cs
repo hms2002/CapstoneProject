@@ -26,9 +26,15 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
     private bool mainVisible;
     private bool lastRunActive;
     private string lastMainText;
+    private RectTransform hudRect;
+    private Vector2 hudRestPosition;
+    private Tween combatMotion;
+    private bool combatHidden;
 
     private void Awake()
     {
+        hudRect = transform as RectTransform;
+        if (hudRect != null) hudRestPosition = hudRect.anchoredPosition;
         if (mainGroup != null) mainRestPosition = mainGroup.anchoredPosition;
         if (officerDescription != null) officerRestPosition = officerDescription.rectTransform.anchoredPosition;
         if (mainDescription != null) descriptionRestPosition = mainDescription.rectTransform.anchoredPosition;
@@ -44,6 +50,21 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
             lastRunActive = RunSessionStore.IsRunActive;
             RefreshParcel();
         }
+    }
+
+    private void LateUpdate() => RefreshCombatVisibility();
+
+    private void RefreshCombatVisibility()
+    {
+        bool hidden = MonsterSpawnRoomGroup.IsPlayerInCombat;
+        if (hudRect == null || combatHidden == hidden) return;
+        combatHidden = hidden;
+        combatMotion?.Kill();
+        // Animate the parent independently of row entrance, exit and vertical reflow.
+        // Keep the presenter running offscreen so combat ending can restore it.
+        float targetX = hidden ? OffscreenX(hudRect) : hudRestPosition.x;
+        combatMotion = hudRect.DOAnchorPosX(targetX, hidden ? exitSeconds : enterSeconds)
+            .SetEase(hidden ? Ease.InCubic : Ease.OutCubic).SetUpdate(true);
     }
 
     private void RefreshMainQuest()
@@ -73,7 +94,8 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
         GamePlayData data = RunSessionStore.Data;
         string scene = SceneManager.GetActiveScene().name;
         bool visible = RunOfficerQuestProgress.IsVisible(data);
-        if (officerLeaving && (!RunOfficerQuestProgress.CanPresentCompletion(data, scene) || SceneTransitionPlayback.IsTransitionActive))
+        bool inCombat = MonsterSpawnRoomGroup.IsPlayerInCombat;
+        if (officerLeaving && (inCombat || !RunOfficerQuestProgress.CanPresentCompletion(data, scene) || SceneTransitionPlayback.IsTransitionActive))
         {
             officerMotion?.Kill();
             officerLeaving = false;
@@ -89,7 +111,8 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
         if (!visible) return;
         string text = $"마왕성 간부를 찾아 토벌하자 ({defeated}/3)" + (defeated == 3 ? " · 완료" : "");
         if (officerDescription.text != text) officerDescription.text = text;
-        if (officerLeaving || !RunOfficerQuestProgress.CanPresentCompletion(data, scene) ||
+        if (inCombat || officerLeaving || !RunOfficerQuestProgress.CanPresentCompletion(data, scene) ||
+            (combatMotion != null && combatMotion.IsActive() && combatMotion.IsPlaying()) ||
             SceneTransitionPlayback.IsTransitionActive || (mainMotion != null && mainMotion.IsActive() && mainMotion.IsPlaying())) return;
 
         officerLeaving = true;
@@ -101,7 +124,7 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
             .OnComplete(() =>
             {
                 officerLeaving = false;
-                if (!ReferenceEquals(data, RunSessionStore.Data) ||
+                if (MonsterSpawnRoomGroup.IsPlayerInCombat || !ReferenceEquals(data, RunSessionStore.Data) ||
                     !RunOfficerQuestProgress.CanPresentCompletion(data, SceneManager.GetActiveScene().name)) return;
                 RunOfficerQuestProgress.CompletePresentation(data, SceneManager.GetActiveScene().name);
                 officerVisible = false;
@@ -167,6 +190,12 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
 
     private void OnEnable()
     {
+        combatHidden = MonsterSpawnRoomGroup.IsPlayerInCombat;
+        if (hudRect != null)
+        {
+            hudRect.anchoredPosition = hudRestPosition;
+            if (combatHidden) hudRect.anchoredPosition = new Vector2(OffscreenX(hudRect), hudRestPosition.y);
+        }
         PlayerRuntimeRegistry.PlayerRegistered += BindPlayer;
         PlayerRuntimeRegistry.PlayerUnregistered += UnbindPlayer;
         if (rowTemplate != null) rowTemplate.gameObject.SetActive(false);
@@ -176,10 +205,15 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
         lastRunActive = RunSessionStore.IsRunActive;
         BindPlayer(PlayerRuntimeRegistry.CurrentPlayer);
         RefreshMainQuest();
+        RefreshCombatVisibility();
     }
 
     private void OnDisable()
     {
+        combatMotion?.Kill();
+        combatMotion = null;
+        combatHidden = false;
+        if (hudRect != null) hudRect.anchoredPosition = hudRestPosition;
         PlayerRuntimeRegistry.PlayerRegistered -= BindPlayer;
         PlayerRuntimeRegistry.PlayerUnregistered -= UnbindPlayer;
         if (inventory != null) inventory.OnChanged -= RefreshParcel;
@@ -283,7 +317,10 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
         Camera camera = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
         float screenX = RectTransformUtility.WorldToScreenPoint(camera, rect.position).x;
         float scale = canvas != null ? Mathf.Max(0.01f, canvas.scaleFactor) : 1f;
-        return rect.anchoredPosition.x - screenX / scale - rect.rect.width - 40f;
+        // Child motions keep their usual local endpoints even while the whole HUD is offscreen.
+        float parentOffset = hudRect != null && rect != hudRect
+            ? hudRect.anchoredPosition.x - hudRestPosition.x : 0f;
+        return rect.anchoredPosition.x - screenX / scale + parentOffset - rect.rect.width - 40f;
     }
 
     private void Reflow()

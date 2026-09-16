@@ -72,6 +72,38 @@ public sealed class AlarmBellRewardIndependencePlayModeTests
         }
     }
 
+    [Test]
+    public void Bell_RejectsStaleSensorCandidateOutsideItsOwnTrigger()
+    {
+        var playerObject = new GameObject("BellRangePlayer");
+        try
+        {
+            var nearbyPlayer = new TestPlayerInteractor(playerObject.transform);
+            var tracker = playerObject.AddComponent<PlayerInteractableTracker2D>();
+            var trigger = bellObject.GetComponent<CircleCollider2D>();
+            trigger.radius = 1.2f;
+            playerObject.transform.position = bellObject.transform.position;
+            Physics2D.SyncTransforms();
+            tracker.RegisterOverlap(trigger);
+            Assert.That(bell.CanInteract(nearbyPlayer), Is.True);
+            Assert.That(tracker.GetClosestInteractable(nearbyPlayer, playerObject.transform.position), Is.SameAs(bell));
+
+            playerObject.transform.position += Vector3.right * 8f;
+            Physics2D.SyncTransforms();
+            Assert.That(bell.CanInteract(nearbyPlayer), Is.False);
+            Assert.That(tracker.GetClosestInteractable(nearbyPlayer, playerObject.transform.position), Is.Null);
+            bell.OnPlayerInteract(nearbyPlayer);
+            Assert.That(trigger.enabled, Is.True, "A remote interaction must not start the encounter.");
+
+            playerObject.transform.position = bellObject.transform.position;
+            Physics2D.SyncTransforms();
+            Assert.That(bell.CanInteract(nearbyPlayer), Is.True);
+            trigger.enabled = false;
+            Assert.That(bell.CanInteract(nearbyPlayer), Is.False);
+        }
+        finally { UnityEngine.Object.DestroyImmediate(playerObject); }
+    }
+
     [TestCase(0, false)]
     [TestCase(2, false)]
     [TestCase(0, true)]

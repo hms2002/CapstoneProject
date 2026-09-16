@@ -3278,22 +3278,15 @@ All formerly unbounded sight masks in Candlestick, LightBead, and Dead'sSkeleton
 - User requested that the previous shop list not reappear on refresh. Exclude all previous weapon/relic/consumable IDs, including sold entries, from the replacement roll. This is one-generation exclusion rather than permanent run history.
 - When a slot has no eligible candidates, substitute a remaining relic or consumable instead of leaving a weapon-only slot empty. Preserve the existing consumable cap; do not bypass old-list exclusions if all candidates are exhausted.
 
-## 2026-09-16 — Level reward categories and direct-damage boundary
-- Level reward cards use three authored categories: conditional = Thunder_Card_9, instant = Earth_Card_3, curse = Void_Card_1.
-- For Overheat and High Voltage, direct damage means damage from abilities granted by a currently equipped weapon. Burn ticks, electric discharge, relic automatic attacks, and reflected damage are excluded.
-- Berserker Rush doubles incoming `GE_Damage_Spec` damage before Soul Heart absorption and HP loss. Spreading Embers uses the current gameplay-camera viewport as “in sight,” ignores occlusion, chooses the closest living enemy from the burn-killed target, and has a global 0.5-second cooldown.
+## 2026-09-16 — Authored monster HUD and common status registration
+User approved Small/Medium/Large HUD widths 0.75/1/1.4, Pawn without an HP bar, left-aligned status icons, orange Burn stack counts and dark-yellow Electrocuted remaining seconds with black outlines. The target status hub now coordinates Burn and configured Electrocuted cleanup; individual owners retain gameplay values. This supersedes the 2026-08-19 runtime-generated Burn-only UI decision for the 19 migrated monster prefabs. Existing gauge gameplay, Burn balance and four-second Electrocuted effect remain. See `StructureMemory/MonsterWorldHudAndStatus.md` for the authored mapping and verification limits.
 
-## 2026-09-17 — One-shot curse completion and status presentation
-- Steel Training applies maximum health -2 until four separately counted damage incidents complete the objective. Completion removes the penalty and applies maximum health +2 relative to the pre-curse baseline; a baseline 7 therefore progresses 7 → 5 → 9.
-- Unextinguished Fire applies direct weapon damage -15% until ten player-attributed burn kills, then replaces the penalty with burn damage +25% and burn application +1.
-- Curse and completed states use Debuff and Buff HUD groups respectively, but each reward retains one shared icon across both states. Objective counts appear only in tooltip text; no icon stack/count overlay is shown.
+## 2026-09-17 — Monster damage trail and boss world statuses
 
-## 2026-09-17 — Critical relic revision
-- Firm Step no longer grants knockback resistance. Non-critical confirmed hits grant +2/3/4 percentage points of critical chance per stack at levels 1–3, up to eight stacks (+16/+24/+32); a critical hit clears all stacks.
-- Tonic Gombangdae no longer converts bonus movement speed. A critical confirmed hit grants +4/6/8/10/12 percentage points of critical chance for three seconds at levels 1–5; further critical hits refresh rather than stack the duration.
-- Portable Brazier no longer increases the first Burn application. A critical hit against an already-burning target applies 1/2/3 Burn at levels 1–3, with one global 0.5-second cooldown. Scorching Awl remains unchanged as the universal Burn starter.
+Approved monster HP feedback uses an immediate red fill and a white presentation trail: hold 0.3 seconds after the most recent damage, then decrease over 0.5 seconds. Each hit restarts the hold from the current trail position; healing synchronizes both fills. Boss world HUDs display statuses only because boss HP already has dedicated UI. Gameplay status timers and stack ownership remain in their existing runtime systems.
 
-## 2026-09-17 — Weapon skill cooldown feedback and short input buffer
-- Weapon Skill1/Skill2 icons use 60% RGB brightness, with alpha unchanged, while unavailable from cooldown. Charge-count skills remain visually ready while any charge remains. Actual cooldown takes immediate priority on the base icon even during execution; the independent active overlay continues to communicate the running cast. Abilities authored to start cooldown on end remain bright until cooldown truly begins.
-- Player weapon skills accept one input during the final 0.08 seconds of cooldown and retry once at zero. The request is scoped to the same weapon, slot and resolved ability and is discarded by input/flow blocking, weapon changes, a new busy state or other activation invalidation.
-- Hold-to-charge input is not a fire-and-forget request. Apprentice Hero Sword Skill1 must remain held until cooldown completion; release cancels the request, and charge duration begins only when the ability actually starts. This prevents pre-cooldown hold time from becoming free charge or an already-released key from triggering a minimum-charge attack.
+## 2026-09-17 - Exhibition Upgrade Defaults And Reward Lifetime
+
+The exhibition version grants the requested eight upgrade nodes independently of parent connections, preserving existing purchases. The grant uses purchased IDs as the durable source of truth; player effects and run modifiers keep their existing reapply/rebuild owners. Relic unlocks require a ready ItemManager.
+
+The upgrade-window experience reward is 100 additional magic stones once per saved profile, on actual hub window opening. `UpgradeSaveData.exhibitionOpeningRewardGranted` is set before CurrencyManager publishes the balance/save event. Reopening, scene travel and restart do not create another grant; a fresh/reset profile may receive it again. Both authored notices remain on the upgrade window while open. This version has no separate exhibition build toggle; removing the preset later will not revoke persisted purchases.
