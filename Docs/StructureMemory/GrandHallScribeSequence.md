@@ -48,6 +48,8 @@ Both first-entry and three-clear sequences finish letterbox PlayOut/Dispose befo
 
 GrandHall invokes DialoguePlayback.SetPortraitsHiddenForCameraDialogue at the same section boundaries as its upper-frame hiding. Intro cue 0 hides the authored portrait root before portal movement; cue 2 restores its prior active state after returning to the scribe. Audience keeps portraits hidden through the final portal-facing line, then cleanup restores root state after closing. The UI backend forwards to PortraitController, which toggles its existing PortrailFrame root without clearing actor/face/position state or closing Dialogue. No black bars are recreated; Hub keeps its existing WithoutPortraits segments.
 
+On restoration, PortraitController starts the existing PortraitActor.FadeIn(0.5f) for still-active registered portraits before reactivating the root. This resets opacity before rendering and uses unscaled time while preserving face and position. Actors removed by dialogue outro are not revived; a root that was inactive before camera guidance remains inactive.
+
 
 ### Upper-frame exit animation
 

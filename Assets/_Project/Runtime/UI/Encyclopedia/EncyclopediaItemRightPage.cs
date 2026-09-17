@@ -449,7 +449,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         HideTypeSections();
         HideAbilityBlocks();
         ApplyItemHeader(consumable);
-        SetDescriptionSection("설명", consumable.description);
+        SetDescriptionSection("효과", consumable.description);
         QueueScrollReset();
     }
 
