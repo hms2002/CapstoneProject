@@ -143,6 +143,7 @@ public sealed class SceneBgmRequestPlayModeTests
         Assert.That(catalog.TryGetEntry(key, out AudioCatalogEntry entry), Is.True);
         Assert.That(entry.bus, Is.EqualTo(AudioBus.BGM));
         Assert.That(entry.HasPlayableClip, Is.True);
+        Assert.That(entry.loop, Is.True, $"BGM catalog entry '{entry.key}' must be authored as looping.");
     }
 
     private static SceneBgmRequester CreateRequester(Scene scene, string key)
