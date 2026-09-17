@@ -79,9 +79,14 @@ public sealed class ExperienceRewardSource : MonoBehaviour
         if (finalExperience <= 0)
             return;
 
+        RelicKillRewardMultiplierRuntime rewardMultiplier =
+            PlayerRuntimeRegistry.GetPlayerComponent<RelicKillRewardMultiplierRuntime>();
+
         if (goldPickupPrefab != null)
         {
             int totalGold = ResolveGoldReward();
+            if (rewardMultiplier != null)
+                totalGold = rewardMultiplier.ApplyGoldReward(totalGold);
             if (totalGold > 0)
             {
                 int count = Mathf.Clamp(Mathf.CeilToInt(totalGold / 20f), 1, 8);
@@ -93,6 +98,9 @@ public sealed class ExperienceRewardSource : MonoBehaviour
                 }
             }
         }
+
+        if (rewardMultiplier != null)
+            finalExperience = rewardMultiplier.ApplyExperienceReward(finalExperience);
 
         ExperiencePickupDropSpawner.SpawnDistributed(
             pickupPrefab,

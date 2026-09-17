@@ -1252,6 +1252,186 @@ public sealed class CombatFeelLootQuestPlayModeTests
         Assert.AreEqual(17, resolve.Invoke(highReward, null));
     }
 
+    [Test]
+    public void KillRewardRelics_UseOriginalLevelCurves_AndKeepRewardKindsIsolated()
+    {
+        var player = Own(new GameObject("KillRewardRelicPlayer"));
+        var runtime = player.AddComponent<RelicKillRewardMultiplierRuntime>();
+        var goldToken = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+        var experienceToken = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+
+        runtime.Register(goldToken, KillRewardRelicKind.Gold, 0.5f);
+        runtime.Register(experienceToken, KillRewardRelicKind.Experience, 0.1f);
+
+        Assert.AreEqual(150, runtime.ApplyGoldReward(100));
+        Assert.AreEqual(110, runtime.ApplyExperienceReward(100));
+        Assert.AreEqual(5, runtime.ApplyExperienceReward(5));
+        Assert.AreEqual(6, runtime.ApplyExperienceReward(5),
+            "Two five-EXP rewards at +10% must preserve the exact accumulated bonus.");
+
+        runtime.Unregister(goldToken);
+        Assert.AreEqual(100, runtime.ApplyGoldReward(100));
+    }
+
+    [Test]
+    public void KillRewardRelics_AreCommonFiveLevelDatabaseEntries_WithCurrentLevelTooltips()
+    {
+        const string goldPath = "Assets/_Project/Data/Items/Relics/Definitions/RD_GoldVein.asset";
+        const string sproutPath = "Assets/_Project/Data/Items/Relics/Definitions/RD_GrowthSprout.asset";
+        RelicDefinition gold = UnityEditor.AssetDatabase.LoadAssetAtPath<RelicDefinition>(goldPath);
+        RelicDefinition sprout = UnityEditor.AssetDatabase.LoadAssetAtPath<RelicDefinition>(sproutPath);
+        ItemDatabase database = UnityEditor.AssetDatabase.LoadAssetAtPath<ItemDatabase>(
+            "Assets/_Project/Data/Items/ItemDatabase.asset");
+
+        Assert.IsNotNull(gold);
+        Assert.IsNotNull(sprout);
+        Assert.AreEqual(ItemRarity.Common, gold.rarity);
+        Assert.AreEqual(ItemRarity.Common, sprout.rarity);
+        Assert.AreEqual(5, gold.maxLevel);
+        Assert.AreEqual(5, sprout.maxLevel);
+        Assert.IsNotNull(gold.icon);
+        Assert.IsNotNull(sprout.icon);
+        CollectionAssert.Contains(database.allRelics, gold);
+        CollectionAssert.Contains(database.allRelics, sprout);
+        CollectionAssert.Contains(database.defaultUnlockedRelics, gold);
+        CollectionAssert.Contains(database.defaultUnlockedRelics, sprout);
+
+        Assert.That(gold.logic.BuildTooltip(gold, 1, null).effectText, Does.Contain("10%"));
+        Assert.That(gold.logic.BuildTooltip(gold, 3, null).effectText, Does.Contain("30%"));
+        Assert.That(gold.logic.BuildTooltip(gold, 5, null).effectText, Does.Contain("50%"));
+        Assert.That(gold.logic.BuildTooltip(gold, 3, null).effectText, Does.Not.Contain("10/20"));
+        Assert.That(sprout.logic.BuildTooltip(sprout, 4, null).effectText, Does.Contain("40%"));
+    }
+
+    [Test]
+    public void FlyingBoots_IsRareThreeLevelDashOnlyCooldownMultiplier()
+    {
+        RelicDefinition boots = UnityEditor.AssetDatabase.LoadAssetAtPath<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_FlyingBoots.asset");
+        AbilityDefinition dash = UnityEditor.AssetDatabase.LoadAssetAtPath<AbilityDefinition>(
+            "Assets/_Project/Data/Abilities/Definitions/AD_Dash.asset");
+        ItemDatabase database = UnityEditor.AssetDatabase.LoadAssetAtPath<ItemDatabase>(
+            "Assets/_Project/Data/Items/ItemDatabase.asset");
+
+        Assert.IsNotNull(boots);
+        Assert.IsNotNull(dash);
+        Assert.AreEqual(ItemRarity.Rare, boots.rarity);
+        Assert.AreEqual(3, boots.maxLevel);
+        Assert.IsNotNull(boots.icon);
+        CollectionAssert.Contains(database.allRelics, boots);
+        CollectionAssert.Contains(database.defaultUnlockedRelics, boots);
+        Assert.That(boots.logic.BuildTooltip(boots, 1, null).effectText, Does.Contain("10%"));
+        Assert.That(boots.logic.BuildTooltip(boots, 2, null).effectText, Does.Contain("20%"));
+        Assert.That(boots.logic.BuildTooltip(boots, 3, null).effectText, Does.Contain("30%"));
+
+        var player = Own(new GameObject("FlyingBootsPlayer"));
+        player.AddComponent<AttributeSet>();
+        var abilities = player.AddComponent<AbilitySystem>();
+        player.AddComponent<RelicProcManager>();
+        var token = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+        var context = new RelicContext
+        {
+            owner = player,
+            abilitySystem = abilities,
+            relicDef = boots,
+            level = 3,
+            token = token
+        };
+
+        boots.logic.OnEquipped(context);
+        object cooldownController = typeof(AbilitySystem)
+            .GetField("cooldownController", BindingFlags.Instance | BindingFlags.NonPublic)
+            .GetValue(abilities);
+        MethodInfo getFinalCooldown = cooldownController.GetType().GetMethod("GetFinalCooldownSeconds");
+        Assert.That((float)getFinalCooldown.Invoke(cooldownController, new object[] { dash }),
+            Is.EqualTo(0.7f).Within(0.0001f));
+
+        var otherAbility = Own(ScriptableObject.CreateInstance<AbilityDefinition>());
+        otherAbility.cooldown = 2f;
+        Assert.That((float)getFinalCooldown.Invoke(cooldownController, new object[] { otherAbility }),
+            Is.EqualTo(2f).Within(0.0001f), "Flying Boots must not reduce weapon skill cooldowns.");
+
+        boots.logic.OnUnequipped(context);
+        Assert.That((float)getFinalCooldown.Invoke(cooldownController, new object[] { dash }),
+            Is.EqualTo(1f).Within(0.0001f));
+    }
+
+    [Test]
+    public void LastStand_IsRareThreeLevelCriticalThreshold_WithOwnedStatusCleanup()
+    {
+        RelicDefinition relic = UnityEditor.AssetDatabase.LoadAssetAtPath<RelicDefinition>(
+            "Assets/_Project/Data/Items/Relics/Definitions/RD_LastStand.asset");
+        StatusHudDefinition status = UnityEditor.AssetDatabase.LoadAssetAtPath<StatusHudDefinition>(
+            "Assets/_Project/Data/Abilities/Effects/SHD_Relic_LastStand.asset");
+        ItemDatabase database = UnityEditor.AssetDatabase.LoadAssetAtPath<ItemDatabase>(
+            "Assets/_Project/Data/Items/ItemDatabase.asset");
+        AttributeCatalogSO catalog = UnityEditor.AssetDatabase.LoadAssetAtPath<AttributeCatalogSO>(
+            "Assets/_Project/Data/Attributes/Definitions/AttributeCatalog.asset");
+        StatTypeBindings bindings = UnityEditor.AssetDatabase.LoadAssetAtPath<StatTypeBindings>(
+            "Assets/_Project/Data/Attributes/Formulas/StatTypeBindings.asset");
+        AttributeDefinition health = UnityEditor.AssetDatabase.LoadAssetAtPath<AttributeDefinition>(
+            "Assets/_Project/Data/Attributes/Definitions/HealthAttribute.asset");
+        AttributeDefinition critChanceAdd = UnityEditor.AssetDatabase.LoadAssetAtPath<AttributeDefinition>(
+            "Assets/_Project/Data/Attributes/Definitions/DamageCalcAttribute/CritChanceAddAttribute.asset");
+
+        Assert.IsNotNull(relic);
+        Assert.IsNotNull(status);
+        Assert.IsInstanceOf<RelicLogic_LastStandCritical>(relic.logic);
+        Assert.AreEqual(ItemRarity.Rare, relic.rarity);
+        Assert.AreEqual(3, relic.maxLevel);
+        Assert.AreEqual("arrow", relic.icon.name);
+        Assert.AreEqual("arrow_Icon", status.Icon.name);
+        Assert.AreEqual(StatusHudGroup.Relic, status.Group);
+        CollectionAssert.Contains(database.allRelics, relic);
+        CollectionAssert.Contains(database.defaultUnlockedRelics, relic);
+        Assert.That(relic.logic.BuildTooltip(relic, 1, null).effectText, Does.Contain("1 이하"));
+        Assert.That(relic.logic.BuildTooltip(relic, 2, null).effectText, Does.Contain("2 이하"));
+        Assert.That(relic.logic.BuildTooltip(relic, 3, null).effectText, Does.Contain("3 이하"));
+
+        var player = Own(new GameObject("LastStandPlayer"));
+        player.SetActive(false);
+        var attributes = player.AddComponent<AttributeSet>();
+        Set(attributes, "attributeCatalog", catalog);
+        player.AddComponent<RelicProcManager>();
+        player.SetActive(true);
+
+        var token = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+        var context = new RelicContext
+        {
+            owner = player,
+            attributeSet = attributes,
+            relicDef = relic,
+            level = 3,
+            token = token
+        };
+
+        relic.logic.OnEquipped(context);
+        PlayerStatusRuntime statusRuntime = player.GetComponent<PlayerStatusRuntime>();
+        Assert.IsNotNull(statusRuntime);
+        Assert.AreEqual(0, statusRuntime.ActiveStatusCount);
+
+        Assert.IsTrue(attributes.TrySetCurrentValue(health, 4f, token));
+        Assert.AreEqual(0f, attributes.GetCurrentValue(critChanceAdd));
+        Assert.AreEqual(0, statusRuntime.ActiveStatusCount);
+
+        Assert.IsTrue(attributes.TrySetCurrentValue(health, 3f, token));
+        Assert.AreEqual(1f, attributes.GetCurrentValue(critChanceAdd));
+        Assert.AreEqual(1, statusRuntime.ActiveStatusCount);
+        var provider = new AttributeStatProvider(attributes, bindings);
+        Assert.IsTrue(DamageFormulaUtil.PostProcess(provider, 10f, 0f, 0.999f).isCrit,
+            "At the level-three threshold, the shared critical formula must always crit.");
+
+        Assert.IsTrue(attributes.TrySetCurrentValue(health, 4f, token));
+        Assert.AreEqual(0f, attributes.GetCurrentValue(critChanceAdd));
+        Assert.AreEqual(0, statusRuntime.ActiveStatusCount);
+
+        Assert.IsTrue(attributes.TrySetCurrentValue(health, 1f, token));
+        Assert.AreEqual(1, statusRuntime.ActiveStatusCount);
+        relic.logic.OnUnequipped(context);
+        Assert.AreEqual(0f, attributes.GetCurrentValue(critChanceAdd));
+        Assert.AreEqual(0, statusRuntime.ActiveStatusCount);
+    }
+
     [Test] public void GoldPickup_CollectsAtDestinationWithoutCollider_OnlyOnce()
     {
         var data = RunSessionStore.Data;

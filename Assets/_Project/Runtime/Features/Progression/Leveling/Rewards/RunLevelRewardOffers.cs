@@ -23,7 +23,16 @@ public static class RunLevelRewardOffers
 
     public static int RerollsUsed => GetOffer()?.rerollsUsed ?? 0;
     public static int MaxRerolls => GetOffer()?.maxRerolls ?? 0;
-    public static bool CanReroll => GetOffer() is { isActive: true } offer && offer.rerollsUsed < offer.maxRerolls;
+    public static bool CanReroll
+    {
+        get
+        {
+            LevelRewardOfferState offer = GetOffer();
+            return offer is { isActive: true } &&
+                   offer.rerollsUsed < offer.maxRerolls &&
+                   HasNovelCandidate(offer);
+        }
+    }
 
     public static bool TryEnsureOffer(int maxRerolls, out string failureReason)
     {
@@ -71,6 +80,12 @@ public static class RunLevelRewardOffers
         if (offer.rerollsUsed >= offer.maxRerolls)
         {
             failureReason = "리롤 횟수를 모두 사용했습니다.";
+            return false;
+        }
+
+        if (!HasNovelCandidate(offer))
+        {
+            failureReason = "새로 등장할 수 있는 레벨업 효과가 없습니다.";
             return false;
         }
 
@@ -124,8 +139,11 @@ public static class RunLevelRewardOffers
     private static bool RollCandidates(LevelProgressionState progression, LevelRewardOfferState offer)
     {
         RunLevelRewards.CollectEligibleDefinitions(EligibleBuffer);
-        offer.candidateRewardIds.Clear();
         if (EligibleBuffer.Count == 0) return false;
+
+        var previousIds = new HashSet<string>(
+            offer.candidateRewardIds ?? new List<string>(),
+            StringComparer.Ordinal);
 
         var random = new Random(CombineSeed(
             progression.rewardRandomSeed,
@@ -138,10 +156,64 @@ public static class RunLevelRewardOffers
             (EligibleBuffer[i], EligibleBuffer[picked]) = (EligibleBuffer[picked], EligibleBuffer[i]);
         }
 
-        int count = Math.Min(CandidateCount, EligibleBuffer.Count);
-        for (int i = 0; i < count; i++)
-            offer.candidateRewardIds.Add(EligibleBuffer[i].RewardId);
+        var rolledIds = new List<string>(Math.Min(CandidateCount, EligibleBuffer.Count));
+        FillCandidateIds(EligibleBuffer, previousIds, rolledIds);
+
+        offer.candidateRewardIds ??= new List<string>();
+        offer.candidateRewardIds.Clear();
+        offer.candidateRewardIds.AddRange(rolledIds);
         return true;
+    }
+
+    /// <summary>
+    /// 직전 후보가 아닌 보상을 먼저 채우고, 후보 풀이 부족할 때만 직전 후보로 남은 자리를 보충한다.
+    /// 입력 순서는 이미 결정론적으로 섞여 있으므로 두 패스 모두 그 순서를 보존한다.
+    /// </summary>
+    private static void FillCandidateIds(
+        IReadOnlyList<LevelRewardDefinitionSO> shuffledEligible,
+        HashSet<string> previousIds,
+        List<string> destination)
+    {
+        destination.Clear();
+        AppendCandidates(shuffledEligible, previousIds, includePrevious: false, destination);
+        AppendCandidates(shuffledEligible, previousIds, includePrevious: true, destination);
+    }
+
+    private static void AppendCandidates(
+        IReadOnlyList<LevelRewardDefinitionSO> shuffledEligible,
+        HashSet<string> previousIds,
+        bool includePrevious,
+        List<string> destination)
+    {
+        for (int i = 0; i < shuffledEligible.Count && destination.Count < CandidateCount; i++)
+        {
+            LevelRewardDefinitionSO definition = shuffledEligible[i];
+            if (definition == null || string.IsNullOrWhiteSpace(definition.RewardId))
+                continue;
+
+            bool wasPrevious = previousIds.Contains(definition.RewardId);
+            if (wasPrevious != includePrevious)
+                continue;
+
+            destination.Add(definition.RewardId);
+        }
+    }
+
+    private static bool HasNovelCandidate(LevelRewardOfferState offer)
+    {
+        if (offer?.candidateRewardIds == null || offer.candidateRewardIds.Count == 0)
+            return false;
+
+        RunLevelRewards.CollectEligibleDefinitions(EligibleBuffer);
+        var previousIds = new HashSet<string>(offer.candidateRewardIds, StringComparer.Ordinal);
+        for (int i = 0; i < EligibleBuffer.Count; i++)
+        {
+            LevelRewardDefinitionSO definition = EligibleBuffer[i];
+            if (definition != null && !previousIds.Contains(definition.RewardId))
+                return true;
+        }
+
+        return false;
     }
 
     private static void RebuildCandidateBuffer()

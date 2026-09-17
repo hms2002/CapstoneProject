@@ -19,7 +19,7 @@ public class ConsumableDetailView : MonoBehaviour, IItemDetailView
 
         var consumable = (ConsumableDefinition)def;
 
-        string effect = BuildEffectText(consumable);
+        string effect = BuildEffectText(consumable, ctx);
         effect = services.formatText != null ? services.formatText(effect) : effect;
         sections?.Add("효과", effect, services.showGlossary);
     }
@@ -30,12 +30,18 @@ public class ConsumableDetailView : MonoBehaviour, IItemDetailView
         gameObject.SetActive(false);
     }
 
-    private static string BuildEffectText(ConsumableDefinition consumable)
+    private static string BuildEffectText(ConsumableDefinition consumable, ItemDetailContext ctx)
     {
         var sb = new StringBuilder();
         bool hasRestoreEffect = consumable.TargetAttribute != null && consumable.RestoreAmount > 0;
+        var inventory = ctx?.owner != null ? ctx.owner.GetComponent<PlayerConsumableInventory>() : null;
+        int restoreAmount = inventory != null ? inventory.GetRestoreAmount(consumable) : consumable.RestoreAmount;
 
-        if (!string.IsNullOrWhiteSpace(consumable.description))
+        if (hasRestoreEffect && restoreAmount != consumable.RestoreAmount)
+        {
+            sb.AppendLine($"● [[{consumable.TargetAttribute.attributeName}]] {{pos:[+{restoreAmount}]}} 회복");
+        }
+        else if (!string.IsNullOrWhiteSpace(consumable.description))
         {
             sb.AppendLine(consumable.description.Trim());
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using CapstoneAudio;
 
@@ -29,6 +30,36 @@ public class PlayerConsumableInventory : MonoBehaviour
     }
 
     public event Action OnChanged;
+    /// <summary>Emitted only after a successful use has consumed its slot.</summary>
+    public event Action<ConsumableDefinition> ConsumableUsed;
+
+    private readonly Dictionary<UnityEngine.Object, (ConsumableDefinition definition, int amount)> restoreOverrides = new();
+
+    public void SetMinimumRestoreAmount(UnityEngine.Object source, ConsumableDefinition definition, int amount)
+    {
+        if (source != null && definition != null)
+            restoreOverrides[source] = (definition, Mathf.Max(0, amount));
+    }
+
+    public void RemoveRestoreOverride(UnityEngine.Object source)
+    {
+        if (source != null)
+            restoreOverrides.Remove(source);
+    }
+
+    public int GetRestoreAmount(ConsumableDefinition definition)
+    {
+        if (definition == null)
+            return 0;
+
+        int amount = definition.RestoreAmount;
+        foreach (var entry in restoreOverrides)
+        {
+            if (entry.Key != null && entry.Value.definition == definition)
+                amount = Mathf.Max(amount, entry.Value.amount);
+        }
+        return amount;
+    }
 
     [Header("Slots")]
     [SerializeField] private ConsumableDefinition[] slots = new ConsumableDefinition[4];
@@ -126,6 +157,7 @@ public class PlayerConsumableInventory : MonoBehaviour
         PlayerHealParticlePlayback.PlayAttached(healParticlePrefab, transform, healParticleLocalOffset);
         PlayConsumableUseSound();
         slots[slotIndex] = null;
+        ConsumableUsed?.Invoke(consumable);
         OnChanged?.Invoke();
         return true;
     }

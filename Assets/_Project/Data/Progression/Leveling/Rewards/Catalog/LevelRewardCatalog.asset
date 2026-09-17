@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: LevelRewardCatalog
   m_EditorClassIdentifier: Gameplay::LevelRewardCatalogSO
   rewards:
+  - {fileID: 11400000, guid: b7ac0f2e281a44768c35210163fd6ab6, type: 2}
+  - {fileID: 11400000, guid: b7ac0f2e281a44768c35210163fd6ab7, type: 2}
   - {fileID: 11400000, guid: 79d1950cf1364af4a33455b39a31f611, type: 2}
   - {fileID: 11400000, guid: 76e79d89a8b54266b02704f104d020e2, type: 2}
   - {fileID: 11400000, guid: f1516e36c1bf4f8898b24217198ea523, type: 2}

@@ -39,6 +39,12 @@ Price rounding: newly rolled run-shop prices round the units digit half-up to mu
 
 BossEncounterEndDirector owns baseGoldReward (50 default) and goldPickupPrefab, authored as 50 in the four production boss scenes. Its guarded CompleteEncounterRoutine emits 43–57 gold (inclusive +/-15%) across up to eight pickups before finale/terminal-ending presentation, only in an active run. Total integer gold is preserved via quotient/remainder distribution. Payment belongs to encounter completion, including split/multi-phase bosses, rather than each managed enemy death. Tutorial director remains unassigned. Unity pickup/ending timing needs playtest confirmation.
 
+## Gold Vein kill-reward multiplier (2026-09-18)
+
+- The Common five-level Gold Vein relic applies +10/20/30/40/50% to totals owned by `ExperienceRewardSource` and `BossEncounterEndDirector`, before the existing pickup split.
+- Its player-owned runtime carries fractional bonus gold and persists that remainder through the existing relic runtime-state bridge.
+- `CurrencyManager.AddGold` is intentionally unchanged. Merchant refunds, gambling/direct grants, scripted event currency and existing pickup travel/collection therefore do not receive the multiplier.
+
 
 ## Homing pickups and portal settlement (2026-09-13)
 

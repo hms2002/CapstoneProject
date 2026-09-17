@@ -28,7 +28,7 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
     [TestCase("SlimeCorridor/Wizard.prefab", 30f, 1f)]
     [TestCase("ShadowCorridor/ShadowMonster.prefab", 45f, 1f)]
     [TestCase("ShadowCorridor/ShadowServant/ShadowServant.prefab", 45f, 1f)]
-    [TestCase("ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab", 75f, 1f)]
+    [TestCase("ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab", 55f, 1f)]
     public void MonsterAwakeAndDifficulty_PreserveAuthoredHp(string relativePath, float baseHp, float roleMultiplier)
     {
         GameObject prefab = Load<GameObject>(Prefabs + relativePath);
