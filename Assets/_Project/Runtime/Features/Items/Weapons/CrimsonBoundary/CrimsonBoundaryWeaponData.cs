@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -21,6 +22,17 @@ public sealed class CrimsonBoundaryWeaponData : ScriptableObject
     public CrimsonBoundaryVisual2D meteorHitPrefab;
     public CrimsonBoundaryVisual2D relicLavaBallPrefab;
     [Min(0f)] public float igniteChargeSeconds = 0.24f;
+
+    [Header("Authored Audio")]
+    public SoundRef swingSound;
+    public SoundRef projectileLaunchSound;
+    public SoundRef lavaBallSummonSound;
+    public SoundRef lavaBallHitSound;
+    public SoundRef igniteExplosionSound;
+
+    [Header("Camera Shake")]
+    public CameraShakeHook igniteExplosionShake = CameraShakeHook.Create(0.2f);
+    public CameraShakeHook lavaBallHitShake = CameraShakeHook.Create(0.3f);
 
     [Header("Attack")]
     public float projectileSpeed = 18f;

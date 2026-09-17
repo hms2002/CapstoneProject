@@ -2193,3 +2193,11 @@ Evidence: In the rebuilt player, Windowed 1280x1024 -> FullScreenWindow 1920x108
 Fix: MouseCursorService assigns the existing UI sorting layer in both software-canvas creation and authored binding, retaining order 32767. Sorting order alone does not put a lower sorting layer above UI. The earlier unreadable-texture fallback warning explains why software rendering is used, but is not itself the display-switch failure. The display letterbox disappears at the logged 16:9 transition, excluding it as the direct occluder for this case.
 
 Prevention: Define both sorting layer and order for overlay cursors. Compare canvas render modes across aspect-ratio/display transitions, not just cursor visibility flags. Keep bounded diagnostics until a rebuilt player confirms Fullscreen and Borderless behavior. Native post-fix visual acceptance remains pending.
+
+## 2026-09-17 - Room candidate inserted outside its serialized list
+
+Cause: appending a RoomObjectPlacementData item before monsterWaves assumes serialized field order. Dragon/Slime normal Stage3 samples place travelEndpointPlacements: [] before monsterWaves, so this anchor put the candidate outside objectPlacements. Text/GUID counts passed while Room Piece did not show the candidate.
+
+Fix: move the existing item into the actual objectPlacements sequence in eight templates. Preserve coordinates and unrelated data. Parse all 30 room documents and assert candidate membership in buildData.objectPlacements, not merely presence in the file.
+
+Prevention: resolve the target sequence boundary from structure; never infer it from a later sibling field. Validate parsed parent membership, reference/type/ID uniqueness and unchanged non-target data. Byte-preserving edits and whitespace checks alone cannot prove semantic correctness. Unity import and visual acceptance must be reported separately. See [session log](./SessionLogs/2026-09-17.md).

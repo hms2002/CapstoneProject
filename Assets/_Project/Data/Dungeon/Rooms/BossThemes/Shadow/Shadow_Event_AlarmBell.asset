@@ -605,7 +605,7 @@ MonoBehaviour:
     - monsterWaveId: 
       placementId: ShadowAlarmBellEventModule
       kind: 0
-      prefab: {fileID: 510000000000000012, guid: 1fb03ea71ac54163befc35f994bc194b, type: 3}
+      prefab: {fileID: 510000000000000012, guid: 1993229a6fa047d78fa1018460abf384, type: 3}
       monsterSpawnRole: 0
       monsterStageSet: {fileID: 0}
       localCell: {x: 9, y: 5}
@@ -614,59 +614,8 @@ MonoBehaviour:
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
       linkedChestLockPlacementId: 
-    - monsterWaveId: 13b40970323f417fa95644b8e366fb55
-      placementId: Mage_05
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 1
-      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
-      localCell: {x: 4, y: 6}
-      localOffset: {x: 0.07999992, y: 0.34000015}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - monsterWaveId: 13b40970323f417fa95644b8e366fb55
-      placementId: Tank_03
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 2
-      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
-      localCell: {x: 5, y: 3}
-      localOffset: {x: -0.4699998, y: 0.46000004}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - monsterWaveId: 13b40970323f417fa95644b8e366fb55
-      placementId: Tank_02
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 2
-      monsterStageSet: {fileID: 11400000, guid: ec58cade0d020f045b201081f7c2a716, type: 2}
-      localCell: {x: 12, y: 7}
-      localOffset: {x: -0.47000027, y: 0.42000008}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - monsterWaveId: 13b40970323f417fa95644b8e366fb55
-      placementId: Mage_04
-      kind: 1
-      prefab: {fileID: 0}
-      monsterSpawnRole: 1
-      monsterStageSet: {fileID: 11400000, guid: dcae9760f13a07046a431a88536b3d4a, type: 2}
-      localCell: {x: 14, y: 4}
-      localOffset: {x: -0.48999977, y: 0.3800001}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: 
     monsterWaves:
     - id: wave_default
       displayName: Wave 1
       startDelaySeconds: 0
-    - id: 13b40970323f417fa95644b8e366fb55
-      displayName: Wave 2
-      startDelaySeconds: 5
     travelEndpointPlacements: []

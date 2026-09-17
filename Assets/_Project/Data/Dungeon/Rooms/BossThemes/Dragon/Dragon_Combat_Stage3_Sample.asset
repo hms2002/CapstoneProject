@@ -2382,6 +2382,18 @@ MonoBehaviour:
       childPoseOverrides: []
       linkedChestLockPlacementId: ''
       monsterWaveId: wave_default
+    - monsterWaveId: ''
+      placementId: ChestPossible_KillLock
+      kind: 0
+      prefab: {fileID: 8536156983854311797, guid: e5c3dbe97e8d669459817a5afe1feebe, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 18, y: 17}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: ''
     travelEndpointPlacements: []
     monsterWaves:
     - id: wave_default

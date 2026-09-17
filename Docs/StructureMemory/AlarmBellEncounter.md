@@ -4,7 +4,9 @@ This is a reconstruction aid, not an Architecture or Contracts source of truth.
 
 ## Authoring And Runtime Flow
 
-- `Assets/_Project/Data/Dungeon/MapEvents/AlarmBell/AlarmBellEncounterDefinition.asset` owns recognition tiers, waves, monster entries and completion EXP. Dragon, Shadow and Slime event rooms share it through `AlarmBellEventModule.prefab`.
+- `Assets/_Project/Data/Dungeon/MapEvents/AlarmBell/AlarmBellEncounterDefinition.asset` owns recognition tiers, waves, monster entries and completion EXP for Dragon and Slime through `AlarmBellEventModule.prefab`.
+- Shadow uses `ShadowAlarmBellEventModule.prefab`, a variant of the shared module that overrides only its name and definition reference. `Shadow_AlarmBellEncounterDefinition.asset` retains the original three-monster first wave and adds a second wave of two CommonRanged and two CommonTank stage-set monsters, after all first-wave monsters die and the 1.5-second inter-wave delay elapses. The second wave keeps neutral HP/speed/tint adjustments and follows bell drop/reward ownership. Both waves must finish before the completion chest and EXP appear.
+- `Shadow_Event_AlarmBell.asset` contains only the bell module, with no ordinary room-entry monster placements. Room-entry waves and bell waves are independent: authoring monsters in the room template starts them on entry even if the bell has not been rung. Bell-only waves belong in the encounter definition; their positions use the module's spawn anchors rather than removed room-placement coordinates.
 - `AlarmBellMonsterEntry` resolves a stage-dependent monster set, falling back to its explicit prefab. Per-entry options control count, non-EXP drop suppression, additional HP, additional attack speed and sprite tint.
 - `AlarmBellInteractable` owns interaction eligibility, encounter holds, wave progression, spawned-monster tracking and completion. It does not own pending level rewards or reward UI state.
 - `MonsterSpawner` / `SceneMonsterSpawnDirector` apply normal difficulty and stage scaling first. The bell then calls `ApplySpawnedMonsterOptions` once for each returned instance. The direct-instantiation fallback uses the same options path.
@@ -19,7 +21,7 @@ This is a reconstruction aid, not an Architecture or Contracts source of truth.
 
 ## Speed Adjustment
 
-- `additionalAttackSpeedMultiplier` defaults to 1 for neutral behavior. Nonpositive, NaN and infinite values resolve to 1. Current authored entries use 1.5.
+- `additionalAttackSpeedMultiplier` defaults to 1 for neutral behavior. Nonpositive, NaN and infinite values resolve to 1. The original bell wave uses 1.5; Shadow's added second wave uses 1.
 - The bell multiplies the instance's already-scaled `AttackSpeedBase` through `AttributeSet.TrySetBaseValue`. `DamageProfile` stat bindings identify the attribute, with the existing attribute-name fallback for legacy setups.
 - `AbilityAttackSpeedResolver` / `CombatTimingService` consume the resulting stat for existing eligible warning, recovery, interval and cooldown slots. Global slot enablement and minimum-duration limits still apply.
 - This does not rewrite shared prefabs, AD/AL timing, movement speed, damage or presentation lifetime. Missing attributes safely skip the adjustment.

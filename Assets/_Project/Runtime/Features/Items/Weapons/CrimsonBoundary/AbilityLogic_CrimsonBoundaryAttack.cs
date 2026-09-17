@@ -15,6 +15,7 @@ public sealed class AbilityLogic_CrimsonBoundaryAttack : AbilityLogic
         if (runtime == null || !runtime.isActiveAndEnabled) yield break;
 
         runtime.BeginSwing(AbilityAttackSpeedResolver.ResolveFinalAttackSpeed(system));
+        AbilityAudioRouter.PlayOneShot(data.swingSound, system, spec, sourceObjectOverride: data);
         bool released = false;
         try
         {
@@ -52,6 +53,7 @@ public sealed class AbilityLogic_CrimsonBoundaryAttack : AbilityLogic
 
         var visual = CrimsonBoundaryVisual2D.Spawn(data.projectilePrefab, position, Quaternion.identity, runtime);
         if (visual == null) yield break;
+        AbilityAudioRouter.PlayOneShotAtPosition(data.projectileLaunchSound, system, spec, position, data);
         GameObject projectileObject = visual.gameObject;
         var collider = projectileObject.GetComponent<BoxCollider2D>();
         collider.isTrigger = true;

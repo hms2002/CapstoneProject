@@ -77,6 +77,8 @@ public sealed class CrimsonBoundaryLavaProjectile2D : MonoBehaviour, IAttackColl
         if (!hitWall) return;
         finished = true;
         CrimsonBoundaryVisual2D.Spawn(data.meteorHitPrefab, transform.position, Quaternion.identity, visualOwner);
+        AbilityAudioRouter.PlayOneShotAtPosition(data.lavaBallHitSound, owner, spec, transform.position, data);
+        data.lavaBallHitShake.TryPlay(gameObject, direction, debugReason: "Crimson LavaBall wall impact");
         Destroy(gameObject);
     }
 

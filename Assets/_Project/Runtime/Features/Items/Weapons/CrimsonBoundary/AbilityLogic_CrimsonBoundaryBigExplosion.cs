@@ -18,8 +18,11 @@ public sealed class AbilityLogic_CrimsonBoundaryBigExplosion : AbilityLogic
             CrimsonBoundaryRuntimeState relicRuntime = CrimsonBoundaryUtility.ResolveRuntimeState(system);
             var ball = CrimsonBoundaryVisual2D.Spawn(data.relicLavaBallPrefab, system.transform.position, Quaternion.identity, relicRuntime);
             if (ball != null)
+            {
                 ball.GetComponent<CrimsonBoundaryLavaProjectile2D>().Setup(system, spec, data, relicRuntime,
                     AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right));
+                AbilityAudioRouter.PlayOneShotAtPosition(data.lavaBallSummonSound, system, spec, ball.transform.position, data);
+            }
             yield break;
         }
 
@@ -35,6 +38,8 @@ public sealed class AbilityLogic_CrimsonBoundaryBigExplosion : AbilityLogic
         }
         Vector3 start = new Vector3(impactPosition.x, startY, 0f);
         var meteor = CrimsonBoundaryVisual2D.Spawn(data.meteorPrefab, start, Quaternion.identity, runtime);
+        if (meteor != null)
+            AbilityAudioRouter.PlayOneShotAtPosition(data.lavaBallSummonSound, system, spec, impactPosition, data);
         try
         {
             float elapsed = 0f;
@@ -52,6 +57,8 @@ public sealed class AbilityLogic_CrimsonBoundaryBigExplosion : AbilityLogic
             if (meteor != null) Object.Destroy(meteor.gameObject);
         }
         CrimsonBoundaryVisual2D.Spawn(data.meteorHitPrefab, impactPosition, Quaternion.identity, runtime);
+        AbilityAudioRouter.PlayOneShotAtPosition(data.lavaBallHitSound, system, spec, impactPosition, data);
+        data.lavaBallHitShake.TryPlay(system.gameObject, Vector3.down, debugReason: "Crimson LavaBall impact");
 
         List<GameObject> targets = CrimsonBoundaryUtility.CollectTargets(impactPosition, data.skill2Diameter, data.damageLayers);
         for (int i = 0; i < targets.Count; i++)

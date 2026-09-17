@@ -40,3 +40,44 @@ MonoBehaviour:
   relicLavaBallPrefab: {fileID: 104, guid: 8d3a284548c54c449788eea30a839434, type: 3}
   igniteChargeSeconds: 0.24
   burnSustainPrefab: {fileID: 104, guid: 60281231dd8c4be6b499e43b294b59e6, type: 3}
+  swingSound:
+    key: weapon.crimson.swing
+    volumeMultiplier: 1
+    anchorPolicy: 2
+    localOffset: {x: 0, y: 0, z: 0}
+  projectileLaunchSound:
+    key: weapon.crimson.projectile.launch
+    volumeMultiplier: 1
+    anchorPolicy: 2
+    localOffset: {x: 0, y: 0, z: 0}
+  lavaBallHitSound:
+    key: weapon.crimson.lavaball.hit
+    volumeMultiplier: 1
+    anchorPolicy: 2
+    localOffset: {x: 0, y: 0, z: 0}
+  lavaBallSummonSound:
+    key: weapon.crimson.lavaball.summon
+    volumeMultiplier: 1
+    anchorPolicy: 2
+    localOffset: {x: 0, y: 0, z: 0}
+  igniteExplosionSound:
+    key: weapon.crimson.ignite.explosion
+    volumeMultiplier: 1
+    anchorPolicy: 2
+    localOffset: {x: 0, y: 0, z: 0}
+  igniteExplosionShake:
+    amplitude: 0.2
+    amplitudeMultiplier: 1
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  lavaBallHitShake:
+    amplitude: 0.3
+    amplitudeMultiplier: 1
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0

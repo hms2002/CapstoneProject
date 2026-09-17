@@ -2854,3 +2854,99 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
+  - key: status.burn.tick
+    bus: 0
+    category: 4
+    variantPlaybackMode: 0
+    variants:
+    - {fileID: 8300000, guid: 6efdae11adbb49e992af71c6c577a016, type: 3}
+    volume: 0.015
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: weapon.crimson.swing
+    bus: 0
+    category: 3
+    variantPlaybackMode: 0
+    variants:
+    - {fileID: 8300000, guid: 322ec0e0528341d392401a3c82985a3f, type: 3}
+    volume: 0.065
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: weapon.crimson.projectile.launch
+    bus: 0
+    category: 3
+    variantPlaybackMode: 0
+    variants:
+    - {fileID: 8300000, guid: ef33d8d30a044d038c5619628209e78c, type: 3}
+    volume: 0.07
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: weapon.crimson.lavaball.hit
+    bus: 0
+    category: 3
+    variantPlaybackMode: 0
+    variants:
+    - {fileID: 8300000, guid: 9d71db5dee6a4a6aabc09bd12e649e62, type: 3}
+    volume: 0.08
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: weapon.crimson.lavaball.summon
+    bus: 0
+    category: 3
+    variantPlaybackMode: 0
+    variants:
+    - {fileID: 8300000, guid: 77f9c3acdd8a4fbeac779be4c1ec0ad8, type: 3}
+    volume: 0.07
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: weapon.crimson.ignite.explosion
+    bus: 0
+    category: 3
+    variantPlaybackMode: 0
+    variants:
+    - {fileID: 8300000, guid: 610043097ae24190bc76f988cfa258fd, type: 3}
+    volume: 0.08
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20

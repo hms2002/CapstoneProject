@@ -2483,6 +2483,18 @@ MonoBehaviour:
     overlayFxTiles: []
     holeTiles: []
     objectPlacements:
+    - monsterWaveId: 
+      placementId: Object_17
+      kind: 0
+      prefab: {fileID: 8536156983854311797, guid: e5c3dbe97e8d669459817a5afe1feebe, type: 3}
+      monsterSpawnRole: 0
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 17, y: 17}
+      localOffset: {x: 0, y: 0}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
     - monsterWaveId: wave_default
       placementId: Monster_09
       kind: 1
@@ -2544,6 +2556,18 @@ MonoBehaviour:
       childPoseOverrides: []
       linkedChestLockPlacementId: 
     - monsterWaveId: wave_default
+      placementId: Monster_10
+      kind: 1
+      prefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 10, y: 17}
+      localOffset: {x: 0.4499998, y: -0.32999992}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
       placementId: Monster_13
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
@@ -2573,8 +2597,20 @@ MonoBehaviour:
       prefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
       monsterSpawnRole: 1
       monsterStageSet: {fileID: 0}
-      localCell: {x: 11, y: 31}
-      localOffset: {x: 0, y: 0}
+      localCell: {x: 11, y: 25}
+      localOffset: {x: 0.25, y: 0.42000008}
+      localRotationDegrees: 0
+      localScale: {x: 1, y: 1, z: 1}
+      childPoseOverrides: []
+      linkedChestLockPlacementId: 
+    - monsterWaveId: wave_default
+      placementId: Monster_02
+      kind: 1
+      prefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
+      monsterSpawnRole: 1
+      monsterStageSet: {fileID: 0}
+      localCell: {x: 17, y: 21}
+      localOffset: {x: -0.1800003, y: -0.45999908}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
@@ -2604,13 +2640,13 @@ MonoBehaviour:
       childPoseOverrides: []
       linkedChestLockPlacementId: 
     - monsterWaveId: wave_default
-      placementId: Monster_10
+      placementId: Monster_16
       kind: 1
       prefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
       monsterSpawnRole: 1
       monsterStageSet: {fileID: 0}
-      localCell: {x: 19, y: 13}
-      localOffset: {x: 0, y: 0}
+      localCell: {x: 23, y: 16}
+      localOffset: {x: -0.30999947, y: 0.11000061}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
@@ -2621,20 +2657,8 @@ MonoBehaviour:
       prefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
       monsterSpawnRole: 1
       monsterStageSet: {fileID: 0}
-      localCell: {x: 22, y: 31}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - monsterWaveId: wave_default
-      placementId: Monster_16
-      kind: 1
-      prefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
-      monsterSpawnRole: 1
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 25, y: 23}
-      localOffset: {x: 0, y: 0}
+      localCell: {x: 23, y: 26}
+      localOffset: {x: -0.39999962, y: -0.4300003}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}
       childPoseOverrides: []
@@ -2658,18 +2682,6 @@ MonoBehaviour:
       monsterSpawnRole: 0
       monsterStageSet: {fileID: 0}
       localCell: {x: 31, y: 2}
-      localOffset: {x: 0, y: 0}
-      localRotationDegrees: 0
-      localScale: {x: 1, y: 1, z: 1}
-      childPoseOverrides: []
-      linkedChestLockPlacementId: 
-    - monsterWaveId: wave_default
-      placementId: Monster_02
-      kind: 1
-      prefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
-      monsterSpawnRole: 1
-      monsterStageSet: {fileID: 0}
-      localCell: {x: 31, y: 31}
       localOffset: {x: 0, y: 0}
       localRotationDegrees: 0
       localScale: {x: 1, y: 1, z: 1}

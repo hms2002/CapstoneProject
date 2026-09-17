@@ -52,6 +52,12 @@ public sealed class AbilityLogic_CrimsonBoundaryIgnite : AbilityLogic
                     explosions.Add(new Explosion(status.transform.position,
                         CrimsonBoundaryUtility.CalculateBurnConsumptionDamage(system, consumed, data.burnConsumptionMultiplier, data.skillFireFormula)));
             }
+            if (explosions.Count > 0)
+            {
+                AbilityAudioRouter.PlayOneShotAtPosition(data.igniteExplosionSound, system, spec, explosions[0].Position, data);
+                data.igniteExplosionShake.TryPlay(system.gameObject, Vector3.up, debugReason: "Crimson Ignite");
+            }
+
             foreach (var explosion in explosions)
             {
                 CrimsonBoundaryVisual2D.Spawn(data.igniteExplosionPrefab, explosion.Position, Quaternion.identity, runtime);

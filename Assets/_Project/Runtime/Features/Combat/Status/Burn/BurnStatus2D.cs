@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -22,6 +23,7 @@ public readonly struct BurnKillContext
 public sealed class BurnStatus2D : MonoBehaviour, IMonsterStatusSource
 {
     public const int StackLimit = 99;
+    private static readonly SoundRef TickSound = SoundRef.FromKey("status.burn.tick");
     private static readonly HashSet<BurnStatus2D> activeStatuses = new();
     private static readonly ElementDamageResult[] NoElementBuildUp = Array.Empty<ElementDamageResult>();
 
@@ -167,6 +169,9 @@ public sealed class BurnStatus2D : MonoBehaviour, IMonsterStatusSource
                 ? sourceRules.ResolveStackDamageMultiplier(stacks)
                 : 1f;
 
+            // Request before damage: lethal callbacks may clear or destroy this status.
+            SoundPlaybackUtility.Play(TickSound, instigator: sourceSystem.gameObject,
+                causer: gameObject, target: gameObject, position: transform.position);
             CombatDamageAction.ApplyDamageAndEmitHit(
                 system: sourceSystem,
                 spec: null,

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 // 책임: 업그레이드 데이터베이스의 노드 조회, 잠금 상태, 구매 가능 여부와 해금 변화를 계산한다.
 public sealed class UpgradeProgressService
 {
-    // Exhibition preset: bag I/II, relic unlock, graves, chest reroll, shop/refresh/discount.
+    // Exhibition preset: travel speed, bag I/II, relic unlock, graves, chest reroll, shop/refresh/discount.
     private static readonly int[] ExhibitionNodeIds =
     {
-        -993005279, 749890120, 1433597785, -1492335095,
+        -198029508, -993005279, 749890120, 1433597785, -1492335095,
         674725477, -2095978215, -1633135072, 484471810
     };
 

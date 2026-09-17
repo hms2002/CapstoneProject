@@ -150,3 +150,22 @@ The former runtime-generated Burn bar/view described above is superseded for the
 - WeaponPrefab_CrimsonBoundary now authors an enabled Animator on its root, the same GameObject passed to SampleAnimation. It intentionally has no controller and applies no root motion; CrimsonBoundaryRuntimeState retains the manual clip clock, endpoint hold and reset ownership.
 - The player log exposed the missing Animator requirement for non-Legacy clip sampling; Editor playback alone did not reveal it. Clip bindings, ability release timing and the shared basic-attack movement lock are unchanged.
 - Prefab binding checks and C# build passed; native player playback acceptance remains pending. See the 2026-09-17 SessionLog.
+
+### Crimson Boundary authored audio (2026-09-17)
+
+- Six original clips live under `Assets/_Project/Audio/Imported/CrimsonBoundary/`; `Assets/_Project/Resources/Audio/DefaultAudioCatalog.asset` owns clip references and mix tuning. `CrimsonBoundaryWeaponData` / `ALData_CrimsonBoundary.asset` author five SoundRefs for swing, basic projectile launch, LavaBall summon/hit and Ignite explosion.
+- Attack requests swing audio at BeginSwing and launch audio after the projectile is spawned at the existing .12 motion-second release. Cancellation before release skips launch audio. Normal Q plays summon at the captured ground position (the meteor starts above camera), then impact after the existing cancellation guard. Relic Q plays summon at launch and impact once at its terminal wall hit; piercing enemy hits and lifetime expiry do not play impact.
+- Ignite requests one shot per actual explosion after charge/cancellation checks. The spawned explosion is the audio causer so simultaneous explosions are not collapsed by the backend's same-source suppression.
+- BurnStatus2D owns the shared `status.burn.tick` request before tick damage, including lethal/final ticks. The target is the audio causer, preventing different burning monsters from suppressing one another. This applies to relic-origin Burn too; it does not require the Crimson weapon to remain equipped. Existing backend same-source 50ms suppression still applies to unusually close requests on the same monster.
+- Initial catalog volumes: Burn .015, swing .065, launch/summon .07, LavaBall hit/Ignite .08. Current catalog global multiplier is 10, yielding .15/.65/.7/.8 before user mix and attenuation. Cooldown 0, pitch/speed 1, spatial one-shots. SoundManager owns playback sources and natural completion; no new AudioSource, manager, loop or cleanup owner.
+- Native import, listening balance and Play Mode timing still need verification. Use Tools/Audio/Audio Catalog for mix tuning.
+
+### Crimson audio 2D correction (2026-09-17)
+
+- Supersedes the spatial-one-shot setting above: all six new keys use catalog `spatial: 0`. The camera AudioListener is authored at Z=-10; using 2D playback prevents camera-depth attenuation of these combat cues. Volumes and event bindings remain unchanged. User-reported silence prompted this correction; runtime audibility still requires confirmation.
+
+### Ignite single sound and impact shake revision (2026-09-17)
+
+- Supersedes per-explosion audio: Ignite uses `692923__dustywind__crunchy-explosion.wav` once per cast with actual explosions, after charge/cancellation checks. It also requests one `igniteExplosionShake` (.2) outside the target loop.
+- LavaBall hit uses `651532__h2p34__explode-1-small.wav` for both normal landing and relic terminal wall collision, with `lavaBallHitShake` (.3). Both CameraShakeHooks are authored in CrimsonBoundaryWeaponData / ALData_CrimsonBoundary and honor the existing screen-shake setting through the Core backend.
+- Existing 2D playback and catalog gains remain. No stack/area-damage/collision changes. Native audio and shake acceptance remains pending.
