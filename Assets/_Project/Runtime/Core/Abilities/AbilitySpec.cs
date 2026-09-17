@@ -48,6 +48,8 @@ namespace UnityGAS
         /// <summary>남은 쿨다운(초). 0 이하이면 쿨다운 없음.</summary>
         public float CooldownRemaining { get; internal set; }
         public AbilityCancellationToken Token { get; internal set; }
+        // Reset for each execution; only an explicit gameplay refund skips the end cooldown.
+        public bool SkipCooldownOnEnd { get; set; }
         /// <summary>
         /// GA 전용 런타임 값(최소 구현용 블랙보드).
         /// 필요하면 int/bool 등 다른 타입 딕셔너리도 추가해도 됨.

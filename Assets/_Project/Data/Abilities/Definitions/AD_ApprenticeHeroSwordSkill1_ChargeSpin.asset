@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: "회전베기"
   icon: {fileID: 21300000, guid: 449fa420d9198034a8864f1f47dd46a7, type: 3}
-  description: "● 길게 눌러 차징하고 떼서 {em:회전베기} 공격\n● 차징할수록 {pos:피해와 공격 범위 증가}\n● 최대 차징 시 최소 차징 대비 피해 약 {val:1.67배}, 공격 크기 {val:2배}"
+  description: "● 길게 눌러 차징하고 떼서 {em:회전베기} 공격\n● 50% 이하에서 놓으면 취소, 50%를 넘겨 차징하면 공격\n● 차징할수록 {pos:피해와 공격 범위 증가}\n● 최대 차징 시 최소 차징 대비 피해 약 {val:1.67배}, 공격 크기 {val:2배}"
   hitFeel:
     targetStunSeconds: 0.1
     attackerStopSeconds: 0.06

@@ -22,6 +22,108 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
     private static T Call<T>(object target, string method, params object[] args) =>
         (T)target.GetType().GetMethod(method, Private).Invoke(target, args);
 
+    [TestCase(0f, false)]
+    [TestCase(0.5f, false)]
+    [TestCase(0.51f, true)]
+    [TestCase(0.99f, true)]
+    [TestCase(1f, true)]
+    public void WeaponFeedback_ChargeReleaseThreshold(float ratio, bool expected)
+    {
+        var method = typeof(AbilityLogic_ApprenticeHeroSwordChargeSpin).GetMethod(
+            "ShouldReleaseAttack", BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.That(method.Invoke(null, new object[] { ratio * 2f, 2f }), Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void WeaponFeedback_QuickChargeReleaseCancelsAndClearsHold()
+    {
+        var system = Own(new GameObject("Quick charge release")).AddComponent<AbilitySystem>();
+        var data = Own(ScriptableObject.CreateInstance<ApprenticeHeroSwordChargeSpinData>());
+        Set(data, "chargeAnimationTrigger", "");
+        Set(data, "enableChargeReveal", false);
+        var definition = Own(ScriptableObject.CreateInstance<AbilityDefinition>());
+        definition.sourceObject = data;
+        definition.cooldown = 6f;
+        definition.startCooldownOnEnd = true;
+        var logic = Own(ScriptableObject.CreateInstance<AbilityLogic_ApprenticeHeroSwordChargeSpin>());
+        var spec = system.GiveAbility(definition);
+        var coordinator = new AbilityExecutionCoordinator();
+        Call(coordinator, "BeginExecution", system, spec, null, false);
+        Assert.That(system.TrySetCooldownRemaining(definition, 3f), Is.True);
+        var input = new PlayerControlTestInput { BackendComponent = system.transform };
+        var field = typeof(InputActionQuery).GetField("backend", BindingFlags.Static | BindingFlags.NonPublic);
+        var previous = (IInputActionQueryBackend)field.GetValue(null);
+        InputActionQuery.RegisterBackend(input);
+        try
+        {
+            IEnumerator routine = logic.Activate(system, spec, null);
+            Assert.That(routine.MoveNext(), Is.False, "A quick release must not enter the release-hit wait.");
+            Assert.That(spec.Token.IsCancelled, Is.True);
+            Assert.That(spec.TryGetFloat("RecoveryOverride", out float recovery), Is.True);
+            Assert.That(recovery, Is.Zero);
+            Assert.That(spec.TryGetFloat(AbilityLogic_ApprenticeHeroSwordChargeSpin.ChargeSecondsKey, out float seconds), Is.True);
+            Assert.That(seconds, Is.Zero);
+            Call(coordinator, "EndExecution", system, spec, null, true, false);
+            Assert.That(system.GetCooldownRemaining(definition), Is.Zero,
+                "A failed charge must clear existing cooldown and not restart it at execution end.");
+
+            Call(coordinator, "BeginExecution", system, spec, null, false);
+            Assert.That(spec.SkipCooldownOnEnd, Is.False, "The refund must not leak into the next activation.");
+            Call(coordinator, "EndExecution", system, spec, null, false, false);
+            Assert.That(system.GetCooldownRemaining(definition), Is.GreaterThan(0f),
+                "The next normal execution must still start its cooldown.");
+        }
+        finally { InputActionQuery.RegisterBackend(previous); }
+    }
+
+    [Test]
+    public void WeaponFeedback_MarkOutlineAndKeyFollowAvailabilityAndRebinding()
+    {
+        var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
+            "Assets/_Project/Prefabs/Items/Weapons/LightningSpear/LightningSpearMark.prefab");
+        var mark = Own(Object.Instantiate(prefab)).GetComponent<LightningSpearMarkActor>();
+        var input = new PlayerControlTestInput { BackendComponent = mark.transform };
+        var backendField = typeof(InputActionQuery).GetField("backend", BindingFlags.Static | BindingFlags.NonPublic);
+        var previous = (IInputActionQueryBackend)backendField.GetValue(null);
+        InputActionQuery.RegisterBackend(input);
+        try
+        {
+            var texture = Own(new Texture2D(16, 16));
+            var first = Own(Sprite.Create(texture, new Rect(0, 0, 8, 8), Vector2.one * 0.5f));
+            var second = Own(Sprite.Create(texture, new Rect(0, 0, 16, 16), Vector2.one * 0.5f));
+            input.BindingIcon = first;
+            mark.Initialize(null, null, 10f, 0f, null, null, null);
+            mark.ActivateFromSpawnEffect();
+            mark.SetFeedback(true, true);
+            var icon = mark.transform.Find("RushKeyIcon").GetComponent<SpriteRenderer>();
+            var outline = mark.transform.Find("ActiveVisual").GetComponent<SpriteRenderer>();
+            var properties = new MaterialPropertyBlock();
+            outline.GetPropertyBlock(properties);
+            Assert.That(properties.GetFloat("_OutlineEnabled"), Is.EqualTo(1f));
+            Assert.That(properties.GetColor("_OutlineColor"), Is.EqualTo((Color)new Color32(0, 160, 230, 255)));
+            Assert.That(outline.sharedMaterial.HasProperty("_OutlineEnabled"), Is.True);
+            Assert.That(icon.enabled, Is.True);
+            Assert.That(icon.sprite, Is.SameAs(first));
+            Time.timeScale = 0f;
+            input.BindingIcon = second;
+            Call(mark, "Update");
+            Assert.That(icon.sprite, Is.SameAs(second), "Paused key remapping must update the world icon.");
+            Assert.That(icon.transform.localPosition.y, Is.GreaterThan(0f));
+            foreach (var flags in new[] { (true, false), (false, true), (false, false) })
+            {
+                mark.SetFeedback(flags.Item1, flags.Item2);
+                outline.GetPropertyBlock(properties);
+                Assert.That(properties.GetFloat("_OutlineEnabled"), Is.Zero,
+                    "Outline requires both rush availability and cursor selection.");
+                Assert.That(icon.enabled, Is.False);
+            }
+            mark.SetFeedback(true, true);
+            mark.gameObject.SetActive(false);
+            Assert.That(icon.enabled, Is.False);
+        }
+        finally { InputActionQuery.RegisterBackend(previous); Time.timeScale = 1f; }
+    }
+
     [TestCase("Open")]
     [TestCase("Wall")]
     [TestCase("HoleTrap")]
@@ -686,6 +788,8 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
 
     private sealed class PlayerControlTestInput : IInputActionQueryBackend
     {
+        public Sprite BindingIcon;
+        public Sprite GetBindingIcon(InputActionId action) => action == InputActionId.Skill1 ? BindingIcon : null;
         public Component BackendComponent { get; set; }
         public InputActionId PressedAction;
 

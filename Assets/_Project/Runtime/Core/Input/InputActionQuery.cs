@@ -6,6 +6,7 @@ using UnityEngine;
 public interface IInputActionQueryBackend
 {
     Component BackendComponent { get; }
+    Sprite GetBindingIcon(InputActionId action);
     bool WasPressedThisFrame(InputActionId action);
     bool WasReleasedThisFrame(InputActionId action);
     bool IsPressed(InputActionId action);
@@ -26,6 +27,9 @@ public static class InputActionQuery
     private static readonly System.Collections.Generic.Dictionary<InputActionId, System.Collections.Generic.HashSet<object>> pressBlockOwners = new();
 
     public static bool IsAvailable => IsBackendAlive(backend);
+
+    public static Sprite GetBindingIcon(InputActionId action) =>
+        IsBackendAlive(backend) ? backend.GetBindingIcon(action) : null;
 
     public static void RegisterBackend(IInputActionQueryBackend queryBackend)
     {

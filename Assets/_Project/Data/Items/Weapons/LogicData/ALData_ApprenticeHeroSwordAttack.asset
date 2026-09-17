@@ -21,7 +21,7 @@ MonoBehaviour:
         hitboxSize: {x: 1.7, y: 1}
         hitboxScaleMultiplier: {x: 1, y: 1}
         overrideSizingMode: 1
-        sizingMode: 3
+        sizingMode: 0
         wallLayers:
           serializedVersion: 2
           m_Bits: 0
@@ -63,7 +63,7 @@ MonoBehaviour:
         hitboxSize: {x: 1.8, y: 1}
         hitboxScaleMultiplier: {x: 1, y: 1}
         overrideSizingMode: 1
-        sizingMode: 3
+        sizingMode: 0
         wallLayers:
           serializedVersion: 2
           m_Bits: 0
@@ -103,9 +103,9 @@ MonoBehaviour:
         hitboxPrefab: {fileID: 2863281621525748656, guid: edb3a0cf9a254480bbb25a3a8601c8c8, type: 3}
         activeTime: 0.16
         hitboxSize: {x: 2, y: 1.2}
-        hitboxScaleMultiplier: {x: 1, y: 1}
+        hitboxScaleMultiplier: {x: 1.2, y: 1.2}
         overrideSizingMode: 1
-        sizingMode: 3
+        sizingMode: 0
         wallLayers:
           serializedVersion: 2
           m_Bits: 0

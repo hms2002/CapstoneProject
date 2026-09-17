@@ -1630,6 +1630,12 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         }
 
         bool skillReady = IsSkill1Ready(loadout);
+        bool canExecuteRush = skillReady && !ownerSystem.IsBusy &&
+            !IsGameplayInputBlockedByUiOrFlow() && !CombatHitPause2D.IsPausedOn(ownerSystem.gameObject) &&
+            !InputActionQuery.IsPressBlocked(InputActionId.Skill1) &&
+            (loadout.MarkRushOrSweep.canCastWhileMoving ||
+                ownerSystem.GetComponent<IMovementStateProvider>()?.IsMoving != true) &&
+            loadout.MarkRushOrSweep.CanActivate(ownerSystem.gameObject, null, logDiagnostics: false);
         Vector2 ownerPosition = ownerSystem.transform.position;
         bool keepRushRangeVisible = HasMarkRushDestinationOrigin() || hasBufferedMarkRushInput;
         Vector2 rushRangeOrigin = hasBufferedMarkRushInput && hasBufferedMarkRushOrigin
@@ -1665,7 +1671,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             bool canRushToMark =
                 (skillReady || keepRushRangeVisible) &&
                 CanRushToMark(loadout, data, mark, rushRangeOrigin);
-            mark.SetFeedback(canRushToMark, mark == selected);
+            mark.SetFeedback(canExecuteRush && canRushToMark, mark == selected);
         }
 
         PruneMarkHoverRangeIndicators();

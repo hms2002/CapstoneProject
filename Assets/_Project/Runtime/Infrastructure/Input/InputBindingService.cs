@@ -504,6 +504,8 @@ public sealed class InputBindingService : MonoBehaviour, IInputActionQueryBacken
         return GetBindingGlyph(action, secondary).Icon;
     }
 
+    Sprite IInputActionQueryBackend.GetBindingIcon(InputActionId action) => GetBindingIcon(action);
+
     public Sprite GetContextShortcutIcon(InputContextShortcutId shortcut)
     {
         return GetContextShortcutGlyph(shortcut).Icon;

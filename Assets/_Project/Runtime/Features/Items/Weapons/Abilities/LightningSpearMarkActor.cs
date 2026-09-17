@@ -13,6 +13,10 @@ public sealed class LightningSpearMarkActor : MonoBehaviour
     [SerializeField] private GameObject selectedVisual;
     [SerializeField, HideInInspector] private GameObject landingPreviewVisual;
     [SerializeField, HideInInspector] private GameObject validRushVisual;
+    [SerializeField] private SpriteRenderer rushOutlineRenderer;
+    [SerializeField] private SpriteRenderer rushKeyIcon;
+    private MaterialPropertyBlock feedbackProperties;
+    private bool rushFeedbackVisible;
 
     private LightningSpearRuntimeState owner;
     private AbilitySystem sourceSystem;
@@ -74,19 +78,46 @@ public sealed class LightningSpearMarkActor : MonoBehaviour
         NotifyActivated();
     }
 
-    public void SetFeedback(bool inRushRange, bool _)
+    public void SetFeedback(bool canRush, bool isSelected)
     {
-        bool canShow = IsActive;
+        rushFeedbackVisible = IsActive && canRush && isSelected;
 
         if (validRushVisual != null)
             validRushVisual.SetActive(false);
 
         if (selectedVisual != null)
-            selectedVisual.SetActive(canShow && inRushRange);
+            selectedVisual.SetActive(false);
+
+        if (rushOutlineRenderer != null)
+        {
+            feedbackProperties ??= new MaterialPropertyBlock();
+            rushOutlineRenderer.GetPropertyBlock(feedbackProperties);
+            feedbackProperties.SetFloat("_OutlineEnabled", rushFeedbackVisible ? 1f : 0f);
+            feedbackProperties.SetColor("_OutlineColor", new Color32(0, 160, 230, 255));
+            feedbackProperties.SetFloat("_AlphaThreshold", 0.1f);
+            rushOutlineRenderer.SetPropertyBlock(feedbackProperties);
+        }
+        RefreshRushKeyIcon();
+    }
+
+    private void RefreshRushKeyIcon()
+    {
+        if (rushKeyIcon == null)
+            return;
+        Sprite icon = InputActionQuery.GetBindingIcon(InputActionId.Skill1);
+        if (rushKeyIcon.sprite != icon)
+        {
+            rushKeyIcon.sprite = icon;
+            if (icon != null)
+                rushKeyIcon.transform.localScale = Vector3.one *
+                    (0.55f / Mathf.Max(0.01f, Mathf.Max(icon.bounds.size.x, icon.bounds.size.y)));
+        }
+        rushKeyIcon.enabled = rushFeedbackVisible && icon != null;
     }
 
     private void Update()
     {
+        RefreshRushKeyIcon();
         if (isConsumed)
             return;
 
@@ -156,4 +187,6 @@ public sealed class LightningSpearMarkActor : MonoBehaviour
     {
         owner?.UnregisterMark(this);
     }
+
+    private void OnDisable() => SetFeedback(false, false);
 }

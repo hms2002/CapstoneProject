@@ -1594,6 +1594,7 @@ public sealed class HitPauseImmuneTestActor : MonoBehaviour, ICombatHitPauseImmu
 
 public sealed class HitFeelTestInput : IInputActionQueryBackend
 {
+    public Sprite GetBindingIcon(InputActionId action) => null;
     public Component BackendComponent { get; set; }
     public bool Held;
     public bool WasPressedThisFrame(InputActionId action) => false;

@@ -1,71 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "17e3c95baaf54286aaab53e85d33f764",
-            "startedUtc": "2026-09-17T13:21:42.8613938Z",
-            "endedUtc": "2026-09-17T13:21:43.8634800Z",
-            "entries": []
-        },
-        {
-            "sessionId": "24edaf1fac9c46a7b9e267fa25e74217",
-            "startedUtc": "2026-09-17T13:22:59.0224549Z",
-            "endedUtc": "2026-09-17T13:23:36.4264697Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 2,
-                    "coldSpawns": 2,
-                    "firstSeenSeconds": 33.84786605834961,
-                    "lastSeenSeconds": 37.38862228393555,
-                    "firstSceneName": "ProceduralShadowCorridor",
-                    "lastSceneName": "ProceduralShadowCorridor"
-                }
-            ]
-        },
-        {
-            "sessionId": "60b8387648744ff4af95bd5aee3a76b2",
-            "startedUtc": "2026-09-17T15:03:25.4489477Z",
-            "endedUtc": "2026-09-17T15:03:26.4567712Z",
-            "entries": []
-        },
-        {
-            "sessionId": "61cea6ee486c424e8a3a2ea004d74746",
-            "startedUtc": "2026-09-17T15:05:04.8957524Z",
-            "endedUtc": "2026-09-17T15:05:07.2914832Z",
-            "entries": []
-        },
-        {
-            "sessionId": "2b2357fbf4144fa4a21e81b9c0469453",
-            "startedUtc": "2026-09-17T15:16:25.4101332Z",
-            "endedUtc": "2026-09-17T15:16:26.4157801Z",
-            "entries": []
-        },
-        {
-            "sessionId": "a870bbcb3120487cb22bdb4ca7867114",
-            "startedUtc": "2026-09-17T15:21:23.5255475Z",
-            "endedUtc": "2026-09-17T15:21:24.5329467Z",
-            "entries": []
-        },
-        {
-            "sessionId": "29596c4b0ffe4711b45fcdc5e73baa77",
-            "startedUtc": "2026-09-17T15:24:12.9045037Z",
-            "endedUtc": "2026-09-17T15:24:15.1504710Z",
-            "entries": []
-        },
-        {
-            "sessionId": "de1f9ef7b3c240909b695b7a9fae9d16",
-            "startedUtc": "2026-09-17T15:33:07.7239983Z",
-            "endedUtc": "2026-09-17T15:33:08.7353844Z",
-            "entries": []
-        },
-        {
-            "sessionId": "cf409d8b539e49f3b4bdd71562e044e3",
-            "startedUtc": "2026-09-17T15:53:49.9980522Z",
-            "endedUtc": "2026-09-17T15:53:51.0054098Z",
-            "entries": []
-        },
-        {
             "sessionId": "352e1942815a475dacda1c1c8307c6c8",
             "startedUtc": "2026-09-17T15:54:32.0014237Z",
             "endedUtc": "2026-09-17T15:54:33.0131005Z",
@@ -129,6 +64,93 @@
             "sessionId": "8a0f3b9fc5da49008db0aff8e68a23bf",
             "startedUtc": "2026-09-17T16:15:18.2324941Z",
             "endedUtc": "2026-09-17T16:15:19.2392294Z",
+            "entries": []
+        },
+        {
+            "sessionId": "64acd9fc400847dcb1c62118de79356d",
+            "startedUtc": "2026-09-17T16:38:51.2075459Z",
+            "endedUtc": "2026-09-17T16:38:52.2193947Z",
+            "entries": []
+        },
+        {
+            "sessionId": "c6f4153fafe14547baf79767077430c4",
+            "startedUtc": "2026-09-17T16:44:47.6840802Z",
+            "endedUtc": "2026-09-17T16:45:50.0338539Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 10,
+                    "coldSpawns": 4,
+                    "firstSeenSeconds": 36.64051818847656,
+                    "lastSeenSeconds": 58.2808837890625,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ProtoTypeHub"
+                }
+            ]
+        },
+        {
+            "sessionId": "8b19b06ef501434baef5b491f7037557",
+            "startedUtc": "2026-09-17T16:55:18.1295755Z",
+            "endedUtc": "2026-09-17T16:55:40.2430808Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 5,
+                    "coldSpawns": 3,
+                    "firstSeenSeconds": 12.84078311920166,
+                    "lastSeenSeconds": 20.583385467529298,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ProtoTypeHub"
+                }
+            ]
+        },
+        {
+            "sessionId": "8b56446d25ca47b4a45afed4c7b42489",
+            "startedUtc": "2026-09-17T16:58:26.8221238Z",
+            "endedUtc": "2026-09-17T16:58:50.6668696Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 5,
+                    "coldSpawns": 5,
+                    "firstSeenSeconds": 16.37420654296875,
+                    "lastSeenSeconds": 19.054283142089845,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ProtoTypeHub"
+                }
+            ]
+        },
+        {
+            "sessionId": "1d9efe0332bf41b3a4120a4ec8fea018",
+            "startedUtc": "2026-09-17T17:09:50.3778674Z",
+            "endedUtc": "2026-09-17T17:09:51.3832887Z",
+            "entries": []
+        },
+        {
+            "sessionId": "19b0d627cb7e4414adb256853c807e44",
+            "startedUtc": "2026-09-17T17:12:44.1501600Z",
+            "endedUtc": "2026-09-17T17:12:45.1593168Z",
+            "entries": []
+        },
+        {
+            "sessionId": "e7b33320873d4f2e80bc5e7108ac283e",
+            "startedUtc": "2026-09-17T17:20:42.6198488Z",
+            "endedUtc": "2026-09-17T17:20:43.3516244Z",
+            "entries": []
+        },
+        {
+            "sessionId": "e19beb3514aa4391b6835e785190c6ea",
+            "startedUtc": "2026-09-17T17:22:24.0407831Z",
+            "endedUtc": "2026-09-17T17:22:24.7458853Z",
+            "entries": []
+        },
+        {
+            "sessionId": "5f754c00bbf14836a2c77d6caa63328f",
+            "startedUtc": "2026-09-17T17:25:04.2371586Z",
+            "endedUtc": "2026-09-17T17:25:05.2668014Z",
             "entries": []
         }
     ]

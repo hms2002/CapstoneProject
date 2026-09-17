@@ -73,6 +73,7 @@ namespace UnityGAS
                 system.SetExecutionState(true, spec, target);
 
             spec.Token = new AbilityCancellationToken();
+            spec.SkipCooldownOnEnd = false;
 
             var def = spec.Definition;
 
@@ -127,7 +128,7 @@ namespace UnityGAS
             if (system.TagSystem != null && def.grantedTagsWhileActive != null)
                 system.TagSystem.RemoveTags(def.grantedTagsWhileActive);
 
-            if (def != null && def.startCooldownOnEnd)
+            if (def != null && def.startCooldownOnEnd && !spec.SkipCooldownOnEnd)
                 system.CooldownController?.StartCooldown(spec);
 
             spec.Token?.Cancel();
