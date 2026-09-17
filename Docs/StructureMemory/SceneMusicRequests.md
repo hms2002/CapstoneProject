@@ -1,7 +1,7 @@
 ---
 status: active
 authority: structure-memory
-last_reviewed: 2026-09-17
+last_reviewed: 2026-09-11
 ---
 
 # Scene Music Requests
@@ -34,12 +34,9 @@ Scene and encounter authors choose music explicitly. The existing Infrastructure
 
 Disable/unload unsubscribes without stopping music. Thus an old scene's cleanup cannot silence the destination. Scene-bound late play/stop requests from invalid, unloaded or inactive scenes are rejected. Existing unscoped audio APIs remain for application-level compatibility; the migrated scene/encounter paths use the scoped APIs.
 
-All catalog entries on the BGM bus are authored with `loop: true`, and `SoundManager` also enforces looping whenever it starts or receives a same-track request. Once playback has actually been observed, `SoundManager` performs one guarded restart from the beginning if the tracked BGM unexpectedly becomes stopped. It does not recover during an explicit `StopMusic` fade/cleanup or while `AudioListener.pause` is active. Callers that intentionally silence music must therefore use `StopMusic` or an explicit silent scene request instead of stopping the internal `AudioSource` directly.
-
 ## Current Setup And Pitfalls
 
 - ProtoTypeHub and Grand Hall use `bgm.hub`; Title uses `TitleSceneBGM`.
-- `bgm.hub`, corridor, boss, Title and GameOver catalog entries are all explicitly authored as looping. The BGM bus runtime fallback remains a second line of defense, not a substitute for correct catalog data.
 - Existing corridor/boss-entry assignments preserve `bgm.shadow_corridor` for all four routes. Current boss combat assignments preserve `bgm.boss.shadow`; distinct per-theme tracks were not invented.
 - TutorialCorridor, DarkLord_Tutorial and SangHyup_Hallway have explicit silent entry settings. Set a key on their requester if music is desired.
 - Legacy route/catalog BGM fields remain serialized for compatibility and migration input, but no longer control live playback. Changing them does not change scene music.

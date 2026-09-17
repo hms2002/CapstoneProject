@@ -314,7 +314,7 @@ MonoBehaviour:
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
-    loop: 1
+    loop: 0
     spatial: 0
     important: 0
     cooldown: 0

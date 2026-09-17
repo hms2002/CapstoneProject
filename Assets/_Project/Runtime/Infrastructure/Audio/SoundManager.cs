@@ -167,7 +167,6 @@ namespace CapstoneAudio
         private float currentMusicVolumeMultiplier = 1f;
         private float currentMusicPitchRoll;
         private bool musicStopPending;
-        private bool musicPlaybackObserved;
         private float combatSfxDuckVolume = 1f;
         private Tween combatSfxDuckTween;
 
@@ -322,21 +321,8 @@ namespace CapstoneAudio
         {
             EnsureInitialized();
 
-            if (musicSource == null)
-            {
-                ClearCurrentMusicTracking();
+            if (musicSource == null || !musicSource.isPlaying)
                 return;
-            }
-
-            if (!musicSource.isPlaying)
-            {
-                musicSource.DOKill();
-                musicSource.Stop();
-                musicSource.clip = null;
-                musicSource.volume = 0f;
-                ClearCurrentMusicTracking();
-                return;
-            }
 
             float duration = ResolveBgmFadeOutSeconds();
             musicSource.DOKill();
@@ -537,7 +523,6 @@ namespace CapstoneAudio
         private void LateUpdate()
         {
             UpdateFollowAnchoredSources();
-            RecoverUnexpectedMusicStop();
         }
 
         private void OnDestroy()
@@ -644,56 +629,6 @@ namespace CapstoneAudio
             currentMusicVolumeMultiplier = 1f;
             currentMusicPitchRoll = 0f;
             musicStopPending = false;
-            musicPlaybackObserved = false;
-        }
-
-        private void RecoverUnexpectedMusicStop()
-        {
-            if (musicSource == null ||
-                !musicSource.isActiveAndEnabled ||
-                musicSource.clip == null ||
-                musicStopPending ||
-                currentMusicCatalog == null ||
-                string.IsNullOrWhiteSpace(currentMusicKey))
-            {
-                musicPlaybackObserved = false;
-                return;
-            }
-
-            if (AudioListener.pause)
-                return;
-
-            if (musicSource.isPlaying)
-            {
-                musicPlaybackObserved = true;
-                return;
-            }
-
-            if (!musicPlaybackObserved)
-                return;
-
-            musicPlaybackObserved = false;
-
-            if (!currentMusicCatalog.TryGetEntry(currentMusicKey, out AudioCatalogEntry entry) ||
-                entry == null ||
-                entry.bus != AudioBus.BGM)
-            {
-                return;
-            }
-
-            musicSource.DOKill();
-            musicSource.pitch = entry.ResolveAudioSourcePitch(currentMusicPitchRoll);
-            musicSource.loop = ShouldLoopMusic(entry);
-            musicSource.spatialBlend = 0f;
-            musicSource.volume = ResolveCurrentMusicTargetVolume();
-            musicSource.time = 0f;
-            musicSource.Play();
-            musicPlaybackObserved = musicSource.isPlaying;
-        }
-
-        private static bool ShouldLoopMusic(AudioCatalogEntry entry)
-        {
-            return entry != null && (entry.loop || entry.bus == AudioBus.BGM);
         }
 
         private Transform CreateRoot(string rootName)
@@ -885,8 +820,6 @@ namespace CapstoneAudio
             {
                 TrackCurrentMusic(catalog, entry.key, nextMusicBaseVolume, nextMusicVolumeMultiplier, nextMusicPitchRoll);
                 musicSource.DOKill();
-                musicSource.loop = ShouldLoopMusic(entry);
-                musicPlaybackObserved = true;
                 if (fadeInSeconds <= 0f)
                     musicSource.volume = targetVolume;
                 else
@@ -902,11 +835,10 @@ namespace CapstoneAudio
                 TrackCurrentMusic(catalog, entry.key, nextMusicBaseVolume, nextMusicVolumeMultiplier, nextMusicPitchRoll);
                 musicSource.clip = clip;
                 musicSource.pitch = entry.ResolveAudioSourcePitch(nextMusicPitchRoll);
-                musicSource.loop = ShouldLoopMusic(entry);
+                musicSource.loop = entry.loop || entry.bus == AudioBus.BGM;
                 musicSource.spatialBlend = 0f;
                 musicSource.volume = fadeInSeconds > 0f ? 0f : targetVolume;
                 musicSource.Play();
-                musicPlaybackObserved = musicSource.isPlaying;
 
                 if (fadeInSeconds > 0f)
                     musicSource.DOFade(targetVolume, fadeInSeconds).SetUpdate(true);
@@ -1275,9 +1207,8 @@ namespace CapstoneAudio
             currentMusicBaseVolume = entry.volume * currentMusicVolumeMultiplier;
             musicSource.DOKill();
             musicSource.pitch = entry.ResolveAudioSourcePitch(currentMusicPitchRoll);
-            musicSource.loop = ShouldLoopMusic(entry);
+            musicSource.loop = entry.loop || entry.bus == AudioBus.BGM;
             musicSource.volume = ResolveCurrentMusicTargetVolume();
-            musicPlaybackObserved = true;
         }
 
         private void RefreshCurrentMusicVolume()
