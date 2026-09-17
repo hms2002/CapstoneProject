@@ -1,18 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "faff7b369b1b462ea6217a9144751c56",
-            "startedUtc": "2026-09-15T16:57:55.9620507Z",
-            "endedUtc": "2026-09-15T16:57:56.9689292Z",
-            "entries": []
-        },
-        {
-            "sessionId": "02e9b761ea5b428db8beaea0b5813693",
-            "startedUtc": "2026-09-15T16:59:10.0422570Z",
-            "endedUtc": "2026-09-15T16:59:16.7696698Z",
-            "entries": []
-        },
-        {
             "sessionId": "cb93813b7c1b41e3a4136d598dd803dd",
             "startedUtc": "2026-09-15T17:14:10.5407896Z",
             "endedUtc": "2026-09-15T17:14:17.9361886Z",
@@ -576,6 +564,18 @@
                     "lastSceneName": "HeoMinSeok_Boss_Shadow"
                 }
             ]
+        },
+        {
+            "sessionId": "dbb5746bcc5d416fad41058de7b6e701",
+            "startedUtc": "2026-09-17T02:54:46.4192610Z",
+            "endedUtc": "2026-09-17T02:54:47.4226789Z",
+            "entries": []
+        },
+        {
+            "sessionId": "393befcb2daa45f18d65f148dff2d6fc",
+            "startedUtc": "2026-09-17T03:04:20.1479112Z",
+            "endedUtc": "2026-09-17T03:04:24.4016897Z",
+            "entries": []
         }
     ]
 }
