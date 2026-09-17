@@ -19,6 +19,15 @@ public class PortraitController : MonoBehaviour
         }
         else
         {
+            // Reset opacity before revealing the root so returning portraits cannot flash.
+            if (wasRootActiveBeforeCameraDialogue)
+            {
+                foreach (var actor in activeActors.Values)
+                {
+                    if (actor != null && actor.gameObject.activeSelf)
+                        actor.FadeIn(0.5f);
+                }
+            }
             gameObject.SetActive(wasRootActiveBeforeCameraDialogue);
         }
     }
