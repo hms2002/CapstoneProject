@@ -71,7 +71,22 @@ internal static class LootPoolItemSelectionService
         return valid[Random.Range(0, valid.Count)];
     }
 
-    public static RelicDefinition GetRandomRelicByRarity(ItemRarity targetRarity)
+    internal static RelicInventory GetPlayerRelicInventory()
+    {
+        var player = PlayerRuntimeRegistry.CurrentPlayer != null
+            ? PlayerRuntimeRegistry.CurrentPlayer : PlayerInteractor2D.Instance;
+        return player != null ? player.GetComponent<RelicInventory>() : null;
+    }
+
+    internal static bool CanGainRelicLevels(RelicDefinition relic, int ownedLevel, int reservedLevel = 0)
+    {
+        // Parcels occupy separate slots; their carry limit is not an upgrade level.
+        return relic != null && (relic is ParcelRelicDefinition ||
+            (long)Mathf.Max(0, ownedLevel) + Mathf.Max(0, reservedLevel) < Mathf.Max(1, relic.maxLevel));
+    }
+
+    public static RelicDefinition GetRandomRelicByRarity(
+        ItemRarity targetRarity, System.Func<RelicDefinition, bool> additionalFilter = null)
     {
         if (ItemManager.Instance == null)
             return null;
@@ -83,6 +98,7 @@ internal static class LootPoolItemSelectionService
         var allUnlockedRelics = new List<RelicDefinition>();
         var exactMatches = new List<RelicDefinition>();
         var lowerRarityMatches = new List<RelicDefinition>();
+        RelicInventory inventory = GetPlayerRelicInventory();
 
         foreach (var id in pool)
         {
@@ -91,6 +107,13 @@ internal static class LootPoolItemSelectionService
 
             var relicData = ItemManager.Instance.GetRelicData(id);
             if (relicData == null)
+                continue;
+
+            int ownedLevel = 0;
+            if (inventory != null)
+                inventory.TryGetRelicLevelById(relicData.relicId, out ownedLevel);
+            if (!CanGainRelicLevels(relicData, ownedLevel) ||
+                (additionalFilter != null && !additionalFilter(relicData)))
                 continue;
 
             allUnlockedRelics.Add(relicData);

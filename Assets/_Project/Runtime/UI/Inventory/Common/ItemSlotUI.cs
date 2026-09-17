@@ -37,6 +37,10 @@ public class ItemSlotUI : MonoBehaviour,
 
     private IItemContainer container;
     private int index;
+    private System.Action<ItemSlotUI> selectionClicked;
+    public int BoundIndex => index;
+
+    public void SetSelectionClickHandler(System.Action<ItemSlotUI> handler) => selectionClicked = handler;
     [SerializeField] private RectTransform slotRect;
     private ItemDisplayIconDefaultState iconDefaultState;
     private Sprite defaultBackgroundSprite;
@@ -231,6 +235,7 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (selectionClicked != null) return;
         if (container == null || IsLocked || IsInventoryInspectionOnly()) return;
 
         // [수정] 드래그 시작 시 호버 패널 숨김 (UIManager 활용)
@@ -290,6 +295,7 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (selectionClicked != null) return;
         if (IsLocked || IsInventoryInspectionOnly())
         {
             ItemDragContext.CancelActiveDragSession();
@@ -302,6 +308,15 @@ public class ItemSlotUI : MonoBehaviour,
     public void OnPointerClick(PointerEventData eventData)
     {
         if (container == null || IsLocked || IsInventoryInspectionOnly()) return;
+
+        if (selectionClicked != null)
+        {
+            if (!ItemDragContext.Active &&
+                (eventData.button == PointerEventData.InputButton.Left ||
+                 eventData.button == PointerEventData.InputButton.Right))
+                selectionClicked(this);
+            return;
+        }
 
         if (eventData.button == PointerEventData.InputButton.Right)
         {

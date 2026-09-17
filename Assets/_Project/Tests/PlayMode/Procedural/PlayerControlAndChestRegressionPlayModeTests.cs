@@ -13,6 +13,7 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
 {
     private const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
     private readonly List<Object> owned = new();
+    private UnityEditor.EditorApplication.CallbackFunction pausedTraceFlush;
     private T Own<T>(T value) where T : Object { owned.Add(value); return value; }
     private static void Set(object target, string field, object value) =>
         target.GetType().GetField(field, Private).SetValue(target, value);
@@ -125,6 +126,9 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
         for (int i = owned.Count - 1; i >= 0; i--)
             if (owned[i] != null) Object.DestroyImmediate(owned[i]);
         owned.Clear();
+        if (pausedTraceFlush != null)
+            UnityEditor.EditorApplication.update += pausedTraceFlush;
+        pausedTraceFlush = null;
     }
 
     [Test]
@@ -314,14 +318,269 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
         }
     }
 
+    [Test]
+    public void ChestSelection_ReservesDistinctSlots_AndRejectsWholeSelectionWhenOnlyOneFits()
+    {
+        var weapon = Own(ScriptableObject.CreateInstance<WeaponDefinition>());
+        var chest = new ChestInventory(2);
+        chest.Set(0, weapon);
+        chest.Set(1, weapon);
+        using var source = new ChestContainerAdapter(chest);
+        var target = new TestContainer();
+        target.Items[0] = weapon;
+        target.Items[1] = weapon;
+        var planner = Type.GetType("ChestSelectionTransferService, UI", true).GetMethod("TryCreatePlan");
+        object[] args = { source, new List<int> { 0, 1 }, null, target, null, null, null };
+
+        Assert.That(planner.Invoke(null, args), Is.False);
+        Assert.That(chest.Get(0), Is.SameAs(weapon));
+        Assert.That(chest.Get(1), Is.SameAs(weapon));
+        Assert.That(chest.AcquiredCount, Is.Zero);
+        Assert.That(target.Get(2), Is.Null);
+        StringAssert.Contains("드래그", (string)args[6]);
+
+        target.Items[1] = null;
+        Assert.That(planner.Invoke(null, args), Is.True);
+        var requests = (IList)args[5];
+        Assert.That(requests.Count, Is.EqualTo(2));
+        Type requestType = requests[0].GetType();
+        Assert.That(requestType.GetProperty("TargetIndex").GetValue(requests[0]),
+            Is.Not.EqualTo(requestType.GetProperty("TargetIndex").GetValue(requests[1])));
+        var transfer = Type.GetType("InventoryTransferService, UI", true).GetMethod("TryTransfer");
+        foreach (object request in requests)
+        {
+            object result = transfer.Invoke(null, new[] { request });
+            Assert.That(result.GetType().GetProperty("Succeeded").GetValue(result), Is.True);
+        }
+        Assert.That(chest.AcquiredCount, Is.EqualTo(2));
+        Assert.That(chest.Get(0), Is.Null);
+        Assert.That(chest.Get(1), Is.Null);
+    }
+
+    [Test]
+    public void ChestSelection_ReadOnlyAdapterRejectsTransfersBeforeRelicMerge()
+    {
+        var relic = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+        relic.relicId = "selection-merge";
+        relic.maxLevel = 5;
+        var player = Own(new GameObject("Selection relic inventory"));
+        var relicInventory = player.AddComponent<RelicInventory>();
+        Assert.That(relicInventory.TrySetRelicSlotWithLevel(0, relic, 1), Is.True);
+        using var target = new PlayerRelicContainerAdapter(relicInventory);
+        var chest = new ChestInventory(2);
+        chest.SetRelicWithLevel(0, relic, 1);
+        using var source = new ChestContainerAdapter(chest, selectionOnly: true);
+        Type requestType = Type.GetType("InventoryTransferRequest, UI", true);
+        object request = Activator.CreateInstance(requestType, source, 0, target, 0, 1);
+        object result = Type.GetType("InventoryTransferService, UI", true)
+            .GetMethod("TryTransfer").Invoke(null, new[] { request });
+        Assert.That(result.GetType().GetProperty("Succeeded").GetValue(result), Is.False);
+        Assert.That(relicInventory.GetRelicLevelInSlot(0), Is.EqualTo(1));
+        Assert.That(chest.Get(0), Is.SameAs(relic));
+        Assert.That(source.TrySet(0, null), Is.False);
+    }
+
+    [Test]
+    public void ChestSelection_CompletionClearsRemainingLoot_AndStaysHiddenAfterRestore()
+    {
+        var weapon = Own(ScriptableObject.CreateInstance<WeaponDefinition>());
+        var host = Own(new GameObject("Completed chest"));
+        var chest = host.AddComponent<TreasureChest>();
+        chest.InitializeWithLoot(new List<ScriptableObject> { weapon, weapon });
+        chest.GetInventory().RecordAcquisition(weapon);
+        chest.CompleteLootSelection();
+        Assert.That(host.activeSelf, Is.False);
+        Assert.That(chest.CaptureDungeonLootState(), Is.Empty);
+        Assert.That(chest.AcquiredCount, Is.EqualTo(1));
+        host.SetActive(true);
+        chest.RestoreOpenedStateForDungeon(chest.CaptureDungeonLootState(), chest.AcquiredCount);
+        Assert.That(host.activeSelf, Is.False);
+    }
+
+    [Test]
+    public void ChestSelection_AllAuthoredChestPrefabsHavePanelAndConfirmReferences()
+    {
+        Type screenType = Type.GetType("ChestScreen, UI", true);
+        foreach (string name in new[] { "ChestUI", "GlobalUIRoot", "GlobalUIRoot_Deafiso", "GlobalUIRoot_DialogueUpdate",
+            "GlobalUIRoot_Salryojo", "GlobalUIRoot_Sub", "GlobalUIRoot_Water" })
+        {
+            var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/_Project/Prefabs/UI/{name}.prefab");
+            var screen = prefab.GetComponentInChildren(screenType, true);
+            Assert.That(screen, Is.Not.Null, name);
+            foreach (string field in new[] { "selectedItemsRoot", "selectedItemsGroup", "confirmSelectionButton", "acquisitionCountLabel" })
+                Assert.That(screenType.GetField(field, Private).GetValue(screen), Is.Not.Null, $"{name}.{field}");
+        }
+    }
+
+    [Test]
+    public void ChestSelection_LaterTransferFailureRollsBackEarlierItemAndAcquisitionCount()
+    {
+        var weapon = Own(ScriptableObject.CreateInstance<WeaponDefinition>());
+        var chest = new ChestInventory(2);
+        chest.Set(0, weapon);
+        chest.Set(1, weapon);
+        using var source = new ChestContainerAdapter(chest);
+        var target = new TestContainer { RejectNonEmptyIndex = 1 };
+        Type service = Type.GetType("ChestSelectionTransferService, UI", true);
+        object[] args = { source, new List<int> { 0, 1 }, null, target, null, null, null };
+        Assert.That(service.GetMethod("TryCreatePlan").Invoke(null, args), Is.True);
+        object result = service.GetMethod("TryCommitPlan").Invoke(null, new[] { args[5] });
+        Assert.That(result.GetType().GetProperty("Succeeded").GetValue(result), Is.False);
+        Assert.That(chest.Get(0), Is.SameAs(weapon));
+        Assert.That(chest.Get(1), Is.SameAs(weapon));
+        Assert.That(chest.AcquiredCount, Is.Zero);
+        Assert.That(chest.OutstandingAcquisitions, Is.Empty);
+        Assert.That(target.Get(0), Is.Null);
+        Assert.That(target.Get(1), Is.Null);
+    }
+
+    [TestCase(0, 0, true)]
+    [TestCase(5, 0, false)]
+    [TestCase(4, 0, true)]
+    [TestCase(4, 1, false)]
+    [TestCase(3, 1, true)]
+    [TestCase(3, 2, false)]
+    public void RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(int ownedLevel, int offeredLevel, bool expected)
+    {
+        var relic = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+        relic.relicId = "loot-level-budget";
+        relic.maxLevel = 5;
+        var inventory = Own(new GameObject("Relic loot owner")).AddComponent<RelicInventory>();
+        if (ownedLevel > 0)
+            Assert.That(inventory.TrySetRelicSlotWithLevel(0, relic, ownedLevel), Is.True);
+        var chest = new ChestInventory(2);
+        if (offeredLevel > 0)
+            chest.SetRelicWithLevel(0, relic, offeredLevel);
+
+        var policy = typeof(LootPoolService).Assembly.GetType("ChestRewardPolicy", true);
+        var method = policy.GetMethod("CanOfferRelic", BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.That(method.Invoke(null, new object[] { relic, inventory, chest }), Is.EqualTo(expected));
+        Assert.That(inventory.GetRelicLevelInSlot(0), Is.EqualTo(ownedLevel));
+        Assert.That(method.Invoke(null, new object[] { relic, inventory, new ChestInventory(2) }),
+            Is.EqualTo(ownedLevel < 5), "Each chest or reroll has its own reservation budget.");
+    }
+
+    [TestCase(0, 1, true)]
+    [TestCase(1, 1, false)]
+    [TestCase(4, 5, true)]
+    [TestCase(5, 5, false)]
+    [TestCase(6, 5, false)]
+    public void RelicLoot_ExcludesOwnedMaxLevel(int ownedLevel, int maxLevel, bool expected)
+    {
+        var relic = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+        relic.maxLevel = maxLevel;
+        var selector = typeof(LootPoolService).Assembly.GetType("LootPoolItemSelectionService", true);
+        var method = selector.GetMethod("CanGainRelicLevels", BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.That(method.Invoke(null, new object[] { relic, ownedLevel, 0 }), Is.EqualTo(expected));
+        var parcel = Own(ScriptableObject.CreateInstance<ParcelRelicDefinition>());
+        Assert.That(method.Invoke(null, new object[] { parcel, 1, 1 }), Is.True,
+            "Parcel carry limits must not be interpreted as relic upgrade limits.");
+    }
+
+    [TestCase(2, false)]
+    [TestCase(3, true)]
+    public void ChestSelection_FullRelicInventoryReservesCombinedLevels(int maxLevel, bool expected)
+    {
+        var relic = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+        relic.relicId = "selection-levels";
+        relic.maxLevel = maxLevel;
+        var host = Own(new GameObject("Full relic inventory"));
+        var inventory = host.AddComponent<RelicInventory>();
+        inventory.TrySetRelicSlotWithLevel(0, relic, 1);
+        for (int i = 1; i < inventory.Capacity; i++)
+        {
+            var filler = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+            filler.relicId = $"filler-{i}";
+            inventory.TrySetRelicSlotWithLevel(i, filler, 1);
+        }
+        using var target = new PlayerRelicContainerAdapter(inventory);
+        var chest = new ChestInventory(2);
+        chest.SetRelicWithLevel(0, relic, 1);
+        chest.SetRelicWithLevel(1, relic, 1);
+        using var source = new ChestContainerAdapter(chest);
+        Type service = Type.GetType("ChestSelectionTransferService, UI", true);
+        object[] args = { source, new List<int> { 0, 1 }, null, null, target, null, null };
+        Assert.That(service.GetMethod("TryCreatePlan").Invoke(null, args), Is.EqualTo(expected));
+        Assert.That(inventory.GetRelicLevelInSlot(0), Is.EqualTo(1));
+        if (!expected) return;
+        object result = service.GetMethod("TryCommitPlan").Invoke(null, new[] { args[5] });
+        Assert.That(result.GetType().GetProperty("Succeeded").GetValue(result), Is.True);
+        Assert.That(inventory.GetRelicLevelInSlot(0), Is.EqualTo(3));
+        Assert.That(chest.AcquiredCount, Is.EqualTo(2));
+    }
+
+    [UnityTest]
+    public IEnumerator ChestSelection_SlotsMoveAndReturnInOriginalOrderWhilePaused_ClosingCancelsSelection()
+    {
+        // Editor trace-file flushing can race AssetDatabase import in batch mode.
+        // Isolate this UI test from that unrelated disk recorder without hiding runtime errors.
+        foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            Type trace = assembly.GetType("PrewarmTraceRuntime");
+            if (trace == null) continue;
+            MethodInfo flush = trace.GetMethod("FlushIfNeeded", BindingFlags.Static | BindingFlags.NonPublic);
+            pausedTraceFlush = (UnityEditor.EditorApplication.CallbackFunction)Delegate.CreateDelegate(
+                typeof(UnityEditor.EditorApplication.CallbackFunction), flush);
+            UnityEditor.EditorApplication.update -= pausedTraceFlush;
+            break;
+        }
+        Type screenType = Type.GetType("ChestScreen, UI", true);
+        var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab");
+        var prefabScreen = (Component)prefab.GetComponentInChildren(screenType, true);
+        var canvas = Own(new GameObject("Chest selection test canvas", typeof(RectTransform), typeof(Canvas)));
+        canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+        var clone = Own(Object.Instantiate(prefabScreen.gameObject, canvas.transform));
+        clone.SetActive(true);
+        var screen = clone.GetComponent(screenType);
+        var weapon = Own(ScriptableObject.CreateInstance<WeaponDefinition>());
+        var chest = new ChestInventory(16);
+        chest.Set(0, weapon);
+        chest.Set(3, weapon);
+        chest.Set(7, weapon);
+        screenType.GetMethod("BindChestOnly").Invoke(screen, new object[] { chest, null });
+        object presentation = screenType.GetField("firstOpenRevealPresentation", Private).GetValue(screen);
+        presentation.GetType().GetMethod("SnapOpen").Invoke(presentation, null);
+        var grid = (Transform)screenType.GetField("chestGridRoot", Private).GetValue(screen);
+        var selected = (Transform)screenType.GetField("selectedItemsRoot", Private).GetValue(screen);
+        var slots = (IList)screenType.GetField("spawnedChestSlots", Private).GetValue(screen);
+        Assert.That(slots.Count, Is.EqualTo(3), "Empty chest slots must not be instantiated.");
+        object middle = slots[1];
+        float oldTimeScale = Time.timeScale;
+        try
+        {
+            Time.timeScale = 0f;
+            Call(screen, "ToggleSelection", middle);
+            yield return new WaitForSecondsRealtime(0.35f);
+            Assert.That(selected.childCount, Is.EqualTo(1));
+            Assert.That(grid.childCount, Is.EqualTo(2));
+            Assert.That(chest.Get(3), Is.SameAs(weapon), "Selection must not acquire the item.");
+            Call(screen, "ToggleSelection", middle);
+            yield return new WaitForSecondsRealtime(0.35f);
+            Assert.That(selected.childCount, Is.Zero);
+            Assert.That(grid.GetChild(1), Is.SameAs(((Component)middle).transform));
+            Call(screen, "ToggleSelection", middle);
+            clone.SetActive(false); // Interrupt the tween through the same disable cleanup used on close.
+            Assert.That(chest.Get(3), Is.SameAs(weapon));
+            Assert.That(chest.AcquiredCount, Is.Zero);
+            Assert.That(((IList)screenType.GetField("selectedSlots", Private).GetValue(screen)).Count, Is.Zero);
+        }
+        finally { Time.timeScale = oldTimeScale; }
+    }
+
     private sealed class TestContainer : IItemContainer
     {
         public readonly ScriptableObject[] Items = new ScriptableObject[3];
+        public int RejectNonEmptyIndex = -1;
         public int SlotCount => Items.Length;
         public event Action OnChanged { add { } remove { } }
         public ScriptableObject Get(int index) => Items[index];
         public bool CanPlace(ScriptableObject item, int index, int ignoreIndex = -1) => true;
-        public bool TrySet(int index, ScriptableObject item) { Items[index] = item; return true; }
+        public bool TrySet(int index, ScriptableObject item)
+        {
+            if (index == RejectNonEmptyIndex && item != null) return false;
+            Items[index] = item;
+            return true;
+        }
         public bool TrySwap(int a, int b) { (Items[a], Items[b]) = (Items[b], Items[a]); return true; }
     }
 

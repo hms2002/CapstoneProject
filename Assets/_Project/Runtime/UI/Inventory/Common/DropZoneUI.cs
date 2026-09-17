@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
-/// 책임 : 인벤토리 drag 중에만 활성화되는 월드 드롭 전용 UI 타겟을 제공한다.
+/// 책임 : 인벤토리 아래의 월드 드롭 영역을 표시하고 drag 중 드롭 입력을 받는다.
 /// </summary>
 public class DropZoneUI : MonoBehaviour, IDropHandler
 {
@@ -18,6 +18,9 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
     [SerializeField] private float scatterRadius = 0.25f;
     [Header("Presentation")]
     [SerializeField] private CanvasGroup canvasGroup;
+    [SerializeField] private bool fitHeightBelowPanel;
+    private RectTransform dropRect;
+    private RectTransform canvasRect;
 
     private void Awake()
     {
@@ -39,6 +42,29 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
     {
         if (ActiveInstance == this)
             ActiveInstance = null;
+    }
+
+    private void LateUpdate()
+    {
+        if (!fitHeightBelowPanel) return;
+        if (dropRect == null) dropRect = transform as RectTransform;
+        if (dropRect == null || dropRect.parent is not RectTransform panel) return;
+        if (canvasRect == null)
+        {
+            Canvas canvas = GetComponentInParent<Canvas>();
+            if (canvas == null) return;
+            canvasRect = canvas.rootCanvas.transform as RectTransform;
+        }
+        if (canvasRect == null) return;
+
+        // Authored bottom anchors match the panel width and keep a gap below it.
+        // Fit the remaining height in panel-local units, including CanvasScaler scaling.
+        Vector3 canvasBottom = canvasRect.TransformPoint(new Vector3(0f, canvasRect.rect.yMin + 16f, 0f));
+        float bottom = panel.InverseTransformPoint(canvasBottom).y;
+        float top = panel.rect.yMin + dropRect.anchoredPosition.y;
+        float height = Mathf.Max(0f, top - bottom);
+        if (!Mathf.Approximately(dropRect.rect.height, height))
+            dropRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
     }
 
     public void SetDropOrigin(Transform origin) => dropOrigin = origin;
@@ -136,7 +162,7 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
     private void SetVisible(bool visible)
     {
         EnsureCanvasGroup();
-        canvasGroup.alpha = visible ? 1f : 0f;
+        canvasGroup.alpha = visible ? 1f : 0.55f;
         canvasGroup.blocksRaycasts = visible;
         canvasGroup.interactable = visible;
     }

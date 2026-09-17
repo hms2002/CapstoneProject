@@ -159,3 +159,14 @@ ShopInventoryRoll uses CanDropWeapon(..., treasureChest: true) and CanDropRelic,
 ### Merchant refresh fallback (2026-09-16)
 
 MerchantRunStateService passes old stock before replacing the list. MerchantNPC uses slot offset zero for full refresh and existing count for appended slots. Exhausted slots fall back to remaining relics/consumables with positive weights and the existing consumable cap. Previous-stock exclusions and same-roll deduplication remain enforced. Empty slots remain possible if all permitted alternatives are exhausted.
+
+### Chest reward selection completion (2026-09-17)
+
+Chest UI now stages one or two rewards and transfers them only on confirmation. Closing before confirmation retains loot; successful reroll clears provisional UI choices. Successful confirmation clears unselected loot and deactivates the chest through `TreasureChest.CompleteLootSelection`. `RestoreOpenedStateForDungeon` treats nonzero acquired count with no remaining loot as completed and inactive, preserving nested-chest completion without changing save DTO fields. Loot-generation tables and reroll policy are unchanged. See [InventoryAndChestUIStructure](InventoryAndChestUIStructure.md#chest-selection-and-confirmation-2026-09-17) for UI ownership and transfer validation.
+
+### Relic upgrade eligibility (2026-09-18)
+
+- `LootPoolItemSelectionService.GetRandomRelicByRarity` excludes relics already at maximum level in the current player's `RelicInventory` before building exact/lower/any-rarity candidate lists. Normal/boss chest, monster and grave rolls share this path. Definitions and unlock data are unchanged; an unowned relic remains eligible, including maxLevel 1 relics. No player means no owned-level exclusion.
+- `TreasureChest.TryAddLootItem` checks `ChestRewardPolicy.CanOfferRelic` against owned levels plus actual levels already placed in this chest, including chest level bonuses. An exhausted candidate is replaced using the existing rarity fallback with the same eligibility filter. If no eligible alternative exists, the slot is omitted. At owned 4/5, only one copy is offered; at 3/5, two +1 copies or one +2 copy exhaust the budget.
+- Reservations are chest contents, not player upgrades or global history. Initialization and refresh clear contents before filling; separate chests have separate budgets. Existing generated/saved contents are not retroactively rewritten when player levels change, so confirmation-time validation remains necessary.
+- `ParcelRelicDefinition` retains its separate carry-count behavior rather than being treated as a leveled duplicate. Merchant stock uses its own selection path and is unchanged.

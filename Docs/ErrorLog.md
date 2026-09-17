@@ -2209,3 +2209,9 @@ CameraShakeService called CinemachineBrain.ManualUpdate while temporarily select
 StatusHudEntryView checked hard-coded child names and an uninitialized RectTransform cache before resolving assigned references. The authored prefab has different child names with valid references, so it emitted a false fallback warning. Resolve the existing root first and check actual serialized references; preserve rendering/fallback behavior in this minimal slice. Successful per-frame status-update logging was removed without changing status updates.
 
 These are verified code/diagnostic issues, not proven causes of the run-entry native Transform::CountNodesDeep crash. MSBuild passed; Unity Play Mode and crash reproduction remain pending. See [session log](./SessionLogs/2026-09-17.md).
+
+## 2026-09-17 — Batch UI tests interrupted by editor prewarm trace file locking
+
+- Observed: the chest selection coroutine test failed on repeated `IOException: Win32 IO returned 1224` from `PrewarmTraceRuntime.Flush`, while the seven synchronous cases passed. The stack ran through `EditorApplication.update` and wrote `PrewarmTrace_HOSEO_LG17090.json`; AssetDatabase was also importing that generated trace file. This was unrelated to inventory assertions.
+- Test isolation: the UI coroutine temporarily unregisters only the recorder's `FlushIfNeeded` editor update delegate and re-registers it during teardown. Do not globally ignore error logs to make the test pass. The next batch run passed all eight cases.
+- The production recorder is unchanged. Treat resilient editor trace flushing as a separate follow-up, and remove only test-generated trace-session changes when cleaning the task diff.

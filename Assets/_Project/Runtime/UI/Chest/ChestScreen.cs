@@ -23,6 +23,15 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     [Header("Chest Inventory")]
     [SerializeField] private Transform chestGridRoot;
     [SerializeField] private ItemSlotUI chestSlotPrefab;
+    [SerializeField] private RectTransform selectedItemsRoot;
+    [SerializeField] private CanvasGroup selectedItemsGroup;
+    [SerializeField] private Button confirmSelectionButton;
+    private readonly List<ItemSlotUI> selectedSlots = new();
+    private Sequence selectionMotion;
+    private bool confirmingSelection;
+    private ItemSlotUI transitSlot;
+    private Transform transitDestination;
+    private readonly Dictionary<Behaviour, bool> suspendedSelectionLayouts = new();
 
     [Header("Player Inventory")]
     [SerializeField] private PlayerInventoryPanelView playerInventoryPanel;
@@ -186,6 +195,8 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void Awake()
     {
+        if (confirmSelectionButton != null)
+            confirmSelectionButton.onClick.AddListener(ConfirmSelection);
         CaptureCounterPose();
         ResolvePresentation();
         ResolvePlayerInventoryPanel();
@@ -217,6 +228,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
         UpdateRerollReveal();
         UpdateAcquisitionPresentation();
+        RefreshSelectionControls();
     }
 
     private void OnEnable()
@@ -257,7 +269,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         playerInventoryPanel?.ClearBinding();
 
         BindAcquisitionCounter(chestInventory);
-        chestContainer = new ChestContainerAdapter(chestInventory);
+        chestContainer = new ChestContainerAdapter(chestInventory, selectionOnly: true);
         chestAdapterDisposer = chestContainer as IDisposable;
 
         Transform playerRoot = ResolveCurrentPlayerRoot();
@@ -297,7 +309,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         DisposeChestAdapter();
 
         BindAcquisitionCounter(chestInventory);
-        chestContainer = new ChestContainerAdapter(chestInventory);
+        chestContainer = new ChestContainerAdapter(chestInventory, selectionOnly: true);
         chestAdapterDisposer = chestContainer as IDisposable;
 
         ItemContainerGroupRegistry.SetGroup(
@@ -560,7 +572,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private bool CanStartRerollHold()
     {
-        if (ChestUIManager.Instance == null)
+        if (ChestUIManager.Instance == null || confirmingSelection || selectionMotion.IsActive())
             return false;
 
         ResolvePresentation();
@@ -686,6 +698,8 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
         if (refreshed)
         {
+            ClearChestSlots();
+            BuildChestSlots();
             firstOpenRevealPresentation?.PlayManualOpenRevealVfx(playSlotRevealParticles: false);
             rerollOpenVfxActive = true;
             rerollSlotRevealVfxPending = true;
@@ -743,6 +757,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         bool isRerollUnlocked = refreshLimit > 0;
         bool isHolding = rerollHoldActionButton != null && rerollHoldActionButton.IsHolding;
         bool canInteract = canRefresh &&
+                           !confirmingSelection && !selectionMotion.IsActive() &&
                            !IsFirstOpenRevealPlaying &&
                            (rerollRevealState == RerollRevealState.Idle || isHolding);
 
@@ -878,18 +893,26 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
         for (int i = 0; i < container.SlotCount; i++)
         {
+            if (container.Get(i) == null) continue;
             ItemSlotUI slot = Instantiate(slotPrefab, gridRoot);
             slot.Bind(container, i);
+            slot.SetSelectionClickHandler(ToggleSelection);
             spawnedChestSlots.Add(slot);
         }
     }
 
     private void ClearChestSlots()
     {
+        StopSelectionMotion();
+        selectedSlots.Clear();
+        confirmingSelection = false;
         for (int i = 0; i < spawnedChestSlots.Count; i++)
         {
             if (spawnedChestSlots[i] == null)
                 continue;
+
+            // Destroy is deferred; remove old slots from layout immediately before a reroll rebuild.
+            spawnedChestSlots[i].gameObject.SetActive(false);
 
             if (Application.isPlaying)
                 Destroy(spawnedChestSlots[i].gameObject);
@@ -899,6 +922,8 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
         spawnedChestSlots.Clear();
         firstOpenRevealPresentation?.ConfigureItemRevealSlots(null);
+        RefreshAcquisitionCounter();
+        RefreshSelectionControls();
     }
 
     private void DisposeChestAdapter()
@@ -1008,7 +1033,156 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private void RefreshAcquisitionCounter()
     {
         if (acquisitionCountLabel != null)
-            acquisitionCountLabel.text = $"획득 가능 {counterInventory?.AcquiredCount ?? 0} / {ChestInventory.AcquisitionLimit}";
+            acquisitionCountLabel.text = $"선택 {selectedSlots.Count} / {ChestInventory.AcquisitionLimit}";
+    }
+
+    private bool CanChangeSelection => chestContainer != null && !confirmingSelection &&
+        !IsFirstOpenRevealPlaying && rerollRevealState == RerollRevealState.Idle;
+
+    private void RefreshSelectionControls()
+    {
+        bool available = CanChangeSelection;
+        if (confirmSelectionButton != null)
+            confirmSelectionButton.interactable = available && selectedSlots.Count > 0 && !selectionMotion.IsActive();
+        if (selectedItemsGroup != null)
+        {
+            selectedItemsGroup.alpha = available ? 1f : 0f;
+            selectedItemsGroup.interactable = available;
+            selectedItemsGroup.blocksRaycasts = available;
+        }
+    }
+
+    private void ToggleSelection(ItemSlotUI slot)
+    {
+        if (!CanChangeSelection || selectedItemsRoot == null || slot == null || !slot.HasItem || selectionMotion.IsActive())
+            return;
+        bool removing = selectedSlots.Contains(slot);
+        if (!removing && selectedSlots.Count + chestInventory.AcquiredCount >= ChestInventory.AcquisitionLimit)
+        {
+            PlayAcquisitionWarning();
+            return;
+        }
+
+        var positions = new Dictionary<ItemSlotUI, Vector3>();
+        foreach (ItemSlotUI item in spawnedChestSlots) positions[item] = item.transform.position;
+        if (removing) selectedSlots.Remove(slot);
+        else selectedSlots.Add(slot);
+        slot.transform.SetParent(removing ? chestGridRoot : selectedItemsRoot, false);
+        int sibling = 0;
+        // The list retains original inventory order, independent of selection order.
+        foreach (ItemSlotUI item in spawnedChestSlots)
+            if (!selectedSlots.Contains(item)) item.transform.SetSiblingIndex(sibling++);
+        for (int i = 0; i < selectedSlots.Count; i++) selectedSlots[i].transform.SetSiblingIndex(i);
+
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)chestGridRoot);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(selectedItemsRoot);
+        SetSelectionLayoutsEnabled(false);
+        selectionMotion = DOTween.Sequence().SetUpdate(true);
+        foreach (ItemSlotUI item in spawnedChestSlots)
+        {
+            Vector3 destination = item.transform.localPosition;
+            Vector3 worldDestination = item.transform.position;
+            item.transform.position = positions[item];
+            if (item == slot && selectedItemsGroup != null)
+            {
+                // Travel above the chest viewport so its RectMask does not clip the flying slot.
+                transitSlot = slot;
+                transitDestination = slot.transform.parent;
+                slot.transform.SetParent(selectedItemsGroup.transform, true);
+                slot.transform.SetAsLastSibling();
+                selectionMotion.Join(slot.transform.DOMove(worldDestination, 0.22f).SetEase(Ease.OutCubic));
+            }
+            else selectionMotion.Join(item.transform.DOLocalMove(destination, 0.22f).SetEase(Ease.OutCubic));
+        }
+        selectionMotion.OnComplete(() =>
+        {
+            selectionMotion = null;
+            RestoreTransitSlot();
+            SetSelectionLayoutsEnabled(true);
+            RefreshSelectionControls();
+        });
+        UIManager.Instance?.HideHoverImmediate();
+        RefreshAcquisitionCounter();
+        RefreshSelectionControls();
+    }
+
+    private void SetSelectionLayoutsEnabled(bool enabled)
+    {
+        if (enabled)
+        {
+            foreach (var state in suspendedSelectionLayouts)
+                if (state.Key != null) state.Key.enabled = state.Value;
+            suspendedSelectionLayouts.Clear();
+            return;
+        }
+        foreach (Transform root in new Transform[] { chestGridRoot, selectedItemsRoot })
+        {
+            if (root == null) continue;
+            Suspend(root.GetComponent<GridLayoutGroup>());
+            Suspend(root.GetComponent<ContentSizeFitter>());
+        }
+        void Suspend(Behaviour layout)
+        {
+            if (layout == null || suspendedSelectionLayouts.ContainsKey(layout)) return;
+            suspendedSelectionLayouts.Add(layout, layout.enabled);
+            layout.enabled = false;
+        }
+    }
+
+    private void RestoreTransitSlot()
+    {
+        if (transitSlot != null && transitDestination != null)
+        {
+            transitSlot.transform.SetParent(transitDestination, true);
+            int sibling = 0;
+            foreach (ItemSlotUI slot in spawnedChestSlots)
+                if (slot != null && !selectedSlots.Contains(slot)) slot.transform.SetSiblingIndex(sibling++);
+            for (int i = 0; i < selectedSlots.Count; i++) selectedSlots[i].transform.SetSiblingIndex(i);
+        }
+        transitSlot = null;
+        transitDestination = null;
+    }
+
+    private void StopSelectionMotion()
+    {
+        selectionMotion?.Kill();
+        selectionMotion = null;
+        RestoreTransitSlot();
+        SetSelectionLayoutsEnabled(true);
+    }
+
+    private void ConfirmSelection()
+    {
+        if (!CanChangeSelection || selectedSlots.Count == 0 || selectionMotion.IsActive()) return;
+        var indices = new List<int>();
+        foreach (ItemSlotUI slot in selectedSlots) indices.Add(slot.BoundIndex);
+        using var source = new ChestContainerAdapter(chestInventory);
+        if (!ChestSelectionTransferService.TryCreatePlan(source, indices,
+            ItemContainerGroupRegistry.ConsumableEquip, ItemContainerGroupRegistry.WeaponEquip,
+            ItemContainerGroupRegistry.RelicEquip, out var plan, out string warning))
+        {
+            WarningPopupPlayback.ShowMessage(warning);
+            return;
+        }
+
+        confirmingSelection = true;
+        RefreshSelectionControls();
+        InventoryTransferResult result = ChestSelectionTransferService.TryCommitPlan(plan);
+        if (!result.Succeeded)
+        {
+            selectedSlots.RemoveAll(item => !item.HasItem);
+            confirmingSelection = false;
+            if (result.HasWarning) WarningPopupPlayback.Show(result.WarningCode);
+            else WarningPopupPlayback.ShowMessage("아이템을 획득할 수 없습니다. 인벤토리와 유물 상태를 확인해 주세요.");
+            RefreshAcquisitionCounter();
+            RefreshSelectionControls();
+            return;
+        }
+        ChestUIManager.Instance?.CompleteOpenedChest(chestInventory);
+        IStackableUI closeTarget = rootOwner ?? this;
+        if (UIManager.Instance != null) UIManager.Instance.PopUI(closeTarget);
+        else closeTarget.CloseUI();
     }
 
     private void PlayAcquisitionWarning()

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
 
@@ -61,6 +62,8 @@ public static class InventoryQuickMoveService
             return InventoryQuickMoveResult.Ignored;
 
         IItemContainer chest = ItemContainerGroupRegistry.Chest;
+        if (chest is ChestContainerAdapter { IsSelectionOnly: true } && source is not WorldLootContainerAdapter)
+            return InventoryQuickMoveResult.Ignored;
         IItemContainer consumableEquip = ItemContainerGroupRegistry.ConsumableEquip;
         IItemContainer weaponEquip = ItemContainerGroupRegistry.WeaponEquip;
         IItemContainer relicEquip = ItemContainerGroupRegistry.RelicEquip;
@@ -323,5 +326,136 @@ public static class InventorySlotTransferInteractionService
             return;
 
         UIManager.Instance?.ShowWarning(result.WarningCode);
+    }
+}
+
+/// <summary>
+/// Reserves destinations for the entire chest selection before any inventory is changed.
+/// Uses the normal transfer path after capacity and relic-level validation.
+/// </summary>
+public static class ChestSelectionTransferService
+{
+    public const string InventoryFullMessage = "인벤토리 공간이 부족합니다. 인벤토리 아이템을 버리는 구역으로 드래그해 버린 후 다시 확정해 주세요.";
+
+    public static InventoryTransferResult TryCommitPlan(IReadOnlyList<InventoryTransferRequest> plan)
+    {
+        var completed = new List<(InventoryTransferRequest request, ScriptableObject item,
+            ScriptableObject previous, int previousLevel)>();
+        foreach (InventoryTransferRequest request in plan)
+        {
+            ScriptableObject item = request.Source.Get(request.SourceIndex);
+            ScriptableObject previous = request.Target.Get(request.TargetIndex);
+            int previousLevel = 0;
+            if (request.Target is IRelicLevelProvider provider)
+                provider.TryGetRelicLevel(request.TargetIndex, out previousLevel);
+            InventoryTransferResult result = InventoryTransferService.TryTransfer(request);
+            if (result.Succeeded)
+            {
+                completed.Add((request, item, previous, previousLevel));
+                continue;
+            }
+
+            // No frame or player input occurs between writes. Undo completed transfers
+            // if a gameplay rule (for example linked health compensation) rejects a later one.
+            for (int i = completed.Count - 1; i >= 0; i--)
+            {
+                var entry = completed[i];
+                bool restored = entry.previous is RelicDefinition relic && entry.request.Target is IRelicSlotReceiver receiver
+                    ? receiver.TrySetRelicWithLevel(entry.request.TargetIndex, relic, entry.previousLevel)
+                    : entry.request.Target.TrySet(entry.request.TargetIndex, entry.previous);
+                if (!restored)
+                {
+                    Debug.LogError("[ChestSelection] Inventory rejected rollback; acquired item remains in the player inventory.");
+                    continue;
+                }
+                var chest = (ChestContainerAdapter)entry.request.Source;
+                if (entry.item is RelicDefinition sourceRelic)
+                    chest.TrySetRelicWithLevel(entry.request.SourceIndex, sourceRelic, entry.request.SourceRelicLevel);
+                else chest.TrySet(entry.request.SourceIndex, entry.item);
+                chest.Inventory.RecordReturn(entry.item);
+            }
+            return result;
+        }
+        return InventoryTransferResult.Success;
+    }
+
+    public static bool TryCreatePlan(ChestContainerAdapter source, IReadOnlyList<int> selection,
+        IItemContainer consumables, IItemContainer weapons, IItemContainer relics,
+        out List<InventoryTransferRequest> plan, out string warning)
+    {
+        plan = new List<InventoryTransferRequest>();
+        warning = InventoryFullMessage;
+        if (source?.Inventory == null || source.IsSelectionOnly || selection == null || selection.Count == 0 ||
+            selection.Count + source.Inventory.AcquiredCount > ChestInventory.AcquisitionLimit)
+            return false;
+
+        var reservations = new Dictionary<IItemContainer, ScriptableObject[]>();
+        var levels = new Dictionary<IItemContainer, int[]>();
+        var sourceIndices = new HashSet<int>();
+        foreach (int sourceIndex in selection)
+        {
+            ScriptableObject item = source.Get(sourceIndex);
+            if (item == null || item.AsDef() == null || !sourceIndices.Add(sourceIndex)) return false;
+            if (item is ParcelRelicDefinition)
+            {
+                warning = "이 아이템은 상자에서 이동할 수 없습니다.";
+                return false;
+            }
+            IItemContainer target = item.AsDef().Kind switch
+            {
+                InventoryItemKind.Consumable => consumables,
+                InventoryItemKind.Weapon => weapons,
+                _ => relics
+            };
+            if (target == null) return false;
+            if (!reservations.TryGetValue(target, out ScriptableObject[] items))
+            {
+                items = new ScriptableObject[target.SlotCount];
+                var storedLevels = new int[items.Length];
+                for (int i = 0; i < items.Length; i++)
+                {
+                    items[i] = target.Get(i);
+                    if (target is IRelicLevelProvider provider) provider.TryGetRelicLevel(i, out storedLevels[i]);
+                }
+                reservations.Add(target, items);
+                levels.Add(target, storedLevels);
+            }
+
+            int destination = -1;
+            var relic = item as RelicDefinition;
+            // The normal player relic adapter merges equal ids, even when all slots are occupied.
+            if (relic != null && target is PlayerRelicContainerAdapter)
+                for (int i = 0; i < items.Length; i++)
+                    if (items[i] is RelicDefinition existing && existing.relicId == relic.relicId)
+                    { destination = i; break; }
+            if (destination < 0)
+                for (int i = 0; i < items.Length; i++)
+                    if (items[i] == null && target.CanPlace(item, i))
+                    { destination = i; break; }
+            if (destination < 0) return false;
+
+            int incomingLevel = source.Inventory.GetRelicLevelInSlot(sourceIndex);
+            if (relic != null)
+            {
+                int previousLevel = levels[target][destination];
+                int resultingLevel = relic.ClampLevel(previousLevel + Mathf.Max(1, incomingLevel));
+                if (resultingLevel <= previousLevel)
+                {
+                    warning = "선택한 유물은 이미 최대 레벨입니다. 다른 아이템을 선택해 주세요.";
+                    return false;
+                }
+                if (target is PlayerRelicContainerAdapter playerRelics &&
+                    playerRelics.PreviewSelection(destination, relic, resultingLevel) != RelicInventory.AcquireResult.Success)
+                {
+                    warning = "현재 상태에서는 선택한 유물을 획득할 수 없습니다. 체력과 유물 상태를 확인해 주세요.";
+                    return false;
+                }
+                levels[target][destination] = resultingLevel;
+            }
+            items[destination] = item;
+            plan.Add(new InventoryTransferRequest(source, sourceIndex, target, destination, incomingLevel));
+        }
+        warning = null;
+        return true;
     }
 }
