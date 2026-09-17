@@ -16,9 +16,7 @@ MonoBehaviour:
   displayName: "\uC18C\uD3EC"
   icon: {fileID: 2914263891378394802, guid: 522fe167c55eab149b6bf24c2e3fa0ff, type: 3}
   rarity: 0
-  description: "\uB2E4\uC74C \uAD6C\uC5ED\uC758 \uBC30\uC1A1\uC9C0\uAE4C\uC9C0 \uC6B4\uBC18\uD574\uC57C
-    \uD558\uB294 \uC18C\uD3EC\uC785\uB2C8\uB2E4. \uC720\uBB3C \uC2AC\uB86F\uC744
-    \uCC28\uC9C0\uD558\uBA70 \uBC84\uB9B4 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4."
+  description: "파셀이 배달해야 했을 소포. 버리는건 용사답지 않다."
   maxLevel: 1
   dropLevel: 1
   logic: {fileID: 0}
