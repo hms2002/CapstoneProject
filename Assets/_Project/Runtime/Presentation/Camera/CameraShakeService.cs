@@ -117,7 +117,9 @@ public sealed class CameraShakeService : MonoBehaviour
         var blendUpdateMethod = shakeBrain.BlendUpdateMethod;
         try
         {
-            shakeBrain.UpdateMethod = CinemachineBrain.UpdateMethods.LateUpdate;
+            // ManualUpdate uses the same non-fixed camera filter as LateUpdate,
+            // but requires ManualUpdate mode for this explicit call.
+            shakeBrain.UpdateMethod = CinemachineBrain.UpdateMethods.ManualUpdate;
             shakeBrain.BlendUpdateMethod = CinemachineBrain.BrainUpdateMethods.LateUpdate;
             shakeBrain.ManualUpdate(Time.frameCount, Time.unscaledDeltaTime);
         }

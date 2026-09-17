@@ -127,12 +127,13 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
     /// </summary>
     private void EnsureVisualTree()
     {
+        rectTransform ??= gameObject.GetComponent<RectTransform>();
         if (rectTransform == null ||
             backgroundImage == null ||
-            transform.Find("Icon") == null ||
-            transform.Find("DurationFill") == null ||
-            transform.Find("StackText") == null ||
-            transform.Find("DurationText") == null)
+            iconImage == null ||
+            durationFillImage == null ||
+            stackText == null ||
+            durationText == null)
         {
             RuntimePresentationFallbackAudit.Record(
                 this,

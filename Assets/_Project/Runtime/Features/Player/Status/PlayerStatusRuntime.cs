@@ -85,9 +85,6 @@ public sealed class PlayerStatusRuntime : MonoBehaviour
         entry.Apply(request);
         UpdateEntryTag(previousTag, entry.StateTag);
 
-        if (logStatusLifecycle && entry.Definition != null)
-            CapstoneDiagnostics.EditorOnlyLog.Log($"[PlayerStatusRuntime] Updated status '{entry.Definition.StatusId}' (id={handle.RuntimeId})", this);
-
         return true;
     }
 

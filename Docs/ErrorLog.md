@@ -2201,3 +2201,11 @@ Cause: appending a RoomObjectPlacementData item before monsterWaves assumes seri
 Fix: move the existing item into the actual objectPlacements sequence in eight templates. Preserve coordinates and unrelated data. Parse all 30 room documents and assert candidate membership in buildData.objectPlacements, not merely presence in the file.
 
 Prevention: resolve the target sequence boundary from structure; never infer it from a later sibling field. Validate parsed parent membership, reference/type/ID uniqueness and unchanged non-target data. Byte-preserving edits and whitespace checks alone cannot prove semantic correctness. Unity import and visual acceptance must be reported separately. See [session log](./SessionLogs/2026-09-17.md).
+
+## 2026-09-17 - Camera manual-update mode and false status-HUD fallback warning
+
+CameraShakeService called CinemachineBrain.ManualUpdate while temporarily selecting LateUpdate mode, producing repeated Editor errors while paused. Select ManualUpdate for the explicit call and restore the original modes in finally; the installed Cinemachine 3.1.5 uses the same non-fixed camera filter for both modes. Existing call timing and shake parameters remain unchanged.
+
+StatusHudEntryView checked hard-coded child names and an uninitialized RectTransform cache before resolving assigned references. The authored prefab has different child names with valid references, so it emitted a false fallback warning. Resolve the existing root first and check actual serialized references; preserve rendering/fallback behavior in this minimal slice. Successful per-frame status-update logging was removed without changing status updates.
+
+These are verified code/diagnostic issues, not proven causes of the run-entry native Transform::CountNodesDeep crash. MSBuild passed; Unity Play Mode and crash reproduction remain pending. See [session log](./SessionLogs/2026-09-17.md).
