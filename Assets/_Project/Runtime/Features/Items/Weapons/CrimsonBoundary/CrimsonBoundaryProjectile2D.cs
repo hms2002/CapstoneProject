@@ -3,8 +3,7 @@ using UnityGAS;
 
 public sealed class CrimsonBoundaryProjectile2D : AttackBase
 {
-    public const float LethalBurstDiameter = 2.5f;
-    public const float LethalBurstDamageMultiplier = 1f;
+    public const float ImpactBurstDiameter = 2.5f;
 
     [SerializeField] private BoxCollider2D wallCollider;
     [SerializeField] private BoxCollider2D damageCollider;
@@ -130,49 +129,42 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
 
     protected override void OnHitTarget(GameObject target, Collider2D hitCollider)
     {
-        bool killedByDirectHit = target != null &&
-                                 target.TryGetComponent(out Enemy enemy) &&
-                                 enemy.IsDead;
-        BurnStatus2D.Apply(target, OwnerSystem, burnDamageEffect, Causer, burnStacks, burnPrefab, burnSustainPrefab);
-        if (killedByDirectHit)
-            ApplyLethalBurst(target);
+        if (impactPlayed) return;
+        // Claim the impact before applying damage so nested callbacks cannot repeat it.
         PlayImpact();
+        BurnStatus2D.Apply(target, OwnerSystem, burnDamageEffect, Causer, burnStacks, burnPrefab, burnSustainPrefab);
+        ApplyImpactBurst(target);
         base.OnHitTarget(target, hitCollider);
     }
 
-    private void ApplyLethalBurst(GameObject directTarget)
+    private void ApplyImpactBurst(GameObject directTarget)
     {
-        if (OwnerSystem == null || HitPayload == null || burnDamageEffect == null)
+        if (OwnerSystem == null || HitPayload == null)
             return;
 
-        float damage = Mathf.Max(0f, HitPayload.finalHpDamage * LethalBurstDamageMultiplier);
-        if (damage <= 0f)
-            return;
-
-        System.Collections.Generic.List<GameObject> targets = CrimsonBoundaryUtility.CollectTargets(
-            transform.position,
-            LethalBurstDiameter,
-            DamageLayers);
-        for (int i = 0; i < targets.Count; i++)
+        var targets = CrimsonBoundaryUtility.CollectTargets(transform.position, ImpactBurstDiameter, DamageLayers);
+        foreach (GameObject secondaryTarget in targets)
         {
-            GameObject secondaryTarget = targets[i];
-            if (secondaryTarget == null || secondaryTarget == directTarget)
+            // The swept direct hit already received this shot's payload.
+            if (secondaryTarget == null || secondaryTarget == directTarget || IsIgnoredTarget(secondaryTarget))
                 continue;
-
-            CrimsonBoundaryUtility.ApplyDamage(
-                OwnerSystem,
-                SourceSpec,
-                burnDamageEffect,
-                secondaryTarget,
-                damage,
-                HitPayload.isCriticalHit,
-                Causer);
+            if (secondaryTarget.TryGetComponent(out Enemy enemy) && enemy.IsDead)
+                continue;
+            if (!CanHitTarget(secondaryTarget))
+                continue;
+            if (Physics2D.Linecast(transform.position, secondaryTarget.transform.position, WallLayers).collider != null)
+                continue;
+            if (TryApplyHit(secondaryTarget))
+                BurnStatus2D.Apply(secondaryTarget, OwnerSystem, burnDamageEffect, Causer,
+                    burnStacks, burnPrefab, burnSustainPrefab);
         }
     }
 
     protected override void OnHitWall(GameObject wall, Collider2D hitCollider)
     {
+        if (impactPlayed) return;
         PlayImpact();
+        ApplyImpactBurst(null);
         base.OnHitWall(wall, hitCollider);
     }
 
@@ -180,7 +172,7 @@ public sealed class CrimsonBoundaryProjectile2D : AttackBase
     {
         if (impactPlayed) return;
         impactPlayed = true;
-        CrimsonBoundaryVisual2D.Spawn(hitPrefab, transform.position, transform.rotation, visualOwner);
+        CrimsonBoundaryVisual2D.Spawn(hitPrefab, transform.position, Quaternion.identity, visualOwner);
     }
 
     private sealed class RaycastHitDistanceComparer : System.Collections.Generic.IComparer<RaycastHit2D>

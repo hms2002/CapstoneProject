@@ -1,6 +1,7 @@
 using CapstoneAudio;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using UnityGAS;
 
 /// <summary>
@@ -49,13 +50,22 @@ public class FieldHealPickup2D : MonoBehaviour
     public static event System.Action<FieldHealPickup2D> WorldStateChanged;
 
     private void OnEnable() => WorldStateChanged?.Invoke(this);
-    private void OnDisable() => WorldStateChanged?.Invoke(this);
+    private void OnDisable()
+    {
+        pushVelocity = Vector2.zero;
+        WorldStateChanged?.Invoke(this);
+    }
     private bool interactionLocked;
     private Coroutine dropRoutine;
     private Vector3 visualBaseLocalPosition;
     private Vector3 visualBaseLocalScale = Vector3.one;
     private bool hasVisualBaseTransform;
     private float idleTimeOffset;
+    private Tilemap[] pushGroundMaps;
+    private readonly RaycastHit2D[] pushHits = new RaycastHit2D[32];
+    private Vector2 pushVelocity;
+    private const float PushSpeed = 2.4f;
+    private const float PushDeceleration = 8f;
 
     public void Configure(AttributeDefinition healthAttributeOverride, int healAmountOverride, Sprite iconOverride)
     {
@@ -100,6 +110,24 @@ public class FieldHealPickup2D : MonoBehaviour
         TickIdlePresentation();
     }
 
+    private void FixedUpdate()
+    {
+        if (collected || interactionLocked)
+        {
+            pushVelocity = Vector2.zero;
+            return;
+        }
+        if (Time.timeScale <= 0f || pushVelocity == Vector2.zero)
+            return;
+
+        float speed = pushVelocity.magnitude;
+        float duration = Mathf.Min(Time.fixedDeltaTime, speed / PushDeceleration);
+        float nextSpeed = Mathf.Max(0f, speed - PushDeceleration * duration);
+        Vector2 direction = pushVelocity / speed;
+        float distance = (speed + nextSpeed) * 0.5f * duration;
+        pushVelocity = MovePush(direction, distance) ? direction * nextSpeed : Vector2.zero;
+    }
+
     private void OnDestroy()
     {
         StopDropRoutine();
@@ -107,6 +135,7 @@ public class FieldHealPickup2D : MonoBehaviour
 
     public void PlayDrop(Vector3 startPosition, Vector3 landingPosition)
     {
+        pushVelocity = Vector2.zero;
         StopDropRoutine();
         CaptureVisualBaseTransform();
         ResetVisualTransform();
@@ -141,6 +170,12 @@ public class FieldHealPickup2D : MonoBehaviour
         if (!TryResolvePlayerAttributeSet(other, out AttributeSet attributeSet, out Transform playerTransform))
             return;
 
+        if (IsHealthFull(attributeSet))
+        {
+            TryPushFromBody(other);
+            return;
+        }
+
         bool didHeal = TryApplyHeal(attributeSet);
         if (!didHeal)
             return;
@@ -164,6 +199,102 @@ public class FieldHealPickup2D : MonoBehaviour
 
         float after = attributeSet.GetCurrentValue(healthAttribute);
         return after > before;
+    }
+
+    private bool IsHealthFull(AttributeSet attributes)
+    {
+        if (healthAttribute == null)
+            return false;
+        AttributeValue health = attributes.GetAttribute(healthAttribute);
+        if (health == null)
+            return false;
+        float maximum = health.MaxValueGetter != null ? health.MaxValueGetter() : healthAttribute.maxValue;
+        return health.CurrentValue >= maximum;
+    }
+
+    private void TryPushFromBody(Collider2D body)
+    {
+        if (Time.timeScale <= 0f)
+            return;
+
+        Collider2D pickup = GetComponent<Collider2D>();
+        Physics2D.SyncTransforms();
+        ColliderDistance2D contact = pickup.Distance(body);
+        if (!contact.isOverlapped)
+            return;
+
+        Vector2 direction = -contact.normal;
+        if (direction.sqrMagnitude < 0.001f)
+            direction = Vector2.right;
+        pushVelocity = direction.normalized * PushSpeed;
+    }
+
+    private bool MovePush(Vector2 direction, float distance)
+    {
+        Collider2D pickup = GetComponent<Collider2D>();
+        Physics2D.SyncTransforms();
+        float requestedDistance = distance;
+        var obstacles = new ContactFilter2D
+        {
+            useLayerMask = true,
+            layerMask = LayerMask.GetMask("Wall", "HoleTrap"),
+            useTriggers = true
+        };
+        int count = pickup.Cast(direction, obstacles, pushHits, distance + 0.02f, ignoreSiblingColliders: false);
+        if (count == pushHits.Length)
+            return false; // A truncated obstacle query cannot establish a safe path.
+        for (int i = 0; i < count; i++)
+        {
+            Collider2D obstacle = pushHits[i].collider;
+            if (obstacle == null || obstacle == pickup)
+                continue;
+            if (obstacle.isTrigger && obstacle.gameObject.layer != LayerMask.NameToLayer("HoleTrap"))
+                continue;
+            distance = Mathf.Min(distance, Mathf.Max(0f, pushHits[i].distance - 0.02f));
+        }
+
+        pushGroundMaps ??= FindObjectsByType<Tilemap>(FindObjectsSortMode.None);
+        Vector3 start = transform.position;
+        Bounds footprint = pickup.bounds;
+        // Small steps keep the entire pickup on supported ground, including at corners.
+        int steps = Mathf.CeilToInt(distance / 0.025f);
+        for (int i = 1; i <= steps; i++)
+        {
+            Vector3 offset = (Vector3)(direction * Mathf.Min(i * 0.025f, distance));
+            if (!HasPushGround(footprint, offset))
+                break;
+            transform.position = start + offset;
+        }
+        if (transform.position != start)
+        {
+            Physics2D.SyncTransforms();
+            WorldStateChanged?.Invoke(this);
+        }
+        return Vector2.Distance(start, transform.position) >= requestedDistance - 0.0001f;
+    }
+
+    private bool HasPushGround(Bounds footprint, Vector3 offset)
+    {
+        int groundLayer = LayerMask.NameToLayer("Ground");
+        for (int y = -1; y <= 1; y++)
+        for (int x = -1; x <= 1; x++)
+        {
+            Vector3 point = footprint.center + offset +
+                new Vector3(footprint.extents.x * x, footprint.extents.y * y);
+            bool supported = false;
+            foreach (Tilemap map in pushGroundMaps)
+            {
+                if (map == null || !map.isActiveAndEnabled || map.gameObject.layer != groundLayer)
+                    continue;
+                if (!map.HasTile(map.WorldToCell(point)))
+                    continue;
+                supported = true;
+                break;
+            }
+            if (!supported)
+                return false;
+        }
+        return true;
     }
 
     private bool TryResolvePlayerAttributeSet(Collider2D other, out AttributeSet attributeSet, out Transform playerTransform)

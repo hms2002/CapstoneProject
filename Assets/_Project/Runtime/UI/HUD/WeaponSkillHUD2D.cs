@@ -360,6 +360,20 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
         UpdateCastingVisual(skill2UI, skill2Def);
     }
 
+    private void HandleBindingChanged(InputActionId action)
+    {
+        InputBindingService input = GetInputBindingService();
+        WeaponSkillHudSlotPresenter.RefreshInputGuideIcon(attackUI, input);
+        WeaponSkillHudSlotPresenter.RefreshInputGuideIcon(skill1UI, input);
+        WeaponSkillHudSlotPresenter.RefreshInputGuideIcon(skill2UI, input);
+    }
+
+    private void OnDestroy()
+    {
+        if (cachedInputBindingService != null)
+            cachedInputBindingService.BindingChanged -= HandleBindingChanged;
+    }
+
     private void UpdateDynamicIcon(SkillSlotUI ui, WeaponAbilitySlot slot, AbilityDefinition def)
     {
         WeaponSkillHudSlotPresenter.UpdateDynamicIcon(ui, slot, def, ResolveHudIconOverrideProvider());
@@ -510,8 +524,15 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
     /// </summary>
     private InputBindingService GetInputBindingService()
     {
-        if (cachedInputBindingService == null)
+        if (cachedInputBindingService != InputBindingService.Instance)
+        {
+            if (cachedInputBindingService != null)
+                cachedInputBindingService.BindingChanged -= HandleBindingChanged;
             cachedInputBindingService = InputBindingService.Instance;
+            // Keep this data-only subscription while disabled; OnDestroy releases it.
+            if (cachedInputBindingService != null)
+                cachedInputBindingService.BindingChanged += HandleBindingChanged;
+        }
 
         return cachedInputBindingService;
     }

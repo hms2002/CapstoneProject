@@ -9,14 +9,16 @@ public sealed class ChestContainerAdapter : IItemContainer, IDisposable, IRelicL
     private readonly ChestInventory inventory;
     public event Action OnChanged;
 
-    public ChestContainerAdapter(ChestInventory inventory)
+    public ChestContainerAdapter(ChestInventory inventory, bool selectionOnly = false)
     {
         this.inventory = inventory;
+        IsSelectionOnly = selectionOnly;
         if (this.inventory != null)
             this.inventory.OnChanged += HandleChanged;
     }
 
     public ChestInventory Inventory => inventory;
+    public bool IsSelectionOnly { get; }
 
     public int SlotCount => inventory != null ? inventory.Capacity : 0;
 
@@ -27,18 +29,18 @@ public sealed class ChestContainerAdapter : IItemContainer, IDisposable, IRelicL
 
     public bool CanPlace(ScriptableObject item, int index, int ignoreIndex = -1)
     {
-        return inventory != null && index >= 0 && index < inventory.Capacity &&
+        return !IsSelectionOnly && inventory != null && index >= 0 && index < inventory.Capacity &&
             (item == null || inventory.CanReturnAcquisition(item));
     }
 
     public bool TrySet(int index, ScriptableObject item)
     {
-        return inventory != null && inventory.Set(index, item);
+        return !IsSelectionOnly && inventory != null && inventory.Set(index, item);
     }
 
     public bool TrySwap(int a, int b)
     {
-        return inventory != null && inventory.Swap(a, b);
+        return !IsSelectionOnly && inventory != null && inventory.Swap(a, b);
     }
 
     public bool TryGetRelicLevel(int index, out int level)
@@ -49,7 +51,7 @@ public sealed class ChestContainerAdapter : IItemContainer, IDisposable, IRelicL
 
     public bool TrySetRelicWithLevel(int index, RelicDefinition relic, int level)
     {
-        return inventory != null && inventory.SetRelicWithLevel(index, relic, level);
+        return !IsSelectionOnly && inventory != null && inventory.SetRelicWithLevel(index, relic, level);
     }
 
     public void Dispose()

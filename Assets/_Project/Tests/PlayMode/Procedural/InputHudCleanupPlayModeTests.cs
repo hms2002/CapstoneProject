@@ -8,6 +8,65 @@ using Object = UnityEngine.Object;
 /// <summary>Verifies input HUD cleanup and boss cinematic HUD release without destroying the boss.</summary>
 public sealed class InputHudCleanupPlayModeTests
 {
+    [TestCase("WeaponSkillHUD2D")]
+    [TestCase("SwapWeaponSkillHUD2D")]
+    public void SkillGlyph_RebindWhilePausedAndHudInactive_UpdatesWithoutShowingHud(string typeName)
+    {
+        const BindingFlags fields = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+        Type hudType = Type.GetType(typeName + ", UI", throwOnError: true);
+        Type slotType = Type.GetType("WeaponSkillHUD2D+SkillSlotUI, UI", throwOnError: true);
+        Type imageType = Type.GetType("UnityEngine.UI.Image, UnityEngine.UI", throwOnError: true);
+        InputBindingService input = InputBindingService.EnsureInstance();
+        InputBinding original = input.GetBinding(InputActionId.Skill1);
+        float originalTimeScale = Time.timeScale;
+        var root = new GameObject("PausedSkillGlyphTest");
+        root.SetActive(false);
+        try
+        {
+            var hud = root.AddComponent(hudType);
+            var guide = new GameObject("Guide", typeof(RectTransform), imageType);
+            guide.transform.SetParent(root.transform);
+            Component image = guide.GetComponent(imageType);
+            var slot = Activator.CreateInstance(slotType);
+            slotType.GetField("useInputGuide").SetValue(slot, true);
+            slotType.GetField("inputActionId").SetValue(slot, InputActionId.Skill1);
+            slotType.GetField("inputGuideIcon").SetValue(slot, image);
+            slotType.GetField("readyFlashRemaining").SetValue(slot, 0.17f);
+            hudType.GetField("skill1UI", fields).SetValue(hud, slot);
+            root.SetActive(true);
+            root.SetActive(false);
+            guide.SetActive(false);
+            ((Behaviour)image).enabled = false;
+            hudType.GetField("weaponInputBlocked", fields).SetValue(hud, true);
+            slotType.GetField("readyFlashRemaining").SetValue(slot, 0.17f);
+            hudType.GetMethod("GetInputBindingService", fields).Invoke(hud, null);
+            Time.timeScale = 0f;
+
+            input.SetPrimaryKey(InputActionId.Skill1, KeyCode.Q);
+            Sprite first = input.GetBindingIcon(InputActionId.Skill1);
+            input.SetPrimaryKey(InputActionId.Skill1, KeyCode.E);
+            Sprite expected = input.GetBindingIcon(InputActionId.Skill1);
+            Assert.That(expected, Is.Not.Null);
+            Assert.That(expected, Is.Not.SameAs(first), "Fixture must use distinct key glyphs.");
+            Assert.That(imageType.GetProperty("sprite").GetValue(image), Is.SameAs(expected),
+                "Applied bindings must update the hidden HUD synchronously without a frame or weapon swap.");
+            Assert.That(root.activeSelf, Is.False);
+            Assert.That(guide.activeSelf, Is.False);
+            Assert.That(((Behaviour)image).enabled, Is.False);
+            Assert.That((float)slotType.GetField("readyFlashRemaining").GetValue(slot), Is.EqualTo(0.17f));
+
+            input.ResetBinding(InputActionId.Skill1);
+            Assert.That(imageType.GetProperty("sprite").GetValue(image),
+                Is.SameAs(input.GetBindingIcon(InputActionId.Skill1)), "Reset must use the same notification path.");
+        }
+        finally
+        {
+            Time.timeScale = originalTimeScale;
+            Object.DestroyImmediate(root);
+            input.SetBinding(InputActionId.Skill1, original);
+        }
+    }
+
     [Test]
     public void ProceduralFader_RebuildsAfterPlacementAndDiscardsColorsBeforeReplacement()
     {

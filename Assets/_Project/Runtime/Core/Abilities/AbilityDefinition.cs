@@ -760,6 +760,9 @@ namespace UnityGAS
         /// - "이 Ability를 지금 이 순간 시작할 수 있는가?"
         /// </summary>
         public bool CanActivate(GameObject caster, GameObject target)
+            => CanActivate(caster, target, logDiagnostics: true);
+
+        public bool CanActivate(GameObject caster, GameObject target, bool logDiagnostics)
         {
             var attributeSet = caster.GetComponent<AttributeSet>();
             if (attributeSet == null) return false;
@@ -773,8 +776,11 @@ namespace UnityGAS
             if (tags != null)
             {
                 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-                tags.PrintHasTags("HAS TAG");
-                TagRegistry.PrintTagMaskLog(_blockMask);
+                if (logDiagnostics)
+                {
+                    tags.PrintHasTags("HAS TAG");
+                    TagRegistry.PrintTagMaskLog(_blockMask);
+                }
                 #endif
 
                 // 금지 태그가 하나라도 있으면 발동 불가

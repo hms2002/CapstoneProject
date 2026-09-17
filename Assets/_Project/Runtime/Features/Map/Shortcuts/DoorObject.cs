@@ -81,6 +81,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
 
     public bool IsOpen { get; private set; }
     public event System.Action<DoorObject> ClosedPresentationCompleted;
+    public event System.Action<DoorObject> InteractionRejected;
 
     private Transform runtimePromptAnchor;
     private Coroutine shakeCoroutine;
@@ -179,6 +180,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         {
             PlayDoorSound(CantOpenSound);
             PlayShakeAnimation();
+            InteractionRejected?.Invoke(this);
 
             PlayerInteractor2D playerScript = player.Transform.GetComponent<PlayerInteractor2D>();
             if (playerScript != null)

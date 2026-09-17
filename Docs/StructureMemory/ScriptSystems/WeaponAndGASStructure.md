@@ -425,3 +425,27 @@ PlayerCombatInput2D.HandleAbilityExecutionStarted excludes the empty OddIron Sho
 ### Odd Iron recoil baseline (2026-09-17)
 
 OddIronRuntimeState caches the resting local position once per recoil Transform. Subsequent shots preserve that baseline, including bursts whose 0.08s interval interrupts the 0.125s recoil cycle. A restarted recoil interpolates from the current displaced position toward baseline + recoil offset, then returns to the fixed baseline. OnDisable/equip cleanup restores the same baseline. No serialized fields, prefab offsets, recoil tuning or ammo rules changed.
+
+### Skill-key binding notifications (2026-09-17)
+
+InputBindingService publishes BindingChanged after an applied primary/secondary binding changes. WeaponSkillHUD2D and SwapWeaponSkillHUD2D subscribe when resolving the existing service and release the subscription on destruction or service replacement. The content-only subscription deliberately remains attached while the HUD is disabled: RefreshInputGuideIcon updates the sprite without activating objects, enabling graphics, or resetting cooldown/charge/flash state. Existing OnEnable slot binding resynchronizes a HUD that has not yet initialized. The earlier LateUpdate-only guide refresh was superseded after the user reported that it did not fix the ESC/settings flow. Keybinding-panel working edits still require Apply; cancelling edits does not change the gameplay binding. InputHudCleanupPlayModeTests adds paused/inactive/blocked HUD cases for both HUD types; compilation passed, runtime tests remain pending.
+
+### Hero Sword charge release and Lightning Spear mark guidance (2026-09-18)
+
+- Display name is now 용사의 검; `Weapon.ApprenticeHeroSword`, asset paths and GUIDs remain stable. Weapon story and the exclusive relic's weapon-name reference were updated.
+- ChargeSpin evaluates raw held time before minimum-charge clamping. At <=40% it cancels the token and skips release animation/hitbox/recovery; the existing finally clears hold snapshots and charge presentation. Above 40%, including full charge, it uses the existing release path. Existing cooldown policy remains unchanged. The skill tooltip states the threshold.
+- `LightningSpearRuntimeState.RefreshMarkFeedback` gates mark highlighting on readiness, no active execution/UI/flow/hit-pause/input block, movement permission, ability tags/cost and existing range/landing/path checks. The existing buffered-rush range presentation stays independent of immediate readiness. `AbilityDefinition.CanActivate` has a diagnostics-disabled overload for repeated presentation queries, preserving activation checks and default logging behavior.
+- `LightningSpearMark.prefab` authors the outline-capable active renderer and a RushKeyIcon SpriteRenderer above the mark. `LightningSpearMarkActor` projects white outline and current Skill1 binding sprite; the old yellow selected overlay is hidden. No runtime UI hierarchy creation is used. Disable/consume clears feedback. Icon lookup through `InputActionQuery`/`IInputActionQueryBackend` keeps Gameplay independent of Infrastructure; InputBindingService forwards its existing glyph mapping. Per-frame icon refresh observes applied remaps while paused.
+- Verification: Gameplay/Core/Infrastructure and ProceduralPlayModeTests MSBuild passed; seven WeaponFeedback cases added and compiled (charge boundaries, quick cancellation, authored mark outline/key/remap/disable). Unity PlayMode and visual acceptance not executed because the project Editor was open. Check 40/41/99/100% releases, marker white edges, key size/placement, cooldown/blocked paths and remapping in Editor.
+
+#### Lightning Spear hover-only guidance refinement
+
+White outline and bound key icon now require `IsActive && canRush && isSelected` together in `LightningSpearMarkActor.SetFeedback`. RuntimeState supplies cursor selection from the existing selectable-mark search and actual rush eligibility separately. Moving off the mark or losing eligibility hides both; other reachable marks do not highlight. Range indicators and skill selection logic are unchanged.
+
+#### Hero Sword failed-charge cooldown refund
+
+A <=40% released charge now sets the runtime-only `AbilitySpec.SkipCooldownOnEnd` flag and clears current cooldown through `AbilitySystem.TrySetCooldownRemaining`. `AbilityExecutionCoordinator` resets the flag at every BeginExecution and suppresses only the explicitly refunded execution's end cooldown. Normal releases and other cancellation reasons retain their existing cooldown behavior. This supersedes the earlier note that short-charge cancellation retains cooldown. No shared AbilityDefinition or serialized schema is mutated. The seven WeaponFeedback PlayMode cases passed on 2026-09-18, including failed-charge refund, no cooldown restart at end, next-execution cooldown restoration, charge thresholds and hover-only spear feedback.
+
+Marker color follow-up (2026-09-18): the hover-only eligible-rush outline now uses saturated sky blue #00A0E6 instead of white. Cursor selection and actual rush eligibility still gate the outline and key icon together.
+
+Charge cutoff tuning follow-up (2026-09-18): Hero Sword now cancels at <=50% and executes above 50%, superseding the earlier 40% threshold. Failed releases still refund cooldown; full charge behavior is unchanged. Skill tooltip and boundary tests use the new threshold.

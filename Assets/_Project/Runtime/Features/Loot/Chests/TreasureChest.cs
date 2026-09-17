@@ -149,7 +149,17 @@ public class TreasureChest : MonoBehaviour
         isOpening = false;
         hasRaisedFirstOpenedUi = true;
         HoldOpenedVisualState();
+        // A confirmed selection clears the remaining loot. Preserve completion even
+        // when this chest is a child of the dungeon's saved object root.
+        if (acquiredCount > 0 && CaptureDungeonLootState().Count == 0)
+            gameObject.SetActive(false);
         WorldStateChanged?.Invoke(this);
+    }
+
+    public void CompleteLootSelection()
+    {
+        inventory?.Clear();
+        gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -319,7 +329,17 @@ public class TreasureChest : MonoBehaviour
     private bool TryAddLootItem(ScriptableObject item)
     {
         if (item is RelicDefinition relic)
+        {
+            RelicInventory playerInventory = LootPoolItemSelectionService.GetPlayerRelicInventory();
+            if (!ChestRewardPolicy.CanOfferRelic(relic, playerInventory, inventory))
+                relic = LootPoolItemSelectionService.GetRandomRelicByRarity(
+                    relic.rarity, candidate => ChestRewardPolicy.CanOfferRelic(candidate, playerInventory, inventory));
+
+            if (relic == null)
+                return false;
+
             return inventory.TryAddRelicWithLevel(relic, ChestRewardPolicy.ResolveChestRelicLevel(relic));
+        }
 
         return inventory.TryAdd(item);
     }

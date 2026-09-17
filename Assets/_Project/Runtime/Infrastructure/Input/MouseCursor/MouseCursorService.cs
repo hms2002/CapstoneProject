@@ -209,12 +209,42 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
 
     private void LateUpdate()
     {
+        RefreshCursorConfinement(Application.isFocused);
         EnsureThemeLoaded();
         PruneDeadOwners();
         RefreshDisplayState();
         ApplyResolvedCursor();
         UpdateCursorPosition();
         LogPendingCursorDiagnostics();
+    }
+
+    private void OnEnable()
+    {
+        RefreshCursorConfinement(Application.isFocused);
+    }
+
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        RefreshCursorConfinement(hasFocus);
+    }
+
+    private void OnDisable()
+    {
+        if (Instance == this)
+            Cursor.lockState = CursorLockMode.None;
+    }
+
+    private void RefreshCursorConfinement(bool hasFocus)
+    {
+        if (Instance != this)
+            return;
+
+        CursorLockMode desired = hasFocus && isActiveAndEnabled
+            ? CursorLockMode.Confined
+            : CursorLockMode.None;
+        // Display changes or focus transitions can reset the OS cursor constraint.
+        if (Cursor.lockState != desired)
+            Cursor.lockState = desired;
     }
 
     private void OnDestroy()
