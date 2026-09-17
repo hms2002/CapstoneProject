@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 책임 :
 /// - 1회용 아이템 정의를 detail panel용 섹션 텍스트로 변환한다.
-/// - 설명과 사용 효과를 기존 무기/유물 detail view와 같은 형식으로 출력한다.
+/// - 작성된 설명 문구를 효과 섹션에 한 번만 출력한다.
 /// </summary>
 public class ConsumableDetailView : MonoBehaviour, IItemDetailView
 {
@@ -18,14 +18,6 @@ public class ConsumableDetailView : MonoBehaviour, IItemDetailView
         sections?.Clear();
 
         var consumable = (ConsumableDefinition)def;
-
-        if (!string.IsNullOrEmpty(consumable.description))
-        {
-            var desc = services.formatText != null
-                ? services.formatText(consumable.description)
-                : consumable.description;
-            sections?.Add("설명", desc, services.showGlossary);
-        }
 
         string effect = BuildEffectText(consumable);
         effect = services.formatText != null ? services.formatText(effect) : effect;
@@ -41,11 +33,15 @@ public class ConsumableDetailView : MonoBehaviour, IItemDetailView
     private static string BuildEffectText(ConsumableDefinition consumable)
     {
         var sb = new StringBuilder();
+        bool hasRestoreEffect = consumable.TargetAttribute != null && consumable.RestoreAmount > 0;
 
-        if (consumable.TargetAttribute != null && consumable.RestoreAmount > 0)
+        if (!string.IsNullOrWhiteSpace(consumable.description))
+        {
+            sb.AppendLine(consumable.description.Trim());
+        }
+        else if (hasRestoreEffect)
         {
             sb.AppendLine($"● [[{consumable.TargetAttribute.attributeName}]] {{pos:[+{consumable.RestoreAmount}]}} 회복");
-            sb.AppendLine("● 사용 시 {neg:1개 소모}");
         }
         else
         {

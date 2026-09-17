@@ -2201,3 +2201,15 @@ Cause: appending a RoomObjectPlacementData item before monsterWaves assumes seri
 Fix: move the existing item into the actual objectPlacements sequence in eight templates. Preserve coordinates and unrelated data. Parse all 30 room documents and assert candidate membership in buildData.objectPlacements, not merely presence in the file.
 
 Prevention: resolve the target sequence boundary from structure; never infer it from a later sibling field. Validate parsed parent membership, reference/type/ID uniqueness and unchanged non-target data. Byte-preserving edits and whitespace checks alone cannot prove semantic correctness. Unity import and visual acceptance must be reported separately. See [session log](./SessionLogs/2026-09-17.md).
+
+## 2026-09-17 - Prefab variant import ID collision caused missing Transform
+
+Evidence: both 09:04 and 09:11 Editor build crashes stopped while opening ProceduralShadowCorridor, with Dereferencing NULL ImmediatePtr and Transform::CountNodesDeep/RebuildTransformHierarchy. TitleScene-only reproduction ruled out the room authoring workspace explanation. Earlier import output identified ShadowAlarmBellEventModule.prefab immediately before fidA != fidB and duplicate file identifier 3 (PrefabImporter/Transform).
+
+Native isolation: Unity 6000.4.2f1 importing the original shared module and Shadow variant reproduced the exact ID collision and returned 8 transforms. Changing only the variant PrefabInstance ID from 510000000000000001 to 8107496527812300491 removed the collision and returned 9 transforms, matching the base in this reduced fixture. Reload verified root identity and hierarchy count. Missing unrelated script/nested-prefab dependencies in this fixture mean these counts are not the complete production hierarchy.
+
+Fix: updated both occurrences of the internal PrefabInstance ID. The root GameObject fileID 510000000000000012, prefab GUID, source-prefab reference, definition override and room reference remain unchanged. Main-project import verified the root identity and 10 transforms with full dependencies.
+
+Prevention: textual duplicate-ID scans do not cover IDs generated during prefab-variant import. Validate native import assertions and compare the imported variant hierarchy with its source, including after reload. Prefer Unity-authored variants. Do not infer that opening a tool caused a native build crash merely from RestoreSceneBackups in the stack. Full-build outcome is recorded in the session log.
+
+Verification follow-up: main-project full Windows x64 build of all 13 enabled scenes succeeded after this ID repair, with 0 errors and 14 warnings; all three procedural corridor scenes loaded. Temporary validation helper removed. See the 2026-09-17 session log.
