@@ -425,3 +425,7 @@ PlayerCombatInput2D.HandleAbilityExecutionStarted excludes the empty OddIron Sho
 ### Odd Iron recoil baseline (2026-09-17)
 
 OddIronRuntimeState caches the resting local position once per recoil Transform. Subsequent shots preserve that baseline, including bursts whose 0.08s interval interrupts the 0.125s recoil cycle. A restarted recoil interpolates from the current displaced position toward baseline + recoil offset, then returns to the fixed baseline. OnDisable/equip cleanup restores the same baseline. No serialized fields, prefab offsets, recoil tuning or ammo rules changed.
+
+### Skill-key binding notifications (2026-09-17)
+
+InputBindingService publishes BindingChanged after an applied primary/secondary binding changes. WeaponSkillHUD2D and SwapWeaponSkillHUD2D subscribe when resolving the existing service and release the subscription on destruction or service replacement. The content-only subscription deliberately remains attached while the HUD is disabled: RefreshInputGuideIcon updates the sprite without activating objects, enabling graphics, or resetting cooldown/charge/flash state. Existing OnEnable slot binding resynchronizes a HUD that has not yet initialized. The earlier LateUpdate-only guide refresh was superseded after the user reported that it did not fix the ESC/settings flow. Keybinding-panel working edits still require Apply; cancelling edits does not change the gameplay binding. InputHudCleanupPlayModeTests adds paused/inactive/blocked HUD cases for both HUD types; compilation passed, runtime tests remain pending.

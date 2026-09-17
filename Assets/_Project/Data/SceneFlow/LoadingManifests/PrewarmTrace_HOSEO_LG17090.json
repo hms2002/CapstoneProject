@@ -1,0 +1,39 @@
+{
+    "sessions": [
+        {
+            "sessionId": "2b8efb8f7a8b4eca86c97caa7d81709d",
+            "startedUtc": "2026-09-17T09:39:25.5948845Z",
+            "endedUtc": "2026-09-17T09:39:26.6054592Z",
+            "entries": []
+        },
+        {
+            "sessionId": "8f71ba50493944a98166866d0d9e57e3",
+            "startedUtc": "2026-09-17T13:12:40.7701072Z",
+            "endedUtc": "2026-09-17T13:12:41.7744358Z",
+            "entries": []
+        },
+        {
+            "sessionId": "17e3c95baaf54286aaab53e85d33f764",
+            "startedUtc": "2026-09-17T13:21:42.8613938Z",
+            "endedUtc": "2026-09-17T13:21:43.8634800Z",
+            "entries": []
+        },
+        {
+            "sessionId": "24edaf1fac9c46a7b9e267fa25e74217",
+            "startedUtc": "2026-09-17T13:22:59.0224549Z",
+            "endedUtc": "2026-09-17T13:23:36.4264697Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 2,
+                    "coldSpawns": 2,
+                    "firstSeenSeconds": 33.84786605834961,
+                    "lastSeenSeconds": 37.38862228393555,
+                    "firstSceneName": "ProceduralShadowCorridor",
+                    "lastSceneName": "ProceduralShadowCorridor"
+                }
+            ]
+        }
+    ]
+}

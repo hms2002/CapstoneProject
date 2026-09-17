@@ -68,8 +68,13 @@ public class StatueShortcut : TemporaryShortcut
     [Header("하이라이트")]
     [SerializeField] private SpriteRenderer highlightRenderer;
     [SerializeField] private GameObject highlightTarget;
+    [SerializeField] private GameObject doorGuidanceArrow;
 
     private MaterialPropertyBlock propBlock;
+    private bool interactionHighlighted;
+    private bool doorGuidanceActive;
+    private DoorObject subscribedDoor;
+    private Vector3 guidanceArrowPosition;
     private bool waitingForOfferingFill;
     private IPlayerInteractor pendingSuccessPlayer;
 
@@ -81,6 +86,64 @@ public class StatueShortcut : TemporaryShortcut
         ApplyCostTypeVisual();
         RefreshVisualState();
         OnUnHighlight();
+        if (doorGuidanceArrow != null)
+        {
+            guidanceArrowPosition = doorGuidanceArrow.transform.localPosition;
+            doorGuidanceArrow.SetActive(false);
+        }
+    }
+
+    private void OnEnable()
+    {
+        subscribedDoor = targetDoor;
+        if (subscribedDoor != null)
+            subscribedDoor.InteractionRejected += HandleDoorInteractionRejected;
+    }
+
+    private void OnDisable()
+    {
+        if (subscribedDoor != null)
+            subscribedDoor.InteractionRejected -= HandleDoorInteractionRejected;
+        subscribedDoor = null;
+        interactionHighlighted = false;
+        ClearDoorGuidance();
+    }
+
+    private void HandleDoorInteractionRejected(DoorObject door)
+    {
+        if (door != targetDoor || costType != CostType.MagicStone || IsActivated || waitingForOfferingFill)
+            return;
+
+        doorGuidanceActive = true;
+        RefreshHighlight();
+        if (doorGuidanceArrow != null)
+            doorGuidanceArrow.SetActive(true);
+    }
+
+    private void LateUpdate()
+    {
+        if (!doorGuidanceActive)
+            return;
+        if (targetDoor == null || !targetDoor.isActiveAndEnabled || IsActivated || waitingForOfferingFill)
+        {
+            ClearDoorGuidance();
+            return;
+        }
+
+        if (doorGuidanceArrow != null)
+            doorGuidanceArrow.transform.localPosition = guidanceArrowPosition +
+                Vector3.up * (Mathf.Abs(Mathf.Sin(Time.unscaledTime * Mathf.PI / 0.6f)) * 0.2f);
+    }
+
+    private void ClearDoorGuidance()
+    {
+        doorGuidanceActive = false;
+        if (doorGuidanceArrow != null)
+        {
+            doorGuidanceArrow.SetActive(false);
+            doorGuidanceArrow.transform.localPosition = guidanceArrowPosition;
+        }
+        RefreshHighlight();
     }
 
     protected override void OnValidate()
@@ -103,28 +166,29 @@ public class StatueShortcut : TemporaryShortcut
 
     public override void OnHighlight()
     {
-        if (highlightRenderer != null)
-        {
-            highlightRenderer.GetPropertyBlock(propBlock);
-            propBlock.SetFloat(OutlineEnabledID, 1f);
-            highlightRenderer.SetPropertyBlock(propBlock);
-        }
-
-        if (highlightTarget != null && !IsActivated)
-            highlightTarget.SetActive(true);
+        interactionHighlighted = true;
+        RefreshHighlight();
     }
 
     public override void OnUnHighlight()
     {
+        interactionHighlighted = false;
+        RefreshHighlight();
+    }
+
+    private void RefreshHighlight()
+    {
+        bool visible = (interactionHighlighted || doorGuidanceActive) && !IsActivated && !waitingForOfferingFill;
         if (highlightRenderer != null)
         {
+            propBlock ??= new MaterialPropertyBlock();
             highlightRenderer.GetPropertyBlock(propBlock);
-            propBlock.SetFloat(OutlineEnabledID, 0f);
+            propBlock.SetFloat(OutlineEnabledID, visible ? 1f : 0f);
             highlightRenderer.SetPropertyBlock(propBlock);
         }
 
         if (highlightTarget != null)
-            highlightTarget.SetActive(false);
+            highlightTarget.SetActive(visible);
     }
 
     public override bool CanInteract(IPlayerInteractor player)
@@ -190,6 +254,7 @@ public class StatueShortcut : TemporaryShortcut
 
         waitingForOfferingFill = true;
         pendingSuccessPlayer = player;
+        ClearDoorGuidance();
 
         if (requirementRoot != null)
             requirementRoot.SetActive(false);
@@ -225,6 +290,7 @@ public class StatueShortcut : TemporaryShortcut
     protected override void OnSuccess()
     {
         base.OnSuccess();
+        ClearDoorGuidance();
         RefreshVisualState();
         OnUnHighlight();
     }

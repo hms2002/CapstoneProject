@@ -224,16 +224,31 @@ public static class WeaponSkillHudSlotPresenter
         Image guideIcon = ui.inputGuideIcon;
         bool shouldShow = isSlotVisible && ui.useInputGuide && guideIcon != null;
 
-        if (guideRoot != null)
+        if (guideRoot != null && guideRoot.activeSelf != shouldShow)
             guideRoot.SetActive(shouldShow);
 
         if (!shouldShow || guideIcon == null)
             return;
 
-        guideIcon.enabled = true;
-        guideIcon.sprite = inputBindingService != null
+        if (!guideIcon.enabled)
+            guideIcon.enabled = true;
+        RefreshInputGuideIcon(ui, inputBindingService);
+    }
+
+    // May run while the HUD is inactive: update content without changing visibility or skill state.
+    public static void RefreshInputGuideIcon(
+        WeaponSkillHUD2D.SkillSlotUI ui,
+        InputBindingService inputBindingService)
+    {
+        if (ui == null || !ui.useInputGuide || ui.inputGuideIcon == null)
+            return;
+
+        Image guideIcon = ui.inputGuideIcon;
+        Sprite bindingIcon = inputBindingService != null
             ? inputBindingService.GetBindingIcon(ui.inputActionId)
             : null;
+        if (guideIcon.sprite != bindingIcon)
+            guideIcon.sprite = bindingIcon;
     }
 
     private static void SetSlotVisible(WeaponSkillHUD2D.SkillSlotUI ui, bool visible)

@@ -288,6 +288,7 @@ public sealed class InputBindingService : MonoBehaviour, IInputActionQueryBacken
     private const string PrefKeyPrefix = "settings.input.";
 
     public static InputBindingService Instance { get; private set; }
+    public event Action<InputActionId> BindingChanged;
 
     private readonly Dictionary<InputActionId, InputBinding> bindings = new();
     private bool initialized;
@@ -755,9 +756,13 @@ public sealed class InputBindingService : MonoBehaviour, IInputActionQueryBacken
         if (!SupportsSecondaryBinding(action))
             binding.secondary = KeyCode.None;
 
+        bool changed = !bindings.TryGetValue(action, out InputBinding previous) ||
+            previous.primary != binding.primary || previous.secondary != binding.secondary;
         bindings[action] = binding;
         PlayerPrefs.SetInt(GetPrimaryPrefKey(action), (int)binding.primary);
         PlayerPrefs.SetInt(GetSecondaryPrefKey(action), (int)binding.secondary);
+        if (changed)
+            BindingChanged?.Invoke(action);
     }
 
     private static string GetPrimaryPrefKey(InputActionId action)

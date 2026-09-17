@@ -97,6 +97,19 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
         RefreshSwapGuide(force: false);
     }
 
+    private void HandleBindingChanged(InputActionId action)
+    {
+        InputBindingService input = GetInputBindingService();
+        WeaponSkillHudSlotPresenter.RefreshInputGuideIcon(skill1UI, input);
+        WeaponSkillHudSlotPresenter.RefreshInputGuideIcon(skill2UI, input);
+    }
+
+    private void OnDestroy()
+    {
+        if (cachedInputBindingService != null)
+            cachedInputBindingService.BindingChanged -= HandleBindingChanged;
+    }
+
     private void HandlePlayerRegistered(PlayerInteractor2D player)
     {
         UnbindInventoryEvents();
@@ -297,8 +310,15 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
     private InputBindingService GetInputBindingService()
     {
         // HUD cleanup can run after the bootstrapped service has already been destroyed.
-        if (cachedInputBindingService == null)
+        if (cachedInputBindingService != InputBindingService.Instance)
+        {
+            if (cachedInputBindingService != null)
+                cachedInputBindingService.BindingChanged -= HandleBindingChanged;
             cachedInputBindingService = InputBindingService.Instance;
+            // Keep this data-only subscription while disabled; OnDestroy releases it.
+            if (cachedInputBindingService != null)
+                cachedInputBindingService.BindingChanged += HandleBindingChanged;
+        }
 
         return cachedInputBindingService;
     }
