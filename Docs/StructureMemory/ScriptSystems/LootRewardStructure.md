@@ -159,3 +159,7 @@ ShopInventoryRoll uses CanDropWeapon(..., treasureChest: true) and CanDropRelic,
 ### Merchant refresh fallback (2026-09-16)
 
 MerchantRunStateService passes old stock before replacing the list. MerchantNPC uses slot offset zero for full refresh and existing count for appended slots. Exhausted slots fall back to remaining relics/consumables with positive weights and the existing consumable cap. Previous-stock exclusions and same-roll deduplication remain enforced. Empty slots remain possible if all permitted alternatives are exhausted.
+
+### Chest reward selection completion (2026-09-17)
+
+Chest UI now stages one or two rewards and transfers them only on confirmation. Closing before confirmation retains loot; successful reroll clears provisional UI choices. Successful confirmation clears unselected loot and deactivates the chest through `TreasureChest.CompleteLootSelection`. `RestoreOpenedStateForDungeon` treats nonzero acquired count with no remaining loot as completed and inactive, preserving nested-chest completion without changing save DTO fields. Loot-generation tables and reroll policy are unchanged. See [InventoryAndChestUIStructure](InventoryAndChestUIStructure.md#chest-selection-and-confirmation-2026-09-17) for UI ownership and transfer validation.

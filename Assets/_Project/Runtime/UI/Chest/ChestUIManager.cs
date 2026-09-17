@@ -84,6 +84,12 @@ public class ChestUIManager : MonoBehaviour, IChestUiOpenBackend
         openedChest = null;
     }
 
+    public void CompleteOpenedChest(ChestInventory expectedInventory)
+    {
+        if (openedChest != null && openedChest.GetInventory() == expectedInventory)
+            openedChest.CompleteLootSelection();
+    }
+
     public bool CanRefreshOpenedChest()
     {
         return openedChest != null && openedChest.CanRefreshLoot();

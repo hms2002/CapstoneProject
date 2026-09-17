@@ -74,6 +74,11 @@ public static class InventoryTransferService
 {
     public static InventoryTransferResult TryTransfer(InventoryTransferRequest request)
     {
+        // Reject before relic merging or any target mutation can take place.
+        if (request.Source is ChestContainerAdapter { IsSelectionOnly: true } ||
+            request.Target is ChestContainerAdapter { IsSelectionOnly: true })
+            return InventoryTransferResult.Failed(InventoryTransferFailureReason.TargetRejectedItem);
+
         if (request.Source == request.Target ||
             !IsValidIndex(request.Source, request.SourceIndex) ||
             !IsValidIndex(request.Target, request.TargetIndex))

@@ -212,6 +212,13 @@ public sealed class PlayerRelicContainerAdapter : IItemContainer, IDisposable, I
             && inventory.TryGetRelicLevelById(relic.relicId, out _);
     }
 
+    public RelicInventory.AcquireResult PreviewSelection(int index, RelicDefinition relic, int resultingLevel)
+    {
+        return inventory != null
+            ? inventory.PreviewSetRelicSlotWithLevel(index, relic, resultingLevel)
+            : RelicInventory.AcquireResult.InvalidDefinition;
+    }
+
     public bool TryMergeExistingRelicWithLevel(RelicDefinition relic, int level)
     {
         if (relic is ParcelRelicDefinition)
