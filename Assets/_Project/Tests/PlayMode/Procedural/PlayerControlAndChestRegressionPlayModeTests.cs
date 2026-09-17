@@ -22,6 +22,106 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
     private static T Call<T>(object target, string method, params object[] args) =>
         (T)target.GetType().GetMethod(method, Private).Invoke(target, args);
 
+    [TestCase("Open")]
+    [TestCase("Wall")]
+    [TestCase("HoleTrap")]
+    [TestCase("Edge")]
+    [TestCase("NoGround")]
+    public void HeartPush_FullHealthMovesOnlyOnSafeGround(string boundary)
+    {
+        if (boundary != "NoGround")
+        {
+            var grid = Own(new GameObject("Heart push ground", typeof(Grid)));
+            var floorObject = new GameObject("Ground", typeof(UnityEngine.Tilemaps.Tilemap));
+            floorObject.transform.SetParent(grid.transform);
+            floorObject.layer = LayerMask.NameToLayer("Ground");
+            var floor = floorObject.GetComponent<UnityEngine.Tilemaps.Tilemap>();
+            var tile = Own(ScriptableObject.CreateInstance<UnityEngine.Tilemaps.Tile>());
+            for (int x = -1; x < (boundary == "Edge" ? 2 : 10); x++)
+            for (int y = -1; y <= 1; y++)
+                floor.SetTile(new Vector3Int(x, y, 0), tile);
+        }
+        Collider2D obstacle = null;
+        if (boundary == "Wall" || boundary == "HoleTrap")
+        {
+            var wall = Own(new GameObject(boundary));
+            wall.layer = LayerMask.NameToLayer(boundary);
+            wall.transform.position = new Vector3(1.5f, 0.5f);
+            var box = wall.AddComponent<BoxCollider2D>();
+            box.size = new Vector2(0.2f, 4f);
+            box.isTrigger = boundary == "HoleTrap";
+            obstacle = box;
+        }
+        var health = Own(ScriptableObject.CreateInstance<AttributeDefinition>());
+        health.defaultBaseValue = 100f;
+        health.maxValue = 200f;
+        var profile = Own(ScriptableObject.CreateInstance<AttributeInitProfileSO>());
+        Set(profile, "entries", new[] { new AttributeInitProfileSO.Entry { attribute = health, baseValue = 100f } });
+        var player = Own(new GameObject("Heart push player"));
+        player.SetActive(false);
+        var attributes = player.AddComponent<AttributeSet>();
+        Set(attributes, "baseInitProfile", profile);
+        var body = player.AddComponent<CircleCollider2D>();
+        body.radius = 0.3f;
+        player.AddComponent<PickupCollector2D>();
+        player.SetActive(true);
+        attributes.GetAttribute(health).SetMaxValueGetter(() => 100f);
+        var heartObject = Own(new GameObject("Pushable heart"));
+        heartObject.transform.position = new Vector3(0.85f, 0.5f);
+        var shape = heartObject.AddComponent<CircleCollider2D>();
+        shape.radius = 0.15f;
+        var heart = heartObject.AddComponent<FieldHealPickup2D>();
+        heart.Configure(health, 1, null);
+        for (int i = 0; i < 80; i++)
+        {
+            player.transform.position = heart.transform.position + Vector3.left * 0.35f;
+            Call(heart, "TryCollect", body);
+            Call(heart, "FixedUpdate");
+            Assert.That(heart.IsCollected, Is.False);
+            if (obstacle != null)
+                Assert.That(shape.Distance(obstacle).isOverlapped, Is.False);
+        }
+        float position = heart.transform.position.x;
+        if (boundary == "Open") Assert.That(position, Is.GreaterThan(2f));
+        else if (boundary == "NoGround") Assert.That(position, Is.EqualTo(0.85f));
+        else
+        {
+            Assert.That(position, Is.GreaterThan(0.85f));
+            Assert.That(position + shape.radius, Is.LessThanOrEqualTo(boundary == "Edge" ? 2f : 1.4f));
+        }
+        Assert.That(attributes.GetCurrentValue(health), Is.EqualTo(100f));
+
+        if (boundary == "Open")
+        {
+            player.transform.position = Vector3.left * 10f;
+            Time.timeScale = 0f;
+            Call(heart, "FixedUpdate");
+            Assert.That(heart.transform.position.x, Is.EqualTo(position));
+            Time.timeScale = 1f;
+            float previousDistance = float.PositiveInfinity;
+            for (int i = 0; i < 25; i++)
+            {
+                float before = heart.transform.position.x;
+                Call(heart, "FixedUpdate");
+                float moved = heart.transform.position.x - before;
+                Assert.That(moved, Is.LessThanOrEqualTo(previousDistance + 0.00001f));
+                previousDistance = moved;
+            }
+            Assert.That(heart.transform.position.x, Is.GreaterThan(position + 0.1f),
+                "The heart should coast after body contact ends.");
+            Assert.That(heart.transform.position.x, Is.LessThan(position + 0.4f));
+            Assert.That(previousDistance, Is.Zero, "Inertia must decay to a complete stop.");
+            position = heart.transform.position.x;
+            player.transform.position = heart.transform.position + Vector3.left * 0.35f;
+        }
+
+        attributes.TrySetBaseValue(health, 90f, heart);
+        Call(heart, "TryCollect", body);
+        Assert.That(heart.IsCollected, Is.True, "Once hurt, the same heart must heal instead of pushing.");
+        Assert.That(attributes.GetCurrentValue(health), Is.EqualTo(91f));
+        Assert.That(heart.transform.position.x, Is.EqualTo(position));
+    }
+
     [UnityTest]
     public IEnumerator SkillCooldownBuffer_WaitsForReadyThenActivatesOnce()
     {
