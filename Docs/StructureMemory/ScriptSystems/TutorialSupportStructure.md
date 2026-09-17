@@ -11,6 +11,16 @@ last_reviewed: 2026-07-04
 
 The tutorial support layer provides reusable authoring pieces for future tutorials without defining tutorial steps or scene content.
 
+## Tutorial Upgrade Blockout (2026-09-18)
+
+- [PrototypeTutorialUpgradeScene.unity](../../../Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity) is an isolated Prototype scene for reviewing the tutorial upgrade layout, not a replacement for the current tutorial route. Open it directly in the Editor; it is not registered in Build Settings or portal routes.
+- `TutorialUpgrade_Blockout` contains seven connected rooms, ordered along positive Y: movement (Y=0), dash (14), hold attack (29), weapon skills (48), chest interaction (67), weapon swap (82), boss arena (103). Floors, Wall-layer BoxCollider2D boundaries, TMP world-space guides, and entry/completion anchors are scene-authored.
+- It reuses the existing player spawner, camera prefabs, GlobalUIRoot, service wiring, and TutorialDefaultWeaponBootstrap from TutorialCorridor. The old introductory cutscene, input prerequisites, combat gates, tutorial persistence events, and outgoing portal are not copied. Shared prefabs and bootstrap code are unchanged.
+- Hold attack has one TrainingDummy; the skill room has four plus three TrainingDummy instances. The chest uses the existing TreasureChest prefab and its normal loot behavior. The swap room currently has two placement pads and pickup anchors, not assigned weapon pickups.
+- Dash bullet rows are visible layout markers without damage or emitters. `DemonKing_VisualPreview_NoCombat` preserves a boss prefab instance with scene overrides disabling its MonoBehaviours, colliders and Rigidbody2D simulation; it is a visual staging reference, not an active encounter.
+- Extension points are named `EntryAnchor`, `CompletionAnchor_Unwired`, projectile emitter/target markers, `RespawnGroup_Unwired`, weapon pickup anchors, boss entrance/camera/exit anchors. Mission progression, skill-only damage, respawn, tutorial health protection, cooldown changes and boss win/loss transitions remain unimplemented by request.
+- No new runtime state owner, cleanup flow, or contract is introduced. Unity scene opening and Play Mode verification remain pending; static serialized-reference and hierarchy checks are recorded in the [session log](../../SessionLogs/2026-09-18.md). Existing Editor direct-start gameplay policy still applies, including development run setup.
+
 ## Current Structure
 
 - WeaponSkillHUD2D and SwapWeaponSkillHUD2D project `PlayerCombatInput2D.IsWeaponInputBlocked`: the tutorial prerequisite hides both skill HUDs and restores them from current ability state on unlock. UI does not own or release the block; existing no-player/no-inactive-weapon visibility rules remain.

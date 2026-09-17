@@ -1,23 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "32e3a55ed1d442ad9ab40b69074344ad",
-            "startedUtc": "2026-09-16T16:46:10.2587761Z",
-            "endedUtc": "2026-09-16T16:47:12.5259723Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 4,
-                    "coldSpawns": 3,
-                    "firstSeenSeconds": 37.430908203125,
-                    "lastSeenSeconds": 62.249229431152347,
-                    "firstSceneName": "ProceduralDragonCorridor",
-                    "lastSceneName": "ProceduralDragonCorridor"
-                }
-            ]
-        },
-        {
             "sessionId": "2f515541705d455d8ced426f9c4deff8",
             "startedUtc": "2026-09-16T16:48:21.0822528Z",
             "endedUtc": "2026-09-16T16:48:24.2018761Z",
@@ -170,6 +153,12 @@
             "sessionId": "d5b5cb4be9964d398ec1a2aa5d34ec7d",
             "startedUtc": "2026-09-17T03:33:21.4438930Z",
             "endedUtc": "2026-09-17T03:33:23.3147563Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a7c26226197f49fa9540c6a88e8df41f",
+            "startedUtc": "2026-09-17T15:25:58.2661673Z",
+            "endedUtc": "2026-09-17T15:25:59.2750113Z",
             "entries": []
         }
     ]
