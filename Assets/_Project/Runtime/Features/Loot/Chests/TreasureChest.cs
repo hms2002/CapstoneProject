@@ -329,7 +329,17 @@ public class TreasureChest : MonoBehaviour
     private bool TryAddLootItem(ScriptableObject item)
     {
         if (item is RelicDefinition relic)
+        {
+            RelicInventory playerInventory = LootPoolItemSelectionService.GetPlayerRelicInventory();
+            if (!ChestRewardPolicy.CanOfferRelic(relic, playerInventory, inventory))
+                relic = LootPoolItemSelectionService.GetRandomRelicByRarity(
+                    relic.rarity, candidate => ChestRewardPolicy.CanOfferRelic(candidate, playerInventory, inventory));
+
+            if (relic == null)
+                return false;
+
             return inventory.TryAddRelicWithLevel(relic, ChestRewardPolicy.ResolveChestRelicLevel(relic));
+        }
 
         return inventory.TryAdd(item);
     }

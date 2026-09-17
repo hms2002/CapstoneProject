@@ -434,6 +434,49 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
         Assert.That(target.Get(1), Is.Null);
     }
 
+    [TestCase(0, 0, true)]
+    [TestCase(5, 0, false)]
+    [TestCase(4, 0, true)]
+    [TestCase(4, 1, false)]
+    [TestCase(3, 1, true)]
+    [TestCase(3, 2, false)]
+    public void RelicLoot_ReservesActualChestLevelsWithoutUpgradingPlayer(int ownedLevel, int offeredLevel, bool expected)
+    {
+        var relic = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+        relic.relicId = "loot-level-budget";
+        relic.maxLevel = 5;
+        var inventory = Own(new GameObject("Relic loot owner")).AddComponent<RelicInventory>();
+        if (ownedLevel > 0)
+            Assert.That(inventory.TrySetRelicSlotWithLevel(0, relic, ownedLevel), Is.True);
+        var chest = new ChestInventory(2);
+        if (offeredLevel > 0)
+            chest.SetRelicWithLevel(0, relic, offeredLevel);
+
+        var policy = typeof(LootPoolService).Assembly.GetType("ChestRewardPolicy", true);
+        var method = policy.GetMethod("CanOfferRelic", BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.That(method.Invoke(null, new object[] { relic, inventory, chest }), Is.EqualTo(expected));
+        Assert.That(inventory.GetRelicLevelInSlot(0), Is.EqualTo(ownedLevel));
+        Assert.That(method.Invoke(null, new object[] { relic, inventory, new ChestInventory(2) }),
+            Is.EqualTo(ownedLevel < 5), "Each chest or reroll has its own reservation budget.");
+    }
+
+    [TestCase(0, 1, true)]
+    [TestCase(1, 1, false)]
+    [TestCase(4, 5, true)]
+    [TestCase(5, 5, false)]
+    [TestCase(6, 5, false)]
+    public void RelicLoot_ExcludesOwnedMaxLevel(int ownedLevel, int maxLevel, bool expected)
+    {
+        var relic = Own(ScriptableObject.CreateInstance<RelicDefinition>());
+        relic.maxLevel = maxLevel;
+        var selector = typeof(LootPoolService).Assembly.GetType("LootPoolItemSelectionService", true);
+        var method = selector.GetMethod("CanGainRelicLevels", BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.That(method.Invoke(null, new object[] { relic, ownedLevel, 0 }), Is.EqualTo(expected));
+        var parcel = Own(ScriptableObject.CreateInstance<ParcelRelicDefinition>());
+        Assert.That(method.Invoke(null, new object[] { parcel, 1, 1 }), Is.True,
+            "Parcel carry limits must not be interpreted as relic upgrade limits.");
+    }
+
     [TestCase(2, false)]
     [TestCase(3, true)]
     public void ChestSelection_FullRelicInventoryReservesCombinedLevels(int maxLevel, bool expected)

@@ -2,6 +2,24 @@ using UnityEngine;
 
 internal static class ChestRewardPolicy
 {
+    internal static bool CanOfferRelic(RelicDefinition relic, RelicInventory playerInventory, ChestInventory chest)
+    {
+        if (relic == null)
+            return false;
+
+        int ownedLevel = 0;
+        if (playerInventory != null)
+            playerInventory.TryGetRelicLevelById(relic.relicId, out ownedLevel);
+
+        int reservedLevel = 0;
+        if (chest != null)
+            for (int i = 0; i < chest.Capacity; i++)
+                if (chest.Get(i) is RelicDefinition offered && offered.relicId == relic.relicId)
+                    reservedLevel += chest.GetRelicLevelInSlot(i);
+
+        return LootPoolItemSelectionService.CanGainRelicLevels(relic, ownedLevel, reservedLevel);
+    }
+
     public static bool CanRefreshLoot(
         bool isGenerated,
         ChestInventory inventory,
