@@ -1237,6 +1237,7 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
 // 책임: 마왕의 강베기 이동, 휘두르기 경고, 범위 피해, 후딜 처리를 실행한다.
 public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
 {
+    private static readonly RaycastHit2D[] ApproachWallHits = new RaycastHit2D[16];
     [SerializeField, Min(0.1f)] private float moveSpeedMultiplier = 4f;
     [SerializeField, Min(0.01f)] private float fallbackMoveSeconds = 0.35f;
     [SerializeField, Min(0f)] private float stopBeforeTargetDistance = 1.1f;
@@ -1290,6 +1291,7 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
             Vector2 moveStart = demon.transform.position;
             Vector2 targetPosition = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : moveStart;
             Vector2 moveTarget = ResolveSlashStopPosition(moveStart, targetPosition, out Vector2 moveDirection);
+            moveTarget = ResolveWallSafeApproachTarget(demon, moveStart, moveTarget);
             Vector2 moveDelta = moveTarget - moveStart;
 
             if (moveDelta.magnitude > 0.05f)
@@ -1538,13 +1540,38 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
         }
         finally
         {
-            if (IsAbilityCancelled(spec))
-                motion?.CancelMotion();
+            motion?.CancelMotion();
             demon.StopBodyAfterimage();
         }
+    }
 
-        if (!IsAbilityCancelled(spec))
-            demon.transform.position = targetPosition;
+    private static Vector2 ResolveWallSafeApproachTarget(DemonKingController demon, Vector2 start, Vector2 target)
+    {
+        Vector2 delta = target - start;
+        float distance = delta.magnitude;
+        if (distance <= 0.0001f) return start;
+
+        ContactFilter2D filter = new();
+        filter.SetLayerMask(demon.WallMask);
+        filter.useTriggers = false;
+        Collider2D probe = demon.WallRushCollisionProbe;
+        Rigidbody2D body = demon.GetComponent<Rigidbody2D>();
+        int count;
+        if (probe != null && probe.enabled && probe.gameObject.activeInHierarchy)
+            count = probe.Cast(delta / distance, filter, ApproachWallHits, distance);
+        else if (body != null)
+            count = body.Cast(delta / distance, filter, ApproachWallHits, distance);
+        else
+            return start; // No body geometry means no safe approach can be established.
+
+        float allowedDistance = distance;
+        for (int i = 0; i < count; i++)
+        {
+            RaycastHit2D hit = ApproachWallHits[i];
+            if (hit.collider == null || (body != null && hit.collider.attachedRigidbody == body)) continue;
+            allowedDistance = Mathf.Min(allowedDistance, Mathf.Max(0f, hit.distance - 0.03f));
+        }
+        return start + delta / distance * allowedDistance;
     }
 
     private Vector2 ResolveSlashStopPosition(Vector2 currentPosition, Vector2 targetPosition, out Vector2 direction)

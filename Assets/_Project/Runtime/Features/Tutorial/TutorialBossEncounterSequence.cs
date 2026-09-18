@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityGAS;
+using CapstoneAudio;
 
 [DisallowMultipleComponent]
 /// <summary>
-/// 책임 : 튜토리얼 보스 조우 컷씬의 카메라 이동, 대사, HUD 숨김, 입력 잠금 흐름을 실행한다.
+/// 책임 : 튜토리얼 보스의 대사, 전투/패배 분기, 카메라/HUD/입력 소유권을 조율한다.
 /// </summary>
 public sealed class TutorialBossEncounterSequence : MonoBehaviour
 {
@@ -80,6 +81,16 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
     [SerializeField] private TutorialBossLaserPresentation laserPresentation;
     [SerializeField] private MonoBehaviour presentationHpView;
 
+    [Header("Playable Encounter (replaces the scripted laser when assigned)")]
+    [SerializeField] private BossControllerBase combatBoss;
+    [SerializeField] private AttributeDefinition combatPlayerHealth;
+    [SerializeField] private SoundRef combatBgm;
+    private AttributeSet combatPlayerAttributes;
+    private PlayerDeathReturnToHub2D normalPlayerDeath;
+    private bool normalPlayerDeathWasEnabled;
+    private bool combatRunning, combatWon, combatLost;
+    private System.IDisposable combatDamageFilter;
+
     [Header("Timing")]
     [SerializeField, Min(0f)] private float delayAfterFirstDialogueSeconds = 0.2f;
     [SerializeField, Min(0f)] private float delayAfterLaserSeconds = 0.2f;
@@ -135,6 +146,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
     private bool subscribedToLaserHit;
     private bool subscribedToHpDepleted;
     private bool hasHiddenDefaultHudRoots;
+    private bool holdsCombatHudSuppression;
     private bool hasStartedPlayerDeathPresentation;
     private bool hasInvokedPlayerCollapse;
     private Coroutine playerDeathPresentationRoutine;
@@ -167,6 +179,9 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private void OnEnable()
     {
+        // This sequence owns the intro; the boss FSM must not start another dialogue.
+        combatBoss?.FinishEncounterIntro();
+        combatBoss?.SetCombatActive(false);
         PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
         PlayerRuntimeRegistry.PlayerUnregistered += HandlePlayerUnregistered;
     }
@@ -234,25 +249,47 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         onBeforeFirstDialogue?.Invoke();
         yield return PlayDialogueRoutine(firstDialogueInk, firstDialogueStartPath, "first");
         onFirstDialogueCompleted?.Invoke();
-        yield return WaitForPresentationSeconds(delayAfterFirstDialogueSeconds);
+        if (combatBoss != null)
+        {
+            yield return PlayCombatRoutine();
+            if (combatWon)
+            {
+                // BossDeathPresentation owns the existing victory dialogue/outro from here.
+                hasPlayed = true;
+                sequenceRoutine = null;
+                CleanupSequenceState(releasePlayerLocks: true);
+                ReleaseCombatPlayer();
+                onSequenceCompleted?.Invoke();
+                yield break;
+            }
+            if (combatLost)
+            {
+                InvokePlayerCollapseOnce();
+                yield return PlayPlayerCollapsePresentationRoutine();
+            }
+        }
+        else
+        {
+            yield return WaitForPresentationSeconds(delayAfterFirstDialogueSeconds);
 
-        PrepareLaserHpHud();
-        yield return PlayLetterboxInIfNeededRoutine();
-        PresentationHpView?.SetVisible(true);
+            PrepareLaserHpHud();
+            yield return PlayLetterboxInIfNeededRoutine();
+            PresentationHpView?.SetVisible(true);
 
-        if (focusPlayerBeforeLaser)
-            yield return FocusPlayerForLaserRoutine();
+            if (focusPlayerBeforeLaser)
+                yield return FocusPlayerForLaserRoutine();
 
-        onBeforeLaser?.Invoke();
-        PresentationHpView?.SetVisible(true);
-        if (laserPresentation != null)
-            yield return laserPresentation.PlayRoutine();
-        onLaserCompleted?.Invoke();
-        yield return WaitForPresentationSeconds(delayAfterLaserSeconds);
-        PresentationHpView?.SetVisible(false);
-        yield return WaitForPlayerDeathPresentationIfRunningRoutine();
+            onBeforeLaser?.Invoke();
+            PresentationHpView?.SetVisible(true);
+            if (laserPresentation != null)
+                yield return laserPresentation.PlayRoutine();
+            onLaserCompleted?.Invoke();
+            yield return WaitForPresentationSeconds(delayAfterLaserSeconds);
+            PresentationHpView?.SetVisible(false);
+            yield return WaitForPlayerDeathPresentationIfRunningRoutine();
 
-        yield return PlayLetterboxOutIfNeededRoutine();
+            yield return PlayLetterboxOutIfNeededRoutine();
+        }
 
         if (refocusBossAfterLaser)
             yield return RefocusBossAfterLaserRoutine();
@@ -273,6 +310,94 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         sequenceRoutine = null;
         CleanupSequenceState(releasePlayerLocks: !keepPlayerLockedAfterSequence);
         onSequenceCompleted?.Invoke();
+    }
+
+    private IEnumerator PlayCombatRoutine()
+    {
+        Transform player = ResolvePlayerTransform();
+        combatPlayerAttributes = player.GetComponent<AttributeSet>();
+        normalPlayerDeath = player.GetComponent<PlayerDeathReturnToHub2D>();
+        normalPlayerDeathWasEnabled = normalPlayerDeath != null && normalPlayerDeath.enabled;
+        if (combatPlayerAttributes == null || combatPlayerHealth == null)
+        {
+            Debug.LogError("[TutorialBossEncounterSequence] Playable encounter requires player HP wiring.", this);
+            CancelSequence();
+            yield break;
+        }
+        // Only this encounter replaces the normal immediate game-over route.
+        if (normalPlayerDeath != null) normalPlayerDeath.enabled = false;
+        combatPlayerAttributes.OnAttributeChanged += HandleCombatPlayerHealth;
+        combatBoss.DeathStarted += HandleCombatBossDeath;
+        combatWon = combatLost = false;
+        combatRunning = true;
+        combatDamageFilter = CombatIncomingDamageModifiers.Register(FilterDamageAfterDefeat);
+        RestoreBossVisualScaleImmediate();
+        RestoreCameraState(player);
+        RestoreDefaultHudRoots();
+        ReleaseTargetabilityBlock();
+        ReleasePlayerProtection();
+        inputBlocker?.Release();
+        ReleaseTransitionPlayerUnlockBlock();
+        // Development scene normalization can release protection before our handoff.
+        // MaintainPlayerLock still owns None, so restore it even when its token is gone.
+        PlayerInteractor2D interactor = player.GetComponent<PlayerInteractor2D>();
+        if (lockPlayerControls && interactor != null && interactor.CurrentState == InteractState.None)
+            interactor.SetInteractState(InteractState.Idle);
+        if (holdsRunTimerPause && RunTimeLimitSystem.Instance != null)
+            RunTimeLimitSystem.Instance.SetExternalPause(this, false);
+        holdsRunTimerPause = false;
+        Animator bossAnimator = combatBoss.GetComponent<Animator>();
+        if (bossAnimator != null) bossAnimator.enabled = true;
+        combatBoss.BeginCombatEncounter(player);
+        SoundPlaybackUtility.TryPlayMusic(combatBgm, gameObject.scene);
+        HandleCombatPlayerHealth(combatPlayerHealth, 1f, combatPlayerAttributes.GetAttributeValue(combatPlayerHealth));
+        while (!combatWon && !combatLost) yield return null;
+        combatRunning = false;
+        combatPlayerAttributes.OnAttributeChanged -= HandleCombatPlayerHealth;
+        combatBoss.DeathStarted -= HandleCombatBossDeath;
+        if (combatLost) HideDefaultHudRoots();
+    }
+
+    private void HandleCombatPlayerHealth(AttributeDefinition attribute, float oldValue, float newValue)
+    {
+        if (!combatRunning || combatWon || combatLost || attribute != combatPlayerHealth || newValue > 0f) return;
+        combatLost = true;
+        combatRunning = false;
+        combatBoss.SetCombatActive(false); // Cancels the boss-owned pattern and its spawned attacks.
+        combatBoss.GetComponent<MovementMotor2D>()?.StopAllMotion();
+        Rigidbody2D body = combatBoss.GetComponent<Rigidbody2D>();
+        if (body != null) body.linearVelocity = Vector2.zero;
+        AcquireSequenceState();
+        normalPlayerDeath?.PrepareForScriptedDeathPresentation();
+    }
+
+    private void HandleCombatBossDeath(Enemy boss)
+    {
+        if (!combatRunning || combatLost || boss != combatBoss) return;
+        combatWon = true;
+        combatRunning = false;
+    }
+
+    private float FilterDamageAfterDefeat(CombatIncomingDamageContext context)
+    {
+        // A lingering player attack must not launch the boss-owned ending after defeat dialogue starts.
+        return combatLost && combatBoss != null && context.Target == combatBoss.gameObject ? 0f : context.BaseDamage;
+    }
+
+    private void ReleaseCombatPlayer()
+    {
+        combatDamageFilter?.Dispose();
+        combatDamageFilter = null;
+        if (combatPlayerAttributes != null) combatPlayerAttributes.OnAttributeChanged -= HandleCombatPlayerHealth;
+        if (combatBoss != null) combatBoss.DeathStarted -= HandleCombatBossDeath;
+        // A defeated player stays on the tutorial game-over route until scene teardown.
+        // Re-enabling the normal death component at zero HP would start a second game over.
+        if (normalPlayerDeath != null && combatPlayerAttributes != null && combatPlayerHealth != null &&
+            combatPlayerAttributes.GetAttributeValue(combatPlayerHealth) > 0f)
+            normalPlayerDeath.enabled = normalPlayerDeathWasEnabled;
+        normalPlayerDeath = null;
+        combatPlayerAttributes = null;
+        combatRunning = false;
     }
 
     private IEnumerator PlayDialogueRoutine(TextAsset inkJson, string startPath, string label)
@@ -468,7 +593,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         }
 
         CacheCameraState();
-        Transform target = bossFocusTarget != null ? bossFocusTarget : transform;
+        Transform target = combatBoss != null ? combatBoss.transform : bossFocusTarget != null ? bossFocusTarget : transform;
         SetCameraTarget(target);
         yield return ZoomCameraWhileWaitingRoutine(
             focusOrthographicSize,
@@ -782,6 +907,15 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private void HideDefaultHudRoots()
     {
+        if (combatBoss != null && hideDefaultHudDuringSequence)
+        {
+            if (!holdsCombatHudSuppression && DialoguePlayback.IsAvailable)
+            {
+                DialoguePlayback.AcquireNonDialogueUiSuppression(this, 0f);
+                holdsCombatHudSuppression = true;
+            }
+            return;
+        }
         if (!hideDefaultHudDuringSequence || hasHiddenDefaultHudRoots)
             return;
 
@@ -835,6 +969,11 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private void RestoreDefaultHudRoots()
     {
+        if (holdsCombatHudSuppression)
+        {
+            DialoguePlayback.ReleaseNonDialogueUiSuppression(this, 0.35f);
+            holdsCombatHudSuppression = false;
+        }
         for (int i = hiddenDefaultHudStates.Count - 1; i >= 0; i--)
         {
             HudObjectActiveState state = hiddenDefaultHudStates[i];
@@ -848,6 +987,8 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private void CancelSequence(bool invokeCanceled)
     {
+        if (combatBoss != null && !combatBoss.IsDead) combatBoss.SetCombatActive(false);
+        ReleaseCombatPlayer();
         if (sequenceRoutine != null)
         {
             StopCoroutine(sequenceRoutine);
@@ -970,6 +1111,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private bool ShouldMaintainPlayerLock()
     {
+        if (combatRunning || combatWon) return false;
         if (!lockPlayerControls && !blockPlayerTargetability)
             return false;
 

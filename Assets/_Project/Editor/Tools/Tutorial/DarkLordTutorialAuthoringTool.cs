@@ -75,6 +75,13 @@ public static class DarkLordTutorialAuthoringTool
         if (!CanEditActiveScene(out Scene scene))
             return;
 
+        TutorialBossEncounterSequence existingSequence = FindSceneComponent<TutorialBossEncounterSequence>(scene);
+        if (existingSequence != null && new SerializedObject(existingSequence).FindProperty("combatBoss").objectReferenceValue != null)
+        {
+            Debug.LogWarning("This scene uses the playable tutorial encounter. Legacy laser authoring would remove its combat components; leaving it unchanged.", existingSequence);
+            return;
+        }
+
         Undo.IncrementCurrentGroup();
         int undoGroup = Undo.GetCurrentGroup();
         Undo.SetCurrentGroupName("Apply DarkLord tutorial authoring");
@@ -163,6 +170,23 @@ public static class DarkLordTutorialAuthoringTool
         TutorialBossEncounterSequence sequence = FindSceneComponent<TutorialBossEncounterSequence>(scene);
         TutorialBossLaserPresentation laserPresentation = FindSceneComponent<TutorialBossLaserPresentation>(scene);
         TutorialPresentationHpView hpView = FindSceneComponent<TutorialPresentationHpView>(scene);
+
+        if (sequence != null && new SerializedObject(sequence).FindProperty("combatBoss").objectReferenceValue != null)
+        {
+            SerializedObject combatSo = new(sequence);
+            RequireReference(report, combatSo, "combatPlayerHealth", "Combat player HP");
+            RequireReference(report, combatSo, "firstDialogueInk", "Opening dialogue");
+            RequireReference(report, combatSo, "secondDialogueInk", "Defeat dialogue");
+            RequireReference(report, combatSo, "tutorialBossNpcData", "Tutorial illustration/NPC");
+            BossControllerBase boss = combatSo.FindProperty("combatBoss").objectReferenceValue as BossControllerBase;
+            if (boss == null || boss.GetComponent<BossDeathPresentation>() == null || boss.GetComponent<BossDefeatEndingSequence>() == null)
+                report.Error("Playable tutorial boss requires combat, death presentation and terminal ending components.");
+            if (FindSceneComponent<EndingOutroPlayer>(scene) == null) report.Error("Victory outro player is missing.");
+            if (combatSo.FindProperty("laserPresentation").objectReferenceValue != null)
+                report.Error("Playable tutorial must not use the scripted laser presentation.");
+            report.Log();
+            return;
+        }
 
         if (sequence == null)
         {

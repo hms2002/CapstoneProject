@@ -2215,3 +2215,22 @@ These are verified code/diagnostic issues, not proven causes of the run-entry na
 - Observed: the chest selection coroutine test failed on repeated `IOException: Win32 IO returned 1224` from `PrewarmTraceRuntime.Flush`, while the seven synchronous cases passed. The stack ran through `EditorApplication.update` and wrote `PrewarmTrace_HOSEO_LG17090.json`; AssetDatabase was also importing that generated trace file. This was unrelated to inventory assertions.
 - Test isolation: the UI coroutine temporarily unregisters only the recorder's `FlushIfNeeded` editor update delegate and re-registers it during teardown. Do not globally ignore error logs to make the test pass. The next batch run passed all eight cases.
 - The production recorder is unchanged. Treat resilient editor trace flushing as a separate follow-up, and remove only test-generated trace-session changes when cleaning the task diff.
+
+## 2026-09-18 — Guided tutorial dash retained its own UI control lock
+
+- Source inspection found that GameFlowInputBlocker acquires UIManager's external block, whose BlockControlOnly profile also applies player control tags. Resuming time and directly calling GAS while retaining that block can reject the guided dash.
+- The prototype releases only its UI flow block before trying the dash, reacquires it on rejection, and leaves independent pause/control ownership intact. Weapon/dash/swap input blocks remain owned until presentation cleanup.
+- Isolated native regression verifies release/reacquire on rejected confirmation; shared time-service overlap/restoration checks pass. Full-scene Play Mode confirmation remains pending. See the tutorial section in [session log](./SessionLogs/2026-09-18.md).
+
+
+### 2026-09-18 — Tutorial combat restoration must include presentation and lock handoff
+- Restoring combat components to a tableau scene left its Witch Animator controller in place; enabling it displayed Chloe. Validate the runtime controller together with the restored boss, and check scene EventSystem duplication.
+- Hiding HUD GameObjects before DialogueService captured them made inactive states become the dialogue restore baseline. Playable tutorial now owns DialoguePlayback suppression and releases it for fade-in.
+- Editor scene normalization can ForceReleaseAll on PlayerCinematicProtection while the tutorial still caches ownership and maintains None. Combat handoff must restore its None interaction state even if the token was already released. Regression includes real interaction/input components and that normalization sequence.
+- Related: `Assets/_Project/Runtime/Features/Tutorial/TutorialBossEncounterSequence.cs`, `Tools/Validation/TutorialBossCombatRegression.cs`, `Tools/Validation/TutorialBossSceneValidation.py`.
+
+
+### 2026-09-18 — HeavySlash approach completion bypassed wall-safe movement
+- A motor can stop at a wall while an ability coroutine later overwrites Transform.position with the unvalidated requested destination. HeavySlash first approach had this path even with motor wall safety enabled.
+- First approach now clamps its body-cast destination and retains the achieved position at completion; no minimum positive travel is forced when already touching a wall. Regression checks blocked/clear casts and absence of completion teleport.
+- This confirms a wall bypass mechanism, not the user's opposite-side target-coordinate cause. Commit-dash/other-pattern direct position writes remain outside this initial-approach fix.

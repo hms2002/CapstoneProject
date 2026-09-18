@@ -102,6 +102,41 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private bool rerollOpenVfxActive;
     private bool rerollSlotRevealVfxPending;
     private HoldActionButton subscribedRerollHoldActionButton;
+    private UnityEngine.Object guidedSelectionOwner;
+    private bool forwardingGuidedSelection;
+
+    public ChestInventory BoundInventory => chestInventory;
+    public ItemSlotUI FirstVisibleSlot => spawnedChestSlots.Count > 0 ? spawnedChestSlots[0] : null;
+    public Button ConfirmButton => confirmSelectionButton;
+    public bool IsSelectionReady => CanChangeSelection && !selectionMotion.IsActive();
+    public event Action SelectionCommitted;
+
+    // Optional scene-owned guidance. With no owner, normal chest behavior is unchanged.
+    public bool AcquireGuidedSelection(UnityEngine.Object owner)
+    {
+        if (owner == null || (guidedSelectionOwner != null && guidedSelectionOwner != owner)) return false;
+        guidedSelectionOwner = owner;
+        ResetRerollHoldState();
+        RefreshRerollUi();
+        return true;
+    }
+
+    public void ReleaseGuidedSelection(UnityEngine.Object owner)
+    {
+        if (guidedSelectionOwner != owner) return;
+        guidedSelectionOwner = null;
+        RefreshRerollUi();
+    }
+
+    public bool TrySelectGuidedFirstSlot(UnityEngine.Object owner)
+    {
+        ItemSlotUI slot = FirstVisibleSlot;
+        if (owner == null || guidedSelectionOwner != owner || slot == null || !IsSelectionReady) return false;
+        forwardingGuidedSelection = true;
+        try { ToggleSelection(slot); }
+        finally { forwardingGuidedSelection = false; }
+        return selectedSlots.Contains(slot);
+    }
 
     public bool IsActive => gameObject.activeSelf;
     public bool CanCloseOnEscape => true;
@@ -242,6 +277,8 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void OnDisable()
     {
+        guidedSelectionOwner = null;
+        forwardingGuidedSelection = false;
         ItemDragContext.CancelActiveDragSession();
         MouseCursorService.Instance?.ClearDomain(this);
         UIManager.Instance?.HideHoverImmediate();
@@ -572,6 +609,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private bool CanStartRerollHold()
     {
+        if (guidedSelectionOwner != null) return false;
         if (ChestUIManager.Instance == null || confirmingSelection || selectionMotion.IsActive())
             return false;
 
@@ -756,7 +794,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
         bool isRerollUnlocked = refreshLimit > 0;
         bool isHolding = rerollHoldActionButton != null && rerollHoldActionButton.IsHolding;
-        bool canInteract = canRefresh &&
+        bool canInteract = guidedSelectionOwner == null && canRefresh &&
                            !confirmingSelection && !selectionMotion.IsActive() &&
                            !IsFirstOpenRevealPlaying &&
                            (rerollRevealState == RerollRevealState.Idle || isHolding);
@@ -1054,6 +1092,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void ToggleSelection(ItemSlotUI slot)
     {
+        if (guidedSelectionOwner != null && !forwardingGuidedSelection) return;
         if (!CanChangeSelection || selectedItemsRoot == null || slot == null || !slot.HasItem || selectionMotion.IsActive())
             return;
         bool removing = selectedSlots.Contains(slot);
@@ -1154,6 +1193,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void ConfirmSelection()
     {
+        if (guidedSelectionOwner != null) return;
         if (!CanChangeSelection || selectedSlots.Count == 0 || selectionMotion.IsActive()) return;
         var indices = new List<int>();
         foreach (ItemSlotUI slot in selectedSlots) indices.Add(slot.BoundIndex);
@@ -1180,6 +1220,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             return;
         }
         ChestUIManager.Instance?.CompleteOpenedChest(chestInventory);
+        SelectionCommitted?.Invoke();
         IStackableUI closeTarget = rootOwner ?? this;
         if (UIManager.Instance != null) UIManager.Instance.PopUI(closeTarget);
         else closeTarget.CloseUI();

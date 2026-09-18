@@ -30,6 +30,8 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
     private Vector2 hudRestPosition;
     private Tween combatMotion;
     private bool combatHidden;
+    private PrototypeTutorialUpgrade prototypeTutorial;
+    private int prototypeSceneHandle = -1;
 
     private void Awake()
     {
@@ -69,9 +71,22 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
 
     private void RefreshMainQuest()
     {
+        Scene scene = SceneManager.GetActiveScene();
+        if (prototypeSceneHandle != scene.handle)
+        {
+            prototypeSceneHandle = scene.handle;
+            prototypeTutorial = null;
+            if (scene.name == "PrototypeTutorialUpgradeScene")
+                foreach (GameObject root in scene.GetRootGameObjects())
+                {
+                    prototypeTutorial = root.GetComponentInChildren<PrototypeTutorialUpgrade>(true);
+                    if (prototypeTutorial != null) break;
+                }
+        }
         int defeated = RunOfficerQuestProgress.CountDefeated(RunSessionStore.Data);
         RefreshOfficerQuest(defeated);
-        string text = ResolveMainQuestText(SceneManager.GetActiveScene().name, defeated, mainQuestRoutes);
+        string text = prototypeTutorial != null && prototypeTutorial.isActiveAndEnabled
+            ? prototypeTutorial.ProgressText : ResolveMainQuestText(scene.name, defeated, mainQuestRoutes);
         bool visible = !string.IsNullOrEmpty(text);
         if (lastMainText != text && mainDescription != null) mainDescription.text = text;
         lastMainText = text;
@@ -93,7 +108,7 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
         if (officerDescription == null) return;
         GamePlayData data = RunSessionStore.Data;
         string scene = SceneManager.GetActiveScene().name;
-        bool visible = RunOfficerQuestProgress.IsVisible(data);
+        bool visible = prototypeTutorial == null && RunOfficerQuestProgress.IsVisible(data);
         bool inCombat = MonsterSpawnRoomGroup.IsPlayerInCombat;
         if (officerLeaving && (inCombat || !RunOfficerQuestProgress.CanPresentCompletion(data, scene) || SceneTransitionPlayback.IsTransitionActive))
         {

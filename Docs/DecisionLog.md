@@ -3294,3 +3294,10 @@ The upgrade-window experience reward is 100 additional magic stones once per sav
 ## 2026-09-17 — Chest rewards require selection confirmation
 
 The approved chest flow stages at most two rewards in a selected-items panel. One selected reward permits confirmation. Selection alone does not acquire loot, and closing before confirmation cancels only the provisional choices. Confirmation checks the entire selection, then uses existing inventory transfer/merge rules. Successful confirmation ends the chest and discards remaining offers; a full inventory keeps the selection and asks the player to drag inventory items into the discard region. The screen no longer exposes immediate chest acquisition or player-to-chest returns. Runtime transfer compatibility APIs remain for existing callers and rollback.
+
+
+## 2026-09-18 - Tutorial DarkLord Fight Has Both Victory And Defeat Routes
+
+The user replaces the scripted laser defeat in DarkLord_Tutorial (referred to as TutorialBoss_Scene) with actual boss combat immediately after the existing opening dialogue. The boss is killable: victory uses the existing DemonKing victory dialogue and ending outro. Player defeat uses the existing post-laser dialogue, tutorial defeat screen and ProtoTypeHub return, preserving their text, illustration and return policy. The scripted laser/fake-HP/collapse sequence is not part of the playable scene's flow. PrototypeTutorialUpgradeScene opens its final portal route after chest confirmation and preserves the tutorial loadout on travel.
+
+TutorialBossEncounterSequence owns the fight/loss handoff; BossDeathPresentation and BossDefeatEndingSequence own victory. Only one terminal outcome may win. The scene does not alter ordinary boss fights, shared player death defaults, Hub return behavior or shared prefabs.

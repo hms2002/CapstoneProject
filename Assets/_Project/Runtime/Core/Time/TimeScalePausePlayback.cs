@@ -20,9 +20,18 @@ public interface ICombatSlowMotionBackend
     bool AcquireCombatSlowMotion(Object owner);
 }
 
+/// <summary>Updates one presentation owner's scale atomically without releasing other pause owners.</summary>
+public interface ITimeScaleRampBackend
+{
+    bool SetOwnedTimeScale(Object owner, float scale);
+}
+
 public static class TimeScalePausePlayback
 {
     private static ITimeScalePauseBackend backend;
+
+    public static bool SetOwnedTimeScale(Object owner, float scale)
+        => backend is ITimeScaleRampBackend ramp && ramp.SetOwnedTimeScale(owner, scale);
 
     public static bool IsCombatSlowMotion => backend is ICombatSlowMotionBackend slow && slow.IsCombatSlowMotion;
     public static bool AcquireCombatSlowMotion(Object owner)

@@ -229,6 +229,12 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
         ReturnToHub(endRunReason, targetHubSceneName, useSceneTransitionService);
     }
 
+    // Scripted encounters own their dialogue/game-over timing but share the actual death state.
+    public void PrepareForScriptedDeathPresentation()
+    {
+        BlockPlayerControl();
+    }
+
     private void BlockPlayerControl()
     {
         ApplyDeathStateTags();

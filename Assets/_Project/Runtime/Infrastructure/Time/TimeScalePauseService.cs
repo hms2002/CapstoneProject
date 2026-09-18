@@ -90,6 +90,15 @@ public static class TimeScalePauseService
         if (owners.ContainsKey(ownerId))
             return false;
 
+        return SetOwnedTimeScale(owner, scale);
+    }
+
+    public static bool SetOwnedTimeScale(Object owner, float scale)
+    {
+        if (owner == null || !float.IsFinite(scale)) return false;
+        CleanupDeadOwners();
+        int ownerId = owner.GetInstanceID();
+
         if (owners.Count == 0)
         {
             EnsureRunner();
@@ -97,7 +106,7 @@ public static class TimeScalePauseService
 
         }
 
-        owners[ownerId] = new PauseOwner(owner, scale);
+        owners[ownerId] = new PauseOwner(owner, Mathf.Clamp01(scale));
         ApplyRequestedScale();
         return true;
     }
@@ -153,11 +162,12 @@ public static class TimeScalePauseService
     /// <summary>
     /// 책임 : Core의 time-scale pause playback 요청을 기존 정적 TimeScalePauseService로 연결한다.
     /// </summary>
-    private sealed class TimeScalePauseBackend : ITimeScalePauseBackend, ICombatSlowMotionBackend
+    private sealed class TimeScalePauseBackend : ITimeScalePauseBackend, ICombatSlowMotionBackend, ITimeScaleRampBackend
     {
         public bool IsPaused => TimeScalePauseService.IsPaused;
         public bool IsCombatSlowMotion => TimeScalePauseService.IsCombatSlowMotion;
         public bool AcquireCombatSlowMotion(Object owner) => TimeScalePauseService.AcquireCombatSlowMotion(owner);
+        public bool SetOwnedTimeScale(Object owner, float scale) => TimeScalePauseService.SetOwnedTimeScale(owner, scale);
 
         public bool IsHeldBy(Object owner)
         {
