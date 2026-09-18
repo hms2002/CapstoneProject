@@ -400,3 +400,10 @@ CombatHitPause2D.FreezeVictim now respects the same parent ICombatHitPauseImmune
 - SlimeQueenEncounterClearCondition removes remaining same-scene Mob objects and cancels SlimeQueenFallingSummon objects when BossEncounterEndDirector requests the finale after both phase-two types have been defeated. Cleanup precedes finale-pair resolution, so missing finale actors do not skip it. Phase-one death and a single phase-two death do not trigger cleanup.
 - Removal disables objects before destruction to run Mob fail-safe cleanup and bypasses death/splitting/kill rewards. Boss controllers derive from Enemy separately from Mob and remain available for finale presentation. Other loaded scenes are excluded. Independently spawned projectiles are not swept by this monster cleanup.
 - Regression cases live in CombatFeelLootQuestPlayModeTests; Unity runtime execution remains pending for this change.
+
+### Dragon inhale presentation lifetime (2026-09-18)
+
+- `AbilityLogic_DragonFireBreath` still spawns the authored inhale hook through `WorldPresentationPlayback.SpawnPersistent`, but each followed visual shares an `InhalePresentationLease` owned by its `DragonController` instance. No state is stored on the shared ability asset for these leases.
+- The sequence finally disposes its leases on normal completion/cancellation. Pattern end, controller disable and controller destruction also release outstanding leases. A disposed lease clears its instance before returning it, so a late coroutine finally cannot release or move an instance already borrowed from the pool by another execution.
+- Player death is checked before the controller's hit-pause early return while inhale visuals are owned; it cancels the active ability and returns them. Breath loops also reject player-death/disabled-owner state before continuing. Prefab authoring and shared persistent pool behavior are unchanged.
+- This is a Dragon-local cleanup boundary. Other manually released persistent presentations still require their own explicit owner cleanup; this change does not globally repair unowned effects.

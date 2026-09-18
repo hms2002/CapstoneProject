@@ -40,6 +40,43 @@ public sealed class DragonController : BossControllerBase
     private const float FacingDeadZone = 0.2f;
     private IAfterimageEmitter2D jumpAfterimageEmitter;
     private bool hasForcedFirstSlamPatternForDemo;
+    private readonly System.Collections.Generic.HashSet<InhalePresentationLease> inhaleVisuals = new();
+
+    // A shared lease makes coroutine-finally and owner cleanup safe in either order.
+    public sealed class InhalePresentationLease : System.IDisposable
+    {
+        private DragonController owner;
+        public GameObject Instance { get; private set; }
+
+        internal InhalePresentationLease(DragonController owner, GameObject instance)
+        {
+            this.owner = owner;
+            Instance = instance;
+        }
+
+        public void Dispose()
+        {
+            GameObject instance = Instance;
+            Instance = null;
+            owner?.inhaleVisuals.Remove(this);
+            owner = null;
+            if (instance != null)
+                CapstonePresentation.WorldPresentationPlayback.Release(instance);
+        }
+    }
+
+    public InhalePresentationLease OwnInhalePresentation(GameObject instance)
+    {
+        var lease = new InhalePresentationLease(this, instance);
+        inhaleVisuals.Add(lease);
+        return lease;
+    }
+
+    private void ReleaseInhalePresentations()
+    {
+        var leases = new System.Collections.Generic.List<InhalePresentationLease>(inhaleVisuals);
+        foreach (var lease in leases) lease.Dispose();
+    }
 
     public DragonRuntimeData RuntimeData
     {
@@ -65,6 +102,11 @@ public sealed class DragonController : BossControllerBase
 
     protected override void Update()
     {
+        if (inhaleVisuals.Count > 0 && CombatTargetDeathUtility.IsPlayerDeathSequenceRunning(Target))
+        {
+            CancelActiveAbility(true);
+            ReleaseInhalePresentations();
+        }
         if (UnityGAS.CombatHitPause2D.IsPausedOn(gameObject)) return;
         base.Update();
 
@@ -74,6 +116,7 @@ public sealed class DragonController : BossControllerBase
 
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
+        ReleaseInhalePresentations();
         faceTargetLockCount = 0;
         SetLandingPoseHeld(false);
         RuntimeData.ResetPatternCounters();
@@ -82,8 +125,15 @@ public sealed class DragonController : BossControllerBase
 
     private void OnDisable()
     {
+        ReleaseInhalePresentations();
         faceTargetLockCount = 0;
         SetLandingPoseHeld(false);
+    }
+
+    protected override void OnDestroy()
+    {
+        ReleaseInhalePresentations();
+        base.OnDestroy();
     }
 
     public override BossPatternEntry SelectNextPattern()

@@ -59,7 +59,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
         {
             for (int i = 0; i < repeatCount; i++)
             {
-                if (IsAbilityCancelled(spec))
+                if (IsBreathCancelled(dragon, spec))
                     yield break;
 
                 yield return RunFireBreathSequence(dragon, telegraphService, spec);
@@ -71,6 +71,12 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
             nextDamageAllowedTimes.Clear();
             dragon.PlayPatternTrigger(DragonAnimationKeys.Idle);
         }
+    }
+
+    private static bool IsBreathCancelled(DragonController dragon, AbilitySpec spec)
+    {
+        return dragon == null || !dragon.isActiveAndEnabled || IsAbilityCancelled(spec) ||
+               CombatTargetDeathUtility.IsPlayerDeathSequenceRunning(dragon.CurrentTarget);
     }
 
     private IEnumerator RunFireBreathSequence(
@@ -87,7 +93,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
             float elapsed = 0f;
             while (elapsed < prepareSeconds)
             {
-                if (IsAbilityCancelled(spec))
+                if (IsBreathCancelled(dragon, spec))
                     yield break;
 
                 aim = ResolveAimSnapshot(dragon, syncFacing: true);
@@ -102,7 +108,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
             ReleaseFollowedPresentationVisuals(inhalePrepareVisuals);
         }
 
-        if (IsAbilityCancelled(spec))
+        if (IsBreathCancelled(dragon, spec))
             yield break;
 
         aim = ResolveAimSnapshot(dragon, syncFacing: true);
@@ -112,7 +118,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
         try
         {
             yield return WaitForSecondsUnlessCancelled(preFireDelaySeconds, spec);
-            if (IsAbilityCancelled(spec))
+            if (IsBreathCancelled(dragon, spec))
                 yield break;
 
             telegraphService?.HideCurrent();
@@ -174,7 +180,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
 
         while (elapsed < activeSeconds)
         {
-            if (IsAbilityCancelled(spec))
+            if (IsBreathCancelled(dragon, spec))
                 yield break;
 
             ApplyDamage(dragon, origin, direction);
@@ -189,7 +195,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
             yield return null;
         }
 
-        if (!IsAbilityCancelled(spec))
+        if (!IsBreathCancelled(dragon, spec))
         {
             ApplyDamage(dragon, origin, direction);
             IgniteAlcoholPuddles(origin, direction);
@@ -248,8 +254,8 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
         WorldPresentationContext context = BuildInhalePresentationContext(dragon, direction);
 
         WorldPresentationPlayback.PlaySignalOnly(inhalePreparePresentation, context);
-        AddFollowedPresentationVisual(visuals, inhalePreparePresentation.effect, context);
-        AddFollowedPresentationVisual(visuals, inhalePreparePresentation.particle, context);
+        AddFollowedPresentationVisual(visuals, inhalePreparePresentation.effect, context, dragon);
+        AddFollowedPresentationVisual(visuals, inhalePreparePresentation.particle, context, dragon);
         return visuals;
     }
 
@@ -296,14 +302,15 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
     private static void AddFollowedPresentationVisual(
         List<FollowedPresentationVisual> visuals,
         SpawnedPresentationHook hook,
-        WorldPresentationContext context)
+        WorldPresentationContext context,
+        DragonController dragon)
     {
         if (visuals == null || !hook.HasContent)
             return;
 
         GameObject instance = WorldPresentationPlayback.SpawnPersistent(hook, context);
         if (instance != null)
-            visuals.Add(new FollowedPresentationVisual(instance, hook));
+            visuals.Add(new FollowedPresentationVisual(dragon.OwnInhalePresentation(instance), hook));
     }
 
     private WorldPresentationContext BuildInhalePresentationContext(DragonController dragon, Vector2 direction)
@@ -565,12 +572,13 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
     /// </summary>
     private readonly struct FollowedPresentationVisual
     {
-        private readonly GameObject instance;
+        private readonly DragonController.InhalePresentationLease lease;
+        private GameObject instance => lease.Instance;
         private readonly SpawnedPresentationHook hook;
 
-        public FollowedPresentationVisual(GameObject instance, SpawnedPresentationHook hook)
+        public FollowedPresentationVisual(DragonController.InhalePresentationLease lease, SpawnedPresentationHook hook)
         {
-            this.instance = instance;
+            this.lease = lease;
             this.hook = hook;
         }
 
@@ -589,8 +597,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
 
         public void Release()
         {
-            if (instance != null)
-                WorldPresentationPlayback.Release(instance);
+            lease.Dispose();
         }
     }
 }

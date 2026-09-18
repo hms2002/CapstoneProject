@@ -1,6 +1,6 @@
 # Dungeon Minimap
 
-Status: structure memory, not a technical contract. Last reviewed: 2026-09-11.
+Status: structure memory, not a technical contract. Last reviewed: 2026-09-18.
 
 ## Purpose And Flow
 
@@ -8,6 +8,12 @@ Status: structure memory, not a technical contract. Last reviewed: 2026-09-11.
 - `DungeonMapGraphSnapshot.Create` builds room shapes and normalized interior icon anchors once per room template for that graph. Its temporary dictionaries do not retain templates across scenes.
 - `DungeonMapRoomShapeBuilder.ResolveInteriorAnchor` in `DungeonMapModels.cs` computes eight-neighbor clearance to empty cells with a padded two-pass distance transform. It maximizes square icon clearance, then prefers proximity to the bounding rectangle center. Rectangle seams/overlaps are not boundaries; holes remain empty. Empty shapes use the center. Cost and temporary memory are O(grid width * grid height), not per frame.
 - `DungeonMinimapPresenter` projects the snapshot through `DungeonMinimapNodeView` and line templates. The node consumes the cached icon anchor; discovery refresh and zoom do not recompute it.
+
+## Player Position Marker
+
+- `DungeonMinimapView.prefab` authors an 8x8 red Image as the last child of MapContent, above room/content views. It reuses the transparent circular GameOverReturnCircle sprite and does not receive raycasts.
+- `DungeonMinimapPresenter.LateUpdate` reads the existing PlayerRuntimeRegistry transform, converts it with `DungeonMapRuntimeController.WorldToLayoutPosition`, and applies the same cached graph center/scale as room views. Layout conversion uses the generation GridLayout, including its transform and cell size; synthetic graphs without a grid retain identity conversion.
+- The Image alpha pulses between 0.25 and 1 once per unscaled second, including while paused. MapBody sizing/visibility applies to the marker naturally. Missing player/graph hides it; clearing graph views disables it immediately. No player discovery state, scene search, coroutine, runtime UI creation or new event subscription is involved.
 
 ## Live Room Contents
 

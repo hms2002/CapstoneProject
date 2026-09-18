@@ -235,3 +235,9 @@ This flow supersedes immediate chest acquisition/return interaction described in
 
 - The existing reroll groups in `GlobalUIRoot` and `GlobalUIRoot_Salryojo` now sit inside the chest's 200-unit lower frame, from 16 to 166 units above its bottom. The prior top-pivot group extended 150 units below the chest and could leave the screen after the selection-panel layout moved the chest down. Hold controls, fill/count references and unlock rules are unchanged.
 - Discard targets in `InventoryElementPannel` and the four embedded legacy root copies use bottom horizontal stretch anchors, zero added width, top pivot and a 12-unit gap beneath the inventory panel. Labels stretch inside the target. Authored `fitHeightBelowPanel` enables `DropZoneUI.LateUpdate` to fit the remaining space down to a 16-unit root-canvas bottom margin, converting canvas coordinates to panel-local coordinates for scaled layouts. This updates presentation geometry only and does not own item state or create UI objects.
+
+### Inventory potion right-click use (2026-09-18)
+
+- `ItemSlotUI.OnPointerClick` routes right-clicks on PlayerConsumableContainerAdapter to its TryUseAt bridge before quick move. Chest selection callbacks retain priority; inspection-only/locked slots and active drags do not consume.
+- PlayerConsumableInventory remains the gameplay owner: successful use applies healing, clears only the clicked slot and publishes normal use/change events and feedback. Failed use (including full HP) does not fall through to transfer or consume. The slot clears its hover tooltip/cursor interaction on successful use.
+- Quickbar keyboard blocking is unchanged; inventory clicks intentionally use the UI path while the inventory is open. Other container types keep their existing selection/transfer behavior.

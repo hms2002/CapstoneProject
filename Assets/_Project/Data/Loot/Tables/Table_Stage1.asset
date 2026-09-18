@@ -55,7 +55,7 @@ MonoBehaviour:
   mobConsumableWeight: 0
   mobFieldItemWeight: 5
   bossStoneCount: 5
-  bossFieldHealBaseCount: 0
+  bossFieldHealBaseCount: 3
   legacyChestWeaponMinCount: 1
   legacyChestWeaponMaxCount: 1
   legacyChestWeaponCounts:

@@ -36,6 +36,7 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
     [SerializeField] private DungeonMinimapNodeView roomTemplate;
     [SerializeField] private Image connectionTemplate;
     [SerializeField] private TMP_Text locationLabel;
+    [SerializeField] private Image playerMarker;
 
     [Header("Graph Layout")]
     [SerializeField, Min(0f)] private float contentPadding = 10f;
@@ -45,6 +46,27 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
 
     private DungeonMinimapIconSetSO iconSet;
     private DungeonMapRuntimeController runtime;
+    private Vector2 graphCenter;
+    private float markerGraphScale;
+
+    private void LateUpdate()
+    {
+        if (playerMarker == null)
+            return;
+
+        Transform player = PlayerRuntimeRegistry.GetPlayerTransform();
+        bool visible = runtime != null && runtime.IsConfigured && roomViews.Count > 0 &&
+                       player != null && player.gameObject.activeInHierarchy;
+        playerMarker.enabled = visible;
+        if (!visible)
+            return;
+
+        Vector2 position = runtime.WorldToLayoutPosition(player.position);
+        playerMarker.rectTransform.anchoredPosition = (position - graphCenter) * markerGraphScale;
+        Color tint = playerMarker.color;
+        tint.a = Mathf.Lerp(0.25f, 1f, (Mathf.Cos(Time.unscaledTime * Mathf.PI * 2f) + 1f) * 0.5f);
+        playerMarker.color = tint;
+    }
 
     public void Configure(DungeonMinimapIconSetSO style)
     {
@@ -150,6 +172,8 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
         float graphScale = Mathf.Min(scaleX, scaleY);
         if (float.IsInfinity(graphScale) || graphScale == float.MaxValue)
             graphScale = 1f;
+        graphCenter = center;
+        markerGraphScale = graphScale;
 
         for (int roomIndex = 0; roomIndex < rooms.Count; roomIndex++)
         {
@@ -291,6 +315,8 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
 
     private void ClearGraphViews()
     {
+        if (playerMarker != null)
+            playerMarker.enabled = false;
         roomViews.Clear();
         connectionViews.Clear();
         DestroyGeneratedChildren(roomRoot, roomTemplate != null ? roomTemplate.transform : null);

@@ -14,6 +14,8 @@ public sealed class PlayerConsumableContainerAdapter : IItemContainer, IDisposab
             this.inventory.OnChanged += HandleChanged;
     }
 
+    public bool TryUseAt(int index) => inventory != null && inventory.TryUseAt(index);
+
     public int SlotCount => inventory != null ? inventory.SlotCount : 0;
 
     public ScriptableObject Get(int index)

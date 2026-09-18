@@ -37,6 +37,10 @@ public sealed class PotionRewardPlayModeTests
         attributes = owner.AddComponent<AttributeSet>();
         SetField(attributes, "attributeCatalog", catalog);
         inventory = owner.AddComponent<PlayerConsumableInventory>();
+        var sensor = new GameObject("InteractionSensor");
+        sensor.transform.SetParent(owner.transform, false);
+        sensor.AddComponent<BoxCollider2D>();
+        sensor.AddComponent<PlayerInteractionSensor2D>();
         owner.AddComponent<PlayerInteractor2D>().enabled = false;
         owner.SetActive(true);
         Assert.That(attributes.TrySetBaseValue(potion.TargetAttribute, 50f, potion), Is.True);
@@ -50,6 +54,40 @@ public sealed class PotionRewardPlayModeTests
         Object.DestroyImmediate(owner);
         Object.DestroyImmediate(catalog);
         runManager.ResetForDevelopmentStart();
+    }
+
+    [TestCase(50f, true, true)]
+    [TestCase(100f, true, false)]
+    [TestCase(50f, false, false)]
+    public void InventoryPointerClick_UsesOnlyClickedPotionOnRightClick(float health, bool rightClick, bool consumed)
+    {
+        attributes.TrySetBaseValue(potion.TargetAttribute, health, potion);
+        inventory.TryAcquire(potion);
+        inventory.TryAcquire(potion);
+        using var adapter = new PlayerConsumableContainerAdapter(inventory);
+        var slotObject = new GameObject("Potion slot click test", typeof(RectTransform));
+        slotObject.SetActive(false);
+        try
+        {
+            var slotType = System.Type.GetType("ItemSlotUI, UI", true);
+            var slot = slotObject.AddComponent(slotType);
+            SetField(slot, "container", adapter);
+            SetField(slot, "index", 1);
+            int uses = 0;
+            inventory.ConsumableUsed += _ => uses++;
+            var pointer = new UnityEngine.EventSystems.PointerEventData(null)
+            {
+                button = rightClick ? UnityEngine.EventSystems.PointerEventData.InputButton.Right
+                    : UnityEngine.EventSystems.PointerEventData.InputButton.Left
+            };
+            slotType.GetMethod("OnPointerClick").Invoke(slot, new object[] { pointer });
+            Assert.That(inventory.GetConsumableInSlot(0), Is.SameAs(potion));
+            Assert.That(inventory.GetConsumableInSlot(1), consumed ? Is.Null : Is.SameAs(potion));
+            Assert.That(uses, Is.EqualTo(consumed ? 1 : 0));
+            Assert.That(attributes.GetCurrentValue(potion.TargetAttribute),
+                Is.EqualTo(health + (consumed ? potion.RestoreAmount : 0)));
+        }
+        finally { Object.DestroyImmediate(slotObject); }
     }
 
     [Test]

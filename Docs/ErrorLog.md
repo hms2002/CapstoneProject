@@ -2234,3 +2234,10 @@ These are verified code/diagnostic issues, not proven causes of the run-entry na
 - A motor can stop at a wall while an ability coroutine later overwrites Transform.position with the unvalidated requested destination. HeavySlash first approach had this path even with motor wall safety enabled.
 - First approach now clamps its body-cast destination and retains the achieved position at completion; no minimum positive travel is forced when already touching a wall. Regression checks blocked/clear casts and absence of completion teleport.
 - This confirms a wall bypass mechanism, not the user's opposite-side target-coordinate cause. Commit-dash/other-pattern direct position writes remain outside this initial-approach fix.
+
+### 2026-09-18 - Dragon inhale loop survives scene unload
+
+- Observed: dying during Dragon fire-breath preparation left PF_Dragon_InhaleWind visible in later scenes.
+- Source cause: SpawnPersistent disables timed return; instances are created under the persistent presentation pool and detached without scene reassignment. The looping particle had only the sequence's coroutine-finally return, with no independent boss-disable/destruction owner cleanup.
+- Fix boundary: share idempotent per-instance leases between the Dragon controller and sequence. Return on pattern end/disable/destroy/player death as well as normal finally. Clear lease references before pool return to prevent late cleanup from releasing a re-rented instance.
+- Prevention: coroutine cleanup alone is insufficient ownership for persistent pooled visuals. Keep an explicit owner fail-safe and test scene unload plus pool reuse. This does not require removing DontDestroyOnLoad from the shared pool.

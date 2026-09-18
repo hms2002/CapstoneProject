@@ -65,6 +65,59 @@ public sealed class DragonSlamCrossExplosionPlayModeTests
         return logic;
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public void InhaleVisual_OwnerDisableReleasesOnceEvenAfterPoolReuse(bool finishNormally)
+    {
+        CreateLogic(out var dragon, out _);
+        dragon.gameObject.SetActive(true);
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/VFX/PF_Dragon_InhaleWind.prefab");
+        var hook = new SpawnedPresentationHook { prefab = prefab, scaleMultiplier = Vector3.one };
+        var context = WorldPresentationContext.AtWorld(dragon.gameObject, Vector3.zero, Vector3.right);
+        var first = WorldPresentationPlayback.SpawnPersistent(hook, context);
+        Assert.That(first, Is.Not.Null);
+        var lease = dragon.OwnInhalePresentation(first);
+        if (finishNormally) lease.Dispose();
+        dragon.gameObject.SetActive(false);
+        Assert.That(first.activeSelf, Is.False);
+        Assert.That(lease.Instance, Is.Null);
+
+        var reused = WorldPresentationPlayback.SpawnPersistent(hook, context);
+        try
+        {
+            Assert.That(reused, Is.SameAs(first), "Exercise a pooled instance borrowed by another execution");
+            lease.Dispose();
+            Assert.That(reused.activeSelf, Is.True, "Late finally must not release a reused instance");
+        }
+        finally { WorldPresentationPlayback.Release(reused); }
+    }
+
+    [UnityTest]
+    public IEnumerator InhaleVisual_SceneUnloadReturnsPersistentEffect()
+    {
+        CreateLogic(out var dragon, out _);
+        var scene = UnityEngine.SceneManagement.SceneManager.CreateScene("DragonInhaleCleanupTest");
+        UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(dragon.gameObject, scene);
+        dragon.gameObject.SetActive(true);
+        dragon.enabled = false; // Avoid unrelated boss AI; OnDestroy must still own cleanup.
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/VFX/PF_Dragon_InhaleWind.prefab");
+        var hook = new SpawnedPresentationHook { prefab = prefab, scaleMultiplier = Vector3.one };
+        var context = WorldPresentationContext.AtWorld(dragon.gameObject, Vector3.zero, Vector3.right);
+        var instance = WorldPresentationPlayback.SpawnPersistent(hook, context);
+        var lease = dragon.OwnInhalePresentation(instance);
+        try
+        {
+            yield return UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(scene);
+            Assert.That(instance == null || !instance.activeInHierarchy, Is.True);
+            Assert.That(lease.Instance, Is.Null);
+        }
+        finally
+        {
+            lease.Dispose();
+            if (scene.isLoaded) UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(scene);
+        }
+    }
+
     private Animator CreateBodyAnimator(DragonController dragon)
     {
         var body = Own(new GameObject("DragonLandingPoseTest"));

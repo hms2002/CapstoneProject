@@ -31,6 +31,13 @@ public sealed class DungeonMapRuntimeController : MonoBehaviour
     public int CurrentRoomPlacementId => discovery?.CurrentRoomPlacementId ?? -1;
     public bool IsConfigured => configured;
 
+    public Vector2 WorldToLayoutPosition(Vector3 worldPosition)
+    {
+        return layoutGrid != null
+            ? (Vector2)layoutGrid.LocalToCellInterpolated(layoutGrid.WorldToLocal(worldPosition))
+            : (Vector2)worldPosition;
+    }
+
     public void Configure(
         DungeonLayoutResult layout,
         string stateId,
