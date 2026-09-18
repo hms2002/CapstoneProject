@@ -86,7 +86,7 @@ public static class ParcelDeliveryEventInstaller
 
         definition.relicId = "Relic.Event.Parcel";
         definition.displayName = "소포";
-        definition.description = "다음 구역의 배송지까지 운반해야 하는 소포입니다. 유물 슬롯을 차지하며 버릴 수 없습니다.";
+        definition.description = "파셀이 배달해야 했을 소포. 버리는건 용사답지 않다.";
         definition.maxLevel = 1;
         definition.dropLevel = 1;
         definition.logic = null;

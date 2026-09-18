@@ -36,6 +36,20 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
   it on a critical hit; Tonic Gombangdae refreshes a three-second critical-chance
   modifier on critical hits; Portable Brazier adds Burn only when a critical hit
   lands on an already-burning target and owns a global proc cooldown.
+- Gold Vein and Growth Sprout share `RelicLogic_KillRewardMultiplier` and the
+  player-owned `RelicKillRewardMultiplierRuntime`. Their exact 10/20/30/40/50%
+  curves apply only at ordinary-enemy and normal boss reward sources. Fractional
+  bonus remainder is token-owned and serialized through the existing relic runtime
+  state bridge so small EXP drops preserve the authored rate across scene travel.
+- Flying Boots uses `RelicLogic_DashCooldownMultiplier` to register an
+  AbilitySystem scoped-duration multiplier that matches only the global
+  `AD_Dash`. Its 10/20/30% reductions become 0.9/0.8/0.7 duration multipliers;
+  the token-owned proc handle restores on scene attach and disposes on unequip.
+- Last Stand uses `RelicLogic_LastStandCritical` to watch current Health against
+  the level-specific absolute thresholds 1/2/3. While active it adds 1.0 to
+  `CritChanceAdd`, which resolves to 100% through the current shared critical
+  formula, and owns the matching relic-status HUD handle. Healing above the
+  threshold, death, unequip, and proc disposal remove both modifier and status.
 
 ## Key Files
 
@@ -48,6 +62,10 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - `Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_CritChanceOnNonCriticalHit_Managed.cs`
 - `Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_CritChanceAfterCriticalHit_Managed.cs`
 - `Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_BurnOnCriticalHit_Managed.cs`
+- `Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_KillRewardMultiplier.cs`
+- `Assets/_Project/Runtime/Features/Items/Relics/RelicKillRewardMultiplierRuntime.cs`
+- `Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_DashCooldownMultiplier.cs`
+- `Assets/_Project/Runtime/Features/Items/Relics/RelicLogic_LastStandCritical.cs`
 - `Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/`
 - `Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/`
 - `Assets/LeeJunMo/Datas/Looting/ItemDatabase.asset`
@@ -61,6 +79,10 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
   a weapon's native post-hit burn application win first; a target that is already
   burning must not receive starter stacks.
 - UI and tooltip views should project `RelicLogic.BuildTooltip(...)`; gameplay state stays in the logic/proc layer.
+- Kill-reward multipliers are queried by the two combat reward owners before
+  pickup splitting. Do not move them into `CurrencyManager` or
+  `RunLevelProgression`, because those lower-level sinks also receive refunds,
+  gambling, workout, and scripted rewards that these relics must not modify.
 
 ## Extension Points
 
@@ -68,6 +90,12 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - Use `RelicLogic_TimedStatOnGameplayEvent_Managed` when an existing `GameplayTag` event should apply a temporary stat buff after validating instigator/target ownership.
 - Use `RelicLogic_StatWhileHealthRatio_Managed` for stat modifiers that stay active while current health ratio is inside a serialized range.
 - Create a new `RelicLogic` only when the behavior needs state, event payload data, or runtime ownership that the shared logic cannot express.
+- Ability-specific cooldown relics should use
+  `AbilitySystem.AddScopedCooldownDurationMultiplier` with exact definition
+  identity and retain/dispose its handle through token-owned relic lifecycle.
+- Absolute-health conditional relics should subscribe through a token-owned
+  proc, recalculate immediately on attach, and keep gameplay modifier and status
+  handle in the same activate/deactivate lifecycle.
 
 ## Known Pitfalls
 
@@ -76,10 +104,15 @@ Fast context map for runtime relic work. Source-of-truth rules still live in `Do
 - Boss-specific relics need a reliable boss identity and damage calculation path before they can be implemented safely.
 - New `.cs` files may not be included in the generated `.csproj` until Unity refreshes project files; in that case command-line MSBuild does not cover them.
 - New ScriptableObject logic and YAML assets require Unity import/compile validation before final gameplay confidence.
+- Last Stand guarantees critical hits only for damage paths that already opt into
+  the shared critical formula. Burn and other damage-over-time sources that
+  explicitly disallow critical hits remain unchanged.
 - A relic definition with `maxLevel > 1` must either consume `ctx.level` in runtime
   logic or provide an explicit level table; otherwise upgrades can silently have no
   gameplay effect even when the inventory level increases.
 - Manually generated Unity YAML should serialize empty lists inline as `field: []`; a split `field:` then `[]` line can make later fields deserialize as defaults.
+- Apply percentage bonuses to the reward total, not each pickup. Small integer
+  rewards need fractional carry or their effective percentage will be distorted.
 
 ## Promotion Candidate
 

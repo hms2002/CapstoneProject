@@ -147,7 +147,17 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
             RefreshRelicHeaderTitle();
 
             if (subtitleText != null)
-                subtitleText.text = common.Kind.ToString();
+            {
+                subtitleText.text = definition is RelicDefinition relic
+                    ? relic.rarity switch
+                    {
+                        ItemRarity.Common => "<color=#FFFFFF>일반</color>",
+                        ItemRarity.Rare => "<color=#409CFF>희귀</color>",
+                        ItemRarity.Epic => "<color=#FFFF00>전설</color>",
+                        _ => common.Kind.ToString()
+                    }
+                    : common.Kind.ToString();
+            }
         }
         else
         {

@@ -280,6 +280,11 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
 
         int total = Random.Range(Mathf.CeilToInt(baseGoldReward * 0.85f),
             Mathf.FloorToInt(baseGoldReward * 1.15f) + 1);
+        RelicKillRewardMultiplierRuntime rewardMultiplier =
+            PlayerRuntimeRegistry.GetPlayerComponent<RelicKillRewardMultiplierRuntime>();
+        if (rewardMultiplier != null)
+            total = rewardMultiplier.ApplyGoldReward(total);
+
         int count = Mathf.Min(8, total);
         for (int i = 0; i < count; i++)
         {
@@ -297,6 +302,11 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
         int stageExperience = ResolveNormalStageBossExperience(ResolveNormalBossStageIndex(context));
         if (stageExperience <= 0)
             return;
+
+        RelicKillRewardMultiplierRuntime rewardMultiplier =
+            PlayerRuntimeRegistry.GetPlayerComponent<RelicKillRewardMultiplierRuntime>();
+        if (rewardMultiplier != null)
+            stageExperience = rewardMultiplier.ApplyExperienceReward(stageExperience);
 
         int spawnedCount = ExperiencePickupDropSpawner.SpawnDistributed(
             experiencePickupPrefab,

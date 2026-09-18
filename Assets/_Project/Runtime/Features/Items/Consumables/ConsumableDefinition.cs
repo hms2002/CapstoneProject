@@ -37,7 +37,9 @@ public class ConsumableDefinition : ScriptableObject, IInventoryItemDefinition
             return false;
 
         float before = attributeSet.GetCurrentValue(targetAttribute);
-        if (!attributeSet.TryModifyAttributeValue(targetAttribute, restoreAmount, this))
+        var inventory = owner.GetComponent<PlayerConsumableInventory>();
+        int amount = inventory != null ? inventory.GetRestoreAmount(this) : restoreAmount;
+        if (!attributeSet.TryModifyAttributeValue(targetAttribute, amount, this))
             return false;
 
         float after = attributeSet.GetCurrentValue(targetAttribute);

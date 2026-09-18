@@ -28,7 +28,7 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
     [TestCase("SlimeCorridor/Wizard.prefab", 30f, 1f)]
     [TestCase("ShadowCorridor/ShadowMonster.prefab", 45f, 1f)]
     [TestCase("ShadowCorridor/ShadowServant/ShadowServant.prefab", 45f, 1f)]
-    [TestCase("ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab", 75f, 1f)]
+    [TestCase("ShadowCorridor/StrangeCandlestick/StrangeCandlestick.prefab", 55f, 1f)]
     public void MonsterAwakeAndDifficulty_PreserveAuthoredHp(string relativePath, float baseHp, float roleMultiplier)
     {
         GameObject prefab = Load<GameObject>(Prefabs + relativePath);
@@ -191,13 +191,104 @@ public sealed class MonsterHealthAndWeaponSkillBalancePlayModeTests
     }
 
     [Test]
-    public void CrimsonBasicAttack_UsesApprovedCadenceAndLethalBurstValues()
+    public void CrimsonBasicAttack_UsesFasterCadenceAndImpactBurst()
     {
         AbilityDefinition attack = Load<AbilityDefinition>(
             "Assets/_Project/Data/Abilities/Definitions/AD_CrimsonBoundaryAttack.asset");
-        Assert.That(attack.cooldown, Is.EqualTo(0.7f).Within(0.001f));
-        Assert.That(CrimsonBoundaryProjectile2D.LethalBurstDiameter, Is.EqualTo(2.5f));
-        Assert.That(CrimsonBoundaryProjectile2D.LethalBurstDamageMultiplier, Is.EqualTo(1f));
+        Assert.That(attack.cooldown, Is.EqualTo(0.5f).Within(0.001f));
+        Assert.That(CrimsonBoundaryProjectile2D.ImpactBurstDiameter, Is.EqualTo(2.5f));
+    }
+
+    [TestCase(10f, false, false)]
+    [TestCase(50f, false, false)]
+    [TestCase(10f, true, false)]
+    [TestCase(10f, false, true)]
+    [TestCase(10f, true, true)]
+    public void CrimsonImpact_DamagesNearbyOnceWithoutRequiringKill(float damage, bool blocked, bool wallImpact)
+    {
+        var objects = new System.Collections.Generic.List<GameObject>();
+        Vector3 center = new(10000f, 10000f, 0f);
+        GameObject SpawnTarget(Vector3 offset)
+        {
+            var target = Object.Instantiate(Load<GameObject>(Prefabs + "CommonCorridor/GoblinWarrior.prefab"),
+                center + offset, Quaternion.identity);
+            objects.Add(target);
+            return target;
+        }
+
+        var health = LoadGuid<AttributeDefinition>("3ff045849daafe84d97370c69cd17747");
+        var maxHealth = LoadGuid<AttributeDefinition>("0e177e1d15e428745b5859fac08ce203");
+        try
+        {
+            var owner = new GameObject("Crimson impact owner");
+            objects.Add(owner);
+            owner.transform.position = center - Vector3.right * 5f;
+            owner.AddComponent<AttributeSet>();
+            owner.AddComponent<TagSystem>();
+            owner.AddComponent<GameplayEffectRunner>();
+            var system = owner.AddComponent<AbilitySystem>();
+            var direct = SpawnTarget(Vector3.zero);
+            var nearby = SpawnTarget(Vector3.right * (wallImpact && !blocked ? -0.8f : 0.8f));
+            var outside = SpawnTarget(Vector3.right * 4f);
+            nearby.GetComponent<AttributeSet>().TrySetBaseValue(maxHealth, 200f, owner);
+            nearby.GetComponent<AttributeSet>().TrySetBaseValue(health, 200f, owner);
+            // Duplicate root collider must not cause a second area hit.
+            var extraHurtbox = new GameObject("Second hurtbox");
+            extraHurtbox.layer = nearby.layer;
+            extraHurtbox.transform.SetParent(nearby.transform, false);
+            extraHurtbox.AddComponent<BoxCollider2D>().isTrigger = true;
+            extraHurtbox.AddComponent<CombatHurtbox2D>();
+            var data = Load<CrimsonBoundaryWeaponData>(LogicData + "ALData_CrimsonBoundary.asset");
+            GameObject wall = null;
+            if (blocked || wallImpact)
+            {
+                wall = new GameObject("Explosion blocking wall");
+                objects.Add(wall);
+                wall.layer = 30;
+                wall.transform.position = center + Vector3.right * 0.4f;
+                wall.AddComponent<BoxCollider2D>().size = new Vector2(0.1f, 3f);
+            }
+            var shot = Object.Instantiate(data.projectilePrefab, center, Quaternion.identity);
+            objects.Add(shot.gameObject);
+            var projectile = shot.GetComponent<CrimsonBoundaryProjectile2D>();
+            projectile.Setup(new ProjectileAttackSpawnContext
+            {
+                ownerSystem = system, ignoreTarget = owner, lifetime = 2f,
+                wallLayers = data.wallLayers, damageLayers = data.damageLayers,
+                direction = Vector2.right, speed = 0f,
+                hitPayload = new CombatHitPayload
+                {
+                    sourceSystem = system, damageEffect = data.damageEffect,
+                    finalHpDamage = damage, causer = owner,
+                    elementBuildUps = System.Array.Empty<ElementDamageResult>(), hasResolvedElementBuildUps = true
+                }
+            }, 3, data.damageEffect);
+            Physics2D.SyncTransforms();
+            const BindingFlags hidden = BindingFlags.Instance | BindingFlags.NonPublic;
+            if (!wallImpact)
+            {
+                bool applied = (bool)typeof(AttackBase).GetMethod("TryApplyHit", hidden)
+                    .Invoke(projectile, new object[] { direct, null });
+                Assert.That(applied, Is.True);
+            }
+            var impact = typeof(CrimsonBoundaryProjectile2D).GetMethod(wallImpact ? "OnHitWall" : "OnHitTarget", hidden);
+            object[] hitArguments = wallImpact
+                ? new object[] { wall, wall.GetComponent<Collider2D>() }
+                : new object[] { direct, null };
+            impact.Invoke(projectile, hitArguments);
+            impact.Invoke(projectile, hitArguments);
+            Assert.That(direct.GetComponent<AttributeSet>().GetAttributeValue(health),
+                Is.EqualTo(Mathf.Max(0f, 45f - damage)).Within(0.01f), "Direct target must not be hit twice");
+            Assert.That(nearby.GetComponent<AttributeSet>().GetAttributeValue(health),
+                Is.EqualTo(blocked ? 200f : 200f - damage).Within(0.01f));
+            Assert.That(outside.GetComponent<AttributeSet>().GetAttributeValue(health), Is.EqualTo(45f).Within(0.01f));
+            Assert.That(nearby.GetComponent<BurnStatus2D>()?.CurrentStacks ?? 0, Is.EqualTo(blocked ? 0 : 3));
+        }
+        finally
+        {
+            for (int i = objects.Count - 1; i >= 0; i--)
+                if (objects[i] != null) Object.DestroyImmediate(objects[i]);
+        }
     }
 
     [TestCase(5f, 65f, 260f, 10f, 30f)]

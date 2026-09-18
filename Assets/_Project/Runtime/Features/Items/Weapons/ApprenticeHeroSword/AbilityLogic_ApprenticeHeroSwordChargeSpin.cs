@@ -67,6 +67,14 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             }
 
             spec.SetInt(HoldingChargeKey, 0);
+            if (!ShouldReleaseAttack(chargeElapsed, data.MaxChargeSeconds))
+            {
+                spec.SetFloat("RecoveryOverride", 0f);
+                spec.SkipCooldownOnEnd = true;
+                system.TrySetCooldownRemaining(spec.Definition, 0f);
+                spec.Token?.Cancel();
+                yield break;
+            }
             float effectiveChargeSeconds = Mathf.Clamp(chargeElapsed, data.MinChargeSeconds, data.MaxChargeSeconds);
             float chargeRatio = data.MaxChargeSeconds > 0f
                 ? Mathf.Clamp01(effectiveChargeSeconds / data.MaxChargeSeconds)
@@ -151,6 +159,9 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             EndSkillAimLock(spec, IsAbilityCancelled(spec));
         }
     }
+
+    internal static bool ShouldReleaseAttack(float seconds, float maxSeconds) =>
+        seconds > Mathf.Max(0.01f, maxSeconds) * 0.5f;
 
     public override void CleanupForSceneTransition(AbilitySystem system, AbilitySpec spec, GameObject target)
     {

@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: WD_ApprenticeHeroSword
   m_EditorClassIdentifier: 
   weaponId: Weapon.ApprenticeHeroSword
-  displayName: "\uACAC\uC2B5 \uC6A9\uC0AC\uC758 \uAC80"
+  displayName: "용사의 검"
   icon: {fileID: 21300000, guid: 748bd1286788d5f468f9857941b73367, type: 3}
-  storyText: "<color=#96DCFA>\uACAC\uC2B5 \uC6A9\uC0AC\uAC00 \uCC98\uC74C \uC950\uC5C8\uB358
-    \uAE30\uBCF8 \uAC80.</color>"
+  storyText: "용사의 검이라지만 그저 오랫동안 손에 익은 평범한 철검이다."
   statModifiers: []
   attackInputHint: "\uC88C\uD074\uB9AD"
   skill1InputHint: "\uC6B0\uD074\uB9AD"

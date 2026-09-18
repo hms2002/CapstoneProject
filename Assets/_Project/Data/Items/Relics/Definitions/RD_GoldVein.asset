@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
+  m_Name: RD_GoldVein
+  m_EditorClassIdentifier: Gameplay::RelicDefinition
+  relicId: RD_GoldVein
+  displayName: "금광"
+  icon: {fileID: 21300000, guid: 872382315c4b44deaa3440a4afe18c0a, type: 3}
+  rarity: 0
+  description: "적 처치 시 얻는 금화의 획득량이 10% 증가"
+  maxLevel: 5
+  dropLevel: 1
+  logic: {fileID: 11400000, guid: 280e6e89cb094a03a0353bf13f030c3c, type: 2}
+  param: {fileID: 0}

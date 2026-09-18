@@ -412,6 +412,10 @@ The shared BuffyHealthTimeEventModule now uses original EX.zip PNGs under Art/Sp
 
 ### Parcel and Buffy interaction speech (2026-09-16)
 
+- Manual-test override removed (2026-09-18, user confirmed testing): Shadow/Dragon/Slime `*_ParcelEventGenerationProfile.asset.guaranteedStartEventDefinitions` are empty again. New maps use the ordinary event selection rules; parcel tooltip/dialogue changes remain.
+
+- Parcel copy update (2026-09-18): `RD_EventParcel.description` owns the parcel flavor text, and `RelicDetailView` renders it as 설명 for `ParcelRelicDefinition` even without relic logic. Other relic tooltip behavior is unchanged. `ParcelDeliveryEventInstaller` preserves the same text on rebuild. The live guide uses `ParcelEventNpc.primaryInk` → `AnimatedVariants/ParcelEventDialogue.json`, compiled from its `.ink`; dialogue describes the delivery request, three-parcel limit, responsibility and reward without inventory/rarity jargon. Temporary first-event forcing used for verification was restored in all three event profiles.
+
 - `ParcelPickupInteractable.npcSpeechBubble` references the authored `SpeechBubbleComponent` on DeliveryGuideNpc. Successful pickup selects the approved line by carried count (1/2/3); carry-limit and inventory-full responses also use Parcel speech. Delivery success no longer displays a message; unspecified delivery failures retain warning popups.
 - Each `BuffyHealthTimeInteractable.npcSpeechBubble` references BuffyGuideNpc's shared speech component. Completed-workout and maximum-level responses use Buffy speech; successful attack/speed/experience rewards use the interacting player's existing `ISpeechBubblePlayback`. Reward-configuration failure remains a warning. NPC conversations remain Ink dialogue.
 - The interaction components hide their NPC bubble when disabled. `RunEventArtInstaller` preserves speaker references when rebuilding modules. No runtime component or hierarchy creation was added.

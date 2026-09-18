@@ -36,7 +36,7 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 8. `LevelRewardDefinitionSO` composes one card from stable IDs, display data, and one or more `LevelRewardEffectSO` assets.
 9. `RunLevelRewards` stores only reward/effect state in `GamePlayData`, disposes live handles when the player leaves, and reapplies persistent effects when a new player is registered.
 10. `OneSwordOathLevelRewardEffectSO` seals weapon slot index 1 without deleting its contents, applies an attack modifier, and scopes cooldown reduction to abilities granted by the weapon currently in slot index 0.
-11. `RunLevelRewardOffers` rolls up to three eligible cards from a persisted run seed, stores the active IDs and reroll usage, and consumes only candidates from that stored offer.
+11. `RunLevelRewardOffers` rolls up to three eligible cards from a persisted run seed, stores the active IDs and reroll usage, and consumes only candidates from that stored offer. A reroll fills from rewards absent from the immediately previous offer first, then backfills previous rewards only when fewer than three novel rewards remain; it is unavailable when no novel reward exists.
 12. `LevelRewardSessionController` handles manual R-key opening, dialogue/UI/combat eligibility, shared pause/input lock, and consecutive pending selections. Authored UI only projects its events and calls its public commands.
 13. Thirteen catalog rewards combine the existing reusable effects with five new effects: Berserker Rush, Hunting Flow, Overheat, Spreading Embers, and High Voltage. The former level-scaled max-heart reward asset is retained for rollback but is no longer cataloged.
 14. `GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/LevelHUD` contains the authored HUD visuals and `LevelHudPresenter`. The presenter projects level/EXP and reward-open eligibility through independent display paths.
@@ -82,6 +82,7 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - `GamePlayData.levelProgression` owns level, current EXP, and pending reward count for the active run.
 - The same state owns selected reward IDs, per-effect JSON payloads, and whether each instant effect already ran.
 - It also owns the reward random seed, offer sequence, active candidate IDs, and reroll usage; closing UI does not reroll or discard the offer.
+- Reroll novelty is defined against the immediately previous offer, not the full run history. With at least six eligible rewards, all three cards change; with five/four eligible rewards, at most one/two previous cards return. If no eligible reward exists outside the current offer, reroll is disabled and does not consume a reroll count.
 - UI must only query `RunLevelProgression.State`, subscribe to its events, and issue commands through the facade. UI must not mutate the DTO.
 - The `LevelHUD` prefab hierarchy and presenter are presentation-only. `ExperienceFill` reads current EXP progress; `RewardReadyBorder` and `LevelUpPrompt` read session-open eligibility and never derive from fill amount.
 - The presenter uses `ExperienceGranted` for a short unscaled-time fill animation and `StateChanged` for immediate lifecycle/restoration synchronization. Runtime progression never waits for the animation.
@@ -111,6 +112,8 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - The current prototype offer owns five rerolls. Opening with R suppresses selection-window input for the opening frame so that the same R press cannot immediately consume one reroll.
 
 ## Extension Entry Points
+
+- Potion-trigger cards and the potion-only recovery relic: see [Potion Rewards](../PotionRewards.md) for success-event ordering, run counters, timed buff ownership and authored content.
 
 - Add an authored `ExperienceRewardSource` to EXP-paying enemy prefabs and assign an authored `ExperiencePickup2D` prefab.
 - Summon, revive, and infinite-spawn flows can call `SetGrantExperience(false)` on their spawned instance.
@@ -164,11 +167,13 @@ Map the run-owned player level/EXP flow, common enemy death notification, EXP re
 - 2026-08-18: Added staggered overshoot card entry, first-view front/back flips, card-only reroll/consecutive-offer replacement, and deferred full-window close fading to the authored selection UI.
 - 2026-09-16: Reworked the existing growth/shield/oath/relic rewards, removed Growth Heart from the catalog, and added Berserker Rush, Hunting Flow, Overheat, Spreading Embers, and High Voltage with category artwork and cleanup-owned runtime modifiers.
 - 2026-09-17: Added the one-shot curse rewards Steel Training and Unextinguished Fire. Both persist their objective progress in effect JSON, project progress through tooltip-only status entries, and replace the Debuff entry with a Buff entry on completion while retaining the same authored icon.
+- 2026-09-18: Added the Common five-level Growth Sprout relic. It applies +10/20/30/40/50% only to ordinary-enemy and normal boss EXP totals before pickup splitting; fractional carry preserves small-drop accuracy across scene travel. Buffy, Alarm Bell and other direct scripted EXP remain outside this multiplier.
 
 ## Recovery Notes
 
 - If EXP is not spawned, check active-run state, `grantExperience`, positive `baseExperience`, and pickup prefab assignment.
 - If a pickup reaches the player but EXP does not change, check its progression config and player registration.
+- If Growth Sprout affects a scripted reward, check that the grant did not bypass the intended `ExperienceRewardSource` / normal-boss boundary by calling the kill-reward runtime directly.
 - If level state survives a new run, inspect all three reset calls in `RunSessionLifecycleService`.
 - If a selected effect does not return after a scene transition, confirm its catalog was registered and its definition/effect IDs still match the stored IDs.
 - If an instant reward repeats, confirm its effect uses `InstantOnce` and that `instantApplied` is preserved in `GamePlayData`.

@@ -26,6 +26,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8a579f9a96134f98a1381cd22d36aff3, type: 2}
   - {fileID: 11400000, guid: ce429c05133a4c52aa9273cddcb24a73, type: 2}
   allRelics:
+  - {fileID: 11400000, guid: b7ac0f2e281a44768c35210163fd6aba, type: 2}
   - {fileID: 11400000, guid: f36d5720370d475cb8ad55ee5b68c27c, type: 2}
   - {fileID: 11400000, guid: b21a9cb41264495aadb828708bd905f7, type: 2}
   - {fileID: 11400000, guid: 897b88fc1f3a40baa3b72a4269743a84, type: 2}
@@ -87,7 +88,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 579612df77094cd69982a34f1903427a, type: 2}
   - {fileID: 11400000, guid: daf2c9814b2f4219a01240dbe50c6c0f, type: 2}
   - {fileID: 11400000, guid: b5a11e75eae575b4193be62ab58517ed, type: 2}
+  - {fileID: 11400000, guid: cca649e618674edeae7fb55e0743a416, type: 2}
+  - {fileID: 11400000, guid: 2a030bcc770946f8abfe827a9bb0afc0, type: 2}
+  - {fileID: 11400000, guid: 4781e03df8c544459db8dc6863762e5c, type: 2}
+  - {fileID: 11400000, guid: d866e0f16ecf48d0948bda26ce39842a, type: 2}
   defaultUnlockedRelics:
+  - {fileID: 11400000, guid: b7ac0f2e281a44768c35210163fd6aba, type: 2}
   - {fileID: 11400000, guid: f36d5720370d475cb8ad55ee5b68c27c, type: 2}
   - {fileID: 11400000, guid: b21a9cb41264495aadb828708bd905f7, type: 2}
   - {fileID: 11400000, guid: 897b88fc1f3a40baa3b72a4269743a84, type: 2}
@@ -144,5 +150,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 102507ab60734546ba64e6abfe926c11, type: 2}
   - {fileID: 11400000, guid: 579612df77094cd69982a34f1903427a, type: 2}
   - {fileID: 11400000, guid: daf2c9814b2f4219a01240dbe50c6c0f, type: 2}
+  - {fileID: 11400000, guid: cca649e618674edeae7fb55e0743a416, type: 2}
+  - {fileID: 11400000, guid: 2a030bcc770946f8abfe827a9bb0afc0, type: 2}
+  - {fileID: 11400000, guid: 4781e03df8c544459db8dc6863762e5c, type: 2}
+  - {fileID: 11400000, guid: d866e0f16ecf48d0948bda26ce39842a, type: 2}
   allConsumables:
   - {fileID: 11400000, guid: 6b22cb4e0ab0a194b968acb6b169cbfb, type: 2}

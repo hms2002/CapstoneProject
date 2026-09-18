@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8f3b7b0879f4661acd56b78a4c1e3f2, type: 3}
+  m_Name: SHD_PotionCheer
+  m_EditorClassIdentifier: Core::StatusHudDefinition
+  statusId: level_reward.potion_cheer
+  group: 1
+  priority: 20
+  icon: {fileID: 21300000, guid: 20438b1c237d4141a10dee181668b788, type: 3}
+  nameText: 야호!
+  storyText:
+  effectText: "이동 속도 +30%, 공격 속도 +15%"
+  showStacksByDefault: 0
+  showDurationByDefault: 0

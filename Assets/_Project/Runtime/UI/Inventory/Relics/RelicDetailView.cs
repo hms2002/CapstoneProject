@@ -79,14 +79,16 @@ public class RelicDetailView : MonoBehaviour, IItemDetailView
             ? currentRelic.logic.BuildTooltip(currentRelic, previewLevel, currentContext)
             : null;
 
-        string effect = tooltip != null && !string.IsNullOrEmpty(tooltip.effectText)
+        string effect = currentRelic is ParcelRelicDefinition
+            ? currentRelic.description
+            : tooltip != null && !string.IsNullOrEmpty(tooltip.effectText)
             ? tooltip.effectText
             : "(로직 없음)";
 
         if (currentServices?.formatText != null)
             effect = currentServices.formatText(effect);
 
-        sections.Add("효과", effect, currentServices?.showGlossary);
+        sections.Add(currentRelic is ParcelRelicDefinition ? "설명" : "효과", effect, currentServices?.showGlossary);
         Canvas.ForceUpdateCanvases();
     }
 
