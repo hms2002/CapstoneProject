@@ -46,6 +46,7 @@ Map the upgrade tree UI navigation and purchase feedback flow after the overflow
   - `UpgradeNotEnoughMagicStone`
   - `UpgradeLocked`
   - `UpgradeUnavailable`
+- Purchased slots retain their completed visual state but remain clickable; a repeat attempt resolves to `UpgradeAlreadyPurchased` and shows `이미 구매된 업그레이드 입니다.` through the shared warning popup.
 - Locked slots keep their lock/gray visual state but leave the button interactable so clicking a locked node can display the warning.
 
 ## Reward Presentation

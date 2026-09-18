@@ -15,7 +15,7 @@ MonoBehaviour:
   rewardId: level_reward.soul_heart_grant
   allowMultipleSelections: 0
   displayName: 영혼의 방패
-  description: "<color=#197A67>소울 하트 3개 획득</color>"
+  description: "<color=#197A67>일회성 체력 3개 획득</color>"
   icon: {fileID: 21300000, guid: d8b0725309424a3d981283a0f86e5efe, type: 3}
   effects:
   - {fileID: 11400000, guid: 352f84774b7540f38eaec4affd003ca0, type: 2}

@@ -16,5 +16,6 @@ public enum WarningPopupCode
     UpgradeLocked,
     UpgradeUnavailable,
     LastWeaponCannotLeaveInventory,
-    BossAlreadyDefeatedThisRun
+    BossAlreadyDefeatedThisRun,
+    UpgradeAlreadyPurchased
 }

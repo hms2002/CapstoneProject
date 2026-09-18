@@ -156,6 +156,7 @@ public class UpgradeManager : MonoBehaviour
         {
             UpgradePurchaseFailureReason.NotEnoughMagicStone => WarningPopupCode.UpgradeNotEnoughMagicStone,
             UpgradePurchaseFailureReason.CurrencySpendFailed => WarningPopupCode.UpgradeNotEnoughMagicStone,
+            UpgradePurchaseFailureReason.AlreadyPurchased => WarningPopupCode.UpgradeAlreadyPurchased,
             UpgradePurchaseFailureReason.NotUnlocked => WarningPopupCode.UpgradeLocked,
             UpgradePurchaseFailureReason.MissingProgressService => WarningPopupCode.UpgradeUnavailable,
             UpgradePurchaseFailureReason.MissingNode => WarningPopupCode.UpgradeUnavailable,

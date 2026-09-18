@@ -1,45 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "6921eb57cd34400f829795c9eb863016",
-            "startedUtc": "2026-09-18T03:00:10.9082972Z",
-            "endedUtc": "2026-09-18T03:00:12.4086267Z",
-            "entries": []
-        },
-        {
-            "sessionId": "9c9b94c74aa141669a0375ccda104dd6",
-            "startedUtc": "2026-09-18T03:06:40.6356701Z",
-            "endedUtc": "2026-09-18T03:06:46.0469082Z",
-            "entries": []
-        },
-        {
-            "sessionId": "0da4697170eb4cf2915b66970c24c633",
-            "startedUtc": "2026-09-18T03:17:10.3438122Z",
-            "endedUtc": "2026-09-18T03:19:57.9424508Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 358,
-                    "coldSpawns": 90,
-                    "firstSeenSeconds": 117.79341888427735,
-                    "lastSeenSeconds": 166.9390869140625,
-                    "firstSceneName": "DarkLord_Tutorial",
-                    "lastSceneName": "DarkLord_Tutorial"
-                },
-                {
-                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
-                    "prefabName": "ElectrocutedSparkParticle",
-                    "totalSpawns": 5,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 118.1762466430664,
-                    "lastSeenSeconds": 165.59823608398438,
-                    "firstSceneName": "DarkLord_Tutorial",
-                    "lastSceneName": "DarkLord_Tutorial"
-                }
-            ]
-        },
-        {
             "sessionId": "fd9cdf722e5f4ce182e9de9f5fe5be85",
             "startedUtc": "2026-09-18T03:40:08.4729506Z",
             "endedUtc": "2026-09-18T03:40:09.8951793Z",
@@ -161,6 +122,24 @@
             "sessionId": "58d93f20d21a43b789ca783038811d74",
             "startedUtc": "2026-09-18T15:20:03.3185509Z",
             "endedUtc": "2026-09-18T15:20:04.8932602Z",
+            "entries": []
+        },
+        {
+            "sessionId": "0bcba597ce484ee29db42308c721cbf3",
+            "startedUtc": "2026-09-18T16:28:12.1219916Z",
+            "endedUtc": "2026-09-18T16:28:13.1281871Z",
+            "entries": []
+        },
+        {
+            "sessionId": "b4cfb131d4484842b4c78e822cea83c4",
+            "startedUtc": "2026-09-18T16:28:35.1428480Z",
+            "endedUtc": "2026-09-18T16:28:37.1028829Z",
+            "entries": []
+        },
+        {
+            "sessionId": "91aa00ee3cc64a0c91a6d70042ec0359",
+            "startedUtc": "2026-09-18T16:41:47.1621448Z",
+            "endedUtc": "2026-09-18T16:41:48.6265378Z",
             "entries": []
         }
     ]
