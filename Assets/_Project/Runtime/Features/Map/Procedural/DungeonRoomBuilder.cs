@@ -1168,6 +1168,13 @@ public sealed partial class DungeonRoomBuilder : MonoBehaviour
                 triggerObject.AddComponent<DungeonRoomDiscoveryTrigger2D>();
             discoveryTrigger.Configure(mapRuntime, roomPlacement.PlacementId);
             discoveryTrigger.PlayerEnteredRoom += NotifyReturnRoomEntered;
+            if (roomPlacement.Template.LayoutData.roomType != RoomType.Shop &&
+                generatedRoomObjectsByPlacement.TryGetValue(roomPlacement.PlacementId, out List<GameObject> npcRoomObjects))
+            {
+                NpcRoomIntroduction introduction = triggerObject.AddComponent<NpcRoomIntroduction>();
+                introduction.Configure(npcRoomObjects);
+                discoveryTrigger.ConfigureIntroduction(introduction);
+            }
             triggerObject.SetActive(true);
         }
 

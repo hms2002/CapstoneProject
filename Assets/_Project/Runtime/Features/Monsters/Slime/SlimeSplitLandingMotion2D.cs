@@ -6,6 +6,7 @@ using UnityGAS;
 /// 책임:
 /// - 분열로 생성된 슬라임이 본체에서 튀어나와 착지하는 짧은 포물선 연출을 수행한다.
 /// - 착지 전까지 CombatHurtbox2D가 소유한 피격 콜라이더를 비활성화해 공중 분열체가 피격되지 않게 한다.
+/// - 공중 연출 동안 물리 시뮬레이션을 잠시 해제하고 착지/중단 때 원래 상태로 복원한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class SlimeSplitLandingMotion2D : MonoBehaviour
@@ -33,6 +34,9 @@ public sealed class SlimeSplitLandingMotion2D : MonoBehaviour
     private ICombatHeightPresentation2D heightPresentation;
     private Transform runtimeShadowRoot;
     private SpriteRenderer runtimeShadowRenderer;
+    private Rigidbody2D landingBody;
+    private bool restoreBodySimulation;
+    private bool bodyWasSimulated;
 
     /// <summary>분열 착지 연출이 아직 진행 중인지 외부 잠금/문 시스템에 제공한다.</summary>
     public bool IsRunning => activeRoutine != null;
@@ -42,6 +46,9 @@ public sealed class SlimeSplitLandingMotion2D : MonoBehaviour
     {
         if (activeRoutine != null)
             StopCoroutine(activeRoutine);
+
+        RestoreHurtboxColliders();
+        RestoreBodySimulation();
 
         activeRoutine = StartCoroutine(RunLandingMotion(
             startPosition,
@@ -58,7 +65,9 @@ public sealed class SlimeSplitLandingMotion2D : MonoBehaviour
 
     private void OnDisable()
     {
+        if (activeRoutine != null) StopCoroutine(activeRoutine);
         RestoreHurtboxColliders();
+        RestoreBodySimulation();
         heightState?.SetGrounded();
         DestroyRuntimeShadow();
         activeRoutine = null;
@@ -69,6 +78,13 @@ public sealed class SlimeSplitLandingMotion2D : MonoBehaviour
         transform.position = startPosition;
         EnsureHeightState();
         CacheAndDisableHurtboxColliders();
+        landingBody = GetComponent<Rigidbody2D>();
+        if (landingBody != null)
+        {
+            bodyWasSimulated = landingBody.simulated;
+            restoreBodySimulation = true;
+            landingBody.simulated = false;
+        }
         EnsureRuntimeShadowIfNeeded(startPosition);
 
         float elapsed = 0f;
@@ -82,10 +98,22 @@ public sealed class SlimeSplitLandingMotion2D : MonoBehaviour
         }
 
         transform.position = landingPosition;
+        RestoreBodySimulation();
         heightState?.SetGrounded();
         RestoreHurtboxColliders();
         DestroyRuntimeShadow();
         activeRoutine = null;
+    }
+
+    private void RestoreBodySimulation()
+    {
+        if (!restoreBodySimulation) return;
+        restoreBodySimulation = false;
+        if (landingBody == null) return;
+        landingBody.position = transform.position;
+        landingBody.linearVelocity = Vector2.zero;
+        landingBody.angularVelocity = 0f;
+        landingBody.simulated = bodyWasSimulated;
     }
 
     /// <summary>지상 위치는 선형 이동하고, 시각 높이는 사인 곡선으로 띄운다.</summary>

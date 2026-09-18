@@ -80,6 +80,39 @@ public sealed class DemonKingController : BossControllerBase
     private GameplayTag knockbackImmuneTag;
     private IAfterimageEmitter2D bodyAfterimageEmitter;
     private SpriteRenderer bodySpriteRenderer;
+    private DemonKingJumpSafety2D jumpSafety;
+    public bool JumpLandedSafely { get; private set; }
+
+    /// <summary>Owns the validated jump destination and restores airborne physics on completion or interruption.</summary>
+    public bool PrepareSafeJump(Vector2 requested, out Vector2 start, out Vector2 target)
+    {
+        CancelSafeJump();
+        JumpLandedSafely = false;
+        var candidate = new DemonKingJumpSafety2D(gameObject, WallMask);
+        if (!candidate.TryResolve(requested, out start, out target)) return false;
+        jumpSafety = candidate;
+        return true;
+    }
+
+    public void BeginSafeJump()
+    {
+        GetComponent<AbilityMotionController2D>()?.CancelMotion();
+        jumpSafety?.Begin();
+    }
+
+    public void SetSafeJumpPose(Vector2 ground, float height) => jumpSafety?.SetPose(ground, height);
+
+    public void CompleteSafeJump()
+    {
+        JumpLandedSafely = jumpSafety != null && jumpSafety.Complete();
+        jumpSafety = null;
+    }
+
+    public void CancelSafeJump()
+    {
+        jumpSafety?.Dispose();
+        jumpSafety = null;
+    }
     private int faceTargetLockCount;
     private int thresholdStaggerGuardCount;
     private bool permanentKnockbackImmuneApplied;
@@ -291,6 +324,7 @@ public sealed class DemonKingController : BossControllerBase
 
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
+        CancelSafeJump();
         faceTargetLockCount = 0;
         ReleasePatternAnimationHold();
         ClearPatternAnimationStartRecords();
@@ -732,6 +766,7 @@ public sealed class DemonKingController : BossControllerBase
 
     private void OnDisable()
     {
+        CancelSafeJump();
         faceTargetLockCount = 0;
     }
 

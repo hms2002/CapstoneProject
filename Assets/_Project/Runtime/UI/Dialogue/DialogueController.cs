@@ -56,6 +56,7 @@ public class DialogueController : MonoBehaviour
     private float choiceInputGuardUntil;
     private bool waitingForChoiceConfirmRelease;
     private bool choiceInputReady;
+    private Action<bool> dialogueEnded;
 
     private void Awake()
     {
@@ -80,6 +81,7 @@ public class DialogueController : MonoBehaviour
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= HandleSceneLoaded;
+        NotifyDialogueEnded(false);
     }
 
     private void OnDestroy()
@@ -160,22 +162,30 @@ public class DialogueController : MonoBehaviour
         ResolveRuntimeReferences();
 
         if (sessionState.IsPlaying)
+        {
+            presentationOptions.OnEnded?.Invoke(false);
             return;
+        }
 
         if (!ValidateDialogueSetup(storySegments, participants))
+        {
+            presentationOptions.OnEnded?.Invoke(false);
             return;
+        }
 
         DialogueStorySegment firstSegment = GetFirstValidSegment(storySegments);
         List<NPCData> validParticipants = BuildValidParticipants(participants);
         if (validParticipants.Count == 0)
         {
             Debug.LogError("[DialogueController] No valid dialogue participants were provided.", this);
+            presentationOptions.OnEnded?.Invoke(false);
             return;
         }
 
         participantRegistry.Initialize(validParticipants);
         sessionState.BeginSession();
         currentPresentationOptions = presentationOptions;
+        dialogueEnded = presentationOptions.OnEnded;
         pendingBossChoiceAffectionCheck = false;
         QueuePendingStorySegments(storySegments, firstSegment);
 
@@ -283,6 +293,7 @@ public class DialogueController : MonoBehaviour
 
     private void AbortDialogueStart()
     {
+        NotifyDialogueEnded(false);
         if (currentFeatureController != null)
             currentFeatureController.RequestDialogueExit -= ExitDialogueMode;
 
@@ -393,10 +404,15 @@ public class DialogueController : MonoBehaviour
 
         Debug.LogError("[DialogueController] Failed to show dialogue choices. Exiting dialogue.", this);
         sessionState.EndChoosing();
-        ExitDialogueMode();
+        ExitDialogueMode(false);
     }
 
     private void ExitDialogueMode()
+    {
+        ExitDialogueMode(true);
+    }
+
+    private void ExitDialogueMode(bool completed)
     {
         if (!sessionState.IsPlaying)
             return;
@@ -420,7 +436,15 @@ public class DialogueController : MonoBehaviour
             pendingStorySegments.Clear();
             participantRegistry.Clear();
             sessionState.EndSession();
+            NotifyDialogueEnded(completed);
         });
+    }
+
+    private void NotifyDialogueEnded(bool completed)
+    {
+        Action<bool> callback = dialogueEnded;
+        dialogueEnded = null;
+        callback?.Invoke(completed);
     }
 
     private void ApplyCurrentSpeakerTheme()

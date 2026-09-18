@@ -1754,7 +1754,7 @@ MonoBehaviour:
   closedChestBadge: {fileID: 9100104}
   openedChestBadge: {fileID: 9100204}
   heartBadge: {fileID: 9100304}
-  iconSize: 10
+  iconSize: 15
   iconSpacing: 2
 --- !u!1 &4721351136517001187
 GameObject:

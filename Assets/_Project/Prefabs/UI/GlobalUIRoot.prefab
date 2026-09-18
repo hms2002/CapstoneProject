@@ -18855,6 +18855,8 @@ MonoBehaviour:
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  levelUpPromptWorldOffset: {x: 0, y: 1.4, z: 0}
+  levelUpPromptUiOffset: {x: -40, y: 0}
 --- !u!1 &2568204851774687758
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,6 +19,91 @@ public sealed class PuddleProjectileVisualPlayModeTests
     private float previousTimeScale;
     private static Type ViewType => Type.GetType("UnityGAS.PuddleShaderVisual, Presentation", true);
 
+    [Test]
+    public void BuffArrows_AuthoredOnlyOnAlcohol()
+    {
+        Type type = Type.GetType("UnityGAS.PuddleParticleVisual, Presentation", true);
+        foreach (string element in new[] { "Alcohol", "Fire" })
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PuddleFolder + element + "Puddle.prefab");
+            var view = prefab.GetComponentInChildren(type, true);
+            var sprite = (Sprite)type.GetField("buffArrowSprite", PrivateInstance).GetValue(view);
+            Assert.That(sprite != null, Is.EqualTo(element == "Alcohol"));
+        }
+    }
+
+    [Test]
+    public void BuffArrows_IgnoreSurfaceQuadScaleAndStayInsideRadius()
+    {
+        Type type = Type.GetType("UnityGAS.PuddleParticleVisual, Presentation", true);
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PuddleFolder + "AlcoholPuddle.prefab");
+        var instance = Own(Object.Instantiate(prefab));
+        var view = instance.GetComponentInChildren(type, true);
+        var update = type.GetMethod("Update", PrivateInstance);
+        update.Invoke(view, null);
+        var arrows = (SpriteRenderer[])type.GetField("buffArrows", PrivateInstance).GetValue(view);
+        var ages = (float[])type.GetField("arrowAges", PrivateInstance).GetValue(view);
+        float radius = instance.GetComponent<AlcoholPuddleArea>().GroundRadius;
+        for (int sample = 0; sample < 20; sample++)
+        {
+            for (int i = 0; i < ages.Length; i++) ages[i] = sample / 20f * 0.85f;
+            update.Invoke(view, null);
+            foreach (var arrow in arrows)
+            {
+                Assert.That(arrow.transform.parent, Is.EqualTo(instance.transform));
+                var line = arrow.GetComponent<LineRenderer>();
+                Assert.That(line.enabled, Is.True);
+                Assert.That(arrow.enabled, Is.False);
+                Assert.That(line.endWidth, Is.EqualTo(0.045f).Within(0.0001f));
+                Assert.That(line.startColor.a, Is.Zero);
+                Assert.That(Vector2.Distance(arrow.transform.position, instance.transform.position) +
+                    Vector3.Distance(line.GetPosition(0), line.GetPosition(1)) * 0.5f + line.endWidth,
+                    Is.LessThan(radius));
+            }
+        }
+        var lines = instance.GetComponentsInChildren<LineRenderer>();
+        var contract = (IPuddleParticleVisual)view;
+        contract.ApplyMode(PuddleAreaMode.AbsorbPreparing);
+        foreach (var line in lines) Assert.That(line.enabled, Is.False);
+        contract.ApplyMode(PuddleAreaMode.Ground);
+        update.Invoke(view, null);
+        Assert.That(instance.GetComponentsInChildren<LineRenderer>(), Is.EqualTo(lines));
+        ((MonoBehaviour)view).enabled = false;
+        foreach (var line in lines) Assert.That(line.enabled, Is.False);
+    }
+
+    [Test]
+    public void BuffArrows_HideOnTransitionsAndReuseChildren()
+    {
+        Type type = Type.GetType("UnityGAS.PuddleParticleVisual, Presentation", true);
+        GameObject owner = Own(new GameObject("BuffArrowTest"));
+        var view = (MonoBehaviour)owner.AddComponent(type);
+        Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/_Project/Art/Sprites/UI/DownArrow.png");
+        type.GetField("buffArrowSprite", PrivateInstance).SetValue(view, sprite);
+        var update = type.GetMethod("Update", PrivateInstance);
+        var contract = (IPuddleParticleVisual)view;
+        contract.SetSurfaceRadius(2);
+        update.Invoke(view, null);
+        SpriteRenderer[] arrows = owner.GetComponentsInChildren<SpriteRenderer>();
+        Assert.That(arrows.Length, Is.EqualTo(6));
+        foreach (var arrow in arrows) Assert.That(arrow.enabled && arrow.flipY, Is.True);
+        foreach (var mode in new[] { PuddleAreaMode.Igniting, PuddleAreaMode.AbsorbPreparing,
+                     PuddleAreaMode.AbsorbProjectile, PuddleAreaMode.Consumed })
+        {
+            contract.ApplyMode(mode);
+            foreach (var arrow in arrows) Assert.That(arrow.enabled, Is.False);
+            contract.ApplyMode(PuddleAreaMode.Ground);
+            update.Invoke(view, null);
+            Assert.That(owner.GetComponentsInChildren<SpriteRenderer>(), Is.EqualTo(arrows));
+        }
+        contract.SetElementType(PuddleElementType.Fire);
+        foreach (var arrow in arrows) Assert.That(arrow.enabled, Is.False);
+        contract.SetElementType(PuddleElementType.Alcohol);
+        update.Invoke(view, null);
+        view.enabled = false;
+        foreach (var arrow in arrows) Assert.That(arrow.enabled, Is.False);
+    }
+
     [SetUp]
     public void SetUp()
     {

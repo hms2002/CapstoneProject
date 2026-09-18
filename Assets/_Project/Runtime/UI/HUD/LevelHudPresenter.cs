@@ -7,6 +7,7 @@ using UnityEngine.UI;
 /// <summary>
 /// 현재 런의 레벨/EXP와 레벨업 보상 선택 가능 상태를 authored HUD에 투영한다.
 /// 경험치 진행률과 보상 선택 가능 표시는 서로 독립적으로 갱신한다.
+/// Positions the authored reward prompt above the current player without reparenting the HUD.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarget
@@ -25,6 +26,8 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
     [Header("Presentation")]
     [SerializeField, Min(0f)] private float fillAnimationDuration = 0.2f;
     [SerializeField] private SoundRef levelUpReadySound;
+    [SerializeField] private Vector3 levelUpPromptWorldOffset = new Vector3(0f, 1.4f, 0f);
+    [SerializeField] private Vector2 levelUpPromptUiOffset = new Vector2(-40f, 0f);
 
     private Coroutine fillAnimation;
     private int visualLevel = 1;
@@ -34,12 +37,16 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
     private float promptColorElapsed;
     private RectTransform promptRect;
     private Vector2 promptRestPosition;
+    private Canvas promptCanvas;
 
     private void Awake()
     {
         promptRect = levelUpPrompt != null ? levelUpPrompt.transform as RectTransform : null;
         if (promptRect != null)
+        {
             promptRestPosition = promptRect.anchoredPosition;
+            promptCanvas = promptRect.GetComponentInParent<Canvas>();
+        }
     }
 
     private void OnEnable()
@@ -65,6 +72,46 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
         AnimateRewardPrompt();
     }
 
+    private void LateUpdate()
+    {
+        if (!isRewardReadyVisible || promptRect == null)
+            return;
+
+        bool hasPosition = TryGetPromptPosition(out Vector3 position);
+        if (levelUpPrompt.activeSelf != hasPosition)
+            levelUpPrompt.SetActive(hasPosition);
+        if (hasPosition)
+            promptRect.position = position;
+    }
+
+    private bool TryGetPromptPosition(out Vector3 position)
+    {
+        position = default;
+        Transform player = PlayerRuntimeRegistry.GetPlayerTransform();
+        Camera worldCamera = Camera.main;
+        if (player == null || worldCamera == null || promptCanvas == null ||
+            promptRect == null || promptRect.parent is not RectTransform parentRect)
+            return false;
+
+        Vector3 screenPoint = worldCamera.WorldToScreenPoint(player.position + levelUpPromptWorldOffset);
+        if (screenPoint.z <= 0f || !worldCamera.pixelRect.Contains((Vector2)screenPoint))
+            return false;
+
+        Canvas rootCanvas = promptCanvas.rootCanvas;
+        Camera uiCamera = rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay
+            ? null : rootCanvas.worldCamera;
+        if (rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay && uiCamera == null)
+            return false;
+
+        if (!RectTransformUtility.ScreenPointToWorldPointInRectangle(
+                parentRect, screenPoint, uiCamera, out position))
+            return false;
+
+        float hoverOffset = 4f * Mathf.Sin(promptColorElapsed * Mathf.PI * 2f / 2.4f);
+        position += parentRect.TransformVector((Vector3)levelUpPromptUiOffset + Vector3.up * hoverOffset);
+        return true;
+    }
+
     private void AnimateRewardPrompt()
     {
         if (!isRewardReadyVisible || levelUpPromptText == null || !levelUpPromptText.isActiveAndEnabled)
@@ -75,11 +122,6 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
         float blend = 0.5f - 0.5f * Mathf.Cos(promptColorElapsed * Mathf.PI * 2f / colorCycleDuration);
         // Change hue only; saturation, value and alpha stay constant.
         levelUpPromptText.color = Color.HSVToRGB(Mathf.Lerp(0.23f, 0.38f, blend), 0.62f, 1f);
-        if (promptRect != null)
-        {
-            float hoverOffset = 4f * Mathf.Sin(promptColorElapsed * Mathf.PI * 2f / colorCycleDuration);
-            promptRect.anchoredPosition = promptRestPosition + Vector2.up * hoverOffset;
-        }
     }
 
     private void HandleExperienceGranted(LevelProgressionGrantResult result)
@@ -196,7 +238,8 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
     {
         bool canOpen = rewardSessionController != null &&
                        rewardSessionController.isActiveAndEnabled &&
-                       rewardSessionController.CanOpenSession;
+                       rewardSessionController.CanOpenSession &&
+                       TryGetPromptPosition(out _);
         bool hasPendingReward = (RunLevelProgression.State?.pendingRewardCount ?? 0) > 0;
         SetRewardReadyVisible(hasPendingReward, canOpen);
     }

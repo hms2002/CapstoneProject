@@ -4,7 +4,10 @@ Navigation aid, not an Architecture or Contracts source of truth.
 
 ## Ownership
 
-- `PawnOrbitContactIntent2D` receives `MonsterSpawnContext` for room-local range bypass and target reacquisition, without changing its crawl/orbit movement. Both actor and target must be inside the owning room. `Slime` preserves and forwards this context through split generations; unscoped summons keep authored detection range. This does not add A* movement to Pawn.
+- `PawnOrbitContactIntent2D` receives `MonsterSpawnContext` for room-local range bypass and target reacquisition. Both actor and target must be inside the owning room. `Slime` preserves and forwards this context through split generations; unscoped summons keep authored detection range.
+- Pawn now uses A* waypoints only when the direct body-envelope segment to the player is blocked. The guide changes direction, not the existing crawl pulse/rest clock. Clear sight restores normal approach/orbit. Active body bounds exclude triggers; the shared pathfinder also checks hole triggers. Missing navigation preserves legacy movement, with a throttled same-scene fallback lookup.
+- Pawn caches copied waypoints and rebuilds for exhausted paths or target movement, at 0.35-0.45 second retry intervals. Instance-hashed initial delay plus a Pawn-only one-search-per-rendered-frame budget spreads searches without gameplay RNG. A blocked next segment clears the cache and waits rather than pushing into a wall. Stops, enable/pool reuse and spawn context replacement reset navigation; stopping does not reset the crawl clock.
+- `PawnNavigationPlayModeTests` covers real pathfinder detours, cached-segment rejection, frame search budget, crawl pulse/rest preservation and stop cleanup. It is not a full generated-room or crowd performance test. Existing overlap/capsule-envelope trapping remains a separate issue; Rook was not changed in this patch.
 
 - One active `TilemapPathfinder2D` belongs to each monster scene, on a separate scene root. It must not be parented under the persistent `MonsterSpawner`.
 - The pathfinder uses a scene-local Grid, primary ground Tilemap and optional additional ground Tilemaps sharing that Grid. Procedural scenes reference `DungeonRoomBuilder.FloorTilemap` before generation; the same Tilemap is populated at runtime.

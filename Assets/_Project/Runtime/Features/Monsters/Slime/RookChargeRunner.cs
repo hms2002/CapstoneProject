@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
@@ -7,6 +8,7 @@ using UnityGAS;
 /// 책임:
 /// - Rook이 만든 돌진 문맥을 받아 경고 표시, 돌진 이동, 충돌/피해 판정을 실행한다.
 /// - 돌진 중단, 경고 정리, 패턴 runner 생명주기를 한곳에서 관리한다.
+/// - 상단 피격 박스 접촉만으로 돌진 피해가 발생하지 않도록 하단 물리 몸체의 접촉을 확인한다.
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rook))]
@@ -56,6 +58,8 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     private TagSystem tagSystem;
     private bool staggerImmuneApplied;
     private float dashEndTime;
+    private readonly List<Collider2D> chargeBodies = new();
+    private readonly List<Collider2D> targetBodies = new();
 
     public bool IsRunning => isRunning;
 
@@ -568,6 +572,9 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         if (hitPlayer || targetObject == null)
             return false;
 
+        if (!IsTouchingLowerBody(targetObject))
+            return false;
+
         if (currentContext.HitPayload == null || !currentContext.HitPayload.IsValid())
             return false;
 
@@ -577,6 +584,32 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
             hitPoint);
 
         return hitPlayer;
+    }
+
+    private bool IsTouchingLowerBody(GameObject targetObject)
+    {
+        GetComponentsInChildren(false, chargeBodies);
+        targetObject.GetComponentsInChildren(false, targetBodies);
+        Rigidbody2D ownBody = GetComponent<Rigidbody2D>();
+        Rigidbody2D playerBody = targetObject.GetComponent<Rigidbody2D>();
+        foreach (Collider2D own in chargeBodies)
+        {
+            if (own.attachedRigidbody != ownBody) continue;
+            foreach (Collider2D other in targetBodies)
+            {
+                if (other.attachedRigidbody != playerBody) continue;
+                if (HasPhysicalBodyContact(own, other)) return true;
+            }
+        }
+        return false;
+    }
+
+    private static bool HasPhysicalBodyContact(Collider2D own, Collider2D other)
+    {
+        if (own == null || other == null || !own.enabled || !other.enabled || own.isTrigger || other.isTrigger)
+            return false;
+        ColliderDistance2D separation = own.Distance(other);
+        return separation.isValid && separation.distance <= 0.01f;
     }
 
     /// <summary>룩이 사용할 붉은 돌진 경고 스타일을 만듭니다.</summary>

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -6,6 +7,7 @@ using UnityGAS;
 /// - Pawn이 플레이어에게 접근한 뒤 정면으로 밀지 않고 주변을 접선 방향으로 돌며 압박하는 이동 의도를 만든다.
 /// - 일반 몬스터 FSM의 추적 생명주기와 MovementMotor2D 의도 이동 인터페이스를 함께 만족한다.
 /// - 개체별로 엇갈리는 짧은 전진과 휴식을 만들어 기어가는 이동 리듬을 담당한다.
+/// - 벽으로 직선 접근이 막히면 경로의 방향만 사용하며 기존 기어가는 속도 리듬은 유지한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSource2D, IEnemyChaseIntent, IMonsterSpawnContextReceiver
@@ -44,12 +46,31 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
     private double crawlEpoch;
     private float crawlPhaseOffset;
 
+    private const float PathRetrySeconds = 0.35f;
+    private const float WaypointReachDistance = 0.18f;
+    private readonly List<Vector2> approachPath = new();
+    private readonly List<Collider2D> navigationBodies = new();
+    private Rigidbody2D navigationBody;
+    private bool navigationBodiesDirty = true;
+    private TilemapPathfinder2D cachedPathfinder;
+    private float nextFinderSearchTime;
+    private float nextPathSearchTime;
+    private Vector2 pathTarget;
+    private int waypointIndex;
+    private static int lastPawnSearchFrame = -1;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetSearchBudget() => lastPawnSearchFrame = -1;
+
+    private void OnTransformChildrenChanged() => navigationBodiesDirty = true;
+
     private void OnEnable()
     {
         // Hash the instance without consuming gameplay RNG; pooled reuse restarts its clock.
         uint hash = unchecked((uint)GetInstanceID() * 2654435761u);
         crawlPhaseOffset = (hash & 0x00ffffffu) / 16777216f;
         crawlEpoch = Time.timeAsDouble;
+        ResetNavigation();
     }
 
     private void Awake()
@@ -81,6 +102,17 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
         if (!CanIgnoreDetectionRange() && distance > detectionRange)
             return IntentMovementData.None;
 
+        TilemapPathfinder2D finder = ResolvePathfinder();
+        if (finder != null)
+        {
+            MonsterNavigationFootprint2D footprint = GetNavigationFootprint();
+            if (!finder.HasDirectWalkableSegment(transform.position, enemy.Target.position, footprint))
+                return CreateCrawlIntent(ResolvePathDirection(finder, enemy.Target.position, footprint), approachSpeedScale);
+
+            approachPath.Clear();
+            waypointIndex = 0;
+        }
+
         if (distance > approachRange)
             return CreateCrawlIntent(toTarget.normalized, approachSpeedScale);
 
@@ -111,6 +143,7 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
     public void StopChase()
     {
         chaseEnabled = false;
+        ResetNavigation();
     }
 
     public bool IsTargetWithinDetectionRange()
@@ -130,6 +163,95 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
     {
         spawnContext = context;
         nextTargetAcquireTime = 0f;
+        ResetNavigation();
+    }
+
+    private void ResetNavigation()
+    {
+        approachPath.Clear();
+        waypointIndex = 0;
+        cachedPathfinder = null;
+        navigationBodiesDirty = true;
+        nextFinderSearchTime = 0f;
+        nextPathSearchTime = Time.time + crawlPhaseOffset * 0.15f;
+    }
+
+    private MonsterNavigationFootprint2D GetNavigationFootprint()
+    {
+        if (navigationBodiesDirty)
+        {
+            GetComponentsInChildren(true, navigationBodies);
+            navigationBody = GetComponent<Rigidbody2D>();
+            navigationBodiesDirty = false;
+        }
+        return MonsterNavigationFootprint2D.FromBodies(transform, navigationBody, navigationBodies);
+    }
+
+    private TilemapPathfinder2D ResolvePathfinder()
+    {
+        TilemapPathfinder2D candidate = spawnContext.Pathfinder;
+        if (candidate == null || !candidate.isActiveAndEnabled || candidate.gameObject.scene != gameObject.scene)
+            candidate = cachedPathfinder;
+        if (candidate != null && candidate.isActiveAndEnabled && candidate.gameObject.scene == gameObject.scene)
+        {
+            if (cachedPathfinder != candidate)
+            {
+                approachPath.Clear();
+                waypointIndex = 0;
+            }
+            return cachedPathfinder = candidate;
+        }
+
+        if (Time.time < nextFinderSearchTime) return null;
+        nextFinderSearchTime = Time.time + 1f + crawlPhaseOffset * 0.2f;
+        cachedPathfinder = null;
+        approachPath.Clear();
+        waypointIndex = 0;
+        foreach (var finder in FindObjectsByType<TilemapPathfinder2D>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+        {
+            if (!finder.isActiveAndEnabled || finder.gameObject.scene != gameObject.scene) continue;
+            cachedPathfinder = finder;
+            break;
+        }
+        return cachedPathfinder;
+    }
+
+    private Vector2 ResolvePathDirection(TilemapPathfinder2D finder, Vector2 target, MonsterNavigationFootprint2D footprint)
+    {
+        Vector2 position = transform.position;
+        while (waypointIndex < approachPath.Count &&
+               (approachPath[waypointIndex] - position).sqrMagnitude <= WaypointReachDistance * WaypointReachDistance)
+            waypointIndex++;
+
+        bool exhausted = waypointIndex >= approachPath.Count;
+        bool targetMoved = (target - pathTarget).sqrMagnitude > 0.35f * 0.35f;
+        if ((exhausted || targetMoved) && Time.time >= nextPathSearchTime && lastPawnSearchFrame != Time.frameCount)
+        {
+            // At most one Pawn A* search per rendered frame, including frames with several physics ticks.
+            lastPawnSearchFrame = Time.frameCount;
+            nextPathSearchTime = Time.time + PathRetrySeconds + crawlPhaseOffset * 0.1f;
+            pathTarget = target;
+            approachPath.Clear();
+            waypointIndex = 0;
+            if (finder.TryBuildPath(position, target, out IReadOnlyList<Vector2> path, footprint))
+                for (int i = 0; i < path.Count; i++) approachPath.Add(path[i]);
+
+            // Skip the starting cell center only when the next segment is genuinely clear.
+            if (approachPath.Count > 1 && finder.HasDirectWalkableSegment(position, approachPath[1], footprint))
+                waypointIndex = 1;
+            while (waypointIndex < approachPath.Count &&
+                   (approachPath[waypointIndex] - position).sqrMagnitude <= WaypointReachDistance * WaypointReachDistance)
+                waypointIndex++;
+        }
+
+        if (waypointIndex >= approachPath.Count) return Vector2.zero;
+        if (!finder.HasDirectWalkableSegment(position, approachPath[waypointIndex], footprint))
+        {
+            approachPath.Clear();
+            waypointIndex = 0;
+            return Vector2.zero;
+        }
+        return (approachPath[waypointIndex] - position).normalized;
     }
 
     private bool CanIgnoreDetectionRange()

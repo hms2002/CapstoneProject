@@ -8,7 +8,7 @@ using UnityEngine;
 /// - 런 특수 NPC의 상호작용, 선택지 표시, 기능 실행 전후 컷씬 프레젠테이션을 조율한다.
 /// - 씬 전환으로 전역 선택지 UI가 교체되면 파괴 참조를 버리고 현재 Presenter에 다시 연결한다.
 /// </summary>
-public sealed class RunSpecialNpcInteractor : InteractableBase
+public sealed class RunSpecialNpcInteractor : InteractableBase, INpcRoomIntroductionSource
 {
     [Header("Prompt")]
     [SerializeField] private Transform promptAnchor;
@@ -89,8 +89,20 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
     private bool isFlowActive;
     private bool holdsRunTimerPause;
     private bool holdsTimeScalePause;
+    private System.Action<bool> introductionEnded;
     private RunSpecialNpcFeatureBase featureToExecuteAfterPresentationClose;
 
+    public string IntroductionKey => primaryFeature != null
+        ? $"run-npc:{(int)primaryFeature.DialogueFeatureKind}" : null;
+    public bool HandlesIntroductionCamera => focusCameraOnNpc;
+
+    public bool TryStartIntroduction(IPlayerInteractor player, System.Action<bool> onEnded)
+    {
+        if (!CanInteract(player)) return false;
+        introductionEnded = onEnded;
+        OnPlayerInteract(player);
+        return true;
+    }
     private void Awake()
     {
         propertyBlock = new MaterialPropertyBlock();
@@ -162,6 +174,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         RunSpecialNpcFeatureContext context = new(this, player);
         featureToExecuteAfterPresentationClose = null;
 
+        bool completed = false;
         try
         {
             yield return PlayLetterboxIn();
@@ -173,6 +186,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
             yield return PlayCameraReturn();
             yield return PlayLetterboxOut();
             yield return ExecuteFeatureAfterPresentationCloseIfNeeded(context);
+            completed = true;
         }
         finally
         {
@@ -182,7 +196,15 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
             featureToExecuteAfterPresentationClose = null;
             EndFlowState();
             activeFlow = null;
+            NotifyIntroductionEnded(completed);
         }
+    }
+
+    private void NotifyIntroductionEnded(bool completed)
+    {
+        System.Action<bool> callback = introductionEnded;
+        introductionEnded = null;
+        callback?.Invoke(completed);
     }
 
     private IEnumerator RunInteractionBody(RunSpecialNpcFeatureContext context, IPlayerInteractor player)
@@ -544,6 +566,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
 
     private void StopActiveFlow()
     {
+        NotifyIntroductionEnded(false);
         if (activeFlow != null)
         {
             Coroutine runningFlow = activeFlow;

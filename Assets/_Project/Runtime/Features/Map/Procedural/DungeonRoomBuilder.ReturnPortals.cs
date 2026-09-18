@@ -6,6 +6,8 @@ using UnityEngine.Tilemaps;
 public sealed partial class DungeonRoomBuilder
 {
     [Header("Dead End Return Portals")]
+    [Tooltip("Prefer safe reachable floor nearest the room center. Authored portal guides still take priority. Disable for legacy opposite-wall placement.")]
+    [SerializeField] private bool preferReturnPortalRoomCenter = true;
     [SerializeField] private DungeonReturnPortal returnPortalPrefab;
     [SerializeField] private DungeonReturnTravel returnTravelPrefab;
     [SerializeField] private DungeonReturnPortal bossShortcutPrefab;
@@ -86,22 +88,20 @@ public sealed partial class DungeonRoomBuilder
                 }
             Vector3 portalPosition;
             if (explicitAnchor != null && reachable.Contains((Vector2Int)floorTilemap.WorldToCell(explicitAnchor.position)) &&
-                IsReturnSpaceClear(explicitAnchor.position, returnPortalClearance, null, false))
+                IsReturnPortalFloorClear(explicitAnchor.position, room.WorldBounds, wallDirection))
             {
                 portalPosition = explicitAnchor.position;
             }
-            else if (DungeonReturnPortalPlacement.TryChooseOppositeWall(reachable, entrance, socket.direction,
-                c => !HasReturnFloor(c), c => IsReturnSpaceClear(floorTilemap.GetCellCenterWorld((Vector3Int)c),
-                    returnPortalClearance, null, false), out Vector2Int chosen))
+            else if (TryChooseReturnPortalCell(room, reachable, entrance, socket.direction, out Vector2Int chosen))
             {
                 if (explicitAnchor != null)
-                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[ReturnPortal] {room.Template.name}: guide '{explicitAnchor.name}' is unreachable or obstructed; using automatic wall placement.", explicitAnchor);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[ReturnPortal] {room.Template.name}: guide '{explicitAnchor.name}' is unreachable or obstructed; using automatic safe placement.", explicitAnchor);
                 wallDirection = DungeonReturnPortalPlacement.Opposite(socket.direction);
                 portalPosition = floorTilemap.GetCellCenterWorld((Vector3Int)chosen);
             }
             else
             {
-                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[ReturnPortal] {room.Template.name}: no safe opposite-wall position. Add ReturnPortal_{wallDirection} anchor.", this);
+                CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[ReturnPortal] {room.Template.name}: no safe reachable portal position; portal skipped. Check floor, obstacles and ReturnPortal_{wallDirection} guide.", this);
                 continue;
             }
             DungeonReturnPortal portal = Instantiate(returnPortalPrefab, portalPosition, floorTilemap.transform.rotation, generatedReturnRoot);
@@ -112,6 +112,55 @@ public sealed partial class DungeonRoomBuilder
             returnPortals.Add(portal);
         }
         TryBuildBossShortcut(layout, start, startCells, landing);
+        return true;
+    }
+
+    private bool TryChooseReturnPortalCell(DungeonRoomPlacement room, List<Vector2Int> reachable,
+        Vector2Int entrance, RoomSocketDirection entranceDirection, out Vector2Int chosen)
+    {
+        bool CanPlace(Vector2Int cell) => IsReturnPortalFloorClear(
+            floorTilemap.GetCellCenterWorld((Vector3Int)cell), room.WorldBounds,
+            DungeonReturnPortalPlacement.Opposite(entranceDirection));
+        return preferReturnPortalRoomCenter
+            ? DungeonReturnPortalPlacement.TryChooseCenter(reachable, room.WorldBounds.center, CanPlace, out chosen)
+            : DungeonReturnPortalPlacement.TryChooseOppositeWall(reachable, entrance, entranceDirection,
+                c => !HasReturnFloor(c), CanPlace, out chosen);
+    }
+
+    private bool IsReturnPortalFloorClear(Vector3 position, RectInt roomBounds, RoomSocketDirection direction)
+    {
+        // Validate the entire conservative footprint, including corners near pit edges.
+        // Stay inside this room even when another room's floor touches its bounds.
+        for (int x = -1; x <= 1; x++)
+            for (int y = -1; y <= 1; y++)
+            {
+                Vector2Int cell = (Vector2Int)floorTilemap.WorldToCell(position +
+                    new Vector3(x * returnPortalClearance, y * returnPortalClearance));
+                if (!roomBounds.Contains(cell) || !HasReturnFloor(cell)) return false;
+            }
+        if (!IsReturnSpaceClear(position, returnPortalClearance, null, false)) return false;
+
+        // The interaction capsule is wider than the safe standing footprint.
+        // Keep it away from chests/NPCs/bells to avoid competing F-key targets.
+        var capsule = returnPortalPrefab.GetComponent<CapsuleCollider2D>();
+        if (capsule == null) return true;
+        float length = Mathf.Max(capsule.size.x, capsule.size.y);
+        float thickness = Mathf.Min(capsule.size.x, capsule.size.y);
+        bool horizontal = direction == RoomSocketDirection.Up || direction == RoomSocketDirection.Down;
+        Vector2 size = horizontal ? new Vector2(length, thickness) : new Vector2(thickness, length);
+        Vector3 scale3 = Vector3.Scale(transform.lossyScale, returnPortalPrefab.transform.localScale);
+        Vector2 scale = new(Mathf.Abs(scale3.x), Mathf.Abs(scale3.y));
+        Quaternion rotation = floorTilemap.transform.rotation;
+        Vector3 center = position + rotation * (Vector3)Vector2.Scale(capsule.offset, scale);
+        int count = Physics2D.OverlapBox(center, Vector2.Scale(size, scale), rotation.eulerAngles.z,
+            new ContactFilter2D { useTriggers = true }, returnOverlapBuffer);
+        if (count >= returnOverlapBuffer.Length) return false;
+        for (int i = 0; i < count; i++)
+        {
+            Collider2D collider = returnOverlapBuffer[i];
+            if (collider == null || collider.gameObject.scene != gameObject.scene) continue;
+            if (collider.GetComponentInParent<InteractableBase>() != null) return false;
+        }
         return true;
     }
 
@@ -199,11 +248,12 @@ public sealed partial class DungeonRoomBuilder
     {
         Vector3Int tileCell = (Vector3Int)cell;
         return floorTilemap.HasTile(tileCell) &&
+            (holeTilemap == null || !holeTilemap.HasTile(tileCell)) &&
             (wallTilemap == null || wallTilemap.GetColliderType(tileCell) == Tile.ColliderType.None);
     }
 
     private bool CanTraverseReturnCell(Vector2Int cell) => HasReturnFloor(cell) &&
-        IsReturnSpaceClear(floorTilemap.GetCellCenterWorld((Vector3Int)cell), 0.15f, null, true);
+        IsReturnSpaceClear(floorTilemap.GetCellCenterWorld((Vector3Int)cell), returnPortalClearance, null, true);
 
     private bool ValidateReturnLanding(Vector3 position, float radius, Transform ignoredPlayer)
     {

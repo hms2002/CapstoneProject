@@ -310,6 +310,73 @@ public sealed class DungeonMapContentLifecyclePlayModeTests
         Assert.That(runtime.GetRoomContents(2).ClosedChestCount, Is.Zero);
     }
 
+    [Test]
+    public void ChestGuidance_SelectsNearestAndDropsOpenedDisabledAndOtherRoomChests()
+    {
+        var near = NewObject("Near", new Vector2(5, 5)).AddComponent<TreasureChest>();
+        var far = NewObject("Far", new Vector2(8, 5)).AddComponent<TreasureChest>();
+        NewObject("OtherRoom", new Vector2(21, 5)).AddComponent<TreasureChest>();
+        tracker = new DungeonMapContentTracker(scene, graph, _ => { });
+        Assert.That(tracker.TryGetNearestUnopenedChest(1, new Vector2(4, 5), out var target), Is.True);
+        Assert.That(target, Is.SameAs(near));
+        near.RestoreOpenedStateForDungeon();
+        Assert.That(tracker.TryGetNearestUnopenedChest(1, new Vector2(4, 5), out target), Is.True);
+        Assert.That(target, Is.SameAs(far));
+        far.gameObject.SetActive(false);
+        Assert.That(tracker.TryGetNearestUnopenedChest(1, Vector3.zero, out target), Is.False);
+        far.gameObject.SetActive(true);
+        Assert.That(tracker.TryGetNearestUnopenedChest(1, Vector3.zero, out target), Is.True);
+        tracker.Dispose();
+        Assert.That(tracker.TryGetNearestUnopenedChest(1, Vector3.zero, out target), Is.False);
+    }
+
+    [Test]
+    public void ChestGuidance_NewRewardRegistersAfterTrackingStarts()
+    {
+        tracker = new DungeonMapContentTracker(scene, graph, _ => { });
+        Assert.That(tracker.TryGetNearestUnopenedChest(1, Vector3.zero, out _), Is.False);
+        var reward = NewObject("BellReward", new Vector2(5, 5)).AddComponent<TreasureChest>();
+        Assert.That(tracker.TryGetNearestUnopenedChest(1, Vector3.zero, out var target), Is.True);
+        Assert.That(target, Is.SameAs(reward));
+        UnityEngine.Object.DestroyImmediate(reward.gameObject);
+        Assert.That(tracker.TryGetNearestUnopenedChest(1, Vector3.zero, out _), Is.False);
+    }
+
+    [Test]
+    public void ChestGuidance_HidesInCorridorDuringWavesAndEncounterHolds()
+    {
+        NewObject("Chest", new Vector2(5, 5)).AddComponent<TreasureChest>();
+        var root = NewObject("Map", Vector2.zero);
+        root.SetActive(false);
+        var runtime = root.AddComponent<DungeonMapRuntimeController>();
+        var discovery = new DungeonMapDiscoveryModel(graph);
+        discovery.EnterRoom(1);
+        SetField(runtime, "graph", graph);
+        SetField(runtime, "discovery", discovery);
+        SetField(runtime, "configured", true);
+        root.SetActive(true);
+        Assert.That(runtime.TryGetChestGuidanceTarget(new Vector2(5, 5), out _), Is.True);
+        Assert.That(runtime.TryGetChestGuidanceTarget(new Vector2(15, 5), out _), Is.False);
+        Assert.That(runtime.TryGetChestGuidanceTarget(new Vector2(25, 5), out _), Is.False);
+
+        var group = NewObject("Encounter", Vector2.zero).AddComponent<MonsterSpawnRoomGroup>();
+        var active = typeof(MonsterSpawnRoomGroup).GetProperty("ActiveRoom");
+        var previous = active.GetValue(null);
+        try
+        {
+            active.SetValue(null, group);
+            SetField(group, "playerEncounterEntered", true);
+            Assert.That(runtime.TryGetChestGuidanceTarget(new Vector2(5, 5), out _), Is.False);
+            SetField(group, "roomWavesCompleted", true);
+            Assert.That(runtime.TryGetChestGuidanceTarget(new Vector2(5, 5), out _), Is.True);
+            group.PushEncounterHold();
+            Assert.That(runtime.TryGetChestGuidanceTarget(new Vector2(5, 5), out _), Is.False);
+            group.PopEncounterHold();
+            Assert.That(runtime.TryGetChestGuidanceTarget(new Vector2(5, 5), out _), Is.True);
+        }
+        finally { active.SetValue(null, previous); }
+    }
+
     private GameObject NewObject(string name, Vector2 position)
     {
         GameObject result = Own(new GameObject(name));

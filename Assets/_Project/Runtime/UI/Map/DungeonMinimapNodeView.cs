@@ -17,7 +17,7 @@ public sealed class DungeonMinimapNodeView : MonoBehaviour
     [SerializeField] private DungeonMinimapContentBadgeView closedChestBadge;
     [SerializeField] private DungeonMinimapContentBadgeView openedChestBadge;
     [SerializeField] private DungeonMinimapContentBadgeView heartBadge;
-    [SerializeField, Min(1f)] private float iconSize = 10f;
+    [SerializeField, Min(1f)] private float iconSize = 15f;
     [SerializeField, Min(0f)] private float iconSpacing = 2f;
     private readonly List<RectTransform> visibleIcons = new(4);
     private Vector2 safeIconSize = Vector2.one;

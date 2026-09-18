@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class DialogueTrigger : InteractableBase
+public class DialogueTrigger : InteractableBase, INpcRoomIntroductionSource
 {
     // 이 클래스의 책임:
     // 월드 NPC/오브젝트의 상호작용 진입점으로서 NPCData와 Ink 대사를 DialoguePlayback에 전달한다.
@@ -23,6 +23,20 @@ public class DialogueTrigger : InteractableBase
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
 
     private NPCFeatureController featureController;
+
+    public string IntroductionKey => npcData != null && !npcData.isBoss ? $"npc:{npcData.id}" : null;
+    public bool HandlesIntroductionCamera => false;
+
+    public bool TryStartIntroduction(IPlayerInteractor player, System.Action<bool> onEnded)
+    {
+        if (!CanInteract(player))
+            return false;
+
+        return DialoguePlayback.TryStartDialogueSequence(
+            new[] { new DialogueStorySegment(ResolveInk()) },
+            new List<NPCData> { npcData }, featureController,
+            new DialoguePresentationOptions(onEnded: onEnded));
+    }
 
     private void Awake()
     {

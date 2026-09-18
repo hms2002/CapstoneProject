@@ -24,7 +24,15 @@ Status: structure memory, not a technical contract. Last reviewed: 2026-09-18.
 - Sources do not reference map/UI classes. The tracker filters by scene and uses occupied shape rectangles to assign a room. `DungeonGenerator` passes `DungeonRoomBuilder.FloorTilemap` into the map controller; the tracker converts source world positions through `WorldToLocal` and `LocalToCellInterpolated` before comparing the graph. The graph's legacy `WorldBounds` name refers to dungeon layout cells, not Unity world units. Hearts/objects on a connector or just beyond a room edge group with the nearest actual room shape; stable placement IDs break distance ties.
 - `GetRoomContents` returns empty data for unvisited rooms; NodeView independently gates content badges on Visited. Room-role silhouettes keep their previous discovery behavior.
 - Content counts are projections of current live objects, not a new save owner. Opened chests follow the existing object-state restore path. A heart which the existing scene persistence does not restore is not kept as a stale map icon.
-- Coordinate conversion happens on source notifications/bootstrap only, not in a new Update scan. The same grid is retained when the controller is disabled/re-enabled. A null grid remains an identity-coordinate compatibility path for synthetic graphs/tests, not the generated scene path.
+- Content-count coordinate conversion happens on source notifications/bootstrap. Chest guidance also resolves tracked chest positions when queried; it does not search scene objects each frame. The same grid is retained when the controller is disabled/re-enabled. A null grid remains an identity-coordinate compatibility path for synthetic graphs/tests, not the generated scene path.
+
+## Player Chest Guidance
+
+- `DungeonMapContentTracker` retains live chest references alongside content counts and exposes the nearest active, unopened, unlocked chest in a requested room. Disable/destruction removes references; map disposal clears them and unsubscribes events. Newly spawned alarm-bell rewards follow the same chest lifecycle notifications.
+- `DungeonMapRuntimeController.TryGetChestGuidanceTarget` gates on `MonsterSpawnRoomGroup.IsPlayerInCombat` (including pending waves and encounter holds) and the player's physical location inside the current room's occupied shape. Remembering the last discovered room alone is insufficient while walking through connectors.
+- `PlayerRoomChestGuidanceView` is an authored child prefab of `PF Player`. It projects the target around the player without owning loot or combat state. Two existing SpriteRenderers are toggled, not created per frame. Only the arrow rotates; the chest icon stays upright. Pause, non-idle interaction, death, room exit, combat or missing target hide the guide.
+- Authoring: `Assets/_Project/Prefabs/Map/Navigation/PlayerRoomChestGuidance.prefab`. Defaults: radius 1.2, arrow offset 0.35, anchor Y 0.3, chest width 0.42, arrow width 0.32, UI sorting layer, no sprite-mask interaction. No new manager, shader or gameplay save fields.
+- Verification: `PlayerRoomChestGuidancePlayModeTests` and guidance cases in `DungeonMapContentLifecyclePlayModeTests`; live scene readability remains a manual check.
 
 ## Authoring And Display
 

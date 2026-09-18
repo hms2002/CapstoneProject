@@ -321,6 +321,8 @@ public class GameData
     public BossClearProgressSaveData bossClearProgressData = new BossClearProgressSaveData();
     public RunSpecialNpcSaveData runSpecialNpcData = new RunSpecialNpcSaveData();
     public TutorialSaveData tutorialData = new TutorialSaveData();
+    // NPC introductions are profile progress, independent of generated room/run IDs.
+    public List<string> completedNpcRoomIntroductions = new List<string>();
 
     // [New] 아이템 해금 데이터 포함
     public ItemSaveData itemData = new ItemSaveData();

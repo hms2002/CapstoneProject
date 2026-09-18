@@ -30,17 +30,15 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
     [Tooltip("충돌체 앞에서 분열체가 멈출 때 남길 여유 거리입니다.")]
     [FormerlySerializedAs("splitLandingWallSkin")]
     [SerializeField, Min(0f)] private float splitLandingBlockedSkin = 0.08f;
-    [Tooltip("착지점 주변 충돌체 겹침을 검사할 반지름입니다.")]
+    [Tooltip("Legacy point-probe setting. Split placement now uses the child's physical colliders.")]
     [SerializeField, Min(0.01f)] private float splitLandingProbeRadius = 0.18f;
-    [Tooltip("착지점이 충돌체와 겹치면 본체 방향으로 당겨 재검사할 횟수입니다.")]
+    [Tooltip("자식의 실제 몸체가 충돌체와 겹칠 때 안전한 출발점으로 보정하는 반복 횟수입니다. 최소 4회를 적용합니다.")]
     [SerializeField, Range(1, 8)] private int splitLandingResolveSteps = 4;
 
     private MobAbilityCoordinator abilityCoordinator;
     private SlimeQueenVanishParticleEffect splitDeathVanishEffect;
     private float wakeTime;
     private bool isPitFallDeath;
-    private readonly RaycastHit2D[] splitLandingRaycastHits = new RaycastHit2D[8];
-    private readonly Collider2D[] splitLandingOverlapHits = new Collider2D[8];
 
     protected override void Awake()
     {
@@ -247,7 +245,6 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
 
         for (int i = 0; i < dirs.Length; i++)
         {
-            Vector3 landingPosition = ResolveSplitLandingPosition(center, dirs[i], splitSpread);
             GameObject spawned = Instantiate(
                 splitPrefab,
                 center,
@@ -259,12 +256,22 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
                 nextSlime.InitSplit(target);
                 nextSlime.SuppressMonsterLootDrop();
                 nextSlime.GetComponent<ExperienceRewardSource>()?.SetGrantExperience(false);
+                var placement = new SlimeSplitPlacement2D(spawned, transform, ResolveSplitLandingBlockedLayers(),
+                    splitLandingBlockedSkin, splitLandingResolveSteps, splitSpawnContext.RoomArea);
+                if (!placement.TryResolve(center, dirs[i], splitSpread, out Vector2 safeStart, out Vector2 landingPosition))
+                {
+                    // Do not register an impossible spawn as a remaining room enemy.
+                    spawned.SetActive(false);
+                    Destroy(spawned);
+                    CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[SlimeSplit] {name}: no safe space for {splitPrefab.name}; skipped blocked child.", this);
+                    continue;
+                }
                 RegisterLockTrackedChild(spawned);
                 var childContext = new MonsterSpawnContext(landingPosition, spawned.transform.rotation,
                     splitSpawnContext.RoomArea, splitSpawnContext.Pathfinder);
                 foreach (var receiver in spawned.GetComponentsInChildren<IMonsterSpawnContextReceiver>(true))
                     receiver.ApplySpawnContext(childContext);
-                StartSplitLandingMotion(spawned, center, landingPosition);
+                StartSplitLandingMotion(spawned, safeStart, landingPosition);
             }
         }
     }
@@ -289,46 +296,6 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
         landingMotion.Begin(startPosition, landingPosition, splitLandingSeconds, splitLandingArcHeight);
     }
 
-    /// <summary>분열체 착지점이 충돌체 너머나 내부에 잡히지 않도록 안전한 지상 좌표로 보정합니다.</summary>
-    private Vector3 ResolveSplitLandingPosition(Vector3 center, Vector2 direction, float splitSpread)
-    {
-        if (direction.sqrMagnitude <= 0.0001f || splitSpread <= 0f)
-            return center;
-
-        LayerMask blockedLayers = ResolveSplitLandingBlockedLayers();
-        Vector2 normalizedDirection = direction.normalized;
-        Vector2 start = center;
-        float safeDistance = splitSpread;
-
-        if (blockedLayers.value != 0)
-        {
-            RaycastHit2D blockerHit = FindNearestSplitLandingBlocker(start, normalizedDirection, splitSpread, blockedLayers);
-            if (blockerHit.collider != null)
-                safeDistance = Mathf.Max(0f, blockerHit.distance - splitLandingBlockedSkin);
-        }
-
-        Vector2 candidate = start + normalizedDirection * safeDistance;
-        return ResolveNonBlockedLanding(start, candidate, blockedLayers);
-    }
-
-    /// <summary>후보 착지점이 충돌체와 겹치면 본체 쪽으로 단계적으로 되돌리며 안전한 위치를 찾습니다.</summary>
-    private Vector3 ResolveNonBlockedLanding(Vector2 center, Vector2 candidate, LayerMask blockedLayers)
-    {
-        if (blockedLayers.value == 0 || !IsSplitLandingBlocked(candidate, blockedLayers))
-            return candidate;
-
-        int steps = Mathf.Max(1, splitLandingResolveSteps);
-        for (int i = 1; i <= steps; i++)
-        {
-            float t = 1f - (float)i / steps;
-            Vector2 fallback = Vector2.Lerp(center, candidate, t);
-            if (!IsSplitLandingBlocked(fallback, blockedLayers))
-                return fallback;
-        }
-
-        return center;
-    }
-
     /// <summary>분열체 착지점 검사에 사용할 충돌체 레이어를 가져옵니다.</summary>
     private LayerMask ResolveSplitLandingBlockedLayers()
     {
@@ -348,60 +315,6 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
             mask |= 1 << nonFightCollisionLayer;
 
         return mask;
-    }
-
-    /// <summary>분열 이동 경로에서 가장 가까운 non-trigger 충돌체를 찾습니다.</summary>
-    private RaycastHit2D FindNearestSplitLandingBlocker(Vector2 start, Vector2 direction, float distance, LayerMask blockedLayers)
-    {
-        ContactFilter2D filter = new()
-        {
-            useLayerMask = true,
-            layerMask = blockedLayers,
-            useTriggers = false
-        };
-
-        int hitCount = Physics2D.Raycast(start, direction, filter, splitLandingRaycastHits, distance);
-        RaycastHit2D nearestHit = default;
-        float nearestDistance = float.MaxValue;
-
-        for (int i = 0; i < hitCount; i++)
-        {
-            RaycastHit2D hit = splitLandingRaycastHits[i];
-            if (hit.collider == null || hit.collider.transform.IsChildOf(transform))
-                continue;
-
-            if (hit.distance < nearestDistance)
-            {
-                nearestHit = hit;
-                nearestDistance = hit.distance;
-            }
-        }
-
-        return nearestHit;
-    }
-
-    /// <summary>지정 위치가 non-trigger 충돌체와 겹치는지 검사합니다.</summary>
-    private bool IsSplitLandingBlocked(Vector2 position, LayerMask blockedLayers)
-    {
-        if (blockedLayers.value == 0)
-            return false;
-
-        ContactFilter2D filter = new()
-        {
-            useLayerMask = true,
-            layerMask = blockedLayers,
-            useTriggers = false
-        };
-
-        int hitCount = Physics2D.OverlapCircle(position, splitLandingProbeRadius, filter, splitLandingOverlapHits);
-        for (int i = 0; i < hitCount; i++)
-        {
-            Collider2D hit = splitLandingOverlapHits[i];
-            if (hit != null && !hit.transform.IsChildOf(transform))
-                return true;
-        }
-
-        return false;
     }
 
     /// <summary>분열 수에 맞춰 원형 배치 방향을 만듭니다.</summary>

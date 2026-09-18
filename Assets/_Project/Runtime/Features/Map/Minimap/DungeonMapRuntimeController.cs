@@ -31,6 +31,28 @@ public sealed class DungeonMapRuntimeController : MonoBehaviour
     public int CurrentRoomPlacementId => discovery?.CurrentRoomPlacementId ?? -1;
     public bool IsConfigured => configured;
 
+    public bool TryGetChestGuidanceTarget(Vector3 playerPosition, out TreasureChest chest)
+    {
+        chest = null;
+        if (!configured || contentTracker == null || MonsterSpawnRoomGroup.IsPlayerInCombat)
+            return false;
+
+        // Discovery remembers the last entered room even while walking through a corridor.
+        // Only guide while physically inside that room's occupied shape.
+        Vector2 position = WorldToLayoutPosition(playerPosition);
+        foreach (DungeonMapRoomNode room in graph.Rooms)
+        {
+            if (room.PlacementId != CurrentRoomPlacementId) continue;
+            bool inside = room.ShapeRectangles.Count == 0 && room.WorldBounds.Contains(position);
+            Vector2 scale = room.WorldBounds.size / (Vector2)room.ShapeGridSize;
+            foreach (RectInt shape in room.ShapeRectangles)
+                inside |= new Rect(room.WorldBounds.min + (Vector2)shape.min * scale,
+                    (Vector2)shape.size * scale).Contains(position);
+            return inside && contentTracker.TryGetNearestUnopenedChest(room.PlacementId, playerPosition, out chest);
+        }
+        return false;
+    }
+
     public Vector2 WorldToLayoutPosition(Vector3 worldPosition)
     {
         return layoutGrid != null

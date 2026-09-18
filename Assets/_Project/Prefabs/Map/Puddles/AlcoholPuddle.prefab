@@ -4868,6 +4868,18 @@ MonoBehaviour:
   fireFlameEmissionRate: 28
   ignitingFlameEmissionRate: 16
   clearFlamesWhenDisabled: 1
+  buffArrowSprite: {fileID: 21300000, guid: 4d8fae93f333492db7fa4b520247dc14, type: 3}
+  flipBuffArrowY: 1
+  buffArrowCount: 6
+  buffArrowLifetime: 0.85
+  buffArrowWidth: 0.22
+  buffArrowRise: 0.4
+  buffArrowColor: {r: 0.65, g: 1, b: 0.8, a: 0.7}
+  useRisingStreaks: 1
+  streakWidth: 0.045
+  streakLengthRange: {x: 0.25, y: 0.45}
+  streakTailColor: {r: 1, g: 0.25, b: 0.02, a: 0}
+  streakTipColor: {r: 1, g: 0.7, b: 0.2, a: 0.85}
 --- !u!1 &1909735147940572936
 GameObject:
   m_ObjectHideFlags: 0

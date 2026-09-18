@@ -15,7 +15,7 @@ MonoBehaviour:
   nodeID: -198029508
   upgradeName: "비전투 이동속도 증가"
   description: "방의 전투가 끝나면 이동속도가 50% 증가합니다."
-  icon: {fileID: 21300000, guid: d950f06d53ce11c41b1f7b2cb791c628, type: 3}
+  icon: {fileID: 21300000, guid: d975f86a6d51406fba3876907c3c6e89, type: 3}
   price: 5
   effects:
   - {fileID: 11400000, guid: c1cd9ee10338df140941ffb73fd3b3fb, type: 2}

@@ -16,7 +16,7 @@ Return from generated dead-end rooms to the same dungeon's Start room without re
 
 - The production portal owns a CapsuleCollider2D trigger (long axis 2.2, short axis 1.2). Configure aligns its long axis horizontally for Up/Down walls and vertically for Left/Right, without rotating/scaling the visual or accumulating size on reuse. This extends the old radius-0.6 circle by 0.5 units on each tangential side. Authoring utility creates the same capsule; legacy non-capsule colliders retain their authored shape.
 
-- `DungeonReturnPortalPlacement.cs`: deterministic actual-connection checks, cardinal directions, reachable-cell flood fill and opposite-wall selection. No prefab or physics ownership.
+- `DungeonReturnPortalPlacement.cs`: deterministic actual-connection checks, cardinal directions, reachable-cell flood fill, nearest-center and legacy opposite-wall selection. No prefab or physics ownership.
 - `DungeonRoomBuilder.ReturnPortals.cs`: one generation-time post-pass after room objects and encounter binding. Owns the generated rig/portals, cached reachable Start cells, landing validation, optional anchor lookup and reveal snapshots. Rebuild cancels travel before disposing its own generated root.
 - `DungeonRoomDiscoveryTrigger2D.cs`: reports entry by the player's designated body collider to optional map discovery and local subscribers. Portal entry does not require an enabled minimap UI.
 - `DungeonReturnPortal.cs`: local entry/reveal/encounter gate and `InteractableBase` prompt. Room counts are checked at 0.1-second intervals; there is no per-frame global monster search.
@@ -31,7 +31,11 @@ Reveal persistence uses a synthetic `return-portal:{placementId}` entry in the e
 
 ## Placement
 
-Start and each dead end are searched from just inside their connected socket. Only reachable floor cells are considered; wall tiles, solid props and hole traps constrain traversal. Automatic portal candidates prefer the deepest opposite boundary, then the longest continuous wall segment, then its midpoint (not the entry's lateral coordinate). Blocked midpoint cells fall back to nearby safe cells; coordinate tie-breaks keep results independent of traversal order. Interaction placement rejects other interactable triggers as well as solids.
+Start and each dead end are searched from just inside their connected socket. Only reachable floor cells are considered; wall tiles, solid props, hole tiles and hole traps constrain traversal. Traversal uses the configured return clearance, rather than a smaller point probe. Hole tiles are excluded even before physics colliders refresh.
+
+Automatic portal candidates now prefer the safe cell center nearest the room bounds center. A concave room, central pit/prop or disconnected central island falls back to the nearest safe cell in the entrance's reachable component. Coordinate tie-breaks keep results independent of traversal order. `DungeonRoomBuilder > Dead End Return Portals > Prefer Return Portal Room Center` defaults to true. Disable it for legacy deepest opposite-wall/longest-segment/midpoint selection.
+
+Both guides and automatic candidates validate the standing footprint including diagonal samples inside the room, solids, hole traps and other interaction triggers. An additional conservative box around the actual directional capsule rejects overlapping chest/NPC/bell interaction areas even when the center itself is clear. Physics buffer saturation fails closed. No safe candidate means warning and omission, not dungeon-generation failure or unsafe forced placement. Searches run during generation, not every frame.
 
 Room Piece Editor's object section exposes a return portal direction and guide selection button. Select Up/Right/Down/Left, select the guide, add it using normal object placement, move it in Scene View and save the room. Existing ReturnPortal_DIRECTION Prop prefabs carry the direction through their ProceduralRoomAnchor slot and existing object serialization; cyan gizmos show position/orientation. Prefer one guide per room. A valid guide overrides both position and direction, even when it differs from the wall opposite the entrance. Multiple guides prefer the opposite direction, then Up/Right/Down/Left order. An unsafe chosen guide warns and falls back to automatic placement. No new room schema or installation step is required.
 

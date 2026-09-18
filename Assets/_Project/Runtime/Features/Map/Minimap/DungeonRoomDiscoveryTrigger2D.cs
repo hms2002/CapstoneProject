@@ -12,6 +12,9 @@ public sealed class DungeonRoomDiscoveryTrigger2D : MonoBehaviour
 
     public int RoomPlacementId => roomPlacementId;
     public event System.Action<int> PlayerEnteredRoom;
+    private NpcRoomIntroduction introduction;
+
+    public void ConfigureIntroduction(NpcRoomIntroduction value) => introduction = value;
 
     public void Configure(DungeonMapRuntimeController runtime, int placementId)
     {
@@ -44,5 +47,13 @@ public sealed class DungeonRoomDiscoveryTrigger2D : MonoBehaviour
 
         targetRuntime?.NotifyPlayerEnteredRoom(roomPlacementId);
         PlayerEnteredRoom?.Invoke(roomPlacementId);
+        introduction?.NotifyEntered(player);
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        PlayerInteractor2D player = other != null ? other.GetComponentInParent<PlayerInteractor2D>() : null;
+        if (player != null && player.BodyCollider == other)
+            introduction?.NotifyExited();
     }
 }

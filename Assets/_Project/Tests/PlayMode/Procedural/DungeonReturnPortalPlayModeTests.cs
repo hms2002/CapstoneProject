@@ -180,6 +180,129 @@ public sealed class DungeonReturnPortalPlayModeTests
         Assert.That(root.transform.localScale, Is.EqualTo(Vector3.one));
     }
 
+    [Test]
+    public void CenterPlacement_IsStableAndUsesNearestSafeReachableCell()
+    {
+        var bounds = new RectInt(0, 0, 7, 7);
+        var cells = DungeonReturnPortalPlacement.Reachable(bounds, Vector2Int.zero, _ => true);
+        Assert.That(DungeonReturnPortalPlacement.TryChooseCenter(cells, bounds.center, _ => true, out var center), Is.True);
+        Assert.That(center, Is.EqualTo(new Vector2Int(3, 3)));
+        bool Clear(Vector2Int cell) => cell != center;
+        Assert.That(DungeonReturnPortalPlacement.TryChooseCenter(cells, bounds.center, Clear, out var alternative), Is.True);
+        Assert.That(alternative, Is.EqualTo(new Vector2Int(2, 3)));
+        cells.Reverse();
+        DungeonReturnPortalPlacement.TryChooseCenter(cells, bounds.center, Clear, out var reversed);
+        Assert.That(reversed, Is.EqualTo(alternative));
+        Assert.That(DungeonReturnPortalPlacement.TryChooseCenter(cells, bounds.center, _ => false, out _), Is.False);
+    }
+
+    [Test]
+    public void CenterPlacement_RejectsDisconnectedCenterIsland()
+    {
+        var bounds = new RectInt(0, 0, 9, 9);
+        var cells = DungeonReturnPortalPlacement.Reachable(bounds, Vector2Int.zero, c => c.x != 3);
+        Assert.That(DungeonReturnPortalPlacement.TryChooseCenter(cells, bounds.center, _ => true, out var chosen), Is.True);
+        Assert.That(chosen, Is.EqualTo(new Vector2Int(2, 4)));
+    }
+
+    [TestCase(true, 13.5f)]
+    [TestCase(false, 15.5f)]
+    public void Builder_CenterIsDefaultAndLegacyWallPlacementIsOptional(bool center, float expectedX)
+    {
+        var builder = MakeBuilder();
+        Assert.That((bool)Get(builder, "preferReturnPortalRoomCenter"), Is.True);
+        Set(builder, "preferReturnPortalRoomCenter", center);
+        Assert.That(builder.TryBuild(MakeLayout()), Is.True);
+        Assert.That(builder.GeneratedReturnPortals.Count, Is.EqualTo(1));
+        Assert.That(builder.GeneratedReturnPortals[0].transform.position,
+            Is.EqualTo(new Vector3(expectedX, 3.5f)));
+    }
+
+    [TestCase(false, 0f)]
+    [TestCase(true, 0f)]
+    [TestCase(true, 1f)]
+    public void Builder_CenterAvoidsSolidPropsAndChestInteractionTriggers(bool chest, float offset)
+    {
+        var obstacle = Own(new GameObject("CenterObstacle"));
+        obstacle.transform.position = new Vector3(13.5f + offset, 3.5f);
+        var collider = obstacle.AddComponent<BoxCollider2D>();
+        collider.size = Vector2.one;
+        collider.isTrigger = chest;
+        if (chest)
+        {
+            obstacle.AddComponent<TreasureChest>();
+            obstacle.AddComponent<ChestInteractable>();
+        }
+        var builder = MakeBuilder();
+        Assert.That(builder.TryBuild(MakeLayout()), Is.True);
+        Assert.That(builder.GeneratedReturnPortals.Count, Is.EqualTo(1));
+        Assert.That(builder.GeneratedReturnPortals[0].transform.position, Is.Not.EqualTo(new Vector3(13.5f, 3.5f)),
+            "Even a clear center must reject overlap with the wider interaction capsule.");
+        Assert.That(Vector2.Distance(builder.GeneratedReturnPortals[0].transform.position,
+            obstacle.transform.position), Is.GreaterThanOrEqualTo(1f));
+    }
+
+    [Test]
+    public void Builder_PortalPlacementAvoidsHoleTilesEvenWithoutPhysicsCollider()
+    {
+        var builder = MakeBuilder();
+        builder.EditorConfigureReturnPortals(null, null);
+        var layout = MakeLayout();
+        Assert.That(builder.TryBuild(layout), Is.True);
+        var hole = new GameObject("Hole", typeof(Tilemap));
+        hole.transform.SetParent(builder.transform, false);
+        var tiles = hole.GetComponent<Tilemap>();
+        builder.EditorAssignHoleTilemap(tiles);
+        var tile = Own(ScriptableObject.CreateInstance<Tile>());
+        tiles.SetTile(new Vector3Int(13, 3), tile);
+        builder.EditorConfigureReturnPortals(Load("DungeonReturnPortal").GetComponent<DungeonReturnPortal>(),
+            Load("DungeonReturnTravelRig").GetComponent<DungeonReturnTravel>());
+        Assert.That((bool)typeof(DungeonRoomBuilder).GetMethod("TryBuildReturnPortals", Private)
+            .Invoke(builder, new object[] { layout }), Is.True);
+        Assert.That(builder.GeneratedReturnPortals.Count, Is.EqualTo(1));
+        var position = builder.GeneratedReturnPortals[0].transform.position;
+        Assert.That(tiles.HasTile(tiles.WorldToCell(position)), Is.False);
+        Assert.That(Vector2.Distance(position, new Vector2(13.5f, 3.5f)), Is.GreaterThanOrEqualTo(1f));
+    }
+
+    [TestCase(false, false)]
+    [TestCase(true, false)]
+    [TestCase(false, true)]
+    public void Builder_RespectsSafeGuideAndFallsBackFromUnreachableGuide(bool outside, bool overlapsEntrance)
+    {
+        var builder = MakeBuilder();
+        builder.EditorConfigureReturnPortals(null, null);
+        var layout = MakeLayout();
+        Assert.That(builder.TryBuild(layout), Is.True);
+        var guide = Own(new GameObject("PortalGuide"));
+        guide.transform.position = outside ? new Vector3(100f, 100f) :
+            overlapsEntrance ? new Vector3(12.5f, 2.5f) : new Vector3(14.5f, 2.5f);
+        guide.AddComponent<ProceduralRoomAnchor>().EditorConfigure("ReturnPortal_Down", ProceduralRoomAnchorScope.LocalRoom);
+        var objects = (Dictionary<int, List<GameObject>>)Get(builder, "generatedRoomObjectsByPlacement");
+        if (!objects.TryGetValue(1, out var entries)) objects[1] = entries = new List<GameObject>();
+        entries.Add(guide);
+        builder.EditorConfigureReturnPortals(Load("DungeonReturnPortal").GetComponent<DungeonReturnPortal>(),
+            Load("DungeonReturnTravelRig").GetComponent<DungeonReturnTravel>());
+        Assert.That((bool)typeof(DungeonRoomBuilder).GetMethod("TryBuildReturnPortals", Private)
+            .Invoke(builder, new object[] { layout }), Is.True);
+        Assert.That(builder.GeneratedReturnPortals.Count, Is.EqualTo(1));
+        var portal = builder.GeneratedReturnPortals[0];
+        bool fallback = outside || overlapsEntrance;
+        Assert.That(portal.transform.position, Is.EqualTo(fallback ? new Vector3(13.5f, 3.5f) : guide.transform.position));
+        Assert.That(portal.name, Does.EndWith(fallback ? "Right" : "Down"));
+    }
+
+    [Test]
+    public void Builder_NoSafeFloorSkipsPortalWithoutFailingDungeon()
+    {
+        var obstacle = Own(new GameObject("BlockedRoom", typeof(BoxCollider2D)));
+        obstacle.transform.position = new Vector3(13.5f, 3.5f);
+        obstacle.GetComponent<BoxCollider2D>().size = new Vector2(7f, 7f);
+        var builder = MakeBuilder();
+        Assert.That(builder.TryBuild(MakeLayout()), Is.True);
+        Assert.That(builder.GeneratedReturnPortals, Is.Empty);
+    }
+
     [TestCase(RoomSocketDirection.Left, 5, 3)]
     [TestCase(RoomSocketDirection.Right, 1, 3)]
     [TestCase(RoomSocketDirection.Down, 3, 5)]

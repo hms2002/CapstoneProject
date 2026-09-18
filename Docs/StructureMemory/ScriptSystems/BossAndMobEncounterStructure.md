@@ -412,3 +412,15 @@ CombatHitPause2D.FreezeVictim now respects the same parent ICombatHitPauseImmune
 - Ego sword warning queries share the actor's circle-cast wall geometry and show the first reflected segment. Homing magic forms five existing stock visuals over 1.5 seconds and previews the first shot during formation. HP50 rush has a minimum two-second first warning and caches the next trajectory near 80% travel; actual movement consumes the warned trajectory. Warning handles, motion and charge visuals are released on interruption.
 - The actual Demon King scene has an unpacked boss object. Its status runtime, size profile, HUD anchor and nested MonsterWorldHud are authored on that object; editing DemonKing.prefab alone does not update this scene instance.
 - Chloe's retired retreat/skeleton-summon pattern is rejected during eligibility evaluation, including forced followups. Retreat movement is not restored.
+
+### 2026-09-19 Rook contact and split placement
+
+- RookChargeRunner gates charge damage on contact between non-trigger physical colliders attached to the Rook/player rigidbodies. The large upper hurtbox remains available for incoming damage but cannot independently deal charge damage. This does not change Rook chase or warning dimensions.
+- Slime split placement runs after InitSplit applies child scale. SlimeSplitPlacement2D repairs starting overlaps and casts actual body shapes toward landings, respecting blocking layers and room bounds. A safe start is the only fallback; a child without safe placement is discarded before inheriting the room/chest lock unit.
+- SlimeSplitLandingMotion2D disables Rigidbody2D simulation during the visual arc, then restores simulation and hurtboxes on landing or interruption. The legacy serialized point-probe radius is retained for data compatibility but no longer defines placement clearance.
+
+### Demon King airborne landing safety
+
+- ExplosionJump and WallBounceRush's final jump share DemonKingJumpSafety2D through DemonKingController. PrepareSafeJump must precede warning creation; the returned target is both the warning base position and landing destination.
+- Non-trigger physical bodies validate wall clearance and clamp the requested destination. An impossible start rejects the jump. Flight retains root-based animation but disables physics and tracks a separate safe ground return position; this is not a prefab visual-root migration.
+- CompleteSafeJump revalidates clearance and sets JumpLandedSafely, which gates impact effects/damage. A new obstruction rejects the impact and restores the validated start. CancelSafeJump is called by the jump finally block, OnPatternEnd and OnDisable; cleanup is idempotent.

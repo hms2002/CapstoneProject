@@ -700,8 +700,6 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         float safeArcHeight = Mathf.Max(0f, arcHeight);
         JumpMotionProfile safeProfile = jumpMotionProfile.Normalized();
         _ = landingFrameSwitchRatio;
-        float z = demon.transform.position.z;
-
         PlayBodyAnimation(
             demon,
             travelAnimation,
@@ -709,23 +707,24 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
                 ? DemonKingController.DarkLordHandJumpAttackState
                 : travelFallbackState);
 
-        float elapsed = 0f;
-        while (elapsed < safeDuration)
+        demon.BeginSafeJump();
+        try
         {
-            if (IsAbilityCancelled(spec))
-                yield break;
-
-            elapsed += Time.deltaTime;
-            float normalizedTime = Mathf.Clamp01(elapsed / safeDuration);
-
-            float horizontalProgress = ResolveDemonKingJumpGroundProgress(normalizedTime, safeProfile);
-            Vector2 groundPosition = Vector2.Lerp(start, target, horizontalProgress);
-            float height = ResolveDemonKingJumpHeight(normalizedTime, safeArcHeight, safeProfile);
-            demon.transform.position = new Vector3(groundPosition.x, groundPosition.y + height, z);
-            yield return null;
+            float elapsed = 0f;
+            while (elapsed < safeDuration)
+            {
+                if (IsAbilityCancelled(spec)) yield break;
+                elapsed += Time.deltaTime;
+                float normalizedTime = Mathf.Clamp01(elapsed / safeDuration);
+                float horizontalProgress = ResolveDemonKingJumpGroundProgress(normalizedTime, safeProfile);
+                Vector2 groundPosition = Vector2.Lerp(start, target, horizontalProgress);
+                float height = ResolveDemonKingJumpHeight(normalizedTime, safeArcHeight, safeProfile);
+                demon.SetSafeJumpPose(groundPosition, height);
+                yield return null;
+            }
+            demon.CompleteSafeJump();
         }
-
-        demon.transform.position = new Vector3(target.x, target.y, z);
+        finally { demon.CancelSafeJump(); }
     }
 
     private static float ResolveDemonKingJumpGroundProgress(float normalizedTime, JumpMotionProfile profile)
@@ -2680,8 +2679,8 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
 
         SpeakPattern(demon, BossSpeechSituationEnum.DemonKingExplosionJump);
 
-        Vector2 start = demon.transform.position;
-        Vector2 target = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : (Vector2)demon.ArenaCenterPosition;
+        Vector2 requested = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : (Vector2)demon.ArenaCenterPosition;
+        if (!demon.PrepareSafeJump(requested, out Vector2 start, out Vector2 target)) yield break;
         Vector2 direction = target - start;
         demon.FacePatternDirection(direction);
         Vector2 impactCenter = demon.ResolveVfxSocketWorldAtBasePosition(
@@ -2718,6 +2717,7 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
             if (IsAbilityCancelled(spec))
                 yield break;
 
+            if (!demon.JumpLandedSafely) yield break;
             PlayBodyAnimation(demon, jumpLandingAnimation, DemonKingController.DarkLordHandJumpAttackState);
             impactCenter = demon.ResolveVfxSocketWorld(landingImpactVfx.SocketId, landingImpactVfx.FallbackLeftOffset);
             DemonKingAnimationClipVisual landingImpact = DemonKingPatternVfx.SpawnCueOneShot(
@@ -3358,8 +3358,8 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
         DemonKingController demon,
         AbilitySpec spec)
     {
-        Vector2 start = demon.transform.position;
-        Vector2 target = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : (Vector2)demon.ArenaCenterPosition;
+        Vector2 requested = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : (Vector2)demon.ArenaCenterPosition;
+        if (!demon.PrepareSafeJump(requested, out Vector2 start, out Vector2 target)) yield break;
         Vector2 delta = target - start;
         demon.FacePatternDirection(delta);
         Vector2 impactCenter = demon.ResolveVfxSocketWorldAtBasePosition(
@@ -3391,6 +3391,7 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
         if (IsAbilityCancelled(spec))
             yield break;
 
+        if (!demon.JumpLandedSafely) yield break;
         PlayBodyAnimation(demon, finalJumpLandingAnimation, DemonKingController.DarkLordHandJumpAttackState);
         impactCenter = demon.ResolveVfxSocketWorld(finalLandingImpactVfx.SocketId, finalLandingImpactVfx.FallbackLeftOffset);
         DemonKingAnimationClipVisual finalImpact = DemonKingPatternVfx.SpawnCueOneShot(

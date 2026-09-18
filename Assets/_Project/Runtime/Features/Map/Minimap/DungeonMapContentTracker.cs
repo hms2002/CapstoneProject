@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,6 +15,7 @@ public sealed class DungeonMapContentTracker : IDisposable
     private readonly GridLayout layoutGrid;
     private readonly Action<int> onChanged;
     private bool disposed;
+    private readonly Dictionary<int, TreasureChest> chests = new();
     public DungeonMapContentModel Model { get; } = new();
 
     public DungeonMapContentTracker(Scene scene, DungeonMapGraphSnapshot graph, Action<int> onChanged,
@@ -39,11 +41,35 @@ public sealed class DungeonMapContentTracker : IDisposable
             return;
         if (!chest.isActiveAndEnabled || chest.gameObject.scene != scene)
         {
+            chests.Remove(chest.GetInstanceID());
             Model.Remove(chest.GetInstanceID());
             return;
         }
+        chests[chest.GetInstanceID()] = chest;
         Model.Set(chest.GetInstanceID(), DungeonMapContentRoomResolver.Resolve(graph, chest.transform.position, layoutGrid),
             chest.IsOpened ? DungeonMapContentKind.OpenedChest : DungeonMapContentKind.ClosedChest);
+    }
+
+    // Read live chest state without rolling loot or searching the scene each frame.
+    public bool TryGetNearestUnopenedChest(int roomId, Vector3 origin, out TreasureChest nearest)
+    {
+        nearest = null;
+        if (disposed || roomId < 0) return false;
+        float bestDistance = float.PositiveInfinity;
+        foreach (TreasureChest chest in chests.Values)
+        {
+            if (chest == null || !chest.isActiveAndEnabled || chest.IsOpened ||
+                chest.gameObject.scene != scene ||
+                DungeonMapContentRoomResolver.Resolve(graph, chest.transform.position, layoutGrid) != roomId)
+                continue;
+            if (chest.TryGetComponent<ChestMonsterKillLock>(out var killLock) && !killLock.IsUnlocked)
+                continue;
+            float distance = (chest.transform.position - origin).sqrMagnitude;
+            if (distance >= bestDistance) continue;
+            nearest = chest;
+            bestDistance = distance;
+        }
+        return nearest != null;
     }
 
     private void HandleHeart(FieldHealPickup2D heart)
@@ -64,6 +90,7 @@ public sealed class DungeonMapContentTracker : IDisposable
         if (disposed)
             return;
         disposed = true;
+        chests.Clear();
         TreasureChest.WorldStateChanged -= HandleChest;
         FieldHealPickup2D.WorldStateChanged -= HandleHeart;
         Model.Changed -= onChanged;

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>Selects reachable opposite-wall portal cells deterministically, independently of Unity scene objects and room selection.</summary>
+/// <summary>Selects reachable center or opposite-wall portal cells deterministically, independently of Unity scene objects and room selection.</summary>
 public static class DungeonReturnPortalPlacement
 {
     private static readonly Vector2Int[] Steps = { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
@@ -40,6 +40,25 @@ public static class DungeonReturnPortalPlacement
             }
         }
         return result;
+    }
+
+    public static bool TryChooseCenter(IReadOnlyList<Vector2Int> reachable, Vector2 center,
+        Func<Vector2Int, bool> canPlace, out Vector2Int chosen)
+    {
+        chosen = default;
+        bool found = false;
+        float bestDistance = float.PositiveInfinity;
+        foreach (Vector2Int cell in reachable)
+        {
+            if (!canPlace(cell)) continue;
+            float distance = ((Vector2)cell + Vector2.one * 0.5f - center).sqrMagnitude;
+            if (found && (distance > bestDistance || (distance == bestDistance &&
+                (cell.x > chosen.x || (cell.x == chosen.x && cell.y >= chosen.y))))) continue;
+            found = true;
+            bestDistance = distance;
+            chosen = cell;
+        }
+        return found;
     }
 
     public static bool TryChooseOppositeWall(IReadOnlyList<Vector2Int> reachable, Vector2Int entrance,

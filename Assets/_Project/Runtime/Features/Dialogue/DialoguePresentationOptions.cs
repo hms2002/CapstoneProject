@@ -23,7 +23,8 @@ public readonly struct DialoguePresentationOptions
         bool fastSilhouetteColorize = false,
         bool forceDialogueBoxOnly = false,
         bool skipBossPrelude = false,
-        bool suppressOpeningIntroSound = false)
+        bool suppressOpeningIntroSound = false,
+        System.Action<bool> onEnded = null)
     {
         SuppressPortraitIntro = suppressPortraitIntro;
         SuppressPortraitOutro = suppressPortraitOutro;
@@ -34,6 +35,7 @@ public readonly struct DialoguePresentationOptions
         ForceDialogueBoxOnly = forceDialogueBoxOnly;
         SkipBossPrelude = skipBossPrelude;
         SuppressOpeningIntroSound = suppressOpeningIntroSound;
+        OnEnded = onEnded;
     }
 
     public bool SuppressPortraitIntro { get; }
@@ -45,6 +47,8 @@ public readonly struct DialoguePresentationOptions
     public bool ForceDialogueBoxOnly { get; }
     public bool SkipBossPrelude { get; }
     public bool SuppressOpeningIntroSound { get; }
+    // True only after a normal close; interruption/start failure reports false.
+    public System.Action<bool> OnEnded { get; }
 
     public float ResolvedFastSilhouetteFadeSeconds => Mathf.Max(0f, FastSilhouetteFadeSeconds);
 
