@@ -303,9 +303,8 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
             AbilityCancellationToken token = data.Spec.Token;
             if (token == null || token == countedAttack || token != heldAttack) return;
             countedAttack = token;
-            // Commit a whole combo at its final confirmed hit, not at animation completion.
-            attackHits = PrototypeTutorialRules.CountComboHit(attackHits,
-                data.Spec.GetInt("Combat.HitFeelIndex", -1), holding: true);
+            // Count each confirmed attack once, independently of combo step or recovery.
+            attackHits++;
             if (attackHits >= 9)
             {
                 tutorialGunner?.RequestDeath(player.gameObject);
@@ -640,9 +639,9 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         {
             0 => "길을 따라 마왕성에 진입하자.",
             1 => "회피하며 전진하자.",
-            2 => $"좌클릭 홀드로 3타 콤보 × 3회: {attackHits}/9\n마지막 3타 명중 시 카운트 +3",
-            3 => $"재사용 약 1초\n우클릭 1초 충전 후 놓기: {chargeKills}/4\nQ 스킬: {thrustKills}/3",
-            4 => "상자를 열고 아이템 선택 후 확정하기",
+            2 => $"좌클릭을 길게 눌러 공격하세요: {attackHits}/9",
+            3 => $"우클릭 스킬로 처치: {chargeKills}/4\nQ 스킬로 처치: {thrustKills}/3",
+            4 => "상자를 열고 아이템 선택 후 획득하기",
             _ => "위쪽 포탈로 이동하기"
         };
         if (message == lastProgress) return;
@@ -664,11 +663,6 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
 
 internal static class PrototypeTutorialRules
 {
-    internal static int CountComboHit(int hits, int comboIndex, bool holding)
-    {
-        return holding && comboIndex == 2 ? hits + 3 : hits;
-    }
-
     internal static bool SweptContact(Vector2 from, Vector2 to, float radius)
     {
         Vector2 delta = to - from;

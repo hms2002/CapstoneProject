@@ -21,7 +21,7 @@ public static class PrototypeTutorialNativeRegression
         {
             Rules();
             GunnerCadenceAndRetreat();
-            Debug.Log("TUTORIAL_COMBO_PASS: final-hit commit, duplicate-hit guard, post-hit cancellation, three combos advance, gunner single-shot/retreat.");
+            Debug.Log("TUTORIAL_COMBO_PASS: per-hit increment, duplicate-hit guard, post-hit cancellation, nine hits advance, gunner single-shot/retreat.");
             EditorApplication.Exit(0);
         }
         catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
@@ -162,14 +162,14 @@ public static class PrototypeTutorialNativeRegression
             for (int i = 0; i < 9; i++)
             {
                 typeof(AbilitySpec).GetProperty("Token").SetValue(spec, new AbilityCancellationToken());
-                spec.SetInt("Combat.HitFeelIndex", i % 3);
+                spec.SetInt("Combat.HitFeelIndex", i < 4 ? 0 : i % 3);
                 Call(tutorial, "OnExecutionStarted", spec);
                 var hit = new AbilityEventData { Spec = spec, Target = gunnerHost };
                 Call(tutorial, "OnGameplayEvent", tag, hit);
                 Call(tutorial, "OnGameplayEvent", tag, hit);
                 Call(tutorial, "OnExecutionEnded", spec, true);
-                Check(Get<int>(tutorial, "attackHits") == (i + 1) / 3 * 3,
-                    "Only final hits commit a combo; duplicate events and cancellation must not change it");
+                Check(Get<int>(tutorial, "attackHits") == i + 1,
+                    "Every hit counts once even when the combo restarts; duplicates and cancellation must not change it");
                 if (i == 0)
                 {
                     Call(tutorial, "TickGunner");
@@ -186,21 +186,7 @@ public static class PrototypeTutorialNativeRegression
     private static void Rules()
     {
         Type rules = typeof(PrototypeTutorialUpgrade).Assembly.GetType("PrototypeTutorialRules");
-        var hit = rules.GetMethod("CountComboHit", BindingFlags.Static | BindingFlags.NonPublic);
         var swept = rules.GetMethod("SweptContact", BindingFlags.Static | BindingFlags.NonPublic);
-        int count = 0;
-        for (int i = 0; i < 30; i++)
-            count = (int)hit.Invoke(null, new object[] { count, i % 2, true });
-        Check(count == 0, "First and second hits must not grant provisional credit");
-        count = (int)hit.Invoke(null, new object[] { count, 2, true });
-        Check(count == 3, "Final confirmed hit must immediately commit three points");
-        Check((int)hit.Invoke(null, new object[] { count, 0, false }) == 3,
-            "Release must never revoke a completed combo");
-        Check((int)hit.Invoke(null, new object[] { count, 2, false }) == 3,
-            "An attack not started with held input must not grant credit");
-        count = 0;
-        for (int i = 0; i < 9; i++) count = (int)hit.Invoke(null, new object[] { count, i % 3, true });
-        Check(count == 9, "Three complete combos must finish");
         Check((bool)swept.Invoke(null, new object[] { new Vector2(0, -3), new Vector2(0, 3), .48f }), "Fast dash crossings must not tunnel");
         Check(!(bool)swept.Invoke(null, new object[] { new Vector2(2, -3), new Vector2(2, 3), .48f }), "Passing beside a bullet must not count");
     }
