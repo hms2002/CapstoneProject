@@ -352,6 +352,17 @@ public class ItemSlotUI : MonoBehaviour,
 
         if (eventData.button == PointerEventData.InputButton.Right)
         {
+            if (ItemDragContext.Active) return;
+            if (container is PlayerConsumableContainerAdapter consumables)
+            {
+                if (consumables.TryUseAt(index))
+                {
+                    UIManager.Instance?.HideHoverImmediate();
+                    MouseCursorService.Instance?.SetInteractable(this, false);
+                }
+                Refresh();
+                return;
+            }
             InventorySlotTransferInteractionService.ExecuteQuickMove(container, index, Refresh);
             return;
         }
