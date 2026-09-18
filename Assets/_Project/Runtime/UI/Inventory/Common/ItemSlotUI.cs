@@ -44,6 +44,25 @@ public class ItemSlotUI : MonoBehaviour,
     [SerializeField] private RectTransform slotRect;
     private ItemDisplayIconDefaultState iconDefaultState;
     private Sprite defaultBackgroundSprite;
+    private Color defaultBackgroundColor;
+    private bool chestSelectionOverlay;
+    private bool selectionBlocked;
+    private UnityEngine.UI.Graphic selectionHighlightGraphic;
+    private Color defaultHighlightColor;
+
+    public void SetSelectionBlocked(bool blocked)
+    {
+        if (selectionBlocked == blocked) return;
+        if (selectionHighlightGraphic == null && hoverHighlightRoot != null)
+        {
+            selectionHighlightGraphic = hoverHighlightRoot.GetComponent<UnityEngine.UI.Graphic>();
+            if (selectionHighlightGraphic != null) defaultHighlightColor = selectionHighlightGraphic.color;
+        }
+        selectionBlocked = blocked;
+        if (selectionHighlightGraphic != null)
+            selectionHighlightGraphic.color = blocked ? Color.red : defaultHighlightColor;
+        if (isActiveAndEnabled) RefreshHoverHighlight();
+    }
     private bool defaultBackgroundEnabled;
     private bool defaultBackgroundPreserveAspect;
     private Image.Type defaultBackgroundType;
@@ -84,6 +103,7 @@ public class ItemSlotUI : MonoBehaviour,
     }
     private void OnDisable()
     {
+        SetSelectionBlocked(false);
         isPointerOver = false;
         isPointerPressed = false;
         isDraggingThisSlot = false;
@@ -180,6 +200,7 @@ public class ItemSlotUI : MonoBehaviour,
             return;
 
         defaultBackgroundSprite = backgroundImage.sprite;
+        defaultBackgroundColor = backgroundImage.color;
         defaultBackgroundEnabled = backgroundImage.enabled;
         defaultBackgroundPreserveAspect = backgroundImage.preserveAspect;
         defaultBackgroundType = backgroundImage.type;
@@ -193,8 +214,19 @@ public class ItemSlotUI : MonoBehaviour,
 
         backgroundImage.sprite = defaultBackgroundSprite;
         backgroundImage.enabled = defaultBackgroundEnabled;
+        // Keep the full-slot raycast surface while the authored empty frame supplies the visuals.
+        Color backgroundColor = defaultBackgroundColor;
+        if (chestSelectionOverlay) backgroundColor.a = 0f;
+        backgroundImage.color = backgroundColor;
         backgroundImage.preserveAspect = defaultBackgroundPreserveAspect;
         backgroundImage.type = defaultBackgroundType;
+    }
+
+    public void SetChestSelectionOverlay(bool selected)
+    {
+        if (!hasDefaultBackgroundState) CaptureDefaultBackgroundState();
+        chestSelectionOverlay = selected;
+        RestoreDefaultBackground();
     }
 
     private void ApplyLockedBackground()
@@ -432,6 +464,8 @@ public class ItemSlotUI : MonoBehaviour,
         if (item == null)
             return false;
 
+        if (selectionBlocked) return true;
+
         if (wasChestReturnCandidate)
             return true;
 
@@ -449,6 +483,7 @@ public class ItemSlotUI : MonoBehaviour,
 
     private float GetHoverHighlightTargetAlpha()
     {
+        if (selectionBlocked) return actionHighlightAlpha;
         if (IsInventoryInspectionOnly())
             return hoverHighlightAlpha;
 
@@ -481,6 +516,11 @@ public class ItemSlotUI : MonoBehaviour,
 
     private void SetHoverHighlight(bool active, float targetAlpha)
     {
+        if (selectionBlocked && HasItem)
+        {
+            active = true;
+            targetAlpha = actionHighlightAlpha;
+        }
         if (hoverHighlightRoot == null)
             return;
 

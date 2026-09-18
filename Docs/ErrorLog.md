@@ -2234,3 +2234,32 @@ These are verified code/diagnostic issues, not proven causes of the run-entry na
 - A motor can stop at a wall while an ability coroutine later overwrites Transform.position with the unvalidated requested destination. HeavySlash first approach had this path even with motor wall safety enabled.
 - First approach now clamps its body-cast destination and retains the achieved position at completion; no minimum positive travel is forced when already touching a wall. Regression checks blocked/clear casts and absence of completion teleport.
 - This confirms a wall bypass mechanism, not the user's opposite-side target-coordinate cause. Commit-dash/other-pattern direct position writes remain outside this initial-approach fix.
+
+### 2026-09-18 — Tutorial gunner retreat assumed a root Animator
+- Symptom: gunner reacts to attacks but the basic-attack tutorial counter stays at zero.
+- Confirmed cause: Editor.log contained repeated MissingComponentException at TickGunner's root GetComponent<Animator>().SetBool. The real prefab's Animator is on a child. The exception prevented clearing retreating, leaving progress gated.
+- Fix: let existing Mob.UpdateAnimation own animation through its authored reference; the tutorial only requests motor motion and completes retreat. Do not add a root Animator to conceal the hierarchy mismatch.
+- Regression: child-only Animator fixture, retreat completion, nine held hit events, duplicate rejection and gunner death/stage advance. Previous root-Animator fixture masked the real prefab mismatch.
+
+
+## 2026-09-18 - Boss HUD Slide Requests During Dialogue Suppression
+
+Related to inactive UI coroutine ownership above: BossHudController previously cached visible=true before StartCoroutine, even while its canvas was inactive. Subsequent refreshes could skip the entrance as already applied. Disabling the canvas could also interrupt a slide without invalidating its cached state. Defer slide requests while inactive and invalidate initial presentation state on disable; keep combat registration intact so restoration can replay the existing entrance. Verified by the isolated TutorialBossHudRegression checks; the reported tutorial scene symptom has not been visually reproduced in Play Mode.
+
+
+## 2026-09-18 - Chest UI Edits Missed Embedded Global Prefab Copies
+
+Symptom: selected items lost their old backgrounds but permanent empty selection frames did not appear, despite a passing standalone prefab structure check. Cause: ChestUI.prefab edits do not propagate to the independent embedded chest hierarchies in GlobalUIRoot and its variants. Fix: applied the same narrow frame authoring to the six global UI prefabs and validated all seven copies plus native sprite import. Prevention: trace the actual runtime prefab ownership before editing or claiming visual application; a standalone prefab/source build check does not certify the live UI.
+
+## 2026-09-18 - Tiny health depletion skipped the death notification
+
+- Symptom: a monster can have an apparently empty health bar, continue moving/attacking, and no longer lose health from subsequent hits.
+- Verified mechanism: AttributeValue.RecalculateValue wrote zero but skipped OnValueChanged when the previous positive residual was at most 0.001. Mob checks for lethal health only in OnEnemyAttributeChanged; subsequent zero-to-zero damage does not emit another event. Float accumulation can leave such residuals (180 HP with repeated 1.2 damage is covered).
+- Fix: always notify a positive-to-nonpositive transition, preserving the threshold for other small changes and avoiding duplicate notifications at zero. Threshold-based event suppression must not swallow depletion transitions used by gameplay lifecycle consumers.
+- Verification: isolated Unity regression fails on the old source and passes after the fix; Core MSBuild passes. The reported ArcaneTankGolem jump encounter itself has not been reproduced in Play Mode, so this mechanism is confirmed but encounter attribution remains unconfirmed.
+- Regression: Tools/Validation/AttributeDepletionRegression.cs. See [session log](./SessionLogs/2026-09-18.md).
+## 2026-09-18 - Same-state final pattern transition and premature encounter completion
+
+- Demon King's recall-to-final transition attempted to enter the already-current `BossPatternExecuteState`; the state machine correctly ignored that transition, so the final ability never entered. Exit the old state first, then reserve the new pattern, then re-enter. Reserving before exit is also unsafe because exit clears reservations. Interruption must release recall motion and presentation ownership.
+- Slime phase-one death called `NotifyBossDefeated`, which paused run completion timing even though split bosses remained. Individual deaths in a managed encounter must defer the notification to the encounter's clear condition. The director now reports completion before its optional reward delay.
+- The actual Demon King scene contains an unpacked object missing status-HUD components already present in the prefab. Validate the runtime scene hierarchy, not just the source prefab.

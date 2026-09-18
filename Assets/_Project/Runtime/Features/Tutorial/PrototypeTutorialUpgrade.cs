@@ -26,6 +26,26 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
     [SerializeField] private GameObject chestPractice;
     [SerializeField] private UnityEvent<string> onProgressChanged = new();
 
+    [Header("Authored monster encounter")]
+    [SerializeField] private GoblinGunner tutorialGunner;
+    [SerializeField] private GoblinWarrior skillMonsterPrefab;
+    [SerializeField] private Transform[] skillSpawnPoints = Array.Empty<Transform>();
+    [SerializeField] private Transform gunnerRetreatPoint;
+    [SerializeField] private Transform bulletFireStart;
+    [SerializeField] private DoorObject dodgeEntranceDoor;
+    private bool gunnerVolleyStarted;
+    [SerializeField] private ChestMonsterKillLock chestLock;
+    [SerializeField] private TreasureChest portalDoorChest;
+    [SerializeField] private DoorObject bossPortalDoor;
+    private Enemy[] skillMonsters;
+    private bool[] creditedKills;
+    private bool retreating, holdsChestLock;
+    private bool gunnerWasHit;
+    private int gunnerWalkSide = 1;
+    private const float IntroStopDistance = .95f;
+    private const float IntroApproachDistance = 2.7f;
+    private readonly System.Collections.Generic.List<GameObject> spawnedMonsters = new();
+
     private AbilitySystem player;
     private AttributeSet[] targetAttributes;
     private Vector3[] targetPositions;
@@ -66,14 +86,17 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
 
     private void Awake()
     {
+        if (skillMonsterPrefab != null) skillTargets = new Transform[skillSpawnPoints.Length];
+        skillMonsters = new Enemy[skillTargets.Length];
+        creditedKills = new bool[skillTargets.Length];
         targetAttributes = new AttributeSet[skillTargets.Length];
         targetPositions = new Vector3[skillTargets.Length];
         defeated = new bool[skillTargets.Length];
         respawnAt = new float[skillTargets.Length];
         for (int i = 0; i < skillTargets.Length; i++)
         {
-            targetAttributes[i] = skillTargets[i].GetComponent<AttributeSet>();
-            targetPositions[i] = skillTargets[i].position;
+            if (skillTargets[i] != null) targetAttributes[i] = skillTargets[i].GetComponent<AttributeSet>();
+            targetPositions[i] = skillMonsterPrefab != null ? skillSpawnPoints[i].position : skillTargets[i].position;
         }
         bulletPositions = new Vector3[bullets.Length];
         bulletConsumed = new bool[bullets.Length];
@@ -82,15 +105,41 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
 
     private void OnEnable()
     {
+        if (portalDoorChest != null)
+        {
+            portalDoorChest.FirstOpenedUi += OpenBossPortalDoor;
+            if (bossPortalDoor != null)
+            {
+                if (portalDoorChest.IsOpened) bossPortalDoor.ForceOpen(immediate: true, playPresentation: false);
+                else bossPortalDoor.ForceClose(immediate: true);
+            }
+        }
         stage = attackHits = chargeKills = thrustKills = 0;
         evadedBullet = false;
         nextDamageTime = 0f;
         lastProgress = null;
-        for (int i = 0; i < skillTargets.Length; i++) ResetTarget(i);
+        if (skillMonsterPrefab == null)
+            for (int i = 0; i < skillTargets.Length; i++) ResetTarget(i);
+        retreating = false;
+        gunnerWasHit = false;
+        gunnerWalkSide = 1;
+        gunnerVolleyStarted = false;
+        if (dodgeEntranceDoor != null)
+            dodgeEntranceDoor.ForceOpen(immediate: true, playPresentation: false);
+        if (tutorialGunner != null)
+        {
+            tutorialGunner.SuppressMonsterLootDrop();
+            tutorialGunner.ApplySpawnIdlePause(float.MaxValue);
+        }
+        if (chestLock != null)
+        {
+            chestLock.ReservePendingMonster();
+            holdsChestLock = true;
+        }
         for (int i = 0; i < bullets.Length; i++)
         {
             bullets[i].position = bulletPositions[i];
-            bulletConsumed[i] = false;
+            bulletConsumed[i] = tutorialGunner != null;
         }
         if (healthRecovery != null) healthRecovery.enabled = true;
         damageFilter = CombatIncomingDamageModifiers.Register(FilterDamage);
@@ -102,9 +151,14 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
 
     private void OnDisable()
     {
+        if (portalDoorChest != null) portalDoorChest.FirstOpenedUi -= OpenBossPortalDoor;
         PlayerRuntimeRegistry.PlayerRegistered -= BindPlayer;
         PlayerRuntimeRegistry.PlayerUnregistered -= UnbindPlayer;
         ReleasePlayer();
+        foreach (Enemy monster in skillMonsters) if (monster != null) monster.DeathStarted -= OnSkillMonsterDeath;
+        foreach (GameObject monster in spawnedMonsters) if (monster != null) Destroy(monster);
+        spawnedMonsters.Clear();
+        ReleaseChestLock();
         damageFilter?.Dispose();
         damageFilter = null;
         if (healthRecovery != null) healthRecovery.enabled = false;
@@ -173,24 +227,18 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         if (player == null) return;
         TickDashIntro();
         if (TimeScalePausePlayback.IsPaused || Time.deltaTime <= 0f) return;
+        TickGunner();
         if (stage == 0 && AtGoal(movementGoal)) Advance();
         if (stage == 1)
         {
             TickBullets();
-            if (evadedBullet && AtGoal(dashGoal)) Advance();
+            if (AtGunnerFront()) Advance();
         }
         if (stage == 2 && !InputActionQuery.IsPressed(InputActionId.PrimaryAttack))
         {
-            attackHits = PrototypeTutorialRules.CompleteTriples(attackHits);
             heldAttack = null;
         }
-        for (int i = 0; i < skillTargets.Length; i++)
-        {
-            if (!defeated[i]) continue;
-            skillTargets[i].gameObject.SetActive(false);
-            bool groupComplete = i < 4 ? chargeKills >= 4 : thrustKills >= 3;
-            if (stage == 3 && !groupComplete && Time.time >= respawnAt[i]) ResetTarget(i);
-        }
+        TickSkillTargets();
         previousPlayerPosition = player.transform.position;
         RefreshPresentation();
     }
@@ -200,6 +248,10 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         Vector2 offset = player.transform.position - goal.position;
         return Mathf.Abs(offset.x) < 1.8f && offset.y >= 0f;
     }
+
+    private bool AtGunnerFront() => tutorialGunner != null
+        ? Vector2.Distance(player.transform.position, tutorialGunner.transform.position) <= 2.6f
+        : AtGoal(dashGoal);
 
     private bool IsFullCharge(AbilitySpec spec)
     {
@@ -215,11 +267,25 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         if (!ownAttackTarget && index < 0) return context.BaseDamage;
         if (player == null || context.DamageSpec?.Context?.Instigator != player.gameObject) return 0f;
         var ability = context.DamageSpec.Context.SourceObject as AbilityDefinition;
-        if (ownAttackTarget) return stage == 2 && ability == basicAttack ? context.BaseDamage : 0f;
+        if (ownAttackTarget)
+        {
+            if (stage != 2 || retreating || ability != basicAttack) return 0f;
+            // Keep the same gunner alive until all nine confirmed attacks, regardless of weapon damage.
+            if (tutorialGunner != null)
+            {
+                AttributeSet attributes = tutorialGunner.GetComponent<AttributeSet>();
+                float gunnerHealth = attributes.GetAttributeValue(damageEffect.healthAttribute);
+                if (gunnerHealth < 2f) attributes.TrySetCurrentValue(damageEffect.healthAttribute, 2f, this);
+                return Mathf.Min(context.BaseDamage, Mathf.Max(1f, gunnerHealth - 1f));
+            }
+            return context.BaseDamage;
+        }
         if (stage != 3 || defeated[index]) return 0f;
-        bool valid = index < 4
-            ? chargeKills < 4 && ability == chargeSkill && IsFullCharge(player.FindSpec(chargeSkill))
+        bool valid = skillMonsterPrefab != null
+            ? (ability == chargeSkill && IsFullCharge(player.FindSpec(chargeSkill))) || ability == thrustSkill
+            : index < 4 ? chargeKills < 4 && ability == chargeSkill && IsFullCharge(player.FindSpec(chargeSkill))
             : thrustKills < 3 && ability == thrustSkill;
+        if (skillMonsterPrefab != null && !valid) return context.BaseDamage;
         if (!valid || context.BaseDamage <= 0f) return 0f;
         // Prototype targets deliberately die to one qualifying skill hit.
         float health = targetAttributes[index].GetAttributeValue(damageEffect.healthAttribute);
@@ -231,39 +297,145 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
     private void OnGameplayEvent(GameplayTag tag, AbilityEventData data)
     {
         if (tag != hitConfirmed || data.Spec == null || data.Target == null || player == null) return;
-        if (stage == 2 && data.Target == attackTarget.gameObject && data.Spec.Definition == basicAttack)
+        if (stage == 2 && !retreating && attackTarget != null && data.Target == attackTarget.gameObject && data.Spec.Definition == basicAttack)
         {
+            gunnerWasHit = true;
             AbilityCancellationToken token = data.Spec.Token;
             if (token == null || token == countedAttack || token != heldAttack) return;
             countedAttack = token;
+            // Commit a whole combo at its final confirmed hit, not at animation completion.
             attackHits = PrototypeTutorialRules.CountComboHit(attackHits,
-                data.Spec.GetInt("Combat.HitFeelIndex", -1), InputActionQuery.IsPressed(InputActionId.PrimaryAttack));
-            if (attackHits >= 9) Advance();
+                data.Spec.GetInt("Combat.HitFeelIndex", -1), holding: true);
+            if (attackHits >= 9)
+            {
+                tutorialGunner?.RequestDeath(player.gameObject);
+                Advance();
+            }
         }
         else if (stage == 3)
         {
             int i = Array.FindIndex(skillTargets, t => t != null && t.gameObject == data.Target);
-            if (i < 0 || defeated[i] || targetAttributes[i].GetAttributeValue(damageEffect.healthAttribute) > 0f) return;
-            bool valid = i < 4 ? IsFullCharge(data.Spec) : data.Spec.Definition == thrustSkill;
+            if (i < 0 || creditedKills[i] || targetAttributes[i].GetAttributeValue(damageEffect.healthAttribute) > 0f) return;
+            bool charged = IsFullCharge(data.Spec);
+            bool valid = skillMonsterPrefab != null ? charged || data.Spec.Definition == thrustSkill
+                : i < 4 ? charged : data.Spec.Definition == thrustSkill;
             if (!valid) return;
+            creditedKills[i] = true;
             defeated[i] = true;
             respawnAt[i] = Time.time + 1f;
-            if (i < 4) chargeKills = Mathf.Min(4, chargeKills + 1);
+            if (skillMonsterPrefab != null ? charged : i < 4) chargeKills = Mathf.Min(4, chargeKills + 1);
             else thrustKills = Mathf.Min(3, thrustKills + 1);
             if (chargeKills == 4 && thrustKills == 3) Advance();
         }
         RefreshPresentation();
     }
 
+    private void TickSkillTargets()
+    {
+        for (int i = 0; i < skillTargets.Length; i++)
+        {
+            if (!defeated[i]) continue;
+            if (skillMonsterPrefab != null)
+            {
+                if (stage == 3 && Time.time >= respawnAt[i]) SpawnSkillMonster(i);
+            }
+            else
+            {
+                if (skillTargets[i] != null) skillTargets[i].gameObject.SetActive(false);
+                bool groupComplete = i < 4 ? chargeKills >= 4 : thrustKills >= 3;
+                if (stage == 3 && !groupComplete && Time.time >= respawnAt[i]) ResetTarget(i);
+            }
+        }
+    }
+
+    private void ReleaseChestLock()
+    {
+        if (holdsChestLock && chestLock != null) chestLock.ReleasePendingMonster();
+        holdsChestLock = false;
+    }
+
+    private void TickGunner()
+    {
+        if (tutorialGunner == null || tutorialGunner.IsDead) return;
+        if (retreating)
+        {
+            Vector2 offset = gunnerRetreatPoint.position - tutorialGunner.transform.position;
+            AbilityMotionController2D motion = tutorialGunner.GetComponent<AbilityMotionController2D>();
+            // Let the existing motor own Rigidbody movement and wall collision checks.
+            motion.StartDash(offset, Mathf.Min(4f, offset.magnitude / .1f), .1f);
+            // Mob.UpdateAnimation drives the authored child Animator from motor movement.
+            if (offset.magnitude < .05f)
+            {
+                motion.CancelMotion();
+                retreating = false;
+            }
+            return;
+        }
+        if (stage == 2 && gunnerWasHit)
+        {
+            Vector2 destination = (Vector2)gunnerRetreatPoint.position + new Vector2(gunnerWalkSide * 1.5f, .5f);
+            Vector2 offset = destination - (Vector2)tutorialGunner.transform.position;
+            if (offset.magnitude < .15f) gunnerWalkSide = -gunnerWalkSide;
+            float speed = tutorialGunner.GetComponent<IStatProvider>().Get(StatId.MoveSpeedFinal) * .65f;
+            tutorialGunner.GetComponent<AbilityMotionController2D>().StartDash(offset,
+                Mathf.Min(speed, offset.magnitude / .1f), .1f);
+            return;
+        }
+        if (stage != 1 || dashIntro == DashIntroPhase.Dashing || gunnerVolleyStarted) return;
+        if (bulletFireStart != null &&
+            (player.transform.position.y < bulletFireStart.position.y ||
+             Mathf.Abs(player.transform.position.x - bulletFireStart.position.x) > .75f)) return;
+        int index = Array.FindIndex(bulletConsumed, consumed => consumed);
+        if (index < 0) return;
+        gunnerVolleyStarted = true;
+        if (dodgeEntranceDoor != null) dodgeEntranceDoor.ForceClose();
+        bulletConsumed[index] = false;
+        bullets[index].position = tutorialGunner.transform.position + Vector3.down * .65f;
+        bullets[index].gameObject.SetActive(true);
+        CommonMonsterCombatUtility.TriggerAnimation(tutorialGunner, CommonMonsterAnimationCue.Attack);
+        CapstoneAudio.SoundPlaybackUtility.Play(CapstoneAudio.SoundRef.FromKey("sound_goblinGunner_GunShot"),
+            causer: tutorialGunner.gameObject, position: tutorialGunner.transform.position, sourceObject: this);
+    }
+
+    private void SpawnSkillMonster(int i)
+    {
+        if (skillMonsters[i] != null) skillMonsters[i].DeathStarted -= OnSkillMonsterDeath;
+        GoblinWarrior monster = Instantiate(skillMonsterPrefab, targetPositions[i], Quaternion.identity, transform);
+        monster.SuppressMonsterLootDrop();
+        monster.ApplySpawnIdlePause(.25f);
+        skillMonsters[i] = monster;
+        skillTargets[i] = monster.transform;
+        targetAttributes[i] = monster.GetComponent<AttributeSet>();
+        defeated[i] = creditedKills[i] = false;
+        monster.DeathStarted += OnSkillMonsterDeath;
+        spawnedMonsters.RemoveAll(item => item == null);
+        spawnedMonsters.Add(monster.gameObject);
+    }
+
+    private void OnSkillMonsterDeath(Enemy monster)
+    {
+        int i = Array.IndexOf(skillMonsters, monster);
+        if (i < 0) return;
+        defeated[i] = true;
+        respawnAt[i] = Time.time + 1f;
+    }
+
     private void ResetTarget(int i)
     {
-        defeated[i] = false;
+        defeated[i] = creditedKills[i] = false;
         skillTargets[i].position = targetPositions[i];
         AttributeSet attributes = targetAttributes[i];
         if (attributes != null && damageEffect != null && damageEffect.healthAttribute != null)
             attributes.TrySetCurrentValue(damageEffect.healthAttribute,
                 attributes.GetAttributeValue(maxHealthAttribute), this);
         skillTargets[i].gameObject.SetActive(true);
+    }
+
+    // Normalize only the tutorial gunner projectile width; vertical reach stays unchanged.
+    private Vector2 BulletContactOffset(Vector2 offset)
+    {
+        if (tutorialGunner != null) offset.x *= .5f;
+        return offset;
     }
 
     private void TickBullets()
@@ -275,12 +447,29 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
              dashData.invulnerableTag != null && dashData.invulnerableTag == damageEffect.invulnerableTag);
         for (int i = 0; i < bullets.Length; i++)
         {
+            if (tutorialGunner != null && bulletConsumed[i]) continue;
             Transform bullet = bullets[i];
             Vector2 from = bullet.position;
             Vector2 to = dashIntro == DashIntroPhase.Dashing
                 ? from : from + Vector2.down * (3f * Time.deltaTime);
+            if (dashIntro == DashIntroPhase.ZoomIn || dashIntro == DashIntroPhase.Waiting)
+            {
+                // Clamp travel before the safety boundary, including a long frame during the intro.
+                if (Mathf.Abs(BulletContactOffset(from - currentPlayer).x) <= .48f && from.y >= currentPlayer.y)
+                {
+                    float dx = BulletContactOffset(from - currentPlayer).x;
+                    float safeY = currentPlayer.y + Mathf.Sqrt(IntroStopDistance * IntroStopDistance - dx * dx);
+                    to.y = Mathf.Min(from.y, Mathf.Max(to.y, safeY));
+                }
+            }
             if (to.y < bulletBottom.position.y)
             {
+                if (tutorialGunner != null)
+                {
+                    bulletConsumed[i] = true;
+                    bullet.gameObject.SetActive(false);
+                    continue;
+                }
                 to.y = bulletTop.position.y;
                 from = to;
                 bulletConsumed[i] = false;
@@ -288,11 +477,12 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
             bullet.position = to;
             bullet.gameObject.SetActive(!bulletConsumed[i]);
             if (bulletConsumed[i] || !PrototypeTutorialRules.SweptContact(
-                    from - previousPlayerPosition, to - currentPlayer, .48f)) continue;
+                    BulletContactOffset(from - previousPlayerPosition), BulletContactOffset(to - currentPlayer), .48f)) continue;
+            if (dashProtected) { evadedBullet = true; continue; }
+            if (invulnerable || dashIntro == DashIntroPhase.ZoomIn || dashIntro == DashIntroPhase.Waiting) continue;
             bulletConsumed[i] = true;
             bullet.gameObject.SetActive(false);
-            if (dashProtected) evadedBullet = true;
-            else if (!invulnerable && Time.time >= nextDamageTime)
+            if (Time.time >= nextDamageTime)
             {
                 nextDamageTime = Time.time + .5f;
                 HazardDamageAction.ApplyDamage(player, player.gameObject, damageEffect, 1f, gameObject, this,
@@ -309,8 +499,9 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
                 player.GetCooldownRemaining(dash) > 0f || TimeScalePausePlayback.IsPaused) return;
             for (int i = 0; i < bullets.Length; i++)
             {
-                Vector2 offset = bullets[i].position - player.transform.position;
-                if (!bulletConsumed[i] && offset.y > .48f && offset.y <= 3.4f && Mathf.Abs(offset.x) <= .48f)
+                Vector2 offset = BulletContactOffset(bullets[i].position - player.transform.position);
+                if (!bulletConsumed[i] && offset.y >= 0f &&
+                    offset.magnitude <= IntroApproachDistance && Mathf.Abs(offset.x) <= .48f)
                 {
                     BeginDashIntro();
                     break;
@@ -323,15 +514,19 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         introElapsed += Time.unscaledDeltaTime;
         if (dashIntro == DashIntroPhase.ZoomIn)
         {
-            introTimeScale = introElapsed >= 2.4f ? 0f :
-                Mathf.Max(.001f, .6f * (1f - Mathf.SmoothStep(0f, 1f, introElapsed / 2.4f)));
+            float distance = IntroApproachDistance;
+            for (int i = 0; i < bullets.Length; i++)
+                if (!bulletConsumed[i]) distance = Mathf.Min(distance, BulletContactOffset(bullets[i].position - player.transform.position).magnitude);
+            introTimeScale = distance <= IntroStopDistance + .01f ? 0f :
+                Mathf.Max(.08f, .6f * Mathf.InverseLerp(IntroStopDistance, IntroApproachDistance, distance));
             TimeScalePausePlayback.SetOwnedTimeScale(this, introTimeScale);
             SetIntroZoom(zoomFrom, zoomFrom * .65f, introElapsed / .9f);
-            if (introElapsed >= 2.4f) dashIntro = DashIntroPhase.Waiting;
+            if (introTimeScale == 0f) dashIntro = DashIntroPhase.Waiting;
             TryConfirmDash();
         }
         else if (dashIntro == DashIntroPhase.Waiting)
         {
+            SetIntroZoom(zoomFrom, zoomFrom * .65f, introElapsed / .9f);
             TryConfirmDash();
         }
         else if (dashIntro == DashIntroPhase.Dashing)
@@ -419,8 +614,13 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
     private void Advance()
     {
         stage++;
+        if (stage == 2 && tutorialGunner != null) retreating = true;
+        if (stage == 3 && skillMonsterPrefab != null)
+            for (int i = 0; i < skillTargets.Length; i++) SpawnSkillMonster(i);
         if (stage == 4)
         {
+            foreach (Enemy monster in skillMonsters) if (monster != null && !monster.IsDead) monster.RequestDeath();
+            ReleaseChestLock();
             chargeCooldown?.Dispose();
             thrustCooldown?.Dispose();
             chargeCooldown = thrustCooldown = null;
@@ -431,19 +631,19 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
 
     private void RefreshPresentation()
     {
-        if (chestPractice != null && chestPractice.activeSelf != (stage == 4))
-            chestPractice.SetActive(stage == 4);
+        if (chestPractice != null && chestPractice.activeSelf != (chestLock != null || stage == 4))
+            chestPractice.SetActive(chestLock != null || stage == 4);
         for (int i = 0; i < gates.Length; i++) gates[i].SetActive(i == 3 ? stage < 5 : stage <= i);
         if (stage != 1)
             foreach (Transform bullet in bullets) bullet.gameObject.SetActive(false);
         string message = stage switch
         {
-            0 => "1/5 이동\n위쪽 표시 지점에 도착하기",
-            1 => evadedBullet ? "2/5 무적 회피 완료!\n위쪽 출구로 이동하기" : "2/5 대쉬\n탄막을 향해 대쉬로 통과하기",
-            2 => $"3/5 일반 공격 · {attackHits}/9\n좌클릭 홀드로 3타 콤보 × 3회\n3타 전 해제 시 콤보 초기화",
-            3 => $"4/5 스킬 · 재사용 약 1초\n우클릭 1초 충전 후 놓기: {chargeKills}/4\nQ 스킬: {thrustKills}/3",
-            4 => "5/5 상자\n상자를 열고 아이템 선택 후 확정하기",
-            _ => "마왕에게 도전\n위쪽 포탈로 이동하기"
+            0 => "길을 따라 마왕성에 진입하자.",
+            1 => "회피하며 전진하자.",
+            2 => $"좌클릭 홀드로 3타 콤보 × 3회: {attackHits}/9\n마지막 3타 명중 시 카운트 +3",
+            3 => $"재사용 약 1초\n우클릭 1초 충전 후 놓기: {chargeKills}/4\nQ 스킬: {thrustKills}/3",
+            4 => "상자를 열고 아이템 선택 후 확정하기",
+            _ => "위쪽 포탈로 이동하기"
         };
         if (message == lastProgress) return;
         lastProgress = message;
@@ -454,17 +654,19 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
     {
         if (stage == 4) Advance();
     }
+
+    private void OpenBossPortalDoor(TreasureChest chest)
+    {
+        if (chest == portalDoorChest && bossPortalDoor != null)
+            bossPortalDoor.ForceOpen(save: false);
+    }
 }
 
 internal static class PrototypeTutorialRules
 {
-    internal static int CompleteTriples(int hits) => hits / 3 * 3;
-
     internal static int CountComboHit(int hits, int comboIndex, bool holding)
     {
-        if (!holding) return CompleteTriples(hits);
-        if (comboIndex == hits % 3) return hits + 1;
-        return CompleteTriples(hits) + (comboIndex == 0 ? 1 : 0);
+        return holding && comboIndex == 2 ? hits + 3 : hits;
     }
 
     internal static bool SweptContact(Vector2 from, Vector2 to, float radius)

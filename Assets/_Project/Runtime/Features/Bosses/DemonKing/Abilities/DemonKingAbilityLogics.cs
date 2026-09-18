@@ -1751,6 +1751,8 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
 
         demon.FacePatternDirection(demon.GetDirectionToTargetOrFacing(sword.ResolveThrowOriginPosition()));
         demon.PushFaceTargetLock();
+        IAttackTelegraphHandle aimWarning = null;
+        IAttackTelegraphHandle reflectedWarning = null;
         try
         {
             Vector2 animationOrigin = sword.ResolveThrowOriginPosition();
@@ -1773,14 +1775,11 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
             SpeakPattern(demon, BossSpeechSituationEnum.DemonKingThrowEgoSword, preReleaseSpeechSeconds);
             SpeakThrowReaction(demon, sword, spec, preReleaseSpeechSeconds);
 
-            IAttackTelegraphHandle aimWarning = releaseDelaySeconds > 0f
-                ? ShowLineWarning(
-                    demon,
-                    animationOrigin,
-                    ResolveProjectileWarningEnd(demon, animationOrigin, lockedThrowTarget),
-                    aimWarningWidth,
-                    releaseDelaySeconds)
-                : null;
+            bool hasReflection = sword.ResolveThrowWarningPath(animationOrigin, lockedThrowTarget - animationOrigin,
+                demon.WallMask, out Vector2 firstEnd, out Vector2 reflectedStart, out Vector2 reflectedEnd);
+            aimWarning = ShowLineAreaWarning(demon, ThrowWarningLine(animationOrigin, firstEnd), releaseDelaySeconds, false);
+            if (hasReflection && wallBounceCount > 1)
+                reflectedWarning = ShowLineAreaWarning(demon, ThrowWarningLine(reflectedStart, reflectedEnd), releaseDelaySeconds, false);
             float elapsed = 0f;
             while (elapsed < releaseDelaySeconds)
             {
@@ -1788,20 +1787,28 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
                     break;
 
                 animationOrigin = sword.ResolveThrowOriginPosition();
-                // The throw pose and warning already committed the target.
-                UpdateLineWarning(
-                    aimWarning,
-                    demon,
-                    animationOrigin,
-                    ResolveProjectileWarningEnd(demon, animationOrigin, lockedThrowTarget),
-                    aimWarningWidth,
-                    releaseDelaySeconds);
+                hasReflection = sword.ResolveThrowWarningPath(animationOrigin, lockedThrowTarget - animationOrigin,
+                    demon.WallMask, out firstEnd, out reflectedStart, out reflectedEnd);
+                UpdateLineAreaWarning(aimWarning, demon, ThrowWarningLine(animationOrigin, firstEnd), releaseDelaySeconds, false);
+                if (hasReflection && wallBounceCount > 1)
+                {
+                    if (reflectedWarning == null)
+                        reflectedWarning = ShowLineAreaWarning(demon, ThrowWarningLine(reflectedStart, reflectedEnd), releaseDelaySeconds, false);
+                    else
+                        UpdateLineAreaWarning(reflectedWarning, demon, ThrowWarningLine(reflectedStart, reflectedEnd), releaseDelaySeconds, false);
+                }
+                else
+                {
+                    reflectedWarning?.HideImmediate();
+                    reflectedWarning = null;
+                }
 
                 elapsed += Time.deltaTime;
                 yield return null;
             }
 
             aimWarning?.HideImmediate();
+            reflectedWarning?.HideImmediate();
 
             if (IsAbilityCancelled(spec))
                 yield break;
@@ -1847,8 +1854,17 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
         }
         finally
         {
+            aimWarning?.HideImmediate();
+            reflectedWarning?.HideImmediate();
             demon.PopFaceTargetLock();
         }
+    }
+
+    private LineArea ThrowWarningLine(Vector2 start, Vector2 end)
+    {
+        Vector2 delta = end - start;
+        return new LineArea((start + end) * 0.5f,
+            new Vector2(Mathf.Max(0.01f, delta.magnitude), aimWarningWidth), DemonKingCombatUtil.RotationDeg(delta));
     }
 
     private void SpeakThrowReaction(
@@ -2004,12 +2020,72 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
         AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
         demon.PushFaceTargetLock();
         List<GameObject> stockOrbVisuals = null;
+        IAttackTelegraphHandle aimWarning = null;
         try
         {
             int count = Mathf.Max(1, projectileCount);
             GameObject stockVisualPrefab = ResolveStockOrbVisualPrefab();
             GameObject firedVisualPrefab = ResolveFiredProjectileVisualPrefab();
             stockOrbVisuals = CreateStockOrbVisuals(demon, count, stockVisualPrefab);
+            const float preparationSeconds = 1.5f;
+            Vector2 firstSpawn = ResolveNextProjectileSpawnPosition(demon, stockOrbVisuals, 0, count, out int firstStockIndex);
+            Vector2 firstDirection = ResolveProjectileDirection(demon, firstSpawn);
+            Vector2 firstTarget = ResolveAimTargetPosition(demon, firstSpawn, firstDirection);
+            int sideSign = ResolveTargetSideSign(demon);
+            var stockScales = new Vector3[stockOrbVisuals.Count];
+            var stockRenderers = new SpriteRenderer[stockOrbVisuals.Count][];
+            var stockColors = new Color[stockOrbVisuals.Count][];
+            for (int j = 0; j < stockOrbVisuals.Count; j++)
+            {
+                stockScales[j] = stockOrbVisuals[j].transform.localScale;
+                stockRenderers[j] = stockOrbVisuals[j].GetComponentsInChildren<SpriteRenderer>(true);
+                stockColors[j] = new Color[stockRenderers[j].Length];
+                for (int k = 0; k < stockRenderers[j].Length; k++)
+                    stockColors[j][k] = stockRenderers[j][k].color;
+                stockOrbVisuals[j].SetActive(false);
+            }
+            PlayBodyAnimation(demon, castAnimation, DemonKingController.DarkLordHandBaltState);
+            aimWarning = ShowLineWarning(demon, firstSpawn,
+                ResolveProjectileWarningEnd(demon, firstSpawn, firstTarget, demon.PlayerMoveSpeedReference * projectileSpeedMultiplier * lifetimeSeconds),
+                aimWarningWidth, preparationSeconds);
+            float preparationElapsed = 0f;
+            while (preparationElapsed < preparationSeconds)
+            {
+                if (IsAbilityCancelled(spec) || demon.IsDead)
+                    yield break;
+                if (preparationElapsed < preparationSeconds - 0.35f)
+                    firstTarget = ResolveAimTargetPosition(demon, firstSpawn, ResolveProjectileDirection(demon, firstSpawn));
+                firstDirection = (firstTarget - firstSpawn).normalized;
+                UpdateLineWarning(aimWarning, demon, firstSpawn,
+                    ResolveProjectileWarningEnd(demon, firstSpawn, firstTarget, demon.PlayerMoveSpeedReference * projectileSpeedMultiplier * lifetimeSeconds),
+                    aimWarningWidth, preparationSeconds);
+                for (int j = 0; j < stockOrbVisuals.Count; j++)
+                {
+                    int order = sideSign >= 0 ? stockOrbVisuals.Count - 1 - j : j;
+                    float amount = Mathf.Clamp01((preparationElapsed - order * preparationSeconds / count) / (preparationSeconds / count));
+                    stockOrbVisuals[j].SetActive(amount > 0f);
+                    float smooth = Mathf.SmoothStep(0f, 1f, amount);
+                    stockOrbVisuals[j].transform.localScale = stockScales[j] * Mathf.Lerp(0.2f, 1f, smooth);
+                    for (int k = 0; k < stockRenderers[j].Length; k++)
+                    {
+                        Color color = stockColors[j][k];
+                        color.a *= smooth;
+                        stockRenderers[j][k].color = color;
+                    }
+                }
+                preparationElapsed += Time.deltaTime;
+                yield return null;
+            }
+            for (int j = 0; j < stockOrbVisuals.Count; j++)
+            {
+                stockOrbVisuals[j].SetActive(true);
+                stockOrbVisuals[j].transform.localScale = stockScales[j];
+                for (int k = 0; k < stockRenderers[j].Length; k++)
+                    stockRenderers[j][k].color = stockColors[j][k];
+            }
+            aimWarning?.HideImmediate();
+            aimWarning = null;
+
             for (int i = 0; i < count; i++)
             {
                 if (IsAbilityCancelled(spec))
@@ -2022,13 +2098,18 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
                     i,
                     count,
                     out int selectedStockOrbIndex);
-                Vector2 fireDirection = ResolveProjectileDirection(demon, spawnPosition);
+                if (i == 0)
+                {
+                    selectedStockOrbIndex = firstStockIndex;
+                    spawnPosition = firstSpawn;
+                }
+                Vector2 fireDirection = i == 0 ? firstDirection : ResolveProjectileDirection(demon, spawnPosition);
                 demon.FacePatternDirection(fireDirection);
                 PlayPatternSound(demon, castSound, bossPosition, this);
                 PlayBodyAnimation(demon, castAnimation, DemonKingController.DarkLordHandBaltState);
 
-                float aimSeconds = Mathf.Max(0f, aimWarningSeconds);
-                IAttackTelegraphHandle aimWarning = aimSeconds > 0f
+                float aimSeconds = i == 0 ? 0f : Mathf.Max(0f, aimWarningSeconds);
+                aimWarning = aimSeconds > 0f
                     ? ShowLineWarning(
                         demon,
                         spawnPosition,
@@ -2069,7 +2150,7 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
                     ApplyStockOrbLayout(demon, stockOrbVisuals);
                 }
 
-                fireDirection = ResolveProjectileDirection(demon, spawnPosition);
+                fireDirection = i == 0 ? firstDirection : ResolveProjectileDirection(demon, spawnPosition);
                 DemonKingProjectile2D.Spawn(
                     demon,
                     spawnPosition,
@@ -2111,6 +2192,8 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
         }
         finally
         {
+            aimWarning?.HideImmediate();
+            motion?.CancelMotion();
             CleanupStockOrbVisuals(stockOrbVisuals);
             demon.PopFaceTargetLock();
         }
@@ -2826,6 +2909,8 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
                 yield return null;
             }
 
+            if (IsAbilityCancelled(spec) || demon.IsDead || demon.RuntimeData.FinalDesperationStarted)
+                yield break;
             if (!sword.IsHeld)
                 sword.CompleteRecallAtOwner();
 
@@ -2956,7 +3041,7 @@ public class AbilityLogic_DemonKingEgoSwordCrossLaser : AbilityLogic_DemonKingBa
 public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(1)] private int wallBounceCount = 4;
-    [SerializeField, Min(0f)] private float warningSeconds = 0.6f;
+    [SerializeField, Min(0f)] private float warningSeconds = 2f;
     [SerializeField, Min(0.01f)] private float retreatSeconds = 0.16f;
     [SerializeField, Min(0.1f)] private float fallbackRushDistance = 40f;
     [SerializeField, Min(0.01f)] private float wallRushBodyCastRadius = 0.8f;
@@ -3029,6 +3114,8 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
         collisionProfile?.SetBodyCollisionMode(EntityCollisionProfile2D.BodyCollisionMode.PassThroughActors);
         demon.PushFaceTargetLock();
         demon.PushThresholdStaggerGuard();
+        IAttackTelegraphHandle warningView = null;
+        DemonKingAnimationClipVisual chargeLoop = null;
 
         try
         {
@@ -3067,23 +3154,20 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
             WallRushTrajectory warningTrajectory = ResolveRushTrajectory(demon, warningStart, direction);
             direction = warningTrajectory.Direction;
             LineArea warningLine = ResolveRushLineArea(warningStart, warningTrajectory);
-            IAttackTelegraphHandle warningView = ShowLineAreaWarning(demon, warningLine, warningSeconds);
+            float preparationSeconds = Mathf.Max(2f, warningSeconds);
+            warningView = ShowLineAreaWarning(demon, warningLine, preparationSeconds, false);
 
             float elapsed = 0f;
-            while (elapsed < warningSeconds)
+            while (elapsed < preparationSeconds)
             {
                 if (IsAbilityCancelled(spec))
                     yield break;
-
-                warningTrajectory = ResolveRushTrajectory(demon, warningStart, demon.GetDirectionToTargetOrFacing(warningStart));
-                direction = warningTrajectory.Direction;
-                warningLine = ResolveRushLineArea(warningStart, warningTrajectory);
-                UpdateLineAreaWarning(warningView, demon, warningLine, warningSeconds);
 
                 elapsed += Time.deltaTime;
                 yield return null;
             }
 
+            WallRushTrajectory nextTrajectory = warningTrajectory;
             float rushSpeed = demon.PlayerMoveSpeedReference * rushSpeedMultiplier;
             float disappearProgress = ResolveChargeDisappearStartProgress();
             for (int i = 0; i < wallBounceCount; i++)
@@ -3092,7 +3176,10 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
                     yield break;
 
                 Vector2 start = demon.transform.position;
-                WallRushTrajectory rushTrajectory = ResolveRushTrajectory(demon, start, demon.GetDirectionToTargetOrFacing(start));
+                warningView?.HideImmediate();
+                warningView = null;
+                WallRushTrajectory rushTrajectory = nextTrajectory;
+                bool nextWarningPrepared = false;
                 direction = rushTrajectory.Direction;
                 demon.FacePatternDirection(direction);
                 PlayBodyAnimation(demon, handRushAnimation, DemonKingController.DarkLordHandJumpAttackState);
@@ -3102,7 +3189,7 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
                 Vector2 safeEndpoint = rushTrajectory.EndpointFrom(start);
 
                 Vector3 chargeLoopOffset = demon.ResolveVfxSocketLocal(chargeLoopVfx.SocketId, chargeLoopVfx.FallbackLeftOffset);
-                DemonKingAnimationClipVisual chargeLoop = DemonKingPatternVfx.SpawnCueFollowingLoop(
+                chargeLoop = DemonKingPatternVfx.SpawnCueFollowingLoop(
                     chargeLoopVfx,
                     demon.transform,
                     chargeLoopOffset,
@@ -3145,6 +3232,13 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
                     lungeEaseOutPower: 1f,
                     onTravelProgress: progress =>
                     {
+                        if (!nextWarningPrepared && i + 1 < wallBounceCount && progress >= 0.8f)
+                        {
+                            nextWarningPrepared = true;
+                            nextTrajectory = ResolveRushTrajectory(demon, safeEndpoint, demon.GetDirectionToTargetOrFacing(safeEndpoint));
+                            warningView = ShowLineAreaWarning(demon, ResolveRushLineArea(safeEndpoint, nextTrajectory),
+                                rushSeconds * 0.2f + Mathf.Max(0.1f, rushEndPoseHoldSeconds), false);
+                        }
                         if (progress >= disappearProgress)
                             TryStartChargeDisappear();
                     });
@@ -3154,6 +3248,12 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
                     yield break;
                 }
 
+                if (!nextWarningPrepared && i + 1 < wallBounceCount)
+                {
+                    nextTrajectory = ResolveRushTrajectory(demon, safeEndpoint, demon.GetDirectionToTargetOrFacing(safeEndpoint));
+                    warningView = ShowLineAreaWarning(demon, ResolveRushLineArea(safeEndpoint, nextTrajectory),
+                        Mathf.Max(0.1f, rushEndPoseHoldSeconds), false);
+                }
                 motion?.CancelMotion();
                 demon.transform.position = safeEndpoint;
                 Vector2 chargeDisappearCenter = demon.ResolveVfxSocketWorld(chargeLoopVfx.SocketId, chargeLoopVfx.FallbackLeftOffset);
@@ -3171,6 +3271,8 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
         }
         finally
         {
+            warningView?.HideImmediate();
+            chargeLoop?.StopAndRelease();
             demon.StopBodyAfterimage();
             demon.PopThresholdStaggerGuard();
             collisionProfile?.RestoreDefaultMode();
@@ -3365,8 +3467,23 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
         string counterFallbackState = demon.ResolveGroggyCounterAnimationState();
         demon.PushFaceTargetLock();
         DemonKingWorldDimmingOverlay dimming = DemonKingWorldDimmingOverlay.Begin(demon, 0f);
+        IAttackTelegraphHandle counterWarning = null;
         try
         {
+            DemonKingVfxCueRef impactCue = branchVisual.CounterImpactVfx;
+            Vector2 warningCenter = demon.ResolveVfxSocketWorld(impactCue.SocketId, impactCue.FallbackLeftOffset);
+            float counterAnimationSeconds = branchVisual.CounterAnimation.SampleMode == DemonKingBodyFrameSampleMode.PlayFromStart
+                ? ResolveBodyAnimationLastFrameDelay(demon, branchVisual.CounterAnimation, counterFallbackState)
+                : 0f;
+            counterWarning = demon.GetTelegraphService()?.SpawnDetachedView(
+                AttackTelegraphSpecUtility.WithThinWarningOutline(
+                    AttackTelegraphSpec.CreateCircle(
+                        warningCenter,
+                        explosionDiameter,
+                        attackDelaySeconds + counterAnimationSeconds,
+                        demon.DefaultWarningStyle)),
+                demon.transform);
+
             float fadeOutSeconds = attackDelaySeconds * dimFadeOutRatio;
             float eyeFlashHoldSeconds = attackDelaySeconds * eyeFlashHoldRatio;
             float fadeInSeconds = Mathf.Max(0f, attackDelaySeconds - fadeOutSeconds - eyeFlashHoldSeconds);
@@ -3403,10 +3520,11 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
             if (IsAbilityCancelled(spec))
                 yield break;
 
-            yield return PlayCounterImpact(demon, branchVisual, counterFallbackState, swordCounterBranch, spec);
+            yield return PlayCounterImpact(demon, branchVisual, counterFallbackState, swordCounterBranch, spec, counterWarning);
         }
         finally
         {
+            counterWarning?.Release();
             if (dimming != null)
                 dimming.Release();
             demon.PopFaceTargetLock();
@@ -3418,7 +3536,8 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
         GroggyCounterBranchVisual branchVisual,
         string counterFallbackState,
         bool swordCounterBranch,
-        AbilitySpec spec)
+        AbilitySpec spec,
+        IAttackTelegraphHandle counterWarning)
     {
         string counterState = ResolveBodyStateName(branchVisual.CounterAnimation, counterFallbackState);
         bool playFromStart = branchVisual.CounterAnimation.SampleMode == DemonKingBodyFrameSampleMode.PlayFromStart;
@@ -3448,6 +3567,7 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
         Vector2 center = demon.ResolveVfxSocketWorld(
             impactCue.SocketId,
             impactCue.FallbackLeftOffset);
+        counterWarning?.HideImmediate();
         DemonKingAnimationClipVisual counterImpact = DemonKingPatternVfx.SpawnCueOneShot(
             impactCue,
             center,

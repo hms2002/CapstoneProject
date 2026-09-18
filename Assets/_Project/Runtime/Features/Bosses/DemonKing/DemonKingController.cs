@@ -87,6 +87,7 @@ public sealed class DemonKingController : BossControllerBase
     private bool authoredPatternRolesBound;
     private bool finalDesperationHealthClampActive;
     private bool restoringFinalDesperationHealthClamp;
+    private bool finalDesperationPending;
     private bool patternAnimationHoldActive;
     private float patternAnimationSpeedBeforeHold = 1f;
 
@@ -235,7 +236,7 @@ public sealed class DemonKingController : BossControllerBase
         else
             BindAuthoredPatternRolesIfNeeded();
 
-        if (!RuntimeData.FinalDesperationStarted &&
+        if ((finalDesperationPending || !RuntimeData.FinalDesperationStarted) &&
             CurrentHealthRatio <= finalDesperationHpRatio &&
             finalDesperationEntry != null)
         {
@@ -831,6 +832,7 @@ public sealed class DemonKingController : BossControllerBase
 
     public void MarkFinalDesperationStarted()
     {
+        finalDesperationPending = false;
         RuntimeData.MarkFinalDesperationStarted();
     }
 
@@ -854,6 +856,7 @@ public sealed class DemonKingController : BossControllerBase
         GetComponent<AbilityMotionController2D>()?.CancelMotion();
 
         RuntimeData.ResetForWorkbenchRuntimeRefresh();
+        finalDesperationPending = false;
         CompleteEgoSwordRecall();
         RestoreCombatPose();
     }
@@ -1596,12 +1599,19 @@ public sealed class DemonKingController : BossControllerBase
     private void ForceFinalDesperationNow()
     {
         EnsurePatternRolesReady();
-        if (finalDesperationEntry == null)
+        if (finalDesperationEntry == null || IsDead || HasDeadTag() || RuntimeData.FinalDesperationStarted)
             return;
 
+        finalDesperationPending = true;
         RuntimeData.MarkFinalDesperationStarted();
         TryEndGroggyStateImmediately();
         AbortCurrentPattern();
+        GetComponent<AbilityMotionController2D>()?.CancelMotion();
+        StopBodyAfterimage();
+        CompleteEgoSwordRecall();
+        // Recall and desperation share PatternExecute. Exit it before reserving
+        // the next pattern: same-state transitions are ignored and Exit clears reservations.
+        ChangeState(GetCombatIdleState());
         PatternRuntime.ReserveForcedPattern(finalDesperationEntry);
         ChangeState(GetPatternState(finalDesperationEntry));
     }

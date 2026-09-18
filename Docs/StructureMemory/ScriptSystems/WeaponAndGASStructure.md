@@ -449,3 +449,8 @@ A <=40% released charge now sets the runtime-only `AbilitySpec.SkipCooldownOnEnd
 Marker color follow-up (2026-09-18): the hover-only eligible-rush outline now uses saturated sky blue #00A0E6 instead of white. Cursor selection and actual rush eligibility still gate the outline and key icon together.
 
 Charge cutoff tuning follow-up (2026-09-18): Hero Sword now cancels at <=50% and executes above 50%, superseding the earlier 40% threshold. Failed releases still refund cooldown; full charge behavior is unchanged. Skill tooltip and boundary tests use the new threshold.
+### 2026-09-18 player attack launch origin
+
+`PlayerAttackOrigin` in `AttackBase.cs` resolves player-origin melee/basic and projectile starts from the body collider bounds center plus aim direction times the world-space body radius plus 0.08. It respects `EntityCollisionProfile2D` body ownership and collider scaling/offset. With an existing wall mask, a short circle cast clamps the start before a wall; this safety exception can reduce the body clearance. Existing target-origin secondary effects, placed marks and ground-area skills retain their own origins.
+
+Consumers include Crimson Boundary, Odd Iron shots/throws, Sword projectile/combo, Fragment Blade, Real Weapon, Lightning Spear basic/recovered shot, Apprentice Hero Sword and Flowering basics/hitboxes. Attack runners still own damage, timing and cleanup; the helper owns no runtime state and creates no objects.

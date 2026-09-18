@@ -1990,10 +1990,29 @@ public sealed class EgoSwordActor : MonoBehaviour
         CapstoneDiagnostics.EditorOnlyLog.LogWarning($"EgoSword aura animation is invalid: {reason}.", this);
     }
 
-    private RaycastHit2D FindNearestWallHit(Vector2 start, Vector2 direction, float distance)
+    public bool ResolveThrowWarningPath(Vector2 origin, Vector2 direction, LayerMask mask,
+        out Vector2 firstEnd, out Vector2 reflectedStart, out Vector2 reflectedEnd)
+    {
+        const float previewDistance = 100f;
+        direction = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        RaycastHit2D hit = FindNearestWallHit(origin, direction, previewDistance, mask);
+        firstEnd = hit.collider != null ? hit.centroid : origin + direction * previewDistance;
+        reflectedStart = firstEnd;
+        reflectedEnd = firstEnd;
+        if (hit.collider == null)
+            return false;
+
+        Vector2 reflectedDirection = Vector2.Reflect(direction, hit.normal).normalized;
+        reflectedStart += hit.normal * Mathf.Max(0.02f, contactRadius * 0.1f);
+        RaycastHit2D second = FindNearestWallHit(reflectedStart, reflectedDirection, previewDistance, mask);
+        reflectedEnd = second.collider != null ? second.centroid : reflectedStart + reflectedDirection * previewDistance;
+        return true;
+    }
+
+    private RaycastHit2D FindNearestWallHit(Vector2 start, Vector2 direction, float distance, LayerMask? queryMask = null)
     {
         ContactFilter2D filter = new();
-        filter.SetLayerMask(wallMask);
+        filter.SetLayerMask(queryMask ?? wallMask);
         filter.useLayerMask = true;
         filter.useTriggers = false;
 

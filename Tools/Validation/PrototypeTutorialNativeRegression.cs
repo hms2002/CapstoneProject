@@ -1,4 +1,4 @@
-// Run in an isolated Unity project with fresh Core/Gameplay DLLs and a copy of TimeScalePauseService.cs.
+// Run in an isolated Unity project with fresh project DLLs and their dependency closure.
 // -batchmode -nographics -executeMethod PrototypeTutorialNativeRegression.Run
 using System;
 using System.Collections.Generic;
@@ -15,35 +15,189 @@ public static class PrototypeTutorialNativeRegression
     private static T Get<T>(object o, string n) => (T)o.GetType().GetField(n, Private).GetValue(o);
     private static void Check(bool value, string message) { if (!value) throw new Exception(message); }
 
+    public static void RunCombo()
+    {
+        try
+        {
+            Rules();
+            GunnerCadenceAndRetreat();
+            Debug.Log("TUTORIAL_COMBO_PASS: final-hit commit, duplicate-hit guard, post-hit cancellation, three combos advance, gunner single-shot/retreat.");
+            EditorApplication.Exit(0);
+        }
+        catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+    }
+
     public static void Run()
     {
         try
         {
             Rules();
+            Check(!QuestHudView.ShouldHideForCombat("PrototypeTutorialUpgradeScene", true) &&
+                !QuestHudView.ShouldHideForCombat("DarkLord_Tutorial", true) &&
+                QuestHudView.ShouldHideForCombat("Grand Hall", true) &&
+                !QuestHudView.ShouldHideForCombat("Grand Hall", false), "Only tutorial combat should retain mission HUD");
             DamageAndLifecycle();
             DashIntroLifecycle();
             SharedTimeScaleOwnership();
-            Debug.Log("TUTORIAL_PROTOTYPE_PASS: missions; progressive slowdown/zoom, immediate prompt, early action input, stop/retry, frozen-bullet invulnerability, cleanup; real shared-service ramp and overlapping pause ownership.");
+            RealMonsterWaveLifecycle();
+            GunnerCadenceAndRetreat();
+            Debug.Log("TUTORIAL_PROTOTYPE_PASS: missions; progressive slowdown/zoom, immediate prompt, early action input, stop/retry, frozen-bullet invulnerability, cleanup; shared time-scale ownership; four real warrior instances, delayed replacement, survivor death, chest unlock and portal gate order.");
             EditorApplication.Exit(0);
         }
         catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+    }
+
+    private static void RealMonsterWaveLifecycle()
+    {
+        var host = new GameObject("Real wave owner"); host.SetActive(false);
+        var tutorial = host.AddComponent<PrototypeTutorialUpgrade>();
+        var prefabHost = new GameObject("Warrior template"); prefabHost.SetActive(false);
+        var prefab = prefabHost.AddComponent<GoblinWarrior>();
+        var points = new Transform[4];
+        for (int i = 0; i < 4; i++) points[i] = new GameObject("Spawn " + i).transform;
+        var chestObject = new GameObject("Locked chest"); chestObject.SetActive(false);
+        var chest = chestObject.AddComponent<ChestMonsterKillLock>();
+        Set(tutorial, "skillMonsterPrefab", prefab);
+        Set(tutorial, "skillSpawnPoints", points);
+        Set(tutorial, "chestLock", chest);
+        var gates = new GameObject[4];
+        for (int i = 0; i < 4; i++) gates[i] = new GameObject("Real gate " + i);
+        Set(tutorial, "gates", gates);
+        Call(tutorial, "Awake");
+        Call(tutorial, "OnEnable");
+        Check(!chest.IsUnlocked, "Chest must be locked before combat");
+        Set(tutorial, "stage", 2);
+        Call(tutorial, "Advance");
+        var wave = Get<Enemy[]>(tutorial, "skillMonsters");
+        Check(wave.Length == 4 && Array.TrueForAll(wave, e => e is GoblinWarrior), "Expected four real warrior instances");
+        Enemy first = wave[0];
+        first.RequestDeath();
+        Check(Get<bool[]>(tutorial, "defeated")[0], "Real death event did not schedule a replacement");
+        Check(Get<float[]>(tutorial, "respawnAt")[0] >= Time.time + .99f, "Replacement is not delayed by one second");
+        Call(tutorial, "TickSkillTargets");
+        Check(wave[0] == first && !chest.IsUnlocked, "Dead slot respawned early or unlocked the chest");
+        Get<float[]>(tutorial, "respawnAt")[0] = Time.time - .01f;
+        Call(tutorial, "TickSkillTargets");
+        Check(wave[0] != first && !wave[0].IsDead, "Dead warrior was reused instead of replaced");
+        Call(tutorial, "Advance");
+        Check(chest.IsUnlocked && Array.TrueForAll(wave, e => e.IsDead), "Skill completion must kill survivors and unlock chest");
+        Enemy completed = wave[0];
+        Get<float[]>(tutorial, "respawnAt")[0] = Time.time - .01f;
+        Call(tutorial, "TickSkillTargets");
+        Check(wave[0] == completed && gates[3].activeSelf, "Completed wave restarted or portal gate opened early");
+        tutorial.CompleteChestTutorial();
+        Check(!gates[3].activeSelf, "Chest tutorial did not open the portal room");
+        Call(tutorial, "OnDisable");
+    }
+
+    private static void GunnerCadenceAndRetreat()
+    {
+        var host = new GameObject("Gunner tutorial"); host.SetActive(false);
+        var tutorial = host.AddComponent<PrototypeTutorialUpgrade>();
+        var gunnerHost = new GameObject("Tutorial gunner"); gunnerHost.SetActive(false);
+        var gunner = gunnerHost.AddComponent<GoblinGunner>();
+        var visual = new GameObject("Visual");
+        visual.transform.SetParent(gunnerHost.transform);
+        visual.AddComponent<Animator>();
+        Check(gunnerHost.GetComponent<Animator>() == null, "Fixture must match the prefab's child-only Animator");
+        var motion = gunnerHost.GetComponent<AbilityMotionController2D>();
+        if (motion == null) motion = gunnerHost.AddComponent<AbilityMotionController2D>();
+        var retreat = new GameObject("Retreat point").transform;
+        gunnerHost.transform.position = new Vector3(0, 21, 0);
+        retreat.position = new Vector3(0, 27, 0);
+        var shots = new Transform[3];
+        for (int i = 0; i < shots.Length; i++) shots[i] = new GameObject("Shot " + i).transform;
+        Set(tutorial, "skillTargets", Array.Empty<Transform>());
+        Set(tutorial, "gates", Array.Empty<GameObject>());
+        Set(tutorial, "tutorialGunner", gunner);
+        Set(tutorial, "gunnerRetreatPoint", retreat);
+        Set(tutorial, "bullets", shots);
+        Call(tutorial, "Awake"); Call(tutorial, "OnEnable");
+        Set(tutorial, "stage", 1);
+        Call(tutorial, "TickGunner");
+        Check(Array.FindAll(Get<bool[]>(tutorial, "bulletConsumed"), c => !c).Length == 1, "Gunner must fire exactly one shot");
+        Check(Vector3.Distance(shots[0].position, new Vector3(0, 20.35f, 0)) < .001f, "Shot must originate straight below the gunner");
+        Call(tutorial, "TickGunner");
+        Check(Get<bool[]>(tutorial, "bulletConsumed")[1], "Gunner fired a second shot");
+        Get<bool[]>(tutorial, "bulletConsumed")[0] = true;
+        Set(tutorial, "evadedBullet", true);
+        Call(tutorial, "TickGunner");
+        Check(Array.TrueForAll(Get<bool[]>(tutorial, "bulletConsumed"), c => c), "Consumed tutorial shot must not be recycled");
+        Call(tutorial, "Advance"); Call(tutorial, "TickGunner");
+        Vector2 velocity = motion.TickAndGetMotionVelocity(.02f);
+        Check(Mathf.Abs(velocity.x) < .001f && Mathf.Abs(velocity.y - 4f) < .001f, "Retreat must use motor motion toward the authored point");
+        gunnerHost.transform.position = retreat.position; Call(tutorial, "TickGunner");
+        Check(!Get<bool>(tutorial, "retreating") && !motion.HasActiveMotion, "Retreat did not stop at its destination");
+        var playerObject = new GameObject("Attack test player");
+        var player = playerObject.AddComponent<AbilitySystem>();
+        Call(player, "Awake");
+        var basic = ScriptableObject.CreateInstance<AbilityDefinition>();
+        var tag = ScriptableObject.CreateInstance<GameplayTag>();
+        Set(tutorial, "player", player);
+        player.transform.position = gunner.transform.position + Vector3.down * 2.5f;
+        Set(tutorial, "evadedBullet", false);
+        Check((bool)Call(tutorial, "AtGunnerFront"), "Arrival must not require a recorded invulnerable hit");
+        player.transform.position = gunner.transform.position + Vector3.down * 3f;
+        Check(!(bool)Call(tutorial, "AtGunnerFront"), "Distant player must not finish the approach mission");
+        Set(tutorial, "attackTarget", gunnerHost.transform);
+        Set(tutorial, "basicAttack", basic);
+        Set(tutorial, "hitConfirmed", tag);
+        var moveAttribute = ScriptableObject.CreateInstance<AttributeDefinition>();
+        moveAttribute.defaultBaseValue = 4f;
+        var catalog = ScriptableObject.CreateInstance<AttributeCatalogSO>();
+        Set(catalog, "attributes", new[] { moveAttribute });
+        Set(gunnerHost.GetComponent<AttributeSet>(), "attributeCatalog", catalog);
+        Set(gunnerHost.GetComponent<AttributeSet>(), "_initialized", false);
+        var moveBindings = ScriptableObject.CreateInstance<StatTypeBindings>();
+        Set(moveBindings, "bindings", new List<StatTypeBindings.Binding> {
+            new StatTypeBindings.Binding { id = StatId.MoveSpeedFinal, attribute = moveAttribute } });
+        var stats = gunnerHost.GetComponent<AttributeStatSource>();
+        Set(stats, "attributeSet", gunnerHost.GetComponent<AttributeSet>());
+        Set(stats, "statBindingsOverride", moveBindings);
+        var input = new InputFixture { BackendComponent = host.transform, PrimaryHeld = true };
+        InputActionQuery.RegisterBackend(input);
+        try
+        {
+            var spec = new AbilitySpec(basic);
+            for (int i = 0; i < 9; i++)
+            {
+                typeof(AbilitySpec).GetProperty("Token").SetValue(spec, new AbilityCancellationToken());
+                spec.SetInt("Combat.HitFeelIndex", i % 3);
+                Call(tutorial, "OnExecutionStarted", spec);
+                var hit = new AbilityEventData { Spec = spec, Target = gunnerHost };
+                Call(tutorial, "OnGameplayEvent", tag, hit);
+                Call(tutorial, "OnGameplayEvent", tag, hit);
+                Call(tutorial, "OnExecutionEnded", spec, true);
+                Check(Get<int>(tutorial, "attackHits") == (i + 1) / 3 * 3,
+                    "Only final hits commit a combo; duplicate events and cancellation must not change it");
+                if (i == 0)
+                {
+                    Call(tutorial, "TickGunner");
+                    Check(Mathf.Abs(motion.TickAndGetMotionVelocity(.02f).magnitude - 2.6f) < .001f,
+                        "First hit must start wandering at 65 percent of the normal speed");
+                }
+            }
+            Check(tutorial.Stage == 3 && gunner.IsDead, "Nine held hits must kill the gunner and advance");
+        }
+        finally { InputActionQuery.UnregisterBackend(input); }
+        Call(tutorial, "OnDisable");
     }
 
     private static void Rules()
     {
         Type rules = typeof(PrototypeTutorialUpgrade).Assembly.GetType("PrototypeTutorialRules");
         var hit = rules.GetMethod("CountComboHit", BindingFlags.Static | BindingFlags.NonPublic);
-        var release = rules.GetMethod("CompleteTriples", BindingFlags.Static | BindingFlags.NonPublic);
         var swept = rules.GetMethod("SweptContact", BindingFlags.Static | BindingFlags.NonPublic);
         int count = 0;
         for (int i = 0; i < 30; i++)
-        {
-            count = (int)hit.Invoke(null, new object[] { count, i % 3, true });
-            count = (int)release.Invoke(null, new object[] { count });
-        }
-        Check(count == 0, "Tapping must not finish the hold mission");
-        for (int i = 0; i < 5; i++) count = (int)hit.Invoke(null, new object[] { count, i % 3, true });
-        Check((int)release.Invoke(null, new object[] { count }) == 3, "Only completed triples survive release");
+            count = (int)hit.Invoke(null, new object[] { count, i % 2, true });
+        Check(count == 0, "First and second hits must not grant provisional credit");
+        count = (int)hit.Invoke(null, new object[] { count, 2, true });
+        Check(count == 3, "Final confirmed hit must immediately commit three points");
+        Check((int)hit.Invoke(null, new object[] { count, 0, false }) == 3,
+            "Release must never revoke a completed combo");
+        Check((int)hit.Invoke(null, new object[] { count, 2, false }) == 3,
+            "An attack not started with held input must not grant credit");
         count = 0;
         for (int i = 0; i < 9; i++) count = (int)hit.Invoke(null, new object[] { count, i % 3, true });
         Check(count == 9, "Three complete combos must finish");
@@ -189,12 +343,16 @@ public static class PrototypeTutorialNativeRegression
         {
             Call(tutorial, "TickDashIntro");
             Check(!pause.IsPaused, "Distant bullet must not freeze gameplay");
-            bullet.position = Vector3.up * 3.2f;
+            bullet.position = Vector3.up * 2.8f;
+            Call(tutorial, "TickDashIntro");
+            Check(!tutorial.IsDashPromptVisible, "Prompt must wait until the bullet is within safe immediate-dash reach");
+            bullet.position = Vector3.up * 2.7f;
             Call(tutorial, "TickDashIntro");
             Check(pause.IsHeldBy(tutorial) && Mathf.Approximately(Time.timeScale, .6f) && tutorial.IsDashPromptVisible,
                 "Approach must start slow motion and show the prompt before full stop");
             Check(InputActionQuery.IsPressBlocked(InputActionId.Dash), "Normal combat input cannot consume the guided dash");
             Set(tutorial, "introElapsed", .2f);
+            bullet.position = Vector3.up * 2.4f;
             Call(tutorial, "TickDashIntro");
             Check(Time.timeScale > 0f && Time.timeScale < .6f && camera.CurrentOrthographicSize < 10f &&
                   camera.CurrentOrthographicSize > 6.5f, "World speed and lens must change progressively");
@@ -208,10 +366,16 @@ public static class PrototypeTutorialNativeRegression
                 "Mapped action must reach GAS during slowdown; rejected activation preserves the ramp");
             Check(ui.Releases == 1 && ui.Blocked, "Confirm must release UI control lock before GAS and reacquire it on rejection");
             Set(tutorial, "introElapsed", 1.2f);
+            bullet.position = Vector3.up * 1.8f;
             Call(tutorial, "TickDashIntro");
             Check(!pause.IsPaused && Time.timeScale > .2f && Time.timeScale < .4f && tutorial.IsDashPromptVisible,
                 "Midpoint must remain visibly in slow motion with the cue available");
+            float distanceScale = Time.timeScale;
+            Set(tutorial, "introElapsed", 20f);
+            Call(tutorial, "TickDashIntro");
+            Check(Mathf.Approximately(Time.timeScale, distanceScale), "Elapsed time alone must not stop a distant projectile");
             Set(tutorial, "introElapsed", 2.5f);
+            bullet.position = Vector3.up * .95f;
             Call(tutorial, "TickDashIntro");
             Check(pause.IsPaused && tutorial.IsDashPromptVisible && Mathf.Approximately(camera.CurrentOrthographicSize, 6.5f),
                 "Unanswered slowdown must settle at complete stop with the prompt retained");
@@ -235,6 +399,8 @@ public static class PrototypeTutorialNativeRegression
             Call(tutorial, "TickBullets");
             Check(bullet.position == frozenPosition && Get<bool>(tutorial, "evadedBullet"),
                 "A real invulnerable dash segment must evade a stationary projectile");
+            Check(!Get<bool[]>(tutorial, "bulletConsumed")[0] && bullet.gameObject.activeSelf,
+                "Dodging must leave the projectile active to pass through the player");
 
             pause.Acquire(playerObject); // Independent owner must survive tutorial cancellation.
             Call(tutorial, "OnDisable");
@@ -347,7 +513,9 @@ public static class PrototypeTutorialNativeRegression
     {
         public Component BackendComponent { get; set; }
         public bool Held;
-        public bool IsPressed(InputActionId action) => action == InputActionId.Dash && Held;
+        public bool PrimaryHeld;
+        public Sprite GetBindingIcon(InputActionId action) => null;
+        public bool IsPressed(InputActionId action) => action == InputActionId.Dash ? Held : action == InputActionId.PrimaryAttack && PrimaryHeld;
         public bool WasPressedThisFrame(InputActionId action) => false;
         public bool WasReleasedThisFrame(InputActionId action) => false;
         public bool IsKeyPressed(KeyCode key) => false;

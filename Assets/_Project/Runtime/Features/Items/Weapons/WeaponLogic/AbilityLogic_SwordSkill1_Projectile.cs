@@ -22,7 +22,7 @@ namespace UnityGAS.Sample
 
             Vector2 dir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
 
-            Vector3 spawnPos = system.transform.position + data.spawnOffset;
+            Vector3 spawnPos = PlayerAttackOrigin.Resolve(system, dir, data.wallLayers);
             var go = Object.Instantiate(data.projectilePrefab, spawnPos, Quaternion.identity);
 
             var cfg = data.DamageConfig;

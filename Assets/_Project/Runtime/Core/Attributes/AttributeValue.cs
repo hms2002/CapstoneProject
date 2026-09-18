@@ -287,7 +287,9 @@ namespace UnityGAS
 
             CurrentValue = Mathf.Clamp(finalValue, Definition.minValue, max);
 
-            if (Math.Abs(oldValue - CurrentValue) > 0.001f)
+            // 사망처럼 0 도달에 의존하는 처리는 작은 잔여 값도 반드시 통지한다.
+            bool depleted = oldValue > 0f && CurrentValue <= 0f;
+            if (depleted || Math.Abs(oldValue - CurrentValue) > 0.001f)
             {
                 OnValueChanged?.Invoke(oldValue, CurrentValue);
                 if (CurrentValue < oldValue)

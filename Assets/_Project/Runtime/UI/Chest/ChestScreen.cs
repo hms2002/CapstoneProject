@@ -29,6 +29,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private readonly List<ItemSlotUI> selectedSlots = new();
     private Sequence selectionMotion;
     private bool confirmingSelection;
+    private float nextSelectionValidationTime;
     private ItemSlotUI transitSlot;
     private Transform transitDestination;
     private readonly Dictionary<Behaviour, bool> suspendedSelectionLayouts = new();
@@ -264,6 +265,11 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         UpdateRerollReveal();
         UpdateAcquisitionPresentation();
         RefreshSelectionControls();
+        if (selectedSlots.Count > 0 && !confirmingSelection && Time.unscaledTime >= nextSelectionValidationTime)
+        {
+            nextSelectionValidationTime = Time.unscaledTime + .15f;
+            RefreshBlockedSelectionSlots();
+        }
     }
 
     private void OnEnable()
@@ -1106,6 +1112,9 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         foreach (ItemSlotUI item in spawnedChestSlots) positions[item] = item.transform.position;
         if (removing) selectedSlots.Remove(slot);
         else selectedSlots.Add(slot);
+        slot.SetChestSelectionOverlay(!removing);
+        slot.SetSelectionBlocked(false);
+        nextSelectionValidationTime = 0f;
         slot.transform.SetParent(removing ? chestGridRoot : selectedItemsRoot, false);
         int sibling = 0;
         // The list retains original inventory order, independent of selection order.
@@ -1191,6 +1200,29 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         SetSelectionLayoutsEnabled(true);
     }
 
+    private void RefreshBlockedSelectionSlots()
+    {
+        if (chestInventory == null) return;
+        var remaining = new List<int>();
+        var blocked = new HashSet<int>();
+        foreach (ItemSlotUI slot in selectedSlots) remaining.Add(slot.BoundIndex);
+        using var source = new ChestContainerAdapter(chestInventory);
+        // Re-run the same reservation rules without each rejected slot to locate all blockers.
+        while (remaining.Count > 0 && !ChestSelectionTransferService.TryCreatePlanWithFailure(source, remaining,
+            ItemContainerGroupRegistry.ConsumableEquip, ItemContainerGroupRegistry.WeaponEquip,
+            ItemContainerGroupRegistry.RelicEquip, out _, out _, out int failedIndex))
+        {
+            if (failedIndex < 0)
+            {
+                foreach (int index in remaining) blocked.Add(index);
+                break;
+            }
+            blocked.Add(failedIndex);
+            if (!remaining.Remove(failedIndex)) break;
+        }
+        foreach (ItemSlotUI slot in selectedSlots) slot.SetSelectionBlocked(blocked.Contains(slot.BoundIndex));
+    }
+
     private void ConfirmSelection()
     {
         if (guidedSelectionOwner != null) return;
@@ -1198,21 +1230,24 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         var indices = new List<int>();
         foreach (ItemSlotUI slot in selectedSlots) indices.Add(slot.BoundIndex);
         using var source = new ChestContainerAdapter(chestInventory);
-        if (!ChestSelectionTransferService.TryCreatePlan(source, indices,
+        if (!ChestSelectionTransferService.TryCreatePlanWithFailure(source, indices,
             ItemContainerGroupRegistry.ConsumableEquip, ItemContainerGroupRegistry.WeaponEquip,
-            ItemContainerGroupRegistry.RelicEquip, out var plan, out string warning))
+            ItemContainerGroupRegistry.RelicEquip, out var plan, out string warning, out _))
         {
+            RefreshBlockedSelectionSlots();
             WarningPopupPlayback.ShowMessage(warning);
             return;
         }
 
         confirmingSelection = true;
         RefreshSelectionControls();
-        InventoryTransferResult result = ChestSelectionTransferService.TryCommitPlan(plan);
+        InventoryTransferResult result = ChestSelectionTransferService.TryCommitPlanWithFailure(plan, out int failedIndex);
         if (!result.Succeeded)
         {
             selectedSlots.RemoveAll(item => !item.HasItem);
             confirmingSelection = false;
+            foreach (ItemSlotUI slot in selectedSlots) slot.SetSelectionBlocked(slot.BoundIndex == failedIndex);
+            nextSelectionValidationTime = Time.unscaledTime + 1f;
             if (result.HasWarning) WarningPopupPlayback.Show(result.WarningCode);
             else WarningPopupPlayback.ShowMessage("아이템을 획득할 수 없습니다. 인벤토리와 유물 상태를 확인해 주세요.");
             RefreshAcquisitionCounter();

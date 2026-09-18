@@ -343,6 +343,9 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
         if (source == null)
             return null;
 
+        if (source.GetComponentInParent<FirePuddleArea>() != null)
+            return "술에 붙은 불길";
+
         string enemyName = ResolveEnemyCauseName(source);
         return !string.IsNullOrWhiteSpace(enemyName)
             ? enemyName
@@ -394,6 +397,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
                normalized.Contains("trap") ||
                normalized.Contains("hazard") ||
                normalized.Contains("puddle") ||
+               normalized.Contains("술에 붙은 불길") ||
                normalized.Contains("구덩") ||
                normalized.Contains("함정")
             ? GameOverCauseKind.Trap

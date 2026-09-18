@@ -247,6 +247,7 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
     private void RefreshVisibility()
     {
         weaponInputBlocked = IsWeaponInputBlocked;
+        RefreshSwapGuide(force: true);
         if (hudRoot == null)
             return;
 
@@ -281,6 +282,10 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
 
     private void RefreshSwapGuide(bool force)
     {
+        bool visible = inventory != null && abilitySystem != null && !IsWeaponInputBlocked && ResolveInactiveWeaponSlotIndex() >= 0;
+        if (swapGuideRoot != null)
+            swapGuideRoot.SetActive(visible);
+
         InputBindingService input = GetInputBindingService();
         KeyCode currentKey = input != null
             ? input.GetKey(InputActionId.SwapWeapon)
@@ -290,10 +295,6 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
             return;
 
         lastSwapGuideKey = currentKey;
-
-        bool visible = !IsWeaponInputBlocked && ResolveInactiveWeaponSlotIndex() >= 0;
-        if (swapGuideRoot != null)
-            swapGuideRoot.SetActive(visible);
 
         if (!visible)
             return;

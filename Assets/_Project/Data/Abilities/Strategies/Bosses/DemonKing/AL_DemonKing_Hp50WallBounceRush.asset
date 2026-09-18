@@ -28,7 +28,7 @@ MonoBehaviour:
   knockback: 12
   finalJumpSeconds: 0.5
   finalImpactDiameter: 3.4
-  finalImpactDamage: 2
+  finalImpactDamage: 1
   finalJumpArcHeight: 1.35
   finalLandingFrameSwitchRatio: 0.78
   finalJumpMotionProfile:

@@ -168,9 +168,7 @@ public sealed class DemonKingProjectile2D : MonoBehaviour
             return;
 
         CombatHitPayload payload = DemonKingCombatUtil.MakePayload(owner, owner.DefaultDamageEffect, damage);
-        if (payload != null)
-            CombatHitPayloadApplier.Apply(targetRoot, payload, hit.ClosestPoint(transform.position));
-
-        Destroy(gameObject);
+        if (payload != null && CombatHitPayloadApplier.Apply(targetRoot, payload, hit.ClosestPoint(transform.position)))
+            Destroy(gameObject);
     }
 }

@@ -2,6 +2,45 @@ using UnityEngine;
 
 namespace UnityGAS
 {
+    /// <summary>Shared launch origin for attacks emitted directly by the player.</summary>
+    public static class PlayerAttackOrigin
+    {
+        private static readonly RaycastHit2D[] WallHits = new RaycastHit2D[16];
+
+        public static Vector2 Resolve(AbilitySystem owner, Vector2 direction, LayerMask wallLayers = default)
+        {
+            if (owner == null) return Vector2.zero;
+            Vector2 center = owner.transform.position;
+            float radius = 0f;
+            EntityCollisionProfile2D profile = owner.GetComponent<EntityCollisionProfile2D>();
+            foreach (Collider2D collider in owner.GetComponentsInChildren<Collider2D>())
+            {
+                if (collider.isTrigger || (profile != null && !profile.ContainsBodyCollider(collider)))
+                    continue;
+                Bounds bounds = collider.bounds;
+                if (bounds.extents.sqrMagnitude <= 0f) continue;
+                center = bounds.center;
+                radius = Mathf.Max(bounds.extents.x, bounds.extents.y);
+                break;
+            }
+            Vector2 aim = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+            float distance = radius + 0.08f;
+            if (wallLayers.value != 0)
+            {
+                ContactFilter2D filter = new();
+                filter.SetLayerMask(wallLayers);
+                filter.useTriggers = false;
+                int count = Physics2D.CircleCast(center, 0.03f, aim, filter, WallHits, distance);
+                for (int i = 0; i < count; i++)
+                {
+                    if (WallHits[i].collider == null || WallHits[i].collider.transform.IsChildOf(owner.transform)) continue;
+                    distance = Mathf.Min(distance, Mathf.Max(0f, WallHits[i].distance - 0.02f));
+                }
+            }
+            return center + aim * distance;
+        }
+    }
+
     /// <summary>
     /// 책임 :
     /// - 모든 공격체가 공통으로 필요로 하는 생성 문맥을 보관한다.

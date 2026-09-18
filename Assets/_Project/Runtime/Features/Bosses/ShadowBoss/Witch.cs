@@ -289,6 +289,9 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// <summary>소등 대상이 없는 패턴은 일반 선택과 실행 직전 평가에서 제외한다.</summary>
     protected override BossPatternEvalResult AdjustPatternEval(BossPatternEntry patternEntry, BossPatternEvalResult result)
     {
+        if (IsRetreatPattern(patternEntry))
+            return BossPatternEvalResult.HardFail("Retreat skeleton summon pattern retired.");
+
         if (result.CanUse && IsExtinguishPattern(patternEntry) && GetNearestCandle() == null)
             return BossPatternEvalResult.HardFail("끌 수 있는 촛불이 없습니다.");
 

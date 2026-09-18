@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: Table_Stage2
   m_EditorClassIdentifier: 
   chestWeaponCountProfile:
-    minCount: 2
-    maxCount: 2
+    minCount: 0
+    maxCount: 1
     weights:
-    - count: 2
-      weight: 100
+    - count: 0
+      weight: 50
+    - count: 1
+      weight: 50
   chestRelicCountProfile:
     minCount: 4
     maxCount: 4

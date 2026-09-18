@@ -10,13 +10,40 @@ using UnityEngine.TestTools;
 using UnityGAS;
 using Object = UnityEngine.Object;
 
-/// <summary>Verifies spin projectile counts, per-launch aiming, scheduling and cancellation with isolated actors.</summary>
+/// <summary>Verifies spin projectile warning snapshots, counts, scheduling and cancellation with isolated actors.</summary>
 public sealed class DragonRotationProjectilePlayModeTests
 {
     private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
     private const string StrategyPath = "Assets/_Project/Data/Abilities/Strategies/AL_DragonRotation.asset";
     private readonly List<Object> owned = new();
     private Random.State randomState;
+
+    private sealed class WarningHandle : IAttackTelegraphHandle
+    {
+        public AttackTelegraphSpec Spec;
+        public bool Released;
+        public bool IsVisible => !Released;
+        public void Show(AttackTelegraphSpec spec) => Spec = spec;
+        public void UpdateGeometry(AttackTelegraphSpec spec) => Spec = spec;
+        public void HideImmediate() => Released = true;
+        public void Release() => Released = true;
+    }
+
+    private sealed class WarningPresenter : IAttackTelegraphPresenter
+    {
+        public readonly List<WarningHandle> Handles = new();
+        public bool HasActiveTelegraph => false;
+        public void Show(AttackTelegraphSpec spec) { }
+        public void UpdateCurrentGeometry(AttackTelegraphSpec spec) { }
+        public void HideCurrent() { }
+        public void ClearAll() { foreach (var handle in Handles) handle.Release(); }
+        public IAttackTelegraphHandle SpawnDetachedView(AttackTelegraphSpec spec, Transform parent = null)
+        {
+            var handle = new WarningHandle { Spec = spec };
+            Handles.Add(handle);
+            return handle;
+        }
+    }
 
     [SetUp]
     public void SetUp()
@@ -42,6 +69,14 @@ public sealed class DragonRotationProjectilePlayModeTests
         typeof(AbilityLogic_DragonRotation).GetField(name, PrivateInstance).SetValue(logic, value);
     private static object Invoke(AbilityLogic_DragonRotation logic, string name, params object[] args) =>
         typeof(AbilityLogic_DragonRotation).GetMethod(name, PrivateInstance).Invoke(logic, args);
+
+    private static object PrepareShot(AbilityLogic_DragonRotation logic, DragonController dragon, int index)
+    {
+        var plans = (System.Array)Invoke(logic, "CreateProjectilePlans");
+        object plan = plans.GetValue(index);
+        Invoke(logic, "PrepareProjectile", dragon, plan, index);
+        return plan;
+    }
 
     private AbilityLogic_DragonRotation CreateLogic(out DragonController dragon, out Transform target)
     {
@@ -88,14 +123,16 @@ public sealed class DragonRotationProjectilePlayModeTests
     {
         var logic = CreateLogic(out var dragon, out var target);
         var shots = new List<GameObject>();
-        int count = (int)Invoke(logic, "ResolveProjectileCount");
-        object[] args = { dragon, shots, 0f, count, 0 };
+        object plans = Invoke(logic, "CreateProjectilePlans");
+        object[] args = { dragon, shots, 0f, plans, 0 };
         for (float elapsed = 0f; elapsed < 2.5f; elapsed += frameStep)
         {
+            Invoke(logic, "PrepareDueProjectiles", dragon, null, plans, elapsed);
             args[2] = elapsed;
             Invoke(logic, "SpawnDueProjectiles", args);
         }
         args[2] = 2.5f;
+        Invoke(logic, "PrepareDueProjectiles", dragon, null, plans, 2.5f);
         Invoke(logic, "SpawnDueProjectiles", args);
         Assert.That(shots.Count, Is.EqualTo(28));
         Assert.That(args[4], Is.EqualTo(28));
@@ -122,28 +159,34 @@ public sealed class DragonRotationProjectilePlayModeTests
     }
 
     [Test]
-    public void AimedShot_UsesLiveTargetCenterAtLaunch_AndDoesNotHomeOrOvershootCloseTarget()
+    public void AimedShot_LocksTargetCenterAndOriginAtWarning_AndDoesNotHomeOrOvershootCloseTarget()
     {
         var logic = CreateLogic(out var dragon, out var target);
         var shots = new List<GameObject>();
         var hurtbox = target.gameObject.AddComponent<BoxCollider2D>();
         hurtbox.offset = Vector2.up;
-        Invoke(logic, "SpawnProjectile", dragon, shots, 2);
+        Invoke(logic, "SpawnProjectile", dragon, shots, PrepareShot(logic, dragon, 2));
         var first = shots[0].GetComponent<DragonSpinProjectile2D>();
         Vector2 firstDirection = Direction(first);
         target.position = Vector3.right * 5f;
         Physics2D.SyncTransforms();
-        Invoke(logic, "SpawnProjectile", dragon, shots, 5);
+        Vector2 lockedTarget = hurtbox.bounds.center;
+        object secondPlan = PrepareShot(logic, dragon, 5);
+        target.position = Vector3.left * 5f;
+        dragon.transform.position = Vector3.down * 2f;
+        Physics2D.SyncTransforms();
+        Invoke(logic, "SpawnProjectile", dragon, shots, secondPlan);
         var second = shots[1].GetComponent<DragonSpinProjectile2D>();
-        Vector2 expected = ((Vector2)hurtbox.bounds.center - (Vector2)second.transform.position).normalized;
+        Vector2 expected = (lockedTarget - (Vector2)second.transform.position).normalized;
         Assert.That(Vector2.Dot(Direction(second), expected), Is.GreaterThan(0.9999f));
         typeof(DragonSpinProjectile2D).GetMethod("TickAttack", PrivateInstance).Invoke(first, new object[] { 0.1f });
         Assert.That(Direction(first), Is.EqualTo(firstDirection), "Moving the target must not change a launched direction.");
 
         hurtbox.offset = Vector2.zero;
+        dragon.transform.position = Vector3.zero;
         target.position = Vector3.right * 0.1f;
         Physics2D.SyncTransforms();
-        Invoke(logic, "SpawnProjectile", dragon, shots, 8);
+        Invoke(logic, "SpawnProjectile", dragon, shots, PrepareShot(logic, dragon, 8));
         Assert.That(shots[2].transform.position.x, Is.InRange(0f, 0.099f));
         Assert.That(Vector2.Dot(Direction(shots[2].GetComponent<DragonSpinProjectile2D>()), Vector2.right), Is.GreaterThan(0.9999f));
     }
@@ -154,12 +197,65 @@ public sealed class DragonRotationProjectilePlayModeTests
         var logic = CreateLogic(out var dragon, out var target);
         var shots = new List<GameObject>();
         target.position = dragon.transform.position;
-        Invoke(logic, "SpawnProjectile", dragon, shots, 2);
+        Invoke(logic, "SpawnProjectile", dragon, shots, PrepareShot(logic, dragon, 2));
         dragon.SetCombatTarget(null);
-        Invoke(logic, "SpawnProjectile", dragon, shots, 5);
+        Invoke(logic, "SpawnProjectile", dragon, shots, PrepareShot(logic, dragon, 5));
         Assert.That(shots.Count, Is.EqualTo(2));
         foreach (var shot in shots)
             Assert.That(Direction(shot.GetComponent<DragonSpinProjectile2D>()).magnitude, Is.EqualTo(1f).Within(0.0001f));
+    }
+
+    [Test]
+    public void Warnings_StartBeforeSpin_MatchAll28Launches_AndReleaseOnLaunch()
+    {
+        var logic = CreateLogic(out var dragon, out _);
+        var presenter = new WarningPresenter();
+        object plans = Invoke(logic, "CreateProjectilePlans");
+        var shots = new List<GameObject>();
+        object[] args = { dragon, shots, 0f, plans, 0 };
+        Invoke(logic, "PrepareDueProjectiles", dragon, presenter, plans, -0.301f);
+        Assert.That(presenter.Handles, Is.Empty);
+        Invoke(logic, "PrepareDueProjectiles", dragon, presenter, plans, -0.3f);
+        Assert.That(presenter.Handles.Count, Is.EqualTo(1));
+        Assert.That(presenter.Handles[0].Spec.duration, Is.EqualTo(0.3f).Within(0.0001f));
+        Assert.That(shots, Is.Empty, "Warning must start inside the existing preparation, before the first shot.");
+
+        for (int tick = -29; tick <= 250; tick++)
+        {
+            float elapsed = tick / 100f;
+            Invoke(logic, "PrepareDueProjectiles", dragon, presenter, plans, elapsed);
+            args[2] = elapsed;
+            Invoke(logic, "SpawnDueProjectiles", args);
+        }
+
+        Assert.That(shots.Count, Is.EqualTo(28));
+        Assert.That(presenter.Handles.Count, Is.EqualTo(28));
+        for (int i = 0; i < shots.Count; i++)
+        {
+            WarningHandle handle = presenter.Handles[i];
+            Assert.That(handle.Released, Is.True);
+            Assert.That(handle.Spec.shape, Is.EqualTo(AttackTelegraphShape.Line));
+            Assert.That(handle.Spec.size.y, Is.EqualTo(0.04f));
+            Assert.That(handle.Spec.duration, Is.InRange(0.289f, 0.301f));
+            Assert.That(handle.Spec.lineStart, Is.EqualTo(shots[i].transform.position));
+            Vector2 warningDirection = (handle.Spec.lineEnd - handle.Spec.lineStart).normalized;
+            Assert.That(Vector2.Dot(warningDirection, Direction(shots[i].GetComponent<DragonSpinProjectile2D>())), Is.GreaterThan(0.9999f));
+            Assert.That(Vector3.Distance(handle.Spec.lineStart, handle.Spec.lineEnd), Is.EqualTo(20f).Within(0.001f));
+            Assert.That(handle.Spec.useWallClipping, Is.True);
+        }
+    }
+
+    [Test]
+    public void DisposedSpin_ReleasesPendingWarningHandles()
+    {
+        var logic = CreateLogic(out var dragon, out _);
+        var presenter = new WarningPresenter();
+        object plans = Invoke(logic, "CreateProjectilePlans");
+        var routine = (IEnumerator)Invoke(logic, "RunSpin", dragon, new AbilitySpec(null), presenter, plans);
+        Assert.That(routine.MoveNext(), Is.True);
+        Assert.That(presenter.Handles.Exists(handle => !handle.Released), Is.True);
+        ((System.IDisposable)routine).Dispose();
+        Assert.That(presenter.Handles.TrueForAll(handle => handle.Released), Is.True);
     }
 
     [UnityTest]
@@ -169,7 +265,10 @@ public sealed class DragonRotationProjectilePlayModeTests
         var spec = new AbilitySpec(null);
         var token = new AbilityCancellationToken();
         typeof(AbilitySpec).GetProperty("Token").SetValue(spec, token);
-        var routine = (IEnumerator)Invoke(logic, "RunSpin", dragon, spec);
+        var presenter = new WarningPresenter();
+        object plans = Invoke(logic, "CreateProjectilePlans");
+        Invoke(logic, "PrepareDueProjectiles", dragon, presenter, plans, -0.3f);
+        var routine = (IEnumerator)Invoke(logic, "RunSpin", dragon, spec, presenter, plans);
         Assert.That(routine.MoveNext(), Is.True);
         var live = new List<GameObject>();
         foreach (var projectile in Object.FindObjectsByType<DragonSpinProjectile2D>(FindObjectsInactive.Include, FindObjectsSortMode.None))
@@ -177,6 +276,8 @@ public sealed class DragonRotationProjectilePlayModeTests
         Assert.That(live.Count, Is.EqualTo(1));
         token.Cancel();
         Assert.That(routine.MoveNext(), Is.False);
+        Assert.That(presenter.Handles.Count, Is.GreaterThan(1));
+        Assert.That(presenter.Handles.TrueForAll(handle => handle.Released), Is.True);
         yield return null;
         foreach (var shot in live) Assert.That(shot == null, Is.True);
         foreach (var projectile in Object.FindObjectsByType<DragonSpinProjectile2D>(FindObjectsInactive.Include, FindObjectsSortMode.None))

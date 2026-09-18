@@ -42,7 +42,7 @@ namespace UnityGAS.Sample
                 yield break;
 
             Vector2 direction = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
-            Vector2 center = (Vector2)system.transform.position + direction.normalized * data.forwardOffset;
+            Vector2 center = PlayerAttackOrigin.Resolve(system, direction);
             MeleeHitboxActor hitbox = Object.Instantiate(data.hitboxPrefab, center, Quaternion.identity);
             if (hitbox == null)
                 yield break;

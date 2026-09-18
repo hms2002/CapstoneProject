@@ -338,7 +338,11 @@ public static class ChestSelectionTransferService
     public const string InventoryFullMessage = "인벤토리 공간이 부족합니다. 인벤토리 아이템을 버리는 구역으로 드래그해 버린 후 다시 확정해 주세요.";
 
     public static InventoryTransferResult TryCommitPlan(IReadOnlyList<InventoryTransferRequest> plan)
+        => TryCommitPlanWithFailure(plan, out _);
+
+    public static InventoryTransferResult TryCommitPlanWithFailure(IReadOnlyList<InventoryTransferRequest> plan, out int failedSourceIndex)
     {
+        failedSourceIndex = -1;
         var completed = new List<(InventoryTransferRequest request, ScriptableObject item,
             ScriptableObject previous, int previousLevel)>();
         foreach (InventoryTransferRequest request in plan)
@@ -355,6 +359,7 @@ public static class ChestSelectionTransferService
                 continue;
             }
 
+            failedSourceIndex = request.SourceIndex;
             // No frame or player input occurs between writes. Undo completed transfers
             // if a gameplay rule (for example linked health compensation) rejects a later one.
             for (int i = completed.Count - 1; i >= 0; i--)
@@ -382,7 +387,13 @@ public static class ChestSelectionTransferService
     public static bool TryCreatePlan(ChestContainerAdapter source, IReadOnlyList<int> selection,
         IItemContainer consumables, IItemContainer weapons, IItemContainer relics,
         out List<InventoryTransferRequest> plan, out string warning)
+        => TryCreatePlanWithFailure(source, selection, consumables, weapons, relics, out plan, out warning, out _);
+
+    public static bool TryCreatePlanWithFailure(ChestContainerAdapter source, IReadOnlyList<int> selection,
+        IItemContainer consumables, IItemContainer weapons, IItemContainer relics,
+        out List<InventoryTransferRequest> plan, out string warning, out int failedSourceIndex)
     {
+        failedSourceIndex = -1;
         plan = new List<InventoryTransferRequest>();
         warning = InventoryFullMessage;
         if (source?.Inventory == null || source.IsSelectionOnly || selection == null || selection.Count == 0 ||
@@ -394,6 +405,7 @@ public static class ChestSelectionTransferService
         var sourceIndices = new HashSet<int>();
         foreach (int sourceIndex in selection)
         {
+            failedSourceIndex = sourceIndex;
             ScriptableObject item = source.Get(sourceIndex);
             if (item == null || item.AsDef() == null || !sourceIndices.Add(sourceIndex)) return false;
             if (item is ParcelRelicDefinition)
@@ -455,6 +467,7 @@ public static class ChestSelectionTransferService
             items[destination] = item;
             plan.Add(new InventoryTransferRequest(source, sourceIndex, target, destination, incomingLevel));
         }
+        failedSourceIndex = -1;
         warning = null;
         return true;
     }

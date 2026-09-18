@@ -11,6 +11,17 @@ using UnityGAS;
 [CreateAssetMenu(fileName = "AL_DragonRotation", menuName = "GAS/Ability Logic/Dragon/AL_DragonRotation")]
 public sealed class AbilityLogic_DragonRotation : AbilityLogic
 {
+    private const float ProjectileWarningSeconds = 0.3f;
+    private const float ProjectileWarningWidth = 0.04f;
+
+    private sealed class ProjectilePlan
+    {
+        public bool prepared;
+        public Vector3 origin;
+        public Vector2 direction;
+        public IAttackTelegraphHandle warning;
+    }
+
     private readonly Dictionary<GameObject, float> nextDamageAllowedTimes = new();
 
     [Header("Timing")]
@@ -61,23 +72,34 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
 
         IAttackTelegraphPresenter telegraphService = AttackTelegraphPresenterResolver.Resolve(dragon);
         Vector2 center = dragon.transform.position;
+        ProjectilePlan[] projectiles = CreateProjectilePlans();
 
         ShowWarningTelegraph(telegraphService, center);
 
         dragon.PushFaceTargetLock();
         try
         {
-            yield return WaitForSecondsUnlessCancelled(warningSeconds, spec);
+            float elapsed = 0f;
+            while (elapsed < warningSeconds)
+            {
+                if (IsAbilityCancelled(spec))
+                    yield break;
+
+                PrepareDueProjectiles(dragon, telegraphService, projectiles, elapsed - warningSeconds);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
             if (IsAbilityCancelled(spec))
                 yield break;
 
             telegraphService?.HideCurrent();
             dragon.PlayPatternTrigger(DragonAnimationKeys.Rotation);
 
-            yield return RunSpin(dragon, spec);
+            yield return RunSpin(dragon, spec, telegraphService, projectiles);
         }
         finally
         {
+            ReleaseProjectileWarnings(projectiles);
             telegraphService?.HideCurrent();
             nextDamageAllowedTimes.Clear();
             dragon.PopFaceTargetLock();
@@ -85,12 +107,13 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
         }
     }
 
-    private IEnumerator RunSpin(DragonController dragon, AbilitySpec spec)
+    private IEnumerator RunSpin(
+        DragonController dragon, AbilitySpec spec,
+        IAttackTelegraphPresenter telegraphService, ProjectilePlan[] projectiles)
     {
         nextDamageAllowedTimes.Clear();
 
         float elapsed = 0f;
-        int projectileCount = ResolveProjectileCount();
         int nextProjectileIndex = 0;
         List<GameObject> spawnedProjectiles = new();
         Transform visualRoot = dragon != null ? dragon.PatternMotionRoot : null;
@@ -118,7 +141,8 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
                 ApplyVisualSway(visualRoot, visualBaseLocalPosition, shadowRoot, shadowBaseLocalPosition, elapsed);
                 ApplyAreaHit(dragon);
 
-                SpawnDueProjectiles(dragon, spawnedProjectiles, elapsed, projectileCount, ref nextProjectileIndex);
+                PrepareDueProjectiles(dragon, telegraphService, projectiles, elapsed);
+                SpawnDueProjectiles(dragon, spawnedProjectiles, elapsed, projectiles, ref nextProjectileIndex);
 
                 elapsed += Time.deltaTime;
                 yield return null;
@@ -127,12 +151,14 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
             if (!IsAbilityCancelled(spec))
             {
                 // A long final frame must not discard the remaining scheduled shots.
-                SpawnDueProjectiles(dragon, spawnedProjectiles, spinSeconds, projectileCount, ref nextProjectileIndex);
+                PrepareDueProjectiles(dragon, telegraphService, projectiles, spinSeconds);
+                SpawnDueProjectiles(dragon, spawnedProjectiles, spinSeconds, projectiles, ref nextProjectileIndex);
                 ApplyAreaHit(dragon);
             }
         }
         finally
         {
+            ReleaseProjectileWarnings(projectiles);
             if (visualRoot != null)
                 visualRoot.localPosition = visualBaseLocalPosition;
 
@@ -262,26 +288,68 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
         return baseCount * Mathf.Max(1, projectileCountMultiplier);
     }
 
+    private ProjectilePlan[] CreateProjectilePlans()
+    {
+        var plans = new ProjectilePlan[ResolveProjectileCount()];
+        for (int i = 0; i < plans.Length; i++)
+            plans[i] = new ProjectilePlan();
+        return plans;
+    }
+
+    // Relative to spin start: negative times allow the first shots to warn during preparation.
+    private void PrepareDueProjectiles(
+        DragonController dragon, IAttackTelegraphPresenter telegraphService,
+        ProjectilePlan[] projectiles, float elapsed)
+    {
+        for (int i = 0; i < projectiles.Length; i++)
+        {
+            float fireTime = i * (spinSeconds / projectiles.Length);
+            ProjectilePlan plan = projectiles[i];
+            if (plan.prepared || elapsed < fireTime - ProjectileWarningSeconds)
+                continue;
+
+            PrepareProjectile(dragon, plan, i);
+            float remaining = fireTime - elapsed;
+            if (remaining <= 0f || projectilePrefab == null || projectileDamageEffect == null)
+                continue;
+
+            Vector3 end = plan.origin + (Vector3)(plan.direction * projectileSpeed * projectileLifetimeSeconds);
+            AttackTelegraphSpec warning = AttackTelegraphSpec.CreateLine(
+                plan.origin, end, ProjectileWarningWidth, remaining, warningTelegraphStyle);
+            plan.warning = telegraphService?.SpawnDetachedView(
+                AttackTelegraphSpecUtility.WithThinWarningOutline(warning));
+        }
+    }
+
+    private static void ReleaseProjectileWarnings(ProjectilePlan[] projectiles)
+    {
+        foreach (ProjectilePlan plan in projectiles)
+        {
+            plan.warning?.Release();
+            plan.warning = null;
+        }
+    }
+
     private void SpawnDueProjectiles(
         DragonController dragon,
         List<GameObject> spawnedProjectiles,
         float elapsed,
-        int projectileCount,
+        ProjectilePlan[] projectiles,
         ref int nextProjectileIndex)
     {
-        while (nextProjectileIndex < projectileCount &&
-               elapsed >= nextProjectileIndex * (spinSeconds / projectileCount))
+        while (nextProjectileIndex < projectiles.Length &&
+               elapsed >= nextProjectileIndex * (spinSeconds / projectiles.Length))
         {
-            SpawnProjectile(dragon, spawnedProjectiles, nextProjectileIndex);
+            ProjectilePlan plan = projectiles[nextProjectileIndex];
+            plan.warning?.Release();
+            plan.warning = null;
+            SpawnProjectile(dragon, spawnedProjectiles, plan);
             nextProjectileIndex++;
         }
     }
 
-    private void SpawnProjectile(DragonController dragon, List<GameObject> spawnedProjectiles, int projectileIndex)
+    private void PrepareProjectile(DragonController dragon, ProjectilePlan plan, int projectileIndex)
     {
-        if (dragon == null || projectilePrefab == null || projectileDamageEffect == null)
-            return;
-
         Vector3 center = dragon.transform.position;
         Vector2? targetPosition = (projectileIndex + 1) % 3 == 0 && dragon.CurrentTarget != null
             ? CommonMonsterCombatUtility.ResolveAimPoint(dragon.CurrentTarget.gameObject, CombatAimPointKind.ProjectileTarget)
@@ -294,7 +362,18 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
             spawnRadius = Mathf.Min(spawnRadius, Vector2.Distance(center, targetPosition.Value) * 0.5f);
         }
 
-        Vector3 origin = center + (Vector3)(direction * spawnRadius);
+        plan.origin = center + (Vector3)(direction * spawnRadius);
+        plan.direction = direction;
+        plan.prepared = true;
+    }
+
+    private void SpawnProjectile(DragonController dragon, List<GameObject> spawnedProjectiles, ProjectilePlan plan)
+    {
+        if (dragon == null || projectilePrefab == null || projectileDamageEffect == null || !plan.prepared)
+            return;
+
+        Vector3 origin = plan.origin;
+        Vector2 direction = plan.direction;
         GameObject projectileObject = Object.Instantiate(
             projectilePrefab,
             origin,

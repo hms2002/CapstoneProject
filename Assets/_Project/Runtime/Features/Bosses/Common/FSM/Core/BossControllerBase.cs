@@ -492,7 +492,8 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBoss
 
         RunProgressPlayback.NotifyBossCombatEnded(this);
         BossHudPlayback.MarkBossDefeated(this);
-        RunProgressPlayback.NotifyBossDefeated(this);
+        if (!BossEncounterEndDirector.SuppressesAutomaticRewardReady(this))
+            RunProgressPlayback.NotifyBossDefeated(this);
         ResolveDeathPresentation();
         deathPresentation?.NotifyDeathStarted();
     }

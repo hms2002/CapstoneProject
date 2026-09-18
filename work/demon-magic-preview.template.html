@@ -1,0 +1,91 @@
+<div id="demon-magic-sprite-preview">
+  <div class="viz-row">
+    <button type="button" class="btn btn-primary" id="dm-play">처음부터 재생</button>
+    <button type="button" class="btn" id="dm-cancel">패턴 중단</button>
+    <span id="dm-time" class="tabular-nums"></span>
+  </div>
+  <canvas id="dm-canvas" role="img" aria-label="기존 마왕과 탄환 스프라이트를 사용한 1.5초 순차 생성, 첫 발 경고 및 발사 견본" style="display:block;width:100%;height:300px"></canvas>
+  <div id="dm-state" aria-live="polite"></div>
+  <label class="form-label" for="dm-seek">시간 이동 · 0–2.1초</label>
+  <input class="form-range" id="dm-seek" type="range" min="0" max="2.1" step="0.01" value="0.9">
+  <div class="viz-row text-small"><span>0–1.5초 순차 형성</span><span>1.15초 첫 발 조준 고정</span><span>1.5초 발사</span></div>
+  <script type="application/json" id="dm-assets">__SPRITE_ASSETS__</script>
+</div>
+<script>
+(() => {
+  const root = document.getElementById('demon-magic-sprite-preview');
+  const canvas = root.querySelector('#dm-canvas'), ctx = canvas.getContext('2d');
+  const seek = root.querySelector('#dm-seek'), timeLabel = root.querySelector('#dm-time');
+  const stateLabel = root.querySelector('#dm-state'), play = root.querySelector('#dm-play'), cancel = root.querySelector('#dm-cancel');
+  const data = JSON.parse(root.querySelector('#dm-assets').textContent);
+  let t = 0.9, stopped = false, frame = 0, loaded = false, width = 640;
+  const images = {};
+  const clamp = (v) => Math.max(0, Math.min(1, v));
+  function save() {
+    if (window.openai?.setWidgetState) window.openai.setWidgetState({modelContent:{preview:'demon-magic',time:t,cancelled:stopped},privateContent:null}).catch(()=>{});
+  }
+  function restore(state) {
+    const s = state?.modelContent;
+    if (s?.preview === 'demon-magic' && Number.isFinite(s.time)) {t=Math.max(0,Math.min(2.1,s.time));stopped=!!s.cancelled;}
+  }
+  restore(window.openai?.widgetState);
+  window.addEventListener('openai:set_globals',e=>{cancelAnimationFrame(frame);restore(e.detail?.globals?.widgetState);draw();});
+  function color(name) {
+    const probe=document.createElement('span');probe.style.color='var('+name+')';root.appendChild(probe);
+    const value=getComputedStyle(probe).color;probe.remove();return value;
+  }
+  let colors;
+  function refreshColors(){colors={ink:color('--foreground'),line:color('--border'),target:color('--viz-series-1'),warning:color('--viz-series-2')};}
+  function sprite(sheet, id, x, y, scale=1, alpha=1, flip=false, rotation=0) {
+    const f=data[sheet].frames[id], img=images[sheet];
+    ctx.save();ctx.translate(x,y);ctx.rotate(rotation);ctx.scale(flip?-scale:scale,scale);ctx.globalAlpha=alpha;
+    ctx.drawImage(img,f.x,img.naturalHeight-f.y-f.h,f.w,f.h,-f.w*f.px,-f.h*(1-f.py),f.w,f.h);ctx.restore();
+  }
+  function draw() {
+    if(!loaded)return;
+    ctx.clearRect(0,0,width,300);ctx.imageSmoothingEnabled=false;
+    const unit=Math.min(65,width/8), bx=width*0.35, by=250, px=width*0.83, py=231;
+    const size=unit/32, phase=stopped?'중단 · 준비 탄환과 경고 정리':t<1.15?'준비 · 첫 발 조준':t<1.5?'준비 · 첫 발 방향 고정':'첫 발 발사 · 나머지 4발 대기';
+    if(stateLabel.textContent!==phase)stateLabel.textContent=phase;
+    timeLabel.textContent=t.toFixed(2)+'초';seek.value=t;
+    ctx.strokeStyle=colors.line;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(12,260);ctx.lineTo(width-12,260);ctx.stroke();
+    ctx.strokeStyle=colors.target;ctx.lineWidth=2;ctx.beginPath();ctx.arc(px,py,10,0,Math.PI*2);ctx.stroke();
+    const ox=bx+0.9*unit, oy=by-1.6*unit;
+    const angle=Math.atan2(py-oy,px-ox);
+    if(!stopped&&t<1.5){
+      ctx.save();ctx.strokeStyle=colors.warning;ctx.globalAlpha=t>=1.15?0.9:0.55;ctx.lineWidth=4;ctx.setLineDash(t>=1.15?[]:[8,5]);
+      ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+Math.cos(angle)*width,oy+Math.sin(angle)*width);ctx.stroke();ctx.restore();
+    }
+    sprite('body',!stopped&&t>=1.5?'5718919925475183731':'7800417542164249327',bx,by,size,1,true);
+    let shown=0;
+    if(!stopped){
+      for(let i=0;i<5;i++){
+        const grow=clamp((t-i*0.3)/0.3);if(grow===0)continue;
+        if(i===0&&t>=1.5)continue;
+        shown++;
+        const x=(2-i)*0.45, y=1.6+0.35*(1-Math.abs(2-i)/2);
+        const smooth=grow*grow*(3-2*grow), localAge=Math.max(0,t-i*0.3);
+        const fid=data.stockSequence[Math.floor(localAge*12)%data.stockSequence.length];
+        sprite('effects',fid,bx+x*unit,by-y*unit,size*(0.2+0.8*smooth),smooth);
+      }
+      if(t>=1.5){const elapsed=t-1.5, distance=elapsed*unit*9;const fid=data.firedSequence[Math.floor(elapsed*12)%data.firedSequence.length];sprite('effects',fid,ox+Math.cos(angle)*distance,oy+Math.sin(angle)*distance,size,1,false,angle);}
+    }
+    root.dataset.visibleOrbs=String(shown);root.dataset.warningVisible=String(!stopped&&t<1.5);root.dataset.cancelled=String(stopped);
+    root.dataset.ready='true';
+  }
+  function resize(){width=Math.max(280,canvas.clientWidth);const dpr=devicePixelRatio||1;canvas.width=Math.round(width*dpr);canvas.height=300*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);draw();}
+  seek.addEventListener('input',()=>{cancelAnimationFrame(frame);t=Number(seek.value);stopped=false;draw();});
+  seek.addEventListener('change',save);
+  cancel.addEventListener('click',()=>{cancelAnimationFrame(frame);stopped=true;draw();save();});
+  play.addEventListener('click',()=>{
+    cancelAnimationFrame(frame);stopped=false;t=0;
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches){t=1.49;draw();save();return;}
+    const start=performance.now();function tick(now){t=Math.min(2.1,(now-start)/1000);draw();if(t<2.1)frame=requestAnimationFrame(tick);else save();}frame=requestAnimationFrame(tick);
+  });
+  const observer=new ResizeObserver(resize);observer.observe(canvas);
+  const themeObserver=new MutationObserver(()=>{refreshColors();draw();});themeObserver.observe(document.documentElement,{attributes:true,attributeFilter:['class','style','data-theme']});
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{refreshColors();draw();});
+  refreshColors();
+  Promise.all(['body','effects'].map(key=>new Promise((resolve,reject)=>{const img=new Image();images[key]=img;img.onload=resolve;img.onerror=reject;img.src=data[key].url;}))).then(()=>{loaded=true;resize();}).catch(()=>{stateLabel.textContent='견본 이미지를 불러오지 못했습니다.';});
+})();
+</script>

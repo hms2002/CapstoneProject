@@ -2557,13 +2557,11 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         Vector2 baseDirection,
         Vector2 shotDirection)
     {
-        Vector2 ownerPosition = system != null ? (Vector2)system.transform.position : Vector2.zero;
         Vector2 safeBaseDirection = baseDirection.sqrMagnitude > 0.0001f ? baseDirection.normalized : Vector2.right;
         Vector2 safeShotDirection = shotDirection.sqrMagnitude > 0.0001f ? shotDirection.normalized : safeBaseDirection;
-        float pivotForwardOffset = data != null ? data.RecoveredSpearShotPivotForwardOffset : 0f;
-        float innerRadius = data != null ? data.RecoveredSpearShotInnerRadius : 0f;
-        Vector2 pivot = ownerPosition + safeBaseDirection * pivotForwardOffset;
-        return pivot + safeShotDirection * innerRadius;
+        LayerMask wallLayers = data != null && data.RecoveredSpearProjectileHit != null
+            ? data.RecoveredSpearProjectileHit.WallLayers : default;
+        return PlayerAttackOrigin.Resolve(system, safeShotDirection, wallLayers);
     }
 
     private static void SortRecoveredSpearVolleyForDespawn(

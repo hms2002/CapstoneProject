@@ -161,10 +161,12 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
 
     private IEnumerator CompleteEncounterRoutine()
     {
+        BossControllerBase rewardBoss = clearCondition != null ? clearCondition.RewardBoss : null;
+        // Split bosses finish the run stage only when the entire encounter clears.
+        if (suppressManagedBossAutomaticRewards)
+            RunProgressPlayback.NotifyBossDefeated(rewardBoss);
         if (rewardDelayAfterClearSeconds > 0f)
             yield return new WaitForSeconds(rewardDelayAfterClearSeconds);
-
-        BossControllerBase rewardBoss = clearCondition != null ? clearCondition.RewardBoss : null;
         LogDebug($"Clear condition completed. RewardBoss={(rewardBoss != null ? rewardBoss.name : "None")}.");
         BossRewardContext context = BuildRewardContext(rewardBoss);
         Vector3 rewardOrigin = clearCondition != null ? clearCondition.RewardOrigin : transform.position;

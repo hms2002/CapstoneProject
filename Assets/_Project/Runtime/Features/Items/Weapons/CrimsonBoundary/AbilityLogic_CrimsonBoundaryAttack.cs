@@ -35,7 +35,7 @@ public sealed class AbilityLogic_CrimsonBoundaryAttack : AbilityLogic
 
         Vector2 direction = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
         runtime.MarkProjectileReleased();
-        Vector3 position = system.transform.position;
+        Vector3 position = PlayerAttackOrigin.Resolve(system, direction, data.wallLayers);
         bool critical;
         float damage = CrimsonBoundaryUtility.CalculateDirectDamage(system, 1f, out critical);
 

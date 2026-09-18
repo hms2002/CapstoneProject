@@ -96,6 +96,9 @@ public sealed class BossHudController : MonoBehaviour, IBossHudBackend
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= HandleSceneLoaded;
+        // Dialogue can hide the canvas while its boss is entering combat.
+        // Re-apply presentation when the canvas returns, including interrupted slides.
+        _hasAppliedInitialSlideState = false;
 
         if (_slideRoutine != null)
         {
@@ -552,6 +555,12 @@ public sealed class BossHudController : MonoBehaviour, IBossHudBackend
 
     private void ApplySlidePresentation(bool visible)
     {
+        if (!isActiveAndEnabled)
+        {
+            _hasAppliedInitialSlideState = false;
+            return;
+        }
+
         if (!useBossHudSlidePresentation)
         {
             LogSlidePresentation($"skip disabled. visible={visible}");

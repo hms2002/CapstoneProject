@@ -21,7 +21,7 @@ namespace UnityGAS.Sample
                 yield break;
 
             Vector2 direction = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
-            Vector3 spawnPosition = OddIronAbilityUtility.ResolveMuzzlePosition(system, direction, data.spawnOffset);
+            Vector3 spawnPosition = PlayerAttackOrigin.Resolve(system, direction, data.wallLayers);
 
             CombatHitPayload payload = OddIronAbilityUtility.BuildFixedPayload(
                 system,

@@ -11,6 +11,10 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
     [SerializeField] private RectTransform[] shadePanels = new RectTransform[4];
     [SerializeField] private Image rightClickGlyph;
     [SerializeField] private RectTransform instruction;
+    [SerializeField] private ChestInteractable worldChest;
+    [SerializeField] private Transform worldArrow;
+    private bool worldHighlight;
+    private float worldHighlightStarted;
 
     private ChestScreen screen;
     private EventSystem navigationSystem;
@@ -34,12 +38,14 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
     private void OnEnable()
     {
         inputShield.gameObject.SetActive(false);
+        if (worldArrow != null) worldArrow.gameObject.SetActive(false);
         if (targetChest != null) targetChest.OpenedUi += OnChestOpened;
     }
 
     private void OnDisable()
     {
         if (targetChest != null) targetChest.OpenedUi -= OnChestOpened;
+        SetWorldGuidance(false);
         Cleanup();
     }
 
@@ -78,6 +84,8 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
 
     private void LateUpdate()
     {
+        SetWorldGuidance(tutorial != null && tutorial.isActiveAndEnabled && tutorial.Stage == 4 &&
+            !completed && (screen == null || !screen.isActiveAndEnabled));
         TickPresentation(Time.unscaledDeltaTime);
         if (screen == null) return;
         if (!screen.isActiveAndEnabled || targetChest == null || screen.BoundInventory != targetChest.GetInventory())
@@ -109,6 +117,24 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
                 0f, true, true);
             pulsing = true;
         }
+    }
+
+    private void SetWorldGuidance(bool visible)
+    {
+        if (worldHighlight != visible)
+        {
+            worldHighlight = visible;
+            worldHighlightStarted = Time.unscaledTime;
+            worldChest?.SetGuidanceHighlight(this, visible);
+        }
+        if (worldArrow == null) return;
+        worldArrow.gameObject.SetActive(visible);
+        if (!visible || worldChest == null) return;
+        // Match HubWeaponDepartureGuide's authored arrow offset and unscaled bounce.
+        float bounce = Mathf.Abs(Mathf.Sin((Time.unscaledTime - worldHighlightStarted) / .6f * Mathf.PI)) * .2f;
+        Transform anchor = worldChest.GetPromptAnchor();
+        worldArrow.position = (anchor != null ? anchor.position : worldChest.transform.position) + Vector3.up * (1.2f + bounce);
+        worldArrow.rotation = Quaternion.identity;
     }
 
     public void OnPointerClick(PointerEventData eventData)

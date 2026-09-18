@@ -58,7 +58,7 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
 
     private void RefreshCombatVisibility()
     {
-        bool hidden = MonsterSpawnRoomGroup.IsPlayerInCombat;
+        bool hidden = ShouldHideForCombat(SceneManager.GetActiveScene().name, MonsterSpawnRoomGroup.IsPlayerInCombat);
         if (hudRect == null || combatHidden == hidden) return;
         combatHidden = hidden;
         combatMotion?.Kill();
@@ -68,6 +68,10 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
         combatMotion = hudRect.DOAnchorPosX(targetX, hidden ? exitSeconds : enterSeconds)
             .SetEase(hidden ? Ease.InCubic : Ease.OutCubic).SetUpdate(true);
     }
+
+    public static bool ShouldHideForCombat(string sceneName, bool inCombat) => inCombat &&
+        sceneName != "PrototypeTutorialUpgradeScene" && sceneName != "TutorialCorridor" &&
+        sceneName != "TutorialScene" && sceneName != "DarkLord_Tutorial";
 
     private void RefreshMainQuest()
     {
@@ -205,7 +209,7 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
 
     private void OnEnable()
     {
-        combatHidden = MonsterSpawnRoomGroup.IsPlayerInCombat;
+        combatHidden = ShouldHideForCombat(SceneManager.GetActiveScene().name, MonsterSpawnRoomGroup.IsPlayerInCombat);
         if (hudRect != null)
         {
             hudRect.anchoredPosition = hudRestPosition;

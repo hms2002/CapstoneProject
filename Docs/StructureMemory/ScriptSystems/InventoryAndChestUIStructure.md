@@ -235,3 +235,17 @@ This flow supersedes immediate chest acquisition/return interaction described in
 
 - The existing reroll groups in `GlobalUIRoot` and `GlobalUIRoot_Salryojo` now sit inside the chest's 200-unit lower frame, from 16 to 166 units above its bottom. The prior top-pivot group extended 150 units below the chest and could leave the screen after the selection-panel layout moved the chest down. Hold controls, fill/count references and unlock rules are unchanged.
 - Discard targets in `InventoryElementPannel` and the four embedded legacy root copies use bottom horizontal stretch anchors, zero added width, top pivot and a 12-unit gap beneath the inventory panel. Labels stretch inside the target. Authored `fitHeightBelowPanel` enables `DropZoneUI.LateUpdate` to fit the remaining space down to a 16-unit root-canvas bottom margin, converting canvas coordinates to panel-local coordinates for scaled layouts. This updates presentation geometry only and does not own item state or create UI objects.
+
+
+## Selected chest slot background
+
+ChestUI.prefab authors two permanent SelectedItemSlot frames (72px, 8px gap) as siblings behind SelectedItemsGrid. They remain visible when the selection is empty and never participate in the dynamic grid layout. ChestScreen.ToggleSelection moves existing item slots above the frames; ItemSlotUI.SetChestSelectionOverlay hides only the item's own background alpha, preserving the full-slot raycast surface and hover/error border. Deselecting restores the original background color. No empty slots are created at runtime; ClearChestSlots only destroys dynamic item slots.
+
+
+## Chest confirmation blockers
+
+ChestSelectionTransferService exposes TryCreatePlanWithFailure/TryCommitPlanWithFailure with the rejected source index; existing entry points retain their signatures and delegate to the same rules. ChestScreen reuses reservation previews every .15 unscaled seconds while a selection exists, removing each rejected candidate from a temporary validation list to identify remaining blockers. This is read-only; selection order determines capacity overflow. Commit-only failures show the failing slot for one second before revalidation. Existing warnings/transfer rollback remain unchanged.
+
+ItemSlotUI.SetSelectionBlocked projects this state onto the existing hover highlight Graphic: red at action alpha even without hover, restoring the authored color when cleared or disabled. Clearing selection or resolving capacity/relic conditions removes the indication; no gameplay validity is owned by the slot. Scene/prefab hierarchy is unchanged.
+
+- Authored-copy caveat: GlobalUIRoot.prefab and its Deafiso/DialogueUpdate/Salryojo/Sub/Water variants embed independent chest UI hierarchies; editing ChestUI.prefab alone does not update them. The two permanent selected-item frames and 8px spacing are present in all seven copies; ChestFixedFramesValidation.py checks them together.

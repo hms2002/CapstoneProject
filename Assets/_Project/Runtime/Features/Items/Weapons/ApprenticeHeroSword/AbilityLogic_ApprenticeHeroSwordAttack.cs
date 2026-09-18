@@ -85,9 +85,7 @@ public sealed class AbilityLogic_ApprenticeHeroSwordAttack : AbilityLogic, IWeap
         float facingSign = direction.x < 0f ? -1f : 1f;
         Vector2 perp = new(-direction.y * facingSign, Mathf.Abs(direction.x));
         int sideSign = step.sideSign < 0 ? -1 : 1;
-        Vector2 center = (Vector2)system.transform.position
-                         + direction * step.forwardOffset
-                         + perp * (step.sideOffset * sideSign);
+        Vector2 center = PlayerAttackOrigin.Resolve(system, direction);
 
 #if UNITY_EDITOR
         if (system.TryGetComponent<IRealtimeHitboxGizmo2D>(out var gizmo))

@@ -74,7 +74,7 @@ namespace UnityGAS.Sample
         {
             Vector2 baseDirection = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
             Vector2 direction = OddIronAbilityUtility.ApplySpread(baseDirection, spreadAngle);
-            Vector3 spawnPosition = OddIronAbilityUtility.ResolveMuzzlePosition(system, direction, data.spawnOffset);
+            Vector3 spawnPosition = PlayerAttackOrigin.Resolve(system, direction, data.wallLayers);
             Quaternion muzzleRotation = OddIronAbilityUtility.ResolveMuzzleRotation(system, direction);
 
             CombatHitPayload payload = OddIronAbilityUtility.BuildFixedPayload(
