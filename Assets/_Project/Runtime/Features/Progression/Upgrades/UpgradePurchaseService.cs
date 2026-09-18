@@ -37,6 +37,7 @@ internal enum UpgradePurchaseFailureReason
     None,
     MissingProgressService,
     MissingNode,
+    AlreadyPurchased,
     NotUnlocked,
     MissingCurrencyManager,
     NotEnoughMagicStone,
@@ -55,7 +56,11 @@ internal static class UpgradePurchaseService
         if (node == null)
             return Failure(UpgradePurchaseFailureReason.MissingNode);
 
-        if (request.ProgressService.GetNodeStatus(request.UpgradeId) != LockType.UnLocked)
+        LockType nodeStatus = request.ProgressService.GetNodeStatus(request.UpgradeId);
+        if (nodeStatus == LockType.Purchased)
+            return Failure(UpgradePurchaseFailureReason.AlreadyPurchased, node);
+
+        if (nodeStatus != LockType.UnLocked)
             return Failure(UpgradePurchaseFailureReason.NotUnlocked, node);
 
         if (request.CurrencyManager == null)
