@@ -18,6 +18,8 @@ internal static class RunSessionLifecycleService
         data.runElapsedSeconds = 0f;
         data.runRemainingSeconds = 0f;
         data.runGold = 0;
+        data.weaponSwapHintUnlocked = false;
+        data.weaponSwapHintCompleted = false;
         data.officerQuestStarted = false;
         data.officerQuestCompletionPresented = false;
         data.grandHallScribeReturnStage = 0;
@@ -51,6 +53,8 @@ internal static class RunSessionLifecycleService
         data.isRunActive = false;
         data.runRemainingSeconds = 0f;
         data.runGold = 0;
+        data.weaponSwapHintUnlocked = false;
+        data.weaponSwapHintCompleted = false;
         data.officerQuestStarted = false;
         data.officerQuestCompletionPresented = false;
         data.grandHallScribeReturnStage = 0;
@@ -513,6 +517,8 @@ internal static class RunSessionStateService
         data.runElapsedSeconds = 0f;
         data.runRemainingSeconds = 0f;
         data.runGold = 0;
+        data.weaponSwapHintUnlocked = false;
+        data.weaponSwapHintCompleted = false;
         data.officerQuestStarted = false;
         data.officerQuestCompletionPresented = false;
         data.grandHallScribeReturnStage = 0;

@@ -141,6 +141,8 @@ public sealed class DungeonRunStateData
 public sealed class GamePlayData
 {
     public bool isRunActive;
+    public bool weaponSwapHintUnlocked;
+    public bool weaponSwapHintCompleted;
     public float runElapsedSeconds;
     public float runRemainingSeconds;
     public RunEndReason lastRunEndReason = RunEndReason.None;

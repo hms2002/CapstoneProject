@@ -93,6 +93,11 @@ public sealed class OneSwordOathLevelRewardEffectSO : LevelRewardEffectSO
             return null;
         }
 
+        // A successfully applied single-weapon trait makes the swap tutorial unnecessary.
+        GamePlayData run = RunSessionStore.Data;
+        if (run != null && run.isRunActive)
+            run.weaponSwapHintCompleted = true;
+
         return new EffectHandle(attributes, this, cooldownMultiplier, slotSeal);
     }
 

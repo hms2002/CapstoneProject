@@ -113,7 +113,8 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
 
     public bool TryHandleCloseRequest()
     {
-        return IsChestFirstOpenRevealPlaying;
+        return openMode == OpenMode.Chest && chestInventoryScreen != null &&
+               chestInventoryScreen.TryHandleCloseRequest();
     }
 
     private void Awake()

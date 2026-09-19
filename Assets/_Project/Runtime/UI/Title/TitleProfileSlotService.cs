@@ -12,7 +12,7 @@ public sealed class TitleProfileSlotService : MonoBehaviour
 
     [Header("Launch Targets")]
     [SerializeField] private string targetSceneName = "ProtoTypeHub";
-    [SerializeField] private string newProfileTargetSceneName = "TutorialCorridor";
+    [SerializeField] private string newProfileTargetSceneName = "PrototypeTutorialUpgradeScene";
     [SerializeField] private UpgradeDatabase upgradeDatabase;
 
     [Header("Debug Preview")]
@@ -127,7 +127,7 @@ public sealed class TitleProfileSlotService : MonoBehaviour
         }
 
         if (action == TitleProfileLaunchAction.ContinueRun &&
-            ShouldResumeTutorialCorridor(slotIndex))
+            ShouldResumeTutorial(slotIndex))
         {
             return newProfileTargetSceneName;
         }
@@ -135,7 +135,7 @@ public sealed class TitleProfileSlotService : MonoBehaviour
         return targetSceneName;
     }
 
-    private bool ShouldResumeTutorialCorridor(int slotIndex)
+    private bool ShouldResumeTutorial(int slotIndex)
     {
         if (string.IsNullOrWhiteSpace(newProfileTargetSceneName))
             return false;

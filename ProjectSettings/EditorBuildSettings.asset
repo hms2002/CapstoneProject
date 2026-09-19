@@ -12,8 +12,8 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/TitleScene.unity
     guid: cd86442ed1495fd4d8436f3c23100177
   - enabled: 1
-    path: Assets/_Project/Scenes/TutorialCorridor.unity
-    guid: ce806cf8fc6515244be9e5b5a1d39ada
+    path: Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity
+    guid: 80fd395adba94d2694477ce9b1c821d1
   - enabled: 1
     path: Assets/_Project/Scenes/DarkLord_Tutorial.unity
     guid: 8a047dbd44c874140b290b75337e2214

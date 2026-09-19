@@ -94,7 +94,7 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
     private LoadManifestSO bootManifest;
     private LoadManifestSO firstRunIntroManifest;
     private string bootSeedSceneName = "ProtoTypeHub";
-    private string firstRunIntroSceneNames = "TutorialCorridor,DarkLord_Tutorial,ProtoTypeHub";
+    private string firstRunIntroSceneNames = "PrototypeTutorialUpgradeScene,DarkLord_Tutorial,ProtoTypeHub";
     private bool saveAssetsAfterBuild = true;
     private bool verboseLogging;
     private Vector2 scrollPosition;

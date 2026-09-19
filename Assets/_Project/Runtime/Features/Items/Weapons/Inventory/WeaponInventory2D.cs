@@ -293,6 +293,7 @@ public class WeaponInventory2D : MonoBehaviour
 
     private void Update()
     {
+        RecordWeaponSwapHintAvailability();
         runtimeCoordinator?.Tick(Time.deltaTime);
     }
 
@@ -425,7 +426,15 @@ public class WeaponInventory2D : MonoBehaviour
         int previousActiveIndex = ActiveIndex;
         Equip(other);
         if (ActiveIndex != previousActiveIndex)
+        {
             PlayRuntimeSwapSound();
+            GamePlayData run = RunSessionStore.Data;
+            if (run != null && run.isRunActive)
+            {
+                run.weaponSwapHintUnlocked = true;
+                run.weaponSwapHintCompleted = true;
+            }
+        }
         NotifyInventoryChanged();
     }
 
@@ -975,7 +984,16 @@ public class WeaponInventory2D : MonoBehaviour
 
     private void NotifyInventoryChanged()
     {
+        RecordWeaponSwapHintAvailability();
         OnInventoryChanged?.Invoke();
+    }
+
+    private void RecordWeaponSwapHintAvailability()
+    {
+        GamePlayData run = RunSessionStore.Data;
+        if (run != null && run.isRunActive && !run.weaponSwapHintUnlocked &&
+            CountAccessibleFilledSlots() >= 2)
+            run.weaponSwapHintUnlocked = true;
     }
 
     private bool IsActiveWeaponChangeBlocked()

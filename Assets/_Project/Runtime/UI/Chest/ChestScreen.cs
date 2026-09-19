@@ -26,9 +26,12 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     [SerializeField] private RectTransform selectedItemsRoot;
     [SerializeField] private CanvasGroup selectedItemsGroup;
     [SerializeField] private Button confirmSelectionButton;
+    [SerializeField] private Outline confirmSelectionWarningOutline;
     private readonly List<ItemSlotUI> selectedSlots = new();
     private Sequence selectionMotion;
     private bool confirmingSelection;
+    private ItemSlotUI rejectedWeaponSlot;
+    private Tween rejectedWeaponWarningTween;
     private float nextSelectionValidationTime;
     private ItemSlotUI transitSlot;
     private Transform transitDestination;
@@ -226,7 +229,20 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     public bool TryHandleCloseRequest()
     {
-        return IsFirstOpenRevealPlaying;
+        if (IsFirstOpenRevealPlaying)
+            return true;
+        if (confirmingSelection || selectedSlots.Count == 0)
+            return false;
+
+        WarningPopupPlayback.ShowMessage("아이템을 획득하거나 선택을 해제해 주십시오.");
+        SetConfirmCloseWarning(true);
+        return true;
+    }
+
+    private void SetConfirmCloseWarning(bool visible)
+    {
+        if (confirmSelectionWarningOutline != null)
+            confirmSelectionWarningOutline.enabled = visible;
     }
 
     private void Awake()
@@ -947,6 +963,8 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void ClearChestSlots()
     {
+        ClearRejectedWeaponWarning();
+        SetConfirmCloseWarning(false);
         StopSelectionMotion();
         selectedSlots.Clear();
         confirmingSelection = false;
@@ -1085,6 +1103,8 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void RefreshSelectionControls()
     {
+        if (selectedSlots.Count == 0)
+            SetConfirmCloseWarning(false);
         bool available = CanChangeSelection;
         if (confirmSelectionButton != null)
             confirmSelectionButton.interactable = available && selectedSlots.Count > 0 && !selectionMotion.IsActive();
@@ -1102,12 +1122,22 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         if (!CanChangeSelection || selectedItemsRoot == null || slot == null || !slot.HasItem || selectionMotion.IsActive())
             return;
         bool removing = selectedSlots.Contains(slot);
+        if (!removing && slot.CurrentItem is WeaponDefinition && IsWeaponInventoryFull())
+        {
+            ClearRejectedWeaponWarning();
+            rejectedWeaponSlot = slot;
+            slot.SetSelectionBlocked(true);
+            rejectedWeaponWarningTween = DOVirtual.DelayedCall(0.8f, ClearRejectedWeaponWarning, true);
+            WarningPopupPlayback.ShowMessage("무기 인벤토리가 가득 찼습니다. 인벤토리 무기를 버리고 획득을 시도해 주세요");
+            return;
+        }
         if (!removing && selectedSlots.Count + chestInventory.AcquiredCount >= ChestInventory.AcquisitionLimit)
         {
             PlayAcquisitionWarning();
             return;
         }
 
+        if (rejectedWeaponSlot == slot) ClearRejectedWeaponWarning();
         var positions = new Dictionary<ItemSlotUI, Vector3>();
         foreach (ItemSlotUI item in spawnedChestSlots) positions[item] = item.transform.position;
         if (removing) selectedSlots.Remove(slot);
@@ -1153,6 +1183,23 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         UIManager.Instance?.HideHoverImmediate();
         RefreshAcquisitionCounter();
         RefreshSelectionControls();
+    }
+
+    private static bool IsWeaponInventoryFull()
+    {
+        IItemContainer weapons = ItemContainerGroupRegistry.WeaponEquip;
+        if (weapons == null || weapons.SlotCount == 0) return false;
+        for (int i = 0; i < weapons.SlotCount; i++)
+            if (weapons.Get(i) == null) return false;
+        return true;
+    }
+
+    private void ClearRejectedWeaponWarning()
+    {
+        rejectedWeaponWarningTween?.Kill();
+        rejectedWeaponWarningTween = null;
+        if (rejectedWeaponSlot != null) rejectedWeaponSlot.SetSelectionBlocked(false);
+        rejectedWeaponSlot = null;
     }
 
     private void SetSelectionLayoutsEnabled(bool enabled)
@@ -1254,6 +1301,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             RefreshSelectionControls();
             return;
         }
+        SetConfirmCloseWarning(false);
         ChestUIManager.Instance?.CompleteOpenedChest(chestInventory);
         SelectionCommitted?.Invoke();
         IStackableUI closeTarget = rootOwner ?? this;

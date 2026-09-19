@@ -6763,6 +6763,7 @@ MonoBehaviour:
   selectedItemsRoot: {fileID: 911709170000000021}
   selectedItemsGroup: {fileID: 911709170000000004}
   confirmSelectionButton: {fileID: 911709170000000034}
+  confirmSelectionWarningOutline: {fileID: 980919000000000100}
   acquisitionCountLabel: {fileID: 911709170000000013}
   acquisitionCountGroup: {fileID: 0}
 --- !u!114 &3291214652359126029
@@ -40548,6 +40549,7 @@ GameObject:
   - component: {fileID: 911709170000000032}
   - component: {fileID: 911709170000000033}
   - component: {fileID: 911709170000000034}
+  - component: {fileID: 980919000000000100}
   m_Layer: 5
   m_Name: ConfirmSelection
   m_TagString: Untagged
@@ -40944,3 +40946,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &980919000000000100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911709170000000030}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
+  m_EffectColor: {r: 1, g: 0.85, b: 0.15, a: 1}
+  m_EffectDistance: {x: 3, y: -3}
+  m_UseGraphicAlpha: 1

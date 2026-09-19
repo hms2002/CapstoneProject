@@ -18,6 +18,7 @@ public class ItemSlotUI : MonoBehaviour,
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private GameObject hoverHighlightRoot;
     [SerializeField] private Sprite lockedSlotSprite;
+    [SerializeField] private ItemTypeBorderGraphic itemTypeBorder;
 
     [Header("Highlight Presentation")]
     [SerializeField, Range(0f, 1f)] private float hoverHighlightAlpha = 0.65f;
@@ -152,6 +153,7 @@ public class ItemSlotUI : MonoBehaviour,
         }
 
         var so = container.Get(index);
+        if (itemTypeBorder != null) itemTypeBorder.SetItem(so);
         RestoreDefaultBackground();
         RefreshHoverHighlight(so);
 
@@ -174,6 +176,7 @@ public class ItemSlotUI : MonoBehaviour,
 
     private void ClearIconAndLevel()
     {
+        if (itemTypeBorder != null) itemTypeBorder.SetItem(null);
         RestoreDefaultBackground();
 
         if (icon != null)
