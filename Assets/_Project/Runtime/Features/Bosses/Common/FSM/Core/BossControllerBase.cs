@@ -248,6 +248,9 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBoss
 
     public float GetCurrentPhaseThinkDelay()
     {
+        if (RunRoutePlayback.HasActivePlan && RunRoutePlayback.CurrentStageIndexOrInvalid == 0)
+            return 1.3f;
+
         BossPhaseConfig currentPhase = GetCurrentPhase();
         if (currentPhase == null)
             return 0.2f;

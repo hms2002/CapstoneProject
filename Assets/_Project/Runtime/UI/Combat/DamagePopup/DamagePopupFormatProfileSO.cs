@@ -117,7 +117,8 @@ public sealed class DamagePopupFormatProfileSO : ScriptableObject
             return defaultColor;
 
         if (request.Kind == DamagePopupKind.Text)
-            return request.TextOverride == "EVADE" ? new Color32(50, 156, 199, 255) : defaultColor;
+            return request.TextOverride == "Evade" ? new Color32(255, 215, 0, 255)
+                : request.TextOverride == "EVADE" ? new Color32(50, 156, 199, 255) : defaultColor;
 
         return new Color32(255, 77, 77, 255);
     }

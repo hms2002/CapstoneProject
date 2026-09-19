@@ -2928,6 +2928,9 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
         }
         finally
         {
+            // Cancellation must not leave the actor flying or its owned warnings alive.
+            if (sword != null && sword.IsRecallActive)
+                demon.CompleteEgoSwordRecall();
             demon.ReleasePatternAnimationHold();
             demon.PopFaceTargetLock();
         }

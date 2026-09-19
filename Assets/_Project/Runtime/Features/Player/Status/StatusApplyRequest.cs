@@ -10,6 +10,7 @@ public readonly struct StatusApplyRequest
 {
     public StatusHudDefinition Definition { get; }
     public string OwnerKey { get; }
+    public string ProgressText { get; }
     public GameplayTag StateTag { get; }
     public int StackCount { get; }
     public float RemainingTime { get; }
@@ -33,10 +34,12 @@ public readonly struct StatusApplyRequest
         string effectTextOverride = null,
         Sprite iconOverride = null,
         bool? showStacksOverride = null,
-        bool? showDurationOverride = null)
+        bool? showDurationOverride = null,
+        string progressText = null)
     {
         Definition = definition;
         OwnerKey = ownerKey;
+        ProgressText = progressText;
         StateTag = stateTag;
         StackCount = stackCount;
         RemainingTime = remainingTime;

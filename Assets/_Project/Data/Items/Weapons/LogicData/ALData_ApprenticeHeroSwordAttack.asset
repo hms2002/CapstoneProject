@@ -139,7 +139,7 @@ MonoBehaviour:
       forwardOffset: 0.95
       sideOffset: 0
       sideSign: 1
-      lungeDistance: 0.75
+      lungeDistance: 0.9
       lungeDuration: 0.14
     comboResetTime: 0.75
     hitEventTag: {fileID: 11400000, guid: a9d545fc5072ee3419e47fc9ff0e650c, type: 2}

@@ -58,6 +58,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
     [SerializeField] private TMP_Text locationText;
     [SerializeField] private Button returnButton;
     [SerializeField] private TMP_Text returnButtonLabelText;
+    [SerializeField] private InventoryOpenHudButton gameOverInventoryButton;
 
     [Header("Authored Death Text")]
     [TextArea(1, 3)]
@@ -119,20 +120,8 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private bool hasInventoryHudPresentation;
     private InventoryOpenHudButton inventoryHudButton;
     private GameObject inventoryHudRoot;
-    private Transform inventoryHudOriginalParent;
-    private int inventoryHudOriginalSiblingIndex;
     private bool inventoryHudOriginalActive;
-    private RectTransform inventoryHudRect;
-    private Vector2 inventoryHudOriginalAnchorMin;
-    private Vector2 inventoryHudOriginalAnchorMax;
-    private Vector2 inventoryHudOriginalPivot;
-    private Vector2 inventoryHudOriginalAnchoredPosition;
-    private Vector2 inventoryHudOriginalSizeDelta;
-    private Vector3 inventoryHudOriginalLocalPosition;
-    private Quaternion inventoryHudOriginalLocalRotation = Quaternion.identity;
-    private Vector3 inventoryHudOriginalLocalScale = Vector3.one;
-    private GameObject inventoryHudKeyHintRoot;
-    private bool inventoryHudKeyHintOriginalActive;
+    private bool inventoryHudOriginalEnabled;
     private InventoryScreen gameOverInventoryScreen;
     private bool hasInventoryLayerLift;
     private CanvasSortingSnapshot popupCanvasSortingSnapshot;
@@ -567,87 +556,42 @@ public sealed class GameOverPresentationController : MonoBehaviour
     {
         RestoreInventoryHudPresentation();
 
-        if (!request.AllowInventoryDuringPresentation || rootCanvas == null)
-            return;
+        if (gameOverInventoryButton != null)
+        {
+            gameOverInventoryButton.gameObject.SetActive(request.AllowInventoryDuringPresentation);
+            gameOverInventoryButton.RefreshNow();
+        }
 
         inventoryHudButton = ResolveInventoryHudButton();
         inventoryHudRoot = inventoryHudButton != null ? inventoryHudButton.GetPresentationRoot() : null;
         if (inventoryHudButton == null || inventoryHudRoot == null)
             return;
 
-        Transform hudTransform = inventoryHudRoot.transform;
-        inventoryHudOriginalParent = hudTransform.parent;
-        inventoryHudOriginalSiblingIndex = hudTransform.GetSiblingIndex();
         inventoryHudOriginalActive = inventoryHudRoot.activeSelf;
-        inventoryHudOriginalLocalPosition = hudTransform.localPosition;
-        inventoryHudOriginalLocalRotation = hudTransform.localRotation;
-        inventoryHudOriginalLocalScale = hudTransform.localScale;
-
-        inventoryHudRect = hudTransform as RectTransform;
-        if (inventoryHudRect != null)
-        {
-            inventoryHudOriginalAnchorMin = inventoryHudRect.anchorMin;
-            inventoryHudOriginalAnchorMax = inventoryHudRect.anchorMax;
-            inventoryHudOriginalPivot = inventoryHudRect.pivot;
-            inventoryHudOriginalAnchoredPosition = inventoryHudRect.anchoredPosition;
-            inventoryHudOriginalSizeDelta = inventoryHudRect.sizeDelta;
-        }
-
-        inventoryHudKeyHintRoot = FindChildByName(inventoryHudRoot.transform, "KeyGlyph");
-        if (inventoryHudKeyHintRoot != null)
-        {
-            inventoryHudKeyHintOriginalActive = inventoryHudKeyHintRoot.activeSelf;
-            inventoryHudKeyHintRoot.SetActive(request.ShowInventoryKeyHint);
-        }
-
-        hudTransform.SetParent(rootCanvas.transform, false);
-        hudTransform.SetAsLastSibling();
-        inventoryHudRoot.SetActive(true);
-        inventoryHudButton.RefreshNow();
+        inventoryHudOriginalEnabled = inventoryHudButton.enabled;
         hasInventoryHudPresentation = true;
+
+        // Stop the HUD presenter from reactivating its root while the result screen owns the entry point.
+        inventoryHudButton.enabled = false;
+        inventoryHudRoot.SetActive(false);
     }
 
     private void RestoreInventoryHudPresentation()
     {
+        if (gameOverInventoryButton != null)
+            gameOverInventoryButton.gameObject.SetActive(false);
+
         if (!hasInventoryHudPresentation)
             return;
 
-        if (inventoryHudKeyHintRoot != null)
-            inventoryHudKeyHintRoot.SetActive(inventoryHudKeyHintOriginalActive);
-
         if (inventoryHudRoot != null)
-        {
-            Transform hudTransform = inventoryHudRoot.transform;
-            if (inventoryHudOriginalParent != null)
-            {
-                hudTransform.SetParent(inventoryHudOriginalParent, false);
-                hudTransform.SetSiblingIndex(Mathf.Min(
-                    inventoryHudOriginalSiblingIndex,
-                    inventoryHudOriginalParent.childCount - 1));
-            }
-
-            hudTransform.localPosition = inventoryHudOriginalLocalPosition;
-            hudTransform.localRotation = inventoryHudOriginalLocalRotation;
-            hudTransform.localScale = inventoryHudOriginalLocalScale;
-
-            if (inventoryHudRect != null)
-            {
-                inventoryHudRect.anchorMin = inventoryHudOriginalAnchorMin;
-                inventoryHudRect.anchorMax = inventoryHudOriginalAnchorMax;
-                inventoryHudRect.pivot = inventoryHudOriginalPivot;
-                inventoryHudRect.anchoredPosition = inventoryHudOriginalAnchoredPosition;
-                inventoryHudRect.sizeDelta = inventoryHudOriginalSizeDelta;
-            }
-
             inventoryHudRoot.SetActive(inventoryHudOriginalActive);
-        }
+        if (inventoryHudButton != null)
+            inventoryHudButton.enabled = inventoryHudOriginalEnabled;
 
         hasInventoryHudPresentation = false;
         inventoryHudButton = null;
         inventoryHudRoot = null;
-        inventoryHudOriginalParent = null;
-        inventoryHudRect = null;
-        inventoryHudKeyHintRoot = null;
     }
 
     private static InventoryOpenHudButton ResolveInventoryHudButton()
@@ -658,7 +602,8 @@ public sealed class GameOverPresentationController : MonoBehaviour
         for (int i = 0; i < buttons.Length; i++)
         {
             InventoryOpenHudButton button = buttons[i];
-            if (button == null || !button.gameObject.scene.IsValid())
+            if (button == null || !button.gameObject.scene.IsValid() ||
+                button.GetComponentInParent<GameOverPresentationController>(true) != null)
                 continue;
 
             if (button.isActiveAndEnabled)
@@ -668,24 +613,6 @@ public sealed class GameOverPresentationController : MonoBehaviour
         }
 
         return inactiveCandidate;
-    }
-
-    private static GameObject FindChildByName(Transform root, string objectName)
-    {
-        if (root == null || string.IsNullOrWhiteSpace(objectName))
-            return null;
-
-        if (string.Equals(root.gameObject.name, objectName, System.StringComparison.Ordinal))
-            return root.gameObject;
-
-        for (int i = 0; i < root.childCount; i++)
-        {
-            GameObject found = FindChildByName(root.GetChild(i), objectName);
-            if (found != null)
-                return found;
-        }
-
-        return null;
     }
 
     private static void CenterCameraOnPlayer(Transform playerTransform)
@@ -1235,6 +1162,9 @@ public sealed class GameOverPresentationController : MonoBehaviour
             CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] Return button is not assigned.", this);
         else if (returnButtonLabelText == null)
             CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] Return button label TMP_Text was not found.", this);
+
+        if (gameOverInventoryButton == null)
+            CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] Game-over inventory button is not assigned.", this);
 
         if (returnPresentationGroup == null || returnPlayerImage == null || returnHoleImage == null)
             CapstoneDiagnostics.EditorOnlyLog.LogWarning("[GameOverPresentationController] One or more UI return presentation references are not assigned.", this);

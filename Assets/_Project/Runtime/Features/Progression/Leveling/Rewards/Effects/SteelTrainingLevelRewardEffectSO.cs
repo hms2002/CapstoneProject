@@ -116,7 +116,8 @@ public sealed class SteelTrainingLevelRewardEffectSO : LevelRewardEffectSO
                 ownerKey: "level_reward.steel_training",
                 effectTextOverride: effectText,
                 showStacksOverride: false,
-                showDurationOverride: false);
+                showDurationOverride: false,
+                progressText: state.completed ? null : $"{state.damageCount}/{target}");
         }
 
         void RefreshStatus(bool forceReplace = false)

@@ -297,6 +297,9 @@ public class TreasureChest : MonoBehaviour
     }
 
     public bool TryRefreshLoot()
+        => TryRefreshLoot(null);
+
+    public bool TryRefreshLoot(IReadOnlyList<int> preservedIndices)
     {
         if (!CanRefreshLoot())
             return false;
@@ -305,9 +308,19 @@ public class TreasureChest : MonoBehaviour
         if (lootManager == null)
             return false;
 
-        ChestLootResult result = lootManager.GenerateChestLootResult(BuildLootRequest());
+        var preserved = new HashSet<int>();
+        if (preservedIndices != null)
+            foreach (int index in preservedIndices)
+                if (inventory.Get(index) == null || !preserved.Add(index)) return false;
+        if (preserved.Count > ChestInventory.AcquisitionLimit) return false;
 
-        inventory.Clear();
+        var retainedItems = new List<ScriptableObject>();
+        foreach (int index in preserved) retainedItems.Add(inventory.Get(index));
+        ChestLootResult result = lootManager.GenerateChestLootResult(BuildLootRequest(retainedItems));
+        if (result.Items.Count == 0) return false;
+
+        // Keep the original slot indices and relic levels; retained choices remain provisional.
+        inventory.ClearExcept(preserved);
         FillInventoryWithLoot(result.Items);
         refreshCountUsed++;
         return true;
@@ -344,12 +357,10 @@ public class TreasureChest : MonoBehaviour
         return inventory.TryAdd(item);
     }
 
-    private ChestLootRequest BuildLootRequest()
+    private ChestLootRequest BuildLootRequest(IReadOnlyList<ScriptableObject> retainedItems = null)
     {
-        if (lootMode != ChestLootMode.OverrideProfile || lootOverrideProfile == null)
-            return ChestLootRequest.Default;
-
-        return new ChestLootRequest(default, LootPoolContext.PlayerInventory, lootOverrideProfile);
+        ChestLootOverrideProfile profile = lootMode == ChestLootMode.OverrideProfile ? lootOverrideProfile : null;
+        return new ChestLootRequest(default, LootPoolContext.PlayerInventory, profile, retainedItems);
     }
 
     private void PlayOpenPresentation(GameObject instigator)

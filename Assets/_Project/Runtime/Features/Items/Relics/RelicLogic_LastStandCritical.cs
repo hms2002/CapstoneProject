@@ -16,6 +16,14 @@ public sealed class RelicLogic_LastStandCritical : RelicLogic
     public override void OnEquipped(RelicContext ctx) => Register(ctx);
     public override void OnRestoreAttached(RelicContext ctx) => Register(ctx);
 
+    public override void AppendPreviewModifiers(RelicContext ctx, AttributeDefinition attribute, List<AttributeModifier> results)
+    {
+        if (attribute != critChanceAddAttribute || healthAttribute == null || results == null) return;
+        float health = ctx.ReadPreviewAttribute(healthAttribute);
+        if (health > 0f && health <= EvaluateThreshold(ctx.level))
+            results.Add(new AttributeModifier(ModifierType.Flat, 1f, ctx.token, 0f));
+    }
+
     public override void OnUnequipped(RelicContext ctx)
     {
         if (ctx.owner == null || ctx.token == null)

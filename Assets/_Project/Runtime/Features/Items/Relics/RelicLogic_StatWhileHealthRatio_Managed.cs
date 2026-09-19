@@ -24,6 +24,16 @@ public sealed class RelicLogic_StatWhileHealthRatio_Managed : RelicLogic
         RegisterProc(ctx);
     }
 
+    public override void AppendPreviewModifiers(RelicContext ctx, AttributeDefinition target, List<AttributeModifier> results)
+    {
+        if (target != attribute || healthAttribute == null || maxHealthAttribute == null || results == null) return;
+        float maxHealth = ctx.ReadPreviewAttribute(maxHealthAttribute);
+        float ratio = maxHealth > 0.0001f ? Mathf.Clamp01(ctx.ReadPreviewAttribute(healthAttribute) / maxHealth) : 0f;
+        if (ratio >= Mathf.Clamp01(Mathf.Min(minHealthRatioInclusive, maxHealthRatioInclusive)) &&
+            ratio <= Mathf.Clamp01(Mathf.Max(minHealthRatioInclusive, maxHealthRatioInclusive)))
+            results.Add(new AttributeModifier(modifierType, value, ctx.token, 0f));
+    }
+
     public override void OnUnequipped(RelicContext ctx)
     {
         if (ctx.owner == null || ctx.token == null)

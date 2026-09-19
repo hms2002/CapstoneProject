@@ -37,6 +37,33 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
         RegisterProc(ctx);
     }
 
+    public override void AppendPreviewModifiers(RelicContext ctx, AttributeDefinition attribute, List<AttributeModifier> results)
+    {
+        if (attribute != critChanceAddAttribute || results == null) return;
+        var bindings = ctx.abilitySystem != null && ctx.abilitySystem.DamageProfile != null
+            ? ctx.abilitySystem.DamageProfile.GetStatBindings() : null;
+        float multiplier = 1f;
+        if (bindings != null)
+        {
+            var provider = new AttributeStatProvider(ctx.attributeSet, bindings);
+            float speed = provider.Get(moveSpeedFinalStatId, ctx.ReadPreviewAttribute);
+            if (bindings.TryGetComposite(moveSpeedFinalStatId, out var composite) && composite != null)
+            {
+                float baseSpeed = provider.Get(composite.baseId, ctx.ReadPreviewAttribute);
+                multiplier = baseSpeed > 0f ? Mathf.Max(0f, speed / baseSpeed) : 1f;
+            }
+            else multiplier = speed != 0f ? Mathf.Max(0f, speed) : 1f;
+        }
+        else if (moveSpeedMultiplierAttributeFallback != null)
+        {
+            float speed = ctx.ReadPreviewAttribute(moveSpeedMultiplierAttributeFallback);
+            multiplier = speed != 0f ? Mathf.Max(0f, speed) : 1f;
+        }
+        int steps = Mathf.FloorToInt(Mathf.Max(0f, multiplier - 1f) / Mathf.Max(0.0001f, bonusMoveStep) + 0.00001f);
+        float bonus = Mathf.Max(0, steps) * EvaluateCritPerStep(ctx.level);
+        if (bonus > 0.000001f) results.Add(new AttributeModifier(ModifierType.Flat, bonus, ctx.token, 0f));
+    }
+
     public override void OnUnequipped(RelicContext ctx)
     {
         if (ctx.owner == null || ctx.token == null) return;

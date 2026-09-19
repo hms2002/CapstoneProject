@@ -90,7 +90,7 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
         int defeated = RunOfficerQuestProgress.CountDefeated(RunSessionStore.Data);
         RefreshOfficerQuest(defeated);
         string text = prototypeTutorial != null && prototypeTutorial.isActiveAndEnabled
-            ? prototypeTutorial.ProgressText : ResolveMainQuestText(scene.name, defeated, mainQuestRoutes);
+            ? null : ResolveMainQuestText(scene.name, defeated, mainQuestRoutes);
         bool visible = !string.IsNullOrEmpty(text);
         if (lastMainText != text && mainDescription != null) mainDescription.text = text;
         lastMainText = text;
@@ -223,12 +223,15 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
         if (officerDescription != null) officerDescription.gameObject.SetActive(false);
         lastRunActive = RunSessionStore.IsRunActive;
         BindPlayer(PlayerRuntimeRegistry.CurrentPlayer);
+        // Procedural delivery points may appear after the HUD is enabled.
+        InvokeRepeating(nameof(RefreshParcel), 0.5f, 0.5f);
         RefreshMainQuest();
         RefreshCombatVisibility();
     }
 
     private void OnDisable()
     {
+        CancelInvoke(nameof(RefreshParcel));
         combatMotion?.Kill();
         combatMotion = null;
         combatHidden = false;
@@ -278,7 +281,18 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
     private void RefreshParcel()
     {
         if (RunSessionStore.IsRunActive && inventory != null && inventory.CountRelicsOfType<ParcelRelicDefinition>() > 0)
-            ShowQuest(ParcelId, "파셀의 소포 배달", "다음 층으로 소포를 배달하세요!");
+        {
+            string description = "다음 층으로 소포를 배달하세요!";
+            Scene scene = SceneManager.GetActiveScene();
+            foreach (ParcelDeliveryPointInteractable point in
+                FindObjectsByType<ParcelDeliveryPointInteractable>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (point.gameObject.scene != scene) continue;
+                description = "현재 구역 어딘가에 있는 소포 배달 장소를 찾아 배달하자.";
+                break;
+            }
+            ShowQuest(ParcelId, "파셀의 소포 배달", description);
+        }
         else
             RemoveQuest(ParcelId);
     }

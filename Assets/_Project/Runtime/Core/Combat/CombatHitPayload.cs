@@ -78,7 +78,10 @@ namespace UnityGAS
                 return false;
 
             if (CombatInvulnerabilityUtil.IsDamageSuppressed(target, payload.damageEffect as GE_Damage_Spec))
+            {
+                CombatInvulnerabilityUtil.ShowEvadeFeedback(target);
                 return false;
+            }
 
             CombatDamageAction.ApplyDamageAndEmitHit(
                 system: payload.sourceSystem,

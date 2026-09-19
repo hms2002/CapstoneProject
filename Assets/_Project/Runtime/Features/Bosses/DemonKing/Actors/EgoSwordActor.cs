@@ -54,7 +54,7 @@ public sealed class EgoSwordActor : MonoBehaviour
     [Header("Recall")]
     [SerializeField, Min(0f)] private float recallLiftHeight = 2.2f;
     [SerializeField, Min(0f)] private float recallLiftSeconds = 0.16f;
-    [SerializeField, Min(0f)] private float recallLiftHoldSeconds = 0.18f;
+    [SerializeField, Min(0f)] private float recallLiftHoldSeconds = 0.84f;
     [SerializeField, Min(0f)] private float recallReturnMinimumSeconds = 0.35f;
 
     [Header("Throw")]
@@ -150,6 +150,10 @@ public sealed class EgoSwordActor : MonoBehaviour
     private bool swordAnimationDefaultsCaptured;
     private bool auraControllerMissingLogged;
     private bool auraControllerInvalidLogged;
+    private IAttackTelegraphHandle recallPathWarning;
+    private IAttackTelegraphHandle recallArrivalWarning;
+    private Vector2 recallWarningStart;
+    private float recallWarningDuration;
     private bool recallMovementActive;
     private bool recallAuraReady;
     private bool recallLiftReady;
@@ -201,6 +205,9 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (owner != null && state == SwordState.Recalling)
+            UpdateRecallWarnings();
+
         if (owner == null || state != SwordState.Held)
             return;
 
@@ -423,6 +430,11 @@ public sealed class EgoSwordActor : MonoBehaviour
         flyingSpeed = Mathf.Max(0.01f, speed);
         ResetRecallReadiness();
         state = SwordState.Recalling;
+        recallWarningStart = (Vector2)transform.position + Vector2.up * Mathf.Max(0f, recallLiftHeight);
+        recallWarningDuration = EstimateRecallTimeoutSeconds(speed);
+        IAttackTelegraphPresenter telegraph = owner != null ? owner.GetTelegraphService() : null;
+        recallPathWarning = telegraph?.SpawnDetachedView(CreateRecallPathWarning());
+        recallArrivalWarning = telegraph?.SpawnDetachedView(CreateRecallArrivalWarning());
         PlayRecallAuraStartup();
         StartRecallLiftMotion();
     }
@@ -616,8 +628,40 @@ public sealed class EgoSwordActor : MonoBehaviour
         recallLiftRoutine = null;
     }
 
+    private AttackTelegraphSpec CreateRecallPathWarning()
+    {
+        Vector2 start = recallMovementActive ? (Vector2)transform.position : recallWarningStart;
+        Vector2 target = ResolveRecallTargetPosition();
+        Vector2 delta = target - start;
+        float diameter = contactRadius * 2f;
+        // Extend both ends by the contact radius to cover the moving circle's footprint.
+        return AttackTelegraphSpecUtility.WithThinWarningOutline(
+            AttackTelegraphSpec.CreateRectangle((start + target) * 0.5f,
+                new Vector2(delta.magnitude + diameter, diameter),
+                Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg,
+                recallWarningDuration, owner != null ? owner.DefaultWarningStyle : null));
+    }
+
+    private AttackTelegraphSpec CreateRecallArrivalWarning()
+    {
+        // Arrival damage uses OverlapCircle, so do not squash this into a top-down ellipse.
+        return AttackTelegraphSpecUtility.WithThinWarningOutline(
+            AttackTelegraphSpec.CreateCircle(ResolveRecallTargetPosition(), recallImpactDiameter,
+                recallWarningDuration, owner != null ? owner.DefaultWarningStyle : null));
+    }
+
+    private void UpdateRecallWarnings()
+    {
+        recallPathWarning?.UpdateGeometry(CreateRecallPathWarning());
+        recallArrivalWarning?.UpdateGeometry(CreateRecallArrivalWarning());
+    }
+
     private void ResetRecallReadiness()
     {
+        recallPathWarning?.Release();
+        recallPathWarning = null;
+        recallArrivalWarning?.Release();
+        recallArrivalWarning = null;
         recallMovementActive = false;
         recallAuraReady = false;
         recallLiftReady = false;

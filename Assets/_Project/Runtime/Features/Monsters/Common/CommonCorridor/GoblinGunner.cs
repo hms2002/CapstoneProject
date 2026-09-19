@@ -165,7 +165,7 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource, IMobProjectile
         return true;
     }
 
-    public void FireProjectile(ShotContext context)
+    public void FireProjectile(ShotContext context, System.Action<LightBeadProjectile2D> onSpawned = null)
     {
         if (burstCadence.IsResting(Time.time))
             return;
@@ -205,6 +205,7 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource, IMobProjectile
             speed = context.ProjectileSpeed
         });
         burstCadence.RecordShot(Time.time);
+        onSpawned?.Invoke(projectile);
     }
 
     private void SpawnMuzzleEffect(AbilityLogic_GoblinGunnerShot logic)
@@ -302,7 +303,8 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
         Cancel();
     }
 
-    public IEnumerator Run(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
+    public IEnumerator Run(AbilitySystem system, AbilitySpec spec, GameObject initialTarget,
+        System.Action<LightBeadProjectile2D> onProjectileSpawned = null)
     {
         if (owner == null) yield break;
         if (!owner.TryBuildShotContext(system, spec, initialTarget, out GoblinGunner.ShotContext context)) yield break;
@@ -334,7 +336,7 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
 
             HideWarning();
             CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.Attack);
-            owner.FireProjectile(context);
+            owner.FireProjectile(context, onProjectileSpawned);
         }
         finally
         {

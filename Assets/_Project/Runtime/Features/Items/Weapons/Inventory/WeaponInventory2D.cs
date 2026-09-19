@@ -370,6 +370,19 @@ public class WeaponInventory2D : MonoBehaviour
         return true;
     }
 
+    public WeaponDefinition PreviewEquippedAfterAcquisitions(IReadOnlyList<(int slot, WeaponDefinition weapon)> acquisitions)
+    {
+        if (acquisitions == null || acquisitions.Count == 0) return ActiveWeapon;
+        var projectedSlots = (WeaponDefinition[])slots.Clone();
+        foreach (var acquisition in acquisitions)
+            if (IsValidSlot(acquisition.slot)) projectedSlots[acquisition.slot] = acquisition.weapon;
+        if (IsSlotAccessible(ActiveIndex) && projectedSlots[ActiveIndex] != null)
+            return projectedSlots[ActiveIndex];
+        for (int i = 0; i < projectedSlots.Length; i++)
+            if (IsSlotAccessible(i) && projectedSlots[i] != null) return projectedSlots[i];
+        return null;
+    }
+
     public void Equip(int slotIndex)
     {
         if (!IsValidSlot(slotIndex)) return;
@@ -551,6 +564,88 @@ public class WeaponInventory2D : MonoBehaviour
                 return false;
         }
 
+        return true;
+    }
+
+    public bool PreviewChestSelection(IReadOnlyList<WeaponDefinition> incoming, out int[] destinations)
+    {
+        destinations = null;
+        if (incoming == null || incoming.Count == 0 || incoming.Count > 2 || slots.Length != 2)
+            return false;
+
+        destinations = incoming.Count == 2 ? new[] { 0, 1 } : new[] { FindEmptySlot() };
+        if (destinations[0] < 0) destinations[0] = 0;
+        var result = (WeaponDefinition[])slots.Clone();
+        for (int i = 0; i < incoming.Count; i++)
+        {
+            int destination = destinations[i];
+            if (incoming[i] == null || (slots[destination] != null && dropPrefab == null)) return false;
+            if (destination == ActiveIndex && IsActiveWeaponChangeBlocked()) return false;
+            result[destination] = incoming[i];
+        }
+        // Validate the final pair, not the old pair that is about to leave the inventory.
+        return !disallowDuplicateWeapons || result[0] == null || result[1] == null ||
+            string.IsNullOrEmpty(result[0].weaponId) || result[0].weaponId != result[1].weaponId;
+    }
+
+    public bool TryAcquireChestSelection(IReadOnlyList<WeaponDefinition> incoming)
+    {
+        if (abilityBinder == null || equipRuntime == null ||
+            !PreviewChestSelection(incoming, out int[] destinations)) return false;
+
+        var outgoing = new WeaponDefinition[destinations.Length];
+        var payloads = new WeaponPersistentStatePayload[destinations.Length];
+        int previousActive = ActiveIndex;
+        bool replacesActive = false;
+        for (int i = 0; i < destinations.Length; i++)
+        {
+            outgoing[i] = slots[destinations[i]];
+            payloads[i] = CaptureWeaponPersistentState(outgoing[i]);
+            replacesActive |= destinations[i] == previousActive;
+        }
+
+        if (replacesActive)
+        {
+            CleanupTransientAbilitiesForWeaponChange();
+            var unequip = equipRuntime.Unequip();
+            SyncActiveStateFromRuntime();
+            if (unequip.Changed)
+                OnEquippedChanged?.Invoke(unequip.PreviousIndex, unequip.NewIndex, unequip.PreviousWeapon, unequip.NewWeapon);
+        }
+
+        // Remove old grants as a batch, then publish only the completed slot arrangement.
+        // Unchanged slots retain their runtime data. A new copy of the same definition gets new data.
+        EnsureRuntimeSlotCapacity();
+        for (int i = 0; i < outgoing.Length; i++)
+            if (outgoing[i] != null) abilityBinder.OnWeaponRemoved(outgoing[i]);
+        for (int i = 0; i < destinations.Length; i++)
+        {
+            slots[destinations[i]] = incoming[i];
+            runtimeSlots[destinations[i]] = CreateRuntimeDataForWeapon(incoming[i]);
+        }
+        runtimeCoordinator?.Rebuild(slots, runtimeSlots);
+        for (int i = 0; i < incoming.Count; i++) abilityBinder.OnWeaponAdded(incoming[i]);
+        for (int i = 0; i < destinations.Length; i++)
+            OnSlotChanged?.Invoke(destinations[i], outgoing[i], incoming[i]);
+        if (replacesActive || ActiveIndex < 0)
+        {
+            int equipIndex = IsSlotAccessible(previousActive) && slots[previousActive] != null
+                ? previousActive : FindFirstAccessibleFilledSlot();
+            if (equipIndex >= 0) Equip(equipIndex);
+        }
+        NotifyInventoryChanged();
+
+        var resolver = new GroundTileDropPositionResolver();
+        var positions = resolver.GetForwardGroundPositions(transform.position, transform);
+        int dropIndex = 0;
+        for (int i = 0; i < outgoing.Length; i++)
+        {
+            if (outgoing[i] == null) continue;
+            Vector3 landing = positions.Count > 0 ? positions[dropIndex++ % positions.Count] : transform.position;
+            var drop = Instantiate(dropPrefab, landing, Quaternion.identity);
+            drop.SetWeapon(outgoing[i], payloads[i]);
+            drop.PlayDrop(transform.position, landing);
+        }
         return true;
     }
 

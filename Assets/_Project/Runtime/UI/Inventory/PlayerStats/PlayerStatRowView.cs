@@ -33,6 +33,9 @@ public sealed class PlayerStatRowView : MonoBehaviour
             labelText.text = definition.Label;
 
         if (valueText != null)
+        {
+            valueText.richText = true;
             valueText.text = value;
+        }
     }
 }

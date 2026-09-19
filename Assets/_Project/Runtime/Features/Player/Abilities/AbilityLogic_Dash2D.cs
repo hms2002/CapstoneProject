@@ -13,6 +13,8 @@ namespace UnityGAS.Sample
     [CreateAssetMenu(fileName = "AL_Dash2D", menuName = "GAS/Samples/AbilityLogic/Dash 2D")]
     public class AbilityLogic_Dash2D : AbilityLogic
     {
+        public const string TutorialForwardKey = "Dash2D.TutorialForward";
+        public const string InvulnerableKey = "Dash2D.Invulnerable";
         private const string MotionVersionKey = "Dash2D.MotionVersion";
 
         public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -30,7 +32,8 @@ namespace UnityGAS.Sample
             float distance = Mathf.Max(0f, data.distance);
             if (distance <= 0.0001f) yield break;
 
-            Vector2 dir = ResolveMoveDirection(system, data.useAimWhenNoMoveInput);
+            Vector2 dir = spec.GetInt(TutorialForwardKey, 0) != 0
+                ? Vector2.up : ResolveMoveDirection(system, data.useAimWhenNoMoveInput);
             if (dir.sqrMagnitude < 0.0001f) yield break;
             dir.Normalize();
 
@@ -55,7 +58,11 @@ namespace UnityGAS.Sample
             {
                 if (tags != null)
                 {
-                    if (data.invulnerableTag != null) tags.AddTag(data.invulnerableTag, 1);
+                    if (data.invulnerableTag != null)
+                    {
+                        tags.AddTag(data.invulnerableTag, 1);
+                        spec.SetInt(InvulnerableKey, 1);
+                    }
                     if (data.aimLockedTag != null) tags.AddTag(data.aimLockedTag, 1);
                 }
 
@@ -152,6 +159,8 @@ namespace UnityGAS.Sample
             var motion = system.GetComponent<AbilityMotionController2D>();
 
             CancelOwnedMotion(motion, spec);
+            spec.SetInt(TutorialForwardKey, 0);
+            spec.SetInt(InvulnerableKey, 0);
 
             if (tags != null)
             {

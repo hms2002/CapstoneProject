@@ -177,10 +177,14 @@ public class ChestInventory
     }
 
     public void Clear()
+        => ClearExcept(null);
+
+    public void ClearExcept(ISet<int> preservedIndices)
     {
         EnsureSize();
         for (int i = 0; i < slots.Count; i++)
         {
+            if (preservedIndices != null && preservedIndices.Contains(i)) continue;
             slots[i].item = null;
             slots[i].relicLevel = 0;
         }

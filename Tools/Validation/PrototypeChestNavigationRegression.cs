@@ -41,6 +41,12 @@ public static class PrototypeChestNavigationRegression
         var screen = screenGo.AddComponent<ChestScreen>();
         var grid = Host("Grid");
         var selectedRoot = Host("Selected");
+        for (int i = 0; i < 2; i++)
+        {
+            var cell = Host("SelectedItemSlot " + i);
+            cell.transform.SetParent(selectedRoot.transform, false);
+            ((RectTransform)cell.transform).sizeDelta = new Vector2(72, 72);
+        }
         var item = ScriptableObject.CreateInstance<ConsumableDefinition>();
         var inventory = new ChestInventory(2);
         inventory.Set(0, item);
@@ -115,7 +121,7 @@ public static class PrototypeChestNavigationRegression
         Call(guide, "OnChestOpened", chest);
         Check(backend.Blocked && !events.sendNavigationEvents && shield.activeSelf, "Guidance did not acquire all input restrictions");
         // Exercise unscaled presentation independently of the inactive screen fixture's LateUpdate.
-        Call(guide, "LayoutSpotlight", slots[0].SlotRect);
+        Call(guide, "LayoutSpotlight", slots[0].SlotRect, false);
         Set(guide, "showing", true);
         Call(guide, "TickPresentation", .06f);
         float openingAlpha = icon.canvasRenderer.GetAlpha();

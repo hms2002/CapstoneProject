@@ -32,6 +32,7 @@ namespace UnityGAS
 
             if (!ignoreInvulnerability && CombatInvulnerabilityUtil.IsDamageSuppressed(target, damageEffect))
             {
+                CombatInvulnerabilityUtil.ShowEvadeFeedback(target);
                 LogDebug(logDebug, $"blocked: invulnerability suppressed. target={target.name}", target);
                 return;
             }

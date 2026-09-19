@@ -52,6 +52,17 @@ public sealed class LootSpawnService
         return pickup;
     }
 
+    public WorldItemPickup2D SpawnPresentationCopy(Vector3 origin, Vector3 landingPosition, ScriptableObject item, int relicLevel)
+    {
+        WorldItemPickup2D copy = InstantiateWorldPickup(origin, item, relicLevel);
+        if (copy == null) return null;
+
+        copy.MakePresentationOnly();
+        if (!WorldItemDropAnimationPlayback.TryPlayDrop(copy.gameObject, origin, landingPosition, null))
+            copy.transform.position = landingPosition;
+        return copy;
+    }
+
     public void SpawnFieldHealPickup(Vector3 position)
     {
         if (fieldItemPrefab == null)

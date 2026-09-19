@@ -72,12 +72,13 @@ internal sealed class ChestLootGenerationService
 
         var drops = new List<ScriptableObject>();
         HashSet<string> banList = poolService.BuildWeaponExclusionSet(request.WeaponExclusionContext);
+        CountRetainedItems(request.RetainedItems, banList, out int retainedWeapons, out int retainedRelics, out int retainedConsumables);
 
         int weaponCount = rollService.PickCountInProfile(
             weaponCountProfile,
             chestModifiers.chestWeaponMinBonus,
             chestModifiers.chestWeaponMaxBonus);
-        for (int i = 0; i < weaponCount; i++)
+        for (int i = retainedWeapons; i < weaponCount; i++)
         {
             WeaponDefinition weapon = poolService.GetRandomTreasureChestWeapon(banList);
             if (weapon == null)
@@ -91,7 +92,7 @@ internal sealed class ChestLootGenerationService
             relicCountProfile,
             chestModifiers.chestRelicMinBonus,
             chestModifiers.chestRelicMaxBonus);
-        for (int i = 0; i < relicCount; i++)
+        for (int i = retainedRelics; i < relicCount; i++)
         {
             RelicDefinition relic = relicProvider != null ? relicProvider.Invoke() : null;
             if (relic != null)
@@ -99,7 +100,7 @@ internal sealed class ChestLootGenerationService
         }
 
         int consumableCount = rollService.PickCountInProfile(consumableCountProfile);
-        for (int i = 0; i < consumableCount; i++)
+        for (int i = retainedConsumables; i < consumableCount; i++)
         {
             ConsumableDefinition consumable = poolService.GetRandomConsumable();
             if (consumable != null)
@@ -114,9 +115,10 @@ internal sealed class ChestLootGenerationService
         ChestLootOverrideProfile profile = request.OverrideProfile;
         var drops = new List<ScriptableObject>();
         HashSet<string> banList = poolService.BuildWeaponExclusionSet(request.WeaponExclusionContext);
+        CountRetainedItems(request.RetainedItems, banList, out int retainedWeapons, out int retainedRelics, out int retainedConsumables);
 
         int weaponCount = rollService.PickCountInProfile(profile.WeaponCountProfile);
-        for (int i = 0; i < weaponCount; i++)
+        for (int i = retainedWeapons; i < weaponCount; i++)
         {
             WeaponDefinition weapon = poolService.GetRandomTreasureChestWeapon(banList);
             if (weapon == null)
@@ -127,14 +129,15 @@ internal sealed class ChestLootGenerationService
         }
 
         int relicCount = rollService.PickCountInProfile(profile.RelicCountProfile);
-        for (int i = 0; i < relicCount; i++)
+        for (int i = retainedRelics; i < relicCount; i++)
         {
             RelicDefinition relic = relicProvider != null ? relicProvider.Invoke() : null;
             if (relic != null)
                 drops.Add(relic);
         }
 
-        int consumableCount = profile.ResolveConsumableCount(drops.Count, rollService);
+        int retainedCount = retainedWeapons + retainedRelics + retainedConsumables;
+        int consumableCount = profile.ResolveConsumableCount(drops.Count + retainedCount, rollService, retainedConsumables);
         for (int i = 0; i < consumableCount; i++)
         {
             ConsumableDefinition consumable = poolService.GetRandomConsumable();
@@ -143,6 +146,23 @@ internal sealed class ChestLootGenerationService
         }
 
         return new ChestLootResult(drops);
+    }
+
+    private static void CountRetainedItems(IReadOnlyList<ScriptableObject> retained, HashSet<string> weaponExclusions,
+        out int weapons, out int relics, out int consumables)
+    {
+        weapons = relics = consumables = 0;
+        if (retained == null) return;
+        foreach (ScriptableObject item in retained)
+        {
+            if (item is WeaponDefinition weapon)
+            {
+                weapons++;
+                weaponExclusions.Add(weapon.weaponId);
+            }
+            else if (item is RelicDefinition) relics++;
+            else if (item is ConsumableDefinition) consumables++;
+        }
     }
 }
 
@@ -170,12 +190,12 @@ public sealed class ChestLootOverrideProfile
     public CountRangeWeightProfile WeaponCountProfile => weaponCountProfile;
     public CountRangeWeightProfile RelicCountProfile => relicCountProfile;
 
-    public int ResolveConsumableCount(int currentLootCount, LootRollService rollService)
+    public int ResolveConsumableCount(int currentLootCount, LootRollService rollService, int retainedConsumables = 0)
     {
         if (fillRemainingWithConsumables)
             return Mathf.Max(0, totalLootCount - currentLootCount);
 
-        return rollService != null ? rollService.PickCountInProfile(consumableCountProfile) : 0;
+        return rollService != null ? Mathf.Max(0, rollService.PickCountInProfile(consumableCountProfile) - retainedConsumables) : 0;
     }
 
     private static CountRangeWeightProfile CreateFixedCountProfile(int count)
@@ -215,6 +235,7 @@ public readonly struct ChestLootRequest
 
     public ChestRunModifierDelta ExtraModifiers { get; }
     public ChestLootOverrideProfile OverrideProfile { get; }
+    public IReadOnlyList<ScriptableObject> RetainedItems { get; }
     public bool HasOverrideProfile => OverrideProfile != null;
     public LootPoolContext WeaponExclusionContext =>
         hasWeaponExclusionContext ? weaponExclusionContext : LootPoolContext.PlayerInventory;
@@ -232,10 +253,12 @@ public readonly struct ChestLootRequest
     public ChestLootRequest(
         ChestRunModifierDelta extraModifiers,
         LootPoolContext weaponExclusionContext,
-        ChestLootOverrideProfile overrideProfile)
+        ChestLootOverrideProfile overrideProfile,
+        IReadOnlyList<ScriptableObject> retainedItems = null)
     {
         ExtraModifiers = extraModifiers;
         OverrideProfile = overrideProfile;
+        RetainedItems = retainedItems;
         this.weaponExclusionContext = weaponExclusionContext;
         hasWeaponExclusionContext = true;
     }

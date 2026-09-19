@@ -81,7 +81,8 @@ public sealed class UnextinguishedFireLevelRewardEffectSO : LevelRewardEffectSO
                 ownerKey: "level_reward.unextinguished_fire",
                 effectTextOverride: effectText,
                 showStacksOverride: false,
-                showDurationOverride: false);
+                showDurationOverride: false,
+                progressText: state.completed ? null : $"{state.burnKillCount}/{target}");
         }
 
         void RefreshStatus(bool forceReplace = false)

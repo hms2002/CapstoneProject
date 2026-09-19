@@ -26,7 +26,7 @@ namespace UnityGAS
             if (system.AttributeSet == null) yield break;
 
             Vector2 dir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
-            Vector2 center = PlayerAttackOrigin.Resolve(system, dir);
+            Vector2 center = PlayerAttackOrigin.Resolve(system, dir) + dir * data.forwardOffset;
 
             IStatProvider statProvider = AbilityStatProviderFactory.Create(system);
 

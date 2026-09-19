@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Node_639065978584483029
   m_EditorClassIdentifier: 
   nodeID: 902021092
-  upgradeName: Up_1_-1
+  upgradeName: "상자 유물 보상 추가"
   description: "\uC0C1\uC790 \uBCF4\uC0C1\uC5D0 \uC720\uBB3C 1\uAC1C \uCD94\uAC00
     \uB4F1\uC7A5"
   icon: {fileID: 6936310560564106424, guid: cd07fd15fcb2523438505c47645741ff, type: 3}

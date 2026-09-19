@@ -42,6 +42,13 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
     private RectTransform rectTransform;
     private StatusHudEntry currentEntry;
     private bool isPointerHovering;
+    private bool progressLayoutActive;
+    private Vector2 originalStackAnchorMin, originalStackAnchorMax, originalStackOffsetMin, originalStackOffsetMax;
+    private TextAlignmentOptions originalStackAlignment;
+    private float originalStackFontSize, originalStackOutlineWidth;
+    private Color32 originalStackOutlineColor;
+    private Color originalStackColor;
+
 
     private void Awake()
     {
@@ -75,7 +82,10 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
             ? highlightedIconColor
             : iconColor;
 
-        stackText.text = entry.ShowStacks && entry.StackCount > 0 ? entry.StackCount.ToString() : string.Empty;
+        bool hasProgress = !string.IsNullOrWhiteSpace(entry.ProgressText);
+        SetProgressLayout(hasProgress);
+        stackText.text = hasProgress ? entry.ProgressText
+            : entry.ShowStacks && entry.StackCount > 0 ? entry.StackCount.ToString() : string.Empty;
         durationText.text = entry.ShowDuration && entry.RemainingTime > 0f
             ? entry.RemainingTime.ToString("0.0")
             : string.Empty;
@@ -93,6 +103,48 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
 
         if (isPointerHovering && UIManager.Instance != null)
             UIManager.Instance.ShowHover(StatusHudTooltipView.Instance, rectTransform, currentEntry);
+    }
+
+    private void SetProgressLayout(bool enabled)
+    {
+        if (progressLayoutActive == enabled)
+            return;
+
+        RectTransform textRect = stackText.rectTransform;
+        if (enabled)
+        {
+            originalStackAnchorMin = textRect.anchorMin;
+            originalStackAnchorMax = textRect.anchorMax;
+            originalStackOffsetMin = textRect.offsetMin;
+            originalStackOffsetMax = textRect.offsetMax;
+            originalStackAlignment = stackText.alignment;
+            originalStackFontSize = stackText.fontSize;
+            originalStackColor = stackText.color;
+            originalStackOutlineColor = stackText.outlineColor;
+            originalStackOutlineWidth = stackText.outlineWidth;
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = new Vector2(1f, 1f);
+            textRect.offsetMax = new Vector2(-1f, -1f);
+            stackText.alignment = TextAlignmentOptions.Center;
+            stackText.fontSize = Mathf.Max(13f, originalStackFontSize);
+            stackText.color = Color.white;
+            stackText.outlineColor = Color.black;
+            stackText.outlineWidth = 0.2f;
+        }
+        else
+        {
+            textRect.anchorMin = originalStackAnchorMin;
+            textRect.anchorMax = originalStackAnchorMax;
+            textRect.offsetMin = originalStackOffsetMin;
+            textRect.offsetMax = originalStackOffsetMax;
+            stackText.alignment = originalStackAlignment;
+            stackText.fontSize = originalStackFontSize;
+            stackText.color = originalStackColor;
+            stackText.outlineColor = originalStackOutlineColor;
+            stackText.outlineWidth = originalStackOutlineWidth;
+        }
+        progressLayoutActive = enabled;
     }
 
     public void OnPointerEnter(PointerEventData eventData)

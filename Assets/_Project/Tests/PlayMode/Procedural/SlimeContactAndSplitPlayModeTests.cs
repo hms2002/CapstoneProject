@@ -5,12 +5,14 @@ using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using UnityEngine.Tilemaps;
 using Object = UnityEngine.Object;
 
 /// <summary>Verifies lower-body charge contact and collision-safe split starts/landings and physics restoration.</summary>
 public sealed class SlimeContactAndSplitPlayModeTests
 {
     private readonly List<GameObject> objects = new();
+    private readonly List<Tile> tiles = new();
     private GameObject child;
     private Rigidbody2D body;
     private CapsuleCollider2D capsule;
@@ -34,6 +36,8 @@ public sealed class SlimeContactAndSplitPlayModeTests
     {
         for (int i = objects.Count - 1; i >= 0; i--) if (objects[i] != null) Object.DestroyImmediate(objects[i]);
         objects.Clear();
+        foreach (Tile tile in tiles) Object.DestroyImmediate(tile);
+        tiles.Clear();
     }
 
     private GameObject Create(string name)
@@ -56,6 +60,64 @@ public sealed class SlimeContactAndSplitPlayModeTests
 
     private SlimeSplitPlacement2D Planner(MonsterRoomArea2D room = null) =>
         new(child, null, 1 << 30, 0.08f, 8, room);
+
+    private TilemapPathfinder2D TileFinder(params Vector3Int[] cells)
+    {
+        var grid = Create("Grid").AddComponent<Grid>();
+        var mapObject = Create("Ground");
+        mapObject.transform.SetParent(grid.transform, false);
+        var map = mapObject.AddComponent<Tilemap>();
+        var tile = ScriptableObject.CreateInstance<Tile>();
+        tiles.Add(tile);
+        foreach (Vector3Int cell in cells) map.SetTile(cell, tile);
+        var finder = grid.gameObject.AddComponent<TilemapPathfinder2D>();
+        typeof(TilemapPathfinder2D).GetField("grid", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(finder, grid);
+        typeof(TilemapPathfinder2D).GetField("groundTilemap", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(finder, map);
+        return finder;
+    }
+
+    [Test]
+    public void TileLandingUsesDistinctAuthoredCenters()
+    {
+        var finder = TileFinder(Vector3Int.zero, Vector3Int.right, Vector3Int.left);
+        var reserved = new HashSet<Vector2>();
+        Vector2 origin = new Vector2(0.5f, 0.5f);
+        Assert.IsTrue(Planner().TryResolveTile(origin, Vector2.right, finder, reserved, out _, out var first));
+        Assert.AreEqual(new Vector2(1.5f, 0.5f), first);
+        Assert.IsTrue(Planner().TryResolveTile(origin, Vector2.right, finder, reserved, out _, out var second));
+        Assert.AreNotEqual(first, second);
+        Assert.AreEqual(0.5f, second.x - Mathf.Floor(second.x));
+        Assert.AreEqual(0.5f, second.y - Mathf.Floor(second.y));
+    }
+
+    [Test]
+    public void TileLandingRejectsThinWallEvenWhenDestinationIsClear()
+    {
+        capsule.size = new Vector2(0.6f, 0.4f);
+        var finder = TileFinder(Vector3Int.zero, Vector3Int.right);
+        Wall(new Vector2(1f, 0.5f), new Vector2(0.05f, 8f));
+        Assert.IsTrue(Planner().TryResolveTile(new Vector2(0.5f, 0.5f), Vector2.right,
+            finder, new HashSet<Vector2>(), out _, out var landing));
+        Assert.AreEqual(new Vector2(0.5f, 0.5f), landing);
+    }
+
+    [Test]
+    public void TileLandingFailsWhenOnlyGroundCellIsReserved()
+    {
+        var finder = TileFinder(Vector3Int.zero);
+        var origin = new Vector2(0.5f, 0.5f);
+        Assert.IsFalse(Planner().TryResolveTile(origin, Vector2.right, finder,
+            new HashSet<Vector2> { origin }, out _, out _));
+    }
+
+    [Test]
+    public void TileLandingRequiresGridAndGround()
+    {
+        Assert.IsFalse(Planner().TryResolveTile(Vector2.zero, Vector2.right, null,
+            new HashSet<Vector2>(), out _, out _));
+        Assert.IsFalse(Planner().TryResolveTile(Vector2.zero, Vector2.right, TileFinder(),
+            new HashSet<Vector2>(), out _, out _));
+    }
 
     private void AssertSafe(Vector2 position, params Collider2D[] walls)
     {

@@ -58,6 +58,23 @@ namespace UnityGAS
             dirty = true;
         }
 
+        // Detached, unticked copy for acquisition previews. No live callbacks or modifier timers are changed.
+        internal AttributeValue CreatePreviewCopy()
+        {
+            var copy = new AttributeValue(Definition);
+            copy.BaseValue = BaseValue;
+            copy.CurrentValue = CurrentValue;
+            copy.keepBaseWithinClamp = keepBaseWithinClamp;
+            foreach (var modifier in modifiers)
+            {
+                if (modifier == null) continue;
+                var cloned = new AttributeModifier(modifier.Type, modifier.Value, modifier.Source, modifier.Duration);
+                cloned.Update(modifier.Duration - modifier.TimeRemaining);
+                copy.modifiers.Add(cloned);
+            }
+            return copy;
+        }
+
         /// <summary>
         /// 책임 : 이 AttributeValue가 재계산 시 base 값까지 clamp 영역 안으로 정규화할지 결정한다.
         /// Health처럼 상태형 값은 숨은 base 초과분이 남지 않도록 true로 바인딩한다.

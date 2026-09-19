@@ -363,6 +363,25 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     }
 
     /// <summary>지정한 셀이 이동 가능한 셀인지 판정합니다.</summary>
+    public bool TryGetWalkableCellCenter(Vector2 reference, Vector2Int offset,
+        MonsterNavigationFootprint2D footprint, out Vector2 center)
+    {
+        center = default;
+        // Placement requires authored tiles; navigation's virtual-grid fallback is not a landing surface.
+        if (grid == null) return false;
+        Vector2Int cell = WorldToCell(reference) + offset;
+        bool hasGroundMap = false;
+        bool hasTile = TryGroundTilemapHasTile(groundTilemap, (Vector3Int)cell, ref hasGroundMap);
+        if (additionalGroundTilemaps != null)
+            foreach (Tilemap map in additionalGroundTilemaps)
+                hasTile |= TryGroundTilemapHasTile(map, (Vector3Int)cell, ref hasGroundMap);
+        foreach (Tilemap map in runtimeGroundTilemaps)
+            hasTile |= TryGroundTilemapHasTile(map, (Vector3Int)cell, ref hasGroundMap);
+        if (!hasTile || !IsWalkable(cell, ResolveFootprint(footprint))) return false;
+        center = CellToWorld(cell);
+        return true;
+    }
+
     private bool IsWalkable(Vector2Int cell, MonsterNavigationFootprint2D footprint)
     {
         if (!HasGroundTile(cell))

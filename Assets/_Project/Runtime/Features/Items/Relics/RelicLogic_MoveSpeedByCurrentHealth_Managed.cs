@@ -41,6 +41,14 @@ public class RelicLogic_MoveSpeedByCurrentHealth_Managed : RelicLogic
         RegisterProc(ctx);
     }
 
+    public override void AppendPreviewModifiers(RelicContext ctx, AttributeDefinition attribute, List<AttributeModifier> results)
+    {
+        if (attribute != moveSpeedAttribute || healthAttribute == null || results == null) return;
+        float bonus = EvaluatePercentBonus(Mathf.Max(1, ctx.level), ctx.ReadPreviewAttribute(healthAttribute));
+        if (Mathf.Abs(bonus) > 0.000001f)
+            results.Add(new AttributeModifier(ModifierType.Percent, bonus, ctx.token, 0f));
+    }
+
     public override void OnUnequipped(RelicContext ctx)
     {
         if (ctx.owner == null || ctx.token == null) return;

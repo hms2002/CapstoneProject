@@ -223,7 +223,10 @@ public static class CombatDamageAction
             return;
 
         if (CombatInvulnerabilityUtil.IsDamageSuppressed(target, damageEffect as GE_Damage_Spec))
+        {
+            CombatInvulnerabilityUtil.ShowEvadeFeedback(target);
             return;
+        }
 
         if (CombatEvasionUtil.TryRollEvasion(target))
         {

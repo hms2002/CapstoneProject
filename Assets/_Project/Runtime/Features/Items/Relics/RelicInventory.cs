@@ -743,6 +743,75 @@ public class RelicInventory : MonoBehaviour
         relic.logic.AppendPreviewModifiers(ctx, attribute, results);
     }
 
+    /// <summary>Projects ordered acquisitions onto detached attributes, including upgrades and linked HP.
+    /// No equip hooks, proc registration, inventory writes, sounds or live stat events are executed.</summary>
+    public void ProjectAcquisitions(
+        Dictionary<AttributeDefinition, AttributeValue> snapshot,
+        IReadOnlyList<(RelicDefinition relic, int gainedLevel)> acquisitions,
+        WeaponDefinition previousWeapon = null, WeaponDefinition nextWeapon = null)
+    {
+        if (snapshot == null || baseCtx.attributeSet == null) return;
+        var contexts = new List<RelicContext>();
+        for (int i = 0; i < slots.Length; i++)
+            if (TryGetRuntimeContextForSlot(i, out var context)) contexts.Add(context);
+        var modifiers = new List<AttributeModifier>();
+
+        float Read(AttributeDefinition attribute) => attribute != null && snapshot.TryGetValue(attribute, out var value)
+            ? value.CurrentValue : 0f;
+
+        void Apply(RelicContext context)
+        {
+            context.previewAttributeReader = Read;
+            foreach (var pair in snapshot)
+            {
+                pair.Value.RemoveModifiersFromSource(context.token);
+                modifiers.Clear();
+                context.relicDef.logic?.AppendPreviewModifiers(context, pair.Key, modifiers);
+                if (!pair.Key.IsBaseOnly())
+                    foreach (var modifier in modifiers) pair.Value.AddModifier(modifier);
+                pair.Value.ForceRecalculate();
+            }
+        }
+
+        void RefreshConditions()
+        {
+            // Current-health effects precede move-speed-derived critical chance.
+            foreach (var context in contexts)
+                if (context.relicDef.logic is RelicLogic_MoveSpeedByCurrentHealth_Managed ||
+                    context.relicDef.logic is RelicLogic_StatWhileHealthRatio_Managed ||
+                    context.relicDef.logic is RelicLogic_LastStandCritical) Apply(context);
+            foreach (var context in contexts)
+                if (context.relicDef.logic is RelicLogic_CritFromBonusMoveSpeed_Managed) Apply(context);
+        }
+
+        foreach (var acquisition in acquisitions)
+        {
+            if (acquisition.relic == null) continue;
+            int existing = contexts.FindIndex(c => c.relicDef.relicId == acquisition.relic.relicId);
+            var context = existing >= 0 ? contexts[existing] : baseCtx;
+            // Merging keeps the equipped definition, just as TryAcquireOrUpgrade does.
+            context.relicDef = existing >= 0 ? context.relicDef : acquisition.relic;
+            context.level = Mathf.Clamp((existing >= 0 ? context.level : 0) + Mathf.Max(1, acquisition.gainedLevel),
+                1, Mathf.Max(1, context.relicDef.maxLevel));
+            context.token = existing >= 0 ? context.token : context.relicDef;
+
+            var linked = new List<(AttributeSet.MaxLink link, float current, float max)>();
+            foreach (var link in baseCtx.attributeSet.EnumerateMaxLinks())
+                if (link.value != null && link.max != null)
+                    linked.Add((link, Read(link.value), Read(link.max)));
+            Apply(context);
+            if (existing >= 0) contexts[existing] = context;
+            else contexts.Add(context);
+            foreach (var state in linked)
+                if (snapshot.TryGetValue(state.link.value, out var current))
+                    current.TrySetCurrentValue(state.current + Read(state.link.max) - state.max);
+            RefreshConditions();
+        }
+        WeaponStatBinder.ProjectChange(snapshot, previousWeapon, nextWeapon);
+        // A newly equipped weapon can also change the conditions of existing relics.
+        RefreshConditions();
+    }
+
     private static AttributeLinkedValueCompensationContext ResolveRelicCompensationContext(
         Entry existingEntry,
         RelicDefinition incomingRelic,

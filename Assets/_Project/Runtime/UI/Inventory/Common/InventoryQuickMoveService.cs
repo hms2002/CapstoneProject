@@ -343,10 +343,44 @@ public static class ChestSelectionTransferService
     public static InventoryTransferResult TryCommitPlanWithFailure(IReadOnlyList<InventoryTransferRequest> plan, out int failedSourceIndex)
     {
         failedSourceIndex = -1;
-        var completed = new List<(InventoryTransferRequest request, ScriptableObject item,
-            ScriptableObject previous, int previousLevel)>();
+        if (plan == null || plan.Count == 0 || plan[0].Source is not ChestContainerAdapter source ||
+            source.IsSelectionOnly || source.Inventory == null ||
+            plan.Count + source.Inventory.AcquiredCount > ChestInventory.AcquisitionLimit)
+            return InventoryTransferResult.Failed(InventoryTransferFailureReason.SourceRejectedItem);
+        var indices = new HashSet<int>();
         foreach (InventoryTransferRequest request in plan)
         {
+            if (request.Source != source || !indices.Add(request.SourceIndex) || source.Get(request.SourceIndex) == null ||
+                request.Target == null || request.TargetIndex < 0 || request.TargetIndex >= request.Target.SlotCount)
+            {
+                failedSourceIndex = request.SourceIndex;
+                return InventoryTransferResult.Failed(InventoryTransferFailureReason.SourceRejectedItem);
+            }
+        }
+        var completed = new List<(InventoryTransferRequest request, ScriptableObject item,
+            ScriptableObject previous, int previousLevel)>();
+        var weaponRequests = new List<InventoryTransferRequest>();
+        var incomingWeapons = new List<WeaponDefinition>();
+        PlayerWeaponContainerAdapter weaponTarget = null;
+        foreach (InventoryTransferRequest request in plan)
+        {
+            if (request.Target is not PlayerWeaponContainerAdapter playerWeapons) continue;
+            if (request.Source is not ChestContainerAdapter || request.Source.Get(request.SourceIndex) is not WeaponDefinition weapon ||
+                (weaponTarget != null && weaponTarget != playerWeapons))
+                return InventoryTransferResult.Failed(InventoryTransferFailureReason.TargetRejectedItem);
+            weaponTarget = playerWeapons;
+            weaponRequests.Add(request);
+            incomingWeapons.Add(weapon);
+        }
+        if (weaponTarget != null && !weaponTarget.PreviewChestSelection(incomingWeapons, out _))
+        {
+            failedSourceIndex = weaponRequests[0].SourceIndex;
+            return InventoryTransferResult.Failed(InventoryTransferFailureReason.TargetRejectedItem);
+        }
+        foreach (InventoryTransferRequest request in plan)
+        {
+            // Commit fallible consumable/relic transfers first; no old weapon drops on their failure.
+            if (request.Target is PlayerWeaponContainerAdapter) continue;
             ScriptableObject item = request.Source.Get(request.SourceIndex);
             ScriptableObject previous = request.Target.Get(request.TargetIndex);
             int previousLevel = 0;
@@ -360,6 +394,30 @@ public static class ChestSelectionTransferService
             }
 
             failedSourceIndex = request.SourceIndex;
+            RollbackCompleted();
+            return result;
+        }
+        if (weaponTarget != null)
+        {
+            if (!weaponTarget.TryAcquireChestSelection(incomingWeapons))
+            {
+                failedSourceIndex = weaponRequests[0].SourceIndex;
+                RollbackCompleted();
+                return InventoryTransferResult.Failed(InventoryTransferFailureReason.TargetRejectedItem);
+            }
+            // Source indices were validated by the plan; ChestInventory.Set cannot reject these clears.
+            for (int i = 0; i < weaponRequests.Count; i++)
+            {
+                var request = weaponRequests[i];
+                var chest = (ChestContainerAdapter)request.Source;
+                chest.TrySet(request.SourceIndex, null);
+                chest.Inventory.RecordAcquisition(incomingWeapons[i]);
+            }
+        }
+        return InventoryTransferResult.Success;
+
+        void RollbackCompleted()
+        {
             // No frame or player input occurs between writes. Undo completed transfers
             // if a gameplay rule (for example linked health compensation) rejects a later one.
             for (int i = completed.Count - 1; i >= 0; i--)
@@ -379,9 +437,7 @@ public static class ChestSelectionTransferService
                 else chest.TrySet(entry.request.SourceIndex, entry.item);
                 chest.Inventory.RecordReturn(entry.item);
             }
-            return result;
         }
-        return InventoryTransferResult.Success;
     }
 
     public static bool TryCreatePlan(ChestContainerAdapter source, IReadOnlyList<int> selection,
@@ -400,6 +456,21 @@ public static class ChestSelectionTransferService
             selection.Count + source.Inventory.AcquiredCount > ChestInventory.AcquisitionLimit)
             return false;
 
+        int[] weaponDestinations = null;
+        if (weapons is PlayerWeaponContainerAdapter playerWeapons)
+        {
+            var incoming = new List<WeaponDefinition>();
+            foreach (int index in selection)
+                if (source.Get(index) is WeaponDefinition weapon) incoming.Add(weapon);
+            if (incoming.Count > 0 && !playerWeapons.PreviewChestSelection(incoming, out weaponDestinations))
+            {
+                foreach (int index in selection)
+                    if (source.Get(index) is WeaponDefinition) { failedSourceIndex = index; break; }
+                warning = "선택한 무기를 획득할 수 없습니다. 중복 무기와 현재 무기 상태를 확인해 주세요.";
+                return false;
+            }
+        }
+        int weaponOrdinal = 0;
         var reservations = new Dictionary<IItemContainer, ScriptableObject[]>();
         var levels = new Dictionary<IItemContainer, int[]>();
         var sourceIndices = new HashSet<int>();
@@ -420,6 +491,11 @@ public static class ChestSelectionTransferService
                 _ => relics
             };
             if (target == null) return false;
+            if (item is WeaponDefinition && target is PlayerWeaponContainerAdapter)
+            {
+                plan.Add(new InventoryTransferRequest(source, sourceIndex, target, weaponDestinations[weaponOrdinal++], 0));
+                continue;
+            }
             if (!reservations.TryGetValue(target, out ScriptableObject[] items))
             {
                 items = new ScriptableObject[target.SlotCount];

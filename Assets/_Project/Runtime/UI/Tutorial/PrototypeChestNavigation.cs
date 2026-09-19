@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -13,6 +14,17 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
     [SerializeField] private RectTransform instruction;
     [SerializeField] private ChestInteractable worldChest;
     [SerializeField] private Transform worldArrow;
+    private InventoryOpenHudButton inventoryButton;
+    private InventoryUIOpenRequestHandler inventoryHandler;
+    private PlayerCombatInput2D inventoryCombatInput;
+    private bool inventoryGuidance;
+    private bool inventoryInputArmed;
+    private static readonly InputActionId[] InventoryBlockedActions =
+    {
+        InputActionId.Dash, InputActionId.SwapWeapon, InputActionId.Interact,
+        InputActionId.ConsumableSlot1, InputActionId.ConsumableSlot2,
+        InputActionId.ConsumableSlot3, InputActionId.ConsumableSlot4
+    };
     private bool worldHighlight;
     private float worldHighlightStarted;
 
@@ -87,6 +99,7 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
         SetWorldGuidance(tutorial != null && tutorial.isActiveAndEnabled && tutorial.Stage == 4 &&
             !completed && (screen == null || !screen.isActiveAndEnabled));
         TickPresentation(Time.unscaledDeltaTime);
+        if (TickInventoryGuidance()) return;
         if (screen == null) return;
         if (!screen.isActiveAndEnabled || targetChest == null || screen.BoundInventory != targetChest.GetInventory())
         { ReleaseScreen(); HideGuidance(); return; }
@@ -117,6 +130,69 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
                 0f, true, true);
             pulsing = true;
         }
+    }
+
+    private bool TickInventoryGuidance()
+    {
+        if (tutorial == null || !tutorial.isActiveAndEnabled || tutorial.Stage != 5)
+        {
+            if (inventoryGuidance) { ReleaseInventoryGuidance(); HideGuidance(); }
+            return false;
+        }
+        // The same InventoryScreen hosts the chest. Wait for its close animation to finish.
+        if (!inventoryGuidance)
+        {
+            if (InventoryUIManager.Instance == null || InventoryUIManager.Instance.IsOpen ||
+                PlayerRuntimeRegistry.CurrentPlayer == null) return true;
+            if (inventoryButton == null) inventoryButton = FindFirstObjectByType<InventoryOpenHudButton>(FindObjectsInactive.Include);
+            if (inventoryHandler == null) inventoryHandler = FindFirstObjectByType<InventoryUIOpenRequestHandler>(FindObjectsInactive.Include);
+            if (inventoryButton == null || inventoryHandler == null || !inventoryHandler.CanOpenInventory) return true;
+            ReleaseScreen();
+            inventoryGuidance = true;
+            inventoryInputArmed = !InputActionQuery.IsPressed(InputActionId.InventoryToggle);
+            inventoryCombatInput = PlayerRuntimeRegistry.CurrentPlayer.GetComponent<PlayerCombatInput2D>();
+            inventoryCombatInput?.SetWeaponInputBlocked(this, true);
+            foreach (InputActionId action in InventoryBlockedActions) InputActionQuery.SetPressBlocked(action, this, true);
+            TimeScalePausePlayback.SetOwnedTimeScale(this, 0f);
+            shieldImage = inputShield.GetComponent<Image>();
+            shieldImage.raycastTarget = true;
+            inputShield.gameObject.SetActive(true);
+            showing = true;
+            presentationFrom = visibility;
+            presentationElapsed = 0f;
+            return true;
+        }
+        if (PlayerRuntimeRegistry.CurrentPlayer == null || inventoryHandler == null || inventoryButton == null)
+        {
+            ReleaseInventoryGuidance();
+            HideGuidance();
+            return true;
+        }
+        bool pressed = InputActionQuery.WasPressedThisFrame(InputActionId.InventoryToggle);
+        if (!InputActionQuery.IsPressed(InputActionId.InventoryToggle)) inventoryInputArmed = true;
+        // The ordinary inventory input handler owns opening; no second toggle or synthetic key press.
+        if (inventoryInputArmed && pressed && inventoryHandler.IsInventoryOpen)
+        {
+            ReleaseInventoryGuidance();
+            HideGuidance();
+            tutorial.CompleteInventoryTutorial();
+            return true;
+        }
+        RectTransform buttonRect = inventoryButton.GetPresentationRoot().transform as RectTransform;
+        if (buttonRect != null) LayoutSpotlight(buttonRect, inventory: true);
+        ApplyPresentation();
+        return true;
+    }
+
+    private void ReleaseInventoryGuidance()
+    {
+        inventoryGuidance = false;
+        inventoryInputArmed = false;
+        inventoryCombatInput?.SetWeaponInputBlocked(this, false);
+        inventoryCombatInput = null;
+        foreach (InputActionId action in InventoryBlockedActions) InputActionQuery.SetPressBlocked(action, this, false);
+        if (TimeScalePausePlayback.IsHeldBy(this)) TimeScalePausePlayback.Release(this);
+        if (shieldImage != null) shieldImage.raycastTarget = false;
     }
 
     private void SetWorldGuidance(bool visible)
@@ -157,7 +233,7 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
         return canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
     }
 
-    private void LayoutSpotlight(RectTransform slot)
+    private void LayoutSpotlight(RectTransform slot, bool inventory = false)
     {
         slot.GetWorldCorners(corners);
         Vector2 min = new(float.PositiveInfinity, float.PositiveInfinity);
@@ -177,11 +253,26 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
         SetRect(shadePanels[1], bounds.xMin, bounds.yMin, bounds.width, min.y - bounds.yMin);
         SetRect(shadePanels[2], bounds.xMin, min.y, min.x - bounds.xMin, max.y - min.y);
         SetRect(shadePanels[3], max.x, min.y, bounds.xMax - max.x, max.y - min.y);
-        rightClickGlyph.sprite = InputGlyphDatabase.Resolve(KeyCode.Mouse1).Icon;
+        InputGlyphPresentation glyph;
+        if (inventory)
+        {
+            InputBindingService bindings = InputBindingService.EnsureInstance();
+            glyph = bindings.GetBindingGlyph(InputActionId.InventoryToggle);
+            if (glyph.Key == KeyCode.None) glyph = bindings.GetBindingGlyph(InputActionId.InventoryToggle, true);
+        }
+        else glyph = InputGlyphDatabase.Resolve(KeyCode.Mouse1);
+        rightClickGlyph.sprite = glyph.Icon;
+        TMP_Text label = instruction.GetComponent<TMP_Text>();
+        if (label != null) label.text = inventory
+            ? (glyph.HasIcon ? "키를 눌러서 인벤토리를 확인할 수 있습니다." : glyph.DisplayLabel + " 키를 눌러서 인벤토리를 확인할 수 있습니다.")
+            : "이 아이템을 우클릭하여 선택하세요";
+        float instructionWidth = inventory ? 560f : 400f;
+        float centerX = Mathf.Clamp((min.x + max.x) * .5f,
+            bounds.xMin + instructionWidth * .5f + 12f, bounds.xMax - instructionWidth * .5f - 12f);
         rightClickGlyph.gameObject.SetActive(rightClickGlyph.sprite != null);
         if (rightClickGlyph.sprite != null)
-            SetRect(rightClickGlyph.rectTransform, (min.x + max.x) / 2f - 24f, max.y + 10f, 48f, 48f);
-        SetRect(instruction, (min.x + max.x) / 2f - 200f, max.y + 62f, 400f, 40f);
+            SetRect(rightClickGlyph.rectTransform, centerX - 24f, max.y + 10f, 48f, 48f);
+        SetRect(instruction, centerX - instructionWidth * .5f, max.y + 62f, instructionWidth, 70f);
         glyphPosition = rightClickGlyph.rectTransform.anchoredPosition;
         instructionPosition = instruction.anchoredPosition;
     }
@@ -267,6 +358,7 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
 
     private void Cleanup()
     {
+        ReleaseInventoryGuidance();
         ReleaseScreen();
         showing = false;
         visibility = presentationFrom = presentationElapsed = 0f;

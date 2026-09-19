@@ -3,6 +3,7 @@ using CapstoneAudio;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 현재 런의 레벨/EXP와 레벨업 보상 선택 가능 상태를 authored HUD에 투영한다.
@@ -29,6 +30,7 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
     [SerializeField] private Vector3 levelUpPromptWorldOffset = new Vector3(0f, 1.4f, 0f);
     [SerializeField] private Vector2 levelUpPromptUiOffset = new Vector2(-40f, 0f);
 
+    private PrototypeTutorialUpgrade combatTutorial;
     private Coroutine fillAnimation;
     private int visualLevel = 1;
     private float visualFill;
@@ -51,6 +53,8 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
 
     private void OnEnable()
     {
+        combatTutorial = FindFirstObjectByType<PrototypeTutorialUpgrade>();
+        SceneManager.sceneLoaded += HandleSceneLoaded;
         RunLevelProgression.ExperienceGranted += HandleExperienceGranted;
         RunLevelProgression.StateChanged += HandleStateChanged;
         RefreshImmediate();
@@ -58,12 +62,20 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
 
     private void OnDisable()
     {
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
+        combatTutorial = null;
         RunLevelProgression.ExperienceGranted -= HandleExperienceGranted;
         RunLevelProgression.StateChanged -= HandleStateChanged;
         StopFillAnimation();
         SetRewardReadyVisible(false, false);
         if (promptRect != null)
             promptRect.anchoredPosition = promptRestPosition;
+    }
+
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        combatTutorial = FindFirstObjectByType<PrototypeTutorialUpgrade>();
+        RefreshRewardAvailability();
     }
 
     private void Update()
@@ -81,7 +93,12 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
         if (levelUpPrompt.activeSelf != hasPosition)
             levelUpPrompt.SetActive(hasPosition);
         if (hasPosition)
+        {
             promptRect.position = position;
+            PlayerOverheadPromptLayout.Place(this, promptRect, promptCanvas, PlayerOverheadPromptLayout.LevelUp);
+        }
+        else
+            PlayerOverheadPromptLayout.Remove(this);
     }
 
     private bool TryGetPromptPosition(out Vector3 position)
@@ -236,7 +253,8 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
 
     private void RefreshRewardAvailability()
     {
-        bool canOpen = rewardSessionController != null &&
+        bool tutorialComplete = combatTutorial == null || !combatTutorial.isActiveAndEnabled || combatTutorial.Stage >= 4;
+        bool canOpen = tutorialComplete && rewardSessionController != null &&
                        rewardSessionController.isActiveAndEnabled &&
                        rewardSessionController.CanOpenSession &&
                        TryGetPromptPosition(out _);
@@ -246,6 +264,7 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
 
     private void SetRewardReadyVisible(bool borderVisible, bool visible)
     {
+        if (!visible) PlayerOverheadPromptLayout.Remove(this);
         if (isRewardReadyVisible == visible &&
             (rewardReadyBorder == null || rewardReadyBorder.activeSelf == borderVisible) &&
             (levelUpPrompt == null || levelUpPrompt.activeSelf == visible))

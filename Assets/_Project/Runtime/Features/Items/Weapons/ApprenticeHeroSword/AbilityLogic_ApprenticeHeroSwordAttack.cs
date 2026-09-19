@@ -80,12 +80,19 @@ public sealed class AbilityLogic_ApprenticeHeroSwordAttack : AbilityLogic, IWeap
         if (payload == null)
             yield break;
 
+        if (comboIndex == 2)
+        {
+            payload.finalHpDamage *= 1.5f;
+            payload.hitCameraScale = 1.2f;
+        }
+
         Vector2 direction = attackDir.sqrMagnitude > 0.0001f ? attackDir.normalized : Vector2.right;
         // Mirror the right-facing authored offset across world X, preserving height.
         float facingSign = direction.x < 0f ? -1f : 1f;
         Vector2 perp = new(-direction.y * facingSign, Mathf.Abs(direction.x));
         int sideSign = step.sideSign < 0 ? -1 : 1;
-        Vector2 center = PlayerAttackOrigin.Resolve(system, direction);
+        Vector2 center = PlayerAttackOrigin.Resolve(system, direction)
+            + direction * step.forwardOffset + perp * (step.sideOffset * sideSign);
 
 #if UNITY_EDITOR
         if (system.TryGetComponent<IRealtimeHitboxGizmo2D>(out var gizmo))

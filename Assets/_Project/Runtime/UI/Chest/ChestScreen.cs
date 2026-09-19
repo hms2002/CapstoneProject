@@ -28,10 +28,9 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     [SerializeField] private Button confirmSelectionButton;
     [SerializeField] private Outline confirmSelectionWarningOutline;
     private readonly List<ItemSlotUI> selectedSlots = new();
+    private PlayerStatPanelView selectionStatPanel;
     private Sequence selectionMotion;
     private bool confirmingSelection;
-    private ItemSlotUI rejectedWeaponSlot;
-    private Tween rejectedWeaponWarningTween;
     private float nextSelectionValidationTime;
     private ItemSlotUI transitSlot;
     private Transform transitDestination;
@@ -351,6 +350,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             playerInventoryPanel != null ? playerInventoryPanel.RelicContainer : null);
 
         BindReturnHighlights(playerInventoryPanel);
+        selectionStatPanel = playerInventoryPanel != null ? playerInventoryPanel.PlayerStatPanel : null;
         BuildChestSlots();
         UIManager.Instance?.HideHoverImmediate();
         ResetRerollHoldState();
@@ -378,6 +378,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             sharedPlayerInventoryPanel != null ? sharedPlayerInventoryPanel.RelicContainer : null);
 
         BindReturnHighlights(sharedPlayerInventoryPanel);
+        selectionStatPanel = sharedPlayerInventoryPanel != null ? sharedPlayerInventoryPanel.PlayerStatPanel : null;
         BuildChestSlots();
         UIManager.Instance?.HideHoverImmediate();
         ResetRerollHoldState();
@@ -583,6 +584,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         if (rerollHoldActionButton == null)
             return;
 
+        rerollHoldActionButton.PointerClicked += HandleRerollPointerClicked;
         rerollHoldActionButton.HoldStarted += HandleRerollHoldStarted;
         rerollHoldActionButton.HoldCanceled += HandleRerollHoldCanceled;
         rerollHoldActionButton.HoldCompleted += HandleRerollHoldCompleted;
@@ -595,6 +597,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         if (subscribedRerollHoldActionButton == null)
             return;
 
+        subscribedRerollHoldActionButton.PointerClicked -= HandleRerollPointerClicked;
         subscribedRerollHoldActionButton.HoldStarted -= HandleRerollHoldStarted;
         subscribedRerollHoldActionButton.HoldCanceled -= HandleRerollHoldCanceled;
         subscribedRerollHoldActionButton.HoldCompleted -= HandleRerollHoldCompleted;
@@ -637,6 +640,14 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
         ResolvePresentation();
         return firstOpenRevealPresentation != null && ChestUIManager.Instance.CanRefreshOpenedChest();
+    }
+
+    private void HandleRerollPointerClicked()
+    {
+        if (IsFirstOpenRevealPlaying || !CanStartRerollHold()) return;
+        BeginRerollHold();
+        ApplyRerollHoldProgress(1f);
+        CompleteRerollHold();
     }
 
     private void HandleRerollHoldStarted()
@@ -749,7 +760,10 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void CompleteRerollHold()
     {
-        bool refreshed = ChestUIManager.Instance != null && ChestUIManager.Instance.TryRefreshOpenedChest();
+        var preservedIndices = new List<int>();
+        foreach (ItemSlotUI slot in selectedSlots) preservedIndices.Add(slot.BoundIndex);
+        bool refreshed = ChestUIManager.Instance != null &&
+            ChestUIManager.Instance.TryRefreshOpenedChest(preservedIndices);
         rerollHoldActive = false;
         rerollRevealState = RerollRevealState.Opening;
         rerollOpenVfxActive = false;
@@ -758,8 +772,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
         if (refreshed)
         {
-            ClearChestSlots();
-            BuildChestSlots();
+            RebuildUnselectedChestSlots();
             firstOpenRevealPresentation?.PlayManualOpenRevealVfx(playSlotRevealParticles: false);
             rerollOpenVfxActive = true;
             rerollSlotRevealVfxPending = true;
@@ -944,6 +957,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     {
         BuildSlots(chestContainer, chestGridRoot, chestSlotPrefab);
         firstOpenRevealPresentation?.ConfigureItemRevealSlots(spawnedChestSlots);
+        firstOpenRevealPresentation?.CaptureInitialLayout();
     }
 
     private void BuildSlots(IItemContainer container, Transform gridRoot, ItemSlotUI slotPrefab)
@@ -963,7 +977,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void ClearChestSlots()
     {
-        ClearRejectedWeaponWarning();
+        selectionStatPanel?.SetSelectionPreview(null);
         SetConfirmCloseWarning(false);
         StopSelectionMotion();
         selectedSlots.Clear();
@@ -974,6 +988,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
                 continue;
 
             // Destroy is deferred; remove old slots from layout immediately before a reroll rebuild.
+            spawnedChestSlots[i].Bind(null, -1);
             spawnedChestSlots[i].gameObject.SetActive(false);
 
             if (Application.isPlaying)
@@ -984,6 +999,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
         spawnedChestSlots.Clear();
         firstOpenRevealPresentation?.ConfigureItemRevealSlots(null);
+        firstOpenRevealPresentation?.ReleaseInitialLayout();
         RefreshAcquisitionCounter();
         RefreshSelectionControls();
     }
@@ -1075,8 +1091,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private void UpdateAcquisitionPresentation()
     {
         RefreshReturnHighlights();
-        bool visible = counterInventory != null && !IsFirstOpenRevealPlaying &&
-            rerollRevealState == RerollRevealState.Idle;
+        bool visible = counterInventory != null && !IsFirstOpenRevealPlaying;
         if (visible == counterVisible) return;
         counterVisible = visible;
         counterFadeTween?.Kill();
@@ -1110,7 +1125,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             confirmSelectionButton.interactable = available && selectedSlots.Count > 0 && !selectionMotion.IsActive();
         if (selectedItemsGroup != null)
         {
-            selectedItemsGroup.alpha = available ? 1f : 0f;
+            selectedItemsGroup.alpha = chestContainer != null && !IsFirstOpenRevealPlaying ? 1f : 0f;
             selectedItemsGroup.interactable = available;
             selectedItemsGroup.blocksRaycasts = available;
         }
@@ -1122,22 +1137,13 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         if (!CanChangeSelection || selectedItemsRoot == null || slot == null || !slot.HasItem || selectionMotion.IsActive())
             return;
         bool removing = selectedSlots.Contains(slot);
-        if (!removing && slot.CurrentItem is WeaponDefinition && IsWeaponInventoryFull())
-        {
-            ClearRejectedWeaponWarning();
-            rejectedWeaponSlot = slot;
-            slot.SetSelectionBlocked(true);
-            rejectedWeaponWarningTween = DOVirtual.DelayedCall(0.8f, ClearRejectedWeaponWarning, true);
-            WarningPopupPlayback.ShowMessage("무기 인벤토리가 가득 찼습니다. 인벤토리 무기를 버리고 획득을 시도해 주세요");
-            return;
-        }
+        if (!removing && selectedSlots.Count >= selectedItemsRoot.childCount) return;
         if (!removing && selectedSlots.Count + chestInventory.AcquiredCount >= ChestInventory.AcquisitionLimit)
         {
             PlayAcquisitionWarning();
             return;
         }
 
-        if (rejectedWeaponSlot == slot) ClearRejectedWeaponWarning();
         var positions = new Dictionary<ItemSlotUI, Vector3>();
         foreach (ItemSlotUI item in spawnedChestSlots) positions[item] = item.transform.position;
         if (removing) selectedSlots.Remove(slot);
@@ -1145,12 +1151,13 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         slot.SetChestSelectionOverlay(!removing);
         slot.SetSelectionBlocked(false);
         nextSelectionValidationTime = 0f;
-        slot.transform.SetParent(removing ? chestGridRoot : selectedItemsRoot, false);
+        RefreshSelectionStatPreview();
+        slot.transform.SetParent(removing ? chestGridRoot : selectedItemsRoot.GetChild(selectedSlots.Count - 1), false);
         int sibling = 0;
         // The list retains original inventory order, independent of selection order.
         foreach (ItemSlotUI item in spawnedChestSlots)
             if (!selectedSlots.Contains(item)) item.transform.SetSiblingIndex(sibling++);
-        for (int i = 0; i < selectedSlots.Count; i++) selectedSlots[i].transform.SetSiblingIndex(i);
+        ArrangeSelectedSlots();
 
         Canvas.ForceUpdateCanvases();
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)chestGridRoot);
@@ -1185,21 +1192,49 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         RefreshSelectionControls();
     }
 
-    private static bool IsWeaponInventoryFull()
+    private void ArrangeSelectedSlots()
     {
-        IItemContainer weapons = ItemContainerGroupRegistry.WeaponEquip;
-        if (weapons == null || weapons.SlotCount == 0) return false;
-        for (int i = 0; i < weapons.SlotCount; i++)
-            if (weapons.Get(i) == null) return false;
-        return true;
+        if (selectedItemsRoot == null) return;
+        for (int i = 0; i < selectedSlots.Count; i++)
+        {
+            RectTransform item = (RectTransform)selectedSlots[i].transform;
+            RectTransform cell = (RectTransform)selectedItemsRoot.GetChild(i);
+            item.SetParent(cell, false);
+            item.anchorMin = item.anchorMax = item.pivot = new Vector2(0.5f, 0.5f);
+            item.sizeDelta = cell.rect.size;
+            item.anchoredPosition3D = Vector3.zero;
+        }
     }
 
-    private void ClearRejectedWeaponWarning()
+    private void RebuildUnselectedChestSlots()
     {
-        rejectedWeaponWarningTween?.Kill();
-        rejectedWeaponWarningTween = null;
-        if (rejectedWeaponSlot != null) rejectedWeaponSlot.SetSelectionBlocked(false);
-        rejectedWeaponSlot = null;
+        // Retained slots keep their object, source index and selection order throughout reroll.
+        for (int i = spawnedChestSlots.Count - 1; i >= 0; i--)
+        {
+            ItemSlotUI slot = spawnedChestSlots[i];
+            if (selectedSlots.Contains(slot)) continue;
+            // Bind can precede first activation, so OnDisable alone cannot release this subscription.
+            slot.Bind(null, -1);
+            slot.gameObject.SetActive(false);
+            if (Application.isPlaying) Destroy(slot.gameObject);
+            else DestroyImmediate(slot.gameObject);
+            spawnedChestSlots.RemoveAt(i);
+        }
+        var revealSlots = new List<ItemSlotUI>();
+        for (int index = 0; index < chestContainer.SlotCount; index++)
+        {
+            if (chestContainer.Get(index) == null || spawnedChestSlots.Exists(slot => slot.BoundIndex == index)) continue;
+            ItemSlotUI slot = Instantiate(chestSlotPrefab, chestGridRoot);
+            slot.Bind(chestContainer, index);
+            slot.SetSelectionClickHandler(ToggleSelection);
+            spawnedChestSlots.Add(slot);
+            revealSlots.Add(slot);
+        }
+        spawnedChestSlots.Sort((a, b) => a.BoundIndex.CompareTo(b.BoundIndex));
+        firstOpenRevealPresentation?.ConfigureItemRevealSlots(revealSlots);
+        nextSelectionValidationTime = 0f;
+        RefreshAcquisitionCounter();
+        RefreshSelectionControls();
     }
 
     private void SetSelectionLayoutsEnabled(bool enabled)
@@ -1233,7 +1268,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             int sibling = 0;
             foreach (ItemSlotUI slot in spawnedChestSlots)
                 if (slot != null && !selectedSlots.Contains(slot)) slot.transform.SetSiblingIndex(sibling++);
-            for (int i = 0; i < selectedSlots.Count; i++) selectedSlots[i].transform.SetSiblingIndex(i);
+            ArrangeSelectedSlots();
         }
         transitSlot = null;
         transitDestination = null;
@@ -1247,8 +1282,28 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         SetSelectionLayoutsEnabled(true);
     }
 
+    private void RefreshSelectionStatPreview()
+    {
+        if (selectionStatPanel == null) return;
+        if (selectedSlots.Count == 0 || chestInventory == null || confirmingSelection)
+        {
+            selectionStatPanel.SetSelectionPreview(null);
+            return;
+        }
+        var indices = new List<int>();
+        foreach (var slot in selectedSlots)
+            if (slot != null && slot.HasItem) indices.Add(slot.BoundIndex);
+        using var source = new ChestContainerAdapter(chestInventory);
+        bool valid = ChestSelectionTransferService.TryCreatePlan(source, indices,
+            ItemContainerGroupRegistry.ConsumableEquip, ItemContainerGroupRegistry.WeaponEquip,
+            ItemContainerGroupRegistry.RelicEquip, out var plan, out _);
+        // A blocked batch cannot be confirmed, so do not promise a partial stat gain.
+        selectionStatPanel.SetSelectionPreview(valid ? plan : null);
+    }
+
     private void RefreshBlockedSelectionSlots()
     {
+        RefreshSelectionStatPreview();
         if (chestInventory == null) return;
         var remaining = new List<int>();
         var blocked = new HashSet<int>();
@@ -1287,12 +1342,14 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         }
 
         confirmingSelection = true;
+        selectionStatPanel?.SetSelectionPreview(null);
         RefreshSelectionControls();
         InventoryTransferResult result = ChestSelectionTransferService.TryCommitPlanWithFailure(plan, out int failedIndex);
         if (!result.Succeeded)
         {
             selectedSlots.RemoveAll(item => !item.HasItem);
             confirmingSelection = false;
+            RefreshSelectionStatPreview();
             foreach (ItemSlotUI slot in selectedSlots) slot.SetSelectionBlocked(slot.BoundIndex == failedIndex);
             nextSelectionValidationTime = Time.unscaledTime + 1f;
             if (result.HasWarning) WarningPopupPlayback.Show(result.WarningCode);

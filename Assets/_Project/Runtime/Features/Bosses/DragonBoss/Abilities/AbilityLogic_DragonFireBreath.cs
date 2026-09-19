@@ -7,12 +7,34 @@ using UnityGAS;
 
 /// <summary>
 /// 책임:
-/// 취룡 보스의 전방 화염 방사 패턴을 실행하며, 부채꼴 예고, 지속 피해, 술 장판 점화를 처리한다.
+/// 취룡 보스의 중앙 점프 후 전방 화염 방사 패턴을 실행하며, 부채꼴 예고, 지속 피해, 술 장판 점화를 처리한다.
 /// </summary>
 [CreateAssetMenu(fileName = "AL_DragonFireBreath", menuName = "GAS/Ability Logic/Dragon/AL_DragonFireBreath")]
 public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
 {
     private readonly Dictionary<GameObject, float> nextDamageAllowedTimes = new();
+
+    [Header("Center Jump")]
+    [SerializeField, Min(0.01f)] private float centerJumpSeconds = 0.9f;
+    [SerializeField, Min(1f)] private float centerJumpEaseOutPower = 2.5f;
+    [SerializeField, Min(0f)] private float centerJumpVisualHeight = 1.4f;
+    [SerializeField, Min(0f)] private float centerJumpBodyZHeight = 1f;
+    [SerializeField] private AnimationCurve centerJumpHeightCurve = new(
+        new Keyframe(0f, 0f),
+        new Keyframe(0.2f, 1f),
+        new Keyframe(0.78f, 0.85f),
+        new Keyframe(1f, 0f));
+    [SerializeField, Min(0.01f)] private float centerLandingDropSeconds = 0.14f;
+    [SerializeField, Min(1f)] private float centerLandingDropSharpness = 3f;
+    [SerializeField, Min(0.01f)] private float centerArriveDistance = 0.08f;
+
+    [Header("Center Impact")]
+    [SerializeField, Min(0.1f)] private float centerImpactDiameter = 3.2f;
+    [SerializeField] private GE_Damage_Spec centerImpactDamageEffect;
+    [SerializeField] private GE_Knockback_Spec centerImpactKnockbackEffect;
+    [SerializeField, Min(0f)] private float centerImpactDamageAmount = 1f;
+    [SerializeField, Min(0f)] private float centerImpactKnockbackImpulse = 1500f;
+    [SerializeField] private AttackTelegraphStyle centerImpactTelegraphStyle;
 
     [Header("Timing")]
     [SerializeField, Min(0f)] private float prepareSeconds = 1.8f;
@@ -43,6 +65,8 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
     [SerializeField, Min(0f)] private float warningTelegraphWallSkinWidth = 0.03f;
 
     [Header("Presentation")]
+    [SerializeField] private WorldPresentationHook centerLandingPresentation;
+    [SerializeField] private WorldPresentationHook centerJumpPresentation;
     [SerializeField] private WorldPresentationHook inhalePreparePresentation;
     [SerializeField] private SoundRef fireBreathLoopSound;
     [SerializeField] private GameObject fireBreathVisualPrefab;
@@ -57,6 +81,10 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
 
         try
         {
+            yield return MoveToArenaCenter(dragon, spec);
+            if (IsBreathCancelled(dragon, spec))
+                yield break;
+
             for (int i = 0; i < repeatCount; i++)
             {
                 if (IsBreathCancelled(dragon, spec))
@@ -71,6 +99,191 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
             nextDamageAllowedTimes.Clear();
             dragon.PlayPatternTrigger(DragonAnimationKeys.Idle);
         }
+    }
+
+    private IEnumerator MoveToArenaCenter(DragonController dragon, AbilitySpec spec)
+    {
+        if (IsBreathCancelled(dragon, spec))
+            yield break;
+
+        CombatHeightState2D heightState = EnsureHeightState(dragon);
+        IAttackTelegraphPresenter telegraphService = AttackTelegraphPresenterResolver.Resolve(dragon);
+        Vector2 start = dragon.transform.position;
+        Vector2 target = dragon.ArenaCenterPosition;
+        if (Vector2.Distance(start, target) <= centerArriveDistance)
+            target = start;
+
+        float duration = Mathf.Max(0.01f, centerJumpSeconds);
+        float elapsed = 0f;
+        IAttackTelegraphHandle impactTelegraph = ShowCenterImpactTelegraph(telegraphService, target, duration);
+
+        dragon.PushFaceTargetLock();
+        try
+        {
+            dragon.PlayPatternTrigger(DragonAnimationKeys.Jump);
+            PlayCenterJumpPresentation(dragon, start);
+            dragon.BeginJumpAfterimage();
+            heightState?.SetAirborne(0f, centerJumpBodyZHeight);
+
+            while (elapsed < duration)
+            {
+                if (IsBreathCancelled(dragon, spec))
+                    yield break;
+
+                float normalizedTime = Mathf.Clamp01(elapsed / duration);
+                float easedMoveTime = 1f - Mathf.Pow(1f - normalizedTime, centerJumpEaseOutPower);
+                Vector2 position = Vector2.LerpUnclamped(start, target, easedMoveTime);
+                float normalizedHeight = ResolveCenterJumpHeight(normalizedTime);
+                normalizedHeight *= ResolveCenterLandingDropMultiplier(elapsed, duration);
+
+                dragon.transform.position = position;
+                heightState?.SetAirborne(centerJumpVisualHeight * normalizedHeight, centerJumpBodyZHeight);
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+        finally
+        {
+            dragon.PopFaceTargetLock();
+            dragon.StopJumpAfterimage(IsBreathCancelled(dragon, spec));
+            heightState?.SetGrounded();
+            if (impactTelegraph != null)
+                impactTelegraph.HideImmediate();
+        }
+
+        if (IsBreathCancelled(dragon, spec))
+            yield break;
+
+        dragon.transform.position = target;
+        dragon.PlayPatternTrigger(DragonAnimationKeys.Landing);
+        PlayCenterLandingPresentation(dragon, target);
+        ApplyCenterImpactDamage(dragon, target);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 브레스 패턴의 중앙 이동 점프가 시작되는 순간 도약 연출을 재생한다.
+    /// </summary>
+    private void PlayCenterJumpPresentation(DragonController dragon, Vector2 startPosition)
+    {
+        if (dragon == null || !centerJumpPresentation.HasAnyContent)
+            return;
+
+        WorldPresentationPlayback.Play(
+            centerJumpPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: dragon.gameObject,
+                position: startPosition,
+                fallbackDirection: Vector3.up,
+                target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+                sourceObject: this,
+                causer: dragon.gameObject));
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 브레스 패턴의 중앙 점프 착지 순간에 AL이 지정한 월드 연출을 재생한다.
+    /// </summary>
+    private void PlayCenterLandingPresentation(DragonController dragon, Vector2 landingPosition)
+    {
+        if (dragon == null || !centerLandingPresentation.HasAnyContent)
+            return;
+
+        WorldPresentationPlayback.Play(
+            centerLandingPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: dragon.gameObject,
+                position: landingPosition,
+                fallbackDirection: Vector3.up,
+                target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+                sourceObject: this));
+    }
+
+    private static CombatHeightState2D EnsureHeightState(DragonController dragon)
+    {
+        if (dragon == null)
+            return null;
+
+        CombatHeightState2D heightState = dragon.GetComponent<CombatHeightState2D>();
+        if (heightState != null)
+            return heightState;
+
+        return dragon.gameObject.AddComponent<CombatHeightState2D>();
+    }
+
+    private float ResolveCenterJumpHeight(float normalizedTime)
+    {
+        if (centerJumpHeightCurve == null || centerJumpHeightCurve.length == 0)
+            return Mathf.Sin(Mathf.Clamp01(normalizedTime) * Mathf.PI);
+
+        return Mathf.Max(0f, centerJumpHeightCurve.Evaluate(Mathf.Clamp01(normalizedTime)));
+    }
+
+    private float ResolveCenterLandingDropMultiplier(float elapsed, float duration)
+    {
+        float dropDuration = Mathf.Clamp(centerLandingDropSeconds, 0.01f, duration);
+        float dropStart = Mathf.Max(0f, duration - dropDuration);
+        if (elapsed < dropStart)
+            return 1f;
+
+        float normalizedDrop = Mathf.Clamp01((elapsed - dropStart) / dropDuration);
+        return 1f - Mathf.Pow(normalizedDrop, centerLandingDropSharpness);
+    }
+
+    private IAttackTelegraphHandle ShowCenterImpactTelegraph(
+        IAttackTelegraphPresenter telegraphService,
+        Vector2 impactPosition,
+        float duration)
+    {
+        if (telegraphService == null)
+            return null;
+
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+            impactPosition,
+            centerImpactDiameter,
+            duration,
+            centerImpactTelegraphStyle);
+
+        spec = AttackTelegraphSpecUtility.WithThinWarningOutline(spec);
+        return telegraphService.SpawnDetachedView(spec);
+    }
+
+    private void ApplyCenterImpactDamage(DragonController dragon, Vector2 impactPosition)
+    {
+        if (dragon == null || centerImpactDamageEffect == null || centerImpactDamageAmount <= 0f)
+            return;
+
+        float radius = Mathf.Max(0.05f, centerImpactDiameter * 0.5f);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(impactPosition, radius, ResolveTargetMask(dragon));
+        CombatHitPayload payload = MakeCenterImpactPayload(dragon);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            GameObject targetRoot = CombatTargetResolver2D.ResolveDamageTarget(hits[i]);
+            if (targetRoot == null || targetRoot == dragon.gameObject)
+                continue;
+
+            CombatHitPayloadApplier.Apply(targetRoot, payload, hits[i].ClosestPoint(impactPosition));
+        }
+    }
+
+    private CombatHitPayload MakeCenterImpactPayload(DragonController dragon)
+    {
+        CombatDamageSnapshot snapshot = new(
+            finalHpDamage: centerImpactDamageAmount,
+            finalStaggerBuildUp: 0f,
+            finalKnockbackImpulse: centerImpactKnockbackImpulse,
+            isCriticalHit: false);
+
+        return CombatHitPayload.FromSnapshot(
+            sourceSystem: dragon.AbilitySystem,
+            sourceSpec: null,
+            damageEffect: centerImpactDamageEffect,
+            knockbackEffect: centerImpactKnockbackEffect,
+            snapshot: snapshot,
+            hitConfirmedTag: null,
+            causer: dragon.gameObject);
     }
 
     private static bool IsBreathCancelled(DragonController dragon, AbilitySpec spec)

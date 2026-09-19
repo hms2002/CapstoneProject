@@ -17,6 +17,7 @@ public sealed class ActiveStatusEntry
     public float MaxTime { get; private set; }
     public bool IsHighlighted { get; private set; }
     public bool IsVisible { get; private set; }
+    public string ProgressText { get; private set; }
     public string EffectTextOverride { get; private set; }
     public Sprite IconOverride { get; private set; }
     public bool? ShowStacksOverride { get; private set; }
@@ -42,6 +43,7 @@ public sealed class ActiveStatusEntry
         MaxTime = request.MaxTime;
         IsHighlighted = request.IsHighlighted;
         IsVisible = request.IsVisible;
+        ProgressText = request.ProgressText;
         EffectTextOverride = request.EffectTextOverride;
         IconOverride = request.IconOverride;
         ShowStacksOverride = request.ShowStacksOverride;
@@ -67,6 +69,7 @@ public sealed class ActiveStatusEntry
             EffectTextOverride,
             IconOverride,
             ShowStacksOverride,
-            ShowDurationOverride);
+            ShowDurationOverride,
+            ProgressText);
     }
 }

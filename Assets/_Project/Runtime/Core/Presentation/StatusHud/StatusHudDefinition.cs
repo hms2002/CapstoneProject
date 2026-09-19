@@ -47,7 +47,8 @@ public sealed class StatusHudDefinition : ScriptableObject
         string effectTextOverride = null,
         Sprite iconOverride = null,
         bool? showStacksOverride = null,
-        bool? showDurationOverride = null)
+        bool? showDurationOverride = null,
+        string progressText = null)
     {
         return new StatusHudEntry(
             ownerKey,
@@ -64,6 +65,7 @@ public sealed class StatusHudDefinition : ScriptableObject
             group,
             priority,
             isHighlighted,
-            isVisible);
+            isVisible,
+            progressText);
     }
 }

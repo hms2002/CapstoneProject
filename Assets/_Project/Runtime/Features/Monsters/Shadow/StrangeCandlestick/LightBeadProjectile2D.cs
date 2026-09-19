@@ -9,6 +9,37 @@ namespace UnityGAS
         private Vector2 direction = Vector2.right;
         private float speed;
         private Witch rampageOwner;
+        private GameObject presentationImpactTarget;
+        private System.Action presentationImpact;
+
+        // An explicitly owned cinematic shot consumes contact without bypassing player protection.
+        public void BindPresentationImpact(GameObject target, System.Action onImpact)
+        {
+            presentationImpactTarget = target;
+            presentationImpact = onImpact;
+        }
+
+        protected override void OnTriggerEnter2D(Collider2D other)
+        {
+            if (!TryPresentationImpact(other)) base.OnTriggerEnter2D(other);
+        }
+
+        protected override void OnTriggerStay2D(Collider2D other)
+        {
+            if (!TryPresentationImpact(other)) base.OnTriggerStay2D(other);
+        }
+
+        private bool TryPresentationImpact(Collider2D other)
+        {
+            if (presentationImpactTarget == null || other == null ||
+                CombatTargetResolver2D.ResolveDamageTarget(other) != presentationImpactTarget) return false;
+            System.Action callback = presentationImpact;
+            presentationImpact = null;
+            // Retain the target until destruction so additional colliders cannot apply a second hit.
+            callback?.Invoke();
+            DestroySelf();
+            return true;
+        }
 
         /// <summary>발사 방향과 속도를 받아 초기화합니다.</summary>
         public void Setup(ProjectileAttackSpawnContext context)

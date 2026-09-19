@@ -10,6 +10,7 @@ using UnityEngine;
 public readonly struct StatusHudEntry
 {
     public string OwnerKey { get; }
+    public string ProgressText { get; }
     public string StatusId { get; }
     public string NameText { get; }
     public string StoryText { get; }
@@ -40,9 +41,11 @@ public readonly struct StatusHudEntry
         StatusHudGroup group,
         int priority,
         bool isHighlighted,
-        bool isVisible)
+        bool isVisible,
+        string progressText = null)
     {
         OwnerKey = ownerKey;
+        ProgressText = progressText;
         StatusId = statusId;
         NameText = nameText;
         StoryText = storyText;

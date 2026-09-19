@@ -416,7 +416,8 @@ CombatHitPause2D.FreezeVictim now respects the same parent ICombatHitPauseImmune
 ### 2026-09-19 Rook contact and split placement
 
 - RookChargeRunner gates charge damage on contact between non-trigger physical colliders attached to the Rook/player rigidbodies. The large upper hurtbox remains available for incoming damage but cannot independently deal charge damage. This does not change Rook chase or warning dimensions.
-- Slime split placement runs after InitSplit applies child scale. SlimeSplitPlacement2D repairs starting overlaps and casts actual body shapes toward landings, respecting blocking layers and room bounds. A safe start is the only fallback; a child without safe placement is discarded before inheriting the room/chest lock unit.
+- Slime split placement runs after InitSplit applies child scale. SlimeSplitPlacement2D repairs starting overlaps, then selects an authored tile center from the parent's eight neighboring cells, ordered toward the split direction, with the parent's own cell last. TilemapPathfinder2D checks ground, holes and body clearance; actual body casts and room bounds validate the final placement. Siblings reserve distinct landing centers during one split. No free-position fallback is used; a child without a safe tile is discarded before inheriting the room/chest lock unit.
+- Split placement uses the spawn context's pathfinder, or the sole active pathfinder in the same scene for authored placements without context. Missing/ambiguous pathfinders or missing Grid/ground tiles cannot produce tile landings. The legacy spread argument no longer determines landing distance; neighboring grid cells do.
 - SlimeSplitLandingMotion2D disables Rigidbody2D simulation during the visual arc, then restores simulation and hurtboxes on landing or interruption. The legacy serialized point-probe radius is retained for data compatibility but no longer defines placement clearance.
 
 ### Demon King airborne landing safety
@@ -424,3 +425,27 @@ CombatHitPause2D.FreezeVictim now respects the same parent ICombatHitPauseImmune
 - ExplosionJump and WallBounceRush's final jump share DemonKingJumpSafety2D through DemonKingController. PrepareSafeJump must precede warning creation; the returned target is both the warning base position and landing destination.
 - Non-trigger physical bodies validate wall clearance and clamp the requested destination. An impossible start rejects the jump. Flight retains root-based animation but disables physics and tracks a separate safe ground return position; this is not a prefab visual-root migration.
 - CompleteSafeJump revalidates clearance and sets JumpLandedSafely, which gates impact effects/damage. A new obstruction rejects the impact and restores the validated start. CancelSafeJump is called by the jump finally block, OnPatternEnd and OnDisable; cleanup is idempotent.
+
+- EgoSword recall preparation is 1 second (0.16-second lift + 0.84-second hold) in both DemonKing scenes and actor defaults. The actor owns detached path/arrival telegraph handles from recall start through return. The path projects the lifted start during preparation, then follows the remaining flight toward the same return socket used by damage; its width/end padding cover contactRadius. Arrival uses an unsquashed circle matching recallImpactDiameter. ResetRecallReadiness releases both handles on completion, hide, disable and state replacement; the recall AL finally returns an interrupted recalling sword to held without applying arrival damage.
+
+
+## Telegraph parent transform correction
+
+- `AttackTelegraphWallClippedMeshView` computes clipping and progress geometry in world-space offsets, converts fill vertices through the root world-to-local matrix only when uploading, and submits border lines in world coordinates.
+- This keeps Mage/Wizard sector and Bishop line warning geometry aligned with world raycasts under scaled, mirrored or nonuniformly scaled parent hierarchies. Existing service parenting, handle ownership, hide/release flow and shape clipping policy are unchanged.
+- Shape regression coverage: `Tools/Validation/StatusTelegraphRecoveryRegression.cs` (line, rectangle, circle, ring and sector).
+
+
+### 2026-09-20 Slime corner attack targeting
+
+- Knight.TryResolveJumpImpact keeps the normal center target first, then checks two rings of eight XY neighbors when the landing-radius cast is blocked. The original target must remain visible; candidates must remain within attack range and impact radius, with clear travel and candidate-to-target paths. JumpSlamContext.ImpactPos is the single landing/warning/damage position.
+- Rook keeps its normal wall-limited cast first. When that cannot reach the center, it checks actual non-trigger body contact before the wall stop, then samples two rings around the target physical body. Collider casts must reach the player before a physical blocker. The selected direction, required contact distance and wall-limited cast are cached together per frame for detection/request/context consistency.
+- Rook BoxCast and auxiliary raycast result counts are independent; ray hits must not extend iteration over the BoxCast buffer.
+- Entry points remain Knight/Rook attack request and context builders; runner lifecycle, physical-contact damage rules, serialized fields and authored assets are unchanged. Native physics regression: Tools/Validation/SlimeCornerAttackRegression.cs. No Architecture/Contracts promotion is needed for this local targeting correction.
+
+
+### Dragon center jump precedes breath
+
+`AbilityLogic_DragonFireBreath` owns one `MoveToArenaCenter` before its three-repeat fire sequence. Its strategy asset now owns the migrated center jump/landing timing, height curve, impact damage/knockback/style and jump/landing presentation hooks. The jump holds facing only during flight and restores grounding, afterimage and impact warning in finally; each breath then uses its existing aim tracking/lock. Cancellation after the jump prevents firing.
+
+`AbilityLogic_DragonAbsorbPuddles` starts inhale/puddle conversion immediately. `DragonBoss.prefab` retains the FireBreath → AbsorbPuddles follow-up and the non-AI-selectable absorb entry. The chain is center jump → three breaths → absorb, with the existing FSM follow-up timing unchanged. Tune jump/landing settings on `AL_DragonFireBreath.asset`; absorb speed/pull/stagger settings remain on `AL_DragonAbsorbPuddles.asset`.

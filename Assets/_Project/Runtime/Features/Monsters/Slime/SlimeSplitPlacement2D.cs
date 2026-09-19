@@ -88,6 +88,57 @@ public sealed class SlimeSplitPlacement2D
         return true; // A verified safe start is preferable to the old unchecked parent-position fallback.
     }
 
+    public bool TryResolveTile(Vector2 origin, Vector2 direction, TilemapPathfinder2D pathfinder,
+        HashSet<Vector2> reservedLandings, out Vector2 start, out Vector2 landing)
+    {
+        start = landing = origin;
+        if (pathfinder == null || !TryResolve(origin, direction, 0f, out start, out _)) return false;
+        var footprint = MonsterNavigationFootprint2D.FromBodies(root, rigidbody, bodies);
+        var candidates = new List<Vector2>();
+        for (int y = -1; y <= 1; y++)
+            for (int x = -1; x <= 1; x++)
+            {
+                if (x == 0 && y == 0) continue;
+                if (pathfinder.TryGetWalkableCellCenter(origin, new Vector2Int(x, y), footprint, out Vector2 center))
+                    candidates.Add(center);
+            }
+        Vector2 preferred = direction.normalized;
+        candidates.Sort((a, b) =>
+        {
+            float scoreA = Vector2.Dot((a - origin).normalized, preferred);
+            float scoreB = Vector2.Dot((b - origin).normalized, preferred);
+            int order = scoreB.CompareTo(scoreA);
+            return order != 0 ? order : (a - origin).sqrMagnitude.CompareTo((b - origin).sqrMagnitude);
+        });
+        if (pathfinder.TryGetWalkableCellCenter(origin, Vector2Int.zero, footprint, out Vector2 ownCenter))
+            candidates.Add(ownCenter);
+
+        foreach (Vector2 candidate in candidates)
+        {
+            if (reservedLandings.Contains(candidate)) continue;
+            SetPosition(start);
+            Vector2 delta = candidate - start;
+            bool blocked = false;
+            if (delta.sqrMagnitude > 0.000001f)
+                foreach (Collider2D body in bodies)
+                {
+                    body.Cast(delta.normalized, filter, hits, delta.magnitude + skin);
+                    foreach (RaycastHit2D hit in hits)
+                        if (!Ignore(hit.collider)) { blocked = true; break; }
+                    if (blocked) break;
+                }
+            if (blocked || !pathfinder.HasDirectWalkableSegment(start, candidate, footprint)) continue;
+            SetPosition(candidate);
+            if (!IsClear()) continue;
+            landing = candidate;
+            reservedLandings.Add(candidate);
+            SetPosition(start);
+            return true;
+        }
+        SetPosition(start);
+        return false;
+    }
+
     private bool IsClear()
     {
         foreach (Collider2D body in bodies)

@@ -3304,3 +3304,17 @@ TutorialBossEncounterSequence owns the fight/loss handoff; BossDeathPresentation
 ## 2026-09-18 - Consistent player attack start and top-aligned dialogue
 
 User-directed player-origin basic attacks and projectiles start slightly outside the player's body circle using a shared 0.08-unit clearance, with wall clamping when the attack supplies its existing wall mask. This replaces individual launch/side offsets for these emitters; target-origin secondary effects are outside this rule. Dialogue multiline growth uses TMP vertical Top alignment only; authored position, size and margins remain unchanged. Chloe's nonfunctional retreat is not restored.
+
+
+## 2026-09-20 — Chest selection recovery: retained rerolls and weapon replacement
+
+User recovery tasks 3/4/5 supersede the earlier full-weapon-capacity rejection policy. One selected weapon uses an empty slot, or replaces slot 1 (index 0) when full; two selected weapons replace both existing weapons in selection order. Existing weapons drop only after the entire acquisition can proceed. Duplicate restrictions and sealed-slot equip rules remain. The user explicitly chose to preserve selected items during reroll: their definitions, relic levels and selection UI survive while only other offers are regenerated. The selected panel remains visible through reroll. Selection is still provisional until confirmation, and refresh uses/acquisition limits retain their existing owners.
+
+
+### 2026-09-20 — Retained chest items participate in loot rules; opened size is fixed
+
+User follow-up requires selected items to count toward their own LootTable type quotas and weapon duplicate exclusions during reroll. Retained relic levels remain included in the existing player-plus-chest level-cap filter. Deducting only a total count from an already generated list is not the intended rule. The chest captures its initial opened frame/grid size when binding the initial offers and preserves that size through selection, return and reroll; the existing reveal animation remains. A new binding captures fresh dimensions.
+
+## 2026-09-20 — Player overhead guidance priority
+
+User-approved rule: visible guidance stacks bottom-to-top as tutorial, Tab weapon swap, then level-up, without reserved gaps for hidden entries. Tutorial overhead text includes only the initial starting-room movement lesson (stage 0), basic attack, skills and chest; later forward/portal movement guidance is hidden. The camera-sequence-owned dash cue remains visible during ZoomIn/Waiting, as clarified by the user; inventory continues without overhead text. The user clarified that basic attack guidance remains visible and specified hold-to-attack, hold/release charged skill, and press-Q skill captions with progress counts. Existing Tab unlock/completion and level reward availability rules are preserved. See StructureMemory/ScriptSystems/TutorialSupportStructure.md for presentation ownership and cleanup.

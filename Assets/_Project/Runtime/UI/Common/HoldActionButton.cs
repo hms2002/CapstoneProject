@@ -10,7 +10,7 @@ using UnityEngine.InputSystem.UI;
 #endif
 
 [DisallowMultipleComponent]
-public sealed class HoldActionButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler, ISubmitHandler
+public sealed class HoldActionButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler, IPointerClickHandler, ISubmitHandler
 {
     private enum HoldSource
     {
@@ -47,11 +47,13 @@ public sealed class HoldActionButton : MonoBehaviour, IPointerDownHandler, IPoin
     [SerializeField] private UnityEvent onHoldCompleted;
     [SerializeField] private FloatEvent onProgressChanged;
 
+    private bool pointerHoldCompleted;
     private float holdElapsed;
     private bool isHolding;
     private bool blockKeyboardRestartUntilRelease;
     private HoldSource activeHoldSource = HoldSource.None;
 
+    public event Action PointerClicked;
     public event Action HoldStarted;
     public event Action HoldCanceled;
     public event Action HoldCompleted;
@@ -120,7 +122,15 @@ public sealed class HoldActionButton : MonoBehaviour, IPointerDownHandler, IPoin
         if (eventData != null && eventData.button != PointerEventData.InputButton.Left)
             return;
 
+        pointerHoldCompleted = false;
         BeginHold(HoldSource.Pointer);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Left &&
+            enablePointerHold && !pointerHoldCompleted && CanUse())
+            PointerClicked?.Invoke();
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -238,6 +248,7 @@ public sealed class HoldActionButton : MonoBehaviour, IPointerDownHandler, IPoin
     {
         SetProgress(1f);
         bool completedFromKeyboard = activeHoldSource == HoldSource.Keyboard;
+        if (activeHoldSource == HoldSource.Pointer) pointerHoldCompleted = true;
         isHolding = false;
         activeHoldSource = HoldSource.None;
 

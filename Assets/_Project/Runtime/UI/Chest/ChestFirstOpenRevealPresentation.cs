@@ -173,6 +173,9 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     private GameFlowInputBlocker inputBlocker;
     private ObjectPool<UIParticleEmitter> slotRevealParticlePool;
     private readonly List<ItemSlotUI> itemRevealSlots = new();
+    private LayoutMetrics? initialLayoutMetrics;
+    private ContentSizeFitter heldGridFitter;
+    private bool heldGridFitterEnabled;
     private readonly HashSet<ItemSlotUI> playedSlotRevealParticleSlots = new();
     private readonly HashSet<UIParticleEmitter> activeSlotRevealParticleEmitters = new();
     private readonly List<UIParticleEmitter> slotRevealParticleBuffer = new();
@@ -385,6 +388,27 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
             if (slot != null)
                 itemRevealSlots.Add(slot);
         }
+    }
+
+    public void CaptureInitialLayout()
+    {
+        ReleaseInitialLayout();
+        ResolveReferences();
+        initialLayoutMetrics = ResolveLayoutMetrics();
+        // The grid may reflow its items, but must not resize the captured reveal frame.
+        heldGridFitter = gridRoot != null ? gridRoot.GetComponent<ContentSizeFitter>() : null;
+        if (heldGridFitter != null)
+        {
+            heldGridFitterEnabled = heldGridFitter.enabled;
+            heldGridFitter.enabled = false;
+        }
+    }
+
+    public void ReleaseInitialLayout()
+    {
+        initialLayoutMetrics = null;
+        if (heldGridFitter != null) heldGridFitter.enabled = heldGridFitterEnabled;
+        heldGridFitter = null;
     }
 
     private IEnumerator PlaySideEntryRevealRoutine()
@@ -655,6 +679,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 
     private LayoutMetrics ResolveLayoutMetrics()
     {
+        if (initialLayoutMetrics.HasValue) return initialLayoutMetrics.Value;
         Vector2 gridSize = ResolveGridSize();
         float naturalMiddleWidth = ResolveHorizontalFrameWidth(middleFrame, gridRoot, gridSize.x);
         float middleHeight = ResolveHorizontalFrameHeight(middleFrame, gridRoot, gridSize.y);
@@ -993,6 +1018,11 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         HorizontalOrVerticalLayoutGroup layout = frame.GetComponent<HorizontalOrVerticalLayoutGroup>();
         RectOffset padding = layout != null ? layout.padding : null;
         float height = padding != null ? padding.top + padding.bottom : 0f;
+        // The center grid determines the chest body height. Side decorations stretch
+        // to that height; their authored or previous reveal size must not constrain it.
+        if (measuredChild != null)
+            return Mathf.Max(1f, height + measuredChildHeight);
+
         float childHeight = 0f;
 
         for (int i = 0; i < frame.childCount; i++)
@@ -1001,7 +1031,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
             if (child == null || !child.gameObject.activeSelf || ShouldIgnoreLayoutChild(child))
                 continue;
 
-            float resolvedHeight = child == measuredChild ? measuredChildHeight : ResolveElementHeight(child);
+            float resolvedHeight = ResolveElementHeight(child);
             childHeight = Mathf.Max(childHeight, resolvedHeight);
         }
 

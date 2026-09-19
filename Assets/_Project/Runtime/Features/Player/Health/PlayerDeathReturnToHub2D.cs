@@ -48,6 +48,8 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     private GameOverCauseKind lastDamageCauseKind = GameOverCauseKind.Monster;
     private GameplayTagSet deadControlBlockTagSet;
     private readonly HashSet<GameplayTag> deathTagsBuffer = new();
+    private readonly List<GameObject> deathItemCopies = new();
+    private bool hasScatteredDeathItems;
 
     public bool IsDeathSequenceRunning => isDeathSequenceRunning;
 
@@ -80,12 +82,17 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
 
     private void OnDisable()
     {
+        ClearDeathItemCopies();
         if (attributeSet != null)
             attributeSet.OnAttributeChanged -= HandleAttributeChanged;
 
         if (abilitySystem != null)
             abilitySystem.GameplayEventRaised -= HandleGameplayEvent;
     }
+
+    // Tutorial combat disables this component before spawning copies through the scripted path.
+    // Destroying that already-disabled player must still clean up its presentation objects.
+    private void OnDestroy() => ClearDeathItemCopies();
 
     private void HandleGameplayEvent(GameplayTag tag, AbilityEventData data)
     {
@@ -213,6 +220,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     {
         BlockPlayerControl();
         CenterCameraOnDeath();
+        ScatterDeathItemCopies();
 
         if (deathPresentation != null)
         {
@@ -229,10 +237,69 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
         ReturnToHub(endRunReason, targetHubSceneName, useSceneTransitionService);
     }
 
+    private void ScatterDeathItemCopies()
+    {
+        if (hasScatteredDeathItems) return;
+        LootManager loot = LootManager.Instance;
+        if (loot == null) return;
+        hasScatteredDeathItems = true;
+
+        // Read the original containers only. GameOver's inspection UI keeps these exact
+        // instances (including weapon runtime data and relic levels) until the run ends.
+        var items = new List<(ScriptableObject item, int level)>();
+        var weapons = GetComponent<WeaponInventory2D>();
+        if (weapons != null)
+            for (int i = 0; i < weapons.SlotCount; i++)
+                AddItem(weapons.GetWeaponInSlot(i), 0);
+        var relics = GetComponent<RelicInventory>();
+        if (relics != null)
+            for (int i = 0; i < relics.Capacity; i++)
+                AddItem(relics.GetRelicInSlot(i), relics.GetRelicLevelInSlot(i));
+        var consumables = GetComponent<PlayerConsumableInventory>();
+        if (consumables != null)
+            for (int i = 0; i < consumables.SlotCount; i++)
+                AddItem(consumables.GetConsumableInSlot(i), 0);
+        var backpack = GetComponent<PlayerBackpackInventory>();
+        if (backpack != null)
+            for (int i = 0; i < backpack.Capacity; i++)
+                AddItem(backpack.Get(i), backpack.GetRelicLevelInSlot(i));
+
+        Vector3 origin = transform.position;
+        for (int i = 0; i < items.Count; i++)
+        {
+            // Golden-angle distribution spreads large bags over a disk in one frame.
+            float angle = i * 2.39996323f;
+            float radius = Mathf.Lerp(0.75f, 2f, Mathf.Sqrt((i + 1f) / items.Count));
+            Vector3 landing = origin + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * radius;
+            WorldItemPickup2D copy = loot.SpawnDeathItemCopy(origin, landing, items[i].item, items[i].level);
+            if (copy == null) continue;
+            SceneManager.MoveGameObjectToScene(copy.gameObject, gameObject.scene);
+            deathItemCopies.Add(copy.gameObject);
+        }
+
+        void AddItem(ScriptableObject item, int level)
+        {
+            if (item != null) items.Add((item, level));
+        }
+    }
+
+    private void ClearDeathItemCopies()
+    {
+        foreach (GameObject copy in deathItemCopies)
+        {
+            if (copy == null) continue;
+            copy.SetActive(false);
+            Destroy(copy);
+        }
+        deathItemCopies.Clear();
+        hasScatteredDeathItems = false;
+    }
+
     // Scripted encounters own their dialogue/game-over timing but share the actual death state.
     public void PrepareForScriptedDeathPresentation()
     {
         BlockPlayerControl();
+        ScatterDeathItemCopies();
     }
 
     private void BlockPlayerControl()

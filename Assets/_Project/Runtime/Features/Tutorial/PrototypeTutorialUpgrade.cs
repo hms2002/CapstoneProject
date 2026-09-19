@@ -28,6 +28,9 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
 
     [Header("Authored monster encounter")]
     [SerializeField] private GoblinGunner tutorialGunner;
+    [SerializeField] private PrototypeTutorialOpeningSequence opening = new();
+    private Coroutine openingRoutine;
+    public bool IsOpeningCinematic => opening.IsPending;
     [SerializeField] private GoblinWarrior skillMonsterPrefab;
     [SerializeField] private Transform[] skillSpawnPoints = Array.Empty<Transform>();
     [SerializeField] private Transform gunnerRetreatPoint;
@@ -57,7 +60,6 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
     private IDisposable chargeCooldown;
     private IDisposable thrustCooldown;
     private AbilityCancellationToken countedAttack;
-    private AbilityCancellationToken heldAttack;
     private AbilityCancellationToken dashToken;
     private Vector2 previousPlayerPosition;
     private int dashEndFrame = -1;
@@ -81,7 +83,25 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
     private float introTimeScale;
 
     public int Stage => stage;
+    public bool IsMovementPrompt => stage == 0 || (stage == 1 && !IsDashPromptVisible) || stage >= 6;
+    public InputActionId PromptAction => stage switch
+    {
+        1 when IsDashPromptVisible => InputActionId.Dash,
+        2 => InputActionId.PrimaryAttack,
+        3 => chargeKills < 4 ? InputActionId.Skill1 : InputActionId.Skill2,
+        4 => InputActionId.Interact,
+        5 => InputActionId.InventoryToggle,
+        _ => InputActionId.MoveUp
+    };
     public string ProgressText => lastProgress;
+    public string PromptInstruction => stage switch
+    {
+        2 => $"를 길게 눌러서 공격 {attackHits}/9",
+        3 => chargeKills < 4
+            ? $"를 길게 눌렀다 떼서 스킬로 적을 처치 {chargeKills}/4"
+            : $"를 눌러 스킬로 적을 처치 {thrustKills}/3",
+        _ => ProgressText
+    };
     public bool IsDashPromptVisible => dashIntro == DashIntroPhase.ZoomIn || dashIntro == DashIntroPhase.Waiting;
 
     private void Awake()
@@ -115,6 +135,8 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
             }
         }
         stage = attackHits = chargeKills = thrustKills = 0;
+        dashIntro = DashIntroPhase.Ready;
+        InputActionQuery.SetPressBlocked(InputActionId.Dash, this, true);
         evadedBullet = false;
         nextDamageTime = 0f;
         lastProgress = null;
@@ -175,6 +197,7 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         player.GameplayEventRaised += OnGameplayEvent;
         player.AbilityExecutionStarted += OnExecutionStarted;
         player.AbilityExecutionEnded += OnExecutionEnded;
+        InputActionQuery.SetPressBlocked(InputActionId.Dash, this, dashIntro != DashIntroPhase.Done);
         if (stage < 4)
         {
             chargeCooldown = player.AddScopedCooldownDurationMultiplier(
@@ -182,6 +205,8 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
             thrustCooldown = player.AddScopedCooldownDurationMultiplier(
                 definition => definition == thrustSkill, 1f / Mathf.Max(1f, thrustSkill.cooldown));
         }
+        if (opening.IsPending)
+            openingRoutine = StartCoroutine(opening.Play(this, player, tutorialGunner));
     }
 
     private void UnbindPlayer(PlayerInteractor2D registered)
@@ -191,7 +216,11 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
 
     private void ReleasePlayer()
     {
+        if (openingRoutine != null) StopCoroutine(openingRoutine);
+        openingRoutine = null;
+        opening.Cancel();
         CleanupDashIntro();
+        InputActionQuery.SetPressBlocked(InputActionId.Dash, this, false);
         if (player != null)
         {
             player.GameplayEventRaised -= OnGameplayEvent;
@@ -202,15 +231,18 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         thrustCooldown?.Dispose();
         chargeCooldown = thrustCooldown = null;
         player = null;
-        heldAttack = countedAttack = dashToken = null;
+        countedAttack = dashToken = null;
         dashEndFrame = -1;
     }
 
     private void OnExecutionStarted(AbilitySpec spec)
     {
-        if (spec.Definition == dash) dashToken = spec.Token;
-        if (spec.Definition == basicAttack)
-            heldAttack = InputActionQuery.IsPressed(InputActionId.PrimaryAttack) ? spec.Token : null;
+        if (spec.Definition == dash)
+        {
+            dashToken = spec.Token;
+            // Actual execution starts before the dash logic samples its direction.
+            spec.SetInt(UnityGAS.Sample.AbilityLogic_Dash2D.TutorialForwardKey, stage == 1 ? 1 : 0);
+        }
     }
 
     private void OnExecutionEnded(AbilitySpec spec, bool cancelled)
@@ -224,7 +256,7 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (player == null) return;
+        if (player == null || IsOpeningCinematic) return;
         TickDashIntro();
         if (TimeScalePausePlayback.IsPaused || Time.deltaTime <= 0f) return;
         TickGunner();
@@ -232,11 +264,7 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         if (stage == 1)
         {
             TickBullets();
-            if (AtGunnerFront()) Advance();
-        }
-        if (stage == 2 && !InputActionQuery.IsPressed(InputActionId.PrimaryAttack))
-        {
-            heldAttack = null;
+            if (!opening.IsEscaping && AtGunnerFront()) Advance();
         }
         TickSkillTargets();
         previousPlayerPosition = player.transform.position;
@@ -281,10 +309,9 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
             return context.BaseDamage;
         }
         if (stage != 3 || defeated[index]) return 0f;
-        bool valid = skillMonsterPrefab != null
-            ? (ability == chargeSkill && IsFullCharge(player.FindSpec(chargeSkill))) || ability == thrustSkill
-            : index < 4 ? chargeKills < 4 && ability == chargeSkill && IsFullCharge(player.FindSpec(chargeSkill))
-            : thrustKills < 3 && ability == thrustSkill;
+        bool valid = chargeKills < 4
+            ? ability == chargeSkill && IsFullCharge(player.FindSpec(chargeSkill)) && (skillMonsterPrefab != null || index < 4)
+            : ability == thrustSkill && (skillMonsterPrefab != null || index >= 4);
         if (skillMonsterPrefab != null && !valid) return context.BaseDamage;
         if (!valid || context.BaseDamage <= 0f) return 0f;
         // Prototype targets deliberately die to one qualifying skill hit.
@@ -301,7 +328,7 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         {
             gunnerWasHit = true;
             AbilityCancellationToken token = data.Spec.Token;
-            if (token == null || token == countedAttack || token != heldAttack) return;
+            if (token == null || token == countedAttack) return;
             countedAttack = token;
             // Count each confirmed attack once, independently of combo step or recovery.
             attackHits++;
@@ -316,8 +343,9 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
             int i = Array.FindIndex(skillTargets, t => t != null && t.gameObject == data.Target);
             if (i < 0 || creditedKills[i] || targetAttributes[i].GetAttributeValue(damageEffect.healthAttribute) > 0f) return;
             bool charged = IsFullCharge(data.Spec);
-            bool valid = skillMonsterPrefab != null ? charged || data.Spec.Definition == thrustSkill
-                : i < 4 ? charged : data.Spec.Definition == thrustSkill;
+            bool valid = chargeKills < 4
+                ? charged && (skillMonsterPrefab != null || i < 4)
+                : data.Spec.Definition == thrustSkill && (skillMonsterPrefab != null || i >= 4);
             if (!valid) return;
             creditedKills[i] = true;
             defeated[i] = true;
@@ -355,6 +383,7 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
 
     private void TickGunner()
     {
+        if (opening.IsEscaping) return;
         if (tutorialGunner == null || tutorialGunner.IsDead) return;
         if (retreating)
         {
@@ -477,7 +506,13 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
             bullet.gameObject.SetActive(!bulletConsumed[i]);
             if (bulletConsumed[i] || !PrototypeTutorialRules.SweptContact(
                     BulletContactOffset(from - previousPlayerPosition), BulletContactOffset(to - currentPlayer), .48f)) continue;
-            if (dashProtected) { evadedBullet = true; continue; }
+            if (dashProtected)
+            {
+                if (!evadedBullet)
+                    DamagePopupPlayback.Show(DamagePopupRequest.Text("Evade", player.transform.position, isPlayerTarget: true));
+                evadedBullet = true;
+                continue;
+            }
             if (invulnerable || dashIntro == DashIntroPhase.ZoomIn || dashIntro == DashIntroPhase.Waiting) continue;
             bulletConsumed[i] = true;
             bullet.gameObject.SetActive(false);
@@ -630,18 +665,20 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
 
     private void RefreshPresentation()
     {
-        if (chestPractice != null && chestPractice.activeSelf != (chestLock != null || stage == 4))
-            chestPractice.SetActive(chestLock != null || stage == 4);
-        for (int i = 0; i < gates.Length; i++) gates[i].SetActive(i == 3 ? stage < 5 : stage <= i);
+        bool showChest = stage <= 4 && (chestLock != null || stage == 4);
+        if (chestPractice != null && chestPractice.activeSelf != showChest)
+            chestPractice.SetActive(showChest);
+        for (int i = 0; i < gates.Length; i++) gates[i].SetActive(i == 3 ? stage < 6 : stage <= i);
         if (stage != 1)
             foreach (Transform bullet in bullets) bullet.gameObject.SetActive(false);
         string message = stage switch
         {
-            0 => "길을 따라 마왕성에 진입하자.",
-            1 => "회피하며 전진하자.",
-            2 => $"좌클릭을 길게 눌러 공격하세요: {attackHits}/9",
-            3 => $"우클릭 스킬로 처치: {chargeKills}/4\nQ 스킬로 처치: {thrustKills}/3",
+            0 => "몬스터를 쫓아가자",
+            1 => IsDashPromptVisible ? "대시로 공격을 피하세요." : "앞으로 이동하세요.",
+            2 => "좌클릭" + PromptInstruction,
+            3 => (chargeKills < 4 ? "우클릭" : "Q") + PromptInstruction,
             4 => "상자를 열고 아이템 선택 후 획득하기",
+            5 => "인벤토리를 열어 획득한 아이템 확인하기",
             _ => "위쪽 포탈로 이동하기"
         };
         if (message == lastProgress) return;
@@ -654,10 +691,247 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         if (stage == 4) Advance();
     }
 
+    public void CompleteInventoryTutorial()
+    {
+        if (stage == 5) Advance();
+    }
+
     private void OpenBossPortalDoor(TreasureChest chest)
     {
         if (chest == portalDoorChest && bossPortalDoor != null)
             bossPortalDoor.ForceOpen(save: false);
+    }
+}
+
+// Scene-authored opening only. The mission director retains all objective/progress ownership.
+[Serializable]
+public sealed class PrototypeTutorialOpeningSequence
+{
+    [SerializeField] private bool enabled;
+    [SerializeField] private Transform gunnerVisual;
+    [SerializeField] private MonoBehaviour gunnerSpeech;
+    [SerializeField] private Vector3 gunnerStart;
+    [SerializeField] private Vector3[] escapePoints = Array.Empty<Vector3>();
+    [SerializeField, Min(.1f)] private float escapeSpeed = 6f;
+    [SerializeField] private Transform openingCameraPoint;
+
+    [NonSerialized] private bool completed;
+    [NonSerialized] private bool landed;
+    [NonSerialized] private bool canWake;
+    [NonSerialized] private bool capturedVisual;
+    [NonSerialized] private Vector3 visualPosition;
+    [NonSerialized] private PlayerHubSpawnPresentation2D arrival;
+    [NonSerialized] private PlayerCinematicProtection protection;
+    [NonSerialized] private ICinematicLetterboxOverlayHandle letterbox;
+    [NonSerialized] private GoblinGunner gunner;
+    [NonSerialized] private GoblinGunnerShotRunner shot;
+    [NonSerialized] private AbilityMotionController2D motion;
+    [NonSerialized] private bool restoreGunnerEnabled;
+    [NonSerialized] private LightBeadProjectile2D openingProjectile;
+    [NonSerialized] private GameFlowInputBlocker openingInputBlocker;
+    [NonSerialized] private IGameplayCameraFocusSession openingCamera;
+    [NonSerialized] private Transform playerTransform;
+    [NonSerialized] private MonoBehaviour coroutineHost;
+    [NonSerialized] private Coroutine letterboxExit;
+    [NonSerialized] private bool escaping;
+
+    public bool IsPending => enabled && !completed;
+    public bool IsEscaping => escaping;
+
+    public System.Collections.IEnumerator Play(MonoBehaviour host, AbilitySystem player, GoblinGunner actor)
+    {
+        // Registration occurs inside the spawner; let spawn/restore and actor Start finish first.
+        yield return null;
+        arrival = player != null ? player.GetComponent<PlayerHubSpawnPresentation2D>() : null;
+        protection = player != null ? player.GetComponent<PlayerCinematicProtection>() : null;
+        gunner = actor;
+        shot = gunner != null ? gunner.GetComponent<GoblinGunnerShotRunner>() : null;
+        motion = gunner != null ? gunner.GetComponent<AbilityMotionController2D>() : null;
+        if (arrival == null || protection == null || shot == null || motion == null ||
+            gunnerVisual == null || gunnerSpeech is not ISpeechBubblePlayback || escapePoints.Length == 0)
+        {
+            Debug.LogError("[TutorialOpening] Missing authored arrival, gunner, speech or escape path.", host);
+            completed = true;
+            Cancel();
+            yield break;
+        }
+
+        landed = canWake = false;
+        coroutineHost = host;
+        playerTransform = player.transform;
+        visualPosition = gunnerVisual.localPosition;
+        capturedVisual = true;
+        gunner.transform.position = gunnerStart;
+        Rigidbody2D body = gunner.GetComponent<Rigidbody2D>();
+        if (body != null) body.position = gunnerStart;
+        try
+        {
+            openingInputBlocker = GameFlowInputBlocker.GetOrAdd(host);
+            openingInputBlocker.Acquire();
+            letterbox = CinematicLetterboxPlayback.CreateOverlay();
+            yield return letterbox.PlayIn(0f, .14f, 0f);
+            // Editor direct-start normalization can release protection during letterbox startup.
+            // Acquire only after that yielding boundary, immediately before arrival captures input states.
+            protection.Acquire(this);
+            if (openingCameraPoint != null)
+            {
+                openingCamera = GameplayCameraFocusPlayback.Capture(host);
+                openingCamera?.SetTarget(openingCameraPoint);
+                openingCamera?.SnapToTarget(openingCameraPoint);
+            }
+            if (!arrival.TryPlayScriptedArrival(this, () => landed = true, () => canWake,
+                    useExternalCamera: openingCameraPoint != null))
+            {
+                Debug.LogError("[TutorialOpening] Player arrival is already owned by another sequence.", host);
+                completed = true;
+                yield break;
+            }
+            while (!landed && arrival.IsPortalArrivalPlaying(this)) yield return null;
+            if (!landed) yield break;
+
+            yield return PlaySurprise();
+
+            // Idle-pause suppression cancels runners. Suspend only the AI component for this single shot.
+            restoreGunnerEnabled = gunner.enabled;
+            gunner.enabled = false;
+            CommonMonsterCombatUtility.TriggerAnimation(gunner, CommonMonsterAnimationCue.AttackReady);
+            yield return shot.Run(gunner.GetComponent<AbilitySystem>(), null, player.gameObject, projectile =>
+            {
+                openingProjectile = projectile;
+                projectile.BindPresentationImpact(player.gameObject, () => canWake = true);
+            });
+            CommonMonsterCombatUtility.TriggerAnimation(gunner, CommonMonsterAnimationCue.Recover);
+            ((ISpeechBubblePlayback)gunnerSpeech).HideActive();
+            while (!canWake && openingProjectile != null) yield return null;
+            if (!canWake)
+            {
+                Debug.LogError("[TutorialOpening] Opening shot missed the player; check the authored firing lane.", host);
+                completed = true;
+                yield break;
+            }
+            // Arrival restores the upright pose, while this sequence still owns control protection.
+            while (arrival.IsPortalArrivalPlaying(this)) yield return null;
+            player.GetComponent<PlayerInteractor2D>()?.SetInteractState(InteractState.None);
+            yield return PlaySurprise();
+            gunner.enabled = restoreGunnerEnabled;
+            restoreGunnerEnabled = false;
+            ((ISpeechBubblePlayback)gunnerSpeech).HideActive();
+
+            escaping = true;
+            float totalDistance = 0f;
+            Vector2 previousPoint = gunner.transform.position;
+            foreach (Vector3 point in escapePoints)
+            {
+                totalDistance += Vector2.Distance(previousPoint, point);
+                previousPoint = point;
+            }
+            float completedDistance = 0f;
+            foreach (Vector3 destination in escapePoints)
+            {
+                float stalledSeconds = 0f;
+                float bestDistance = Vector2.Distance(gunner.transform.position, destination);
+                float segmentLength = bestDistance;
+                while (Vector2.Distance(gunner.transform.position, destination) > .06f)
+                {
+                    Vector2 offset = destination - gunner.transform.position;
+                    motion.StartDash(offset, Mathf.Min(escapeSpeed, offset.magnitude / .1f), .1f);
+                    float distance = offset.magnitude;
+                    if (!completed && completedDistance + Mathf.Max(0f, segmentLength - distance) >= totalDistance * .7f)
+                    {
+                        ReleaseCinematicControl();
+                        letterboxExit = host.StartCoroutine(FadeOutLetterbox());
+                    }
+                    if (distance < bestDistance - .02f) { bestDistance = distance; stalledSeconds = 0f; }
+                    else stalledSeconds += Time.deltaTime;
+                    if (stalledSeconds > 3f)
+                    {
+                        Debug.LogError("[TutorialOpening] Escape path is blocked; check authored waypoints and walls.", host);
+                        completed = true;
+                        yield break;
+                    }
+                    yield return null;
+                }
+                motion.CancelMotion();
+                completedDistance += segmentLength;
+            }
+            escaping = false;
+            if (!completed)
+            {
+                ReleaseCinematicControl();
+                letterboxExit = host.StartCoroutine(FadeOutLetterbox());
+            }
+            if (letterboxExit != null) yield return letterboxExit;
+        }
+        finally
+        {
+            Cancel();
+        }
+    }
+
+    private void ReleaseCinematicControl()
+    {
+        completed = true;
+        openingCamera?.Restore(playerTransform);
+        openingCamera = null;
+        openingInputBlocker?.Release();
+        openingInputBlocker = null;
+        if (protection != null) protection.Release(this);
+        protection = null;
+    }
+
+    private System.Collections.IEnumerator FadeOutLetterbox()
+    {
+        yield return letterbox.PlayOut(.25f);
+        letterbox.Dispose();
+        letterbox = null;
+        letterboxExit = null;
+    }
+
+    private System.Collections.IEnumerator PlaySurprise()
+    {
+        ((ISpeechBubblePlayback)gunnerSpeech).Speak("!", .85f);
+        for (float elapsed = 0f; elapsed < .4f; elapsed += Time.deltaTime)
+        {
+            float t = Mathf.Clamp01(elapsed / .4f);
+            gunnerVisual.localPosition = visualPosition + Vector3.up * (4f * t * (1f - t) * .45f);
+            yield return null;
+        }
+        gunnerVisual.localPosition = visualPosition;
+        yield return new WaitForSeconds(.2f);
+    }
+
+    public void Cancel()
+    {
+        escaping = false;
+        if (letterboxExit != null && coroutineHost != null) coroutineHost.StopCoroutine(letterboxExit);
+        letterboxExit = null;
+        if (openingProjectile != null)
+        {
+            openingProjectile.BindPresentationImpact(null, null);
+            UnityEngine.Object.Destroy(openingProjectile.gameObject);
+        }
+        openingProjectile = null;
+        shot?.Cancel();
+        motion?.CancelMotion();
+        if (gunner != null && restoreGunnerEnabled) gunner.enabled = true;
+        restoreGunnerEnabled = false;
+        if (capturedVisual && gunnerVisual != null) gunnerVisual.localPosition = visualPosition;
+        capturedVisual = false;
+        if (gunnerSpeech is ISpeechBubblePlayback speech) speech.HideActive();
+        // Arrival restores its input snapshot before the outer cinematic owner restores normal controls.
+        if (arrival != null) arrival.CancelPortalArrival(this);
+        openingCamera?.Restore(playerTransform);
+        openingCamera = null;
+        openingInputBlocker?.Release();
+        openingInputBlocker = null;
+        if (protection != null) protection.Release(this);
+        letterbox?.Dispose();
+        letterbox = null;
+        arrival = null;
+        protection = null;
+        shot = null;
+        motion = null;
+        gunner = null;
     }
 }
 

@@ -50,7 +50,7 @@ public sealed class ItemDetailContext
             return ItemDetailActionHint.Hidden;
 
         return IsChestUiActive
-            ? ItemDetailActionHint.Show(KeyCode.Mouse1, "상자로 옮기기")
+            ? ItemDetailActionHint.Hidden
             : ItemDetailActionHint.Show(KeyCode.F, "버리기");
     }
 

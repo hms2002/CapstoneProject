@@ -17,39 +17,44 @@ namespace UnityGAS
     {
         private readonly AttributeSet _set;
         private readonly StatTypeBindings _bindings;
+        private readonly System.Func<AttributeDefinition, float> _readAttribute;
 
         public AttributeStatProvider(AttributeSet set, StatTypeBindings bindings)
         {
             _set = set;
             _bindings = bindings;
+            _readAttribute = set != null ? set.GetAttributeValue : (System.Func<AttributeDefinition, float>)null;
         }
 
         public float Get(StatId id)
+            => _set != null ? Get(id, _readAttribute) : 0f;
+
+        public float Get(StatId id, System.Func<AttributeDefinition, float> readAttribute)
         {
-            if (_set == null || _bindings == null) return 0f;
+            if (readAttribute == null || _bindings == null) return 0f;
             if (id == StatId.None) return 0f;
 
             // Composite final
             if (_bindings.TryGetComposite(id, out var c) && c != null)
             {
-                float b = GetBoundOrDefault(c.baseId, defaultValue: 0f);
-                float a = GetBoundOrDefault(c.addId, defaultValue: 0f);
-                float m = GetBoundOrDefault(c.mulId, defaultValue: 1f, treatAsMultiplier: true);
+                float b = GetBoundOrDefault(c.baseId, readAttribute, defaultValue: 0f);
+                float a = GetBoundOrDefault(c.addId, readAttribute, defaultValue: 0f);
+                float m = GetBoundOrDefault(c.mulId, readAttribute, defaultValue: 1f, treatAsMultiplier: true);
                 return (b + a) * m;
             }
 
             // Raw bound
-            return GetBoundOrDefault(id, defaultValue: 0f);
+            return GetBoundOrDefault(id, readAttribute, defaultValue: 0f);
         }
 
-        private float GetBoundOrDefault(StatId id, float defaultValue, bool treatAsMultiplier = false)
+        private float GetBoundOrDefault(StatId id, System.Func<AttributeDefinition, float> readAttribute, float defaultValue, bool treatAsMultiplier = false)
         {
             if (id == StatId.None) return defaultValue;
 
             if (_bindings.TryGetBinding(id, out var b) && b != null)
             {
                 if (b.attribute == null) return defaultValue;
-                float v = _set.GetAttributeValue(b.attribute);
+                float v = readAttribute(b.attribute);
 
                 if (b.isMultiplier || treatAsMultiplier)
                     return v != 0f ? Mathf.Max(0f, v) : 1f;

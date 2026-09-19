@@ -211,6 +211,15 @@ public class LootManager : MonoBehaviour
         spawnService.SpawnLootObject(position, itemData);
     }
 
+    public WorldItemPickup2D SpawnDeathItemCopy(Vector3 origin, Vector3 landingPosition, ScriptableObject item, int relicLevel)
+    {
+        EnsureServices();
+        List<Vector3> groundPositions = spawnService.GetNearbyGroundPositions(landingPosition);
+        if (groundPositions.Count > 0)
+            landingPosition = groundPositions[0];
+        return spawnService.SpawnPresentationCopy(origin, landingPosition, item, relicLevel);
+    }
+
     public int SpawnRelicDropsByRarity(Vector3 origin, ItemRarity rarity, int count)
     {
         if (count <= 0)

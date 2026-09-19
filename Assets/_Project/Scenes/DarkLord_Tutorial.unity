@@ -16761,7 +16761,7 @@ MonoBehaviour:
   egoSwordSpeechOffsetDelta: {x: -0.5, y: -0.6, z: 0}
   recallLiftHeight: 2.2
   recallLiftSeconds: 0.16
-  recallLiftHoldSeconds: 0.18
+  recallLiftHoldSeconds: 0.84
   recallReturnMinimumSeconds: 0.35
   contactRadius: 0.45
   contactDamage: 1

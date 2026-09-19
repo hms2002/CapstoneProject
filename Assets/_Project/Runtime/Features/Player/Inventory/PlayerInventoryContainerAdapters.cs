@@ -77,6 +77,15 @@ public sealed class PlayerWeaponContainerAdapter : IItemContainer, IDisposable
 
     public int SlotCount => inventory != null ? inventory.SlotCount : 0;
 
+    public bool PreviewChestSelection(System.Collections.Generic.IReadOnlyList<WeaponDefinition> incoming, out int[] destinations)
+    {
+        destinations = null;
+        return inventory != null && inventory.PreviewChestSelection(incoming, out destinations);
+    }
+
+    public bool TryAcquireChestSelection(System.Collections.Generic.IReadOnlyList<WeaponDefinition> incoming)
+        => inventory != null && inventory.TryAcquireChestSelection(incoming);
+
     public ScriptableObject Get(int index)
     {
         return inventory != null ? inventory.GetWeaponInSlot(index) : null;

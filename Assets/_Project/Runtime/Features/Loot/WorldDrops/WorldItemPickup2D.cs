@@ -24,6 +24,7 @@ public class WorldItemPickup2D : InteractableBase
 
     private MaterialPropertyBlock outlinePropertyBlock;
     private Collider2D triggerCollider;
+    private bool presentationOnly;
 
     public ScriptableObject Item => item;
     public int RelicLevel => relicLevel;
@@ -59,7 +60,18 @@ public class WorldItemPickup2D : InteractableBase
         OnUnHighlight();
     }
 
-    private void OnEnable() => WorldItemRegistry.Register(this);
+    private void OnEnable()
+    {
+        if (!presentationOnly) WorldItemRegistry.Register(this);
+    }
+
+    // One-way: death copies must never become inventory rewards, even after landing.
+    public void MakePresentationOnly()
+    {
+        presentationOnly = true;
+        SetInteractionLocked(true);
+        WorldItemRegistry.Unregister(this);
+    }
 
     private void OnDisable()
     {
@@ -111,7 +123,7 @@ public class WorldItemPickup2D : InteractableBase
 
     public override void OnPlayerInteract(IPlayerInteractor player)
     {
-        if (item == null)
+        if (item == null || presentationOnly)
             return;
 
         WorldPickupDeliveryResult result = WorldPickupDeliveryService.TryDeliver(
@@ -141,6 +153,7 @@ public class WorldItemPickup2D : InteractableBase
 
     public void SetInteractionLocked(bool locked)
     {
+        locked |= presentationOnly;
         interactionLocked = locked;
         if (locked)
             OnUnHighlight();

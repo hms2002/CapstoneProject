@@ -115,6 +115,11 @@ public class ChestUIManager : MonoBehaviour, IChestUiOpenBackend
         return openedChest != null && openedChest.TryRefreshLoot();
     }
 
+    public bool TryRefreshOpenedChest(System.Collections.Generic.IReadOnlyList<int> preservedIndices)
+    {
+        return openedChest != null && openedChest.TryRefreshLoot(preservedIndices);
+    }
+
     private void OnDestroy()
     {
         if (Instance == this)

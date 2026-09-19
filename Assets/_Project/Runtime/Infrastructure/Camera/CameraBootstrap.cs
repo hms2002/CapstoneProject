@@ -58,21 +58,31 @@ public sealed class CameraBootstrap : MonoBehaviour
 
     public static Camera GetMainCamera()
     {
+        // Read queries must not rerun rig setup: setup restores player Follow/priority and
+        // would overwrite an active cinematic target (including reads during spawn height calculation).
+        if (Instance != null && Instance.runtimeMainCamera != null)
+            return Instance.runtimeMainCamera;
         return EnsureRuntimeRigForCurrentScene().runtimeMainCamera;
     }
 
     public static CameraFollow GetLegacyFollow()
     {
+        if (Instance != null && Instance.runtimeMainCamera != null)
+            return Instance.runtimeLegacyFollow;
         return EnsureRuntimeRigForCurrentScene().runtimeLegacyFollow;
     }
 
     public static CinemachineBrain GetBrain()
     {
+        if (Instance != null && Instance.runtimeMainCamera != null)
+            return Instance.runtimeBrain;
         return EnsureRuntimeRigForCurrentScene().runtimeBrain;
     }
 
     public static CinemachineCamera GetPlayerCamera()
     {
+        if (Instance != null && Instance.runtimePlayerCam != null)
+            return Instance.runtimePlayerCam;
         return EnsureRuntimeRigForCurrentScene().runtimePlayerCam;
     }
 

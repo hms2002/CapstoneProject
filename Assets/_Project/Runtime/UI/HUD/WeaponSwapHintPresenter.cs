@@ -70,9 +70,8 @@ public sealed class WeaponSwapHintPresenter : MonoBehaviour
             return false;
         if (!RectTransformUtility.ScreenPointToWorldPointInRectangle(parent, screen, uiCamera, out Vector3 position))
             return false;
-        float extraHeight = levelUpPrompt != null && levelUpPrompt.activeInHierarchy ? 64f : 0f;
         float hover = 4f * Mathf.Sin(Time.unscaledTime * Mathf.PI * 2f / 2.4f);
-        prompt.position = position + parent.TransformVector((Vector3)uiOffset + Vector3.up * (extraHeight + hover));
+        prompt.position = position + parent.TransformVector((Vector3)uiOffset + Vector3.up * hover);
         return true;
     }
 
@@ -98,5 +97,9 @@ public sealed class WeaponSwapHintPresenter : MonoBehaviour
     {
         if (prompt != null && prompt.gameObject.activeSelf != visible)
             prompt.gameObject.SetActive(visible);
+        if (visible && prompt != null)
+            PlayerOverheadPromptLayout.Place(this, prompt, promptCanvas, PlayerOverheadPromptLayout.WeaponSwap);
+        else
+            PlayerOverheadPromptLayout.Remove(this);
     }
 }

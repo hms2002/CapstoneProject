@@ -2263,3 +2263,42 @@ Symptom: selected items lost their old backgrounds but permanent empty selection
 - Demon King's recall-to-final transition attempted to enter the already-current `BossPatternExecuteState`; the state machine correctly ignored that transition, so the final ability never entered. Exit the old state first, then reserve the new pattern, then re-enter. Reserving before exit is also unsafe because exit clears reservations. Interruption must release recall motion and presentation ownership.
 - Slime phase-one death called `NotifyBossDefeated`, which paused run completion timing even though split bosses remained. Individual deaths in a managed encounter must defer the notification to the encounter's clear condition. The director now reports completion before its optional reward delay.
 - The actual Demon King scene contains an unpacked object missing status-HUD components already present in the prefab. Validate the runtime scene hierarchy, not just the source prefab.
+
+
+## 2026-09-20 - World-clipped telegraphs were scaled again by caster parents
+
+- `AttackTelegraphService` parents its reusable view beneath the caster. The mesh renderer used raycast distances and directions measured in world space directly as local mesh vertices, so caster scale/reflection distorted the already-clipped result. World rotation alone does not cancel inherited scale or shear.
+- Keep clipping/progress math in world units, transform final mesh offsets with `worldToLocalMatrix.MultiplyVector`, and submit border positions in world coordinates. This preserves the existing parent-owned cleanup lifecycle; detaching views is unnecessary.
+- Regression: `Tools/Validation/StatusTelegraphRecoveryRegression.cs` compares transformed mesh and outline coordinates across uniform, reflected and nonuniform rotated parents, including the wall endpoint.
+
+
+## 2026-09-20 — Chest reroll destruction must unbind never-enabled slots
+
+- Observed in the isolated Unity regression: a slot bound while inactive subscribed to ChestContainerAdapter.OnChanged, then was destroyed during reroll before ever becoming active. A subsequent reroll invoked Refresh on the destroyed ItemSlotUI and threw MissingReferenceException.
+- Cause: relying only on OnDisable to release subscriptions created by Bind; a never-enabled object has no matching disable callback.
+- Fix: ChestScreen explicitly calls Bind(null, -1) before deleting generated slots in both full cleanup and unselected-offer rebuild. Selected views remain bound and alive.
+- Prevention: when explicit binding can precede activation, release binding explicitly in the owner teardown path. ChestSelectionRecoveryRegression repeats rerolls and checks retained views/cells.
+
+## 2026-09-20 — Tutorial cinematic token lost during Editor startup
+
+- Evidence: Editor.log recorded PrototypeTutorialOpeningSequence acquiring PlayerCinematicProtection, then SceneDomainCoordinator.NormalizeDevelopmentPlayerState calling ForceReleaseAll while the opening yielded its letterbox startup, before player arrival began. The sequence later set interaction to None after waking, but its final Release had no token left to restore Idle. This explains the reported post-cinematic control loss; do not solve it by force-enabling every player input or releasing other owners.
+- Fix: acquire cinematic protection after yielding letterbox startup and immediately before scripted arrival captures its input snapshot. Keep the same token through wake and release at the requested 70% escape handoff. Native regression simulates the normalizer, exercises the updated acquisition order with real input/interactor components, and checks that handoff restores input/Idle while early wake stays locked.
+- Camera ownership: the opening now owns an authored camera anchor; scripted arrival explicitly skips its internal camera rebinding when an external sequence owns framing. Keep startup/landing/wake and cancellation under the same owner to avoid camera jumps.
+
+## 2026-09-20 — Camera getters erased tutorial focus
+
+- Cause: CameraBootstrap.GetMainCamera/GetPlayerCamera/GetBrain/GetLegacyFollow called EnsureRuntimeRigForCurrentScene on every read. EnsureRuntimeRig reset camera priority and rebound legacy Follow/LookAt to PlayerRuntimeRegistry's player, even while the legacy follower was disabled by a cinematic. PlayerHubSpawnPresentation2D.ResolveStartPosition reads the main camera immediately after the tutorial assigns its opening anchor, so the authored focus was overwritten.
+- Fix: return existing cached camera references without running setup. Missing-rig initialization and explicit scene-load/player-registration setup are unchanged; no DDOL lifecycle or scene-domain policy changes.
+- Regression: CameraFocusQueryRegression repeated all four getters and failed before the fix with `Read queries reset cinematic priority`. The fixed implementation must preserve both target and priority, including when the optional legacy follower is absent. Avoid treating a state-mutating Ensure operation as a read accessor.
+
+### 2026-09-20 — Chest initial height contaminated by decorative frame dimensions
+- Symptom: five initial items produced a two-row grid but retained GlobalUIRoot's 415-high body instead of 225.
+- Cause: ResolveHorizontalFrameHeight took the maximum of the measured grid height and authored/previous side decoration heights; CaptureInitialLayout then froze that result.
+- Fix: a measured center grid determines body height plus frame padding; decorations follow the result. Top/bottom frame measurement remains unchanged.
+- Regression coverage: ChestSelectionRecoveryRegression.FixedInitialSize includes both 415-high side decorations, five items with actual grid padding, selection/reroll/return, and recapture for a subsequent one-row chest. A grid-only fixture had missed the defect.
+
+## 2026-09-20 — Scripted tutorial death bypassed item scatter
+
+- The tutorial boss encounter intentionally disables PlayerDeathReturnToHub2D while it owns combat defeat, post-defeat dialogue and tutorial game-over routing. It calls PrepareForScriptedDeathPresentation at zero HP, which previously only blocked controls. Item scatter existed only in the normal CoDeathSequence, so the tutorial route never called it.
+- Share scatter from the scripted preparation entry without re-enabling automatic death routing. Guard duplicate scatter and preserve original containers; emit non-interactable visual copies only. Also clear copies on destruction: a component disabled before scripted spawning cannot rely solely on a later OnDisable to clean new objects.
+- Isolated native regression covers the disabled scripted entry, repeated calls, inventory retention, normal death route remaining inactive, and disabled-player destruction cleanup.

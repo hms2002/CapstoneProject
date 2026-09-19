@@ -1,4 +1,5 @@
 using CapstoneAudio;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityGAS;
@@ -241,6 +242,16 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
 
         Vector3 center = transform.position;
         Vector2[] dirs = GetDirs(splitCount);
+        var reservedLandings = new HashSet<Vector2>();
+        TilemapPathfinder2D splitPathfinder = splitSpawnContext.Pathfinder;
+        if (splitPathfinder == null)
+            foreach (var finder in FindObjectsByType<TilemapPathfinder2D>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+                if (finder.isActiveAndEnabled && finder.gameObject.scene == gameObject.scene)
+                {
+                    // Authored scenes may not supply a spawn context. Never choose arbitrarily between grids.
+                    if (splitPathfinder != null) { splitPathfinder = null; break; }
+                    splitPathfinder = finder;
+                }
         PlaySplitSound<T>(center);
 
         for (int i = 0; i < dirs.Length; i++)
@@ -258,7 +269,8 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
                 nextSlime.GetComponent<ExperienceRewardSource>()?.SetGrantExperience(false);
                 var placement = new SlimeSplitPlacement2D(spawned, transform, ResolveSplitLandingBlockedLayers(),
                     splitLandingBlockedSkin, splitLandingResolveSteps, splitSpawnContext.RoomArea);
-                if (!placement.TryResolve(center, dirs[i], splitSpread, out Vector2 safeStart, out Vector2 landingPosition))
+                if (!placement.TryResolveTile(center, dirs[i], splitPathfinder, reservedLandings,
+                    out Vector2 safeStart, out Vector2 landingPosition))
                 {
                     // Do not register an impossible spawn as a remaining room enemy.
                     spawned.SetActive(false);
@@ -268,7 +280,7 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
                 }
                 RegisterLockTrackedChild(spawned);
                 var childContext = new MonsterSpawnContext(landingPosition, spawned.transform.rotation,
-                    splitSpawnContext.RoomArea, splitSpawnContext.Pathfinder);
+                    splitSpawnContext.RoomArea, splitPathfinder);
                 foreach (var receiver in spawned.GetComponentsInChildren<IMonsterSpawnContextReceiver>(true))
                     receiver.ApplySpawnContext(childContext);
                 StartSplitLandingMotion(spawned, safeStart, landingPosition);

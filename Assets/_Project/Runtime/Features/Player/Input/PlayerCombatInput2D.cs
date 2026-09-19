@@ -8,9 +8,12 @@ using UnityGAS;
 /// - UI/대화/연출 흐름과 block tag 상태를 확인해 전투 조작이 들어가지 않도록 차단한다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventListener
+public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventListener, ICombatEvadeState
 {
     private readonly System.Collections.Generic.HashSet<object> weaponInputBlockOwners = new();
+    public bool IsEvadeInvulnerable => abilitySystem != null && dash != null &&
+        abilitySystem.FindSpec(dash)?.GetInt(UnityGAS.Sample.AbilityLogic_Dash2D.InvulnerableKey, 0) == 1;
+
     public bool IsWeaponInputBlocked => weaponInputBlockOwners.Count > 0;
 
     public void SetWeaponInputBlocked(object owner, bool blocked)

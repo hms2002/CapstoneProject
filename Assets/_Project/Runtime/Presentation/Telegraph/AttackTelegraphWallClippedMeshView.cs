@@ -193,7 +193,7 @@ namespace UnityGAS
             if (renderer == null)
                 return;
 
-            renderer.useWorldSpace = false;
+            renderer.useWorldSpace = true;
             renderer.widthMultiplier = BorderWidth;
             renderer.numCapVertices = 0;
             renderer.numCornerVertices = 0;
@@ -356,6 +356,7 @@ namespace UnityGAS
             RebuildRectangleBorderLine(safeSampleCount);
             ApplyFillScaleToRectangleVertices(safeSampleCount, fillScale);
 
+            ConvertWorldOffsetsToLocalVertices();
             mesh.Clear();
             mesh.vertices = vertices;
             mesh.triangles = triangles;
@@ -421,6 +422,7 @@ namespace UnityGAS
             RebuildRingBorderLines(safeSampleCount);
             ApplyFillScaleToRingVertices(safeSampleCount, safeInnerRadius, fillScale);
 
+            ConvertWorldOffsetsToLocalVertices();
             mesh.Clear();
             mesh.vertices = vertices;
             mesh.triangles = triangles;
@@ -504,6 +506,7 @@ namespace UnityGAS
                 triangles[triangleIndex++] = next + 1;
             }
 
+            ConvertWorldOffsetsToLocalVertices();
             mesh.Clear();
             mesh.vertices = vertices;
             mesh.triangles = triangles;
@@ -599,7 +602,7 @@ namespace UnityGAS
 
                 borderLineRenderer.loop = true;
                 borderLineRenderer.positionCount = outerVertexCount;
-                borderLineRenderer.SetPositions(borderPositions);
+                SetWorldBorderPositions(borderLineRenderer);
             }
             else
             {
@@ -612,7 +615,7 @@ namespace UnityGAS
                 borderPositions[positionCount - 1] = Vector3.zero;
                 borderLineRenderer.loop = false;
                 borderLineRenderer.positionCount = positionCount;
-                borderLineRenderer.SetPositions(borderPositions);
+                SetWorldBorderPositions(borderLineRenderer);
             }
 
             borderLineRenderer.enabled = true;
@@ -634,7 +637,7 @@ namespace UnityGAS
 
             borderLineRenderer.loop = true;
             borderLineRenderer.positionCount = sampleCount;
-            borderLineRenderer.SetPositions(borderPositions);
+            SetWorldBorderPositions(borderLineRenderer);
             borderLineRenderer.enabled = true;
 
             for (int i = 0; i < sampleCount; i++)
@@ -642,7 +645,7 @@ namespace UnityGAS
 
             innerBorderLineRenderer.loop = true;
             innerBorderLineRenderer.positionCount = sampleCount;
-            innerBorderLineRenderer.SetPositions(borderPositions);
+            SetWorldBorderPositions(innerBorderLineRenderer);
             innerBorderLineRenderer.enabled = true;
         }
 
@@ -674,8 +677,25 @@ namespace UnityGAS
             borderPositions[positionCount - 1] = vertices[0];
             borderLineRenderer.loop = false;
             borderLineRenderer.positionCount = positionCount;
-            borderLineRenderer.SetPositions(borderPositions);
+            SetWorldBorderPositions(borderLineRenderer);
             borderLineRenderer.enabled = true;
+        }
+
+        // Geometry and raycasts above use world-space offsets. Convert only at upload:
+        // parent scale, reflection and shear must not stretch the clipped result again.
+        private void ConvertWorldOffsetsToLocalVertices()
+        {
+            Matrix4x4 worldToLocal = transform.worldToLocalMatrix;
+            for (int i = 0; i < vertices.Length; i++)
+                vertices[i] = worldToLocal.MultiplyVector(vertices[i]);
+        }
+
+        private void SetWorldBorderPositions(LineRenderer renderer)
+        {
+            Vector3 origin = transform.position;
+            for (int i = 0; i < borderPositions.Length; i++)
+                borderPositions[i] += origin;
+            renderer.SetPositions(borderPositions);
         }
 
         private float ResolveVisibleDistance(

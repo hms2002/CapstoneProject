@@ -184,7 +184,7 @@ public class Knight : Slime
 
         GameObject targetObject = target != null ? target.gameObject : null;
         if (!InRange(targetObject, AttackRange)) return false;
-        if (!CanJumpDirectlyToTarget(targetObject)) return false;
+        if (!TryResolveJumpImpact(targetObject, out _)) return false;
 
         request = new MobAttackRequest(jumpSlamAbility, targetObject, AttackRecoverSeconds);
         return request.IsValid;
@@ -200,12 +200,12 @@ public class Knight : Slime
 
         GameObject targetObject = GetTarget(explicitTarget);
         if (!InRange(targetObject, AttackRange)) return false;
-        if (!CanJumpDirectlyToTarget(targetObject)) return false;
+        if (!TryResolveJumpImpact(targetObject, out Vector2 impactPosition)) return false;
 
         context = new JumpSlamContext(
             targetObject,
             transform.position,
-            ResolveReachableImpactPosition(transform.position, targetObject.transform.position),
+            impactPosition,
             TravelSeconds,
             TravelSeconds * HorizontalTravelNormalized,
             TravelEaseOutPower,
@@ -218,100 +218,57 @@ public class Knight : Slime
         return true;
     }
 
-    /// <summary>점프 내려찍기 착지 위치가 벽/사물 너머로 잡히지 않도록 실제 도달 가능한 지점으로 보정합니다.</summary>
-    private Vector2 ResolveReachableImpactPosition(Vector2 startPosition, Vector2 desiredImpactPosition)
+    // Resolve once per request/context; the runner uses this same point for warning and impact.
+    private bool TryResolveJumpImpact(GameObject targetObject, out Vector2 impactPosition)
     {
-        Vector2 delta = desiredImpactPosition - startPosition;
-        float distance = delta.magnitude;
-        if (distance <= 0.001f)
-            return desiredImpactPosition;
+        impactPosition = targetObject != null ? (Vector2)targetObject.transform.position : Vector2.zero;
+        if (targetObject == null) return false;
+        Vector2 start = transform.position;
+        Vector2 targetPosition = impactPosition;
+        float radius = Mathf.Max(0.01f, jumpLandingProbeRadius);
+        if (IsJumpPathClear(start, targetPosition, radius, targetObject)) return true;
 
-        LayerMask blockedLayers = ResolveJumpBlockedLayers();
-        if (blockedLayers.value == 0)
-            return desiredImpactPosition;
-
-        Vector2 direction = delta / distance;
-        ContactFilter2D filter = new ContactFilter2D
+        // Only relax an endpoint clearance failure, never jump around an intervening wall.
+        if (!IsJumpPathClear(start, targetPosition, 0f, targetObject)) return false;
+        for (int ring = 1; ring <= 2; ring++)
         {
-            useLayerMask = true,
-            layerMask = blockedLayers,
-            useTriggers = false
-        };
-
-        int hitCount = Physics2D.CircleCast(
-            startPosition,
-            Mathf.Max(0.01f, jumpLandingProbeRadius),
-            direction,
-            filter,
-            jumpLandingHits,
-            distance);
-
-        float nearestDistance = distance;
-        for (int i = 0; i < hitCount; i++)
-        {
-            RaycastHit2D hit = jumpLandingHits[i];
-            if (hit.collider == null || hit.collider.transform.IsChildOf(transform))
-                continue;
-
-            nearestDistance = Mathf.Min(nearestDistance, hit.distance);
+            float offset = (radius + Mathf.Max(0f, jumpBlockedSkin)) * ring;
+            for (int x = -1; x <= 1; x++)
+            for (int y = -1; y <= 1; y++)
+            {
+                if (x == 0 && y == 0) continue;
+                Vector2 candidate = targetPosition + new Vector2(x, y) * offset;
+                if (Vector2.Distance(candidate, targetPosition) > ImpactDiameter * 0.5f ||
+                    Vector2.Distance(start, candidate) > AttackRange) continue;
+                if (!IsJumpPathClear(start, candidate, radius, targetObject) ||
+                    !IsJumpPathClear(candidate, targetPosition, 0f, targetObject)) continue;
+                impactPosition = candidate;
+                return true;
+            }
         }
-
-        float allowedDistance = Mathf.Clamp(nearestDistance - Mathf.Max(0f, jumpBlockedSkin), 0f, distance);
-        return startPosition + direction * allowedDistance;
+        return false;
     }
 
-    /// <summary>
-    /// 책임:
-    /// - Knight가 목표 위치까지 벽/사물에 막히지 않고 직접 점프 내려찍기를 사용할 수 있는지 판단한다.
-    /// - 조건을 만족하지 않으면 공격 요청을 만들지 않아 FSM이 Chase 상태로 위치를 다시 잡게 한다.
-    /// </summary>
-    private bool CanJumpDirectlyToTarget(GameObject targetObject)
+    private bool IsJumpPathClear(Vector2 start, Vector2 end, float radius, GameObject targetObject)
     {
-        if (targetObject == null)
-            return false;
-
-        Vector2 startPosition = transform.position;
-        Vector2 targetPosition = targetObject.transform.position;
-        Vector2 delta = targetPosition - startPosition;
-        float distance = delta.magnitude;
-        if (distance <= 0.001f)
-            return true;
-
-        LayerMask blockedLayers = ResolveJumpBlockedLayers();
-        if (blockedLayers.value == 0)
-            return true;
-
-        Vector2 direction = delta / distance;
+        Vector2 delta = end - start;
         ContactFilter2D filter = new ContactFilter2D
         {
             useLayerMask = true,
-            layerMask = blockedLayers,
+            layerMask = ResolveJumpBlockedLayers(),
             useTriggers = false
         };
-
-        int hitCount = Physics2D.CircleCast(
-            startPosition,
-            Mathf.Max(0.01f, jumpLandingProbeRadius),
-            direction,
-            filter,
-            jumpLandingHits,
-            distance);
-
-        for (int i = 0; i < hitCount; i++)
+        int count = radius > 0f
+            ? Physics2D.CircleCast(start, radius, delta.normalized, filter, jumpLandingHits, delta.magnitude)
+            : Physics2D.Raycast(start, delta.normalized, filter, jumpLandingHits, delta.magnitude);
+        if (count == jumpLandingHits.Length) return false;
+        for (int i = 0; i < count; i++)
         {
-            RaycastHit2D hit = jumpLandingHits[i];
-            if (hit.collider == null)
-                continue;
-
-            if (hit.collider.transform.IsChildOf(transform))
-                continue;
-
-            if (hit.collider.transform.IsChildOf(targetObject.transform))
-                continue;
-
+            Collider2D hit = jumpLandingHits[i].collider;
+            if (hit == null || hit.transform.IsChildOf(transform) ||
+                hit.transform.IsChildOf(targetObject.transform)) continue;
             return false;
         }
-
         return true;
     }
 

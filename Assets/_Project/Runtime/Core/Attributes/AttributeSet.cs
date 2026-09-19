@@ -314,6 +314,22 @@ namespace UnityGAS
             return attributes.Keys;
         }
 
+        public Dictionary<AttributeDefinition, AttributeValue> CreatePreviewSnapshot()
+        {
+            EnsureInitialized();
+            var snapshot = new Dictionary<AttributeDefinition, AttributeValue>();
+            foreach (var pair in attributes)
+                snapshot.Add(pair.Key, pair.Value.CreatePreviewCopy());
+            foreach (var link in maxLinks)
+            {
+                if (link.value == null || link.max == null ||
+                    !snapshot.TryGetValue(link.value, out var value) ||
+                    !snapshot.TryGetValue(link.max, out var maximum)) continue;
+                value.SetMaxValueGetter(() => maximum.CurrentValue);
+            }
+            return snapshot;
+        }
+
         /// <summary>
         /// 책임 : 특정 Attribute의 현재 base 값을 공식적으로 조회한다.
         /// 저장/비교/복원 정책 판단의 기준값으로 사용한다.

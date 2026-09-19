@@ -86,7 +86,9 @@ public static class PrototypeTutorialNativeRegression
         Call(tutorial, "TickSkillTargets");
         Check(wave[0] == completed && gates[3].activeSelf, "Completed wave restarted or portal gate opened early");
         tutorial.CompleteChestTutorial();
-        Check(!gates[3].activeSelf, "Chest tutorial did not open the portal room");
+        Check(gates[3].activeSelf && tutorial.Stage == 5, "Chest must wait for inventory lesson");
+        tutorial.CompleteInventoryTutorial();
+        Check(!gates[3].activeSelf, "Inventory lesson did not open the portal room");
         Call(tutorial, "OnDisable");
     }
 
@@ -269,7 +271,9 @@ public static class PrototypeTutorialNativeRegression
         Call(tutorial, "Advance");
         Check(tutorial.Stage == 4 && gates[3].activeSelf && !gates[0].activeSelf, "Skill completion still requires chest confirmation before boss travel");
         tutorial.CompleteChestTutorial();
-        Check(tutorial.Stage == 5 && !gates[3].activeSelf, "Chest confirmation must open the final boss portal route");
+        Check(tutorial.Stage == 5 && gates[3].activeSelf, "Chest confirmation must enter inventory lesson");
+        tutorial.CompleteInventoryTutorial();
+        Check(tutorial.Stage == 6 && !gates[3].activeSelf, "Inventory confirmation must open final route");
         Check(Get<IDisposable>(tutorial, "chargeCooldown") == null, "Completion releases cooldown policy");
         Check(Mathf.Approximately(cooldown.GetFinalCooldownSeconds(charge), 6f) &&
               Mathf.Approximately(cooldown.GetFinalCooldownSeconds(thrust), 3f), "Original skill cooldowns return after completion");

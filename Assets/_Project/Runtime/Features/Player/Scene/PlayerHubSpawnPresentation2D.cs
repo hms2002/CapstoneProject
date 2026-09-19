@@ -151,6 +151,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 
     private Coroutine sequenceRoutine;
     private object portalArrivalOwner;
+    private bool externalCameraControl;
     private Transform cameraAnchor;
     private IGameplayCameraFocusSession cameraFocusSession;
     private GameFlowInputBlocker inputBlocker;
@@ -204,6 +205,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         ReleaseInputBlocker();
         ReleaseCameraFocusSession();
         portalArrivalOwner = null;
+        externalCameraControl = false;
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -253,6 +255,19 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         return owner != null && ReferenceEquals(portalArrivalOwner, owner) && IsPlaying;
     }
 
+    // A scene sequence owns the landing hold; normal Hub and portal wake rules stay unchanged.
+    public bool TryPlayScriptedArrival(object owner, Action onLanded, Func<bool> canWake, bool useExternalCamera = false)
+    {
+        if (owner == null || canWake == null || !isActiveAndEnabled || IsPlaying)
+            return false;
+
+        CacheReferences();
+        portalArrivalOwner = owner;
+        externalCameraControl = useExternalCamera;
+        sequenceRoutine = StartCoroutine(PlayRoutine(onLanded: onLanded, scriptedWake: canWake));
+        return true;
+    }
+
     public void CancelPortalArrival(object owner)
     {
         if (owner == null || !ReferenceEquals(portalArrivalOwner, owner))
@@ -264,11 +279,12 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         if (presentationPrepared)
             ForceRestorePresentationState(allowHierarchyMutation: gameObject.activeInHierarchy);
         portalArrivalOwner = null;
+        externalCameraControl = false;
     }
 
-    private IEnumerator PlayRoutine(Vector3? portalStartPosition = null, Action onLanded = null, float recoveryTimeScale = 1f, bool isDeathReturn = false)
+    private IEnumerator PlayRoutine(Vector3? portalStartPosition = null, Action onLanded = null, float recoveryTimeScale = 1f, bool isDeathReturn = false, Func<bool> scriptedWake = null)
     {
-        bool isPortalArrival = portalStartPosition.HasValue;
+        bool isPortalArrival = portalStartPosition.HasValue || scriptedWake != null;
         if (!isPortalArrival)
             hasPlayedThisScene = true;
         landingPosition = transform.position;
@@ -283,7 +299,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         transform.position = startPosition;
         transform.rotation = Quaternion.identity;
         ApplyShadowScale(0f);
-        ApplyCameraPresentationMode(landingPosition);
+        if (!externalCameraControl) ApplyCameraPresentationMode(landingPosition);
         presentationRuntime?.Start(gameplayPresentation, BuildPresentationParams(startPosition, hasExplicitPosition: true));
 
         float elapsed = 0f;
@@ -315,18 +331,25 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         RestorePhysicsParticipation();
         movementMotor?.StopAllMotion();
         ZeroAllRigidbodies();
-        RestoreCameraBindingToPlayer();
+        if (!externalCameraControl) RestoreCameraBindingToPlayer();
 
         onLanded?.Invoke();
-        yield return new WaitForSeconds(landingLockSeconds * recoveryTimeScale);
-
         bool completedWake = false;
-        if (autoWakeWithoutInput)
+        if (scriptedWake != null)
+        {
+            while (!scriptedWake()) yield return null;
+            WakeIntoGameplay();
+            completedWake = true;
+        }
+        else
+            yield return new WaitForSeconds(landingLockSeconds * recoveryTimeScale);
+
+        if (!completedWake && autoWakeWithoutInput)
         {
             yield return WaitForWakeInputOrAutoWakeRoutine(recoveryTimeScale);
             completedWake = true;
         }
-        else
+        else if (!completedWake)
         {
             float idleElapsed = 0f;
             while (idleElapsed < sleepAfterIdleSeconds * recoveryTimeScale)
@@ -375,6 +398,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         sequenceRoutine = null;
         ReleaseCameraFocusSession();
         portalArrivalOwner = null;
+        externalCameraControl = false;
         if (!isPortalArrival && !isDeathReturn)
             InvokePresentationCompleted();
     }
@@ -434,7 +458,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         if (allowHierarchyMutation)
         {
             ReattachShadow();
-            RestoreCameraBindingToPlayer();
+            if (!externalCameraControl) RestoreCameraBindingToPlayer();
             CleanupCameraAnchor();
             ReleaseCameraFocusSession();
         }
@@ -746,7 +770,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         ApplyAwakeIdleSprite();
         transform.rotation = Quaternion.identity;
         ReattachShadow();
-        RestoreCameraBindingToPlayer();
+        if (!externalCameraControl) RestoreCameraBindingToPlayer();
         RestoreGameplayControl();
         SetFadeTransitionUnlockBlocked(false);
         CleanupCameraAnchor();

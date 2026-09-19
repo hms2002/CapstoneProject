@@ -61,6 +61,11 @@ public class Rook : Slime, IMobTargetDetectionOverride
     private ChargeCastResult cachedChargeCastResult;
     private GameObject cachedChargeCastTarget;
     private int cachedChargeCastFrame = -1;
+    private readonly System.Collections.Generic.List<Collider2D> chargeTargetBodies = new();
+    private Vector2 cachedChargeDirection;
+    private float cachedChargeRequiredDistance;
+    private readonly System.Collections.Generic.List<Collider2D> chargeOwnBodies = new();
+    private readonly RaycastHit2D[] chargeContactHits = new RaycastHit2D[64];
 
     /// <summary>
     /// 책임:
@@ -300,7 +305,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
         if (!CanStartRoomCharge(targetObject, "TryBuildChargeContext")) return false;
 
         Vector2 direction = GetDirection(targetObject);
-        ChargeCastResult chargeCast = ResolveChargeCastCached(direction, targetObject);
+        ChargeCastResult chargeCast = ResolveChargeCastCached(ref direction, targetObject);
         context = new ChargeContext(
             targetObject,
             chargeCast.Start,
@@ -410,7 +415,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
         }
 
         Vector2 direction = GetDirection(targetObject);
-        ChargeCastResult chargeCast = ResolveChargeCastCached(direction, targetObject);
+        ChargeCastResult chargeCast = ResolveChargeCastCached(ref direction, targetObject);
         float targetDistance = Vector2.Distance(chargeCast.Start, ResolveChargeLineTargetPoint(targetObject));
         float allowedChargeRange = ResolveAllowedChargeRange(targetObject);
         if (targetDistance > allowedChargeRange)
@@ -421,7 +426,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
             return false;
         }
 
-        if (!chargeCast.ReachesTarget(targetDistance))
+        if (!chargeCast.ReachesTarget(cachedChargeRequiredDistance))
         {
             LogRookFsmThrottled(
                 $"CanStartRoomCharge=false. source={source}, reason=target beyond charge cast, " +
@@ -696,7 +701,6 @@ public class Rook : Slime, IMobTargetDetectionOverride
             origin,
             normalizedDirection,
             targetObject,
-            ref hitCount,
             out float nearestSampleDistance,
             out Collider2D nearestSampleBlocker);
 
@@ -743,15 +747,86 @@ public class Rook : Slime, IMobTargetDetectionOverride
     /// - 같은 프레임의 FSM 감지/공격 요청/문맥 생성이 동일한 돌진 cast 결과를 공유하게 한다.
     /// - 공격 가능 판정과 실제 경고/이동 거리가 서로 다른 cast 결과를 쓰는 불일치를 막는다.
     /// </summary>
-    private ChargeCastResult ResolveChargeCastCached(Vector2 direction, GameObject targetObject)
+    private ChargeCastResult ResolveChargeCastCached(ref Vector2 direction, GameObject targetObject)
     {
         if (cachedChargeCastFrame == Time.frameCount && cachedChargeCastTarget == targetObject)
+        {
+            direction = cachedChargeDirection;
             return cachedChargeCastResult;
+        }
 
         cachedChargeCastResult = ResolveChargeCast(direction, targetObject);
+        cachedChargeRequiredDistance = Vector2.Distance(cachedChargeCastResult.Start, ResolveChargeLineTargetPoint(targetObject));
+        if (!cachedChargeCastResult.ReachesTarget(cachedChargeRequiredDistance))
+            TryResolveNearbyCharge(targetObject, ref direction);
+        cachedChargeDirection = direction;
         cachedChargeCastTarget = targetObject;
         cachedChargeCastFrame = Time.frameCount;
         return cachedChargeCastResult;
+    }
+
+    private void TryResolveNearbyCharge(GameObject targetObject, ref Vector2 direction)
+    {
+        if (targetObject == null) return;
+        // Keep the original direction when body contact is possible before the wall stop.
+        GetComponentsInChildren(false, chargeOwnBodies);
+        if (TryResolveChargeContact(targetObject, direction, cachedChargeCastResult, out float contactDistance))
+        {
+            cachedChargeRequiredDistance = contactDistance;
+            return;
+        }
+        targetObject.GetComponentsInChildren(false, chargeTargetBodies);
+        Rigidbody2D targetBody = targetObject.GetComponent<Rigidbody2D>();
+        foreach (Collider2D body in chargeTargetBodies)
+        {
+            if (!body.enabled || body.isTrigger || body.attachedRigidbody != targetBody) continue;
+            for (int ring = 1; ring <= 2; ring++)
+            for (int x = -1; x <= 1; x++)
+            for (int y = -1; y <= 1; y++)
+            {
+                if (x == 0 && y == 0) continue;
+                Vector2 point = (Vector2)body.bounds.center + new Vector2(x, y) * (WarningWidth * 0.25f * ring);
+                Vector2 aim = (point - (Vector2)transform.position).normalized;
+                ChargeCastResult candidate = ResolveChargeCast(aim, targetObject);
+                if (!TryResolveChargeContact(targetObject, aim, candidate, out contactDistance)) continue;
+                cachedChargeRequiredDistance = contactDistance;
+                cachedChargeCastResult = candidate;
+                direction = aim;
+                return;
+            }
+        }
+    }
+
+    private bool TryResolveChargeContact(GameObject targetObject, Vector2 direction, ChargeCastResult cast, out float distance)
+    {
+        distance = 0f;
+        Rigidbody2D ownBody = GetComponent<Rigidbody2D>();
+        Rigidbody2D targetBody = targetObject.GetComponent<Rigidbody2D>();
+        ContactFilter2D filter = new ContactFilter2D { useTriggers = false };
+        foreach (Collider2D body in chargeOwnBodies)
+        {
+            if (!body.enabled || body.isTrigger || body.attachedRigidbody != ownBody) continue;
+            int count = body.Cast(direction, filter, chargeContactHits, cast.Distance, true);
+            if (count == chargeContactHits.Length) continue;
+            float targetDistance = float.PositiveInfinity;
+            float blockerDistance = float.PositiveInfinity;
+            for (int i = 0; i < count; i++)
+            {
+                Collider2D hit = chargeContactHits[i].collider;
+                if (hit == null || IsColliderOwnedByTransform(hit, transform)) continue;
+                if (!hit.isTrigger && hit.attachedRigidbody == targetBody &&
+                    IsColliderOwnedByTransform(hit, targetObject.transform))
+                    targetDistance = Mathf.Min(targetDistance, chargeContactHits[i].distance);
+                else if (IsChargeBlocker(hit))
+                    blockerDistance = Mathf.Min(blockerDistance, chargeContactHits[i].distance);
+            }
+            if (!float.IsPositiveInfinity(targetDistance) && targetDistance <= blockerDistance)
+            {
+                distance = targetDistance;
+                return true;
+            }
+        }
+        return false;
     }
 
     /// <summary>
@@ -763,7 +838,6 @@ public class Rook : Slime, IMobTargetDetectionOverride
         Vector2 origin,
         Vector2 direction,
         GameObject targetObject,
-        ref int boxCastHitCount,
         out float nearestDistance,
         out Collider2D nearestBlocker)
     {
@@ -774,9 +848,9 @@ public class Rook : Slime, IMobTargetDetectionOverride
         float halfWidth = WarningWidth * 0.5f;
         float edgeOffset = Mathf.Max(0f, halfWidth - ChargeLinecastSkin);
 
-        EvaluateChargeLineSample(origin, direction, targetObject, ref boxCastHitCount, ref nearestDistance, ref nearestBlocker, 0f);
-        EvaluateChargeLineSample(origin + perpendicular * edgeOffset, direction, targetObject, ref boxCastHitCount, ref nearestDistance, ref nearestBlocker, edgeOffset);
-        EvaluateChargeLineSample(origin - perpendicular * edgeOffset, direction, targetObject, ref boxCastHitCount, ref nearestDistance, ref nearestBlocker, -edgeOffset);
+        EvaluateChargeLineSample(origin, direction, targetObject, ref nearestDistance, ref nearestBlocker, 0f);
+        EvaluateChargeLineSample(origin + perpendicular * edgeOffset, direction, targetObject, ref nearestDistance, ref nearestBlocker, edgeOffset);
+        EvaluateChargeLineSample(origin - perpendicular * edgeOffset, direction, targetObject, ref nearestDistance, ref nearestBlocker, -edgeOffset);
     }
 
     /// <summary>단일 경고 폭 샘플선을 raycast해 가장 가까운 돌진 차단물을 갱신합니다.</summary>
@@ -784,7 +858,6 @@ public class Rook : Slime, IMobTargetDetectionOverride
         Vector2 sampleOrigin,
         Vector2 direction,
         GameObject targetObject,
-        ref int boxCastHitCount,
         ref float nearestDistance,
         ref Collider2D nearestBlocker,
         float lateralOffset)
@@ -797,7 +870,6 @@ public class Rook : Slime, IMobTargetDetectionOverride
         };
 
         int hitCount = Physics2D.Raycast(sampleOrigin, direction, filter, chargeLineHits, MaxWallDashDistance);
-        boxCastHitCount += hitCount;
 
         for (int i = 0; i < hitCount; i++)
         {

@@ -86,6 +86,7 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
     {
         ResolvePresentation();
         ResolvePlayerInventoryPanel();
+        if (closeButton != null) closeButton.gameObject.SetActive(openMode == OpenMode.PlayerOnly);
 
         if (openMode == OpenMode.Chest)
             OpenChestMode();

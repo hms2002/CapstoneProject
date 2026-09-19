@@ -217,7 +217,8 @@ namespace UnityGAS.Sample
             Vector2 perp = new(-direction.y * (direction.x < 0f ? -1f : 1f), Mathf.Abs(direction.x));
             int sideSign = step.sideSign < 0 ? -1 : 1;
 
-            Vector2 center = PlayerAttackOrigin.Resolve(system, direction, step.attackPrefab.WallLayers);
+            Vector2 center = PlayerAttackOrigin.Resolve(system, direction, step.attackPrefab.WallLayers)
+                + direction * step.forwardOffset + perp * (step.sideOffset * sideSign);
 
 #if UNITY_EDITOR
             if (system.TryGetComponent<IRealtimeHitboxGizmo2D>(out var gizmo))

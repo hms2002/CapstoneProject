@@ -50,6 +50,12 @@ namespace UnityGAS
             cachedProvider = new AttributeStatProvider(attributeSet, bindings);
         }
 
+        public float GetProjected(StatId id, System.Func<AttributeDefinition, float> readAttribute)
+        {
+            if (cachedProvider == null) RebuildProvider();
+            return cachedProvider != null ? cachedProvider.Get(id, readAttribute) : 0f;
+        }
+
         private StatTypeBindings ResolveBindings()
         {
             if (statBindingsOverride != null)

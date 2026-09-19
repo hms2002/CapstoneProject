@@ -1,124 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "fd9cdf722e5f4ce182e9de9f5fe5be85",
-            "startedUtc": "2026-09-18T03:40:08.4729506Z",
-            "endedUtc": "2026-09-18T03:40:09.8951793Z",
-            "entries": []
-        },
-        {
-            "sessionId": "7240ff2c26a94d6095f3f2efede33940",
-            "startedUtc": "2026-09-18T04:12:06.1426500Z",
-            "endedUtc": "2026-09-18T04:12:07.5263677Z",
-            "entries": []
-        },
-        {
-            "sessionId": "25442ede5b204229a6df5e003ef2fa23",
-            "startedUtc": "2026-09-18T04:12:32.0218084Z",
-            "endedUtc": "2026-09-18T04:12:33.0318318Z",
-            "entries": []
-        },
-        {
-            "sessionId": "f75594c04eea44dfbff98be8b9d85dea",
-            "startedUtc": "2026-09-18T04:12:53.1823669Z",
-            "endedUtc": "2026-09-18T04:12:54.1924702Z",
-            "entries": []
-        },
-        {
-            "sessionId": "f1036d10365a439cb19fb2ad9240b1ef",
-            "startedUtc": "2026-09-18T04:37:55.7065534Z",
-            "endedUtc": "2026-09-18T04:37:57.7136547Z",
-            "entries": []
-        },
-        {
-            "sessionId": "82e03ec154fe48858941823575631c50",
-            "startedUtc": "2026-09-18T04:43:42.5607994Z",
-            "endedUtc": "2026-09-18T04:43:43.6170752Z",
-            "entries": []
-        },
-        {
-            "sessionId": "ef0a92fc8a074dfab2bee57caf872e50",
-            "startedUtc": "2026-09-18T05:01:00.1775528Z",
-            "endedUtc": "2026-09-18T05:01:02.1494930Z",
-            "entries": []
-        },
-        {
-            "sessionId": "15d4dc40b4324481a0c75744abaa8f20",
-            "startedUtc": "2026-09-18T05:05:06.0270516Z",
-            "endedUtc": "2026-09-18T05:05:09.2830214Z",
-            "entries": []
-        },
-        {
-            "sessionId": "4f5b3aac17ae4332b324eb094b2ea628",
-            "startedUtc": "2026-09-18T05:14:34.9790476Z",
-            "endedUtc": "2026-09-18T05:14:36.6488092Z",
-            "entries": []
-        },
-        {
-            "sessionId": "5ac1428f47e647c7bac34fd6dc68342f",
-            "startedUtc": "2026-09-18T08:06:27.8537426Z",
-            "endedUtc": "2026-09-18T08:07:45.7982606Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 259,
-                    "coldSpawns": 122,
-                    "firstSeenSeconds": 50.518951416015628,
-                    "lastSeenSeconds": 76.69488525390625,
-                    "firstSceneName": "DarkLord_Tutorial",
-                    "lastSceneName": "DarkLord_Tutorial"
-                }
-            ]
-        },
-        {
-            "sessionId": "f1d70435b58242b39910668996775772",
-            "startedUtc": "2026-09-18T08:09:10.8049963Z",
-            "endedUtc": "2026-09-18T08:09:11.8475890Z",
-            "entries": []
-        },
-        {
-            "sessionId": "bfafb9c542214947a1595d401ce6bf85",
-            "startedUtc": "2026-09-18T08:26:01.9395306Z",
-            "endedUtc": "2026-09-18T08:26:03.5612822Z",
-            "entries": []
-        },
-        {
-            "sessionId": "f9b096476cf44d939a780742f8e7a9d6",
-            "startedUtc": "2026-09-18T08:26:25.2387100Z",
-            "endedUtc": "2026-09-18T08:26:27.7340558Z",
-            "entries": []
-        },
-        {
-            "sessionId": "72544a7b48964e398137c96f82e341c5",
-            "startedUtc": "2026-09-18T14:36:50.2298878Z",
-            "endedUtc": "2026-09-18T14:39:29.1542228Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 485,
-                    "coldSpawns": 80,
-                    "firstSeenSeconds": 60.696170806884769,
-                    "lastSeenSeconds": 158.13877868652345,
-                    "firstSceneName": "DarkLord_Tutorial",
-                    "lastSceneName": "DarkLord_Tutorial"
-                }
-            ]
-        },
-        {
-            "sessionId": "77a89ac9a3b84dc783bcdf3232f66a9b",
-            "startedUtc": "2026-09-18T15:00:04.2760281Z",
-            "endedUtc": "2026-09-18T15:00:05.2845475Z",
-            "entries": []
-        },
-        {
-            "sessionId": "69868f29a88b49babf764ad7d1b957fb",
-            "startedUtc": "2026-09-18T15:17:04.2213252Z",
-            "endedUtc": "2026-09-18T15:17:05.3117293Z",
-            "entries": []
-        },
-        {
             "sessionId": "58d93f20d21a43b789ca783038811d74",
             "startedUtc": "2026-09-18T15:20:03.3185509Z",
             "endedUtc": "2026-09-18T15:20:04.8932602Z",
@@ -141,6 +23,195 @@
             "startedUtc": "2026-09-18T16:41:47.1621448Z",
             "endedUtc": "2026-09-18T16:41:48.6265378Z",
             "entries": []
+        },
+        {
+            "sessionId": "4bf8876827b2480595bb08b1b0bfed3c",
+            "startedUtc": "2026-09-19T16:22:43.6097549Z",
+            "endedUtc": "2026-09-19T16:22:44.6189482Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4106c285161c455c8ea3fd167a6d8477",
+            "startedUtc": "2026-09-19T17:18:50.5081587Z",
+            "endedUtc": "2026-09-19T17:18:51.5182452Z",
+            "entries": []
+        },
+        {
+            "sessionId": "7932788400b6423190061aa5fea69951",
+            "startedUtc": "2026-09-19T20:09:33.9248358Z",
+            "endedUtc": "2026-09-19T20:12:42.5755928Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 325,
+                    "coldSpawns": 85,
+                    "firstSeenSeconds": 133.013671875,
+                    "lastSeenSeconds": 185.9034881591797,
+                    "firstSceneName": "DarkLord_Tutorial",
+                    "lastSceneName": "DarkLord_Tutorial"
+                }
+            ]
+        },
+        {
+            "sessionId": "f1028ef84c0c464486df28a117cc7a57",
+            "startedUtc": "2026-09-19T21:02:08.8278123Z",
+            "endedUtc": "2026-09-19T21:02:14.3642491Z",
+            "entries": []
+        },
+        {
+            "sessionId": "2d80bb4e1aaa4fb9903fb5aae0075c18",
+            "startedUtc": "2026-09-19T21:06:15.6264521Z",
+            "endedUtc": "2026-09-19T21:06:20.7917462Z",
+            "entries": []
+        },
+        {
+            "sessionId": "7ae73e5dd24a4572b01dade37ec3f6a8",
+            "startedUtc": "2026-09-19T21:18:35.1108963Z",
+            "endedUtc": "2026-09-19T21:18:40.4665375Z",
+            "entries": []
+        },
+        {
+            "sessionId": "aad8b0e1ef2647d9b6be53679d9a0fe4",
+            "startedUtc": "2026-09-19T21:48:57.3597844Z",
+            "endedUtc": "2026-09-19T21:49:01.7250800Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d0d817f4f557490eb2997f938a1b3502",
+            "startedUtc": "2026-09-19T21:51:29.3599673Z",
+            "endedUtc": "2026-09-19T21:51:33.6813560Z",
+            "entries": []
+        },
+        {
+            "sessionId": "511cbf9e18604d46a1860714e4469474",
+            "startedUtc": "2026-09-19T21:54:20.6851146Z",
+            "endedUtc": "2026-09-19T21:54:24.2854584Z",
+            "entries": []
+        },
+        {
+            "sessionId": "da67987fcb5843068a54c623e334b85d",
+            "startedUtc": "2026-09-19T21:57:38.2353838Z",
+            "endedUtc": "2026-09-19T21:57:43.4280079Z",
+            "entries": []
+        },
+        {
+            "sessionId": "6c7eec8198b949d48cbb41abaf8c18fb",
+            "startedUtc": "2026-09-19T22:02:54.7145698Z",
+            "endedUtc": "2026-09-19T22:02:58.3652328Z",
+            "entries": []
+        },
+        {
+            "sessionId": "ac8c8ca688f64ee3a4f2f867f1fd6ac3",
+            "startedUtc": "2026-09-19T22:17:00.7753448Z",
+            "endedUtc": "2026-09-19T22:17:03.6050248Z",
+            "entries": []
+        },
+        {
+            "sessionId": "2698f441bf7f4980910582de188018ea",
+            "startedUtc": "2026-09-19T22:18:07.2689616Z",
+            "endedUtc": "2026-09-19T22:18:09.5542205Z",
+            "entries": []
+        },
+        {
+            "sessionId": "55bfe05b61c04d58a41503ba0b608337",
+            "startedUtc": "2026-09-19T22:19:04.2733870Z",
+            "endedUtc": "2026-09-19T22:19:06.7834274Z",
+            "entries": []
+        },
+        {
+            "sessionId": "6f335a5bc6e6432987e8357eb475a52c",
+            "startedUtc": "2026-09-19T22:27:13.9336013Z",
+            "endedUtc": "2026-09-19T22:36:31.2113085Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 53,
+                    "coldSpawns": 19,
+                    "firstSeenSeconds": 304.16156005859377,
+                    "lastSeenSeconds": 540.8746337890625,
+                    "firstSceneName": "DarkLord_Tutorial",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab",
+                    "prefabName": "PF_Dragon_KegImpactSplash",
+                    "totalSpawns": 9,
+                    "coldSpawns": 4,
+                    "firstSeenSeconds": 520.00537109375,
+                    "lastSeenSeconds": 544.6769409179688,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 4,
+                    "coldSpawns": 4,
+                    "firstSeenSeconds": 338.56805419921877,
+                    "lastSeenSeconds": 342.7940673828125,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ProtoTypeHub"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/Particle/DashDust.prefab",
+                    "prefabName": "DashDust",
+                    "totalSpawns": 2,
+                    "coldSpawns": 2,
+                    "firstSeenSeconds": 517.2339477539063,
+                    "lastSeenSeconds": 538.8231811523438,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_InhaleWind.prefab",
+                    "prefabName": "PF_Dragon_InhaleWind",
+                    "totalSpawns": 5,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 522.6134033203125,
+                    "lastSeenSeconds": 547.3229370117188,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_LandEffect.prefab",
+                    "prefabName": "PF_Dragon_LandEffect",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 518.6341552734375,
+                    "lastSeenSeconds": 540.2239379882813,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/_Project/Prefabs/VFX/PF_Dragon_LandingDust.prefab",
+                    "prefabName": "PF_Dragon_LandingDust",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 522.5947265625,
+                    "lastSeenSeconds": 547.3201293945313,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                }
+            ]
+        },
+        {
+            "sessionId": "d1e9aedc8e94407c91e9555f7a2b4b80",
+            "startedUtc": "2026-09-19T22:44:51.6173732Z",
+            "endedUtc": "2026-09-19T22:46:36.1885413Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/_Project/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
+                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
+                    "totalSpawns": 25,
+                    "coldSpawns": 15,
+                    "firstSeenSeconds": 90.97721099853516,
+                    "lastSeenSeconds": 104.556884765625,
+                    "firstSceneName": "DarkLord_Tutorial",
+                    "lastSceneName": "DarkLord_Tutorial"
+                }
+            ]
         }
     ]
 }
