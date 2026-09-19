@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityGAS;
@@ -96,6 +96,7 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
     private AbilityDefinition skill2Def;
     private WeaponAbilitySelector abilitySelector;
     private InputBindingService cachedInputBindingService;
+    private readonly WeaponSkillHudTooltipPresenter tooltipPresenter = new();
 
     private void Awake()
     {
@@ -125,6 +126,7 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
 
     private void OnDisable()
     {
+        tooltipPresenter.Hide();
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
         UnbindInventoryEvents();
@@ -229,6 +231,7 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
 
     private void RefreshAbilityRefs()
     {
+        tooltipPresenter.Hide();
         if (inventory == null)
         {
             attackDef = skill1Def = skill2Def = null;
@@ -347,6 +350,7 @@ public class WeaponSkillHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
     {
         if (weaponInputBlocked != IsWeaponInputBlocked)
             RefreshAbilityRefs();
+        tooltipPresenter.Update(inventory, !weaponInputBlocked && abilitySystem != null, skill1UI, skill1Def, skill2UI, skill2Def);
         if (weaponInputBlocked)
             return;
 

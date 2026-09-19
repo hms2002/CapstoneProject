@@ -592,10 +592,10 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
             hoverUIController.ShowHover(view, targetRect, data, context);
     }
 
-    public void HideHover(IHoverView view, RectTransform targetRect)
+    public void HideHover(IHoverView view, RectTransform targetRect, bool immediate = false)
     {
         if (hoverUIController != null)
-            hoverUIController.HideHover(view, targetRect);
+            hoverUIController.HideHover(view, targetRect, immediate);
     }
 
     public void HideHoverImmediate()

@@ -74,8 +74,13 @@ public class HoverUIController : MonoBehaviour
         ScheduleDeferredReposition();
     }
 
-    public void HideHover(IHoverView view, RectTransform targetRect)
+    public void HideHover(IHoverView view, RectTransform targetRect, bool immediate = false)
     {
+        if (immediate)
+        {
+            if (_currentView == view && _targetSlotRect == targetRect) HideImmediate();
+            return;
+        }
         if (_currentView == view && _targetSlotRect == targetRect)
             _isHovering = false;
 

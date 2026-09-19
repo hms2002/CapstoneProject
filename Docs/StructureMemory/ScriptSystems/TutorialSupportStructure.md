@@ -262,3 +262,8 @@ Door, player, monster, objective, guide and portal objects retain their authored
 ### Tutorial route promotion (2026-09-19)
 
 TitleProfileSlotService is created through its existing EnsureInstance path; no scene/prefab serialized override of its launch target was found. The default newProfileTargetSceneName now names PrototypeTutorialUpgradeScene, with the existing HubIntroProgressGate deciding unfinished-profile resumes. No completion IDs, stored profile progress or new-profile semantics changed. EditorBuildSettings uses the new scene GUID at the old entry index so subsequent indices stay stable. RouteSetLoadManifestBuilderWindow defaults its first-run seed list to the new scene, DarkLord_Tutorial and ProtoTypeHub. The existing generated IntroTutorialLoadManifest asset was not regenerated in this route-only change; rebuilding its preload coverage for the new scene is a loading-performance follow-up. Actual title-to-tutorial-to-boss-to-hub playthrough remains unverified; build and serialized route/portal checks passed.
+
+
+### Hub intro completion weapon guidance (2026-09-19)
+
+HubIntroAfterDarkLordSequence starts the same-scene HubWeaponDepartureGuide after normal completion and CleanupSequenceState. BeginWeaponGuidance uses the current registered player without the unarmed-departure speech. The existing grave/chest owner-scoped white outline and authored bouncing arrow remain active until equipment or guide disable. Already-equipped players skip guidance; canceled/skipped intros never start it. Guide target selection and cleanup remain owned by HubWeaponDepartureGuide (see InventoryAndChestUIStructure.md).

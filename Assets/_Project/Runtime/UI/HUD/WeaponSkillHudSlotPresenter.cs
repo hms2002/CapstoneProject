@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityGAS;
 
@@ -654,4 +654,64 @@ public static class WeaponSkillHudSlotPresenter
         ui.cooldownFill.fillMethod = ui.cooldownFillMethod;
         ui.cooldownFill.fillOrigin = ui.cooldownFillOrigin;
     }
+}
+
+// Shared hover session for equipped and reserve weapon skill icons.
+internal sealed class WeaponSkillHudTooltipPresenter
+{
+    private StatusHudTooltipView skillTooltip;
+    private RectTransform hoveredSkillRect;
+    private AbilityDefinition hoveredSkill;
+
+    public void Update(WeaponInventory2D inventory, bool available,
+        WeaponSkillHUD2D.SkillSlotUI skill1UI, AbilityDefinition skill1Def,
+        WeaponSkillHUD2D.SkillSlotUI skill2UI, AbilityDefinition skill2Def)
+    {
+        UIManager manager = UIManager.Instance;
+        if (!available || inventory == null ||
+            MonsterSpawnRoomGroup.IsPlayerInCombat || manager == null || manager.HasBlockingUI())
+        {
+            Hide();
+            return;
+        }
+
+        WeaponSkillHUD2D.SkillSlotUI slot = IsPointerOverSkill(skill1UI, skill1Def) ? skill1UI :
+            IsPointerOverSkill(skill2UI, skill2Def) ? skill2UI : null;
+        AbilityDefinition ability = slot == skill1UI ? skill1Def : slot == skill2UI ? skill2Def : null;
+        if (slot == null || ability == null)
+        {
+            Hide();
+            return;
+        }
+        if (hoveredSkillRect == slot.icon.rectTransform && hoveredSkill == ability &&
+            skillTooltip != null && skillTooltip.IsActive) return;
+
+        Hide();
+        // Use the existing authored tooltip; never create the fallback UI hierarchy.
+        if (GlobalUIRoot.GetStatusTooltipPrefab() == null) return;
+        skillTooltip = StatusHudTooltipView.Instance;
+        hoveredSkillRect = slot.icon.rectTransform;
+        hoveredSkill = ability;
+        manager.ShowHover(skillTooltip, hoveredSkillRect, ability, ItemDetailContext.FromOwner(inventory.gameObject));
+    }
+
+    private static bool IsPointerOverSkill(WeaponSkillHUD2D.SkillSlotUI slot, AbilityDefinition ability)
+    {
+        Image icon = slot?.icon;
+        if (ability == null || icon == null || !icon.isActiveAndEnabled || icon.color.a <= 0.01f ||
+            icon.canvasRenderer.GetInheritedAlpha() <= 0.01f) return false;
+        Canvas canvas = icon.canvas;
+        if (canvas == null || !canvas.isActiveAndEnabled || !canvas.rootCanvas.isActiveAndEnabled) return false;
+        Camera camera = canvas.rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.rootCanvas.worldCamera;
+        return RectTransformUtility.RectangleContainsScreenPoint(icon.rectTransform, Input.mousePosition, camera);
+    }
+
+    public void Hide()
+    {
+        if (skillTooltip != null && hoveredSkillRect != null && UIManager.Instance != null)
+            UIManager.Instance.HideHover(skillTooltip, hoveredSkillRect, immediate: true);
+        hoveredSkillRect = null;
+        hoveredSkill = null;
+    }
+
 }

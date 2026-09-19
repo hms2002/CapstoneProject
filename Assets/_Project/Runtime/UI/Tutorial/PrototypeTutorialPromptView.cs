@@ -19,6 +19,8 @@ public sealed class PrototypeTutorialPromptView : MonoBehaviour
     private void Refresh()
     {
         if (prompt == null) return;
+        // Keep the authored parent active for its key icon, without explanatory text.
+        prompt.text = string.Empty;
         bool visible = tutorial != null && tutorial.isActiveAndEnabled && tutorial.IsDashPromptVisible;
         prompt.gameObject.SetActive(visible);
         if (!visible) return;
@@ -30,9 +32,5 @@ public sealed class PrototypeTutorialPromptView : MonoBehaviour
             dashGlyph.sprite = glyph.Icon;
             dashGlyph.gameObject.SetActive(glyph.HasIcon);
         }
-        string key = bindings.GetBindingDisplayLabel(InputActionId.Dash);
-        if (bindings.GetBinding(InputActionId.Dash).secondary != KeyCode.None)
-            key += " / " + bindings.GetBindingDisplayLabel(InputActionId.Dash, true);
-        prompt.text = $"<b>[ {key} ] 대쉬</b>\n탄막 방향으로 이동 키를 누르며 대쉬하세요.\n대쉬 중에는 무적으로 탄막을 통과합니다.";
     }
 }

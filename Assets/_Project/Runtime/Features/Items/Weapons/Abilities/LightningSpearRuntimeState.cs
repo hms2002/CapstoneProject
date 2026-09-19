@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
@@ -70,7 +70,6 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
     private PlayerAim2D aimSource;
     private MovementMotor2D movementMotor;
     private WeaponPresentationRig2D presentationRig;
-    private GameObject rushRangeIndicatorInstance;
     private GameObject selectedMarkIndicatorInstance;
     private bool cursorInteractableSet;
     private bool skill1MarkRushHudOverrideActive;
@@ -1403,11 +1402,6 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         return data != null ? data.CursorSelectRadius : loadout.CursorSelectRadius;
     }
 
-    private static float GetMarkRushRange(LightningSpearLoadout loadout, LightningSpearSkill1Data data)
-    {
-        return data != null ? data.MarkRushRange : loadout.MarkRushRange;
-    }
-
     private static float GetMarkRushBodyRadius(LightningSpearLoadout loadout, LightningSpearSkill1Data data)
     {
         return data != null ? data.MarkRushBodyRadius : loadout.MarkRushBodyRadius;
@@ -1637,17 +1631,16 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
                 ownerSystem.GetComponent<IMovementStateProvider>()?.IsMoving != true) &&
             loadout.MarkRushOrSweep.CanActivate(ownerSystem.gameObject, null, logDiagnostics: false);
         Vector2 ownerPosition = ownerSystem.transform.position;
-        bool keepRushRangeVisible = HasMarkRushDestinationOrigin() || hasBufferedMarkRushInput;
-        Vector2 rushRangeOrigin = hasBufferedMarkRushInput && hasBufferedMarkRushOrigin
+        bool keepRushFeedback = HasMarkRushDestinationOrigin() || hasBufferedMarkRushInput;
+        Vector2 rushOrigin = hasBufferedMarkRushInput && hasBufferedMarkRushOrigin
             ? bufferedMarkRushOrigin
-            : keepRushRangeVisible
+            : keepRushFeedback
                 ? ResolveMarkRushInputOrigin()
                 : ownerPosition;
         Vector2 cursorWorld = ResolveCursorWorld(ownerSystem);
         LightningSpearMarkActor selected = skillReady
             ? FindSelectableMark(loadout, data, ownerPosition, cursorWorld)
             : null;
-        bool hasActiveMark = false;
         visibleMarkHoverRangeMarks.Clear();
 
         for (int i = activeMarks.Count - 1; i >= 0; i--)
@@ -1665,17 +1658,15 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
                 continue;
             }
 
-            hasActiveMark = true;
             visibleMarkHoverRangeMarks.Add(mark);
             UpdateMarkHoverRangeIndicator(loadout, data, mark, true);
             bool canRushToMark =
-                (skillReady || keepRushRangeVisible) &&
-                CanRushToMark(loadout, data, mark, rushRangeOrigin);
+                (skillReady || keepRushFeedback) &&
+                CanRushToMark(loadout, data, mark, rushOrigin);
             mark.SetFeedback(canExecuteRush && canRushToMark, mark == selected);
         }
 
         PruneMarkHoverRangeIndicators();
-        UpdateRangeIndicator(loadout, data, (skillReady || keepRushRangeVisible) && hasActiveMark);
         UpdateSelectedMarkIndicator(loadout, selected);
         UpdateCursorFeedback(selected != null);
         skill1MarkRushHudOverrideActive = selected != null;
@@ -1697,42 +1688,11 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             mark.SetFeedback(false, false);
         }
 
-        if (rushRangeIndicatorInstance != null)
-            rushRangeIndicatorInstance.SetActive(false);
-
         if (selectedMarkIndicatorInstance != null)
             selectedMarkIndicatorInstance.SetActive(false);
 
         SetAllMarkHoverRangeIndicatorsActive(false);
         UpdateCursorFeedback(false);
-    }
-
-    private void UpdateRangeIndicator(
-        LightningSpearLoadout loadout,
-        LightningSpearSkill1Data data,
-        bool active)
-    {
-        if (!active || loadout == null || ownerSystem == null || loadout.RushRangeIndicatorPrefab == null)
-        {
-            if (rushRangeIndicatorInstance != null)
-                rushRangeIndicatorInstance.SetActive(false);
-            return;
-        }
-
-        if (rushRangeIndicatorInstance == null)
-            rushRangeIndicatorInstance = Instantiate(loadout.RushRangeIndicatorPrefab);
-
-        rushRangeIndicatorInstance.transform.SetParent(null, true);
-        rushRangeIndicatorInstance.transform.position = ownerSystem.transform.position;
-        rushRangeIndicatorInstance.transform.rotation = Quaternion.identity;
-        rushRangeIndicatorInstance.transform.localScale = Vector3.one;
-
-        if (rushRangeIndicatorInstance.TryGetComponent(out LightningSpearRushRangeIndicator rangeIndicator))
-            rangeIndicator.SetRadius(GetMarkRushRange(loadout, data));
-        else
-            rushRangeIndicatorInstance.transform.localScale = Vector3.one * (GetMarkRushRange(loadout, data) * 2f);
-
-        rushRangeIndicatorInstance.SetActive(true);
     }
 
     private void UpdateMarkHoverRangeIndicator(
@@ -1844,12 +1804,6 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
     private void DestroyFeedbackObjects()
     {
-        if (rushRangeIndicatorInstance != null)
-        {
-            Destroy(rushRangeIndicatorInstance);
-            rushRangeIndicatorInstance = null;
-        }
-
         if (selectedMarkIndicatorInstance != null)
         {
             Destroy(selectedMarkIndicatorInstance);
@@ -1910,9 +1864,6 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             return false;
 
         Vector2 markPosition = mark.transform.position;
-        if (Vector2.Distance(ownerPosition, markPosition) > GetMarkRushRange(loadout, data))
-            return false;
-
         if (!IsLandingValid(loadout, ResolveSkill2Data(loadout), markPosition))
             return false;
 

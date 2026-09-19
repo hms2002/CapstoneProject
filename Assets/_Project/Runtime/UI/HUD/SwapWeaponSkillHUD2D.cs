@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityGAS;
@@ -41,6 +41,7 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
     private AbilityDefinition skill2Def;
     private WeaponAbilitySelector abilitySelector;
     private InputBindingService cachedInputBindingService;
+    private readonly WeaponSkillHudTooltipPresenter tooltipPresenter = new();
     private KeyCode lastSwapGuideKey = KeyCode.None;
 
     private void Awake()
@@ -73,6 +74,7 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
 
     private void OnDisable()
     {
+        tooltipPresenter.Hide();
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
         UnbindInventoryEvents();
@@ -82,6 +84,7 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
     {
         if (weaponInputBlocked != IsWeaponInputBlocked)
             RefreshAbilityRefs();
+        tooltipPresenter.Update(inventory, !weaponInputBlocked && abilitySystem != null, skill1UI, skill1Def, skill2UI, skill2Def);
         if (weaponInputBlocked)
             return;
 
@@ -209,6 +212,7 @@ public sealed class SwapWeaponSkillHUD2D : MonoBehaviour
 
     private void RefreshAbilityRefs()
     {
+        tooltipPresenter.Hide();
         int inactiveSlotIndex = ResolveInactiveWeaponSlotIndex();
         WeaponDefinition inactiveWeapon = inactiveSlotIndex >= 0 && inventory != null
             ? inventory.GetWeaponInSlot(inactiveSlotIndex)

@@ -21,6 +21,18 @@ public sealed class HubWeaponDepartureGuide : MonoBehaviour
     private float started;
     private float nextSpeech;
 
+    public void BeginWeaponGuidance(IPlayerInteractor player)
+    {
+        if (!isActiveAndEnabled || !SceneDomainNamePolicy.IsHubSceneName(gameObject.scene.name) ||
+            player == null || player.Transform == null) return;
+        var inventory = player.Transform.GetComponent<WeaponInventory2D>();
+        if (inventory != null && inventory.HasEquippedWeapon) { Clear(); return; }
+
+        guidedPlayer = player;
+        RefreshTarget();
+        ShowArrowIfAvailable();
+    }
+
     public bool TryAllowDeparture(IPlayerInteractor player)
     {
         if (!SceneDomainNamePolicy.IsHubSceneName(gameObject.scene.name)) return true;

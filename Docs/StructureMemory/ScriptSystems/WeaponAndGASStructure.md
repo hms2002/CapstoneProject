@@ -454,3 +454,10 @@ Charge cutoff tuning follow-up (2026-09-18): Hero Sword now cancels at <=50% and
 `PlayerAttackOrigin` in `AttackBase.cs` resolves player-origin melee/basic and projectile starts from the body collider bounds center plus aim direction times the world-space body radius plus 0.08. It respects `EntityCollisionProfile2D` body ownership and collider scaling/offset. With an existing wall mask, a short circle cast clamps the start before a wall; this safety exception can reduce the body clearance. Existing target-origin secondary effects, placed marks and ground-area skills retain their own origins.
 
 Consumers include Crimson Boundary, Odd Iron shots/throws, Sword projectile/combo, Fragment Blade, Real Weapon, Lightning Spear basic/recovered shot, Apprentice Hero Sword and Flowering basics/hitboxes. Attack runners still own damage, timing and cleanup; the helper owns no runtime state and creates no objects.
+
+
+### Skill HUD hover and lightning rush distance (2026-09-19)
+
+- WeaponSkillHUD2D and SwapWeaponSkillHUD2D own separate WeaponSkillHudTooltipPresenter sessions (helper in WeaponSkillHudSlotPresenter.cs). They poll their authored icon rectangles and use MonsterSpawnRoomGroup.IsPlayerInCombat plus UIManager.HasBlockingUI to gate descriptions. Disable, ability-reference refresh, hidden icons and combat dismiss the owned hover immediately.
+- StatusHudTooltipView also projects AbilityDefinition via the existing authored tooltip. IDetailProvider supplies numerical/detail text; IAbilityTooltipVariantProvider supplies all variant explanations. DetailTextFormatter renders semantic tags. UIManager/HoverUIController scoped immediate hide matches both view and anchor, preserving other hover owners.
+- LightningSpearRuntimeState no longer limits player-to-mark rush distance or instantiates the maximum-range indicator. Serialized MarkRushRange and RushRangeIndicatorPrefab values remain for asset compatibility but are not consumed. Same-room, landing and blocker checks, mark selection and hover indicators remain active.

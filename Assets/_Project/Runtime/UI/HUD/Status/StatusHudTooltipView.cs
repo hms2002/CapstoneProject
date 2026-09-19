@@ -80,6 +80,11 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
 
     public void ShowHover(object data, object context = null)
     {
+        if (data is UnityGAS.AbilityDefinition ability)
+        {
+            ShowAbility(ability, context as ItemDetailContext);
+            return;
+        }
         if (data is not StatusHudEntry entry)
         {
             HideHover();
@@ -125,6 +130,40 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
             return;
 
         canvasGroup.alpha = 0f;
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+    }
+
+    private void ShowAbility(UnityGAS.AbilityDefinition ability, ItemDetailContext context)
+    {
+        EnsureVisualTree();
+        context ??= new ItemDetailContext();
+        iconImage.sprite = ability.icon;
+        iconImage.enabled = ability.icon != null;
+        nameText.text = ability.abilityName;
+        storyText.text = $"재사용 대기시간: {ability.cooldown:0.##}초";
+        var body = new System.Text.StringBuilder();
+        if (ability.sourceObject is IAbilityTooltipVariantProvider variants &&
+            variants.GetAbilityTooltipVariantCount(ability, context) > 0)
+        {
+            int count = variants.GetAbilityTooltipVariantCount(ability, context);
+            for (int i = 0; i < count; i++)
+            {
+                var variant = variants.BuildAbilityTooltipVariant(ability, i, context);
+                if (i > 0) body.AppendLine();
+                body.AppendLine(variant.Title);
+                body.AppendLine(variant.Body);
+            }
+        }
+        else
+        {
+            if (!string.IsNullOrWhiteSpace(ability.description)) body.AppendLine(ability.description);
+            if (ability.sourceObject is IDetailProvider provider)
+                body.AppendLine(provider.BuildDetailBlock(context).body);
+        }
+        effectText.text = DetailTextFormatter.Format(body.ToString().TrimEnd(), null);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+        canvasGroup.alpha = 1f;
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
     }

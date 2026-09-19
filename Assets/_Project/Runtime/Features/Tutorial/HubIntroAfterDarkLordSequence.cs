@@ -245,6 +245,12 @@ public sealed class HubIntroAfterDarkLordSequence : MonoBehaviour
         sequenceRoutine = null;
         CleanupSequenceState();
         onSequenceCompleted?.Invoke();
+        foreach (var guide in FindObjectsByType<HubWeaponDepartureGuide>(FindObjectsSortMode.None))
+        {
+            if (guide.gameObject.scene != gameObject.scene) continue;
+            guide.BeginWeaponGuidance(PlayerRuntimeRegistry.CurrentPlayer);
+            break;
+        }
     }
 
     private IEnumerator PlayFocusStepRoutine(HubIntroFocusStep step)
