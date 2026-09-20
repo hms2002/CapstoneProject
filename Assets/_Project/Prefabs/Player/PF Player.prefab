@@ -1027,7 +1027,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: -1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8969203147945012884}
@@ -1081,7 +1081,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -720365038908779728, guid: 54afb36f0c9a5b347b44945f7a8e0f78, type: 3}
+  m_Sprite: {fileID: 4696735137829499572, guid: 1812316cf684a814797d8dd8cdd4b381, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2387,8 +2387,8 @@ MonoBehaviour:
   lyingShadowLocalOffset: {x: -0.2, y: 0.4, z: 0.1}
   lyingShadowLocalRotationZ: -90
   lyingShadowScaleMultiplier: {x: 2.2, y: 1, z: 1}
-  awakeIdleSpriteOverride: {fileID: -720365038908779728, guid: 54afb36f0c9a5b347b44945f7a8e0f78, type: 3}
-  sleepSprite: {fileID: -720365038908779728, guid: 54afb36f0c9a5b347b44945f7a8e0f78, type: 3}
+  awakeIdleSpriteOverride: {fileID: 4696735137829499572, guid: 1812316cf684a814797d8dd8cdd4b381, type: 3}
+  sleepSprite: {fileID: 4696735137829499572, guid: 1812316cf684a814797d8dd8cdd4b381, type: 3}
   sleepEffectAnchor: {fileID: 4115971267136633410}
   sleepEffectPrefab: {fileID: 5901972143961512537, guid: 1585d72a2e7a6574bbdafcb2f8a24b41, type: 3}
   sleepEffectLocalOffset: {x: 0, y: 0, z: 0}
