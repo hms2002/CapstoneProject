@@ -19,4 +19,8 @@ public enum InputActionId
     ConsumableSlot4 = 13,
     InventoryToggle = 14,
     DialogueAdvance = 15,
+    InventoryDrop = 16,
+    LevelRewardOpen = 17,
+    MinimapExpand = 18,
+    MinimapShrink = 19,
 }

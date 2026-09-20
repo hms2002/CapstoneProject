@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_ApprenticeHeroSwordSkill1_ChargeSpin
   m_EditorClassIdentifier: 
+  simpleDescription: "누르고 있다가 놓으면 회전하며 주변을 벱니다. 충분히 충전해야 발동하며, 오래 충전할수록 더 넓고 강해집니다."
   abilityName: "회전베기"
   icon: {fileID: 21300000, guid: 449fa420d9198034a8864f1f47dd46a7, type: 3}
   description: "● 길게 눌러 차징하고 떼서 {em:회전베기} 공격\n● 50% 이하에서 놓으면 취소, 50%를 넘겨 차징하면 공격\n● 차징할수록 {pos:피해와 공격 범위 증가}\n● 최대 차징 시 최소 차징 대비 피해 약 {val:1.67배}, 공격 크기 {val:2배}"

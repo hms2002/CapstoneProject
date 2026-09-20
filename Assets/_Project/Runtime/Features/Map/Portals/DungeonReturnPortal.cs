@@ -62,6 +62,7 @@ public sealed class DungeonReturnPortal : InteractableBase
 
     private void HideForEncounter()
     {
+        OnUnHighlight();
         bool wasRevealed = revealed;
         revealed = false;
         clearSince = -1f;
@@ -91,6 +92,10 @@ public sealed class DungeonReturnPortal : InteractableBase
         if (!revealed && visited && entryUnlock) Reveal(false);
         if (interaction != null) interaction.enabled = revealed && (view == null || !view.IsOpening);
     }
+
+    public override void OnHighlight() => view?.SetHighlighted(true);
+    public override void OnUnHighlight() => view?.SetHighlighted(false);
+    private void OnDisable() => OnUnHighlight();
 
     public override bool CanInteract(IPlayerInteractor player) =>
         isActiveAndEnabled && revealed && (view == null || !view.IsOpening) && EncounterReady &&

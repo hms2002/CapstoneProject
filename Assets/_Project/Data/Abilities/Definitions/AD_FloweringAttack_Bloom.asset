@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_FloweringAttack_Bloom
   m_EditorClassIdentifier:
+  simpleDescription: "[[개화]] 중에는 넓은 참격을 빠르게 이어갑니다."
   abilityName: 만개 참격
   icon: {fileID: 655937068, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
   description: "● [[개화]] 중 기본 공격이 넓은 참격으로 변함\n● 참격 모양은 바로 전 공격과 겹치지 않게 바뀜\n● 짧은 간격으로 빠르게 연속 사용 가능"

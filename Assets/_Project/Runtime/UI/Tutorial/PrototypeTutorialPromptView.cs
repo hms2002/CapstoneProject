@@ -9,19 +9,29 @@ public sealed class PrototypeTutorialPromptView : MonoBehaviour
     [SerializeField] private TMP_Text prompt;
     [SerializeField] private Image dashGlyph;
     [SerializeField] private Image[] additionalMovementGlyphs = new Image[3];
+    [SerializeField] private Sprite[] highlightedKeyGlyphs = System.Array.Empty<Sprite>();
     [SerializeField] private Vector3 playerOffset = new Vector3(0f, 1.5f, 0f);
     private static readonly InputActionId[] MovementActions =
         { InputActionId.MoveUp, InputActionId.MoveLeft, InputActionId.MoveDown, InputActionId.MoveRight };
     private Canvas canvas;
+    private readonly System.Collections.Generic.Dictionary<string, Sprite> highlightedGlyphLookup = new();
+    private float promptStartedAt;
+    private int visibleStage = -1;
+    private InputActionId visibleAction;
+    private bool highlightPulse;
 
     private void Awake()
     {
         canvas = GetComponent<Canvas>();
+        foreach (Sprite glyph in highlightedKeyGlyphs)
+            if (glyph != null) highlightedGlyphLookup[glyph.name] = glyph;
         if (prompt == null) return;
         prompt.rectTransform.localScale *= 1.5f;
         prompt.rectTransform.pivot = new Vector2(0.5f, 0.5f);
         prompt.fontStyle |= FontStyles.Bold;
+        prompt.richText = true;
         prompt.enableAutoSizing = false;
+        prompt.fontSize *= 1.1f;
         prompt.textWrappingMode = TextWrappingModes.NoWrap;
         prompt.alignment = TextAlignmentOptions.MidlineLeft;
     }
@@ -29,6 +39,7 @@ public sealed class PrototypeTutorialPromptView : MonoBehaviour
     private void LateUpdate() => Refresh();
     private void OnDisable()
     {
+        visibleStage = -1;
         PlayerOverheadPromptLayout.Remove(this);
         if (prompt != null) prompt.gameObject.SetActive(false);
     }
@@ -48,6 +59,7 @@ public sealed class PrototypeTutorialPromptView : MonoBehaviour
         prompt.gameObject.SetActive(visible);
         if (!visible)
         {
+            visibleStage = -1;
             PlayerOverheadPromptLayout.Remove(this);
             return;
         }
@@ -61,11 +73,19 @@ public sealed class PrototypeTutorialPromptView : MonoBehaviour
         InputBindingService bindings = InputBindingService.EnsureInstance();
         string fallback = string.Empty;
         bool movement = tutorial.Stage == 0;
-        const float gap = 12f;
+        if (visibleStage != tutorial.Stage || visibleAction != tutorial.PromptAction)
+        {
+            visibleStage = tutorial.Stage;
+            visibleAction = tutorial.PromptAction;
+            promptStartedAt = Time.unscaledTime;
+        }
+        highlightPulse = Mathf.FloorToInt((Time.unscaledTime - promptStartedAt) / 0.3f) % 2 == 1;
+        const float gap = 4f;
         float glyphWidth = movement ? 132f : 88f;
         float glyphCenter = -gap - glyphWidth * 0.5f;
-        SetGlyph(dashGlyph, movement ? MovementActions[0] : tutorial.PromptAction,
+        float singleGlyphWidth = SetGlyph(dashGlyph, movement ? MovementActions[0] : tutorial.PromptAction,
             new Vector2(glyphCenter, movement ? 24f : 0f), movement, bindings, ref fallback);
+        if (!movement) glyphWidth = singleGlyphWidth;
         for (int i = 0; i < additionalMovementGlyphs.Length; i++)
         {
             Image image = additionalMovementGlyphs[i];
@@ -75,28 +95,41 @@ public sealed class PrototypeTutorialPromptView : MonoBehaviour
                 new Vector2(glyphCenter + (i - 1) * 46f, -24f), true, bindings, ref fallback);
         }
         prompt.text = (string.IsNullOrEmpty(fallback) ? tutorial.PromptInstruction : fallback + " " + tutorial.PromptInstruction)
-            .Replace('\n', ' ').Replace('\r', ' ');
+            .Replace('\n', ' ').Replace('\r', ' ')
+            .Replace("길게", "<color=#FF4444>길게</color>");
         prompt.rectTransform.sizeDelta = new Vector2(prompt.preferredWidth, movement ? 92f : 70f);
         // Center the complete glyph-and-caption row over the player.
         prompt.rectTransform.position += prompt.rectTransform.TransformVector(Vector3.right * ((glyphWidth + gap) * 0.5f));
         PlayerOverheadPromptLayout.Place(this, prompt.rectTransform, canvas, PlayerOverheadPromptLayout.Tutorial);
     }
 
-    private static void SetGlyph(Image image, InputActionId action, Vector2 position, bool movement,
+    private float SetGlyph(Image image, InputActionId action, Vector2 position, bool movement,
         InputBindingService bindings, ref string fallback)
     {
         InputGlyphPresentation glyph = bindings.GetBindingGlyph(action);
         if (glyph.Key == KeyCode.None) glyph = bindings.GetBindingGlyph(action, true);
+        if (movement && !InputActionQuery.IsKeyPressed(glyph.Key))
+        {
+            InputGlyphPresentation secondary = bindings.GetBindingGlyph(action, true);
+            if (secondary.Key != KeyCode.None && InputActionQuery.IsKeyPressed(secondary.Key)) glyph = secondary;
+        }
+        // Match the visible aspect-fitted width instead of reserving an empty 88-wide box.
+        float width = movement ? 40f : glyph.HasIcon
+            ? Mathf.Min(88f, 44f * glyph.Icon.rect.width / glyph.Icon.rect.height) : 0f;
+        if (!movement) position.x += (88f - width) * 0.5f;
         if (image != null)
         {
-            image.sprite = glyph.Icon;
+            bool highlighted = movement ? InputActionQuery.IsKeyPressed(glyph.Key) : highlightPulse;
+            image.sprite = highlighted && glyph.HasIcon && highlightedGlyphLookup.TryGetValue(glyph.Icon.name, out Sprite point)
+                ? point : glyph.Icon;
             image.gameObject.SetActive(glyph.HasIcon);
             image.rectTransform.anchorMin = image.rectTransform.anchorMax = new Vector2(0f, 0.5f);
             image.rectTransform.pivot = new Vector2(0.5f, 0.5f);
             image.rectTransform.anchoredPosition = position;
-            image.rectTransform.sizeDelta = new Vector2(movement ? 40f : 88f, 44f);
+            image.rectTransform.sizeDelta = new Vector2(width, 44f);
         }
         if (!glyph.HasIcon) fallback += (fallback.Length > 0 ? " " : string.Empty) + glyph.DisplayLabel;
+        return width;
     }
 }
 

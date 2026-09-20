@@ -88,6 +88,7 @@ public struct ShopRunModifierDelta
     public bool shopEnabled;
     public int shopSlotBonus;
     public float discountRate;
+    public float affectionDiscountRate;
     public int shopRefreshCount;
 
     public void Add(ShopRunModifierDelta other)
@@ -95,6 +96,7 @@ public struct ShopRunModifierDelta
         shopEnabled |= other.shopEnabled;
         shopSlotBonus += other.shopSlotBonus;
         discountRate += other.discountRate;
+        affectionDiscountRate += other.affectionDiscountRate;
         shopRefreshCount += other.shopRefreshCount;
     }
 }

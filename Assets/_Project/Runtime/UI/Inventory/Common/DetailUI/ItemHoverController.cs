@@ -34,7 +34,7 @@ public class ItemHoverController : MonoBehaviour
 
     private void Update()
     {
-        HandleFixedInventoryDropInput();
+        HandleInventoryDropInput();
     }
 
     public void HoverSlot(RectTransform slotRect, ScriptableObject itemDef, IItemContainer container = null, int index = -1)
@@ -104,12 +104,12 @@ public class ItemHoverController : MonoBehaviour
 
     /// <summary>
     /// 책임 :
-    /// - 키 설정에 등록되지 않는 고정 F 입력으로 현재 hover 중인 플레이어 인벤토리 아이템을 월드에 버린다.
+    /// - 매핑된 버리기 입력으로 현재 hover 중인 플레이어 인벤토리 아이템을 월드에 버린다.
     /// - 상자 UI, 도감, 상점, 월드 아이템처럼 버리기 대상이 아닌 상세 컨텍스트는 무시한다.
     /// </summary>
-    private void HandleFixedInventoryDropInput()
+    private void HandleInventoryDropInput()
     {
-        if (!InputKeyCompatibility.WasPressedThisFrame(KeyCode.F))
+        if (!InputActionQuery.WasPressedThisFrame(InputActionId.InventoryDrop))
             return;
 
         if (!CanDropCurrentHoverToWorld())
@@ -147,7 +147,7 @@ public class ItemHoverController : MonoBehaviour
             return false;
 
         ItemDetailActionHint hint = currentContext.ResolvePrimaryActionHint();
-        return hint.Visible && hint.Key == KeyCode.F;
+        return hint.Visible && hint.Action == InputActionId.InventoryDrop;
     }
 
     private static bool IsInventoryInspectionOnly(RectTransform slotRect)

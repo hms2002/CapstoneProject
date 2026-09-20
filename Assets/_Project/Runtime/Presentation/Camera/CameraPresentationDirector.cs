@@ -325,11 +325,12 @@ public class CameraPresentationDirector : MonoBehaviour, ICameraPresentationDire
     private CinemachineCamera ResolveBossCameraReference(CinemachineCamera fallbackCamera)
     {
         Scene ownerScene = gameObject.scene;
-        if (!CameraBootstrap.IsBossScene(ownerScene))
-            return null;
-
+        // Tutorial encounters also author a BossCam without the normal encounter directors.
         if (fallbackCamera != null && fallbackCamera.gameObject.scene == ownerScene)
             return fallbackCamera;
+
+        if (!CameraBootstrap.IsBossScene(ownerScene))
+            return null;
 
         return CameraBootstrap.FindSceneBossCamera(ownerScene);
     }

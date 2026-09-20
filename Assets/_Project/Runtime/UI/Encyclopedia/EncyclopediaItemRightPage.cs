@@ -69,7 +69,9 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
     private const string EmptyRelicEffectText = "효과 정보 없음";
 
     private readonly List<WeaponAbilityBlockView> abilityBlockPool = new();
-    private readonly List<VariantAbilityEntry> variantEntries = new();
+    [SerializeField] private WeaponDescriptionHint weaponDescriptionHint = new();
+    private WeaponDefinition currentWeapon;
+    private bool showDetailedDescription;
     private readonly StringBuilder builder = new();
     private ItemDisplayIconDefaultState iconDefaultState;
     private ItemDetailContext detailContext;
@@ -95,25 +97,37 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
     private void Update()
     {
-        if (!isActiveAndEnabled || (variantEntries.Count == 0 && currentRelic == null))
+        if (!isActiveAndEnabled)
             return;
 
-        InputBindingService input = InputBindingService.EnsureInstance();
-
-        if (variantEntries.Count > 0)
+        // A foreground hover owns this shortcut while it is visible.
+        if (currentWeapon != null &&
+            (ItemDetailPanel.Instance == null || !ItemDetailPanel.Instance.IsActive) &&
+            WeaponDescriptionHint.WasTogglePressed())
         {
-            RefreshVariantPreviewLayouts();
-            if (input.WasPressedThisFrame(InputContextShortcutId.TooltipVariantNext))
-                CycleFirstAvailableVariant();
+            showDetailedDescription = !showDetailedDescription;
+            BuildWeaponAbilityBlocks(currentWeapon);
+            weaponDescriptionHint.Refresh(true, showDetailedDescription);
+            glossaryPopup?.Hide();
+            QueueScrollReset();
         }
-
         if (currentRelic != null)
-            HandleRelicPreviewInput(input);
+            HandleRelicPreviewInput(InputBindingService.EnsureInstance());
     }
 
     private void OnDisable()
     {
         CancelPendingScrollReset();
+        showDetailedDescription = false;
+    }
+
+    private void OnEnable()
+    {
+        if (currentWeapon != null)
+        {
+            BuildWeaponAbilityBlocks(currentWeapon);
+            weaponDescriptionHint.Refresh(true, false);
+        }
     }
 
 #if UNITY_EDITOR
@@ -395,6 +409,8 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         relicPreviewLevel = 1;
         SetVisible(true);
         HideTypeSections();
+        currentWeapon = weapon;
+        weaponDescriptionHint.Refresh(true, false);
         ApplyItemHeader(weapon);
         SetDescriptionSection("스토리", weapon.storyText);
 
@@ -493,12 +509,13 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         if (AddAbilityBlock("스킬 2", weapon.GetAbility(WeaponAbilitySlot.Skill2), weapon.skill2InputHint, InputActionId.Skill2))
             count++;
 
+
+
         RebuildDetailLayout();
-        RefreshVariantPreviewLayouts();
         return count;
     }
 
-    private bool AddAbilityBlock(string header, AbilityDefinition ability, string inputHint, InputActionId inputAction)
+    private bool AddAbilityBlock(string header, AbilityDefinition ability, string inputHint, InputActionId? inputAction)
     {
         if (abilityContainer == null || abilityBlockPrefab == null || ability == null)
             return false;
@@ -507,46 +524,14 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         if (displayStates.Count == 0)
             return false;
 
-        AbilityDisplayState initial = displayStates[0];
-        WeaponAbilityBlockView view = GetAbilityBlock();
-        if (view == null)
-            return false;
-
-        view.Set(
-            initial.Title,
-            initial.Icon,
-            initial.InputHint,
-            initial.CooldownSeconds,
-            initial.ExtraMeta,
-            initial.Body,
-            inputAction,
-            glossaryClickHandler);
-
-        if (displayStates.Count > 1)
+        foreach (AbilityDisplayState state in displayStates)
         {
-            WeaponAbilityBlockView nextView = GetAbilityBlock();
-            if (nextView != null)
-            {
-                nextView.name = $"{view.name}_Next";
-                view.SetExternalShuffleNextView(nextView);
-                ApplyExternalPreview(view, displayStates[1], inputAction, glossaryClickHandler);
-
-                InputGlyphPresentation glyph = InputBindingService.EnsureInstance()
-                    .GetContextShortcutGlyph(InputContextShortcutId.TooltipVariantNext);
-                string guideLabel = glyph.HasIcon
-                    ? "모드 전환"
-                    : $"{glyph.DisplayLabel} 모드 전환";
-
-                view.SetVariantSwitchGuide(true, glyph.Icon, guideLabel);
-                variantEntries.Add(new VariantAbilityEntry(view, displayStates, inputAction, glossaryClickHandler));
-            }
+            WeaponAbilityBlockView view = GetAbilityBlock();
+            if (view == null)
+                continue;
+            view.Set(state.Title, state.Icon, state.InputHint, state.CooldownSeconds,
+                state.ExtraMeta, state.Body, inputAction, glossaryClickHandler);
         }
-        else
-        {
-            view.SetExternalShuffleNextView(null);
-            view.SetVariantSwitchGuide(false, null, null);
-        }
-
         return true;
     }
 
@@ -594,7 +579,6 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
     private void HideAbilityBlocks()
     {
-        variantEntries.Clear();
         abilityBlockCursor = 0;
 
         for (int i = 0; i < abilityBlockPool.Count; i++)
@@ -640,7 +624,9 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
             : (!string.IsNullOrWhiteSpace(ability.abilityName) ? ability.abilityName : header);
 
         Sprite icon = variant.Icon != null ? variant.Icon : ability.icon;
-        string body = !string.IsNullOrWhiteSpace(variant.Body) ? variant.Body : BuildAbilityBody(ability);
+        string body = !showDetailedDescription && !string.IsNullOrWhiteSpace(variant.SimpleBody)
+            ? variant.SimpleBody
+            : (!string.IsNullOrWhiteSpace(variant.Body) ? variant.Body : BuildAbilityBody(ability));
         string resolvedInputHint = !string.IsNullOrWhiteSpace(variant.InputHint) ? variant.InputHint : inputHint;
         string extraMeta = !string.IsNullOrWhiteSpace(variant.ExtraMeta) ? variant.ExtraMeta : "-";
 
@@ -667,6 +653,9 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
     private string BuildAbilityBody(AbilityDefinition ability)
     {
+        if (!showDetailedDescription && ability != null && !string.IsNullOrWhiteSpace(ability.simpleDescription))
+            return ability.simpleDescription;
+
         builder.Clear();
 
         if (ability != null && !string.IsNullOrWhiteSpace(ability.description))
@@ -685,97 +674,6 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         }
 
         return builder.ToString().TrimEnd();
-    }
-
-    private void CycleFirstAvailableVariant()
-    {
-        for (int i = 0; i < variantEntries.Count; i++)
-        {
-            VariantAbilityEntry entry = variantEntries[i];
-            if (entry == null || entry.View == null || entry.States.Count <= 1)
-                continue;
-
-            if (entry.View.IsVariantSwitching)
-                return;
-
-            entry.CurrentIndex = (entry.CurrentIndex + 1) % entry.States.Count;
-            ApplyVariantEntry(entry, animate: true);
-            Canvas.ForceUpdateCanvases();
-            return;
-        }
-    }
-
-    private void RefreshVariantPreviewLayouts()
-    {
-        for (int i = 0; i < variantEntries.Count; i++)
-        {
-            VariantAbilityEntry entry = variantEntries[i];
-            if (entry?.View != null)
-                entry.View.RefreshExternalShufflePreviewLayout();
-        }
-    }
-
-    private static void ApplyVariantEntry(VariantAbilityEntry entry, bool animate)
-    {
-        AbilityDisplayState state = entry.States[entry.CurrentIndex];
-        AbilityDisplayState previewState = entry.States[(entry.CurrentIndex + 1) % entry.States.Count];
-
-        if (animate)
-            QueueExternalPreview(entry.View, previewState, entry.InputAction, entry.OnGlossaryClick);
-
-        entry.View.SetVariantDisplay(
-            state.Title,
-            state.Icon,
-            state.InputHint,
-            state.CooldownSeconds,
-            state.ExtraMeta,
-            state.Body,
-            entry.InputAction,
-            animate,
-            entry.OnGlossaryClick);
-
-        if (!animate)
-            ApplyExternalPreview(entry.View, previewState, entry.InputAction, entry.OnGlossaryClick);
-    }
-
-    private static void ApplyExternalPreview(
-        WeaponAbilityBlockView view,
-        AbilityDisplayState state,
-        InputActionId inputAction,
-        Action<string> onGlossaryClick)
-    {
-        if (view == null)
-            return;
-
-        view.SetExternalShufflePreview(
-            state.Title,
-            state.Icon,
-            state.InputHint,
-            state.CooldownSeconds,
-            state.ExtraMeta,
-            state.Body,
-            inputAction,
-            onGlossaryClick);
-    }
-
-    private static void QueueExternalPreview(
-        WeaponAbilityBlockView view,
-        AbilityDisplayState state,
-        InputActionId inputAction,
-        Action<string> onGlossaryClick)
-    {
-        if (view == null)
-            return;
-
-        view.QueueExternalShufflePreview(
-            state.Title,
-            state.Icon,
-            state.InputHint,
-            state.CooldownSeconds,
-            state.ExtraMeta,
-            state.Body,
-            inputAction,
-            onGlossaryClick);
     }
 
     private void HandleRelicPreviewInput(InputBindingService input)
@@ -889,6 +787,9 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
     private void HideTypeSections()
     {
+        currentWeapon = null;
+        showDetailedDescription = false;
+        weaponDescriptionHint.Refresh(false, false);
         SetActive(weaponStatsRoot, false);
         SetActive(weaponAbilityRoot, false);
         SetActive(relicPreviewRoot, false);
@@ -1139,28 +1040,4 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         public string Body { get; }
     }
 
-    /// <summary>
-    /// 책임 : 변형 가능한 능력 블록의 표시 상태 목록과 현재 선택 인덱스를 보관한다.
-    /// </summary>
-    private sealed class VariantAbilityEntry
-    {
-        public VariantAbilityEntry(
-            WeaponAbilityBlockView view,
-            List<AbilityDisplayState> states,
-            InputActionId inputAction,
-            Action<string> onGlossaryClick)
-        {
-            View = view;
-            States = states;
-            InputAction = inputAction;
-            OnGlossaryClick = onGlossaryClick;
-        }
-
-        public WeaponAbilityBlockView View { get; }
-        public List<AbilityDisplayState> States { get; }
-        public InputActionId InputAction { get; }
-        public Action<string> OnGlossaryClick { get; }
-        public int CurrentIndex { get; set; }
-    }
 }
-

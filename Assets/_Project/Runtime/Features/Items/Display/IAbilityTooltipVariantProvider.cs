@@ -15,7 +15,8 @@ public readonly struct AbilityTooltipVariant
         string body,
         float? cooldownSeconds = null,
         string inputHint = null,
-        string extraMeta = null)
+        string extraMeta = null,
+        string simpleBody = null)
     {
         Id = id;
         Title = title;
@@ -24,12 +25,14 @@ public readonly struct AbilityTooltipVariant
         CooldownSeconds = cooldownSeconds;
         InputHint = inputHint;
         ExtraMeta = extraMeta;
+        SimpleBody = simpleBody;
     }
 
     public string Id { get; }
     public string Title { get; }
     public Sprite Icon { get; }
     public string Body { get; }
+    public string SimpleBody { get; }
     public float? CooldownSeconds { get; }
     public string InputHint { get; }
     public string ExtraMeta { get; }

@@ -20,7 +20,7 @@ public sealed class FloweringLoadout : WeaponAbilityLoadout
         return slot switch
         {
             WeaponAbilitySlot.Attack => baseAttack,
-            WeaponAbilitySlot.Skill1 => bloomSkill,
+            WeaponAbilitySlot.Skill2 => bloomSkill,
             _ => null
         };
     }
@@ -51,6 +51,6 @@ public sealed class FloweringLoadout : WeaponAbilityLoadout
             yield return "Bloom Attack reference is empty.";
 
         if (bloomSkill == null)
-            yield return "Bloom Skill1 reference is empty.";
+            yield return "Bloom Skill2 reference is empty.";
     }
 }

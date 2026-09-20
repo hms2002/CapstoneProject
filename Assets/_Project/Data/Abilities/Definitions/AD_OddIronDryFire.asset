@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_OddIronDryFire
   m_EditorClassIdentifier: 
+  simpleDescription: "탄약이 없어 공격할 수 없습니다."
   abilityName: "빈 격발"
   icon: {fileID: 0}
   description: "탄약이 없어 공격할 수 없습니다."

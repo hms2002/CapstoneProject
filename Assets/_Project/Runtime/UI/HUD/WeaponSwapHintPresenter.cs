@@ -38,7 +38,7 @@ public sealed class WeaponSwapHintPresenter : MonoBehaviour
         }
 
         GamePlayData run = RunSessionStore.Data;
-        bool ready = run != null && run.isRunActive && run.weaponSwapHintUnlocked &&
+        bool ready = run != null && run.weaponSwapHintUnlocked &&
                      !run.weaponSwapHintCompleted && inventory != null &&
                      inventory.HasWeapon(0) && inventory.HasWeapon(1) &&
                      inventory.IsSlotAccessible(0) && inventory.IsSlotAccessible(1);

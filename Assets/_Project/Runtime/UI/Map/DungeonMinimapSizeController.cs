@@ -18,10 +18,12 @@ public sealed class DungeonMinimapSizeController : MonoBehaviour
     private const int Expanded = 2;
     private int sizeLevel = Normal;
     private Vector3 normalScale;
+    private CanvasGroup visibility;
 
     private void Awake()
     {
         normalScale = mapBody != null ? mapBody.localScale : Vector3.one;
+        visibility = GetComponent<CanvasGroup>();
     }
 
     private void OnEnable()
@@ -39,6 +41,16 @@ public sealed class DungeonMinimapSizeController : MonoBehaviour
             expandButton.onClick.RemoveListener(Expand);
         if (shrinkButton != null)
             shrinkButton.onClick.RemoveListener(Shrink);
+    }
+
+    private void Update()
+    {
+        if (visibility != null && (!visibility.interactable || visibility.alpha <= 0f))
+            return;
+        if (InputActionQuery.WasPressedThisFrame(InputActionId.MinimapExpand))
+            Expand();
+        else if (InputActionQuery.WasPressedThisFrame(InputActionId.MinimapShrink))
+            Shrink();
     }
 
     public void Expand()

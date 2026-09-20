@@ -8,19 +8,29 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
 {
     [SerializeField] private SectionListView sections;
 
+    private bool showDetailedDescription;
+
     public bool CanShow(object def) => def is WeaponDefinition;
 
     public void Show(object def, ItemDetailContext ctx, ItemDetailPanelServices services)
     {
+        Show(def, ctx, services, false);
+    }
+
+    public void Show(object def, ItemDetailContext ctx, ItemDetailPanelServices services, bool detailed)
+    {
+        showDetailedDescription = detailed;
         gameObject.SetActive(true);
         sections?.Clear();
 
         WeaponDefinition weapon = (WeaponDefinition)def;
 
         AddWeaponSummarySection(weapon, services);
-        AddAbilitySection("일반공격", weapon.attack, DamageAttackKind.Normal, ctx, services, weapon.attackInputHint, InputActionId.PrimaryAttack);
-        AddAbilitySection("스킬 1", weapon.skill1, DamageAttackKind.Skill, ctx, services, weapon.skill1InputHint, InputActionId.Skill1);
-        AddAbilitySection("스킬 2", weapon.skill2, DamageAttackKind.Skill, ctx, services, weapon.skill2InputHint, InputActionId.Skill2);
+        if (weapon.weaponId == "Weapon.CrimsonBoundary")
+            AddAbilitySection("일반공격", weapon.GetAbility(WeaponAbilitySlot.Attack), DamageAttackKind.Normal, ctx, services, weapon.attackInputHint, InputActionId.PrimaryAttack);
+        AddAbilitySection("스킬 1", weapon.GetAbility(WeaponAbilitySlot.Skill1), DamageAttackKind.Skill, ctx, services, weapon.skill1InputHint, InputActionId.Skill1);
+        AddAbilitySection("스킬 2", weapon.GetAbility(WeaponAbilitySlot.Skill2), DamageAttackKind.Skill, ctx, services, weapon.skill2InputHint, InputActionId.Skill2);
+
     }
 
     public void Hide()
@@ -36,10 +46,29 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
         ItemDetailContext ctx,
         ItemDetailPanelServices services,
         string inputHint,
-        InputActionId inputAction)
+        InputActionId? inputAction)
     {
         if (sections == null || ability == null)
             return;
+
+        if (ability.sourceObject is IAbilityTooltipVariantProvider variants)
+        {
+            int count = variants.GetAbilityTooltipVariantCount(ability, ctx);
+            for (int i = 0; i < count; i++)
+            {
+                AbilityTooltipVariant variant = variants.BuildAbilityTooltipVariant(ability, i, ctx);
+                string variantBody = !showDetailedDescription && !string.IsNullOrWhiteSpace(variant.SimpleBody)
+                    ? variant.SimpleBody : variant.Body;
+                string variantText = $"{variantBody}\n입력: {ResolveInputHintLabel(inputHint, inputAction)}";
+                float cooldown = variant.CooldownSeconds ?? ability.cooldown;
+                if (cooldown > 0f)
+                    variantText += $"\n쿨다운: {cooldown:0.##}s";
+                sections.Add(variant.Title, services?.formatText != null
+                    ? services.formatText(variantText) : variantText, services?.showGlossary);
+            }
+            if (count > 0)
+                return;
+        }
 
         string body = BuildAbilityBody(ability, kind, ctx, inputHint, inputAction);
         if (services?.formatText != null)
@@ -96,13 +125,15 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
         DamageAttackKind kind,
         ItemDetailContext ctx,
         string inputHint,
-        InputActionId inputAction)
+        InputActionId? inputAction)
     {
         var sb = new StringBuilder();
 
         sb.AppendLine($"<b>{ability.abilityName}</b>");
-        if (!string.IsNullOrEmpty(ability.description))
-            sb.AppendLine(ability.description);
+        string description = !showDetailedDescription && !string.IsNullOrWhiteSpace(ability.simpleDescription)
+            ? ability.simpleDescription : ability.description;
+        if (!string.IsNullOrEmpty(description))
+            sb.AppendLine(description);
 
         string resolvedInputHint = ResolveInputHintLabel(inputHint, inputAction);
         if (!string.IsNullOrEmpty(resolvedInputHint))
@@ -111,10 +142,10 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
         if (ability.cooldown > 0f)
             sb.AppendLine($"쿨다운: <color=#FFD54F>{ability.cooldown:0.##}s</color>");
 
-        if (ability.abilityTags != null && ability.abilityTags.Count > 0)
+        if (showDetailedDescription && ability.abilityTags != null && ability.abilityTags.Count > 0)
             sb.AppendLine($"태그: {JoinTags(ability.abilityTags)}");
 
-        if (ability.sourceObject != null)
+        if (showDetailedDescription && ability.sourceObject != null)
         {
             sb.AppendLine();
             sb.AppendLine("<b>상세</b>");
@@ -124,9 +155,11 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
         return sb.ToString().TrimEnd();
     }
 
-    private static string ResolveInputHintLabel(string fallbackInputHint, InputActionId inputAction)
+    private static string ResolveInputHintLabel(string fallbackInputHint, InputActionId? inputAction)
     {
-        string bindingLabel = InputBindingService.EnsureInstance().GetBindingDisplayLabel(inputAction);
+        if (!inputAction.HasValue)
+            return fallbackInputHint;
+        string bindingLabel = InputBindingService.EnsureInstance().GetBindingDisplayLabel(inputAction.Value);
         if (!string.IsNullOrWhiteSpace(bindingLabel) && bindingLabel != "-")
             return bindingLabel;
 

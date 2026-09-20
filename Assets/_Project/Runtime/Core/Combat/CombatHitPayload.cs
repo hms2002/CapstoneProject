@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace UnityGAS
@@ -72,14 +73,15 @@ namespace UnityGAS
             return Apply(target, payload, target != null ? target.transform.position : Vector3.zero);
         }
 
-        public static bool Apply(GameObject target, CombatHitPayload payload, Vector3 hitWorldPosition)
+        public static bool Apply(GameObject target, CombatHitPayload payload, Vector3 hitWorldPosition,
+            HashSet<GameObject> evadeFeedbackTargets = null)
         {
             if (target == null || payload == null || !payload.IsValid())
                 return false;
 
             if (CombatInvulnerabilityUtil.IsDamageSuppressed(target, payload.damageEffect as GE_Damage_Spec))
             {
-                CombatInvulnerabilityUtil.ShowEvadeFeedback(target);
+                CombatInvulnerabilityUtil.ShowEvadeFeedback(target, evadeFeedbackTargets);
                 return false;
             }
 
@@ -102,7 +104,8 @@ namespace UnityGAS
                 hitFeelOverride: payload.hitFeel,
                 hitStopGroup: payload.hitStopGroup,
                 impactCameraOverride: payload.impactCameraOverride,
-                hitCameraScale: payload.hitCameraScale);
+                hitCameraScale: payload.hitCameraScale,
+                evadeFeedbackTargets: evadeFeedbackTargets);
 
             return true;
         }

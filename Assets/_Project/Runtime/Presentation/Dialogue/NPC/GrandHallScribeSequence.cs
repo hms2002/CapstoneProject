@@ -10,6 +10,9 @@ using UnityEngine;
 public sealed class GrandHallScribeSequence : InteractableBase, INPCFeature
 {
     private const string IntroSeenId = "grandhall_scribe_intro_seen";
+    private static readonly int OutlineEnabledId = Shader.PropertyToID("_OutlineEnabled");
+    private SpriteRenderer outlineRenderer;
+    private MaterialPropertyBlock outlineProperties;
     // Dialogue owns its canvas; the common letterbox handles Gameplay/Boss HUD fading.
     private static readonly GlobalCanvasLayer[] PresentationFadedLayers =
     {
@@ -31,6 +34,7 @@ public sealed class GrandHallScribeSequence : InteractableBase, INPCFeature
     [SerializeField] private Transform shadowPortal;
     [SerializeField] private Transform slimePortal;
     [SerializeField] private Transform demonPortal;
+    [SerializeField] private GameObject trainingDummy;
     [SerializeField, Min(0.1f)] private float moveSeconds = 1f;
     [SerializeField, Min(1f)] private float closeSize = 4.8f;
     [SerializeField, Min(1f)] private float portalPadding = 2.5f;
@@ -52,11 +56,33 @@ public sealed class GrandHallScribeSequence : InteractableBase, INPCFeature
     private GameData slot;
     private ISpeechBubblePlayback Speech => speechBubble as ISpeechBubblePlayback;
     public string FeatureName => "scribe_cue";
+    // The saved completion cue precedes camera restoration; wait for the whole entry flow.
+    public bool IsPortalGuidanceReady => isActiveAndEnabled && !busy && IsCurrentSlot &&
+        TutorialProgressStore.IsCompleted(IntroSeenId);
+
+    private void Awake()
+    {
+        outlineRenderer = GetComponent<SpriteRenderer>();
+        OnUnHighlight();
+        HideTrainingDummyForFirstEntry();
+    }
+
+    private void HideTrainingDummyForFirstEntry()
+    {
+        // Keep it hidden for this entire visit, even after the intro completion is saved.
+        // Boss-clear returns and later runs load the authored active prefab and skip this hide.
+        if (trainingDummy != null && GameDataStore.IsAvailable && GameDataStore.Data != null &&
+            !TutorialProgressStore.IsCompleted(IntroSeenId))
+            trainingDummy.SetActive(false);
+    }
 
     private IEnumerator Start()
     {
-        while (!GameDataStore.IsAvailable || GameDataStore.Data == null ||
-               PlayerRuntimeRegistry.GetPlayerTransform() == null || !DialoguePlayback.HasActiveController ||
+        while (!GameDataStore.IsAvailable || GameDataStore.Data == null)
+            yield return null;
+
+        HideTrainingDummyForFirstEntry();
+        while (PlayerRuntimeRegistry.GetPlayerTransform() == null || !DialoguePlayback.HasActiveController ||
                SceneTransitionPlayback.IsTransitionActive || DialoguePlayback.IsPlaying)
             yield return null;
 
@@ -267,10 +293,23 @@ public sealed class GrandHallScribeSequence : InteractableBase, INPCFeature
 
     private void OnDisable()
     {
+        OnUnHighlight();
         StopAllCoroutines();
         if (busy && DialoguePlayback.IsPlaying) features?.RequestDialogueExit?.Invoke();
         Cleanup();
         busy = false;
+    }
+
+    public override void OnHighlight() => SetOutline(true);
+    public override void OnUnHighlight() => SetOutline(false);
+
+    private void SetOutline(bool enabled)
+    {
+        if (outlineRenderer == null) return;
+        outlineProperties ??= new MaterialPropertyBlock();
+        outlineRenderer.GetPropertyBlock(outlineProperties);
+        outlineProperties.SetFloat(OutlineEnabledId, enabled ? 1f : 0f);
+        outlineRenderer.SetPropertyBlock(outlineProperties);
     }
 
     public override bool CanInteract(IPlayerInteractor player) => !busy && player != null &&

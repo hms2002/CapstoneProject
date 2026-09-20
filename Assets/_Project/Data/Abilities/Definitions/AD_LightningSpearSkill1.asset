@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_LightningSpearSkill1
   m_EditorClassIdentifier: 
+  simpleDescription: "[[낙뢰 표식]]으로 돌진하고 {em:회수 창}을 얻습니다. 표식이 없으면 전방을 휩쓸며 모아 둔 창을 발사합니다."
   abilityName: 뇌창 돌격
   icon: {fileID: 21300000, guid: 340af4cfb3b1848419310b98a964e9eb, type: 3}
   description: "● 커서 주변에 [[낙뢰 표식]]이 있으면 {em:뇌창 돌격}으로 전환\n● 표식이 없으면 {em:뇌창 휩쓸기}로 전방 공격\n● 표식 돌격 성공 시 {pos:뇌창 돌격 재사용 대기시간 초기화}\n● {em:회수 창} {val:1개} 획득"

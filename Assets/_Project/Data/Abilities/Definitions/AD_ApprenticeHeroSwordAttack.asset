@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_ApprenticeHeroSwordAttack
   m_EditorClassIdentifier: 
+  simpleDescription: "검을 연속으로 휘두릅니다. 마지막 공격은 앞으로 나아가며 크게 베어냅니다."
   abilityName: "\uACAC\uC2B5 \uC5F0\uC18D \uBCA0\uAE30"
   icon: {fileID: 0}
   description: "● 검을 휘둘러 {val:3연속} 근접 공격\n● 세 번째 공격은 더 길게 전진하며 크게 베어낸다"

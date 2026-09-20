@@ -279,7 +279,7 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
     public void BeginRebind(KeyBindingRowUI row, InputActionId action, bool secondary)
     {
-        if (row == null)
+        if (row == null || !InputBindingDefaultsSO.IsRemappable(action))
             return;
 
         CancelRebind();
@@ -353,7 +353,8 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
     public bool CanResetAction(InputActionId action)
     {
-        return !AreBindingsEqual(GetWorkingBinding(action), InputBindingService.EnsureInstance().GetDefaultBinding(action));
+        return InputBindingDefaultsSO.IsRemappable(action) &&
+               !AreBindingsEqual(GetWorkingBinding(action), InputBindingService.EnsureInstance().GetDefaultBinding(action));
     }
 
     private void BindListeners()
@@ -399,10 +400,15 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
     private IReadOnlyList<InputActionId> ResolveActionOrder()
     {
-        if (actionOrder != null && actionOrder.Count > 0)
-            return actionOrder;
-
-        return InputBindingService.EnsureInstance().GetRemappableActions();
+        List<InputActionId> result = new();
+        if (actionOrder != null)
+            foreach (InputActionId action in actionOrder)
+                if (InputBindingDefaultsSO.IsRemappable(action) && !result.Contains(action))
+                    result.Add(action);
+        foreach (InputActionId action in InputBindingService.EnsureInstance().GetRemappableActions())
+            if (!result.Contains(action))
+                result.Add(action);
+        return result;
     }
 
     private void LoadWorkingBindingsFromService()
@@ -665,12 +671,18 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         previewBindings = CloneBindings(workingBindings);
         conflicts = new HashSet<InputActionId>();
 
-        if (!ApplySlotChange(previewBindings, targetAction, secondary: false, targetBinding.primary, conflicts))
+        if (!InputBindingDefaultsSO.IsRemappable(targetAction) ||
+            !previewBindings.TryGetValue(targetAction, out InputBinding original))
+            return false;
+
+        if (original.primary != targetBinding.primary &&
+            !ApplySlotChange(previewBindings, targetAction, secondary: false, targetBinding.primary, conflicts))
             return false;
 
         if (SupportsSecondaryBinding(targetAction))
         {
-            if (!ApplySlotChange(previewBindings, targetAction, secondary: true, targetBinding.secondary, conflicts))
+            if (original.secondary != targetBinding.secondary &&
+                !ApplySlotChange(previewBindings, targetAction, secondary: true, targetBinding.secondary, conflicts))
                 return false;
         }
         else
@@ -697,14 +709,33 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         if (currentKey == newKey)
             return true;
 
-        if (FindConflict(previewBindings, targetAction, secondary, newKey, out InputActionId conflictAction, out bool conflictSecondary))
+        if (FindConflict(previewBindings, targetAction, secondary, newKey, out _, out _))
         {
-            conflicts.Add(conflictAction);
-            SetKey(previewBindings, conflictAction, conflictSecondary, currentKey);
+            // Swap the complete key groups. F may legitimately belong to both Interact and
+            // InventoryDrop; moving only one owner would leave a new collision with InventoryToggle.
+            foreach (InputActionId action in InputBindingService.EnsureInstance().GetRemappableActions())
+            {
+                InputBinding binding = previewBindings[action];
+                KeyCode primary = SwapKey(binding.primary, currentKey, newKey);
+                KeyCode secondaryKey = SwapKey(binding.secondary, currentKey, newKey);
+                if (primary != binding.primary || secondaryKey != binding.secondary)
+                {
+                    conflicts.Add(action);
+                    SetKey(previewBindings, action, false, primary);
+                    SetKey(previewBindings, action, true, secondaryKey);
+                }
+            }
+            conflicts.Remove(targetAction);
         }
 
         SetKey(previewBindings, targetAction, secondary, newKey);
         return true;
+    }
+
+    private static KeyCode SwapKey(KeyCode key, KeyCode oldKey, KeyCode newKey)
+    {
+        if (key == newKey) return oldKey;
+        return oldKey != KeyCode.None && key == oldKey ? newKey : key;
     }
 
     private bool FindConflict(
@@ -728,6 +759,9 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         {
             InputActionId action = actions[i];
             InputBinding binding = bindings[action];
+
+            if (InputBindingDefaultsSO.CanShareKey(action, targetAction))
+                continue;
 
             if (binding.primary == key && (!Equals(action, targetAction) || targetSecondary))
             {

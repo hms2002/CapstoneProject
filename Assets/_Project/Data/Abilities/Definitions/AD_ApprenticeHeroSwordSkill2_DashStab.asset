@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_ApprenticeHeroSwordSkill2_DashStab
   m_EditorClassIdentifier: 
+  simpleDescription: "조준 방향으로 돌진하며 전방의 적을 찌릅니다."
   abilityName: "돌진 찌르기"
   icon: {fileID: 21300000, guid: 812935a52cbb94e4f932573ef56ea32a, type: 3}
   description: "● 조준 방향으로 {em:돌진}하며 전방의 적을 찌르기"

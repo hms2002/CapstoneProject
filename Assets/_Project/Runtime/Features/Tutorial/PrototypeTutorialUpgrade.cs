@@ -30,7 +30,14 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
     [SerializeField] private GoblinGunner tutorialGunner;
     [SerializeField] private PrototypeTutorialOpeningSequence opening = new();
     private Coroutine openingRoutine;
-    public bool IsOpeningCinematic => opening.IsPending;
+    public bool IsOpeningCinematic => opening.IsPending || volleyCinematic;
+    private Coroutine volleyRoutine;
+    private bool volleyCinematic, entranceClosed;
+    private IGameplayCameraFocusSession volleyCamera;
+    private ICinematicLetterboxOverlayHandle volleyLetterbox;
+    private PlayerCinematicProtection volleyProtection;
+    private GameFlowInputBlocker volleyInput;
+    private Vector3 volleyAnchorPosition;
     [SerializeField] private GoblinWarrior skillMonsterPrefab;
     [SerializeField] private Transform[] skillSpawnPoints = Array.Empty<Transform>();
     [SerializeField] private Transform gunnerRetreatPoint;
@@ -38,6 +45,7 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
     [SerializeField] private DoorObject dodgeEntranceDoor;
     private bool gunnerVolleyStarted;
     [SerializeField] private ChestMonsterKillLock chestLock;
+    // Retain existing scene serialization; the inventory lesson now owns the portal unlock condition.
     [SerializeField] private TreasureChest portalDoorChest;
     [SerializeField] private DoorObject bossPortalDoor;
     private Enemy[] skillMonsters;
@@ -69,6 +77,12 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
     private int thrustKills;
     private bool evadedBullet;
     private float nextDamageTime;
+    private bool openingWoundApplied;
+    private static readonly InputActionId[] PotionActions =
+    {
+        InputActionId.ConsumableSlot1, InputActionId.ConsumableSlot2,
+        InputActionId.ConsumableSlot3, InputActionId.ConsumableSlot4
+    };
     private string lastProgress;
 
     private enum DashIntroPhase { Ready, ZoomIn, Waiting, Dashing, ZoomOut, Done }
@@ -83,7 +97,13 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
     private float introTimeScale;
 
     public int Stage => stage;
-    public bool IsMovementPrompt => stage == 0 || (stage == 1 && !IsDashPromptVisible) || stage >= 6;
+    public bool TryGetChestGuidanceTarget(out TreasureChest target)
+    {
+        target = portalDoorChest;
+        return isActiveAndEnabled && stage == 4 && !IsOpeningCinematic &&
+            target != null && target.isActiveAndEnabled && !target.IsOpened;
+    }
+    public bool IsMovementPrompt => stage == 0 || (stage == 1 && !IsDashPromptVisible) || stage >= 7;
     public InputActionId PromptAction => stage switch
     {
         1 when IsDashPromptVisible => InputActionId.Dash,
@@ -91,6 +111,7 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         3 => chargeKills < 4 ? InputActionId.Skill1 : InputActionId.Skill2,
         4 => InputActionId.Interact,
         5 => InputActionId.InventoryToggle,
+        6 => InputActionId.ConsumableSlot1,
         _ => InputActionId.MoveUp
     };
     public string ProgressText => lastProgress;
@@ -125,16 +146,11 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
 
     private void OnEnable()
     {
-        if (portalDoorChest != null)
-        {
-            portalDoorChest.FirstOpenedUi += OpenBossPortalDoor;
-            if (bossPortalDoor != null)
-            {
-                if (portalDoorChest.IsOpened) bossPortalDoor.ForceOpen(immediate: true, playPresentation: false);
-                else bossPortalDoor.ForceClose(immediate: true);
-            }
-        }
+        if (bossPortalDoor != null) bossPortalDoor.ForceClose(immediate: true);
         stage = attackHits = chargeKills = thrustKills = 0;
+        openingWoundApplied = false;
+        healthRecovery?.SetRecoveryMissingHealth(0f);
+        foreach (InputActionId action in PotionActions) InputActionQuery.SetPressBlocked(action, this, true);
         dashIntro = DashIntroPhase.Ready;
         InputActionQuery.SetPressBlocked(InputActionId.Dash, this, true);
         evadedBullet = false;
@@ -173,7 +189,8 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
 
     private void OnDisable()
     {
-        if (portalDoorChest != null) portalDoorChest.FirstOpenedUi -= OpenBossPortalDoor;
+        foreach (InputActionId action in PotionActions) InputActionQuery.SetPressBlocked(action, this, false);
+        healthRecovery?.SetRecoveryMissingHealth(0f);
         PlayerRuntimeRegistry.PlayerRegistered -= BindPlayer;
         PlayerRuntimeRegistry.PlayerUnregistered -= UnbindPlayer;
         ReleasePlayer();
@@ -219,6 +236,9 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         if (openingRoutine != null) StopCoroutine(openingRoutine);
         openingRoutine = null;
         opening.Cancel();
+        if (volleyRoutine != null) StopCoroutine(volleyRoutine);
+        volleyRoutine = null;
+        CleanupVolleyCinematic();
         CleanupDashIntro();
         InputActionQuery.SetPressBlocked(InputActionId.Dash, this, false);
         if (player != null)
@@ -260,6 +280,7 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         TickDashIntro();
         if (TimeScalePausePlayback.IsPaused || Time.deltaTime <= 0f) return;
         TickGunner();
+        if (volleyCinematic) return;
         if (stage == 0 && AtGoal(movementGoal)) Advance();
         if (stage == 1)
         {
@@ -416,7 +437,95 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         int index = Array.FindIndex(bulletConsumed, consumed => consumed);
         if (index < 0) return;
         gunnerVolleyStarted = true;
-        if (dodgeEntranceDoor != null) dodgeEntranceDoor.ForceClose();
+        volleyRoutine = StartCoroutine(PlayVolleyCinematic(index));
+    }
+
+    private System.Collections.IEnumerator PlayVolleyCinematic(int index)
+    {
+        volleyCinematic = true;
+        Transform anchor = opening.CameraPoint;
+        if (anchor != null) volleyAnchorPosition = anchor.position;
+        try
+        {
+            volleyInput = GameFlowInputBlocker.GetOrAdd(this);
+            volleyInput.Acquire();
+            volleyProtection = player.GetComponent<PlayerCinematicProtection>();
+            volleyProtection?.Acquire(this);
+            entranceClosed = dodgeEntranceDoor == null || !dodgeEntranceDoor.IsOpen;
+            if (!entranceClosed)
+            {
+                dodgeEntranceDoor.ClosedPresentationCompleted += OnEntranceClosed;
+                dodgeEntranceDoor.ForceClose();
+            }
+            while (!entranceClosed) yield return null;
+            volleyCamera = GameplayCameraFocusPlayback.Capture(this);
+            volleyLetterbox = CinematicLetterboxPlayback.CreateOverlay();
+            yield return volleyLetterbox.PlayIn(0f, .14f, 0f);
+            yield return PanVolleyCamera(tutorialGunner.transform, .65f);
+            yield return new WaitForSeconds(.5f);
+            FireTutorialVolley(index);
+            // Keep the real tutorial projectile moving while the shot is on screen.
+            for (float elapsed = 0f; elapsed < .18f; elapsed += Time.deltaTime)
+            {
+                TickBullets();
+                yield return null;
+            }
+            yield return PanVolleyCamera(player.transform, .25f, moveBullet: true);
+            volleyCamera?.Restore(player.transform);
+            volleyCamera = null;
+            yield return volleyLetterbox.PlayOut(.12f);
+        }
+        finally
+        {
+            CleanupVolleyCinematic();
+            volleyRoutine = null;
+        }
+    }
+
+    private void OnEntranceClosed(DoorObject door) => entranceClosed = true;
+
+    private System.Collections.IEnumerator PanVolleyCamera(Transform target, float duration, bool moveBullet = false)
+    {
+        Transform anchor = opening.CameraPoint;
+        if (volleyCamera == null || target == null) yield break;
+        if (anchor == null)
+        {
+            volleyCamera.SetTarget(target);
+            yield return volleyCamera.WaitForSettle(target);
+            yield break;
+        }
+        Vector3 start = volleyCamera.CurrentCenter;
+        volleyCamera.SetTarget(anchor);
+        for (float elapsed = 0f; elapsed < duration; elapsed += Time.deltaTime)
+        {
+            anchor.position = Vector3.Lerp(start, target.position, Mathf.SmoothStep(0f, 1f, elapsed / duration));
+            volleyCamera.SnapToTarget(anchor);
+            if (moveBullet) TickBullets();
+            yield return null;
+        }
+        anchor.position = target.position;
+        volleyCamera.SnapToTarget(anchor);
+    }
+
+    private void CleanupVolleyCinematic()
+    {
+        if (dodgeEntranceDoor != null) dodgeEntranceDoor.ClosedPresentationCompleted -= OnEntranceClosed;
+        volleyCamera?.Restore(player != null ? player.transform : null);
+        volleyCamera = null;
+        if (volleyCinematic && opening.CameraPoint != null) opening.CameraPoint.position = volleyAnchorPosition;
+        volleyLetterbox?.Dispose();
+        volleyLetterbox = null;
+        volleyProtection?.Release(this);
+        volleyProtection = null;
+        volleyInput?.Release();
+        volleyInput = null;
+        if (volleyCinematic && Array.TrueForAll(bulletConsumed, consumed => consumed)) gunnerVolleyStarted = false;
+        volleyCinematic = false;
+        if (player != null) previousPlayerPosition = player.transform.position;
+    }
+
+    private void FireTutorialVolley(int index)
+    {
         bulletConsumed[index] = false;
         bullets[index].position = tutorialGunner.transform.position + Vector3.down * .65f;
         bullets[index].gameObject.SetActive(true);
@@ -504,8 +613,16 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
             }
             bullet.position = to;
             bullet.gameObject.SetActive(!bulletConsumed[i]);
+            Vector2 contactFrom = BulletContactOffset(from - previousPlayerPosition);
+            Vector2 contactTo = BulletContactOffset(to - currentPlayer);
+            // Halve only the gunner shot's vertical hit reach, without changing dash-intro timing.
+            if (tutorialGunner != null)
+            {
+                contactFrom.y *= 2f;
+                contactTo.y *= 2f;
+            }
             if (bulletConsumed[i] || !PrototypeTutorialRules.SweptContact(
-                    BulletContactOffset(from - previousPlayerPosition), BulletContactOffset(to - currentPlayer), .48f)) continue;
+                    contactFrom, contactTo, .48f)) continue;
             if (dashProtected)
             {
                 if (!evadedBullet)
@@ -658,7 +775,6 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
             chargeCooldown?.Dispose();
             thrustCooldown?.Dispose();
             chargeCooldown = thrustCooldown = null;
-            if (healthRecovery != null) healthRecovery.enabled = false;
         }
         RefreshPresentation();
     }
@@ -668,7 +784,7 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         bool showChest = stage <= 4 && (chestLock != null || stage == 4);
         if (chestPractice != null && chestPractice.activeSelf != showChest)
             chestPractice.SetActive(showChest);
-        for (int i = 0; i < gates.Length; i++) gates[i].SetActive(i == 3 ? stage < 6 : stage <= i);
+        for (int i = 0; i < gates.Length; i++) gates[i].SetActive(i == 3 ? stage < 7 : stage <= i);
         if (stage != 1)
             foreach (Transform bullet in bullets) bullet.gameObject.SetActive(false);
         string message = stage switch
@@ -679,6 +795,7 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
             3 => (chargeKills < 4 ? "우클릭" : "Q") + PromptInstruction,
             4 => "상자를 열고 아이템 선택 후 획득하기",
             5 => "인벤토리를 열어 획득한 아이템 확인하기",
+            6 => "1번 소모품 슬롯의 포션 사용하기",
             _ => "위쪽 포탈로 이동하기"
         };
         if (message == lastProgress) return;
@@ -693,13 +810,37 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
 
     public void CompleteInventoryTutorial()
     {
-        if (stage == 5) Advance();
+        if (stage != 5) return;
+        Advance();
+        healthRecovery?.SetRecoveryMissingHealth(0f);
+        if (healthRecovery != null) healthRecovery.enabled = false;
+        InputActionQuery.SetPressBlocked(InputActionId.ConsumableSlot1, this, false);
     }
 
-    private void OpenBossPortalDoor(TreasureChest chest)
+    public void CompletePotionTutorial()
     {
-        if (chest == portalDoorChest && bossPortalDoor != null)
-            bossPortalDoor.ForceOpen(save: false);
+        if (stage != 6) return;
+        Advance();
+        foreach (InputActionId action in PotionActions) InputActionQuery.SetPressBlocked(action, this, false);
+        healthRecovery?.SetRecoveryMissingHealth(0f);
+        if (bossPortalDoor != null) bossPortalDoor.ForceOpen(save: false);
+    }
+
+    public void ApplyOpeningShotDamage()
+    {
+        if (openingWoundApplied || player == null || damageEffect == null || damageEffect.healthAttribute == null) return;
+        AttributeSet attributes = player.GetComponent<AttributeSet>();
+        if (attributes == null) return;
+        // This authored one-HP wound bypasses cinematic protection without releasing any control owner.
+        // Ordinary projectiles still use the combat damage pipeline and its invulnerability rules.
+        healthRecovery?.SetRecoveryMissingHealth(1f);
+        if (attributes.TryModifyAttributeValue(damageEffect.healthAttribute, -1f, this))
+        {
+            openingWoundApplied = true;
+            player.GetComponent<PlayerHitFeedback2D>()?.PlayScriptedImpactPresentation(
+                tutorialGunner != null ? tutorialGunner.gameObject : null);
+            DamagePopupPlayback.Show(DamagePopupRequest.Damage(1f, player.transform.position, isPlayerTarget: true));
+        }
     }
 }
 
@@ -718,6 +859,7 @@ public sealed class PrototypeTutorialOpeningSequence
     [NonSerialized] private bool completed;
     [NonSerialized] private bool landed;
     [NonSerialized] private bool canWake;
+    [NonSerialized] private bool openingShotHit;
     [NonSerialized] private bool capturedVisual;
     [NonSerialized] private Vector3 visualPosition;
     [NonSerialized] private PlayerHubSpawnPresentation2D arrival;
@@ -737,6 +879,7 @@ public sealed class PrototypeTutorialOpeningSequence
 
     public bool IsPending => enabled && !completed;
     public bool IsEscaping => escaping;
+    public Transform CameraPoint => openingCameraPoint;
 
     public System.Collections.IEnumerator Play(MonoBehaviour host, AbilitySystem player, GoblinGunner actor)
     {
@@ -756,7 +899,7 @@ public sealed class PrototypeTutorialOpeningSequence
             yield break;
         }
 
-        landed = canWake = false;
+        landed = canWake = openingShotHit = false;
         coroutineHost = host;
         playerTransform = player.transform;
         visualPosition = gunnerVisual.localPosition;
@@ -798,21 +941,28 @@ public sealed class PrototypeTutorialOpeningSequence
             yield return shot.Run(gunner.GetComponent<AbilitySystem>(), null, player.gameObject, projectile =>
             {
                 openingProjectile = projectile;
-                projectile.BindPresentationImpact(player.gameObject, () => canWake = true);
+                projectile.BindPresentationImpact(player.gameObject, () =>
+                {
+                    if (host is PrototypeTutorialUpgrade tutorial) tutorial.ApplyOpeningShotDamage();
+                    openingShotHit = true;
+                });
             });
             CommonMonsterCombatUtility.TriggerAnimation(gunner, CommonMonsterAnimationCue.Recover);
             ((ISpeechBubblePlayback)gunnerSpeech).HideActive();
-            while (!canWake && openingProjectile != null) yield return null;
-            if (!canWake)
+            while (!openingShotHit && openingProjectile != null) yield return null;
+            if (!openingShotHit)
             {
                 Debug.LogError("[TutorialOpening] Opening shot missed the player; check the authored firing lane.", host);
                 completed = true;
                 yield break;
             }
+            // Show the impact on the lying pose before the authored recovery begins.
+            yield return new WaitForSeconds(.4f);
+            canWake = true;
             // Arrival restores the upright pose, while this sequence still owns control protection.
             while (arrival.IsPortalArrivalPlaying(this)) yield return null;
             player.GetComponent<PlayerInteractor2D>()?.SetInteractState(InteractState.None);
-            yield return PlaySurprise();
+            yield return PlaySurprise("!!!");
             gunner.enabled = restoreGunnerEnabled;
             restoreGunnerEnabled = false;
             ((ISpeechBubblePlayback)gunnerSpeech).HideActive();
@@ -887,9 +1037,9 @@ public sealed class PrototypeTutorialOpeningSequence
         letterboxExit = null;
     }
 
-    private System.Collections.IEnumerator PlaySurprise()
+    private System.Collections.IEnumerator PlaySurprise(string text = "!")
     {
-        ((ISpeechBubblePlayback)gunnerSpeech).Speak("!", .85f);
+        ((ISpeechBubblePlayback)gunnerSpeech).Speak(text, .85f);
         for (float elapsed = 0f; elapsed < .4f; elapsed += Time.deltaTime)
         {
             float t = Mathf.Clamp01(elapsed / .4f);

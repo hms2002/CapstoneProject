@@ -29,6 +29,166 @@ public sealed class DungeonReturnPortalPlayModeTests
     private T Own<T>(T value) where T : Object { owned.Add(value); return value; }
 
     [UnityTest]
+    public IEnumerator PortalArrival_PreservesBloomAcrossCompletionAndCancel_ThenUnlocksOnExpiry()
+    {
+        var player = MakePlayer();
+        var system = StartBloom(player, out var state, out var data, out var definition);
+        var arrival = player.Transform.GetComponent<PlayerHubSpawnPresentation2D>();
+        float remaining = data.RemainingSeconds;
+        object owner = new();
+        Assert.That(arrival.TryPlayPortalArrival(owner, player.Transform.position + Vector3.up, null), Is.True);
+        Assert.That(state.IsBloomActive, Is.True, "Arrival preparation must not reset the active buff.");
+        float deadline = Time.realtimeSinceStartup + 4f;
+        while (arrival.IsPlaying && Time.realtimeSinceStartup < deadline) yield return null;
+        Assert.That(arrival.IsPlaying, Is.False);
+        Assert.That(state.IsBloomActive, Is.True);
+        Assert.That(data.RemainingSeconds, Is.LessThan(remaining), "The existing scaled timer keeps running.");
+        Assert.That(state.BlocksWeaponSwap, Is.True);
+        Assert.That(system.GetCooldownRemaining(definition), Is.Zero);
+
+        Assert.That(arrival.TryPlayPortalArrival(owner, player.Transform.position + Vector3.up, null), Is.True);
+        arrival.CancelPortalArrival(owner);
+        Assert.That(state.IsBloomActive, Is.True, "Cancelling travel must not cancel Bloom.");
+        data.TickBloom(100f);
+        deadline = Time.realtimeSinceStartup + 2f;
+        while (state.BlocksWeaponSwap && Time.realtimeSinceStartup < deadline) yield return null;
+        Assert.That(state.BlocksWeaponSwap, Is.False, "The preserved ability must still release its swap lock.");
+        Assert.That(system.GetCooldownRemaining(definition), Is.GreaterThan(0f));
+    }
+
+    [Test]
+    public void ScriptedArrival_StillCleansBloomAndSwapLock()
+    {
+        var player = MakePlayer();
+        StartBloom(player, out var state, out _, out _);
+        var arrival = player.Transform.GetComponent<PlayerHubSpawnPresentation2D>();
+        object owner = new();
+        Assert.That(arrival.TryPlayScriptedArrival(owner, null, () => true), Is.True);
+        Assert.That(state.IsBloomActive, Is.False);
+        Assert.That(state.BlocksWeaponSwap, Is.False);
+        arrival.CancelPortalArrival(owner);
+    }
+
+    private UnityGAS.AbilitySystem StartBloom(TestPlayerInteractor player,
+        out FloweringRuntimeState state, out FloweringRuntimeData data, out UnityGAS.AbilityDefinition definition)
+    {
+        var root = player.Transform.gameObject;
+        var system = root.AddComponent<UnityGAS.AbilitySystem>();
+        var inventory = root.AddComponent<WeaponInventory2D>();
+        data = new FloweringRuntimeData();
+        ((WeaponRuntimeData[])Get(inventory, "runtimeSlots"))[0] = data;
+        ((WeaponEquipRuntime)Get(inventory, "equipRuntime")).Initialize(0, null);
+        state = FloweringRuntimeState.GetOrAdd(system);
+        Set(state, "presentation", new SilentBloomPresentation());
+        var bloom = Own(ScriptableObject.CreateInstance<FloweringBloomData>());
+        Set(bloom, "durationSeconds", 20f);
+        definition = Own(ScriptableObject.CreateInstance<UnityGAS.AbilityDefinition>());
+        definition.logic = Own(ScriptableObject.CreateInstance<AbilityLogic_FloweringBloom>());
+        definition.sourceObject = bloom;
+        definition.startCooldownOnEnd = true;
+        definition.cooldown = 240f;
+        var spec = system.GiveAbility(definition);
+        var routine = system.StartCoroutine(new UnityGAS.AbilityExecutionCoordinator().RunParallel(system, spec, null));
+        typeof(UnityGAS.AbilitySystem).GetMethod("AttachParallelExecutionCoroutine", Private)
+            .Invoke(system, new object[] { spec, routine });
+        Assert.That(state.IsBloomActive, Is.True);
+        return system;
+    }
+
+    private sealed class SilentBloomPresentation : IFloweringBloomPresentation
+    {
+        public void Initialize(GameObject owner, FloweringBloomData data) { }
+        public IEnumerator PlayCutIn(UnityGAS.AbilitySystem system, UnityGAS.AbilitySpec spec, FloweringBloomData data) { yield break; }
+        public IEnumerator PlayBloomEndTransition(UnityGAS.AbilitySpec spec, FloweringBloomData data) { yield break; }
+        public void BeginActiveBloom(FloweringBloomData data) { }
+        public void Release() { }
+    }
+
+    [TestCase(RoomSocketDirection.Up)]
+    [TestCase(RoomSocketDirection.Right)]
+    [TestCase(RoomSocketDirection.Down)]
+    [TestCase(RoomSocketDirection.Left)]
+    public void ReturnOutline_FollowsSelectedDirection_AndClearsOnHide(RoomSocketDirection direction)
+    {
+        var root = Own(Object.Instantiate(Load("DungeonReturnPortal")));
+        var portal = root.GetComponent<DungeonReturnPortal>();
+        var view = root.GetComponentInChildren<DungeonReturnPortalView>(true);
+        view.SelectDirection(direction);
+        view.Open(true);
+        var renderer = root.GetComponentsInChildren<SpriteRenderer>(true)
+            .Single(r => r.gameObject.activeInHierarchy);
+        Assert.That(renderer.sharedMaterial.HasProperty("_OutlineEnabled"), Is.True);
+        var properties = new MaterialPropertyBlock();
+        properties.SetFloat("_OutlineThickness", 3f);
+        renderer.SetPropertyBlock(properties);
+        portal.OnHighlight();
+        renderer.GetPropertyBlock(properties);
+        Assert.That(properties.GetFloat("_OutlineEnabled"), Is.EqualTo(1f));
+        Assert.That(properties.GetFloat("_OutlineThickness"), Is.EqualTo(3f));
+        portal.OnUnHighlight();
+        renderer.GetPropertyBlock(properties);
+        Assert.That(properties.GetFloat("_OutlineEnabled"), Is.Zero);
+        portal.OnHighlight();
+        view.ShrinkAndHide(0.2f);
+        renderer.GetPropertyBlock(properties);
+        Assert.That(properties.GetFloat("_OutlineEnabled"), Is.Zero);
+        portal.OnHighlight();
+        renderer.GetPropertyBlock(properties);
+        Assert.That(properties.GetFloat("_OutlineEnabled"), Is.Zero, "Closing portal must not highlight");
+        view.Open(true);
+        portal.OnHighlight();
+        root.SetActive(false);
+        renderer.GetPropertyBlock(properties);
+        Assert.That(properties.GetFloat("_OutlineEnabled"), Is.Zero);
+    }
+
+    [Test]
+    public void BossShortcutOutline_ClearsOnClose_AndOpeningCannotHighlight()
+    {
+        var root = Own(Object.Instantiate(Load("DungeonBossShortcut")));
+        var view = root.GetComponent<DungeonReturnPortalView>();
+        var portal = root.GetComponent<DungeonReturnPortal>();
+        var renderer = root.GetComponentInChildren<SpriteRenderer>(true);
+        Assert.That(renderer.sharedMaterial.HasProperty("_OutlineEnabled"), Is.True);
+        view.SelectDirection(RoomSocketDirection.Up);
+        view.Open();
+        portal.OnHighlight();
+        var properties = new MaterialPropertyBlock();
+        renderer.GetPropertyBlock(properties);
+        Assert.That(properties.GetFloat("_OutlineEnabled"), Is.Zero);
+        view.Open(true);
+        portal.OnHighlight();
+        renderer.GetPropertyBlock(properties);
+        Assert.That(properties.GetFloat("_OutlineEnabled"), Is.EqualTo(1f));
+        view.Close();
+        renderer.GetPropertyBlock(properties);
+        Assert.That(properties.GetFloat("_OutlineEnabled"), Is.Zero);
+    }
+
+    [Test]
+    public void SceneTravelOutline_UsesBodyWithoutHighlightTarget_AndClearsOnDisable()
+    {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
+            "Assets/_Project/Prefabs/Map/Procedural/ProceduralSceneTravelPortal.prefab");
+        var root = Own(Object.Instantiate(prefab));
+        var portal = root.GetComponent<SceneTravelInteractable>();
+        var renderer = root.GetComponent<SpriteRenderer>();
+        Assert.That(renderer.sharedMaterial.HasProperty("_OutlineEnabled"), Is.True);
+        Assert.That(Get(portal, "highlightTarget"), Is.Null);
+        var properties = new MaterialPropertyBlock();
+        portal.OnHighlight();
+        renderer.GetPropertyBlock(properties);
+        Assert.That(properties.GetFloat("_OutlineEnabled"), Is.EqualTo(1f));
+        portal.OnPlayerLeave();
+        renderer.GetPropertyBlock(properties);
+        Assert.That(properties.GetFloat("_OutlineEnabled"), Is.Zero);
+        portal.OnHighlight();
+        portal.enabled = false;
+        renderer.GetPropertyBlock(properties);
+        Assert.That(properties.GetFloat("_OutlineEnabled"), Is.Zero);
+    }
+
+    [UnityTest]
     public IEnumerator BossShortcut_BuilderPersistsUnlock_TravelsToBoss_AndKeepsReturnsUsable()
     {
         var builder = MakeBuilder();

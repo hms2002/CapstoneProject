@@ -32,6 +32,9 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
     [SerializeField] private Vector2 fallbackActionHintAnchoredPosition = new Vector2(0f, 24f);
     [SerializeField] private Vector2 fallbackActionHintSize = new Vector2(320f, 36f);
 
+    [Header("Weapon Description")]
+    [SerializeField] private WeaponDescriptionHint weaponDescriptionHint = new();
+
     [Header("Views")]
     [SerializeField] private WeaponDetailView weaponView;
     [SerializeField] private WeaponDetailViewV2 weaponViewV2;
@@ -61,6 +64,34 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
     private Vector2 hoverPositionOffset;
     private bool isAnimating;
     private int presentationSerial;
+    private InputBindingService hintInput;
+    private ItemDetailContext actionHintContext;
+    private ItemDetailContext currentContext;
+    private bool showDetailedDescription;
+    private bool isClosing;
+
+    private void OnEnable()
+    {
+        hintInput = InputBindingService.Instance;
+        if (hintInput != null)
+            hintInput.BindingChanged += HandleHintBindingChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (hintInput != null)
+            hintInput.BindingChanged -= HandleHintBindingChanged;
+        hintInput = null;
+        actionHintContext = null;
+        currentContext = null;
+        showDetailedDescription = false;
+    }
+
+    private void HandleHintBindingChanged(InputActionId action)
+    {
+        if (action == InputActionId.InventoryDrop && actionHintContext != null)
+            RefreshActionHint(actionHintContext);
+    }
 
     public RectTransform Rect => transform as RectTransform;
     public Vector2 HoverPositionOffset => hoverPositionOffset;
@@ -108,6 +139,18 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
 
     private void Update()
     {
+        if (!isClosing && currentDefinition is WeaponDefinition && WeaponDescriptionHint.WasTogglePressed())
+        {
+            showDetailedDescription = !showDetailedDescription;
+            if (weaponViewV2 != null && weaponViewV2.gameObject.activeSelf)
+                weaponViewV2.Show(currentDefinition, currentContext, _services, showDetailedDescription);
+            else if (weaponView != null && weaponView.gameObject.activeSelf)
+                weaponView.Show(currentDefinition, currentContext, _services, showDetailedDescription);
+            weaponDescriptionHint.Refresh(true, showDetailedDescription);
+            glossaryPopup?.Hide();
+            Canvas.ForceUpdateCanvases();
+        }
+
         if (!gameObject.activeSelf || relicView == null || !relicView.gameObject.activeSelf)
             return;
 
@@ -126,7 +169,11 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
         int serial = ++presentationSerial;
         bool animateOpen = !IsActive;
         var ctx = context as ItemDetailContext;
+        if (animateOpen || isClosing || !ReferenceEquals(currentDefinition, definition))
+            showDetailedDescription = false;
+        isClosing = false;
         currentDefinition = definition;
+        currentContext = ctx;
         currentHeaderLevelSuffix = string.Empty;
 
         if (glossaryPopup != null)
@@ -175,7 +222,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
 
         if (weaponViewV2 != null && weaponViewV2.CanShow(definition))
         {
-            weaponViewV2.Show(definition, ctx, _services);
+            weaponViewV2.Show(definition, ctx, _services, showDetailedDescription);
             if (weaponView != null)
                 weaponView.Hide();
             if (relicView != null)
@@ -185,7 +232,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
         }
         else if (weaponView != null && weaponView.CanShow(definition))
         {
-            weaponView.Show(definition, ctx, _services);
+            weaponView.Show(definition, ctx, _services, showDetailedDescription);
             if (weaponViewV2 != null)
                 weaponViewV2.Hide();
             if (relicView != null)
@@ -230,12 +277,14 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
         }
 
         RefreshActionHint(ctx);
+        weaponDescriptionHint.Refresh(definition is WeaponDefinition, showDetailedDescription);
         Canvas.ForceUpdateCanvases();
         PlayOpenPresentation(animateOpen, serial);
     }
 
     public void HideHover()
     {
+        isClosing = true;
         ResolvePresentationReferences();
         int serial = ++presentationSerial;
 
@@ -269,6 +318,9 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
         SetRelicPreviewGuidesVisible(false);
         HideActionHint();
         currentDefinition = null;
+        currentContext = null;
+        showDetailedDescription = false;
+        weaponDescriptionHint.Refresh(false, false);
         currentHeaderLevelSuffix = string.Empty;
         SetHeaderTitle(string.Empty);
     }
@@ -496,11 +548,12 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
 
     /// <summary>
     /// 책임 :
-    /// - 현재 상세 패널 컨텍스트에 맞는 하단 고정 조작 힌트를 렌더링한다.
-    /// - 키 설정 대상이 아닌 Mouse1/F 같은 컨텍스트 입력을 글리프 데이터베이스의 비주얼만 재사용해 보여준다.
+    /// - 현재 상세 패널 컨텍스트에 맞는 하단 조작 힌트를 렌더링한다.
+    /// - 버리기 액션은 현재 매핑을, 상자 클릭은 고정 마우스 키를 표시한다.
     /// </summary>
     private void RefreshActionHint(ItemDetailContext ctx)
     {
+        actionHintContext = ctx;
         ItemDetailActionHint hint = ctx != null
             ? ctx.ResolvePrimaryActionHint()
             : ItemDetailActionHint.Hidden;
@@ -515,7 +568,14 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
         if (actionHintRoot == null)
             return;
 
-        InputGlyphPresentation glyph = InputGlyphDatabase.Resolve(hint.Key);
+        KeyCode hintKey = hint.Key;
+        if (hint.Action.HasValue)
+        {
+            InputBindingService input = InputBindingService.EnsureInstance();
+            InputBinding binding = input.GetBinding(hint.Action.Value);
+            hintKey = binding.primary != KeyCode.None ? binding.primary : binding.secondary;
+        }
+        InputGlyphPresentation glyph = InputGlyphDatabase.Resolve(hintKey);
         Sprite icon = glyph.Icon;
 
         actionHintRoot.SetActive(true);
@@ -536,7 +596,30 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
         }
 
         if (actionHintLabel != null)
+        {
             actionHintLabel.text = hint.Label;
+            if (actionHintIcon != null && icon != null)
+            {
+                // Keyboard sprites include padding; enlarge their cell to match the caption visually.
+                float size = actionHintLabel.fontSize * 1.5f;
+                RectTransform iconRect = actionHintIcon.rectTransform;
+                float previousWidth = iconRect.rect.width;
+                LayoutElement iconLayout = actionHintIcon.GetComponent<LayoutElement>();
+                if (iconLayout != null)
+                {
+                    iconLayout.preferredWidth = size;
+                    iconLayout.preferredHeight = size;
+                }
+                else
+                {
+                    // Keep the authored right edge (and caption gap) when growing leftward.
+                    iconRect.anchoredPosition += Vector2.left * (size - previousWidth) * (1f - iconRect.pivot.x);
+                }
+                iconRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size);
+                iconRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size);
+                actionHintIcon.preserveAspect = true;
+            }
+        }
     }
 
     private void HideActionHint()

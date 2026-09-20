@@ -10,6 +10,8 @@ public sealed class MerchantStockEntryState
     public InventoryItemKind kind;
     public string itemId;
     public int price;
+    // Run-gold prices are rolled once; discounts always derive from this original price.
+    public int undiscountedPrice = -1;
     public bool isSold;
 
     public bool HasItem => !string.IsNullOrWhiteSpace(itemId);

@@ -292,7 +292,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 
         AcquireInputBlocker();
         SetFadeTransitionUnlockBlocked(true);
-        PrepareForPresentation();
+        PrepareForPresentation(preserveActiveAbilities: portalStartPosition.HasValue);
         DetachShadow();
 
         Vector3 startPosition = portalStartPosition ?? ResolveStartPosition(landingPosition);
@@ -419,13 +419,16 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         WakeIntoGameplay();
     }
 
-    private void PrepareForPresentation()
+    private void PrepareForPresentation(bool preserveActiveAbilities)
     {
         CacheReferences();
         CaptureManagedBehaviourStates();
         CapturePhysicsStates();
 
-        abilitySystem?.ResetTransientRuntimeState();
+        // Same-scene portals already reject busy players. Keep parallel buffs and
+        // their owning coroutines alive; Hub/death/scripted arrivals still reset.
+        if (!preserveActiveAbilities)
+            abilitySystem?.ResetTransientRuntimeState();
         movementMotor?.StopAllMotion();
         ZeroAllRigidbodies();
         CaptureAwakeSprite();

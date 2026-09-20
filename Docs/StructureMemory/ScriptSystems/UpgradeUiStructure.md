@@ -14,7 +14,7 @@ Map the upgrade tree UI navigation and purchase feedback flow after the overflow
 ## Current Structure
 
 - `UpgradeTreeUI` builds node buttons and lines from `UpgradeManager.GetAllUpgrades()`.
-- `UpgradeTreeUI` owns content sizing, clamp/pan behavior, lake presentation hooks, and optional authored overflow arrow buttons.
+- `UpgradeTreeUI` owns content sizing, cursor-centered wheel zoom, clamp/pan behavior, lake presentation hooks, and optional authored overflow arrow buttons.
 - `UpgradeSlotUI` owns node visual state and forwards click attempts to `UpgradeManager`.
 - `UpgradeFeature` blocks player control during the dialogue-exit handoff before `UpgradeManager.ToggleUI()` starts the normal UI open flow.
 - `UpgradeManager.TryBuyUpgrade(...)` is the public purchase entry point. Failed purchases are mapped to `WarningPopupCode`; successful purchases continue through `UpgradePurchaseCompletionService`.
@@ -28,7 +28,9 @@ Map the upgrade tree UI navigation and purchase feedback flow after the overflow
 - `Assets/LeeJunMo/Prefab/UI/Upgrade/UpgradeTreePanel.prefab` currently carries four inactive overflow arrow buttons wired into `UpgradeTreeUI`.
 - The previous `Scrollbar Horizontal` subtree has been removed from the main upgrade panel prefab; do not re-add a horizontal scrollbar unless the navigation model changes again.
 - Active arrows are shown only when the content can move farther in that direction.
-- Arrow clicks move content by `gridCellSize * overflowArrowBlockCells` and then reuse the existing clamp logic.
+- Arrow clicks move content by `gridCellSize * overflowArrowBlockCells * current zoom` and then reuse the existing clamp logic.
+- Wheel input inside the viewport scales node/line content around the cursor (1.15 per wheel step); ScrollRect wheel translation is disabled. Minimum zoom fits the existing content rectangle, including automatic node padding and minimum content size, into the viewport; maximum zoom is 2. Position clamps and arrow visibility use scaled content dimensions. Axes smaller than the viewport stay centered.
+- Center-on-open restores scale 1; otherwise zoom persists on the UI instance. LateUpdate constrains zoom against current viewport size before clamping position. UI owns zoom only; progression state remains in UpgradeManager.
 - Movement input bindings (`MoveLeft`, `MoveRight`, `MoveUp`, `MoveDown`; default WASD / arrow keys) invoke the matching active arrow button `onClick` path, so keyboard navigation reuses the same movement, clamp, and extra button listener behavior as pointer clicks.
 - Active arrows oscillate along their own direction using unscaled time.
 - `Tools/Validation/Scene Setup Validator` checks inactive upgrade panels too, reports missing overflow arrow references, reports stale `ScrollRect.horizontalScrollbar` references, and can detach/disable the stale horizontal scrollbar through Auto Fix.

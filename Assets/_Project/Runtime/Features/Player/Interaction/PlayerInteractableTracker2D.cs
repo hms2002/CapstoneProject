@@ -14,6 +14,11 @@ public sealed class PlayerInteractableTracker2D : MonoBehaviour
 
     public IReadOnlyList<IInteractable> NearbyObjects => nearbyObjects;
 
+    public bool IsInInteractionRange(IInteractable interactable)
+    {
+        return interactable != null && nearbyOverlapCounts.ContainsKey(interactable);
+    }
+
     public void RegisterOverlap(Collider2D other)
     {
         IInteractable interactable = ResolveInteractable(other);

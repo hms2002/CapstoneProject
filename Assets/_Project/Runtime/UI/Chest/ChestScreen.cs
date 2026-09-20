@@ -31,6 +31,9 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private PlayerStatPanelView selectionStatPanel;
     private Sequence selectionMotion;
     private bool confirmingSelection;
+    private PlayerInventoryPanelView selectionInventoryPanel;
+    private AcquisitionPresentation acquisitionPresentation;
+    private ChestInventory committedPresentationInventory;
     private float nextSelectionValidationTime;
     private ItemSlotUI transitSlot;
     private Transform transitDestination;
@@ -107,12 +110,37 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private HoldActionButton subscribedRerollHoldActionButton;
     private UnityEngine.Object guidedSelectionOwner;
     private bool forwardingGuidedSelection;
+    private UnityEngine.Object requiredSelectionOwner;
+    private ScriptableObject requiredSelectionItem;
 
     public ChestInventory BoundInventory => chestInventory;
     public ItemSlotUI FirstVisibleSlot => spawnedChestSlots.Count > 0 ? spawnedChestSlots[0] : null;
     public Button ConfirmButton => confirmSelectionButton;
     public bool IsSelectionReady => CanChangeSelection && !selectionMotion.IsActive();
     public event Action SelectionCommitted;
+
+    public ItemSlotUI FindVisibleSlot(ScriptableObject item)
+        => item != null ? spawnedChestSlots.Find(slot => slot != null && slot.CurrentItem == item) : null;
+
+    public bool RequireSelection(UnityEngine.Object owner, ScriptableObject item)
+    {
+        if (owner == null || item == null || (requiredSelectionOwner != null && requiredSelectionOwner != owner)) return false;
+        requiredSelectionOwner = owner;
+        requiredSelectionItem = item;
+        RefreshSelectionControls();
+        return true;
+    }
+
+    public void ReleaseSelectionRequirement(UnityEngine.Object owner)
+    {
+        if (requiredSelectionOwner != owner) return;
+        requiredSelectionOwner = null;
+        requiredSelectionItem = null;
+        RefreshSelectionControls();
+    }
+
+    private bool HasRequiredSelection => requiredSelectionOwner == null ||
+        selectedSlots.Exists(slot => slot != null && slot.CurrentItem == requiredSelectionItem);
 
     // Optional scene-owned guidance. With no owner, normal chest behavior is unchanged.
     public bool AcquireGuidedSelection(UnityEngine.Object owner)
@@ -132,9 +160,12 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     }
 
     public bool TrySelectGuidedFirstSlot(UnityEngine.Object owner)
+        => TrySelectGuidedSlot(owner, FirstVisibleSlot);
+
+    public bool TrySelectGuidedSlot(UnityEngine.Object owner, ItemSlotUI slot)
     {
-        ItemSlotUI slot = FirstVisibleSlot;
-        if (owner == null || guidedSelectionOwner != owner || slot == null || !IsSelectionReady) return false;
+        if (owner == null || guidedSelectionOwner != owner || slot == null || !spawnedChestSlots.Contains(slot) || !IsSelectionReady) return false;
+        if (selectedSlots.Contains(slot)) return true;
         forwardingGuidedSelection = true;
         try { ToggleSelection(slot); }
         finally { forwardingGuidedSelection = false; }
@@ -209,6 +240,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     public void CloseUI()
     {
+        StopAcquisitionPresentation();
         ItemDragContext.CancelActiveDragSession();
         UIManager.Instance?.HideHoverImmediate();
         ResetRerollHoldState();
@@ -228,9 +260,9 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     public bool TryHandleCloseRequest()
     {
-        if (IsFirstOpenRevealPlaying)
+        if (IsFirstOpenRevealPlaying || confirmingSelection)
             return true;
-        if (confirmingSelection || selectedSlots.Count == 0)
+        if (selectedSlots.Count == 0)
             return false;
 
         WarningPopupPlayback.ShowMessage("아이템을 획득하거나 선택을 해제해 주십시오.");
@@ -299,6 +331,8 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private void OnDisable()
     {
         guidedSelectionOwner = null;
+        requiredSelectionOwner = null;
+        requiredSelectionItem = null;
         forwardingGuidedSelection = false;
         ItemDragContext.CancelActiveDragSession();
         MouseCursorService.Instance?.ClearDomain(this);
@@ -977,6 +1011,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void ClearChestSlots()
     {
+        StopAcquisitionPresentation();
         selectionStatPanel?.SetSelectionPreview(null);
         SetConfirmCloseWarning(false);
         StopSelectionMotion();
@@ -1048,6 +1083,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void BindReturnHighlights(PlayerInventoryPanelView panel)
     {
+        selectionInventoryPanel = panel;
         returnHighlightSlots = panel != null ? panel.GetComponentsInChildren<ItemSlotUI>(true) : Array.Empty<ItemSlotUI>();
         previousReturnItems = new ScriptableObject[returnHighlightSlots.Length];
         nextReturnHighlights = new bool[returnHighlightSlots.Length];
@@ -1122,7 +1158,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             SetConfirmCloseWarning(false);
         bool available = CanChangeSelection;
         if (confirmSelectionButton != null)
-            confirmSelectionButton.interactable = available && selectedSlots.Count > 0 && !selectionMotion.IsActive();
+            confirmSelectionButton.interactable = available && selectedSlots.Count > 0 && HasRequiredSelection && !selectionMotion.IsActive();
         if (selectedItemsGroup != null)
         {
             selectedItemsGroup.alpha = chestContainer != null && !IsFirstOpenRevealPlaying ? 1f : 0f;
@@ -1328,7 +1364,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private void ConfirmSelection()
     {
         if (guidedSelectionOwner != null) return;
-        if (!CanChangeSelection || selectedSlots.Count == 0 || selectionMotion.IsActive()) return;
+        if (!CanChangeSelection || selectedSlots.Count == 0 || !HasRequiredSelection || selectionMotion.IsActive()) return;
         var indices = new List<int>();
         foreach (ItemSlotUI slot in selectedSlots) indices.Add(slot.BoundIndex);
         using var source = new ChestContainerAdapter(chestInventory);
@@ -1341,12 +1377,22 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             return;
         }
 
+        if (!AcquisitionPresentation.CanPrepare(this, plan))
+        {
+            Debug.LogError("[ChestScreen] Acquisition presentation requires visible destination slots, a slot prefab and a drop zone for replaced weapons.", this);
+            return;
+        }
+
+        ItemDragContext.CancelActiveDragSession();
+        UIManager.Instance?.HideHoverImmediate();
+        acquisitionPresentation = new AcquisitionPresentation(this, plan);
         confirmingSelection = true;
         selectionStatPanel?.SetSelectionPreview(null);
         RefreshSelectionControls();
         InventoryTransferResult result = ChestSelectionTransferService.TryCommitPlanWithFailure(plan, out int failedIndex);
         if (!result.Succeeded)
         {
+            StopAcquisitionPresentation();
             selectedSlots.RemoveAll(item => !item.HasItem);
             confirmingSelection = false;
             RefreshSelectionStatPreview();
@@ -1359,11 +1405,227 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             return;
         }
         SetConfirmCloseWarning(false);
-        ChestUIManager.Instance?.CompleteOpenedChest(chestInventory);
-        SelectionCommitted?.Invoke();
+        committedPresentationInventory = chestInventory;
+        acquisitionPresentation.Play(() =>
+        {
+            StopAcquisitionPresentation();
+            CloseAfterAcquisition();
+        });
+    }
+
+    private void StopAcquisitionPresentation()
+    {
+        acquisitionPresentation?.Dispose();
+        acquisitionPresentation = null;
+        // An interrupted presentation must still finish the already committed chest exactly once.
+        ChestInventory committed = committedPresentationInventory;
+        committedPresentationInventory = null;
+        if (committed != null)
+        {
+            ChestUIManager.Instance?.CompleteOpenedChest(committed);
+            SelectionCommitted?.Invoke();
+        }
+    }
+
+    private void CloseAfterAcquisition()
+    {
+        confirmingSelection = false;
+        selectedSlots.Clear();
         IStackableUI closeTarget = rootOwner ?? this;
         if (UIManager.Instance != null) UIManager.Instance.PopUI(closeTarget);
         else closeTarget.CloseUI();
+    }
+
+    // Short-lived visual snapshots only. Gameplay state remains in the existing transfer service.
+    private sealed class AcquisitionPresentation : IDisposable
+    {
+        private const float TravelDuration = 0.19f / 1.2f;
+        private const float DropDuration = 0.16f / 1.2f;
+        private const float SettleDuration = 0.05f / 1.2f;
+        private readonly ChestScreen owner;
+        private readonly RectTransform canvasRoot;
+        private readonly RectTransform dropRect;
+        private readonly List<Step> steps = new();
+        private readonly List<ItemSlotUI> copies = new();
+        private readonly Dictionary<ItemSlotUI, ItemSlotUI> standingCopies = new();
+        private readonly Dictionary<CanvasGroup, (float alpha, bool added)> hidden = new();
+        private readonly UnityEngine.EventSystems.EventSystem eventSystem;
+        private readonly bool eventSystemEnabled;
+        private Sequence motion;
+
+        private sealed class Step
+        {
+            public ItemSlotUI Incoming;
+            public ItemSlotUI Target;
+            public bool ReplacesWeapon;
+            public ScriptableObject Item;
+            public int ResultLevel;
+        }
+
+        private sealed class Snapshot : IItemContainer, IRelicLevelProvider
+        {
+            private readonly ScriptableObject item;
+            private readonly int level;
+            public Snapshot(ScriptableObject item, int level) { this.item = item; this.level = level; }
+            public int SlotCount => 1;
+            public event Action OnChanged { add { } remove { } }
+            public ScriptableObject Get(int index) => index == 0 ? item : null;
+            public bool TryGetRelicLevel(int index, out int value) { value = level; return index == 0 && item is RelicDefinition; }
+            public bool CanPlace(ScriptableObject value, int index, int ignoreIndex = -1) => false;
+            public bool TrySet(int index, ScriptableObject value) => false;
+            public bool TrySwap(int a, int b) => false;
+        }
+
+        private static ItemSlotUI FindTarget(ChestScreen screen, InventoryTransferRequest request)
+            => Array.Find(screen.returnHighlightSlots, slot => slot != null &&
+                slot.BoundContainer == request.Target && slot.BoundIndex == request.TargetIndex);
+
+        public static bool CanPrepare(ChestScreen screen, IReadOnlyList<InventoryTransferRequest> plan)
+        {
+            if (screen.chestSlotPrefab == null || screen.selectedItemsRoot == null ||
+                screen.selectedItemsRoot.GetComponentInParent<Canvas>() == null) return false;
+            foreach (var request in plan)
+            {
+                ItemSlotUI target = FindTarget(screen, request);
+                if (target == null || !target.gameObject.activeInHierarchy) return false;
+                if (request.Target is PlayerWeaponContainerAdapter && target.HasItem &&
+                    (screen.selectionInventoryPanel == null || screen.selectionInventoryPanel.DropZone == null)) return false;
+            }
+            return true;
+        }
+
+        public AcquisitionPresentation(ChestScreen owner, IReadOnlyList<InventoryTransferRequest> plan)
+        {
+            this.owner = owner;
+            canvasRoot = (RectTransform)owner.selectedItemsRoot.GetComponentInParent<Canvas>().rootCanvas.transform;
+            dropRect = owner.selectionInventoryPanel != null && owner.selectionInventoryPanel.DropZone != null
+                ? owner.selectionInventoryPanel.DropZone.transform as RectTransform : null;
+            Canvas.ForceUpdateCanvases();
+            eventSystem = UnityEngine.EventSystems.EventSystem.current;
+            eventSystemEnabled = eventSystem != null && eventSystem.enabled;
+            if (eventSystem != null) eventSystem.enabled = false;
+            var resultLevels = new Dictionary<ItemSlotUI, int>();
+            foreach (var request in plan)
+            {
+                ItemSlotUI source = owner.selectedSlots.Find(slot => slot.BoundIndex == request.SourceIndex);
+                ItemSlotUI target = FindTarget(owner, request);
+                ScriptableObject item = request.Source.Get(request.SourceIndex);
+                if (!standingCopies.ContainsKey(target))
+                {
+                    standingCopies.Add(target, Copy(target.SlotRect, target.CurrentItem, Level(target.BoundContainer, target.BoundIndex)));
+                    Hide(target);
+                }
+                int previousLevel = resultLevels.TryGetValue(target, out int reserved)
+                    ? reserved : Level(target.BoundContainer, target.BoundIndex);
+                int resultingLevel = item is RelicDefinition relic
+                    ? relic.ClampLevel(previousLevel + Mathf.Max(1, request.SourceRelicLevel)) : 0;
+                resultLevels[target] = resultingLevel;
+                steps.Add(new Step
+                {
+                    Incoming = Copy(source.SlotRect, item, request.SourceRelicLevel),
+                    Target = target,
+                    ReplacesWeapon = request.Target is PlayerWeaponContainerAdapter && target.HasItem,
+                    Item = item,
+                    ResultLevel = resultingLevel
+                });
+                Hide(source);
+            }
+        }
+
+        private static int Level(IItemContainer container, int index)
+            => container is IRelicLevelProvider provider && provider.TryGetRelicLevel(index, out int level) ? level : 0;
+
+        private Vector3 Center(RectTransform rect) => canvasRoot.InverseTransformPoint(rect.TransformPoint(rect.rect.center));
+        private Vector2 Size(RectTransform rect) => new Vector2(
+            canvasRoot.InverseTransformVector(rect.TransformVector(Vector3.right * rect.rect.width)).magnitude,
+            canvasRoot.InverseTransformVector(rect.TransformVector(Vector3.up * rect.rect.height)).magnitude);
+
+        private ItemSlotUI Copy(RectTransform pose, ScriptableObject item, int level)
+        {
+            ItemSlotUI copy = Instantiate(owner.chestSlotPrefab, canvasRoot);
+            copies.Add(copy);
+            copy.name = "ChestAcquisitionSlot";
+            copy.Bind(new Snapshot(item, level), 0);
+            copy.SetChestSelectionOverlay(false);
+            foreach (UnityEngine.UI.Graphic graphic in copy.GetComponentsInChildren<UnityEngine.UI.Graphic>(true))
+                graphic.raycastTarget = false;
+            RectTransform rect = copy.SlotRect;
+            rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.one * 0.5f;
+            rect.localScale = Vector3.one;
+            rect.localRotation = Quaternion.identity;
+            rect.sizeDelta = Size(pose);
+            rect.localPosition = Center(pose);
+            return copy;
+        }
+
+        private void Hide(ItemSlotUI slot)
+        {
+            CanvasGroup group = slot.GetComponent<CanvasGroup>();
+            bool added = group == null;
+            if (added) group = slot.gameObject.AddComponent<CanvasGroup>();
+            if (hidden.ContainsKey(group)) return;
+            hidden.Add(group, (group.alpha, added));
+            group.alpha = 0f;
+        }
+
+        public void Play(Action completed)
+        {
+            motion = DOTween.Sequence().SetUpdate(true);
+            ItemSlotUI firstDrop = null;
+            foreach (Step step in steps)
+            {
+                if (step.ReplacesWeapon)
+                {
+                    ItemSlotUI outgoing = standingCopies[step.Target];
+                    Vector3 destination = Center(dropRect);
+                    if (firstDrop != null)
+                    {
+                        // Two cells share the same center, with an eight-unit gap in canvas space.
+                        float offset = (firstDrop.SlotRect.rect.width + outgoing.SlotRect.rect.width) * 0.25f + 4f;
+                        motion.Append(firstDrop.transform.DOLocalMove(destination - Vector3.right * offset, DropDuration).SetEase(Ease.InQuad));
+                        motion.Join(outgoing.transform.DOLocalMove(destination + Vector3.right * offset, DropDuration).SetEase(Ease.InQuad));
+                    }
+                    else
+                    {
+                        motion.Append(outgoing.transform.DOLocalMove(destination, DropDuration).SetEase(Ease.InQuad));
+                        firstDrop = outgoing;
+                    }
+                }
+                motion.Append(step.Incoming.transform.DOLocalMove(Center(step.Target.SlotRect), TravelDuration).SetEase(Ease.InCubic));
+                motion.Join(step.Incoming.SlotRect.DOSizeDelta(Size(step.Target.SlotRect), TravelDuration).SetEase(Ease.InCubic));
+                motion.AppendCallback(() =>
+                {
+                    if (!step.ReplacesWeapon && standingCopies.TryGetValue(step.Target, out ItemSlotUI previous))
+                        previous.gameObject.SetActive(false);
+                    step.Incoming.Bind(new Snapshot(step.Item, step.ResultLevel), 0);
+                    standingCopies[step.Target] = step.Incoming;
+                });
+                motion.AppendInterval(SettleDuration);
+            }
+            motion.OnComplete(() => { motion = null; completed(); });
+        }
+
+        public void Dispose()
+        {
+            motion?.Kill();
+            motion = null;
+            foreach (ItemSlotUI copy in copies)
+                if (copy != null)
+                {
+                    copy.Bind(null, -1);
+                    copy.gameObject.SetActive(false);
+                    Destroy(copy.gameObject);
+                }
+            copies.Clear();
+            foreach (var entry in hidden)
+                if (entry.Key != null)
+                {
+                    entry.Key.alpha = entry.Value.alpha;
+                    if (entry.Value.added) Destroy(entry.Key);
+                }
+            hidden.Clear();
+            if (eventSystem != null) eventSystem.enabled = eventSystemEnabled;
+        }
     }
 
     private void PlayAcquisitionWarning()

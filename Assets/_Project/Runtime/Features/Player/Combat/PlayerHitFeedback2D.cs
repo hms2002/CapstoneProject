@@ -156,9 +156,18 @@ namespace UnityGAS
         }
 
         /// <summary>
-        /// 책임 :
-        /// - 외부에서 강제로 피격 상태를 끊어야 할 때 연출/태그를 정리한다.
+        /// Plays the existing flash and camera shake without changing the scripted pose or control state.
         /// </summary>
+        public void PlayScriptedImpactPresentation(GameObject causer)
+        {
+            // Scripted arrivals own their pose and recovery; do not enter the hit state machine.
+            _hitFlash?.PlayFlash();
+            if (defaultShake > 0f)
+                hitCameraShake.TryPlayOverrideAmplitude(
+                    defaultShake, gameObject, ResolveShakeDirection(causer), nameof(PlayerHitFeedback2D));
+        }
+
+        /// <summary>외부에서 강제로 피격 상태를 끊어야 할 때 연출/태그를 정리한다.</summary>
         public void ForceEndReaction()
         {
             if (_reactionRoutine != null)

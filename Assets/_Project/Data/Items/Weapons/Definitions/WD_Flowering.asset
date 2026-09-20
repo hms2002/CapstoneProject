@@ -18,8 +18,8 @@ MonoBehaviour:
   storyText: "<color=#96DCFA>숨이 끊기기 전 가장 붉게 피는 꽃. 개화는 그 한순간을 칼날 위에 붙잡아 둔다.</color>"
   statModifiers: []
   attackInputHint: "\uC6B0\uD074\uB9AD"
-  skill1InputHint: Q
-  skill2InputHint:
+  skill1InputHint:
+  skill2InputHint: Q
   weaponPrefab: {fileID: 916365682996460394, guid: 8876af03985f1734dafa9e2c0d589207, type: 3}
   displayVisualProfile: {fileID: 0}
   swapSoundOverride:
@@ -29,6 +29,6 @@ MonoBehaviour:
     localOffset: {x: 0, y: 0, z: 0}
   equippedTag: {fileID: 11400000, guid: cac1046499d28814a91fcb2631757240, type: 2}
   attack: {fileID: 11400000, guid: e88ec91ea0494e0ba99bbdb7e6cf485f, type: 2}
-  skill1: {fileID: 11400000, guid: 54d210bc8c1a44bc9394d9569d3a030b, type: 2}
-  skill2: {fileID: 0}
+  skill1: {fileID: 0}
+  skill2: {fileID: 11400000, guid: 54d210bc8c1a44bc9394d9569d3a030b, type: 2}
   abilityLoadout: {fileID: 11400000, guid: 582f1f2dfb794402a447a76daf6e7ab3, type: 2}

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_CrimsonBoundaryIgnite
   m_EditorClassIdentifier: 
+  simpleDescription: "시야 안의 불타는 적들의 [[화상]]을 일부 소모해 폭발시킵니다. 폭발은 주변 적도 피해를 줍니다."
   abilityName: "점화!"
   icon: {fileID: 21300000, guid: bc1ac4dd5d704964980142f9f0e52242, type: 3}
   description: "● 시야 안의 [[화상]] 상태인 모든 적에게 폭발 발생\n● 대상마다 [[화상]] 최대 {val:5중첩}을 소모해 폭발 피해\n● 주변 적에게도 동일한 피해\n● 폭발 지름 {val:5칸}"

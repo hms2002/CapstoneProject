@@ -18,8 +18,7 @@ internal static class RunSessionLifecycleService
         data.runElapsedSeconds = 0f;
         data.runRemainingSeconds = 0f;
         data.runGold = 0;
-        data.weaponSwapHintUnlocked = false;
-        data.weaponSwapHintCompleted = false;
+        // Preserve hint progress earned during hub preparation; EndRun resets it for the next cycle.
         data.officerQuestStarted = false;
         data.officerQuestCompletionPresented = false;
         data.grandHallScribeReturnStage = 0;
@@ -48,6 +47,7 @@ internal static class RunSessionLifecycleService
         {
             commitPendingRunProgress?.Invoke();
             GameDataSaveCoordinator.FlushNow(saveRequester);
+            data.affectionGainNpcIds?.Clear();
         }
 
         data.isRunActive = false;
@@ -351,6 +351,19 @@ internal static class RunSessionStateService
         data.pendingRunAffectionChanges.Add(new PendingRunAffectionChange(npcId, delta));
     }
 
+    public static bool TryConsumeAffectionGain(GamePlayData data, int npcId)
+    {
+        if (data == null)
+            return false;
+
+        data.affectionGainNpcIds ??= new List<int>();
+        if (data.affectionGainNpcIds.Contains(npcId))
+            return false;
+
+        data.affectionGainNpcIds.Add(npcId);
+        return true;
+    }
+
     public static void AddPendingShortcutUnlock(GamePlayData data, string mapID, string doorID)
     {
         if (data == null || string.IsNullOrWhiteSpace(mapID) || string.IsNullOrWhiteSpace(doorID))
@@ -514,6 +527,7 @@ internal static class RunSessionStateService
             return;
 
         data.isRunActive = false;
+        data.affectionGainNpcIds?.Clear();
         data.runElapsedSeconds = 0f;
         data.runRemainingSeconds = 0f;
         data.runGold = 0;

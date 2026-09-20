@@ -172,7 +172,8 @@ public static class CombatDamageAction
         CombatHitFeelTiming? hitFeelOverride = null,
         HitStopActivation hitStopGroup = null,
         CameraShakeRequest? impactCameraOverride = null,
-        float? hitCameraScale = null)
+        float? hitCameraScale = null,
+        HashSet<GameObject> evadeFeedbackTargets = null)
     {
         ApplyDamageAndEmitHitInternal(
             system,
@@ -194,7 +195,8 @@ public static class CombatDamageAction
             hitFeelOverride,
             hitStopGroup,
             impactCameraOverride,
-            hitCameraScale);
+            hitCameraScale,
+            evadeFeedbackTargets);
     }
 
     private static void ApplyDamageAndEmitHitInternal(
@@ -217,20 +219,22 @@ public static class CombatDamageAction
         CombatHitFeelTiming? hitFeelOverride,
         HitStopActivation hitStopGroup,
         CameraShakeRequest? impactCameraOverride,
-        float? hitCameraScale)
+        float? hitCameraScale,
+        HashSet<GameObject> evadeFeedbackTargets)
     {
         if (!Validate(system, damageEffect, target))
             return;
 
         if (CombatInvulnerabilityUtil.IsDamageSuppressed(target, damageEffect as GE_Damage_Spec))
         {
-            CombatInvulnerabilityUtil.ShowEvadeFeedback(target);
+            CombatInvulnerabilityUtil.ShowEvadeFeedback(target, evadeFeedbackTargets);
             return;
         }
 
         if (CombatEvasionUtil.TryRollEvasion(target))
         {
-            DamagePopupPlayback.Show(DamagePopupRequest.Text("EVADE", target.transform.position, isPlayerTarget: target.CompareTag("Player")));
+            if (evadeFeedbackTargets == null || evadeFeedbackTargets.Add(target))
+                DamagePopupPlayback.Show(DamagePopupRequest.Text("EVADE", target.transform.position, isPlayerTarget: target.CompareTag("Player")));
             TryPlayPlayerEvadeSound(target);
             return;
         }

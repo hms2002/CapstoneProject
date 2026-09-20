@@ -77,6 +77,83 @@ public static class RunEventArtInstaller
         ConfigureWorkout(root, "LogEquipment", "exercise2.png", "경험치 획득", 1.8f, 0f);
 
         BuffyHealthTimeEventInstaller.ConfigureCompositePoseSlots(root);
+        ConfigureBuffyPresentation(root);
+    }
+
+    [MenuItem("Tools/Dungeon/Run Events/Apply Buffy Workout Presentation")]
+    public static void ApplyBuffyPresentation()
+    {
+        if (EditorApplication.isPlayingOrWillChangePlaymode)
+            throw new InvalidOperationException("Exit Play Mode before authoring event prefabs.");
+        ApplyPrefab(Modules + "BuffyHealthTime/BuffyHealthTimeEventModule.prefab", ConfigureBuffyPresentation);
+    }
+
+    // Shared by the narrow presentation update and the full event-content installer.
+    public static void ConfigureBuffyPresentation(GameObject root)
+    {
+        BuffyHealthTimeInteractable[] group = root.GetComponentsInChildren<BuffyHealthTimeInteractable>(true);
+        DialogueTrigger guide = RequiredChild(root.transform, "BuffyGuideNpc").GetComponent<DialogueTrigger>();
+        if (group.Length != 3 || guide == null)
+            throw new InvalidOperationException("Buffy presentation requires its guide and three equipment choices.");
+        GameObject arrowPrefab = Required<GameObject>("Assets/_Project/Prefabs/Map/Navigation/HubWeaponGuidanceArrow.prefab");
+        GameObject dustPrefab = Required<GameObject>("Assets/_Project/Prefabs/VFX/Particle/KillLockOffDust.prefab");
+        Material outline = Required<Material>("Assets/_Project/Resources/OutlineMaterial.mat");
+        foreach (BuffyHealthTimeInteractable equipment in group)
+        {
+            SpriteRenderer body = RequiredChild(equipment.transform, equipment.name + "Body").GetComponent<SpriteRenderer>();
+            body.sharedMaterial = outline;
+            Transform arrow = equipment.transform.Find("WorkoutGuidanceArrow");
+            if (arrow == null)
+            {
+                arrow = ((GameObject)PrefabUtility.InstantiatePrefab(arrowPrefab, equipment.transform)).transform;
+                arrow.name = "WorkoutGuidanceArrow";
+            }
+            arrow.localPosition = new Vector3(0f, body.bounds.max.y - equipment.transform.position.y + 0.6f, 0f);
+            arrow.localRotation = Quaternion.identity; // DownArrow already points downward.
+            arrow.localScale = Vector3.one * 0.65f;
+            SpriteRenderer arrowRenderer = arrow.GetComponentInChildren<SpriteRenderer>(true);
+            arrowRenderer.color = Color.white;
+            arrowRenderer.sortingLayerID = body.sortingLayerID;
+            arrowRenderer.sortingOrder = body.sortingOrder + 5;
+            arrow.gameObject.SetActive(false);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(arrow);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(arrow.gameObject);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(arrowRenderer);
+
+            Transform dust = equipment.transform.Find("DustParticle");
+            if (dust == null)
+            {
+                dust = ((GameObject)PrefabUtility.InstantiatePrefab(dustPrefab, equipment.transform)).transform;
+                dust.name = "DustParticle";
+            }
+            dust.localPosition = new Vector3(0f, -0.4f, 0f);
+            dust.localRotation = Quaternion.identity;
+            dust.localScale = Vector3.one;
+            ParticleSystem particles = dust.GetComponent<ParticleSystem>();
+            ParticleSystem.MainModule main = particles.main;
+            main.loop = false;
+            main.playOnAwake = false;
+            main.stopAction = ParticleSystemStopAction.None;
+            ParticleSystemRenderer dustRenderer = dust.GetComponent<ParticleSystemRenderer>();
+            dustRenderer.sortingLayerID = body.sortingLayerID;
+            dustRenderer.sortingOrder = body.sortingOrder + 2;
+            PrefabUtility.RecordPrefabInstancePropertyModifications(dust);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(dust.gameObject);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(particles);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(dustRenderer);
+
+            var serialized = new SerializedObject(equipment);
+            serialized.FindProperty("introductionSource").objectReferenceValue = guide;
+            serialized.FindProperty("guidanceArrow").objectReferenceValue = arrow;
+            serialized.FindProperty("dustParticle").objectReferenceValue = particles;
+            SerializedProperty renderers = serialized.FindProperty("highlightedRenderers");
+            renderers.arraySize = 1;
+            renderers.GetArrayElementAtIndex(0).objectReferenceValue = body;
+            SerializedProperty equipmentList = serialized.FindProperty("equipmentGroup");
+            equipmentList.arraySize = group.Length;
+            for (int i = 0; i < group.Length; i++) equipmentList.GetArrayElementAtIndex(i).objectReferenceValue = group[i];
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
     }
 
     private static void ConfigureWorkout(GameObject root, string name, string spriteFile, string prompt, float height, float offsetY)

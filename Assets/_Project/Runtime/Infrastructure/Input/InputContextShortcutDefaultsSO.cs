@@ -37,6 +37,7 @@ public sealed class InputContextShortcutDefaultsSO : ScriptableObject
         InputContextShortcutId.RelicPreviewPrevious,
         InputContextShortcutId.RelicPreviewNext,
         InputContextShortcutId.TooltipVariantNext,
+        InputContextShortcutId.TooltipDescriptionToggle,
     };
 
     private static InputContextShortcutDefaultsSO runtimeInstance;
@@ -146,6 +147,7 @@ public sealed class InputContextShortcutDefaultsSO : ScriptableObject
             InputContextShortcutId.RelicPreviewPrevious => KeyCode.Q,
             InputContextShortcutId.RelicPreviewNext => KeyCode.E,
             InputContextShortcutId.TooltipVariantNext => KeyCode.BackQuote,
+            InputContextShortcutId.TooltipDescriptionToggle => KeyCode.BackQuote,
             _ => KeyCode.None,
         };
     }

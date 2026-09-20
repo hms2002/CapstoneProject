@@ -1226,7 +1226,7 @@ public class DialogueView : MonoBehaviour
     {
         CompleteOpeningHeaderReveal();
         openingHeaderRevealPending = true;
-        openingHeartRevealPending = isBoss && ResolveAffectionUI() != null;
+        openingHeartRevealPending = ResolveAffectionUI() != null;
         if (nameText != null)
             nameText.maxVisibleCharacters = 0;
 
@@ -1270,7 +1270,7 @@ public class DialogueView : MonoBehaviour
             PlayGroupOpen(dialogueUpperFrameGroup, dialogueUpperFramePresentation, CompleteAnimation);
         }
 
-        if (isBoss && affectionGroup != null)
+        if (affectionGroup != null)
         {
             if (IsAffectionNestedInTextBox())
                 SnapGroupOpen(affectionGroup, affectionPresentation);

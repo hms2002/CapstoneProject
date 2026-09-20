@@ -282,7 +282,7 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
     {
         if (RunSessionStore.IsRunActive && inventory != null && inventory.CountRelicsOfType<ParcelRelicDefinition>() > 0)
         {
-            string description = "다음 층으로 소포를 배달하세요!";
+            string description = "다음 구역에 소포를 배달하자";
             Scene scene = SceneManager.GetActiveScene();
             foreach (ParcelDeliveryPointInteractable point in
                 FindObjectsByType<ParcelDeliveryPointInteractable>(FindObjectsInactive.Include, FindObjectsSortMode.None))

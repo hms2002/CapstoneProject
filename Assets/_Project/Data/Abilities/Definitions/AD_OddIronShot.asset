@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_OddIronShot
   m_EditorClassIdentifier: 
+  simpleDescription: "탄약을 소모해 적을 밀쳐내는 탄환을 발사합니다. 탄약이 없으면 공격할 수 없습니다."
   abilityName: 단발 사격
   icon: {fileID: 0}
   description: "● {val:잔탄 1발}을 소비해 직선 탄환 발사\n● 탄환은 {val:고정 피해 100}과 넉백을 적용\n● 잔탄이 없으면 {neg:빈 격발}로 전환"

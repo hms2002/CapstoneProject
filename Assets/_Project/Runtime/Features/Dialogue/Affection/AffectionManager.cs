@@ -91,6 +91,12 @@ public class AffectionManager : MonoBehaviour
             return false;
         }
 
+        if (amount > 0 && !RunSessionStore.TryConsumeAffectionGain(data.id))
+        {
+            onComplete?.Invoke();
+            return false;
+        }
+
         bool isRunActive = IsRunActive();
         AffectionChangeResult change = progressStore.AddAffection(
             GameDataStore.Data,

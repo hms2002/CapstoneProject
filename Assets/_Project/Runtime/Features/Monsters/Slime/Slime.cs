@@ -1,5 +1,4 @@
 using CapstoneAudio;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityGAS;
@@ -242,7 +241,6 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
 
         Vector3 center = transform.position;
         Vector2[] dirs = GetDirs(splitCount);
-        var reservedLandings = new HashSet<Vector2>();
         TilemapPathfinder2D splitPathfinder = splitSpawnContext.Pathfinder;
         if (splitPathfinder == null)
             foreach (var finder in FindObjectsByType<TilemapPathfinder2D>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
@@ -269,7 +267,7 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
                 nextSlime.GetComponent<ExperienceRewardSource>()?.SetGrantExperience(false);
                 var placement = new SlimeSplitPlacement2D(spawned, transform, ResolveSplitLandingBlockedLayers(),
                     splitLandingBlockedSkin, splitLandingResolveSteps, splitSpawnContext.RoomArea);
-                if (!placement.TryResolveTile(center, dirs[i], splitPathfinder, reservedLandings,
+                if (!placement.TryResolveTile(center, dirs[i], splitSpread, splitPathfinder,
                     out Vector2 safeStart, out Vector2 landingPosition))
                 {
                     // Do not register an impossible spawn as a remaining room enemy.

@@ -53,7 +53,8 @@ public class InventoryUIManager : MonoBehaviour
 
     private void Update()
     {
-        if (InputBindingService.EnsureInstance().WasPressedThisFrame(InputActionId.InventoryToggle))
+        if (!InputActionQuery.IsPressBlocked(InputActionId.InventoryToggle) &&
+            InputBindingService.EnsureInstance().WasPressedThisFrame(InputActionId.InventoryToggle))
         {
             bool isOpen = inventoryScreen != null && inventoryScreen.IsActive;
             if (!isOpen &&

@@ -37,6 +37,7 @@ public sealed class PlayerInventoryPanelView : MonoBehaviour
     public RectTransform RectTransform => panelRoot != null ? panelRoot : transform as RectTransform;
     public RectTransform CollisionBoundsRect => ResolveCollisionBoundsRect();
     public PlayerStatPanelView PlayerStatPanel => playerStatPanel;
+    public DropZoneUI DropZone => dropZone;
     public RectTransform PlayerStatPanelRect => playerStatPanel != null
         ? playerStatPanel.transform as RectTransform
         : null;

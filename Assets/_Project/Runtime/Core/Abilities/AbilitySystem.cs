@@ -165,10 +165,17 @@ namespace UnityGAS
                 tagSystem.RemoveTags(def.grantedTagsWhileActive);
 
             spec.Token?.Cancel();
-            spec.Token = null;
 
             if (exec.Coroutine != null)
                 StopCoroutine(exec.Coroutine);
+
+            // A forced stop may skip the execution coordinator's finally block.
+            // Settle deferred cooldowns before scene-transition state is captured.
+            // Normal completion clears Token, so it must not be charged twice.
+            if (spec.Token != null && def.startCooldownOnEnd && !spec.SkipCooldownOnEnd)
+                cooldownController?.StartCooldown(spec);
+
+            spec.Token = null;
         }
 
         /// <summary>

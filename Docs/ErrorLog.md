@@ -2302,3 +2302,33 @@ Symptom: selected items lost their old backgrounds but permanent empty selection
 - The tutorial boss encounter intentionally disables PlayerDeathReturnToHub2D while it owns combat defeat, post-defeat dialogue and tutorial game-over routing. It calls PrepareForScriptedDeathPresentation at zero HP, which previously only blocked controls. Item scatter existed only in the normal CoDeathSequence, so the tutorial route never called it.
 - Share scatter from the scripted preparation entry without re-enabling automatic death routing. Guard duplicate scatter and preserve original containers; emit non-interactable visual copies only. Also clear copies on destruction: a component disabled before scripted spawning cannot rely solely on a later OnDisable to clean new objects.
 - Isolated native regression covers the disabled scripted entry, repeated calls, inventory retention, normal death route remaining inactive, and disabled-player destruction cleanup.
+
+## 2026-09-21 — Forced parallel execution skipped deferred cooldown
+
+- Symptom: entering a boss room during active Flowering Bloom left its skill ready again. Bloom uses a parallel execution and starts its 240-second base cooldown on end.
+- Cause: scene travel cleans active Bloom and forcibly stops its coroutine before capturing runtime state. ForceCleanupParallelExecution did not settle startCooldownOnEnd when the execution coordinator finally block was skipped, allowing a zero cooldown snapshot.
+- Fix: cancel and stop first, then settle a non-refunded deferred cooldown only while the execution token remains; normal finalization clears that token. Repeat cleanup does not restart an existing cooldown. This shared forced-parallel path also serves forced resets and cancellation.
+- Coverage: parameterized persistent-state round-trip tests and an isolated Unity native coroutine-stop harness. Active Bloom still ends on travel; carrying the active buff across scenes is outside this fix.
+
+## 2026-09-21 - Ending/loading omitted from the shared display viewport
+- Symptom: user reported ending skip UI clipping in a 16:10 fullscreen player. The earlier 21:9 report was corrected to 16:10.
+- Verified defect: GamePresentationController adapted only a fixed list of gameplay canvas layers. FadeInOutCanvas (ending) and LoadingCanvas were excluded, leaving their screen-edge content outside the intended central 16:9 area. Layout calculation showed the old skip rectangle overlapping the bottom-bar region; exact original draw-order occlusion was not runtime-confirmed.
+- Fix: adapt direct Canvas children of GlobalUIRoot, preserving world-space canvases and excluding nested/service-owned overlays. Refresh when the root instance changes as well as when display/camera changes. Keep the existing restore behavior for a full viewport.
+- Prevention: include inactive presentation canvases when checking viewport coverage; validate a player build because Editor Play bypasses letterboxing. Do not compensate by merely moving the skip label or assuming a larger sortingOrder always draws above another sorting layer.
+- Validation: UI.csproj MSBuild passed; prefab coverage and six resolution geometry cases passed. Actual player visual/input verification remains pending. Structure map: Docs/StructureMemory/SettingsPanelLayout.md.
+
+## 2026-09-21 - Variable-step UI chain resting jitter
+- Report: chains across multiple screens visibly trembled while idle, especially at small resolutions.
+- Reproduced mechanism: SettingsPanelFakeChainPresentation used ceil(frameTime/maxStep) and frameTime/count, changing Verlet integration duration between frames without rescaling stored displacement. In an isolated native Unity fixture, stationary endpoints still produced 0.1227722 local-unit peak-to-peak motion with frame times straddling 1/60 second. This identifies a solver defect, not definitive attribution of every low-resolution visual artifact.
+- Fix: accumulate elapsed time and integrate at constant ticks; clear leftover time on reset and limit stall catch-up. Preserve UIChainDropPresentation's existing panel settle path and authored simulation parameters. No additional chain sleep behavior.
+- Verification: UI.csproj MSBuild and isolated Unity fixed/variable-time, anchored/free-end, motion and reset checks passed; fixed-driver residual=0.00001525879 local units. Small-resolution player rendering and input feel remain unverified. Regression: Tools/Validation/ChainFixedStepRegression.cs.
+
+## 2026-09-21 - Hidden fixed action mutated by keybinding swaps
+
+The title/global keybinding row lists omitted DialogueAdvance, but the service still advertised it as remappable. Assigning Space after moving Dash, or resetting Dash individually, could move DialogueAdvance to another key; assigning Space to an empty secondary could clear it. Overrides persisted across restarts. Fixed-action policy now governs reads, mutation, conflict membership and persistence; stale overrides are removed. Preview applies only changed slots, avoiding reversal of an intra-action primary/secondary swap. Shared Interact/InventoryDrop F owners must move together when swapping with another action, otherwise InventoryToggle can still collide with dropping. See Docs/StructureMemory/InputBindings.md and Tools/Validation/KeyBindingRegression.cs.
+
+## 2026-09-21 - Inspect the authored arrow sprite before choosing rotation
+- Symptom: Buffy workout guidance arrows lay horizontally.
+- Cause: authoring assumed the shared sprite pointed left and applied +90 degrees, but `DownArrow.png` already points down.
+- Fix: preserve identity rotation for the three Buffy arrow roots and the content installer.
+- Prevention: inspect the actual referenced image and both root/renderer transforms; a passing reward/lifecycle test does not verify visual direction.

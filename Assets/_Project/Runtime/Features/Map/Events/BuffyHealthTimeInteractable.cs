@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityGAS;
 
@@ -28,10 +29,24 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
     [SerializeField] private string interactPromptText = "운동기구 사용하기";
     [SerializeField] private SpriteRenderer[] highlightedRenderers;
 
+    [Header("Workout Presentation")]
+    [SerializeField] private DialogueTrigger introductionSource;
+    [SerializeField] private BuffyHealthTimeInteractable[] equipmentGroup;
+    [SerializeField] private Transform guidanceArrow;
+    [SerializeField] private ParticleSystem dustParticle;
+
     [SerializeField] private MonoBehaviour npcSpeechBubble;
     private ISpeechBubblePlayback speech;
     private MaterialPropertyBlock outlinePropertyBlock;
     private IPlayerInteractor activePlayer;
+    private Color[] originalColors;
+    private Vector3 arrowRestPosition;
+    private bool resultPresented;
+    private bool guidanceVisible;
+    private bool disappearing;
+    private float arrowTime;
+
+    private string SelectionId => EventId + ":" + (int)workoutType;
 
     public BuffyWorkoutType WorkoutType => workoutType;
 
@@ -46,18 +61,53 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
             highlightedRenderers = GetComponentsInChildren<SpriteRenderer>(includeInactive: true);
 
         outlinePropertyBlock = new MaterialPropertyBlock();
-        OnUnHighlight();
+        originalColors = new Color[highlightedRenderers.Length];
+        for (int i = 0; i < highlightedRenderers.Length; i++)
+            if (highlightedRenderers[i] != null) originalColors[i] = highlightedRenderers[i].color;
+        if (guidanceArrow != null) arrowRestPosition = guidanceArrow.localPosition;
+        SetGuidance(false);
+        if (dustParticle != null) dustParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+    }
+
+    private void Start()
+    {
+        if (!RunMapEventProgress.IsEventCompleted(RunSessionStore.Data, EventId)) return;
+        bool hasSelection = false;
+        if (equipmentGroup != null)
+            foreach (BuffyHealthTimeInteractable equipment in equipmentGroup)
+                if (equipment != null && RunMapEventProgress.IsEventCompleted(RunSessionStore.Data, equipment.SelectionId))
+                    hasSelection = true;
+
+        // Older completed runs have no selected-equipment marker; do not invent a choice.
+        PresentResult(!hasSelection || RunMapEventProgress.IsEventCompleted(RunSessionStore.Data, SelectionId), false);
+    }
+
+    private void Update()
+    {
+        bool show = !resultPresented && introductionSource != null &&
+                    GameDataStore.Data?.completedNpcRoomIntroductions?.Contains(introductionSource.IntroductionKey) == true &&
+                    !RunMapEventProgress.IsEventCompleted(RunSessionStore.Data, EventId) &&
+                    !DialoguePlayback.IsPlaying;
+        if (show != guidanceVisible) SetGuidance(show);
+        if (show && guidanceArrow != null)
+        {
+            arrowTime += TimeScalePausePlayback.PresentationDeltaTime;
+            guidanceArrow.localPosition = arrowRestPosition + Vector3.up * (Mathf.Sin(arrowTime * 4f) * 0.12f);
+        }
     }
 
     private void OnDisable()
     {
         speech?.HideActive();
-        OnUnHighlight();
+        SetGuidance(false);
+        StopAllCoroutines();
+        if (dustParticle != null) dustParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        if (disappearing) gameObject.SetActive(false);
     }
 
     public override bool CanInteract(IPlayerInteractor player)
     {
-        return player != null &&
+        return !disappearing && player != null &&
                player.CurrentState == InteractState.Idle;
     }
 
@@ -90,7 +140,15 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
         }
 
         if (granted)
+        {
+            RunMapEventProgress.MarkEventCompleted(RunSessionStore.Data, SelectionId);
             RunMapEventProgress.MarkEventCompleted(RunSessionStore.Data, EventId);
+            PresentResult(true, false);
+            if (equipmentGroup != null)
+                foreach (BuffyHealthTimeInteractable equipment in equipmentGroup)
+                    if (equipment != null && equipment != this)
+                        equipment.PresentResult(false, true);
+        }
     }
 
     public override InteractState GetInteractType() => InteractState.Idle;
@@ -99,9 +157,9 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
-    public override void OnHighlight() => SetOutline(true);
+    public override void OnHighlight() => SetOutline(guidanceVisible);
 
-    public override void OnUnHighlight() => SetOutline(false);
+    public override void OnUnHighlight() => SetOutline(guidanceVisible);
 
     public override void OnPlayerLeave() => OnUnHighlight();
 
@@ -114,7 +172,7 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
         if (!attributes.TrySetBaseValue(attackBaseAttribute, nextValue, this))
             return ShowRewardConfigurationFailure("공격력");
 
-        ShowPlayerSpeech($"공격력이 {Mathf.Max(0f, attackBaseBonus):0.#} 올랐어.");
+        ShowRewardPopup($"공격력 +{Mathf.Max(0f, attackBaseBonus):0.#}", "FF9933");
         return true;
     }
 
@@ -128,7 +186,7 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
         if (!attributes.TrySetBaseValue(moveSpeedMultiplierAttribute, nextValue, this))
             return ShowRewardConfigurationFailure("이동속도");
 
-        ShowPlayerSpeech($"이동속도가 {safeBonus * 100f:0.#}% 올랐어.");
+        ShowRewardPopup($"이동속도 +{safeBonus * 100f:0.#}%", "A6DFFF");
         return true;
     }
 
@@ -148,7 +206,7 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
         if (!RunLevelProgression.TryGrantExperience(levelProgressionConfig, requiredExperience, out _))
             return ShowRewardConfigurationFailure("경험치");
 
-        ShowPlayerSpeech("경험치를 받았어.");
+        ShowRewardPopup("레벨업 !", "B2FF99");
         return true;
     }
 
@@ -169,10 +227,55 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
         return false;
     }
 
-    private void ShowPlayerSpeech(string message)
+    private void ShowRewardPopup(string message, string colorHex)
     {
         if (activePlayer is Component playerComponent)
-            playerComponent.GetComponent<ISpeechBubblePlayback>()?.Speak(message, 4f);
+            DamagePopupPlayback.ShowText($"<color=#{colorHex}>{message}</color>", playerComponent.transform.position + Vector3.up);
+    }
+
+    private void SetGuidance(bool visible)
+    {
+        guidanceVisible = visible;
+        SetOutline(visible);
+        if (guidanceArrow != null)
+        {
+            guidanceArrow.gameObject.SetActive(visible);
+            if (!visible) guidanceArrow.localPosition = arrowRestPosition;
+        }
+    }
+
+    private void PresentResult(bool selected, bool playDust)
+    {
+        if (resultPresented) return;
+        resultPresented = true;
+        SetGuidance(false);
+        for (int i = 0; i < highlightedRenderers.Length; i++)
+        {
+            SpriteRenderer renderer = highlightedRenderers[i];
+            if (renderer == null) continue;
+            if (selected)
+            {
+                Color color = originalColors[i];
+                renderer.color = new Color(color.r * 0.7f, color.g * 0.7f, color.b * 0.7f, color.a);
+            }
+            else renderer.enabled = false;
+        }
+        if (selected) return;
+
+        disappearing = true;
+        foreach (Collider2D interactionCollider in GetComponentsInChildren<Collider2D>(true))
+            interactionCollider.enabled = false;
+        if (playDust && dustParticle != null && isActiveAndEnabled)
+            StartCoroutine(Disappear());
+        else gameObject.SetActive(false);
+    }
+
+    private IEnumerator Disappear()
+    {
+        dustParticle.Play(true);
+        yield return null;
+        while (dustParticle != null && dustParticle.IsAlive(true)) yield return null;
+        gameObject.SetActive(false);
     }
 
     private void ShowSpeech(string message)
@@ -193,6 +296,7 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
                 continue;
 
             renderer.GetPropertyBlock(outlinePropertyBlock);
+            outlinePropertyBlock.SetColor(Shader.PropertyToID("_OutlineColor"), Color.white);
             outlinePropertyBlock.SetFloat(outlineEnabledId, enabled ? 1f : 0f);
             renderer.SetPropertyBlock(outlinePropertyBlock);
         }

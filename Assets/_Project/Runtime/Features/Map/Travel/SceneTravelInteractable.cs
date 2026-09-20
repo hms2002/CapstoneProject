@@ -11,11 +11,16 @@ public sealed class SceneTravelInteractable : InteractableBase
     [SerializeField] private string interactPromptText = "이동하기";
     [SerializeField] private GameObject highlightTarget;
 
+    private static readonly int OutlineEnabledId = Shader.PropertyToID("_OutlineEnabled");
+    private SpriteRenderer outlineRenderer;
+    private MaterialPropertyBlock outlineProperties;
+
     private void Awake()
     {
         if (endpoint == null)
             endpoint = GetComponent<SceneTravelEndpoint>();
 
+        outlineRenderer = GetComponent<SpriteRenderer>();
         OnUnHighlight();
     }
 
@@ -38,12 +43,14 @@ public sealed class SceneTravelInteractable : InteractableBase
 
     public override void OnHighlight()
     {
+        SetOutline(true);
         if (highlightTarget != null)
             highlightTarget.SetActive(true);
     }
 
     public override void OnUnHighlight()
     {
+        SetOutline(false);
         if (highlightTarget != null)
             highlightTarget.SetActive(false);
     }
@@ -51,6 +58,18 @@ public sealed class SceneTravelInteractable : InteractableBase
     public override void OnPlayerLeave()
     {
         OnUnHighlight();
+    }
+
+    private void OnDisable() => OnUnHighlight();
+
+    private void SetOutline(bool enabled)
+    {
+        if (outlineRenderer == null || outlineRenderer.sharedMaterial == null ||
+            !outlineRenderer.sharedMaterial.HasProperty(OutlineEnabledId)) return;
+        outlineProperties ??= new MaterialPropertyBlock();
+        outlineRenderer.GetPropertyBlock(outlineProperties);
+        outlineProperties.SetFloat(OutlineEnabledId, enabled ? 1f : 0f);
+        outlineRenderer.SetPropertyBlock(outlineProperties);
     }
 
     public override InteractState GetInteractType() => InteractState.Idle;

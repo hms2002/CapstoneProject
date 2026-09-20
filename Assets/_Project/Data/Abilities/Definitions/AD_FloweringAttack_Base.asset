@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_FloweringAttack_Base
   m_EditorClassIdentifier:
+  simpleDescription: "꽃잎을 흩뿌리며 연속으로 벱니다. 마지막 공격은 더 멀리 나아가며 강하게 베어냅니다."
   abilityName: 꽃잎 연격
   icon: {fileID: 655937068, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
   description: "● 꽃잎을 흩뿌리며 {val:3연속} 베기\n● 세 번째 공격은 더 길게 전진하며 강하게 베어낸다"

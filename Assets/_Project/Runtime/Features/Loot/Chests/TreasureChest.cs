@@ -43,6 +43,7 @@ public class TreasureChest : MonoBehaviour
 
     private ChestInventory inventory;
     private bool isOpened;
+    private bool isLootSelectionComplete;
     private bool isGenerated;
     private bool isOpening;
     private bool isPreludeTimeFrozen;
@@ -53,6 +54,7 @@ public class TreasureChest : MonoBehaviour
     private bool hasRaisedFirstOpenedUi;
     public int Capacity => capacity;
     public bool IsOpened => isOpened;
+    public bool IsLootSelectionComplete => isLootSelectionComplete;
     // Read-only guidance: never roll loot merely to decide whether to highlight a chest.
     public bool HasAvailableWeaponReward
     {
@@ -158,8 +160,26 @@ public class TreasureChest : MonoBehaviour
 
     public void CompleteLootSelection()
     {
+        if (isLootSelectionComplete)
+            return;
+
+        isLootSelectionComplete = true;
         inventory?.Clear();
-        gameObject.SetActive(false);
+        isOpened = true;
+        HoldOpenedVisualState();
+        if (chestAnimator != null)
+            chestAnimator.enabled = false;
+        if (chestSpriteRenderer != null)
+        {
+            Color color = chestSpriteRenderer.color;
+            chestSpriteRenderer.color = new Color(color.r * 0.25f, color.g * 0.25f, color.b * 0.25f, color.a);
+        }
+
+        foreach (Collider2D chestCollider in GetComponentsInChildren<Collider2D>(true))
+            chestCollider.enabled = false;
+        if (TryGetComponent(out ChestInteractable interactable))
+            interactable.enabled = false;
+        WorldStateChanged?.Invoke(this);
     }
 
     /// <summary>
@@ -202,6 +222,9 @@ public class TreasureChest : MonoBehaviour
 
     public bool Open(IPlayerInteractor player = null)
     {
+        if (isLootSelectionComplete)
+            return false;
+
         if (!isGenerated)
         {
             GenerateSelfLoot();

@@ -3,7 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// 책임 : ChestMonsterKillLock의 현재 상태를 시각적으로 표현한다.
-/// 잠금 이펙트와 남은 몬스터 수 텍스트를 갱신하는 표시 역할만 담당한다.
+/// 잠금 표시와 미개봉 상자의 잠금 해제 대기 파티클을 갱신한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class ChestMonsterKillLockView : MonoBehaviour
@@ -17,6 +17,11 @@ public sealed class ChestMonsterKillLockView : MonoBehaviour
 
     [Tooltip("상자 위에 남은 몬스터 수를 표시할 TMP 텍스트")]
     [SerializeField] private TMP_Text remainingCountText;
+
+    [Tooltip("잠금 해제된 미개봉 상자에서 반복 재생할 프리팹 자식 파티클")]
+    [SerializeField] private ParticleSystem unlockedIdleParticle;
+
+    private TreasureChest chest;
 
     [Header("Text")]
     [SerializeField] private string lockedFormat = "남은 몬스터 : {0}";
@@ -36,10 +41,13 @@ public sealed class ChestMonsterKillLockView : MonoBehaviour
     {
         if (targetLock == null)
             targetLock = GetComponent<ChestMonsterKillLock>();
+
+        chest = GetComponent<TreasureChest>();
     }
 
     private void OnEnable()
     {
+        TreasureChest.WorldStateChanged += HandleChestWorldStateChanged;
         if (targetLock != null)
         {
             targetLock.OnRemainingCountChanged += HandleRemainingCountChanged;
@@ -49,13 +57,47 @@ public sealed class ChestMonsterKillLockView : MonoBehaviour
         RefreshAll();
     }
 
+    private void Start() => RefreshAll();
+
     private void OnDisable()
     {
+        TreasureChest.WorldStateChanged -= HandleChestWorldStateChanged;
         if (targetLock != null)
         {
             targetLock.OnRemainingCountChanged -= HandleRemainingCountChanged;
             targetLock.OnLockStateChanged -= HandleLockStateChanged;
         }
+
+        StopUnlockedIdleParticle();
+    }
+
+    private void HandleChestWorldStateChanged(TreasureChest changedChest)
+    {
+        if (changedChest == chest)
+            RefreshUnlockedIdleParticle();
+    }
+
+    private void RefreshUnlockedIdleParticle()
+    {
+        if (unlockedIdleParticle == null)
+            return;
+
+        bool shouldPlay = isActiveAndEnabled && targetLock != null && targetLock.IsUnlocked &&
+            chest != null && chest.isActiveAndEnabled && !chest.IsOpened;
+        if (!shouldPlay)
+        {
+            StopUnlockedIdleParticle();
+            return;
+        }
+
+        if (!unlockedIdleParticle.isPlaying)
+            unlockedIdleParticle.Play(true);
+    }
+
+    private void StopUnlockedIdleParticle()
+    {
+        if (unlockedIdleParticle != null)
+            unlockedIdleParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
     }
 
     /// <summary>
@@ -65,6 +107,7 @@ public sealed class ChestMonsterKillLockView : MonoBehaviour
     {
         RefreshLockEffect(isUnlocked);
         RefreshText(isUnlocked, targetLock != null ? targetLock.RemainingAliveCount : 0);
+        RefreshUnlockedIdleParticle();
     }
 
     /// <summary>
@@ -86,6 +129,7 @@ public sealed class ChestMonsterKillLockView : MonoBehaviour
 
         RefreshLockEffect(unlocked);
         RefreshText(unlocked, remainingCount);
+        RefreshUnlockedIdleParticle();
     }
 
     /// <summary>

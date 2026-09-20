@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace UnityGAS
@@ -88,6 +89,8 @@ namespace UnityGAS
 
         private float lifeRemaining;
         private bool isInitialized;
+        // Per attack entity, even when several projectiles share the same payload.
+        private readonly HashSet<GameObject> evadeFeedbackTargets = new();
 
         /// <summary>
         /// 책임 :
@@ -111,6 +114,7 @@ namespace UnityGAS
             }
 
             OwnerSystem = context.ownerSystem;
+            evadeFeedbackTargets.Clear();
             SourceSpec = context.sourceSpec;
             Causer = context.causer != null ? context.causer : context.ownerSystem.gameObject;
             IgnoreTarget = context.ignoreTarget;
@@ -287,7 +291,7 @@ namespace UnityGAS
                 return false;
 
             Vector3 hitWorldPosition = ResolveHitWorldPosition(target, hitCollider);
-            return CombatHitPayloadApplier.Apply(target, HitPayload, hitWorldPosition);
+            return CombatHitPayloadApplier.Apply(target, HitPayload, hitWorldPosition, evadeFeedbackTargets);
         }
 
         private Vector3 ResolveHitWorldPosition(GameObject target, Collider2D hitCollider)

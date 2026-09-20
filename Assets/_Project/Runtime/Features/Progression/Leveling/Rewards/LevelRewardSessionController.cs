@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// R키 비전투 진입, 후보 세션의 pause/input lock, 연속 미수령 보상 처리를 담당한다.
+/// 매핑된 보상 열기 입력, 후보 세션의 pause/input lock, 연속 미수령 보상 처리를 담당한다.
 /// 실제 카드 UI는 이 컴포넌트의 이벤트와 공개 명령에 연결된 authored UI가 소유한다.
 /// </summary>
 [DisallowMultipleComponent]
@@ -14,7 +14,7 @@ public sealed class LevelRewardSessionController : MonoBehaviour
     [SerializeField, Min(0)] private int maxRerollsPerOffer = 5;
 
     [Header("Open Rule")]
-    [SerializeField] private KeyCode openKey = KeyCode.R;
+    [SerializeField, HideInInspector] private KeyCode openKey = KeyCode.R; // Legacy serialized value; input now uses LevelRewardOpen.
     [SerializeField] private string combatBlockedMessage = "전투가 끝난 뒤 할 수 있어";
 
     private GameFlowInputBlocker inputBlocker;
@@ -53,7 +53,7 @@ public sealed class LevelRewardSessionController : MonoBehaviour
 
     private void Update()
     {
-        if (!isSessionOpen && openKey != KeyCode.None && InputActionQuery.WasKeyPressedThisFrame(openKey))
+        if (!isSessionOpen && InputActionQuery.WasPressedThisFrame(InputActionId.LevelRewardOpen))
             TryOpenSession(out _);
     }
 

@@ -34,6 +34,9 @@ public class ChestInteractable : InteractableBase
 
     public override bool CanInteract(IPlayerInteractor player)
     {
+        if (!isActiveAndEnabled || (chest != null && chest.IsLootSelectionComplete))
+            return false;
+
         if (player == null || player.CurrentState != InteractState.Idle)
             return false;
 

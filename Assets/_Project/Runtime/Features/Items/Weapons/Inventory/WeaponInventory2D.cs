@@ -442,7 +442,7 @@ public class WeaponInventory2D : MonoBehaviour
         {
             PlayRuntimeSwapSound();
             GamePlayData run = RunSessionStore.Data;
-            if (run != null && run.isRunActive)
+            if (run != null)
             {
                 run.weaponSwapHintUnlocked = true;
                 run.weaponSwapHintCompleted = true;
@@ -1086,7 +1086,7 @@ public class WeaponInventory2D : MonoBehaviour
     private void RecordWeaponSwapHintAvailability()
     {
         GamePlayData run = RunSessionStore.Data;
-        if (run != null && run.isRunActive && !run.weaponSwapHintUnlocked &&
+        if (run != null && !run.weaponSwapHintUnlocked &&
             CountAccessibleFilledSlots() >= 2)
             run.weaponSwapHintUnlocked = true;
     }

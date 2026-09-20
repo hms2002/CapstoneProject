@@ -69,6 +69,7 @@ internal static class RunModifierAggregationService
             request.NpcManager,
             request.GameData,
             request.RunData,
+            ref shopModifiers,
             ref bossRewardModifiers);
 
         return new RunModifierAggregationResult(
@@ -136,6 +137,7 @@ internal static class RunModifierAggregationService
         NPCManager npcManager,
         GameData gameData,
         GamePlayData runData,
+        ref ShopRunModifierDelta shopModifiers,
         ref BossRewardModifierAggregate bossRewardModifiers)
     {
         if (npcManager == null)
@@ -155,6 +157,8 @@ internal static class RunModifierAggregationService
 
                 if (reward.effect is BossAffectionRunModifierEffect bossEffect)
                     bossRewardModifiers.Add(bossEffect.ModifierAggregate);
+                else if (reward.effect is ShopAffectionDiscountEffect shopEffect)
+                    shopModifiers.Add(shopEffect.Delta);
             }
         }
     }

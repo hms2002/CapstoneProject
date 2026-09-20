@@ -48,7 +48,7 @@ public static class MerchantShopPolicy
             ? Mathf.Clamp(baseSlotCount + Mathf.Max(0, modifiers.shopSlotBonus), 0, authoredSlotCount)
             : 0;
 
-        float discountRate = Mathf.Clamp01(modifiers.discountRate);
+        float discountRate = Mathf.Clamp01(modifiers.discountRate + modifiers.affectionDiscountRate);
         MerchantPriceSettings effectivePriceSettings = definition.PriceSettings.WithDiscount(discountRate);
 
         return new MerchantShopPolicySnapshot(

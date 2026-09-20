@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -13,6 +14,7 @@ public sealed class DemonKingProjectile2D : MonoBehaviour
     private float damage;
     private float lifetime;
     private float elapsed;
+    private readonly HashSet<GameObject> evadeFeedbackTargets = new();
 
     public static DemonKingProjectile2D Spawn(
         DemonKingController owner,
@@ -112,6 +114,7 @@ public sealed class DemonKingProjectile2D : MonoBehaviour
         bool scaleRootVisual)
     {
         owner = newOwner;
+        evadeFeedbackTargets.Clear();
         direction = initialDirection.sqrMagnitude > 0.0001f ? initialDirection.normalized : Vector2.right;
         homingTarget = newHomingTarget;
         speed = Mathf.Max(0.01f, newSpeed);
@@ -168,7 +171,7 @@ public sealed class DemonKingProjectile2D : MonoBehaviour
             return;
 
         CombatHitPayload payload = DemonKingCombatUtil.MakePayload(owner, owner.DefaultDamageEffect, damage);
-        if (payload != null && CombatHitPayloadApplier.Apply(targetRoot, payload, hit.ClosestPoint(transform.position)))
+        if (payload != null && CombatHitPayloadApplier.Apply(targetRoot, payload, hit.ClosestPoint(transform.position), evadeFeedbackTargets))
             Destroy(gameObject);
     }
 }

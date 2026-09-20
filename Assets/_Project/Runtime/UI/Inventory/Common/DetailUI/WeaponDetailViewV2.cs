@@ -21,12 +21,18 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
 
     private readonly List<WeaponStatLineView> spawnedStats = new();
     private readonly List<WeaponAbilityBlockView> spawnedAbilities = new();
-    private readonly List<VariantAbilityEntry> variantEntries = new();
+    private bool showDetailedDescription;
 
     public bool CanShow(object def) => def is WeaponDefinition;
 
     public void Show(object def, ItemDetailContext ctx, ItemDetailPanelServices services)
     {
+        Show(def, ctx, services, false);
+    }
+
+    public void Show(object def, ItemDetailContext ctx, ItemDetailPanelServices services, bool detailed)
+    {
+        showDetailedDescription = detailed;
         gameObject.SetActive(true);
         Clear();
 
@@ -44,16 +50,17 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
         BuildStatLines(weapon);
 
         if (weapon.weaponId == "Weapon.CrimsonBoundary")
-            AddAbilityBlock("기본 공격", weapon.attack, weapon.attackInputHint, InputActionId.PrimaryAttack, ctx, services);
+            AddAbilityBlock("기본 공격", weapon.GetAbility(WeaponAbilitySlot.Attack), weapon.attackInputHint, InputActionId.PrimaryAttack, ctx, services);
 
-        AddAbilityBlock("스킬 1", weapon.skill1, weapon.skill1InputHint, InputActionId.Skill1, ctx, services);
-        AddAbilityBlock("스킬 2", weapon.skill2, weapon.skill2InputHint, InputActionId.Skill2, ctx, services);
+        AddAbilityBlock("스킬 1", weapon.GetAbility(WeaponAbilitySlot.Skill1), weapon.skill1InputHint, InputActionId.Skill1, ctx, services);
+        AddAbilityBlock("스킬 2", weapon.GetAbility(WeaponAbilitySlot.Skill2), weapon.skill2InputHint, InputActionId.Skill2, ctx, services);
+
+
 
         if (abilityRoot is RectTransform abilityRect)
             LayoutRebuilder.ForceRebuildLayoutImmediate(abilityRect);
 
         Canvas.ForceUpdateCanvases();
-        RefreshVariantPreviewLayouts();
     }
 
     public void Hide()
@@ -62,23 +69,15 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
         gameObject.SetActive(false);
     }
 
-    private void Update()
-    {
-        if (!gameObject.activeSelf || variantEntries.Count == 0)
-            return;
-
-        RefreshVariantPreviewLayouts();
-
-        if (InputBindingService.EnsureInstance().WasPressedThisFrame(InputContextShortcutId.TooltipVariantNext))
-            CycleFirstAvailableVariant();
-    }
-
     private void Clear()
     {
         for (int i = 0; i < spawnedStats.Count; i++)
         {
             if (spawnedStats[i] != null)
+            {
+                spawnedStats[i].gameObject.SetActive(false);
                 Destroy(spawnedStats[i].gameObject);
+            }
         }
 
         spawnedStats.Clear();
@@ -86,11 +85,13 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
         for (int i = 0; i < spawnedAbilities.Count; i++)
         {
             if (spawnedAbilities[i] != null)
+            {
+                spawnedAbilities[i].gameObject.SetActive(false);
                 Destroy(spawnedAbilities[i].gameObject);
+            }
         }
 
         spawnedAbilities.Clear();
-        variantEntries.Clear();
     }
 
     private void BuildStatLines(WeaponDefinition weapon)
@@ -122,7 +123,7 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
         string header,
         AbilityDefinition ability,
         string inputHint,
-        InputActionId inputAction,
+        InputActionId? inputAction,
         ItemDetailContext ctx,
         ItemDetailPanelServices services)
     {
@@ -133,41 +134,13 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
         if (displayStates.Count == 0)
             return;
 
-        AbilityDisplayState initial = displayStates[0];
-        WeaponAbilityBlockView view = Instantiate(abilityBlockPrefab, abilityRoot);
-        view.Set(
-            initial.Title,
-            initial.Icon,
-            initial.InputHint,
-            initial.CooldownSeconds,
-            initial.ExtraMeta,
-            initial.Body,
-            inputAction,
-            services?.showGlossary);
-
-        if (displayStates.Count > 1)
+        foreach (AbilityDisplayState state in displayStates)
         {
-            WeaponAbilityBlockView nextView = Instantiate(abilityBlockPrefab, abilityRoot);
-            nextView.name = $"{view.name}_Next";
-            view.SetExternalShuffleNextView(nextView);
-            ApplyExternalPreview(view, displayStates[1], inputAction, services?.showGlossary);
-
-            InputGlyphPresentation glyph = InputBindingService.EnsureInstance()
-                .GetContextShortcutGlyph(InputContextShortcutId.TooltipVariantNext);
-            string guideLabel = glyph.HasIcon
-                ? "모드 전환"
-                : $"{glyph.DisplayLabel} 모드 전환";
-
-            view.SetVariantSwitchGuide(true, glyph.Icon, guideLabel);
-            variantEntries.Add(new VariantAbilityEntry(view, displayStates, inputAction, services?.showGlossary));
-            spawnedAbilities.Add(nextView);
+            WeaponAbilityBlockView view = Instantiate(abilityBlockPrefab, abilityRoot);
+            view.Set(state.Title, state.Icon, state.InputHint, state.CooldownSeconds,
+                state.ExtraMeta, state.Body, inputAction, services?.showGlossary);
+            spawnedAbilities.Add(view);
         }
-        else
-        {
-            view.SetVariantSwitchGuide(false, null, null);
-        }
-
-        spawnedAbilities.Add(view);
     }
 
     private List<AbilityDisplayState> BuildAbilityDisplayStates(
@@ -208,9 +181,9 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
             : (!string.IsNullOrEmpty(ability.abilityName) ? ability.abilityName : header);
 
         Sprite icon = variant.Icon != null ? variant.Icon : ability.icon;
-        string body = !string.IsNullOrWhiteSpace(variant.Body)
-            ? variant.Body
-            : BuildAbilityBody(ability, ctx);
+        string body = !showDetailedDescription && !string.IsNullOrWhiteSpace(variant.SimpleBody)
+            ? variant.SimpleBody
+            : (!string.IsNullOrWhiteSpace(variant.Body) ? variant.Body : BuildAbilityBody(ability, ctx));
         if (services?.formatText != null)
             body = services.formatText(body);
 
@@ -252,99 +225,11 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
             body);
     }
 
-    private void CycleFirstAvailableVariant()
-    {
-        for (int i = 0; i < variantEntries.Count; i++)
-        {
-            VariantAbilityEntry entry = variantEntries[i];
-            if (entry == null || entry.View == null || entry.States.Count <= 1)
-                continue;
-
-            if (entry.View.IsVariantSwitching)
-                return;
-
-            entry.CurrentIndex = (entry.CurrentIndex + 1) % entry.States.Count;
-            ApplyVariantEntry(entry, animate: true);
-            Canvas.ForceUpdateCanvases();
-            return;
-        }
-    }
-
-    private void RefreshVariantPreviewLayouts()
-    {
-        for (int i = 0; i < variantEntries.Count; i++)
-        {
-            VariantAbilityEntry entry = variantEntries[i];
-            if (entry?.View != null)
-                entry.View.RefreshExternalShufflePreviewLayout();
-        }
-    }
-
-    private static void ApplyVariantEntry(VariantAbilityEntry entry, bool animate)
-    {
-        AbilityDisplayState state = entry.States[entry.CurrentIndex];
-        AbilityDisplayState previewState = entry.States[(entry.CurrentIndex + 1) % entry.States.Count];
-
-        if (animate)
-            QueueExternalPreview(entry.View, previewState, entry.InputAction, entry.OnGlossaryClick);
-
-        entry.View.SetVariantDisplay(
-            state.Title,
-            state.Icon,
-            state.InputHint,
-            state.CooldownSeconds,
-            state.ExtraMeta,
-            state.Body,
-            entry.InputAction,
-            animate,
-            entry.OnGlossaryClick);
-
-        if (!animate)
-            ApplyExternalPreview(entry.View, previewState, entry.InputAction, entry.OnGlossaryClick);
-    }
-
-    private static void ApplyExternalPreview(
-        WeaponAbilityBlockView view,
-        AbilityDisplayState state,
-        InputActionId inputAction,
-        Action<string> onGlossaryClick)
-    {
-        if (view == null)
-            return;
-
-        view.SetExternalShufflePreview(
-            state.Title,
-            state.Icon,
-            state.InputHint,
-            state.CooldownSeconds,
-            state.ExtraMeta,
-            state.Body,
-            inputAction,
-            onGlossaryClick);
-    }
-
-    private static void QueueExternalPreview(
-        WeaponAbilityBlockView view,
-        AbilityDisplayState state,
-        InputActionId inputAction,
-        Action<string> onGlossaryClick)
-    {
-        if (view == null)
-            return;
-
-        view.QueueExternalShufflePreview(
-            state.Title,
-            state.Icon,
-            state.InputHint,
-            state.CooldownSeconds,
-            state.ExtraMeta,
-            state.Body,
-            inputAction,
-            onGlossaryClick);
-    }
-
     private string BuildAbilityBody(AbilityDefinition ability, ItemDetailContext ctx)
     {
+        if (!showDetailedDescription && !string.IsNullOrWhiteSpace(ability.simpleDescription))
+            return ability.simpleDescription;
+
         var sb = new StringBuilder();
 
         if (!string.IsNullOrEmpty(ability.description))
@@ -399,24 +284,46 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
         public string Body { get; }
     }
 
-    private sealed class VariantAbilityEntry
-    {
-        public VariantAbilityEntry(
-            WeaponAbilityBlockView view,
-            List<AbilityDisplayState> states,
-            InputActionId inputAction,
-            Action<string> onGlossaryClick)
-        {
-            View = view;
-            States = states;
-            InputAction = inputAction;
-            OnGlossaryClick = onGlossaryClick;
-        }
+}
 
-        public WeaponAbilityBlockView View { get; }
-        public List<AbilityDisplayState> States { get; }
-        public InputActionId InputAction { get; }
-        public Action<string> OnGlossaryClick { get; }
-        public int CurrentIndex { get; set; }
+/// <summary>Presentation-only description shortcut shared by hover and encyclopedia views.</summary>
+[Serializable]
+public sealed class WeaponDescriptionHint
+{
+    [SerializeField] private GameObject root;
+    [SerializeField] private UnityEngine.UI.Image keyIcon;
+    [SerializeField] private TMP_Text label;
+
+    public void Refresh(bool visible, bool detailed)
+    {
+        if (root == null)
+            return;
+        root.SetActive(visible);
+        if (!visible)
+            return;
+
+        InputGlyphPresentation glyph = InputBindingService.EnsureInstance()
+            .GetContextShortcutGlyph(InputContextShortcutId.TooltipDescriptionToggle);
+        if (keyIcon != null)
+        {
+            keyIcon.sprite = glyph.Icon;
+            keyIcon.gameObject.SetActive(glyph.HasIcon);
+        }
+        if (label != null)
+        {
+            string caption = detailed ? "간단히 설명" : "자세히 설명";
+            label.text = glyph.HasIcon ? caption : $"~ {caption}";
+        }
+    }
+
+    public static bool WasTogglePressed()
+    {
+        GameObject selected = UnityEngine.EventSystems.EventSystem.current != null
+            ? UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject : null;
+        if (selected != null && (selected.GetComponent<TMP_InputField>() != null ||
+            selected.GetComponent<UnityEngine.UI.InputField>() != null))
+            return false;
+        return InputBindingService.EnsureInstance()
+            .WasPressedThisFrame(InputContextShortcutId.TooltipDescriptionToggle);
     }
 }

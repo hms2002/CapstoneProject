@@ -86,7 +86,7 @@ public sealed class LightningSpearMarkActor : MonoBehaviour
             validRushVisual.SetActive(false);
 
         if (selectedVisual != null)
-            selectedVisual.SetActive(false);
+            selectedVisual.SetActive(rushFeedbackVisible);
 
         if (rushOutlineRenderer != null)
         {
@@ -95,6 +95,7 @@ public sealed class LightningSpearMarkActor : MonoBehaviour
             feedbackProperties.SetFloat("_OutlineEnabled", rushFeedbackVisible ? 1f : 0f);
             feedbackProperties.SetColor("_OutlineColor", new Color32(0, 160, 230, 255));
             feedbackProperties.SetFloat("_AlphaThreshold", 0.1f);
+            feedbackProperties.SetFloat("_OutlineThickness", 2f);
             rushOutlineRenderer.SetPropertyBlock(feedbackProperties);
         }
         RefreshRushKeyIcon();

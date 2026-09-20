@@ -55,3 +55,10 @@ Status: structure memory, not a technical contract. Last reviewed: 2026-09-18.
 - `DungeonMapContentPlayModeTests.cs` contains pure aggregation/shape-fit tests and Unity source-lifecycle/discovery tests, including translated/rotated/nonuniform grids, drop landing positions, opening/collection and controller re-enable. Test pickups require a concrete CircleCollider2D before adding FieldHealPickup2D; its abstract Collider2D requirement alone cannot create a valid test object. Source collection, scene lifecycle and actual UI rendering require Play Mode.
 - Actual button clicks, mouse input coexistence, unusual aspect ratios and scene visibility should be checked in Unity Play Mode. The standard 1920x1080 reference layout fits the default expanded body.
 - This is a feature-level structure map; no Architecture/Contracts promotion is required for this local display change.
+
+## Keyboard Controls (2026-09-21)
+
+The existing size controller also consumes remappable `MinimapExpand` (M / +/=) and `MinimapShrink` (N / -). Hidden presenter input and blocking UI are rejected. Button behavior and local size ownership are unchanged. See [Input Bindings](./InputBindings.md) for persistence and conflict rules; the earlier no-input-action description above is superseded by this addition.
+
+### Guidance proximity (2026-09-21)
+- PlayerRoomChestGuidanceView scales its player anchor, icon radius and arrow offset linearly inside 4 world units. It hides both renderers while the target ChestInteractable is in PlayerInteractableTracker2D's overlap set, then restores them on exit if the normal target gates still pass. The presenter remains enabled to observe exit. Tutorial chest guidance uses the same behavior.

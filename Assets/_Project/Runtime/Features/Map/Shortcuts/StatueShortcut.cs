@@ -230,8 +230,18 @@ public class StatueShortcut : TemporaryShortcut
                 var attributeSet = player != null ? player.Transform.GetComponent<AttributeSet>() : null;
                 if (attributeSet != null && healthAttribute != null)
                 {
+                    float previousHp = attributeSet.GetAttributeValue(healthAttribute);
                     attributeSet.TryModifyAttributeValue(healthAttribute, -costAmount, this);
                     PlayPaymentSound(OfferBloodSound, player);
+                    if (attributeSet.GetAttributeValue(healthAttribute) < previousHp)
+                    {
+                        // The offering remains an HP cost; reuse combat feedback without applying damage twice.
+                        GameObject target = attributeSet.gameObject;
+                        target.GetComponent<IHitFeedbackReceiver2D>()?.OnHitFeedback(
+                            new HitFeedbackPayload(gameObject, 0f, 0f));
+                        CombatHitAudioPlayback.PlayImpact(
+                            system: null, spec: null, damageEffect: null, target: target, causer: gameObject);
+                    }
                 }
                 break;
         }

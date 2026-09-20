@@ -18,6 +18,7 @@ public interface IRunSessionStoreBackend
     int GetPendingRunMagicStoneDelta();
     void AddPendingRunMagicStoneDelta(int delta);
     void AddPendingAffectionDelta(int npcId, int delta);
+    bool TryConsumeAffectionGain(int npcId);
     void AddPendingShortcutUnlock(string mapID, string doorID);
     bool HasPendingShortcutUnlock(string mapID, string doorID);
     void AddPendingRunSpecialNpcConstructionStart(string constructionId, int startedClearCount);
@@ -118,6 +119,11 @@ public static class RunSessionStore
     {
         if (IsAvailable)
             backend.AddPendingAffectionDelta(npcId, delta);
+    }
+
+    public static bool TryConsumeAffectionGain(int npcId)
+    {
+        return IsAvailable && backend.TryConsumeAffectionGain(npcId);
     }
 
     public static void AddPendingShortcutUnlock(string mapID, string doorID)

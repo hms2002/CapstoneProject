@@ -22,6 +22,37 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
     private static T Call<T>(object target, string method, params object[] args) =>
         (T)target.GetType().GetMethod(method, Private).Invoke(target, args);
 
+    [TestCase(true, false, 240f)]
+    [TestCase(true, true, 0f)]
+    [TestCase(false, false, 0f)]
+    public void SceneTransition_ForcedParallelEndPreservesDeferredCooldown(
+        bool startOnEnd, bool skipCooldown, float expected)
+    {
+        var system = Own(new GameObject("Departing Bloom owner")).AddComponent<AbilitySystem>();
+        var definition = Own(ScriptableObject.CreateInstance<AbilityDefinition>());
+        definition.name = "Bloom transition cooldown";
+        definition.cooldown = 240f;
+        definition.startCooldownOnEnd = startOnEnd;
+        var spec = system.GiveAbility(definition);
+        typeof(AbilitySpec).GetProperty("Token").SetValue(spec, new AbilityCancellationToken());
+        spec.SkipCooldownOnEnd = skipCooldown;
+        typeof(AbilitySystem).GetMethod("BeginParallelExecution", Private | BindingFlags.Public)
+            .Invoke(system, new object[] { spec, null });
+
+        system.CancelAllForSceneTransition();
+
+        Assert.That(system.GetCooldownRemaining(definition), Is.EqualTo(expected));
+        var saved = system.ExportPersistentState(definition);
+        var arrival = Own(new GameObject("Arriving Bloom owner")).AddComponent<AbilitySystem>();
+        arrival.ImportPersistentState(saved, id => definition);
+        Assert.That(arrival.GetCooldownRemaining(definition), Is.EqualTo(expected));
+
+        system.TrySetCooldownRemaining(definition, 17f);
+        system.CancelAllForSceneTransition();
+        Assert.That(system.GetCooldownRemaining(definition), Is.EqualTo(17f),
+            "Repeated cleanup must not restart the cooldown.");
+    }
+
     [TestCase(0f, false)]
     [TestCase(0.5f, false)]
     [TestCase(0.51f, true)]
@@ -583,20 +614,35 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
     }
 
     [Test]
-    public void ChestSelection_CompletionClearsRemainingLoot_AndStaysHiddenAfterRestore()
+    public void ChestSelection_CompletionKeepsDimmedOpenChestWithoutCollisionOrReopening()
     {
         var weapon = Own(ScriptableObject.CreateInstance<WeaponDefinition>());
         var host = Own(new GameObject("Completed chest"));
+        var renderer = host.AddComponent<SpriteRenderer>();
+        renderer.color = new Color(0.8f, 0.6f, 0.4f, 0.9f);
+        var collider = host.AddComponent<BoxCollider2D>();
+        var child = new GameObject("Child collider");
+        child.transform.SetParent(host.transform);
+        var childCollider = child.AddComponent<CircleCollider2D>();
         var chest = host.AddComponent<TreasureChest>();
+        var interactable = host.AddComponent<ChestInteractable>();
         chest.InitializeWithLoot(new List<ScriptableObject> { weapon, weapon });
         chest.GetInventory().RecordAcquisition(weapon);
         chest.CompleteLootSelection();
-        Assert.That(host.activeSelf, Is.False);
+        Assert.That(host.activeSelf, Is.True);
+        Assert.That(chest.IsOpened, Is.True);
+        Assert.That(chest.IsLootSelectionComplete, Is.True);
+        Assert.That(collider.enabled, Is.False);
+        Assert.That(childCollider.enabled, Is.False);
+        Assert.That(interactable.enabled, Is.False);
+        Assert.That(chest.Open(), Is.False);
+        Assert.That(renderer.color.r, Is.EqualTo(0.2f).Within(0.001f));
+        Assert.That(renderer.color.a, Is.EqualTo(0.9f).Within(0.001f));
         Assert.That(chest.CaptureDungeonLootState(), Is.Empty);
         Assert.That(chest.AcquiredCount, Is.EqualTo(1));
-        host.SetActive(true);
-        chest.RestoreOpenedStateForDungeon(chest.CaptureDungeonLootState(), chest.AcquiredCount);
-        Assert.That(host.activeSelf, Is.False);
+        Color completedColor = renderer.color;
+        chest.CompleteLootSelection();
+        Assert.That(renderer.color, Is.EqualTo(completedColor), "Completion must not dim the chest twice.");
     }
 
     [Test]

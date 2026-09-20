@@ -57,7 +57,19 @@ MonoBehaviour:
     secondary: 0
   - action: 14
     primary: 118
-    secondary: 0
+    secondary: 105
   - action: 15
     primary: 32
     secondary: 0
+  - action: 16
+    primary: 102
+    secondary: 0
+  - action: 17
+    primary: 114
+    secondary: 0
+  - action: 18
+    primary: 109
+    secondary: 61
+  - action: 19
+    primary: 110
+    secondary: 45

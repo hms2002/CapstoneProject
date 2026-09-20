@@ -32,7 +32,10 @@ public sealed class InputBindingDefaultsSO : ScriptableObject
         InputActionId.ConsumableSlot3,
         InputActionId.ConsumableSlot4,
         InputActionId.InventoryToggle,
-        InputActionId.DialogueAdvance,
+        InputActionId.InventoryDrop,
+        InputActionId.LevelRewardOpen,
+        InputActionId.MinimapExpand,
+        InputActionId.MinimapShrink,
     };
 
     private static InputBindingDefaultsSO runtimeInstance;
@@ -76,6 +79,18 @@ public sealed class InputBindingDefaultsSO : ScriptableObject
             : GetBuiltInDefaultBinding(action);
     }
 
+    public static bool IsRemappable(InputActionId action)
+    {
+        return System.Array.IndexOf(RemappableActions, action) >= 0;
+    }
+
+    // World interaction and inventory dropping run in separate contexts and share F by default.
+    public static bool CanShareKey(InputActionId first, InputActionId second)
+    {
+        return (first == InputActionId.Interact && second == InputActionId.InventoryDrop) ||
+               (first == InputActionId.InventoryDrop && second == InputActionId.Interact);
+    }
+
     internal static bool SupportsSecondaryBinding(InputActionId action)
     {
         return action != InputActionId.DialogueAdvance;
@@ -87,6 +102,7 @@ public sealed class InputBindingDefaultsSO : ScriptableObject
         defaultBindings = new List<InputBindingEntry>(RemappableActions.Length);
         for (int i = 0; i < RemappableActions.Length; i++)
             defaultBindings.Add(GetBuiltInDefaultEntry(RemappableActions[i]));
+        defaultBindings.Add(GetBuiltInDefaultEntry(InputActionId.DialogueAdvance));
     }
 
     private void Reset()
@@ -114,6 +130,7 @@ public sealed class InputBindingDefaultsSO : ScriptableObject
                 normalized.Add(GetBuiltInDefaultEntry(action));
         }
 
+        normalized.Add(GetBuiltInDefaultEntry(InputActionId.DialogueAdvance));
         defaultBindings = normalized;
     }
 
@@ -167,8 +184,12 @@ public sealed class InputBindingDefaultsSO : ScriptableObject
             InputActionId.ConsumableSlot2 => new InputBinding(KeyCode.Alpha2),
             InputActionId.ConsumableSlot3 => new InputBinding(KeyCode.Alpha3),
             InputActionId.ConsumableSlot4 => new InputBinding(KeyCode.Alpha4),
-            InputActionId.InventoryToggle => new InputBinding(KeyCode.I),
+            InputActionId.InventoryToggle => new InputBinding(KeyCode.V, KeyCode.I),
             InputActionId.DialogueAdvance => new InputBinding(KeyCode.Space),
+            InputActionId.InventoryDrop => new InputBinding(KeyCode.F),
+            InputActionId.LevelRewardOpen => new InputBinding(KeyCode.R),
+            InputActionId.MinimapExpand => new InputBinding(KeyCode.M, KeyCode.Equals),
+            InputActionId.MinimapShrink => new InputBinding(KeyCode.N, KeyCode.Minus),
             _ => new InputBinding(KeyCode.None),
         };
     }

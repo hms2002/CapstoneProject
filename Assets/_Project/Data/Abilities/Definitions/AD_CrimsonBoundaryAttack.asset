@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_CrimsonBoundaryAttack
   m_EditorClassIdentifier: 
+  simpleDescription: "화염구를 발사해 적중 지점 주변에 피해를 주고 [[화상]]을 남깁니다."
   abilityName: "홍련 화염탄"
   description: "● 조준 방향으로 화염구 발사\n● 적중 지점 주변의 적에게 [[화염 피해]]만큼 범위 피해를 주고 [[화상]] {val:3중첩} 부여"
   hitFeel:

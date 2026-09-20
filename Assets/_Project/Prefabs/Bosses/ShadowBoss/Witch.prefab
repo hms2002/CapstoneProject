@@ -343,19 +343,6 @@ MonoBehaviour:
       minHpRatio: 0
       maxHpRatio: 1
       additionalConditions: []
-    - ability: {fileID: 11400000, guid: b5241a76782b44ec892e9bff62fbeb80, type: 2}
-      followUpAbility: {fileID: 0}
-      selectableByAi: 1
-      selectionWeight: 1000
-      maxConsecutiveUseCount: 0
-      maxUseCount: 1
-      aiSelectionLockTime: 0
-      postPatternDelay: 0
-      minDistanceToTarget: 0
-      maxDistanceToTarget: 100
-      minHpRatio: 0
-      maxHpRatio: 0.5
-      additionalConditions: []
   fogPrefab: {fileID: 4201956065249926095, guid: 983d63dce5dc9454a9a74287a2ed4d94, type: 3}
   candlestickPrefab: {fileID: 625522859161183429, guid: 84e107a2d896c944b86df050ad0becb7, type: 3}
   lightBeadPrefab: {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}

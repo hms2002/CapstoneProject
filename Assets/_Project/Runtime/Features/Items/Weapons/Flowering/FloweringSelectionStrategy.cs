@@ -25,11 +25,11 @@ public sealed class FloweringSelectionStrategy : WeaponAbilitySelectionStrategy
                 ability = bloomActive ? floweringLoadout.BloomAttack : floweringLoadout.BaseAttack;
                 return ability != null;
 
-            case WeaponAbilitySlot.Skill1:
+            case WeaponAbilitySlot.Skill2:
                 ability = floweringLoadout.BloomSkill;
                 return ability != null;
 
-            case WeaponAbilitySlot.Skill2:
+            case WeaponAbilitySlot.Skill1:
                 return false;
 
             default:

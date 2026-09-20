@@ -55,6 +55,9 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
     private TilemapPathfinder2D cachedPathfinder;
     private float nextFinderSearchTime;
     private float nextPathSearchTime;
+    private Vector2 pathProgressPosition;
+    private float pathProgressTime;
+    private float lastPathProgressSample = float.NegativeInfinity;
     private Vector2 pathTarget;
     private int waypointIndex;
     private static int lastPawnSearchFrame = -1;
@@ -142,6 +145,7 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
 
     public void StopChase()
     {
+        lastPathProgressSample = float.NegativeInfinity;
         chaseEnabled = false;
         ResetNavigation();
     }
@@ -223,9 +227,18 @@ public sealed class PawnOrbitContactIntent2D : MonoBehaviour, IIntentMovementSou
                (approachPath[waypointIndex] - position).sqrMagnitude <= WaypointReachDistance * WaypointReachDistance)
             waypointIndex++;
 
+        float now = Time.time;
+        if (now - lastPathProgressSample > Mathf.Max(0.25f, Time.fixedDeltaTime * 3f) ||
+            (position - pathProgressPosition).sqrMagnitude >= 0.05f * 0.05f)
+        {
+            pathProgressPosition = position;
+            pathProgressTime = now;
+        }
+        lastPathProgressSample = now;
+        bool stalled = now - pathProgressTime >= Mathf.Max(1f, (crawlMoveSeconds + crawlRestSeconds) * 2f);
         bool exhausted = waypointIndex >= approachPath.Count;
         bool targetMoved = (target - pathTarget).sqrMagnitude > 0.35f * 0.35f;
-        if ((exhausted || targetMoved) && Time.time >= nextPathSearchTime && lastPawnSearchFrame != Time.frameCount)
+        if ((exhausted || targetMoved || stalled) && Time.time >= nextPathSearchTime && lastPawnSearchFrame != Time.frameCount)
         {
             // At most one Pawn A* search per rendered frame, including frames with several physics ticks.
             lastPawnSearchFrame = Time.frameCount;

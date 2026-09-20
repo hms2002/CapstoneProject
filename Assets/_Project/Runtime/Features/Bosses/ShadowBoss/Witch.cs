@@ -52,7 +52,6 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     private bool hasLoggedRuntimeDataReady;
     private AbilityDefinition basicAttack2Ability;
     private AbilityDefinition sealedCandleRampageAbility;
-    private AbilityDefinition lightAllCandlesAbility;
     private readonly List<Candlestick> runtimeSpawnedCandles = new();
     private readonly List<LightBeadProjectile2D> activeRampageProjectiles = new();
     private readonly List<DeadsSkeleton> activeRetreatSummons = new();
@@ -1114,14 +1113,6 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
             castTime: 0f,
             recoveryTime: 0.85f);
 
-        lightAllCandlesAbility = CreateRuntimeAbility(
-            "AD_Witch_LightAllCandles_Runtime",
-            lightAllCandlesPatternLogicTemplate != null
-                ? Instantiate(lightAllCandlesPatternLogicTemplate)
-                : ScriptableObject.CreateInstance<AbilityLogic_WitchLightAllCandles>(),
-            castTime: 0f,
-            recoveryTime: 0.2f);
-
         BossPatternEntry phase1BasicAttack = BossPatternEntry.CreateRuntime(
             basicAttack2Ability,
             runtimeSelectionWeight: 100,
@@ -1156,21 +1147,10 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
             runtimeMaxHpRatio: 1f,
             WitchSealedCandlesCondition.CreateRuntime());
 
-        BossPatternEntry lightAllCandlesPattern = BossPatternEntry.CreateRuntime(
-            lightAllCandlesAbility,
-            runtimeSelectionWeight: 3000,
-            runtimeMaxConsecutiveUseCount: 1,
-            runtimeMaxUseCount: 1,
-            runtimeSelectionLockTime: 0f,
-            runtimeMinDistanceToTarget: 0f,
-            runtimeMaxDistanceToTarget: 99f,
-            runtimeMinHpRatio: 0f,
-            runtimeMaxHpRatio: 0.5f);
-
         SetRuntimePhases(new[]
         {
             BossPhaseConfig.CreateRuntime("Phase 1", 1f, 0.3f, 0.55f, phase1BasicAttack),
-            BossPhaseConfig.CreateRuntime("Phase 2", 0.5f, 0.25f, 0.5f, lightAllCandlesPattern, rampagePattern, phase2BasicAttack)
+            BossPhaseConfig.CreateRuntime("Phase 2", 0.5f, 0.25f, 0.5f, rampagePattern, phase2BasicAttack)
         });
     }
 

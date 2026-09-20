@@ -71,3 +71,16 @@ Folder: `Assets/_Project/Prefabs/Map/Procedural/ReturnPortals/`.
 Headless tests are not a rendered animation review or a full production-actor playthrough. Manual checks still include active weapon presentation, camera/fade feel, authored props around chosen positions, all four supplied animations, and return after a real multi-wave/event encounter.
 
 Promotion candidate: if additional same-scene transport features adopt these boundaries, consider promoting travel ownership/cleanup and authoring contracts with explicit approval. No broader transport abstraction is required for this implementation.
+
+## Portal interaction outlines (2026-09-21)
+- DungeonReturnPortal forwards focus callbacks to DungeonReturnPortalView. The view writes _OutlineEnabled only on the selected directional body's existing SpriteRenderer, preserving other MaterialPropertyBlock values. Highlight requires a visible, fully opened, non-closing, active view.
+- Close, encounter shrink/hide, HideImmediate, direction replacement and disable clear the old body's outline. Travel permissions, encounter completion and opening animation timing retain their existing owners.
+- DungeonReturnPortal.prefab's four directional bodies and DungeonBossShortcut.prefab's BluePortal body use the existing white OutlineMaterial. Arrival-only views remain unhighlighted unless explicitly driven by an interactable.
+- SceneTravelInteractable separately projects focus to its same-object outline-capable SpriteRenderer and retains the authored highlightTarget behavior; leave/disable clear both. ProceduralSceneTravelPortal already has the correct body material. Particles and unrelated non-outline travel renderers are not changed.
+- Regression coverage is in DungeonReturnPortalPlayModeTests: four directions, property-block preservation, unhighlight/shrink/disable, boss shortcut opening/close and scene-travel leave/disable. Tests compiled against previously built dependencies; Play Mode not executed. Main full build was subsequently blocked by unrelated missing ShopAffectionDiscountEffect in RunModifierAggregationService.cs.
+
+## Same-scene portal ability lifetime (2026-09-21)
+- Return-to-Start and Start-to-Boss use `DungeonReturnTravel` and the explicit-position `TryPlayPortalArrival` path. Arrival preparation preserves running abilities on this path, including Flowering Bloom's runtime data, coroutine, modifiers and weapon-swap lock. The existing busy gate still rejects casting/exclusive execution before travel.
+- Bloom's remaining duration continues on its existing scaled-time clock during travel; it is neither refreshed nor saved/restored. Natural expiry owns buff cleanup, swap unlock and cooldown start. Cancelling the arrival animation does not cancel Bloom.
+- Ordinary Hub, death-return and scripted arrivals retain `ResetTransientRuntimeState`. Scene-transition cleanup is unchanged. No serialized asset migration is required.
+- Regression entry points: `PortalArrival_PreservesBloomAcrossCompletionAndCancel_ThenUnlocksOnExpiry` and `ScriptedArrival_StillCleansBloomAndSwapLock` in `DungeonReturnPortalPlayModeTests`. Presentation is replaced by a silent test double; full in-game visuals, especially expiry during the falling/wake animation, still require manual review.

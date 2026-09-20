@@ -33,6 +33,12 @@ public class PlayerConsumableHUD2D : MonoBehaviour, IDefaultHudVisibilityTarget
 
     private bool hasBoundInventoryEvents;
 
+    public RectTransform GetSlotRect(int index)
+    {
+        ConsumableSlotUI slot = index switch { 0 => slot1UI, 1 => slot2UI, 2 => slot3UI, 3 => slot4UI, _ => null };
+        return slot != null ? ResolveSlotRoot(slot)?.transform as RectTransform : null;
+    }
+
     private void Awake()
     {
         if (hudRoot == null)

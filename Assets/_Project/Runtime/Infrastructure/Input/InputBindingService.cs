@@ -286,6 +286,7 @@ public struct InputBindingEntry
 public sealed class InputBindingService : MonoBehaviour, IInputActionQueryBackend
 {
     private const string PrefKeyPrefix = "settings.input.";
+    private const string BindingUpgradeKey = PrefKeyPrefix + "contextActions.v1";
 
     public static InputBindingService Instance { get; private set; }
     public event Action<InputActionId> BindingChanged;
@@ -401,6 +402,8 @@ public sealed class InputBindingService : MonoBehaviour, IInputActionQueryBacken
     public InputBinding GetBinding(InputActionId action)
     {
         EnsureInitialized();
+        if (!InputBindingDefaultsSO.IsRemappable(action))
+            return GetConfiguredDefaultBinding(action);
         return bindings.TryGetValue(action, out InputBinding binding)
             ? binding
             : GetConfiguredDefaultBinding(action);
@@ -552,6 +555,8 @@ public sealed class InputBindingService : MonoBehaviour, IInputActionQueryBacken
     public void SwapBindings(InputActionId firstAction, bool firstSecondary, InputActionId secondAction, bool secondSecondary)
     {
         EnsureInitialized();
+        if (!InputBindingDefaultsSO.IsRemappable(firstAction) || !InputBindingDefaultsSO.IsRemappable(secondAction))
+            return;
 
         KeyCode firstKey = GetKey(firstAction, firstSecondary);
         KeyCode secondKey = GetKey(secondAction, secondSecondary);
@@ -601,6 +606,9 @@ public sealed class InputBindingService : MonoBehaviour, IInputActionQueryBacken
             InputActionId action = actions[i];
             InputBinding binding = GetBinding(action);
 
+            if (InputBindingDefaultsSO.CanShareKey(action, targetAction))
+                continue;
+
             if (binding.primary == key && (!Equals(action, targetAction) || targetSecondary))
             {
                 conflictingAction = action;
@@ -644,6 +652,10 @@ public sealed class InputBindingService : MonoBehaviour, IInputActionQueryBacken
             InputActionId.ConsumableSlot4 => "소모품 4",
             InputActionId.InventoryToggle => "인벤토리",
             InputActionId.DialogueAdvance => "대화 넘기기",
+            InputActionId.InventoryDrop => "인벤토리 아이템 버리기",
+            InputActionId.LevelRewardOpen => "레벨 보상 열기",
+            InputActionId.MinimapExpand => "미니맵 확대",
+            InputActionId.MinimapShrink => "미니맵 축소",
             _ => action.ToString(),
         };
     }
@@ -751,10 +763,50 @@ public sealed class InputBindingService : MonoBehaviour, IInputActionQueryBacken
                     : defaultBinding.secondary);
             bindings[action] = loaded;
         }
+
+        // Fixed dialogue input never loads historical overrides left by the old swap UI.
+        PlayerPrefs.DeleteKey(GetPrimaryPrefKey(InputActionId.DialogueAdvance));
+        PlayerPrefs.DeleteKey(GetSecondaryPrefKey(InputActionId.DialogueAdvance));
+
+        if (!PlayerPrefs.HasKey(BindingUpgradeKey))
+        {
+            InputBinding inventory = bindings[InputActionId.InventoryToggle];
+            if (!PlayerPrefs.HasKey(GetSecondaryPrefKey(InputActionId.InventoryToggle)) &&
+                inventory.secondary == KeyCode.I &&
+                TryFindConflict(InputActionId.InventoryToggle, KeyCode.I, true, out _, out _))
+            {
+                inventory.secondary = KeyCode.None;
+                SetBindingInternal(InputActionId.InventoryToggle, inventory);
+            }
+            if (inventory.secondary == KeyCode.None && inventory.primary != KeyCode.I &&
+                !TryFindConflict(InputActionId.InventoryToggle, KeyCode.I, true, out _, out _))
+            {
+                inventory.secondary = KeyCode.I;
+                SetBindingInternal(InputActionId.InventoryToggle, inventory);
+            }
+
+            // Do not silently steal custom keys when adding the new actions to an existing profile.
+            foreach (InputActionId action in new[] { InputActionId.InventoryDrop, InputActionId.LevelRewardOpen,
+                         InputActionId.MinimapExpand, InputActionId.MinimapShrink })
+            {
+                if (PlayerPrefs.HasKey(GetPrimaryPrefKey(action)))
+                    continue;
+                InputBinding binding = bindings[action];
+                if (TryFindConflict(action, binding.primary, false, out _, out _))
+                    binding.primary = KeyCode.None;
+                if (TryFindConflict(action, binding.secondary, true, out _, out _))
+                    binding.secondary = KeyCode.None;
+                SetBindingInternal(action, binding);
+            }
+            PlayerPrefs.SetInt(BindingUpgradeKey, 1);
+        }
     }
 
     private void SetBindingInternal(InputActionId action, InputBinding binding)
     {
+        if (!InputBindingDefaultsSO.IsRemappable(action))
+            return;
+
         if (!SupportsSecondaryBinding(action))
             binding.secondary = KeyCode.None;
 
@@ -785,6 +837,7 @@ public sealed class InputBindingService : MonoBehaviour, IInputActionQueryBacken
     [ContextMenu("Clear Saved Binding Overrides")]
     private void ClearSavedBindingOverrides()
     {
+        PlayerPrefs.DeleteKey(BindingUpgradeKey);
         IReadOnlyList<InputActionId> actions = GetRemappableActions();
         for (int i = 0; i < actions.Count; i++)
         {

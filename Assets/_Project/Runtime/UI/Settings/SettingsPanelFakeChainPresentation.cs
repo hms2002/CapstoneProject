@@ -65,6 +65,7 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
     private float[] segmentLengths;
     private float totalChainLength;
     private bool initialized;
+    private float accumulatedSimulationTime;
     private bool hasPreviousMouseLocalPosition;
     private Vector2 previousMouseLocalPosition;
     private bool hasPreviousSupportMotionSourcePosition;
@@ -158,8 +159,7 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
 
     private void OnDisable()
     {
-        hasPreviousMouseLocalPosition = false;
-        hasPreviousSupportMotionSourcePosition = false;
+        SyncCachedInputState();
     }
 
     private void OnApplicationFocus(bool hasFocus)
@@ -190,16 +190,28 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
         if (!initialized)
             ResetSimulation(topLocal, bottomLocal);
 
+        AdvanceSimulation(deltaTime, topLocal, bottomLocal);
+    }
+
+    private void AdvanceSimulation(float deltaTime, Vector2 topLocal, Vector2 bottomLocal)
+    {
+        // Verlet stores displacement, so every integration step must use the same duration.
+        // Keep the authored maximum as an upper bound, without slowing updates below 60 Hz.
+        float stepDeltaTime = maxSimulationStep > 0f
+            ? Mathf.Min(maxSimulationStep, 1f / 60f)
+            : 1f / 60f;
+        accumulatedSimulationTime += Mathf.Min(deltaTime, 0.1f);
+        int frameStepCount = Mathf.FloorToInt(accumulatedSimulationTime / stepDeltaTime);
+        if (frameStepCount == 0)
+            return;
+
+        accumulatedSimulationTime -= frameStepCount * stepDeltaTime;
+        // Sample only when consuming time so input motion on intervening frames is retained.
         bool hasMouseBrushInteraction = TryGetMouseBrushState(
             out Vector2 mouseLocalPosition,
             out Vector2 mouseLocalDelta);
-        bool hasSupportMotionResponse = TryGetSupportMotionDelta(deltaTime, out Vector2 supportMotionLocalDelta);
-
-        int frameStepCount = 1;
-        if (maxSimulationStep > 0f)
-            frameStepCount = Mathf.Max(1, Mathf.CeilToInt(deltaTime / maxSimulationStep));
-
-        float stepDeltaTime = deltaTime / frameStepCount;
+        bool hasSupportMotionResponse = TryGetSupportMotionDelta(
+            frameStepCount * stepDeltaTime, out Vector2 supportMotionLocalDelta);
         Vector2 stepMouseDelta = frameStepCount > 0 ? mouseLocalDelta / frameStepCount : mouseLocalDelta;
         Vector2 stepSupportMotionLocalDelta = frameStepCount > 0
             ? supportMotionLocalDelta / frameStepCount
@@ -899,6 +911,7 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
 
     private void ResetSimulation(Vector2 topLocal, Vector2 bottomLocal)
     {
+        accumulatedSimulationTime = 0f;
         if (jointPositions == null || jointPositions.Length == 0)
             return;
 
@@ -1094,6 +1107,7 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
 
     private void SyncCachedInputState()
     {
+        accumulatedSimulationTime = 0f;
         hasPreviousMouseLocalPosition = false;
         hasPreviousSupportMotionSourcePosition = false;
         smoothedSupportMotionLocalDelta = Vector2.zero;

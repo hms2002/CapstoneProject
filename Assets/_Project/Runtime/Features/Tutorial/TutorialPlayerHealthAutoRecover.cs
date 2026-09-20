@@ -30,6 +30,10 @@ public sealed class TutorialPlayerHealthAutoRecover : MonoBehaviour
     private bool isRestoring;
     private bool hasStoredDeathReturnState;
     private bool previousDeathReturnEnabled;
+    private float recoveryMissingHealth;
+
+    // Preserve the opening wound through training's automatic healing, until the potion lesson.
+    public void SetRecoveryMissingHealth(float amount) => recoveryMissingHealth = Mathf.Max(0f, amount);
 
     private void Awake()
     {
@@ -74,7 +78,8 @@ public sealed class TutorialPlayerHealthAutoRecover : MonoBehaviour
         if (isRestoring)
             return;
 
-        float maxHealth = attributeSet.GetAttributeValue(maxHealthAttribute);
+        float maxHealth = Mathf.Max(minimumSurvivalHealth,
+            attributeSet.GetAttributeValue(maxHealthAttribute) - recoveryMissingHealth);
         float currentHealth = attributeSet.GetAttributeValue(healthAttribute);
         if (currentHealth + restoreEpsilon >= maxHealth)
             return;
@@ -102,6 +107,15 @@ public sealed class TutorialPlayerHealthAutoRecover : MonoBehaviour
 
         if (attribute == healthAttribute)
         {
+            float ceiling = Mathf.Max(minimumSurvivalHealth,
+                attributeSet.GetAttributeValue(maxHealthAttribute) - recoveryMissingHealth);
+            if (recoveryMissingHealth > 0f && newValue > ceiling + restoreEpsilon)
+            {
+                isRestoring = true;
+                try { attributeSet.TrySetCurrentValue(healthAttribute, ceiling, this); }
+                finally { isRestoring = false; }
+                return;
+            }
             if (newValue <= 0f)
             {
                 EnsureSurvivalHealth();

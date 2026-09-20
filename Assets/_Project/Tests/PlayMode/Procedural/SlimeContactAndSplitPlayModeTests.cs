@@ -77,46 +77,23 @@ public sealed class SlimeContactAndSplitPlayModeTests
     }
 
     [Test]
-    public void TileLandingUsesDistinctAuthoredCenters()
-    {
-        var finder = TileFinder(Vector3Int.zero, Vector3Int.right, Vector3Int.left);
-        var reserved = new HashSet<Vector2>();
-        Vector2 origin = new Vector2(0.5f, 0.5f);
-        Assert.IsTrue(Planner().TryResolveTile(origin, Vector2.right, finder, reserved, out _, out var first));
-        Assert.AreEqual(new Vector2(1.5f, 0.5f), first);
-        Assert.IsTrue(Planner().TryResolveTile(origin, Vector2.right, finder, reserved, out _, out var second));
-        Assert.AreNotEqual(first, second);
-        Assert.AreEqual(0.5f, second.x - Mathf.Floor(second.x));
-        Assert.AreEqual(0.5f, second.y - Mathf.Floor(second.y));
-    }
-
-    [Test]
-    public void TileLandingRejectsThinWallEvenWhenDestinationIsClear()
-    {
-        capsule.size = new Vector2(0.6f, 0.4f);
-        var finder = TileFinder(Vector3Int.zero, Vector3Int.right);
-        Wall(new Vector2(1f, 0.5f), new Vector2(0.05f, 8f));
-        Assert.IsTrue(Planner().TryResolveTile(new Vector2(0.5f, 0.5f), Vector2.right,
-            finder, new HashSet<Vector2>(), out _, out var landing));
-        Assert.AreEqual(new Vector2(0.5f, 0.5f), landing);
-    }
-
-    [Test]
-    public void TileLandingFailsWhenOnlyGroundCellIsReserved()
+    public void TileLandingPreservesUnsnappedPositionAndAllowsSameTile()
     {
         var finder = TileFinder(Vector3Int.zero);
-        var origin = new Vector2(0.5f, 0.5f);
-        Assert.IsFalse(Planner().TryResolveTile(origin, Vector2.right, finder,
-            new HashSet<Vector2> { origin }, out _, out _));
+        var origin = new Vector2(0.4f, 0.4f);
+        Assert.IsTrue(Planner().TryResolveTile(origin, Vector2.right, 0.1f, finder, out _, out var first));
+        Assert.AreEqual(new Vector2(0.5f, 0.4f), first);
+        Assert.IsTrue(Planner().TryResolveTile(origin, Vector2.left, 0.1f, finder, out _, out var second));
+        Assert.AreEqual(new Vector2(0.3f, 0.4f), second);
+        Assert.IsTrue(Planner().TryResolveTile(origin, Vector2.right, 0f, finder, out _, out var stationary));
+        Assert.AreEqual(origin, stationary);
     }
 
     [Test]
-    public void TileLandingRequiresGridAndGround()
+    public void TileLandingRequiresRealGroundAtCandidate()
     {
-        Assert.IsFalse(Planner().TryResolveTile(Vector2.zero, Vector2.right, null,
-            new HashSet<Vector2>(), out _, out _));
-        Assert.IsFalse(Planner().TryResolveTile(Vector2.zero, Vector2.right, TileFinder(),
-            new HashSet<Vector2>(), out _, out _));
+        Assert.IsFalse(Planner().TryResolveTile(Vector2.zero, Vector2.right, 0.5f, null, out _, out _));
+        Assert.IsFalse(Planner().TryResolveTile(Vector2.zero, Vector2.right, 0.5f, TileFinder(), out _, out _));
     }
 
     private void AssertSafe(Vector2 position, params Collider2D[] walls)

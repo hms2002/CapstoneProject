@@ -52,14 +52,15 @@ public sealed class MonsterStageHpScalingSettings : ScriptableObject
     /// <summary>
     /// 책임:
     /// - 현재 stage index를 최종 HP 배율로 변환한다.
-    /// - stage 0은 1배, 이후 스테이지는 설정된 증가량만큼 선형 누적된다.
+    /// - stage 0은 1배, 이후 선형 증가하며 3스테이지(index 2)는 추가로 2배 적용한다.
     /// </summary>
     public float CalculateStageHpMultiplier(int stageIndex)
     {
         if (!enabled)
             return 1f;
 
-        return 1f + HpMultiplierPerClearedStage * Mathf.Max(0, stageIndex);
+        float multiplier = 1f + HpMultiplierPerClearedStage * Mathf.Max(0, stageIndex);
+        return stageIndex == 2 ? multiplier * 2f : multiplier;
     }
 
     /// <summary>

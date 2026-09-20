@@ -77,6 +77,7 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     private readonly Dictionary<Vector2Int, Vector2Int> cameFrom = new();
     private readonly Dictionary<Vector2Int, int> gScore = new();
     private readonly List<Vector2Int> openSet = new();
+    private readonly HashSet<Vector2Int> goalCells = new();
     private readonly HashSet<Vector2Int> closedSet = new();
     private readonly HashSet<Tilemap> runtimeGroundTilemaps = new();
     private readonly List<Vector2> lastDebugPath = new();
@@ -136,28 +137,21 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
         Vector2Int startCell = WorldToCell(startWorld);
         Vector2Int endCell = WorldToCell(endWorld);
 
-        if (startCell == endCell)
+        goalCells.Clear();
+        if (IsWalkable(endCell, footprint)) goalCells.Add(endCell);
+        else
+            for (int y = -2; y <= 2; y++)
+                for (int x = -2; x <= 2; x++)
+                {
+                    Vector2Int candidate = endCell + new Vector2Int(x, y);
+                    if (IsWalkable(candidate, footprint)) goalCells.Add(candidate);
+                }
+        if (goalCells.Count == 0)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            DiagnosticSearchResult = "same-cell";
+            DiagnosticSearchResult = "end-unwalkable";
 #endif
-            reusablePath.Add(CellToWorld(startCell));
-            CacheDebugPath(reusablePath, true);
-            LogDebug($"경로 생략: 시작 셀과 목표 셀이 같습니다. start={startCell}");
-            return true;
-        }
-
-        if (!IsWalkable(endCell, footprint))
-        {
-            endCell = FindNearestWalkableCell(endCell, radius: 2, footprint);
-            if (endCell == startCell && !IsWalkable(endCell, footprint))
-            {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                DiagnosticSearchResult = "end-unwalkable";
-#endif
-                LogDebug($"경로 실패: 목표 셀과 인접 셀을 모두 사용할 수 없습니다. requestedEnd={WorldToCell(endWorld)}");
-                return false;
-            }
+            return false;
         }
 
         RectInt searchBounds = BuildSearchBounds(startCell, endCell);
@@ -170,6 +164,11 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
         openSet.Add(startCell);
         gScore[startCell] = 0;
 
+        int closestGoalDistance = int.MaxValue;
+        foreach (Vector2Int goal in goalCells)
+            closestGoalDistance = Mathf.Min(closestGoalDistance, (goal - endCell).sqrMagnitude);
+        Vector2Int? reachableGoal = null;
+        int reachableGoalDistance = int.MaxValue;
         int visited = 0;
         while (openSet.Count > 0 && visited < maxVisitedNodes)
         {
@@ -178,10 +177,15 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
             DiagnosticVisitedNodes = visited;
 #endif
 
-            int currentIndex = FindBestOpenIndex(endCell);
+            int currentIndex = FindBestOpenIndex();
             Vector2Int current = openSet[currentIndex];
 
-            if (current == endCell)
+            if (goalCells.Contains(current) && (current - endCell).sqrMagnitude < reachableGoalDistance)
+            {
+                reachableGoal = current;
+                reachableGoalDistance = (current - endCell).sqrMagnitude;
+            }
+            if (reachableGoal.HasValue && reachableGoalDistance == closestGoalDistance)
             {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 DiagnosticSearchResult = "success";
@@ -221,6 +225,18 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
                         openSet.Add(neighbor);
                 }
             }
+        }
+
+        // A nearer free cell may be disconnected. Use the closest candidate actually reached,
+        // rather than retrying that unreachable cell or stopping at the starting cell prematurely.
+        if (reachableGoal.HasValue)
+        {
+            ReconstructPath(reachableGoal.Value);
+            CacheDebugPath(reusablePath, true);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DiagnosticSearchResult = "reachable-alternative";
+#endif
+            return true;
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -275,28 +291,6 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
             HoleFilter, holeCastHits, distance) == 0;
     }
 
-    /// <summary>지정한 셀이 막혀 있다면 인접 셀 중 가장 가까운 이동 가능 셀을 찾습니다.</summary>
-    private Vector2Int FindNearestWalkableCell(Vector2Int center, int radius, MonsterNavigationFootprint2D footprint)
-    {
-        if (IsWalkable(center, footprint))
-            return center;
-
-        for (int r = 1; r <= radius; r++)
-        {
-            for (int y = -r; y <= r; y++)
-            {
-                for (int x = -r; x <= r; x++)
-                {
-                    Vector2Int candidate = new Vector2Int(center.x + x, center.y + y);
-                    if (IsWalkable(candidate, footprint))
-                        return candidate;
-                }
-            }
-        }
-
-        return center;
-    }
-
     /// <summary>현재 셀에서 이동 가능한 이웃 셀들을 순회합니다.</summary>
     private IEnumerable<Vector2Int> EnumerateNeighbors(Vector2Int cell)
     {
@@ -315,7 +309,7 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     }
 
     /// <summary>현재 열린 셀 목록에서 목표까지 예상 비용이 가장 낮은 셀 인덱스를 찾습니다.</summary>
-    private int FindBestOpenIndex(Vector2Int goal)
+    private int FindBestOpenIndex()
     {
         int bestIndex = 0;
         int bestScore = int.MaxValue;
@@ -323,7 +317,9 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
         for (int i = 0; i < openSet.Count; i++)
         {
             Vector2Int cell = openSet[i];
-            int score = gScore[cell] + Heuristic(cell, goal);
+            int estimate = int.MaxValue;
+            foreach (Vector2Int goal in goalCells) estimate = Mathf.Min(estimate, Heuristic(cell, goal));
+            int score = gScore[cell] + estimate;
             if (score < bestScore)
             {
                 bestScore = score;
@@ -363,13 +359,11 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     }
 
     /// <summary>지정한 셀이 이동 가능한 셀인지 판정합니다.</summary>
-    public bool TryGetWalkableCellCenter(Vector2 reference, Vector2Int offset,
-        MonsterNavigationFootprint2D footprint, out Vector2 center)
+    public bool IsValidLandingPosition(Vector2 position, MonsterNavigationFootprint2D footprint)
     {
-        center = default;
-        // Placement requires authored tiles; navigation's virtual-grid fallback is not a landing surface.
+        // Require a real ground tile at the candidate, but test geometry at its unsnapped position.
         if (grid == null) return false;
-        Vector2Int cell = WorldToCell(reference) + offset;
+        Vector2Int cell = WorldToCell(position);
         bool hasGroundMap = false;
         bool hasTile = TryGroundTilemapHasTile(groundTilemap, (Vector3Int)cell, ref hasGroundMap);
         if (additionalGroundTilemaps != null)
@@ -377,9 +371,11 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
                 hasTile |= TryGroundTilemapHasTile(map, (Vector3Int)cell, ref hasGroundMap);
         foreach (Tilemap map in runtimeGroundTilemaps)
             hasTile |= TryGroundTilemapHasTile(map, (Vector3Int)cell, ref hasGroundMap);
-        if (!hasTile || !IsWalkable(cell, ResolveFootprint(footprint))) return false;
-        center = CellToWorld(cell);
-        return true;
+        if (!hasTile) return false;
+        footprint = ResolveFootprint(footprint);
+        return Physics2D.OverlapBox(position + footprint.CenterOffset, footprint.Size, 0f,
+                   HoleFilter, holeOverlapHits) == 0 &&
+               Physics2D.OverlapBox(position + footprint.CenterOffset, footprint.Size, 0f, blockedLayers) == null;
     }
 
     private bool IsWalkable(Vector2Int cell, MonsterNavigationFootprint2D footprint)

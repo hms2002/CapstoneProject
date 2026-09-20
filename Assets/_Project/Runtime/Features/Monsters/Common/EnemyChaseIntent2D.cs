@@ -73,6 +73,10 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     private readonly List<Vector2> chasePath = new();
     private int chasePathIndex;
     private float nextPathRebuildTime;
+    private Vector2 progressPosition;
+    private float progressTime;
+    private float lastProgressSampleTime = float.NegativeInfinity;
+    private bool chaseStalled;
     private Vector2 lastPathTargetPosition;
     private TilemapPathfinder2D fallbackPathfinder;
     private bool triedResolveFallbackPathfinder;
@@ -335,6 +339,8 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     /// <summary>FSM이 Chase 상태를 벗어날 때 추적 의도 이동을 즉시 멈춥니다.</summary>
     public void StopChase()
     {
+        lastProgressSampleTime = float.NegativeInfinity;
+        chaseStalled = false;
         chaseEnabled = false;
         lastIntent = IntentMovementData.None;
         ClearChasePath();
@@ -450,8 +456,9 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
 
         Vector2 currentPosition = transform.position;
         Vector2 targetPosition = enemy.Target.position;
+        ObserveChaseProgress();
 
-        if (!needsFiringPosition && pathfinder.HasDirectWalkableSegment(currentPosition, targetPosition, GetNavigationFootprint()))
+        if (!chaseStalled && !needsFiringPosition && pathfinder.HasDirectWalkableSegment(currentPosition, targetPosition, GetNavigationFootprint()))
         {
             TraceIntentReason("direct-clear");
             ClearChasePath();
@@ -501,13 +508,29 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         return true;
     }
 
+    private void ObserveChaseProgress()
+    {
+        float now = Time.time;
+        Vector2 position = transform.position;
+        // A gap means movement was paused/stopped; don't count that time as a wall stall.
+        if (now - lastProgressSampleTime > Mathf.Max(0.25f, Time.fixedDeltaTime * 3f) ||
+            (position - progressPosition).sqrMagnitude >= 0.05f * 0.05f)
+        {
+            progressPosition = position;
+            progressTime = now;
+            chaseStalled = false;
+        }
+        else if (now - progressTime >= 1f) chaseStalled = true;
+        lastProgressSampleTime = now;
+    }
+
     /// <summary>경로 재계산이 필요한지 시간/타겟 이동량/캐시 유무 기준으로 판단합니다.</summary>
     private bool ShouldRebuildChasePath(Vector2 targetPosition)
     {
         if (Time.time < nextPathRebuildTime)
             return false;
 
-        if (chasePathIndex >= chasePath.Count)
+        if (chaseStalled || chasePathIndex >= chasePath.Count)
             return true;
 
         float targetMoveThreshold = Mathf.Max(0.01f, pathTargetMoveThreshold);

@@ -120,6 +120,11 @@ public sealed class GamePlayDataManager : MonoBehaviour, IRunSessionStoreBackend
         RunSessionStateService.AddPendingAffectionDelta(Data, npcId, delta);
     }
 
+    public bool TryConsumeAffectionGain(int npcId)
+    {
+        return RunSessionStateService.TryConsumeAffectionGain(Data, npcId);
+    }
+
     public void AddPendingShortcutUnlock(string mapID, string doorID)
     {
         RunSessionStateService.AddPendingShortcutUnlock(Data, mapID, doorID);

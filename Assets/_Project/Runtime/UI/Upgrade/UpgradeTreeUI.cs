@@ -65,7 +65,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     [SerializeField] private UpgradeLakePresentation lakePresentation;
 
     private readonly List<UpgradeSlotUI> allSlots = new List<UpgradeSlotUI>();
-    private readonly List<GameObject> allLines = new List<GameObject>();
+    private readonly Dictionary<UnityEngine.UI.Graphic, int> allLines = new Dictionary<UnityEngine.UI.Graphic, int>();
     private bool hasBuilt;
     private bool isRightMousePanning;
     private Vector2 lastPointerLocalPosition;
@@ -79,6 +79,8 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     private bool hasDownOverflowArrowBasePosition;
     private bool isExplicitOpenActivation;
     private UpgradeUiOpenFlow openFlow;
+    private const float MaximumZoom = 2f;
+    private const float ZoomPerWheelStep = 1.15f;
 
     public Component BackendComponent => this;
     public bool IsActive => gameObject.activeSelf;
@@ -164,6 +166,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     private void Update()
     {
+        HandleMouseWheelZoom();
         HandleRightMousePan();
         HandleOverflowArrowKeyboardInput();
         AnimateOverflowArrows();
@@ -172,6 +175,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     private void LateUpdate()
     {
+        ClampZoom();
         ClampContentPosition();
         RefreshOverflowArrows();
     }
@@ -306,7 +310,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
                 DrawLine(
                     slotDict[node.nodeID].GetComponent<RectTransform>(),
-                    targetSlot.GetComponent<RectTransform>());
+                    targetSlot.GetComponent<RectTransform>(), nextId);
             }
         }
 
@@ -314,7 +318,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         RefreshOverflowArrows();
     }
 
-    private void DrawLine(RectTransform start, RectTransform end)
+    private void DrawLine(RectTransform start, RectTransform end, int targetNodeId)
     {
         Vector2 s = start.anchoredPosition;
         Vector2 e = end.anchoredPosition;
@@ -322,10 +326,10 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         if (Vector2.Distance(s, e) < 1f)
             return;
 
-        CreateLineSegment(s, e);
+        CreateLineSegment(s, e, targetNodeId);
     }
 
-    private void CreateLineSegment(Vector2 start, Vector2 end)
+    private void CreateLineSegment(Vector2 start, Vector2 end, int targetNodeId)
     {
         if (Vector2.Distance(start, end) < 0.1f || lineParent == null || linePrefab == null)
             return;
@@ -349,7 +353,12 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         rect.anchoredPosition = start;
         rect.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
 
-        allLines.Add(line);
+        UnityEngine.UI.Graphic graphic = line.GetComponent<UnityEngine.UI.Graphic>();
+        if (graphic != null)
+        {
+            allLines.Add(graphic, targetNodeId);
+            RefreshLineColor(graphic, targetNodeId);
+        }
     }
 
     private void PrepareLayout()
@@ -450,6 +459,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         scrollRect.vertical = true;
         scrollRect.movementType = ScrollRect.MovementType.Clamped;
         scrollRect.inertia = false;
+        scrollRect.scrollSensitivity = 0f;
         DisableLegacyHorizontalScrollbar(scrollRect.horizontalScrollbar);
         scrollRect.horizontalScrollbar = null;
         scrollRect.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
@@ -585,6 +595,8 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         if (contentRect == null)
             return;
 
+        contentRect.localScale = Vector3.one;
+        ClampZoom();
         contentRect.anchoredPosition = Vector2.zero;
         if (scrollRect != null)
             scrollRect.StopMovement();
@@ -745,7 +757,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         if (contentRect == null || viewportRect == null)
             return Vector2.zero;
 
-        Vector2 contentSize = contentRect.rect.size;
+        Vector2 contentSize = Vector2.Scale(contentRect.rect.size, contentRect.localScale);
         Vector2 viewportSize = viewportRect.rect.size;
         return new Vector2(
             Mathf.Max(0f, (contentSize.x - viewportSize.x) * 0.5f),
@@ -780,6 +792,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         Vector2 step = new Vector2(
             Mathf.Max(1f, gridCellSize.x) * overflowArrowBlockCells,
             Mathf.Max(1f, gridCellSize.y) * overflowArrowBlockCells);
+        step *= contentRect.localScale.x;
         contentRect.anchoredPosition += new Vector2(direction.x * step.x, direction.y * step.y);
 
         if (scrollRect != null)
@@ -787,6 +800,47 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
         ClampContentPosition();
         RefreshOverflowArrows();
+    }
+
+    private float GetMinimumZoom()
+    {
+        Vector2 size = contentRect.rect.size;
+        Vector2 viewportSize = viewportRect.rect.size;
+        if (size.x <= 0f || size.y <= 0f || viewportSize.x <= 0f || viewportSize.y <= 0f)
+            return 1f;
+
+        return Mathf.Min(1f, viewportSize.x / size.x, viewportSize.y / size.y);
+    }
+
+    private void ClampZoom()
+    {
+        if (contentRect == null || viewportRect == null)
+            return;
+
+        float zoom = Mathf.Clamp(contentRect.localScale.x, GetMinimumZoom(), MaximumZoom);
+        contentRect.localScale = new Vector3(zoom, zoom, 1f);
+    }
+
+    private void HandleMouseWheelZoom()
+    {
+        if (contentRect == null || viewportRect == null)
+            return;
+
+        float wheel = Input.mouseScrollDelta.y;
+        Camera eventCamera = GetEventCamera();
+        if (Mathf.Approximately(wheel, 0f) ||
+            !RectTransformUtility.RectangleContainsScreenPoint(viewportRect, Input.mousePosition, eventCamera) ||
+            !RectTransformUtility.ScreenPointToLocalPointInRectangle(contentRect, Input.mousePosition, eventCamera, out Vector2 localPoint))
+            return;
+
+        Vector3 worldPoint = contentRect.TransformPoint(localPoint);
+        float zoom = Mathf.Clamp(contentRect.localScale.x * Mathf.Pow(ZoomPerWheelStep, wheel), GetMinimumZoom(), MaximumZoom);
+        contentRect.localScale = new Vector3(zoom, zoom, 1f);
+        // Keep the point under the cursor stationary until the content boundary is reached.
+        contentRect.position += worldPoint - contentRect.TransformPoint(localPoint);
+        if (scrollRect != null)
+            scrollRect.StopMovement();
+        ClampContentPosition();
     }
 
     private void HandleRightMousePan()
@@ -859,7 +913,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         if (contentRect == null || viewportRect == null)
             return;
 
-        Vector2 contentSize = contentRect.rect.size;
+        Vector2 contentSize = Vector2.Scale(contentRect.rect.size, contentRect.localScale);
         Vector2 viewportSize = viewportRect.rect.size;
         Vector2 position = contentRect.anchoredPosition;
 
@@ -897,5 +951,19 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
             if (slot != null)
                 slot.RefreshUI();
         }
+
+        foreach (var line in allLines)
+        {
+            if (line.Key != null)
+                RefreshLineColor(line.Key, line.Value);
+        }
+    }
+
+    private void RefreshLineColor(UnityEngine.UI.Graphic graphic, int targetNodeId)
+    {
+        LockType status = UpgradeManager.Instance != null
+            ? UpgradeManager.Instance.GetNodeStatus(targetNodeId)
+            : LockType.Locked;
+        graphic.color = status == LockType.Locked ? Color.gray : Color.white;
     }
 }

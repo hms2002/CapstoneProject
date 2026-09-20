@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_LightningSpearAttack
   m_EditorClassIdentifier:
+  simpleDescription: "번개 창으로 연속 공격해 [[전기 속성]]을 축적합니다."
   abilityName: 뇌창 연격
   icon: {fileID: -6255143421326930151, guid: e658b351294cef44b8a5c823d1fdcb73, type: 3}
   description: "● 번개 창으로 {val:3연속} 찌르기와 내려찍기\n● 공격마다 [[전기 속성]] 축적을 노림\n● 마지막 타격은 전방을 강하게 압박"

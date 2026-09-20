@@ -96,6 +96,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainingDummy_Right (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 2612323558732698419, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 3890557363222966203, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_Size.x
       value: 0.6938282
@@ -111,6 +115,22 @@ PrefabInstance:
     - target: {fileID: 3890557363222966203, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_Offset.y
       value: -0.020128965
+      objectReference: {fileID: 0}
+    - target: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278234073
+      objectReference: {fileID: 0}
+    - target: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
+    - target: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278536191
+      objectReference: {fileID: 0}
+    - target: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
       objectReference: {fileID: 0}
     - target: {fileID: 7958329241213569362, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_LocalScale.x
@@ -230,6 +250,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainingDummy_Right (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 2612323558732698419, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 3890557363222966203, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_Size.x
       value: 0.6938282
@@ -245,6 +269,22 @@ PrefabInstance:
     - target: {fileID: 3890557363222966203, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_Offset.y
       value: -0.020128965
+      objectReference: {fileID: 0}
+    - target: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278234073
+      objectReference: {fileID: 0}
+    - target: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
+    - target: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278536191
+      objectReference: {fileID: 0}
+    - target: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
       objectReference: {fileID: 0}
     - target: {fileID: 7958329241213569362, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_LocalScale.x
@@ -364,6 +404,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainingDummy_Right (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 2612323558732698419, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 3890557363222966203, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_Size.x
       value: 0.6938282
@@ -379,6 +423,22 @@ PrefabInstance:
     - target: {fileID: 3890557363222966203, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_Offset.y
       value: -0.020128965
+      objectReference: {fileID: 0}
+    - target: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278234073
+      objectReference: {fileID: 0}
+    - target: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
+    - target: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278536191
+      objectReference: {fileID: 0}
+    - target: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
       objectReference: {fileID: 0}
     - target: {fileID: 7958329241213569362, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_LocalScale.x
@@ -498,6 +558,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainingDummy_Right (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2612323558732698419, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 3890557363222966203, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_Size.x
       value: 0.6938282
@@ -513,6 +577,22 @@ PrefabInstance:
     - target: {fileID: 3890557363222966203, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_Offset.y
       value: -0.020128965
+      objectReference: {fileID: 0}
+    - target: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278234073
+      objectReference: {fileID: 0}
+    - target: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
+    - target: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278536191
+      objectReference: {fileID: 0}
+    - target: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
       objectReference: {fileID: 0}
     - target: {fileID: 7958329241213569362, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_LocalScale.x
@@ -632,6 +712,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainingDummy_Right
       objectReference: {fileID: 0}
+    - target: {fileID: 2612323558732698419, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 3890557363222966203, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_Size.x
       value: 0.6938282
@@ -647,6 +731,22 @@ PrefabInstance:
     - target: {fileID: 3890557363222966203, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_Offset.y
       value: -0.020128965
+      objectReference: {fileID: 0}
+    - target: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278234073
+      objectReference: {fileID: 0}
+    - target: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
+    - target: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278536191
+      objectReference: {fileID: 0}
+    - target: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
       objectReference: {fileID: 0}
     - target: {fileID: 7958329241213569362, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_LocalScale.x

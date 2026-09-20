@@ -17,6 +17,13 @@ public sealed class ParcelPickupInteractable : InteractableBase
     [SerializeField] private Transform promptAnchor;
     [SerializeField] private string interactPromptText = "소포 가져가기";
     [SerializeField] private SpriteRenderer[] highlightedRenderers;
+    [SerializeField] private SpriteRenderer guidanceArrow;
+    [SerializeField] private DialogueTrigger introductionSource;
+
+    private bool interactionHighlighted;
+    private bool guidanceHighlighted;
+    private PlayerInteractor2D guidancePlayer;
+    private RelicInventory guidanceInventory;
 
     [SerializeField] private MonoBehaviour npcSpeechBubble;
     private ISpeechBubblePlayback speech;
@@ -34,12 +41,13 @@ public sealed class ParcelPickupInteractable : InteractableBase
 
         outlinePropertyBlock = new MaterialPropertyBlock();
         OnUnHighlight();
+        if (guidanceArrow != null) guidanceArrow.enabled = false;
     }
 
     private void OnDisable()
     {
         speech?.HideActive();
-        OnUnHighlight();
+        ClearGuidance();
     }
 
     public override bool CanInteract(IPlayerInteractor player)
@@ -107,15 +115,63 @@ public sealed class ParcelPickupInteractable : InteractableBase
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
-    public override void OnHighlight() => SetOutline(true);
+    public override void OnHighlight()
+    {
+        interactionHighlighted = true;
+        SetOutline(true);
+    }
 
-    public override void OnUnHighlight() => SetOutline(false);
+    public override void OnUnHighlight()
+    {
+        interactionHighlighted = false;
+        SetOutline(guidanceHighlighted);
+    }
 
     public override void OnPlayerLeave() => OnUnHighlight();
 
     private void ShowSpeech(string message)
     {
         speech?.Speak(message, 4f);
+    }
+
+    private void LateUpdate()
+    {
+        PlayerInteractor2D current = PlayerRuntimeRegistry.CurrentPlayer;
+        if (guidancePlayer != current)
+        {
+            guidancePlayer = current;
+            guidanceInventory = current != null ? current.GetComponent<RelicInventory>() : null;
+        }
+
+        bool visible = parcelDefinition != null && guidanceArrow != null &&
+            guidancePlayer != null && guidancePlayer.isActiveAndEnabled &&
+            guidancePlayer.gameObject.scene == gameObject.scene &&
+            guidancePlayer.CurrentState == InteractState.Idle && guidanceInventory != null &&
+            !DialoguePlayback.IsPlaying && !SceneTransitionPlayback.IsTransitionActive &&
+            introductionSource != null &&
+            GameDataStore.Data?.completedNpcRoomIntroductions?.Contains(introductionSource.IntroductionKey) == true &&
+            guidanceInventory.PreviewAcquireParcel() == RelicInventory.AcquireResult.Success;
+        if (guidanceHighlighted != visible)
+        {
+            guidanceHighlighted = visible;
+            SetOutline(interactionHighlighted || guidanceHighlighted);
+        }
+        if (guidanceArrow == null) return;
+        guidanceArrow.enabled = visible;
+        if (!visible) return;
+
+        float bounce = Mathf.Abs(Mathf.Sin(Time.unscaledTime / 0.6f * Mathf.PI)) * 0.2f;
+        guidanceArrow.transform.position = GetPromptAnchor().position + Vector3.up * (1.2f + bounce);
+        guidanceArrow.transform.rotation = Quaternion.identity;
+    }
+
+    private void ClearGuidance()
+    {
+        guidanceHighlighted = false;
+        guidancePlayer = null;
+        guidanceInventory = null;
+        OnUnHighlight();
+        if (guidanceArrow != null) guidanceArrow.enabled = false;
     }
 
     private void SetOutline(bool enabled)
@@ -126,7 +182,7 @@ public sealed class ParcelPickupInteractable : InteractableBase
         for (int i = 0; i < highlightedRenderers.Length; i++)
         {
             SpriteRenderer renderer = highlightedRenderers[i];
-            if (renderer == null)
+            if (renderer == null || renderer == guidanceArrow)
                 continue;
 
             renderer.GetPropertyBlock(outlinePropertyBlock);

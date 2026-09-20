@@ -58,19 +58,12 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
     private readonly List<LightningSpearRecoverShotTrailEffect> recoveredShotTrails = new List<LightningSpearRecoverShotTrailEffect>();
     private readonly List<GameObject> recoveredShotSpawnEffects = new List<GameObject>();
     private readonly List<Coroutine> recoveredSpearFireRoutines = new List<Coroutine>();
-    private readonly Dictionary<LightningSpearMarkActor, GameObject> markHoverRangeIndicators =
-        new Dictionary<LightningSpearMarkActor, GameObject>();
-    private readonly List<LightningSpearMarkActor> visibleMarkHoverRangeMarks =
-        new List<LightningSpearMarkActor>();
-    private readonly List<LightningSpearMarkActor> staleMarkHoverRangeMarks =
-        new List<LightningSpearMarkActor>();
 
     private AbilitySystem ownerSystem;
     private WeaponInventory2D weaponInventory;
     private PlayerAim2D aimSource;
     private MovementMotor2D movementMotor;
     private WeaponPresentationRig2D presentationRig;
-    private GameObject selectedMarkIndicatorInstance;
     private bool cursorInteractableSet;
     private bool skill1MarkRushHudOverrideActive;
     private bool hasBufferedMarkRushInput;
@@ -122,7 +115,6 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         ClearAllMarks();
         ClearRecoveredSpearState();
         ClearFeedback();
-        DestroyFeedbackObjects();
     }
 
     private void OnDestroy()
@@ -135,7 +127,6 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         ClearAllMarks();
         ClearRecoveredSpearState();
         ClearFeedback();
-        DestroyFeedbackObjects();
     }
 
     public override void HandleEquippedWeaponChanged(WeaponDefinition previousWeapon, WeaponDefinition newWeapon)
@@ -413,7 +404,6 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             return;
 
         activeMarks.Remove(mark);
-        DestroyMarkHoverRangeIndicator(mark);
     }
 
     private void TryConsumeBufferedMarkRush(LightningSpearLoadout loadout, LightningSpearSkill1Data data)
@@ -1399,7 +1389,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
     private static float GetCursorSelectRadius(LightningSpearLoadout loadout, LightningSpearSkill1Data data)
     {
-        return data != null ? data.CursorSelectRadius : loadout.CursorSelectRadius;
+        return (data != null ? data.CursorSelectRadius : loadout.CursorSelectRadius) * 1.15f;
     }
 
     private static float GetMarkRushBodyRadius(LightningSpearLoadout loadout, LightningSpearSkill1Data data)
@@ -1641,7 +1631,6 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         LightningSpearMarkActor selected = skillReady
             ? FindSelectableMark(loadout, data, ownerPosition, cursorWorld)
             : null;
-        visibleMarkHoverRangeMarks.Clear();
 
         for (int i = activeMarks.Count - 1; i >= 0; i--)
         {
@@ -1657,17 +1646,11 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
                 mark.SetFeedback(false, false);
                 continue;
             }
-
-            visibleMarkHoverRangeMarks.Add(mark);
-            UpdateMarkHoverRangeIndicator(loadout, data, mark, true);
             bool canRushToMark =
                 (skillReady || keepRushFeedback) &&
                 CanRushToMark(loadout, data, mark, rushOrigin);
             mark.SetFeedback(canExecuteRush && canRushToMark, mark == selected);
         }
-
-        PruneMarkHoverRangeIndicators();
-        UpdateSelectedMarkIndicator(loadout, selected);
         UpdateCursorFeedback(selected != null);
         skill1MarkRushHudOverrideActive = selected != null;
     }
@@ -1687,110 +1670,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
             mark.SetFeedback(false, false);
         }
-
-        if (selectedMarkIndicatorInstance != null)
-            selectedMarkIndicatorInstance.SetActive(false);
-
-        SetAllMarkHoverRangeIndicatorsActive(false);
         UpdateCursorFeedback(false);
-    }
-
-    private void UpdateMarkHoverRangeIndicator(
-        LightningSpearLoadout loadout,
-        LightningSpearSkill1Data data,
-        LightningSpearMarkActor mark,
-        bool active)
-    {
-        if (!active || loadout == null || mark == null || loadout.MarkHoverRangeIndicatorPrefab == null)
-        {
-            DestroyMarkHoverRangeIndicator(mark);
-            return;
-        }
-
-        if (!markHoverRangeIndicators.TryGetValue(mark, out GameObject indicator) || indicator == null)
-        {
-            indicator = Instantiate(loadout.MarkHoverRangeIndicatorPrefab);
-            markHoverRangeIndicators[mark] = indicator;
-        }
-
-        indicator.transform.SetParent(null, true);
-        indicator.transform.position = mark.transform.position;
-        indicator.transform.rotation = Quaternion.identity;
-        indicator.transform.localScale = Vector3.one;
-
-        float radius = GetCursorSelectRadius(loadout, data);
-        if (indicator.TryGetComponent(out LightningSpearRushRangeIndicator rangeIndicator))
-            rangeIndicator.SetRadius(radius);
-        else
-            indicator.transform.localScale = Vector3.one * (radius * 2f);
-
-        indicator.SetActive(true);
-    }
-
-    private void PruneMarkHoverRangeIndicators()
-    {
-        staleMarkHoverRangeMarks.Clear();
-
-        foreach (KeyValuePair<LightningSpearMarkActor, GameObject> entry in markHoverRangeIndicators)
-        {
-            LightningSpearMarkActor mark = entry.Key;
-            if (mark == null || !mark.IsActive || !visibleMarkHoverRangeMarks.Contains(mark))
-                staleMarkHoverRangeMarks.Add(mark);
-        }
-
-        for (int i = 0; i < staleMarkHoverRangeMarks.Count; i++)
-            DestroyMarkHoverRangeIndicator(staleMarkHoverRangeMarks[i]);
-
-        staleMarkHoverRangeMarks.Clear();
-        visibleMarkHoverRangeMarks.Clear();
-    }
-
-    private void SetAllMarkHoverRangeIndicatorsActive(bool active)
-    {
-        foreach (KeyValuePair<LightningSpearMarkActor, GameObject> entry in markHoverRangeIndicators)
-        {
-            if (entry.Value != null)
-                entry.Value.SetActive(active);
-        }
-    }
-
-    private void DestroyMarkHoverRangeIndicator(LightningSpearMarkActor mark)
-    {
-        if (ReferenceEquals(mark, null) || !markHoverRangeIndicators.TryGetValue(mark, out GameObject indicator))
-            return;
-
-        markHoverRangeIndicators.Remove(mark);
-        if (indicator != null)
-            Destroy(indicator);
-    }
-
-    private void DestroyAllMarkHoverRangeIndicators()
-    {
-        foreach (KeyValuePair<LightningSpearMarkActor, GameObject> entry in markHoverRangeIndicators)
-        {
-            if (entry.Value != null)
-                Destroy(entry.Value);
-        }
-
-        markHoverRangeIndicators.Clear();
-        visibleMarkHoverRangeMarks.Clear();
-        staleMarkHoverRangeMarks.Clear();
-    }
-
-    private void UpdateSelectedMarkIndicator(LightningSpearLoadout loadout, LightningSpearMarkActor selected)
-    {
-        if (selected == null || loadout == null || loadout.SelectedMarkIndicatorPrefab == null)
-        {
-            if (selectedMarkIndicatorInstance != null)
-                selectedMarkIndicatorInstance.SetActive(false);
-            return;
-        }
-
-        if (selectedMarkIndicatorInstance == null)
-            selectedMarkIndicatorInstance = Instantiate(loadout.SelectedMarkIndicatorPrefab);
-
-        selectedMarkIndicatorInstance.transform.position = selected.transform.position;
-        selectedMarkIndicatorInstance.SetActive(true);
     }
 
     private void UpdateCursorFeedback(bool active)
@@ -1800,17 +1680,6 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
         cursorInteractableSet = active;
         MouseCursorPlayback.SetInteractable(this, active);
-    }
-
-    private void DestroyFeedbackObjects()
-    {
-        if (selectedMarkIndicatorInstance != null)
-        {
-            Destroy(selectedMarkIndicatorInstance);
-            selectedMarkIndicatorInstance = null;
-        }
-
-        DestroyAllMarkHoverRangeIndicators();
     }
 
     private LightningSpearMarkActor FindSelectableMark(
@@ -2232,7 +2101,6 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
     private void ClearAllMarks()
     {
-        DestroyAllMarkHoverRangeIndicators();
 
         for (int i = activeMarks.Count - 1; i >= 0; i--)
         {

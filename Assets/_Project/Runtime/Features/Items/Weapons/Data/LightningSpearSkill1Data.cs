@@ -157,7 +157,8 @@ public sealed class LightningSpearSkill1Data : ScriptableObject, IAbilityTooltip
             "뇌창 휩쓸기",
             ability != null ? ability.icon : null,
             "● {em:낙뢰 표식이 없을 때} 제자리에서 전방을 휩쓸기\n● 보유한 {em:회수 창}을 조준 방향 앞쪽에서 부채꼴로 순차 발사",
-            ability != null ? (float?)ability.cooldown : null);
+            ability != null ? (float?)ability.cooldown : null,
+            simpleBody: "낙뢰 표식이 없으면 전방을 휩쓸고, 모아 둔 {em:회수 창}을 발사합니다.");
     }
 
     private AbilityTooltipVariant BuildMarkRushTooltipVariant(AbilityDefinition ability)
@@ -168,6 +169,7 @@ public sealed class LightningSpearSkill1Data : ScriptableObject, IAbilityTooltip
             "뇌창 돌격",
             icon,
             "● 커서 주변의 [[낙뢰 표식]]으로 즉시 돌진\n● 이동 경로와 도착 지점을 공격\n● 표식 소모 시 {pos:뇌창 돌격 재사용 대기시간 초기화}\n● {em:회수 창} {val:1개} 획득",
-            ability != null ? (float?)ability.cooldown : null);
+            ability != null ? (float?)ability.cooldown : null,
+            simpleBody: "커서 주변의 [[낙뢰 표식]]으로 돌진해 경로의 적을 공격합니다. 표식을 소모하면 다시 사용할 수 있고 {em:회수 창}을 얻습니다.");
     }
 }

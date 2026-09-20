@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_FloweringBloom
   m_EditorClassIdentifier: 
+  simpleDescription: "잠시 [[개화]]하여 공격력과 공격·이동 속도가 증가합니다. 기본 공격이 넓은 참격으로 바뀌고, 대시 경로에도 참격을 남깁니다."
   abilityName: "\uAC1C\uD654"
   icon: {fileID: 21300000, guid: a99578084c43ee442bdee25e29041870, type: 3}
   description: "\u25CF {em:\uAC1C\uD654 \uC0C1\uD0DC} \uC9C4\uC785\n\u25CF {val:3\uCD08}

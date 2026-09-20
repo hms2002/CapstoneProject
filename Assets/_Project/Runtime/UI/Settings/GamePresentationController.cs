@@ -7,19 +7,6 @@ public sealed class GamePresentationController : MonoBehaviour
 {
     private const int LetterboxSortingOrder = 32767;
 
-    private static readonly GlobalCanvasLayer[] UiPresentationLayers =
-    {
-        GlobalCanvasLayer.GameplayHUD,
-        GlobalCanvasLayer.Dialogue,
-        GlobalCanvasLayer.Popup,
-        GlobalCanvasLayer.Hover,
-        GlobalCanvasLayer.Prompt,
-        GlobalCanvasLayer.Reward,
-        GlobalCanvasLayer.DamagePopup,
-        GlobalCanvasLayer.BossHUD,
-        GlobalCanvasLayer.GameOver,
-    };
-
     private readonly Dictionary<Canvas, RenderMode> baseCanvasRenderModes = new();
     private readonly Dictionary<Canvas, Camera> baseCanvasWorldCameras = new();
     private readonly Dictionary<Canvas, float> baseCanvasPlaneDistances = new();
@@ -36,11 +23,13 @@ public sealed class GamePresentationController : MonoBehaviour
     private int lastResolutionWidth = -1;
     private int lastResolutionHeight = -1;
     private int lastPresentationCameraInstanceId = -1;
+    private int lastGlobalUiRootInstanceId = -1;
 
     public void RefreshIfNeeded(GameWindowMode windowMode, int resolutionWidth, int resolutionHeight)
     {
         Camera presentationCamera = ResolvePresentationCamera();
         int presentationCameraInstanceId = presentationCamera != null ? presentationCamera.GetInstanceID() : 0;
+        int globalUiRootInstanceId = GlobalUIRoot.Instance != null ? GlobalUIRoot.Instance.GetInstanceID() : 0;
         Vector2Int containerSize = PresentationViewportUtility.GetPresentationContainerSize(
             windowMode,
             resolutionWidth,
@@ -50,7 +39,8 @@ public sealed class GamePresentationController : MonoBehaviour
             lastWindowMode == windowMode &&
             lastResolutionWidth == resolutionWidth &&
             lastResolutionHeight == resolutionHeight &&
-            lastPresentationCameraInstanceId == presentationCameraInstanceId)
+            lastPresentationCameraInstanceId == presentationCameraInstanceId &&
+            lastGlobalUiRootInstanceId == globalUiRootInstanceId)
             return;
 
         ApplyPresentation(windowMode, resolutionWidth, resolutionHeight);
@@ -76,6 +66,7 @@ public sealed class GamePresentationController : MonoBehaviour
         lastResolutionWidth = resolutionWidth;
         lastResolutionHeight = resolutionHeight;
         lastPresentationCameraInstanceId = presentationCamera != null ? presentationCamera.GetInstanceID() : 0;
+        lastGlobalUiRootInstanceId = GlobalUIRoot.Instance != null ? GlobalUIRoot.Instance.GetInstanceID() : 0;
     }
 
     private static Camera ResolvePresentationCamera()
@@ -112,11 +103,17 @@ public sealed class GamePresentationController : MonoBehaviour
 
     private void ApplyUiCanvasPresentation(Rect viewportRect, Camera presentationCamera)
     {
+        GlobalUIRoot root = GlobalUIRoot.Instance;
+        if (root == null)
+            return;
+
         bool useFullScreen = PresentationViewportUtility.IsFullViewport(viewportRect);
 
-        for (int i = 0; i < UiPresentationLayers.Length; i++)
+        // Include authored ending/loading canvases even when they have no gameplay layer slot.
+        // Nested canvases inherit their parent; service-owned fullscreen overlays stay separate.
+        for (int i = 0; i < root.transform.childCount; i++)
         {
-            Canvas canvas = GlobalUIRoot.GetCanvas(UiPresentationLayers[i]);
+            Canvas canvas = root.transform.GetChild(i).GetComponent<Canvas>();
             if (canvas == null)
                 continue;
 

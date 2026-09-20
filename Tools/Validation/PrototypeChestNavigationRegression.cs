@@ -49,7 +49,7 @@ public static class PrototypeChestNavigationRegression
         }
         var item = ScriptableObject.CreateInstance<ConsumableDefinition>();
         var inventory = new ChestInventory(2);
-        inventory.Set(0, item);
+        inventory.Set(0, ScriptableObject.CreateInstance<ConsumableDefinition>());
         inventory.Set(1, item);
         using var adapter = new ChestContainerAdapter(inventory);
         Set(screen, "chestInventory", inventory);
@@ -93,6 +93,7 @@ public static class PrototypeChestNavigationRegression
         var label = Host("Instruction");
         label.AddComponent<Image>();
         Set(guide, "targetChest", chest);
+        Set(guide, "tutorialPotion", item);
         Set(guide, "tutorial", tutorial);
         Set(guide, "inputShield", (RectTransform)shield.transform);
         Set(guide, "shadePanels", panels);
@@ -121,7 +122,8 @@ public static class PrototypeChestNavigationRegression
         Call(guide, "OnChestOpened", chest);
         Check(backend.Blocked && !events.sendNavigationEvents && shield.activeSelf, "Guidance did not acquire all input restrictions");
         // Exercise unscaled presentation independently of the inactive screen fixture's LateUpdate.
-        Call(guide, "LayoutSpotlight", slots[0].SlotRect, false);
+        Check(screen.FindVisibleSlot(item) == slots[1], "Potion lookup depended on first-slot order");
+        Call(guide, "LayoutSpotlight", slots[1].SlotRect, false);
         Set(guide, "showing", true);
         Call(guide, "TickPresentation", .06f);
         float openingAlpha = icon.canvasRenderer.GetAlpha();
@@ -141,14 +143,15 @@ public static class PrototypeChestNavigationRegression
 
         var click = new PointerEventData(events) { position = new Vector2(200, 200), button = PointerEventData.InputButton.Left };
         guide.OnPointerClick(click);
-        Check(chosen.Count == 0 && backend.Blocked, "Left click advanced the tutorial");
+        Check(chosen.Count == 0 && backend.Blocked, "Wrong-slot left click advanced the tutorial");
         click.button = PointerEventData.InputButton.Right;
-        click.position = new Vector2(400, 200);
-        guide.OnPointerClick(click);
-        Check(chosen.Count == 0 && backend.Blocked, "Another slot advanced the tutorial");
         click.position = new Vector2(200, 200);
         guide.OnPointerClick(click);
-        Check(chosen.Count == 1 && chosen[0] == slots[0], "First-slot right click failed");
+        Check(chosen.Count == 0 && backend.Blocked, "Another slot advanced the tutorial");
+        click.position = new Vector2(400, 200);
+        click.button = PointerEventData.InputButton.Left;
+        guide.OnPointerClick(click);
+        Check(chosen.Count == 1 && chosen[0] == slots[1], "Potion-slot left click failed");
         Check(!backend.Blocked && events.sendNavigationEvents && !shieldImage.raycastTarget && shield.activeSelf,
             "Selection must immediately restore input while the exit remains visible");
         Call(guide, "TickPresentation", .05f);
@@ -159,11 +162,16 @@ public static class PrototypeChestNavigationRegression
         Check(tutorial.Stage == 4, "Selection prematurely completed the chest quest");
         Call(screen, "StopSelectionMotion");
         Call(screen, "ToggleSelection", slots[1]);
-        Check(chosen.Count == 2, "Normal selection did not resume after guidance");
+        Call(screen, "StopSelectionMotion");
+        Call(screen, "ToggleSelection", slots[0]);
+        Call(screen, "StopSelectionMotion");
+        Call(screen, "ConfirmSelection");
+        Check(inventory.Count == 2 && chosen.Count == 1, "Confirmation without the potion must be rejected");
+        Call(screen, "ToggleSelection", slots[1]);
+        Check(chosen.Count == 2, "Selecting the potion again must preserve normal optional selection");
         Call(screen, "StopSelectionMotion");
         Call(guide, "Cleanup");
 
-        Set(guide, "learnedSelection", false);
         Call(guide, "OnChestOpened", chest);
         Call(guide, "OnDisable");
         Check(!backend.Blocked && events.sendNavigationEvents && !shield.activeSelf, "Cancellation leaked input restrictions");

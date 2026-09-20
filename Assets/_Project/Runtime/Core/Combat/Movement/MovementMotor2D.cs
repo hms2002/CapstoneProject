@@ -396,17 +396,16 @@ namespace UnityGAS
             if (!preventWallTunneling || body == null || wallCollisionLayers.value == 0)
                 return velocity;
 
-            float speed = velocity.magnitude;
-            if (speed <= 0.0001f)
+            if (!body.simulated || CombatHitPause2D.IsPausedOn(gameObject) || IsHardStopped())
                 return velocity;
-
-            if (!slideCurrentMovement && speed < wallSafetyMinSpeed)
-                return velocity;
-
             if (bodyColliders == null || bodyColliders.Length == 0)
                 CacheBodyColliders();
 
+            // Recovery must still run when navigation has stopped because of an overlap.
             ResolveWallPenetration();
+            float speed = velocity.magnitude;
+            if (speed <= 0.0001f || (!slideCurrentMovement && speed < wallSafetyMinSpeed))
+                return velocity;
 
             if (slideCurrentMovement)
                 return ResolveSlidingVelocity(velocity);

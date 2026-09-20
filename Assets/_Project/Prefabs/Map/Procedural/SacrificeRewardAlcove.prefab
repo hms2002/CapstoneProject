@@ -218,6 +218,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 4494946227313418171}
     m_Modifications:
     - target: {fileID: 351202635860622217, guid: 225d580cb9ca3624c9d81e307cbfce64, type: 3}
+      propertyPath: costType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 351202635860622217, guid: 225d580cb9ca3624c9d81e307cbfce64, type: 3}
+      propertyPath: costAmount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 351202635860622217, guid: 225d580cb9ca3624c9d81e307cbfce64, type: 3}
       propertyPath: targetDoor
       value: 
       objectReference: {fileID: 8143557619880870442}

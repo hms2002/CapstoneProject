@@ -108,6 +108,7 @@ public class DragIcon : MonoBehaviour
     [SerializeField] private RectTransform rectTransform;
     private ItemDisplayIconDefaultState iconDefaultState;
     private RectTransformDefaultState rootDefaultState;
+    private Canvas owningCanvas;
 
     private void Awake()
     {
@@ -119,6 +120,7 @@ public class DragIcon : MonoBehaviour
 
         Instance = this;
         if (rectTransform == null) rectTransform = transform as RectTransform;
+        owningCanvas = GetComponentInParent<Canvas>();
         iconDefaultState = CanApplyIconTransform()
             ? ItemDisplayIconDefaultState.Stretch(image)
             : new ItemDisplayIconDefaultState(image);
@@ -154,8 +156,15 @@ public class DragIcon : MonoBehaviour
 
     public void Follow(Vector2 screenPos)
     {
-        if (rectTransform != null)
-            rectTransform.position = screenPos;
+        if (rectTransform == null || rectTransform.parent is not RectTransform parentRect)
+            return;
+
+        // Render mode/camera can change at runtime when the presentation viewport changes.
+        Canvas rootCanvas = owningCanvas != null ? owningCanvas.rootCanvas : null;
+        Camera eventCamera = rootCanvas != null && rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay
+            ? rootCanvas.worldCamera : null;
+        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(parentRect, screenPos, eventCamera, out Vector3 position))
+            rectTransform.position = position;
     }
 
     public void Hide()

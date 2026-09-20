@@ -40,6 +40,7 @@ public class ItemSlotUI : MonoBehaviour,
     private int index;
     private System.Action<ItemSlotUI> selectionClicked;
     public int BoundIndex => index;
+    public IItemContainer BoundContainer => container;
 
     public void SetSelectionClickHandler(System.Action<ItemSlotUI> handler) => selectionClicked = handler;
     [SerializeField] private RectTransform slotRect;

@@ -3318,3 +3318,40 @@ User follow-up requires selected items to count toward their own LootTable type 
 ## 2026-09-20 — Player overhead guidance priority
 
 User-approved rule: visible guidance stacks bottom-to-top as tutorial, Tab weapon swap, then level-up, without reserved gaps for hidden entries. Tutorial overhead text includes only the initial starting-room movement lesson (stage 0), basic attack, skills and chest; later forward/portal movement guidance is hidden. The camera-sequence-owned dash cue remains visible during ZoomIn/Waiting, as clarified by the user; inventory continues without overhead text. The user clarified that basic attack guidance remains visible and specified hold-to-attack, hold/release charged skill, and press-Q skill captions with progress counts. Existing Tab unlock/completion and level reward availability rules are preserved. See StructureMemory/ScriptSystems/TutorialSupportStructure.md for presentation ownership and cleanup.
+
+## 2026-09-20 - Tutorial Portal Unlock Follows Inventory Inspection And Return
+
+The user replaces the chest-based portal-door condition: after chest confirmation/close, pause the world and move the gameplay inventory HUD button up/right by roughly one third of the screen while scaling to 2.5x over 0.8 seconds. The authored spotlight follows its current bounds; show a single-line mapped-key glyph instruction only after the motion. Keep stage 5 through inventory opening, inspection, closing and the 0.8-second HUD return/fade. Only the completed return advances to stage 6 and opens the portal door. Cancellation restores the HUD and releases only the lesson's own locks without unlocking the door. This supersedes the earlier chest-open/confirmation unlock described in the 2026-09-18 tutorial route decision. See `StructureMemory/ScriptSystems/TutorialSupportStructure.md` for ownership and validation entry points.
+
+
+## 2026-09-20 - Potion use is the final tutorial portal condition
+
+The user's follow-up supersedes the inventory-return unlock above. Chest guidance selects the actual healing potion and confirmation requires it. Inventory return advances to a paused four-slot potion lesson; the potion is moved to slot 1, and successful use restores control and opens the door. Opening cinematic impact removes exactly one HP once; tutorial recovery retains that deficit until the potion stage. The UI uses authored scene objects, and all temporary HUD transforms/input/pause ownership are restored on completion or cancellation.
+
+## 2026-09-21 - Buffy workout completion preserves the selected equipment
+
+A successful Buffy workout retains only the selected equipment at 70% original RGB, clears objective guidance, and hides the other equipment with authored dust. Successful reward feedback uses the existing damage-text path instead of player speech. The existing run completion-ID list additionally stores `buffy_health_time:<workout numeric value>` to restore the selected appearance across room reconstruction without changing the save schema. Older completed saves without this marker keep all equipment dimmed because the original selection is unknown. First-entry guidance reads the existing profile introduction completion key; it owns no additional introduction state. See `StructureMemory/ProceduralDungeonRoomPipeline.md`.
+
+## 2026-09-21 - NPC Affection Gain Once Per Hub And Run Cycle
+
+Decision:
+Positive dialogue affection gain is allowed once per NPC across hub preparation and the following run. The user explicitly chose to include hub conversations; ending an active run unlocks the next allowance. Failure choices and repeated dialogue remain usable, and a failed choice does not consume the allowance.
+
+Reason:
+Ordinary NPCs can be spoken to repeatedly; repeated success must not farm affection or duplicate level rewards.
+
+Implications:
+- The consumed NPC IDs belong to volatile GamePlayData session state and are mutated through RunSessionStore/GamePlayDataManager/RunSessionStateService. Starting a run preserves hub consumption; ending a run or development reset clears it.
+- Positive AddAffection is gated before presentation, save mutation or rewards. Blocked requests invoke their completion callback. Negative changes do not restore the allowance; SetAffection remains an absolute state-setting API.
+- Sasha level 1 contributes a 20% affection discount through the existing modifier rebuild. Gold shops accept this contribution while continuing to exclude legacy shop upgrade modifiers. Gold prices derive from their original rolled price on every refresh; stock identity and sold state remain intact.
+
+## 2026-09-21 - Context actions participate in key mapping
+
+User requested inventory secondary I, remappable inventory dropping and level-reward opening, and minimap M/N with +/- secondary keys. Defaults are V/I, F, R, M/Equals and N/Minus respectively. DialogueAdvance remains fixed Space with its existing Interact alias; dialogue choice numeric shortcuts remain contextual. Interact and InventoryDrop may share F across their separate contexts, while inventory toggle and reward open participate in normal conflict handling. Preserve existing user overrides during the one-time default upgrade; occupied new default slots stay unassigned rather than stealing custom keys. See Docs/StructureMemory/InputBindings.md.
+
+
+## 2026-09-21 - Weapon descriptions default to concise copy
+
+User selected concise weapon explanations as the default, with BackQuote (`~` key) toggling full descriptions and a small upper-right glyph/caption (`자세히 설명` / `간단히 설명`). Closing/reopening or changing the hovered item resets to concise; an ordinary refresh of the same visible item preserves the chosen mode. Display all skill variants as independent vertical rows; retire the previous LightningSpear stacked-card/mode-preview interaction. Keep essential consumption and weapon-loss conditions in concise copy. Author copy only for the current drop-policy roster: ApprenticeHeroSword, LightningSpear, CrimsonBoundary, Flowering and OddIron. Existing combat data and detailed copy remain unchanged.
+
+2026-09-21 follow-up: the user restricted basic-attack descriptions to CrimsonBoundary only. Other weapons show skills only in both concise and detailed modes, including hiding alternate basic attacks (Flowering Bloom attack and OddIron dry fire).

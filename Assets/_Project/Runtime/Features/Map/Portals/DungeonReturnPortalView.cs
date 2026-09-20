@@ -13,6 +13,8 @@ public sealed class DungeonReturnPortalView : MonoBehaviour
     [SerializeField] private string closeState = "Close";
     [SerializeField, Min(0f)] private float openSeconds = 0.25f;
     [SerializeField, Min(0f)] private float closeSeconds = 0.25f;
+    private static readonly int OutlineEnabledId = Shader.PropertyToID("_OutlineEnabled");
+    private MaterialPropertyBlock outlineProperties;
     private Transform selected;
     private Vector3 fullScale;
     private float progress;
@@ -53,6 +55,7 @@ public sealed class DungeonReturnPortalView : MonoBehaviour
 
     public void Close()
     {
+        SetHighlighted(false);
         if (!visible || selected == null) return;
         shrinking = false;
         closing = true;
@@ -62,6 +65,7 @@ public sealed class DungeonReturnPortalView : MonoBehaviour
 
     public void ShrinkAndHide(float seconds)
     {
+        SetHighlighted(false);
         if (!visible || selected == null || shrinking) return;
         if (seconds <= 0f) { HideImmediate(); return; }
         closing = true;
@@ -83,6 +87,7 @@ public sealed class DungeonReturnPortalView : MonoBehaviour
 
     public void HideImmediate()
     {
+        SetHighlighted(false);
         shrinking = false;
         if (selected != null) selected.localScale = fullScale;
         if (up != null) up.gameObject.SetActive(false);
@@ -90,6 +95,17 @@ public sealed class DungeonReturnPortalView : MonoBehaviour
         if (down != null) down.gameObject.SetActive(false);
         if (left != null) left.gameObject.SetActive(false);
         visible = false;
+    }
+
+    public void SetHighlighted(bool enabled)
+    {
+        SpriteRenderer renderer = selected != null ? selected.GetComponent<SpriteRenderer>() : null;
+        if (renderer == null) return;
+        outlineProperties ??= new MaterialPropertyBlock();
+        renderer.GetPropertyBlock(outlineProperties);
+        outlineProperties.SetFloat(OutlineEnabledId,
+            enabled && isActiveAndEnabled && visible && !closing && !IsOpening ? 1f : 0f);
+        renderer.SetPropertyBlock(outlineProperties);
     }
 
     private void Update()

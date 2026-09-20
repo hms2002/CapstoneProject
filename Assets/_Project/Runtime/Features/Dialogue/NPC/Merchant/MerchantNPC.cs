@@ -190,7 +190,7 @@ public sealed class MerchantNPC : MonoBehaviour
             StockStateId,
             policy.VisibleSlotCount,
             (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries, excludedEntries?.Count ?? 0));
-        ApplyEffectivePrices(runtimeState, policy.EffectivePriceSettings);
+        ApplyEffectivePrices(runtimeState, policy);
 
         BindSlots();
         RefreshAllSlots();
@@ -259,7 +259,7 @@ public sealed class MerchantNPC : MonoBehaviour
             return false;
 
         ApplyShopAvailability(true, policy.VisibleSlotCount);
-        ApplyEffectivePrices(runtimeState, policy.EffectivePriceSettings);
+        ApplyEffectivePrices(runtimeState, policy);
         BindSlots();
         RefreshAllSlots();
         RefreshRefreshInteractables();
@@ -319,9 +319,9 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private void ApplyEffectivePrices(
         MerchantRuntimeState state,
-        MerchantPriceSettings effectivePriceSettings)
+        MerchantShopPolicySnapshot policy)
     {
-        if (UsesRunGold || state?.slots == null)
+        if (state?.slots == null)
             return;
 
         for (int i = 0; i < state.slots.Count; i++)
@@ -331,13 +331,27 @@ public sealed class MerchantNPC : MonoBehaviour
             if (definition == null)
                 continue;
 
-            entry.price = effectivePriceSettings.ResolvePrice(definition);
+            if (UsesRunGold)
+            {
+                // Existing stock predating discounts already contains its original rolled price.
+                if (entry.undiscountedPrice <= 0)
+                    entry.undiscountedPrice = entry.price;
+                entry.price = Mathf.Max(0, Mathf.RoundToInt(entry.undiscountedPrice * (1f - policy.DiscountRate)));
+            }
+            else
+            {
+                entry.price = policy.EffectivePriceSettings.ResolvePrice(definition);
+            }
         }
     }
 
     private ShopRunModifierDelta ResolveShopModifiers()
     {
-        return UsesRunGold ? default : RunModifierService.CurrentRewardSnapshot.ShopModifiers;
+        ShopRunModifierDelta modifiers = RunModifierService.CurrentRewardSnapshot.ShopModifiers;
+        // Gold shops keep their authored slots/availability and exclude legacy shop upgrades.
+        return UsesRunGold
+            ? new ShopRunModifierDelta { affectionDiscountRate = modifiers.affectionDiscountRate }
+            : modifiers;
     }
 
     private MerchantShopPolicySnapshot ResolveShopPolicy()

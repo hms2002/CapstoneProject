@@ -1182,11 +1182,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 80e2cdbbf23063546b08b1f0741c8b17
-    m_Address: Assets/_Project/Art/Sprites/NPCs/NPC1.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8143e435c2ff5f342951e4e9991c11ea
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art
       Top Down - Basic/Tile Palette/TP Grass/TX Tileset Grass 13.asset
@@ -1230,11 +1225,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 851fface87e33534281fcbb17a5fc4ae
     m_Address: Assets/_Project/Art/Sprites/ThirdParty/WeaponAndSandBack/WeaponAnimation/AC_GreenWeapon.controller
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 86ac2dc98d52fc54c830b39098a898e1
-    m_Address: Assets/_Project/Art/Sprites/NPCs/NPC2.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

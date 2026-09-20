@@ -230,3 +230,7 @@ PlayerLevelUpEffect2D.playerRenderer is authored to PF Player/PlayerRender. On a
 ## Current room-clear eligibility
 
 LevelRewardSessionController and InventoryUIManager read MonsterSpawnRoomGroup.IsPlayerInCombat. The room group owns ActiveRoom through encounter entry/exit, disable/enable and subsystem reset. RoomWavesCompleted plus zero RemainingRegisteredOrPendingCount immediately ends combat even if stale enemy recognition remains. Pending waves, spawn reservations and encounter holds remain combat; outside an active room the query uses living enemy recognition. The old damage grace timer and serialized combatGraceSeconds have been removed. Dialogue, blocking UI, pause, scene/loading transitions and non-idle player interaction state also block. LevelHudPresenter reads CanOpenSession for the existing R prompt; GlobalUIRoot authors that prompt above the skill bar in #BCF58F, outside skill layout groups.
+
+## Reward Open Binding (2026-09-21)
+
+`LevelRewardSessionController` now reads `InputActionId.LevelRewardOpen` (default R) through `InputActionQuery`. Its legacy serialized `openKey` is retained but no longer drives input. Eligibility and the reward window's existing reroll/number shortcuts are unchanged. See [Input Bindings](../InputBindings.md).

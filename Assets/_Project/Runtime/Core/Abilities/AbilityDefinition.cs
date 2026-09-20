@@ -24,6 +24,8 @@ namespace UnityGAS
         public string abilityName = "New Ability";
         public Sprite icon;
         [TextArea] public string description = "Ability description.";
+        [Tooltip("Short player-facing description. Empty entries use the detailed description.")]
+        [TextArea] public string simpleDescription;
 
         [Header("Hit Feel Prototype (seconds; zero disables)")]
         public CombatHitFeelTiming hitFeel;

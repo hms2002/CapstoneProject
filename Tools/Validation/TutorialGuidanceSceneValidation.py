@@ -21,4 +21,11 @@ for i in ("8100000058", "8400000032"):
 guide = blocks["8400000035"]
 assert len(re.findall(r"^  - \{fileID:", guide, re.M)) == 4, "Four authored spotlight panels required"
 assert "m_RaycastTarget: 0" in blocks["8100000058"], "Objective text blocks pointer input"
+assert "tutorialPotion: {fileID: 11400000, guid: 6b22cb4e0ab0a194b968acb6b169cbfb, type: 2}" in guide
+for field, component in (("potionRangeEndGlyph", 9610000103), ("potionRangeSeparator", 9610000113),
+                         ("potionUseGlyph", 9610000123), ("potionUseInstruction", 9610000133)):
+    assert f"{field}: {{fileID: {component}}}" in guide, field + " is not wired"
+    assert "m_RaycastTarget: 0" in blocks[str(component)], field + " intercepts input"
+    assert f"  - {{fileID: {component - 2}}}" in blocks["8400000006"], field + " is outside guidance"
+    assert "m_IsActive: 0" in blocks[str(component - 3)], field + " starts visible"
 print("TUTORIAL_GUIDANCE_SCENE_PASS: local IDs/references, disabled fixed guides, four glyphs, outline materials and four-panel spotlight.")
