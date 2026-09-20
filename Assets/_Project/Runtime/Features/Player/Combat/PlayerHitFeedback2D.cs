@@ -129,7 +129,7 @@ namespace UnityGAS
             // Damage feedback is dispatched after HP or soul-heart loss. Skill reaction immunity
             // may suppress the pose, but does not suppress the impact freeze.
             if (!IsDeadState())
-                CombatHitPause2D.ApplyWorldPause(gameObject, 0.1f);
+                CombatHitPause2D.ApplyWorldPause(gameObject, 0.2f);
 
             if (ShouldIgnoreHitReaction())
                 return;
