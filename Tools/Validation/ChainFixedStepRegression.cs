@@ -41,6 +41,7 @@ public static class ChainFixedStepRegression
             Exercise(jitter, true, true, out float legacyRange);
             Check(legacyRange > .02f, "Fixture did not reproduce legacy jitter");
             VerifyResetAndMotion();
+            VerifySwingLimit();
             Debug.Log($"CHAIN_FIXED_STEP_PASS legacyJitter={legacyRange}; fixed/variable frames, anchored/free ends, reset and motion");
             EditorApplication.Exit(0);
         }
@@ -101,6 +102,58 @@ public static class ChainFixedStepRegression
             }
             range = max - min;
             return Get<Vector2[]>(chain, "jointPositions")[5];
+        }
+        finally { UnityEngine.Object.DestroyImmediate(chain.gameObject); }
+    }
+
+    private static void VerifySwingLimit()
+    {
+        var chain = Create(false);
+        try
+        {
+            Vector2[] positions = Get<Vector2[]>(chain, "jointPositions");
+            Vector2[] previous = Get<Vector2[]>(chain, "previousJointPositions");
+            Vector2 pivot = new Vector2(80f, 40f);
+            foreach (float degrees in new[] { -75f, -28f, -20f, 20f, 28f, 75f })
+            {
+                float radians = degrees * Mathf.Deg2Rad;
+                Vector2 direction = new Vector2(Mathf.Sin(radians), -Mathf.Cos(radians));
+                Vector2 tangent = new Vector2(-direction.y, direction.x) * Mathf.Sign(degrees);
+                for (int i = 0; i < positions.Length; i++)
+                {
+                    positions[i] = pivot + direction * (i * 48.63689f);
+                    previous[i] = positions[i] - tangent * i;
+                }
+                Vector2 oldEnd = positions[11];
+                Call(chain, "LimitFreeSwing", pivot, 1f / 60f);
+                float angle = Mathf.Abs(Vector2.SignedAngle(Vector2.down, positions[11] - pivot));
+                Check(angle <= 30.001f, "Swing exceeded maximum angle");
+                Check(positions[0] == pivot, "Top anchor moved");
+                for (int i = 1; i < positions.Length; i++)
+                {
+                    Check(Mathf.Abs(Vector2.Distance(positions[i - 1], positions[i]) - 48.63689f) < .001f,
+                        "Swing correction changed link length");
+                    if (Mathf.Abs(degrees) > 30f)
+                    {
+                        Vector2 offset = positions[i] - pivot;
+                        Vector2 outward = new Vector2(-offset.y, offset.x).normalized * Mathf.Sign(degrees);
+                        Check(Vector2.Dot(positions[i] - previous[i], outward) < .001f,
+                            "Hard limit retained outward velocity");
+                    }
+                }
+                if (Mathf.Abs(degrees) < 25f) Check(positions[11] == oldEnd, "Small swing was changed");
+                else Check(angle < Mathf.Abs(degrees), "Soft limit did not restore inward");
+            }
+            Call(chain, "ResetSimulation", Top, Bottom);
+            for (int frame = 0; frame < 600; frame++)
+            {
+                float push = frame < 300 ? 64f : -64f;
+                Call(chain, "Simulate", Top, Bottom, 1f / 60f, false, Vector2.zero, Vector2.zero,
+                    true, new Vector2(push, 0f));
+                Check(Mathf.Abs(Vector2.SignedAngle(Vector2.down, positions[11] - Top)) <= 30.001f,
+                    "Repeated support motion escaped swing limit");
+            }
+            Debug.Log("CHAIN_SWING_LIMIT_PASS both directions, soft zone, lengths, outward velocity, repeated support motion");
         }
         finally { UnityEngine.Object.DestroyImmediate(chain.gameObject); }
     }

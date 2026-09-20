@@ -10,6 +10,9 @@ public enum SettingsPanelChainBottomEndpointMode
 [DisallowMultipleComponent]
 public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
 {
+    private const float SwingSoftLimitDegrees = 25f;
+    private const float SwingMaxDegrees = 30f;
+
     [Header("References")]
     [SerializeField] private RectTransform chainContainer;
     [SerializeField] private RectTransform topAnchor;
@@ -983,11 +986,58 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
 
             for (int iteration = 0; iteration < constraintIterations; iteration++)
                 SolveDistanceConstraints(topLocal, bottomLocal, anchoredBottomEndpoint);
+
+            if (!anchoredBottomEndpoint)
+                LimitFreeSwing(topLocal, stepDeltaTime);
         }
 
         previousJointPositions[0] = topLocal;
         if (anchoredBottomEndpoint)
             previousJointPositions[lastIndex] = bottomLocal;
+    }
+
+    private void LimitFreeSwing(Vector2 topLocal, float deltaTime)
+    {
+        Vector2 endDirection = jointPositions[jointPositions.Length - 1] - topLocal;
+        if (endDirection.sqrMagnitude < 0.0001f)
+            return;
+
+        float angle = Vector2.SignedAngle(Vector2.down, endDirection);
+        float magnitude = Mathf.Abs(angle);
+        if (magnitude <= SwingSoftLimitDegrees)
+            return;
+
+        float sign = Mathf.Sign(angle);
+        float influence = Mathf.Clamp01((magnitude - SwingSoftLimitDegrees)
+            / (SwingMaxDegrees - SwingSoftLimitDegrees));
+        influence *= influence;
+        bool hitLimit = magnitude >= SwingMaxDegrees;
+        float outwardDamping = hitLimit ? 1f : 1f - Mathf.Exp(-20f * influence * deltaTime);
+        float correctedMagnitude = Mathf.Min(magnitude, SwingMaxDegrees);
+        correctedMagnitude -= (correctedMagnitude - SwingSoftLimitDegrees)
+            * (1f - Mathf.Exp(-8f * influence * deltaTime));
+        float correction = (sign * correctedMagnitude - angle) * Mathf.Deg2Rad;
+        float sine = Mathf.Sin(correction);
+        float cosine = Mathf.Cos(correction);
+
+        // Rotate the entire pose around its pinned top: link lengths and bending survive.
+        // Rotate velocity too, removing only the component pushing farther out.
+        for (int i = 1; i < jointPositions.Length; i++)
+        {
+            Vector2 offset = jointPositions[i] - topLocal;
+            Vector2 velocity = jointPositions[i] - previousJointPositions[i];
+            Vector2 outwardTangent = new Vector2(-offset.y, offset.x).normalized * sign;
+            float outwardSpeed = Vector2.Dot(velocity, outwardTangent);
+            if (outwardSpeed > 0f)
+                velocity -= outwardTangent * (outwardSpeed * outwardDamping);
+
+            Vector2 rotatedOffset = new Vector2(
+                cosine * offset.x - sine * offset.y, sine * offset.x + cosine * offset.y);
+            Vector2 rotatedVelocity = new Vector2(
+                cosine * velocity.x - sine * velocity.y, sine * velocity.x + cosine * velocity.y);
+            jointPositions[i] = topLocal + rotatedOffset;
+            previousJointPositions[i] = jointPositions[i] - rotatedVelocity;
+        }
     }
 
     private void ApplySupportMotionResponse(Vector2 supportMotionStepDelta)

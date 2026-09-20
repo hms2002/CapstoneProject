@@ -1,23 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "6cf3efd2042647c9ac8cf8bea1c888e6",
-            "startedUtc": "2026-09-20T15:54:09.4440447Z",
-            "endedUtc": "2026-09-20T16:08:33.9334610Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/_Project/Resources/DemonKing/Vfx/PF_ExplosionDebrisBounce_HighArc.prefab",
-                    "prefabName": "PF_ExplosionDebrisBounce_HighArc",
-                    "totalSpawns": 15,
-                    "coldSpawns": 15,
-                    "firstSeenSeconds": 860.642822265625,
-                    "lastSeenSeconds": 863.5152587890625,
-                    "firstSceneName": "DarkLord_Tutorial",
-                    "lastSceneName": "DarkLord_Tutorial"
-                }
-            ]
-        },
-        {
             "sessionId": "9aa8ded377d5403384e41c6cd6930b42",
             "startedUtc": "2026-09-20T16:42:40.0855215Z",
             "endedUtc": "2026-09-20T16:46:15.3990941Z",
@@ -244,6 +227,12 @@
             "sessionId": "f38df29cbec3439298383ba50363a510",
             "startedUtc": "2026-09-20T19:23:52.9655046Z",
             "endedUtc": "2026-09-20T19:23:53.9901340Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a327bd1e498247669cb05989a5c39bae",
+            "startedUtc": "2026-09-20T19:44:53.0068749Z",
+            "endedUtc": "2026-09-20T19:44:54.0180624Z",
             "entries": []
         }
     ]

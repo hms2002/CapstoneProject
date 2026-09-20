@@ -39,6 +39,12 @@ Validation: UI.csproj MSBuild succeeded; main-prefab direct Canvas coverage and 
 
 ## Chain integration timing (2026-09-21)
 
+### Free-hanging swing limit trial
+
+`SettingsPanelFakeChainPresentation` limits the top-to-tip direction of FreeHanging chains to 30 degrees either side of chain-local down. From 25 degrees, quadratic influence gradually damps outward tangential motion and restores the pose inward. After distance solving, a rigid rotation around the top preserves existing segment lengths and bends; previous positions are updated with the corrected velocity to avoid injecting a kick. Individual links are not angle-clamped. Anchored chains retain their two endpoint constraints and do not use this limit. Trial values are private constants; no prefab/serialized schema changes.
+
+The isolated Unity regression checks both directions, the soft zone, unchanged small swings, length preservation, removal of outward boundary velocity, repeated support impulses, and the existing fixed-step settling cases. These pass; rendered motion and feel still require a player playtest. This is a trial tuning choice, not a durable architecture decision.
+
 `SettingsPanelFakeChainPresentation` advances its existing Verlet solver through a time accumulator, with a constant tick of min(authored maxSimulationStep, 1/60 second), defaulting to 1/60 for a nonpositive maximum. Existing simulationSubsteps still subdivides that fixed tick. At most 0.1 second of elapsed time is accepted from a single rendered frame. Input/support motion is sampled when ticks are consumed so intervening-frame displacement is not discarded. ResetSimulation and lifecycle input-cache resets clear residual time.
 
 `UIChainDropPresentation` still owns panel fall/settle behavior; no additional chain sleep mode was introduced. Authored link lengths, gravity, damping, anchors and serialized schemas remain unchanged. The change reduces frame-time-induced resting motion; it does not claim to solve all low-resolution rasterization artifacts.
