@@ -441,7 +441,7 @@ InputBindingService publishes BindingChanged after an applied primary/secondary 
 
 #### Lightning Spear hover-only guidance refinement
 
-White outline and bound key icon now require `IsActive && canRush && isSelected` together in `LightningSpearMarkActor.SetFeedback`. RuntimeState supplies cursor selection from the existing selectable-mark search and actual rush eligibility separately. Moving off the mark or losing eligibility hides both; other reachable marks do not highlight. As of 2026-09-21, SelectedVisual shares this hover gate for its authored Idle loop; outline thickness is 2 texels instead of 1. RuntimeState no longer creates hover-range or selected-ground-circle indicators. Cursor selection uses 1.15 times the authored radius for both feedback and rush targeting. Loadout indicator references remain serialized for asset compatibility but are unused.
+White outline and bound key icon now require `IsActive && canRush && isSelected` together in `LightningSpearMarkActor.SetFeedback`. RuntimeState supplies cursor selection from the existing selectable-mark search and actual rush eligibility separately. Moving off the mark or losing eligibility hides both; other reachable marks do not highlight. As of 2026-09-21, SelectedVisual shares this hover gate for its authored Idle loop; outline thickness is 2 texels instead of 1. RuntimeState no longer creates hover-range or selected-ground-circle indicators. Cursor selection uses 1.38 times the authored radius (1.2 times the previous 1.15 multiplier) for both feedback and rush targeting. Loadout indicator references remain serialized for asset compatibility but are unused.
 
 #### Hero Sword failed-charge cooldown refund
 

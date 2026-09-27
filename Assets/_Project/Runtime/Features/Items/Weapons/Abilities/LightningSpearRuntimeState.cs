@@ -10,6 +10,8 @@ using UnityGAS;
 /// </summary>
 public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWeaponAbilityHudIconOverrideProvider
 {
+    private const string FirstMarkRushTutorialId = "lightning-spear:first-mark-rush";
+
     private readonly struct RecoveredSpearShotRequest
     {
         public readonly Vector2 direction;
@@ -622,6 +624,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
                 facingSideSign);
             MoveOwnerToMark(system, destination);
             AddRecoveredSpear(data, system.transform, system, spec);
+            TutorialProgressStore.MarkCompleted(FirstMarkRushTutorialId);
 
             float hitDelay = GetMarkRushArrivalHitDelay(loadout, data);
             if (hitDelay > 0f)
@@ -1389,7 +1392,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
     private static float GetCursorSelectRadius(LightningSpearLoadout loadout, LightningSpearSkill1Data data)
     {
-        return (data != null ? data.CursorSelectRadius : loadout.CursorSelectRadius) * 1.15f;
+        return (data != null ? data.CursorSelectRadius : loadout.CursorSelectRadius) * 1.38f;
     }
 
     private static float GetMarkRushBodyRadius(LightningSpearLoadout loadout, LightningSpearSkill1Data data)
@@ -1631,6 +1634,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         LightningSpearMarkActor selected = skillReady
             ? FindSelectableMark(loadout, data, ownerPosition, cursorWorld)
             : null;
+        bool showUnselectedMarkGuidance = !TutorialProgressStore.IsCompleted(FirstMarkRushTutorialId);
 
         for (int i = activeMarks.Count - 1; i >= 0; i--)
         {
@@ -1649,7 +1653,8 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             bool canRushToMark =
                 (skillReady || keepRushFeedback) &&
                 CanRushToMark(loadout, data, mark, rushOrigin);
-            mark.SetFeedback(canExecuteRush && canRushToMark, mark == selected);
+            mark.SetFeedback(canExecuteRush && canRushToMark,
+                showUnselectedMarkGuidance || mark == selected);
         }
         UpdateCursorFeedback(selected != null);
         skill1MarkRushHudOverrideActive = selected != null;

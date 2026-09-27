@@ -11,6 +11,8 @@ using CapstoneAudio;
 /// </summary>
 public sealed class TutorialBossEncounterSequence : MonoBehaviour
 {
+    private const float TutorialBossHitDamage = 3f;
+
     [Header("Playback")]
     [SerializeField] private bool playOnStart;
     [SerializeField] private bool playOnlyOnce = true;
@@ -330,7 +332,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         combatBoss.DeathStarted += HandleCombatBossDeath;
         combatWon = combatLost = false;
         combatRunning = true;
-        combatDamageFilter = CombatIncomingDamageModifiers.Register(FilterDamageAfterDefeat);
+        combatDamageFilter = CombatIncomingDamageModifiers.Register(FilterTutorialCombatDamage);
         RestoreBossVisualScaleImmediate();
         RestoreCameraState(player);
         RestoreDefaultHudRoots();
@@ -378,10 +380,18 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         combatRunning = false;
     }
 
-    private float FilterDamageAfterDefeat(CombatIncomingDamageContext context)
+    private float FilterTutorialCombatDamage(CombatIncomingDamageContext context)
     {
         // A lingering player attack must not launch the boss-owned ending after defeat dialogue starts.
-        return combatLost && combatBoss != null && context.Target == combatBoss.gameObject ? 0f : context.BaseDamage;
+        if (combatLost && combatBoss != null && context.Target == combatBoss.gameObject)
+            return 0f;
+
+        if (!combatRunning || combatBoss == null || combatPlayerAttributes == null ||
+            context.Target != combatPlayerAttributes.gameObject || context.BaseDamage <= 0f)
+            return context.BaseDamage;
+
+        GameObject causer = context.DamageSpec?.Context?.Causer ?? context.DamageSpec?.Context?.Instigator;
+        return causer == combatBoss.gameObject ? TutorialBossHitDamage : context.BaseDamage;
     }
 
     private void ReleaseCombatPlayer()

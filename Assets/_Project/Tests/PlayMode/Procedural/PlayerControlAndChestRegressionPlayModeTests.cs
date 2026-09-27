@@ -155,6 +155,40 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
         finally { InputActionQuery.RegisterBackend(previous); Time.timeScale = 1f; }
     }
 
+    [Test]
+    public void WeaponFeedback_FirstMarkRushGuidanceCompletionIsPerSaveSlot()
+    {
+        const string tutorialId = "lightning-spear:first-mark-rush";
+        var idField = typeof(LightningSpearRuntimeState).GetField(
+            "FirstMarkRushTutorialId", BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.That(idField?.GetRawConstantValue(), Is.EqualTo(tutorialId));
+        var backendField = typeof(GameDataStore).GetField("backend", BindingFlags.Static | BindingFlags.NonPublic);
+        var previous = (IGameDataStoreBackend)backendField.GetValue(null);
+        var store = new MarkRushTutorialTestStore();
+        GameDataStore.RegisterBackend(store);
+        try
+        {
+            Assert.That(TutorialProgressStore.IsCompleted(tutorialId), Is.False);
+            Assert.That(TutorialProgressStore.MarkCompleted(tutorialId), Is.True);
+            Assert.That(store.SaveCount, Is.EqualTo(1));
+            Assert.That(TutorialProgressStore.MarkCompleted(tutorialId), Is.False);
+            Assert.That(store.SaveCount, Is.EqualTo(1));
+
+            store.LoadSlot(1);
+            Assert.That(TutorialProgressStore.IsCompleted(tutorialId), Is.False,
+                "A fresh save slot must show the first-rush guidance again.");
+            store.LoadSlot(0);
+            Assert.That(TutorialProgressStore.IsCompleted(tutorialId), Is.True,
+                "Returning to the completed slot must keep the guidance dismissed.");
+        }
+        finally
+        {
+            GameDataStore.UnregisterBackend(store);
+            if (previous != null)
+                GameDataStore.RegisterBackend(previous);
+        }
+    }
+
     [TestCase("Open")]
     [TestCase("Wall")]
     [TestCase("HoleTrap")]
@@ -848,6 +882,34 @@ public sealed class PlayerControlAndChestRegressionPlayModeTests
         public Vector2 GetMoveVectorRaw() => Vector2.zero;
         public Vector2 GetMoveVectorNormalized() => Vector2.zero;
         public Vector3 GetPointerWorldPosition(Camera camera, float z = 0f) => Vector3.zero;
+    }
+
+    private sealed class MarkRushTutorialTestStore : IGameDataStoreBackend
+    {
+        private readonly Dictionary<int, GameData> slots = new();
+        public GameData Data { get; private set; } = new GameData();
+        public int ActiveSlotIndex { get; private set; }
+        public int SaveCount { get; private set; }
+        public event Action<GameData, int> OnDataLoaded;
+
+        public void LoadSlot(int index)
+        {
+            ActiveSlotIndex = index;
+            Data = slots.TryGetValue(index, out GameData saved)
+                ? JsonUtility.FromJson<GameData>(JsonUtility.ToJson(saved))
+                : new GameData();
+            OnDataLoaded?.Invoke(Data, index);
+        }
+
+        public GameData EnsureData() => Data;
+        public void SaveData()
+        {
+            slots[ActiveSlotIndex] = JsonUtility.FromJson<GameData>(JsonUtility.ToJson(Data));
+            SaveCount++;
+        }
+        public void RequestImmediateSave(Object requester) => SaveData();
+        public void RequestDeferredSave(Object requester) => SaveData();
+        public void FlushSave(Object requester) => SaveData();
     }
 }
 

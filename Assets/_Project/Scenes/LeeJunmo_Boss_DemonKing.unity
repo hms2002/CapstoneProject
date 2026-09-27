@@ -16898,7 +16898,7 @@ MonoBehaviour:
   verticalStrikeDropSeconds: 0.16
   patternDamage: 1
   recallImpactDiameter: 3.2
-  recallImpactDamage: 1.5
+  recallImpactDamage: 1
   recallImpactKnockback: 8
   swordSpinVfx:
     prefabOverride: {fileID: 0}
