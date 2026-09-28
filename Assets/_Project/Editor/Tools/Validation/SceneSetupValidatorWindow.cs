@@ -235,7 +235,7 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
             AssignSerializedReference(serializedRoot, "bossHudCanvas", FindChildCanvas(prefabContents.transform, "BossHUDCanvas"));
             serializedRoot.ApplyModifiedPropertiesWithoutUndo();
 
-            EnsureMouseCursorAuthoredPresentation(prefabContents.transform);
+            EnsureMouseCursorService(prefabContents.transform);
             PrefabUtility.SaveAsPrefabAsset(prefabContents, GlobalUiRootPrefabPath);
             AssetDatabase.SaveAssets();
         }
@@ -740,25 +740,6 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
             ValidateOptionalPresentationReference(scene.path, controller, serializedController, "overlayView", "LoadingOverlayController.overlayView is not assigned. It can use GlobalUIRoot.loadingCanvas or create a runtime fallback canvas.");
         }
 
-        foreach (MouseCursorService cursorService in FindSceneObjects<MouseCursorService>(scene, includeInactive: true))
-        {
-            SerializedObject serializedCursor = new SerializedObject(cursorService);
-            Canvas authoredCanvas = GetSerializedObjectReference<Canvas>(serializedCursor, "authoredCursorCanvas");
-            Image authoredImage = GetSerializedObjectReference<Image>(serializedCursor, "authoredCursorImage");
-            RectTransform authoredRect = GetSerializedObjectReference<RectTransform>(serializedCursor, "authoredCursorRect");
-            bool hasSerializedPresentation = authoredCanvas != null && authoredImage != null && authoredRect != null;
-            bool hasLegacyChildPresentation = HasMouseCursorChildPresentation(cursorService.transform);
-
-            if (!hasSerializedPresentation && !hasLegacyChildPresentation)
-            {
-                AddResult(scene.path, Severity.Warning, "MouseCursorService has no authored cursor canvas/image references. Sprite cursor mode can create runtime UI fallback.", cursorService, GetObjectPath(cursorService.transform));
-            }
-            else if (!hasSerializedPresentation)
-            {
-                AddResult(scene.path, Severity.Warning, "MouseCursorService uses legacy child-name cursor presentation. Assign authoredCursorCanvas/authoredCursorRect/authoredCursorImage to avoid fallback dependency.", cursorService, GetObjectPath(cursorService.transform));
-            }
-        }
-
         foreach (GamePresentationController controller in FindSceneObjects<GamePresentationController>(scene, includeInactive: true))
         {
             AddResult(scene.path, Severity.Info, "GamePresentationController intentionally creates the display letterbox overlay at runtime.", controller, GetObjectPath(controller.transform));
@@ -840,13 +821,6 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         if (cursorService == null)
         {
             AddResult(GlobalUiRootPrefabPath, Severity.Error, "Representative GlobalUIRoot prefab has no MouseCursorService.", prefab, prefab.name);
-        }
-        else
-        {
-            SerializedObject serializedCursor = new SerializedObject(cursorService);
-            ValidateSerializedReference(GlobalUiRootPrefabPath, cursorService, serializedCursor, "authoredCursorCanvas", "Representative MouseCursorService.authoredCursorCanvas is not assigned.");
-            ValidateSerializedReference(GlobalUiRootPrefabPath, cursorService, serializedCursor, "authoredCursorRect", "Representative MouseCursorService.authoredCursorRect is not assigned.");
-            ValidateSerializedReference(GlobalUiRootPrefabPath, cursorService, serializedCursor, "authoredCursorImage", "Representative MouseCursorService.authoredCursorImage is not assigned.");
         }
 
         StatusHudPresenter statusPresenterPrefab = GetSerializedObjectReference<StatusHudPresenter>(serializedRoot, "statusHudPresenterPrefab");
@@ -1171,19 +1145,6 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         return count;
     }
 
-    private static bool HasMouseCursorChildPresentation(Transform cursorServiceRoot)
-    {
-        if (cursorServiceRoot == null)
-            return false;
-
-        Transform canvasTransform = cursorServiceRoot.Find("MouseCursorCanvas");
-        if (canvasTransform == null)
-            return false;
-
-        return canvasTransform.GetComponent<Canvas>() != null &&
-               canvasTransform.Find("CursorImage")?.GetComponent<Image>() != null;
-    }
-
     private static bool GetSerializedBool(SerializedObject serializedObject, string propertyName)
     {
         SerializedProperty property = serializedObject.FindProperty(propertyName);
@@ -1339,76 +1300,14 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         EditorSceneManager.MarkSceneDirty(scene);
     }
 
-    private static void EnsureMouseCursorAuthoredPresentation(Transform root)
+    private static void EnsureMouseCursorService(Transform root)
     {
-        MouseCursorService cursorService = root.GetComponentInChildren<MouseCursorService>(true);
-        if (cursorService == null)
-        {
-            Transform servicesRoot = FindChildRecursive(root, "Services") ?? root;
-            GameObject serviceObject = new GameObject(nameof(MouseCursorService), typeof(MouseCursorService));
-            serviceObject.transform.SetParent(servicesRoot, false);
-            cursorService = serviceObject.GetComponent<MouseCursorService>();
-        }
-
-        Transform canvasTransform = cursorService.transform.Find("MouseCursorCanvas");
-        if (canvasTransform == null)
-        {
-            GameObject canvasObject = new GameObject("MouseCursorCanvas", typeof(RectTransform), typeof(Canvas));
-            canvasTransform = canvasObject.transform;
-            canvasTransform.SetParent(cursorService.transform, false);
-        }
-
-        RectTransform canvasRect = canvasTransform as RectTransform;
-        ConfigureFullScreenRect(canvasRect);
-
-        Canvas canvas = GetOrAddComponent<Canvas>(canvasTransform.gameObject);
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.overrideSorting = true;
-        canvas.sortingOrder = short.MaxValue;
-
-        Transform imageTransform = canvasTransform.Find("CursorImage");
-        if (imageTransform == null)
-        {
-            GameObject imageObject = new GameObject("CursorImage", typeof(RectTransform), typeof(Image));
-            imageTransform = imageObject.transform;
-            imageTransform.SetParent(canvasTransform, false);
-        }
-
-        RectTransform imageRect = imageTransform as RectTransform;
-        if (imageRect != null)
-        {
-            imageRect.anchorMin = Vector2.zero;
-            imageRect.anchorMax = Vector2.zero;
-            imageRect.anchoredPosition = Vector2.zero;
-        }
-
-        Image cursorImage = GetOrAddComponent<Image>(imageTransform.gameObject);
-        cursorImage.raycastTarget = false;
-        cursorImage.enabled = false;
-
-        SerializedObject serializedCursor = new SerializedObject(cursorService);
-        AssignSerializedReference(serializedCursor, "authoredCursorCanvas", canvas);
-        AssignSerializedReference(serializedCursor, "authoredCursorRect", imageRect);
-        AssignSerializedReference(serializedCursor, "authoredCursorImage", cursorImage);
-        serializedCursor.ApplyModifiedPropertiesWithoutUndo();
-        EditorUtility.SetDirty(cursorService);
-    }
-
-    private static void ConfigureFullScreenRect(RectTransform rectTransform)
-    {
-        if (rectTransform == null)
+        if (root.GetComponentInChildren<MouseCursorService>(true) != null)
             return;
 
-        rectTransform.anchorMin = Vector2.zero;
-        rectTransform.anchorMax = Vector2.one;
-        rectTransform.offsetMin = Vector2.zero;
-        rectTransform.offsetMax = Vector2.zero;
-    }
-
-    private static T GetOrAddComponent<T>(GameObject gameObject) where T : Component
-    {
-        T component = gameObject.GetComponent<T>();
-        return component != null ? component : gameObject.AddComponent<T>();
+        Transform servicesRoot = FindChildRecursive(root, "Services") ?? root;
+        GameObject serviceObject = new GameObject(nameof(MouseCursorService), typeof(MouseCursorService));
+        serviceObject.transform.SetParent(servicesRoot, false);
     }
 
     private static void DisableLegacyUiRoots(Scene scene)

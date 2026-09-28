@@ -166,7 +166,7 @@ public sealed class GameSettingsService : MonoBehaviour
             0,
             resolutionOptions.Count - 1);
 
-        return resolutionOptions[clampedIndex];
+        return FitWindowResolution(resolutionOptions[clampedIndex], GetWindowClientLimit());
     }
 
     public int GetCurrentResolutionIndex()
@@ -226,7 +226,7 @@ public sealed class GameSettingsService : MonoBehaviour
             0,
             resolutionOptions.Count - 1);
 
-        DisplayResolutionOption option = resolutionOptions[clampedIndex];
+        DisplayResolutionOption option = FitWindowResolution(resolutionOptions[clampedIndex], GetWindowClientLimit());
         bool changed = windowMode != mode ||
                        resolutionWidth != option.width ||
                        resolutionHeight != option.height;
@@ -236,6 +236,7 @@ public sealed class GameSettingsService : MonoBehaviour
         resolutionHeight = option.height;
         PlayerPrefs.SetInt(WindowModePrefKey, (int)windowMode);
         SaveResolution();
+        BuildResolutionOptions();
         ApplyDisplaySettings(windowMode, resolutionWidth, resolutionHeight);
 
         if (changed)
@@ -366,6 +367,7 @@ public sealed class GameSettingsService : MonoBehaviour
         initialized = true;
         EnsurePresentationController();
         LoadPreferences();
+        NormalizeSavedWindowResolution();
         BuildResolutionOptions();
         ApplyDisplaySettings(windowMode, resolutionWidth, resolutionHeight);
         ApplyPresentationBounds();
@@ -406,12 +408,14 @@ public sealed class GameSettingsService : MonoBehaviour
     {
         resolutionOptions.Clear();
 
+        Vector2Int limit = GetWindowClientLimit();
         HashSet<string> seen = new();
         Resolution[] screenResolutions = Screen.resolutions;
         for (int i = 0; i < screenResolutions.Length; i++)
         {
             Resolution resolution = screenResolutions[i];
-            if (resolution.width < 640 || resolution.height < 360)
+            if (resolution.width < 640 || resolution.height < 360 ||
+                resolution.width > limit.x || resolution.height > limit.y)
                 continue;
 
             string key = $"{resolution.width}x{resolution.height}";
@@ -424,7 +428,8 @@ public sealed class GameSettingsService : MonoBehaviour
         for (int i = 0; i < CuratedResolutionOptions.Length; i++)
         {
             DisplayResolutionOption option = CuratedResolutionOptions[i];
-            if (option.width < 640 || option.height < 360)
+            if (option.width < 640 || option.height < 360 ||
+                option.width > limit.x || option.height > limit.y)
                 continue;
 
             string key = $"{option.width}x{option.height}";
@@ -470,6 +475,66 @@ public sealed class GameSettingsService : MonoBehaviour
         });
     }
 
+    private void NormalizeSavedWindowResolution()
+    {
+        DisplayResolutionOption fitted = FitWindowResolution(
+            new DisplayResolutionOption(resolutionWidth, resolutionHeight), GetWindowClientLimit());
+        resolutionWidth = fitted.width;
+        resolutionHeight = fitted.height;
+        SaveResolution();
+    }
+
+    private static DisplayResolutionOption FitWindowResolution(DisplayResolutionOption requested, Vector2Int limit)
+    {
+        int width = Mathf.Max(640, requested.width);
+        int height = Mathf.Max(360, requested.height);
+        float scale = Mathf.Min(1f, Mathf.Min(Mathf.Max(1, limit.x) / (float)width, Mathf.Max(1, limit.y) / (float)height));
+        return new DisplayResolutionOption(Mathf.Max(1, Mathf.FloorToInt(width * scale)),
+            Mathf.Max(1, Mathf.FloorToInt(height * scale)));
+    }
+
+    private static Vector2Int GetWindowClientLimit()
+    {
+        RectInt workArea = Screen.mainWindowDisplayInfo.workArea;
+        if (workArea.width <= 0 || workArea.height <= 0)
+        {
+            DisplayResolutionOption display = GetSystemDisplayResolution();
+            workArea = new RectInt(0, 0, display.width, display.height);
+        }
+
+        // Reserve window decorations as well as the taskbar excluded by Unity's work area.
+        int frameWidth = 32;
+        int frameHeight = 64;
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+        IntPtr window = GetActiveWindow();
+        uint dpi = window != IntPtr.Zero ? GetDpiForWindow(window) : GetDpiForSystem();
+        NativeWindowRect frame = default;
+        // WS_OVERLAPPEDWINDOW is conservative even for a non-resizable player.
+        if (AdjustWindowRectExForDpi(ref frame, 0x00CF0000, false, 0, dpi))
+        {
+            frameWidth = frame.right - frame.left;
+            frameHeight = frame.bottom - frame.top;
+        }
+#endif
+        return new Vector2Int(Mathf.Max(1, workArea.width - frameWidth), Mathf.Max(1, workArea.height - frameHeight));
+    }
+
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    private struct NativeWindowRect { public int left, top, right, bottom; }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern IntPtr GetActiveWindow();
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern uint GetDpiForWindow(IntPtr window);
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern uint GetDpiForSystem();
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+    private static extern bool AdjustWindowRectExForDpi(ref NativeWindowRect rect, uint style,
+        [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)] bool menu, uint extendedStyle, uint dpi);
+#endif
+
     private void SaveResolution()
     {
         PlayerPrefs.SetInt(ResolutionWidthPrefKey, resolutionWidth);
@@ -499,6 +564,11 @@ public sealed class GameSettingsService : MonoBehaviour
             (int)GameWindowMode.Fullscreen);
         savedWidth = Mathf.Max(640, PlayerPrefs.GetInt(ResolutionWidthPrefKey, DefaultWindowWidth));
         savedHeight = Mathf.Max(360, PlayerPrefs.GetInt(ResolutionHeightPrefKey, DefaultWindowHeight));
+        DisplayResolutionOption fitted = FitWindowResolution(new DisplayResolutionOption(savedWidth, savedHeight), GetWindowClientLimit());
+        savedWidth = fitted.width;
+        savedHeight = fitted.height;
+        PlayerPrefs.SetInt(ResolutionWidthPrefKey, savedWidth);
+        PlayerPrefs.SetInt(ResolutionHeightPrefKey, savedHeight);
     }
 
     private static void ApplyDisplaySettings(GameWindowMode mode, int width, int height)
@@ -512,13 +582,13 @@ public sealed class GameSettingsService : MonoBehaviour
         };
 
         DisplayResolutionOption appliedResolution = mode == GameWindowMode.Windowed
-            ? new DisplayResolutionOption(width, height)
+            ? FitWindowResolution(new DisplayResolutionOption(width, height), GetWindowClientLimit())
             : GetSystemDisplayResolution();
 
         Screen.fullScreenMode = fullScreenMode;
         Screen.SetResolution(
-            Mathf.Max(640, appliedResolution.width),
-            Mathf.Max(360, appliedResolution.height),
+            appliedResolution.width,
+            appliedResolution.height,
             fullScreenMode);
 
         MouseCursorService.EnsureInstance().NotifyDisplayConfigurationChanged();

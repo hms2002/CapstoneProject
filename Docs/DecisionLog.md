@@ -3359,3 +3359,13 @@ User selected concise weapon explanations as the default, with BackQuote (`~` ke
 ## 2026-09-27 - Lightning Spear mark-rush guidance is completed per save slot
 
 Until the player successfully rushes to an active Lightning Spear mark, every currently rushable active mark shows its existing highlight and bound Skill1 key icon without requiring cursor hover. The actual cursor-targeting rule remains unchanged. A successful mark rush records `lightning-spear:first-mark-rush` through the existing tutorial profile store immediately; a no-mark sweep does not. Subsequent runs in that save slot use hover-only feedback, while a fresh save slot shows the guidance again. Existing saves cannot establish past rush use, so they show the guidance until their next successful rush.
+
+
+## 2026-09-28 - Cursor Rendering Uses Unity Cursor API
+
+Keep existing theme/domain/variant and owner-based visibility contracts, but render via `Cursor.SetCursor(..., CursorMode.Auto)` instead of Canvas Image fallback. Non-readable sprites are converted with bounded GPU readback and cached readable RGBA32 textures; output size and hotspot preserve existing authored scaling. TitleMenuController owns a low-priority SystemUi request while enabled. This removes cursor dependence on game UI sorting. Serialized legacy fields remain until separately approved asset cleanup. Actual hardware choice and DPI behavior remain Unity/platform responsibilities. See `Docs/StructureMemory/ScriptSystems/LoadingPresentationStructure.md`.
+
+
+## 2026-09-28 - Explicit Cursor Recapture and Bounded Window Resolution
+
+Escape releases cursor confinement until a focused left click inside the game client. Focus/display changes alone do not recapture it. Windowed resolution selection is bounded by the current display's work area with frame decorations reserved; oversized saved sizes are proportionally fitted and persisted. Fullscreen and borderless retain desktop-resolution policy. This follows the user's reported Escape/oversized-window failures and approved correction.

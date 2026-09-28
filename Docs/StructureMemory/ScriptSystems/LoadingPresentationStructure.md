@@ -90,7 +90,7 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 | Title-local vs global runtime UI | Title menu/panels are scene-local authored UI. Gameplay `GlobalUIRoot`, runtime camera rig, and stack UI services are cleaned or avoided on title through the scene-domain bootstrap policy; title-side persistent UI/camera cleanup now executes through `SceneDomainTitleCleanupScope`, and camera title guards now route through `CameraBootstrapScenePolicy`. |
 | Loading / preload | `PresentationPreloadService` keeps Boot, FirstRunIntro, RunCommon, Current, and Next scopes independently and delegates manifest preload/release to asset providers. FirstRunIntro is profile-progress-gated; RunCommon/Current/Next still come from the active route load window. |
 | Presentation runtime | `WorldPresentationRuntime` and `PresentationSpawnService` execute sound, shake, visual spawn, pooling, and cleanup. They are runtime consumers, not authoring owners. `TopDownDebrisBounceEmitter2D` is an authored prefab helper consumed by those spawn paths. |
-| Runtime-created UI / overlay | Loading overlay fallback, cursor canvas, cinematic letterbox, status HUD entry/tooltip fallback, and Boss HUD dual/split fallback can create UI hierarchy at runtime and report through `RuntimePresentationFallbackAudit` in editor/development builds. `MouseCursorService` now prefers serialized cursor canvas/image references before fallback creation. `GamePresentationController` intentionally keeps the display letterbox runtime-generated because it follows window/resolution policy. Scene Setup Validator validates the representative `GlobalUIRoot.prefab` and provides an auto-fix path for cursor authoring. |
+| Runtime-created UI / overlay | Loading overlay fallback, cinematic letterbox, status HUD entry/tooltip fallback, and Boss HUD dual/split fallback can create UI hierarchy at runtime and report through `RuntimePresentationFallbackAudit` in editor/development builds. `MouseCursorService` uses `Cursor.SetCursor(..., CursorMode.Auto)` and no longer creates cursor UI. See the cursor ownership notes below. `GamePresentationController` intentionally keeps the display letterbox runtime-generated because it follows window/resolution policy. Scene Setup Validator validates the representative `GlobalUIRoot.prefab`; cursor Canvas/Image references are no longer required. |
 | Camera / audio support | Camera remains presentation support. Music callers submit explicit scene/encounter requests; the music backend no longer infers progression or portal context. |
 
 ## Refactor Candidates
@@ -109,7 +109,7 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 ## Known Pitfalls
 
 - Runtime UI object creation can be useful for first-pass feel checks, debug fallback, or emergency fallback, but it should not silently become the build-facing structure. New runtime hierarchy fallback paths should call `RuntimePresentationFallbackAudit.Record(...)`.
-- Run `Tools/Validation/Scene Setup Validator` after global UI/presentation edits to catch missing loading/cursor/status/Boss HUD authored references before play verification. If the representative prefab is missing cursor authoring, run `Auto Fix GlobalUIRoot Prefab` from the same window and review the generated objects.
+- Run `Tools/Validation/Scene Setup Validator` after global UI/presentation edits to catch missing loading/status/Boss HUD authored references before play verification. Cursor rendering uses the Unity API and requires no Canvas/Image authoring.
 - Title-local presentation should stay scene-authored; adding runtime fallback UI or camera objects for title needs explicit owner, cleanup, and migration notes.
 - Production-facing global UI and presentation overlays should be scene- or prefab-authored where possible, then driven through serialized references or `GlobalUIRoot` layers.
 - Runtime-created fallback paths need explicit owner, cleanup, and a migration follow-up before they are treated as final UI.
@@ -128,3 +128,22 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 ## Promotion Candidate
 
 Loading scope policy already has `Docs/Architecture/LoadingScopes.md`, and title/game bootstrap policy has `Docs/Architecture/SceneDomainBootstrapArchitecture.md`. The new FirstRunIntro scope should be promoted into `LoadingScopes.md` after Architecture-doc approval because the current source-of-truth scope list still only names Boot, RunCommon, and RouteSet.
+
+## Cursor API Ownership (2026-09-28)
+
+- `Assets/_Project/Runtime/Infrastructure/Input/MouseCursor/MouseCursorService.cs` retains domain/variant priority and owner-based hidden/drag/interactable requests. `MouseCursorPlayback` remains the gameplay-facing gateway.
+- Rendering uses `Cursor.SetCursor` with `CursorMode.Auto`; Unity chooses hardware where supported. There is no project-owned software Canvas fallback or mouse-position projection.
+- Each theme sprite is read back once through a temporary render texture, including non-readable PNG/Aseprite sources. RGBA32, readable, mip-free output textures are cached at one current size per sprite. Point resampling preserves the former Image native size (`sprite.rect * 100 / pixelsPerUnit`), theme scale and screen-height scale. Hotspots scale with output dimensions and stay inside bounds.
+- The service releases generated textures on destruction, restores the default pointer on disable, and reapplies its cursor after focus/display changes. A superseded service does not restore the OS cursor over a replacement service.
+- `Assets/_Project/Runtime/UI/Title/TitleMenuController.cs` requests `SystemUi` at priority 0 while enabled and releases that request on disable. Settings/popup priorities and intro hidden requests still win; gameplay defaults to Combat after title unload.
+- Old serialized Canvas references and software-policy fields remain hidden for asset compatibility. Referenced/legacy cursor UI is disabled. Their removal requires a separately reviewed asset migration; see [fallback backlog](../../RefactorBacklog/RuntimePresentationFallbackAuthoringSplit.md).
+- Extension point: keep state selection in the existing theme/domain interfaces. Cursor sprites currently use non-rotated texture regions; packed/rotated atlas migration needs explicit conversion coverage. Actual OS/DPI sizing, screen-edge clipping and fullscreen transitions need Windows player visual acceptance. Unlike the old UI clamp, native cursors let the OS handle pointer position and screen edges.
+- Promotion: a separate Architecture/Contracts document is not currently needed; this is the current implementation map.
+
+## Cursor Release and Window Bounds (2026-09-28)
+
+- `MouseCursorService` retains an Escape-release latch independently of focus/display changes. Escape releases confinement; a focused left click inside the client rectangle clears the latch. Escape wins over a same-frame click. The existing pause/title Escape handlers still run normally.
+- `Assets/_Project/Runtime/UI/Settings/GameSettingsService.cs` limits selectable windowed sizes to `Screen.mainWindowDisplayInfo.workArea` minus window decorations. Windows players use DPI-aware Win32 frame sizing; the Editor/other platforms reserve a conservative margin.
+- Saved window dimensions are proportionally fitted and persisted at bootstrap/initialization. Selection preview, apply and option rebuilding use the same bounds. Oversized curated modes are excluded; a formerly saved oversized value becomes a fitted option rather than being reintroduced unbounded. Fullscreen/borderless still use desktop resolution.
+- Validation entry points: `Tools/Validation/MouseCursorApiRegression.cs` for Escape state transitions; `Tools/Validation/DisplaySettingsRegression.cs` for saved preferences/options and actual Windows client dimensions.
+- Changing monitors after startup is rechecked on display selection/application. Automatic migration of a manually dragged window and manual multi-DPI placement remain separate from this size policy.

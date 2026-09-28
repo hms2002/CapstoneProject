@@ -72,8 +72,14 @@ public sealed class TitleMenuController : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.SystemUi, priority: 0);
+    }
+
     private void OnDisable()
     {
+        MouseCursorService.Instance?.ClearDomain(this);
         StopMainMenuUnlockLead();
     }
 

@@ -2332,3 +2332,19 @@ The title/global keybinding row lists omitted DialogueAdvance, but the service s
 - Cause: authoring assumed the shared sprite pointed left and applied +90 degrees, but `DownArrow.png` already points down.
 - Fix: preserve identity rotation for the three Buffy arrow roots and the content installer.
 - Prevention: inspect the actual referenced image and both root/renderer transforms; a passing reward/lifecycle test does not verify visual direction.
+
+
+## 2026-09-28 - Cursor Sorting Fix Was Present in Player but Ineffective
+
+- Evidence: the September 27 Player.log contained 32 cursor snapshots at Default/32767 while competing UI canvases used the higher UI sorting layer. Cursor images were active, opaque and not culled. Inspection of that player's Infrastructure.dll confirmed the previous UI-layer assignment was included, so a missing rebuild did not explain the observations. The exact native initialization/reset point was not isolated.
+- Correction: replace project-owned cursor Canvas rendering with Unity Cursor API. Convert non-readable theme sprites instead of hiding the OS cursor and falling back to an Image. Preserve owner-based hidden state during display notifications and restore default cursor on service disable; only the active service restores global cursor state on destruction.
+- Prevention: verify actual player cursor backend/state rather than treating source sorting assignments or MSBuild success as visual acceptance. CursorMode.Auto requests Unity's supported backend and is not proof of hardware use. Native screen-edge behavior differs from the former image clamping.
+- Validation and remaining player checks: `Docs/SessionLogs/2026-09-28.md`; regression source: `Tools/Validation/MouseCursorApiRegression.cs`.
+
+
+## 2026-09-28 - Escape Recapture and Oversized Window Selection
+
+- Evidence: the user's rebuilt player logged Windowed 1680x1050 followed by a new display request and Windowed 3440x1080. Saved preferences were Windowed 3440x1440. GameSettingsService injected ultrawide options without monitor bounds; the cursor service continuously forced Confined while focused and had no Escape-release state. Both behaviors predated the API migration and were missed in its original coverage.
+- Correction: retain explicit Escape release until a focused inside-client click; focus/display callbacks cannot erase the latch. Filter window sizes against work area minus frame decorations; proportionally fit and persist oversized saved selections, and recheck bounds on application.
+- Prevention: a cursor backend regression must cover confinement intent as well as visibility. Display tests must compare requested and actual client dimensions and saved settings, including a window larger than the desktop; avoid independent axis clamping that distorts aspect.
+- Verification: see `Docs/SessionLogs/2026-09-28.md` follow-up.

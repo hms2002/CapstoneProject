@@ -22,7 +22,7 @@ public enum MouseCursorVariant
     InteractablePressed = 4
 }
 
-// 책임: 커서 스프라이트, hotspot, 소프트웨어 커서 scale 설정을 보관한다.
+// 책임: 커서 스프라이트, hotspot, 커서 픽셀 배율 설정을 보관한다.
 [Serializable]
 public sealed class MouseCursorSpriteDefinition
 {
@@ -76,7 +76,7 @@ public sealed class MouseCursorEncyclopediaDomainDefinition
 
 [DefaultExecutionOrder(1000)]
 [DisallowMultipleComponent]
-// Responsibility: resolves the active cursor domain/variant and presents a safe software or hardware cursor at runtime.
+// Responsibility: resolves the active cursor domain/variant and presents it through Unity's cursor API, independently of UI sorting.
 public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
 {
     private const string DefaultThemeResourcePath = "DefaultMouseCursorTheme";
@@ -102,18 +102,18 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
     [Header("Theme")]
     [SerializeField] private MouseCursorTheme themeOverride;
 
-    [Header("Authoring")]
-    [SerializeField] private Canvas authoredCursorCanvas;
-    [SerializeField] private RectTransform authoredCursorRect;
-    [SerializeField] private Image authoredCursorImage;
+    // Retained for serialized asset compatibility; Canvas rendering is no longer used.
+    [SerializeField, HideInInspector] private Canvas authoredCursorCanvas;
+    [SerializeField, HideInInspector] private RectTransform authoredCursorRect;
+    [SerializeField, HideInInspector] private Image authoredCursorImage;
+    [SerializeField, HideInInspector] private bool hideSystemCursorWhileSpriteActive = true;
+    [SerializeField, HideInInspector] private bool preferHardwareCursorWhenAvailable = true;
+    [SerializeField, HideInInspector] private bool preferHardwareCursorInExclusiveFullscreen = true;
+    [SerializeField, HideInInspector] private bool keepSystemCursorVisibleWhenUsingSoftwareCursor;
+    [SerializeField, HideInInspector] private bool keepSystemCursorVisibleInExclusiveFullscreenFallback;
+    [SerializeField, HideInInspector] private int overlaySortingOrder = short.MaxValue;
 
-    [Header("Software Cursor Presentation")]
-    [SerializeField] private bool hideSystemCursorWhileSpriteActive = true;
-    [SerializeField] private bool preferHardwareCursorWhenAvailable = true;
-    [SerializeField] private bool preferHardwareCursorInExclusiveFullscreen = true;
-    [SerializeField] private bool keepSystemCursorVisibleWhenUsingSoftwareCursor;
-    [SerializeField] private bool keepSystemCursorVisibleInExclusiveFullscreenFallback;
-    [SerializeField] private int overlaySortingOrder = short.MaxValue;
+    [Header("Cursor Pixel Size")]
     [SerializeField] private bool scaleWithScreenHeight = true;
     [SerializeField, Min(1f)] private float referenceScreenHeight = 1080f;
     [SerializeField, Min(0.1f)] private float minResolutionScale = 0.1f;
@@ -123,13 +123,18 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
     private readonly Dictionary<int, OwnerFlag> interactableOwners = new Dictionary<int, OwnerFlag>();
     private readonly Dictionary<int, OwnerFlag> draggingOwners = new Dictionary<int, OwnerFlag>();
     private readonly Dictionary<int, OwnerFlag> hiddenOwners = new Dictionary<int, OwnerFlag>();
-    private readonly Dictionary<int, Texture2D> generatedCursorTextures = new Dictionary<int, Texture2D>();
-    private readonly HashSet<int> unreadableSpriteWarnings = new HashSet<int>();
+    private sealed class CursorTexture
+    {
+        public Color32[] pixels;
+        public int sourceWidth;
+        public int sourceHeight;
+        public Texture2D texture;
+    }
+
+    // One source readback and one current output size per sprite, bounded across window resizing.
+    private readonly Dictionary<int, CursorTexture> generatedCursorTextures = new Dictionary<int, CursorTexture>();
     private readonly List<RaycastResult> uiRaycastResults = new List<RaycastResult>(8);
 
-    private Canvas cursorCanvas;
-    private RectTransform cursorRect;
-    private Image cursorImage;
     private EventSystem pointerEventSystem;
     private PointerEventData pointerEventData;
     private long nextOrder;
@@ -146,7 +151,7 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
     private FullScreenMode lastFullScreenMode;
     private bool hasCapturedDisplayState;
     private bool forceCursorTextureReapply;
-    private int displayTransitionRecoveryFrames;
+    private bool cursorReleasedByEscape;
     private bool cursorDiagnosticPending;
     private bool cursorDiagnosticSettling;
     private float cursorDiagnosticDeadline;
@@ -209,29 +214,53 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
 
     private void LateUpdate()
     {
+        UpdateCursorReleaseIntent(Application.isFocused, Input.GetKeyDown(KeyCode.Escape),
+            Input.GetMouseButtonDown(0), Input.mousePosition);
         RefreshCursorConfinement(Application.isFocused);
         EnsureThemeLoaded();
         PruneDeadOwners();
         RefreshDisplayState();
         ApplyResolvedCursor();
-        UpdateCursorPosition();
         LogPendingCursorDiagnostics();
     }
 
     private void OnEnable()
     {
+        if (Instance != this)
+            return;
+
+        DisableLegacyPresentation();
+        forceCursorTextureReapply = true;
         RefreshCursorConfinement(Application.isFocused);
     }
 
     private void OnApplicationFocus(bool hasFocus)
     {
         RefreshCursorConfinement(hasFocus);
+        if (hasFocus)
+            forceCursorTextureReapply = true;
     }
 
     private void OnDisable()
     {
-        if (Instance == this)
-            Cursor.lockState = CursorLockMode.None;
+        if (Instance != this)
+            return;
+
+        Cursor.lockState = CursorLockMode.None;
+        RestoreSystemCursor();
+    }
+
+    private void UpdateCursorReleaseIntent(bool hasFocus, bool escapePressed, bool pointerPressed, Vector2 pointer)
+    {
+        if (!hasFocus)
+            return;
+
+        // Escape wins if a click occurs in the same frame. Focus/display events retain this choice.
+        if (escapePressed)
+            cursorReleasedByEscape = true;
+        else if (pointerPressed && pointer.x >= 0f && pointer.y >= 0f &&
+                 pointer.x < Screen.width && pointer.y < Screen.height)
+            cursorReleasedByEscape = false;
     }
 
     private void RefreshCursorConfinement(bool hasFocus)
@@ -239,7 +268,7 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
         if (Instance != this)
             return;
 
-        CursorLockMode desired = hasFocus && isActiveAndEnabled
+        CursorLockMode desired = hasFocus && isActiveAndEnabled && !cursorReleasedByEscape
             ? CursorLockMode.Confined
             : CursorLockMode.None;
         // Display changes or focus transitions can reset the OS cursor constraint.
@@ -252,9 +281,11 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
         MouseCursorPlayback.UnregisterBackend(this);
 
         if (Instance == this)
+        {
+            RestoreSystemCursor();
             Instance = null;
+        }
 
-        RestoreSystemCursor();
         ReleaseGeneratedTextures();
     }
 
@@ -315,10 +346,9 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
     {
         LogCursorDiagnostic("display-request-before-cursor-reset");
         ScheduleCursorDiagnostics();
-        displayTransitionRecoveryFrames = Mathf.Max(displayTransitionRecoveryFrames, 60);
         ClearSystemCursorTexture();
         forceCursorTextureReapply = true;
-        Cursor.visible = true;
+        Cursor.visible = !HasAnyOwner(hiddenOwners);
     }
 
     private void SetOwnerFlag(Dictionary<int, OwnerFlag> owners, UnityEngine.Object owner, bool active)
@@ -342,79 +372,17 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
         ownerFlag.owner = owner;
     }
 
-    private void EnsureRuntimePresentation()
+    private void DisableLegacyPresentation()
     {
-        if (cursorCanvas != null && cursorRect != null && cursorImage != null)
-            return;
+        if (authoredCursorCanvas != null)
+            authoredCursorCanvas.enabled = false;
+        if (authoredCursorImage != null)
+            authoredCursorImage.enabled = false;
 
-        if (TryBindAuthoredRuntimePresentation())
-            return;
-
-        Transform canvasTransform = transform.Find("MouseCursorCanvas");
-        if (canvasTransform == null)
-        {
-            RuntimePresentationFallbackAudit.Record(
-                this,
-                "Mouse cursor canvas fallback",
-                "an authored cursor canvas/image under the cursor service prefab or global UI root");
-
-            GameObject canvasObject = new GameObject("MouseCursorCanvas", typeof(RectTransform), typeof(Canvas));
-            canvasTransform = canvasObject.transform;
-            canvasTransform.SetParent(transform, false);
-        }
-
-        Canvas canvas = canvasTransform.GetComponent<Canvas>();
-        if (canvas == null)
-            canvas = canvasTransform.gameObject.AddComponent<Canvas>();
-
-        cursorCanvas = canvas;
-        cursorCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        // Sorting order only applies within a layer; title UI also becomes an overlay.
-        cursorCanvas.sortingLayerID = SortingLayer.NameToID("UI");
-        cursorCanvas.overrideSorting = true;
-        cursorCanvas.sortingOrder = overlaySortingOrder;
-
-        Transform imageTransform = canvasTransform.Find("CursorImage");
-        if (imageTransform == null)
-        {
-            GameObject imageObject = new GameObject("CursorImage", typeof(RectTransform), typeof(Image));
-            imageTransform = imageObject.transform;
-            imageTransform.SetParent(canvasTransform, false);
-        }
-
-        cursorRect = imageTransform as RectTransform;
-        cursorImage = imageTransform.GetComponent<Image>();
-        if (cursorImage != null)
-            cursorImage.raycastTarget = false;
-
-        if (cursorRect != null)
-        {
-            cursorRect.anchorMin = Vector2.zero;
-            cursorRect.anchorMax = Vector2.zero;
-            cursorRect.anchoredPosition = Vector2.zero;
-        }
-    }
-
-    private bool TryBindAuthoredRuntimePresentation()
-    {
-        if (authoredCursorCanvas == null || authoredCursorImage == null)
-            return false;
-
-        cursorCanvas = authoredCursorCanvas;
-        cursorImage = authoredCursorImage;
-        cursorRect = authoredCursorRect != null ? authoredCursorRect : authoredCursorImage.rectTransform;
-        if (cursorRect == null)
-            return false;
-
-        cursorCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        cursorCanvas.sortingLayerID = SortingLayer.NameToID("UI");
-        cursorCanvas.overrideSorting = true;
-        cursorCanvas.sortingOrder = overlaySortingOrder;
-        cursorImage.raycastTarget = false;
-        cursorRect.anchorMin = Vector2.zero;
-        cursorRect.anchorMax = Vector2.zero;
-        cursorRect.anchoredPosition = Vector2.zero;
-        return true;
+        // Old authored children may exist without serialized references. Never create replacements.
+        Transform legacyCanvas = transform.Find("MouseCursorCanvas");
+        if (legacyCanvas != null)
+            legacyCanvas.gameObject.SetActive(false);
     }
 
     private void EnsureThemeLoaded()
@@ -489,7 +457,6 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
     {
         if (HasAnyOwner(hiddenOwners))
         {
-            HideSoftwareCursor();
             ClearSystemCursorTexture();
             Cursor.visible = false;
             return;
@@ -501,27 +468,14 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
         MouseCursorSpriteDefinition definition = ResolveDefinition(currentDomain, currentVariant);
         if (definition == null || definition.sprite == null)
         {
-            HideSoftwareCursor();
             RestoreSystemCursor();
             return;
         }
 
-        if (ShouldPreferHardwareCursor() && TryApplyHardwareCursor(definition))
-        {
-            HideSoftwareCursor();
+        if (TryApplyNativeCursor(definition))
             Cursor.visible = true;
-            return;
-        }
-
-        if (!ApplySoftwareCursor(definition))
+        else
             RestoreSystemCursor();
-    }
-
-    private bool ShouldPreferHardwareCursor()
-    {
-        return preferHardwareCursorWhenAvailable ||
-               preferHardwareCursorInExclusiveFullscreen &&
-               Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen;
     }
 
     private MouseCursorDomain ResolveDomain()
@@ -671,7 +625,7 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
         return definition != null && definition.sprite != null;
     }
 
-    private bool TryApplyHardwareCursor(MouseCursorSpriteDefinition definition)
+    private bool TryApplyNativeCursor(MouseCursorSpriteDefinition definition)
     {
         if (!TryResolveCursorTexture(definition, out Texture2D texture, out Vector2 hotspot))
             return false;
@@ -689,103 +643,86 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
     private bool TryResolveCursorTexture(MouseCursorSpriteDefinition definition, out Texture2D texture, out Vector2 hotspot)
     {
         texture = null;
-        hotspot = definition.hotspotPixels;
-
+        hotspot = Vector2.zero;
         Sprite sprite = definition.sprite;
-        if (sprite == null)
+        if (sprite == null || sprite.texture == null)
             return false;
-
-        Texture2D sourceTexture = sprite.texture;
-        if (sourceTexture == null)
-            return false;
-
-        Rect rect = sprite.rect;
-        bool usesFullTexture = Mathf.Approximately(rect.x, 0f) &&
-                               Mathf.Approximately(rect.y, 0f) &&
-                               Mathf.Approximately(rect.width, sourceTexture.width) &&
-                               Mathf.Approximately(rect.height, sourceTexture.height);
-        if (usesFullTexture)
-        {
-            texture = sourceTexture;
-            return true;
-        }
 
         int spriteId = sprite.GetInstanceID();
-        if (generatedCursorTextures.TryGetValue(spriteId, out Texture2D cachedTexture) && cachedTexture != null)
+        if (!generatedCursorTextures.TryGetValue(spriteId, out CursorTexture cached))
         {
-            texture = cachedTexture;
-            return true;
+            cached = new CursorTexture
+            {
+                sourceWidth = Mathf.RoundToInt(sprite.rect.width),
+                sourceHeight = Mathf.RoundToInt(sprite.rect.height)
+            };
+            cached.pixels = ReadSpritePixels(sprite, cached.sourceWidth, cached.sourceHeight);
+            generatedCursorTextures.Add(spriteId, cached);
         }
 
-        if (!sourceTexture.isReadable)
+        // Match Image.SetNativeSize on the former default Canvas (100 reference pixels/unit).
+        float scale = ResolveCursorScale(definition) * 100f / sprite.pixelsPerUnit;
+        int width = Mathf.Max(1, Mathf.RoundToInt(cached.sourceWidth * scale));
+        int height = Mathf.Max(1, Mathf.RoundToInt(cached.sourceHeight * scale));
+        if (cached.texture == null || cached.texture.width != width || cached.texture.height != height)
         {
-            if (unreadableSpriteWarnings.Add(spriteId))
+            Color32[] pixels = new Color32[width * height];
+            for (int y = 0; y < height; y++)
             {
-                CapstoneDiagnostics.EditorOnlyLog.LogWarning(
-                    $"[MouseCursorService] Sprite '{sprite.name}' uses only a sub-rect of a non-readable texture. Falling back to software cursor rendering.",
-                    this);
+                int sourceY = Mathf.Min(cached.sourceHeight - 1, (int)((y + 0.5f) * cached.sourceHeight / height));
+                for (int x = 0; x < width; x++)
+                {
+                    int sourceX = Mathf.Min(cached.sourceWidth - 1, (int)((x + 0.5f) * cached.sourceWidth / width));
+                    pixels[y * width + x] = cached.pixels[sourceY * cached.sourceWidth + sourceX];
+                }
             }
 
-            return false;
+            Texture2D resized = new Texture2D(width, height, TextureFormat.RGBA32, mipChain: false);
+            resized.name = $"{sprite.name}_Cursor_{width}x{height}";
+            resized.filterMode = FilterMode.Point;
+            resized.wrapMode = TextureWrapMode.Clamp;
+            resized.SetPixels32(pixels);
+            resized.Apply(updateMipmaps: false, makeNoLongerReadable: false);
+            if (cached.texture != null)
+                Destroy(cached.texture);
+            cached.texture = resized;
         }
 
-        int width = Mathf.RoundToInt(rect.width);
-        int height = Mathf.RoundToInt(rect.height);
-        if (width <= 0 || height <= 0)
-            return false;
-
-        Color[] pixels = sourceTexture.GetPixels(
-            Mathf.RoundToInt(rect.x),
-            Mathf.RoundToInt(rect.y),
-            width,
-            height);
-
-        Texture2D generatedTexture = new Texture2D(width, height, TextureFormat.RGBA32, mipChain: false);
-        generatedTexture.name = $"{sprite.name}_CursorTexture";
-        generatedTexture.filterMode = FilterMode.Point;
-        generatedTexture.wrapMode = TextureWrapMode.Clamp;
-        generatedTexture.SetPixels(pixels);
-        generatedTexture.Apply(updateMipmaps: false, makeNoLongerReadable: false);
-
-        generatedCursorTextures[spriteId] = generatedTexture;
-        texture = generatedTexture;
+        texture = cached.texture;
+        hotspot = new Vector2(
+            Mathf.Clamp(definition.hotspotPixels.x * width / cached.sourceWidth, 0f, width - 1f),
+            Mathf.Clamp(definition.hotspotPixels.y * height / cached.sourceHeight, 0f, height - 1f));
         return true;
     }
 
-    private bool ApplySoftwareCursor(MouseCursorSpriteDefinition definition)
+    private static Color32[] ReadSpritePixels(Sprite sprite, int width, int height)
     {
-        EnsureRuntimePresentation();
-        if (cursorImage == null || cursorRect == null)
+        // GPU readback also supports non-readable PNG/Aseprite imports without asset migration.
+        Texture2D source = sprite.texture;
+        RenderTexture previous = RenderTexture.active;
+        bool previousSrgbWrite = GL.sRGBWrite;
+        RenderTexture temporary = RenderTexture.GetTemporary(
+            source.width, source.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+        Texture2D readable = new Texture2D(width, height, TextureFormat.RGBA32, mipChain: false);
+        try
         {
-            HideSoftwareCursor();
-            return false;
+            GL.sRGBWrite = QualitySettings.activeColorSpace == ColorSpace.Linear;
+            Graphics.Blit(source, temporary);
+            RenderTexture.active = temporary;
+            // Preserve transparent padding and hotspots for trimmed, non-rotated sprites.
+            readable.SetPixels32(new Color32[width * height]);
+            Vector2 offset = sprite.textureRectOffset;
+            readable.ReadPixels(sprite.textureRect, Mathf.RoundToInt(offset.x), Mathf.RoundToInt(offset.y), false);
+            readable.Apply(updateMipmaps: false, makeNoLongerReadable: false);
+            return readable.GetPixels32();
         }
-
-        Sprite sprite = definition.sprite;
-        if (sprite == null)
+        finally
         {
-            HideSoftwareCursor();
-            return false;
+            RenderTexture.active = previous;
+            GL.sRGBWrite = previousSrgbWrite;
+            RenderTexture.ReleaseTemporary(temporary);
+            Destroy(readable);
         }
-
-        cursorImage.sprite = sprite;
-        cursorImage.enabled = true;
-        cursorImage.SetNativeSize();
-        cursorRect.localScale = Vector3.one * ResolveSoftwareCursorScale(definition);
-        cursorRect.pivot = ResolvePivot(sprite, definition.hotspotPixels);
-        cursorRect.SetAsLastSibling();
-
-        if (cursorCanvas != null)
-            cursorCanvas.enabled = true;
-
-        Cursor.visible = ShouldKeepSystemCursorVisibleWithSoftwareFallback() ||
-                         keepSystemCursorVisibleWhenUsingSoftwareCursor ||
-                         !hideSystemCursorWhileSpriteActive;
-        appliedCursorTexture = null;
-        appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
-        forceCursorTextureReapply = false;
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-        return true;
     }
 
     private void RefreshDisplayState()
@@ -816,7 +753,6 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
         lastFullScreenMode = fullScreenMode;
         ScheduleCursorDiagnostics();
         forceCursorTextureReapply = true;
-        displayTransitionRecoveryFrames = Mathf.Max(displayTransitionRecoveryFrames, 60);
     }
 
     // Diagnostic snapshots only: do not alter cursor recovery or rendering behavior.
@@ -844,53 +780,16 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
 
     private void LogCursorDiagnostic(string phase)
     {
-        var message = new System.Text.StringBuilder(1024);
-        message.Append($"[CursorDiagnostic] phase={phase} frame={Time.frameCount} " +
-            $"time={Time.realtimeSinceStartup:F2} service={GetInstanceID()} " +
+        Debug.Log($"[CursorDiagnostic] phase={phase} frame={Time.frameCount} " +
             $"screen={Screen.width}x{Screen.height} mode={Screen.fullScreenMode} " +
-            $"focused={Application.isFocused} mouse={Input.mousePosition} " +
-            $"systemVisible={Cursor.visible} lock={Cursor.lockState} " +
+            $"focused={Application.isFocused} visible={Cursor.visible} lock={Cursor.lockState} " +
             $"domain={currentDomain}/{currentVariant} hiddenOwners={hiddenOwners.Count} " +
-            $"hardwareTexture={(appliedCursorTexture != null ? appliedCursorTexture.name : "none")} " +
-            $"preferHardware={ShouldPreferHardwareCursor()} recoveryFrames={displayTransitionRecoveryFrames}");
-
-        if (cursorCanvas != null)
-            message.Append($" | cursorCanvas={cursorCanvas.name} id={cursorCanvas.GetInstanceID()} " +
-                $"enabled={cursorCanvas.enabled} active={cursorCanvas.gameObject.activeInHierarchy} " +
-                $"mode={cursorCanvas.renderMode} root={cursorCanvas.isRootCanvas} " +
-                $"layer={cursorCanvas.sortingLayerName} order={cursorCanvas.sortingOrder} " +
-                $"override={cursorCanvas.overrideSorting} display={cursorCanvas.targetDisplay} " +
-                $"pixelRect={cursorCanvas.pixelRect} scale={cursorCanvas.scaleFactor}");
-        else
-            message.Append(" | cursorCanvas=none");
-
-        if (cursorImage != null)
-            message.Append($" | imageEnabled={cursorImage.enabled} active={cursorImage.gameObject.activeInHierarchy} " +
-                $"sprite={(cursorImage.sprite != null ? cursorImage.sprite.name : "none")} " +
-                $"colorAlpha={cursorImage.color.a} rendererAlpha={cursorImage.canvasRenderer.GetAlpha()} " +
-                $"inheritedAlpha={cursorImage.canvasRenderer.GetInheritedAlpha()} culled={cursorImage.canvasRenderer.cull}");
-        if (cursorRect != null)
-            message.Append($" | cursorPosition={cursorRect.position} rect={cursorRect.rect} " +
-                $"lossyScale={cursorRect.lossyScale} pivot={cursorRect.pivot}");
-
-        // Capture competing canvases only at the bounded transition snapshots.
-        foreach (Canvas canvas in FindObjectsByType<Canvas>(FindObjectsSortMode.None))
-        {
-            if (!canvas.isActiveAndEnabled || (!canvas.isRootCanvas && !canvas.overrideSorting))
-                continue;
-            message.Append($" | canvas={canvas.name} id={canvas.GetInstanceID()} mode={canvas.renderMode} " +
-                $"layer={canvas.sortingLayerName} order={canvas.sortingOrder} display={canvas.targetDisplay}");
-        }
-        Debug.Log(message.ToString(), this);
+            $"backend=UnityCursorAPI cursorMode=Auto " +
+            $"texture={(appliedCursorTexture != null ? appliedCursorTexture.name : "system")} " +
+            $"hotspot={appliedCursorHotspot}", this);
     }
 
-    private bool ShouldKeepSystemCursorVisibleWithSoftwareFallback()
-    {
-        return keepSystemCursorVisibleInExclusiveFullscreenFallback &&
-               Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen;
-    }
-
-    private float ResolveSoftwareCursorScale(MouseCursorSpriteDefinition definition)
+    private float ResolveCursorScale(MouseCursorSpriteDefinition definition)
     {
         float authoredScale = definition != null ? Mathf.Max(0.1f, definition.scale) : 1f;
         if (!scaleWithScreenHeight)
@@ -899,79 +798,6 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
         float safeReferenceHeight = Mathf.Max(1f, referenceScreenHeight);
         float resolutionScale = Mathf.Clamp(Screen.height / safeReferenceHeight, minResolutionScale, maxResolutionScale);
         return authoredScale * resolutionScale;
-    }
-
-    private void UpdateCursorPosition()
-    {
-        if (displayTransitionRecoveryFrames > 0)
-            displayTransitionRecoveryFrames--;
-
-        if (cursorCanvas == null || cursorRect == null || cursorImage == null || !cursorImage.enabled)
-            return;
-
-        cursorRect.position = ResolveVisibleCursorPosition(Input.mousePosition);
-    }
-
-    private Vector2 ResolveVisibleCursorPosition(Vector2 rawPosition)
-    {
-        int screenWidth = Screen.width;
-        int screenHeight = Screen.height;
-        if (screenWidth <= 1 || screenHeight <= 1)
-            return HasFiniteComponents(rawPosition) ? rawPosition : Vector2.zero;
-
-        Vector2 cursorSize = ResolveVisibleCursorSize();
-        Vector2 pivot = cursorRect != null ? cursorRect.pivot : new Vector2(0f, 1f);
-
-        float minX = cursorSize.x * pivot.x;
-        float maxX = screenWidth - cursorSize.x * (1f - pivot.x);
-        float minY = cursorSize.y * pivot.y;
-        float maxY = screenHeight - cursorSize.y * (1f - pivot.y);
-
-        return new Vector2(
-            ClampToVisibleAxis(rawPosition.x, minX, maxX, screenWidth * 0.5f),
-            ClampToVisibleAxis(rawPosition.y, minY, maxY, screenHeight * 0.5f));
-    }
-
-    private Vector2 ResolveVisibleCursorSize()
-    {
-        if (cursorRect == null)
-            return Vector2.one;
-
-        Rect rect = cursorRect.rect;
-        Vector3 scale = cursorRect.lossyScale;
-        float width = Mathf.Abs(rect.width * scale.x);
-        float height = Mathf.Abs(rect.height * scale.y);
-        return new Vector2(Mathf.Max(1f, width), Mathf.Max(1f, height));
-    }
-
-    private static float ClampToVisibleAxis(float value, float min, float max, float fallback)
-    {
-        if (!IsFinite(value))
-            return fallback;
-
-        if (min > max)
-            return fallback;
-
-        return Mathf.Clamp(value, min, max);
-    }
-
-    private static bool HasFiniteComponents(Vector2 value)
-    {
-        return IsFinite(value.x) && IsFinite(value.y);
-    }
-
-    private static bool IsFinite(float value)
-    {
-        return !float.IsNaN(value) && !float.IsInfinity(value);
-    }
-
-    private void HideSoftwareCursor()
-    {
-        if (cursorCanvas != null)
-            cursorCanvas.enabled = false;
-
-        if (cursorImage != null)
-            cursorImage.enabled = false;
     }
 
     private void RestoreSystemCursor()
@@ -1002,27 +828,12 @@ public sealed class MouseCursorService : MonoBehaviour, IMouseCursorBackend
 
     private void ReleaseGeneratedTextures()
     {
-        foreach (Texture2D texture in generatedCursorTextures.Values)
+        foreach (CursorTexture cached in generatedCursorTextures.Values)
         {
-            if (texture != null)
-                Destroy(texture);
+            if (cached.texture != null)
+                Destroy(cached.texture);
         }
 
         generatedCursorTextures.Clear();
-        unreadableSpriteWarnings.Clear();
-    }
-
-    private static Vector2 ResolvePivot(Sprite sprite, Vector2 hotspotPixels)
-    {
-        if (sprite == null)
-            return new Vector2(0f, 1f);
-
-        Rect rect = sprite.rect;
-        if (rect.width <= 0f || rect.height <= 0f)
-            return new Vector2(0f, 1f);
-
-        float pivotX = Mathf.Clamp01(hotspotPixels.x / rect.width);
-        float pivotY = Mathf.Clamp01(1f - (hotspotPixels.y / rect.height));
-        return new Vector2(pivotX, pivotY);
     }
 }
