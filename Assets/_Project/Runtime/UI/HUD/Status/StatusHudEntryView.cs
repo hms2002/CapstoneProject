@@ -48,6 +48,13 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
     private float originalStackFontSize, originalStackOutlineWidth;
     private Color32 originalStackOutlineColor;
     private Color originalStackColor;
+    private Outline entryOutline;
+    private bool visualTreeReady;
+    private bool hasBoundEntry;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    public int DiagnosticVisualSetupCount { get; private set; }
+    public int DiagnosticStackFormatCount { get; private set; }
+#endif
 
 
     private void Awake()
@@ -57,12 +64,23 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
 
     private void OnDisable()
     {
+        hasBoundEntry = false;
         HideHoverIfNeeded();
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        visualTreeReady = false;
+        hasBoundEntry = false;
+    }
+#endif
 
     public void Bind(in StatusHudEntry entry)
     {
         EnsureVisualTree();
+        bool updateStack = !hasBoundEntry || currentEntry.ShowStacks != entry.ShowStacks ||
+            currentEntry.StackCount != entry.StackCount || currentEntry.ProgressText != entry.ProgressText;
         currentEntry = entry;
 
         gameObject.SetActive(entry.IsVisible);
@@ -84,8 +102,9 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
 
         bool hasProgress = !string.IsNullOrWhiteSpace(entry.ProgressText);
         SetProgressLayout(hasProgress);
-        stackText.text = hasProgress ? entry.ProgressText
-            : entry.ShowStacks && entry.StackCount > 0 ? entry.StackCount.ToString() : string.Empty;
+        if (updateStack)
+            stackText.text = hasProgress ? entry.ProgressText
+                : entry.ShowStacks && entry.StackCount > 0 ? FormatStack(entry.StackCount) : string.Empty;
         durationText.text = entry.ShowDuration && entry.RemainingTime > 0f
             ? entry.RemainingTime.ToString("0.0")
             : string.Empty;
@@ -101,8 +120,17 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
             durationFillImage.fillAmount = 0f;
         }
 
+        hasBoundEntry = true;
         if (isPointerHovering && UIManager.Instance != null)
             UIManager.Instance.ShowHover(StatusHudTooltipView.Instance, rectTransform, currentEntry);
+    }
+
+    private string FormatStack(int count)
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        DiagnosticStackFormatCount++;
+#endif
+        return count.ToString();
     }
 
     private void SetProgressLayout(bool enabled)
@@ -179,6 +207,14 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
     /// </summary>
     private void EnsureVisualTree()
     {
+        // Binding updates presentation values, not the already configured hierarchy/style.
+        if (visualTreeReady && rectTransform != null && backgroundImage != null &&
+            iconImage != null && durationFillImage != null && stackText != null &&
+            durationText != null && entryOutline != null)
+            return;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        DiagnosticVisualSetupCount++;
+#endif
         rectTransform ??= gameObject.GetComponent<RectTransform>();
         if (rectTransform == null ||
             backgroundImage == null ||
@@ -199,9 +235,9 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
 
         backgroundImage ??= gameObject.GetComponent<Image>() ?? gameObject.AddComponent<Image>();
         backgroundImage.color = backgroundColor;
-        Outline outline = gameObject.GetComponent<Outline>() ?? gameObject.AddComponent<Outline>();
-        outline.effectColor = outlineColor;
-        outline.effectDistance = outlineDistance;
+        entryOutline = gameObject.GetComponent<Outline>() ?? gameObject.AddComponent<Outline>();
+        entryOutline.effectColor = outlineColor;
+        entryOutline.effectDistance = outlineDistance;
 
         iconImage ??= CreateImage("Icon", iconOffsetMin, iconOffsetMax, 0);
         iconImage.preserveAspect = true;
@@ -214,6 +250,7 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
 
         stackText ??= CreateText("StackText", stackFontSize, TextAlignmentOptions.TopRight, new Vector2(0f, 0f), new Vector2(0f, 0f), stackOffsetMin, stackOffsetMax);
         durationText ??= CreateText("DurationText", durationFontSize, TextAlignmentOptions.Bottom, new Vector2(0f, 0f), new Vector2(1f, 0f), durationOffsetMin, durationOffsetMax);
+        visualTreeReady = true;
     }
 
     private Image CreateImage(string name, Vector2 offsetMin, Vector2 offsetMax, int siblingIndex)

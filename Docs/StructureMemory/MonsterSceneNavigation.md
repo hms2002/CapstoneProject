@@ -15,6 +15,13 @@ Navigation aid, not an Architecture or Contracts source of truth.
 - Fallback lookup caches active navigation, rejects foreign-scene or disabled references, and retries a miss at roughly one-second instance-staggered intervals. Re-enable resets fallback state. This is lookup recovery, not automatic runtime installation.
 - Ranged lane-aware pursuit remains in `EnemyChaseIntent2D`; stationary monsters stay stationary. Connection does not make every monster run A* each frame.
 
+## Per-query search optimization
+
+- `TilemapPathfinder2D` reuses walkability and minimum-goal-heuristic results only within one synchronous search. Both dictionaries clear at the start of every request; different bodies, changed floor tiles and moved/closed doors do not share results across requests.
+- Swept edge wall/hole checks remain unchanged. Cached cell occupancy must never replace segment validation. The open list and tie order remain unchanged; fixed neighbor offsets replace iterator allocation.
+- Dictionary capacity remains with the scene-local finder until destruction. Diagnostic evaluation counters are Editor/Development-only, not runtime logging.
+- `PathfinderPerformancePlayModeTests` records warmed CPU timing and baseline path fingerprints, and verifies thin walls, holes, body size/offset, changing geometry and diagonal corners. Allocation API calibration reports unavailable counters as -1 rather than claiming zero allocation. See `Logs/Performance/PathfinderOptimization_20260928.md` for the measured scope and limits.
+
 ## Authoring
 
 `Tools/Monsters/Navigation` provides Install In Active Scene, Validate Active Scene and Install All Monster Scenes.
