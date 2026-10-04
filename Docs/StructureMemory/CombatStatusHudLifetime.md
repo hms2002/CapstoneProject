@@ -16,3 +16,9 @@ Navigation aid; not an Architecture or Contracts source of truth.
 - Optional runtime `ProgressText` flows through `StatusApplyRequest` -> `ActiveStatusEntry` -> `StatusHudDefinition.CreateEntry` -> Core `StatusHudEntry`. No serialized definition fields or save schema were added. Sources can supply `N%` for percentage-based objectives; the existing two curses use counts.
 - `StatusHudEntryView` reuses the authored stack text in the center with a black TMP outline while progress is present. It restores the original anchors, offsets, alignment, font size, color and outline when a pooled entry returns to ordinary stacks. HUD owns no objective state.
 - Regression: `Tools/Validation/StatusTelegraphRecoveryRegression.cs` covers projection, zero count, percentage, completion and slot reuse.
+
+## Entry binding performance
+
+- `StatusHudEntryView` prepares its valid authored/fallback tree once and caches Outline. Editor OnValidate invalidates style preparation; no new runtime UI path was introduced.
+- Stack formatting is keyed by ShowStacks, StackCount and ProgressText. Disable invalidates binding so pool reuse redraws correctly. The full currentEntry is still replaced on every Bind for tooltip metadata; duration text, fill and hover retain their existing update cadence.
+- `StatusHudPerformancePlayModeTests` uses the production entry prefab and verifies setup/format suppression, timer updates, highlight, progress layout and reuse. See `Logs/Performance/StatusHudOptimization_20260928.md` for before/after evidence. The measured absolute savings are small; this is not a demonstrated frame-stall fix.

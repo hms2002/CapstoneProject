@@ -27,6 +27,20 @@ namespace UnityGAS
         private readonly RaycastHit2D[] wallClipHitBuffer = new RaycastHit2D[WallClipHitBufferSize];
         private AttackTelegraphSpec activeSpec;
         private AttackTelegraphStyle activeStyle;
+        private bool hasCachedGeometry;
+        private AttackTelegraphSpec cachedGeometrySpec;
+        private float cachedFillScale;
+        private Matrix4x4 cachedWorldToLocal;
+        private bool hasRigidPoseSource;
+        private AttackTelegraphSpec rigidPoseSourceSpec;
+        private Vector3 rigidPoseSourceOrigin;
+        private float rigidPoseSourceScale;
+        private Vector3[] rigidBorderSource;
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public int DiagnosticMeshRebuildCount { get; private set; }
+        public int DiagnosticPoseReuseCount { get; private set; }
+#endif
 
         public bool IsVisible => meshRenderer != null && meshRenderer.enabled;
 
@@ -47,7 +61,7 @@ namespace UnityGAS
             }
 
             ApplySorting(sortingReference);
-            ApplyStyle(style, normalizedProgress);
+            ApplyColors(style, normalizedProgress);
             meshRenderer.enabled = true;
         }
 
@@ -60,6 +74,11 @@ namespace UnityGAS
             if (IsVisible)
                 TryRebuildMesh(activeSpec, activeStyle, normalizedProgress);
 
+            ApplyColors(style, normalizedProgress);
+        }
+
+        private void ApplyColors(AttackTelegraphStyle style, float normalizedProgress)
+        {
             float curved = style != null && style.progressCurve != null
                 ? Mathf.Clamp01(style.progressCurve.Evaluate(normalizedProgress))
                 : normalizedProgress;
@@ -106,6 +125,8 @@ namespace UnityGAS
 
         public void HideImmediate()
         {
+            hasCachedGeometry = false;
+            hasRigidPoseSource = false;
             if (meshRenderer != null)
                 meshRenderer.enabled = false;
 
@@ -203,7 +224,109 @@ namespace UnityGAS
 
         private bool TryRebuildMesh(AttackTelegraphSpec spec, AttackTelegraphStyle style, float normalizedProgress)
         {
-            float fillScale = ResolveFillScale(style, normalizedProgress);
+            float fillScale = spec.shape == AttackTelegraphShape.Line
+                ? 1f : ResolveFillScale(style, normalizedProgress);
+            // Clipped geometry must observe moving doors/walls, even when the spec is unchanged.
+            bool canReuse = !spec.useWallClipping || spec.wallClipLayers.value == 0;
+            if (canReuse && hasCachedGeometry && cachedFillScale.Equals(fillScale) &&
+                SameGeometry(cachedGeometrySpec, spec) &&
+                cachedWorldToLocal.Equals(transform.worldToLocalMatrix))
+                return true;
+
+            if (canReuse && hasCachedGeometry && cachedFillScale.Equals(fillScale) && TryReuseRigidPose(spec))
+            {
+                cachedGeometrySpec = spec;
+                cachedWorldToLocal = transform.worldToLocalMatrix;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                DiagnosticPoseReuseCount++;
+#endif
+                return true;
+            }
+
+            hasCachedGeometry = false;
+            hasRigidPoseSource = false;
+            if (!RebuildMesh(spec, fillScale))
+                return false;
+
+            cachedGeometrySpec = spec;
+            cachedFillScale = fillScale;
+            cachedWorldToLocal = transform.worldToLocalMatrix;
+            hasCachedGeometry = canReuse;
+            // Growing fills rebuild anyway; avoid collecting an extra pose snapshot every frame.
+            if (canReuse && (style == null || !style.scaleFillWithProgress) &&
+                SupportsRigidPose(spec) && TryGetUniformPlanarScale(out rigidPoseSourceScale))
+            {
+                rigidPoseSourceSpec = spec;
+                rigidPoseSourceOrigin = transform.position;
+                int count = borderLineRenderer.positionCount;
+                if (rigidBorderSource == null || rigidBorderSource.Length != count)
+                    rigidBorderSource = new Vector3[count];
+                borderLineRenderer.GetPositions(rigidBorderSource);
+                hasRigidPoseSource = true;
+            }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DiagnosticMeshRebuildCount++;
+#endif
+            return true;
+        }
+
+        // Keep the existing world-space outline and width policy. Only mesh pose is reused;
+        // outline positions are transformed from the last full rebuild, never accumulated.
+        private bool TryReuseRigidPose(AttackTelegraphSpec spec)
+        {
+            if (!hasRigidPoseSource || !SupportsRigidPose(spec) ||
+                spec.shape != rigidPoseSourceSpec.shape || !spec.size.Equals(rigidPoseSourceSpec.size) ||
+                spec.wallClipSampleCount != rigidPoseSourceSpec.wallClipSampleCount ||
+                !spec.wallClipSkinWidth.Equals(rigidPoseSourceSpec.wallClipSkinWidth) ||
+                !TryGetUniformPlanarScale(out float scale) || !scale.Equals(rigidPoseSourceScale))
+                return false;
+
+            float angle = spec.shape == AttackTelegraphShape.Rectangle
+                ? spec.rotationDeg - rigidPoseSourceSpec.rotationDeg : 0f;
+            Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
+            Vector2 origin = spec.center;
+            if (spec.shape == AttackTelegraphShape.Rectangle)
+                origin -= (Vector2)(Quaternion.Euler(0f, 0f, spec.rotationDeg) * Vector3.right) *
+                    (Mathf.Max(0.01f, spec.size.x) * 0.5f);
+
+            transform.SetPositionAndRotation(origin, rotation);
+            EnsureBorderBuffer(rigidBorderSource.Length);
+            for (int i = 0; i < rigidBorderSource.Length; i++)
+                borderPositions[i] = (Vector3)origin + rotation * (rigidBorderSource[i] - rigidPoseSourceOrigin);
+            borderLineRenderer.SetPositions(borderPositions);
+            return true;
+        }
+
+        private static bool SupportsRigidPose(AttackTelegraphSpec spec)
+            => spec.shape == AttackTelegraphShape.Rectangle || spec.shape == AttackTelegraphShape.Circle;
+
+        private bool TryGetUniformPlanarScale(out float scale)
+        {
+            scale = 1f;
+            for (Transform current = transform; current != null; current = current.parent)
+            {
+                Vector3 localScale = current.localScale;
+                Quaternion rotation = current.localRotation;
+                // Reflection, shear or out-of-plane rotation require the existing world-to-local rebuild.
+                if (localScale.x <= 0f || !localScale.x.Equals(localScale.y) ||
+                    rotation.x != 0f || rotation.y != 0f)
+                    return false;
+                scale *= localScale.x;
+            }
+            return true;
+        }
+
+        private static bool SameGeometry(AttackTelegraphSpec a, AttackTelegraphSpec b)
+        {
+            return a.shape == b.shape && a.center.Equals(b.center) && a.size.Equals(b.size) &&
+                a.origin.Equals(b.origin) && a.lineStart.Equals(b.lineStart) && a.lineEnd.Equals(b.lineEnd) &&
+                a.rotationDeg.Equals(b.rotationDeg) && a.innerDiameter.Equals(b.innerDiameter) &&
+                a.sectorAngleDeg.Equals(b.sectorAngleDeg) && a.wallClipSampleCount == b.wallClipSampleCount &&
+                a.wallClipSkinWidth.Equals(b.wallClipSkinWidth);
+        }
+
+        private bool RebuildMesh(AttackTelegraphSpec spec, float fillScale)
+        {
             LayerMask wallLayers = spec.useWallClipping ? spec.wallClipLayers : default;
             borderLineRenderer.widthMultiplier = BorderWidth;
             switch (spec.shape)

@@ -79,6 +79,14 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     private readonly List<Vector2Int> openSet = new();
     private readonly HashSet<Vector2Int> goalCells = new();
     private readonly HashSet<Vector2Int> closedSet = new();
+    // A synchronous query has one footprint and goal set. Never share these results across queries.
+    private readonly Dictionary<Vector2Int, bool> queryWalkability = new();
+    private readonly Dictionary<Vector2Int, int> queryGoalEstimates = new();
+    private static readonly Vector2Int[] NeighborOffsets =
+    {
+        new(1, 0), new(-1, 0), new(0, 1), new(0, -1),
+        new(1, 1), new(1, -1), new(-1, 1), new(-1, -1)
+    };
     private readonly HashSet<Tilemap> runtimeGroundTilemaps = new();
     private readonly List<Vector2> lastDebugPath = new();
     private Vector2 lastDebugStart;
@@ -88,6 +96,9 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
     public string DiagnosticSearchResult { get; private set; } = "not-run";
     public int DiagnosticVisitedNodes { get; private set; }
+    public int DiagnosticWalkabilityProbes { get; private set; }
+    public int DiagnosticSegmentProbes { get; private set; }
+    public int DiagnosticHeuristicEvaluations { get; private set; }
 
     // Read-only snapshot of the navigation probe, not a second path search.
     public string DescribeWallStall(Vector2 position, Vector2 destination, MonsterNavigationFootprint2D footprint = default)
@@ -123,6 +134,8 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     public bool TryBuildPath(Vector2 startWorld, Vector2 endWorld, out IReadOnlyList<Vector2> path, MonsterNavigationFootprint2D footprint = default)
     {
         footprint = ResolveFootprint(footprint);
+        queryWalkability.Clear();
+        queryGoalEstimates.Clear();
         reusablePath.Clear();
         path = reusablePath;
         lastDebugStart = startWorld;
@@ -132,6 +145,9 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         DiagnosticSearchResult = "searching";
         DiagnosticVisitedNodes = 0;
+        DiagnosticWalkabilityProbes = 0;
+        DiagnosticSegmentProbes = 0;
+        DiagnosticHeuristicEvaluations = 0;
 #endif
 
         Vector2Int startCell = WorldToCell(startWorld);
@@ -200,8 +216,9 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
             openSet.RemoveAt(currentIndex);
             closedSet.Add(current);
 
-            foreach (Vector2Int neighbor in EnumerateNeighbors(current))
+            for (int neighborIndex = 0; neighborIndex < (allowDiagonal ? 8 : 4); neighborIndex++)
             {
+                Vector2Int neighbor = current + NeighborOffsets[neighborIndex];
                 if (!searchBounds.Contains(neighbor))
                     continue;
 
@@ -269,6 +286,9 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     /// </summary>
     public bool HasDirectWalkableSegment(Vector2 startWorld, Vector2 endWorld, MonsterNavigationFootprint2D footprint = default)
     {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        DiagnosticSegmentProbes++;
+#endif
         footprint = ResolveFootprint(footprint);
         Vector2 delta = endWorld - startWorld;
         float distance = delta.magnitude;
@@ -291,23 +311,6 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
             HoleFilter, holeCastHits, distance) == 0;
     }
 
-    /// <summary>현재 셀에서 이동 가능한 이웃 셀들을 순회합니다.</summary>
-    private IEnumerable<Vector2Int> EnumerateNeighbors(Vector2Int cell)
-    {
-        yield return new Vector2Int(cell.x + 1, cell.y);
-        yield return new Vector2Int(cell.x - 1, cell.y);
-        yield return new Vector2Int(cell.x, cell.y + 1);
-        yield return new Vector2Int(cell.x, cell.y - 1);
-
-        if (!allowDiagonal)
-            yield break;
-
-        yield return new Vector2Int(cell.x + 1, cell.y + 1);
-        yield return new Vector2Int(cell.x + 1, cell.y - 1);
-        yield return new Vector2Int(cell.x - 1, cell.y + 1);
-        yield return new Vector2Int(cell.x - 1, cell.y - 1);
-    }
-
     /// <summary>현재 열린 셀 목록에서 목표까지 예상 비용이 가장 낮은 셀 인덱스를 찾습니다.</summary>
     private int FindBestOpenIndex()
     {
@@ -317,8 +320,12 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
         for (int i = 0; i < openSet.Count; i++)
         {
             Vector2Int cell = openSet[i];
-            int estimate = int.MaxValue;
-            foreach (Vector2Int goal in goalCells) estimate = Mathf.Min(estimate, Heuristic(cell, goal));
+            if (!queryGoalEstimates.TryGetValue(cell, out int estimate))
+            {
+                estimate = int.MaxValue;
+                foreach (Vector2Int goal in goalCells) estimate = Mathf.Min(estimate, Heuristic(cell, goal));
+                queryGoalEstimates.Add(cell, estimate);
+            }
             int score = gScore[cell] + estimate;
             if (score < bestScore)
             {
@@ -380,6 +387,19 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
 
     private bool IsWalkable(Vector2Int cell, MonsterNavigationFootprint2D footprint)
     {
+        if (queryWalkability.TryGetValue(cell, out bool walkable))
+            return walkable;
+
+        walkable = EvaluateWalkability(cell, footprint);
+        queryWalkability.Add(cell, walkable);
+        return walkable;
+    }
+
+    private bool EvaluateWalkability(Vector2Int cell, MonsterNavigationFootprint2D footprint)
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        DiagnosticWalkabilityProbes++;
+#endif
         if (!HasGroundTile(cell))
             return false;
 
@@ -462,6 +482,9 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     /// <summary>휴리스틱 비용을 계산합니다.</summary>
     private int Heuristic(Vector2Int a, Vector2Int b)
     {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        DiagnosticHeuristicEvaluations++;
+#endif
         int dx = Mathf.Abs(a.x - b.x);
         int dy = Mathf.Abs(a.y - b.y);
         return allowDiagonal ? Mathf.Max(dx, dy) * 10 : (dx + dy) * 10;
