@@ -88,9 +88,9 @@ public class ChestInteractable : InteractableBase
     public override string GetInteractDescription()
     {
         if (killLock != null && !killLock.IsUnlocked)
-            return string.Format(lockedPromptFormat, killLock.RemainingAliveCount);
+            return string.Format(GameText.Get("interaction.chestinteractable.lockedpromptformat", lockedPromptFormat), killLock.RemainingAliveCount);
 
-        return openPromptText;
+        return GameText.Get("interaction.chestinteractable.openprompttext", openPromptText);
     }
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;

@@ -45,6 +45,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
 
     private bool isDeathSequenceRunning;
     private string lastDamageSourceName;
+    private string lastDamageSourceKey;
     private GameOverCauseKind lastDamageCauseKind = GameOverCauseKind.Monster;
     private GameplayTagSet deadControlBlockTagSet;
     private readonly HashSet<GameplayTag> deathTagsBuffer = new();
@@ -363,11 +364,22 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
         string targetHubSceneName,
         bool useSceneTransitionService)
     {
+        // Capture display identity before translating; gameplay cause classification stays unchanged.
+        string causeKey = causeKind == GameOverCauseKind.TimeOver ? "gameover.time_over_cause" : lastDamageSourceKey;
+        if (causeName == DefaultTrapCauseName)
+            causeKey = "code.gameoverpresentationcontroller.9bc5e20aaf";
+        else if (causeName == DefaultMonsterCauseName)
+            causeKey = "code.gameoverpresentationcontroller.b151220e53";
+        else if (causeName == "술에 붙은 불길")
+            causeKey = "gameover.fire_puddle";
+        if (causeKind == GameOverCauseKind.TimeOver) causeKey = "gameover.time_over_cause";
+        causeName = GameText.Get(causeKey, causeName);
         GameOverPresentationRequest request = causeKind == GameOverCauseKind.TimeOver
             ? GameOverPresentationRequest.TimeOver(transform, targetHubSceneName, useSceneTransitionService)
             : GameOverPresentationRequest.Defeat(transform, causeName, causeKind, targetHubSceneName, useSceneTransitionService);
 
         request.CauseName = string.IsNullOrWhiteSpace(causeName) ? request.CauseName : causeName;
+        request.CauseNameKey = causeKey;
         request.EndRunOnReturn = true;
         request.EndRunReason = endRunReason;
 
@@ -384,7 +396,15 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
             return;
 
         lastDamageSourceName = resolvedName;
+        lastDamageSourceKey = ResolveEnemyCauseKey(causer) ?? ResolveEnemyCauseKey(instigator);
         lastDamageCauseKind = ResolveCauseKind(resolvedName);
+    }
+
+    private static string ResolveEnemyCauseKey(object source)
+    {
+        GameObject host = source is GameObject go ? go : source is Component component ? component.gameObject : null;
+        Enemy enemy = host != null ? host.GetComponentInParent<Enemy>() : null;
+        return enemy != null ? GameText.AssetKey(enemy, "enemyName") : null;
     }
 
     private static string ResolveCauseName(object causer)
@@ -440,7 +460,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
             return null;
 
         Enemy enemy = source.GetComponentInParent<Enemy>();
-        return enemy != null ? SanitizeObjectName(enemy.EnemyName) : null;
+        return enemy != null ? SanitizeObjectName(enemy.DisplayName) : null;
     }
 
     private static string SanitizeObjectName(string objectName)

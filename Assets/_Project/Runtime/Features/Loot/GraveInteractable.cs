@@ -77,7 +77,7 @@ public class GraveInteractable : InteractableBase
 
     public override bool CanInteract(IPlayerInteractor player) => !isLooted && player != null && player.CurrentState == InteractState.Idle;
     public override InteractState GetInteractType() => InteractState.Idle;
-    public override string GetInteractDescription() => interactPromptText;
+    public override string GetInteractDescription() => GameText.Get("interaction.graveinteractable.interactprompttext", interactPromptText);
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
     public override void OnPlayerInteract(IPlayerInteractor player)

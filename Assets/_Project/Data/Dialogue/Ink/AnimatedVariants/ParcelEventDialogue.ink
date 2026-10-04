@@ -2,11 +2,11 @@
 # speaker: 4101
 # face: 4101: Normal
 # anim: normal
-거기, 투구 쓴 사람. 그래, 여기저기 돌아다니는 너.
-마왕성 구조가 또 바뀌었거든. 길 좀 외웠다 싶으면 이 모양이야. 덕분에 배달이 잔뜩 밀렸어.
-어차피 다음 구역으로 갈 거면, 옆에 쌓인 소포 좀 가져다줄래? 거기 배송 상자에 넣어 주면 돼.
-가방에 들어갈 만큼만 챙겨. 세 개면 충분해. 그 이상 맡겼다간 내가 농땡이 피운 줄 알 거 아냐.
-대신 가져간 건 끝까지 부탁해. 누군가는 목 빠지게 기다리는 물건이니까, 길에 버리고 가면 안 돼.
-빈손으로 부탁하는 건 아니야. 소포 하나마다 꽤 귀한 물건으로 사례할게. 그 정도면 해 볼 만하지?
-난 여기서 남은 것 좀 정리할 테니까, 준비되면 챙겨 가.
+거기, 투구 쓴 사람. 그래, 여기저기 돌아다니는 너. # loc:dialogue.parceleventdialogue.fdde45f8d7
+마왕성 구조가 또 바뀌었거든. 길 좀 외웠다 싶으면 이 모양이야. 덕분에 배달이 잔뜩 밀렸어. # loc:dialogue.parceleventdialogue.cb701ca51f
+어차피 다음 구역으로 갈 거면, 옆에 쌓인 소포 좀 가져다줄래? 거기 배송 상자에 넣어 주면 돼. # loc:dialogue.parceleventdialogue.2360a1e2e3
+가방에 들어갈 만큼만 챙겨. 세 개면 충분해. 그 이상 맡겼다간 내가 농땡이 피운 줄 알 거 아냐. # loc:dialogue.parceleventdialogue.f3c1952833
+대신 가져간 건 끝까지 부탁해. 누군가는 목 빠지게 기다리는 물건이니까, 길에 버리고 가면 안 돼. # loc:dialogue.parceleventdialogue.824344b7e6
+빈손으로 부탁하는 건 아니야. 소포 하나마다 꽤 귀한 물건으로 사례할게. 그 정도면 해 볼 만하지? # loc:dialogue.parceleventdialogue.5364b178db
+난 여기서 남은 것 좀 정리할 테니까, 준비되면 챙겨 가. # loc:dialogue.parceleventdialogue.cf33432b0c
 -> END

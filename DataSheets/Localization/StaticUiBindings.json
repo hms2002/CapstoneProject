@@ -1,0 +1,3748 @@
+{
+  "rows": [
+    {
+      "key": "ui.59d1bdee5588c7a479498050c355140e.911709170000000043",
+      "path": "Assets/_Project/Prefabs/UI/ChestUI.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "ChestUI/ChestScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "확정"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.725739894526856456",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/LevelUpPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "레벨업 가능"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.980919000000000010",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/WeaponSwapPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "무기 교체"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.6652912847072605710",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+      "field": "m_text",
+      "text": "메인 퀘스트"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.910913000000000013",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+      "field": "m_text",
+      "text": "마왕을 토벌하기 위해 전진하자."
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.910913000000000023",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/SubQuestHeading",
+      "field": "m_text",
+      "text": "서브 퀘스트"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.8620687982883683713",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "일시정지"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.5370726716884883298",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Resume/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "계속하기"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.1240219133469714557",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.4336757616084828052",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/ToTitle/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "메인 화면"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.7221799767385547015",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임종료"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.5205652078610141816",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.8531695574262776435",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.31563780200945105",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.5661658987962628542",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.8696438907223781666",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.8641358161749258056",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.6674218367146121904",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.8398896015272634982",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.3824489241034573567",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.5121694007916151682",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.9042550377915823491",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.3375295893321030724",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.2793336958056733864",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.5027649806269748425",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.8589628396417215700",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.8953073901465920600",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.3470112273884937614",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.1540573552400353567",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.911709170000000043",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/ChestInventoryScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "획득"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.912009200000000008",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.1682163956432234820",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/RewardCanvas/RewardPanel/Button/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기\n"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.9700000000000093",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/ReturnButton/Label",
+      "field": "m_text",
+      "text": "귀환"
+    },
+    {
+      "key": "ui.5e15651ae66572d459df089d6e5dc0b4.9700000000001093",
+      "path": "Assets/_Project/Prefabs/UI/GlobalUIRoot.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/GameOverInventoryButton/Label",
+      "field": "m_text",
+      "text": "인벤토리 확인"
+    },
+    {
+      "key": "ui.b5eaeac079f751342ba74d3465688636.1153145813432247256",
+      "path": "Assets/_Project/Prefabs/UI/KeyMapRow.prefab",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "KeyMapRow/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.881201560",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임 시작"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.1879462512",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정\n"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.2040164327",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임 종료\n"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.1403729277",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+      "field": "m_text",
+      "text": "삭제하기"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.484877678",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+      "field": "m_text",
+      "text": "삭제하기"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.1592965931",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+      "field": "m_text",
+      "text": "삭제하기"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.1851637749",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/TitleProfileSlotUI/WarningRoot/ButtonGroup/CancleButton/Text (TMP)",
+      "field": "m_text",
+      "text": "취소"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.719610567",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/TitleProfileSlotUI/WarningRoot/ButtonGroup/DeleteButton/Text (TMP)",
+      "field": "m_text",
+      "text": "삭제"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.24658304",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.1404984864",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.1066580994",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.2085050066",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.1628484049",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.643062369",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.150144853",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.561231326",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.1301841683",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.1833556754",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.1891794949",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.1562733205",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.1700131064",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.2136990745",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.823218620",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.1278323325",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.2075311439",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.cd86442ed1495fd4d8436f3c23100177.865514220",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.725739894526856456",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/LevelUpPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "레벨업 가능"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.980919000000000010",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/WeaponSwapPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "무기 교체"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.6652912847072605710",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+      "field": "m_text",
+      "text": "메인 퀘스트"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.910913000000000013",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+      "field": "m_text",
+      "text": "마왕을 토벌하기 위해 전진하자."
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.910913000000000023",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/SubQuestHeading",
+      "field": "m_text",
+      "text": "서브 퀘스트"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8620687982883683713",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "일시정지"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.5370726716884883298",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Resume/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "계속하기"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.1240219133469714557",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.4336757616084828052",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/ToTitle/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "메인 화면"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.7221799767385547015",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임종료"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.5205652078610141816",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8531695574262776435",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.31563780200945105",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.5661658987962628542",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8696438907223781666",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8641358161749258056",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.6674218367146121904",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8398896015272634982",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.3824489241034573567",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.5121694007916151682",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.9042550377915823491",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.3375295893321030724",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.2793336958056733864",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.5027649806269748425",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8589628396417215700",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8953073901465920600",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.3470112273884937614",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.1540573552400353567",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.911709170000000043",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/ChestInventoryScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "획득"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.912009200000000008",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.1682163956432234820",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/RewardCanvas/RewardPanel/Button/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기\n"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.9700000000000093",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/ReturnButton/Label",
+      "field": "m_text",
+      "text": "귀환"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.9700000000001093",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/GameOverInventoryButton/Label",
+      "field": "m_text",
+      "text": "인벤토리 확인"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8200000113",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "TutorialUpgrade_Blockout/Guide - 시작 지점",
+      "field": "m_text",
+      "text": "시작 지점"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8200000118",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "TutorialUpgrade_Blockout/Guide - ← 대쉬 통로",
+      "field": "m_text",
+      "text": "← 대쉬 통로"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8200000123",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "TutorialUpgrade_Blockout/Guide - 공격 · 스킬 · 상자",
+      "field": "m_text",
+      "text": "공격 · 스킬 · 상자"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8200000128",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "TutorialUpgrade_Blockout/Guide - 우클릭 충전 · 대상 4개",
+      "field": "m_text",
+      "text": "우클릭 충전 · 대상 4개"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8200000133",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "TutorialUpgrade_Blockout/Guide - Q 스킬 · 대상 3개",
+      "field": "m_text",
+      "text": "Q 스킬 · 대상 3개"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8200000138",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "TutorialUpgrade_Blockout/Guide - 상자 / 무기 교체 배치",
+      "field": "m_text",
+      "text": "상자 / 무기 교체 배치"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8200000143",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "TutorialUpgrade_Blockout/Guide - ↑ 보스전",
+      "field": "m_text",
+      "text": "↑ 보스전"
+    },
+    {
+      "key": "ui.80fd395adba94d2694477ce9b1c821d1.8200000148",
+      "path": "Assets/_Project/Scenes/PrototypeTutorialUpgradeScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "TutorialUpgrade_Blockout/Guide - 보스 전투 구역",
+      "field": "m_text",
+      "text": "보스 전투 구역"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.725739894526856456",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/LevelUpPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "레벨업 가능"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.980919000000000010",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/WeaponSwapPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "무기 교체"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.6652912847072605710",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+      "field": "m_text",
+      "text": "메인 퀘스트"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.910913000000000013",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+      "field": "m_text",
+      "text": "마왕을 토벌하기 위해 전진하자."
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.910913000000000023",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/SubQuestHeading",
+      "field": "m_text",
+      "text": "서브 퀘스트"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.8620687982883683713",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "일시정지"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.5370726716884883298",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Resume/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "계속하기"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.1240219133469714557",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.4336757616084828052",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/ToTitle/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "메인 화면"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.7221799767385547015",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임종료"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.5205652078610141816",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.8531695574262776435",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.31563780200945105",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.5661658987962628542",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.8696438907223781666",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.8641358161749258056",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.6674218367146121904",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.8398896015272634982",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.3824489241034573567",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.5121694007916151682",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.9042550377915823491",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.3375295893321030724",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.2793336958056733864",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.5027649806269748425",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.8589628396417215700",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.8953073901465920600",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.3470112273884937614",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.1540573552400353567",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.911709170000000043",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/ChestInventoryScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "획득"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.912009200000000008",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.1682163956432234820",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/RewardCanvas/RewardPanel/Button/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기\n"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.9700000000000093",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/ReturnButton/Label",
+      "field": "m_text",
+      "text": "귀환"
+    },
+    {
+      "key": "ui.8a047dbd44c874140b290b75337e2214.9700000000001093",
+      "path": "Assets/_Project/Scenes/DarkLord_Tutorial.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/GameOverInventoryButton/Label",
+      "field": "m_text",
+      "text": "인벤토리 확인"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.725739894526856456",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/LevelUpPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "레벨업 가능"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.980919000000000010",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/WeaponSwapPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "무기 교체"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.6652912847072605710",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+      "field": "m_text",
+      "text": "메인 퀘스트"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.910913000000000013",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+      "field": "m_text",
+      "text": "마왕을 토벌하기 위해 전진하자."
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.910913000000000023",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/SubQuestHeading",
+      "field": "m_text",
+      "text": "서브 퀘스트"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.8620687982883683713",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "일시정지"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.5370726716884883298",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Resume/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "계속하기"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.1240219133469714557",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.4336757616084828052",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/ToTitle/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "메인 화면"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.7221799767385547015",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임종료"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.5205652078610141816",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.8531695574262776435",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.31563780200945105",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.5661658987962628542",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.8696438907223781666",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.8641358161749258056",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.6674218367146121904",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.8398896015272634982",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.3824489241034573567",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.5121694007916151682",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.9042550377915823491",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.3375295893321030724",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.2793336958056733864",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.5027649806269748425",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.8589628396417215700",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.8953073901465920600",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.3470112273884937614",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.1540573552400353567",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.911709170000000043",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/ChestInventoryScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "획득"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.912009200000000008",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.1682163956432234820",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/RewardCanvas/RewardPanel/Button/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기\n"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.9700000000000093",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/ReturnButton/Label",
+      "field": "m_text",
+      "text": "귀환"
+    },
+    {
+      "key": "ui.1885b7f69a4ac174784d9d21fa889aa6.9700000000001093",
+      "path": "Assets/_Project/Scenes/ProtoTypeHub.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/GameOverInventoryButton/Label",
+      "field": "m_text",
+      "text": "인벤토리 확인"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.725739894526856456",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/LevelUpPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "레벨업 가능"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.980919000000000010",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/WeaponSwapPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "무기 교체"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.6652912847072605710",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+      "field": "m_text",
+      "text": "메인 퀘스트"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.910913000000000013",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+      "field": "m_text",
+      "text": "마왕을 토벌하기 위해 전진하자."
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.910913000000000023",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/SubQuestHeading",
+      "field": "m_text",
+      "text": "서브 퀘스트"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.8620687982883683713",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "일시정지"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.5370726716884883298",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Resume/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "계속하기"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.1240219133469714557",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.4336757616084828052",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/ToTitle/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "메인 화면"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.7221799767385547015",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임종료"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.5205652078610141816",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.8531695574262776435",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.31563780200945105",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.5661658987962628542",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.8696438907223781666",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.8641358161749258056",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.6674218367146121904",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.8398896015272634982",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.3824489241034573567",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.5121694007916151682",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.9042550377915823491",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.3375295893321030724",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.2793336958056733864",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.5027649806269748425",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.8589628396417215700",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.8953073901465920600",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.3470112273884937614",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.1540573552400353567",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.911709170000000043",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/ChestInventoryScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "획득"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.912009200000000008",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.1682163956432234820",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/RewardCanvas/RewardPanel/Button/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기\n"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.9700000000000093",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/ReturnButton/Label",
+      "field": "m_text",
+      "text": "귀환"
+    },
+    {
+      "key": "ui.f24251656cc0b71449518198fb0423b0.9700000000001093",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Shadow.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/GameOverInventoryButton/Label",
+      "field": "m_text",
+      "text": "인벤토리 확인"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.725739894526856456",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/LevelUpPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "레벨업 가능"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.980919000000000010",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/WeaponSwapPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "무기 교체"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.6652912847072605710",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+      "field": "m_text",
+      "text": "메인 퀘스트"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.910913000000000013",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+      "field": "m_text",
+      "text": "마왕을 토벌하기 위해 전진하자."
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.910913000000000023",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/SubQuestHeading",
+      "field": "m_text",
+      "text": "서브 퀘스트"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.8620687982883683713",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "일시정지"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.5370726716884883298",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Resume/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "계속하기"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.1240219133469714557",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.4336757616084828052",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/ToTitle/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "메인 화면"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.7221799767385547015",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임종료"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.5205652078610141816",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.8531695574262776435",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.31563780200945105",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.5661658987962628542",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.8696438907223781666",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.8641358161749258056",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.6674218367146121904",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.8398896015272634982",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.3824489241034573567",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.5121694007916151682",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.9042550377915823491",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.3375295893321030724",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.2793336958056733864",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.5027649806269748425",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.8589628396417215700",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.8953073901465920600",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.3470112273884937614",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.1540573552400353567",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.911709170000000043",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/ChestInventoryScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "획득"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.912009200000000008",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.1682163956432234820",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/RewardCanvas/RewardPanel/Button/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기\n"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.9700000000000093",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/ReturnButton/Label",
+      "field": "m_text",
+      "text": "귀환"
+    },
+    {
+      "key": "ui.a12f8757a34e86041902dbfa6e583af7.9700000000001093",
+      "path": "Assets/_Project/Scenes/HeoMinSeok_Boss_Dragon.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/GameOverInventoryButton/Label",
+      "field": "m_text",
+      "text": "인벤토리 확인"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.725739894526856456",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/LevelUpPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "레벨업 가능"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.980919000000000010",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/WeaponSwapPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "무기 교체"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.6652912847072605710",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+      "field": "m_text",
+      "text": "메인 퀘스트"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.910913000000000013",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+      "field": "m_text",
+      "text": "마왕을 토벌하기 위해 전진하자."
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.910913000000000023",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/SubQuestHeading",
+      "field": "m_text",
+      "text": "서브 퀘스트"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.8620687982883683713",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "일시정지"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.5370726716884883298",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Resume/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "계속하기"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.1240219133469714557",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.4336757616084828052",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/ToTitle/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "메인 화면"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.7221799767385547015",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임종료"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.5205652078610141816",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.8531695574262776435",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.31563780200945105",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.5661658987962628542",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.8696438907223781666",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.8641358161749258056",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.6674218367146121904",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.8398896015272634982",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.3824489241034573567",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.5121694007916151682",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.9042550377915823491",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.3375295893321030724",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.2793336958056733864",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.5027649806269748425",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.8589628396417215700",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.8953073901465920600",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.3470112273884937614",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.1540573552400353567",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.911709170000000043",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/ChestInventoryScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "획득"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.912009200000000008",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.1682163956432234820",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/RewardCanvas/RewardPanel/Button/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기\n"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.9700000000000093",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/ReturnButton/Label",
+      "field": "m_text",
+      "text": "귀환"
+    },
+    {
+      "key": "ui.9fda7339af9c20946807655a94cfc671.9700000000001093",
+      "path": "Assets/_Project/Scenes/SangHyup_Boss_SlimeQueen.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/GameOverInventoryButton/Label",
+      "field": "m_text",
+      "text": "인벤토리 확인"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.725739894526856456",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/LevelUpPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "레벨업 가능"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.980919000000000010",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/WeaponSwapPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "무기 교체"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.6652912847072605710",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+      "field": "m_text",
+      "text": "메인 퀘스트"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.910913000000000013",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+      "field": "m_text",
+      "text": "마왕을 토벌하기 위해 전진하자."
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.910913000000000023",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/SubQuestHeading",
+      "field": "m_text",
+      "text": "서브 퀘스트"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.8620687982883683713",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "일시정지"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.5370726716884883298",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Resume/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "계속하기"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.1240219133469714557",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.4336757616084828052",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/ToTitle/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "메인 화면"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.7221799767385547015",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임종료"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.5205652078610141816",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.8531695574262776435",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.31563780200945105",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.5661658987962628542",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.8696438907223781666",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.8641358161749258056",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.6674218367146121904",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.8398896015272634982",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.3824489241034573567",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.5121694007916151682",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.9042550377915823491",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.3375295893321030724",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.2793336958056733864",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.5027649806269748425",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.8589628396417215700",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.8953073901465920600",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.3470112273884937614",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.1540573552400353567",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.911709170000000043",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/ChestInventoryScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "획득"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.912009200000000008",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.1682163956432234820",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/RewardCanvas/RewardPanel/Button/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기\n"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.9700000000000093",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/ReturnButton/Label",
+      "field": "m_text",
+      "text": "귀환"
+    },
+    {
+      "key": "ui.2b9ae993eb2d68a4bac3df3d12e7e164.9700000000001093",
+      "path": "Assets/_Project/Scenes/DemonkingCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/GameOverInventoryButton/Label",
+      "field": "m_text",
+      "text": "인벤토리 확인"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.725739894526856456",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/LevelUpPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "레벨업 가능"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.980919000000000010",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/WeaponSwapPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "무기 교체"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.6652912847072605710",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+      "field": "m_text",
+      "text": "메인 퀘스트"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.910913000000000013",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+      "field": "m_text",
+      "text": "마왕을 토벌하기 위해 전진하자."
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.910913000000000023",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/SubQuestHeading",
+      "field": "m_text",
+      "text": "서브 퀘스트"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.8620687982883683713",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "일시정지"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.5370726716884883298",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Resume/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "계속하기"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.1240219133469714557",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.4336757616084828052",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/ToTitle/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "메인 화면"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.7221799767385547015",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임종료"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.5205652078610141816",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.8531695574262776435",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.31563780200945105",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.5661658987962628542",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.8696438907223781666",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.8641358161749258056",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.6674218367146121904",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.8398896015272634982",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.3824489241034573567",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.5121694007916151682",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.9042550377915823491",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.3375295893321030724",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.2793336958056733864",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.5027649806269748425",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.8589628396417215700",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.8953073901465920600",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.3470112273884937614",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.1540573552400353567",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.911709170000000043",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/ChestInventoryScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "획득"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.912009200000000008",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.1682163956432234820",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/RewardCanvas/RewardPanel/Button/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기\n"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.9700000000000093",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/ReturnButton/Label",
+      "field": "m_text",
+      "text": "귀환"
+    },
+    {
+      "key": "ui.0c24345d0b1badb4981f9aa3e94f0faa.9700000000001093",
+      "path": "Assets/_Project/Scenes/LeeJunmo_Boss_DemonKing.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/GameOverInventoryButton/Label",
+      "field": "m_text",
+      "text": "인벤토리 확인"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.725739894526856456",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/LevelUpPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "레벨업 가능"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.980919000000000010",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/WeaponSwapPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "무기 교체"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.6652912847072605710",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+      "field": "m_text",
+      "text": "메인 퀘스트"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.910913000000000013",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+      "field": "m_text",
+      "text": "마왕을 토벌하기 위해 전진하자."
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.910913000000000023",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/SubQuestHeading",
+      "field": "m_text",
+      "text": "서브 퀘스트"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.8620687982883683713",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "일시정지"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.5370726716884883298",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Resume/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "계속하기"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.1240219133469714557",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.4336757616084828052",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/ToTitle/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "메인 화면"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.7221799767385547015",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임종료"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.5205652078610141816",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.8531695574262776435",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.31563780200945105",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.5661658987962628542",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.8696438907223781666",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.8641358161749258056",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.6674218367146121904",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.8398896015272634982",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.3824489241034573567",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.5121694007916151682",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.9042550377915823491",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.3375295893321030724",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.2793336958056733864",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.5027649806269748425",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.8589628396417215700",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.8953073901465920600",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.3470112273884937614",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.1540573552400353567",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.911709170000000043",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/ChestInventoryScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "획득"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.912009200000000008",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.1682163956432234820",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/RewardCanvas/RewardPanel/Button/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기\n"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.9700000000000093",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/ReturnButton/Label",
+      "field": "m_text",
+      "text": "귀환"
+    },
+    {
+      "key": "ui.fb1addfa612992d459befe9a5dffd9b0.9700000000001093",
+      "path": "Assets/_Project/Scenes/ProceduralShadowCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/GameOverInventoryButton/Label",
+      "field": "m_text",
+      "text": "인벤토리 확인"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.725739894526856456",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/LevelUpPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "레벨업 가능"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.980919000000000010",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/WeaponSwapPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "무기 교체"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.6652912847072605710",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+      "field": "m_text",
+      "text": "메인 퀘스트"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.910913000000000013",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+      "field": "m_text",
+      "text": "마왕을 토벌하기 위해 전진하자."
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.910913000000000023",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/SubQuestHeading",
+      "field": "m_text",
+      "text": "서브 퀘스트"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.8620687982883683713",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "일시정지"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.5370726716884883298",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Resume/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "계속하기"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.1240219133469714557",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.4336757616084828052",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/ToTitle/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "메인 화면"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.7221799767385547015",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임종료"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.5205652078610141816",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.8531695574262776435",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.31563780200945105",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.5661658987962628542",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.8696438907223781666",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.8641358161749258056",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.6674218367146121904",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.8398896015272634982",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.3824489241034573567",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.5121694007916151682",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.9042550377915823491",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.3375295893321030724",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.2793336958056733864",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.5027649806269748425",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.8589628396417215700",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.8953073901465920600",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.3470112273884937614",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.1540573552400353567",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.911709170000000043",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/ChestInventoryScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "획득"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.912009200000000008",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.1682163956432234820",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/RewardCanvas/RewardPanel/Button/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기\n"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.9700000000000093",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/ReturnButton/Label",
+      "field": "m_text",
+      "text": "귀환"
+    },
+    {
+      "key": "ui.aaaa20fefbfca1840a91d25166fc3310.9700000000001093",
+      "path": "Assets/_Project/Scenes/ProceduralDragonCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/GameOverInventoryButton/Label",
+      "field": "m_text",
+      "text": "인벤토리 확인"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.725739894526856456",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/LevelUpPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "레벨업 가능"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.980919000000000010",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/WeaponSwapPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "무기 교체"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.6652912847072605710",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+      "field": "m_text",
+      "text": "메인 퀘스트"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.910913000000000013",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+      "field": "m_text",
+      "text": "마왕을 토벌하기 위해 전진하자."
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.910913000000000023",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/SubQuestHeading",
+      "field": "m_text",
+      "text": "서브 퀘스트"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.8620687982883683713",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "일시정지"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.5370726716884883298",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Resume/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "계속하기"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.1240219133469714557",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.4336757616084828052",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/ToTitle/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "메인 화면"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.7221799767385547015",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임종료"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.5205652078610141816",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.8531695574262776435",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.31563780200945105",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.5661658987962628542",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.8696438907223781666",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.8641358161749258056",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.6674218367146121904",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.8398896015272634982",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.3824489241034573567",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.5121694007916151682",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.9042550377915823491",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.3375295893321030724",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.2793336958056733864",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.5027649806269748425",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.8589628396417215700",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.8953073901465920600",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.3470112273884937614",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.1540573552400353567",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.911709170000000043",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/ChestInventoryScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "획득"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.912009200000000008",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.1682163956432234820",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/RewardCanvas/RewardPanel/Button/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기\n"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.9700000000000093",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/ReturnButton/Label",
+      "field": "m_text",
+      "text": "귀환"
+    },
+    {
+      "key": "ui.536c9b2d2a7730f43b03e02a1e449fab.9700000000001093",
+      "path": "Assets/_Project/Scenes/ProceduralSlimeCorridor.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/GameOverInventoryButton/Label",
+      "field": "m_text",
+      "text": "인벤토리 확인"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.725739894526856456",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/LevelUpPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "레벨업 가능"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.980919000000000010",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/WeaponSwapPrompt/Text (TMP)",
+      "field": "m_text",
+      "text": "무기 교체"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.6652912847072605710",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+      "field": "m_text",
+      "text": "메인 퀘스트"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.910913000000000013",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+      "field": "m_text",
+      "text": "마왕을 토벌하기 위해 전진하자."
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.910913000000000023",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/SubQuestHeading",
+      "field": "m_text",
+      "text": "서브 퀘스트"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.8620687982883683713",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "일시정지"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.5370726716884883298",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Resume/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "계속하기"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.1240219133469714557",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Setting/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.4336757616084828052",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/ToTitle/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "메인 화면"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.7221799767385547015",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/PauseUI/Background/Quit/SelectionBackground/Label",
+      "field": "m_text",
+      "text": "게임종료"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.5205652078610141816",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+      "field": "m_text",
+      "text": "화면 모드"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.8531695574262776435",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+      "field": "m_text",
+      "text": "해상도"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.31563780200945105",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "마스터 볼륨"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.5661658987962628542",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+      "field": "m_text",
+      "text": "효과음 볼륨"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.8696438907223781666",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+      "field": "m_text",
+      "text": "BGM 볼륨"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.8641358161749258056",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+      "field": "m_text",
+      "text": "화면 흔들림"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.6674218367146121904",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/UISize/OptionText",
+      "field": "m_text",
+      "text": "UI크기"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.8398896015272634982",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+      "field": "m_text",
+      "text": "언어"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.3824489241034573567",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+      "field": "m_text",
+      "text": "키 매핑 설정"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.5121694007916151682",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "설정"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.9042550377915823491",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.3375295893321030724",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.2793336958056733864",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+      "field": "m_text",
+      "text": "나가기"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.5027649806269748425",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ResetSlot/ResetAll/Text (TMP)",
+      "field": "m_text",
+      "text": "설정 초기화"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.8589628396417215700",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+      "field": "m_text",
+      "text": "적용하기"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.8953073901465920600",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/Background/TitleTextPanel/OptionTitle",
+      "field": "m_text",
+      "text": "키 설정"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.3470112273884937614",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/Yes/Text (TMP)",
+      "field": "m_text",
+      "text": "예"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.1540573552400353567",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/KeyMappingUI/GuideParent/GuideButtonGroup/No/Text (TMP)",
+      "field": "m_text",
+      "text": "아니오\n"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.911709170000000043",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/ChestInventoryScreen/ChestPanel/SelectedItemsPanel/ConfirmSelection/ConfirmLabel",
+      "field": "m_text",
+      "text": "획득"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.912009200000000008",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.1682163956432234820",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/RewardCanvas/RewardPanel/Button/Text (TMP)",
+      "field": "m_text",
+      "text": "닫기\n"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.9700000000000093",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/ReturnButton/Label",
+      "field": "m_text",
+      "text": "귀환"
+    },
+    {
+      "key": "ui.97ed3d74416c7a644b3688edb6a106da.9700000000001093",
+      "path": "Assets/_Project/Scenes/Grand Hall.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "GlobalUIRoot/GameOverCanvas/GameOverPresentationRoot/InfoGroup/GameOverInventoryButton/Label",
+      "field": "m_text",
+      "text": "인벤토리 확인"
+    },
+    {
+      "key": "title.profile.slot.1",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "슬롯 1"
+    },
+    {
+      "key": "title.profile.slot.3",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "슬롯 3"
+    },
+    {
+      "key": "title.profile.slot.2",
+      "path": "Assets/_Project/Scenes/TitleScene.unity",
+      "type": "TMPro.TextMeshProUGUI",
+      "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/TitleTextPanel/TopText",
+      "field": "m_text",
+      "text": "슬롯 2"
+    }
+  ]
+}

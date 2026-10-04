@@ -96,7 +96,7 @@ public sealed class AlarmBellEncounterDefinitionSO : ScriptableObject
     [SerializeField] private List<AlarmBellEncounterTier> tiers = new();
 
     public string EventId => eventId;
-    public string InteractPromptText => interactPromptText;
+    public string InteractPromptText => GameText.Asset(this, "interactPromptText", interactPromptText);
     public float ActivationDelaySeconds => Mathf.Max(0f, activationDelaySeconds);
     public float NextWaveDelaySeconds => Mathf.Max(0f, nextWaveDelaySeconds);
     public float MinimumPlayerSpawnDistance => Mathf.Max(0f, minimumPlayerSpawnDistance);

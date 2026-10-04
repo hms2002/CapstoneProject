@@ -182,7 +182,7 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
             return;
         }
 
-        ShowLegacyWeapon(entry.DisplayName, entry.Id, entry.Image, entry.stageText, null);
+        ShowLegacyWeapon(entry.DisplayName, entry.Id, entry.Image, entry.StageText, null);
     }
 
     public void ShowWeapon(WeaponDefinition weapon)
@@ -193,7 +193,7 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
             return;
         }
 
-        ShowInventoryItem(weapon, "무기", () => ShowLegacyWeapon(GetDisplayName(weapon), weapon.weaponId, weapon.icon, string.Empty, weapon));
+        ShowInventoryItem(weapon, GameText.Get("code.encyclopediadetailpanel.8c4dac1fcc", "무기"), () => ShowLegacyWeapon(GetDisplayName(weapon), weapon.weaponId, weapon.icon, string.Empty, weapon));
     }
 
     public void ShowRelic(RelicDefinition relic)
@@ -204,7 +204,7 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
             return;
         }
 
-        ShowInventoryItem(relic, "유물", () => ShowLegacyItem(relic, "유물", relic.relicId, relic.description));
+        ShowInventoryItem(relic, GameText.Get("code.encyclopediadetailpanel.b949ada423", "유물"), () => ShowLegacyItem(relic, GameText.Get("code.encyclopediadetailpanel.b949ada423", "유물"), relic.relicId, GameText.Asset(relic, "description", relic.description)));
     }
 
     public void ShowConsumable(ConsumableDefinition consumable)
@@ -215,7 +215,7 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
             return;
         }
 
-        ShowInventoryItem(consumable, "소모품", () => ShowLegacyItem(consumable, "소모품", consumable.consumableId, consumable.description));
+        ShowInventoryItem(consumable, GameText.Get("code.encyclopediadetailpanel.fd06a09504", "소모품"), () => ShowLegacyItem(consumable, GameText.Get("code.encyclopediadetailpanel.fd06a09504", "소모품"), consumable.consumableId, GameText.Asset(consumable, "description", consumable.description)));
     }
 
     public void ShowMonster(EncyclopediaMonsterEntry entry)
@@ -232,15 +232,15 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
         HideInventoryViews();
         SetLegacyMode(weaponMode: false, bossMode: false);
         SetImage(iconImage, entry.image);
-        SetText(titleText, entry.displayName);
-        SetText(subtitleText, "몬스터");
+        SetText(titleText, entry.DisplayName);
+        SetText(subtitleText, GameText.Get("code.encyclopediadetailpanel.fa2390684b", "몬스터"));
         SetText(metadataText, BuildMetadata(
-            FormatLabeledLine("분류", entry.type),
-            FormatLabeledLine("공격 방식", entry.attackStyle),
-            FormatLabeledLine("등장 구역", entry.stageText)));
-        SetText(legacyAttackStyleText, FormatLabeledLine("공격 방식", entry.attackStyle));
-        SetText(legacyStageText, FormatLabeledLine("등장 구역", entry.stageText));
-        SetText(storyText, string.IsNullOrWhiteSpace(entry.storyText) ? "설명 준비 중" : entry.storyText);
+            FormatLabeledLine(GameText.Get("code.encyclopediadetailpanel.8b1d74f0c2", "분류"), entry.type),
+            FormatLabeledLine(GameText.Get("code.encyclopediadetailpanel.f465d8a381", "공격 방식"), entry.AttackStyle),
+            FormatLabeledLine(GameText.Get("code.encyclopediadetailpanel.082c060ddf", "등장 구역"), entry.StageText)));
+        SetText(legacyAttackStyleText, FormatLabeledLine(GameText.Get("code.encyclopediadetailpanel.f465d8a381", "공격 방식"), entry.AttackStyle));
+        SetText(legacyStageText, FormatLabeledLine(GameText.Get("code.encyclopediadetailpanel.082c060ddf", "등장 구역"), entry.StageText));
+        SetText(storyText, string.IsNullOrWhiteSpace(entry.StoryText) ? GameText.Get("code.encyclopediadetailpanel.c6793d9ba0", "설명 준비 중") : entry.StoryText);
         SetText(weaponStatsText, string.Empty);
         SetText(weaponAbilitiesText, string.Empty);
         SetText(bossAffectionText, string.Empty);
@@ -262,15 +262,15 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
         HideInventoryViews();
         SetLegacyMode(weaponMode: false, bossMode: true);
         SetImage(iconImage, entry.image);
-        SetText(titleText, entry.displayName);
-        SetText(subtitleText, "보스");
+        SetText(titleText, entry.DisplayName);
+        SetText(subtitleText, GameText.Get("code.encyclopediadetailpanel.792e7e43e5", "보스"));
         SetText(metadataText, BuildMetadata(
-            FormatLabeledLine("분류", entry.type),
-            FormatLabeledLine("공격 방식", entry.attackStyle),
-            FormatLabeledLine("등장 구역", entry.stageText)));
-        SetText(legacyAttackStyleText, FormatLabeledLine("공격 방식", entry.attackStyle));
-        SetText(legacyStageText, FormatLabeledLine("등장 구역", entry.stageText));
-        SetText(storyText, string.IsNullOrWhiteSpace(entry.storyText) ? "설명 준비 중" : entry.storyText);
+            FormatLabeledLine(GameText.Get("code.encyclopediadetailpanel.8b1d74f0c2", "분류"), entry.type),
+            FormatLabeledLine(GameText.Get("code.encyclopediadetailpanel.f465d8a381", "공격 방식"), entry.AttackStyle),
+            FormatLabeledLine(GameText.Get("code.encyclopediadetailpanel.082c060ddf", "등장 구역"), entry.StageText)));
+        SetText(legacyAttackStyleText, FormatLabeledLine(GameText.Get("code.encyclopediadetailpanel.f465d8a381", "공격 방식"), entry.AttackStyle));
+        SetText(legacyStageText, FormatLabeledLine(GameText.Get("code.encyclopediadetailpanel.082c060ddf", "등장 구역"), entry.StageText));
+        SetText(storyText, string.IsNullOrWhiteSpace(entry.StoryText) ? GameText.Get("code.encyclopediadetailpanel.c6793d9ba0", "설명 준비 중") : entry.StoryText);
         SetText(weaponStatsText, string.Empty);
         SetText(weaponAbilitiesText, string.Empty);
         SetText(bossAffectionText, BuildBossAffectionText(entry.npcData));
@@ -386,11 +386,11 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
         SetLegacyMode(weaponMode: true, bossMode: false);
         SetImage(iconImage, icon);
         SetText(titleText, displayName);
-        SetText(subtitleText, "무기");
+        SetText(subtitleText, GameText.Get("code.encyclopediadetailpanel.8c4dac1fcc", "무기"));
         SetText(metadataText, BuildMetadata(
             FormatLabeledLine("ID", itemId),
-            FormatLabeledLine("등장 구역", stageText)));
-        SetText(storyText, weapon != null && !string.IsNullOrWhiteSpace(weapon.storyText) ? weapon.storyText : "설명 준비 중");
+            FormatLabeledLine(GameText.Get("code.encyclopediadetailpanel.082c060ddf", "등장 구역"), stageText)));
+        SetText(storyText, weapon != null && !string.IsNullOrWhiteSpace(GameText.Asset(weapon, "storyText", weapon.storyText)) ? GameText.Asset(weapon, "storyText", weapon.storyText) : GameText.Get("code.encyclopediadetailpanel.c6793d9ba0", "설명 준비 중"));
         SetText(weaponStatsText, BuildWeaponStatsText(weapon));
         SetText(weaponAbilitiesText, BuildWeaponAbilitiesText(weapon));
     }
@@ -403,7 +403,7 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
         SetText(titleText, item != null ? item.DisplayName : string.Empty);
         SetText(subtitleText, subtitle);
         SetText(metadataText, FormatLabeledLine("ID", itemId));
-        SetText(storyText, string.IsNullOrWhiteSpace(description) ? "설명 준비 중" : FormatText(description));
+        SetText(storyText, string.IsNullOrWhiteSpace(description) ? GameText.Get("code.encyclopediadetailpanel.c6793d9ba0", "설명 준비 중") : FormatText(description));
     }
 
     private void QueueScrollReset()
@@ -483,7 +483,7 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
         if (glossary != null && glossary.TryGet(key, out string description))
             glossaryPopup.Show(key, description);
         else
-            glossaryPopup.Show(key, "설명 준비 중");
+            glossaryPopup.Show(key, GameText.Get("code.encyclopediadetailpanel.c6793d9ba0", "설명 준비 중"));
     }
 
     private void SetHeaderLevelSuffix(string text)
@@ -545,7 +545,7 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
     private string BuildWeaponStatsText(WeaponDefinition weapon)
     {
         if (weapon == null || weapon.statModifiers == null || weapon.statModifiers.Count == 0)
-            return "스탯 변경 없음";
+            return GameText.Get("code.encyclopediadetailpanel.e3f3e5b105", "스탯 변경 없음");
 
         builder.Clear();
         for (int i = 0; i < weapon.statModifiers.Count; i++)
@@ -553,7 +553,7 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
             WeaponDefinition.WeaponStatModifier modifier = weapon.statModifiers[i];
             string label = !string.IsNullOrWhiteSpace(modifier.labelOverride)
                 ? modifier.labelOverride
-                : modifier.attribute != null ? modifier.attribute.attributeName : "Unknown";
+                : modifier.attribute != null ? modifier.attribute.DisplayName : "Unknown";
             string value = FormatModifierValue(modifier.type, modifier.value);
             builder.Append(label).Append(": ").Append(value);
 
@@ -567,14 +567,14 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
     private string BuildWeaponAbilitiesText(WeaponDefinition weapon)
     {
         if (weapon == null)
-            return "스킬 데이터 없음";
+            return GameText.Get("code.encyclopediadetailpanel.9c17813ec1", "스킬 데이터 없음");
 
         builder.Clear();
-        AppendAbility(builder, "기본 공격", weapon.attackInputHint, weapon.GetAbility(WeaponAbilitySlot.Attack));
-        AppendAbility(builder, "스킬 1", weapon.skill1InputHint, weapon.GetAbility(WeaponAbilitySlot.Skill1));
-        AppendAbility(builder, "스킬 2", weapon.skill2InputHint, weapon.GetAbility(WeaponAbilitySlot.Skill2));
+        AppendAbility(builder, GameText.Get("code.encyclopediadetailpanel.065f292f33", "기본 공격"), weapon.attackInputHint, weapon.GetAbility(WeaponAbilitySlot.Attack));
+        AppendAbility(builder, GameText.Get("code.encyclopediadetailpanel.a091200702", "스킬 1"), weapon.skill1InputHint, weapon.GetAbility(WeaponAbilitySlot.Skill1));
+        AppendAbility(builder, GameText.Get("code.encyclopediadetailpanel.01d28c5504", "스킬 2"), weapon.skill2InputHint, weapon.GetAbility(WeaponAbilitySlot.Skill2));
 
-        return builder.Length > 0 ? builder.ToString() : "스킬 데이터 없음";
+        return builder.Length > 0 ? builder.ToString() : GameText.Get("code.encyclopediadetailpanel.9c17813ec1", "스킬 데이터 없음");
     }
 
     private static void AppendAbility(StringBuilder target, string slotLabel, string inputHint, AbilityDefinition ability)
@@ -589,34 +589,34 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
         if (!string.IsNullOrWhiteSpace(inputHint))
             target.Append(" (").Append(inputHint).Append(')');
 
-        target.Append(": ").Append(string.IsNullOrWhiteSpace(ability.abilityName) ? ability.name : ability.abilityName);
+        target.Append(": ").Append(string.IsNullOrWhiteSpace(ability.DisplayName) ? ability.name : ability.DisplayName);
 
         if (ability.cooldown > 0f)
             target.Append(" / ").Append(ability.cooldown.ToString("0.##", CultureInfo.InvariantCulture)).Append("s");
 
-        if (!string.IsNullOrWhiteSpace(ability.description))
-            target.AppendLine().Append(ability.description);
+        if (!string.IsNullOrWhiteSpace(ability.Description))
+            target.AppendLine().Append(ability.Description);
     }
 
     private string BuildBossAffectionText(NPCData npcData)
     {
         if (npcData == null)
-            return "호감도 데이터 미연결";
+            return GameText.Get("code.encyclopediadetailpanel.3f92db343c", "호감도 데이터 미연결");
 
         int currentAffection = AffectionManager.Instance != null
             ? AffectionManager.Instance.GetAffection(npcData.id)
             : 0;
 
-        return $"현재 호감도: {currentAffection}";
+        return GameText.Format("code.encyclopediadetailpanel.0ecfc0b16e", "현재 호감도: {0}", currentAffection);
     }
 
     private string BuildBossRewardText(NPCData npcData)
     {
         if (npcData == null)
-            return "보상 데이터 미연결";
+            return GameText.Get("code.encyclopediadetailpanel.1557bfa715", "보상 데이터 미연결");
 
         if (npcData.affectionRewards == null || npcData.affectionRewards.Count == 0)
-            return "등록된 호감도 보상 없음";
+            return GameText.Get("code.encyclopediadetailpanel.5df09cdf01", "등록된 호감도 보상 없음");
 
         int currentAffection = AffectionManager.Instance != null
             ? AffectionManager.Instance.GetAffection(npcData.id)
@@ -626,10 +626,10 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
         for (int i = 0; i < npcData.affectionRewards.Count; i++)
         {
             AffectionReward reward = npcData.affectionRewards[i];
-            string state = currentAffection >= reward.targetLevel ? "해금" : "미해금";
-            string rewardText = reward.effect != null && !string.IsNullOrWhiteSpace(reward.effect.rewardText)
-                ? reward.effect.rewardText
-                : "보상 설명 준비 중";
+            string state = currentAffection >= reward.targetLevel ? GameText.Get("code.encyclopediadetailpanel.d1496ce82d", "해금") : GameText.Get("code.encyclopediadetailpanel.b35f488f01", "미해금");
+            string rewardText = reward.effect != null && !string.IsNullOrWhiteSpace(reward.effect.RewardText)
+                ? reward.effect.RewardText
+                : GameText.Get("code.encyclopediadetailpanel.00333329dd", "보상 설명 준비 중");
 
             builder.Append('[').Append(state).Append("] ")
                 .Append(reward.targetLevel).Append(": ")
@@ -647,8 +647,8 @@ public sealed class EncyclopediaDetailPanel : MonoBehaviour
         if (weapon == null)
             return string.Empty;
 
-        if (!string.IsNullOrWhiteSpace(weapon.displayName))
-            return weapon.displayName;
+        if (!string.IsNullOrWhiteSpace(weapon.DisplayName))
+            return weapon.DisplayName;
 
         return !string.IsNullOrWhiteSpace(weapon.weaponId) ? weapon.weaponId : weapon.name;
     }

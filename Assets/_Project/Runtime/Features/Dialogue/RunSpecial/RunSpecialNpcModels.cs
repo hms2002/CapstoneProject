@@ -27,6 +27,9 @@ public enum RunSpecialNpcChoiceAction
 [Serializable]
 public sealed class RunSpecialNpcLine
 {
+    [NonSerialized] private ScriptableObject localizationOwner;
+    [NonSerialized] private string localizationPath;
+    internal void BindLocalization(ScriptableObject owner, string path) { localizationOwner = owner; localizationPath = path; }
     [SerializeField, TextArea] private string text;
     [SerializeField, Min(0.05f)] private float duration = 2.5f;
     [SerializeField] private SpeechBubbleThemeSettings theme;
@@ -45,7 +48,7 @@ public sealed class RunSpecialNpcLine
         this.theme = theme ?? new SpeechBubbleThemeSettings();
     }
 
-    public string Text => text;
+    public string Text => GameText.Asset(localizationOwner, localizationPath + ".text", text);
     public float Duration => duration;
     public SpeechBubbleThemeSettings Theme => theme;
 }
@@ -53,6 +56,20 @@ public sealed class RunSpecialNpcLine
 [Serializable]
 public sealed class RunSpecialNpcChoiceDefinition
 {
+    [NonSerialized] private ScriptableObject localizationOwner;
+    [NonSerialized] private string localizationPath;
+    internal void BindLocalization(ScriptableObject owner, string path)
+    {
+        localizationOwner = owner;
+        localizationPath = path;
+        BindLines(responseLines, owner, path + ".responseLines");
+        BindLines(unavailableResponseLines, owner, path + ".unavailableResponseLines");
+    }
+    private static void BindLines(RunSpecialNpcLine[] lines, ScriptableObject owner, string path)
+    {
+        if (lines == null) return;
+        for (int i = 0; i < lines.Length; i++) lines[i]?.BindLocalization(owner, $"{path}.Array.data[{i}]");
+    }
     [SerializeField, TextArea] private string label = "Choice";
     [SerializeField] private bool hideWhenActionUnavailable;
     [SerializeField] private RunSpecialNpcChoiceAction action;
@@ -77,7 +94,7 @@ public sealed class RunSpecialNpcChoiceDefinition
         this.unavailableResponseLines = unavailableResponseLines ?? Array.Empty<RunSpecialNpcLine>();
     }
 
-    public string Label => label;
+    public string Label => GameText.Asset(localizationOwner, localizationPath + ".label", label);
     public bool HideWhenActionUnavailable => hideWhenActionUnavailable;
     public RunSpecialNpcChoiceAction Action => action;
     public RunSpecialNpcLine[] ResponseLines => responseLines;
@@ -129,6 +146,13 @@ public sealed class RunSpecialNpcChoiceDefinition
 [Serializable]
 public sealed class RunSpecialNpcDialogueBranchDefinition
 {
+    internal void BindLocalization(ScriptableObject owner, string path)
+    {
+        if (lines != null)
+            for (int i = 0; i < lines.Length; i++) lines[i]?.BindLocalization(owner, $"{path}.lines.Array.data[{i}]");
+        if (choices != null)
+            for (int i = 0; i < choices.Length; i++) choices[i]?.BindLocalization(owner, $"{path}.choices.Array.data[{i}]");
+    }
     [SerializeField] private RunSpecialNpcLine[] lines = Array.Empty<RunSpecialNpcLine>();
     [SerializeField] private RunSpecialNpcChoiceDefinition[] choices = Array.Empty<RunSpecialNpcChoiceDefinition>();
 

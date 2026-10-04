@@ -42,6 +42,7 @@ public sealed class TitleProfileSlotPanelUI : MonoBehaviour, ICloseRequestHandle
     private int pendingDeleteSlotIndex = -1;
     private Coroutine activeFadeCoroutine;
     private Coroutine activeCloseLeadCoroutine;
+    private bool refreshWhenLocalizationReady;
 
     public bool IsActive => gameObject.activeSelf && !isClosing;
 
@@ -55,8 +56,35 @@ public sealed class TitleProfileSlotPanelUI : MonoBehaviour, ICloseRequestHandle
         SetPanelContentInteractable(false);
     }
 
+    private void OnEnable()
+    {
+        refreshWhenLocalizationReady = !UnityEngine.Localization.Settings.LocalizationSettings.InitializationOperation.IsDone;
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
+    }
+
+    private void Update()
+    {
+        if (!refreshWhenLocalizationReady || !UnityEngine.Localization.Settings.LocalizationSettings.InitializationOperation.IsDone) return;
+        refreshWhenLocalizationReady = false;
+        HandleLocaleChanged(UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale);
+    }
+
+    private void HandleLocaleChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (!IsActive) return;
+        RefreshTexts();
+        var service = TitleProfileSlotService.Instance;
+        if (service == null) return;
+        for (int index = 0; index < slotCards.Count && index < service.SlotCount; index++)
+            if (slotCards[index] != null)
+                slotCards[index].RefreshLocalizedText(service.GetSlotSummary(index));
+        if (awaitingDeleteConfirmation && pendingDeleteSlotIndex >= 0 && warningText != null)
+            warningText.text = BuildDeleteWarningMessage(pendingDeleteSlotIndex);
+    }
+
     private void OnDisable()
     {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
         StopFadeCoroutine();
         StopCloseLeadCoroutine();
         isClosing = false;
@@ -194,10 +222,10 @@ public sealed class TitleProfileSlotPanelUI : MonoBehaviour, ICloseRequestHandle
     private void RefreshTexts()
     {
         if (headerText != null)
-            headerText.text = "\uD504\uB85C\uD544 \uC120\uD0DD";
+            headerText.text = GameText.Get("code.titleprofileslotpanelui.a19583b4e9", "프로필 선택");
 
         if (descriptionText != null)
-            descriptionText.text = "\uC9C4\uD589 \uC911 \uB7F0\uC774 \uC788\uC73C\uBA74 \uC774\uC5B4\uD558\uAE30, \uC5C6\uC73C\uBA74 \uC0C8 \uB7F0\uC744 \uC2DC\uC791\uD569\uB2C8\uB2E4.";
+            descriptionText.text = GameText.Get("code.titleprofileslotpanelui.f8fc40251a", "진행 중 런이 있으면 이어하기, 없으면 새 런을 시작합니다.");
     }
 
     private void RefreshSlots()
@@ -404,7 +432,7 @@ public sealed class TitleProfileSlotPanelUI : MonoBehaviour, ICloseRequestHandle
 
     private static string BuildDeleteWarningMessage(int slotIndex)
     {
-        return "\uC2AC\uB86F " + (slotIndex + 1) + "\uC758 \uD504\uB85C\uD544 \uB370\uC774\uD130\uB97C \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?\n\uC774 \uC791\uC5C5\uC740 \uB418\uB3CC\uB9B4 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.";
+        return GameText.Format("title.profile.delete_confirmation", "슬롯 {0}의 프로필 데이터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.", slotIndex + 1);
     }
 
     private void StartFade(float targetAlpha, float duration, Action onCompleted = null)

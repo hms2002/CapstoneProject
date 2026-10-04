@@ -124,7 +124,7 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
         if (upgradeNode != null || (upgradeEffects != null && upgradeEffects.Count > 0))
         {
             if (titleText != null)
-                titleText.text = "업그레이드 완료!";
+                titleText.text = GameText.Get("code.rewarddisplayui.9186c2199a", "업그레이드 완료!");
 
             if (upgradeNode != null)
             {
@@ -139,7 +139,7 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
         else if (affectionEffects != null && affectionEffects.Count > 0)
         {
             if (titleText != null)
-                titleText.text = "호감도 보상!";
+                titleText.text = GameText.Get("code.rewarddisplayui.c3309bc502", "호감도 보상!");
 
             foreach (AffectionEffect effect in affectionEffects)
                 ProcessAffection(effect, ref summary);
@@ -191,8 +191,8 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
             CreateEffectSlot(effect.rewardIcon);
         }
 
-        if (!string.IsNullOrEmpty(effect.rewardText))
-            summary += $"- {effect.rewardText}\n";
+        if (!string.IsNullOrEmpty(effect.RewardText))
+            summary += $"- {effect.RewardText}\n";
     }
 
     private void ProcessUpgrade(UpgradeNodeSO node, List<UpgradeEffectSO> effects, ref string summary)
@@ -230,10 +230,10 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
             CreateEffectSlot(node.icon);
 
         if (hasItemUnlockEffect)
-            summary += "- 아이템이 해금되었습니다.\n";
+            summary += GameText.Get("code.rewarddisplayui.7f78781a5d", "- 아이템이 해금되었습니다.\n");
 
-        if (hasGenericEffect && !string.IsNullOrWhiteSpace(node.description))
-            summary += $"- {node.description}\n";
+        if (hasGenericEffect && !string.IsNullOrWhiteSpace(node.Description))
+            summary += $"- {node.Description}\n";
     }
 
     private void ProcessItemUnlockUpgrade(ItemUnlockUpgradeEffectSO unlockEffect)
@@ -272,8 +272,8 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
             CreateEffectSlot(effect.rewardIcon);
         }
 
-        if (!string.IsNullOrEmpty(effect.rewardText))
-            summary += $"- {effect.rewardText}\n";
+        if (!string.IsNullOrEmpty(effect.RewardText))
+            summary += $"- {effect.RewardText}\n";
     }
 
     private void CreateUnlockSlot(ScriptableObject definition)

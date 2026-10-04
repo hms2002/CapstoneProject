@@ -152,19 +152,18 @@ public sealed class EndingOutroPlayer : MonoBehaviour
             resolvedView.SetSlideSprite(slide.Image);
             resolvedView.SetSlideAlpha(0f);
 
-            string text = slide.Text;
             float fadeInDuration = i == 0
                 ? sequence.InitialImageFadeDuration
                 : sequence.ImageFadeDuration;
             yield return TypeTextAndFadeInAsync(
-                text,
+                i,
                 fadeInDuration,
                 ignoreAdvanceUntilFadeComplete: i == 0,
                 fadeSkipPromptWithSlide: i == 0);
             if (skipOutroRequested)
                 break;
 
-            yield return WaitAfterTextAsync(sequence.GetPostTextWaitSeconds(text));
+            yield return WaitAfterTextAsync(i, sequence.GetPostTextWaitSeconds(slide.Text));
             if (skipOutroRequested)
                 break;
 
@@ -215,7 +214,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
     }
 
     private IEnumerator TypeTextAndFadeInAsync(
-        string text,
+        int slideIndex,
         float fadeDuration,
         bool ignoreAdvanceUntilFadeComplete,
         bool fadeSkipPromptWithSlide)
@@ -224,7 +223,7 @@ public sealed class EndingOutroPlayer : MonoBehaviour
         if (resolvedView == null)
             yield break;
 
-        text ??= string.Empty;
+        string text = sequence.GetSlideText(slideIndex);
         resolvedView.SetText(string.Empty);
         nextTypingSoundTime = 0f;
         typingStartSoundPlayed = false;
@@ -252,6 +251,14 @@ public sealed class EndingOutroPlayer : MonoBehaviour
 
         while (!textComplete || !fadeComplete)
         {
+            string translated = sequence.GetSlideText(slideIndex);
+            if (translated != text)
+            {
+                text = translated;
+                visibleCharacters = textComplete ? text.Length : Mathf.Min(visibleCharacters, text.Length);
+                resolvedView.SetText(text.Substring(0, visibleCharacters));
+                textComplete = textComplete || visibleCharacters >= text.Length;
+            }
             EndingOutroInputCommand command = PollInput();
             if (command == EndingOutroInputCommand.SkipOutro)
             {
@@ -317,11 +324,12 @@ public sealed class EndingOutroPlayer : MonoBehaviour
             resolvedView.SetSkipPromptAlpha(1f);
     }
 
-    private IEnumerator WaitAfterTextAsync(float waitSeconds)
+    private IEnumerator WaitAfterTextAsync(int slideIndex, float waitSeconds)
     {
         float elapsed = 0f;
         while (elapsed < waitSeconds)
         {
+            View?.SetText(sequence.GetSlideText(slideIndex));
             EndingOutroInputCommand command = PollInput();
             if (command == EndingOutroInputCommand.SkipOutro)
             {

@@ -1,0 +1,211 @@
+{
+    "scene": "TitleScene",
+    "locale": "en",
+    "screen": "settings",
+    "image": "outputs/localization-screen-review-2026-10-04/en-settings.png",
+    "labels": [
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+            "text": "Display Mode",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/Stepper/Previous",
+            "text": "<",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/Stepper/OptionText",
+            "text": "English",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+            "text": "Language",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+            "text": "Screen Shake",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/Stepper/Next",
+            "text": ">",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/Stepper/Next",
+            "text": ">",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+            "text": "Start Game",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/Stepper/Next",
+            "text": ">",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/Stepper/Next",
+            "text": ">",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+            "text": "Master Volume",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/Stepper/Previous",
+            "text": "<",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/Stepper/OptionText",
+            "text": "Fullscreen",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+            "text": "Key Bindings",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+            "text": "Resolution",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/SliderGroup/Text (TMP)",
+            "text": "62%",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+            "text": "Apply",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+            "text": "Music Volume",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/Stepper/OptionText",
+            "text": "On",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/Stepper/Previous",
+            "text": "<",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+            "text": "Settings",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 60.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/Stepper/OptionText",
+            "text": "1920 x 1080",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+            "text": "Settings",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+            "text": "Back",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/Stepper/Previous",
+            "text": "<",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/SliderGroup/Text (TMP)",
+            "text": "24%",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+            "text": "Quit Game",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/SliderGroup/Text (TMP)",
+            "text": "34%",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+            "text": "Sound Effects",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        }
+    ]
+}

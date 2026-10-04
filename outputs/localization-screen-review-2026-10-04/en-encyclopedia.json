@@ -1,0 +1,260 @@
+{
+    "scene": "ProtoTypeHub",
+    "locale": "en",
+    "screen": "encyclopedia",
+    "image": "outputs/localization-screen-review-2026-10-04/en-encyclopedia.png",
+    "labels": [
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock_Encyclopedia(Clone)/CardMotionRoot/Panel_AbillityDetailInfo/Text (TMP)",
+            "text": "● Perform a high-speed slash ahead\n● Damage bonus equal to <link=\"glossary:이동속도\"><color=#5EC8FF>Movement Speed</color></link> <color=#FFBE00>x3</color>",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock_Encyclopedia(Clone)/CardMotionRoot/Panel_AbilityUpperInfo/SkillInfoGroup/BG_CoolDown/Text_coolDown",
+            "text": "5s",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock_Encyclopedia(Clone)/CardMotionRoot/Panel_AbilityUpperInfo/SkillInfoGroup/BG_SkillName/Text_SkillName",
+            "text": "Speed Strike",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock_Encyclopedia(Clone)/CardMotionRoot/Panel_AbillityDetailInfo/Text (TMP)",
+            "text": "● Accelerate immediately, then gain further speed in stages while maintained\n● On use / after <color=#FFBE00>3 seconds</color> / after <color=#FFBE00>6 seconds</color>: <link=\"glossary:이동속도\"><color=#5EC8FF>Movement Speed</color></link> bonus <color=#FFBE00>100% / 200% / 300%</color>\n● <color=#FF3296>Forced movement toward the mouse</color>\n● Taking damage, colliding with an enemy or attacking <color=#FF5050>immediately ends acceleration</color>",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock_Encyclopedia(Clone)/CardMotionRoot/Panel_AbilityUpperInfo/SkillInfoGroup/BG_CoolDown/Text_coolDown",
+            "text": "12s",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock_Encyclopedia(Clone)/CardMotionRoot/Panel_AbilityUpperInfo/SkillInfoGroup/BG_SkillName/Text_SkillName",
+            "text": "Rush",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "PF Player(Clone)/OddIronAmmoHUD/AmmoText",
+            "text": "6 / 6",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (3)/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (2)/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (1)/ShopSlot(Clone)/PriceText",
+            "text": "4",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlotPosition/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/StoryTextPanel/StoryText",
+            "text": "<color=#96DCFA>“Once a knight's wings begin to beat, they never stop. Only victory or utter destruction can bring them to an end.”</color>",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 23.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/LvPanel/LvTxt",
+            "text": "Movement Speed [+1%]",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header/WeaponDescriptionHint/DescriptionToggleLabel",
+            "text": "Show Details",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 27.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header/Name_Panel/Title",
+            "text": "Wings of Afterimage",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 33.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/LeftPage/PageButtonGroup/PageNum",
+            "text": "1/1",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/LeftPage/TitleGroup/Title",
+            "text": "Weapon",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+            "text": "Advance to defeat the Demon King.",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 26.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+            "text": "Main Quest",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/Timer_BossUI/TimerSection/TimerBG/Timer",
+            "text": "15:00",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/LevelHUD/LevelText",
+            "text": "1",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (4)/KeyGuideText",
+            "text": "4",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (3)/KeyGuideText",
+            "text": "3",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (2)/KeyGuideText",
+            "text": "2",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (1)/KeyGuideText",
+            "text": "1",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/CurrencyUI/Text(TMP)",
+            "text": "1",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/GoldUI/Text(TMP)",
+            "text": "0",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (4)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (3)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (2)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (1)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "EncyclopediaStand/NameplateAnchor/NpcNameplate/Name",
+            "text": "Encyclopedia",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/RefreshButton/CountText",
+            "text": "3 remaining",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 5.0
+        },
+        {
+            "owner": "Npc/NameplateAnchor/NpcNameplate/Name",
+            "text": "Velka",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/MerchantNpc/NameplateAnchor/NpcNameplate/Name",
+            "text": "Sasha",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        }
+    ]
+}

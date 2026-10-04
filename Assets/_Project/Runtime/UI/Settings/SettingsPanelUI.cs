@@ -38,6 +38,10 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
     private static readonly GameLanguageOption[] LanguageOptions =
     {
         GameLanguageOption.Korean,
+        GameLanguageOption.English,
+        GameLanguageOption.Japanese,
+        GameLanguageOption.SimplifiedChinese,
+        GameLanguageOption.TraditionalChinese,
     };
 
     public static SettingsPanelUI Instance { get; private set; }
@@ -149,11 +153,13 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
 
     private void OnEnable()
     {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
         MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.SystemUi, priority: SystemCursorPriority);
     }
 
     private void OnDisable()
     {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
         ApplyTemporaryHiddenState(false);
         isClosing = false;
         MouseCursorService.Instance?.ClearDomain(this);
@@ -297,6 +303,16 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI, ITitleScenePe
         UpdateApplyDisplayButton(settings);
 
         suppressCallbacks = false;
+    }
+
+    private void HandleLocaleChanged(UnityEngine.Localization.Locale locale)
+    {
+        var settings = GameSettingsService.Instance;
+        if (settings == null) return;
+        // Preserve unapplied window/resolution choices while updating translated value labels.
+        RefreshDisplayStepperState(settings);
+        RefreshScreenShakeStepper(settings);
+        RefreshLanguageStepper(settings);
     }
 
     private void BindListeners()

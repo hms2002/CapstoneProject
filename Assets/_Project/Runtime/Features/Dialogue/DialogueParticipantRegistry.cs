@@ -7,7 +7,12 @@ public sealed class DialogueParticipantRegistry
     public NPCData CurrentNPCData { get; private set; }
     public NPCData CurrentSpeakerNPCData { get; private set; }
     public int CurrentSpeakerId { get; private set; } = -1;
-    public string CurrentSpeakerName { get; private set; } = string.Empty;
+    private string speakerName = string.Empty;
+    public string CurrentSpeakerName
+    {
+        get => CurrentSpeakerNPCData != null ? CurrentSpeakerNPCData.DisplayName : speakerName;
+        private set => speakerName = value;
+    }
 
     public void Initialize(List<NPCData> participants)
     {

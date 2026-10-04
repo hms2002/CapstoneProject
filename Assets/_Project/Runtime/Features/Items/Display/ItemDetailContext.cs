@@ -41,7 +41,7 @@ public sealed class ItemDetailContext
             return ItemDetailActionHint.Hidden;
 
         if (IsFromChest)
-            return ItemDetailActionHint.Show(KeyCode.Mouse0, "인벤토리로 가져오기");
+            return ItemDetailActionHint.Show(KeyCode.Mouse0, GameText.Get("ui.item.take", "인벤토리로 가져오기"));
 
         if (!IsFromPlayerInventory)
             return ItemDetailActionHint.Hidden;
@@ -51,7 +51,7 @@ public sealed class ItemDetailContext
 
         return IsChestUiActive
             ? ItemDetailActionHint.Hidden
-            : ItemDetailActionHint.Show(InputActionId.InventoryDrop, "버리기");
+            : ItemDetailActionHint.Show(InputActionId.InventoryDrop, GameText.Get("ui.item.drop", "버리기"));
     }
 
     public static ItemDetailContext FromOwner(GameObject owner)

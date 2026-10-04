@@ -144,7 +144,7 @@ public class WorldItemPickup2D : InteractableBase
 
     public override string GetInteractDescription()
     {
-        return item != null && !interactionLocked ? interactPromptText : string.Empty;
+        return item != null && !interactionLocked ? GameText.Get("interaction.worlditempickup2d.interactprompttext", interactPromptText) : string.Empty;
     }
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;

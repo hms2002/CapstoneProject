@@ -1,0 +1,29 @@
+{
+    "scene": "TitleScene",
+    "locale": "ja",
+    "screen": "title",
+    "image": "outputs/localization-screen-review-2026-10-04/ja-title.png",
+    "labels": [
+        {
+            "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+            "text": "ゲーム開始",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+            "text": "設定",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+            "text": "ゲーム終了",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.0
+        }
+    ]
+}

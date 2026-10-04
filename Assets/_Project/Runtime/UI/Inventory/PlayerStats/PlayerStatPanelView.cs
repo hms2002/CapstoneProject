@@ -32,6 +32,7 @@ public sealed class PlayerStatPanelView : MonoBehaviour
 
     private void OnEnable()
     {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
         UnbindAttributeEvents();
         BindAttributeEvents();
         if (ownerOverride != null)
@@ -42,11 +43,14 @@ public sealed class PlayerStatPanelView : MonoBehaviour
 
     private void OnDisable()
     {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
         selectionPreview = null;
         projectedAttributes = null;
         attributeRefreshPending = false;
         UnbindAttributeEvents();
     }
+
+    private void HandleLocaleChanged(UnityEngine.Localization.Locale locale) => attributeRefreshPending = true;
 
     private void LateUpdate()
     {

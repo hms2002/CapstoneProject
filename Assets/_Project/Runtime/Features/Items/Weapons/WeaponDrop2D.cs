@@ -153,7 +153,7 @@ public class WeaponDrop2D : InteractableBase
 
     public override string GetInteractDescription()
     {
-        return weapon != null && !interactionLocked ? interactPromptText : string.Empty;
+        return weapon != null && !interactionLocked ? GameText.Get("interaction.weapondrop2d.interactprompttext", interactPromptText) : string.Empty;
     }
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;

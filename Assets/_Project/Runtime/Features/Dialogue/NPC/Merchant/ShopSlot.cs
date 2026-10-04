@@ -171,7 +171,7 @@ public sealed class ShopSlot : InteractableBase
     public override string GetInteractDescription()
     {
         return currentDefinition != null && currentState != null && !currentState.isSold
-            ? interactPromptText
+            ? GameText.Get("interaction.shopslot.interactprompttext", interactPromptText)
             : string.Empty;
     }
 

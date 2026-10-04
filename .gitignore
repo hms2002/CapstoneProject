@@ -85,3 +85,6 @@ crashlytics-build.properties
 
 # Obsidian local settings
 Docs/.obsidian/
+
+# Local Steam development App ID; do not ship with the game.
+/steam_appid.txt

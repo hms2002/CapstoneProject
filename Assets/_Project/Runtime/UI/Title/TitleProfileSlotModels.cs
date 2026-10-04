@@ -57,24 +57,24 @@ public sealed class TitleProfileSlotDebugState
     public TitleProfileSlotSummary BuildSummary(int slotIndex)
     {
         string resolvedSlotLabel = string.IsNullOrWhiteSpace(slotLabelOverride)
-            ? "\uC2AC\uB86F " + (slotIndex + 1)
+            ? GameText.Get("code.titleprofileslotmodels.d2f7319b25", "슬롯 ") + (slotIndex + 1)
             : slotLabelOverride;
 
         string resolvedPlayTimeLabel = hasProfile
-            ? NormalizeLabel(playTimeLabel, "--\uC2DC\uAC04 --\uBD84")
-            : "--\uC2DC\uAC04 --\uBD84";
+            ? NormalizeLabel(playTimeLabel, GameText.Get("code.titleprofileslotmodels.2f4e954267", "--시간 --분"))
+            : GameText.Get("code.titleprofileslotmodels.2f4e954267", "--시간 --분");
 
         string resolvedUpgradeProgressLabel = hasProfile
             ? NormalizeLabel(upgradeProgressLabel, "--%")
             : "--%";
 
         string resolvedMagicStoneLabel = hasProfile
-            ? NormalizeLabel(magicStoneLabel, "--\uAC1C")
-            : "--\uAC1C";
+            ? NormalizeLabel(magicStoneLabel, GameText.Get("code.titleprofileslotmodels.0eeffea837", "--개"))
+            : GameText.Get("code.titleprofileslotmodels.0eeffea837", "--개");
 
         string resolvedClearCountLabel = hasProfile
-            ? NormalizeLabel(clearCountLabel, "--\uD68C")
-            : "--\uD68C";
+            ? NormalizeLabel(clearCountLabel, GameText.Get("code.titleprofileslotmodels.10690e9888", "--회"))
+            : GameText.Get("code.titleprofileslotmodels.10690e9888", "--회");
 
         return new TitleProfileSlotSummary(
             slotIndex,

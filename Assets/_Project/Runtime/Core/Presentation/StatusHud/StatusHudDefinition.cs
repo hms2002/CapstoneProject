@@ -31,9 +31,9 @@ public sealed class StatusHudDefinition : ScriptableObject
     public StatusHudGroup Group => group;
     public int Priority => priority;
     public Sprite Icon => icon;
-    public string NameText => nameText;
-    public string StoryText => storyText;
-    public string EffectText => effectText;
+    public string NameText => GameText.Asset(this, "nameText", nameText);
+    public string StoryText => GameText.Asset(this, "storyText", storyText);
+    public string EffectText => GameText.Asset(this, "effectText", effectText);
     public bool ShowStacksByDefault => showStacksByDefault;
     public bool ShowDurationByDefault => showDurationByDefault;
 
@@ -53,9 +53,9 @@ public sealed class StatusHudDefinition : ScriptableObject
         return new StatusHudEntry(
             ownerKey,
             statusId,
-            nameText,
-            storyText,
-            string.IsNullOrWhiteSpace(effectTextOverride) ? effectText : effectTextOverride,
+            NameText,
+            StoryText,
+            string.IsNullOrWhiteSpace(effectTextOverride) ? EffectText : effectTextOverride,
             iconOverride != null ? iconOverride : icon,
             stackCount,
             showStacksOverride ?? showStacksByDefault,

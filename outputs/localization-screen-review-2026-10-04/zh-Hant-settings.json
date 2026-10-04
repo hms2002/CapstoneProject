@@ -1,0 +1,211 @@
+{
+    "scene": "TitleScene",
+    "locale": "zh-Hant",
+    "screen": "settings",
+    "image": "outputs/localization-screen-review-2026-10-04/zh-Hant-settings.png",
+    "labels": [
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+            "text": "顯示模式",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/Stepper/Previous",
+            "text": "<",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/Stepper/OptionText",
+            "text": "繁體中文",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+            "text": "語言",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+            "text": "畫面震動",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/Stepper/Next",
+            "text": ">",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/Stepper/Next",
+            "text": ">",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+            "text": "開始遊戲",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/Stepper/Next",
+            "text": ">",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/Stepper/Next",
+            "text": ">",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+            "text": "主音量",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/Stepper/Previous",
+            "text": "<",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/Stepper/OptionText",
+            "text": "全螢幕",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+            "text": "按鍵設定",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+            "text": "解析度",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/SliderGroup/Text (TMP)",
+            "text": "62%",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+            "text": "套用",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+            "text": "音樂音量",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/Stepper/OptionText",
+            "text": "開啟",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/Stepper/Previous",
+            "text": "<",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+            "text": "設定",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 60.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/Stepper/OptionText",
+            "text": "1920 x 1080",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+            "text": "設定",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+            "text": "返回",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/Stepper/Previous",
+            "text": "<",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/SliderGroup/Text (TMP)",
+            "text": "24%",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+            "text": "結束遊戲",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/SliderGroup/Text (TMP)",
+            "text": "34%",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+            "text": "音效音量",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 50.0
+        }
+    ]
+}

@@ -11,6 +11,6 @@ public sealed class StatSectionDefinition : ScriptableObject
     [SerializeField] private string title = "Section";
     [SerializeField] private StatInfoUIDefinition[] entries;
 
-    public string Title => title;
+    public string Title => GameText.Asset(this, "title", title);
     public StatInfoUIDefinition[] Entries => entries;
 }

@@ -76,31 +76,31 @@ public sealed class RelicLogic_BurnModifier_Managed : RelicLogic
 
         float intervalMultiplier = Evaluate(tickIntervalMultipliers, level, 1f);
         if (!Mathf.Approximately(intervalMultiplier, 1f))
-            lines.Add($"● [[화상]] 소모 주기 {{pos:{(1f - intervalMultiplier) * 100f:0}% 감소}} (주기 {{val:{intervalMultiplier:0.##}초}})");
+            lines.Add(GameText.Format("code.reliclogic_burnmodifier_managed.4cc9ccde24", "● [[화상]] 소모 주기 {{pos:{0:0}% 감소}} (주기 {{val:{1:0.##}초}})", (1f - intervalMultiplier) * 100f, intervalMultiplier));
 
         float damageAdd = Evaluate(damageRatioAdds, level, 0f);
         if (damageAdd > 0f)
-            lines.Add($"● [[화상 피해]] 계수 {{pos:+{damageAdd * 100f:0}%p}}");
+            lines.Add(GameText.Format("code.reliclogic_burnmodifier_managed.3cec499e76", "● [[화상 피해]] 계수 {{pos:+{0:0}%p}}", damageAdd * 100f));
 
         int applicationAdd = Evaluate(applicationAdds, level, 0);
         if (applicationAdd > 0)
-            lines.Add($"● [[화상]] 부여량 {{pos:+{applicationAdd}}}");
+            lines.Add(GameText.Format("code.reliclogic_burnmodifier_managed.2050270bc4", "● [[화상]] 부여량 {{pos:+{0}}}", applicationAdd));
 
         int firstApplicationAdd = Evaluate(firstApplicationAdds, level, 0);
         if (firstApplicationAdd > 0)
-            lines.Add($"● [[화상]]이 없는 적에게 처음 부여하는 [[화상]] {{pos:+{firstApplicationAdd}중첩}}");
+            lines.Add(GameText.Format("code.reliclogic_burnmodifier_managed.c581162ca4", "● [[화상]]이 없는 적에게 처음 부여하는 [[화상]] {{pos:+{0}중첩}}", firstApplicationAdd));
 
         if (allowCritical)
-            lines.Add("● [[화상 피해]]에 치명타 확률과 치명타 피해 적용");
+            lines.Add(GameText.Get("code.reliclogic_burnmodifier_managed.de3cc74b74", "● [[화상 피해]]에 치명타 확률과 치명타 피해 적용"));
 
         int threshold = Evaluate(stackDamageThresholds, level, 0);
         float ratioPerStep = Evaluate(stackDamageRatiosPerStep, level, 0f);
         if (threshold > 0 && ratioPerStep > 0f)
-            lines.Add($"● 대상의 [[화상]] {{val:{threshold}중첩}}마다 [[화상 피해]] {{pos:+{ratioPerStep * 100f:0}%}}\n● 최대 {{val:{stackDamageRatioMax * 100f:0}%}}까지 증가");
+            lines.Add(GameText.Format("code.reliclogic_burnmodifier_managed.a76358e559", "● 대상의 [[화상]] {{val:{0}중첩}}마다 [[화상 피해]] {{pos:+{1:0}%}}\n● 최대 {{val:{2:0}%}}까지 증가", threshold, ratioPerStep * 100f, stackDamageRatioMax * 100f));
 
         int starterStacks = Evaluate(starterStacksByLevel, level, 0);
         if (starterStacks > 0)
-            lines.Add($"● 대상에게 [[화상]]이 없으면 [[화상]] {{val:{starterStacks}중첩}} 부여");
+            lines.Add(GameText.Format("code.reliclogic_burnmodifier_managed.5459d7e4c4", "● 대상에게 [[화상]]이 없으면 [[화상]] {{val:{0}중첩}} 부여", starterStacks));
 
         return new RelicTooltipData { effectText = string.Join("\n", lines) };
     }

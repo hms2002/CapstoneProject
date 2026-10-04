@@ -1,0 +1,29 @@
+{
+    "scene": "TitleScene",
+    "locale": "ko",
+    "screen": "title",
+    "image": "outputs/localization-screen-review-2026-10-04/ko-title.png",
+    "labels": [
+        {
+            "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+            "text": "게임 시작",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+            "text": "설정",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+            "text": "게임 종료",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        }
+    ]
+}

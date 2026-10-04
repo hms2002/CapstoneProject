@@ -45,7 +45,7 @@ public sealed class SteelTrainingLevelRewardEffectSO : LevelRewardEffectSO
 
         if (attributes.GetAttributeValue(maxHealthAttribute) - Mathf.Max(0f, maximumHealthPenalty) < 1f)
         {
-            failureReason = "현재 최대 체력이 저주를 감당할 수 없습니다.";
+            failureReason = GameText.Get("code.steeltraininglevelrewardeffectso.36c21ae807", "현재 최대 체력이 저주를 감당할 수 없습니다.");
             return false;
         }
 
@@ -109,8 +109,8 @@ public sealed class SteelTrainingLevelRewardEffectSO : LevelRewardEffectSO
         {
             int target = Mathf.Max(1, requiredDamageCount);
             string effectText = state.completed
-                ? $"저주 해제\n최대 체력 +{Mathf.Max(0f, maximumHealthReward):0.#}"
-                : $"최대 체력 -{Mathf.Max(0f, maximumHealthPenalty):0.#}\n피해를 받은 횟수: {state.damageCount}/{target}";
+                ? GameText.Format("code.steeltraininglevelrewardeffectso.ec30adefab", "저주 해제\n최대 체력 +{0:0.#}", Mathf.Max(0f, maximumHealthReward))
+                : GameText.Format("code.steeltraininglevelrewardeffectso.77aa85927e", "최대 체력 -{0:0.#}\n피해를 받은 횟수: {1}/{2}", Mathf.Max(0f, maximumHealthPenalty), state.damageCount, target);
             return new StatusApplyRequest(
                 state.completed ? completedStatus : curseStatus,
                 ownerKey: "level_reward.steel_training",

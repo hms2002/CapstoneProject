@@ -73,6 +73,7 @@ GameObject:
   - component: {fileID: 983406617}
   - component: {fileID: 983406619}
   - component: {fileID: 983406618}
+  - component: {fileID: 9204600060359342068}
   m_Layer: 0
   m_Name: PriceText
   m_TagString: Untagged
@@ -124,7 +125,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1826925326976027445, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -170,8 +171,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 123
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}
-  m_sharedMaterial: {fileID: 1826925326976027445, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ab56e3ce9940d9648a8a4896df560905, type: 2}
+  m_sharedMaterial: {fileID: 0}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -243,6 +244,42 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 983406619}
   m_maskType: 0
+--- !u!114 &9204600060359342068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983406616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5cb2a964a4d75134d94a70d8c8aa34ee
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9204600060359342068}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 5cb2a964a4d75134d94a70d8c8aa34ee, type: 2}
 --- !u!1 &1258005897
 GameObject:
   m_ObjectHideFlags: 0

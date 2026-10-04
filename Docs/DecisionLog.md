@@ -3369,3 +3369,23 @@ Keep existing theme/domain/variant and owner-based visibility contracts, but ren
 ## 2026-09-28 - Explicit Cursor Recapture and Bounded Window Resolution
 
 Escape releases cursor confinement until a focused left click inside the game client. Focus/display changes alone do not recapture it. Windowed resolution selection is bounded by the current display's work area with frame decorations reserved; oversized saved sizes are proportionally fitted and persisted. Fullscreen and borderless retain desktop-resolution policy. This follows the user's reported Escape/oversized-window failures and approved correction.
+
+## 2026-10-03 - Language preference is a saved concrete language
+
+Keep Korean=0 and append English=1, Japanese=2, SimplifiedChinese=3, TraditionalChinese=4. Do not add Auto to the persisted enum. Detect a supported initial language only when no valid preference exists, save it, and preserve explicit choices thereafter. The agreed final precedence is Steam game language → OS → English; the present slice implements OS → English while Steam SDK integration remains pending. Runtime locale is Unity Localization SelectedLocale, with fixed translation keys and untranslated value tokens. See `Docs/StructureMemory/LocalizationFlow.md`.
+
+### 2026-10-03 — Steam SDK preparation without an assigned App ID
+
+User approved SDK installation, required asmdef references, and one App-scoped Steam service/bootstrap under the existing RuntimeServices root. Embed the supplied Steamworks.NET 2025.163.0 runtime package without upstream Editor automation or the sample SteamManager; do not generate a default App ID or automatically change project defines. SteamPlatformService owns Init/RunCallbacks/Shutdown; initialization failure leaves gameplay available. First-language detection now implements Steam game language → OS → English, only when no valid saved choice exists. Actual Steam/App ID validation remains an environment handoff. See `Docs/StructureMemory/SteamIntegration.md`.
+
+## 2026-10-03 — Chinese pixel fonts and intentional SOLD label
+
+User approved applying the recommended Chinese pixel-font option. Use Fusion Pixel 12px proportional zh-Hans/zh-Hant regional sources (release 2026.09.25): 10px lacks U+89D0 in the current Simplified Chinese table, whereas 12px covers both Chinese tables. Keep existing TMP sizes and per-label Korean material presets; language font entries remain owned by GameFonts. Record source/license hashes. SOLD intentionally stays English at the user's request. Japanese font selection is still a separate follow-up; current JA Noto is unchanged.
+
+## 2026-10-03 — Whole-game fixed keys and regional TMP font tables
+
+Expand the existing Unity Localization tables rather than introduce another runtime language owner or sentence-lookup dictionary. Keep authored IDs, numeric tokens and glossary link IDs stable; translate display projections and term captions only. Use one Ink source per dialogue, loc tags and compiled JSON for all five languages. Use GameFonts Asset Tables with regional Noto CJK dynamic fonts, preserving KO/EN source fonts. UI events are authored in approved scenes/prefabs through Unity APIs; explicitly record prefab instance property overrides. Asset keys use GUID/field paths; generated runtime type/name/field lookup must be regenerated after asset renaming or nested-array reordering. Foreign text remains a draft until language review. See LocalizationFlow.md and the session log.
+
+## 2026-10-04 — Japanese Galmuri9 pixel font
+
+User authorized replacing the Japanese font after the actual JA path was found to use Noto CJK. Use a separate TMP asset built from official Galmuri9.ttf for JA, retaining existing Korean assets and authored material presets. Current JA table coverage is 1,062 unique visible characters with no missing glyphs. GameFonts owns the locale references; do not infer the active font from the original label asset name. Chinese locales retain Fusion Pixel. Source/license hashes are recorded in Fonts/Sources.json. Font coverage must be repeated when translations introduce new characters.

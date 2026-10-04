@@ -13,6 +13,7 @@ public abstract class UpgradeEffectSO : ScriptableObject
 {
     [Header("Reward UI Display")]
     public string rewardText;
+    public string RewardText => GameText.Asset(this, "rewardText", rewardText);
     public Sprite rewardIcon;
 
     public virtual UpgradeEffectKind EffectKind => UpgradeEffectKind.Generic;

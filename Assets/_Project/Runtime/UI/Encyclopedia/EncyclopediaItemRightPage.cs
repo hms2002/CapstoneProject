@@ -79,6 +79,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
     private int abilityBlockCursor;
     private Coroutine pendingScrollReset;
     private RelicDefinition currentRelic;
+    private ConsumableDefinition currentConsumable;
     private int relicPreviewLevel = 1;
     private bool warnedMissingHeader;
     private bool warnedMissingDescription;
@@ -117,17 +118,45 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
     private void OnDisable()
     {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
         CancelPendingScrollReset();
         showDetailedDescription = false;
     }
 
     private void OnEnable()
     {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
         if (currentWeapon != null)
         {
             BuildWeaponAbilityBlocks(currentWeapon);
             weaponDescriptionHint.Refresh(true, false);
         }
+    }
+
+    private void HandleLocaleChanged(UnityEngine.Localization.Locale locale)
+    {
+        // Refresh the current projection without rebinding selection, preview level or scroll position.
+        if (currentWeapon != null)
+        {
+            ApplyItemHeader(currentWeapon);
+            SetDescriptionSection(GameText.Get("code.encyclopediaitemrightpage.a295d44fdf", "스토리"),
+                GameText.Asset(currentWeapon, "storyText", currentWeapon.storyText));
+            SetText(weaponStatsText, BuildWeaponStatsText(currentWeapon));
+            BuildWeaponAbilityBlocks(currentWeapon);
+            weaponDescriptionHint.Refresh(true, showDetailedDescription);
+        }
+        else if (currentRelic != null)
+        {
+            ApplyItemHeader(currentRelic);
+            RefreshRelicPreview();
+        }
+        else if (currentConsumable != null)
+        {
+            ApplyItemHeader(currentConsumable);
+            SetDescriptionSection(GameText.Get("code.encyclopediaitemrightpage.ce49decb68", "효과"),
+                GameText.Asset(currentConsumable, "description", currentConsumable.description));
+        }
+        RebuildDetailLayout();
     }
 
 #if UNITY_EDITOR
@@ -378,6 +407,8 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
     {
         InitializeRuntimeState();
         currentRelic = null;
+        currentWeapon = null;
+        currentConsumable = null;
         relicPreviewLevel = 1;
         SetVisible(false);
         SetText(titleText, string.Empty);
@@ -410,9 +441,10 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         SetVisible(true);
         HideTypeSections();
         currentWeapon = weapon;
+        currentConsumable = null;
         weaponDescriptionHint.Refresh(true, false);
         ApplyItemHeader(weapon);
-        SetDescriptionSection("스토리", weapon.storyText);
+        SetDescriptionSection(GameText.Get("code.encyclopediaitemrightpage.a295d44fdf", "스토리"), GameText.Asset(weapon, "storyText", weapon.storyText));
 
         string statsText = BuildWeaponStatsText(weapon);
         SetText(weaponStatsText, statsText);
@@ -440,6 +472,8 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         HideTypeSections();
         HideAbilityBlocks();
         currentRelic = relic;
+        currentWeapon = null;
+        currentConsumable = null;
         relicPreviewLevel = 1;
 
         ApplyItemHeader(relic);
@@ -460,12 +494,14 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         }
 
         currentRelic = null;
+        currentWeapon = null;
+        currentConsumable = consumable;
         relicPreviewLevel = 1;
         SetVisible(true);
         HideTypeSections();
         HideAbilityBlocks();
         ApplyItemHeader(consumable);
-        SetDescriptionSection("효과", consumable.description);
+        SetDescriptionSection(GameText.Get("code.encyclopediaitemrightpage.ce49decb68", "효과"), GameText.Asset(consumable, "description", consumable.description));
         QueueScrollReset();
     }
 
@@ -483,7 +519,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
     private void SetDescriptionSection(string title, string rawDescription)
     {
-        string description = FormatTextOrFallback(rawDescription, EmptyDescriptionText);
+        string description = FormatTextOrFallback(rawDescription, GameText.Get("encyclopedia.description_pending", EmptyDescriptionText));
         SetActive(descriptionRoot, true);
         SetActive(descriptionTitleText != null ? descriptionTitleText.gameObject : null, true);
         SetActive(storyText != null ? storyText.gameObject : null, true);
@@ -502,11 +538,11 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
         int count = 0;
         if (weapon.weaponId == "Weapon.CrimsonBoundary" &&
-            AddAbilityBlock("기본 공격", weapon.GetAbility(WeaponAbilitySlot.Attack), weapon.attackInputHint, InputActionId.PrimaryAttack))
+            AddAbilityBlock(GameText.Get("code.encyclopediaitemrightpage.065f292f33", "기본 공격"), weapon.GetAbility(WeaponAbilitySlot.Attack), weapon.attackInputHint, InputActionId.PrimaryAttack))
             count++;
-        if (AddAbilityBlock("스킬 1", weapon.GetAbility(WeaponAbilitySlot.Skill1), weapon.skill1InputHint, InputActionId.Skill1))
+        if (AddAbilityBlock(GameText.Get("code.encyclopediaitemrightpage.a091200702", "스킬 1"), weapon.GetAbility(WeaponAbilitySlot.Skill1), weapon.skill1InputHint, InputActionId.Skill1))
             count++;
-        if (AddAbilityBlock("스킬 2", weapon.GetAbility(WeaponAbilitySlot.Skill2), weapon.skill2InputHint, InputActionId.Skill2))
+        if (AddAbilityBlock(GameText.Get("code.encyclopediaitemrightpage.01d28c5504", "스킬 2"), weapon.GetAbility(WeaponAbilitySlot.Skill2), weapon.skill2InputHint, InputActionId.Skill2))
             count++;
 
 
@@ -621,7 +657,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
     {
         string title = !string.IsNullOrWhiteSpace(variant.Title)
             ? variant.Title
-            : (!string.IsNullOrWhiteSpace(ability.abilityName) ? ability.abilityName : header);
+            : (!string.IsNullOrWhiteSpace(ability.DisplayName) ? ability.DisplayName : header);
 
         Sprite icon = variant.Icon != null ? variant.Icon : ability.icon;
         string body = !showDetailedDescription && !string.IsNullOrWhiteSpace(variant.SimpleBody)
@@ -641,7 +677,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
     private AbilityDisplayState BuildDefaultDisplayState(AbilityDefinition ability, string header, string inputHint)
     {
-        string title = !string.IsNullOrWhiteSpace(ability.abilityName) ? ability.abilityName : header;
+        string title = !string.IsNullOrWhiteSpace(ability.DisplayName) ? ability.DisplayName : header;
         return new AbilityDisplayState(
             title,
             ability.icon,
@@ -653,13 +689,13 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
     private string BuildAbilityBody(AbilityDefinition ability)
     {
-        if (!showDetailedDescription && ability != null && !string.IsNullOrWhiteSpace(ability.simpleDescription))
-            return ability.simpleDescription;
+        if (!showDetailedDescription && ability != null && !string.IsNullOrWhiteSpace(ability.SimpleDescription))
+            return ability.SimpleDescription;
 
         builder.Clear();
 
-        if (ability != null && !string.IsNullOrWhiteSpace(ability.description))
-            builder.AppendLine(ability.description);
+        if (ability != null && !string.IsNullOrWhiteSpace(ability.Description))
+            builder.AppendLine(ability.Description);
 
         if (ability != null && ability.sourceObject is IDetailProvider provider)
         {
@@ -714,12 +750,12 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
     private string BuildRelicEffectText(RelicDefinition relic, int previewLevel)
     {
         if (relic == null || relic.logic == null)
-            return EmptyRelicEffectText;
+            return GameText.Get("encyclopedia.effect_missing", EmptyRelicEffectText);
 
         RelicTooltipData tooltip = relic.logic.BuildTooltip(relic, previewLevel, detailContext);
         return tooltip != null && !string.IsNullOrWhiteSpace(tooltip.effectText)
             ? tooltip.effectText
-            : EmptyRelicEffectText;
+            : GameText.Get("encyclopedia.effect_missing", EmptyRelicEffectText);
     }
 
     private void RefreshRelicPreviewGuides(int maxLevel)
@@ -767,7 +803,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         if (glossary != null && glossary.TryGet(key, out string description))
             glossaryPopup.Show(key, description);
         else
-            glossaryPopup.Show(key, EmptyDescriptionText);
+            glossaryPopup.Show(key, GameText.Get("encyclopedia.description_pending", EmptyDescriptionText));
     }
 
     private static Image ResolveGuideIcon(Transform guideRoot)
@@ -939,7 +975,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
                 continue;
 
             string label = !string.IsNullOrWhiteSpace(modifier.labelOverride)
-                ? modifier.labelOverride
+                ? GameText.Asset(weapon, $"statModifiers.Array.data[{i}].labelOverride", modifier.labelOverride)
                 : ResolveAttributeName(modifier.attribute);
             string value = modifier.type == ModifierType.Percent
                 ? FormatTooltipValue(modifier.value, true)
@@ -967,8 +1003,8 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         if (attribute == null)
             return string.Empty;
 
-        if (!string.IsNullOrWhiteSpace(attribute.attributeName))
-            return attribute.attributeName;
+        if (!string.IsNullOrWhiteSpace(attribute.DisplayName))
+            return attribute.DisplayName;
 
         return attribute.name;
     }

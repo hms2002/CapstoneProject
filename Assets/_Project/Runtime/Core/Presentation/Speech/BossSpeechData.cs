@@ -76,10 +76,12 @@ public class BossSpeechData : ScriptableObject
 
     public string GetLine(BossSpeechSituationEnum situation)
     {
-        var entry = entries.Find(x => x.situation == situation);
+        int entryIndex = entries.FindIndex(x => x.situation == situation);
+        var entry = entryIndex >= 0 ? entries[entryIndex] : null;
         if (entry != null && entry.lines != null && entry.lines.Length > 0)
         {
-            return entry.lines[Random.Range(0, entry.lines.Length)];
+            int lineIndex = Random.Range(0, entry.lines.Length);
+            return GameText.Asset(this, $"entries.Array.data[{entryIndex}].lines.Array.data[{lineIndex}]", entry.lines[lineIndex]);
         }
         return "";
     }

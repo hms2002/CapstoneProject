@@ -105,7 +105,7 @@ public sealed class DungeonReturnPortal : InteractableBase
         if (CanInteract(player)) travel.TryTravel(this, player);
     }
     public override InteractState GetInteractType() => InteractState.Idle;
-    public override string GetInteractDescription() => prompt;
+    public override string GetInteractDescription() => GameText.Get("interaction.dungeonreturnportal.prompt", prompt);
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
 #if UNITY_EDITOR

@@ -23,11 +23,24 @@ public sealed class NpcNameplatePresenter : MonoBehaviour
     private bool IsHidden => DialoguePlayback.IsPlaying || CinematicLetterboxOverlay.IsAnyVisible ||
         (PlayerRuntimeRegistry.CurrentPlayer != null && PlayerRuntimeRegistry.CurrentPlayer.CurrentState == InteractState.Talking);
 
-    private void OnEnable()
+    private TMP_FontAsset measuredFont;
+
+    private string ResolveDisplayName()
+    {
+        if (npc != null) return npc.DisplayName;
+        if (GetComponentInParent<EncyclopediaInteractable>() != null)
+            return GameText.Get("world.nameplate.encyclopedia", fallbackName);
+        if (interactionAnchor != null && interactionAnchor.parent != null)
+            return GameText.Get("world.nameplate." + interactionAnchor.parent.name, fallbackName);
+        return fallbackName;
+    }
+
+    private void RefreshName()
     {
         if (nameText != null)
         {
-            nameText.text = npc != null ? npc.npcName : fallbackName;
+            nameText.text = ResolveDisplayName();
+            measuredFont = nameText.font;
             nameText.raycastTarget = false;
             float width = nameText.GetPreferredValues(nameText.text).x;
             Sprite icon = npc != null ? npc.roleIcon : fallbackIcon;
@@ -44,6 +57,11 @@ public sealed class NpcNameplatePresenter : MonoBehaviour
                 roleIcon.raycastTarget = false;
             }
         }
+    }
+
+    private void OnEnable()
+    {
+        RefreshName();
         if (group != null)
         {
             group.alpha = IsHidden ? 0f : 1f;
@@ -55,6 +73,8 @@ public sealed class NpcNameplatePresenter : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (nameText != null && (nameText.text != ResolveDisplayName() || measuredFont != nameText.font))
+            RefreshName();
         FollowAnchor();
         if (group != null)
             group.alpha = Mathf.MoveTowards(group.alpha, IsHidden ? 0f : 1f, Time.unscaledDeltaTime / FadeSeconds);

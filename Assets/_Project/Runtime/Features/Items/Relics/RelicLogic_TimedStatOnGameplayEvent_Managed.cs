@@ -23,7 +23,7 @@ public sealed class RelicLogic_TimedStatOnGameplayEvent_Managed : RelicLogic
         TargetIsOwner
     }
 
-    protected override string DefaultEffectTemplate => "● {trigger} {duration} 동안 [[{stat}]] {value}";
+    protected override string DefaultEffectTemplate => GameText.Get("code.reliclogic_timedstatongameplayevent_managed.d590a85e62", "● {trigger} {duration} 동안 [[{stat}]] {value}");
 
     [Header("Trigger")]
     public GameplayTag triggerTag;
@@ -101,7 +101,7 @@ public sealed class RelicLogic_TimedStatOnGameplayEvent_Managed : RelicLogic
             DefaultEffectTemplate,
             new Dictionary<string, string>
             {
-                ["trigger"] = string.IsNullOrWhiteSpace(triggerLabel) ? "조건 충족 시" : triggerLabel,
+                ["trigger"] = string.IsNullOrWhiteSpace(triggerLabel) ? GameText.Get("code.reliclogic_timedstatongameplayevent_managed.57d7036d63", "조건 충족 시") : GameText.Asset(this, "triggerLabel", triggerLabel),
                 ["duration"] = RelicTooltipFormatter.FormatSeconds(durationSeconds),
                 ["stat"] = displayName,
                 ["value"] = RelicTooltipFormatter.FormatSignedValueToken(

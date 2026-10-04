@@ -142,7 +142,7 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         InputBindingService input = InputBindingService.EnsureInstance();
         if (!input.IsSupportedKeyboardBindingKey(key))
         {
-            ShowGuide("지원하지 않는 키입니다.\n다른 키를 입력해 주세요.", showButtons: false);
+            ShowGuide(GameText.Get("code.keybindingpanelui.3203668996", "지원하지 않는 키입니다.\n다른 키를 입력해 주세요."), showButtons: false);
             return;
         }
 
@@ -165,7 +165,7 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
             return;
         }
 
-        ShowGuide("키 변경을 적용할 수 없습니다.\n다른 키를 입력해 주세요.", showButtons: false);
+        ShowGuide(GameText.Get("code.keybindingpanelui.61469ed926", "키 변경을 적용할 수 없습니다.\n다른 키를 입력해 주세요."), showButtons: false);
     }
 
     private void OnDestroy()
@@ -297,7 +297,7 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         pendingPreviewBindings = null;
 
         row.SetListeningState(primary: !secondary, secondary: secondary);
-        ShowGuide("할당하실 키를 입력해 주세요.", showButtons: false);
+        ShowGuide(GameText.Get("code.keybindingpanelui.7722e65b27", "할당하실 키를 입력해 주세요."), showButtons: false);
         UpdateBottomButtons();
     }
 
@@ -609,7 +609,7 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         {
             resumeListeningOnConflictCancel = false;
             listeningStartFrame = Time.frameCount;
-            ShowGuide("할당하실 키를 입력해 주세요.", showButtons: false);
+            ShowGuide(GameText.Get("code.keybindingpanelui.7722e65b27", "할당하실 키를 입력해 주세요."), showButtons: false);
             UpdateBottomButtons();
             return;
         }
@@ -636,14 +636,14 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
     private void BeginCloseConfirmation()
     {
         awaitingCloseConfirmation = true;
-        ShowGuide("변경사항이 있습니다.\n적용하시겠습니까?", showButtons: true);
+        ShowGuide(GameText.Get("code.keybindingpanelui.e08a1b208c", "변경사항이 있습니다.\n적용하시겠습니까?"), showButtons: true);
         UpdateBottomButtons();
     }
 
     private string BuildConflictMessage(HashSet<InputActionId> conflicts, bool isResetConflict)
     {
         if (conflicts == null || conflicts.Count == 0)
-            return "서로 교체하시겠습니까?";
+            return GameText.Get("code.keybindingpanelui.1fd0740cc4", "서로 교체하시겠습니까?");
 
         if (conflicts.Count == 1)
         {
@@ -651,15 +651,15 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
             {
                 string label = GetActionLabel(action);
                 if (isResetConflict)
-                    return $"기본 키가 현재 '{label}'에 할당되어 있습니다.\n서로 교체하시겠습니까?";
+                    return GameText.Format("code.keybindingpanelui.06636e843e", "기본 키가 현재 '{0}'에 할당되어 있습니다.\n서로 교체하시겠습니까?", label);
 
-                return $"이 키는 현재 '{label}'에 할당되어 있습니다.\n서로 교체하시겠습니까?";
+                return GameText.Format("code.keybindingpanelui.60e98ae233", "이 키는 현재 '{0}'에 할당되어 있습니다.\n서로 교체하시겠습니까?", label);
             }
         }
 
         return isResetConflict
-            ? "기본 키가 현재 다른 동작에 할당되어 있습니다.\n서로 교체하시겠습니까?"
-            : "이 키는 현재 다른 동작에 할당되어 있습니다.\n서로 교체하시겠습니까?";
+            ? GameText.Get("code.keybindingpanelui.dff6913108", "기본 키가 현재 다른 동작에 할당되어 있습니다.\n서로 교체하시겠습니까?")
+            : GameText.Get("code.keybindingpanelui.10896cffea", "이 키는 현재 다른 동작에 할당되어 있습니다.\n서로 교체하시겠습니까?");
     }
 
     private bool TryBuildPreviewForBindingChange(

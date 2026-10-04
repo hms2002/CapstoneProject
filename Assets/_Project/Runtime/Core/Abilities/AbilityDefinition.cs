@@ -22,6 +22,9 @@ namespace UnityGAS
 
         [Header("Info")]
         public string abilityName = "New Ability";
+        public string DisplayName => GameText.Asset(this, "abilityName", abilityName);
+        public string Description => GameText.Asset(this, "description", description);
+        public string SimpleDescription => GameText.Asset(this, "simpleDescription", simpleDescription);
         public Sprite icon;
         [TextArea] public string description = "Ability description.";
         [Tooltip("Short player-facing description. Empty entries use the detailed description.")]

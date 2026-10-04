@@ -9,7 +9,7 @@ public class GlossaryPopup : MonoBehaviour
 
     public void Show(string title, string body)
     {
-        if (titleText) titleText.text = title;
+        if (titleText) titleText.text = GameText.Get("term." + title, title);
         if (bodyText) bodyText.text = body;
         if (root) root.SetActive(true);
         else gameObject.SetActive(true);

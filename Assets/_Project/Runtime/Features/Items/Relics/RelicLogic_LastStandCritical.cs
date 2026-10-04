@@ -39,14 +39,17 @@ public sealed class RelicLogic_LastStandCritical : RelicLogic
         int previewLevel,
         ItemDetailContext ctx)
     {
-        return BuildTemplatedTooltip(
-            DefaultEffectTemplate,
-            new Dictionary<string, string>
+        return new RelicTooltipData
+        {
+            effectText = RelicTooltipFormatter.ReplaceTokens(
+                GameText.Get("relic.last_stand.description", ResolveEffectTemplate(DefaultEffectTemplate)),
+                new Dictionary<string, string>
             {
                 ["threshold"] = RelicTooltipFormatter.FormatUnsignedValueToken(
                     EvaluateThreshold(previewLevel),
                     false)
-            });
+            })
+        };
     }
 
     private void Register(RelicContext ctx)

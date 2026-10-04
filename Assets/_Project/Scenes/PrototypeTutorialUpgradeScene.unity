@@ -119,6 +119,64 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &86174034 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000455}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720639033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &86174035 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000455}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720639035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &115371989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 115371989}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!1 &161455600
 GameObject:
   m_ObjectHideFlags: 0
@@ -172,6 +230,226 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &287056493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 287056493}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
+--- !u!114 &344418799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 344418799}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
+--- !u!114 &353732207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 353732207}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
+--- !u!114 &353732208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GameText
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui.80fd395adba94d2694477ce9b1c821d1.8200000113
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8200000113}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  references:
+    version: 2
+    RefIds: []
+--- !u!114 &364686129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 364686129}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
+--- !u!114 &389637833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 389637833}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!1 &400535305
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,6 +494,86 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &585022175 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000451}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1476359322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &585022176 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000451}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1476359324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &618631972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8000000443}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &656586300 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000447}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322769710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &656586301 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000447}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322769712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
 --- !u!1 &770899546
 GameObject:
   m_ObjectHideFlags: 0
@@ -260,6 +618,553 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &787370979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8000000441}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &815269464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 815269464}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
+--- !u!114 &815269465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GameText
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui.80fd395adba94d2694477ce9b1c821d1.8200000118
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8200000118}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  references:
+    version: 2
+    RefIds: []
+--- !u!1 &842493756 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5758784486991303732, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  m_PrefabInstance: {fileID: 8600000001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &842493757 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6269321026865754438, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  m_PrefabInstance: {fileID: 8600000001}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842493756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &842493758 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8470840063093916664, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  m_PrefabInstance: {fileID: 8600000001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &842493759 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6604243268259773035, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  m_PrefabInstance: {fileID: 8600000001}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842493758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &842493760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842493756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 842493757}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 7785331808423663526, guid: ab56e3ce9940d9648a8a4896df560905, type: 2}
+--- !u!114 &842493761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842493758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 842493759}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 7785331808423663526, guid: ab56e3ce9940d9648a8a4896df560905, type: 2}
+--- !u!114 &887373138 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1108438616367583487, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  m_PrefabInstance: {fileID: 8600000001}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842493756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &887373139 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1473552372011955427, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  m_PrefabInstance: {fileID: 8600000001}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842493758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &903389612 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000449}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589161942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &903389613 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000449}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589161944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &920923830 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000457}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &920923831 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000457}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &927277000 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000453}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1020686663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &927277001 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000453}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1020686665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &948323919 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000445}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090834938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &948323920 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000445}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090834940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &951335689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 951335689}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
+--- !u!114 &951335690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GameText
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui.80fd395adba94d2694477ce9b1c821d1.8200000143
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8200000143}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  references:
+    version: 2
+    RefIds: []
+--- !u!1 &1020686663 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000453}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1020686664 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000453}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1020686663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &1020686665 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000453}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1020686666 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000453}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1020686665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &1020686667 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000453}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1020686669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1020686663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1020686664}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &1020686670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1020686665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1020686666}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &1020686671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1020686667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1020686671}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
 --- !u!1 &1032229108
 GameObject:
   m_ObjectHideFlags: 0
@@ -368,6 +1273,151 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3b7c58c25137bb847a4b3ff4e06fed18, type: 3}
+--- !u!1 &1090834938 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000445}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1090834939 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000445}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090834938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &1090834940 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000445}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1090834941 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000445}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090834940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &1090834942 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000445}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1090834944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090834938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1090834939}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &1090834945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090834940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1090834941}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &1090834946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090834942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1090834946}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
 --- !u!1 &1175960434
 GameObject:
   m_ObjectHideFlags: 0
@@ -415,6 +1465,223 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1221293879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1221293879}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
+--- !u!1 &1322769710 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000447}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1322769711 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000447}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322769710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &1322769712 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000447}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1322769713 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000447}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322769712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &1322769714 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000447}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1322769716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322769710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1322769711}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &1322769717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322769712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1322769713}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &1322769718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322769714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1322769718}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
+--- !u!114 &1418066721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1418066721}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
 --- !u!1 &1441605663
 GameObject:
   m_ObjectHideFlags: 0
@@ -460,6 +1727,151 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1476359322 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000451}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1476359323 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000451}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1476359322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &1476359324 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000451}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1476359325 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000451}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1476359324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &1476359326 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000451}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1476359328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1476359322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1476359323}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &1476359329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1476359324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1476359325}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &1476359330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1476359326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1476359330}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
 --- !u!1001 &1531557033
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -560,6 +1972,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -10
       objectReference: {fileID: 0}
+    - target: {fileID: 42336293288047675, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.31563780200945105
+      objectReference: {fileID: 0}
     - target: {fileID: 84732719001453522, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -580,6 +1996,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 91261704199675747, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.8589628396417215700
+      objectReference: {fileID: 0}
     - target: {fileID: 114108318775855751, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -611,6 +2031,10 @@ PrefabInstance:
     - target: {fileID: 199379876815644893, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 230518173196682340, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.4336757616084828052
       objectReference: {fileID: 0}
     - target: {fileID: 235268548766057600, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -651,6 +2075,10 @@ PrefabInstance:
     - target: {fileID: 295235055664439723, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 438577435300658484, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.8620687982883683713
       objectReference: {fileID: 0}
     - target: {fileID: 527548198200260922, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -723,6 +2151,10 @@ PrefabInstance:
     - target: {fileID: 621976137746154060, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 627892574465069939, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.910913000000000013
       objectReference: {fileID: 0}
     - target: {fileID: 667220681982091710, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1072,6 +2504,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1216823319494741721, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.5661658987962628542
+      objectReference: {fileID: 0}
     - target: {fileID: 1231702217243538828, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1087,6 +2523,10 @@ PrefabInstance:
     - target: {fileID: 1231702217243538828, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1257677834350124968, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.725739894526856456
       objectReference: {fileID: 0}
     - target: {fileID: 1260049452530736813, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1140,6 +2580,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1351789399351359572, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.1240219133469714557
+      objectReference: {fileID: 0}
     - target: {fileID: 1383297658094531473, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1248,6 +2692,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1737488266188088471, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.6674218367146121904
+      objectReference: {fileID: 0}
     - target: {fileID: 1775230342333700200, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1315,6 +2763,10 @@ PrefabInstance:
     - target: {fileID: 1836713673751508080, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1969450077087123410, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.3375295893321030724
       objectReference: {fileID: 0}
     - target: {fileID: 2086735553244836382, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1388,6 +2840,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2391689577085890721, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.910913000000000023
+      objectReference: {fileID: 0}
     - target: {fileID: 2444036361947555456, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -1407,6 +2863,10 @@ PrefabInstance:
     - target: {fileID: 2444036361947555456, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -245.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2486617982015774252, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.8696438907223781666
       objectReference: {fileID: 0}
     - target: {fileID: 2558639463439316799, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1628,6 +3088,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3069325255227589661, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.7221799767385547015
+      objectReference: {fileID: 0}
     - target: {fileID: 3074067268676767110, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1728,6 +3192,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3198182770292877675, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.9700000000000093
+      objectReference: {fileID: 0}
     - target: {fileID: 3322535595205365583, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -1803,6 +3271,14 @@ PrefabInstance:
     - target: {fileID: 3592175541828617911, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3600807457144263760, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.3470112273884937614
+      objectReference: {fileID: 0}
+    - target: {fileID: 3666663501242379756, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.980919000000000010
       objectReference: {fileID: 0}
     - target: {fileID: 3797854229084120178, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1960,6 +3436,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4131989620613267290, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.9700000000001093
+      objectReference: {fileID: 0}
+    - target: {fileID: 4155940293805737244, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.1540573552400353567
+      objectReference: {fileID: 0}
     - target: {fileID: 4211461793636231282, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1995,11 +3479,19 @@ PrefabInstance:
     - target: {fileID: 4260623595070457465, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4281722141784091539, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.8953073901465920600
       objectReference: {fileID: 0}
     - target: {fileID: 4291013103374352841, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4299537586612724963, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.5205652078610141816
+      objectReference: {fileID: 0}
     - target: {fileID: 4341542154177470179, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2067,6 +3559,10 @@ PrefabInstance:
     - target: {fileID: 4462176181425602415, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4522657334796264605, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.9042550377915823491
       objectReference: {fileID: 0}
     - target: {fileID: 4625433562030045442, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2131,6 +3627,10 @@ PrefabInstance:
     - target: {fileID: 4780560614855518558, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4854923462361005969, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.8531695574262776435
       objectReference: {fileID: 0}
     - target: {fileID: 5216965227714232358, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2284,6 +3784,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5749453016154989859, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.912009200000000008
+      objectReference: {fileID: 0}
     - target: {fileID: 5857079469730888616, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2299,6 +3803,10 @@ PrefabInstance:
     - target: {fileID: 5857079469730888616, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5888404450279864093, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.5027649806269748425
       objectReference: {fileID: 0}
     - target: {fileID: 5904369947923607477, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2331,6 +3839,10 @@ PrefabInstance:
     - target: {fileID: 5931063886014884517, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939581631749205711, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.3824489241034573567
       objectReference: {fileID: 0}
     - target: {fileID: 6111780990473329105, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2488,6 +4000,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6343153249078877020, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.5121694007916151682
+      objectReference: {fileID: 0}
     - target: {fileID: 6409945013953957155, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2584,6 +4100,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6810719785198304788, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.1682163956432234820
+      objectReference: {fileID: 0}
     - target: {fileID: 6810922535632451209, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2643,6 +4163,14 @@ PrefabInstance:
     - target: {fileID: 6945886350381178840, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6958544358527065915, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.8641358161749258056
+      objectReference: {fileID: 0}
+    - target: {fileID: 7026715142123956612, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.2793336958056733864
       objectReference: {fileID: 0}
     - target: {fileID: 7088042006494984841, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_SizeDelta.y
@@ -2663,6 +4191,10 @@ PrefabInstance:
     - target: {fileID: 7134175440588843094, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7145543891766911968, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.6652912847072605710
       objectReference: {fileID: 0}
     - target: {fileID: 7165045844504709437, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3004,6 +4536,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -660
       objectReference: {fileID: 0}
+    - target: {fileID: 8248669179446737742, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.911709170000000043
+      objectReference: {fileID: 0}
     - target: {fileID: 8387763865765399309, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -3107,6 +4643,10 @@ PrefabInstance:
     - target: {fileID: 8717712659931204604, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8733318197677775342, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.5370726716884883298
       objectReference: {fileID: 0}
     - target: {fileID: 8801000000000000081, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3304,6 +4844,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9092049125883229077, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_Key
+      value: ui.80fd395adba94d2694477ce9b1c821d1.8398896015272634982
+      objectReference: {fileID: 0}
     - target: {fileID: 9121300000000000005, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3367,6 +4911,187 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 098d94856215da74dbbf50659196d131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1589161942 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000449}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1589161943 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000449}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589161942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &1589161944 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000449}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1589161945 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000449}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589161944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &1589161946 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000449}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1589161948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589161942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589161943}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &1589161949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589161944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589161945}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &1589161950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589161946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589161950}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
+--- !u!114 &1628235250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1628235250}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!1 &1675587048
 GameObject:
   m_ObjectHideFlags: 0
@@ -3412,6 +5137,513 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1692868088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1692868088}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
+--- !u!114 &1692868089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GameText
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui.80fd395adba94d2694477ce9b1c821d1.8200000138
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8200000138}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  references:
+    version: 2
+    RefIds: []
+--- !u!114 &1717075466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1717075466}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
+--- !u!114 &1717075467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GameText
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui.80fd395adba94d2694477ce9b1c821d1.8200000133
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8200000133}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  references:
+    version: 2
+    RefIds: []
+--- !u!1 &1720639033 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000455}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1720639034 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000455}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720639033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &1720639035 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000455}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1720639036 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000455}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720639035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &1720639037 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000455}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1720639039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720639033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1720639034}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &1720639040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720639035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1720639036}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &1720639041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720639037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1720639041}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
+--- !u!114 &1739371068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1739371068}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
+--- !u!114 &1825365732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1825365732}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
+--- !u!114 &1825365733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GameText
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui.80fd395adba94d2694477ce9b1c821d1.8200000123
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8200000123}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  references:
+    version: 2
+    RefIds: []
+--- !u!114 &1876499394 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000438}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &1876499395 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000438}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+--- !u!114 &1966726969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1966726969}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
+--- !u!114 &1966726970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GameText
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui.80fd395adba94d2694477ce9b1c821d1.8200000128
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8200000128}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1969022361
 GameObject:
   m_ObjectHideFlags: 0
@@ -3489,6 +5721,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   portraitController: {fileID: 1531557034}
+--- !u!114 &1991176835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1991176835}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!1001 &2005081368
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6012,6 +8280,38 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1876499395}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1876499394}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
+      objectReference: {fileID: 0}
     - target: {fileID: 7958329241213569362, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_LocalScale.x
       value: 2
@@ -6039,11 +8339,57 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1418066721}
+    - targetCorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 618631972}
+    - targetCorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 787370979}
   m_SourcePrefab: {fileID: 100100000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
 --- !u!4 &8000000439 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7958329241213569362, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000438}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8000000440 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000438}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8000000441 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000438}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &8000000442 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000438}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8000000443 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000438}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &8000000444 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
   m_PrefabInstance: {fileID: 8000000438}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8000000445
@@ -6061,6 +8407,38 @@ PrefabInstance:
     - target: {fileID: 1956472550783629341, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 948323920}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 948323919}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
       objectReference: {fileID: 0}
     - target: {fileID: 7594079009644736712, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: neverDie
@@ -6093,7 +8471,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1090834946}
+    - targetCorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1090834945}
+    - targetCorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1090834944}
   m_SourcePrefab: {fileID: 100100000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
 --- !u!4 &8000000446 stripped
 Transform:
@@ -6116,6 +8503,38 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 656586301}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 656586300}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
+      objectReference: {fileID: 0}
     - target: {fileID: 7594079009644736712, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: neverDie
       value: 0
@@ -6147,7 +8566,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1322769718}
+    - targetCorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1322769717}
+    - targetCorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1322769716}
   m_SourcePrefab: {fileID: 100100000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
 --- !u!4 &8000000448 stripped
 Transform:
@@ -6169,6 +8597,38 @@ PrefabInstance:
     - target: {fileID: 1956472550783629341, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 903389613}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 903389612}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
       objectReference: {fileID: 0}
     - target: {fileID: 7594079009644736712, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: neverDie
@@ -6201,7 +8661,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1589161950}
+    - targetCorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1589161949}
+    - targetCorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1589161948}
   m_SourcePrefab: {fileID: 100100000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
 --- !u!4 &8000000450 stripped
 Transform:
@@ -6223,6 +8692,38 @@ PrefabInstance:
     - target: {fileID: 1956472550783629341, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 585022176}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 585022175}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
       objectReference: {fileID: 0}
     - target: {fileID: 7594079009644736712, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: neverDie
@@ -6255,7 +8756,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1476359330}
+    - targetCorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1476359329}
+    - targetCorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1476359328}
   m_SourcePrefab: {fileID: 100100000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
 --- !u!4 &8000000452 stripped
 Transform:
@@ -6277,6 +8787,38 @@ PrefabInstance:
     - target: {fileID: 1956472550783629341, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 927277001}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 927277000}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
       objectReference: {fileID: 0}
     - target: {fileID: 7594079009644736712, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: neverDie
@@ -6309,7 +8851,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1020686671}
+    - targetCorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1020686670}
+    - targetCorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1020686669}
   m_SourcePrefab: {fileID: 100100000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
 --- !u!4 &8000000454 stripped
 Transform:
@@ -6331,6 +8882,38 @@ PrefabInstance:
     - target: {fileID: 1956472550783629341, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 86174035}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 86174034}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
       objectReference: {fileID: 0}
     - target: {fileID: 7594079009644736712, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: neverDie
@@ -6363,7 +8946,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1720639041}
+    - targetCorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1720639040}
+    - targetCorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1720639039}
   m_SourcePrefab: {fileID: 100100000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
 --- !u!4 &8000000456 stripped
 Transform:
@@ -6385,6 +8977,38 @@ PrefabInstance:
     - target: {fileID: 1956472550783629341, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 920923831}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 2514812232966742034, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 920923830}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176107312786998286, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
       objectReference: {fileID: 0}
     - target: {fileID: 7594079009644736712, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
       propertyPath: neverDie
@@ -6417,13 +9041,167 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8000000467}
+    - targetCorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8000000466}
+    - targetCorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8000000465}
   m_SourcePrefab: {fileID: 100100000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
 --- !u!4 &8000000458 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7958329241213569362, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
   m_PrefabInstance: {fileID: 8000000457}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8000000459 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8754500211564036293, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000457}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8000000460 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7031366088122607031, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000457}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &8000000461 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4835472221849949961, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000457}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8000000462 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7868782744214285978, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000457}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &8000000463 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6100200000000000, guid: 5a0eb9c3258276e4ab0789f47447d1c8, type: 3}
+  m_PrefabInstance: {fileID: 8000000457}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8000000465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8000000460}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &8000000466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.5a1fd8e230149544b87478f4f52f6ba9
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8000000462}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_font
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 0}
+--- !u!114 &8000000467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000000463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8000000467}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
 --- !u!1 &8000000469
 GameObject:
   m_ObjectHideFlags: 0
@@ -7857,6 +10635,7 @@ GameObject:
   - component: {fileID: 8100000055}
   - component: {fileID: 8100000057}
   - component: {fileID: 8100000058}
+  - component: {fileID: 8100000059}
   m_Layer: 0
   m_Name: ObjectiveAndGlyphs
   m_TagString: Untagged
@@ -7987,6 +10766,42 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8100000059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8100000054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8100000059}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!114 &8100000060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11780,6 +14595,8 @@ GameObject:
   - component: {fileID: 8200000111}
   - component: {fileID: 8200000112}
   - component: {fileID: 8200000113}
+  - component: {fileID: 353732208}
+  - component: {fileID: 353732207}
   m_Layer: 0
   m_Name: "Guide - \uC2DC\uC791 \uC9C0\uC810"
   m_TagString: Untagged
@@ -11942,6 +14759,8 @@ GameObject:
   - component: {fileID: 8200000116}
   - component: {fileID: 8200000117}
   - component: {fileID: 8200000118}
+  - component: {fileID: 815269465}
+  - component: {fileID: 815269464}
   m_Layer: 0
   m_Name: "Guide - \u2190 \uB300\uC26C \uD1B5\uB85C"
   m_TagString: Untagged
@@ -12104,6 +14923,8 @@ GameObject:
   - component: {fileID: 8200000121}
   - component: {fileID: 8200000122}
   - component: {fileID: 8200000123}
+  - component: {fileID: 1825365733}
+  - component: {fileID: 1825365732}
   m_Layer: 0
   m_Name: "Guide - \uACF5\uACA9 \xB7 \uC2A4\uD0AC \xB7 \uC0C1\uC790"
   m_TagString: Untagged
@@ -12266,6 +15087,8 @@ GameObject:
   - component: {fileID: 8200000126}
   - component: {fileID: 8200000127}
   - component: {fileID: 8200000128}
+  - component: {fileID: 1966726970}
+  - component: {fileID: 1966726969}
   m_Layer: 0
   m_Name: "Guide - \uC6B0\uD074\uB9AD \uCDA9\uC804 \xB7 \uB300\uC0C1 4\uAC1C"
   m_TagString: Untagged
@@ -12428,6 +15251,8 @@ GameObject:
   - component: {fileID: 8200000131}
   - component: {fileID: 8200000132}
   - component: {fileID: 8200000133}
+  - component: {fileID: 1717075467}
+  - component: {fileID: 1717075466}
   m_Layer: 0
   m_Name: "Guide - Q \uC2A4\uD0AC \xB7 \uB300\uC0C1 3\uAC1C"
   m_TagString: Untagged
@@ -12590,6 +15415,8 @@ GameObject:
   - component: {fileID: 8200000136}
   - component: {fileID: 8200000137}
   - component: {fileID: 8200000138}
+  - component: {fileID: 1692868089}
+  - component: {fileID: 1692868088}
   m_Layer: 0
   m_Name: "Guide - \uC0C1\uC790 / \uBB34\uAE30 \uAD50\uCCB4 \uBC30\uCE58"
   m_TagString: Untagged
@@ -12752,6 +15579,8 @@ GameObject:
   - component: {fileID: 8200000141}
   - component: {fileID: 8200000142}
   - component: {fileID: 8200000143}
+  - component: {fileID: 951335690}
+  - component: {fileID: 951335689}
   m_Layer: 0
   m_Name: "Guide - \u2191 \uBCF4\uC2A4\uC804"
   m_TagString: Untagged
@@ -12914,6 +15743,8 @@ GameObject:
   - component: {fileID: 8200000146}
   - component: {fileID: 8200000147}
   - component: {fileID: 8200000148}
+  - component: {fileID: 8200000152}
+  - component: {fileID: 8200000151}
   m_Layer: 0
   m_Name: "Guide - \uBCF4\uC2A4 \uC804\uD22C \uAD6C\uC5ED"
   m_TagString: Untagged
@@ -13099,6 +15930,82 @@ Transform:
   - {fileID: 8200000163}
   m_Father: {fileID: 8000000002}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8200000151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8200000151}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
+--- !u!114 &8200000152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GameText
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui.80fd395adba94d2694477ce9b1c821d1.8200000148
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8200000148}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &8200000154
 GameObject:
   m_ObjectHideFlags: 0
@@ -13202,6 +16109,7 @@ GameObject:
   - component: {fileID: 8200000159}
   - component: {fileID: 8200000160}
   - component: {fileID: 8200000161}
+  - component: {fileID: 1221293879}
   m_Layer: 0
   m_Name: Guide - SPACE
   m_TagString: Untagged
@@ -13364,6 +16272,7 @@ GameObject:
   - component: {fileID: 8200000164}
   - component: {fileID: 8200000165}
   - component: {fileID: 8200000166}
+  - component: {fileID: 8200000170}
   m_Layer: 0
   m_Name: "Guide - \uB300\uC26C\uB85C \uD0C4\uB9C9 \uD1B5\uACFC"
   m_TagString: Untagged
@@ -13567,6 +16476,42 @@ Transform:
   - {fileID: 8800000002}
   m_Father: {fileID: 8000000002}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8200000170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8200000170}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!1 &8200000173
 GameObject:
   m_ObjectHideFlags: 0
@@ -13670,6 +16615,7 @@ GameObject:
   - component: {fileID: 8200000178}
   - component: {fileID: 8200000179}
   - component: {fileID: 8200000180}
+  - component: {fileID: 1739371068}
   m_Layer: 0
   m_Name: Guide - LMB
   m_TagString: Untagged
@@ -13832,6 +16778,7 @@ GameObject:
   - component: {fileID: 8200000183}
   - component: {fileID: 8200000184}
   - component: {fileID: 8200000185}
+  - component: {fileID: 8200000187}
   m_Layer: 0
   m_Name: "Guide - \uAE38\uAC8C \uB20C\uB7EC \uC5F0\uC18D \uACF5\uACA9"
   m_TagString: Untagged
@@ -14003,6 +16950,42 @@ MonoBehaviour:
   presentationRoot: {fileID: 8800000002}
   animate: 0
   glyphSize: 0.8
+--- !u!114 &8200000187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8200000181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8200000187}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!1 &8300000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -14629,6 +17612,7 @@ GameObject:
   - component: {fileID: 8400000030}
   - component: {fileID: 8400000031}
   - component: {fileID: 8400000032}
+  - component: {fileID: 8400000036}
   m_Layer: 5
   m_Name: RightClickInstruction
   m_TagString: Untagged
@@ -14800,6 +17784,42 @@ MonoBehaviour:
   potionRangeSeparator: {fileID: 9610000113}
   potionUseGlyph: {fileID: 9610000123}
   potionUseInstruction: {fileID: 9610000133}
+--- !u!114 &8400000036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8400000029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8400000036}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!1001 &8500000001
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14913,9 +17933,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1108438616367583487, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 1108438616367583487, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 887373138}
+    - target: {fileID: 1108438616367583487, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 1108438616367583487, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
+      objectReference: {fileID: 0}
     - target: {fileID: 1357169097319335874, guid: a185228d38109f64eae6c7afb0622827, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473552372011955427, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+      propertyPath: authoredMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cbb3906aba2b7a74a9e8db1234a7deaf, type: 2}
+    - target: {fileID: 1473552372011955427, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 887373139}
+    - target: {fileID: 1473552372011955427, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ApplyLocalizedFont
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473552372011955427, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+      propertyPath: m_UpdateAsset.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LocalizeTmpFontEvent, UI
       objectReference: {fileID: 0}
     - target: {fileID: 5546223340966227954, guid: a185228d38109f64eae6c7afb0622827, type: 3}
       propertyPath: m_LocalPosition.x
@@ -14968,6 +18020,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9300000002}
+    - targetCorrespondingSourceObject: {fileID: 8470840063093916664, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 842493761}
+    - targetCorrespondingSourceObject: {fileID: 5758784486991303732, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 842493760}
   m_SourcePrefab: {fileID: 100100000, guid: a185228d38109f64eae6c7afb0622827, type: 3}
 --- !u!4 &8600000002 stripped
 Transform:
@@ -25633,6 +28691,7 @@ GameObject:
   - component: {fileID: 8800000013}
   - component: {fileID: 8800000014}
   - component: {fileID: 8800000015}
+  - component: {fileID: 389637833}
   m_Layer: 0
   m_Name: Guide - LMB
   m_TagString: Untagged
@@ -25795,6 +28854,7 @@ GameObject:
   - component: {fileID: 8800000018}
   - component: {fileID: 8800000019}
   - component: {fileID: 8800000020}
+  - component: {fileID: 287056493}
   m_Layer: 0
   m_Name: "Guide - \uAE38\uAC8C \uB20C\uB7EC \uC5F0\uC18D \uACF5\uACA9"
   m_TagString: Untagged
@@ -26141,6 +29201,7 @@ GameObject:
   - component: {fileID: 8800000034}
   - component: {fileID: 8800000035}
   - component: {fileID: 8800000036}
+  - component: {fileID: 344418799}
   m_Layer: 0
   m_Name: Guide - LMB
   m_TagString: Untagged
@@ -26303,6 +29364,7 @@ GameObject:
   - component: {fileID: 8800000039}
   - component: {fileID: 8800000040}
   - component: {fileID: 8800000041}
+  - component: {fileID: 364686129}
   m_Layer: 0
   m_Name: "Guide - \uAE38\uAC8C \uB20C\uB7EC \uC5F0\uC18D \uACF5\uACA9"
   m_TagString: Untagged
@@ -26644,6 +29706,7 @@ GameObject:
   - component: {fileID: 8800000055}
   - component: {fileID: 8800000056}
   - component: {fileID: 8800000057}
+  - component: {fileID: 1628235250}
   m_Layer: 0
   m_Name: Guide - LMB
   m_TagString: Untagged
@@ -26806,6 +29869,7 @@ GameObject:
   - component: {fileID: 8800000060}
   - component: {fileID: 8800000061}
   - component: {fileID: 8800000062}
+  - component: {fileID: 115371989}
   m_Layer: 0
   m_Name: "Guide - \uAE38\uAC8C \uB20C\uB7EC \uC5F0\uC18D \uACF5\uACA9"
   m_TagString: Untagged
@@ -27146,6 +30210,7 @@ GameObject:
   - component: {fileID: 8800000076}
   - component: {fileID: 8800000077}
   - component: {fileID: 8800000078}
+  - component: {fileID: 1991176835}
   m_Layer: 0
   m_Name: Guide - LMB
   m_TagString: Untagged
@@ -27308,6 +30373,7 @@ GameObject:
   - component: {fileID: 8800000081}
   - component: {fileID: 8800000082}
   - component: {fileID: 8800000083}
+  - component: {fileID: 8800000087}
   m_Layer: 0
   m_Name: "Guide - \uAE38\uAC8C \uB20C\uB7EC \uC5F0\uC18D \uACF5\uACA9"
   m_TagString: Untagged
@@ -27512,6 +30578,42 @@ Transform:
   - {fileID: 8800000080}
   m_Father: {fileID: 8800000067}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8800000087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8800000087}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!1001 &8800000108
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27652,6 +30754,7 @@ GameObject:
   - component: {fileID: 8900000005}
   - component: {fileID: 8900000006}
   - component: {fileID: 8900000007}
+  - component: {fileID: 8900000009}
   m_Layer: 0
   m_Name: LeftFallback
   m_TagString: Untagged
@@ -27822,6 +30925,42 @@ MonoBehaviour:
   presentationRoot: {fileID: 0}
   animate: 0
   glyphSize: 0.55
+--- !u!114 &8900000009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8900000003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8900000009}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!1 &8900000010
 GameObject:
   m_ObjectHideFlags: 0
@@ -27925,6 +31064,7 @@ GameObject:
   - component: {fileID: 8900000015}
   - component: {fileID: 8900000016}
   - component: {fileID: 8900000017}
+  - component: {fileID: 8900000019}
   m_Layer: 0
   m_Name: DownFallback
   m_TagString: Untagged
@@ -28095,6 +31235,42 @@ MonoBehaviour:
   presentationRoot: {fileID: 0}
   animate: 0
   glyphSize: 0.55
+--- !u!114 &8900000019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8900000013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8900000019}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!1 &8900000020
 GameObject:
   m_ObjectHideFlags: 0
@@ -28198,6 +31374,7 @@ GameObject:
   - component: {fileID: 8900000025}
   - component: {fileID: 8900000026}
   - component: {fileID: 8900000027}
+  - component: {fileID: 8900000029}
   m_Layer: 0
   m_Name: RightFallback
   m_TagString: Untagged
@@ -28368,6 +31545,42 @@ MonoBehaviour:
   presentationRoot: {fileID: 0}
   animate: 0
   glyphSize: 0.55
+--- !u!114 &8900000029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8900000023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8900000029}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!1001 &9000000000
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28822,38 +32035,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1660057539 &9223372036854775807
-SceneRoots:
-  m_ObjectHideFlags: 0
-  m_Roots:
-  - {fileID: 9700000202}
-  - {fileID: 9300000005}
-  - {fileID: 1175960437}
-  - {fileID: 2128455465}
-  - {fileID: 1033997674}
-  - {fileID: 2005081368}
-  - {fileID: 1531557033}
-  - {fileID: 1675587050}
-  - {fileID: 1969022363}
-  - {fileID: 400535307}
-  - {fileID: 770899548}
-  - {fileID: 161455602}
-  - {fileID: 1032229110}
-  - {fileID: 1441605665}
-  - {fileID: 8000000002}
-  - {fileID: 8000000512}
-  - {fileID: 8100000002}
-  - {fileID: 8100000052}
-  - {fileID: 8400000002}
-  - {fileID: 8500000001}
-  - {fileID: 8600000001}
-  - {fileID: 8600000005}
-  - {fileID: 8600000007}
-  - {fileID: 8600000009}
-  - {fileID: 8600000011}
-  - {fileID: 8600000013}
-  - {fileID: 8600000016}
-  - {fileID: 8800000108}
 --- !u!1 &9610000100
 GameObject:
   m_ObjectHideFlags: 0
@@ -28909,8 +32090,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -28940,6 +32121,7 @@ GameObject:
   - component: {fileID: 9610000111}
   - component: {fileID: 9610000112}
   - component: {fileID: 9610000113}
+  - component: {fileID: 9610000114}
   m_Layer: 5
   m_Name: PotionRangeSeparator
   m_TagString: Untagged
@@ -28984,7 +32166,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -29066,6 +32248,42 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &9610000114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9610000110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9610000114}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!1 &9610000120
 GameObject:
   m_ObjectHideFlags: 0
@@ -29121,8 +32339,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -29152,6 +32370,7 @@ GameObject:
   - component: {fileID: 9610000131}
   - component: {fileID: 9610000132}
   - component: {fileID: 9610000133}
+  - component: {fileID: 9610000134}
   m_Layer: 5
   m_Name: PotionUseInstruction
   m_TagString: Untagged
@@ -29196,7 +32415,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -29278,8 +32497,42 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
-
-
+--- !u!114 &9610000134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9610000130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67b4911bc8e531341acb0b19c13be09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UI::LocalizeTmpFontEvent
+  m_LocalizedAssetReference:
+    m_TableReference:
+      m_TableCollectionName: GameFonts
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: font.698a407b32ed1874bb4cb7324dfddce2
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  m_UpdateAsset:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9610000134}
+        m_TargetAssemblyTypeName: LocalizeTmpFontEvent, UI
+        m_MethodName: ApplyLocalizedFont
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  authoredMaterial: {fileID: 2100000, guid: bc5dc7440ad16f045b3a71f996721562, type: 2}
 --- !u!1 &9700000200
 GameObject:
   m_ObjectHideFlags: 0
@@ -29307,7 +32560,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 12565987a9ce4c05beca8baf2fca2921, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Infrastructure::SceneBgmRequester
   sceneMusic:
     key: bgm.shadow_corridor
@@ -29329,3 +32582,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 9700000202}
+  - {fileID: 9300000005}
+  - {fileID: 1175960437}
+  - {fileID: 2128455465}
+  - {fileID: 1033997674}
+  - {fileID: 2005081368}
+  - {fileID: 1531557033}
+  - {fileID: 1675587050}
+  - {fileID: 1969022363}
+  - {fileID: 400535307}
+  - {fileID: 770899548}
+  - {fileID: 161455602}
+  - {fileID: 1032229110}
+  - {fileID: 1441605665}
+  - {fileID: 8000000002}
+  - {fileID: 8000000512}
+  - {fileID: 8100000002}
+  - {fileID: 8100000052}
+  - {fileID: 8400000002}
+  - {fileID: 8500000001}
+  - {fileID: 8600000001}
+  - {fileID: 8600000005}
+  - {fileID: 8600000007}
+  - {fileID: 8600000009}
+  - {fileID: 8600000011}
+  - {fileID: 8600000013}
+  - {fileID: 8600000016}
+  - {fileID: 8800000108}

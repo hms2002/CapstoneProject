@@ -197,7 +197,7 @@ public class RelicLogic_MoveSpeedByCurrentHealth_Managed : RelicLogic
 
         if (rules == null || rules.Count == 0)
         {
-            sb.AppendLine("(체력 구간 규칙 없음)");
+            sb.AppendLine(GameText.Get("code.reliclogic_movespeedbycurrenthealth_managed.848ec576e8", "(체력 구간 규칙 없음)"));
         }
         else
         {
@@ -209,16 +209,16 @@ public class RelicLogic_MoveSpeedByCurrentHealth_Managed : RelicLogic
                 bool hasUpper = !float.IsInfinity(rule.maxHealthInclusive) && rule.maxHealthInclusive < 999999f;
 
                 if (Mathf.Approximately(rule.minHealthInclusive, rule.maxHealthInclusive))
-                    rangeText = $"현재 체력이 {rule.minHealthInclusive:0.##}";
+                    rangeText = GameText.Format("code.reliclogic_movespeedbycurrenthealth_managed.04db4e426b", "현재 체력이 {0:0.##}", rule.minHealthInclusive);
                 else if (hasLower && hasUpper)
-                    rangeText = $"현재 체력이 {rule.minHealthInclusive:0.##}~{rule.maxHealthInclusive:0.##}";
+                    rangeText = GameText.Format("code.reliclogic_movespeedbycurrenthealth_managed.0351bcc3d7", "현재 체력이 {0:0.##}~{1:0.##}", rule.minHealthInclusive, rule.maxHealthInclusive);
                 else if (hasLower)
-                    rangeText = $"현재 체력이 {rule.minHealthInclusive:0.##} 이상";
+                    rangeText = GameText.Format("code.reliclogic_movespeedbycurrenthealth_managed.07b5841548", "현재 체력이 {0:0.##} 이상", rule.minHealthInclusive);
                 else
-                    rangeText = $"현재 체력이 {rule.maxHealthInclusive:0.##} 이하";
+                    rangeText = GameText.Format("code.reliclogic_movespeedbycurrenthealth_managed.f3179999c6", "현재 체력이 {0:0.##} 이하", rule.maxHealthInclusive);
 
                 string bonus = RelicTooltipFormatter.FormatSignedValueToken(EvalValue(rule, previewLevel), true);
-                sb.AppendLine($"● {rangeText}: [[이동속도]] {bonus}");
+                sb.AppendLine(GameText.Format("code.reliclogic_movespeedbycurrenthealth_managed.137d0ef6ae", "● {0}: [[이동속도]] {1}", rangeText, bonus));
             }
         }
 

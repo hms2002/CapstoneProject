@@ -824,14 +824,14 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         Transform resolvedPlayer = ResolvePlayerTransform();
         GameOverPresentationRequest request = GameOverPresentationRequest.Defeat(
             resolvedPlayer,
-            ResolveFakeGameOverText(fakeGameOverCauseName, "Tutorial Boss", "마왕"),
+            GameText.Get("code.tutorialbossencountersequence.93df8f92c4", fakeGameOverCauseName),
             GameOverCauseKind.Monster,
             returnSceneName,
             useSceneTransitionService);
         request.EndRunOnReturn = false;
-        request.ReturnButtonLabel = fakeGameOverButtonLabel;
-        request.MessageTextOverride = ResolveFakeGameOverText(fakeGameOverMessageText, null, "처치자 마왕");
-        request.LocationName = ResolveFakeGameOverText(fakeGameOverLocationName, null, "마왕의 알현실");
+        request.ReturnButtonLabel = GameText.Get("tutorial.fall", fakeGameOverButtonLabel);
+        request.MessageTextOverride = GameText.Get("code.tutorialbossencountersequence.5664f327bd", fakeGameOverMessageText);
+        request.LocationName = GameText.Get("code.tutorialbossencountersequence.b96353069a", fakeGameOverLocationName);
         request.HideTimeText = hideFakeGameOverTimeText;
         request.AllowInventoryDuringPresentation = false;
         request.ShowInventoryKeyHint = false;

@@ -1,0 +1,211 @@
+{
+    "scene": "TitleScene",
+    "locale": "ja",
+    "screen": "settings",
+    "image": "outputs/localization-screen-review-2026-10-04/ja-settings.png",
+    "labels": [
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+            "text": "画面モード",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/Stepper/Previous",
+            "text": "<",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/Stepper/OptionText",
+            "text": "日本語",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+            "text": "言語",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+            "text": "画面の揺れ",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/Stepper/Next",
+            "text": ">",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/Stepper/Next",
+            "text": ">",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+            "text": "ゲーム開始",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/Stepper/Next",
+            "text": ">",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/Stepper/Next",
+            "text": ">",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+            "text": "マスター音量",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/Stepper/Previous",
+            "text": "<",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/Stepper/OptionText",
+            "text": "フルスクリーン",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+            "text": "キー割り当て",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+            "text": "解像度",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/SliderGroup/Text (TMP)",
+            "text": "62%",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+            "text": "適用",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+            "text": "BGM音量",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/Stepper/OptionText",
+            "text": "オン",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/Stepper/Previous",
+            "text": "<",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+            "text": "設定",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 60.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/Stepper/OptionText",
+            "text": "1920 x 1080",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+            "text": "設定",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+            "text": "戻る",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/Stepper/Previous",
+            "text": "<",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/SliderGroup/Text (TMP)",
+            "text": "24%",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+            "text": "ゲーム終了",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/SliderGroup/Text (TMP)",
+            "text": "34%",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+            "text": "効果音の音量",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 50.0
+        }
+    ]
+}

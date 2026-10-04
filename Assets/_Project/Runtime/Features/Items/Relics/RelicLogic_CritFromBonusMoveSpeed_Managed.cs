@@ -9,7 +9,7 @@ using System.Collections.Generic;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Crit From Bonus MoveSpeed (Managed)")]
 public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
 {
-    protected override string DefaultEffectTemplate => "● [[추가 이동속도]] {bonus_move_step}마다 [[치명타 확률]] {crit_gain_per_step} 추가";
+    protected override string DefaultEffectTemplate => GameText.Get("code.reliclogic_critfrombonusmovespeed_managed.5e968816b5", "● [[추가 이동속도]] {bonus_move_step}마다 [[치명타 확률]] {crit_gain_per_step} 추가");
 
     [Header("Read MoveSpeed (x1 multiplier)")]
     [Tooltip("권장: MoveSpeedFinal. Composite 최종 속도를 기본 속도로 나누어 100% 기준 배율로 읽습니다.")]
@@ -271,7 +271,7 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
     public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
     {
         return BuildTemplatedTooltip(
-            "● [[추가 이동속도]] {bonus_move_step}마다 [[치명타 확률]] {crit_gain_per_step} 추가",
+            DefaultEffectTemplate,
             new Dictionary<string, string>
             {
                 ["bonus_move_step"] = RelicTooltipFormatter.FormatSignedValueToken(bonusMoveStep, true),

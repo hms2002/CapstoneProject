@@ -40,7 +40,7 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
 
         if (summaryText != null)
         {
-            string text = weapon.storyText ?? string.Empty;
+            string text = GameText.WeaponStory(weapon.weaponId, GameText.Asset(weapon, "storyText", weapon.storyText) ?? string.Empty);
             if (services?.formatText != null)
                 text = services.formatText(text);
 
@@ -50,10 +50,10 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
         BuildStatLines(weapon);
 
         if (weapon.weaponId == "Weapon.CrimsonBoundary")
-            AddAbilityBlock("기본 공격", weapon.GetAbility(WeaponAbilitySlot.Attack), weapon.attackInputHint, InputActionId.PrimaryAttack, ctx, services);
+            AddAbilityBlock(GameText.Get("code.weapondetailviewv2.065f292f33", "기본 공격"), weapon.GetAbility(WeaponAbilitySlot.Attack), weapon.attackInputHint, InputActionId.PrimaryAttack, ctx, services);
 
-        AddAbilityBlock("스킬 1", weapon.GetAbility(WeaponAbilitySlot.Skill1), weapon.skill1InputHint, InputActionId.Skill1, ctx, services);
-        AddAbilityBlock("스킬 2", weapon.GetAbility(WeaponAbilitySlot.Skill2), weapon.skill2InputHint, InputActionId.Skill2, ctx, services);
+        AddAbilityBlock(GameText.Get("code.weapondetailviewv2.a091200702", "스킬 1"), weapon.GetAbility(WeaponAbilitySlot.Skill1), weapon.skill1InputHint, InputActionId.Skill1, ctx, services);
+        AddAbilityBlock(GameText.Get("code.weapondetailviewv2.01d28c5504", "스킬 2"), weapon.GetAbility(WeaponAbilitySlot.Skill2), weapon.skill2InputHint, InputActionId.Skill2, ctx, services);
 
 
 
@@ -106,8 +106,8 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
                 continue;
 
             string label = !string.IsNullOrEmpty(entry.labelOverride)
-                ? entry.labelOverride
-                : (!string.IsNullOrEmpty(entry.attribute.attributeName) ? entry.attribute.attributeName : entry.attribute.name);
+                ? GameText.Asset(weapon, $"statModifiers.Array.data[{i}].labelOverride", entry.labelOverride)
+                : (!string.IsNullOrEmpty(entry.attribute.DisplayName) ? entry.attribute.DisplayName : entry.attribute.name);
 
             string value = entry.type == ModifierType.Percent
                 ? FormatTooltipValue(entry.value, true)
@@ -178,7 +178,7 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
     {
         string title = !string.IsNullOrWhiteSpace(variant.Title)
             ? variant.Title
-            : (!string.IsNullOrEmpty(ability.abilityName) ? ability.abilityName : header);
+            : (!string.IsNullOrEmpty(ability.DisplayName) ? ability.DisplayName : header);
 
         Sprite icon = variant.Icon != null ? variant.Icon : ability.icon;
         string body = !showDetailedDescription && !string.IsNullOrWhiteSpace(variant.SimpleBody)
@@ -215,7 +215,7 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
         if (services?.formatText != null)
             body = services.formatText(body);
 
-        string displayHeader = !string.IsNullOrEmpty(ability.abilityName) ? ability.abilityName : header;
+        string displayHeader = !string.IsNullOrEmpty(ability.DisplayName) ? ability.DisplayName : header;
         return new AbilityDisplayState(
             displayHeader,
             ability.icon,
@@ -227,13 +227,13 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
 
     private string BuildAbilityBody(AbilityDefinition ability, ItemDetailContext ctx)
     {
-        if (!showDetailedDescription && !string.IsNullOrWhiteSpace(ability.simpleDescription))
-            return ability.simpleDescription;
+        if (!showDetailedDescription && !string.IsNullOrWhiteSpace(ability.SimpleDescription))
+            return ability.SimpleDescription;
 
         var sb = new StringBuilder();
 
-        if (!string.IsNullOrEmpty(ability.description))
-            sb.AppendLine(ability.description);
+        if (!string.IsNullOrEmpty(ability.Description))
+            sb.AppendLine(ability.Description);
 
         if (ability.sourceObject is IDetailProvider provider)
         {
@@ -311,7 +311,7 @@ public sealed class WeaponDescriptionHint
         }
         if (label != null)
         {
-            string caption = detailed ? "간단히 설명" : "자세히 설명";
+            string caption = detailed ? GameText.Get("code.weapondetailviewv2.84187e30d7", "간단히 설명") : GameText.Get("code.weapondetailviewv2.05dad13cbb", "자세히 설명");
             label.text = glyph.HasIcon ? caption : $"~ {caption}";
         }
     }

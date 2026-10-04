@@ -29,7 +29,7 @@ public sealed class RunSpecialNpcDialogueSetSO : ScriptableObject
 
     public RunSpecialNpcDialogueBranchDefinition GetBranch(RunSpecialNpcDialogueBranchKey key)
     {
-        return key switch
+        var branch = key switch
         {
             RunSpecialNpcDialogueBranchKey.ConstructionNotStarted => constructionNotStarted ?? EmptyBranch,
             RunSpecialNpcDialogueBranchKey.ConstructionInsufficientFunds => constructionInsufficientFunds ?? EmptyBranch,
@@ -40,5 +40,18 @@ public sealed class RunSpecialNpcDialogueSetSO : ScriptableObject
             RunSpecialNpcDialogueBranchKey.TeleportUnavailable => teleportUnavailable ?? EmptyBranch,
             _ => EmptyBranch,
         };
+        string field = key switch
+        {
+            RunSpecialNpcDialogueBranchKey.ConstructionNotStarted => "constructionNotStarted",
+            RunSpecialNpcDialogueBranchKey.ConstructionInsufficientFunds => "constructionInsufficientFunds",
+            RunSpecialNpcDialogueBranchKey.ConstructionPending => "constructionPending",
+            RunSpecialNpcDialogueBranchKey.ConstructionCompleted => "constructionCompleted",
+            RunSpecialNpcDialogueBranchKey.TeleportAvailable => "teleportAvailable",
+            RunSpecialNpcDialogueBranchKey.TeleportLocked => "teleportLocked",
+            RunSpecialNpcDialogueBranchKey.TeleportUnavailable => "teleportUnavailable",
+            _ => null
+        };
+        if (field != null && branch != EmptyBranch) branch.BindLocalization(this, field);
+        return branch;
     }
 }

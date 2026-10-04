@@ -167,7 +167,7 @@ public sealed class AlarmBellInteractable :
         if (!CanInteract(player))
         {
             if (IsEventAlreadyUsed())
-                WarningPopupPlayback.ShowMessage(alreadyUsedMessage);
+                WarningPopupPlayback.ShowMessage(GameText.Get("interaction.alarmbellinteractable.alreadyusedmessage", alreadyUsedMessage));
 
             return;
         }
@@ -175,7 +175,7 @@ public sealed class AlarmBellInteractable :
         if (!TryValidateConfiguration(out string failureReason))
         {
             CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[AlarmBell] {failureReason}", this);
-            WarningPopupPlayback.ShowMessage(invalidConfigurationMessage);
+            WarningPopupPlayback.ShowMessage(GameText.Get("interaction.alarmbellinteractable.invalidconfigurationmessage", invalidConfigurationMessage));
             return;
         }
 
@@ -193,7 +193,7 @@ public sealed class AlarmBellInteractable :
         if (definition != null && !string.IsNullOrWhiteSpace(definition.InteractPromptText))
             return definition.InteractPromptText;
 
-        return "경보 종 울리기";
+        return GameText.Get("code.alarmbellinteractable.4fc1c932d2", "경보 종 울리기");
     }
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
@@ -752,7 +752,7 @@ public sealed class AlarmBellInteractable :
             sourceObject: this);
 
         if (!string.IsNullOrWhiteSpace(activatedPopupMessage))
-            WarningPopupPlayback.ShowMessage(activatedPopupMessage);
+            WarningPopupPlayback.ShowMessage(GameText.Get("interaction.alarmbellinteractable.activatedpopupmessage", activatedPopupMessage));
     }
 
     private void PlaySpawnPresentation(Vector3 position, Quaternion rotation)
@@ -777,7 +777,7 @@ public sealed class AlarmBellInteractable :
         RefreshCompletionReward();
 
         if (!string.IsNullOrWhiteSpace(clearedPopupMessage))
-            WarningPopupPlayback.ShowMessage(clearedPopupMessage);
+            WarningPopupPlayback.ShowMessage(GameText.Get("interaction.alarmbellinteractable.clearedpopupmessage", clearedPopupMessage));
     }
 
     private void TrySetAnimatorTrigger(string triggerName)

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Move Speed On Damaged (Managed)")]
 public class RelicLogic_MoveSpeedOnDamaged_Managed : RelicLogic
 {
-    protected override string DefaultEffectTemplate => "● [[피해를 받으면]] {duration} 동안 [[이동속도]] {move_speed_bonus}";
+    protected override string DefaultEffectTemplate => GameText.Get("code.reliclogic_movespeedondamaged_managed.b1fa3944a6", "● [[피해를 받으면]] {duration} 동안 [[이동속도]] {move_speed_bonus}");
 
     [Header("Trigger")]
     [Tooltip("피격 이벤트 태그. 보통 AbilitySystem.damagedTag에 설정한 태그(Event.Actor.Damaged).")]
@@ -76,7 +76,7 @@ public class RelicLogic_MoveSpeedOnDamaged_Managed : RelicLogic
     public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
     {
         return BuildTemplatedTooltip(
-            "● [[피해를 받으면]] {duration} 동안 [[이동속도]] {move_speed_bonus}",
+            DefaultEffectTemplate,
             new Dictionary<string, string>
             {
                 ["duration"] = RelicTooltipFormatter.FormatSeconds(durationSeconds),

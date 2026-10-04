@@ -1,0 +1,580 @@
+{
+    "rows": [
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[2].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[2].lines.Array.data[0]",
+            "text": "크윽.."
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[4].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[4].lines.Array.data[0]",
+            "text": "...이건 좀 아플거야"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[6].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[6].lines.Array.data[0]",
+            "text": "찌른다!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[6].lines.Array.data[1]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[6].lines.Array.data[1]",
+            "text": "잘 보고 피해봐!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[7].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[7].lines.Array.data[0]",
+            "text": "베어주마!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[7].lines.Array.data[1]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[7].lines.Array.data[1]",
+            "text": "이건 맞으면 진짜 아파?"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[8].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[8].lines.Array.data[0]",
+            "text": "던진다!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[9].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[9].lines.Array.data[0]",
+            "text": "어디까지 도망가나 볼까?"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[9].lines.Array.data[1]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[9].lines.Array.data[1]",
+            "text": "어디한번 피해보시지!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[10].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[10].lines.Array.data[0]",
+            "text": "터져볼래?"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[11].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[11].lines.Array.data[0]",
+            "text": "착지한다, 비켜!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[11].lines.Array.data[1]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[11].lines.Array.data[1]",
+            "text": "비켜! 애송이!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[12].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[12].lines.Array.data[0]",
+            "text": "돌아와, 아직 안 끝났어!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[12].lines.Array.data[1]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[12].lines.Array.data[1]",
+            "text": "이리와!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[13].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[13].lines.Array.data[0]",
+            "text": "잡히면 죽어!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[14].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[14].lines.Array.data[0]",
+            "text": "방심했지?"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[15].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[15].lines.Array.data[0]",
+            "text": "장난은 여기까지야."
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[15].lines.Array.data[1]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[15].lines.Array.data[1]",
+            "text": "조금 진심을 내볼까"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[16].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[16].lines.Array.data[0]",
+            "text": "야야야, 던지지 마!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[16].lines.Array.data[1]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[16].lines.Array.data[1]",
+            "text": "설마 또 던지려고?"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[16].lines.Array.data[2]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[16].lines.Array.data[2]",
+            "text": "잠깐, 나 준비 안 됐는데?!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[17].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[17].lines.Array.data[0]",
+            "text": "이제 와서 부르냐?!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[17].lines.Array.data[1]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[17].lines.Array.data[1]",
+            "text": "그래그래, 없으면 안 되겠지?"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[17].lines.Array.data[2]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[17].lines.Array.data[2]",
+            "text": "흥, 이번만 도와준다."
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[17].lines.Array.data[3]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[17].lines.Array.data[3]",
+            "text": "그래, 결국 내가 필요하지?"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[18].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[18].lines.Array.data[0]",
+            "text": "으아아아아악!!"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[19].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[19].lines.Array.data[0]",
+            "text": "한 마디만 더해라"
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[20].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[20].lines.Array.data[0]",
+            "text": "...."
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[21].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[21].lines.Array.data[0]",
+            "text": "우웩.."
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[21].lines.Array.data[1]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[21].lines.Array.data[1]",
+            "text": "감히.. 이 몸을.."
+        },
+        {
+            "key": "asset.0d91c9df159665a4aaf50b12b327a52f.entries.Array.data[21].lines.Array.data[2]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DarkLordBossSpeechData",
+            "field": "entries.Array.data[21].lines.Array.data[2]",
+            "text": "투척용 검이 아니라고!!"
+        },
+        {
+            "key": "asset.5f57d0cf6cc24a40a9d65b165fbc4e2f.entries.Array.data[2].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DragonBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DragonBossSpeechData",
+            "field": "entries.Array.data[2].lines.Array.data[0]",
+            "text": "술이... 모자라..."
+        },
+        {
+            "key": "asset.5f57d0cf6cc24a40a9d65b165fbc4e2f.entries.Array.data[6].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DragonBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DragonBossSpeechData",
+            "field": "entries.Array.data[6].lines.Array.data[0]",
+            "text": "들이킨다!"
+        },
+        {
+            "key": "asset.5f57d0cf6cc24a40a9d65b165fbc4e2f.entries.Array.data[7].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DragonBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DragonBossSpeechData",
+            "field": "entries.Array.data[7].lines.Array.data[0]",
+            "text": "크으~ 취한다~!"
+        },
+        {
+            "key": "asset.5f57d0cf6cc24a40a9d65b165fbc4e2f.entries.Array.data[7].lines.Array.data[1]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DragonBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DragonBossSpeechData",
+            "field": "entries.Array.data[7].lines.Array.data[1]",
+            "text": "음~ 좋다~"
+        },
+        {
+            "key": "asset.5f57d0cf6cc24a40a9d65b165fbc4e2f.entries.Array.data[8].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DragonBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DragonBossSpeechData",
+            "field": "entries.Array.data[8].lines.Array.data[0]",
+            "text": "앗 뜨거!"
+        },
+        {
+            "key": "asset.5f57d0cf6cc24a40a9d65b165fbc4e2f.entries.Array.data[9].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DragonBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DragonBossSpeechData",
+            "field": "entries.Array.data[9].lines.Array.data[0]",
+            "text": "어질어질하군..."
+        },
+        {
+            "key": "asset.5f57d0cf6cc24a40a9d65b165fbc4e2f.entries.Array.data[10].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/DragonBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "DragonBossSpeechData",
+            "field": "entries.Array.data[10].lines.Array.data[0]",
+            "text": "잘 피해봐~"
+        },
+        {
+            "key": "asset.95081fedc29af6044801e50a4e2d73fb.entries.Array.data[0].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/NewPlayerSpeechData.asset",
+            "type": "PlayerSpeechData",
+            "owner": "NewPlayerSpeechData",
+            "field": "entries.Array.data[0].lines.Array.data[0]",
+            "text": "열리지 않아."
+        },
+        {
+            "key": "asset.95081fedc29af6044801e50a4e2d73fb.entries.Array.data[0].lines.Array.data[1]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/NewPlayerSpeechData.asset",
+            "type": "PlayerSpeechData",
+            "owner": "NewPlayerSpeechData",
+            "field": "entries.Array.data[0].lines.Array.data[1]",
+            "text": "굳게 잠겨있어."
+        },
+        {
+            "key": "asset.95081fedc29af6044801e50a4e2d73fb.entries.Array.data[0].lines.Array.data[2]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/NewPlayerSpeechData.asset",
+            "type": "PlayerSpeechData",
+            "owner": "NewPlayerSpeechData",
+            "field": "entries.Array.data[0].lines.Array.data[2]",
+            "text": "다른 장치가 있을 수도 있겠어."
+        },
+        {
+            "key": "asset.95081fedc29af6044801e50a4e2d73fb.entries.Array.data[1].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/NewPlayerSpeechData.asset",
+            "type": "PlayerSpeechData",
+            "owner": "NewPlayerSpeechData",
+            "field": "entries.Array.data[1].lines.Array.data[0]",
+            "text": "장비 칸이 가득 찼어."
+        },
+        {
+            "key": "asset.95081fedc29af6044801e50a4e2d73fb.entries.Array.data[1].lines.Array.data[1]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/NewPlayerSpeechData.asset",
+            "type": "PlayerSpeechData",
+            "owner": "NewPlayerSpeechData",
+            "field": "entries.Array.data[1].lines.Array.data[1]",
+            "text": "빈 칸을 만들어야 겠어."
+        },
+        {
+            "key": "asset.95081fedc29af6044801e50a4e2d73fb.entries.Array.data[1].lines.Array.data[2]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/NewPlayerSpeechData.asset",
+            "type": "PlayerSpeechData",
+            "owner": "NewPlayerSpeechData",
+            "field": "entries.Array.data[1].lines.Array.data[2]",
+            "text": "지금은 더 못 줍겠어."
+        },
+        {
+            "key": "asset.95081fedc29af6044801e50a4e2d73fb.entries.Array.data[2].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/NewPlayerSpeechData.asset",
+            "type": "PlayerSpeechData",
+            "owner": "NewPlayerSpeechData",
+            "field": "entries.Array.data[2].lines.Array.data[0]",
+            "text": "이쪽에선 안열려."
+        },
+        {
+            "key": "asset.95081fedc29af6044801e50a4e2d73fb.entries.Array.data[2].lines.Array.data[1]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/NewPlayerSpeechData.asset",
+            "type": "PlayerSpeechData",
+            "owner": "NewPlayerSpeechData",
+            "field": "entries.Array.data[2].lines.Array.data[1]",
+            "text": "반대편에서 열 수 있겠어."
+        },
+        {
+            "key": "asset.2e94bab546cea6b47a40fcf9034d64be.entries.Array.data[2].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/SlimeBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "SlimeBossSpeechData",
+            "field": "entries.Array.data[2].lines.Array.data[0]",
+            "text": "네가 다치지 않아서 다행이야.."
+        },
+        {
+            "key": "asset.2e94bab546cea6b47a40fcf9034d64be.entries.Array.data[4].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/SlimeBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "SlimeBossSpeechData",
+            "field": "entries.Array.data[4].lines.Array.data[0]",
+            "text": "...이건 좀 아플거야"
+        },
+        {
+            "key": "asset.2e94bab546cea6b47a40fcf9034d64be.entries.Array.data[6].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/SlimeBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "SlimeBossSpeechData",
+            "field": "entries.Array.data[6].lines.Array.data[0]",
+            "text": "모두 모여라!!"
+        },
+        {
+            "key": "asset.2e94bab546cea6b47a40fcf9034d64be.entries.Array.data[7].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/SlimeBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "SlimeBossSpeechData",
+            "field": "entries.Array.data[7].lines.Array.data[0]",
+            "text": "교대해줘!"
+        },
+        {
+            "key": "asset.2e94bab546cea6b47a40fcf9034d64be.entries.Array.data[8].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/SlimeBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "SlimeBossSpeechData",
+            "field": "entries.Array.data[8].lines.Array.data[0]",
+            "text": "오케이!"
+        },
+        {
+            "key": "asset.2e94bab546cea6b47a40fcf9034d64be.entries.Array.data[9].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/SlimeBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "SlimeBossSpeechData",
+            "field": "entries.Array.data[9].lines.Array.data[0]",
+            "text": "아야야… 감히 피하다니!"
+        },
+        {
+            "key": "asset.2e94bab546cea6b47a40fcf9034d64be.entries.Array.data[10].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/SlimeBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "SlimeBossSpeechData",
+            "field": "entries.Array.data[10].lines.Array.data[0]",
+            "text": "우으으 져버리다니..!"
+        },
+        {
+            "key": "asset.2e94bab546cea6b47a40fcf9034d64be.entries.Array.data[11].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/SlimeBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "SlimeBossSpeechData",
+            "field": "entries.Array.data[11].lines.Array.data[0]",
+            "text": "다음에는 봐주지 않을 거야!"
+        },
+        {
+            "key": "asset.b1f6e8fa2c2b48cc925e3f5ac1ffd2cb.entries.Array.data[2].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/WitchBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "WitchBossSpeechData",
+            "field": "entries.Array.data[2].lines.Array.data[0]",
+            "text": "네가 다치지 않아서 다행이야.."
+        },
+        {
+            "key": "asset.b1f6e8fa2c2b48cc925e3f5ac1ffd2cb.entries.Array.data[4].lines.Array.data[0]",
+            "path": "Assets/_Project/Data/Dialogue/SpeechData/WitchBossSpeechData.asset",
+            "type": "BossSpeechData",
+            "owner": "WitchBossSpeechData",
+            "field": "entries.Array.data[4].lines.Array.data[0]",
+            "text": "...이건 좀 아플거야"
+        },
+        {
+            "key": "asset.498d0a1f691de2b4d94db6e1220f433c.slides.Array.data[0].text",
+            "path": "Assets/_Project/Data/Dialogue/IntroAndOutro/Intro/IntroSequence_Default.asset",
+            "type": "TitleIntroSequenceSO",
+            "owner": "IntroSequence_Default",
+            "field": "slides.Array.data[0].text",
+            "text": "오래전. 인간과 이종족의 갈등이 점차 격해져 마침내 최고조에 달했다."
+        },
+        {
+            "key": "asset.498d0a1f691de2b4d94db6e1220f433c.slides.Array.data[1].text",
+            "path": "Assets/_Project/Data/Dialogue/IntroAndOutro/Intro/IntroSequence_Default.asset",
+            "type": "TitleIntroSequenceSO",
+            "owner": "IntroSequence_Default",
+            "field": "slides.Array.data[1].text",
+            "text": "당장이라도 큰 싸움이 벌어질 듯했던 그때. 홀연히 나타난 '마왕'이 이종족을 규합해 거대한 세력을 세우니, 사람들은 이를 마왕군이라 불렀다."
+        },
+        {
+            "key": "asset.498d0a1f691de2b4d94db6e1220f433c.slides.Array.data[2].text",
+            "path": "Assets/_Project/Data/Dialogue/IntroAndOutro/Intro/IntroSequence_Default.asset",
+            "type": "TitleIntroSequenceSO",
+            "owner": "IntroSequence_Default",
+            "field": "slides.Array.data[2].text",
+            "text": "불안에 빠진 인간들은 당신의 소꿉친구를 용사로 발탁했다. 하지만 마왕군의 위협을 조기에 막고자 홀로 마왕성으로 향했던 친구는, 그곳에서 감감무소식으로 실종되고 말았다."
+        },
+        {
+            "key": "asset.498d0a1f691de2b4d94db6e1220f433c.slides.Array.data[3].text",
+            "path": "Assets/_Project/Data/Dialogue/IntroAndOutro/Intro/IntroSequence_Default.asset",
+            "type": "TitleIntroSequenceSO",
+            "owner": "IntroSequence_Default",
+            "field": "slides.Array.data[3].text",
+            "text": "그리고 현재. 사라진 소꿉친구의 흔적을 쫓아, 당신 또한 마왕성의 입구에 도달하며 이야기는 시작된다."
+        },
+        {
+            "key": "asset.54e5f53ed338f354db8ebcec3fdda0bc.slides.Array.data[0].text",
+            "path": "Assets/_Project/Data/Dialogue/IntroAndOutro/Outro/EndingOutroSequence.asset",
+            "type": "EndingOutroSequenceSO",
+            "owner": "EndingOutroSequence",
+            "field": "slides.Array.data[0].text",
+            "text": "마왕은 쓰러졌다."
+        },
+        {
+            "key": "asset.54e5f53ed338f354db8ebcec3fdda0bc.slides.Array.data[1].text",
+            "path": "Assets/_Project/Data/Dialogue/IntroAndOutro/Outro/EndingOutroSequence.asset",
+            "type": "EndingOutroSequenceSO",
+            "owner": "EndingOutroSequence",
+            "field": "slides.Array.data[1].text",
+            "text": "왕국을 위협하던 이종족은 마왕의 부재로 뿔뿔이 흩어졌다. 흩어진 이종족이 각지에서 문제를 일으킨다는 소식도 들려왔다."
+        },
+        {
+            "key": "asset.54e5f53ed338f354db8ebcec3fdda0bc.slides.Array.data[2].text",
+            "path": "Assets/_Project/Data/Dialogue/IntroAndOutro/Outro/EndingOutroSequence.asset",
+            "type": "EndingOutroSequenceSO",
+            "owner": "EndingOutroSequence",
+            "field": "slides.Array.data[2].text",
+            "text": "당신의 친구가 어째서 마왕을 자처했는지 아직 모르지만, 어쨌거나 왕국은 귀환한 당신을 환영했다."
+        },
+        {
+            "key": "asset.54e5f53ed338f354db8ebcec3fdda0bc.slides.Array.data[3].text",
+            "path": "Assets/_Project/Data/Dialogue/IntroAndOutro/Outro/EndingOutroSequence.asset",
+            "type": "EndingOutroSequenceSO",
+            "owner": "EndingOutroSequence",
+            "field": "slides.Array.data[3].text",
+            "text": "하지만... 정말 이것으로 된 걸까?"
+        },
+        {
+            "key": "asset.e51505379253cd7418eede840755f707.corridorLocationName",
+            "path": "Assets/_Project/Data/SceneFlow/Routes/DemonkingRouteSet.asset",
+            "type": "CorridorBossRouteSetSO",
+            "owner": "DemonkingRouteSet",
+            "field": "corridorLocationName",
+            "text": "마왕의 알현실 입구"
+        },
+        {
+            "key": "asset.e51505379253cd7418eede840755f707.bossLocationName",
+            "path": "Assets/_Project/Data/SceneFlow/Routes/DemonkingRouteSet.asset",
+            "type": "CorridorBossRouteSetSO",
+            "owner": "DemonkingRouteSet",
+            "field": "bossLocationName",
+            "text": "마왕의 알현실"
+        },
+        {
+            "key": "asset.946aaf6b94713064e9f547584fa3e2e3.corridorLocationName",
+            "path": "Assets/_Project/Data/SceneFlow/Routes/Dragon_CorridorBossRouteSet.asset",
+            "type": "CorridorBossRouteSetSO",
+            "owner": "Dragon_CorridorBossRouteSet",
+            "field": "corridorLocationName",
+            "text": "보물창고"
+        },
+        {
+            "key": "asset.946aaf6b94713064e9f547584fa3e2e3.bossLocationName",
+            "path": "Assets/_Project/Data/SceneFlow/Routes/Dragon_CorridorBossRouteSet.asset",
+            "type": "CorridorBossRouteSetSO",
+            "owner": "Dragon_CorridorBossRouteSet",
+            "field": "bossLocationName",
+            "text": "스피리의 방"
+        },
+        {
+            "key": "asset.d35e3630a31b6ef42a9a2b03d2afa4e3.corridorLocationName",
+            "path": "Assets/_Project/Data/SceneFlow/Routes/ShadowCorridorBossRouteSet.asset",
+            "type": "CorridorBossRouteSetSO",
+            "owner": "ShadowCorridorBossRouteSet",
+            "field": "corridorLocationName",
+            "text": "그림자 감옥"
+        },
+        {
+            "key": "asset.d35e3630a31b6ef42a9a2b03d2afa4e3.bossLocationName",
+            "path": "Assets/_Project/Data/SceneFlow/Routes/ShadowCorridorBossRouteSet.asset",
+            "type": "CorridorBossRouteSetSO",
+            "owner": "ShadowCorridorBossRouteSet",
+            "field": "bossLocationName",
+            "text": "클로에의 방"
+        },
+        {
+            "key": "asset.ac129d8bcfb6e3c4da2f9c2e3e4ead07.corridorLocationName",
+            "path": "Assets/_Project/Data/SceneFlow/Routes/SlimeRouteSet.asset",
+            "type": "CorridorBossRouteSetSO",
+            "owner": "SlimeRouteSet",
+            "field": "corridorLocationName",
+            "text": "슬라임 왕국"
+        },
+        {
+            "key": "asset.ac129d8bcfb6e3c4da2f9c2e3e4ead07.bossLocationName",
+            "path": "Assets/_Project/Data/SceneFlow/Routes/SlimeRouteSet.asset",
+            "type": "CorridorBossRouteSetSO",
+            "owner": "SlimeRouteSet",
+            "field": "bossLocationName",
+            "text": "멜타의 방"
+        }
+    ]
+}

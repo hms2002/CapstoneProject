@@ -25,7 +25,7 @@ public sealed class LevelScaledMaxHeartLevelRewardEffectSO : LevelRewardEffectSO
 
         if (context.Progression == null || context.Progression.level < Mathf.Max(1, levelsPerHeart))
         {
-            failureReason = "현재 레벨이 효과 최소 조건보다 낮습니다.";
+            failureReason = GameText.Get("code.levelscaledmaxheartlevelrewardeffectso.3be593c58f", "현재 레벨이 효과 최소 조건보다 낮습니다.");
             return false;
         }
 

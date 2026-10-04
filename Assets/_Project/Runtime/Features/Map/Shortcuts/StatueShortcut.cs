@@ -311,14 +311,14 @@ public class StatueShortcut : TemporaryShortcut
             return string.Empty;
 
         return costType == CostType.MagicStone
-            ? $"마정석 {costAmount}개 바치기"
-            : $"체력 {costAmount} 바치기";
+            ? GameText.Format("code.statueshortcut.001988760f", "마정석 {0}개 바치기", costAmount)
+            : GameText.Format("code.statueshortcut.5e8d92c449", "체력 {0} 바치기", costAmount);
     }
 
     protected override void OnFail(IPlayerInteractor player)
     {
         base.OnFail(player);
-        WarningPopupPlayback.ShowMessage(InsufficientOfferingMessage);
+        WarningPopupPlayback.ShowMessage(GameText.Get("interaction.statueshortcut.insufficientofferingmessage", InsufficientOfferingMessage));
     }
 
     private bool IsActivated => targetDoor != null && targetDoor.IsOpen;

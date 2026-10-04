@@ -109,7 +109,7 @@ public class DialogueTrigger : InteractableBase, INpcRoomIntroductionSource
 
     public override InteractState GetInteractType() => InteractState.Talking;
 
-    public override string GetInteractDescription() => interactPromptText;
+    public override string GetInteractDescription() => GameText.Get("interaction.dialoguetrigger.interactprompttext", interactPromptText);
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 

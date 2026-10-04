@@ -21,7 +21,7 @@ public class ConsumableDetailView : MonoBehaviour, IItemDetailView
 
         string effect = BuildEffectText(consumable, ctx);
         effect = services.formatText != null ? services.formatText(effect) : effect;
-        sections?.Add("효과", effect, services.showGlossary);
+        sections?.Add(GameText.Get("code.consumabledetailview.ce49decb68", "효과"), effect, services.showGlossary);
     }
 
     public void Hide()
@@ -39,19 +39,19 @@ public class ConsumableDetailView : MonoBehaviour, IItemDetailView
 
         if (hasRestoreEffect && restoreAmount != consumable.RestoreAmount)
         {
-            sb.AppendLine($"● [[{consumable.TargetAttribute.attributeName}]] {{pos:[+{restoreAmount}]}} 회복");
+            sb.AppendLine(GameText.Format("code.consumabledetailview.a621751ec4", "● [[{0}]] {{pos:[+{1}]}} 회복", consumable.TargetAttribute.attributeName, restoreAmount));
         }
-        else if (!string.IsNullOrWhiteSpace(consumable.description))
+        else if (!string.IsNullOrWhiteSpace(GameText.Asset(consumable, "description", consumable.description)))
         {
-            sb.AppendLine(consumable.description.Trim());
+            sb.AppendLine(GameText.Asset(consumable, "description", consumable.description).Trim());
         }
         else if (hasRestoreEffect)
         {
-            sb.AppendLine($"● [[{consumable.TargetAttribute.attributeName}]] {{pos:[+{consumable.RestoreAmount}]}} 회복");
+            sb.AppendLine(GameText.Format("code.consumabledetailview.a621751ec4", "● [[{0}]] {{pos:[+{1}]}} 회복", consumable.TargetAttribute.attributeName, consumable.RestoreAmount));
         }
         else
         {
-            sb.AppendLine("(사용 효과 정보 없음)");
+            sb.AppendLine(GameText.Get("code.consumabledetailview.40b875c29d", "(사용 효과 정보 없음)"));
         }
 
         return sb.ToString().TrimEnd();

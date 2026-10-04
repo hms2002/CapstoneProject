@@ -76,8 +76,8 @@ public sealed class TitleProfileSlotCardUI : MonoBehaviour
 
         if (selectButtonLabelText != null)
             selectButtonLabelText.text = hasProfile
-                ? "\uACC4\uC18D\uD558\uAE30"
-                : "\uC2DC\uC791\uD558\uAE30";
+                ? GameText.Get("code.titleprofileslotcardui.9cb367f710", "계속하기")
+                : GameText.Get("code.titleprofileslotcardui.389b82de7b", "시작하기");
 
         if (selectButton != null)
             selectButton.interactable = true;
@@ -151,6 +151,24 @@ public sealed class TitleProfileSlotCardUI : MonoBehaviour
             deleteButton.interactable = enabled;
     }
 
+    public void RefreshLocalizedText(TitleProfileSlotSummary summary)
+    {
+        if (slotLabelText != null) slotLabelText.text = summary.SlotLabel;
+        if (stateLabelText != null) stateLabelText.text = ResolveStateLabel(summary);
+        if (playTimeTitleText != null) playTimeTitleText.text = PlayTimeTitle;
+        if (upgradeProgressTitleText != null) upgradeProgressTitleText.text = UpgradeProgressTitle;
+        if (magicStoneTitleText != null) magicStoneTitleText.text = MagicStoneTitle;
+        if (clearCountTitleText != null) clearCountTitleText.text = ClearCountTitle;
+        if (playTimeValueText != null) playTimeValueText.text = summary.PlayTimeLabel;
+        if (upgradeProgressValueText != null) upgradeProgressValueText.text = summary.UpgradeProgressLabel;
+        if (magicStoneValueText != null) magicStoneValueText.text = summary.MagicStoneLabel;
+        if (clearCountValueText != null) clearCountValueText.text = summary.ClearCountLabel;
+        if (selectButtonLabelText != null)
+            selectButtonLabelText.text = summary.HasProfile
+                ? GameText.Get("code.titleprofileslotcardui.9cb367f710", "계속하기")
+                : GameText.Get("code.titleprofileslotcardui.389b82de7b", "시작하기");
+    }
+
     public void PlayClosePresentations(Action onCompleted = null)
     {
         ResolveReferences();
@@ -196,9 +214,9 @@ public sealed class TitleProfileSlotCardUI : MonoBehaviour
     private static string ResolveStateLabel(TitleProfileSlotSummary summary)
     {
         if (!summary.HasProfile)
-            return "\uBE48 \uC2AC\uB86F";
+            return GameText.Get("code.titleprofileslotcardui.b5ccf802d5", "빈 슬롯");
 
-        return summary.HasActiveRun ? "\uC9C4\uD589 \uC911" : "\uB300\uAE30 \uC911";
+        return summary.HasActiveRun ? GameText.Get("code.titleprofileslotcardui.7890cafc8d", "진행 중") : GameText.Get("code.titleprofileslotcardui.ec425b26f2", "대기 중");
     }
 
     private static void BindGroupedText(
@@ -222,8 +240,8 @@ public sealed class TitleProfileSlotCardUI : MonoBehaviour
             valueText.text = value;
     }
 
-    private const string PlayTimeTitle = "\uD50C\uB808\uC774 \uD0C0\uC784";
-    private const string UpgradeProgressTitle = "\uC5C5\uADF8\uB808\uC774\uB4DC \uC9C4\uD589\uB3C4";
-    private const string MagicStoneTitle = "\uBCF4\uC720 \uB9C8\uC815\uC11D";
-    private const string ClearCountTitle = "\uD074\uB9AC\uC5B4 \uD69F\uC218";
+    private static string PlayTimeTitle => GameText.Get("title.profile.play_time", "플레이 타임");
+    private static string UpgradeProgressTitle => GameText.Get("title.profile.upgrade_progress", "업그레이드 진행도");
+    private static string MagicStoneTitle => GameText.Get("title.profile.magic_stones", "보유 마정석");
+    private static string ClearCountTitle => GameText.Get("title.profile.clear_count", "클리어 횟수");
 }

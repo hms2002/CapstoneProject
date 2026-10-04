@@ -54,6 +54,8 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
     private bool warnedMissingItemDatabase;
     private bool warnedMissingLeftPage;
     private bool warnedMissingRightPage;
+    private UnityEngine.Localization.Locale displayedLocale;
+    private bool localizationReady;
 
     public bool HasDataSource => itemDatabase != null;
 
@@ -68,6 +70,14 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
     private void Update()
     {
         HandleGridNavigationInput();
+        bool ready = UnityEngine.Localization.Settings.LocalizationSettings.InitializationOperation.IsDone;
+        var locale = UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale;
+        if (ready && (!localizationReady || displayedLocale != locale))
+        {
+            localizationReady = true;
+            displayedLocale = locale;
+            RefreshTitle();
+        }
     }
 
 #if UNITY_EDITOR
@@ -502,14 +512,12 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
             _ => weaponTitle
         };
 
-        string title = !string.IsNullOrWhiteSpace(preset.text)
-            ? preset.text
-            : currentSubTab switch
-            {
-                EncyclopediaItemSubTab.Relic => "유물",
-                EncyclopediaItemSubTab.Consumable => "소모품",
-                _ => "무기"
-            };
+        string title = currentSubTab switch
+        {
+            EncyclopediaItemSubTab.Relic => GameText.Get("code.encyclopediaitemtab.b949ada423", string.IsNullOrWhiteSpace(preset.text) ? "유물" : preset.text),
+            EncyclopediaItemSubTab.Consumable => GameText.Get("code.encyclopediaitemtab.fd06a09504", string.IsNullOrWhiteSpace(preset.text) ? "소모품" : preset.text),
+            _ => GameText.Get("code.encyclopediaitemtab.8c4dac1fcc", string.IsNullOrWhiteSpace(preset.text) ? "무기" : preset.text)
+        };
 
         leftPage?.SetTitle(title, preset.icon);
     }
@@ -517,16 +525,16 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
     private string BuildNotice(int entryCount, int availableSlotCount, bool hasRuntimeSlotAuthoring, bool hasAnySlotAuthoring)
     {
         if (itemDatabase == null)
-            return "ItemDatabase가 연결되지 않았습니다.";
+            return GameText.Get("code.encyclopediaitemtab.f366704385", "ItemDatabase가 연결되지 않았습니다.");
 
         if (!hasRuntimeSlotAuthoring && !hasAnySlotAuthoring)
-            return "EntryGridRoot 또는 슬롯 프리팹이 연결되지 않았습니다.";
+            return GameText.Get("code.encyclopediaitemtab.93fe0ae25f", "EntryGridRoot 또는 슬롯 프리팹이 연결되지 않았습니다.");
 
         if (entryCount == 0)
-            return "등록된 항목이 없습니다.";
+            return GameText.Get("code.encyclopediaitemtab.9359c3227e", "등록된 항목이 없습니다.");
 
         if (availableSlotCount <= 0)
-            return "표시할 슬롯이 없습니다.";
+            return GameText.Get("code.encyclopediaitemtab.c173fe0e1b", "표시할 슬롯이 없습니다.");
 
         return null;
     }

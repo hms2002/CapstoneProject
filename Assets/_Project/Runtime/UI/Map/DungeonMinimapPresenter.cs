@@ -51,6 +51,7 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
 
     private void LateUpdate()
     {
+        RefreshLocationLabel();
         if (playerMarker == null)
             return;
 
@@ -306,11 +307,12 @@ public sealed class DungeonMinimapPresenter : MonoBehaviour
             return;
 
         string sceneName = SceneManager.GetActiveScene().name;
-        locationLabel.text = RunRoutePlayback.TryResolveCurrentLocationName(
+        string text = RunRoutePlayback.TryResolveCurrentLocationName(
             sceneName,
             out string locationName)
             ? locationName
-            : sceneName;
+            : GameText.Get("location.unknown", "알 수 없는 장소");
+        if (locationLabel.text != text) locationLabel.text = text;
     }
 
     private void ClearGraphViews()

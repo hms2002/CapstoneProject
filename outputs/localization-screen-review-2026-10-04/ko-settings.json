@@ -1,0 +1,211 @@
+{
+    "scene": "TitleScene",
+    "locale": "ko",
+    "screen": "settings",
+    "image": "outputs/localization-screen-review-2026-10-04/ko-settings.png",
+    "labels": [
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/OptionText",
+            "text": "화면 모드",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/Stepper/Previous",
+            "text": "<",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/Stepper/OptionText",
+            "text": "한국어",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/OptionText",
+            "text": "언어",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/OptionText",
+            "text": "화면 흔들림",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/Stepper/Next",
+            "text": ">",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Language/Stepper/Next",
+            "text": ">",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+            "text": "게임 시작",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/Stepper/Next",
+            "text": ">",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/Stepper/Next",
+            "text": ">",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/Text (TMP)",
+            "text": "마스터 볼륨",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/Stepper/Previous",
+            "text": "<",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/Stepper/OptionText",
+            "text": "전체화면",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/KeyMapping/OptionText",
+            "text": "키 매핑 설정",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/OptionText",
+            "text": "해상도",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/MasterVolume/SliderGroup/Text (TMP)",
+            "text": "62%",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ButtonGroup/ApplySlot/ApplyButton/Text (TMP)",
+            "text": "적용하기",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/OptionText",
+            "text": "BGM 볼륨",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/Stepper/OptionText",
+            "text": "켜기",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/WindowMode/Stepper/Previous",
+            "text": "<",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/TitleTextPanel/OptionTitle",
+            "text": "설정",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 60.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/Resolution/Stepper/OptionText",
+            "text": "1920 x 1080",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+            "text": "설정",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ButtonGroup/QuitSlot/QuitButton/Text (TMP)",
+            "text": "나가기",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/ScreenShake/Stepper/Previous",
+            "text": "<",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 90.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/SliderGroup/Text (TMP)",
+            "text": "24%",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+            "text": "게임 종료",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/BGMVolume/SliderGroup/Text (TMP)",
+            "text": "34%",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "Canvas/SettingUI/Background/ContentsMask/Contents/SFXVolume/Text (TMP)",
+            "text": "효과음 볼륨",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        }
+    ]
+}

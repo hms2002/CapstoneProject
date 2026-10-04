@@ -102,6 +102,9 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private Coroutine activeRoutine;
     private Coroutine returnRoutine;
     private GameOverPresentationRequest request;
+    private string selectedDeathMessageKey;
+    private string selectedDeathMessageFallback;
+    private bool refreshWhenLocalizationReady;
     private bool timerPauseApplied;
     private bool listenerBound;
     private bool hideOnNextSceneLoaded;
@@ -236,11 +239,14 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private void OnEnable()
     {
         SceneManager.sceneLoaded += HandleSceneLoaded;
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
+        refreshWhenLocalizationReady = !UnityEngine.Localization.Settings.LocalizationSettings.InitializationOperation.IsDone;
     }
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= HandleSceneLoaded;
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
         ReleaseGameOverInventoryPresentation();
         RestoreInventoryHudPresentation();
         ReleaseInputBlocker();
@@ -264,8 +270,20 @@ public sealed class GameOverPresentationController : MonoBehaviour
             activeController = null;
     }
 
+    private void HandleLocaleChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (activeController != this) return;
+        ApplyText(request);
+        ApplyReturnButtonLabel(request);
+    }
+
     private void Update()
     {
+        if (refreshWhenLocalizationReady && UnityEngine.Localization.Settings.LocalizationSettings.InitializationOperation.IsDone)
+        {
+            refreshWhenLocalizationReady = false;
+            HandleLocaleChanged(UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale);
+        }
         if (gameOverInventoryScreen != null && !gameOverInventoryScreen.IsActive)
             ReleaseGameOverInventoryPresentation();
     }
@@ -280,6 +298,8 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
     private void Begin(GameOverPresentationRequest incomingRequest)
     {
+        selectedDeathMessageKey = null;
+        selectedDeathMessageFallback = null;
         request = NormalizeRequest(incomingRequest);
         ResolveReferences();
         CaptureAuthoredReturnPose();
@@ -1349,7 +1369,9 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
         if (messageText != null)
         {
-            messageText.text = string.IsNullOrWhiteSpace(request.MessageTextOverride)
+            messageText.text = request.IsVictory
+                ? GameText.Get("gameover.victory.message", request.MessageTextOverride)
+                : string.IsNullOrWhiteSpace(request.MessageTextOverride)
                 ? BuildDeathMessage(request)
                 : request.MessageTextOverride;
         }
@@ -1359,14 +1381,16 @@ public sealed class GameOverPresentationController : MonoBehaviour
         if (request.IsVictory && locationText != null)
         {
             locationText.text = string.Format(
-                MagicStoneRewardTextFormat,
+                GameText.Get("gameover.reward", MagicStoneRewardTextFormat),
                 Mathf.Max(0, request.MagicStoneRewardAmount));
             return;
         }
 
         if (locationText != null)
         {
-            locationText.text = string.Format(LocationTextFormat, request.LocationName);
+            string location = string.IsNullOrWhiteSpace(request.LocationSceneName) ? request.LocationName
+                : GameOverPresentationRequest.ResolveLocationName(request.LocationSceneName);
+            locationText.text = string.Format(GameText.Get("gameover.location", LocationTextFormat), location);
             return;
         }
 
@@ -1389,8 +1413,10 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
         CaptureDefaultTitleText();
 
-        titleText.text = string.IsNullOrWhiteSpace(request.TitleTextOverride)
-            ? defaultTitleText
+        titleText.text = request.IsVictory
+            ? GameText.Get("gameover.victory.title", request.TitleTextOverride)
+            : string.IsNullOrWhiteSpace(request.TitleTextOverride)
+            ? GameText.Get("gameover.failed", defaultTitleText)
             : request.TitleTextOverride;
 
         titleText.color = request.HasTitleColorOverride
@@ -1428,7 +1454,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
             timeText.gameObject.SetActive(showTimeText);
 
         if (!request.HideTimeText)
-            timeText.text = $"남은 시간  {FormatTime(request.RemainingSeconds)}";
+            timeText.text = GameText.Format("code.gameoverpresentationcontroller.f3dc48dae2", "남은 시간  {0}", FormatTime(request.RemainingSeconds));
     }
 
     private void RestoreDefaultTimeTextActive()
@@ -1471,45 +1497,55 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
     private string BuildDeathMessage(GameOverPresentationRequest request)
     {
+        if (!string.IsNullOrEmpty(request.CauseNameKey)) request.CauseName = GameText.Get(request.CauseNameKey, request.CauseName);
         switch (request.CauseKind)
         {
             case GameOverCauseKind.TimeOver:
-                return ResolveAuthoredText(timeOverMessage, "마왕의 인내심이 한계에 도달했습니다.");
+                return GameText.Get("code.gameoverpresentationcontroller.929a05b016", timeOverMessage);
 
             case GameOverCauseKind.Trap:
                 string trapName = string.IsNullOrWhiteSpace(request.CauseName)
-                    ? ResolveAuthoredText(defaultTrapCauseName, "구덩이")
+                    ? GameText.Get("code.gameoverpresentationcontroller.9bc5e20aaf", defaultTrapCauseName)
                     : request.CauseName;
                 return FormatDeathMessage(
-                    ResolveAuthoredText(trapMessageFormat, "{0}에 빠져 속절없이 추락했습니다."),
+                    GameText.Get("code.gameoverpresentationcontroller.a620953d2a", trapMessageFormat),
                     trapName);
 
             case GameOverCauseKind.Monster:
             default:
                 string causeName = string.IsNullOrWhiteSpace(request.CauseName)
-                    ? ResolveAuthoredText(defaultMonsterCauseName, "알 수 없는 적")
+                    ? GameText.Get("code.gameoverpresentationcontroller.b151220e53", defaultMonsterCauseName)
                     : request.CauseName;
                 string messageFormat = PickMonsterDeathMessageFormat();
                 if (!string.IsNullOrWhiteSpace(messageFormat))
                     return FormatDeathMessage(messageFormat, causeName);
 
-                string phrase = MonsterDeathPhrases[Random.Range(0, MonsterDeathPhrases.Length)];
-                return phrase.StartsWith("의", System.StringComparison.Ordinal)
-                    ? $"{causeName}{phrase}"
-                    : $"{causeName}에게 {phrase}";
+                int phraseIndex = Random.Range(0, MonsterDeathPhrases.Length);
+                string phrase = MonsterDeathPhrases[phraseIndex];
+                string authoredFormat = phrase.StartsWith("의", System.StringComparison.Ordinal)
+                    ? "{0}" + phrase : "{0}에게 " + phrase;
+                selectedDeathMessageKey = "gameover.monster." + phraseIndex;
+                selectedDeathMessageFallback = authoredFormat;
+                return FormatDeathMessage(GameText.Get(selectedDeathMessageKey, selectedDeathMessageFallback), causeName);
         }
     }
 
     private string PickMonsterDeathMessageFormat()
     {
+        if (selectedDeathMessageKey != null) return GameText.Get(selectedDeathMessageKey, selectedDeathMessageFallback);
         if (monsterDeathMessageFormats != null && monsterDeathMessageFormats.Length > 0)
         {
             int startIndex = Random.Range(0, monsterDeathMessageFormats.Length);
             for (int i = 0; i < monsterDeathMessageFormats.Length; i++)
             {
-                string candidate = monsterDeathMessageFormats[(startIndex + i) % monsterDeathMessageFormats.Length];
+                int index = (startIndex + i) % monsterDeathMessageFormats.Length;
+                string candidate = monsterDeathMessageFormats[index];
                 if (!string.IsNullOrWhiteSpace(candidate))
-                    return candidate;
+                {
+                    selectedDeathMessageKey = "gameover.monster." + index;
+                    selectedDeathMessageFallback = candidate;
+                    return GameText.Get(selectedDeathMessageKey, candidate);
+                }
             }
         }
 

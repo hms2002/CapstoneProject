@@ -99,7 +99,7 @@ public static class RelicTooltipFormatter
 
     public static string FormatSeconds(float seconds)
     {
-        return "{val:" + Mathf.Max(0f, seconds).ToString("0.##") + "}초";
+        return GameText.Format("units.seconds.value", "{0}초", "{val:" + Mathf.Max(0f, seconds).ToString("0.##") + "}");
     }
 
     /// <summary>

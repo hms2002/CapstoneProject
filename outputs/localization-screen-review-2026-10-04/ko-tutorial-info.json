@@ -1,0 +1,120 @@
+{
+    "scene": "TutorialCorridor",
+    "locale": "ko",
+    "screen": "tutorial-info",
+    "image": "outputs/localization-screen-review-2026-10-04/ko-tutorial-info.png",
+    "labels": [
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/StatusHudPresenter/StatusHudEntry_0/duration_Txt",
+            "text": "",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/StatusHudPresenter/StatusHudEntry_0/stack_Txt",
+            "text": "",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 10.0
+        },
+        {
+            "owner": "PF Player(Clone)/OddIronAmmoHUD/AmmoText",
+            "text": "6 / 6",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/TutorialUI/TutorialPanel/TutorialPanelCenter/TutorialInfoGroup/TutorialText",
+            "text": "전투가 종료되면 상자에 접근해 F키를 눌러 개방이 가능합니다.",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 26.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/TutorialUI/TutorialPanel/TutorialPanelCenter/TutorialTitle/Text (TMP)",
+            "text": "상자",
+            "font": "Galmuri9 SDF",
+            "overflow": true,
+            "size": 50.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/TutorialUI/TutorialPanel/TutorialPanelCenter/ButtonGroup/PageGroup/Text (TMP)",
+            "text": "1/2",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+            "text": "마왕을 토벌하기 위해 전진하자.",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 26.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+            "text": "메인 퀘스트",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/Timer_BossUI/TimerSection/TimerBG/Timer",
+            "text": "14:38",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/LevelHUD/LevelText",
+            "text": "1",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (4)/KeyGuideText",
+            "text": "4",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (3)/KeyGuideText",
+            "text": "3",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (2)/KeyGuideText",
+            "text": "2",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (1)/KeyGuideText",
+            "text": "1",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/CurrencyUI/Text(TMP)",
+            "text": "1",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/GoldUI/Text(TMP)",
+            "text": "0",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        }
+    ]
+}

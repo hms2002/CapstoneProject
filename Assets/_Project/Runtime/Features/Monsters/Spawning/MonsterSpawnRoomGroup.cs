@@ -14,8 +14,8 @@ using UnityEngine;
 public sealed partial class MonsterSpawnRoomGroup : MonoBehaviour
 {
     private const string DefaultRoomEntrySpawnSettingsResourcePath = "MonsterRoomEntrySpawnSettings";
-    internal const int NormalCombatRunGoldBudget = 120;
-    internal const int LargeCombatRunGoldBudget = 180;
+    internal const int NormalCombatRunGoldBudget = BalanceGoldValues.NormalRoomGold;
+    internal const int LargeCombatRunGoldBudget = BalanceGoldValues.LargeRoomGold;
 
     public static MonsterSpawnRoomGroup ActiveRoom { get; private set; }
 

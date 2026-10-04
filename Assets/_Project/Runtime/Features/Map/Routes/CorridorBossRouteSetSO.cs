@@ -42,8 +42,8 @@ public sealed class CorridorBossRouteSetSO : SceneRouteContextSO
     public string CorridorEntryPointId => corridorEntryPointId;
     public string BossSceneName => bossSceneName;
     public string BossEntryPointId => bossEntryPointId;
-    public string CorridorLocationName => corridorLocationName;
-    public string BossLocationName => bossLocationName;
+    public string CorridorLocationName => GameText.Asset(this, "corridorLocationName", corridorLocationName);
+    public string BossLocationName => GameText.Asset(this, "bossLocationName", bossLocationName);
     public SoundRef CorridorBgm => corridorBgm;
     public SoundRef BossCombatBgm => bossCombatBgm;
     public RouteSetLoadManifestSO LoadManifest => loadManifest;
@@ -79,7 +79,7 @@ public sealed class CorridorBossRouteSetSO : SceneRouteContextSO
             if (string.IsNullOrWhiteSpace(corridorLocationName))
                 return false;
 
-            locationName = corridorLocationName;
+            locationName = CorridorLocationName;
             return true;
         }
 
@@ -88,7 +88,7 @@ public sealed class CorridorBossRouteSetSO : SceneRouteContextSO
             if (string.IsNullOrWhiteSpace(bossLocationName))
                 return false;
 
-            locationName = bossLocationName;
+            locationName = BossLocationName;
             return true;
         }
 

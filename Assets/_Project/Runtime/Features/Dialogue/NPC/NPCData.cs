@@ -15,6 +15,7 @@ public class NPCData : ScriptableObject
     [Header("Basic Info")]
     public int id;
     public string npcName;
+    public string DisplayName => GameText.Asset(this, "npcName", npcName);
     public Sprite roleIcon;
     public bool isBoss;
 

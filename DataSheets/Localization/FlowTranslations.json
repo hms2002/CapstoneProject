@@ -1,0 +1,506 @@
+[
+  {
+    "ko": "크윽..",
+    "en": "Urgh...",
+    "ja": "くっ…",
+    "zh-Hans": "呃啊……",
+    "zh-Hant": "呃啊……"
+  },
+  {
+    "ko": "...이건 좀 아플거야",
+    "en": "...This might hurt a little.",
+    "ja": "…これは少し痛いぞ。",
+    "zh-Hans": "……这下会有点疼。",
+    "zh-Hant": "……這下會有點疼。"
+  },
+  {
+    "ko": "찌른다!",
+    "en": "Thrust!",
+    "ja": "突くぞ！",
+    "zh-Hans": "刺！",
+    "zh-Hant": "刺！"
+  },
+  {
+    "ko": "잘 보고 피해봐!",
+    "en": "Watch closely and dodge!",
+    "ja": "よく見て避けろ！",
+    "zh-Hans": "看清楚，躲开！",
+    "zh-Hant": "看清楚，躲開！"
+  },
+  {
+    "ko": "베어주마!",
+    "en": "I'll cut you down!",
+    "ja": "斬ってやる！",
+    "zh-Hans": "斩了你！",
+    "zh-Hant": "斬了你！"
+  },
+  {
+    "ko": "이건 맞으면 진짜 아파?",
+    "en": "This really hurts if it hits, you know?",
+    "ja": "当たると本当に痛いぞ？",
+    "zh-Hans": "挨到这一下真的很疼哦？",
+    "zh-Hant": "挨到這一下真的很疼哦？"
+  },
+  {
+    "ko": "던진다!",
+    "en": "Here it comes!",
+    "ja": "投げるぞ！",
+    "zh-Hans": "扔了！",
+    "zh-Hant": "扔了！"
+  },
+  {
+    "ko": "어디까지 도망가나 볼까?",
+    "en": "Let's see how far you can run.",
+    "ja": "どこまで逃げられるかな？",
+    "zh-Hans": "看看你能逃多远？",
+    "zh-Hant": "看看你能逃多遠？"
+  },
+  {
+    "ko": "어디한번 피해보시지!",
+    "en": "Try dodging this!",
+    "ja": "避けてみせろ！",
+    "zh-Hans": "有本事躲躲看！",
+    "zh-Hant": "有本事躲躲看！"
+  },
+  {
+    "ko": "터져볼래?",
+    "en": "Care for an explosion?",
+    "ja": "爆発してみるか？",
+    "zh-Hans": "想尝尝爆炸吗？",
+    "zh-Hant": "想嚐嚐爆炸嗎？"
+  },
+  {
+    "ko": "착지한다, 비켜!",
+    "en": "Coming down! Move!",
+    "ja": "着地するぞ、どけ！",
+    "zh-Hans": "要落地了，闪开！",
+    "zh-Hant": "要落地了，閃開！"
+  },
+  {
+    "ko": "비켜! 애송이!",
+    "en": "Move, whelp!",
+    "ja": "どけ、小僧！",
+    "zh-Hans": "闪开，小鬼！",
+    "zh-Hant": "閃開，小鬼！"
+  },
+  {
+    "ko": "돌아와, 아직 안 끝났어!",
+    "en": "Come back! We're not done!",
+    "ja": "戻れ、まだ終わっていない！",
+    "zh-Hans": "回来，还没结束！",
+    "zh-Hant": "回來，還沒結束！"
+  },
+  {
+    "ko": "이리와!",
+    "en": "Come here!",
+    "ja": "こっちへ来い！",
+    "zh-Hans": "过来！",
+    "zh-Hant": "過來！"
+  },
+  {
+    "ko": "잡히면 죽어!",
+    "en": "Get caught and you're dead!",
+    "ja": "捕まったら終わりだ！",
+    "zh-Hans": "被抓到你就死定了！",
+    "zh-Hant": "被抓到你就死定了！"
+  },
+  {
+    "ko": "방심했지?",
+    "en": "Let your guard down, did you?",
+    "ja": "油断したな？",
+    "zh-Hans": "大意了吧？",
+    "zh-Hant": "大意了吧？"
+  },
+  {
+    "ko": "장난은 여기까지야.",
+    "en": "Playtime is over.",
+    "ja": "遊びはここまでだ。",
+    "zh-Hans": "玩闹到此为止。",
+    "zh-Hant": "玩鬧到此為止。"
+  },
+  {
+    "ko": "조금 진심을 내볼까",
+    "en": "Time to get a little serious.",
+    "ja": "少し本気を出そうか。",
+    "zh-Hans": "稍微认真一点吧。",
+    "zh-Hant": "稍微認真一點吧。"
+  },
+  {
+    "ko": "야야야, 던지지 마!",
+    "en": "Hey, hey! Don't throw me!",
+    "ja": "おいおい、投げるな！",
+    "zh-Hans": "喂喂喂，别扔我！",
+    "zh-Hant": "喂喂喂，別扔我！"
+  },
+  {
+    "ko": "설마 또 던지려고?",
+    "en": "You're not throwing me again, are you?",
+    "ja": "まさかまた投げる気か？",
+    "zh-Hans": "你不会又要扔我吧？",
+    "zh-Hant": "你不會又要扔我吧？"
+  },
+  {
+    "ko": "잠깐, 나 준비 안 됐는데?!",
+    "en": "Wait! I'm not ready!",
+    "ja": "待て、まだ準備ができてないぞ？！",
+    "zh-Hans": "等等，我还没准备好？！",
+    "zh-Hant": "等等，我還沒準備好？！"
+  },
+  {
+    "ko": "이제 와서 부르냐?!",
+    "en": "Now you call me back?!",
+    "ja": "今さら呼び戻すのか？！",
+    "zh-Hans": "现在才叫我回来？！",
+    "zh-Hant": "現在才叫我回來？！"
+  },
+  {
+    "ko": "그래그래, 없으면 안 되겠지?",
+    "en": "Fine, fine. Can't do without me, can you?",
+    "ja": "はいはい、私がいないと駄目なんだろ？",
+    "zh-Hans": "好好好，没我不行吧？",
+    "zh-Hant": "好好好，沒我不行吧？"
+  },
+  {
+    "ko": "흥, 이번만 도와준다.",
+    "en": "Hmph. Just this once.",
+    "ja": "ふん、今回だけ手を貸してやる。",
+    "zh-Hans": "哼，只帮你这一次。",
+    "zh-Hant": "哼，只幫你這一次。"
+  },
+  {
+    "ko": "그래, 결국 내가 필요하지?",
+    "en": "See? You need me after all.",
+    "ja": "ほら、結局私が必要なんだろ？",
+    "zh-Hans": "看吧，最后还是需要我吧？",
+    "zh-Hant": "看吧，最後還是需要我吧？"
+  },
+  {
+    "ko": "으아아아아악!!",
+    "en": "Aaaaaaah!!",
+    "ja": "うわああああ！！",
+    "zh-Hans": "啊啊啊啊啊！！",
+    "zh-Hant": "啊啊啊啊啊！！"
+  },
+  {
+    "ko": "한 마디만 더해라",
+    "en": "Say one more word. I dare you.",
+    "ja": "もう一言言ってみろ。",
+    "zh-Hans": "有种再说一句。",
+    "zh-Hant": "有種再說一句。"
+  },
+  {
+    "ko": "....",
+    "en": "....",
+    "ja": "....",
+    "zh-Hans": "....",
+    "zh-Hant": "...."
+  },
+  {
+    "ko": "우웩..",
+    "en": "Blergh...",
+    "ja": "うえっ…",
+    "zh-Hans": "呕……",
+    "zh-Hant": "嘔……"
+  },
+  {
+    "ko": "감히.. 이 몸을..",
+    "en": "How dare you... do this to me...",
+    "ja": "よくも…この私を…",
+    "zh-Hans": "竟敢……把本大爷……",
+    "zh-Hant": "竟敢……把本大爺……"
+  },
+  {
+    "ko": "투척용 검이 아니라고!!",
+    "en": "I'm not a throwing sword!!",
+    "ja": "私は投げるための剣じゃない！！",
+    "zh-Hans": "我不是投掷用的剑！！",
+    "zh-Hant": "我不是投擲用的劍！！"
+  },
+  {
+    "ko": "술이... 모자라...",
+    "en": "Not enough... booze...",
+    "ja": "酒が…足りない…",
+    "zh-Hans": "酒……不够……",
+    "zh-Hant": "酒……不夠……"
+  },
+  {
+    "ko": "들이킨다!",
+    "en": "Bottoms up!",
+    "ja": "飲み干すぞ！",
+    "zh-Hans": "一口干了！",
+    "zh-Hant": "一口乾了！"
+  },
+  {
+    "ko": "크으~ 취한다~!",
+    "en": "Ahh~ Getting tipsy~!",
+    "ja": "くぅ～酔ってきた～！",
+    "zh-Hans": "哈～醉了～！",
+    "zh-Hant": "哈～醉了～！"
+  },
+  {
+    "ko": "음~ 좋다~",
+    "en": "Mmm~ That's good~",
+    "ja": "う～ん、いいね～",
+    "zh-Hans": "嗯～真不错～",
+    "zh-Hant": "嗯～真不錯～"
+  },
+  {
+    "ko": "앗 뜨거!",
+    "en": "Ow, hot!",
+    "ja": "あちっ！",
+    "zh-Hans": "哎呀，好烫！",
+    "zh-Hant": "哎呀，好燙！"
+  },
+  {
+    "ko": "어질어질하군...",
+    "en": "Feeling dizzy...",
+    "ja": "くらくらするな…",
+    "zh-Hans": "头晕晕的……",
+    "zh-Hant": "頭暈暈的……"
+  },
+  {
+    "ko": "잘 피해봐~",
+    "en": "Better dodge this~",
+    "ja": "うまく避けろよ～",
+    "zh-Hans": "好好躲开哦～",
+    "zh-Hant": "好好躲開哦～"
+  },
+  {
+    "ko": "열리지 않아.",
+    "en": "It won't open.",
+    "ja": "開かない。",
+    "zh-Hans": "打不开。",
+    "zh-Hant": "打不開。"
+  },
+  {
+    "ko": "굳게 잠겨있어.",
+    "en": "It's locked tight.",
+    "ja": "固く閉ざされている。",
+    "zh-Hans": "锁得很牢。",
+    "zh-Hant": "鎖得很牢。"
+  },
+  {
+    "ko": "다른 장치가 있을 수도 있겠어.",
+    "en": "There might be another mechanism.",
+    "ja": "別の仕掛けがあるかもしれない。",
+    "zh-Hans": "可能还有其他机关。",
+    "zh-Hant": "可能還有其他機關。"
+  },
+  {
+    "ko": "장비 칸이 가득 찼어.",
+    "en": "My equipment slots are full.",
+    "ja": "装備欄がいっぱいだ。",
+    "zh-Hans": "装备栏满了。",
+    "zh-Hant": "裝備欄滿了。"
+  },
+  {
+    "ko": "빈 칸을 만들어야 겠어.",
+    "en": "I need to free up a slot.",
+    "ja": "空きを作らないと。",
+    "zh-Hans": "得腾出一个空位。",
+    "zh-Hant": "得騰出一個空位。"
+  },
+  {
+    "ko": "지금은 더 못 줍겠어.",
+    "en": "I can't pick up any more right now.",
+    "ja": "今はこれ以上拾えない。",
+    "zh-Hans": "现在捡不了更多了。",
+    "zh-Hant": "現在撿不了更多了。"
+  },
+  {
+    "ko": "이쪽에선 안열려.",
+    "en": "It won't open from this side.",
+    "ja": "こちらからは開かない。",
+    "zh-Hans": "从这边打不开。",
+    "zh-Hant": "從這邊打不開。"
+  },
+  {
+    "ko": "반대편에서 열 수 있겠어.",
+    "en": "I could open it from the other side.",
+    "ja": "反対側からなら開けられそうだ。",
+    "zh-Hans": "从另一边应该能打开。",
+    "zh-Hant": "從另一邊應該能打開。"
+  },
+  {
+    "ko": "네가 다치지 않아서 다행이야..",
+    "en": "I'm glad you weren't hurt...",
+    "ja": "あなたが無事でよかった…",
+    "zh-Hans": "你没受伤，真是太好了……",
+    "zh-Hant": "你沒受傷，真是太好了……"
+  },
+  {
+    "ko": "...이건 좀 아플거야",
+    "en": "...This might hurt a little.",
+    "ja": "…これは少し痛いぞ。",
+    "zh-Hans": "……这下会有点疼。",
+    "zh-Hant": "……這下會有點疼。"
+  },
+  {
+    "ko": "모두 모여라!!",
+    "en": "Everyone, gather round!!",
+    "ja": "みんな、集まれ！！",
+    "zh-Hans": "大家集合！！",
+    "zh-Hant": "大家集合！！"
+  },
+  {
+    "ko": "교대해줘!",
+    "en": "Switch with me!",
+    "ja": "交代して！",
+    "zh-Hans": "跟我换一下！",
+    "zh-Hant": "跟我換一下！"
+  },
+  {
+    "ko": "오케이!",
+    "en": "Okay!",
+    "ja": "オーケー！",
+    "zh-Hans": "好！",
+    "zh-Hant": "好！"
+  },
+  {
+    "ko": "아야야… 감히 피하다니!",
+    "en": "Oww... How dare you dodge!",
+    "ja": "いたた…よくも避けたわね！",
+    "zh-Hans": "哎哟……竟敢躲开！",
+    "zh-Hant": "哎唷……竟敢躲開！"
+  },
+  {
+    "ko": "우으으 져버리다니..!",
+    "en": "Ugh... I can't believe I lost...!",
+    "ja": "うう、負けるなんて…！",
+    "zh-Hans": "呜呜，居然输了……！",
+    "zh-Hant": "嗚嗚，居然輸了……！"
+  },
+  {
+    "ko": "다음에는 봐주지 않을 거야!",
+    "en": "I won't go easy on you next time!",
+    "ja": "次は手加減しないからね！",
+    "zh-Hans": "下次我可不会手下留情！",
+    "zh-Hant": "下次我可不會手下留情！"
+  },
+  {
+    "ko": "네가 다치지 않아서 다행이야..",
+    "en": "I'm glad you weren't hurt...",
+    "ja": "あなたが無事でよかった…",
+    "zh-Hans": "你没受伤，真是太好了……",
+    "zh-Hant": "你沒受傷，真是太好了……"
+  },
+  {
+    "ko": "...이건 좀 아플거야",
+    "en": "...This might hurt a little.",
+    "ja": "…これは少し痛いぞ。",
+    "zh-Hans": "……这下会有点疼。",
+    "zh-Hant": "……這下會有點疼。"
+  },
+  {
+    "ko": "오래전. 인간과 이종족의 갈등이 점차 격해져 마침내 최고조에 달했다.",
+    "en": "Long ago, tensions between humans and the other races grew until they finally reached a breaking point.",
+    "ja": "遠い昔。人間と異種族の対立は次第に激しくなり、ついに頂点に達した。",
+    "zh-Hans": "很久以前，人类与异族之间的矛盾日益激化，终于达到顶点。",
+    "zh-Hant": "很久以前，人類與異族之間的矛盾日益激化，終於達到頂點。"
+  },
+  {
+    "ko": "당장이라도 큰 싸움이 벌어질 듯했던 그때. 홀연히 나타난 '마왕'이 이종족을 규합해 거대한 세력을 세우니, 사람들은 이를 마왕군이라 불렀다.",
+    "en": "Just as a great war seemed inevitable, a mysterious Demon King appeared and united the other races into a mighty force. People called it the Demon King's army.",
+    "ja": "大きな戦が今にも始まりそうなその時、突如現れた「魔王」が異種族をまとめ、巨大な勢力を築いた。人々はそれを魔王軍と呼んだ。",
+    "zh-Hans": "就在大战一触即发之时，突然现身的“魔王”集结异族，建立了庞大的势力。人们称其为魔王军。",
+    "zh-Hant": "就在大戰一觸即發之時，突然現身的「魔王」集結異族，建立了龐大的勢力。人們稱其為魔王軍。"
+  },
+  {
+    "ko": "불안에 빠진 인간들은 당신의 소꿉친구를 용사로 발탁했다. 하지만 마왕군의 위협을 조기에 막고자 홀로 마왕성으로 향했던 친구는, 그곳에서 감감무소식으로 실종되고 말았다.",
+    "en": "The frightened humans chose your childhood friend as their hero. Hoping to stop the threat before it grew, your friend set out alone for the Demon King's castle, only to vanish without a trace.",
+    "ja": "不安に包まれた人間たちは、あなたの幼なじみを勇者に選んだ。しかし、魔王軍の脅威を早く食い止めようと一人で魔王城に向かった友は、そこで消息を絶ってしまった。",
+    "zh-Hans": "陷入不安的人类选中了你的青梅竹马作为勇者。然而，为了尽早阻止魔王军的威胁，独自前往魔王城的朋友却在那里杳无音讯，就此失踪。",
+    "zh-Hant": "陷入不安的人類選中了你的青梅竹馬作為勇者。然而，為了儘早阻止魔王軍的威脅，獨自前往魔王城的朋友卻在那裡杳無音訊，就此失蹤。"
+  },
+  {
+    "ko": "그리고 현재. 사라진 소꿉친구의 흔적을 쫓아, 당신 또한 마왕성의 입구에 도달하며 이야기는 시작된다.",
+    "en": "Now, following the trail of your missing childhood friend, you too arrive at the gates of the Demon King's castle. And so your story begins.",
+    "ja": "そして現在。姿を消した幼なじみの足跡を追い、あなたも魔王城の入り口にたどり着く。ここから物語が始まる。",
+    "zh-Hans": "如今，追寻失踪的青梅竹马留下的踪迹，你也来到了魔王城的入口。故事由此开始。",
+    "zh-Hant": "如今，追尋失蹤的青梅竹馬留下的蹤跡，你也來到了魔王城的入口。故事由此開始。"
+  },
+  {
+    "ko": "마왕은 쓰러졌다.",
+    "en": "The Demon King fell.",
+    "ja": "魔王は倒れた。",
+    "zh-Hans": "魔王倒下了。",
+    "zh-Hant": "魔王倒下了。"
+  },
+  {
+    "ko": "왕국을 위협하던 이종족은 마왕의 부재로 뿔뿔이 흩어졌다. 흩어진 이종족이 각지에서 문제를 일으킨다는 소식도 들려왔다.",
+    "en": "Without the Demon King, the other races that threatened the kingdom scattered. Reports soon arrived of the scattered groups causing trouble across the land.",
+    "ja": "王国を脅かしていた異種族は、魔王を失い、散り散りになった。各地で騒ぎを起こしているという知らせも届いた。",
+    "zh-Hans": "威胁王国的异族因魔王的消失而四散。不久，各地又传来了这些异族引发事端的消息。",
+    "zh-Hant": "威脅王國的異族因魔王的消失而四散。不久，各地又傳來了這些異族引發事端的消息。"
+  },
+  {
+    "ko": "당신의 친구가 어째서 마왕을 자처했는지 아직 모르지만, 어쨌거나 왕국은 귀환한 당신을 환영했다.",
+    "en": "You still do not know why your friend claimed to be the Demon King. Nevertheless, the kingdom welcomed you home.",
+    "ja": "友がなぜ魔王を名乗ったのかはまだ分からない。それでも、王国は帰還したあなたを歓迎した。",
+    "zh-Hans": "你仍不知道朋友为何自称魔王。无论如何，王国欢迎了归来的你。",
+    "zh-Hant": "你仍不知道朋友為何自稱魔王。無論如何，王國歡迎了歸來的你。"
+  },
+  {
+    "ko": "하지만... 정말 이것으로 된 걸까?",
+    "en": "But... was this truly enough?",
+    "ja": "でも…本当にこれでよかったのだろうか？",
+    "zh-Hans": "但是……这样真的就够了吗？",
+    "zh-Hant": "但是……這樣真的就夠了嗎？"
+  },
+  {
+    "ko": "마왕의 알현실 입구",
+    "en": "Entrance to the Demon King's Audience Chamber",
+    "ja": "魔王の謁見の間の入口",
+    "zh-Hans": "魔王谒见厅入口",
+    "zh-Hant": "魔王謁見廳入口"
+  },
+  {
+    "ko": "마왕의 알현실",
+    "en": "The Demon King's Audience Chamber",
+    "ja": "魔王の謁見の間",
+    "zh-Hans": "魔王谒见厅",
+    "zh-Hant": "魔王謁見廳"
+  },
+  {
+    "ko": "보물창고",
+    "en": "Treasure Vault",
+    "ja": "宝物庫",
+    "zh-Hans": "宝库",
+    "zh-Hant": "寶庫"
+  },
+  {
+    "ko": "스피리의 방",
+    "en": "Spiri's Room",
+    "ja": "スピリの部屋",
+    "zh-Hans": "斯皮里的房间",
+    "zh-Hant": "斯皮里的房間"
+  },
+  {
+    "ko": "그림자 감옥",
+    "en": "Shadow Prison",
+    "ja": "影の牢獄",
+    "zh-Hans": "暗影牢狱",
+    "zh-Hant": "暗影牢獄"
+  },
+  {
+    "ko": "클로에의 방",
+    "en": "Chloe's Room",
+    "ja": "クロエの部屋",
+    "zh-Hans": "克洛伊的房间",
+    "zh-Hant": "克洛伊的房間"
+  },
+  {
+    "ko": "슬라임 왕국",
+    "en": "Slime Kingdom",
+    "ja": "スライム王国",
+    "zh-Hans": "史莱姆王国",
+    "zh-Hant": "史萊姆王國"
+  },
+  {
+    "ko": "멜타의 방",
+    "en": "Melta's Room",
+    "ja": "メルタの部屋",
+    "zh-Hans": "梅尔塔的房间",
+    "zh-Hant": "梅爾塔的房間"
+  }
+]

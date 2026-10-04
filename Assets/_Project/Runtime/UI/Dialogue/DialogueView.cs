@@ -1493,6 +1493,13 @@ public class DialogueView : MonoBehaviour
             onComplete);
     }
 
+    public void RefreshSpeakerName(string speakerName)
+    {
+        if (nameText == null) return;
+        nameText.text = speakerName;
+        nameText.maxVisibleCharacters = int.MaxValue;
+    }
+
     public void SkipTyping(string fullText)
     {
         StopTypingRoutine();
@@ -1664,7 +1671,7 @@ public class DialogueView : MonoBehaviour
 
             TextMeshProUGUI btnText = btnObj.GetComponentInChildren<TextMeshProUGUI>();
             if (btnText != null)
-                btnText.text = choice.text;
+                btnText.text = GameText.FromInkTags(choice.tags, choice.text);
 
             DialogueChoiceHighlightPresentation choiceHighlight = btnObj.GetComponent<DialogueChoiceHighlightPresentation>();
             if (choiceHighlight != null)
@@ -1714,6 +1721,15 @@ public class DialogueView : MonoBehaviour
 
         PlayChoiceEnterPresentation();
         return true;
+    }
+
+    public void RefreshChoiceText(IList<Ink.Runtime.Choice> choices)
+    {
+        for (int i = 0; i < activeChoiceButtons.Count && i < choices.Count; i++)
+        {
+            var text = activeChoiceButtons[i].GetComponentInChildren<TextMeshProUGUI>();
+            if (text != null) text.text = GameText.FromInkTags(choices[i].tags, choices[i].text);
+        }
     }
 
     public void ChangeChoiceSelection(int direction)

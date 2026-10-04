@@ -69,9 +69,12 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
     private ItemDetailContext currentContext;
     private bool showDetailedDescription;
     private bool isClosing;
+    private bool refreshWhenLocalizationReady;
 
     private void OnEnable()
     {
+        refreshWhenLocalizationReady = !UnityEngine.Localization.Settings.LocalizationSettings.InitializationOperation.IsDone;
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
         hintInput = InputBindingService.Instance;
         if (hintInput != null)
             hintInput.BindingChanged += HandleHintBindingChanged;
@@ -79,6 +82,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
 
     private void OnDisable()
     {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
         if (hintInput != null)
             hintInput.BindingChanged -= HandleHintBindingChanged;
         hintInput = null;
@@ -91,6 +95,24 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
     {
         if (action == InputActionId.InventoryDrop && actionHintContext != null)
             RefreshActionHint(actionHintContext);
+    }
+
+    private void HandleLocaleChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (isClosing || currentDefinition == null) return;
+        RefreshActionHint(actionHintContext);
+        RefreshRelicHeaderTitle();
+        if (currentDefinition is WeaponDefinition)
+        {
+            if (weaponViewV2 != null && weaponViewV2.gameObject.activeSelf)
+                weaponViewV2.Show(currentDefinition, currentContext, _services, showDetailedDescription);
+            else if (weaponView != null && weaponView.gameObject.activeSelf)
+                weaponView.Show(currentDefinition, currentContext, _services, showDetailedDescription);
+        }
+        else if (relicView != null && relicView.gameObject.activeSelf)
+            relicView.RefreshLocalizedText();
+        else if (consumableView != null && consumableView.gameObject.activeSelf)
+            consumableView.Show(currentDefinition, currentContext, _services);
     }
 
     public RectTransform Rect => transform as RectTransform;
@@ -139,6 +161,11 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
 
     private void Update()
     {
+        if (refreshWhenLocalizationReady && UnityEngine.Localization.Settings.LocalizationSettings.InitializationOperation.IsDone)
+        {
+            refreshWhenLocalizationReady = false;
+            HandleLocaleChanged(UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale);
+        }
         if (!isClosing && currentDefinition is WeaponDefinition && WeaponDescriptionHint.WasTogglePressed())
         {
             showDetailedDescription = !showDetailedDescription;
@@ -198,9 +225,9 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
                 subtitleText.text = definition is RelicDefinition relic
                     ? relic.rarity switch
                     {
-                        ItemRarity.Common => "<color=#FFFFFF>일반</color>",
-                        ItemRarity.Rare => "<color=#409CFF>희귀</color>",
-                        ItemRarity.Epic => "<color=#FFFF00>전설</color>",
+                        ItemRarity.Common => GameText.Get("code.itemdetailpanel.5e1187a4f5", "<color=#FFFFFF>일반</color>"),
+                        ItemRarity.Rare => GameText.Get("code.itemdetailpanel.a81c2cf5c9", "<color=#409CFF>희귀</color>"),
+                        ItemRarity.Epic => GameText.Get("code.itemdetailpanel.98049ba327", "<color=#FFFF00>전설</color>"),
                         _ => common.Kind.ToString()
                     }
                     : common.Kind.ToString();
@@ -785,7 +812,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
         }
         else
         {
-            glossaryPopup.Show(key, "설명이 등록되지 않았습니다.");
+            glossaryPopup.Show(key, GameText.Get("code.itemdetailpanel.073d6eadf7", "설명이 등록되지 않았습니다."));
         }
     }
 }

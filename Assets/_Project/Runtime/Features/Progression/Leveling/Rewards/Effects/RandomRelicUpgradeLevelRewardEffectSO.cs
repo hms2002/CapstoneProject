@@ -19,7 +19,7 @@ public sealed class RandomRelicUpgradeLevelRewardEffectSO : LevelRewardEffectSO
         RelicInventory inventory = context.Player.GetComponent<RelicInventory>();
         if (inventory == null || !HasUpgradeableRelic(inventory))
         {
-            failureReason = "강화 가능한 유물이 없습니다.";
+            failureReason = GameText.Get("code.randomrelicupgradelevelrewardeffectso.3db384b65a", "강화 가능한 유물이 없습니다.");
             return false;
         }
 

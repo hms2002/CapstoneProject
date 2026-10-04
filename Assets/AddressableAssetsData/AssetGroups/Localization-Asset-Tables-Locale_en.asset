@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-Asset-Tables-Locale_en
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Localization-Asset-Tables-Locale_en
+  m_GUID: 6fb98ef3255859b438a67093eaaab49f
+  m_SerializeEntries:
+  - m_GUID: 97dc526db54dddc458b403d5d4a4ef25
+    m_Address: GameFonts_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 93e2e8ea0ab34d7488d27de93762ae93, type: 2}
+    - {fileID: 11400000, guid: 9e6d438fce5f0ea4092e45febadbf95c, type: 2}
+    - {fileID: 11400000, guid: d58487638daa3fe42b9c005b20295acd, type: 2}

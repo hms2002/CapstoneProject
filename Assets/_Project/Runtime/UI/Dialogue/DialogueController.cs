@@ -48,6 +48,8 @@ public class DialogueController : MonoBehaviour
     private readonly Queue<DialogueStorySegment> pendingStorySegments = new Queue<DialogueStorySegment>();
 
     private Story currentStory;
+    private string authoredCurrentLine;
+    private List<string> authoredCurrentTags;
     private string currentStoryJson;
     private NPCFeatureController currentFeatureController;
     private DialoguePresentationOptions currentPresentationOptions;
@@ -74,12 +76,14 @@ public class DialogueController : MonoBehaviour
 
     private void OnEnable()
     {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += HandleLocaleChanged;
         DialogueService.EnsureInstance()?.RegisterController(this);
         SceneManager.sceneLoaded += HandleSceneLoaded;
     }
 
     private void OnDisable()
     {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= HandleLocaleChanged;
         SceneManager.sceneLoaded -= HandleSceneLoaded;
         NotifyDialogueEnded(false);
     }
@@ -326,6 +330,9 @@ public class DialogueController : MonoBehaviour
         if (currentStory.canContinue)
         {
             string currentText = currentStory.Continue();
+            authoredCurrentLine = currentText;
+            authoredCurrentTags = new List<string>(currentStory.currentTags);
+            currentText = GameText.FromInkTags(currentStory.currentTags, currentText);
             participantRegistry.HandleSpeakerTag(currentStory.currentTags);
             DialogueAnimType animType = ResolveDialogueAnimType(currentStory.currentTags);
             DialogueCameraShakePreset cameraShakePreset = ResolveDialogueCameraShakePreset(currentStory.currentTags);
@@ -701,6 +708,7 @@ public class DialogueController : MonoBehaviour
         DialogueAnimType animType,
         DialogueCameraShakePreset cameraShakePreset)
     {
+        currentText = GameText.FromInkTags(authoredCurrentTags, authoredCurrentLine ?? currentText);
         sessionState.EndWaiting();
         sessionState.BeginTyping(currentText);
         view.TypeText(participantRegistry.CurrentSpeakerName, currentText, animType, cameraShakePreset, () =>
@@ -708,6 +716,20 @@ public class DialogueController : MonoBehaviour
             sessionState.EndTyping();
             DisplayChoicesIfNeeded();
         });
+    }
+
+    private void HandleLocaleChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (!sessionState.IsPlaying || view == null) return;
+        view.RefreshSpeakerName(participantRegistry.CurrentSpeakerName);
+        if (sessionState.IsTransitioning || sessionState.IsWaitingForCallback ||
+            currentStory == null || authoredCurrentLine == null) return;
+        string text = GameText.FromInkTags(authoredCurrentTags, authoredCurrentLine);
+        sessionState.BeginTyping(text);
+        view.SkipTyping(text);
+        sessionState.EndTyping();
+        if (sessionState.IsChoosing) view.RefreshChoiceText(currentStory.currentChoices);
+        else DisplayChoicesIfNeeded();
     }
 
     private void HandlePortraitEnter(string id, string val)

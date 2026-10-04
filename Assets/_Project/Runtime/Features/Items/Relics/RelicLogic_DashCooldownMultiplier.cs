@@ -10,7 +10,7 @@ public sealed class RelicLogic_DashCooldownMultiplier : RelicLogic
     [SerializeField] private AbilityDefinition dashAbility;
     [SerializeField] private List<float> cooldownReductionByLevel = new();
 
-    protected override string DefaultEffectTemplate => "대쉬 재사용 대기시간이 {reduction} 감소";
+    protected override string DefaultEffectTemplate => GameText.Get("code.reliclogic_dashcooldownmultiplier.bd61dfa411", "대쉬 재사용 대기시간이 {reduction} 감소");
 
     public override void OnEquipped(RelicContext ctx) => Register(ctx);
     public override void OnRestoreAttached(RelicContext ctx) => Register(ctx);

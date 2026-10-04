@@ -13,7 +13,11 @@ public class SectionListView : MonoBehaviour
         for (int i = 0; i < spawned.Count; i++)
         {
             if (spawned[i] != null)
+            {
+                // Destroy is deferred; exclude old sections from this frame's rebuilt layout.
+                spawned[i].gameObject.SetActive(false);
                 Destroy(spawned[i].gameObject);
+            }
         }
         spawned.Clear();
     }

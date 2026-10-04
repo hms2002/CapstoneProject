@@ -8,7 +8,7 @@ using System.Collections.Generic;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Evasion From Bonus MoveSpeed (Managed)")]
 public class RelicLogic_EvasionFromBonusMoveSpeed_Managed : RelicLogic
 {
-    protected override string DefaultEffectTemplate => "● [[추가 이동속도]] {bonus_move_step}마다 [[공격을 회피할 확률]] {evasion_gain_per_step} 추가";
+    protected override string DefaultEffectTemplate => GameText.Get("code.reliclogic_evasionfrombonusmovespeed_managed.dd6534d473", "● [[추가 이동속도]] {bonus_move_step}마다 [[공격을 회피할 확률]] {evasion_gain_per_step} 추가");
 
     [Header("Read MoveSpeed (x1 multiplier)")]
     public StatId moveSpeedFinalStatId = StatId.MoveSpeedFinal;
@@ -230,7 +230,7 @@ public class RelicLogic_EvasionFromBonusMoveSpeed_Managed : RelicLogic
     public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
     {
         return BuildTemplatedTooltip(
-            "● [[추가 이동속도]] {bonus_move_step}마다 [[공격을 회피할 확률]] {evasion_gain_per_step} 추가",
+            DefaultEffectTemplate,
             new Dictionary<string, string>
             {
                 ["bonus_move_step"] = RelicTooltipFormatter.FormatUnsignedValueToken(bonusMoveStep, true),

@@ -751,18 +751,18 @@ public class UIManager : MonoBehaviour, IWarningPopupBackend, IUiInteractionStat
     {
         return code switch
         {
-            WarningPopupCode.RelicInventoryFull => "유물 인벤토리가 가득 찼습니다.",
-            WarningPopupCode.RelicAlreadyMaxLevel => "이미 최대 레벨인 유물입니다.",
-            WarningPopupCode.WeaponInventoryFull => "무기 인벤토리가 가득 찼습니다.",
-            WarningPopupCode.ConsumableInventoryFull => "일회용 아이템 인벤토리가 가득 찼습니다.",
-            WarningPopupCode.CannotDropHere => "여기에는 버릴 수 없습니다.",
-            WarningPopupCode.LastWeaponCannotLeaveInventory => "마지막 무기는 버리거나 옮길 수 없습니다.",
-            WarningPopupCode.RelicChangeWouldDefeatPlayer => "현재 체력이 부족해 해제할 수 없습니다.",
-            WarningPopupCode.UpgradeNotEnoughMagicStone => "\uB9C8\uC815\uC11D\uC774 \uBD80\uC871\uD569\uB2C8\uB2E4.",
-            WarningPopupCode.UpgradeLocked => "\uC544\uC9C1 \uD574\uAE08\uB418\uC9C0 \uC54A\uC740 \uC5C5\uADF8\uB808\uC774\uB4DC\uC785\uB2C8\uB2E4.",
-            WarningPopupCode.UpgradeUnavailable => "\uD604\uC7AC \uAD6C\uB9E4\uD560 \uC218 \uC5C6\uB294 \uC5C5\uADF8\uB808\uC774\uB4DC\uC785\uB2C8\uB2E4.",
-            WarningPopupCode.UpgradeAlreadyPurchased => "이미 구매된 업그레이드 입니다.",
-            WarningPopupCode.BossAlreadyDefeatedThisRun => "이번 탐험에서 이미 처치한 보스입니다.",
+            WarningPopupCode.RelicInventoryFull => GameText.Get("code.uimanager.2500687505", "유물 인벤토리가 가득 찼습니다."),
+            WarningPopupCode.RelicAlreadyMaxLevel => GameText.Get("code.uimanager.a6a0ad3eab", "이미 최대 레벨인 유물입니다."),
+            WarningPopupCode.WeaponInventoryFull => GameText.Get("code.uimanager.3d0dfa7659", "무기 인벤토리가 가득 찼습니다."),
+            WarningPopupCode.ConsumableInventoryFull => GameText.Get("code.uimanager.6b8845fda2", "일회용 아이템 인벤토리가 가득 찼습니다."),
+            WarningPopupCode.CannotDropHere => GameText.Get("code.uimanager.9f43429f9b", "여기에는 버릴 수 없습니다."),
+            WarningPopupCode.LastWeaponCannotLeaveInventory => GameText.Get("code.uimanager.3525412290", "마지막 무기는 버리거나 옮길 수 없습니다."),
+            WarningPopupCode.RelicChangeWouldDefeatPlayer => GameText.Get("code.uimanager.38d54544c4", "현재 체력이 부족해 해제할 수 없습니다."),
+            WarningPopupCode.UpgradeNotEnoughMagicStone => GameText.Get("code.uimanager.8b9158dcb7", "마정석이 부족합니다."),
+            WarningPopupCode.UpgradeLocked => GameText.Get("code.uimanager.0db1e293cf", "아직 해금되지 않은 업그레이드입니다."),
+            WarningPopupCode.UpgradeUnavailable => GameText.Get("code.uimanager.eac8c76703", "현재 구매할 수 없는 업그레이드입니다."),
+            WarningPopupCode.UpgradeAlreadyPurchased => GameText.Get("code.uimanager.55d403aec5", "이미 구매된 업그레이드 입니다."),
+            WarningPopupCode.BossAlreadyDefeatedThisRun => GameText.Get("code.uimanager.020f268ed9", "이번 탐험에서 이미 처치한 보스입니다."),
             _ => string.Empty,
         };
     }

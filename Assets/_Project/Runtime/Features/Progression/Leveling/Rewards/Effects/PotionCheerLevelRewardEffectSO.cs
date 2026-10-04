@@ -59,7 +59,7 @@ public sealed class PotionCheerLevelRewardEffectSO : LevelRewardEffectSO
             float remaining = Mathf.Max(0f, state.expiresAt - Time.time);
             return new StatusApplyRequest(statusDefinition, "level_reward.potion_cheer",
                 remainingTime: remaining, maxTime: durationSeconds,
-                effectTextOverride: $"이동 속도 +{moveSpeedPercent * 100f:0.#}%, 공격 속도 +{attackSpeedPercent * 100f:0.#}%\n남은 시간: {remaining:0.0}초",
+                effectTextOverride: GameText.Format("code.potioncheerlevelrewardeffectso.1fb82dacf0", "이동 속도 +{0:0.#}%, 공격 속도 +{1:0.#}%\n남은 시간: {2:0.0}초", moveSpeedPercent * 100f, attackSpeedPercent * 100f, remaining),
                 showStacksOverride: false, showDurationOverride: false);
         }
 

@@ -11,6 +11,7 @@ namespace UnityGAS
     {
         [Header("Info")]
         public string attributeName = "Health";
+        public string DisplayName => GameText.Asset(this, "attributeName", attributeName);
         [TextArea] public string description = "Attribute description.";
 
         [Header("Mutation Policy")]

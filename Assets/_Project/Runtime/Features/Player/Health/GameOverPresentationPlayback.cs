@@ -21,8 +21,10 @@ public struct GameOverPresentationRequest
 
     public GameOverCauseKind CauseKind;
     public string CauseName;
+    public string CauseNameKey; // Transient display context; not save data.
     public float RemainingSeconds;
     public string LocationName;
+    public string LocationSceneName; // Keep scene identity for locale refresh.
     public string HubSceneName;
     public Transform PlayerTransform;
     public bool EndRunOnReturn;
@@ -53,6 +55,7 @@ public struct GameOverPresentationRequest
             CauseName = causeName,
             RemainingSeconds = ResolveRemainingSeconds(),
             LocationName = ResolveCurrentLocationName(),
+            LocationSceneName = SceneManager.GetActiveScene().name,
             HubSceneName = hubSceneName,
             PlayerTransform = playerTransform,
             EndRunOnReturn = true,
@@ -71,9 +74,10 @@ public struct GameOverPresentationRequest
         return new GameOverPresentationRequest
         {
             CauseKind = GameOverCauseKind.TimeOver,
-            CauseName = "\uB9C8\uC655\uC758 \uC778\uB0B4\uC2EC",
+            CauseName = GameText.Get("gameover.time_over_cause", "마왕의 인내심"),
             RemainingSeconds = ResolveRemainingSeconds(),
             LocationName = ResolveCurrentLocationName(),
+            LocationSceneName = SceneManager.GetActiveScene().name,
             HubSceneName = hubSceneName,
             PlayerTransform = playerTransform,
             EndRunOnReturn = true,
@@ -101,13 +105,13 @@ public struct GameOverPresentationRequest
             EndRunOnReturn = true,
             EndRunReason = RunEndReason.Victory,
             UseSceneTransitionService = useSceneTransitionService,
-            MessageTextOverride = VictoryMessageText,
+            MessageTextOverride = GameText.Get("gameover.victory.message", VictoryMessageText),
             IsVictory = true,
             MagicStoneRewardAmount = Mathf.Max(0, magicStoneRewardAmount),
             AllowInventoryDuringPresentation = true,
             ShowInventoryKeyHint = true,
             UseStandingPlayerSnapshot = true,
-            TitleTextOverride = VictoryTitleText,
+            TitleTextOverride = GameText.Get("gameover.victory.title", VictoryTitleText),
             HasTitleColorOverride = true,
             TitleColorOverride = new Color(0.35f, 1f, 0.35f, 1f)
         };
@@ -123,9 +127,13 @@ public struct GameOverPresentationRequest
 
     private static string ResolveCurrentLocationName()
     {
-        string sceneName = SceneManager.GetActiveScene().name;
+        return ResolveLocationName(SceneManager.GetActiveScene().name);
+    }
+
+    public static string ResolveLocationName(string sceneName)
+    {
         if (string.IsNullOrWhiteSpace(sceneName))
-            return "\uC54C \uC218 \uC5C6\uB294 \uC7A5\uC18C";
+            return GameText.Get("location.unknown", "\uC54C \uC218 \uC5C6\uB294 \uC7A5\uC18C");
 
         string normalized = sceneName.ToLowerInvariant();
         bool isBossRoom = normalized.Contains("boss");
@@ -134,33 +142,33 @@ public struct GameOverPresentationRequest
             return routeLocationName;
 
         if (normalized.Contains("demon") || normalized.Contains("king"))
-            return "\uB9C8\uC655\uC758 \uC54C\uD604\uC2E4";
+            return GameText.Get("location.demon_king", "\uB9C8\uC655\uC758 \uC54C\uD604\uC2E4");
 
         if (normalized.Contains("dragon") || normalized.Contains("dragon") ||
             sceneName == "ProtoTypeCorridor 1" || sceneName == "ProtoTypeBoss 2")
         {
-            return isBossRoom ? "\uB4DC\uB798\uACE4\uC758 \uBC29" : "\uBCF4\uBB3C\uCC3D\uACE0";
+            return isBossRoom ? GameText.Get("location.dragon_boss", "\uB4DC\uB798\uACE4\uC758 \uBC29") : GameText.Get("location.dragon_corridor", "\uBCF4\uBB3C\uCC3D\uACE0");
         }
 
         if (normalized.Contains("shadow") || normalized.Contains("chloe") ||
             sceneName == "ProtoTypeCorridor 2" || sceneName == "ProtoTypeBoss 3")
         {
-            return isBossRoom ? "\uD074\uB85C\uC5D0\uC758 \uBC29" : "\uADF8\uB9BC\uC790 \uAC10\uC625";
+            return isBossRoom ? GameText.Get("location.shadow_boss", "\uD074\uB85C\uC5D0\uC758 \uBC29") : GameText.Get("location.shadow_corridor", "\uADF8\uB9BC\uC790 \uAC10\uC625");
         }
 
         if (normalized.Contains("slime") || normalized.Contains("melta") ||
             sceneName == "ProtoTypeCorridor 3" || sceneName == "ProtoTypeBoss 4")
         {
-            return isBossRoom ? "\uBA5C\uD0C0\uC758 \uBC29" : "\uC2AC\uB77C\uC784 \uC655\uAD6D";
+            return isBossRoom ? GameText.Get("location.slime_boss", "\uBA5C\uD0C0\uC758 \uBC29") : GameText.Get("location.slime_corridor", "\uC2AC\uB77C\uC784 \uC655\uAD6D");
         }
 
         if (sceneName.StartsWith("ProtoTypeCorridor", System.StringComparison.OrdinalIgnoreCase))
-            return "\uBCF4\uBB3C\uCC3D\uACE0";
+            return GameText.Get("location.dragon_corridor", "\uBCF4\uBB3C\uCC3D\uACE0");
 
         if (sceneName.StartsWith("ProtoTypeBoss", System.StringComparison.OrdinalIgnoreCase))
-            return "\uBCF4\uC2A4\uB8F8";
+            return GameText.Get("location.boss_room", "\uBCF4\uC2A4\uB8F8");
 
-        return sceneName;
+        return GameText.Get("location.unknown", "알 수 없는 장소");
     }
 
     private static bool TryResolveRouteSetLocationName(string sceneName, out string locationName)

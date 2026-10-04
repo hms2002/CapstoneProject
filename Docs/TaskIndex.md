@@ -22,6 +22,7 @@ Use this file to find a matching `Docs/ActiveTasks/<task-id>.md` or to decide th
 
 | Task ID | Mode | Risk | Target Type | Status | ActiveTask |
 | --- | --- | --- | --- | --- | --- |
+| full-game-localization | Implementation | Approved serialized UI/font edits | Runtime + UI assets + tables | Japanese Galmuri9 applied; 55 representative Play Mode captures, timer atlas repaired; encyclopedia hint overlap and full-flow review remain (SOLD excluded) | [Scope](ActiveTasks/full-game-localization.md) |
 
 ## Proposed Tasks
 

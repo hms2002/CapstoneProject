@@ -135,7 +135,7 @@ public sealed class TrainingDummyDamageReadout2D : MonoBehaviour
 
         displayText.text = string.Format(
             CultureInfo.InvariantCulture,
-            displayFormat,
+            GameText.Get("tutorial.dummy.damage", displayFormat),
             FormatNumber(lastDamage),
             FormatNumber(maxDamage),
             FormatNumber(currentDps),

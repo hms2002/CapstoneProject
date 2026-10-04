@@ -15,6 +15,8 @@ public class UpgradeNodeSO : ScriptableObject
     [Header("Basic Info")]
     public int nodeID;
     public string upgradeName;
+    public string DisplayName => GameText.Asset(this, "upgradeName", upgradeName);
+    public string Description => GameText.Asset(this, "description", description);
     [TextArea] public string description;
     public Sprite icon;
     public int price;

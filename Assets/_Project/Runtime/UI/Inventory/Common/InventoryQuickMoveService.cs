@@ -451,7 +451,7 @@ public static class ChestSelectionTransferService
     {
         failedSourceIndex = -1;
         plan = new List<InventoryTransferRequest>();
-        warning = InventoryFullMessage;
+        warning = GameText.Get("inventory.confirmation_full", InventoryFullMessage);
         if (source?.Inventory == null || source.IsSelectionOnly || selection == null || selection.Count == 0 ||
             selection.Count + source.Inventory.AcquiredCount > ChestInventory.AcquisitionLimit)
             return false;
@@ -466,7 +466,7 @@ public static class ChestSelectionTransferService
             {
                 foreach (int index in selection)
                     if (source.Get(index) is WeaponDefinition) { failedSourceIndex = index; break; }
-                warning = "선택한 무기를 획득할 수 없습니다. 중복 무기와 현재 무기 상태를 확인해 주세요.";
+                warning = GameText.Get("code.inventoryquickmoveservice.ed108fd05f", "선택한 무기를 획득할 수 없습니다. 중복 무기와 현재 무기 상태를 확인해 주세요.");
                 return false;
             }
         }
@@ -481,7 +481,7 @@ public static class ChestSelectionTransferService
             if (item == null || item.AsDef() == null || !sourceIndices.Add(sourceIndex)) return false;
             if (item is ParcelRelicDefinition)
             {
-                warning = "이 아이템은 상자에서 이동할 수 없습니다.";
+                warning = GameText.Get("code.inventoryquickmoveservice.dca5a9d96c", "이 아이템은 상자에서 이동할 수 없습니다.");
                 return false;
             }
             IItemContainer target = item.AsDef().Kind switch
@@ -529,13 +529,13 @@ public static class ChestSelectionTransferService
                 int resultingLevel = relic.ClampLevel(previousLevel + Mathf.Max(1, incomingLevel));
                 if (resultingLevel <= previousLevel)
                 {
-                    warning = "선택한 유물은 이미 최대 레벨입니다. 다른 아이템을 선택해 주세요.";
+                    warning = GameText.Get("code.inventoryquickmoveservice.f08e1f5d11", "선택한 유물은 이미 최대 레벨입니다. 다른 아이템을 선택해 주세요.");
                     return false;
                 }
                 if (target is PlayerRelicContainerAdapter playerRelics &&
                     playerRelics.PreviewSelection(destination, relic, resultingLevel) != RelicInventory.AcquireResult.Success)
                 {
-                    warning = "현재 상태에서는 선택한 유물을 획득할 수 없습니다. 체력과 유물 상태를 확인해 주세요.";
+                    warning = GameText.Get("code.inventoryquickmoveservice.db446c3636", "현재 상태에서는 선택한 유물을 획득할 수 없습니다. 체력과 유물 상태를 확인해 주세요.");
                     return false;
                 }
                 levels[target][destination] = resultingLevel;

@@ -42,10 +42,10 @@ namespace UnityGAS
         {
             return new ItemDetailBlock
             {
-                title = "투사체 스킬",
+                title = GameText.Get("code.swordskill1projectiledata.57b9e0e2cb", "투사체 스킬"),
                 body = (damageFormula != null)
-                    ? $"피해(공식): {damageFormula.BuildDebugString(ctx.attributeSet)}"
-                    : $"피해: {damage}"
+                    ? GameText.Format("code.swordskill1projectiledata.4e9149bfdc", "피해(공식): {0}", damageFormula.BuildDebugString(ctx.attributeSet))
+                    : GameText.Format("code.swordskill1projectiledata.2e627a9aa2", "피해: {0}", damage)
             };
         }
     }

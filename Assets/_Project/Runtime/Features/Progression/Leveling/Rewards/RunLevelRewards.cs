@@ -100,34 +100,34 @@ public static class RunLevelRewards
         failureReason = null;
         if (!RunSessionStore.IsRunActive)
         {
-            failureReason = "활성 런이 아닙니다.";
+            failureReason = GameText.Get("code.runlevelrewards.20fa3f240e", "활성 런이 아닙니다.");
             return false;
         }
 
         LevelProgressionState progression = RunLevelProgression.State;
         if (progression == null || progression.pendingRewardCount <= 0)
         {
-            failureReason = "선택 가능한 레벨업 보상이 없습니다.";
+            failureReason = GameText.Get("code.runlevelrewards.19bc091705", "선택 가능한 레벨업 보상이 없습니다.");
             return false;
         }
 
         PlayerInteractor2D player = PlayerRuntimeRegistry.CurrentPlayer;
         if (player == null)
         {
-            failureReason = "현재 플레이어가 등록되지 않았습니다.";
+            failureReason = GameText.Get("code.runlevelrewards.e39a6f6f55", "현재 플레이어가 등록되지 않았습니다.");
             return false;
         }
 
         if (definition == null)
         {
-            failureReason = "보상 정의가 없습니다.";
+            failureReason = GameText.Get("code.runlevelrewards.de17d466d5", "보상 정의가 없습니다.");
             return false;
         }
 
         RegisterDefinition(definition);
         if (!definition.AllowMultipleSelections && HasSelected(definition.RewardId))
         {
-            failureReason = "이미 선택한 보상입니다.";
+            failureReason = GameText.Get("code.runlevelrewards.07dfa5f39f", "이미 선택한 보상입니다.");
             return false;
         }
 
@@ -145,7 +145,7 @@ public static class RunLevelRewards
         {
             progression.selectedRewards.Remove(selectionState);
             RebuildActiveEffects();
-            failureReason = "레벨업 보상 소비에 실패했습니다.";
+            failureReason = GameText.Get("code.runlevelrewards.5b4c04b72b", "레벨업 보상 소비에 실패했습니다.");
             return false;
         }
 

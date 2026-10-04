@@ -9,7 +9,7 @@ using System.Collections.Generic;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Move Speed On Kill (Managed)")]
 public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
 {
-    protected override string DefaultEffectTemplate => "● 적 처치 시 {duration} 동안 [[공격력]] {attack_bonus}\n● [[이동속도]] {move_speed_bonus}";
+    protected override string DefaultEffectTemplate => GameText.Get("code.reliclogic_movespeedonkill_managed.e9eca0b5c4", "● 적 처치 시 {duration} 동안 [[공격력]] {attack_bonus}\n● [[이동속도]] {move_speed_bonus}");
 
     [Header("Trigger")]
     [Tooltip("킬 확정 이벤트 태그. 보통 AbilitySystem.killConfirmedTag에 설정한 태그(Event.KillConfirmed).")]

@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-Assets-Shared
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Localization-Assets-Shared
+  m_GUID: 3b7c197cf2ff3e7409577478c2477f80
+  m_SerializeEntries:
+  - m_GUID: 279da0caf294fe94f8813c8d45601977
+    m_Address: Assets/_Project/Data/Localization/GameFonts Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a1fd8e230149544b87478f4f52f6ba9
+    m_Address: MonsterStatusPixelNumbers
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    - Locale-ko
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e6eece5703a7af49ae3c7212669274b
+    m_Address: Assets/_Project/Data/Localization/GameText Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 7835138ac3640374ca7a836f8ca1dc2a, type: 2}
+    - {fileID: 11400000, guid: 71e3c36acd196d24da1eee76e65d3b8d, type: 2}
+    - {fileID: 11400000, guid: 33664f0ca20242640877e82243f84bc6, type: 2}

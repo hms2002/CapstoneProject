@@ -1,0 +1,40 @@
+{
+  "speech_assets": [
+    {
+      "path": "Assets/_Project/Data/Dialogue/SpeechData/DarkLordBossSpeechData.asset",
+      "authored_lines": 31,
+      "status": "raw_GetLine_without_key_lookup"
+    },
+    {
+      "path": "Assets/_Project/Data/Dialogue/SpeechData/DragonBossSpeechData.asset",
+      "authored_lines": 7,
+      "status": "raw_GetLine_without_key_lookup"
+    },
+    {
+      "path": "Assets/_Project/Data/Dialogue/SpeechData/NewPlayerSpeechData.asset",
+      "authored_lines": 8,
+      "status": "raw_GetLine_without_key_lookup"
+    },
+    {
+      "path": "Assets/_Project/Data/Dialogue/SpeechData/SlimeBossSpeechData.asset",
+      "authored_lines": 8,
+      "status": "raw_GetLine_without_key_lookup"
+    },
+    {
+      "path": "Assets/_Project/Data/Dialogue/SpeechData/WitchBossSpeechData.asset",
+      "authored_lines": 2,
+      "status": "raw_GetLine_without_key_lookup"
+    }
+  ],
+  "route_assets": [
+    "Assets/_Project/Data/SceneFlow/Routes/DemonkingRouteSet.asset",
+    "Assets/_Project/Data/SceneFlow/Routes/Dragon_CorridorBossRouteSet.asset",
+    "Assets/_Project/Data/SceneFlow/Routes/ShadowCorridorBossRouteSet.asset",
+    "Assets/_Project/Data/SceneFlow/Routes/SlimeRouteSet.asset"
+  ],
+  "ending_asset": "Assets/_Project/Data/Dialogue/IntroAndOutro/Outro/EndingOutroSequence.asset",
+  "ending_slides": 4,
+  "note": "Read-only authored asset inventory. Runtime call sites reviewed; actual Play Mode branches not executed.",
+  "intro_asset": "Assets/_Project/Data/Dialogue/IntroAndOutro/Intro/IntroSequence_Default.asset",
+  "intro_slides": 4
+}

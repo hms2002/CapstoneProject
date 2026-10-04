@@ -53,13 +53,13 @@ public sealed class ParcelDeliveryPointInteractable : InteractableBase
         int parcelCount = inventory.CountRelicsOfType<ParcelRelicDefinition>();
         if (parcelCount <= 0)
         {
-            WarningPopupPlayback.ShowMessage("배송할 소포가 없습니다.");
+            WarningPopupPlayback.ShowMessage(GameText.Get("code.parceldeliverypointinteractable.b083ab6389", "배송할 소포가 없습니다."));
             return;
         }
 
         if (LootManager.Instance == null)
         {
-            WarningPopupPlayback.ShowMessage("보상을 생성할 수 없어 소포를 배송하지 않았습니다.");
+            WarningPopupPlayback.ShowMessage(GameText.Get("code.parceldeliverypointinteractable.38b255dcbf", "보상을 생성할 수 없어 소포를 배송하지 않았습니다."));
             return;
         }
 
@@ -69,7 +69,7 @@ public sealed class ParcelDeliveryPointInteractable : InteractableBase
             parcelCount);
         if (rewardedCount <= 0)
         {
-            WarningPopupPlayback.ShowMessage("Epic 유물 보상을 생성할 수 없어 소포를 배송하지 않았습니다.");
+            WarningPopupPlayback.ShowMessage(GameText.Get("code.parceldeliverypointinteractable.4f412bd3b6", "Epic 유물 보상을 생성할 수 없어 소포를 배송하지 않았습니다."));
             return;
         }
 
@@ -84,7 +84,7 @@ public sealed class ParcelDeliveryPointInteractable : InteractableBase
     }
 
     public override InteractState GetInteractType() => InteractState.Idle;
-    public override string GetInteractDescription() => parcelDefinition != null ? interactPromptText : string.Empty;
+    public override string GetInteractDescription() => parcelDefinition != null ? GameText.Get("interaction.parceldeliverypointinteractable.interactprompttext", interactPromptText) : string.Empty;
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
     public override void OnHighlight()
     {

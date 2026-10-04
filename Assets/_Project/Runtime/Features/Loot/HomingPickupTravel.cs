@@ -20,7 +20,7 @@ public static class HomingPickupTravel
             if (pickup != null && pickup.isActiveAndEnabled)
                 succeeded &= pickup.TryCollectForTravel(player);
         if (!succeeded)
-            WarningPopupPlayback.ShowMessage("획득물을 정산하지 못했습니다. 잠시 후 다시 이동해 주세요.");
+            WarningPopupPlayback.ShowMessage(GameText.Get("code.homingpickuptravel.4b200fb9cf", "획득물을 정산하지 못했습니다. 잠시 후 다시 이동해 주세요."));
         return succeeded;
     }
 }

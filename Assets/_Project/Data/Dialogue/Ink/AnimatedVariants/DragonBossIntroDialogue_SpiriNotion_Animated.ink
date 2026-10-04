@@ -8,115 +8,115 @@
 # speaker: 2001
 # face: 2001: Spiri_Dragon
 # anim: cold
-...네가 용사인가.
+...네가 용사인가. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.9d356ac5a4
 
 # face: 2001: Spiri_Dragon
 # anim: cold
-나는 스피리다. 붉은 재앙의 용... [pause=0.25]스피리.
+나는 스피리다. 붉은 재앙의 용... [pause=0.25]스피리. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.3fc54fff56
 
 # face: 2001: Spiri_Dragon
 # anim: slow
-이유를 모르겠군. 네놈에게선... [pause=0.35]아무 냄새도 나지 않아.
+이유를 모르겠군. 네놈에게선... [pause=0.35]아무 냄새도 나지 않아. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.4adb1425bb
 
 # face: 2001: Spiri_Dragon
 # anim: cold
-공포도. 살의도. 생존 본능조차.
+공포도. 살의도. 생존 본능조차. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.2a68c617ea
 
 # face: 2001: Spiri_Dragon
 # anim: slow
-...그 정도로 약한 건가? [pause=0.25]아니면 이미 각오를 끝낸 건가.
+...그 정도로 약한 건가? [pause=0.25]아니면 이미 각오를 끝낸 건가. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.6e65686948
 
 # face: 2001: Spiri_Dragon
 # anim: slow
-...
+... # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.6eae3a5b06
 
 # face: 2001: Spiri_Dragon
 # anim: slow
-...미안하지만 잠시 기다려주겠나.
+...미안하지만 잠시 기다려주겠나. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.07de708c80
 
 # face: 2001: Spiri_Dragon
 # anim: slow
-지금의 나는... [pause=0.35]그다지 바람직한 상태가 아니라서.
+지금의 나는... [pause=0.35]그다지 바람직한 상태가 아니라서. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.ded925120e
 
 # face: 2001: Spiri_Drink
 # anim: slow
 # CameraShake: Low
-(<size=110%>벌컥</size>)
+(<size=110%>벌컥</size>) # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.77b65f9777
 
 # face: 2001: Spiri_Drink
 # anim: slow
 # CameraShake: Middle
-(<size=115%>벌컥</size>)
+(<size=115%>벌컥</size>) # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.3c6d679039
 
 # face: 2001: Spiri_Drink
 # anim: angry
 # CameraShake: High
-(<size=110%>벌컥</size><size=115%>벌컥</size><size=120%>벌컥벌컥--!!</size>)
+(<size=110%>벌컥</size><size=115%>벌컥</size><size=120%>벌컥벌컥--!!</size>) # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.77bb4c842f
 
 # face: 2001: Spiri_DrunkShout
 # anim: angry
-[slowshake][rand_size=95,112]푸하아아아아아----[/rand_size][/slowshake]!!!
+[slowshake][rand_size=95,112]푸하아아아아아----[/rand_size][/slowshake]!!! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.749045a08e
 
 # face: 2001: Spiri_DrunkShout
 # anim: normal
-[slowshake][rand_size=95,110]크으으으으~[/rand_size][/slowshake]! 역시 인간들의 [rand_size=95,108]술이[/rand_size] 최고라니까아~! [rand_size=95,106]살 것[/rand_size] 같네에에에~!
+[slowshake][rand_size=95,110]크으으으으~[/rand_size][/slowshake]! 역시 인간들의 [rand_size=95,108]술이[/rand_size] 최고라니까아~! [rand_size=95,106]살 것[/rand_size] 같네에에에~! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.8cbae641ef
 
 # face: 2001: Spiri_Idle
 # anim: normal
-오오~ 용사! [slowshake][rand_size=95,110]안 갔네에에[/rand_size][/slowshake]~!
+오오~ 용사! [slowshake][rand_size=95,110]안 갔네에에[/rand_size][/slowshake]~! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.d1284e8056
 
 # face: 2001: Spiri_DrunkRelax
 # anim: normal
-자자, 그렇게 굳어 있지 말고~ [pause=0.2][rand_size=95,108]한 잔[/rand_size] 받아라! 싸움은 [slowshake]취해서[/slowshake] 해야 제맛이라고?
+자자, 그렇게 굳어 있지 말고~ [pause=0.2][rand_size=95,108]한 잔[/rand_size] 받아라! 싸움은 [slowshake]취해서[/slowshake] 해야 제맛이라고? # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.d1cd9d5f8e
 
-+ [방금 그건 대체 뭐였지...?]
++ [방금 그건 대체 뭐였지...? # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.b4231187ec]
     -> DRAGON_01_CONFUSED
 
-+ [좋아. 술자리라면 사양 안 하지!]
++ [좋아. 술자리라면 사양 안 하지! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.d0e30cc584]
     # add_aff: 1
     -> DRAGON_01_DRINKING_PARTNER
 
 = DRAGON_01_CONFUSED
 # face: 2001: Spiri_DrunkRelax
 # anim: normal
-방금~?
+방금~? # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.efe9839691
 
 # face: 2001: Spiri_DrunkRelax
 # anim: whisper
-으히히... [pause=0.25][slowshake][rand_size=95,108]글쎄에[/rand_size][/slowshake]~?
+으히히... [pause=0.25][slowshake][rand_size=95,108]글쎄에[/rand_size][/slowshake]~? # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.6fc2a2c2c7
 
 # face: 2001: Spiri_Smile
 # anim: normal
-못 본 걸로 해주라~ [pause=0.2]나도 [rand_size=95,105]기억하기[/rand_size] 싫거든.
+못 본 걸로 해주라~ [pause=0.2]나도 [rand_size=95,105]기억하기[/rand_size] 싫거든. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.9a75233460
 
 -> DRAGON_01_COMMON
 
 = DRAGON_01_DRINKING_PARTNER
 # face: 2001: Spiri_DrunkShout
 # anim: angry
-오오오~!! 분위기 탈 줄 아는 [slowshake][rand_size=95,112]녀석이잖냐[/rand_size][/slowshake]~!!
+오오오~!! 분위기 탈 줄 아는 [slowshake][rand_size=95,112]녀석이잖냐[/rand_size][/slowshake]~!! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.e9518c12c0
 
 # face: 2001: Spiri_DrunkShout
 # anim: normal
-좋다 좋아! 오늘은 특별히 [rand_size=95,108]용사 환영주[/rand_size]다~!
+좋다 좋아! 오늘은 특별히 [rand_size=95,108]용사 환영주[/rand_size]다~! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.76ba5bd81d
 
 # face: 2001: Spiri_DrunkRelax
 # anim: whisper
-어라. [pause=0.25]손이 왜 [slowshake][rand_size=95,108]세 개로[/rand_size][/slowshake] 보이지.
+어라. [pause=0.25]손이 왜 [slowshake][rand_size=95,108]세 개로[/rand_size][/slowshake] 보이지. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.4e56cae1a6
 
 -> DRAGON_01_COMMON
 
 = DRAGON_01_COMMON
 # face: 2001: Spiri_Idle
 # anim: normal
-자, 몸도 [rand_size=95,108]달아올랐고[/rand_size] 슬슬 [slowshake]시작해볼까아[/slowshake]~
+자, 몸도 [rand_size=95,108]달아올랐고[/rand_size] 슬슬 [slowshake]시작해볼까아[/slowshake]~ # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.9ee2fcbd71
 
 # face: 2001: Spiri_Idle
 # anim: normal
-[rand_size=95,106]술 깨기 전에[/rand_size] 끝내야 하거든. [pause=0.2]너무 오래 끌진 말자고.
+[rand_size=95,106]술 깨기 전에[/rand_size] 끝내야 하거든. [pause=0.2]너무 오래 끌진 말자고. # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.3acddd1614
 
 # face: 2001: Spiri_Smile
 # anim: angry
-안 그러면, 주변이 좀 [slowshake][rand_size=95,110]위험해져서[/rand_size][/slowshake] 말이야!
+안 그러면, 주변이 좀 [slowshake][rand_size=95,110]위험해져서[/rand_size][/slowshake] 말이야! # loc:dialogue.dragonbossintrodialogue_spirinotion_animated.a3aae538f4
 
 -> END

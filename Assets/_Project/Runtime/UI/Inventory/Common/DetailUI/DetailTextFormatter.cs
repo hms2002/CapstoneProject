@@ -22,7 +22,10 @@ public static class DetailTextFormatter
         return TermRegex.Replace(raw, m =>
         {
             var term = m.Groups[1].Value;
-            return $"<link=\"glossary:{term}\"><color=#{linkColorHex}>{term}</color></link>";
+            int separator = term.IndexOf('|');
+            string identity = separator >= 0 ? term.Substring(0, separator) : term;
+            string caption = separator >= 0 ? term.Substring(separator + 1) : GameText.Get("term." + identity, identity);
+            return $"<link=\"glossary:{identity}\"><color=#{linkColorHex}>{caption}</color></link>";
         });
     }
 

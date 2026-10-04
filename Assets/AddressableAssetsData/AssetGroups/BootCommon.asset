@@ -572,7 +572,9 @@ MonoBehaviour:
   - m_GUID: 46edeb50a3c50454ebceca0f0822b6ad
     m_Address: Assets/_Project/Art/Font/Galmuri9 SDF WhiteOutline.asset
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Locale-en
+    - Locale-ko
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 47d328b88c893e241a4c084d550218b7
     m_Address: Assets/_Project/Prefabs/VFX/Particle/FallingDust.prefab
@@ -800,7 +802,9 @@ MonoBehaviour:
   - m_GUID: 5cb2a964a4d75134d94a70d8c8aa34ee
     m_Address: Assets/_Project/Art/Font/Galmuri9 SDF BlackOutline.asset
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Locale-en
+    - Locale-ko
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5cc86fef14fe49c49b193dfb4cae2c42
     m_Address: Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Move Speed
@@ -892,7 +896,9 @@ MonoBehaviour:
   - m_GUID: 698a407b32ed1874bb4cb7324dfddce2
     m_Address: Assets/_Project/Art/Font/Galmuri9 SDF.asset
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Locale-en
+    - Locale-ko
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6a381fd96b3c05d4cbcbd73fbf173f4e
     m_Address: Assets/_Project/Resources/Tags/State.Status.Groggy.asset

@@ -6,7 +6,7 @@ public sealed class RelicLogic_PotionRecovery : RelicLogic
     [SerializeField] private ConsumableDefinition potion;
     [SerializeField, Min(1)] private int recoveryAmount = 2;
 
-    protected override string DefaultEffectTemplate => "포션의 회복량이 1에서 2로 증가";
+    protected override string DefaultEffectTemplate => GameText.Get("code.reliclogic_potionrecovery.60f10e94d2", "포션의 회복량이 1에서 2로 증가");
 
     public override void OnEquipped(RelicContext ctx) => Attach(ctx);
     public override void OnRestoreAttached(RelicContext ctx) => Attach(ctx);
@@ -27,7 +27,7 @@ public sealed class RelicLogic_PotionRecovery : RelicLogic
     {
         return new RelicTooltipData
         {
-            effectText = $"포션의 회복량이 {(potion != null ? potion.RestoreAmount : 1)}에서 {recoveryAmount}로 증가"
+            effectText = GameText.Format("code.reliclogic_potionrecovery.ce49d1d76f", "포션의 회복량이 {0}에서 {1}로 증가", (potion != null ? potion.RestoreAmount : 1), recoveryAmount)
         };
     }
 }
