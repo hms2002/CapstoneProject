@@ -25,10 +25,10 @@ public sealed class ParcelGuideNpcInteractable : InteractableBase
 
     public override void OnPlayerInteract(IPlayerInteractor player)
     {
-        WarningPopupPlayback.ShowMessage(guideText, 4f);
+        WarningPopupPlayback.ShowMessage(GameText.Get("interaction.parcelguidenpcinteractable.guidetext", guideText), 4f);
     }
 
     public override InteractState GetInteractType() => InteractState.Idle;
-    public override string GetInteractDescription() => interactPromptText;
+    public override string GetInteractDescription() => GameText.Get("interaction.parcelguidenpcinteractable.interactprompttext", interactPromptText);
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 }

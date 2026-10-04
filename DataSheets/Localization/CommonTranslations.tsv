@@ -1,0 +1,999 @@
+﻿ko	en	ja	zh-Hans	zh-Hant
+무기	Weapon	武器	武器	武器
+유물	Relic	遺物	遗物	遺物
+소모품	Consumable	消耗品	消耗品	消耗品
+몬스터	Monster	モンスター	怪物	怪物
+보스	Boss	ボス	首领	首領
+분류	Type	分類	类型	類型
+공격 방식	Attack Style	攻撃方法	攻击方式	攻擊方式
+등장 구역	Location	出現エリア	出现区域	出現區域
+설명 준비 중	Description coming soon	説明準備中	说明准备中	說明準備中
+효과 정보 없음	No effect information	効果情報なし	暂无效果信息	暫無效果資訊
+스킬 데이터 없음	No skill data	スキル情報なし	暂无技能数据	暫無技能資料
+스탯 변경 없음	No stat changes	能力値の変化なし	属性无变化	屬性無變化
+기본 공격	Basic Attack	通常攻撃	普通攻击	普通攻擊
+일반공격	Basic Attack	通常攻撃	普通攻击	普通攻擊
+스킬 1	Skill 1	スキル1	技能1	技能1
+스킬 2	Skill 2	スキル2	技能2	技能2
+스토리	Story	物語	故事	故事
+설명	Description	説明	说明	說明
+효과	Effect	効果	效果	效果
+요약	Summary	概要	概述	概述
+상세	Details	詳細	详情	詳情
+간단히 설명	Show Summary	簡単な説明	简要说明	簡要說明
+자세히 설명	Show Details	詳しい説明	详细说明	詳細說明
+설명이 등록되지 않았습니다.	No description available.	説明が登録されていません。	暂无说明。	暫無說明。
+(추가 정보 없음)	(No additional information)	（追加情報なし）	（无补充信息）	（無補充資訊）
+(디테일 제공 인터페이스 미구현)	(No detailed information available)	（詳細情報なし）	（暂无详细信息）	（暫無詳細資訊）
+(로직 없음)	(No effect defined)	（効果未設定）	（未设置效果）	（未設定效果）
+(사용 효과 정보 없음)	(No usage effect information)	（使用効果の情報なし）	（暂无使用效果信息）	（暫無使用效果資訊）
+해금	Unlocked	解放済み	已解锁	已解鎖
+미해금	Locked	未解放	未解锁	未解鎖
+보상 설명 준비 중	Reward description coming soon	報酬の説明準備中	奖励说明准备中	獎勵說明準備中
+호감도 데이터 미연결	Affection information unavailable	好感度情報なし	暂无好感度信息	暫無好感度資訊
+보상 데이터 미연결	Reward information unavailable	報酬情報なし	暂无奖励信息	暫無獎勵資訊
+등록된 호감도 보상 없음	No affection rewards available	好感度報酬なし	暂无好感度奖励	暫無好感度獎勵
+현재 호감도: {0}	Current Affection: {0}	現在の好感度：{0}	当前好感度：{0}	目前好感度：{0}
+등록된 항목이 없습니다.	No entries available.	登録された項目がありません。	暂无条目。	暫無項目。
+표시할 슬롯이 없습니다.	No slots to display.	表示できるスロットがありません。	没有可显示的槽位。	沒有可顯示的欄位。
+유물 인벤토리가 가득 찼습니다.	Your relic inventory is full.	遺物の所持枠がいっぱいです。	遗物栏已满。	遺物欄已滿。
+이미 최대 레벨인 유물입니다.	This relic is already at maximum level.	この遺物はすでに最大レベルです。	此遗物已达到最高等级。	此遺物已達到最高等級。
+무기 인벤토리가 가득 찼습니다.	Your weapon inventory is full.	武器の所持枠がいっぱいです。	武器栏已满。	武器欄已滿。
+일회용 아이템 인벤토리가 가득 찼습니다.	Your consumable inventory is full.	消耗品の所持枠がいっぱいです。	消耗品栏已满。	消耗品欄已滿。
+여기에는 버릴 수 없습니다.	You cannot discard items here.	ここではアイテムを捨てられません。	无法在此丢弃物品。	無法在此丟棄物品。
+마지막 무기는 버리거나 옮길 수 없습니다.	You cannot discard or move your last weapon.	最後の武器は捨てたり移動したりできません。	无法丢弃或移动最后一把武器。	無法丟棄或移動最後一把武器。
+현재 체력이 부족해 해제할 수 없습니다.	You do not have enough health to unequip this.	体力が足りないため外せません。	生命值不足，无法卸下。	生命值不足，無法卸下。
+이미 구매된 업그레이드 입니다.	You have already purchased this upgrade.	この強化は購入済みです。	此升级已购买。	此升級已購買。
+이번 탐험에서 이미 처치한 보스입니다.	You have already defeated this boss during this run.	この探索ではすでに倒したボスです。	本次探索中已击败此首领。	本次探索中已擊敗此首領。
+전투가 끝난 뒤 할 수 있어	Available after combat.	戦闘が終わると利用できます。	战斗结束后即可使用。	戰鬥結束後即可使用。
+업그레이드 완료!	Upgrade complete!	強化完了！	升级完成！	升級完成！
+호감도 보상!	Affection reward!	好感度報酬！	好感度奖励！	好感度獎勵！
+- 아이템이 해금되었습니다.\n	- Item unlocked.\n	- アイテムが解放されました。\n	- 物品已解锁。\n	- 物品已解鎖。\n
+아이템을 획득하거나 선택을 해제해 주십시오.	Collect the items or clear your selection.	アイテムを受け取るか、選択を解除してください。	请领取物品或取消选择。	請領取物品或取消選擇。
+아이템을 획득할 수 없습니다. 인벤토리와 유물 상태를 확인해 주세요.	Cannot collect the item. Check your inventory and relics.	アイテムを受け取れません。所持枠と遺物の状態を確認してください。	无法领取物品，请检查物品栏和遗物状态。	無法領取物品，請檢查物品欄和遺物狀態。
+선택 {0} / {1}	Selected {0} / {1}	選択 {0} / {1}	已选择 {0} / {1}	已選擇 {0} / {1}
+한 상자에서 아이템은 2개까지만 획득할 수 있습니다.	You can collect up to 2 items from one chest.	1つの宝箱から受け取れるアイテムは2個までです。	每个宝箱最多可领取2件物品。	每個寶箱最多可領取2件物品。
+이 상자에서 가져온 아이템만 돌려놓을 수 있습니다.	Only items taken from this chest can be returned.	この宝箱から取ったアイテムだけ戻せます。	只能放回从此宝箱取出的物品。	只能放回從此寶箱取出的物品。
+이 아이템은 상자에서 이동할 수 없습니다.	This item cannot be moved from the chest.	このアイテムは宝箱から移動できません。	此物品无法从宝箱移出。	此物品無法從寶箱移出。
+선택한 유물은 이미 최대 레벨입니다. 다른 아이템을 선택해 주세요.	The selected relic is at maximum level. Choose another item.	選択した遺物は最大レベルです。別のアイテムを選んでください。	所选遗物已满级，请选择其他物品。	所選遺物已滿級，請選擇其他物品。
+현재 상태에서는 선택한 유물을 획득할 수 없습니다. 체력과 유물 상태를 확인해 주세요.	Cannot collect this relic. Check your health and relics.	この遺物は受け取れません。体力と遺物の状態を確認してください。	当前无法领取此遗物，请检查生命值和遗物状态。	目前無法領取此遺物，請檢查生命值和遺物狀態。
+선택한 무기를 획득할 수 없습니다. 중복 무기와 현재 무기 상태를 확인해 주세요.	Cannot collect this weapon. Check for duplicates and your equipped weapons.	この武器は受け取れません。重複する武器と装備の状態を確認してください。	无法领取此武器，请检查重复武器和当前武器状态。	無法領取此武器，請檢查重複武器和目前武器狀態。
+인벤토리 공간이 부족합니다. 인벤토리 아이템을 버리는 구역으로 드래그해 버린 후 다시 확정해 주세요.	Your inventory is full. Drag an item to the discard area, then confirm again.	所持枠が足りません。アイテムを廃棄エリアにドラッグしてから、もう一度確定してください。	物品栏空间不足，请将物品拖至丢弃区域后再次确认。	物品欄空間不足，請將物品拖至丟棄區域後再次確認。
+지원하지 않는 키입니다.\n다른 키를 입력해 주세요.	This key is not supported.\nPress another key.	このキーは使用できません。\n別のキーを入力してください。	不支持此按键。\n请输入其他按键。	不支援此按鍵。\n請輸入其他按鍵。
+키 변경을 적용할 수 없습니다.\n다른 키를 입력해 주세요.	Cannot apply this key binding.\nPress another key.	キー設定を適用できません。\n別のキーを入力してください。	无法应用此按键设置。\n请输入其他按键。	無法套用此按鍵設定。\n請輸入其他按鍵。
+할당하실 키를 입력해 주세요.	Press a key to bind.	割り当てるキーを入力してください。	请输入要绑定的按键。	請輸入要綁定的按鍵。
+변경사항이 있습니다.\n적용하시겠습니까?	You have unsaved changes.\nApply them?	変更があります。\n適用しますか？	存在未应用的更改。\n是否应用？	存在尚未套用的變更。\n是否套用？
+서로 교체하시겠습니까?	Swap these bindings?	キー設定を入れ替えますか？	是否交换按键？	是否交換按鍵？
+기본 키가 현재 '{0}'에 할당되어 있습니다.\n서로 교체하시겠습니까?	The default key is assigned to '{0}'.\nSwap these bindings?	標準キーは現在「{0}」に割り当てられています。\n入れ替えますか？	默认按键已绑定至“{0}”。\n是否交换？	預設按鍵已綁定至「{0}」。\n是否交換？
+이 키는 현재 '{0}'에 할당되어 있습니다.\n서로 교체하시겠습니까?	This key is assigned to '{0}'.\nSwap these bindings?	このキーは現在「{0}」に割り当てられています。\n入れ替えますか？	此按键已绑定至“{0}”。\n是否交换？	此按鍵已綁定至「{0}」。\n是否交換？
+기본 키가 현재 다른 동작에 할당되어 있습니다.\n서로 교체하시겠습니까?	The default key is assigned to another action.\nSwap these bindings?	標準キーは別の操作に割り当てられています。\n入れ替えますか？	默认按键已绑定至其他操作。\n是否交换？	預設按鍵已綁定至其他操作。\n是否交換？
+이 키는 현재 다른 동작에 할당되어 있습니다.\n서로 교체하시겠습니까?	This key is assigned to another action.\nSwap these bindings?	このキーは別の操作に割り当てられています。\n入れ替えますか？	此按键已绑定至其他操作。\n是否交换？	此按鍵已綁定至其他操作。\n是否交換？
+위로 이동	Move Up	上に移動	向上移动	向上移動
+아래로 이동	Move Down	下に移動	向下移动	向下移動
+왼쪽으로 이동	Move Left	左に移動	向左移动	向左移動
+오른쪽으로 이동	Move Right	右に移動	向右移动	向右移動
+공격	Attack	攻撃	攻击	攻擊
+상호작용	Interact	調べる	交互	互動
+대시	Dash	ダッシュ	冲刺	衝刺
+무기 교체	Swap Weapon	武器交換	切换武器	切換武器
+소모품 1	Consumable 1	消耗品1	消耗品1	消耗品1
+소모품 2	Consumable 2	消耗品2	消耗品2	消耗品2
+소모품 3	Consumable 3	消耗品3	消耗品3	消耗品3
+소모품 4	Consumable 4	消耗品4	消耗品4	消耗品4
+인벤토리	Inventory	所持品	物品栏	物品欄
+대화 넘기기	Advance Dialogue	会話を進める	继续对话	繼續對話
+인벤토리 아이템 버리기	Discard Item	アイテムを捨てる	丢弃物品	丟棄物品
+레벨 보상 열기	Open Level Rewards	レベル報酬を開く	打开奖励	開啟獎勵
+미니맵 확대	Zoom In Minimap	ミニマップ拡大	放大小地图	放大小地圖
+미니맵 축소	Zoom Out Minimap	ミニマップ縮小	缩小小地图	縮小小地圖
+요청을 처리할 수 없습니다.	Unable to process the request.	要求を処理できません。	无法处理此请求。	無法處理此請求。
+스택: {0}	Stacks: {0}	スタック：{0}	层数：{0}	層數：{0}
+지속시간: {0:0.0}s	Duration: {0:0.0}s	持続時間：{0:0.0}秒	持续时间：{0:0.0}秒	持續時間：{0:0.0}秒
+재사용 대기시간: {0:0.##}초	Cooldown: {0:0.##}s	クールダウン：{0:0.##}秒	冷却时间：{0:0.##}秒	冷卻時間：{0:0.##}秒
+길게	Hold	長押し	长按	長按
+좌클릭	Left Click	左クリック	鼠标左键	滑鼠左鍵
+우클릭	Right Click	右クリック	鼠标右键	滑鼠右鍵
+대화하기	Talk	話す	交谈	交談
+대화	Talk	話す	交谈	交談
+조사하기	Investigate	調査する	调查	調查
+ · 완료	 · Complete	 · 完了	 · 完成	 · 完成
+마왕을 토벌하기 위해 전진하자.	Advance to defeat the Demon King.	魔王を討伐するために進もう。	向前推进，讨伐魔王。	向前推進，討伐魔王。
+마왕성 공략 준비를 마치고 위 쪽의 포탈로 이동하자.	Prepare for the assault, then head to the portal above.	魔王城攻略の準備を終えて、上のポータルへ向かおう。	做好进攻魔王城的准备，前往上方传送门。	做好進攻魔王城的準備，前往上方傳送門。
+마왕을 토벌하기 위해 포탈로 이동하자.	Head to the portal to confront the Demon King.	魔王を倒すためにポータルへ向かおう。	前往传送门，讨伐魔王。	前往傳送門，討伐魔王。
+마지막 포탈로 이동하자.	Head to the final portal.	最後のポータルへ向かおう。	前往最后的传送门。	前往最後的傳送門。
+둘 중 하나의 포탈을 선택해 이동하자.	Choose one of the two portals.	2つのポータルから1つを選んで進もう。	选择两扇传送门中的一扇。	選擇兩扇傳送門中的一扇。
+셋 중 하나의 포탈을 선택해 이동하자.	Choose one of the three portals.	3つのポータルから1つを選んで進もう。	选择三扇传送门中的一扇。	選擇三扇傳送門中的一扇。
+마왕을 토벌하자.	Defeat the Demon King.	魔王を倒そう。	讨伐魔王。	討伐魔王。
+간부를 토벌하자.	Defeat a commander.	幹部を倒そう。	讨伐干部。	討伐幹部。
+포탈을 찾아 간부를 토벌하자.	Find the portal and defeat a commander.	ポータルを見つけて幹部を倒そう。	找到传送门，讨伐干部。	找到傳送門，討伐幹部。
+마왕성 간부를 찾아 토벌하자 ({0}/3)	Find and defeat the castle commanders ({0}/3)	魔王城の幹部を見つけて倒そう（{0}/3）	寻找并讨伐魔王城干部（{0}/3）	尋找並討伐魔王城幹部（{0}/3）
+다음 구역에 소포를 배달하자	Deliver the parcel in the next area.	次のエリアに小包を届けよう。	将包裹送到下一区域。	將包裹送到下一區域。
+현재 구역 어딘가에 있는 소포 배달 장소를 찾아 배달하자.	Find the delivery destination in this area.	このエリアにある配達先を見つけて小包を届けよう。	找到当前区域的包裹投递点并完成配送。	找到目前區域的包裹投遞點並完成配送。
+파셀의 소포 배달	Parcel's Delivery	パーセルの小包配達	帕塞尔的包裹配送	帕塞爾的包裹配送
+몬스터를 쫓아가자	Follow the monster.	モンスターを追いかけよう。	追上怪物。	追上怪物。
+대시로 공격을 피하세요.	Dash to dodge attacks.	ダッシュで攻撃を避けてください。	冲刺躲避攻击。	衝刺躲避攻擊。
+앞으로 이동하세요.	Move forward.	前へ進んでください。	向前移动。	向前移動。
+상자를 열고 아이템 선택 후 획득하기	Open the chest, select an item, and collect it.	宝箱を開き、アイテムを選んで受け取ろう。	打开宝箱，选择并领取物品。	打開寶箱，選擇並領取物品。
+인벤토리를 열어 획득한 아이템 확인하기	Open your inventory to view the collected item.	所持品を開いて受け取ったアイテムを確認しよう。	打开物品栏，查看获得的物品。	打開物品欄，查看獲得的物品。
+1번 소모품 슬롯의 포션 사용하기	Use the potion in consumable slot 1.	消耗品スロット1のポーションを使おう。	使用消耗品栏1中的药水。	使用消耗品欄1中的藥水。
+위쪽 포탈로 이동하기	Head to the portal above.	上のポータルへ向かおう。	前往上方传送门。	前往上方傳送門。
+마왕	Demon King	魔王	魔王	魔王
+처치자 마왕	Demon King, the Slayer	討伐者・魔王	杀戮者魔王	殺戮者魔王
+마왕의 알현실	Demon King's Audience Chamber	魔王の謁見室	魔王谒见厅	魔王謁見廳
+구덩이	Pit	落とし穴	深坑	深坑
+알 수 없는 적	Unknown Enemy	不明な敵	未知敌人	未知敵人
+마왕의 인내심이 한계에 도달했습니다.	The Demon King's patience has run out.	魔王の我慢が限界に達しました。	魔王的耐心耗尽了。	魔王的耐心耗盡了。
+{0}에 빠져 속절없이 추락했습니다.	You fell helplessly into {0}.	{0}に落ち、なすすべなく墜落しました。	你落入{0}，无助地坠落。	你落入{0}，無助地墜落。
+남은 시간  {0}	Time Remaining  {0}	残り時間  {0}	剩余时间  {0}	剩餘時間  {0}
+마정석이 부족합니다.	Not enough magic stones.	魔晶石が足りません。	魔晶石不足。	魔晶石不足。
+아직 해금되지 않은 업그레이드입니다.	This upgrade is not unlocked yet.	この強化はまだ解放されていません。	此升级尚未解锁。	此升級尚未解鎖。
+현재 구매할 수 없는 업그레이드입니다.	This upgrade cannot be purchased now.	現在、この強化は購入できません。	当前无法购买此升级。	目前無法購買此升級。
+계속하기	Resume	再開	继续	繼續
+시작하기	Start	始める	开始游戏	開始遊戲
+빈 슬롯	Empty Slot	空きスロット	空存档位	空存檔欄
+진행 중	In Progress	進行中	进行中	進行中
+대기 중	Ready	待機中	待开始	待開始
+슬롯 	Slot 	スロット 	存档位 	存檔欄 
+프로필 선택	Select Profile	プロフィール選択	选择档案	選擇檔案
+진행 중 런이 있으면 이어하기, 없으면 새 런을 시작합니다.	Continue your current run, or start a new one.	探索中なら再開し、そうでなければ新しく始めます。	继续当前探索，或开始新的探索。	繼續目前探索，或開始新的探索。
+의 프로필 데이터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.	: delete this profile?\nThis cannot be undone.	のプロフィールを削除しますか？\nこの操作は取り消せません。	的档案数据是否删除？\n此操作无法撤销。	的檔案資料是否刪除？\n此操作無法復原。
+--시간 --분	--h --m	--時間 --分	--小时 --分钟	--小時 --分鐘
+--개	--	--個	--个	--個
+--회	--	--回	--次	--次
+{0}시간 {1}분	{0}h {1}m	{0}時間 {1}分	{0}小时 {1}分钟	{0}小時 {1}分鐘
+{0}개	{0}	{0}個	{0}个	{0}個
+{0}회	{0}	{0}回	{0}次	{0}次
+잠김	Locked	未解放	未解锁	未解鎖
+구매됨	Purchased	購入済み	已购买	已購買
+<color=#FF4444>길게</color>	<color=#FF4444>Hold</color>	<color=#FF4444>長押し</color>	<color=#FF4444>长按</color>	<color=#FF4444>長按</color>
+[{0}] 무기 교체	[{0}] Switch Weapon	[{0}] 武器切替	[{0}] 切换武器	[{0}] 切換武器
+<color=#FFFFFF>일반</color>	<color=#FFFFFF>Common</color>	<color=#FFFFFF>一般</color>	<color=#FFFFFF>普通</color>	<color=#FFFFFF>普通</color>
+<color=#409CFF>희귀</color>	<color=#409CFF>Rare</color>	<color=#409CFF>レア</color>	<color=#409CFF>稀有</color>	<color=#409CFF>稀有</color>
+<color=#FFFF00>전설</color>	<color=#FFFF00>Legendary</color>	<color=#FFFF00>伝説</color>	<color=#FFFF00>传说</color>	<color=#FFFF00>傳說</color>
+<b>능력치</b>	<b>Stats</b>	<b>能力値</b>	<b>属性</b>	<b>屬性</b>
+<b>상세</b>	<b>Details</b>	<b>詳細</b>	<b>详情</b>	<b>詳情</b>
+{0}\n입력: {1}	{0}\nInput: {1}	{0}\n入力：{1}	{0}\n按键：{1}	{0}\n按鍵：{1}
+\n쿨다운: {0:0.##}s	\nCooldown: {0:0.##}s	\nクールダウン：{0:0.##}秒	\n冷却时间：{0:0.##}秒	\n冷卻時間：{0:0.##}秒
+입력: <color=#A7E1FF>{0}</color>	Input: <color=#A7E1FF>{0}</color>	入力：<color=#A7E1FF>{0}</color>	按键：<color=#A7E1FF>{0}</color>	按鍵：<color=#A7E1FF>{0}</color>
+쿨다운: <color=#FFD54F>{0:0.##}s</color>	Cooldown: <color=#FFD54F>{0:0.##}s</color>	クールダウン：<color=#FFD54F>{0:0.##}秒</color>	冷却时间：<color=#FFD54F>{0:0.##}秒</color>	冷卻時間：<color=#FFD54F>{0:0.##}秒</color>
+태그: {0}	Tags: {0}	タグ：{0}	标签：{0}	標籤：{0}
+● [[{0}]] {{pos:[+{1}]}} 회복	● Restore [[{0}]] by {{pos:[+{1}]}}	● [[{0}]]を{{pos:[+{1}]}}回復	● 恢复[[{0}]] {{pos:[+{1}]}}	● 恢復[[{0}]] {{pos:[+{1}]}}
+를 눌러서 포션을 사용할 수 있습니다.	 to use a potion.	を押すとポーションを使えます。	即可使用药水。	即可使用藥水。
+을 눌러 포션 사용.	 to use a potion.	を押してポーションを使おう。	使用药水。	使用藥水。
+를 눌러 인벤토리를 열 수 있습니다.	 to open your inventory.	を押すと所持品を開けます。	即可打开物品栏。	即可開啟物品欄。
+포션을 좌클릭하여 선택하세요	Left-click the potion to select it.	ポーションを左クリックして選んでください。	左键点击药水以选择。	左鍵點擊藥水以選擇。
+를 길게 눌러서 공격 {0}/9	 to attack (hold) {0}/9	を長押しして攻撃 {0}/9	长按进行攻击 {0}/9	長按進行攻擊 {0}/9
+를 길게 눌렀다 떼서 스킬로 적을 처치 {0}/4	, hold and release to defeat enemies with the skill {0}/4	を長押しして離し、スキルで敵を倒す {0}/4	长按后松开，使用技能击败敌人 {0}/4	長按後鬆開，使用技能擊敗敵人 {0}/4
+를 눌러 스킬로 적을 처치 {0}/3	 to defeat enemies with the skill {0}/3	を押してスキルで敵を倒す {0}/3	使用技能击败敌人 {0}/3	使用技能擊敗敵人 {0}/3
+획득물을 정산하지 못했습니다. 잠시 후 다시 이동해 주세요.	Unable to collect rewards. Try moving again shortly.	報酬を受け取れませんでした。少し待ってから再び移動してください。	奖励结算失败，请稍后再次移动。	獎勵結算失敗，請稍後再次移動。
+(이 유물 로직 타입에 대한 상세 표시를 추가할 수 있어요)	(Detailed effect information unavailable)	（詳細な効果情報なし）	（暂无详细效果信息）	（暫無詳細效果資訊）
+(스탯 변경 없음)	(No stat changes)	（能力値の変化なし）	（属性无变化）	（屬性無變化）
+(체력 구간 규칙 없음)	(No health range rules)	（体力範囲の設定なし）	（暂无生命值区间规则）	（暫無生命值區間規則）
+현재 체력이 {0:0.##}	Current health is {0:0.##}	現在の体力が{0:0.##}	当前生命值为{0:0.##}	目前生命值為{0:0.##}
+현재 체력이 {0:0.##}~{1:0.##}	Current health is {0:0.##}–{1:0.##}	現在の体力が{0:0.##}～{1:0.##}	当前生命值为{0:0.##}～{1:0.##}	目前生命值為{0:0.##}～{1:0.##}
+현재 체력이 {0:0.##} 이상	Current health is at least {0:0.##}	現在の体力が{0:0.##}以上	当前生命值不低于{0:0.##}	目前生命值不低於{0:0.##}
+현재 체력이 {0:0.##} 이하	Current health is at most {0:0.##}	現在の体力が{0:0.##}以下	当前生命值不高于{0:0.##}	目前生命值不高於{0:0.##}
+● {0}: [[이동속도]] {1}	● {0}: [[Movement Speed]] {1}	● {0}：[[移動速度]] {1}	● {0}：[[移动速度]] {1}	● {0}：[[移動速度]] {1}
+포션의 회복량이 1에서 2로 증가	Increases potion healing from 1 to 2.	ポーションの回復量が1から2に増加する。	药水恢复量从1提高至2。	藥水恢復量從1提高至2。
+포션의 회복량이 {0}에서 {1}로 증가	Potion healing increases from {0} to {1}.	ポーションの回復量が{0}から{1}に増加	药水恢复量从{0}提高至{1}	藥水恢復量從{0}提高至{1}
+조건 충족 시	When triggered	条件を満たすと	满足条件时	滿足條件時
+● 재사용 대기시간 {0}	● Cooldown {0}	● クールダウン {0}	● 冷却时间 {0}	● 冷卻時間 {0}
+\n● 남은 장전 횟수: {0}회	\n● Reloads remaining: {0}	\n● 残り装填回数：{0}回	\n● 剩余装填次数：{0}	\n● 剩餘裝填次數：{0}
+첫번째 승리군요.\n생각보다 빠르십니다.	Your first victory.\nThat was faster than I expected.	初めての勝利ですね。\n思ったより早いです。	这是您的首次胜利。\n比我预想的更快。	這是您的首次勝利。\n比我預想的更快。
+이제 마지막 간부입니다.\n마왕님께서 기다리고 계십니다.\n서두르시길.	Only the final commander remains.\nThe Demon King awaits you.\nDo hurry.	残るは最後の幹部です。\n魔王様がお待ちです。\nお急ぎください。	只剩最后一位干部了。\n魔王大人正在等您。\n请抓紧时间。	只剩最後一位幹部了。\n魔王大人正在等您。\n請抓緊時間。
+오셨군요 용사님	Welcome, Hero.	いらっしゃいましたね、勇者様。	您来了，勇者大人。	您來了，勇者大人。
+뇌창 휩쓸기	Thunder Spear Sweep	雷槍薙ぎ払い	雷枪横扫	雷槍橫掃
+뇌창 돌격	Thunder Spear Rush	雷槍突撃	雷枪突袭	雷槍突襲
+● {em:낙뢰 표식이 없을 때} 제자리에서 전방을 휩쓸기\n● 보유한 {em:회수 창}을 조준 방향 앞쪽에서 부채꼴로 순차 발사	● {em:Without a Lightning Mark}, sweep the area ahead\n● Fire stored {em:Recovered Spears} in sequence in a fan toward your aim	● {em:落雷の印がない時}、その場で前方を薙ぎ払う\n● 保有する{em:回収槍}を照準方向へ扇状に順次発射	● {em:没有落雷标记时}，原地横扫前方\n● 将储存的{em:回收枪}朝瞄准方向呈扇形依次发射	● {em:沒有落雷標記時}，原地橫掃前方\n● 將儲存的{em:回收槍}朝瞄準方向呈扇形依次發射
+낙뢰 표식이 없으면 전방을 휩쓸고, 모아 둔 {em:회수 창}을 발사합니다.	Without a Lightning Mark, sweep ahead and fire stored {em:Recovered Spears}.	落雷の印がない場合、前方を薙ぎ払い、保有する{em:回収槍}を発射します。	没有落雷标记时，横扫前方并发射储存的{em:回收枪}。	沒有落雷標記時，橫掃前方並發射儲存的{em:回收槍}。
+● 커서 주변의 [[낙뢰 표식]]으로 즉시 돌진\n● 이동 경로와 도착 지점을 공격\n● 표식 소모 시 {pos:뇌창 돌격 재사용 대기시간 초기화}\n● {em:회수 창} {val:1개} 획득	● Rush to a [[Lightning Mark]] near the cursor\n● Attack along the path and at the destination\n● Consuming the mark {pos:resets Thunder Spear Rush's cooldown}\n● Gain {val:1} {em:Recovered Spear}	● カーソル付近の[[落雷の印]]へ即座に突撃\n● 移動経路と到着地点を攻撃\n● 印を消費すると{pos:雷槍突撃のクールダウンをリセット}\n● {em:回収槍}を{val:1本}獲得	● 立即突袭至光标附近的[[落雷标记]]\n● 攻击路径和终点\n● 消耗标记后{pos:重置雷枪突袭的冷却时间}\n● 获得{val:1根}{em:回收枪}	● 立即突襲至游標附近的[[落雷標記]]\n● 攻擊路徑和終點\n● 消耗標記後{pos:重置雷槍突襲的冷卻時間}\n● 獲得{val:1根}{em:回收槍}
+커서 주변의 [[낙뢰 표식]]으로 돌진해 경로의 적을 공격합니다. 표식을 소모하면 다시 사용할 수 있고 {em:회수 창}을 얻습니다.	Rush to a [[Lightning Mark]] near the cursor and attack enemies along the path. Consume the mark to reset the skill and gain a {em:Recovered Spear}.	カーソル付近の[[落雷の印]]へ突撃し、経路上の敵を攻撃します。印を消費すると再使用でき、{em:回収槍}を獲得します。	突袭至光标附近的[[落雷标记]]，攻击路径上的敌人。消耗标记后可再次使用，并获得{em:回收枪}。	突襲至游標附近的[[落雷標記]]，攻擊路徑上的敵人。消耗標記後可再次使用，並獲得{em:回收槍}。
+투사체 스킬	Projectile Skill	投射スキル	投射技能	投射技能
+피해(공식): {0}	Damage (Formula): {0}	ダメージ（計算式）：{0}	伤害（公式）：{0}	傷害（公式）：{0}
+피해: {0}	Damage: {0}	ダメージ：{0}	伤害：{0}	傷害：{0}
+● [[화상]] 소모 주기 {{pos:{0:0}% 감소}} (주기 {{val:{1:0.##}초}})	● [[Burn]] tick interval {{pos:reduced by {0:0}%}} (interval {{val:{1:0.##}s}})	● [[火傷]]の消費間隔{{pos:{0:0}%減少}}（間隔{{val:{1:0.##}秒}}）	● [[灼烧]]消耗间隔{{pos:减少{0:0}%}}（间隔{{val:{1:0.##}秒}}）	● [[灼燒]]消耗間隔{{pos:減少{0:0}%}}（間隔{{val:{1:0.##}秒}}）
+● [[화상 피해]] 계수 {{pos:+{0:0}%p}}	● [[Burn Damage]] coefficient {{pos:+{0:0}%p}}	● [[火傷ダメージ]]係数{{pos:+{0:0}%p}}	● [[灼烧伤害]]系数{{pos:+{0:0}%p}}	● [[灼燒傷害]]係數{{pos:+{0:0}%p}}
+● [[화상]] 부여량 {{pos:+{0}}}	● [[Burn]] application {{pos:+{0}}}	● [[火傷]]付与量{{pos:+{0}}}	● [[灼烧]]施加量{{pos:+{0}}}	● [[灼燒]]施加量{{pos:+{0}}}
+● [[화상]]이 없는 적에게 처음 부여하는 [[화상]] {{pos:+{0}중첩}}	● First [[Burn]] on an unburned enemy {{pos:+{0} stacks}}	● [[火傷]]のない敵への初回[[火傷]]{{pos:+{0}スタック}}	● 对未[[灼烧]]敌人首次施加[[灼烧]]时{{pos:+{0}层}}	● 對未[[灼燒]]敵人首次施加[[灼燒]]時{{pos:+{0}層}}
+● [[화상 피해]]에 치명타 확률과 치명타 피해 적용	● [[Burn Damage]] benefits from critical chance and critical damage	● [[火傷ダメージ]]に会心率と会心ダメージを適用	● [[灼烧伤害]]可应用暴击率和暴击伤害	● [[灼燒傷害]]可套用暴擊率和暴擊傷害
+● 대상의 [[화상]] {{val:{0}중첩}}마다 [[화상 피해]] {{pos:+{1:0}%}}\n● 최대 {{val:{2:0}%}}까지 증가	● [[Burn Damage]] {{pos:+{1:0}%}} per {{val:{0} stacks}} of [[Burn]] on the target\n● Up to {{val:{2:0}%}}	● 対象の[[火傷]]{{val:{0}スタック}}ごとに[[火傷ダメージ]]{{pos:+{1:0}%}}\n● 最大{{val:{2:0}%}}まで増加	● 目标每有{{val:{0}层}}[[灼烧]]，[[灼烧伤害]]{{pos:+{1:0}%}}\n● 最多增加至{{val:{2:0}%}}	● 目標每有{{val:{0}層}}[[灼燒]]，[[灼燒傷害]]{{pos:+{1:0}%}}\n● 最多增加至{{val:{2:0}%}}
+● 대상에게 [[화상]]이 없으면 [[화상]] {{val:{0}중첩}} 부여	● Apply {{val:{0} stacks}} of [[Burn]] if the target has none	● 対象に[[火傷]]がなければ{{val:{0}スタック}}付与	● 若目标未[[灼烧]]，施加{{val:{0}层}}[[灼烧]]	● 若目標未[[灼燒]]，施加{{val:{0}層}}[[灼燒]]
+● {{val:{0:0.##}초}}마다 {{em:태양의 파편}} 생성\n● 최대 {{val:{1}개}} 유지\n	● Create a {{em:Sun Fragment}} every {{val:{0:0.##}s}}\n● Maintain up to {{val:{1}}}\n	● {{val:{0:0.##}秒}}ごとに{{em:太陽の欠片}}を生成\n● 最大{{val:{1}個}}維持\n	● 每{{val:{0:0.##}秒}}生成{{em:太阳碎片}}\n● 最多保留{{val:{1}个}}\n	● 每{{val:{0:0.##}秒}}生成{{em:太陽碎片}}\n● 最多保留{{val:{1}個}}\n
+● 적과 접촉 시 [[화염 피해]] {{val:100%}} 및 [[화상]] {{val:{0}중첩}} 부여 후 소멸	● On contact, deal {{val:100%}} [[Fire Damage]] and apply {{val:{0} stacks}} of [[Burn]], then vanish	● 敵に触れると[[炎ダメージ]]{{val:100%}}と[[火傷]]{{val:{0}スタック}}を与えて消滅	● 接触敌人时造成{{val:100%}}[[火焰伤害]]并施加{{val:{0}层}}[[灼烧]]后消失	● 接觸敵人時造成{{val:100%}}[[火焰傷害]]並施加{{val:{0}層}}[[灼燒]]後消失
+이동 속도 +{0:0.#}%, 공격 속도 +{1:0.#}%\n남은 시간: {2:0.0}초	Movement Speed +{0:0.#}%, Attack Speed +{1:0.#}%\nTime Remaining: {2:0.0}s	移動速度+{0:0.#}%、攻撃速度+{1:0.#}%\n残り時間：{2:0.0}秒	移动速度+{0:0.#}%，攻击速度+{1:0.#}%\n剩余时间：{2:0.0}秒	移動速度+{0:0.#}%，攻擊速度+{1:0.#}%\n剩餘時間：{2:0.0}秒
+저주 해제\n최대 체력 +{0:0.#}	Curse Lifted\nMax Health +{0:0.#}	呪い解除\n最大体力+{0:0.#}	诅咒解除\n最大生命值+{0:0.#}	詛咒解除\n最大生命值+{0:0.#}
+최대 체력 -{0:0.#}\n피해를 받은 횟수: {1}/{2}	Max Health -{0:0.#}\nHits Taken: {1}/{2}	最大体力-{0:0.#}\n被弾回数：{1}/{2}	最大生命值-{0:0.#}\n受到伤害次数：{1}/{2}	最大生命值-{0:0.#}\n受到傷害次數：{1}/{2}
+저주 해제\n화상 피해 +{0:0.#}%\n화상 부여량 +{1}	Curse Lifted\nBurn Damage +{0:0.#}%\nBurn Application +{1}	呪い解除\n火傷ダメージ+{0:0.#}%\n火傷付与量+{1}	诅咒解除\n灼烧伤害+{0:0.#}%\n灼烧施加量+{1}	詛咒解除\n灼燒傷害+{0:0.#}%\n灼燒施加量+{1}
+직접 피해 -{0:0.#}%\n화상 피해로 처치: {1}/{2}	Direct Damage -{0:0.#}%\nBurn Kills: {1}/{2}	直接ダメージ-{0:0.#}%\n火傷で倒した数：{1}/{2}	直接伤害-{0:0.#}%\n灼烧击杀：{1}/{2}	直接傷害-{0:0.#}%\n灼燒擊殺：{1}/{2}
+버피	Buffy	バフィー	巴菲	巴菲
+스피리	Spiri	スピリ	斯皮莉	斯皮莉
+사샤	Sasha	サーシャ	萨莎	薩莎
+벨카	Velka	ヴェルカ	维尔卡	維爾卡
+파셀	Parcel	パーセル	帕塞尔	帕塞爾
+서기관	Scribe	書記官	书记官	書記官
+멜타	Melta	メルタ	梅尔塔	梅爾塔
+아, 그래? 그럼 그냥 갈게.	Oh, really? Then I'll be on my way.	あ、そう？じゃあ、もう行くね。	啊，是吗？那我就走了。	啊，是嗎？那我就走了。
+그 공사 대금을 내가 내줄 수\n있는데. 마정석 -50	I can pay for the construction.\nMagic Stones -50	その工事費なら私が払えるよ。\n魔晶石 -50	我可以支付施工费用。\n魔晶石 -50	我可以支付施工費用。\n魔晶石 -50
+그래. 부탁해.	Yes, please.	うん、お願い。	好，拜托了。	好，拜託了。
+아니. 괜찮아.	No, I'm fine.	いや、大丈夫。	不用了，没关系。	不用了，沒關係。
+경보 종 울리기	Ring the Alarm Bell	警鐘を鳴らす	敲响警钟	敲響警鐘
+경보 종	Alarm Bell	警鐘	警钟	警鐘
+버피의 헬스타임	Buffy's Health Time	バフィーのトレーニング	巴菲的健身时间	巴菲的健身時間
+소포 배달 대행	Parcel Delivery	小包の配達代行	代送包裹	代送包裹
+소포 배송 지점	Parcel Delivery Point	小包の配達先	包裹配送点	包裹配送點
+회복 물약	Healing Potion	回復ポーション	治疗药水	治療藥水
+소포	Parcel	小包	包裹	包裹
+파셀이 배달해야 했을 소포. 버리는건 용사답지 않다.	A parcel that Parcel was supposed to deliver. A hero wouldn't throw it away.	パーセルが届けるはずだった小包。捨てるのは勇者らしくない。	帕塞尔原本要送的包裹。勇者可不会把它扔掉。	帕塞爾原本要送的包裹。勇者可不會把它扔掉。
+힘 부적	Strength Charm	力の護符	力量护符	力量護符
+공격력이 증가합니다.	Increases attack power.	攻撃力が増加する。	提高攻击力。	提高攻擊力。
+균형추	Counterweight	釣り合い重り	平衡砝码	平衡砝碼
+기본공격 피해와 스킬 피해가 증가합니다.	Increases basic attack and skill damage.	通常攻撃とスキルのダメージが増加する。	提高普通攻击和技能伤害。	提高普通攻擊和技能傷害。
+광전사의 끈	Berserker's Strap	狂戦士の紐	狂战士束带	狂戰士束帶
+최대 체력이 감소하지만 공격속도가 크게 증가합니다.	Reduces max HP but greatly increases attack speed.	最大HPが減少するが、攻撃速度が大幅に増加する。	降低生命值上限，但大幅提高攻击速度。	降低生命值上限，但大幅提高攻擊速度。
+검은 향로	Black Censer	黒い香炉	黑色香炉	黑色香爐
+스킬 피해가 크게 증가하지만 기본공격 피해가 감소합니다.	Greatly increases skill damage but reduces basic attack damage.	スキルダメージが大幅に増加するが、通常攻撃ダメージが減少する。	大幅提高技能伤害，但降低普通攻击伤害。	大幅提高技能傷害，但降低普通攻擊傷害。
+무딘 방패	Blunt Shield	鈍い盾	钝盾	鈍盾
+공격속도가 감소하지만 최대 체력이 크게 증가합니다.	Reduces attack speed but greatly increases max HP.	攻撃速度が減少するが、最大HPが大幅に増加する。	降低攻击速度，但大幅提高生命值上限。	降低攻擊速度，但大幅提高生命值上限。
+깨진 시계	Broken Clock	壊れた時計	破损时钟	破損時鐘
+공격속도가 증가하지만 스킬 피해가 감소합니다.	Increases attack speed but reduces skill damage.	攻撃速度が増加するが、スキルダメージが減少する。	提高攻击速度，但降低技能伤害。	提高攻擊速度，但降低技能傷害。
+부서진 왕관	Shattered Crown	砕けた王冠	碎裂王冠	碎裂王冠
+최대 체력이 감소하지만 최종 피해가 크게 증가합니다.	Reduces max HP but greatly increases final damage.	最大HPが減少するが、最終ダメージが大幅に増加する。	降低生命值上限，但大幅提高最终伤害。	降低生命值上限，但大幅提高最終傷害。
+청동 주사위	Bronze Dice	青銅のサイコロ	青铜骰子	青銅骰子
+치명타 확률과 회피율이 조금 증가합니다.	Slightly increases critical chance and evasion.	クリティカル率と回避率が少し増加する。	小幅提高暴击率和闪避率。	小幅提高暴擊率和閃避率。
+불타는 깃털	Burning Feather	燃える羽根	燃烧羽毛	燃燒羽毛
+모든 화상 부여량이 늘어납니다.	Increases all burn buildup.	すべての火傷付与量が増加する。	提高所有灼烧积累量。	提高所有灼燒累積量。
+여유로운 심장	Carefree Heart	余裕のある心臓	从容之心	從容之心
+체력이 높을 때 이동속도가 증가합니다.	Increases movement speed while HP is high.	HPが高いとき、移動速度が増加する。	生命值较高时提高移动速度。	生命值較高時提高移動速度。
+연쇄의 부적	Chain Charm	連鎖の護符	连锁护符	連鎖護符
+치명타를 내면 이동속도가 누적 증가합니다.	Critical hits grant stacking movement speed.	クリティカルが発生すると、移動速度が累積して増加する。	暴击时获得可叠加的移动速度提升。	暴擊時獲得可疊加的移動速度提升。
+전투 장갑	Combat Gloves	戦闘用手袋	战斗手套	戰鬥手套
+공격속도가 증가합니다.	Increases attack speed.	攻撃速度が増加する。	提高攻击速度。	提高攻擊速度。
+반격의 박차	Counterattack Spurs	反撃の拍車	反击马刺	反擊馬刺
+피해를 받으면 잠시 이동속도가 증가합니다.	Taking damage briefly increases movement speed.	ダメージを受けると、一時的に移動速度が増加する。	受到伤害后短暂提高移动速度。	受到傷害後短暫提高移動速度。
+홍련의 왕관	Crimson Crown	紅蓮の王冠	红莲王冠	紅蓮王冠
+적의 화상 중첩에 비례해 화상 피해가 증가합니다.	Burn damage increases with the enemy's burn stacks.	敵の火傷スタック数に応じて火傷ダメージが増加する。	灼烧伤害随敌人的灼烧层数提高。	灼燒傷害隨敵人的灼燒層數提高。
+전류 조각	Current Fragment	電流の欠片	电流碎片	電流碎片
+전기 속성 보너스가 증가합니다.	Increases the electric element bonus.	電気属性ボーナスが増加する。	提高电属性加成。	提高電屬性加成。
+독한 술기운	Strong Spirits	強い酒気	烈酒余劲	烈酒餘勁
+피해를 받으면 6초 동안 최종 피해가 증가합니다.	Taking damage increases final damage for 6 seconds.	ダメージを受けると、6秒間最終ダメージが増加する。	受到伤害后提高最终伤害，持续6秒。	受到傷害後提高最終傷害，持續6秒。
+회피의 깃	Evasion Plume	回避の羽根	闪避之羽	閃避之羽
+회피율이 증가합니다.	Increases evasion.	回避率が増加する。	提高闪避率。	提高閃避率。
+하얀 깃털	White Feather	白い羽根	白色羽毛	白色羽毛
+타오르는 심핵	Blazing Core	燃え盛る心核	炽燃心核	熾燃心核
+화염 피해가 증가합니다.	Increases fire damage.	火炎ダメージが増加する。	提高火焰伤害。	提高火焰傷害。
+굳센 발걸음	Steadfast Steps	不屈の歩み	坚定步伐	堅定步伐
+귀인의 검흔	Noble Sword Scar	貴人の剣痕	贵人剑痕	貴人劍痕
+날개 부츠	Winged Boots	翼のブーツ	羽翼靴	羽翼靴
+대쉬 재사용 대기시간이 10% 감소	Reduces dash cooldown by 10%.	ダッシュのクールダウンが10%減少する。	冲刺冷却时间减少10%。	衝刺冷卻時間減少10%。
+집중의 렌즈	Focus Lens	集中のレンズ	专注透镜	專注透鏡
+스킬 피해가 증가합니다.	Increases skill damage.	スキルダメージが増加する。	提高技能伤害。	提高技能傷害。
+금광	Gold Mine	金鉱	金矿	金礦
+적 처치 시 얻는 금화의 획득량이 10% 증가	Increases gold gained from defeating enemies by 10%.	敵を倒したときの金貨獲得量が10%増加する。	击败敌人获得的金币增加10%。	擊敗敵人獲得的金幣增加10%。
+성장의 새싹	Sprout of Growth	成長の芽	成长新芽	成長新芽
+경험치 획득량이 10% 증가	Increases EXP gained by 10%.	経験値獲得量が10%増加する。	经验值获取量增加10%。	經驗值獲取量增加10%。
+송골매의 증표	Falcon Emblem	ハヤブサの証	猎隼徽记	獵隼徽記
+추가 이동속도 20%마다 공격 회피 확률이 3% 증가합니다.	Increases evasion chance by 3% for every 20% bonus movement speed.	追加移動速度20%ごとに、攻撃回避率が3%増加する。	每增加20%移动速度，攻击闪避率提高3%。	每增加20%移動速度，攻擊閃避率提高3%。
+무거운 팔찌	Heavy Bracelet	重い腕輪	沉重手镯	沉重手鐲
+이동속도가 감소하지만 공격력이 크게 증가합니다.	Reduces movement speed but greatly increases attack power.	移動速度が減少するが、攻撃力が大幅に増加する。	降低移动速度，但大幅提高攻击力。	降低移動速度，但大幅提高攻擊力。
+사냥꾼의 표식	Hunter's Mark	狩人の印	猎人印记	獵人印記
+치명타 확률이 증가합니다.	Increases critical chance.	クリティカル率が増加する。	提高暴击率。	提高暴擊率。
+마지막 숨	Last Breath	最後の息	最后一息	最後一息
+체력이 낮을 때 공격력이 증가합니다.	Increases attack power while HP is low.	HPが低いとき、攻撃力が増加する。	生命值较低时提高攻击力。	生命值較低時提高攻擊力。
+최후의 저항	Last Stand	最後の抵抗	背水一战	背水一戰
+현재 체력이 1 이하일 경우 모든 공격이 반드시 치명타로 적중.	All attacks are guaranteed critical hits while current HP is 1 or lower.	現在のHPが1以下の場合、すべての攻撃が必ずクリティカルになる。	当前生命值不高于1时，所有攻击必定暴击。	目前生命值不高於1時，所有攻擊必定暴擊。
+가벼운 끈	Light Strap	軽い紐	轻巧束带	輕巧束帶
+이동속도가 증가합니다.	Increases movement speed.	移動速度が増加する。	提高移动速度。	提高移動速度。
+장인의 숫돌	Artisan's Whetstone	職人の砥石	匠人磨刀石	匠人磨刀石
+공격력과 기본공격 피해가 증가합니다.	Increases attack power and basic attack damage.	攻撃力と通常攻撃ダメージが増加する。	提高攻击力和普通攻击伤害。	提高攻擊力和普通攻擊傷害。
+녹아내린 종	Molten Bell	溶けた鐘	熔化之钟	熔化之鐘
+화상 소모 주기가 빨라집니다.	Burn stacks are consumed more frequently.	火傷スタックの消費間隔が短くなる。	缩短灼烧层数的消耗间隔。	縮短灼燒層數的消耗間隔。
+날렵한 망토	Agile Cloak	俊敏なマント	灵巧披风	靈巧披風
+이동속도와 회피율이 증가합니다.	Increases movement speed and evasion.	移動速度と回避率が増加する。	提高移动速度和闪避率。	提高移動速度和閃避率。
+쇳덩이의 예비 탄창	Odd Iron's Spare Magazine	奇妙な鉄塊の予備弾倉	怪铁块备用弹匣	怪鐵塊備用彈匣
+한방울의 신속	A Drop of Haste	一滴の迅速	一滴迅捷	一滴迅捷
+휴대용 화로	Portable Brazier	携帯火鉢	便携火盆	便攜火盆
+화상 상태인 적에게 치명타 적중 시 화상을 1/2/3 부여합니다. (재사용 대기시간: 0.5초)	Critical hits against burning enemies inflict 1/2/3 burn. (Cooldown: 0.5 seconds)	火傷中の敵にクリティカルが命中すると、火傷を1/2/3付与する。（クールダウン：0.5秒）	对灼烧中的敌人暴击时施加1/2/3层灼烧。（冷却时间：0.5秒）	對灼燒中的敵人暴擊時施加1/2/3層灼燒。（冷卻時間：0.5秒）
+추격자의 발톱	Pursuer's Claw	追跡者の爪	追猎者之爪	追獵者之爪
+적을 처치하면 잠시 이동속도가 증가합니다.	Defeating an enemy briefly increases movement speed.	敵を倒すと、一時的に移動速度が増加する。	击败敌人后短暂提高移动速度。	擊敗敵人後短暫提高移動速度。
+회복의 팬턴트	Healing Pendant	回復のペンダント	治愈吊坠	治癒吊墜
+붉은 계약	Crimson Pact	赤い契約	赤红契约	赤紅契約
+적을 처치하면 잠시 공격력이 증가합니다.	Defeating an enemy briefly increases attack power.	敵を倒すと、一時的に攻撃力が増加する。	击败敌人后短暂提高攻击力。	擊敗敵人後短暫提高攻擊力。
+균열석	Rift Stone	亀裂石	裂隙石	裂隙石
+최종 피해가 증가합니다.	Increases final damage.	最終ダメージが増加する。	提高最终伤害。	提高最終傷害。
+회전하는 철구	Spinning Iron Ball	回転する鉄球	旋转铁球	旋轉鐵球
+적 처치 시 4초 동안 공격력과 이동속도가 10% 증가합니다.	Defeating an enemy increases attack power and movement speed by 10% for 4 seconds.	敵を倒すと、4秒間攻撃力と移動速度が10%増加する。	击败敌人后攻击力和移动速度提高10%，持续4秒。	擊敗敵人後攻擊力和移動速度提高10%，持續4秒。
+도망자의 신발	Fugitive's Shoes	逃亡者の靴	逃亡者之靴	逃亡者之靴
+피해를 받으면 잠시 회피율이 증가합니다.	Taking damage briefly increases evasion.	ダメージを受けると、一時的に回避率が増加する。	受到伤害后短暂提高闪避率。	受到傷害後短暫提高閃避率。
+달리는 장부	Running Ledger	走る帳簿	奔跑账簿	奔跑帳簿
+작열하는 송곳	Scorching Awl	灼熱の錐	灼热尖锥	灼熱尖錐
+대상에게 화상이 없으면 화상을 부여합니다.	Inflicts burn if the target is not already burning.	対象が火傷状態でなければ、火傷を付与する。	目标未处于灼烧状态时施加灼烧。	目標未處於灼燒狀態時施加灼燒。
+예리한 송곳	Sharp Awl	鋭い錐	锋利尖锥	鋒利尖錐
+치명타 피해가 증가합니다.	Increases critical damage.	クリティカルダメージが増加する。	提高暴击伤害。	提高暴擊傷害。
+작은 심장	Small Heart	小さな心臓	小小心脏	小小心臟
+최대 체력이 증가하고, 피해를 받으면 잠시 이동속도가 증가합니다.	Increases max HP. Taking damage briefly increases movement speed.	最大HPが増加する。ダメージを受けると、一時的に移動速度が増加する。	提高生命值上限。受到伤害后短暂提高移动速度。	提高生命值上限。受到傷害後短暫提高移動速度。
+매캐한 향로	Acrid Censer	煙たい香炉	呛鼻香炉	嗆鼻香爐
+화상 피해 계수가 증가합니다.	Increases the burn damage coefficient.	火傷ダメージ係数が増加する。	提高灼烧伤害系数。	提高灼燒傷害係數。
+신속의 부츠	Boots of Haste	迅速のブーツ	迅捷之靴	迅捷之靴
+스피드 메달	Speed Medal	スピードメダル	速度奖章	速度獎章
+레벨에 따라 이동속도가 3/5/7/9/12%, 치명타 확률이 2/4/6/8/10% 증가합니다.	Increases movement speed by 3/5/7/9/12% and critical chance by 2/4/6/8/10%, depending on level.	レベルに応じて移動速度が3/5/7/9/12%、クリティカル率が2/4/6/8/10%増加する。	根据等级，移动速度提高3/5/7/9/12%，暴击率提高2/4/6/8/10%。	根據等級，移動速度提高3/5/7/9/12%，暴擊率提高2/4/6/8/10%。
+속기사	Swift Knight	速き騎士	疾行骑士	疾行騎士
+태양의 파편	Sun Fragment	太陽の欠片	太阳碎片	太陽碎片
+주위를 회전하는 태양의 파편을 생성합니다.	Creates a sun fragment that orbits you.	周囲を回転する太陽の欠片を生成する。	生成环绕自身旋转的太阳碎片。	生成環繞自身旋轉的太陽碎片。
+생존자의 목걸이	Survivor's Necklace	生存者の首飾り	幸存者项链	倖存者項鏈
+최대 체력과 이동속도가 조금 증가합니다.	Slightly increases max HP and movement speed.	最大HPと移動速度が少し増加する。	小幅提高生命值上限和移动速度。	小幅提高生命值上限和移動速度。
+얇은 갑옷 조각	Thin Armor Shard	薄い鎧の欠片	薄甲碎片	薄甲碎片
+최대 체력과 회피율이 조금 증가합니다.	Slightly increases max HP and evasion.	最大HPと回避率が少し増加する。	小幅提高生命值上限和闪避率。	小幅提高生命值上限和閃避率。
+보약 곰방대	Tonic Pipe	滋養の煙管	滋补烟斗	滋補煙斗
+질긴 붕대	Tough Bandage	丈夫な包帯	坚韧绷带	堅韌繃帶
+최대 체력이 증가합니다.	Increases max HP.	最大HPが増加する。	提高生命值上限。	提高生命值上限。
+승리의 깃발	Victory Flag	勝利の旗	胜利旗帜	勝利旗幟
+적을 처치하면 잠시 공격속도가 증가합니다.	Defeating an enemy briefly increases attack speed.	敵を倒すと、一時的に攻撃速度が増加する。	击败敌人后短暂提高攻击速度。	擊敗敵人後短暫提高攻擊速度。
+전사의 맹세	Warrior's Oath	戦士の誓い	战士誓言	戰士誓言
+기본공격 피해가 크게 증가하지만 스킬 피해가 감소합니다.	Greatly increases basic attack damage but reduces skill damage.	通常攻撃ダメージが大幅に増加するが、スキルダメージが減少する。	大幅提高普通攻击伤害，但降低技能伤害。	大幅提高普通攻擊傷害，但降低技能傷害。
+질풍의 석판	Gale Tablet	疾風の石板	疾风石板	疾風石板
+최대 체력이 1 감소하고, 레벨에 따라 이동속도가 6/9/12/15/18% 증가합니다.	Reduces max HP by 1 and increases movement speed by 6/9/12/15/18%, depending on level.	最大HPが1減少し、レベルに応じて移動速度が6/9/12/15/18%増加する。	生命值上限降低1，并根据等级提高6/9/12/15/18%移动速度。	生命值上限降低1，並根據等級提高6/9/12/15/18%移動速度。
+낡은 숫돌	Worn Whetstone	古びた砥石	破旧磨刀石	破舊磨刀石
+공격력	Attack Power	攻撃力	攻击力	攻擊力
+출혈 피해	Bleed Damage	出血ダメージ	出血伤害	出血傷害
+기본공격 피해	Basic Attack Damage	通常攻撃ダメージ	普通攻击伤害	普通攻擊傷害
+스킬 피해	Skill Damage	スキルダメージ	技能伤害	技能傷害
+최대 체력	Max HP	最大HP	生命值上限	生命值上限
+공격속도	Attack Speed	攻撃速度	攻击速度	攻擊速度
+최종 피해	Final Damage	最終ダメージ	最终伤害	最終傷害
+치명타 확률	Critical Chance	クリティカル率	暴击率	暴擊率
+회피율	Evasion	回避率	闪避率	閃避率
+이동속도	Movement Speed	移動速度	移动速度	移動速度
+전기 속성	Electric Element	電気属性	电属性	電屬性
+치명타 피해	Critical Damage	クリティカルダメージ	暴击伤害	暴擊傷害
+화염 피해	Fire Damage	火炎ダメージ	火焰伤害	火焰傷害
+대쉬 재사용 대기시간이 {reduction} 감소	Reduces dash cooldown by {reduction}.	ダッシュのクールダウンが{reduction}減少する。	冲刺冷却时间减少{reduction}。	衝刺冷卻時間減少{reduction}。
+적 처치 시 얻는 금화의 획득량이 {bonus} 증가	Increases gold gained from defeating enemies by {bonus}.	敵を倒したときの金貨獲得量が{bonus}増加する。	击败敌人获得的金币增加{bonus}。	擊敗敵人獲得的金幣增加{bonus}。
+경험치 획득량이 {bonus} 증가	Increases EXP gained by {bonus}.	経験値獲得量が{bonus}増加する。	经验值获取量增加{bonus}。	經驗值獲取量增加{bonus}。
+현재 체력이 {threshold} 이하일 경우 모든 공격이 반드시 치명타로 적중.	All attacks are guaranteed critical hits while current HP is {threshold} or lower.	現在のHPが{threshold}以下の場合、すべての攻撃が必ずクリティカルになる。	当前生命值不高于{threshold}时，所有攻击必定暴击。	目前生命值不高於{threshold}時，所有攻擊必定暴擊。
+기본 능력치	Basic Stats	基本能力値	基础属性	基礎屬性
+전투 능력치	Combat Stats	戦闘能力値	战斗属性	戰鬥屬性
+공격 속도	Attack Speed	攻撃速度	攻击速度	攻擊速度
+출혈 피해량	Bleed Damage	出血ダメージ	出血伤害	出血傷害
+전기 피해량	Electric Damage	電気ダメージ	电伤害	電傷害
+화염 피해량	Fire Damage	火炎ダメージ	火焰伤害	火焰傷害
+체력	HP	HP	生命值	生命值
+이동 속도	Movement Speed	移動速度	移动速度	移動速度
+기본 공격 피해	Basic Attack Damage	通常攻撃ダメージ	普通攻击伤害	普通攻擊傷害
+중독 피해량	Poison Damage	毒ダメージ	中毒伤害	中毒傷害
+잡동사니 업그레이드	Junk Upgrade	ガラクタ強化	杂物升级	雜物升級
+잡동사니에서 나오는 아이템 개수 증가	Increases the number of items obtained from junk.	ガラクタから出るアイテムの数が増加する。	增加杂物产出的物品数量。	增加雜物產出的物品數量。
+상자 유물 보상 추가	Extra Chest Relic	宝箱の遺物追加	宝箱额外遗物	寶箱額外遺物
+상자 보상에 유물 1개 추가 등장	Adds 1 relic to chest rewards.	宝箱の報酬に遺物が1個追加される。	宝箱奖励额外出现1件遗物。	寶箱獎勵額外出現1件遺物。
+유물 가방 확장 Ⅰ	Relic Bag Expansion I	遺物バッグ拡張Ⅰ	遗物背包扩容Ⅰ	遺物背包擴容Ⅰ
+유물 슬롯 12칸 → 16칸	Relic slots: 12 → 16	遺物スロット：12 → 16	遗物栏位：12 → 16	遺物欄位：12 → 16
+일회성 체력 지급	Starting Soul Hearts	開始時の一時HP	初始临时生命值	初始臨時生命值
+시작 시 일회성 체력 부여	Grants temporary HP at the start.	開始時に一時HPを獲得する。	开始时获得临时生命值。	開始時獲得臨時生命值。
+상자 리롤 가능	Chest Rerolls	宝箱のリロール	宝箱重掷	寶箱重擲
+상자의 내용물을 5회 리롤할 수 있습니다.	Allows 5 rerolls of chest contents.	宝箱の中身を5回リロールできる。	可重掷宝箱内容5次。	可重擲寶箱內容5次。
+시작 표션 지급	Starting Potion	開始時のポーション	初始药水	初始藥水
+시작 시 포션 지급	Grants a potion at the start.	開始時にポーションを獲得する。	开始时获得药水。	開始時獲得藥水。
+상자 유물 레벨 강화	Higher Chest Relic Levels	宝箱の遺物レベル強化	宝箱遗物等级强化	寶箱遺物等級強化
+10% 확률로 유물의 레벨이 +1된 상태로 등장	Relics have a 10% chance to appear with +1 level.	10%の確率で遺物のレベルが+1された状態で出現	遗物有10%的概率以等级+1的状态出现	遺物有10%的機率以等級+1的狀態出現
+상점 활성화	Enable shop	店を有効化	启用商店	啟用商店
+상점 개업	Opens the shop.	ショップを開く。	开设商店。	開設商店。
+체력 증진 I	HP Boost I	HP増強Ⅰ	生命强化Ⅰ	生命強化Ⅰ
+최대 체력 1 증가	Increases max HP by 1.	最大HPが1増加する。	生命值上限增加1。	生命值上限增加1。
+체력 증진 II	HP Boost II	HP増強Ⅱ	生命强化Ⅱ	生命強化Ⅱ
+유물 가방 확장 Ⅱ	Relic Bag Expansion II	遺物バッグ拡張Ⅱ	遗物背包扩容Ⅱ	遺物背包擴容Ⅱ
+유물 슬롯 16칸 → 20칸	Relic slots: 16 → 20	遺物スロット：16 → 20	遗物栏位：16 → 20	遺物欄位：16 → 20
+유물 가방 확장 III	Relic Bag Expansion III	遺物バッグ拡張Ⅲ	遗物背包扩容Ⅲ	遺物背包擴容Ⅲ
+유물 슬롯 20칸 → 24칸	Relic slots: 20 → 24	遺物スロット：20 → 24	遗物栏位：20 → 24	遺物欄位：20 → 24
+상점 새로고침	Shop Refresh	ショップ更新	商店刷新	商店重新整理
+새로고침 횟수 1회 추가	Adds 1 shop refresh.	ショップの更新回数が1回増える。	增加1次商店刷新次数。	增加1次商店重新整理次數。
+상점 할인	Shop Discount	ショップ割引	商店折扣	商店折扣
+상점 물품 20% 할인	20% discount on shop items	店の商品が20%割引	商店物品优惠20%	商店物品優惠20%
+유물 해금 	Relic Unlock	遺物解放	遗物解锁	遺物解鎖
+유물 2개 해금	Unlocks 2 relics.	遺物を2個解放する。	解锁2件遗物。	解鎖2件遺物。
+비전투 이동속도 증가	Out-of-Combat Speed	非戦闘時の移動速度増加	非战斗移速提升	非戰鬥移速提升
+방의 전투가 끝나면 이동속도가 50% 증가합니다.	Increases movement speed by 50% after a room's combat ends.	部屋の戦闘が終わると、移動速度が50%増加する。	房间战斗结束后移动速度提高50%。	房間戰鬥結束後移動速度提高50%。
+일시정지	Paused	一時停止	暂停	暫停
+메인 화면	Main Menu	メインメニュー	主菜单	主選單
+게임종료	Quit Game	ゲーム終了	退出游戏	結束遊戲
+화면 모드	Display Mode	画面モード	显示模式	顯示模式
+해상도	Resolution	解像度	分辨率	解析度
+마스터 볼륨	Master Volume	マスター音量	主音量	主音量
+효과음 볼륨	Sound Effects	効果音の音量	音效音量	音效音量
+BGM 볼륨	Music Volume	BGM音量	音乐音量	音樂音量
+화면 흔들림	Screen Shake	画面の揺れ	屏幕震动	畫面震動
+UI크기	UI Scale	UIサイズ	界面大小	介面大小
+언어	Language	言語	语言	語言
+키 매핑 설정	Key Bindings	キー割り当て	按键设置	按鍵設定
+설정 초기화	Reset Settings	設定をリセット	重置设置	重設設定
+키 설정	Key Settings	キー設定	按键设置	按鍵設定
+적용하기	Apply	適用	应用	套用
+획득	Take	獲得	获取	取得
+닫기	Close	閉じる	关闭	關閉
+인벤토리 확인	View Inventory	インベントリ確認	查看背包	查看背包
+업그레이드 체험을 위한 마정석 100개 지급\n원활한 체험을 위한 업그레이드를 미리 활성화 했습니다	Granted 100 Magic Stones to try upgrades.\nSome upgrades are already enabled for this demo.	強化体験用に魔晶石100個を支給。\nスムーズに体験できるよう、一部の強化を解放済みです。	已发放100个魔晶石用于体验升级。\n为了便于体验，已预先启用部分升级。	已發放100個魔晶石用於體驗升級。\n為了便於體驗，已預先啟用部分升級。
+게임 시작	Start Game	ゲーム開始	开始游戏	開始遊戲
+게임 종료	Quit Game	ゲーム終了	退出游戏	結束遊戲
+플레이 타임 :	Play Time:	プレイ時間：	游玩时间：	遊玩時間：
+업그레이드 진행도	Upgrade Progress	強化の進行度	升级进度	升級進度
+마정석 개수	Magic Stones	魔晶石の数	魔晶石数量	魔晶石數量
+클리어 횟수	Clear Count	クリア回数	通关次数	通關次數
+삭제하기	Delete	削除	删除	刪除
+공략 실패	Run Failed	攻略失敗	挑战失败	挑戰失敗
+귀환	Return	帰還	返回	返回
+로딩중...	Loading...	ロード中…	加载中……	載入中……
+Tip : 그거 아십니까 레몬 한 개에는 레몬 한 개 분량의 비타민 C가 들어 있습니다.	Tip: Did you know one lemon contains one lemon's worth of vitamin C?	豆知識：レモン1個には、レモン1個分のビタミンCが含まれています。	小知识：你知道吗？一个柠檬含有一个柠檬份量的维生素C。	小知識：你知道嗎？一個檸檬含有一個檸檬份量的維生素C。
+시작 지점	Starting Point	開始地点	起点	起點
+← 대쉬 통로	← Dash Lane	← ダッシュ通路	← 冲刺通道	← 衝刺通道
+공격 · 스킬 · 상자	Attack · Skills · Chests	攻撃・スキル・宝箱	攻击 · 技能 · 宝箱	攻擊 · 技能 · 寶箱
+우클릭 충전 · 대상 4개	Hold Right Click · 4 Targets	右クリックでチャージ・対象4体	按住右键蓄力 · 4个目标	按住右鍵蓄力 · 4個目標
+Q 스킬 · 대상 3개	Q Skill · 3 Targets	Qスキル・対象3体	Q技能 · 3个目标	Q技能 · 3個目標
+상자 / 무기 교체 배치	Chests / Weapon Swap Area	宝箱／武器交換エリア	宝箱／武器切换区域	寶箱／武器切換區域
+↑ 보스전	↑ Boss Battle	↑ ボス戦	↑ 首领战	↑ 首領戰
+보스 전투 구역	Boss Battle Area	ボス戦エリア	首领战区域	首領戰區域
+그림자 복도	Shadow Corridor	影の回廊	暗影走廊	暗影走廊
+슬라임 복도	Slime Corridor	スライムの回廊	史莱姆走廊	史萊姆走廊
+드래곤 복도	Dragon Corridor	ドラゴンの回廊	巨龙走廊	巨龍走廊
+확정	Confirm	確定	确认	確認
+레벨업 가능	Level Up Available	レベルアップ可能	可以升级	可以升級
+메인 퀘스트	Main Quest	メインクエスト	主线任务	主線任務
+서브 퀘스트	Side Quests	サブクエスト	支线任务	支線任務
+설정	Settings	設定	设置	設定
+나가기	Back	戻る	返回	返回
+예	Yes	はい	是	是
+아니오	No	いいえ	否	否
+취소	Cancel	キャンセル	取消	取消
+삭제	Delete	削除	删除	刪除
+무기 데이터베이스	Weapon Database	武器データベース	武器数据库	武器資料庫
+Beer Monster	Beer Monster	ビールモンスター	啤酒怪	啤酒怪
+근접 추격	Melee Pursuit	近接追撃	近战追击	近戰追擊
+드래곤 루트	Dragon Route	ドラゴンルート	巨龙路线	巨龍路線
+술기운에 잠식된 하급 몬스터입니다.	A lesser monster consumed by intoxication.	酒気に侵された下級モンスター。	被酒气侵蚀的低级怪物。	被酒氣侵蝕的低級怪物。
+Treasure Monster	Treasure Monster	宝物モンスター	宝藏怪	寶藏怪
+접근 압박	Close-Range Pressure	接近による圧迫	贴近压制	貼近壓制
+공용	Shared	共通	通用	通用
+보물처럼 보이지만 전투를 유도하는 몬스터입니다.	A monster that looks like treasure but draws you into combat.	宝物に見えるが、戦闘に誘い込むモンスター。	看似宝藏，却会引发战斗的怪物。	看似寶藏，卻會引發戰鬥的怪物。
+Frog	Frog	カエル	青蛙	青蛙
+도약 공격	Leaping Attack	跳躍攻撃	跳跃攻击	跳躍攻擊
+초원/습지 계열	Grasslands / Wetlands	草原／湿地	草原／湿地	草原／濕地
+빠르게 거리를 좁히는 개구리형 몬스터입니다.	A frog-like monster that closes the distance quickly.	素早く距離を詰めるカエル型モンスター。	能迅速拉近距离的蛙型怪物。	能迅速拉近距離的蛙型怪物。
+강화 도약 공격	Enhanced Leaping Attack	強化跳躍攻撃	强化跳跃攻击	強化跳躍攻擊
+일반 개구리보다 강한 정예 개체입니다.	An elite specimen stronger than an ordinary frog.	通常のカエルより強い精鋭個体。	比普通青蛙更强的精英个体。	比普通青蛙更強的精英個體。
+Pawn	Pawn	ポーン	兵卒	兵卒
+직선 압박	Straight-Line Pressure	直線上の圧迫	直线压制	直線壓制
+낮은 위협도의 슬라임 체스 병사입니다.	A slime chess soldier with a low threat level.	脅威度の低いスライムのチェス兵士。	威胁较低的史莱姆棋兵。	威脅較低的史萊姆棋兵。
+Rook	Rook	ルーク	战车	戰車
+직선 돌진	Straight Charge	直線突進	直线冲锋	直線衝鋒
+묵직하게 전열을 밀어붙이는 슬라임입니다.	A heavy slime that pushes through the front line.	重々しく前線を押し進むスライム。	以沉重身躯推进战线的史莱姆。	以沉重身軀推進戰線的史萊姆。
+Knight	Knight	ナイト	骑士	騎士
+변칙 이동	Unpredictable Movement	変則移動	不规则移动	不規則移動
+예측하기 어려운 이동으로 접근하는 슬라임입니다.	A slime that approaches with unpredictable movements.	予測しにくい動きで近づくスライム。	以难以预测的移动方式接近的史莱姆。	以難以預測的移動方式接近的史萊姆。
+Bishop	Bishop	ビショップ	主教	主教
+사선 압박	Diagonal Pressure	斜線上の圧迫	斜线压制	斜線壓制
+사선 위협을 담당하는 슬라임입니다.	A slime that threatens you along diagonals.	斜線方向から脅威を与えるスライム。	负责斜线威胁的史莱姆。	負責斜線威脅的史萊姆。
+Wizard	Wizard	ウィザード	法师	法師
+원거리 시전	Ranged Spellcasting	遠距離詠唱	远程施法	遠程施法
+마법 공격을 사용하는 슬라임입니다.	A slime that uses magical attacks.	魔法攻撃を使うスライム。	使用魔法攻击的史莱姆。	使用魔法攻擊的史萊姆。
+Corridor Candlestick Monster	Corridor Candlestick Monster	回廊の燭台モンスター	走廊烛台怪	走廊燭台怪
+고정형 위협	Stationary Threat	固定型の脅威	固定威胁	固定威脅
+어둠 속 시야와 위치를 압박하는 촛대형 몬스터입니다.	A candlestick-like monster that threatens your visibility and positioning in the dark.	暗闇で視界と立ち位置を脅かす燭台型モンスター。	在黑暗中压制视野和站位的烛台型怪物。	在黑暗中壓制視野和站位的燭台型怪物。
+Deads' Skeleton	Deads' Skeleton	死者の骸骨	亡者骷髅	亡者骷髏
+근접 공격	Melee Attack	近接攻撃	近战攻击	近戰攻擊
+죽은 자의 잔흔이 남은 해골 몬스터입니다.	A skeleton monster bearing traces of the dead.	死者の残滓が宿る骸骨モンスター。	留有亡者残迹的骷髅怪物。	留有亡者殘跡的骷髏怪物。
+Shadow Monster	Shadow Monster	影のモンスター	暗影怪	暗影怪
+기습 공격	Ambush Attack	奇襲攻撃	突袭攻击	突襲攻擊
+어둠과 함께 움직이는 그림자 몬스터입니다.	A shadow monster that moves with the darkness.	暗闇とともに動く影のモンスター。	随黑暗移动的暗影怪物。	隨黑暗移動的暗影怪物。
+Shadow Servant	Shadow Servant	影の従者	暗影仆从	暗影僕從
+시야 교란	Vision Disruption	視界妨害	视野干扰	視野干擾
+안개와 함께 전장을 흐리는 그림자 하수인입니다.	A shadow minion that obscures the battlefield with mist.	霧とともに戦場を曇らせる影の従者。	用迷雾遮蔽战场的暗影仆从。	用迷霧遮蔽戰場的暗影僕從。
+Strange Candlestick	Strange Candlestick	奇妙な燭台	奇异烛台	奇異燭台
+봉인/보조 패턴	Sealing / Support Patterns	封印／補助パターン	封印／辅助招式	封印／輔助招式
+클로에 전투 흐름과 연결되는 기묘한 촛대입니다.	A strange candlestick tied to Chloe's battle mechanics.	クロエの戦闘に関わる奇妙な燭台。	与克洛伊战斗机制相关的奇异烛台。	與克洛伊戰鬥機制相關的奇異燭台。
+Slime Queen	Slime Queen	スライムクイーン	史莱姆女王	史萊姆女王
+점프/독성 장판/소환	Jumps / Poison Fields / Summons	ジャンプ／毒の床／召喚	跳跃／毒区／召唤	跳躍／毒區／召喚
+멜타의 방	Melta's Chamber	メルタの部屋	梅尔塔的房间	梅爾塔的房間
+슬라임 루트의 여왕 보스입니다.	The queen boss of the slime route.	スライムルートの女王ボス。	史莱姆路线的女王首领。	史萊姆路線的女王首領。
+클로에	Chloe	クロエ	克洛伊	克洛伊
+촛불/시야 교란/광역 마법	Candles / Vision Disruption / Area Magic	蝋燭／視界妨害／範囲魔法	烛火／视野干扰／范围魔法	燭火／視野干擾／範圍魔法
+클로에의 방	Chloe's Chamber	クロエの部屋	克洛伊的房间	克洛伊的房間
+그림자 복도의 중심에 있는 마녀 보스입니다.	The witch boss at the heart of the Shadow Corridor.	影の回廊の中心にいる魔女のボス。	位于暗影走廊中心的魔女首领。	位於暗影走廊中心的魔女首領。
+Dragon	Dragon	ドラゴン	巨龙	巨龍
+돌진/화염/술통 투척	Charges / Fire / Barrel Throws	突進／火炎／酒樽投げ	冲锋／火焰／酒桶投掷	衝鋒／火焰／酒桶投擲
+스피리의 방	Spiri's Chamber	スピリの部屋	斯皮莉的房间	斯皮莉的房間
+술기운을 두른 드래곤 보스입니다.	A dragon boss wreathed in alcohol fumes.	酒気をまとったドラゴンのボス。	周身环绕酒气的巨龙首领。	周身環繞酒氣的巨龍首領。
+검격/투사체/광역 패턴	Sword Strikes / Projectiles / Area Attacks	剣撃／飛翔体／範囲攻撃	剑击／投射物／范围招式	劍擊／投射物／範圍招式
+최종 루트의 마왕 보스입니다.	The Demon King boss of the final route.	最終ルートの魔王ボス。	最终路线的魔王首领。	最終路線的魔王首領。
+용사의 검	Hero's Sword	勇者の剣	勇者之剑	勇者之劍
+용사의 검이라지만 그저 오랫동안 손에 익은 평범한 철검이다.	Called a hero's sword, it is merely an ordinary iron sword made familiar through years of use.	勇者の剣とはいうが、長年使って手になじんだ普通の鉄剣にすぎない。	虽称勇者之剑，不过是多年使用后趁手的普通铁剑。	雖稱勇者之劍，不過是多年使用後趁手的普通鐵劍。
+홍련의 한계선	Crimson Limit	紅蓮の限界線	红莲极限	紅蓮極限
+뇌창 갈라론	Thunder Spear Galaron	雷槍ガラロン	雷枪加拉隆	雷槍加拉隆
+기묘한 쇠덩이	Odd Iron	奇妙な鉄塊	怪铁块	怪鐵塊
+잔영의 날개	Wings of Afterimage	残影の翼	残影之翼	殘影之翼
+화염 공격력	Fire Attack Power	火炎攻撃力	火焰攻击力	火焰攻擊力
+견습 연속 베기	Apprentice Slash Combo	見習いの連続斬り	见习连斩	見習連斬
+회전베기	Spinning Slash	回転斬り	旋转斩	旋轉斬
+돌진 찌르기	Charging Thrust	突進突き	冲锋刺击	衝鋒刺擊
+홍련 화염탄	Crimson Fireball	紅蓮の火炎弾	红莲火球	紅蓮火球
+대폭발!	Mega Explosion!	大爆発！	大爆炸！	大爆炸！
+점화!	Ignite!	点火！	点燃！	點燃！
+꽃잎 연격	Petal Combo	花びら連撃	花瓣连击	花瓣連擊
+만개 참격	Full Bloom Slash	満開の斬撃	盛放斩击	盛放斬擊
+개화	Bloom	開花	绽放	綻放
+뇌창 연격	Thunder Spear Combo	雷槍連撃	雷枪连击	雷槍連擊
+낙뢰 표식	Lightning Mark	落雷の標	落雷标记	落雷標記
+전탄 난사	Full Barrage	全弾乱射	全弹扫射	全彈掃射
+빈 격발	Dry Fire	空撃ち	空击	空擊
+단발 사격	Single Shot	単発射撃	单发射击	單發射擊
+마지막 투척	Final Throw	最後の投擲	最后一掷	最後一擲
+러쉬	Rush	ラッシュ	疾冲	疾衝
+스피드 스트라이크	Speed Strike	スピードストライク	极速斩击	極速斬擊
+연속 베기	Slash Combo	連続斬り	连续斩击	連續斬擊
+견습 용사의 연계 증표	Apprentice Hero's Combo Emblem	見習い勇者の連携の証	见习勇者连招徽记	見習勇者連招徽記
+한계선의 잔불 추격	Crimson Limit's Ember Pursuit	限界線の残り火追撃	红莲极限余烬追击	紅蓮極限餘燼追擊
+한계선의 관통 용암	Crimson Limit's Piercing Lava	限界線の貫通溶岩	红莲极限贯穿熔岩	紅蓮極限貫穿熔岩
+뇌창의 추적 낙뢰	Thunder Spear's Pursuing Lightning	雷槍の追跡落雷	雷枪追踪落雷	雷槍追蹤落雷
+뇌창의 세 번째 번개	Thunder Spear's Third Bolt	雷槍の三度目の稲妻	雷枪第三道闪电	雷槍第三道閃電
+치명적 일격	Fatal Strike	致命の一撃	致命一击	致命一擊
+광전사의 질주	Berserker's Sprint	狂戦士の疾走	狂战士疾奔	狂戰士疾奔
+완전한 성장	Perfect Growth	完全な成長	完美成长	完美成長
+고전압	High Voltage	高電圧	高电压	高電壓
+사냥의 흐름	Hunting Flow	狩りの流れ	狩猎之势	狩獵之勢
+미완의 회복	Imperfect Recovery	未完の回復	未竟恢复	未竟恢復
+연쇄 냉각	Chain Cooling	連鎖冷却	连锁冷却	連鎖冷卻
+성장의 심장	Heart of Growth	成長の心臓	成长之心	成長之心
+최후의 질주	Final Sprint	最後の疾走	最后疾奔	最後疾奔
+한 자루의 맹세	One Weapon's Oath	一振りの誓い	一刃之誓	一刃之誓
+과열	Overheat	過熱	过热	過熱
+야호!	Woohoo!	やっほー！	好耶！	好耶！
+벌컥벌컥	Gulp Gulp	ごくごく	咕嘟咕嘟	咕嘟咕嘟
+유물 공명	Relic Resonance	遺物共鳴	遗物共鸣	遺物共鳴
+영혼의 방패	Soul Shield	魂の盾	灵魂之盾	靈魂之盾
+번지는 잿불	Spreading Embers	広がる残り火	蔓延余烬	蔓延餘燼
+강철의 수련	Steel Training	鋼の鍛錬	钢铁修炼	鋼鐵修煉
+꺼지지 않는 불	Undying Flame	消えない炎	不灭之火	不滅之火
+Health	HP	HP	生命值	生命值
+MaxHealth	Max HP	最大HP	生命值上限	生命值上限
+MoveSpeedAddAttribute	Movement Speed Bonus	移動速度加算	移动速度加成	移動速度加成
+MoveSpeedAttribute	Movement Speed	移動速度	移动速度	移動速度
+MoveSpeedMulAttribute	Movement Speed Multiplier	移動速度倍率	移动速度倍率	移動速度倍率
+SoulHeart	Temporary HP	一時HP	临时生命值	臨時生命值
+AttackAddAttribute	Attack Power Bonus	攻撃力加算	攻击力加成	攻擊力加成
+AttackBaseAttribute	Attack Power Base	攻撃力基礎値	攻击力基础值	攻擊力基礎值
+AttackMulAttribute	Attack Power Multiplier	攻撃力倍率	攻击力倍率	攻擊力倍率
+AttackSpeedAdd	Attack Speed Bonus	攻撃速度加算	攻击速度加成	攻擊速度加成
+AttackSpeedBase	Attack Speed Base	攻撃速度基礎値	攻击速度基础值	攻擊速度基礎值
+CritChanceAddAttribute	Critical Chance Bonus	クリティカル率加算	暴击率加成	暴擊率加成
+CritChanceBaseAttribute	Critical Chance Base	クリティカル率基礎値	暴击率基础值	暴擊率基礎值
+CritChanceMulAttribute	Critical Chance Multiplier	クリティカル率倍率	暴击率倍率	暴擊率倍率
+CritMultiplierAttribute	Critical Multiplier	クリティカル倍率	暴击倍率	暴擊倍率
+EvasionAddAttribute	Evasion Bonus	回避率加算	闪避率加成	閃避率加成
+EvasionBaseAttribute	Evasion Base	回避率基礎値	闪避率基础值	閃避率基礎值
+EvasionMulAttribute	Evasion Multiplier	回避率倍率	闪避率倍率	閃避率倍率
+FinalMulAttribute	Final Damage Multiplier	最終ダメージ倍率	最终伤害倍率	最終傷害倍率
+NormalAddAttribute	Basic Attack Damage Bonus	通常攻撃ダメージ加算	普通攻击伤害加成	普通攻擊傷害加成
+NormalBaseAttribute	Basic Attack Damage Base	通常攻撃ダメージ基礎値	普通攻击伤害基础值	普通攻擊傷害基礎值
+NormalMulAttribute	Basic Attack Damage Multiplier	通常攻撃ダメージ倍率	普通攻击伤害倍率	普通攻擊傷害倍率
+SkillAddAttribute	Skill Damage Bonus	スキルダメージ加算	技能伤害加成	技能傷害加成
+SkillBaseAttribute	Skill Damage Base	スキルダメージ基礎値	技能伤害基础值	技能傷害基礎值
+SkillMulAttribute	Skill Damage Multiplier	スキルダメージ倍率	技能伤害倍率	技能傷害倍率
+BloodElementAddAttribute	Bleed Damage Bonus	出血ダメージ加算	出血伤害加成	出血傷害加成
+BloodElementBaseAttribute	Bleed Damage Base	出血ダメージ基礎値	出血伤害基础值	出血傷害基礎值
+BloodElementMulAttribute	Bleed Damage Multiplier	出血ダメージ倍率	出血伤害倍率	出血傷害倍率
+ElectricElementAddAttribute	Electric Damage Bonus	電気ダメージ加算	电伤害加成	電傷害加成
+ElectricElementBaseAttribute	Electric Damage Base	電気ダメージ基礎値	电伤害基础值	電傷害基礎值
+ElectricElementMulAttribute	Electric Damage Multiplier	電気ダメージ倍率	电伤害倍率	電傷害倍率
+FireElementAddAttribute	Fire Damage Bonus	火炎ダメージ加算	火焰伤害加成	火焰傷害加成
+FireElementBaseAttribute	Fire Damage Base	火炎ダメージ基礎値	火焰伤害基础值	火焰傷害基礎值
+FireElementMulAttribute	Fire Damage Multiplier	火炎ダメージ倍率	火焰伤害倍率	火焰傷害倍率
+MaxBloodElementGaugeAttribute	Bleed Threshold	出血発現閾値	出血触发阈值	出血觸發閾值
+MaxElectricElementGaugeAttribute	Electric Threshold	電気発現閾値	电属性触发阈值	電屬性觸發閾值
+MaxFireElementGaugeAttribute	Burn Threshold	火傷発現閾値	灼烧触发阈值	灼燒觸發閾值
+MaxPoisonElementGaugeAttribute	Poison Threshold	毒発現閾値	中毒触发阈值	中毒觸發閾值
+PoisonElementAddAttribute	Poison Damage Bonus	毒ダメージ加算	中毒伤害加成	中毒傷害加成
+PoisonElementBaseAttribute	Poison Damage Base	毒ダメージ基礎値	中毒伤害基础值	中毒傷害基礎值
+PoisonElementMulAttribute	Poison Damage Multiplier	毒ダメージ倍率	中毒伤害倍率	中毒傷害倍率
+KnockBackPowerAddAttribute	Knockback Power Bonus	ノックバック威力加算	击退力度加成	擊退力度加成
+KnockBackPowerBaseAttribute	Knockback Power Base	ノックバック威力基礎値	击退力度基础值	擊退力度基礎值
+KnockBackPowerMulAttribute	Knockback Power Multiplier	ノックバック威力倍率	击退力度倍率	擊退力度倍率
+KnockbackResistanceAttribute	Knockback Resistance	ノックバック耐性	击退抗性	擊退抗性
+MaxStaggerAttribute	Max Stagger	最大よろめき値	硬直值上限	硬直值上限
+StaggerAddAttribute	Stagger Bonus	よろめき値加算	硬直值加成	硬直值加成
+StaggerBaseAttribute	Stagger Base	よろめき値基礎値	硬直值基础值	硬直值基礎值
+StaggerMulAttribute	Stagger Multiplier	よろめき値倍率	硬直值倍率	硬直值倍率
+StaggerResistanceAttribute	Stagger Resistance	よろめき耐性	硬直抗性	硬直抗性
+Stagger	Stagger	よろめき値	硬直值	硬直值
+검을 연속으로 휘두릅니다. 마지막 공격은 앞으로 나아가며 크게 베어냅니다.	Swings the sword repeatedly. The final attack advances forward with a wide slash.	剣を連続で振るう。最後の攻撃は前進しながら大きく斬り払う。	连续挥剑，最后一击向前推进并大幅斩击。	連續揮劍，最後一擊向前推進並大幅斬擊。
+● 검을 휘둘러 {val:3연속} 근접 공격\n● 세 번째 공격은 더 길게 전진하며 크게 베어낸다	● Swing the sword for {val:3 consecutive} melee attacks\n● The third attack advances farther with a wide slash	● 剣を振るって{val:3連続}の近接攻撃\n● 3撃目はより遠くへ前進し、大きく斬り払う	● 挥剑进行{val:3连击}近战攻击\n● 第三击前进更远并大幅斩击	● 揮劍進行{val:3連擊}近戰攻擊\n● 第三擊前進更遠並大幅斬擊
+누르고 있다가 놓으면 회전하며 주변을 벱니다. 충분히 충전해야 발동하며, 오래 충전할수록 더 넓고 강해집니다.	Hold and release to spin and slash nearby enemies. Requires sufficient charge; charging longer increases range and power.	長押しして離すと、回転して周囲を斬る。十分なチャージが必要で、長く溜めるほど範囲と威力が増す。	按住后松开，旋转斩击周围敌人。需要充分蓄力，蓄力越久范围和威力越大。	按住後鬆開，旋轉斬擊周圍敵人。需要充分蓄力，蓄力越久範圍和威力越大。
+● 길게 눌러 차징하고 떼서 {em:회전베기} 공격\n● 50% 이하에서 놓으면 취소, 50%를 넘겨 차징하면 공격\n● 차징할수록 {pos:피해와 공격 범위 증가}\n● 최대 차징 시 최소 차징 대비 피해 약 {val:1.67배}, 공격 크기 {val:2배}	● Hold to charge, then release for a {em:Spinning Slash}\n● Releasing at 50% or less cancels; above 50% attacks\n● Charging increases {pos:damage and attack range}\n● At max charge: about {val:1.67x} damage and {val:2x} size compared to minimum charge	● 長押しで溜め、離すと{em:回転斬り}\n● 50%以下で離すとキャンセル、50%を超えると攻撃\n● 溜めるほど{pos:ダメージと攻撃範囲が増加}\n● 最大チャージ時は最小時に比べ、ダメージ約{val:1.67倍}、攻撃サイズ{val:2倍}	● 长按蓄力，松开施放{em:旋转斩}\n● 50%及以下松开会取消，超过50%则攻击\n● 蓄力越久，{pos:伤害和攻击范围越大}\n● 最大蓄力时，相比最低蓄力伤害约{val:1.67倍}，攻击大小{val:2倍}	● 長按蓄力，鬆開施放{em:旋轉斬}\n● 50%及以下鬆開會取消，超過50%則攻擊\n● 蓄力越久，{pos:傷害和攻擊範圍越大}\n● 最大蓄力時，相比最低蓄力傷害約{val:1.67倍}，攻擊大小{val:2倍}
+조준 방향으로 돌진하며 전방의 적을 찌릅니다.	Charges in the aimed direction and thrusts at enemies ahead.	狙った方向へ突進し、前方の敵を突く。	朝瞄准方向冲锋，刺击前方敌人。	朝瞄準方向衝鋒，刺擊前方敵人。
+● 조준 방향으로 {em:돌진}하며 전방의 적을 찌르기	● {em:Charge} in the aimed direction and thrust at enemies ahead	● 狙った方向へ{em:突進}し、前方の敵を突く	● 朝瞄准方向{em:冲锋}并刺击前方敌人	● 朝瞄準方向{em:衝鋒}並刺擊前方敵人
+화염구를 발사해 적중 지점 주변에 피해를 주고 [[화상]]을 남깁니다.	Fires a fireball that damages enemies around the impact point and inflicts [[화상]].	火炎弾を放ち、着弾地点の周囲にダメージを与えて[[화상]]を付与する。	发射火球，对命中点周围造成伤害并施加[[화상]]。	發射火球，對命中點周圍造成傷害並施加[[화상]]。
+● 조준 방향으로 화염구 발사\n● 적중 지점 주변의 적에게 [[화염 피해]]만큼 범위 피해를 주고 [[화상]] {val:3중첩} 부여	● Fire a fireball in the aimed direction\n● Deal area damage equal to [[화염 피해]] around the impact point and inflict {val:3 stacks} of [[화상]]	● 狙った方向に火炎弾を発射\n● 着弾地点周囲に[[화염 피해]]分の範囲ダメージを与え、[[화상]]を{val:3スタック}付与	● 朝瞄准方向发射火球\n● 对命中点周围造成等同于[[화염 피해]]的范围伤害并施加{val:3层}[[화상]]	● 朝瞄準方向發射火球\n● 對命中點周圍造成等同於[[화염 피해]]的範圍傷害並施加{val:3層}[[화상]]
+지정한 위치에 잠시 후 큰 폭발을 일으킵니다. 적의 [[화상]]을 모두 소모하며, 중첩이 많을수록 강해집니다.	Creates a large explosion at the chosen location after a short delay. Consumes all enemy [[화상]] stacks; more stacks mean more power.	指定位置に少し遅れて大爆発を起こす。敵の[[화상]]をすべて消費し、スタックが多いほど強くなる。	短暂延迟后在指定位置引发大爆炸。消耗敌人的全部[[화상]]层数，层数越多威力越强。	短暫延遲後在指定位置引發大爆炸。消耗敵人的全部[[화상]]層數，層數越多威力越強。
+커서 위치에서 0.6초 후 폭발합니다. 화염 공격력에 비례한 피해를 주고, 적의 화상을 모두 소모해 중첩당 추가 피해를 줍니다.	Explodes at the cursor after 0.6 seconds. Deals damage based on fire attack power and consumes all burn stacks for additional damage per stack.	カーソル位置で0.6秒後に爆発する。火炎攻撃力に応じたダメージを与え、火傷をすべて消費してスタックごとに追加ダメージを与える。	0.6秒后在光标位置爆炸。造成与火焰攻击力成比例的伤害，并消耗全部灼烧层数，每层造成额外伤害。	0.6秒後在游標位置爆炸。造成與火焰攻擊力成比例的傷害，並消耗全部灼燒層數，每層造成額外傷害。
+시야 안의 불타는 적들의 [[화상]]을 일부 소모해 폭발시킵니다. 폭발은 주변 적도 피해를 줍니다.	Consumes some [[화상]] stacks on burning enemies in view to trigger explosions. Nearby enemies also take damage.	視界内の火傷中の敵の[[화상]]を一部消費して爆発させる。周囲の敵にもダメージを与える。	消耗视野内燃烧敌人的部分[[화상]]层数引发爆炸。爆炸也会伤害周围敌人。	消耗視野內燃燒敵人的部分[[화상]]層數引發爆炸。爆炸也會傷害周圍敵人。
+● 시야 안의 [[화상]] 상태인 모든 적에게 폭발 발생\n● 대상마다 [[화상]] 최대 {val:5중첩}을 소모해 폭발 피해\n● 주변 적에게도 동일한 피해\n● 폭발 지름 {val:5칸}	● Trigger explosions on all enemies with [[화상]] in view\n● Consume up to {val:5 stacks} of [[화상]] per target for explosion damage\n● Nearby enemies take the same damage\n● Explosion diameter: {val:5 tiles}	● 視界内の[[화상]]状態の敵すべてを爆発させる\n● 対象ごとに[[화상]]を最大{val:5スタック}消費して爆発ダメージ\n● 周囲の敵にも同じダメージ\n● 爆発の直径：{val:5マス}	● 引爆视野内所有处于[[화상]]状态的敌人\n● 每个目标最多消耗{val:5层}[[화상]]造成爆炸伤害\n● 周围敌人受到相同伤害\n● 爆炸直径：{val:5格}	● 引爆視野內所有處於[[화상]]狀態的敵人\n● 每個目標最多消耗{val:5層}[[화상]]造成爆炸傷害\n● 周圍敵人受到相同傷害\n● 爆炸直徑：{val:5格}
+이동 방향으로 빠르게 대시합니다.	Dashes quickly in the movement direction.	移動方向へ素早くダッシュする。	朝移动方向快速冲刺。	朝移動方向快速衝刺。
+꽃잎을 흩뿌리며 연속으로 벱니다. 마지막 공격은 더 멀리 나아가며 강하게 베어냅니다.	Slashes repeatedly amid scattered petals. The final attack advances farther with a powerful slash.	花びらを散らしながら連続で斬る。最後の攻撃はさらに前進し、強く斬り払う。	挥洒花瓣连续斩击，最后一击前进更远并强力斩击。	揮灑花瓣連續斬擊，最後一擊前進更遠並強力斬擊。
+● 꽃잎을 흩뿌리며 {val:3연속} 베기\n● 세 번째 공격은 더 길게 전진하며 강하게 베어낸다	● Scatter petals with {val:3 consecutive} slashes\n● The third attack advances farther with a powerful slash	● 花びらを散らしながら{val:3連続}で斬る\n● 3撃目はより遠くへ前進し、強く斬り払う	● 挥洒花瓣进行{val:3连斩}\n● 第三击前进更远并强力斩击	● 揮灑花瓣進行{val:3連斬}\n● 第三擊前進更遠並強力斬擊
+[[개화]] 중에는 넓은 참격을 빠르게 이어갑니다.	During [[개화]], rapidly chains wide slashes.	[[개화]]中は広い斬撃を素早く繰り出す。	[[개화]]期间快速连续施展宽幅斩击。	[[개화]]期間快速連續施展寬幅斬擊。
+● [[개화]] 중 기본 공격이 넓은 참격으로 변함\n● 참격 모양은 바로 전 공격과 겹치지 않게 바뀜\n● 짧은 간격으로 빠르게 연속 사용 가능	● Basic attacks become wide slashes during [[개화]]\n● Each slash changes shape to avoid overlapping the previous attack\n● Can be chained rapidly at short intervals	● [[개화]]中、通常攻撃が広い斬撃に変化\n● 直前の攻撃と重ならないように斬撃の形が変わる\n● 短い間隔で素早く連続使用できる	● [[개화]]期间普通攻击变为宽幅斩击\n● 斩击形状会变化，避免与上一击重叠\n● 可在短间隔内快速连续使用	● [[개화]]期間普通攻擊變為寬幅斬擊\n● 斬擊形狀會變化，避免與上一擊重疊\n● 可在短間隔內快速連續使用
+잠시 [[개화]]하여 공격력과 공격·이동 속도가 증가합니다. 기본 공격이 넓은 참격으로 바뀌고, 대시 경로에도 참격을 남깁니다.	Briefly enters [[개화]], increasing attack power, attack speed and movement speed. Basic attacks become wide slashes, and dashes leave slashes along the path.	一時的に[[개화]]し、攻撃力・攻撃速度・移動速度が増加する。通常攻撃が広い斬撃に変わり、ダッシュ経路にも斬撃を残す。	短暂进入[[개화]]，提高攻击力、攻击速度和移动速度。普通攻击变为宽幅斩击，冲刺路径也会留下斩击。	短暫進入[[개화]]，提高攻擊力、攻擊速度和移動速度。普通攻擊變為寬幅斬擊，衝刺路徑也會留下斬擊。
+번개 창으로 연속 공격해 [[전기 속성]]을 축적합니다.	Attacks repeatedly with a lightning spear to build up [[전기 속성]].	雷の槍で連続攻撃し、[[전기 속성]]を蓄積する。	用雷枪连续攻击，积累[[전기 속성]]。	用雷槍連續攻擊，累積[[전기 속성]]。
+남은 탄약을 모두 소모해 부채꼴로 난사합니다. 탄환에 맞은 적은 밀려납니다.	Spends all remaining ammo in a fan-shaped barrage. Bullets knock enemies back.	残弾をすべて消費して扇状に乱射する。弾が当たった敵は押し戻される。	消耗全部剩余弹药进行扇形扫射，命中的敌人会被击退。	消耗全部剩餘彈藥進行扇形掃射，命中的敵人會被擊退。
+탄약이 없어 공격할 수 없습니다.	Cannot attack without ammo.	弾薬がないため攻撃できない。	没有弹药，无法攻击。	沒有彈藥，無法攻擊。
+탄약을 소모해 적을 밀쳐내는 탄환을 발사합니다. 탄약이 없으면 공격할 수 없습니다.	Spends ammo to fire a bullet that knocks enemies back. Cannot attack without ammo.	弾薬を消費して敵を押し戻す弾を撃つ。弾薬がないと攻撃できない。	消耗弹药发射击退敌人的子弹。没有弹药时无法攻击。	消耗彈藥發射擊退敵人的子彈。沒有彈藥時無法攻擊。
+무기를 던져 적에게 피해를 주고 밀쳐냅니다. 던진 무기는 {neg:영구히 사라집니다}.	Throws the weapon to damage and knock back enemies. The thrown weapon is {neg:lost permanently}.	武器を投げて敵にダメージを与え、押し戻す。投げた武器は{neg:永久に失われる}。	投掷武器，对敌人造成伤害并击退。投出的武器会{neg:永久消失}。	投擲武器，對敵人造成傷害並擊退。投出的武器會{neg:永久消失}。
+검을 연속으로 휘둘러 전방의 적을 공격합니다.	Swings the sword repeatedly to attack enemies ahead.	剣を連続で振るい、前方の敵を攻撃する。	连续挥剑攻击前方敌人。	連續揮劍攻擊前方敵人。
+기본 공격 시 <color=#8A5A10>10% 확률</color>\n<color=#197A67>피해량 3배</color>	Basic attacks have a <color=#8A5A10>10% chance</color>\nto deal <color=#197A67>3x damage</color>	通常攻撃時、<color=#8A5A10>10%の確率</color>で\n<color=#197A67>ダメージ3倍</color>	普通攻击有<color=#8A5A10>10%概率</color>\n造成<color=#197A67>3倍伤害</color>	普通攻擊有<color=#8A5A10>10%機率</color>\n造成<color=#197A67>3倍傷害</color>
+<color=#A8324A>받는 피해 2배</color>\n<color=#197A67>공격 속도 +40%</color>\n<color=#197A67>이동 속도 +20%</color>	<color=#A8324A>Damage taken x2</color>\n<color=#197A67>Attack speed +40%</color>\n<color=#197A67>Movement speed +20%</color>	<color=#A8324A>被ダメージ2倍</color>\n<color=#197A67>攻撃速度+40%</color>\n<color=#197A67>移動速度+20%</color>	<color=#A8324A>受到的伤害2倍</color>\n<color=#197A67>攻击速度+40%</color>\n<color=#197A67>移动速度+20%</color>	<color=#A8324A>受到的傷害2倍</color>\n<color=#197A67>攻擊速度+40%</color>\n<color=#197A67>移動速度+20%</color>
+<color=#8A5A10>레벨업 시</color> <color=#197A67>체력 2 회복</color>\n피해를 받지 않았다면\n<color=#197A67>최대 체력 +1</color> (최대 3회)	<color=#8A5A10>On level up</color>, <color=#197A67>restore 2 HP</color>\nIf you have taken no damage,\n<color=#197A67>max HP +1</color> (up to 3 times)	<color=#8A5A10>レベルアップ時</color>に<color=#197A67>HPを2回復</color>\nダメージを受けていなければ\n<color=#197A67>最大HP+1</color>（最大3回）	<color=#8A5A10>升级时</color><color=#197A67>恢复2点生命值</color>\n如果未受到伤害\n<color=#197A67>生命值上限+1</color>（最多3次）	<color=#8A5A10>升級時</color><color=#197A67>恢復2點生命值</color>\n如果未受到傷害\n<color=#197A67>生命值上限+1</color>（最多3次）
+<color=#A8324A>직접 피해 -20%</color>\n<color=#197A67>전기 축적량 +25%</color>\n<color=#197A67>전기 발현 피해 +2</color>	<color=#A8324A>Direct damage -20%</color>\n<color=#197A67>Electric buildup +25%</color>\n<color=#197A67>Electric proc damage +2</color>	<color=#A8324A>直接ダメージ-20%</color>\n<color=#197A67>電気蓄積量+25%</color>\n<color=#197A67>電気発現ダメージ+2</color>	<color=#A8324A>直接伤害-20%</color>\n<color=#197A67>电属性积累量+25%</color>\n<color=#197A67>电属性触发伤害+2</color>	<color=#A8324A>直接傷害-20%</color>\n<color=#197A67>電屬性累積量+25%</color>\n<color=#197A67>電屬性觸發傷害+2</color>
+5초 안에 적 5명을 처치하면\n5초 동안 <color=#197A67>공격 속도 +20%</color>\n효과 중 적을 처치 시 지속 시간 초기화	Defeat 5 enemies within 5 seconds to gain\n<color=#197A67>attack speed +20%</color> for 5 seconds\nKills during the effect reset its duration	5秒以内に敵を5体倒すと\n5秒間<color=#197A67>攻撃速度+20%</color>\n効果中に敵を倒すと持続時間をリセット	5秒内击败5名敌人后\n<color=#197A67>攻击速度+20%</color>，持续5秒\n效果期间击败敌人会重置持续时间	5秒內擊敗5名敵人後\n<color=#197A67>攻擊速度+20%</color>，持續5秒\n效果期間擊敗敵人會重設持續時間
+<color=#8A5A10>적 20명 처치할 때마다</color>\n<color=#197A67>체력 1 회복</color>	<color=#8A5A10>Every 20 enemies defeated</color>\n<color=#197A67>restore 1 HP</color>	<color=#8A5A10>敵を20体倒すごとに</color>\n<color=#197A67>HPを1回復</color>	<color=#8A5A10>每击败20名敌人</color>\n<color=#197A67>恢复1点生命值</color>	<color=#8A5A10>每擊敗20名敵人</color>\n<color=#197A67>恢復1點生命值</color>
+<color=#8A5A10>적 처치 시</color>\n남은 무기 재사용 대기시간\n<color=#197A67>5% 감소</color>	<color=#8A5A10>On enemy kill</color>\nremaining weapon cooldowns\n<color=#197A67>reduced by 5%</color>	<color=#8A5A10>敵を倒すと</color>\n武器の残りクールダウンが\n<color=#197A67>5%減少</color>	<color=#8A5A10>击败敌人时</color>\n武器剩余冷却时间\n<color=#197A67>减少5%</color>	<color=#8A5A10>擊敗敵人時</color>\n武器剩餘冷卻時間\n<color=#197A67>減少5%</color>
+<color=#8A5A10>선택 시 현재 레벨 3마다</color>\n<color=#197A67>최대 하트 +1</color>	<color=#8A5A10>On selection, for every 3 current levels</color>\n<color=#197A67>max hearts +1</color>	<color=#8A5A10>選択時、現在のレベル3ごとに</color>\n<color=#197A67>最大ハート+1</color>	<color=#8A5A10>选择时，当前等级每满3级</color>\n<color=#197A67>心数上限+1</color>	<color=#8A5A10>選擇時，目前等級每滿3級</color>\n<color=#197A67>心數上限+1</color>
+<color=#8A5A10>남은 시간 6분 이하일 때</color>\n<color=#197A67>이동 속도 +40%</color>\n<color=#197A67>공격 속도 +25%</color>	<color=#8A5A10>When 6 minutes or less remain</color>\n<color=#197A67>Movement speed +40%</color>\n<color=#197A67>Attack speed +25%</color>	<color=#8A5A10>残り時間が6分以下のとき</color>\n<color=#197A67>移動速度+40%</color>\n<color=#197A67>攻撃速度+25%</color>	<color=#8A5A10>剩余时间不超过6分钟时</color>\n<color=#197A67>移动速度+40%</color>\n<color=#197A67>攻击速度+25%</color>	<color=#8A5A10>剩餘時間不超過6分鐘時</color>\n<color=#197A67>移動速度+40%</color>\n<color=#197A67>攻擊速度+25%</color>
+<color=#A8324A>2번 무기 슬롯 봉인</color>\n<color=#197A67>공격력 +25%</color>\n1번 무기 재사용 대기시간\n<color=#197A67>25% 감소</color>	<color=#A8324A>Weapon slot 2 sealed</color>\n<color=#197A67>Attack power +25%</color>\nWeapon 1 cooldowns\n<color=#197A67>reduced by 25%</color>	<color=#A8324A>武器スロット2を封印</color>\n<color=#197A67>攻撃力+25%</color>\n武器1のクールダウンが\n<color=#197A67>25%減少</color>	<color=#A8324A>封印武器栏位2</color>\n<color=#197A67>攻击力+25%</color>\n武器1冷却时间\n<color=#197A67>减少25%</color>	<color=#A8324A>封印武器欄位2</color>\n<color=#197A67>攻擊力+25%</color>\n武器1冷卻時間\n<color=#197A67>減少25%</color>
+<color=#A8324A>직접 피해 -20%</color>\n<color=#197A67>화상 부여량 +2</color>\n<color=#197A67>화상 피해 +30%</color>	<color=#A8324A>Direct damage -20%</color>\n<color=#197A67>Burn inflicted +2</color>\n<color=#197A67>Burn damage +30%</color>	<color=#A8324A>直接ダメージ-20%</color>\n<color=#197A67>火傷付与量+2</color>\n<color=#197A67>火傷ダメージ+30%</color>	<color=#A8324A>直接伤害-20%</color>\n<color=#197A67>灼烧施加量+2</color>\n<color=#197A67>灼烧伤害+30%</color>	<color=#A8324A>直接傷害-20%</color>\n<color=#197A67>灼燒施加量+2</color>\n<color=#197A67>灼燒傷害+30%</color>
+포션 사용 후 15초 동안 <color=#2474D2>야호!</color> 상태 돌입.\n<color=#2474D2>야호!</color>: 이동 속도 +30%, 공격 속도 +15%	Using a potion grants <color=#2474D2>Woohoo!</color> for 15 seconds.\n<color=#2474D2>Woohoo!</color>: movement speed +30%, attack speed +15%	ポーション使用後、15秒間<color=#2474D2>やっほー！</color>状態になる。\n<color=#2474D2>やっほー！</color>：移動速度+30%、攻撃速度+15%	使用药水后进入<color=#2474D2>好耶！</color>状态，持续15秒。\n<color=#2474D2>好耶！</color>：移动速度+30%，攻击速度+15%	使用藥水後進入<color=#2474D2>好耶！</color>狀態，持續15秒。\n<color=#2474D2>好耶！</color>：移動速度+30%，攻擊速度+15%
+포션을 사용할 때마다 공격 속도가 2% 증가	Each potion used increases attack speed by 2%.	ポーションを使うたびに攻撃速度が2%増加する。	每次使用药水，攻击速度提高2%。	每次使用藥水，攻擊速度提高2%。
+강화 가능한 유물 중\n무작위 <color=#8A5A10>최대 3개</color>\n<color=#197A67>각각 유물 레벨 +1</color>	Randomly select <color=#8A5A10>up to 3</color>\nrelics that can be upgraded\n<color=#197A67>Each relic gains +1 level</color>	強化可能な遺物から\nランダムに<color=#8A5A10>最大3個</color>\n<color=#197A67>それぞれ遺物レベル+1</color>	从可升级的遗物中\n随机选取<color=#8A5A10>最多3件</color>\n<color=#197A67>各遗物等级+1</color>	從可升級的遺物中\n隨機選取<color=#8A5A10>最多3件</color>\n<color=#197A67>各遺物等級+1</color>
+<color=#197A67>일회성 체력 3개 획득</color>	<color=#197A67>Gain 3 temporary hearts</color>	<color=#197A67>一時HPを3個獲得</color>	<color=#197A67>获得3个临时心</color>	<color=#197A67>獲得3個臨時心</color>
+화상 피해로 적을 처치하면\n시야 내 가장 가까운 적에게\n<color=#197A67>화상 3 부여</color>\n재사용 대기시간 0.5초	When burn damage defeats an enemy,\ninflict <color=#197A67>3 burn</color>\non the nearest enemy in view\nCooldown: 0.5 seconds	火傷ダメージで敵を倒すと\n視界内の最も近い敵に\n<color=#197A67>火傷を3付与</color>\nクールダウン：0.5秒	灼烧伤害击败敌人时\n对视野内最近的敌人\n<color=#197A67>施加3层灼烧</color>\n冷却时间0.5秒	灼燒傷害擊敗敵人時\n對視野內最近的敵人\n<color=#197A67>施加3層灼燒</color>\n冷卻時間0.5秒
+<color=#A8324A>최대 체력 -2</color>\n피해를 4회 받으면 저주가 풀리고\n기존 최대 체력보다\n<color=#197A67>최대 체력 +2</color>	<color=#A8324A>Max HP -2</color>\nTaking damage 4 times lifts the curse\nand grants, over the original maximum,\n<color=#197A67>max HP +2</color>	<color=#A8324A>最大HP-2</color>\n4回ダメージを受けると呪いが解け\n元の最大HPより\n<color=#197A67>最大HP+2</color>	<color=#A8324A>生命值上限-2</color>\n受到4次伤害后解除诅咒\n相比原有生命值上限\n<color=#197A67>生命值上限+2</color>	<color=#A8324A>生命值上限-2</color>\n受到4次傷害後解除詛咒\n相比原有生命值上限\n<color=#197A67>生命值上限+2</color>
+<color=#A8324A>직접 피해 -15%</color>\n화상 피해로 적 10명을 처치하면 저주가 풀리고\n<color=#197A67>화상 피해 +25%</color>\n<color=#197A67>화상 부여량 +1</color>	<color=#A8324A>Direct damage -15%</color>\nDefeat 10 enemies with burn damage to lift the curse\n<color=#197A67>Burn damage +25%</color>\n<color=#197A67>Burn inflicted +1</color>	<color=#A8324A>直接ダメージ-15%</color>\n火傷ダメージで敵を10体倒すと呪いが解ける\n<color=#197A67>火傷ダメージ+25%</color>\n<color=#197A67>火傷付与量+1</color>	<color=#A8324A>直接伤害-15%</color>\n用灼烧伤害击败10名敌人后解除诅咒\n<color=#197A67>灼烧伤害+25%</color>\n<color=#197A67>灼烧施加量+1</color>	<color=#A8324A>直接傷害-15%</color>\n用灼燒傷害擊敗10名敵人後解除詛咒\n<color=#197A67>灼燒傷害+25%</color>\n<color=#197A67>灼燒施加量+1</color>
+● {em:개화 상태} 진입\n● {val:3초} 동안 {pos:일반 피해 증가} {val:+25}, {pos:공격속도 증가} {val:+2.5}, {pos:이동속도 증가} {val:+60%}\n● 지속 중 기본 공격이 {em:넓은 만개 참격}으로 변함\n● 지속 중 [[대시]]가 빨라지고, 대시 경로에 {val:3회} 참격 생성\n● 전용 유물이 있으면 적 처치 시 {pos:지속 시간 증가} {val:+1초}	● Enter {em:Bloom}\n● For {val:3 seconds}: {pos:normal damage} {val:+25}, {pos:attack speed} {val:+2.5}, {pos:movement speed} {val:+60%}\n● Basic attacks become {em:wide Full Bloom Slashes}\n● [[대시]] becomes faster and creates {val:3} slashes along the path\n● With the exclusive relic, kills {pos:extend duration} by {val:+1 second}	● {em:開花状態}に入る\n● {val:3秒}間、{pos:通常ダメージ} {val:+25}、{pos:攻撃速度} {val:+2.5}、{pos:移動速度} {val:+60%}\n● 通常攻撃が{em:広い満開の斬撃}に変化\n● [[대시]]が速くなり、経路に{val:3回}斬撃を生成\n● 専用遺物があれば敵撃破時に{pos:持続時間延長} {val:+1秒}	● 进入{em:绽放状态}\n● {val:3秒}内，{pos:普通伤害} {val:+25}、{pos:攻击速度} {val:+2.5}、{pos:移动速度} {val:+60%}\n● 普通攻击变为{em:宽幅盛放斩击}\n● [[대시]]加快，路径上产生{val:3次}斩击\n● 持有专属遗物时，击败敌人{pos:延长持续时间} {val:+1秒}	● 進入{em:綻放狀態}\n● {val:3秒}內，{pos:普通傷害} {val:+25}、{pos:攻擊速度} {val:+2.5}、{pos:移動速度} {val:+60%}\n● 普通攻擊變為{em:寬幅盛放斬擊}\n● [[대시]]加快，路徑上產生{val:3次}斬擊\n● 持有專屬遺物時，擊敗敵人{pos:延長持續時間} {val:+1秒}
+● 번개 창으로 {val:3연속} 찌르기와 내려찍기\n● 공격마다 [[전기 속성]] 축적을 노림\n● 마지막 타격은 전방을 강하게 압박	● Perform {val:3 consecutive} thrusts and downward strikes with a lightning spear\n● Each attack builds up [[전기 속성]]\n● The final hit applies heavy pressure ahead	● 雷の槍で{val:3連続}の突きと振り下ろし\n● 攻撃ごとに[[전기 속성]]の蓄積を狙う\n● 最後の一撃は前方を強く圧迫	● 用雷枪进行{val:3连击}刺击与下劈\n● 每次攻击积累[[전기 속성]]\n● 最后一击强力压制前方	● 用雷槍進行{val:3連擊}刺擊與下劈\n● 每次攻擊累積[[전기 속성]]\n● 最後一擊強力壓制前方
+[[낙뢰 표식]]으로 돌진하고 {em:회수 창}을 얻습니다. 표식이 없으면 전방을 휩쓸며 모아 둔 창을 발사합니다.	Charges to a [[낙뢰 표식]] and gains a {em:Recovered Spear}. Without a mark, sweeps ahead and fires stored spears.	[[낙뢰 표식]]へ突進し、{em:回収した槍}を得る。標がなければ前方を薙ぎ払い、溜めた槍を放つ。	冲向[[낙뢰 표식]]并获得{em:回收枪}。没有标记时横扫前方并发射积攒的枪。	衝向[[낙뢰 표식]]並獲得{em:回收槍}。沒有標記時橫掃前方並發射積攢的槍。
+● 커서 주변에 [[낙뢰 표식]]이 있으면 {em:뇌창 돌격}으로 전환\n● 표식이 없으면 {em:뇌창 휩쓸기}로 전방 공격\n● 표식 돌격 성공 시 {pos:뇌창 돌격 재사용 대기시간 초기화}\n● {em:회수 창} {val:1개} 획득	● With a [[낙뢰 표식]] near the cursor, becomes {em:Thunder Spear Charge}\n● Without a mark, attacks ahead with {em:Thunder Spear Sweep}\n● A successful mark charge {pos:resets Thunder Spear Charge cooldown}\n● Gain {val:1} {em:Recovered Spear}	● カーソル付近に[[낙뢰 표식]]があると{em:雷槍突撃}に変化\n● 標がなければ{em:雷槍薙ぎ払い}で前方を攻撃\n● 標への突撃成功時、{pos:雷槍突撃のクールダウンをリセット}\n● {em:回収した槍}を{val:1本}獲得	● 光标附近有[[낙뢰 표식]]时变为{em:雷枪突击}\n● 没有标记时以{em:雷枪横扫}攻击前方\n● 成功冲向标记后{pos:重置雷枪突击冷却时间}\n● 获得{val:1把}{em:回收枪}	● 游標附近有[[낙뢰 표식]]時變為{em:雷槍突擊}\n● 沒有標記時以{em:雷槍橫掃}攻擊前方\n● 成功衝向標記後{pos:重設雷槍突擊冷卻時間}\n● 獲得{val:1把}{em:回收槍}
+주변에 번개 창을 떨어뜨려 피해를 주고 [[낙뢰 표식]]을 남깁니다. 표식은 {em:뇌창 돌격}의 목표가 됩니다.	Drops lightning spears nearby to deal damage and leave [[낙뢰 표식]]s. Marks serve as targets for {em:Thunder Spear Charge}.	周囲に雷の槍を落としてダメージを与え、[[낙뢰 표식]]を残す。標は{em:雷槍突撃}の対象になる。	在周围落下雷枪造成伤害并留下[[낙뢰 표식]]。标记可作为{em:雷枪突击}的目标。	在周圍落下雷槍造成傷害並留下[[낙뢰 표식]]。標記可作為{em:雷槍突擊}的目標。
+● 플레이어 주변 전투 구역에 [[낙뢰 표식]] {val:6개} 생성\n● 창이 꽂힐 때 약한 착지 피해를 주고 표식은 {val:7초} 유지\n● 생성된 표식은 {em:뇌창 돌격} 대상으로 사용	● Create {val:6} [[낙뢰 표식]]s in the combat area around you\n● Spears deal light landing damage; marks last {val:7 seconds}\n● Use the marks as {em:Thunder Spear Charge} targets	● プレイヤー周辺の戦闘区域に[[낙뢰 표식]]を{val:6個}生成\n● 槍が刺さると軽い着地ダメージを与え、標は{val:7秒}残る\n● 標は{em:雷槍突撃}の対象に使える	● 在玩家周围战斗区域生成{val:6个}[[낙뢰 표식]]\n● 枪落地时造成少量伤害，标记持续{val:7秒}\n● 标记可作为{em:雷枪突击}目标	● 在玩家周圍戰鬥區域生成{val:6個}[[낙뢰 표식]]\n● 槍落地時造成少量傷害，標記持續{val:7秒}\n● 標記可作為{em:雷槍突擊}目標
+● 남은 탄약을 모두 소모해 {em:난사}\n● 탄환마다 {val:고정 피해 100}과 넉백 적용\n● {val:0.08초} 간격, {val:15도} 탄퍼짐으로 발사\n● 사용 후 {neg:남은 탄약 0발}	● Spend all remaining ammo on a {em:barrage}\n● Each bullet deals {val:100 fixed damage} and knockback\n● Fire at {val:0.08-second} intervals with a {val:15-degree} spread\n● After use: {neg:0 ammo remaining}	● 残弾をすべて消費して{em:乱射}\n● 各弾に{val:固定ダメージ100}とノックバック\n● {val:0.08秒}間隔、{val:15度}の拡散で発射\n● 使用後は{neg:残弾0発}	● 消耗全部剩余弹药进行{em:扫射}\n● 每发子弹造成{val:100固定伤害}并击退\n● 以{val:0.08秒}间隔和{val:15度}散射角发射\n● 使用后{neg:剩余弹药0发}	● 消耗全部剩餘彈藥進行{em:掃射}\n● 每發子彈造成{val:100固定傷害}並擊退\n● 以{val:0.08秒}間隔和{val:15度}散射角發射\n● 使用後{neg:剩餘彈藥0發}
+● {val:잔탄 1발}을 소비해 직선 탄환 발사\n● 탄환은 {val:고정 피해 100}과 넉백을 적용\n● 잔탄이 없으면 {neg:빈 격발}로 전환	● Spend {val:1 remaining round} to fire a straight bullet\n● The bullet deals {val:100 fixed damage} and knockback\n● Without ammo, switches to {neg:Dry Fire}	● {val:残弾1発}を消費して直線弾を発射\n● 弾は{val:固定ダメージ100}とノックバックを与える\n● 残弾がなければ{neg:空撃ち}に変化	● 消耗{val:1发剩余弹药}发射直线子弹\n● 子弹造成{val:100固定伤害}并击退\n● 无剩余弹药时变为{neg:空击}	● 消耗{val:1發剩餘彈藥}發射直線子彈\n● 子彈造成{val:100固定傷害}並擊退\n● 無剩餘彈藥時變為{neg:空擊}
+● {em:기묘한 쇠덩이}를 던져 적에게 {val:고정 피해 60}을 주고 밀쳐내기\n● 던진 무기는 소멸하며 {neg:다시 획득 불가}	● Throw {em:Odd Iron} to deal {val:60 fixed damage} and knock enemies back\n● The weapon disappears and {neg:cannot be recovered}	● {em:奇妙な鉄塊}を投げて敵に{val:固定ダメージ60}を与え、押し戻す\n● 武器は消滅し、{neg:再取得できない}	● 投掷{em:怪铁块}，造成{val:60固定伤害}并击退敌人\n● 武器消失且{neg:无法再次获取}	● 投擲{em:怪鐵塊}，造成{val:60固定傷害}並擊退敵人\n● 武器消失且{neg:無法再次取得}
+● 사용 즉시 가속하며, 유지할수록 단계별 추가 가속\n● 사용 시 / {val:3초} 후 / {val:6초} 후 [[이동속도]] 보너스 {val:100% / 200% / 300%}\n● {em:마우스 방향으로 강제 이동}\n● 피격, 적 충돌 또는 공격 시 {neg:가속 즉시 종료}	● Accelerate immediately, then gain further speed in stages while maintained\n● On use / after {val:3 seconds} / after {val:6 seconds}: [[이동속도]] bonus {val:100% / 200% / 300%}\n● {em:Forced movement toward the mouse}\n● Taking damage, colliding with an enemy or attacking {neg:immediately ends acceleration}	● 使用直後に加速し、維持すると段階的に追加加速\n● 使用時／{val:3秒}後／{val:6秒}後の[[이동속도]]ボーナスは{val:100% / 200% / 300%}\n● {em:マウス方向へ強制移動}\n● 被弾、敵との衝突、攻撃で{neg:加速が即終了}	● 使用后立即加速，维持时分阶段继续加速\n● 使用时／{val:3秒}后／{val:6秒}后，[[이동속도]]加成为{val:100% / 200% / 300%}\n● {em:强制朝鼠标方向移动}\n● 受击、碰撞敌人或攻击时{neg:立即结束加速}	● 使用後立即加速，維持時分階段繼續加速\n● 使用時／{val:3秒}後／{val:6秒}後，[[이동속도]]加成為{val:100% / 200% / 300%}\n● {em:強制朝滑鼠方向移動}\n● 受擊、碰撞敵人或攻擊時{neg:立即結束加速}
+● 전방으로 고속 베기 공격\n● [[이동속도]]의 {val:x3}만큼 피해 보너스	● Perform a high-speed slash ahead\n● Damage bonus equal to [[이동속도]] {val:x3}	● 前方へ高速の斬撃\n● [[이동속도]]の{val:x3}分のダメージボーナス	● 向前方高速斩击\n● 伤害加成等于[[이동속도]]的{val:x3}	● 向前方高速斬擊\n● 傷害加成等於[[이동속도]]的{val:x3}
+달빛이 남긴 서늘함이 검신을 타고 흐르며, 베어낸 자리에 차가운 숨결을 남깁니다.	Moonlit chill flows along the blade, leaving a cold breath where it cuts.	月光の冷たさが刀身を伝い、斬った場所に冷たい息吹を残す。	月光的寒意流过剑身，在斩过之处留下冰冷气息。	月光的寒意流過劍身，在斬過之處留下冰冷氣息。
+찰나에 일생의 정수를 쏟아붓는 개화 상태입니다.	A state of Bloom that pours a lifetime's essence into a single instant.	一瞬に一生の精髄を注ぎ込む開花状態。	将一生的精华倾注于刹那的绽放状态。	將一生的精華傾注於剎那的綻放狀態。
+날이 스친 자리마다 태양의 잔열이 남아, 칼끝이 아직 식지 않은 듯 숨을 쉽니다.	The sun's lingering heat remains wherever the blade passes, as though its tip still breathes with warmth.	刃が通った場所に太陽の余熱が残り、まだ冷めぬ切っ先が息づくようだ。	刀刃掠过之处留下太阳余热，剑尖仿佛尚未冷却，仍在呼吸。	刀刃掠過之處留下太陽餘熱，劍尖彷彿尚未冷卻，仍在呼吸。
+술기운이 발끝을 타고 퍼진다.	Intoxication spreads from the tips of your toes.	酒気が足先から広がっていく。	酒意从脚尖蔓延。	酒意從腳尖蔓延。
+가격된 순간 다리에 시끄러운 반사 감각이 스며듭니다.	At the moment of impact, a jarring reflex surges through your legs.	打撃を受けた瞬間、騒がしい反射感覚が脚に染み込む。	受击瞬间，强烈的反射感涌入双腿。	受擊瞬間，強烈的反射感湧入雙腿。
+적을 베어낸 순간, 다리 끝에 가볍고 날카로운 관성이 남습니다.	The moment you cut down an enemy, a light, sharp momentum lingers in your legs.	敵を斬り倒した瞬間、脚に軽く鋭い勢いが残る。	斩倒敌人的瞬间，腿间留下轻快而锐利的惯性。	斬倒敵人的瞬間，腿間留下輕快而銳利的慣性。
+지워지는 숫자만큼 발걸음이 가벼워집니다.	Your steps grow lighter as the numbers disappear.	消えていく数字の分だけ、足取りが軽くなる。	随着数字消散，脚步愈加轻盈。	隨著數字消散，腳步愈加輕盈。
+짙은 어둠이 시야를 가려, 발밑을 유심히 확인하게 만듭니다.	Dense darkness obscures your vision, forcing you to watch your footing closely.	深い闇が視界を遮り、足元を注意深く確かめさせる。	浓重黑暗遮蔽视野，让你不得不仔细观察脚下。	濃重黑暗遮蔽視野，讓你不得不仔細觀察腳下。
+그림자 안개가 눈앞을 덜어 내, 주변을 분간하기 어렵게 만듭니다.	Shadow mist veils your sight, making it difficult to distinguish your surroundings.	影の霧が視界を奪い、周囲を見分けにくくする。	暗影迷雾遮挡眼前，难以辨清周围。	暗影迷霧遮擋眼前，難以辨清周圍。
+● [[체력]] {pos:[+1]} 회복	● Restore {pos:[+1]} [[체력]]	● [[체력]]を{pos:[+1]}回復	● 恢复{pos:[+1]}[[체력]]	● 恢復{pos:[+1]}[[체력]]
+플레이어 주위를 도는 깃털을 생성합니다. 레벨에 따라 공격력의 35/45/55/65/75% 피해를 주며, 이동속도가 높을수록 더 빠르게 회전합니다.	Creates a feather that orbits you. Deals 35/45/55/65/75% of attack power as damage depending on level, and orbits faster with higher movement speed.	周囲を回る羽根を生成する。レベルに応じて攻撃力の35/45/55/65/75%のダメージを与え、移動速度が高いほど速く回る。	生成环绕玩家的羽毛。根据等级造成攻击力35/45/55/65/75%的伤害，移动速度越高旋转越快。	生成環繞玩家的羽毛。根據等級造成攻擊力35/45/55/65/75%的傷害，移動速度越高旋轉越快。
+치명타가 아닌 공격 적중 시 치명타 확률이 2/3/4% 증가합니다. 최대 8회 중첩되며, 치명타 발생 시 초기화됩니다.	Non-critical hits increase critical chance by 2/3/4%. Stacks up to 8 times and resets on a critical hit.	非クリティカル攻撃が命中すると、クリティカル率が2/3/4%増加する。最大8回累積し、クリティカル発生時にリセットされる。	非暴击攻击命中时暴击率提高2/3/4%。最多叠加8次，暴击时重置。	非暴擊攻擊命中時暴擊率提高2/3/4%。最多疊加8次，暴擊時重設。
+개화 전용 유물\n개화 중 적 처치 시 개화 지속 시간이 1초 증가합니다.	Exclusive relic for Bloom\nDefeating an enemy during Bloom extends its duration by 1 second.	開花専用の遺物\n開花中に敵を倒すと、持続時間が1秒延びる。	绽放专属遗物\n绽放期间击败敌人，绽放持续时间延长1秒。	綻放專屬遺物\n綻放期間擊敗敵人，綻放持續時間延長1秒。
+잔영의 날개 전용 유물\n스피드 스트라이크로 적을 처치하면 러쉬가 종료되지 않습니다.	Exclusive relic for Wings of Afterimage\nDefeating an enemy with Speed Strike prevents Rush from ending.	残影の翼専用の遺物\nスピードストライクで敵を倒すと、ラッシュが終了しない。	残影之翼专属遗物\n用极速斩击击败敌人时，疾冲不会结束。	殘影之翼專屬遺物\n用極速斬擊擊敗敵人時，疾衝不會結束。
+[치명타 시] [이동속도] 2% 씩 증가\n최대 50%까지 증가 가능\n[피해를 받으면 초기화]	[On critical hit] [Movement speed] +2%\nStacks up to 50%\n[Resets when taking damage]	[クリティカル時] [移動速度]が2%ずつ増加\n最大50%まで累積\n[ダメージを受けるとリセット]	[暴击时] [移动速度]提高2%\n最多提高50%\n[受到伤害后重置]	[暴擊時] [移動速度]提高2%\n最多提高50%\n[受到傷害後重設]
+잔영의 날개 전용 유물\n러쉬의 이동속도 보너스가 증가\n러쉬 사용 시 [이동속도] 150% 증가\n3초 후 [이동속도] 150% 추가 증가\n3초 후 [이동속도] 200% 추가 증가	Exclusive relic for Wings of Afterimage\nIncreases Rush's movement speed bonus\nOn using Rush: [Movement speed] +150%\nAfter 3 seconds: [Movement speed] +150% more\nAfter another 3 seconds: [Movement speed] +200% more	残影の翼専用の遺物\nラッシュの移動速度ボーナスが増加\nラッシュ使用時：[移動速度]+150%\n3秒後：[移動速度]がさらに150%増加\nさらに3秒後：[移動速度]がさらに200%増加	残影之翼专属遗物\n提高疾冲的移动速度加成\n使用疾冲时：[移动速度]提高150%\n3秒后：[移动速度]额外提高150%\n再过3秒：[移动速度]额外提高200%	殘影之翼專屬遺物\n提高疾衝的移動速度加成\n使用疾衝時：[移動速度]提高150%\n3秒後：[移動速度]額外提高150%\n再過3秒：[移動速度]額外提高200%
+치명타 적중 시 3초 동안 치명타 확률이 4/6/8/10/12% 증가합니다. 치명타 적중 시 지속 시간이 초기화됩니다.	Critical hits increase critical chance by 4/6/8/10/12% for 3 seconds. Further critical hits reset the duration.	クリティカルが命中すると、3秒間クリティカル率が4/6/8/10/12%増加する。クリティカル命中時に持続時間がリセットされる。	暴击命中后，暴击率提高4/6/8/10/12%，持续3秒。暴击命中会重置持续时间。	暴擊命中後，暴擊率提高4/6/8/10/12%，持續3秒。暴擊命中會重設持續時間。
+● 체력이 {min_ratio} 이상일 때 [[{stat}]] {value}	● While HP is at least {min_ratio}: [[{stat}]] {value}	● HPが{min_ratio}以上のとき：[[{stat}]] {value}	● 生命值不低于{min_ratio}时：[[{stat}]] {value}	● 生命值不低於{min_ratio}時：[[{stat}]] {value}
+● [[치명타]] 시 [[이동속도]] {move_speed_gain}씩 증가\n● 최대 {max_move_speed_bonus}까지 누적\n● 피해를 받으면 {neg:누적 보너스 초기화}	● [[치명타]] increases [[이동속도]] by {move_speed_gain}\n● Stacks up to {max_move_speed_bonus}\n● Taking damage {neg:resets accumulated bonuses}	● [[치명타]]時、[[이동속도]]が{move_speed_gain}ずつ増加\n● 最大{max_move_speed_bonus}まで累積\n● ダメージを受けると{neg:累積ボーナスをリセット}	● [[치명타]]时[[이동속도]]提高{move_speed_gain}\n● 最多累积至{max_move_speed_bonus}\n● 受到伤害后{neg:重置累积加成}	● [[치명타]]時[[이동속도]]提高{move_speed_gain}\n● 最多累積至{max_move_speed_bonus}\n● 受到傷害後{neg:重設累積加成}
+● {trigger} {duration} 동안 [[{stat}]] {value}	● {trigger}: [[{stat}]] {value} for {duration}	● {trigger}：{duration}間、[[{stat}]] {value}	● {trigger}：{duration}内[[{stat}]] {value}	● {trigger}：{duration}內[[{stat}]] {value}
+● 체력이 {max_ratio} 이하일 때 [[{stat}]] {value}	● While HP is at most {max_ratio}: [[{stat}]] {value}	● HPが{max_ratio}以下のとき：[[{stat}]] {value}	● 生命值不高于{max_ratio}时：[[{stat}]] {value}	● 生命值不高於{max_ratio}時：[[{stat}]] {value}
+● [[피해를 받으면]] {duration} 동안 [[이동속도]] {move_speed_bonus}	● [[피해를 받으면]]: [[이동속도]] {move_speed_bonus} for {duration}	● [[피해를 받으면]]、{duration}間[[이동속도]] {move_speed_bonus}	● [[피해를 받으면]]，{duration}内[[이동속도]] {move_speed_bonus}	● [[피해를 받으면]]，{duration}內[[이동속도]] {move_speed_bonus}
+<color=#96DCFA>“충분한 거리를 확보한 뒤 사용하십시오.”\n전 사용자는 충분하다는 말을 주관적인 개념으로 받아들였다.</color>	<color=#96DCFA>“Ensure sufficient distance before use.”\nIts previous owner considered “sufficient” a subjective concept.</color>	<color=#96DCFA>「十分な距離を確保してからご使用ください。」\n前の持ち主は「十分」を主観的な概念として捉えていた。</color>	<color=#96DCFA>“请确保足够距离后使用。”\n前任使用者把“足够”理解成了主观概念。</color>	<color=#96DCFA>「請確保足夠距離後使用。」\n前任使用者把「足夠」理解成了主觀概念。</color>
+<color=#96DCFA>숨이 끊기기 전 가장 붉게 피는 꽃. 개화는 그 한순간을 칼날 위에 붙잡아 둔다.</color>	<color=#96DCFA>A flower blooms its deepest red just before its last breath. Bloom holds that fleeting moment upon the blade.</color>	<color=#96DCFA>息絶える直前、最も赤く咲く花。開花はその一瞬を刃の上に留める。</color>	<color=#96DCFA>在断气前绽放得最红的花。绽放将那一瞬凝于刀刃之上。</color>	<color=#96DCFA>在斷氣前綻放得最紅的花。綻放將那一瞬凝於刀刃之上。</color>
+<color=#96DCFA>번뜩이는 섬광이 시야를 스치기 전, 적의 전열은 이미 꿰뚫려 있다.</color>	<color=#96DCFA>Before the dazzling flash crosses your vision, the enemy line has already been pierced.</color>	<color=#96DCFA>閃光が視界をかすめる前に、敵の前線はすでに貫かれている。</color>	<color=#96DCFA>闪光掠过视野之前，敌人的战线早已被贯穿。</color>	<color=#96DCFA>閃光掠過視野之前，敵人的戰線早已被貫穿。</color>
+<color=#96DCFA>재장전은 없다. 여섯 발이 끝나면, 이제 던질 일만 남은 기묘한 쇳덩이.</color>	<color=#96DCFA>No reloading. Once the six shots are spent, all that remains is to throw this odd lump of iron.</color>	<color=#96DCFA>リロードはできない。六発撃ち終えたら、あとは投げるしかない奇妙な鉄の塊。</color>	<color=#96DCFA>无法装填。六发打完，这块奇怪的铁疙瘩就只剩扔出去的份了。</color>	<color=#96DCFA>無法裝填。六發打完，這塊奇怪的鐵疙瘩就只剩扔出去的份了。</color>
+<color=#96DCFA>“한 번 시작된 기사의 날갯짓은 결코 멈추지 않는다. 그 끝은 오직 승리 혹은 완전한 소멸뿐이다.”</color>	<color=#96DCFA>“Once a knight's wings begin to beat, they never stop. Only victory or utter destruction can bring them to an end.”</color>	<color=#96DCFA>「一度始まった騎士の羽ばたきは決して止まらない。その終わりは勝利か、完全な消滅だけだ。」</color>	<color=#96DCFA>“骑士一旦振翅，便永不停歇。唯有胜利或彻底湮灭，才是终点。”</color>	<color=#96DCFA>「騎士一旦振翅，便永不停歇。唯有勝利或徹底湮滅，才是終點。」</color>
+● {em:용사의 검} 전용 유물\n● 회전베기 차징 중 {pos:돌진 찌르기 사용 가능}\n● 사용 순간의 차징 정도에 따라 돌진 찌르기의 피해·크기·색상 변화\n● 최대 차징 시 돌진 찌르기 피해 약 {val:1.67배}\n● 돌진 중 버튼을 놓으면 {em:강화 회전베기}로 연계	● Exclusive relic for {em:Hero's Sword}\n● {pos:Charging Thrust available} while charging Spinning Slash\n● Thrust damage, size and color scale with charge at activation\n● At max charge, thrust damage is about {val:1.67x}\n● Release during the charge to chain into an {em:Enhanced Spinning Slash}	● {em:勇者の剣}専用の遺物\n● 回転斬りのチャージ中に{pos:突進突きが使用可能}\n● 発動時のチャージ量に応じて突きのダメージ・サイズ・色が変化\n● 最大チャージ時、突きのダメージ約{val:1.67倍}\n● 突進中にボタンを離すと{em:強化回転斬り}につながる	● {em:勇者之剑}专属遗物\n● 旋转斩蓄力期间{pos:可使用冲锋刺击}\n● 刺击伤害、大小和颜色根据发动时的蓄力程度变化\n● 最大蓄力时刺击伤害约{val:1.67倍}\n● 冲锋中松开按钮可衔接{em:强化旋转斩}	● {em:勇者之劍}專屬遺物\n● 旋轉斬蓄力期間{pos:可使用衝鋒刺擊}\n● 刺擊傷害、大小和顏色根據發動時的蓄力程度變化\n● 最大蓄力時刺擊傷害約{val:1.67倍}\n● 衝鋒中鬆開按鈕可銜接{em:強化旋轉斬}
+● {em:홍련의 한계선} 전용 유물\n● {em:점화!}로 적 처치 시 해당 위치에서 {em:추적 화염탄} {val:1개} 생성\n● 화염탄은 가까운 적을 추적\n● 추적할 적이 없으면 생성되지 않으며, 추적 화염탄으로는 {neg:추가 생성 불가}	● Exclusive relic for {em:Crimson Limit}\n● Kills with {em:Ignite!} create {val:1} {em:Homing Fireball} at the target's location\n● The fireball tracks a nearby enemy\n● No target means no fireball; homing fireballs {neg:cannot create further fireballs}	● {em:紅蓮の限界線}専用の遺物\n● {em:点火！}で敵を倒すと、その位置に{em:追跡火炎弾}を{val:1個}生成\n● 火炎弾は近くの敵を追跡\n● 追跡対象がなければ生成されず、追跡火炎弾では{neg:追加生成できない}	● {em:红莲极限}专属遗物\n● 用{em:点燃！}击败敌人时，在其位置生成{val:1个}{em:追踪火球}\n● 火球追踪附近敌人\n● 没有追踪目标时不生成，追踪火球{neg:无法继续生成火球}	● {em:紅蓮極限}專屬遺物\n● 用{em:點燃！}擊敗敵人時，在其位置生成{val:1個}{em:追蹤火球}\n● 火球追蹤附近敵人\n● 沒有追蹤目標時不生成，追蹤火球{neg:無法繼續生成火球}
+● {em:홍련의 한계선} 전용 유물\n● {em:대폭발!}이 적을 관통하는 {em:거대 용암구 발사}로 전환\n● 대폭발!의 피해와 크기 유지\n● 용암구 속도는 기본 공격 투사체의 {val:75%}\n● 벽에 닿으면 소멸	● Exclusive relic for {em:Crimson Limit}\n● {em:Mega Explosion!} becomes a {em:giant piercing lava ball}\n● Retains Mega Explosion!'s damage and size\n● Travels at {val:75%} of basic attack projectile speed\n● Disappears on contact with a wall	● {em:紅蓮の限界線}専用の遺物\n● {em:大爆発！}が敵を貫通する{em:巨大溶岩球の発射}に変化\n● 大爆発！のダメージとサイズを維持\n● 速度は通常攻撃の飛翔体の{val:75%}\n● 壁に触れると消滅	● {em:红莲极限}专属遗物\n● {em:大爆炸！}变为发射可贯穿敌人的{em:巨型熔岩球}\n● 保持大爆炸！的伤害和大小\n● 熔岩球速度为普通攻击投射物的{val:75%}\n● 碰墙后消失	● {em:紅蓮極限}專屬遺物\n● {em:大爆炸！}變為發射可貫穿敵人的{em:巨型熔岩球}\n● 保持大爆炸！的傷害和大小\n● 熔岩球速度為普通攻擊投射物的{val:75%}\n● 碰牆後消失
+● {em:뇌창 갈라론} 전용 유물\n● 낙뢰 표식이 적의 위치에 {val:0.07초} 간격으로 순차 낙하\n● 해당 위치에 떨어질 수 없거나 다른 뇌창과 너무 가까우면 적과 가까운 빈 위치에 낙하	● Exclusive relic for {em:Thunder Spear Galaron}\n● Lightning Marks fall sequentially at enemy positions at {val:0.07-second} intervals\n● If blocked or too close to another spear, fall at an empty location near the enemy	● {em:雷槍ガラロン}専用の遺物\n● 落雷の標が敵の位置へ{val:0.07秒}間隔で順に落下\n● 落下できない位置や他の雷槍に近すぎる場合、敵の近くの空いた位置に落下	● {em:雷枪加拉隆}专属遗物\n● 落雷标记以{val:0.07秒}间隔依次落向敌人位置\n● 无法落下或与其他雷枪过近时，落向敌人附近的空位	● {em:雷槍加拉隆}專屬遺物\n● 落雷標記以{val:0.07秒}間隔依次落向敵人位置\n● 無法落下或與其他雷槍過近時，落向敵人附近的空位
+● {em:뇌창 갈라론} 전용 유물\n● [[공격속도]] {pos:[+20%]}\n● 기본 공격의 {val:세 번째 타격} 시 공격 끝 지점 주변의 적을 향해 뇌창 {val:1개} 낙하	● Exclusive relic for {em:Thunder Spear Galaron}\n● [[공격속도]] {pos:[+20%]}\n● The {val:third hit} of a basic attack drops {val:1} thunder spear toward an enemy near the attack's endpoint	● {em:雷槍ガラロン}専用の遺物\n● [[공격속도]] {pos:[+20%]}\n● 通常攻撃の{val:3撃目}で、攻撃終端付近の敵に雷槍を{val:1本}落とす	● {em:雷枪加拉隆}专属遗物\n● [[공격속도]] {pos:[+20%]}\n● 普通攻击的{val:第三击}向攻击终点附近的敌人落下{val:1把}雷枪	● {em:雷槍加拉隆}專屬遺物\n● [[공격속도]] {pos:[+20%]}\n● 普通攻擊的{val:第三擊}向攻擊終點附近的敵人落下{val:1把}雷槍
+● {em:기묘한 쇠덩이} 전용 유물\n● 탄약이 없을 때 공격 또는 {em:난사} 입력 시 재장전\n● 재장전 완료 시 유물 레벨 {val:1}을 소모해 {pos:완전 장전}\n● 장전 후 다시 입력하면 발사\n● 유물 레벨은 남은 장전 횟수를 의미\n● 레벨이 {val:0}이 되면 {neg:유물 소멸}	● Exclusive relic for {em:Odd Iron}\n● Attack or {em:barrage} input reloads when out of ammo\n● Reloading consumes {val:1} relic level for a {pos:full magazine}\n● Press again after reloading to fire\n● Relic level represents remaining reloads\n● At level {val:0}, the {neg:relic disappears}	● {em:奇妙な鉄塊}専用の遺物\n● 弾切れ時、攻撃または{em:乱射}入力でリロード\n● リロード完了時、遺物レベル{val:1}を消費して{pos:満タンに装填}\n● 装填後に再入力すると発射\n● 遺物レベルは残りの装填回数\n● レベル{val:0}で{neg:遺物が消滅}	● {em:怪铁块}专属遗物\n● 弹药耗尽时，攻击或{em:扫射}输入可装填\n● 装填完成后消耗遗物等级{val:1}，获得{pos:满弹匣}\n● 装填后再次输入即可射击\n● 遗物等级代表剩余装填次数\n● 等级为{val:0}时{neg:遗物消失}	● {em:怪鐵塊}專屬遺物\n● 彈藥耗盡時，攻擊或{em:掃射}輸入可裝填\n● 裝填完成後消耗遺物等級{val:1}，獲得{pos:滿彈匣}\n● 裝填後再次輸入即可射擊\n● 遺物等級代表剩餘裝填次數\n● 等級為{val:0}時{neg:遺物消失}
+화상	Burn	火傷	灼烧	灼燒
+치명타	Critical Hit	クリティカル	暴击	暴擊
+피해를 받으면	On taking damage	ダメージを受けると	受到伤害时	受到傷害時
+어서 오십시오, 용사님. 마왕님의 알현실은 이 앞입니다.	Welcome, hero. The Demon King's audience chamber is just ahead.	ようこそ、勇者様。魔王様の謁見の間はこの先です。	欢迎，勇者大人。魔王的觐见厅就在前方。	歡迎，勇者大人。魔王的覲見廳就在前方。
+다만 현재는 알현 접수가 어렵습니다. 마왕님께서 밀린 업무를 처리 중이시라서요.	Unfortunately, audiences are unavailable at present. His Majesty is catching up on paperwork.	ただ、現在は謁見を受け付けられません。魔王様は溜まった仕事を片付けておられます。	不过现在无法受理觐见。魔王正在处理积压的事务。	不過現在無法受理覲見。魔王正在處理積壓的事務。
+정확히는… 아주 많이 밀려 있습니다.	To be precise... a great deal of paperwork.	正確には……かなり溜まっております。	准确地说……积压了非常多。	準確地說……積壓了非常多。
+마왕님께서는 용사님께 이렇게 전하라 하셨습니다.	His Majesty asked me to give you this message.	魔王様から、勇者様にこう伝えるよう仰せつかっております。	魔王让我向您转达如下口信。	魔王讓我向您轉達如下口信。
+‘아직은 이르다. 성 안을 더 둘러보고, 간부들의 인정을 받아 오도록.’	“It is too soon. Explore the castle further and earn the officers' recognition.”	「まだ早い。城内をさらに巡り、幹部たちの認めを得てくるがよい。」	“还为时尚早。再探索一下城堡，得到干部们的认可再来。”	「還為時尚早。再探索一下城堡，得到幹部們的認可再來。」
+세 구역에 각각 간부님들이 계십니다.	Our officers can be found in each of the three regions.	3つの区域に、それぞれ幹部の方々がおられます。	三个区域各有干部驻守。	三個區域各有幹部駐守。
+그분들 중 세 분께 인정을 받으신다면, 이 문은 용사님을 위해 열릴 것입니다.	Earn recognition from three of them, and this door will open for you.	そのうち3名から認められれば、この扉は勇者様のために開かれます。	若能得到其中三位的认可，这扇门就会为您打开。	若能得到其中三位的認可，這扇門就會為您打開。
+물론… 자리에 계신다는 보장은 없습니다. 마왕성은 생각보다 자유로운 직장이라서요.	Of course... I cannot guarantee they are at their posts. This castle is a surprisingly flexible workplace.	もちろん……席におられる保証はありません。魔王城は思ったより自由な職場ですので。	当然……不能保证他们都在岗位上。魔王城可是比想象中更自由的工作场所。	當然……不能保證他們都在崗位上。魔王城可是比想像中更自由的工作場所。
+그럼 행운을 빌겠습니다.	Then I wish you good luck.	それでは、ご武運をお祈りします。	那么，祝您好运。	那麼，祝您好運。
+조건이 충족되었습니다.	The requirements have been met.	条件が満たされました。	条件已满足。	條件已滿足。
+이제 마왕님을 알현하시길.	You may now have your audience with the Demon King.	どうぞ、魔王様に謁見なさってください。	现在请去觐见魔王吧。	現在請去覲見魔王吧。
+마침내 문이 열렸군. 영겁과 같은 시간 동안 지루하던 참이었는데 말이지.	At last, the door opens. I was growing bored through what felt like an eternity.	ようやく扉が開いたか。永劫にも思える時間、退屈していたところだ。	门终于开了。漫长得仿佛永恒的时光里，我正觉得无聊呢。	門終於開了。漫長得彷彿永恆的時光裡，我正覺得無聊呢。
+여기까지 오다니 우선 칭찬해주지.	First, allow me to commend you for coming this far.	ここまで来たことは、まず褒めてやろう。	能来到这里，先夸奖你一下吧。	能來到這裡，先誇獎你一下吧。
+네가 마왕인가.	Are you the Demon King?	お前が魔王か。	你就是魔王吗？	你就是魔王嗎？
+먼저 온 나의 친우를 어떻게 했지?	What did you do to my dear friend who came before me?	先に来た私の親友をどうした？	你把先来的挚友怎么样了？	你把先來的摯友怎麼樣了？
+친구. 용사를 말하는 건가. 이 얼마나 진부한 말인가... 그녀는... 음...	Your friend. You mean the hero? How painfully trite... She is... well...	友。勇者のことか。なんと陳腐な言葉だ……彼女は……その……	朋友。你指勇者吗？多么陈腐的说法……她……嗯……	朋友。你指勇者嗎？多麼陳腐的說法……她……嗯……
+<color=purple>푸하하하하하하--!</color>	<color=purple>Bwahahahahaha--!</color>	<color=purple>フハハハハハハー！</color>	<color=purple>噗哈哈哈哈哈哈——！</color>	<color=purple>噗哈哈哈哈哈哈——！</color>
+...?	...?	……？	……？	……？
+뭔가 기묘한 웃음 소리네.	That's a rather strange laugh.	なんだか妙な笑い声だね。	这笑声真奇怪。	這笑聲真奇怪。
+....	....	……	……	……
+(마왕은 스스로의 검을 질책하듯 주먹으로 가볍게 두드렸고, 검은 부르르 떨렸다.)	(The Demon King lightly tapped the sword with a fist, as if scolding it. The sword shuddered.)	（魔王は剣を叱るように拳で軽く叩き、剣はぶるりと震えた。）	（魔王像训斥自己的剑一样，用拳头轻敲剑身，剑颤抖了一下。）	（魔王像訓斥自己的劍一樣，用拳頭輕敲劍身，劍顫抖了一下。）
+크흠. 어쨌든. 너는 그녀를 찾기에는 너무 나약하다.	Ahem. In any case, you are far too weak to find her.	こほん。ともかく、彼女を探すにはお前は弱すぎる。	咳。总之，你太弱了，根本找不到她。	咳。總之，你太弱了，根本找不到她。
+힘의 차이를 보여주지.	Let me show you the difference in our strength.	力の差を見せてやろう。	让我展示一下力量的差距。	讓我展示一下力量的差距。
+보시다시피, 너는 한없이 나약하고 초라하다. 이 옥좌에 닿기엔 턱없이 부족해.	As you can see, you are pitifully weak. You fall far short of reaching this throne.	見てのとおり、お前はひどく弱く惨めだ。この玉座に届くにはあまりに足りない。	如你所见，你无比弱小又可怜。想触及这个王座，还远远不够。	如你所見，你無比弱小又可憐。想觸及這個王座，還遠遠不夠。
+하지만 나는 너그러운 마왕. 꺾인 날개로 발버둥 치는 새를 지켜보는 것 또한 나의 아량이니, 저 아득한 구덩이로 너를 던져주마.	But I am a generous Demon King. Watching a bird struggle with broken wings is another act of my mercy. I shall cast you into that distant pit.	だが私は寛大な魔王だ。折れた翼でもがく鳥を見守るのも我が慈悲。あの遥かな穴へ落としてやろう。	但我是宽宏的魔王。看着折翼之鸟挣扎，也是我的仁慈。就把你扔进那深不见底的坑吧。	但我是寬宏的魔王。看著折翼之鳥掙扎，也是我的仁慈。就把你扔進那深不見底的坑吧。
+저 깊고 어두운 구덩이 속에서 다시 기어 올라와 보거라. 내 수하들을 지나 다시 나에게 닿을 수 있다면 몇번이고 상대해주지.	Claw your way back from that deep, dark pit. If you pass my servants and reach me again, I will face you as many times as you wish.	その深く暗い穴から這い上がってみせよ。我が配下を越えて再び私に届くなら、何度でも相手をしてやる。	从那深邃黑暗的坑里再爬上来吧。若能越过我的部下再次来到我面前，我会一次又一次奉陪。	從那深邃黑暗的坑裡再爬上來吧。若能越過我的部下再次來到我面前，我會一次又一次奉陪。
+단, 내 인내심은 바닥을 향해 떨어지는 모래알과 같다. 정확히 15분이다. 그 안에 내 앞까지 도달할 투지를 보여라.	But my patience is like sand falling to the bottom of an hourglass. Exactly 15 minutes. Show me the resolve to reach me before it runs out.	ただし、私の忍耐は底へ落ちる砂粒のようなもの。ちょうど15分だ。その間にここへ辿り着く闘志を見せよ。	不过，我的耐心就像落向底部的沙粒。整整15分钟。在此之前，展现出抵达我面前的斗志吧。	不過，我的耐心就像落向底部的沙粒。整整15分鐘。在此之前，展現出抵達我面前的鬥志吧。
+그럼. 다음 만남을 기대하지.	Then I look forward to our next meeting.	では、次の出会いを楽しみにしているぞ。	那么，期待下次相见。	那麼，期待下次相見。
+너는 용사인가? 뭐냐, 그 빈약한 몸은! 그 몸으로 감히 마왕님께 덤비겠다고? 기합은 가상하다만, 단련이 한참 부족하군!	Are you the hero? What's with that scrawny body! You dare challenge His Majesty like that? Admirable spirit, but you need a lot more training!	お前が勇者か？なんだ、その貧弱な体は！それで魔王様に挑むだと？気合いは立派だが、鍛錬が足りん！	你是勇者？那瘦弱的身体算什么！就凭这身板也敢挑战魔王？勇气可嘉，但锻炼还差得远！	你是勇者？那瘦弱的身體算什麼！就憑這身板也敢挑戰魔王？勇氣可嘉，但鍛鍊還差得遠！
+마왕님을 때려눕히겠다고? 그 터무니없이 높은 목표는 마음에 드는군! 목표가 높을수록 몸도 더 높은 곳까지 올라가는 법이니까!	You want to knock His Majesty down? I like that absurdly lofty goal! The higher your sights, the higher your body can climb!	魔王様を倒すだと？その途方もない目標、気に入った！目標が高いほど、体も高みへ登れるものだ！	想打倒魔王？这高得离谱的目标，我喜欢！目标越高，身体也能攀得越高！	想打倒魔王？這高得離譜的目標，我喜歡！目標越高，身體也能攀得越高！
+좋다! 이 버피가 직접 단련시켜 주마! 옆의 훈련 기구 셋 중 하나를 골라 당장 몸부터 움직여! 실시!	Good! Buffy will train you personally! Pick one of the three machines beside me and get moving! Go!	よし！このバフィーが直々に鍛えてやる！隣の3つの器具から1つ選び、今すぐ体を動かせ！始め！	好！就由我巴菲亲自训练你！从旁边三台训练器械中选一台，立刻动起来！开始！	好！就由我巴菲親自訓練你！從旁邊三台訓練器械中選一台，立刻動起來！開始！
+드디어 왔군. 용사. [pause=0.25]후후, 참 [punch]느려 빠졌네[/punch].	At last, hero. [pause=0.25]Hehe, you sure [punch]took your time[/punch].	やっと来たね、勇者。[pause=0.25]ふふ、本当に[punch]遅かったね[/punch]。	终于来了，勇者。[pause=0.25]呵呵，真是[punch]慢死了[/punch]。	終於來了，勇者。[pause=0.25]呵呵，真是[punch]慢死了[/punch]。
+자, 어때? 네 오랜 소꿉친구가 [punch]마왕[/punch]이 되어있는데.	So, what do you think? Your oldest childhood friend is the [punch]Demon King[/punch] now.	どう？昔からの幼なじみが[punch]魔王[/punch]になってるんだけど。	怎么样？你从小一起长大的朋友现在成了[punch]魔王[/punch]。	怎麼樣？你從小一起長大的朋友現在成了[punch]魔王[/punch]。
+그게 무슨...! 세뇌라도 당한거냐!	What the...! Were you brainwashed or something?!	どういうことだ……！洗脳でもされたのか！	这是什么……！你被洗脑了吗！	這是什麼……！你被洗腦了嗎！
+... 너 그 옷 진짜 안 어울려...	...That outfit really doesn't suit you...	……その服、本当に似合ってないね……	……你那身衣服真的不适合你……	……你那身衣服真的不適合你……
+역시 좋은 반응이네~ [pause=0.2]뭐, 세뇌 같은 건 아니니까 안심하라고.	Now that's the reaction I wanted~ [pause=0.2]Relax, nobody brainwashed me.	やっぱりいい反応だね～。[pause=0.2]まあ、洗脳とかじゃないから安心して。	果然反应不错呢～[pause=0.2]放心吧，不是被洗脑了。	果然反應不錯呢～[pause=0.2]放心吧，不是被洗腦了。
+뭐, 이쪽도 나름 사정이 있거든. [pause=0.25]아직 말해줄 수 없지만.	Well, I have my reasons too. [pause=0.25]I just can't tell you yet.	こっちにも事情があるんだよ。[pause=0.25]まだ話せないけど。	我这边也有自己的苦衷。[pause=0.25]不过现在还不能告诉你。	我這邊也有自己的苦衷。[pause=0.25]不過現在還不能告訴你。
+[shake]하아!?![/shake] 그게 무슨 반응이야!?	[shake]Whaaat!?![/shake] What kind of reaction is that?!	[shake]はあ！？[/shake]なに、その反応！？	[shake]哈！？！[/shake]你这是什么反应！？	[shake]哈！？！[/shake]你這是什麼反應！？
+기껏 열심히 골랐는데 조금은 [punch]칭찬하라고[/punch]!	I spent ages picking it out! At least [punch]give me a compliment[/punch]!	せっかく一生懸命選んだんだから、少しは[punch]褒めてよ[/punch]！	我可是认真挑了好久，好歹[punch]夸我一下[/punch]啊！	我可是認真挑了好久，好歹[punch]誇我一下[/punch]啊！
+…어쨌든... [pause=0.35]봐주지 않을 거야. 나도 일단은 마왕이니까. [pause=0.2]자, [punch]춤춰보자고[/punch], 용사!	...Anyway... [pause=0.35]I won't go easy on you. I am the Demon King, after all. [pause=0.2]Come on, [punch]let's dance[/punch], hero!	……とにかく……[pause=0.35]手加減はしないよ。一応、魔王だからね。[pause=0.2]さあ、[punch]踊ろうよ[/punch]、勇者！	……总之……[pause=0.35]我不会手下留情。毕竟我也算是魔王。[pause=0.2]来吧，[punch]一起起舞吧[/punch]，勇者！	……總之……[pause=0.35]我不會手下留情。畢竟我也算是魔王。[pause=0.2]來吧，[punch]一起起舞吧[/punch]，勇者！
+...네가 용사인가.	...Are you the hero?	……お前が勇者か。	……你就是勇者吗？	……你就是勇者嗎？
+나는 스피리다. 붉은 재앙의 용... [pause=0.25]스피리.	I am Spiri. The dragon of crimson calamity... [pause=0.25]Spiri.	我はスピリ。赤き災厄の竜……[pause=0.25]スピリだ。	我是斯皮莉。赤色灾厄之龙……[pause=0.25]斯皮莉。	我是斯皮莉。赤色災厄之龍……[pause=0.25]斯皮莉。
+이유를 모르겠군. 네놈에게선... [pause=0.35]아무 냄새도 나지 않아.	I do not understand. From you... [pause=0.35]I smell nothing.	理由が分からぬ。お前からは……[pause=0.35]何の匂いもしない。	我不明白。你身上……[pause=0.35]什么气息都没有。	我不明白。你身上……[pause=0.35]什麼氣息都沒有。
+공포도. 살의도. 생존 본능조차.	No fear. No bloodlust. Not even the will to survive.	恐怖も、殺意も、生存本能さえも。	没有恐惧，没有杀意，甚至没有生存本能。	沒有恐懼，沒有殺意，甚至沒有生存本能。
+...그 정도로 약한 건가? [pause=0.25]아니면 이미 각오를 끝낸 건가.	...Are you truly that weak? [pause=0.25]Or have you already made your peace?	……そこまで弱いのか？[pause=0.25]それとも、すでに覚悟を決めたのか。	……弱到这种地步了吗？[pause=0.25]还是早已做好了觉悟？	……弱到這種地步了嗎？[pause=0.25]還是早已做好了覺悟？
+...	...	……	……	……
+...미안하지만 잠시 기다려주겠나.	...Forgive me, but could you wait a moment?	……すまないが、少し待ってもらえるか。	……抱歉，能稍等一下吗？	……抱歉，能稍等一下嗎？
+지금의 나는... [pause=0.35]그다지 바람직한 상태가 아니라서.	At present, I am... [pause=0.35]not in a particularly desirable state.	今の我は……[pause=0.35]あまり望ましい状態ではないのでな。	现在的我……[pause=0.35]状态不太理想。	現在的我……[pause=0.35]狀態不太理想。
+(<size=110%>벌컥</size>)	(<size=110%>Gulp</size>)	（<size=110%>ごくっ</size>）	（<size=110%>咕嘟</size>）	（<size=110%>咕嘟</size>）
+(<size=115%>벌컥</size>)	(<size=115%>Gulp</size>)	（<size=115%>ごくっ</size>）	（<size=115%>咕嘟</size>）	（<size=115%>咕嘟</size>）
+(<size=110%>벌컥</size><size=115%>벌컥</size><size=120%>벌컥벌컥--!!</size>)	(<size=110%>Gulp</size><size=115%>Gulp</size><size=120%>Gulp gulp--!!</size>)	（<size=110%>ごくっ</size><size=115%>ごくっ</size><size=120%>ごくごくー！！</size>）	（<size=110%>咕嘟</size><size=115%>咕嘟</size><size=120%>咕嘟咕嘟——！！</size>）	（<size=110%>咕嘟</size><size=115%>咕嘟</size><size=120%>咕嘟咕嘟——！！</size>）
+[slowshake][rand_size=95,112]푸하아아아아아----[/rand_size][/slowshake]!!!	[slowshake][rand_size=95,112]Pwaaaaaah----[/rand_size][/slowshake]!!!	[slowshake][rand_size=95,112]ぷはああああー[/rand_size][/slowshake]！！！	[slowshake][rand_size=95,112]噗哈啊啊啊啊——[/rand_size][/slowshake]！！！	[slowshake][rand_size=95,112]噗哈啊啊啊啊——[/rand_size][/slowshake]！！！
+[slowshake][rand_size=95,110]크으으으으~[/rand_size][/slowshake]! 역시 인간들의 [rand_size=95,108]술이[/rand_size] 최고라니까아~! [rand_size=95,106]살 것[/rand_size] 같네에에에~!	[slowshake][rand_size=95,110]Aaaah~[/rand_size][/slowshake]! Human [rand_size=95,108]booze[/rand_size] really is the best~! I feel [rand_size=95,106]alive[/rand_size] again~!	[slowshake][rand_size=95,110]くううう～[/rand_size][/slowshake]！やっぱり人間の[rand_size=95,108]酒は[/rand_size]最高だなあ～！[rand_size=95,106]生き返る[/rand_size]うう～！	[slowshake][rand_size=95,110]啊啊啊～[/rand_size][/slowshake]！果然人类的[rand_size=95,108]酒[/rand_size]最棒了～！感觉[rand_size=95,106]活过来[/rand_size]了～！	[slowshake][rand_size=95,110]啊啊啊～[/rand_size][/slowshake]！果然人類的[rand_size=95,108]酒[/rand_size]最棒了～！感覺[rand_size=95,106]活過來[/rand_size]了～！
+오오~ 용사! [slowshake][rand_size=95,110]안 갔네에에[/rand_size][/slowshake]~!	Oooh~ Hero! You're [slowshake][rand_size=95,110]still heeere[/rand_size][/slowshake]~!	おお～勇者！[slowshake][rand_size=95,110]まだいたのかあ[/rand_size][/slowshake]～！	哦哦～勇者！[slowshake][rand_size=95,110]还没走呢[/rand_size][/slowshake]～！	哦哦～勇者！[slowshake][rand_size=95,110]還沒走呢[/rand_size][/slowshake]～！
+자자, 그렇게 굳어 있지 말고~ [pause=0.2][rand_size=95,108]한 잔[/rand_size] 받아라! 싸움은 [slowshake]취해서[/slowshake] 해야 제맛이라고?	Come on, don't be so stiff~ [pause=0.2]Have a [rand_size=95,108]drink[/rand_size]! Fighting is best when you're [slowshake]drunk[/slowshake], you know?	さあさあ、そんなに固くなるな～。[pause=0.2][rand_size=95,108]一杯[/rand_size]飲め！戦いは[slowshake]酔って[/slowshake]こそ楽しいんだぞ？	来来，别那么僵硬～[pause=0.2]来[rand_size=95,108]喝一杯[/rand_size]！打架就要[slowshake]喝醉了[/slowshake]才够味嘛！	來來，別那麼僵硬～[pause=0.2]來[rand_size=95,108]喝一杯[/rand_size]！打架就要[slowshake]喝醉了[/slowshake]才夠味嘛！
+방금 그건 대체 뭐였지...?	What on earth was that just now...?	さっきのは一体なんだったんだ……？	刚才那到底是什么……？	剛才那到底是什麼……？
+좋아. 술자리라면 사양 안 하지!	All right. I'd never turn down a drink!	いいね。酒の席なら遠慮しないよ！	好啊，喝酒的话我可不会客气！	好啊，喝酒的話我可不會客氣！
+방금~?	Just now~?	さっき～？	刚才～？	剛才～？
+으히히... [pause=0.25][slowshake][rand_size=95,108]글쎄에[/rand_size][/slowshake]~?	Ehehe... [pause=0.25][slowshake][rand_size=95,108]Who knooows[/rand_size][/slowshake]~?	うひひ……[pause=0.25][slowshake][rand_size=95,108]さあねえ[/rand_size][/slowshake]～？	嘻嘻……[pause=0.25][slowshake][rand_size=95,108]谁知道呢[/rand_size][/slowshake]～？	嘻嘻……[pause=0.25][slowshake][rand_size=95,108]誰知道呢[/rand_size][/slowshake]～？
+못 본 걸로 해주라~ [pause=0.2]나도 [rand_size=95,105]기억하기[/rand_size] 싫거든.	Pretend you didn't see it~ [pause=0.2]I don't want to [rand_size=95,105]remember[/rand_size] it either.	見なかったことにしてくれ～。[pause=0.2]こっちも[rand_size=95,105]思い出したく[/rand_size]ないんだ。	就当没看见吧～[pause=0.2]我也不想[rand_size=95,105]记起来[/rand_size]。	就當沒看見吧～[pause=0.2]我也不想[rand_size=95,105]記起來[/rand_size]。
+오오오~!! 분위기 탈 줄 아는 [slowshake][rand_size=95,112]녀석이잖냐[/rand_size][/slowshake]~!!	Ooooh~!! You're [slowshake][rand_size=95,112]my kind of company[/rand_size][/slowshake]~!!	おおお～！！[slowshake][rand_size=95,112]ノリのいいやつだなあ[/rand_size][/slowshake]～！！	哦哦哦～！！你还真是个[slowshake][rand_size=95,112]懂气氛的家伙[/rand_size][/slowshake]～！！	哦哦哦～！！你還真是個[slowshake][rand_size=95,112]懂氣氛的傢伙[/rand_size][/slowshake]～！！
+좋다 좋아! 오늘은 특별히 [rand_size=95,108]용사 환영주[/rand_size]다~!	Great, great! Today calls for a special [rand_size=95,108]hero's welcome drink[/rand_size]~!	よしよし！今日は特別に[rand_size=95,108]勇者歓迎の酒[/rand_size]だ～！	好好好！今天特别来个[rand_size=95,108]勇者欢迎酒[/rand_size]～！	好好好！今天特別來個[rand_size=95,108]勇者歡迎酒[/rand_size]～！
+어라. [pause=0.25]손이 왜 [slowshake][rand_size=95,108]세 개로[/rand_size][/slowshake] 보이지.	Huh. [pause=0.25]Why do I see [slowshake][rand_size=95,108]three hands[/rand_size][/slowshake]?	あれ。[pause=0.25]なんで手が[slowshake][rand_size=95,108]3本に[/rand_size][/slowshake]見えるんだ。	咦。[pause=0.25]怎么手看起来有[slowshake][rand_size=95,108]三只[/rand_size][/slowshake]？	咦。[pause=0.25]怎麼手看起來有[slowshake][rand_size=95,108]三隻[/rand_size][/slowshake]？
+자, 몸도 [rand_size=95,108]달아올랐고[/rand_size] 슬슬 [slowshake]시작해볼까아[/slowshake]~	Well, I'm [rand_size=95,108]warmed up[/rand_size] now. Shall we [slowshake]get started[/slowshake]~?	さて、体も[rand_size=95,108]温まったし[/rand_size]、そろそろ[slowshake]始めようかあ[/slowshake]～。	好了，身体也[rand_size=95,108]热起来了[/rand_size]，差不多该[slowshake]开始了吧[/slowshake]～	好了，身體也[rand_size=95,108]熱起來了[/rand_size]，差不多該[slowshake]開始了吧[/slowshake]～
+[rand_size=95,106]술 깨기 전에[/rand_size] 끝내야 하거든. [pause=0.2]너무 오래 끌진 말자고.	We need to finish [rand_size=95,106]before I sober up[/rand_size]. [pause=0.2]Let's not drag this out.	[rand_size=95,106]酔いが覚める前に[/rand_size]終わらせないとな。[pause=0.2]長引かせないでくれよ。	得在[rand_size=95,106]酒醒之前[/rand_size]结束。[pause=0.2]别拖太久哦。	得在[rand_size=95,106]酒醒之前[/rand_size]結束。[pause=0.2]別拖太久哦。
+안 그러면, 주변이 좀 [slowshake][rand_size=95,110]위험해져서[/rand_size][/slowshake] 말이야!	Otherwise, things around here get a little [slowshake][rand_size=95,110]dangerous[/rand_size][/slowshake]!	でないと、周りがちょっと[slowshake][rand_size=95,110]危なくなる[/rand_size][/slowshake]んだ！	不然，周围会变得有点[slowshake][rand_size=95,110]危险[/rand_size][/slowshake]哦！	不然，周圍會變得有點[slowshake][rand_size=95,110]危險[/rand_size][/slowshake]哦！
+무기부터 유물까지 없는 것 빼고 다 있어! 어디서 구했는지는 묻지 말고, 헤헤!	Weapons, relics, I've got everything you could want! Just don't ask where I got it, hehe!	武器から遺物まで、ないもの以外は何でもあるよ！どこで手に入れたかは聞かないでね、へへ！	从武器到遗物，应有尽有！别问我从哪儿弄来的，嘿嘿！	從武器到遺物，應有盡有！別問我從哪兒弄來的，嘿嘿！
+오오, 역시 보는 눈이 있네! 전부 마왕성에서 엄선한 귀한 물건들이야!	Ooh, you've got a good eye! These are treasures carefully selected from the Demon King's castle!	おお、見る目があるね！全部、魔王城で厳選した貴重な品だよ！	哦哦，果然有眼光！全是从魔王城精挑细选的珍贵物品！	哦哦，果然有眼光！全是從魔王城精挑細選的珍貴物品！
+조금 전까지 누구 물건이었는지는 중요하지 않잖아? 지금은 내 거니까!	Who owned them a moment ago doesn't matter, right? They're mine now!	さっきまで誰のものだったかは関係ないよね？今は私のものなんだから！	刚才还是谁的东西不重要吧？现在是我的了！	剛才還是誰的東西不重要吧？現在是我的了！
+뭐어?! 진짜 그냥 가게?! 자, 잠깐만! 구경은 공짜니까 조금만 더 보고 가!	Whaaat?! You're really leaving?! W-wait! Looking is free, so stay a little longer!	ええっ！？本当に帰るの！？ちょ、待って！見るだけならタダだから、もう少し見ていって！	什么？！真就这么走了？！等、等等！看看又不要钱，再看一会儿嘛！	什麼？！真就這麼走了？！等、等等！看看又不要錢，再看一會兒嘛！
+보다 보면 분명 사고 싶어질 거라구!	Keep looking and you'll definitely find something you want!	見ていれば、きっと買いたくなるって！	多看看肯定就想买了！	多看看肯定就想買了！
+거기, 투구 쓴 사람. 그래, 여기저기 돌아다니는 너.	Hey, you in the helmet. Yes, you, wandering all over the place.	そこの兜をかぶった人。そう、あちこち歩き回ってる君。	那边戴头盔的人。对，就是到处乱转的你。	那邊戴頭盔的人。對，就是到處亂轉的你。
+마왕성 구조가 또 바뀌었거든. 길 좀 외웠다 싶으면 이 모양이야. 덕분에 배달이 잔뜩 밀렸어.	The castle layout changed again. Just when I learn my way around, this happens. Now deliveries are piling up.	魔王城の構造がまた変わったんだ。道を覚えたと思ったらこれだよ。おかげで配達が溜まっちゃってね。	魔王城的布局又变了。刚记住路就这样，结果快递积压了一大堆。	魔王城的布局又變了。剛記住路就這樣，結果包裹積壓了一大堆。
+어차피 다음 구역으로 갈 거면, 옆에 쌓인 소포 좀 가져다줄래? 거기 배송 상자에 넣어 주면 돼.	If you're heading to the next region anyway, could you take some parcels from that pile? Just put them in the delivery box there.	次の区域に行くなら、隣の小包を届けてくれない？そこの配達箱に入れればいいよ。	反正你要去下个区域，能帮忙带些旁边的包裹吗？放进那边的配送箱就行。	反正你要去下個區域，能幫忙帶些旁邊的包裹嗎？放進那邊的配送箱就行。
+가방에 들어갈 만큼만 챙겨. 세 개면 충분해. 그 이상 맡겼다간 내가 농땡이 피운 줄 알 거 아냐.	Take only what fits in your bag. Three is plenty. Any more and they'll think I'm slacking off.	バッグに入る分だけでいい。3個で十分だよ。それ以上任せたら、私がサボってると思われちゃう。	只拿背包放得下的就好，三个足够。再多就要以为我偷懒了。	只拿背包放得下的就好，三個足夠。再多就要以為我偷懶了。
+대신 가져간 건 끝까지 부탁해. 누군가는 목 빠지게 기다리는 물건이니까, 길에 버리고 가면 안 돼.	But see each one through to delivery. Someone's waiting eagerly for it, so don't abandon it on the road.	その代わり、持っていった分は最後まで頼むよ。誰かが首を長くして待ってる品だから、道に捨てないでね。	不过拿走的就请送到底。有人正翘首以盼，可不能丢在路上。	不過拿走的就請送到底。有人正翹首以盼，可不能丟在路上。
+빈손으로 부탁하는 건 아니야. 소포 하나마다 꽤 귀한 물건으로 사례할게. 그 정도면 해 볼 만하지?	I'm not asking for free. I'll give you something valuable for each parcel. Worth a try, right?	タダで頼むわけじゃない。小包1個ごとに、結構貴重な品でお礼するよ。やってみる価値はあるでしょ？	不会让你白干。每送一个包裹，我都会用挺珍贵的东西答谢。值得试试吧？	不會讓你白做。每送一個包裹，我都會用挺珍貴的東西答謝。值得試試吧？
+난 여기서 남은 것 좀 정리할 테니까, 준비되면 챙겨 가.	I'll sort out the rest here. Take them when you're ready.	私はここで残りを整理してるから、準備できたら持っていって。	我在这儿整理剩下的，准备好就带走吧。	我在這兒整理剩下的，準備好就帶走吧。
+...마왕군 소속... [pause=0.25]침묵의 간수장, 그림자 정령 클로에. ...돌아가. 여긴... 너희가 올 곳이 아니야.	...Demon King's army... [pause=0.25]Chloe, shadow spirit and Silent Warden. ...Go back. This... isn't a place for your kind.	……魔王軍所属……[pause=0.25]沈黙の看守長、影の精霊クロエ。……帰って。ここは……あなたたちが来る場所じゃない。	……隶属魔王军……[pause=0.25]沉默典狱长，暗影精灵克洛伊。……回去吧。这里……不是你们该来的地方。	……隸屬魔王軍……[pause=0.25]沉默典獄長，暗影精靈克洛伊。……回去吧。這裡……不是你們該來的地方。
+...가까이 오지 마. 내 그림자에 닿아서 어떻게 돼도... [tremble]난 책임 못 져[/tremble].	...Don't come closer. If you touch my shadow and something happens... [tremble]I won't be responsible[/tremble].	……近づかないで。私の影に触れて何かあっても……[tremble]責任は取れないから[/tremble]。	……别靠近。碰到我的影子出了什么事……[tremble]我可不负责[/tremble]。	……別靠近。碰到我的影子出了什麼事……[tremble]我可不負責[/tremble]。
+떨고 있는 것 같은데. 사실은 싸우고 싶지 않은 거지?	You seem to be trembling. You don't really want to fight, do you?	震えてるみたいだけど。本当は戦いたくないんでしょ？	你好像在发抖。其实不想打吧？	你好像在發抖。其實不想打吧？
+수작 부리지 마라! 그깟 그림자 따위 베어버리겠다!	Enough tricks! I'll cut through that pathetic shadow!	小細工はやめろ！そんな影など斬り捨ててやる！	别耍花招！区区影子，我一剑就斩了！	別耍花招！區區影子，我一劍就斬了！
+...어?! 으, 응...? 아, 아니야! 나 엄청 [punch]무서운 정령[/punch]이란 말이야! 다들 나만 보면 벌벌 떤다고...!	...Huh?! U-um...? N-no! I'm a really [punch]scary spirit[/punch]! Everyone trembles when they see me...!	……え！？え、うん……？ち、違う！私、すごく[punch]怖い精霊[/punch]なんだから！みんな私を見ると震えるの……！	……诶？！嗯、啊……？不、不是！我可是超级[punch]可怕的精灵[/punch]！大家一看到我都会发抖……！	……欸？！嗯、啊……？不、不是！我可是超級[punch]可怕的精靈[/punch]！大家一看到我都會發抖……！
+...너, 진짜 이상한 인간이야. 내 진심을... [pause=0.3]보통은 무섭다고 다 도망치는데...	...You're a very strange human. My true feelings... [pause=0.3]Usually everyone runs away in fear...	……あなた、本当に変な人間。私の本心を……[pause=0.3]普通は怖がって逃げていくのに……	……你真是个奇怪的人类。我的真心……[pause=0.3]一般人都会害怕地逃走……	……你真是個奇怪的人類。我的真心……[pause=0.3]一般人都會害怕地逃走……
+...그, 그래도 안 싸울 수는 없으니까... [tremble]너무 아프게 공격하진 않을게[/tremble]...	...S-still, I have to fight... [tremble]I'll try not to hurt you too much[/tremble]...	……そ、それでも戦わないわけにはいかないから……[tremble]あまり痛くしないようにするね[/tremble]……	……但、但还是得打……[tremble]我不会打得太疼的[/tremble]……	……但、但還是得打……[tremble]我不會打得太疼的[/tremble]……
+...거봐. 역시 인간들은 다 똑같아. 내 진짜 마음 같은 건... [pause=0.35]처음부터 보려고도 안 하잖아.	...See? Humans are all the same. My real feelings... [pause=0.35]You never even try to see them.	……ほらね。やっぱり人間はみんな同じ。私の本当の気持ちなんて……[pause=0.35]最初から見ようともしない。	……看吧，人类果然都一样。我的真实心意……[pause=0.35]从一开始就不想了解。	……看吧，人類果然都一樣。我的真實心意……[pause=0.35]從一開始就不想了解。
+...맨날 자기들 멋대로 오해하고... 이젠 나도 몰라. [punch]다치든 말든[/punch] 마음대로 해.	...Always making up your own assumptions... I don't care anymore. Do what you want, [punch]hurt yourself for all I care[/punch].	……いつも勝手に誤解して……もう知らない。[punch]怪我しようがしまいが[/punch]、好きにして。	……总是自顾自地误会……我不管了。[punch]受伤也好不受伤也好[/punch]，随你便。	……總是自顧自地誤會……我不管了。[punch]受傷也好不受傷也好[/punch]，隨你便。
+…많이 다쳐도 난 책임 못 져. 진짜로… [tremble]아플 텐데[/tremble]...	...I won't be responsible if you get badly hurt. It really... [tremble]will hurt[/tremble]...	……ひどい怪我をしても責任は取れないよ。本当に……[tremble]痛いんだから[/tremble]……	……就算受重伤我也不负责。真的……[tremble]会很疼的[/tremble]……	……就算受重傷我也不負責。真的……[tremble]會很疼的[/tremble]……
+나를 찾아온 건 네가 처음이 아니야. [pause=0.25]그리고 마지막도 아닐 거고.	You're not the first to seek me out. [pause=0.25]And you won't be the last.	私を訪ねてきたのは、あなたが初めてじゃない。[pause=0.25]最後でもないだろうね。	你不是第一个来找我的。[pause=0.25]也不会是最后一个。	你不是第一個來找我的。[pause=0.25]也不會是最後一個。
+그래도 여기까지 온 건 기억해둘게.	Still, I'll remember that you made it this far.	それでも、ここまで来たことは覚えておくよ。	不过，你能来到这里，我会记住的。	不過，你能來到這裡，我會記住的。
+[shake]????[/shake] 너 어떻게 살아있냐?!	[shake]????[/shake] How are you still alive?!	[shake]？？？？[/shake]なんでまだ生きてるの！？	[shake]？？？？[/shake]你怎么还活着？！	[shake]？？？？[/shake]你怎麼還活著？！
+아니, 좋아. 이번엔 조금 더 똑바로 봐줄게.	No, all right. This time I'll take a closer look at you.	いや、いいよ。今度はもう少しちゃんと見てあげる。	不，好吧。这次我会更认真地看看你。	不，好吧。這次我會更認真地看看你。
+이제는 [punch]그만 좀 찾아와[/punch]!	Could you [punch]stop coming back[/punch] already?!	もう[punch]来るのやめてよ[/punch]！	你就[punch]别再来了[/punch]！	你就[punch]別再來了[/punch]！
+매번 이렇게 나타나면 나도 반응하기 힘들다고.	It's hard to keep reacting when you show up like this every time.	毎回こんなふうに現れたら、こっちも反応に困るんだけど。	每次都这么出现，我也很难反应啊。	每次都這麼出現，我也很難反應啊。
+이제 슬슬 익숙해지네.	I'm starting to get used to this.	そろそろ慣れてきたね。	开始慢慢习惯了。	開始慢慢習慣了。
+네가 오는 게 이상하지 않게 느껴지는 것도 좀 이상하지만.	Though it's strange that your visits don't feel strange anymore.	あなたが来ても変に感じなくなったのが、ちょっと変だけど。	虽然不再觉得你来很奇怪，这本身也挺奇怪的。	雖然不再覺得你來很奇怪，這本身也挺奇怪的。
+왔구나. 생각보다 빨랐네.	You're here. Sooner than I expected.	来たんだ。思ったより早かったね。	你来了，比想象中快。	你來了，比想像中快。
+이번엔 네 이야기를 조금 더 들어줄 수 있을지도 몰라.	Maybe this time I can listen to a little more of your story.	今度はあなたの話を、もう少し聞けるかもしれない。	这次也许能多听听你的故事。	這次也許能多聽聽你的故事。
+[punch]오오오!?[/punch] 너 꽤 빨리 왔다!?	[punch]Oooh!?[/punch] You got here pretty quickly!?	[punch]おおお！？[/punch]結構早かったね！？	[punch]哦哦哦！？[/punch]你来得挺快啊！？	[punch]哦哦哦！？[/punch]你來得挺快啊！？
+그 정도 여유가 있으면 허세 좀 부려도 되겠는데.	With that much time to spare, you could afford a little swagger.	それだけ余裕があるなら、少しくらい格好つけてもいいんじゃない？	这么从容，稍微逞点威风也行吧。	這麼從容，稍微逞點威風也行吧。
+너 곧 쓰러질 것 같은 얼굴인데?	You look like you're about to collapse.	今にも倒れそうな顔してるよ？	你看起来马上就要倒下了？	你看起來馬上就要倒下了？
+그래도 여기까지 왔다는 건 인정해줄게.	Still, I'll give you credit for making it here.	それでも、ここまで来たことは認めてあげる。	不过，能来到这里这点，我认可。	不過，能來到這裡這點，我認可。
+잠깐, 너 [tremble]그 몸으로[/tremble] 싸우려고?	Wait, you're going to fight [tremble]in that condition[/tremble]?	待って、[tremble]その体で[/tremble]戦うつもり？	等等，你要用[tremble]这副身体[/tremble]战斗？	等等，你要用[tremble]這副身體[/tremble]戰鬥？
+무모한 건지 끈질긴 건지 아직은 모르겠네.	I still can't tell whether you're reckless or persistent.	無謀なのか、しぶといのか、まだ分からないね。	还分不清你是鲁莽还是顽强。	還分不清你是魯莽還是頑強。
+또 왔네.	You're back again.	また来たね。	又来了。	又來了。
+좋아. 이번에도 네가 어디까지 버티는지 보자.	All right. Let's see how long you last this time.	いいよ。今回も、どこまで耐えられるか見てみよう。	好吧，这次也看看你能撑到哪里。	好吧，這次也看看你能撐到哪裡。
+호오?	Oh?	ほう？	哦？	哦？
+네가 그 소문의 용사로구나.	So you are the hero I've heard about.	そなたが噂の勇者か。	你就是传闻中的勇者吧。	你就是傳聞中的勇者吧。
+<size=120%>[punch]잠깐.[/punch]</size> 거기서 멈추거라!	<size=120%>[punch]Halt.[/punch]</size> Stop right there!	<size=120%>[punch]待て。[/punch]</size>そこで止まるがよい！	<size=120%>[punch]等等。[/punch]</size>就在那里停下！	<size=120%>[punch]等等。[/punch]</size>就在那裡停下！
+이 몸의 수로에 발을 들이기 전에 먼저 신발부터 닦는 것이 예의 아니더냐?	Is it not proper to clean your shoes before entering my waterways?	我が水路に入る前に、まず靴を拭くのが礼儀ではないか？	踏入本王的水道之前，先擦干净鞋子不是基本礼仪吗？	踏入本王的水道之前，先擦乾淨鞋子不是基本禮儀嗎？
+그 흙 묻은 신발로 한 발짝만 더 들어오면, 짐의 백성들이 세 시간 동안 광낸 바닥이 망가지느니라.	One more step in those muddy shoes, and you'll ruin the floor my subjects spent three hours polishing.	その泥だらけの靴で一歩でも進めば、我が民が3時間かけて磨いた床が台無しになる。	你那沾满泥的鞋子再往前一步，就会毁掉本王子民花了三个小时擦亮的地板。	你那沾滿泥的鞋子再往前一步，就會毀掉本王子民花了三個小時擦亮的地板。
+[float]보아라.[/float]	[float]Behold.[/float]	[float]見よ。[/float]	[float]看吧。[/float]	[float]看吧。[/float]
+이 투명한 물길을.	These crystal-clear waterways.	この澄みきった水路を。	这清澈透明的水道。	這清澈透明的水道。
+<size=110%>[float]보아라.[/float] 이 티끌 하나 없는 타일을.</size>	<size=110%>[float]Behold.[/float] These spotless tiles.</size>	<size=110%>[float]見よ。[/float]この塵ひとつないタイルを。</size>	<size=110%>[float]看吧。[/float]这纤尘不染的瓷砖。</size>	<size=110%>[float]看吧。[/float]這纖塵不染的磁磚。</size>
+<size=120%>[wave]이것이 바로 슬라임 왕국의 긍지.[/wave]</size>	<size=120%>[wave]This is the pride of the Slime Kingdom.[/wave]</size>	<size=120%>[wave]これこそスライム王国の誇り。[/wave]</size>	<size=120%>[wave]这正是史莱姆王国的骄傲。[/wave]</size>	<size=120%>[wave]這正是史萊姆王國的驕傲。[/wave]</size>
+<size=120%>[wave]마왕성 지하 수로의 진정한 아름다움이니라![/wave]</size>	<size=120%>[wave]The true beauty of the castle's underground waterways![/wave]</size>	<size=120%>[wave]魔王城の地下水路の、真の美しさなのだ！[/wave]</size>	<size=120%>[wave]魔王城地下水道真正的美丽！[/wave]</size>	<size=120%>[wave]魔王城地下水道真正的美麗！[/wave]</size>
+그리고 짐은 그 모든 [slowshake][rand_size=98,106]말캉한[/rand_size][/slowshake] 백성들의 군주.	And I am sovereign over all those [slowshake][rand_size=98,106]squishy[/rand_size][/slowshake] subjects.	そして余は、その[slowshake][rand_size=98,106]ぷにぷにの[/rand_size][/slowshake]民すべての君主。	而本王，是所有这些[slowshake][rand_size=98,106]软乎乎的[/rand_size][/slowshake]子民的君主。	而本王，是所有這些[slowshake][rand_size=98,106]軟乎乎的[/rand_size][/slowshake]子民的君主。
+<size=120%>위대한 슬라임들의 여왕, 멜타다!</size>	<size=120%>Melta, queen of the mighty slimes!</size>	<size=120%>偉大なるスライムたちの女王、メルタだ！</size>	<size=120%>伟大的史莱姆女王，梅尔塔！</size>	<size=120%>偉大的史萊姆女王，梅爾塔！</size>
+정말 훌륭한 수로군.	These are truly magnificent waterways.	実に立派な水路だね。	真是出色的水道。	真是出色的水道。
+<size=120%>[wave]오호호호호![/wave]</size>	<size=120%>[wave]Ohohohoho![/wave]</size>	<size=120%>[wave]おほほほほ！[/wave]</size>	<size=120%>[wave]哦呵呵呵呵！[/wave]</size>	<size=120%>[wave]哦呵呵呵呵！[/wave]</size>
+훌륭한 수로라.	Magnificent waterways, you say.	立派な水路とな。	出色的水道么。	出色的水道麼。
+그래, 아주 정확한 평가로구나!	Yes, an exceptionally accurate assessment!	うむ、実に的確な評価だ！	不错，真是准确的评价！	不錯，真是準確的評價！
+짐의 백성들이 들으면 기뻐하겠군.	My subjects would be delighted to hear that.	我が民が聞けば喜ぶであろう。	本王的子民听到会很高兴。	本王的子民聽到會很高興。
+아니, 이미 듣고 있겠지.	No, they must be hearing it already.	いや、すでに聞いておるだろう。	不，应该已经听到了吧。	不，應該已經聽到了吧。
+다들 숨어서 보고 있으니 말이다.	They are all watching from hiding, after all.	皆、隠れて見ておるからな。	毕竟大家都躲着看呢。	畢竟大家都躲著看呢。
+좋아. 그대에게는 특별히 품격 있는 패배를 허락하마!	Very well. I shall grant you a defeat befitting your fine manners!	よい。そなたには特別に、気品ある敗北を授けよう！	好，本王就特别赐予你一场有格调的败北！	好，本王就特別賜予你一場有格調的敗北！
+슬라임 치고는 꽤 깨끗하네.	Pretty clean, for slimes.	スライムにしては結構きれいだね。	对史莱姆来说，挺干净的嘛。	對史萊姆來說，挺乾淨的嘛。
+[tremble]...슬라임 치고는?[/tremble]	[tremble]...For slimes?[/tremble]	[tremble]……スライムにしては？[/tremble]	[tremble]……对史莱姆来说？[/tremble]	[tremble]……對史萊姆來說？[/tremble]
+지금 네놈, [pause=0.2] 짐의 백성들을 [tremble]얕본 것이냐?[/tremble]	Did you just [pause=0.2] [tremble]look down on[/tremble] my subjects?	今そなた、[pause=0.2]我が民を[tremble]見下したのか？[/tremble]	你刚才，[pause=0.2]是在[tremble]小看[/tremble]本王的子民吗？	你剛才，[pause=0.2]是在[tremble]小看[/tremble]本王的子民嗎？
+<size=120%>슬라임은 샴푸도, 젤리도, 연금술 재료도 아니다!</size>	<size=120%>Slimes are not shampoo, jelly, or alchemical ingredients!</size>	<size=120%>スライムはシャンプーでも、ゼリーでも、錬金術の材料でもない！</size>	<size=120%>史莱姆不是洗发水，不是果冻，也不是炼金材料！</size>	<size=120%>史萊姆不是洗髮精，不是果凍，也不是鍊金材料！</size>
+움직이고, 생각하고,	They move, they think,	動き、考え、	会行动，会思考，	會行動，會思考，
+근무 교대표까지 작성하는 당당한 백성이니라!	They are proud citizens who even draw up their own shift schedules!	勤務のシフト表まで作る、誇り高き民なのだ！	是连轮班表都会编写的堂堂子民！	是連輪班表都會編寫的堂堂子民！
+좋아.	Very well.	よかろう。	好吧。	好吧。
+네놈은 특별히 예절 교육부터 받아야겠구나.	You shall receive a special lesson in etiquette first.	そなたには、まず特別な礼儀作法の教育が必要だな。	看来得先特别教教你礼仪。	看來得先特別教教你禮儀。
+마왕님께서 네놈을 적당히 봐주라 명하셨으니, 짐도 그 뜻은 따르겠다.	His Majesty ordered us to show you some mercy, and I shall respect his wishes.	魔王様が適度に手加減せよと命じられたゆえ、余もその意に従おう。	魔王命我适当放你一马，本王也会遵从旨意。	魔王命我適當放你一馬，本王也會遵從旨意。
+허나 이곳은 짐의 왕국.	But this is my kingdom.	だが、ここは余の王国。	但这里是本王的王国。	但這裡是本王的王國。
+여왕의 앞을 지나가려면, 그만한 자격을 보이거라.	If you wish to pass your queen, prove yourself worthy.	女王の前を通りたければ、それに相応しい資格を示せ。	想从女王面前通过，就证明你有相应的资格。	想從女王面前通過，就證明你有相應的資格。
+자, 나의 귀여운 [slowshake][rand_size=98,106]백성들이여[/rand_size][/slowshake]!	Now, my adorable [slowshake][rand_size=98,106]subjects[/rand_size][/slowshake]!	さあ、我が愛らしい[slowshake][rand_size=98,106]民たちよ[/rand_size][/slowshake]！	来吧，我可爱的[slowshake][rand_size=98,106]子民们[/rand_size][/slowshake]！	來吧，我可愛的[slowshake][rand_size=98,106]子民們[/rand_size][/slowshake]！
+<size=110%>[punch]줄을 맞춰라![/punch]</size>	<size=110%>[punch]Form ranks![/punch]</size>	<size=110%>[punch]列を揃えよ！[/punch]</size>	<size=110%>[punch]排好队伍！[/punch]</size>	<size=110%>[punch]排好隊伍！[/punch]</size>
+<size=120%>[wave]대형은 넓게![/wave]</size>	<size=120%>[wave]Spread the formation![/wave]</size>	<size=120%>[wave]陣形を広く！[/wave]</size>	<size=120%>[wave]展开阵形！[/wave]</size>	<size=120%>[wave]展開陣形！[/wave]</size>
+<size=130%>[punch]무례한 용사를 말캉하게 짓눌러라!![/punch]</size>	<size=130%>[punch]Squish that insolent hero flat!![/punch]</size>	<size=130%>[punch]無礼な勇者をぷにっと押し潰せ！！[/punch]</size>	<size=130%>[punch]软乎乎地碾压无礼的勇者！！[/punch]</size>	<size=130%>[punch]軟乎乎地碾壓無禮的勇者！！[/punch]</size>
+오, 왔어? 오늘은 또 뭘 두들겨 줄까!	Oh, you're here? What shall I hammer into shape today?	お、来たの？今日は何を叩いてあげようか！	哦，来了？今天又要敲些什么！	哦，來了？今天又要敲些什麼！
+마정석만 두둑하게 챙겨왔다면, 내 망치로 아주 화끈하게 벼려주지!	Bring plenty of Magic Stones, and my hammer will forge you something spectacular!	魔晶石をたっぷり持ってきたなら、この槌で豪快に鍛えてあげる！	只要带够魔晶石，我的锤子就能给你狠狠锻造一番！	只要帶夠魔晶石，我的錘子就能給你狠狠鍛造一番！
+업그레이드를 부탁한다.	I'd like an upgrade.	強化を頼む。	请帮我升级。	請幫我升級。
+좋아, 시원시원해서 마음에 드네!	Good! I like someone who gets straight to the point!	いいね、はっきりしてて気に入った！	好，爽快，我喜欢！	好，爽快，我喜歡！
+아직 결정하지 못했다.	I haven't decided yet.	まだ決めていない。	还没决定。	還沒決定。
+뭐야, 기껏 망치질할 생각에 신나서 화로까지 벌겋게 달궈 놨더니!	What? I got so excited to hammer away that I heated the forge red-hot!	なんだよ、槌を振るうのが楽しみで炉まで真っ赤にしておいたのに！	什么嘛，我都兴奋得把炉子烧红了，就等着敲锤子呢！	什麼嘛，我都興奮得把爐子燒紅了，就等著敲錘子呢！
+...쳇, 알았어. 맘 정해지면 다시 와. 다음엔 사람 기대하게 만들어 놓고 빼기 없기다?	...Tch, fine. Come back when you've decided. Next time, don't get my hopes up and back out, all right?	……ちぇっ、分かった。決まったらまた来て。次は期待させておいて逃げるのなしだからね？	……啧，知道了。想好再来。下次可别让我满怀期待又退缩哦？	……嘖，知道了。想好再來。下次可別讓我滿懷期待又退縮哦？
+당장 화로에 불부터 지필 테니까, 뭘 어떻게 뜯어고칠지 똑바로 골라보라고.	I'll get the forge fired up. You figure out exactly what you want rebuilt.	すぐ炉に火を入れるから、何をどう改造するかちゃんと選んで。	我这就给炉子点火，你好好选选要把什么怎么改造。	我這就給爐子點火，你好好選選要把什麼怎麼改造。
+너처럼 '이번엔 다르다'며 기세등등하게 나갔다가 마왕성 바닥 청소만 하고 굴러떨어진 녀석들이 한 무더기거든.	Plenty of people marched out saying “This time is different,” only to mop the castle floor with their faces and tumble back down.	「今度は違う」って意気込んで出ていって、魔王城の床を顔で掃除して転げ落ちたやつ、山ほどいるんだよ。	像你这样喊着“这次不一样”气势汹汹地出去，结果只给魔王城擦了地板就滚下来的家伙多得很。	像你這樣喊著「這次不一樣」氣勢洶洶地出去，結果只給魔王城擦了地板就滾下來的傢伙多得很。
+또 쥐어터져서 오면 엄청 비웃어줄 테니까, 힘내 봐!	Come back beaten up again and I'll laugh my head off, so give it your best!	またボコボコにされて戻ったら大笑いしてあげるから、頑張って！	要是又被揍扁了回来，我可会狠狠嘲笑你，加油吧！	要是又被揍扁了回來，我可會狠狠嘲笑你，加油吧！
+준비 다 끝났으면 저기 문으로 나가면 돼.	Once you're ready, head out through that door.	準備ができたら、あそこの扉から出ればいいよ。	准备好就从那边的门出去。	準備好就從那邊的門出去。
+아, 미리 말해두는데 저 문 밖으로 나가면 얄짤없이 일방통행이다?	Oh, fair warning: once you go through that door, it's strictly one-way.	あ、先に言っておくけど、あの扉を出たら容赦なく一方通行だからね？	啊，先说好，出了那扇门可就只能往前走了。	啊，先說好，出了那扇門可就只能往前走了。
+나중에 뭐 두고 왔다고 밖에서 엉엉 울어도 못 돌아와.	Even if you cry outside because you forgot something, you can't come back.	忘れ物したって外で泣いても、戻れないからね。	以后就算因为忘带东西在外面哭鼻子，也回不来。	以後就算因為忘帶東西在外面哭鼻子，也回不來。
+저기 쌓여 있는 것들 보이지? 너처럼 이 구덩이에 떨어진 녀석들이 남긴 물건들을 내가 쓸 만하게 손 좀 봐둔 거야.	See that pile? It's stuff left by people who fell into this pit, like you. I fixed it up so it's usable.	あそこに積んであるの、見える？君みたいにこの穴へ落ちたやつらの残した物を、使えるように直しておいたんだ。	看见那堆东西了吗？都是像你一样掉进坑里的家伙留下的，我修了修，让它们能用了。	看見那堆東西了嗎？都是像你一樣掉進坑裡的傢伙留下的，我修了修，讓它們能用了。
+맨손으로 덤빌 생각 아니면 저기서 하나 챙겨가.	Unless you plan to fight bare-handed, take one from the pile.	素手で挑むつもりじゃないなら、そこから1つ持っていって。	不打算赤手空拳上的话，就去拿一件。	不打算赤手空拳上的話，就去拿一件。
+무기 골랐으면 그 옆에 허수아비한테 손부터 좀 풀어보고.	Once you've picked a weapon, warm up on the dummy beside it.	武器を選んだら、隣のカカシで肩慣らししてね。	选好武器后，先拿旁边的稻草人练练手。	選好武器後，先拿旁邊的稻草人練練手。
+엄한 데서 헛스윙하다 또 바닥으로 굴러떨어지지 말고.	Don't swing at thin air somewhere else and tumble back down again.	変なところで空振りして、また底へ転げ落ちないように。	别在不该挥的地方挥空，又滚回坑底。	別在不該揮的地方揮空，又滾回坑底。
+● [[추가 이동속도]] {bonus_move_step}마다 [[치명타 확률]] {crit_gain_per_step} 추가	● Every {bonus_move_step} [[추가 이동속도]] grants {crit_gain_per_step} [[치명타 확률]]	● [[추가 이동속도]]{bonus_move_step}ごとに[[치명타 확률]]{crit_gain_per_step}追加	● 每{bonus_move_step}[[추가 이동속도]]额外获得{crit_gain_per_step}[[치명타 확률]]	● 每{bonus_move_step}[[추가 이동속도]]額外獲得{crit_gain_per_step}[[치명타 확률]]
+● [[추가 이동속도]] {bonus_move_step}마다 [[공격을 회피할 확률]] {evasion_gain_per_step} 추가	● Every {bonus_move_step} [[추가 이동속도]] grants {evasion_gain_per_step} [[공격을 회피할 확률]]	● [[추가 이동속도]]{bonus_move_step}ごとに[[공격을 회피할 확률]]{evasion_gain_per_step}追加	● 每{bonus_move_step}[[추가 이동속도]]额外获得{evasion_gain_per_step}[[공격을 회피할 확률]]	● 每{bonus_move_step}[[추가 이동속도]]額外獲得{evasion_gain_per_step}[[공격을 회피할 확률]]
+● 깃털 {feather_count}개가 주위를 회전하며 적을 공격\n● 깃털 피해는 [[공격력]]의 {damage_coef}\n● 회전 반경 {radius}\n● 같은 적을 다시 공격하는 기본 간격 {hit_cooldown}	● {feather_count} feathers orbit you and attack enemies\n● Feather damage: {damage_coef} of [[공격력]]\n● Orbit radius: {radius}\n● Base interval for hitting the same enemy: {hit_cooldown}	● {feather_count}個の羽根が周囲を回って敵を攻撃\n● 羽根のダメージは[[공격력]]の{damage_coef}\n● 回転半径：{radius}\n● 同じ敵への基本攻撃間隔：{hit_cooldown}	● {feather_count}片羽毛环绕自身攻击敌人\n● 羽毛伤害为[[공격력]]的{damage_coef}\n● 旋转半径{radius}\n● 再次攻击同一敌人的基础间隔{hit_cooldown}	● {feather_count}片羽毛環繞自身攻擊敵人\n● 羽毛傷害為[[공격력]]的{damage_coef}\n● 旋轉半徑{radius}\n● 再次攻擊同一敵人的基礎間隔{hit_cooldown}
+● {em:개화} 전용 유물\n● {em:개화 상태}에서 적 처치 시 {pos:지속 시간 증가} {extension_seconds}	● Exclusive relic for {em:Bloom}\n● Kills during {em:Bloom} {pos:extend duration} by {extension_seconds}	● {em:開花}専用の遺物\n● {em:開花状態}で敵を倒すと{pos:持続時間延長} {extension_seconds}	● {em:绽放}专属遗物\n● {em:绽放状态}下击败敌人{pos:延长持续时间} {extension_seconds}	● {em:綻放}專屬遺物\n● {em:綻放狀態}下擊敗敵人{pos:延長持續時間} {extension_seconds}
+● 공격 적중 시 주변 적에게 {em:번개 추가타}\n● 번개 피해 {lightning_damage}\n● 범위 {radius}\n{cooldown_line}	● Hits trigger an {em:additional lightning strike} on nearby enemies\n● Lightning damage: {lightning_damage}\n● Radius: {radius}\n{cooldown_line}	● 攻撃命中時、周囲の敵に{em:雷の追加攻撃}\n● 雷ダメージ：{lightning_damage}\n● 範囲：{radius}\n{cooldown_line}	● 攻击命中时对周围敌人施加{em:额外雷击}\n● 雷击伤害{lightning_damage}\n● 范围{radius}\n{cooldown_line}	● 攻擊命中時對周圍敵人施加{em:額外雷擊}\n● 雷擊傷害{lightning_damage}\n● 範圍{radius}\n{cooldown_line}
+● 적 처치 시 {duration} 동안 [[공격력]] {attack_bonus}\n● [[이동속도]] {move_speed_bonus}	● On kill: [[공격력]] {attack_bonus} for {duration}\n● [[이동속도]] {move_speed_bonus}	● 敵撃破時、{duration}間[[공격력]] {attack_bonus}\n● [[이동속도]] {move_speed_bonus}	● 击败敌人后{duration}内[[공격력]] {attack_bonus}\n● [[이동속도]] {move_speed_bonus}	● 擊敗敵人後{duration}內[[공격력]] {attack_bonus}\n● [[이동속도]] {move_speed_bonus}
+● {em:잔영의 날개} 전용 유물\n● {em:스피드 스트라이크}로 적 처치 시 {pos:러쉬 유지}	● Exclusive relic for {em:Wings of Afterimage}\n● Kills with {em:Speed Strike} {pos:maintain Rush}	● {em:残影の翼}専用の遺物\n● {em:スピードストライク}で敵を倒すと{pos:ラッシュを維持}	● {em:残影之翼}专属遗物\n● 用{em:极速斩击}击败敌人时{pos:维持疾冲}	● {em:殘影之翼}專屬遺物\n● 用{em:極速斬擊}擊敗敵人時{pos:維持疾衝}
+● 체력이 {min_ratio}~{max_ratio}일 때 [[{stat}]] {value}	● While HP is between {min_ratio} and {max_ratio}: [[{stat}]] {value}	● HPが{min_ratio}～{max_ratio}のとき：[[{stat}]] {value}	● 生命值为{min_ratio}～{max_ratio}时：[[{stat}]] {value}	● 生命值為{min_ratio}～{max_ratio}時：[[{stat}]] {value}
+● {em:잔영의 날개} 전용 유물\n● {em:러쉬}의 이동속도 보너스 변경\n● 사용 시 [[이동속도]] {stage_0_bonus}\n● {val:3초} 후 [[이동속도]] {stage_1_bonus} 추가, 총 {stage_1_total}\n● {val:6초} 후 [[이동속도]] {stage_2_bonus} 추가, 총 {stage_2_total}	● Exclusive relic for {em:Wings of Afterimage}\n● Changes {em:Rush}'s movement speed bonus\n● On use: [[이동속도]] {stage_0_bonus}\n● After {val:3 seconds}: [[이동속도]] +{stage_1_bonus}, total {stage_1_total}\n● After {val:6 seconds}: [[이동속도]] +{stage_2_bonus}, total {stage_2_total}	● {em:残影の翼}専用の遺物\n● {em:ラッシュ}の移動速度ボーナスを変更\n● 使用時：[[이동속도]] {stage_0_bonus}\n● {val:3秒}後：[[이동속도]] {stage_1_bonus}追加、合計{stage_1_total}\n● {val:6秒}後：[[이동속도]] {stage_2_bonus}追加、合計{stage_2_total}	● {em:残影之翼}专属遗物\n● 改变{em:疾冲}的移动速度加成\n● 使用时[[이동속도]] {stage_0_bonus}\n● {val:3秒}后[[이동속도]]额外{stage_1_bonus}，合计{stage_1_total}\n● {val:6秒}后[[이동속도]]额外{stage_2_bonus}，合计{stage_2_total}	● {em:殘影之翼}專屬遺物\n● 改變{em:疾衝}的移動速度加成\n● 使用時[[이동속도]] {stage_0_bonus}\n● {val:3秒}後[[이동속도]]額外{stage_1_bonus}，合計{stage_1_total}\n● {val:6秒}後[[이동속도]]額外{stage_2_bonus}，合計{stage_2_total}
+추가 이동속도	Bonus Movement Speed	追加移動速度	额外移动速度	額外移動速度
+공격을 회피할 확률	Attack Evasion Chance	攻撃回避率	攻击闪避率	攻擊閃避率
+냉기	Chill	冷気	寒气	寒氣
+냉기가 높을수록 태양도의 일반 공격이 강화되고, 공명 피니시 조건으로 사용됩니다.	Higher Chill strengthens the Sun Blade's basic attacks and contributes to the Resonance Finish requirement.	冷気が高いほど太陽刀の通常攻撃が強化され、共鳴フィニッシュの条件にも使われる。	寒气越高，太阳刀的普通攻击越强，并作为共鸣终结的触发条件。	寒氣越高，太陽刀的普通攻擊越強，並作為共鳴終結的觸發條件。
+공격력, 공격속도, 이동속도가 증가하고 대시 참격이 활성화됩니다.	Increases attack power, attack speed and movement speed, and enables dash slashes.	攻撃力・攻撃速度・移動速度が増加し、ダッシュ斬撃が有効になる。	提高攻击力、攻击速度和移动速度，并启用冲刺斩击。	提高攻擊力、攻擊速度和移動速度，並啟用衝刺斬擊。
+열기	Open	開ける	打开	打開
+열기가 높을수록 월영도의 일반 공격이 강화되고, 공명 피니시 조건으로 사용됩니다.	Higher Heat strengthens the Moonshadow Blade's basic attacks and contributes to the Resonance Finish requirement.	熱気が高いほど月影刀の通常攻撃が強化され、共鳴フィニッシュの条件にも使われる。	热气越高，月影刀的普通攻击越强，并作为共鸣终结的触发条件。	熱氣越高，月影刀的普通攻擊越強，並作為共鳴終結的觸發條件。
+술 장판	Alcohol Pool	酒の床	酒液区域	酒液區域
+이동 속도 +25%, 공격 속도 +40%.	Movement speed +25%, attack speed +40%.	移動速度+25%、攻撃速度+40%。	移动速度+25%，攻击速度+40%。	移動速度+25%，攻擊速度+40%。
+반격 준비	Counterattack Ready	反撃準備	反击准备	反擊準備
+질주의 여운	Lingering Sprint	疾走の余韻	疾奔余韵	疾奔餘韻
+적 처치 시 잠시 이동속도가 증가합니다.	Defeating an enemy briefly increases movement speed.	敵を倒すと、一時的に移動速度が増加する。	击败敌人后短暂提高移动速度。	擊敗敵人後短暫提高移動速度。
+치명타 시 이동속도 스택이 쌓이고, 피해를 받으면 초기화됩니다.	Critical hits build movement speed stacks, which reset when taking damage.	クリティカルで移動速度が累積し、ダメージを受けるとリセットされる。	暴击时累积移动速度层数，受到伤害后重置。	暴擊時累積移動速度層數，受到傷害後重設。
+시야 제한	Limited Vision	視界制限	视野受限	視野受限
+플레이어의 시야가 일시적으로 줄어들고, 어둠 마스크가 활성화됩니다.	Temporarily reduces your field of vision and activates the darkness mask.	プレイヤーの視界が一時的に狭まり、暗闇マスクが有効になる。	暂时缩小玩家视野，并启用黑暗遮罩。	暫時縮小玩家視野，並啟用黑暗遮罩。
+시야 차단	Obscured Vision	視界遮断	视野遮蔽	視野遮蔽
+그림자 안개에 접촉한 동안 플레이어의 시야가 일시적으로 차단됩니다.	Temporarily obscures your vision while in contact with shadow mist.	影の霧に触れている間、プレイヤーの視界が一時的に遮られる。	接触暗影迷雾时暂时遮蔽玩家视野。	接觸暗影迷霧時暫時遮蔽玩家視野。
+어이, 거기! 여긴 못 지나가!	Hey, you! You can't pass here!	おい、そこの！ここは通れないぞ！	喂，那边的！这里不能过！	喂，那邊的！這裡不能過！
+아니. 딱히 막는 게 아니라 길이 없어.	No, I'm not blocking you. There's no road.	いや、止めてるわけじゃなくて、道がないんだ。	不是故意拦你，是没路。	不是故意攔你，是沒路。
+예전 용사가 날뛰면서 길이 완전히 막혔거든.	The last hero's rampage blocked the road completely.	前の勇者が暴れて、道が完全に塞がったんだ。	之前的勇者大闹一场，把路完全堵住了。	之前的勇者大鬧一場，把路完全堵住了。
+공사 대금이 아직 안 들어와서 작업이 불가능해.	We can't work until the construction payment arrives.	工事代金がまだ届いてなくて、作業できないんだ。	工程款还没到，没法施工。	工程款還沒到，沒法施工。
+정말로? 그럼 공사를 시작할게! 아마 3일 후 즈음 오면 될 거야.	Really? Then I'll start construction! Come back in about 3 days.	本当？じゃあ工事を始めるよ！たぶん3日後くらいに来ればいい。	真的？那就开始施工！大概3天后再来吧。	真的？那就開始施工！大概3天後再來吧。
+마정석이 부족한데?	You don't have enough Magic Stones.	魔晶石が足りないけど？	魔晶石不够啊？	魔晶石不夠啊？
+너구나! 고마워 친구. 덕분에 공사 중이야.	It's you! Thanks, friend. Construction is underway thanks to you.	君か！ありがとう、友よ。おかげで工事中だ。	是你啊！谢谢，朋友。托你的福，正在施工。	是你啊！謝謝，朋友。託你的福，正在施工。
+앞으로 N일 정도 남았어.	About N days remain.	あとN日くらいだ。	还剩大约N天。	還剩大約N天。
+공사는 잘 마무리 됐어, 볼 일 보러 가	Construction is finished. Go take care of your business.	工事は無事に終わったよ。用事を済ませておいで。	工程顺利完成了，去办你的事吧。	工程順利完成了，去辦你的事吧。
+공사 대금이 부족한 것 같아. 마정석을 더 모아 와.	Looks like you're short on construction funds. Bring more Magic Stones.	工事代金が足りないみたいだ。魔晶石をもっと集めてきて。	工程款好像不够，再去攒些魔晶石吧。	工程款好像不夠，再去攢些魔晶石吧。
+오오! 여왕님의 친우구나.\r\n여왕님이 네가 수로를 쓰는 것을 허락해줬어. 말만해.\r\n반대편까지 빠르게 데려다 줄게	Oh! You're the queen's friend.\nShe has allowed you to use the waterways. Just say the word.\nI'll take you straight to the other side.	おお！女王様のご友人か。\n女王様が水路の使用を許可された。声をかけてくれ。\n反対側まですぐに連れていくよ。	哦哦！你是女王的朋友。\n女王允许你使用水道了，尽管开口。\n我会快速送你到对面。	哦哦！你是女王的朋友。\n女王允許你使用水道了，儘管開口。\n我會快速送你到對面。
+너. 용사인가.\n여긴 수로의 시작 지점이야.\n원하는 구역으로 바로 이동할 수 있지.\n지나가게 해주고 싶지만, 아직 여왕님이 허락해주지 않을 거야.\n용사가 수질을 오염 시킨다고 말이지.\n이용하고 싶다면 여왕님의 허락을 받고 와.\t	You. Are you the hero?\nThis is the entrance to the waterways.\nYou can travel directly to your chosen region.\nI'd let you pass, but the queen hasn't approved it yet.\nShe says heroes pollute the water.\nGet her permission if you want to use it.	お前、勇者か。\nここは水路の入口だ。\n好きな区域へ直接移動できる。\n通してやりたいが、まだ女王様が許可されないだろう。\n勇者は水を汚すと言っていてな。\n使いたければ女王様の許可を得てきてくれ。	你，是勇者吗？\n这里是水道的起点。\n可以直接前往想去的区域。\n我想让你通过，但女王还不会同意。\n她说勇者会污染水质。\n想使用的话，先去得到女王的许可。	你，是勇者嗎？\n這裡是水道的起點。\n可以直接前往想去的區域。\n我想讓你通過，但女王還不會同意。\n她說勇者會污染水質。\n想使用的話，先去得到女王的許可。
+화상 피해	Burn Damage	火傷ダメージ	灼烧伤害	灼燒傷害
+레벨업 선택 세션이 이미 열려 있습니다.	Level-up selection is already open.	レベルアップ選択はすでに開いています。	升级选择已打开。	升級選擇已開啟。
+레벨업 선택 세션이 열려 있지 않습니다.	Level-up selection is not open.	レベルアップ選択が開いていません。	升级选择尚未打开。	升級選擇尚未開啟。
+선택 가능한 레벨업 보상이 없습니다.	No level-up rewards are available.	選択できるレベルアップ報酬がありません。	没有可选的升级奖励。	沒有可選的升級獎勵。
+현재 플레이어가 등록되지 않았습니다.	No player is currently registered.	プレイヤーが登録されていません。	当前没有已登记的玩家。	目前沒有已登記的玩家。
+다른 대화 또는 UI가 진행 중입니다.	Another dialogue or screen is active.	別の会話または画面が開いています。	其他对话或界面正在进行。	其他對話或介面正在進行。
+현재 선택 가능한 레벨업 효과가 없습니다.	No level-up effects are currently available.	現在選択できるレベルアップ効果がありません。	当前没有可选的升级效果。	目前沒有可選的升級效果。
+활성 레벨업 후보가 없습니다.	No level-up candidates are active.	有効なレベルアップ候補がありません。	没有可用的升级候选项。	沒有可用的升級候選項。
+리롤 횟수를 모두 사용했습니다.	No rerolls remaining.	リロール回数を使い切りました。	重掷次数已用完。	重擲次數已用完。
+새로 등장할 수 있는 레벨업 효과가 없습니다.	No new level-up effects can appear.	新たに出現できるレベルアップ効果がありません。	没有可新出现的升级效果。	沒有可新出現的升級效果。
+리롤할 수 있는 후보가 없습니다.	No candidates can be rerolled.	リロールできる候補がありません。	没有可重掷的候选项。	沒有可重擲的候選項。
+현재 후보에 없는 보상입니다.	This reward is not among the current candidates.	現在の候補にない報酬です。	该奖励不在当前候选项中。	該獎勵不在目前候選項中。
+활성 런이 아닙니다.	No active run.	有効なランがありません。	当前没有进行中的挑战。	目前沒有進行中的挑戰。
+보상 정의가 없습니다.	Reward data is missing.	報酬データがありません。	缺少奖励数据。	缺少獎勵資料。
+이미 선택한 보상입니다.	This reward has already been selected.	すでに選択した報酬です。	已经选择过该奖励。	已經選擇過該獎勵。
+레벨업 보상 소비에 실패했습니다.	Could not claim the level-up reward.	レベルアップ報酬を受け取れませんでした。	无法领取升级奖励。	無法領取升級獎勵。
+1번 슬롯에 무기가 없습니다.	No weapon in slot 1.	スロット1に武器がありません。	栏位1没有武器。	欄位1沒有武器。
+2번 슬롯에 봉인할 무기가 없습니다.	No weapon to seal in slot 2.	スロット2に封印できる武器がありません。	栏位2没有可封印的武器。	欄位2沒有可封印的武器。
+현재 상태에서는 2번 슬롯을 안전하게 봉인할 수 없습니다.	Weapon slot 2 cannot be sealed in the current state.	現在の状態では武器スロット2を封印できません。	当前状态下无法安全封印武器栏位2。	目前狀態下無法安全封印武器欄位2。
+강화 가능한 유물이 없습니다.	No relics can be upgraded.	強化できる遺物がありません。	没有可升级的遗物。	沒有可升級的遺物。
+현재 레벨이 효과 최소 조건보다 낮습니다.	Your level is below the effect's minimum requirement.	現在のレベルが効果の最低条件を満たしていません。	当前等级低于效果的最低要求。	目前等級低於效果的最低要求。
+현재 최대 체력이 저주를 감당할 수 없습니다.	Your max HP is too low to bear this curse.	現在の最大HPでは呪いに耐えられません。	当前生命值上限不足以承受诅咒。	目前生命值上限不足以承受詛咒。
+ItemDatabase가 연결되지 않았습니다.	The item database is not assigned.	アイテムデータベースが設定されていません。	未连接物品数据库。	未連接物品資料庫。
+EntryGridRoot 또는 슬롯 프리팹이 연결되지 않았습니다.	The entry grid or slot prefab is not assigned.	項目グリッドまたはスロットのプレハブが設定されていません。	未连接条目网格或栏位预制件。	未連接項目網格或欄位預製物件。
+술통 미믹	Barrel Mimic	酒樽ミミック	酒桶拟态怪	酒桶擬態怪
+비전 근접 골렘	Arcane Melee Golem	秘術の近接ゴーレム	奥术近战魔像	奧術近戰魔像
+비전 탱크 골렘	Arcane Tank Golem	秘術の重装ゴーレム	奥术重装魔像	奧術重裝魔像
+고블린 거너	Goblin Gunner	ゴブリンガンナー	哥布林枪手	哥布林槍手
+고블린 탱크	Goblin Tank	重装ゴブリン	重装哥布林	重裝哥布林
+고블린 전사	Goblin Warrior	ゴブリン戦士	哥布林战士	哥布林戰士
+리자드 마법사	Lizard Mage	リザードメイジ	蜥蜴法师	蜥蜴法師
+리자드 전사	Lizard Warrior	リザード戦士	蜥蜴战士	蜥蜴戰士
+개구리	Frog	カエル	青蛙	青蛙
+개구리 보스	Frog Boss	カエルのボス	青蛙首领	青蛙首領
+촛대 미믹	Candlestick Mimic	燭台ミミック	烛台拟态怪	燭台擬態怪
+망자의 해골	Deads' Skeleton	死者の骸骨	亡者骷髅	亡者骷髏
+그림자 몬스터	Shadow Monster	影のモンスター	暗影怪	暗影怪
+그림자 하수인	Shadow Servant	影の従者	暗影仆从	暗影僕從
+기묘한 촛대	Strange Candlestick	奇妙な燭台	奇异烛台	奇異燭台
+비숍 슬라임	Bishop Slime	ビショップスライム	主教史莱姆	主教史萊姆
+나이트 슬라임	Knight Slime	ナイトスライム	骑士史莱姆	騎士史萊姆
+폰 슬라임	Pawn Slime	ポーンスライム	兵卒史莱姆	兵卒史萊姆
+룩 슬라임	Rook Slime	ルークスライム	战车史莱姆	戰車史萊姆
+마법사 슬라임	Wizard Slime	魔法使いスライム	法师史莱姆	法師史萊姆
+보물 미믹	Treasure Mimic	宝物ミミック	宝藏拟态怪	寶藏擬態怪
+취룡 스피리	Spiri, the Drunken Dragon	酔竜スピリ	醉龙斯皮莉	醉龍斯皮莉
+그림자 정령 클로에	Chloe, the Shadow Spirit	影の精霊クロエ	暗影精灵克洛伊	暗影精靈克洛伊
+슬라임 퀸 멜타	Melta, the Slime Queen	スライムクイーン・メルタ	史莱姆女王梅尔塔	史萊姆女王梅爾塔
+우아한 여왕 멜타	Melta, the Graceful Queen	優雅な女王メルタ	优雅女王梅尔塔	優雅女王梅爾塔
+변덕스러운 여왕 멜타	Melta, the Fickle Queen	気まぐれな女王メルタ	善变女王梅尔塔	善變女王梅爾塔
+{0}번 남음	{0} remaining	残り{0}回	剩余{0}次	剩餘{0}次
+오늘의 운동은 이미 끝났어. 다음에도 건강하게 만나자!	You've finished today's workout. Stay healthy until next time!	今日の運動はもう終わったよ。また元気に会おう！	今天的锻炼已经结束了。下次也要健健康康地见面！	今天的鍛鍊已經結束了。下次也要健健康康地見面！
+공격력 +{0:0.#}	Attack +{0:0.#}	攻撃力 +{0:0.#}	攻击力 +{0:0.#}	攻擊力 +{0:0.#}
+이동속도 +{0:0.#}%	Movement speed +{0:0.#}%	移動速度 +{0:0.#}%	移动速度 +{0:0.#}%	移動速度 +{0:0.#}%
+경험치	Experience	経験値	经验值	經驗值
+그건 안해도 되겠는데? 다른 운동을 해봐.	You don't need that one. Try another workout.	それは必要なさそうだね。別の運動をしてみて。	你似乎不需要这个，试试别的锻炼吧。	你似乎不需要這個，試試別的鍛鍊吧。
+레벨업 !	Level up!	レベルアップ！	升级！	升級！
+{0} 보상을 적용할 수 없습니다.	Unable to apply the {0} reward.	{0}の報酬を適用できません。	无法应用{0}奖励。	無法套用{0}獎勵。
+배송할 소포가 없습니다.	You have no parcel to deliver.	配達する小包がありません。	没有可配送的包裹。	沒有可配送的包裹。
+보상을 생성할 수 없어 소포를 배송하지 않았습니다.	The parcel was not delivered because the reward could not be created.	報酬を生成できないため、小包は配達されませんでした。	无法生成奖励，因此未配送包裹。	無法產生獎勵，因此未配送包裹。
+Epic 유물 보상을 생성할 수 없어 소포를 배송하지 않았습니다.	The parcel was not delivered because the Epic relic reward could not be created.	エピック遺物の報酬を生成できないため、小包は配達されませんでした。	无法生成史诗遗物奖励，因此未配送包裹。	無法產生史詩遺物獎勵，因此未配送包裹。
+다음 배송 지점을 예약할 수 없습니다.	Unable to reserve the next delivery point.	次の配達先を予約できません。	无法预约下一个配送点。	無法預約下一個配送點。
+한개? 흠 뭐 고마워.	One? Well, thanks.	一個？まあ、ありがと。	一个？嗯，谢谢。	一個？嗯，謝謝。
+두개 정도면 딱 좋지.	Two is just right.	二個くらいがちょうどいいね。	两个就刚刚好。	兩個就剛剛好。
+세개? 야 그만 가져가. 나 잘린다고.	Three? Hey, stop taking them. You'll get me fired.	三個？おい、もう持ってくな。クビになっちまうよ。	三个？喂，别再拿了。我会被炒的。	三個？喂，別再拿了。我會被炒的。
+그만가져가라고 했지.	I told you to stop taking them.	もう持ってくなって言っただろ。	我说了别再拿了。	我說了別再拿了。
+가방을 좀 비우지그래?	Why don't you clear some space in your bag?	かばんを少し空けたらどう？	先清理一下背包吧？	先清理一下背包吧？
+마정석 {0}개 바치기	Offer {0} magic stones	魔晶石を{0}個捧げる	献上{0}颗魔晶石	獻上{0}顆魔晶石
+체력 {0} 바치기	Offer {0} health	体力を{0}捧げる	献上{0}生命值	獻上{0}生命值
+이동 경로를 사용할 수 없습니다.	This travel route is unavailable.	この移動経路は利用できません。	无法使用此移动路线。	無法使用此移動路線。
+아직 이용할 수 없습니다.	Not available yet.	まだ利用できません。	尚不可用。	尚不可用。
+지금은 이동할 수 없습니다.	You cannot travel right now.	今は移動できません。	现在无法移动。	現在無法移動。
+맵을 준비하지 못했습니다. 빈 맵으로 진입하지 않도록 이동을 보류했습니다.	The map could not be prepared. Travel was paused to avoid entering an empty map.	マップを準備できませんでした。空のマップへの移動を保留しました。	地图准备失败。为避免进入空地图，已暂停移动。	地圖準備失敗。為避免進入空地圖，已暫停移動。
+다시 시도	Retry	再試行	重试	重試
+맵 생성 실패	Map generation failed	マップ生成失敗	地图生成失败	地圖生成失敗
+구매	Buy	購入	购买	購買
+새로고침	Refresh	更新	刷新	重新整理
+이동하기	Travel	移動する	移动	移動
+작동하기	Activate	作動させる	启动	啟動
+살펴보기	Inspect	調べる	查看	查看
+획득하기	Pick up	拾う	拾取	拾取
+도감 보기	Open encyclopedia	図鑑を見る	查看图鉴	查看圖鑑
+굳게 잠겨있다	Firmly locked	固く閉ざされている	牢牢锁住了	牢牢鎖住了
+상자 열기	Open chest	宝箱を開ける	打开宝箱	打開寶箱
+잠김 ({0})	Locked ({0})	施錠中（{0}）	已锁定（{0}）	已鎖定（{0}）
+시작 방으로 돌아가기	Return to the starting room	開始地点に戻る	返回起始房间	返回起始房間
+운동기구 사용하기	Use exercise equipment	運動器具を使う	使用锻炼器材	使用鍛鍊器材
+소포 배송하기	Deliver parcel	小包を配達する	配送包裹	配送包裹
+소포 가져가기	Take parcel	小包を持っていく	拿取包裹	拿取包裹
+운동기구 세 개 중 하나를 사용해! 근력은 공격력, 바퀴는 이동속도, 통나무는 경험치를 올려줘!	Use one of the three exercise stations! Strength boosts attack, the wheel boosts movement speed, and the log grants experience!	三つの運動器具から一つ選んで！筋トレは攻撃力、車輪は移動速度、丸太は経験値を上げるよ！	从三种器材中选一种吧！力量训练提高攻击力，转轮提高移动速度，木桩增加经验值！	從三種器材中選一種吧！力量訓練提高攻擊力，轉輪提高移動速度，木樁增加經驗值！
+옆의 상자 더미에서 소포를 가져가 주세요. 소포는 유물 슬롯을 차지하며 버릴 수 없습니다.	Please take a parcel from the pile of boxes beside me. Parcels occupy relic slots and cannot be discarded.	隣の箱の山から小包を持っていってください。小包は遺物スロットを使い、捨てられません。	请从旁边的箱堆拿取包裹。包裹占用遗物栏位，无法丢弃。	請從旁邊的箱堆拿取包裹。包裹佔用遺物欄位，無法丟棄。
+이미 울린 경보 종입니다.	This alarm bell has already been rung.	この警報の鐘はもう鳴らされています。	这个警报钟已经敲响过了。	這個警報鐘已經敲響過了。
+경보 종을 사용할 수 없습니다.	The alarm bell cannot be used.	警報の鐘を使用できません。	无法使用警报钟。	無法使用警報鐘。
+경보 종이 울렸다!	The alarm bell rang!	警報の鐘が鳴った！	警报钟响了！	警報鐘響了！
+경보 종 전투 완료!	Alarm bell battle complete!	警報の鐘の戦闘完了！	警报钟战斗完成！	警報鐘戰鬥完成！
+세 보스를 모두 처치해야 이동할 수 있습니다.	Defeat all three bosses to travel.	移動するには三体のボスをすべて倒す必要があります。	击败全部三名首领后才能移动。	擊敗全部三名首領後才能移動。
+제물이 부족합니다	Not enough offerings	供物が足りません	祭品不足	祭品不足
+무기가 없어	I don't have a weapon.	武器がない。	我没有武器。	我沒有武器。
+무기가 없으면 출발할 수 없어	I can't leave without a weapon.	武器がないと出発できない。	没有武器就不能出发。	沒有武器就不能出發。
+무기를 먼저 챙겨야겠어	I should get a weapon first.	先に武器を用意しよう。	得先拿好武器。	得先拿好武器。
+무기와 유물 해금	Unlock weapons and relics	武器と遺物を解放	解锁武器与遗物	解鎖武器與遺物
+상점 판매 가격 20% 할인	20% discount on shop prices	店の販売価格が20%割引	商店售价优惠20%	商店售價優惠20%
+TeleportNpc 이용 가능	Teleport NPC available	転送NPCを利用可能	可使用传送NPC	可使用傳送NPC
+상자의 내용물을 리롤할 수 있다.	Allows chest contents to be rerolled.	宝箱の中身を再抽選できる。	可重新抽取宝箱内容。	可重新抽取寶箱內容。
+상자 내용물에 유물 1개 추가 등장	Chests contain 1 additional relic.	宝箱に遺物が1個追加される	宝箱额外出现1件遗物	寶箱額外出現1件遺物
+비전투 이동속도 +50%	Movement speed outside combat +50%	非戦闘時の移動速度 +50%	非战斗移动速度 +50%	非戰鬥移動速度 +50%
+잡동사니에서 나오는 유물 수  증가	More relics appear from junk.	がらくたから出る遺物の数が増加	杂物中出现的遗物数量增加	雜物中出現的遺物數量增加
+최대 체력 +1	Maximum health +1	最大体力 +1	最大生命值 +1	最大生命值 +1
+유물 슬롯 4칸 확장	Expand relic inventory by 4 slots.	遺物スロットを4枠拡張	遗物栏位增加4格	遺物欄位增加4格
+시작 시 포션 1개 지급 	Receive 1 potion at the start.	開始時にポーションを1個獲得	开始时获得1瓶药水	開始時獲得1瓶藥水
+일회성 추가 체력 부여	Grant temporary extra health.	一時的な追加体力を付与	获得一次性额外生命值	獲得一次性額外生命值
+상점 새로고침 1회 가능	Allows 1 shop refresh.	店を1回更新できる	可刷新商店1次	可重新整理商店1次

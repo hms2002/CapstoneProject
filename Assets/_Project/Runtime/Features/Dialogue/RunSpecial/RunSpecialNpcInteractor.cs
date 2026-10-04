@@ -150,7 +150,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase, INpcRoomIntroduc
 
     public override string GetInteractDescription()
     {
-        return interactPromptText;
+        return GameText.Get("interaction.runspecialnpcinteractor.interactprompttext", interactPromptText);
     }
 
     public override Transform GetPromptAnchor()

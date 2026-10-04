@@ -105,8 +105,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 8190195008394652090}
-  spriteLibrary: {fileID: 3401051893803425096}
   canvasGroup: {fileID: 8441141739005780768}
+  npcId: 0
+  currentLabel: Normal
+  currentPosition: center
 --- !u!225 &8441141739005780768
 CanvasGroup:
   m_ObjectHideFlags: 0

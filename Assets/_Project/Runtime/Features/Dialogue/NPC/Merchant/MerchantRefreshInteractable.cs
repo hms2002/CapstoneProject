@@ -108,7 +108,7 @@ public sealed class MerchantRefreshInteractable : InteractableBase, IInteraction
     public override string GetInteractDescription()
     {
         return CanShowRefreshTarget()
-            ? interactPromptText
+            ? GameText.Get("interaction.merchantrefreshinteractable.interactprompttext", interactPromptText)
             : string.Empty;
     }
 
@@ -199,15 +199,21 @@ public sealed class MerchantRefreshInteractable : InteractableBase, IInteraction
         return true;
     }
 
+    private void LateUpdate()
+    {
+        if (hasAwakened && remainingCountText != null && remainingCountText.gameObject.activeInHierarchy)
+            RefreshRemainingCountText();
+    }
+
     private void RefreshRemainingCountText()
     {
         if (remainingCountText == null)
             return;
 
         int remainingCount = owner != null ? owner.GetRemainingRefreshCount() : 0;
-        TextPresentationBinding.TrySetText(
-            remainingCountText,
-            string.Format("{0}\uBC88 \uB0A8\uC74C", remainingCount));
+        string text = GameText.Format("code.merchantrefreshinteractable.5680190972", "{0}번 남음", remainingCount);
+        if (!TextPresentationBinding.TryGetText(remainingCountText, out string current) || current != text)
+            TextPresentationBinding.TrySetText(remainingCountText, text);
     }
 
     private bool CanShowRefreshTarget()

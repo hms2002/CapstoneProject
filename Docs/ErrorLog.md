@@ -2348,3 +2348,76 @@ The title/global keybinding row lists omitted DialogueAdvance, but the service s
 - Correction: retain explicit Escape release until a focused inside-client click; focus/display callbacks cannot erase the latch. Filter window sizes against work area minus frame decorations; proportionally fit and persist oversized saved selections, and recheck bounds on application.
 - Prevention: a cursor backend regression must cover confinement intent as well as visibility. Display tests must compare requested and actual client dimensions and saved settings, including a window larger than the desktop; avoid independent axis clamping that distorts aspect.
 - Verification: see `Docs/SessionLogs/2026-09-28.md` follow-up.
+
+## 2026-10-03 - Localization inventory blocks interactive Editor
+
+- Evidence: user screenshot names LocalizationInventoryExport delayCall and a two-hour busy wait; no inventory completion record. Internal blocked API remains unknown.
+- Prevention: never automatically run broad asset/prefab/scene inventory after domain reload in the user's interactive Editor. Require isolated batch mode after the user saves and closes the Editor, and log each asset boundary for diagnosis.
+- Recovery limitation: removing the callback source does not interrupt the already executing managed callback. Forced termination requires user authorization because unsaved work can be lost.
+- Verification: source-only guard inspection; compile/reproduction pending Editor recovery.
+
+### Localization recovery verification and serialized binding traps
+
+- Isolated reproduction stopped progressing after BG_Witch.asset during broad ScriptableObject traversal. The precise internal blocked API was not stack-captured. Restrict to reviewed source paths and skip ManagedReference descendants; filtered export completed with 2,508 rows.
+- Unity source edits compiled in batch. Readback exposed stale inherited StringReference keys in scene prefab instances even after a scene save. SetDirty alone is insufficient for these direct property writes; RecordPrefabInstancePropertyModifications records the intended overrides. After repair, 492 caption and 1,897 font bindings passed persistent target/method/state and five-locale setter checks.
+- Windows error 1224 occurred overwriting an imported Ink JSON with a mapped file handle. ReleaseCachedFileHandles then atomically replace a temporary file; all 16 active Ink files compiled successfully on retry.
+- Do not equate successful table/glyph/binding checks with actual screen layout or Play Mode acceptance. See Docs/SessionLogs/2026-10-03.md.
+
+### Localization display regression follow-up
+
+- TMP font setter replaces the material when the atlas changes; direct localized set_font binding lost authored Outline/style. Bind the adapter and use TMP's public fallback material API with balanced references. Validate source style properties and the target shader _MainTex, not Material.mainTexture aliases.
+- Filled tables missed quoted weapon variant literals and dynamically composed [[stat ID]] captions. Add explicit variant keys and raw-ID term captions; verify actual formatted display strings without translating gameplay IDs or percent classification inputs.
+- A translated NPC asset getter does not refresh an already visible name. Locale callbacks must update the speaker label as well as the dialogue body, including pending dialogue transitions.
+- Deferred Destroy left old relic sections in the same-frame layout calculation. Deactivate them before destruction; retain normal text-dependent height changes.
+- Batch collection lookup returned null despite an existing collection asset. Resolve the known asset path before trying to create a new collection. Exact cache timing cause is not established.
+- Verification: 2026-10-03 SessionLog follow-up; actual Play Mode visual acceptance remains separate.
+
+### Screenshot disproved the font-style baseline
+
+- User screenshot still showed no Outline and untranslated world nameplates/count. NpcNameplate.prefab authoredMaterial referenced NotoSansCJKtc with OutlineWidth=0, while HEAD referenced Galmuri9 BlackOutline with width=0.314. Prior equality tests compared against a contaminated baseline and could pass without visible Outline.
+- Restore Korean original material references/presets through Editor APIs and reject localization-font materials as authored style. Also copy Korean preset properties into CJK default materials, retaining their own atlas/gradient/weight. Five-language rendered Outline-on/off pixel differences supplement property checks.
+- Dialogue name labels and world nameplates are separate execution paths. Table completeness and DialogueView tests did not cover OnEnable-only NpcNameplatePresenter or merchant count refresh. First initialization and live locale changes require actual presenter lifecycle coverage.
+
+### Dynamic relic and tutorial coverage gaps
+
+- A general StatModifiers tooltip test missed weapon-exclusive description passthrough and TimedStat triggerLabel tokens. Validate actual ItemDatabase definitions with their assigned logic at every authored level, then format glossary/semantic tags before checking visible Hangul.
+- Localized DefaultEffectTemplate does not help if BuildTooltip passes a separate Korean fallback. Reuse the default template or add a fixed key for that fallback; also test empty-template paths.
+- Tutorial request page.title/body bypassed fixed-caption bindings. Key pages by the existing tutorial ID/index and refresh text without invoking navigation/hold-reset methods. Test actual scene-authored pages and retained hold/page values across locale changes.
+- A scene traversal can silently skip a presenter supplied only by a spawned prefab. Load RunMerchantGroup explicitly and require MerchantRefreshInteractable to exist before testing its count refresh. Do not report presenter coverage from an empty foreach.
+- Verification: 2026-10-03 omission follow-up in SessionLog; 1,500 dynamic projections, 8,591 checks, Unity/MSBuild and Addressables passed. Actual Play Mode visuals remain separate.
+
+### Game-flow audit found display paths outside the original inventory
+
+- Unicode-escaped const strings, non-Ink SpeechData arrays and nested intro/ending
+  slides bypassed the original text inventory. Empty-cell/key/glyph tests do not prove
+  output coverage; trace actual getter → formatter → TMP/Speak/SetText for each flow.
+- Encyclopedia title localization existed only in the empty preset branch, while the
+  real prefab always provided nonempty Korean presets. Test actual authored nonempty
+  values and failure/override branches, not only default fallback lookups.
+- Title card runtime values also had fixed String Events bound to authored captions.
+  A delayed locale event could overwrite numbers. Remove fixed events only from
+  explicitly runtime-owned labels via Unity API and keep the inventory aligned.
+- Title PreviewScene Canvas has authored zero scale until CanvasScaler runs; geometry
+  probes must emulate a visible scale. Runtime bounds code skips zero parent scale.
+- Verification: 2026-10-03 SessionLog. Broad game-flow Play Mode coverage still pending.
+
+## 2026-10-04 — 중첩 표시 데이터와 언어 전환 재추첨
+
+- Speech entries/lines, Intro/Outro slides.text와 RouteSet 표시명은 단순 최상위 문자열 조사에서 빠졌다. 실제 사용 자산의 SerializedProperty 경로를 export하고 모든 배열 후보를 표시 getter까지 검증했다. 직접 원문 Text/GetLine 반환과 비어 있지 않은 도감 preset의 번역 우회를 수정했다.
+- UI locale refresh 때 Random을 다시 호출하면 사망 문구가 바뀐다. Begin에서 고른 형식 키를 유지하고 적의 표시 키를 사라지기 전 확보하여 문장 대조 없이 다시 번역한다. 검증은 speech의 RNG 소비량과 death cache의 재추첨 없음도 확인한다.
+- Editor Preview는 Awake를 자동 보장하지 않는다. GameOver의 비직렬화 titleText가 ResolveReferences에서 설정되므로 실제 초기화 경로를 실행한 뒤 표시를 검증한다. 데이터 슬롯에 직접 참조가 없다는 이유만으로 runtime UI 누락이라고 판정하지 않는다.
+- 관련: Docs/StructureMemory/LocalizationFlow.md, Docs/SessionLogs/2026-10-04.md. 실제 Play Mode 입력/프레임/레이아웃 검수는 별도.
+
+## 2026-10-04 — 실제 화면 검수의 초기화/위치 계산 함정
+
+- Batch executeMethod 진입 직후 collection import가 null로 실패한 경우, authoring 저장 후 EditorApplication.delayCall에서 검증을 시작하니 정상 로딩/검증됐다. 실패한 첫 실행을 성공으로 보고하지 않는다.
+- 실제 게임 언어는 GameSettingsService의 저장 설정이 초기화 때 적용한다. SelectedLocale만 직접 변경하면 초기 preference가 다시 덮어쓸 수 있다. 실제 SetLanguage를 사용하고 검수 이전 preference를 복원한다.
+- 씬을 연속 직접 로드하면 정상 portal 경로의 camera/overlay 수명과 다르다. 검수는 씬별 새 Editor Play Mode에서 실행하고 검은 PNG를 실패로 판정한다. 직접 ShowHover만 호출하면 HoverUIController의 경계/anchor 계산을 건너뛴다. 화면 밖 tooltip은 실제 hover controller 경로에서도 재현되는지 확인한다.
+- isTextOverflowing만으로 시각적 잘림을 판정하지 않는다. Overflow 모드, TMP color alpha0인 숨겨진 허수아비 라벨, 화면 밖 월드 라벨을 구분하고 실제 PNG를 함께 검토한다. 허수아비 초기 한국어 문자열은 alpha0이며 첫 피격 이후 실제 표시 때 번역 getter를 재실행한다.
+- ExitPlaymode의 domain reload가 없는 설정에서도 cleanup이 실행되도록 Editor update와 초기화 callback 양쪽에서 guard된 복원을 예약한다. 검수 시작 전 정확한 저장 경로의 byte backup을 만들고 종료 후 parity를 확인한다.
+
+### TMP Outline이 남긴 CanvasRenderer atlas override
+
+- RunTimerHUD는 TMP outlineColor/outlineWidth를 설정한다. 설치된 UGUI/TMP TextMeshProUGUI.SetOutlineThickness는 CanvasRenderer.SetMaterial(material, texture)를 사용해 renderer texture override도 지정한다. 반면 UpdateMaterial은 SetMaterial(material,0)만 호출한다.
+- LocalizeTmpFontEvent가 font/fontSharedMaterial을 바꿔도 기존 renderer override가 남으면 `15:00` 문자열과 새 UV는 정상인데 이전 atlas의 이미지 조각을 그린다. material.mainTexture와 font.atlasTexture 비교만으로는 이 override를 검출하지 못한다.
+- 글꼴 교체 시 TextMeshProUGUI의 canvasRenderer.SetTexture(matched.mainTexture)를 함께 호출한다. 추가 머티리얼 인스턴스/매 프레임 보정/타이머 로직 변경 없이 대상 atlas를 맞춘다. 실제 Play Mode의 타이머 픽셀도 확인해야 한다.

@@ -330,7 +330,7 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
             return;
         }
 
-        speechBubble.Speak(merchantSpeechText, speechDuration);
+        speechBubble.Speak(GameText.Get("merchant.first_opening", merchantSpeechText), speechDuration);
     }
 
     private void CacheCameraState()

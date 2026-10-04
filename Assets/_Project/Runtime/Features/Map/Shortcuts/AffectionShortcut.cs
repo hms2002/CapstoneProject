@@ -55,5 +55,5 @@ public class AffectionShortcut : PermanentShortcut
         return false;
     }
 
-    public override string GetInteractDescription() => interactPromptText;
+    public override string GetInteractDescription() => GameText.Get("interaction.affectionshortcut.interactprompttext", interactPromptText);
 }

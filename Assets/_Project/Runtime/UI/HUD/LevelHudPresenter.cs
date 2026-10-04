@@ -124,8 +124,7 @@ public sealed class LevelHudPresenter : MonoBehaviour, IDefaultHudVisibilityTarg
                 parentRect, screenPoint, uiCamera, out position))
             return false;
 
-        float hoverOffset = 4f * Mathf.Sin(promptColorElapsed * Mathf.PI * 2f / 2.4f);
-        position += parentRect.TransformVector((Vector3)levelUpPromptUiOffset + Vector3.up * hoverOffset);
+        position += parentRect.TransformVector((Vector3)levelUpPromptUiOffset);
         return true;
     }
 

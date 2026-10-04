@@ -1,0 +1,176 @@
+{
+    "scene": "ProtoTypeHub",
+    "locale": "zh-Hant",
+    "screen": "hub",
+    "image": "outputs/localization-screen-review-2026-10-04/zh-Hant-hub.png",
+    "labels": [
+        {
+            "owner": "PF Player(Clone)/OddIronAmmoHUD/AmmoText",
+            "text": "6 / 6",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (3)/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (2)/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (1)/ShopSlot(Clone)/PriceText",
+            "text": "4",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlotPosition/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+            "text": "向前推進，討伐魔王。",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 26.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+            "text": "主線任務",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/Timer_BossUI/TimerSection/TimerBG/Timer",
+            "text": "15:00",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/LevelHUD/LevelText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (4)/KeyGuideText",
+            "text": "4",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (3)/KeyGuideText",
+            "text": "3",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (2)/KeyGuideText",
+            "text": "2",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (1)/KeyGuideText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/CurrencyUI/Text(TMP)",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/GoldUI/Text(TMP)",
+            "text": "0",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (4)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (3)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (2)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (1)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "EncyclopediaStand/NameplateAnchor/NpcNameplate/Name",
+            "text": "圖鑑",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/RefreshButton/CountText",
+            "text": "剩餘3次",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 5.0
+        },
+        {
+            "owner": "Npc/NameplateAnchor/NpcNameplate/Name",
+            "text": "維爾卡",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/MerchantNpc/NameplateAnchor/NpcNameplate/Name",
+            "text": "薩莎",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 40.0
+        }
+    ]
+}

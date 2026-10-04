@@ -160,7 +160,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge, IBoss
 
     public BossHudHealthBarTheme HudHealthBarTheme => hudHealthBarTheme;
     public Component HudSourceComponent => this;
-    public string BossHudDisplayName => EnemyName;
+    public string BossHudDisplayName => DisplayName;
     public bool IsBossHudDead => IsDead || HasDeadTag();
     public bool HasBossHudGroggyTag => HasGroggyTag();
 

@@ -27,7 +27,7 @@ public sealed class RelicLogic_CritChanceOnNonCriticalHit_Managed : RelicLogic
         float chancePerStack = EvaluateChancePerStack(previewLevel);
         float maximumChance = chancePerStack * Mathf.Max(1, maximumStacks);
         return BuildTemplatedTooltip(
-            "● 치명타가 아닌 공격 적중 시 [[치명타 확률]] {chance_per_stack}\n● 최대 {maximum_stacks}회 중첩, 총 {maximum_chance}\n● 치명타 발생 시 {neg:누적 보너스 초기화}",
+            GameText.Get("relic.fallback.crit_on_noncritical", "● 치명타가 아닌 공격 적중 시 [[치명타 확률]] {chance_per_stack}\n● 최대 {maximum_stacks}회 중첩, 총 {maximum_chance}\n● 치명타 발생 시 {neg:누적 보너스 초기화}"),
             new Dictionary<string, string>
             {
                 ["chance_per_stack"] = RelicTooltipFormatter.FormatSignedValueToken(chancePerStack, true),

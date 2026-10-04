@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -33,6 +34,9 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
     private bool selected;
     private bool visible;
     private bool swordPositionCaptured;
+    private TMP_Text labelText;
+    private readonly Vector3[] swordCorners = new Vector3[4];
+    private const float SwordTextGap = 12f;
 
     private void Reset()
     {
@@ -83,10 +87,14 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
 
     private void LateUpdate()
     {
+        if (visible) RefreshSwordVisiblePosition();
         RefreshState();
 
         if (visible && motionRoutine == null)
+        {
+            if (swordRoot != null) swordRoot.anchoredPosition = swordVisiblePosition;
             ApplyBackgroundAlpha(ResolveActiveBackgroundAlpha());
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -125,6 +133,7 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
     private void SetVisible(bool show)
     {
         ResolveReferences();
+        RefreshSwordVisiblePosition();
 
         if (visible == show && motionRoutine == null)
             return;
@@ -147,15 +156,15 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
 
         float fromBackgroundAlpha = backgroundImage != null ? backgroundImage.color.a : hiddenBackgroundAlpha;
         float toBackgroundAlpha = show ? activeBackgroundMinAlpha : hiddenBackgroundAlpha;
-        Vector2 fromSwordPosition = swordRoot != null ? swordRoot.anchoredPosition : swordVisiblePosition;
-        Vector2 toSwordPosition = show ? swordVisiblePosition : swordVisiblePosition + swordHiddenOffset;
+        Vector2 fromSwordOffset = swordRoot != null ? swordRoot.anchoredPosition - swordVisiblePosition : Vector2.zero;
+        Vector2 toSwordOffset = show ? Vector2.zero : swordHiddenOffset;
         float fromSwordAlpha = swordGraphic != null ? swordGraphic.color.a : 0f;
         float toSwordAlpha = show ? swordVisibleAlpha : 0f;
         float duration = show ? showDuration : hideDuration;
 
         if (duration <= 0f)
         {
-            ApplyPose(toBackgroundAlpha, toSwordPosition, toSwordAlpha);
+            ApplyPose(toBackgroundAlpha, swordVisiblePosition + toSwordOffset, toSwordAlpha);
             FinishAnimation(show);
             yield break;
         }
@@ -168,12 +177,12 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
             float eased = show ? EaseOutCubic(t) : EaseInCubic(t);
             ApplyPose(
                 Mathf.LerpUnclamped(fromBackgroundAlpha, toBackgroundAlpha, eased),
-                Vector2.LerpUnclamped(fromSwordPosition, toSwordPosition, eased),
+                swordVisiblePosition + Vector2.LerpUnclamped(fromSwordOffset, toSwordOffset, eased),
                 Mathf.LerpUnclamped(fromSwordAlpha, toSwordAlpha, eased));
             yield return null;
         }
 
-        ApplyPose(toBackgroundAlpha, toSwordPosition, toSwordAlpha);
+        ApplyPose(toBackgroundAlpha, swordVisiblePosition + toSwordOffset, toSwordAlpha);
         FinishAnimation(show);
     }
 
@@ -188,6 +197,7 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
     private void Snap(bool show)
     {
         ResolveReferences();
+        RefreshSwordVisiblePosition();
         visible = show;
 
         if (show && swordRoot != null)
@@ -249,6 +259,9 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
         if (button == null)
             button = GetComponent<Button>();
 
+        if (labelText == null)
+            labelText = GetComponentInChildren<TMP_Text>(true);
+
         if (backgroundImage == null)
             backgroundImage = GetComponent<Image>();
 
@@ -273,6 +286,29 @@ public sealed class MenuButtonHighlightPresentation : MonoBehaviour, IPointerEnt
 
         existing = transform.parent.Find(visualName);
         return existing as RectTransform;
+    }
+
+    private void RefreshSwordVisiblePosition()
+    {
+        if (labelText == null || swordRoot == null || !(swordRoot.parent is RectTransform parent)) return;
+        // CanvasScaler can leave the authored canvas at zero scale until its first layout pass.
+        if (Mathf.Abs(parent.lossyScale.x) < 0.0001f || Mathf.Abs(parent.lossyScale.y) < 0.0001f) return;
+        labelText.ForceMeshUpdate(ignoreActiveState: true);
+        if (labelText.textInfo.characterCount == 0) return;
+        Bounds bounds = labelText.textBounds;
+        Vector3 textLeft = parent.InverseTransformPoint(labelText.transform.TransformPoint(new Vector3(bounds.min.x, bounds.center.y, 0f)));
+        swordRoot.GetWorldCorners(swordCorners);
+        float right = float.NegativeInfinity, bottom = float.PositiveInfinity, top = float.NegativeInfinity;
+        foreach (Vector3 corner in swordCorners)
+        {
+            Vector3 point = parent.InverseTransformPoint(corner);
+            right = Mathf.Max(right, point.x);
+            bottom = Mathf.Min(bottom, point.y);
+            top = Mathf.Max(top, point.y);
+        }
+        // Convert the rendered text edge into the icon parent's space, retaining anchors/pivot.
+        Vector2 shift = new Vector2(textLeft.x - SwordTextGap - right, textLeft.y - (bottom + top) * 0.5f);
+        swordVisiblePosition = swordRoot.anchoredPosition + shift;
     }
 
     private void CaptureSwordVisiblePosition(bool force)

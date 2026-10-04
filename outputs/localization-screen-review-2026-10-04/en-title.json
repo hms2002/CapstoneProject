@@ -1,0 +1,29 @@
+{
+    "scene": "TitleScene",
+    "locale": "en",
+    "screen": "title",
+    "image": "outputs/localization-screen-review-2026-10-04/en-title.png",
+    "labels": [
+        {
+            "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+            "text": "Start Game",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+            "text": "Settings",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+            "text": "Quit Game",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        }
+    ]
+}

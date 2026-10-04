@@ -49,6 +49,9 @@ public sealed class EndingOutroSequenceSO : ScriptableObject
         return slides[index];
     }
 
+    public string GetSlideText(int index) =>
+        GameText.Asset(this, $"slides.Array.data[{index}].text", GetSlide(index)?.Text ?? string.Empty);
+
     public float GetPostTextWaitSeconds(string text)
     {
         return CountLines(text) <= 1

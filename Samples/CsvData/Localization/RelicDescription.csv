@@ -1,0 +1,2 @@
+﻿"key","relicId","ko","en"
+"relic.last_stand.description","RD_LastStand","현재 체력이 {threshold} 이하일 경우 모든 공격이 반드시 치명타로 적중.","All attacks are guaranteed critical hits while current HP is {threshold} or lower."

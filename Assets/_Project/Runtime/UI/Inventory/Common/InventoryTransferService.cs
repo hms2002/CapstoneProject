@@ -98,7 +98,7 @@ public static class InventoryTransferService
         if ((sourceChest != null && returnedToSource != null && !sourceChest.CanReturnAcquisition(returnedToSource)) ||
             (targetChest != null && !targetChest.CanReturnAcquisition(sourceItem)))
         {
-            WarningPopupPlayback.ShowMessage("이 상자에서 가져온 아이템만 돌려놓을 수 있습니다.");
+            WarningPopupPlayback.ShowMessage(GameText.Get("code.inventorytransferservice.6dc3d6f0b1", "이 상자에서 가져온 아이템만 돌려놓을 수 있습니다."));
             return InventoryTransferResult.Failed(InventoryTransferFailureReason.TargetRejectedItem);
         }
         bool takesSource = sourceChest != null;
@@ -106,7 +106,7 @@ public static class InventoryTransferService
         if ((takesSource && !sourceChest.CheckAcquisitionAllowed(returnedToSource)) ||
             (takesTarget && !targetChest.CheckAcquisitionAllowed(sourceItem)))
         {
-            WarningPopupPlayback.ShowMessage("한 상자에서 아이템은 2개까지만 획득할 수 있습니다.");
+            WarningPopupPlayback.ShowMessage(GameText.Get("code.inventorytransferservice.7fe83ed505", "한 상자에서 아이템은 2개까지만 획득할 수 있습니다."));
             return InventoryTransferResult.Failed(InventoryTransferFailureReason.SourceRejectedItem);
         }
 

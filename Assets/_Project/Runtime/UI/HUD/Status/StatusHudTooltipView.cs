@@ -102,9 +102,9 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
         nameText.text = string.IsNullOrWhiteSpace(entry.NameText) ? entry.StatusId : entry.NameText;
         storyText.text = entry.StoryText ?? string.Empty;
 
-        string stackLine = entry.ShowStacks ? $"스택: {entry.StackCount}" : string.Empty;
+        string stackLine = entry.ShowStacks ? GameText.Format("code.statushudtooltipview.1c79f7fcb9", "스택: {0}", entry.StackCount) : string.Empty;
         string durationLine = entry.ShowDuration
-            ? $"지속시간: {Mathf.Max(0f, entry.RemainingTime):0.0}s"
+            ? GameText.Format("code.statushudtooltipview.8f6c61be38", "지속시간: {0:0.0}s", Mathf.Max(0f, entry.RemainingTime))
             : string.Empty;
         string runtimeStats = string.IsNullOrEmpty(stackLine)
             ? durationLine
@@ -140,8 +140,8 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
         context ??= new ItemDetailContext();
         iconImage.sprite = ability.icon;
         iconImage.enabled = ability.icon != null;
-        nameText.text = ability.abilityName;
-        storyText.text = $"재사용 대기시간: {ability.cooldown:0.##}초";
+        nameText.text = ability.DisplayName;
+        storyText.text = GameText.Format("code.statushudtooltipview.618ce811ec", "재사용 대기시간: {0:0.##}초", ability.cooldown);
         var body = new System.Text.StringBuilder();
         if (ability.sourceObject is IAbilityTooltipVariantProvider variants &&
             variants.GetAbilityTooltipVariantCount(ability, context) > 0)
@@ -157,7 +157,7 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
         }
         else
         {
-            if (!string.IsNullOrWhiteSpace(ability.description)) body.AppendLine(ability.description);
+            if (!string.IsNullOrWhiteSpace(ability.Description)) body.AppendLine(ability.Description);
             if (ability.sourceObject is IDetailProvider provider)
                 body.AppendLine(provider.BuildDetailBlock(context).body);
         }

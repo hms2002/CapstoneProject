@@ -96,12 +96,12 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour, ISceneTransition
         GUI.ModalWindow(GetInstanceID(), new Rect((Screen.width - width) / 2f,
             Mathf.Max(12f, (Screen.height - 240f) / 2f), width, 240f), _ =>
         {
-            GUILayout.Label("맵을 준비하지 못했습니다. 빈 맵으로 진입하지 않도록 이동을 보류했습니다.");
+            GUILayout.Label(GameText.Get("code.scenetransitioncoordinator.5048bfa555", "맵을 준비하지 못했습니다. 빈 맵으로 진입하지 않도록 이동을 보류했습니다."));
             sceneFailureScroll = GUILayout.BeginScrollView(sceneFailureScroll, GUILayout.Height(130f));
             GUILayout.Label(failedSceneEntry.SceneEntryFailure, new GUIStyle(GUI.skin.label) { wordWrap = true });
             GUILayout.EndScrollView();
-            if (GUILayout.Button("다시 시도", GUILayout.Height(36f))) retrySceneEntryRequested = true;
-        }, "맵 생성 실패");
+            if (GUILayout.Button(GameText.Get("code.scenetransitioncoordinator.0c767cecf6", "다시 시도"), GUILayout.Height(36f))) retrySceneEntryRequested = true;
+        }, GameText.Get("code.scenetransitioncoordinator.6f223aef6a", "맵 생성 실패"));
         GUI.depth = oldDepth;
     }
 

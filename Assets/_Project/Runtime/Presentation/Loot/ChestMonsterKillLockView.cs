@@ -59,6 +59,12 @@ public sealed class ChestMonsterKillLockView : MonoBehaviour
 
     private void Start() => RefreshAll();
 
+    private void LateUpdate()
+    {
+        if (remainingCountText == null || !remainingCountText.gameObject.activeInHierarchy) return;
+        RefreshText(targetLock == null || targetLock.IsUnlocked, targetLock != null ? targetLock.RemainingAliveCount : 0);
+    }
+
     private void OnDisable()
     {
         TreasureChest.WorldStateChanged -= HandleChestWorldStateChanged;
@@ -173,7 +179,8 @@ public sealed class ChestMonsterKillLockView : MonoBehaviour
         else
         {
             remainingCountText.gameObject.SetActive(true);
-            remainingCountText.text = string.Format(lockedFormat, remainingCount);
+            string text = GameText.Format("chest.remaining_monsters", lockedFormat, remainingCount);
+            if (remainingCountText.text != text) remainingCountText.text = text;
         }
     }
 }

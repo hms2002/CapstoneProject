@@ -1,0 +1,260 @@
+{
+    "scene": "TitleScene",
+    "locale": "ko",
+    "screen": "profiles",
+    "image": "outputs/localization-screen-review-2026-10-04/ko-profiles.png",
+    "labels": [
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/PlayTimeTextGroup/PlayTimeLabel",
+            "text": "플레이 타임",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/UpgradeTextGroup/UpgradeProgressContext",
+            "text": "56%",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/MagicStoneTextGroup/MagicStoneContext",
+            "text": "1개",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/PlayTimeTextGroup/PlayTimeContext",
+            "text": "0시간 0분",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ClearTextGroup/ClearCountContext",
+            "text": "0회",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/UpgradeTextGroup/UpgradeProgressLabel",
+            "text": "업그레이드 진행도",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/MagicStoneTextGroup/MagicStoneLabel",
+            "text": "보유 마정석",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/TitleTextPanel/TopText",
+            "text": "슬롯 1",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.45000076293945
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+            "text": "삭제하기",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 30.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/MagicStoneTextGroup/MagicStoneLabel",
+            "text": "보유 마정석",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/MagicStoneTextGroup/MagicStoneContext",
+            "text": "0개",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/TitleTextPanel/TopText",
+            "text": "슬롯 3",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.45000076293945
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ButtonGroup/ContinueSlot/ContinueButton/Text (TMP)",
+            "text": "계속하기",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ClearTextGroup/ClearCountContext",
+            "text": "0회",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/MagicStoneTextGroup/MagicStoneContext",
+            "text": "0개",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+            "text": "게임 시작",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/MagicStoneTextGroup/MagicStoneLabel",
+            "text": "보유 마정석",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/UpgradeTextGroup/UpgradeProgressLabel",
+            "text": "업그레이드 진행도",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ClearTextGroup/ClearCountContext",
+            "text": "0회",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/PlayTimeTextGroup/PlayTimeContext",
+            "text": "0시간 0분",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ClearTextGroup/ClearCountLabel",
+            "text": "클리어 횟수",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ClearTextGroup/ClearCountLabel",
+            "text": "클리어 횟수",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/PlayTimeTextGroup/PlayTimeLabel",
+            "text": "플레이 타임",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/PlayTimeTextGroup/PlayTimeContext",
+            "text": "0시간 5분",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+            "text": "삭제하기",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 30.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/UpgradeTextGroup/UpgradeProgressLabel",
+            "text": "업그레이드 진행도",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/PlayTimeTextGroup/PlayTimeLabel",
+            "text": "플레이 타임",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/UpgradeTextGroup/UpgradeProgressContext",
+            "text": "56%",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ButtonGroup/ContinueSlot/ContinueButton/Text (TMP)",
+            "text": "계속하기",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+            "text": "삭제하기",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 30.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ButtonGroup/ContinueSlot/ContinueButton/Text (TMP)",
+            "text": "계속하기",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+            "text": "설정",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ClearTextGroup/ClearCountLabel",
+            "text": "클리어 횟수",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/TitleTextPanel/TopText",
+            "text": "슬롯 2",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.45000076293945
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+            "text": "게임 종료",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/UpgradeTextGroup/UpgradeProgressContext",
+            "text": "56%",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        }
+    ]
+}

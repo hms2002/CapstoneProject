@@ -5,7 +5,7 @@ using UnityGAS;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Flowering Bloom Extension (Managed)")]
 public sealed class RelicLogic_FloweringBloomExtension_Managed : RelicLogic
 {
-    protected override string DefaultEffectTemplate => "● {em:개화} 전용 유물\n● {em:개화 상태}에서 적 처치 시 {pos:지속 시간 증가} {extension_seconds}";
+    protected override string DefaultEffectTemplate => GameText.Get("code.reliclogic_floweringbloomextension_managed.53cbe2f08d", "● {em:개화} 전용 유물\n● {em:개화 상태}에서 적 처치 시 {pos:지속 시간 증가} {extension_seconds}");
 
     [Tooltip("Flowering runtime checks this tag before applying kill duration extension.")]
     public GameplayTag grantedTag;
@@ -36,7 +36,7 @@ public sealed class RelicLogic_FloweringBloomExtension_Managed : RelicLogic
     public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
     {
         return BuildTemplatedTooltip(
-            "● {em:개화} 전용 유물\n● {em:개화 상태}에서 적 처치 시 {pos:지속 시간 증가} {extension_seconds}",
+            DefaultEffectTemplate,
             new Dictionary<string, string>
             {
                 ["extension_seconds"] = RelicTooltipFormatter.FormatSeconds(extensionSeconds),

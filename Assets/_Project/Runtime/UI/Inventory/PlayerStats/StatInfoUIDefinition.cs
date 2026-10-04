@@ -26,7 +26,7 @@ public sealed class StatInfoUIDefinition : ScriptableObject
     [SerializeField] private int decimalPlaces = 0;
 
     public Sprite Icon => icon;
-    public string Label => label;
+    public string Label => GameText.Asset(this, "label", label);
     public PlayerStatValueMode ValueMode => valueMode;
     public AttributeDefinition ValueAttribute => valueAttribute;
     public AttributeDefinition MaxAttribute => maxAttribute;

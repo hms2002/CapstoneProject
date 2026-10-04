@@ -22,8 +22,8 @@ public sealed class LevelRewardDefinitionSO : ScriptableObject
 
     public string RewardId => rewardId;
     public bool AllowMultipleSelections => allowMultipleSelections;
-    public string DisplayName => displayName;
-    public string Description => description;
+    public string DisplayName => GameText.Asset(this, "displayName", displayName);
+    public string Description => GameText.Asset(this, "description", description);
     public Sprite Icon => icon;
     public IReadOnlyList<LevelRewardEffectSO> Effects => effects;
 

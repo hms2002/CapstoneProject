@@ -40,7 +40,7 @@ public static class RunLevelRewardOffers
         LevelProgressionState progression = RunLevelProgression.State;
         if (!RunSessionStore.IsRunActive || progression == null || progression.pendingRewardCount <= 0)
         {
-            failureReason = "선택 가능한 레벨업 보상이 없습니다.";
+            failureReason = GameText.Get("code.runlevelrewardoffers.19bc091705", "선택 가능한 레벨업 보상이 없습니다.");
             return false;
         }
 
@@ -58,7 +58,7 @@ public static class RunLevelRewardOffers
         if (!RollCandidates(progression, offer))
         {
             offer.Clear();
-            failureReason = "현재 선택 가능한 레벨업 효과가 없습니다.";
+            failureReason = GameText.Get("code.runlevelrewardoffers.8029564aad", "현재 선택 가능한 레벨업 효과가 없습니다.");
             return false;
         }
 
@@ -73,19 +73,19 @@ public static class RunLevelRewardOffers
         LevelRewardOfferState offer = progression?.activeRewardOffer;
         if (offer == null || !offer.isActive)
         {
-            failureReason = "활성 레벨업 후보가 없습니다.";
+            failureReason = GameText.Get("code.runlevelrewardoffers.bcb61ac9df", "활성 레벨업 후보가 없습니다.");
             return false;
         }
 
         if (offer.rerollsUsed >= offer.maxRerolls)
         {
-            failureReason = "리롤 횟수를 모두 사용했습니다.";
+            failureReason = GameText.Get("code.runlevelrewardoffers.12a42c8ca5", "리롤 횟수를 모두 사용했습니다.");
             return false;
         }
 
         if (!HasNovelCandidate(offer))
         {
-            failureReason = "새로 등장할 수 있는 레벨업 효과가 없습니다.";
+            failureReason = GameText.Get("code.runlevelrewardoffers.0d977c0f1b", "새로 등장할 수 있는 레벨업 효과가 없습니다.");
             return false;
         }
 
@@ -93,7 +93,7 @@ public static class RunLevelRewardOffers
         if (!RollCandidates(progression, offer))
         {
             offer.rerollsUsed--;
-            failureReason = "리롤할 수 있는 후보가 없습니다.";
+            failureReason = GameText.Get("code.runlevelrewardoffers.7baca9486b", "리롤할 수 있는 후보가 없습니다.");
             return false;
         }
 
@@ -109,7 +109,7 @@ public static class RunLevelRewardOffers
         if (offer == null || !offer.isActive || offer.candidateRewardIds == null ||
             !offer.candidateRewardIds.Contains(rewardId))
         {
-            failureReason = "현재 후보에 없는 보상입니다.";
+            failureReason = GameText.Get("code.runlevelrewardoffers.1b695cfb99", "현재 후보에 없는 보상입니다.");
             return false;
         }
 

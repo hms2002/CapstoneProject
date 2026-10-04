@@ -193,8 +193,18 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
         StopTransition(resetVisuals: true);
     }
 
+    private void RefreshRerollCountText()
+    {
+        if (rerollCountText == null) return;
+        int remaining = Mathf.Max(0, sessionController.MaxRerolls - sessionController.RerollsUsed);
+        string text = GameText.Format("ui.level_reward.rerolls", "[R] 리롤 {0}/{1}", remaining, sessionController.MaxRerolls);
+        if (rerollCountText.text != text) rerollCountText.text = text;
+    }
+
     private void Update()
     {
+        if (IsActive && sessionController != null && sessionController.IsSessionOpen)
+            RefreshRerollCountText();
         if (!IsActive ||
             sessionController == null ||
             !sessionController.IsSessionOpen ||
@@ -404,9 +414,7 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
                 slot.CardView?.Clear();
         }
 
-        int remainingRerolls = Mathf.Max(0, sessionController.MaxRerolls - sessionController.RerollsUsed);
-        if (rerollCountText != null)
-            rerollCountText.text = $"[R] 리롤 {remainingRerolls}/{sessionController.MaxRerolls}";
+        RefreshRerollCountText();
         if (pendingRewardCountText != null)
             pendingRewardCountText.text = Mathf.Max(0, sessionController.PendingRewardCount).ToString();
 
@@ -872,7 +880,7 @@ public sealed class LevelRewardSelectionPresenter : MonoBehaviour, IStackableUI,
     private void ShowFeedback(string message)
     {
         if (feedbackText != null)
-            feedbackText.text = string.IsNullOrWhiteSpace(message) ? "요청을 처리할 수 없습니다." : message;
+            feedbackText.text = string.IsNullOrWhiteSpace(message) ? GameText.Get("code.levelrewardselectionpresenter.efb9cd7e71", "요청을 처리할 수 없습니다.") : message;
     }
 
     private void ClearFeedback()

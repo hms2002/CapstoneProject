@@ -116,19 +116,18 @@ public sealed class TitleIntroPlayer : MonoBehaviour
             view.SetSlideSprite(slide.Image);
             view.SetSlideAlpha(0f);
 
-            string text = slide.Text;
             float fadeInDuration = i == 0
                 ? sequence.InitialImageFadeDuration
                 : sequence.ImageFadeDuration;
             yield return TypeTextAndFadeInAsync(
-                text,
+                i,
                 fadeInDuration,
                 ignoreAdvanceUntilFadeComplete: i == 0,
                 fadeSkipPromptWithSlide: i == 0);
             if (skipIntroRequested)
                 break;
 
-            yield return WaitAfterTextAsync(sequence.GetPostTextWaitSeconds(text));
+            yield return WaitAfterTextAsync(i, sequence.GetPostTextWaitSeconds(slide.Text));
             if (skipIntroRequested)
                 break;
 
@@ -175,12 +174,12 @@ public sealed class TitleIntroPlayer : MonoBehaviour
     }
 
     private IEnumerator TypeTextAndFadeInAsync(
-        string text,
+        int slideIndex,
         float fadeDuration,
         bool ignoreAdvanceUntilFadeComplete,
         bool fadeSkipPromptWithSlide)
     {
-        text ??= string.Empty;
+        string text = sequence.GetSlideText(slideIndex);
         view.SetText(string.Empty);
         nextTypingSoundTime = 0f;
         typingStartSoundPlayed = false;
@@ -208,6 +207,14 @@ public sealed class TitleIntroPlayer : MonoBehaviour
 
         while (!textComplete || !fadeComplete)
         {
+            string translated = sequence.GetSlideText(slideIndex);
+            if (translated != text)
+            {
+                text = translated;
+                visibleCharacters = textComplete ? text.Length : Mathf.Min(visibleCharacters, text.Length);
+                view.SetText(text.Substring(0, visibleCharacters));
+                textComplete = textComplete || visibleCharacters >= text.Length;
+            }
             TitleIntroInputCommand command = PollInput();
             if (command == TitleIntroInputCommand.SkipIntro)
             {
@@ -273,11 +280,12 @@ public sealed class TitleIntroPlayer : MonoBehaviour
             view.SetSkipPromptAlpha(1f);
     }
 
-    private IEnumerator WaitAfterTextAsync(float waitSeconds)
+    private IEnumerator WaitAfterTextAsync(int slideIndex, float waitSeconds)
     {
         float elapsed = 0f;
         while (elapsed < waitSeconds)
         {
+            view.SetText(sequence.GetSlideText(slideIndex));
             TitleIntroInputCommand command = PollInput();
             if (command == TitleIntroInputCommand.SkipIntro)
             {

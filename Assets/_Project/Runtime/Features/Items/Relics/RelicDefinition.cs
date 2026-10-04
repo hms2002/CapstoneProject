@@ -35,6 +35,6 @@ public class RelicDefinition : ScriptableObject, IInventoryItemDefinition
     // IInventoryItemDefinition
     public InventoryItemKind Kind => InventoryItemKind.Relic;
     public string ItemId => relicId;
-    public string DisplayName => displayName;
+    public string DisplayName => GameText.Asset(this, "displayName", displayName);
     public Sprite Icon => icon;
 }

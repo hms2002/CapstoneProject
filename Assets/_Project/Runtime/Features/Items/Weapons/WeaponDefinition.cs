@@ -111,7 +111,7 @@ public class WeaponDefinition : ScriptableObject, IInventoryItemDefinition
     // IInventoryItemDefinition
     public InventoryItemKind Kind => InventoryItemKind.Weapon;
     public string ItemId => weaponId;
-    public string DisplayName => displayName;
+    public string DisplayName => GameText.Asset(this, "displayName", displayName);
     public Sprite Icon => icon;
     public ItemDisplayVisualProfileSO DisplayVisualProfile => displayVisualProfile;
 

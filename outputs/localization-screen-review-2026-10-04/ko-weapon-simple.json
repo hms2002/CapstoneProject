@@ -1,0 +1,246 @@
+{
+    "scene": "ProtoTypeHub",
+    "locale": "ko",
+    "screen": "weapon-simple",
+    "image": "outputs/localization-screen-review-2026-10-04/ko-weapon-simple.png",
+    "labels": [
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock(Clone)/CardMotionRoot/Panel_AbillityDetailInfo/Text (TMP)",
+            "text": "● 전방으로 고속 베기 공격\n● <link=\"glossary:이동속도\"><color=#5EC8FF>이동속도</color></link>의 <color=#FFBE00>x3</color>만큼 피해 보너스",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock(Clone)/CardMotionRoot/Panel_AbilityUpperInfo/BG_CoolDown/Text_coolDown",
+            "text": "5s",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock(Clone)/CardMotionRoot/Panel_AbilityUpperInfo/BG_SkillName/Text_SkillName",
+            "text": "스피드 스트라이크",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 19.299999237060548
+        },
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock(Clone)/CardMotionRoot/Panel_AbillityDetailInfo/Text (TMP)",
+            "text": "● 사용 즉시 가속하며, 유지할수록 단계별 추가 가속\n● 사용 시 / <color=#FFBE00>3초</color> 후 / <color=#FFBE00>6초</color> 후 <link=\"glossary:이동속도\"><color=#5EC8FF>이동속도</color></link> 보너스 <color=#FFBE00>100% / 200% / 300%</color>\n● <color=#FF3296>마우스 방향으로 강제 이동</color>\n● 피격, 적 충돌 또는 공격 시 <color=#FF5050>가속 즉시 종료</color>",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock(Clone)/CardMotionRoot/Panel_AbilityUpperInfo/BG_CoolDown/Text_coolDown",
+            "text": "12s",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock(Clone)/CardMotionRoot/Panel_AbilityUpperInfo/BG_SkillName/Text_SkillName",
+            "text": "러쉬",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Content/tooltipStatLines /weaponstatLineview(Clone)/Text_Body",
+            "text": "● 이동속도 <color=#66FF66>[+1%]</color>",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "PF Player(Clone)/OddIronAmmoHUD/AmmoText",
+            "text": "6 / 6",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (3)/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (2)/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (1)/ShopSlot(Clone)/PriceText",
+            "text": "4",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlotPosition/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Header/StoryText",
+            "text": "<color=#96DCFA>“한 번 시작된 기사의 날갯짓은 결코 멈추지 않는다. 그 끝은 오직 승리 혹은 완전한 소멸뿐이다.”</color>",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 23.200000762939454
+        },
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Header/Line/WeaponDescriptionHint/DescriptionToggleLabel",
+            "text": "자세히 설명",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 27.0
+        },
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Header/Name_Panel/TitleParent/Title",
+            "text": "잔영의 날개",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 33.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+            "text": "마왕을 토벌하기 위해 전진하자.",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 26.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+            "text": "메인 퀘스트",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/Timer_BossUI/TimerSection/TimerBG/Timer",
+            "text": "15:00",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/LevelHUD/LevelText",
+            "text": "1",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (4)/KeyGuideText",
+            "text": "4",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (3)/KeyGuideText",
+            "text": "3",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (2)/KeyGuideText",
+            "text": "2",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (1)/KeyGuideText",
+            "text": "1",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/CurrencyUI/Text(TMP)",
+            "text": "1",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/GoldUI/Text(TMP)",
+            "text": "0",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (4)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (3)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (2)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (1)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "EncyclopediaStand/NameplateAnchor/NpcNameplate/Name",
+            "text": "도감",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/RefreshButton/CountText",
+            "text": "3번 남음",
+            "font": "Galmuri9 SDF",
+            "overflow": false,
+            "size": 5.0
+        },
+        {
+            "owner": "Npc/NameplateAnchor/NpcNameplate/Name",
+            "text": "벨카",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/MerchantNpc/NameplateAnchor/NpcNameplate/Name",
+            "text": "사샤",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        }
+    ]
+}

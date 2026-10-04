@@ -73,6 +73,6 @@ public sealed class SceneTravelInteractable : InteractableBase
     }
 
     public override InteractState GetInteractType() => InteractState.Idle;
-    public override string GetInteractDescription() => interactPromptText;
+    public override string GetInteractDescription() => GameText.Get("interaction.scenetravelinteractable.interactprompttext", interactPromptText);
     public override Transform GetPromptAnchor() => endpoint != null ? endpoint.DepartureAnchor : transform;
 }

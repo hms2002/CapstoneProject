@@ -86,7 +86,7 @@ public sealed class EncyclopediaInteractable : InteractableBase
 
     public override string GetInteractDescription()
     {
-        return promptText;
+        return GameText.Get("interaction.encyclopediainteractable.prompttext", promptText);
     }
 
     public override Transform GetPromptAnchor()

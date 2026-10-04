@@ -45,7 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popupPrefab: {fileID: 788094768127510997, guid: 6dd146133f44c4e45a1839cbed6f7ec4, type: 3}
+  formatProfile: {fileID: 0}
+  logPopupRequests: 1
   worldOffset: {x: 0, y: 0.8, z: 0}
   randomOffsetX: {x: -0.15, y: 0.15}
   randomOffsetY: {x: -0.05, y: 0.05}
+  useTetrisPlacement: 1
+  slotSpacing: {x: 0.5, y: 0.36}
+  minSeparation: {x: 0.4, y: 0.28}
+  maxReservationSeconds: 0.75
   popupParent: {fileID: 0}

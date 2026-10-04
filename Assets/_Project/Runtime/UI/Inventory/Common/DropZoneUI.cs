@@ -146,7 +146,7 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
         ChestInventory chest = (source as ChestContainerAdapter)?.Inventory;
         if (chest != null && !chest.CheckAcquisitionAllowed())
         {
-            WarningPopupPlayback.ShowMessage("한 상자에서 아이템은 2개까지만 획득할 수 있습니다.");
+            WarningPopupPlayback.ShowMessage(GameText.Get("code.dropzoneui.7fe83ed505", "한 상자에서 아이템은 2개까지만 획득할 수 있습니다."));
             return false;
         }
 

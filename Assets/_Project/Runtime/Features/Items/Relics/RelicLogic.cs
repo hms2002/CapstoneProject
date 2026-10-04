@@ -55,7 +55,7 @@ public abstract class RelicLogic : ScriptableObject
     {
         return new RelicTooltipData
         {
-            effectText = "(이 유물 로직 타입에 대한 상세 표시를 추가할 수 있어요)"
+            effectText = GameText.Get("code.reliclogic.98e2b6e040", "(이 유물 로직 타입에 대한 상세 표시를 추가할 수 있어요)")
         };
     }
 
@@ -76,7 +76,8 @@ public abstract class RelicLogic : ScriptableObject
     /// </summary>
     protected string ResolveEffectTemplate(string fallbackTemplate)
     {
-        return string.IsNullOrWhiteSpace(effectTemplate) ? fallbackTemplate : effectTemplate;
+        string template = string.IsNullOrWhiteSpace(effectTemplate) ? fallbackTemplate : effectTemplate;
+        return GameText.Asset(this, "effectTemplate", template);
     }
 
     /// <summary>

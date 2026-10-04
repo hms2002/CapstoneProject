@@ -255,6 +255,19 @@ MonoBehaviour:
   reachMultiplier: 1
   reachPadding: 0
   lastLinkLocalOffset: {x: 0, y: 0}
+  authoredSegmentLengths:
+  - 47.836365
+  - 47.836365
+  - 47.836365
+  - 47.836365
+  - 47.836365
+  - 47.836365
+  - 47.836365
+  - 47.836365
+  - 47.836365
+  - 47.836365
+  - 47.836365
+  authoredEndpointDistance: 526.2
 --- !u!1 &3254291365863230454
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,0 +1,260 @@
+{
+    "scene": "TitleScene",
+    "locale": "en",
+    "screen": "profiles",
+    "image": "outputs/localization-screen-review-2026-10-04/en-profiles.png",
+    "labels": [
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/PlayTimeTextGroup/PlayTimeLabel",
+            "text": "Play Time",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/UpgradeTextGroup/UpgradeProgressContext",
+            "text": "56%",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/MagicStoneTextGroup/MagicStoneContext",
+            "text": "1",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/PlayTimeTextGroup/PlayTimeContext",
+            "text": "0h 0m",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ClearTextGroup/ClearCountContext",
+            "text": "0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/UpgradeTextGroup/UpgradeProgressLabel",
+            "text": "Upgrade Progress",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/MagicStoneTextGroup/MagicStoneLabel",
+            "text": "Magic Stones Owned",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/TitleTextPanel/TopText",
+            "text": "Slot 1",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.45000076293945
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+            "text": "Delete",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 30.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/MagicStoneTextGroup/MagicStoneLabel",
+            "text": "Magic Stones Owned",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/MagicStoneTextGroup/MagicStoneContext",
+            "text": "0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/TitleTextPanel/TopText",
+            "text": "Slot 3",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.45000076293945
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ButtonGroup/ContinueSlot/ContinueButton/Text (TMP)",
+            "text": "Continue",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ClearTextGroup/ClearCountContext",
+            "text": "0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/MagicStoneTextGroup/MagicStoneContext",
+            "text": "0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+            "text": "Start Game",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/MagicStoneTextGroup/MagicStoneLabel",
+            "text": "Magic Stones Owned",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/UpgradeTextGroup/UpgradeProgressLabel",
+            "text": "Upgrade Progress",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ClearTextGroup/ClearCountContext",
+            "text": "0",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/PlayTimeTextGroup/PlayTimeContext",
+            "text": "0h 0m",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ClearTextGroup/ClearCountLabel",
+            "text": "Clear Count",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ClearTextGroup/ClearCountLabel",
+            "text": "Clear Count",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/PlayTimeTextGroup/PlayTimeLabel",
+            "text": "Play Time",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/PlayTimeTextGroup/PlayTimeContext",
+            "text": "0h 5m",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+            "text": "Delete",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 30.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/UpgradeTextGroup/UpgradeProgressLabel",
+            "text": "Upgrade Progress",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/PlayTimeTextGroup/PlayTimeLabel",
+            "text": "Play Time",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/UpgradeTextGroup/UpgradeProgressContext",
+            "text": "56%",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ButtonGroup/ContinueSlot/ContinueButton/Text (TMP)",
+            "text": "Continue",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+            "text": "Delete",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 30.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ButtonGroup/ContinueSlot/ContinueButton/Text (TMP)",
+            "text": "Continue",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+            "text": "Settings",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ClearTextGroup/ClearCountLabel",
+            "text": "Clear Count",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/TitleTextPanel/TopText",
+            "text": "Slot 2",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.45000076293945
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+            "text": "Quit Game",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/UpgradeTextGroup/UpgradeProgressContext",
+            "text": "56%",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": true,
+            "size": 28.0
+        }
+    ]
+}

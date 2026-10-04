@@ -1,0 +1,260 @@
+{
+    "scene": "ProtoTypeHub",
+    "locale": "zh-Hant",
+    "screen": "encyclopedia",
+    "image": "outputs/localization-screen-review-2026-10-04/zh-Hant-encyclopedia.png",
+    "labels": [
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock_Encyclopedia(Clone)/CardMotionRoot/Panel_AbillityDetailInfo/Text (TMP)",
+            "text": "● 向前方高速斬擊\n● 傷害加成等於<link=\"glossary:이동속도\"><color=#5EC8FF>移動速度</color></link>的<color=#FFBE00>x3</color>",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock_Encyclopedia(Clone)/CardMotionRoot/Panel_AbilityUpperInfo/SkillInfoGroup/BG_CoolDown/Text_coolDown",
+            "text": "5s",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock_Encyclopedia(Clone)/CardMotionRoot/Panel_AbilityUpperInfo/SkillInfoGroup/BG_SkillName/Text_SkillName",
+            "text": "極速斬擊",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock_Encyclopedia(Clone)/CardMotionRoot/Panel_AbillityDetailInfo/Text (TMP)",
+            "text": "● 使用後立即加速，維持時分階段繼續加速\n● 使用時／<color=#FFBE00>3秒</color>後／<color=#FFBE00>6秒</color>後，<link=\"glossary:이동속도\"><color=#5EC8FF>移動速度</color></link>加成為<color=#FFBE00>100% / 200% / 300%</color>\n● <color=#FF3296>強制朝滑鼠方向移動</color>\n● 受擊、碰撞敵人或攻擊時<color=#FF5050>立即結束加速</color>",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock_Encyclopedia(Clone)/CardMotionRoot/Panel_AbilityUpperInfo/SkillInfoGroup/BG_CoolDown/Text_coolDown",
+            "text": "12s",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Content/AbilityBlockContainer/Panel_AbilityBlock_Encyclopedia(Clone)/CardMotionRoot/Panel_AbilityUpperInfo/SkillInfoGroup/BG_SkillName/Text_SkillName",
+            "text": "疾衝",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "PF Player(Clone)/OddIronAmmoHUD/AmmoText",
+            "text": "6 / 6",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (3)/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (2)/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (1)/ShopSlot(Clone)/PriceText",
+            "text": "4",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlotPosition/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/StoryTextPanel/StoryText",
+            "text": "<color=#96DCFA>「騎士一旦振翅，便永不停歇。唯有勝利或徹底湮滅，才是終點。」</color>",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 23.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/LvPanel/LvTxt",
+            "text": "移動速度 [+1%]",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header/WeaponDescriptionHint/DescriptionToggleLabel",
+            "text": "詳細說明",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 27.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/RightPage/ItemDetailPanel/ContentPanel/Header/Name_Panel/Title",
+            "text": "殘影之翼",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 33.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/LeftPage/PageButtonGroup/PageNum",
+            "text": "1/1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/EncyclopediaUI/Book/LeftPage/TitleGroup/Title",
+            "text": "武器",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 40.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+            "text": "向前推進，討伐魔王。",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 26.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+            "text": "主線任務",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/Timer_BossUI/TimerSection/TimerBG/Timer",
+            "text": "15:00",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/LevelHUD/LevelText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (4)/KeyGuideText",
+            "text": "4",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (3)/KeyGuideText",
+            "text": "3",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (2)/KeyGuideText",
+            "text": "2",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (1)/KeyGuideText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/CurrencyUI/Text(TMP)",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/GoldUI/Text(TMP)",
+            "text": "0",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (4)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (3)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (2)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (1)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "EncyclopediaStand/NameplateAnchor/NpcNameplate/Name",
+            "text": "圖鑑",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/RefreshButton/CountText",
+            "text": "剩餘3次",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 5.0
+        },
+        {
+            "owner": "Npc/NameplateAnchor/NpcNameplate/Name",
+            "text": "維爾卡",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/MerchantNpc/NameplateAnchor/NpcNameplate/Name",
+            "text": "薩莎",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 40.0
+        }
+    ]
+}

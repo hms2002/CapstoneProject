@@ -1,0 +1,8 @@
+﻿"weaponId","section","key","value","note"
+"Weapon.OddIron","defaults","maxAmmo","6","최대 탄약 수"
+"Weapon.OddIron","shot","projectileSpeed","25","투사체 속도"
+"Weapon.OddIron","shot","lifetime","1.5","투사체 수명(초)"
+"Weapon.OddIron","shot","fixedDamage","90","고정 피해량"
+"Weapon.OddIron","shot","fixedKnockbackImpulse","8","넉백 충격량"
+"Weapon.OddIron","shot","barrageInterval","0.08","전탄난사 간격(초)"
+"Weapon.OddIron","shot","barrageSpreadAngle","15","전탄난사 확산 각도"

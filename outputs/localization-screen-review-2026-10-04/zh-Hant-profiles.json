@@ -1,0 +1,260 @@
+{
+    "scene": "TitleScene",
+    "locale": "zh-Hant",
+    "screen": "profiles",
+    "image": "outputs/localization-screen-review-2026-10-04/zh-Hant-profiles.png",
+    "labels": [
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/PlayTimeTextGroup/PlayTimeLabel",
+            "text": "遊玩時間",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/UpgradeTextGroup/UpgradeProgressContext",
+            "text": "56%",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/MagicStoneTextGroup/MagicStoneContext",
+            "text": "1個",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/PlayTimeTextGroup/PlayTimeContext",
+            "text": "0小時 0分鐘",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ClearTextGroup/ClearCountContext",
+            "text": "0次",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/UpgradeTextGroup/UpgradeProgressLabel",
+            "text": "升級進度",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/MagicStoneTextGroup/MagicStoneLabel",
+            "text": "持有魔晶石",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/TitleTextPanel/TopText",
+            "text": "存檔欄 1",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 37.5
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+            "text": "刪除",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 30.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/MagicStoneTextGroup/MagicStoneLabel",
+            "text": "持有魔晶石",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/MagicStoneTextGroup/MagicStoneContext",
+            "text": "0個",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/TitleTextPanel/TopText",
+            "text": "存檔欄 3",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 37.5
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ButtonGroup/ContinueSlot/ContinueButton/Text (TMP)",
+            "text": "繼續遊戲",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ClearTextGroup/ClearCountContext",
+            "text": "0次",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/MagicStoneTextGroup/MagicStoneContext",
+            "text": "0個",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+            "text": "開始遊戲",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/MagicStoneTextGroup/MagicStoneLabel",
+            "text": "持有魔晶石",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/UpgradeTextGroup/UpgradeProgressLabel",
+            "text": "升級進度",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ClearTextGroup/ClearCountContext",
+            "text": "0次",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/PlayTimeTextGroup/PlayTimeContext",
+            "text": "0小時 0分鐘",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ClearTextGroup/ClearCountLabel",
+            "text": "通關次數",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ClearTextGroup/ClearCountLabel",
+            "text": "通關次數",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/PlayTimeTextGroup/PlayTimeLabel",
+            "text": "遊玩時間",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/PlayTimeTextGroup/PlayTimeContext",
+            "text": "0小時 5分鐘",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+            "text": "刪除",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 30.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/UpgradeTextGroup/UpgradeProgressLabel",
+            "text": "升級進度",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/PlayTimeTextGroup/PlayTimeLabel",
+            "text": "遊玩時間",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/UpgradeTextGroup/UpgradeProgressContext",
+            "text": "56%",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ButtonGroup/ContinueSlot/ContinueButton/Text (TMP)",
+            "text": "繼續遊戲",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+            "text": "刪除",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 30.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ButtonGroup/ContinueSlot/ContinueButton/Text (TMP)",
+            "text": "繼續遊戲",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+            "text": "設定",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ClearTextGroup/ClearCountLabel",
+            "text": "通關次數",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/TitleTextPanel/TopText",
+            "text": "存檔欄 2",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 37.5
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+            "text": "結束遊戲",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/UpgradeTextGroup/UpgradeProgressContext",
+            "text": "56%",
+            "font": "fusion-pixel-12px-proportional-zh_hant SDF",
+            "overflow": true,
+            "size": 28.0
+        }
+    ]
+}

@@ -47,14 +47,16 @@ public sealed class RunConstructionNpcDialogueProvider : RunSpecialNpcDialoguePr
     {
         if (feature == null ||
             string.IsNullOrWhiteSpace(text) ||
-            text.IndexOf(RemainingDaysToken, System.StringComparison.Ordinal) < 0)
+            (text.IndexOf(RemainingDaysToken, System.StringComparison.Ordinal) < 0 &&
+             text.IndexOf("{remaining_runs}", System.StringComparison.Ordinal) < 0))
         {
             return text;
         }
 
         string remainingRuns = feature.GetRemainingRunCompletions()
             .ToString(CultureInfo.InvariantCulture);
-        return text.Replace(RemainingDaysToken, remainingRuns + "\uC77C");
+        string displayDays = GameText.Format("units.days.value", "{0}일", remainingRuns);
+        return text.Replace(RemainingDaysToken, displayDays).Replace("{remaining_runs}", displayDays);
     }
 
     private void ResolveFeature()

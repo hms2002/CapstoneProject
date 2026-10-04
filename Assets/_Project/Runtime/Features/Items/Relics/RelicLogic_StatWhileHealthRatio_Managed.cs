@@ -5,7 +5,7 @@ using UnityGAS;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Stat While Health Ratio (Managed)")]
 public sealed class RelicLogic_StatWhileHealthRatio_Managed : RelicLogic
 {
-    protected override string DefaultEffectTemplate => "● 체력이 {min_ratio}~{max_ratio}일 때 [[{stat}]] {value}";
+    protected override string DefaultEffectTemplate => GameText.Get("code.reliclogic_statwhilehealthratio_managed.10f3dfbb81", "● 체력이 {min_ratio}~{max_ratio}일 때 [[{stat}]] {value}");
 
     [Header("Watch")]
     public AttributeDefinition healthAttribute;

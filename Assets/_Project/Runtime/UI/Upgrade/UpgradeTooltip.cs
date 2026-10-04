@@ -74,11 +74,11 @@ public class UpgradeTooltip : MonoBehaviour, IHoverView, IHoverPositionOffsetPro
         }
 
         if (titleText != null)
-            titleText.text = node.upgradeName;
+            titleText.text = node.DisplayName;
 
         if (contentText != null)
         {
-            contentText.text = node.description;
+            contentText.text = node.Description;
             contentText.enableWordWrapping = true;
         }
 
@@ -106,8 +106,8 @@ public class UpgradeTooltip : MonoBehaviour, IHoverView, IHoverPositionOffsetPro
 
         string statusLabel = status switch
         {
-            LockType.Locked => "\uC7A0\uAE40",
-            LockType.Purchased => "\uAD6C\uB9E4\uB428",
+            LockType.Locked => GameText.Get("code.upgradetooltip.956f2f4243", "잠김"),
+            LockType.Purchased => GameText.Get("code.upgradetooltip.bf3eab857f", "구매됨"),
             _ => string.Empty
         };
 

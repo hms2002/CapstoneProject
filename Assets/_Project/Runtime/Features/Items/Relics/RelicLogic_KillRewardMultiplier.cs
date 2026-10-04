@@ -11,8 +11,8 @@ public sealed class RelicLogic_KillRewardMultiplier : RelicLogic, IRelicRuntimeS
     [SerializeField] private List<float> bonusRateByLevel = new();
 
     protected override string DefaultEffectTemplate => rewardKind == KillRewardRelicKind.Gold
-        ? "적 처치 시 얻는 금화의 획득량이 {bonus} 증가"
-        : "경험치 획득량이 {bonus} 증가";
+        ? GameText.Get("code.reliclogic_killrewardmultiplier.d22f60d01b", "적 처치 시 얻는 금화의 획득량이 {bonus} 증가")
+        : GameText.Get("code.reliclogic_killrewardmultiplier.78802a9ec5", "경험치 획득량이 {bonus} 증가");
 
     public override void OnEquipped(RelicContext ctx) => Attach(ctx);
     public override void OnRestoreAttached(RelicContext ctx) => Attach(ctx);

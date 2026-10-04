@@ -80,17 +80,19 @@ public class RelicDetailView : MonoBehaviour, IItemDetailView
             : null;
 
         string effect = currentRelic is ParcelRelicDefinition
-            ? currentRelic.description
+            ? GameText.Asset(currentRelic, "description", currentRelic.description)
             : tooltip != null && !string.IsNullOrEmpty(tooltip.effectText)
             ? tooltip.effectText
-            : "(로직 없음)";
+            : GameText.Get("code.relicdetailview.0e60b44054", "(로직 없음)");
 
         if (currentServices?.formatText != null)
             effect = currentServices.formatText(effect);
 
-        sections.Add(currentRelic is ParcelRelicDefinition ? "설명" : "효과", effect, currentServices?.showGlossary);
+        sections.Add(currentRelic is ParcelRelicDefinition ? GameText.Get("code.relicdetailview.841964364c", "설명") : GameText.Get("code.relicdetailview.ce49decb68", "효과"), effect, currentServices?.showGlossary);
         Canvas.ForceUpdateCanvases();
     }
+
+    public void RefreshLocalizedText() => RefreshSections();
 
     /// <summary>
     /// 책임 :

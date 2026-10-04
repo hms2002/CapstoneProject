@@ -9,7 +9,7 @@ using System.Collections.Generic;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Feather Orbit (Managed)")]
 public class RelicLogic_FeatherOrbit_Managed : RelicLogic
 {
-    protected override string DefaultEffectTemplate => "● 깃털 {feather_count}개가 주위를 회전하며 적을 공격\n● 깃털 피해는 [[공격력]]의 {damage_coef}\n● 회전 반경 {radius}\n● 같은 적을 다시 공격하는 기본 간격 {hit_cooldown}";
+    protected override string DefaultEffectTemplate => GameText.Get("code.reliclogic_featherorbit_managed.cef8ff8aec", "● 깃털 {feather_count}개가 주위를 회전하며 적을 공격\n● 깃털 피해는 [[공격력]]의 {damage_coef}\n● 회전 반경 {radius}\n● 같은 적을 다시 공격하는 기본 간격 {hit_cooldown}");
 
     [Header("Prefabs")]
     public FeatherOrbitFeather featherPrefab;
@@ -97,7 +97,7 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
     public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
     {
         return BuildTemplatedTooltip(
-            "● 깃털 {feather_count}개가 주위를 회전하며 적을 공격\n● 깃털 피해는 [[공격력]]의 {damage_coef}\n● 회전 반경 {radius}\n● 같은 적을 다시 공격하는 기본 간격 {hit_cooldown}",
+            DefaultEffectTemplate,
             new Dictionary<string, string>
             {
                 ["feather_count"] = RelicTooltipFormatter.FormatUnsignedValueToken(featherCount, false),

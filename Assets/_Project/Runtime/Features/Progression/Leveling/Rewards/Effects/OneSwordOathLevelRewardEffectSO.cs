@@ -37,13 +37,13 @@ public sealed class OneSwordOathLevelRewardEffectSO : LevelRewardEffectSO
 
         if (inventory.GetWeaponInSlot(mainWeaponSlotIndex) == null)
         {
-            failureReason = "1번 슬롯에 무기가 없습니다.";
+            failureReason = GameText.Get("code.oneswordoathlevelrewardeffectso.76ededcc5c", "1번 슬롯에 무기가 없습니다.");
             return false;
         }
 
         if (inventory.GetWeaponInSlot(sealedWeaponSlotIndex) == null)
         {
-            failureReason = "2번 슬롯에 봉인할 무기가 없습니다.";
+            failureReason = GameText.Get("code.oneswordoathlevelrewardeffectso.10552c53f5", "2번 슬롯에 봉인할 무기가 없습니다.");
             return false;
         }
 
@@ -51,7 +51,7 @@ public sealed class OneSwordOathLevelRewardEffectSO : LevelRewardEffectSO
             mainWeaponCooldownMultiplier <= 0f ||
             !inventory.CanAcquireSlotSeal(sealedWeaponSlotIndex))
         {
-            failureReason = "현재 상태에서는 2번 슬롯을 안전하게 봉인할 수 없습니다.";
+            failureReason = GameText.Get("code.oneswordoathlevelrewardeffectso.9161e5e552", "현재 상태에서는 2번 슬롯을 안전하게 봉인할 수 없습니다.");
             return false;
         }
 

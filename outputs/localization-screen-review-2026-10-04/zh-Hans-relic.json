@@ -1,0 +1,204 @@
+{
+    "scene": "ProtoTypeHub",
+    "locale": "zh-Hans",
+    "screen": "relic",
+    "image": "outputs/localization-screen-review-2026-10-04/zh-Hans-relic.png",
+    "labels": [
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Content/ItemDetailSectionView(Clone)/BodyText",
+            "text": "药水恢复量从1提高至2",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 22.0
+        },
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Content/ItemDetailSectionView(Clone)/HeaderText",
+            "text": "效果",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 22.0
+        },
+        {
+            "owner": "PF Player(Clone)/OddIronAmmoHUD/AmmoText",
+            "text": "6 / 6",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (3)/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (2)/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (1)/ShopSlot(Clone)/PriceText",
+            "text": "4",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlotPosition/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Header/StoryText",
+            "text": "<color=#409CFF>稀有</color>",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 23.200000762939454
+        },
+        {
+            "owner": "GlobalUIRoot/HoverCanvas/ItemDetailPanel/Body_parent/ContentPanel/Header/Name_Panel/TitleParent/Title",
+            "text": "治愈吊坠 Lv 1 / 1",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 33.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+            "text": "向前推进，讨伐魔王。",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 26.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+            "text": "主线任务",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/Timer_BossUI/TimerSection/TimerBG/Timer",
+            "text": "15:00",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/LevelHUD/LevelText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (4)/KeyGuideText",
+            "text": "4",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (3)/KeyGuideText",
+            "text": "3",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (2)/KeyGuideText",
+            "text": "2",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (1)/KeyGuideText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/CurrencyUI/Text(TMP)",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/GoldUI/Text(TMP)",
+            "text": "0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (4)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (3)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (2)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (1)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "EncyclopediaStand/NameplateAnchor/NpcNameplate/Name",
+            "text": "图鉴",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/RefreshButton/CountText",
+            "text": "剩余3次",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 5.0
+        },
+        {
+            "owner": "Npc/NameplateAnchor/NpcNameplate/Name",
+            "text": "维尔卡",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/MerchantNpc/NameplateAnchor/NpcNameplate/Name",
+            "text": "萨莎",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 40.0
+        }
+    ]
+}

@@ -228,7 +228,12 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
         if (inventoryPhase == InventoryLessonPhase.Viewing)
         {
             // IsInventoryOpen remains true throughout the screen's closing animation.
-            if (inventoryHandler.IsInventoryOpen) return;
+            if (inventoryHandler.IsInventoryOpen)
+            {
+                // Keep the backdrop continuous, including after a window resize.
+                LayoutShades(inputShield.rect.center, inputShield.rect.center);
+                return;
+            }
             inventoryPhase = InventoryLessonPhase.Returning;
             inventoryMotionElapsed = 0f;
             RestoreGuidanceCanvas();
@@ -271,6 +276,7 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
                 inventoryPhase = InventoryLessonPhase.Viewing;
                 shieldImage.raycastTarget = false;
                 SetInventoryInstructionVisible(false);
+                LayoutShades(inputShield.rect.center, inputShield.rect.center);
                 InventoryScreen openScreen = FindFirstObjectByType<InventoryScreen>();
                 lessonInventoryScreen = openScreen;
                 lessonInventoryScreen?.AcquireInspectionOnlyMode(this);
@@ -541,9 +547,9 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
         rightClickGlyph.sprite = potionUseGlyph.sprite = first.Icon;
         potionRangeEndGlyph.sprite = last.Icon;
         TMP_Text label = instruction.GetComponent<TMP_Text>();
-        label.text = "를 눌러서 포션을 사용할 수 있습니다.";
+        label.text = GameText.Get("code.prototypechestnavigation.feb2bfc90a", "를 눌러서 포션을 사용할 수 있습니다.");
         potionRangeSeparator.text = (first.HasIcon ? "" : first.DisplayLabel) + "~" + (last.HasIcon ? "" : last.DisplayLabel);
-        potionUseInstruction.text = (first.HasIcon ? "" : first.DisplayLabel) + "을 눌러 포션 사용.";
+        potionUseInstruction.text = (first.HasIcon ? "" : first.DisplayLabel) + GameText.Get("code.prototypechestnavigation.d6a5fc843a", "을 눌러 포션 사용.");
         float captionWidth = PreparePotionText(label);
         float rangeWidth = PreparePotionText(potionRangeSeparator);
         float useWidth = PreparePotionText(potionUseInstruction);
@@ -667,8 +673,8 @@ public sealed class PrototypeChestNavigation : MonoBehaviour, IPointerClickHandl
         rightClickGlyph.sprite = glyph.Icon;
         TMP_Text label = instruction.GetComponent<TMP_Text>();
         if (label != null) label.text = inventory
-            ? (glyph.HasIcon ? "를 눌러 인벤토리를 열 수 있습니다." : glyph.DisplayLabel + "를 눌러 인벤토리를 열 수 있습니다.")
-            : "포션을 좌클릭하여 선택하세요";
+            ? (glyph.HasIcon ? GameText.Get("code.prototypechestnavigation.052f5e5eb3", "를 눌러 인벤토리를 열 수 있습니다.") : glyph.DisplayLabel + GameText.Get("code.prototypechestnavigation.052f5e5eb3", "를 눌러 인벤토리를 열 수 있습니다."))
+            : GameText.Get("code.prototypechestnavigation.d371f891e4", "포션을 좌클릭하여 선택하세요");
         if (inventory && label != null)
         {
             label.textWrappingMode = TextWrappingModes.NoWrap;

@@ -1,0 +1,146 @@
+[
+  {
+    "key": "merchant.failure.currency",
+    "ko": "마정석이 부족하군.",
+    "en": "Not enough magic stones.",
+    "ja": "魔晶石が足りないな。",
+    "zh-Hans": "魔晶石不够啊。",
+    "zh-Hant": "魔晶石不夠啊。"
+  },
+  {
+    "key": "merchant.failure.inventory",
+    "ko": "가방이 가득 찼군.",
+    "en": "Your bag is full.",
+    "ja": "かばんがいっぱいだな。",
+    "zh-Hans": "背包满了啊。",
+    "zh-Hant": "背包滿了啊。"
+  },
+  {
+    "key": "merchant.first_opening",
+    "ko": "짜잔! 오늘부터 정상 영업이야!",
+    "en": "Ta-da! Open for business starting today!",
+    "ja": "じゃーん！今日から本格的に営業開始だ！",
+    "zh-Hans": "锵锵！从今天起正式营业！",
+    "zh-Hant": "鏘鏘！從今天起正式營業！"
+  },
+  {
+    "key": "chest.remaining_monsters",
+    "ko": "남은 몬스터 : {0}",
+    "en": "Monsters remaining: {0}",
+    "ja": "残りのモンスター：{0}",
+    "zh-Hans": "剩余怪物：{0}",
+    "zh-Hant": "剩餘怪物：{0}"
+  },
+  {
+    "key": "ui.level_reward.combat_blocked",
+    "ko": "전투가 끝난 뒤 할 수 있어",
+    "en": "You can do that after combat.",
+    "ja": "戦闘が終わってからできるよ。",
+    "zh-Hans": "战斗结束后才能进行。",
+    "zh-Hant": "戰鬥結束後才能進行。"
+  },
+  {
+    "key": "ui.loading",
+    "ko": "불러오는 중",
+    "en": "Loading",
+    "ja": "ロード中",
+    "zh-Hans": "加载中",
+    "zh-Hant": "載入中"
+  },
+  {
+    "key": "gameover.victory.title",
+    "ko": "승리?",
+    "en": "Victory?",
+    "ja": "勝利？",
+    "zh-Hans": "胜利？",
+    "zh-Hant": "勝利？"
+  },
+  {
+    "key": "gameover.victory.message",
+    "ko": "승리하였지만, 이것으로 충분했을까?",
+    "en": "You won, but was that enough?",
+    "ja": "勝利した。でも、これで十分だったのだろうか？",
+    "zh-Hans": "虽然获胜了，但这样就够了吗？",
+    "zh-Hant": "雖然獲勝了，但這樣就夠了嗎？"
+  },
+  {
+    "key": "gameover.time_over_cause",
+    "ko": "마왕의 인내심",
+    "en": "The Demon King's Patience",
+    "ja": "魔王の忍耐",
+    "zh-Hans": "魔王的耐心",
+    "zh-Hant": "魔王的耐心"
+  },
+  {
+    "key": "location.unknown",
+    "ko": "알 수 없는 장소",
+    "en": "Unknown Location",
+    "ja": "不明な場所",
+    "zh-Hans": "未知地点",
+    "zh-Hant": "未知地點"
+  },
+  {
+    "key": "location.demon_king",
+    "ko": "마왕의 알현실",
+    "en": "The Demon King's Audience Chamber",
+    "ja": "魔王の謁見の間",
+    "zh-Hans": "魔王谒见厅",
+    "zh-Hant": "魔王謁見廳"
+  },
+  {
+    "key": "location.dragon_boss",
+    "ko": "드래곤의 방",
+    "en": "The Dragon's Room",
+    "ja": "ドラゴンの部屋",
+    "zh-Hans": "龙的房间",
+    "zh-Hant": "龍的房間"
+  },
+  {
+    "key": "location.dragon_corridor",
+    "ko": "보물창고",
+    "en": "Treasure Vault",
+    "ja": "宝物庫",
+    "zh-Hans": "宝库",
+    "zh-Hant": "寶庫"
+  },
+  {
+    "key": "location.shadow_boss",
+    "ko": "클로에의 방",
+    "en": "Chloe's Room",
+    "ja": "クロエの部屋",
+    "zh-Hans": "克洛伊的房间",
+    "zh-Hant": "克洛伊的房間"
+  },
+  {
+    "key": "location.shadow_corridor",
+    "ko": "그림자 감옥",
+    "en": "Shadow Prison",
+    "ja": "影の牢獄",
+    "zh-Hans": "暗影牢狱",
+    "zh-Hant": "暗影牢獄"
+  },
+  {
+    "key": "location.slime_boss",
+    "ko": "멜타의 방",
+    "en": "Melta's Room",
+    "ja": "メルタの部屋",
+    "zh-Hans": "梅尔塔的房间",
+    "zh-Hant": "梅爾塔的房間"
+  },
+  {
+    "key": "location.slime_corridor",
+    "ko": "슬라임 왕국",
+    "en": "Slime Kingdom",
+    "ja": "スライム王国",
+    "zh-Hans": "史莱姆王国",
+    "zh-Hant": "史萊姆王國"
+  },
+  {
+    "key": "location.boss_room",
+    "ko": "보스룸",
+    "en": "Boss Room",
+    "ja": "ボスの部屋",
+    "zh-Hans": "首领房间",
+    "zh-Hant": "首領房間"
+  }
+]

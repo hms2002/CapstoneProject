@@ -1,0 +1,82 @@
+[
+  {
+    "id": "RD_BloodBonusRelic",
+    "guid": "a901646dacf2764408f638b7cdbb3663",
+    "originalPath": "Assets/_Project/Data/Items/Relics/Definitions/RD_BloodBonusRelic.asset",
+    "archivePath": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Relics/RD_BloodBonusRelic.asset",
+    "assetSha256": "12CEE6CDFB6EBCED2C76D8FC37E3806B260026D04813A3F083458CC1D09906A8",
+    "metaSha256": "4268B6B5DAEC0E67718E5553D8C2880CA6F0607A9AC675EAFC9306B51C7D1B6E"
+  },
+  {
+    "id": "Relic.New2",
+    "guid": "1f774045e4d72664996fab05fc0e1308",
+    "originalPath": "Assets/_Project/Data/Items/Relics/Definitions/RD_LightningRelic.asset",
+    "archivePath": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Relics/RD_LightningRelic.asset",
+    "assetSha256": "456FB92388BF1FB5864652E9272D1ABBFA25C1EAE69424354F41E76CD0EC66AC",
+    "metaSha256": "9FBED42C48D70C27AEB7F565974B2042F8A2BE38837C1D74B7BCDE87809B7483"
+  },
+  {
+    "id": "Weapon.SunBlade",
+    "guid": "6c615cee73cf4a0584e74d6e36c2ce19",
+    "originalPath": "Assets/_Project/Data/Items/Weapons/Definitions/WD_SunBlade.asset",
+    "archivePath": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_SunBlade.asset",
+    "assetSha256": "4E307C0FA9F1961D49D895DF36B97DF4BB00D9DAC67200FD4A63AF1B83A4D73B",
+    "metaSha256": "91AD66DD9D6CF62301735C232D4ED73970BFBDAADD0A99B212A8B1BFEFBDE18B"
+  },
+  {
+    "id": "Weapon.MoonBlade",
+    "guid": "1ca2e6c6a388452199113cc97413b7a7",
+    "originalPath": "Assets/_Project/Data/Items/Weapons/Definitions/WD_MoonBlade.asset",
+    "archivePath": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_MoonBlade.asset",
+    "assetSha256": "1E391C59031B18C7C096AFF72652F5C46E88C7BCCCB7A1E69756DC8BF09F8A86",
+    "metaSha256": "69DCF7E0FD45D7BCA1AC1D4D1AB9AC658F9B412BEA1B22E9636410D0C48C18D4"
+  },
+  {
+    "id": "Weapon.MarkSword",
+    "guid": "29be7cddf55e4f47a20f0a3ec4003013",
+    "originalPath": "Assets/_Project/Data/Items/Weapons/Definitions/WD_MarkSword.asset",
+    "archivePath": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_MarkSword.asset",
+    "assetSha256": "147C86392C4D542951128741303A87EE2B7F4346399AD111BF20704DFCD1732C",
+    "metaSha256": "52064A66071E1DED4E1544B69C14E0711A5DB343A801978816BDE262C558B5B9"
+  },
+  {
+    "id": "Weapon.FragmentBlade",
+    "guid": "4d258aba25a64b5e8c2a1925edd571d6",
+    "originalPath": "Assets/_Project/Data/Items/Weapons/Definitions/WD_FragmentBlade.asset",
+    "archivePath": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_FragmentBlade.asset",
+    "assetSha256": "B6ADBC43E76B6DB3450937DA06E840AFE5CBC013EFAC50304D8E373B9E5361A8",
+    "metaSha256": "559265DD217D19B781692561B6D8238C568536B4E6862F44BE3137F89FDFB235"
+  },
+  {
+    "id": "Weapon.ExecutionGun",
+    "guid": "3ce3ce38b1a6491e9647218fc4003014",
+    "originalPath": "Assets/_Project/Data/Items/Weapons/Definitions/WD_ExecutionGun.asset",
+    "archivePath": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_ExecutionGun.asset",
+    "assetSha256": "5B2B33E684BEC0A5A49A8F14F898F7FA8B0D376BEB2AFC05235B4525E903B837",
+    "metaSha256": "D5C7E323AF2BA9DBA12685828AEB80AB1FA88AF24C49E526FB17E7FED4AB1356"
+  },
+  {
+    "id": "Weapon.ExecutionerGreatsword",
+    "guid": "92d5c5dc6e2847c89fda25b5888a06d7",
+    "originalPath": "Assets/_Project/Data/Items/Weapons/Definitions/WD_ExecutionerGreatsword.asset",
+    "archivePath": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_ExecutionerGreatsword.asset",
+    "assetSha256": "4290040B82ACA35FDCF8EDBDFEAEDF431DB759E4D59C4051AAB0CBF9AE91B505",
+    "metaSha256": "F1C8DB1668A73090676231B6D1BD38C95E00C6E749927F08780EBF1B4EEC749F"
+  },
+  {
+    "id": "Weapon.EclipseSword",
+    "guid": "a30c4a3fe7ea4b71b7a622c0f5653b6f",
+    "originalPath": "Assets/_Project/Data/Items/Weapons/Definitions/WD_EclipseSword.asset",
+    "archivePath": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_EclipseSword.asset",
+    "assetSha256": "0D34F9D30AB99604244823AEA0BD68BFA5D803968BC058BE1348C30A33DEAB00",
+    "metaSha256": "00CA65B37A50A119A29E433ED58EDD717F4F0D1D2B7E71B9E79DB61C70BF9C23"
+  },
+  {
+    "id": "Weapon.ChainSpear",
+    "guid": "6a2a0aa9e8e7416ab7e5b80a1671dcb2",
+    "originalPath": "Assets/_Project/Data/Items/Weapons/Definitions/WD_ChainSpear.asset",
+    "archivePath": "Assets/_Project/Data/Items/Archive_NotInItemDatabase/Weapons/WD_ChainSpear.asset",
+    "assetSha256": "E1AC070C781A5A04005707DDCFFFCB93C31578CBB71D9BA3235FAB4FCF3A8001",
+    "metaSha256": "3FD9B569D5CE1314BD8A7CB07791F55D41D001081EF89F32D42A06FDB6412D79"
+  }
+]

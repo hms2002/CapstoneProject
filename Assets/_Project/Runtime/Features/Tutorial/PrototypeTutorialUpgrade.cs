@@ -117,10 +117,10 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
     public string ProgressText => lastProgress;
     public string PromptInstruction => stage switch
     {
-        2 => $"를 길게 눌러서 공격 {attackHits}/9",
+        2 => GameText.Format("code.prototypetutorialupgrade.4fb1d89fd2", "를 길게 눌러서 공격 {0}/9", attackHits),
         3 => chargeKills < 4
-            ? $"를 길게 눌렀다 떼서 스킬로 적을 처치 {chargeKills}/4"
-            : $"를 눌러 스킬로 적을 처치 {thrustKills}/3",
+            ? GameText.Format("code.prototypetutorialupgrade.1f3bc59145", "를 길게 눌렀다 떼서 스킬로 적을 처치 {0}/4", chargeKills)
+            : GameText.Format("code.prototypetutorialupgrade.8f99e657c5", "를 눌러 스킬로 적을 처치 {0}/3", thrustKills),
         _ => ProgressText
     };
     public bool IsDashPromptVisible => dashIntro == DashIntroPhase.ZoomIn || dashIntro == DashIntroPhase.Waiting;
@@ -277,6 +277,7 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
     private void LateUpdate()
     {
         if (player == null || IsOpeningCinematic) return;
+        RefreshProgressText();
         TickDashIntro();
         if (TimeScalePausePlayback.IsPaused || Time.deltaTime <= 0f) return;
         TickGunner();
@@ -787,16 +788,21 @@ public sealed class PrototypeTutorialUpgrade : MonoBehaviour
         for (int i = 0; i < gates.Length; i++) gates[i].SetActive(i == 3 ? stage < 7 : stage <= i);
         if (stage != 1)
             foreach (Transform bullet in bullets) bullet.gameObject.SetActive(false);
+        RefreshProgressText();
+    }
+
+    private void RefreshProgressText()
+    {
         string message = stage switch
         {
-            0 => "몬스터를 쫓아가자",
-            1 => IsDashPromptVisible ? "대시로 공격을 피하세요." : "앞으로 이동하세요.",
-            2 => "좌클릭" + PromptInstruction,
-            3 => (chargeKills < 4 ? "우클릭" : "Q") + PromptInstruction,
-            4 => "상자를 열고 아이템 선택 후 획득하기",
-            5 => "인벤토리를 열어 획득한 아이템 확인하기",
-            6 => "1번 소모품 슬롯의 포션 사용하기",
-            _ => "위쪽 포탈로 이동하기"
+            0 => GameText.Get("code.prototypetutorialupgrade.fae38088fc", "몬스터를 쫓아가자"),
+            1 => IsDashPromptVisible ? GameText.Get("code.prototypetutorialupgrade.f321bd14d7", "대시로 공격을 피하세요.") : GameText.Get("code.prototypetutorialupgrade.3579509018", "앞으로 이동하세요."),
+            2 => GameText.Get("code.prototypetutorialupgrade.02940256ed", "좌클릭") + PromptInstruction,
+            3 => (chargeKills < 4 ? GameText.Get("code.prototypetutorialupgrade.0049bb6383", "우클릭") : "Q") + PromptInstruction,
+            4 => GameText.Get("code.prototypetutorialupgrade.9384b6cd9f", "상자를 열고 아이템 선택 후 획득하기"),
+            5 => GameText.Get("code.prototypetutorialupgrade.8ebae1fe1a", "인벤토리를 열어 획득한 아이템 확인하기"),
+            6 => GameText.Get("code.prototypetutorialupgrade.6efad512d7", "1번 소모품 슬롯의 포션 사용하기"),
+            _ => GameText.Get("code.prototypetutorialupgrade.788c4eb3fc", "위쪽 포탈로 이동하기")
         };
         if (message == lastProgress) return;
         lastProgress = message;

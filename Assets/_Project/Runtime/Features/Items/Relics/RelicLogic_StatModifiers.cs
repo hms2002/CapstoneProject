@@ -130,7 +130,7 @@ public class RelicLogic_StatModifiers : RelicLogic
 
         if (entries == null || entries.Count == 0)
         {
-            sb.AppendLine("(스탯 변경 없음)");
+            sb.AppendLine(GameText.Get("code.reliclogic_statmodifiers.e698aa11da", "(스탯 변경 없음)"));
         }
         else
         {

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-Assets-Locale_ja
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Localization-Assets-Locale_ja
+  m_GUID: 16adce2b79a7a1241b958c4636e3f58e
+  m_SerializeEntries:
+  - m_GUID: 423b1561980931f4288965d31ed4b1f8
+    m_Address: Galmuri9 Japanese SDF
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ja
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: adc5c785f5e5cb84492665c0776a7686, type: 2}
+    - {fileID: 11400000, guid: 5f6327f4ae3c47c4fa2ae04b2016efc6, type: 2}
+    - {fileID: 11400000, guid: 3689e0da714a8be40a11cd868fb4514d, type: 2}

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4db626ad063b13545924a9839ac5fa83, type: 3}
+  m_Name: GameFonts
+  m_EditorClassIdentifier: Unity.Localization.Editor::UnityEditor.Localization.AssetTableCollection
+  m_SharedTableData: {fileID: 11400000, guid: 279da0caf294fe94f8813c8d45601977, type: 2}
+  m_Tables:
+  - {fileID: 11400000, guid: 97dc526db54dddc458b403d5d4a4ef25, type: 2}
+  - {fileID: 11400000, guid: 8e19d815563fe7546a8f2f106ae757b9, type: 2}
+  - {fileID: 11400000, guid: 5eb909d194ab5c64f89c64de9d9af532, type: 2}
+  - {fileID: 11400000, guid: a10062b76ea6d3f49a83939118d418bd, type: 2}
+  - {fileID: 11400000, guid: 8d7ca504d666e764c8cf4f63f0fe65f1, type: 2}
+  m_Extensions: []
+  m_Group: Asset Table
+  references:
+    version: 2
+    RefIds: []

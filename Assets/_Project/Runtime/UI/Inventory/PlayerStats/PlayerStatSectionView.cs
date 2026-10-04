@@ -16,6 +16,7 @@ public sealed class PlayerStatSectionView : MonoBehaviour
 
     private readonly List<PlayerStatRowView> spawnedRows = new();
     private readonly List<StatInfoUIDefinition> boundEntries = new();
+    private StatSectionDefinition boundDefinition;
 
     public void Build(StatSectionDefinition definition, Func<StatInfoUIDefinition, string> valueResolver)
     {
@@ -28,6 +29,7 @@ public sealed class PlayerStatSectionView : MonoBehaviour
         }
 
         gameObject.SetActive(true);
+        boundDefinition = definition;
 
         if (titleText != null)
             titleText.text = definition.Title;
@@ -50,6 +52,7 @@ public sealed class PlayerStatSectionView : MonoBehaviour
 
     public void Refresh(Func<StatInfoUIDefinition, string> valueResolver)
     {
+        if (titleText != null && boundDefinition != null) titleText.text = boundDefinition.Title;
         for (int i = 0; i < spawnedRows.Count; i++)
         {
             if (spawnedRows[i] == null || i >= boundEntries.Count || boundEntries[i] == null)
@@ -69,5 +72,6 @@ public sealed class PlayerStatSectionView : MonoBehaviour
 
         spawnedRows.Clear();
         boundEntries.Clear();
+        boundDefinition = null;
     }
 }

@@ -93,7 +93,7 @@ public class LeverShortcut : PermanentShortcut
             leverRenderer.sprite = defaultSprite;
     }
 
-    public override string GetInteractDescription() => isCinematicPlaying ? string.Empty : interactPromptText;
+    public override string GetInteractDescription() => isCinematicPlaying ? string.Empty : GameText.Get("interaction.levershortcut.interactprompttext", interactPromptText);
 
     private void OnDisable()
     {

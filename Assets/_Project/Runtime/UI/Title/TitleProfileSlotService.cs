@@ -190,11 +190,11 @@ public sealed class TitleProfileSlotService : MonoBehaviour
             slotIndex,
             hasProfile: false,
             hasActiveRun: false,
-            slotLabel: "\uC2AC\uB86F " + (slotIndex + 1),
-            playTimeLabel: "--\uC2DC\uAC04 --\uBD84",
+            slotLabel: GameText.Get("code.titleprofileslotservice.d2f7319b25", "슬롯 ") + (slotIndex + 1),
+            playTimeLabel: GameText.Get("code.titleprofileslotservice.2f4e954267", "--시간 --분"),
             upgradeProgressLabel: "--%",
-            magicStoneLabel: "--\uAC1C",
-            clearCountLabel: "--\uD68C");
+            magicStoneLabel: GameText.Get("code.titleprofileslotservice.0eeffea837", "--개"),
+            clearCountLabel: GameText.Get("code.titleprofileslotservice.10690e9888", "--회"));
     }
 
     private TitleProfileSlotSummary BuildRealSummary(int slotIndex)
@@ -219,7 +219,7 @@ public sealed class TitleProfileSlotService : MonoBehaviour
             slotIndex,
             hasProfile: hasProfile,
             hasActiveRun: false,
-            slotLabel: "\uC2AC\uB86F " + (slotIndex + 1),
+            slotLabel: GameText.Get("code.titleprofileslotservice.d2f7319b25", "슬롯 ") + (slotIndex + 1),
             playTimeLabel: FormatPlayTimeLabel(data.totalPlaySeconds),
             upgradeProgressLabel: upgradeProgressLabel,
             magicStoneLabel: FormatMagicStoneValue(data.magicStone),
@@ -257,17 +257,17 @@ public sealed class TitleProfileSlotService : MonoBehaviour
         int safeSeconds = Mathf.Max(0, Mathf.RoundToInt(totalPlaySeconds));
         TimeSpan playTime = TimeSpan.FromSeconds(safeSeconds);
         int totalHours = Mathf.Max(0, (int)playTime.TotalHours);
-        return $"{totalHours}\uC2DC\uAC04 {playTime.Minutes}\uBD84";
+        return GameText.Format("code.titleprofileslotservice.2cda8aa535", "{0}시간 {1}분", totalHours, playTime.Minutes);
     }
 
     private static string FormatMagicStoneValue(int magicStone)
     {
-        return $"{Mathf.Max(0, magicStone)}\uAC1C";
+        return GameText.Format("code.titleprofileslotservice.b1166a37e1", "{0}개", Mathf.Max(0, magicStone));
     }
 
     private static string FormatClearCountValue(int clearCount)
     {
-        return $"{Mathf.Max(0, clearCount)}\uD68C";
+        return GameText.Format("code.titleprofileslotservice.9ec5470102", "{0}회", Mathf.Max(0, clearCount));
     }
 
     private static bool LooksPopulated(GameData data)

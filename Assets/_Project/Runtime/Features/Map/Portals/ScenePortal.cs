@@ -178,7 +178,7 @@ public sealed class ScenePortal : InteractableBase
     }
 
     public override InteractState GetInteractType() => InteractState.Idle;
-    public override string GetInteractDescription() => interactPromptText;
+    public override string GetInteractDescription() => GameText.Get("interaction.sceneportal.interactprompttext", interactPromptText);
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
     /// <summary>

@@ -51,7 +51,7 @@ internal static class SceneConnectionTravelCoordinator
 
         if (!endpoint.TryResolveDirection(out ResolvedSceneTravelDirection resolved))
         {
-            WarningPopupPlayback.ShowMessage("이동 경로를 사용할 수 없습니다.");
+            WarningPopupPlayback.ShowMessage(GameText.Get("code.sceneconnectiontravelservice.c5204ce78e", "이동 경로를 사용할 수 없습니다."));
             Debug.LogError(
                 $"[SceneConnectionTravelService] Endpoint '{endpoint.EndpointId}' has no valid direction for scene '{endpoint.gameObject.scene.name}'.",
                 endpoint);
@@ -68,7 +68,7 @@ internal static class SceneConnectionTravelCoordinator
             else if (failedGateKind == SceneTravelGateKind.BossNotDefeatedThisRun)
                 WarningPopupPlayback.Show(WarningPopupCode.BossAlreadyDefeatedThisRun);
             else
-                WarningPopupPlayback.ShowMessage("아직 이용할 수 없습니다.");
+                WarningPopupPlayback.ShowMessage(GameText.Get("code.sceneconnectiontravelservice.905f9eeec1", "아직 이용할 수 없습니다."));
             return false;
         }
 
@@ -197,7 +197,7 @@ internal static class SceneConnectionTravelExecutor
         endpoint.ReleaseTravelReservation();
         playerTransform.SetPositionAndRotation(originalPosition, originalRotation);
         player.SetInteractState(InteractState.Idle);
-        WarningPopupPlayback.ShowMessage("지금은 이동할 수 없습니다.");
+        WarningPopupPlayback.ShowMessage(GameText.Get("code.sceneconnectiontravelservice.35842031b3", "지금은 이동할 수 없습니다."));
     }
 
     /// <summary>

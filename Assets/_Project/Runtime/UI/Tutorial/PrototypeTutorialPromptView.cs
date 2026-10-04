@@ -95,8 +95,7 @@ public sealed class PrototypeTutorialPromptView : MonoBehaviour
                 new Vector2(glyphCenter + (i - 1) * 46f, -24f), true, bindings, ref fallback);
         }
         prompt.text = (string.IsNullOrEmpty(fallback) ? tutorial.PromptInstruction : fallback + " " + tutorial.PromptInstruction)
-            .Replace('\n', ' ').Replace('\r', ' ')
-            .Replace("길게", "<color=#FF4444>길게</color>");
+            .Replace('\n', ' ').Replace('\r', ' ');
         prompt.rectTransform.sizeDelta = new Vector2(prompt.preferredWidth, movement ? 92f : 70f);
         // Center the complete glyph-and-caption row over the player.
         prompt.rectTransform.position += prompt.rectTransform.TransformVector(Vector3.right * ((glyphWidth + gap) * 0.5f));

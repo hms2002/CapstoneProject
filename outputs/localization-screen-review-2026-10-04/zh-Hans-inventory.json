@@ -1,0 +1,379 @@
+{
+    "scene": "ProtoTypeHub",
+    "locale": "zh-Hans",
+    "screen": "inventory",
+    "image": "outputs/localization-screen-review-2026-10-04/zh-Hans-inventory.png",
+    "labels": [
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Value",
+            "text": "100%",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Label",
+            "text": "技能伤害",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Value",
+            "text": "100%",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Label",
+            "text": "普通攻击伤害",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Value",
+            "text": "150%",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Label",
+            "text": "暴击伤害",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Value",
+            "text": "1.00",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Label",
+            "text": "攻击速度",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Value",
+            "text": "20%",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Label",
+            "text": "闪避率",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Value",
+            "text": "5%",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Label",
+            "text": "暴击率",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Value",
+            "text": "0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Label",
+            "text": "电伤害",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Value",
+            "text": "0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Label",
+            "text": "中毒伤害",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Value",
+            "text": "0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Label",
+            "text": "出血伤害",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Value",
+            "text": "0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Label",
+            "text": "火焰伤害",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/Text_Title",
+            "text": "战斗属性",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Value",
+            "text": "100.00%",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Label",
+            "text": "移动速度",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Value",
+            "text": "20",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Label",
+            "text": "攻击力",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Value",
+            "text": "6 / 6",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/PlayerStatRowView(Clone)/Text_Label",
+            "text": "生命值",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerStatUI/PlayerStatSectionView(Clone)/Text_Title",
+            "text": "基础属性",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "PF Player(Clone)/OddIronAmmoHUD/AmmoText",
+            "text": "6 / 6",
+            "font": "Galmuri9 SDF BlackOutline",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (3)/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (2)/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlot (1)/ShopSlot(Clone)/PriceText",
+            "text": "4",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/ShopSlotPositionGroup/ShopSlotPosition/ShopSlot(Clone)/PriceText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 4.0
+        },
+        {
+            "owner": "GlobalUIRoot/PopupCanvas/InventoryRoot/PlayerInventoryScreen/InventoryCloseButton/Text (TMP)",
+            "text": "关闭",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": true,
+            "size": 25.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestDescription",
+            "text": "向前推进，讨伐魔王。",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 26.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/QuestHUD/MainQuestGroup/MainQuestHeading",
+            "text": "主线任务",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/Timer_BossUI/TimerSection/TimerBG/Timer",
+            "text": "15:00",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/LevelHUD/LevelText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 32.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (4)/KeyGuideText",
+            "text": "4",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (3)/KeyGuideText",
+            "text": "3",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (2)/KeyGuideText",
+            "text": "2",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/LeftUpperUIGroup/PlayerConsumableHUD/ConsumableUI (1)/KeyGuideText",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 20.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/CurrencyUI/Text(TMP)",
+            "text": "1",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "GlobalUIRoot/GameplayHUDCanvas/GoldUI/Text(TMP)",
+            "text": "0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 36.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (4)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (3)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (2)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right (1)/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "TrainingDummyGroup/TrainingDummy_Right/DamageReadout",
+            "text": "피해 0/0\nDPS 0/0\n누적 0",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 18.0
+        },
+        {
+            "owner": "EncyclopediaStand/NameplateAnchor/NpcNameplate/Name",
+            "text": "图鉴",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/RefreshButton/CountText",
+            "text": "剩余3次",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 5.0
+        },
+        {
+            "owner": "Npc/NameplateAnchor/NpcNameplate/Name",
+            "text": "维尔卡",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "MerchantGroup/ShopParent/MerchantNpc/NameplateAnchor/NpcNameplate/Name",
+            "text": "萨莎",
+            "font": "fusion-pixel-12px-proportional-zh_hans SDF",
+            "overflow": false,
+            "size": 40.0
+        }
+    ]
+}

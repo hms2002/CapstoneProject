@@ -1,5 +1,9 @@
 # Settings panel responsive layout
 
+## Language choices (2026-10-03)
+
+The existing language stepper now selects Korean, English, Japanese, Simplified Chinese and Traditional Chinese. Korean retains persisted value 0; Auto is not an enum or setting option. A missing/invalid saved choice is initialized once from the OS, with English fallback, then saved. Unity Localization owns runtime locale state; active value labels update on locale changes without resetting pending display choices. No scene/prefab layout or serialized bindings changed. See [LocalizationFlow](LocalizationFlow.md) for the current translation scope and remaining font/Play Mode checks.
+
 Current map: 2026-09-17. This document is context, not an Architecture/Contracts authority.
 
 ## Purpose and key assets

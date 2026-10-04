@@ -1,0 +1,362 @@
+[
+  {
+    "path": "Assets/_Project/Runtime/Features/Dialogue/Affection/AffectionEffect.cs",
+    "line": 6,
+    "key": "code.affectioneffect.a34e856f51",
+    "text": "무기 슬롯 추가"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Procedural/RoomTemplateSO.cs",
+    "line": 435,
+    "key": "code.roomtemplateso.21d3081331",
+    "text": "바닥 아래 배경"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Procedural/RoomTemplateSO.cs",
+    "line": 436,
+    "key": "code.roomtemplateso.a44a42e256",
+    "text": "기본 이동 바닥"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Procedural/RoomTemplateSO.cs",
+    "line": 437,
+    "key": "code.roomtemplateso.56dacf38b6",
+    "text": "바닥 위 평면 장식"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Procedural/RoomTemplateSO.cs",
+    "line": 438,
+    "key": "code.roomtemplateso.93edd1a952",
+    "text": "통과 가능한 입체 장식"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Procedural/RoomTemplateSO.cs",
+    "line": 439,
+    "key": "code.roomtemplateso.b86a4b7256",
+    "text": "기본 벽과 방 경계"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Procedural/RoomTemplateSO.cs",
+    "line": 440,
+    "key": "code.roomtemplateso.59f474a50d",
+    "text": "벽 부착 장식"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Procedural/RoomTemplateSO.cs",
+    "line": 441,
+    "key": "code.roomtemplateso.a5b88bff82",
+    "text": "캐릭터 앞 상단 장식"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Procedural/RoomTemplateSO.cs",
+    "line": 442,
+    "key": "code.roomtemplateso.ac615833c7",
+    "text": "화면·방 오버레이 효과"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Procedural/RoomTemplateSO.cs",
+    "line": 443,
+    "key": "code.roomtemplateso.d00edfa1d3",
+    "text": "낙하 구덩이"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleAreaBase.cs",
+    "line": 114,
+    "key": "code.puddleareabase.3018e4c307",
+    "text": "흡수 탄막 준비 시작: anchor={0}, speedOverride={1}, resolvedSpeed={2}, gatherDelay={3}"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleAreaBase.cs",
+    "line": 246,
+    "key": "code.puddleareabase.f283bffd86",
+    "text": "흡수 준비 중 anchor가 사라져 장판을 소비 처리합니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleAreaBase.cs",
+    "line": 276,
+    "key": "code.puddleareabase.afaad8c830",
+    "text": "흡수 탄막 이동 중 anchor가 사라져 장판을 소비 처리합니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleAreaBase.cs",
+    "line": 317,
+    "key": "code.puddleareabase.6a573b9806",
+    "text": "모드 변경: {0} -> {1}"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 46,
+    "key": "code.puddledebugspawner.eb5e85b46c",
+    "text": "입력 감지: {0} -> 가장 가까운 술 장판 점화"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 52,
+    "key": "code.puddledebugspawner.cd13ec95d3",
+    "text": "입력 감지: {0} -> 가장 가까운 장판 흡수"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 58,
+    "key": "code.puddledebugspawner.dad8c67600",
+    "text": "입력 감지: {0} -> 가장 가까운 술 장판 흡수"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 64,
+    "key": "code.puddledebugspawner.71bcacfd64",
+    "text": "입력 감지: {0} -> 가장 가까운 불 장판 흡수"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 73,
+    "key": "code.puddledebugspawner.59b6d106ac",
+    "text": "술 장판 생성 실패: alcoholPuddlePrefab이 연결되어 있지 않습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 79,
+    "key": "code.puddledebugspawner.8033091e74",
+    "text": "술 장판 생성: {0}, position={1}"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 86,
+    "key": "code.puddledebugspawner.b068c8b978",
+    "text": "불 장판 생성 실패: firePuddlePrefab이 연결되어 있지 않습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 92,
+    "key": "code.puddledebugspawner.85375100d8",
+    "text": "불 장판 생성: {0}, position={1}"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 100,
+    "key": "code.puddledebugspawner.844b48f215",
+    "text": "점화 테스트 실패: 가장 가까운 술 장판을 찾지 못했습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 104,
+    "key": "code.puddledebugspawner.f287660f8e",
+    "text": "점화 테스트 시작: {0}"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 130,
+    "key": "code.puddledebugspawner.333ad7acbf",
+    "text": "흡수 테스트 실패: absorbAnchor가 연결되어 있지 않습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 136,
+    "key": "code.puddledebugspawner.83d924947f",
+    "text": "흡수 테스트 실패: 마우스 위치 근처에서 장판을 찾지 못했습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 142,
+    "key": "code.puddledebugspawner.3b33926246",
+    "text": "흡수 테스트 시작: {0}, element={1}, speed={2}"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 145,
+    "key": "code.puddledebugspawner.de5791044b",
+    "text": "흡수 테스트 도착: {0}"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 156,
+    "key": "code.puddledebugspawner.db2e63045c",
+    "text": "장판 검색 실패: PuddleManager를 찾거나 생성하지 못했습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Puddles/PuddleDebugSpawner.cs",
+    "line": 182,
+    "key": "code.puddledebugspawner.83a766b174",
+    "text": "장판 검색: type={0}, registered={1}, candidates={2}, pointer={3}, nearest={4}"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Map/Shortcuts/AffectionShortcut.cs",
+    "line": 54,
+    "key": "code.affectionshortcut.ad6764af74",
+    "text": "[안내] {0}번 보스의 호감도가 부족합니다. (현재:{1} / 필요:{2})"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/LevelRewardDefinitionSO.cs",
+    "line": 34,
+    "key": "code.levelrewarddefinitionso.5e1efb6e71",
+    "text": "보상 ID가 비어 있습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/LevelRewardDefinitionSO.cs",
+    "line": 40,
+    "key": "code.levelrewarddefinitionso.23f29b289f",
+    "text": "적용할 효과가 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/LevelRewardDefinitionSO.cs",
+    "line": 50,
+    "key": "code.levelrewarddefinitionso.7445560ab5",
+    "text": "효과 참조 또는 효과 ID가 비어 있습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/LevelRewardDefinitionSO.cs",
+    "line": 56,
+    "key": "code.levelrewarddefinitionso.3f15be07ce",
+    "text": "같은 카드에 중복된 효과 ID가 있습니다: {0}"
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/BasicAttackTripleDamageLevelRewardEffectSO.cs",
+    "line": 18,
+    "key": "code.basicattacktripledamagelevelrewardeffectso.93259d8ba4",
+    "text": "플레이어 기본 공격 판별 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/BerserkerRushLevelRewardEffectSO.cs",
+    "line": 24,
+    "key": "code.berserkerrushlevelrewardeffectso.88fe9f86e1",
+    "text": "공격/이동 속도 Attribute 구성이 올바르지 않습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/BerserkerRushLevelRewardEffectSO.cs",
+    "line": 30,
+    "key": "code.berserkerrushlevelrewardeffectso.be20e67d20",
+    "text": "플레이어 스탯 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/FutureLevelFullRestoreLevelRewardEffectSO.cs",
+    "line": 30,
+    "key": "code.futurelevelfullrestorelevelrewardeffectso.cebb499106",
+    "text": "체력/최대 체력/소울 하트 Attribute 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/HighVoltageLevelRewardEffectSO.cs",
+    "line": 24,
+    "key": "code.highvoltagelevelrewardeffectso.813d1c18b7",
+    "text": "전기 태그 또는 플레이어 무기/능력 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/HuntingFlowLevelRewardEffectSO.cs",
+    "line": 24,
+    "key": "code.huntingflowlevelrewardeffectso.a86aefa5cf",
+    "text": "공격 속도 Attribute 구성이 올바르지 않습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/HuntingFlowLevelRewardEffectSO.cs",
+    "line": 31,
+    "key": "code.huntingflowlevelrewardeffectso.0881ef41d3",
+    "text": "플레이어 능력/스탯 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/KillCooldownReductionLevelRewardEffectSO.cs",
+    "line": 17,
+    "key": "code.killcooldownreductionlevelrewardeffectso.e9bb614d72",
+    "text": "플레이어 무기/능력 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/KillHealLevelRewardEffectSO.cs",
+    "line": 22,
+    "key": "code.killheallevelrewardeffectso.68b2efcf8e",
+    "text": "체력 Attribute 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/LevelScaledMaxHeartLevelRewardEffectSO.cs",
+    "line": 22,
+    "key": "code.levelscaledmaxheartlevelrewardeffectso.271c5219b8",
+    "text": "최대 체력 Attribute가 modifier를 허용하지 않습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/LowTimeHasteLevelRewardEffectSO.cs",
+    "line": 21,
+    "key": "code.lowtimehastelevelrewardeffectso.c6df2ffeec",
+    "text": "이동/공격 속도 Attribute 구성이 올바르지 않습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/OneSwordOathLevelRewardEffectSO.cs",
+    "line": 28,
+    "key": "code.oneswordoathlevelrewardeffectso.ca02b4e34a",
+    "text": "플레이어의 무기/능력/스탯 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/OneSwordOathLevelRewardEffectSO.cs",
+    "line": 34,
+    "key": "code.oneswordoathlevelrewardeffectso.4113c02480",
+    "text": "공격력 Attribute가 없거나 modifier를 허용하지 않습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/OverheatLevelRewardEffectSO.cs",
+    "line": 22,
+    "key": "code.overheatlevelrewardeffectso.e9bb614d72",
+    "text": "플레이어 무기/능력 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/PotionCheerLevelRewardEffectSO.cs",
+    "line": 35,
+    "key": "code.potioncheerlevelrewardeffectso.1470363195",
+    "text": "포션/속도 Attribute/상태 HUD 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/PotionGrowthLevelRewardEffectSO.cs",
+    "line": 29,
+    "key": "code.potiongrowthlevelrewardeffectso.69ed58606c",
+    "text": "포션/공격 속도/소모품 인벤토리 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/SoulHeartGrantLevelRewardEffectSO.cs",
+    "line": 17,
+    "key": "code.soulheartgrantlevelrewardeffectso.f3ddac44e5",
+    "text": "소울 하트 Attribute 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/SpreadingEmbersLevelRewardEffectSO.cs",
+    "line": 20,
+    "key": "code.spreadingemberslevelrewardeffectso.30bec46d63",
+    "text": "화상 피해/플레이어 능력 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/SteelTrainingLevelRewardEffectSO.cs",
+    "line": 36,
+    "key": "code.steeltraininglevelrewardeffectso.cebb499106",
+    "text": "체력/최대 체력/소울 하트 Attribute 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/SteelTrainingLevelRewardEffectSO.cs",
+    "line": 42,
+    "key": "code.steeltraininglevelrewardeffectso.53fa39a753",
+    "text": "강철의 수련 상태 HUD 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/UnextinguishedFireLevelRewardEffectSO.cs",
+    "line": 32,
+    "key": "code.unextinguishedfirelevelrewardeffectso.e9bb614d72",
+    "text": "플레이어 무기/능력 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/Features/Progression/Leveling/Rewards/Effects/UnextinguishedFireLevelRewardEffectSO.cs",
+    "line": 38,
+    "key": "code.unextinguishedfirelevelrewardeffectso.75d101ff2a",
+    "text": "꺼지지 않는 불 상태 HUD 구성이 없습니다."
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/GameOver/GameOverPresentationController.cs",
+    "line": 1498,
+    "key": "code.gameoverpresentationcontroller.cbf1df6a6d",
+    "text": "의"
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/GameOver/GameOverPresentationController.cs",
+    "line": 1499,
+    "key": "code.gameoverpresentationcontroller.fdd14c9d0b",
+    "text": "{0}에게 "
+  },
+  {
+    "path": "Assets/_Project/Runtime/UI/Settings/GameSettingsService.cs",
+    "line": 334,
+    "key": "code.gamesettingsservice.6e081b5948",
+    "text": "한국어"
+  }
+]

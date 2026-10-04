@@ -27,9 +27,9 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
 
         AddWeaponSummarySection(weapon, services);
         if (weapon.weaponId == "Weapon.CrimsonBoundary")
-            AddAbilitySection("일반공격", weapon.GetAbility(WeaponAbilitySlot.Attack), DamageAttackKind.Normal, ctx, services, weapon.attackInputHint, InputActionId.PrimaryAttack);
-        AddAbilitySection("스킬 1", weapon.GetAbility(WeaponAbilitySlot.Skill1), DamageAttackKind.Skill, ctx, services, weapon.skill1InputHint, InputActionId.Skill1);
-        AddAbilitySection("스킬 2", weapon.GetAbility(WeaponAbilitySlot.Skill2), DamageAttackKind.Skill, ctx, services, weapon.skill2InputHint, InputActionId.Skill2);
+            AddAbilitySection(GameText.Get("code.weapondetailview.2a2645b694", "일반공격"), weapon.GetAbility(WeaponAbilitySlot.Attack), DamageAttackKind.Normal, ctx, services, weapon.attackInputHint, InputActionId.PrimaryAttack);
+        AddAbilitySection(GameText.Get("code.weapondetailview.a091200702", "스킬 1"), weapon.GetAbility(WeaponAbilitySlot.Skill1), DamageAttackKind.Skill, ctx, services, weapon.skill1InputHint, InputActionId.Skill1);
+        AddAbilitySection(GameText.Get("code.weapondetailview.01d28c5504", "스킬 2"), weapon.GetAbility(WeaponAbilitySlot.Skill2), DamageAttackKind.Skill, ctx, services, weapon.skill2InputHint, InputActionId.Skill2);
 
     }
 
@@ -59,10 +59,10 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
                 AbilityTooltipVariant variant = variants.BuildAbilityTooltipVariant(ability, i, ctx);
                 string variantBody = !showDetailedDescription && !string.IsNullOrWhiteSpace(variant.SimpleBody)
                     ? variant.SimpleBody : variant.Body;
-                string variantText = $"{variantBody}\n입력: {ResolveInputHintLabel(inputHint, inputAction)}";
+                string variantText = GameText.Format("code.weapondetailview.7f3bbc3159", "{0}\n입력: {1}", variantBody, ResolveInputHintLabel(inputHint, inputAction));
                 float cooldown = variant.CooldownSeconds ?? ability.cooldown;
                 if (cooldown > 0f)
-                    variantText += $"\n쿨다운: {cooldown:0.##}s";
+                    variantText += GameText.Format("code.weapondetailview.4a3999d69c", "\n쿨다운: {0:0.##}s", cooldown);
                 sections.Add(variant.Title, services?.formatText != null
                     ? services.formatText(variantText) : variantText, services?.showGlossary);
             }
@@ -84,15 +84,15 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
 
         var sb = new StringBuilder();
 
-        if (!string.IsNullOrEmpty(weapon.storyText))
-            sb.AppendLine(weapon.storyText);
+        if (!string.IsNullOrEmpty(GameText.Asset(weapon, "storyText", weapon.storyText)))
+            sb.AppendLine(GameText.WeaponStory(weapon.weaponId, GameText.Asset(weapon, "storyText", weapon.storyText)));
 
         if (weapon.statModifiers != null && weapon.statModifiers.Count > 0)
         {
             if (sb.Length > 0)
                 sb.AppendLine();
 
-            sb.AppendLine("<b>능력치</b>");
+            sb.AppendLine(GameText.Get("code.weapondetailview.fbc4d3430b", "<b>능력치</b>"));
 
             for (int i = 0; i < weapon.statModifiers.Count; i++)
             {
@@ -101,8 +101,8 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
                     continue;
 
                 string label = !string.IsNullOrEmpty(entry.labelOverride)
-                    ? entry.labelOverride
-                    : (!string.IsNullOrEmpty(entry.attribute.attributeName) ? entry.attribute.attributeName : entry.attribute.name);
+                    ? GameText.Asset(weapon, $"statModifiers.Array.data[{i}].labelOverride", entry.labelOverride)
+                    : (!string.IsNullOrEmpty(entry.attribute.DisplayName) ? entry.attribute.DisplayName : entry.attribute.name);
 
                 string valueText = entry.type == ModifierType.Percent
                     ? $"+{entry.value * 100f:0.#}%"
@@ -117,7 +117,7 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
             body = services.formatText(body);
 
         if (!string.IsNullOrEmpty(body))
-            sections.Add("요약", body, services?.showGlossary);
+            sections.Add(GameText.Get("code.weapondetailview.3ea27a4d42", "요약"), body, services?.showGlossary);
     }
 
     private string BuildAbilityBody(
@@ -129,26 +129,26 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine($"<b>{ability.abilityName}</b>");
-        string description = !showDetailedDescription && !string.IsNullOrWhiteSpace(ability.simpleDescription)
-            ? ability.simpleDescription : ability.description;
+        sb.AppendLine($"<b>{ability.DisplayName}</b>");
+        string description = !showDetailedDescription && !string.IsNullOrWhiteSpace(ability.SimpleDescription)
+            ? ability.SimpleDescription : ability.Description;
         if (!string.IsNullOrEmpty(description))
             sb.AppendLine(description);
 
         string resolvedInputHint = ResolveInputHintLabel(inputHint, inputAction);
         if (!string.IsNullOrEmpty(resolvedInputHint))
-            sb.AppendLine($"입력: <color=#A7E1FF>{resolvedInputHint}</color>");
+            sb.AppendLine(GameText.Format("code.weapondetailview.fb75110738", "입력: <color=#A7E1FF>{0}</color>", resolvedInputHint));
 
         if (ability.cooldown > 0f)
-            sb.AppendLine($"쿨다운: <color=#FFD54F>{ability.cooldown:0.##}s</color>");
+            sb.AppendLine(GameText.Format("code.weapondetailview.7765bb89c3", "쿨다운: <color=#FFD54F>{0:0.##}s</color>", ability.cooldown));
 
         if (showDetailedDescription && ability.abilityTags != null && ability.abilityTags.Count > 0)
-            sb.AppendLine($"태그: {JoinTags(ability.abilityTags)}");
+            sb.AppendLine(GameText.Format("code.weapondetailview.a347361001", "태그: {0}", JoinTags(ability.abilityTags)));
 
         if (showDetailedDescription && ability.sourceObject != null)
         {
             sb.AppendLine();
-            sb.AppendLine("<b>상세</b>");
+            sb.AppendLine(GameText.Get("code.weapondetailview.ba2be2f795", "<b>상세</b>"));
             AppendSourceObjectDetails(sb, ability.sourceObject, kind, ctx);
         }
 
@@ -170,7 +170,7 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
     {
         if (sourceObj == null)
         {
-            sb.AppendLine("(추가 정보 없음)");
+            sb.AppendLine(GameText.Get("code.weapondetailview.7f5a77508f", "(추가 정보 없음)"));
             return;
         }
 
@@ -184,13 +184,13 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
             if (!string.IsNullOrEmpty(block.body))
                 sb.AppendLine(block.body);
             else
-                sb.AppendLine("(추가 정보 없음)");
+                sb.AppendLine(GameText.Get("code.weapondetailview.7f5a77508f", "(추가 정보 없음)"));
 
             return;
         }
 
         sb.AppendLine(sourceObj.name);
-        sb.AppendLine("(디테일 제공 인터페이스 미구현)");
+        sb.AppendLine(GameText.Get("code.weapondetailview.eb225fbfb7", "(디테일 제공 인터페이스 미구현)"));
     }
 
     private static string JoinTags(List<GameplayTag> tags)

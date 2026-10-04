@@ -102,8 +102,8 @@ public sealed class GrandHallScribeSequence : InteractableBase, INPCFeature
             {
                 bool hidden = false;
                 Speech.Speak(stage == 1
-                    ? "첫번째 승리군요.\n생각보다 빠르십니다."
-                    : "이제 마지막 간부입니다.\n마왕님께서 기다리고 계십니다.\n서두르시길.",
+                    ? GameText.Get("code.grandhallscribesequence.89b7bd7895", "첫번째 승리군요.\n생각보다 빠르십니다.")
+                    : GameText.Get("code.grandhallscribesequence.9b8537e232", "이제 마지막 간부입니다.\n마왕님께서 기다리고 계십니다.\n서두르시길."),
                     greetingSeconds, null, () => hidden = true);
                 while (!hidden && IsCurrentRun) yield return null;
                 if (IsCurrentRun && hidden) run.grandHallScribeReturnStage = stage;
@@ -145,7 +145,7 @@ public sealed class GrandHallScribeSequence : InteractableBase, INPCFeature
             if (firstMeeting)
             {
                 bool hidden = false;
-                Speech.Speak("오셨군요 용사님", greetingSeconds, null, () => hidden = true);
+                Speech.Speak(GameText.Get("code.grandhallscribesequence.c15ccb875f", "오셨군요 용사님"), greetingSeconds, null, () => hidden = true);
                 while (!hidden && CanContinueCinematic) yield return null;
             }
             if (!CanContinueCinematic) yield break;
@@ -321,5 +321,5 @@ public sealed class GrandHallScribeSequence : InteractableBase, INPCFeature
             DialoguePlayback.TryStartDialogue(story, new List<NPCData> { npc }, "repeat", features);
     }
     public override InteractState GetInteractType() => InteractState.Talking;
-    public override string GetInteractDescription() => "대화";
+    public override string GetInteractDescription() => GameText.Get("code.grandhallscribesequence.c65f61d601", "대화");
 }

@@ -88,7 +88,7 @@ public sealed class LevelRewardSessionController : MonoBehaviour
     {
         if (isSessionOpen)
         {
-            failureReason = "레벨업 선택 세션이 이미 열려 있습니다.";
+            failureReason = GameText.Get("code.levelrewardsessioncontroller.3ecd3b527f", "레벨업 선택 세션이 이미 열려 있습니다.");
             return false;
         }
 
@@ -100,7 +100,7 @@ public sealed class LevelRewardSessionController : MonoBehaviour
         failureReason = null;
         if (!isSessionOpen)
         {
-            failureReason = "레벨업 선택 세션이 열려 있지 않습니다.";
+            failureReason = GameText.Get("code.levelrewardsessioncontroller.7f464a0fd2", "레벨업 선택 세션이 열려 있지 않습니다.");
             return false;
         }
 
@@ -127,7 +127,7 @@ public sealed class LevelRewardSessionController : MonoBehaviour
     {
         if (!isSessionOpen)
         {
-            failureReason = "레벨업 선택 세션이 열려 있지 않습니다.";
+            failureReason = GameText.Get("code.levelrewardsessioncontroller.7f464a0fd2", "레벨업 선택 세션이 열려 있지 않습니다.");
             return false;
         }
 
@@ -158,7 +158,7 @@ public sealed class LevelRewardSessionController : MonoBehaviour
     private bool Reject(string failureReason, bool showCombatWarning)
     {
         if (showCombatWarning)
-            WarningPopupPlayback.ShowMessage(string.IsNullOrWhiteSpace(failureReason) ? combatBlockedMessage : failureReason);
+            WarningPopupPlayback.ShowMessage(string.IsNullOrWhiteSpace(failureReason) ? GameText.Get("ui.level_reward.combat_blocked", combatBlockedMessage) : failureReason);
         OpenRejected?.Invoke(failureReason);
         return false;
     }
@@ -170,13 +170,13 @@ public sealed class LevelRewardSessionController : MonoBehaviour
 
         if (!RunSessionStore.IsRunActive || PendingRewardCount <= 0)
         {
-            failureReason = "선택 가능한 레벨업 보상이 없습니다.";
+            failureReason = GameText.Get("code.levelrewardsessioncontroller.19bc091705", "선택 가능한 레벨업 보상이 없습니다.");
             return false;
         }
 
         if (PlayerRuntimeRegistry.CurrentPlayer == null)
         {
-            failureReason = "현재 플레이어가 등록되지 않았습니다.";
+            failureReason = GameText.Get("code.levelrewardsessioncontroller.e39a6f6f55", "현재 플레이어가 등록되지 않았습니다.");
             return false;
         }
 
@@ -184,20 +184,20 @@ public sealed class LevelRewardSessionController : MonoBehaviour
             SceneTransitionPlayback.IsTransitionActive || LoadingPresentationQuery.IsActiveLoadingPresentation ||
             PlayerRuntimeRegistry.CurrentPlayer.CurrentState != InteractState.Idle)
         {
-            failureReason = "다른 대화 또는 UI가 진행 중입니다.";
+            failureReason = GameText.Get("code.levelrewardsessioncontroller.e50fc21281", "다른 대화 또는 UI가 진행 중입니다.");
             return false;
         }
 
         if (MonsterSpawnRoomGroup.IsPlayerInCombat)
         {
-            failureReason = combatBlockedMessage;
+            failureReason = GameText.Get("ui.level_reward.combat_blocked", combatBlockedMessage);
             showCombatWarning = true;
             return false;
         }
 
         if (!HasSelectableRewardCandidate())
         {
-            failureReason = "현재 선택 가능한 레벨업 효과가 없습니다.";
+            failureReason = GameText.Get("code.levelrewardsessioncontroller.8029564aad", "현재 선택 가능한 레벨업 효과가 없습니다.");
             return false;
         }
 

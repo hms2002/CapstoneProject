@@ -1,0 +1,260 @@
+{
+    "scene": "TitleScene",
+    "locale": "ja",
+    "screen": "profiles",
+    "image": "outputs/localization-screen-review-2026-10-04/ja-profiles.png",
+    "labels": [
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/PlayTimeTextGroup/PlayTimeLabel",
+            "text": "プレイ時間",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/UpgradeTextGroup/UpgradeProgressContext",
+            "text": "56%",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/MagicStoneTextGroup/MagicStoneContext",
+            "text": "1個",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/PlayTimeTextGroup/PlayTimeContext",
+            "text": "0時間 0分",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ClearTextGroup/ClearCountContext",
+            "text": "0回",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/UpgradeTextGroup/UpgradeProgressLabel",
+            "text": "強化の進行度",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/MagicStoneTextGroup/MagicStoneLabel",
+            "text": "所持魔晶石",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/TitleTextPanel/TopText",
+            "text": "スロット 1",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.45000076293945
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+            "text": "削除",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 30.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/MagicStoneTextGroup/MagicStoneLabel",
+            "text": "所持魔晶石",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/MagicStoneTextGroup/MagicStoneContext",
+            "text": "0個",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/TitleTextPanel/TopText",
+            "text": "スロット 3",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.45000076293945
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ButtonGroup/ContinueSlot/ContinueButton/Text (TMP)",
+            "text": "続ける",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ClearTextGroup/ClearCountContext",
+            "text": "0回",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/MagicStoneTextGroup/MagicStoneContext",
+            "text": "0個",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/GameStart/SelectionBackground/Label",
+            "text": "ゲーム開始",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/MagicStoneTextGroup/MagicStoneLabel",
+            "text": "所持魔晶石",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/UpgradeTextGroup/UpgradeProgressLabel",
+            "text": "強化の進行度",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ClearTextGroup/ClearCountContext",
+            "text": "0回",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/PlayTimeTextGroup/PlayTimeContext",
+            "text": "0時間 0分",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ClearTextGroup/ClearCountLabel",
+            "text": "クリア回数",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ClearTextGroup/ClearCountLabel",
+            "text": "クリア回数",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/PlayTimeTextGroup/PlayTimeLabel",
+            "text": "プレイ時間",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/PlayTimeTextGroup/PlayTimeContext",
+            "text": "0時間 5分",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+            "text": "削除",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 30.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/UpgradeTextGroup/UpgradeProgressLabel",
+            "text": "強化の進行度",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/PlayTimeTextGroup/PlayTimeLabel",
+            "text": "プレイ時間",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/UpgradeTextGroup/UpgradeProgressContext",
+            "text": "56%",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 28.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ButtonGroup/ContinueSlot/ContinueButton/Text (TMP)",
+            "text": "続ける",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/ButtonGroup/DeleteSlot/DeleteButton/Text (TMP)",
+            "text": "削除",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 30.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot1/PanelRoot/ButtonGroup/ContinueSlot/ContinueButton/Text (TMP)",
+            "text": "続ける",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 40.0
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Setting/SelectionBackground/Label",
+            "text": "設定",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/ClearTextGroup/ClearCountLabel",
+            "text": "クリア回数",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 35.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot2/PanelRoot/TitleTextPanel/TopText",
+            "text": "スロット 2",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.45000076293945
+        },
+        {
+            "owner": "Canvas/TitleUI/Background/Quit/SelectionBackground/Label",
+            "text": "ゲーム終了",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": false,
+            "size": 45.0
+        },
+        {
+            "owner": "Canvas/TitleProfileSlotUI/SlotRoot/ProfileSlot3/PanelRoot/UpgradeTextGroup/UpgradeProgressContext",
+            "text": "56%",
+            "font": "Galmuri9 Japanese SDF",
+            "overflow": true,
+            "size": 28.0
+        }
+    ]
+}

@@ -90,7 +90,7 @@ public sealed class WeaponSwapHintPresenter : MonoBehaviour
             keyIcon.gameObject.SetActive(icon != null);
         }
         if (promptText != null)
-            promptText.text = icon != null ? "무기 교체" : $"[{input.GetKeyDisplayLabel(key)}] 무기 교체";
+            promptText.text = icon != null ? GameText.Get("code.weaponswaphintpresenter.c51875f9e0", "무기 교체") : $"[{input.GetKeyDisplayLabel(key)}] 무기 교체";
     }
 
     private void SetVisible(bool visible)

@@ -124,6 +124,7 @@ public sealed class TutorialInfoPanel : MonoBehaviour, ITutorialInfoPanel
         if (!isOpen || isClosing)
             return;
 
+        RefreshLocalizedPageText();
         HandlePageKeyboardInput();
 
         if (!IsOnFinalPage())
@@ -288,11 +289,7 @@ public sealed class TutorialInfoPanel : MonoBehaviour, ITutorialInfoPanel
     {
         TutorialInfoPage page = GetCurrentPage();
 
-        if (titleText != null)
-            titleText.text = page.title ?? string.Empty;
-
-        if (bodyText != null)
-            bodyText.text = page.body ?? string.Empty;
+        RefreshLocalizedPageText();
 
         SetImageSprite(contentImage, page.contentSprite);
 
@@ -300,6 +297,21 @@ public sealed class TutorialInfoPanel : MonoBehaviour, ITutorialInfoPanel
             contentImage.gameObject.SetActive(page.contentSprite != null);
 
         RefreshPageControlsAndAdvanceState();
+    }
+
+    private void RefreshLocalizedPageText()
+    {
+        TutorialInfoPage page = GetCurrentPage();
+        string prefix = $"tutorial.info.{activeRequest.tutorialId}.page.{currentPageIndex}.";
+        string title = GameText.Get(prefix + "title", page.title ?? string.Empty);
+        string body = GameText.Get(prefix + "body", page.body ?? string.Empty);
+        if (titleText != null && titleText.text != title) titleText.text = title;
+        if (bodyText != null && bodyText.text != body) bodyText.text = body;
+        if (advanceGuideText != null && advanceHoldButton == null)
+        {
+            string guide = FormatAdvanceGuide();
+            if (advanceGuideText.text != guide) advanceGuideText.text = guide;
+        }
     }
 
     private TutorialInfoPage GetCurrentPage()
@@ -721,7 +733,7 @@ public sealed class TutorialInfoPanel : MonoBehaviour, ITutorialInfoPanel
         if (string.IsNullOrEmpty(label))
             label = "Space";
 
-        return string.Format(advanceGuideFormat, label);
+        return GameText.Format("tutorial.info.hold", advanceGuideFormat, label);
     }
 
     private void SetProgress(float value)

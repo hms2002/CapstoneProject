@@ -85,8 +85,8 @@ public sealed class RequiredBossClearScenePortalAccessRule : MonoBehaviour, ISce
             return;
 
         if (popupDuration > 0f)
-            WarningPopupPlayback.ShowMessage(blockedMessage, popupDuration);
+            WarningPopupPlayback.ShowMessage(GameText.Get("interaction.requiredbossclearsceneportalaccessrule.blockedmessage", blockedMessage), popupDuration);
         else
-            WarningPopupPlayback.ShowMessage(blockedMessage);
+            WarningPopupPlayback.ShowMessage(GameText.Get("interaction.requiredbossclearsceneportalaccessrule.blockedmessage", blockedMessage));
     }
 }

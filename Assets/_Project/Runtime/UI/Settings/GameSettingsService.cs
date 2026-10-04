@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Localization.Settings;
 
 /// <summary>
 /// 책임: 게임 창 표시 방식의 사용자 설정 값을 나타낸다.
@@ -20,6 +22,10 @@ public enum GameWindowMode
 public enum GameLanguageOption
 {
     Korean = 0,
+    English = 1,
+    Japanese = 2,
+    SimplifiedChinese = 3,
+    TraditionalChinese = 4,
 }
 
 /// <summary>
@@ -256,12 +262,16 @@ public sealed class GameSettingsService : MonoBehaviour
 
     public void SetLanguage(GameLanguageOption newLanguage)
     {
+        if (!IsSupportedLanguage(newLanguage))
+            throw new ArgumentOutOfRangeException(nameof(newLanguage), newLanguage, "Unsupported game language.");
         EnsureInitialized();
         if (language == newLanguage)
             return;
 
         language = newLanguage;
         PlayerPrefs.SetInt(LanguagePrefKey, (int)language);
+        PlayerPrefs.Save();
+        ApplyLanguageLocale();
         NotifySettingsChanged();
     }
 
@@ -302,21 +312,25 @@ public sealed class GameSettingsService : MonoBehaviour
     {
         return mode switch
         {
-            GameWindowMode.Borderless => "테두리 없음",
-            GameWindowMode.Fullscreen => "전체화면",
-            _ => "창모드",
+            GameWindowMode.Borderless => GameText.Get("settings.window.borderless", "테두리 없음"),
+            GameWindowMode.Fullscreen => GameText.Get("settings.window.fullscreen", "전체화면"),
+            _ => GameText.Get("settings.window.windowed", "창모드"),
         };
     }
 
     public string GetOnOffLabel(bool value)
     {
-        return value ? "켜기" : "끄기";
+        return value ? GameText.Get("settings.toggle.on", "켜기") : GameText.Get("settings.toggle.off", "끄기");
     }
 
     public string GetLanguageLabel(GameLanguageOption option)
     {
         return option switch
         {
+            GameLanguageOption.English => "English",
+            GameLanguageOption.Japanese => "日本語",
+            GameLanguageOption.SimplifiedChinese => "简体中文",
+            GameLanguageOption.TraditionalChinese => "繁體中文",
             _ => "한국어",
         };
     }
@@ -367,6 +381,7 @@ public sealed class GameSettingsService : MonoBehaviour
         initialized = true;
         EnsurePresentationController();
         LoadPreferences();
+        ApplyLanguageLocale();
         NormalizeSavedWindowResolution();
         BuildResolutionOptions();
         ApplyDisplaySettings(windowMode, resolutionWidth, resolutionHeight);
@@ -398,10 +413,82 @@ public sealed class GameSettingsService : MonoBehaviour
         resolutionWidth = Mathf.Max(640, PlayerPrefs.GetInt(ResolutionWidthPrefKey, DefaultWindowWidth));
         resolutionHeight = Mathf.Max(360, PlayerPrefs.GetInt(ResolutionHeightPrefKey, DefaultWindowHeight));
         screenShakeEnabled = PlayerPrefs.GetInt(ScreenShakePrefKey, 1) != 0;
-        language = (GameLanguageOption)Mathf.Clamp(
-            PlayerPrefs.GetInt(LanguagePrefKey, (int)GameLanguageOption.Korean),
-            (int)GameLanguageOption.Korean,
-            (int)GameLanguageOption.Korean);
+        var savedLanguage = (GameLanguageOption)PlayerPrefs.GetInt(LanguagePrefKey, -1);
+        if (PlayerPrefs.HasKey(LanguagePrefKey) && IsSupportedLanguage(savedLanguage))
+        {
+            language = savedLanguage;
+        }
+        else
+        {
+            string steamLanguage = SteamPlatformService.TryGetGameLanguage(out string detected) ? detected : null;
+            language = ResolveInitialLanguage(steamLanguage, Application.systemLanguage);
+            PlayerPrefs.SetInt(LanguagePrefKey, (int)language);
+            PlayerPrefs.Save();
+        }
+    }
+
+    internal static bool IsSupportedLanguage(GameLanguageOption option) =>
+        option >= GameLanguageOption.Korean && option <= GameLanguageOption.TraditionalChinese;
+
+    internal static GameLanguageOption ResolveInitialLanguage(string steamLanguage, SystemLanguage systemLanguage)
+    {
+        return steamLanguage switch
+        {
+            "koreana" => GameLanguageOption.Korean,
+            "english" => GameLanguageOption.English,
+            "japanese" => GameLanguageOption.Japanese,
+            "schinese" => GameLanguageOption.SimplifiedChinese,
+            "tchinese" => GameLanguageOption.TraditionalChinese,
+            _ => ResolveSystemLanguage(systemLanguage),
+        };
+    }
+
+    internal static GameLanguageOption ResolveSystemLanguage(SystemLanguage systemLanguage)
+    {
+        return systemLanguage switch
+        {
+            SystemLanguage.Korean => GameLanguageOption.Korean,
+            SystemLanguage.Japanese => GameLanguageOption.Japanese,
+            SystemLanguage.ChineseSimplified => GameLanguageOption.SimplifiedChinese,
+            SystemLanguage.ChineseTraditional => GameLanguageOption.TraditionalChinese,
+            _ => GameLanguageOption.English,
+        };
+    }
+
+    private Coroutine localeInitialization;
+
+    private void ApplyLanguageLocale()
+    {
+        if (localeInitialization == null)
+            localeInitialization = StartCoroutine(SelectLanguageLocale());
+    }
+
+    private IEnumerator SelectLanguageLocale()
+    {
+        yield return LocalizationSettings.InitializationOperation;
+        // Read the latest preference after initialization, including changes made while it was loading.
+        GameLanguageOption requestedLanguage = language;
+        string code = language switch
+        {
+            GameLanguageOption.Korean => "ko",
+            GameLanguageOption.Japanese => "ja",
+            GameLanguageOption.SimplifiedChinese => "zh-Hans",
+            GameLanguageOption.TraditionalChinese => "zh-Hant",
+            _ => "en",
+        };
+        var locale = LocalizationSettings.AvailableLocales.GetLocale(code);
+        if (locale != null)
+        {
+            yield return LocalizationSettings.StringDatabase.GetTableAsync(GameText.TableName, locale);
+            if (language != requestedLanguage)
+            {
+                localeInitialization = null;
+                ApplyLanguageLocale();
+                yield break;
+            }
+            LocalizationSettings.SelectedLocale = locale;
+        }
+        localeInitialization = null;
     }
 
     private void BuildResolutionOptions()

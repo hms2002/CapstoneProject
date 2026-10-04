@@ -3,6 +3,7 @@
     "rootNamespace": "",
     "references": [
         "Core",
+        "com.rlabrecque.steamworks.net",
         "Gameplay",
         "Unity.Addressables",
         "Unity.ResourceManager",

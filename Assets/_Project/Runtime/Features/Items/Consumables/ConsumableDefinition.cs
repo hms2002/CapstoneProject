@@ -22,7 +22,7 @@ public class ConsumableDefinition : ScriptableObject, IInventoryItemDefinition
 
     public InventoryItemKind Kind => InventoryItemKind.Consumable;
     public string ItemId => consumableId;
-    public string DisplayName => displayName;
+    public string DisplayName => GameText.Asset(this, "displayName", displayName);
     public Sprite Icon => icon;
     public AttributeDefinition TargetAttribute => targetAttribute;
     public int RestoreAmount => restoreAmount;

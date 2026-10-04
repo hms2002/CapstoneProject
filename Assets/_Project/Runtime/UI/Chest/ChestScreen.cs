@@ -265,7 +265,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         if (selectedSlots.Count == 0)
             return false;
 
-        WarningPopupPlayback.ShowMessage("아이템을 획득하거나 선택을 해제해 주십시오.");
+        WarningPopupPlayback.ShowMessage(GameText.Get("code.chestscreen.e266fd2d0f", "아이템을 획득하거나 선택을 해제해 주십시오."));
         SetConfirmCloseWarning(true);
         return true;
     }
@@ -1146,7 +1146,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private void RefreshAcquisitionCounter()
     {
         if (acquisitionCountLabel != null)
-            acquisitionCountLabel.text = $"선택 {selectedSlots.Count} / {ChestInventory.AcquisitionLimit}";
+            acquisitionCountLabel.text = GameText.Format("code.chestscreen.91202e3c02", "선택 {0} / {1}", selectedSlots.Count, ChestInventory.AcquisitionLimit);
     }
 
     private bool CanChangeSelection => chestContainer != null && !confirmingSelection &&
@@ -1399,7 +1399,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             foreach (ItemSlotUI slot in selectedSlots) slot.SetSelectionBlocked(slot.BoundIndex == failedIndex);
             nextSelectionValidationTime = Time.unscaledTime + 1f;
             if (result.HasWarning) WarningPopupPlayback.Show(result.WarningCode);
-            else WarningPopupPlayback.ShowMessage("아이템을 획득할 수 없습니다. 인벤토리와 유물 상태를 확인해 주세요.");
+            else WarningPopupPlayback.ShowMessage(GameText.Get("code.chestscreen.6efd1f528f", "아이템을 획득할 수 없습니다. 인벤토리와 유물 상태를 확인해 주세요."));
             RefreshAcquisitionCounter();
             RefreshSelectionControls();
             return;

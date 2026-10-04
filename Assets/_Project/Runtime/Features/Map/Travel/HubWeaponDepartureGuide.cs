@@ -44,8 +44,11 @@ public sealed class HubWeaponDepartureGuide : MonoBehaviour
         nextSpeech = Time.unscaledTime + Mathf.Max(0.1f, speechCooldown);
         guidedPlayer = player;
         if (lines != null && lines.Length > 0)
+        {
+            int lineIndex = Random.Range(0, lines.Length);
             player.Transform.GetComponent<PlayerSpeechController>()?.SpeakLine(
-                lines[Random.Range(0, lines.Length)], displaySeconds);
+                GameText.Get("hub.weapon_required." + lineIndex, lines[lineIndex]), displaySeconds);
+        }
         RefreshTarget();
         ShowArrowIfAvailable();
         return false;

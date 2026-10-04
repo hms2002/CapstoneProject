@@ -580,7 +580,7 @@ public sealed class LoadingOverlayController : MonoBehaviour, ILoadingPresentati
 
         float elapsed = Mathf.Max(0f, Time.realtimeSinceStartup - startedRealtime);
         int dotCount = Mathf.FloorToInt(elapsed / Mathf.Max(0.05f, loadingDotStepSeconds)) % 3 + 1;
-        loadingText.text = "Loading" + new string('.', dotCount);
+        loadingText.text = GameText.Get("ui.loading", "Loading") + new string('.', dotCount);
     }
 
     private void UpdateLegacyCopy(

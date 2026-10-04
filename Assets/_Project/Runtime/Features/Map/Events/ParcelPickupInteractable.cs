@@ -76,7 +76,7 @@ public sealed class ParcelPickupInteractable : InteractableBase
                     parcelCount))
             {
                 inventory.RemoveOne(parcelDefinition);
-                WarningPopupPlayback.ShowMessage("다음 배송 지점을 예약할 수 없습니다.");
+                WarningPopupPlayback.ShowMessage(GameText.Get("code.parcelpickupinteractable.b46a2f5831", "다음 배송 지점을 예약할 수 없습니다."));
                 CapstoneDiagnostics.EditorOnlyLog.LogWarning("[ParcelDelivery] Failed to queue the next-route delivery room.", this);
                 return;
             }
@@ -84,22 +84,22 @@ public sealed class ParcelPickupInteractable : InteractableBase
             SoundPlaybackUtility.Play(PickupSound, causer: gameObject, position: transform.position, sourceObject: this);
             ShowSpeech(parcelCount switch
             {
-                1 => "한개? 흠 뭐 고마워.",
-                2 => "두개 정도면 딱 좋지.",
-                _ => "세개? 야 그만 가져가. 나 잘린다고."
+                1 => GameText.Get("code.parcelpickupinteractable.95ce5d8425", "한개? 흠 뭐 고마워."),
+                2 => GameText.Get("code.parcelpickupinteractable.91994d886a", "두개 정도면 딱 좋지."),
+                _ => GameText.Get("code.parcelpickupinteractable.caa7643b77", "세개? 야 그만 가져가. 나 잘린다고.")
             });
             return;
         }
 
         if (result == RelicInventory.AcquireResult.ParcelCarryLimitReached)
         {
-            ShowSpeech("그만가져가라고 했지.");
+            ShowSpeech(GameText.Get("code.parcelpickupinteractable.51be776ea2", "그만가져가라고 했지."));
             return;
         }
 
         if (result == RelicInventory.AcquireResult.InventoryFull)
         {
-            ShowSpeech("가방을 좀 비우지그래?");
+            ShowSpeech(GameText.Get("code.parcelpickupinteractable.e51afb0ed7", "가방을 좀 비우지그래?"));
             return;
         }
 
@@ -111,7 +111,7 @@ public sealed class ParcelPickupInteractable : InteractableBase
     public override InteractState GetInteractType() => InteractState.Idle;
 
     public override string GetInteractDescription() =>
-        parcelDefinition != null ? interactPromptText : string.Empty;
+        parcelDefinition != null ? GameText.Get("interaction.parcelpickupinteractable.interactprompttext", interactPromptText) : string.Empty;
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 

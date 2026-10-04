@@ -1,0 +1,74 @@
+[
+  {
+    "file": "LICENSE",
+    "url": "https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/LICENSE",
+    "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2",
+    "bytes": 4301
+  },
+  {
+    "file": "NotoSansCJKjp-Regular.otf",
+    "url": "https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/OTF/Japanese/NotoSansCJKjp-Regular.otf",
+    "sha256": "68a3fc98800b2a27b371f2fb79991daf3633bd89309d4ffaa6946fd587f375b5",
+    "bytes": 16467736
+  },
+  {
+    "file": "NotoSansCJKsc-Regular.otf",
+    "url": "https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf",
+    "sha256": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b",
+    "bytes": 16437364
+  },
+  {
+    "file": "NotoSansCJKtc-Regular.otf",
+    "url": "https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/OTF/TraditionalChinese/NotoSansCJKtc-Regular.otf",
+    "sha256": "dce08bd4fd91aa8aa76ed8fea4b694c2dfb8550f67871e326843212ddbeb88b4",
+    "bytes": 16435884
+  },
+  {
+    "file": "FusionPixel/fusion-pixel-12px-proportional-zh_hans.ttf",
+    "url": "https://github.com/TakWolf/fusion-pixel-font/releases/download/2026.09.25/fusion-pixel-font-12px-proportional-ttf-v2026.09.25.zip",
+    "sha256": "b2ee68647dc257fa697e4d0c78f9b59461bc504a023b9a3b5ad66f358bbb1613",
+    "bytes": 7053672
+  },
+  {
+    "file": "FusionPixel/fusion-pixel-12px-proportional-zh_hant.ttf",
+    "url": "https://github.com/TakWolf/fusion-pixel-font/releases/download/2026.09.25/fusion-pixel-font-12px-proportional-ttf-v2026.09.25.zip",
+    "sha256": "51f4c66df38cea343cc0295a49fa4dea69c5e7df703b37e2b4edfe2eeba81399",
+    "bytes": 7069476
+  },
+  {
+    "file": "FusionPixel/LICENSES/ark-pixel/OFL.txt",
+    "url": "https://github.com/TakWolf/fusion-pixel-font/releases/download/2026.09.25/fusion-pixel-font-12px-proportional-ttf-v2026.09.25.zip",
+    "sha256": "3ab41567e68e3988ba1ef16dd2644eca95ca5648ea12e7d46e6287fc0bbe5aee",
+    "bytes": 4412
+  },
+  {
+    "file": "FusionPixel/LICENSES/cubic-11/OFL.txt",
+    "url": "https://github.com/TakWolf/fusion-pixel-font/releases/download/2026.09.25/fusion-pixel-font-12px-proportional-ttf-v2026.09.25.zip",
+    "sha256": "2b6e5938e5cffa0b9e183bd05f8c363e174e7ebed1a0556e2855fd1707fa2188",
+    "bytes": 5364
+  },
+  {
+    "file": "FusionPixel/LICENSES/galmuri/LICENSE.txt",
+    "url": "https://github.com/TakWolf/fusion-pixel-font/releases/download/2026.09.25/fusion-pixel-font-12px-proportional-ttf-v2026.09.25.zip",
+    "sha256": "86a3ee9495f942f0243f18c103da9faca27adb88142613edb8bb852e56c892c1",
+    "bytes": 4360
+  },
+  {
+    "file": "FusionPixel/OFL.txt",
+    "url": "https://github.com/TakWolf/fusion-pixel-font/releases/download/2026.09.25/fusion-pixel-font-12px-proportional-ttf-v2026.09.25.zip",
+    "sha256": "bc518cf64b8032c07690f33cc270c35c179255a6ac8efa7c165ebae7e8f76a63",
+    "bytes": 4418
+  },
+  {
+    "file": "Galmuri/Galmuri9.ttf",
+    "url": "https://raw.githubusercontent.com/quiple/galmuri/main/dist/Galmuri9.ttf",
+    "sha256": "e84e821b18be15b9e3a907ceb83cfba25fabf51c80b7edf0d2921cf8f8e1a11d",
+    "bytes": 4649144
+  },
+  {
+    "file": "Galmuri/LICENSE.txt",
+    "url": "https://raw.githubusercontent.com/quiple/galmuri/main/dist/LICENSE.txt",
+    "sha256": "86a3ee9495f942f0243f18c103da9faca27adb88142613edb8bb852e56c892c1",
+    "bytes": 4360
+  }
+]

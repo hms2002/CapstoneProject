@@ -1,0 +1,126 @@
+{
+  "OddIron": [
+    {
+      "section": "defaults",
+      "key": "maxAmmo",
+      "source": "Assets/_Project/Data/Items/Weapons/Loadouts/WAL_OddIron.asset",
+      "field": "maxAmmo"
+    },
+    {
+      "section": "shot",
+      "key": "projectileSpeed",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_OddIronShot.asset",
+      "field": "projectileSpeed"
+    },
+    {
+      "section": "shot",
+      "key": "lifetime",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_OddIronShot.asset",
+      "field": "lifetime"
+    },
+    {
+      "section": "shot",
+      "key": "fixedDamage",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_OddIronShot.asset",
+      "field": "fixedDamage"
+    },
+    {
+      "section": "shot",
+      "key": "fixedKnockbackImpulse",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_OddIronShot.asset",
+      "field": "fixedKnockbackImpulse"
+    },
+    {
+      "section": "shot",
+      "key": "barrageInterval",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_OddIronShot.asset",
+      "field": "barrageInterval"
+    },
+    {
+      "section": "shot",
+      "key": "barrageSpreadAngle",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_OddIronShot.asset",
+      "field": "barrageSpreadAngle"
+    }
+  ],
+  "Flowering": [
+    {
+      "section": "bloom",
+      "key": "durationSeconds",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_FloweringBloom.asset",
+      "field": "durationSeconds"
+    },
+    {
+      "section": "bloom",
+      "key": "killExtensionSeconds",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_FloweringBloom.asset",
+      "field": "killExtensionSeconds"
+    },
+    {
+      "section": "bloom",
+      "key": "normalDamageAdd",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_FloweringBloom.asset",
+      "field": "normalDamageAdd"
+    },
+    {
+      "section": "bloom",
+      "key": "attackSpeedBaseAdd",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_FloweringBloom.asset",
+      "field": "attackSpeedBaseAdd"
+    },
+    {
+      "section": "bloom",
+      "key": "moveSpeedPercent",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_FloweringBloom.asset",
+      "field": "moveSpeedPercent"
+    },
+    {
+      "section": "bloom",
+      "key": "dashDistanceMultiplier",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_FloweringBloom.asset",
+      "field": "dashDistanceMultiplier"
+    },
+    {
+      "section": "bloom",
+      "key": "dashDurationMultiplier",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_FloweringBloom.asset",
+      "field": "dashDurationMultiplier"
+    },
+    {
+      "section": "bloom",
+      "key": "dashSlashCount",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_FloweringBloom.asset",
+      "field": "dashSlashCount"
+    },
+    {
+      "section": "bloom",
+      "key": "dashSlashIntervalSeconds",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_FloweringBloom.asset",
+      "field": "dashSlashIntervalSeconds"
+    },
+    {
+      "section": "bloom",
+      "key": "dashSlashDamageScale",
+      "source": "Assets/_Project/Data/Items/Weapons/LogicData/ALData_FloweringBloom.asset",
+      "field": "dashSlashDamageScale"
+    }
+  ],
+  "FirmStep": {
+    "source": "Assets/_Project/Data/Items/Relics/Strategies/Relic Logic_Common_FirmStep.asset",
+    "fields": {
+      "chancePerStack": "chancePerStackByLevel[level-1]",
+      "maximumStacks": "maximumStacks"
+    }
+  },
+  "LastStand": {
+    "source": "Assets/_Project/Data/Items/Relics/Strategies/RelicLogic_LastStand.asset",
+    "fields": {
+      "healthThreshold": "healthThresholdByLevel[level-1]"
+    }
+  },
+  "Dialogue": {
+    "npc": "Assets/_Project/Data/Dialogue/NPC/MSShopNpc.asset",
+    "source": "Assets/_Project/Data/Dialogue/Ink/AnimatedVariants/MerchantDialogue_Animated.ink",
+    "notes": "loc tags are proposed and only added to the sample copy; English is a draft."
+  }
+}

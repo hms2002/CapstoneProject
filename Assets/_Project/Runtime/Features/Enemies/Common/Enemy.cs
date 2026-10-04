@@ -55,6 +55,7 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
     public virtual Transform Target => target;
     public bool IsDead => isDead;
     public virtual string EnemyName => enemyName;
+    public string DisplayName => GameText.Asset(this, "enemyName", enemyName);
     public virtual bool IsRecognizingPlayer => false;
 
     /// <summary>

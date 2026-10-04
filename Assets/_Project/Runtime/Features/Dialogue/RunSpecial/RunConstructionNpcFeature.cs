@@ -115,14 +115,16 @@ public sealed class RunConstructionNpcFeature : RunSpecialNpcFeatureBase, IProce
     public override string ResolveDialogueLineText(string text, RunSpecialNpcFeatureContext context)
     {
         if (string.IsNullOrWhiteSpace(text) ||
-            text.IndexOf(RemainingDaysToken, System.StringComparison.Ordinal) < 0)
+            (text.IndexOf(RemainingDaysToken, System.StringComparison.Ordinal) < 0 &&
+             text.IndexOf("{remaining_runs}", System.StringComparison.Ordinal) < 0))
         {
             return text;
         }
 
         string remainingRuns = GetRemainingRunCompletions()
             .ToString(CultureInfo.InvariantCulture);
-        return text.Replace(RemainingDaysToken, remainingRuns + "\uC77C");
+        string displayDays = GameText.Format("units.days.value", "{0}일", remainingRuns);
+        return text.Replace(RemainingDaysToken, displayDays).Replace("{remaining_runs}", displayDays);
     }
 
     public override IEnumerator Execute(RunSpecialNpcFeatureContext context)

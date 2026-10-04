@@ -491,12 +491,12 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
             return string.Empty;
 
         if (doorType == DoorType.Locked)
-            return lockedPromptText;
+            return GameText.Get("interaction.doorobject.lockedprompttext", lockedPromptText);
 
         if (doorType == DoorType.AffectionLocked)
-            return CanAffectionDoorOpen() ? openPromptText : lockedPromptText;
+            return CanAffectionDoorOpen() ? GameText.Get("interaction.doorobject.openprompttext", openPromptText) : GameText.Get("interaction.doorobject.lockedprompttext", lockedPromptText);
 
-        return openPromptText;
+        return GameText.Get("interaction.doorobject.openprompttext", openPromptText);
     }
 
     /// <summary>문 위치 기준으로 단발 상호작용 사운드를 재생합니다.</summary>

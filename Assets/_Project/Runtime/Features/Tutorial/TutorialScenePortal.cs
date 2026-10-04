@@ -133,7 +133,7 @@ public sealed class TutorialScenePortal : InteractableBase
     }
 
     public override InteractState GetInteractType() => InteractState.Idle;
-    public override string GetInteractDescription() => interactPromptText;
+    public override string GetInteractDescription() => GameText.Get("interaction.tutorialsceneportal.interactprompttext", interactPromptText);
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
     private PreparedTutorialTravel PrepareTutorialTravel(IPlayerInteractor player)

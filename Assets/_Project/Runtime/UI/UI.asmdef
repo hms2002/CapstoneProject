@@ -3,6 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Core",
+        "Unity.Localization",
+        "Unity.ResourceManager",
         "Gameplay",
         "Infrastructure",
         "Presentation",

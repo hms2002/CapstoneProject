@@ -74,8 +74,8 @@ public sealed class UnextinguishedFireLevelRewardEffectSO : LevelRewardEffectSO
         {
             int target = Mathf.Max(1, requiredBurnKills);
             string effectText = state.completed
-                ? $"저주 해제\n화상 피해 +{(Mathf.Max(0f, completedBurnDamageMultiplier) - 1f) * 100f:0.#}%\n화상 부여량 +{completedBurnApplicationBonus}"
-                : $"직접 피해 -{(1f - Mathf.Clamp01(directDamageMultiplier)) * 100f:0.#}%\n화상 피해로 처치: {state.burnKillCount}/{target}";
+                ? GameText.Format("code.unextinguishedfirelevelrewardeffectso.df39c2636f", "저주 해제\n화상 피해 +{0:0.#}%\n화상 부여량 +{1}", (Mathf.Max(0f, completedBurnDamageMultiplier) - 1f) * 100f, completedBurnApplicationBonus)
+                : GameText.Format("code.unextinguishedfirelevelrewardeffectso.4866d060d5", "직접 피해 -{0:0.#}%\n화상 피해로 처치: {1}/{2}", (1f - Mathf.Clamp01(directDamageMultiplier)) * 100f, state.burnKillCount, target);
             return new StatusApplyRequest(
                 state.completed ? completedStatus : curseStatus,
                 ownerKey: "level_reward.unextinguished_fire",

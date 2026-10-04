@@ -20,7 +20,7 @@ public class GlossaryDatabase : ScriptableObject
         {
             if (entries[i].key == key)
             {
-                description = entries[i].description;
+                description = GameText.Asset(this, $"entries.Array.data[{i}].description", entries[i].description);
                 return true;
             }
         }

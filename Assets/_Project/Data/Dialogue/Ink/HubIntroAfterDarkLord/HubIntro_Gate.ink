@@ -1,6 +1,6 @@
 === HUB_INTRO_GATE ===
 # speaker: 1002
-준비 다 끝났으면 저기 문으로 나가면 돼.
-아, 미리 말해두는데 저 문 밖으로 나가면 얄짤없이 일방통행이다?
-나중에 뭐 두고 왔다고 밖에서 엉엉 울어도 못 돌아와.
+준비 다 끝났으면 저기 문으로 나가면 돼. # loc:dialogue.hubintro_gate.66397b31e4
+아, 미리 말해두는데 저 문 밖으로 나가면 얄짤없이 일방통행이다? # loc:dialogue.hubintro_gate.9a77b4e7e1
+나중에 뭐 두고 왔다고 밖에서 엉엉 울어도 못 돌아와. # loc:dialogue.hubintro_gate.dfd5052d76
 -> END

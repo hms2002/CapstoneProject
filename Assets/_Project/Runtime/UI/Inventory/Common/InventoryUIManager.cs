@@ -124,7 +124,7 @@ public class InventoryUIManager : MonoBehaviour
 
         if (IsBlockedByCombat)
         {
-            WarningPopupPlayback.ShowMessage("전투가 끝난 뒤 할 수 있어");
+            WarningPopupPlayback.ShowMessage(GameText.Get("code.inventoryuimanager.42846c69da", "전투가 끝난 뒤 할 수 있어"));
             return false;
         }
 

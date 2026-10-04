@@ -28,6 +28,10 @@ public enum EncyclopediaItemSubTab
 [Serializable]
 public sealed class EncyclopediaWeaponEntry
 {
+    [NonSerialized] internal EncyclopediaCatalogSO localizationOwner;
+    [NonSerialized] internal int localizationIndex;
+    public string StageText => GameText.Asset(localizationOwner,
+        $"weaponEntries.Array.data[{localizationIndex}].stageText", stageText);
     public string idOverride;
     public WeaponDefinition weapon;
     public Sprite imageOverride;
@@ -37,13 +41,21 @@ public sealed class EncyclopediaWeaponEntry
         ? idOverride
         : weapon != null ? weapon.weaponId : string.Empty;
 
-    public string DisplayName => weapon != null ? weapon.displayName : Id;
+    public string DisplayName => weapon != null ? weapon.DisplayName : Id;
     public Sprite Image => imageOverride != null ? imageOverride : weapon != null ? weapon.icon : null;
 }
 
 [Serializable]
 public sealed class EncyclopediaMonsterEntry
 {
+    [NonSerialized] internal EncyclopediaCatalogSO localizationOwner;
+    [NonSerialized] internal int localizationIndex;
+    public string DisplayName => Localized("displayName", displayName);
+    public string AttackStyle => Localized("attackStyle", attackStyle);
+    public string StageText => Localized("stageText", stageText);
+    public string StoryText => Localized("storyText", storyText);
+    private string Localized(string field, string fallback) => GameText.Asset(localizationOwner,
+        $"monsterEntries.Array.data[{localizationIndex}].{field}", fallback);
     public string id;
     public string displayName;
     public Sprite image;
@@ -57,6 +69,14 @@ public sealed class EncyclopediaMonsterEntry
 [Serializable]
 public sealed class EncyclopediaBossEntry
 {
+    [NonSerialized] internal EncyclopediaCatalogSO localizationOwner;
+    [NonSerialized] internal int localizationIndex;
+    public string DisplayName => Localized("displayName", displayName);
+    public string AttackStyle => Localized("attackStyle", attackStyle);
+    public string StageText => Localized("stageText", stageText);
+    public string StoryText => Localized("storyText", storyText);
+    private string Localized(string field, string fallback) => GameText.Asset(localizationOwner,
+        $"bossEntries.Array.data[{localizationIndex}].{field}", fallback);
     public string id;
     public string displayName;
     public Sprite image;
@@ -100,8 +120,8 @@ public sealed class EncyclopediaCatalogSO : ScriptableObject
         return category switch
         {
             EncyclopediaCategory.Weapon => TryGetWeapon(index, out var weapon) ? weapon.DisplayName : string.Empty,
-            EncyclopediaCategory.Monster => TryGetMonster(index, out var monster) ? monster.displayName : string.Empty,
-            EncyclopediaCategory.Boss => TryGetBoss(index, out var boss) ? boss.displayName : string.Empty,
+            EncyclopediaCategory.Monster => TryGetMonster(index, out var monster) ? monster.DisplayName : string.Empty,
+            EncyclopediaCategory.Boss => TryGetBoss(index, out var boss) ? boss.DisplayName : string.Empty,
             _ => string.Empty
         };
     }
@@ -119,17 +139,26 @@ public sealed class EncyclopediaCatalogSO : ScriptableObject
 
     public bool TryGetWeapon(int index, out EncyclopediaWeaponEntry entry)
     {
-        return TryGetEntry(weaponEntries, index, out entry);
+        if (!TryGetEntry(weaponEntries, index, out entry)) return false;
+        entry.localizationOwner = this;
+        entry.localizationIndex = index;
+        return true;
     }
 
     public bool TryGetMonster(int index, out EncyclopediaMonsterEntry entry)
     {
-        return TryGetEntry(monsterEntries, index, out entry);
+        if (!TryGetEntry(monsterEntries, index, out entry)) return false;
+        entry.localizationOwner = this;
+        entry.localizationIndex = index;
+        return true;
     }
 
     public bool TryGetBoss(int index, out EncyclopediaBossEntry entry)
     {
-        return TryGetEntry(bossEntries, index, out entry);
+        if (!TryGetEntry(bossEntries, index, out entry)) return false;
+        entry.localizationOwner = this;
+        entry.localizationIndex = index;
+        return true;
     }
 
 #if UNITY_EDITOR

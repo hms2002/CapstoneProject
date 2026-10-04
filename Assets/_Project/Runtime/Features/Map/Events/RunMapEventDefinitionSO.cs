@@ -68,7 +68,7 @@ public sealed class RunMapEventDefinitionSO : ScriptableObject
     [SerializeField] private List<RunMapEventFollowUpDefinition> followUps = new();
 
     public string EventId => !string.IsNullOrWhiteSpace(eventId) ? eventId : name;
-    public string DisplayName => displayName;
+    public string DisplayName => GameText.Asset(this, "displayName", displayName);
     public float SelectionWeight => Mathf.Max(0f, selectionWeight);
     public bool AllowRepeatInRun => allowRepeatInRun;
     public bool RequireBossRouteContext => requireBossRouteContext;

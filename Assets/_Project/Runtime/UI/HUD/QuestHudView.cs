@@ -128,7 +128,7 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
             SetOfficerLayout(visible, false);
         }
         if (!visible) return;
-        string text = $"마왕성 간부를 찾아 토벌하자 ({defeated}/3)" + (defeated == 3 ? " · 완료" : "");
+        string text = GameText.Format("code.questhudview.d94daf5df2", "마왕성 간부를 찾아 토벌하자 ({0}/3)", defeated) + (defeated == 3 ? GameText.Get("code.questhudview.fe42ecc073", " · 완료") : "");
         if (officerDescription.text != text) officerDescription.text = text;
         if (inCombat || officerLeaving || !RunOfficerQuestProgress.CanPresentCompletion(data, scene) ||
             (combatMotion != null && combatMotion.IsActive() && combatMotion.IsPlaying()) ||
@@ -172,28 +172,28 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
 
     public static string ResolveMainQuestText(string sceneName, int defeatedNormalBosses, RunRouteCatalogSO routes)
     {
-        if (sceneName == "DarkLord_Tutorial") return "마왕을 토벌하기 위해 전진하자.";
+        if (sceneName == "DarkLord_Tutorial") return GameText.Get("code.questhudview.bb4fac2637", "마왕을 토벌하기 위해 전진하자.");
         if (SceneDomainNamePolicy.IsHubSceneName(sceneName))
-            return "마왕성 공략 준비를 마치고 위 쪽의 포탈로 이동하자.";
+            return GameText.Get("code.questhudview.e4390bf572", "마왕성 공략 준비를 마치고 위 쪽의 포탈로 이동하자.");
         if (sceneName == "Grand Hall")
         {
-            if (defeatedNormalBosses >= 3) return "마왕을 토벌하기 위해 포탈로 이동하자.";
-            if (defeatedNormalBosses == 2) return "마지막 포탈로 이동하자.";
-            if (defeatedNormalBosses == 1) return "둘 중 하나의 포탈을 선택해 이동하자.";
-            return "셋 중 하나의 포탈을 선택해 이동하자.";
+            if (defeatedNormalBosses >= 3) return GameText.Get("code.questhudview.bd18757c85", "마왕을 토벌하기 위해 포탈로 이동하자.");
+            if (defeatedNormalBosses == 2) return GameText.Get("code.questhudview.893d22ee62", "마지막 포탈로 이동하자.");
+            if (defeatedNormalBosses == 1) return GameText.Get("code.questhudview.d73cdda0f0", "둘 중 하나의 포탈을 선택해 이동하자.");
+            return GameText.Get("code.questhudview.f7c49e8542", "셋 중 하나의 포탈을 선택해 이동하자.");
         }
         CorridorBossRouteSetSO final = routes != null ? routes.FinalRouteSet : null;
         if (sceneName == "LeeJunmo_Boss_DemonKing" || (final != null && sceneName == final.BossSceneName))
-            return "마왕을 토벌하자.";
+            return GameText.Get("code.questhudview.6b0006d214", "마왕을 토벌하자.");
         if (sceneName == "ProceduralDemonkingCorridor" || sceneName == "DemonkingCorridor" ||
             (final != null && sceneName == final.CorridorSceneName))
-            return "마왕을 토벌하기 위해 포탈로 이동하자.";
+            return GameText.Get("code.questhudview.bd18757c85", "마왕을 토벌하기 위해 포탈로 이동하자.");
         if (routes != null)
             foreach (CorridorBossRouteSetSO route in routes.NormalRouteSets)
             {
                 if (route == null) continue;
-                if (sceneName == route.BossSceneName) return "간부를 토벌하자.";
-                if (sceneName == route.CorridorSceneName) return "포탈을 찾아 간부를 토벌하자.";
+                if (sceneName == route.BossSceneName) return GameText.Get("code.questhudview.a26bbc8df5", "간부를 토벌하자.");
+                if (sceneName == route.CorridorSceneName) return GameText.Get("code.questhudview.25cbaec60a", "포탈을 찾아 간부를 토벌하자.");
             }
         return null;
     }
@@ -282,16 +282,16 @@ public sealed class QuestHudView : MonoBehaviour, IDefaultHudVisibilityTarget
     {
         if (RunSessionStore.IsRunActive && inventory != null && inventory.CountRelicsOfType<ParcelRelicDefinition>() > 0)
         {
-            string description = "다음 구역에 소포를 배달하자";
+            string description = GameText.Get("code.questhudview.a55f0abca1", "다음 구역에 소포를 배달하자");
             Scene scene = SceneManager.GetActiveScene();
             foreach (ParcelDeliveryPointInteractable point in
                 FindObjectsByType<ParcelDeliveryPointInteractable>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 if (point.gameObject.scene != scene) continue;
-                description = "현재 구역 어딘가에 있는 소포 배달 장소를 찾아 배달하자.";
+                description = GameText.Get("code.questhudview.36ee045faf", "현재 구역 어딘가에 있는 소포 배달 장소를 찾아 배달하자.");
                 break;
             }
-            ShowQuest(ParcelId, "파셀의 소포 배달", description);
+            ShowQuest(ParcelId, GameText.Get("code.questhudview.82174adb03", "파셀의 소포 배달"), description);
         }
         else
             RemoveQuest(ParcelId);

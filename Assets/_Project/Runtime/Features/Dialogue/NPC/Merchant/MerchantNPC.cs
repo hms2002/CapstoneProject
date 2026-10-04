@@ -483,10 +483,10 @@ public sealed class MerchantNPC : MonoBehaviour
     {
         string line = resultType switch
         {
-            MerchantPurchaseResultType.NotEnoughCurrency => notEnoughCurrencySpeech,
-            MerchantPurchaseResultType.WeaponInventoryFull => inventoryFullSpeech,
-            MerchantPurchaseResultType.RelicInventoryFull => inventoryFullSpeech,
-            MerchantPurchaseResultType.ConsumableInventoryFull => inventoryFullSpeech,
+            MerchantPurchaseResultType.NotEnoughCurrency => GameText.Get("merchant.failure.currency", notEnoughCurrencySpeech),
+            MerchantPurchaseResultType.WeaponInventoryFull => GameText.Get("merchant.failure.inventory", inventoryFullSpeech),
+            MerchantPurchaseResultType.RelicInventoryFull => GameText.Get("merchant.failure.inventory", inventoryFullSpeech),
+            MerchantPurchaseResultType.ConsumableInventoryFull => GameText.Get("merchant.failure.inventory", inventoryFullSpeech),
             _ => string.Empty
         };
 

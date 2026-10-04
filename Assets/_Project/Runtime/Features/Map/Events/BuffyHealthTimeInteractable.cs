@@ -118,7 +118,7 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
 
         if (RunMapEventProgress.IsEventCompleted(RunSessionStore.Data, EventId))
         {
-            ShowSpeech("오늘의 운동은 이미 끝났어. 다음에도 건강하게 만나자!");
+            ShowSpeech(GameText.Get("code.buffyhealthtimeinteractable.2798127a16", "오늘의 운동은 이미 끝났어. 다음에도 건강하게 만나자!"));
             return;
         }
 
@@ -153,7 +153,7 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
 
     public override InteractState GetInteractType() => InteractState.Idle;
 
-    public override string GetInteractDescription() => interactPromptText;
+    public override string GetInteractDescription() => GameText.Get("interaction.buffyhealthtimeinteractable.interactprompttext", interactPromptText);
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
@@ -166,27 +166,27 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
     private bool TryGrantAttackReward()
     {
         if (!TryResolveAttributeSet(out AttributeSet attributes) || attackBaseAttribute == null)
-            return ShowRewardConfigurationFailure("공격력");
+            return ShowRewardConfigurationFailure(GameText.Get("code.buffyhealthtimeinteractable.50b8df8c55", "공격력"));
 
         float nextValue = attributes.GetBaseValue(attackBaseAttribute) + Mathf.Max(0f, attackBaseBonus);
         if (!attributes.TrySetBaseValue(attackBaseAttribute, nextValue, this))
-            return ShowRewardConfigurationFailure("공격력");
+            return ShowRewardConfigurationFailure(GameText.Get("code.buffyhealthtimeinteractable.50b8df8c55", "공격력"));
 
-        ShowRewardPopup($"공격력 +{Mathf.Max(0f, attackBaseBonus):0.#}", "FF9933");
+        ShowRewardPopup(GameText.Format("code.buffyhealthtimeinteractable.bbeb815a1f", "공격력 +{0:0.#}", Mathf.Max(0f, attackBaseBonus)), "FF9933");
         return true;
     }
 
     private bool TryGrantMoveSpeedReward()
     {
         if (!TryResolveAttributeSet(out AttributeSet attributes) || moveSpeedMultiplierAttribute == null)
-            return ShowRewardConfigurationFailure("이동속도");
+            return ShowRewardConfigurationFailure(GameText.Get("code.buffyhealthtimeinteractable.1ae1ad2d14", "이동속도"));
 
         float safeBonus = Mathf.Max(0f, moveSpeedMultiplierBonus);
         float nextValue = attributes.GetBaseValue(moveSpeedMultiplierAttribute) + safeBonus;
         if (!attributes.TrySetBaseValue(moveSpeedMultiplierAttribute, nextValue, this))
-            return ShowRewardConfigurationFailure("이동속도");
+            return ShowRewardConfigurationFailure(GameText.Get("code.buffyhealthtimeinteractable.1ae1ad2d14", "이동속도"));
 
-        ShowRewardPopup($"이동속도 +{safeBonus * 100f:0.#}%", "A6DFFF");
+        ShowRewardPopup(GameText.Format("code.buffyhealthtimeinteractable.9169b25144", "이동속도 +{0:0.#}%", safeBonus * 100f), "A6DFFF");
         return true;
     }
 
@@ -194,19 +194,19 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
     {
         LevelProgressionState state = RunLevelProgression.State;
         if (state == null || levelProgressionConfig == null)
-            return ShowRewardConfigurationFailure("경험치");
+            return ShowRewardConfigurationFailure(GameText.Get("code.buffyhealthtimeinteractable.e134585b3a", "경험치"));
 
         int requiredExperience = levelProgressionConfig.GetRequiredExperience(state.level);
         if (requiredExperience <= 0)
         {
-            ShowSpeech("그건 안해도 되겠는데? 다른 운동을 해봐.");
+            ShowSpeech(GameText.Get("code.buffyhealthtimeinteractable.54af791c6b", "그건 안해도 되겠는데? 다른 운동을 해봐."));
             return false;
         }
 
         if (!RunLevelProgression.TryGrantExperience(levelProgressionConfig, requiredExperience, out _))
-            return ShowRewardConfigurationFailure("경험치");
+            return ShowRewardConfigurationFailure(GameText.Get("code.buffyhealthtimeinteractable.e134585b3a", "경험치"));
 
-        ShowRewardPopup("레벨업 !", "B2FF99");
+        ShowRewardPopup(GameText.Get("code.buffyhealthtimeinteractable.dfada06811", "레벨업 !"), "B2FF99");
         return true;
     }
 
@@ -222,7 +222,7 @@ public sealed class BuffyHealthTimeInteractable : InteractableBase
 
     private bool ShowRewardConfigurationFailure(string rewardName)
     {
-        WarningPopupPlayback.ShowMessage($"{rewardName} 보상을 적용할 수 없습니다.");
+        WarningPopupPlayback.ShowMessage(GameText.Format("code.buffyhealthtimeinteractable.0595f9c5e8", "{0} 보상을 적용할 수 없습니다.", rewardName));
         CapstoneDiagnostics.EditorOnlyLog.LogWarning($"[BuffyHealthTime] Could not apply {rewardName} reward.", this);
         return false;
     }
