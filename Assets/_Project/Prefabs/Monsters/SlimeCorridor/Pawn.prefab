@@ -361,6 +361,8 @@ MonoBehaviour:
   resistancePercentAttribute: {fileID: 0}
   staggeredEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
   allowOverflow: 1
+  maxHealthAttribute: {fileID: 0}
+  maxGaugePerMaxHealth: 0
   allowPresentationOffset: 0
   presentationWorldOffset: {x: 0, y: 1.6, z: 0}
   presentationAnchor: {fileID: 0}

@@ -34,6 +34,8 @@ public sealed class MonsterStackStatusWorldView : MonoBehaviour
     [SerializeField] private RectTransform healthBar;
     [SerializeField] private Image healthFill;
     [SerializeField] private Image damageTrail;
+    [SerializeField] private RectTransform staggerBar;
+    [SerializeField] private Image staggerFill;
     [SerializeField, Min(0f)] private float damageTrailDelay = 0.3f;
     [SerializeField, Min(0.01f)] private float damageTrailDuration = 0.5f;
     [SerializeField] private RectTransform statusRow;
@@ -46,6 +48,8 @@ public sealed class MonsterStackStatusWorldView : MonoBehaviour
     private AttributeSet attributes;
     private MonsterSizeProfile sizeProfile;
     private MonsterStatusRuntime statuses;
+    private StaggerGaugeSystem staggerGauge;
+    private GameplayEffectRunner effectRunner;
     private bool healthInitialized;
     private float healthRatio;
     private float trailRatio;
@@ -59,6 +63,8 @@ public sealed class MonsterStackStatusWorldView : MonoBehaviour
         if (sizeProfile == null) return;
         attributes = sizeProfile.GetComponent<AttributeSet>();
         statuses = sizeProfile.GetComponent<MonsterStatusRuntime>();
+        staggerGauge = sizeProfile.GetComponent<StaggerGaugeSystem>();
+        effectRunner = sizeProfile.GetComponent<GameplayEffectRunner>();
     }
 
     private void OnEnable()
@@ -66,7 +72,9 @@ public sealed class MonsterStackStatusWorldView : MonoBehaviour
         healthInitialized = false;
         if (attributes != null) attributes.OnAttributeChanged += OnAttributeChanged;
         if (enemy != null) enemy.DeathStarted += OnDeath;
+        if (staggerGauge != null) staggerGauge.OnGaugeChanged += OnStaggerGaugeChanged;
         RefreshHealth();
+        RefreshStagger();
     }
 
     private void OnDisable()
@@ -74,17 +82,49 @@ public sealed class MonsterStackStatusWorldView : MonoBehaviour
         healthInitialized = false;
         if (attributes != null) attributes.OnAttributeChanged -= OnAttributeChanged;
         if (enemy != null) enemy.DeathStarted -= OnDeath;
+        if (staggerGauge != null) staggerGauge.OnGaugeChanged -= OnStaggerGaugeChanged;
         if (slots != null) foreach (var slot in slots) slot.Bind(null);
     }
 
     private void OnDeath(Enemy _) => visualRoot.gameObject.SetActive(false);
+    private void OnStaggerGaugeChanged(float _, float __) => RefreshStagger();
     private void OnAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
     {
         if (attribute == healthAttribute || attribute == maxHealthAttribute)
             RefreshHealth(attribute == healthAttribute && newValue < oldValue);
+        if (staggerGauge != null && attribute == staggerGauge.maxGaugeAttribute)
+            RefreshStagger();
     }
 
-    private void Start() => RefreshHealth(); // All AttributeSet/appearance initialization has completed.
+    private void Start()
+    {
+        // All AttributeSet/appearance initialization has completed.
+        RefreshHealth();
+        RefreshStagger();
+    }
+
+    private void RefreshStagger()
+    {
+        if (staggerBar == null) return;
+
+        bool show = staggerGauge != null && staggerGauge.enabled && staggerGauge.HasHealthScaledGauge && sizeProfile != null && sizeProfile.ShowHealthBar;
+        staggerBar.gameObject.SetActive(show);
+        if (!show || attributes == null || staggerGauge.maxGaugeAttribute == null || staggerGauge.currentGaugeAttribute == null)
+            return;
+
+        float maximum = attributes.GetAttributeValue(staggerGauge.maxGaugeAttribute);
+        float ratio = maximum > 0f
+            ? 1f - Mathf.Clamp01(attributes.GetAttributeValue(staggerGauge.currentGaugeAttribute) / maximum)
+            : 0f;
+        GameplayEffect groggyEffect = staggerGauge.staggeredEffect;
+        if (effectRunner != null && groggyEffect != null && groggyEffect.duration > 0f)
+        {
+            float remaining = effectRunner.GetRemainingTime(groggyEffect, sizeProfile.gameObject);
+            if (remaining > 0.001f)
+                ratio = 1f - Mathf.Clamp01(remaining / groggyEffect.duration);
+        }
+        SetBarRatio(staggerFill, ratio);
+    }
 
     private void RefreshHealth(bool damaged = false)
     {
@@ -150,7 +190,17 @@ public sealed class MonsterStackStatusWorldView : MonoBehaviour
         float width = sizeProfile.HealthBarWidth;
         healthBar.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
         healthBar.gameObject.SetActive(sizeProfile.ShowHealthBar);
-        statusRow.anchoredPosition = new Vector2(-width * 0.5f, sizeProfile.ShowHealthBar ? -15f : 0f);
+        bool showStagger = staggerGauge != null && staggerGauge.enabled && staggerGauge.HasHealthScaledGauge && sizeProfile.ShowHealthBar;
+        if (staggerBar != null)
+        {
+            staggerBar.gameObject.SetActive(showStagger);
+            if (showStagger)
+            {
+                staggerBar.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+                RefreshStagger();
+            }
+        }
+        statusRow.anchoredPosition = new Vector2(-width * 0.5f, showStagger ? -24f : sizeProfile.ShowHealthBar ? -15f : 0f);
         float x = 0f;
         if (slots == null) return;
         foreach (var slot in slots)

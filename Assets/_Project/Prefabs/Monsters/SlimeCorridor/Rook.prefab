@@ -330,6 +330,8 @@ MonoBehaviour:
   resistancePercentAttribute: {fileID: 0}
   staggeredEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
   allowOverflow: 1
+  maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  maxGaugePerMaxHealth: 0.33333334
   allowPresentationOffset: 0
   presentationWorldOffset: {x: 0, y: 1.6, z: 0}
   presentationAnchor: {fileID: 0}
@@ -627,8 +629,8 @@ MonoBehaviour:
   tagSystem: {fileID: 0}
   groggyTag: {fileID: 0}
   followAnchor: {fileID: 0}
-  boundsSource: {fileID: 0}
-  effectPrefab: {fileID: 2456809460785590275, guid: 80d266c90ff9c4d458d715b8d37a677b, type: 3}
+  boundsSource: {fileID: 6309188611656536190}
+  effectPrefab: {fileID: 1300715046430871899, guid: 08b77e82d78534d45abd893363571c52, type: 3}
   effectParent: {fileID: 0}
   instantiateOnAwake: 0
   destroyInstanceWhenHidden: 1

@@ -57,3 +57,9 @@ The shared HUD contains a white DamageTrail Image behind the red fill. Health da
 Unity authoring and reference validation passed for 19 monsters and 6 bosses. The editor validation exercised the production private presentation methods for immediate red decrease, hold, interpolation, repeat damage and healing. The generated prefab render was inspected. Live Play Mode combat and boss anchor positions have not been verified.
 
 The view resolves AttributeSet and MonsterStatusRuntime from the parent MonsterSizeProfile, allowing TrainingDummy2D targets without Enemy inheritance. Enemy death subscriptions/checks remain conditional. The dummy retains its existing damage readout and never-die behavior; no runtime HUD objects are created.
+
+## Selected monster groggy gauge (2026-10-02)
+
+GoblinTank, ArcaneTankGolem and Rook opt into a yellow groggy bar through their authored `StaggerGaugeSystem` components. `maxGaugePerMaxHealth = 0.33333334` currently keeps maximum stagger at one-third of effective maximum HP when stage difficulty changes HP. Their base init profiles currently set 60 each; Rook retains `CurStagger` as the current gauge attribute. Other monsters, including Pawn, do not opt into the world bar.
+
+The shared HUD prefab owns the black/yellow bar under HP. `MonsterStackStatusWorldView` projects boss-style remaining gauge, then groggy recovery progress while the shared three-second status effect is active; it moves the status row down only for opted-in targets. `GroggyOverheadEffectPresenter2D` on the three prefabs uses the authored `groggy_effect` 8-frame, 32-pixel looping animation. No groggy audio was added. The common HUD authoring tool predates this addition and may replace the bar if rerun; inspect and preserve the groggy bar before rebuilding that prefab.

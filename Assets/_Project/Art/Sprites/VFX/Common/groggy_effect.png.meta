@@ -1,0 +1,421 @@
+fileFormatVersion: 2
+guid: 545311b7bcebd1b40bbb4ad6d5be4729
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1392681547492024247
+    second: groggy_effect_0
+  - first:
+      213: -1743158694600629529
+    second: groggy_effect_1
+  - first:
+      213: -7787582209971094546
+    second: groggy_effect_2
+  - first:
+      213: -3856606072391648451
+    second: groggy_effect_3
+  - first:
+      213: -22647497880930361
+    second: groggy_effect_4
+  - first:
+      213: 4112272309674101733
+    second: groggy_effect_5
+  - first:
+      213: -6180520757770049409
+    second: groggy_effect_6
+  - first:
+      213: 959046964357115552
+    second: groggy_effect_7
+  - first:
+      213: 8300838323827855013
+    second: groggy_effect_8
+  - first:
+      213: 2664365654673454762
+    second: groggy_effect_9
+  - first:
+      213: -2926345312631634308
+    second: groggy_effect_10
+  - first:
+      213: -2400583905193411034
+    second: groggy_effect_11
+  - first:
+      213: 4406217186196319629
+    second: groggy_effect_12
+  - first:
+      213: -3735276000370184969
+    second: groggy_effect_13
+  - first:
+      213: -8720735038238703911
+    second: groggy_effect_14
+  - first:
+      213: 8486383990318360732
+    second: groggy_effect_15
+  - first:
+      213: 2921571891501838211
+    second: groggy_effect_16
+  - first:
+      213: -3677672181573133702
+    second: groggy_effect_17
+  - first:
+      213: -8980627176595659578
+    second: groggy_effect_18
+  - first:
+      213: 4271141565152565871
+    second: groggy_effect_19
+  - first:
+      213: -1507716159989011976
+    second: groggy_effect_20
+  - first:
+      213: -277004643117625553
+    second: groggy_effect_21
+  - first:
+      213: -7413453219414770112
+    second: groggy_effect_22
+  - first:
+      213: 812666341055908180
+    second: groggy_effect_23
+  - first:
+      213: -407438469863008884
+    second: groggy_effect_00
+  - first:
+      213: 8752892842100563432
+    second: groggy_effect_01
+  - first:
+      213: 9082237800025375877
+    second: groggy_effect_02
+  - first:
+      213: 9075401911922172062
+    second: groggy_effect_03
+  - first:
+      213: 1777881692312147681
+    second: groggy_effect_04
+  - first:
+      213: -7923002313802124722
+    second: groggy_effect_05
+  - first:
+      213: 6287139806130836634
+    second: groggy_effect_06
+  - first:
+      213: -4443743623585652937
+    second: groggy_effect_07
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: groggy_effect_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c859cffcedc785af0800000000000000
+      internalID: -407438469863008884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: groggy_effect_01
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ed96724aa5887970800000000000000
+      internalID: 8752892842100563432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: groggy_effect_02
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 584432cc8279a0e70800000000000000
+      internalID: 9082237800025375877
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: groggy_effect_03
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e90a50294fd42fd70800000000000000
+      internalID: 9075401911922172062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: groggy_effect_04
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e69fe2cafd4ca810800000000000000
+      internalID: 1777881692312147681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: groggy_effect_05
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e42f93b9f57db0290800000000000000
+      internalID: -7923002313802124722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: groggy_effect_06
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9495adc758604750800000000000000
+      internalID: 6287139806130836634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: groggy_effect_07
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73f1543e7b6a452c0800000000000000
+      internalID: -4443743623585652937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      groggy_effect_0: 1392681547492024247
+      groggy_effect_00: -407438469863008884
+      groggy_effect_01: 8752892842100563432
+      groggy_effect_02: 9082237800025375877
+      groggy_effect_03: 9075401911922172062
+      groggy_effect_04: 1777881692312147681
+      groggy_effect_05: -7923002313802124722
+      groggy_effect_06: 6287139806130836634
+      groggy_effect_07: -4443743623585652937
+      groggy_effect_1: -1743158694600629529
+      groggy_effect_10: -2926345312631634308
+      groggy_effect_11: -2400583905193411034
+      groggy_effect_12: 4406217186196319629
+      groggy_effect_13: -3735276000370184969
+      groggy_effect_14: -8720735038238703911
+      groggy_effect_15: 8486383990318360732
+      groggy_effect_16: 2921571891501838211
+      groggy_effect_17: -3677672181573133702
+      groggy_effect_18: -8980627176595659578
+      groggy_effect_19: 4271141565152565871
+      groggy_effect_2: -7787582209971094546
+      groggy_effect_20: -1507716159989011976
+      groggy_effect_21: -277004643117625553
+      groggy_effect_22: -7413453219414770112
+      groggy_effect_23: 812666341055908180
+      groggy_effect_3: -3856606072391648451
+      groggy_effect_4: -22647497880930361
+      groggy_effect_5: 4112272309674101733
+      groggy_effect_6: -6180520757770049409
+      groggy_effect_7: 959046964357115552
+      groggy_effect_8: 8300838323827855013
+      groggy_effect_9: 2664365654673454762
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
